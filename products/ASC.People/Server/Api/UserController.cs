@@ -1118,26 +1118,16 @@ public class UserController : PeopleControllerBase
                 var quotaBytes = ByteConverter.ConvertSizeToBytes(inDto.Quota);
                 var tenanSpaceQuota = _tenantExtra.GetTenantQuota().MaxTotalSize;
 
-                if (tenanSpaceQuota < quotaBytes)
+
+                if (tenanSpaceQuota < quotaBytes || usedSpace > quotaBytes)
                 {
-                    throw new Exception(Resource.QuotaGreaterPortalError);
-                }
-                if (usedSpace > quotaBytes)
-                {
-                    if (users.Count > 1)
-                    {
-                        throw new Exception(Resource.QuotaGroupError);
-                    }
-                    throw new Exception(Resource.QuotaLessUsedMemoryError); 
+                    continue;
                 }
             }
 
             user.QuotaLimit = inDto.Quota;
             _userManager.SaveUserInfo(user, syncCardDav: true);
-        }
-        
-        foreach (var user in users)
-        {
+
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
     }
