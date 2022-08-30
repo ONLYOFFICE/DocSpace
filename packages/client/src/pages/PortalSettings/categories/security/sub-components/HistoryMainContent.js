@@ -6,9 +6,16 @@ import StyledSaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
 
+import { hugeMobile } from "@docspace/components/utils/device";
+
 const StyledTextInput = styled(TextInput)`
   margin-top: 4px;
   margin-bottom: 24px;
+  width: 350px;
+
+  @media ${hugeMobile} {
+    width: 100%;
+  }
 `;
 
 const MainContainer = styled.div`
@@ -109,7 +116,7 @@ const HistoryMainContent = (props) => {
         <StyledTextInput
           onChange={lifeTimeHandler}
           value={lifeTime}
-          size="big"
+          size="base"
           id="storage-period"
           type="text"
         />
