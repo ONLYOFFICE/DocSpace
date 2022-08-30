@@ -14,6 +14,8 @@ import {
 import ExpanderDownIcon from "../../../../public/images/expander-down.react.svg";
 import commonIconsStyles from "../../utils/common-icons-style";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
 `;
@@ -40,7 +42,7 @@ class ComboButton extends React.Component {
     const isSelected = selectedOption.key !== 0;
 
     return (
-      <StyledComboButton
+      <ColorTheme
         isOpen={isOpen}
         isDisabled={isDisabled}
         noBorder={noBorder}
@@ -51,6 +53,7 @@ class ComboButton extends React.Component {
         size={size}
         isSelected={isSelected}
         className="combo-button"
+        type={ThemeType.ComboButton}
       >
         {innerContainer && (
           <StyledOptionalItem
@@ -103,7 +106,7 @@ class ComboButton extends React.Component {
               />
             ))}
         </StyledArrowIcon>
-      </StyledComboButton>
+      </ColorTheme>
     );
   }
 }

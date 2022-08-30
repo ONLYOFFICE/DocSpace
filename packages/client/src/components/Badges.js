@@ -7,36 +7,10 @@ import { isTablet } from "react-device-detect";
 import { FileStatus } from "@docspace/common/constants";
 import { Base } from "@docspace/components/themes";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
-`;
-
-const StyledEditIcon = styled(IconButton)`
-  ${commonIconsStyles}
-
-  svg {
-    path {
-      fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
-    }
-  }
-`;
-
-const StyledPinIcon = styled(IconButton)`
-  ${commonIconsStyles}
-
-  svg {
-    path {
-      fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
-    }
-  }
-
-  :hover {
-    svg {
-      path {
-        fill: ${(props) => props.theme.filesSection.rowView.editingIconColor};
-      }
-    }
-  }
 `;
 
 const StyledWrapper = styled.div`
@@ -149,7 +123,6 @@ const Badges = ({
 
   const commonBadgeProps = {
     borderRadius: "11px",
-    color: theme.filesBadges.color,
     fontSize: fontSizeBadge,
     fontWeight: 800,
     maxWidth: "50px",
@@ -172,7 +145,9 @@ const Badges = ({
   return fileExst ? (
     <div className="badges additional-badges">
       {isEditing && (
-        <StyledEditIcon
+        <ColorTheme
+          type={ThemeType.IconButton}
+          isEditing={isEditing}
           iconName={iconEdit}
           className="badge icons-group is-editing tablet-badge tablet-edit"
           size={sizeBadge}
@@ -182,7 +157,8 @@ const Badges = ({
         />
       )}
       {canConvert && !isTrashFolder && (
-        <StyledIcon
+        <ColorTheme
+          type={ThemeType.IconButton}
           onClick={setConvertDialogVisible}
           iconName={iconRefresh}
           className="badge tablet-badge icons-group can-convert"
@@ -199,6 +175,7 @@ const Badges = ({
             label={t("VersionBadge", { version: countVersions })}
             onClick={onShowVersionHistory}
             noHover={true}
+            isVersionBadge={true}
           />
         </BadgeWrapper>
       )}
@@ -207,7 +184,6 @@ const Badges = ({
           <Badge
             {...commonBadgeProps}
             className="badge-version badge-new-version tablet-badge icons-group"
-            backgroundColor={theme.filesBadges.badgeBackgroundColor}
             label={t("New")}
             onClick={onBadgeClick}
           />
@@ -217,7 +193,8 @@ const Badges = ({
   ) : (
     <>
       {isRoom && pinned && (
-        <StyledPinIcon
+        <ColorTheme
+          type={ThemeType.IconButtonPin}
           onClick={onUnpinClick}
           className="badge icons-group is-pinned tablet-badge tablet-pinned"
           iconName={iconPin}
@@ -229,7 +206,6 @@ const Badges = ({
         <Badge
           {...commonBadgeProps}
           className="new-items tablet-badge"
-          backgroundColor={theme.filesBadges.badgeBackgroundColor}
           label={contentNewItems}
           onClick={onBadgeClick}
         />

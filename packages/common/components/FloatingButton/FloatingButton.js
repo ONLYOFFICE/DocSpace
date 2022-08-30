@@ -22,20 +22,26 @@ import ButtonPlusIcon from "../../../../public/images/actions.button.plus.react.
 import ButtonMinusIcon from "../../../../public/images/actions.button.minus.react.svg";
 import CloseIcon from "../../../../public/images/close-icon.react.svg";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
 
 const Delay = 1000;
-const FloatingButton = ({ id, className, style, ...rest }) => {
+const FloatingButton = (props) => {
   const {
+    id,
+    className,
+    style,
     icon,
     alert,
     percent,
     onClick,
     color,
     clearUploadedFilesHistory,
-  } = rest;
+    ...rest
+  } = props;
 
   const [animationCompleted, setAnimationCompleted] = useState(false);
 
@@ -58,7 +64,9 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
 
   return (
     <StyledFloatingButtonWrapper>
-      <StyledCircleWrap
+      <ColorTheme
+        {...props}
+        type={ThemeType.FloatingButton}
         color={color}
         id={id}
         className={`${className} not-selectable`}
@@ -102,7 +110,7 @@ const FloatingButton = ({ id, className, style, ...rest }) => {
             </StyledAlertIcon>
           </StyledFloatingButton>
         </StyledCircle>
-      </StyledCircleWrap>
+      </ColorTheme>
       {clearUploadedFilesHistory && percent === 100 && (
         <CloseIcon
           className="layout-progress-bar_close-icon"
