@@ -25,7 +25,7 @@ export const getScripts = (assets: assetsType): string[] | void => {
   if (!assets || typeof assets !== "object") return;
   const regTest = /static\/js\/.*/;
   const keys = [];
-  console.log(assets);
+
   for (let key in assets) {
     if (assets.hasOwnProperty(key) && regTest.test(key)) {
       keys.push(key);

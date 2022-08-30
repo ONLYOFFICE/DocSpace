@@ -85,7 +85,6 @@ const Login: React.FC<ILoginProps> = ({
         target.parentElement
       ) {
         targetElement = target.parentElement;
-        console.log(targetElement);
       }
       const providerName = targetElement.dataset.providername;
       const url = targetElement.dataset.url || "";
@@ -109,8 +108,6 @@ const Login: React.FC<ILoginProps> = ({
           );
           if (tokenGetterWin && typeof tokenGetterWin !== "string")
             tokenGetterWin.location.href = getLoginLink(token, code);
-
-          console.log(tokenGetterWin);
         });
       } catch (err) {
         console.log(err);
