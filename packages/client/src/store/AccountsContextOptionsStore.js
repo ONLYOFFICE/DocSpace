@@ -355,6 +355,7 @@ class AccountsContextOptionsStore {
     const {
       setDialogData,
       setDeleteProfileDialogVisible,
+      closeDialogs,
     } = this.peopleStore.dialogStore;
     const { id, displayName, userName } = item;
 
