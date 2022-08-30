@@ -21,6 +21,7 @@ const ButtonContainer = ({
   isDisabled,
   isLoading,
   countAdmin,
+  setPortalQuota,
   t,
 }) => {
   const updateMethod = async () => {
@@ -30,7 +31,7 @@ const ButtonContainer = ({
       }, 500);
 
       await updatePayment(managersCount);
-      toastr.success("the changes will be applied soon");
+      await setPortalQuota();
     } catch (e) {
       toastr.error(e);
     }
@@ -76,7 +77,7 @@ const ButtonContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { portalQuota } = auth;
+  const { portalQuota, setPortalQuota } = auth;
   const { countAdmin } = portalQuota;
   const {
     updatePayment,
@@ -95,5 +96,6 @@ export default inject(({ auth, payments }) => {
     isLoading,
     managersCount,
     countAdmin,
+    setPortalQuota,
   };
 })(observer(ButtonContainer));
