@@ -5,6 +5,7 @@ import TextInput from "@docspace/components/text-input";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
+import toastr from "@docspace/components/toast/toastr";
 
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
 
@@ -77,6 +78,7 @@ const MainContainer = styled.div`
 
 const HistoryMainContent = (props) => {
   const {
+    t,
     loginHistory,
     latestText,
     subHeader,
@@ -103,7 +105,7 @@ const HistoryMainContent = (props) => {
     }
   };
 
-  const setLifeTimeSettings = () => {
+  const setLifeTimeSettings = async () => {
     if (loginHistory) {
       const data = {
         settings: {
@@ -112,10 +114,12 @@ const HistoryMainContent = (props) => {
         },
       };
       try {
-        setLifetimeAuditSettings(data);
+        await setLifetimeAuditSettings(data);
         setShowReminder(false);
+        toastr.success(t("SuccessfullySaveSettingsMessage"));
       } catch (error) {
         console.error(error);
+        toastr.error(error);
       }
     } else {
       const data = {
@@ -126,10 +130,12 @@ const HistoryMainContent = (props) => {
       };
 
       try {
-        setLifetimeAuditSettings(data);
+        await setLifetimeAuditSettings(data);
         setShowReminder(false);
+        toastr.success(t("SuccessfullySaveSettingsMessage"));
       } catch (error) {
         console.error(error);
+        toastr.error(error);
       }
     }
   };

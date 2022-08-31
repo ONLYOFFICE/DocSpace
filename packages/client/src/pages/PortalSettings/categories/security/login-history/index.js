@@ -59,6 +59,7 @@ const LoginHistory = (props) => {
     <>
       {securityLifetime && securityLifetime.loginHistoryLifeTime && (
         <HistoryMainContent
+          t={t}
           loginHistory={true}
           subHeader={t("LoginSubheaderTitle")}
           latestText={t("LoginLatestText")}
