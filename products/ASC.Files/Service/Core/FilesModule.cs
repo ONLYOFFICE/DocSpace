@@ -141,8 +141,10 @@ public class FilesModule : FeedModule
 
         var folderIDs = files.Select(r => r.File.ParentId).ToList();
         var folders = _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync().Result;
+        var roomsIds = _folderDao.GetParentRoomsAsync(folderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId).Result;
 
-        return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId))), f));
+        return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId)), 
+            roomsIds.GetValueOrDefault(f.File.ParentId)), f));
     }
 
     public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
@@ -150,10 +152,11 @@ public class FilesModule : FeedModule
         return _fileDao.GetTenantsWithFeedsAsync(fromTime).ToListAsync().Result;
     }
 
-    private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> rootFolder)
+    private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> rootFolder, int roomId)
     {
         var file = tuple.File;
         var shareRecord = tuple.ShareRecord;
+        var contextId = roomId != default ? $"room_{roomId}" : null;
 
         if (shareRecord != null)
         {
@@ -172,7 +175,8 @@ public class FilesModule : FeedModule
                 HasPreview = false,
                 CanComment = false,
                 Target = shareRecord.Subject,
-                GroupId = GetGroupId(SharedFileItem, shareRecord.Owner, file.ParentId.ToString())
+                GroupId = GetGroupId(SharedFileItem, shareRecord.Owner, file.ParentId.ToString()),
+                ContextId = contextId
             };
 
             return feed;
@@ -196,7 +200,8 @@ public class FilesModule : FeedModule
             HasPreview = false,
             CanComment = false,
             Target = null,
-            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.ParentId.ToString(), updated ? 1 : 0)
+            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.ParentId.ToString(), updated ? 1 : 0),
+            ContextId = contextId
         };
     }
 
