@@ -115,7 +115,7 @@ class AccountsContextOptionsStore {
           return {
             key: option,
             icon: "images/info.react.svg",
-            label: t("PeopleTranslations:Details"),
+            label: t("Common:Info"),
             onClick: this.onDetailsClick,
           };
 
@@ -210,7 +210,7 @@ class AccountsContextOptionsStore {
       },
       {
         key: "cm-info",
-        label: t("PeopleTranslations:Details"),
+        label: t("Common:Info"),
         disabled: isVisible,
         onClick: setVisible,
         icon: "images/info.react.svg",

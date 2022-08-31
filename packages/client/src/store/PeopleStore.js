@@ -192,7 +192,7 @@ class PeopleStore {
       },
       {
         key: "info",
-        label: t("PeopleTranslations:Details"),
+        label: t("Common:Info"),
         disabled: isVisible,
         onClick: setVisible,
         iconUrl: "images/info.react.svg",
