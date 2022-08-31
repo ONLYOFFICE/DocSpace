@@ -22,6 +22,7 @@ import MoreLoginModal from "./sub-components/more-login";
 import RecoverAccessModalDialog from "./sub-components/recover-access-modal-dialog";
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const greetingTitle = "Web Office Applications"; // from PortalSettingsStore
 
@@ -164,7 +165,7 @@ const Login: React.FC<ILoginProps> = ({
       isDesktop={isDesktopEditor}
       className="with-background-pattern"
     >
-      <LoginContainer>
+      <ColorTheme themeId={ThemeType.LinkForgotPassword}>
         <Logo className="logo-wrapper" />
         <Text
           fontSize="23px"
@@ -225,7 +226,7 @@ const Login: React.FC<ILoginProps> = ({
           visible={recoverDialogVisible}
           onClose={onRecoverDialogVisible}
         />
-      </LoginContainer>
+      </ColorTheme>
       {!checkIsSSR() && enabledJoin && <Register enabledJoin={enabledJoin} />}
     </LoginFormWrapper>
   );
