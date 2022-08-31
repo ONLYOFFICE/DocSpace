@@ -2066,6 +2066,10 @@ const Base = {
       tileSortFill: black,
       tileSortColor: black,
     },
+
+    selectedItems: {
+      background: "#eceef1",
+    },
   },
 
   profileInfo: {

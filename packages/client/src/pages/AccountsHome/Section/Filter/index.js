@@ -211,7 +211,6 @@ const SectionFilterContent = ({
     return filterOptions;
   };
 
-  //TODO:
   const getSortData = React.useCallback(() => {
     return [
       {

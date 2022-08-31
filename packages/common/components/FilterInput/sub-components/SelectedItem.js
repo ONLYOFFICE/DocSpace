@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
+import { Base } from "@docspace/components/themes";
 
 const StyledSelectedItem = styled.div`
   width: auto;
@@ -21,13 +22,15 @@ const StyledSelectedItem = styled.div`
   margin-right: 4px;
   margin-bottom: 4px;
 
-  background: #eceef1;
+  background: ${(props) => props.theme.filterInput.SelectedItems.background};
 
   .selected-item_label {
     line-height: 20px;
     margin-right: 10px;
   }
 `;
+
+StyledSelectedItem.defaultProps = { theme: Base };
 
 const SelectedItem = ({ propKey, label, group, removeSelectedItem }) => {
   const onRemove = () => {

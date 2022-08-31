@@ -2066,6 +2066,10 @@ const Dark = {
       tileSortFill: "#eeeeee",
       tileSortColor: "#eeeeee",
     },
+
+    selectedItems: {
+      background: "#000000",
+    },
   },
 
   profileInfo: {
