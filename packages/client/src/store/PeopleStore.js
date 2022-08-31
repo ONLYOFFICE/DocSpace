@@ -39,8 +39,6 @@ class PeopleStore {
   viewAs = isMobile ? "row" : "table";
 
   constructor(authStore, infoPanelStore, setupStore) {
-    console.log(infoPanelStore);
-
     this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this);
