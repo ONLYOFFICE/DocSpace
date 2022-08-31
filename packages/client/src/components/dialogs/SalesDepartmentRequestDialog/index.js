@@ -132,7 +132,7 @@ const SalesDepartmentRequestDialog = ({ visible, onClose }) => {
             size="base"
             scale
             tabIndex={2}
-            placeholder={""}
+            placeholder={t("Common:RegistrationEmail")}
             isDisabled={isLoading}
             value={email}
             onChange={onChangeEmail}
