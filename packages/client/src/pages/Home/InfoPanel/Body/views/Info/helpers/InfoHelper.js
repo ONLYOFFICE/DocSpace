@@ -64,6 +64,14 @@ class InfoHelper {
     this.culture = culture;
   }
 
+  getPropertyList = () => {
+    return this.getNeededProperties().map((propertyId) => ({
+      id: propertyId,
+      title: this.getPropertyTitle(propertyId),
+      content: this.getPropertyContent(propertyId),
+    }));
+  };
+
   getNeededProperties = () => {
     return this.item.isRoom
       ? [
@@ -99,45 +107,88 @@ class InfoHelper {
         ];
   };
 
+  getPropertyTitle = (propertyId) => {
+    switch (propertyId) {
+      case "Owner":
+        return this.t("Common:Owner");
+      case "Location":
+        return this.t("InfoPanel:Location");
+
+      case "Type":
+        return this.t("Common:Type");
+      case "Storage Type":
+        return this.t("InfoPanel:Storage type");
+      case "Storage account":
+        return this.t("InfoPanel:Storage account");
+
+      case "File extension":
+        return this.t("FileExtension");
+
+      case "Content":
+        return this.t("Common:Content");
+      case "Size":
+        return this.t("Common:Size");
+
+      case "Date modified":
+        return this.t("Files:ByLastModifiedDate");
+      case "Last modified by":
+        return this.t("LastModifiedBy");
+      case "Creation date":
+        return this.t("Files:ByCreationDate");
+
+      case "Versions":
+        return this.t("Versions");
+      case "Comments":
+        return this.t("Common:Comments");
+      case "Tags":
+        return this.t("Files:Tags");
+    }
+  };
+
   getPropertyContent = (propertyId) => {
     switch (propertyId) {
       case "Owner":
-        return getItemOwner();
+        return this.getItemOwner();
       case "Location":
-        return getItemLocation();
+        return this.getItemLocation();
 
       case "Type":
-        return getItemType();
+        return this.getItemType();
       case "Storage Type":
-        return getItemStorageType();
+        return this.getItemStorageType();
       case "Storage account":
-        return getItemStorageAccount();
+        return this.getItemStorageAccount();
 
       case "File extension":
-        return getItemFileExtention();
+        return this.getItemFileExtention();
 
       case "Content":
-        return getItemContent();
+        return this.getItemContent();
       case "Size":
-        return getItemSize();
-      case "Tags":
-        return getItemTags();
+        return this.getItemSize();
 
       case "Date modified":
-        return getItemDateModified();
+        return this.getItemDateModified();
       case "Last modified by":
-        return getItemLastModifiedBy();
+        return this.getItemLastModifiedBy();
       case "Creation date":
-        return getItemCreationDate();
+        return this.getItemCreationDate();
+
+      case "Versions":
+        return this.getItemCreationDate();
+      case "Comments":
+        return this.getItemCreationDate();
+      case "Tags":
+        return this.getItemTags();
     }
   };
 
   getItemOwner = () => {
     return this.personal
-      ? styledText(decodeString(selectedItem.createdBy?.displayName))
+      ? styledText(decodeString(this.item.createdBy?.displayName))
       : styledLink(
-          decodeString(selectedItem.createdBy?.displayName),
-          selectedItem.createdBy?.profileUrl
+          decodeString(this.item.createdBy?.displayName),
+          this.item.createdBy?.profileUrl
         );
   };
 
@@ -179,29 +230,37 @@ class InfoHelper {
     return styledText(this.item.contentLength);
   };
 
-  getItemTags = () => {
-    return styledTagList(selectedItem.tags);
-  };
-
   getItemDateModified = () => {
     return styledText(
-      parseAndFormatDate(selectedItem.updated, this.personal, this.culture)
+      parseAndFormatDate(this.item.updated, this.personal, this.culture)
     );
   };
 
   getItemLastModifiedBy = () => {
-    return personal
-      ? styledText(decodeString(selectedItem.updatedBy?.displayName))
+    return this.personal
+      ? styledText(decodeString(this.item.updatedBy?.displayName))
       : styledLink(
-          decodeString(selectedItem.updatedBy?.displayName),
-          selectedItem.updatedBy?.profileUrl
+          decodeString(this.item.updatedBy?.displayName),
+          this.item.updatedBy?.profileUrl
         );
   };
 
   getItemCreationDate = () => {
     return styledText(
-      parseAndFormatDate(selectedItem.created, this.personal, this.culture)
+      parseAndFormatDate(this.item.created, this.personal, this.culture)
     );
+  };
+
+  getItemVersions = () => {
+    return styledText(this.item.version);
+  };
+
+  getItemComments = () => {
+    return styledText(this.item.comment);
+  };
+
+  getItemTags = () => {
+    return styledTagList(this.item.tags);
   };
 }
 
