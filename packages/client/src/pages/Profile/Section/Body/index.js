@@ -9,6 +9,7 @@ import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 
 import MainProfile from "./sub-components/main-profile";
 import LoginSettings from "./sub-components/login-settings";
+import Subscription from "./sub-components/subscription";
 
 const Wrapper = styled.div`
   max-width: 660px;
@@ -29,6 +30,8 @@ const SectionBodyContent = (props) => {
     setBackupCodes,
     getTfaType,
     getBackupCodes,
+    changeEmailSubscription,
+    tipsSubscription,
   } = props;
   const [tfa, setTfa] = useState(false);
 
@@ -59,6 +62,11 @@ const SectionBodyContent = (props) => {
           setBackupCodes={setBackupCodes}
         />
       )}
+      <Subscription
+        t={t}
+        changeEmailSubscription={changeEmailSubscription}
+        tipsSubscription={tipsSubscription}
+      />
     </Wrapper>
   );
 };
@@ -69,7 +77,11 @@ export default withRouter(
     const { culture } = settingsStore;
 
     const { targetUserStore } = peopleStore;
-    const { targetUser: profile } = targetUserStore;
+    const {
+      targetUser: profile,
+      changeEmailSubscription,
+      tipsSubscription,
+    } = targetUserStore;
 
     const {
       getBackupCodes,
@@ -89,6 +101,8 @@ export default withRouter(
       getTfaType,
       backupCodes,
       setBackupCodes,
+      changeEmailSubscription,
+      tipsSubscription,
     };
   })(
     observer(
