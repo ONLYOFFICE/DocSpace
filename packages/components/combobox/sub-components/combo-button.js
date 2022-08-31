@@ -53,7 +53,7 @@ class ComboButton extends React.Component {
         size={size}
         isSelected={isSelected}
         className="combo-button"
-        type={ThemeType.ComboButton}
+        themeId={ThemeType.ComboButton}
       >
         {innerContainer && (
           <StyledOptionalItem
