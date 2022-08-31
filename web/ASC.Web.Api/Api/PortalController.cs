@@ -193,12 +193,14 @@ public class PortalController : ControllerBase
         return _coreBaseSettings.Personal ? 1 : _userManager.GetUserNames(EmployeeStatus.Active).Length;
     }
 
+    [AllowNotPayment]
     [HttpGet("tariff")]
     public Tariff GetTariff()
     {
         return _tariffService.GetTariff(Tenant.Id);
     }
 
+    [AllowNotPayment]
     [HttpGet("quota")]
     public TenantQuota GetQuota()
     {

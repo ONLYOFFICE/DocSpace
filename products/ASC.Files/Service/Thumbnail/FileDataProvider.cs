@@ -90,7 +90,7 @@ internal class FileDataProvider
         using var filesDbContext = _coreContextFactory.CreateDbContext();
         var search =
             filesDbContext.Tariffs
-            .Join(filesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Tariff, b => b.Tenant, (tariff, quota) => new { tariff, quota })
+            .Join(filesDbContext.Quotas.AsQueryable().DefaultIfEmpty(), a => a.Id, b => b.Tenant, (tariff, quota) => new { tariff, quota })
             .Where(r =>
                     (
                         r.tariff.Comment == null ||

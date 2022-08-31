@@ -626,7 +626,7 @@ public class TariffService : ITariffService
         tariff.CustomerId = r.CustomerId;
 
         var tariffRows = coreDbContext.TariffRows
-            .Where(row => row.Key == r.Tariff && row.Tenant == tenant);
+            .Where(row => row.TariffId == r.Id && row.Tenant == tenant);
 
         tariff.Quotas = tariffRows.Select(r => new Tuple<int, int>(r.Quota, r.Quantity)).ToList();
 
@@ -647,27 +647,26 @@ public class TariffService : ITariffService
                 using var dbContext = _dbContextFactory.CreateDbContext();
                 using var tx = dbContext.Database.BeginTransaction();
 
-                var tariffRowId = dbContext.TariffRows.Any() ? dbContext.TariffRows.Max(r => r.Key) + 1 : 1;
-
-                var tariffRows = tariffInfo.Quotas.Select(q => new DbTariffRow
-                {
-                    Key = tariffRowId,
-                    Quota = q.Item1,
-                    Quantity = q.Item2,
-                    Tenant = tenant
-                });
-                dbContext.TariffRows.AddRange(tariffRows);
-
                 var efTariff = new DbTariff
                 {
                     Tenant = tenant,
-                    Tariff = tariffRowId,
                     Stamp = tariffInfo.DueDate,
                     CustomerId = tariffInfo.CustomerId,
                     CreateOn = DateTime.UtcNow
                 };
 
-                dbContext.Tariffs.Add(efTariff);
+                efTariff = dbContext.Tariffs.Add(efTariff).Entity;
+                dbContext.SaveChanges();
+
+                var tariffRows = tariffInfo.Quotas.Select(q => new DbTariffRow
+                {
+                    TariffId = efTariff.Id,
+                    Quota = q.Item1,
+                    Quantity = q.Item2,
+                    Tenant = tenant
+                });
+
+                dbContext.TariffRows.AddRange(tariffRows);
                 dbContext.SaveChanges();
 
                 _cache.Remove(GetTariffCacheKey(tenant));

@@ -119,6 +119,11 @@ public class TariffHelper
             result.Id = id;
             result.Title = Resource.ResourceManager.GetString($"TariffsFeature_{id}");
 
+            if (id == "total_size") //TODO
+            {
+                result.Title = string.Format(result.Title, FileSizeComment.FilesSizeToString(tenantQuota.MaxTotalSize));
+            }
+
             var img = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.img.{id}.svg");
 
             if (img != null)
