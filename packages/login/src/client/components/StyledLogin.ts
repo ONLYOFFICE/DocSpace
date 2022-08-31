@@ -45,7 +45,7 @@ export const LoginContainer = styled.div`
   }
 
   .or-label,
-  .login-or-access {
+  .login-or-access-text {
     min-height: 18px;
   }
 

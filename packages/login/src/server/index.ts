@@ -31,60 +31,60 @@ app.use("/login", express.static(path.resolve(path.join(__dirname, "client"))));
 
 app.use(logger("dev", { stream: stream }));
 
-if (IS_DEVELOPMENT) {
-  app.get("*", async (req: ILoginRequest, res: Response) => {
-    const { i18n, cookies, headers, query, t, url } = req;
-    let initialState: IInitialState;
-    let assets: assetsType;
+app.get("*", async (req: ILoginRequest, res: Response) => {
+  const { i18n, cookies, headers, query, t, url } = req;
+  let initialState: IInitialState;
+  let assets: assetsType;
 
-    initSSR(headers);
+  initSSR(headers);
 
-    try {
-      initialState = await getInitialState(query);
+  try {
+    initialState = await getInitialState(query);
 
-      let currentLanguage = initialState.portalSettings.culture;
+    let currentLanguage = initialState.portalSettings.culture;
 
-      if (cookies && cookies[LANGUAGE]) {
-        currentLanguage = cookies[LANGUAGE];
-      } else {
-        res.cookie(LANGUAGE, currentLanguage, {
-          maxAge: COOKIE_EXPIRATION_YEAR,
-        });
-      }
-
-      if (i18n) await i18n.changeLanguage(currentLanguage);
-
-      let initialI18nStore = {};
-      if (i18n) initialI18nStore = i18n.services.resourceStore.data;
-
-      assets = await getAssets();
-
-      const { component, styleTags } = renderApp(i18n, initialState, url);
-
-      const htmlString = template(
-        initialState,
-        component,
-        styleTags,
-        initialI18nStore,
-        currentLanguage,
-        assets,
-        t
-      );
-
-      res.send(htmlString);
-    } catch (e) {
-      let message: string | unknown = e;
-      if (e instanceof Error) {
-        message = e.message;
-      }
-      winston.error(message);
+    if (cookies && cookies[LANGUAGE]) {
+      currentLanguage = cookies[LANGUAGE];
+    } else {
+      res.cookie(LANGUAGE, currentLanguage, {
+        maxAge: COOKIE_EXPIRATION_YEAR,
+      });
     }
-  });
 
-  const server = app.listen(port, () => {
-    winston.info(`Server is listening on port ${port}`);
-  });
+    if (i18n) await i18n.changeLanguage(currentLanguage);
 
+    let initialI18nStore = {};
+    if (i18n) initialI18nStore = i18n.services.resourceStore.data;
+
+    assets = await getAssets();
+
+    const { component, styleTags } = renderApp(i18n, initialState, url);
+
+    const htmlString = template(
+      initialState,
+      component,
+      styleTags,
+      initialI18nStore,
+      currentLanguage,
+      assets,
+      t
+    );
+
+    res.send(htmlString);
+  } catch (e) {
+    let message: string | unknown = e;
+    if (e instanceof Error) {
+      message = e.message;
+    }
+    winston.error(message);
+  }
+});
+
+const server = app.listen(port, () => {
+  winston.info(`Server is listening on port ${port}`);
+});
+
+if (IS_DEVELOPMENT) {
   const wss = ws(server);
 
   const manifestFile = path.resolve(

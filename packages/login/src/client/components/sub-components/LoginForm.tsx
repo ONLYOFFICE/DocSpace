@@ -328,13 +328,16 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                   {t("SignInWithCode")}
                 </Link>*/}
 
-          <Text color="#A3A9AE">{t("Or")}</Text>
+          <Text color="#A3A9AE" className="login-or-access-text">
+            {t("Or")}
+          </Text>
           <Link
             fontWeight="600"
             fontSize="13px"
             color="#316DAA"
             type="action"
             isHovered={true}
+            className="recover-link"
             onClick={onRecoverDialogVisible}
           >
             {t("RecoverAccess")}
