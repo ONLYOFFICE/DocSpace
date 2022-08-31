@@ -23,7 +23,6 @@
   "RegisterTextBodyAfterDomainsList": "가입하시려면, 이메일을 입력한 뒤 가입 요청을 클릭하세요. 활성화 링크가 전송됩니다.",
   "RegisterTextBodyBeforeDomainsList": "이메일 계정을 가진 사용자만 가입할 수 있습니다 -",
   "RegisterTitle": "가입 요청",
-  "RegistrationEmail": "가입 이메일",
   "RegistrationEmailWatermark": "이메일",
   "Remember": "저장하기",
   "RememberHelper": "기본 세션 기간은 20분입니다. 1년으로 설정하려면 이 옵션을 확인하세요. 원하시는 값으로 설정하려면 설정으로 이동하세요.",

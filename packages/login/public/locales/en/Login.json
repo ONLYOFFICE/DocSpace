@@ -23,7 +23,6 @@
   "RegisterTextBodyAfterDomainsList": "To register, enter your email and click Send request. A message with a link to activate your account will be sent to the specified address.",
   "RegisterTextBodyBeforeDomainsList": "Registration is available to users with an email account at",
   "RegisterTitle": "Registration request",
-  "RegistrationEmail": "Your registration email",
   "RegistrationEmailWatermark": "Email",
   "Remember": "Remember me",
   "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings.",

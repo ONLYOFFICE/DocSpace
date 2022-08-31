@@ -98,7 +98,7 @@ const ForgotPasswordModalDialog = (props) => {
         >
           <EmailInput
             hasError={isShowError && emailError}
-            placeholder={t("RegistrationEmail")}
+            placeholder={t("Common:RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
             name="e-mail"

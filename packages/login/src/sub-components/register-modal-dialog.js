@@ -78,7 +78,7 @@ const RegisterModalDialog = ({
         >
           <EmailInput
             hasError={isShowError && emailErr}
-            placeholder={t("RegistrationEmail")}
+            placeholder={t("Common:RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
             name="e-mail"

@@ -23,7 +23,6 @@
   "RegisterTextBodyAfterDomainsList": "Für Registrierung geben Sie Ihre E-Mail-Adresse ein und klicken Sie auf Anfrage senden. Der Link zur Aktivierung Ihres Kontos wird an dieser Adresse gesendet.",
   "RegisterTextBodyBeforeDomainsList": "Für Registrierung sollen Benutzer E-Mail-Konten hier haben:",
   "RegisterTitle": "Registrierungsanfrage",
-  "RegistrationEmail": "Ihr Registrierungsemail",
   "RegistrationEmailWatermark": "E-Mail",
   "Remember": "Anmeldedaten speichern",
   "RememberHelper": "Lebensdauer der Sitzung ist standardmäßig 20 Minuten. Wählen Sie diese Option aus, um den Wert 1 Jahr zu setzen. Für benutzerdefinierte Werte öffnen Sie Einstellungen.",

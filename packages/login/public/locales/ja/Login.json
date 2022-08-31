@@ -23,7 +23,6 @@
   "RegisterTextBodyAfterDomainsList": "登録するには、メールアドレスを入力して「リクエスト送信」をクリックします。指定されたアドレスに、アカウント有効化のためのリンクが添付されたメッセージが送信されます。",
   "RegisterTextBodyBeforeDomainsList": "のメールアカウントをお持ちの方は登録が可能です。",
   "RegisterTitle": "登録申請",
-  "RegistrationEmail": "登録されたメールアドレス",
   "RegistrationEmailWatermark": "メール",
   "Remember": "保存",
   "RememberHelper": "デフォルトのセッションライフタイムは20分です。このオプションをチェックすると、1年間に設定されます。独自の値を設定するには、「設定」で設定します。",

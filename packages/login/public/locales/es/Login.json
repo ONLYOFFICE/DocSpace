@@ -23,7 +23,6 @@
   "RegisterTextBodyAfterDomainsList": "Para registrarse, introduzca su email y haga clic en Enviar solicitud. Se le enviará un enlace de activación.",
   "RegisterTextBodyBeforeDomainsList": "El registro está disponible para los usuarios con una cuenta de email en",
   "RegisterTitle": "Solicitud de registro",
-  "RegistrationEmail": "Su email de registro",
   "RegistrationEmailWatermark": "Email",
   "Remember": "Recordarme",
   "RememberHelper": "La duración de la sesión por defecto es de 20 minutos. Marque esta opción para establecerla en 1 año. Para establecer su propio valor, vaya a Ajustes.",
