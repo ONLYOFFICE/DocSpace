@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import styled, { css } from "styled-components";
 import toastr from "client/toastr";
+import SalesDepartmentRequestDialog from "../../../../../../src/components/dialogs/SalesDepartmentRequestDialog";
 
 const StyledBody = styled.div`
   button {
@@ -24,6 +25,8 @@ const ButtonContainer = ({
   setPortalQuota,
   t,
 }) => {
+  const [isVisibleDialog, setIsVisibleDialog] = useState(false);
+
   const updateMethod = async () => {
     try {
       timerId = setTimeout(() => {
@@ -49,6 +52,13 @@ const ButtonContainer = ({
 
     if (paymentLink) window.open(paymentLink, "_blank");
   };
+  const toDoRequest = () => {
+    setIsVisibleDialog(true);
+  };
+
+  const onClose = () => {
+    setIsVisibleDialog(false);
+  };
   useEffect(() => {
     return () => {
       timerId && clearTimeout(timerId);
@@ -60,6 +70,12 @@ const ButtonContainer = ({
 
   return (
     <StyledBody>
+      {isVisibleDialog && (
+        <SalesDepartmentRequestDialog
+          visible={isVisibleDialog}
+          onClose={onClose}
+        />
+      )}
       <Button
         label={isNeedRequest ? t("SendRequest") : t("UpgradeNow")}
         size={"medium"}
@@ -69,7 +85,7 @@ const ButtonContainer = ({
           isLoading ||
           isDisabled
         }
-        onClick={onUpdateTariff}
+        onClick={isNeedRequest ? toDoRequest : onUpdateTariff}
         isLoading={isLoading}
       />
     </StyledBody>
