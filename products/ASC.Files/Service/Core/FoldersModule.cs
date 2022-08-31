@@ -31,9 +31,9 @@ namespace ASC.Files.Service.Core;
 public class FoldersModule : FeedModule
 {
     public override Guid ProductID => WebItemManager.DocumentsProductID;
-    public override string Name => Feed.Constants.FoldersModule;
+    public override string Name => Constants.FoldersModule;
     public override string Product => "documents";
-    protected override string DbId => Feed.Constants.FilesDbId;
+    protected override string DbId => Constants.FilesDbId;
 
     private const string FolderItem = "folder";
     private const string SharedFolderItem = "sharedFolder";
@@ -65,9 +65,9 @@ public class FoldersModule : FeedModule
             return false;
         }
 
-        var tuple = (Tuple<Folder<int>, SmallShareRecord>)data;
-        var folder = tuple.Item1;
-        var shareRecord = tuple.Item2;
+        var folderWithShare = (FolderWithShare)data;
+        var folder = folderWithShare.Folder;
+        var shareRecord = folderWithShare.ShareRecord;
 
         bool targetCond;
         if (feed.Target != null)

@@ -31,7 +31,7 @@ namespace ASC.Files.Service.Core;
 public class FilesModule : FeedModule
 {
     public override Guid ProductID => WebItemManager.DocumentsProductID;
-    public override string Name => Feed.Constants.FilesModule;
+    public override string Name => Constants.FilesModule;
     public override string Product => "documents";
     protected override string DbId => "files";
 
@@ -67,9 +67,9 @@ public class FilesModule : FeedModule
             return false;
         }
 
-        var tuple = ((File<int>, SmallShareRecord))data;
-        var file = tuple.Item1;
-        var shareRecord = tuple.Item2;
+        var fileWithShare = (FileWithShare)data;
+        var file = fileWithShare.File;
+        var shareRecord = fileWithShare.ShareRecord;
 
         bool targetCond;
         if (feed.Target != null)
@@ -105,9 +105,9 @@ public class FilesModule : FeedModule
 
         var feed1 = feed.Select(r =>
         {
-            var tuple = ((File<int>, SmallShareRecord))r.Item2;
+            var fileWithShare = (FileWithShare)r.Item2;
 
-            return new Tuple<FeedRow, File<int>, SmallShareRecord>(r.Item1, tuple.Item1, tuple.Item2);
+            return new Tuple<FeedRow, File<int>, SmallShareRecord>(r.Item1, fileWithShare.File, fileWithShare.ShareRecord);
         })
         .ToList();
 
