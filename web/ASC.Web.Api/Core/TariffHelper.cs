@@ -54,7 +54,7 @@ public class TariffHelper
         return new TariffDto()
         {
             Id = tenantQuota.Tenant,
-            Title = tenantQuota.Name,
+            Title = Resource.ResourceManager.GetString($"Tariffs_{tenantQuota.Name}"),
 
             NonProfit = tenantQuota.NonProfit,
             Free = tenantQuota.Free,
