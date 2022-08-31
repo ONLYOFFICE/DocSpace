@@ -51,6 +51,13 @@ public static class Constants
     public const string CasesModule = "cases";
     public const string FilesModule = "files";
     public const string FoldersModule = "folders";
+    public const string RoomsModule = "rooms";
+
+    #endregion
+
+    #region Products
+
+    public const string Documents = "documents";
 
     #endregion
 }
