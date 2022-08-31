@@ -377,7 +377,7 @@ const Form = (props) => {
   //console.log("Login render");
 
   return (
-    <ColorTheme {...props} type={ThemeType.LinkForgotPassword}>
+    <ColorTheme {...props} themeId={ThemeType.LinkForgotPassword}>
       {!isLoaded ? (
         <AppLoader />
       ) : (

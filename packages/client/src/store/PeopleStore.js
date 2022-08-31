@@ -9,13 +9,12 @@ import SelectionStore from "./SelectionPeopleStore";
 import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
-import store from "client/store";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
 import { isMobile } from "react-device-detect";
-const { auth: authStore } = store;
 
 class PeopleStore {
+  authStore = null;
   groupsStore = null;
   usersStore = null;
   targetUserStore = null;
@@ -31,7 +30,8 @@ class PeopleStore {
   isInit = false;
   viewAs = isMobile ? "row" : "table";
 
-  constructor() {
+  constructor(authStore) {
+    this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this);
     this.targetUserStore = new TargetUserStore(this);
@@ -49,18 +49,23 @@ class PeopleStore {
   }
 
   get isPeoplesAdmin() {
-    return authStore.isAdmin;
+    return this.authStore.isAdmin;
   }
 
   init = async () => {
     if (this.isInit) return;
     this.isInit = true;
 
-    //authStore.settingsStore.setModuleInfo(config.homepage, config.id);
+    //this.authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
-    await authStore.settingsStore.getPortalPasswordSettings();
+    await this.authStore.settingsStore.getPortalPasswordSettings();
 
     this.loadingStore.setIsLoaded(true);
+  };
+
+  reset = () => {
+    this.isInit = false;
+    this.loadingStore.setIsLoaded(false);
   };
 
   resetFilter = (withoutGroup = false) => {
@@ -79,7 +84,10 @@ class PeopleStore {
   };
 
   getHeaderMenu = (t) => {
-    const { userCaption, guestCaption } = authStore.settingsStore.customNames;
+    const {
+      userCaption,
+      guestCaption,
+    } = this.authStore.settingsStore.customNames;
     const {
       hasUsersToMakeEmployees,
       hasUsersToMakeGuests,

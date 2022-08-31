@@ -1,16 +1,14 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { setWithCredentialsStatus } from "../api/client";
-import history from "../history";
 
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
-import { combineUrl, isAdmin } from "../utils";
-import { AppServerConfig, LANGUAGE, TenantStatus } from "../constants";
-const { proxyURL } = AppServerConfig;
+import { isAdmin } from "../utils";
+import { LANGUAGE, TenantStatus } from "../constants";
 
 class AuthStore {
   userStore = null;
@@ -158,7 +156,7 @@ class AuthStore {
     this.settingsStore = new SettingsStore();
   };
 
-  logout = async (redirectToLogin = true, redirectPath = null) => {
+  logout = async () => {
     await api.user.logout();
 
     //console.log("Logout response ", response);
@@ -169,22 +167,26 @@ class AuthStore {
 
     isDesktop && logoutDesktop();
 
-    if (redirectToLogin) {
-      if (redirectPath) {
-        return window.location.replace(redirectPath);
-      }
-      if (personal) {
-        return window.location.replace("/");
-      } else {
-        this.reset(true);
-        this.userStore.setUser(null);
-        this.init();
-        return history.push(combineUrl(proxyURL, "/login"));
-      }
-    } else {
-      this.reset();
-      this.init();
-    }
+    this.reset(true);
+    this.userStore.setUser(null);
+    this.init();
+
+    // if (redirectToLogin) {
+    //   if (redirectPath) {
+    //     return window.location.replace(redirectPath);
+    //   }
+    //   if (personal) {
+    //     return window.location.replace("/");
+    //   } else {
+    //     this.reset(true);
+    //     this.userStore.setUser(null);
+    //     this.init();
+    //     return history.push(combineUrl(proxyURL, "/login"));
+    //   }
+    // } else {
+    //   this.reset();
+    //   this.init();
+    // }
   };
 
   get isAuthenticated() {
