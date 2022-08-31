@@ -40,108 +40,40 @@ const SingleItem = ({
       thumbnailUrl: "",
     }),
     [itemProperties, setItemProperties] = useState([]),
-    [itemAccess, setItemAccess] = useState({
-      owner: {
-        img: "",
-        link: "",
-      },
-      others: [],
-    });
+    [itemAccess, setItemAccess] = useState(null);
+
+  // {
+  //   owner: {
+  //     img: "",
+  //     link: "",
+  //   },
+  //   others: [],
+  // }
 
   const updateItemsInfo = async (selectedItem) => {
     setItem({
       ...selectedItem,
-      iconUrl: infoHelper.getItemIcon(32),
-      thumbnailUrl: selectedItem.thumbnailUrl || infoHelper.getItemIcon(96),
+      thumbnailUrl:
+        selectedItem.thumbnailUrl || selectedItem.isRoom
+          ? selectedItem.logo && selectedItem.logo.big
+            ? selectedItem.logo.big
+            : selectedItem.icon
+          : selectedItem.isFolder
+          ? getFolderIcon(selectedItem.providerKey, 96)
+          : getIcon(96, selectedItem.fileExst || ".file"),
     });
 
-    const neededItemProperties = infoHelper.getNeededProperties();
-    setItemProperties(
-      [
-        neededItemProperties.includes("Owner") && {
-          id: "Owner",
-          title: t("Common:Owner"),
-          content: personal
-            ? infoHelper.styledText(
-                infoHelper.infoHelper.decodeString(
-                  selectedItem.createdBy?.displayName
-                )
-              )
-            : infoHelper.styledLink(
-                infoHelper.decodeString(selectedItem.createdBy?.displayName),
-                selectedItem.createdBy?.profileUrl
-              ),
-        },
-        neededItemProperties.includes("Location") && {
-          id: "Location",
-          title: t("InfoPanel:Location"),
-          content: infoHelper.styledText("..."),
-        },
-        neededItemProperties.includes("Type") && {
-          id: "Type",
-          title: t("Common:Type"),
-          content: infoHelper.styledText(infoHelper.getItemType(selectedItem)),
-        },
-        neededItemProperties.includes("Size") && {
-          id: "Size",
-          title: selectedItem.fileType ? t("Common:Size") : t("Common:Content"),
-          content: infoHelper.styledText(
-            infoHelper.getItemSize(t, selectedItem)
-          ),
-        },
-        neededItemProperties.includes("Date modified") && {
-          id: "ByLastModifiedDate",
-          title: t("Home:ByLastModifiedDate"),
-          content: infoHelper.styledText(
-            infoHelper.parseAndFormatDate(selectedItem.updated)
-          ),
-        },
-        neededItemProperties.includes("Last modified by") && {
-          id: "LastModifiedBy",
-          title: t("LastModifiedBy"),
-          content: personal
-            ? infoHelper.styledText(
-                infoHelper.decodeString(selectedItem.updatedBy?.displayName)
-              )
-            : infoHelper.styledLink(
-                infoHelper.decodeString(selectedItem.updatedBy?.displayName),
-                selectedItem.updatedBy?.profileUrl
-              ),
-        },
-        neededItemProperties.includes("Creation date") && {
-          id: "ByCreationDate",
-          title: t("Home:ByCreationDate"),
-          content: infoHelper.styledText(
-            infoHelper.parseAndFormatDate(selectedItem.created)
-          ),
-        },
-        neededItemProperties.includes("Versions") && {
-          id: "Versions",
-          title: t("Versions"),
-          content: infoHelper.styledText(selectedItem.version),
-        },
-        neededItemProperties.includes("Comments") && {
-          id: "Comments",
-          title: t("Common:Comments"),
-          content: infoHelper.styledText(selectedItem.comment),
-        },
-        neededItemProperties.includes("Tags") && {
-          id: "Tags",
-          title: t("Files:Tags"),
-          content: <></>,
-        },
-      ].filter((item) => !!item)
-    );
+    setItemProperties(infoHelper.getPropertyList());
 
-    setItemAccess({
-      access: {
-        owner: {
-          img: selectedItem.createdBy?.avatarSmall,
-          link: selectedItem.createdBy?.profileUrl,
-        },
-        others: [],
-      },
-    });
+    // setItemAccess({
+    //   access: {
+    //     owner: {
+    //       img: selectedItem.createdBy?.avatarSmall,
+    //       link: selectedItem.createdBy?.profileUrl,
+    //     },
+    //     others: [],
+    //   },
+    // });
 
     await loadAsyncData();
   };
@@ -205,8 +137,6 @@ const SingleItem = ({
         [selectedItem.isFolder ? selectedItem.parentId : selectedItem.folderId],
         [selectedItem.id]
       );
-
-      console.log(accesses);
 
       const result = {
         owner: {},
@@ -276,15 +206,6 @@ const SingleItem = ({
 
   return (
     <>
-      <StyledTitle>
-        <img
-          className={`icon ${selectedItem.isRoom && "is-room"}`}
-          src={item.iconUrl}
-          alt="thumbnail-icon"
-        />
-        <Text className="text">{item.title}</Text>
-      </StyledTitle>
-
       {selectedItem?.thumbnailUrl ? (
         <StyledThumbnail>
           <img
@@ -323,7 +244,7 @@ const SingleItem = ({
         })}
       </StyledProperties>
 
-      {!dontShowAccess && itemAccess && !personal && (
+      {!!itemAccess && !dontShowAccess && !personal && (
         <>
           <StyledSubtitle>
             <Text fontWeight="600" fontSize="14px">
