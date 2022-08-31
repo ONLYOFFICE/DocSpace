@@ -32,7 +32,7 @@ public class FoldersModule : FeedModule
 {
     public override Guid ProductID => WebItemManager.DocumentsProductID;
     public override string Name => Constants.FoldersModule;
-    public override string Product => "documents";
+    public override string Product => Constants.Documents;
     protected override string DbId => Constants.FilesDbId;
 
     private const string FolderItem = "folder";
