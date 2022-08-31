@@ -78,12 +78,25 @@ declare global {
     ssoLabel: string;
     ssoUrl: string;
   }
+
+  interface ITheme {
+    id: number;
+    accentColor: string;
+    buttonsMain: string;
+    textColor: string;
+  }
+  interface IThemes {
+    limit: number;
+    selected: number;
+    themes: ITheme[];
+  }
   interface IInitialState {
     portalSettings: IPortalSettings;
     buildInfo: IBuildInfo;
     providers: ProvidersType;
     capabilities: ICapabilities;
     match: MatchType;
+    currentColorScheme: ITheme;
   }
 
   interface DevRequest {

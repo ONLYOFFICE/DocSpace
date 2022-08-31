@@ -5,6 +5,7 @@ import {
   getBuildVersion,
   getAuthProviders,
   getCapabilities,
+  getAppearanceTheme,
 } from "@docspace/common/api/settings";
 
 export const getAssets = (): assetsType => {
@@ -53,14 +54,26 @@ export const getInitialState = async (
   let portalSettings: IPortalSettings,
     buildInfo: IBuildInfo,
     providers: ProvidersType,
-    capabilities: ICapabilities;
+    capabilities: ICapabilities,
+    availableThemes: IThemes;
 
-  [portalSettings, buildInfo, providers, capabilities] = await Promise.all([
+  [
+    portalSettings,
+    buildInfo,
+    providers,
+    capabilities,
+    availableThemes,
+  ] = await Promise.all([
     getSettings(),
     getBuildVersion(),
     getAuthProviders(),
     getCapabilities(),
+    getAppearanceTheme(),
   ]);
+
+  const currentColorScheme = availableThemes.themes.find((theme) => {
+    return availableThemes.selected === theme.id;
+  });
 
   const initialState: IInitialState = {
     portalSettings,
@@ -68,6 +81,7 @@ export const getInitialState = async (
     providers,
     capabilities,
     match: query,
+    currentColorScheme,
   };
 
   return initialState;
