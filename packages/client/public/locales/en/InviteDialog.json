@@ -10,5 +10,7 @@
   "SendInvitation": "Send invitation",
   "SearchPlaceholder": "Invite people by name or email",
   "Add": "Add",
-  "Invited": "Invited"
+  "Invited": "Invited",
+  "EmailErrorMessage": "Email address not valid. You can edit the email by clicking on it.",
+  "СhooseFromList": "Сhoose from list"
 }

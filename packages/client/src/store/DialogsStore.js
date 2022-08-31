@@ -1,6 +1,6 @@
 import { getNewFiles } from "@docspace/common/api/files";
 import { FileAction } from "@docspace/common/constants";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 
 class DialogsStore {
@@ -249,6 +249,13 @@ class DialogsStore {
   setInviteItems = (items) => {
     this.inviteItems = items;
   };
+
+  changeInviteItem = async (item) =>
+    runInAction(() => {
+      const index = this.inviteItems.findIndex((iItem) => iItem.id === item.id);
+
+      this.inviteItems[index] = { ...this.inviteItems[index], ...item };
+    });
 
   get someDialogIsOpen() {
     return (

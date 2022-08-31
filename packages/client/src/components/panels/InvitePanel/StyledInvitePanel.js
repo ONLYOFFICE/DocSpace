@@ -4,10 +4,10 @@ import TextInput from "@docspace/components/text-input";
 import ComboBox from "@docspace/components/combobox";
 import Box from "@docspace/components/box";
 import DropDown from "@docspace/components/drop-down";
-import DropDownItem from "@docspace/components/drop-down-item";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import HelpButton from "@docspace/components/help-button";
+import Link from "@docspace/components/link";
 
 import CheckIcon from "PUBLIC_DIR/images/check.edit.react.svg";
 import CrossIcon from "PUBLIC_DIR/images/cross.edit.react.svg";
@@ -90,12 +90,13 @@ const StyledInviteInputContainer = styled(Box)`
 
 const StyledDropDown = styled(DropDown)`
   ${fillAvailableWidth}
-`;
-const StyledDropDownItem = styled(DropDownItem)`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 48px;
+
+  .list-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 48px;
+  }
 `;
 
 const SearchItemText = styled(Text)`
@@ -165,6 +166,10 @@ const StyledButtons = styled(Box)`
   border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
 `;
 
+const StyledLink = styled(Link)`
+  float: right;
+`;
+
 StyledButtons.defaultProps = { theme: Base };
 
 export {
@@ -177,7 +182,6 @@ export {
   StyledComboBox,
   StyledInviteInputContainer,
   StyledDropDown,
-  StyledDropDownItem,
   SearchItemText,
   StyledEditInput,
   StyledEditButton,
@@ -186,4 +190,5 @@ export {
   StyledHelpButton,
   StyledDeleteIcon,
   StyledButtons,
+  StyledLink,
 };

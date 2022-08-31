@@ -19,7 +19,7 @@ import {
   StyledDeleteIcon,
 } from "./StyledInvitePanel";
 
-const Item = ({ item, setInviteItems, inviteItems }) => {
+const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
   const { avatarSmall, displayName, email, id, errors, access } = item;
 
   const name = !!avatarSmall ? displayName : email;
@@ -34,37 +34,31 @@ const Item = ({ item, setInviteItems, inviteItems }) => {
       key: "roomManager",
       label: "Room manager",
       access: ShareAccessRights.FullAccess,
-      id,
     },
     {
       key: "editor",
       label: "Editor",
-      access: ShareAccessRights.FullAccess,
-      id,
+      access: ShareAccessRights.CustomFilter,
     },
     {
       key: "formFiller",
       label: "Form filler",
       access: ShareAccessRights.FormFilling,
-      id,
     },
     {
       key: "reviewer",
       label: "Reviewer",
       access: ShareAccessRights.Review,
-      id,
     },
     {
       key: "commentator",
       label: "Commentator",
       access: ShareAccessRights.Comment,
-      id,
     },
     {
       key: "viewer",
       label: "Viewer",
       access: ShareAccessRights.ReadOnly,
-      id,
     },
     {
       key: "sep",
@@ -73,7 +67,6 @@ const Item = ({ item, setInviteItems, inviteItems }) => {
     {
       key: "delete",
       label: "Delete",
-      id,
     },
   ];
 
@@ -91,13 +84,10 @@ const Item = ({ item, setInviteItems, inviteItems }) => {
   };
 
   const saveEdit = (e) => {
-    if (inputValue === "") {
-      setInputValue(name);
-    }
+    const value = inputValue === "" ? name : inputValue;
 
     setEdit(false);
-
-    debouncedValidate(inputValue);
+    validateValue(value);
   };
 
   const validateValue = (value) => {
@@ -106,61 +96,46 @@ const Item = ({ item, setInviteItems, inviteItems }) => {
     const errors = !!parseErrors.length ? parseErrors : [];
 
     setParseErrors(errors);
+    changeInviteItem({ id, email: value, errors });
   };
-
-  const debouncedValidate = useCallback(
-    debounce((value) => validateValue(value), 500),
-    []
-  );
 
   const changeValue = (e) => {
     const value = e.target.value.trim();
-    setInputValue(value);
 
-    debouncedValidate(value);
+    setInputValue(value);
   };
 
   const hasError = parseErrors && !!parseErrors.length;
 
-  const tooltipBody =
-    hasError &&
-    parseErrors.map((error) => <div key={error.key}>{error.message}</div>);
-
-  const removeItem = (e) => {
-    const id = e.target.dataset.id;
+  const removeItem = () => {
     const newItems = inviteItems.filter((item) => item.id !== id);
 
     setInviteItems(newItems);
   };
 
   const selectItemAccess = (selected) => {
-    const newItems = inviteItems.map((item) => {
-      let temp = item;
-
-      if (temp.id === selected.id) {
-        temp.access = selected.access;
-      }
-
-      return temp;
-    });
-
-    setInviteItems(newItems);
+    if (selected.key === "delete") return removeItem();
+    changeInviteItem(selected);
   };
+
+  const textProps = !!avatarSmall ? {} : { onClick: onEdit };
 
   const displayBody = (
     <>
-      <Text onClick={onEdit}>{inputValue}</Text>
+      <Text {...textProps} noSelect>
+        {inputValue}
+      </Text>
       {hasError ? (
         <>
           <StyledHelpButton
             iconName="/static/images/info.edit.react.svg"
             displayType="auto"
             offsetRight={0}
-            tooltipContent={tooltipBody}
+            tooltipContent={t("EmailErrorMessage")}
             size={16}
             color="#F21C0E"
           />
-          <StyledDeleteIcon size="medium" onClick={removeItem} data-id={id} />
+          <StyledDeleteIcon size="medium" onClick={removeItem} />
         </>
       ) : (
         <StyledComboBox
@@ -182,7 +157,7 @@ const Item = ({ item, setInviteItems, inviteItems }) => {
 
   const editBody = (
     <>
-      <StyledEditInput hasError value={inputValue} onChange={changeValue} />
+      <StyledEditInput value={inputValue} onChange={changeValue} />
       <StyledEditButton icon={okIcon} onClick={saveEdit} />
       <StyledEditButton icon={cancelIcon} onClick={cancelEdit} />
     </>
@@ -196,12 +171,14 @@ const Item = ({ item, setInviteItems, inviteItems }) => {
   );
 };
 
-const Items = ({ t, setInviteItems, inviteItems }) => {
+const Items = ({ t, setInviteItems, inviteItems, changeInviteItem }) => {
   return inviteItems.map((item) => (
     <StyledRow key={item.id}>
       <Item
+        t={t}
         item={item}
         setInviteItems={setInviteItems}
+        changeInviteItem={changeInviteItem}
         inviteItems={inviteItems}
       />
     </StyledRow>
@@ -209,10 +186,11 @@ const Items = ({ t, setInviteItems, inviteItems }) => {
 };
 
 export default inject(({ dialogsStore }) => {
-  const { setInviteItems, inviteItems } = dialogsStore;
+  const { setInviteItems, inviteItems, changeInviteItem } = dialogsStore;
 
   return {
     setInviteItems,
     inviteItems,
+    changeInviteItem,
   };
 })(observer(Items));

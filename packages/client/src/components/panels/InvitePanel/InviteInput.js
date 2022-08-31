@@ -3,6 +3,7 @@ import debounce from "lodash.debounce";
 import { inject, observer } from "mobx-react";
 
 import Avatar from "@docspace/components/avatar";
+import DropDownItem from "@docspace/components/drop-down-item";
 
 import { parseAddresses } from "@docspace/components/utils/email";
 import { ShareAccessRights } from "@docspace/common/constants";
@@ -11,7 +12,6 @@ import {
   StyledInviteInput,
   StyledInviteInputContainer,
   StyledDropDown,
-  StyledDropDownItem,
   SearchItemText,
 } from "./StyledInvitePanel";
 
@@ -22,34 +22,16 @@ const InviteInput = ({
   inviteItems,
   getUsersByQuery,
   t,
+  roomUsers,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [panelVisible, setPanelVisible] = useState(false);
-  const [roomUsers, setRoomUsers] = useState([]);
-
-  useEffect(() => {
-    const { id } = invitePanelOptions;
-    getShareUsers([id]).then((accesses) => {
-      const users = accesses.map((user) => {
-        return {
-          id: user.sharedTo.id,
-          email: user.sharedTo.email,
-          access: user.access,
-        };
-      });
-      setRoomUsers(users);
-    });
-  }, [invitePanelOptions]);
 
   const toUserItem = (email) => {
     const emails = parseAddresses(email);
+    const uid = () => Math.random().toString(36).slice(-6);
 
-    const uid = () =>
-      String(Date.now().toString(32) + Math.random().toString(16)).replace(
-        /\./g,
-        ""
-      );
     return {
       email,
       id: uid(),
@@ -62,27 +44,25 @@ const InviteInput = ({
     return roomUsers.some((user) => user.id === id);
   };
 
-  const searchByTerm = async (value) => {
-    value = value.trim();
+  const searchByQuery = async (value) => {
+    const query = value.trim();
 
-    if (value.length > 0) {
-      const users = await getUsersByQuery(value);
+    if (query.length > 0) {
+      const users = await getUsersByQuery(query);
       setUsersList(users);
     }
   };
 
   const debouncedSearch = useCallback(
-    debounce((value) => searchByTerm(value), 500),
+    debounce((value) => searchByQuery(value), 300),
     []
   );
 
   const onChange = (e) => {
     const value = e.target.value;
 
-    setPanelVisible(!!value.length);
-
+    setPanelVisible(!!usersList.length || value.trim().length > 1);
     setInputValue(value);
-
     debouncedSearch(value);
   };
 
@@ -99,7 +79,13 @@ const InviteInput = ({
     };
 
     return (
-      <StyledDropDownItem key={id} onClick={addUser} disabled={invited}>
+      <DropDownItem
+        key={id}
+        onClick={addUser}
+        disabled={invited}
+        height={48}
+        className="list-item"
+      >
         <Avatar size="min" role="user" source={avatarSmall} />
         <div>
           <SearchItemText primary disabled={invited}>
@@ -108,7 +94,7 @@ const InviteInput = ({
           <SearchItemText>{email}</SearchItemText>
         </div>
         {invited && <SearchItemText info>{t("Invited")}</SearchItemText>}
-      </StyledDropDownItem>
+      </DropDownItem>
     );
   };
 
@@ -120,6 +106,8 @@ const InviteInput = ({
     setInviteItems([...inviteItems, item]);
     setPanelVisible(false);
   };
+
+  const dropDownMaxHeight = usersList.length > 5 ? { maxHeight: 240 } : {};
 
   return (
     <StyledInviteInputContainer>
@@ -135,14 +123,15 @@ const InviteInput = ({
         manualX="16px"
         showDisabledItems
         clickOutsideAction={() => setPanelVisible(false)}
+        {...dropDownMaxHeight}
       >
-        {!!usersList.length ? (
-          usersList.map((user) => getItemContent(user))
-        ) : (
-          <StyledDropDownItem onClick={addItem}>
-            {t("Add")} «{inputValue}»
-          </StyledDropDownItem>
-        )}
+        {!!usersList.length
+          ? usersList.map((user) => getItemContent(user))
+          : inputValue.length > 2 && (
+              <DropDownItem onClick={addItem} height={48}>
+                {t("Add")} «{inputValue}»
+              </DropDownItem>
+            )}
       </StyledDropDown>
     </StyledInviteInputContainer>
   );

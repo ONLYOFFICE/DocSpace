@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import debounce from "lodash.debounce";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -7,12 +6,15 @@ import Backdrop from "@docspace/components/backdrop";
 import Aside from "@docspace/components/aside";
 import Button from "@docspace/components/button";
 
+import { AddUsersPanel, EmbeddingPanel } from "../index";
+
 import {
   StyledBlock,
   StyledHeading,
   StyledInvitePanel,
   StyledSubHeader,
   StyledButtons,
+  StyledLink,
 } from "./StyledInvitePanel";
 
 import Items from "./items.js";
@@ -33,7 +35,11 @@ const InvitePanel = ({
   inviteItems,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [showUsersPanel, setShowUsersPanel] = useState(false);
   const [hasErrors, setHasErrors] = useState(false);
+  const [roomUsers, setRoomUsers] = useState([]);
+
+  let shareUsers = [];
 
   useEffect(() => {
     const { id } = invitePanelOptions;
@@ -45,6 +51,18 @@ const InvitePanel = ({
         setSelectedRoom(info);
       });
     }
+
+    getShareUsers([id]).then((accesses) => {
+      shareUsers = accesses;
+      const users = accesses.map((user) => {
+        return {
+          id: user.sharedTo.id,
+          email: user.sharedTo.email,
+          access: user.access,
+        };
+      });
+      setRoomUsers(users);
+    });
   }, [invitePanelOptions]);
 
   const onClose = () => setInvitePanelOptions({ visible: false });
@@ -78,6 +96,10 @@ const InvitePanel = ({
     console.log("send", toSend);
   };
 
+  const openUserPanel = () => {
+    setShowUsersPanel(true);
+  };
+
   return (
     <StyledInvitePanel>
       <Backdrop
@@ -95,8 +117,18 @@ const InvitePanel = ({
           <StyledSubHeader>{t("SharingPanel:ExternalLink")}</StyledSubHeader>
         </StyledBlock>
 
-        <StyledSubHeader>{t("IndividualInvitation")}</StyledSubHeader>
-        <InviteInput t={t} />
+        <StyledSubHeader>
+          {t("IndividualInvitation")}
+          <StyledLink
+            fontWeight="600"
+            type="action"
+            isHovered
+            onClick={openUserPanel}
+          >
+            {t("СhooseFromList")}
+          </StyledLink>
+        </StyledSubHeader>
+        <InviteInput t={t} roomUsers={roomUsers} />
         {!!inviteItems.length && (
           <>
             <Items t={t} />
@@ -117,6 +149,20 @@ const InvitePanel = ({
               />
             </StyledButtons>
           </>
+        )}
+
+        {showUsersPanel && (
+          <AddUsersPanel
+            onSharingPanelClose={onClose}
+            onClose={() => setShowUsersPanel(false)}
+            visible={showUsersPanel}
+            shareDataItems={shareUsers}
+            setShareDataItems={(item) => console.log(item)}
+            //groupsCaption={groupsCaption}
+            accessOptions={["FullAccess"]}
+            isMultiSelect
+            //isEncrypted={isEncrypted}
+          />
         )}
       </Aside>
     </StyledInvitePanel>
