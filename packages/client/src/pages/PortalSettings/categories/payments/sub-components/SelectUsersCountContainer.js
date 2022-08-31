@@ -105,27 +105,27 @@ const SelectUsersCountContainer = ({
   theme,
   isDisabled,
   isLoading,
-  minManagersCount,
+  minAvailableManagersCount,
   isAlreadyPaid,
   maxAvailableManagersCount,
   setManagersCount,
   setTotalPrice,
   pricePerManager,
-  minAvailableManagersCount,
+
   isLessCountThanAcceptable,
 }) => {
   const { t } = useTranslation("Payments");
 
   const onSliderChange = (e) => {
     const count = parseFloat(e.target.value);
-    if (count > minManagersCount) {
+    if (count > minAvailableManagersCount) {
       setShoppingLink(count);
       setManagersCount(count);
       setTotalPrice(count * pricePerManager);
     } else {
-      setShoppingLink(minManagersCount);
-      setManagersCount(minManagersCount);
-      setTotalPrice(minManagersCount * pricePerManager);
+      setShoppingLink(minAvailableManagersCount);
+      setManagersCount(minAvailableManagersCount);
+      setTotalPrice(minAvailableManagersCount * pricePerManager);
     }
   };
 
@@ -143,7 +143,7 @@ const SelectUsersCountContainer = ({
       if (managersCount >= maxManagersCount) {
         value = maxAvailableManagersCount;
       } else {
-        if (managersCount > minManagersCount) {
+        if (managersCount > minAvailableManagersCount) {
           value -= step;
         }
       }
@@ -168,7 +168,7 @@ const SelectUsersCountContainer = ({
     if (isNaN(numberValue)) return;
 
     if (numberValue === 0) {
-      setManagersCount(minManagersCount);
+      setManagersCount(minAvailableManagersCount);
       return;
     }
 
@@ -229,10 +229,10 @@ const SelectUsersCountContainer = ({
         {...onChangeSlideProp}
       />
       <div className="slider-track">
-        <Text className="slider-track-value_min">
+        <Text className="slider-track-value_min" noSelect>
           {minAvailableManagersCount}
         </Text>
-        <Text className="slider-track-value_max">
+        <Text className="slider-track-value_max" noSelect>
           {maxAvailableManagersCount + "+"}
         </Text>
       </div>
@@ -245,27 +245,27 @@ export default inject(({ auth, payments }) => {
   const { theme } = auth.settingsStore;
   const {
     isLoading,
-    minManagersCount,
+    minAvailableManagersCount,
     managersCount,
     maxManagersCount,
     maxAvailableManagersCount,
     setManagersCount,
     setTotalPrice,
-    minAvailableManagersCount,
+
     isLessCountThanAcceptable,
   } = payments;
 
   return {
     theme,
     isLoading,
-    minManagersCount,
+    minAvailableManagersCount,
     managersCount,
     maxManagersCount,
     maxAvailableManagersCount,
     setManagersCount,
     setTotalPrice,
     pricePerManager,
-    minAvailableManagersCount,
+
     isLessCountThanAcceptable,
   };
 })(observer(SelectUsersCountContainer));

@@ -41,7 +41,7 @@ const PriceCalculation = ({
   setIsLoading,
   setTotalPrice,
   pricePerManager,
-  minManagersCount,
+  minAvailableManagersCount,
   setManagersCount,
   maxAvailableManagersCount,
   isFreeTariff,
@@ -50,7 +50,9 @@ const PriceCalculation = ({
 
   const isAlreadyPaid = !isFreeTariff;
 
-  const initialUsersCount = isAlreadyPaid ? countAdmin : minManagersCount;
+  const initialUsersCount = isAlreadyPaid
+    ? countAdmin
+    : minAvailableManagersCount;
 
   const setStartLink = async () => {
     if (isAlreadyPaid) return;
@@ -60,7 +62,9 @@ const PriceCalculation = ({
 
   useEffect(() => {
     setStartLink();
-    setTotalPrice(isAlreadyPaid ? price : minManagersCount * pricePerManager);
+    setTotalPrice(
+      isAlreadyPaid ? price : minAvailableManagersCount * pricePerManager
+    );
     setManagersCount(initialUsersCount);
     return () => {
       timeout && clearTimeout(timeout);
@@ -142,7 +146,7 @@ export default inject(({ auth, payments }) => {
     setIsLoading,
     setTotalPrice,
     maxManagersCount,
-    minManagersCount,
+    minAvailableManagersCount,
     setManagersCount,
     maxAvailableManagersCount,
   } = payments;
@@ -163,7 +167,7 @@ export default inject(({ auth, payments }) => {
     pricePerManager,
     setTotalPrice,
     maxManagersCount,
-    minManagersCount,
+    minAvailableManagersCount,
     maxAvailableManagersCount,
   };
 })(observer(PriceCalculation));

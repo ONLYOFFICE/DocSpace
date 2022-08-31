@@ -26,7 +26,6 @@ class PaymentStore {
   maxManagersCount = 1000;
   maxAvailableManagersCount = 999;
   minAvailableManagersCount = 1;
-  minManagersCount = 1;
   paymentTariff = [];
 
   constructor() {
