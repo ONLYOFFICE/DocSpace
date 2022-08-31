@@ -9,18 +9,18 @@ import SelectionStore from "./SelectionPeopleStore";
 import HeaderMenuStore from "./HeaderMenuStore";
 import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
-import store from "client/store";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
 import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
 import { isMobile } from "react-device-detect";
+
 import toastr from "client/toastr";
-const { auth: authStore } = store;
 
 const fullAccessId = "00000000-0000-0000-0000-000000000000";
 
 class PeopleStore {
   contextOptionsStore = null;
+  authStore = null;
   groupsStore = null;
   usersStore = null;
   targetUserStore = null;
@@ -38,7 +38,10 @@ class PeopleStore {
   isInit = false;
   viewAs = isMobile ? "row" : "table";
 
-  constructor(infoPanelStore, setupStore) {
+  constructor(authStore, infoPanelStore, setupStore) {
+    console.log(infoPanelStore);
+
+    this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this);
     this.targetUserStore = new TargetUserStore(this);
@@ -54,24 +57,29 @@ class PeopleStore {
     this.infoPanelStore = infoPanelStore;
     this.setupStore = setupStore;
 
-    this.contextOptionsStore = new AccountsContextOptionsStore(authStore, this);
+    this.contextOptionsStore = new AccountsContextOptionsStore(this);
 
     makeAutoObservable(this);
   }
 
   get isPeoplesAdmin() {
-    return authStore.isAdmin;
+    return this.authStore.isAdmin;
   }
 
   init = async () => {
     if (this.isInit) return;
     this.isInit = true;
 
-    //authStore.settingsStore.setModuleInfo(config.homepage, config.id);
+    //this.authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
-    await authStore.settingsStore.getPortalPasswordSettings();
+    await this.authStore.settingsStore.getPortalPasswordSettings();
 
     this.loadingStore.setIsLoaded(true);
+  };
+
+  reset = () => {
+    this.isInit = false;
+    this.loadingStore.setIsLoaded(false);
   };
 
   resetFilter = (withoutGroup = false) => {
@@ -145,7 +153,7 @@ class PeopleStore {
       setDeleteDialogVisible,
     } = this.dialogStore;
 
-    const { isAdmin, isOwner } = authStore.userStore.user;
+    const { isAdmin, isOwner } = this.authStore.userStore.user;
 
     const { setVisible, isVisible } = this.infoPanelStore;
 

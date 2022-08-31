@@ -22,9 +22,9 @@ class AccountsContextOptionsStore {
 
   peopleStore = null;
 
-  constructor(authStore, peopleStore) {
+  constructor(peopleStore) {
     makeAutoObservable(this);
-    this.authStore = authStore;
+    this.authStore = peopleStore.authStore;
 
     this.peopleStore = peopleStore;
   }

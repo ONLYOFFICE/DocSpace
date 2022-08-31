@@ -55,7 +55,7 @@ class ComboButton extends React.Component {
         isSelected={isSelected}
         modernView={modernView}
         className="combo-button"
-        type={ThemeType.ComboButton}
+        themeId={ThemeType.ComboButton}
       >
         {innerContainer && (
           <StyledOptionalItem
