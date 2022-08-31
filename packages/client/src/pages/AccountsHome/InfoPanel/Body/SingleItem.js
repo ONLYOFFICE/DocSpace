@@ -124,7 +124,9 @@ const SingleItem = ({
               {user.email}
             </Text>
           )}
-          {isPending && <Badges statusType={user.statusType} />}
+          {isPending && (
+            <Badges withoutPaid={true} statusType={user.statusType} />
+          )}
         </div>
         <ContextMenuButton className="context-button" getData={getData} />
       </StyledInfoHeaderContainer>

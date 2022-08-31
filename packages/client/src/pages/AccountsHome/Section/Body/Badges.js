@@ -34,10 +34,10 @@ const StyledCatalogSpamIcon = styled(CatalogSpamIcon)`
 `;
 
 //TODO: need backed isPaid
-const Badges = ({ t, statusType, isPaid = false }) => {
+const Badges = ({ t, statusType, withoutPaid, isPaid = false }) => {
   return (
     <StyledBadgesContainer className="badges additional-badges">
-      {!isPaid && (
+      {!withoutPaid && !isPaid && (
         <StyledPaidBadge
           className="paid-badge"
           label={t("Paid")}
