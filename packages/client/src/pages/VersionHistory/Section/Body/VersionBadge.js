@@ -16,7 +16,7 @@ const VersionBadge = ({
 }) => (
   <Box className={className} marginProp="0 8px" displayProp="flex" {...rest}>
     <ColorTheme
-      elementType={ThemeType.VersionBadge}
+      themeId={ThemeType.VersionBadge}
       isVersion={isVersion}
       theme={theme}
       index={index}

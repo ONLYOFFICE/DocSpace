@@ -90,7 +90,7 @@ const AboutContent = (props) => {
         <ColorTheme
           {...props}
           tag="a"
-          elementType={ThemeType.Link}
+          themeId={ThemeType.Link}
           className="row-el"
           fontSize="13px"
           fontWeight="600"
@@ -112,7 +112,7 @@ const AboutContent = (props) => {
         <ColorTheme
           {...props}
           tag="a"
-          elementType={ThemeType.Link}
+          themeId={ThemeType.Link}
           className="row-el"
           fontSize="13px"
           fontWeight="600"
@@ -165,7 +165,7 @@ const AboutContent = (props) => {
         <ColorTheme
           {...props}
           tag="a"
-          elementType={ThemeType.Link}
+          themeId={ThemeType.Link}
           className="row-el"
           fontSize="13px"
           fontWeight="600"

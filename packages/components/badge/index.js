@@ -33,7 +33,7 @@ const Badge = (props) => {
       {...props}
       isHovered={isHovered}
       onClick={onClick}
-      elementType={ThemeType.Badge}
+      themeId={ThemeType.Badge}
     >
       <StyledInner
         backgroundColor={backgroundColor}

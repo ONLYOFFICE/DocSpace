@@ -39,7 +39,7 @@ const LoadingButton = (props) => {
       className={className}
       style={style}
       onClick={onClick}
-      elementType={ThemeType.LoadingButton}
+      themeId={ThemeType.LoadingButton}
     >
       <StyledCircle
         percent={percent}

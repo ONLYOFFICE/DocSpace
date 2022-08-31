@@ -146,7 +146,7 @@ const Badges = ({
     <div className="badges additional-badges">
       {isEditing && (
         <ColorTheme
-          elementType={ThemeType.IconButton}
+          themeId={ThemeType.IconButton}
           isEditing={isEditing}
           iconName={iconEdit}
           className="badge icons-group is-editing tablet-badge tablet-edit"
@@ -158,7 +158,7 @@ const Badges = ({
       )}
       {canConvert && !isTrashFolder && (
         <ColorTheme
-          elementType={ThemeType.IconButton}
+          themeId={ThemeType.IconButton}
           onClick={setConvertDialogVisible}
           iconName={iconRefresh}
           className="badge tablet-badge icons-group can-convert"
@@ -194,7 +194,7 @@ const Badges = ({
     <>
       {isRoom && pinned && (
         <ColorTheme
-          elementType={ThemeType.IconButtonPin}
+          themeId={ThemeType.IconButtonPin}
           onClick={onUnpinClick}
           className="badge icons-group is-pinned tablet-badge tablet-pinned"
           iconName={iconPin}

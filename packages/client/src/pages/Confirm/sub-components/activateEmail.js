@@ -16,9 +16,9 @@ class ActivateEmail extends React.PureComponent {
       linkData.uid,
       linkData.confirmHeader,
     ];
-    logout();
-    changeEmail(uid, email, key)
-      .then((res) => {
+    logout().then(() =>
+      changeEmail(uid, email, key)
+        .then((res) => {
         tryRedirectTo(
           combineUrl(AppServerConfig.proxyURL, `/login?confirmedEmail=${email}`)
         );

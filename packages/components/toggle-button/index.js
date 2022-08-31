@@ -82,7 +82,7 @@ class ToggleButton extends Component {
     return (
       <ColorTheme
         {...this.props}
-        elementType={ThemeType.ToggleButton}
+        themeId={ThemeType.ToggleButton}
         id={id}
         className={className}
         style={style}

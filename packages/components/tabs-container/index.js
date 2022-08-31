@@ -162,7 +162,7 @@ class TabContainer extends Component {
             {elements.map((item, index) => (
               <ColorTheme
                 {...this.props}
-                elementType={ThemeType.TabsContainer}
+                themeId={ThemeType.TabsContainer}
                 onMouseMove={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
                 ref={this.arrayRefs[index]}

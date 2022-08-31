@@ -10,9 +10,9 @@ class TextInput extends React.Component {
   }
 
   render() {
-    console.log(`TextInput render id=${this.props.type}`);
+    // console.log(`TextInput render id=${this.props.id}`);
 
-    return <ColorTheme {...this.props} elementType={ThemeType.TextInput} />;
+    return <ColorTheme {...this.props} themeId={ThemeType.TextInput} />;
   }
 }
 

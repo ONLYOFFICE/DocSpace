@@ -4,9 +4,8 @@ import { makeAutoObservable } from "mobx";
 import { setCookie } from "@docspace/common/utils";
 import store from "client/store";
 
-const { auth: authStore } = store;
-
 class TargetUserStore {
+  peopleStore = null;
   targetUser = null;
   isEditTargetUser = false;
   tipsSubscription = null;
@@ -18,8 +17,8 @@ class TargetUserStore {
 
   get getDisableProfileType() {
     const res =
-      authStore.userStore.user.id === this.targetUser.id ||
-      !authStore.isAdmin ||
+      this.peopleStore.authStore.userStore.user.id === this.targetUser.id ||
+      !this.peopleStore.authStore.isAdmin ||
       this.peopleStore.isPeoplesAdmin
         ? false
         : true;
@@ -30,16 +29,17 @@ class TargetUserStore {
   get isMe() {
     return (
       this.targetUser &&
-      this.targetUser.userName === authStore.userStore.user.userName
+      this.targetUser.userName ===
+        this.peopleStore.authStore.userStore.user.userName
     );
   }
 
   getTargetUser = async (userName) => {
-    /*if (authStore.userStore.user.userName === userName) {
-      return this.setTargetUser(authStore.userStore.user);
+    /*if (this.peopleStore.authStore.userStore.user.userName === userName) {
+      return this.setTargetUser(this.peopleStore.authStore.userStore.user);
     } else {*/
     const user = await api.people.getUser(userName);
-    if (user?.userName === authStore.userStore.user.userName) {
+    if (user?.userName === this.peopleStore.authStore.userStore.user.userName) {
       const tipsSubscription = await api.settings.getTipsSubscription();
       this.tipsSubscription = tipsSubscription;
     }
@@ -64,7 +64,7 @@ class TargetUserStore {
     );
 
     const res = await api.people.updateUser(member);
-    if (!res.theme) res.theme = authStore.userStore.user.theme;
+    if (!res.theme) res.theme = this.peopleStore.authStore.userStore.user.theme;
 
     this.setTargetUser(res);
     return Promise.resolve(res);
@@ -81,11 +81,11 @@ class TargetUserStore {
   updateProfileCulture = async (id, culture) => {
     const res = await api.people.updateUserCulture(id, culture);
 
-    authStore.userStore.setUser(res);
+    this.peopleStore.authStore.userStore.setUser(res);
 
     this.setTargetUser(res);
     //caches.delete("api-cache");
-    //await authStore.settingsStore.init();
+    //await this.peopleStore.authStore.settingsStore.init();
     setCookie(LANGUAGE, culture, {
       "max-age": COOKIE_EXPIRATION_YEAR,
     });

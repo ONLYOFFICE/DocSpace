@@ -42,7 +42,7 @@ const Item = ({ id, title, isRoot, isRootRoom, onClick, ...rest }) => {
 
   return (
     <StyledItem id={id} isRoot={isRoot} onClick={onClickAvailable} {...rest}>
-      <ColorTheme isRoot={isRoot} elementType={ThemeType.IconWrapper}>
+      <ColorTheme isRoot={isRoot} themeId={ThemeType.IconWrapper}>
         {isMobile || isTablet() || IsMobileUtils() ? (
           isRoot ? (
             <RootTabletIcon />

@@ -9,7 +9,7 @@ import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 const Button = React.forwardRef((props, ref) => {
   const { primary, size, isLoading, icon, label } = props;
   return (
-    <ColorTheme {...props} innerRef={ref} elementType={ThemeType.Button}>
+    <ColorTheme {...props} innerRef={ref} themeId={ThemeType.Button}>
       <div className="button-content">
         {(isLoading || icon) &&
           (isLoading ? (

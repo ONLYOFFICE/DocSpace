@@ -66,7 +66,7 @@ const FloatingButton = (props) => {
     <StyledFloatingButtonWrapper>
       <ColorTheme
         {...props}
-        elementType={ThemeType.FloatingButton}
+        themeId={ThemeType.FloatingButton}
         color={color}
         id={id}
         className={`${className} not-selectable`}

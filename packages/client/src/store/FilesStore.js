@@ -35,8 +35,6 @@ const storageViewAs = localStorage.getItem("viewAs");
 
 class FilesStore {
   authStore;
-  settingsStore;
-  userStore;
 
   selectedFolderStore;
   treeFoldersStore;
@@ -97,9 +95,6 @@ class FilesStore {
 
   constructor(
     authStore,
-    settingsStore,
-    userStore,
-
     selectedFolderStore,
     treeFoldersStore,
     filesSettingsStore
@@ -109,8 +104,6 @@ class FilesStore {
 
     makeAutoObservable(this);
     this.authStore = authStore;
-    this.settingsStore = settingsStore;
-    this.userStore = userStore;
 
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
@@ -362,11 +355,11 @@ class FilesStore {
       getPortalCultures,
       getIsEncryptionSupport,
       getEncryptionKeys,
-      setModuleInfo,
-    } = this.settingsStore;
-    const { isDesktopClient } = settingsStore;
+      //setModuleInfo,
+      isDesktopClient,
+    } = settingsStore;
 
-    setModuleInfo(config.homepage, config.id);
+    //setModuleInfo(config.homepage, config.id);
 
     const requests = [];
 
@@ -393,12 +386,27 @@ class FilesStore {
     return Promise.all(requests).then(() => (this.isInit = true));
   };
 
+  reset = () => {
+    this.isInit = false;
+    this.isLoaded = false;
+    this.isLoading = false;
+    this.firstLoad = true;
+
+    this.alreadyFetchingRooms = false;
+
+    this.files = [];
+    this.folders = [];
+
+    this.selection = [];
+    this.bufferSelection = null;
+    this.selected = "close";
+  };
   setFirstLoad = (firstLoad) => {
     this.firstLoad = firstLoad;
   };
 
   setFiles = (files) => {
-    const { socketHelper } = this.settingsStore;
+    const { socketHelper } = this.authStore.settingsStore;
     if (files.length === 0 && this.files.length === 0) return;
 
     if (this.files?.length > 0) {
@@ -531,7 +539,7 @@ class FilesStore {
 
   //TODO: FILTER
   setFilesFilter = (filter) => {
-    const key = `UserFilter=${this.userStore.user.id}`;
+    const key = `UserFilter=${this.authStore.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
@@ -552,7 +560,7 @@ class FilesStore {
   };
 
   setRoomsFilter = (filter) => {
-    const key = `UserRoomsFilter=${this.userStore.user.id}`;
+    const key = `UserRoomsFilter=${this.authStore.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
@@ -656,8 +664,8 @@ class FilesStore {
     filterData.folder = folderId;
 
     const filterStorageItem =
-      this.userStore.user?.id &&
-      localStorage.getItem(`UserFilter=${this.userStore.user.id}`);
+      this.authStore.userStore.user?.id &&
+      localStorage.getItem(`UserFilter=${this.authStore.userStore.user.id}`);
 
     if (filterStorageItem && !filter) {
       const splitFilter = filterStorageItem.split(",");
@@ -793,6 +801,7 @@ class FilesStore {
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
+          console.error(err);
           toastr.error(err);
           if (!requestCounter) return;
           requestCounter--;
@@ -804,7 +813,7 @@ class FilesStore {
           } else {
             this.treeFoldersStore.fetchTreeFolders();
             return this.fetchFiles(
-              this.userStore.user.isVisitor ? "@common" : "@my"
+              this.authStore.userStore.user.isVisitor ? "@common" : "@my"
             );
           }
         });
@@ -824,7 +833,7 @@ class FilesStore {
     const filterData = !!filter ? filter.clone() : RoomsFilter.getDefault();
 
     const filterStorageItem = localStorage.getItem(
-      `UserRoomsFilter=${this.userStore.user.id}`
+      `UserRoomsFilter=${this.authStore.userStore.user.id}`
     );
 
     if (filterStorageItem && !filter) {
@@ -1005,7 +1014,9 @@ class FilesStore {
 
   getFilesContextOptions = (item, canOpenPlayer) => {
     const isVisitor =
-      (this.userStore.user && this.userStore.user.isVisitor) || false;
+      (this.authStore.userStore.user &&
+        this.authStore.userStore.user.isVisitor) ||
+      false;
     const isFile = !!item.fileExst || item.contentLength;
     const isRoom = !!item.roomType;
     const isFavorite =
@@ -1020,7 +1031,7 @@ class FilesStore {
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
       (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    const isFileOwner = item.createdBy.id === this.userStore.user.id;
+    const isFileOwner = item.createdBy.id === this.authStore.userStore.user.id;
 
     const {
       isRecycleBinFolder,
@@ -1040,7 +1051,7 @@ class FilesStore {
       canFormFillingDocs,
     } = this.filesSettingsStore;
 
-    const { enablePlugins } = this.settingsStore;
+    const { enablePlugins } = this.authStore.settingsStore;
 
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
@@ -1048,7 +1059,7 @@ class FilesStore {
     const isCommonFolder = isCommon(item.rootFolderType);
     const isMyFolder = isMy(item.rootFolderType);
 
-    const { personal } = this.settingsStore;
+    const { personal } = this.authStore.settingsStore;
     const { isDesktopClient } = this.authStore.settingsStore;
 
     const pluginAllKeys =
@@ -1787,7 +1798,8 @@ class FilesStore {
   };
 
   canShareOwnerChange = (item) => {
-    const userId = this.userStore.user && this.userStore.user.id;
+    const userId =
+      this.authStore.userStore.user && this.authStore.userStore.user.id;
 
     if (item.providerKey || !this.hasCommonFolder) {
       return false;
@@ -1803,7 +1815,9 @@ class FilesStore {
   get canShare() {
     const folderType = this.selectedFolderStore.rootFolderType;
     const isVisitor =
-      (this.userStore.user && this.userStore.user.isVisitor) || false;
+      (this.authStore.userStore.user &&
+        this.authStore.userStore.user.isVisitor) ||
+      false;
 
     if (isVisitor) {
       return false;
@@ -1896,7 +1910,7 @@ class FilesStore {
       case FolderType.Privacy:
         return (
           this.authStore.settingsStore.isDesktopClient &&
-          this.settingsStore.isEncryptionSupport
+          this.authStore.settingsStore.isEncryptionSupport
         );
       case FolderType.COMMON:
         return this.authStore.isAdmin;
