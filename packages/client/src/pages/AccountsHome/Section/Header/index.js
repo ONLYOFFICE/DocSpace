@@ -24,7 +24,7 @@ import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu"
 import { Base } from "@docspace/components/themes";
 import IconButton from "@docspace/components/icon-button";
 
-// import toastr from "client/toastr";
+import toastr from "client/toastr";
 
 import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 
@@ -241,10 +241,12 @@ const SectionHeaderContent = (props) => {
 
   const onInvite = React.useCallback((e) => {
     const type = e.target.dataset.action;
+    toastr.warning("Work in progress " + type);
     console.log("invite ", type);
   }, []);
 
   const onInviteAgain = React.useCallback(() => {
+    toastr.warning("Work in progress (invite again)");
     console.log("invite again");
   }, []);
 
@@ -259,15 +261,15 @@ const SectionHeaderContent = (props) => {
         "data-action": "administrator",
         key: "administrator",
       },
-      // {
-      //   id: "main-button_manager",
-      //   className: "main-button_drop-down",
-      //   icon: "/static/images/person.manager.react.svg",
-      //   label: t("Manager"),
-      //   onClick: onInvite,
-      //   "data-action": "manager",
-      //   key: "manager",
-      // },
+      {
+        id: "main-button_manager",
+        className: "main-button_drop-down",
+        icon: "/static/images/person.manager.react.svg",
+        label: t("Manager"),
+        onClick: onInvite,
+        "data-action": "manager",
+        key: "manager",
+      },
       {
         id: "main-button_user",
         className: "main-button_drop-down",
