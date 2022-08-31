@@ -22,7 +22,7 @@ const StyledSelectedItem = styled.div`
   margin-right: 4px;
   margin-bottom: 4px;
 
-  background: ${(props) => props.theme.filterInput.SelectedItems.background};
+  background: ${(props) => props.theme.filterInput.selectedItems.background};
 
   .selected-item_label {
     line-height: 20px;
