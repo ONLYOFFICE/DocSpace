@@ -341,7 +341,7 @@ public interface IFolderDao<T>
     /// <param name="folderIDs"></param>
     /// <returns></returns>
     Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<T> folderIDs);
-
+    IAsyncEnumerable<FolderWithShare> GetFeedsForRoomsAsync(int tenant, DateTime from, DateTime to);
     IAsyncEnumerable<FolderWithShare> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to);
 
     IAsyncEnumerable<T> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime);

@@ -1349,13 +1349,34 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .ToDictionaryAsync(r => r.LeftNode, r => r.RightNode);
     }
 
+    public async IAsyncEnumerable<FolderWithShare> GetFeedsForRoomsAsync(int tenant, DateTime from, DateTime to)
+    {
+        var roomTypes = new List<FolderType> { FolderType.CustomRoom, FolderType.ReviewRoom, FolderType.FillingFormsRoom, FolderType.EditingRoom, FolderType.ReadOnlyRoom };
+        Expression<Func<DbFolder, bool>> filter = f => roomTypes.Contains(f.FolderType);
+
+        await foreach (var e in GetFeedsInternalAsync(tenant, from, to, filter))
+        {
+            yield return e;
+        }
+    }
+
     public async IAsyncEnumerable<FolderWithShare> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
+    {
+        Expression<Func<DbFolder, bool>> filter = f => f.FolderType == FolderType.DEFAULT;
+
+        await foreach (var e in GetFeedsInternalAsync(tenant, from, to, filter))
+        {
+            yield return e;
+        }
+    }
+
+    public async IAsyncEnumerable<FolderWithShare> GetFeedsInternalAsync(int tenant, DateTime from, DateTime to, Expression<Func<DbFolder, bool>> filter)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var q1 = filesDbContext.Folders
             .Where(r => r.TenantId == tenant)
-            .Where(r => r.FolderType == FolderType.DEFAULT)
+            .Where(filter)
             .Where(r => r.CreateOn >= from && r.ModifiedOn <= to);
 
         var q2 = FromQuery(filesDbContext, q1)
@@ -1363,7 +1384,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var q3 = filesDbContext.Folders
             .Where(r => r.TenantId == tenant)
-            .Where(r => r.FolderType == FolderType.DEFAULT);
+            .Where(filter);
 
         var q4 = FromQuery(filesDbContext, q3)
             .Join(filesDbContext.Security.DefaultIfEmpty(), r => r.Folder.Id.ToString(), s => s.EntryId, (f, s) => new DbFolderQueryWithSecurity { DbFolderQuery = f, Security = s })
@@ -1387,7 +1408,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var q1 = filesDbContext.Files
+        var q1 = filesDbContext.Folders
             .Where(r => r.ModifiedOn > fromTime)
             .GroupBy(r => r.TenantId)
             .Where(r => r.Any())
