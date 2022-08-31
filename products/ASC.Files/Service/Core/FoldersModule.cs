@@ -107,14 +107,17 @@ public class FoldersModule : FeedModule
 
         var parentFolderIDs = folders.Select(r => r.Folder.ParentId).ToList();
         var parentFolders = _folderDao.GetFoldersAsync(parentFolderIDs, checkShare: false).ToListAsync().Result;
+        var roomsIds = _folderDao.GetParentRoomsAsync(parentFolderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId).Result;
 
-        return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Folder.ParentId))), f));
+        return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Folder.ParentId)), 
+            roomsIds.GetValueOrDefault(f.Folder.ParentId)), f));
     }
 
-    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity, Folder<int> rootFolder)
+    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity, Folder<int> rootFolder, int roomId)
     {
         var folder = folderWithSecurity.Folder;
         var shareRecord = folderWithSecurity.ShareRecord;
+        var contextId = roomId != default ? $"room_{roomId}" : null;
 
         if (shareRecord != null)
         {
@@ -132,7 +135,8 @@ public class FoldersModule : FeedModule
                 HasPreview = false,
                 CanComment = false,
                 Target = shareRecord.Subject,
-                GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, folder.ParentId.ToString())
+                GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, folder.ParentId.ToString()),
+                ContextId = contextId
             };
 
             return feed;
@@ -152,7 +156,8 @@ public class FoldersModule : FeedModule
             HasPreview = false,
             CanComment = false,
             Target = null,
-            GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.ParentId.ToString())
+            GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.ParentId.ToString()),
+            ContextId = contextId
         };
     }
 }
