@@ -17,6 +17,8 @@ import withLoader from "../../../HOCs/withLoader";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
+import toastr from "client/toastr";
+
 const ArticleMainButtonContent = (props) => {
   const {
     t,
@@ -122,11 +124,13 @@ const ArticleMainButtonContent = (props) => {
 
   const onInvite = React.useCallback((e) => {
     const type = e.action;
+    toastr.warning("Work in progress " + type);
     console.log("invite ", type);
   }, []);
 
   const onInviteAgain = React.useCallback(() => {
     console.log("invite again");
+    toastr.warning("Work in progress (invite again)");
   }, []);
 
   React.useEffect(() => {
@@ -190,15 +194,15 @@ const ArticleMainButtonContent = (props) => {
             action: "administrator",
             key: "administrator",
           },
-          // {
-          //   id: "main-button_manager",
-          //   className: "main-button_drop-down",
-          //   icon: "/static/images/person.manager.react.svg",
-          //   label: t("People:Manager"),
-          //   onClick: onInvite,
-          //   action: "manager",
-          //   key: "manager",
-          // },
+          {
+            id: "main-button_manager",
+            className: "main-button_drop-down",
+            icon: "/static/images/person.manager.react.svg",
+            label: t("People:Manager"),
+            onClick: onInvite,
+            action: "manager",
+            key: "manager",
+          },
           {
             id: "main-button_user",
             className: "main-button_drop-down",
