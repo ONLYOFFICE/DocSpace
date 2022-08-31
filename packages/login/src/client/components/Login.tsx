@@ -23,6 +23,7 @@ import RecoverAccessModalDialog from "./sub-components/recover-access-modal-dial
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import SSOIcon from "../../../../../public/images/sso.react.svg";
 
 const greetingTitle = "Web Office Applications"; // from PortalSettingsStore
 
@@ -55,7 +56,8 @@ const Login: React.FC<ILoginProps> = ({
     return (
       <div className="buttonWrapper">
         <SocialButton
-          iconName="/static/images/sso.react.svg"
+          //iconName="/static/images/sso.react.svg"
+          IconComponent={SSOIcon}
           className="socialButton"
           label={ssoLabel || getProviderTranslation("sso", t)}
           onClick={onClick}

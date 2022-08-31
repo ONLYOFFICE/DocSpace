@@ -5,6 +5,7 @@ import InvalidRoute from "./components/Invalid";
 import CodeLogin from "./components/CodeLogin";
 import initLoginStore from "../store";
 import { Provider as MobxProvider } from "mobx-react";
+
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
 }

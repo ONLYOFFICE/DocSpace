@@ -40,9 +40,23 @@ export const LoginContainer = styled.div`
     max-width: 311px;
   }
 
+  .socialButton {
+    min-height: 40px;
+  }
+
+  .or-label,
+  .login-or-access {
+    min-height: 18px;
+  }
+
+  .recover-link {
+    min-height: 19px;
+  }
+
   .greeting-title {
     width: 100%;
     padding-bottom: 32px;
+    min-height: 32px;
 
     @media ${hugeMobile} {
       padding-top: 32px;
