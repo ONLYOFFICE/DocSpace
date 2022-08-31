@@ -1,4 +1,4 @@
-{
+﻿{
   "AccessRightsAccessToProduct": "Pääsy moduuliin {{product}} on myönnetty",
   "AccessRightsAllUsers": "Kaikki {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Muutokset otetaan käyttöön sähköpostivahvistuksen jälkeen.",
@@ -10,6 +10,7 @@
   "AddAdmins": "Lisätä järjestelmänvalvojia",
   "AddName": "Lisätä nimiä",
   "AddTrustedDomain": "Lisää luotettu verkkotunnus",
+  "AuditTrailNav": "Tapahtumien seuranta",
   "AdminInModules": "Ylläpitää moduuleja",
   "AdministratorsAddedSuccessfully": "Järjestelmänvalvojat lisätty onnistuneesti",
   "AdministratorsRemovedSuccessfully": "Järjestelmänvalvojat poistettiin onnistuneesti",
@@ -48,6 +49,8 @@
   "CustomizationDescription": "Tämän osion avulla voit muuttaa portaalisi ulkoasua. Voit käyttää oman yrityksesi logoa, nimeä ja tekstiä organisaatiobrändin mukaan.",
   "DeactivateOrDeletePortal": "Ota portaali pois käytöstä tai poista se.",
   "Disabled": "Poistettu käytöstä",
+  "DownloadReportBtn": "Lataa ja avaa raportti",
+  "DocumentsAdministratorsCan": "tässä osiossa asiakirjojen järjestelmänvalvojat voivat linkittää Dropbox-, Box- ja muut tilit ”yhteisiin asiakirjoihin” ja määrittää käyttöoikeudet",
   "DocumentsAdministratorsCan": "Tässä osiossa asiakirjojen järjestelmänvalvojat voivat linkittää Dropbox-, Box- ja muut tilit yhteisiin asiakirjoihin ja määrittää käyttöoikeudet",
   "DownloadCopy": "Lataa kopio",
   "Employees": "Käyttäjät",
@@ -73,6 +76,7 @@
   "LogoDark": "Tietoja/kirjautumissivun logo",
   "LogoDocsEditor": "Toimittajan otsikon logo",
   "LogoFavicon": "Favicon",
+  "LoginHistoryTitle": "Kirjautumishistoria",
   "LogoLightSmall": "Portaalin otsikon logo",
   "LogoSettings": "Portaalin logon asetukset",
   "LogoUploadRecommendation": "Suosittelemme, että käytät kuvia <1>PNG</1>-muodossa läpinäkyvällä taustalla",
