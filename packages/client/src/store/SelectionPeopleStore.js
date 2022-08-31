@@ -132,11 +132,11 @@ class SelectionStore {
         (!x.isOwner &&
           !x.isAdmin &&
           x.status !== EmployeeStatus.Disabled &&
-          x.id !== authStore.userStore.user.id) ||
+          x.id !== this.peopleStore.authStore.userStore.user.id) ||
         (x.isAdmin &&
           isOwner &&
           x.status !== EmployeeStatus.Disabled &&
-          x.id !== authStore.userStore.user.id)
+          x.id !== this.peopleStore.authStore.userStore.user.id)
       );
     });
 
