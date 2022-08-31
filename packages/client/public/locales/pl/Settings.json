@@ -1,4 +1,4 @@
-{
+﻿{
   "AccessRightsAccessToProduct": "Dostęp do modułu {{product}} został udzielony",
   "AccessRightsAllUsers": "Wszyscy {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Zmiany zostaną zastosowane po zatwierdzeniu ich drogą mailową.",
@@ -15,6 +15,7 @@
   "AdministratorsRemovedSuccessfully": "Administratorzy zostali pomyślnie usunięci",
   "Admins": "Administratorzy",
   "AllDomains": "Wszystkie domeny",
+  "AuditTrailNav": "Szlak audytu",
   "AutoBackup": "Automatyczna kopia zapasowa",
   "AutoBackupDescription": "Użyj tej opcji do automatycznego tworzenia kopii zapasowych danych portalu.",
   "AutoBackupHelp": "Opcja <strong>Automatyczna kopia zapasowa</strong> służy do automatyzacji procesu tworzenia kopii zapasowych danych portalu, aby móc ją później przywrócić na lokalnym serwerze.",
@@ -48,6 +49,7 @@
   "CustomizationDescription": "Dana sekcja umożliwia zmianę wyglądu Twojego portalu. Możesz dodać logo swojej firmy, nazwę oraz tekst, które będą pasować do Twojej marki.",
   "DeactivateOrDeletePortal": "Dezaktywuj lub usuń portal.",
   "Disabled": "Wyłączono",
+  "DownloadReportBtn": "Pobierz i otwórz raport",
   "DocumentsAdministratorsCan": "Administratorzy dokumentów mogą podłączyć Dropbox, Box oraz inne konta do Wspólnych Dokumentów i skonfigurować prawa dostępu w tej sekcji",
   "DownloadCopy": "Pobierz kopię",
   "Employees": "użytkownicy",
@@ -73,6 +75,7 @@
   "LogoDark": "Logo dla strony O/Logowania",
   "LogoDocsEditor": "Logo dla nagłówka edytorów",
   "LogoFavicon": "Favicon",
+  "LoginHistoryTitle": "Historia logowania",
   "LogoLightSmall": "Logo dla nagłówka portalu",
   "LogoSettings": "Ustawienia logo portalu",
   "LogoUploadRecommendation": "Zalecamy wykorzystanie obrazów w formacie <1>PNG</1> z przezroczystym tłem",

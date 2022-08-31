@@ -28,7 +28,7 @@ const InfoPanelHeaderContent = (props) => {
 
       <ColorTheme
         {...props}
-        type={ThemeType.InfoPanelToggle}
+        themeId={ThemeType.InfoPanelToggle}
         isRootFolder={true}
         isInfoPanelVisible={true}
       >
