@@ -43,7 +43,11 @@ const bannerStore = new BannerStore();
 
 const ssoStore = new SsoFormStore();
 
-const peopleStore = new PeopleStore(authStore);
+const peopleStore = new PeopleStore(
+  authStore,
+  authStore.infoPanelStore,
+  setupStore
+);
 
 const tagsStore = new TagsStore();
 

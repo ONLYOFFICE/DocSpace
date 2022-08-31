@@ -34,7 +34,10 @@ class UsersStore {
 
     if (!filterData) {
       filterData = Filter.getDefault();
-      filterData.employeeStatus = EmployeeStatus.Active;
+    }
+
+    if (filterData.employeeStatus === EmployeeStatus.Active) {
+      filterData.employeeStatus = null;
     }
 
     if (filterData.group && filterData.group === "root")
@@ -165,21 +168,29 @@ class UsersStore {
     switch (statusType) {
       case "normal":
       case "unknown":
-        options.push("send-email");
-
-        if (hasMobileNumber && isMobileOnly) {
-          options.push("send-message");
+        if (isMySelf) {
+          options.push("profile");
+        } else {
+          options.push("details");
         }
 
-        options.push("separator");
-        options.push("edit");
-        options.push("change-password");
-        options.push("change-email");
+        options.push("separator-1");
 
         if (isMySelf) {
-          if (!isOwner) {
-            options.push("delete-self-profile");
-          }
+          options.push("change-name");
+        }
+
+        options.push("change-email");
+        options.push("change-password");
+
+        if (!isMySelf) {
+          options.push("reset-auth");
+        }
+
+        options.push("separator-2");
+
+        if (isMySelf && isOwner) {
+          options.push("change-owner");
         } else {
           options.push("disable");
         }
@@ -187,24 +198,26 @@ class UsersStore {
         break;
       case "disabled":
         options.push("enable");
-        //TODO: Need implementation
-        /*options.push("reassign-data");
-        options.push("delete-personal-data");*/
-        options.push("delete-profile");
+        options.push("details");
+        options.push("separator-1");
+        options.push("reassign-data");
+        options.push("delete-personal-data");
+        options.push("separator-2");
+        options.push("delete-user");
         break;
       case "pending":
-        options.push("edit");
+        // options.push("edit");
         options.push("invite-again");
+        options.push("details");
 
-        if (isMySelf) {
-          options.push("delete-profile");
+        options.push("separator-1");
+
+        if (status === EmployeeStatus.Active) {
+          options.push("disable");
         } else {
-          if (status === EmployeeStatus.Active) {
-            options.push("disable");
-          } else {
-            options.push("enable");
-          }
+          options.push("enable");
         }
+
         break;
       default:
         break;
@@ -233,6 +246,8 @@ class UsersStore {
         status,
         groups,
         title,
+        firstName,
+        lastName,
       } = user;
       const statusType = this.getStatusType(user);
       const role = this.getUserRole(user);
@@ -266,6 +281,8 @@ class UsersStore {
         options,
         groups,
         position: title,
+        firstName,
+        lastName,
       };
     });
 

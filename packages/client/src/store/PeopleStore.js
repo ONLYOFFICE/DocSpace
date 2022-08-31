@@ -11,9 +11,15 @@ import AvatarEditorStore from "./AvatarEditorStore";
 import InviteLinksStore from "./InviteLinksStore";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
+import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
 import { isMobile } from "react-device-detect";
 
+import toastr from "client/toastr";
+
+const fullAccessId = "00000000-0000-0000-0000-000000000000";
+
 class PeopleStore {
+  contextOptionsStore = null;
   authStore = null;
   groupsStore = null;
   usersStore = null;
@@ -27,10 +33,12 @@ class PeopleStore {
   inviteLinksStore = null;
   dialogStore = null;
   loadingStore = null;
+  infoPanelStore = null;
+  setupStore = null;
   isInit = false;
   viewAs = isMobile ? "row" : "table";
 
-  constructor(authStore) {
+  constructor(authStore, infoPanelStore, setupStore) {
     this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this);
@@ -44,6 +52,10 @@ class PeopleStore {
     this.inviteLinksStore = new InviteLinksStore(this);
     this.dialogStore = new DialogStore();
     this.loadingStore = new LoadingStore();
+    this.infoPanelStore = infoPanelStore;
+    this.setupStore = setupStore;
+
+    this.contextOptionsStore = new AccountsContextOptionsStore(this);
 
     makeAutoObservable(this);
   }
@@ -83,78 +95,141 @@ class PeopleStore {
     return getUsersList(newFilter);
   };
 
+  onChangeType = (e, t) => {
+    const action = e?.action ? e.action : e?.target?.dataset?.action;
+
+    const { getUsersToMakeEmployeesIds } = this.selectionStore;
+
+    this.changeType(action, getUsersToMakeEmployeesIds, t);
+  };
+
+  changeType = (type, users, t, needClearSelection = true) => {
+    const { changeAdmins } = this.setupStore;
+    const { getUsersList } = this.usersStore;
+    const { filter } = this.filterStore;
+    const { clearSelection } = this.selectionStore;
+
+    const userIDs = users.map((user) => {
+      return user?.id ? user.id : user;
+    });
+
+    if (type === "admin") {
+      changeAdmins(userIDs, fullAccessId, true).then((res) => {
+        getUsersList(filter);
+        needClearSelection && clearSelection();
+        toastr.success(t("Settings:AdministratorsAddedSuccessfully"));
+      });
+    }
+
+    if (type === "manager") {
+      toastr.warning("Work at progress");
+    }
+
+    if (type === "user") {
+      changeAdmins(userIDs, fullAccessId, false).then((res) => {
+        getUsersList(filter);
+        needClearSelection && clearSelection();
+        toastr.success(t("Settings:AdministratorsRemovedSuccessfully"));
+      });
+    }
+  };
+
   getHeaderMenu = (t) => {
     const {
-      userCaption,
-      guestCaption,
-    } = this.authStore.settingsStore.customNames;
-    const {
       hasUsersToMakeEmployees,
-      hasUsersToMakeGuests,
       hasUsersToActivate,
       hasUsersToDisable,
       hasUsersToInvite,
-      hasAnybodySelected,
       hasUsersToRemove,
+      getUsersToRemoveIds,
       selection,
     } = this.selectionStore;
     const {
-      setEmployeeDialogVisible,
-      setGuestDialogVisible,
       setActiveDialogVisible,
       setDisableDialogVisible,
       setSendInviteDialogVisible,
       setDeleteDialogVisible,
     } = this.dialogStore;
 
+    const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    const { setVisible, isVisible } = this.infoPanelStore;
+
+    const options = [];
+
+    const adminOption = {
+      id: "group-menu_administrator",
+      className: "group-menu_drop-down",
+      label: t("Administrator"),
+      title: t("Administrator"),
+      onClick: (e) => this.onChangeType(e, t),
+      "data-action": "admin",
+      key: "administrator",
+    };
+    const managerOption = {
+      id: "group-menu_manager",
+      className: "group-menu_drop-down",
+      label: t("Manager"),
+      title: t("Manager"),
+      onClick: (e) => this.onChangeType(e, t),
+      "data-action": "manager",
+      key: "manager",
+    };
+    const userOption = {
+      id: "group-menu_user",
+      className: "group-menu_drop-down",
+      label: t("Common:User"),
+      title: t("Common:User"),
+      onClick: (e) => this.onChangeType(e, t),
+      "data-action": "user",
+      key: "user",
+    };
+
+    isOwner && options.push(adminOption);
+
+    isAdmin && options.push(managerOption);
+
+    options.push(userOption);
+
     const headerMenu = [
       {
-        label: t("ChangeToUser", {
-          userCaption,
-        }),
-        disabled: !hasUsersToMakeEmployees,
-        onClick: () => setEmployeeDialogVisible(true),
+        key: "change-user",
+        label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
+        disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
         iconUrl: "/static/images/change.to.employee.react.svg",
+        withDropDown: true,
+        options: options,
       },
       {
-        label: t("ChangeToGuest", {
-          guestCaption,
-        }),
-        disabled: !hasUsersToMakeGuests,
-        onClick: () => setGuestDialogVisible(true),
-        iconUrl: "/static/images/change.to.guest.react.svg",
+        key: "info",
+        label: t("Common:Info"),
+        disabled: isVisible,
+        onClick: setVisible,
+        iconUrl: "images/info.react.svg",
       },
       {
-        label: t("LblSetActive"),
-        disabled: !hasUsersToActivate,
-        onClick: () => setActiveDialogVisible(true),
-        iconUrl: "/static/images/enable.react.svg",
-      },
-      {
-        label: t("LblSetDisabled"),
-        disabled: !hasUsersToDisable,
-        onClick: () => setDisableDialogVisible(true),
-        iconUrl: "/static/images/disable.react.svg",
-      },
-      {
-        label: t("LblInviteAgain"),
+        key: "invite",
+        label: t("Common:Invite"),
         disabled: !hasUsersToInvite,
         onClick: () => setSendInviteDialogVisible(true),
         iconUrl: "/static/images/invite.again.react.svg",
       },
       {
-        label: t("LblSendEmail"),
-        disabled: !hasAnybodySelected,
-        onClick: () => {
-          let str = "";
-          for (let item of selection) {
-            str += `${item.email},`;
-          }
-          window.open(`mailto: ${str}`, "_self");
-        },
-        iconUrl: "/static/images/send.react.svg",
+        key: "enable",
+        label: t("Common:Enable"),
+        disabled: !hasUsersToActivate,
+        onClick: () => setActiveDialogVisible(true),
+        iconUrl: "images/enable.react.svg",
       },
       {
+        key: "disable",
+        label: t("PeopleTranslations:DisableUserButton"),
+        disabled: !hasUsersToDisable,
+        onClick: () => setDisableDialogVisible(true),
+        iconUrl: "images/disable.react.svg",
+      },
+      {
+        key: "delete",
         label: t("Common:Delete"),
         disabled: !hasUsersToRemove,
         onClick: () => setDeleteDialogVisible(true),

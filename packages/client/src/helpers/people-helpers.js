@@ -12,7 +12,7 @@ export const getUserStatus = (user) => {
     user.status === EmployeeStatus.Active &&
     user.activationStatus === EmployeeActivationStatus.Activated
   ) {
-    return "normal";
+    return "active";
   } else if (
     user.status === EmployeeStatus.Active &&
     user.activationStatus === EmployeeActivationStatus.Pending
