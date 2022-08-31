@@ -115,6 +115,10 @@ class PeopleStore {
       });
     }
 
+    if (type === "manager") {
+      toastr.warning("Work at progress");
+    }
+
     if (type === "user") {
       changeAdmins(userIDs, fullAccessId, false).then((res) => {
         getUsersList(filter);

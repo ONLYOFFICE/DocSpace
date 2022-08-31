@@ -277,6 +277,7 @@ class AccountsContextOptionsStore {
     setDialogData({ id, firstName, lastName });
 
     setChangeNameDialogVisible(true);
+    toastr.warning("Work at progress");
   };
 
   toggleChangeEmailDialog = (item) => {
@@ -311,6 +312,7 @@ class AccountsContextOptionsStore {
     const { setChangeOwnerDialogVisible } = this.peopleStore.dialogStore;
 
     setChangeOwnerDialogVisible(true);
+    toastr.warning("Work at progress");
   };
 
   onEnableClick = (t, item) => {
@@ -338,13 +340,15 @@ class AccountsContextOptionsStore {
   onReassignDataClick = (item) => {
     const { userName } = item;
 
-    history.push(
-      combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `/reassign/${userName}`
-      )
-    );
+    toastr.warning("Work at progress");
+
+    // history.push(
+    //   combineUrl(
+    //     AppServerConfig.proxyURL,
+    //     config.homepage,
+    //     `/reassign/${userName}`
+    //   )
+    // );
   };
 
   onDeletePersonalDataClick = (t, item) => {
@@ -395,6 +399,7 @@ class AccountsContextOptionsStore {
   };
 
   onResetAuth = (item) => {
+    toastr.warning("Work at progress");
     console.log(item);
   };
 }
