@@ -56,10 +56,12 @@ interface IMoreLoginNodalProps {
   ) => void;
   ssoLabel: string;
   ssoUrl: string;
+  t: TFuncType;
 }
 
 const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
   const {
+    t,
     visible,
     onClose,
     providers,
@@ -67,8 +69,6 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
     ssoLabel,
     ssoUrl,
   } = props;
-
-  const { t } = useTranslation(["Login", "Common"]);
 
   return (
     <Modal

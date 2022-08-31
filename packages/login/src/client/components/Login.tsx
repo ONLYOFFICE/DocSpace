@@ -218,6 +218,7 @@ const Login: React.FC<ILoginProps> = ({
           onSocialLoginClick={onSocialButtonClick}
           ssoLabel={ssoLabel}
           ssoUrl={ssoUrl}
+          t={t}
         />
 
         <RecoverAccessModalDialog
