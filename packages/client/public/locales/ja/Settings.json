@@ -144,7 +144,7 @@
   "ThirdPartyPropsActivated": "更新成功",
   "ThirdPartyPropsDeactivated": "正常に解除された",
   "ThirdPartyResource": "サードパーティーリソース",
-  "ThirdPartyResourceDescription": "バックアップは、サードパーティーアカウント（Dropbox、Box.com、OneDrive、Google Drive）に保存できます。バックアップを保存する前、サードパーティーアカウント（Dropbox、Box.com、OneDrive、Google Drive）を共通ドキュメントフォルダーに接続する必要です。",
+  "ThirdPartyResourceDescription": "バックアップは、サードパーティーアカウント（Dropbox、Box.com、OneDrive、Google Drive）に保存できます。バックアップを保存する前、サードパーティーアカウント（Dropbox、Box.com、OneDrive、Google Drive）に接続する必要があります。",
   "ThirdPartyStorage": "第三者ストレージ",
   "ThirdPartyStorageDescription": "バックアップはサードパーティストレージに保存することができます。事前に、「統合」セクションで対応するサービスを接続する必要があります。そうでない場合は、以下の設定は無効となります。",
   "ThirdPartyTitleDescription": "認証キーを使って、サードパーティのサービスをポータルに接続します。Facebook、Twitter、LinkedInで簡単にサインインしたり、DropboxやOneDriveなどを追加して、Documentsモジュールから保存されたファイルを扱うことができます。",

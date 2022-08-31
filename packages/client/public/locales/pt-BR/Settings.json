@@ -146,7 +146,7 @@
   "ThirdPartyPropsActivated": "Atualizado com sucesso",
   "ThirdPartyPropsDeactivated": "Desativado com sucesso",
   "ThirdPartyResource": "Recurso de terceiros",
-  "ThirdPartyResourceDescription": "O backup pode ser salvo em sua conta de terceiros (Dropbox, Box.com, OneDrive ou Google Drive). Você precisa conectar sua conta de terceiros (Dropbox, Box.com, OneDrive ou Google Drive) à pasta de Documentos comuns antes de poder salvar seu backup lá.",
+  "ThirdPartyResourceDescription": "O backup pode ser salvo em sua conta de terceiros (Dropbox, Box.com, OneDrive ou Google Drive). Você precisa conectar sua conta de terceiros (Dropbox, Box.com, OneDrive ou Google Drive) antes de poder salvar seu backup lá.",
   "ThirdPartyStorage": "Armazenamento de terceiros",
   "ThirdPartyStorageDescription": "O backup pode ser salvo em um armazenamento de terceiros. Primeiro, você precisa conectar o serviço correspondente na seção 'Integração'. Caso contrário, as configurações a seguir ficarão inativas.",
   "ThirdPartyTitleDescription": "Com as chaves de autorização, você pode conectar serviços de terceiros ao seu portal. Entre facilmente com Facebook, Twitter ou LinkedIn; adicione Dropbox, OneDrive, etc. para trabalhar com arquivos armazenados lá a partir do módulo Documentos.",

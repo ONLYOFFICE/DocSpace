@@ -142,7 +142,7 @@
   "ThirdPartyPropsActivated": "Uspešno posodobljeno",
   "ThirdPartyPropsDeactivated": "Uspešno deaktivirano",
   "ThirdPartyResource": "Shranjevanje pri zunanjem ponudniku",
-  "ThirdPartyResourceDescription": "Varnostno kopijo lahko shranite s svojim računom pri zunanjem ponudniku (Dropbox, box.com, OneDrive ali Google Drive). Svoj račun pri zunanjem ponudniku (Dropbox, box.com, OneDrive ali Google Drive) morate predhodno povezati z mapo Skupnih dokumentov. Tam boste lahko shranili svojo varnostno kopijo.",
+  "ThirdPartyResourceDescription": "Varnostno kopijo lahko shranite s svojim računom pri zunanjem ponudniku (Dropbox, box.com, OneDrive ali Google Drive). Svoj račun pri zunanjem ponudniku (Dropbox, box.com, OneDrive ali Google Drive) morate predhodno povezati. Tam boste lahko shranili svojo varnostno kopijo.",
   "ThirdPartyStorage": "Shranjevanje pri zunanjem ponudniku",
   "ThirdPartyStorageDescription": "Varnostno kopijo lahko shranite pri zunanjem ponudniku. Pred tem morate v razdelku »Integracija« povezati ustrezno storitev. V nasprotnem primeru bodo naslednje nastavitve neaktivne.",
   "ThirdPartyTitleDescription": "S ključi za avtorizacijo lahko na svoj portal povežete storitve tretjih oseb. Enostavno se prijavite s Facebook, Twitter ali LinkedIn; dodajte Dropbox, OneDrive itd. za delo z datotekami, shranjenimi v modulu Dokumenti.",
