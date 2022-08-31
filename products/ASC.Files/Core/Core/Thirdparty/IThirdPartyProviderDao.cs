@@ -224,6 +224,11 @@ internal abstract class ThirdPartyProviderDao
         throw new NotImplementedException();
     }
 
+    public IAsyncEnumerable<ParentRoomPair> GetParentRoomsAsync(IEnumerable<int> foldersIds)
+    {
+        throw new NotImplementedException();
+    }
+
     public IAsyncEnumerable<string> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
     {
         throw new NotImplementedException();

@@ -357,6 +357,26 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
     }
 
+    public async IAsyncEnumerable<ParentRoomPair> GetParentRoomsAsync(IEnumerable<int> foldersIds)
+    {
+        var roomTypes = new List<FolderType> { FolderType.CustomRoom, FolderType.ReviewRoom, FolderType.FillingFormsRoom, FolderType.EditingRoom, FolderType.ReadOnlyRoom };
+
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = GetFolderQuery(filesDbContext)
+            .AsNoTracking()
+            .Join(filesDbContext.Tree, r => r.Id, a => a.ParentId, (folder, tree) => new { folder, tree })
+            .Where(r => foldersIds.Contains(r.tree.FolderId))
+            .OrderByDescending(r => r.tree.Level)
+            .Where(r => roomTypes.Contains(r.folder.FolderType))
+            .Select(r => new ParentRoomPair { FolderId = r.tree.FolderId, ParentRoomId = r.folder.Id });
+
+        await foreach (var e in q.AsAsyncEnumerable())
+        {
+            yield return e;
+        }
+    }
+
     public Task<int> SaveFolderAsync(Folder<int> folder)
     {
         return SaveFolderAsync(folder, null);
@@ -1615,4 +1635,10 @@ public class DbFolderQueryWithSecurity
 {
     public DbFolderQuery DbFolderQuery { get; set; }
     public DbFilesSecurity Security { get; set; }
+}
+
+public class ParentRoomPair
+{
+    public int FolderId { get; set; }
+    public int ParentRoomId { get; set; }
 }
