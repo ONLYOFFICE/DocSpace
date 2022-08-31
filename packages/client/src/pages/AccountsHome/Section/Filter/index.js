@@ -56,7 +56,7 @@ const SectionFilterContent = ({
   groups,
   customNames,
 }) => {
-  // TODO:
+  //TODO: add new options from filter after update backend and fix manager from role
   const onFilter = (data) => {
     const status = getStatus(data);
 
@@ -82,7 +82,6 @@ const SectionFilterContent = ({
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
-  // TODO:
   const onSort = (sortId, sortDirection) => {
     const sortBy = sortId;
     const sortOrder = sortDirection === "desc" ? "descending" : "ascending";
@@ -97,7 +96,6 @@ const SectionFilterContent = ({
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
-  // TODO: change fetchPeople
   const onSearch = (data = "") => {
     const newFilter = filter.clone();
     newFilter.page = 0;
@@ -108,7 +106,7 @@ const SectionFilterContent = ({
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
-  // TODO: change keys
+  // TODO: change translation keys
   const getData = async () => {
     const { userCaption } = customNames;
 
@@ -145,11 +143,11 @@ const SectionFilterContent = ({
         isLast: true,
       },
       { key: "admin", group: "filter-type", label: t("Administrator") },
-      // {
-      //   key: "manager",
-      //   group: "filter-type",
-      //   label: "TODO:Manager",
-      // },
+      {
+        key: "manager",
+        group: "filter-type",
+        label: "Manager",
+      },
       {
         key: "user",
         group: "filter-type",
@@ -161,27 +159,27 @@ const SectionFilterContent = ({
       {
         key: "filter-role",
         group: "filter-role",
-        label: "TODO: Role in room",
+        label: "Role in room",
         isHeader: true,
       },
-      { key: "1", group: "filter-role", label: "TODO: Room manager" },
-      { key: "2", group: "filter-role", label: "TODO: Co-worker" },
-      { key: "3", group: "filter-role", label: "TODO: Editor" },
-      { key: "4", group: "filter-role", label: "TODO: Form filler" },
-      { key: "5", group: "filter-role", label: "TODO: Reviewer" },
-      { key: "6", group: "filter-role", label: "TODO: Commentator" },
-      { key: "7", group: "filter-role", label: "TODO: Viewer" },
+      { key: "1", group: "filter-role", label: "Room manager" },
+      { key: "2", group: "filter-role", label: "Co-worker" },
+      { key: "3", group: "filter-role", label: "Editor" },
+      { key: "4", group: "filter-role", label: "Form filler" },
+      { key: "5", group: "filter-role", label: "Reviewer" },
+      { key: "6", group: "filter-role", label: "Commentator" },
+      { key: "7", group: "filter-role", label: "Viewer" },
     ];
 
     const accountItems = [
       {
         key: "filter-account",
         group: "filter-account",
-        label: "TODO: Account",
+        label: "Account",
         isHeader: true,
       },
-      { key: "paid", group: "filter-account", label: "TODO: Paid" },
-      { key: "free", group: "filter-account", label: "TODO: Free" },
+      { key: "paid", group: "filter-account", label: "Paid" },
+      { key: "free", group: "filter-account", label: "Free" },
     ];
 
     const roomItems = [
@@ -222,12 +220,10 @@ const SectionFilterContent = ({
     ];
   }, [t]);
 
-  //TODO:
   const getSelectedInputValue = React.useCallback(() => {
     return filter.search;
   }, [filter.search]);
 
-  //TODO:
   const getSelectedSortData = React.useCallback(() => {
     return {
       sortDirection: filter.sortOrder === "ascending" ? "asc" : "desc",
@@ -235,7 +231,7 @@ const SectionFilterContent = ({
     };
   }, [filter.sortOrder, filter.sortBy]);
 
-  //TODO:
+  //TODO: add new options from filter after update backend
   const getSelectedFilterData = async () => {
     const { guestCaption, userCaption, groupCaption } = customNames;
     const filterValues = [];
@@ -302,7 +298,7 @@ const SectionFilterContent = ({
     return filterValues;
   };
 
-  //TODO:
+  //TODO: add new options from filter after update backend
   const removeSelectedItem = ({ key, group }) => {
     const newFilter = filter.clone();
     newFilter.page = 0;
