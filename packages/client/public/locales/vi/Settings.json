@@ -1,4 +1,4 @@
-{
+﻿{
   "AccessRightsAccessToProduct": "Quyền truy cập vào mô-đun {{product}} được cấp cho",
   "AccessRightsAllUsers": "Tất cả {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Các thay đổi sẽ được áp dụng sau khi xác nhận qua email.",
@@ -7,6 +7,10 @@
   "AccessRightsSubTitle": "Phần này cho phép bạn chuyển quyền chủ sở hữu cổng thông tin và quản lý quyền truy cập của quản trị viên.",
   "AccessRightsUsersFromList": "{{users}} từ danh sách ",
   "AccessSettings": "Cài đặt truy cập",
+  "AuditTrailNav": "Kiểm tra Truy nguyên",
+  "AutoBackup": "Tự động sao lưu",
+  "AutoBackupDescription": "Sử dụng tùy chọn này để tự động sao lưu dữ liệu cổng thông tin.",
+  "AutoBackupHelp": "Tùy chọn <strong>Tự động sao lưu</strong> được sử dụng để tự động hóa quá trình sao lưu dữ liệu cổng thông tin và cho phép khôi phục lại sau trên một server. Chọn dung lượng dữ liệu, thời gian sao lưu tự động và số lượng tối đa bản sao sẽ được lưu.<br/><strong>Lưu ý:</strong> trước khi bạn có thể lưu dữ liệu sao lưu vào tài khoản bên thứ ba (DropBox, Box.com, OneDrive hoặc Google Drive), bạn sẽ phải kết nối tài khoản này với thư mục Tài liệu Cộng tác của ONLYOFFICE.",
   "AddAdmins": "Thêm quản trị viên",
   "AddName": "Thêm tên",
   "AddTrustedDomain": "Thêm tên miền được tin cậy",
@@ -48,6 +52,7 @@
   "CustomizationDescription": "Tiểu mục này cho phép bạn thay đổi giao diện của cổng thông tin của mình. Bạn có thể sử dụng logo, tên và văn bản của công ty để phù hợp với thương hiệu của tổ chức của bạn.",
   "DeactivateOrDeletePortal": "Tắt hoặc xóa cổng thông tin.",
   "Disabled": "Đã vô hiệu hóa",
+  "DownloadReportBtn": "Tải về và mở báo cáo",
   "DocumentsAdministratorsCan": "Người quản trị tài liệu có thể liên kết Dropbox, Box và các tài khoản khác với Tài liệu chung và thiết lập quyền truy cập trong phần này",
   "DownloadCopy": "Tải xuống bản sao",
   "Employees": "người dùng",
@@ -72,6 +77,7 @@
   "LocalFile": "Tập tin cục bộ",
   "LogoDark": "Logo cho trang Giới thiệu/Đăng nhập",
   "LogoDocsEditor": "Logo cho tiêu đề trình chỉnh sửa",
+  "LoginHistoryTitle": "Lịch sử đăng nhập",
   "LogoFavicon": "Favicon",
   "LogoLightSmall": "Logo cho tiêu đề cổng thông tin",
   "LogoSettings": "Cài đặt Logo cổng thông tin",

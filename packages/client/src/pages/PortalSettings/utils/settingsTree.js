@@ -148,6 +148,20 @@ export const settingsTree = [
           },
         ],
       },
+      {
+        key: "1-2",
+        icon: "",
+        link: "login-history",
+        tKey: "LoginHistoryTitle",
+        isCategory: true,
+      },
+      {
+        key: "1-3",
+        icon: "",
+        link: "audit-trail",
+        tKey: "AuditTrailNav",
+        isCategory: true,
+      },
     ],
   },
   {
