@@ -96,7 +96,6 @@ const StyledBody = styled.div`
   }
 `;
 
-const min = 0;
 const step = 1;
 
 const SelectUsersCountContainer = ({
@@ -108,10 +107,12 @@ const SelectUsersCountContainer = ({
   isLoading,
   minManagersCount,
   isAlreadyPaid,
-  maxSliderManagersNumber,
+  maxAvailableManagersCount,
   setManagersCount,
   setTotalPrice,
   pricePerManager,
+  minAvailableManagersCount,
+  isLessCountThanAcceptable,
 }) => {
   const { t } = useTranslation("Payments");
 
@@ -140,7 +141,7 @@ const SelectUsersCountContainer = ({
     }
     if (operation === "minus") {
       if (managersCount >= maxManagersCount) {
-        value = maxSliderManagersNumber;
+        value = maxAvailableManagersCount;
       } else {
         if (managersCount > minManagersCount) {
           value -= step;
@@ -178,7 +179,7 @@ const SelectUsersCountContainer = ({
 
   const value =
     managersCount >= maxManagersCount
-      ? maxSliderManagersNumber + "+"
+      ? maxAvailableManagersCount + "+"
       : managersCount + "";
 
   const isUpdatingTariff = isLoading && isAlreadyPaid;
@@ -218,17 +219,21 @@ const SelectUsersCountContainer = ({
         isDisabled={isDisabled || isUpdatingTariff}
         isReadOnly={isDisabled || isUpdatingTariff}
         type="range"
-        min={min}
+        min={minAvailableManagersCount}
         max={maxManagersCount.toString()}
         step={step}
         withPouring
-        value={managersCount}
+        value={
+          isLessCountThanAcceptable ? minAvailableManagersCount : managersCount
+        }
         {...onChangeSlideProp}
       />
       <div className="slider-track">
-        <Text className="slider-track-value_min">{min}</Text>
+        <Text className="slider-track-value_min">
+          {minAvailableManagersCount}
+        </Text>
         <Text className="slider-track-value_max">
-          {maxSliderManagersNumber + "+"}
+          {maxAvailableManagersCount + "+"}
         </Text>
       </div>
     </StyledBody>
@@ -243,9 +248,11 @@ export default inject(({ auth, payments }) => {
     minManagersCount,
     managersCount,
     maxManagersCount,
-    maxSliderManagersNumber,
+    maxAvailableManagersCount,
     setManagersCount,
     setTotalPrice,
+    minAvailableManagersCount,
+    isLessCountThanAcceptable,
   } = payments;
 
   return {
@@ -254,9 +261,11 @@ export default inject(({ auth, payments }) => {
     minManagersCount,
     managersCount,
     maxManagersCount,
-    maxSliderManagersNumber,
+    maxAvailableManagersCount,
     setManagersCount,
     setTotalPrice,
     pricePerManager,
+    minAvailableManagersCount,
+    isLessCountThanAcceptable,
   };
 })(observer(SelectUsersCountContainer));

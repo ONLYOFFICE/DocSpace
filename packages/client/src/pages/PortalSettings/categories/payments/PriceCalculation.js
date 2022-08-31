@@ -43,7 +43,7 @@ const PriceCalculation = ({
   pricePerManager,
   minManagersCount,
   setManagersCount,
-  maxSliderManagersNumber,
+  maxAvailableManagersCount,
   isFreeTariff,
 }) => {
   const { countAdmin, price } = portalQuota;
@@ -69,7 +69,7 @@ const PriceCalculation = ({
   }, []);
 
   const setShoppingLink = (value) => {
-    if (isAlreadyPaid || value > maxSliderManagersNumber) {
+    if (isAlreadyPaid || value > maxAvailableManagersCount) {
       timeout && clearTimeout(timeout);
       setIsLoading(false);
       return;
@@ -144,7 +144,7 @@ export default inject(({ auth, payments }) => {
     maxManagersCount,
     minManagersCount,
     setManagersCount,
-    maxSliderManagersNumber,
+    maxAvailableManagersCount,
   } = payments;
   const { theme } = auth.settingsStore;
   const { portalQuota, pricePerManager, isFreeTariff } = auth;
@@ -164,6 +164,6 @@ export default inject(({ auth, payments }) => {
     setTotalPrice,
     maxManagersCount,
     minManagersCount,
-    maxSliderManagersNumber,
+    maxAvailableManagersCount,
   };
 })(observer(PriceCalculation));

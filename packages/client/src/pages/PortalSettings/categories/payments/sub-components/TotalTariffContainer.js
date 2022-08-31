@@ -56,7 +56,7 @@ const StyledBody = styled.div`
 
 const TotalTariffContainer = ({
   t,
-  maxSliderManagersNumber,
+  maxAvailableManagersCount,
   pricePerManager,
   isDisabled,
   theme,
@@ -92,7 +92,7 @@ const TotalTariffContainer = ({
             className="total-tariff_description"
           >
             <Trans t={t} i18nKey="BusinessRequestDescription" ns="Payments">
-              {{ peopleNumber: maxSliderManagersNumber }}
+              {{ peopleNumber: maxAvailableManagersCount }}
             </Trans>
           </Text>
         ) : (
@@ -131,7 +131,7 @@ export default inject(({ auth, payments }) => {
     isLoading,
     totalPrice,
     isNeedRequest,
-    maxSliderManagersNumber,
+    maxAvailableManagersCount,
   } = payments;
 
   return {
@@ -140,7 +140,7 @@ export default inject(({ auth, payments }) => {
     totalPrice,
     isLoading,
     isNeedRequest,
-    maxSliderManagersNumber,
+    maxAvailableManagersCount,
     isoCurrencySymbol: currencies[0]?.isoCurrencySymbol,
   };
 })(observer(TotalTariffContainer));

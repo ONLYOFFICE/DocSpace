@@ -24,7 +24,8 @@ class PaymentStore {
   totalPrice = null;
   managersCount = 1;
   maxManagersCount = 1000;
-  maxSliderManagersNumber = 999;
+  maxAvailableManagersCount = 999;
+  minAvailableManagersCount = 1;
   minManagersCount = 1;
   paymentTariff = [];
 
@@ -127,6 +128,9 @@ class PaymentStore {
     return this.managersCount >= this.maxManagersCount;
   }
 
+  get isLessCountThanAcceptable() {
+    return this.managersCount < this.minAvailableManagersCount;
+  }
   setPaymentTariff = async () => {
     try {
       const res = await api.portal.getPaymentTariff();

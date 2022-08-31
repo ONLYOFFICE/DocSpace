@@ -21,8 +21,9 @@ const ButtonContainer = ({
   managersCount,
   isDisabled,
   isLoading,
-  countAdmin,
+  maxTariffManagers,
   setPortalQuota,
+  isLessCountThanAcceptable,
   t,
 }) => {
   const [isVisibleDialog, setIsVisibleDialog] = useState(false);
@@ -66,7 +67,7 @@ const ButtonContainer = ({
     };
   }, []);
 
-  const isTheSameCount = managersCount === countAdmin;
+  const isTheSameCount = managersCount === maxTariffManagers;
 
   return (
     <StyledBody>
@@ -82,6 +83,7 @@ const ButtonContainer = ({
         primary
         isDisabled={
           (!isNeedRequest && isAlreadyPaid && isTheSameCount) ||
+          isLessCountThanAcceptable ||
           isLoading ||
           isDisabled
         }
@@ -94,7 +96,7 @@ const ButtonContainer = ({
 
 export default inject(({ auth, payments }) => {
   const { portalQuota, setPortalQuota } = auth;
-  const { countAdmin } = portalQuota;
+  const { countAdmin: maxTariffManagers } = portalQuota;
   const {
     updatePayment,
     setIsLoading,
@@ -102,6 +104,7 @@ export default inject(({ auth, payments }) => {
     isNeedRequest,
     isLoading,
     managersCount,
+    isLessCountThanAcceptable,
   } = payments;
 
   return {
@@ -111,7 +114,8 @@ export default inject(({ auth, payments }) => {
     isNeedRequest,
     isLoading,
     managersCount,
-    countAdmin,
+    maxTariffManagers,
     setPortalQuota,
+    isLessCountThanAcceptable,
   };
 })(observer(ButtonContainer));
