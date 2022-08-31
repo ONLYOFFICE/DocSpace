@@ -40,6 +40,7 @@ public class FeedAggregate : BaseEntity, IMapFrom<FeedRow>
     public DateTime AggregateDate { get; set; }
     public string Json { get; set; }
     public string Keywords { get; set; }
+    public string ContextId { get; set; }
 
     public override object[] GetKeys()
     {
@@ -137,6 +138,12 @@ public static class FeedAggregateExtension
                 .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
+
+            entity.Property(e => e.ContextId)
+                .HasColumnName("context_id")
+                .HasColumnType("text")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
         });
     }
     public static void PgSqlAddFeedAggregate(this ModelBuilder modelBuilder)
@@ -198,6 +205,8 @@ public static class FeedAggregateExtension
                 .HasMaxLength(50);
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
+
+            entity.Property(e => e.ContextId).HasColumnName("context_id");
         });
     }
 }
