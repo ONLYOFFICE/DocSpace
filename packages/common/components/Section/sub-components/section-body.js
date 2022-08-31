@@ -12,6 +12,7 @@ import {
   tablet,
   desktop,
   smallTablet,
+  mobile,
 } from "@docspace/components/utils/device";
 
 const settingsStudioStyles = css`
@@ -26,6 +27,10 @@ const settingsStudioStyles = css`
 
           @media ${smallTablet} {
             padding: 8px 0 16px 24px;
+          }
+
+          @media ${mobile} {
+            padding: 0 0 16px 24px;
           }
         `
       : css`

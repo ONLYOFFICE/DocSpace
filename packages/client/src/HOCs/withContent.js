@@ -110,14 +110,7 @@ export default function withContent(WrappedContent) {
 
   return inject(
     (
-      {
-        filesActionsStore,
-        filesStore,
-        treeFoldersStore,
-        auth,
-        dialogsStore,
-        uploadDataStore,
-      },
+      { filesStore, treeFoldersStore, auth, dialogsStore, uploadDataStore },
       { item }
     ) => {
       const {
@@ -132,9 +125,9 @@ export default function withContent(WrappedContent) {
         isUpdatingRowItem,
         passwordEntryProcess,
         addActiveItems,
-        gallerySelected,
         setCreatedItem,
       } = filesStore;
+
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const {
         isRecycleBinFolder,
@@ -190,7 +183,6 @@ export default function withContent(WrappedContent) {
 
         titleWithoutExt,
 
-        gallerySelected,
         setCreatedItem,
         personal,
       };

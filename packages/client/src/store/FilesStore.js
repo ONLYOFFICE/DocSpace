@@ -84,8 +84,6 @@ class FilesStore {
   headerBorder = false;
 
   enabledHotkeys = true;
-  oformFiles = null;
-  gallerySelected = null;
 
   createdItem = null;
   scrollToItem = null;
@@ -390,26 +388,9 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
-    requests.push(this.getOforms());
     requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => (this.isInit = true));
-  };
-
-  getOforms = async () => {
-    const oformData = await this.authStore.getOforms();
-
-    runInAction(() => {
-      this.oformFiles = oformData?.data?.data ? oformData.data.data : [];
-    });
-  };
-
-  get hasGalleryFiles() {
-    return this.oformFiles && !!this.oformFiles.length;
-  }
-
-  setGallerySelected = (gallerySelected) => {
-    this.gallerySelected = gallerySelected;
   };
 
   setFirstLoad = (firstLoad) => {
@@ -2636,15 +2617,17 @@ class FilesStore {
   }
 
   get hasMoreFiles() {
-    const { Shared, Archive } = CategoryType;
-    const isRoom = this.categoryType == Shared || this.categoryType == Archive;
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
 
-    const filterTotal = isRoom ? this.roomsFilter.total : this.filter.total;
+    const isRooms = isRoomsFolder || isArchiveFolder;
 
-    console.log("hasMoreFiles isRoom", isRoom);
+    // const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
+    const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
+
+    console.log("hasMoreFiles isRooms", isRooms);
     console.log("hasMoreFiles filesList", this.filesList.length);
-    console.log("hasMoreFiles this.filter.total", this.filter.total);
-    console.log("hasMoreFiles this.roomsFilter.total", this.roomsFilter.total);
+    console.log("hasMoreFiles this.filterTotal", this.filterTotal);
+    console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
     console.log("hasMoreFiles filterTotal", filterTotal);
     console.log("hasMoreFiles", this.filesList.length < filterTotal);
     console.log("----------------------------");
@@ -2659,18 +2642,19 @@ class FilesStore {
   fetchMoreFiles = async () => {
     if (!this.hasMoreFiles || this.filesIsLoading || this.isLoading) return;
 
-    const { Shared, Archive } = CategoryType;
-    const isRoom = this.categoryType == Shared || this.categoryType == Archive;
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+
+    const isRooms = isRoomsFolder || isArchiveFolder;
 
     this.setFilesIsLoading(true);
     // console.log("fetchMoreFiles");
 
-    const newFilter = isRoom ? this.roomsFilter.clone() : this.filter.clone();
+    const newFilter = isRooms ? this.roomsFilter.clone() : this.filter.clone();
     newFilter.page += 1;
-    if (isRoom) this.setRoomsFilter(newFilter);
+    if (isRooms) this.setRoomsFilter(newFilter);
     else this.setFilter(newFilter);
 
-    const newFiles = isRoom
+    const newFiles = isRooms
       ? await api.rooms.getRooms(newFilter)
       : await api.files.getFolder(newFilter.folder, newFilter);
 

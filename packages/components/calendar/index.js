@@ -14,6 +14,8 @@ import {
   ComboBoxStyle,
 } from "./styled-calendar.js";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 class Calendar extends Component {
   constructor(props) {
     super(props);
@@ -498,7 +500,7 @@ class Calendar extends Component {
         style={style}
         size={size}
       >
-        <CalendarStyle size={size} color={themeColor}>
+        <ColorTheme size={size} color={themeColor} type={ThemeType.Calendar}>
           <ComboBoxStyle>
             <ComboBoxMonthStyle size={size}>
               <ComboBox
@@ -543,7 +545,7 @@ class Calendar extends Component {
               onDayClick={this.onDayClick}
             />
           </Month>
-        </CalendarStyle>
+        </ColorTheme>
       </CalendarContainer>
     );
   }
