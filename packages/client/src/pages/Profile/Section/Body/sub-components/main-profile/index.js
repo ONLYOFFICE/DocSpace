@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import Avatar from "@docspace/components/avatar";
@@ -10,6 +10,10 @@ import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { getUserRole } from "../../../../../../helpers/people-helpers";
 
 import LanguagesCombo from "./languagesCombo";
+import {
+  ChangeEmailDialog,
+  ChangePasswordDialog,
+} from "../../../../../../components/dialogs";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -57,6 +61,14 @@ const MainProfile = (props) => {
   const { t, profile, cultureNames, culture } = props;
   const { cultureName, currentCulture } = profile;
 
+  const [changeEmailDialogVisible, setChangeEmailDialogVisible] = useState(
+    false
+  );
+  const [
+    changePasswordDialogVisible,
+    setChangePasswordDialogVisible,
+  ] = useState(false);
+
   console.log(profile);
   const role = getUserRole(profile);
 
@@ -94,7 +106,7 @@ const MainProfile = (props) => {
             <IconButton
               iconName="/static/images/pencil.outline.react.svg"
               size="12"
-              onClick={() => console.log("onclick")}
+              onClick={() => setChangeEmailDialogVisible(true)}
             />
           </div>
         </div>
@@ -107,7 +119,7 @@ const MainProfile = (props) => {
             <IconButton
               iconName="/static/images/pencil.outline.react.svg"
               size="12"
-              onClick={() => console.log("onclick")}
+              onClick={() => setChangePasswordDialogVisible(true)}
             />
           </div>
         </div>
@@ -124,6 +136,22 @@ const MainProfile = (props) => {
           />
         </div>
       </StyledInfo>
+
+      {changeEmailDialogVisible && (
+        <ChangeEmailDialog
+          visible={changeEmailDialogVisible}
+          onClose={() => setChangeEmailDialogVisible(false)}
+          user={profile}
+        />
+      )}
+
+      {changePasswordDialogVisible && (
+        <ChangePasswordDialog
+          visible={changePasswordDialogVisible}
+          onClose={() => setChangePasswordDialogVisible(false)}
+          email={profile.email}
+        />
+      )}
     </StyledWrapper>
   );
 };
