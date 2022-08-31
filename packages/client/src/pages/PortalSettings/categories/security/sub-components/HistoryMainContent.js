@@ -93,6 +93,7 @@ const HistoryMainContent = (props) => {
   } = props;
 
   const [lifeTime, setLifeTime] = useState(String(lifetime) || "180");
+  const [showReminder, setShowReminder] = useState(false);
 
   const lifeTimeHandler = (e) => {
     const reg = new RegExp(/^(\d){1,3}$/g);
@@ -110,17 +111,36 @@ const HistoryMainContent = (props) => {
           auditTrailLifeTime: securityLifetime.auditTrailLifeTime,
         },
       };
-      return setLifetimeAuditSettings(data);
-    }
-    const data = {
-      settings: {
-        loginHistoryLifeTime: securityLifetime.loginHistoryLifeTime,
-        auditTrailLifeTime: lifeTime,
-      },
-    };
+      try {
+        setLifetimeAuditSettings(data);
+        setShowReminder(false);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      const data = {
+        settings: {
+          loginHistoryLifeTime: securityLifetime.loginHistoryLifeTime,
+          auditTrailLifeTime: lifeTime,
+        },
+      };
 
-    return setLifetimeAuditSettings(data);
+      try {
+        setLifetimeAuditSettings(data);
+        setShowReminder(false);
+      } catch (error) {
+        console.error(error);
+      }
+    }
   };
+
+  useEffect(() => {
+    if (lifeTime === String(lifetime)) {
+      setShowReminder(false);
+    } else {
+      setShowReminder(true);
+    }
+  }, [lifeTime]);
 
   return (
     <MainContainer>
@@ -143,10 +163,10 @@ const HistoryMainContent = (props) => {
         <SaveCancelButtons
           className="save-cancel"
           onSaveClick={setLifeTimeSettings}
-          onCancelClick={() => setLifeTime(lifetime)}
+          onCancelClick={() => setLifeTime(String(lifetime))}
           saveButtonLabel={saveButtonLabel}
           cancelButtonLabel={cancelButtonLabel}
-          showReminder={true}
+          showReminder={showReminder}
           displaySettings={true}
           hasScroll={false}
         />
