@@ -80,7 +80,12 @@ const commonStyles = css`
     height: 100%;
     ${(props) =>
       !props.withScroll &&
-      `display: flex; flex-direction: column; height: 100%; box-sizing:border-box`};
+      css`
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-sizing: border-box;
+      `};
     ${(props) => !props.withScroll && paddingStyles}
   }
 
@@ -114,7 +119,6 @@ const commonStyles = css`
           props.viewAs === "row" &&
           css`
             margin-top: -15px;
-            margin-right: 4px;
           `}
       }
     }

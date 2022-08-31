@@ -45,6 +45,7 @@ const ArticleBodyContent = (props) => {
     theme,
     toggleArticleOpen,
     categoryType,
+    isAdmin,
     filesIsLoading,
   } = props;
 
@@ -158,7 +159,7 @@ const ArticleBodyContent = (props) => {
         showText={showText}
         onHide={toggleArticleOpen}
       />
-      {!personal && <AccountsItem />}
+      {!personal && isAdmin && <AccountsItem />}
       {!personal && !firstLoad && <SettingsItem />}
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
@@ -232,6 +233,7 @@ export default inject(
       articleOpen,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
+      isAdmin: auth.userStore.user.isAdmin,
       homepage: config.homepage,
 
       fetchRooms,
