@@ -26,7 +26,6 @@ const SectionBodyContent = (props) => {
     resetTfaApp,
     getNewBackupCodes,
     backupCodes,
-    backupCodesCount,
     setBackupCodes,
     getTfaType,
     getBackupCodes,
@@ -34,6 +33,7 @@ const SectionBodyContent = (props) => {
     tipsSubscription,
   } = props;
   const [tfa, setTfa] = useState(false);
+  const [backupCodesCount, setBackupCodesCount] = useState(0);
 
   const fetchData = async () => {
     const type = await getTfaType();
@@ -41,6 +41,16 @@ const SectionBodyContent = (props) => {
     if (type && type !== "none") {
       const codes = await getBackupCodes();
       setBackupCodes(codes);
+
+      let backupCodesCount = 0;
+      if (codes && codes.length > 0) {
+        codes.map((item) => {
+          if (!item.isUsed) {
+            backupCodesCount++;
+          }
+        });
+      }
+      setBackupCodesCount(backupCodesCount);
     }
   };
 
