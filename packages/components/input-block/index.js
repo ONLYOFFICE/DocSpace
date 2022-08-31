@@ -81,7 +81,6 @@ class InputBlock extends React.Component {
           break;
       }
     }
-    console.log({ type });
     return (
       <ColorTheme
         hasError={hasError}
