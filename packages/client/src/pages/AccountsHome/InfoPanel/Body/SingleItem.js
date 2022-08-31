@@ -26,8 +26,6 @@ const SingleItem = ({
   const user = selection[0];
   const { role, statusType, options } = user;
 
-  console.log(user);
-
   React.useEffect(() => {
     getStatusLabel();
   }, [user, getStatusLabel]);
