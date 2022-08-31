@@ -117,6 +117,7 @@ global using ASC.Web.Core.WhiteLabel;
 global using ASC.Web.Files.Services.DocumentService;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
+global using ASC.Web.Studio.Core.Quota;
 global using ASC.Web.Studio.Core.SMS;
 global using ASC.Web.Studio.Core.Statistic;
 global using ASC.Web.Studio.Core.TFA;

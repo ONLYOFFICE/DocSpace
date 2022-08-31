@@ -54,7 +54,8 @@ public class QuotaSync
     }
 }
 
-class QuotaSyncJob
+[Scope]
+public class QuotaSyncJob
 {
     private readonly TenantManager _tenantManager;
     private readonly StorageFactoryConfig _storageFactoryConfig;

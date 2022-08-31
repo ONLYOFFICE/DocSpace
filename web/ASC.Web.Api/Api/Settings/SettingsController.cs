@@ -62,6 +62,7 @@ public class SettingsController : BaseSettingsController
     private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    private readonly QuotaSyncJob _quotaSyncJob;
 
     public SettingsController(
         ILoggerProvider option,
@@ -98,7 +99,8 @@ public class SettingsController : BaseSettingsController
         Constants constants,
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
-        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper
+        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        QuotaSyncJob quotaSyncJob
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -132,6 +134,7 @@ public class SettingsController : BaseSettingsController
         _constants = constants;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+        _quotaSyncJob = quotaSyncJob;
     }
 
     [HttpGet("")]
@@ -326,23 +329,25 @@ public class SettingsController : BaseSettingsController
         return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
     }
 
-    //[HttpGet("recalculatequota")]
-    //public void RecalculateQuota()
-    //{
+    [HttpGet("recalculatequota")]
+    public void RecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        _quotaSyncJob.RunJob(_tenantManager.GetCurrentTenant().Id);
     //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
-    //    var operations = quotaTasks.GetTasks()
-    //        .Where(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
+        //    var operations = quotaTasks.GetTasks()
+        //        .Where(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
 
-    //    if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
-    //    {
-    //        throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
-    //    }
+        //    if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
+        //    {
+        //        throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
+        //    }
 
-    //    var op = new QuotaSync(Tenant.Id, ServiceProvider);
+        //    var op = new QuotaSync(Tenant.Id, ServiceProvider);
 
-    //    quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
-    //}
+        //    quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
+    }
 
     //[HttpGet("checkrecalculatequota")]
     //public bool CheckRecalculateQuota()
