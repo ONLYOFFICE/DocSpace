@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import TagHandler from "./handlers/tagHandler";
+import TagHandler from "./handlers/TagHandler";
 import SetRoomParams from "./sub-components/SetRoomParams";
 import DialogHeader from "./sub-components/DialogHeader";
 
