@@ -34,7 +34,10 @@ class UsersStore {
 
     if (!filterData) {
       filterData = Filter.getDefault();
-      filterData.employeeStatus = EmployeeStatus.Active;
+    }
+
+    if (filterData.employeeStatus === EmployeeStatus.Active) {
+      filterData.employeeStatus = null;
     }
 
     if (filterData.group && filterData.group === "root")
