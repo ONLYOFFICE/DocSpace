@@ -28,6 +28,7 @@ namespace ASC.Feed;
 
 public class FeedApiFilter
 {
+    public string Id { get; set; }
     public string Product { get; set; }
     public DateTime From { get; set; }
     public DateTime To { get; set; }
@@ -36,4 +37,6 @@ public class FeedApiFilter
     public Guid Author { get; set; }
     public string[] SearchKeys { get; set; }
     public bool OnlyNew { get; set; }
+    public bool WithoutMe { get; set; }
+    public bool WithRelated { get; set; }
 }

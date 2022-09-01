@@ -205,12 +205,25 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var q = feedDbContext.FeedAggregates
             .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
-            .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
             .Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
             .Where(r => r.users.UserId == _authContext.CurrentAccount.ID)
             .OrderByDescending(r => r.aggregates.ModifiedDate)
             .Skip(filter.Offset)
             .Take(filter.Max);
+
+        if (filter.WithoutMe)
+        {
+            q = q.Where(r => r.aggregates.ModifiedBy != _authContext.CurrentAccount.ID);
+        }
+
+        if (filter.WithRelated && !string.IsNullOrEmpty(filter.Id))
+        {
+            q = q.Where(r => r.aggregates.Id == filter.Id || r.aggregates.ContextId == filter.Id);
+        }
+        else if (!string.IsNullOrEmpty(filter.Id))
+        {
+            q = q.Where(r => r.aggregates.Id == filter.Id);
+        }
 
         if (filter.OnlyNew)
         {

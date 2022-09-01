@@ -29,7 +29,6 @@ namespace ASC.Web.Api.Controllers;
 [Scope]
 [DefaultRoute]
 [ApiController]
-[ControllerName("feeds")]
 public class FeedController : ControllerBase
 {
     private readonly FeedReadedDataProvider _feedReadedDataProvider;
@@ -87,21 +86,27 @@ public class FeedController : ControllerBase
     ///<returns>List of filtered feeds</returns>
     [HttpGet("filter")]
     public object GetFeed(
+        string id,
         string product,
         ApiDateTime from,
         ApiDateTime to,
         Guid? author,
         bool? onlyNew,
+        bool? withoutMe,
+        bool? withRelated,
         ApiDateTime timeReaded)
     {
         var filter = new FeedApiFilter
         {
+            Id = id,
             Product = product,
             Offset = Convert.ToInt32(_apiContext.StartIndex),
             Max = Convert.ToInt32(_apiContext.Count) - 1,
             Author = author ?? Guid.Empty,
             SearchKeys = _apiContext.FilterValues,
-            OnlyNew = onlyNew.HasValue && onlyNew.Value
+            OnlyNew = onlyNew.HasValue && onlyNew.Value,
+            WithoutMe = withoutMe.HasValue && withoutMe.Value,
+            WithRelated = withRelated.HasValue && withRelated.Value,
         };
 
         if (from != null && to != null)
