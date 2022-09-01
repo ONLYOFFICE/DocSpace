@@ -26,6 +26,7 @@ const ButtonContainer = ({
   isLessCountThanAcceptable,
   t,
   isNotPaid,
+  isGracePeriod,
   accountLink,
 }) => {
   const [isVisibleDialog, setIsVisibleDialog] = useState(false);
