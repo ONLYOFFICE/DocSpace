@@ -47,7 +47,7 @@ const LoginSettings = (props) => {
     <StyledWrapper>
       <div className="header">
         <Text fontSize="16px" fontWeight={700}>
-          {t("LoginSettings")}
+          {t("TfaLoginSettings")}
         </Text>
         <Text color="#A3A9AE">{t("TwoFactorDescription")}</Text>
       </div>
