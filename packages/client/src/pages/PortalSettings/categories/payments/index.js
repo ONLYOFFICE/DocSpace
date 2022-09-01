@@ -174,7 +174,9 @@ const PaymentsPage = ({
       )}
 
       {!isFreeTariff && <PayerInformationContainer />}
+
       <CurrentTariffContainer />
+
       {isNotPaid ? (
         <Text
           noSelect

@@ -34,7 +34,7 @@ let timeout = null,
 
 const PriceCalculation = ({
   t,
-  rights,
+  user,
   theme,
   setPaymentLink,
   portalQuota,
@@ -115,7 +115,10 @@ const PriceCalculation = ({
     }, 1000);
   };
 
-  const isDisabled = rights === "3" || rights === "2" ? true : false;
+  const payer = false;
+  const isDisabled = isFreeTariff
+    ? false
+    : (!user.isOwner && !user.isAdmin) || !payer;
 
   const color = isDisabled ? { color: theme.text.disableColor } : {};
 
@@ -151,15 +154,13 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
   } = payments;
   const { theme } = auth.settingsStore;
-  const { portalQuota, pricePerManager, isFreeTariff } = auth;
-  //const rights = "2";
-  //const rights = "3";
-  const rights = "1";
+  const { userStore, portalQuota, pricePerManager, isFreeTariff } = auth;
+  const { user } = userStore;
+
   return {
     isFreeTariff,
     setManagersCount,
     tariffsInfo,
-    rights,
     theme,
     setPaymentLink,
     portalQuota,
@@ -169,5 +170,6 @@ export default inject(({ auth, payments }) => {
     maxManagersCount,
     minAvailableManagersCount,
     maxAvailableManagersCount,
+    user,
   };
 })(observer(PriceCalculation));

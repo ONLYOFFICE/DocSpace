@@ -39,20 +39,15 @@ const StyledContainer = styled.div`
   }
 `;
 
-const PayerInformationContainer = ({
-  style,
-  theme,
-  rights,
-
-  accountLink,
-}) => {
+const PayerInformationContainer = ({ style, theme, user, accountLink }) => {
   const { t } = useTranslation("Payments");
 
   const payerName = `${"Test Name" + " (" + t("Payer") + ")"}`;
 
   const email = "example email";
 
-  const isLinkAvailable = rights === "3" ? false : true;
+  const payer = false;
+  const isLinkAvailable = user.isOwner || payer;
 
   const renderTooltip = () => {
     return (
@@ -109,19 +104,16 @@ const PayerInformationContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { quota, portalQuota } = auth;
+  const { quota, portalQuota, userStore } = auth;
   const { accountLink } = payments;
 
-  //const rights = "2";
-  //const rights = "3";
-  const rights = "1";
+  const { user } = userStore;
 
   return {
     quota,
     portalQuota,
     theme: auth.settingsStore.theme,
-    rights,
-
+    user,
     accountLink,
   };
 })(observer(PayerInformationContainer));
