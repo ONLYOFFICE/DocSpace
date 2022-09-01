@@ -160,7 +160,7 @@ reassign_values (){
   	SERVICE_TYPE="simple"
 	EXEC_START="${NODE_RUN} ${WORK_DIR}${EXEC_FILE} --app.port=${SERVICE_PORT} --app.appsettings=${PATH_TO_CONF} --app.environment=${ENVIRONMENT}"
   elif [[ "${SERVICE_NAME}" = "migration-runner" ]]; then
-    SERVICE_TYPE="simple"
+    SERVICE_TYPE="notify"
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE}"
   else
   	SERVICE_TYPE="notify"	
