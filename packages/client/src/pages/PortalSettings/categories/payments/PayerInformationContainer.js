@@ -70,7 +70,7 @@ const PayerInformationContainer = ({
     );
   };
   return (
-    <StyledContainer style={style} className="current-tariff" theme={theme}>
+    <StyledContainer style={style} theme={theme}>
       <div className="payer-info_avatar">
         <Text isBold noSelect>
           {"AvatarPlace"}:
