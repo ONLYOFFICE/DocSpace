@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StyledUser } from "../../../styles/VirtualRoom/members";
+import { StyledUser } from "../../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import LinkWithDropdown from "@docspace/components/link-with-dropdown";
 
