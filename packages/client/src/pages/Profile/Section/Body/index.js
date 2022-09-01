@@ -67,12 +67,7 @@ const SectionBodyContent = (props) => {
 
   return (
     <Wrapper>
-      <MainProfile
-        t={t}
-        profile={profile}
-        culture={culture}
-        updateProfile={updateProfile}
-      />
+      <MainProfile t={t} profile={profile} updateProfile={updateProfile} />
       {tfa && tfa !== "none" && (
         <LoginSettings
           t={t}
@@ -95,8 +90,7 @@ const SectionBodyContent = (props) => {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => {
-    const { settingsStore, tfaStore } = auth;
-    const { culture } = settingsStore;
+    const { tfaStore } = auth;
 
     const { targetUserStore } = peopleStore;
     const {
@@ -117,7 +111,6 @@ export default withRouter(
 
     return {
       profile,
-      culture,
       getBackupCodes,
       getNewBackupCodes,
       resetTfaApp,

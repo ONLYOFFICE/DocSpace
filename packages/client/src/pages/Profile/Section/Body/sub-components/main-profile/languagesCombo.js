@@ -60,13 +60,18 @@ const LanguagesCombo = (props) => {
   );
 };
 
-export default inject(({ peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   const { loadingStore, targetUserStore } = peopleStore;
+  const { settingsStore } = auth;
+
   const { setIsLoading } = loadingStore;
   const { updateProfileCulture } = targetUserStore;
+
+  const { culture } = settingsStore;
 
   return {
     setIsLoading,
     updateProfileCulture,
+    culture,
   };
 })(observer(LanguagesCombo));
