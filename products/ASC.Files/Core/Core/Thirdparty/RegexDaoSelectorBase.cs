@@ -156,7 +156,7 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
     public async Task UpdateProviderFolderId(T provider, string id)
     {
         var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
-        await dbDao.UpdateProviderInfoAsync(provider.ID, id, provider.FolderType);
+        await dbDao.UpdateProviderInfoAsync(provider.ID, id, provider.FolderType, provider.Private);
         provider.FolderId = id;
     }
 

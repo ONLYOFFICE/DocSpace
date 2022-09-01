@@ -217,7 +217,7 @@ class SelectFolderDialog extends React.Component {
     //console.log("Render Folder Component?", this.state);
 
     const folderSelectionDisabled =
-      folderId === sharedRoomId || folderId === sharedRoomId.toString();
+      folderId === sharedRoomId || folderId === sharedRoomId?.toString();
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView

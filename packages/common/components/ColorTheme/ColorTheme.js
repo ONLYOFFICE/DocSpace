@@ -33,7 +33,7 @@ import { ThemeType } from "./constants";
 
 const ColorTheme = forwardRef(
   ({ currentColorScheme, isVersion, ...props }, ref) => {
-    switch (props.type) {
+    switch (props.themeId) {
       case ThemeType.Button: {
         return (
           <ButtonTheme
