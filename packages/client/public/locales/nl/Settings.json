@@ -142,7 +142,7 @@
   "ThirdPartyPropsActivated": "Met succes bijgewerkt",
   "ThirdPartyPropsDeactivated": "Met succes gedeactiveerd",
   "ThirdPartyResource": "Bron van derden",
-  "ThirdPartyResourceDescription": "Back-ups kunt u opslaan in uw account van derden (Dropbox, Box.com, OneDrive of Google Drive). U moet uw account van derden (Dropbox, Box.com, OneDrive of Google Drive) verbinden met de map Gemeenschappelijke documenten voordat u uw back-up daar kunt opslaan.",
+  "ThirdPartyResourceDescription": "Back-ups kunt u opslaan in uw account van derden (Dropbox, Box.com, OneDrive of Google Drive). U moet uw account van derden (Dropbox, Box.com, OneDrive of Google Drive) verbinden voordat u uw back-up daar kunt opslaan.",
   "ThirdPartyStorage": "Opslag door derden",
   "ThirdPartyStorageDescription": "Back-up kan worden opgeslagen in een opslagruimte van derden. Eerst moet u de overeenkomstige dienst verbinden in het 'Integratie' gedeelte. Anders zijn de volgende instellingen inactief.",
   "ThirdPartyTitleDescription": "Met Autorisatiesleutels kunt u diensten van derden aan uw portaal koppelen. Meld u gemakkelijk aan met Facebook, Twitter, of LinkedIn; voeg Dropbox, OneDrive, enz. toe om te werken met bestanden die daar opgeslagen zijn vanuit de Documentenmodule.",

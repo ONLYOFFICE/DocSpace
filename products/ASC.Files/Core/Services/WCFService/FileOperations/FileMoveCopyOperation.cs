@@ -42,7 +42,7 @@ class FileMoveCopyOperation : ComposeFileOperation<FileMoveCopyOperationData<str
 
 internal class FileMoveCopyOperationData<T> : FileOperationData<T>
 {
-    public string ThirdpartyFolderId { get; }
+    public string ThirdPartyFolderId { get; }
     public int DaoFolderId { get; }
     public bool Copy { get; }
     public FileConflictResolveType ResolveType { get; }
@@ -55,7 +55,7 @@ internal class FileMoveCopyOperationData<T> : FileOperationData<T>
         {
             if (!int.TryParse(toFolderId.GetString(), out var i))
             {
-                ThirdpartyFolderId = toFolderId.GetString();
+                ThirdPartyFolderId = toFolderId.GetString();
             }
             else
             {
@@ -81,14 +81,15 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
     private readonly FileConflictResolveType _resolveType;
     private readonly IDictionary<string, StringValues> _headers;
     private readonly ThumbnailSettings _thumbnailSettings;
+    private readonly Dictionary<T, Folder<T>> _parentRooms = new Dictionary<T, Folder<T>>();
 
     public override FileOperationType OperationType => _copy ? FileOperationType.Copy : FileOperationType.Move;
 
     public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data, ThumbnailSettings thumbnailSettings)
-    : base(serviceProvider, data)
+        : base(serviceProvider, data)
     {
         _daoFolderId = data.DaoFolderId;
-        _thirdpartyFolderId = data.ThirdpartyFolderId;
+        _thirdpartyFolderId = data.ThirdPartyFolderId;
         _copy = data.Copy;
         _resolveType = data.ResolveType;
 
@@ -178,8 +179,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
         var needToMark = new List<FileEntry<TTo>>();
 
-        var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy);
-        var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy);
+            var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy, parentFolders);
+            var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy, parentFolders);
 
         needToMark.AddRange(moveOrCopyFoldersTask);
         needToMark.AddRange(moveOrCopyFilesTask);
@@ -191,7 +192,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
     }
 
-    private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy)
+    private async Task<List<FileEntry<TTo>>> MoveOrCopyFoldersAsync<TTo>(IServiceScope scope, List<T> folderIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toFolderParents)
     {
         var needToMark = new List<FileEntry<TTo>>();
 
@@ -239,6 +240,10 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             else if (isRoom && toFolder.FolderType != FolderType.VirtualRooms && toFolder.FolderType != FolderType.Archive)
             {
                 Error = FilesCommonResource.ErrorMessage_UnarchiveRoom;
+            }
+            else if (!isRoom && folder.Private && !await CompliesPrivateRoomRulesAsync(folder, toFolderParents))
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
             else if (!await FilesSecurity.CanDownloadAsync(folder))
             {
@@ -289,8 +294,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                         if (toFolder.ProviderId == folder.ProviderId // crossDao operation is always recursive
                             && FolderDao.UseRecursiveOperation(folder.Id, toFolderId))
                         {
-                            await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.Id).ToListAsync(), newFolder, copy);
-                            await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.Id).Select(f => f.Id).ToListAsync(), newFolder, copy);
+                            await MoveOrCopyFilesAsync(scope, await FileDao.GetFilesAsync(folder.Id).ToListAsync(), newFolder, copy, toFolderParents);
+                            await MoveOrCopyFoldersAsync(scope, await FolderDao.GetFoldersAsync(folder.Id).Select(f => f.Id).ToListAsync(), newFolder, copy, toFolderParents);
 
                             if (!copy)
                             {
@@ -436,7 +441,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         return needToMark;
     }
 
-    private async Task<List<FileEntry<TTo>>> MoveOrCopyFilesAsync<TTo>(IServiceScope scope, List<T> fileIds, Folder<TTo> toFolder, bool copy)
+    private async Task<List<FileEntry<TTo>>> MoveOrCopyFilesAsync<TTo>(IServiceScope scope, List<T> fileIds, Folder<TTo> toFolder, bool copy, IEnumerable<Folder<TTo>> toParentFolders)
     {
         var needToMark = new List<FileEntry<TTo>>();
 
@@ -476,6 +481,10 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException;
             }
+            else if (!await CompliesPrivateRoomRulesAsync(file, toParentFolders))
+            {
+                Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
+            }
             else if (file.RootFolderType == FolderType.Privacy
                 && (copy || toFolder.RootFolderType != FolderType.Privacy))
             {
@@ -492,7 +501,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                 try
                 {
                     var conflict = _resolveType == FileConflictResolveType.Duplicate
-                        || file.RootFolderType == FolderType.Privacy
+                        || file.RootFolderType == FolderType.Privacy || file.Encrypted
                                        ? null
                                        : await fileDao.GetFileAsync(toFolderId, file.Title);
                     if (conflict == null)
@@ -716,6 +725,36 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
         }
         return (false, error);
+    }
+
+    private async Task<bool> CompliesPrivateRoomRulesAsync<TTo>(FileEntry<T> entry, IEnumerable<Folder<TTo>> toFolderParents)
+    {
+        Folder<T> entryParentRoom;
+
+        if (_parentRooms.ContainsKey(entry.ParentId))
+        {
+            entryParentRoom = _parentRooms.Get(entry.ParentId);
+        }
+        else
+        {
+            entryParentRoom = await FolderDao.GetParentFoldersAsync(entry.ParentId).FirstOrDefaultAsync(f => f.Private && DocSpaceHelper.IsRoom(f.FolderType));
+            _parentRooms.Add(entry.ParentId, entryParentRoom);
+        }
+
+        var toFolderParentRoom = toFolderParents.FirstOrDefault(f => f.Private && DocSpaceHelper.IsRoom(f.FolderType));
+
+        if (entryParentRoom == null && toFolderParentRoom == null)
+        {
+            return true;
+        }
+
+        if (entryParentRoom != null && toFolderParentRoom == null
+            || entryParentRoom == null && toFolderParentRoom != null)
+        {
+            return false;
+        }
+
+        return entryParentRoom.Id.Equals(toFolderParentRoom.Id) && !_copy;
     }
 }
 

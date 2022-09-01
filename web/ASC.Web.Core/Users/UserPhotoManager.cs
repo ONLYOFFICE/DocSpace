@@ -520,9 +520,16 @@ public class UserPhotoManager
             var storage = GetDataStore();
             storage.DeleteFilesAsync("", idUser + "*.*", false).Wait();
         }
-        catch (DirectoryNotFoundException e)
+        catch (AggregateException e)
         {
-            _log.ErrorRemovePhoto(e);
+            if (e.InnerException is DirectoryNotFoundException exc)
+            {
+                _log.ErrorRemovePhoto(exc);
+            }
+            else
+            {
+                throw;
+            }
         }
 
         _userManager.SaveUserPhoto(idUser, null);

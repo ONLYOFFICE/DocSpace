@@ -150,7 +150,7 @@
   "ThirdPartyPropsActivated": "Einstellungen wurde aktualisiert",
   "ThirdPartyPropsDeactivated": "Deaktivierung erfolgreich",
   "ThirdPartyResource": "Ressource eines Drittanbieters",
-  "ThirdPartyResourceDescription": "Die Sicherungskopie kann in Ihrem Konto bei einem Drittanbieter (Dropbox, Box.com, OneDrive oder Google Drive) gespeichert werden. Sie müssen Ihr Konto (Dropbox, Box.com, OneDrive oder Google Drive) mit dem Ordner 'Gemeinsame Dokumente' verbinden, bevor Sie Ihr Backup dort speichern können.",
+  "ThirdPartyResourceDescription": "Die Sicherungskopie kann in Ihrem Konto bei einem Drittanbieter (Dropbox, Box.com, OneDrive oder Google Drive) gespeichert werden. Sie müssen Ihr Konto (Dropbox, Box.com, OneDrive oder Google Drive) verbinden, bevor Sie Ihr Backup dort speichern können.",
   "ThirdPartyStorage": "Drittanbieter",
   "ThirdPartyStorageDescription": "Backups können auf einem Speicher eines Drittanbieters gespeichert werden. Zuvor müssen Sie den entsprechenden Dienst im Abschnitt 'Integration' verbinden. Andernfalls sind die folgenden Einstellungen nicht verfügbar",
   "ThirdPartyTitleDescription": "Mit Berechtigungsschlüsseln können Sie Ihr Portal mit den Drittleistungen verbinden. Loggen Sie sich einfacher mit Facebook, Twitter oder LinkedIn. Fügen Sie Dropbox, OneDrive usw. hinzu, um mit dort gespeicherten Dateien aus dem Modul Dokumente zu arbeiten.",
