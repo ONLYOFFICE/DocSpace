@@ -302,7 +302,7 @@ class ManualBackup extends React.Component {
             </div>
           )}
         </StyledModules>
-        <StyledModules>
+        <StyledModules isDisabled={isNotPaid}>
           <RadioButton
             label={t("RoomsModule")}
             name={"isCheckedDocuments"}
@@ -324,7 +324,7 @@ class ManualBackup extends React.Component {
           )}
         </StyledModules>
 
-        <StyledModules>
+        <StyledModules isDisabled={isNotPaid}>
           <RadioButton
             label={t("ThirdPartyResource")}
             name={"isCheckedThirdParty"}
@@ -338,7 +338,7 @@ class ManualBackup extends React.Component {
           </Text>
           {isCheckedThirdParty && <ThirdPartyModule {...commonModulesProps} />}
         </StyledModules>
-        <StyledModules>
+        <StyledModules isDisabled={isNotPaid}>
           <RadioButton
             label={t("ThirdPartyStorage")}
             name={"isCheckedThirdPartyStorage"}
