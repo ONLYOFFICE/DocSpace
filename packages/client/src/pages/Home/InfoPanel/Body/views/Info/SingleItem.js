@@ -5,17 +5,14 @@ import { FileType } from "@docspace/common/constants";
 import Text from "@docspace/components/text";
 import Tooltip from "@docspace/components/tooltip";
 
+import InfoHelper from "./helpers/InfoHelper.js";
 import {
   StyledAccess,
   StyledAccessItem,
   StyledOpenSharingPanel,
-  StyledProperties,
-  StyledSubtitle,
   StyledThumbnail,
-  StyledTitle,
-} from "../../styles/styles.js";
-
-import InfoHelper from "./helpers/InfoHelper.js";
+} from "../../styles/info.js";
+import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
 
 const SingleItem = ({
   t,
@@ -34,13 +31,8 @@ const SingleItem = ({
 }) => {
   let infoHelper;
 
-  const [item, setItem] = useState({
-      title: "",
-      iconUrl: "",
-      thumbnailUrl: "",
-    }),
-    [itemProperties, setItemProperties] = useState([]),
-    [itemAccess, setItemAccess] = useState(null);
+  const [itemProperties, setItemProperties] = useState([]);
+  const [itemAccess, setItemAccess] = useState(null);
 
   // {
   //   owner: {
@@ -51,18 +43,6 @@ const SingleItem = ({
   // }
 
   const updateItemsInfo = async (selectedItem) => {
-    setItem({
-      ...selectedItem,
-      thumbnailUrl:
-        selectedItem.thumbnailUrl || selectedItem.isRoom
-          ? selectedItem.logo && selectedItem.logo.big
-            ? selectedItem.logo.big
-            : selectedItem.icon
-          : selectedItem.isFolder
-          ? getFolderIcon(selectedItem.providerKey, 96)
-          : getIcon(96, selectedItem.fileExst || ".file"),
-    });
-
     setItemProperties(infoHelper.getPropertyList());
 
     // setItemAccess({
@@ -132,58 +112,58 @@ const SingleItem = ({
     //   return result;
     // };
 
-    const updateLoadedItemAccess = async (selectedItem) => {
-      const accesses = await getShareUsers(
-        [selectedItem.isFolder ? selectedItem.parentId : selectedItem.folderId],
-        [selectedItem.id]
-      );
+    //   const updateLoadedItemAccess = async (selectedItem) => {
+    //     const accesses = await getShareUsers(
+    //       [selectedItem.isFolder ? selectedItem.parentId : selectedItem.folderId],
+    //       [selectedItem.id]
+    //     );
 
-      const result = {
-        owner: {},
-        others: [],
-      };
+    //     const result = {
+    //       owner: {},
+    //       others: [],
+    //     };
 
-      accesses.forEach((access) => {
-        let key = access.sharedTo.id,
-          img = access.sharedTo.avatarSmall,
-          link = access.sharedTo.profileUrl,
-          name = access.sharedTo.displayName || access.sharedTo.name,
-          { manager } = access.sharedTo;
+    //     accesses.forEach((access) => {
+    //       let key = access.sharedTo.id,
+    //         img = access.sharedTo.avatarSmall,
+    //         link = access.sharedTo.profileUrl,
+    //         name = access.sharedTo.displayName || access.sharedTo.name,
+    //         { manager } = access.sharedTo;
 
-        if (access.isOwner) result.owner = { key, img, link, name };
-        else {
-          if (access.sharedTo.email)
-            result.others.push({ key, type: "user", img, link, name });
-          else if (access.sharedTo.manager)
-            result.others.push({ key, type: "group", name, manager });
-        }
-      });
+    //       if (access.isOwner) result.owner = { key, img, link, name };
+    //       else {
+    //         if (access.sharedTo.email)
+    //           result.others.push({ key, type: "user", img, link, name });
+    //         else if (acc ess.sharedTo.manager)
+    //           result.others.push({ key, type: "group", name, manager });
+    //       }
+    //     });
 
-      result.others = result.others.sort((a) => (a.type === "group" ? -1 : 1));
-      return result;
-    };
+    //     result.others = result.others.sort((a) => (a.type === "group" ? -1 : 1));
+    //     return result;
+    //   };
 
-    // const properties = await updateLoadedItemProperties(
-    //   displayedItem,
-    //   selectedItem
-    // );
+    //   const properties = await updateLoadedItemProperties(
+    //     displayedItem,
+    //     selectedItem
+    //   );
 
-    // if (dontShowAccess) {
-    //   setItem({
-    //     // ...displayedItem,
-    //     //properties: properties,
-    //   });
-    //   return;
-    // }
+    //   if (dontShowAccess) {
+    //     setItem({
+    //       // ...displayedItem,
+    //       //properties: properties,
+    //     });
+    //     return;
+    //   }
 
-    // if (!personal) {
-    //   const access = await updateLoadedItemAccess(selectedItem);
-    //   setItem({
-    //     // ...displayedItem,
-    //     // properties: properties,
-    //     access: access,
-    //   });
-    // }
+    //   if (!personal) {
+    //     const access = await updateLoadedItemAccess(selectedItem);
+    //     setItem({
+    //       // ...displayedItem,
+    //       // properties: properties,
+    //       access: access,
+    //     });
+    //   }
   };
 
   const openSharingPanel = () => {
@@ -206,7 +186,7 @@ const SingleItem = ({
 
   return (
     <>
-      {selectedItem?.thumbnailUrl ? (
+      {selectedItem?.hasCustonThumbnail ? (
         <StyledThumbnail>
           <img
             src={selectedItem.thumbnailUrl}
@@ -219,7 +199,7 @@ const SingleItem = ({
         <div className="no-thumbnail-img-wrapper">
           <img
             className={`no-thumbnail-img ${selectedItem.isRoom && "is-room"}`}
-            src={item.thumbnailUrl}
+            src={selectedItem.thumbnailUrl}
             alt="thumbnail-icon-big"
           />
         </div>
