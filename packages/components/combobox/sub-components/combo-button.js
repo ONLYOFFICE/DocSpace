@@ -36,6 +36,7 @@ class ComboButton extends React.Component {
       size,
       comboIcon,
       fillIcon,
+      modernView,
     } = this.props;
 
     const defaultOption = selectedOption.default;
@@ -52,8 +53,9 @@ class ComboButton extends React.Component {
         scaled={scaled}
         size={size}
         isSelected={isSelected}
+        modernView={modernView}
         className="combo-button"
-        type={ThemeType.ComboButton}
+        themeId={ThemeType.ComboButton}
       >
         {innerContainer && (
           <StyledOptionalItem
@@ -91,6 +93,7 @@ class ComboButton extends React.Component {
           needDisplay={withOptions || withAdvancedOptions}
           noBorder={noBorder}
           isOpen={isOpen}
+          modernView={modernView}
           className="combo-buttons_arrow-icon"
         >
           {(withOptions || withAdvancedOptions) &&
@@ -132,6 +135,7 @@ ComboButton.propTypes = {
   onClick: PropTypes.func,
   comboIcon: PropTypes.string,
   fillIcon: PropTypes.bool,
+  modernView: PropTypes.bool,
 };
 
 ComboButton.defaultProps = {
@@ -143,6 +147,7 @@ ComboButton.defaultProps = {
   isOpen: false,
   size: "content",
   scaled: false,
+  modernView: false,
 };
 
 export default ComboButton;

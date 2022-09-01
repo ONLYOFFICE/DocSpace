@@ -65,6 +65,12 @@ public class UserGroupRef : IMapFrom<UserGroup>
         return obj is UserGroupRef r && r.Tenant == Tenant && r.UserId == UserId && r.GroupId == GroupId && r.RefType == RefType;
     }
 
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<UserGroup, UserGroupRef>()
+            .ForMember(dest => dest.GroupId, opt => opt.MapFrom(src => src.UserGroupId));
+    }
+
     public static implicit operator UserGroupRef(UserGroupRefCacheItem cache)
     {
         var result = new UserGroupRef

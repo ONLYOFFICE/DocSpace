@@ -38,6 +38,11 @@ public class UserGroup : BaseEntity, IMapFrom<UserGroupRef>
     {
         return new object[] { Tenant, Userid, UserGroupId, RefType };
     }
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<UserGroupRef, UserGroup>()
+            .ForMember(dest => dest.UserGroupId, opt => opt.MapFrom(src => src.GroupId));
+    }
 }
 
 public static class DbUserGroupExtension

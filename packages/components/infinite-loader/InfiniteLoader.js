@@ -12,13 +12,15 @@ const InfiniteLoaderComponent = (props) => {
     ? document.querySelector("#customScrollBar > .scroll-body")
     : document.querySelector("#sectionScroll > .scroll-body");
 
-  if (viewAs === "row" && scroll) scroll.style.paddingRight = 0;
-  else scroll.style.paddingRight = isMobile() ? "8px" : "17px";
+  if (scroll) {
+    if (viewAs === "row") scroll.style.paddingRight = 0;
+    else scroll.style.paddingRight = isMobile() ? "8px" : "17px";
+  }
 
   return viewAs === "tile" ? (
-    <GridComponent scroll={scroll} {...props} />
+    <GridComponent scroll={scroll ?? window} {...props} />
   ) : (
-    <ListComponent scroll={scroll} {...props} />
+    <ListComponent scroll={scroll ?? window} {...props} />
   );
 };
 InfiniteLoaderComponent.propTypes = {
