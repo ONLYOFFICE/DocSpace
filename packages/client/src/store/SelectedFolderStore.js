@@ -23,6 +23,7 @@ class SelectedFolderStore {
   pinned = null;
   isRoom = null;
   logo = null;
+  tags = null;
 
   settingsStore = null;
 
@@ -58,6 +59,7 @@ class SelectedFolderStore {
     this.pinned = null;
     this.isRoom = null;
     this.logo = null;
+    this.tags = null;
   };
 
   setParentId = (parentId) => {
