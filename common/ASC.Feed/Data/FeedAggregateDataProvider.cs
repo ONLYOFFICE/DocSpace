@@ -253,14 +253,14 @@ public class FeedAggregateDataProvider
         return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(news);
     }
 
-    public int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
+    public int GetNewFeedsCount(DateTime lastReadedTime)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var count = feedDbContext.FeedAggregates
-            .Where(r => r.Tenant == tenantManager.GetCurrentTenant().Id)
-            .Where(r => r.ModifiedBy != authContext.CurrentAccount.ID)
+            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
             .Join(feedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
-            .Where(r => r.user.UserId == authContext.CurrentAccount.ID);
+            .Where(r => r.user.UserId == _authContext.CurrentAccount.ID);
 
         if (1 < lastReadedTime.Year)
         {
@@ -316,66 +316,21 @@ public class FeedAggregateDataProvider
 
 public class FeedResultItem : IMapFrom<FeedAggregate>
 {
-    public string Json { get; private set; }
-    public string Module { get; private set; }
-    public Guid AuthorId { get; private set; }
-    public Guid ModifiedById { get; private set; }
-    public string GroupId { get; private set; }
-    public bool IsToday { get; private set; }
-    public bool IsYesterday { get; private set; }
-    public bool IsTomorrow { get; private set; }
-    public DateTime CreatedDate { get; private set; }
-    public DateTime ModifiedDate { get; private set; }
-    public DateTime AggregatedDate { get; private set; }
-
-    public FeedResultItem() { }
-
-    public FeedResultItem(
-        string json,
-        string module,
-        Guid authorId,
-        Guid modifiedById,
-        string groupId,
-        DateTime createdDate,
-        DateTime modifiedDate,
-        DateTime aggregatedDate,
-        TenantUtil tenantUtil)
-    {
-        var now = tenantUtil.DateTimeFromUtc(DateTime.UtcNow);
-
-        Json = json;
-        Module = module;
-
-        AuthorId = authorId;
-        ModifiedById = modifiedById;
-
-        GroupId = groupId;
-
-        var compareDate = JsonNode.Parse(Json)["IsAllDayEvent"].GetValue<bool>()
-                ? tenantUtil.DateTimeToUtc(createdDate).Date
-                : createdDate.Date;
-
-        if (now.Date == compareDate.AddDays(-1))
-        {
-            IsTomorrow = true;
-        }
-        else if (now.Date == compareDate)
-        {
-            IsToday = true;
-        }
-        else if (now.Date == compareDate.AddDays(1))
-        {
-            IsYesterday = true;
-        }
-
-        CreatedDate = createdDate;
-        ModifiedDate = modifiedDate;
-        AggregatedDate = aggregatedDate;
-    }
+    public string Json { get; set; }
+    public string Module { get; set; }
+    public Guid AuthorId { get; set; }
+    public Guid ModifiedById { get; set; }
+    public string GroupId { get; set; }
+    public bool IsToday { get; set; }
+    public bool IsYesterday { get; set; }
+    public bool IsTomorrow { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime ModifiedDate { get; set; }
+    public DateTime AggregatedDate { get; set; }
 
     public void Mapping(Profile profile)
     {
         profile.CreateMap<FeedAggregate, FeedResultItem>()
-            .ConvertUsing<FeedTypeConverter>();
+            .AfterMap<FeedMappingAction>();
     }
 }
