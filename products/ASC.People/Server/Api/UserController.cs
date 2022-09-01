@@ -739,6 +739,7 @@ public class UserController : PeopleControllerBase
         return darkThemeSettings;
     }
 
+    [AllowNotPayment]
     [HttpGet("@self")]
     public async Task<EmployeeFullDto> Self()
     {
