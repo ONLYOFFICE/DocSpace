@@ -1,11 +1,12 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
+
 import { Base } from "@docspace/components/themes";
 
 const StyledUserTypeHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 24px 0 16px;
+  padding: 8px 0 16px;
 
   .title {
     font-weight: 600;

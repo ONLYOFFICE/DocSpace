@@ -1,6 +1,7 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
+
 import { Base } from "@docspace/components/themes";
-import { mobile, smallTablet, tablet } from "@docspace/components/utils/device";
+import { mobile } from "@docspace/components/utils/device";
 
 const StyledHistoryList = styled.div`
   display: flex;
