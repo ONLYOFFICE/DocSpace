@@ -2883,6 +2883,12 @@ const Dark = {
     defaultTagColor: "#858585",
     newTagBackground: "#333333",
   },
+
+  profile: {
+    main: {
+      background: "#1f1f1f",
+    },
+  },
 };
 
 export default Dark;

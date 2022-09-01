@@ -2876,6 +2876,12 @@ const Base = {
     defaultTagColor: "#A3A9AE",
     newTagBackground: "#eceef1",
   },
+
+  profile: {
+    main: {
+      background: "#F8F9F9",
+    },
+  },
 };
 
 export default Base;
