@@ -56,6 +56,8 @@ const parseAndFormatDate = (date, personal, culture) => {
   return correctDate;
 };
 
+// InfoHelper Class
+
 class InfoHelper {
   constructor(t, item, personal, culture) {
     this.t = t;
@@ -88,7 +90,7 @@ class InfoHelper {
       : this.item.isFolder
       ? [
           "Owner",
-          "Location",
+          //"Location",
           "Type",
           "Content",
           "Date modified",
@@ -97,13 +99,15 @@ class InfoHelper {
         ]
       : [
           "Owner",
-          "Location",
+          //"Location",
           "Type",
           "File extension",
           "Size",
           "Date modified",
           "Last modified by",
           "Creation date",
+          "Versions",
+          "Comments",
         ];
   };
 
@@ -112,7 +116,7 @@ class InfoHelper {
       case "Owner":
         return this.t("Common:Owner");
       case "Location":
-        return this.t("InfoPanel:Location");
+        return this.t("Common:Location");
 
       case "Type":
         return this.t("Common:Type");
@@ -137,11 +141,11 @@ class InfoHelper {
         return this.t("Files:ByCreationDate");
 
       case "Versions":
-        return this.t("Versions");
+        return this.t("InfoPanel:Versions");
       case "Comments":
         return this.t("Common:Comments");
       case "Tags":
-        return this.t("Files:Tags");
+        return this.t("Common:Tags");
     }
   };
 
@@ -175,13 +179,15 @@ class InfoHelper {
         return this.getItemCreationDate();
 
       case "Versions":
-        return this.getItemCreationDate();
+        return this.getItemVersions();
       case "Comments":
-        return this.getItemCreationDate();
+        return this.getItemComments();
       case "Tags":
         return this.getItemTags();
     }
   };
+
+  /// Property  //
 
   getItemOwner = () => {
     return this.personal
@@ -197,9 +203,11 @@ class InfoHelper {
   };
 
   getItemType = () => {
-    if (this.item.isRoom)
-      return styledText(getDefaultRoomName(this.item.roomType, this.t));
-    return styledText(getFileTypeName(this.item.fileType, this.t));
+    return styledText(
+      this.item.isRoom
+        ? getDefaultRoomName(this.item.roomType, this.t)
+        : getFileTypeName(this.item.fileType, this.t)
+    );
   };
 
   getItemFileExtention = () => {
@@ -210,7 +218,9 @@ class InfoHelper {
 
   getItemStorageType = () => {
     return styledText(
-      connectedCloudsTypeTitleTranslation(this.item.providerKey, this.t)
+      this.item.providerKey
+        ? connectedCloudsTypeTitleTranslation(this.item.providerKey, this.t)
+        : "ONLYOFFICE DocSpace"
     );
   };
 
