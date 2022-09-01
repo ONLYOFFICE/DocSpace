@@ -101,25 +101,38 @@ public class QuotaSyncJob : DistributedTaskProgress
     }
     protected override void DoJob()
     {
-        using var scope = _serviceScopeFactory.CreateScope();
-
-        var _tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
-        var _storageFactoryConfig = scope.ServiceProvider.GetRequiredService<StorageFactoryConfig>();
-        var _storageFactory = scope.ServiceProvider.GetRequiredService<StorageFactory>();
-
-        _tenantManager.SetCurrentTenant(TenantId);
-        var storageModules = _storageFactoryConfig.GetModuleList(string.Empty);
-
-        foreach (var module in storageModules)
+        try
         {
-            var storage = _storageFactory.GetStorage(TenantId.ToString(), module);
-            storage.ResetQuotaAsync("").Wait();
+            using var scope = _serviceScopeFactory.CreateScope();
 
-            var domains = _storageFactoryConfig.GetDomainList(string.Empty, module);
-            foreach (var domain in domains)
+            var _tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
+            var _storageFactoryConfig = scope.ServiceProvider.GetRequiredService<StorageFactoryConfig>();
+            var _storageFactory = scope.ServiceProvider.GetRequiredService<StorageFactory>();
+
+            _tenantManager.SetCurrentTenant(TenantId);
+            var storageModules = _storageFactoryConfig.GetModuleList(string.Empty);
+
+            foreach (var module in storageModules)
             {
-                storage.ResetQuotaAsync(domain).Wait();
+                var storage = _storageFactory.GetStorage(TenantId.ToString(), module);
+                storage.ResetQuotaAsync("").Wait();
+
+                var domains = _storageFactoryConfig.GetDomainList(string.Empty, module);
+                foreach (var domain in domains)
+                {
+                    storage.ResetQuotaAsync(domain).Wait();
+                }
             }
         }
+        catch (Exception ex)
+        {
+            Status = DistributedTaskStatus.Failted;
+            Exception = ex;
+        }
+        finally
+        {
+            IsCompleted = true;
+        }
+        PublishChanges();
     }
 }

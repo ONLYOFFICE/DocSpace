@@ -335,23 +335,7 @@ public class SettingsController : BaseSettingsController
     public void RecalculateQuota()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
         _quotaSyncOperation.RunJob(_tenantManager.GetCurrentTenant());
-
-       // _quotaSyncJob.RunJob(_tenantManager.GetCurrentTenant().Id);
-       //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
-
-        //    var operations = quotaTasks.GetTasks()
-        //        .Where(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
-
-        //    if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
-        //    {
-        //        throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
-        //    }
-
-        //    var op = new QuotaSync(Tenant.Id, ServiceProvider);
-
-        //    quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
     }
 
     //[HttpGet("checkrecalculatequota")]
