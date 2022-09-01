@@ -35,8 +35,8 @@ const styledLink = (text, href) => (
 
 const styledTagList = (tags) => (
   <div className="property-tag_list">
-    {tags.map((tag) => (
-      <Tag className="property-tag" label={tag} />
+    {tags.map((tag, i) => (
+      <Tag key={i} className="property-tag" label={tag} />
     ))}
   </div>
 );
