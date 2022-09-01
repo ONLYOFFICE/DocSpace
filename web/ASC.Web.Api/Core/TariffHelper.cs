@@ -27,31 +27,31 @@
 namespace ASC.Web.Api.Core;
 
 [Scope]
-public class TariffHelper
+public class QuotaHelper
 {
     private readonly TenantManager _tenantManager;
     private readonly RegionHelper _regionHelper;
 
-    public TariffHelper(TenantManager tenantManager, RegionHelper regionHelper)
+    public QuotaHelper(TenantManager tenantManager, RegionHelper regionHelper)
     {
         _tenantManager = tenantManager;
         _regionHelper = regionHelper;
     }
 
-    public IEnumerable<TariffDto> GetTariffs()
+    public IEnumerable<QuotaDto> GetQuotas()
     {
         var quotaList = _tenantManager.GetTenantQuotas(false);
         var priceInfo = _tenantManager.GetProductPriceInfo();
         var currentRegion = _regionHelper.GetCurrentRegionInfo();
 
-        return quotaList.Select(x => ToTariffDto(x, priceInfo, currentRegion)).ToList();
+        return quotaList.Select(x => ToQuotaDto(x, priceInfo, currentRegion)).ToList();
     }
 
-    private TariffDto ToTariffDto(TenantQuota tenantQuota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
+    private QuotaDto ToQuotaDto(TenantQuota tenantQuota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
     {
         var features = GetFeatures(tenantQuota, priceInfo, currentRegion);
 
-        return new TariffDto()
+        return new QuotaDto()
         {
             Id = tenantQuota.Tenant,
             Title = Resource.ResourceManager.GetString($"Tariffs_{tenantQuota.Name}"),
@@ -87,7 +87,7 @@ public class TariffHelper
         return string.Format("{0}{1}", currentRegion.CurrencySymbol, priceString);
     }
 
-    private IEnumerable<TariffFeatureDto> GetFeatures(TenantQuota tenantQuota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
+    private IEnumerable<QuotaFeatureDto> GetFeatures(TenantQuota tenantQuota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
     {
         var assembly = GetType().Assembly;
 
@@ -95,7 +95,7 @@ public class TariffHelper
 
         foreach (var feature in features)
         {
-            var result = new TariffFeatureDto();
+            var result = new QuotaFeatureDto();
 
             var id = feature;
 
@@ -139,8 +139,6 @@ public class TariffHelper
 
                 }
             }
-
-
 
             yield return result;
         }

@@ -24,13 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Constants = ASC.Core.Users.Constants;
-
 namespace ASC.Web.Api.Controllers.Settings;
+
 public class SettingsController : BaseSettingsController
 {
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly MessageService _messageService;
     private readonly ConsumerFactory _consumerFactory;
     private readonly TimeZoneConverter _timeZoneConverter;
@@ -40,7 +40,6 @@ public class SettingsController : BaseSettingsController
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
     private readonly TenantExtra _tenantExtra;
-    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly AuthContext _authContext;
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
@@ -53,24 +52,21 @@ public class SettingsController : BaseSettingsController
     private readonly IConfiguration _configuration;
     private readonly SetupInfo _setupInfo;
     private readonly StatisticManager _statisticManager;
-    private readonly CoreConfiguration _coreConfiguration;
     private readonly UrlShortener _urlShortener;
     private readonly PasswordHasher _passwordHasher;
     private readonly ILogger _log;
     private readonly TelegramHelper _telegramHelper;
-    private readonly FirebaseHelper _firebaseHelper;
-    private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
 
     public SettingsController(
+        IServiceScopeFactory serviceScopeFactory,
         ILoggerProvider option,
         MessageService messageService,
         ApiContext apiContext,
         UserManager userManager,
         TenantManager tenantManager,
         TenantExtra tenantExtra,
-        TenantStatisticsProvider tenantStatisticsProvider,
         AuthContext authContext,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
@@ -84,7 +80,6 @@ public class SettingsController : BaseSettingsController
         IConfiguration configuration,
         SetupInfo setupInfo,
         StatisticManager statisticManager,
-        CoreConfiguration coreConfiguration,
         ConsumerFactory consumerFactory,
         TimeZoneConverter timeZoneConverter,
         CustomNamingPeople customNamingPeople,
@@ -92,10 +87,8 @@ public class SettingsController : BaseSettingsController
         ProviderManager providerManager,
         FirstTimeTenantSettings firstTimeTenantSettings,
         TelegramHelper telegramHelper,
-        FirebaseHelper firebaseHelper,
         UrlShortener urlShortener,
         PasswordHasher passwordHasher,
-        Constants constants,
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
         AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper
@@ -107,11 +100,11 @@ public class SettingsController : BaseSettingsController
         _customNamingPeople = customNamingPeople;
         _providerManager = providerManager;
         _firstTimeTenantSettings = firstTimeTenantSettings;
+        _serviceScopeFactory = serviceScopeFactory;
         _messageService = messageService;
         _userManager = userManager;
         _tenantManager = tenantManager;
         _tenantExtra = tenantExtra;
-        _tenantStatisticsProvider = tenantStatisticsProvider;
         _authContext = authContext;
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
@@ -124,12 +117,9 @@ public class SettingsController : BaseSettingsController
         _configuration = configuration;
         _setupInfo = setupInfo;
         _statisticManager = statisticManager;
-        _coreConfiguration = coreConfiguration;
         _passwordHasher = passwordHasher;
         _urlShortener = urlShortener;
         _telegramHelper = telegramHelper;
-        _firebaseHelper = firebaseHelper;
-        _constants = constants;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
     }
@@ -262,9 +252,10 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpGet("quota")]
-    public QuotaDto GetQuotaUsed()
+    public QuotaUsageDto GetQuotaUsed()
     {
-        return new QuotaDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, WebItemManager, _constants);
+        using var scope = _serviceScopeFactory.CreateScope();
+        return scope.ServiceProvider.GetRequiredService<QuotaUsageDto>();
     }
 
     [AllowAnonymous]

@@ -38,7 +38,7 @@ public class PaymentController : ControllerBase
     private readonly ITariffService _tariffService;
     private readonly SecurityContext _securityContext;
     private readonly RegionHelper _regionHelper;
-    private readonly TariffHelper _tariffHelper;
+    private readonly QuotaHelper _quotaHelper;
 
     protected Tenant Tenant { get { return _apiContext.Tenant; } }
 
@@ -49,7 +49,7 @@ public class PaymentController : ControllerBase
         ITariffService tariffService,
         SecurityContext securityContext,
         RegionHelper regionHelper,
-        TariffHelper tariffHelper
+        QuotaHelper tariffHelper
         )
     {
         _apiContext = apiContext;
@@ -58,7 +58,7 @@ public class PaymentController : ControllerBase
         _tariffService = tariffService;
         _securityContext = securityContext;
         _regionHelper = regionHelper;
-        _tariffHelper = tariffHelper;
+        _quotaHelper = tariffHelper;
     }
 
     [AllowNotPayment]
@@ -134,9 +134,9 @@ public class PaymentController : ControllerBase
     }
 
     [AllowNotPayment]
-    [HttpGet("payment/tariff")]
-    public IEnumerable<TariffDto> GetTariffs()
+    [HttpGet("payment/quotas")]
+    public IEnumerable<QuotaDto> GetQuotas()
     {
-        return _tariffHelper.GetTariffs();
+        return _quotaHelper.GetQuotas();
     }
 }
