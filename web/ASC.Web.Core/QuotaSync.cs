@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Studio.Core.Quota;
 
-[Scope(Additional = typeof(QuotaSyncOperationExtension))]
+[Singletone(Additional = typeof(QuotaSyncOperationExtension))]
 public class QuotaSyncOperation
 {
 
@@ -34,16 +34,11 @@ public class QuotaSyncOperation
 
     private readonly DistributedTaskQueue _progressQueue;
 
-    private readonly TenantManager _tenantManager;
-    private readonly StorageFactoryConfig _storageFactoryConfig;
-    private readonly StorageFactory _storageFactory;
     private readonly IServiceProvider _serviceProvider;
 
-    public QuotaSyncOperation(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory, IServiceProvider serviceProvider, IDistributedTaskQueueFactory queueFactory)
+    public QuotaSyncOperation(IServiceProvider serviceProvider, IDistributedTaskQueueFactory queueFactory)
     {
-        _tenantManager = tenantManager;
-        _storageFactoryConfig = storageFactoryConfig;
-        _storageFactory = storageFactory;
+;
         _serviceProvider = serviceProvider;
 
         _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
@@ -51,20 +46,15 @@ public class QuotaSyncOperation
     public void RunJob(Tenant tenant)
     {
         var item = _progressQueue.GetAllTasks<QuotaSyncJob>().FirstOrDefault(t => t.TenantId == tenant.Id);
-      /*  if (item != null && item.IsCompleted)
-        {
-            _progressQueue.DequeueTask(item.Id);
-            item = null;
-        }*/
-        if (item != null)
+        if (item != null && item.IsCompleted)
         {
             _progressQueue.DequeueTask(item.Id);
             item = null;
         }
+        
         if (item == null)
         {
-            using var scope = _serviceProvider.CreateScope();
-            item = scope.ServiceProvider.GetRequiredService<QuotaSyncJob>();
+            item = _serviceProvider.GetRequiredService<QuotaSyncJob>();
             item.InitJob(tenant);
             _progressQueue.EnqueueTask(item);
         }
@@ -85,9 +75,7 @@ public class QuotaSyncOperation
 
 public class QuotaSyncJob : DistributedTaskProgress
 {
-    private readonly TenantManager _tenantManager;
-    private readonly StorageFactoryConfig _storageFactoryConfig;
-    private readonly StorageFactory _storageFactory;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
     private int? _tenantId;
     public int TenantId
@@ -102,14 +90,10 @@ public class QuotaSyncJob : DistributedTaskProgress
             this[nameof(_tenantId)] = value;
         }
     }
-    public StorageFactoryConfig StorageFactoryConfig { get; private set; }
-    public StorageFactory StorageFactory { get; private set; }
 
-    public QuotaSyncJob(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory)
+    public QuotaSyncJob(IServiceScopeFactory serviceScopeFactory)
     {
-        _tenantManager = tenantManager;
-        _storageFactoryConfig = storageFactoryConfig;
-        _storageFactory = storageFactory;
+        _serviceScopeFactory = serviceScopeFactory;
     }
     public void InitJob(Tenant tenant)
     {
@@ -117,8 +101,13 @@ public class QuotaSyncJob : DistributedTaskProgress
     }
     protected override void DoJob()
     {
-        _tenantManager.SetCurrentTenant(TenantId);
+        using var scope = _serviceScopeFactory.CreateScope();
 
+        var _tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
+        var _storageFactoryConfig = scope.ServiceProvider.GetRequiredService<StorageFactoryConfig>();
+        var _storageFactory = scope.ServiceProvider.GetRequiredService<StorageFactory>();
+
+        _tenantManager.SetCurrentTenant(TenantId);
         var storageModules = _storageFactoryConfig.GetModuleList(string.Empty);
 
         foreach (var module in storageModules)
