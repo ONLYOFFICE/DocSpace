@@ -661,6 +661,7 @@ class TableHeader extends React.Component {
       isLengthenHeader,
       sortingVisible,
       infoPanelVisible,
+      showSettings,
       ...rest
     } = this.props;
 
@@ -696,12 +697,14 @@ class TableHeader extends React.Component {
               );
             })}
 
-            <div className="table-container_header-settings">
-              <TableSettings
-                columns={columns}
-                infoPanelVisible={infoPanelVisible}
-              />
-            </div>
+            {showSettings && (
+              <div className="table-container_header-settings">
+                <TableSettings
+                  columns={columns}
+                  infoPanelVisible={infoPanelVisible}
+                />
+              </div>
+            )}
           </StyledTableRow>
         </StyledTableHeader>
 
@@ -715,6 +718,7 @@ TableHeader.defaultProps = {
   sortingVisible: true,
   infoPanelVisible: false,
   useReactWindow: false,
+  showSettings: true,
 };
 
 TableHeader.propTypes = {
@@ -730,6 +734,7 @@ TableHeader.propTypes = {
   sortingVisible: PropTypes.bool,
   infoPanelVisible: PropTypes.bool,
   useReactWindow: PropTypes.bool,
+  showSettings: PropTypes.bool,
 };
 
 export default TableHeader;

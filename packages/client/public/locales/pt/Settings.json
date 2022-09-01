@@ -138,7 +138,7 @@
   "ThirdPartyPropsActivated": "Atualização bem-sucedida",
   "ThirdPartyPropsDeactivated": "Desativado com êxito",
   "ThirdPartyResource": "Recurso de terceiros",
-  "ThirdPartyResourceDescription": "A cópia de segurança pode ser guardada na sua conta num serviço de terceiros (Dropbox, Box.com, OneDrive ou Google Drive). Precisa de conectar a sua conta do serviço oferecido por terceiros (Dropbox, Box.com, OneDrive ou Google Drive) à pasta de Comuns antes que possa guardar a sua cópia de segurança lá.",
+  "ThirdPartyResourceDescription": "A cópia de segurança pode ser guardada na sua conta num serviço de terceiros (Dropbox, Box.com, OneDrive ou Google Drive). Precisa de conectar a sua conta do serviço oferecido por terceiros (Dropbox, Box.com, OneDrive ou Google Drive) antes que possa guardar a sua cópia de segurança lá.",
   "ThirdPartyStorage": "Armazenamento Proveniente de Terceiros",
   "ThirdPartyStorageDescription": "A cópia de segurança pode ser guardada num armazenamento de terceiros. Para que o possa fazer, precisa de conectar o respetivo serviço na secção de 'Integração'. Caso contrário, as seguintes alterações ficaram inativas.",
   "ThirdPartyTitleDescription": "Com as chaves de Autorização, pode ligar serviços de terceiros ao seu portal. Inicie sessão facilmente com o Facebook, Twitter ou LinkedIn; adicione o Dropbox, Onedrive, etc. para trabalhar em ficheiros armazenados nessas plataformas a partir do módulo dos documentos.",

@@ -71,15 +71,29 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
     {
         ErrorIfNotDocSpace();
 
-        var room = await _fileStorageService.CreateRoomAsync(inDto.Title, inDto.RoomType);
+        var room = await _fileStorageService.CreateRoomAsync(inDto.Title, inDto.RoomType, inDto.Private, inDto.Share, inDto.Notify, inDto.SharingMessage);
 
         return await _folderDtoHelper.GetAsync(room);
     }
 }
 
-public class VirtualRoomsThirdpartyController : VirtualRoomsController<string>
+public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
 {
-    public VirtualRoomsThirdpartyController(FoldersControllerHelper<string> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<string> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomInvitationLinksService roomLinksService, CustomTagsService<string> customTagsService, RoomLogoManager roomLogoManager, StudioNotifyService studioNotifyService, FileStorageService<string> fileStorageService, FileSecurity fileSecurity, FileSecurityCommon fileSecurityCommon, EmailValidationKeyProvider emailValidationKeyProvider,
+    public VirtualRoomsThirdPartyController(
+        FoldersControllerHelper<string> foldersControllerHelper,
+        GlobalFolderHelper globalFolderHelper,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        SecurityControllerHelper<string> securityControllerHelper,
+        CoreBaseSettings coreBaseSettings,
+        AuthContext authContext,
+        RoomInvitationLinksService roomLinksService,
+        CustomTagsService<string> customTagsService,
+        RoomLogoManager roomLogoManager,
+        StudioNotifyService studioNotifyService,
+        FileStorageService<string> fileStorageService,
+        FileSecurity fileSecurity,
+        FileSecurityCommon fileSecurityCommon,
+        EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(foldersControllerHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksService, customTagsService, roomLogoManager, studioNotifyService, fileStorageService, fileSecurity, fileSecurityCommon, emailValidationKeyProvider, folderDtoHelper, fileDtoHelper)
     {
@@ -108,7 +122,7 @@ public class VirtualRoomsThirdpartyController : VirtualRoomsController<string>
     {
         ErrorIfNotDocSpace();
 
-        var room = await _fileStorageService.CreateThirdpartyRoomAsync(inDto.Title, inDto.RoomType, id);
+        var room = await _fileStorageService.CreateThirdPartyRoomAsync(inDto.Title, inDto.RoomType, id, inDto.Private, inDto.Share, inDto.Notify, inDto.SharingMessage);
 
         return await _folderDtoHelper.GetAsync(room);
     }

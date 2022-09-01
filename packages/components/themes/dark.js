@@ -1555,6 +1555,7 @@ const Dark = {
       disabledColor: "#858585",
       background: "#292929",
       backgroundWithBorder: "none",
+      backgroundModernView: "none",
 
       border: `1px solid #474747`,
       borderRadius: "3px",
@@ -1568,6 +1569,9 @@ const Dark = {
       hoverBorderColor: "#858585",
       hoverBorderColorOpen: grayMaxLight,
       hoverDisabledBorderColor: "#474747",
+      hoverBackgroundModernView: "#474747",
+
+      activeBackgroundModernView: "#858585",
     },
 
     label: {
@@ -1881,7 +1885,7 @@ const Dark = {
         marginLeft: "12px",
         lineHeight: "16px",
         fontSize: "14px",
-        fontWeight: "bold",
+        fontWeight: "600",
       },
     },
     initialText: {
@@ -2063,6 +2067,10 @@ const Dark = {
 
       tileSortFill: "#eeeeee",
       tileSortColor: "#eeeeee",
+    },
+
+    selectedItems: {
+      background: "#000000",
     },
   },
 

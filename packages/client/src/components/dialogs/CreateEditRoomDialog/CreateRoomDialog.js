@@ -4,7 +4,7 @@ import styled, { css } from "styled-components";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 
-import TagHandler from "./handlers/tagHandler";
+import TagHandler from "./handlers/TagHandler";
 
 import SetRoomParams from "./sub-components/SetRoomParams";
 import RoomTypeList from "./sub-components/RoomTypeList";

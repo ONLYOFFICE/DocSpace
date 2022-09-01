@@ -138,7 +138,7 @@
   "ThirdPartyPropsActivated": "S-a actualizat cu succes",
   "ThirdPartyPropsDeactivated": "Dezactivat cu succes",
   "ThirdPartyResource": "Resursă terță parte",
-  "ThirdPartyResourceDescription": "Puteți salva o copie de rezervă prin intermediu contului de stocare de la terți (Dropbox, Box.com, OneDrive sau Google Drive). Trebuie să vă conectați cu contul de stocare de la terți (Dropbox, Box.com, OneDrive sau Google Drive) la folderul Comun înainte de a crea o copie de rezervă acolo.",
+  "ThirdPartyResourceDescription": "Puteți salva o copie de rezervă prin intermediu contului de stocare de la terți (Dropbox, Box.com, OneDrive sau Google Drive). Trebuie să vă conectați cu contul de stocare de la terți (Dropbox, Box.com, OneDrive sau Google Drive) înainte de a crea o copie de rezervă acolo.",
   "ThirdPartyStorage": "Aplicație de stocare de la terțe",
   "ThirdPartyStorageDescription": "Puteți salva copia de rezervă prin intermediu contului de stocare de la terți. Mai întâi, trebuie să vă conectați cu acest cont de stocare în secțiunea Integrare.  În caz contrar, următoarele setări vor fi inactive.",
   "ThirdPartyTitleDescription": "Având chei de autentificare, dvs puteți conecta servicii de terță parte la portalul dvs. Vă conectați cu contul dvs Facebook, Twitter, sau LinkedIn; adăugați Dropbox, OneDrive, etc. pentru prelucrarea documentelor din stocarea direct în modulul Documente.",

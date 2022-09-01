@@ -233,7 +233,9 @@ class SectionHeaderContent extends React.PureComponent {
     });
 
   onEditClick = () => {
-    const { history, isMy } = this.props;
+    const { history, isMy, setIsEditTargetUser } = this.props;
+
+    setIsEditTargetUser(true);
 
     const editUrl = isMy
       ? combineUrl(AppServerConfig.proxyURL, `/my?action=edit`)
@@ -548,6 +550,7 @@ export default withRouter(
       updateUserStatus: peopleStore.usersStore.updateUserStatus,
       resetProfile: peopleStore.targetUserStore.resetTargetUser,
       fetchProfile: peopleStore.targetUserStore.getTargetUser,
+      setIsEditTargetUser: peopleStore.targetUserStore.setIsEditTargetUser,
       profile: peopleStore.targetUserStore.targetUser,
       isMe: peopleStore.targetUserStore.isMe,
       updateProfile: peopleStore.targetUserStore.updateProfile,
