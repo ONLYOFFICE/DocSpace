@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-import ContextMenuButton from "@docspace/components/context-menu-button";
+import UserList from "./UserList";
+import { StyledUserTypeHeader } from "../../../styles/members";
+
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
-import { StyledTitle } from "../../../styles/styles";
-import { StyledUserTypeHeader } from "../../../styles/VirtualRoom/members";
-import UserList from "./UserList";
 
 const Members = ({ t, selfId, selectedItem, getShareUsers }) => {
   const [members, setMembers] = useState([]);
@@ -17,26 +16,10 @@ const Members = ({ t, selfId, selectedItem, getShareUsers }) => {
     );
     setMembers(fetchedMembers);
     console.log("members", fetchedMembers);
-
-    console.log(selectedItem.logo);
   }, []);
 
   return (
     <>
-      <StyledTitle withBottomBorder>
-        <img
-          className="icon is-room"
-          src={
-            selectedItem.logo && selectedItem.logo.big
-              ? selectedItem.logo.big
-              : selectedItem.icon
-          }
-          alt="thumbnail-icon"
-        />
-        <Text className="text">{selectedItem.title}</Text>
-        <ContextMenuButton getData={() => {}} className="context-menu-button" />
-      </StyledTitle>
-
       <StyledUserTypeHeader>
         <Text className="title">
           {t("Users in room")} : {members.length}
