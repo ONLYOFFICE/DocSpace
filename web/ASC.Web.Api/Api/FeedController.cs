@@ -29,6 +29,7 @@ namespace ASC.Web.Api.Controllers;
 [Scope]
 [DefaultRoute]
 [ApiController]
+[ControllerName("feeds")]
 public class FeedController : ControllerBase
 {
     private readonly FeedReadedDataProvider _feedReadedDataProvider;
@@ -57,7 +58,7 @@ public class FeedController : ControllerBase
         _mapper = mapper;
     }
 
-    private string Key => $"newfeedscount/{_securityContext}";
+    private string Key => $"newfeedscount/{_securityContext.CurrentAccount.ID}";
 
     ///<summary>
     ///Opens feeds for reading.
