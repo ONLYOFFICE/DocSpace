@@ -12,18 +12,6 @@ class InfoPanelStore {
     makeAutoObservable(this);
   }
 
-  calculateisRoom = (selectedItem) => {
-    const categoryType = getCategoryType(location);
-    const isRoomCategory =
-      categoryType == CategoryType.Shared ||
-      categoryType == CategoryType.SharedRoom ||
-      categoryType == CategoryType.Archive ||
-      categoryType == CategoryType.ArchivedRoom;
-    const isRoomItem = selectedItem.isRoom;
-
-    this.isRoom = isRoomCategory && isRoomItem;
-  };
-
   setIsRoom = (isRoom) => {
     this.isRoom = isRoom;
   };

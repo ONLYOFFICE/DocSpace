@@ -25,7 +25,7 @@ const InfoPanelBodyContent = ({
 
   isRoom,
   roomState,
-  calculateisRoom,
+  setIsRoom,
 
   getFolderInfo,
   onSelectItem,
@@ -113,7 +113,7 @@ const InfoPanelBodyContent = ({
   const selection = getSelection();
 
   useEffect(() => {
-    calculateisRoom(selection.isRoom);
+    setIsRoom(selection.isRoom);
   }, [selection]);
 
   return (
@@ -162,7 +162,7 @@ export default inject(
     oformsStore,
   }) => {
     const { personal, culture } = auth.settingsStore;
-    const { roomState, isRoom, calculateisRoom } = auth.infoPanelStore;
+    const { roomState, isRoom, setIsRoom } = auth.infoPanelStore;
     const selfId = auth.userStore.user.id;
 
     const {
@@ -219,7 +219,7 @@ export default inject(
 
       isRoom,
       roomState,
-      calculateisRoom,
+      setIsRoom,
 
       getFolderInfo,
       onSelectItem,
