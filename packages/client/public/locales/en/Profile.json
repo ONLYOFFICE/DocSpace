@@ -20,6 +20,7 @@
   "SubscriptionTurnOffToast": "You have been successfully unsubscribed from the the mailing list. <1>Subscribe again</1>",
   "Subscriptions": "Subscriptions",
   "SystemTheme": "Use system theme",
+  "SystemThemeDescription": "Automatically switch between light and dark themes when your system does.",
   "TfaLoginSettings": "Login settings",
   "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin."
 }
