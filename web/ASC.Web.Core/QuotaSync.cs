@@ -26,40 +26,84 @@
 
 namespace ASC.Web.Studio.Core.Quota;
 
-public class QuotaSync
+[Scope(Additional = typeof(QuotaSyncOperationExtension))]
+public class QuotaSyncOperation
 {
-    public const string TenantIdKey = "tenantID";
-    protected DistributedTask TaskInfo { get; private set; }
-    private readonly int _tenantId;
+
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "ldapOperation";
+
+    private readonly DistributedTaskQueue _progressQueue;
+
+    private readonly TenantManager _tenantManager;
+    private readonly StorageFactoryConfig _storageFactoryConfig;
+    private readonly StorageFactory _storageFactory;
     private readonly IServiceProvider _serviceProvider;
 
-    public QuotaSync(int tenantId, IServiceProvider serviceProvider)
+    public QuotaSyncOperation(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory, IServiceProvider serviceProvider, IDistributedTaskQueueFactory queueFactory)
     {
-        _tenantId = tenantId;
-        TaskInfo = new DistributedTask();
+        _tenantManager = tenantManager;
+        _storageFactoryConfig = storageFactoryConfig;
+        _storageFactory = storageFactory;
         _serviceProvider = serviceProvider;
+
+        _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
+    }
+    public void RunJob(Tenant tenant)
+    {
+        var item = _progressQueue.GetAllTasks<QuotaSyncJob>().FirstOrDefault(t => t.TenantId == tenant.Id);
+      /*  if (item != null && item.IsCompleted)
+        {
+            _progressQueue.DequeueTask(item.Id);
+            item = null;
+        }*/
+        if (item != null)
+        {
+            _progressQueue.DequeueTask(item.Id);
+            item = null;
+        }
+        if (item == null)
+        {
+            using var scope = _serviceProvider.CreateScope();
+            item = scope.ServiceProvider.GetRequiredService<QuotaSyncJob>();
+            item.InitJob(tenant);
+            _progressQueue.EnqueueTask(item);
+        }
+
+        item.PublishChanges();
     }
 
-    public void RunJob()//DistributedTask distributedTask, CancellationToken cancellationToken)
+
+    public static class QuotaSyncOperationExtension
     {
-        using var scope = _serviceProvider.CreateScope();
-        var scopeClass = scope.ServiceProvider.GetService<QuotaSyncJob>();
-        scopeClass.RunJob(_tenantId);
+        public static void Register(DIHelper services)
+        {
+            services.TryAdd<QuotaSyncJob>();
+        }
     }
 
-    public virtual DistributedTask GetDistributedTask()
-    {
-        TaskInfo[TenantIdKey] = _tenantId;
-        return TaskInfo;
-    }
 }
 
-[Scope]
-public class QuotaSyncJob
+public class QuotaSyncJob : DistributedTaskProgress
 {
     private readonly TenantManager _tenantManager;
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly StorageFactory _storageFactory;
+
+    private int? _tenantId;
+    public int TenantId
+    {
+        get
+        {
+            return _tenantId ?? this[nameof(_tenantId)];
+        }
+        private set
+        {
+            _tenantId = value;
+            this[nameof(_tenantId)] = value;
+        }
+    }
+    public StorageFactoryConfig StorageFactoryConfig { get; private set; }
+    public StorageFactory StorageFactory { get; private set; }
 
     public QuotaSyncJob(TenantManager tenantManager, StorageFactoryConfig storageFactoryConfig, StorageFactory storageFactory)
     {
@@ -67,16 +111,19 @@ public class QuotaSyncJob
         _storageFactoryConfig = storageFactoryConfig;
         _storageFactory = storageFactory;
     }
-
-    public void RunJob(int tenantId)
+    public void InitJob(Tenant tenant)
     {
-        _tenantManager.SetCurrentTenant(tenantId);
+        TenantId = tenant.Id;
+    }
+    protected override void DoJob()
+    {
+        _tenantManager.SetCurrentTenant(TenantId);
 
         var storageModules = _storageFactoryConfig.GetModuleList(string.Empty);
 
         foreach (var module in storageModules)
         {
-            var storage = _storageFactory.GetStorage(tenantId.ToString(), module);
+            var storage = _storageFactory.GetStorage(TenantId.ToString(), module);
             storage.ResetQuotaAsync("").Wait();
 
             var domains = _storageFactoryConfig.GetDomainList(string.Empty, module);
@@ -84,7 +131,6 @@ public class QuotaSyncJob
             {
                 storage.ResetQuotaAsync(domain).Wait();
             }
-
         }
     }
 }

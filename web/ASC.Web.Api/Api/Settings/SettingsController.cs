@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Web.Studio.Core.Quota;
+
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Api.Controllers.Settings;
@@ -62,7 +64,7 @@ public class SettingsController : BaseSettingsController
     private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
-    private readonly QuotaSyncJob _quotaSyncJob;
+    private readonly QuotaSyncOperation _quotaSyncOperation;
 
     public SettingsController(
         ILoggerProvider option,
@@ -100,7 +102,7 @@ public class SettingsController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
         AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
-        QuotaSyncJob quotaSyncJob
+        QuotaSyncOperation quotaSyncOperation
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -134,7 +136,7 @@ public class SettingsController : BaseSettingsController
         _constants = constants;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
-        _quotaSyncJob = quotaSyncJob;
+        _quotaSyncOperation = quotaSyncOperation;
     }
 
     [HttpGet("")]
@@ -333,8 +335,11 @@ public class SettingsController : BaseSettingsController
     public void RecalculateQuota()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        _quotaSyncJob.RunJob(_tenantManager.GetCurrentTenant().Id);
-    //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+
+        _quotaSyncOperation.RunJob(_tenantManager.GetCurrentTenant());
+
+       // _quotaSyncJob.RunJob(_tenantManager.GetCurrentTenant().Id);
+       //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
 
         //    var operations = quotaTasks.GetTasks()
         //        .Where(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
