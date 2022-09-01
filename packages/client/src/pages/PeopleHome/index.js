@@ -16,6 +16,7 @@ import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 import { withTranslation } from "react-i18next";
 import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
+import { ChangePortalOwnerDialog } from "SRC_DIR/components/dialogs";
 
 const PureHome = ({
   isAdmin,
@@ -66,6 +67,7 @@ const PureHome = ({
 
   return (
     <>
+      <ChangePortalOwnerDialog />
       <Section
         withBodyScroll
         withBodyAutoFocus={!isMobile}
