@@ -84,6 +84,8 @@ class PaymentStore {
         } else {
           toastr.error(res);
         }
+      } else {
+        toastr.error(res);
       }
     } catch (e) {
       toastr.error(e);

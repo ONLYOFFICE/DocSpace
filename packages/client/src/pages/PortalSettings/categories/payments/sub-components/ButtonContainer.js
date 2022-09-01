@@ -25,6 +25,8 @@ const ButtonContainer = ({
   setPortalQuota,
   isLessCountThanAcceptable,
   t,
+  isNotPaid,
+  accountLink,
 }) => {
   const [isVisibleDialog, setIsVisibleDialog] = useState(false);
 
@@ -53,6 +55,11 @@ const ButtonContainer = ({
 
     if (paymentLink) window.open(paymentLink, "_blank");
   };
+
+  const goToStripeAccount = () => {
+    if (accountLink) window.open(accountLink, "_blank");
+  };
+
   const toDoRequest = () => {
     setIsVisibleDialog(true);
   };
@@ -77,25 +84,36 @@ const ButtonContainer = ({
           onClose={onClose}
         />
       )}
-      <Button
-        label={isNeedRequest ? t("SendRequest") : t("UpgradeNow")}
-        size={"medium"}
-        primary
-        isDisabled={
-          (!isNeedRequest && isAlreadyPaid && isTheSameCount) ||
-          isLessCountThanAcceptable ||
-          isLoading ||
-          isDisabled
-        }
-        onClick={isNeedRequest ? toDoRequest : onUpdateTariff}
-        isLoading={isLoading}
-      />
+      {isNotPaid || isGracePeriod ? (
+        <Button
+          label={t("Pay")}
+          size={"medium"}
+          primary
+          isDisabled={isLoading || isDisabled}
+          onClick={goToStripeAccount}
+          isLoading={isLoading}
+        />
+      ) : (
+        <Button
+          label={isNeedRequest ? t("SendRequest") : t("UpgradeNow")}
+          size={"medium"}
+          primary
+          isDisabled={
+            (!isNeedRequest && isAlreadyPaid && isTheSameCount) ||
+            isLessCountThanAcceptable ||
+            isLoading ||
+            isDisabled
+          }
+          onClick={isNeedRequest ? toDoRequest : onUpdateTariff}
+          isLoading={isLoading}
+        />
+      )}
     </StyledBody>
   );
 };
 
 export default inject(({ auth, payments }) => {
-  const { portalQuota, setPortalQuota } = auth;
+  const { portalQuota, setPortalQuota, isNotPaid, isGracePeriod } = auth;
   const { countAdmin: maxTariffManagers } = portalQuota;
   const {
     updatePayment,
@@ -105,6 +123,7 @@ export default inject(({ auth, payments }) => {
     isLoading,
     managersCount,
     isLessCountThanAcceptable,
+    accountLink,
   } = payments;
 
   return {
@@ -117,5 +136,8 @@ export default inject(({ auth, payments }) => {
     maxTariffManagers,
     setPortalQuota,
     isLessCountThanAcceptable,
+    isNotPaid,
+    isGracePeriod,
+    accountLink,
   };
 })(observer(ButtonContainer));
