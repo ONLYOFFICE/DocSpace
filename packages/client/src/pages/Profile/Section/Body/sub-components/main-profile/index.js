@@ -20,7 +20,7 @@ const StyledWrapper = styled.div`
   display: flex;
   padding: 24px;
   gap: 40px;
-  background: #f8f9f9;
+  background: ${(props) => props.theme.profile.main.background};
   border-radius: 12px;
 
   .avatar {
