@@ -13,6 +13,7 @@ import LanguagesCombo from "./languagesCombo";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
+  ChangeNameDialog,
 } from "../../../../../../components/dialogs";
 
 const StyledWrapper = styled.div`
@@ -58,9 +59,10 @@ const StyledInfo = styled.div`
 `;
 
 const MainProfile = (props) => {
-  const { t, profile, cultureNames, culture } = props;
+  const { t, tReady, profile, cultureNames, culture, updateProfile } = props;
   const { cultureName, currentCulture } = profile;
 
+  const [changeNameDialogVisible, setChangeNameDialogVisible] = useState(false);
   const [changeEmailDialogVisible, setChangeEmailDialogVisible] = useState(
     false
   );
@@ -93,7 +95,7 @@ const MainProfile = (props) => {
             <IconButton
               iconName="/static/images/pencil.outline.react.svg"
               size="12"
-              onClick={() => console.log("onclick")}
+              onClick={() => setChangeNameDialogVisible(true)}
             />
           </div>
         </div>
@@ -150,6 +152,17 @@ const MainProfile = (props) => {
           visible={changePasswordDialogVisible}
           onClose={() => setChangePasswordDialogVisible(false)}
           email={profile.email}
+        />
+      )}
+
+      {changeNameDialogVisible && (
+        <ChangeNameDialog
+          t={t}
+          tReady={tReady}
+          visible={changeNameDialogVisible}
+          onClose={() => setChangeNameDialogVisible(false)}
+          profile={profile}
+          onSave={updateProfile}
         />
       )}
     </StyledWrapper>

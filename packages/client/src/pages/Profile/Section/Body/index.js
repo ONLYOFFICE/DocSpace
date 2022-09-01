@@ -11,11 +11,17 @@ import MainProfile from "./sub-components/main-profile";
 import LoginSettings from "./sub-components/login-settings";
 import Subscription from "./sub-components/subscription";
 
+import { tablet } from "@docspace/components/utils/device";
+
 const Wrapper = styled.div`
   max-width: 660px;
   display: flex;
   flex-direction: column;
   gap: 40px;
+
+  @media ${tablet} {
+    width: 100%;
+  }
 `;
 
 const SectionBodyContent = (props) => {
@@ -31,6 +37,7 @@ const SectionBodyContent = (props) => {
     getBackupCodes,
     changeEmailSubscription,
     tipsSubscription,
+    updateProfile,
   } = props;
   const [tfa, setTfa] = useState(false);
   const [backupCodesCount, setBackupCodesCount] = useState(0);
@@ -60,7 +67,12 @@ const SectionBodyContent = (props) => {
 
   return (
     <Wrapper>
-      <MainProfile t={t} profile={profile} culture={culture} />
+      <MainProfile
+        t={t}
+        profile={profile}
+        culture={culture}
+        updateProfile={updateProfile}
+      />
       {tfa && tfa !== "none" && (
         <LoginSettings
           t={t}
@@ -91,6 +103,7 @@ export default withRouter(
       targetUser: profile,
       changeEmailSubscription,
       tipsSubscription,
+      updateProfile,
     } = targetUserStore;
 
     const {
@@ -113,12 +126,16 @@ export default withRouter(
       setBackupCodes,
       changeEmailSubscription,
       tipsSubscription,
+      updateProfile,
     };
   })(
     observer(
-      withTranslation(["Profile", "Common", "PeopleTranslations"])(
-        withPeopleLoader(SectionBodyContent)(<Loaders.ProfileView />)
-      )
+      withTranslation([
+        "Profile",
+        "Common",
+        "PeopleTranslations",
+        "ProfileAction",
+      ])(withPeopleLoader(SectionBodyContent)(<Loaders.ProfileView />))
     )
   )
 );
