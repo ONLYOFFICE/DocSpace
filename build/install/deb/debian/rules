@@ -8,7 +8,7 @@ export DH_OPTIONS=-v
 %:
 	dh $@ --with=systemd
 
-PRODUCT=appserver
+PRODUCT={{product}}
 CURRENT_PATH=${CURDIR}
 SRC_PATH=$(shell cd ../../../; pwd)
 SCRIPT_PATH=build/install/common
