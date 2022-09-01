@@ -21,7 +21,6 @@ const Label = styled.div`
   height: ${(props) => props.theme.tabsContainer.label.height};
   border-radius: ${(props) => props.theme.tabsContainer.label.borderRadius};
   min-width: ${(props) => props.theme.tabsContainer.label.minWidth};
-  margin-right: ${(props) => props.theme.tabsContainer.label.marginRight};
   width: ${(props) => props.theme.tabsContainer.label.width};
 
   .title_style {

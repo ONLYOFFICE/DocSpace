@@ -21,6 +21,8 @@ import {
   StyledFilterBlockItemSeparator,
 } from "./StyledFilterBlock";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 import XIcon from "../svg/x.react.svg";
 
 const FilterBlockItem = ({
@@ -84,7 +86,7 @@ const FilterBlockItem = ({
         </StyledFilterBlockItemSelectorText>
       </StyledFilterBlockItemSelector>
     ) : (
-      <StyledFilterBlockItemTag
+      <ColorTheme
         key={item.key}
         isSelected={item.isSelected}
         onClick={(event) =>
@@ -95,6 +97,7 @@ const FilterBlockItem = ({
             clearSelectorRef.current
           )
         }
+        themeId={ThemeType.FilterBlockItemTag}
       >
         <StyledFilterBlockItemTagText
           noSelect={true}
@@ -107,7 +110,7 @@ const FilterBlockItem = ({
             <XIcon style={{ marginTop: "2px" }} />
           </StyledFilterBlockItemTagIcon>
         )}
-      </StyledFilterBlockItemTag>
+      </ColorTheme>
     );
   };
 
@@ -164,13 +167,14 @@ const FilterBlockItem = ({
 
   const getTagItem = (item) => {
     return (
-      <StyledFilterBlockItemTag
+      <ColorTheme
         key={item.key}
         isSelected={item.isSelected}
         name={`${item.label}-${item.key}`}
         onClick={() =>
           changeFilterValueAction(item.key, item.isSelected, item.isMultiSelect)
         }
+        themeId={ThemeType.FilterBlockItemTag}
       >
         <StyledFilterBlockItemTagText
           noSelect={true}
@@ -178,7 +182,7 @@ const FilterBlockItem = ({
         >
           {item.label}
         </StyledFilterBlockItemTagText>
-      </StyledFilterBlockItemTag>
+      </ColorTheme>
     );
   };
 

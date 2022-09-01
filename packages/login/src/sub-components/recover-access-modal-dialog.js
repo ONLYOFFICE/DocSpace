@@ -146,7 +146,7 @@ const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
       <ModalDialog.Footer>
         <Button
           className="recover-button-dialog"
-          key="SendBtn"
+          key="RecoverySendBtn"
           label={loading ? t("Common:Sending") : t("Common:SendButton")}
           size="normal"
           primary={true}

@@ -41,6 +41,26 @@ export function createRoom(data) {
   });
 }
 
+export function createRoomInThirdpary(id, data) {
+  const options = {
+    method: "post",
+    url: `/files/rooms/thirdparty/${id}`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function editRoom(id, data) {
+  const options = { method: "put", url: `/files/rooms/${id}`, data };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
 export function pinRoom(id) {
   const options = { method: "put", url: `/files/rooms/${id}/pin` };
 
@@ -98,10 +118,84 @@ export function unarchiveRoom(id, deleteAfter = true) {
   });
 }
 
+export function createTag(name) {
+  const data = { name };
+  const options = {
+    method: "post",
+    url: "/files/tags",
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function addTagsToRoom(id, tagArray) {
+  const data = { names: tagArray };
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/tags`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function removeTagsFromRoom(id, tagArray) {
+  const data = { names: tagArray };
+  const options = {
+    method: "delete",
+    url: `/files/rooms/${id}/tags`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
 export function getTags() {
   const options = {
     method: "get",
     url: "/files/tags",
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function uploadRoomLogo(data) {
+  const options = {
+    method: "post",
+    url: `/files/logos`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function addLogoToRoom(id, data) {
+  const options = {
+    method: "post",
+    url: `/files/rooms/${id}/logo`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function removeLogoFromRoom(id) {
+  const options = {
+    method: "delete",
+    url: `/files/rooms/${id}/logo`,
   };
 
   return request(options).then((res) => {

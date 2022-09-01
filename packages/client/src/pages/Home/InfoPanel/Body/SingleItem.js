@@ -147,7 +147,7 @@ const SingleItem = (props) => {
         },
         {
           id: "ByLastModifiedDate",
-          title: t("Home:ByLastModifiedDate"),
+          title: t("Files:ByLastModifiedDate"),
           content: styledText(parseAndFormatDate(item.updated)),
         },
         {
@@ -162,7 +162,7 @@ const SingleItem = (props) => {
         },
         {
           id: "ByCreationDate",
-          title: t("Home:ByCreationDate"),
+          title: t("Files:ByCreationDate"),
           content: styledText(parseAndFormatDate(item.created)),
         },
       ];

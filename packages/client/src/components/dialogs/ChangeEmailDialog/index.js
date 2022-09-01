@@ -126,7 +126,7 @@ class ChangeEmailDialogComponent extends React.Component {
         displayType="modal"
       >
         <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
-        <ModalDialog.Body>
+        <ModalDialog.Body className="email-dialog-body">
           <>
             <Text className="text-body">{t("EmailActivationDescription")}</Text>
             <FieldContainer
@@ -153,7 +153,7 @@ class ChangeEmailDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
-            key="SendBtn"
+            key="ChangeEmailSendBtn"
             label={t("Common:SendButton")}
             size="normal"
             scale

@@ -56,6 +56,7 @@ internal class BoxProviderInfo : IProviderInfo
     public FolderType RootFolderType { get; set; }
     public FolderType FolderType { get; set; }
     public string FolderId { get; set; }
+    public bool Private { get; set; }
 
     public string BoxRootId
     {

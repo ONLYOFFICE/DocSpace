@@ -342,8 +342,10 @@ class ContextOptionsStore {
     setIsVisible(true);
   };
 
-  onClickEditRoom = () => {
-    console.log("edit room");
+  onClickEditRoom = (item) => {
+    const event = new Event(Events.ROOM_EDIT);
+    event.item = item;
+    window.dispatchEvent(event);
   };
 
   onClickInviteUsers = () => {
