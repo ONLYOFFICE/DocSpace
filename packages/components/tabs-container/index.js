@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import Text from "../text";
 import { NavItem, Label, StyledScrollbar } from "./styled-tabs-container";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 class TabContainer extends Component {
   constructor(props) {
     super(props);
@@ -55,7 +57,7 @@ class TabContainer extends Component {
       activeTab === nextState.activeTab &&
       isDisabled === nextProps.isDisabled &&
       onScrollHide === nextState.onScrollHide &&
-      elements.length === nextProps.elements.length
+      elements === nextProps.elements
     ) {
       return false;
     }
@@ -138,6 +140,10 @@ class TabContainer extends Component {
     this.setState({ onScrollHide: true });
   };
 
+  onClick = (index, item) => {
+    this.titleClick(index, item, this.arrayRefs[index]);
+  };
+
   render() {
     //console.log("Tabs container render");
 
@@ -154,16 +160,13 @@ class TabContainer extends Component {
         >
           <NavItem className="className_items">
             {elements.map((item, index) => (
-              <Label
+              <ColorTheme
+                {...this.props}
+                themeId={ThemeType.TabsContainer}
                 onMouseMove={this.onMouseEnter}
                 onMouseLeave={this.onMouseLeave}
                 ref={this.arrayRefs[index]}
-                onClick={this.titleClick.bind(
-                  this,
-                  index,
-                  item,
-                  this.arrayRefs[index]
-                )}
+                onClick={() => this.onClick(index, item)}
                 key={item.key}
                 selected={activeTab === index}
                 isDisabled={isDisabled}
@@ -171,7 +174,7 @@ class TabContainer extends Component {
                 <Text fontWeight={600} className="title_style" fontSize="13px">
                   {item.title}
                 </Text>
-              </Label>
+              </ColorTheme>
             ))}
           </NavItem>
         </StyledScrollbar>

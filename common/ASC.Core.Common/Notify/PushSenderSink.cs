@@ -24,19 +24,22 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.Notify.Push.Dao;
+
 using Constants = ASC.Core.Configuration.Constants;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Core.Common.Notify;
 
 class PushSenderSink : Sink
 {
-    private readonly ILogger<PushSenderSink> _logger;
-    private bool _configured = true;
+    private static readonly string _senderName = Constants.NotifyPushSenderSysName;
+    private readonly INotifySender _sender;
 
-    public PushSenderSink(IServiceProvider serviceProvider, ILogger<PushSenderSink> logger)
+    public PushSenderSink(INotifySender sender, IServiceProvider serviceProvider)
     {
+        _sender = sender ?? throw new ArgumentNullException(nameof(sender));
         _serviceProvider = serviceProvider;
-        _logger = logger;
     }
 
     private readonly IServiceProvider _serviceProvider;
@@ -45,42 +48,21 @@ class PushSenderSink : Sink
     {
         try
         {
+
+            var result = SendResult.OK;
             using var scope = _serviceProvider.CreateScope();
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
 
-            var notification = new PushNotification
+            var m = scope.ServiceProvider.GetRequiredService<PushSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
+            if (string.IsNullOrEmpty(m.Reciever))
             {
-                Module = GetTagValue<PushModule>(message, PushConstants.PushModuleTagName),
-                Action = GetTagValue<PushAction>(message, PushConstants.PushActionTagName),
-                Item = GetTagValue<PushItem>(message, PushConstants.PushItemTagName),
-                ParentItem = GetTagValue<PushItem>(message, PushConstants.PushParentItemTagName),
-                Message = message.Body,
-                ShortMessage = message.Subject
-            };
-
-            if (_configured)
-            {
-                try
-                {
-                    using var pushClient = new PushServiceClient();
-                    pushClient.EnqueueNotification(
-                        tenantManager.GetCurrentTenant().Id,
-                        message.Recipient.ID,
-                        notification,
-                        new List<string>());
-                }
-                catch (InvalidOperationException)
-                {
-                    _configured = false;
-                    _logger.DebugPushSender();
-                }
+                result = SendResult.IncorrectRecipient;
             }
             else
             {
-                _logger.DebugPushSender();
+                _sender.Send(m);
             }
 
-            return new SendResponse(message, Constants.NotifyPushSenderSysName, SendResult.OK);
+            return new SendResponse(message, Constants.NotifyPushSenderSysName, result);
         }
         catch (Exception error)
         {
@@ -93,5 +75,97 @@ class PushSenderSink : Sink
         var tag = message.Arguments.FirstOrDefault(arg => arg.Tag == tagName);
 
         return tag != null ? (T)tag.Value : default;
+    }
+}
+public class LowerCaseNamingPolicy : JsonNamingPolicy
+{
+    public override string ConvertName(string name) =>
+        name.ToLower();
+}
+[Scope]
+public class PushSenderSinkMessageCreator : SinkMessageCreator
+{
+    private readonly UserManager _userManager;
+    private readonly TenantManager _tenantManager;
+
+    public PushSenderSinkMessageCreator(UserManager userManager, TenantManager tenantManager)
+    {
+        _tenantManager = tenantManager;
+        _userManager = userManager;
+    }
+
+    public override NotifyMessage CreateNotifyMessage(INoticeMessage message, string senderName)
+    {
+        var tenant = _tenantManager.GetCurrentTenant(false);
+        if (tenant == null)
+        {
+            _tenantManager.SetCurrentTenant(Tenant.DefaultTenant);
+            tenant = _tenantManager.GetCurrentTenant(false);
+        }      
+
+        var user = _userManager.GetUsers(new Guid(message.Recipient.ID));
+        var username = user.UserName;
+
+        var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
+        var productID = message.Arguments.FirstOrDefault(x => x.Tag.Equals("__ProductID"));
+        var originalUrl = message.Arguments.FirstOrDefault(x => x.Tag.Equals("DocumentURL"));
+
+        var folderId = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderID"));
+        var rootFolderId = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderParentId"));
+        var rootFolderType = message.Arguments.FirstOrDefault(x => x.Tag.Equals("FolderRootFolderType"));
+
+
+        var notifyData = new NotifyData()
+        {
+            Email = user.Email,
+            Portal = _tenantManager.GetCurrentTenant().TrustedDomains.FirstOrDefault(),
+            OriginalUrl = originalUrl != null && originalUrl.Value != null ? originalUrl.Value.ToString() : "",
+            Folder = new NotifyFolderData
+            {
+                Id = folderId != null && folderId.Value != null ? folderId.Value.ToString() : "",
+                ParentId = rootFolderId != null && rootFolderId.Value != null ? rootFolderId.Value.ToString() : "",
+                RootFolderType = rootFolderType != null && rootFolderType.Value != null ? (int)rootFolderType.Value : 0
+            },
+        };
+
+        var msg = (NoticeMessage)message;
+
+        if (msg.ObjectID.StartsWith("file_"))
+        {
+            var documentTitle = message.Arguments.FirstOrDefault(x => x.Tag.Equals("DocumentTitle"));
+            var documentExtension = message.Arguments.FirstOrDefault(x => x.Tag.Equals("DocumentExtension"));
+
+            notifyData.File = new NotifyFileData()
+            {
+                Id = msg.ObjectID.Substring(5),
+                Title = documentTitle != null && documentTitle.Value != null ? documentTitle.Value.ToString() : "",
+                Extension = documentExtension != null && documentExtension.Value != null ? documentExtension.Value.ToString() : ""
+
+            };
+        }
+
+        var serializeOptions = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = new LowerCaseNamingPolicy(),
+            WriteIndented = true
+        };
+
+        var jsonNotifyData = JsonSerializer.Serialize(notifyData, serializeOptions);
+
+        var m = new NotifyMessage
+        {
+            TenantId = tenant.Id,
+            Reciever = username,
+            Subject = fromTag != null && fromTag.Value != null ? fromTag.Value.ToString() : message.Subject,
+            ContentType = message.ContentType,
+            Content = message.Body,
+            Sender = Constants.NotifyPushSenderSysName,
+            CreationDate = DateTime.UtcNow,
+            ProductID = fromTag != null && fromTag.Value != null ? productID.Value.ToString() : null,
+            Data = jsonNotifyData
+        };
+
+
+        return m;
     }
 }

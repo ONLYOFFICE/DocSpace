@@ -502,6 +502,7 @@ class PureHome extends React.Component {
       showTitle,
       showFilter,
       frameConfig,
+      withPaging,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -513,6 +514,7 @@ class PureHome extends React.Component {
         <MediaViewer />
         <DragTooltip />
         <Section
+          withPaging={withPaging}
           dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -581,9 +583,11 @@ class PureHome extends React.Component {
             <InfoPanelBodyContent />
           </Section.InfoPanelBody>
 
-          <Section.SectionPaging>
-            <SectionPagingContent tReady={tReady} />
-          </Section.SectionPaging>
+          {withPaging && (
+            <Section.SectionPaging>
+              <SectionPagingContent tReady={tReady} />
+            </Section.SectionPaging>
+          )}
         </Section>
       </>
     );
@@ -601,6 +605,7 @@ export default inject(
     mediaViewerDataStore,
     settingsStore,
     filesActionsStore,
+    oformsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -622,7 +627,6 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
-      gallerySelected,
       setIsUpdatingRowItem,
 
       folders,
@@ -634,7 +638,10 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
+      withPaging,
     } = filesStore;
+
+    const { gallerySelected } = oformsStore;
 
     const {
       isRecycleBinFolder,
@@ -770,6 +777,7 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
+      withPaging,
     };
   }
 )(withRouter(observer(Home)));

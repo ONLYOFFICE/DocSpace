@@ -17,6 +17,8 @@ import {
 } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 const StyledItem = styled.div`
   height: auto;
   width: auto !important;
@@ -26,30 +28,6 @@ const StyledItem = styled.div`
   grid-template-columns: 17px auto;
   cursor: pointer;
 `;
-
-const StyledIconWrapper = styled.div`
-  width: 17px;
-  display: flex;
-  align-items: ${(props) => (props.isRoot ? "center" : "flex-end")};
-  justify-content: center;
-
-  svg {
-    path {
-      fill: ${(props) => props.theme.navigation.icon.fill};
-    }
-
-    circle {
-      stroke: ${(props) => props.theme.navigation.icon.fill};
-    }
-
-    path:first-child {
-      fill: none !important;
-      stroke: ${(props) => props.theme.navigation.icon.stroke};
-    }
-  }
-`;
-
-StyledIconWrapper.defaultProps = { theme: Base };
 
 const StyledText = styled(Text)`
   margin-left: 10px;
@@ -64,7 +42,7 @@ const Item = ({ id, title, isRoot, isRootRoom, onClick, ...rest }) => {
 
   return (
     <StyledItem id={id} isRoot={isRoot} onClick={onClickAvailable} {...rest}>
-      <StyledIconWrapper isRoot={isRoot}>
+      <ColorTheme isRoot={isRoot} themeId={ThemeType.IconWrapper}>
         {isMobile || isTablet() || IsMobileUtils() ? (
           isRoot ? (
             <RootTabletIcon />
@@ -76,7 +54,8 @@ const Item = ({ id, title, isRoot, isRootRoom, onClick, ...rest }) => {
         ) : (
           <DefaultIcon />
         )}
-      </StyledIconWrapper>
+      </ColorTheme>
+
       <StyledText
         isRoot={isRoot}
         fontWeight={isRoot ? "600" : "400"}

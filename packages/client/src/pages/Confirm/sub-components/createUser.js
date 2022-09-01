@@ -263,7 +263,7 @@ const Confirm = (props) => {
     const { isAuthenticated, logout } = props;
     if (isAuthenticated) {
       const path = window.location;
-      logout(true, path);
+      logout().then(() => window.location.replace(path));
     }
   }, []);
 

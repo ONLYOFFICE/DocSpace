@@ -27,9 +27,16 @@ class TreeFoldersStore {
 
   setRootFoldersTitles = (treeFolders) => {
     treeFolders.forEach((elem) => {
-      this.rootFoldersTitles[elem.rootFolderType] = elem.title;
+      this.rootFoldersTitles[elem.rootFolderType] = {
+        id: elem.id,
+        title: elem.title,
+      };
     });
   };
+
+  get sharedRoomId() {
+    return this.rootFoldersTitles[FolderType.Rooms]?.id;
+  }
 
   getFoldersTree = () => getFoldersTree();
 

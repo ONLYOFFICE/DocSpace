@@ -79,6 +79,7 @@ global using ASC.Core.Tenants;
 global using ASC.Core.Users;
 global using ASC.Data.Backup;
 global using ASC.Data.Backup.Contracts;
+global using ASC.Data.Backup.EF.Context;
 global using ASC.Data.Storage;
 global using ASC.Data.Storage.Configuration;
 global using ASC.Data.Storage.Encryption;

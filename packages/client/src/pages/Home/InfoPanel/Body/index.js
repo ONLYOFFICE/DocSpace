@@ -118,6 +118,7 @@ export default inject(
     dialogsStore,
     treeFoldersStore,
     selectedFolderStore,
+    oformsStore,
   }) => {
     const { personal, culture } = auth.settingsStore;
 
@@ -126,9 +127,9 @@ export default inject(
       bufferSelection,
       getFolderInfo,
       getShareUsers,
-      gallerySelected,
       createThumbnail,
     } = filesStore;
+    const { gallerySelected } = oformsStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem } = filesActionsStore;
     const { setSharingPanelVisible } = dialogsStore;

@@ -71,9 +71,10 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, filesStore }) => {
+export default inject(({ auth, filesStore, oformsStore }) => {
   const { toggleIsVisible, isVisible } = auth.infoPanelStore;
-  const { setGallerySelected, categoryType } = filesStore;
+  const { categoryType } = filesStore;
+  const { setGallerySelected } = oformsStore;
   return {
     toggleInfoPanel: toggleIsVisible,
     isInfoPanelVisible: isVisible,

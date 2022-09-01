@@ -162,6 +162,7 @@ const StyledFilterBlockItemTag = styled.div`
   cursor: pointer;
 
   ${(props) => props.isSelected && selectedItemTag}
+
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 `;
 
