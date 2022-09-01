@@ -3,13 +3,33 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
+import toastr from "client/toastr";
 
 import ModalDialogContainer from "../ModalDialogContainer";
 
 const ChangeNameDialog = (props) => {
-  const { t, tReady, visible, onClose, fName, sName } = props;
-  const [firstName, setFirstName] = useState(fName);
-  const [lastName, setLastName] = useState(sName);
+  const { t, tReady, visible, onClose, profile, onSave } = props;
+  const [firstName, setFirstName] = useState(profile.firstName);
+  const [lastName, setLastName] = useState(profile.lastName);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const onSaveClick = async () => {
+    const newProfile = profile;
+    newProfile.firstName = firstName;
+    newProfile.lastName = lastName;
+
+    try {
+      setIsSaving(true);
+      await onSave(newProfile);
+      toastr.success(t("ProfileAction:ChangesSavedSuccessfully"));
+      onClose();
+    } catch (error) {
+      console.error(error);
+      toastr.error(error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <ModalDialogContainer
@@ -56,6 +76,8 @@ const ChangeNameDialog = (props) => {
           size="normal"
           scale
           primary={true}
+          onClick={onSaveClick}
+          isLoading={isSaving}
         />
         <Button
           key="CloseBtn"
@@ -63,6 +85,7 @@ const ChangeNameDialog = (props) => {
           size="normal"
           scale
           onClick={onClose}
+          isDisabled={isSaving}
         />
       </ModalDialog.Footer>
     </ModalDialogContainer>
