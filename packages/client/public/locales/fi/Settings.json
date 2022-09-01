@@ -143,7 +143,7 @@
   "ThirdPartyPropsActivated": "Päivitetty onnistuneesti",
   "ThirdPartyPropsDeactivated": "Otettu pois käytöstä onnistuneesti",
   "ThirdPartyResource": "Kolmannen osapuolen resurssi",
-  "ThirdPartyResourceDescription": "Varmuuskopio voidaan tallentaa kolmannen osapuolen tilillesi (Dropbox, Box.com, OneDrive tai Google Drive). Sinun on yhdistettävä kolmannen osapuolen tilisi (Dropbox, Box.com, OneDrive tai Google Drive) Yleiset asiakirjat -kansioon, ennen kuin voit tallentaa varmuuskopiosi sinne.",
+  "ThirdPartyResourceDescription": "Varmuuskopio voidaan tallentaa kolmannen osapuolen tilillesi (Dropbox, Box.com, OneDrive tai Google Drive). Sinun on yhdistettävä kolmannen osapuolen tilisi (Dropbox, Box.com, OneDrive tai Google Drive), ennen kuin voit tallentaa varmuuskopiosi sinne.",
   "ThirdPartyStorage": "Kolmannen osapuolen tallennus",
   "ThirdPartyStorageDescription": "Varmuuskopio voidaan tallentaa kolmannen osapuolen tallennustilaan. Ennen sitä, sinun on kytkettävä vastaava palvelu Integrointi-osiossa. Muussa tapauksessa seuraavat asetukset ovat passiivisia.",
   "ThirdPartyTitleDescription": "Valtuutusavaimilla voit yhdistää kolmannen osapuolen palveluita portaaliin. Kirjaudu helposti sisään Facebookin, Twitterin tai LinkedInin avulla; lisää Dropbox, OneDrive jne. työskennelläksesi siellä olevien tiedostojen kanssa asiakirja-moduulissa.",

@@ -84,6 +84,11 @@ public class FileSharingAceHelper<T>
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
+        
+        if (entry is Folder<T> { Private: true } && advancedSettings is not { AllowSharingPrivateRoom: true })
+        {
+            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+        }
 
         var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootCreateBy : entry.CreateBy;
         var entryType = entry.FileEntryType;
@@ -234,7 +239,7 @@ public class FileSharingAceHelper<T>
 
     private async Task<List<AceWrapper>> FilterForRoomsAsync(FileEntry<T> entry, List<AceWrapper> aceWrappers, bool invite)
     {
-        if (entry.FileEntryType == FileEntryType.File || entry.RootFolderType == FolderType.Archive || invite)
+        if (entry.FileEntryType == FileEntryType.File || entry.RootFolderType == FolderType.Archive || invite || entry is Folder<T> { Private : true })
         {
             return aceWrappers;
         }
@@ -325,9 +330,8 @@ public class FileSharingHelper
         return
             entry != null
             && ((entry.RootFolderType == FolderType.COMMON && _global.IsAdministrator)
-            || (entry.RootFolderType == FolderType.VirtualRooms && _global.IsAdministrator)
-            || (folder != null && (folder.FolderType == FolderType.FillingFormsRoom || folder.FolderType == FolderType.EditingRoom || folder.FolderType == FolderType.ReviewRoom ||
-                folder.FolderType == FolderType.ReadOnlyRoom || folder.FolderType == FolderType.CustomRoom) && await _fileSecurity.CanEditRoomAsync(entry))
+            || (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsAdministrator || await _fileSecurity.CanShare(entry)))
+            || (folder != null && DocSpaceHelper.IsRoom(folder.FolderType) && await _fileSecurity.CanEditRoomAsync(entry))
                 || !_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)
                     && (entry.RootFolderType == FolderType.USER
                         && (Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanShare(entry))

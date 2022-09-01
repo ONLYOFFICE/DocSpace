@@ -490,7 +490,7 @@ internal class GoogleDriveFolderDao : GoogleDriveDaoBase, IFolderDao<string>
         return entries.Count == 0;
     }
 
-    public bool UseTrashForRemove(Folder<string> folder)
+    public bool UseTrashForRemoveAsync(Folder<string> folder)
     {
         return false;
     }
