@@ -1,47 +1,55 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-
-import { Base } from "@docspace/components/themes";
-import withLoader from "../../../../HOCs/withLoader";
-import Loaders from "@docspace/common/components/Loaders";
-
-import { StyledInfoPanelBody } from "./styles/styles.js";
+import { ReactSVG } from "react-svg";
 
 import Gallery from "./views/Gallery";
 import Room from "./views/Room";
 import Info from "./views/Info";
+import { StyledInfoPanelBody, StyledTitle } from "./styles/common";
+
+import { Base } from "@docspace/components/themes";
+import withLoader from "../../../../HOCs/withLoader";
+import Loaders from "@docspace/common/components/Loaders";
+import { Text } from "@docspace/components";
 
 const InfoPanelBodyContent = ({
   t,
-  isRoom,
-  selfId,
-  selectedFolder,
   selectedItems,
+  selectedFolder,
+
+  selfId,
+  personal,
+  culture,
+
+  isRoom,
+  roomState,
+  calculateisRoom,
+
   getFolderInfo,
+  onSelectItem,
+  getShareUsers,
+  setSharingPanelVisible,
+
   getIcon,
   getFolderIcon,
-  getShareUsers,
-  onSelectItem,
-  setSharingPanelVisible,
+  createThumbnail,
+
+  isGallery,
+  gallerySelected,
+
+  isFileCategory,
   isRootFolder,
   isFavoritesFolder,
   isRecentFolder,
   isRecycleBinFolder,
-  isGallery,
-  gallerySelected,
-  personal,
-  createThumbnail,
-  culture,
-  roomState,
-  calculateisRoom,
 }) => {
   const defaultProps = {
     t,
-    selectedItems,
     personal,
     culture,
+    isFileCategory,
     isRootFolder,
     isRecycleBinFolder,
     isRecentFolder,
@@ -49,7 +57,6 @@ const InfoPanelBodyContent = ({
   };
 
   const detailsProps = {
-    selectedFolder,
     getFolderInfo,
     getIcon,
     getFolderIcon,
@@ -60,8 +67,6 @@ const InfoPanelBodyContent = ({
   };
 
   const roomProps = {
-    selectedItems,
-    selectedFolder,
     roomState,
     defaultProps,
     membersProps: {
@@ -81,18 +86,66 @@ const InfoPanelBodyContent = ({
     culture,
   };
 
-  const getInfoPanelBodyContent = () => {
-    if (isGallery) return <Gallery {...galleryProps} />;
-    else if (isRoom) return <Room {...roomProps} />;
-    else return <Info {...defaultProps} {...detailsProps} />;
+  const getSelection = () => {
+    if (selectedItems.length > 1) return selectedItems;
+
+    const newSelection =
+      selectedItems.length === 0
+        ? { ...selectedFolder, isSelectedFolder: true }
+        : { ...selectedItems[0], isSelectedItem: true };
+
+    const getItemIcon = (size) =>
+      newSelection.isRoom
+        ? newSelection.logo && newSelection.logo.big
+          ? newSelection.logo.big
+          : newSelection.icon
+        : newSelection.isFolder
+        ? getFolderIcon(newSelection.providerKey, size)
+        : getIcon(size, newSelection.fileExst || ".file");
+
+    newSelection.icon = getItemIcon(32);
+    newSelection.hasCustonThumbnail = !!newSelection.thumbnailUrl;
+    newSelection.thumbnailUrl = newSelection.thumbnailUrl || getItemIcon(96);
+
+    return newSelection;
   };
 
-  useEffect(() => {
-    if (selectedItems.length === 1) calculateisRoom(selectedItems[0]);
-    else if (selectedItems.length === 0) calculateisRoom(selectedFolder);
-  }, [selectedItems, selectedFolder]);
+  const selection = getSelection();
 
-  return <StyledInfoPanelBody>{getInfoPanelBodyContent()}</StyledInfoPanelBody>;
+  useEffect(() => {
+    calculateisRoom(selection.isRoom);
+  }, [selection]);
+
+  return (
+    <StyledInfoPanelBody>
+      {!(isFileCategory && selection.isSelectedFolder) && !isGallery ? (
+        !Array.isArray(selection) ? (
+          <StyledTitle>
+            <img
+              className={`icon ${selection.isRoom && "is-room"}`}
+              src={selection.icon}
+              alt="thumbnail-icon"
+            />
+            <Text className="text">{selection.title}</Text>
+          </StyledTitle>
+        ) : (
+          <StyledTitle>
+            <ReactSVG className="icon" src={getIcon(32, ".file")} />
+            <Text className="text">
+              {`${t("ItemsSelected")}: ${selection.length}`}
+            </Text>
+          </StyledTitle>
+        )
+      ) : null}
+      {isGallery ? (
+        <Gallery selection={selection} {...galleryProps} />
+      ) : isRoom ? (
+        <Room selection={selection} {...roomProps} />
+      ) : (
+        <Info selection={selection} {...defaultProps} {...detailsProps} />
+      )}
+    </StyledInfoPanelBody>
+  );
 };
 
 InfoPanelBodyContent.defaultProps = { theme: Base };
@@ -119,7 +172,6 @@ export default inject(
       getShareUsers,
       createThumbnail,
     } = filesStore;
-    const { gallerySelected } = oformsStore;
 
     const {
       isRecycleBinFolder,
@@ -131,6 +183,11 @@ export default inject(
     const { onSelectItem } = filesActionsStore;
     const { setSharingPanelVisible } = dialogsStore;
     const { isRootFolder } = selectedFolderStore;
+    const { gallerySelected } = oformsStore;
+
+    const isFileCategory =
+      isRootFolder &&
+      (isRecycleBinFolder || isRecentFolder || isFavoritesFolder);
 
     const selectedItems =
       selection?.length > 0
@@ -141,6 +198,7 @@ export default inject(
 
     const selectedFolder = {
       ...selectedFolderStore,
+      isFolder: true,
       isRoom: !!selectedFolderStore.roomType,
     };
 
@@ -153,35 +211,39 @@ export default inject(
 
     return {
       selfId,
-      selectedFolder: selectedFolder,
-      selectedItems: selectedItems,
+      personal,
+      culture,
+
+      selectedItems,
+      selectedFolder,
+
+      isRoom,
+      roomState,
+      calculateisRoom,
 
       getFolderInfo,
-      getShareUsers,
-      getIcon,
-      getFolderIcon,
       onSelectItem,
+      getShareUsers,
       setSharingPanelVisible,
 
+      getIcon,
+      getFolderIcon,
+      createThumbnail,
+
+      gallerySelected,
+
+      isFileCategory,
       isRootFolder,
       isFavoritesFolder,
       isRecentFolder,
       isRecycleBinFolder,
-
-      gallerySelected,
-      personal,
-      createThumbnail,
-      culture,
-      isRoom,
-      roomState,
-      calculateisRoom,
     };
   }
 )(
   withRouter(
     withTranslation(["InfoPanel", "Home", "Common", "Translations"])(
       withLoader(observer(InfoPanelBodyContent))(
-        <Loaders.InfoPanelBodyLoader isFolder />
+        <Loaders.InfoPanelBodyLoader />
       )
     )
   )
