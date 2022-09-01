@@ -1,5 +1,4 @@
 import { Request } from "express";
-export {};
 
 type WindowI18nType = {
   inLoad: object[];
@@ -25,7 +24,7 @@ declare global {
 
   type MatchType = {
     confirmedEmail?: string;
-    error?: string;
+    message?: string;
   };
 
   type PasswordHashType = {
