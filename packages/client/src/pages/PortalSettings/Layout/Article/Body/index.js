@@ -203,11 +203,17 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText } = this.props;
+    const { showText, isNotPaid } = this.props;
 
     const items = [];
+    let resultTree = [...settingsTree];
 
-    settingsTree.map((item) => {
+    if (isNotPaid) {
+      resultTree = [...settingsTree].filter((e) => {
+        return e.tKey === "Backup" || e.tKey === "Payments";
+      });
+    }
+    resultTree.map((item) => {
       items.push(
         <CatalogItem
           key={item.key}
@@ -241,12 +247,14 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(({ auth, common }) => {
   const { isLoaded, setIsLoadedArticleBody } = common;
+  const { isNotPaid } = auth;
 
   return {
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
     isLoaded,
     setIsLoadedArticleBody,
+    isNotPaid,
   };
 })(
   withLoading(

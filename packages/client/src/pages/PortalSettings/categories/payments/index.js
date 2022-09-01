@@ -26,7 +26,8 @@ const StyledBody = styled.div`
   .payment-info_grace-period {
     margin-bottom: 12px;
   }
-  .payment-info_grace-period {
+  .payment-info_grace-period,
+  .payment-info_expired-period {
     color: ${(props) => props.theme.client.payments.delayColor};
   }
   .payment-info {
@@ -69,6 +70,7 @@ const PaymentsPage = ({
   currencies,
   setCurrencies,
   isoCurrencySymbol,
+  isNotPaid,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -83,7 +85,9 @@ const PaymentsPage = ({
 
     if (portalTariff) {
       dueDate = moment(
-        isGracePeriod ? portalTariff.delayDueDate : portalTariff.dueDate
+        isGracePeriod || isNotPaid
+          ? portalTariff.delayDueDate
+          : portalTariff.dueDate
       ).format("LL");
 
       if (isGracePeriod) {
@@ -152,12 +156,35 @@ const PaymentsPage = ({
     <Loaders.PaymentsLoader />
   ) : (
     <StyledBody theme={theme}>
-      <Text noSelect fontSize="16px" isBold>
-        {isFreeTariff ? t("StartupTitle") : t("BusinessTitle")}
-      </Text>
+      {isNotPaid ? (
+        <Text
+          noSelect
+          fontSize="16px"
+          isBold
+          className="payment-info_expired-period"
+        >
+          <Trans t={t} i18nKey="BusinessExpired" ns="Payments">
+            {{ date: dueDate }}
+          </Trans>
+        </Text>
+      ) : (
+        <Text noSelect fontSize="16px" isBold>
+          {isFreeTariff ? t("StartupTitle") : t("BusinessTitle")}
+        </Text>
+      )}
+
       {!isFreeTariff && <PayerInformationContainer />}
       <CurrentTariffContainer />
-      {isGracePeriod ? (
+      {isNotPaid ? (
+        <Text
+          noSelect
+          fontSize="16px"
+          isBold
+          className="payment-info_suggestion "
+        >
+          {t("RenewSubscription")}
+        </Text>
+      ) : isGracePeriod ? (
         <Text
           noSelect
           fontSize="16px"
@@ -233,6 +260,7 @@ export default inject(({ auth, payments }) => {
     isGracePeriod,
     currencies,
     setCurrencies,
+    isNotPaid,
   } = auth;
 
   const { organizationName, theme } = auth.settingsStore;
@@ -262,5 +290,6 @@ export default inject(({ auth, payments }) => {
     currencies,
     setCurrencies,
     isoCurrencySymbol: currencies[0]?.isoCurrencySymbol,
+    isNotPaid,
   };
 })(withRouter(observer(PaymentsPage)));

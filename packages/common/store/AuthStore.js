@@ -328,6 +328,10 @@ class AuthStore {
     return this.portalTariff.state === TariffState.Delay;
   }
 
+  get isNotPaid() {
+    return this.portalTariff.state === TariffState.NotPaid;
+  }
+
   setPortalTariff = async () => {
     const res = await api.portal.getPortalTariff();
     if (res) this.portalTariff = res;

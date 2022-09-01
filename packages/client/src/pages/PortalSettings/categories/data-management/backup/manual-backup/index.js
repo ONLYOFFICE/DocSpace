@@ -210,6 +210,7 @@ class ManualBackup extends React.Component {
       renderTooltip,
       //isDocSpace,
       rootFoldersTitles,
+      isNotPaid,
     } = this.props;
     const {
       isInitialLoading,
@@ -307,7 +308,7 @@ class ManualBackup extends React.Component {
             name={"isCheckedDocuments"}
             key={1}
             isChecked={isCheckedDocuments}
-            isDisabled={!isMaxProgress}
+            isDisabled={!isMaxProgress || isNotPaid}
             {...commonRadioButtonProps}
           />
           <Text className="backup-description module-documents">
@@ -329,7 +330,7 @@ class ManualBackup extends React.Component {
             name={"isCheckedThirdParty"}
             key={2}
             isChecked={isCheckedThirdParty}
-            isDisabled={!isMaxProgress}
+            isDisabled={!isMaxProgress || isNotPaid}
             {...commonRadioButtonProps}
           />
           <Text className="backup-description">
@@ -343,7 +344,7 @@ class ManualBackup extends React.Component {
             name={"isCheckedThirdPartyStorage"}
             key={3}
             isChecked={isCheckedThirdPartyStorage}
-            isDisabled={!isMaxProgress}
+            isDisabled={!isMaxProgress || isNotPaid}
             {...commonRadioButtonProps}
           />
           <Text className="backup-description">
@@ -384,10 +385,12 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     setStorageRegions,
     saveToLocalStorage,
   } = backup;
+  const { isNotPaid } = auth;
   const { organizationName } = auth.settingsStore;
   const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
 
   return {
+    isNotPaid,
     organizationName,
     setThirdPartyStorage,
     clearProgressInterval,

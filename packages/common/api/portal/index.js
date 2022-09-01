@@ -207,5 +207,5 @@ export function getCurrencies() {
 }
 
 export function getPaymentTariff() {
-  return request({ method: "get", url: "/portal/payment/tariff" });
+  return request({ method: "get", url: "/portal/payment/quotas" });
 }

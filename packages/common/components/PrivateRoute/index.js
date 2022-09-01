@@ -27,8 +27,17 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     personal,
     location,
     tenantStatus,
+    isNotPaid,
   } = rest;
-  const isPortal = window.location.pathname === "/preparation-portal";
+
+  const windowPath = window.location.pathname;
+
+  const isPortal = windowPath === "/preparation-portal";
+  const isPaymentsPage =
+    windowPath === "/portal-settings/payments/portal-payments";
+  const isPortalUnavailable = windowPath === "/portal-unavailable";
+  const isBackupPage = windowPath === "/portal-settings/backup/data-backup";
+
   const { params, path } = computedMatch;
   const { userId } = params;
 
@@ -76,6 +85,48 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
             pathname: combineUrl(
               AppServerConfig.proxyURL,
               "/preparation-portal"
+            ),
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
+    if (
+      isNotPaid &&
+      isLoaded &&
+      isAuthenticated &&
+      (user.isOwner || user.isAdmin) &&
+      !isPaymentsPage &&
+      !isBackupPage
+    ) {
+      return (
+        <Redirect
+          to={{
+            pathname: combineUrl(
+              AppServerConfig.proxyURL,
+              "/portal-settings/payments/portal-payments"
+            ),
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
+    if (
+      isNotPaid &&
+      isLoaded &&
+      isAuthenticated &&
+      !user.isOwner &&
+      !user.isAdmin &&
+      !isPortalUnavailable
+    ) {
+      return (
+        <Redirect
+          to={{
+            pathname: combineUrl(
+              AppServerConfig.proxyURL,
+              "/portal-unavailable"
             ),
             state: { from: props.location },
           }}
@@ -144,7 +195,14 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 };
 
 export default inject(({ auth }) => {
-  const { userStore, isAuthenticated, isLoaded, isAdmin, settingsStore } = auth;
+  const {
+    userStore,
+    isAuthenticated,
+    isLoaded,
+    isAdmin,
+    settingsStore,
+    isNotPaid,
+  } = auth;
   const { user } = userStore;
 
   const {
@@ -155,6 +213,7 @@ export default inject(({ auth }) => {
   } = settingsStore;
 
   return {
+    isNotPaid,
     user,
     isAuthenticated,
     isAdmin,
