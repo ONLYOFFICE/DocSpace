@@ -1,8 +1,5 @@
 import { makeAutoObservable } from "mobx";
 
-import { getCategoryType } from "SRC_DIR/helpers/utils";
-import { CategoryType } from "SRC_DIR/helpers/constants";
-
 class InfoPanelStore {
   isVisible = false;
   roomState = "members";
