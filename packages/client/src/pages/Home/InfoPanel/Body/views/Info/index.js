@@ -6,8 +6,7 @@ import SingleItem from "./SingleItem";
 const Info = ({
   t,
 
-  selectedItems,
-  selectedFolder,
+  selection,
 
   getFolderInfo,
   getIcon,
@@ -22,6 +21,7 @@ const Info = ({
 
   isRoom,
 
+  isFileCategory,
   isRootFolder,
   isRecycleBinFolder,
   isRecentFolder,
@@ -59,25 +59,12 @@ const Info = ({
     );
   };
 
-  return (
-    <>
-      {selectedItems.length === 0 ? (
-        // Can    its info
-        isRootFolder &&
-        (isRecycleBinFolder || isRecentFolder || isFavoritesFolder) ? (
-          <EmptyScreen />
-        ) : (
-          singleItem({
-            ...selectedFolder,
-            isFolder: true,
-          })
-        )
-      ) : selectedItems.length === 1 ? (
-        singleItem(selectedItems[0])
-      ) : (
-        <SeveralItems selectedItems={selectedItems} getIcon={getIcon} />
-      )}
-    </>
+  return isFileCategory && selection.isSelectedFolder ? (
+    <EmptyScreen />
+  ) : Array.isArray(selection) ? (
+    <SeveralItems selectedItems={selection} getIcon={getIcon} />
+  ) : (
+    singleItem(selection)
   );
 };
 
