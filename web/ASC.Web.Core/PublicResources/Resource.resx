@@ -852,4 +852,7 @@
   <data name="TariffsFeature_whitelabel" xml:space="preserve">
     <value>Branding &amp; customization</value>
   </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business plan</value>
+  </data>
 </root>

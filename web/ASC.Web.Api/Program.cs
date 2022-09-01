@@ -38,6 +38,7 @@ builder.Host.ConfigureDefault(args, configureServices: (hostContext, services, d
     diHelper.TryAdd<LdapNotifyService>();
     services.AddBaseDbContextPool<FilesDbContext>();
     services.AddBaseDbContextPool<BackupsContext>();
+    services.AddTransient<QuotaUsageDto>();
 });
 
 builder.WebHost.ConfigureDefaultKestrel();

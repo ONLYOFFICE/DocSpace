@@ -2140,6 +2140,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Business plan.
+        /// </summary>
+        public static string Tariffs_admin {
+            get {
+                return ResourceManager.GetString("Tariffs_admin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number of managers.
         /// </summary>
         public static string TariffsFeature_admin_price_count {
