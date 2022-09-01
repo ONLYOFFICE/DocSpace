@@ -1,5 +1,4 @@
 import React from "react";
-import { StyledInfoPanelBody } from "../../styles/styles";
 import GalleryEmptyScreen from "./GalleryEmptyScreen";
 import GalleryItem from "./GalleryItem";
 

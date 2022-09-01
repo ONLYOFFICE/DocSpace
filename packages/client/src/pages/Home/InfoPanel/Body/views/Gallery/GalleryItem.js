@@ -9,7 +9,7 @@ import {
   StyledSubtitle,
   StyledGalleryThumbnail,
   StyledTitle,
-} from "../../styles/styles.js";
+} from "../../styles/common.js";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 
 const SingleItem = (props) => {
