@@ -37,6 +37,10 @@ const Selector = ({
   emptyScreenImage,
   emptyScreenHeader,
   emptyScreenDescription,
+  hasNextPage,
+  isNextPageLoading,
+  loadNextPage,
+  totalItems,
 }) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -47,9 +51,7 @@ const Selector = ({
   const [renderedItems, setRenderedItems] = React.useState([]);
   const [newSelectedItems, setNewSelectedItems] = React.useState([]);
 
-  const [newSelectedAccessRights, setNewSelectedAccessRights] = React.useState(
-    {}
-  );
+  const [selectedAccess, setSelectedAccess] = React.useState({});
 
   const onBackClickAction = React.useCallback(() => {
     onBackClick && onBackClick();
@@ -164,8 +166,8 @@ const Selector = ({
   }, [items, newSelectedItems]);
 
   const onAcceptAction = React.useCallback(() => {
-    onAccept && onAccept(newSelectedItems, newSelectedAccessRights);
-  }, [newSelectedItems, newSelectedAccessRights]);
+    onAccept && onAccept(newSelectedItems, selectedAccess);
+  }, [newSelectedItems, selectedAccess]);
 
   const onCancelAction = React.useCallback(() => {
     onCancel && onCancel();
@@ -173,7 +175,7 @@ const Selector = ({
 
   const onChangeAccessRightsAction = React.useCallback(
     (access) => {
-      setNewSelectedAccessRights({ ...access });
+      setSelectedAccess({ ...access });
       onAccessRightsChange && onAccessRightsChange(access);
     },
     [onAccessRightsChange]
@@ -196,8 +198,15 @@ const Selector = ({
     [selectedItems]
   );
 
+  const loadMoreItems = React.useCallback(
+    (startIndex) => {
+      loadNextPage && loadNextPage(startIndex);
+    },
+    [isNextPageLoading, loadNextPage]
+  );
+
   React.useEffect(() => {
-    setNewSelectedAccessRights({ ...selectedAccessRight });
+    setSelectedAccess({ ...selectedAccessRight });
   }, [selectedAccessRight]);
 
   React.useEffect(() => {
@@ -251,6 +260,9 @@ const Selector = ({
         emptyScreenImage={emptyScreenImage}
         emptyScreenHeader={emptyScreenHeader}
         emptyScreenDescription={emptyScreenDescription}
+        hasNextPage={hasNextPage}
+        loadMoreItems={loadMoreItems}
+        totalItems={totalItems}
       />
 
       {footerVisible && (
@@ -262,7 +274,7 @@ const Selector = ({
           cancelButtonLabel={cancelButtonLabel}
           withAccessRights={withAccessRights}
           accessRights={accessRights}
-          selectedAccessRight={newSelectedAccessRights}
+          selectedAccessRight={selectedAccess}
           onAccept={onAcceptAction}
           onCancel={onCancelAction}
           onChangeAccessRights={onChangeAccessRightsAction}
@@ -310,6 +322,11 @@ Selector.propTypes = {
   emptyScreenImage: PropTypes.string,
   emptyScreenHeader: PropTypes.string,
   emptyScreenDescription: PropTypes.string,
+
+  totalItems: PropTypes.number,
+  hasNextPage: PropTypes.bool,
+  isNextPageLoading: PropTypes.bool,
+  loadNextPage: PropTypes.func,
 };
 
 Selector.defaultProps = {
