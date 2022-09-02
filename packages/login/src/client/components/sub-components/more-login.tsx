@@ -6,7 +6,6 @@ import { providersData } from "@docspace/common/constants";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { getProviderTranslation } from "@docspace/common/utils";
-import { useTranslation } from "react-i18next";
 
 const ProviderRow = styled.div`
   width: 100%;

@@ -1,7 +1,5 @@
 import React from "react";
 import { ServerStyleSheet } from "styled-components";
-// import GlobalStyle from "../../../client/components/GlobalStyle";
-// import Login from "../../../client/components/Login";
 import App from "../../../client/App";
 import { renderToString } from "react-dom/server";
 import { I18nextProvider, I18nextProviderProps } from "react-i18next";

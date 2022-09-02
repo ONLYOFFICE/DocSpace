@@ -56,7 +56,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
   const { t } = useTranslation(["Login", "Common"]);
 
-  const { error, confirmedEmail } = match;
+  const { message, confirmedEmail } = match;
 
   useEffect(() => {
     const profile = localStorage.getItem("profile");
@@ -66,7 +66,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   }, []);
 
   useEffect(() => {
-    error && setErrorText(error);
+    message && setErrorText(message);
     confirmedEmail && setIdentifier(confirmedEmail);
 
     focusInput();

@@ -1,10 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  ButtonsWrapper,
-  LoginContainer,
-  LoginFormWrapper,
-} from "./StyledLogin";
+import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
 import Logo from "../../../../../public/images/docspace.big.react.svg";
 import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";

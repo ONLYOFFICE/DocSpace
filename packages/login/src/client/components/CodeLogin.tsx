@@ -4,9 +4,7 @@ import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import CodeInput from "@docspace/components/code-input";
 import { Trans } from "react-i18next";
-import { RouteComponentProps } from "react-router-dom";
 import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
-import { I18next } from "i18next-express-middleware";
 import BarLogo from "../../../../../public/images/danger.alert.react.svg";
 import DocspaceLogo from "../../../../../public/images/docspace.big.react.svg";
 interface IBarProp {

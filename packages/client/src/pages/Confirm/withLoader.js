@@ -36,7 +36,7 @@ export default function withLoader(WrappedComponent) {
             history.push(
               combineUrl(
                 AppServerConfig.proxyURL,
-                `/login/error?error=${error}`
+                `/login/error?message=${error}`
               )
             );
           });

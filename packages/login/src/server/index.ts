@@ -8,7 +8,7 @@ import logger from "morgan";
 import winston, { stream } from "./lib/logger";
 import { getAssets, getInitialState } from "./lib/helpers";
 import renderApp from "./lib/helpers/render-app";
-import i18nextMiddleware, { I18next } from "i18next-express-middleware";
+import i18nextMiddleware from "i18next-express-middleware";
 import i18next from "./i18n";
 import cookieParser from "cookie-parser";
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
