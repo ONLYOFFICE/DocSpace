@@ -60,4 +60,15 @@ public static class Constants
     public const string Documents = "documents";
 
     #endregion
+
+    #region Items
+
+    public const string RoomItem = "room";
+    public const string SharedRoomItem = "sharedRoom";
+    public const string FileItem = "file";
+    public const string SharedFileItem = "sharedFile";
+    public const string FolderItem = "folder";
+    public const string SharedFolderItem = "sharedFolder";
+
+    #endregion
 }
