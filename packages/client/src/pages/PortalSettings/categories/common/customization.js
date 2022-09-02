@@ -97,8 +97,6 @@ const Customization = (props) => {
 
   const isMobile = !!(isSmallTablet() && mobileView);
 
-  console.log("isLoadedPage", isLoadedPage);
-
   return isMobile ? (
     <CustomizationNavbar isLoadedPage={isLoadedPage} />
   ) : (
