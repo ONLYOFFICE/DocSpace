@@ -258,7 +258,7 @@ class WelcomePageSettings extends React.Component {
         <FieldContainer
           id="fieldContainerWelcomePage"
           className="field-container-width"
-          labelText={`${t("Common:Title")}:`}
+          labelText={`${t("Common:Title")}`}
           isVertical={true}
         >
           <TextInput

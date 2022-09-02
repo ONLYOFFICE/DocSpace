@@ -230,7 +230,7 @@ const PortalRenaming = (props) => {
       <FieldContainer
         id="fieldContainerPortalRenaming"
         className="field-container-width"
-        labelText={`${t("PortalRenamingLabelText")}:`}
+        labelText={`${t("PortalRenamingLabelText")}`}
         isVertical={true}
       >
         <TextInput
