@@ -51,26 +51,45 @@ class AddUsersPanelComponent extends React.Component {
   };
 
   onPeopleSelect = (users) => {
-    const { shareDataItems, setShareDataItems, onClose } = this.props;
-    const items = shareDataItems;
-    for (let item of users) {
-      const groups = item?.groups.map((group) => ({
-        id: group,
-      }));
+    const {
+      shareDataItems,
+      setShareDataItems,
+      onClose,
+      withoutAdded,
+    } = this.props;
+    const items = withoutAdded ? [] : shareDataItems;
 
-      if (item.key) {
-        item.id = item.key;
-        item.groups = groups;
-      }
+    for (let item of users) {
       const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
-      if (!currentItem) {
-        const newItem = {
-          access: this.state.accessRight,
-          isLocked: false,
-          isOwner: false,
-          sharedTo: item,
-        };
-        items.push(newItem);
+
+      if (withoutAdded) {
+        if (!currentItem) {
+          items.push({
+            access: this.state.accessRight,
+            email: item.email,
+            id: item.key,
+            displayName: item.label,
+            avatarSmall: item.avatarUrl,
+          });
+        }
+      } else {
+        const groups = item?.groups.map((group) => ({
+          id: group,
+        }));
+
+        if (item.key) {
+          item.id = item.key;
+          item.groups = groups;
+        }
+
+        if (!currentItem) {
+          items.push({
+            access: this.state.accessRight,
+            isLocked: false,
+            isOwner: false,
+            sharedTo: item,
+          });
+        }
       }
     }
 
@@ -203,8 +222,11 @@ AddUsersPanelComponent.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default inject(({ auth }) => {
-  return { theme: auth.settingsStore.theme };
+export default inject(({ auth, dialogsStore }) => {
+  return {
+    theme: auth.settingsStore.theme,
+    inviteItems: dialogsStore.inviteItems,
+  };
 })(
   observer(
     withTranslation(["SharingPanel", "PeopleTranslations", "Common"])(
