@@ -203,7 +203,7 @@ public class FeedAggregateDataProvider
     private List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        var q = feedDbContext.FeedAggregates
+        var q = feedDbContext.FeedAggregates.AsNoTracking()
             .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
             .Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
             .Where(r => r.users.UserId == _authContext.CurrentAccount.ID)
