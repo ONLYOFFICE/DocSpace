@@ -30,13 +30,13 @@ namespace ASC.Files.Service.Core;
 
 public class RoomsModule : FeedModule
 {
+    public const string RoomItem = Constants.RoomItem;
+    public const string SharedRoomItem = Constants.SharedRoomItem;
+
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
     private readonly FileSecurity _fileSecurity;
-
-    private const string RoomItem = "room";
-    private const string SharedRoomItem = "sharedRoom";
 
     public RoomsModule(
         TenantManager tenantManager,
@@ -98,10 +98,7 @@ public class RoomsModule : FeedModule
     {
         var rooms = _folderDao.GetFeedsForRoomsAsync(filter.Tenant, filter.Time.From, filter.Time.To).ToListAsync().Result;
 
-        var parentFolderIDs = rooms.Select(r => r.Folder.ParentId).ToList();
-        var parentFolders = _folderDao.GetFoldersAsync(parentFolderIDs, checkShare: false).ToListAsync().Result;
-
-        return rooms.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Folder.ParentId))), f));
+        return rooms.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f), f));
     }
 
     public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
@@ -109,7 +106,7 @@ public class RoomsModule : FeedModule
         return _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync().Result;
     }
 
-    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity, Folder<int> rootFolder)
+    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity)
     {
         var folder = folderWithSecurity.Folder;
         var shareRecord = folderWithSecurity.ShareRecord;
@@ -124,9 +121,11 @@ public class RoomsModule : FeedModule
                 Product = Product,
                 Module = Name,
                 Title = folder.Title,
-                ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(folder.ParentId, false) : string.Empty,
+                ExtraLocation = FilesUCResource.VirtualRooms,
+                ExtraLocationUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.RootId, false),
                 Keywords = folder.Title,
+                AdditionalInfo = Enum.GetName(folder.FolderType),
+                AdditionalInfo2 = folder.Private ? "private" : null,
                 HasPreview = false,
                 CanComment = false,
                 Target = shareRecord.Subject,
@@ -144,9 +143,11 @@ public class RoomsModule : FeedModule
             Product = Product,
             Module = Name,
             Title = folder.Title,
-            ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-            ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(folder.ParentId, false) : string.Empty,
+            ExtraLocation = FilesUCResource.VirtualRooms,
+            ExtraLocationUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.RootId, false),
             Keywords = folder.Title,
+            AdditionalInfo = Enum.GetName(folder.FolderType),
+            AdditionalInfo2 = folder.Private ? "private" : null,
             HasPreview = false,
             CanComment = false,
             Target = null,
