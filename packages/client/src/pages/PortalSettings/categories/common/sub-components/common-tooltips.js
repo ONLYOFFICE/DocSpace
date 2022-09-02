@@ -100,14 +100,14 @@ export const DNSSettingsTooltip = ({ t, theme, helpLink }) => {
 
   return (
     <StyledTooltip>
-      <Text className="font-size">
+      <div className="font-size">
         <Trans
           ns="Settings"
           i18nKey="DNSSettingsTooltip"
           text={text}
           learnMore={learnMore}
         >
-          <Text className="display-inline font-size"> {{ text }}</Text>{" "}
+          <div className="display-inline font-size"> {{ text }}</div>{" "}
           <Link
             color={theme.client.settings.common.linkColorHelp}
             className="display-block font-size"
@@ -118,7 +118,7 @@ export const DNSSettingsTooltip = ({ t, theme, helpLink }) => {
             {{ learnMore }}
           </Link>
         </Trans>
-      </Text>
+      </div>
     </StyledTooltip>
   );
 };
