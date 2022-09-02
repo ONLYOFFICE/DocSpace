@@ -1957,6 +1957,9 @@ const Dark = {
   article: {
     background: "#292929",
     pinBorderColor: "#474747",
+    catalogItemHeader: "#858585",
+    catalogItemText: "rgba(255, 255, 255, 0.6)",
+    catalogItemActiveBackground: "#333333",
   },
 
   section: {
