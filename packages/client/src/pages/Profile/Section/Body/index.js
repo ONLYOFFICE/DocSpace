@@ -10,6 +10,7 @@ import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 import MainProfile from "./sub-components/main-profile";
 import LoginSettings from "./sub-components/login-settings";
 import Subscription from "./sub-components/subscription";
+import InterfaceTheme from "./sub-components/interface-theme";
 
 import { tablet } from "@docspace/components/utils/device";
 
@@ -84,6 +85,7 @@ const SectionBodyContent = (props) => {
         changeEmailSubscription={changeEmailSubscription}
         tipsSubscription={tipsSubscription}
       />
+      <InterfaceTheme />
     </Wrapper>
   );
 };
