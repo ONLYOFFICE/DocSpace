@@ -6,6 +6,7 @@ import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
+import { smallTablet } from "@docspace/components/utils/device";
 
 import { getUserRole } from "../../../../../../helpers/people-helpers";
 
@@ -23,6 +24,14 @@ const StyledWrapper = styled.div`
   background: ${(props) => props.theme.profile.main.background};
   border-radius: 12px;
 
+  @media ${smallTablet} {
+    background: none;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+    padding: 0;
+  }
+
   .avatar {
     height: 124px;
     width: 124px;
@@ -34,9 +43,19 @@ const StyledInfo = styled.div`
   flex-direction: column;
   gap: 16px;
 
+  @media ${smallTablet} {
+    width: 100%;
+  }
+
   .row {
     display: flex;
-    gap: 24px;
+    align-items: center;
+    gap: 8px;
+
+    .field {
+      display: flex;
+      gap: 24px;
+    }
 
     .label {
       min-width: 60px;
@@ -44,15 +63,24 @@ const StyledInfo = styled.div`
       white-space: nowrap;
     }
 
-    .field {
-      display: flex;
-      align-items: center;
+    @media ${smallTablet} {
       gap: 8px;
-    }
+      background: ${(props) => props.theme.profile.main.background};
+      padding: 12px 16px;
+      border-radius: 6px;
 
-    .lang-combo {
-      & > div {
-        padding: 0 !important;
+      .field {
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .label {
+        min-width: 100%;
+        max-width: 100%;
+      }
+
+      .edit-button {
+        margin-left: auto;
       }
     }
   }
@@ -87,56 +115,56 @@ const MainProfile = (props) => {
       />
       <StyledInfo>
         <div className="row">
-          <Text as="div" color="#A3A9AE" className="label">
-            {t("Common:Name")}
-          </Text>
           <div className="field">
+            <Text as="div" color="#A3A9AE" className="label">
+              {t("Common:Name")}
+            </Text>
             <Text fontWeight={600}>{profile.displayName}</Text>
-            <IconButton
-              iconName="/static/images/pencil.outline.react.svg"
-              size="12"
-              onClick={() => setChangeNameDialogVisible(true)}
-            />
           </div>
-        </div>
-        <div className="row">
-          <Text as="div" color="#A3A9AE" className="label">
-            {t("Common:Email")}
-          </Text>
-          <div className="field">
-            <Text fontWeight={600}>{profile.email}</Text>
-            <IconButton
-              iconName="/static/images/pencil.outline.react.svg"
-              size="12"
-              onClick={() => setChangeEmailDialogVisible(true)}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <Text as="div" color="#A3A9AE" className="label">
-            {t("Common:Password")}
-          </Text>
-          <div className="field">
-            <Text fontWeight={600}>********</Text>
-            <IconButton
-              iconName="/static/images/pencil.outline.react.svg"
-              size="12"
-              onClick={() => setChangePasswordDialogVisible(true)}
-            />
-          </div>
-        </div>
-        <div className="row">
-          <Text as="div" color="#A3A9AE" className="label">
-            {t("Common:Language")}
-          </Text>
-          <LanguagesCombo
-            profile={profile}
-            cultureName={cultureName}
-            currentCulture={currentCulture}
-            culture={culture}
-            cultureNames={cultureNames}
+          <IconButton
+            className="edit-button"
+            iconName="/static/images/pencil.outline.react.svg"
+            size="12"
+            onClick={() => setChangeNameDialogVisible(true)}
           />
         </div>
+        <div className="row">
+          <div className="field">
+            <Text as="div" color="#A3A9AE" className="label">
+              {t("Common:Email")}
+            </Text>
+            <Text fontWeight={600}>{profile.email}</Text>
+          </div>
+          <IconButton
+            className="edit-button"
+            iconName="/static/images/pencil.outline.react.svg"
+            size="12"
+            onClick={() => setChangeEmailDialogVisible(true)}
+          />
+        </div>
+        <div className="row">
+          <div className="field">
+            <Text as="div" color="#A3A9AE" className="label">
+              {t("Common:Password")}
+            </Text>
+            <Text fontWeight={600}>********</Text>
+          </div>
+          <IconButton
+            className="edit-button"
+            iconName="/static/images/pencil.outline.react.svg"
+            size="12"
+            onClick={() => setChangePasswordDialogVisible(true)}
+          />
+        </div>
+
+        <LanguagesCombo
+          t={t}
+          profile={profile}
+          cultureName={cultureName}
+          currentCulture={currentCulture}
+          culture={culture}
+          cultureNames={cultureNames}
+        />
       </StyledInfo>
 
       {changeEmailDialogVisible && (
