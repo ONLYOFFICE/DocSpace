@@ -35,7 +35,9 @@ const Body = ({
   emptyScreenImage,
   emptyScreenHeader,
   emptyScreenDescription,
-
+  searchEmptyScreenImage,
+  searchEmptyScreenHeader,
+  searchEmptyScreenDescription,
   loadMoreItems,
   hasNextPage,
   totalItems,
@@ -112,6 +114,9 @@ const Body = ({
           image={emptyScreenImage}
           header={emptyScreenHeader}
           description={emptyScreenDescription}
+          searchImage={searchEmptyScreenImage}
+          searchHeader={searchEmptyScreenHeader}
+          searchDescription={searchEmptyScreenDescription}
         />
       ) : (
         <>

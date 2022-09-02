@@ -43,15 +43,31 @@ const StyledContainer = styled.div`
   }
 `;
 
-const EmptyScreen = ({ image, header, description, withSearch }) => {
+const EmptyScreen = ({
+  image,
+  header,
+  description,
+  searchImage,
+  searchHeader,
+  searchDescription,
+  withSearch,
+}) => {
+  const currentImage = withSearch ? searchImage : image;
+  const currentHeader = withSearch ? searchHeader : header;
+  const currentDescription = withSearch ? searchDescription : description;
+
   return (
     <StyledContainer withSearch={withSearch}>
-      <img className="empty-image" src={image} alt="empty-screen-image" />
+      <img
+        className="empty-image"
+        src={currentImage}
+        alt="empty-screen-image"
+      />
       <Heading level={3} className="empty-header">
-        {header}
+        {currentHeader}
       </Heading>
       <Text className="empty-description" noSelect>
-        {description}
+        {currentDescription}
       </Text>
     </StyledContainer>
   );

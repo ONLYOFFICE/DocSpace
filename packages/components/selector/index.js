@@ -37,6 +37,9 @@ const Selector = ({
   emptyScreenImage,
   emptyScreenHeader,
   emptyScreenDescription,
+  searchEmptyScreenImage,
+  searchEmptyScreenHeader,
+  searchEmptyScreenDescription,
   hasNextPage,
   isNextPageLoading,
   loadNextPage,
@@ -260,6 +263,9 @@ const Selector = ({
         emptyScreenImage={emptyScreenImage}
         emptyScreenHeader={emptyScreenHeader}
         emptyScreenDescription={emptyScreenDescription}
+        searchEmptyScreenImage={searchEmptyScreenImage}
+        searchEmptyScreenHeader={searchEmptyScreenHeader}
+        searchEmptyScreenDescription={searchEmptyScreenDescription}
         hasNextPage={hasNextPage}
         loadMoreItems={loadMoreItems}
         totalItems={totalItems}
@@ -322,6 +328,10 @@ Selector.propTypes = {
   emptyScreenImage: PropTypes.string,
   emptyScreenHeader: PropTypes.string,
   emptyScreenDescription: PropTypes.string,
+
+  searchEmptyScreenImage: PropTypes.string,
+  searchEmptyScreenHeader: PropTypes.string,
+  searchEmptyScreenDescription: PropTypes.string,
 
   totalItems: PropTypes.number,
   hasNextPage: PropTypes.bool,
