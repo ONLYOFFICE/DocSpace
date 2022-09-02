@@ -116,24 +116,22 @@ const UserSelector = ({
   }, [searchValue]);
 
   return (
-    <div style={{ height: "900px" }}>
-      <Selector
-        id={id}
-        className={className}
-        style={style}
-        headerLabel={t("AccountsList")}
-        onBackClick={onCancel}
-        searchPlaceholder={t("Common:Search")}
-        searchValue={searchValue}
-        onSearch={onSearchAction}
-        onClearSearch={onClearSearchAction}
-        items={items}
-        totalItems={filterData.total}
-        loadNextPage={loadNextPage}
-        hasNextPage={filterData.hasNextPage}
-        isNextPageLoading={filterData.isNextPageLoading}
-      />
-    </div>
+    <Selector
+      id={id}
+      className={className}
+      style={style}
+      headerLabel={t("AccountsList")}
+      onBackClick={onCancel}
+      searchPlaceholder={t("Common:Search")}
+      searchValue={searchValue}
+      onSearch={onSearchAction}
+      onClearSearch={onClearSearchAction}
+      items={items}
+      totalItems={filterData.total}
+      loadNextPage={loadNextPage}
+      hasNextPage={filterData.hasNextPage}
+      isNextPageLoading={filterData.isNextPageLoading}
+    />
   );
 };
 
