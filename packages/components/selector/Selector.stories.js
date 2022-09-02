@@ -42,7 +42,7 @@ const getItems = (count) => {
     items.push({
       key: `room_${i}`,
       id: `room_${i}`,
-      label: makeName(),
+      label: makeName() + " " + i + " room",
       icon: "static/images/icons/32/rooms/custom.svg",
     });
   }
