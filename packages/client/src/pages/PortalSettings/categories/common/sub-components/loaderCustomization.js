@@ -6,7 +6,7 @@ import { isTablet } from "react-device-detect";
 
 const tabletStyles = css`
   .header {
-    display: block;
+    display: ${(props) => !props.dnsSettings && "block"};
     width: ${(props) =>
       props.lngTZSettings
         ? "283px"
@@ -47,8 +47,18 @@ const tabletStyles = css`
   .save-cancel-buttons {
     display: block;
     position: static;
-    width: 350px;
+    width: 192px;
     padding: 0;
+  }
+
+  .dns-description {
+    width: 122px;
+    padding-bottom: 12px;
+  }
+
+  .dns-field {
+    width: 350px;
+    padding-bottom: 20px;
   }
 `;
 
@@ -93,6 +103,24 @@ const StyledLoader = styled.div`
     padding: 0 0 16px 16px;
   }
 
+  .flex {
+    display: flex;
+    align-items: center;
+    padding-bottom: 8px;
+  }
+
+  .dns-description {
+    padding-bottom: 8px;
+  }
+
+  .padding-right {
+    padding-right: 8px;
+  }
+
+  .dns-field {
+    height: 32px;
+  }
+
   @media (min-width: 600px) {
     ${tabletStyles}
   }
@@ -107,14 +135,17 @@ const LoaderCustomization = ({
   lngTZSettings,
   portalRenaming,
   welcomePage,
+  dnsSettings,
 }) => {
   const heightSaveCancelButtons = window.innerWidth < 600 ? "40px" : "32px";
+  const heightDnsDescription = window.innerWidth < 600 ? "40px" : "22px";
 
   return (
     <StyledLoader
       lngTZSettings={lngTZSettings}
       portalRenaming={portalRenaming}
       welcomePage={welcomePage}
+      dnsSettings={dnsSettings}
       className="category-item-wrapper"
     >
       <Loaders.Rectangle height="22px" className="header" />
@@ -123,8 +154,29 @@ const LoaderCustomization = ({
         <Loaders.Rectangle height="80px" className="description" />
       )}
 
-      <Loaders.Rectangle height="20px" className="title" />
-      <Loaders.Rectangle height="32px" className="combo-box" />
+      {dnsSettings ? (
+        <>
+          <Loaders.Rectangle
+            className="dns-description"
+            height={heightDnsDescription}
+          />
+          <div className="flex">
+            <Loaders.Rectangle
+              height="16px"
+              width="16px"
+              className="padding-right"
+            />
+            <Loaders.Rectangle height="20px" width="135px" />
+          </div>
+          <Loaders.Rectangle className="dns-field" />
+        </>
+      ) : (
+        <>
+          <Loaders.Rectangle height="20px" className="title" />
+          <Loaders.Rectangle height="32px" className="combo-box" />
+        </>
+      )}
+
       {lngTZSettings && (
         <>
           <Loaders.Rectangle height="20px" className="title-long" />
