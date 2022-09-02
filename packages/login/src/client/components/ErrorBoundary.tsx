@@ -31,6 +31,7 @@ class ErrorBoundary extends React.Component<
   IErrorBoundaryState
 > {
   state: IErrorBoundaryState = { hasError: false };
+  props: any;
   // eslint-disable-next-line no-unused-vars
   static getDerivedStateFromError() {
     // Update state so the next render will show the fallback UI.
