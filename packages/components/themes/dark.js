@@ -2891,6 +2891,9 @@ const Dark = {
     main: {
       background: "#1f1f1f",
     },
+    themePreview: {
+      border: "1px solid #858585",
+    },
   },
 };
 

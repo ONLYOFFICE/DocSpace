@@ -2884,6 +2884,9 @@ const Base = {
     main: {
       background: "#F8F9F9",
     },
+    themePreview: {
+      border: "1px solid #eceef1",
+    },
   },
 };
 
