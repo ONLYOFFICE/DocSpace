@@ -35,8 +35,8 @@ public class FoldersModule : FeedModule
     public override string Product => Constants.Documents;
     protected override string DbId => Constants.FilesDbId;
 
-    private const string FolderItem = "folder";
-    private const string SharedFolderItem = "sharedFolder";
+    private const string FolderItem = Constants.FolderItem;
+    private const string SharedFolderItem = Constants.SharedFolderItem;
 
     private readonly FileSecurity _fileSecurity;
     private readonly FilesLinkUtility _filesLinkUtility;
@@ -117,7 +117,7 @@ public class FoldersModule : FeedModule
     {
         var folder = folderWithSecurity.Folder;
         var shareRecord = folderWithSecurity.ShareRecord;
-        var contextId = roomId != default ? $"room_{roomId}" : null;
+        var contextId = roomId != default ? $"{RoomsModule.RoomItem}_{roomId}" : null;
 
         if (shareRecord != null)
         {

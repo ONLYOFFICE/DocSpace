@@ -35,8 +35,8 @@ public class FilesModule : FeedModule
     public override string Product => Constants.Documents;
     protected override string DbId => Constants.FilesDbId;
 
-    private const string FileItem = "file";
-    private const string SharedFileItem = "sharedFile";
+    private const string FileItem = Constants.FileItem;
+    private const string SharedFileItem = Constants.SharedFileItem;
 
     private readonly FileSecurity _fileSecurity;
     private readonly FilesLinkUtility _filesLinkUtility;
@@ -156,7 +156,7 @@ public class FilesModule : FeedModule
     {
         var file = tuple.File;
         var shareRecord = tuple.ShareRecord;
-        var contextId = roomId != default ? $"room_{roomId}" : null;
+        var contextId = roomId != default ? $"{RoomsModule.RoomItem}_{roomId}" : null;
 
         if (shareRecord != null)
         {
