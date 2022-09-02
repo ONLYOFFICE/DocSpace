@@ -88,6 +88,7 @@ public class FeedController : ControllerBase
     public object GetFeed(
         string id,
         string product,
+        string module,
         ApiDateTime from,
         ApiDateTime to,
         Guid? author,
@@ -100,6 +101,7 @@ public class FeedController : ControllerBase
         {
             Id = id,
             Product = product,
+            Module = module,
             Offset = Convert.ToInt32(_apiContext.StartIndex),
             Max = Convert.ToInt32(_apiContext.Count) - 1,
             Author = author ?? Guid.Empty,
