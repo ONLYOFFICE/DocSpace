@@ -22,6 +22,7 @@ const Wrapper = styled.div`
 
   @media ${tablet} {
     width: 100%;
+    max-width: 100%;
   }
 `;
 

@@ -5,11 +5,14 @@ import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
+import RadioButtonGroup from "@docspace/components/radio-button-group";
 import { ThemeKeys } from "@docspace/common/constants";
 
 import ThemePreview from "./theme-preview";
 
 import { Base, Dark } from "@docspace/components/themes";
+
+import { smallTablet } from "@docspace/components/utils/device";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -23,15 +26,27 @@ const StyledWrapper = styled.div`
 
   .themes-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
+
+    @media ${smallTablet} {
+      display: none;
+    }
+  }
+
+  .mobile-themes-container {
+    display: none;
+
+    @media ${smallTablet} {
+      display: flex;
+      padding-left: 30px;
+    }
   }
 `;
 
 const InterfaceTheme = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
   const { theme, changeTheme, setIsLoading } = props;
-
-  console.log(theme);
 
   const themeChange = async (theme) => {
     try {
@@ -49,7 +64,6 @@ const InterfaceTheme = (props) => {
   };
 
   const onChangeSystemTheme = (e) => {
-    console.log(e);
     const isChecked = (e.currentTarget || e.target).checked;
 
     if (!isChecked) {
@@ -96,6 +110,21 @@ const InterfaceTheme = (props) => {
           value={ThemeKeys.DarkStr}
           isChecked={theme === ThemeKeys.DarkStr}
           onChangeTheme={onChangeTheme}
+        />
+      </div>
+
+      <div className="mobile-themes-container">
+        <RadioButtonGroup
+          orientation="vertical"
+          name="interface-theme"
+          options={[
+            { value: ThemeKeys.BaseStr, label: t("LightTheme") },
+            { value: ThemeKeys.DarkStr, label: t("DarkTheme") },
+          ]}
+          onClick={onChangeTheme}
+          selected={theme}
+          spacing="12px"
+          isDisabled={isSystemTheme}
         />
       </div>
     </StyledWrapper>

@@ -2,7 +2,6 @@ import React from "react";
 import { ThemeProvider } from "styled-components";
 import RadioButton from "@docspace/components/radio-button";
 import Text from "@docspace/components/text";
-//import ThemeProvider from "@docspace/components/theme-provider";
 
 import { StyledWrapper, StyledPreview } from "./styled-preview";
 
@@ -16,6 +15,7 @@ const ThemePreview = (props) => {
     onChangeTheme,
     value,
   } = props;
+
   return (
     <StyledWrapper>
       <div className="header">

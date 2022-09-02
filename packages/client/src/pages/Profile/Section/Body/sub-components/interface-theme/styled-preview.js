@@ -1,10 +1,17 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { tablet } from "@docspace/components/utils/device";
 
 export const StyledWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border: ${(props) => props.theme.profile.themePreview.border};
   border-radius: 12px;
+  height: 284px;
+  width: 318px;
+
+  @media ${tablet} {
+    width: 100%;
+  }
 
   .header {
     padding: 12px 20px;
@@ -14,6 +21,7 @@ export const StyledWrapper = styled.div`
 
 export const StyledPreview = styled.div`
   display: flex;
+  flex-direction: row;
   overflow: hidden;
 
   .article {
