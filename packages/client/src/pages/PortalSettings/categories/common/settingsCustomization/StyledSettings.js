@@ -87,10 +87,6 @@ const StyledSettingsComponent = styled.div`
     }
   }
 
-  .settings-block {
-    margin-top: 8px;
-  }
-
   @media (min-width: 600px) {
     .settings-block {
       max-width: 350px;

@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import Loaders from "@docspace/common/components/Loaders";
-
 import { isTablet } from "react-device-detect";
 
 const tabletStyles = css`
@@ -26,12 +25,13 @@ const tabletStyles = css`
     display: block;
     width: ${(props) =>
       props.lngTZSettings
-        ? "65px"
+        ? "61px"
         : props.welcomePage
-        ? "31px"
+        ? "28px"
         : props.portalRenaming
-        ? "113px"
+        ? "109px"
         : 0};
+    padding-bottom: 4px;
   }
 
   .combo-box {
@@ -47,8 +47,8 @@ const tabletStyles = css`
   .save-cancel-buttons {
     display: block;
     position: static;
-    width: 192px;
-    padding: 0;
+    width: ${(props) => (props.welcomePage ? "274px" : "197px")};
+    padding: 8px 0 0;
   }
 
   .dns-description {
@@ -58,7 +58,7 @@ const tabletStyles = css`
 
   .dns-field {
     width: 350px;
-    padding-bottom: 20px;
+    padding-bottom: 12px;
   }
 `;
 
@@ -73,20 +73,19 @@ const StyledLoader = styled.div`
   }
 
   .title {
-    width: ${(props) => (props.portalRenaming ? "49px" : "63.7px")};
-    padding-bottom: 4px;
+    width: ${(props) => (props.portalRenaming ? "109px" : "61px")};
   }
 
   .title-long {
     display: block;
-    width: 68px;
+    width: 64px;
     padding-bottom: 4px;
   }
 
   .combo-box {
     display: block;
     width: 100%;
-    padding-bottom: 24px;
+    padding-bottom: 16px;
   }
 
   .field-container {
@@ -129,6 +128,12 @@ const StyledLoader = styled.div`
   `
     ${tabletStyles}
   `}
+
+  @media (min-width: 1024px) {
+    .save-cancel-buttons {
+      width: ${(props) => (props.welcomePage ? "264px" : "192px")};
+    }
+  }
 `;
 
 const LoaderCustomization = ({
@@ -137,8 +142,35 @@ const LoaderCustomization = ({
   welcomePage,
   dnsSettings,
 }) => {
-  const heightSaveCancelButtons = window.innerWidth < 600 ? "40px" : "32px";
-  const heightDnsDescription = window.innerWidth < 600 ? "40px" : "22px";
+  const [isMobileView, setIsMobileView] = useState(false);
+  const [isDesktopView, setIsDesktopView] = useState(false);
+
+  const checkInnerWidth = () => {
+    const isMobileView = window.innerWidth < 600;
+    const isDesktopView = window.innerWidth <= 1024;
+
+    if (isMobileView) {
+      setIsMobileView(true);
+    } else {
+      setIsMobileView(false);
+    }
+
+    if (isDesktopView) {
+      setIsDesktopView(true);
+    } else {
+      setIsDesktopView(false);
+    }
+  };
+
+  useEffect(() => {
+    checkInnerWidth();
+    window.addEventListener("resize", checkInnerWidth);
+
+    return () => window.removeEventListener("resize", checkInnerWidth);
+  });
+
+  const heightSaveCancelButtons = isDesktopView ? "40px" : "32px";
+  const heightDnsDescription = isMobileView ? "40px" : "22px";
 
   return (
     <StyledLoader
