@@ -238,7 +238,7 @@ const Dark = {
   },
 
   mainButton: {
-    backgroundColor: "#F59931",
+    backgroundColor: "#ED7309",
     disableBackgroundColor: "#4C3B2D",
     hoverBackgroundColor: "#FFAD3D",
     clickBackgroundColor: "#E6842E",
@@ -248,7 +248,7 @@ const Dark = {
     lineHeight: "22px",
     fontSize: "16px",
     fontWeight: 700,
-    textColor: "#FFFFFF",
+    textColor: black,
     textColorDisabled: black,
 
     cornerRoundsTopRight: "0",
