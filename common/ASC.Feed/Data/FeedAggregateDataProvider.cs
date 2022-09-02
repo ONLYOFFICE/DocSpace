@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-
 namespace ASC.Feed.Data;
 
 [Scope]
@@ -204,51 +202,50 @@ public class FeedAggregateDataProvider
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var q = feedDbContext.FeedAggregates.AsNoTracking()
-            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
-            .Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
-            .Where(r => r.users.UserId == _authContext.CurrentAccount.ID)
+            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id);
+
+        var exp = GetIdSearchExpression(filter.Id, filter.Module, filter.WithRelated);
+
+        if (exp != null)
+        {
+            q = q.Where(exp);
+        }
+
+        var q1 = q.Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
             .OrderByDescending(r => r.aggregates.ModifiedDate)
             .Skip(filter.Offset)
             .Take(filter.Max);
 
-        if (filter.WithoutMe)
+        if (exp == null)
         {
-            q = q.Where(r => r.aggregates.ModifiedBy != _authContext.CurrentAccount.ID);
-        }
-
-        if (filter.WithRelated && !string.IsNullOrEmpty(filter.Id))
-        {
-            q = q.Where(r => r.aggregates.Id == filter.Id || r.aggregates.ContextId == filter.Id);
-        }
-        else if (!string.IsNullOrEmpty(filter.Id))
-        {
-            q = q.Where(r => r.aggregates.Id == filter.Id);
+            q1 = q1.Where(r => r.aggregates.ModifiedBy != _authContext.CurrentAccount.ID).
+                Where(r => r.users.UserId == _authContext.CurrentAccount.ID);
         }
 
         if (filter.OnlyNew)
         {
-            q = q.Where(r => r.aggregates.AggregateDate >= filter.From);
+            q1 = q1.Where(r => r.aggregates.AggregateDate >= filter.From);
         }
         else
         {
             if (1 < filter.From.Year)
             {
-                q = q.Where(r => r.aggregates.ModifiedDate >= filter.From);
+                q1 = q1.Where(r => r.aggregates.ModifiedDate >= filter.From);
             }
             if (filter.To.Year < 9999)
             {
-                q = q.Where(r => r.aggregates.ModifiedDate <= filter.To);
+                q1 = q1.Where(r => r.aggregates.ModifiedDate <= filter.To);
             }
         }
 
         if (!string.IsNullOrEmpty(filter.Product))
         {
-            q = q.Where(r => r.aggregates.Product == filter.Product);
+            q1 = q1.Where(r => r.aggregates.Product == filter.Product);
         }
 
         if (filter.Author != Guid.Empty)
         {
-            q = q.Where(r => r.aggregates.ModifiedBy == filter.Author);
+            q1 = q1.Where(r => r.aggregates.ModifiedBy == filter.Author);
         }
 
         if (filter.SearchKeys != null && filter.SearchKeys.Length > 0)
@@ -258,10 +255,10 @@ public class FeedAggregateDataProvider
                             .Select(s => s.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_"))
                             .ToList();
 
-            q = q.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
+            q1 = q1.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
         }
 
-        var news = q.Select(r => r.aggregates).AsEnumerable();
+        var news = q1.Select(r => r.aggregates).AsEnumerable();
 
         return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(news);
     }
@@ -324,6 +321,41 @@ public class FeedAggregateDataProvider
 
             tx.Commit();
         });
+    }
+
+    private Expression<Func<FeedAggregate, bool>> GetIdSearchExpression(string id, string module, bool withRelated)
+    {
+        Expression<Func<FeedAggregate, bool>> exp = null;
+
+        if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(module))
+        {
+            return exp;
+        }
+
+        if (module == Constants.RoomsModule)
+        {
+            var roomId = $"{Constants.RoomItem}_{id}";
+            var sharedRoomId = $"{Constants.SharedRoomItem}_{id}";
+
+            exp = f => f.Id == roomId || f.Id.StartsWith(sharedRoomId);
+
+            if (withRelated)
+            {
+                exp = f => f.Id == roomId || f.Id.StartsWith(sharedRoomId) || f.ContextId == roomId;
+            }
+        }
+
+        if (module == Constants.FilesModule)
+        {
+            exp = f => f.Id.StartsWith($"{Constants.FileItem}_{id}") || f.Id.StartsWith($"{Constants.SharedFileItem}_{id}");
+        }
+
+        if (module == Constants.FoldersModule)
+        {
+            exp = f => f.Id == $"{Constants.FolderItem}_{id}" || f.Id.StartsWith($"{Constants.SharedFolderItem}_{id}");
+        }
+
+        return exp;
     }
 }
 
