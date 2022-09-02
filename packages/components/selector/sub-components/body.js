@@ -8,6 +8,7 @@ import SelectAll from "./select-all";
 import Item from "./item";
 
 import { StyledSelectorBody } from "../StyledSelector";
+import EmptyScreen from "./empty-screen";
 
 const CONTAINER_PADDING = 32;
 const SEARCH_HEIGHT = 44;
@@ -30,6 +31,9 @@ const Body = ({
   selectAllLabel,
   selectAllIcon,
   onSelectAll,
+  emptyScreenImage,
+  emptyScreenHeader,
+  emptyScreenDescription,
 }) => {
   const [bodyHeight, setBodyHeight] = React.useState(null);
 
@@ -78,28 +82,39 @@ const Body = ({
         />
       )}
 
-      {isMultiSelect && withSelectAll && !isSearch && (
-        <SelectAll
-          label={selectAllLabel}
-          icon={selectAllIcon}
-          isChecked={isAllChecked}
-          isIndeterminate={isAllIndeterminate}
-          onSelectAll={onSelectAll}
+      {items.length === 0 ? (
+        <EmptyScreen
+          withSearch={withSearch}
+          image={emptyScreenImage}
+          header={emptyScreenHeader}
+          description={emptyScreenDescription}
         />
-      )}
+      ) : (
+        <>
+          {isMultiSelect && withSelectAll && !isSearch && (
+            <SelectAll
+              label={selectAllLabel}
+              icon={selectAllIcon}
+              isChecked={isAllChecked}
+              isIndeterminate={isAllIndeterminate}
+              onSelectAll={onSelectAll}
+            />
+          )}
 
-      {bodyHeight && (
-        <List
-          className="items-list"
-          height={listHeight}
-          width={"100%"}
-          itemCount={items.length}
-          itemData={{ items, onSelect, isMultiSelect }}
-          itemSize={48}
-          outerElementType={CustomScrollbarsVirtualList}
-        >
-          {Item}
-        </List>
+          {bodyHeight && (
+            <List
+              className="items-list"
+              height={listHeight}
+              width={"100%"}
+              itemCount={items.length}
+              itemData={{ items, onSelect, isMultiSelect }}
+              itemSize={48}
+              outerElementType={CustomScrollbarsVirtualList}
+            >
+              {Item}
+            </List>
+          )}
+        </>
       )}
     </StyledSelectorBody>
   );

@@ -34,6 +34,9 @@ const Selector = ({
   withCancelButton,
   cancelButtonLabel,
   onCancel,
+  emptyScreenImage,
+  emptyScreenHeader,
+  emptyScreenDescription,
 }) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
@@ -245,6 +248,9 @@ const Selector = ({
         selectAllLabel={selectAllLabel}
         selectAllIcon={selectAllIcon}
         onSelectAll={onSelectAllAction}
+        emptyScreenImage={emptyScreenImage}
+        emptyScreenHeader={emptyScreenHeader}
+        emptyScreenDescription={emptyScreenDescription}
       />
 
       {footerVisible && (
@@ -300,6 +306,10 @@ Selector.propTypes = {
   withCancelButton: PropTypes.bool,
   cancelButtonLabel: PropTypes.string,
   onCancel: PropTypes.func,
+
+  emptyScreenImage: PropTypes.string,
+  emptyScreenHeader: PropTypes.string,
+  emptyScreenDescription: PropTypes.string,
 };
 
 Selector.defaultProps = {
