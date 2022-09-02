@@ -335,24 +335,15 @@ public class SettingsController : BaseSettingsController
     public void RecalculateQuota()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        _quotaSyncOperation.RunJob(_tenantManager.GetCurrentTenant());
+        _quotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
     }
 
-    //[HttpGet("checkrecalculatequota")]
-    //public bool CheckRecalculateQuota()
-    //{
-    //    PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-    //    var task = quotaTasks.GetTasks().FirstOrDefault(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
-
-    //    if (task != null && task.Status == DistributedTaskStatus.Completed)
-    //    {
-    //        quotaTasks.RemoveTask(task.Id);
-    //        return false;
-    //    }
-
-    //    return task != null;
-    //}
+    [HttpGet("checkrecalculatequota")]
+    public bool CheckRecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        return _quotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
 
     [HttpGet("logo")]
     public object GetLogo()

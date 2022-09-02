@@ -43,7 +43,7 @@ public class QuotaSyncOperation
 
         _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
-    public void RunJob(Tenant tenant)
+    public void RecalculateQuota(Tenant tenant)
     {
         var item = _progressQueue.GetAllTasks<QuotaSyncJob>().FirstOrDefault(t => t.TenantId == tenant.Id);
         if (item != null && item.IsCompleted)
@@ -62,6 +62,17 @@ public class QuotaSyncOperation
         item.PublishChanges();
     }
 
+    public bool CheckRecalculateQuota(Tenant tenant)
+    {
+        var item = _progressQueue.GetAllTasks<QuotaSyncJob>().FirstOrDefault(t => t.TenantId == tenant.Id);
+        if (item != null && item.IsCompleted)
+        {
+            _progressQueue.DequeueTask(item.Id);
+            return false;
+        }
+
+        return item != null;
+    }
 
     public static class QuotaSyncOperationExtension
     {
