@@ -146,7 +146,7 @@
   "ThirdPartyPropsActivated": "更新成功",
   "ThirdPartyPropsDeactivated": "停用成功",
   "ThirdPartyResource": "第三方资源、",
-  "ThirdPartyResourceDescription": "备份可以保存到您的第三方账户（Dropbox、Box.com、OneDrive或Google Drive）。您需要将您的第三方账户（Dropbox、Box.com、OneDrive或Google Drive）连接到常用文档文件夹，然后您才能将备份在第三方账户保存",
+  "ThirdPartyResourceDescription": "备份可以保存到您的第三方账户（Dropbox、Box.com、OneDrive或Google Drive）。您需要连接到您的第三方账户（Dropbox、Box.com、OneDrive或Google Drive），然后您才能将备份在第三方账户保存",
   "ThirdPartyStorage": "第三方存储",
   "ThirdPartyStorageDescription": "备份可以保存到第三方存储。保存之前，您需要在'集成'部分连接相应的服务。否则，该设置无法激活。",
   "ThirdPartyTitleDescription": "您可使用授权密钥通过门户连接第三方服务。使用Fcebook、Twitter或领英轻松登录；添加Dropbox、OneDrive等服务以在文档模块中使用存储于其中的文件。",

@@ -145,7 +145,7 @@
   "ThirdPartyPropsActivated": "Đã cập nhật thành công",
   "ThirdPartyPropsDeactivated": "Đã tắt thành công",
   "ThirdPartyResource": "Tài nguyên của bên thứ ba",
-  "ThirdPartyResourceDescription": "Bản sao lưu có thể được lưu vào tài khoản bên thứ ba của bạn (Dropbox, Box.com, OneDrive hoặc Google Drive).Bạn cần kết nối tài khoản bên thứ ba (Dropbox, Box.com, OneDrive hoặc Google Drive) với thư mục Common documents - tài liệu chung - trước khi bạn có thể lưu bản sao lưu của mình ở đó.",
+  "ThirdPartyResourceDescription": "Bản sao lưu có thể được lưu vào tài khoản bên thứ ba của bạn (Dropbox, Box.com, OneDrive hoặc Google Drive). Bạn cần kết nối tài khoản bên thứ ba (Dropbox, Box.com, OneDrive hoặc Google Drive) trước khi bạn có thể lưu bản sao lưu của mình ở đó.",
   "ThirdPartyStorage": "Lưu trữ của bên thứ ba",
   "ThirdPartyStorageDescription": "Bản sao lưu có thể được lưu vào bộ nhớ của bên thứ ba. Trước tiên, bạn cần kết nối dịch vụ tương ứng trong phần 'Tích hợp'. Nếu không, các cài đặt sau sẽ không hoạt động.",
   "ThirdPartyTitleDescription": "Với các khóa ủy quyền, bạn có thể kết nối các dịch vụ của bên thứ ba với cổng thông tin của mình. Đăng nhập dễ dàng bằng Facebook, Twitter hoặc LinkedIn; thêm Dropbox, OneDrive, v.v. để làm việc với các tệp được lưu trữ ở đó từ mô-đun Tài liệu/Documents. ",

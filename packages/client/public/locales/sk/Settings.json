@@ -144,7 +144,7 @@
   "ThirdPartyPropsActivated": "Úspešne aktualizované",
   "ThirdPartyPropsDeactivated": "Úspešne deaktivované",
   "ThirdPartyResource": "Zdroj tretej strany",
-  "ThirdPartyResourceDescription": "Zálohované údaje môžete uložiť na účet tretej strany (Dropbox, Box.com, OneDrive alebo Disk Google). Najskôr musíte pripojiť svoj účet tretej strany (Dropbox, Box.com, OneDrive alebo Disk Google) k priečinku Bežné dokumenty, než si tam budete môcť uložiť zálohované údaje.",
+  "ThirdPartyResourceDescription": "Zálohované údaje môžete uložiť na účet tretej strany (Dropbox, Box.com, OneDrive alebo Disk Google). Najskôr musíte pripojiť svoj účet tretej strany (Dropbox, Box.com, OneDrive alebo Disk Google), než si tam budete môcť uložiť zálohované údaje.",
   "ThirdPartyStorage": "Úložisko tretích strán",
   "ThirdPartyStorageDescription": "Zálohované údaje môžete uložiť na účet tretej strany. Predtým však musíte v časti 'Integrácia' pripojiť príslušnú službu. V opačnom prípade budú nasledujúce nastavenia neaktívne.",
   "ThirdPartyTitleDescription": "Pomocou autorizačných kľúčov môžete k svojmu portálu pripojiť služby tretích strán. Prihláste sa jednoducho cez Facebook, Twitter alebo LinkedIn; pridajte Dropbox, OneDrive atď., aby ste mohli pracovať so súbormi, ktoré sú tam uložené z priečinka Dokumenty.",

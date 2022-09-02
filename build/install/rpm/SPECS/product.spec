@@ -1,8 +1,8 @@
-%global         product appserver
+%global         product docspace
 %global         buildpath %{_var}/www/%{product}
-%global         sourcename AppServer-%GIT_BRANCH
+%global         sourcename DocSpace-%GIT_BRANCH
 
-Name:           onlyoffice-appserver
+Name:           onlyoffice-docspace
 Summary:        Business productivity tools.
 Group:          Applications/Internet
 Version:        %version
@@ -23,23 +23,26 @@ BuildRequires:  nodejs >= 14.0
 BuildRequires:  yarn
 BuildRequires:  dotnet-sdk-6.0
 
-Requires:       %name-api-system = %version-%release
+Requires:       %name-api = %version-%release
 Requires:       %name-backup = %version-%release
-Requires:       %name-storage-encryption = %version-%release
-Requires:       %name-storage-migration = %version-%release
+Requires:       %name-backup-background = %version-%release
+Requires:       %name-clear-events = %version-%release
+Requires:       %name-doceditor = %version-%release
 Requires:       %name-files = %version-%release
 Requires:       %name-files-services = %version-%release
+Requires:       %name-migration = %version-%release
+Requires:       %name-migration-runner = %version-%release
 Requires:       %name-notify = %version-%release
 Requires:       %name-people-server = %version-%release
+Requires:       %name-proxy = %version-%release
+Requires:       %name-radicale = %version-%release
 Requires:       %name-socket = %version-%release
 Requires:       %name-ssoauth = %version-%release
+Requires:       %name-studio = %version-%release
 Requires:       %name-studio-notify = %version-%release
 Requires:       %name-telegram-service = %version-%release
-Requires:       %name-thumbnails = %version-%release
 Requires:       %name-urlshortener = %version-%release
-Requires:       %name-api = %version-%release
-Requires:       %name-studio = %version-%release
-Requires:       %name-proxy = %version-%release
+Requires:       %name-webhooks-service = %version-%release
 
 %description
 App Server is a platform for building your own online office by connecting ONLYOFFICE modules packed as separate apps.
@@ -79,3 +82,19 @@ chmod +x %{_bindir}/%{product}-configuration.sh
 rm -rf %{_builddir} %{buildroot} 
 
 %changelog
+
+%triggerin radicale -- python3, python36
+
+if ! which python3; then
+	if rpm -q python36; then
+		update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+	fi
+fi
+
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade requests
+python3 -m pip install --upgrade setuptools 
+python3 -m pip install --upgrade radicale==3.0.5
+python3 -m pip install --upgrade %{buildpath}/Tools/radicale/plugins/app_auth_plugin/.
+python3 -m pip install --upgrade %{buildpath}/Tools/radicale/plugins/app_store_plugin/.
+python3 -m pip install --upgrade %{buildpath}/Tools/radicale/plugins/app_rights_plugin/.

@@ -44,6 +44,7 @@ public class SharePointProviderInfo : IProviderInfo
     public string RootFolderId => "spoint-" + ID;
     public string SpRootFolderId { get; set; } = "/Shared Documents";
     public string FolderId { get; set; }
+    public bool Private { get; set; }
 
     public SharePointProviderInfo(
         ILogger<SharePointProviderInfo> logger,
@@ -303,6 +304,7 @@ public class SharePointProviderInfo : IProviderInfo
             result.RootFolderType = RootFolderType;
             result.Title = MakeTitle(GetTitleById(errorFile.ID));
             result.Error = errorFile.Error;
+            result.Encrypted = Private;
 
             return result;
         }
@@ -324,6 +326,7 @@ public class SharePointProviderInfo : IProviderInfo
         result.RootCreateBy = Owner;
         result.Shared = false;
         result.Version = 1;
+        result.Encrypted = Private;
 
         if (file.IsPropertyAvailable("Length"))
         {
@@ -572,6 +575,7 @@ public class SharePointProviderInfo : IProviderInfo
             result.FilesCount = 0;
             result.FoldersCount = 0;
             result.Error = errorFolder.Error;
+            result.Private = Private;
 
             return result;
         }
@@ -594,6 +598,7 @@ public class SharePointProviderInfo : IProviderInfo
         result.Title = isRoot ? CustomerTitle : MakeTitle(folder.Name);
         result.FilesCount = 0;
         result.FoldersCount = 0;
+        result.Private = Private;
 
         SetFolderType(result, isRoot);
 

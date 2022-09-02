@@ -32,7 +32,7 @@
  #
 
 PACKAGE_SYSNAME="onlyoffice"
-PRODUCT="appserver"
+PRODUCT="docspace"
 BASE_DIR="/app/$PACKAGE_SYSNAME";
 STATUS=""
 DOCKER_TAG=""
@@ -51,7 +51,7 @@ KERNEL="";
 INSTALL_KAFKA="true";
 INSTALL_MYSQL_SERVER="true";
 INSTALL_DOCUMENT_SERVER="true";
-INSTALL_APPSERVER="true";
+INSTALL_PRODUCT="true";
 UPDATE="false";
 
 HUB="";
@@ -117,9 +117,9 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-ias | --installappserver )
+		-ids | --installdocspace )
 			if [ "$2" != "" ]; then
-				INSTALL_APPSERVER=$2
+				INSTALL_PRODUCT=$2
 				shift
 			fi
 		;;
@@ -236,7 +236,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-ash | --appserverhost )
+		-dsh | --docspacehost )
 			if [ "$2" != "" ]; then
 				APP_CORE_BASE_DOMAIN=$2
 				shift
@@ -306,26 +306,26 @@ while [ "$1" != "" ]; do
 			echo "      -hub, --hub                       dockerhub name"
 			echo "      -un, --username                   dockerhub username"
 			echo "      -p, --password                    dockerhub password"
-			echo "      -ias, --installappserver          install or update appserver (true|false)"
-			echo "      -tag, --dockertag                 select the version to install appserver (latest|develop|version number)"
+			echo "      -ids, --installdocspace           install or update $PRODUCT (true|false)"
+			echo "      -tag, --dockertag                 select the version to install $PRODUCT (latest|develop|version number)"
 			echo "      -ids, --installdocumentserver     install or update document server (true|false)"
 			echo "      -di, --documentserverimage        document server image name"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
 			echo "      -ikafka, --installkafka           install or update kafka (true|false)"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
-			echo "      -mysqld, --mysqldatabase          appserver database name"
-			echo "      -mysqlu, --mysqluser              appserver database user"
-			echo "      -mysqlp, --mysqlpassword          appserver database password"
+			echo "      -mysqld, --mysqldatabase          $PRODUCT database name"
+			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
+			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
-			echo "      -ash, --appserverhost             appserver host"
+			echo "      -dsh, --docspdcehost              $PRODUCT host"
 			echo "      -zp, --zookeeperport              zookeeper port (default value 2181)"
 			echo "      -zh, --zookeeperhost              zookeeper host"
 			echo "      -kh, --kafkahost                  kafka host"
 			echo "      -esh, --elasticsearchhost         elasticsearch host"
-			echo "      -env, --environment               appserver environment"
+			echo "      -env, --environment               $PRODUCT environment"
 			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
-			echo "      -ip, --internalport               internal appserver port (default value 5050)"
-			echo "      -ep, --externalport               external appserver port (default value 8092)"
+			echo "      -ip, --internalport               internal $PRODUCT port (default value 5050)"
+			echo "      -ep, --externalport               external $PRODUCT port (default value 8092)"
 			echo "      -mk, --machinekey                 setting for core.machinekey"
 			echo "      -ls, --local_scripts              run the installation from local scripts"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
@@ -334,7 +334,7 @@ while [ "$1" != "" ]; do
 			echo "    Install all the components without document server:"
 			echo "      bash $HELP_TARGET -ids false"
 			echo
-			echo "    Install Document Server only. Skip the installation of MYSQL and Appserver:"
+			echo "    Install Document Server only. Skip the installation of MYSQL and $PRODUCT:"
 			echo "      bash $HELP_TARGET -ias false -ids true -imysql false -ims false"
 			echo "    Update all installed components. Stop the containers that need to be updated, remove them and run the latest versions of the corresponding components. The portal data should be picked up automatically:"
 			echo "      bash $HELP_TARGET -u true"
@@ -342,7 +342,7 @@ while [ "$1" != "" ]; do
 			echo "    Update Document Server only to version 4.4.2.20 and skip the update for all other components:"
 			echo "      bash $HELP_TARGET -u true -dv 4.4.2.20 -ias false"
 			echo
-			echo "    Update Appserver only to version 0.1.10 and skip the update for all other components:"
+			echo "    Update $PRODUCT only to version 0.1.10 and skip the update for all other components:"
 			echo "      bash $HELP_TARGET -u true -av 9.1.0.393 -ids false"
 			echo
 			exit 0
@@ -584,7 +584,7 @@ check_ports () {
 		exit 1;
 	fi
 
-	if [ "$INSTALL_APPSERVER" == "true" ]; then
+	if [ "$INSTALL_PRODUCT" == "true" ]; then
 		ARRAY_PORTS=(${ARRAY_PORTS[@]} "$EXTERNAL_PORT");
 	fi
 
@@ -856,7 +856,7 @@ install_kafka () {
 	docker-compose -f $BASE_DIR/kafka.yml up -d
 }
 
-install_appserver () {
+install_product () {
 	if ! command_exists docker-compose; then
 		install_docker_compose
 	fi
@@ -867,10 +867,10 @@ install_appserver () {
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	if [[ -n $EXTERNAL_PORT ]]; then
-		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/appserver.yml
+		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/$PRODUCT.yml
 	fi
 
-	docker-compose -f $BASE_DIR/appserver.yml up -d
+	docker-compose -f $BASE_DIR/$PRODUCT.yml up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
 }
 
@@ -903,11 +903,11 @@ check_image_RepoDigest() {
 }
 
 docker_image_update() {
-    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/appserver.yml down --volumes
+    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/$PRODUCT.yml down --volumes
     docker-compose -f $BASE_DIR/build.yml pull
 }
 
-update_appserver () {
+update_product () {
 	if ! command_exists docker-compose; then
 		install_docker_compose
 	fi
@@ -952,7 +952,7 @@ save_parameters_from_configs() {
 	APP_CORE_MACHINEKEY=$(save_parameter APP_CORE_MACHINEKEY $APP_CORE_MACHINEKEY)
 	APP_CORE_BASE_DOMAIN=$(save_parameter APP_CORE_BASE_DOMAIN $APP_CORE_BASE_DOMAIN)
 	if [ ${EXTERNAL_PORT} = "8092" ]; then 
-		EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' /app/onlyoffice/appserver.yml)
+		EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' /app/onlyoffice/$PRODUCT.yml)
 	fi
 }
 
@@ -993,7 +993,7 @@ start_installation () {
 	create_network
 
 	if [ "$UPDATE" = "true" ]; then
-		update_appserver
+		update_product
 	fi
 
 	if [ "$INSTALL_MYSQL_SERVER" == "true" ]; then
@@ -1008,8 +1008,8 @@ start_installation () {
 		install_kafka
 	fi
 
-	if [ "$INSTALL_APPSERVER" == "true" ]; then
-		install_appserver
+	if [ "$INSTALL_PRODUCT" == "true" ]; then
+		install_product
 	fi
 
 	echo ""

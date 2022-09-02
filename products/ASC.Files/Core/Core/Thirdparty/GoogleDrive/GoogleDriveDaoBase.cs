@@ -139,6 +139,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         folder.ParentId = isRoot ? null : MakeId(GetParentDriveId(driveEntry));
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.CreatedTime ?? default);
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.ModifiedTime ?? default);
+        folder.Private = ProviderInfo.Private;
         SetFolderType(folder, isRoot);
 
         folder.Title = MakeFolderTitle(driveEntry);
@@ -217,6 +218,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         file.NativeAccessor = driveFile;
         file.Title = MakeFileTitle(driveFile);
         file.ThumbnailStatus = Thumbnail.Created;
+        file.Encrypted = ProviderInfo.Private;
 
         return file;
     }
