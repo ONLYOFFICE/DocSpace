@@ -61,6 +61,7 @@ public class SettingsController : BaseSettingsController
     private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    private readonly IMapper _mapper;
 
     public SettingsController(
         ILoggerProvider option,
@@ -96,7 +97,8 @@ public class SettingsController : BaseSettingsController
         Constants constants,
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
-        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper
+        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        IMapper mapper
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -129,6 +131,7 @@ public class SettingsController : BaseSettingsController
         _constants = constants;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+        _mapper = mapper;
     }
 
     [HttpGet("")]
@@ -181,7 +184,8 @@ public class SettingsController : BaseSettingsController
                 settings.DebugInfo = debugInfo;
             }
 
-            settings.LoginSettings = _settingsManager.Load<LoginSettings>();
+            var loginSettings = _settingsManager.Load<LoginSettings>();
+            settings.LoginSettings = _mapper.Map<LoginSettings, LoginSettingsDto>(loginSettings);
         }
         else
         {

@@ -52,7 +52,7 @@ public class SettingsDto
     public TenantStatus TenantStatus { get; set; }
     public string TenantAlias { get; set; }
     public string HelpLink { get; set; }   
-    public LoginSettings LoginSettings { get; set; }
+    public LoginSettingsDto LoginSettings { get; set; }
 
     public static SettingsDto GetSample()
     {

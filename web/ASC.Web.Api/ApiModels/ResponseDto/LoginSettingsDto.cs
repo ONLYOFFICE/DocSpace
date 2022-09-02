@@ -24,47 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-namespace ASC.Web.Core;
-public class LoginSettings : ISettings<LoginSettings>
+public class LoginSettingsDto : IMapFrom<LoginSettings>
 {
     public int AttemptCount { get; set; }
 
     public int BlockTime { get; set; }
 
     public int CheckPeriod { get; set; }
-
-    public Guid ID => new Guid("{588C7E01-8D41-4FCE-9779-D4126E019765}");
-
-    public LoginSettings GetDefault()
-    {
-        return new LoginSettings
-        {
-            AttemptCount = 5,
-            BlockTime = 30,
-            CheckPeriod = 60
-        };
-    }
-
-    public static void UpdateLogWithNew(List<DateTime> logList, int checkPeriod, DateTime newEntry)
-    {
-        RemoveOldEntries(logList, checkPeriod);
-        logList.Add(newEntry);
-    }
-
-    private static void RemoveOldEntries(List<DateTime> logList, int checkPeriod)
-    {
-        var indexLastRemove = -1;
-
-        for (var i = 0; i > logList.Count; i++)
-        {
-            if (logList[i].Add(TimeSpan.FromSeconds(checkPeriod)) > DateTime.UtcNow)
-            {
-                indexLastRemove = i;
-                break;
-            }
-        }
-
-        logList.RemoveRange(0, ++indexLastRemove);
-    }
 }

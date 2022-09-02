@@ -293,8 +293,8 @@ public class SecurityController : BaseSettingsController
         return new { inDto.ProductId, inDto.UserId, inDto.Administrator };
     }
 
-    [HttpPut("security/login")]
-    public object SaveLoginSettings(LoginSettingsRequestDto loginSettingsRequestDto)
+    [HttpPut("security/loginSettings")]
+    public LoginSettingsDto UpdateLoginSettings(LoginSettingsRequestDto loginSettingsRequestDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -304,11 +304,15 @@ public class SecurityController : BaseSettingsController
 
         if (attemptsCount < 1)
         {
-            throw new ArgumentException("AttemptsCount");
+            throw new ArgumentOutOfRangeException("attemptsCount");
         }
         if (checkPeriod < 1)
         {
-            throw new ArgumentException("CheckPeriod");
+            throw new ArgumentOutOfRangeException("checkPeriod");
+        }
+        if (blockTime < 0)
+        {
+            throw new ArgumentOutOfRangeException("blockTime");
         }
 
         var settings = new LoginSettings {
@@ -319,7 +323,7 @@ public class SecurityController : BaseSettingsController
 
         _settingsManager.Save(settings);
 
-        return Resource.SuccessfullySaveSettingsMessage;
+        return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
     }
 
 }

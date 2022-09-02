@@ -43,7 +43,6 @@ public class AuthenticationController : ControllerBase
     private readonly PasswordHasher _passwordHasher;
     private readonly EmailValidationKeyModelHelper _emailValidationKeyModelHelper;
     private readonly ICache _cache;
-    private readonly SetupInfo _setupInfo;
     private readonly MessageService _messageService;
     private readonly ProviderManager _providerManager;
     private readonly IOptionsSnapshot<AccountLinker> _accountLinker;
@@ -67,6 +66,7 @@ public class AuthenticationController : ControllerBase
     private readonly CookieStorage _cookieStorage;
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly UserManagerWrapper _userManagerWrapper;
+    private readonly BruteForceLoginManager _bruteForceLoginManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public AuthenticationController(
@@ -78,7 +78,6 @@ public class AuthenticationController : ControllerBase
         PasswordHasher passwordHasher,
         EmailValidationKeyModelHelper emailValidationKeyModelHelper,
         ICache cache,
-        SetupInfo setupInfo,
         MessageService messageService,
         ProviderManager providerManager,
         IOptionsSnapshot<AccountLinker> accountLinker,
@@ -102,6 +101,7 @@ public class AuthenticationController : ControllerBase
         AuthContext authContext,
         CookieStorage cookieStorage,
         DbLoginEventsManager dbLoginEventsManager,
+        BruteForceLoginManager bruteForceLoginManager,
         IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
@@ -112,7 +112,6 @@ public class AuthenticationController : ControllerBase
         _passwordHasher = passwordHasher;
         _emailValidationKeyModelHelper = emailValidationKeyModelHelper;
         _cache = cache;
-        _setupInfo = setupInfo;
         _messageService = messageService;
         _providerManager = providerManager;
         _accountLinker = accountLinker;
@@ -136,6 +135,7 @@ public class AuthenticationController : ControllerBase
         _cookieStorage = cookieStorage;
         _dbLoginEventsManager = dbLoginEventsManager;
         _userManagerWrapper = userManagerWrapper;
+        _bruteForceLoginManager = bruteForceLoginManager;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -358,30 +358,16 @@ public class AuthenticationController : ControllerBase
                     inDto.PasswordHash.ThrowIfNull(new ArgumentException(@"PasswordHash empty", "PasswordHash"));
                 }
 
-                var ip = MessageSettings.GetIP(_httpContextAccessor.HttpContext.Request);
-                bool.TryParse(_cache.Get<string>("loginblock/" + inDto.UserName + ip), out var isBlock);
+                var secretEmail = SetupInfo.IsSecretEmail(inDto.UserName);
 
-                if (isBlock && !SetupInfo.IsSecretEmail(inDto.UserName))
+                var requestIp = MessageSettings.GetIP(Request);
+                _bruteForceLoginManager.Init(inDto.UserName, requestIp);
+                var bruteForceSuccessAttempt = _bruteForceLoginManager.Increment(out var _);
+
+                if (!secretEmail && !bruteForceSuccessAttempt)
                 {
                     throw new BruteForceCredentialException();
                 }
-
-                var loginSettings = _settingsManager.Load<LoginSettings>();
-                var attemptsCount = loginSettings.AttemptCount;
-                var blockTime = loginSettings.BlockTime;
-                var checkPeriod = loginSettings.CheckPeriod;
-
-                var loginLog = _cache.Get<List<DateTime>>("loginsec/" + inDto.UserName + ip) ?? new List<DateTime>();
-                LoginSettings.UpdateLogWithNew(loginLog, checkPeriod, DateTime.UtcNow);
-
-                if (loginLog.Count > attemptsCount && !SetupInfo.IsSecretEmail(inDto.UserName))
-                {
-                    _cache.Insert("loginblock/" + inDto.UserName + ip, "true", DateTime.UtcNow.Add(TimeSpan.FromMinutes(blockTime)));
-                    throw new BruteForceCredentialException();
-                }
-
-                _cache.Insert("loginsec/" + inDto.UserName + ip, loginLog, DateTime.UtcNow.Add(TimeSpan.FromMinutes(checkPeriod)));
-
 
                 inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
 
@@ -405,8 +391,10 @@ public class AuthenticationController : ControllerBase
                     throw new Exception("user not found");
                 }
 
-                loginLog.RemoveAt(loginLog.Count - 1);
-                _cache.Insert("loginsec/" + inDto.UserName + ip, loginLog, DateTime.UtcNow.Add(TimeSpan.FromMinutes(checkPeriod)));
+                if (!secretEmail)
+                {
+                    _bruteForceLoginManager.Decrement();
+                }
             }
             else
             {
