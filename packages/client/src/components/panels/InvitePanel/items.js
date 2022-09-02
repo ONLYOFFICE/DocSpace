@@ -34,31 +34,37 @@ const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
       key: "roomManager",
       label: "Room manager",
       access: ShareAccessRights.FullAccess,
+      id,
     },
     {
       key: "editor",
       label: "Editor",
       access: ShareAccessRights.CustomFilter,
+      id,
     },
     {
       key: "formFiller",
       label: "Form filler",
       access: ShareAccessRights.FormFilling,
+      id,
     },
     {
       key: "reviewer",
       label: "Reviewer",
       access: ShareAccessRights.Review,
+      id,
     },
     {
       key: "commentator",
       label: "Commentator",
       access: ShareAccessRights.Comment,
+      id,
     },
     {
       key: "viewer",
       label: "Viewer",
       access: ShareAccessRights.ReadOnly,
+      id,
     },
     {
       key: "sep",
@@ -115,6 +121,7 @@ const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
 
   const selectItemAccess = (selected) => {
     if (selected.key === "delete") return removeItem();
+
     changeInviteItem(selected);
   };
 
