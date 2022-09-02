@@ -5,6 +5,8 @@ import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import Link from "@docspace/components/link";
 
+import { hugeMobile } from "@docspace/components/utils/device";
+
 import {
   ResetApplicationDialog,
   BackupCodesDialog,
@@ -25,6 +27,18 @@ const StyledWrapper = styled.div`
     display: flex;
     gap: 16px;
     align-items: center;
+
+    @media ${hugeMobile} {
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+
+      .button {
+        width: 100%;
+        height: 40px;
+        font-size: 14px;
+      }
+    }
   }
 `;
 
@@ -53,6 +67,7 @@ const LoginSettings = (props) => {
       </div>
       <div className="actions">
         <Button
+          className="button"
           label={t("ShowBackupCodes")}
           onClick={() => setBackupCodesDialogVisible(true)}
           size="small"
