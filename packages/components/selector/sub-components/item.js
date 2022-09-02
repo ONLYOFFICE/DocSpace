@@ -79,7 +79,9 @@ const Item = React.memo(({ index, style, data }) => {
 
   const item = items[index];
 
-  const { label, avatar, icon, isSelected } = item;
+  const { label, avatar, icon, role, isSelected } = item;
+
+  const currentRole = role ? role : "user";
 
   const isLogo = !!icon;
 
@@ -102,7 +104,7 @@ const Item = React.memo(({ index, style, data }) => {
         <Avatar
           className="user-avatar"
           source={avatar}
-          role={"user"}
+          role={currentRole}
           size={"min"}
         />
       ) : (

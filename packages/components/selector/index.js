@@ -317,6 +317,8 @@ Selector.defaultProps = {
   withSelectAll: false,
   withAccessRights: false,
   withCancelButton: false,
+
+  selectedItems: [],
 };
 
 export default Selector;
