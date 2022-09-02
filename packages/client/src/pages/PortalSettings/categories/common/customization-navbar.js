@@ -34,12 +34,17 @@ const StyledComponent = styled.div`
       color: #657077;
       font-size: 13px;
       max-width: 1024px;
+      line-height: 20px;
     }
 
     .inherit-title-link {
       margin-right: 4px;
       font-size: 16px;
       font-weight: 700;
+    }
+    .link-learn-more {
+      line-height: 15px;
+      font-weight: 600;
     }
   }
 `;
@@ -89,6 +94,7 @@ const CustomizationNavbar = ({
         </Text>
         <Box paddingProp="10px 0 3px 0">
           <Link
+            className="link-learn-more"
             color={theme.client.settings.common.linkColorHelp}
             target="_blank"
             isHovered={true}

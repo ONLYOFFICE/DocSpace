@@ -1037,7 +1037,7 @@ public class FileSecurity : IFileSecurity
 
         foreach (var record in recordGroup.Where(r => r.firstRecord.Share != FileShare.Restrict))
         {
-            if (!roomsIds.ContainsKey((T)record.firstRecord.EntryId))
+            if (!roomsIds.ContainsKey((T)record.firstRecord.EntryId) && record.firstRecord.EntryType == FileEntryType.Folder)
             {
                 roomsIds.Add((T)record.firstRecord.EntryId, record.firstRecord.Share);
             }

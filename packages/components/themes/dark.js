@@ -132,9 +132,9 @@ const Dark = {
       baseHover: "#FAFAFA",
       baseActive: "#858585",
       baseDisabled: "#545454",
-      primary: black,
-      primaryHover: black,
-      primaryActive: "#292929",
+      primary: "#FFFFFF",
+      primaryHover: "#FFFFFF",
+      primaryActive: "#FFFFFF",
       primaryDisabled: black,
     },
 
@@ -243,12 +243,13 @@ const Dark = {
     hoverBackgroundColor: "#FFAD3D",
     clickBackgroundColor: "#E6842E",
 
-    padding: "5px 10px",
+    padding: "5px 14px 5px 12px",
     borderRadius: "3px",
     lineHeight: "22px",
-    fontSize: "15px",
+    fontSize: "16px",
     fontWeight: 700,
-    textColor: black,
+    textColor: "#FFFFFF",
+    textColorDisabled: black,
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
@@ -274,8 +275,9 @@ const Dark = {
     arrowDropdown: {
       borderLeft: "4px solid transparent",
       borderRight: "4px solid transparent",
-      borderTop: `4px solid ${black}`,
-      right: "10px",
+      borderTop: `5px solid ${white}`,
+      borderTopDisabled: `5px solid ${black}`,
+      right: "14px",
       top: "50%",
       width: "0",
       height: "0",
@@ -905,7 +907,7 @@ const Dark = {
   tabsContainer: {
     scrollbar: {
       width: "100%",
-      height: "50px",
+      height: "44px",
     },
 
     label: {
@@ -952,8 +954,8 @@ const Dark = {
       margin: "0 0 16px 0",
 
       label: {
-        lineHeight: "13px",
-        height: "15px",
+        lineHeight: "20px",
+        height: "20px",
       },
 
       labelIcon: {
@@ -1553,6 +1555,7 @@ const Dark = {
       disabledColor: "#858585",
       background: "#292929",
       backgroundWithBorder: "none",
+      backgroundModernView: "none",
 
       border: `1px solid #474747`,
       borderRadius: "3px",
@@ -1566,6 +1569,9 @@ const Dark = {
       hoverBorderColor: "#858585",
       hoverBorderColorOpen: grayMaxLight,
       hoverDisabledBorderColor: "#474747",
+      hoverBackgroundModernView: "#474747",
+
+      activeBackgroundModernView: "#858585",
     },
 
     label: {
@@ -1615,7 +1621,6 @@ const Dark = {
     fillColorOff: "#292929",
 
     disableFillColor: black,
-    disableFillColorOff: "#646464",
 
     borderColor: "#474747",
     borderColorOff: "#474747",
@@ -1623,11 +1628,11 @@ const Dark = {
     disableBorderColor: "#474747",
     disableBorderColorOff: "#646464",
 
-    fillCircleColor: "#292929",
+    fillCircleColor: "#FFFFFF",
     fillCircleColorOff: grayMaxLight,
 
-    disableFillCircleColor: "#646464",
-    disableFillCircleColorOff: black,
+    disableFillCircleColor: "#333333",
+    disableFillCircleColorOff: "#797979",
   },
 
   contextMenuButton: {
@@ -1861,7 +1866,7 @@ const Dark = {
         height: "16px",
 
         fill: "#a9a9a9",
-
+        isActiveFill: "#FFFFFF",
         tablet: {
           width: "20px",
           height: "20px",
@@ -1873,13 +1878,14 @@ const Dark = {
       marginLeft: "8px",
       lineHeight: "20px",
       color: "#a9a9a9",
+      isActiveColor: "#FFFFFF",
       fontSize: "13px",
       fontWeight: 600,
       tablet: {
         marginLeft: "12px",
         lineHeight: "16px",
         fontSize: "14px",
-        fontWeight: "bold",
+        fontWeight: "600",
       },
     },
     initialText: {
@@ -2062,6 +2068,10 @@ const Dark = {
       tileSortFill: "#eeeeee",
       tileSortColor: "#eeeeee",
     },
+
+    selectedItems: {
+      background: "#000000",
+    },
   },
 
   profileInfo: {
@@ -2128,6 +2138,7 @@ const Dark = {
 
       editingIconColor: "#eeeeee",
       shareHoverColor: "#eeeeee",
+      pinColor: "#FFFFFF",
     },
 
     tableView: {
@@ -2590,7 +2601,7 @@ const Dark = {
     iconColor: "#858585",
     hoverIconColor: "#eeeeee",
 
-    color: black,
+    color: "#FFFFFF",
     backgroundColor: "#858585",
 
     badgeColor: black,
@@ -2854,7 +2865,7 @@ const Dark = {
   submenu: {
     lineColor: "#474747",
     backgroundColor: "#333",
-    textColor: "#E06A1B",
+    textColor: "#FFFFFF",
     bottomLineColor: "#E06A1B",
   },
 

@@ -1,4 +1,5 @@
 import { computed, makeObservable } from "mobx";
+import { getUserStatus } from "SRC_DIR/helpers/people-helpers";
 
 class HeaderMenuStore {
   constructor(peopleStore) {
@@ -10,9 +11,47 @@ class HeaderMenuStore {
     });
   }
 
+  get cbMenuItems() {
+    const { users } = this.peopleStore.usersStore;
+
+    let cbMenu = ["all"];
+
+    for (let user of users) {
+      const status = getUserStatus(user);
+      switch (status) {
+        case "active":
+          cbMenu.push(status);
+          break;
+        case "pending":
+          cbMenu.push(status);
+          break;
+        case "disabled":
+          cbMenu.push(status);
+          break;
+      }
+    }
+
+    cbMenu = cbMenu.filter((item, index) => cbMenu.indexOf(item) === index);
+
+    return cbMenu;
+  }
+
+  getCheckboxItemLabel = (t, item) => {
+    switch (item) {
+      case "active":
+        return t("Common:Active");
+      case "pending":
+        return t("PeopleTranslations:PendingTitle");
+      case "disabled":
+        return t("PeopleTranslations:DisabledEmployeeStatus");
+      case "all":
+        return t("Files:All");
+    }
+  };
+
   get isHeaderVisible() {
-    const { selection, selected } = this.peopleStore.selectionStore;
-    return !!selection.length || selected !== "none";
+    const { selection } = this.peopleStore.selectionStore;
+    return selection.length > 0;
   }
 
   get isHeaderIndeterminate() {

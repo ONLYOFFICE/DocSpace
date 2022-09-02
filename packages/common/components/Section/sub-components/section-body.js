@@ -12,6 +12,7 @@ import {
   tablet,
   desktop,
   smallTablet,
+  mobile,
 } from "@docspace/components/utils/device";
 
 const settingsStudioStyles = css`
@@ -26,6 +27,10 @@ const settingsStudioStyles = css`
 
           @media ${smallTablet} {
             padding: 8px 0 16px 24px;
+          }
+
+          @media ${mobile} {
+            padding: 0 0 16px 24px;
           }
         `
       : css`
@@ -75,7 +80,12 @@ const commonStyles = css`
     height: 100%;
     ${(props) =>
       !props.withScroll &&
-      `display: flex; flex-direction: column; height: 100%; box-sizing:border-box`};
+      css`
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-sizing: border-box;
+      `};
     ${(props) => !props.withScroll && paddingStyles}
   }
 
@@ -109,7 +119,6 @@ const commonStyles = css`
           props.viewAs === "row" &&
           css`
             margin-top: -15px;
-            margin-right: 4px;
           `}
       }
     }

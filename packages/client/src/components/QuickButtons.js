@@ -5,24 +5,28 @@ import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { isMobile, isTablet } from "react-device-detect";
 import { FileStatus } from "@docspace/common/constants";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 export const StyledIcon = styled(IconButton)`
   ${commonIconsStyles}
 `;
 
-const QuickButtons = ({
-  item,
-  theme,
-  sectionWidth,
-  isTrashFolder,
-  accessToEdit,
-  showShare,
-  onClickLock,
-  isDisabled,
-  onClickFavorite,
-  onClickShare,
-  viewAs,
-  isCanWebEdit,
-}) => {
+const QuickButtons = (props) => {
+  const {
+    item,
+    theme,
+    sectionWidth,
+    isTrashFolder,
+    accessToEdit,
+    showShare,
+    onClickLock,
+    isDisabled,
+    onClickFavorite,
+    onClickShare,
+    viewAs,
+    isCanWebEdit,
+  } = props;
+
   const { id, locked, fileStatus, title, fileExst, shared } = item;
 
   const isFavorite =
@@ -66,12 +70,14 @@ const QuickButtons = ({
   return (
     <div className="badges additional-badges">
       {item.canShare && showShare && displayBadges && (
-        <StyledIcon
+        <ColorTheme
+          themeId={ThemeType.IconButton}
+          shared={shared}
           iconName={iconShare}
           className="badge share-button-icon"
           size={sizeQuickButton}
-          onClick={onClickShare}
           color={colorShare}
+          onClick={onClickShare}
           hoverColor={theme.filesQuickButtons.sharedColor}
         />
       )}
@@ -80,27 +86,31 @@ const QuickButtons = ({
         !isTrashFolder &&
         displayBadges &&
         isCanWebEdit && (
-          <StyledIcon
+          <ColorTheme
+            themeId={ThemeType.IconButton}
             iconName={iconLock}
+            locked={locked}
             className="badge lock-file icons-group"
             size={sizeQuickButton}
             data-id={id}
             data-locked={locked ? true : false}
             onClick={onClickLock}
-            isDisabled={isDisabled}
             color={colorLock}
+            isDisabled={isDisabled}
             hoverColor={theme.filesQuickButtons.sharedColor}
           />
         )}
       {fileExst && !isTrashFolder && displayBadges && (
-        <StyledIcon
+        <ColorTheme
+          themeId={ThemeType.IconButton}
           iconName={iconFavorite}
+          isFavorite={isFavorite}
           className="favorite badge icons-group"
           size={sizeQuickButton}
           data-id={id}
           data-title={title}
-          onClick={setFavorite}
           color={colorFavorite}
+          onClick={setFavorite}
           hoverColor={theme.filesQuickButtons.hoverColor}
         />
       )}
