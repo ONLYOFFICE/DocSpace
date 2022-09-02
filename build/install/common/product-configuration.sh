@@ -2,10 +2,11 @@
 
 set -e
 
-PRODUCT="appserver"
+PRODUCT="docspace"
 ENVIRONMENT="production"
 
 APP_DIR="/etc/onlyoffice/${PRODUCT}"
+PRODUCT_DIR="/var/www/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 NGINX_DIR="/etc/nginx"
 NGINX_CONF="${NGINX_DIR}/conf.d"
@@ -24,14 +25,16 @@ APP_PORT="80"
 DOCUMENT_SERVER_HOST="localhost";
 DOCUMENT_SERVER_PORT="8083";
 
-KAFKA_HOST="localhost"
-KAFKA_PORT="9092"
-ZOOKEEPER_HOST="localhost"
-ZOOKEEPER_PORT="2181"
-
 ELK_SHEME="http"
 ELK_HOST="localhost"
 ELK_PORT="9200"
+
+RABBITMQ_HOST="localhost"
+RABBITMQ_USER="guest"
+RABBITMQ_PWD="guest"
+	
+REDIS_HOST="localhost"
+REDIS_PORT="6379"
 
 JSON="json -I -f"
 JSON_USERCONF="$JSON $USER_CONF -e"
@@ -65,34 +68,6 @@ while [ "$1" != "" ]; do
 		-dsp | --docsport )
 			if [ "$2" != "" ]; then
 				DOCUMENT_SERVER_PORT=$2
-				shift
-			fi
-		;;
-
-		-kh | --kafkahost )
-			if [ "$2" != "" ]; then
-				KAFKA_HOST=$2
-				shift
-			fi
-		;;
-
-		-kp | --kafkaport )
-			if [ "$2" != "" ]; then
-				KAFKA_PORT=$2
-				shift
-			fi
-		;;
-
-		-zkh | --zookeeperhost )
-			if [ "$2" != "" ]; then
-				ZOOKEEPER_HOST=$2
-				shift
-			fi
-		;;
-
-		-zkp | --zookeeperport )
-			if [ "$2" != "" ]; then
-				ZOOKEEPER_PORT=$2
 				shift
 			fi
 		;;
@@ -152,6 +127,41 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
+
+		-rdh | --redishost )
+			if [ "$2" != "" ]; then
+				REDIS_HOST=$2
+				shift
+			fi
+		;;
+
+		-rdp | --redisport )
+			if [ "$2" != "" ]; then
+				REDIS_PORT=$2
+				shift
+			fi
+		;;
+
+		-rbh | --rabbitmqhost )
+			if [ "$2" != "" ]; then
+				RABBITMQ_HOST=$2
+				shift
+			fi
+		;;
+
+		-rbu | --rabbitmquser )
+			if [ "$2" != "" ]; then
+				RABBITMQ_USER=$2
+				shift
+			fi
+		;;
+
+		-rbp | --rabbitmqpassword )
+			if [ "$2" != "" ]; then
+				RABBITMQ_PASSWORD=$2
+				shift
+			fi
+		;;
 		
 		-? | -h | --help )
 			echo "  Usage: bash ${PRODUCT}-configuration.sh [PARAMETER] [[PARAMETER], ...]"
@@ -161,12 +171,13 @@ while [ "$1" != "" ]; do
 			echo "      -asp, --appsport                    ${PRODUCT} port (default 80)"
 			echo "      -dsh, --docshost                    document server ip"
 			echo "      -dsp, --docsport                    document server port (default 8083)"
-			echo "      -kh, --kafkahost                    kafka ip"
-			echo "      -kp, --kafkaport                    kafka port (default 9092)"
-			echo "      -zkh, --zookeeperhost               zookeeper ip"
-			echo "      -zkp, --zookeeperport               zookeeper port (default 2181)"
 			echo "      -esh, --elastichost                 elasticsearch ip"
 			echo "      -esp, --elasticport                 elasticsearch port (default 9200)"
+			echo "      -rdh, --redishost                 	redis ip"
+			echo "      -rdp, --redisport                 	redis port (default 6379)"
+			echo "      -rbh, --rabbitmqhost                rabbitmq ip"
+			echo "      -rbu, --rabbitmquser                rabbitmq user"
+			echo "      -rbp, --rabbitmqpassword            rabbitmq password"
 			echo "      -mysqlh, --mysqlhost                mysql server host"
 			echo "      -mysqld, --mysqldatabase            ${PRODUCT} database name"
 			echo "      -mysqlu, --mysqluser                ${PRODUCT} database user"
@@ -208,26 +219,24 @@ install_json() {
 		chown onlyoffice:onlyoffice $USER_CONF
 	
 		set_core_machinekey
-		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\", \
-		'products': { 'folder': '/var/www/appserver/products', 'subfolder': 'server'} }" \
-		-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.thumb={ 'path': '../ASC.Thumbnails/' }" \
-		-e "this.socket={ 'path': '../ASC.Socket.IO/' }" -e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" >/dev/null 2>&1
+		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
 	fi
 }
 
 restart_services() {
 	echo -n "Restarting services... "
 
-	sed -i "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
+	sed -e "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" -e "s/environment=.*/environment=$ENVIRONMENT/" -i $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
-	for SVC in nginx ${MYSQL_PACKAGE} ${PRODUCT}-api ${PRODUCT}-api-system ${PRODUCT}-urlshortener ${PRODUCT}-thumbnails \
-	${PRODUCT}-socket ${PRODUCT}-studio-notify ${PRODUCT}-notify ${PRODUCT}-people-server ${PRODUCT}-files \
-	${PRODUCT}-files-services ${PRODUCT}-studio ${PRODUCT}-backup ${PRODUCT}-storage-encryption \
-	${PRODUCT}-storage-migration ${PRODUCT}-telegram-service elasticsearch $KAFKA_SERVICE $ZOOKEEPER_SERVICE
+	systemctl start ${PRODUCT}-migration-runner || true
+
+	for SVC in api urlshortener socket studio-notify notify \
+	people-server files files-services studio backup telegram-service \
+	webhooks-service clear-events backup-background migration ssoauth doceditor
 	do
-		systemctl enable $SVC >/dev/null 2>&1
-		systemctl restart $SVC
+		systemctl enable ${PRODUCT}-$SVC >/dev/null 2>&1
+		systemctl restart ${PRODUCT}-$SVC
 	done
 	echo "OK"
 }
@@ -279,17 +288,17 @@ establish_mysql_conn(){
 	fi
 
     #Save db settings in .json
-	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \
-	\"Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300\"}}" >/dev/null 2>&1
+	CONNECTION_STRING="Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false; \
+SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"
+
+	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
+	sed "s/Server=.*/$CONNECTION_STRING\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
 
 	change_mysql_config
 
 	#Enable database migration
 	$JSON_USERCONF "this.migration={'enabled': \"true\"}" >/dev/null 2>&1
 
-	#Fixing appserver-backup startup error \ Adding backup_backup and backup_schedule tables
-	$MYSQL -D "$DB_NAME" -e 'CREATE TABLE IF NOT EXISTS `backup_backup` ( `id` char(38) NOT NULL, `tenant_id` int(11) NOT NULL, `is_scheduled` int(1) NOT NULL, `name` varchar(255) NOT NULL, `storage_type` int(11) NOT NULL, `storage_base_path` varchar(255) DEFAULT NULL, `storage_path` varchar(255) NOT NULL, `created_on` datetime NOT NULL, `expires_on` datetime NOT NULL DEFAULT "0001-01-01 00:00:00", `storage_params` TEXT NULL, `hash` char(64) NOT NULL, PRIMARY KEY (`id`), KEY `tenant_id` (`tenant_id`), KEY `expires_on` (`expires_on`), KEY `is_scheduled` (`is_scheduled`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >/dev/null 2>&1
-	$MYSQL -D "$DB_NAME" -e 'CREATE TABLE IF NOT EXISTS `backup_schedule` ( `tenant_id` int(11) NOT NULL, `backup_mail` int(11) NOT NULL DEFAULT "0", `cron` varchar(255) NOT NULL, `backups_stored` int(11) NOT NULL, `storage_type` int(11) NOT NULL, `storage_base_path` varchar(255) DEFAULT NULL, `last_backup_time` datetime NOT NULL, `storage_params` TEXT NULL, PRIMARY KEY (`tenant_id`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8;' >/dev/null 2>&1
 	echo "OK"
 }
 
@@ -394,7 +403,8 @@ change_mysql_config(){
 	fi
 
     systemctl daemon-reload >/dev/null 2>&1
-	systemctl restart ${MYSQL_PACKAGE} >/dev/null 2>&1
+	systemctl enable ${MYSQL_PACKAGE} >/dev/null 2>&1
+	systemctl restart ${MYSQL_PACKAGE}
 }
 
 setup_nginx(){
@@ -439,6 +449,8 @@ setup_nginx(){
 	fi
     chown nginx:nginx /etc/nginx/* -R
     sudo sed -e 's/#//' -i $NGINX_CONF/onlyoffice.conf
+	systemctl enable nginx >/dev/null 2>&1
+	systemctl restart nginx
 	echo "OK"
 }
 
@@ -465,9 +477,15 @@ setup_docs() {
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
 	'url': {'public': '/ds-vpath/','internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
 	
-	#Enable ds-example autostart
-	sed 's,autostart=false,autostart=true,' -i /etc/supervisord.d/ds-example.ini >/dev/null 2>&1 || sed 's,autostart=false,autostart=true,' -i /etc/supervisor/conf.d/ds-example.conf >/dev/null 2>&1
-	supervisorctl start ds:example >/dev/null 2>&1
+	#Docs Database Migration
+	local DOCUMENT_SERVER_DB_HOST=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbHost)
+	local DOCUMENT_SERVER_DB_PORT=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbPort)
+	local DOCUMENT_SERVER_DB_NAME=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbName)
+	local DOCUMENT_SERVER_DB_USERNAME=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbUser)
+	local DOCUMENT_SERVER_DB_PASSWORD=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbPass)
+	local DS_CONNECTION_STRING="Host=${DOCUMENT_SERVER_DB_HOST};Port=${DOCUMENT_SERVER_DB_PORT};Database=${DOCUMENT_SERVER_DB_NAME};Username=${DOCUMENT_SERVER_DB_USERNAME};Password=${DOCUMENT_SERVER_DB_PASSWORD};"
+
+	sed "s/Host=.*/$DS_CONNECTION_STRING;\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
 	
 	echo "OK"
 }
@@ -538,48 +556,44 @@ setup_elasticsearch() {
 
 	change_elasticsearch_config
 	
+	systemctl enable elasticsearch >/dev/null 2>&1
+	systemctl restart elasticsearch
 	echo "OK"
 }
 
-setup_kafka() {
+setup_redis() {
+	echo -n "Configuring redis... "
 
-	KAFKA_SERVICE=$(systemctl list-unit-files --no-legend "*kafka*" | grep -oE '[^ ]+.service')
-	ZOOKEEPER_SERVICE=$(systemctl list-unit-files --no-legend "*zookeeper*" | grep -oE '[^ ]+.service')
+	sed "s_\(\"Host\":\).*_\1 \"${REDIS_HOST}\",_" -i $APP_DIR/redis.json
+	sed "s_\(\"Port\":\).*_\1 \"${REDIS_PORT}\"_" -i $APP_DIR/redis.json
 
-	if [ -n ${KAFKA_SERVICE} ]; then
+	systemctl enable $REDIS_PACKAGE >/dev/null 2>&1
+	systemctl restart $REDIS_PACKAGE
 
-		echo -n "Configuring kafka... "
-		
-		local KAFKA_DIR="$(grep -oP '(?<=ExecStop=).*(?=/bin)' $SYSTEMD_DIR/$KAFKA_SERVICE)"
-		local KAFKA_CONF="${KAFKA_DIR}/config"
+	echo "OK"
+}
 
-		#Change kafka config
-		sed -i "s/clientPort=.*/clientPort=${ZOOKEEPER_PORT}/g" $KAFKA_CONF/zookeeper.properties
-		sed -i "s/zookeeper.connect=.*/zookeeper.connect=${ZOOKEEPER_HOST}:${ZOOKEEPER_PORT}/g" $KAFKA_CONF/server.properties
-		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/consumer.properties
-		sed -i "s/bootstrap.servers=.*/bootstrap.servers=${KAFKA_HOST}:${KAFKA_PORT}/g" $KAFKA_CONF/connect-standalone.properties
-		sed -i "s/logger.kafka.controller=.*,/logger.kafka.controller=INFO,/g" $KAFKA_CONF/log4j.properties
-		sed -i "s/logger.state.change.logger=.*,/logger.state.change.logger=INFO,/g" $KAFKA_CONF/log4j.properties
-		if ! grep -q "DefaultEventHandler" $KAFKA_CONF/log4j.properties; then
-			echo "log4j.logger.kafka.producer.async.DefaultEventHandler=INFO, kafkaAppender" >> $KAFKA_CONF/log4j.properties
-		fi
-		
-		#Save kafka parameters in .json
-		$JSON_USERCONF "this.kafka={'BootstrapServers': \"${KAFKA_HOST}:${KAFKA_PORT}\"}" >/dev/null 2>&1
-		
-		echo "OK"
-	fi
+setup_rabbitmq() {
+	echo -n "Configuring rabbitmq... "
 
+	$JSON $APP_DIR/rabbitmq.json -e "this.RabbitMQ={'Hostname': \"${RABBITMQ_HOST}\",'UserName': \"${RABBITMQ_USER}\",'Password': \"${RABBITMQ_PASSWORD}\" }" >/dev/null 2>&1
+	
+	systemctl enable rabbitmq-server >/dev/null 2>&1
+	systemctl restart rabbitmq-server
+
+	echo "OK"
 }
 
 if command -v yum >/dev/null 2>&1; then
 	DIST="RedHat"
 	PACKAGE_MANAGER="rpm -q"
 	MYSQL_PACKAGE="mysqld"
+	REDIS_PACKAGE="redis"
 elif command -v apt >/dev/null 2>&1; then
 	DIST="Debian"
 	PACKAGE_MANAGER="dpkg -l"
 	MYSQL_PACKAGE="mysql"
+	REDIS_PACKAGE="redis-server"
 fi
 
 install_json
@@ -601,6 +615,12 @@ if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then
     setup_elasticsearch
 fi
 
-setup_kafka
+if $PACKAGE_MANAGER $REDIS_PACKAGE >/dev/null 2>&1 >/dev/null 2>&1; then
+    setup_redis
+fi
+
+if $PACKAGE_MANAGER rabbitmq-server >/dev/null 2>&1; then
+    setup_rabbitmq
+fi
 
 restart_services

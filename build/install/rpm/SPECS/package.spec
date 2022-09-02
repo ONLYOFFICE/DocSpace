@@ -35,14 +35,6 @@ Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    files
 
-%package        api-system
-Summary:        api-system
-Group:          Applications/Internet
-Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
-AutoReqProv:    no
-%description    api-system
-
 %package        proxy
 Summary:        proxy
 Group:          Applications/Internet
@@ -72,8 +64,7 @@ AutoReqProv:    no
 Summary:        urlshortener
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
-Requires:       nodejs >= 12.0
+Requires:       nodejs >= 14.0
 AutoReqProv:    no
 %description    urlshortener
 
@@ -81,19 +72,9 @@ AutoReqProv:    no
 Summary:        socket
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
-Requires:       nodejs >= 12.0
+Requires:       nodejs >= 14.0
 AutoReqProv:    no
 %description    socket
-
-%package        thumbnails
-Summary:        thumbnails
-Group:          Applications/Internet
-Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
-Requires:       nodejs >= 12.0
-AutoReqProv:    no
-%description    thumbnails
 
 %package        studio
 Summary:        studio
@@ -111,22 +92,6 @@ Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    api
 
-%package        storage-encryption
-Summary:        storage-encryption
-Group:          Applications/Internet
-Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
-AutoReqProv:    no
-%description    storage-encryption
-
-%package        storage-migration
-Summary:        storage-migration
-Group:          Applications/Internet
-Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
-AutoReqProv:    no
-%description    storage-migration
-
 %package        telegram-service
 Summary:        telegram-service
 Group:          Applications/Internet
@@ -139,7 +104,62 @@ AutoReqProv:    no
 Summary:        ssoauth
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
-Requires:       nodejs >= 12.0
+Requires:       nodejs >= 14.0
 AutoReqProv:    no
 %description    ssoauth
+
+%package        webhooks-service
+Summary:        webhooks-service
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       dotnet-sdk-6.0
+AutoReqProv:    no
+%description    webhooks-service
+
+%package        clear-events
+Summary:        clear-events
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       dotnet-sdk-6.0
+AutoReqProv:    no
+%description    clear-events
+
+%package        backup-background
+Summary:        backup-background
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       dotnet-sdk-6.0
+AutoReqProv:    no
+%description    backup-background
+
+%package        migration
+Summary:        migration
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       dotnet-sdk-6.0
+AutoReqProv:    no
+%description    migration
+
+%package        radicale
+Summary:        radicale
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       python3 >= 3.6
+AutoReqProv:    no
+%description    radicale
+
+%package        doceditor
+Summary:        doceditor
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       nodejs >= 14.0
+AutoReqProv:    no
+%description    doceditor
+
+%package        migration-runner
+Summary:        migration-runner
+Group:          Applications/Internet
+Requires:       %name-common  = %version-%release
+Requires:       dotnet-sdk-6.0
+AutoReqProv:    no
+%description    migration-runner
