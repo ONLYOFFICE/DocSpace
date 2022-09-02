@@ -32,6 +32,11 @@ class PaymentStore {
     makeAutoObservable(this);
   }
 
+  setSalesEmail = async () => {
+    const newSettings = await getPaymentSettings();
+    const { salesEmail } = newSettings;
+    this.salesEmail = salesEmail;
+  };
   getSettingsPayment = async () => {
     const newSettings = await getPaymentSettings();
     const {

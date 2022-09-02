@@ -71,6 +71,7 @@ const PaymentsPage = ({
   setCurrencies,
   isoCurrencySymbol,
   isNotPaid,
+  setSalesEmail,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -101,7 +102,7 @@ const PaymentsPage = ({
     (async () => {
       const requests = [];
 
-      requests.push(setPaymentTariff());
+      requests.push(setPaymentTariff(), setSalesEmail());
 
       if (Object.keys(portalQuota).length === 0)
         requests.push(setPortalQuota());
@@ -271,6 +272,7 @@ export default inject(({ auth, payments }) => {
     tariffsInfo,
     setPaymentAccount,
     setPaymentTariff,
+    setSalesEmail,
   } = payments;
 
   return {
@@ -293,5 +295,6 @@ export default inject(({ auth, payments }) => {
     setCurrencies,
     isoCurrencySymbol: currencies[0]?.isoCurrencySymbol,
     isNotPaid,
+    setSalesEmail,
   };
 })(withRouter(observer(PaymentsPage)));
