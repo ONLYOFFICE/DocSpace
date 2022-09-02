@@ -44,9 +44,10 @@ const Selector = ({
   isNextPageLoading,
   loadNextPage,
   totalItems,
+  isLoading,
+  searchLoader,
+  rowLoader,
 }) => {
-  const [isLoading, setIsLoading] = React.useState(false);
-
   const [footerVisible, setFooterVisible] = React.useState(false);
 
   const [isSearch, setIsSearch] = React.useState(false);
@@ -267,8 +268,12 @@ const Selector = ({
         searchEmptyScreenHeader={searchEmptyScreenHeader}
         searchEmptyScreenDescription={searchEmptyScreenDescription}
         hasNextPage={hasNextPage}
+        isNextPageLoading={isNextPageLoading}
         loadMoreItems={loadMoreItems}
         totalItems={totalItems}
+        isLoading={isLoading}
+        searchLoader={searchLoader}
+        rowLoader={rowLoader}
       />
 
       {footerVisible && (
@@ -337,6 +342,10 @@ Selector.propTypes = {
   hasNextPage: PropTypes.bool,
   isNextPageLoading: PropTypes.bool,
   loadNextPage: PropTypes.func,
+
+  isLoading: PropTypes.bool,
+  searchLoader: PropTypes.node,
+  rowLoader: PropTypes.node,
 };
 
 Selector.defaultProps = {

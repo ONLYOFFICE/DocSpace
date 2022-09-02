@@ -15,6 +15,7 @@ const CONTAINER_PADDING = 32;
 const SEARCH_HEIGHT = 44;
 const SELECT_ALL_HEIGHT = 73;
 const FOOTER_HEIGHT = 73;
+const ROW_LOADER_HEIGHT = 48;
 
 const Body = ({
   footerVisible,
@@ -39,8 +40,12 @@ const Body = ({
   searchEmptyScreenHeader,
   searchEmptyScreenDescription,
   loadMoreItems,
+  isNextPageLoading,
   hasNextPage,
   totalItems,
+  isLoading,
+  searchLoader,
+  rowLoader,
 }) => {
   const [bodyHeight, setBodyHeight] = React.useState(null);
 
@@ -96,10 +101,13 @@ const Body = ({
   if (footerVisible) listHeight -= FOOTER_HEIGHT;
   if (isMultiSelect && withSelectAll && !isSearch)
     listHeight -= SELECT_ALL_HEIGHT;
+  if (isNextPageLoading) listHeight -= ROW_LOADER_HEIGHT;
 
   return (
     <StyledSelectorBody ref={onBodyRef}>
-      {withSearch && (
+      {withSearch && isLoading ? (
+        searchLoader
+      ) : (
         <Search
           placeholder={placeholder}
           value={value}
@@ -127,32 +135,41 @@ const Body = ({
               isChecked={isAllChecked}
               isIndeterminate={isAllIndeterminate}
               onSelectAll={onSelectAll}
+              isLoading={isLoading}
+              rowLoader={rowLoader}
             />
           )}
 
-          {bodyHeight && (
-            <InfiniteLoader
-              ref={listOptionsRef}
-              isItemLoaded={isItemLoaded}
-              itemCount={totalItems}
-              loadMoreItems={loadMoreItems}
-            >
-              {({ onItemsRendered, ref }) => (
-                <List
-                  className="items-list"
-                  height={listHeight}
-                  width={"100%"}
-                  itemCount={itemsCount}
-                  itemData={{ items, onSelect, isMultiSelect }}
-                  itemSize={48}
-                  onItemsRendered={onItemsRendered}
-                  ref={ref}
-                  outerElementType={CustomScrollbarsVirtualList}
+          {isLoading ? (
+            rowLoader
+          ) : (
+            <>
+              {bodyHeight && (
+                <InfiniteLoader
+                  ref={listOptionsRef}
+                  isItemLoaded={isItemLoaded}
+                  itemCount={totalItems}
+                  loadMoreItems={loadMoreItems}
                 >
-                  {Item}
-                </List>
+                  {({ onItemsRendered, ref }) => (
+                    <List
+                      className="items-list"
+                      height={listHeight}
+                      width={"100%"}
+                      itemCount={itemsCount}
+                      itemData={{ items, onSelect, isMultiSelect }}
+                      itemSize={48}
+                      onItemsRendered={onItemsRendered}
+                      ref={ref}
+                      outerElementType={CustomScrollbarsVirtualList}
+                    >
+                      {Item}
+                    </List>
+                  )}
+                </InfiniteLoader>
               )}
-            </InfiniteLoader>
+              {isNextPageLoading && rowLoader}
+            </>
           )}
         </>
       )}

@@ -43,7 +43,8 @@ const StyledSelectorBody = styled.div`
 
   box-sizing: border-box;
 
-  .search-input {
+  .search-input,
+  .search-loader {
     padding: 0 16px;
 
     margin-bottom: 12px;

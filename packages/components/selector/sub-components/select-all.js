@@ -43,32 +43,47 @@ const StyledSelectAll = styled.div`
 `;
 
 const SelectAll = React.memo(
-  ({ label, icon, onSelectAll, isChecked, isIndeterminate }) => {
+  ({
+    label,
+    icon,
+    onSelectAll,
+    isChecked,
+    isIndeterminate,
+    isLoading,
+    rowLoader,
+  }) => {
     return (
       <StyledSelectAll>
-        <Avatar
-          className="select-all_avatar"
-          source={icon}
-          role={"user"}
-          size={"min"}
-        />
+        <div style={{ background: "red", height: "150px" }}></div>
+        {isLoading ? (
+          rowLoader
+        ) : (
+          <>
+            <Avatar
+              className="select-all_avatar"
+              source={icon}
+              role={"user"}
+              size={"min"}
+            />
 
-        <Text
-          className="label"
-          fontWeight={600}
-          fontSize={"14px"}
-          noSelect
-          truncate
-        >
-          {label}
-        </Text>
+            <Text
+              className="label"
+              fontWeight={600}
+              fontSize={"14px"}
+              noSelect
+              truncate
+            >
+              {label}
+            </Text>
 
-        <Checkbox
-          className="checkbox"
-          isChecked={isChecked}
-          isIndeterminate={isIndeterminate}
-          onChange={onSelectAll}
-        />
+            <Checkbox
+              className="checkbox"
+              isChecked={isChecked}
+              isIndeterminate={isIndeterminate}
+              onChange={onSelectAll}
+            />
+          </>
+        )}
       </StyledSelectAll>
     );
   }

@@ -1,6 +1,19 @@
 import React from "react";
+import styled from "styled-components";
 
 import Selector from "./";
+
+const StyledRowLoader = styled.div`
+  width: 100%;
+  height: 48px;
+  background: red;
+`;
+
+const StyledSearchLoader = styled.div`
+  width: 100%;
+  height: 32px;
+  background: black;
+`;
 
 export default {
   title: "Components/Selector",
@@ -106,6 +119,9 @@ const Template = (args) => {
     setRendItems((val) => [...val, ...items.slice(index, index + 100)]);
   };
 
+  const rowLoader = <StyledRowLoader />;
+  const searchLoader = <StyledSearchLoader className="search-loader" />;
+
   return (
     <div
       style={{
@@ -118,10 +134,9 @@ const Template = (args) => {
       <Selector
         {...args}
         items={rendItems}
-        totalItems={totalItems}
-        hasNextPage={true}
-        isNextPageLoading={false}
         loadNextPage={loadNextPage}
+        searchLoader={searchLoader}
+        rowLoader={rowLoader}
       />
     </div>
   );
@@ -161,4 +176,8 @@ Default.args = {
   searchEmptyScreenHeader: "No other accounts here yet search",
   searchEmptyScreenDescription:
     " SEARCH !!! The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time.",
+  totalItems,
+  hasNextPage: true,
+  isNextPageLoading: false,
+  isLoading: false,
 };
