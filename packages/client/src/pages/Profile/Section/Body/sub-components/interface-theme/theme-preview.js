@@ -41,7 +41,29 @@ const ThemePreview = (props) => {
               </Text>
               <img src="/static/images/triangle-main-button.svg" />
             </button>
+            <Text fontSize="11px" fontWeight={600} className="catalog-header">
+              {t("Common:Rooms")}
+            </Text>
+            <div className="item">
+              <img src="/static/images/catalog.user.react.svg" />
+              <Text className="label" fontWeight={600}>
+                Personal
+              </Text>
+            </div>
+            <div className="item item-active">
+              <img src="/static/images/catalog.folder.react.svg" />
+              <Text className="label" fontWeight={600}>
+                Shared
+              </Text>
+            </div>
+            <div className="item">
+              <img src="/static/images/catalog.archive.react.svg" />
+              <Text className="label" fontWeight={600}>
+                Archived
+              </Text>
+            </div>
           </div>
+          <div className="body"></div>
         </StyledPreview>
       </ThemeProvider>
     </StyledWrapper>

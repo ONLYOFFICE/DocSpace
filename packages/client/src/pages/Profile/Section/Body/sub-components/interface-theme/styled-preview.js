@@ -16,10 +16,11 @@ export const StyledPreview = styled.div`
   display: flex;
 
   .article {
-    width: 251px;
+    width: 211px;
     background: ${(props) => props.theme.article.background};
     padding: 0 20px;
-    border-radius: 0 0 12px 12px;
+    border: none;
+    border-radius: 0 0 0 12px;
 
     .logo {
       padding: 22px 0;
@@ -39,5 +40,33 @@ export const StyledPreview = styled.div`
         color: ${(props) => props.theme.mainButton.textColor};
       }
     }
+
+    .catalog-header {
+      color: ${(props) => props.theme.article.catalogItemHeader};
+      padding-left: 12px;
+      padding-bottom: 4px;
+    }
+
+    .item {
+      display: flex;
+      gap: 8px;
+      padding: 10px 0 10px 10px;
+      border-radius: 3px;
+
+      .label {
+        color: ${(props) => props.theme.article.catalogItemText};
+      }
+    }
+
+    .item-active {
+      background: ${(props) => props.theme.article.catalogItemActiveBackground};
+    }
+  }
+
+  .body {
+    width: 69px;
+    background: ${(props) => props.theme.backgroundColor};
+    border: none;
+    border-radius: 0 0 12px 0;
   }
 `;
