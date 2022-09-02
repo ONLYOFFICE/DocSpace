@@ -112,7 +112,13 @@ public class QuotaHelper
                     Value = val,
                     CurrencySymbol = currentRegion.CurrencySymbol,
                     Per = string.Format(Resource.ResourceManager.GetString($"TariffsFeature_{id}_price_per"), GetPriceString(val, currentRegion)),
-                    Count = Resource.ResourceManager.GetString($"TariffsFeature_{id}_price_count")
+                    Count = Resource.ResourceManager.GetString($"TariffsFeature_{id}_price_count"),
+                    Range = new FeaturePriceRangeDto
+                    {
+                        Value = 1,
+                        Min = 1,
+                        Max = 999,
+                    }
                 };
             }
 

@@ -53,4 +53,12 @@ public class FeaturePriceDto
     public string CurrencySymbol { get; set; }
     public string Count { get; set; }
     public string Per { get; set; }
+    public FeaturePriceRangeDto Range { get; set; }
+}
+
+public class FeaturePriceRangeDto
+{
+    public object Value { get; set; }
+    public object Min { get; set; }
+    public object Max { get; set; }
 }
