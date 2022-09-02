@@ -246,8 +246,8 @@ class DialogsStore {
     this.invitePanelOptions = invitePanelOptions;
   };
 
-  setInviteItems = (items) => {
-    this.inviteItems = items;
+  setInviteItems = (inviteItems) => {
+    this.inviteItems = inviteItems;
   };
 
   changeInviteItem = async (item) =>
