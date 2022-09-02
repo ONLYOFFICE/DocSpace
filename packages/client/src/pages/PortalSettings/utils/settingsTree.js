@@ -32,6 +32,12 @@ export const settingsTree = [
           {
             key: "0-0-2",
             icon: "",
+            link: "dns-settings",
+            tKey: "DNSSettings",
+          },
+          {
+            key: "0-0-3",
+            icon: "",
             link: "portal-renaming",
             tKey: "PortalRenaming",
           },
