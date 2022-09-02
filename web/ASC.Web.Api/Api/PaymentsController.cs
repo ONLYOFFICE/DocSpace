@@ -65,7 +65,7 @@ public class PaymentController : ControllerBase
     [HttpPut("payment/url")]
     public Uri GetPaymentUrl(PaymentUrlRequestsDto inDto)
     {
-        if (!_tariffService.GetPayments(Tenant.Id).Any() ||
+        if (_tariffService.GetPayments(Tenant.Id).Any() ||
             !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
         {
             return null;
