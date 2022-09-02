@@ -8,7 +8,11 @@ import DropDownItem from "@docspace/components/drop-down-item";
 import { parseAddresses } from "@docspace/components/utils/email";
 import { ShareAccessRights } from "@docspace/common/constants";
 
+import { AddUsersPanel } from "../index";
+
 import {
+  StyledSubHeader,
+  StyledLink,
   StyledInviteInput,
   StyledInviteInputContainer,
   StyledDropDown,
@@ -22,11 +26,23 @@ const InviteInput = ({
   inviteItems,
   getUsersByQuery,
   t,
-  roomUsers,
+  onClose,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [panelVisible, setPanelVisible] = useState(false);
+  const [roomUsers, setRoomUsers] = useState([]);
+  const [showUsersPanel, setShowUsersPanel] = useState(false);
+
+  useEffect(() => {
+    const { id } = invitePanelOptions;
+
+    getShareUsers([id]).then((users) => setRoomUsers(users));
+  }, [invitePanelOptions]);
+
+  const inRoom = (id) => {
+    return roomUsers.some((user) => user.sharedTo.id === id);
+  };
 
   const toUserItem = (email) => {
     const emails = parseAddresses(email);
@@ -38,10 +54,6 @@ const InviteInput = ({
       displayName: email,
       errors: emails[0].parseErrors,
     };
-  };
-
-  const inRoom = (id) => {
-    return roomUsers.some((user) => user.id === id);
   };
 
   const searchByQuery = async (value) => {
@@ -60,10 +72,13 @@ const InviteInput = ({
 
   const onChange = (e) => {
     const value = e.target.value;
+    const clearValue = value.trim();
 
-    setPanelVisible(!!usersList.length || value.trim().length > 1);
+    if ((!!usersList.length || clearValue.length > 1) && !panelVisible)
+      openInviteInputPanel();
+
     setInputValue(value);
-    debouncedSearch(value);
+    debouncedSearch(clearValue);
   };
 
   const getItemContent = (item) => {
@@ -75,7 +90,7 @@ const InviteInput = ({
 
     const addUser = () => {
       setInviteItems([...inviteItems, item]);
-      setPanelVisible(false);
+      closeInviteInputPanel();
     };
 
     return (
@@ -104,36 +119,97 @@ const InviteInput = ({
     item.access = ShareAccessRights.ReadOnly; //TODO: get from main selector;
 
     setInviteItems([...inviteItems, item]);
-    setPanelVisible(false);
+    closeInviteInputPanel();
+  };
+
+  const addItems = (users) => {
+    const items = [...inviteItems, ...users];
+
+    const filtered = items.reduce((unique, o) => {
+      !unique.some((obj) => obj.email === o.email) && unique.push(o);
+      return unique;
+    }, []);
+
+    setInviteItems(filtered);
+    closeInviteInputPanel();
   };
 
   const dropDownMaxHeight = usersList.length > 5 ? { maxHeight: 240 } : {};
 
+  const openUsersPanel = () => {
+    setInputValue("");
+    setShowUsersPanel(true);
+  };
+
+  const closeUsersPanel = () => {
+    setShowUsersPanel(false);
+  };
+
+  const openInviteInputPanel = () => {
+    setPanelVisible(true);
+  };
+
+  const closeInviteInputPanel = () => {
+    setInputValue("");
+    setPanelVisible(false);
+  };
+
+  const foundUsers = usersList.map((user) => getItemContent(user));
+
+  const accesses = Object.keys(ShareAccessRights);
+
   return (
-    <StyledInviteInputContainer>
-      <StyledInviteInput
-        onChange={onChange}
-        placeholder={t("SearchPlaceholder")}
-        value={inputValue}
-        onFocus={() => setPanelVisible(true)}
-      />
-      <StyledDropDown
-        isDefaultMode={false}
-        open={panelVisible}
-        manualX="16px"
-        showDisabledItems
-        clickOutsideAction={() => setPanelVisible(false)}
-        {...dropDownMaxHeight}
-      >
-        {!!usersList.length
-          ? usersList.map((user) => getItemContent(user))
-          : inputValue.length > 2 && (
-              <DropDownItem onClick={addItem} height={48}>
-                {t("Add")} «{inputValue}»
-              </DropDownItem>
-            )}
-      </StyledDropDown>
-    </StyledInviteInputContainer>
+    <>
+      <StyledSubHeader>
+        {t("IndividualInvitation")}
+        <StyledLink
+          fontWeight="600"
+          type="action"
+          isHovered
+          onClick={openUsersPanel}
+        >
+          {t("СhooseFromList")}
+        </StyledLink>
+      </StyledSubHeader>
+
+      <StyledInviteInputContainer>
+        <StyledInviteInput
+          onChange={onChange}
+          placeholder={t("SearchPlaceholder")}
+          value={inputValue}
+        />
+        <StyledDropDown
+          isDefaultMode={false}
+          open={panelVisible}
+          manualX="16px"
+          showDisabledItems
+          clickOutsideAction={closeInviteInputPanel}
+          {...dropDownMaxHeight}
+        >
+          {!!usersList.length
+            ? foundUsers
+            : inputValue.length > 2 && (
+                <DropDownItem onClick={addItem} height={48}>
+                  {t("Add")} «{inputValue}»
+                </DropDownItem>
+              )}
+        </StyledDropDown>
+
+        {showUsersPanel && (
+          <AddUsersPanel
+            onSharingPanelClose={onClose}
+            onClose={closeUsersPanel}
+            visible={showUsersPanel}
+            shareDataItems={roomUsers}
+            tempDataItems={inviteItems}
+            setShareDataItems={addItems}
+            accessOptions={accesses}
+            isMultiSelect
+            withoutAdded
+          />
+        )}
+      </StyledInviteInputContainer>
+    </>
   );
 };
 
