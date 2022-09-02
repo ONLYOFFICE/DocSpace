@@ -30,6 +30,7 @@ public class FeedApiFilter
 {
     public string Id { get; set; }
     public string Product { get; set; }
+    public string Module { get; set; }
     public DateTime From { get; set; }
     public DateTime To { get; set; }
     public int Offset { get; set; }
