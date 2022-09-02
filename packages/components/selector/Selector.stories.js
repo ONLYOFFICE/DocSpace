@@ -33,7 +33,7 @@ const getItems = (count) => {
     items.push({
       key: `user_${i}`,
       id: `user_${i}`,
-      label: makeName(),
+      label: makeName() + " " + i,
       avatar: "static/images/room.archive.svg",
     });
   }
@@ -87,7 +87,25 @@ const getAccessRights = () => {
   return accesses;
 };
 
+const items = getItems(1000);
+
+const selectedItems = [items[0], items[3], items[7]];
+
+const accessRights = getAccessRights();
+
+const selectedAccessRight = accessRights[1];
+
+const renderedItems = items.slice(0, 100);
+const totalItems = items.length;
+
 const Template = (args) => {
+  const [rendItems, setRendItems] = React.useState(renderedItems);
+
+  const loadNextPage = (index) => {
+    console.log("call");
+    setRendItems((val) => [...val, ...items.slice(index, index + 100)]);
+  };
+
   return (
     <div
       style={{
@@ -97,20 +115,19 @@ const Template = (args) => {
         margin: "auto",
       }}
     >
-      <Selector {...args} />
+      <Selector
+        {...args}
+        items={rendItems}
+        totalItems={totalItems}
+        hasNextPage={true}
+        isNextPageLoading={false}
+        loadNextPage={loadNextPage}
+      />
     </div>
   );
 };
 
 export const Default = Template.bind({});
-
-const items = getItems(1000);
-
-const selectedItems = [items[0], items[3], items[7]];
-
-const accessRights = getAccessRights();
-
-const selectedAccessRight = accessRights[1];
 
 Default.args = {
   height: "485px", // container height
@@ -118,10 +135,10 @@ Default.args = {
   onBackClick: () => console.log("back click"),
   searchPlaceholder: "Search",
   searchValue: "",
-  items: [],
+  items: renderedItems,
   onSelect: (item) => console.log("select " + item),
   isMultiSelect: false,
-  selectedItems: [],
+  selectedItems: selectedItems,
   acceptButtonLabel: "Add",
   onAccept: (items, access) => console.log("accept " + items + access),
   withSelectAll: false,
@@ -140,4 +157,8 @@ Default.args = {
   emptyScreenHeader: "No other accounts here yet",
   emptyScreenDescription:
     "The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time.",
+  searchEmptyScreenImage: "static/images/empty_screen_filter.png",
+  searchEmptyScreenHeader: "No other accounts here yet search",
+  searchEmptyScreenDescription:
+    " SEARCH !!! The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time.",
 };
