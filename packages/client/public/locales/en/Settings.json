@@ -61,6 +61,10 @@
   "DataBackup": "Data backup",
   "DeactivateOrDeletePortal": "Deactivate or delete portal.",
   "Disabled": "Disabled",
+  "DNSSettings": "DNS Settings",
+  "DNSSettingsDescription": "DNS Settings is a way to set an alternative URL for your portal.",
+  "DNSSettingsMobile": "Send your request to our support team, and our specialists will help you with the settings.",
+  "DNSSettingsTooltip": "DNS Settings allow you to set an alternative URL address for your ONLYOFFICE portal. Send your request to our support team, and our specialists will help you with the settings.<2>{{learnMore}}</2>",
   "DocumentsAdministratorsCan": "Documents administrators can link Dropbox, Box, and other accounts to Common Documents and set up access rights in this section",
   "DownloadCopy": "Download the copy",
   "Employees": "users",
@@ -186,5 +190,6 @@
   "UserAgreement": "I confirm and want to proceed",
   "Users": "Users",
   "WhiteLabel": "White label",
-  "YouHaveUnsavedChanges": "You have unsaved changes"
+  "YouHaveUnsavedChanges": "You have unsaved changes",
+  "YourCurrentDomain": "Your current domain"
 }
