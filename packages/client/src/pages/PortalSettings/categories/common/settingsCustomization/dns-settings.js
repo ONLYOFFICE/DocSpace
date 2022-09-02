@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import HelpButton from "@docspace/components/help-button";
 import FieldContainer from "@docspace/components/field-container";
@@ -30,13 +30,14 @@ const DNSSettings = (props) => {
   } = props;
   const [hasScroll, setHasScroll] = useState(false);
   const isLoadedSetting = isLoaded && tReady;
+  const [isCustomizationView, setIsCustomizationView] = useState(false);
 
   useEffect(() => {
     setDocumentTitle(t("DNSSettings"));
 
     const checkScroll = checkScrollSettingsBlock();
-
-    window.addEventListener("resize", checkInnerWidth, checkScroll);
+    checkInnerWidth();
+    window.addEventListener("resize", checkInnerWidth);
 
     const scrollPortalName = checkScroll();
 
@@ -53,12 +54,7 @@ const DNSSettings = (props) => {
       settingsMobile.style.display = "none";
     }
 
-    return () =>
-      window.removeEventListener(
-        "resize",
-        checkInnerWidth,
-        checkScrollSettingsBlock
-      );
+    return () => window.removeEventListener("resize", checkInnerWidth);
   }, []);
 
   useEffect(() => {
@@ -69,8 +65,10 @@ const DNSSettings = (props) => {
     window.open("https://helpdesk.onlyoffice.com/hc/en-us/requests/new");
   };
 
-  const checkInnerWidth = () => {
+  const checkInnerWidth = useCallback(() => {
     if (!isSmallTablet()) {
+      setIsCustomizationView(true);
+
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -78,9 +76,10 @@ const DNSSettings = (props) => {
           "/portal-settings/common/customization"
         )
       );
-      return true;
+    } else {
+      setIsCustomizationView(false);
     }
-  };
+  }, [isSmallTablet, setIsCustomizationView]);
 
   const tooltipDNSSettingsTooltip = (
     <DNSSettingsTooltip t={t} theme={theme} helpLink={helpLink} />
@@ -112,7 +111,7 @@ const DNSSettings = (props) => {
       hasScroll={hasScroll}
       className="category-item-wrapper"
     >
-      {checkInnerWidth() && !isMobileView && (
+      {isCustomizationView && !isMobileView && (
         <div className="category-item-heading">
           <div className="category-item-title">{t("DNSSettings")}</div>
           <HelpButton
