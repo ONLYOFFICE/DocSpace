@@ -12,6 +12,7 @@
   "LightTheme": "Light theme",
   "LoginSettings": "Login settings",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
+  "MyProfile": "My profile",
   "PhoneLbl": "Phone",
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
