@@ -467,7 +467,7 @@ class SectionHeaderContent extends React.PureComponent {
         />
 
         <Headline className="header-headline" type="content" truncate={true}>
-          {profile.displayName}
+          {t("Profile:MyProfile")}
           {profile.isLDAP && ` (${t("PeopleTranslations:LDAPLbl")})`}
         </Headline>
         {((isAdmin && !profile.isOwner) || isMe) && (
