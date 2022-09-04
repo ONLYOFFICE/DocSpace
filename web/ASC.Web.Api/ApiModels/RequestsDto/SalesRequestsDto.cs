@@ -24,10 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api.Routing;
+namespace ASC.Web.Api.ApiModels.RequestsDto;
 
-[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-public class AllowNotPaymentAttribute : Attribute
+public class SalesRequestsDto
 {
-
+    public string UserName { get; set; }
+    public string Email { get; set; }
+    public string Message { get; set; }
 }
