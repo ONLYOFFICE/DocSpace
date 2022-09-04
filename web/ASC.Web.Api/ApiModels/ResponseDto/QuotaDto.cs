@@ -38,13 +38,26 @@ public class QuotaDto
     public IEnumerable<QuotaFeatureDto> Features { get; set; }
 }
 
-public class QuotaFeatureDto
+public class QuotaFeatureDto : IEquatable<QuotaFeatureDto>
 {
     public string Id { get; set; }
     public string Title { get; set; }
     public string Image { get; set; }
     public object Used { get; set; }
     public FeaturePriceDto Price { get; set; }
+
+    public bool Equals(QuotaFeatureDto other)
+    {
+        if (other is null)
+        {
+            return false;
+        }
+
+        return Id == other.Id;
+    }
+
+    public override bool Equals(object obj) => Equals(obj as QuotaFeatureDto);
+    public override int GetHashCode() => Id.GetHashCode();
 }
 
 public class FeaturePriceDto

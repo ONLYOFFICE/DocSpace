@@ -49,7 +49,10 @@ public class QuotaHelper
 
     private QuotaDto ToQuotaDto(TenantQuota tenantQuota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
     {
-        var features = GetFeatures(tenantQuota, priceInfo, currentRegion);
+        var defaultFeatures = GetFeatures(TenantQuota.Default, priceInfo, currentRegion);
+        var quotaFeatures = GetFeatures(tenantQuota, priceInfo, currentRegion);
+
+        var features = quotaFeatures.Union(defaultFeatures);
 
         return new QuotaDto()
         {
