@@ -315,117 +315,38 @@ class SectionHeaderContent extends React.PureComponent {
       .catch((error) => toastr.error(error));
   };
 
-  getUserContextOptions = (user, viewer) => {
-    let status = "";
-    const { t, isAdmin, isMe } = this.props;
-
-    if (isAdmin || (!isAdmin && isMe)) {
-      status = getUserStatus(user);
-    }
-
-    switch (status) {
-      case "normal":
-      case "unknown":
-        return [
-          {
-            key: "edit",
-            className: "header-context-menu_edit",
-            label: t("Profile:EditUser"),
-            onClick: this.onEditClick,
-          },
-          {
-            key: "change-password",
-            className: "header-context-menu_change-password",
-            label: t("PeopleTranslations:PasswordChangeButton"),
-            onClick: this.toggleChangePasswordDialog,
-          },
-          {
-            key: "change-email",
-            className: "header-context-menu_change-email",
-            label: t("PeopleTranslations:EmailChangeButton"),
-            onClick: this.toggleChangeEmailDialog,
-          },
-          isMe
-            ? viewer.isOwner
-              ? {}
-              : {
-                  key: "delete-profile",
-                  className: "header-context-menu_delete-profile",
-                  label: t("PeopleTranslations:DeleteSelfProfile"),
-                  onClick: this.toggleDeleteSelfProfileDialog,
-                }
-            : {
-                key: "disable",
-                className: "header-context-menu_disable",
-                label: t("PeopleTranslations:DisableUserButton"),
-                onClick: this.onDisableClick,
-              },
-        ];
-      case "disabled":
-        return [
-          {
-            key: "enable",
-            className: "header-context-menu_enable",
-            label: t("PeopleTranslations:EnableUserButton"),
-            onClick: this.onEnableClick,
-          },
-          {
-            key: "reassign-data",
-            className: "header-context-menu_reassign-data",
-            label: t("PeopleTranslations:ReassignData"),
-            onClick: this.onReassignDataClick.bind(this, user),
-          },
-          {
-            key: "delete-personal-data",
-            className: "header-context-menu_delete-personal-data",
-            label: t("PeopleTranslations:RemoveData"),
-            onClick: this.onDeletePersonalDataClick,
-          },
-          {
-            key: "delete-profile",
-            className: "header-context-menu_delete-profile",
-            label: t("PeopleTranslations:DeleteSelfProfile"),
-            onClick: this.toggleDeleteProfileEverDialog,
-          },
-        ];
-      case "pending":
-        return [
-          {
-            key: "edit",
-            className: "header-context-menu_edit",
-            label: t("Common:EditButton"),
-            onClick: this.onEditClick,
-          },
-          {
-            key: "invite-again",
-            className: "header-context-menu_invite-again",
-            label: t("Profile:InviteAgainLbl"),
-            onClick: this.onInviteAgainClick,
-          },
-          !isMe &&
-            (user.status === EmployeeStatus.Active
-              ? {
-                  key: "disable",
-                  className: "header-context-menu_disable",
-                  label: t("PeopleTranslations:DisableUserButton"),
-                  onClick: this.onDisableClick,
-                }
-              : {
-                  key: "enable",
-                  className: "header-context-menu_enable",
-                  label: t("PeopleTranslations:EnableUserButton"),
-                  onClick: this.onEnableClick,
-                }),
-          isMe && {
-            key: "delete-profile",
-            className: "header-context-menu_delete-profile",
-            label: t("PeopleTranslations:DeleteSelfProfile"),
-            onClick: this.toggleDeleteSelfProfileDialog,
-          },
-        ];
-      default:
-        return [];
-    }
+  getUserContextOptions = () => {
+    return [
+      {
+        key: "change-email",
+        label: "Change email",
+        onClick: () => console.log("Change email"),
+        disabled: false,
+        icon: "/static/images/email.react.svg",
+      },
+      {
+        key: "change-password",
+        label: "Change password",
+        onClick: () => console.log("Change password"),
+        disabled: false,
+        icon: "/static/images/security.react.svg",
+      },
+      {
+        key: "edit-photo",
+        label: "Edit photo",
+        onClick: () => console.log("Edit photo"),
+        disabled: false,
+        icon: "/static/images/image.react.svg",
+      },
+      { key: "separator", isSeparator: true },
+      {
+        key: "delete-profile",
+        label: "Delete profile",
+        onClick: () => console.log("Delete profile"),
+        disabled: false,
+        icon: "/static/images/catalog.trash.react.svg",
+      },
+    ];
   };
 
   onClickBack = () => {
@@ -452,7 +373,7 @@ class SectionHeaderContent extends React.PureComponent {
     const { profile, isAdmin, viewer, t, filter, history, isMe } = this.props;
     const { avatar, visibleAvatarEditor, dialogsVisible } = this.state;
 
-    const contextOptions = () => this.getUserContextOptions(profile, viewer);
+    const contextOptions = () => this.getUserContextOptions();
 
     return (
       <StyledContainer
