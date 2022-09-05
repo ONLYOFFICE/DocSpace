@@ -11,6 +11,7 @@ import MainProfile from "./sub-components/main-profile";
 import LoginSettings from "./sub-components/login-settings";
 import Subscription from "./sub-components/subscription";
 import InterfaceTheme from "./sub-components/interface-theme";
+import SocialNetworks from "./sub-components/social-networks";
 
 import { tablet } from "@docspace/components/utils/device";
 
@@ -80,6 +81,7 @@ const SectionBodyContent = (props) => {
           setBackupCodes={setBackupCodes}
         />
       )}
+      <SocialNetworks />
       <Subscription
         changeEmailSubscription={changeEmailSubscription}
         tipsSubscription={tipsSubscription}
