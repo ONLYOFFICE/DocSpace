@@ -47,9 +47,28 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
         FileSecurityCommon fileSecurityCommon,
         EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper) : base(foldersControllerHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksService, customTagsService, roomLogoManager, studioNotifyService, fileStorageService, fileSecurity, fileSecurityCommon, emailValidationKeyProvider, folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper,
+        FileShareDtoHelper fileShareDtoHelper) : base(
+            foldersControllerHelper,
+            globalFolderHelper,
+            fileOperationDtoHelper,
+            securityControllerHelper,
+            coreBaseSettings,
+            authContext,
+            roomLinksService,
+            customTagsService,
+            roomLogoManager,
+            studioNotifyService,
+            fileStorageService,
+            fileSecurity,
+            fileSecurityCommon,
+            emailValidationKeyProvider,
+            folderDtoHelper,
+            fileDtoHelper,
+            fileShareDtoHelper)
     {
     }
+
 
     /// <summary>
     /// Create a room in the virtual rooms section
@@ -95,7 +114,25 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
         FileSecurityCommon fileSecurityCommon,
         EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper) : base(foldersControllerHelper, globalFolderHelper, fileOperationDtoHelper, securityControllerHelper, coreBaseSettings, authContext, roomLinksService, customTagsService, roomLogoManager, studioNotifyService, fileStorageService, fileSecurity, fileSecurityCommon, emailValidationKeyProvider, folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper,
+        FileShareDtoHelper fileShareDtoHelper) : base(
+            foldersControllerHelper,
+            globalFolderHelper,
+            fileOperationDtoHelper,
+            securityControllerHelper,
+            coreBaseSettings,
+            authContext,
+            roomLinksService,
+            customTagsService,
+            roomLogoManager,
+            studioNotifyService,
+            fileStorageService,
+            fileSecurity,
+            fileSecurityCommon,
+            emailValidationKeyProvider,
+            folderDtoHelper,
+            fileDtoHelper,
+            fileShareDtoHelper)
     {
     }
 
@@ -144,10 +181,26 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     private readonly FileSecurity _fileSecurity;
     private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+    private readonly FileShareDtoHelper _fileShareDtoHelper;
 
-    protected VirtualRoomsController(FoldersControllerHelper<T> foldersControllerHelper, GlobalFolderHelper globalFolderHelper, FileOperationDtoHelper fileOperationDtoHelper, SecurityControllerHelper<T> securityControllerHelper, CoreBaseSettings coreBaseSettings, AuthContext authContext, RoomInvitationLinksService roomLinksService, CustomTagsService<T> customTagsService, RoomLogoManager roomLogoManager, StudioNotifyService studioNotifyService, FileStorageService<T> fileStorageService, FileSecurity fileSecurity, FileSecurityCommon fileSecurityCommon, EmailValidationKeyProvider emailValidationKeyProvider,
+    protected VirtualRoomsController(
+        FoldersControllerHelper<T> foldersControllerHelper,
+        GlobalFolderHelper globalFolderHelper,
+        FileOperationDtoHelper fileOperationDtoHelper,
+        SecurityControllerHelper<T> securityControllerHelper,
+        CoreBaseSettings coreBaseSettings,
+        AuthContext authContext,
+        RoomInvitationLinksService roomLinksService,
+        CustomTagsService<T> customTagsService,
+        RoomLogoManager roomLogoManager,
+        StudioNotifyService studioNotifyService,
+        FileStorageService<T> fileStorageService,
+        FileSecurity fileSecurity,
+        FileSecurityCommon fileSecurityCommon,
+        EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper,
+        FileShareDtoHelper fileShareDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _foldersControllerHelper = foldersControllerHelper;
         _globalFolderHelper = globalFolderHelper;
@@ -163,6 +216,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         _fileSecurity = fileSecurity;
         _fileSecurityCommon = fileSecurityCommon;
         _emailValidationKeyProvider = emailValidationKeyProvider;
+        _fileShareDtoHelper = fileShareDtoHelper;
     }
 
     /// <summary>
@@ -351,6 +405,24 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         await foreach (var r in result)
         {
             yield return r;
+        }
+    }
+
+    /// <summary>
+    /// Getting security information about a room
+    /// </summary>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <returns>Room security info</returns>
+    [HttpGet("rooms/{id}/share")]
+    public async IAsyncEnumerable<FileShareDto> GetRoomSecurityInfo(T id)
+    {
+        var fileShares = await _fileStorageService.GetSharedInfoAsync(Array.Empty<T>(), new[] { id });
+
+        foreach (var fileShareDto in fileShares)
+        {
+            yield return await _fileShareDtoHelper.Get(fileShareDto);
         }
     }
 
