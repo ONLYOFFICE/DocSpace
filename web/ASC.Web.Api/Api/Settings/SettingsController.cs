@@ -183,9 +183,6 @@ public class SettingsController : BaseSettingsController
             {
                 settings.DebugInfo = debugInfo;
             }
-
-            var loginSettings = _settingsManager.Load<LoginSettings>();
-            settings.LoginSettings = _mapper.Map<LoginSettings, LoginSettingsDto>(loginSettings);
         }
         else
         {
