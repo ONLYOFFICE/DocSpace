@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "Zapamatovat si mě",
   "RememberHelper": "Výchozí doba trvání relace je 20 minut. Zaškrtnutím této možnosti ji nastavíte na 1 rok. Chcete-li nastavit vlastní hodnotu, přejděte do Nastavení.",
-  "ResendCode": "Opětovné zaslání kódu"
+  "ResendCode": "Opětovné zaslání kódu",
+  "ErrorInvalidHeader": "Nesprávný e-mail nebo neplatný odkaz",
+  "ErrorInvalidText": "Za 10 sekund budete přesměrováni na <1>přihlašovací stránku</1>"
 }

@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
-
 import Button from "@docspace/components/button";
 import TextInput from "@docspace/components/text-input";
 import Text from "@docspace/components/text";
@@ -11,6 +9,12 @@ import FieldContainer from "@docspace/components/field-container";
 import { smallTablet } from "@docspace/components/utils/device";
 import { sendRecoverRequest } from "@docspace/common/api/settings";
 import toastr from "@docspace/components/toast/toastr";
+import { useTranslation } from "react-i18next";
+
+interface IRecoverAccessModalDialogProps {
+  visible: boolean;
+  onClose: () => void;
+}
 
 const ModalDialogContainer = styled(ModalDialog)`
   .modal-dialog-aside-footer {
@@ -34,7 +38,10 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
 `;
 
-const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
+const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
+  visible,
+  onClose,
+}) => {
   const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -42,6 +49,8 @@ const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
 
   const [description, setDescription] = useState("");
   const [descErr, setDescErr] = useState(false);
+
+  const { t } = useTranslation(["Login", "Common"]);
 
   const onRecoverModalClose = () => {
     setEmail("");
@@ -51,12 +60,12 @@ const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
     onClose && onClose();
   };
 
-  const onChangeEmail = (e) => {
+  const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.currentTarget.value);
     setEmailErr(false);
   };
 
-  const onChangeDescription = (e) => {
+  const onChangeDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(e.currentTarget.value);
     setDescErr(false);
   };
@@ -70,7 +79,7 @@ const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
     } else {
       setLoading(true);
       sendRecoverRequest(email, description)
-        .then((res) => {
+        .then((res: string) => {
           setLoading(false);
           toastr.success(res);
         })
@@ -157,7 +166,7 @@ const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
         />
         <Button
           className="recover-button-dialog"
-          key="SendBtn"
+          key="SendBtn-recover-close"
           label={t("Common:CancelButton")}
           size="normal"
           onClick={onRecoverModalClose}
@@ -168,12 +177,6 @@ const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
       </ModalDialog.Footer>
     </ModalDialogContainer>
   );
-};
-
-RecoverAccessModalDialog.propTypes = {
-  t: PropTypes.func.isRequired,
-  visible: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
 };
 
 export default RecoverAccessModalDialog;

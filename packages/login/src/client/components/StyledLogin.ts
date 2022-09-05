@@ -40,9 +40,23 @@ export const LoginContainer = styled.div`
     max-width: 311px;
   }
 
+  .socialButton {
+    min-height: 40px;
+  }
+
+  .or-label,
+  .login-or-access-text {
+    min-height: 18px;
+  }
+
+  .recover-link {
+    min-height: 19px;
+  }
+
   .greeting-title {
     width: 100%;
     padding-bottom: 32px;
+    min-height: 32px;
 
     @media ${hugeMobile} {
       padding-top: 32px;
@@ -199,9 +213,14 @@ export const LoginContainer = styled.div`
   }
 `;
 
+interface ILoginFormWrapperProps {
+  enabledJoin?: boolean;
+  isDesktop?: boolean;
+}
+
 export const LoginFormWrapper = styled.div`
   display: grid;
-  grid-template-rows: ${(props) =>
+  grid-template-rows: ${(props: ILoginFormWrapperProps) =>
     props.enabledJoin
       ? props.isDesktop
         ? css`1fr 10px`

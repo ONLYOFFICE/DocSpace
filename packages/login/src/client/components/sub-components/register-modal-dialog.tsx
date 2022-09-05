@@ -1,21 +1,35 @@
 import React from "react";
-import PropTypes from "prop-types";
-
 import Button from "@docspace/components/button";
 import EmailInput from "@docspace/components/email-input";
 import Text from "@docspace/components/text";
 import ModalDialog from "@docspace/components/modal-dialog";
 import FieldContainer from "@docspace/components/field-container";
-
+import { useTranslation } from "react-i18next";
 import ModalDialogContainer from "./modal-dialog-container";
 import { TenantTrustedDomainsType } from "@docspace/common/constants";
 
-const RegisterModalDialog = ({
+interface IRegisterModalDialogProps {
+  visible: boolean;
+  loading: boolean;
+  email?: string;
+  emailErr: boolean;
+  onChangeEmail: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onValidateEmail: (res: IEmailValid) => void;
+  onBlurEmail: () => void;
+  onSendRegisterRequest: () => void;
+  onKeyDown: (e: KeyboardEvent) => void;
+  onRegisterModalClose: () => void;
+  trustedDomainsType?: number;
+  trustedDomains?: string[];
+  errorText?: string;
+  isShowError?: boolean;
+}
+
+const RegisterModalDialog: React.FC<IRegisterModalDialogProps> = ({
   visible,
   loading,
   email,
   emailErr,
-  t,
   onChangeEmail,
   onValidateEmail,
   onBlurEmail,
@@ -27,15 +41,18 @@ const RegisterModalDialog = ({
   errorText,
   isShowError,
 }) => {
+  const { t } = useTranslation("Login");
+
   const getDomains = () => {
-    return trustedDomains.map((domain, i) => (
-      <span key={i}>
-        <b>
-          {domain}
-          {i === trustedDomains.length - 1 ? "." : ", "}
-        </b>
-      </span>
-    ));
+    if (trustedDomains)
+      return trustedDomains.map((domain, i) => (
+        <span key={i}>
+          <b>
+            {domain}
+            {i === trustedDomains.length - 1 ? "." : ", "}
+          </b>
+        </span>
+      ));
   };
 
   const getDomainsBlock = () => {
@@ -125,24 +142,6 @@ const RegisterModalDialog = ({
       </ModalDialog.Footer>
     </ModalDialogContainer>
   );
-};
-
-RegisterModalDialog.propTypes = {
-  visible: PropTypes.bool.isRequired,
-  loading: PropTypes.bool.isRequired,
-  email: PropTypes.string,
-  emailErr: PropTypes.bool.isRequired,
-  t: PropTypes.func.isRequired,
-  onChangeEmail: PropTypes.func.isRequired,
-  onValidateEmail: PropTypes.func.isRequired,
-  onBlurEmail: PropTypes.func.isRequired,
-  onSendRegisterRequest: PropTypes.func.isRequired,
-  onKeyDown: PropTypes.func.isRequired,
-  onRegisterModalClose: PropTypes.func.isRequired,
-  trustedDomainsType: PropTypes.number,
-  trustedDomains: PropTypes.array,
-  errorText: PropTypes.string,
-  isShowError: PropTypes.bool,
 };
 
 export default RegisterModalDialog;

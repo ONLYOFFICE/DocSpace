@@ -1,34 +1,31 @@
 import React, { useState } from "react";
-import Section from "@docspace/common/components/Section";
-import { withRouter } from "react-router";
-import {
-  I18nextProvider,
-  useTranslation,
-  withTranslation,
-} from "react-i18next";
+import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import CodeInput from "@docspace/components/code-input";
 import { Trans } from "react-i18next";
-import { ReactSVG } from "react-svg";
-
-import i18n from "./i18n";
 import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
+import BarLogo from "../../../../../public/images/danger.alert.react.svg";
+import DocspaceLogo from "../../../../../public/images/docspace.big.react.svg";
+interface IBarProp {
+  t: TFuncType;
+  expired: boolean;
+}
 
-const Bar = (props) => {
+const Bar: React.FC<IBarProp> = (props) => {
   const { t, expired } = props;
   const type = expired ? "warning" : "error";
   const text = expired ? t("ExpiredCode") : t("InvalidCode");
 
   return (
     <div className={`code-input-bar ${type}`}>
-      <ReactSVG src="/static/images/danger.alert.react.svg" />
+      <BarLogo />
       {text}
     </div>
   );
 };
 
-const Form = () => {
+const Form: React.FC = () => {
   const { t } = useTranslation("Login");
   const [invalidCode, setInvalidCode] = useState(false);
   const [expiredCode, setExpiredCode] = useState(false);
@@ -37,7 +34,7 @@ const Form = () => {
   const email = "test@onlyoffice.com"; //TODO: get email from form
   const validCode = "123456"; //TODO: get from api
 
-  const onSubmit = (code) => {
+  const onSubmit = (code: number | string) => {
     if (code !== validCode) {
       setInvalidCode(true);
     } else {
@@ -53,10 +50,7 @@ const Form = () => {
 
   return (
     <LoginContainer>
-      <ReactSVG
-        src="/static/images/docspace.big.react.svg"
-        className="logo-wrapper"
-      />
+      <DocspaceLogo className="logo-wrapper" />
 
       <Text
         fontSize="23px"
@@ -107,22 +101,12 @@ const Form = () => {
   );
 };
 
-const CodeLoginForm = (props) => {
+const CodeLogin: React.FC<ICodeProps> = (props) => {
   return (
     <LoginFormWrapper>
-      <Section>
-        <Section.SectionBody>
-          <Form {...props} />
-        </Section.SectionBody>
-      </Section>
+      <Form {...props} />
     </LoginFormWrapper>
   );
 };
 
-const CodeLogin = withRouter(withTranslation("Login")(CodeLoginForm));
-
-export default (props) => (
-  <I18nextProvider i18n={i18n}>
-    <CodeLogin {...props} />
-  </I18nextProvider>
-);
+export default CodeLogin;
