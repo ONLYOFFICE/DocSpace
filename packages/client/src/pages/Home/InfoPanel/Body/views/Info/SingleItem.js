@@ -5,7 +5,7 @@ import { FileType } from "@docspace/common/constants";
 import Text from "@docspace/components/text";
 import Tooltip from "@docspace/components/tooltip";
 
-import InfoHelper from "./helpers/InfoHelper.js";
+import InfoHelper from "../../helpers/InfoHelper.js";
 import {
   StyledAccess,
   StyledAccessItem,
