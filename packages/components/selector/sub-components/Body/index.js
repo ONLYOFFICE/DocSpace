@@ -12,6 +12,7 @@ import EmptyScreen from "../EmptyScreen";
 import { StyledSelectorBody } from "../../StyledSelector";
 
 const CONTAINER_PADDING = 32;
+const HEADER_HEIGHT = 54;
 const SEARCH_HEIGHT = 44;
 const SELECT_ALL_HEIGHT = 73;
 const FOOTER_HEIGHT = 73;
@@ -95,10 +96,12 @@ const Body = ({
     resetCache();
   }, [resetCache, hasNextPage]);
 
-  let listHeight = bodyHeight - CONTAINER_PADDING;
+  let listHeight = bodyHeight - CONTAINER_PADDING - HEADER_HEIGHT;
 
   if (withSearch) listHeight -= SEARCH_HEIGHT;
+
   if (footerVisible) listHeight -= FOOTER_HEIGHT;
+
   if (isMultiSelect && withSelectAll && !isSearch)
     listHeight -= SELECT_ALL_HEIGHT;
   if (isNextPageLoading) listHeight -= ROW_LOADER_HEIGHT;

@@ -189,7 +189,10 @@ const Selector = ({
     (newList) => {
       let isEqual = true;
 
-      if (selectedItems.length !== newList.length) {
+      if (
+        selectedItems.length !== newList.length ||
+        (newList.length === 0 && selectedItems.length === 0)
+      ) {
         return setFooterVisible(true);
       }
 
