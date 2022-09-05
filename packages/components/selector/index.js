@@ -142,8 +142,6 @@ const Selector = ({
         label: item.label,
       };
 
-      console.log(item.isSelected);
-
       if (item.isSelected) {
         setNewSelectedItems([]);
         compareSelectedItems([]);
@@ -215,7 +213,7 @@ const Selector = ({
 
   const loadMoreItems = React.useCallback(
     (startIndex) => {
-      loadNextPage && loadNextPage(startIndex);
+      !isNextPageLoading && loadNextPage && loadNextPage(startIndex);
     },
     [isNextPageLoading, loadNextPage]
   );
