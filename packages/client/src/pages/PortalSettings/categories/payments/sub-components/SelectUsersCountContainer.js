@@ -99,7 +99,6 @@ const StyledBody = styled.div`
 const step = 1;
 
 const SelectUsersCountContainer = ({
-  maxManagersCount,
   managersCount,
   setShoppingLink,
   theme,
@@ -135,12 +134,12 @@ const SelectUsersCountContainer = ({
     let value = +managersCount;
 
     if (operation === "plus") {
-      if (managersCount < maxManagersCount) {
+      if (managersCount <= maxAvailableManagersCount) {
         value += step;
       }
     }
     if (operation === "minus") {
-      if (managersCount >= maxManagersCount) {
+      if (managersCount > maxAvailableManagersCount) {
         value = maxAvailableManagersCount;
       } else {
         if (managersCount > minAvailableManagersCount) {
@@ -159,7 +158,7 @@ const SelectUsersCountContainer = ({
     const { target } = e;
     let value = target.value;
 
-    if (managersCount >= maxManagersCount) {
+    if (managersCount > maxAvailableManagersCount) {
       value = value.slice(0, -1);
     }
 
@@ -178,7 +177,7 @@ const SelectUsersCountContainer = ({
   };
 
   const value =
-    managersCount >= maxManagersCount
+    managersCount > maxAvailableManagersCount
       ? maxAvailableManagersCount + "+"
       : managersCount + "";
 
@@ -220,7 +219,7 @@ const SelectUsersCountContainer = ({
         isReadOnly={isDisabled || isUpdatingTariff}
         type="range"
         min={minAvailableManagersCount}
-        max={maxManagersCount.toString()}
+        max={(maxAvailableManagersCount + 1).toString()}
         step={step}
         withPouring
         value={
@@ -247,7 +246,6 @@ export default inject(({ auth, payments }) => {
     isLoading,
     minAvailableManagersCount,
     managersCount,
-    maxManagersCount,
     maxAvailableManagersCount,
     setManagersCount,
     setTotalPrice,
@@ -260,7 +258,6 @@ export default inject(({ auth, payments }) => {
     isLoading,
     minAvailableManagersCount,
     managersCount,
-    maxManagersCount,
     maxAvailableManagersCount,
     setManagersCount,
     setTotalPrice,

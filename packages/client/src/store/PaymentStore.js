@@ -23,7 +23,6 @@ class PaymentStore {
   isLoading = false;
   totalPrice = null;
   managersCount = 1;
-  maxManagersCount = 1000;
   maxAvailableManagersCount = 999;
   minAvailableManagersCount = 1;
   paymentTariff = [];
@@ -126,12 +125,8 @@ class PaymentStore {
     this.managersCount = managers;
   };
 
-  setMaxManagersCount = (managers) => {
-    this.maxManagersCount = managers;
-  };
-
   get isNeedRequest() {
-    return this.managersCount >= this.maxManagersCount;
+    return this.managersCount > this.maxAvailableManagersCount;
   }
 
   get isLessCountThanAcceptable() {
@@ -140,7 +135,9 @@ class PaymentStore {
   setPaymentTariff = async () => {
     try {
       const res = await api.portal.getPaymentTariff();
-      if (res) this.paymentTariff = res;
+      if (res) {
+        this.paymentTariff = res;
+      }
     } catch (e) {}
   };
 }
