@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "이메일",
   "Remember": "저장하기",
   "RememberHelper": "기본 세션 기간은 20분입니다. 1년으로 설정하려면 이 옵션을 확인하세요. 원하시는 값으로 설정하려면 설정으로 이동하세요.",
-  "ResendCode": "코드 재전송"
+  "ResendCode": "코드 재전송",
+  "ErrorInvalidHeader": "정확하지 않은 이메일 또는 만료된 링크입니다",
+  "ErrorInvalidText": "10초 내에 <1>로그인 페이지</1>로 리디렉션됩니다"
 }

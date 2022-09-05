@@ -3,7 +3,5 @@
   "Error403Text": "对不起，拒绝访问。",
   "Error404Text": "对不起，找不到资源。",
   "ErrorEmptyResponse": "空响应",
-  "ErrorInvalidHeader": "电子邮件不正确或链接已过期",
-  "ErrorInvalidText": "在10秒钟内，您将重定向到<1>登录页面</1>",
   "ErrorOfflineText": "未找到网络连接。"
 }
