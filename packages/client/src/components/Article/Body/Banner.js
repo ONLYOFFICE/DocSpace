@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import CampaignsBanner from "@docspace/components/campaigns-banner";
 import { ADS_TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 import { LANGUAGE } from "@docspace/common/constants";
-import { getLanguage } from "@docspace/common/utils";
+import { getLanguage, getCookie } from "@docspace/common/utils";
 
 const Banner = () => {
   const [campaignImage, setCampaignImage] = useState();
@@ -12,7 +12,7 @@ const Banner = () => {
     .split(",")
     .filter((campaign) => campaign.length > 0);
 
-  const lng = localStorage.getItem(LANGUAGE) || "en";
+  const lng = getCookie(LANGUAGE) || "en";
   const language = getLanguage(lng instanceof Array ? lng[0] : lng);
 
   const getImage = async (campaign) => {

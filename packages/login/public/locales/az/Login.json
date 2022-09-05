@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "Elektron poçt",
   "Remember": "Yadda saxla",
   "RememberHelper": "Susmaya görə sessiya müddəti 20 dəqiqədir. Müddəti 1 ilə uzatmaq üçün qutunu klikləyin. Digər müddəti təyin etmək üçün, Ayarlar bölməsinə keçin.",
-  "ResendCode": "Kodu yenidən göndərin"
+  "ResendCode": "Kodu yenidən göndərin",
+  "ErrorInvalidHeader": "Yanlış e-poçt ünvanı və ya vaxtı bitmiş keçid",
+  "ErrorInvalidText": "10 saniyədə <1>giriş səhifəsinə</1> yönləndiriləcəksiniz"
 }

@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "Nhớ tôi",
   "RememberHelper": "Thời lượng của phiên mặc định là 20 phút. Hãy chọn tùy chọn này để đặt thành 1 năm. Để đặt giá trị của riêng bạn, hãy đi đến Cài đặt.",
-  "ResendCode": "Gửi lại mã"
+  "ResendCode": "Gửi lại mã",
+  "ErrorInvalidHeader": "Email không chính xác hoặc liên kết hết hạn",
+  "ErrorInvalidText": "Trong 10 giây, bạn sẽ được chuyển hướng đến <1>trang đăng nhập</1>"
 }
