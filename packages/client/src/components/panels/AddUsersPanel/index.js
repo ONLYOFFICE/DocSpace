@@ -30,8 +30,6 @@ class AddUsersPanelComponent extends React.Component {
       showActionPanel: false,
       accessRight,
     };
-
-    this.scrollRef = React.createRef();
   }
 
   onPlusClick = () =>
@@ -54,15 +52,8 @@ class AddUsersPanelComponent extends React.Component {
     const { shareDataItems, setShareDataItems, onClose } = this.props;
     const items = shareDataItems;
     for (let item of users) {
-      const groups = item?.groups.map((group) => ({
-        id: group,
-      }));
-
-      if (item.key) {
-        item.id = item.key;
-        item.groups = groups;
-      }
       const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
+
       if (!currentItem) {
         const newItem = {
           access: this.state.accessRight,
@@ -92,8 +83,6 @@ class AddUsersPanelComponent extends React.Component {
   };
 
   componentDidMount() {
-    const scroll = this.scrollRef.current.getElementsByClassName("scroll-body");
-    setTimeout(() => scroll[1] && scroll[1].focus(), 2000);
     window.addEventListener("keyup", this.onKeyPress);
   }
 
@@ -151,6 +140,17 @@ class AddUsersPanelComponent extends React.Component {
 
     //console.log("AddUsersPanel render");
 
+    const accesses = accessOptions.map((access) => {
+      return {
+        key: access,
+        label: t(access),
+      };
+    });
+
+    const selectedAccess = accesses.filter(
+      (access) => access.key === "Review"
+    )[0];
+
     return (
       <StyledAddUsersPanelPanel visible={visible}>
         <Backdrop
@@ -164,33 +164,27 @@ class AddUsersPanelComponent extends React.Component {
           visible={visible}
           onClose={this.onClosePanels}
         >
-          <StyledContent>
-            <StyledBody ref={this.scrollRef}>
-              <PeopleSelector
-                className="peopleSelector"
-                role={isMultiSelect ? null : "user"}
-                employeeStatus={1}
-                displayType="aside"
-                withoutAside
-                isOpen={visible}
-                isMultiSelect={isMultiSelect}
-                onSelect={
-                  isMultiSelect ? this.onPeopleSelect : this.onOwnerSelect
-                }
-                {...embeddedComponent}
-                selectedOptions={selectedOptions}
-                groupsCaption={groupsCaption}
-                showCounter
-                onArrowClick={this.onArrowClick}
-                headerLabel={
-                  isMultiSelect
-                    ? t("Common:AddUsers")
-                    : t("PeopleTranslations:OwnerChange")
-                }
-                //onCancel={onClose}
-              />
-            </StyledBody>
-          </StyledContent>
+          <PeopleSelector
+            className="peopleSelector"
+            isMultiSelect={isMultiSelect}
+            onAccept={isMultiSelect ? this.onPeopleSelect : this.onOwnerSelect}
+            {...embeddedComponent}
+            selectedOptions={selectedOptions}
+            groupsCaption={groupsCaption}
+            showCounter
+            onBackClick={this.onArrowClick}
+            headerLabel={
+              isMultiSelect
+                ? t("Common:AddUsers")
+                : t("PeopleTranslations:OwnerChange")
+            }
+            accessRights={accesses}
+            selectedAccessRight={selectedAccess}
+            onCancel={this.onClosePanels}
+            withCancelButton={!isMultiSelect}
+            withAccessRights={isMultiSelect}
+            withSelectAll={isMultiSelect}
+          />
         </Aside>
       </StyledAddUsersPanelPanel>
     );
