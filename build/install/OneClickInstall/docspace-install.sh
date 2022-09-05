@@ -35,7 +35,7 @@ PARAMETERS="";
 DOCKER="";
 LOCAL_SCRIPTS="false"
 HELP="false";
-product="appserver"
+product="docspace"
 GIT_BRANCH="develop"
 
 while [ "$1" != "" ]; do
