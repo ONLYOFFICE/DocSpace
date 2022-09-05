@@ -100,7 +100,7 @@ const getAccessRights = () => {
   return accesses;
 };
 
-const items = getItems(1000);
+const items = getItems(100000);
 
 const selectedItems = [items[0], items[3], items[7]];
 
@@ -115,7 +115,6 @@ const Template = (args) => {
   const [rendItems, setRendItems] = React.useState(renderedItems);
 
   const loadNextPage = (index) => {
-    console.log("call");
     setRendItems((val) => [...val, ...items.slice(index, index + 100)]);
   };
 

@@ -296,55 +296,94 @@ const Selector = ({
 };
 
 Selector.propTypes = {
+  /** Accepts id  */
   id: PropTypes.string,
+  /** Accepts class  */
   className: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  /** Accepts css style */
   style: PropTypes.object,
 
+  /** Selector header text */
   headerLabel: PropTypes.string,
+  /** What the header arrow will trigger when clicked */
   onBackClick: PropTypes.func,
 
+  /** Placeholder for search input */
   searchPlaceholder: PropTypes.string,
+  /** Start value for search input */
   searchValue: PropTypes.string,
+  /** What the search input will trigger when user stopped typing */
   onSearch: PropTypes.func,
+  /** What the clear icon of search input will trigger when clicked */
   onClearSearch: PropTypes.func,
 
+  /** Displaying items */
   items: PropTypes.array,
+  /** What the item will trigger when clicked */
   onSelect: PropTypes.func,
 
+  /** Allows you to select multiple objects */
   isMultiSelect: PropTypes.bool,
+  /** Tells when the items should present a checked state */
   selectedItems: PropTypes.array,
+  /** Accept button text */
   acceptButtonLabel: PropTypes.string,
+  /** What the accept button will trigger when clicked */
   onAccept: PropTypes.func,
 
+  /** Add option for select all items */
   withSelectAll: PropTypes.bool,
+  /** Text for select all component */
   selectAllLabel: PropTypes.string,
+  /** Icon for select all component */
   selectAllIcon: PropTypes.string,
+  /** What the select all will trigger when clicked */
   onSelectAll: PropTypes.func,
 
+  /** Add combobox for displaying access rights at footer */
   withAccessRights: PropTypes.bool,
+  /** Access rights items */
   accessRights: PropTypes.array,
+  /** Selected access rights items */
   selectedAccessRight: PropTypes.object,
+  /** What the access right will trigger when changed */
   onAccessRightsChange: PropTypes.func,
 
+  /** Add cancel button at footer */
   withCancelButton: PropTypes.bool,
+  /** Displaying text at cancel button */
   cancelButtonLabel: PropTypes.string,
+  /** What the cancel button will trigger when clicked */
   onCancel: PropTypes.func,
 
+  /** Image for default empty screen */
   emptyScreenImage: PropTypes.string,
+  /** Header for default empty screen */
   emptyScreenHeader: PropTypes.string,
+  /** Description for default empty screen */
   emptyScreenDescription: PropTypes.string,
 
+  /** Image for search empty screen */
   searchEmptyScreenImage: PropTypes.string,
+  /** Header for search empty screen */
   searchEmptyScreenHeader: PropTypes.string,
+  /** Description for search empty screen */
   searchEmptyScreenDescription: PropTypes.string,
 
+  /** Count items for infinity scroll */
   totalItems: PropTypes.number,
+  /** Has next page for infinity scroll */
   hasNextPage: PropTypes.bool,
+  /** Tells when next page already loading */
   isNextPageLoading: PropTypes.bool,
+  /** Function for load next page */
   loadNextPage: PropTypes.func,
 
+  /** Set loading state for select */
   isLoading: PropTypes.bool,
+  /** Loader element for search block */
   searchLoader: PropTypes.node,
+  /** Loader element for item */
   rowLoader: PropTypes.node,
 };
 
