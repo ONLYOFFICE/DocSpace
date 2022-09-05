@@ -134,7 +134,7 @@ class PaymentStore {
   }
 
   setRangeBound = (managerStep, min, max) => {
-    this.minAvailableManagersCount = 6;
+    this.minAvailableManagersCount = min;
     this.maxAvailableManagersCount = max;
   };
 
