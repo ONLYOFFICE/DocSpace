@@ -31,7 +31,7 @@ jobs:
         name: Build 4testing
         run: |
           cd ./build/install/docker
-          REPO="onlyoffice" \
+          REPO=${{ secrets.DOCKER_USERNAME }} \
           STATUS="4testing-" \
           DOCKER_TAG="test" \
           DOCKERFILE="Dockerfile.app" \
