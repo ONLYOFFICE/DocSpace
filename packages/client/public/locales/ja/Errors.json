@@ -3,7 +3,5 @@
   "Error403Text": "申し訳ありませんが、アクセスが拒否されました。",
   "Error404Text": "申し訳ありませんが、リソースが見つかりません。",
   "ErrorEmptyResponse": "反応なし",
-  "ErrorInvalidHeader": "メールアドレスが正しくないかリンクの有効期限が切れています",
-  "ErrorInvalidText": "10秒後、<1>ログインページ</1>にリダイレクトされます。",
   "ErrorOfflineText": "インターネットに接続されていません。"
 }

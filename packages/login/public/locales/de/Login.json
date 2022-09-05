@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "E-Mail",
   "Remember": "Anmeldedaten speichern",
   "RememberHelper": "Lebensdauer der Sitzung ist standardmäßig 20 Minuten. Wählen Sie diese Option aus, um den Wert 1 Jahr zu setzen. Für benutzerdefinierte Werte öffnen Sie Einstellungen.",
-  "ResendCode": "Code nochmals senden"
+  "ResendCode": "Code nochmals senden",
+  "ErrorInvalidHeader": "Inkorrekte E-Mail oder ungültiger Link",
+  "ErrorInvalidText": "In 10 Sekunden werden Sie auf die <1>Anmeldeseite</1> weitergeleitet"
 }

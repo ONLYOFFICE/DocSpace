@@ -319,7 +319,7 @@ class AccountsContextOptionsStore {
     const { id } = item;
     const { updateUserStatus } = this.peopleStore.usersStore;
 
-    updateUserStatus(EmployeeStatus.Active, [id], true)
+    updateUserStatus(EmployeeStatus.Active, [id])
       .then(() =>
         toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
       )
@@ -330,7 +330,7 @@ class AccountsContextOptionsStore {
     const { id } = item;
     const { updateUserStatus } = this.peopleStore.usersStore;
 
-    updateUserStatus(EmployeeStatus.Disabled, [id], true)
+    updateUserStatus(EmployeeStatus.Disabled, [id])
       .then(() =>
         toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
       )

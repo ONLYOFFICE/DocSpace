@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "E-mail",
   "Remember": "Pamiętaj mnie",
   "RememberHelper": "Domyślny czas trwania sesji to 20 min. Zaznacz tę opcję, aby ustawić go na 1 rok. Aby ustawić wartość niestandardową, przejdź do Ustawień.",
-  "ResendCode": "Wyślij kod jeszcze raz"
+  "ResendCode": "Wyślij kod jeszcze raz",
+  "ErrorInvalidHeader": "Nieprawidłowy adres e-mail lub nieaktualny link",
+  "ErrorInvalidText": "Za 10 sekund nastąpi przekierowanie na <1>stronę logowania</1>"
 }

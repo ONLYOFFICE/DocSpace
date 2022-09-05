@@ -142,7 +142,7 @@
   "ThirdPartyPropsActivated": "Veiksmīgi atjaunināts",
   "ThirdPartyPropsDeactivated": "Veiksmīgi deaktivizēts",
   "ThirdPartyResource": "Trešās puses resurss",
-  "ThirdPartyResourceDescription": "Dublējumu var saglabāt jūsu trešās puses kontā (Dropbox, Box.com, OneDrive vai Google Drive). Jums ir jāsavieno trešās puses konts (Dropbox, Box.com, OneDrive vai Google Drive) ar mapi Kopīgie dokumenti pirms varēsiet tur saglabāt savu dublējumu.",
+  "ThirdPartyResourceDescription": "Dublējumu var saglabāt jūsu trešās puses kontā (Dropbox, Box.com, OneDrive vai Google Drive). Jums ir jāsavieno trešās puses konts (Dropbox, Box.com, OneDrive vai Google Drive) pirms varēsiet tur saglabāt savu dublējumu.",
   "ThirdPartyStorage": "Trešās puses krātuve",
   "ThirdPartyStorageDescription": "Dublējumu var saglabāt trešās puses krātuvē. Pirms tam sadaļā Integrācija ir jāpieslēdz attiecīgais pakalpojums. Pretējā gadījumā tālāk norādītie iestatījumi būs neaktīvi.",
   "ThirdPartyTitleDescription": "Izmantojot autorizācijas atslēgas, jūs varat savienot trešo pušu pakalpojumus ar savu portālu. Vienkārši pierakstieties, izmantojot Facebook, Twitter vai LinkedIn, pievienojiet Dropbox, OneDrive utt., lai strādātu ar failiem, kas tur saglabāti no moduļa Dokumenti.",

@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "E-mail",
   "Remember": "Mij onthouden",
   "RememberHelper": "De standaard sessieduur is 20 minuten. Vink deze optie aan om deze in te stellen op 1 jaar. Om uw eigen waarde in te stellen, ga naar Instellingen.",
-  "ResendCode": "Code opnieuw versturen"
+  "ResendCode": "Code opnieuw versturen",
+  "ErrorInvalidHeader": "Onjuiste e-mail of verlopen link",
+  "ErrorInvalidText": "Over 10 seconden wordt u doorverwezen naar de <1>login pagina</1>"
 }

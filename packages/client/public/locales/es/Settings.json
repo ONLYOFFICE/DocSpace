@@ -150,7 +150,7 @@
   "ThirdPartyPropsActivated": "Actualizado correctamente",
   "ThirdPartyPropsDeactivated": "Desactivado correctamente",
   "ThirdPartyResource": "Recurso de terceros",
-  "ThirdPartyResourceDescription": "La copia de seguridad puede guardarse en su cuenta de terceros (Dropbox, Box.com, OneDrive o Google Drive). Debe conectar su cuenta de terceros (Dropbox, Box.com, OneDrive o Google Drive) a la carpeta Documentos comunes para poder guardar la copia de seguridad allí.",
+  "ThirdPartyResourceDescription": "La copia de seguridad puede guardarse en su cuenta de terceros (Dropbox, Box.com, OneDrive o Google Drive). Debe conectar su cuenta de terceros (Dropbox, Box.com, OneDrive o Google Drive) para poder guardar la copia de seguridad allí.",
   "ThirdPartyStorage": "Almacenamiento de terceros",
   "ThirdPartyStorageDescription": "La copia de seguridad se puede guardar en un almacenamiento de terceros. Para ello, es necesario conectar el servicio correspondiente en la sección 'Integración'. En caso contrario, los siguientes ajustes estarán inactivos.",
   "ThirdPartyTitleDescription": "Con las claves de autorización, puede conectar servicios de terceros a su portal. Inicie sesión fácilmente con Facebook, Twitter o LinkedIn; añada Dropbox, OneDrive, etc. para trabajar con los archivos almacenados allí desde el módulo Documentos.",

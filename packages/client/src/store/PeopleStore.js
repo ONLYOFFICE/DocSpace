@@ -41,7 +41,7 @@ class PeopleStore {
   constructor(authStore, infoPanelStore, setupStore) {
     this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
-    this.usersStore = new UsersStore(this);
+    this.usersStore = new UsersStore(this, authStore);
     this.targetUserStore = new TargetUserStore(this);
     this.selectedGroupStore = new SelectedGroupStore(this);
     this.editingFormStore = new EditingFormStore(this);
