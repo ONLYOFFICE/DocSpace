@@ -105,7 +105,7 @@ public class AbstractDao
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var folders = await filesDbContext.Folders
             .Where(r => r.TenantId == TenantID)
-            .Where(r => filesDbContext.Tree.Where(r => r.FolderId == folderId).Any(a => r.ParentId == r.Id))
+            .Where(r => filesDbContext.Tree.Where(r => r.FolderId == folderId).Any(a => a.ParentId == r.Id))
             .ToListAsync();
 
         foreach (var f in folders)

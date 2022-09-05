@@ -41,10 +41,6 @@ import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 // ];
 // const WIZARD_URL = combineUrl(PROXY_HOMEPAGE_URL, "/wizard");
 // const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
-// const LOGIN_URLS = [
-//   combineUrl(PROXY_HOMEPAGE_URL, "/login"),
-//   combineUrl(PROXY_HOMEPAGE_URL, "/login/confirmed-email=:confirmedEmail"),
-// ];
 // const CONFIRM_URL = combineUrl(PROXY_HOMEPAGE_URL, "/confirm");
 
 // const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
@@ -52,7 +48,6 @@ import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 // const ERROR_401_URL = combineUrl(PROXY_HOMEPAGE_URL, "/error401");
 // const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 // const ENTER_CODE_URL = combineUrl(PROXY_HOMEPAGE_URL, "/code");
-// const INVALID_URL = combineUrl(PROXY_HOMEPAGE_URL, "/login/error=:error");
 // const PREPARATION_PORTAL = combineUrl(
 //   PROXY_HOMEPAGE_URL,
 //   "/preparation-portal"
@@ -69,8 +64,6 @@ const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
 
 const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
 // const MyProfile = React.lazy(() => import("./pages/My"));
-const EnterCode = !IS_PERSONAL && React.lazy(() => import("login/codeLogin"));
-const InvalidError = React.lazy(() => import("./pages/Errors/Invalid"));
 const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
 
 const FormGallery = React.lazy(() => import("./pages/FormGallery"));
@@ -156,24 +149,6 @@ const WizardRoute = (props) => (
 //     </ErrorBoundary>
 //   </React.Suspense>
 // );
-
-const EnterCodeRoute =
-  !IS_PERSONAL &&
-  ((props) => (
-    <React.Suspense fallback={<AppLoader />}>
-      <ErrorBoundary>
-        <EnterCode {...props} />
-      </ErrorBoundary>
-    </React.Suspense>
-  ));
-
-const InvalidRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <InvalidError {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
 
 const FormGalleryRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -426,38 +401,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
 
-  const loginRoutes = [];
-
-  if (isLoaded && !IS_PERSONAL) {
-    let module;
-    if (roomsMode) {
-      module = "./roomsLogin";
-    } else {
-      module = "./login";
-    }
-
-    const loginSystem = {
-      url: combineUrl(AppServerConfig.proxyURL, "/login/remoteEntry.js"),
-      scope: "login",
-      module: module,
-    };
-    loginRoutes.push(
-      <PublicRoute
-        key={loginSystem.scope}
-        exact
-        path={["/login", "/login/confirmed-email=:confirmedEmail"]}
-        component={System}
-        system={loginSystem}
-      />
-    );
-  }
-
-  const roomsRoutes = [];
-
-  if (!IS_PERSONAL && roomsMode) {
-    roomsRoutes.push();
-  }
-
   const currentTheme = isBase ? "Base" : "Dark";
   const systemTheme = useThemeDetector();
   useEffect(() => {
@@ -518,18 +461,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               ]}
               component={FilesRoute}
             />
-
             <PrivateRoute
               path={"/form-gallery/:folderId"}
               component={FormGalleryRoute}
             />
-
             <PublicRoute exact path={"/wizard"} component={WizardRoute} />
             <PrivateRoute path={"/about"} component={AboutRoute} />
-            {loginRoutes}
-            <Route path={"/code"} component={EnterCodeRoute} />
             <Route path={"/confirm"} component={ConfirmRoute} />
-            <Route path={"/login/error=:error"} component={InvalidRoute} />
             <PrivateRoute path={"/payments"} component={PaymentsRoute} />
             <PrivateRoute
               restricted

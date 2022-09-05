@@ -1,10 +1,11 @@
-import { LANGUAGE } from "../constants";
+import { LANGUAGE, AppServerConfig } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
 import TopLoaderService from "@docspace/components/top-loading-indicator";
-
 import { Encoder } from "./encoder";
+import FilesFilter from "../api/files/filter";
 
+const { proxyURL } = AppServerConfig;
 export const toUrlParams = (obj, skipNull) => {
   let str = "";
   for (var key in obj) {
@@ -64,10 +65,7 @@ export function getObjectByLocation(location) {
   return object;
 }
 
-export function changeLanguage(
-  i18n,
-  currentLng = localStorage.getItem(LANGUAGE)
-) {
+export function changeLanguage(i18n, currentLng = getCookie(LANGUAGE)) {
   return currentLng
     ? i18n.language !== currentLng
       ? i18n.changeLanguage(currentLng)
@@ -329,7 +327,6 @@ export function convertLanguage(key) {
   return key;
 }
 
-import FilesFilter from "../api/files/filter";
 export function getFolderOptions(folderId, filter) {
   if (folderId && typeof folderId === "string") {
     folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
@@ -376,6 +373,41 @@ export function assign(obj, keyPath, value) {
     obj = obj[key];
   }
   obj[keyPath[lastKeyIndex]] = value;
+}
+
+export function getOAuthToken(
+  tokenGetterWin: Window | string | null
+): Promise<string> {
+  return new Promise((resolve, reject) => {
+    localStorage.removeItem("code");
+    let interval: ReturnType<typeof setInterval>;
+    interval = setInterval(() => {
+      try {
+        const code = localStorage.getItem("code");
+        if (typeof tokenGetterWin !== "string") {
+          if (code) {
+            localStorage.removeItem("code");
+            clearInterval(interval);
+            resolve(code);
+          } else if (tokenGetterWin && tokenGetterWin.closed) {
+            clearInterval(interval);
+            reject();
+          }
+        }
+      } catch (e) {
+        clearInterval(interval);
+        reject(e);
+      }
+    }, 500);
+  });
+}
+
+export function getLoginLink(token: string, code: string) {
+  return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
+}
+
+export function checkIsSSR() {
+  return typeof window === "undefined";
 }
 
 export const frameCallbackData = (data) => {

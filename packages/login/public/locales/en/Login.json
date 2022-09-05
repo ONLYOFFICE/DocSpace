@@ -29,5 +29,7 @@
   "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings.",
   "ResendCode": "Resend code",
   "SignInWithCode": "Sign in with secret code",
-  "SignInWithPassword": "Sign in with a password"
+  "SignInWithPassword": "Sign in with a password",
+  "ErrorInvalidHeader": "Incorrect email or expired link",
+  "ErrorInvalidText": "In 10 seconds you will be redirected to the <1>login page</1>"
 }

@@ -60,6 +60,8 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     public const string ParamName_ProductSysName = "product";
     public const string ParamName_UserUserID = "uid";
+    public const string AbsoluteAccountsPath = "/accounts/";
+    public const string VirtualAccountsPath = "~/accounts/";
 
     private readonly UserManager _userManager;
     private readonly WebItemManagerSecurity _webItemManagerSecurity;
@@ -173,7 +175,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
             queryParams = guid != Guid.Empty ? GetUserParamsPair(guid) : HttpUtility.UrlEncode(user.ToLowerInvariant());
         }
 
-        var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
+        var url = absolute ? ToAbsolute(VirtualAccountsPath) : AbsoluteAccountsPath;
         url += "view/";
         url += queryParams;
 
@@ -184,7 +186,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     {
         var queryParams = user.Id != Guid.Empty ? GetUserParamsPair(user) : HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
 
-        var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
+        var url = absolute ? ToAbsolute(VirtualAccountsPath) : AbsoluteAccountsPath;
         url += "view/";
         url += queryParams;
 
@@ -194,7 +196,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     {
         var queryParams = GetUserParamsPair(user);
 
-        var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
+        var url = absolute ? ToAbsolute(VirtualAccountsPath) : AbsoluteAccountsPath;
         url += "view/";
         url += queryParams;
 

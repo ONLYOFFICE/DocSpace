@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "E-pasts",
   "Remember": "Atcerēties mani",
   "RememberHelper": "Noklusējuma sesijas ilgums ir 20 minūtes. Atzīmējiet šo opciju, lai iestatītu to uz vienu gadu. Lai iestatītu savu vērtību, dodieties uz Iestatījumi.",
-  "ResendCode": "Atkārtoti nosūtīt kodu"
+  "ResendCode": "Atkārtoti nosūtīt kodu",
+  "ErrorInvalidHeader": "Nepareizs e-pasts vai saite, kurai beidzies derīguma termiņš",
+  "ErrorInvalidText": "Pēc 10 sekundēm jūs tiksiet novirzīts uz <1>pieteikšanās lapu</1>"
 }
