@@ -34,9 +34,7 @@ const StyledItem = styled.div`
   .room-logo {
     height: 32px;
 
-    svg {
-      border-radius: 6px;
-    }
+    border-radius: 6px;
   }
 
   .label {
@@ -108,7 +106,7 @@ const Item = React.memo(({ index, style, data }) => {
           size={"min"}
         />
       ) : (
-        <ReactSVG className="room-logo" src={icon} alt="room logo" />
+        <img className="room-logo" src={icon} alt="room logo" />
       )}
 
       <Text
