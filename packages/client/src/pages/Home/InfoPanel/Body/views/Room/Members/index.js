@@ -16,7 +16,7 @@ const Members = ({ t, selfId, selectedItem, getShareUsers }) => {
     );
     setMembers(fetchedMembers);
     console.log("members", fetchedMembers);
-  }, []);
+  }, [selectedItem]);
 
   return (
     <>
