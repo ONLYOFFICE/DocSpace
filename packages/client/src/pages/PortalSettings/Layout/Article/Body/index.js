@@ -203,7 +203,7 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText, isNotPaid } = this.props;
+    const { showText, isNotPaid, t } = this.props;
 
     const items = [];
     let resultTree = [...settingsTree];
@@ -227,6 +227,18 @@ class ArticleBodyContent extends React.Component {
         />
       );
     });
+
+    const settingsHeader = (
+      <CatalogItem
+        key={"settings-header"}
+        isHeader={true}
+        isFirstHeader={true}
+        showText={showText}
+        text={`${t("Common:Settings")}`}
+      />
+    );
+
+    items.unshift(settingsHeader);
 
     return items;
   };

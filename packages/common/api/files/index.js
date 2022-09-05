@@ -699,7 +699,8 @@ export function saveThirdParty(
   isCorporate,
   customerTitle,
   providerKey,
-  providerId
+  providerId,
+  isRoomsStorage
 ) {
   const data = {
     url,
@@ -710,6 +711,7 @@ export function saveThirdParty(
     customerTitle,
     providerKey,
     providerId,
+    isRoomsStorage,
   };
   return request({ method: "post", url: "files/thirdparty", data });
 }

@@ -49,7 +49,7 @@ const StyledCatalogItemHeaderContainer = styled.div`
   }
 
   @media ${tablet} {
-    padding: ${(props) => (props.showText ? "0px 12px 12px" : "4px 12px 19px")};
+    padding: ${(props) => (props.showText ? "0px 9px 12px" : "4px 12px 19px")};
 
     margin-top: ${(props) => (props.isFirstHeader ? "0" : "16px")};
 
@@ -210,7 +210,11 @@ const StyledCatalogItemText = styled(Text)`
 
   pointer-events: none;
 
-  color: ${(props) => props.theme.catalogItem.text.color};
+  color: ${(props) =>
+    props.isActive
+      ? props.theme.catalogItem.text.isActiveColor
+      : props.theme.catalogItem.text.color};
+
   font-size: ${(props) => props.theme.catalogItem.text.fontSize};
   font-weight: ${(props) => props.theme.catalogItem.text.fontWeight};
   white-space: nowrap;
@@ -258,7 +262,10 @@ const StyledCatalogItemImg = styled.div`
     width: ${(props) => props.theme.catalogItem.img.svg.width};
     height: ${(props) => props.theme.catalogItem.img.svg.height};
     path {
-      fill: ${(props) => props.theme.catalogItem.img.svg.fill} !important;
+      fill: ${(props) =>
+        props.isActive
+          ? props.theme.catalogItem.img.svg.isActiveFill
+          : props.theme.catalogItem.img.svg.fill} !important;
     }
   }
 

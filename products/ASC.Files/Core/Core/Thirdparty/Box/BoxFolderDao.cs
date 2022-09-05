@@ -497,7 +497,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
         return items.Count == 0;
     }
 
-    public bool UseTrashForRemove(Folder<string> folder)
+    public bool UseTrashForRemoveAsync(Folder<string> folder)
     {
         return false;
     }

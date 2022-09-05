@@ -176,7 +176,7 @@ public interface IFolderDao<T>
     /// </summary>
     /// <param name="folder"></param>
     /// <returns></returns>
-    bool UseTrashForRemove(Folder<T> folder);
+    bool UseTrashForRemoveAsync(Folder<T> folder);
 
     /// <summary>
     /// Check the need to use recursion for operations

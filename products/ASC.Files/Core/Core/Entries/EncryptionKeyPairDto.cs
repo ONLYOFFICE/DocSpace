@@ -103,6 +103,7 @@ public class EncryptionKeyPairDtoHelper
     public async Task<IEnumerable<EncryptionKeyPairDto>> GetKeyPairAsync<T>(T fileId, FileStorageService<T> FileStorageService)
     {
         var fileDao = _daoFactory.GetFileDao<T>();
+        var folderDao = _daoFactory.GetFolderDao<T>();
 
         await fileDao.InvalidateCacheAsync(fileId);
 
@@ -117,7 +118,10 @@ public class EncryptionKeyPairDtoHelper
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
 
-        if (file.RootFolderType != FolderType.Privacy)
+        var locatedInPrivateRoom = file.RootFolderType == FolderType.VirtualRooms 
+            && await DocSpaceHelper.LocatedInPrivateRoomAsync(file, folderDao);
+
+        if (file.RootFolderType != FolderType.Privacy && !locatedInPrivateRoom)
         {
             throw new NotSupportedException();
         }

@@ -105,6 +105,8 @@ const WHITELABEL_URL = combineUrl(PROXY_BASE_URL, "/common/whitelabel");
 const SECURITY_URLS = [
   combineUrl(PROXY_BASE_URL, "/security/access-rights"),
   combineUrl(PROXY_BASE_URL, "/security/access-portal"),
+  combineUrl(PROXY_BASE_URL, "/security/login-history"),
+  combineUrl(PROXY_BASE_URL, "/security/audit-trail"),
 ];
 const TFA_PAGE_URL = combineUrl(PROXY_BASE_URL, "/security/access-portal/tfa");
 const PASSWORD_PAGE_URL = combineUrl(

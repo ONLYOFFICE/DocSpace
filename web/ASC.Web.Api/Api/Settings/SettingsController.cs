@@ -28,6 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class SettingsController : BaseSettingsController
 {
+    private static readonly object locked = new object();
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly IServiceScopeFactory _serviceScopeFactory;
@@ -48,7 +49,6 @@ public class SettingsController : BaseSettingsController
     private readonly TenantUtil _tenantUtil;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ColorThemesSettingsHelper _colorThemesSettingsHelper;
     private readonly IConfiguration _configuration;
     private readonly SetupInfo _setupInfo;
     private readonly StatisticManager _statisticManager;
@@ -58,6 +58,7 @@ public class SettingsController : BaseSettingsController
     private readonly TelegramHelper _telegramHelper;
     private readonly DnsSettings _dnsSettings;
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    private readonly CustomColorThemesSettingsHelper _customColorThemesSettingsHelper;
 
     public SettingsController(
         IServiceScopeFactory serviceScopeFactory,
@@ -76,7 +77,6 @@ public class SettingsController : BaseSettingsController
         TenantUtil tenantUtil,
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
-        ColorThemesSettingsHelper colorThemesSettingsHelper,
         IConfiguration configuration,
         SetupInfo setupInfo,
         StatisticManager statisticManager,
@@ -91,7 +91,8 @@ public class SettingsController : BaseSettingsController
         PasswordHasher passwordHasher,
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
-        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper
+        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        CustomColorThemesSettingsHelper customColorThemesSettingsHelper
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -113,7 +114,6 @@ public class SettingsController : BaseSettingsController
         _tenantUtil = tenantUtil;
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
-        _colorThemesSettingsHelper = colorThemesSettingsHelper;
         _configuration = configuration;
         _setupInfo = setupInfo;
         _statisticManager = statisticManager;
@@ -122,6 +122,7 @@ public class SettingsController : BaseSettingsController
         _telegramHelper = telegramHelper;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+        _customColorThemesSettingsHelper = customColorThemesSettingsHelper;
     }
 
     [HttpGet("")]
@@ -376,13 +377,83 @@ public class SettingsController : BaseSettingsController
         _settingsManager.SaveForCurrentUser(collaboratorPopupSettings);
     }
 
-    ///<visible>false</visible>
+    [AllowAnonymous]
+    [HttpGet("colortheme")]
+    public CustomColorThemesSettingsDto GetColorTheme()
+    {
+        return new CustomColorThemesSettingsDto(_settingsManager.Load<CustomColorThemesSettings>(), _customColorThemesSettingsHelper.Limit);
+    }
+
     [HttpPut("colortheme")]
-    public void SaveColorTheme(SettingsRequestsDto inDto)
+    public CustomColorThemesSettingsDto SaveColorTheme(CustomColorThemesSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        _colorThemesSettingsHelper.SaveColorTheme(inDto.Theme);
-        _messageService.Send(MessageAction.ColorThemeChanged);
+        var settings = _settingsManager.Load<CustomColorThemesSettings>();
+
+        if (inDto.Themes != null)
+        {
+            lock (locked)
+            {
+                foreach (var item in inDto.Themes)
+                {
+                    var settingItem = settings.Themes.SingleOrDefault(r => r.Id == item.Id);
+                    if (settingItem != null)
+                    {
+                        settingItem.AccentColor = item.AccentColor;
+                        settingItem.ButtonsMain = item.ButtonsMain;
+                        settingItem.TextColor = item.TextColor;
+                    }
+                    else
+                    {
+                        if (_customColorThemesSettingsHelper.Limit == 0 || settings.Themes.Count() < _customColorThemesSettingsHelper.Limit)
+                        {
+                            if (item.Id == 0)
+                            {
+                                item.Id = settings.Themes.Max(r => r.Id) + 1;
+                            }
+
+                            settings.Themes = settings.Themes.Append(item).ToList();
+                        }
+                    }
+                }
+
+                _settingsManager.Save(settings);
+            }
+        }
+
+        if (inDto.Selected.HasValue && settings.Themes.Any(r => r.Id == inDto.Selected.Value))
+        {
+            settings.Selected = inDto.Selected.Value;
+            _settingsManager.Save(settings);
+            _messageService.Send(MessageAction.ColorThemeChanged);
+        }
+
+        return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
+    }
+
+    [HttpDelete("colortheme")]
+    public CustomColorThemesSettingsDto DeleteColorTheme(int id)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var settings = _settingsManager.Load<CustomColorThemesSettings>();
+
+        if (CustomColorThemesSettingsItem.Default.Any(r => r.Id == id))
+        {
+            return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
+        }
+
+        settings.Themes = settings.Themes.Where(r => r.Id != id).ToList();
+
+        if (settings.Selected == id)
+        {
+            settings.Selected = settings.Themes.Min(r => r.Id);
+            _messageService.Send(MessageAction.ColorThemeChanged);
+        }
+
+        _settingsManager.Save(settings);
+
+        return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
     }
 
     [HttpPut("closeadminhelper")]

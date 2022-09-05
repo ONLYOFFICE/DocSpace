@@ -1,21 +1,22 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { StyledSlider } from "./styled-slider";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
-const Slider = ({
-  id,
-  type,
-  className,
-  onChange,
-  min,
-  max,
-  step,
-  value,
-  withPouring,
-  style,
-  isReadOnly = false,
-  isDisabled = false,
-}) => {
+const Slider = (props) => {
+  const {
+    id,
+    type,
+    className,
+    onChange,
+    min,
+    max,
+    step,
+    value,
+    withPouring,
+    style,
+    isReadOnly = false,
+    isDisabled = false,
+  } = props;
   const [size, setSize] = useState("0%");
 
   useEffect(() => {
@@ -23,11 +24,13 @@ const Slider = ({
   }, [value]);
 
   return (
-    <StyledSlider
+    <ColorTheme
+      {...props}
+      themeId={ThemeType.Slider}
+      type={type}
       isDisabled={isDisabled}
       style={style}
       id={id}
-      type={type}
       className={className}
       min={min}
       max={max}

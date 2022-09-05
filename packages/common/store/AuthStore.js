@@ -1,7 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { setWithCredentialsStatus } from "../api/client";
-import history from "../history";
 
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
@@ -176,7 +175,7 @@ class AuthStore {
     this.settingsStore = new SettingsStore();
   };
 
-  logout = async (redirectToLogin = true, redirectPath = null) => {
+  logout = async () => {
     await api.user.logout();
 
     //console.log("Logout response ", response);
@@ -187,22 +186,26 @@ class AuthStore {
 
     isDesktop && logoutDesktop();
 
-    if (redirectToLogin) {
-      if (redirectPath) {
-        return window.location.replace(redirectPath);
-      }
-      if (personal) {
-        return window.location.replace("/");
-      } else {
-        this.reset(true);
-        this.userStore.setUser(null);
-        this.init();
-        return history.push(combineUrl(proxyURL, "/login"));
-      }
-    } else {
-      this.reset();
-      this.init();
-    }
+    this.reset(true);
+    this.userStore.setUser(null);
+    this.init();
+
+    // if (redirectToLogin) {
+    //   if (redirectPath) {
+    //     return window.location.replace(redirectPath);
+    //   }
+    //   if (personal) {
+    //     return window.location.replace("/");
+    //   } else {
+    //     this.reset(true);
+    //     this.userStore.setUser(null);
+    //     this.init();
+    //     return history.push(combineUrl(proxyURL, "/login"));
+    //   }
+    // } else {
+    //   this.reset();
+    //   this.init();
+    // }
   };
 
   get isAuthenticated() {
@@ -282,18 +285,29 @@ class AuthStore {
     this.providers = providers;
   };
 
-  getOforms = () => {
+  getOforms = (filter) => {
     const culture =
       this.userStore.user.cultureName || this.settingsStore.culture;
 
+    const formName = "&fields[0]=name_form";
+    const updatedAt = "&fields[1]=updatedAt";
+    const size = "&fields[2]=file_size";
+    const filePages = "&fields[3]=file_pages";
+    const cardPrewiew = "&populate[card_prewiew][fields][4]=url";
+    const templateImage = "&populate[template_image][fields][5]=formats";
+
+    const fields = `${formName}${updatedAt}${size}${filePages}${cardPrewiew}${templateImage}`;
+
+    const params = `?${filter.toUrlParams()}${fields}`;
+
     const promise = new Promise(async (resolve, reject) => {
       let oforms = await api.settings.getOforms(
-        `${this.settingsStore.urlOforms}${culture}`
+        `${this.settingsStore.urlOforms}${params}&locale=${culture}`
       );
 
       if (!oforms?.data?.data.length) {
         oforms = await api.settings.getOforms(
-          `${this.settingsStore.urlOforms}en`
+          `${this.settingsStore.urlOforms}${params}&locale=en`
         );
       }
 

@@ -118,7 +118,7 @@ const ForgotPasswordModalDialog = (props) => {
       <ModalDialog.Footer>
         <Button
           className="modal-dialog-button"
-          key="SendBtn"
+          key="ForgotSendBtn"
           label={
             isLoading ? t("Common:LoadingProcessing") : t("Common:SendButton")
           }

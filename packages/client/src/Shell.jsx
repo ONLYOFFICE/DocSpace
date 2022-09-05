@@ -14,9 +14,7 @@ import toastr from "client/toastr";
 import { combineUrl, updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
-
 import store from "client/store";
-import filesStores from "./store/index.Files";
 
 import config from "PACKAGE_FILE";
 import { I18nextProvider, useTranslation } from "react-i18next";
@@ -609,7 +607,7 @@ const ThemeProviderWrapper = inject(({ auth }) => {
 })(observer(ThemeProvider));
 
 export default () => (
-  <MobxProvider {...store} {...filesStores}>
+  <MobxProvider {...store}>
     <I18nextProvider i18n={i18n}>
       <ThemeProviderWrapper>
         <ShellWrapper />

@@ -10,6 +10,8 @@ import globalColors from "../utils/globalColors";
 import { motion } from "framer-motion";
 import Base from "../themes/base";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 const ToggleIcon = ({ isChecked, isLoading }) => {
   return (
     <motion.svg
@@ -78,7 +80,13 @@ class ToggleButton extends Component {
     //console.log("ToggleButton render");
 
     return (
-      <Container id={id} className={className} style={style}>
+      <ColorTheme
+        {...this.props}
+        themeId={ThemeType.ToggleButton}
+        id={id}
+        className={className}
+        style={style}
+      >
         <ToggleButtonContainer
           id={id}
           className={className}
@@ -99,7 +107,7 @@ class ToggleButton extends Component {
             </Text>
           )}
         </ToggleButtonContainer>
-      </Container>
+      </ColorTheme>
     );
   }
 }

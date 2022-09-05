@@ -45,6 +45,8 @@ import EmailInput from "@docspace/components/email-input";
 import { ReactSVG } from "react-svg";
 import FormWrapper from "@docspace/components/form-wrapper";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 const settings = {
   minLength: 6,
   upperCase: false,
@@ -375,7 +377,7 @@ const Form = (props) => {
   //console.log("Login render");
 
   return (
-    <LoginContainer>
+    <ColorTheme {...props} themeId={ThemeType.LinkForgotPassword}>
       {!isLoaded ? (
         <AppLoader />
       ) : (
@@ -499,7 +501,6 @@ const Form = (props) => {
 
                   <Link
                     fontSize="13px"
-                    color="#316DAA"
                     className="login-link"
                     type="page"
                     isHovered={false}
@@ -585,7 +586,7 @@ const Form = (props) => {
           />
         </>
       )}
-    </LoginContainer>
+    </ColorTheme>
   );
 };
 

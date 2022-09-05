@@ -11,7 +11,7 @@ import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import RoomsModule from "./sub-components/RoomsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
-import { getFromLocalStorage } from "../../../../utils";
+import { getFromLocalStorage, saveToLocalStorage } from "../../../../utils";
 //import { getThirdPartyCommonFolderTree } from "@docspace/common/api/files";
 import DataBackupLoader from "@docspace/common/components/Loaders/DataBackupLoader";
 import {

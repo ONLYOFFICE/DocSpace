@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
@@ -2268,7 +2268,8 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("create_on");
 
                     b.Property<string>("FolderId")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("folder_id");
 
                     b.Property<int>("FolderType")
                         .HasColumnType("integer")
@@ -2279,6 +2280,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("password");
+
+                    b.Property<bool>("Private")
+                        .HasColumnType("boolean")
+                        .HasColumnName("private");
 
                     b.Property<string>("Provider")
                         .IsRequired()
@@ -2430,6 +2435,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<int>("ParentId")
                         .HasColumnType("integer")
                         .HasColumnName("parent_id");
+
+                    b.Property<bool>("Private")
+                        .HasColumnType("boolean")
+                        .HasColumnName("private");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")
