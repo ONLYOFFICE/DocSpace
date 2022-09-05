@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import Header from "./sub-components/header";
-import Body from "./sub-components/body";
-import Footer from "./sub-components/footer";
+import Header from "./sub-components/Header";
+import Body from "./sub-components/Body";
+import Footer from "./sub-components/Footer";
 
 import { StyledSelector } from "./StyledSelector";
 
