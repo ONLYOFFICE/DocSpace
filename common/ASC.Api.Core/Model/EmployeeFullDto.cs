@@ -97,7 +97,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
     private readonly WebItemSecurity _webItemSecurity;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly WebItemManager _webItemManager;
-
+    private readonly SettingsManager _settingsManager;
+    private readonly TenantManager _tenantManager;
     public EmployeeFullDtoHelper(
         ApiContext context,
         UserManager userManager,
@@ -106,13 +107,17 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         CommonLinkUtility commonLinkUtility,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         ApiDateTimeHelper apiDateTimeHelper,
-        WebItemManager webItemManager)
+        WebItemManager webItemManager,
+        SettingsManager settingsManager,
+        TenantManager tenantManager)
     : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager)
     {
         _context = context;
         _webItemSecurity = webItemSecurity;
         _apiDateTimeHelper = apiDateTimeHelper;
         _webItemManager = webItemManager;
+        _settingsManager = settingsManager;
+        _tenantManager = tenantManager;
     }
 
     public static Expression<Func<User, UserInfo>> GetExpression(ApiContext apiContext)
@@ -186,12 +191,18 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             IsAdmin = userInfo.IsAdmin(_userManager),
             IsOwner = userInfo.IsOwner(_context.Tenant),
             IsLDAP = userInfo.IsLDAP(),
-            IsSSO = userInfo.IsSSO(),
-            QuotaLimit = userInfo.QuotaLimit
+            IsSSO = userInfo.IsSSO()
 
         };
 
         await Init(result, userInfo);
+
+        var quotaSettings = _settingsManager.LoadForTenant<UserQuotaSettings>(_tenantManager.GetCurrentTenant().Id);
+
+        if (quotaSettings.EnableUserQuota)
+        {
+            result.QuotaLimit = userInfo.QuotaLimit;
+        }
 
         if (userInfo.Sex.HasValue)
         {
