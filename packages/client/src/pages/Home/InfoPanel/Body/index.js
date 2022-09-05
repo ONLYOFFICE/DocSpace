@@ -13,6 +13,7 @@ import { Base } from "@docspace/components/themes";
 import withLoader from "../../../../HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
 import { Text } from "@docspace/components";
+import InfoPanelContextOptions from "../InfoPanelContextOptions";
 
 const InfoPanelBodyContent = ({
   t,
@@ -127,6 +128,7 @@ const InfoPanelBodyContent = ({
               alt="thumbnail-icon"
             />
             <Text className="text">{selection.title}</Text>
+            <InfoPanelContextOptions selectedItem={selection} />
           </StyledTitle>
         ) : (
           <StyledTitle>
@@ -189,12 +191,13 @@ export default inject(
       isRootFolder &&
       (isRecycleBinFolder || isRecentFolder || isFavoritesFolder);
 
-    const selectedItems =
-      selection?.length > 0
-        ? [...selection]
-        : bufferSelection
-        ? [bufferSelection]
-        : [];
+    // const selectedItems =
+    // selection?.length > 0
+    //   ? [...selection]
+    //   : bufferSelection
+    //   ? [bufferSelection]
+    //   : [];
+    const selectedItems = selection?.length > 0 ? [...selection] : [];
 
     const selectedFolder = {
       ...selectedFolderStore,
