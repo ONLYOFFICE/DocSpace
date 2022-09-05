@@ -30,7 +30,7 @@ class AuthStore {
   isInit = false;
 
   quota = {};
-  portalQuota = {};
+  portalPaymentQuotas = {};
   portalTariff = {};
   pricePerManager = null;
   currencies = [];
@@ -60,10 +60,10 @@ class AuthStore {
 
     if (this.isAuthenticated) {
       requests.push(
-        this.setPortalQuota(),
+        this.setPortalPaymentsQuotas(),
         this.setPortalTariff(),
-        this.getPaymentPrices(),
-        this.setCurrencies()
+        this.setPortalQuota()
+        //this.setCurrencies()
       );
 
       !this.settingsStore.passwordSettings &&
@@ -322,20 +322,25 @@ class AuthStore {
     if (res) this.quota = res;
   };
 
-  setPortalQuota = async () => {
-    const res = await api.portal.getPortalQuota();
-    if (res) this.portalQuota = res;
+  setPortalPaymentsQuotas = async () => {
+    const res = await api.portal.getPortalPaymentQuotas();
+    if (res) {
+      this.portalPaymentQuotas = res[0];
+      this.priceInfoPerManager = res[0].features.find(
+        (obj) => obj.id === "admin"
+      ).price;
+    }
   };
 
-  getPaymentPrices = async () => {
-    const res = await api.portal.getPaymentPrices();
+  setPortalQuota = async () => {
+    const res = await api.portal.getPortalQuota();
     if (res) {
-      this.pricePerManager = res.admin;
+      this.portalQuota = res;
     }
   };
 
   get isFreeTariff() {
-    return this.portalQuota.trial || this.portalQuota.free;
+    return this.portalPaymentQuotas.trial || this.portalPaymentQuotas.free;
   }
 
   get isGracePeriod() {

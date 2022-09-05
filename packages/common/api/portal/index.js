@@ -166,8 +166,8 @@ export function setPortalRename(alias) {
   });
 }
 
-export function getPaymentPrices() {
-  return request({ method: "get", url: "/portal/payment/prices" });
+export function getPortalPaymentQuotas() {
+  return request({ method: "get", url: "/portal/payment/quotas" });
 }
 
 export function getPortalQuota() {
@@ -207,5 +207,5 @@ export function getCurrencies() {
 }
 
 export function getPaymentTariff() {
-  return request({ method: "get", url: "/portal/payment/quotas" });
+  return request({ method: "get", url: "/portal/payment/tariff" });
 }

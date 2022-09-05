@@ -65,10 +65,12 @@ const BenefitsContainer = ({ t, features }) => {
   );
 };
 
-export default inject(({ payments }) => {
-  const { paymentTariff } = payments;
+export default inject(({ auth }) => {
+  const { portalPaymentQuotas } = auth;
+
+  const { features } = portalPaymentQuotas;
 
   return {
-    features: paymentTariff[0]?.features,
+    features: features,
   };
 })(observer(BenefitsContainer));

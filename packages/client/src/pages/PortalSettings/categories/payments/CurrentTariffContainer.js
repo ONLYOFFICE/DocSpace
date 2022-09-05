@@ -28,11 +28,11 @@ const StyledCurrentTariffContainer = styled.div`
   }
 `;
 
-const CurrentTariffContainer = ({ quota, portalQuota, style }) => {
+const CurrentTariffContainer = ({ quota, portalPaymentQuotas, style }) => {
   const { t } = useTranslation("Payments");
 
   const { usedSize } = quota;
-  const { maxTotalSize, countRoom } = portalQuota;
+  const { maxTotalSize, countRoom } = portalPaymentQuotas;
 
   const addedRooms = 1;
   const maxManagers = 50;
@@ -88,7 +88,7 @@ const CurrentTariffContainer = ({ quota, portalQuota, style }) => {
 };
 
 export default inject(({ auth }) => {
-  const { quota, portalQuota } = auth;
+  const { quota, portalPaymentQuotas } = auth;
 
-  return { quota, portalQuota };
+  return { quota, portalPaymentQuotas };
 })(observer(CurrentTariffContainer));

@@ -24,8 +24,7 @@ const ArticlePaymentAlert = ({
   pricePerManager,
   isFreeTariff,
   theme,
-  isGracePeriod,
-  isoCurrencySymbol,
+  currencySymbol,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -37,7 +36,7 @@ const ArticlePaymentAlert = ({
     history.push(paymentPageUrl);
   };
 
-  const convertedPrice = `${isoCurrencySymbol}${pricePerManager}`;
+  const convertedPrice = `${currencySymbol}${pricePerManager}`;
 
   return !ready ? (
     <Loaders.Rectangle width="210px" height="88px" />
@@ -72,13 +71,14 @@ const ArticlePaymentAlert = ({
 
 export default withRouter(
   inject(({ auth }) => {
-    const { pricePerManager, currencies } = auth;
+    const { priceInfoPerManager } = auth;
     const { theme } = auth.settingsStore;
 
+    const { value, currencySymbol } = priceInfoPerManager;
     return {
-      pricePerManager,
+      pricePerManager: value,
       theme,
-      isoCurrencySymbol: currencies[0]?.isoCurrencySymbol,
+      currencySymbol: currencySymbol,
     };
   })(observer(ArticlePaymentAlert))
 );

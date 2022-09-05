@@ -22,7 +22,7 @@ const ButtonContainer = ({
   isDisabled,
   isLoading,
   maxTariffManagers,
-  setPortalQuota,
+  setPortalPaymentsQuotas,
   isLessCountThanAcceptable,
   t,
   isNotPaid,
@@ -38,7 +38,7 @@ const ButtonContainer = ({
       }, 500);
 
       await updatePayment(managersCount);
-      await setPortalQuota();
+      await setPortalPaymentsQuotas();
     } catch (e) {
       toastr.error(e);
     }
@@ -114,8 +114,13 @@ const ButtonContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { portalQuota, setPortalQuota, isNotPaid, isGracePeriod } = auth;
-  const { countAdmin: maxTariffManagers } = portalQuota;
+  const {
+    portalPaymentQuotas,
+    setPortalPaymentsQuotas,
+    isNotPaid,
+    isGracePeriod,
+  } = auth;
+  const { countAdmin: maxTariffManagers } = portalPaymentQuotas;
   const {
     updatePayment,
     setIsLoading,
@@ -135,7 +140,7 @@ export default inject(({ auth, payments }) => {
     isLoading,
     managersCount,
     maxTariffManagers,
-    setPortalQuota,
+    setPortalPaymentsQuotas,
     isLessCountThanAcceptable,
     isNotPaid,
     isGracePeriod,

@@ -240,7 +240,8 @@ const SelectUsersCountContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { pricePerManager } = auth;
+  const { priceInfoPerManager } = auth;
+  const { value } = priceInfoPerManager;
   const { theme } = auth.settingsStore;
   const {
     isLoading,
@@ -249,7 +250,6 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
     setManagersCount,
     setTotalPrice,
-
     isLessCountThanAcceptable,
   } = payments;
 
@@ -261,8 +261,7 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
     setManagersCount,
     setTotalPrice,
-    pricePerManager,
-
+    pricePerManager: value,
     isLessCountThanAcceptable,
   };
 })(observer(SelectUsersCountContainer));

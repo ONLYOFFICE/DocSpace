@@ -21,7 +21,7 @@ class PaymentStore {
   paymentLink = null;
   accountLink = null;
   isLoading = false;
-  totalPrice = null;
+  totalPrice = 30;
   managersCount = 1;
   maxAvailableManagersCount = 999;
   minAvailableManagersCount = 1;
@@ -132,14 +132,20 @@ class PaymentStore {
   get isLessCountThanAcceptable() {
     return this.managersCount < this.minAvailableManagersCount;
   }
-  setPaymentTariff = async () => {
-    try {
-      const res = await api.portal.getPaymentTariff();
-      if (res) {
-        this.paymentTariff = res;
-      }
-    } catch (e) {}
+
+  setRangeBound = (managerStep, min, max) => {
+    this.minAvailableManagersCount = 6;
+    this.maxAvailableManagersCount = max;
   };
+
+  // setPaymentTariff = async () => {
+  //   try {
+  //     const res = await api.portal.getPaymentTariff();
+  //     if (res) {
+  //       this.paymentTariff = res;
+  //     }
+  //   } catch (e) {}
+  // };
 }
 
 export default PaymentStore;

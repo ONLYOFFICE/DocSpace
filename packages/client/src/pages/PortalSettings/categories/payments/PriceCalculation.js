@@ -37,7 +37,6 @@ const PriceCalculation = ({
   user,
   theme,
   setPaymentLink,
-  portalQuota,
   setIsLoading,
   setTotalPrice,
   pricePerManager,
@@ -45,6 +44,7 @@ const PriceCalculation = ({
   setManagersCount,
   maxAvailableManagersCount,
   isFreeTariff,
+  portalQuota,
 }) => {
   const { countAdmin, price } = portalQuota;
 
@@ -65,6 +65,7 @@ const PriceCalculation = ({
     setTotalPrice(
       isAlreadyPaid ? price : minAvailableManagersCount * pricePerManager
     );
+
     setManagersCount(initialUsersCount);
     return () => {
       timeout && clearTimeout(timeout);
@@ -115,7 +116,7 @@ const PriceCalculation = ({
     }, 1000);
   };
 
-  const payer = false;
+  const payer = true;
   const isDisabled = isFreeTariff
     ? false
     : (!user.isOwner && !user.isAdmin) || !payer;
@@ -153,8 +154,14 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
   } = payments;
   const { theme } = auth.settingsStore;
-  const { userStore, portalQuota, pricePerManager, isFreeTariff } = auth;
+  const {
+    priceInfoPerManager,
+    isFreeTariff,
+    userStore,
+    portalQuota,
+  } = auth;
   const { user } = userStore;
+  const { value } = priceInfoPerManager;
 
   return {
     isFreeTariff,
@@ -162,12 +169,12 @@ export default inject(({ auth, payments }) => {
     tariffsInfo,
     theme,
     setPaymentLink,
-    portalQuota,
     setIsLoading,
-    pricePerManager,
+    pricePerManager: value,
     setTotalPrice,
     minAvailableManagersCount,
     maxAvailableManagersCount,
     user,
+    portalQuota,
   };
 })(observer(PriceCalculation));

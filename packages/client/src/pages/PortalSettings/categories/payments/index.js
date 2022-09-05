@@ -55,23 +55,23 @@ const StyledBody = styled.div`
 
 let dueDate, fromDate, byDate;
 const PaymentsPage = ({
-  setPaymentTariff,
-  getPaymentPrices,
   pricePerManager,
-  setPortalQuota,
+  setPortalPaymentsQuotas,
   setPortalTariff,
   language,
   portalTariff,
-  portalQuota,
+  portalPaymentQuotas,
   isFreeTariff,
   isGracePeriod,
   theme,
   setPaymentAccount,
   currencies,
   setCurrencies,
-  isoCurrencySymbol,
+  currencySymbol,
   isNotPaid,
   setSalesEmail,
+  setRangeBound,
+  range,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -102,12 +102,13 @@ const PaymentsPage = ({
     (async () => {
       const requests = [];
 
-      requests.push(setPaymentTariff(), setSalesEmail());
+      requests.push(
+        setSalesEmail(),
+        setRangeBound(range.value, range.min, range.max)
+      );
 
-      if (Object.keys(portalQuota).length === 0)
-        requests.push(setPortalQuota());
-
-      if (!pricePerManager) requests.push(getPaymentPrices());
+      if (Object.keys(portalPaymentQuotas).length === 0)
+        requests.push(setPortalPaymentsQuotas());
 
       if (Object.keys(portalTariff).length === 0) {
         requests.push(setPortalTariff(), setPaymentAccount());
@@ -151,7 +152,7 @@ const PaymentsPage = ({
     );
   };
 
-  const convertedPrice = `${isoCurrencySymbol}${pricePerManager}`;
+  const convertedPrice = `${currencySymbol}${pricePerManager}`;
 
   return isInitialLoading ? (
     <Loaders.PaymentsLoader />
@@ -252,13 +253,12 @@ PaymentsPage.propTypes = {
 
 export default inject(({ auth, payments }) => {
   const {
-    setPortalQuota,
+    setPortalPaymentsQuotas,
     setPortalTariff,
     language,
     portalTariff,
-    getPaymentPrices,
-    pricePerManager,
-    portalQuota,
+    priceInfoPerManager,
+    portalPaymentQuotas,
     isFreeTariff,
     isGracePeriod,
     currencies,
@@ -271,30 +271,32 @@ export default inject(({ auth, payments }) => {
     setTariffsInfo,
     tariffsInfo,
     setPaymentAccount,
-    setPaymentTariff,
     setSalesEmail,
+    setRangeBound,
   } = payments;
 
+  const { currencySymbol, value, range } = priceInfoPerManager;
+
   return {
-    setPaymentTariff,
     isFreeTariff,
-    setPortalQuota,
+    setPortalPaymentsQuotas,
     setPortalTariff,
     portalTariff,
-    getPaymentPrices,
     language,
     organizationName,
     setTariffsInfo,
     tariffsInfo,
     isGracePeriod,
-    pricePerManager,
-    portalQuota,
+    pricePerManager: value,
+    portalPaymentQuotas,
     theme,
     setPaymentAccount,
     currencies,
     setCurrencies,
-    isoCurrencySymbol: currencies[0]?.isoCurrencySymbol,
+    currencySymbol: currencySymbol,
     isNotPaid,
     setSalesEmail,
+    setRangeBound,
+    range,
   };
 })(withRouter(observer(PaymentsPage)));
