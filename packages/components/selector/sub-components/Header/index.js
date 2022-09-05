@@ -1,9 +1,9 @@
 import React from "react";
 
-import IconButton from "../../icon-button";
-import Heading from "../../heading";
+import IconButton from "../../../icon-button";
+import Heading from "../../../heading";
 
-import { StyledSelectorHeader } from "../StyledSelector";
+import { StyledSelectorHeader } from "../../StyledSelector";
 
 const Header = React.memo(({ onBackClickAction, headerLabel }) => {
   return (

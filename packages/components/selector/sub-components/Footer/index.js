@@ -2,10 +2,10 @@ import React from "react";
 
 import styled from "styled-components";
 
-import Button from "../../button";
-import Combobox from "../../combobox";
+import Button from "../../../button";
+import Combobox from "../../../combobox";
 
-import { StyledSelectorFooter } from "../StyledSelector";
+import { StyledSelectorFooter } from "../../StyledSelector";
 
 const StyledComboBox = styled(Combobox)`
   margin-bottom: 2px;

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import Heading from "../../heading";
-import Text from "../../text";
+import Heading from "../../../heading";
+import Text from "../../../text";
 
 const StyledContainer = styled.div`
   width: 100%;

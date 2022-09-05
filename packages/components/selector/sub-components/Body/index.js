@@ -2,14 +2,14 @@ import React from "react";
 import InfiniteLoader from "react-window-infinite-loader";
 import { FixedSizeList as List } from "react-window";
 
-import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
+import CustomScrollbarsVirtualList from "../../../scrollbar/custom-scrollbars-virtual-list";
 
-import Search from "./search";
-import SelectAll from "./select-all";
-import Item from "./item";
+import Search from "../Search";
+import SelectAll from "../SelectAll";
+import Item from "../Item";
+import EmptyScreen from "../EmptyScreen";
 
-import { StyledSelectorBody } from "../StyledSelector";
-import EmptyScreen from "./empty-screen";
+import { StyledSelectorBody } from "../../StyledSelector";
 
 const CONTAINER_PADDING = 32;
 const SEARCH_HEIGHT = 44;

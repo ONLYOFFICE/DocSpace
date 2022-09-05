@@ -1,6 +1,6 @@
 import React from "react";
 
-import SearchInput from "../../search-input";
+import SearchInput from "../../../search-input";
 
 const Search = React.memo(({ placeholder, value, onSearch, onClearSearch }) => {
   return (

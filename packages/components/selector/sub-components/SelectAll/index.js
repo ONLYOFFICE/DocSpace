@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-import Avatar from "../../avatar";
-import Text from "../../text";
-import Checkbox from "../../checkbox";
+import Avatar from "../../../avatar";
+import Text from "../../../text";
+import Checkbox from "../../../checkbox";
 
 const StyledSelectAll = styled.div`
   width: 100%;

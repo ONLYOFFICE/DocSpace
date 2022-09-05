@@ -2,10 +2,10 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 
-import Avatar from "../../avatar";
-import Text from "../../text";
-import Checkbox from "../../checkbox";
-import { Base } from "../../themes";
+import Avatar from "../../../avatar";
+import Text from "../../../text";
+import Checkbox from "../../../checkbox";
+import { Base } from "../../../themes";
 
 const selectedCss = css`
   background: #f3f4f4 !important;
