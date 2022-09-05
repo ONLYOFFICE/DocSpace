@@ -93,7 +93,6 @@ public class FeedController : ControllerBase
         ApiDateTime to,
         Guid? author,
         bool? onlyNew,
-        bool? withoutMe,
         bool? withRelated,
         ApiDateTime timeReaded)
     {
@@ -107,7 +106,6 @@ public class FeedController : ControllerBase
             Author = author ?? Guid.Empty,
             SearchKeys = _apiContext.FilterValues,
             OnlyNew = onlyNew.HasValue && onlyNew.Value,
-            WithoutMe = withoutMe.HasValue && withoutMe.Value,
             WithRelated = withRelated.HasValue && withRelated.Value,
         };
 
