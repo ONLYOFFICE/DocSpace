@@ -2185,7 +2185,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unlimited number of active users.
+        ///   Looks up a localized string similar to Unlimited number of active rooms.
         /// </summary>
         public static string TariffsFeature_room {
             get {

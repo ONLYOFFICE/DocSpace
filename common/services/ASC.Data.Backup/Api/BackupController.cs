@@ -123,6 +123,7 @@ public class BackupController : ControllerBase
     /// <param name="backupMail">Include mail in the backup</param>
     /// <category>Backup</category>
     /// <returns>Backup Progress</returns>
+    [AllowNotPayment]
     [HttpPost("startbackup")]
     public BackupProgress StartBackup(BackupDto backup)
     {
@@ -149,6 +150,7 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     /// <returns>Backup Progress</returns>
+    [AllowNotPayment]
     [HttpGet("getbackupprogress")]
     public BackupProgress GetBackupProgress()
     {

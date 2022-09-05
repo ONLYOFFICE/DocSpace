@@ -29,6 +29,7 @@ namespace ASC.Web.Api.Controllers;
 [Scope]
 [DefaultRoute]
 [ApiController]
+[AllowNotPayment]
 [ControllerName("portal")]
 public class PaymentController : ControllerBase
 {
@@ -39,7 +40,12 @@ public class PaymentController : ControllerBase
     private readonly SecurityContext _securityContext;
     private readonly RegionHelper _regionHelper;
     private readonly QuotaHelper _quotaHelper;
-
+    private readonly IMemoryCache _memoryCache;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly MessageService _messageService;
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly int _maxCount = 10;
+    private readonly int _expirationMinutes = 2;
     protected Tenant Tenant { get { return _apiContext.Tenant; } }
 
     public PaymentController(
@@ -49,8 +55,11 @@ public class PaymentController : ControllerBase
         ITariffService tariffService,
         SecurityContext securityContext,
         RegionHelper regionHelper,
-        QuotaHelper tariffHelper
-        )
+        QuotaHelper tariffHelper,
+        IMemoryCache memoryCache,
+        IHttpContextAccessor httpContextAccessor,
+        MessageService messageService,
+        StudioNotifyService studioNotifyService)
     {
         _apiContext = apiContext;
         _userManager = userManager;
@@ -59,9 +68,12 @@ public class PaymentController : ControllerBase
         _securityContext = securityContext;
         _regionHelper = regionHelper;
         _quotaHelper = tariffHelper;
+        _memoryCache = memoryCache;
+        _httpContextAccessor = httpContextAccessor;
+        _messageService = messageService;
+        _studioNotifyService = studioNotifyService;
     }
 
-    [AllowNotPayment]
     [HttpPut("payment/url")]
     public Uri GetPaymentUrl(PaymentUrlRequestsDto inDto)
     {
@@ -80,7 +92,6 @@ public class PaymentController : ControllerBase
             inDto.BackUrl);
     }
 
-    [AllowNotPayment]
     [HttpPut("payment/update")]
     public bool PaymentUpdate(PaymentUrlRequestsDto inDto)
     {
@@ -93,7 +104,6 @@ public class PaymentController : ControllerBase
         return _tariffService.PaymentChange(Tenant.Id, inDto.Quantity);
     }
 
-    [AllowNotPayment]
     [HttpGet("payment/account")]
     public Uri GetPaymentAccount(string backUrl)
     {
@@ -108,7 +118,6 @@ public class PaymentController : ControllerBase
         return _tariffService.GetAccountLink(Tenant.Id, backUrl);
     }
 
-    [AllowNotPayment]
     [HttpGet("payment/prices")]
     public object GetPrices()
     {
@@ -118,7 +127,7 @@ public class PaymentController : ControllerBase
         return result;
     }
 
-    [AllowNotPayment]
+
     [HttpGet("payment/currencies")]
     public IEnumerable<CurrenciesDto> GetCurrencies()
     {
@@ -133,10 +142,42 @@ public class PaymentController : ControllerBase
         }
     }
 
-    [AllowNotPayment]
     [HttpGet("payment/quotas")]
     public IEnumerable<QuotaDto> GetQuotas()
     {
         return _quotaHelper.GetQuotas();
+    }
+
+    [HttpPost("payment/request")]
+    public void SendSalesRequest(SalesRequestsDto inDto)
+    {
+        if (!inDto.Email.TestEmailRegex())
+        {
+            throw new Exception(Resource.ErrorNotCorrectEmail);
+        }
+
+        if (string.IsNullOrEmpty(inDto.Message))
+        {
+            throw new Exception(Resource.ErrorEmptyMessage);
+        }
+
+        CheckCache("salesrequest");
+
+        _studioNotifyService.SendMsgToSales(inDto.Email, inDto.UserName, inDto.Message);
+        _messageService.Send(MessageAction.ContactSalesMailSent);
+    }
+
+    internal void CheckCache(string basekey)
+    {
+        var key = _httpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
+        if (_memoryCache.TryGetValue<int>(key, out var count))
+        {
+            if (count > _maxCount)
+            {
+                throw new Exception(Resource.ErrorRequestLimitExceeded);
+            }
+        }
+
+        _memoryCache.Set(key, count + 1, TimeSpan.FromMinutes(_expirationMinutes));
     }
 }

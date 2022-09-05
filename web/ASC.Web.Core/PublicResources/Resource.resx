@@ -838,7 +838,7 @@
     <value>Automatic backup &amp; recovery</value>
   </data>
   <data name="TariffsFeature_room" xml:space="preserve">
-    <value>Unlimited number of active users</value>
+    <value>Unlimited number of active rooms</value>
   </data>
   <data name="TariffsFeature_sso" xml:space="preserve">
     <value>SSO</value>
