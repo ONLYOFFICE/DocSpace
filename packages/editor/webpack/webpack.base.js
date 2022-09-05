@@ -1,3 +1,5 @@
+const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
+
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
 const imageExtensions = /\.(bmp|gif|jpg|jpeg|png)$/;
 const fontsExtension = /\.(eot|otf|ttf|woff|woff2)$/;
@@ -46,4 +48,10 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    //ignore the drivers you don't want. This is the complete list of all drivers -- remove the suppressions for drivers you want to use.
+    new FilterWarningsPlugin({
+      exclude: [/Critical dependency/],
+    }),
+  ],
 };
