@@ -383,7 +383,7 @@ export default withRouter(
       getHeaderMenu,
       dialogStore,
     } = peopleStore;
-    const { getUsersList, removeUser, updateUserStatus } = usersStore;
+    const { getUsersList, removeUser } = usersStore;
     const {
       setSelected,
       selectByStatus,
@@ -418,7 +418,6 @@ export default withRouter(
       selectAll,
       deleteGroup,
       removeUser,
-      updateUserStatus,
       group,
       isTabletView,
       getHeaderMenu,
