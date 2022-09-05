@@ -12,7 +12,6 @@ import { withTranslation } from "react-i18next";
 class Profile extends React.Component {
   componentDidMount() {
     const {
-      match,
       fetchProfile,
       profile,
       location,
@@ -23,12 +22,10 @@ class Profile extends React.Component {
       setIsEditTargetUser,
       setLoadedProfile,
     } = this.props;
-    let { userId } = match.params;
+    const userId = "@self";
 
     setFirstLoad(false);
     setIsEditTargetUser(false);
-
-    if (!userId) userId = "@self";
 
     setDocumentTitle(t("Common:Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");

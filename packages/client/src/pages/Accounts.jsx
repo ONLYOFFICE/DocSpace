@@ -8,7 +8,6 @@ import AppLoader from "@docspace/common/components/AppLoader";
 import { /*combineUrl,*/ updateTempContent } from "@docspace/common/utils";
 import Home from "./AccountsHome";
 import Profile from "./Profile";
-import ProfileAction from "./ProfileAction";
 
 import Filter from "@docspace/common/api/people/filter";
 import { showLoader, hideLoader } from "@docspace/common/utils";
@@ -22,17 +21,6 @@ const PeopleSection = React.memo(() => {
         exact
         path={["/accounts/view/:userId"]}
         component={Profile}
-      />
-      <PrivateRoute
-        path={["/accounts/edit/:userId"]}
-        restricted
-        allowForMe
-        component={ProfileAction}
-      />
-      <PrivateRoute
-        path={["/accounts/create/:type"]}
-        restricted
-        component={ProfileAction}
       />
       <PrivateRoute
         exact
