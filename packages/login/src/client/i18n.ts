@@ -1,17 +1,19 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import Backend from "@docspace/common/utils/i18next-http-backend";
+import config from "../../package.json";
 import { LANGUAGE } from "@docspace/common/constants";
-import config from "PACKAGE_FILE";
-import { loadLanguagePath } from "@docspace/common/utils";
+import { loadLanguagePath, getCookie } from "@docspace/common/utils";
 
 const newInstance = i18n.createInstance();
+
+const lng = getCookie(LANGUAGE) || window.initialLanguage || "en";
 
 newInstance
   .use(Backend)
   .use(initReactI18next)
   .init({
-    lng: localStorage.getItem(LANGUAGE) || "en",
+    lng: lng,
     fallbackLng: "en",
     load: "currentOnly",
     //debug: true,
@@ -25,8 +27,13 @@ newInstance
     },
 
     backend: {
-      loadPath: loadLanguagePath(config.homepage, "Errors"),
+      loadPath: loadLanguagePath(config.homepage),
+      allowMultiLoading: true,
+      crossDomain: false,
     },
+
+    ns: ["Login", "Common"],
+    defaultNS: "Login",
 
     react: {
       useSuspense: false,

@@ -8,9 +8,9 @@ import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject, observer } from "mobx-react";
-import { LANGUAGE } from "@docspace/common/constants";
+import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { LanguageTimeSettingsTooltip } from "../sub-components/common-tooltips";
-import { combineUrl } from "@docspace/common/utils";
+import { combineUrl, setCookie } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import history from "@docspace/common/history";
@@ -297,7 +297,9 @@ class LanguageAndTimeZone extends React.Component {
         .then(
           () =>
             !user.cultureName &&
-            localStorage.setItem(LANGUAGE, language.key || "en")
+            setCookie(LANGUAGE, language.key || "en", {
+              "max-age": COOKIE_EXPIRATION_YEAR,
+            })
         )
         .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
         .then(

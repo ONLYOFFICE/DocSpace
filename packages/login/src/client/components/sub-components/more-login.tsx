@@ -46,7 +46,19 @@ const Modal = styled(ModalDialog)`
   }
 `;
 
-const MoreLoginModal = (props) => {
+interface IMoreLoginNodalProps {
+  visible: boolean;
+  onClose: VoidFunction;
+  providers: ProvidersType;
+  onSocialLoginClick: (
+    e: HTMLElementEvent<HTMLButtonElement | HTMLElement>
+  ) => void;
+  ssoLabel: string;
+  ssoUrl: string;
+  t: TFuncType;
+}
+
+const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
   const {
     t,
     visible,
