@@ -1,17 +1,22 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useState } from "react";
 import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
 import toastr from "@docspace/components/toast/toastr";
-
 import RegisterModalDialog from "./register-modal-dialog";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import { sendRegisterRequest } from "@docspace/common/api/settings";
-import { I18nextProvider, useTranslation } from "react-i18next";
-import i18n from "../i18n";
+import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { Base } from "@docspace/components/themes";
+
+interface IRegisterProps {
+  language?: string;
+  isAuthenticated?: boolean;
+  enabledJoin: boolean;
+  trustedDomainsType?: number;
+  trustedDomains?: string[];
+  theme?: any;
+}
 
 const StyledRegister = styled(Box)`
   display: flex;
@@ -29,7 +34,7 @@ const StyledRegister = styled(Box)`
 
 StyledRegister.defaultProps = { theme: Base };
 
-const Register = (props) => {
+const Register: React.FC<IRegisterProps> = (props) => {
   const {
     enabledJoin,
     isAuthenticated,
@@ -57,13 +62,15 @@ const Register = (props) => {
     setEmailErr(false);
   };
 
-  const onChangeEmail = (e) => {
-    setEmail(e.currentTarget.value);
-    setEmailErr(false);
-    setIsShowError(false);
+  const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e) {
+      setEmail(e.currentTarget.value);
+      setEmailErr(false);
+      setIsShowError(false);
+    }
   };
 
-  const onValidateEmail = (res) => {
+  const onValidateEmail = (res: IEmailValid) => {
     setEmailErr(!res.isValid);
     setErrorText(res.errors[0]);
   };
@@ -79,11 +86,11 @@ const Register = (props) => {
     } else {
       setLoading(true);
       sendRegisterRequest(email)
-        .then((res) => {
+        .then((res: string) => {
           setLoading(false);
           toastr.success(res);
         })
-        .catch((error) => {
+        .catch((error: any) => {
           setLoading(false);
           toastr.error(error);
         })
@@ -91,7 +98,7 @@ const Register = (props) => {
     }
   };
 
-  const onKeyDown = (e) => {
+  const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === "Enter") {
       onSendRegisterRequest();
       e.preventDefault();
@@ -112,7 +119,6 @@ const Register = (props) => {
           emailErr={emailErr}
           trustedDomainsType={trustedDomainsType}
           trustedDomains={trustedDomains}
-          t={t}
           onChangeEmail={onChangeEmail}
           onValidateEmail={onValidateEmail}
           onBlurEmail={onBlurEmail}
@@ -129,23 +135,11 @@ const Register = (props) => {
   );
 };
 
-Register.propTypes = {
-  language: PropTypes.string,
-  isAuthenticated: PropTypes.bool,
-  enabledJoin: PropTypes.bool,
-};
-
 export default inject(({ auth }) => {
   const { settingsStore, isAuthenticated, language } = auth;
-  const {
-    enabledJoin,
-    trustedDomainsType,
-    trustedDomains,
-    theme,
-  } = settingsStore;
+  const { trustedDomainsType, trustedDomains, theme } = settingsStore;
   return {
     theme,
-    enabledJoin,
     trustedDomainsType,
     trustedDomains,
     isAuthenticated,

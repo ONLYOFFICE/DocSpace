@@ -3,7 +3,5 @@
   "Error403Text": "Ne pare rău, accesul este refuzat.",
   "Error404Text": "Ne pare rău, sursa nu s-a găsit.",
   "ErrorEmptyResponse": "Răspunsul necompletat",
-  "ErrorInvalidHeader": "Adresa e-mail invalidă sau link-ul expirat",
-  "ErrorInvalidText": "Veţi fi redirecționat în 10 secunde către <1>pagina de autentificare</1>",
   "ErrorOfflineText": "Nu există nicio conexiune la Internet."
 }
