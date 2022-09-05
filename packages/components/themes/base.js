@@ -1552,12 +1552,15 @@ const Base = {
     button: {
       height: "18px",
       heightWithBorder: "30px",
+      heightModernView: "28px",
+
       paddingLeft: "8px",
 
       color: black,
       disabledColor: grayMid,
       background: white,
       backgroundWithBorder: "none",
+      backgroundModernView: "none",
 
       border: `1px solid ${grayMid}`,
       borderRadius: "3px",
@@ -1569,6 +1572,9 @@ const Base = {
       hoverBorderColor: gray,
       hoverBorderColorOpen: blueMain,
       hoverDisabledBorderColor: grayLightMid,
+      hoverBackgroundModernView: "#F8F9F9",
+
+      activeBackgroundModernView: "#F3F4F4",
     },
 
     label: {
@@ -2070,6 +2076,10 @@ const Base = {
 
       tileSortFill: black,
       tileSortColor: black,
+    },
+
+    selectedItems: {
+      background: "#eceef1",
     },
   },
 

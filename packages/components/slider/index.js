@@ -24,7 +24,8 @@ const Slider = (props) => {
   return (
     <ColorTheme
       {...props}
-      type={ThemeType.Slider}
+      themeId={ThemeType.Slider}
+      type={type}
       style={style}
       id={id}
       className={className}

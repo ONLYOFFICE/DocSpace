@@ -8,26 +8,23 @@ import Base from "@docspace/components/themes/base";
 const getDefaultStyles = ({ $currentColorScheme, color, icon, theme }) =>
   $currentColorScheme &&
   css`
-    background: ${
-      color
+    background: ${color
+      ? color
+      : theme.isBase
+      ? $currentColorScheme.accentColor
+      : icon === "upload"
+      ? theme.floatingButton.backgroundColor
+      : $currentColorScheme.accentColor} !important;
+
+    ${StyledFloatingButton} {
+      background: ${color
         ? color
         : theme.isBase
         ? $currentColorScheme.accentColor
         : icon === "upload"
         ? theme.floatingButton.backgroundColor
-        : $currentColorScheme.accentColor
-    } !important;
-
-    ${StyledFloatingButton} {
-      background: ${
-        color
-          ? color
-          : theme.isBase
-          ? $currentColorScheme.accentColor
-          : icon === "upload"
-          ? theme.floatingButton.backgroundColor
-          : $currentColorScheme.accentColor
-      } !important;
+        : $currentColorScheme.accentColor} !important;
+    }
   `;
 
 StyledCircleWrap.defaultProps = { theme: Base };
