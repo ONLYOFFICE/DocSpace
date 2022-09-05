@@ -138,6 +138,14 @@ class PaymentStore {
     this.maxAvailableManagersCount = max;
   };
 
+  sendPaymentRequest = async (email, userName, message) => {
+    try {
+      await api.portal.sendPaymentRequest(email, userName, message);
+      toastr.success("Success");
+    } catch (e) {
+      toastr.error(e);
+    }
+  };
   // setPaymentTariff = async () => {
   //   try {
   //     const res = await api.portal.getPaymentTariff();

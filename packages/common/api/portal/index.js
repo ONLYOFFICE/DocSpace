@@ -209,3 +209,15 @@ export function getCurrencies() {
 export function getPaymentTariff() {
   return request({ method: "get", url: "/portal/payment/tariff" });
 }
+
+export function sendPaymentRequest(email, userName, message) {
+  return request({
+    method: "post",
+    url: `/portal/payment/request `,
+    data: {
+      email,
+      userName,
+      message,
+    },
+  });
+}

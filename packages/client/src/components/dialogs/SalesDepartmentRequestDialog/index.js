@@ -10,6 +10,7 @@ import Textarea from "@docspace/components/textarea";
 import FieldContainer from "@docspace/components/field-container";
 import { smallTablet } from "@docspace/components/utils/device";
 import toastr from "@docspace/components/toast/toastr";
+import { inject, observer } from "mobx-react";
 
 const ModalDialogContainer = styled(ModalDialog)`
   .modal-dialog-aside-footer {
@@ -23,7 +24,11 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
 `;
 
-const SalesDepartmentRequestDialog = ({ visible, onClose }) => {
+const SalesDepartmentRequestDialog = ({
+  visible,
+  onClose,
+  sendPaymentRequest,
+}) => {
   const { t, ready } = useTranslation([
     "SalesDepartmentRequestDialog",
     "Common",
@@ -57,7 +62,7 @@ const SalesDepartmentRequestDialog = ({ visible, onClose }) => {
     setName(e.currentTarget.value);
     setIsValidDescription(true);
   };
-  const onSendRequest = () => {
+  const onSendRequest = async () => {
     const isEmailValid = email.trim();
     const isDescriptionValid = description.trim();
     const isNameValid = name.trim();
@@ -68,6 +73,9 @@ const SalesDepartmentRequestDialog = ({ visible, onClose }) => {
       setIsValidDescription(isDescriptionValid);
       return;
     }
+
+    await sendPaymentRequest(email, name, description);
+    onClose && onClose();
   };
 
   return (
@@ -186,4 +194,10 @@ SalesDepartmentRequestDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default SalesDepartmentRequestDialog;
+export default inject(({ payments }) => {
+  const { sendPaymentRequest } = payments;
+
+  return {
+    sendPaymentRequest,
+  };
+})(observer(SalesDepartmentRequestDialog));
