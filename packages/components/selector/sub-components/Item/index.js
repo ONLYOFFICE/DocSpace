@@ -82,7 +82,7 @@ const Item = React.memo(({ index, style, data }) => {
     const item = items[index];
 
     if (!item && !item?.id) return <div style={style}>{rowLoader}</div>;
-    console.log(index, item);
+
     const { label, avatar, icon, role, isSelected } = item;
 
     const currentRole = role ? role : "user";
