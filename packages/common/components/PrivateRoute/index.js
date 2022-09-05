@@ -41,7 +41,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
       console.log("PrivateRoute render Redirect to login", rest);
       const redirectPath = wizardCompleted ? "/login" : "/wizard";
-      window.location.replace(redirectPath);
+      return window.location.replace(redirectPath);
       // return (
       //   <Redirect
       //     to={{
