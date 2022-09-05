@@ -13,7 +13,8 @@ import { Base } from "@docspace/components/themes";
 import withLoader from "../../../../HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
 import { Text } from "@docspace/components";
-import InfoPanelContextOptions from "../InfoPanelContextOptions";
+import ItemContextOptions from "./sub-components/ItemContextOptions";
+import ItemTitle from "./sub-components/ItemTitle";
 
 const InfoPanelBodyContent = ({
   t,
@@ -119,26 +120,14 @@ const InfoPanelBodyContent = ({
 
   return (
     <StyledInfoPanelBody>
-      {!(isFileCategory && selection.isSelectedFolder) && !isGallery ? (
-        !Array.isArray(selection) ? (
-          <StyledTitle>
-            <img
-              className={`icon ${selection.isRoom && "is-room"}`}
-              src={selection.icon}
-              alt="thumbnail-icon"
-            />
-            <Text className="text">{selection.title}</Text>
-            <InfoPanelContextOptions selectedItem={selection} />
-          </StyledTitle>
-        ) : (
-          <StyledTitle>
-            <ReactSVG className="icon" src={getIcon(32, ".file")} />
-            <Text className="text">
-              {`${t("ItemsSelected")}: ${selection.length}`}
-            </Text>
-          </StyledTitle>
-        )
-      ) : null}
+      <ItemTitle
+        t={t}
+        selection={selection}
+        isGallery={isGallery}
+        isFileCategory={isFileCategory}
+        getIcon={getIcon}
+      />
+
       {isGallery ? (
         <Gallery selection={selection} {...galleryProps} />
       ) : isRoom ? (
