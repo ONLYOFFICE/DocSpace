@@ -77,11 +77,14 @@ public class FeedController : ControllerBase
     ///<short>
     ///Get feeds
     ///</short>
-    /// <param name="product">Product which feeds you want to read</param>
+    /// <param name="id">Entity ID</param>
+    /// <param name="product">Module that will be searched for by entity ID</param>
+    /// <param name="module"></param>
     /// <param name="from">Time from which the feeds should be displayed</param>
     /// <param name="to">Time until which the feeds should be displayed</param>
     /// <param name="author">Author whose feeds you want to read</param>
     /// <param name="onlyNew">Displays only fresh feeds</param>
+    /// <param name="withRelated">Include the associated feed related to the entity with the given id</param>
     /// <param name="timeReaded">Time when the feeds were read</param>
     ///<returns>List of filtered feeds</returns>
     [HttpGet("filter")]
