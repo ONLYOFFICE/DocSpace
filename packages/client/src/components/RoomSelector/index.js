@@ -45,6 +45,8 @@ const RoomSelector = ({
   className,
   style,
 
+  excludeItems,
+
   headerLabel,
   onBackClick,
 
@@ -127,13 +129,15 @@ const RoomSelector = ({
         .then(({ folders, total, count }) => {
           const rooms = convertToItems(folders);
 
+          const itemList = rooms.filter((x) => !excludeItems.includes(x.id));
+
           setHasNextPage(count === pageCount);
 
           if (isFirstLoad) {
             setTotal(total);
-            setItems(rooms);
+            setItems(itemList);
           } else {
-            setItems((value) => [...value, ...rooms]);
+            setItems((value) => [...value, ...itemList]);
           }
         })
         .finally(() => {
@@ -141,7 +145,7 @@ const RoomSelector = ({
           setIsNextPageLoading(false);
         });
     },
-    [isFirstLoad]
+    [isFirstLoad, excludeItems, searchValue]
   );
 
   React.useEffect(() => {
@@ -217,5 +221,7 @@ const RoomSelector = ({
     />
   );
 };
+
+RoomSelector.defaultProp = { excludeItems: [] };
 
 export default withTranslation(["RoomSelector", "Common"])(RoomSelector);
