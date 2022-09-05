@@ -10,11 +10,19 @@ const Members = ({ t, selfId, selectedItem, getShareUsers }) => {
   const [members, setMembers] = useState([]);
 
   useEffect(async () => {
-    const data = selectedItem.isFolder
+    if (selectedItem.members) {
+      console.log("hasMembers");
+      setMembers(selectedItem.members);
+      return;
+    }
+
+    const getShareUsersData = selectedItem.isFolder
       ? [[selectedItem.id], []]
       : [[], [selectedItem.id]];
-    const fetchedMembers = await getShareUsers(...data);
+    const fetchedMembers = await getShareUsers(...getShareUsersData);
     setMembers(fetchedMembers);
+    selectedItem.members = fetchedMembers;
+
     console.log("members", fetchedMembers);
   }, [selectedItem]);
 
