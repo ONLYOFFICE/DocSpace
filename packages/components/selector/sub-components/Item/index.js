@@ -68,66 +68,75 @@ const compareFunction = (prevProps, nextProps) => {
   const nextItem = nextItems[nextIndex];
 
   return (
-    prevItem.id === nextItem.id && prevItem.isSelected === nextItem.isSelected
+    prevItem?.id === nextItem?.id &&
+    prevItem?.isSelected === nextItem?.isSelected
   );
 };
 
 const Item = React.memo(({ index, style, data }) => {
-  const { items, onSelect, isMultiSelect } = data;
+  const { items, onSelect, isMultiSelect, isItemLoaded, rowLoader } = data;
 
-  const item = items[index];
+  const isLoaded = isItemLoaded(index);
 
-  const { label, avatar, icon, role, isSelected } = item;
+  const renderItem = () => {
+    const item = items[index];
 
-  const currentRole = role ? role : "user";
+    if (!item && !item?.id) return <div style={style}>{rowLoader}</div>;
+    console.log(index, item);
+    const { label, avatar, icon, role, isSelected } = item;
 
-  const isLogo = !!icon;
+    const currentRole = role ? role : "user";
 
-  const onChangeAction = () => {
-    onSelect && onSelect(item);
-  };
+    const isLogo = !!icon;
 
-  const onClick = () => {
-    !isMultiSelect && onSelect && onSelect(item);
-  };
+    const onChangeAction = () => {
+      onSelect && onSelect(item);
+    };
 
-  return (
-    <StyledItem
-      isSelected={isSelected}
-      isMultiSelect={isMultiSelect}
-      style={style}
-      onClick={onClick}
-    >
-      {!isLogo ? (
-        <Avatar
-          className="user-avatar"
-          source={avatar}
-          role={currentRole}
-          size={"min"}
-        />
-      ) : (
-        <img className="room-logo" src={icon} alt="room logo" />
-      )}
+    const onClick = () => {
+      !isMultiSelect && onSelect && onSelect(item);
+    };
 
-      <Text
-        className="label"
-        fontWeight={600}
-        fontSize={"14px"}
-        noSelect
-        truncate
+    return (
+      <StyledItem
+        isSelected={isSelected}
+        isMultiSelect={isMultiSelect}
+        style={style}
+        onClick={onClick}
       >
-        {label}
-      </Text>
+        {!isLogo ? (
+          <Avatar
+            className="user-avatar"
+            source={avatar}
+            role={currentRole}
+            size={"min"}
+          />
+        ) : (
+          <img className="room-logo" src={icon} alt="room logo" />
+        )}
 
-      {isMultiSelect && (
-        <Checkbox
-          className="checkbox"
-          isChecked={isSelected}
-          onChange={onChangeAction}
-        />
-      )}
-    </StyledItem>
-  );
+        <Text
+          className="label"
+          fontWeight={600}
+          fontSize={"14px"}
+          noSelect
+          truncate
+        >
+          {label}
+        </Text>
+
+        {isMultiSelect && (
+          <Checkbox
+            className="checkbox"
+            isChecked={isSelected}
+            onChange={onChangeAction}
+          />
+        )}
+      </StyledItem>
+    );
+  };
+
+  return isLoaded ? renderItem() : <div style={style}>{rowLoader}</div>;
 }, compareFunction);
 
 export default Item;

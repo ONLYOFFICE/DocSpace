@@ -53,7 +53,7 @@ const Body = ({
   const bodyRef = React.useRef(null);
   const listOptionsRef = React.useRef(null);
 
-  const itemsCount = items.length;
+  const itemsCount = hasNextPage ? items.length + 1 : items.length;
   const withSearch = isSearch || itemsCount > 0;
 
   const resetCache = React.useCallback(() => {
@@ -158,7 +158,13 @@ const Body = ({
                   height={listHeight}
                   width={"100%"}
                   itemCount={itemsCount}
-                  itemData={{ items, onSelect, isMultiSelect }}
+                  itemData={{
+                    items,
+                    onSelect,
+                    isMultiSelect,
+                    rowLoader,
+                    isItemLoaded,
+                  }}
                   itemSize={48}
                   onItemsRendered={onItemsRendered}
                   ref={ref}
@@ -169,7 +175,6 @@ const Body = ({
               )}
             </InfiniteLoader>
           )}
-          {isNextPageLoading && rowLoader}
         </>
       )}
     </StyledSelectorBody>
