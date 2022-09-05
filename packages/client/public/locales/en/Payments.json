@@ -37,5 +37,6 @@
   "StripeCustomerPortal": "go to the Stripe customer portal",
   "SendRequest": "Send request",
   "Terabyte": "TB",
-  "UpgradeNow": "Upgrade now"
+  "UpgradeNow": "Upgrade now",
+  "YourPrice": "Your price"
 }

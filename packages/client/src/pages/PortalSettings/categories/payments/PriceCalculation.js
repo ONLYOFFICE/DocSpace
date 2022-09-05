@@ -46,6 +46,8 @@ const PriceCalculation = ({
   isFreeTariff,
   portalQuota,
   payer,
+  isGracePeriod,
+  isNotPaid,
 }) => {
   const { countAdmin, price } = portalQuota;
 
@@ -126,13 +128,15 @@ const PriceCalculation = ({
   return (
     <StyledBody>
       <Text fontSize="16px" fontWeight={600} noSelect {...color}>
-        {t("PriceCalculation")}
+        {!isGracePeriod && !isNotPaid ? t("PriceCalculation") : t("YourPrice")}
       </Text>
-      <SelectUsersCountContainer
-        isDisabled={isDisabled}
-        setShoppingLink={setShoppingLink}
-        isAlreadyPaid={isAlreadyPaid}
-      />
+      {!isGracePeriod && !isNotPaid && (
+        <SelectUsersCountContainer
+          isDisabled={isDisabled}
+          setShoppingLink={setShoppingLink}
+          isAlreadyPaid={isAlreadyPaid}
+        />
+      )}
       <TotalTariffContainer t={t} isDisabled={isDisabled} />
       <ButtonContainer
         isDisabled={isDisabled}
@@ -154,7 +158,14 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
   } = payments;
   const { theme } = auth.settingsStore;
-  const { priceInfoPerManager, isFreeTariff, userStore, portalQuota } = auth;
+  const {
+    priceInfoPerManager,
+    isFreeTariff,
+    userStore,
+    portalQuota,
+    isGracePeriod,
+    isNotPaid,
+  } = auth;
   const { user } = userStore;
   const { value } = priceInfoPerManager;
 
@@ -171,5 +182,7 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
     user,
     portalQuota,
+    isGracePeriod,
+    isNotPaid,
   };
 })(observer(PriceCalculation));

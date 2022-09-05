@@ -220,11 +220,12 @@ const PaymentsPage = ({
       {isGracePeriod && (
         <Text noSelect fontSize={"14"}>
           <Trans t={t} i18nKey="GracePeriodActivatedDescription" ns="Payments">
-            {{ date: { fromDate, byDate } }}
+            {{ fromDate }} {{ byDate }}
           </Trans>
         </Text>
       )}
-      {!isFreeTariff && !isGracePeriod && (
+
+      {!isFreeTariff && !isGracePeriod && !isNotPaid && (
         <Text noSelect fontSize={"14"} className="payment-info_managers-price">
           <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
             {{ finalDate: dueDate }}
@@ -247,7 +248,7 @@ const PaymentsPage = ({
       </div>
       <div className="payment-info">
         <PriceCalculation t={t} payer={payer} />
-        <BenefitsContainer t={t} />
+        {!isGracePeriod && !isNotPaid && <BenefitsContainer t={t} />}
       </div>
       <ContactContainer t={t} />
     </StyledBody>

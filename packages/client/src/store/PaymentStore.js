@@ -89,10 +89,10 @@ class PaymentStore {
           toastr.error(res);
         }
       } else {
-        toastr.error(res);
+        console.error(res);
       }
     } catch (e) {
-      toastr.error(e);
+      console.error(e);
     }
   };
 
