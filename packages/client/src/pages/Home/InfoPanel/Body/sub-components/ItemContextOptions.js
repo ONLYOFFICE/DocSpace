@@ -4,17 +4,17 @@ import { inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import { ContextMenuButton } from "@docspace/components";
-import ContextHelper from "./Body/helpers/ContextHelper";
+import ContextHelper from "../helpers/ContextHelper";
 
-const StyledInfoPanelContextOptions = styled.div`
+const StyledItemContextOptions = styled.div`
   margin-left: auto;
 `;
 
-const InfoPanelContextOptions = (props) => {
+const ItemContextOptions = (props) => {
   const contextHelper = new ContextHelper(props);
 
   return (
-    <StyledInfoPanelContextOptions>
+    <StyledItemContextOptions>
       <ContextMenuButton
         zIndex={402}
         className="option-button"
@@ -25,7 +25,7 @@ const InfoPanelContextOptions = (props) => {
         getData={contextHelper.getItemContextOptions}
         isDisabled={false}
       />
-    </StyledInfoPanelContextOptions>
+    </StyledItemContextOptions>
   );
 };
 
@@ -46,5 +46,5 @@ export default inject(({ filesStore, contextOptionsStore }) => {
     "Translations",
     "InfoPanel",
     "SharingPanel",
-  ])(InfoPanelContextOptions)
+  ])(ItemContextOptions)
 );
