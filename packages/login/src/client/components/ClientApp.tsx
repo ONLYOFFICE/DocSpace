@@ -28,7 +28,6 @@ const ClientApp: React.FC<IClientApp> = ({
   initialI18nStoreASC,
   ...rest
 }) => {
-  console.log(initialLanguage);
   useSSR(initialI18nStoreASC, initialLanguage);
 
   return (

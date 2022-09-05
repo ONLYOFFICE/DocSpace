@@ -12,8 +12,9 @@ import Button from "@docspace/components/button";
 import { checkIsSSR, createPasswordHash } from "@docspace/common/utils";
 import { checkPwd } from "@docspace/common/desktop";
 import { login } from "@docspace/common/utils/loginUtils";
-import { oAuthLogin } from "../../helpers/utils";
 import toastr from "@docspace/components/toast/toastr";
+import { thirdPartyLogin } from "@docspace/common/api/user";
+import { setWithCredentialsStatus } from "@docspace/common/api/client";
 
 interface ILoginFormProps {
   isLoading: boolean;
@@ -58,6 +59,30 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
   const { message, confirmedEmail } = match;
 
+  const authCallback = (profile: string) => {
+    localStorage.removeItem("profile");
+    localStorage.removeItem("code");
+
+    thirdPartyLogin(profile)
+      .then((response) => {
+        if (!response || !response.token) throw new Error("Empty API response");
+
+        setWithCredentialsStatus(true);
+        const redirectPath = localStorage.getItem("redirectPath");
+
+        if (redirectPath) {
+          localStorage.removeItem("redirectPath");
+          window.location.href = redirectPath;
+        }
+      })
+      .catch(() => {
+        toastr.error(
+          t("Common:ProviderNotConnected"),
+          t("Common:ProviderLoginError")
+        );
+      });
+  };
+
   useEffect(() => {
     const profile = localStorage.getItem("profile");
     if (!profile) return;
@@ -73,16 +98,6 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
     window.authCallback = authCallback;
   }, []);
-
-  const authCallback = async (profile: string) => {
-    const result = await oAuthLogin(profile);
-    if (!result) {
-      toastr.error(
-        t("Common:ProviderNotConnected"),
-        t("Common:ProviderLoginError")
-      );
-    }
-  };
 
   const onChangeLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
     //console.log("onChangeLogin", e.target.value);
