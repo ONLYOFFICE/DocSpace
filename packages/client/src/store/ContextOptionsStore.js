@@ -535,23 +535,16 @@ class ContextOptionsStore {
       },
       {
         key: "edit-room",
-        label: "Edit room",
+        label: t("EditRoom"),
         icon: "images/settings.react.svg",
         onClick: () => this.onClickEditRoom(item),
         disabled: false,
       },
       {
         key: "invite-users-to-room",
-        label: "Invite users",
+        label: t("InviteUsers"),
         icon: "/static/images/person.react.svg",
         onClick: () => this.onClickInviteUsers(),
-        disabled: false,
-      },
-      {
-        key: "room-info",
-        label: "Info",
-        icon: "/static/images/info.react.svg",
-        onClick: this.onShowInfoPanel,
         disabled: false,
       },
       {
