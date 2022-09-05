@@ -142,8 +142,15 @@ const Selector = ({
         label: item.label,
       };
 
-      setNewSelectedItems([newItem]);
-      compareSelectedItems([newItem]);
+      console.log(item.isSelected);
+
+      if (item.isSelected) {
+        setNewSelectedItems([]);
+        compareSelectedItems([]);
+      } else {
+        setNewSelectedItems([newItem]);
+        compareSelectedItems([newItem]);
+      }
     }
   };
 
@@ -189,11 +196,12 @@ const Selector = ({
     (newList) => {
       let isEqual = true;
 
-      if (
-        selectedItems.length !== newList.length ||
-        (newList.length === 0 && selectedItems.length === 0)
-      ) {
+      if (selectedItems.length !== newList.length) {
         return setFooterVisible(true);
+      }
+
+      if (newList.length === 0 && selectedItems.length === 0) {
+        return setFooterVisible(false);
       }
 
       newList.forEach((item) => {
