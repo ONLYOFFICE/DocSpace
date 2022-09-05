@@ -38,6 +38,8 @@ public class IPSecurity
     private readonly IPRestrictionsService _ipRestrictionsService;
     private readonly string _currentIpForTest;
     private readonly string _myNetworks;
+    private readonly SecurityContext _securityContext;
+    private readonly UserManager _userManager;
 
     public IPSecurity(
         IConfiguration configuration,
@@ -45,6 +47,8 @@ public class IPSecurity
         AuthContext authContext,
         TenantManager tenantManager,
         IPRestrictionsService iPRestrictionsService,
+        SecurityContext securityContext,
+        UserManager userManager,
         ILogger<IPSecurity> logger)
     {
         _logger = logger;
@@ -52,6 +56,8 @@ public class IPSecurity
         _authContext = authContext;
         _tenantManager = tenantManager;
         _ipRestrictionsService = iPRestrictionsService;
+        _securityContext = securityContext;
+        _userManager = userManager;
         _currentIpForTest = configuration["ipsecurity:test"];
         _myNetworks = configuration["ipsecurity:mynetworks"];
         var hideSettings = (configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
@@ -99,7 +105,9 @@ public class IPSecurity
                           ? Array.Empty<string>()
                           : requestIps.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (ips.Any(requestIp => restrictions.Any(restriction => MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))
+            var isAdmin = _userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Core.Users.Constants.GroupAdmin.ID);
+
+            if (ips.Any(requestIp => restrictions.Any(restriction => (restriction.ForAdmin ? isAdmin : true) && MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))
             {
                 return true;
             }
@@ -131,6 +139,11 @@ public class IPSecurity
             var range = new IPAddressRange(lower, upper);
 
             return range.IsInRange(IPAddress.Parse(requestIp));
+        }
+
+        if (restrictionIp.IndexOf('/') > -1)
+        {
+            return IPAddressRange.IsInRange(requestIp, restrictionIp);
         }
 
         return requestIp == restrictionIp;
