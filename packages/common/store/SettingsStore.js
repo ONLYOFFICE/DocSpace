@@ -103,6 +103,7 @@ class SettingsStore {
   wizardToken = null;
   passwordSettings = null;
   hasShortenService = false;
+  withPaging = false;
 
   customSchemaList = [];
   firebase = {
@@ -130,14 +131,12 @@ class SettingsStore {
   hotkeyPanelVisible = false;
   frameConfig = null;
 
-
   appearanceTheme = [];
   selectedThemeId = null;
   currentColorScheme = null;
 
   enablePlugins = false;
   pluginOptions = [];
-
 
   constructor() {
     makeAutoObservable(this);
