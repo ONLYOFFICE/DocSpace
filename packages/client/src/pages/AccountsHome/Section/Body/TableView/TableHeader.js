@@ -6,9 +6,6 @@ import TableHeader from "@docspace/components/table-container/TableHeader";
 
 const TABLE_VERSION = "2";
 const TABLE_COLUMNS = `peopleTableColumns_ver-${TABLE_VERSION}`;
-const COLUMNS_SIZE = `peopleColumnsSize_ver-${TABLE_VERSION}`;
-const INFO_PANEL_TABLE_COLUMNS = `infoPanelPeopleTableColumns_ver-${TABLE_VERSION}`;
-const INFO_PANEL_COLUMNS_SIZE = `infoPanelPeopleColumnsSize_ver-${TABLE_VERSION}`;
 
 class PeopleTableHeader extends React.Component {
   constructor(props) {
@@ -125,8 +122,10 @@ class PeopleTableHeader extends React.Component {
       containerRef,
       filter,
       sectionWidth,
-      userId,
       infoPanelVisible,
+      columnStorageName,
+      columnInfoPanelStorageName,
+      withPaging,
     } = this.props;
     const { sortOrder } = filter;
 
@@ -136,11 +135,12 @@ class PeopleTableHeader extends React.Component {
         sorted={sortOrder === "descending"}
         containerRef={containerRef}
         columns={columns}
-        columnStorageName={`${COLUMNS_SIZE}=${userId}`}
-        columnInfoPanelStorageName={`${INFO_PANEL_COLUMNS_SIZE}=${userId}`}
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
         sectionWidth={sectionWidth}
         checkboxMargin="12px"
         infoPanelVisible={infoPanelVisible}
+        useReactWindow={!withPaging}
       />
     );
   }
@@ -154,12 +154,15 @@ export default inject(({ auth, peopleStore }) => {
   const { setIsLoading } = loadingStore;
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+  const { withPaging } = auth.settingsStore;
+
   return {
     filter,
     fetchPeople: getUsersList,
     setIsLoading,
     userId: auth.userStore.user.id,
     infoPanelVisible,
+    withPaging,
   };
 })(
   withTranslation(["People", "Common", "PeopleTranslations"])(

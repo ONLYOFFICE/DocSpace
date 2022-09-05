@@ -12,13 +12,9 @@ import {
   StyledSubtitle,
   StyledThumbnail,
   StyledTitle,
-<<<<<<<< HEAD:products/ASC.Files/Client/src/pages/Home/InfoPanel/Body/views/Details/SingleItem.js
-} from "../../styles/styles.js";
-import getCorrectDate from "@appserver/components/utils/getCorrectDate";
-========
 } from "./styles/styles.js";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
->>>>>>>> develop:packages/client/src/pages/Home/InfoPanel/Body/SingleItem.js
+import { getCookie } from "@docspace/common/utils/index";
 
 const SingleItem = (props) => {
   const {
@@ -88,7 +84,7 @@ const SingleItem = (props) => {
       };
 
       const parseAndFormatDate = (date) => {
-        const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+        const locale = personal ? getCookie(LANGUAGE) : culture;
         const correctDate = getCorrectDate(locale, date);
         return correctDate;
       };

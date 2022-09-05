@@ -650,7 +650,6 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
-      withPaging,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -708,6 +707,7 @@ export default inject(
       setFrameConfig,
       frameConfig,
       isFrame,
+      withPaging,
     } = auth.settingsStore;
 
     if (!firstLoad) {

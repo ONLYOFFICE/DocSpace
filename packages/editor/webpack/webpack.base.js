@@ -1,3 +1,5 @@
+const FilterWarningsPlugin = require("webpack-filter-warnings-plugin");
+
 const scriptExtensions = /\.(tsx|ts|js|jsx|mjs)$/;
 const imageExtensions = /\.(bmp|gif|jpg|jpeg|png)$/;
 const fontsExtension = /\.(eot|otf|ttf|woff|woff2)$/;
@@ -18,7 +20,11 @@ module.exports = {
           {
             loader: "babel-loader",
             options: {
-              presets: ["@babel/preset-react", "@babel/preset-env"],
+              presets: [
+                "@babel/preset-react",
+                "@babel/preset-env",
+                "@babel/preset-typescript",
+              ],
               plugins: [
                 "@babel/plugin-transform-runtime",
                 "@babel/plugin-proposal-class-properties",
@@ -42,4 +48,10 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    //ignore the drivers you don't want. This is the complete list of all drivers -- remove the suppressions for drivers you want to use.
+    new FilterWarningsPlugin({
+      exclude: [/Critical dependency/],
+    }),
+  ],
 };

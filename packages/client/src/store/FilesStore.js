@@ -91,7 +91,6 @@ class FilesStore {
   isHidePagination = false;
   trashIsEmpty = false;
   filesIsLoading = false;
-  withPaging = false;
 
   constructor(
     authStore,
@@ -109,7 +108,7 @@ class FilesStore {
     this.treeFoldersStore = treeFoldersStore;
     this.filesSettingsStore = filesSettingsStore;
 
-    const { socketHelper } = authStore.settingsStore;
+    const { socketHelper, withPaging } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
       //console.log("Call s:modify-folder", opt);
@@ -126,7 +125,7 @@ class FilesStore {
 
             const newFiles = [file, ...this.files];
 
-            if (newFiles.length > this.filter.pageCount && this.withPaging) {
+            if (newFiles.length > this.filter.pageCount && withPaging) {
               newFiles.pop(); // Remove last
             }
 
@@ -564,7 +563,7 @@ class FilesStore {
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
-    if (!this.withPaging) filter.pageCount = 100;
+    if (!this.authStore.settingsStore.withPaging) filter.pageCount = 100;
 
     this.setFilterUrl(filter, true);
     this.roomsFilter = filter;
@@ -583,7 +582,7 @@ class FilesStore {
   };
 
   setFilter = (filter) => {
-    if (!this.withPaging) filter.pageCount = 100;
+    if (!this.authStore.settingsStore.withPaging) filter.pageCount = 100;
     this.filter = filter;
   };
 
@@ -675,7 +674,7 @@ class FilesStore {
       filterData.sortOrder = splitFilter[2];
     }
 
-    if (!this.withPaging) {
+    if (!this.authStore.settingsStore.withPaging) {
       filterData.page = 0;
       filterData.pageCount = 100;
     }
@@ -844,7 +843,7 @@ class FilesStore {
       filterData.sortOrder = splitFilter[2];
     }
 
-    if (!this.withPaging) {
+    if (!this.authStore.settingsStore.withPaging) {
       filterData.page = 0;
       filterData.pageCount = 100;
     }
@@ -1718,7 +1717,7 @@ class FilesStore {
   };
 
   scrollToTop = () => {
-    if (this.withPaging) return;
+    if (this.authStore.settingsStore.withPaging) return;
 
     const scrollElm = isMobileOnly
       ? document.querySelector("#customScrollBar > .scroll-body")

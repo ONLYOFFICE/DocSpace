@@ -120,11 +120,11 @@ export default inject(
       filterTotal,
       fetchMoreFiles,
       hasMoreFiles,
-      withPaging,
       roomsFilterTotal,
     } = filesStore;
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+    const { withPaging } = auth.settingsStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
 
