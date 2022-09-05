@@ -35,7 +35,7 @@ public class MigrationRunner
     private readonly ILogger<RestoreDbModuleTask> _logger;
 
     private readonly string _backupFile;
-    private readonly string _configPath;
+    private readonly string _region;
     private readonly List<IModuleSpecifics> _modules;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
     {
@@ -46,7 +46,7 @@ public class MigrationRunner
         ModuleName.WebStudio
     };
 
-    public MigrationRunner(IServiceProvider serviceProvider, string backupFile)
+    public MigrationRunner(IServiceProvider serviceProvider, string backupFile, string region)
     {
         _moduleProvider = serviceProvider.GetService<ModuleProvider>();
         _dbFactory = serviceProvider.GetService<DbFactory>();
@@ -54,7 +54,7 @@ public class MigrationRunner
         _storageFactoryConfig = serviceProvider.GetService<StorageFactoryConfig>();
         _logger = serviceProvider.GetService<ILogger<RestoreDbModuleTask>>();
 
-        _configPath = null;
+        _region = region;
         _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
         _backupFile = backupFile;
     }
@@ -66,7 +66,7 @@ public class MigrationRunner
         {
             foreach (var module in _modules)
             {
-                var restoreTask = new RestoreDbModuleTask(_logger, module, dataReader, columnMapper, _dbFactory, false, false, _storageFactory, _storageFactoryConfig, _moduleProvider);
+                var restoreTask = new RestoreDbModuleTask(_logger, module, dataReader, columnMapper, _dbFactory, false, false, _region, _storageFactory, _storageFactoryConfig, _moduleProvider);
 
                 restoreTask.RunJob();
             }
@@ -85,7 +85,7 @@ public class MigrationRunner
         {
             foreach (var file in group)
             {
-                var storage = _storageFactory.GetStorage(_configPath, columnMapper.GetTenantMapping().ToString(), group.Key);
+                var storage = _storageFactory.GetStorage(columnMapper.GetTenantMapping().ToString(), group.Key, _region);
                 var quotaController = storage.QuotaController;
                 storage.SetQuotaController(null);
 

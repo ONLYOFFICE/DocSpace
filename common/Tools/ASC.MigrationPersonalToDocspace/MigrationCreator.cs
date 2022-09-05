@@ -31,7 +31,6 @@ public class MigrationCreator
     private readonly IDbContextFactory<UserDbContext> _userDbContext;
     private readonly IDbContextFactory<BackupsContext> _backupsContext;
     private readonly IDbContextFactory<FilesDbContext> _filesDbContext;
-    private readonly IDbContextFactory<TenantDbContext> _tenantDbContext;
     private readonly IHostEnvironment _hostEnvironment;
     private readonly IConfiguration _configuration;
     private readonly TempStream _tempStream;
@@ -40,8 +39,8 @@ public class MigrationCreator
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly List<IModuleSpecifics> _modules;
     private readonly string _pathToSave;
-    private readonly string _configPath;
     private readonly string _userName;
+    private readonly string _toRegion;
     private readonly int _tenant;
     private readonly int _limit = 1000;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
@@ -53,25 +52,25 @@ public class MigrationCreator
         ModuleName.WebStudio
     };
 
-    public MigrationCreator(IServiceProvider serviceProvider, int tenant, string userName)
+    public MigrationCreator(IServiceProvider serviceProvider, int tenant, string userName, string toRegion)
     {
         _userDbContext = serviceProvider.GetService<IDbContextFactory<UserDbContext>>();
         _backupsContext = serviceProvider.GetService<IDbContextFactory<BackupsContext>>();
         _filesDbContext = serviceProvider.GetService<IDbContextFactory<FilesDbContext>>();
-        _tenantDbContext = serviceProvider.GetService<IDbContextFactory<TenantDbContext>>();
         _tempStream = serviceProvider.GetService<TempStream>();
         _dbFactory = serviceProvider.GetService<DbFactory>();
         _storageFactory = serviceProvider.GetService<StorageFactory>();
         _storageFactoryConfig = serviceProvider.GetService<StorageFactoryConfig>();
         _hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
         _configuration = serviceProvider.GetService<IConfiguration>();
+        
 
         var moduleProvider = serviceProvider.GetService<ModuleProvider>();
         _modules = moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
 
         _pathToSave = "";
+        _toRegion = toRegion;
         _userName = userName;
-        _configPath = null;
         _tenant = tenant;
 
         CheckExistDataStorage();
@@ -79,7 +78,7 @@ public class MigrationCreator
 
     private void CheckExistDataStorage()
     {
-        var store = _storageFactory.GetStorage(_configPath, _tenant.ToString(), "files");
+        var store = _storageFactory.GetStorage(_tenant.ToString(), "files");
         if (store is DiscDataStore)
         {
             var path = Path.Combine(_hostEnvironment.ContentRootPath, _configuration[Data.Storage.Constants.StorageRootParam]);
@@ -174,7 +173,7 @@ public class MigrationCreator
 
     private void ChangeAlias(DataTable data)
     {
-        var aliases = _tenantDbContext.CreateDbContext().Tenants.Select(t => t.Alias);
+        var aliases = GetAliases();
         var newAlias = _userName;
         if (aliases.Contains(_userName))
         {
@@ -191,6 +190,29 @@ public class MigrationCreator
         data.Rows[0]["alias"] = newAlias;
     }
 
+    private List<string> GetAliases()
+    {
+        using (var connection = _dbFactory.OpenConnection(region: _toRegion))
+        {
+            var list = new List<string>();
+            var dataAdapter = _dbFactory.CreateDataAdapter();
+
+            var command = connection.CreateCommand();
+            command.CommandText = "select alias from tenants_tenants";
+            using (var reader = command.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(reader.GetValue(0).ToString());
+                    }
+                }
+                return list;
+            }
+        }
+    }
+
     private void DoMigrationStorage(Guid id, IDataWriteOperator writer)
     {
         var fileGroups = GetFilesGroup(id);
@@ -198,7 +220,7 @@ public class MigrationCreator
         {
             foreach (var file in group)
             {
-                var storage = _storageFactory.GetStorage(_pathToSave, _tenant.ToString(), group.Key);
+                var storage = _storageFactory.GetStorage(_tenant.ToString(), group.Key);
                 var file1 = file;
                 ActionInvoker.Try(state =>
                 {
@@ -227,16 +249,19 @@ public class MigrationCreator
     {
         var files = GetFilesToProcess(id).ToList();
 
+        var exclude = _backupsContext.CreateDbContext().Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
+        files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
+
         return files.GroupBy(file => file.Module).ToList();
     }
 
     protected IEnumerable<BackupFileInfo> GetFilesToProcess(Guid id)
     {
         var files = new List<BackupFileInfo>();
-        foreach (var module in _storageFactoryConfig.GetModuleList(_configPath).Where(m => m == "files"))
+        foreach (var module in _storageFactoryConfig.GetModuleList().Where(m => m == "files"))
         {
-            var store = _storageFactory.GetStorage(_configPath, _tenant.ToString(), module);
-            var domains = _storageFactoryConfig.GetDomainList(_configPath, module).ToArray();
+            var store = _storageFactory.GetStorage(_tenant.ToString(), module);
+            var domains = _storageFactoryConfig.GetDomainList(module).ToArray();
 
             foreach (var domain in domains)
             {

@@ -33,7 +33,6 @@ public interface IBackupService
     BackupProgress GetRestoreProgress(int tenantId);
     BackupProgress GetTransferProgress(int tenantId);
     List<BackupHistoryRecord> GetBackupHistory(int tenantId);
-    List<TransferRegion> GetTransferRegions();
     ScheduleResponse GetSchedule(int tenantId);
     string GetTmpFolder();
     void CreateSchedule(CreateScheduleRequest request);

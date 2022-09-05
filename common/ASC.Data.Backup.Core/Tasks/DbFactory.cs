@@ -31,7 +31,7 @@ public class DbFactory
 {
     public const string DefaultConnectionStringName = "default";
 
-    internal string ConnectionStringSettings(string path = null, string connectionString = null)
+    internal string ConnectionStringSettings(string key = null, string connectionString = null, string region = "current")
     {
         if (!string.IsNullOrEmpty(connectionString))
         {
@@ -39,12 +39,12 @@ public class DbFactory
         }
         else
         {
-            if (path != null)
+            if (key != null)
             {
-                return _configurationExtension.GetConnectionStrings(path).ConnectionString;
+                return _configurationExtension.GetConnectionStrings(key, region).ConnectionString;
             }
 
-            return _configurationExtension.GetConnectionStrings(DefaultConnectionStringName).ConnectionString;
+            return _configurationExtension.GetConnectionStrings(DefaultConnectionStringName, region).ConnectionString;
         }
     }
 
@@ -74,14 +74,14 @@ public class DbFactory
         _configurationExtension = configurationExtension;
     }
 
-    public DbConnection OpenConnection(string path = "default", string connectionString = null)
+    public DbConnection OpenConnection(string path = "default", string connectionString = null, string region = "current")
     {
         _connectionString = connectionString;
         _path = path;
         var connection = DbProviderFactory.CreateConnection();
         if (connection != null)
         {
-            connection.ConnectionString = EnsureConnectionTimeout(ConnectionStringSettings(path, connectionString));
+            connection.ConnectionString = EnsureConnectionTimeout(ConnectionStringSettings(path, connectionString, region));
             connection.Open();
         }
 

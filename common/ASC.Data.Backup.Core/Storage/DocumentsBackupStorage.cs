@@ -30,7 +30,6 @@ namespace ASC.Data.Backup.Storage;
 public class DocumentsBackupStorage : IBackupStorage
 {
     private int _tenantId;
-    private string _webConfigPath;
     private readonly SetupInfo _setupInfo;
     private readonly TenantManager _tenantManager;
     private readonly SecurityContext _securityContext;
@@ -54,10 +53,9 @@ public class DocumentsBackupStorage : IBackupStorage
         _serviceProvider = serviceProvider;
     }
 
-    public void Init(int tenantId, string webConfigPath)
+    public void Init(int tenantId)
     {
         _tenantId = tenantId;
-        _webConfigPath = webConfigPath;
     }
 
     public string Upload(string folderId, string localPath, Guid userId)
@@ -208,7 +206,7 @@ public class DocumentsBackupStorage : IBackupStorage
     {
         // hack: create storage using webConfigPath and put it into DataStoreCache
         // FileDao will use this storage and will not try to create the new one from service config
-        _storageFactory.GetStorage(_webConfigPath, _tenantId.ToString(), "files");
+        _storageFactory.GetStorage(_tenantId.ToString(), "files");
         return _daoFactory.GetFileDao<T>();
     }
 }

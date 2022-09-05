@@ -72,21 +72,19 @@ public class BackupStorageFactory
     public IBackupStorage GetBackupStorage(BackupStorageType type, int tenantId, Dictionary<string, string> storageParams)
     {
         var settings = _configuration.GetSetting<BackupSettings>("backup");
-        var webConfigPath = PathHelper.ToRootedConfigPath(settings.WebConfigs.CurrentPath);
-
 
         switch (type)
         {
             case BackupStorageType.Documents:
             case BackupStorageType.ThridpartyDocuments:
                 {
-                    _documentsBackupStorage.Init(tenantId, webConfigPath);
+                    _documentsBackupStorage.Init(tenantId);
 
                     return _documentsBackupStorage;
                 }
             case BackupStorageType.DataStore:
                 {
-                    _dataStoreBackupStorage.Init(tenantId, webConfigPath);
+                    _dataStoreBackupStorage.Init(tenantId);
 
                     return _dataStoreBackupStorage;
                 }

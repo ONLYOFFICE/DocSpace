@@ -103,11 +103,19 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
 
 var app = builder.Build();
 
-var migrationCreator = new MigrationCreator(app.Services, Int32.Parse(args[0]), args[1]);
+var tenant = Int32.Parse(args[0]);
+var userName = args[1];
+var region = args[2];
+
+var migrationCreator = new MigrationCreator(app.Services, tenant, userName, region);
 migrationCreator.Create();
 
-var migrationRunner = new MigrationRunner(app.Services, args[1] + ".tar.gz");
+var migrationRunner = new MigrationRunner(app.Services.CreateScope().ServiceProvider, userName + ".tar.gz", region);
 migrationRunner.Run();
 
 Directory.GetFiles(AppContext.BaseDirectory).Where(f => f.Contains(".tar")).ToList().ForEach(File.Delete);
-Directory.Delete(AppContext.BaseDirectory + "\\temp");
+
+if (Directory.Exists(AppContext.BaseDirectory + "\\temp"))
+{
+    Directory.Delete(AppContext.BaseDirectory + "\\temp");
+}

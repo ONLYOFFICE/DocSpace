@@ -64,9 +64,8 @@ public class RestoreProgressItem : BaseBackupProgressItem
     private RestorePortalTask _restorePortalTask;
     private readonly CoreBaseSettings _coreBaseSettings;
 
-    private string _currentRegion;
+    private string _region;
     private string _upgradesPath;
-    private Dictionary<string, string> _configPaths;
 
     public RestoreProgressItem(
         IConfiguration configuration,
@@ -92,7 +91,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
     public Dictionary<string, string> StorageParams { get; set; }
     public string TempFolder { get; set; }
 
-    public void Init(StartRestoreRequest request, string tempFolder, string upgradesPath, string currentRegion, Dictionary<string, string> configPaths)
+    public void Init(StartRestoreRequest request, string tempFolder, string upgradesPath, string region = "current")
     {
         TenantId = request.TenantId;
         Notify = request.NotifyAfterCompletion;
@@ -100,8 +99,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         StorageType = request.StorageType;
         TempFolder = tempFolder;
         _upgradesPath = upgradesPath;
-        _currentRegion = currentRegion;
-        _configPaths = configPaths;
+        _region = region;
     }
 
     protected override void DoJob()
@@ -150,7 +148,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             columnMapper.Commit();
 
             var restoreTask = _restorePortalTask;
-            restoreTask.Init(_configPaths[_currentRegion], tempFile, TenantId, columnMapper, _upgradesPath);
+            restoreTask.Init(_region, tempFile, TenantId, columnMapper, _upgradesPath);
             restoreTask.ProgressChanged += (sender, args) =>
             {
                 Percentage = Percentage = 10d + 0.65 * args.Progress;

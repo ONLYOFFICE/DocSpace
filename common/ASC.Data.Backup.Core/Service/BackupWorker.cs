@@ -34,23 +34,18 @@ public class BackupWorker
     public string TempFolder { get; set; }
 
     private DistributedTaskQueue _progressQueue;
-    private string _currentRegion;
-    private Dictionary<string, string> _configPaths;
     private int _limit;
     private string _upgradesPath;
-    private readonly ILogger<BackupWorker> _logger;
     private readonly TempPath _tempPath;
     private readonly IServiceProvider _serviceProvider;
     private readonly object _synchRoot = new object();
 
     public BackupWorker(
-        ILogger<BackupWorker> logger,
         IDistributedTaskQueueFactory queueFactory,
         IServiceProvider serviceProvider,
         TempPath tempPath)
     {
         _serviceProvider = serviceProvider;
-        _logger = logger;
         _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _tempPath = tempPath;
         TempFolder = Path.Combine(_tempPath.GetTempPath(), "backup");
@@ -65,16 +60,6 @@ public class BackupWorker
 
         _limit = settings.Limit;
         _upgradesPath = settings.UpgradesPath;
-        _currentRegion = settings.WebConfigs.CurrentRegion;
-        _configPaths = settings.WebConfigs.Elements.ToDictionary(el => el.Region, el => PathHelper.ToRootedConfigPath(el.Path));
-        _configPaths[_currentRegion] = PathHelper.ToRootedConfigPath(settings.WebConfigs.CurrentPath);
-
-        var invalidConfigPath = _configPaths.Values.FirstOrDefault(path => !File.Exists(path));
-
-        if (invalidConfigPath != null)
-        {
-            _logger.WarningCanNotBackupFile(invalidConfigPath);
-        }
     }
 
     public void Stop()
@@ -108,7 +93,7 @@ public class BackupWorker
 
                 item = _serviceProvider.GetService<BackupProgressItem>();
 
-                item.Init(request, false, TempFolder, _limit, _currentRegion, _configPaths);
+                item.Init(request, false, TempFolder, _limit);
 
                 _progressQueue.EnqueueTask(item);
             }
@@ -133,7 +118,7 @@ public class BackupWorker
             if (item == null)
             {
                 item = _serviceProvider.GetService<BackupProgressItem>();
-                item.Init(schedule, false, TempFolder, _limit, _currentRegion, _configPaths);
+                item.Init(schedule, false, TempFolder, _limit);
 
                 _progressQueue.EnqueueTask(item);
             }
@@ -201,7 +186,7 @@ public class BackupWorker
             if (item == null)
             {
                 item = _serviceProvider.GetService<RestoreProgressItem>();
-                item.Init(request, TempFolder, _upgradesPath, _currentRegion, _configPaths);
+                item.Init(request, TempFolder, _upgradesPath);
 
                 _progressQueue.EnqueueTask(item);
             }
@@ -223,7 +208,7 @@ public class BackupWorker
             if (item == null)
             {
                 item = _serviceProvider.GetService<TransferProgressItem>();
-                item.Init(targetRegion, transferMail, tenantId, TempFolder, _limit, notify, _currentRegion, _configPaths);
+                item.Init(targetRegion, transferMail, tenantId, TempFolder, _limit, notify);
 
                 _progressQueue.EnqueueTask(item);
             }

@@ -101,8 +101,16 @@ public class ConfigurationExtension
         return _connectionStringSettings.Value;
     }
 
-    public ConnectionStringSettings GetConnectionStrings(string key)
+    public ConnectionStringSettings GetConnectionStrings(string key, string region = "current")
     {
-        return GetConnectionStrings()[key];
+        if (region == "current")
+        {
+            return GetConnectionStrings()[key];
+        }
+        else
+        {
+            var connectionStrings = new ConnectionStringCollection(GetSettings<ConnectionStringSettings>($"regions:{region}:ConnectionStrings"));
+            return connectionStrings[key];
+        }
     }
 }
