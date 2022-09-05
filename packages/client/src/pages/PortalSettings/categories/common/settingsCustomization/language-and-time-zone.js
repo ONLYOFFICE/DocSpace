@@ -424,7 +424,7 @@ class LanguageAndTimeZone extends React.Component {
       <div className="settings-block">
         <FieldContainer
           id="fieldContainerLanguage"
-          labelText={`${t("Common:Language")}:`}
+          labelText={`${t("Common:Language")}`}
           isVertical={true}
         >
           <ComboBox
@@ -442,7 +442,7 @@ class LanguageAndTimeZone extends React.Component {
         </FieldContainer>
         <FieldContainer
           id="fieldContainerTimezone"
-          labelText={`${t("TimeZone")}:`}
+          labelText={`${t("TimeZone")}`}
           isVertical={true}
         >
           <ComboBox
