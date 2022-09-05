@@ -1385,7 +1385,7 @@ class FilesStore {
       let roomOptions = [
         "edit-room",
         "invite-users-to-room",
-        "room-info",
+        "show-info",
         "pin-room",
         "unpin-room",
         "separator0",
