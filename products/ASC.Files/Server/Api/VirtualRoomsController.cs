@@ -220,41 +220,22 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Getting the contents of a virtual room
+    /// Getting virtual room information
     /// </summary>
     /// <param name="id">
     /// Room ID
     /// </param>
-    /// <param name="startIndex">
-    /// The value of the beginning of the enumeration
-    /// </param>
-    /// <param name="count">
-    /// Quantity
-    /// </param>
-    /// <param name="filterValue">
-    /// Filter by name
-    /// </param>
-    /// <param name="userOrGroupId">
-    /// User or Group ID
-    /// </param>
-    /// <param name="filterType">
-    /// Content filtering type
-    /// </param>
-    /// <param name="searchInContent">
-    /// Full-text content search
-    /// </param>
-    /// <param name="withSubFolders">
-    /// Search by subfolders
-    /// </param>
     /// <returns>
-    /// Room content
+    /// Room info
     /// </returns>
     [HttpGet("rooms/{id}")]
-    public async Task<FolderContentDto<T>> GetRoomAsync(T id, Guid? userOrGroupId, FilterType? filterType, bool? searchInContent, bool? withSubFolders)
+    public async Task<FolderDto<T>> GetRoomInfoAsync(T id)
     {
         ErrorIfNotDocSpace();
 
-        return await _foldersControllerHelper.GetFolderAsync(id, userOrGroupId, filterType, searchInContent, withSubFolders);
+        var folder = await _fileStorageService.GetFolderAsync(id).NotFoundIfNull("Folder not found");
+
+        return await _folderDtoHelper.GetAsync(folder);
     }
 
     /// <summary>
