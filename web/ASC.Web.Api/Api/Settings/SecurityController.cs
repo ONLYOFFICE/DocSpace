@@ -326,4 +326,13 @@ public class SecurityController : BaseSettingsController
         return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
     }
 
+    [HttpGet("security/loginSettings")]
+    public LoginSettingsDto GetLoginSettings()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var settings = _settingsManager.Load<LoginSettings>();
+
+        return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
+    }
 }
