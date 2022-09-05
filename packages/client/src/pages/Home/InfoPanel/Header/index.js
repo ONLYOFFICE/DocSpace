@@ -49,11 +49,7 @@ const InfoPanelHeaderContent = (props) => {
     <StyledInfoPanelHeader isRoom={isRoom}>
       <div className="main">
         <Text className="header-text" fontSize="21px" fontWeight="700">
-          {isRoom
-            ? t("Room")
-            : isGallery
-            ? t("FormGallery:FormTemplateInfo")
-            : t("Common:Info")}
+          {isGallery ? t("FormGallery:FormTemplateInfo") : t("Common:Info")}
         </Text>
 
         <ColorTheme
