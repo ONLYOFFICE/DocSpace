@@ -16,7 +16,6 @@ const HEADER_HEIGHT = 54;
 const SEARCH_HEIGHT = 44;
 const SELECT_ALL_HEIGHT = 73;
 const FOOTER_HEIGHT = 73;
-const ROW_LOADER_HEIGHT = 48;
 
 const Body = ({
   footerVisible,
@@ -104,7 +103,6 @@ const Body = ({
 
   if (isMultiSelect && withSelectAll && !isSearch)
     listHeight -= SELECT_ALL_HEIGHT;
-  if (isNextPageLoading) listHeight -= ROW_LOADER_HEIGHT;
 
   return (
     <StyledSelectorBody ref={onBodyRef}>
