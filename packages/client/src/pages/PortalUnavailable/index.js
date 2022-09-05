@@ -5,9 +5,15 @@ import Text from "@docspace/components/text";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { ReactSVG } from "react-svg";
+import Button from "@docspace/components/button";
 
 const StyledBodyContent = styled.div`
   max-width: 480px;
+  text-align: center;
+  button {
+    margin-top: 24px;
+    max-width: 320px;
+  }
 `;
 const StyledBody = styled.div`
   display: flex;
@@ -44,9 +50,13 @@ const StyledBody = styled.div`
   }
 `;
 
-const PortalUnavailable = ({ theme, logoUrl }) => {
-  const { t, ready } = useTranslation("PortalUnavailable");
-  console.log("logoUrl", logoUrl);
+const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
+  const { t, ready } = useTranslation(["PortalUnavailable", "Common"]);
+
+  const onClick = () => {
+    onLogoutClick();
+  };
+
   return (
     <StyledBody theme={theme}>
       <ReactSVG
@@ -63,16 +73,24 @@ const PortalUnavailable = ({ theme, logoUrl }) => {
           <Text textAlign="center" className="portal-unavailable_text">
             {t("AccessingProblem")}
           </Text>
+          <Button
+            scale
+            label={t("Common:LogoutButton")}
+            size={"medium"}
+            onClick={onClick}
+          />
         </StyledBodyContent>
       </ErrorContainer>
     </StyledBody>
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, profileActionsStore }) => {
+  const { onLogoutClick } = profileActionsStore;
   const { theme, logoUrl } = auth.settingsStore;
   return {
     logoUrl,
     theme,
+    onLogoutClick,
   };
 })(observer(PortalUnavailable));
