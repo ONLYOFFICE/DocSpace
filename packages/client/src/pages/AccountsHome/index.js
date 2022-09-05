@@ -40,6 +40,7 @@ const PureHome = ({
   setMaintenanceExist,
 
   setSelectedNode,
+  withPaging,
 }) => {
   const { location } = history;
   const { pathname } = location;
@@ -81,6 +82,7 @@ const PureHome = ({
         isLoading={isLoading}
         firstLoad={firstLoad}
         viewAs={viewAs}
+        withPaging={withPaging}
       >
         <Section.SectionHeader>
           <SectionHeaderContent />
@@ -102,9 +104,12 @@ const PureHome = ({
         <Section.InfoPanelBody>
           <InfoPanelBodyContent />
         </Section.InfoPanelBody>
-        <Section.SectionPaging>
-          <SectionPagingContent tReady={tReady} />
-        </Section.SectionPaging>
+
+        {withPaging && (
+          <Section.SectionPaging>
+            <SectionPagingContent tReady={tReady} />
+          </Section.SectionPaging>
+        )}
       </Section>
 
       <Dialogs />
@@ -120,7 +125,7 @@ const Home = withTranslation("People")(PureHome);
 
 export default inject(({ auth, peopleStore, treeFoldersStore }) => {
   const { settingsStore } = auth;
-  const { showCatalog } = settingsStore;
+  const { showCatalog, withPaging } = settingsStore;
   const { usersStore, selectedGroupStore, loadingStore, viewAs } = peopleStore;
   const { getUsersList } = usersStore;
   const { selectedGroup } = selectedGroupStore;
@@ -148,5 +153,6 @@ export default inject(({ auth, peopleStore, treeFoldersStore }) => {
     checkedMaintenance: auth.settingsStore.checkedMaintenance,
     setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
     snackbarExist: auth.settingsStore.snackbarExist,
+    withPaging,
   };
 })(observer(withRouter(Home)));
