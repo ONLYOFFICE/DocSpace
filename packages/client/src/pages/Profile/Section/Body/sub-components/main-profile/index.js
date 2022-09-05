@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
@@ -87,7 +88,9 @@ const StyledInfo = styled.div`
 `;
 
 const MainProfile = (props) => {
-  const { t, tReady, profile, cultureNames, culture, updateProfile } = props;
+  const { t, ready } = useTranslation(["Profile", "Common"]);
+
+  const { profile, cultureNames, culture, updateProfile } = props;
   const { cultureName, currentCulture } = profile;
 
   const [changeNameDialogVisible, setChangeNameDialogVisible] = useState(false);
@@ -186,7 +189,7 @@ const MainProfile = (props) => {
       {changeNameDialogVisible && (
         <ChangeNameDialog
           t={t}
-          tReady={tReady}
+          tReady={ready}
           visible={changeNameDialogVisible}
           onClose={() => setChangeNameDialogVisible(false)}
           profile={profile}

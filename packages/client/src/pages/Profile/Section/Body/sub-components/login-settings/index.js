@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
@@ -43,8 +44,9 @@ const StyledWrapper = styled.div`
 `;
 
 const LoginSettings = (props) => {
+  const { t } = useTranslation(["Profile", "Common"]);
+
   const {
-    t,
     profile,
     resetTfaApp,
     getNewBackupCodes,

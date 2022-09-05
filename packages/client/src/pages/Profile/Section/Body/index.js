@@ -69,10 +69,9 @@ const SectionBodyContent = (props) => {
 
   return (
     <Wrapper>
-      <MainProfile t={t} profile={profile} updateProfile={updateProfile} />
+      <MainProfile profile={profile} updateProfile={updateProfile} />
       {tfa && tfa !== "none" && (
         <LoginSettings
-          t={t}
           profile={profile}
           resetTfaApp={resetTfaApp}
           getNewBackupCodes={getNewBackupCodes}
@@ -82,7 +81,6 @@ const SectionBodyContent = (props) => {
         />
       )}
       <Subscription
-        t={t}
         changeEmailSubscription={changeEmailSubscription}
         tipsSubscription={tipsSubscription}
       />

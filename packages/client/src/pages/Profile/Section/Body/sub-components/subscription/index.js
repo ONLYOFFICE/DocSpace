@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
+
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
 
@@ -18,7 +20,9 @@ const StyledWrapper = styled.div`
 `;
 
 const Subscription = (props) => {
-  const { t, changeEmailSubscription, tipsSubscription } = props;
+  const { t } = useTranslation("Profile");
+
+  const { changeEmailSubscription, tipsSubscription } = props;
 
   const onChangeEmailSubscription = (e) => {
     const checked = e.currentTarget.checked;
