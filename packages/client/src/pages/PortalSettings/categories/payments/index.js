@@ -18,6 +18,7 @@ import moment from "moment";
 import { HelpButton } from "@docspace/components";
 import PayerInformationContainer from "./PayerInformationContainer";
 import { TariffState } from "@docspace/common/constants";
+import { getUser } from "@docspace/common/api/people";
 
 const StyledBody = styled.div`
   max-width: 660px;
@@ -53,7 +54,7 @@ const StyledBody = styled.div`
   }
 `;
 
-let dueDate, fromDate, byDate;
+let dueDate, fromDate, byDate, payerInfo;
 const PaymentsPage = ({
   pricePerManager,
   setPortalPaymentsQuotas,
@@ -65,13 +66,13 @@ const PaymentsPage = ({
   isGracePeriod,
   theme,
   setPaymentAccount,
-  currencies,
-  setCurrencies,
   currencySymbol,
   isNotPaid,
   setSalesEmail,
   setRangeBound,
   range,
+  payerId,
+  user,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -117,14 +118,17 @@ const PaymentsPage = ({
       if (portalTariff && portalTariff.state !== TariffState.Trial)
         requests.push(setPaymentAccount());
 
-      if (currencies.length === 0) {
-        requests.push(setCurrencies());
-      }
-
       try {
         await Promise.all(requests);
       } catch (error) {
         toastr.error(error);
+      }
+
+      try {
+        if (isFreeTariff) return;
+        payerInfo = await getUser(payerId);
+      } catch (e) {
+        payerInfo = null;
       }
 
       setIsInitialLoading(false);
@@ -153,6 +157,7 @@ const PaymentsPage = ({
   };
 
   const convertedPrice = `${currencySymbol}${pricePerManager}`;
+  const payer = user.id === payerId;
 
   return isInitialLoading ? (
     <Loaders.PaymentsLoader />
@@ -175,7 +180,9 @@ const PaymentsPage = ({
         </Text>
       )}
 
-      {!isFreeTariff && <PayerInformationContainer />}
+      {!isFreeTariff && (
+        <PayerInformationContainer payerInfo={payerInfo} payer={payer} />
+      )}
 
       <CurrentTariffContainer />
 
@@ -239,7 +246,7 @@ const PaymentsPage = ({
         {renderTooltip()}
       </div>
       <div className="payment-info">
-        <PriceCalculation t={t} />
+        <PriceCalculation t={t} payer={payer} />
         <BenefitsContainer t={t} />
       </div>
       <ContactContainer t={t} />
@@ -261,9 +268,10 @@ export default inject(({ auth, payments }) => {
     portalPaymentQuotas,
     isFreeTariff,
     isGracePeriod,
-    currencies,
+
     setCurrencies,
     isNotPaid,
+    userStore,
   } = auth;
 
   const { organizationName, theme } = auth.settingsStore;
@@ -274,8 +282,10 @@ export default inject(({ auth, payments }) => {
     setSalesEmail,
     setRangeBound,
   } = payments;
-
+  const { user } = userStore;
   const { currencySymbol, value, range } = priceInfoPerManager;
+
+  const payerId = portalTariff.customerId;
 
   return {
     isFreeTariff,
@@ -291,12 +301,14 @@ export default inject(({ auth, payments }) => {
     portalPaymentQuotas,
     theme,
     setPaymentAccount,
-    currencies,
+
     setCurrencies,
     currencySymbol: currencySymbol,
     isNotPaid,
     setSalesEmail,
     setRangeBound,
     range,
+    payerId,
+    user,
   };
 })(withRouter(observer(PaymentsPage)));

@@ -45,6 +45,7 @@ const PriceCalculation = ({
   maxAvailableManagersCount,
   isFreeTariff,
   portalQuota,
+  payer,
 }) => {
   const { countAdmin, price } = portalQuota;
 
@@ -116,7 +117,6 @@ const PriceCalculation = ({
     }, 1000);
   };
 
-  const payer = true;
   const isDisabled = isFreeTariff
     ? false
     : (!user.isOwner && !user.isAdmin) || !payer;
@@ -154,12 +154,7 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
   } = payments;
   const { theme } = auth.settingsStore;
-  const {
-    priceInfoPerManager,
-    isFreeTariff,
-    userStore,
-    portalQuota,
-  } = auth;
+  const { priceInfoPerManager, isFreeTariff, userStore, portalQuota } = auth;
   const { user } = userStore;
   const { value } = priceInfoPerManager;
 

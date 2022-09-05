@@ -4,6 +4,7 @@ import Text from "@docspace/components/text";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { HelpButton, Link } from "@docspace/components";
+import Avatar from "@docspace/components/avatar";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -39,14 +40,22 @@ const StyledContainer = styled.div`
   }
 `;
 
-const PayerInformationContainer = ({ style, theme, user, accountLink }) => {
+const PayerInformationContainer = ({
+  style,
+  theme,
+  user,
+  accountLink,
+  payer,
+  payerInfo,
+}) => {
   const { t } = useTranslation("Payments");
 
-  const payerName = `${"Test Name" + " (" + t("Payer") + ")"}`;
+  const payerName = payerInfo
+    ? payerInfo.displayName + " (" + t("Payer") + ")"
+    : `${"Test Name" + " (" + t("Payer") + ")"}`;
 
-  const email = "example email";
+  const email = payerInfo ? payerInfo.email : "example email";
 
-  const payer = false;
   const isLinkAvailable = user.isOwner || payer;
 
   const renderTooltip = () => {
@@ -67,9 +76,7 @@ const PayerInformationContainer = ({ style, theme, user, accountLink }) => {
   return (
     <StyledContainer style={style} theme={theme}>
       <div className="payer-info_avatar">
-        <Text isBold noSelect>
-          {"AvatarPlace"}:
-        </Text>
+        <Avatar size={"min"} source={user.avatar} userName={user.displayName} />
       </div>
 
       <div className="payer-info_wrapper">

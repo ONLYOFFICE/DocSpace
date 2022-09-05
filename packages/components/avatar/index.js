@@ -102,7 +102,7 @@ Avatar.propTypes = {
   /** Size of avatar */
   size: PropTypes.oneOf(["max", "big", "medium", "base", "small", "min"]),
   /** Adds a user role table */
-  role: PropTypes.oneOf(["owner", "admin", "guest", "user"]),
+  role: PropTypes.oneOf(["owner", "admin", "guest", "user", ""]),
   /** Provide either a url to display as `Picture` or path to **.svg** file to display as `Icon` */
   source: PropTypes.string,
   /** Provide this and leave `source` empty to display as initials */
