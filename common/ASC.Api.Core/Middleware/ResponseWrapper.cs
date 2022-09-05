@@ -77,9 +77,7 @@ public class CustomResponseFilterAttribute : ResultFilterAttribute
     {
         if (context.Result is ObjectResult result)
         {
-            context.HttpContext.Items.TryGetValue("TotalCount", out var total);
-            context.HttpContext.Items.TryGetValue("Count", out var count);
-            result.Value = new SuccessApiResponse((HttpStatusCode)context.HttpContext.Response.StatusCode, result.Value, (long?)total, (int?)count);
+            result.Value = new SuccessApiResponse(context.HttpContext, result.Value);
         }
 
         base.OnResultExecuting(context);

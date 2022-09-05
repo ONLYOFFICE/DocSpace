@@ -33,20 +33,20 @@ public class EncryptionLoginProvider
     private readonly SecurityContext _securityContext;
     private readonly Signature _signature;
     private readonly InstanceCrypto _instanceCrypto;
-    private readonly IOptionsSnapshot<AccountLinker> _snapshot;
+    private readonly AccountLinker _accountLinker;
 
     public EncryptionLoginProvider(
         ILogger<EncryptionLoginProvider> logger,
         SecurityContext securityContext,
         Signature signature,
         InstanceCrypto instanceCrypto,
-        IOptionsSnapshot<AccountLinker> snapshot)
+        AccountLinker accountLinker)
     {
         _logger = logger;
         _securityContext = securityContext;
         _signature = signature;
         _instanceCrypto = instanceCrypto;
-        _snapshot = snapshot;
+        _accountLinker = accountLinker;
     }
 
 
@@ -63,8 +63,7 @@ public class EncryptionLoginProvider
             Name = _instanceCrypto.Encrypt(keys)
         };
 
-        var linker = _snapshot.Get("webstudio");
-        linker.AddLink(userId.ToString(), loginProfile);
+        _accountLinker.AddLink(userId.ToString(), loginProfile);
     }
 
     public string GetKeys()
@@ -74,8 +73,7 @@ public class EncryptionLoginProvider
 
     public string GetKeys(Guid userId)
     {
-        var linker = _snapshot.Get("webstudio");
-        var profile = linker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Encryption).FirstOrDefault();
+        var profile = _accountLinker.GetLinkedProfiles(userId.ToString(), ProviderConstants.Encryption).FirstOrDefault();
         if (profile == null)
         {
             return null;
@@ -91,5 +89,29 @@ public class EncryptionLoginProvider
             _logger.ErrorWithException(message, ex);
             return null;
         }
+    }
+
+    public IDictionary<Guid, string> GetKeys(IEnumerable<Guid> usrsIds)
+    {
+        var profiles = _accountLinker.GetLinkedProfiles(usrsIds.Select(id => id.ToString()), ProviderConstants.Encryption);
+        var keys = new Dictionary<Guid, string>(profiles.Count);
+
+        foreach (var profilePair in profiles)
+        {
+            var userId = new Guid(profilePair.Key);
+
+            try
+            {
+                var key = _instanceCrypto.Decrypt(profilePair.Value.Name);
+                keys.Add(new Guid(profilePair.Key), key);
+            }
+            catch (Exception ex)
+            {
+                var message = string.Format("Can not decrypt {0} keys for {1}", ProviderConstants.Encryption, userId);
+                _logger.ErrorWithException(message, ex);
+            }
+        }
+
+        return keys;
     }
 }

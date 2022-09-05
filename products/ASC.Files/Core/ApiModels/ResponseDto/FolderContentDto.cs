@@ -44,8 +44,8 @@ public class FolderContentDto<T>
         return new FolderContentDto<int>
         {
             Current = FolderDto<int>.GetSample(),
-            Files = new List<FileEntryDto>(new[] { FileDto<int>.GetSample(), FileDto<int>.GetSample() }),
-            Folders = new List<FileEntryDto>(new[] { FolderDto<int>.GetSample(), FolderDto<int>.GetSample() }),
+            //Files = new List<FileEntryDto>(new[] { FileDto<int>.GetSample(), FileDto<int>.GetSample() }),
+            //Folders = new List<FileEntryDto>(new[] { FolderDto<int>.GetSample(), FolderDto<int>.GetSample() }),
             PathParts = new
             {
                 key = "Key",
@@ -81,72 +81,106 @@ public class FolderContentDtoHelper
 
     public async Task<FolderContentDto<T>> GetAsync<T>(DataWrapper<T> folderItems, int startIndex)
     {
-        var foldersIntWithRights = await GetFoldersIntWithRightsAsync<int>();
-        var foldersStringWithRights = await GetFoldersIntWithRightsAsync<string>();
-        var files = new List<FileEntryDto>();
-        var folders = new List<FileEntryDto>();
+        var parentInternalIds = new HashSet<int>();
+        var parentThirdPartyIds = new HashSet<string>();
 
-        var fileEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.File);
-        foreach (var r in fileEntries)
+        var files = new List<FileEntry>();
+        var folders = new List<FileEntry>();
+
+        foreach (var e in folderItems.Entries)
         {
-            FileEntryDto wrapper = null;
-            if (r is File<int> fol1)
+            if (e.FileEntryType == FileEntryType.File)
             {
-                wrapper = await _fileDtoHelper.GetAsync(fol1, foldersIntWithRights);
+                files.Add(e);
             }
-            else if (r is File<string> fol2)
+            else if (e.FileEntryType == FileEntryType.Folder)
             {
-                wrapper = await _fileDtoHelper.GetAsync(fol2, foldersStringWithRights);
+                folders.Add(e);
             }
 
-            files.Add(wrapper);
+            if (e is FileEntry<int> internalEntry)
+            {
+                parentInternalIds.Add(internalEntry.ParentId);
+            }
+            else if (e is FileEntry<string> thirdParty)
+            {
+                if (int.TryParse(thirdParty.ParentId, out var pId))
+                {
+                    parentInternalIds.Add(pId);
+                }
+                else
+                {
+                    parentThirdPartyIds.Add(thirdParty.ParentId);
+                }
+            }
         }
 
-        var folderEntries = folderItems.Entries.Where(r => r.FileEntryType == FileEntryType.Folder);
+        var foldersIntWithRightsTask = GetFoldersWithRightsAsync(parentInternalIds).ToListAsync();
+        var foldersStringWithRightsTask = GetFoldersWithRightsAsync(parentThirdPartyIds).ToListAsync();
 
-        foreach (var r in folderEntries)
-        {
-            FileEntryDto wrapper = null;
-            if (r is Folder<int> fol1)
-            {
-                wrapper = await _folderDtoHelper.GetAsync(fol1, foldersIntWithRights);
-            }
-            else if (r is Folder<string> fol2)
-            {
-                wrapper = await _folderDtoHelper.GetAsync(fol2, foldersStringWithRights);
-            }
+        var foldersIntWithRights = await foldersIntWithRightsTask;
+        var foldersStringWithRights = await foldersStringWithRightsTask;
 
-            folders.Add(wrapper);
-        }
+        var filesTask = GetFilesDto(files).ToListAsync();
+        var foldersTask = GetFoldersDto(folders).ToListAsync();
+        var currentTask = _folderDtoHelper.GetAsync(folderItems.FolderInfo);
 
         var result = new FolderContentDto<T>
         {
-            Files = files,
-            Folders = folders,
             PathParts = folderItems.FolderPathParts,
-            StartIndex = startIndex
+            StartIndex = startIndex,
+            Total = folderItems.Total,
+            New = folderItems.New,
+            Count = folderItems.Entries.Count,
+            Current = await currentTask
         };
 
-        result.Current = await _folderDtoHelper.GetAsync(folderItems.FolderInfo);
-        result.Count = result.Files.Count + result.Folders.Count;
-        result.Total = folderItems.Total;
-        result.New = folderItems.New;
+        var tasks = await Task.WhenAll(filesTask.AsTask(), foldersTask.AsTask());
+        result.Files = tasks[0];
+        result.Folders = tasks[1];
 
         return result;
 
-
-        async ValueTask<List<Tuple<FileEntry<T1>, bool>>> GetFoldersIntWithRightsAsync<T1>()
+        IAsyncEnumerable<Tuple<FileEntry<T1>, bool>> GetFoldersWithRightsAsync<T1>(IEnumerable<T1> ids)
         {
-            var ids = folderItems.Entries.OfType<FileEntry<T1>>().Select(r => r.ParentId).Distinct();
             if (ids.Any())
             {
                 var folderDao = _daoFactory.GetFolderDao<T1>();
-                var folders = await folderDao.GetFoldersAsync(ids).ToListAsync();
 
-                return await _fileSecurity.CanReadAsync(folders);
+                return _fileSecurity.CanReadAsync(folderDao.GetFoldersAsync(ids));
             }
 
-            return new List<Tuple<FileEntry<T1>, bool>>();
+            return AsyncEnumerable.Empty<Tuple<FileEntry<T1>, bool>>();
+        }
+
+        async IAsyncEnumerable<FileEntryDto> GetFilesDto(IEnumerable<FileEntry> fileEntries)
+        {
+            foreach (var r in fileEntries)
+            {
+                if (r is File<int> fol1)
+                {
+                    yield return await _fileDtoHelper.GetAsync(fol1, foldersIntWithRights);
+                }
+                else if (r is File<string> fol2)
+                {
+                    yield return await _fileDtoHelper.GetAsync(fol2, foldersStringWithRights);
+                }
+            }
+        }
+
+        async IAsyncEnumerable<FileEntryDto> GetFoldersDto(IEnumerable<FileEntry> folderEntries)
+        {
+            foreach (var r in folderEntries)
+            {
+                if (r is Folder<int> fol1)
+                {
+                    yield return await _folderDtoHelper.GetAsync(fol1, foldersIntWithRights);
+                }
+                else if (r is Folder<string> fol2)
+                {
+                    yield return await _folderDtoHelper.GetAsync(fol2, foldersStringWithRights);
+                }
+            }
         }
     }
 }
@@ -205,32 +239,37 @@ public class FileEntryWrapperConverter : System.Text.Json.Serialization.JsonConv
 
     public override void Write(Utf8JsonWriter writer, FileEntryDto value, JsonSerializerOptions options)
     {
-        if (value is FolderDto<string> f1)
+        if (value.EntryType == FileEntryType.Folder)
         {
-            JsonSerializer.Serialize(writer, f1, typeof(FolderDto<string>), options);
+            if (value is FolderDto<string> f1)
+            {
+                JsonSerializer.Serialize(writer, f1, typeof(FolderDto<string>), options);
 
-            return;
+                return;
+            }
+
+            if (value is FolderDto<int> f2)
+            {
+                JsonSerializer.Serialize(writer, f2, typeof(FolderDto<int>), options);
+
+                return;
+            }
         }
-
-        if (value is FolderDto<int> f2)
+        else
         {
-            JsonSerializer.Serialize(writer, f2, typeof(FolderDto<int>), options);
+            if (value is FileDto<string> f3)
+            {
+                JsonSerializer.Serialize(writer, f3, typeof(FileDto<string>), options);
 
-            return;
-        }
+                return;
+            }
 
-        if (value is FileDto<string> f3)
-        {
-            JsonSerializer.Serialize(writer, f3, typeof(FileDto<string>), options);
+            if (value is FileDto<int> f4)
+            {
+                JsonSerializer.Serialize(writer, f4, typeof(FileDto<int>), options);
 
-            return;
-        }
-
-        if (value is FileDto<int> f4)
-        {
-            JsonSerializer.Serialize(writer, f4, typeof(FileDto<int>), options);
-
-            return;
+                return;
+            }
         }
 
         JsonSerializer.Serialize(writer, value, options);

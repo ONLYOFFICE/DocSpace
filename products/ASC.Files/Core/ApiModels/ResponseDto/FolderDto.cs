@@ -38,6 +38,9 @@ public class FolderDto<T> : FileEntryDto<T>
     public Logo Logo { get; set; }
     public bool Pinned { get; set; }
     public RoomType? RoomType { get; set; }
+    public bool Private { get; set; }
+
+    protected internal override FileEntryType EntryType { get => FileEntryType.Folder; }
 
     public FolderDto() { }
 
@@ -78,7 +81,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
         GlobalFolderHelper globalFolderHelper,
-        FileSharingHelper fileSharingHelper, 
+        FileSharingHelper fileSharingHelper,
         RoomLogoManager roomLogoManager)
         : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
     {
@@ -100,16 +103,14 @@ public class FolderDtoHelper : FileEntryDtoHelper
             {
                 var tagDao = _daoFactory.GetTagDao<T>();
 
-                var tags = await tagDao.GetTagsAsync(TagType.Custom, new[] { folder }).ToListAsync();
-
-                result.Tags = tags.Select(t => t.Name);
+                result.Tags = await tagDao.GetTagsAsync(TagType.Custom, new[] { folder }).Select(t => t.Name).ToListAsync();
             }
             else
             {
                 result.Tags = folder.Tags.Select(t => t.Name);
             }
 
-            result.Logo = await _roomLogoManager.GetLogo(folder.Id);
+            result.Logo = await _roomLogoManager.GetLogo(folder);
             result.RoomType = folder.FolderType switch
             {
                 FolderType.FillingFormsRoom => RoomType.FillingFormsRoom,
@@ -160,6 +161,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
         result.IsFavorite = folder.IsFavorite.NullIfDefault();
         result.New = folder.NewForMe;
         result.Pinned = folder.Pinned;
+        result.Private = folder.Private;
 
         return result;
     }

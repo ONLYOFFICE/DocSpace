@@ -3,7 +3,5 @@
   "Error403Text": "Spiacente, accesso negato.",
   "Error404Text": "Spiacente, impossibile trovare la risorsa.",
   "ErrorEmptyResponse": "Risposta vuota",
-  "ErrorInvalidHeader": "Email errata o link scaduto",
-  "ErrorInvalidText": "Tra 10 secondi sarai reindirizzato alla <1>pagina di login</1>",
   "ErrorOfflineText": "Nessuna connessione a internet trovata"
 }

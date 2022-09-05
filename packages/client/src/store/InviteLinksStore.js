@@ -5,12 +5,12 @@ import {
 } from "@docspace/common/api/portal";
 
 class InviteLinksStore {
+  peopleStore = null;
   userLink = null;
   guestLink = null;
-  authStore = null;
 
-  constructor(authStore) {
-    this.authStore = authStore;
+  constructor(peopleStore) {
+    this.peopleStore = peopleStore;
     makeAutoObservable(this);
   }
 
@@ -22,7 +22,7 @@ class InviteLinksStore {
   };
 
   getPortalInviteLinks = async () => {
-    const isViewerAdmin = this.authStore.isAdmin;
+    const isViewerAdmin = this.peopleStore.authStore.isAdmin;
 
     if (!isViewerAdmin) return Promise.resolve();
 

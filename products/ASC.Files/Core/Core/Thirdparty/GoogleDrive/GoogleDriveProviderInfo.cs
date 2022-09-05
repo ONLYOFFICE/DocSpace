@@ -59,6 +59,7 @@ internal class GoogleDriveProviderInfo : IProviderInfo
     public FolderType RootFolderType { get; set; }
     public FolderType FolderType { get; set; }
     public string FolderId { get; set; }
+    public bool Private { get; set; }
     public string DriveRootId
     {
         get
@@ -196,7 +197,7 @@ internal class GoogleDriveStorageDisposableWrapper : IDisposable
     {
         var driveStorage = _serviceProvider.GetService<GoogleDriveStorage>();
 
-        await CheckTokenAsync(token, id).ConfigureAwait(false);
+        await CheckTokenAsync(token, id);
 
         driveStorage.Open(token);
 
@@ -221,7 +222,7 @@ internal class GoogleDriveStorageDisposableWrapper : IDisposable
 
             var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
             var authData = new AuthData(token: token.ToJson());
-            await dbDao.UpdateProviderInfoAsync(id, authData).ConfigureAwait(false);
+            await dbDao.UpdateProviderInfoAsync(id, authData);
         }
     }
 
@@ -279,7 +280,7 @@ public class GoogleDriveProviderInfoHelper
         var entry = _cacheEntry.Get<DriveFile>("drive-" + id + "-" + driveId);
         if (entry == null)
         {
-            entry = await storage.GetEntryAsync(driveId).ConfigureAwait(false);
+            entry = await storage.GetEntryAsync(driveId);
             if (entry != null)
             {
                 _cacheEntry.Insert("drive-" + id + "-" + driveId, entry, DateTime.UtcNow.Add(_cacheExpiration));
@@ -298,7 +299,7 @@ public class GoogleDriveProviderInfoHelper
                 var value = _cacheChildFolders.Get<List<DriveFile>>("drived-" + id + "-" + parentDriveId);
                 if (value == null)
                 {
-                    value = await storage.GetEntriesAsync(parentDriveId, true).ConfigureAwait(false);
+                    value = await storage.GetEntriesAsync(parentDriveId, true);
                     if (value != null)
                     {
                         _cacheChildFolders.Insert("drived-" + id + "-" + parentDriveId, value, DateTime.UtcNow.Add(_cacheExpiration));
@@ -312,7 +313,7 @@ public class GoogleDriveProviderInfoHelper
                 var value = _cacheChildFiles.Get<List<DriveFile>>("drivef-" + id + "-" + parentDriveId);
                 if (value == null)
                 {
-                    value = await storage.GetEntriesAsync(parentDriveId, false).ConfigureAwait(false);
+                    value = await storage.GetEntriesAsync(parentDriveId, false);
                     if (value != null)
                     {
                         _cacheChildFiles.Insert("drivef-" + id + "-" + parentDriveId, value, DateTime.UtcNow.Add(_cacheExpiration));
@@ -326,7 +327,7 @@ public class GoogleDriveProviderInfoHelper
         if (_cacheChildFiles.Get<List<DriveFile>>("drivef-" + id + "-" + parentDriveId) == null &&
             _cacheChildFolders.Get<List<DriveFile>>("drived-" + id + "-" + parentDriveId) == null)
         {
-            var entries = await storage.GetEntriesAsync(parentDriveId).ConfigureAwait(false);
+            var entries = await storage.GetEntriesAsync(parentDriveId);
 
             _cacheChildFiles.Insert("drivef-" + id + "-" + parentDriveId, entries.Where(entry => entry.MimeType != GoogleLoginProvider.GoogleDriveMimeTypeFolder).ToList(), DateTime.UtcNow.Add(_cacheExpiration));
             _cacheChildFolders.Insert("drived-" + id + "-" + parentDriveId, entries.Where(entry => entry.MimeType == GoogleLoginProvider.GoogleDriveMimeTypeFolder).ToList(), DateTime.UtcNow.Add(_cacheExpiration));
@@ -337,13 +338,13 @@ public class GoogleDriveProviderInfoHelper
         var folders = _cacheChildFolders.Get<List<DriveFile>>("drived-" + id + "-" + parentDriveId);
         if (folders == null)
         {
-            folders = await storage.GetEntriesAsync(parentDriveId, true).ConfigureAwait(false);
+            folders = await storage.GetEntriesAsync(parentDriveId, true);
             _cacheChildFolders.Insert("drived-" + id + "-" + parentDriveId, folders, DateTime.UtcNow.Add(_cacheExpiration));
         }
         var files = _cacheChildFiles.Get<List<DriveFile>>("drivef-" + id + "-" + parentDriveId);
         if (files == null)
         {
-            files = await storage.GetEntriesAsync(parentDriveId, false).ConfigureAwait(false);
+            files = await storage.GetEntriesAsync(parentDriveId, false);
             _cacheChildFiles.Insert("drivef-" + id + "-" + parentDriveId, files, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
@@ -354,7 +355,7 @@ public class GoogleDriveProviderInfoHelper
     {
         if (driveEntry != null)
         {
-            await _cacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, Key = id + "-" + driveEntry.Id }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, Key = id + "-" + driveEntry.Id }, CacheNotifyAction.Remove);
         }
     }
 
@@ -363,7 +364,7 @@ public class GoogleDriveProviderInfoHelper
         var key = id + "-";
         if (driveId == null)
         {
-            await _cacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
         }
         else
         {
@@ -374,7 +375,7 @@ public class GoogleDriveProviderInfoHelper
 
             key += driveId;
 
-            await _cacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, ResetChilds = true, Key = key, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove).ConfigureAwait(false);
+            await _cacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetEntry = true, ResetChilds = true, Key = key, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove);
         }
     }
 

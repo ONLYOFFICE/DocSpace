@@ -209,16 +209,22 @@ public class RestorePortalTask : PortalTaskBase
 
             Task.WaitAll(tasks.ToArray());
         }
-
-        using (var connection = DbFactory.OpenConnection())
+        try
         {
-            var command = connection.CreateCommand();
-            command.CommandText = "select id, connection_string from mail_server_server";
-            ExecuteList(command).ForEach(r =>
+            using (var connection = DbFactory.OpenConnection())
             {
-                var connectionString = GetConnectionString((int)r[0], JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(r[1]))["DbConnection"].ToString());
-                databases.Add(new Tuple<string, string>(connectionString.Name, connectionString.ConnectionString), databasesFromDirs[connectionString.Name]);
-            });
+                var command = connection.CreateCommand();
+                command.CommandText = "select id, connection_string from mail_server_server";
+                ExecuteList(command).ForEach(r =>
+                {
+                    var connectionString = GetConnectionString((int)r[0], JsonConvert.DeserializeObject<Dictionary<string, object>>(Convert.ToString(r[1]))["DbConnection"].ToString());
+                    databases.Add(new Tuple<string, string>(connectionString.Name, connectionString.ConnectionString), databasesFromDirs[connectionString.Name]);
+                });
+            }
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorWithException(e);
         }
 
         foreach (var database in databases)

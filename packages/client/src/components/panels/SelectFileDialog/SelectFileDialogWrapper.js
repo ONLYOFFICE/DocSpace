@@ -2,7 +2,7 @@ import React from "react";
 import { Provider as MobxProvider, inject, observer } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
 import SelectFileDialog from "./index";
-import store from "SRC_DIR/store";
+import store from "client/store";
 import i18n from "./i18n";
 const { auth: authStore } = store;
 

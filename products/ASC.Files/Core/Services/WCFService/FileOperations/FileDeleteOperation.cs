@@ -127,9 +127,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 Error = FilesCommonResource.ErrorMassage_FolderNotFound;
             }
             else if (folder.FolderType != FolderType.DEFAULT && folder.FolderType != FolderType.BUNCH
-                && folder.FolderType != FolderType.FillingFormsRoom && folder.FolderType != FolderType.EditingRoom
-                && folder.FolderType != FolderType.ReviewRoom && folder.FolderType != FolderType.ReadOnlyRoom 
-                && folder.FolderType != FolderType.CustomRoom)
+                && !DocSpaceHelper.IsRoom(folder.FolderType))
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
             }
@@ -169,10 +167,10 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 }
                 else
                 {
-                    var immediately = _immediately || !FolderDao.UseTrashForRemove(folder);
+                    var immediately = _immediately || FolderDao.UseTrashForRemoveAsync(folder);
                     if (immediately && FolderDao.UseRecursiveOperation(folder.Id, default(T)))
                     {
-                        var files = await FileDao.GetFilesAsync(folder.Id);
+                        var files = await FileDao.GetFilesAsync(folder.Id).ToListAsync();
                         await DeleteFilesAsync(files, scope);
 
                         var folders = await FolderDao.GetFoldersAsync(folder.Id).ToListAsync();
@@ -187,19 +185,12 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
 
                             await FolderDao.DeleteFolderAsync(folder.Id);
 
-                            if (isRoom)
+                            if (isRoom && folder.ProviderEntry)
                             {
-                                if (folder.ProviderEntry)
-                                {
-                                    await ProviderDao.UpdateProviderInfoAsync(folder.ProviderId, null, FolderType.DEFAULT);
-                                }
-                                
-                                filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
+                                await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
                             }
-                            else
-                            {
-                                filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
-                            }
+
+                            filesMessageService.Send(folder, _headers, isRoom ? MessageAction.RoomDeleted : MessageAction.FolderDeleted, folder.Title);
 
                             ProcessedFolder(folderId);
                         }
@@ -216,19 +207,21 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                         {
                             if (immediately)
                             {
+                                if (isRoom)
+                                {
+                                    await roomLogoManager.DeleteAsync(folder.Id);
+                                }
+
                                 await FolderDao.DeleteFolderAsync(folder.Id);
+
+                                if (isRoom && folder.ProviderEntry)
+                                {
+                                    await ProviderDao.RemoveProviderInfoAsync(folder.ProviderId);
+                                }
 
                                 if (isNeedSendActions)
                                 {
-                                    if (isRoom)
-                                    {
-                                        await roomLogoManager.DeleteAsync(folder.Id);
-                                        filesMessageService.Send(folder, _headers, MessageAction.RoomDeleted, folder.Title);
-                                    }
-                                    else
-                                    {
-                                        filesMessageService.Send(folder, _headers, MessageAction.FolderDeleted, folder.Title);
-                                    }
+                                    filesMessageService.Send(folder, _headers, isRoom ? MessageAction.RoomDeleted : MessageAction.FolderDeleted, folder.Title);
                                 }
                             }
                             else

@@ -13,6 +13,11 @@
   "NotFoundCode": "ບໍ່ສາມາດຊອກຫາລະຫັດໄດ້ບໍ? ກວດເບິ່ງໂຟນເດີ «Spam» ຂອງທ່ານ.",
   "Or": "ຫຼື",
   "PasswordRecoveryTitle": "ກູ້ຄືນລະຫັດຜ່ານ",
+  "RecoverAccess": "ກູ້ຄືນການເຂົ້າເຖິງ",
+  "RecoverContactEmailPlaceholder": "ອີເມວຕິດຕໍ່",
+  "RecoverDescribeYourProblemPlaceholder": "ອະທິບາຍບັນຫາຂອງທ່ານ",
+  "RecoverTextBody": "ຖ້າທ່ານບໍ່ສາມາດເຂົ້າສູ່ລະບົບໄດ້ຫຼືຕ້ອງການລົງທະບຽນໃຫມ່, ໃຫ້ທ່ານຕິດຕໍ່ຜູ້ດູແລລະບົບ portal ",
+  "RecoverTitle": "ການເຂົ້າເຖິງການກູ້ຄືນ",
   "Register": "ລົງທະບຽນ",
   "RegisterSendButton": "ສົ່ງຄຳຂໍ",
   "RegisterTextBodyAfterDomainsList": "ການລົງທະບຽນ, ໃຫ້ທ່ານປ້ອນອີເມວຂອງທ່ານແລ້ວກົດສົ່ງຄຳຮ້ອງຂໍ. ລີງຂໍເປີດໃຊ້ງານຈະສົ່ງຫາທ່ານຜ່ານທາງອີເມວ",
@@ -22,5 +27,7 @@
   "RegistrationEmailWatermark": "ອີເມລ",
   "Remember": "ຈື່ຂ້ອຍ",
   "RememberHelper": "ຄ່າຕັ້ງຕົ້ນຂອງຕະຫຼອດການນຳໃຊ້ແມ່ນ 20 ນາທີ. ເຂົ້າໄປຕົວເລືອກເພື່ອກໍານົົດ 1 ປີ. ເຊັດການຕັ້ງຄ່າເກົ່າຂອງທ່ານ ເຂົ້າໄປທີ່ການຕັ້ງຄ່າ.",
-  "ResendCode": "ສົ່ງຄືນ ລະຫັດ"
+  "ResendCode": "ສົ່ງຄືນ ລະຫັດ",
+  "ErrorInvalidHeader": "ອີເມລ໌ບໍ່ຖືກຕ້ອງ ຫຼືລິ້ງໝົດອາຍຸ",
+  "ErrorInvalidText": "ໃນ 10 ວິນາທີທ່ານຈະຖືກໂອນໄປຫາ <1>ໜ້າເຂົ້າສູ່ລະບົບ</1>"
 }

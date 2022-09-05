@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { Provider as MobxProvider, inject, observer } from "mobx-react";
 import { getShareFiles } from "@docspace/common/api/files";
 import SharingPanel from "../SharingPanel";
-import store from "SRC_DIR/store";
+import store from "client/store";
+
 const { auth: authStore } = store;
 
 const SharingDialog = ({

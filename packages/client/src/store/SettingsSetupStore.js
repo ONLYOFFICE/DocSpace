@@ -2,14 +2,18 @@ import api from "@docspace/common/api";
 import { makeAutoObservable } from "mobx";
 const { Filter } = api;
 import SelectionStore from "./SelectionStore";
+//import CommonStore from "./CommonStore";
+import authStore from "@docspace/common/store/AuthStore";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
+import { isMobile } from "react-device-detect";
 
 class SettingsSetupStore {
   selectionStore = null;
   authStore = null;
   isInit = false;
+  viewAs = isMobile ? "row" : "table";
 
   security = {
     accessRight: {
@@ -22,6 +26,13 @@ class SettingsSetupStore {
       selectorIsOpen: false,
       isLoading: false,
     },
+    loginHistory: {
+      users: [],
+    },
+    auditTrail: {
+      users: [],
+    },
+    trailReport: [],
   };
 
   headerAction = {
@@ -38,7 +49,9 @@ class SettingsSetupStore {
     commonThirdPartyList: [],
   };
 
-  constructor(authStore) {
+  securityLifetime = [];
+
+  constructor() {
     this.selectionStore = new SelectionStore(this);
     this.authStore = authStore;
     makeAutoObservable(this);
@@ -48,12 +61,12 @@ class SettingsSetupStore {
     if (this.isInit) return;
     this.isInit = true;
 
-    if (this.authStore.isAuthenticated) {
-      await this.authStore.settingsStore.getPortalPasswordSettings();
-      await this.authStore.tfaStore.getTfaType();
-      await this.authStore.settingsStore.getIpRestrictionsEnable();
-      await this.authStore.settingsStore.getIpRestrictions();
-      await this.authStore.settingsStore.getSessionLifetime();
+    if (authStore.isAuthenticated) {
+      await authStore.settingsStore.getPortalPasswordSettings();
+      await authStore.tfaStore.getTfaType();
+      await authStore.settingsStore.getIpRestrictionsEnable();
+      await authStore.settingsStore.getIpRestrictions();
+      await authStore.settingsStore.getSessionLifetime();
     }
   };
 
@@ -79,6 +92,10 @@ class SettingsSetupStore {
 
   setTotalAdmins = (total) => {
     this.security.accessRight.adminsTotal = total;
+  };
+
+  setViewAs = (viewAs) => {
+    this.viewAs = viewAs;
   };
 
   setOwner = (owner) => {
@@ -217,18 +234,57 @@ class SettingsSetupStore {
     const res = await api.settings.setMailDomainSettings(dnsName, enable);
   };
 
+  getLifetimeAuditSettings = async (data) => {
+    const res = await api.settings.getLifetimeAuditSettings(data);
+    this.setSecurityLifeTime(res);
+  };
+
   setLifetimeAuditSettings = async (data) => {
-    const res = await api.settings.setLifetimeAuditSettings(data);
+    await api.settings.setLifetimeAuditSettings(data);
+  };
+
+  setSecurityLifeTime = (lifetime) => {
+    this.securityLifetime = lifetime;
+  };
+
+  setLoginHistoryUsers = (users) => {
+    this.security.loginHistory.users = users;
+  };
+
+  setAuditTrailUsers = (users) => {
+    this.security.auditTrail.users = users;
+  };
+
+  getLoginHistory = async () => {
+    const res = await api.settings.getLoginHistory();
+    return this.setLoginHistoryUsers(res);
+  };
+
+  getAuditTrail = async () => {
+    const res = await api.settings.getAuditTrail();
+    return this.setAuditTrailUsers(res);
+  };
+
+  getLoginHistoryReport = async () => {
+    const res = await api.settings.getLoginHistoryReport();
+    window.open(res);
+    return this.setAuditTrailReport(res);
   };
 
   getAuditTrailReport = async () => {
     const res = await api.settings.getAuditTrailReport();
+    window.open(res);
+    return this.setAuditTrailReport(res);
   };
 
   setGreetingTitle = async (greetingTitle) => {
     const res = await api.settings.setGreetingSettings(greetingTitle);
 
     //if (res) this.setGreetingSettings(greetingTitle);
+  };
+
+  setAuditTrailReport = (report) => {
+    this.security.trailReport = report;
   };
 
   setCurrentSchema = async (id) => {

@@ -13,6 +13,11 @@
   "NotFoundCode": "Kunt u de code niet vinden? Bekijk uw \"Spam\" map.",
   "Or": "OR",
   "PasswordRecoveryTitle": "Wachtwoord herstellen",
+  "RecoverAccess": "Toegang herstellen",
+  "RecoverContactEmailPlaceholder": "Contact e-mail",
+  "RecoverDescribeYourProblemPlaceholder": "Beschrijf uw probleem",
+  "RecoverTextBody": "Als u zich niet kunt aanmelden met uw bestaande account of als nieuwe gebruiker wilt worden geregistreerd, neem dan contact op met de portaalbeheerder.",
+  "RecoverTitle": "Toegang herstel",
   "Register": "Registreren",
   "RegisterSendButton": "Stuur verzoek",
   "RegisterTextBodyAfterDomainsList": "Om te registreren, voert u uw e-mail in en klikt u op Stuur verzoek. U ontvangt een activatielink.",
@@ -22,5 +27,7 @@
   "RegistrationEmailWatermark": "E-mail",
   "Remember": "Mij onthouden",
   "RememberHelper": "De standaard sessieduur is 20 minuten. Vink deze optie aan om deze in te stellen op 1 jaar. Om uw eigen waarde in te stellen, ga naar Instellingen.",
-  "ResendCode": "Code opnieuw versturen"
+  "ResendCode": "Code opnieuw versturen",
+  "ErrorInvalidHeader": "Onjuiste e-mail of verlopen link",
+  "ErrorInvalidText": "Over 10 seconden wordt u doorverwezen naar de <1>login pagina</1>"
 }

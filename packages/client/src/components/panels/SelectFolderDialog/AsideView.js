@@ -37,6 +37,7 @@ const SelectFolderDialogAsideView = ({
   isDisableButton,
   parentId,
   selectionFiles,
+  folderSelectionDisabled,
 }) => {
   return (
     <StyledModalDialog
@@ -105,7 +106,11 @@ const SelectFolderDialogAsideView = ({
           label={primaryButtonName}
           onClick={onButtonClick}
           isDisabled={
-            isDisableButton || isDisableTree || isLoadingData || !isAvailable
+            folderSelectionDisabled ||
+            isDisableButton ||
+            isDisableTree ||
+            isLoadingData ||
+            !isAvailable
           }
         />
         <Button

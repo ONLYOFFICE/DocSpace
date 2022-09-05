@@ -13,6 +13,11 @@
   "NotFoundCode": "找不到代码？检查您的 '垃圾邮件' 文件夹。",
   "Or": "或",
   "PasswordRecoveryTitle": "密码恢复",
+  "RecoverAccess": "恢复访问",
+  "RecoverContactEmailPlaceholder": "联系邮箱",
+  "RecoverDescribeYourProblemPlaceholder": "描述您的问题",
+  "RecoverTextBody": "如果您无法使用现有账户登录或希望注册为新用户，请联系门户管理员。",
+  "RecoverTitle": "访问恢复",
   "Register": "注册",
   "RegisterSendButton": "发送请求",
   "RegisterTextBodyAfterDomainsList": "如需注册，请输入您的邮箱并点击发送请求。我们会将激活链接发送到指定地址。",
@@ -22,5 +27,7 @@
   "RegistrationEmailWatermark": "邮箱",
   "Remember": "记住我",
   "RememberHelper": "默认会话寿命为20分钟。勾选此选项以将其设为1年。如需自行设置其值，请前往设置。",
-  "ResendCode": "重新发送代码"
+  "ResendCode": "重新发送代码",
+  "ErrorInvalidHeader": "电子邮件不正确或链接已过期",
+  "ErrorInvalidText": "在10秒钟内，您将重定向到<1>登录页面</1>"
 }

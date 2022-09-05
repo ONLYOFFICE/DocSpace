@@ -1,5 +1,7 @@
 import React, { useCallback } from "react";
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
+
 import Link from "@docspace/components/link";
 import LinkWithDropdown from "@docspace/components/link-with-dropdown";
 import Avatar from "@docspace/components/avatar";
@@ -20,6 +22,7 @@ export default function withContent(WrappedContent) {
       deselectUser,
       isAdmin,
       theme,
+      getModel,
     } = props;
     const { userName, mobilePhone, email, role, displayName, avatar } = item;
 
@@ -121,6 +124,20 @@ export default function withContent(WrappedContent) {
     const onPhoneClick = () => window.open(`sms:${mobilePhone}`);
     const onEmailClick = () => window.open(`mailto:${email}`);
 
+    const { t } = useTranslation([
+      "People",
+      "Common",
+      "PeopleTranslations",
+      "DeleteProfileEverDialog",
+      "Translations",
+      "Files",
+      "ChangeUserTypeDialog",
+    ]);
+
+    const contextOptionsProps = {
+      contextOptions: getModel(item, t),
+    };
+
     return (
       <WrappedContent
         onContentRowSelect={onContentRowSelect}
@@ -131,6 +148,7 @@ export default function withContent(WrappedContent) {
         checkedProps={checkedProps}
         element={element}
         isAdmin={isAdmin}
+        contextOptionsProps={contextOptionsProps}
         {...props}
       />
     );
@@ -141,9 +159,17 @@ export default function withContent(WrappedContent) {
 
     const { selectGroup } = peopleStore.selectedGroupStore;
     const { getTargetUser } = peopleStore.targetUserStore;
-    const { selectionStore } = peopleStore;
+    const { selectionStore, contextOptionsStore } = peopleStore;
 
-    const { selection, selectUser, deselectUser } = selectionStore;
+    const { getModel } = contextOptionsStore;
+
+    const {
+      selection,
+      bufferSelection,
+      setBufferSelection,
+      selectUser,
+      deselectUser,
+    } = selectionStore;
 
     return {
       theme: auth.settingsStore.theme,
@@ -152,8 +178,12 @@ export default function withContent(WrappedContent) {
       selectGroup,
       fetchProfile: getTargetUser,
       checked: selection.some((el) => el.id === item.id),
+      isSeveralSelection: selection.length > 1,
+      isActive: bufferSelection?.id === item?.id,
+      setBufferSelection,
       selectUser,
       deselectUser,
+      getModel,
     };
   })(observer(WithContent));
 }

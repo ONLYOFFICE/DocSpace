@@ -29,6 +29,9 @@ function DownloadComponents {
   }
 }
 
+$zookeeper_version = '3.7.1'
+$kafka_version = '2.8.0'
+$scala_version = '2.12'
 $nginx_version = '1.21.1'
 
 $path_prereq = "${pwd}\build\install\win\"
@@ -42,21 +45,20 @@ $prerequisites = @(
 
   @{  
     download_allways = $false; 
+    name = "apache-zookeeper-${zookeeper_version}-bin.tar.gz"; 
+    link = "https://dlcdn.apache.org/zookeeper/zookeeper-${zookeeper_version}/apache-zookeeper-${zookeeper_version}-bin.tar.gz";
+  }
+  @{  
+    download_allways = $false; 
+    name = "kafka_${scala_version}-${kafka_version}.tgz"; 
+    link = "https://archive.apache.org/dist/kafka/${kafka_version}/kafka_${scala_version}-${kafka_version}.tgz";
+  }
+
+  @{  
+    download_allways = $false; 
     name = "WinSW.NET4new.exe"; 
     link = "https://github.com/winsw/winsw/releases/download/v2.11.0/WinSW.NET4.exe";
   }
 )
 
-$path_nuget_packages = "${pwd}\.nuget\packages\"
-
-$nuget_packages = @(
-  @{  
-    download_allways = $false; 
-    name = "rabbitmq.client.3.6.5.nupkg"; 
-    link = "https://www.nuget.org/api/v2/package/RabbitMQ.Client/3.6.5";
-  }
-)
-
 DownloadComponents $prerequisites $path_prereq
-
-DownloadComponents $nuget_packages $path_nuget_packages

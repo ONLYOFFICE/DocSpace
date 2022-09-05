@@ -1,9 +1,9 @@
 import React from "react";
 import { Provider as MobxProvider } from "mobx-react";
 import { I18nextProvider } from "react-i18next";
+import store from "client/store";
 import SelectFolderInput from "./index";
 import i18n from "./i18n";
-import store from "SRC_DIR/store";
 const { auth: authStore } = store;
 
 const SelectFolderModalWrapper = (props) => <SelectFolderInput {...props} />;

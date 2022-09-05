@@ -1,4 +1,4 @@
-import authStore from "./AuthStore";
+import authStore from "@docspace/common/store/AuthStore";
 import PaymentStore from "./PaymentStore";
 import WizardStore from "./WizardStore";
 import SettingsSetupStore from "./SettingsSetupStore";
@@ -7,6 +7,8 @@ import BackupStore from "./BackupStore";
 import CommonStore from "./CommonStore";
 import BannerStore from "./BannerStore";
 import ProfileActionsStore from "./ProfileActionsStore";
+import SsoFormStore from "./SsoFormStore";
+
 import FilesStore from "./FilesStore";
 import SelectedFolderStore from "./SelectedFolderStore";
 import TreeFoldersStore from "./TreeFoldersStore";
@@ -23,19 +25,29 @@ import DialogsStore from "./DialogsStore";
 import selectFolderDialogStore from "./SelectFolderDialogStore";
 import ContextOptionsStore from "./ContextOptionsStore";
 import HotkeyStore from "./HotkeyStore";
+
 import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
+import OformsStore from "./OformsStore";
+
+const oformsStore = new OformsStore(authStore);
 
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();
-const setupStore = new SettingsSetupStore(authStore);
+const setupStore = new SettingsSetupStore();
 const confirmStore = new ConfirmStore();
 const backupStore = new BackupStore();
 const commonStore = new CommonStore();
 const bannerStore = new BannerStore();
 
-const peopleStore = new PeopleStore(authStore);
+const ssoStore = new SsoFormStore();
+
+const peopleStore = new PeopleStore(
+  authStore,
+  authStore.infoPanelStore,
+  setupStore
+);
 
 const tagsStore = new TagsStore();
 
@@ -43,10 +55,9 @@ const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
 
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
+
 const filesStore = new FilesStore(
   authStore,
-  authStore.settingsStore,
-  authStore.userStore,
   selectedFolderStore,
   treeFoldersStore,
   settingsStore,
@@ -124,8 +135,9 @@ const store = {
   confirm: confirmStore,
   backup: backupStore,
   common: commonStore,
-  bannerStore: bannerStore,
-  profileActionsStore: profileActionsStore,
+  bannerStore,
+  ssoStore,
+  profileActionsStore,
 
   filesStore,
 
@@ -141,6 +153,7 @@ const store = {
   contextOptionsStore,
   hotkeyStore,
   selectFileDialogStore,
+  oformsStore,
 
   tagsStore,
 

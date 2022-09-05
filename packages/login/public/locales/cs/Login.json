@@ -13,6 +13,11 @@
   "NotFoundCode": "Nemůžete najít kód? Zkontrolujte složku «Spam».",
   "Or": "NEBO",
   "PasswordRecoveryTitle": "Obnovení hesla",
+  "RecoverAccess": "Obnovit přístup",
+  "RecoverContactEmailPlaceholder": "Kontaktní emailová adresa",
+  "RecoverDescribeYourProblemPlaceholder": "Popište svůj problém",
+  "RecoverTextBody": "Pokud se nemůžete přihlásit pomocí stávajícího účtu nebo chcete být zaregistrováni jako nový uživatel, kontaktujte správce portálu. ",
+  "RecoverTitle": "Obnovení přístupu",
   "Register": "Registrovat se",
   "RegisterSendButton": "Odeslat požadavek",
   "RegisterTextBodyAfterDomainsList": "Pro registraci zadejte svůj e-mail a klikněte na tlačítko Odeslat žádost. Bude vám zaslán aktivační odkaz.  ",
@@ -22,5 +27,7 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "Zapamatovat si mě",
   "RememberHelper": "Výchozí doba trvání relace je 20 minut. Zaškrtnutím této možnosti ji nastavíte na 1 rok. Chcete-li nastavit vlastní hodnotu, přejděte do Nastavení.",
-  "ResendCode": "Opětovné zaslání kódu"
+  "ResendCode": "Opětovné zaslání kódu",
+  "ErrorInvalidHeader": "Nesprávný e-mail nebo neplatný odkaz",
+  "ErrorInvalidText": "Za 10 sekund budete přesměrováni na <1>přihlašovací stránku</1>"
 }

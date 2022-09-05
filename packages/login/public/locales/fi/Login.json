@@ -13,6 +13,11 @@
   "NotFoundCode": "Etkö löydä koodia? Tarkista «Roskaposti» -kansiosi.",
   "Or": "TAI",
   "PasswordRecoveryTitle": "Salasanan palautus",
+  "RecoverAccess": "Palauta käyttöoikeus",
+  "RecoverContactEmailPlaceholder": "Sähköposti yhteydenottoa varten",
+  "RecoverDescribeYourProblemPlaceholder": "Kuvaile ongelmasi",
+  "RecoverTextBody": "Jos et voi kirjautua sisään nykyisellä tililläsi tai haluat rekisteröityä uutena käyttäjänä, ota yhteyttä portaalin järjestelmänvalvojaan. ",
+  "RecoverTitle": "Käytä palautusta",
   "Register": "Rekisteröidy",
   "RegisterSendButton": "Lähetä pyyntö",
   "RegisterTextBodyAfterDomainsList": "Rekisteröidy kirjoittamalla sähköpostiosoitteesi ja napsauttamalla Lähetä pyyntö. Sinulle lähetetään aktivointilinkki.  ",
@@ -22,5 +27,7 @@
   "RegistrationEmailWatermark": "sähköposti",
   "Remember": "Muista minut",
   "RememberHelper": "Istunnon oletuskesto on 20 minuuttia. Valitse tämä vaihtoehto, jos haluat asettaa sen 1 vuodeksi. Voit asettaa oman arvon Asetuksissa.",
-  "ResendCode": "Lähetä koodi uudelleen"
+  "ResendCode": "Lähetä koodi uudelleen",
+  "ErrorInvalidHeader": "Väärä sähköposti tai vanhentunut linkki",
+  "ErrorInvalidText": "10 sekunnin kuluttua sinut ohjataan <1>kirjautumissivulle</1>"
 }

@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
-import { FileAction } from "@docspace/common/constants";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 import toastr from "client/toastr";
+import throttle from "lodash/throttle";
 
 const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
@@ -51,6 +51,7 @@ const withHotkeys = (Component) => {
 
       selection,
       setFavoriteAction,
+      filesIsLoading,
     } = props;
 
     const hotkeysFilter = {
@@ -58,7 +59,11 @@ const withHotkeys = (Component) => {
         ev.target?.type === "checkbox" || ev.target?.tagName !== "INPUT",
       filterPreventDefault: false,
       enableOnTags: ["INPUT"],
-      enabled: !someDialogIsOpen && enabledHotkeys && !mediaViewerIsVisible,
+      enabled:
+        !someDialogIsOpen &&
+        enabledHotkeys &&
+        !mediaViewerIsVisible &&
+        !filesIsLoading,
       // keyup: true,
       // keydown: false,
     };
@@ -87,9 +92,12 @@ const withHotkeys = (Component) => {
     };
 
     useEffect(() => {
-      window.addEventListener("keydown", onKeyDown);
+      const throttledKeyDownEvent = throttle(onKeyDown, 300);
 
-      return () => window.removeEventListener("keypress", onKeyDown);
+      window.addEventListener("keydown", throttledKeyDownEvent);
+
+      return () =>
+        window.removeEventListener("keypress", throttledKeyDownEvent);
     });
 
     //Select/deselect item
@@ -248,8 +256,8 @@ const withHotkeys = (Component) => {
               deleteOperation: t("Translations:DeleteOperation"),
               deleteFromTrash: t("Translations:DeleteFromTrash"),
               deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-              FileRemoved: t("Files:FileRemoved"),
-              FolderRemoved: t("Files:FolderRemoved"),
+              FileRemoved: t("Home:FileRemoved"),
+              FolderRemoved: t("Home:FolderRemoved"),
             };
             deleteAction(translations).catch((err) => toastr.error(err));
           }
@@ -322,9 +330,9 @@ const withHotkeys = (Component) => {
         setSelected,
         viewAs,
         setViewAs,
-        fileActionStore,
         enabledHotkeys,
         selection,
+        filesIsLoading,
       } = filesStore;
 
       const {
@@ -413,6 +421,7 @@ const withHotkeys = (Component) => {
 
         selection,
         setFavoriteAction,
+        filesIsLoading,
       };
     }
   )(observer(WithHotkeys));

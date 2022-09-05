@@ -9,6 +9,8 @@ import FieldContainer from "@docspace/components/field-container";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { runInAction } from "mobx";
+import { getOAuthToken } from "@docspace/common/utils";
+import { saveSettingsThirdParty } from "@docspace/common/api/files";
 
 const PureConnectDialogContainer = (props) => {
   const {
@@ -23,13 +25,16 @@ const PureConnectDialogContainer = (props) => {
     providers,
     selectedFolderId,
     selectedFolderFolders,
-    getOAuthToken,
     saveThirdParty,
     openConnectWindow,
     setConnectDialogVisible,
     personal,
     getSubfolders,
     folderFormValidation,
+    updateInfo,
+    isConnectionViaBackupModule,
+    roomCreation,
+    setSaveThirdpartyResponse,
   } = props;
   const {
     corporate,
@@ -83,7 +88,7 @@ const PureConnectDialogContainer = (props) => {
     //const chars = '*+:"<>?|/'; TODO: think how to solve problem with interpolation escape values in i18n translate
 
     if (title.match(folderFormValidation)) {
-      toastr.warning(t("Files:ContainsSpecCharacter"));
+      toastr.warning(t("Home:ContainsSpecCharacter"));
     }
     title = title.replace(folderFormValidation, "_");
 
@@ -122,6 +127,32 @@ const PureConnectDialogContainer = (props) => {
     }
 
     setIsLoading(true);
+
+    if (isConnectionViaBackupModule) {
+      saveSettingsThirdParty(
+        urlValue,
+        loginValue,
+        passwordValue,
+        oAuthToken,
+        false,
+        customerTitle,
+        provider_key,
+        provider_id
+      )
+        .catch((err) => {
+          setIsLoading(false);
+          onClose();
+          toastr.error(err);
+        })
+        .finally(() => {
+          setIsLoading(false);
+          updateInfo && updateInfo();
+          onClose();
+        });
+
+      return;
+    }
+
     saveThirdParty(
       urlValue,
       loginValue,
@@ -130,9 +161,12 @@ const PureConnectDialogContainer = (props) => {
       isCorporate,
       customerTitle,
       provider_key || key,
-      provider_id
+      provider_id,
+      roomCreation
     )
-      .then(async () => {
+      .then(async (res) => {
+        setSaveThirdpartyResponse(res);
+
         const folderId = isCorporate ? commonFolderId : myFolderId;
         const subfolders = await getSubfolders(folderId);
         const node = treeFolders.find((x) => x.id === folderId);
@@ -211,7 +245,12 @@ const PureConnectDialogContainer = (props) => {
       </ModalDialog.Header>
       <ModalDialog.Body>
         {isAccount ? (
-          <FieldContainer labelVisible labelText={t("Account")} isVertical>
+          <FieldContainer
+            style={roomCreation ? { margin: "0" } : {}}
+            labelVisible
+            labelText={t("Account")}
+            isVertical
+          >
             <Button
               label={t("Reconnect")}
               size="normal"
@@ -266,6 +305,7 @@ const PureConnectDialogContainer = (props) => {
               isVertical
               hasError={!isPasswordValid}
               errorMessage={t("Common:RequiredField")}
+              style={roomCreation ? { margin: "0" } : {}}
             >
               <PasswordInput
                 hasError={!isPasswordValid}
@@ -279,24 +319,26 @@ const PureConnectDialogContainer = (props) => {
             </FieldContainer>
           </>
         )}
-
-        <FieldContainer
-          labelText={t("ConnectFolderTitle")}
-          isRequired
-          isVertical
-          hasError={!isTitleValid}
-          errorMessage={t("Common:RequiredField")}
-        >
-          <TextInput
+        {!(isConnectionViaBackupModule || roomCreation) && (
+          <FieldContainer
+            labelText={t("ConnectFolderTitle")}
+            isRequired
+            isVertical
             hasError={!isTitleValid}
-            isDisabled={isLoading}
-            tabIndex={4}
-            scale
-            value={`${customerTitle}`}
-            onChange={onChangeFolderName}
-          />
-        </FieldContainer>
-        {!personal && (
+            errorMessage={t("Common:RequiredField")}
+          >
+            <TextInput
+              hasError={!isTitleValid}
+              isDisabled={isLoading}
+              tabIndex={4}
+              scale
+              value={`${customerTitle}`}
+              onChange={onChangeFolderName}
+            />
+          </FieldContainer>
+        )}
+
+        {!personal && !(isConnectionViaBackupModule || roomCreation) && (
           <Checkbox
             label={t("ConnectMakeShared")}
             isChecked={isCorporate}
@@ -323,7 +365,6 @@ const PureConnectDialogContainer = (props) => {
           scale={isAccount}
           onClick={onClose}
           isDisabled={isLoading}
-          isLoading={isLoading}
         />
       </ModalDialog.Footer>
     </ModalDialog>
@@ -338,25 +379,24 @@ const ConnectDialog = withTranslation([
 ])(PureConnectDialogContainer);
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    settingsStore,
-    treeFoldersStore,
-    selectedFolderStore,
-    dialogsStore,
-  }) => {
+  (
+    {
+      auth,
+      filesStore,
+      settingsStore,
+      treeFoldersStore,
+      selectedFolderStore,
+      dialogsStore,
+    },
+    { passedItem, isConnectionViaBackupModule }
+  ) => {
     const {
       providers,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
-    const {
-      getOAuthToken,
-      personal,
-      folderFormValidation,
-    } = auth.settingsStore;
+    const { personal, folderFormValidation } = auth.settingsStore;
 
     const {
       treeFolders,
@@ -368,8 +408,12 @@ export default inject(
     const {
       connectDialogVisible: visible,
       setConnectDialogVisible,
-      connectItem: item,
+      connectItem,
+      roomCreation,
+      setSaveThirdpartyResponse,
     } = dialogsStore;
+
+    const item = isConnectionViaBackupModule ? passedItem : connectItem;
 
     return {
       selectedFolderId: id,
@@ -380,9 +424,10 @@ export default inject(
       providers,
       visible,
       item,
+      roomCreation,
+      setSaveThirdpartyResponse,
       folderFormValidation,
 
-      getOAuthToken,
       getSubfolders,
       saveThirdParty,
       openConnectWindow,

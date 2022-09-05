@@ -1,4 +1,4 @@
-import authStore from "SRC_DIR/store/AuthStore";
+import authStore from "@docspace/common/store/AuthStore";
 import { AppServerConfig, RoomsType } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl, toUrlParams } from "@docspace/common/utils";
@@ -203,5 +203,31 @@ export const connectedCloudsTypeTitleTranslation = (key, t) => {
 
     default:
       return key;
+  }
+};
+
+export const connectedCloudsTypeIcon = (key) => {
+  switch (key) {
+    case "GoogleDrive":
+      return "/static/images/cloud.services.google.drive.react.svg";
+    case "Box":
+      return "/static/images/cloud.services.box.react.svg";
+    case "DropboxV2":
+      return "/static/images/cloud.services.dropbox.react.svg";
+    case "OneDrive":
+      return "/static/images/cloud.services.onedrive.react.svg";
+    case "SharePoint":
+      return "/static/images/cloud.services.onedrive.react.svg";
+    case "kDrive":
+      return "/static/images/cloud.services.kdrive.react.svg";
+    case "Yandex":
+      return "/static/images/cloud.services.yandex.react.svg";
+    case "NextCloud":
+      return "/static/images/cloud.services.nextcloud.react.svg";
+    case "OwnCloud":
+      return "/static/images/catalog.folder.react.svg";
+    case "WebDav":
+      return "/static/images/cloud.services.webdav.react.svg";
+    default:
   }
 };

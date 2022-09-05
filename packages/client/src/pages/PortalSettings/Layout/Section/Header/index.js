@@ -27,10 +27,6 @@ const HeaderContainer = styled.div`
   align-items: center;
   max-width: calc(100vw - 32px);
 
-  h1 {
-    line-height: 53px;
-  }
-
   .action-wrapper {
     flex-grow: 1;
 
@@ -52,12 +48,22 @@ const HeaderContainer = styled.div`
   css`
     h1 {
       line-height: 61px;
+      font-size: 21px;
     }
   `};
 
   @media (min-width: 600px) and (max-width: 1024px) {
     h1 {
       line-height: 61px;
+      font-size: 21px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    h1 {
+      font-size: 18px;
+      line-height: 59px !important;
+      padding-bottom: 6px;
     }
   }
 `;
@@ -212,6 +218,7 @@ class SectionHeaderContent extends React.Component {
   render() {
     const {
       t,
+      tReady,
       addUsers,
       isHeaderIndeterminate,
       isHeaderChecked,
@@ -247,7 +254,7 @@ class SectionHeaderContent extends React.Component {
       location.pathname.includes("common/customization") ||
       location.pathname === "/portal-settings";
 
-    const showLoader = commonSettings ? !isLoadedPage : false;
+    const showLoader = commonSettings ? !isLoadedPage : !tReady;
 
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>

@@ -150,6 +150,7 @@ class Section extends React.Component {
     this.intervalHandler = null;
 
     this.scroll = null;
+    this.selectoRef = React.createRef(null);
   }
 
   componentDidUpdate(prevProps) {
@@ -224,6 +225,7 @@ class Section extends React.Component {
       isInfoPanelAvailable,
       settingsStudio,
       clearUploadedFilesHistory,
+      withPaging,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -362,6 +364,8 @@ class Section extends React.Component {
                           viewAs={viewAs}
                           isHomepage={isHomepage}
                           settingsStudio={settingsStudio}
+                          withPaging={withPaging}
+                          selectoRef={this.selectoRef}
                         >
                           {isMobile && (
                             <StyledMainBar
@@ -498,11 +502,12 @@ class Section extends React.Component {
     return (
       <>
         {renderSection()}
-        {!isMobile && uploadFiles && !dragging && (
+        {!isMobile && uploadFiles && !dragging && withPaging && (
           <StyledSelectoWrapper>
             <Selecto
-              boundContainer={".section-wrapper"}
-              dragContainer={".section-body"}
+              ref={this.selectoRef}
+              boundContainer=".section-wrapper-content"
+              dragContainer=".section-wrapper"
               selectableTargets={[".files-item"]}
               hitRate={0}
               selectByClick={false}
@@ -546,6 +551,7 @@ Section.propTypes = {
   isHomepage: PropTypes.bool,
   isInfoPanelAvailable: PropTypes.bool,
   settingsStudio: PropTypes.bool,
+  withPaging: PropTypes.bool,
 };
 
 Section.defaultProps = {
@@ -553,6 +559,7 @@ Section.defaultProps = {
   withBodyAutoFocus: false,
   isInfoPanelAvailable: true,
   settingsStudio: false,
+  withPaging: true,
 };
 
 Section.InfoPanelHeader = InfoPanelHeader;

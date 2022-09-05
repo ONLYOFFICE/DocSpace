@@ -9,6 +9,7 @@ import {
   StyledChildrenBlock,
   StyledIconBlock,
 } from "./styled-input-block";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 //const iconNames = Object.keys(Icons);
 
@@ -17,7 +18,9 @@ class InputBlock extends React.Component {
     super(props);
   }
   onIconClick = (e) => {
-    if (typeof this.props.onIconClick === "function" && !this.props.isDisabled)
+    if (
+      typeof this.props.onIconClick === "function" /*&& !this.props.isDisabled*/
+    )
       this.props.onIconClick(e);
   };
   onChange = (e) => {
@@ -78,9 +81,8 @@ class InputBlock extends React.Component {
           break;
       }
     }
-
     return (
-      <StyledInputGroup
+      <ColorTheme
         hasError={hasError}
         hasWarning={hasWarning}
         isDisabled={isDisabled}
@@ -89,6 +91,7 @@ class InputBlock extends React.Component {
         className={className}
         style={style}
         color={iconColor}
+        themeId={ThemeType.InputBlock}
       >
         <div className="prepend">
           <StyledChildrenBlock className="prepend-children">
@@ -126,7 +129,7 @@ class InputBlock extends React.Component {
           <div className="append">
             <StyledIconBlock
               className="input-block-icon"
-              isDisabled={isDisabled}
+              //isDisabled={isDisabled}
               onClick={this.onIconClick}
               isClickable={typeof onIconClick === "function"}
             >
@@ -134,13 +137,13 @@ class InputBlock extends React.Component {
                 size={iconButtonSize}
                 iconName={iconName}
                 isFill={isIconFill}
-                isDisabled={isDisabled}
+                //isDisabled={isDisabled}
                 isClickable={typeof onIconClick === "function"}
               />
             </StyledIconBlock>
           </div>
         }
-      </StyledInputGroup>
+      </ColorTheme>
     );
   }
 }

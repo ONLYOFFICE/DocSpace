@@ -14,6 +14,7 @@ import {
   StyledTitle,
 } from "./styles/styles.js";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
+import { getCookie } from "@docspace/common/utils/index";
 
 const SingleItem = (props) => {
   const {
@@ -83,7 +84,7 @@ const SingleItem = (props) => {
       };
 
       const parseAndFormatDate = (date) => {
-        const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+        const locale = personal ? getCookie(LANGUAGE) : culture;
         const correctDate = getCorrectDate(locale, date);
         return correctDate;
       };
@@ -101,13 +102,13 @@ const SingleItem = (props) => {
           case FileType.Image:
             return t("Common:Image");
           case FileType.Spreadsheet:
-            return t("Files:Spreadsheet");
+            return t("Home:Spreadsheet");
           case FileType.Presentation:
-            return t("Files:Presentation");
+            return t("Home:Presentation");
           case FileType.Document:
-            return t("Files:Document");
+            return t("Home:Document");
           default:
-            return t("Files:Folder");
+            return t("Home:Folder");
         }
       };
 

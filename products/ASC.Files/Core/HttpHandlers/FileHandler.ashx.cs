@@ -37,7 +37,7 @@ public class FileHandler
 
     public async Task Invoke(HttpContext context, FileHandlerService fileHandlerService)
     {
-        await fileHandlerService.Invoke(context).ConfigureAwait(false);
+        await fileHandlerService.Invoke(context);
     }
 }
 
@@ -161,37 +161,37 @@ public class FileHandlerService
             switch ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").ToLower())
             {
                 case "view":
-                    await DownloadFile(context, true).ConfigureAwait(false);
+                    await DownloadFile(context, true);
                     break;
                 case "download":
-                    await DownloadFile(context).ConfigureAwait(false);
+                    await DownloadFile(context);
                     break;
                 case "bulk":
-                    await BulkDownloadFile(context).ConfigureAwait(false);
+                    await BulkDownloadFile(context);
                     break;
                 case "stream":
-                    await StreamFile(context).ConfigureAwait(false);
+                    await StreamFile(context);
                     break;
                 case "empty":
-                    await EmptyFile(context).ConfigureAwait(false);
+                    await EmptyFile(context);
                     break;
                 case "tmp":
-                    await TempFile(context).ConfigureAwait(false);
+                    await TempFile(context);
                     break;
                 case "create":
-                    await CreateFile(context).ConfigureAwait(false);
+                    await CreateFile(context);
                     break;
                 case "redirect":
-                    await RedirectAsync(context).ConfigureAwait(false);
+                    await RedirectAsync(context);
                     break;
                 case "diff":
-                    await DifferenceFile(context).ConfigureAwait(false);
+                    await DifferenceFile(context);
                     break;
                 case "thumb":
-                    await ThumbnailFile(context).ConfigureAwait(false);
+                    await ThumbnailFile(context);
                     break;
                 case "track":
-                    await TrackFile(context).ConfigureAwait(false);
+                    await TrackFile(context);
                     break;
                 default:
                     throw new HttpException((int)HttpStatusCode.BadRequest, FilesCommonResource.ErrorMassage_BadRequest);

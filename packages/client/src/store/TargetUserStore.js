@@ -1,8 +1,11 @@
 import api from "@docspace/common/api";
-import { LANGUAGE } from "@docspace/common/constants";
+import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
+import { setCookie } from "@docspace/common/utils";
+import store from "client/store";
 
 class TargetUserStore {
+  peopleStore = null;
   targetUser = null;
   isEditTargetUser = false;
   tipsSubscription = null;
@@ -32,6 +35,9 @@ class TargetUserStore {
   }
 
   getTargetUser = async (userName) => {
+    /*if (this.peopleStore.authStore.userStore.user.userName === userName) {
+      return this.setTargetUser(this.peopleStore.authStore.userStore.user);
+    } else {*/
     const user = await api.people.getUser(userName);
     if (user?.userName === this.peopleStore.authStore.userStore.user.userName) {
       const tipsSubscription = await api.settings.getTipsSubscription();
@@ -39,6 +45,7 @@ class TargetUserStore {
     }
     this.setTargetUser(user);
     return user;
+    //}
   };
 
   setTargetUser = (user) => {
@@ -77,8 +84,11 @@ class TargetUserStore {
     this.peopleStore.authStore.userStore.setUser(res);
 
     this.setTargetUser(res);
-
-    localStorage.setItem(LANGUAGE, culture);
+    //caches.delete("api-cache");
+    //await this.peopleStore.authStore.settingsStore.init();
+    setCookie(LANGUAGE, culture, {
+      "max-age": COOKIE_EXPIRATION_YEAR,
+    });
   };
 
   getUserPhoto = async (id) => {

@@ -3,12 +3,13 @@ import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
+import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 
 const { proxyURL } = AppServerConfig;
 
 const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
-//const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
+const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
 const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
 const HELP_URL = "https://onlyoffice.com/";
@@ -84,18 +85,12 @@ class ProfileActionsStore {
     }
   };
 
-  onLogoutClick = async () => {
-    await this.authStore.logout();
-
-    this.authStore.reset();
-
-    this.filesStore.reset();
-
-    this.peopleStore.reset();
-
-    this.authStore.init();
-
-    history.push("/login");
+  onLogoutClick = () => {
+    this.authStore.logout().then(() => {
+      this.filesStore.reset();
+      this.peopleStore.reset();
+      window.location.replace(combineUrl(proxyURL, "/login"));
+    });
   };
 
   onDebugClick = () => {
@@ -103,6 +98,7 @@ class ProfileActionsStore {
   };
 
   getActions = (t) => {
+    const { enablePlugins } = this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
     // const settingsModule = modules.find((module) => module.id === "settings");
     // const peopleAvailable = modules.some((m) => m.appName === "people");
@@ -206,6 +202,19 @@ class ProfileActionsStore {
         label: "Debug Info",
         onClick: this.onDebugClick,
       });
+    }
+
+    if (enablePlugins) {
+      const pluginActions = getProfileMenuItems();
+
+      if (pluginActions) {
+        pluginActions.forEach((option) => {
+          actions.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+          });
+        });
+      }
     }
 
     return actions;

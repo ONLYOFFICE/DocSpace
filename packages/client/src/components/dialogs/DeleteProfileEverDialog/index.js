@@ -93,34 +93,22 @@ class DeleteProfileEverDialogComponent extends React.Component {
             <Text>{t("DeleteUserDataConfirmation")}</Text> */}
         </ModalDialog.Body>
         <ModalDialog.Footer>
-          <div className="delete-user-footer">
-            {/* <Link
-              className="reassign-data"
-              isHovered
-              fontWeight={600}
-              type={"action"}
-            >
-              {t("PeopleTranslations:ReassignData")}
-            </Link> */}
-            <div className="delete-user-footer-buttons">
-              <Button
-                key="OKBtn"
-                label={t("Common:OKButton")}
-                size="normal"
-                primary={true}
-                scale
-                onClick={this.onDeleteProfileEver}
-                isLoading={isRequestRunning}
-              />
-              <Button
-                label={t("Common:CancelButton")}
-                size="normal"
-                scale
-                onClick={onClose}
-                isLoading={isRequestRunning}
-              />
-            </div>
-          </div>
+          <Button
+            key="OKBtn"
+            label={t("Common:OKButton")}
+            size="normal"
+            primary={true}
+            scale
+            onClick={this.onDeleteProfileEver}
+            isLoading={isRequestRunning}
+          />
+          <Button
+            label={t("Common:CancelButton")}
+            size="normal"
+            scale
+            onClick={onClose}
+            isLoading={isRequestRunning}
+          />
         </ModalDialog.Footer>
       </ModalDialogContainer>
     );
