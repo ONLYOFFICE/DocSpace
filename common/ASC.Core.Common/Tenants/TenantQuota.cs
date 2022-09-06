@@ -46,6 +46,7 @@ public class TenantQuota : IMapFrom<DbQuota>
     public bool Visible { get; set; }
     public long MaxFileSize { get; set; }
 
+    [JsonIgnore]
     public IReadOnlyList<TenantQuotaFeature> TenantQuotaFeatures { get; private set; }
 
     private List<string> _featuresList;

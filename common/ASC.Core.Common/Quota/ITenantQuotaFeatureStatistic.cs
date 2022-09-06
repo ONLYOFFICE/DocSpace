@@ -24,46 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Quota.Features;
+namespace ASC.Core.Common.Quota;
 
-public class ActiveUsersFeature : TenantQuotaFeatureCount
+public interface ITenantQuotaFeatureStatistic
 {
-    public override string Name { get => "users"; }
-    public ActiveUsersFeature(TenantQuota tenantQuota) : base(tenantQuota)
-    {
-    }
+    object GetValue();
 }
 
-public class ActiveUsersChecker : ITenantQuotaFeatureChecker
+public interface ITenantQuotaFeatureStatistic<T> : ITenantQuotaFeatureStatistic where T : TenantQuotaFeature
 {
-    private readonly UserManager _userManager;
 
-    public ActiveUsersChecker(UserManager userManager)
-    {
-        _userManager = userManager;
-    }
-    public bool Check(TenantQuota quota)
-    {
-        return _userManager.GetUsersByGroup(Users.Constants.GroupUser.ID).Length >= quota.ActiveUsers;
-    }
-
-    public string Exception(TenantQuota quota)
-    {
-        return "The number of active users should not exceed " + quota.ActiveUsers;
-    }
-}
-
-public class ActiveUsersStatistic : ITenantQuotaFeatureStatistic<ActiveUsersFeature>
-{
-    private readonly UserManager _userManager;
-
-    public ActiveUsersStatistic(UserManager userManager)
-    {
-        _userManager = userManager;
-    }
-
-    public object GetValue()
-    {
-        return _userManager.GetUsersByGroup(Users.Constants.GroupUser.ID).Length;
-    }
 }

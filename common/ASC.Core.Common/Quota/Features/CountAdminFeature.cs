@@ -25,8 +25,10 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Core.Common.Quota.Features;
+
 public class CountAdminFeature : TenantQuotaFeatureCount
 {
+    public override bool Paid { get => true; }
     public override string Name { get => "admin"; }
     public CountAdminFeature(TenantQuota tenantQuota) : base(tenantQuota)
     {

@@ -38,6 +38,7 @@ public class TenantQuotaFeature
 
     }
 }
+
 public class TenantQuotaFeature<T> : TenantQuotaFeature
 {
     private readonly TenantQuota _tenantQuota;

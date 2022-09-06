@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.Quota;
+
 namespace ASC.Web.Api.Core;
 
 [Scope]
@@ -31,11 +33,13 @@ public class QuotaHelper
 {
     private readonly TenantManager _tenantManager;
     private readonly RegionHelper _regionHelper;
+    private readonly IServiceProvider _serviceProvider;
 
-    public QuotaHelper(TenantManager tenantManager, RegionHelper regionHelper)
+    public QuotaHelper(TenantManager tenantManager, RegionHelper regionHelper, IServiceProvider serviceProvider)
     {
         _tenantManager = tenantManager;
         _regionHelper = regionHelper;
+        _serviceProvider = serviceProvider;
     }
 
     public IEnumerable<QuotaDto> GetQuotas()
@@ -97,7 +101,7 @@ public class QuotaHelper
         {
             var result = new QuotaFeatureDto();
 
-            if (feature.Name == "admin" || features.Length == 1) //TODO
+            if (feature.Paid || features.Length == 1)
             {
                 var val = GetPrice(tenantQuota, priceInfo, currentRegion);
                 result.Price = new FeaturePriceDto
@@ -137,6 +141,13 @@ public class QuotaHelper
                 {
 
                 }
+            }
+
+            var statisticProvider = (ITenantQuotaFeatureStatistic)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStatistic<>).MakeGenericType(feature.GetType()));
+
+            if (statisticProvider != null)
+            {
+                result.Used = statisticProvider.GetValue();
             }
 
             yield return result;

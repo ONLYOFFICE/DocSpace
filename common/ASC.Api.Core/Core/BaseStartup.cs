@@ -117,8 +117,12 @@ public abstract class BaseStartup
         services.AddEventBus(_configuration);
         services.AddDistributedTaskQueue();
         services.AddCacheNotify(_configuration);
+
         services.AddScoped<ITenantQuotaFeatureChecker, ActiveUsersChecker>();
         services.AddScoped<ActiveUsersChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStatistic<ActiveUsersFeature>, ActiveUsersStatistic>();
+        services.AddScoped<ActiveUsersStatistic>();
 
 
         DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
