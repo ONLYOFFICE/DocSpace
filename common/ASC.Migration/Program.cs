@@ -32,7 +32,11 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args);
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
+
 builder.WebHost.ConfigureDefaultKestrel();
 
 var startup = new Startup(builder.Configuration, builder.Environment);
