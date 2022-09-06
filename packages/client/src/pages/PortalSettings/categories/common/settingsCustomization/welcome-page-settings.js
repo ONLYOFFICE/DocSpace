@@ -315,7 +315,7 @@ class WelcomePageSettings extends React.Component {
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
           hasScroll={hasScroll}
-          isFirstWelcomePageSettings={isFirstWelcomePageSettings}
+          isFirstRestoreToDefault={isFirstWelcomePageSettings}
         />
       </StyledSettingsComponent>
     );
