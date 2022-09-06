@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Avatar from "../../../avatar";
 import Text from "../../../text";
 import Checkbox from "../../../checkbox";
+import { Base } from "../../../themes";
 
 const StyledSelectAll = styled.div`
   width: 100%;
@@ -14,7 +15,7 @@ const StyledSelectAll = styled.div`
   display: flex;
   align-items: center;
 
-  border-bottom: 1px solid #eceef1;
+  border-bottom: ${(props) => props.theme.selector.border};
 
   box-sizing: border-box;
 
@@ -41,6 +42,8 @@ const StyledSelectAll = styled.div`
     }
   }
 `;
+
+StyledSelectAll.defaultProps = { theme: Base };
 
 const SelectAll = React.memo(
   ({

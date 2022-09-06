@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Heading from "../../../heading";
 import Text from "../../../text";
+import { Base } from "../../../themes";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -37,11 +38,13 @@ const StyledContainer = styled.div`
 
     text-align: center;
 
-    color: #555f65;
+    color: ${(props) => props.theme.selector.emptyScreen.descriptionColor};
 
     margin-top: 8px;
   }
 `;
+
+StyledContainer.defaultProps = { theme: Base };
 
 const EmptyScreen = ({
   image,

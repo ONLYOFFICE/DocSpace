@@ -8,7 +8,8 @@ import Checkbox from "../../../checkbox";
 import { Base } from "../../../themes";
 
 const selectedCss = css`
-  background: #f3f4f4 !important;
+  background: ${(props) =>
+    props.theme.selector.item.selectedBackground} !important;
 `;
 
 const StyledItem = styled.div`
@@ -21,7 +22,7 @@ const StyledItem = styled.div`
 
   :hover {
     cursor: pointer;
-    background: #f8f9f9;
+    background: ${(props) => props.theme.selector.item.hoverBackground};
   }
 
   ${(props) => props.isSelected && !props.isMultiSelect && selectedCss}
