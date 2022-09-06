@@ -767,6 +767,7 @@ class FilesStore {
               .reverse();
           });
 
+          console.log("fetchFiles", data.current);
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,
             ...data.current,
@@ -903,6 +904,8 @@ class FilesStore {
               this.setSelected("close");
             }
           }
+
+          console.log("fetchrooms", data.current);
 
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,
@@ -1675,6 +1678,10 @@ class FilesStore {
 
   removeLogoFromRoom(id) {
     return api.rooms.removeLogoFromRoom(id);
+  }
+
+  getRoomMembers(id) {
+    return api.rooms.getRoomMembers(id);
   }
 
   setFile = (file) => {
@@ -2637,13 +2644,13 @@ class FilesStore {
     // const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
     const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
 
-    console.log("hasMoreFiles isRooms", isRooms);
-    console.log("hasMoreFiles filesList", this.filesList.length);
-    console.log("hasMoreFiles this.filterTotal", this.filterTotal);
-    console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
-    console.log("hasMoreFiles filterTotal", filterTotal);
-    console.log("hasMoreFiles", this.filesList.length < filterTotal);
-    console.log("----------------------------");
+    // console.log("hasMoreFiles isRooms", isRooms);
+    // console.log("hasMoreFiles filesList", this.filesList.length);
+    // console.log("hasMoreFiles this.filterTotal", this.filterTotal);
+    // console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
+    // console.log("hasMoreFiles filterTotal", filterTotal);
+    // console.log("hasMoreFiles", this.filesList.length < filterTotal);
+    // console.log("----------------------------");
 
     return this.filesList.length < filterTotal;
   }
