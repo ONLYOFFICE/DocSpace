@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Data.Backup.Extension;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -32,15 +34,12 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config.AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-}, (ctx, ser, di) =>
-{
-    ser.AddBaseDbContextPool<BackupsContext>();
-    ser.AddBaseDbContextPool<FilesDbContext>();
-});
+builder.Host.ConfigureDefault();
+
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddBackupConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.WebHost.ConfigureDefaultKestrel();
 
