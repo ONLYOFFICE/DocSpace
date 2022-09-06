@@ -30,13 +30,12 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using ASC.Api.CRM;
-using ASC.Api.Documents;
 using ASC.Common.Web;
 using ASC.Core.Common.Settings;
 using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
-using ASC.Web.Api.Routing;
+using ASC.Files.Core.ApiModels.ResponseDto;
 using ASC.Web.CRM.Classes;
 using ASC.Web.Files.Services.DocumentService;
 
@@ -49,7 +48,7 @@ namespace ASC.CRM.Api
     public class ReportsController : BaseApiController
     {
         private readonly DocbuilderReportsUtilityHelper _docbuilderReportsUtilityHelper;
-        private readonly FileWrapperHelper _fileWrapperHelper;
+        private readonly FileDtoHelper _fileDtoHelper;
         private readonly ReportHelper _reportHelper;
         private readonly Global _global;
         private readonly SettingsManager _settingsManager;
@@ -59,7 +58,7 @@ namespace ASC.CRM.Api
                      SettingsManager settingsManager,
                      Global global,
                      ReportHelper reportHelper,
-                     FileWrapperHelper fileWrapperHelper,
+                     FileDtoHelper fileDtoHelper,
                      DocbuilderReportsUtilityHelper docbuilderReportsUtilityHelper,
                      IMapper mapper
                      )
@@ -68,7 +67,7 @@ namespace ASC.CRM.Api
             _settingsManager = settingsManager;
             _global = global;
             _reportHelper = reportHelper;
-            _fileWrapperHelper = fileWrapperHelper;
+            _fileDtoHelper = fileDtoHelper;
             _docbuilderReportsUtilityHelper = docbuilderReportsUtilityHelper;
         }
 
@@ -78,8 +77,8 @@ namespace ASC.CRM.Api
         /// <category>Reports</category>
         /// <returns>Report files</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
-        [Read(@"report/files")]
-        public Task<IEnumerable<FileWrapper<int>>> GetFilesAsync()
+        [HttpGet(@"report/files")]
+        public Task<IEnumerable<FileDto<int>>> GetFilesAsync()
         {
             if (!_global.CanCreateReports)
                 throw _crmSecurity.CreateSecurityException();
@@ -87,7 +86,7 @@ namespace ASC.CRM.Api
             return InternalGetFilesAsync();
             }
 
-        private async Task<IEnumerable<FileWrapper<int>>> InternalGetFilesAsync()
+        private async Task<IEnumerable<FileDto<int>>> InternalGetFilesAsync()
         {
             var reportDao = _daoFactory.GetReportDao();
 
@@ -107,10 +106,10 @@ namespace ASC.CRM.Api
                 }
             }
 
-            List<FileWrapper<int>> result = new List<FileWrapper<int>>(files.Count);
+            List<FileDto<int>> result = new List<FileDto<int>>(files.Count);
             foreach (var file in files)
             {
-                result.Add(await _fileWrapperHelper.GetAsync<int>(file));
+                result.Add(await _fileDtoHelper.GetAsync<int>(file));
             }
 
             return result.OrderByDescending(file => file.Id);
@@ -123,7 +122,7 @@ namespace ASC.CRM.Api
         /// <exception cref="SecurityException">if user can't create reports</exception>
         /// <exception cref="ArgumentException">if fileid les than 0</exception>
         /// <exception cref="ItemNotFoundException">if file not found</exception>
-        [Delete(@"report/file/{fileid:int}")]
+        [HttpDelete(@"report/file/{fileid:int}")]
         public void DeleteFile(int fileid)
         {
             if (!_global.CanCreateReports)
@@ -138,7 +137,7 @@ namespace ASC.CRM.Api
             _daoFactory.GetReportDao().DeleteFile(fileid);
         }
 
-        [Delete(@"report/fileAsync/{fileid:int}")]
+        [HttpDelete(@"report/fileAsync/{fileid:int}")]
         public Task DeleteFileAsync(int fileid)
         {
             if (!_global.CanCreateReports)
@@ -163,7 +162,7 @@ namespace ASC.CRM.Api
         /// <category>Reports</category>
         /// <returns>Report state</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
-        [Read(@"report/status")]
+        [HttpGet(@"report/status")]
         public ReportState GetStatus()
         {
             if (!_global.CanCreateReports)
@@ -177,7 +176,7 @@ namespace ASC.CRM.Api
         /// <short>Terminate report generation</short>
         /// <category>Reports</category>
         /// <exception cref="SecurityException">if user can't create reports</exception>
-        [Read(@"report/terminate")]
+        [HttpGet(@"report/terminate")]
         public void Terminate()
         {
             if (!_global.CanCreateReports)
@@ -194,7 +193,7 @@ namespace ASC.CRM.Api
         /// <category>Reports</category>
         /// <returns>Object</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
-        [Create(@"report/check")]
+        [HttpPost(@"report/check")]
         public object CheckReportData([FromBody] ReportDataRequestDto inDto)
         {
             var type = inDto.Type;
@@ -219,7 +218,7 @@ namespace ASC.CRM.Api
         /// <category>Reports</category>
         /// <returns>Report state</returns>
         /// <exception cref="SecurityException">if user can't create reports</exception>
-        [Create(@"report/generate")]
+        [HttpPost(@"report/generate")]
         public ReportState GenerateReport([FromBody] ReportDataRequestDto inDto)
         {
             var type = inDto.Type;

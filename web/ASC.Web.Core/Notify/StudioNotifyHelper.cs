@@ -1,230 +1,219 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Constants = ASC.Core.Users.Constants;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
+namespace ASC.Web.Studio.Core.Notify;
 
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-using ASC.Notify.Model;
-using ASC.Notify.Recipients;
-using ASC.Web.Core.Utility.Skins;
-using ASC.Web.Core.WhiteLabel;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Web.Studio.Core.Notify
+[Scope]
+public class StudioNotifyHelper
 {
-    [Scope]
-    public class StudioNotifyHelper
+    public readonly string Helplink;
+    public readonly StudioNotifySource NotifySource;
+    public readonly ISubscriptionProvider SubscriptionProvider;
+    public readonly IRecipientProvider RecipientsProvider;
+
+    private readonly int _countMailsToNotActivated;
+    private readonly string _notificationImagePath;
+    private readonly UserManager _userManager;
+    private readonly SettingsManager _settingsManager;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly TenantManager _tenantManager;
+    private readonly TenantExtra _tenantExtra;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly WebImageSupplier _webImageSupplier;
+    private readonly ILogger<StudioNotifyHelper> _logger;
+
+    public StudioNotifyHelper(
+        StudioNotifySource studioNotifySource,
+        UserManager userManager,
+        SettingsManager settingsManager,
+        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        CommonLinkUtility commonLinkUtility,
+        TenantManager tenantManager,
+        TenantExtra tenantExtra,
+        CoreBaseSettings coreBaseSettings,
+        WebImageSupplier webImageSupplier,
+        IConfiguration configuration,
+        ILogger<StudioNotifyHelper> logger)
     {
-        public readonly string Helplink;
+        Helplink = commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false);
+        NotifySource = studioNotifySource;
+        _userManager = userManager;
+        _settingsManager = settingsManager;
+        _commonLinkUtility = commonLinkUtility;
+        _tenantManager = tenantManager;
+        _tenantExtra = tenantExtra;
+        _coreBaseSettings = coreBaseSettings;
+        _webImageSupplier = webImageSupplier;
+        SubscriptionProvider = NotifySource.GetSubscriptionProvider();
+        RecipientsProvider = NotifySource.GetRecipientsProvider();
+        _logger = logger;
 
-        public readonly StudioNotifySource NotifySource;
+        int.TryParse(configuration["core:notify:countspam"], out _countMailsToNotActivated);
+        _notificationImagePath = configuration["web:notification:image:path"];
+    }
 
-        public readonly ISubscriptionProvider SubscriptionProvider;
 
-        public readonly IRecipientProvider RecipientsProvider;
-
-        private readonly int CountMailsToNotActivated;
-
-        private readonly string NotificationImagePath;
-
-        private UserManager UserManager { get; }
-        private SettingsManager SettingsManager { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private SetupInfo SetupInfo { get; }
-        private TenantManager TenantManager { get; }
-        private TenantExtra TenantExtra { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private WebImageSupplier WebImageSupplier { get; }
-        private ILog Log { get; }
-
-        public StudioNotifyHelper(
-            StudioNotifySource studioNotifySource,
-            UserManager userManager,
-            SettingsManager settingsManager,
-            AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
-            CommonLinkUtility commonLinkUtility,
-            SetupInfo setupInfo,
-            TenantManager tenantManager,
-            TenantExtra tenantExtra,
-            CoreBaseSettings coreBaseSettings,
-            WebImageSupplier webImageSupplier,
-            IConfiguration configuration,
-            IOptionsMonitor<ILog> option)
+    public IEnumerable<UserInfo> GetRecipients(bool toadmins, bool tousers, bool toguests)
+    {
+        if (toadmins)
         {
-            Helplink = commonLinkUtility.GetHelpLink(settingsManager, additionalWhiteLabelSettingsHelper, false);
-            NotifySource = studioNotifySource;
-            UserManager = userManager;
-            SettingsManager = settingsManager;
-            CommonLinkUtility = commonLinkUtility;
-            SetupInfo = setupInfo;
-            TenantManager = tenantManager;
-            TenantExtra = tenantExtra;
-            CoreBaseSettings = coreBaseSettings;
-            WebImageSupplier = webImageSupplier;
-            SubscriptionProvider = NotifySource.GetSubscriptionProvider();
-            RecipientsProvider = NotifySource.GetRecipientsProvider();
-            Log = option.CurrentValue;
-
-            int.TryParse(configuration["core:notify:countspam"], out CountMailsToNotActivated);
-            NotificationImagePath = configuration["web:notification:image:path"];
-        }
-
-
-        public IEnumerable<UserInfo> GetRecipients(bool toadmins, bool tousers, bool toguests)
-        {
-            if (toadmins)
-            {
-                if (tousers)
-                {
-                    if (toguests)
-                        return UserManager.GetUsers();
-
-                    return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User);
-                }
-
-                if (toguests)
-                    return
-                        UserManager.GetUsersByGroup(Constants.GroupAdmin.ID)
-                                   .Concat(UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor));
-
-                return UserManager.GetUsersByGroup(Constants.GroupAdmin.ID);
-            }
-
             if (tousers)
             {
                 if (toguests)
-                    return UserManager.GetUsers()
-                                      .Where(u => !UserManager.IsUserInGroup(u.ID, Constants.GroupAdmin.ID));
+                {
+                    return _userManager.GetUsers();
+                }
 
-                return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.User)
-                                  .Where(u => !UserManager.IsUserInGroup(u.ID, Constants.GroupAdmin.ID));
+                return _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.User);
             }
 
             if (toguests)
-                return UserManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor);
-
-            return new List<UserInfo>();
-        }
-
-        public IRecipient ToRecipient(Guid userId)
-        {
-            return RecipientsProvider.GetRecipient(userId.ToString());
-        }
-
-        public IRecipient[] RecipientFromEmail(string email, bool checkActivation)
-        {
-            return RecipientFromEmail(new List<string> { email }, checkActivation);
-        }
-
-        public IRecipient[] RecipientFromEmail(List<string> emails, bool checkActivation)
-        {
-            var res = new List<IRecipient>();
-
-            if (emails == null) return res.ToArray();
-
-            res.AddRange(emails.
-                             Select(email => email.ToLower()).
-                             Select(e => new DirectRecipient(e, null, new[] { e }, checkActivation)));
-
-            if (!checkActivation
-                && CountMailsToNotActivated > 0
-                && TenantExtra.Saas && !CoreBaseSettings.Personal)
             {
-                var tenant = TenantManager.GetCurrentTenant();
-                var tariff = TenantManager.GetTenantQuota(tenant.TenantId);
-                if (tariff.Free || tariff.Trial)
-                {
-                    var spamEmailSettings = SettingsManager.Load<SpamEmailSettings>();
-                    var sended = spamEmailSettings.MailsSended;
-
-                    var mayTake = Math.Max(0, CountMailsToNotActivated - sended);
-                    var tryCount = res.Count;
-                    if (mayTake < tryCount)
-                    {
-                        res = res.Take(mayTake).ToList();
-
-                        Log.Warn(string.Format("Free tenant {0} for today is trying to send {1} more letters without checking activation. Sent {2}", tenant.TenantId, tryCount, mayTake));
-                    }
-                    spamEmailSettings.MailsSended = sended + tryCount;
-                    SettingsManager.Save(spamEmailSettings);
-                }
+                return
+                    _userManager.GetUsersByGroup(Constants.GroupAdmin.ID)
+                               .Concat(_userManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor));
             }
 
+            return _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
+        }
+
+        if (tousers)
+        {
+            if (toguests)
+            {
+                return _userManager.GetUsers()
+                                  .Where(u => !_userManager.IsUserInGroup(u.Id, Constants.GroupAdmin.ID));
+            }
+
+            return _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.User)
+                              .Where(u => !_userManager.IsUserInGroup(u.Id, Constants.GroupAdmin.ID));
+        }
+
+        if (toguests)
+        {
+            return _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor);
+        }
+
+        return new List<UserInfo>();
+    }
+
+    public IRecipient ToRecipient(Guid userId)
+    {
+        return RecipientsProvider.GetRecipient(userId.ToString());
+    }
+
+    public IRecipient[] RecipientFromEmail(string email, bool checkActivation)
+    {
+        return RecipientFromEmail(new List<string> { email }, checkActivation);
+    }
+
+    public IRecipient[] RecipientFromEmail(List<string> emails, bool checkActivation)
+    {
+        var res = new List<IRecipient>();
+
+        if (emails == null)
+        {
             return res.ToArray();
         }
 
-        public string GetNotificationImageUrl(string imageFileName)
+        res.AddRange(emails.
+                         Select(email => email.ToLower()).
+                         Select(e => new DirectRecipient(e, null, new[] { e }, checkActivation)));
+
+        if (!checkActivation
+            && _countMailsToNotActivated > 0
+            && _tenantExtra.Saas && !_coreBaseSettings.Personal)
         {
-            if (string.IsNullOrEmpty(NotificationImagePath))
+            var tenant = _tenantManager.GetCurrentTenant();
+            var tariff = _tenantManager.GetTenantQuota(tenant.Id);
+            if (tariff.Free || tariff.Trial)
             {
-                return
-                    CommonLinkUtility.GetFullAbsolutePath(
-                        WebImageSupplier.GetAbsoluteWebPath("notification/" + imageFileName));
+                var spamEmailSettings = _settingsManager.Load<SpamEmailSettings>();
+                var sended = spamEmailSettings.MailsSended;
+
+                var mayTake = Math.Max(0, _countMailsToNotActivated - sended);
+                var tryCount = res.Count;
+                if (mayTake < tryCount)
+                {
+                    res = res.Take(mayTake).ToList();
+
+                    _logger.WarningFreeTenant(tenant.Id, tryCount, mayTake);
+                }
+                spamEmailSettings.MailsSended = sended + tryCount;
+                _settingsManager.Save(spamEmailSettings);
             }
-
-            return NotificationImagePath.TrimEnd('/') + "/" + imageFileName;
         }
 
+        return res.ToArray();
+    }
 
-        public bool IsSubscribedToNotify(Guid userId, INotifyAction notifyAction)
+    public string GetNotificationImageUrl(string imageFileName)
+    {
+        if (string.IsNullOrEmpty(_notificationImagePath))
         {
-            return IsSubscribedToNotify(ToRecipient(userId), notifyAction);
+            return
+                _commonLinkUtility.GetFullAbsolutePath(
+                    _webImageSupplier.GetAbsoluteWebPath("notification/" + imageFileName));
         }
 
-        public bool IsSubscribedToNotify(IRecipient recipient, INotifyAction notifyAction)
+        return _notificationImagePath.TrimEnd('/') + "/" + imageFileName;
+    }
+
+
+    public bool IsSubscribedToNotify(Guid userId, INotifyAction notifyAction)
+    {
+        return IsSubscribedToNotify(ToRecipient(userId), notifyAction);
+    }
+
+    public bool IsSubscribedToNotify(IRecipient recipient, INotifyAction notifyAction)
+    {
+        return recipient != null && SubscriptionProvider.IsSubscribed(_logger, notifyAction, recipient, null);
+    }
+
+    public void SubscribeToNotify(Guid userId, INotifyAction notifyAction, bool subscribe)
+    {
+        SubscribeToNotify(ToRecipient(userId), notifyAction, subscribe);
+    }
+
+    public void SubscribeToNotify(IRecipient recipient, INotifyAction notifyAction, bool subscribe)
+    {
+        if (recipient == null)
         {
-            return recipient != null && SubscriptionProvider.IsSubscribed(Log, notifyAction, recipient, null);
+            return;
         }
 
-        public void SubscribeToNotify(Guid userId, INotifyAction notifyAction, bool subscribe)
+        if (subscribe)
         {
-            SubscribeToNotify(ToRecipient(userId), notifyAction, subscribe);
+            SubscriptionProvider.Subscribe(notifyAction, null, recipient);
         }
-
-        public void SubscribeToNotify(IRecipient recipient, INotifyAction notifyAction, bool subscribe)
+        else
         {
-            if (recipient == null) return;
-
-            if (subscribe)
-            {
-                SubscriptionProvider.Subscribe(notifyAction, null, recipient);
-            }
-            else
-            {
-                SubscriptionProvider.UnSubscribe(notifyAction, null, recipient);
-            }
+            SubscriptionProvider.UnSubscribe(notifyAction, null, recipient);
         }
     }
 }

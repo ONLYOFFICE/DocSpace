@@ -50,7 +50,7 @@ namespace ASC.CRM.ApiModels
         public InvoiceTaxDto InvoiceTax1 { get; set; }
         public InvoiceTaxDto InvoiceTax2 { get; set; }
         public ApiDateTime CreateOn { get; set; }
-        public EmployeeWraper CreateBy { get; set; }
+        public EmployeeDto CreateBy { get; set; }
         public bool CanEdit { get; set; }
         public bool CanDelete { get; set; }
 

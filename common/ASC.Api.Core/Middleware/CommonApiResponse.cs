@@ -1,98 +1,143 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Api.Core.Middleware
+namespace ASC.Api.Core.Middleware;
+
+public abstract class CommonApiResponse
 {
-    public abstract class CommonApiResponse
+    public int Status { get; set; }
+    public HttpStatusCode StatusCode { get; set; }
+
+    public CommonApiResponse()
     {
-        public int Status { get; set; }
 
-        public HttpStatusCode StatusCode { get; set; }
-
-        protected CommonApiResponse(HttpStatusCode statusCode)
-        {
-            StatusCode = statusCode;
-        }
     }
 
-    public class ErrorApiResponse : CommonApiResponse
+    protected CommonApiResponse(HttpStatusCode statusCode)
     {
-        public CommonApiError Error { get; set; }
+        StatusCode = statusCode;
 
-        protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error, string message, bool withStackTrace) : base(statusCode)
-        {
-            Status = 1;
-            Error = CommonApiError.FromException(error, message, withStackTrace);
-        }
     }
+}
 
-    public class SuccessApiResponse : CommonApiResponse
+public class ErrorApiResponse : CommonApiResponse
+{
+    public CommonApiError Error { get; set; }
+
+    protected internal ErrorApiResponse(HttpStatusCode statusCode, Exception error, string message, bool withStackTrace) : base(statusCode)
     {
-        public int? Count { get; set; }
+        Status = 1;
+        Error = CommonApiError.FromException(error, message, withStackTrace);
+    }
+}
 
-        public long? Total { get; set; }
+public class SuccessApiResponse : CommonApiResponse
+{
+    private readonly HttpContext _httpContext;
 
-        public object Response { get; set; }
+    public object Response { get; set; }
 
-        protected internal SuccessApiResponse(HttpStatusCode statusCode, object response, long? total = null, int? count = null) : base(statusCode)
+    public int? Count
+    {
+        get
         {
-            Status = 0;
-            Response = response;
-            Total = total;
 
-            if (count.HasValue)
+            if (_httpContext.Items.TryGetValue("Count", out var count))
             {
-                Count = count;
+                return (int?)count;
+            }
+
+            if (Response is List<object> list)
+            {
+                return list.Count;
+            }
+
+            if (Response is IEnumerable<object> collection)
+            {
+                return collection.Count();
+            }
+
+            if (Response == null)
+            {
+                return 0;
             }
             else
             {
-                if (response is List<object> list)
-                {
-                    Count = list.Count;
-                }
-                else if (response is IEnumerable<object> collection)
-                {
-                    Count = collection.Count();
-                }
-                else if (response == null)
-                {
-                    Count = 0;
-                }
-                else
-                {
-                    Count = 1;
-                }
+                return 1;
             }
         }
     }
 
-    public class CommonApiError
+    public long? Total
     {
-        public string Message { get; set; }
-
-        public string Type { get; set; }
-
-        public string Stack { get; set; }
-
-        public int Hresult { get; set; }
-
-        public static CommonApiError FromException(Exception exception, string message, bool withStackTrace)
+        get
         {
-            var result = new CommonApiError()
+            if (_httpContext.Items.TryGetValue("TotalCount", out var total))
             {
-                Message = message ?? exception.Message
-            };
-
-            if (withStackTrace)
-            {
-                result.Type = exception.GetType().ToString();
-                result.Stack = exception.StackTrace;
-                result.Hresult = exception.HResult;
+                return (long?)total;
             }
 
-            return result;
+            return null;
         }
+    }
+
+    public SuccessApiResponse()
+    {
+
+    }
+
+    protected internal SuccessApiResponse(HttpContext httpContext, object response) : base((HttpStatusCode)httpContext.Response.StatusCode)
+    {
+        Status = 0;
+        _httpContext = httpContext;
+        Response = response;
+    }
+}
+
+public class CommonApiError
+{
+    public string Message { get; set; }
+    public string Type { get; set; }
+    public string Stack { get; set; }
+    public int Hresult { get; set; }
+
+    public static CommonApiError FromException(Exception exception, string message, bool withStackTrace)
+    {
+        var result = new CommonApiError()
+        {
+            Message = message ?? exception.Message
+        };
+
+        if (withStackTrace)
+        {
+            result.Type = exception.GetType().ToString();
+            result.Stack = exception.StackTrace;
+            result.Hresult = exception.HResult;
+        }
+
+        return result;
     }
 }

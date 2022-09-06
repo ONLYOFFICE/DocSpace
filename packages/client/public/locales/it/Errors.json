@@ -1,0 +1,7 @@
+{
+  "Error401Text": "Spiacente, la risorsa non è attualmente accessibile.",
+  "Error403Text": "Spiacente, accesso negato.",
+  "Error404Text": "Spiacente, impossibile trovare la risorsa.",
+  "ErrorEmptyResponse": "Risposta vuota",
+  "ErrorOfflineText": "Nessuna connessione a internet trovata"
+}

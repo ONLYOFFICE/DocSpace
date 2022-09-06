@@ -1,6 +1,0 @@
-﻿{
-  "DeleteGroupUsersMessage": "Вимкнені користувачі, яких ви вибрали, будуть видалені.",
-  "DeleteGroupUsersMessageHeader": "Видалити користувачів з порталу",
-  "DeleteGroupUsersSuccessMessage": "Користувачів успішно видалено.",
-  "DeleteUserDataConfirmation": "Документи користувачів, до яких надано спільний доступ, будуть видалені. Щоб цьому запобігти, перепризначте дані."
-}

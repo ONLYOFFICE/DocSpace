@@ -1,6 +1,0 @@
-﻿{
-  "DeleteGroupUsersMessage": "Os utilizadores desativados selecionados por si serão eliminados.",
-  "DeleteGroupUsersMessageHeader": "Eliminar os utilizadores do portal",
-  "DeleteGroupUsersSuccessMessage": "Os utilizadores foram eliminados com êxito.",
-  "DeleteUserDataConfirmation": "Os documentos dos utilizadores partilhados serão eliminados. Para evitar isto, reatribuir dados."
-}

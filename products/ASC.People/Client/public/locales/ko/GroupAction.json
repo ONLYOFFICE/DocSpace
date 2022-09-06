@@ -1,8 +1,0 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (creation)",
-  "GroupAction": "그룹 액션",
-  "Members": "멤버",
-  "SearchAddedMembers": "추가된 멤버 검색",
-  "SelectAction": "선택",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' 그룹이 성공적으로 저장되었습니다"
-}

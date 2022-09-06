@@ -1,0 +1,5 @@
+{
+  "DeleteUser": "删除用户",
+  "DeleteUserMessage": "{{userCaption}} <strong>{{user}}</strong> 将被删除。可供他人使用的用户个人文件将被删除。为了避免这种情况，您必须在删除之前启动数据重新分配程序。",
+  "SuccessfullyDeleteUserInfoMessage": "用户已成功删除。"
+}

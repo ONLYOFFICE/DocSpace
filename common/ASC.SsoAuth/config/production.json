@@ -2,8 +2,8 @@
   "app": {
     "name": "Onlyoffice Single Sign-On handler",
     "port": 9834,
-    "machinekey": "Vskoproizvolny Salt par Chivreski",
-    "logDir": "/var/log/onlyoffice/",
+    "appsettings": "../../../config",
+    "environment": "Development",
     "logName": "web.sso.%DATE%.log",
     "logSamlData": false,
     "portal": {

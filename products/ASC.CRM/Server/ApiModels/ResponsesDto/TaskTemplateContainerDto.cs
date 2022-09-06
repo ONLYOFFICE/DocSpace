@@ -68,7 +68,7 @@ namespace ASC.CRM.ApiModels
         public int ContainerID { get; set; }
         public String Title { get; set; }
         public String Description { get; set; }
-        public EmployeeWraper Responsible { get; set; }
+        public EmployeeDto Responsible { get; set; }
         public TaskCategoryDto Category { get; set; }
         public bool isNotify { get; set; }
         public long OffsetTicks { get; set; }
@@ -81,7 +81,7 @@ namespace ASC.CRM.ApiModels
                 Title = "Send an Email",
                 Category = TaskCategoryDto.GetSample(),
                 isNotify = true,
-                Responsible = EmployeeWraper.GetSample(),
+                Responsible = EmployeeDto.GetSample(),
                 ContainerID = 12,
                 DeadLineIsFixed = false,
                 OffsetTicks = TimeSpan.FromDays(10).Ticks,

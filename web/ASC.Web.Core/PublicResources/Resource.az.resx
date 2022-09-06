@@ -1,0 +1,316 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Təsdiq kodu sahəsi boş ola bilməz</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Mobil telefon nömrəsi daxil edin</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>Təsdiq kodu sahəsi boş ola bilməz</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Administrator bildirişləri</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Sizin mesajınız uğurla göndərilmişdi. Portalın administratoru Sizinlə əlaqə saxlayacaq.</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>SMS vasitəsi ilə</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value> Audentifikasiya tətbiqi ilə</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Əməliyyatı təsdiq etmək üçün keçid: e-poçt ünvanına göndərildi. (portal sahibinin e-poçt ünvanı)</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>LDAP istifadəçisi üçün parol bərpa əməliyyatı qadağandır</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>SSO istifadəçisi üçün parol bərpa əməliyyatı qadağandır</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>İstifadəçi seçimləri</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Əməliyyatı təsdiq etmək üçün keçid {0} ünvanına göndərildi. (portal sahibinin e-poçt ünvanı)</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Yanlış Nümunə id.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Səhv elektron poçt ünvanı</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Yanlış promo kodu</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Bu əyləmi gerçəkləşdirməyə icazə yoxdur</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>Portala giriş məhdudlaşdırılıb.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Səhv açarlar</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Profiliniz dayandırılıb</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>bu e-poçt ünvanı ilə {!User} artıq qeydiyyata alınıb</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Bu domendən olan e-poçtların qeydiyyata alınmasına icazə verilmir</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>Elektron poçt sahəsi boşdur</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>İndiki elektron poçt və yeni elektron poçt eynidirlər</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Lütfən, bütün sahələri doldurun</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>Mesaj mətni boşdur</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Yüklənən fayl tapılmadı</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Təsvir faylının ölçüsü çox böyükdür</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>Yanlış ad və ya soyad</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Sizin qiymət planınız bu imkanı dəstəkləmir</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Etibarsız elektron poçt</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Etibarsız domen adı</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Parol boşdur.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>{0} - {1} simvolları</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Yalnış yeni parol. O, bunları içərməlidir</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Bunda olmalıdır</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>rəqəmlər</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>Xüsusi simvollar</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>böyük hərflər</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>Sorğu limiti keçib</value>
+  </data>
+  <data name="ErrorTenantTooShort" xml:space="preserve">
+    <value>İcarəçi domeni boş ola bilməz.</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>Domen adı {0} və {1} simvol uzunluğunda olmalıdır.</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>İstifadəçi tapılmadı</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>"{0}" elektron poçtlu istifadəçi tapılmadı</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>Aİ (Frankfurt) Regionu</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>Faylın maksimal ölçüsü aşıldı</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Qeyd: faylın ölçüsü {1}{0}{2}-dən çox ola bilməz</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>bayt, kilobayt, meqabayt, giqabayt</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Hesabınızı təsdiqləmək üçün keçid göstərilmiş elektron poçt ünvanına göndərildi</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>Server parametrləri saxlaya bilmədi.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Həddindən artıq LDAP əməliyyatları.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Lisenziya düzgün deyil</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Lisenziya bu portal versiyası üçün etibarlı deyil.</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Portalların sayı lisenziya ilə icazə veriləndən çoxdur</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>İstifadəçilərin sayı lisenziya ilə icazə veriləndən artıqdır</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Uğurla yükləndi</value>
+  </data>
+  <data name="LicenseUploadedOverdue" xml:space="preserve">
+    <value>Uğurla yükləndi. {0}Bu lisenziya üçün dəstək və yeniləmələr {2} tarixindən etibarən mövcud deyil.{1}</value>
+  </data>
+  <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
+    <value>Uğurla yükləndi. {0}Bu lisenziya üçün dəstək {2} tarixindən etibarən mövcud deyil.{1}</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Elektron poçt dəyişdirilmə instruksiyaları {0} elektron poçt ünvanına göndərildi.</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>{0} e-poçtu olan istifadəçi varsa, parol dəyişdirmə təlimatı bu e-poçt ünvanına göndərilib.</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Nömrəni dəyişmək üçün cari telefon nömrənizi silməlisiniz</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG Regionu</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Sahib</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>Disk sahəsi kvotası keçildi</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Portala Giriş</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>{0} üçün datanın yenidən təyin edilməsi prosesi tamamlanmayıb.</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Yanlış Recaptcha</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Asiya Sakit Okean (Sinqapur)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Səhv kod</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Portala daxil olmaq üçün kodunuz: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Kodun istifadə müddəti başa çatıb. Yeni mətn mesajı tələb edin.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>SMS parametrləri mövcud deyil</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Siz həddən artıq çox mətn mesajı göndərmisiniz. Zəhmət olmasa bir az sonra yenə cəhd edin.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Parametrləri yaddaşda saxlamaq mümkün olmadı</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Parametrlər sıfır ola bilməz</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Yanlış əlaqələndirmə: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Yanlış qurum İD-si</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Yanlış sahələrin xəritəsi</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Salamlama ayarları uğurla qeyd edildi</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Ayarlar uğurla yeniləndi</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Profilinizin silinməsi üçün instruksiyalar Sizin elektron poçt ünvanınıza göndərildi</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>Səhv kod</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>TFA proqram parametrləri mövcud deyil</value>
+  </data>
+  <data name="TfaTooMuchError" xml:space="preserve">
+    <value>Siz həddən artıq çox mətn mesajı göndərmisiniz. Zəhmət olmasa bir az sonra yenə cəhd edin.</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>ABŞ Qərbi (Oreqon) Bölgəsi</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>Yeniliklər</value>
+  </data>
+</root>

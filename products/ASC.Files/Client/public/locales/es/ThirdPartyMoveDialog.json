@@ -1,5 +1,0 @@
-﻿{
-  "MoveConfirmation": "Confirmación de movimiento",
-  "MoveConfirmationAlert": "¿Está seguro de que quiere mover los elementos?",
-  "MoveConfirmationMessage": "Está a punto de mover elementos del directorio {{provider}}. Se eliminarán de su cuenta {{provider}} y ya no serán accesibles para otros usuarios."
-}

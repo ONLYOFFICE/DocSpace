@@ -1,5 +1,0 @@
-﻿{
-  "MoveConfirmation": "Move confirmation",
-  "MoveConfirmationAlert": "Are you sure you want to move the elements?",
-  "MoveConfirmationMessage": "You are about to move elements from the {{provider}} directory. They will be deleted from your {{provider}} account and will no longer be accessible to other users."
-}

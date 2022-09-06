@@ -49,11 +49,11 @@ namespace ASC.Web.CRM.Classes
         public readonly int MaxRoxCount = 10000;
 
         public ImportFromCSV(TenantManager tenantProvider,
-                             DistributedTaskQueueOptionsManager progressQueueOptionsManager,
+                             IDistributedTaskQueueFactory factory,
                              ImportDataOperation importDataOperation)
         {
-            _tenantId = tenantProvider.GetCurrentTenant().TenantId;
-            _importQueue = progressQueueOptionsManager.Get<ImportDataOperation>();
+            _tenantId = tenantProvider.GetCurrentTenant().Id;
+            _importQueue = factory.CreateQueue<ImportDataOperation>();
             _importDataOperation = importDataOperation;
         }
 
@@ -122,7 +122,7 @@ namespace ASC.Web.CRM.Classes
 
         public IProgressItem GetStatus(EntityType entityType)
         {
-            var operation = _importQueue.GetTasks<ImportDataOperation>().FirstOrDefault(x => x.Id == GetKey(entityType));
+            var operation = _importQueue.GetAllTasks<ImportDataOperation>().FirstOrDefault(x => x.Id == GetKey(entityType));
 
             return operation;
         }
@@ -131,11 +131,11 @@ namespace ASC.Web.CRM.Classes
         {
             lock (_syncObj)
             {
-                var operation = _importQueue.GetTasks<ImportDataOperation>().FirstOrDefault(x => x.Id == GetKey(entityType));
+                var operation = _importQueue.GetAllTasks<ImportDataOperation>().FirstOrDefault(x => x.Id == GetKey(entityType));
 
                 if (operation != null && operation.IsCompleted)
                 {
-                    _importQueue.RemoveTask(operation.Id);
+                    _importQueue.DequeueTask(operation.Id);
 
                     operation = null;
 
@@ -144,7 +144,7 @@ namespace ASC.Web.CRM.Classes
                 if (operation == null)
                 {
                     _importDataOperation.Configure(entityType, CSVFileURI, importSettingsJSON);
-                    _importQueue.QueueTask(_importDataOperation);
+                    _importQueue.EnqueueTask(_importDataOperation);
                 }
 
                 return operation;

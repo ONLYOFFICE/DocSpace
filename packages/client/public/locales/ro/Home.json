@@ -1,0 +1,6 @@
+{
+  "GoodAfternoon": "Bună ziua, {{displayName}}!",
+  "GoodEvening": "Bună seara, {{displayName}}!",
+  "GoodMorning": "Bună dimineața, {{displayName}}!",
+  "NoOneModulesAvailable": "Nu este disponibil niciun modul"
+}

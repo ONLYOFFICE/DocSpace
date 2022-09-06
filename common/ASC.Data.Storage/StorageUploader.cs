@@ -1,277 +1,264 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Data.Storage;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Common.Logging;
-using ASC.Common.Threading;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Data.Storage.Configuration;
-using ASC.Protos.Migration;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Data.Storage
+[Singletone]
+public class StorageUploader
 {
-    [Singletone]
-    public class StorageUploader
+    protected readonly DistributedTaskQueue _queue;
+
+    private static readonly object _locker;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly TempStream _tempStream;
+    private readonly ICacheNotify<MigrationProgress> _cacheMigrationNotify;
+    private readonly ILogger<StorageUploader> _logger;
+
+    static StorageUploader()
     {
-        protected readonly DistributedTaskQueue Queue;
+        _locker = new object();
+    }
 
-        private static readonly object Locker;
+    public StorageUploader(
+        IServiceProvider serviceProvider,
+        TempStream tempStream,
+        ICacheNotify<MigrationProgress> cacheMigrationNotify,
+        IDistributedTaskQueueFactory queueFactory,
+        ILogger<StorageUploader> logger)
+    {
+        _serviceProvider = serviceProvider;
+        _tempStream = tempStream;
+        _cacheMigrationNotify = cacheMigrationNotify;
+        _logger = logger;
+        _queue = queueFactory.CreateQueue();
+    }
 
-        private IServiceProvider ServiceProvider { get; }
-        private TempStream TempStream { get; }
-        private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
-
-        static StorageUploader()
+    public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)
+    {
+        lock (_locker)
         {
-            Locker = new object();
-        }
+            var id = GetCacheKey(tenantId);
 
-        public StorageUploader(IServiceProvider serviceProvider, TempStream tempStream, ICacheNotify<MigrationProgress> cacheMigrationNotify, DistributedTaskQueueOptionsManager options)
-        {
-            ServiceProvider = serviceProvider;
-            TempStream = tempStream;
-            CacheMigrationNotify = cacheMigrationNotify;
-            Queue = options.Get(nameof(StorageUploader));
-        }
-
-        public void Start(int tenantId, StorageSettings newStorageSettings, StorageFactoryConfig storageFactoryConfig)
-        {
-            lock (Locker)
+            if (_queue.GetAllTasks().Any(x => x.Id == id))
             {
-                var id = GetCacheKey(tenantId);
-                var migrateOperation = Queue.GetTask<MigrateOperation>(id);
-                if (migrateOperation != null) return;
-
-                migrateOperation = new MigrateOperation(ServiceProvider, CacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, TempStream);
-                Queue.QueueTask(migrateOperation);
+                return;
             }
-        }
 
-        public MigrateOperation GetProgress(int tenantId)
-                {
-                    lock (Locker)
-                    {
-                return Queue.GetTask<MigrateOperation>(GetCacheKey(tenantId));
-                    }
-        }
-
-        public void Stop()
-        {
-            foreach (var task in Queue.GetTasks<MigrateOperation>().Where(r => r.Status == DistributedTaskStatus.Running))
-            {
-                Queue.CancelTask(task.Id);
-            }
-        }
-
-        private static string GetCacheKey(int tenantId)
-        {
-            return typeof(MigrateOperation).FullName + tenantId;
+            var migrateOperation = new MigrateOperation(_serviceProvider, _cacheMigrationNotify, id, tenantId, newStorageSettings, storageFactoryConfig, _tempStream, _logger);
+            _queue.EnqueueTask(migrateOperation);
         }
     }
 
-    [Transient]
-    public class MigrateOperation : DistributedTaskProgress
+    public MigrateOperation GetProgress(int tenantId)
     {
-        private readonly ILog Log;
-        private static readonly string ConfigPath;
-        private readonly IEnumerable<string> Modules;
-        private readonly StorageSettings settings;
-        private readonly int tenantId;
-
-        static MigrateOperation()
+        lock (_locker)
         {
-            ConfigPath = "";
+            return _queue.PeekTask<MigrateOperation>(GetCacheKey(tenantId));
         }
+    }
 
-        public MigrateOperation(
-            IServiceProvider serviceProvider,
-            ICacheNotify<MigrationProgress> cacheMigrationNotify,
-            string id,
-            int tenantId,
-            StorageSettings settings,
-            StorageFactoryConfig storageFactoryConfig,
-            TempStream tempStream)
+    public void Stop()
+    {
+        foreach (var task in _queue.GetAllTasks(DistributedTaskQueue.INSTANCE_ID).Where(r => r.Status == DistributedTaskStatus.Running))
         {
-            Id = id;
-            Status = DistributedTaskStatus.Created;
-
-            ServiceProvider = serviceProvider;
-            CacheMigrationNotify = cacheMigrationNotify;
-            this.tenantId = tenantId;
-            this.settings = settings;
-            StorageFactoryConfig = storageFactoryConfig;
-            TempStream = tempStream;
-            Modules = storageFactoryConfig.GetModuleList(ConfigPath, true);
-            StepCount = Modules.Count();
-            Log = serviceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
+            _queue.DequeueTask(task.Id);
         }
+    }
 
-        private IServiceProvider ServiceProvider { get; }
-        private StorageFactoryConfig StorageFactoryConfig { get; }
-        private TempStream TempStream { get; }
-        private ICacheNotify<MigrationProgress> CacheMigrationNotify { get; }
+    private static string GetCacheKey(int tenantId)
+    {
+        return typeof(MigrateOperation).FullName + tenantId;
+    }
+}
 
-        protected override void DoJob()
+[Transient]
+public class MigrateOperation : DistributedTaskProgress
+{
+    private static readonly string _configPath;
+    private readonly ILogger<StorageUploader> _logger;
+    private readonly IEnumerable<string> _modules;
+    private readonly StorageSettings _settings;
+    private readonly int _tenantId;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly StorageFactoryConfig _storageFactoryConfig;
+    private readonly TempStream _tempStream;
+    private readonly ICacheNotify<MigrationProgress> _cacheMigrationNotify;
+
+    static MigrateOperation()
+    {
+        _configPath = string.Empty;
+    }
+
+    public MigrateOperation(
+        IServiceProvider serviceProvider,
+        ICacheNotify<MigrationProgress> cacheMigrationNotify,
+        string id,
+        int tenantId,
+        StorageSettings settings,
+        StorageFactoryConfig storageFactoryConfig,
+        TempStream tempStream,
+        ILogger<StorageUploader> logger)
+    {
+        Id = id;
+        Status = DistributedTaskStatus.Created;
+
+        _serviceProvider = serviceProvider;
+        _cacheMigrationNotify = cacheMigrationNotify;
+        _tenantId = tenantId;
+        _settings = settings;
+        _storageFactoryConfig = storageFactoryConfig;
+        _tempStream = tempStream;
+        _modules = storageFactoryConfig.GetModuleList(_configPath, true);
+        StepCount = _modules.Count();
+        _logger = logger;
+    }
+
+    public object Clone()
+    {
+        return MemberwiseClone();
+    }
+
+    protected override void DoJob()
+    {
+        try
         {
-            try
+            _logger.DebugTenant(_tenantId);
+            Status = DistributedTaskStatus.Running;
+
+            using var scope = _serviceProvider.CreateScope();
+            var tempPath = scope.ServiceProvider.GetService<TempPath>();
+            var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
+            var (tenantManager, securityContext, storageFactory, options, storageSettingsHelper, settingsManager) = scopeClass;
+            var tenant = tenantManager.GetTenant(_tenantId);
+            tenantManager.SetCurrentTenant(tenant);
+
+            securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
+
+            foreach (var module in _modules)
             {
-                Log.DebugFormat("Tenant: {0}", tenantId);
-                Status = DistributedTaskStatus.Running;
+                var oldStore = storageFactory.GetStorage(_configPath, _tenantId.ToString(), module);
+                var store = storageFactory.GetStorageFromConsumer(_configPath, _tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(_settings));
+                var domains = _storageFactoryConfig.GetDomainList(_configPath, module).ToList();
 
-                using var scope = ServiceProvider.CreateScope();
-                var tempPath = scope.ServiceProvider.GetService<TempPath>();
-                var scopeClass = scope.ServiceProvider.GetService<MigrateOperationScope>();
-                var (tenantManager, securityContext, storageFactory, options, storageSettingsHelper, settingsManager) = scopeClass;
-                var tenant = tenantManager.GetTenant(tenantId);
-                tenantManager.SetCurrentTenant(tenant);
+                var crossModuleTransferUtility = new CrossModuleTransferUtility(options, _tempStream, tempPath, oldStore, store);
 
-                securityContext.AuthenticateMeWithoutCookie(tenant.OwnerId);
-
-                foreach (var module in Modules)
+                string[] files;
+                foreach (var domain in domains)
                 {
-                    var oldStore = storageFactory.GetStorage(ConfigPath, tenantId.ToString(), module);
-                    var store = storageFactory.GetStorageFromConsumer(ConfigPath, tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(settings));
-                    var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
-
-                    var crossModuleTransferUtility = new CrossModuleTransferUtility(options, TempStream, tempPath, oldStore, store);
-
-                    string[] files;
-                    foreach (var domain in domains)
-                    {
-                        //Status = module + domain;
-                        Log.DebugFormat("Domain: {0}", domain);
-                        files = oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result;
-
-                        foreach (var file in files)
-                        {
-                            Log.DebugFormat("File: {0}", file);
-                            crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file).Wait();
-                        }
-                    }
-
-                    Log.Debug("Domain:");
-
-                    files = oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
-                        .Where(path => domains.All(domain => !path.Contains(domain + "/")))
-                        .ToArray();
+                    //Status = module + domain;
+                    _logger.DebugDomain(domain);
+                    files = oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result;
 
                     foreach (var file in files)
                     {
-                        Log.DebugFormat("File: {0}", file);
-                        crossModuleTransferUtility.CopyFileAsync("", file, "", file).Wait();
+                        _logger.DebugFile(file);
+                        crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file).Wait();
                     }
-
-                    StepDone();
-
-                    MigrationPublish();
                 }
 
-                settingsManager.Save(settings);
-                tenant.SetStatus(TenantStatus.Active);
-                tenantManager.SaveTenant(tenant);
+                files = oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
+                .Where(path => domains.All(domain => !path.Contains(domain + "/")))
+                .ToArray();
 
-                Status = DistributedTaskStatus.Completed;
+                foreach (var file in files)
+                {
+                    _logger.DebugFile(file);
+                    crossModuleTransferUtility.CopyFileAsync("", file, "", file).Wait();
+                }
+
+                StepDone();
+
+                MigrationPublish();
             }
-            catch (Exception e)
-            {
-                Status = DistributedTaskStatus.Failted;
-                Exception = e;
-                Log.Error(e);
-            }
 
-            MigrationPublish();
-        }       
+            settingsManager.Save(_settings);
+            tenant.SetStatus(TenantStatus.Active);
+            tenantManager.SaveTenant(tenant);
 
-        public object Clone()
+            Status = DistributedTaskStatus.Completed;
+        }
+        catch (Exception e)
         {
-            return MemberwiseClone();
+            Status = DistributedTaskStatus.Failted;
+            Exception = e;
+            _logger.ErrorMigrateOperation(e);
         }
 
-        private void MigrationPublish()
-        {
-            CacheMigrationNotify.Publish(new MigrationProgress
-            {
-                TenantId = tenantId,
-                Progress = Percentage,
-                Error = Exception.ToString(),
-                IsCompleted = IsCompleted
-            },
-            CacheNotifyAction.Insert);
-        }
+        MigrationPublish();
     }
 
-    public class MigrateOperationScope
+    private void MigrationPublish()
     {
-        private TenantManager TenantManager { get; }
-        private SecurityContext SecurityContext { get; }
-        private StorageFactory StorageFactory { get; }
-        private IOptionsMonitor<ILog> Options { get; }
-        private StorageSettingsHelper StorageSettingsHelper { get; }
-        private SettingsManager SettingsManager { get; }
-
-        public MigrateOperationScope(TenantManager tenantManager,
-            SecurityContext securityContext,
-            StorageFactory storageFactory,
-            IOptionsMonitor<ILog> options,
-            StorageSettingsHelper storageSettingsHelper,
-            SettingsManager settingsManager)
+        _cacheMigrationNotify.Publish(new MigrationProgress
         {
-            TenantManager = tenantManager;
-            SecurityContext = securityContext;
-            StorageFactory = storageFactory;
-            Options = options;
-            StorageSettingsHelper = storageSettingsHelper;
-            SettingsManager = settingsManager;
-        }
+            TenantId = _tenantId,
+            Progress = Percentage,
+            Error = Exception.ToString(),
+            IsCompleted = IsCompleted
+        },
+            CacheNotifyAction.Insert);
+    }
+}
 
-        public void Deconstruct(out TenantManager tenantManager,
-            out SecurityContext securityContext,
-            out StorageFactory storageFactory,
-            out IOptionsMonitor<ILog> options,
-            out StorageSettingsHelper storageSettingsHelper,
-            out SettingsManager settingsManager)
-        {
-            tenantManager = TenantManager;
-            securityContext = SecurityContext;
-            storageFactory = StorageFactory;
-            options = Options;
-            storageSettingsHelper = StorageSettingsHelper;
-            settingsManager = SettingsManager;
-        }
+public class MigrateOperationScope
+{
+    private readonly TenantManager _tenantManager;
+    private readonly SecurityContext _securityContext;
+    private readonly StorageFactory _storageFactory;
+    private readonly ILogger _options;
+    private readonly StorageSettingsHelper _storageSettingsHelper;
+    private readonly SettingsManager _settingsManager;
+
+    public MigrateOperationScope(TenantManager tenantManager,
+        SecurityContext securityContext,
+        StorageFactory storageFactory,
+        ILogger<MigrateOperationScope> options,
+        StorageSettingsHelper storageSettingsHelper,
+        SettingsManager settingsManager)
+    {
+        _tenantManager = tenantManager;
+        _securityContext = securityContext;
+        _storageFactory = storageFactory;
+        _options = options;
+        _storageSettingsHelper = storageSettingsHelper;
+        _settingsManager = settingsManager;
+    }
+
+    public void Deconstruct(out TenantManager tenantManager,
+        out SecurityContext securityContext,
+        out StorageFactory storageFactory,
+        out ILogger options,
+        out StorageSettingsHelper storageSettingsHelper,
+        out SettingsManager settingsManager)
+    {
+        tenantManager = _tenantManager;
+        securityContext = _securityContext;
+        storageFactory = _storageFactory;
+        options = _options;
+        storageSettingsHelper = _storageSettingsHelper;
+        settingsManager = _settingsManager;
     }
 }

@@ -40,15 +40,15 @@ namespace ASC.CRM.Mapping
     public class InvoiceTaxDtoTypeConverter : ITypeConverter<InvoiceTax, InvoiceTaxDto>
     {
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
         private readonly CrmSecurity _crmSecurity;
 
         public InvoiceTaxDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
-                                      EmployeeWraperHelper employeeWraperHelper,
+                                      EmployeeDtoHelper employeeDtoHelper,
                                       CrmSecurity crmSecurity)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
             _crmSecurity = crmSecurity;
         }
 
@@ -64,7 +64,7 @@ namespace ASC.CRM.Mapping
             result.Description = source.Description;
             result.Rate = source.Rate;
             result.CreateOn = _apiDateTimeHelper.Get(source.CreateOn);
-            result.CreateBy = _employeeWraperHelper.Get(source.CreateBy);
+            result.CreateBy = _employeeDtoHelper.Get(source.CreateBy);
             result.CanEdit = _crmSecurity.CanEdit(source);
             result.CanDelete = _crmSecurity.CanDelete(source);
 

@@ -33,20 +33,19 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.CRM.Classes
 {
     [Scope]
     public class CurrencyProvider
     {
-        private readonly ILog _log;
+        private readonly ILogger _log;
         private readonly IHttpClientFactory _clientFactory;
         private readonly object _syncRoot = new object();
         private readonly IConfiguration _configuration;
@@ -57,13 +56,13 @@ namespace ASC.Web.CRM.Classes
         private Dictionary<String, CurrencyInfo> _currencies;
         private readonly DaoFactory _daoFactory;
 
-        public CurrencyProvider(IOptionsMonitor<ILog> logger,
+        public CurrencyProvider(ILogger logger,
                                 IConfiguration configuration,
                                 DaoFactory daoFactory,
                                 SettingsManager settingsManager,
                                 IHttpClientFactory httpClientFactory)
         {
-            _log = logger.Get("ASC");
+            _log = logger;
             _daoFactory = daoFactory;
             _configuration = configuration;
             _settingsManager = settingsManager;
@@ -254,7 +253,7 @@ namespace ASC.Web.CRM.Classes
                         }
                         catch (Exception error)
                         {
-                            _log.Error(error);
+                            _log.LogError(error.ToString());
                             _publisherDate = DateTime.UtcNow;
                         }
                     }
@@ -308,7 +307,7 @@ namespace ASC.Web.CRM.Classes
                 }
                 catch (Exception err)
                 {
-                    _log.Error(err);
+                    _log.LogError(err.ToString());
                 }
             }
         }
@@ -322,7 +321,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception err)
             {
-                _log.Error(err);
+                _log.LogError(err.ToString());
             }
         }
 
@@ -362,7 +361,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception error)
             {
-                _log.Error(error);
+                _log.LogError(error.ToString());
             }
         }
 

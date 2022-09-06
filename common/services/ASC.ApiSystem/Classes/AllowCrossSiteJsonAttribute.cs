@@ -23,23 +23,19 @@
  *
 */
 
+namespace ASC.ApiSystem.Classes;
 
-using System.Web.Http.Filters;
-
-namespace ASC.ApiSystem.Classes
+public class AllowCrossSiteJsonAttribute : System.Web.Http.Filters.ActionFilterAttribute
 {
-    public class AllowCrossSiteJsonAttribute : ActionFilterAttribute
+    public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
     {
-        public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
+        if (actionExecutedContext.Response != null)
         {
-            if (actionExecutedContext.Response != null)
-            {
-                actionExecutedContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
-                //actionExecutedContext.Response.Headers.Add("Access-Control-Allow-Headers", "*");
-                //actionExecutedContext.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
-            }
-
-            base.OnActionExecuted(actionExecutedContext);
+            actionExecutedContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+            //actionExecutedContext.Response.Headers.Add("Access-Control-Allow-Headers", "*");
+            //actionExecutedContext.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
         }
+
+        base.OnActionExecuted(actionExecutedContext);
     }
 }

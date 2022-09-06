@@ -31,10 +31,8 @@ using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
@@ -42,7 +40,7 @@ using ASC.CRM.Resources;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -52,7 +50,7 @@ namespace ASC.CRM.Core.Dao
         public TagDao(DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger,
+            ILogger logger,
             ICache ascCache,
             IMapper mapper) :
                         base(dbContextManager,
@@ -76,14 +74,14 @@ namespace ASC.CRM.Core.Dao
         private bool IsExistInDb(EntityType entityType, String tagName)
         {
             return Query(CrmDbContext.Tags)
-                    .Where(x => x.EntityType == entityType && String.Compare(x.Title, tagName, true) == 0)
+                    .Where(x => x.EntityType == entityType && x.Title.ToLower() == tagName.ToLower())
                     .Any();
         }
 
         private int GetTagId(EntityType entityType, String tagName)
         {
             return Query(CrmDbContext.Tags)
-                    .Where(x => x.EntityType == entityType && String.Compare(x.Title, tagName, true) == 0)
+                    .Where(x => x.EntityType == entityType && x.Title.ToLower() == tagName.ToLower())
                     .Select(x => x.Id)
                     .SingleOrDefault();
         }

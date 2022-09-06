@@ -1,144 +1,144 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Core.ChunkedUploader;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-
-namespace ASC.Core.ChunkedUploader
+[Serializable]
+public class CommonChunkedUploadSession : ICloneable
 {
-    [Serializable]
-    public class CommonChunkedUploadSession : ICloneable
+    public string Id { get; set; }
+    public DateTime Created { get; set; }
+    public DateTime Expired { get; set; }
+    public string Location { get; set; }
+    public long BytesUploaded { get; set; }
+    public long BytesTotal { get; set; }
+    public int TenantId { get; set; }
+    public Guid UserId { get; set; }
+    public bool UseChunks { get; set; }
+    public string CultureName { get; set; }
+    public Dictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
+
+    [JsonIgnore]
+    public string TempPath
     {
-        public string Id { get; set; }
+        get => GetItemOrDefault<string>(TempPathKey);
+        set => Items[TempPathKey] = value;
+    }
 
-        public DateTime Created { get; set; }
+    [JsonIgnore]
+    public string UploadId
+    {
+        get => GetItemOrDefault<string>(UploadIdKey);
+        set => Items[UploadIdKey] = value;
+    }
 
-        public DateTime Expired { get; set; }
+    [JsonIgnore]
+    public string ChunksBuffer
+    {
+        get => GetItemOrDefault<string>(ChunksBufferKey);
+        set => Items[ChunksBufferKey] = value;
+    }
 
-        public string Location { get; set; }
+    private const string TempPathKey = "TempPath";
+    private const string UploadIdKey = "UploadId";
+    private const string ChunksBufferKey = "ChunksBuffer";
 
-        public long BytesUploaded { get; set; }
+    public CommonChunkedUploadSession(long bytesTotal)
+    {
+        Id = Guid.NewGuid().ToString("N");
+        Created = DateTime.UtcNow;
+        BytesUploaded = 0;
+        BytesTotal = bytesTotal;
+        UseChunks = true;
+    }
 
-        public long BytesTotal { get; set; }
-
-        public int TenantId { get; set; }
-
-        public Guid UserId { get; set; }
-
-        public bool UseChunks { get; set; }
-
-        public string CultureName { get; set; }
-
-        public Dictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
-
-        private const string TempPathKey = "TempPath";
-
-        [JsonIgnore]
-        public string TempPath
+    public T GetItemOrDefault<T>(string key)
+    {
+        if (Items.ContainsKey(key) && Items[key] != null)
         {
-            get { return GetItemOrDefault<string>(TempPathKey); }
-            set { Items[TempPathKey] = value; }
-        }
-
-        private const string UploadIdKey = "UploadId";
-
-        [JsonIgnore]
-        public string UploadId
-        {
-            get { return GetItemOrDefault<string>(UploadIdKey); }
-            set { Items[UploadIdKey] = value; }
-        }
-
-        private const string ChunksBufferKey = "ChunksBuffer";
-
-        [JsonIgnore]
-        public string ChunksBuffer
-        {
-            get { return GetItemOrDefault<string>(ChunksBufferKey); }
-            set { Items[ChunksBufferKey] = value; }
-        }
-
-        public CommonChunkedUploadSession(long bytesTotal)
-        {
-            Id = Guid.NewGuid().ToString("N");
-            Created = DateTime.UtcNow;
-            BytesUploaded = 0;
-            BytesTotal = bytesTotal;
-            UseChunks = true;
-        }
-
-        public T GetItemOrDefault<T>(string key)
-        {
-            return Items.ContainsKey(key) && Items[key] is T t ? t : default;
-        }
-
-        public virtual Stream Serialize()
-        {
-            return null;
-        }
-
-        public void TransformItems()
-        {
-            var newItems = new Dictionary<string, object>();
-            foreach(var item in Items)
+            if (Items[key] is T)
             {
-                if (item.Value != null)
+                return (T)Items[key];
+            }
+
+            var jToken = Items[key] as Newtonsoft.Json.Linq.JToken;
+            if (jToken != null)
+            {
+                var item = jToken.ToObject<T>();
+                Items[key] = item;
+                return item;
+            }
+        }
+        return default(T);
+    }
+
+    public virtual Stream Serialize()
+    {
+        return null;
+    }
+
+    public void TransformItems()
+    {
+        var newItems = new Dictionary<string, object>();
+
+        foreach (var item in Items)
+        {
+            if (item.Value != null)
+            {
+                if (item.Value is JsonElement)
                 {
-                    if (item.Value is JsonElement)
+                    var value = (JsonElement)item.Value;
+
+                        switch (value.ValueKind)
                     {
-                        var value = (JsonElement)item.Value;
-                        if (value.ValueKind == JsonValueKind.String)
-                        {
-                            newItems.Add(item.Key, item.Value.ToString());
-                        }
-                        if (value.ValueKind == JsonValueKind.Number)
-                        {
-                            newItems.Add(item.Key, Int32.Parse(item.Value.ToString()));
-                        }
-                        if (value.ValueKind == JsonValueKind.Array)
-                        {
-                            newItems.Add(item.Key, value.EnumerateArray().Select(o => o.ToString()).ToList());
-                        }
-                    }
-                    else
-                    {
-                        newItems.Add(item.Key, item.Value);
+                            case JsonValueKind.String:
+                        newItems.Add(item.Key, item.Value.ToString());
+                                break;
+                            case JsonValueKind.Number:
+                                newItems.Add(item.Key, Int32.Parse(item.Value.ToString()));
+                                break;
+                            case JsonValueKind.Array:
+                        newItems.Add(item.Key, value.EnumerateArray().Select(o => o.ToString()).ToList());
+                                break;
+                            default:
+                                newItems.Add(item.Key, item.Value);
+                                break;
                     }
                 }
+                else
+                {
+                    newItems.Add(item.Key, item.Value);
+                }
             }
-            Items = newItems;
         }
+        Items = newItems;
+    }
 
-        public virtual object Clone()
-        {
-            return (CommonChunkedUploadSession)MemberwiseClone();
-        }
+    public virtual object Clone()
+    {
+        return (CommonChunkedUploadSession)MemberwiseClone();
     }
 }

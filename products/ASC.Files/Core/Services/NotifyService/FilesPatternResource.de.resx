@@ -53,42 +53,34 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_DocuSignComplete" xml:space="preserve">
     <value>h1. Alle Unterzeichner haben den Signiervorgang erfolgreich abgeschlossen $DocumentTitle
 
-Durch diese E-Mail-Benachrichtigung werden Sie darüber informiert, dass alle Unterzeichner den Signiervorgang abgeschlossen haben. "$DocumentTitle":"$DocumentURL".
-
-^Sie erhalten diese E-Mail, weil Sie ein registrierter Benutzer/in von "${__VirtualRootPath}":"${__VirtualRootPath}" Portal sind.^</value>
+Durch diese E-Mail-Benachrichtigung werden Sie darüber informiert, dass alle Unterzeichner den Signiervorgang abgeschlossen haben. "$DocumentTitle":"$DocumentURL".</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle
 
-Für weitere Informationen melden Sie sich bei Ihrem DocuSign Konto an.
-
-^Sie erhalten diese E-Mail, da Sie registrierter Benutzer/in"${__VirtualRootPath}":"${__VirtualRootPath}" des Portals sind.^</value>
+Für weitere Informationen melden Sie sich bei Ihrem DocuSign Konto an.</value>
   </data>
   <data name="pattern_EditorMentions" xml:space="preserve">
     <value>h1. "$__AuthorName":"$__AuthorUrl" hat Sie im Kommentar zum Dokument erwähnt.
 
 Diese Nachricht informiert Sie, dass "$__AuthorName":"$__AuthorUrl" Sie im Kommentar zum Dokument "$DocumentTitle":"$DocumentURL" erwähnt hat:
 
-$Message
-
-^Sie erhalten diese Nachricht, weil Sie ein registrierter Benutzer des Portals "${__VirtualRootPath}":"${__VirtualRootPath}" sind.^</value>
+$Message</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. E-Mailversand ist abgeschlossen
 
 Der E-Mailversand von $MailsCount Nachrichten ist nun abgeschlossen.
 
-Sie können den Status dieser E-Mail-Nachrichten im "Gesendet":"$__VirtualRootPath/addons/mail/#sent"-Ordner des Mail-Moduls überprüfen.
-
-^Sie erhalten diese Nachricht, weil Sie ein registrierter Benutzer des Portals "${__VirtualRootPath}":"${__VirtualRootPath}" sind.^</value>
+Sie können den Status dieser E-Mail-Nachrichten im "Gesendet":"$__VirtualRootPath/addons/mail/#sent"-Ordner des Mail-Moduls überprüfen.</value>
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1.Zugriff auf das Dokument "$DocumentTitle":"$DocumentURL" erteilt

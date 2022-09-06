@@ -1,0 +1,20 @@
+{
+  "Administrator": "Administrador",
+  "ChangeToGuest": "Mudança para {{guestCaption}}",
+  "ChangeToUser": "Mude para {{userCaption}}",
+  "EmptyGroupDescription": "Você pode adicionar novos membros à equipe manualmente ou convidá-los através de um link.",
+  "EmptyGroupTitle": "Ainda não há colegas de equipe aqui",
+  "LblInviteAgain": "Convidar novamente",
+  "LblInvited": "Convidado",
+  "LblSendEmail": "Enviar e-mail",
+  "LblSendMessage": "Enviar mensagem",
+  "LblSetActive": "Ativar",
+  "LblSetDisabled": "Conjunto desativado",
+  "MakeInvitationLink": "Criar link para convite",
+  "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <1>{{email}}</1>",
+  "NotFoundDescription": "Tente um filtro diferente ou limpe-o para ver todas as pessoas da seção.",
+  "NotFoundTitle": "Nenhum colega de equipe encontrado",
+  "ReassignmentData": "Reatribuição de dados",
+  "SuccessfullyRemovedGroup": "O grupo foi removido com sucesso",
+  "UserStatus": "Status"
+}

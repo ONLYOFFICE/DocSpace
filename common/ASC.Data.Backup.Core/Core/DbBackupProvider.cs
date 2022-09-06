@@ -1,228 +1,236 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ConfigurationManager = System.Configuration.ConfigurationManager;
 
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Xml.Linq;
+namespace ASC.Data.Backup;
 
-using ASC.Common;
-using ASC.Common.Utils;
-
-namespace ASC.Data.Backup
+[Scope]
+public class DbBackupProvider : IBackupProvider
 {
-    [Scope]
-    public class DbBackupProvider : IBackupProvider
+    public string Name => "databases";
+
+    private readonly List<string> _processedTables = new List<string>();
+    private readonly DbHelper _dbHelper;
+    private readonly TempStream _tempStream;
+
+    public DbBackupProvider(DbHelper dbHelper, TempStream tempStream)
     {
-        private readonly List<string> processedTables = new List<string>();
-        private readonly DbHelper dbHelper;
-        private readonly TempStream tempStream;
+        _dbHelper = dbHelper;
+        _tempStream = tempStream;
+    }
 
-        public string Name
-        {
-            get { return "databases"; }
-        }
+    public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
-        public DbBackupProvider(DbHelper dbHelper, TempStream tempStream)
+    public IEnumerable<XElement> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
+    {
+        _processedTables.Clear();
+        var xml = new List<XElement>();
+        var connectionKeys = new Dictionary<string, string>();
+
+        foreach (var connectionString in GetConnectionStrings(configs))
         {
-            this.dbHelper = dbHelper;
-            this.tempStream = tempStream;
-        }
-        public IEnumerable<XElement> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
-        {
-            processedTables.Clear();
-            var xml = new List<XElement>();
-            var connectionKeys = new Dictionary<string, string>();
-            foreach (var connectionString in GetConnectionStrings(configs))
+            //do not save the base, having the same provider and connection string is not to duplicate
+            //data, but also expose the ref attribute of repetitive bases for the correct recovery
+            var node = new XElement(connectionString.Name);
+            xml.Add(node);
+
+            var connectionKey = connectionString.ProviderName + connectionString.ConnectionString;
+            if (connectionKeys.TryGetValue(connectionKey, out var value))
             {
-                //do not save the base, having the same provider and connection string is not to duplicate
-                //data, but also expose the ref attribute of repetitive bases for the correct recovery
-                var node = new XElement(connectionString.Name);
-                xml.Add(node);
-
-                var connectionKey = connectionString.ProviderName + connectionString.ConnectionString;
-                if (connectionKeys.TryGetValue(connectionKey, out var value))
-                {
-                    node.Add(new XAttribute("ref", value));
-                }
-                else
-                {
-                    connectionKeys.Add(connectionKey, connectionString.Name);
-                    node.Add(BackupDatabase(tenant, connectionString, writer));
-                }
+                node.Add(new XAttribute("ref", value));
             }
-
-            return xml;
-        }
-
-        public void LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
-        {
-            processedTables.Clear();
-            foreach (var connectionString in GetConnectionStrings(configs))
+            else
             {
-                RestoreDatabase(connectionString, elements, reader);
+                connectionKeys.Add(connectionKey, connectionString.Name);
+                node.Add(BackupDatabase(tenant, connectionString, writer));
             }
         }
 
-        public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+        return xml;
+    }
 
+    public void LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
+    {
+        _processedTables.Clear();
 
-        private void OnProgressChanged(string status, int progress)
+        foreach (var connectionString in GetConnectionStrings(configs))
         {
-            ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(status, progress));
+            RestoreDatabase(connectionString, elements, reader);
         }
+    }
 
+    public IEnumerable<ConnectionStringSettings> GetConnectionStrings(string[] configs)
+    {
+        /*  if (configs.Length == 0)
+          {
+              configs = new string[] { AppDomain.CurrentDomain.SetupInformation.ConfigurationFile }; 
+          }
+          var connectionStrings = new List<ConnectionStringSettings>();
+          foreach (var config in configs)
+          {
+              connectionStrings.AddRange(GetConnectionStrings(GetConfiguration(config)));
+          }
+          return connectionStrings.GroupBy(cs => cs.Name).Select(g => g.First());*/
+        return null;
+    }
 
-        private Configuration GetConfiguration(string config)
+    public IEnumerable<ConnectionStringSettings> GetConnectionStrings(Configuration cfg)
+    {
+        var connectionStrings = new List<ConnectionStringSettings>();
+        foreach (ConnectionStringSettings connectionString in cfg.ConnectionStrings.ConnectionStrings)
         {
-            if (config.Contains(Path.DirectorySeparatorChar) && !Uri.IsWellFormedUriString(config, UriKind.Relative))
+            if (connectionString.Name == "LocalSqlServer" || connectionString.Name == "readonly")
             {
-                var map = new ExeConfigurationFileMap
-                {
-                    ExeConfigFilename = string.Equals(Path.GetExtension(config), ".config", StringComparison.OrdinalIgnoreCase) ? config : CrossPlatform.PathCombine(config, "Web.config")
-                };
-                return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+                continue;
             }
-            return ConfigurationManager.OpenExeConfiguration(config);
-        }
 
-        public IEnumerable<ConnectionStringSettings> GetConnectionStrings(string[] configs)
-        {
-            /*  if (configs.Length == 0)
-              {
-                  configs = new string[] { AppDomain.CurrentDomain.SetupInformation.ConfigurationFile }; 
-              }
-              var connectionStrings = new List<ConnectionStringSettings>();
-              foreach (var config in configs)
-              {
-                  connectionStrings.AddRange(GetConnectionStrings(GetConfiguration(config)));
-              }
-              return connectionStrings.GroupBy(cs => cs.Name).Select(g => g.First());*/
-            return null;
-        }
-
-        public IEnumerable<ConnectionStringSettings> GetConnectionStrings(Configuration cfg)
-        {
-            var connectionStrings = new List<ConnectionStringSettings>();
-            foreach (ConnectionStringSettings connectionString in cfg.ConnectionStrings.ConnectionStrings)
+            connectionStrings.Add(connectionString);
+            if (connectionString.ConnectionString.Contains("|DataDirectory|"))
             {
-                if (connectionString.Name == "LocalSqlServer" || connectionString.Name == "readonly") continue;
-                connectionStrings.Add(connectionString);
-                if (connectionString.ConnectionString.Contains("|DataDirectory|"))
-                {
-                    connectionString.ConnectionString = connectionString.ConnectionString.Replace("|DataDirectory|", Path.GetDirectoryName(cfg.FilePath) + '\\');
-                }
+                connectionString.ConnectionString = connectionString.ConnectionString.Replace("|DataDirectory|", Path.GetDirectoryName(cfg.FilePath) + '\\');
             }
-            return connectionStrings;
         }
 
-        private List<XElement> BackupDatabase(int tenant, ConnectionStringSettings connectionString, IDataWriteOperator writer)
+        return connectionStrings;
+    }
+
+    private void OnProgressChanged(string status, int progress)
+    {
+        ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(status, progress));
+    }
+
+    private Configuration GetConfiguration(string config)
+    {
+        if (config.Contains(Path.DirectorySeparatorChar) && !Uri.IsWellFormedUriString(config, UriKind.Relative))
         {
-            var xml = new List<XElement>();
-            var errors = 0;
-            var timeout = TimeSpan.FromSeconds(1);
-            var tables = dbHelper.GetTables();
-            for (var i = 0; i < tables.Count; i++)
+            var map = new ExeConfigurationFileMap
             {
-                var table = tables[i];
-                OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
+                ExeConfigFilename = string.Equals(Path.GetExtension(config), ".config", StringComparison.OrdinalIgnoreCase) ? config : CrossPlatform.PathCombine(config, "Web.config")
+            };
+            return ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+        }
+        return ConfigurationManager.OpenExeConfiguration(config);
+    }
 
-                if (processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
+    private List<XElement> BackupDatabase(int tenant, ConnectionStringSettings connectionString, IDataWriteOperator writer)
+    {
+        var xml = new List<XElement>();
+        var errors = 0;
+        var timeout = TimeSpan.FromSeconds(1);
+        var tables = _dbHelper.GetTables();
+
+        for (var i = 0; i < tables.Count; i++)
+        {
+            var table = tables[i];
+            OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
+
+            if (_processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
+            {
+                continue;
+            }
+
+            xml.Add(new XElement(table));
+            DataTable dataTable;
+
+            while (true)
+            {
+                try
                 {
-                    continue;
+                    dataTable = _dbHelper.GetTable(table, tenant);
+                    break;
                 }
-
-                xml.Add(new XElement(table));
-                DataTable dataTable;
-                while (true)
+                catch
                 {
-                    try
+                    errors++;
+                    if (20 < errors)
                     {
-                        dataTable = dbHelper.GetTable(table, tenant);
-                        break;
+                        throw;
                     }
-                    catch
-                    {
-                        errors++;
-                        if (20 < errors) throw;
-                        Thread.Sleep(timeout);
-                    }
-                }
-                foreach (DataColumn c in dataTable.Columns)
-                {
-                    if (c.DataType == typeof(DateTime)) c.DateTimeMode = DataSetDateTime.Unspecified;
-                }
 
-                using (var file = tempStream.Create())
-                {
-                    dataTable.WriteXml(file, XmlWriteMode.WriteSchema);
-                    writer.WriteEntry($"{Name}\\{connectionString.Name}\\{table}".ToLower(), file);
+                    Thread.Sleep(timeout);
                 }
-
-                processedTables.Add(table);
             }
-            return xml;
+
+            foreach (DataColumn c in dataTable.Columns)
+            {
+                if (c.DataType == typeof(DateTime))
+                {
+                    c.DateTimeMode = DataSetDateTime.Unspecified;
+                }
+            }
+
+            using (var file = _tempStream.Create())
+            {
+                dataTable.WriteXml(file, XmlWriteMode.WriteSchema);
+                writer.WriteEntry($"{Name}\\{connectionString.Name}\\{table}".ToLower(), file);
+            }
+
+            _processedTables.Add(table);
         }
 
-        private void RestoreDatabase(ConnectionStringSettings connectionString, IEnumerable<XElement> elements, IDataReadOperator reader)
+        return xml;
+    }
+
+    private void RestoreDatabase(ConnectionStringSettings connectionString, IEnumerable<XElement> elements, IDataReadOperator reader)
+    {
+        var dbName = connectionString.Name;
+        var dbElement = elements.SingleOrDefault(e => string.Equals(e.Name.LocalName, connectionString.Name, StringComparison.OrdinalIgnoreCase));
+        if (dbElement != null && dbElement.Attribute("ref") != null)
         {
-            var dbName = connectionString.Name;
-            var dbElement = elements.SingleOrDefault(e => string.Equals(e.Name.LocalName, connectionString.Name, StringComparison.OrdinalIgnoreCase));
-            if (dbElement != null && dbElement.Attribute("ref") != null)
+            dbName = dbElement.Attribute("ref").Value;
+            dbElement = elements.Single(e => string.Equals(e.Name.LocalName, dbElement.Attribute("ref").Value, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (dbElement == null)
+        {
+            return;
+        }
+
+        var tables = _dbHelper.GetTables();
+
+        for (var i = 0; i < tables.Count; i++)
+        {
+            var table = tables[i];
+            OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
+
+            if (_processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
             {
-                dbName = dbElement.Attribute("ref").Value;
-                dbElement = elements.Single(e => string.Equals(e.Name.LocalName, dbElement.Attribute("ref").Value, StringComparison.OrdinalIgnoreCase));
+                continue;
             }
-            if (dbElement == null) return;
 
-            var tables = dbHelper.GetTables();
-            for (var i = 0; i < tables.Count; i++)
+            if (dbElement.Element(table) != null)
             {
-                var table = tables[i];
-                OnProgressChanged(table, (int)(i / (double)tables.Count * 100));
-
-                if (processedTables.Contains(table, StringComparer.InvariantCultureIgnoreCase))
+                using (var stream = reader.GetEntry($"{Name}\\{dbName}\\{table}".ToLower()))
                 {
-                    continue;
+                    var data = new DataTable();
+                    data.ReadXml(stream);
+                    _dbHelper.SetTable(data);
                 }
-
-                if (dbElement.Element(table) != null)
-                {
-                    using (var stream = reader.GetEntry($"{Name}\\{dbName}\\{table}".ToLower()))
-                    {
-                        var data = new DataTable();
-                        data.ReadXml(stream);
-                        dbHelper.SetTable(data);
-                    }
-                    processedTables.Add(table);
-                }
+                _processedTables.Add(table);
             }
         }
     }

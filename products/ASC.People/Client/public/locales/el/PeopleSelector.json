@@ -1,6 +1,0 @@
-﻿{
-  "CustomAllGroups": "Όλοι {{ groupsCaption, lowercase }}",
-  "EmptySearchUsersResult": "Δεν υπάρχουν χρήστες με τέτοιο όνομα",
-  "EmptyUsers": "Δεν υπάρχουν χρήστες",
-  "SearchUsersPlaceholder": "Αναζήτηση χρηστών"
-}

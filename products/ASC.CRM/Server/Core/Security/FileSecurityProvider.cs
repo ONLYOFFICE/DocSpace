@@ -42,14 +42,14 @@ namespace ASC.CRM.Core
     public class FileSecurity : IFileSecurity
     {
         private readonly DaoFactory _daoFactory;
-        private readonly FilesIntegration _filesIntegration;
+        private readonly IDaoFactory _daoFilesFactory;
         private readonly CrmSecurity _crmSecurity;
 
-        public FileSecurity(FilesIntegration filesIntegration,
+        public FileSecurity(IDaoFactory daoFilesFactory,
                             CrmSecurity crmSecurity,
                             DaoFactory daoFactory)
         {
-            _filesIntegration = filesIntegration;
+            _daoFilesFactory = daoFilesFactory;
             _crmSecurity = crmSecurity;
             _daoFactory = daoFactory;
         }
@@ -90,7 +90,7 @@ namespace ASC.CRM.Core
         {
             if (entry.FileEntryType == FileEntryType.Folder) return Task.FromResult(false);
 
-            var invoice = _daoFactory.GetInvoiceDao().GetByFileId(Convert.ToInt32(entry.ID));
+            var invoice = _daoFactory.GetInvoiceDao().GetByFileId(Convert.ToInt32(entry.Id));
             if (invoice != null)
                 return Task.FromResult(_crmSecurity.CanAccessTo(invoice, userId));
 
@@ -100,16 +100,16 @@ namespace ASC.CRM.Core
 
         private async Task<bool> InternalCanReadAsync<T>(FileEntry<T> entry, Guid userId)
         {
-            var reportFile = await _daoFactory.GetReportDao().GetFileAsync(Convert.ToInt32(entry.ID), userId);
+            var reportFile = await _daoFactory.GetReportDao().GetFileAsync(Convert.ToInt32(entry.Id), userId);
 
             if (reportFile != null)
                 return true;
 
-            var tagDao = _filesIntegration.DaoFactory.GetTagDao<T>();
+            var tagDao = _daoFilesFactory.GetTagDao<T>();
 
-            var eventIds = await tagDao.GetTagsAsync(entry.ID, FileEntryType.File, TagType.System)
-                .Where(x => x.TagName.StartsWith("RelationshipEvent_"))
-                .Select(x => Convert.ToInt32(x.TagName.Split(new[] { '_' })[1]))
+            var eventIds = await tagDao.GetTagsAsync(entry.Id, FileEntryType.File, TagType.System)
+                .Where(x => x.Name.StartsWith("RelationshipEvent_"))
+                .Select(x => Convert.ToInt32(x.Name.Split(new[] { '_' })[1]))
                 .ToListAsync();
 
             if (eventIds.Count == 0) return false;
@@ -136,25 +136,28 @@ namespace ASC.CRM.Core
     {
         public FileSecurityProvider(FilesIntegration filesIntegration,
                                     CrmSecurity crmSecurity,
-                                    DaoFactory daoFactory)
+                                    DaoFactory daoFactory,
+                                    IDaoFactory daoFilesFactory)
         {
             FilesIntegration = filesIntegration;
             CRMSecurity = crmSecurity;
             DaoFactory = daoFactory;
+            DaoFilesFactory = daoFilesFactory;
         }
 
         public DaoFactory DaoFactory { get; }
+        public IDaoFactory DaoFilesFactory { get; }
         public FilesIntegration FilesIntegration { get; }
         public CrmSecurity CRMSecurity { get; }
 
         public IFileSecurity GetFileSecurity(string data)
         {
-            return new FileSecurity(FilesIntegration, CRMSecurity, DaoFactory);
+            return new FileSecurity(DaoFilesFactory, CRMSecurity, DaoFactory);
         }
 
         public Dictionary<object, IFileSecurity> GetFileSecurity(Dictionary<string, string> data)
         {
-            return data.ToDictionary<KeyValuePair<string, string>, object, IFileSecurity>(d => d.Key, d => new FileSecurity(FilesIntegration, CRMSecurity, DaoFactory));
+            return data.ToDictionary<KeyValuePair<string, string>, object, IFileSecurity>(d => d.Key, d => new FileSecurity(DaoFilesFactory, CRMSecurity, DaoFactory));
         }
     }
 }

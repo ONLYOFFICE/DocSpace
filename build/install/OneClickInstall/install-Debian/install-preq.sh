@@ -42,65 +42,15 @@ curl https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 echo "deb https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-${ELASTIC_DIST}.x.list
 
 # add nodejs repo
-curl -sL https://deb.nodesource.com/setup_12.x | bash - 
-
-#add yarn repo
-curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+curl -sL https://deb.nodesource.com/setup_16.x | bash - 
 
 #add dotnet repo
-curl https://packages.microsoft.com/config/$DIST/$REV/packages-microsoft-prod.deb -O
-dpkg -i packages-microsoft-prod.deb
-rm packages-microsoft-prod.deb
-
-#install kafka
-PRODUCT_DIR="/var/www/${product}"
-if [ "$(ls "$PRODUCT_DIR/services/kafka" 2> /dev/null)" == "" ]; then
-	mkdir -p ${PRODUCT_DIR}/services/
-	if ! cat /etc/passwd | grep -q "kafka"; then
-		adduser --quiet --home ${PRODUCT_DIR}/services/kafka --system kafka
-	fi
-	cd ${PRODUCT_DIR}/services/kafka
-	KAFKA_VERSION=$(curl https://downloads.apache.org/kafka/ | grep -Eo '3.1.[0-9]' | tail -1)
-	KAFKA_ARCHIVE=$(curl https://downloads.apache.org/kafka/$KAFKA_VERSION/ | grep -Eo "kafka_2.[0-9][0-9]-$KAFKA_VERSION.tgz" | tail -1)
-	curl https://downloads.apache.org/kafka/$KAFKA_VERSION/$KAFKA_ARCHIVE -O
-	tar xzf $KAFKA_ARCHIVE --strip 1 && rm -rf $KAFKA_ARCHIVE
-	chown -R kafka ${PRODUCT_DIR}/services/kafka/
-	cd -
-fi
-
-if [ ! -e /lib/systemd/system/zookeeper.service ]; then
-cat > /lib/systemd/system/zookeeper.service <<END
-[Unit]
-Requires=network.target remote-fs.target
-After=network.target remote-fs.target
-[Service]
-Type=simple
-User=kafka
-ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-start.sh ${PRODUCT_DIR}/services/kafka/config/zookeeper.properties > ${PRODUCT_DIR}/services/kafka/zookeeper.log 2>&1'
-ExecStop=${PRODUCT_DIR}/services/kafka/bin/zookeeper-server-stop.sh
-Restart=on-abnormal
-[Install]
-WantedBy=multi-user.target
-END
-systemctl start zookeeper
-fi
-
-if [ ! -e /lib/systemd/system/kafka.service ]; then
-cat > /lib/systemd/system/kafka.service <<END
-[Unit]
-Requires=zookeeper.service
-After=zookeeper.service
-[Service]
-Type=simple
-User=kafka
-ExecStart=/bin/sh -c '${PRODUCT_DIR}/services/kafka/bin/kafka-server-start.sh ${PRODUCT_DIR}/services/kafka/config/server.properties > ${PRODUCT_DIR}/services/kafka/kafka.log 2>&1'
-ExecStop=${PRODUCT_DIR}/services/kafka/bin/kafka-server-stop.sh
-Restart=on-abnormal
-[Install]
-WantedBy=multi-user.target
-END
-systemctl start kafka
+if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
+	curl -sSL https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+	wget -O /etc/apt/sources.list.d/microsoft-prod.list https://packages.microsoft.com/config/debian/9/prod.list
+else
+	curl https://packages.microsoft.com/config/$DIST/$REV/packages-microsoft-prod.deb -O
+	dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
 fi
 
 if ! dpkg -l | grep -q "mysql-server"; then
@@ -111,10 +61,7 @@ if ! dpkg -l | grep -q "mysql-server"; then
 	MYSQL_SERVER_PASS=${MYSQL_SERVER_PASS:-"$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)"}
 
 	# setup mysql 8.0 package
-	MYSQL_PACKAGE_NAME="mysql-apt-config_0.8.22-1_all.deb"
-	if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
-		MYSQL_PACKAGE_NAME="mysql-apt-config_0.8.16-1_all.deb"
-	fi
+	MYSQL_PACKAGE_NAME="mysql-apt-config_0.8.23-1_all.deb"
 	curl -OL http://dev.mysql.com/get/${MYSQL_PACKAGE_NAME}
 	echo "mysql-apt-config mysql-apt-config/repo-codename  select  $DISTRIB_CODENAME" | debconf-set-selections
 	echo "mysql-apt-config mysql-apt-config/repo-distro  select  $DIST" | debconf-set-selections
@@ -131,9 +78,14 @@ if ! dpkg -l | grep -q "mysql-server"; then
 	apt-get -y update
 fi
 
+if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
+	apt-get install -yq mysql-server mysql-client --allow-unauthenticated
+fi
+
 # add redis repo
 if [ "$DIST" = "ubuntu" ]; then	
-	add-apt-repository -y ppa:chris-lea/redis-server	
+	add-apt-repository -y ppa:chris-lea/redis-server
+	if [ "$DISTRIB_CODENAME" = "jammy" ]; then sed -i 's/jammy/focal/g' /etc/apt/sources.list.d/*redis-server*.list; fi; #Fix missing repository for jammy
 fi
 
 #add nginx repo
@@ -147,21 +99,19 @@ echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select tr
 
 # install
 apt-get install -o DPkg::options::="--force-confnew" -yq \
+				python3-pip \
 				expect \
 				nano \
 				nodejs \
 				gcc \
-				g++ \
 				make \
-				yarn \
-				dotnet-sdk-5.0 \
+				dotnet-sdk-6.0 \
 				mysql-server \
 				mysql-client \
 				postgresql \
 				redis-server \
 				rabbitmq-server \
-				nginx-extras \
-				default-jdk
+				nginx-extras 
 		
 if [ -e /etc/redis/redis.conf ]; then
  sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis/redis.conf

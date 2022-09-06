@@ -1,107 +1,159 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-using ASC.Api.Settings;
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Common.EF.Model;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Web.Api.Controllers;
-using ASC.Web.Core.Utility.Settings;
-using ASC.Web.Studio.UserControls.FirstTime;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
-using NUnit.Framework;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
-namespace ASC.Web.Api.Tests
+namespace ASC.Web.Api.Tests;
+
+class ApiApplication : WebApplicationFactory<Program>
 {
-    [SetUpFixture]
-    public class MySetUpClass
+    private readonly Dictionary<string, string> _args;
+
+    public ApiApplication(Dictionary<string, string> args)
     {
-        protected IServiceScope Scope { get; set; }
+        _args = args;
+    }
 
-        [OneTimeSetUp]
-        public void CreateDb()
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        foreach (var s in _args)
         {
-            var host = Program.CreateHostBuilder(new string[] {
-                "--pathToConf", Path.Combine("..", "..", "..", "..","..", "..", "config"),
-                "--ConnectionStrings:default:connectionString", BaseApiTests.TestConnection,
-                "--migration:enabled", "true",
-                "--core:products:folder", Path.Combine("..", "..", "..", "..","..", "..", "products")}).Build();
-
-            Migrate(host.Services);
-            Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
-
-            Scope = host.Services.CreateScope();
+            builder.UseSetting(s.Key, s.Value);
         }
 
-        [OneTimeTearDown]
-        public void DropDb()
+        builder.ConfigureAppConfiguration((context, a) =>
         {
-            var context = Scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-            context.Value.Database.EnsureDeleted();
-        }
+            (a.Sources[0] as ChainedConfigurationSource).Configuration["pathToConf"] = a.Build()["pathToConf"];
+        });
 
-
-        private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
+        builder.ConfigureServices(services =>
         {
-            using var scope = serviceProvider.CreateScope();
-
-            if (!string.IsNullOrEmpty(testAssembly))
+            var DIHelper = new ASC.Common.DIHelper();
+            DIHelper.Configure(services);
+            foreach (var a in Assembly.Load("ASC.Files").GetTypes().Where(r => r.IsAssignableTo<ControllerBase>()))
             {
-                var configuration = scope.ServiceProvider.GetService<IConfiguration>();
-                configuration["testAssembly"] = testAssembly;
+                DIHelper.TryAdd(a);
             }
+        });
 
-            using var db = scope.ServiceProvider.GetService<DbContextManager<UserDbContext>>();
-            db.Value.Migrate();
-        }
+        base.ConfigureWebHost(builder);
     }
-    class BaseApiTests
+}
+
+[SetUpFixture]
+public class MySetUpClass
+{
+    protected IServiceScope _scope;
+
+    [OneTimeSetUp]
+    public void CreateDb()
     {
-        protected ILog Log { get; set; }
-        protected UserManager UserManager { get; set; }
-        protected Tenant CurrentTenant { get; set; }
-        protected SecurityContext SecurityContext { get; set; }
-        protected UserOptions UserOptions { get; set; }
-        protected IServiceScope scope { get; set; }
-        protected SettingsManager settingsManager { get; set; }
-        protected DbWebstudioSettings dbWebStudioSettings { get; set; }
+        var host = new ApiApplication(new Dictionary<string, string>
+                {
+                    { "pathToConf", Path.Combine("..","..", "..", "config") },
+                    { "ConnectionStrings:default:connectionString", BaseApiTests.TestConnection },
+                    { "migration:enabled", "true" },
+                    { "core:products:folder", Path.Combine("..","..", "..", "products") },
+                    { "web:hub::internal", "" }
+                })
+       .WithWebHostBuilder(builder =>
+       {
+       });
 
-        protected FirstTimeTenantSettings firstTimeTenantSettings { get; set; }
+        Migrate(host.Services);
+        Migrate(host.Services, Assembly.GetExecutingAssembly().GetName().Name);
 
-        public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True";
-        public virtual void SetUp()
+        _scope = host.Services.CreateScope();
+    }
+
+    [OneTimeTearDown]
+    public void DropDb()
+    {
+        var context = _scope.ServiceProvider.GetService<IDbContextFactory<UserDbContext>>().CreateDbContext();
+        context.Database.EnsureDeleted();
+    }
+
+
+    private void Migrate(IServiceProvider serviceProvider, string testAssembly = null)
+    {
+        using var scope = serviceProvider.CreateScope();
+
+        if (!string.IsNullOrEmpty(testAssembly))
         {
-            var host = Program.CreateHostBuilder(new string[] {
-                "--pathToConf" , Path.Combine("..", "..", "..", "..","..", "..", "config"),
-                "--ConnectionStrings:default:connectionString", TestConnection,
-                 "--migration:enabled", "true" }).Build();
-
-            scope = host.Services.CreateScope();
-
-            var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
-            var tenant = tenantManager.GetTenant(1);
-            tenantManager.SetCurrentTenant(tenant);
-            CurrentTenant = tenant;
-
-            firstTimeTenantSettings = scope.ServiceProvider.GetService<FirstTimeTenantSettings>();
-            settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
-            dbWebStudioSettings = scope.ServiceProvider.GetService<DbWebstudioSettings>();
-            UserManager = scope.ServiceProvider.GetService<UserManager>();
-            SecurityContext = scope.ServiceProvider.GetService<SecurityContext>();
-            UserOptions = scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
-            Log = scope.ServiceProvider.GetService<IOptionsMonitor<ILog>>().CurrentValue;
-            SecurityContext.AuthenticateMe(CurrentTenant.OwnerId);
+            var configuration = scope.ServiceProvider.GetService<IConfiguration>();
+            configuration["testAssembly"] = testAssembly;
         }
 
-
+        using var db = scope.ServiceProvider.GetService<IDbContextFactory<UserDbContext>>().CreateDbContext();
+        db.Database.Migrate();
     }
+}
+
+class BaseApiTests
+{
+    protected ILogger _log;
+    protected UserManager _userManager;
+    protected Tenant _currentTenant;
+    protected SecurityContext _securityContext;
+    protected UserOptions _userOptions;
+    protected IServiceScope _scope;
+    protected SettingsManager _settingsManager;
+    protected DbWebstudioSettings _dbWebStudioSettings;
+    protected FirstTimeTenantSettings _firstTimeTenantSettings;
+
+    public const string TestConnection = "Server=localhost;Database=onlyoffice_test;User ID=root;Password=root;Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;AllowPublicKeyRetrieval=True";
+    public virtual void SetUp()
+    {
+        var host = new ApiApplication(new Dictionary<string, string>
+            {
+                { "pathToConf", Path.Combine("..","..", "..", "config") },
+                { "ConnectionStrings:default:connectionString", TestConnection },
+                { "migration:enabled", "true" },
+                { "web:hub:internal", "" }
+            })
+        .WithWebHostBuilder(a => { });
+
+        _scope = host.Services.CreateScope();
+
+        var tenantManager = _scope.ServiceProvider.GetService<TenantManager>();
+        var tenant = tenantManager.GetTenant(1);
+        tenantManager.SetCurrentTenant(tenant);
+        _currentTenant = tenant;
+
+        _firstTimeTenantSettings = _scope.ServiceProvider.GetService<FirstTimeTenantSettings>();
+        _settingsManager = _scope.ServiceProvider.GetService<SettingsManager>();
+        _dbWebStudioSettings = _scope.ServiceProvider.GetService<DbWebstudioSettings>();
+        _userManager = _scope.ServiceProvider.GetService<UserManager>();
+        _securityContext = _scope.ServiceProvider.GetService<SecurityContext>();
+        _userOptions = _scope.ServiceProvider.GetService<IOptions<UserOptions>>().Value;
+        _log = _scope.ServiceProvider.GetService<ILogger<BaseApiTests>>();
+        _securityContext.AuthenticateMe(_currentTenant.OwnerId);
+    }
+
+
 }

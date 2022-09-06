@@ -27,7 +27,7 @@ var Coder = function() {
                 return undefined;
 
             const jsonStr = JSON.stringify(data);
-            const dataEncoded = hash.encode(jsonStr, config["core.machinekey"] ? config["core.machinekey"] : config.app.machinekey);
+            const dataEncoded = hash.encode(jsonStr, config["machinekey"] ? config["core"].machinekey : config.app.machinekey);
 
             return dataEncoded;
         },
@@ -36,7 +36,7 @@ var Coder = function() {
             if (!data && typeof (data) !== "string")
                 return undefined;
 
-            const jsonStr = hash.decode(data, config["core.machinekey"] ? config["core.machinekey"] : config.app.machinekey);
+            const jsonStr = hash.decode(data, config["core"].machinekey ? config["core"].machinekey : config.app.machinekey);
             const dataDecoded = JSON.parse(jsonStr);          
 
             return dataDecoded;

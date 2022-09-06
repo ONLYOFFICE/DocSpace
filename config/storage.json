@@ -69,6 +69,21 @@
         ]
       },
       {
+        "name": "room_logos",
+        "data": "00000000-0000-0000-0000-000000000000",
+        "type": "disc",
+        "path": "$STORAGE_ROOT\\Products\\Files\\logos\\{0}",
+        "domain": [
+          {
+            "name": "logos_temp",
+            "visible": false,
+            "data": "00000000-0000-0000-0000-000000000000",
+            "type": "disc",
+            "path": "$STORAGE_ROOT\\Products\\Files\\logos\\{0}\\temp"
+          }
+        ]
+      },
+      {
         "name": "files_template",
         "visible": false,
         "data": "00000000-0000-0000-0000-000000000000",

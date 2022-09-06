@@ -1,0 +1,7 @@
+{
+  "Error401Text": "Désolé, la ressource n'est pas disponible actuellement.",
+  "Error403Text": "Désolé, accès refusé.",
+  "Error404Text": "Désolé, la ressource n'a pu être trouvée.",
+  "ErrorEmptyResponse": "Réponse vide",
+  "ErrorOfflineText": "Aucune connexion Internet trouvée."
+}

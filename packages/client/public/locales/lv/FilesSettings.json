@@ -1,0 +1,22 @@
+{
+  "Clouds": "Mākoņi",
+  "CommonSettings": "Kopīgi iestatījumi",
+  "ConnectAdminDescription": "Lai veiksmīgi izveidotu savienojumu, ievadiet nepieciešamos datus <1>šajā lapā</1>.",
+  "ConnectCloud": "Pieslēgt kontu",
+  "ConnectDescriptionText": "Jūs vēl neesat pievienojis nevienu trešo pušu mākoni.",
+  "ConnectEmpty": "Šeit nekā nav",
+  "ConnectMakeShared": "Padariet to par kopīgotu un ievietojiet mapē 'Kopīgs'",
+  "ConnectMessage": "Jūs varat savienot šādus kontus ar ONLYOFFICE dokumentiem. Tie tiks parādīti 'Mani dokumenti' mapē un jums būs iespēja rediģēt un saglabāt tos tiešī portālā.",
+  "ConnextOtherAccount": "Cits konts",
+  "DisplayFavorites": "Rādīt izlasi",
+  "DisplayNotification": "Parādīt paziņojumu, pārvietojot vienumus uz atkritni",
+  "DisplayRecent": "Rādīt nesenos",
+  "DisplayTemplates": "Rādīt veidnes",
+  "IntermediateVersion": "Saglabājiet visas saglabātās starpnieka versijas",
+  "KeepIntermediateVersion": "Rediģēšanas laikā saglabājiet starpnieka versijas",
+  "OriginalCopy": "Saglabājiet faila kopiju arī sākotnējā formātā",
+  "StoringFileVersion": "Failu versiju uzglabāšana",
+  "ThirdPartyBtn": "Ļaujiet lietotājiem savienot trešo pušu krātuves",
+  "ThirdPartySettings": "Savienotie mākoņi",
+  "UpdateOrCreate": "Atjauniniet faila versiju esošajam failam ar tādu pašu nosaukumu. Pretējā gadījumā tiks izveidota faila kopija."
+}

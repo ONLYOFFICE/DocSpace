@@ -1,7 +1,0 @@
-﻿{
-  "ChangeUserTypeButton": "Промени тип",
-  "ChangeUserTypeHeader": "Промени потребителски тип",
-  "ChangeUserTypeMessage": "Потребителите с  '{{ firstType }}' тип ще бъдат преместени в тип '{{ secondType }}'.",
-  "ChangeUserTypeMessageWarning": "Не можете да сменяте типа за администраторите на портала и за себе си",
-  "SuccessChangeUserType": "Потребителският тип беше сменен успешно"
-}

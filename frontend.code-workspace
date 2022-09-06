@@ -1,44 +1,37 @@
 {
   "folders": [
     {
-      "name": "✨ appserver",
+      "name": "🌐 root",
       "path": "."
     },
     {
-      "name": "📦 @appserver/common",
-      "path": "packages\\asc-web-common"
+      "name": "🚀 @docspace/client",
+      "path": "packages\\client"
     },
     {
-      "name": "📦 @appserver/components",
-      "path": "packages\\asc-web-components"
+      "name": "🔑 @docspace/login",
+      "path": "packages\\login"
     },
     {
-      "name": "🚀 @appserver/files",
-      "path": "products\\ASC.Files\\Client"
+      "name": "📄 @docspace/editor",
+      "path": "packages\\editor"
     },
     {
-      "name": "🚀 @appserver/people",
-      "path": "products\\ASC.People\\Client"
+      "name": "📦 @docspace/common",
+      "path": "packages\\common"
     },
     {
-      "name": "🚀 @appserver/studio",
-      "path": "web\\ASC.Web.Client"
-    },
-    {
-      "name": "🚀 @appserver/login",
-      "path": "web\\ASC.Web.Login"
-    },
-    {
-      "name": "🚀 @appserver/editor",
-      "path": "web\\ASC.Web.Editor"
+      "name": "📦 @docspace/components",
+      "path": "packages\\components"
     }
   ],
   "settings": {
     "window.zoomLevel": 0,
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "liveServer.settings.multiRootWorkspaceName": "✨ appserver",
-    "cSpell.words": ["appserver", "browserslist", "debuginfo", "doceditor"]
+    "liveServer.settings.multiRootWorkspaceName": "✨ docspace",
+    "cSpell.words": ["docspace", "browserslist", "debuginfo", "doceditor"],
+    "jest.autoRun": "false"
   },
   "extensions": {
     "recommendations": [

@@ -1,0 +1,9 @@
+{
+  "DocumentsFileType": "tài liệu",
+  "FileLocation": "Đi tới Tài liệu",
+  "FileName": "Tên file",
+  "ImageFileType": "hình ảnh",
+  "MailMergeFileType": "Chọn tệp tin trong định dạng XLSX",
+  "OpenSavedDocument": "Mở tài liệu đã lưu trong tab mới",
+  "SelectFilesType": "Chọn tệp tin loại: {{fileType}}"
+}

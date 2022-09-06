@@ -31,10 +31,8 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
@@ -43,7 +41,7 @@ using ASC.Web.CRM.Classes;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -57,7 +55,7 @@ namespace ASC.CRM.Core.Dao
                 TenantManager tenantManager,
                 SecurityContext securityContext,
                 CrmSecurity crmSecurity,
-                IOptionsMonitor<ILog> logger,
+                ILogger logger,
                 ICache ascCache,
                 IMapper mapper
             ) : base(dbContextManager,
@@ -221,7 +219,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    _logger.ErrorFormat(@"Private invoice items count more than all cases. Tenant: {0}. CurrentAccount: {1}",
+                    _logger.LogError(@"Private invoice items count more than all cases. Tenant: {0}. CurrentAccount: {1}",
                                                             TenantID,
                                                             _securityContext.CurrentAccount.ID);
 

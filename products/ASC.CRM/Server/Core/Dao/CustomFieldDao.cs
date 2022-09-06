@@ -30,10 +30,8 @@ using System.Text.Json;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
@@ -46,7 +44,7 @@ using ASC.Web.CRM.Core.Search;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -62,7 +60,7 @@ namespace ASC.CRM.Core.Dao
             SecurityContext securityContext,
             TenantUtil tenantUtil,
             FactoryIndexerFieldValue factoryIndexer,
-            IOptionsMonitor<ILog> logger,
+            ILogger logger,
             ICache ascCache,
             IMapper mapper
             ) :
@@ -235,7 +233,7 @@ namespace ASC.CRM.Core.Dao
                 }
                 if (customFieldType == CustomFieldType.SelectBox)
                 {
-                    _logger.Error(ex);
+                    _logger.LogError(ex.ToString());
 
                     throw;
                 }
@@ -380,7 +378,7 @@ namespace ASC.CRM.Core.Dao
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error(ex);
+                    _logger.LogError(ex.ToString());
 
                     throw;
                 }

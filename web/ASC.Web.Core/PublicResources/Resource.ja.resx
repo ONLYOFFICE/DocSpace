@@ -1,0 +1,287 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>検証コードフィールドは空にすることはできません</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>携帯電話番号を入力し</value>
+  </data>
+  <data name="ActivateTfaAppEmptyCode" xml:space="preserve">
+    <value>検証コードフィールドは空にすることはできません</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>管理者通知</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>あなたのメッセージが正常に送信されました。あなたは、ポータル管理者がご連絡いたします。</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>SMSで</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>認証アプリで</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>メール（ポータル所有者の電子メールアドレス）：動作を確認するためのリンクがに送信されました。</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>パスワード回復は、LDAPユーザーのために禁止されます</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>パスワード回復は、SSOユーザーのために禁止されます</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>カスタム</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>操作を確認するためのリンクが{0}（ポータル所有者の電子メールアドレス）に送信されました。</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>インスタンスIDが間違っているようです</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>正しくないメールアドレス</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>プロモーションコードが間違っているようです</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>この操作を実行するアクセス許可がありません</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>ポータルアクセスは制限です。</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>不正なライセンスキー</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} このメールアドレスは既に登録されていると</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>このドメインからのメールは登録できません。</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>メールフィールドは空です</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>現在のメールアドレスと新しいメールアドレスは同じです</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>すべての欄に記入してください</value>
+  </data>
+  <data name="ErrorEmptyMessage" xml:space="preserve">
+    <value>メッセージテキストを入力してください</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>アップロードされたファイルが見つかりませんでした</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>イメージファイルのサイズが大きすぎます</value>
+  </data>
+  <data name="ErrorIncorrectUserName" xml:space="preserve">
+    <value>不適切な名または姓</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>あなたの料金プランは、このオプションをサポートしていません</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>無効なメール</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>無効なドメイン名</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>パスワードは空です。</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>{0}～{1}文字</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>パスワードが含まれている必要な記号</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>パスワードが含まれている必要な記号</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>桁</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>特殊文字</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>大文字</value>
+  </data>
+  <data name="ErrorRequestLimitExceeded" xml:space="preserve">
+    <value>要求数が上限を超過しました。</value>
+  </data>
+  <data name="ErrorTenantTooShortFormat" xml:space="preserve">
+    <value>ドメイン名の長さは{0}文字から{1}文字の間でなければなりません。</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>ユーザーが見つかりませんでした</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>"{0}"のメールアドレスのユーザーは見つかりませんでした</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>欧州（フランクフルト）地域</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>最大ファイルサイズを超えています</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>注：ファイルサイズを超えることはできません{1}{0}{2}
+</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>bytes,KB,MB,GB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>アカウントを確認するためのリンクが指定された電子メールに送信されました</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>LDAP操作が多すぎています</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>ライセンスが間違っているようです</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>ユーザー数はライセンスで許可されたユーザー数を超過した</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>メールアドレスの変更手順は、{0}メールアドレスに送信されました</value>
+  </data>
+  <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
+    <value>{0}メールアドレスを持つユーザが存在する場合は、パスワード変更手順はこのメールアドレスに送信されます。</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>電話番号を変更のために、現在電話番後を削除するのは必要です。</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>ORG地域 </value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>所有者</value>
+  </data>
+  <data name="PersonalFreeSpaceException" xml:space="preserve">
+    <value>ディスク容量制限を超えました</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>ポータルでのアクセス</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>{0}にデータの再割り当て過程が完了です。</value>
+  </data>
+  <data name="RecaptchaInvalid" xml:space="preserve">
+    <value>Recaptchaが間違っているようです</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>アジア太平洋 (シンガポール)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>不正なコード</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>コード：{0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>コードを利用する時間は期限が切れています。新しいテクストメッセージを請求してください。</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>SMS設定は利用できません</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>設定は保存できませんでした。</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>設定はnullにすることはできません</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>無効な束縛：{0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>無効なエンティティーID</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>無効なフィールドマッピング</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>「開始ページ」設定は保存しました</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>設定が正常に更新されました</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>プロファイルの削除方法は、お使いのメールアドレスに送信されました</value>
+  </data>
+  <data name="TfaAppAuthMessageError" xml:space="preserve">
+    <value>不正なコード</value>
+  </data>
+  <data name="TfaAppNotAvailable" xml:space="preserve">
+    <value>二要素認証アプリ設定は無効です。</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>US西部地域（オレゴン）</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>新着情報</value>
+  </data>
+</root>

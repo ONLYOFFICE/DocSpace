@@ -1,0 +1,20 @@
+{
+  "Administrator": "Administrateur",
+  "ChangeToGuest": "Modifier en {{guestCaption}}",
+  "ChangeToUser": "Modifier en {{userCaption}}",
+  "EmptyGroupDescription": "Vous pouvez ajouter des membres à l'équipe manuellement ou via un lien.",
+  "EmptyGroupTitle": "Pas encore de collaborateur ici",
+  "LblInviteAgain": "Inviter à nouveau",
+  "LblInvited": "Invité",
+  "LblSendEmail": "Envoyer message",
+  "LblSendMessage": "Envoyer message",
+  "LblSetActive": "Définir comme actif",
+  "LblSetDisabled": "Définir comme désactivé",
+  "MakeInvitationLink": "Créer un lien d'invitation",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Les instructions d'activation ont été envoyées à l'adresse <1>{{email}}</1>",
+  "NotFoundDescription": "Essayez un autre filtre ou désactivez-le pour afficher toutes les personnes de la section.",
+  "NotFoundTitle": "Aucun collaborateur trouvé ",
+  "ReassignmentData": "Réattribution de données",
+  "SuccessfullyRemovedGroup": "Le groupe a été supprimé avec succès.",
+  "UserStatus": "Statut"
+}

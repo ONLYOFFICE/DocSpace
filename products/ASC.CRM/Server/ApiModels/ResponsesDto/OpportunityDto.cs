@@ -50,13 +50,13 @@ namespace ASC.CRM.ApiModels
         }
 
         public int Id { get; set; }
-        public EmployeeWraper CreateBy { get; set; }
+        public EmployeeDto CreateBy { get; set; }
         public ApiDateTime Created { get; set; }
         public IEnumerable<ContactBaseDto> Members { get; set; }
         public ContactBaseDto Contact { get; set; }
         public String Title { get; set; }
         public String Description { get; set; }
-        public EmployeeWraper Responsible { get; set; }
+        public EmployeeDto Responsible { get; set; }
         public BidType BidType { get; set; }
         public decimal BidValue { get; set; }
         public CurrencyInfoDto BidCurrency { get; set; }
@@ -67,7 +67,7 @@ namespace ASC.CRM.ApiModels
         public ApiDateTime ExpectedCloseDate { get; set; }
 
         public bool IsPrivate { get; set; }
-        public IEnumerable<EmployeeWraper> AccessList { get; set; }
+        public IEnumerable<EmployeeDto> AccessList { get; set; }
         public bool CanEdit { get; set; }
         public IEnumerable<CustomFieldBaseDto> CustomFields { get; set; }
 
@@ -75,9 +75,9 @@ namespace ASC.CRM.ApiModels
         {
             return new OpportunityDto
             {
-                CreateBy = EmployeeWraper.GetSample(),
+                CreateBy = EmployeeDto.GetSample(),
                 Created = ApiDateTime.GetSample(),
-                Responsible = EmployeeWraper.GetSample(),
+                Responsible = EmployeeDto.GetSample(),
                 Title = "Hotel catalogue",
                 Description = "",
                 ExpectedCloseDate = ApiDateTime.GetSample(),

@@ -1,5 +1,0 @@
-﻿{
-  "MoveConfirmation": "Potwierdzenie przeniesienia",
-  "MoveConfirmationAlert": "Na pewno chcesz przenieść te elementy?",
-  "MoveConfirmationMessage": "Zamierzasz przenieść elementy z katalogu {{provider}}. Zostaną one usunięte z konta {{provider}} i pozostali użytkownicy utracą do nich dostęp."
-}

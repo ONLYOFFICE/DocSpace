@@ -1,0 +1,274 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Поле коду перевірки не може бути порожнім
+</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Введіть номер мобільного телефону
+</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Сповіщення адміністраторів</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Повідомлення було успішно надіслано. Адміністратор порталу зв'яжеться з вами.
+</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Посилання для підтвердження операції було відправлено ​​на: email (адреса електронної пошти власника порталу).</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Операція відновлення пароля заборонена для користувача LDAP</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Операція відновлення пароля заборонена для користувача SSO</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Користувальницький</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Посилання для підтвердження операції було відправлено ​​на {0} (адреса електронної пошти власника порталу).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Неправильна адреса електронної пошти</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Неправильний промокод
+</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Недостатньо прав для виконання данної операції</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>Доступ до порталу обмежений.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Невірні ключі</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Ваш профіль заблоковано
+</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} з такою адресою email вже зареєстрований</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Листи з цього домену не дозволено реєструвати</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>Не заповнено поле адреси електронної пошти</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>Поточна адреса електронної пошти збігається з новою адресою</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Будь ласка, заповніть всі поля</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Завантажуваний файл не знайдений</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Завеликий файл зображення
+</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Ваш тарифний план не підтримує цей параметр
+</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Неправильна адреса електронної пошти</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Неправильне ім'я домену</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Поле Пароль не заповнено.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>Від {0} до {1} символів</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Пароль повинен містити</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Повинен містити
+</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>цифри</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>Спеціальні символи</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>заголовні літери</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>Користувач не знайдений</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>Користувача з e-mail "{0}" не знайдено</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>Регіон ЄС (Франкфурт)</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>Перевищено максимальний розмір файлу</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Примітка. Розмір файлу не може перевищувати {1}{0}{2}
+</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>байт,Кб,Мб,Гб,Тб</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>На вказаний email було вислане посилання для підтвердження нового облікового запису</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>Сервер не зміг зберегти налаштування.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Занадто багато операцій LDAP</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Невірна ліцензія</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Термін дії ліцензії минув</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Кількість порталів перевищує кількість дозволених ліцензією</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Кількість користувачів перевищує кількість дозволених ліцензією</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Завантаження успішно</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Інструкції по зміні електронної пошти були відправлені</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Для зміни номеру потрібно видалити свій поточний номер телефону</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>Регіон ORG</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Власник</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Доступ до порталу</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Азіатсько-Тихоокеанський регіон (Сінгапур)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Неправильний код
+</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Код для входу на портал: {0}
+</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Термін дії коду закінчився. Будь ласка, запитайте нове текстове повідомлення.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>Налаштування Смс недоступні</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Ви надіслали занадто багато текстових повідомлень. Будь ласка, спробуйте пізніше.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Не вдалося зберегти налаштування</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Параметри не можуть бути нульовими</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Неправильне зв'язування: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Недійсний ідентифікатор ID</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Неправильне відображення полів</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Налаштування привітання успішно збережені</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Налаштування успішно оновлені</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Інструкції з видалення профілю були відправлені на вашу адресу електронної пошти</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>Регіон Заходу США (Орегон)
+</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>Новеньке</value>
+  </data>
+</root>

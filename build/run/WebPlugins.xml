@@ -1,0 +1,10 @@
+<service>
+  <id>OnlyofficeWebPlugins</id>
+  <name>ONLYOFFICE WebPlugins Server</name>
+  <startmode>manual</startmode>
+  <executable>node</executable>
+  <arguments>../../common/ASC.WebPlugins/dist/src/main.js</arguments>
+  <log mode="none"/>
+  <delayedAutoStart>true</delayedAutoStart>
+  <onfailure action="restart" delay="5 sec" />
+</service>

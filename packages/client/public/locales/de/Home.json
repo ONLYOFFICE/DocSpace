@@ -1,0 +1,6 @@
+{
+  "GoodAfternoon": "Guten Tag, {{displayName}}!",
+  "GoodEvening": "Guten Abend, {{displayName}}!",
+  "GoodMorning": "Guten Morgen, {{displayName}}!",
+  "NoOneModulesAvailable": "Keine Module verfügbar"
+}

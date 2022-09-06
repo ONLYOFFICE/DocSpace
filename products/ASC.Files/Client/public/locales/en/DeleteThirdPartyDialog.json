@@ -1,4 +1,0 @@
-﻿{
-  "DeleteThirdPartyAlert": "Remove {{service}} from the 'Documents' module? This will not affect your {{account}} account in any way.",
-  "SuccessDeleteThirdParty": "Third-party {{service}} is deleted"
-}

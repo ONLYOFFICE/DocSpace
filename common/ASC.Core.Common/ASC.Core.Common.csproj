@@ -11,6 +11,7 @@
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+	  <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -20,6 +21,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ASC.Common\ASC.Common.csproj" />
+    <ProjectReference Include="..\ASC.EventBus\ASC.EventBus.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
@@ -33,10 +35,7 @@
     <None Remove="protos\consumer_cache_item.proto" />
     <None Remove="protos\create_client_proto.proto" />
     <None Remove="protos\disable_client_proto.proto" />
-    <None Remove="protos\encryption_settings_proto.proto" />
     <None Remove="protos\group_cache_item.proto" />
-    <None Remove="protos\notify_invoke.proto" />
-    <None Remove="protos\notify_message.proto" />
     <None Remove="protos\quota_cache_item.proto" />
     <None Remove="protos\register_user_proto.proto" />
     <None Remove="protos\settings_cache_item.proto" />
@@ -49,23 +48,23 @@
     <None Remove="protos\user_photo_cache_item.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="AWSSDK.Core" Version="3.7.6.2" />
-    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.7.0.119" />
-    <PackageReference Include="Grpc.Tools" Version="2.43.0">
+    <PackageReference Include="AWSSDK.Core" Version="3.7.10.11" />
+    <PackageReference Include="AWSSDK.SimpleEmail" Version="3.7.0.150" />
+    <PackageReference Include="FirebaseAdmin" Version="2.3.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.47.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MailKit" Version="3.1.1" />
+    <PackageReference Include="MailKit" Version="3.2.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
-    <PackageReference Include="Telegram.Bot" Version="15.7.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.5" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="Telegram.Bot" Version="17.0.0" />
+    <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.2" />
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="protos\create_client_proto.proto" />
-    <Protobuf Include="protos\encryption_settings_proto.proto" />
-    <Protobuf Include="protos\notify_invoke.proto" />
-    <Protobuf Include="protos\notify_message.proto" />
     <Protobuf Include="protos\disable_client_proto.proto" />
     <Protobuf Include="protos\register_user_proto.proto" />
     <Protobuf Include="protos\settings_cache_item.proto" />
@@ -81,9 +80,5 @@
     <Protobuf Include="protos\tariff_cache_item.proto" />
     <Protobuf Include="protos\az_record_cache.proto" />
     <Protobuf Include="protos\quota_cache_item.proto" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Migrations\MySql\DbContextMySql\" />
-    <Folder Include="Migrations\MySql\NotifyDbContextMySql\" />
   </ItemGroup>
 </Project>

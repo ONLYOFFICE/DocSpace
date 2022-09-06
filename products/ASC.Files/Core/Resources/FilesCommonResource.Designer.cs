@@ -19,7 +19,7 @@ namespace ASC.Files.Core.Resources {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class FilesCommonResource {
@@ -282,6 +282,15 @@ namespace ASC.Files.Core.Resources {
         public static string CommentRevertChanges {
             get {
                 return ResourceManager.GetString("CommentRevertChanges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submitted form.
+        /// </summary>
+        public static string CommentSubmitFillForm {
+            get {
+                return ResourceManager.GetString("CommentSubmitFillForm", resourceCulture);
             }
         }
         
@@ -781,6 +790,33 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to archive the room.
+        /// </summary>
+        public static string ErrorMessage_ArchiveRoom {
+            get {
+                return ResourceManager.GetString("ErrorMessage_ArchiveRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to archive the room.
+        /// </summary>
+        public static string ErrorMessage_UnarchiveRoom {
+            get {
+                return ResourceManager.GetString("ErrorMessage_UnarchiveRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You cannot edit archived rooms.
+        /// </summary>
+        public static string ErrorMessage_UpdateArchivedRoom {
+            get {
+                return ResourceManager.GetString("ErrorMessage_UpdateArchivedRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Everyone.
         /// </summary>
         public static string Everyone {
@@ -826,7 +862,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The oform copy is created in the {0} folder. Please fill out the form and download the result as a PDF or DOCX file..
+        ///   Looks up a localized string similar to The OFORM copy is created in the {0} folder. Please fill out the form and download the result as a PDF or DOCX file..
         /// </summary>
         public static string MessageFillFormDraftCreated {
             get {
@@ -853,7 +889,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create, edit, and share office documents. Collaborate on them in real-time. 100% compatibility with docx, xlsx, pptx guaranteed. .
+        ///   Looks up a localized string similar to Create, edit, and share office documents. Collaborate on them in real-time. Highest compatibility with docx, xlsx, pptx guaranteed. .
         /// </summary>
         public static string ProductDescription {
             get {
@@ -863,7 +899,7 @@ namespace ASC.Files.Core.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Edit, share and collaborate on office documents in real-time. Create and manage common docs for the whole team to access. 
-        ///100% compatibility with docx, xlsx, pptx. .
+        ///Highest compatibility with docx, xlsx, pptx. .
         /// </summary>
         public static string ProductDescriptionEx {
             get {
@@ -872,7 +908,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View and download shared documents. Upload files to shared folders. 100% compatibility with docx, xlsx, pptx guaranteed..
+        ///   Looks up a localized string similar to View and download shared documents. Upload files to shared folders. Highest compatibility with docx, xlsx, pptx guaranteed..
         /// </summary>
         public static string ProductDescriptionShort {
             get {

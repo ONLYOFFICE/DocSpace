@@ -30,17 +30,15 @@ using System.Linq;
 using System.Linq.Expressions;
 
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -52,25 +50,25 @@ namespace ASC.CRM.Core.Dao
         public CrmDbContext CrmDbContext { get => LazyCrmDbContext.Value; }
         protected readonly SecurityContext _securityContext;
         protected readonly ICache _cache;
-        protected ILog _logger;
+        protected ILogger _logger;
         protected IMapper _mapper;
 
         public AbstractDao(
             DbContextManager<CrmDbContext> dbContextManager,
             TenantManager tenantManager,
             SecurityContext securityContext,
-            IOptionsMonitor<ILog> logger,
+            ILogger logger,
             ICache ascCache,
             IMapper mapper
             )
         {
             _mapper = mapper;
-            _logger = logger.Get("ASC.CRM");
+            _logger = logger;
 
             _cache = ascCache;
 
             LazyCrmDbContext = new Lazy<CrmDbContext>(() => dbContextManager.Get(CrmConstants.DatabaseId));
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
+            TenantID = tenantManager.GetCurrentTenant().Id;
             _securityContext = securityContext;
 
             _supportedEntityType.Add(EntityType.Company);

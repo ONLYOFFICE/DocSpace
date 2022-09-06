@@ -1,9 +1,7 @@
-version: "3.6"
+version: "3.8"
 
 services:
-  
   onlyoffice-mysql-server:
-    
     image: mysql:${MYSQL_VERSION}
     command: --default-authentication-plugin=mysql_native_password
     cap_add:
@@ -22,13 +20,6 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./config/mysql/conf.d/:/etc/mysql/conf.d
-      - ./config/createdb.sql:/docker-entrypoint-initdb.d/01_createdb.sql
-      - ./config/onlyoffice.sql:/docker-entrypoint-initdb.d/02_onlyoffice.sql
-      - ./config/onlyoffice.data.sql:/docker-entrypoint-initdb.d/03_onlyoffice.data.sql
-      - ./config/onlyoffice.resources.sql:/docker-entrypoint-initdb.d/04_onlyoffice.resources.sql
-      - ./config/onlyoffice.upgradev110.sql:/docker-entrypoint-initdb.d/05_onlyoffice.upgradev110.sql
-      - ./config/onlyoffice.upgradev111.sql:/docker-entrypoint-initdb.d/06_onlyoffice.upgradev111.sql
-      - ./config/onlyoffice.upgradev115.sql:/docker-entrypoint-initdb.d/07_onlyoffice.upgradev115.sql
     networks:
       - ${NETWORK_NAME} 
     tmpfs: /var/log/mysql/

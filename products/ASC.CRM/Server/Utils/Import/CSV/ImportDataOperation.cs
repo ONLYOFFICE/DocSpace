@@ -29,7 +29,6 @@ using System.Linq;
 using System.Text.Json;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Common.Security.Authentication;
 using ASC.Common.Threading;
 using ASC.Common.Threading.Progress;
@@ -42,14 +41,14 @@ using ASC.CRM.Resources;
 using ASC.Data.Storage;
 using ASC.Web.CRM.Services.NotifyService;
 
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.CRM.Classes
 {
     [Transient]
     public partial class ImportDataOperation : DistributedTaskProgress, IProgressItem
     {
-        private readonly ILog _log;
+        private readonly ILogger _log;
         private readonly IDataStore _dataStore;
         private readonly IAccount _author;
         private readonly int _tenantID;
@@ -70,7 +69,7 @@ namespace ASC.Web.CRM.Classes
 
         public ImportDataOperation(Global global,
                                    TenantManager tenantManager,
-                                   IOptionsMonitor<ILog> logger,
+                                   ILogger logger,
                                    UserManager userManager,
                                    CrmSecurity crmSecurity,
                                    NotifyClient notifyClient,
@@ -86,14 +85,14 @@ namespace ASC.Web.CRM.Classes
             _dataStore = global.GetStore();
 
             _tenantManager = tenantManager;
-            _tenantID = tenantManager.GetCurrentTenant().TenantId;
+            _tenantID = tenantManager.GetCurrentTenant().Id;
             _author = _securityContext.CurrentAccount;
 
             _notifyClient = notifyClient;
 
             Id = String.Format("{0}_{1}", _tenantID, (int)_entityType);
 
-            _log = logger.Get("ASC.CRM");
+            _log = logger;
 
             _crmSecurity = crmSecurity;
             _settingsManager = settingsManager;
@@ -159,7 +158,7 @@ namespace ASC.Web.CRM.Classes
 
             Percentage = 100;
 
-            _log.Debug("Import is completed");
+            _log.LogDebug("Import is completed");
 
             _notifyClient.SendAboutImportCompleted(_author.ID, _entityType);
         }
@@ -200,7 +199,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (OperationCanceledException)
             {
-                _log.Debug("Queue canceled");
+                _log.LogDebug("Queue canceled");
             }
         }
     }

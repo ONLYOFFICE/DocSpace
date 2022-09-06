@@ -1,5 +1,0 @@
-﻿{
-  "MoveConfirmation": "Potrditev premika",
-  "MoveConfirmationAlert": "Ali ste prepričani, da želite premakniti elemente?",
-  "MoveConfirmationMessage": "Ali ste prepričani, da želite premakniti elemente iz {{provider}} direktorija. Izbrisani bodo iz vašega {{provider}} računa in ne bodo več dostopni drugim uporabnikom."
-}

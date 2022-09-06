@@ -1,0 +1,5 @@
+{
+  "DeleteUser": "Benutzer löschen",
+  "DeleteUserMessage": "{{userCaption}} <strong>{{user}}</strong> wird gelöscht. Persönliche Dokumente von Benutzer, die für andere verfügbar sind, werden gelöscht. Um dies zu vermeiden, müssen Sie den Datenumlagerungsprozess vor dem Löschen starten.",
+  "SuccessfullyDeleteUserInfoMessage": "Der Benutzer wurde erfolgreich gelöscht"
+}

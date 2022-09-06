@@ -1,8 +1,0 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (създаване)",
-  "GroupAction": "Групово действие",
-  "Members": "Членове",
-  "SearchAddedMembers": "Търси добавени членове",
-  "SelectAction": "Избери",
-  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' беше запазено успешно"
-}

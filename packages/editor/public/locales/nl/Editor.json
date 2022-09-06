@@ -1,0 +1,9 @@
+{
+  "DocumentsFileType": "documenten",
+  "FileLocation": "Open bestandslocatie",
+  "FileName": "Bestandsnaam",
+  "ImageFileType": "afbeeldingen",
+  "MailMergeFileType": "Selecteer het bestand in XLSX-formaat",
+  "OpenSavedDocument": "Open bewaard document in nieuwe tab",
+  "SelectFilesType": "Kies bestanden van het type: {{fileType}}"
+}

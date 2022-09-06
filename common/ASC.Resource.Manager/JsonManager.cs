@@ -1,236 +1,221 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Resource.Manager;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Text.Json;
-using System.Text.Unicode;
-using System.Xml;
-
-using ASC.Common.Logging;
-
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Resource.Manager
+public static class JsonManager
 {
-    public static class JsonManager
+    public static void Upload(ILogger option, ResourceData resourceData, string fileName, Stream fileStream, string projectName, string moduleName)
     {
-        public static void Upload(IOptionsMonitor<ILog> option, ResourceData resourceData, string fileName, Stream fileStream, string projectName, string moduleName)
+        var culture = GetCultureFromFileName(fileName);
+
+        string jsonString;
+        using (var reader = new StreamReader(fileStream))
         {
-            var culture = GetCultureFromFileName(fileName);
+            jsonString = reader.ReadToEnd();
+        }
 
-            string jsonString;
-            using (var reader = new StreamReader(fileStream))
+        var jsonObj = new Dictionary<string, string>();
+
+        if (Path.GetExtension(fileName) == ".xml")
+        {
+            var doc = new XmlDocument();
+            doc.LoadXml(jsonString);
+            var list = doc.SelectNodes("//resources//string");
+            if (list != null)
             {
-                jsonString = reader.ReadToEnd();
-            }
-
-            var jsonObj = new Dictionary<string, string>();
-
-            if (Path.GetExtension(fileName) == ".xml")
-            {
-                var doc = new XmlDocument();
-                doc.LoadXml(jsonString);
-                var list = doc.SelectNodes("//resources//string");
-                if (list != null)
+                try
                 {
-                    try
-                    {
-                        var nodes = list.Cast<XmlNode>().ToList();
-                        jsonObj = nodes.ToDictionary(r => r.Attributes["name"].Value, r => r.InnerText);
-                    }
-                    catch (Exception e)
-                    {
-                        option.CurrentValue.ErrorFormat("parse xml " + fileName, e);
-                    }
+                    var nodes = list.Cast<XmlNode>().ToList();
+                    jsonObj = nodes.ToDictionary(r => r.Attributes["name"].Value, r => r.InnerText);
+                }
+                catch (Exception e)
+                {
+                    option.LogError("parse xml " + fileName, e);
                 }
             }
-            else
-            {
-                jsonObj = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString);
-            }
+        }
+        else
+        {
+            jsonObj = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString);
+        }
 
-            var fileID = resourceData.AddFile(fileName, projectName, moduleName);
-            const string resourceType = "text";
-            foreach (var key in jsonObj.Keys)
+        var fileID = resourceData.AddFile(fileName, projectName, moduleName);
+        const string resourceType = "text";
+        foreach (var key in jsonObj.Keys)
+        {
+            var word = new ResWord
             {
-                var word = new ResWord
+                Title = key,
+                ValueFrom = jsonObj[key],
+                ResFile = new ResFile { FileID = fileID }
+            };
+            if (culture != "Neutral")
+            {
+                var neutralKey = new ResWord
                 {
                     Title = key,
                     ValueFrom = jsonObj[key],
                     ResFile = new ResFile { FileID = fileID }
                 };
-                if (culture != "Neutral")
-                {
-                    var neutralKey = new ResWord
-                    {
-                        Title = key,
-                        ValueFrom = jsonObj[key],
-                        ResFile = new ResFile { FileID = fileID }
-                    };
 
-                    resourceData.GetValueByKey(neutralKey, "Neutral");
-                    if (string.IsNullOrEmpty(neutralKey.ValueTo)) continue;
-                }
-
-                resourceData.AddResource(culture, resourceType, DateTime.UtcNow, word, true, "Console");
+                resourceData.GetValueByKey(neutralKey, "Neutral");
+                if (string.IsNullOrEmpty(neutralKey.ValueTo)) continue;
             }
+
+            resourceData.AddResource(culture, resourceType, DateTime.UtcNow, word, true, "Console");
+        }
+    }
+
+    public static bool Export(IServiceProvider serviceProvider, string project, string module, string fName, string language, string exportPath, string key = null)
+    {
+        var filter = new ResCurrent
+        {
+            Project = new ResProject { Name = project },
+            Module = new ResModule { Name = module },
+            Language = new ResCulture { Title = language },
+            Word = new ResWord { ResFile = new ResFile { FileName = fName } }
+        };
+
+        using var scope = serviceProvider.CreateScope();
+        var resourceData = scope.ServiceProvider.GetService<ResourceData>();
+        var words = resourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
+
+        if (!words.Any())
+        {
+            Console.WriteLine("Error!!! Can't find appropriate project and module. Possibly wrong names!");
+            return false;
         }
 
-        public static bool Export(IServiceProvider serviceProvider, string project, string module, string fName, string language, string exportPath, string key = null)
+        foreach (var fileWords in words)
         {
-            var filter = new ResCurrent
-            {
-                Project = new ResProject { Name = project },
-                Module = new ResModule { Name = module },
-                Language = new ResCulture { Title = language },
-                Word = new ResWord { ResFile = new ResFile { FileName = fName } }
-            };
+            var wordsDictionary = new Dictionary<string, object>();
+            var firstWord = fileWords.FirstOrDefault();
+            var fileName = firstWord == null
+                ? module
+                : Path.GetFileNameWithoutExtension(firstWord.ResFile.FileName);
+            var zipFileName = Path.Combine(exportPath, language == "Neutral" ? "en" : language, $"{fileName}.json");
 
-            using var scope = serviceProvider.CreateScope();
-            var resourceData = scope.ServiceProvider.GetService<ResourceData>();
-            var words = resourceData.GetListResWords(filter, string.Empty).GroupBy(x => x.ResFile.FileID).ToList();
-
-            if (!words.Any())
+            var dirName = Path.GetDirectoryName(zipFileName);
+            if (!Directory.Exists(dirName))
             {
-                Console.WriteLine("Error!!! Can't find appropriate project and module. Possibly wrong names!");
-                return false;
+                Directory.CreateDirectory(dirName);
             }
 
-            foreach (var fileWords in words)
+            var toAdd = new List<ResWord>();
+            if (!string.IsNullOrEmpty(key))
             {
-                var wordsDictionary = new Dictionary<string, object>();
-                var firstWord = fileWords.FirstOrDefault();
-                var fileName = firstWord == null
-                    ? module
-                    : Path.GetFileNameWithoutExtension(firstWord.ResFile.FileName);
-                var zipFileName = Path.Combine(exportPath, language == "Neutral" ? "en" : language, $"{fileName}.json");
-
-                var dirName = Path.GetDirectoryName(zipFileName);
-                if (!Directory.Exists(dirName))
+                if (File.Exists(zipFileName))
                 {
-                    Directory.CreateDirectory(dirName);
+                    var jObject = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(zipFileName, Encoding.UTF8));
+                    foreach (var j in jObject)
+                    {
+                        toAdd.Add(new ResWord { Title = j.Key, ValueFrom = j.Value.ToString() });
+                    }
                 }
 
-                var toAdd = new List<ResWord>();
-                if (!string.IsNullOrEmpty(key))
+                if (!toAdd.Any(r => r.Title == key))
                 {
-                    if (File.Exists(zipFileName))
+                    toAdd.Add(fileWords.FirstOrDefault(r => r.Title == key));
+                }
+            }
+            else
+            {
+                if (File.Exists(zipFileName))
+                {
+                    var jObject = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(zipFileName, Encoding.UTF8));
+                    foreach (var f in fileWords.Where(word => !wordsDictionary.ContainsKey(word.Title)))
                     {
-                        var jObject = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(zipFileName, Encoding.UTF8));
-                        foreach (var j in jObject)
+                        if (jObject.ContainsKey(f.Title))
                         {
-                            toAdd.Add(new ResWord { Title = j.Key, ValueFrom = j.Value.ToString() });
+                            toAdd.Add(f);
                         }
                     }
 
-                    if (!toAdd.Any(r => r.Title == key))
+                    foreach (var j in jObject)
                     {
-                        toAdd.Add(fileWords.FirstOrDefault(r => r.Title == key));
+                        if (!toAdd.Any(r => r.Title == j.Key))
+                        {
+                            toAdd.Add(new ResWord { Title = j.Key, ValueFrom = j.Value, ValueTo = j.Value });
+                        }
                     }
                 }
                 else
                 {
-                    if (File.Exists(zipFileName))
-                    {
-                        var jObject = JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(zipFileName, Encoding.UTF8));
-                        foreach(var f in fileWords.Where(word => !wordsDictionary.ContainsKey(word.Title)))
-                        {
-                            if (jObject.ContainsKey(f.Title))
-                            {
-                                toAdd.Add(f);
-                            }
-                        }
-
-                        foreach (var j in jObject)
-                        {
-                            if (!toAdd.Any(r=> r.Title == j.Key))
-                            {
-                                toAdd.Add(new ResWord { Title = j.Key, ValueFrom = j.Value, ValueTo = j.Value });
-                            }
-                        }
-                    }
-                    else
-                    {
-                        toAdd.AddRange(fileWords.Where(word => !wordsDictionary.ContainsKey(word.Title)));
-                    }
+                    toAdd.AddRange(fileWords.Where(word => !wordsDictionary.ContainsKey(word.Title)));
                 }
-
-                foreach (var word in toAdd.Where(r => r != null))
-                {
-                    if (string.IsNullOrEmpty(word.ValueTo)) continue;
-
-                    var newVal = word.ValueTo ?? word.ValueFrom;
-
-                    if (!string.IsNullOrEmpty(newVal))
-                    {
-                        newVal = newVal.TrimEnd('\n').TrimEnd('\r');
-                    }
-
-                    var newKey = GetKey(word.Title, newVal);
-                    wordsDictionary.Add(newKey.Keys.First(), newKey.Values.First());
-                }
-
-                var serialized = JsonSerializer.Serialize(wordsDictionary.OrderBy(r => r.Key).ToDictionary(r => r.Key, r => r.Value),
-                    new JsonSerializerOptions() { 
-                        WriteIndented = true,
-                        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
-                    });
-
-                File.WriteAllText(zipFileName, serialized, Encoding.UTF8);
-
             }
 
-            return true;
-        }
-
-        private static string GetCultureFromFileName(string fileName)
-        {
-            var culture = "Neutral";
-            var nameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-
-            if (nameWithoutExtension != null && nameWithoutExtension.Split('.').Length > 1)
+            foreach (var word in toAdd.Where(r => r != null))
             {
-                culture = nameWithoutExtension.Split('.')[1];
+                if (string.IsNullOrEmpty(word.ValueTo)) continue;
+
+                var newVal = word.ValueTo ?? word.ValueFrom;
+
+                if (!string.IsNullOrEmpty(newVal))
+                {
+                    newVal = newVal.TrimEnd('\n').TrimEnd('\r');
+                }
+
+                var newKey = GetKey(word.Title, newVal);
+                wordsDictionary.Add(newKey.Keys.First(), newKey.Values.First());
             }
 
-            return culture;
+            var serialized = JsonSerializer.Serialize(wordsDictionary.OrderBy(r => r.Key).ToDictionary(r => r.Key, r => r.Value),
+                new JsonSerializerOptions()
+                {
+                    WriteIndented = true,
+                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+                });
+
+            File.WriteAllText(zipFileName, serialized, Encoding.UTF8);
+
         }
 
-        private static Dictionary<string, object> GetKey(string title, string val)
+        return true;
+    }
+
+    private static string GetCultureFromFileName(string fileName)
+    {
+        var culture = "Neutral";
+        var nameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+
+        if (nameWithoutExtension != null && nameWithoutExtension.Split('.').Length > 1)
         {
-            var splited = title.Split('.');
-            if (splited.Length == 1) return new Dictionary<string, object>() { { title, val } };
-
-            return new Dictionary<string, object>() { { splited[0], GetKey(title.Substring(title.IndexOf('.') + 1), val) } };
+            culture = nameWithoutExtension.Split('.')[1];
         }
+
+        return culture;
+    }
+
+    private static Dictionary<string, object> GetKey(string title, string val)
+    {
+        var splited = title.Split('.');
+        if (splited.Length == 1) return new Dictionary<string, object>() { { title, val } };
+
+        return new Dictionary<string, object>() { { splited[0], GetKey(title.Substring(title.IndexOf('.') + 1), val) } };
     }
 }

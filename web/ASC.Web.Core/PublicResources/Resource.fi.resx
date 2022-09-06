@@ -1,0 +1,226 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Vahvistuskoodi-kenttä ei voi olla tyhjä</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Kirjoita matkapuhelimen numero</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Järjestelmänvalvojan ilmoitukset</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Viestisi lähetettiin onnistuneesti. Sivuston omistaja ottaa sinuun yhteyttä mahdollisimman pian.</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Vahvistuslinkki on lähetetty sivuston omistajan sähköpostiosoitteeseen.</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Mukautettu</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Vahvistuslinkki on lähetetty sivuston omistajan sähköpostiosoitteeseen {0}.</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Virheellinen sähköpostiosoite</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Väärä promokoodi</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Ei käyttöoikeuksia tämän toiminnon suorittamiseen. </value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>Portaaliin pääsy on rajoitettu.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Virheelliset avaimet</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Käyttäjätunnuksesi on poistettu käytöstä.</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>Antamasi sähköpostiosoite on jo toisen käyttäjän käytössä. Pelottavaa!</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Sähköposteja tästä verkkotunnuksesta ei ole sallittu rekisteröintiin</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>Sähköpostiosoite on tyhjä. </value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>Nykyinen sähköposti ja uusi sähköposti ovat sama. Nyt ei jokin tässä täsmää...</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Täytä kaikki kentät. Please!</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Lisättyä tiedostoa ei löytynyt. Ei sitten millään.</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Kuvatiedoston koko on liian suuri. Ei pysty.</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Sinun hintavaihtoehtosi ei tue tätä mahdollisuutta</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Sähköpostiosoite ei kelpaa. Jokin siinä mättää.</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Virheellinen verkkotunnuksen nimi</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Salasana on tyhjä. Tyhjä.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>{0} - {1} merkkiä</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Uusi salasana on virheellinen. Sen on sisällettävä</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Sen on sisällettävä</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>numerot</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>erikoismerkit</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>isot kirjaimet</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>Käyttäjää ei löytynyt. Minne lie kadonnut.</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>Käyttäjä, jonka sähköposti on {0} ei löytynyt. Outoa.</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>EU (Frankfurt)</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>Tiedoston enimmäiskoko ylitetty</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Huomautus: tiedostokoko ei voi ylittää {1}{0}{2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>tavua, kt, Mt, Gt, Tt</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Tilin vahvistamiseen tarvittava linkki on lähetetty annettuun sähköpostiosoitteeseen</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>Palvelin ei kyennyt tallentamaan asetuksia.</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Ladattu onnistuneesti</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Sähköpostin muutosohjeet on lähetetty {0} sähköpostiosoitteeseen</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Numeron vaihtamiseksi, sinun tulee poistaa nykyinen puhelinnumerosi</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Omistaja</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Portaalin käyttöoikeus</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Aasia (Singapore)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Virheellinen koodi</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Koodi, jolla voit kirjautua sivustolle: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Koodin käyttöaika on erääntynyt. Ole hyvä ja pyydä uusi tekstiviesti.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>SMS asetukset eivät ole saatavilla</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Olet lähettänyt liian monta tekstiviestiä. Yritä myöhemmin uudelleen.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Ei voitu tallentaa asetuksia</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Tervehdysasetukset on tallennettu onnistuneesti</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Asetukset on päivitetty onnistuneesti</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Profiilin poistoon liittyviä ohjeita on lähetetty sähköpostiosoitteeseesi</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>US (Oregon)</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>Uutta</value>
+  </data>
+</root>

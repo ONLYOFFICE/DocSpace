@@ -1,41 +1,34 @@
-version: "3.6"
+version: "3.8"
 
 services: 
-  onlyoffice-api-system:
+  onlyoffice-backup-background-tasks:
     build:
       context: ./
       dockerfile: "${DOCKERFILE}"
-      target: api_system
-    image: "${REPO}/${STATUS}appserver-api-system:${DOCKER_TAG}"
-     
+      target: backup_background
+    image: "${REPO}/${STATUS}appserver-backup-background:${DOCKER_TAG}"
+
+  onlyoffice-clear-events:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: clear-events
+    image: "${REPO}/${STATUS}appserver-clear-events:${DOCKER_TAG}"
+  
+  onlyoffice-migration:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: migration
+    image: "${REPO}/${STATUS}appserver-migration:${DOCKER_TAG}"
+
   onlyoffice-backup:
     build:
       context: ./
       dockerfile: "${DOCKERFILE}"
       target: backup
     image: "${REPO}/${STATUS}appserver-backup:${DOCKER_TAG}"
-
-  onlyoffice-calendar:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: calendar
-    image: "${REPO}/${STATUS}appserver-calendar:${DOCKER_TAG}"
-
-  onlyoffice-crm:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: crm
-    image: "${REPO}/${STATUS}appserver-crm:${DOCKER_TAG}"
-
-  onlyoffice-storage-encryption:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: data_storage_encryption
-    image: "${REPO}/${STATUS}appserver-storage-encryption:${DOCKER_TAG}" 
-
+  
   onlyoffice-files:
     build:
       context: ./
@@ -50,20 +43,6 @@ services:
       target: files_services
     image: "${REPO}/${STATUS}appserver-files-services:${DOCKER_TAG}"
 
-  onlyoffice-mail:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: mail
-    image: "${REPO}/${STATUS}appserver-mail:${DOCKER_TAG}"
-
-  onlyoffice-storage-migration:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: data_storage_migration
-    image: "${REPO}/${STATUS}appserver-storage-migration:${DOCKER_TAG}"
-
   onlyoffice-notify:
     build:
       context: ./
@@ -77,13 +56,6 @@ services:
       dockerfile: "${DOCKERFILE}"
       target: people_server
     image: "${REPO}/${STATUS}appserver-people-server:${DOCKER_TAG}"
-    
-  onlyoffice-projects-server:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: projects_server
-    image: "${REPO}/${STATUS}appserver-projects-server:${DOCKER_TAG}"
 
   onlyoffice-socket:
     build:
@@ -106,13 +78,6 @@ services:
       target: telegram_service
     image: "${REPO}/${STATUS}appserver-telegram-service:${DOCKER_TAG}"
 
-  onlyoffice-thumbnails:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: thumbnails
-    image: "${REPO}/${STATUS}appserver-thumbnails:${DOCKER_TAG}"
-    
   onlyoffice-urlshortener:
     build:
       context: ./
@@ -141,6 +106,13 @@ services:
       target: ssoauth
     image: "${REPO}/${STATUS}appserver-ssoauth:${DOCKER_TAG}"
 
+  onlyoffice-webhooks-service:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: webhooks-service
+    image: "${REPO}/${STATUS}appserver-webhooks-service:${DOCKER_TAG}"
+  
   onlyoffice-bin-share:
     build:
       context: ./
@@ -155,9 +127,23 @@ services:
       target: wait_bin_share
     image: "${REPO}/${STATUS}appserver-wait-bin-share:${DOCKER_TAG}"
 
+  onlyoffice-doceditor:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE}"
+      target: doceditor
+    image: "${REPO}/${STATUS}appserver-doceditor:${DOCKER_TAG}"
+
   onlyoffice-proxy:
     build:
       context:  ./
       dockerfile: "${DOCKERFILE}"
       target: web
     image: "${REPO}/${STATUS}appserver-proxy:${DOCKER_TAG}"
+
+  onlyoffice-migration-runner:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE}"
+      target: onlyoffice-migration-runner
+    image: "${REPO}/${STATUS}appserver-migration-runner:${DOCKER_TAG}"

@@ -1,0 +1,8 @@
+{
+  "AddHeadOfDepartment": "Add head of department",
+  "CustomNewDepartment": "{{groupCaption}} (creation)",
+  "GroupAction": "Group action",
+  "Members": "Members",
+  "SearchAddedMembers": "Search added members",
+  "SuccessSaveGroup": "{{groupCaption}} '{{ groupName }}' has been saved successfully"
+}

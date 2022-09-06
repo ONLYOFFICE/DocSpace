@@ -1,344 +1,347 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Files.Thirdparty.Box;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Common.Caching;
-using ASC.Core.Common.Configuration;
-using ASC.FederatedLogin;
-using ASC.FederatedLogin.Helpers;
-using ASC.FederatedLogin.LoginProviders;
-using ASC.Files.Core;
-
-using Box.V2.Models;
-
-using Microsoft.Extensions.DependencyInjection;
-
-namespace ASC.Files.Thirdparty.Box
+[Transient]
+[DebuggerDisplay("{CustomerTitle}")]
+internal class BoxProviderInfo : IProviderInfo
 {
-    [Transient]
-    [DebuggerDisplay("{CustomerTitle}")]
-    internal class BoxProviderInfo : IProviderInfo
+    public OAuth20Token Token { get; set; }
+    private string _rootId;
+
+    internal Task<BoxStorage> StorageAsync
     {
-        public OAuth20Token Token { get; set; }
-
-        private string _rootId;
-
-        internal Task<BoxStorage> StorageAsync
+        get
         {
-            get
+            if (_wrapper.Storage == null || !_wrapper.Storage.IsOpened)
             {
-                if (Wrapper.Storage == null || !Wrapper.Storage.IsOpened)
-                {
-                    return Wrapper.CreateStorageAsync(Token, ID);
-                }
-                return Task.FromResult(Wrapper.Storage);
-            }
-        }
-
-        internal bool StorageOpened
-        {
-            get => Wrapper.Storage != null && Wrapper.Storage.IsOpened;
-        }
-
-        public int ID { get; set; }
-
-        public Guid Owner { get; set; }
-
-        public string CustomerTitle { get; set; }
-
-        public DateTime CreateOn { get; set; }
-
-        public string RootFolderId
-        {
-            get { return "box-" + ID; }
-        }
-
-        public string ProviderKey { get; set; }
-
-        public FolderType RootFolderType { get; set; }
-
-        public string BoxRootId
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_rootId))
-                {
-                    var storage = StorageAsync.Result;
-                    _rootId = storage.GetRootFolderIdAsync().Result;
-                }
-                return _rootId;
-            }
-        }
-
-        private BoxStorageDisposableWrapper Wrapper { get; set; }
-        private BoxProviderInfoHelper BoxProviderInfoHelper { get; }
-
-        public BoxProviderInfo(
-            BoxStorageDisposableWrapper wrapper,
-            BoxProviderInfoHelper boxProviderInfoHelper)
-        {
-            Wrapper = wrapper;
-            BoxProviderInfoHelper = boxProviderInfoHelper;
-        }
-
-        public void Dispose()
-        {
-            if (StorageOpened)
-            {
-                StorageAsync.Result.Close();
-            }
-        }
-
-        public Task<bool> CheckAccessAsync()
-        {
-            try
-            {
-                return Task.FromResult(!string.IsNullOrEmpty(BoxRootId));
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return Task.FromResult(false);
-            }
-        }
-
-        public Task InvalidateStorageAsync()
-        {
-            if (Wrapper != null)
-            {
-                Wrapper.Dispose();
+                return _wrapper.CreateStorageAsync(Token, ID);
             }
 
-            return CacheResetAsync();
-        }
-
-        public void UpdateTitle(string newtitle)
-        {
-            CustomerTitle = newtitle;
-        }
-
-        internal async Task<BoxFolder> GetBoxFolderAsync(string dropboxFolderPath)
-        {
-            var storage = await StorageAsync;
-            return await BoxProviderInfoHelper.GetBoxFolderAsync(storage, ID, dropboxFolderPath);
-        }
-
-        internal async ValueTask<BoxFile> GetBoxFileAsync(string dropboxFilePath)
-        {
-            var storage = await StorageAsync;
-            return await BoxProviderInfoHelper.GetBoxFileAsync(storage, ID, dropboxFilePath);
-        }
-
-        internal async Task<List<BoxItem>> GetBoxItemsAsync(string dropboxFolderPath)
-        {
-            var storage = await StorageAsync;
-            return await BoxProviderInfoHelper.GetBoxItemsAsync(storage, ID, dropboxFolderPath);
-        }
-
-        internal Task CacheResetAsync(BoxItem boxItem)
-        {
-            return BoxProviderInfoHelper.CacheResetAsync(ID, boxItem);
-        }
-
-        internal Task CacheResetAsync(string boxPath = null, bool? isFile = null)
-        {
-            return BoxProviderInfoHelper.CacheResetAsync(BoxRootId, ID, boxPath, isFile);
+            return Task.FromResult(_wrapper.Storage);
         }
     }
 
-    [Scope]
-    internal class BoxStorageDisposableWrapper : IDisposable
+    internal bool StorageOpened => _wrapper.Storage != null && _wrapper.Storage.IsOpened;
+    public int ID { get; set; }
+    public Guid Owner { get; set; }
+    public string CustomerTitle { get; set; }
+    public DateTime CreateOn { get; set; }
+    public string RootFolderId => "box-" + ID;
+    public string ProviderKey { get; set; }
+    public FolderType RootFolderType { get; set; }
+    public FolderType FolderType { get; set; }
+    public string FolderId { get; set; }
+    public bool Private { get; set; }
+
+    public string BoxRootId
     {
-        public BoxStorage Storage { get; private set; }
-        private ConsumerFactory ConsumerFactory { get; }
-        private TempStream TempStream { get; }
-        private IServiceProvider ServiceProvider { get; }
-        private readonly OAuth20TokenHelper _oAuth20TokenHelper;
-
-        public BoxStorageDisposableWrapper(ConsumerFactory consumerFactory, TempStream tempStream, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
+        get
         {
-            ConsumerFactory = consumerFactory;
-            TempStream = tempStream;
-            ServiceProvider = serviceProvider;
-            _oAuth20TokenHelper = oAuth20TokenHelper;
-        }
-
-        internal Task<BoxStorage> CreateStorageAsync(OAuth20Token token, int id)
-        {
-            if (Storage != null && Storage.IsOpened) return Task.FromResult(Storage);
-
-            return InternalCreateStorageAsync(token, id);
-        }
-
-        private async Task<BoxStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
-        {
-            var boxStorage = new BoxStorage(TempStream);
-            await CheckTokenAsync(token, id).ConfigureAwait(false);
-
-            boxStorage.Open(token);
-            return Storage = boxStorage;
-        }
-
-        private Task CheckTokenAsync(OAuth20Token token, int id)
-        {
-            if (token == null) throw new UnauthorizedAccessException("Cannot create Box session with given token");
-            return InternalCheckTokenAsync(token, id);
-        }
-
-        private async Task InternalCheckTokenAsync(OAuth20Token token, int id)
-        {
-            if (token.IsExpired)
+            if (string.IsNullOrEmpty(_rootId))
             {
-                token = _oAuth20TokenHelper.RefreshToken<BoxLoginProvider>(ConsumerFactory, token);
-
-                var dbDao = ServiceProvider.GetService<ProviderAccountDao>();
-                await dbDao.UpdateProviderInfoAsync(id, new AuthData(token: token.ToJson())).ConfigureAwait(false);
+                var storage = StorageAsync.Result;
+                _rootId = storage.GetRootFolderIdAsync().Result;
             }
-        }
 
-        public void Dispose()
-        {
-            if (Storage != null)
-            {
-                Storage.Close();
-                Storage = null;
-            }
+            return _rootId;
         }
     }
 
-    [Singletone]
-    public class BoxProviderInfoHelper
+    private readonly BoxStorageDisposableWrapper _wrapper;
+    private readonly BoxProviderInfoHelper _boxProviderInfoHelper;
+
+    public BoxProviderInfo(
+        BoxStorageDisposableWrapper wrapper,
+        BoxProviderInfoHelper boxProviderInfoHelper)
     {
-        private readonly TimeSpan CacheExpiration = TimeSpan.FromMinutes(1);
-        private readonly ICache CacheFile;
-        private readonly ICache CacheFolder;
-        private readonly ICache CacheChildItems;
-        private readonly ICacheNotify<BoxCacheItem> CacheNotify;
+        _wrapper = wrapper;
+        _boxProviderInfoHelper = boxProviderInfoHelper;
+    }
 
-        public BoxProviderInfoHelper(ICacheNotify<BoxCacheItem> cacheNotify, ICache cache)
+    public void Dispose()
+    {
+        if (StorageOpened)
         {
-            CacheFile = cache;
-            CacheFolder = cache;
-            CacheChildItems = cache;
-            CacheNotify = cacheNotify;
-            CacheNotify.Subscribe((i) =>
-            {
-                if (i.ResetAll)
-                {
-                    CacheChildItems.Remove(new Regex("^box-" + i.Key + ".*"));
-                    CacheFile.Remove(new Regex("^boxf-" + i.Key + ".*"));
-                    CacheFolder.Remove(new Regex("^boxd-" + i.Key + ".*"));
-                }
+            StorageAsync.Result.Close();
+        }
+    }
 
-                if (!i.IsFileExists)
-                {
-                    CacheChildItems.Remove("box-" + i.Key);
+    public Task<bool> CheckAccessAsync()
+    {
+        try
+        {
+            return Task.FromResult(!string.IsNullOrEmpty(BoxRootId));
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Task.FromResult(false);
+        }
+    }
 
-                    CacheFolder.Remove("boxd-" + i.Key);
-                }
-                else
-                {
-                    if (i.IsFileExists)
-                    {
-                        CacheFile.Remove("boxf-" + i.Key);
-                    }
-                    else
-                    {
-                        CacheFolder.Remove("boxd-" + i.Key);
-                    }
-                }
-            }, CacheNotifyAction.Remove);
+    public Task InvalidateStorageAsync()
+    {
+        if (_wrapper != null)
+        {
+            _wrapper.Dispose();
         }
 
-        internal async Task<BoxFolder> GetBoxFolderAsync(BoxStorage storage, int id, string boxFolderId)
+        return CacheResetAsync();
+    }
+
+    public void UpdateTitle(string newtitle)
+    {
+        CustomerTitle = newtitle;
+    }
+
+    internal async Task<BoxFolder> GetBoxFolderAsync(string dropboxFolderPath)
+    {
+        var storage = await StorageAsync;
+
+        return await _boxProviderInfoHelper.GetBoxFolderAsync(storage, ID, dropboxFolderPath);
+    }
+
+    internal async ValueTask<BoxFile> GetBoxFileAsync(string dropboxFilePath)
+    {
+        var storage = await StorageAsync;
+
+        return await _boxProviderInfoHelper.GetBoxFileAsync(storage, ID, dropboxFilePath);
+    }
+
+    internal async Task<List<BoxItem>> GetBoxItemsAsync(string dropboxFolderPath)
+    {
+        var storage = await StorageAsync;
+
+        return await _boxProviderInfoHelper.GetBoxItemsAsync(storage, ID, dropboxFolderPath);
+    }
+
+    internal Task CacheResetAsync(BoxItem boxItem)
+    {
+        return _boxProviderInfoHelper.CacheResetAsync(ID, boxItem);
+    }
+
+    internal Task CacheResetAsync(string boxPath = null, bool? isFile = null)
+    {
+        return _boxProviderInfoHelper.CacheResetAsync(BoxRootId, ID, boxPath, isFile);
+    }
+
+    internal async Task<Stream> GetThumbnailAsync(string boxFileId, int width, int height)
+    {
+        var storage = await StorageAsync;
+        return await _boxProviderInfoHelper.GetThumbnailAsync(storage, boxFileId, width, height);
+    }
+}
+
+[Scope]
+internal class BoxStorageDisposableWrapper : IDisposable
+{
+    public BoxStorage Storage { get; private set; }
+    private readonly OAuth20TokenHelper _oAuth20TokenHelper;
+
+    private readonly ConsumerFactory _consumerFactory;
+    private readonly TempStream _tempStream;
+    private readonly IServiceProvider _serviceProvider;
+
+    public BoxStorageDisposableWrapper(ConsumerFactory consumerFactory, TempStream tempStream, IServiceProvider serviceProvider, OAuth20TokenHelper oAuth20TokenHelper)
+    {
+        _consumerFactory = consumerFactory;
+        _tempStream = tempStream;
+        _serviceProvider = serviceProvider;
+        _oAuth20TokenHelper = oAuth20TokenHelper;
+    }
+
+    internal Task<BoxStorage> CreateStorageAsync(OAuth20Token token, int id)
+    {
+        if (Storage != null && Storage.IsOpened)
         {
-            var folder = CacheFolder.Get<BoxFolder>("boxd-" + id + "-" + boxFolderId);
-            if (folder == null)
+            return Task.FromResult(Storage);
+        }
+
+        return InternalCreateStorageAsync(token, id);
+    }
+
+    private async Task<BoxStorage> InternalCreateStorageAsync(OAuth20Token token, int id)
+    {
+        var boxStorage = new BoxStorage(_tempStream);
+        await CheckTokenAsync(token, id);
+
+        boxStorage.Open(token);
+
+        return Storage = boxStorage;
+    }
+
+    private Task CheckTokenAsync(OAuth20Token token, int id)
+    {
+        if (token == null)
+        {
+            throw new UnauthorizedAccessException("Cannot create Box session with given token");
+        }
+
+        return InternalCheckTokenAsync(token, id);
+    }
+
+    private async Task InternalCheckTokenAsync(OAuth20Token token, int id)
+    {
+        if (token.IsExpired)
+        {
+            token = _oAuth20TokenHelper.RefreshToken<BoxLoginProvider>(_consumerFactory, token);
+
+            var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
+            await dbDao.UpdateProviderInfoAsync(id, new AuthData(token: token.ToJson()));
+        }
+    }
+
+    public void Dispose()
+    {
+        if (Storage != null)
+        {
+            Storage.Close();
+            Storage = null;
+        }
+    }
+}
+
+[Singletone]
+public class BoxProviderInfoHelper
+{
+    private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(1);
+    private readonly ICache _cacheFile;
+    private readonly ICache _cacheFolder;
+    private readonly ICache _cacheChildItems;
+    private readonly ICacheNotify<BoxCacheItem> _cacheNotify;
+
+    public BoxProviderInfoHelper(ICacheNotify<BoxCacheItem> cacheNotify, ICache cache)
+    {
+        _cacheFile = cache;
+        _cacheFolder = cache;
+        _cacheChildItems = cache;
+        _cacheNotify = cacheNotify;
+        _cacheNotify.Subscribe((i) =>
+        {
+            if (i.ResetAll)
             {
-                folder = await storage.GetFolderAsync(boxFolderId).ConfigureAwait(false);
-                if (folder != null)
-                    CacheFolder.Insert("boxd-" + id + "-" + boxFolderId, folder, DateTime.UtcNow.Add(CacheExpiration));
+                _cacheChildItems.Remove(new Regex("^box-" + i.Key + ".*"));
+                _cacheFile.Remove(new Regex("^boxf-" + i.Key + ".*"));
+                _cacheFolder.Remove(new Regex("^boxd-" + i.Key + ".*"));
             }
-            return folder;
-        }
 
-        internal async ValueTask<BoxFile> GetBoxFileAsync(BoxStorage storage, int id, string boxFileId)
-        {
-            var file = CacheFile.Get<BoxFile>("boxf-" + id + "-" + boxFileId);
-            if (file == null)
+            if (!i.IsFileExists)
             {
-                file = await storage.GetFileAsync(boxFileId).ConfigureAwait(false);
-                if (file != null)
-                    CacheFile.Insert("boxf-" + id + "-" + boxFileId, file, DateTime.UtcNow.Add(CacheExpiration));
-            }
-            return file;
-        }
+                _cacheChildItems.Remove("box-" + i.Key);
 
-        internal async Task<List<BoxItem>> GetBoxItemsAsync(BoxStorage storage, int id, string boxFolderId)
-        {
-            var items = CacheChildItems.Get<List<BoxItem>>("box-" + id + "-" + boxFolderId);
-
-            if (items == null)
-            {
-                items = await storage.GetItemsAsync(boxFolderId).ConfigureAwait(false);
-                CacheChildItems.Insert("box-" + id + "-" + boxFolderId, items, DateTime.UtcNow.Add(CacheExpiration));
-            }
-            return items;
-        }
-
-        internal async Task CacheResetAsync(int id, BoxItem boxItem)
-        {
-            if (boxItem != null)
-            {
-                await CacheNotify.PublishAsync(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, CacheNotifyAction.Remove).ConfigureAwait(false);
-            }
-        }
-
-        internal async Task CacheResetAsync(string boxRootId, int id, string boxId = null, bool? isFile = null)
-        {
-            var key = id + "-";
-            if (boxId == null)
-            {
-                await CacheNotify.PublishAsync(new BoxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+                _cacheFolder.Remove("boxd-" + i.Key);
             }
             else
             {
-                if (boxId == boxRootId)
+                if (i.IsFileExists)
                 {
-                    boxId = "0";
+                    _cacheFile.Remove("boxf-" + i.Key);
                 }
-                key += boxId;
+                else
+                {
+                    _cacheFolder.Remove("boxd-" + i.Key);
+                }
+            }
+        }, CacheNotifyAction.Remove);
+    }
 
-                await CacheNotify.PublishAsync(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove).ConfigureAwait(false);
+    internal async Task<BoxFolder> GetBoxFolderAsync(BoxStorage storage, int id, string boxFolderId)
+    {
+        var folder = _cacheFolder.Get<BoxFolder>("boxd-" + id + "-" + boxFolderId);
+        if (folder == null)
+        {
+            folder = await storage.GetFolderAsync(boxFolderId);
+            if (folder != null)
+            {
+                _cacheFolder.Insert("boxd-" + id + "-" + boxFolderId, folder, DateTime.UtcNow.Add(_cacheExpiration));
             }
         }
+
+        return folder;
+    }
+
+    internal async ValueTask<BoxFile> GetBoxFileAsync(BoxStorage storage, int id, string boxFileId)
+    {
+        var file = _cacheFile.Get<BoxFile>("boxf-" + id + "-" + boxFileId);
+        if (file == null)
+        {
+            file = await storage.GetFileAsync(boxFileId);
+            if (file != null)
+            {
+                _cacheFile.Insert("boxf-" + id + "-" + boxFileId, file, DateTime.UtcNow.Add(_cacheExpiration));
+            }
+        }
+
+        return file;
+    }
+
+    internal async Task<List<BoxItem>> GetBoxItemsAsync(BoxStorage storage, int id, string boxFolderId)
+    {
+        var items = _cacheChildItems.Get<List<BoxItem>>("box-" + id + "-" + boxFolderId);
+
+        if (items == null)
+        {
+            items = await storage.GetItemsAsync(boxFolderId);
+            _cacheChildItems.Insert("box-" + id + "-" + boxFolderId, items, DateTime.UtcNow.Add(_cacheExpiration));
+        }
+
+        return items;
+    }
+
+    internal async Task CacheResetAsync(int id, BoxItem boxItem)
+    {
+        if (boxItem != null)
+        {
+            await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = boxItem is BoxFile, Key = id + "-" + boxItem.Id }, CacheNotifyAction.Remove);
+        }
+    }
+
+    internal async Task CacheResetAsync(string boxRootId, int id, string boxId = null, bool? isFile = null)
+    {
+        var key = id + "-";
+        if (boxId == null)
+        {
+            await _cacheNotify.PublishAsync(new BoxCacheItem { ResetAll = true, Key = key }, CacheNotifyAction.Remove);
+        }
+        else
+        {
+            if (boxId == boxRootId)
+            {
+                boxId = "0";
+            }
+
+            key += boxId;
+
+            await _cacheNotify.PublishAsync(new BoxCacheItem { IsFile = isFile ?? false, IsFileExists = isFile.HasValue, Key = key }, CacheNotifyAction.Remove);
+        }
+    }
+
+    internal async Task<Stream> GetThumbnailAsync(BoxStorage storage, string boxFileId, int width, int height)
+    {
+        return await storage.GetThumbnailAsync(boxFileId, width, height);
     }
 }

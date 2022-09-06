@@ -139,14 +139,15 @@ if rpm -q "firewalld"; then
 	systemctl restart firewalld.service
 fi
 
-{ ${package_manager} check-update ${package_sysname}-${product}; APPSERVER_CHECK_UPDATE=$?; } || true
-if [[ $APPSERVER_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
-	APPSERVER_NEED_UPDATE="true"
-fi
-
-if [ "$APPSERVER_INSTALLED" = "false" ]; then
-	${package_manager} install -y ${package_sysname}-${product} 
-elif [ "$APPSERVER_NEED_UPDATE" = "true" ]; then
+{ ${package_manager} check-update ${package_sysname}-${product}; PRODUCT_CHECK_UPDATE=$?; } || true
+if [ "$PRODUCT_INSTALLED" = "false" ]; then
+	${package_manager} install -y ${package_sysname}-${product}
+	${product}-configuration.sh \
+		-mysqlh ${MYSQL_SERVER_HOST} \
+		-mysqld ${MYSQL_SERVER_DB_NAME} \
+		-mysqlu ${MYSQL_SERVER_USER} \
+		-mysqlp ${MYSQL_ROOT_PASS}
+elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
 	ENVIRONMENT="$(cat /lib/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
 	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
 	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
@@ -156,34 +157,12 @@ elif [ "$APPSERVER_NEED_UPDATE" = "true" ]; then
 	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
 
 	${package_manager} -y update ${package_sysname}-${product}
-fi
-
-if [ "${APPSERVER_INSTALLED}" = "false" ] || [ "$APPSERVER_NEED_UPDATE" = "true" ]; then
-expect << EOF
-	set timeout -1
-	log_user 1
-
-	if { "${UPDATE}" == "true" } {
-		spawn ${product}-configuration.sh -e ${ENVIRONMENT}
-	} else {
-		spawn ${product}-configuration.sh
-	}
-
-	expect -re "Database host:"
-	send "\025$MYSQL_SERVER_HOST\r"
-
-	expect -re "Database name:"
-	send "\025$MYSQL_SERVER_DB_NAME\r"
-
-	expect -re "Database user:"
-	send "\025$MYSQL_SERVER_USER\r"
-
-	expect -re "Database password:"
-	send "\025$MYSQL_ROOT_PASS\r"
-
-	expect eof	
-EOF
-	APPSERVER_INSTALLED="true";
+	${product}-configuration.sh \
+		-e ${ENVIRONMENT} \
+		-mysqlh ${MYSQL_SERVER_HOST} \
+		-mysqld ${MYSQL_SERVER_DB_NAME} \
+		-mysqlu ${MYSQL_SERVER_USER} \
+		-mysqlp ${MYSQL_ROOT_PASS}
 fi
 
 echo ""

@@ -1,159 +1,157 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Security.Cryptography;
 
-using System;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace ASC.Security.Cryptography
+public static class Hasher
 {
-    public static class Hasher
+    private const HashAlg DefaultAlg = HashAlg.SHA256;
+
+    public static byte[] Hash(string data, HashAlg hashAlg)
     {
-        private const HashAlg DefaultAlg = HashAlg.SHA256;
+        return ComputeHash(data, hashAlg);
+    }
 
+    public static byte[] Hash(string data)
+    {
+        return Hash(data, DefaultAlg);
+    }
 
-        public static byte[] Hash(string data, HashAlg hashAlg)
+    public static byte[] Hash(byte[] data, HashAlg hashAlg)
+    {
+        return ComputeHash(data, hashAlg);
+    }
+
+    public static byte[] Hash(byte[] data)
+    {
+        return Hash(data, DefaultAlg);
+    }
+
+    public static string Base64Hash(string data, HashAlg hashAlg)
+    {
+        return ComputeHash64(data, hashAlg);
+    }
+
+    public static string Base64Hash(string data)
+    {
+        return Base64Hash(data, DefaultAlg);
+    }
+
+    public static string Base64Hash(byte[] data, HashAlg hashAlg)
+    {
+        return ComputeHash64(data, hashAlg);
+    }
+
+    public static string Base64Hash(byte[] data)
+    {
+        return Base64Hash(data, DefaultAlg);
+    }
+
+    public static bool EqualHash(byte[] dataToCompare, byte[] hash)
+    {
+        return EqualHash(dataToCompare, hash, DefaultAlg);
+    }
+
+    public static bool EqualHash(string dataToCompare, string hash, HashAlg hashAlg)
+    {
+        return EqualHash(S2B(dataToCompare), S642B(hash), hashAlg);
+    }
+
+    public static bool EqualHash(string dataToCompare, string hash)
+    {
+        return EqualHash(dataToCompare, hash, DefaultAlg);
+    }
+
+    public static bool EqualHash(byte[] dataToCompare, byte[] hash, HashAlg hashAlg)
+    {
+        return string.Equals(
+            ComputeHash64(dataToCompare, hashAlg),
+            B2S64(hash)
+            );
+    }
+
+    private static HashAlgorithm GetAlg(HashAlg hashAlg)
+    {
+        return hashAlg switch
         {
-            return ComputeHash(data, hashAlg);
-        }
+            HashAlg.MD5 => MD5.Create(),
+            HashAlg.SHA1 => SHA1.Create(),
+            HashAlg.SHA256 => SHA256.Create(),
+            HashAlg.SHA512 => SHA512.Create(),
+            _ => SHA256.Create()
+        };
+    }
 
-        public static byte[] Hash(string data)
-        {
-            return Hash(data, DefaultAlg);
-        }
+    private static byte[] S2B(string str)
+    {
+        ArgumentNullException.ThrowIfNull(str);
 
-        public static byte[] Hash(byte[] data, HashAlg hashAlg)
-        {
-            return ComputeHash(data, hashAlg);
-        }
+        return Encoding.UTF8.GetBytes(str);
+    }
 
-        public static byte[] Hash(byte[] data)
-        {
-            return Hash(data, DefaultAlg);
-        }
+    private static string B2S(byte[] data)
+    {
+        ArgumentNullException.ThrowIfNull(data);
 
-        public static string Base64Hash(string data, HashAlg hashAlg)
-        {
-            return ComputeHash64(data, hashAlg);
-        }
+        return Encoding.UTF8.GetString(data);
+    }
 
-        public static string Base64Hash(string data)
-        {
-            return Base64Hash(data, DefaultAlg);
-        }
+    private static byte[] S642B(string str)
+    {
+        ArgumentNullException.ThrowIfNull(str);
 
-        public static string Base64Hash(byte[] data, HashAlg hashAlg)
-        {
-            return ComputeHash64(data, hashAlg);
-        }
+        return Convert.FromBase64String(str);
+    }
 
-        public static string Base64Hash(byte[] data)
-        {
-            return Base64Hash(data, DefaultAlg);
-        }
+    private static string B2S64(byte[] data)
+    {
+        ArgumentNullException.ThrowIfNull(data);
 
-        public static bool EqualHash(byte[] dataToCompare, byte[] hash, HashAlg hashAlg)
-        {
-            return string.Equals(
-                ComputeHash64(dataToCompare, hashAlg),
-                B2S64(hash)
-                );
-        }
+        return Convert.ToBase64String(data);
+    }
 
-        public static bool EqualHash(byte[] dataToCompare, byte[] hash)
-        {
-            return EqualHash(dataToCompare, hash, DefaultAlg);
-        }
+    private static byte[] ComputeHash(byte[] data, HashAlg hashAlg)
+    {
+        using var alg = GetAlg(hashAlg);
 
-        public static bool EqualHash(string dataToCompare, string hash, HashAlg hashAlg)
-        {
-            return EqualHash(S2B(dataToCompare), S642B(hash), hashAlg);
-        }
+        return alg.ComputeHash(data);
+    }
 
-        public static bool EqualHash(string dataToCompare, string hash)
-        {
-            return EqualHash(dataToCompare, hash, DefaultAlg);
-        }
+    private static byte[] ComputeHash(string data, HashAlg hashAlg)
+    {
+        return ComputeHash(S2B(data), hashAlg);
+    }
 
+    private static string ComputeHash64(byte[] data, HashAlg hashAlg)
+    {
+        return B2S64(ComputeHash(data, hashAlg));
+    }
 
-        private static HashAlgorithm GetAlg(HashAlg hashAlg)
-        {
-            return hashAlg switch
-            {
-                HashAlg.MD5 => MD5.Create(),
-                HashAlg.SHA1 => SHA1.Create(),
-                HashAlg.SHA256 => SHA256.Create(),
-                HashAlg.SHA512 => SHA512.Create(),
-                _ => SHA256.Create()
-            };
-        }
-
-        private static byte[] S2B(string str)
-        {
-            if (str == null) throw new ArgumentNullException(nameof(str));
-            return Encoding.UTF8.GetBytes(str);
-        }
-
-        private static string B2S(byte[] data)
-        {
-            if (data == null) throw new ArgumentNullException(nameof(data));
-            return Encoding.UTF8.GetString(data);
-        }
-
-        private static byte[] S642B(string str)
-        {
-            if (str == null) throw new ArgumentNullException(nameof(str));
-            return Convert.FromBase64String(str);
-        }
-
-        private static string B2S64(byte[] data)
-        {
-            if (data == null) throw new ArgumentNullException(nameof(data));
-            return Convert.ToBase64String(data);
-        }
-
-        private static byte[] ComputeHash(byte[] data, HashAlg hashAlg)
-        {
-            using var alg = GetAlg(hashAlg);
-            return alg.ComputeHash(data);
-        }
-
-        private static byte[] ComputeHash(string data, HashAlg hashAlg)
-        {
-            return ComputeHash(S2B(data), hashAlg);
-        }
-
-        private static string ComputeHash64(byte[] data, HashAlg hashAlg)
-        {
-            return B2S64(ComputeHash(data, hashAlg));
-        }
-
-        private static string ComputeHash64(string data, HashAlg hashAlg)
-        {
-            return ComputeHash64(S2B(data), hashAlg);
-        }
+    private static string ComputeHash64(string data, HashAlg hashAlg)
+    {
+        return ComputeHash64(S2B(data), hashAlg);
     }
 }

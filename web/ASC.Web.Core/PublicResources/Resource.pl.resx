@@ -1,0 +1,265 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Pole kodu walidacyjnego nie może być puste</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Wpisz numer telefonu komórkowego</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Powiadomienia administratora</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Twoja wiadomość została pomyślnie wysłana. Zostaniesz o tym powiadomiony przez administratora portalu.</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Link potwierdzający operację został wysłany na adres :email (adres e-mail właściciela portalu).</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
+    <value>Operator odzyskiwania hasła jest zabroniony dla użytkownika LDAP</value>
+  </data>
+  <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
+    <value>Operacja odzyskiwania hasła jest zabroniona dla użytkownika SSO</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Niestandardowy</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Link potwierdzający operację został wysłany do {0} (adres e-mail właściciela portalu).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Nieprawidłowy adres e-mail</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Nieprawidłowy kod promocyjny</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Brak uprawnień do wykonania tej operacji</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>Dostęp do portalu jest ograniczony.</value>
+  </data>
+  <data name="ErrorBadKeys" xml:space="preserve">
+    <value>Nieprawidłowe klucze</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Twój profil został zawieszony</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} o takim adresie e-mail jest już zarejestrowany</value>
+  </data>
+  <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
+    <value>Wiadomości e-mail z tej domeny nie są dopuszczone do rejestracji</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>Pole e-mail jest puste</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>Obecny e-mail jest zbieżny z nowym adresem e-mail.</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Proszę wypełnić wszystkie pola</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Przesłany plik nie został znaleziony.</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Rozmiar obrazka jest zbyt duży</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Twój plan wycena nie obsługuje tej opcji</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Nieprawidłowy e-mail</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Nieprawidłowa nazwa domeny</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Hasło jest puste.</value>
+  </data>
+  <data name="ErrorPasswordLength" xml:space="preserve">
+    <value>od {0} do {1} znaków</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Hasło musi zawierać</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Musi zawierać</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>liczby</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>znaki specjalne</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>wielkie litery</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>Użytkownik nie został odnaleziony.</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>Użytkownik z adresem e-mail "{0}" nie został odnaleziony.</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>Region UE (Frankfurt)</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>Maksymalny rozmiar pliku został przekroczony.</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Uwaga: rozmiar pliku nie może przekroczyć {1}{0}{2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>bajty,kB,MB,GB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Link potwierdzający założenie konta został wysłany na podany e-mail.</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>Serweru nie udało się zapisać ustawień.</value>
+  </data>
+  <data name="LdapSettingsTooManyOperations" xml:space="preserve">
+    <value>Zbyt wiele operacji LDAP.</value>
+  </data>
+  <data name="LicenseError" xml:space="preserve">
+    <value>Licencja nie jest poprawna</value>
+  </data>
+  <data name="LicenseErrorExpired" xml:space="preserve">
+    <value>Licencja wygasła</value>
+  </data>
+  <data name="LicenseErrorPortal" xml:space="preserve">
+    <value>Liczba portali przekracza dozwoloną liczbę licencji</value>
+  </data>
+  <data name="LicenseErrorQuota" xml:space="preserve">
+    <value>Liczba użytkowników przekracza dozwoloną licencję</value>
+  </data>
+  <data name="LicenseUploaded" xml:space="preserve">
+    <value>Przesłane pomyślnie</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Instrukcje zmiany e-mail zostały wysłane na adres pomyślnie</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Aby zmienić numer, musisz usunąć bieżący numer telefonu</value>
+  </data>
+  <data name="OrgServerRegion" xml:space="preserve">
+    <value>Region ORG</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Właściciel</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Dostęp do portalu</value>
+  </data>
+  <data name="ReassignDataRemoveUserError" xml:space="preserve">
+    <value>Proces przypisywania danych do {0} nie jest kompletny.</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Azja Pacyfik (Singapur)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>błędny kod</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Code: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Czas użycia kodu wygasł. Poproś o nową wiadomość tekstową.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>Ustawienia SMS nie są dostępne</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Wysłałeś zbyt wiele wiadomości tekstowych. Spróbuj ponownie później.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Nie można zapisać ustawień</value>
+  </data>
+  <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
+    <value>Ustawienia nie mogą być puste</value>
+  </data>
+  <data name="SsoSettingsInvalidBinding" xml:space="preserve">
+    <value>Niewłaściwe powiązanie: {0}</value>
+  </data>
+  <data name="SsoSettingsInvalidEntityId" xml:space="preserve">
+    <value>Nieprawidłowy identyfikator ID</value>
+  </data>
+  <data name="SsoSettingsInvalidMapping" xml:space="preserve">
+    <value>Nieprawidłowe mapowanie pól</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Ustawienie powitania pozostaje puste.</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Ustawienia zostały zaktualizowane.</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Instrukcje dotyczące usunięcia profilu zostały wysłane na {0} twój adres e-mail</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>Region Stanów Zjednoczonych (Oregon)</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>Co nowego?</value>
+  </data>
+</root>

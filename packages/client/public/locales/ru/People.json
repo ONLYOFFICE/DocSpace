@@ -1,0 +1,20 @@
+{
+  "Administrator": "Администратор",
+  "ChangeToGuest": "Изменить на {{guestCaption}}",
+  "ChangeToUser": "Изменить на {{userCaption}}",
+  "EmptyGroupDescription": "Вы можете добавить новых сотрудников вручную или пригласить их по ссылке.",
+  "EmptyGroupTitle": "Здесь пока нет сотрудников",
+  "LblInviteAgain": "Выслать приглашение ещё раз",
+  "LblInvited": "Приглашен",
+  "LblSendEmail": "Отправить email",
+  "LblSendMessage": "Отправить сообщение",
+  "LblSetActive": "Разблокировать",
+  "LblSetDisabled": "Заблокировать",
+  "MakeInvitationLink": "Создать пригласительную ссылку",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
+  "NotFoundDescription": "Попробуйте изменить или очистить настройки фильтра, чтобы увидеть всех людей в разделе.",
+  "NotFoundTitle": "Сотрудников не найдено",
+  "ReassignmentData": "Переназначение данных",
+  "SuccessfullyRemovedGroup": "Группа была успешно удалена",
+  "UserStatus": "Статус"
+}

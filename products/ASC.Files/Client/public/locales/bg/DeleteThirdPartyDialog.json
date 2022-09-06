@@ -1,4 +1,0 @@
-﻿{
-  "DeleteThirdPartyAlert": "Премахване на {{service}} от модула 'Документи'? Това няма да повлияе на вашия {{account}} профил по никакъв начин.",
-  "SuccessDeleteThirdParty": "{{service}} от трето лице е изтрит/а"
-}

@@ -1,5 +1,0 @@
-﻿{
-  "MoveConfirmation": "移动确认",
-  "MoveConfirmationAlert": "您确定要移动此元素吗？",
-  "MoveConfirmationMessage": "您即将从{{provider}}目录中移出元素。其将从您的{{provider}}账户中删除，且其他用户将无法继续访问。"
-}

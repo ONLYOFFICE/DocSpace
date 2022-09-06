@@ -71,10 +71,10 @@ namespace ASC.Core.Common.Tests
 
         private void CompareAces(AzRecord ar1, AzRecord ar2)
         {
-            Assert.AreEqual(ar1.ActionId, ar2.ActionId);
-            Assert.AreEqual(ar1.ObjectId, ar2.ObjectId);
-            Assert.AreEqual(ar1.Reaction, ar2.Reaction);
-            Assert.AreEqual(ar1.SubjectId, ar2.SubjectId);
+            Assert.AreEqual(ar1.Action, ar2.Action);
+            Assert.AreEqual(ar1.Object, ar2.Object);
+            Assert.AreEqual(ar1.AceType, ar2.AceType);
+            Assert.AreEqual(ar1.Subject, ar2.Subject);
             Assert.AreEqual(ar1.Tenant, ar2.Tenant);
         }
     }

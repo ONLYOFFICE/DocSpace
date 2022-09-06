@@ -1,3 +1,29 @@
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -29,12 +55,11 @@ using System.Collections.Generic;
 using System.IO;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Web.Core.Calendars;
 
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Calendar.iCalParser
 {
@@ -43,7 +68,7 @@ namespace ASC.Calendar.iCalParser
     {
         public IServiceProvider ServiceProvider { get; }
 
-        private readonly ILog Log;
+        private readonly ILogger<DDayICalParser> Log;
         public TenantManager TenantManager { get; }
         public TimeZoneConverter TimeZoneConverter { get; }
         public AuthContext AuthContext { get; }
@@ -54,13 +79,13 @@ namespace ASC.Calendar.iCalParser
              TenantManager tenantManager,
              TimeZoneConverter timeZoneConverter,
              AuthContext authContext,
-             IOptionsMonitor<ILog> options)
+             ILogger<DDayICalParser> options)
         {
             ServiceProvider = serviceProvider;
             TenantManager = tenantManager;
             TimeZoneConverter = timeZoneConverter;
             AuthContext = authContext;
-            Log = options.Get("ASC.Calendar");
+            Log = options;
         }
         public Ical.Net.CalendarCollection DeserializeCalendar(string iCalCalendarString)
         {
@@ -75,7 +100,7 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "DeserializeCalendar");
                 return null;
             }
         }
@@ -88,7 +113,7 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "DeserializeCalendar");
                 return null;
             }
         }
@@ -102,7 +127,7 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "SerializeCalendar");
                 return null;
             }
         }
@@ -118,12 +143,12 @@ namespace ASC.Calendar.iCalParser
                 using (var stringReader = new StringReader(iCalEventString))
                 {
                     var serializer = new Ical.Net.Serialization.EventSerializer();
-                    return (Ical.Net.CalendarComponents.CalendarEvent) serializer.Deserialize(stringReader);
+                    return (Ical.Net.CalendarComponents.CalendarEvent)serializer.Deserialize(stringReader);
                 }
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "DeserializeEvent");
                 return null;
             }
         }
@@ -133,11 +158,11 @@ namespace ASC.Calendar.iCalParser
             try
             {
                 var serializer = new Ical.Net.Serialization.EventSerializer();
-                return (Ical.Net.CalendarComponents.CalendarEvent) serializer.Deserialize(stringReader);
+                return (Ical.Net.CalendarComponents.CalendarEvent)serializer.Deserialize(stringReader);
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "DeserializeEvent");
                 return null;
             }
         }
@@ -151,7 +176,7 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "SerializeEvent");
                 return null;
             }
         }
@@ -167,12 +192,12 @@ namespace ASC.Calendar.iCalParser
                 using (var stringReader = new StringReader(iCalRecurrencePatternString))
                 {
                     var serializer = new Ical.Net.Serialization.DataTypes.RecurrencePatternSerializer();
-                    return (Ical.Net.DataTypes.RecurrencePattern) serializer.Deserialize(stringReader);
+                    return (Ical.Net.DataTypes.RecurrencePattern)serializer.Deserialize(stringReader);
                 }
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "DeserializeRecurrencePattern");
                 return null;
             }
         }
@@ -186,7 +211,7 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "DeserializeRecurrencePattern");
                 return null;
             }
         }
@@ -200,40 +225,40 @@ namespace ASC.Calendar.iCalParser
             }
             catch (Exception ex)
             {
-                Log.Error(ex);
+                Log.LogError(ex, "SerializeRecurrencePattern");
                 return null;
             }
         }
 
 
-       /* public BaseCalendar ConvertCalendar(Ical.Net.Calendar calandarObj)
-        {
-            if (calandarObj == null) return null;
+        /* public BaseCalendar ConvertCalendar(Ical.Net.Calendar calandarObj)
+         {
+             if (calandarObj == null) return null;
 
-            var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
-            var result = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter, icalendar, DataProvider);
+             var icalendar = new iCalendar(AuthContext, TimeZoneConverter, TenantManager);
+             var result = new BusinessObjects.Calendar(AuthContext, TimeZoneConverter, icalendar, DataProvider);
 
-            result.Name = string.IsNullOrEmpty(calandarObj.Name)
-                           ? calandarObj.Properties.ContainsKey("X-WR-CALNAME")
-                                 ? calandarObj.Properties["X-WR-CALNAME"].Value.ToString()
-                                 : string.Empty
-                           : calandarObj.Name;
+             result.Name = string.IsNullOrEmpty(calandarObj.Name)
+                            ? calandarObj.Properties.ContainsKey("X-WR-CALNAME")
+                                  ? calandarObj.Properties["X-WR-CALNAME"].Value.ToString()
+                                  : string.Empty
+                            : calandarObj.Name;
 
-            result.Description = calandarObj.Properties.ContainsKey("X-WR-CALDESC")
-                                     ? calandarObj.Properties["X-WR-CALDESC"].Value.ToString()
-                                     : string.Empty;
+             result.Description = calandarObj.Properties.ContainsKey("X-WR-CALDESC")
+                                      ? calandarObj.Properties["X-WR-CALDESC"].Value.ToString()
+                                      : string.Empty;
 
-            var tzids = calandarObj.TimeZones.Select(x => x.TzId).Where(x => !string.IsNullOrEmpty(x)).ToList();
+             var tzids = calandarObj.TimeZones.Select(x => x.TzId).Where(x => !string.IsNullOrEmpty(x)).ToList();
 
-            result.TimeZone = tzids.Any()
-                                  ? TimeZoneConverter.GetTimeZone(tzids.First())
-                                  : (calandarObj.Properties.ContainsKey("X-WR-TIMEZONE")
-                                         ? TimeZoneConverter.GetTimeZone(
-                                             calandarObj.Properties["X-WR-TIMEZONE"].Value.ToString())
-                                         : TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone));
+             result.TimeZone = tzids.Any()
+                                   ? TimeZoneConverter.GetTimeZone(tzids.First())
+                                   : (calandarObj.Properties.ContainsKey("X-WR-TIMEZONE")
+                                          ? TimeZoneConverter.GetTimeZone(
+                                              calandarObj.Properties["X-WR-TIMEZONE"].Value.ToString())
+                                          : TimeZoneConverter.GetTimeZone(TenantManager.GetCurrentTenant().TimeZone));
 
-            return result;
-        }*/
+             return result;
+         }*/
 
         public Ical.Net.Calendar ConvertCalendar(BaseCalendar calandarObj)
         {
@@ -402,17 +427,17 @@ namespace ASC.Calendar.iCalParser
         public Ical.Net.CalendarComponents.CalendarEvent CreateEvent(string name, string description, DateTime startUtcDate, DateTime endUtcDate, string repeatType, bool isAllDayLong, EventStatus status)
         {
             var evt = new Ical.Net.CalendarComponents.CalendarEvent
-                {
-                    Summary = name,
-                    Location = string.Empty,
-                    Description = description,
-                    IsAllDay = isAllDayLong,
-                    DtStamp = new Ical.Net.DataTypes.CalDateTime(DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc), TimeZoneInfo.Utc.Id),
-                    Start = new Ical.Net.DataTypes.CalDateTime(DateTime.SpecifyKind(startUtcDate, DateTimeKind.Utc), TimeZoneInfo.Utc.Id),
-                    End = new Ical.Net.DataTypes.CalDateTime(DateTime.SpecifyKind(endUtcDate, DateTimeKind.Utc), TimeZoneInfo.Utc.Id),
-                    RecurrenceRules = new List<Ical.Net.DataTypes.RecurrencePattern>(),
-                    Status = ConvertEventStatus(status)
-                };
+            {
+                Summary = name,
+                Location = string.Empty,
+                Description = description,
+                IsAllDay = isAllDayLong,
+                DtStamp = new Ical.Net.DataTypes.CalDateTime(DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc), TimeZoneInfo.Utc.Id),
+                Start = new Ical.Net.DataTypes.CalDateTime(DateTime.SpecifyKind(startUtcDate, DateTimeKind.Utc), TimeZoneInfo.Utc.Id),
+                End = new Ical.Net.DataTypes.CalDateTime(DateTime.SpecifyKind(endUtcDate, DateTimeKind.Utc), TimeZoneInfo.Utc.Id),
+                RecurrenceRules = new List<Ical.Net.DataTypes.RecurrencePattern>(),
+                Status = ConvertEventStatus(status)
+            };
 
             var rrule = RecurrenceRule.Parse(repeatType).ToString(true);
 

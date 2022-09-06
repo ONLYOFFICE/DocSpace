@@ -1,6 +1,0 @@
-﻿{
-  "DeleteGroupUsersMessage": "Izbrani onemogočeni uporabniki bodo izbrisani.",
-  "DeleteGroupUsersMessageHeader": "Izbrišite uporabnike s portala",
-  "DeleteGroupUsersSuccessMessage": "Uporabniki so bili uspešno izbrisani.",
-  "DeleteUserDataConfirmation": "Uporabnikovi dokumenti, ki so v skupni rabi z drugimi, bodo izbrisani. Da bi se temu izognili, znova dodelite podatke."
-}

@@ -1,0 +1,23 @@
+{
+  "Administrator": "Administrator",
+  "ChangeToGuest": "Change to {{guestCaption}}",
+  "ChangeToUser": "Change to {{userCaption}}",
+  "EmptyGroupDescription": "You can add new team members manually or invite them via link.",
+  "EmptyGroupTitle": "No teammates here yet",
+  "LblInviteAgain": "Invite again",
+  "LblInvited": "Invited",
+  "LblSendEmail": "Send email",
+  "LblSendMessage": "Send message",
+  "LblSetActive": "Set active",
+  "LblSetDisabled": "Set disabled",
+  "Manager": "Manager",
+  "MakeInvitationLink": "Create invitation link",
+  "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
+  "NotFoundDescription": "Try a different filter or clear it to view all people in the section.",
+  "NotFoundUsersDescription": "No people matching you filter can be displayed. Please select other filter options or clear filter to view all the people in this section",
+  "NotFoundTitle": "No teammates found",
+  "NotFoundUsers": "No users found",
+  "ReassignmentData": "Data reassignment",
+  "SuccessfullyRemovedGroup": "Group has been removed successfully",
+  "UserStatus": "Status"
+}

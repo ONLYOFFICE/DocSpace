@@ -1,8 +1,0 @@
-﻿{
-  "ChangeUsersActiveStatus": "onemogočeno",
-  "ChangeUsersDisableStatus": "omogočeno",
-  "ChangeUsersStatusButton": "Spremeni status uporabnika",
-  "ChangeUserStatusDialog": "Uporabniki z '{{ userStatus }}' statusom bodo {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Spremeni status uporabnika",
-  "ChangeUserStatusDialogMessage": "Status lastnika portala in svojega statusa ne morete spremeniti"
-}

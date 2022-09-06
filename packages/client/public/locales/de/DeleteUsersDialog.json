@@ -1,0 +1,5 @@
+{
+  "DeleteGroupUsersSuccessMessage": "Benutzer wurden erfolgreich gelöscht.",
+  "DeleteUsers": "Benutzer löschen",
+  "DeleteUsersMessage": "Die ausgewählten deaktivierten Benutzer werden aus dem Portal gelöscht. Persönliche Dokumente dieser Benutzer, die für andere verfügbar sind, werden auch gelöscht. Um dies zu vermeiden, müssen Sie den Datenübertragungsprozess starten."
+}

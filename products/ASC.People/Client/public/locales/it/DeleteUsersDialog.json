@@ -1,6 +1,0 @@
-﻿{
-  "DeleteGroupUsersMessage": "Gli utenti disabilitati selezionati verranno eliminati.",
-  "DeleteGroupUsersMessageHeader": "Elimina gli utenti dal portale",
-  "DeleteGroupUsersSuccessMessage": "Gli utenti sono stati eliminati con successo.",
-  "DeleteUserDataConfirmation": "I documenti utente condivisi verso altri utenti verranno eliminati. Per evitare ciò, si consiglia di riassegnare i dati."
-}

@@ -1,4 +1,0 @@
-﻿{
-  "DeleteThirdPartyAlert": " Xóa {{service}} khỏi mô-đun 'Tài liệu'? Điều này sẽ không ảnh hưởng đến tài khoản {{account}} của bạn theo bất kỳ cách nào.",
-  "SuccessDeleteThirdParty": "{{service}} bên thứ ba đã bị xóa"
-}

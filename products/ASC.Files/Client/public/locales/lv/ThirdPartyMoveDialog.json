@@ -1,5 +1,0 @@
-﻿{
-  "MoveConfirmation": "Pārvietošanas apstiprinājums",
-  "MoveConfirmationAlert": "Vai tiešām vēlaties pārvietot elementus?",
-  "MoveConfirmationMessage": "Jūs gatavojaties pārvietot elementus no direktorija {{provider}}. Tie tiks izdzēsti no jūsu {{provider}} konta un vairs nebūs pieejami citiem lietotājiem."
-}

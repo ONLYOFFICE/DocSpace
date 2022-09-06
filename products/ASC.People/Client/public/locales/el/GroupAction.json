@@ -1,8 +1,0 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}} (δημιουργία)",
-  "GroupAction": "Ενέργεια ομάδας",
-  "Members": "Μέλη",
-  "SearchAddedMembers": "Αναζήτηση προστιθέμενων μελών",
-  "SelectAction": "Επιλογή",
-  "SuccessSaveGroup": "Το {{groupCaption}} «{{ groupName }}» έχει αποθηκευτεί επιτυχώς"
-}

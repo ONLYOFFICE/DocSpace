@@ -1,0 +1,20 @@
+{
+  "Administrator": "Správca",
+  "ChangeToGuest": "Zmeniť na {{guestCaption}}",
+  "ChangeToUser": "Zmeniť na {{userCaption}}",
+  "EmptyGroupDescription": "Nových členov tímu môžete pridať ručne alebo ich pozvať prostredníctvom odkazu.",
+  "EmptyGroupTitle": "Zatiaľ tu nie sú žiadni členovia tímu",
+  "LblInviteAgain": "Pozvať znova",
+  "LblInvited": "Pozvaní",
+  "LblSendEmail": "Poslať e-mail",
+  "LblSendMessage": "Poslať správu",
+  "LblSetActive": "Nastaviť ako aktívného",
+  "LblSetDisabled": "Nastaviť ako neaktívného",
+  "MakeInvitationLink": "Vytvoriť odkaz na pozvanie",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na <1>{{email}}</1> e-mail",
+  "NotFoundDescription": "Skúste iný filter alebo ho vymažte, aby sa zobrazili všetci ľudia v sekcii.",
+  "NotFoundTitle": "Nenašli sa žiadni členovia tímu",
+  "ReassignmentData": "Zmena priradenia údajov",
+  "SuccessfullyRemovedGroup": "Skupina bola úspešne odstránená",
+  "UserStatus": "Stav"
+}

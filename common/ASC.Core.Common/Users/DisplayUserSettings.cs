@@ -1,112 +1,99 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Web.Core.Users;
 
-using System;
-using System.Reflection;
-using System.Web;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Users;
-
-using Microsoft.Extensions.Configuration;
-
-namespace ASC.Web.Core.Users
+[Serializable]
+public class DisplayUserSettings : ISettings<DisplayUserSettings>
 {
-    [Serializable]
-    public class DisplayUserSettings : ISettings
+    [JsonIgnore]
+    public Guid ID => new Guid("2EF59652-E1A7-4814-BF71-FEB990149428");
+
+    public bool IsDisableGettingStarted { get; set; }
+
+    public DisplayUserSettings GetDefault()
     {
-        public Guid ID
+        return new DisplayUserSettings
         {
-            get { return new Guid("2EF59652-E1A7-4814-BF71-FEB990149428"); }
-        }
+            IsDisableGettingStarted = false,
+        };
+    }
+}
 
-        public bool IsDisableGettingStarted { get; set; }
-
-        public ISettings GetDefault(IServiceProvider serviceProvider)
-        {
-            return new DisplayUserSettings
-            {
-                IsDisableGettingStarted = false,
-            };
-        }
+[Scope]
+public class DisplayUserSettingsHelper
+{
+    private readonly string _removedProfileName;
+    public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter, IConfiguration configuration)
+    {
+        _userManager = userManager;
+        _userFormatter = userFormatter;
+        _removedProfileName = configuration["web:removed-profile-name"] ?? "profile removed";
     }
 
-    [Scope]
-    public class DisplayUserSettingsHelper
+    private readonly UserManager _userManager;
+    private readonly UserFormatter _userFormatter;
+
+    public string GetFullUserName(Guid userID, bool withHtmlEncode = true)
     {
-        private readonly string RemovedProfileName;
-        public DisplayUserSettingsHelper(UserManager userManager, UserFormatter userFormatter, IConfiguration configuration)
+        return GetFullUserName(_userManager.GetUsers(userID), withHtmlEncode);
+    }
+
+    public string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true)
+    {
+        return GetFullUserName(userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
+    }
+
+    public string GetFullUserName(UserInfo userInfo, DisplayUserNameFormat format, bool withHtmlEncode)
+    {
+        if (userInfo == null)
         {
-            UserManager = userManager;
-            UserFormatter = userFormatter;
-            RemovedProfileName = configuration["web:removed-profile-name"] ?? "profile removed";
+            return string.Empty;
         }
-
-        private UserManager UserManager { get; }
-        private UserFormatter UserFormatter { get; }
-
-        public string GetFullUserName(Guid userID, bool withHtmlEncode = true)
+        if (!userInfo.Id.Equals(Guid.Empty) && !_userManager.UserExists(userInfo))
         {
-            return GetFullUserName(UserManager.GetUsers(userID), withHtmlEncode);
-        }
-
-        public string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true)
-        {
-            return GetFullUserName(userInfo, DisplayUserNameFormat.Default, withHtmlEncode);
-        }
-
-        public string GetFullUserName(UserInfo userInfo, DisplayUserNameFormat format, bool withHtmlEncode)
-        {
-            if (userInfo == null)
+            try
             {
-                return string.Empty;
-            }
-            if (!userInfo.ID.Equals(Guid.Empty) && !UserManager.UserExists(userInfo))
-            {
-                try
-                {
-                    var resourceType = Type.GetType("ASC.Web.Core.PublicResources.Resource, ASC.Web.Core");
-                    var resourceProperty = resourceType.GetProperty("ProfileRemoved", BindingFlags.Static | BindingFlags.Public);
-                    var resourceValue = (string)resourceProperty.GetValue(null);
+                var resourceType = Type.GetType("ASC.Web.Core.PublicResources.Resource, ASC.Web.Core");
+                var resourceProperty = resourceType.GetProperty("ProfileRemoved", BindingFlags.Static | BindingFlags.Public);
+                var resourceValue = (string)resourceProperty.GetValue(null);
 
-                    return string.IsNullOrEmpty(resourceValue) ? RemovedProfileName : resourceValue;
-                }
-                catch (Exception)
-                {
-                    return RemovedProfileName;
-                }
+                return string.IsNullOrEmpty(resourceValue) ? _removedProfileName : resourceValue;
             }
-            var result = UserFormatter.GetUserName(userInfo, format);
-            return withHtmlEncode ? HtmlEncode(result) : result;
+            catch (Exception)
+            {
+                return _removedProfileName;
+            }
         }
-        public string HtmlEncode(string str)
-        {
-            return !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
-        }
+        var result = _userFormatter.GetUserName(userInfo, format);
+
+        return withHtmlEncode ? HtmlEncode(result) : result;
+    }
+    public string HtmlEncode(string str)
+    {
+        return !string.IsNullOrEmpty(str) ? HttpUtility.HtmlEncode(str) : str;
     }
 }

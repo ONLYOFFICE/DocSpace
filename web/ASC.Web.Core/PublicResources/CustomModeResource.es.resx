@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
     <value>Estimado/a $UserName,
@@ -85,56 +85,61 @@ Muy atentamente,
 Equipo de ${LetterLogoText}</value>
   </data>
   <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
-    <value>h1.Bienvenido al ONLYOFFICE Personal
+    <value>h1.Bienvenido/a al ONLYOFFICE Personal
 
 Usted acaba de crear su oficina personal en la nube.
 
-h3.Es un espacio de trabajo virtual donde Usted puede editar y almacenar documentos, trabajar con archivos desde cualquier lugar proporcionando acceso a sus amigos o compañeros.
+h3.Es un espacio de trabajo virtual donde puede editar y almacenar documentos, trabajar con archivos desde cualquier lugar proporcionando acceso a sus amigos o compañeros.
 
-ONLYOFFICE es compatible con los formatos de documentos de Microsoft Office™ y garantiza el trabajo sin pérdida de formateo y calidad de los objetos creados. Prometemos liberarle de un dolor de cabeza relacionado con fidelidad de formateo y dar un conjunto de herramientas de edición completo y profesional en su mano.
+h3.Para un rápido inicio, aprenda lo que puede hacer en ONLYOFFICE:
 
-h3.Para un rápido inicio aprenda lo que puede hacer en ONLYOFFICE:
+- Crear, ver y editar documentos de texto, hojas de cálculo y presentaciones.
 
-- Cargar archivos de su ordenador o crear nuevos;
+- Trabajar con todos los formatos de archivos populares. Máxima compatibilidad con los archivos de MS Office.
 
-- Trabajar con todos los formatos de archivos populares;
+- Crear y coeditar "formularios listos para rellenar": "https://www.onlyoffice.com/es/form-creator.aspx".
 
-- Editar autoformas, gráficos, tablas, ecuaciones y otros objetos;
+- Compartir y colaborar en documentos en línea.
 
-- Usar varios addons para posibilidades de edición avanzadas;
+- Utilizar varios plugins para aplicar funciones adicionales.
 
 - Fácilmente acceder a su nube personal vía "extensión de Chrome":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US". 
 
-También Usted puede editar documentos offline con nuestros "editores desktop" gratuitos:"https://www.onlyoffice.com/download-desktop.aspx" o obtener un "conjunto de edición móvil":"https://www.onlyoffice.com/mobile.aspx" para su dispositivo iOS o Android.
+También puede editar documentos offline con nuestros "editores de escritorio" gratuitos: "https://www.onlyoffice.com/es/download-desktop.aspx" o conseguir una suite de edición móvil para su dispositivo "iOS": "https://apps.apple.com/app/onlyoffice-documents/id944896972" o "Android": "https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 
-Muy atentamente,
+Atentamente,
 Equipo de ONLYOFFICE</value>
   </data>
   <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
-    <value>$PersonalHeaderStart Conecte su nube de almacenamiento favorita a ONLYOFFICE $PersonalHeaderEnd
+    <value>$PersonalHeaderStart Conecte su almacenamiento en la nube favorito a ONLYOFFICE $PersonalHeaderEnd
 
-Ha pasado una semana desde que usted creó su oficina en la nube, así que creemos que es hora de revelar algunas características beneficiosas que quizás se haya perdido.
+Ha pasado una semana desde que creó su oficina en la nube, así que creemos que es el momento de desvelar algunos consejos y recomendaciones para que su trabajo sea aún más eficaz.
 
-Conecte *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud*, *kDrive* or *Yandex.Disk* a ONLYOFFICE y cree un único espacio de gestión de documentos para todos sus documentos. Usted podrá editar archivos externos en ONLYOFFICE y guardarlos en el almacenamiento en el que guarda los documentos. Lea los detalles sobre la conexión de los almacenamientos de archivos a ONLYOFFICE "aquí":"${__HelpLink}/tipstricks/add-resource.aspx".
+*Agregue todos sus documentos*
+
+Conecte Dropbox, Google Drive, Box, OneDrive, Nextcloud, ownCloud, kDrive o Yandex.Disk a ONLYOFFICE y cree un único espacio de gestión documental para todos sus documentos.
+"Más información":"https://helpcenter.onlyoffice.com/es/tipstricks/add-resource.aspx"
+
+*Edite documentos en Google Drive*
 
 También puede integrar los editores de ONLYOFFICE en Google Drive usando nuestra "aplicación de conexión":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
 
-¿Necesita más de la gestión de documentos?
+*Utilice las herramientas de productividad*
 
-h3.Pruebe ONLYOFFICE para negocios "en la nube":"https://www.onlyoffice.com/es/cloud-office.aspx" o "en su servidor":"https://www.onlyoffice.com/es/server-solutions.aspx" de forma gratuita durante 30 días y compruebe las ventajas de la gestión de documentos junto con una gama de herramientas de negocio:
+h3.Pruebe ONLYOFFICE para empresas "en la nube":"https://www.onlyoffice.com/es/cloud-office.aspx" o "en su servidor":"https://www.onlyoffice.com/es/workspace-enterprise.aspx" de forma gratuita durante 30 días y descubra las ventajas de la gestión de documentos junto con un conjunto de herramientas empresariales:
 
-- Gestione los documentos del equipo en los proyectos;
+·	Gestione los documentos en equipo y los proyectos;
 
-- Integre documentos con el CRM y el correo electrónico;
+·	Integre los documentos con el CRM y el correo electrónico;
 
-- Comparta archivos con grupos de usuarios;
+·	Comparta archivos con grupos de usuarios;
 
-- Optimice su flujo de trabajo con herramientas de comunicación de equipo.
+·	Optimice el flujo de trabajo con herramientas de comunicación en equipo.
 
-¿Está interesado? Más información sobre "ONLYOFFICE para el negocio":"http://www.onlyoffice.com/es/document-management.aspx".
+Puede elegir una tarifa totalmente gratuita para equipos de hasta 5 usuarios. "Regístrese":"https://www.onlyoffice.com/es/registration.aspx"
 
-Cordialmente,
-Equipo ONLYOFFICE </value>
+Atentamente,
+Equipo de ONLYOFFICE team</value>
   </data>
   <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
     <value>¿Desea cambiar el correo electrónico de su cuenta de oficina en la nube?
@@ -149,20 +154,6 @@ El enlace es válido durante 7 días.
 
 ¿No desea cambiar su correo electrónico? Simplemente ignore este mensaje.</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Se ha pedido el cambio de contraseña que se usa para entrar en el portal "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Por favor, siga el enlace abajo para cambiar su contraseña:
-
-$GreenButton
-
-*Tome en cuenta*: este enlace es válido sólo durante 7 días. Por favor, termine el proceso de cambio de contraseña dentro de este período.
-
-Si Usted no quiere cambiar su contraseña o ha recibido este mensaje por error, por favor, ignórelo.
-
-Muy atentamente,
-Equipo de ONLYOFFICE</value>
-  </data>
   <data name="pattern_personal_custom_mode_confirmation" xml:space="preserve">
     <value>Buenos días,
 
@@ -176,15 +167,17 @@ Equipo de ONLYOFFICE</value>
   <data name="pattern_personal_custom_mode_profile_delete" xml:space="preserve">
     <value>Usted ha solicitado la terminación de su cuenta en personal.onlyoffice.com. Siga este enlace para completar la solicitud (el enlace es activo durante 7 días): 
 
-$GreenButton
+Confirmar la cancelación de la cuenta
 
-*Tome en cuenta*: Después de la eliminación su cuenta y todos los datos asociados con esta cuenta se borrarán permanentemente de acuerdo con nuestra "Declaración de privacidad":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+*Tome en cuenta*: Después de la eliminación, su cuenta y todos los datos asociados con esta cuenta se borrarán permanentemente de acuerdo con nuestra "Declaración de privacidad":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+"Leer más sobre la cancelación de la cuenta": "https://helpcenter.onlyoffice.com/es/administration/configuration.aspx"
 
 Si no quiere continuar el proceso, ignore este mensaje. 
 
-Si tiene algunas preguntas, por favor, póngase en contacto con nosotros por correo "support@onlyoffice.com":"mailto:support@onlyoffice.com"
+Si tiene algunas preguntas, por favor, póngase en contacto con nosotros a través de "support@onlyoffice.com":"mailto:support@onlyoffice.com"
 
-Muy atentamente,
+Atentamente,
 Equipo de ONLYOFFICE</value>
   </data>
   <data name="pattern_remove_user_data_completed_custom_mode" xml:space="preserve">
@@ -196,9 +189,7 @@ La eliminación de datos personales permitió liberar:
 
 # Documentos - $DocsSpace
 # Correo - $MailSpace
-# Chat - $TalkSpace
-
-^Ha recibido este mensaje de email porque Usted es un usuario registrado del portal "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+# Chat - $TalkSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.Se ha registrado un nuevo portal
@@ -218,12 +209,6 @@ La eliminación de datos personales permitió liberar:
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Bienvenido al ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Conecte su almacenamiento en la nube favorito al ONLYOFFICE</value>
-  </data>
-  <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
-    <value>Asistencia para contraseñas de ONLYOFFICE Personal</value>
   </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Por favor, active su correo electrónico</value>

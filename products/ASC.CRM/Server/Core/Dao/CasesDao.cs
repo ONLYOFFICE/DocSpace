@@ -33,22 +33,19 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.Files.Core;
 using ASC.Web.CRM.Core.Search;
-using ASC.Web.Files.Api;
 
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using OrderBy = ASC.CRM.Core.Entities.OrderBy;
 using SortedByType = ASC.CRM.Core.Enums.SortedByType;
@@ -60,7 +57,7 @@ namespace ASC.CRM.Core.Dao
     {
         private readonly BundleSearch _bundleSearch;
         private readonly AuthorizationManager _authorizationManager;
-        private readonly FilesIntegration _filesIntegration;
+        private readonly IDaoFactory _daoFactory;
         private readonly TenantUtil _tenantUtil;
         private readonly CrmSecurity _crmSecurity;
 
@@ -70,9 +67,9 @@ namespace ASC.CRM.Core.Dao
             SecurityContext securityContext,
             CrmSecurity crmSecurity,
             TenantUtil tenantUtil,
-            FilesIntegration filesIntegration,
+            IDaoFactory daoFactory,
             AuthorizationManager authorizationManager,
-            IOptionsMonitor<ILog> logger,
+            ILogger logger,
             ICache ascCache,
             BundleSearch bundleSearch,
             IMapper mapper
@@ -86,7 +83,7 @@ namespace ASC.CRM.Core.Dao
         {
             _crmSecurity = crmSecurity;
             _tenantUtil = tenantUtil;
-            _filesIntegration = filesIntegration;
+            _daoFactory = daoFactory;
             _authorizationManager = authorizationManager;
             _bundleSearch = bundleSearch;
         }
@@ -279,7 +276,7 @@ namespace ASC.CRM.Core.Dao
         {
             var casesID = caseses.Select(x => x.ID).ToArray();
 
-            var tagdao = _filesIntegration.DaoFactory.GetTagDao<int>();
+            var tagdao = _daoFactory.GetTagDao<int>();
 
             var tagNames = Query(CrmDbContext.RelationshipEvent)
                             .Where(x => x.HaveFiles && casesID.Contains(x.EntityId) && x.EntityType == EntityType.Case)
@@ -314,7 +311,7 @@ namespace ASC.CRM.Core.Dao
 
             if (0 < tagNames.Length)
             {
-                var filedao = _filesIntegration.DaoFactory.GetFileDao<int>();
+                var filedao = _daoFactory.GetFileDao<int>();
 
                 await foreach (var filesID in filesIDs)
                 {
@@ -385,7 +382,7 @@ namespace ASC.CRM.Core.Dao
 
                 if (privateCount > countWithoutPrivate)
                 {
-                    _logger.ErrorFormat(@"Private cases count more than all cases. Tenant: {0}. CurrentAccount: {1}",
+                    _logger.LogError(@"Private cases count more than all cases. Tenant: {0}. CurrentAccount: {1}",
                                                             TenantID,
                                                             _securityContext.CurrentAccount.ID);
                     privateCount = 0;

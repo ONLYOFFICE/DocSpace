@@ -1,0 +1,6 @@
+{
+  "GoodAfternoon": "こんにちは{{displayName}}!さん",
+  "GoodEvening": "こんばんは{{displayName}}!さん",
+  "GoodMorning": "{{displayName}}!さん、おはようございます",
+  "NoOneModulesAvailable": "利用可能なモジュールはありません"
+}

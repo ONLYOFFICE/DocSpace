@@ -1,0 +1,7 @@
+{
+  "ConversionMessage": "Όλα τα έγγραφα που ανεβάζετε θα μετατραπούν σε μορφή Office με ανοιχτή μορφή XML (docx, xlsx ή pptx) για ταχύτερη επεξεργασία.",
+  "ConvertedFileDestination": "Το αντίγραφο του αρχείου θα δημιουργηθεί στον φάκελο <strong>{{folderTitle}}</strong>",
+  "HideMessage": "Να μην εμφανιστεί ξανά αυτό το μήνυμα",
+  "InfoCreateFileIn": "Το νέο αρχείο '{{fileTitle}}' δημιουργήθηκε στον φάκελο '{{folderTitle}}'",
+  "SaveOriginalFormatMessage": "Αποθηκεύστε το αντίγραφο του αρχείου στην αρχική μορφή"
+}

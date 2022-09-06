@@ -1,8 +1,0 @@
-﻿{
-  "CustomAllGroups": "Все {{ groupsCaption, lowercase }}",
-  "EmptySearchUsersResult": "Нет такого пользователя",
-  "EmptyUsers": "Нет пользователей",
-  "SearchUsersPlaceholder": "Поиск пользователей",
-  "AddUsers": "Добавить пользователей",
-  "AllUsers": "Все пользователи"
-}

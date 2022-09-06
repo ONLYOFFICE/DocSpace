@@ -1,0 +1,5 @@
+{
+  "DeleteUser": "Supprimer l'utilisateur",
+  "DeleteUserMessage": "{{userCaption}} <strong>{{user}}</strong> sera supprimé. Les documents personnels de l'utilisateur qui sont à la disposition des autres seront supprimés. Pour éviter cela, vous devez démarrer le processus de réaffectation des données avant la suppression.",
+  "SuccessfullyDeleteUserInfoMessage": "L'utilisateur a été supprimé avec succès"
+}

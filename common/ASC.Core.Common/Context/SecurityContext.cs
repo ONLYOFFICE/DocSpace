@@ -1,397 +1,388 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Core;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security;
-using System.Security.Authentication;
-using System.Security.Claims;
-using System.Threading;
-using System.Web;
-
-using ASC.Common;
-using ASC.Common.Logging;
-using ASC.Common.Security;
-using ASC.Common.Security.Authentication;
-using ASC.Common.Security.Authorizing;
-using ASC.Core.Billing;
-using ASC.Core.Common.Security;
-using ASC.Core.Security.Authentication;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
-
-namespace ASC.Core
+[Scope]
+public class SecurityContext
 {
-    [Scope]
-    public class SecurityContext
+    private readonly ILogger<SecurityContext> _logger;
+    private readonly DbLoginEventsManager _dbLoginEventsManager;
+
+    public IAccount CurrentAccount => _authContext.CurrentAccount;
+    public bool IsAuthenticated => _authContext.IsAuthenticated;
+
+    private readonly UserManager _userManager;
+    private readonly AuthManager _authentication;
+    private readonly AuthContext _authContext;
+    private readonly TenantManager _tenantManager;
+    private readonly UserFormatter _userFormatter;
+    private readonly CookieStorage _cookieStorage;
+    private readonly TenantCookieSettingsHelper _tenantCookieSettingsHelper;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public SecurityContext(
+        UserManager userManager,
+        AuthManager authentication,
+        AuthContext authContext,
+        TenantManager tenantManager,
+        UserFormatter userFormatter,
+        CookieStorage cookieStorage,
+        TenantCookieSettingsHelper tenantCookieSettingsHelper,
+        ILogger<SecurityContext> logger,
+        DbLoginEventsManager dbLoginEventsManager
+        )
     {
-        private readonly ILog log;
+        _logger = logger;
+        _dbLoginEventsManager = dbLoginEventsManager;
+        _userManager = userManager;
+        _authentication = authentication;
+        _authContext = authContext;
+        _tenantManager = tenantManager;
+        _userFormatter = userFormatter;
+        _cookieStorage = cookieStorage;
+        _tenantCookieSettingsHelper = tenantCookieSettingsHelper;
+    }
+
+    public SecurityContext(
+        IHttpContextAccessor httpContextAccessor,
+        UserManager userManager,
+        AuthManager authentication,
+        AuthContext authContext,
+        TenantManager tenantManager,
+        UserFormatter userFormatter,
+        CookieStorage cookieStorage,
+        TenantCookieSettingsHelper tenantCookieSettingsHelper,
+        ILogger<SecurityContext> logger,
+        DbLoginEventsManager dbLoginEventsManager
+        ) : this(userManager, authentication, authContext, tenantManager, userFormatter, cookieStorage, tenantCookieSettingsHelper, logger, dbLoginEventsManager)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
 
 
-        public IAccount CurrentAccount
+    public string AuthenticateMe(string login, string passwordHash, Func<int> funcLoginEvent = null)
+    {
+        ArgumentNullException.ThrowIfNull(login);
+        ArgumentNullException.ThrowIfNull(passwordHash);
+
+        var tenantid = _tenantManager.GetCurrentTenant().Id;
+        var u = _userManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
+
+        return AuthenticateMe(new UserAccount(u, tenantid, _userFormatter), funcLoginEvent);
+    }
+
+    public bool AuthenticateMe(string cookie)
+    {
+        if (string.IsNullOrEmpty(cookie)) return false;
+
+        if (!_cookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser, out var loginEventId))
         {
-            get => AuthContext.CurrentAccount;
-        }
-
-        public bool IsAuthenticated
-        {
-            get => AuthContext.IsAuthenticated;
-        }
-
-        private UserManager UserManager { get; }
-        private AuthManager Authentication { get; }
-        private AuthContext AuthContext { get; }
-        private TenantManager TenantManager { get; }
-        private UserFormatter UserFormatter { get; }
-        private CookieStorage CookieStorage { get; }
-        private TenantCookieSettingsHelper TenantCookieSettingsHelper { get; }
-        private IHttpContextAccessor HttpContextAccessor { get; }
-
-        public SecurityContext(
-            UserManager userManager,
-            AuthManager authentication,
-            AuthContext authContext,
-            TenantManager tenantManager,
-            UserFormatter userFormatter,
-            CookieStorage cookieStorage,
-            TenantCookieSettingsHelper tenantCookieSettingsHelper,
-            IOptionsMonitor<ILog> options
-            )
-        {
-            log = options.CurrentValue;
-            UserManager = userManager;
-            Authentication = authentication;
-            AuthContext = authContext;
-            TenantManager = tenantManager;
-            UserFormatter = userFormatter;
-            CookieStorage = cookieStorage;
-            TenantCookieSettingsHelper = tenantCookieSettingsHelper;
-        }
-
-        public SecurityContext(
-            IHttpContextAccessor httpContextAccessor,
-            UserManager userManager,
-            AuthManager authentication,
-            AuthContext authContext,
-            TenantManager tenantManager,
-            UserFormatter userFormatter,
-            CookieStorage cookieStorage,
-            TenantCookieSettingsHelper tenantCookieSettingsHelper,
-            IOptionsMonitor<ILog> options
-            ) : this(userManager, authentication, authContext, tenantManager, userFormatter, cookieStorage, tenantCookieSettingsHelper, options)
-        {
-            HttpContextAccessor = httpContextAccessor;
-        }
-
-
-        public string AuthenticateMe(string login, string passwordHash)
-        {
-            if (login == null) throw new ArgumentNullException(nameof(login));
-            if (passwordHash == null) throw new ArgumentNullException(nameof(passwordHash));
-
-            var tenantid = TenantManager.GetCurrentTenant().TenantId;
-            var u = UserManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
-
-            return AuthenticateMe(new UserAccount(u, tenantid, UserFormatter));
-        }
-
-        public bool AuthenticateMe(string cookie)
-        {
-            if (!string.IsNullOrEmpty(cookie))
+            if (cookie.Equals("Bearer", StringComparison.InvariantCulture))
             {
-
-                if (cookie.Equals("Bearer", StringComparison.InvariantCulture))
+                var ipFrom = string.Empty;
+                var address = string.Empty;
+                if (_httpContextAccessor?.HttpContext != null)
                 {
-                    var ipFrom = string.Empty;
-                    var address = string.Empty;
-                    if (HttpContextAccessor?.HttpContext != null)
-                    {
-                        var request = HttpContextAccessor?.HttpContext.Request;
+                    var request = _httpContextAccessor?.HttpContext.Request;
 
-                        if (request == null) throw new ArgumentNullException("request");
+                    ArgumentNullException.ThrowIfNull(request);
 
-                        ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
-                        address = "for " + request.GetUrlRewriter();
-                    }
-                    log.InfoFormat("Empty Bearer cookie: {0} {1}", ipFrom, address);
+                    ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
+                    address = "for " + request.GetUrlRewriter();
                 }
-                else if (CookieStorage.DecryptCookie(cookie, out var tenant, out var userid, out var indexTenant, out var expire, out var indexUser))
-                {
-                    if (tenant != TenantManager.GetCurrentTenant().TenantId)
-                    {
-                        return false;
-                    }
-
-                    var settingsTenant = TenantCookieSettingsHelper.GetForTenant(tenant);
-                    if (indexTenant != settingsTenant.Index)
-                    {
-                        return false;
-                    }
-
-                    if (expire != DateTime.MaxValue && expire < DateTime.UtcNow)
-                    {
-                        return false;
-                    }
-
-                    try
-                    {
-                        var settingsUser = TenantCookieSettingsHelper.GetForUser(userid);
-                        if (indexUser != settingsUser.Index)
-                        {
-                            return false;
-                        }
-
-                        AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { ID = userid }, tenant, UserFormatter));
-
-                        return true;
-                    }
-                    catch (InvalidCredentialException ice)
-                    {
-                        log.DebugFormat("{0}: cookie {1}, tenant {2}, userid {3}", ice.Message, cookie, tenant, userid);
-                    }
-                    catch (SecurityException se)
-                    {
-                        log.DebugFormat("{0}: cookie {1}, tenant {2}, userid {3}", se.Message, cookie, tenant, userid);
-                    }
-                    catch (Exception err)
-                    {
-                        log.ErrorFormat("Authenticate error: cookie {0}, tenant {1}, userid {2}, : {3}", cookie, tenant, userid, err);
-                    }
-                }
-                else
-                {
-                    var ipFrom = string.Empty;
-                    var address = string.Empty;
-                    if (HttpContextAccessor?.HttpContext != null)
-                    {
-                        var request = HttpContextAccessor?.HttpContext.Request;
-
-                        if (request == null) throw new ArgumentNullException("request");
-
-                        address = "for " + request.GetUrlRewriter();
-                        ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
-                    }
-                    log.WarnFormat("Can not decrypt cookie: {0} {1} {2}", cookie, ipFrom, address);
-                }
+                _logger.InformationEmptyBearer(ipFrom, address);
             }
+            else
+            {
+                var ipFrom = string.Empty;
+                var address = string.Empty;
+                if (_httpContextAccessor?.HttpContext != null)
+                {
+                    var request = _httpContextAccessor?.HttpContext.Request;
+
+                    ArgumentNullException.ThrowIfNull(request);
+
+                    address = "for " + request.GetUrlRewriter();
+                    ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
+                }
+
+                _logger.WarningCanNotDecrypt(cookie, ipFrom, address);
+            }
+
+            return false;
+        }
+        
+        if (tenant != _tenantManager.GetCurrentTenant().Id)
+        {
             return false;
         }
 
-        public string AuthenticateMe(IAccount account, List<Claim> additionalClaims = null)
+        var settingsTenant = _tenantCookieSettingsHelper.GetForTenant(tenant);
+
+        if (indexTenant != settingsTenant.Index)
         {
-            AuthenticateMeWithoutCookie(account, additionalClaims);
-
-            string cookie = null;
-
-            if (account is IUserAccount)
-            {
-                cookie = CookieStorage.EncryptCookie(TenantManager.GetCurrentTenant().TenantId, account.ID);
-            }
-
-            return cookie;
+            return false;
         }
 
-        public void AuthenticateMeWithoutCookie(IAccount account, List<Claim> additionalClaims = null)
+        if (expire != DateTime.MaxValue && expire < DateTime.UtcNow)
         {
-            if (account == null || account.Equals(Configuration.Constants.Guest)) throw new InvalidCredentialException("account");
+            return false;
+        }
 
-            var roles = new List<string> { Role.Everyone };
-
-            if (account is ISystemAccount && account.ID == Configuration.Constants.CoreSystem.ID)
+        try
+        {
+            var settingsUser = _tenantCookieSettingsHelper.GetForUser(userid);
+            if (indexUser != settingsUser.Index)
             {
-                roles.Add(Role.System);
+                return false;
             }
 
-            if (account is IUserAccount)
+            var settingLoginEvents = _dbLoginEventsManager.GetLoginEventIds(tenant, userid).Result; // remove Result
+            if (loginEventId != 0 && !settingLoginEvents.Contains(loginEventId))
             {
-                var tenant = TenantManager.GetCurrentTenant();
-
-                var u = UserManager.GetUsers(account.ID);
-
-                if (u.ID == Users.Constants.LostUser.ID)
-                {
-                    throw new InvalidCredentialException("Invalid username or password.");
-                }
-                if (u.Status != EmployeeStatus.Active)
-                {
-                    throw new SecurityException("Account disabled.");
-                }
-
-                // for LDAP users only
-                if (u.Sid != null)
-                {
-                    if (!TenantManager.GetTenantQuota(tenant.TenantId).Ldap)
-                    {
-                        throw new BillingException("Your tariff plan does not support this option.", "Ldap");
-                    }
-                }
-                if (UserManager.IsUserInGroup(u.ID, Users.Constants.GroupAdmin.ID))
-                {
-                    roles.Add(Role.Administrators);
-                }
-                roles.Add(Role.Users);
-
-                account = new UserAccount(u, TenantManager.GetCurrentTenant().TenantId, UserFormatter);
+                return false;
             }
 
-            var claims = new List<Claim>
+            AuthenticateMeWithoutCookie(new UserAccount(new UserInfo { Id = userid }, tenant, _userFormatter));
+            return true;
+        }
+        catch (InvalidCredentialException ice)
+        {
+            _logger.AuthenticateDebug(cookie, tenant, userid, ice);
+        }
+        catch (SecurityException se)
+        {
+            _logger.AuthenticateDebug(cookie, tenant, userid, se);
+        }
+        catch (Exception err)
+        {
+            _logger.AuthenticateError(cookie, tenant, userid, err);
+        }
+
+
+        return false;
+    }
+
+    public string AuthenticateMe(Guid userId, Func<int> funcLoginEvent = null, List<Claim> additionalClaims = null)
+    {
+        var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId);
+        return AuthenticateMe(account, funcLoginEvent, additionalClaims);
+    }
+
+    public string AuthenticateMe(IAccount account, Func<int> funcLoginEvent = null, List<Claim> additionalClaims = null)
+    {
+        AuthenticateMeWithoutCookie(account, additionalClaims);
+
+        string cookie = null;
+
+        if (account is IUserAccount)
+        {
+            var loginEventId = 0;
+            if (funcLoginEvent != null)
+            {
+                loginEventId = funcLoginEvent();
+            }
+
+            cookie = _cookieStorage.EncryptCookie(_tenantManager.GetCurrentTenant().Id, account.ID, loginEventId);
+        }
+
+        return cookie;
+    }
+
+    public void AuthenticateMeWithoutCookie(IAccount account, List<Claim> additionalClaims = null)
+    {
+        if (account == null || account.Equals(Configuration.Constants.Guest))
+        {
+            throw new InvalidCredentialException("account");
+        }
+
+        var roles = new List<string> { Role.Everyone };
+
+        if (account is ISystemAccount && account.ID == Configuration.Constants.CoreSystem.ID)
+        {
+            roles.Add(Role.System);
+        }
+
+        if (account is IUserAccount)
+        {
+            var tenant = _tenantManager.GetCurrentTenant();
+
+            var u = _userManager.GetUsers(account.ID);
+
+            if (u.Id == Users.Constants.LostUser.Id)
+            {
+                throw new InvalidCredentialException("Invalid username or password.");
+            }
+            if (u.Status != EmployeeStatus.Active)
+            {
+                throw new SecurityException("Account disabled.");
+            }
+
+            // for LDAP users only
+            if (u.Sid != null)
+            {
+                if (!_tenantManager.GetTenantQuota(tenant.Id).Ldap)
+                {
+                    throw new BillingException("Your tariff plan does not support this option.", "Ldap");
+                }
+            }
+
+            if (_userManager.IsUserInGroup(u.Id, Users.Constants.GroupAdmin.ID))
+            {
+                roles.Add(Role.Administrators);
+            }
+
+            roles.Add(Role.Users);
+
+            account = new UserAccount(u, _tenantManager.GetCurrentTenant().Id, _userFormatter);
+        }
+
+        var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Sid, account.ID.ToString()),
                 new Claim(ClaimTypes.Name, account.Name)
             };
-            claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
+        claims.AddRange(roles.Select(r => new Claim(ClaimTypes.Role, r)));
 
-            if (additionalClaims != null)
-            {
-                claims.AddRange(additionalClaims);
-            }
-            AuthContext.Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
-        }
-
-        public string AuthenticateMe(Guid userId, List<Claim> additionalClaims = null)
+        if (additionalClaims != null)
         {
-            var account = Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId);
-            return AuthenticateMe(account, additionalClaims);
+            claims.AddRange(additionalClaims);
         }
 
-        public void AuthenticateMeWithoutCookie(Guid userId, List<Claim> additionalClaims = null)
-        {
-            var account = Authentication.GetAccountByID(TenantManager.GetCurrentTenant().TenantId, userId);
-            AuthenticateMeWithoutCookie(account, additionalClaims);
-        }
-
-        public void Logout()
-        {
-            AuthContext.Logout();
-        }
-
-        public void SetUserPasswordHash(Guid userID, string passwordHash)
-        {
-            var tenantid = TenantManager.GetCurrentTenant().TenantId;
-            var u = UserManager.GetUsersByPasswordHash(tenantid, userID.ToString(), passwordHash);
-            if (!Equals(u, Users.Constants.LostUser))
-            {
-                throw new PasswordException("A new password must be used");
-            }
-
-            Authentication.SetUserPasswordHash(userID, passwordHash);
-        }
-
-        public class PasswordException : Exception
-        {
-            public PasswordException(string message) : base(message)
-            {
-            }
-        }
+        _authContext.Principal = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
     }
 
-    [Scope]
-    public class PermissionContext
+    public void AuthenticateMeWithoutCookie(Guid userId, List<Claim> additionalClaims = null)
     {
-        public IPermissionResolver PermissionResolver { get; set; }
-        private AuthContext AuthContext { get; }
+        var account = _authentication.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId);
 
-        public PermissionContext(IPermissionResolver permissionResolver, AuthContext authContext)
-        {
-            PermissionResolver = permissionResolver;
-            AuthContext = authContext;
-        }
-
-        public bool CheckPermissions(params IAction[] actions)
-        {
-            return PermissionResolver.Check(AuthContext.CurrentAccount, actions);
-        }
-
-        public bool CheckPermissions(ISecurityObject securityObject, params IAction[] actions)
-        {
-            return CheckPermissions(securityObject, null, actions);
-        }
-
-        public bool CheckPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
-        {
-            return PermissionResolver.Check(AuthContext.CurrentAccount, objectId, securityObjProvider, actions);
-        }
-
-        public void DemandPermissions(params IAction[] actions)
-        {
-            PermissionResolver.Demand(AuthContext.CurrentAccount, actions);
-        }
-
-        public void DemandPermissions(ISecurityObject securityObject, params IAction[] actions)
-        {
-            DemandPermissions(securityObject, null, actions);
-        }
-
-        public void DemandPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
-        {
-            PermissionResolver.Demand(AuthContext.CurrentAccount, objectId, securityObjProvider, actions);
-        }
+        AuthenticateMeWithoutCookie(account, additionalClaims);
     }
 
-    [Scope]
-    public class AuthContext
+    public void Logout()
     {
-        private IHttpContextAccessor HttpContextAccessor { get; }
+        _authContext.Logout();
+    }
 
-        public AuthContext()
+    public void SetUserPasswordHash(Guid userID, string passwordHash)
+    {
+        var tenantid = _tenantManager.GetCurrentTenant().Id;
+        var u = _userManager.GetUsersByPasswordHash(tenantid, userID.ToString(), passwordHash);
+        if (!Equals(u, Users.Constants.LostUser))
         {
-
+            throw new PasswordException("A new password must be used");
         }
 
-        public AuthContext(IHttpContextAccessor httpContextAccessor)
-        {
-            HttpContextAccessor = httpContextAccessor;
-        }
+        _authentication.SetUserPasswordHash(userID, passwordHash);
+    }
 
-        public IAccount CurrentAccount
-        {
-            get { return Principal?.Identity is IAccount ? (IAccount)Principal.Identity : Configuration.Constants.Guest; }
-        }
+    public class PasswordException : Exception
+    {
+        public PasswordException(string message) : base(message) { }
+    }
+}
 
-        public bool IsAuthenticated
-        {
-            get { return CurrentAccount.IsAuthenticated; }
-        }
+[Scope]
+public class PermissionContext
+{
+    public IPermissionResolver PermissionResolver { get; set; }
+    private AuthContext AuthContext { get; }
 
-        public void Logout()
-        {
-            Principal = null;
-        }
+    public PermissionContext(IPermissionResolver permissionResolver, AuthContext authContext)
+    {
+        PermissionResolver = permissionResolver;
+        AuthContext = authContext;
+    }
 
-        internal ClaimsPrincipal Principal
+    public bool CheckPermissions(params IAction[] actions)
+    {
+        return PermissionResolver.Check(AuthContext.CurrentAccount, actions);
+    }
+
+    public bool CheckPermissions(ISecurityObject securityObject, params IAction[] actions)
+    {
+        return CheckPermissions(securityObject, null, actions);
+    }
+
+    public bool CheckPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
+    {
+        return PermissionResolver.Check(AuthContext.CurrentAccount, objectId, securityObjProvider, actions);
+    }
+
+    public void DemandPermissions(params IAction[] actions)
+    {
+        PermissionResolver.Demand(AuthContext.CurrentAccount, actions);
+    }
+
+    public void DemandPermissions(ISecurityObject securityObject, params IAction[] actions)
+    {
+        DemandPermissions(securityObject, null, actions);
+    }
+
+    public void DemandPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
+    {
+        PermissionResolver.Demand(AuthContext.CurrentAccount, objectId, securityObjProvider, actions);
+    }
+}
+
+[Scope]
+public class AuthContext
+{
+    private IHttpContextAccessor HttpContextAccessor { get; }
+
+    public AuthContext()
+    {
+
+    }
+
+    public AuthContext(IHttpContextAccessor httpContextAccessor)
+    {
+        HttpContextAccessor = httpContextAccessor;
+    }
+
+    public IAccount CurrentAccount => Principal?.Identity is IAccount ? (IAccount)Principal.Identity : Configuration.Constants.Guest;
+
+    public bool IsAuthenticated => CurrentAccount.IsAuthenticated;
+
+    public void Logout()
+    {
+        Principal = null;
+    }
+
+    internal ClaimsPrincipal Principal
+    {
+        get => Thread.CurrentPrincipal as ClaimsPrincipal ?? HttpContextAccessor?.HttpContext?.User;
+        set
         {
-            get => Thread.CurrentPrincipal as ClaimsPrincipal ?? HttpContextAccessor?.HttpContext?.User;
-            set
+            Thread.CurrentPrincipal = value;
+
+            if (HttpContextAccessor?.HttpContext != null)
             {
-                Thread.CurrentPrincipal = value;
-                if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = value;
+                HttpContextAccessor.HttpContext.User = value;
             }
         }
     }

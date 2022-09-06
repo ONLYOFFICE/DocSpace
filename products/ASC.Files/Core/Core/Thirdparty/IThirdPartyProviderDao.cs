@@ -1,590 +1,736 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common.Logging;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-using ASC.Files.Core;
-using ASC.Files.Core.EF;
-using ASC.Files.Core.Security;
-using ASC.Files.Core.Thirdparty;
-using ASC.Security.Cryptography;
-using ASC.Web.Core.Files;
-using ASC.Web.Files.Services.DocumentService;
-using ASC.Web.Studio.Core;
+namespace ASC.Files.Thirdparty;
 
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
-
-namespace ASC.Files.Thirdparty
+internal abstract class ThirdPartyProviderDao
 {
-    internal abstract class ThirdPartyProviderDao
+    #region FileDao
+
+    public Task ReassignFilesAsync(string[] fileIds, Guid newOwnerId)
     {
-        #region FileDao
-
-        public Task ReassignFilesAsync(string[] fileIds, Guid newOwnerId)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task<List<File<string>>> GetFilesAsync(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
-        {
-            return Task.FromResult(new List<File<string>>());
-        }
-
-        public IAsyncEnumerable<File<string>> SearchAsync(string text, bool bunch)
-        {
-            return null;
-        }
-
-        public Task<bool> IsExistOnStorageAsync(File<string> file)
-        {
-            return Task.FromResult(true);
-        }
-
-        public Task SaveEditHistoryAsync(File<string> file, string changes, Stream differenceStream)
-        {
-            //Do nothing
-            return Task.CompletedTask;
-        }
-
-        public Task<List<EditHistory>> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
-        {
-            return null;
-        }
-
-        public Task<Stream> GetDifferenceStreamAsync(File<string> file)
-        {
-            return null;
-        }
-
-        public Task<bool> ContainChangesAsync(string fileId, int fileVersion)
-        {
-            return Task.FromResult(false);
-        }
-
-        public Task SaveThumbnailAsync(File<string> file, Stream thumbnail)
-        {
-            //Do nothing
-            return Task.CompletedTask;
-        }
-
-        public Task<Stream> GetThumbnailAsync(File<string> file)
-        {
-            return Task.FromResult<Stream>(null);
-        }
-
-        public virtual Task<Stream> GetFileStreamAsync(File<string> file)
-        {
-            return null;
-        }
-
-        public string GetUniqFilePath(File<string> file, string fileTitle)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<(File<int>, SmallShareRecord)>> GetFeedsAsync(int tenant, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime fromTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-        #region FolderDao
-
-        public Task ReassignFoldersAsync(string[] folderIds, Guid newOwnerId)
-        {
-            return Task.CompletedTask;
-        }
-
-        public IAsyncEnumerable<Folder<string>> SearchFoldersAsync(string text, bool bunch)
-        {
-            return null;
-        }
-
-
-        public Task<string> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public Task<IEnumerable<string>> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
-        {
-            return Task.FromResult((IEnumerable<string>)new List<string>());
-        }
-
-        public Task<string> GetFolderIDCommonAsync(bool createIfNotExists)
-        {
-            return null;
-        }
-
-
-        public Task<string> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-        public Task<string> GetFolderIDShareAsync(bool createIfNotExists)
-        {
-            return null;
-        }
-
-
-        public Task<string> GetFolderIDRecentAsync(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public Task<string> GetFolderIDFavoritesAsync(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public Task<string> GetFolderIDTemplatesAsync(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public Task<string> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-        public Task<string> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId)
-        {
-            return null;
-        }
-
-        public string GetFolderIDPhotos(bool createIfNotExists)
-        {
-            return null;
-        }
-
-
-        public Task<string> GetFolderIDProjectsAsync(bool createIfNotExists)
-        {
-            return null;
-        }
-
-        public Task<string> GetBunchObjectIDAsync(string folderID)
-        {
-            return null;
-        }
-
-        public Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<string> folderIDs)
-        {
-            return null;
-        }
-
-        public Task<IEnumerable<(Folder<string>, SmallShareRecord)>> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<string>> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
+        return Task.CompletedTask;
     }
 
-    internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDisposable where T : class, IProviderInfo
+    public IAsyncEnumerable<File<string>> GetFilesAsync(IEnumerable<string> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
     {
-        public int TenantID { get; private set; }
-        protected IServiceProvider ServiceProvider { get; }
-        protected UserManager UserManager { get; }
-        protected TenantUtil TenantUtil { get; }
-        private Lazy<FilesDbContext> LazyFilesDbContext { get; }
-        protected FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-        protected SetupInfo SetupInfo { get; }
-        protected ILog Log { get; }
-        protected FileUtility FileUtility { get; }
-        protected TempPath TempPath { get; }
-        protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
-        protected T ProviderInfo { get; set; }
-        protected string PathPrefix { get; private set; }
+        return AsyncEnumerable.Empty<File<string>>();
+    }
 
-        protected abstract string Id { get; }
+    public IAsyncEnumerable<File<string>> SearchAsync(string text, bool bunch)
+    {
+        return null;
+    }
 
-        protected ThirdPartyProviderDao(
-            IServiceProvider serviceProvider,
-            UserManager userManager,
-            TenantManager tenantManager,
-            TenantUtil tenantUtil,
-            DbContextManager<FilesDbContext> dbContextManager,
-            SetupInfo setupInfo,
-            IOptionsMonitor<ILog> monitor,
-            FileUtility fileUtility,
-            TempPath tempPath)
-        {
-            ServiceProvider = serviceProvider;
-            UserManager = userManager;
-            TenantUtil = tenantUtil;
-            LazyFilesDbContext = new Lazy<FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-            SetupInfo = setupInfo;
-            Log = monitor.CurrentValue;
-            FileUtility = fileUtility;
-            TempPath = tempPath;
-            TenantID = tenantManager.GetCurrentTenant().TenantId;
-        }
+    public Task<bool> IsExistOnStorageAsync(File<string> file)
+    {
+        return Task.FromResult(true);
+    }
 
-        public void Init(BaseProviderInfo<T> providerInfo, RegexDaoSelectorBase<T> selectorBase)
-        {
-            ProviderInfo = providerInfo.ProviderInfo;
-            PathPrefix = providerInfo.PathPrefix;
-            DaoSelector = selectorBase;
-        }
+    public Task SaveEditHistoryAsync(File<string> file, string changes, Stream differenceStream)
+    {
+        //Do nothing
+        return Task.CompletedTask;
+    }
 
-        protected IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
-        {
-            return set.AsQueryable().Where(r => r.TenantId == TenantID);
-        }
+    public IAsyncEnumerable<EditHistory> GetEditHistoryAsync(DocumentServiceHelper documentServiceHelper, string fileId, int fileVersion)
+    {
+        return null;
+    }
 
-        protected Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
-        {
-            if (id == null) return null;
+    public Task<Stream> GetDifferenceStreamAsync(File<string> file)
+    {
+        return null;
+    }
 
-            return InternalMappingIDAsync(id, saveIfNotExist);
-        }
+    public Task<bool> ContainChangesAsync(string fileId, int fileVersion)
+    {
+        return Task.FromResult(false);
+    }
 
-        private async Task<string> InternalMappingIDAsync(string id, bool saveIfNotExist = false)
-        {
-            string result;
-            if (id.StartsWith(Id))
-            {
-                result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id, HashAlg.MD5)), "-", "").ToLower();
-            }
-            else
-            {
-                result = await FilesDbContext.ThirdpartyIdMapping
-                        .AsQueryable()
-                        .Where(r => r.HashId == id)
-                        .Select(r => r.Id)
-                        .FirstOrDefaultAsync()
-                        .ConfigureAwait(false);
-            }
-            if (saveIfNotExist)
-            {
-                var newMapping = new DbFilesThirdpartyIdMapping
-                {
-                    Id = id,
-                    HashId = result,
-                    TenantId = TenantID
-                };
+    public Task SaveThumbnailAsync(File<string> file, Stream thumbnail, int width, int height)
+    {
+        //Do nothing
+        return Task.CompletedTask;
+    }
 
-                await FilesDbContext.ThirdpartyIdMapping.AddAsync(newMapping).ConfigureAwait(false);
-                await FilesDbContext.SaveChangesAsync().ConfigureAwait(false);
-            }
-            return result;
-        }
+    public virtual Task<Stream> GetThumbnailAsync(File<string> file, int width, int height)
+    {
+        return GetThumbnailAsync(file.Id, width, height);
+    }
 
-        protected Folder<string> GetFolder()
-        {
-            var folder = ServiceProvider.GetService<Folder<string>>();
+    public virtual Task<Stream> GetThumbnailAsync(string file, int width, int height)
+    {
+        return Task.FromResult<Stream>(null);
+    }
 
-            InitFileEntry(folder);
+    public Task<EntryProperties> GetProperties(string fileId)
+    {
+        return Task.FromResult<EntryProperties>(null);
+    }
 
-            folder.FolderType = FolderType.DEFAULT;
-            folder.Shareable = false;
-            folder.TotalFiles = 0;
-            folder.TotalSubFolders = 0;
+    public Task SaveProperties(string fileId, EntryProperties entryProperties)
+    {
+        return null;
+    }
 
-            return folder;
-        }
+    public virtual Task<Stream> GetFileStreamAsync(File<string> file)
+    {
+        return null;
+    }
 
-        protected Folder<string> GetErrorFolder(ErrorEntry entry)
-        {
-            var folder = GetFolder();
+    public string GetUniqFilePath(File<string> file, string fileTitle)
+    {
+        throw new NotImplementedException();
+    }
 
-            InitFileEntryError(folder, entry);
+    public IAsyncEnumerable<FileWithShare> GetFeedsAsync(int tenant, DateTime from, DateTime to)
+    {
+        throw new NotImplementedException();
+    }
 
-            folder.FolderID = null;
+    public IAsyncEnumerable<int> GetTenantsWithFeedsAsync(DateTime fromTime)
+    {
+        throw new NotImplementedException();
+    }
 
-            return folder;
-        }
+    #endregion
+    #region FolderDao
 
-        protected File<string> GetFile()
-        {
-            var file = ServiceProvider.GetService<File<string>>();
+    public Task ReassignFoldersAsync(string[] folderIds, Guid newOwnerId)
+    {
+        return Task.CompletedTask;
+    }
 
-            InitFileEntry(file);
-
-            file.Access = FileShare.None;
-            file.Shared = false;
-            file.Version = 1;
-
-            return file;
-        }
-
-        protected File<string> GetErrorFile(ErrorEntry entry)
-        {
-            var file = GetFile();
-            InitFileEntryError(file, entry);
-            return file;
-        }
-
-        protected void InitFileEntry(FileEntry<string> fileEntry)
-        {
-            fileEntry.CreateBy = ProviderInfo.Owner;
-            fileEntry.ModifiedBy = ProviderInfo.Owner;
-            fileEntry.ProviderId = ProviderInfo.ID;
-            fileEntry.ProviderKey = ProviderInfo.ProviderKey;
-            fileEntry.RootFolderCreator = ProviderInfo.Owner;
-            fileEntry.RootFolderType = ProviderInfo.RootFolderType;
-            fileEntry.RootFolderId = MakeId();
-        }
-
-        protected void InitFileEntryError(FileEntry<string> fileEntry, ErrorEntry entry)
-        {
-            fileEntry.ID = MakeId(entry.ErrorId);
-            fileEntry.CreateOn = TenantUtil.DateTimeNow();
-            fileEntry.ModifiedOn = TenantUtil.DateTimeNow();
-            fileEntry.Error = entry.Error;
-        }
+    public IAsyncEnumerable<Folder<string>> SearchFoldersAsync(string text, bool bunch)
+    {
+        return null;
+    }
 
 
-        protected abstract string MakeId(string path = null);
+    public Task<string> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public IAsyncEnumerable<string> GetFolderIDsAsync(string module, string bunch, IEnumerable<string> data, bool createIfNotExists)
+    {
+        return AsyncEnumerable.Empty<string>();
+    }
+
+    public Task<string> GetFolderIDCommonAsync(bool createIfNotExists)
+    {
+        return null;
+    }
 
 
-        #region SecurityDao
-        public Task SetShareAsync(FileShareRecord r)
-        {
-            return Task.CompletedTask;
-        }
+    public Task<string> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId)
+    {
+        return null;
+    }
 
-        public ValueTask<List<FileShareRecord>> GetSharesAsync(IEnumerable<Guid> subjects)
-        {
-            List<FileShareRecord> result = null;
-            return new ValueTask<List<FileShareRecord>>(result);
-        }
+    public Task<string> GetFolderIDShareAsync(bool createIfNotExists)
+    {
+        return null;
+    }
 
-        public Task<IEnumerable<FileShareRecord>> GetSharesAsync(IEnumerable<FileEntry<string>> entry)
+
+    public Task<string> GetFolderIDRecentAsync(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDFavoritesAsync(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDTemplatesAsync(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId)
+    {
+        return null;
+    }
+
+    public string GetFolderIDPhotos(bool createIfNotExists)
+    {
+        return null;
+    }
+
+
+    public Task<string> GetFolderIDProjectsAsync(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDVirtualRooms(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetFolderIDArchive(bool createIfNotExists)
+    {
+        return null;
+    }
+
+    public Task<string> GetBunchObjectIDAsync(string folderID)
+    {
+        return null;
+    }
+
+    public Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<string> folderIDs)
+    {
+        return null;
+    }
+
+    public IAsyncEnumerable<FolderWithShare> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<string> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime)
+    {
+        throw new NotImplementedException();
+    }
+
+    #endregion
+}
+
+internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDisposable where T : class, IProviderInfo
+{
+    public int TenantID { get; private set; }
+    protected readonly IServiceProvider _serviceProvider;
+    protected readonly UserManager _userManager;
+    protected readonly TenantUtil _tenantUtil;
+    protected readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
+    protected readonly SetupInfo _setupInfo;
+    protected readonly ILogger _logger;
+    protected readonly FileUtility _fileUtility;
+    protected readonly TempPath _tempPath;
+    protected readonly AuthContext _authContext;
+    protected RegexDaoSelectorBase<T> DaoSelector { get; set; }
+    protected T ProviderInfo { get; set; }
+    protected string PathPrefix { get; private set; }
+
+    protected abstract string Id { get; }
+
+    protected ThirdPartyProviderDao(
+        IServiceProvider serviceProvider,
+        UserManager userManager,
+        TenantManager tenantManager,
+        TenantUtil tenantUtil,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
+        SetupInfo setupInfo,
+        ILogger logger,
+        FileUtility fileUtility,
+        TempPath tempPath,
+        AuthContext authContext)
+    {
+        _serviceProvider = serviceProvider;
+        _userManager = userManager;
+        _tenantUtil = tenantUtil;
+        _dbContextFactory = dbContextFactory;
+        _setupInfo = setupInfo;
+        _logger = logger;
+        _fileUtility = fileUtility;
+        _tempPath = tempPath;
+        TenantID = tenantManager.GetCurrentTenant().Id;
+        _authContext = authContext;
+    }
+
+    public void Init(BaseProviderInfo<T> providerInfo, RegexDaoSelectorBase<T> selectorBase)
+    {
+        ProviderInfo = providerInfo.ProviderInfo;
+        PathPrefix = providerInfo.PathPrefix;
+        DaoSelector = selectorBase;
+    }
+
+    protected IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
+    {
+        return set.Where(r => r.TenantId == TenantID);
+    }
+
+    protected Task<string> MappingIDAsync(string id, bool saveIfNotExist = false)
+    {
+        if (id == null)
         {
             return null;
         }
 
-        public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<string> entry)
+        return InternalMappingIDAsync(id, saveIfNotExist);
+    }
+
+    private async Task<string> InternalMappingIDAsync(string id, bool saveIfNotExist = false)
+    {
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+
+        string result;
+        if (id.StartsWith(Id))
         {
-            return null;
+            result = Regex.Replace(BitConverter.ToString(Hasher.Hash(id, HashAlg.MD5)), "-", "").ToLower();
         }
-
-        public Task RemoveSubjectAsync(Guid subject)
+        else
         {
-            return Task.CompletedTask;
+            result = await filesDbContext.ThirdpartyIdMapping
+                    .Where(r => r.HashId == id)
+                    .Select(r => r.Id)
+                    .FirstOrDefaultAsync();
         }
-
-        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(IEnumerable<FileEntry<string>> entries)
+        if (saveIfNotExist)
         {
-            return null;
-        }
-
-        public Task<IEnumerable<FileShareRecord>> GetPureShareRecordsAsync(FileEntry<string> entry)
-        {
-            return null;
-        }
-
-        public Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
-        {
-            return Task.CompletedTask;
-        }
-
-        public ValueTask<bool> IsSharedAsync(object entryId, FileEntryType type)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
-        #region TagDao
-
-        public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
-        {
-            return AsyncEnumerable.Empty<Tag>();
-        }
-
-        public IAsyncEnumerable<Tag> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
-        {
-            return AsyncEnumerable.Empty<Tag>();
-        }
-
-        public IAsyncEnumerable<Tag> GetTagsAsync(Guid owner, TagType tagType)
-        {
-            return AsyncEnumerable.Empty<Tag>();
-        }
-
-        public IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType)
-        {
-            return AsyncEnumerable.Empty<Tag>();
-        }
-
-        public IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
-        {
-            return AsyncEnumerable.Empty<Tag>();
-        }
-
-        public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
-        {
-            return Task.FromResult((IDictionary<object, IEnumerable<Tag>>)new Dictionary<object, IEnumerable<Tag>>());
-        }
-
-        public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
-        {
-            return AsyncEnumerable.Empty<Tag>();
-        }
-
-        public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, FileEntry<string> fileEntry)
-        {
-            return AsyncEnumerable.Empty<Tag>();
-        }
-
-        public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
-        {
-            return new List<Tag>();
-        }
-
-        public IEnumerable<Tag> SaveTags(Tag tag)
-        {
-            return new List<Tag>();
-        }
-
-        public void UpdateNewTags(IEnumerable<Tag> tag)
-        {
-        }
-
-        public void UpdateNewTags(Tag tag)
-        {
-        }
-
-        public void RemoveTags(IEnumerable<Tag> tag)
-        {
-        }
-
-        public void RemoveTags(Tag tag)
-        {
-        }
-
-
-        public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
-        {
-            return AsyncEnumerable.Empty<Tag>();
-        }
-
-        public void MarkAsNew(Guid subject, FileEntry<string> fileEntry)
-        {
-        }
-
-        public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
-        {
-            var folderId = DaoSelector.ConvertId(parentFolder.ID);
-
-            var entryIDs = await FilesDbContext.ThirdpartyIdMapping
-                       .AsQueryable()
-                       .Where(r => r.Id.StartsWith(parentFolder.ID))
-                       .Select(r => r.HashId)
-                       .ToListAsync()
-                       .ConfigureAwait(false);
-
-            if (!entryIDs.Any()) yield break;
-
-            var q = from r in FilesDbContext.Tag
-                    from l in FilesDbContext.TagLink.AsQueryable().Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
-                    where r.TenantId == TenantID && l.TenantId == TenantID && r.Flag == TagType.New && entryIDs.Contains(l.EntryId)
-                    select new { tag = r, tagLink = l };
-
-            if (subject != Guid.Empty)
+            var newMapping = new DbFilesThirdpartyIdMapping
             {
-                q = q.Where(r => r.tag.Owner == subject);
-            }
+                Id = id,
+                HashId = result,
+                TenantId = TenantID
+            };
 
-            var qList = q
-                .Distinct()
-                .AsAsyncEnumerable();
+            await filesDbContext.ThirdpartyIdMapping.AddAsync(newMapping);
+            await filesDbContext.SaveChangesAsync();
+        }
 
-            var tags = qList
-                .SelectAwait(async r => new Tag
-                {
-                    TagName = r.tag.Name,
-                    TagType = r.tag.Flag,
-                    Owner = r.tag.Owner,
-                    EntryId = await MappingIDAsync(r.tagLink.EntryId).ConfigureAwait(false),
-                    EntryType = r.tagLink.EntryType,
-                    Count = r.tagLink.TagCount,
-                    Id = r.tag.Id
-                });
+        return result;
+    }
+
+    protected Folder<string> GetFolder()
+    {
+        var folder = _serviceProvider.GetService<Folder<string>>();
+
+        InitFileEntry(folder);
+
+        folder.FolderType = FolderType.DEFAULT;
+        folder.Shareable = false;
+        folder.FilesCount = 0;
+        folder.FoldersCount = 0;
+
+        return folder;
+    }
+
+    protected Folder<string> GetErrorFolder(ErrorEntry entry)
+    {
+        var folder = GetFolder();
+
+        InitFileEntryError(folder, entry);
+
+        folder.ParentId = null;
+
+        return folder;
+    }
+
+    protected File<string> GetFile()
+    {
+        var file = _serviceProvider.GetService<File<string>>();
+
+        InitFileEntry(file);
+
+        file.Access = FileShare.None;
+        file.Shared = false;
+        file.Version = 1;
+
+        return file;
+    }
+
+    protected File<string> GetErrorFile(ErrorEntry entry)
+    {
+        var file = GetFile();
+        InitFileEntryError(file, entry);
+
+        return file;
+    }
+
+    protected void InitFileEntry(FileEntry<string> fileEntry)
+    {
+        fileEntry.CreateBy = ProviderInfo.Owner;
+        fileEntry.ModifiedBy = ProviderInfo.Owner;
+        fileEntry.ProviderId = ProviderInfo.ID;
+        fileEntry.ProviderKey = ProviderInfo.ProviderKey;
+        fileEntry.RootCreateBy = ProviderInfo.Owner;
+        fileEntry.RootFolderType = ProviderInfo.RootFolderType;
+        fileEntry.RootId = MakeId();
+    }
+
+    protected void InitFileEntryError(FileEntry<string> fileEntry, ErrorEntry entry)
+    {
+        fileEntry.Id = MakeId(entry.ErrorId);
+        fileEntry.CreateOn = _tenantUtil.DateTimeNow();
+        fileEntry.ModifiedOn = _tenantUtil.DateTimeNow();
+        fileEntry.Error = entry.Error;
+    }
+
+    protected void SetFolderType(Folder<string> folder, bool isRoot)
+    {
+        if (isRoot && (ProviderInfo.RootFolderType == FolderType.VirtualRooms ||
+            ProviderInfo.RootFolderType == FolderType.Archive))
+        {
+            folder.FolderType = ProviderInfo.RootFolderType;
+        }
+        else if (ProviderInfo.FolderId == folder.Id)
+        {
+            folder.FolderType = ProviderInfo.FolderType;
+        }
+    }
+
+    protected IAsyncEnumerable<Folder<string>> FilterByTags(IAsyncEnumerable<Folder<string>> folders, bool withoutTags, IEnumerable<string> tagNames)
+    {
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+        if (withoutTags)
+        {
+            return folders.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+                .WhereAwait(async r => !await filesDbContext.TagLink.Join(filesDbContext.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
+                .Where(r => r.tag.Type == TagType.Custom).ToAsyncEnumerable().AnyAsync(t => t.EntryId == r.HashId))
+                .Select(r => r.folder);
+        }
+
+        if (tagNames == null || !tagNames.Any())
+        {
+            return folders;
+        }
+
+        var filtered = folders.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+            .Join(filesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
+            .Join(filesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
+                .Where(r => tagNames.Contains(r.Name))
+                .Select(r => r.folder);
+
+        return filtered;
+    }
+
+    protected IAsyncEnumerable<Folder<string>> FilterByRoomType(IAsyncEnumerable<Folder<string>> rooms, FilterType filterType)
+    {
+        if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
+        {
+            return rooms;
+        }
+
+        var filter = filterType switch
+        {
+            FilterType.FillingFormsRooms => FolderType.FillingFormsRoom,
+            FilterType.EditingRooms => FolderType.EditingRoom,
+            FilterType.ReviewRooms => FolderType.ReviewRoom,
+            FilterType.ReadOnlyRooms => FolderType.ReadOnlyRoom,
+            FilterType.CustomRooms => FolderType.CustomRoom,
+            _ => FolderType.DEFAULT,
+        };
+
+        return rooms.Where(f => f.FolderType == filter || filter == FolderType.DEFAULT);
+    }
+
+    protected IAsyncEnumerable<Folder<string>> FilterByOwner(IAsyncEnumerable<Folder<string>> rooms, Guid ownerId, bool withoutMe)
+    {
+        if (ownerId != Guid.Empty && !withoutMe)
+        {
+            rooms = rooms.Where(f => f.CreateBy == ownerId);
+        }
+
+        if (ownerId == Guid.Empty && withoutMe)
+        {
+            rooms = rooms.Where((f => f.CreateBy != _authContext.CurrentAccount.ID));
+        }
+
+        return rooms;
+    }
+
+    protected bool CheckInvalidFilter(FilterType filterType)
+    {
+        return filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly
+            or FilterType.SpreadsheetsOnly or FilterType.ArchiveOnly or FilterType.MediaOnly;
+    }
+
+    protected abstract string MakeId(string path = null);
 
 
-            if (deepSearch)
+    #region SecurityDao
+    public Task SetShareAsync(FileShareRecord r)
+    {
+        return Task.CompletedTask;
+    }
+
+    public IAsyncEnumerable<FileShareRecord> GetSharesAsync(IEnumerable<Guid> subjects)
+    {
+        return AsyncEnumerable.Empty<FileShareRecord>();
+    }
+
+    public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<string> entry)
+    {
+        return null;
+    }
+
+    public Task RemoveSubjectAsync(Guid subject)
+    {
+        return Task.CompletedTask;
+    }
+
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsync(IEnumerable<FileEntry<string>> entries)
+    {
+        return null;
+    }
+
+    public IAsyncEnumerable<FileShareRecord> GetPureShareRecordsAsync(FileEntry<string> entry)
+    {
+        return null;
+    }
+
+    public Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> IsSharedAsync(string entryId, FileEntryType type)
+    {
+        return null;
+    }
+
+    #endregion
+
+    #region TagDao
+
+    public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public IAsyncEnumerable<Tag> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public IAsyncEnumerable<Tag> GetTagsAsync(Guid owner, TagType tagType)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+    {
+        return Task.FromResult((IDictionary<object, IEnumerable<Tag>>)new Dictionary<object, IEnumerable<Tag>>());
+    }
+
+    public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IAsyncEnumerable<FileEntry<string>> fileEntries)
+    {
+        return Task.FromResult((IDictionary<object, IEnumerable<Tag>>)new Dictionary<object, IEnumerable<Tag>>());
+    }
+
+    public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IAsyncEnumerable<FileEntry<string>> fileEntries)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, FileEntry<string> fileEntry)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName, int from = 0, int count = 0)
+    {
+        return AsyncEnumerable.Empty<TagInfo>();
+    }
+
+    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<string> names)
+    {
+        return AsyncEnumerable.Empty<TagInfo>();
+    }
+
+    public Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo)
+    {
+        return Task.FromResult(tagInfo);
+    }
+
+    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
+    {
+        return new List<Tag>();
+    }
+
+    public IEnumerable<Tag> SaveTags(Tag tag)
+    {
+        return new List<Tag>();
+    }
+
+    public void UpdateNewTags(IEnumerable<Tag> tag)
+    {
+    }
+
+    public void UpdateNewTags(Tag tag)
+    {
+    }
+
+    public Task RemoveTagsAsync(FileEntry<string> entry, IEnumerable<int> tagsIds)
+    {
+        return Task.CompletedTask;
+    }
+
+    public Task RemoveTagsAsync(IEnumerable<int> tagsIds)
+    {
+        return Task.CompletedTask;
+    }
+
+    public void RemoveTags(IEnumerable<Tag> tag)
+    {
+    }
+
+    public void RemoveTags(Tag tag)
+    {
+    }
+
+    public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
+    {
+        return AsyncEnumerable.Empty<Tag>();
+    }
+
+    public void MarkAsNew(Guid subject, FileEntry<string> fileEntry)
+    {
+    }
+
+    public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
+    {
+        var folderId = DaoSelector.ConvertId(parentFolder.Id);
+
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+        var entryIDs = await filesDbContext.ThirdpartyIdMapping
+                   .Where(r => r.Id.StartsWith(parentFolder.Id))
+                   .Select(r => r.HashId)
+                   .ToListAsync();
+
+        if (!entryIDs.Any())
+        {
+            yield break;
+        }
+
+        var q = from r in filesDbContext.Tag
+                from l in filesDbContext.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+                where r.TenantId == TenantID && l.TenantId == TenantID && r.Type == TagType.New && entryIDs.Contains(l.EntryId)
+                select new { tag = r, tagLink = l };
+
+        if (subject != Guid.Empty)
+        {
+            q = q.Where(r => r.tag.Owner == subject);
+        }
+
+        var qList = await q
+            .Distinct()
+            .AsAsyncEnumerable()
+            .ToListAsync();
+
+        var tags = new List<Tag>();
+
+        foreach (var r in qList)
+        {
+            tags.Add(new Tag
             {
-                await foreach (var e in tags.ConfigureAwait(false))
-                    yield return e;
-                yield break;
-            }
+                Name = r.tag.Name,
+                Type = r.tag.Type,
+                Owner = r.tag.Owner,
+                EntryId = await MappingIDAsync(r.tagLink.EntryId),
+                EntryType = r.tagLink.EntryType,
+                Count = r.tagLink.Count,
+                Id = r.tag.Id
+            });
+        }
 
-            var folderFileIds = new[] { parentFolder.ID }
-                .Concat(await GetChildrenAsync(folderId).ConfigureAwait(false));
 
-            await foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())).ConfigureAwait(false))
+        if (deepSearch)
+        {
+            foreach (var e in tags)
+            {
                 yield return e;
-        }
-
-        protected abstract Task<IEnumerable<string>> GetChildrenAsync(string folderId);
-
-        #endregion
-
-        public void Dispose()
-        {
-            if (ProviderInfo != null)
-            {
-                ProviderInfo.Dispose();
-                ProviderInfo = null;
             }
+            yield break;
+        }
+
+        var folderFileIds = new[] { parentFolder.Id }
+            .Concat(await GetChildrenAsync(folderId));
+
+        foreach (var e in tags.Where(tag => folderFileIds.Contains(tag.EntryId.ToString())))
+        {
+            yield return e;
         }
     }
 
-    internal class ErrorEntry
+    protected abstract Task<IEnumerable<string>> GetChildrenAsync(string folderId);
+
+    #endregion
+
+    public void Dispose()
     {
-        public string Error { get; set; }
-
-        public string ErrorId { get; set; }
-
-        public ErrorEntry(string error, string errorId)
+        if (ProviderInfo != null)
         {
-            Error = error;
-            ErrorId = errorId;
+            ProviderInfo.Dispose();
+            ProviderInfo = null;
         }
     }
+}
 
-    public class TagLink
+internal class ErrorEntry
+{
+    public string Error { get; set; }
+    public string ErrorId { get; set; }
+
+    public ErrorEntry(string error, string errorId)
     {
-        public int TenantId { get; set; }
-        public int Id { get; set; }
+        Error = error;
+        ErrorId = errorId;
+    }
+}
+
+public class TagLink
+{
+    public int TenantId { get; set; }
+    public int Id { get; set; }
+}
+
+public class TagLinkComparer : IEqualityComparer<TagLink>
+{
+    public bool Equals([AllowNull] TagLink x, [AllowNull] TagLink y)
+    {
+        return x.Id == y.Id && x.TenantId == y.TenantId;
     }
 
-    public class TagLinkComparer : IEqualityComparer<TagLink>
+    public int GetHashCode([DisallowNull] TagLink obj)
     {
-        public bool Equals([AllowNull] TagLink x, [AllowNull] TagLink y)
-        {
-            return x.Id == y.Id && x.TenantId == y.TenantId;
-        }
-
-        public int GetHashCode([DisallowNull] TagLink obj)
-        {
-            return obj.Id.GetHashCode() + obj.TenantId.GetHashCode();
-        }
+        return obj.Id.GetHashCode() + obj.TenantId.GetHashCode();
     }
 }

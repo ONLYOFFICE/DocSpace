@@ -29,6 +29,7 @@ using System.Collections.Generic;
 
 using ASC.Common.Mapping;
 using ASC.Common.Security;
+using ASC.Common.Security.Authorizing;
 using ASC.CRM.Core.EF;
 
 namespace ASC.CRM.Core.Entities
@@ -49,6 +50,7 @@ namespace ASC.CRM.Core.Entities
         {
             get { return ID; }
         }
+        public string FullId => AzObjectIdHelper.GetFullObjectId(this);
 
         public Type ObjectType
         {

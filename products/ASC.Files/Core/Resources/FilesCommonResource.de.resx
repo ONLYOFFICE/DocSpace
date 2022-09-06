@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
     <value>Außerhalb Portal</value>
@@ -109,6 +109,9 @@
   <data name="CommentCreateByDocuSign" xml:space="preserve">
     <value>Erstellt mit Hilfe von DocuSign</value>
   </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Zum Ausfüllen von Formularen erstellt</value>
+  </data>
   <data name="CommentEdit" xml:space="preserve">
     <value>Bearbeitet</value>
   </data>
@@ -129,6 +132,9 @@
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
     <value>Aus der Dokumentänderung{0}wiederhergestellt </value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Formular abgesendet</value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Hochgeladen</value>
@@ -308,6 +314,15 @@
   </data>
   <data name="MessageFileCreated" xml:space="preserve">
     <value>Die Datei wurde im Ordner"{0}"erstellt</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Die ausfüllbare OFORM-Datei ist fertig und im Ordner {0} zugänglich</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Die Kopie der OFORM-Datei ist im Ordner {0} erstellt. Füllen Sie bitte das Formular aus und laden Sie es danach als eine PDF- oder DOCX-Datei herunter.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Die Datei ist kein Entwurf zum Ausfüllen von Formularen mehr.</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
     <value>Dieselben Operationen wie ein Benutzer durchführen|Dropbox-, Box- und sonstige Konten in der Sektion 'Gemeinsame Dokumente' verknüpfen|Zugriffsrechte für Dokumente und Ordner in der Sektion 'Gemeinsame Dokumente' gewähren</value>

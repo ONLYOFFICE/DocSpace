@@ -101,9 +101,9 @@
     filesIO.to(room).emit("s:start-edit-file", fileId);
   }
 
-  function stopEdit({ fileId, room, data } = {}) {
+  function stopEdit({ fileId, room } = {}) {
     logger.info(`stop edit file ${fileId} in room ${room}`);
-    filesIO.to(room).emit("s:stop-edit-file", fileId, data);
+    filesIO.to(room).emit("s:stop-edit-file", fileId);
   }
 
   function modifyFolder(room, cmd, id, type, data) {
@@ -115,10 +115,15 @@
     modifyFolder(room, "create", fileId, "file", data);
   }
 
+  function updateFile({ fileId, room, data } = {}) {
+    logger.info(`update file ${fileId} in room ${room}`);
+    modifyFolder(room, "update", fileId, "file", data);
+  }
+
   function deleteFile({ fileId, room } = {}) {
     logger.info(`delete file ${fileId} in room ${room}`);
     modifyFolder(room, "delete", fileId, "file");
   }
 
-  return { startEdit, stopEdit, createFile, deleteFile };
+  return { startEdit, stopEdit, createFile, deleteFile, updateFile };
 };

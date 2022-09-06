@@ -57,14 +57,14 @@ namespace ASC.Web.CRM.Configuration
         {
             _pathProvider = pathProvider;
             LazyFilesDbContext = new Lazy<FilesDbContext>(() => filesDbContext.Value);
-            _tenantId = tenantManager.GetCurrentTenant().TenantId;
+            _tenantId = tenantManager.GetCurrentTenant().Id;
         }
 
 
         public override async ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
         {
             var spaceUsage = await _filesDbContext.Files.AsQueryable().Join(_filesDbContext.Tree,
-                                     x => x.FolderId,
+                                     x => x.ParentId,
                                      y => y.FolderId,
                                      (x, y) => new { x, y }
                                    )

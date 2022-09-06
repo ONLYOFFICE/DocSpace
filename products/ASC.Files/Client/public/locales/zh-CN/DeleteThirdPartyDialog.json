@@ -1,4 +1,0 @@
-﻿{
-  "DeleteThirdPartyAlert": "从‘文档’模块中移除{{service}}？这将不会影响您的{{account}}账户。",
-  "SuccessDeleteThirdParty": "第三方{{service}}已删除"
-}

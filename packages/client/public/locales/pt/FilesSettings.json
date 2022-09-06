@@ -1,0 +1,20 @@
+{
+  "Clouds": "Nuvens",
+  "CommonSettings": "Definições comuns",
+  "ConnectAdminDescription": "Para uma ligação bem sucedida, introduza os dados necessários nesta <1>página</1>.",
+  "ConnectDescriptionText": "Ainda não se conectou a nenhuma nuvem de terceiros.",
+  "ConnectEmpty": "Não há nada aqui",
+  "ConnectMakeShared": "Partilhar e colocar na pasta 'Comum'",
+  "ConnextOtherAccount": "Outra conta",
+  "DisplayFavorites": "Mostrar Favoritos",
+  "DisplayNotification": "Mostrar notificação ao mover itens para a Lixo",
+  "DisplayRecent": "Mostrar recentes",
+  "DisplayTemplates": "Mostrar Modelos",
+  "IntermediateVersion": "Manter todas as versões intermédias guardadas",
+  "KeepIntermediateVersion": "Manter versões intermediárias ao editar",
+  "OriginalCopy": "Guardar a cópia do ficheiro também no formato original",
+  "StoringFileVersion": "Armazenamento de versões de ficheiros",
+  "ThirdPartyBtn": "Ativar armazenamentos de terceiros para utilizadores",
+  "ThirdPartySettings": "Nuvens ligadas",
+  "UpdateOrCreate": "Atualizar a versão do ficheiro existente com o mesmo nome. Caso contrário, será criada uma cópia do ficheiro."
+}

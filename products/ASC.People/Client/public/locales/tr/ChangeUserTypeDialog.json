@@ -1,7 +1,0 @@
-﻿{
-  "ChangeUserTypeButton": "Türü değiştir",
-  "ChangeUserTypeHeader": "Kullanıcı türünü değiştir",
-  "ChangeUserTypeMessage": "'{{ firstType }}' türündeki kullanıcılar '{{ secondType }}' türüne taşınacaktır.",
-  "ChangeUserTypeMessageWarning": "Portal yöneticileri ve kendiniz için türü değiştiremezsiniz",
-  "SuccessChangeUserType": "Kullanıcı türü başarıyla değiştirildi"
-}

@@ -1,0 +1,22 @@
+{
+  "Clouds": "Pilvet",
+  "CommonSettings": "Yleiset asetukset",
+  "ConnectAdminDescription": "Yhteyden muodostaminen onnistuu syöttämällä tarvittavat tiedot <1>tälle sivulle</1>.",
+  "ConnectCloud": "Liitä tili",
+  "ConnectDescriptionText": "Et ole vielä yhdistänyt yhtään kolmannen osapuolen pilveä.",
+  "ConnectEmpty": "Täällä ei ole mitään",
+  "ConnectMakeShared": "Jaa ja laita 'Common' -kansioon",
+  "ConnectMessage": "Voit liittää seuraavat palvelut ONLYOFFICE Asiakirjat moduuliin. Ne näytetään 'Omat Asiakirjat' kansiossa ja voit muokata ja tallentaa niitä yhdessä portaalin paikassa.",
+  "ConnextOtherAccount": "Muu tili",
+  "DisplayFavorites": "Näytä suosikit",
+  "DisplayNotification": "Näytä ilmoitus, kun siirrät kohteita roskakoriin",
+  "DisplayRecent": "Näytä viimeisimmät",
+  "DisplayTemplates": "Näytä mallit",
+  "IntermediateVersion": "Säilytä kaikki tallennetut väliversiot",
+  "KeepIntermediateVersion": "Pidä väliversiot muokkauksen aikana",
+  "OriginalCopy": "Tallenna kopio tiedostosta myös alkuperäisessä muodossa",
+  "StoringFileVersion": "Tiedostoversioiden tallentaminen",
+  "ThirdPartyBtn": "Salli käyttäjien yhdistää kolmannen osapuolen tallennustilat",
+  "ThirdPartySettings": "Yhdistetyt pilvet",
+  "UpdateOrCreate": "Päivitä samannimisen tiedoston tiedostoversio. Muussa tapauksessa tiedostosta luodaan kopio."
+}

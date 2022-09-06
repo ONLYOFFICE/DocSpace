@@ -31,11 +31,9 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Common.Utils;
 using ASC.Core;
 using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
 using ASC.Core.Tenants;
 using ASC.CRM.Classes;
 using ASC.CRM.Core.EF;
@@ -50,7 +48,7 @@ using ASC.Web.CRM.Core.Search;
 using AutoMapper;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.CRM.Core.Dao
 {
@@ -81,7 +79,7 @@ namespace ASC.CRM.Core.Dao
                       PathProvider pathProvider,
                       FactoryIndexerTask tasksDtoIndexer,
                       FactoryIndexerInvoice invoicesDtoIndexer,
-                      IOptionsMonitor<ILog> logger,
+                      ILogger logger,
                       ICache ascCache,
                       WebImageSupplier webImageSupplier,
                       BundleSearch bundleSearch,

@@ -1,5 +1,30 @@
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
@@ -9,12 +34,11 @@ using ASC.Api.Core.Core;
 using ASC.Api.Core.Middleware;
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.Core.Tenants;
 using ASC.Web.Webhooks;
 using ASC.Webhooks.Core;
-using ASC.Webhooks.Core.Dao.Models;
+using ASC.Webhooks.Core.EF.Model;
 using ASC.Webhooks.Service;
 
 using Microsoft.AspNetCore.Builder;
@@ -23,7 +47,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
 
 using Moq;
@@ -35,13 +59,13 @@ namespace ASC.Webhooks.Tests
     [TestFixture]
     public class CommonWebhooksTests : BaseSetUp
     {
-        private string EventName = "testEvent";
-        private string secretKey = "testSecretKey";
-        private string content = JsonSerializer.Serialize("testContent");
-        private string headers = JsonSerializer.Serialize(new { Host = new StringValues("localhost")});
-        private string URI = $"http://localhost:{port}/api/2.0/Test/";
-        private DateTime creationTime = DateTime.Now;
-        private CacheNotifyAction testCacheNotifyAction = CacheNotifyAction.Update;
+        private readonly string EventName = "testEvent";
+        private readonly string secretKey = "testSecretKey";
+        private readonly string content = JsonSerializer.Serialize("testContent");
+        private readonly string headers = JsonSerializer.Serialize(new { Host = new StringValues("localhost") });
+        private readonly string URI = $"http://localhost:{port}/api/2.0/Test/";
+        private readonly DateTime creationTime = DateTime.Now;
+        private readonly CacheNotifyAction testCacheNotifyAction = CacheNotifyAction.Update;
 
         [Order(1)]
         [Test]
@@ -54,11 +78,11 @@ namespace ASC.Webhooks.Tests
             var id = 1;
             var testWebhookRequest = new WebhookRequest { Id = id };
             var testTenant = new Tenant(1, "testWebhooksPublisher");
-            var testWebhookConfig = new WebhooksConfig() 
-            { 
-                SecretKey = secretKey, 
-                TenantId = testTenant.TenantId, 
-                Uri = URI 
+            var testWebhookConfig = new WebhooksConfig()
+            {
+                SecretKey = secretKey,
+                TenantId = testTenant.Id,
+                Uri = URI
             };
             var testWebhooksEntry = new WebhookEntry()
             {
@@ -74,18 +98,15 @@ namespace ASC.Webhooks.Tests
 
                 dbWorker.AddWebhookConfig(testWebhookConfig);
 
-                var mockedLog = new Mock<IOptionsMonitor<ILog>>();
-                mockedLog.Setup(a => a.Get("ASC.Webhooks")).Verifiable();
-
                 var mockedKafkaCaches = new Mock<ICacheNotify<WebhookRequest>>();
                 mockedKafkaCaches.Setup(a => a.Publish(testWebhookRequest, testCacheNotifyAction)).Verifiable();
 
-                var publisher = new WebhookPublisher(dbWorker, tenantManager, mockedLog.Object, mockedKafkaCaches.Object);
+                var publisher = new WebhookPublisher(dbWorker, tenantManager, mockedKafkaCaches.Object);
                 publisher.Publish(EventName, content);
 
-                mockedKafkaCaches.Verify(a => a.Publish(testWebhookRequest, testCacheNotifyAction), Times.Once);            
+                mockedKafkaCaches.Verify(a => a.Publish(testWebhookRequest, testCacheNotifyAction), Times.Once);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Assert.Fail(ex.ToString());
             }
@@ -117,11 +138,11 @@ namespace ASC.Webhooks.Tests
             var successWebhookPayloadId = dbWorker.WriteToJournal(successWebhookPayload);
             var failedWebhookPayloadId = dbWorker.WriteToJournal(failedWebhookPayload);
 
-            var mockedLog = new Mock<ILog>();
-            mockedLog.Setup(a => a.Error(It.IsAny<string>())).Verifiable();
+            var mockedLog = new Mock<ILoggerProvider>();
+            //mockedLog.Setup(a => a.Error(It.IsAny<string>())).Verifiable();
 
-            var mockedLogOptions = new Mock<IOptionsMonitor<ILog>>();
-            mockedLogOptions.Setup(a => a.Get("ASC.Webhooks.Core")).Returns(mockedLog.Object).Verifiable();
+            //var mockedLogOptions = new Mock<IOptionsMonitor<ILog>>();
+            //mockedLogOptions.Setup(a => a.Get("ASC.Webhooks.Core")).Returns(mockedLog.Object).Verifiable();
 
             var source = new CancellationTokenSource();
             var token = source.Token;
@@ -129,7 +150,7 @@ namespace ASC.Webhooks.Tests
             var SuccessedWebhookRequest = new WebhookRequest { Id = successWebhookPayloadId };
             var FailedWebhookRequest = new WebhookRequest { Id = failedWebhookPayloadId };
 
-            var sender = new WebhookSender(mockedLogOptions.Object, serviceProvider, settings);
+            var sender = new WebhookSender(mockedLog.Object, serviceProvider.GetRequiredService<IServiceScopeFactory>(), settings, httpClientFactory);
             await sender.Send(SuccessedWebhookRequest, token);
             await sender.Send(FailedWebhookRequest, token);
 
@@ -137,7 +158,7 @@ namespace ASC.Webhooks.Tests
 
             Assert.IsTrue(requestHistory.SuccessCounter == 1, "Problem with successed request");
             Assert.IsTrue(requestHistory.FailedCounter == webhookSender.RepeatCount, "Problem with failed request");
-            Assert.IsTrue(requestHistory.�orrectSignature, "Problem with signature");
+            Assert.IsTrue(requestHistory.СorrectSignature, "Problem with signature");
         }
 
         [Test]
@@ -152,7 +173,7 @@ namespace ASC.Webhooks.Tests
                 var mockedWebhookPubslisher = new Mock<IWebhookPublisher>();
                 mockedWebhookPubslisher.Setup(a => a.Publish(getEventName, content)).Verifiable();
                 mockedWebhookPubslisher.Setup(a => a.Publish(postEventName, content)).Verifiable();
-              
+
 
                 using var host = await new HostBuilder()
                     .ConfigureWebHost(webBuilder =>
@@ -197,7 +218,7 @@ namespace ASC.Webhooks.Tests
                 var postResponse = await host.GetTestClient().PostAsync(controllerAddress, stringContent);
                 mockedWebhookPubslisher.Verify(a => a.Publish(postEventName, content), Times.Once);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Assert.Fail(ex.ToString());
             }

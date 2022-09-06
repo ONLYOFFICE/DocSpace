@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
+    <value>Polje potrditvene kode ne more biti prazno</value>
+  </data>
+  <data name="ActivateMobilePhoneEmptyPhoneNumber" xml:space="preserve">
+    <value>Vnesi telefonsko številko</value>
+  </data>
+  <data name="AdministratorNotifySenderTypeName" xml:space="preserve">
+    <value>Obvestila administratorja</value>
+  </data>
+  <data name="AdminMessageSent" xml:space="preserve">
+    <value>Vaše sporočilo je bilo uspešno poslano. Kontaktiral vas bo administrator portala.</value>
+  </data>
+  <data name="ChangePortalOwnerMsg" xml:space="preserve">
+    <value>Povezava za potrditev operacije je bila poslana na :e-naslov (e-naslov lastnika portala).</value>
+  </data>
+  <data name="CustomNamingPeopleSchema" xml:space="preserve">
+    <value>Po meri</value>
+  </data>
+  <data name="DnsChangeMsg" xml:space="preserve">
+    <value>Povezava za potrditev operacije je bila poslana na {0} (e-naslov lastnika portala).</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
+    <value>Nepravilen e-naslov</value>
+  </data>
+  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
+    <value>Nepravilna promocijska koda</value>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Ni dovoljenj za izvajanje tega dejanja</value>
+  </data>
+  <data name="ErrorAccessRestricted" xml:space="preserve">
+    <value>Dostop do portala je omejen.</value>
+  </data>
+  <data name="ErrorDisabledProfile" xml:space="preserve">
+    <value>Vaš profil je onemogočen</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} s to e-pošto je že registriran</value>
+  </data>
+  <data name="ErrorEmailEmpty" xml:space="preserve">
+    <value>Okno e-pošte je prazno</value>
+  </data>
+  <data name="ErrorEmailsAreTheSame" xml:space="preserve">
+    <value>Trenuten in nov e-naslov sta enaka</value>
+  </data>
+  <data name="ErrorEmptyFields" xml:space="preserve">
+    <value>Prosim izpolnite vsa polja</value>
+  </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>Naložene datoteke ni bilo mogoče najti</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Velikost datoteke slike je prevelika</value>
+  </data>
+  <data name="ErrorNotAllowedOption" xml:space="preserve">
+    <value>Vaš cenovni načrt ne podpira te možnosti</value>
+  </data>
+  <data name="ErrorNotCorrectEmail" xml:space="preserve">
+    <value>Nepravilen e-naslov</value>
+  </data>
+  <data name="ErrorNotCorrectTrustedDomain" xml:space="preserve">
+    <value>Nepravilno ime domene</value>
+  </data>
+  <data name="ErrorPasswordEmpty" xml:space="preserve">
+    <value>Geslo je prazno.</value>
+  </data>
+  <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Novo geslo je nepravilno. Vsebovati mora</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Mora vsebovati</value>
+  </data>
+  <data name="ErrorPasswordNoDigits" xml:space="preserve">
+    <value>številke</value>
+  </data>
+  <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
+    <value>Posebni znaki</value>
+  </data>
+  <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
+    <value>Veliko tiskane črke</value>
+  </data>
+  <data name="ErrorUserNotFound" xml:space="preserve">
+    <value>Uporabnika ni bilo mogoče najti</value>
+  </data>
+  <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
+    <value>Uporabnika z "{0}" e-naslovom ni bilo mogoče najti</value>
+  </data>
+  <data name="EuServerRegion" xml:space="preserve">
+    <value>Območje EU (Frankfurt)</value>
+  </data>
+  <data name="FileSizeMaxExceed" xml:space="preserve">
+    <value>Maksimalna velikost datoteke je presežena</value>
+  </data>
+  <data name="FileSizeNote" xml:space="preserve">
+    <value>Opozorilo: velikost datoteke ne more preseči {1}{0}{2}</value>
+  </data>
+  <data name="FileSizePostfix" xml:space="preserve">
+    <value>bajtov,KB,MB,GB,TB</value>
+  </data>
+  <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
+    <value>Povezava za potrditev vašega računa je bila uspešno poslana na določen e-naslov</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>Strežnik je neuspešno shranil nastavitve</value>
+  </data>
+  <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
+    <value>Navodila za spremembo e-naslova so bila uspešno poslana</value>
+  </data>
+  <data name="MobilePhoneMustErase" xml:space="preserve">
+    <value>Za spremembo številke morate izbrisati svojo trenutno telefonsko številko</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Lastnik</value>
+  </data>
+  <data name="PortalSecurity" xml:space="preserve">
+    <value>Dostop portala</value>
+  </data>
+  <data name="SgServerRegion" xml:space="preserve">
+    <value>Azija Pacifik (Singapur)</value>
+  </data>
+  <data name="SmsAuthenticationMessageError" xml:space="preserve">
+    <value>Nepravilna koda</value>
+  </data>
+  <data name="SmsAuthenticationMessageToUser" xml:space="preserve">
+    <value>Koda: {0}</value>
+  </data>
+  <data name="SmsAuthenticationTimeout" xml:space="preserve">
+    <value>Čas za uporabo kode se je iztekel. Prosim zahtevajte novo besedilno sporočilo.</value>
+  </data>
+  <data name="SmsNotAvailable" xml:space="preserve">
+    <value>SMS nastavitve niso na voljo</value>
+  </data>
+  <data name="SmsTooMuchError" xml:space="preserve">
+    <value>Poslali ste preveč besednih sporočil. Prosim poskusite kasneje.</value>
+  </data>
+  <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
+    <value>Ne morem shraniti nastavitev</value>
+  </data>
+  <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
+    <value>Nastavitve pozdrava so bile uspešno shranjene</value>
+  </data>
+  <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
+    <value>Nastavitve so bile uspešno posodobljene</value>
+  </data>
+  <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
+    <value>Navodila za brisanje svojega profila so bile poslana na {0} e-naslov</value>
+  </data>
+  <data name="UsServerRegion" xml:space="preserve">
+    <value>US Zahodna (Oregonska) Regija</value>
+  </data>
+  <data name="WhatsNewSubscriptionName" xml:space="preserve">
+    <value>Kaj je novega</value>
+  </data>
+</root>

@@ -1,4 +1,0 @@
-﻿{
-  "DeleteThirdPartyAlert": " 'ドキュメント' モジュールから{{service}}を削除しますか？これは、あなたの{{account}}アカウントには何の影響もありません。",
-  "SuccessDeleteThirdParty": "第三方の{{service}}が削除されました。"
-}

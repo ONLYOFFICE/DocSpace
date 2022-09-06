@@ -1,3 +1,29 @@
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
+
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2018
@@ -33,7 +59,6 @@ using System.Threading.Tasks;
 using System.Xml;
 
 using ASC.Common;
-using ASC.Common.Logging;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Resources;
@@ -43,7 +68,7 @@ using ASC.Web.Files.Services.DocumentService;
 using ICSharpCode.SharpZipLib.Zip;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 using SixLabors.ImageSharp;
 
@@ -52,17 +77,17 @@ namespace ASC.Web.CRM.Classes
     [Scope]
     public class PdfCreator
     {
-        private InvoiceFormattedData _invoiceFormattedData;
-        private DaoFactory _daoFactory;
-        private IServiceProvider _serviceProvider;
-        private DocumentServiceConnector _documentServiceConnector;
-        private OrganisationLogoManager _organisationLogoManager;
-        private Files.Classes.PathProvider _filesPathProvider;
-        private ILog _logger;
-        private IHttpClientFactory _clientFactory;
+        private readonly InvoiceFormattedData _invoiceFormattedData;
+        private readonly DaoFactory _daoFactory;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly DocumentServiceConnector _documentServiceConnector;
+        private readonly OrganisationLogoManager _organisationLogoManager;
+        private readonly Files.Classes.PathProvider _filesPathProvider;
+        private readonly ILogger _logger;
+        private readonly IHttpClientFactory _clientFactory;
 
 
-        public PdfCreator(IOptionsMonitor<ILog> logger,
+        public PdfCreator(ILogger logger,
                           Files.Classes.PathProvider filesPathProvider,
                           DocumentServiceConnector documentServiceConnector,
                           IServiceProvider serviceProvider,
@@ -73,7 +98,7 @@ namespace ASC.Web.CRM.Classes
         {
             _filesPathProvider = filesPathProvider;
 
-            _logger = logger.Get("ASC.CRM");
+            _logger = logger;
 
             _documentServiceConnector = documentServiceConnector;
             _serviceProvider = serviceProvider;
@@ -101,7 +126,7 @@ namespace ASC.Web.CRM.Classes
 
         public async System.Threading.Tasks.Task CreateAndSaveFileAsync(int invoiceId)
         {
-            _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}", invoiceId);
+            _logger.LogDebug("PdfCreator. CreateAndSaveFile. Invoice ID = {0}", invoiceId);
 
             try
             {
@@ -109,12 +134,12 @@ namespace ASC.Web.CRM.Classes
 
                 if (invoice == null)
                 {
-                    _logger.Warn(CRMErrorsResource.InvoiceNotFound + ". Invoice ID = " + invoiceId);
+                    _logger.LogWarning(CRMErrorsResource.InvoiceNotFound + ". Invoice ID = " + invoiceId);
 
                     return;
                 }
 
-                _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. Convertation", invoiceId);
+                _logger.LogDebug("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. Convertation", invoiceId);
 
                 string urlToFile;
 
@@ -123,13 +148,13 @@ namespace ASC.Web.CRM.Classes
                     urlToFile = await GetUrlToFileAsync(docxStream);
                 }
 
-                _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UrlToFile = {1}", invoiceId,
+                _logger.LogDebug("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UrlToFile = {1}", invoiceId,
                     urlToFile);
 
                 var file = _serviceProvider.GetService<File<int>>();
 
                 file.Title = $"{invoice.Number}{FormatPdf}";
-                file.FolderID = await _daoFactory.GetFileDao().GetRootAsync();
+                file.ParentId = await _daoFactory.GetFileDao().GetRootAsync();
 
                 var request = new HttpRequestMessage();
                 request.RequestUri = new Uri(urlToFile);
@@ -138,7 +163,7 @@ namespace ASC.Web.CRM.Classes
                 using (var response = httpClient.Send(request))
                 using (var stream = response.Content.ReadAsStream())
                 {
-                    _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. SaveFile", invoiceId);
+                    _logger.LogDebug("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. SaveFile", invoiceId);
                     file = await _daoFactory.GetFileDao().SaveFileAsync(file, stream);
                 }
 
@@ -147,19 +172,19 @@ namespace ASC.Web.CRM.Classes
                     throw new Exception(CRMErrorsResource.FileCreateError);
                 }
 
-                invoice.FileID = Int32.Parse(file.ID.ToString());
+                invoice.FileID = Int32.Parse(file.Id.ToString());
 
-                _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UpdateInvoiceFileID. FileID = {1}", invoiceId, file.ID);
+                _logger.LogDebug("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. UpdateInvoiceFileID. FileID = {1}", invoiceId, file.Id);
 
                 _daoFactory.GetInvoiceDao().UpdateInvoiceFileID(invoice.ID, invoice.FileID);
 
-                _logger.DebugFormat("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. AttachFiles. FileID = {1}", invoiceId, file.ID);
+                _logger.LogDebug("PdfCreator. CreateAndSaveFile. Invoice ID = {0}. AttachFiles. FileID = {1}", invoiceId, file.Id);
 
                 _daoFactory.GetRelationshipEventDao().AttachFiles(invoice.ContactID, invoice.EntityType, invoice.EntityID, new[] { invoice.FileID });
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                _logger.LogError(e.ToString());
             }
         }
 
@@ -176,7 +201,7 @@ namespace ASC.Web.CRM.Classes
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                _logger.LogError(e.ToString());
 
                 throw;
             }
@@ -188,13 +213,13 @@ namespace ASC.Web.CRM.Classes
 
             externalUri = _documentServiceConnector.ReplaceCommunityAdress(externalUri);
 
-            _logger.DebugFormat("PdfCreator. GetUrlToFile. externalUri = {0}", externalUri);
+            _logger.LogDebug("PdfCreator. GetUrlToFile. externalUri = {0}", externalUri);
 
             var revisionId = DocumentServiceConnector.GenerateRevisionId(Guid.NewGuid().ToString());
 
-            var (_, urlToFile) = await _documentServiceConnector.GetConvertedUriAsync(externalUri, FormatDocx, FormatPdf, revisionId, null, null, null, false);
+            var (_, urlToFile) = await _documentServiceConnector.GetConvertedUriAsync(externalUri, FormatDocx, FormatPdf, revisionId, null, null, null, null, false);
 
-            _logger.DebugFormat("PdfCreator. GetUrlToFile. urlToFile = {0}", urlToFile);
+            _logger.LogDebug("PdfCreator. GetUrlToFile. urlToFile = {0}", urlToFile);
 
             return urlToFile;
 
@@ -211,7 +236,7 @@ namespace ASC.Web.CRM.Classes
                 var revisionId = DocumentServiceConnector.GenerateRevisionId(Guid.NewGuid().ToString());
 
 
-                await _documentServiceConnector.GetConvertedUriAsync(externalUri, FormatDocx, FormatPdf, revisionId, null, null, null, true);
+                await _documentServiceConnector.GetConvertedUriAsync(externalUri, FormatDocx, FormatPdf, revisionId, null, null, null, null, true);
 
                 return new ConverterData
                 {
@@ -234,7 +259,7 @@ namespace ASC.Web.CRM.Classes
 
         private async Task<File<int>> internalGetConvertedFileAsync(ConverterData data, DaoFactory daoFactory)
         {
-            var (_, urlToFile) = await _documentServiceConnector.GetConvertedUriAsync(data.StorageUrl, FormatDocx, FormatPdf, data.RevisionId, null, null, null, true);
+            var (_, urlToFile) = await _documentServiceConnector.GetConvertedUriAsync(data.StorageUrl, FormatDocx, FormatPdf, data.RevisionId, null, null, null, null, true);
 
             if (string.IsNullOrEmpty(urlToFile))
             {
@@ -263,12 +288,12 @@ namespace ASC.Web.CRM.Classes
                     var document = _serviceProvider.GetService<File<int>>();
 
                     document.Title = $"{data.Number}{FormatPdf}";
-                    document.FolderID = await _daoFactory.GetFileDao().GetRootAsync();
+                    document.ParentId = await _daoFactory.GetFileDao().GetRootAsync();
                     document.ContentLength = stream.Length;
 
                     if (data.GetInvoiceFile(daoFactory) != null)
                     {
-                        document.ID = data.FileID;
+                        document.Id = data.FileID;
                     }
 
                     file = await _daoFactory.GetFileDao().SaveFileAsync(document, stream);

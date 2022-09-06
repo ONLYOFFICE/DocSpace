@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.6.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
     <value>Portale esterno</value>
@@ -109,6 +109,9 @@
   <data name="CommentCreateByDocuSign" xml:space="preserve">
     <value>Creato con Docusign</value>
   </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Creato per compilare il modulo</value>
+  </data>
   <data name="CommentEdit" xml:space="preserve">
     <value>Modificato</value>
   </data>
@@ -129,6 +132,9 @@
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
     <value>Ripristinato dalla modifica del documento di {0}</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Modulo inviato</value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Caricato</value>
@@ -307,17 +313,27 @@
   <data name="MessageFileCreated" xml:space="preserve">
     <value>File creato nella cartella "{0}"</value>
   </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>Il documento compilabile OFORM è pronto. È salvato in</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>La copia di OFORM è creata nella cartella {0}. Compila il modulo e scarica il risultato come file PDF o DOCX.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Il file non è più una bozza da compilare il modulo.</value>
+  </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
     <value>Fare lo stesso che un utente|Collegare Dropbox, Box e altri account nella section 'Documenti comuni'|Impostare i diritti di accesso ai documenti e alle cartelle nella sezione 'Documenti comuni'</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Crea, modifica, e condividi documenti. Collabora in tempo reale. Compatibilità garantita al 100% con i formati MS Office.</value>
+    <value>Crea, modifica e condividi documenti office. Collabora su di loro in tempo reale. Massima compatibilità con docx, xlsx, pptx garantita.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Crea, modifica, e condividi documenti. Collabora in tempo reale. Compatibilità garantita al 100% con i formati MS Office.</value>
+    <value>Modifica, condividi e collabora su documenti office in tempo reale. Crea e gestisci documenti comuni con l'accesso per l'intero team.
+Massima compatibilità con docx, xlsx, pptx.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
-    <value>Crea, modifica, salva e condividi documenti. Collega i tuoi account Google Drive, Dropbox e Box e conserva tutti i documenti in un unico posto.</value>
+    <value>Visualizza e scarica i documenti condivisi. Carica i file nelle cartelle condivise. Massima compatibilità con docx, xlsx, pptx garantita.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Documenti</value>

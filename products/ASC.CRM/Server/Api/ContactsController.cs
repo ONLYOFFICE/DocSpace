@@ -43,9 +43,9 @@ using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Resources;
-using ASC.MessagingSystem;
+using ASC.MessagingSystem.Core;
+using ASC.MessagingSystem.Models;
 using ASC.Web.Api.Models;
-using ASC.Web.Api.Routing;
 using ASC.Web.CRM.Classes;
 using ASC.Web.CRM.Services.NotifyService;
 using ASC.Web.Studio.Core;
@@ -66,7 +66,7 @@ namespace ASC.CRM.Api
         private readonly MailSender _mailSender;
         private readonly FileSizeComment _fileSizeComment;
         private readonly ContactPhotoManager _contactPhotoManager;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
         private readonly UserFormatter _userFormatter;
         private readonly SetupInfo _setupInfo;
         private readonly SecurityContext _securityContext;
@@ -84,7 +84,7 @@ namespace ASC.CRM.Api
                      SecurityContext securityContext,
                      SetupInfo setupInfo,
                      UserFormatter userFormatter,
-                     EmployeeWraperHelper employeeWraperHelper,
+                     EmployeeDtoHelper employeeDtoHelper,
                      ContactPhotoManager contactPhotoManager,
                      FileSizeComment fileSizeComment,
                      MailSender mailSender,
@@ -98,7 +98,7 @@ namespace ASC.CRM.Api
             _securityContext = securityContext;
             _setupInfo = setupInfo;
             _userFormatter = userFormatter;
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
             _contactPhotoManager = contactPhotoManager;
             _fileSizeComment = fileSizeComment;
             _mailSender = mailSender;
@@ -115,7 +115,7 @@ namespace ASC.CRM.Api
         /// <category>Contacts</category>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Read(@"contact/{contactid:int}")]
+        [HttpGet(@"contact/{contactid:int}")]
         public ContactDto GetContactByID(int contactid)
         {
             if (contactid <= 0) throw new ArgumentException();
@@ -145,7 +145,7 @@ namespace ASC.CRM.Api
         ///     Contact list
         /// </returns>
         ///<exception cref="ArgumentException"></exception>
-        [Read(@"contact/project/{projectid:int}")]
+        [HttpGet(@"contact/project/{projectid:int}")]
         public IEnumerable<ContactDto> GetContactsByProjectID(int projectid)
         {
             if (projectid <= 0) throw new ArgumentException();
@@ -166,7 +166,7 @@ namespace ASC.CRM.Api
         ///// <exception cref="ArgumentException"></exception>
         ///// <exception cref="ItemNotFoundException"></exception>
         ///// <returns>Contact Info</returns>
-        //[Create(@"contact/{contactid:int}/project/{projectid:int}")]
+        //[HttpPost(@"contact/{contactid:int}/project/{projectid:int}")]
         //public ContactDto SetRelativeContactToProject(int contactid, int projectid)
         //{
         //    if (contactid <= 0 || projectid <= 0) throw new ArgumentException();
@@ -202,7 +202,7 @@ namespace ASC.CRM.Api
         ///// <returns>
         /////    Contact list
         ///// </returns>
-        //[Create(@"contact/project/{projectid:int}")]
+        //[HttpPost(@"contact/project/{projectid:int}")]
         //public IEnumerable<ContactDto> SetRelativeContactListToProject(IEnumerable<int> contactid, int projectid)
         //{
         //    if (contactid == null) throw new ArgumentException();
@@ -241,7 +241,7 @@ namespace ASC.CRM.Api
         ///// <returns>
         /////    Contact info
         ///// </returns>
-        //[Delete(@"contact/{contactid:int}/project/{projectid:int}")]
+        //[HttpDelete(@"contact/{contactid:int}/project/{projectid:int}")]
         //public ContactBaseDto RemoveRelativeContactToProject(int contactid, int projectid)
         //{
         //    if (contactid <= 0 || projectid <= 0) throw new ArgumentException();
@@ -275,7 +275,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Opportunity
         /// </returns>
-        [Create(@"contact/{contactid:int}/opportunity/{opportunityid:int}")]
+        [HttpPost(@"contact/{contactid:int}/opportunity/{opportunityid:int}")]
         public OpportunityDto AddDealToContact([FromRoute] int contactid, [FromRoute] int opportunityid)
         {
             if ((opportunityid <= 0) || (contactid <= 0)) throw new ArgumentException();
@@ -306,7 +306,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Opportunity
         /// </returns>
-        [Delete(@"contact/{contactid:int}/opportunity/{opportunityid:int}")]
+        [HttpDelete(@"contact/{contactid:int}/opportunity/{opportunityid:int}")]
         public OpportunityDto DeleteDealFromContact(int contactid, int opportunityid)
         {
             if ((opportunityid <= 0) || (contactid <= 0)) throw new ArgumentException();
@@ -338,7 +338,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Contact list
         /// </returns>
-        [Read(@"contact/filter")]
+        [HttpGet(@"contact/filter")]
         public IEnumerable<ContactDto> GetContacts(
            [FromQuery] IEnumerable<String> tags,
            [FromQuery] int? contactStage,
@@ -450,7 +450,7 @@ namespace ASC.CRM.Api
         ///    Contact list
         /// </returns>
         /// <visible>false</visible>
-        [Read(@"contact/simple/byEmail")]
+        [HttpGet(@"contact/simple/byEmail")]
         public IEnumerable<ContactWithTaskDto> SearchContactsByEmail(string term, int maxCount)
         {
             var result = ToSimpleListContactDto(_daoFactory.GetContactDao().SearchContactsByEmail(
@@ -477,7 +477,7 @@ namespace ASC.CRM.Api
         ///    Contact list
         /// </returns>
         /// <visible>false</visible>
-        [Read(@"contact/simple/filter")]
+        [HttpGet(@"contact/simple/filter")]
         public IEnumerable<ContactWithTaskDto> GetSimpleContacts(
             IEnumerable<string> tags,
             int? contactStage,
@@ -586,7 +586,7 @@ namespace ASC.CRM.Api
         ///   Contact list
         /// </returns>
         /// <visible>false</visible>
-        [Read(@"contact/mail")]
+        [HttpGet(@"contact/mail")]
         public IEnumerable<ContactBaseWithEmailDto> GetContactsForMail(IEnumerable<int> contactids)
         {
             if (contactids == null) throw new ArgumentException();
@@ -613,7 +613,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact list
         /// </returns>
-        [Delete(@"contact/filter")]
+        [HttpDelete(@"contact/filter")]
         public async Task<IEnumerable<ContactBaseDto>> DeleteBatchContactsAsync(
             IEnumerable<String> tags,
             int? contactStage,
@@ -656,7 +656,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Linked persons
         /// </returns>
-        [Read(@"contact/company/{companyid:int}/person")]
+        [HttpGet(@"contact/company/{companyid:int}/person")]
         public IEnumerable<ContactDto> GetPeopleFromCompany(int companyid)
         {
             if (companyid <= 0) throw new ArgumentException();
@@ -681,7 +681,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Person
         /// </returns>
-        [Create(@"contact/company/{companyid:int}/person")]
+        [HttpPost(@"contact/company/{companyid:int}/person")]
         public PersonDto AddPeopleToCompany([FromRoute] int companyid, [FromBody] int personid)
         {
             if ((companyid <= 0) || (personid <= 0)) throw new ArgumentException();
@@ -710,7 +710,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Person
         /// </returns>
-        [Delete(@"contact/company/{companyid:int}/person")]
+        [HttpDelete(@"contact/company/{companyid:int}/person")]
         public PersonDto DeletePeopleFromCompany(int companyid, int personid)
         {
             if ((companyid <= 0) || (personid <= 0)) throw new ArgumentException();
@@ -742,7 +742,7 @@ namespace ASC.CRM.Api
         /// <category>Contacts</category>
         /// <returns>Person</returns>
         /// <exception cref="ArgumentException"></exception>
-        [Create(@"contact/person")]
+        [HttpPost(@"contact/person")]
         public Task<PersonDto> CreatePersonAsync([FromBody] CreateOrUpdatePersonRequestDto intDto)
         {
             int companyId = intDto.CompanyId;
@@ -822,7 +822,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Path to contact photo
         /// </returns>
-        [Update(@"contact/{contactid:int}/changephoto")]
+        [HttpPut(@"contact/{contactid:int}/changephoto")]
         public Task<string> ChangeContactPhotoAsync(int contactid, IEnumerable<IFormFile> photo)
         {
             if (contactid <= 0)
@@ -869,7 +869,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Path to contact photo
         /// </returns>
-        [Update(@"contact/{contactid:int}/changephotobyurl")]
+        [HttpPut(@"contact/{contactid:int}/changephotobyurl")]
         public Task<string> ChangeContactPhotoAsync(int contactid, string photourl)
         {
             if (contactid <= 0 || string.IsNullOrEmpty(photourl)) throw new ArgumentException();
@@ -899,7 +899,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Contact
         /// </returns>
-        [Update(@"contact/merge")]
+        [HttpPut(@"contact/merge")]
         public ContactDto MergeContacts(int fromcontactid, int tocontactid)
         {
             if (fromcontactid <= 0 || tocontactid <= 0) throw new ArgumentException();
@@ -938,7 +938,7 @@ namespace ASC.CRM.Api
         /// <returns>Person</returns>
         /// <exception cref="ArgumentException"></exception>
         /// <exception cref="ItemNotFoundException"></exception>
-        [Update(@"contact/person/{personid:int}")]
+        [HttpPut(@"contact/person/{personid:int}")]
         public Task<PersonDto> UpdatePersonAsync([FromQuery] int personid, [FromBody] CreateOrUpdatePersonRequestDto inDto)
         {
             string firstName = inDto.FirstName;
@@ -1020,7 +1020,7 @@ namespace ASC.CRM.Api
         /// <category>Contacts</category>
         /// <returns>Company</returns>
         /// <exception cref="ArgumentException"></exception>
-        [Create(@"contact/company")]
+        [HttpPost(@"contact/company")]
         public async Task<CompanyDto> CreateCompanyAsync([FromBody] CreateOrUpdateCompanyRequestDto inDto)
         {
             var personList = inDto.PersonList;
@@ -1092,7 +1092,7 @@ namespace ASC.CRM.Api
         /// <category>Contacts</category>
         /// <returns>Contact list</returns>
         /// <exception cref="ArgumentException"></exception>
-        [Create(@"contact/company/quick")]
+        [HttpPost(@"contact/company/quick")]
         public IEnumerable<ContactBaseDto> CreateCompany([FromBody] IEnumerable<string> companyName)
         {
             if (companyName == null) throw new ArgumentException();
@@ -1142,7 +1142,7 @@ namespace ASC.CRM.Api
         /// <category>Contacts</category>
         /// <returns>Contact list</returns>
         /// <exception cref="ArgumentException"></exception>
-        [Create(@"contact/person/quick")]
+        [HttpPost(@"contact/person/quick")]
         public IEnumerable<ContactBaseDto> CreatePerson([FromBody] IEnumerable<ItemKeyValuePair<string, string>> data)
         {
             if (data == null) return null;
@@ -1194,7 +1194,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Company
         /// </returns>
-        [Update(@"contact/company/{companyid:int}")]
+        [HttpPut(@"contact/company/{companyid:int}")]
         public CompanyDto UpdateCompany(
             [FromRoute] int companyid,
             [FromBody] CreateOrUpdateCompanyRequestDto intDto)
@@ -1251,7 +1251,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Company
         /// </returns>
-        [Update(@"contact/{contactid:int}/status")]
+        [HttpPut(@"contact/{contactid:int}/status")]
         public ContactDto UpdateContactStatus(int contactid, int contactStatusid)
         {
             if (contactid <= 0 || contactStatusid < 0) throw new ArgumentException();
@@ -1290,7 +1290,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Company
         /// </returns>
-        [Update(@"contact/company/{companyid:int}/status")]
+        [HttpPut(@"contact/company/{companyid:int}/status")]
         public ContactDto UpdateCompanyAndParticipantsStatus(int companyid, int contactStatusid)
         {
             if (companyid <= 0 || contactStatusid < 0) throw new ArgumentException();
@@ -1340,7 +1340,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Person
         /// </returns>
-        [Update(@"contact/person/{personid:int}/status")]
+        [HttpPut(@"contact/person/{personid:int}/status")]
         public ContactDto UpdatePersonAndItsCompanyStatus(int personid, int contactStatusid)
         {
             if (personid <= 0 || contactStatusid < 0) throw new ArgumentException();
@@ -1408,8 +1408,8 @@ namespace ASC.CRM.Api
         ///<exception cref="ItemNotFoundException"></exception>
         ///<exception cref="SecurityException"></exception>
         /// <returns>User list</returns>
-        [Read(@"contact/{contactid:int}/access")]
-        public IEnumerable<EmployeeWraper> GetContactAccessList(int contactid)
+        [HttpGet(@"contact/{contactid:int}/access")]
+        public IEnumerable<EmployeeDto> GetContactAccessList(int contactid)
         {
             if (contactid <= 0) throw new ArgumentException();
 
@@ -1421,8 +1421,8 @@ namespace ASC.CRM.Api
 
             return _crmSecurity.IsPrivate(contact)
                        ? _crmSecurity.GetAccessSubjectTo(contact)
-                                    .Select(item => _employeeWraperHelper.Get(item.Key))
-                       : new List<EmployeeWraper>();
+                                    .Select(item => _employeeDtoHelper.Get(item.Key))
+                       : new List<EmployeeDto>();
         }
 
         /// <summary>
@@ -1439,7 +1439,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact
         /// </returns>
-        [Update(@"contact/{contactid:int}/access")]
+        [HttpPut(@"contact/{contactid:int}/access")]
         public ContactDto SetAccessToContact(int contactid, bool isShared, IEnumerable<Guid> managerList)
         {
             if (contactid <= 0) throw new ArgumentException();
@@ -1495,7 +1495,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact list
         /// </returns>
-        [Update(@"contact/access")]
+        [HttpPut(@"contact/access")]
         public IEnumerable<ContactDto> SetAccessToBatchContact(
             [FromBody] SetAccessToBatchContactRequestDto inDto)
         {
@@ -1534,7 +1534,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact list
         /// </returns>
-        [Update(@"contact/filter/access")]
+        [HttpPut(@"contact/filter/access")]
         public IEnumerable<ContactDto> SetAccessToBatchContact(
          [FromBody] SetAccessToBatchContactByFilterRequestDto inDto)
         {
@@ -1589,7 +1589,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact
         /// </returns>
-        [Delete(@"contact/{contactid:int}")]
+        [HttpDelete(@"contact/{contactid:int}")]
         public Task<ContactDto> DeleteContactAsync(int contactid)
         {
             if (contactid <= 0) throw new ArgumentException();
@@ -1619,7 +1619,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///   Contact list
         /// </returns>
-        [Update(@"contact")]
+        [HttpPut(@"contact")]
         public Task<IEnumerable<ContactBaseDto>> DeleteBatchContactsAsync(IEnumerable<int> contactids)
         {
             if (contactids == null) throw new ArgumentException();
@@ -1647,7 +1647,7 @@ namespace ASC.CRM.Api
         ///    Contact list
         /// </returns>
         /// <visible>false</visible>
-        [Read(@"contact/byprefix")]
+        [HttpGet(@"contact/byprefix")]
         public IEnumerable<ContactBaseWithPhoneDto> GetContactsByPrefix(string prefix, int searchType, EntityType entityType, int entityID)
         {
             var result = new List<ContactBaseWithPhoneDto>();
@@ -1719,7 +1719,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    Contact list
         /// </returns>
-        [Read(@"contact/bycontactinfo")]
+        [HttpGet(@"contact/bycontactinfo")]
         public IEnumerable<ContactDto> GetContactsByContactInfo(ContactInfoType? infoType, String data, int? category, bool? isPrimary)
         {
             if (!infoType.HasValue) throw new ArgumentException();
@@ -1738,7 +1738,7 @@ namespace ASC.CRM.Api
         ///// <param name="count"></param>
         ///// <category>Contacts</category>
         ///// <returns></returns>
-        //[Read(@"contact/{contactid:int}/tweets")]
+        //[HttpGet(@"contact/{contactid:int}/tweets")]
         //public List<Message> GetUserTweets(int contactid, int count)
         //{
         //    var MessageCount = 10;
@@ -1801,7 +1801,7 @@ namespace ASC.CRM.Api
         ///// <param name="searchText"></param>
         ///// <category>Contacts</category>
         ///// <returns></returns>
-        //[Read(@"contact/twitterprofile")]
+        //[HttpGet(@"contact/twitterprofile")]
         //public List<TwitterUserInfo> FindTwitterProfiles(string searchText)
         //{
         //    try
@@ -1831,7 +1831,7 @@ namespace ASC.CRM.Api
         /// <param name="uploadOnly"></param>
         /// <category>Contacts</category>
         /// <returns></returns>
-        [Delete(@"contact/{contactid:int}/avatar")]
+        [HttpDelete(@"contact/{contactid:int}/avatar")]
         public Task<string> DeleteContactAvatarAsync(int contactId, string contactType, bool uploadOnly)
         {
             bool isCompany;
@@ -1864,7 +1864,7 @@ namespace ASC.CRM.Api
         ///// <param name="contactId"></param>
         ///// <category>Contacts</category>
         ///// <returns></returns>
-        //[Read(@"contact/{contactid:int}/socialmediaavatar")]
+        //[HttpGet(@"contact/{contactid:int}/socialmediaavatar")]
         //public List<SocialMediaImageDescription> GetContactSMImages(int contactId)
         //{
         //    return new SocialMediaUI(DaoFactory).GetContactSMImages(contactId);
@@ -1876,7 +1876,7 @@ namespace ASC.CRM.Api
         ///// <param name="socialNetworks"></param>
         ///// <category>Contacts</category>
         ///// <returns></returns>
-        //[Create(@"contact/socialmediaavatar")]
+        //[HttpPost(@"contact/socialmediaavatar")]
         //public List<SocialMediaImageDescription> GetContactSMImagesByNetworks(List<ContactInfoDto> socialNetworks)
         //{
         //    if (socialNetworks == null || socialNetworks.Count == 0)
@@ -1903,7 +1903,7 @@ namespace ASC.CRM.Api
         ///// <param name="tmpDirName" visible="false"></param>
         ///// <category>Contacts</category>
         ///// <returns></returns>
-        //[Update(@"contact/{contactid:int}/avatar")]
+        //[HttpPut(@"contact/{contactid:int}/avatar")]
         //public ContactPhotoManager.PhotoData UploadUserAvatarFromSocialNetwork(int contactId, SocialNetworks socialNetwork, string userIdentity, bool uploadOnly, string tmpDirName)
         //{
         //    if (socialNetwork != SocialNetworks.Twitter)
@@ -1928,7 +1928,7 @@ namespace ASC.CRM.Api
         //}
 
         /// <visible>false</visible>
-        [Create(@"contact/mailsmtp/send")]
+        [HttpPost(@"contact/mailsmtp/send")]
         public IProgressItem SendMailSMTPToContacts(
             SendMailSMTPToContactsRequestDto inDto)
         {
@@ -1948,7 +1948,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Create(@"contact/mailsmtp/preview")]
+        [HttpPost(@"contact/mailsmtp/preview")]
         public string GetMailSMTPToContactsPreview([FromBody] GetMailSMTPToContactsPreviewRequestDto inDto)
         {
             var contactId = inDto.ContactId;
@@ -1962,14 +1962,14 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Read(@"contact/mailsmtp/status")]
+        [HttpGet(@"contact/mailsmtp/status")]
         public IProgressItem GetMailSMTPToContactsStatus()
         {
             return _mailSender.GetStatus();
         }
 
         /// <visible>false</visible>
-        [Update(@"contact/mailsmtp/cancel")]
+        [HttpPut(@"contact/mailsmtp/cancel")]
         public IProgressItem CancelMailSMTPToContacts()
         {
             var progressItem = _mailSender.GetStatus();
@@ -1981,7 +1981,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Update(@"contact/{contactid:int}/creationdate")]
+        [HttpPut(@"contact/{contactid:int}/creationdate")]
         public void SetContactCreationDate(int contactId, ApiDateTime creationDate)
         {
             var dao = _daoFactory.GetContactDao();
@@ -1994,7 +1994,7 @@ namespace ASC.CRM.Api
         }
 
         /// <visible>false</visible>
-        [Update(@"contact/{contactid:int}/lastmodifeddate")]
+        [HttpPut(@"contact/{contactid:int}/lastmodifeddate")]
         public void SetContactLastModifedDate(int contactId, ApiDateTime lastModifedDate)
         {
             var dao = _daoFactory.GetContactDao();

@@ -38,8 +38,6 @@ const query = require('./app/sqlConsts');
 const config = require('./config');
 const co = require('co');
 
-
-
 var app = express();
 
 app.use(cookieParser());
@@ -47,4 +45,4 @@ app.use(cookieParser());
 app.get('/', short.make);
 app.get('/*', short.redirect);
 
-app.listen(config.get("port"));
+app.listen(config.get("app").port);

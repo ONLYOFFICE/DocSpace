@@ -1,118 +1,127 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Core.Users;
 
-using System.Collections.Generic;
-
-using ASC.Core.Tenants;
-
-namespace ASC.Core.Users
+public static class UserExtensions
 {
-    public static class UserExtensions
+    public static bool IsOwner(this UserInfo ui, Tenant tenant)
     {
-        public static bool IsOwner(this UserInfo ui, Tenant tenant)
+        if (ui == null)
         {
-            if (ui == null) return false;
-
-            return tenant != null && tenant.OwnerId.Equals(ui.ID);
+            return false;
         }
 
-        public static bool IsMe(this UserInfo ui, AuthContext authContext)
+        return tenant != null && tenant.OwnerId.Equals(ui.Id);
+    }
+
+    public static bool IsMe(this UserInfo ui, AuthContext authContext)
+    {
+        return ui != null && ui.Id == authContext.CurrentAccount.ID;
+    }
+
+    public static bool IsAdmin(this UserInfo ui, UserManager UserManager)
+    {
+        return ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupAdmin.ID);
+    }
+
+    public static bool IsVisitor(this UserInfo ui, UserManager UserManager)
+    {
+        return ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupVisitor.ID);
+    }
+
+    public static bool IsOutsider(this UserInfo ui, UserManager userManager)
+    {
+        return IsVisitor(ui, userManager) && ui.Id == Constants.OutsideUser.Id;
+    }
+
+    public static bool IsLDAP(this UserInfo ui)
+    {
+        if (ui == null)
         {
-            return ui != null && ui.ID == authContext.CurrentAccount.ID;
+            return false;
         }
 
-        public static bool IsAdmin(this UserInfo ui, UserManager UserManager)
+        return !string.IsNullOrEmpty(ui.Sid);
+    }
+
+    // ReSharper disable once InconsistentNaming
+    public static bool IsSSO(this UserInfo ui)
+    {
+        if (ui == null)
         {
-            return ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupAdmin.ID);
+            return false;
         }
 
-        public static bool IsVisitor(this UserInfo ui, UserManager UserManager)
+        return !string.IsNullOrEmpty(ui.SsoNameId);
+    }
+
+    private const string _extMobPhone = "extmobphone";
+    private const string _mobPhone = "mobphone";
+    private const string _extMail = "extmail";
+    private const string _mail = "mail";
+
+    public static void ConvertExternalContactsToOrdinary(this UserInfo ui)
+    {
+        var ldapUserContacts = ui.ContactsList;
+
+        if (ui.ContactsList == null)
         {
-            return ui != null && UserManager.IsUserInGroup(ui.ID, Constants.GroupVisitor.ID);
+            return;
         }
 
-        public static bool IsOutsider(this UserInfo ui, UserManager userManager)
+        var newContacts = new List<string>();
+
+        for (int i = 0, m = ldapUserContacts.Count; i < m; i += 2)
         {
-            return IsVisitor(ui, userManager) && ui.ID == Constants.OutsideUser.ID;
-        }
-
-        public static bool IsLDAP(this UserInfo ui)
-        {
-            if (ui == null) return false;
-
-            return !string.IsNullOrEmpty(ui.Sid);
-        }
-
-        // ReSharper disable once InconsistentNaming
-        public static bool IsSSO(this UserInfo ui)
-        {
-            if (ui == null) return false;
-
-            return !string.IsNullOrEmpty(ui.SsoNameId);
-        }
-
-        private const string EXT_MOB_PHONE = "extmobphone";
-        private const string MOB_PHONE = "mobphone";
-        private const string EXT_MAIL = "extmail";
-        private const string MAIL = "mail";
-
-        public static void ConvertExternalContactsToOrdinary(this UserInfo ui)
-        {
-            var ldapUserContacts = ui.ContactsList;
-
-            if (ui.ContactsList == null) return;
-
-            var newContacts = new List<string>();
-
-            for (int i = 0, m = ldapUserContacts.Count; i < m; i += 2)
+            if (i + 1 >= ldapUserContacts.Count)
             {
-                if (i + 1 >= ldapUserContacts.Count)
-                    continue;
-
-                var type = ldapUserContacts[i];
-                var value = ldapUserContacts[i + 1];
-
-                switch (type)
-                {
-                    case EXT_MOB_PHONE:
-                        newContacts.Add(MOB_PHONE);
-                        newContacts.Add(value);
-                        break;
-                    case EXT_MAIL:
-                        newContacts.Add(MAIL);
-                        newContacts.Add(value);
-                        break;
-                    default:
-                        newContacts.Add(type);
-                        newContacts.Add(value);
-                        break;
-                }
+                continue;
             }
 
-            ui.ContactsList = newContacts;
+            var type = ldapUserContacts[i];
+            var value = ldapUserContacts[i + 1];
+
+            switch (type)
+            {
+                case _extMobPhone:
+                    newContacts.Add(_mobPhone);
+                    newContacts.Add(value);
+                    break;
+                case _extMail:
+                    newContacts.Add(_mail);
+                    newContacts.Add(value);
+                    break;
+                default:
+                    newContacts.Add(type);
+                    newContacts.Add(value);
+                    break;
+            }
         }
+
+        ui.ContactsList = newContacts;
     }
 }

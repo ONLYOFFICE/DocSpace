@@ -1,154 +1,140 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Data.Reassigns;
 
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Common.Threading;
-using ASC.Core.Users;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Primitives;
-
-namespace ASC.Data.Reassigns
+public static class QueueWorker
 {
-    public static class QueueWorker
+    public static IDictionary<string, StringValues> GetHttpHeaders(HttpRequest httpRequest)
     {
-        public static IDictionary<string, StringValues> GetHttpHeaders(HttpRequest httpRequest)
+        return httpRequest?.Headers;
+    }
+}
+
+public class QueueWorker<T> where T : DistributedTaskProgress
+{
+    protected IServiceScopeFactory _serviceProvider;
+    private readonly object _synchRoot = new object();
+    protected readonly DistributedTaskQueue _queue;
+    protected readonly IDictionary<string, StringValues> _httpHeaders;
+
+    public QueueWorker(
+        IHttpContextAccessor httpContextAccessor,
+            IServiceScopeFactory serviceProvider,
+            IDistributedTaskQueueFactory queueFactory,
+            string queueName)
+    {
+        _serviceProvider = serviceProvider;
+        _queue = queueFactory.CreateQueue(queueName);
+        _httpHeaders = httpContextAccessor.HttpContext.Request?.Headers;
+    }
+
+    public static string GetProgressItemId(int tenantId, Guid userId)
+    {
+        return string.Format("{0}_{1}_{2}", tenantId, userId, typeof(T).Name);
+    }
+
+    public T GetProgressItemStatus(int tenantId, Guid userId)
+    {
+        var id = GetProgressItemId(tenantId, userId);
+
+        return _queue.PeekTask<T>(id);
+    }
+
+    public void Terminate(int tenantId, Guid userId)
+    {
+        var item = GetProgressItemStatus(tenantId, userId);
+
+        if (item != null)
         {
-            return httpRequest?.Headers;
+            _queue.DequeueTask(item.Id);
         }
     }
 
-    public class QueueWorker<T> where T : DistributedTaskProgress
+    protected T Start(int tenantId, Guid userId, T newTask)
     {
-        protected readonly DistributedTaskQueue Queue;
-
-        protected IHttpContextAccessor HttpContextAccessor { get; }
-        protected IServiceProvider ServiceProvider { get; }
-
-        private readonly object _synchRoot = new object();
-
-        public QueueWorker(
-            IHttpContextAccessor httpContextAccessor,
-            IServiceProvider serviceProvider,
-            DistributedTaskQueueOptionsManager options)
+        lock (_synchRoot)
         {
-            HttpContextAccessor = httpContextAccessor;
-            ServiceProvider = serviceProvider;
-            Queue = options.Get<T>();
-        }
+            var task = GetProgressItemStatus(tenantId, userId);
 
-        public static string GetProgressItemId(int tenantId, Guid userId)
-        {
-            return string.Format("{0}_{1}_{2}", tenantId, userId, typeof(T).Name);
-        }
-
-        public T GetProgressItemStatus(int tenantId, Guid userId)
-        {
-            var id = GetProgressItemId(tenantId, userId);
-            return Queue.GetTask<T>(id);
-        }
-
-        public void Terminate(int tenantId, Guid userId)
-        {
-            var item = GetProgressItemStatus(tenantId, userId);
-
-            if (item != null)
+            if (task != null && task.IsCompleted)
             {
-                Queue.CancelTask(item.Id);
+                _queue.DequeueTask(task.Id);
+                task = null;
             }
-        }
 
-        protected DistributedTaskProgress Start(int tenantId, Guid userId, Func<T> constructor)
-        {
-            lock (_synchRoot)
+            if (task == null)
             {
-                var task = GetProgressItemStatus(tenantId, userId);
-
-                if (task != null && task.IsCompleted)
-                {
-                    Queue.RemoveTask(task.Id);
-                    task = null;
-                }
-
-                if (task == null)
-                {
-                    task = constructor();
-                    Queue.QueueTask(task);
-                }
-
-                return task;
+                task = newTask;
+                _queue.EnqueueTask(task);
             }
+
+            return task;
         }
     }
+}
 
-    [Scope(Additional = typeof(ReassignProgressItemExtension))]
-    public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
+[Scope(Additional = typeof(ReassignProgressItemExtension))]
+public class QueueWorkerReassign : QueueWorker<ReassignProgressItem>
+{
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "user_data_reassign";
+
+    public QueueWorkerReassign(
+        IHttpContextAccessor httpContextAccessor,
+            IServiceScopeFactory serviceProvider,
+            IDistributedTaskQueueFactory queueFactory) :
+            base(httpContextAccessor, serviceProvider, queueFactory, CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME)
     {
-        public QueueWorkerReassign(
-            IHttpContextAccessor httpContextAccessor,
-            IServiceProvider serviceProvider,
-            DistributedTaskQueueOptionsManager options) :
-            base(httpContextAccessor, serviceProvider, options)
-        {
-        }
-
-        public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
-        {
-            return Start(tenantId, fromUserId, () =>
-            {
-                var result = ServiceProvider.GetService<ReassignProgressItem>();
-                result.Init(tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
-                return result;
-            }) as ReassignProgressItem;
-        }
     }
 
-    [Scope(Additional = typeof(RemoveProgressItemExtension))]
-    public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
+    public ReassignProgressItem Start(int tenantId, Guid fromUserId, Guid toUserId, Guid currentUserId, bool deleteProfile)
     {
-        public QueueWorkerRemove(
-            IHttpContextAccessor httpContextAccessor,
-            IServiceProvider serviceProvider,
-            DistributedTaskQueueOptionsManager options) :
-            base(httpContextAccessor, serviceProvider, options)
-        {
-        }
+        var result = new ReassignProgressItem(_serviceProvider, _httpHeaders, tenantId, fromUserId, toUserId, currentUserId, deleteProfile);
 
-        public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
-        {
-            return Start(tenantId, user.ID, () =>
-            {
-                var result = ServiceProvider.GetService<RemoveProgressItem>();
-                result.Init(tenantId, user, currentUserId, notify);
-                return result;
-            }) as RemoveProgressItem;
-        }
+        return Start(tenantId, fromUserId, result);
+    }
+}
+
+[Scope(Additional = typeof(RemoveProgressItemExtension))]
+public class QueueWorkerRemove : QueueWorker<RemoveProgressItem>
+{
+    public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "user_data_remove";
+
+    public QueueWorkerRemove(
+        IHttpContextAccessor httpContextAccessor,
+            IServiceScopeFactory serviceProvider,
+            IDistributedTaskQueueFactory queueFactory) :
+            base(httpContextAccessor, serviceProvider, queueFactory, CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME)
+    {
+    }
+
+    public RemoveProgressItem Start(int tenantId, UserInfo user, Guid currentUserId, bool notify)
+    {
+        var result = new RemoveProgressItem(_serviceProvider, _httpHeaders, tenantId, user, currentUserId, notify);
+
+        return Start(tenantId, user.Id, result);
     }
 }

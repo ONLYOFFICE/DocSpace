@@ -30,7 +30,6 @@ using System.Linq;
 
 using ASC.Common;
 using ASC.Common.Caching;
-using ASC.Common.Logging;
 using ASC.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.EF;
@@ -38,7 +37,7 @@ using ASC.ElasticSearch;
 using ASC.ElasticSearch.Core;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
 
 namespace ASC.Web.CRM.Core.Search
 {
@@ -46,7 +45,7 @@ namespace ASC.Web.CRM.Core.Search
     public sealed class FactoryIndexerCase : FactoryIndexer<DbCase>
     {
         public FactoryIndexerCase(
-            IOptionsMonitor<ILog> options,
+            ILoggerProvider option,
             TenantManager tenantManager,
             SearchSettingsHelper searchSettingsHelper,
             FactoryIndexer factoryIndexer,
@@ -54,7 +53,7 @@ namespace ASC.Web.CRM.Core.Search
             IServiceProvider serviceProvider,
             DaoFactory daoFactory,
             ICache cache)
-            : base(options, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
+            : base(option, tenantManager, searchSettingsHelper, factoryIndexer, baseIndexer, serviceProvider, cache)
         {
             DaoFactory = daoFactory;
         }
@@ -121,14 +120,14 @@ namespace ASC.Web.CRM.Core.Search
 
             try
             {
-                foreach (var data in Indexer.IndexAll(getCount, getIds, getData))
+                foreach (var data in _indexer.IndexAll(getCount, getIds, getData))
                 {
                     Index(data);
                 }
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                Logger.LogError(e.ToString());
 
                 throw;
             }

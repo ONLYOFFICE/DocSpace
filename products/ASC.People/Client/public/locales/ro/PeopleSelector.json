@@ -1,6 +1,0 @@
-﻿{
-  "CustomAllGroups": "Toate {{ groupsCaption, lowercase }}",
-  "EmptySearchUsersResult": "Utilizatorii cu acest nume nu s-au găsit",
-  "EmptyUsers": "Nu există nici un utilizator",
-  "SearchUsersPlaceholder": "Căutare după utilizatori"
-}

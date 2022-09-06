@@ -29,13 +29,13 @@ using System.Collections.Generic;
 
 
 using ASC.Api.Core;
-using ASC.Api.Documents;
 using ASC.Common;
 using ASC.Common.Mapping;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Core.Entities;
 using ASC.CRM.Core.Enums;
 using ASC.CRM.Mapping;
+using ASC.Files.Core.ApiModels.ResponseDto;
 using ASC.Web.Api.Models;
 
 using AutoMapper;
@@ -113,7 +113,7 @@ namespace ASC.CRM.ApiModels
         }
 
         public int Id { get; set; }
-        public EmployeeWraper CreateBy { get; set; }
+        public EmployeeDto CreateBy { get; set; }
 
         public ApiDateTime Created { get; set; }
         public String Content { get; set; }
@@ -121,7 +121,7 @@ namespace ASC.CRM.ApiModels
         public ContactBaseDto Contact { get; set; }
         public EntityDto Entity { get; set; }
         public bool CanEdit { get; set; }
-        public IEnumerable<FileWrapper<int>> Files { get; set; }
+        public IEnumerable<FileDto<int>> Files { get; set; }
         public static RelationshipEventDto GetSample()
         {
             return new RelationshipEventDto
@@ -131,8 +131,8 @@ namespace ASC.CRM.ApiModels
                 Entity = EntityDto.GetSample(),
                 Contact = ContactBaseDto.GetSample(),
                 Created = ApiDateTime.GetSample(),
-                CreateBy = EmployeeWraper.GetSample(),
-                Files = new[] { FileWrapper<int>.GetSample() },
+                CreateBy = EmployeeDto.GetSample(),
+                Files = new[] { FileDto<int>.GetSample() },
                 Content = @"Agreed to meet at lunch and discuss the client commercial offer"
             };
         }

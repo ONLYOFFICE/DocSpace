@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AceStatusEnum_Comment" xml:space="preserve">
+    <value>Σχόλιο</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Προσαρμοσμένο Φίλτρο</value>
+  </data>
+  <data name="AceStatusEnum_FillForms" xml:space="preserve">
+    <value>Συμπλήρωση Φόρμας</value>
+  </data>
+  <data name="AceStatusEnum_Read" xml:space="preserve">
+    <value>Μόνο για ανάγνωση</value>
+  </data>
+  <data name="AceStatusEnum_ReadWrite" xml:space="preserve">
+    <value>Πλήρης πρόσβαση</value>
+  </data>
+  <data name="AceStatusEnum_Restrict" xml:space="preserve">
+    <value>Άρνηση πρόσβασης</value>
+  </data>
+  <data name="AceStatusEnum_Review" xml:space="preserve">
+    <value>Επισκόπηση</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Διαχειριστής</value>
+  </data>
+  <data name="Author_Me" xml:space="preserve">
+    <value>Εγώ</value>
+  </data>
+  <data name="CommentAutosave" xml:space="preserve">
+    <value>Αποθηκεύτηκε αυτόματα</value>
+  </data>
+  <data name="CommentChangeOwner" xml:space="preserve">
+    <value>Ο κάτοχος άλλαξε</value>
+  </data>
+  <data name="CommentConvert" xml:space="preserve">
+    <value>Μετατράπηκε από {0}</value>
+  </data>
+  <data name="CommentCopy" xml:space="preserve">
+    <value>Αντιγράφηκε</value>
+  </data>
+  <data name="CommentCreate" xml:space="preserve">
+    <value>Δημιουργήθηκε</value>
+  </data>
+  <data name="CommentCreateByDocuSign" xml:space="preserve">
+    <value>Δημιουργήθηκε μέσω DocuSign</value>
+  </data>
+  <data name="CommentEdit" xml:space="preserve">
+    <value>Επεξεργάσθηκε</value>
+  </data>
+  <data name="CommentEditEncrypt" xml:space="preserve">
+    <value>Τροποποιήθηκε με κρυπτογράφηση</value>
+  </data>
+  <data name="CommentEncrypted" xml:space="preserve">
+    <value>Κρυπτογραφημένο</value>
+  </data>
+  <data name="CommentForcesave" xml:space="preserve">
+    <value>Αποθηκεύτηκε</value>
+  </data>
+  <data name="CommentUpload" xml:space="preserve">
+    <value>Μεταφορτώθηκε</value>
+  </data>
+  <data name="DocuSignStatusDeclined" xml:space="preserve">
+    <value>Απορρίφθηκε</value>
+  </data>
+  <data name="DocuSignStatusNotSended" xml:space="preserve">
+    <value>Η αποστολή του εγγράφου μέσω DocuSign έχει ακυρωθεί</value>
+  </data>
+  <data name="DocuSignStatusSended" xml:space="preserve">
+    <value>Το έγγραφο απεστάλη για υπογραφή μέσω DocuSign</value>
+  </data>
+  <data name="EditorMentions" xml:space="preserve">
+    <value>Ειδοποίηση όταν γίνεται αναφορά σε εσάς σε έγγραφο</value>
+  </data>
+  <data name="ErrorMassage_BadRequest" xml:space="preserve">
+    <value>Κακό αίτημα.</value>
+  </data>
+  <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
+    <value>Δεν μπορείτε να επιλέξετε αυτόν τον χρήστη</value>
+  </data>
+  <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
+    <value>Η μετατροπή παίρνει υπερβολικά πολύ χρόνο.</value>
+  </data>
+  <data name="ErrorMassage_DocServiceException" xml:space="preserve">
+    <value>Προέκυψε σφάλμα στο Documents Service</value>
+  </data>
+  <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
+    <value>Το αρχείο είναι ανοιχτό για επεξεργασία από τον/την {0}. Αυτή τη στιγμή, η ταυτόχρονη επεξεργασία δεν υποστηρίζεται για αυτή τη μορφή αρχείου.</value>
+  </data>
+  <data name="ErrorMassage_EditingMobile" xml:space="preserve">
+    <value>Το αρχείο είναι ανοικτό για τροποποίηση σε μια κινητή εφαρμογή από τον/την {0}</value>
+  </data>
+  <data name="ErrorMassage_EmptyFile" xml:space="preserve">
+    <value>Κενό αρχείο</value>
+  </data>
+  <data name="ErrorMassage_FileNotFound" xml:space="preserve">
+    <value>Το απαιτούμενο αρχείο δεν βρέθηκε</value>
+  </data>
+  <data name="ErrorMassage_FileSizeConvert" xml:space="preserve">
+    <value>Αρχείο μεγαλύτερο από {0} δε θα μετατραπεί</value>
+  </data>
+  <data name="ErrorMassage_FileSizeCopy" xml:space="preserve">
+    <value>Αρχείο μεγαλύτερο από {0} δε θα αντιγραφεί</value>
+  </data>
+  <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
+    <value>Αρχείο μεγαλύτερο από {0} δε θα τροποποιηθεί</value>
+  </data>
+  <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
+    <value>Αρχείο μεγαλύτερο από δε θα μετακινηθεί</value>
+  </data>
+  <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
+    <value>Δεν μπορείτε να αντιγράψετε τον φάκελο στους υποφακέλους του</value>
+  </data>
+  <data name="ErrorMassage_FolderNotFound" xml:space="preserve">
+    <value>Ο απαιτούμενος φάκελος δεν βρέθηκε</value>
+  </data>
+  <data name="ErrorMassage_InvalidTitle" xml:space="preserve">
+    <value>Εσφαλμένος τίτλος</value>
+  </data>
+  <data name="ErrorMassage_LockedFile" xml:space="preserve">
+    <value>Αυτή τη στιγμή το αρχείο είναι κλειδωμένο από άλλον χρήστη</value>
+  </data>
+  <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
+    <value>Υπερβολικά πολλές λήψεις.</value>
+  </data>
+  <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
+    <value>Συγγνώμη, αυτή η μορφή αρχείου δεν υποστηρίζεται</value>
+  </data>
+  <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
+    <value>Ο συγγραφές της αποθήκευσης είναι άγνωστος</value>
+  </data>
+  <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
+    <value>Αποτυχία αποθήκευσης αρχείου</value>
+  </data>
+  <data name="ErrorMassage_SecurityException" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να εκτελέσετε τη λειτουργία</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να δημιουργήσετε</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteEditingFile" xml:space="preserve">
+    <value>Δεν μπορείτε να διαγράψετε το αρχείο, επειδή έχει ανοίξει για επεξεργασία</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
+    <value>Δεν μπορείτε να διαγράψετε το φάκελο, επειδή ένα από τα αρχεία έχει ανοιχτεί για επεξεργασία</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να διαγράψετε το αρχείο</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_DeleteFolder" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να διαγράψετε το φάκελο</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_EditFile" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να επεξεργαστείτε το αρχείο</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_EditFileTwice" xml:space="preserve">
+    <value>Το έγγραφο αυτό τροποποιείται από εσάς σε μια άλλη καρτέλα</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να μετακινήσετε το αρχείο</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να μετακινήσετε τον φάκελο</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ReadFile" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να δείτε το αρχείο</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ReadFolder" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να δείτε το περιεχόμενο του φακέλου</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_RenameFile" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να μετονομάσετε το αρχείο</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_RenameFolder" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να μετονομάσετε το φάκελο</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_UpdateEditingFile" xml:space="preserve">
+    <value>Δεν είναι δυνατή η ενημέρωση του αρχείου γιατί έχει ανοιχτεί για επεξεργασία</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_ViewFolder" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για να δείτε το περιεχόμενο του φακέλου</value>
+  </data>
+  <data name="ErrorMassage_UpdateEditingFile" xml:space="preserve">
+    <value>Δεν μπορείτε να ενημερώσετε ένα αρχείο που έχει ανοιχτεί για επεξεργασία</value>
+  </data>
+  <data name="ErrorMassage_UserNotFound" xml:space="preserve">
+    <value>Ο χρήστης δε βρέθηκε</value>
+  </data>
+  <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
+    <value>Δεν σας επιτρέπεται η προεπισκόπηση στοιχείων στον κάδο ανακύκλωσης</value>
+  </data>
+  <data name="Everyone" xml:space="preserve">
+    <value>Όλοι</value>
+  </data>
+  <data name="Guest" xml:space="preserve">
+    <value>Ανώνυμος</value>
+  </data>
+  <data name="IndexTitle" xml:space="preserve">
+    <value>Αναζήτηση στο περιεχόμενο των εγγράφων</value>
+  </data>
+  <data name="MessageFileCreated" xml:space="preserve">
+    <value>Δημιουργήθηκε αρχείο στον φάκελο "{0}"</value>
+  </data>
+  <data name="ProductDescription" xml:space="preserve">
+    <value>Δημιουργία, επεξεργασία, αποθήκευση και κοινή χρήση εγγράφων απευθείας στην πύλη σας. Εισαγωγή docs base από το Google Drive, Zoho, Box.</value>
+  </data>
+  <data name="ProductDescriptionEx" xml:space="preserve">
+    <value>Τροποποιήστε, διαμοιραστείτε και συνεργαστείτε στα office documents σε πραγματικό χρόνο. Δημιουργείστε και διαχειριστείτε κοινά έγγραφα προσβάσιμα από όλη την ομάδα. 
+Υψηλότερη συμβατότητα με docx, xlsx, pptx.</value>
+  </data>
+  <data name="ProductDescriptionShort" xml:space="preserve">
+    <value>Προβολή και λήψη διαμοιρασμένων εγγράφων. Ανέβασμα αρχείων σε διαμοιρασμένους φακέλους. Εγγυημένα υψηλότερη συμβατότητα με docx, xlsx, pptx.</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>Έγγραφα</value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!User} αφαιρέθηκε</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Ειδοποίηση όταν ένας φάκελος διαμοιράζεται</value>
+  </data>
+  <data name="SubscriptDocuSignComplete" xml:space="preserve">
+    <value>Ειδοποίηση όταν το έγγραφο υπογράφεται μέσω DocuSign</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Ειδοποίηση όταν ένα έγγραφο διαμοιράζεται</value>
+  </data>
+  <data name="TitleDeletedUserFolder" xml:space="preserve">
+    <value>Έγγραφα του/της {!user} {0}</value>
+  </data>
+  <data name="UnknownFirstName" xml:space="preserve">
+    <value>Όνομα</value>
+  </data>
+  <data name="UnknownLastName" xml:space="preserve">
+    <value>Επώνυμο</value>
+  </data>
+  <data name="UnlockComment" xml:space="preserve">
+    <value>Το αρχείο είναι ξεκλείδωτο</value>
+  </data>
+</root>

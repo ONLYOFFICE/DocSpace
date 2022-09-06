@@ -1,143 +1,118 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Core.Notify;
 
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Threading;
-
-using ASC.Notify;
-using ASC.Notify.Model;
-using ASC.Notify.Patterns;
-using ASC.Notify.Recipients;
-
-namespace ASC.Core.Notify
+public abstract class NotifySource : INotifySource
 {
-    public abstract class NotifySource : INotifySource
+    private readonly IDictionary<CultureInfo, IActionProvider> _actions = new Dictionary<CultureInfo, IActionProvider>();
+    private readonly IDictionary<CultureInfo, IPatternProvider> _patterns = new Dictionary<CultureInfo, IPatternProvider>();
+
+    protected ISubscriptionProvider _subscriprionProvider;
+    protected IRecipientProvider _recipientsProvider;
+    protected IActionProvider ActionProvider => GetActionProvider();
+    protected IPatternProvider PatternProvider => GetPatternProvider();
+    public string Id { get; private set; }
+
+    private readonly UserManager _userManager;
+    private readonly SubscriptionManager _subscriptionManager;
+
+    protected NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
     {
-        private readonly IDictionary<CultureInfo, IActionProvider> actions = new Dictionary<CultureInfo, IActionProvider>();
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(id);
 
-        private readonly IDictionary<CultureInfo, IPatternProvider> patterns = new Dictionary<CultureInfo, IPatternProvider>();
+        Id = id;
+        _userManager = userManager;
+        _recipientsProvider = recipientsProvider;
+        _subscriptionManager = subscriptionManager;
+    }
 
+    protected NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
+        : this(id.ToString(), userManager, recipientsProvider, subscriptionManager)
+    {
+    }
 
-        protected ISubscriptionProvider SubscriprionProvider;
-
-        protected IRecipientProvider RecipientsProvider;
-
-
-        protected IActionProvider ActionProvider
+    public IActionProvider GetActionProvider()
+    {
+        lock (_actions)
         {
-            get { return GetActionProvider(); }
-        }
-
-        protected IPatternProvider PatternProvider
-        {
-            get { return GetPatternProvider(); }
-        }
-
-
-        public string ID
-        {
-            get;
-            private set;
-        }
-        private UserManager UserManager { get; }
-        private SubscriptionManager SubscriptionManager { get; }
-
-        protected NotifySource(string id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
-        {
-            if (string.IsNullOrEmpty(id)) throw new ArgumentNullException(nameof(id));
-
-            ID = id;
-            UserManager = userManager;
-            RecipientsProvider = recipientsProvider;
-            SubscriptionManager = subscriptionManager;
-        }
-
-        protected NotifySource(Guid id, UserManager userManager, IRecipientProvider recipientsProvider, SubscriptionManager subscriptionManager)
-            : this(id.ToString(), userManager, recipientsProvider, subscriptionManager)
-        {
-        }
-
-        public IActionProvider GetActionProvider()
-        {
-            lock (actions)
+            var culture = Thread.CurrentThread.CurrentCulture;
+            if (!_actions.ContainsKey(culture))
             {
-                var culture = Thread.CurrentThread.CurrentCulture;
-                if (!actions.ContainsKey(culture))
-                {
-                    actions[culture] = CreateActionProvider();
-                }
-                return actions[culture];
+                _actions[culture] = CreateActionProvider();
             }
-        }
 
-        public IPatternProvider GetPatternProvider()
+            return _actions[culture];
+        }
+    }
+
+    public IPatternProvider GetPatternProvider()
+    {
+        lock (_patterns)
         {
-            lock (patterns)
+            var culture = Thread.CurrentThread.CurrentCulture;
+            if (Thread.CurrentThread.CurrentUICulture != culture)
             {
-                var culture = Thread.CurrentThread.CurrentCulture;
-                if (Thread.CurrentThread.CurrentUICulture != culture)
-                {
-                    Thread.CurrentThread.CurrentUICulture = culture;
-                }
-                if (!patterns.ContainsKey(culture))
-                {
-                    patterns[culture] = CreatePatternsProvider();
-                }
-                return patterns[culture];
+                Thread.CurrentThread.CurrentUICulture = culture;
             }
+            if (!_patterns.ContainsKey(culture))
+            {
+                _patterns[culture] = CreatePatternsProvider();
+            }
+
+            return _patterns[culture];
         }
+    }
 
-        public IRecipientProvider GetRecipientsProvider()
-        {
-            return CreateRecipientsProvider();
-        }
+    public IRecipientProvider GetRecipientsProvider()
+    {
+        return CreateRecipientsProvider();
+    }
 
-        public ISubscriptionProvider GetSubscriptionProvider()
-        {
-            return CreateSubscriptionProvider();
-        }
+    public ISubscriptionProvider GetSubscriptionProvider()
+    {
+        return CreateSubscriptionProvider();
+    }
+
+    protected abstract IPatternProvider CreatePatternsProvider();
+
+    protected abstract IActionProvider CreateActionProvider();
 
 
-        protected abstract IPatternProvider CreatePatternsProvider();
+    protected virtual ISubscriptionProvider CreateSubscriptionProvider()
+    {
+        var subscriptionProvider = new DirectSubscriptionProvider(Id, _subscriptionManager, _recipientsProvider);
 
-        protected abstract IActionProvider CreateActionProvider();
+        return new TopSubscriptionProvider(_recipientsProvider, subscriptionProvider, WorkContext.DefaultClientSenders)
+            ?? throw new NotifyException("Provider ISubscriprionProvider not instanced.");
+    }
 
-
-        protected virtual ISubscriptionProvider CreateSubscriptionProvider()
-        {
-            var subscriptionProvider = new DirectSubscriptionProvider(ID, SubscriptionManager, RecipientsProvider);
-            return new TopSubscriptionProvider(RecipientsProvider, subscriptionProvider, WorkContext.DefaultClientSenders) ??
-                throw new NotifyException("Provider ISubscriprionProvider not instanced.");
-        }
-
-        protected virtual IRecipientProvider CreateRecipientsProvider()
-        {
-            return new RecipientProviderImpl(UserManager) ?? throw new NotifyException("Provider IRecipientsProvider not instanced.");
-        }
+    protected virtual IRecipientProvider CreateRecipientsProvider()
+    {
+        return new RecipientProviderImpl(_userManager)
+            ?? throw new NotifyException("Provider IRecipientsProvider not instanced.");
     }
 }

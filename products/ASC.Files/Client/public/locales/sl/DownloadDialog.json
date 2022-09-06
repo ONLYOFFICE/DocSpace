@@ -1,9 +1,0 @@
-﻿{
-  "ChooseFormatText": "Izberite format za vsako datoteko, ki jo želite prenesti",
-  "ConvertInto": "Pretvori v",
-  "ConvertMessage": "Če se odločite za pretvorbo datoteke v obliko, ki je drugačna od izvirne, se lahko nekateri podatki izgubijo.",
-  "ConvertToZip": "Datoteke bodo kompresirane v .zip datoteko",
-  "CustomFormat": "Poljuben format",
-  "OriginalFormat": "Izvirni format",
-  "Other": "Drugo"
-}

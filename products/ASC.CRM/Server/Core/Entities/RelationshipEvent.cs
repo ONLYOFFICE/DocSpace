@@ -30,6 +30,7 @@ using System;
 
 using ASC.Common.Mapping;
 using ASC.Common.Security;
+using ASC.Common.Security.Authorizing;
 using ASC.CRM.Core.EF;
 using ASC.CRM.Core.Enums;
 #endregion
@@ -47,11 +48,11 @@ namespace ASC.CRM.Core.Entities
         public EntityType EntityType { get; set; }
         public int EntityID { get; set; }
         public int CategoryID { get; set; }
-
         public object SecurityId
         {
             get { return ID; }
         }
+        public string FullId => AzObjectIdHelper.GetFullObjectId(this);
 
         public Type ObjectType
         {

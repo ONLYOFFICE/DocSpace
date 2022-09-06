@@ -23,76 +23,68 @@
  *
 */
 
+namespace ASC.ApiSystem.Models;
 
-using System.ComponentModel.DataAnnotations;
-
-using ASC.ApiSystem.Interfaces;
-using ASC.Core.Tenants;
-
-
-namespace ASC.ApiSystem.Models
+public class TenantModel : IModel
 {
-    public class TenantModel : IModel
-    {
-        public string PortalName { get; set; }
+    public string PortalName { get; set; }
 
-        public int? TenantId { get; set; }
+    public int? TenantId { get; set; }
 
-        [StringLength(255)]
-        public string AffiliateId { get; set; }
+    [StringLength(255)]
+    public string AffiliateId { get; set; }
 
-        public string Campaign { get; set; }
+    public string Campaign { get; set; }
 
-        [StringLength(255)]
-        public string FirstName { get; set; }
+    [StringLength(255)]
+    public string FirstName { get; set; }
 
-        //todo  [Email]
-        [StringLength(255)]
-        public string Email { get; set; }
+    //todo  [Email]
+    [StringLength(255)]
+    public string Email { get; set; }
 
-        public int Industry { get; set; }
+    public int Industry { get; set; }
 
-        [StringLength(7)]
-        public string Language { get; set; }
+    [StringLength(7)]
+    public string Language { get; set; }
 
-        [StringLength(255)]
-        public string LastName { get; set; }
+    [StringLength(255)]
+    public string LastName { get; set; }
 
-        [StringLength(38)]
-        public string Module { get; set; }
+    [StringLength(38)]
+    public string Module { get; set; }
 
-        //todo: delete after www update
-        [StringLength(Web.Core.Utility.PasswordSettings.MaxLength)]
-        public string Password { get; set; }
+    //todo: delete after www update
+    [StringLength(Web.Core.Utility.PasswordSettings.MaxLength)]
+    public string Password { get; set; }
 
-        public string PasswordHash { get; set; }
+    public string PasswordHash { get; set; }
 
-        [StringLength(255)]
-        public string PartnerId { get; set; }
+    [StringLength(255)]
+    public string PartnerId { get; set; }
 
-        [StringLength(32)]
-        public string Phone { get; set; }
+    [StringLength(32)]
+    public string Phone { get; set; }
 
-        public string RecaptchaResponse { get; set; }
+    public string RecaptchaResponse { get; set; }
 
-        public RecaptchaType RecaptchaType { get; set; }
+    public RecaptchaType RecaptchaType { get; set; }
 
-        [StringLength(20)]
-        public string Region { get; set; }
+    [StringLength(20)]
+    public string Region { get; set; }
 
-        public TenantStatus Status { get; set; }
+    public TenantStatus Status { get; set; }
 
-        public bool SkipWelcome { get; set; }
+    public bool SkipWelcome { get; set; }
 
-        [StringLength(255)]
-        public string TimeZoneName { get; set; }
+    [StringLength(255)]
+    public string TimeZoneName { get; set; }
 
-        public bool Spam { get; set; }
+    public bool Spam { get; set; }
 
-        public bool Calls { get; set; }
+    public bool Calls { get; set; }
 
-        public string AppKey { get; set; }
+    public string AppKey { get; set; }
 
-        public bool LimitedControlPanel { get; set; }
-    }
+    public bool LimitedControlPanel { get; set; }
 }

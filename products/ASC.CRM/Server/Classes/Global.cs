@@ -36,13 +36,11 @@ using ASC.Core.Common.Settings;
 using ASC.CRM.Core;
 using ASC.CRM.Resources;
 using ASC.Data.Storage;
-using ASC.Web.Core;
 using ASC.Web.Core.Files;
 using ASC.Web.Studio.Core;
 
 using Microsoft.Extensions.Configuration;
 
-using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 
 namespace ASC.Web.CRM.Classes
@@ -75,7 +73,7 @@ namespace ASC.Web.CRM.Classes
             _setupInfo = setupInfo;
             _securityContext = securityContext;
             _crmSecurity = crmSecurity;
-            _tenantID = tenantManager.GetCurrentTenant().TenantId;
+            _tenantID = tenantManager.GetCurrentTenant().Id;
             _settingsManager = settingsManager;
             _configuration = configuration;
         }

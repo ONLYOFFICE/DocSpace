@@ -14,12 +14,11 @@
  *
 */
 
-namespace ASC.ApiSystem.Models
+namespace ASC.ApiSystem.Models;
+
+public enum RecaptchaType
 {
-    public enum RecaptchaType
-    {
-        Default = 0,
-        AndroidV2 = 1,
-        iOSV2 = 2
-    }
+    Default = 0,
+    AndroidV2 = 1,
+    iOSV2 = 2
 }

@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 using ASC.Common;
 using ASC.CRM.Core.Enums;
-using ASC.MessagingSystem;
+using ASC.MessagingSystem.Core;
 using ASC.Web.Core.Utility;
 
 #endregion

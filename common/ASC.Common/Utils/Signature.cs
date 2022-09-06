@@ -1,96 +1,94 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Common.Utils;
 
-using System;
-using System.Security.Cryptography;
-using System.Text;
-
-using ASC.Security.Cryptography;
-
-using Microsoft.AspNetCore.WebUtilities;
-
-using Newtonsoft.Json;
-
-namespace ASC.Common.Utils
+[Singletone]
+public class Signature
 {
-    [Singletone]
-    public class Signature
+    private readonly MachinePseudoKeys _machinePseudoKeys;
+
+    public Signature(MachinePseudoKeys machinePseudoKeys)
     {
-        public Signature(MachinePseudoKeys machinePseudoKeys)
-        {
-            MachinePseudoKeys = machinePseudoKeys;
-        }
+        _machinePseudoKeys = machinePseudoKeys;
+    }
 
-        private MachinePseudoKeys MachinePseudoKeys { get; }
+    public string Create<T>(T obj)
+    {
+        return Create(obj, Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()));
+    }
 
-        public string Create<T>(T obj)
-        {
-            return Create(obj, Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()));
-        }
+    public static string Create<T>(T obj, string secret)
+    {
+        var str = JsonConvert.SerializeObject(obj);
+        var payload = GetHashBase64(str + secret) + "?" + str;
 
-        public static string Create<T>(T obj, string secret)
-        {
-            var str = JsonConvert.SerializeObject(obj);
-            var payload = GetHashBase64(str + secret) + "?" + str;
-            return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(payload));
-        }
+        return WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(payload));
+    }
 
-        public T Read<T>(string signature)
-        {
-            return Read<T>(signature, Encoding.UTF8.GetString(MachinePseudoKeys.GetMachineConstant()));
-        }
+    public T Read<T>(string signature)
+    {
+        return Read<T>(signature, Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()));
+    }
 
-        public static T Read<T>(string signature, string secret)
+    public static T Read<T>(string signature, string secret)
+    {
+        try
         {
-            try
+            var lastSignChar = Int32.Parse(signature.Substring(signature.Length - 1));
+            signature = signature.Remove(signature.Length - 1);
+
+            while(lastSignChar > 0)
             {
-                var rightSignature = signature.Replace("\"", "");
-                var payloadParts = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(rightSignature)).Split('?');
-                if (GetHashBase64(payloadParts[1] + secret) == payloadParts[0])
-                {
-                    //Sig correct
-                    return JsonConvert.DeserializeObject<T>(payloadParts[1]);
-                }
+                signature = signature + "=";
+                lastSignChar--;
             }
-            catch (Exception)
+            var payloadParts = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(signature)).Split('?');
+
+            if (GetHashBase64(payloadParts[1].Trim() + secret) == payloadParts[0])
             {
+                return JsonConvert.DeserializeObject<T>(payloadParts[1].Trim()); //Sig correct
             }
-            return default;
         }
+        catch (Exception) { }
 
-        private static string GetHashBase64(string str)
-        {
-            using var sha256 = SHA256.Create();
-            return Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(str)));
-        }
+        return default;
+    }
 
-        private static string GetHashBase64MD5(string str)
-        {
-            using var md5 = MD5.Create();
-            return Convert.ToBase64String(md5.ComputeHash(Encoding.UTF8.GetBytes(str)));
-        }
+    private static string GetHashBase64(string str)
+    {
+        using var sha256 = SHA256.Create();
+
+        return Convert.ToBase64String(sha256.ComputeHash(Encoding.UTF8.GetBytes(str)));
+    }
+
+    private static string GetHashBase64MD5(string str)
+    {
+        using var md5 = MD5.Create();
+
+        return Convert.ToBase64String(md5.ComputeHash(Encoding.UTF8.GetBytes(str)));
     }
 }

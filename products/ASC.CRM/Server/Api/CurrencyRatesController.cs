@@ -35,8 +35,7 @@ using ASC.CRM.ApiModels;
 using ASC.CRM.Core;
 using ASC.CRM.Core.Dao;
 using ASC.CRM.Resources;
-using ASC.MessagingSystem;
-using ASC.Web.Api.Routing;
+using ASC.MessagingSystem.Core;
 using ASC.Web.CRM.Classes;
 
 using AutoMapper;
@@ -79,7 +78,7 @@ namespace ASC.CRM.Api
         /// <returns>
         ///    List of currency rates
         /// </returns>
-        [Read(@"currency/rates")]
+        [HttpGet(@"currency/rates")]
         public IEnumerable<CurrencyRateDto> GetCurrencyRates()
         {
             return _daoFactory.GetCurrencyRateDao().GetAll().ConvertAll(x => _mapper.Map<CurrencyRateDto>(x));
@@ -94,7 +93,7 @@ namespace ASC.CRM.Api
         ///    Currency rate
         /// </returns>
         /// <exception cref="ArgumentException"></exception>
-        [Read(@"currency/rates/{id:int}")]
+        [HttpGet(@"currency/rates/{id:int}")]
         public CurrencyRateDto GetCurrencyRate(int id)
         {
             if (id <= 0) throw new ArgumentException();
@@ -113,7 +112,7 @@ namespace ASC.CRM.Api
         ///    Currency rate
         /// </returns>
         /// <exception cref="ArgumentException"></exception>
-        [Read(@"currency/rates/{fromCurrency}/{toCurrency}")]
+        [HttpGet(@"currency/rates/{fromCurrency}/{toCurrency}")]
         public CurrencyRateDto GetCurrencyRate(string fromCurrency, string toCurrency)
         {
             if (string.IsNullOrEmpty(fromCurrency) || string.IsNullOrEmpty(toCurrency))
@@ -130,7 +129,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Common</category>
         /// <returns></returns>
-        [Create(@"currency/rates")]
+        [HttpPost(@"currency/rates")]
         public CurrencyRateDto CreateCurrencyRate(
             [FromBody] CreateCurrencyRateRequestDto inDto)
         {
@@ -162,7 +161,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Common</category>
         /// <returns></returns>
-        [Update(@"currency/rates/{id:int}")]
+        [HttpPut(@"currency/rates/{id:int}")]
         public CurrencyRateDto UpdateCurrencyRate(int id, string fromCurrency, string toCurrency, decimal rate)
         {
             if (id <= 0)
@@ -193,7 +192,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Common</category>
         /// <returns></returns>
-        [Create(@"currency/setrates")]
+        [HttpPost(@"currency/setrates")]
         public List<CurrencyRateDto> SetCurrencyRates(
              SetCurrencyRatesRequestDto inDto)
         {
@@ -241,7 +240,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Common</category>
         /// <returns></returns>
-        [Create(@"currency/addrates")]
+        [HttpPost(@"currency/addrates")]
         public List<CurrencyRateDto> AddCurrencyRates([FromBody] List<CurrencyRate> rates)
         {
             if (!_crmSecurity.IsAdmin)
@@ -283,7 +282,7 @@ namespace ASC.CRM.Api
         /// <short></short>
         /// <category>Common</category>
         /// <returns></returns>
-        [Delete(@"currency/rates/{id:int}")]
+        [HttpDelete(@"currency/rates/{id:int}")]
         public CurrencyRateDto DeleteCurrencyRate(int id)
         {
             if (id <= 0)

@@ -1,97 +1,89 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Core.Data;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
-using ASC.Core.Tenants;
-
-namespace ASC.Core.Data
+[Scope]
+class DbAzService : IAzService
 {
-    [Scope]
-    class DbAzService : IAzService
+    private readonly IDbContextFactory<UserDbContext> _dbContextFactory;
+    private readonly IMapper _mapper;
+
+    public DbAzService(IDbContextFactory<UserDbContext> dbContextFactory, IMapper mapper)
     {
-        public Expression<Func<Acl, AzRecord>> FromAclToAzRecord { get; set; }
+        _dbContextFactory = dbContextFactory;
+        _mapper = mapper;
+    }
 
-        private UserDbContext UserDbContext { get => LazyUserDbContext.Value; }
-        private Lazy<UserDbContext> LazyUserDbContext { get; set; }
+    public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
+    {
+        using var userDbContext = _dbContextFactory.CreateDbContext();
 
-        public DbAzService(DbContextManager<UserDbContext> dbContextManager)
+        // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
+        var commonAces =
+            userDbContext.Acl
+            .Where(r => r.Tenant == Tenant.DefaultTenant)
+            .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
+            .ToDictionary(a => string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object));
+
+        var tenantAces =
+            userDbContext.Acl
+            .Where(r => r.Tenant == tenant)
+            .ProjectTo<AzRecord>(_mapper.ConfigurationProvider)
+            .ToList();
+
+        // remove excaped rows
+        foreach (var a in tenantAces)
         {
-            LazyUserDbContext = new Lazy<UserDbContext>(() => dbContextManager.Value);
-            FromAclToAzRecord = r => new AzRecord
+            var key = string.Concat(a.Tenant.ToString(), a.Subject.ToString(), a.Action.ToString(), a.Object);
+            if (commonAces.TryGetValue(key, out var common))
             {
-                ActionId = r.Action,
-                ObjectId = r.Object,
-                Reaction = r.AceType,
-                SubjectId = r.Subject,
-                Tenant = r.Tenant
-            };
-        }
-
-        public IEnumerable<AzRecord> GetAces(int tenant, DateTime from)
-        {
-            // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
-            var commonAces =
-                UserDbContext.Acl
-                .Where(r => r.Tenant == Tenant.DEFAULT_TENANT)
-                .Select(FromAclToAzRecord)
-                .ToDictionary(a => string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId));
-
-            var tenantAces =
-                UserDbContext.Acl
-                .Where(r => r.Tenant == tenant)
-                .Select(FromAclToAzRecord)
-                .ToList();
-
-            // remove excaped rows
-            foreach (var a in tenantAces)
-            {
-                var key = string.Concat(a.Tenant.ToString(), a.SubjectId.ToString(), a.ActionId.ToString(), a.ObjectId);
-                if (commonAces.TryGetValue(key, out var common))
+                commonAces.Remove(key);
+                if (common.AceType == a.AceType)
                 {
-                    commonAces.Remove(key);
-                    if (common.Reaction == a.Reaction)
-                    {
-                        tenantAces.Remove(a);
-                    }
+                    tenantAces.Remove(a);
                 }
             }
-
-            return commonAces.Values.Concat(tenantAces);
         }
 
-        public AzRecord SaveAce(int tenant, AzRecord r)
+        return commonAces.Values.Concat(tenantAces);
+    }
+
+    public AzRecord SaveAce(int tenant, AzRecord r)
+    {
+        r.Tenant = tenant;
+
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
         {
-            r.Tenant = tenant;
-            using var tx = UserDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = userDbContext.Database.BeginTransaction();
+
             if (!ExistEscapeRecord(r))
             {
                 InsertRecord(r);
@@ -101,15 +93,25 @@ namespace ASC.Core.Data
                 // unescape
                 DeleteRecord(r);
             }
+
             tx.Commit();
+        });
 
-            return r;
-        }
+        return r;
+    }
 
-        public void RemoveAce(int tenant, AzRecord r)
+    public void RemoveAce(int tenant, AzRecord r)
+    {
+        r.Tenant = tenant;
+
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = userDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
         {
-            r.Tenant = tenant;
-            using var tx = UserDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = userDbContext.Database.BeginTransaction();
+
             if (ExistEscapeRecord(r))
             {
                 // escape
@@ -119,51 +121,47 @@ namespace ASC.Core.Data
             {
                 DeleteRecord(r);
             }
+
             tx.Commit();
-        }
+        });
+
+    }
 
 
-        private bool ExistEscapeRecord(AzRecord r)
+    private bool ExistEscapeRecord(AzRecord r)
+    {
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        return userDbContext.Acl
+            .Where(a => a.Tenant == Tenant.DefaultTenant)
+            .Where(a => a.Subject == r.Subject)
+            .Where(a => a.Action == r.Action)
+            .Where(a => a.Object == (r.Object ?? string.Empty))
+            .Where(a => a.AceType == r.AceType)
+            .Any();
+    }
+
+    private void DeleteRecord(AzRecord r)
+    {
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        var record = userDbContext.Acl
+            .Where(a => a.Tenant == r.Tenant)
+            .Where(a => a.Subject == r.Subject)
+            .Where(a => a.Action == r.Action)
+            .Where(a => a.Object == (r.Object ?? string.Empty))
+            .Where(a => a.AceType == r.AceType)
+            .FirstOrDefault();
+
+        if (record != null)
         {
-            return UserDbContext.Acl
-                .Where(a => a.Tenant == Tenant.DEFAULT_TENANT)
-                .Where(a => a.Subject == r.SubjectId)
-                .Where(a => a.Action == r.ActionId)
-                .Where(a => a.Object == (r.ObjectId ?? string.Empty))
-                .Where(a => a.AceType == r.Reaction)
-                .Any();
+            userDbContext.Acl.Remove(record);
+            userDbContext.SaveChanges();
         }
+    }
 
-        private void DeleteRecord(AzRecord r)
-        {
-            var record = UserDbContext.Acl
-                .Where(a => a.Tenant == r.Tenant)
-                .Where(a => a.Subject == r.SubjectId)
-                .Where(a => a.Action == r.ActionId)
-                .Where(a => a.Object == (r.ObjectId ?? string.Empty))
-                .Where(a => a.AceType == r.Reaction)
-                .FirstOrDefault();
-
-            if (record != null)
-            {
-                UserDbContext.Acl.Remove(record);
-                UserDbContext.SaveChanges();
-            }
-        }
-
-        private void InsertRecord(AzRecord r)
-        {
-            var record = new Acl
-            {
-                AceType = r.Reaction,
-                Action = r.ActionId,
-                Object = r.ObjectId ?? string.Empty,
-                Subject = r.SubjectId,
-                Tenant = r.Tenant
-            };
-
-            UserDbContext.AddOrUpdate(r => r.Acl, record);
-            UserDbContext.SaveChanges();
-        }
+    private void InsertRecord(AzRecord r)
+    {
+        using var userDbContext = _dbContextFactory.CreateDbContext();
+        userDbContext.AddOrUpdate(r => r.Acl, _mapper.Map<AzRecord, Acl>(r));
+        userDbContext.SaveChanges();
     }
 }

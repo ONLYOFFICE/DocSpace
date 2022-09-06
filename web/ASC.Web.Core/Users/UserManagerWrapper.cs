@@ -1,353 +1,335 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
-using System;
-using System.Globalization;
-using System.Net.Mail;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.Settings;
-using ASC.Core.Tenants;
-using ASC.Core.Users;
-using ASC.MessagingSystem;
-using ASC.Web.Core.PublicResources;
-using ASC.Web.Core.Utility;
-using ASC.Web.Studio.Core.Notify;
+using Constants = ASC.Core.Users.Constants;
 
-namespace ASC.Web.Core.Users
+namespace ASC.Web.Core.Users;
+
+/// <summary>
+/// Web studio user manager helper
+/// </summary>
+/// 
+[Scope]
+public sealed class UserManagerWrapper
 {
-    /// <summary>
-    /// Web studio user manager helper
-    /// </summary>
-    /// 
-    [Scope]
-    public sealed class UserManagerWrapper
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly UserManager _userManager;
+    private readonly SecurityContext _securityContext;
+    private readonly MessageService _messageService;
+    private readonly CustomNamingPeople _customNamingPeople;
+    private readonly TenantUtil _tenantUtil;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly IPSecurity.IPSecurity _iPSecurity;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly SettingsManager _settingsManager;
+    private readonly UserFormatter _userFormatter;
+
+    public UserManagerWrapper(
+        StudioNotifyService studioNotifyService,
+        UserManager userManager,
+        SecurityContext securityContext,
+        MessageService messageService,
+        CustomNamingPeople customNamingPeople,
+        TenantUtil tenantUtil,
+        CoreBaseSettings coreBaseSettings,
+        IPSecurity.IPSecurity iPSecurity,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        SettingsManager settingsManager,
+        UserFormatter userFormatter)
     {
-        private StudioNotifyService StudioNotifyService { get; }
-        private UserManager UserManager { get; }
-        private SecurityContext SecurityContext { get; }
-        private MessageService MessageService { get; }
-        private CustomNamingPeople CustomNamingPeople { get; }
-        private TenantUtil TenantUtil { get; }
-        private CoreBaseSettings CoreBaseSettings { get; }
-        private IPSecurity.IPSecurity IPSecurity { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        private SettingsManager SettingsManager { get; }
-        private UserFormatter UserFormatter { get; }
+        _studioNotifyService = studioNotifyService;
+        _userManager = userManager;
+        _securityContext = securityContext;
+        _messageService = messageService;
+        _customNamingPeople = customNamingPeople;
+        _tenantUtil = tenantUtil;
+        _coreBaseSettings = coreBaseSettings;
+        _iPSecurity = iPSecurity;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+        _settingsManager = settingsManager;
+        _userFormatter = userFormatter;
+    }
 
-        public UserManagerWrapper(
-            StudioNotifyService studioNotifyService,
-            UserManager userManager,
-            SecurityContext securityContext,
-            MessageService messageService,
-            CustomNamingPeople customNamingPeople,
-            TenantUtil tenantUtil,
-            CoreBaseSettings coreBaseSettings,
-            IPSecurity.IPSecurity iPSecurity,
-            DisplayUserSettingsHelper displayUserSettingsHelper,
-            SettingsManager settingsManager,
-            UserFormatter userFormatter)
+    private bool TestUniqueUserName(string uniqueName)
+    {
+        if (string.IsNullOrEmpty(uniqueName))
         {
-            StudioNotifyService = studioNotifyService;
-            UserManager = userManager;
-            SecurityContext = securityContext;
-            MessageService = messageService;
-            CustomNamingPeople = customNamingPeople;
-            TenantUtil = tenantUtil;
-            CoreBaseSettings = coreBaseSettings;
-            IPSecurity = iPSecurity;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            SettingsManager = settingsManager;
-            UserFormatter = userFormatter;
+            return false;
         }
 
-        private bool TestUniqueUserName(string uniqueName)
+        return Equals(_userManager.GetUserByUserName(uniqueName), Constants.LostUser);
+    }
+
+    private string MakeUniqueName(UserInfo userInfo)
+    {
+        if (string.IsNullOrEmpty(userInfo.Email))
         {
-            if (string.IsNullOrEmpty(uniqueName))
-                return false;
-            return Equals(UserManager.GetUserByUserName(uniqueName), Constants.LostUser);
+            throw new ArgumentException(Resource.ErrorEmailEmpty, nameof(userInfo));
         }
 
-        private string MakeUniqueName(UserInfo userInfo)
+        var uniqueName = new MailAddress(userInfo.Email).User;
+        var startUniqueName = uniqueName;
+        var i = 0;
+        while (!TestUniqueUserName(uniqueName))
         {
-            if (string.IsNullOrEmpty(userInfo.Email))
-                throw new ArgumentException(Resource.ErrorEmailEmpty, nameof(userInfo));
+            uniqueName = $"{startUniqueName}{(++i).ToString(CultureInfo.InvariantCulture)}";
+        }
+        return uniqueName;
+    }
 
-            var uniqueName = new MailAddress(userInfo.Email).User;
-            var startUniqueName = uniqueName;
-            var i = 0;
-            while (!TestUniqueUserName(uniqueName))
-            {
-                uniqueName = $"{startUniqueName}{(++i).ToString(CultureInfo.InvariantCulture)}";
-            }
-            return uniqueName;
+    public bool CheckUniqueEmail(Guid userId, string email)
+    {
+        var foundUser = _userManager.GetUserByEmail(email);
+        return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
+    }
+
+    public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false)
+    {
+        ArgumentNullException.ThrowIfNull(userInfo);
+
+        if (!_userFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
+        {
+            throw new Exception(Resource.ErrorIncorrectUserName);
         }
 
-        public bool CheckUniqueEmail(Guid userId, string email)
+        if (!CheckUniqueEmail(userInfo.Id, userInfo.Email))
         {
-            var foundUser = UserManager.GetUserByEmail(email);
-            return Equals(foundUser, Constants.LostUser) || foundUser.ID == userId;
+            throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
-        public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true)
+        if (makeUniqueName)
         {
-            if (userInfo == null) throw new ArgumentNullException(nameof(userInfo));
+            userInfo.UserName = MakeUniqueName(userInfo);
+        }
+        if (!userInfo.WorkFromDate.HasValue)
+        {
+            userInfo.WorkFromDate = _tenantUtil.DateTimeNow();
+        }
 
-            if (!UserFormatter.IsValidUserName(userInfo.FirstName, userInfo.LastName))
-                throw new Exception(Resource.ErrorIncorrectUserName);
+        if (!_coreBaseSettings.Personal && !fromInviteLink)
+        {
+            userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
+        }
 
-            if (!CheckUniqueEmail(userInfo.ID, userInfo.Email))
-                throw new Exception(CustomNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
-            if (makeUniqueName)
-            {
-                userInfo.UserName = MakeUniqueName(userInfo);
-            }
-            if (!userInfo.WorkFromDate.HasValue)
-            {
-                userInfo.WorkFromDate = TenantUtil.DateTimeNow();
-            }
+        var newUserInfo = _userManager.SaveUserInfo(userInfo, isVisitor, isCardDav);
+        _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
-            if (!CoreBaseSettings.Personal && !fromInviteLink)
-            {
-                userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
-            }
-
-            var newUserInfo = UserManager.SaveUserInfo(userInfo);
-            SecurityContext.SetUserPasswordHash(newUserInfo.ID, passwordHash);
-
-            if (CoreBaseSettings.Personal)
-            {
-                StudioNotifyService.SendUserWelcomePersonal(newUserInfo);
-                return newUserInfo;
-            }
-
-            if ((newUserInfo.Status & EmployeeStatus.Active) == EmployeeStatus.Active && notify)
-            {
-                //NOTE: Notify user only if it's active
-                if (afterInvite)
-                {
-                    if (isVisitor)
-                    {
-                        StudioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
-                    }
-                    else
-                    {
-                        StudioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
-                    }
-
-                    if (fromInviteLink)
-                    {
-                        StudioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
-                    }
-                }
-                else
-                {
-                    //Send user invite
-                    if (isVisitor)
-                    {
-                        StudioNotifyService.GuestInfoActivation(newUserInfo);
-                    }
-                    else
-                    {
-                        StudioNotifyService.UserInfoActivation(newUserInfo);
-                    }
-
-                }
-            }
-
-            if (isVisitor)
-            {
-                UserManager.AddUserIntoGroup(newUserInfo.ID, Constants.GroupVisitor.ID);
-            }
-
+        if (_coreBaseSettings.Personal)
+        {
+            _studioNotifyService.SendUserWelcomePersonal(newUserInfo);
             return newUserInfo;
         }
 
-        #region Password
-
-        public void CheckPasswordPolicy(string password)
+        if ((newUserInfo.Status & EmployeeStatus.Active) == EmployeeStatus.Active && notify)
         {
-            if (string.IsNullOrWhiteSpace(password))
-                throw new Exception(Resource.ErrorPasswordEmpty);
-
-            var passwordSettingsObj = SettingsManager.Load<PasswordSettings>();
-
-            if (!CheckPasswordRegex(passwordSettingsObj, password))
-                throw new Exception(GenerateErrorMessage(passwordSettingsObj));
-        }
-
-        public string GetPasswordRegex(PasswordSettings passwordSettings)
-        {
-            var pwdBuilder = new StringBuilder();
-
-            if (CoreBaseSettings.CustomMode)
+            //NOTE: Notify user only if it's active
+            if (afterInvite)
             {
-                pwdBuilder.Append(@"^(?=.*[a-z]{0,})");
+                if (isVisitor)
+                {
+                    _studioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
+                }
+                else
+                {
+                    _studioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
+                }
 
-                if (passwordSettings.Digits)
-                    pwdBuilder.Append(@"(?=.*\d)");
-
-                if (passwordSettings.UpperCase)
-                    pwdBuilder.Append(@"(?=.*[A-Z])");
-
-                if (passwordSettings.SpecSymbols)
-                    pwdBuilder.Append(@"(?=.*[_\-.~!$^*()=|])");
-
-                pwdBuilder.Append(@"[0-9a-zA-Z_\-.~!$^*()=|]");
+                if (fromInviteLink)
+                {
+                    _studioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
+                }
             }
             else
             {
-                pwdBuilder.Append(@"^(?=.*\p{Ll}{0,})");
+                //Send user invite
+                if (isVisitor)
+                {
+                    _studioNotifyService.GuestInfoActivation(newUserInfo);
+                }
+                else
+                {
+                    _studioNotifyService.UserInfoActivation(newUserInfo);
+                }
 
-                if (passwordSettings.Digits)
-                    pwdBuilder.Append(@"(?=.*\d)");
-
-                if (passwordSettings.UpperCase)
-                    pwdBuilder.Append(@"(?=.*\p{Lu})");
-
-                if (passwordSettings.SpecSymbols)
-                    pwdBuilder.Append(@"(?=.*[\W])");
-
-                pwdBuilder.Append('.');
             }
-
-            pwdBuilder.Append('{');
-            pwdBuilder.Append(passwordSettings.MinLength);
-            pwdBuilder.Append(',');
-            pwdBuilder.Append(PasswordSettings.MaxLength);
-            pwdBuilder.Append(@"}$");
-
-            return pwdBuilder.ToString();
         }
 
-        public bool CheckPasswordRegex(PasswordSettings passwordSettings, string password)
+        if (isVisitor)
         {
-            var passwordRegex = GetPasswordRegex(passwordSettings);
-
-            return new Regex(passwordRegex).IsMatch(password);
+            _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupVisitor.ID);
         }
 
-        public string SendUserPassword(string email)
+        return newUserInfo;
+    }
+
+    #region Password
+
+    public void CheckPasswordPolicy(string password)
+    {
+        if (string.IsNullOrWhiteSpace(password))
         {
-            email = (email ?? "").Trim();
-            if (!email.TestEmailRegex()) throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
-
-            if (!IPSecurity.Verify())
-            {
-                throw new Exception(Resource.ErrorAccessRestricted);
-            }
-
-            var userInfo = UserManager.GetUserByEmail(email);
-            if (!UserManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
-            {
-                return string.Format(Resource.ErrorUserNotFoundByEmail, email);
-            }
-            if (userInfo.Status == EmployeeStatus.Terminated)
-            {
-                return Resource.ErrorDisabledProfile;
-            }
-            if (userInfo.IsLDAP())
-            {
-                return Resource.CouldNotRecoverPasswordForLdapUser;
-            }
-            if (userInfo.IsSSO())
-            {
-                return Resource.CouldNotRecoverPasswordForSsoUser;
-            }
-
-            StudioNotifyService.UserPasswordChange(userInfo);
-
-            var displayUserName = userInfo.DisplayUserName(false, DisplayUserSettingsHelper);
-            MessageService.Send(MessageAction.UserSentPasswordChangeInstructions, displayUserName);
-
-            return null;
+            throw new Exception(Resource.ErrorPasswordEmpty);
         }
 
-        public static string GeneratePassword()
+        var passwordSettingsObj = _settingsManager.Load<PasswordSettings>();
+
+        if (!CheckPasswordRegex(passwordSettingsObj, password))
         {
-            return Guid.NewGuid().ToString();
+            throw new Exception(GetPasswordHelpMessage(passwordSettingsObj));
         }
+    }
 
-        internal static string GeneratePassword(int minLength, int maxLength, string noise)
+    public string GetPasswordRegex(PasswordSettings passwordSettings)
+    {
+        var pwdBuilder = new StringBuilder("^");
+
+        if (passwordSettings.Digits)
         {
-            var length = RandomNumberGenerator.GetInt32(minLength, maxLength + 1);
-
-            var sb = new StringBuilder();
-            while (length-- > 0)
-            {
-                sb.Append(noise[RandomNumberGenerator.GetInt32(noise.Length - 1)]);
-            }
-            return sb.ToString();
+            pwdBuilder.Append(passwordSettings.DigitsRegexStr);
         }
 
-        internal static string GenerateErrorMessage(PasswordSettings passwordSettings)
+        if (passwordSettings.UpperCase)
         {
-            var error = new StringBuilder();
-
-            error.Append($"{Resource.ErrorPasswordMessage} ");
-            error.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
-            if (passwordSettings.UpperCase)
-                error.AppendFormat($", {Resource.ErrorPasswordNoUpperCase}");
-            if (passwordSettings.Digits)
-                error.Append($", {Resource.ErrorPasswordNoDigits}");
-            if (passwordSettings.SpecSymbols)
-                error.Append($", {Resource.ErrorPasswordNoSpecialSymbols}");
-
-            return error.ToString();
+            pwdBuilder.Append(passwordSettings.UpperCaseRegexStr);
         }
 
-        public string GetPasswordHelpMessage()
+        if (passwordSettings.SpecSymbols)
         {
-            var info = new StringBuilder();
-            var passwordSettings = SettingsManager.Load<PasswordSettings>();
-            info.Append($"{Resource.ErrorPasswordMessageStart} ");
-            info.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
-            if (passwordSettings.UpperCase)
-                info.Append($", {Resource.ErrorPasswordNoUpperCase}");
-            if (passwordSettings.Digits)
-                info.Append($", {Resource.ErrorPasswordNoDigits}");
-            if (passwordSettings.SpecSymbols)
-                info.Append($", {Resource.ErrorPasswordNoSpecialSymbols}");
-
-            return info.ToString();
+            pwdBuilder.Append(passwordSettings.SpecSymbolsRegexStr);
         }
 
-        #endregion
+        pwdBuilder.Append($"{passwordSettings.AllowedCharactersRegexStr}{{{passwordSettings.MinLength},{PasswordSettings.MaxLength}}}$");
 
-        public static bool ValidateEmail(string email)
+        return pwdBuilder.ToString();
+    }
+
+    public bool CheckPasswordRegex(PasswordSettings passwordSettings, string password)
+    {
+        var passwordRegex = GetPasswordRegex(passwordSettings);
+
+        return new Regex(passwordRegex).IsMatch(password);
+    }
+
+    public string SendUserPassword(string email)
+    {
+        email = (email ?? "").Trim();
+        if (!email.TestEmailRegex())
         {
-            const string pattern = @"^(([^<>()[\]\\.,;:\s@\""]+"
-                                   + @"(\.[^<>()[\]\\.,;:\s@\""]+)*)|(\"".+\""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
-                                   + @"\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
-            const RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
-            return new Regex(pattern, options).IsMatch(email);
+            throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
         }
+
+        var settings = _settingsManager.Load<IPRestrictionsSettings>();
+
+        if (settings.Enable && !_iPSecurity.Verify())
+        {
+            throw new Exception(Resource.ErrorAccessRestricted);
+        }
+
+        var userInfo = _userManager.GetUserByEmail(email);
+        if (!_userManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
+        {
+            return string.Format(Resource.ErrorUserNotFoundByEmail, email);
+        }
+        if (userInfo.Status == EmployeeStatus.Terminated)
+        {
+            return Resource.ErrorDisabledProfile;
+        }
+        if (userInfo.IsLDAP())
+        {
+            return Resource.CouldNotRecoverPasswordForLdapUser;
+        }
+        if (userInfo.IsSSO())
+        {
+            return Resource.CouldNotRecoverPasswordForSsoUser;
+        }
+
+        _studioNotifyService.UserPasswordChange(userInfo);
+
+        return null;
+    }
+
+    public static string GeneratePassword()
+    {
+        return Guid.NewGuid().ToString();
+    }
+
+    internal static string GeneratePassword(int minLength, int maxLength, string noise)
+    {
+        var length = RandomNumberGenerator.GetInt32(minLength, maxLength + 1);
+
+        var sb = new StringBuilder();
+        while (length-- > 0)
+        {
+            sb.Append(noise[RandomNumberGenerator.GetInt32(noise.Length - 1)]);
+        }
+        return sb.ToString();
+    }
+
+    public static string GetPasswordHelpMessage(PasswordSettings passwordSettings)
+    {
+        var text = new StringBuilder();
+
+        text.AppendFormat("{0} ", Resource.ErrorPasswordMessage);
+        text.AppendFormat(Resource.ErrorPasswordLength, passwordSettings.MinLength, PasswordSettings.MaxLength);
+        text.AppendFormat(", {0}", Resource.ErrorPasswordOnlyLatinLetters);
+        text.AppendFormat(", {0}", Resource.ErrorPasswordNoSpaces);
+
+        if (passwordSettings.UpperCase)
+        {
+            text.AppendFormat(", {0}", Resource.ErrorPasswordNoUpperCase);
+        }
+
+        if (passwordSettings.Digits)
+        {
+            text.AppendFormat(", {0}", Resource.ErrorPasswordNoDigits);
+        }
+
+        if (passwordSettings.SpecSymbols)
+        {
+            text.AppendFormat(", {0}", Resource.ErrorPasswordNoSpecialSymbols);
+        }
+
+        return text.ToString();
+    }
+
+    public string GetPasswordHelpMessage()
+    {
+        return GetPasswordHelpMessage(_settingsManager.Load<PasswordSettings>());
+    }
+
+    #endregion
+
+    public static bool ValidateEmail(string email)
+    {
+        const string pattern = @"^(([^<>()[\]\\.,;:\s@\""]+"
+                               + @"(\.[^<>()[\]\\.,;:\s@\""]+)*)|(\"".+\""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
+                               + @"\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
+        const RegexOptions options = RegexOptions.IgnoreCase | RegexOptions.Compiled;
+        return new Regex(pattern, options).IsMatch(email);
     }
 }

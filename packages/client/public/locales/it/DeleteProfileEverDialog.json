@@ -1,0 +1,5 @@
+{
+  "DeleteUser": "Elimina utente",
+  "DeleteUserMessage": "{{userCaption}} <strong>{{user}}</strong> verrà eliminato. I documenti personali dell'utente disponibili per gli altri verranno eliminati. Per evitare ciò, è necessario avviare il processo di riassegnazione dei dati prima di eliminarli.",
+  "SuccessfullyDeleteUserInfoMessage": "L'utente è stato cancellato con successo"
+}

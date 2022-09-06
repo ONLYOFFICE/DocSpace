@@ -1,170 +1,146 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+namespace ASC.Web.Files;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using ASC.Common;
-using ASC.Core;
-using ASC.Core.Common.EF;
-using ASC.Core.Common.EF.Context;
-using ASC.Core.Users;
-using ASC.Files.Core;
-using ASC.Files.Core.Resources;
-using ASC.Web.Core;
-using ASC.Web.Core.Users;
-using ASC.Web.Files.Classes;
-using ASC.Web.Files.Utils;
-using ASC.Web.Studio.Utility;
-
-using Microsoft.EntityFrameworkCore;
-
-namespace ASC.Web.Files
+[Scope]
+public class FilesSpaceUsageStatManager : SpaceUsageStatManager
 {
-    [Scope]
-    public class FilesSpaceUsageStatManager : SpaceUsageStatManager
+    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
+    private readonly TenantManager _tenantManager;
+    private readonly UserManager _userManager;
+    private readonly UserPhotoManager _userPhotoManager;
+    private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly PathProvider _pathProvider;
+
+    public FilesSpaceUsageStatManager(
+        IDbContextFactory<FilesDbContext> dbContextFactory,
+        TenantManager tenantManager,
+        UserManager userManager,
+        UserPhotoManager userPhotoManager,
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        CommonLinkUtility commonLinkUtility,
+        GlobalFolderHelper globalFolderHelper,
+        PathProvider pathProvider)
     {
-        private Lazy<ASC.Files.Core.EF.FilesDbContext> LazyFilesDbContext { get; }
-        private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-        private TenantManager TenantManager { get; }
-        private UserManager UserManager { get; }
-        private UserPhotoManager UserPhotoManager { get; }
-        private DisplayUserSettingsHelper DisplayUserSettingsHelper { get; }
-        private CommonLinkUtility CommonLinkUtility { get; }
-        private GlobalFolderHelper GlobalFolderHelper { get; }
-        private PathProvider PathProvider { get; }
-
-        public FilesSpaceUsageStatManager(
-            DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
-            TenantManager tenantManager,
-            UserManager userManager,
-            UserPhotoManager userPhotoManager,
-            DisplayUserSettingsHelper displayUserSettingsHelper,
-            CommonLinkUtility commonLinkUtility,
-            GlobalFolderHelper globalFolderHelper,
-            PathProvider pathProvider)
-        {
-            LazyFilesDbContext = new Lazy<ASC.Files.Core.EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-            TenantManager = tenantManager;
-            UserManager = userManager;
-            UserPhotoManager = userPhotoManager;
-            DisplayUserSettingsHelper = displayUserSettingsHelper;
-            CommonLinkUtility = commonLinkUtility;
-            GlobalFolderHelper = globalFolderHelper;
-            PathProvider = pathProvider;
-        }
-
-        public override ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
-        {
-            var myFiles = FilesDbContext.Files
-                .AsQueryable()
-                .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
-                .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
-                .Where(r => r.file.TenantId == r.bunch.TenantId)
-                .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
-                .Where(r => r.bunch.RightNode.StartsWith("files/my/") || r.bunch.RightNode.StartsWith("files/trash/"))
-                .GroupBy(r => r.file.CreateBy)
-                .Select(r => new { CreateBy = r.Key, Size = r.Sum(a => a.file.ContentLength) });
-
-            var commonFiles = FilesDbContext.Files
-                .AsQueryable()
-                .Join(FilesDbContext.Tree, a => a.FolderId, b => b.FolderId, (file, tree) => new { file, tree })
-                .Join(FilesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
-                .Where(r => r.file.TenantId == r.bunch.TenantId)
-                .Where(r => r.file.TenantId == TenantManager.GetCurrentTenant().TenantId)
-                .Where(r => r.bunch.RightNode.StartsWith("files/common/"))
-                .GroupBy(r => Constants.LostUser.ID)
-                .Select(r => new { CreateBy = Constants.LostUser.ID, Size = r.Sum(a => a.file.ContentLength) });
-
-            return myFiles.Union(commonFiles)
-                .AsAsyncEnumerable()
-                .GroupByAwait(
-                async r => await Task.FromResult(r.CreateBy),
-                async r => await Task.FromResult(r.Size),
-                async (userId, items) =>
-                {
-                    var user = UserManager.GetUsers(userId);
-                    var item = new UsageSpaceStatItem { SpaceUsage = await items.SumAsync() };
-                    if (user.Equals(Constants.LostUser))
-                    {
-                        item.Name = FilesUCResource.CorporateFiles;
-                        item.ImgUrl = PathProvider.GetImagePath("corporatefiles_big.png");
-                        item.Url = await PathProvider.GetFolderUrlByIdAsync(await GlobalFolderHelper.FolderCommonAsync);
-                    }
-                    else
-                    {
-                        item.Name = user.DisplayUserName(false, DisplayUserSettingsHelper);
-                        item.ImgUrl = user.GetSmallPhotoURL(UserPhotoManager);
-                        item.Url = user.GetUserProfilePageURL(CommonLinkUtility);
-                        item.Disabled = user.Status == EmployeeStatus.Terminated;
-                    }
-                    return item;
-                })
-                .OrderByDescending(i => i.SpaceUsage)
-                .ToListAsync();
-
-        }
+        _dbContextFactory = dbContextFactory;
+        _tenantManager = tenantManager;
+        _userManager = userManager;
+        _userPhotoManager = userPhotoManager;
+        _displayUserSettingsHelper = displayUserSettingsHelper;
+        _commonLinkUtility = commonLinkUtility;
+        _globalFolderHelper = globalFolderHelper;
+        _pathProvider = pathProvider;
     }
 
-    [Scope]
-    public class FilesUserSpaceUsage : IUserSpaceUsage
+    public override ValueTask<List<UsageSpaceStatItem>> GetStatDataAsync()
     {
-        private Lazy<ASC.Files.Core.EF.FilesDbContext> LazyFilesDbContext { get; }
-        private ASC.Files.Core.EF.FilesDbContext FilesDbContext { get => LazyFilesDbContext.Value; }
-        private TenantManager TenantManager { get; }
-        private GlobalFolder GlobalFolder { get; }
-        public FileMarker FileMarker { get; }
-        public IDaoFactory DaoFactory { get; }
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var myFiles = filesDbContext.Files
+            .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
+            .Join(filesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
+            .Where(r => r.file.TenantId == r.bunch.TenantId)
+            .Where(r => r.file.TenantId == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.bunch.RightNode.StartsWith("files/my/") || r.bunch.RightNode.StartsWith("files/trash/"))
+            .GroupBy(r => r.file.CreateBy)
+            .Select(r => new { CreateBy = r.Key, Size = r.Sum(a => a.file.ContentLength) });
 
-        public FilesUserSpaceUsage(
-            DbContextManager<ASC.Files.Core.EF.FilesDbContext> dbContextManager,
-            TenantManager tenantManager,
-            GlobalFolder globalFolder,
-            FileMarker fileMarker,
-            IDaoFactory daoFactory)
-        {
-            LazyFilesDbContext = new Lazy<ASC.Files.Core.EF.FilesDbContext>(() => dbContextManager.Get(FileConstant.DatabaseId));
-            TenantManager = tenantManager;
-            GlobalFolder = globalFolder;
-            FileMarker = fileMarker;
-            DaoFactory = daoFactory;
-        }
+        var commonFiles = filesDbContext.Files
+            .Join(filesDbContext.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
+            .Join(filesDbContext.BunchObjects, a => a.tree.ParentId.ToString(), b => b.LeftNode, (fileTree, bunch) => new { fileTree.file, fileTree.tree, bunch })
+            .Where(r => r.file.TenantId == r.bunch.TenantId)
+            .Where(r => r.file.TenantId == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.bunch.RightNode.StartsWith("files/common/"))
+            .GroupBy(r => Constants.LostUser.Id)
+            .Select(r => new { CreateBy = Constants.LostUser.Id, Size = r.Sum(a => a.file.ContentLength) });
 
-        public async Task<long> GetUserSpaceUsageAsync(Guid userId)
-        {
-            var tenantId = TenantManager.GetCurrentTenant().TenantId;
-            var my = GlobalFolder.GetFolderMy(FileMarker, DaoFactory);
-            var trash = await GlobalFolder.GetFolderTrashAsync<int>(DaoFactory);
+        return myFiles.Union(commonFiles)
+            .AsAsyncEnumerable()
+            .GroupByAwait(
+            async r => await Task.FromResult(r.CreateBy),
+            async r => await Task.FromResult(r.Size),
+            async (userId, items) =>
+            {
+                var user = _userManager.GetUsers(userId);
+                var item = new UsageSpaceStatItem { SpaceUsage = await items.SumAsync() };
+                if (user.Equals(Constants.LostUser))
+                {
+                    item.Name = FilesUCResource.CorporateFiles;
+                    item.ImgUrl = _pathProvider.GetImagePath("corporatefiles_big.png");
+                    item.Url = await _pathProvider.GetFolderUrlByIdAsync(await _globalFolderHelper.FolderCommonAsync);
+                }
+                else
+                {
+                    item.Name = user.DisplayUserName(false, _displayUserSettingsHelper);
+                    item.ImgUrl = await user.GetSmallPhotoURL(_userPhotoManager);
+                    item.Url = user.GetUserProfilePageURL(_commonLinkUtility);
+                    item.Disabled = user.Status == EmployeeStatus.Terminated;
+                }
+                return item;
+            })
+            .OrderByDescending(i => i.SpaceUsage)
+            .ToListAsync();
 
-            return await FilesDbContext.Files
-                .AsQueryable()
-                .Where(r => r.TenantId == tenantId && (r.FolderId == my || r.FolderId == trash))
-                .SumAsync(r => r.ContentLength);
-        }
+    }
+}
+
+[Scope]
+public class FilesUserSpaceUsage : IUserSpaceUsage
+{
+    private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
+    private readonly TenantManager _tenantManager;
+    private readonly GlobalFolder _globalFolder;
+    private readonly FileMarker _fileMarker;
+    private readonly IDaoFactory _daoFactory;
+
+    public FilesUserSpaceUsage(
+        IDbContextFactory<FilesDbContext> dbContextFactory,
+        TenantManager tenantManager,
+        GlobalFolder globalFolder,
+        FileMarker fileMarker,
+        IDaoFactory daoFactory)
+    {
+        _dbContextFactory = dbContextFactory;
+        _tenantManager = tenantManager;
+        _globalFolder = globalFolder;
+        _fileMarker = fileMarker;
+        _daoFactory = daoFactory;
+    }
+
+    public async Task<long> GetUserSpaceUsageAsync(Guid userId)
+    {
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var my = _globalFolder.GetFolderMy(_fileMarker, _daoFactory);
+        var trash = await _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
+
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        return await filesDbContext.Files
+            .Where(r => r.TenantId == tenantId && (r.ParentId == my || r.ParentId == trash))
+            .SumAsync(r => r.ContentLength);
     }
 }

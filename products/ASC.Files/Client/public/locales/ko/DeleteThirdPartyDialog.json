@@ -1,4 +1,0 @@
-﻿{
-  "DeleteThirdPartyAlert": "'문서' 모듈에서 {{service}} 서비스를 삭제하시겠습니까? 이미 {{account}} 계정에 영향을 미치지 않습니다.",
-  "SuccessDeleteThirdParty": "제3자 {{service}} 서비스가 삭제되었습니다"
-}

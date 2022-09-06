@@ -1,8 +1,0 @@
-﻿{
-  "ChangeUsersActiveStatus": "bị vô hiệu hóa",
-  "ChangeUsersDisableStatus": "đã kích hoạt",
-  "ChangeUsersStatusButton": "Thay đổi trạng thái người dùng",
-  "ChangeUserStatusDialog": "Người dùng có trạng thái '{{ userStatus }}' sẽ bị {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Thay đổi trạng thái người dùng",
-  "ChangeUserStatusDialogMessage": "Bạn không thể thay đổi trạng thái cho chủ sở hữu cổng thông tin và cho chính mình"
-}

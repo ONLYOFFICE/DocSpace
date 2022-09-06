@@ -1,94 +1,102 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// (c) Copyright Ascensio System SIA 2010-2022
+//
+// This program is a free software product.
+// You can redistribute it and/or modify it under the terms
+// of the GNU Affero General Public License (AGPL) version 3 as published by the Free Software
+// Foundation. In accordance with Section 7(a) of the GNU AGPL its Section 15 shall be amended
+// to the effect that Ascensio System SIA expressly excludes the warranty of non-infringement of
+// any third-party rights.
+//
+// This program is distributed WITHOUT ANY WARRANTY, without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR  PURPOSE. For details, see
+// the GNU AGPL at: http://www.gnu.org/licenses/agpl-3.0.html
+//
+// You can contact Ascensio System SIA at Lubanas st. 125a-25, Riga, Latvia, EU, LV-1021.
+//
+// The  interactive user interfaces in modified source and object code versions of the Program must
+// display Appropriate Legal Notices, as required under Section 5 of the GNU AGPL version 3.
+//
+// Pursuant to Section 7(b) of the License you must retain the original Product logo when
+// distributing the program. Pursuant to Section 7(e) we decline to grant you any rights under
+// trademark law for use of our trademarks.
+//
+// All the Product's GUI elements, including illustrations and icon sets, as well as technical writing
+// content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
+// International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common.Utils;
+namespace ASC.Data.Backup.Services;
 
-namespace ASC.Data.Backup.Services
+public class BackupSettings
 {
-    public class BackupSettings
+    public string UpgradesPath { get; set; }
+    public int Limit { get; set; }
+    public ServiceConfigurationElement Service { get; set; }
+    public SchedulerConfigurationElement Scheduler { get; set; }
+    public CleanerConfigurationElement Cleaner { get; set; }
+    public WebConfigCollection WebConfigs { get; set; }
+
+    public class SchedulerConfigurationElement
     {
-        public string UpgradesPath { get; set; }
+        public TimeSpan Period { get; set; }
+        public int WorkerCount { get; set; }
+    }
 
-        public int Limit { get; set; }
+    public class CleanerConfigurationElement
+    {
+        public TimeSpan Period { get; set; }
+    }
 
-        public ServiceConfigurationElement Service { get; set; }
-        public SchedulerConfigurationElement Scheduler { get; set; }
-        public CleanerConfigurationElement Cleaner { get; set; }
-        public WebConfigCollection WebConfigs { get; set; }
+    public class ServiceConfigurationElement
+    {
+        public int WorkerCount { get; set; }
+    }
 
-        public class SchedulerConfigurationElement
+    public class WebConfigCollection
+    {
+        public string CurrentRegion { get; set; }
+        public List<WebConfigElement> Elements { get; set; }
+        public string CurrentPath
         {
-
-            public TimeSpan Period { get; set; }
-            public int WorkerCount { get; set; }
-        }
-
-        public class CleanerConfigurationElement
-        {
-            public TimeSpan Period { get; set; }
-        }
-
-        public class ServiceConfigurationElement
-        {
-            public int WorkerCount { get; set; }
-        }
-
-        public class WebConfigCollection
-        {
-            public string CurrentRegion { get; set; }
-
-
-            public List<WebConfigElement> Elements { get; set; }
-
-            public string CurrentPath
+            get
             {
-                get
+                if (Elements == null)
                 {
-                    if (Elements == null)
-                    {
-                        Elements = new List<WebConfigElement>();
-                    }
-                    if (Elements.Count == 0)
-                    {
-                        return CrossPlatform.PathCombine("..", "..", "WebStudio");
-                    }
-                    if (Elements.Count == 1)
-                    {
-                        return Elements[0].Path;
-                    }
-                    return GetPath(CurrentRegion);
+                    Elements = new List<WebConfigElement>();
+                }
+                if (Elements.Count == 0)
+                {
+                    return CrossPlatform.PathCombine("..", "..", "WebStudio");
+                }
+                if (Elements.Count == 1)
+                {
+                    return Elements[0].Path;
+                }
+                return GetPath(CurrentRegion);
+            }
+        }
+
+        public string GetPath(string region)
+        {
+            foreach (var el in Elements)
+            {
+                if (el.Region == region)
+                {
+                    return el.Path;
                 }
             }
-
-            public string GetPath(string region)
-            {
-
-                foreach (var el in Elements)
-                {
-                    if (el.Region == region)
-                    {
-                        return el.Path;
-                    }
-                }
-                return null;
-            }
-
-        }
-
-        public class WebConfigElement
-        {
-            public string Region { get; }
-
-            public string Path { get; }
-
-            public WebConfigElement(string region, string path)
-            {
-                Region = region;
-                Path = path;
-            }
+            return null;
         }
     }
 
+    public class WebConfigElement
+    {
+        public string Region { get; }
+        public string Path { get; }
 
+        public WebConfigElement(string region, string path)
+        {
+            Region = region;
+            Path = path;
+        }
+    }
 }
-

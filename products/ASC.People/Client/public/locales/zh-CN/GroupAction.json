@@ -1,8 +1,0 @@
-﻿{
-  "CustomNewDepartment": "{{groupCaption}}（创建）",
-  "GroupAction": "群组操作",
-  "Members": "成员",
-  "SearchAddedMembers": "搜索已添加的成员",
-  "SelectAction": "选择",
-  "SuccessSaveGroup": "{{groupCaption}}‘{{ groupName }}’已成功保存"
-}

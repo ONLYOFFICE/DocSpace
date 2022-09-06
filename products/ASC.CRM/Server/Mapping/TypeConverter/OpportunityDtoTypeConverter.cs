@@ -49,16 +49,16 @@ namespace ASC.CRM.Mapping
         private readonly DaoFactory _daoFactory;
         private readonly CrmSecurity _crmSecurity;
         private readonly ApiDateTimeHelper _apiDateTimeHelper;
-        private readonly EmployeeWraperHelper _employeeWraperHelper;
+        private readonly EmployeeDtoHelper _employeeDtoHelper;
 
         public OpportunityDtoTypeConverter(ApiDateTimeHelper apiDateTimeHelper,
-                           EmployeeWraperHelper employeeWraperHelper,
+                           EmployeeDtoHelper employeeDtoHelper,
                            CrmSecurity crmSecurity,
                            DaoFactory daoFactory,
                            CurrencyProvider currencyProvider)
         {
             _apiDateTimeHelper = apiDateTimeHelper;
-            _employeeWraperHelper = employeeWraperHelper;
+            _employeeDtoHelper = employeeDtoHelper;
             _crmSecurity = crmSecurity;
             _daoFactory = daoFactory;
             _currencyProvider = currencyProvider;
@@ -69,11 +69,11 @@ namespace ASC.CRM.Mapping
             var dealDto = new OpportunityDto
             {
                 Id = source.ID,
-                CreateBy = _employeeWraperHelper.Get(source.CreateBy),
+                CreateBy = _employeeDtoHelper.Get(source.CreateBy),
                 Created = _apiDateTimeHelper.Get(source.CreateOn),
                 Title = source.Title,
                 Description = source.Description,
-                Responsible = _employeeWraperHelper.Get(source.ResponsibleID),
+                Responsible = _employeeDtoHelper.Get(source.ResponsibleID),
                 BidType = source.BidType,
                 BidValue = source.BidValue,
                 PerPeriodValue = source.PerPeriodValue,
@@ -97,7 +97,7 @@ namespace ASC.CRM.Mapping
             }
 
             dealDto.AccessList = _crmSecurity.GetAccessSubjectTo(source)
-                                                .Select(item => _employeeWraperHelper.Get(item.Key));
+                                                .Select(item => _employeeDtoHelper.Get(item.Key));
 
             dealDto.IsPrivate = _crmSecurity.IsPrivate(source);
 

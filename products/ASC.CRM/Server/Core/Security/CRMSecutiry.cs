@@ -125,9 +125,9 @@ namespace ASC.CRM.Core
                                    .GetAces(userId, _actionRead.ID)
                                    .Where(
                                        item =>
-                                       !String.IsNullOrEmpty(item.ObjectId) &&
-                                       item.ObjectId.StartsWith(objectType.FullName))
-                                   .GroupBy(item => item.ObjectId, item => item.SubjectId);
+                                       !String.IsNullOrEmpty(item.Object) &&
+                                       item.Object.StartsWith(objectType.FullName))
+                                   .GroupBy(item => item.Object, item => item.Subject);
 
             if (withoutUser)
             {
@@ -158,19 +158,19 @@ namespace ASC.CRM.Core
         {
             var allAces = _authorizationManager.GetAcesWithInherits(Guid.Empty, _actionRead.ID, entity,
                                                                                GetCRMSecurityProvider())
-                                     .Where(item => item.SubjectId != Constants.GroupEveryone.ID);
+                                     .Where(item => item.Subject != Constants.GroupEveryone.ID);
 
             var result = new Dictionary<Guid, String>();
 
             foreach (var azRecord in allAces)
             {
-                if (!result.ContainsKey(azRecord.SubjectId))
+                if (!result.ContainsKey(azRecord.Subject))
                 {
-                    var userInfo = _userManager.GetUsers(azRecord.SubjectId);
+                    var userInfo = _userManager.GetUsers(azRecord.Subject);
                     var displayName = employeeStatus == EmployeeStatus.All || userInfo.Status == employeeStatus
                                           ? userInfo.DisplayUserName(_displayUserSettingsHelper)
                                           : Constants.LostUser.DisplayUserName(_displayUserSettingsHelper);
-                    result.Add(azRecord.SubjectId, displayName);
+                    result.Add(azRecord.Subject, displayName);
                 }
             }
             return result;
@@ -185,14 +185,14 @@ namespace ASC.CRM.Core
         {
             var allAces = _authorizationManager.GetAcesWithInherits(Guid.Empty, _actionRead.ID, entity,
                                                                                GetCRMSecurityProvider())
-                                     .Where(item => item.SubjectId != Constants.GroupEveryone.ID);
+                                     .Where(item => item.Subject != Constants.GroupEveryone.ID);
 
             var result = new List<Guid>();
 
             foreach (var azRecord in allAces)
             {
-                if (!result.Contains(azRecord.SubjectId))
-                    result.Add(azRecord.SubjectId);
+                if (!result.Contains(azRecord.Subject))
+                    result.Add(azRecord.Subject);
             }
             return result;
         }
@@ -209,23 +209,23 @@ namespace ASC.CRM.Core
             var aces = _authorizationManager.GetAcesWithInherits(Guid.Empty, _actionRead.ID, entity, GetCRMSecurityProvider());
             foreach (var r in aces)
             {
-                if (!subjectID.Contains(r.SubjectId) && (r.SubjectId != Constants.GroupEveryone.ID || r.Reaction != AceType.Allow))
+                if (!subjectID.Contains(r.Subject) && (r.Subject != Constants.GroupEveryone.ID || r.AceType != AceType.Allow))
                 {
                     _authorizationManager.RemoveAce(r);
                 }
             }
 
-            var oldSubjects = aces.Select(r => r.SubjectId).ToList();
+            var oldSubjects = aces.Select(r => r.Subject).ToList();
 
             foreach (var s in subjectID)
             {
                 if (!oldSubjects.Contains(s))
                 {
-                    _authorizationManager.AddAce(new AzRecord(s, _actionRead.ID, AceType.Allow, entity));
+                    _authorizationManager.AddAce(new AzRecord(s, _actionRead.ID, AceType.Allow, entity.FullId));
                 }
             }
 
-            _authorizationManager.AddAce(new AzRecord(Constants.GroupEveryone.ID, _actionRead.ID, AceType.Deny, entity));
+            _authorizationManager.AddAce(new AzRecord(Constants.GroupEveryone.ID, _actionRead.ID, AceType.Deny, entity.FullId));
         }
 
         public void SetAccessTo(File<int> file)
