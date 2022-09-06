@@ -6,6 +6,7 @@ import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./settingsCustomization/language-and-time-zone";
 import WelcomePageSettings from "./settingsCustomization/welcome-page-settings";
 import PortalRenaming from "./settingsCustomization/portal-renaming";
+import DNSSettings from "./settingsCustomization/dns-settings";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import CustomizationNavbar from "./customization-navbar";
 import { Base } from "@docspace/components/themes";
@@ -21,11 +22,8 @@ const StyledComponent = styled.div`
     max-width: 100%;
   }
 
-  .settings-block {
-    margin-bottom: 24px;
-  }
-
   .category-description {
+    margin-top: 5px;
     line-height: 20px;
     color: #657077;
     margin-bottom: 20px;
@@ -55,6 +53,10 @@ const StyledComponent = styled.div`
     font-size: 16px;
     line-height: 22px;
     margin-right: 4px;
+  }
+
+  .settings-block {
+    margin-bottom: 24px;
   }
 
   @media (min-width: 600px) {
@@ -109,6 +111,7 @@ const Customization = (props) => {
       )}
       <LanguageAndTimeZone isMobileView={isMobile} />
       <WelcomePageSettings isMobileView={isMobile} />
+      <DNSSettings isMobileView={isMobile} />
       <PortalRenaming isMobileView={isMobile} />
     </StyledComponent>
   );

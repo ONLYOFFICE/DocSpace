@@ -169,7 +169,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         return result;
     }
 
-    public EmployeeFullDto GetFull(UserInfo userInfo)
+    public async Task<EmployeeFullDto> GetFull(UserInfo userInfo)
     {
         var result = new EmployeeFullDto
         {
@@ -189,7 +189,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             IsSSO = userInfo.IsSSO()
         };
 
-        Init(result, userInfo);
+        await Init(result, userInfo);
 
         if (userInfo.Sex.HasValue)
         {
@@ -225,17 +225,17 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (_context.Check("avatarMax"))
         {
-            result.AvatarMax = _userPhotoManager.GetMaxPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.AvatarMax = await _userPhotoManager.GetMaxPhotoURL(userInfo.Id) + $"?_={userInfoLM}";
         }
 
         if (_context.Check("avatarMedium"))
         {
-            result.AvatarMedium = _userPhotoManager.GetMediumPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.AvatarMedium = await _userPhotoManager.GetMediumPhotoURL(userInfo.Id) + $"?_={userInfoLM}";
         }
 
         if (_context.Check("avatar"))
         {
-            result.Avatar = _userPhotoManager.GetBigPhotoURL(userInfo.Id, out var isdef) + (isdef ? "" : $"?_={userInfoLM}");
+            result.Avatar = await _userPhotoManager.GetBigPhotoURL(userInfo.Id) + $"?_={userInfoLM}";
         }
 
         if (_context.Check("listAdminModules"))

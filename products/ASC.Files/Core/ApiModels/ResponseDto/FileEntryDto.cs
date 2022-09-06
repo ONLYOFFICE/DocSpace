@@ -48,15 +48,11 @@ public abstract class FileEntryDto
     public string ProviderKey { get; set; }
     public int? ProviderId { get; set; }
 
-    protected FileEntryDto(FileEntry entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
+    protected FileEntryDto(FileEntry entry)
     {
         Title = entry.Title;
         Access = entry.Access;
         Shared = entry.Shared;
-        Created = apiDateTimeHelper.Get(entry.CreateOn);
-        CreatedBy = employeeWraperHelper.Get(entry.CreateBy);
-        Updated = apiDateTimeHelper.Get(entry.ModifiedOn);
-        UpdatedBy = employeeWraperHelper.Get(entry.ModifiedBy);
         RootFolderType = entry.RootFolderType;
         ProviderItem = entry.ProviderEntry.NullIfDefault();
         ProviderKey = entry.ProviderKey;
@@ -73,8 +69,8 @@ public abstract class FileEntryDto<T> : FileEntryDto
     public bool CanShare { get; set; }
     public bool CanEdit { get; set; }
 
-    protected FileEntryDto(FileEntry<T> entry, EmployeeDtoHelper employeeWraperHelper, ApiDateTimeHelper apiDateTimeHelper)
-        : base(entry, employeeWraperHelper, apiDateTimeHelper)
+    protected FileEntryDto(FileEntry<T> entry)
+        : base(entry)
     {
         Id = entry.Id;
         RootFolderId = entry.RootId;
@@ -112,9 +108,9 @@ public class FileEntryDtoHelper
             Access = entry.Access,
             Shared = entry.Shared,
             Created = _apiDateTimeHelper.Get(entry.CreateOn),
-            CreatedBy = _employeeWraperHelper.Get(entry.CreateBy),
+            CreatedBy = await _employeeWraperHelper.Get(entry.CreateBy),
             Updated = _apiDateTimeHelper.Get(entry.ModifiedOn),
-            UpdatedBy = _employeeWraperHelper.Get(entry.ModifiedBy),
+            UpdatedBy = await _employeeWraperHelper.Get(entry.ModifiedBy),
             RootFolderType = entry.RootFolderType,
             RootFolderId = entry.RootId,
             ProviderItem = entry.ProviderEntry.NullIfDefault(),

@@ -1,4 +1,4 @@
-Source: appserver
+Source: {{product}}
 Section: web
 Priority: optional
 Maintainer: onlyoffice
@@ -7,185 +7,187 @@ Standards-Version: {{package_header_tag_version}}
 Homepage: https://www.onlyoffice.com/
 Architecture: any
 
-Package: appserver
+Package: {{product}}
 Architecture: any
-Depends: appserver-api-system (= {{package_header_tag_version}}),
-         appserver-backup (= {{package_header_tag_version}}),
-         appserver-storage-encryption (= {{package_header_tag_version}}),
-         appserver-files (= {{package_header_tag_version}}),
-         appserver-files-services (= {{package_header_tag_version}}),    
-         appserver-storage-migration (= {{package_header_tag_version}}),
-         appserver-notify (= {{package_header_tag_version}}),
-         appserver-people-server (= {{package_header_tag_version}}),
-         appserver-socket (= {{package_header_tag_version}}),
-         appserver-ssoauth (= {{package_header_tag_version}}),
-         appserver-studio-notify (= {{package_header_tag_version}}),
-         appserver-telegram-service (= {{package_header_tag_version}}),
-         appserver-thumbnails (= {{package_header_tag_version}}),
-         appserver-urlshortener (= {{package_header_tag_version}}),
-         appserver-api (= {{package_header_tag_version}}),
-         appserver-studio (= {{package_header_tag_version}}),
-         appserver-proxy (= {{package_header_tag_version}})
+Depends: {{product}}-api (= {{package_header_tag_version}}),
+         {{product}}-backup (= {{package_header_tag_version}}),
+         {{product}}-backup-background (= {{package_header_tag_version}}),
+         {{product}}-clear-events (= {{package_header_tag_version}}),
+         {{product}}-doceditor(= {{package_header_tag_version}}),
+         {{product}}-files (= {{package_header_tag_version}}),
+         {{product}}-files-services (= {{package_header_tag_version}}),
+         {{product}}-migration (= {{package_header_tag_version}}),
+         {{product}}-migration-runner (= {{package_header_tag_version}}),
+         {{product}}-notify (= {{package_header_tag_version}}),
+         {{product}}-people-server (= {{package_header_tag_version}}),
+         {{product}}-proxy (= {{package_header_tag_version}}),
+         {{product}}-radicale (= {{package_header_tag_version}}),
+         {{product}}-socket (= {{package_header_tag_version}}),
+         {{product}}-ssoauth (= {{package_header_tag_version}}),
+         {{product}}-studio (= {{package_header_tag_version}}),
+         {{product}}-studio-notify (= {{package_header_tag_version}}),
+         {{product}}-telegram-service (= {{package_header_tag_version}}),
+         {{product}}-urlshortener (= {{package_header_tag_version}}),
+         {{product}}-webhooks-service (= {{package_header_tag_version}})
 Description: Description
 
-Package: appserver-common
-Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Description
-
-Package: appserver-configuration
+Package: {{product}}-common
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
-Package: appserver-api-system
+Package: {{product}}-backup
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-backup
+Package: {{product}}-files
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-storage-encryption
+Package: {{product}}-files-services
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-files
+Package: {{product}}-notify
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-files-services
+Package: {{product}}-people-server
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-storage-migration
+Package: {{product}}-socket
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
- dotnet-sdk-6.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: appserver-notify
-Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
- dotnet-sdk-6.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: appserver-people-server
-Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
- dotnet-sdk-6.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: appserver-socket
-Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
- dotnet-sdk-6.0,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  nodejs (>=14),
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-studio-notify
+Package: {{product}}-studio-notify
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-telegram-service
+Package: {{product}}-telegram-service
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-thumbnails
+Package: {{product}}-urlshortener
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
- dotnet-sdk-6.0,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  nodejs (>=14),
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-urlshortener
+Package: {{product}}-api
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
- dotnet-sdk-6.0,
- nodejs (>=14),
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: appserver-api
-Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-studio
+Package: {{product}}-studio
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description
 
-Package: appserver-proxy
+Package: {{product}}-proxy
 Architecture: any
 Depends: nginx, ${misc:Depends}, ${shlibs:Depends}
 Description: Description
 
-Package: appserver-ssoauth
+Package: {{product}}-ssoauth
 Architecture: any
-Depends: appserver-common (= {{package_header_tag_version}}),
- appserver-configuration,
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ nodejs (>=14),
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: Description
+
+Package: {{product}}-backup-background
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-6.0,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: Description
+
+Package: {{product}}-clear-events
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ dotnet-sdk-6.0,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: Description
+
+Package: {{product}}-migration
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ dotnet-sdk-6.0,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: Description
+
+Package: {{product}}-migration-runner
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ dotnet-sdk-6.0,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: Description
+
+Package: {{product}}-radicale
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ python3-pip,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: Description
+
+Package: {{product}}-webhooks-service
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ dotnet-sdk-6.0,
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: Description
+
+Package: {{product}}-doceditor
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
  nodejs (>=14),
  ${misc:Depends},
  ${shlibs:Depends}

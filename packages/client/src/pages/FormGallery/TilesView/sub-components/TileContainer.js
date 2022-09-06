@@ -1,49 +1,17 @@
-import React, { memo } from "react";
+import React from "react";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
-import { FixedSizeList as List, areEqual } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
-import CustomScrollbarsVirtualList from "@docspace/components/scrollbar";
 import { StyledGridWrapper, StyledTileContainer } from "../StyledTileView";
+import InfiniteGrid from "./InfiniteGrid";
 
 class TileContainer extends React.PureComponent {
-  renderTile = memo(({ data, index, style }) => {
-    return <div style={style}>{data[index]}</div>;
-  }, areEqual);
-
   render() {
-    const {
-      itemHeight,
-      children,
-      useReactWindow,
-      id,
-      className,
-      style,
-    } = this.props;
-
-    const renderList = ({ height, width }) => (
-      <List
-        className="list"
-        height={height}
-        width={width}
-        itemSize={itemHeight}
-        itemCount={children.length}
-        itemData={children}
-        outerElementType={CustomScrollbarsVirtualList}
-      >
-        {this.renderTile}
-      </List>
-    );
+    const { children, useReactWindow, ...rest } = this.props;
 
     return (
-      <StyledTileContainer
-        id={id}
-        className={className}
-        style={style}
-        useReactWindow={useReactWindow}
-      >
+      <StyledTileContainer {...rest}>
         {useReactWindow ? (
-          <AutoSizer>{renderList}</AutoSizer>
+          <InfiniteGrid>{children}</InfiniteGrid>
         ) : (
           <StyledGridWrapper>{children}</StyledGridWrapper>
         )}
@@ -53,19 +21,15 @@ class TileContainer extends React.PureComponent {
 }
 
 TileContainer.propTypes = {
-  itemHeight: PropTypes.number,
-  manualHeight: PropTypes.string,
   children: PropTypes.any.isRequired,
-  useReactWindow: PropTypes.bool,
   className: PropTypes.string,
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 TileContainer.defaultProps = {
-  itemHeight: 50,
   useReactWindow: true,
-  id: "rowContainer",
+  id: "tileContainer",
 };
 
 export default withTranslation(["Files", "Common"])(TileContainer);

@@ -13,6 +13,11 @@
   "NotFoundCode": "Vous n'avez pas trouvé le code ? Veuillez vérifier votre dossier 'Spam'.",
   "Or": "Ou",
   "PasswordRecoveryTitle": "Récupération du mot de passe",
+  "RecoverAccess": "Récupérer l'accès",
+  "RecoverContactEmailPlaceholder": "E-mail de contact",
+  "RecoverDescribeYourProblemPlaceholder": "Décrivez votre problème",
+  "RecoverTextBody": "Si vous ne pouvez pas vous connecter avec votre compte existant ou que vous souhaitez en créer un nouveau, merci de contacter l'administrateur du portail.",
+  "RecoverTitle": "Récupération d'accès",
   "Register": "Inscription",
   "RegisterSendButton": "Envoyer une demande",
   "RegisterTextBodyAfterDomainsList": "Pour vous inscrire, merci de saisir votre adresse e-mail et de cliquer sur Envoyer une demande. Un message avec un lien pour activer votre compte sera envoyé à cette adresse.",
@@ -22,5 +27,7 @@
   "RegistrationEmailWatermark": "Adresse de courriel",
   "Remember": "Se souvenir de moi",
   "RememberHelper": "Par défaut, la durée de validité de la session est de 20 minutes. Cochez cette option pour la définir sur 1 an. Vous pouvez définir votre propre valeur en accédant aux paramètres.",
-  "ResendCode": "Renvoyer le code"
+  "ResendCode": "Renvoyer le code",
+  "ErrorInvalidHeader": "Adresse e-mail incorrecte ou lien expiré",
+  "ErrorInvalidText": "En 10 secondes, vous serez redirigé vers <1>login page</1>"
 }

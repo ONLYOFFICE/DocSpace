@@ -176,7 +176,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var filter = GetRoomTypeFilter(filterType);
 
         var searchByTags = tags != null && tags.Any() && !withoutTags;
-        var searchByTypes = filterType != FilterType.None;
+        var searchByTypes = filterType != FilterType.None && filterType != FilterType.FoldersOnly;
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = GetFolderQuery(filesDbContext, r => r.ParentId == parentId).AsNoTracking();
@@ -206,7 +206,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var filter = GetRoomTypeFilter(filterType);
 
         var searchByTags = tags != null && tags.Any() && !withoutTags;
-        var searchByTypes = filterType != FilterType.None;
+        var searchByTypes = filterType != FilterType.None && filterType != FilterType.FoldersOnly;
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = GetFolderQuery(filesDbContext, f => roomsIds.Contains(f.Id)).AsNoTracking();
@@ -448,6 +448,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 ModifiedOn = _tenantUtil.DateTimeToUtc(folder.ModifiedOn),
                 ModifiedBy = folder.ModifiedBy,
                 FolderType = folder.FolderType,
+                Private = folder.Private,
                 TenantId = TenantID
             };
 
@@ -889,9 +890,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return await GetItemsCountAsync(folderId) == 0;
     }
 
-    public bool UseTrashForRemove(Folder<int> folder)
+    public bool UseTrashForRemoveAsync(Folder<int> folder)
     {
-        return folder.RootFolderType != FolderType.TRASH && folder.RootFolderType != FolderType.Privacy && folder.FolderType != FolderType.BUNCH;
+        return folder.RootFolderType != FolderType.TRASH && folder.RootFolderType != FolderType.Privacy && folder.FolderType != FolderType.BUNCH && folder.Private;
     }
 
     public bool UseRecursiveOperation(int folderId, string toRootFolderId)

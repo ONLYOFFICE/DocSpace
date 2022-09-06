@@ -53,9 +53,7 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<ChunkedUploaderHandlerService>();
         DIHelper.TryAdd<DocuSignHandlerService>();
         DIHelper.TryAdd<ThirdPartyAppHandlerService>();
-        DIHelper.TryAdd<OFormService>();
 
-        services.AddHostedService<OFormService>();
         NotifyConfigurationExtension.Register(DIHelper);
     }
 

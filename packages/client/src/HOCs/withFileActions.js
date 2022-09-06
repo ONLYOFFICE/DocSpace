@@ -176,6 +176,10 @@ export default function withFileActions(WrappedFileItem) {
       this.props.selectTag(tag);
     };
 
+    onSelectType = (type) => {
+      this.props.selectType(type);
+    };
+
     getContextModel = () => {
       const { getModel, item, t } = this.props;
       return getModel(item, t);
@@ -237,6 +241,7 @@ export default function withFileActions(WrappedFileItem) {
           onMouseClick={this.onMouseClick}
           onHideContextMenu={this.onHideContextMenu}
           onSelectTag={this.onSelectTag}
+          onSelectType={this.onSelectType}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
@@ -271,6 +276,7 @@ export default function withFileActions(WrappedFileItem) {
       const {
         selectRowAction,
         selectTag,
+        selectType,
         onSelectItem,
         setNewBadgeCount,
         openFileAction,
@@ -331,7 +337,8 @@ export default function withFileActions(WrappedFileItem) {
       )
         isActive = true;
 
-      const showHotkeyBorder = hotkeyCaret?.id === item.id;
+      const showHotkeyBorder =
+        hotkeyCaret?.id === item.id && hotkeyCaret?.isFolder === item.isFolder;
 
       return {
         t,
@@ -339,6 +346,7 @@ export default function withFileActions(WrappedFileItem) {
         selectRowAction,
         onSelectItem,
         selectTag,
+        selectType,
         setSharingPanelVisible,
         isPrivacy: isPrivacyFolder,
         isRoomsFolder,

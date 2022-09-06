@@ -97,7 +97,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager
                 else
                 {
                     item.Name = user.DisplayUserName(false, _displayUserSettingsHelper);
-                    item.ImgUrl = user.GetSmallPhotoURL(_userPhotoManager);
+                    item.ImgUrl = await user.GetSmallPhotoURL(_userPhotoManager);
                     item.Url = user.GetUserProfilePageURL(_commonLinkUtility);
                     item.Disabled = user.Status == EmployeeStatus.Terminated;
                 }

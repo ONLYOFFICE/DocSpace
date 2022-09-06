@@ -1,72 +1,46 @@
 import React from "react";
 import { withTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import SelectelSettings from "../../../consumer-storage-settings/SelectelSettings";
+import { ThirdPartyStorages } from "@docspace/common/constants";
+import { getFromLocalStorage } from "../../../../../../utils";
 
 class SelectelStorage extends React.Component {
   constructor(props) {
     super(props);
-    const { selectedStorage } = this.props;
+    const { selectedStorage, setCompletedFormFields } = this.props;
 
-    const formSettings = {};
-    this.namesArray = SelectelSettings.formNames();
-    this.namesArray.forEach((elem) => (formSettings[elem] = ""));
+    const basicValues = SelectelSettings.formNames();
 
-    this.state = {
-      formSettings,
-      formErrors: {},
-    };
+    const moduleValues = getFromLocalStorage(
+      "LocalCopyThirdPartyStorageValues"
+    );
+    const moduleType =
+      getFromLocalStorage("LocalCopyStorage") === ThirdPartyStorages.SelectelId;
+
+    setCompletedFormFields(
+      moduleType && moduleValues ? moduleValues : basicValues
+    );
 
     this.isDisabled = selectedStorage && !selectedStorage.isSet;
   }
 
-  onChange = (event) => {
-    const { formSettings } = this.state;
-    const { target } = event;
-    const value = target.value;
-    const name = target.name;
-
-    this.setState({ formSettings: { ...formSettings, [name]: value } });
-  };
-
-  onMakeCopy = () => {
-    const { formSettings } = this.state;
-
-    const { onMakeCopyIntoStorage, isInvalidForm } = this.props;
-
-    const isInvalid = isInvalidForm(formSettings);
-
-    const hasError = isInvalid[0];
-    const errors = isInvalid[1];
-
-    if (hasError) {
-      this.setState({ formErrors: errors });
-      return;
-    }
-
-    const arraySettings = Object.entries(formSettings);
-
-    onMakeCopyIntoStorage(arraySettings);
-    this.setState({ formErrors: {} });
-  };
-
   render() {
-    const { formSettings, formErrors } = this.state;
     const {
       t,
       isLoadingData,
       isMaxProgress,
       selectedStorage,
       buttonSize,
+      onMakeCopyIntoStorage,
+      isValidForm,
     } = this.props;
 
     return (
       <>
         <SelectelSettings
-          formSettings={formSettings}
-          onChange={this.onChange}
           isLoadingData={isLoadingData}
-          isError={formErrors}
           selectedStorage={selectedStorage}
           t={t}
         />
@@ -74,22 +48,22 @@ class SelectelStorage extends React.Component {
         <div className="manual-backup_buttons">
           <Button
             label={t("Common:Duplicate")}
-            onClick={this.onMakeCopy}
+            onClick={onMakeCopyIntoStorage}
             primary
-            isDisabled={!isMaxProgress || this.isDisabled}
+            isDisabled={!isValidForm || !isMaxProgress || this.isDisabled}
             size={buttonSize}
           />
-          {!isMaxProgress && (
-            <Button
-              label={t("Common:CopyOperation") + "..."}
-              isDisabled={true}
-              size={buttonSize}
-              style={{ marginLeft: "8px" }}
-            />
-          )}
         </div>
       </>
     );
   }
 }
-export default withTranslation(["Settings", "Common"])(SelectelStorage);
+
+export default inject(({ backup }) => {
+  const { setCompletedFormFields, isValidForm } = backup;
+
+  return {
+    isValidForm,
+    setCompletedFormFields,
+  };
+})(observer(withTranslation(["Settings", "Common"])(SelectelStorage)));

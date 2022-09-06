@@ -153,6 +153,13 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
         provider.UpdateTitle(newTitle); //This will update cached version too
     }
 
+    public async Task UpdateProviderFolderId(T provider, string id)
+    {
+        var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
+        await dbDao.UpdateProviderInfoAsync(provider.ID, id, provider.FolderType, provider.Private);
+        provider.FolderId = id;
+    }
+
     protected virtual T GetProviderInfo(int linkId)
     {
         var dbDao = _daoFactory.ProviderDao;

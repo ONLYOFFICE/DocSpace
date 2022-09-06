@@ -13,6 +13,11 @@
   "NotFoundCode": "コードが見つかりませんか？「迷惑メール」のフォルダをご確認ください。",
   "Or": "または",
   "PasswordRecoveryTitle": "パスワード復旧",
+  "RecoverAccess": "アクセス回復",
+  "RecoverContactEmailPlaceholder": "連絡先メール",
+  "RecoverDescribeYourProblemPlaceholder": "ご質問を説明ください",
+  "RecoverTextBody": "既存のアカウントでログインできない場合や、新規ユーザーとして登録したい場合は、ポータル管理者にお問い合わせください。 ",
+  "RecoverTitle": "アクセス回復機能",
   "Register": "登録",
   "RegisterSendButton": "リクエスト送信",
   "RegisterTextBodyAfterDomainsList": "登録するには、メールアドレスを入力して「リクエスト送信」をクリックします。指定されたアドレスに、アカウント有効化のためのリンクが添付されたメッセージが送信されます。",
@@ -22,5 +27,7 @@
   "RegistrationEmailWatermark": "メール",
   "Remember": "保存",
   "RememberHelper": "デフォルトのセッションライフタイムは20分です。このオプションをチェックすると、1年間に設定されます。独自の値を設定するには、「設定」で設定します。",
-  "ResendCode": "コードの再送信"
+  "ResendCode": "コードの再送信",
+  "ErrorInvalidHeader": "メールアドレスが正しくないかリンクの有効期限が切れています",
+  "ErrorInvalidText": "10秒後、<1>ログインページ</1>にリダイレクトされます。"
 }

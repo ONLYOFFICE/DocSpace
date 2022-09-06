@@ -461,6 +461,11 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
                 //We can't search google folders by title because root can have multiple folders with the same name
                 //var newFolder = SharpBoxProviderInfo.Storage.GetFileSystemObject(newTitle, folder.Parent);
                 newId = MakeId(entry);
+
+                if (DocSpaceHelper.IsRoom(ProviderInfo.FolderType) && ProviderInfo.FolderId != null && ProviderInfo.FolderId == oldId)
+                {
+                    await DaoSelector.UpdateProviderFolderId(ProviderInfo, newId);
+                }
             }
         }
 
@@ -479,7 +484,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         return Task.FromResult(GetFolderById(folderId).Count == 0);
     }
 
-    public bool UseTrashForRemove(Folder<string> folder)
+    public bool UseTrashForRemoveAsync(Folder<string> folder)
     {
         return false;
     }

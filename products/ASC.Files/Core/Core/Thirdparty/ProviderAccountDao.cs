@@ -137,9 +137,9 @@ internal class ProviderAccountDao : IProviderDao
         ctx.ThirdpartyAccount
         .AsNoTracking()
         .Where(r => r.TenantId == tenantId)
-        .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) || r.UserId == userId)
+        .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) || r.UserId == userId || r.FolderType == FolderType.ThirdpartyBackup)
         .Where(r => linkId == -1 || r.Id == linkId)
-        .Where(r => folderType == FolderType.DEFAULT || r.FolderType == folderType)
+        .Where(r => folderType == FolderType.DEFAULT && !(r.FolderType == FolderType.ThirdpartyBackup && linkId == -1) || r.FolderType == folderType)
         .Where(r => searchText == "" || r.Title.ToLower().Contains(searchText)));
 
     private IAsyncEnumerable<IProviderInfo> GetProvidersInfoInternalAsync(int linkId = -1, FolderType folderType = FolderType.DEFAULT, string searchText = null)
@@ -229,7 +229,7 @@ internal class ProviderAccountDao : IProviderDao
         return true;
     }
 
-    public async Task<bool> UpdateProviderInfoAsync(int linkId, string folderId, FolderType folderType)
+    public async Task<bool> UpdateProviderInfoAsync(int linkId, string folderId, FolderType roomType, bool @private)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var forUpdate = await filesDbContext.ThirdpartyAccount
@@ -242,8 +242,10 @@ internal class ProviderAccountDao : IProviderDao
             return false;
         }
 
-        forUpdate.RoomType = folderType;
+        forUpdate.RoomType = roomType;
         forUpdate.FolderId = folderId;
+        forUpdate.FolderType = FolderType.VirtualRooms;
+        forUpdate.Private = @private;
 
         await filesDbContext.SaveChangesAsync();
 
@@ -353,6 +355,66 @@ internal class ProviderAccountDao : IProviderDao
         return toUpdate.Count == 1 ? linkId : default;
     }
 
+    public virtual async Task<int> UpdateBackupProviderInfoAsync(string providerKey, string customerTitle, AuthData newAuthData)
+    {
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        var querySelect =
+                filesDbContext.ThirdpartyAccount
+                .AsQueryable()
+                .Where(r => r.TenantId == TenantID)
+                .Where(r => r.FolderType == FolderType.ThirdpartyBackup);
+
+        DbFilesThirdpartyAccount thirdparty;
+        try
+        {
+            thirdparty = await querySelect.SingleAsync().ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorUpdateBackupProviderInfo(_securityContext.CurrentAccount.ID, e);
+            throw;
+        }
+
+        if (!ProviderTypesExtensions.TryParse(providerKey, true, out var key))
+        {
+            throw new ArgumentException("Unrecognize ProviderType");
+        }
+
+        if (newAuthData != null && !newAuthData.IsEmpty())
+        {
+            if (!string.IsNullOrEmpty(newAuthData.Token))
+            {
+                newAuthData = GetEncodedAccesToken(newAuthData, key);
+            }
+
+            if (!await CheckProviderInfoAsync(ToProviderInfo(0, key, customerTitle, newAuthData, _securityContext.CurrentAccount.ID, FolderType.ThirdpartyBackup, _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow()))).ConfigureAwait(false))
+            {
+                throw new UnauthorizedAccessException(string.Format(FilesCommonResource.ErrorMassage_SecurityException_Auth, key));
+            }
+        }
+
+        if (!string.IsNullOrEmpty(customerTitle))
+        {
+            thirdparty.Title = customerTitle;
+        }
+
+        thirdparty.UserId = _securityContext.CurrentAccount.ID;
+        thirdparty.Provider = providerKey;
+
+        if (!newAuthData.IsEmpty())
+        {
+            thirdparty.UserName = newAuthData.Login ?? "";
+            thirdparty.Password = EncryptPassword(newAuthData.Password);
+            thirdparty.Token = EncryptPassword(newAuthData.Token ?? "");
+            thirdparty.Url = newAuthData.Url ?? "";
+        }
+
+        await filesDbContext.SaveChangesAsync().ConfigureAwait(false);
+
+        return thirdparty.Id;
+    }
+
     public virtual async Task RemoveProviderInfoAsync(int linkId)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
@@ -430,6 +492,7 @@ internal class ProviderAccountDao : IProviderDao
         var owner = input.UserId;
         var rootFolderType = input.FolderType;
         var folderType = input.RoomType;
+        var privateRoom = input.Private;
         var folderId = input.FolderId;
         var createOn = _tenantUtil.DateTimeFromUtc(input.CreateOn);
         var authData = new AuthData(input.Url, input.UserName, DecryptPassword(input.Password, id), token);
@@ -451,6 +514,7 @@ internal class ProviderAccountDao : IProviderDao
             box.Token = OAuth20Token.FromJson(token);
             box.FolderType = folderType;
             box.FolderId = folderId;
+            box.Private = privateRoom;
 
             return box;
         }
@@ -472,6 +536,7 @@ internal class ProviderAccountDao : IProviderDao
             drop.Token = OAuth20Token.FromJson(token);
             drop.FolderType = folderType;
             drop.FolderId = folderId;
+            drop.Private = privateRoom;
 
             return drop;
         }
@@ -493,6 +558,7 @@ internal class ProviderAccountDao : IProviderDao
             sh.InitClientContext(authData);
             sh.FolderType = folderType;
             sh.FolderId = folderId;
+            sh.Private = privateRoom;
 
             return sh;
         }
@@ -514,6 +580,7 @@ internal class ProviderAccountDao : IProviderDao
             gd.Token = OAuth20Token.FromJson(token);
             gd.FolderType = folderType;
             gd.FolderId = folderId;
+            gd.Private = privateRoom;
 
             return gd;
         }
@@ -535,6 +602,7 @@ internal class ProviderAccountDao : IProviderDao
             od.Token = OAuth20Token.FromJson(token);
             od.FolderType = folderType;
             od.FolderId = folderId;
+            od.Private = privateRoom;
 
             return od;
         }
@@ -564,6 +632,7 @@ internal class ProviderAccountDao : IProviderDao
         sharpBoxProviderInfo.AuthData = authData;
         sharpBoxProviderInfo.FolderType = folderType;
         sharpBoxProviderInfo.FolderId = folderId;
+        sharpBoxProviderInfo.Private = privateRoom;
 
         return sharpBoxProviderInfo;
     }

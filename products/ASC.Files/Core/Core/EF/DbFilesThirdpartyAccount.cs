@@ -41,6 +41,7 @@ public class DbFilesThirdpartyAccount : BaseEntity, IDbFile, IDbSearch
     public string Url { get; set; }
     public int TenantId { get; set; }
     public string FolderId { get; set; }
+    public bool Private { get; set; }
 
     public override object[] GetKeys()
     {
@@ -134,6 +135,8 @@ public static class DbFilesThirdpartyAccountExtension
                 .HasColumnType("text")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
+
+            entity.Property(e => e.Private).HasColumnName("private");
         });
     }
     public static void PgSqlAddDbFilesThirdpartyAccount(this ModelBuilder modelBuilder)
@@ -182,6 +185,10 @@ public static class DbFilesThirdpartyAccountExtension
                 .IsRequired()
                 .HasColumnName("user_name")
                 .HasMaxLength(100);
+
+            entity.Property(e => e.FolderId).HasColumnName("folder_id");
+
+            entity.Property(e => e.Private).HasColumnName("private");
         });
     }
 }

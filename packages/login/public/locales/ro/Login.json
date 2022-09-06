@@ -13,6 +13,11 @@
   "NotFoundCode": "Nu puteți găsi codul? Ar trebui să vă verificați folderul Spam.",
   "Or": "SAU",
   "PasswordRecoveryTitle": "Recuperarea parolei",
+  "RecoverAccess": "Recuperarea accesului la cont",
+  "RecoverContactEmailPlaceholder": "E-mail de contact",
+  "RecoverDescribeYourProblemPlaceholder": "Descrieți problema",
+  "RecoverTextBody": "Dacă nu puteți să vă conectați la contul dvs curent sau doriți să vă înregistrați din nou, contactați administratorul portalului. ",
+  "RecoverTitle": "Restabilirea accesului",
   "Register": "Înregistrare",
   "RegisterSendButton": "Trimite solicitarea",
   "RegisterTextBodyAfterDomainsList": "Pentru a vă înregistra, introduceți adresa de e-mail și dați clic pe Trimite solicitarea. Veți primi o scrisoare de activare.",
@@ -22,5 +27,7 @@
   "RegistrationEmailWatermark": "E-mail",
   "Remember": "Reține-mă",
   "RememberHelper": "Durata sesiunii implicită este de 20 de minute. Bifați caseta de selectare pentru a prelungi durata până la un an. Pentru stabilirea perioadei personalizate, accesați Setările.",
-  "ResendCode": "Retrimite codul"
+  "ResendCode": "Retrimite codul",
+  "ErrorInvalidHeader": "Adresa e-mail invalidă sau link-ul expirat",
+  "ErrorInvalidText": "Veţi fi redirecționat în 10 secunde către <1>pagina de autentificare</1>"
 }

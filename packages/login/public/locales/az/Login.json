@@ -13,6 +13,11 @@
   "NotFoundCode": "Kodu tapa bilmirsiniz? «Spam» qutunuzu yoxlayın.",
   "Or": "VƏ YA",
   "PasswordRecoveryTitle": "Parolun bərpa edilməsi",
+  "RecoverAccess": "Girişi bərpa edin",
+  "RecoverContactEmailPlaceholder": "Əlaqə üçün e-poçt ünvanı",
+  "RecoverDescribeYourProblemPlaceholder": "Probleminizi təsvir edin",
+  "RecoverTextBody": "Cari hesabınızla giriş edə bilmirsinizsə və ya yeni istifadəçi kimi qeydiyyatdan keçmək istəyirsinizsə, o zaman portal administratoru ilə əlaqə saxlayın.",
+  "RecoverTitle": "Girişin bərpası",
   "Register": "Qeydiyyatdan keç",
   "RegisterSendButton": "Sorğunu göndər",
   "RegisterTextBodyAfterDomainsList": "Qeydiyyatdan keçmək üçün, elektron poçt ünvanını daxil edin və Sorğunu göndər düyməsinə basın.",
@@ -22,5 +27,7 @@
   "RegistrationEmailWatermark": "Elektron poçt",
   "Remember": "Yadda saxla",
   "RememberHelper": "Susmaya görə sessiya müddəti 20 dəqiqədir. Müddəti 1 ilə uzatmaq üçün qutunu klikləyin. Digər müddəti təyin etmək üçün, Ayarlar bölməsinə keçin.",
-  "ResendCode": "Kodu yenidən göndərin"
+  "ResendCode": "Kodu yenidən göndərin",
+  "ErrorInvalidHeader": "Yanlış e-poçt ünvanı və ya vaxtı bitmiş keçid",
+  "ErrorInvalidText": "10 saniyədə <1>giriş səhifəsinə</1> yönləndiriləcəksiniz"
 }

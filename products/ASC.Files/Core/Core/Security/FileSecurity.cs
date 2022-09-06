@@ -493,7 +493,8 @@ public class FileSecurity : IFileSecurity
             e.RootFolderType == FolderType.Privacy ||
             e.RootFolderType == FolderType.Projects ||
             e.RootFolderType == FolderType.VirtualRooms ||
-            e.RootFolderType == FolderType.Archive)
+            e.RootFolderType == FolderType.Archive ||
+            e.RootFolderType == FolderType.ThirdpartyBackup)
         {
             if (!isAuthenticated && userId != FileConstant.ShareLinkId)
             {
@@ -653,6 +654,11 @@ public class FileSecurity : IFileSecurity
                 return true;
             }
 
+            if (e.RootFolderType == FolderType.ThirdpartyBackup && isAdmin)
+            {
+                return true;
+            }
+
             if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && isAdmin)
             {
                 return true;
@@ -663,8 +669,8 @@ public class FileSecurity : IFileSecurity
             {
                 subjects = GetUserSubjects(userId);
                 shares = (await GetSharesAsync(e))
-                    .Join(subjects, r => r.Subject, s => s, (r, s) => r)
-                    .ToList();
+                        .Join(subjects, r => r.Subject, s => s, (r, s) => r)
+                        .ToList();
                 // shares ordered by level
             }
 
@@ -703,6 +709,8 @@ public class FileSecurity : IFileSecurity
 
             e.Access = ace != null ? ace.Share : defaultShare;
 
+            e.Access = e.RootFolderType == FolderType.ThirdpartyBackup ? FileShare.Restrict : e.Access;
+
             if (action == FilesSecurityActions.Read && e.Access != FileShare.Restrict)
             {
                 return true;
@@ -739,6 +747,10 @@ public class FileSecurity : IFileSecurity
             {
                 return true;
             }
+            else if (e.Access != FileShare.Restrict && e.CreateBy == userId && (e.FileEntryType == FileEntryType.File || folder.FolderType != FolderType.COMMON))
+            {
+                return true;
+            }
             else if (action == FilesSecurityActions.Delete && (e.Access == FileShare.RoomManager || e.Access == FileShare.ReadWrite))
             {
                 if (file != null && (file.RootFolderType == FolderType.VirtualRooms || file.RootFolderType == FolderType.Archive))
@@ -750,10 +762,6 @@ public class FileSecurity : IFileSecurity
                 {
                     return true;
                 }
-            }
-            else if (e.Access != FileShare.Restrict && e.CreateBy == userId && (e.FileEntryType == FileEntryType.File || folder.FolderType != FolderType.COMMON))
-            {
-                return true;
             }
 
             if (e.CreateBy == userId)
@@ -948,7 +956,7 @@ public class FileSecurity : IFileSecurity
             foldersInt.AddRange(roomsEntries);
             foldersString.AddRange(thirdPartyRoomsEntries);
 
-            if (withSubfolders)
+            if (withSubfolders && filterType != FilterType.FoldersOnly)
             {
                 List<File<int>> files;
                 List<File<string>> thirdPartyFiles;
@@ -980,7 +988,7 @@ public class FileSecurity : IFileSecurity
             foldersInt.AddRange(roomsEntries);
             foldersString.AddRange(thirdPartyRoomsEntries);
 
-            if (withSubfolders)
+            if (withSubfolders && filterType != FilterType.FoldersOnly)
             {
                 List<File<int>> files;
                 List<File<string>> thirdPartyFiles;
@@ -1029,7 +1037,7 @@ public class FileSecurity : IFileSecurity
 
         foreach (var record in recordGroup.Where(r => r.firstRecord.Share != FileShare.Restrict))
         {
-            if (!roomsIds.ContainsKey((T)record.firstRecord.EntryId))
+            if (!roomsIds.ContainsKey((T)record.firstRecord.EntryId) && record.firstRecord.EntryType == FileEntryType.Folder)
             {
                 roomsIds.Add((T)record.firstRecord.EntryId, record.firstRecord.Share);
             }
@@ -1063,7 +1071,7 @@ public class FileSecurity : IFileSecurity
 
         entries.AddRange(fileEntries);
 
-        if (withSubfolders)
+        if (withSubfolders && filterType != FilterType.FoldersOnly)
         {
             List<File<T>> files;
 

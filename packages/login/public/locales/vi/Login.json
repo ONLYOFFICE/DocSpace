@@ -13,6 +13,11 @@
   "NotFoundCode": "Bạn không tìm được mã? Hãy kiểm tra thư mục «Spam» của bạn.",
   "Or": "HOẶC",
   "PasswordRecoveryTitle": "Khôi phục mật khẩu",
+  "RecoverAccess": "Khôi phục quyền truy cập",
+  "RecoverContactEmailPlaceholder": "Email liên hệ",
+  "RecoverDescribeYourProblemPlaceholder": "Mô tả vấn đề của bạn",
+  "RecoverTextBody": "Nếu bạn không thể đăng nhập bằng tài khoản hiện có của mình hoặc muốn đăng ký làm người dùng mới, hãy liên hệ với quản trị viên cổng thông tin.",
+  "RecoverTitle": "Khôi phục truy cập",
   "Register": "Đăng ký",
   "RegisterSendButton": "Gửi yêu cầu",
   "RegisterTextBodyAfterDomainsList": "Để đăng ký, hãy nhập email của bạn và nhấp vào Gửi yêu cầu. Liên kết kích hoạt sẽ được gửi đến bạn.",
@@ -22,5 +27,7 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "Nhớ tôi",
   "RememberHelper": "Thời lượng của phiên mặc định là 20 phút. Hãy chọn tùy chọn này để đặt thành 1 năm. Để đặt giá trị của riêng bạn, hãy đi đến Cài đặt.",
-  "ResendCode": "Gửi lại mã"
+  "ResendCode": "Gửi lại mã",
+  "ErrorInvalidHeader": "Email không chính xác hoặc liên kết hết hạn",
+  "ErrorInvalidText": "Trong 10 giây, bạn sẽ được chuyển hướng đến <1>trang đăng nhập</1>"
 }

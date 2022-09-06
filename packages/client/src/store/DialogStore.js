@@ -1,8 +1,10 @@
 import { makeAutoObservable } from "mobx";
 
 class DialogStore {
+  changeName = false;
   changeEmail = false;
   changePassword = false;
+  changeOwner = false;
   deleteSelfProfile = false;
   deleteProfileEver = false;
   data = {};
@@ -19,12 +21,20 @@ class DialogStore {
     makeAutoObservable(this);
   }
 
+  setChangeNameDialogVisible = (visible) => {
+    this.changeName = visible;
+  };
+
   setChangeEmailDialogVisible = (visible) => {
     this.changeEmail = visible;
   };
 
   setChangePasswordDialogVisible = (visible) => {
     this.changePassword = visible;
+  };
+
+  setChangeOwnerDialogVisible = (visible) => {
+    this.changeOwner = visible;
   };
 
   setDeleteSelfProfileDialogVisible = (visible) => {

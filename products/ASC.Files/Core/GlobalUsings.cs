@@ -88,6 +88,7 @@ global using ASC.FederatedLogin.Helpers;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
 global using ASC.Files.Core;
+global using ASC.Files.Core.ApiModels;
 global using ASC.Files.Core.ApiModels.RequestDto;
 global using ASC.Files.Core.ApiModels.ResponseDto;
 global using ASC.Files.Core.Core.Entries;
@@ -166,6 +167,8 @@ global using DocuSign.eSign.Model;
 global using Dropbox.Api;
 global using Dropbox.Api.Files;
 
+global using Flurl;
+
 global using Google;
 global using Google.Apis.Auth.OAuth2;
 global using Google.Apis.Auth.OAuth2.Flows;
@@ -188,6 +191,7 @@ global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.Filters;
 global using Microsoft.AspNetCore.Mvc.ModelBinding;
+global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Infrastructure;
 global using Microsoft.EntityFrameworkCore.Metadata;

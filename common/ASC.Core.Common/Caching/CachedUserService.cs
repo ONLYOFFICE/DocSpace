@@ -60,17 +60,12 @@ public class UserServiceCache
         CacheGroupCacheItem = cacheGroupCacheItem;
         CacheUserGroupRefItem = cacheUserGroupRefItem;
 
-        cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), CacheNotifyAction.Any);
+        cacheUserInfoItem.Subscribe(InvalidateCache, CacheNotifyAction.Any);
         cacheUserPhotoItem.Subscribe((p) => Cache.Remove(p.Key), CacheNotifyAction.Remove);
-        cacheGroupCacheItem.Subscribe((g) => InvalidateCache(), CacheNotifyAction.Any);
+        cacheGroupCacheItem.Subscribe((g) => InvalidateCache(g), CacheNotifyAction.Any);
 
-        cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, true), CacheNotifyAction.Remove);
-        cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r, false), CacheNotifyAction.InsertOrUpdate);
-    }
-
-    public void InvalidateCache()
-    {
-        InvalidateCache(null);
+        cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r), CacheNotifyAction.Remove);
+        cacheUserGroupRefItem.Subscribe((r) => UpdateUserGroupRefCache(r), CacheNotifyAction.InsertOrUpdate);
     }
 
     private void InvalidateCache(UserInfoCacheItem userInfo)
@@ -81,21 +76,25 @@ public class UserServiceCache
             Cache.Remove(key);
         }
     }
+    private void InvalidateCache(GroupCacheItem groupCacheItem)
+    {
+        if (groupCacheItem != null)
+        {
+            var key = GetGroupCacheKey(groupCacheItem.Tenant, new Guid(groupCacheItem.Id));
+            Cache.Remove(key);
+        }
+    }
 
-    private void UpdateUserGroupRefCache(UserGroupRef r, bool remove)
+    private void UpdateUserGroupRefCache(UserGroupRef r)
     {
         var key = GetRefCacheKey(r.Tenant);
         var refs = Cache.Get<UserGroupRefStore>(key);
-        if (!remove && refs != null)
+        if (refs != null)
         {
             lock (refs)
             {
                 refs[r.CreateKey()] = r;
             }
-        }
-        else
-        {
-            InvalidateCache();
         }
     }
 
@@ -131,42 +130,6 @@ public class UserServiceCache
     public static string GetUserCacheKey(int tenant, Guid userId)
     {
         return tenant.ToString() + Users + userId;
-    }
-}
-
-[Scope]
-class ConfigureCachedUserService : IConfigureNamedOptions<CachedUserService>
-{
-    internal readonly IOptionsSnapshot<EFUserService> Service;
-    internal readonly UserServiceCache UserServiceCache;
-    internal readonly CoreBaseSettings CoreBaseSettings;
-
-    public ConfigureCachedUserService(
-        IOptionsSnapshot<EFUserService> service,
-        UserServiceCache userServiceCache,
-        CoreBaseSettings coreBaseSettings)
-    {
-        Service = service;
-        UserServiceCache = userServiceCache;
-        CoreBaseSettings = coreBaseSettings;
-    }
-
-    public void Configure(string name, CachedUserService options)
-    {
-        Configure(options);
-        options.Service = Service.Get(name);
-    }
-
-    public void Configure(CachedUserService options)
-    {
-        options.Service = Service.Value;
-        options.CoreBaseSettings = CoreBaseSettings;
-        options.UserServiceCache = UserServiceCache;
-        options.Cache = UserServiceCache.Cache;
-        options.CacheUserInfoItem = UserServiceCache.CacheUserInfoItem;
-        options.CacheUserPhotoItem = UserServiceCache.CacheUserPhotoItem;
-        options.CacheGroupCacheItem = UserServiceCache.CacheGroupCacheItem;
-        options.CacheUserGroupRefItem = UserServiceCache.CacheUserGroupRefItem;
     }
 }
 
@@ -330,7 +293,7 @@ public class CachedUserService : IUserService, ICachedService
     public Group SaveGroup(int tenant, Group group)
     {
         group = Service.SaveGroup(tenant, group);
-        CacheGroupCacheItem.Publish(new GroupCacheItem { Id = group.Id.ToString() }, CacheNotifyAction.Any);
+        CacheGroupCacheItem.Publish(new GroupCacheItem { Id = group.Id.ToString(), Tenant = tenant }, CacheNotifyAction.Any);
 
         return group;
     }
@@ -338,7 +301,7 @@ public class CachedUserService : IUserService, ICachedService
     public void RemoveGroup(int tenant, Guid id)
     {
         Service.RemoveGroup(tenant, id);
-        CacheGroupCacheItem.Publish(new GroupCacheItem { Id = id.ToString() }, CacheNotifyAction.Any);
+        CacheGroupCacheItem.Publish(new GroupCacheItem { Id = id.ToString(), Tenant = tenant }, CacheNotifyAction.Any);
     }
 
 
@@ -384,7 +347,7 @@ public class CachedUserService : IUserService, ICachedService
     {
         Service.RemoveUserGroupRef(tenant, userId, groupId, refType);
 
-        var r = new UserGroupRef(userId, groupId, refType) { Tenant = tenant };
+        var r = new UserGroupRef(userId, groupId, refType) { Tenant = tenant, Removed = true };
         CacheUserGroupRefItem.Publish(r, CacheNotifyAction.Remove);
     }
 
@@ -418,7 +381,6 @@ public class CachedUserService : IUserService, ICachedService
 
     public void InvalidateCache()
     {
-        UserServiceCache.InvalidateCache();
     }
 
     public UserInfo GetUser(int tenant, Guid id, Expression<Func<User, UserInfo>> exp)
