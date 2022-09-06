@@ -152,8 +152,6 @@ const RoomSelector = ({
     onLoadNextPage(0);
   }, [searchValue]);
 
-  setDefaultTranslations();
-
   return (
     <Selector
       id={id}
