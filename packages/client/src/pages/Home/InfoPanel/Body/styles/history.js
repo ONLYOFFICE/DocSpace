@@ -8,6 +8,14 @@ const StyledHistoryList = styled.div`
   flex-direction: column;
 `;
 
+const StyledHistorySubtitle = styled.div`
+  padding: 8px 0 12px;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 20px;
+  color: #a3a9ae;
+`;
+
 const StyledUserNameLink = styled.span`
   white-space: normal;
   margin: 1px 0;
@@ -134,4 +142,9 @@ const StyledHistoryBlock = styled.div`
 
 StyledHistoryBlock.defaultProps = { theme: Base };
 
-export { StyledHistoryList, StyledUserNameLink, StyledHistoryBlock };
+export {
+  StyledHistoryList,
+  StyledHistorySubtitle,
+  StyledUserNameLink,
+  StyledHistoryBlock,
+};
