@@ -23,6 +23,7 @@ import BackupCodesDialog from "./BackupCodesDialog";
 import CreateRoomDialog from "./CreateEditRoomDialog/CreateRoomDialog";
 import EditRoomDialog from "./CreateEditRoomDialog/EditRoomDialog";
 import ChangeNameDialog from "./ChangeNameDialog";
+import AvatarEditorDialog from "./AvatarEditorDialog";
 
 export {
   EmptyTrashDialog,
@@ -50,4 +51,5 @@ export {
   CreateRoomDialog,
   EditRoomDialog,
   ChangeNameDialog,
+  AvatarEditorDialog,
 };
