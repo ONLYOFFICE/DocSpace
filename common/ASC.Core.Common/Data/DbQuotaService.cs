@@ -131,4 +131,45 @@ class DbQuotaService : IQuotaService
 
         return q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToList();
     }
+
+    public void SetUserQuotaRow(UserQuotaRow row, bool exchange)
+    {
+        ArgumentNullException.ThrowIfNull(row);
+
+        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = coreDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
+        {
+            using var coreDbContext = _dbContextFactory.CreateDbContext();
+            using var tx = coreDbContext.Database.BeginTransaction();
+
+            var counter = coreDbContext.UserQuotaRows
+                .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == row.UserId)
+                .Select(r => r.Counter)
+                .Take(1)
+                .FirstOrDefault();
+
+            var dbUserQuotaRow = _mapper.Map<UserQuotaRow, DbUsersQuotaRow>(row);
+            dbUserQuotaRow.Counter = exchange ? counter + row.Counter : row.Counter;
+
+            coreDbContext.AddOrUpdate(r => r.UserQuotaRows, dbUserQuotaRow);
+            coreDbContext.SaveChanges();
+
+            tx.Commit();
+        });
+    }
+
+    public IEnumerable<UserQuotaRow> FindUserQuotaRows(int tenantId, string userId)
+    {
+        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        IQueryable<DbUsersQuotaRow> q = coreDbContext.UserQuotaRows;
+
+        if (tenantId != Tenant.DefaultTenant)
+        {
+            q = q.Where(r => r.Tenant == tenantId && r.UserId == userId);
+        }
+
+        return q.ProjectTo<UserQuotaRow>(_mapper.ConfigurationProvider).ToList();
+    }
 }

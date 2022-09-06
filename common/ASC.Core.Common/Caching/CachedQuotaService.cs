@@ -139,6 +139,26 @@ class CachedQuotaService : IQuotaService
         return result;
     }
 
+    public void SetUserQuotaRow(UserQuotaRow row, bool exchange)
+    {
+        Service.SetUserQuotaRow(row, exchange);
+        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.InsertOrUpdate);
+    }
+
+    public IEnumerable<UserQuotaRow> FindUserQuotaRows(int tenantId, string userId)
+    {
+        var key = GetKey(tenantId);
+        var result = Cache.Get<IEnumerable<UserQuotaRow>>(key);
+
+        if (result == null)
+        {
+            result = Service.FindUserQuotaRows(tenantId, userId);
+            Cache.Insert(key, result, DateTime.UtcNow.Add(_cacheExpiration));
+        }
+
+        return result;
+    }
+
     public string GetKey(int tenant)
     {
         return QuotaServiceCache.KeyQuotaRows + tenant;

@@ -49,6 +49,7 @@ public class UserManager
 {
     private IDictionary<Guid, UserInfo> SystemUsers => _userManagerConstants.SystemUsers;
 
+    private readonly IQuotaService _quotaService;
     private readonly IHttpContextAccessor _accessor;
     private readonly IUserService _userService;
     private readonly TenantManager _tenantManager;
@@ -73,6 +74,7 @@ public class UserManager
     }
 
     public UserManager(
+        IQuotaService quotaService,
         IUserService service,
         TenantManager tenantManager,
         SettingsManager settingsManager,
@@ -86,6 +88,7 @@ public class UserManager
         ILogger<UserManager> log,
         ICache cache)
     {
+        _quotaService = quotaService;
         _userService = service;
         _tenantManager = tenantManager;
         _settingsManager = settingsManager;
@@ -102,6 +105,7 @@ public class UserManager
     }
 
     public UserManager(
+        IQuotaService quotaService,
         IUserService service,
         TenantManager tenantManager,
         SettingsManager settingsManager,
@@ -115,7 +119,7 @@ public class UserManager
         ILogger<UserManager> log,
         ICache cache,
         IHttpContextAccessor httpContextAccessor)
-        : this(service, tenantManager, settingsManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache)
+        : this(quotaService, service, tenantManager, settingsManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache)
     {
         _accessor = httpContextAccessor;
     }
@@ -881,4 +885,15 @@ public class UserManager
             Sid = g.Sid
         };
     }
+
+    public void SetUserQuotaRow(UserQuotaRow row, bool exchange)
+    {
+        _quotaService.SetUserQuotaRow(row, exchange);
+    }
+
+    public List<UserQuotaRow> FindTenantQuotaRows(int tenantId, string userId)
+    {
+        return _quotaService.FindUserQuotaRows(tenantId, userId).ToList();
+    }
+
 }
