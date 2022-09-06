@@ -4,5 +4,6 @@
   "AllowedManagerNumber": "Number of managers allowed",
   "CurrentManagerNumber": "Current number of managers",
   "StorageSpaceSizeAllowed": "Storage space size allowed",
-  "CurrentStorageSpace": "Current storage space"
+  "CurrentStorageSpace": "Current storage space",
+  "SaveOrChange": "Reduce the required parameter or preserve your current pricing plan."
 }

@@ -20,6 +20,9 @@ const ModalDialogContainer = styled(ModalDialog)`
   .downgrade-plan-wrapper {
     display: flex;
   }
+  .save-or-change {
+    margin-top: 16px;
+  }
 `;
 
 const DowngradePlanDialog = ({ visible, onClose }) => {
@@ -80,6 +83,10 @@ const DowngradePlanDialog = ({ visible, onClose }) => {
             {"4350"}
           </Text>
           {"."}
+        </Text>
+
+        <Text fontSize="13px" className="save-or-change">
+          {t("SaveOrChange")}
         </Text>
       </ModalDialog.Body>
       <ModalDialog.Footer>
