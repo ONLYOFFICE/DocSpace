@@ -59,13 +59,6 @@ public class RoomInvitationLinksService
 
     public string GenerateLink<T>(T id, string email, int fileShare, EmployeeType employeeType, Guid guid)
     {
-        var user = _userManager.GetUserByEmail(email);
-
-        if (user != ASC.Core.Users.Constants.LostUser)
-        {
-            throw new Exception("The user with this email already exists");
-        }
-
         var postifx = (int)employeeType + fileShare + id.ToString();
 
         var link = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.LinkInvite, postifx, guid)
