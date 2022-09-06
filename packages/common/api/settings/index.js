@@ -217,6 +217,38 @@ export function restoreWhiteLabelSettings(isDefault) {
   });
 }
 
+export function setCompanyInfoSettings(
+  address,
+  companyName,
+  email,
+  phone,
+  site
+) {
+  const data = {
+    settings: { address, companyName, email, phone, site },
+  };
+
+  return request({
+    method: "post",
+    url: `/settings/rebranding/company.json`,
+    data,
+  });
+}
+
+export function getCompanyInfoSettings() {
+  return request({
+    method: "get",
+    url: `/settings/rebranding/company.json`,
+  });
+}
+
+export function restoreCompanyInfoSettings() {
+  return request({
+    method: "delete",
+    url: `/settings/rebranding/company.json`,
+  });
+}
+
 export function getCustomSchemaList() {
   return request({
     method: "get",
