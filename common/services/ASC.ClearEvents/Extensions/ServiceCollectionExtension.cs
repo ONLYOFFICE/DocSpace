@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,29 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var options = new WebApplicationOptions
+namespace ASC.ClearEvents.Extensions;
+public static class ServiceCollectionExtension
 {
-    Args = args,
-    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
-};
+    public static IServiceCollection AddClearEventsServices(this IServiceCollection services)
+    {
+        var diHelper = new DIHelper(services);
 
-var builder = WebApplication.CreateBuilder(options);
+        services.AddHostedService<ClearEventsService>();
+        diHelper.TryAdd<ClearEventsService>();
+        services.AddBaseDbContextPool<MessagesContext>();
 
-builder.Host.ConfigureDefault();
+        return services;
 
-builder.Configuration.AddDefaultConfiguration(builder.Environment)
-                     .AddWebhookConfiguration()
-                     .AddEnvironmentVariables()
-                     .AddCommandLine(args);
-
-builder.WebHost.ConfigureDefaultKestrel();
-
-var startup = new Startup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-var app = builder.Build();
-
-startup.Configure(app);
-
-await app.RunWithTasksAsync();
+    }
+}

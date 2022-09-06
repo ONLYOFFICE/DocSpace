@@ -78,3 +78,6 @@ global using Microsoft.Extensions.Options;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Formats;
+
+global using ASC.Core.Common.EF;
+global using ASC.Files.Core.EF;
