@@ -1,5 +1,5 @@
 import React from "react";
-import Info from "../Info";
+import Details from "../Details";
 import History from "../History";
 import Members from "../Members";
 
@@ -24,7 +24,7 @@ const Room = ({
   ) : roomState === "history" ? (
     <History selectedItem={selection} {...defaultProps} {...historyProps} />
   ) : (
-    <Info selection={selection} {...defaultProps} {...detailsProps} />
+    <Details selection={selection} {...defaultProps} {...detailsProps} />
   );
 };
 

@@ -9,7 +9,7 @@ import Loaders from "@docspace/common/components/Loaders";
 import ItemTitle from "./sub-components/ItemTitle";
 import Gallery from "./views/Gallery";
 import Room from "./views/Room";
-import Info from "./views/Info";
+import Details from "./views/Details";
 
 import { StyledInfoPanelBody } from "./styles/common";
 
@@ -136,7 +136,7 @@ const InfoPanelBodyContent = ({
       ) : selection.isRoom ? (
         <Room {...defaultProps} {...roomProps} />
       ) : (
-        <Info {...defaultProps} {...detailsProps} />
+        <Details {...defaultProps} {...detailsProps} />
       )}
     </StyledInfoPanelBody>
   );
