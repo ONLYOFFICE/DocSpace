@@ -49,12 +49,9 @@ public class QuotaHelper
 
     private QuotaDto ToQuotaDto(TenantQuota tenantQuota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
     {
-        var defaultFeatures = GetFeatures(TenantQuota.Default, priceInfo, currentRegion);
-        var quotaFeatures = GetFeatures(tenantQuota, priceInfo, currentRegion);
+        var features = GetFeatures(tenantQuota, priceInfo, currentRegion);
 
-        var features = quotaFeatures.Union(defaultFeatures);
-
-        return new QuotaDto()
+        return new QuotaDto
         {
             Id = tenantQuota.Tenant,
             Title = Resource.ResourceManager.GetString($"Tariffs_{tenantQuota.Name}"),
@@ -96,26 +93,19 @@ public class QuotaHelper
 
         var features = tenantQuota.Features.Split(' ', ',', ';');
 
-        foreach (var feature in features)
+        foreach (var feature in tenantQuota.TenantQuotaFeatures.Where(r => r.Visible).OrderBy(r => r.Order))
         {
             var result = new QuotaFeatureDto();
 
-            var id = feature;
-
-            if (id.Contains(':'))
-            {
-                id = id.Split(':')[0];
-            }
-
-            if (id == "admin" || features.Length == 1) //TODO
+            if (feature.Name == "admin" || features.Length == 1) //TODO
             {
                 var val = GetPrice(tenantQuota, priceInfo, currentRegion);
                 result.Price = new FeaturePriceDto
                 {
                     Value = val,
                     CurrencySymbol = currentRegion.CurrencySymbol,
-                    Per = string.Format(Resource.ResourceManager.GetString($"TariffsFeature_{id}_price_per"), GetPriceString(val, currentRegion)),
-                    Count = Resource.ResourceManager.GetString($"TariffsFeature_{id}_price_count"),
+                    Per = string.Format(Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}_price_per"), GetPriceString(val, currentRegion)),
+                    Count = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}_price_count"),
                     Range = new FeaturePriceRangeDto
                     {
                         Value = 1,
@@ -125,15 +115,15 @@ public class QuotaHelper
                 };
             }
 
-            result.Id = id;
-            result.Title = Resource.ResourceManager.GetString($"TariffsFeature_{id}");
+            result.Id = feature.Name;
+            result.Title = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}");
 
-            if (id == "total_size") //TODO
+            if (feature.Name == "total_size") //TODO
             {
                 result.Title = string.Format(result.Title, FileSizeComment.FilesSizeToString(tenantQuota.MaxTotalSize));
             }
 
-            var img = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.img.{id}.svg");
+            var img = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.img.{feature.Name}.svg");
 
             if (img != null)
             {

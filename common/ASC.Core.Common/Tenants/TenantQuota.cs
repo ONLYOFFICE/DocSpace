@@ -27,7 +27,7 @@
 namespace ASC.Core.Tenants;
 
 [DebuggerDisplay("{Tenant} {Name}")]
-public class TenantQuota : ICloneable, IMapFrom<DbQuota>
+public class TenantQuota : IMapFrom<DbQuota>
 {
     public static readonly TenantQuota Default = new TenantQuota(Tenants.Tenant.DefaultTenant)
     {
@@ -45,6 +45,10 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
     public string ProductId { get; set; }
     public bool Visible { get; set; }
     public long MaxFileSize { get; set; }
+
+    public IReadOnlyList<TenantQuotaFeature> TenantQuotaFeatures { get; private set; }
+
+    private List<string> _featuresList;
 
     public string Features
     {
@@ -64,142 +68,213 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
             }
         }
     }
+
+    private readonly MaxTotalSizeFeature _maxTotalSizeFeature;
     public long MaxTotalSize
     {
-        get => ByteConverter.GetInBytes(GetFeature("total_size", () => Default.MaxTotalSize));
-        set => SetFeature("total_size", ByteConverter.GetInMBytes(value));
+        get => ByteConverter.GetInBytes(_maxTotalSizeFeature.Value);
+        set => _maxTotalSizeFeature.Value = ByteConverter.GetInMBytes(value);
     }
 
+    private readonly ActiveUsersFeature _activeUsersFeature;
     public int ActiveUsers
     {
-        get => GetFeature("users", () => Default.ActiveUsers);
-        set => SetFeature("users", value);
+        get => _activeUsersFeature.Value;
+        set => _activeUsersFeature.Value = value;
     }
 
+    private readonly CountAdminFeature _countAdminFeature;
     public int CountAdmin
     {
-        get => GetFeature("admin", () => Default.CountAdmin);
-        set => SetFeature("admin", value);
+        get => _countAdminFeature.Value;
+        set => _countAdminFeature.Value = value;
     }
 
+    private readonly CountRoomFeature _countRoomFeature;
     public int CountRoom
     {
-        get => GetFeature("room", () => Default.CountRoom);
-        set => SetFeature("room", value);
+        get => _countRoomFeature.Value;
+        set => _countRoomFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _nonProfitFeature;
     public bool NonProfit
     {
-        get => GetFeature("non-profit");
-        set => SetFeature("non-profit", value);
+        get => _nonProfitFeature.Value;
+        set => _nonProfitFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _trialFeature;
     public bool Trial
     {
-        get => GetFeature("trial");
-        set => SetFeature("trial", value);
+        get => _trialFeature.Value;
+        set => _trialFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _freeFeature;
     public bool Free
     {
-        get => GetFeature("free");
-        set => SetFeature("free", value);
+        get => _freeFeature.Value;
+        set => _freeFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _openFeature;
     public bool Open
     {
-        get => GetFeature("open");
-        set => SetFeature("open", value);
+        get => _openFeature.Value;
+        set => _openFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _updateFeature;
     public bool Update
     {
-        get => GetFeature("update");
-        set => SetFeature("update", value);
+        get => _updateFeature.Value;
+        set => _updateFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _auditFeature;
     public bool Audit
     {
-        get => GetFeature("audit");
-        set => SetFeature("audit", value);
+        get => _auditFeature.Value;
+        set => _auditFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _docsEditionFeature;
     public bool DocsEdition
     {
-        get => GetFeature("docs");
-        set => SetFeature("docs", value);
+        get => _docsEditionFeature.Value;
+        set => _docsEditionFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _hasMigrationFeature;
     public bool HasMigration
     {
-        get => GetFeature("migration");
-        set => SetFeature("migration", value);
+        get => _hasMigrationFeature.Value;
+        set => _hasMigrationFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _ldapFeature;
     public bool Ldap
     {
-        get => GetFeature("ldap");
-        set => SetFeature("ldap", value);
+        get => _ldapFeature.Value;
+        set => _ldapFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _ssoFeature;
     public bool Sso
     {
-        get => GetFeature("sso");
-        set => SetFeature("sso", value);
+        get => _ssoFeature.Value;
+        set => _ssoFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _whiteLabelFeature;
     public bool WhiteLabel
     {
-        get => GetFeature("whitelabel");
-        set => SetFeature("whitelabel", value);
+        get => _whiteLabelFeature.Value;
+        set => _whiteLabelFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _customizationFeature;
     public bool Customization
     {
-        get => GetFeature("customization");
-        set => SetFeature("customization", value);
+        get => _customizationFeature.Value;
+        set => _customizationFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _customFeature;
     public bool Custom
     {
-        get => GetFeature("custom");
-        set => SetFeature("custom", value);
+        get => _customFeature.Value;
+        set => _customFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _restoreFeature;
     public bool Restore
     {
-        get => GetFeature("restore");
-        set => SetFeature("restore", value);
+        get => _restoreFeature.Value;
+        set => _restoreFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _autoBackupFeature;
     public bool AutoBackup
     {
-        get => GetFeature("autobackup");
-        set => SetFeature("autobackup", value);
+        get => _autoBackupFeature.Value;
+        set => _autoBackupFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _oauthFeature;
     public bool Oauth
     {
-        get => GetFeature("oauth");
-        set => SetFeature("oauth", value);
+        get => _oauthFeature.Value;
+        set => _oauthFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _contentSearchFeature;
     public bool ContentSearch
     {
-        get => GetFeature("contentsearch");
-        set => SetFeature("contentsearch", value);
+        get => _contentSearchFeature.Value;
+        set => _contentSearchFeature.Value = value;
     }
 
+    private readonly TenantQuotaFeatureFlag _thirdPartyFeature;
     public bool ThirdParty
     {
-        get => GetFeature("thirdparty");
-        set => SetFeature("thirdparty", value);
+        get => _thirdPartyFeature.Value;
+        set => _thirdPartyFeature.Value = value;
     }
 
-    private List<string> _featuresList;
     public TenantQuota()
     {
         _featuresList = new List<string>();
+
+        _activeUsersFeature = new ActiveUsersFeature(this) { Order = 1 };
+        _countAdminFeature = new CountAdminFeature(this);
+        _countRoomFeature = new CountRoomFeature(this) { Order = 2 };
+        _maxTotalSizeFeature = new MaxTotalSizeFeature(this) { Order = 3 };
+        _nonProfitFeature = new TenantQuotaFeatureFlag(this) { Name = "non-profit", Visible = false };
+        _trialFeature = new TenantQuotaFeatureFlag(this) { Name = "trial", Visible = false };
+        _freeFeature = new TenantQuotaFeatureFlag(this) { Name = "free", Visible = false };
+        _openFeature = new TenantQuotaFeatureFlag(this) { Name = "open", Visible = false };
+        _updateFeature = new TenantQuotaFeatureFlag(this) { Name = "update", Visible = false };
+        _auditFeature = new TenantQuotaFeatureFlag(this) { Name = "audit", Order = 7 };
+        _docsEditionFeature = new TenantQuotaFeatureFlag(this) { Name = "docs", Visible = false };
+        _hasMigrationFeature = new TenantQuotaFeatureFlag(this) { Name = "migration", Visible = false };
+        _ldapFeature = new TenantQuotaFeatureFlag(this) { Name = "ldap", Visible = false };
+        _ssoFeature = new TenantQuotaFeatureFlag(this) { Name = "sso", Order = 5 };
+        _whiteLabelFeature = new TenantQuotaFeatureFlag(this) { Name = "whitelabel", Order = 4 };
+        _customizationFeature = new TenantQuotaFeatureFlag(this) { Name = "customization", Visible = false };
+        _customFeature = new TenantQuotaFeatureFlag(this) { Name = "custom", Visible = false };
+        _restoreFeature = new TenantQuotaFeatureFlag(this) { Name = "restore", Order = 6 };
+        _autoBackupFeature = new TenantQuotaFeatureFlag(this) { Name = "autobackup", Visible = false };
+        _oauthFeature = new TenantQuotaFeatureFlag(this) { Name = "oauth", Visible = false };
+        _contentSearchFeature = new TenantQuotaFeatureFlag(this) { Name = "contentsearch", Visible = false };
+        _thirdPartyFeature = new TenantQuotaFeatureFlag(this) { Name = "thirdparty", Visible = false };
+
+        TenantQuotaFeatures = new List<TenantQuotaFeature>
+        {
+            _activeUsersFeature,
+            _countAdminFeature,
+            _countRoomFeature,
+            _maxTotalSizeFeature,
+            _nonProfitFeature,
+            _trialFeature,
+            _freeFeature,
+            _openFeature,
+            _updateFeature,
+            _auditFeature,
+            _docsEditionFeature,
+            _hasMigrationFeature,
+            _ldapFeature,
+            _ssoFeature,
+            _whiteLabelFeature,
+            _customizationFeature,
+            _customFeature,
+            _restoreFeature,
+            _autoBackupFeature,
+            _oauthFeature,
+            _contentSearchFeature,
+            _thirdPartyFeature
+        };
     }
 
     public TenantQuota(int tenant) : this()
@@ -207,7 +282,7 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         Tenant = tenant;
     }
 
-    public TenantQuota(TenantQuota quota)
+    public TenantQuota(TenantQuota quota) : this()
     {
         Tenant = quota.Tenant;
         Name = quota.Name;
@@ -228,78 +303,24 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         return obj is TenantQuota q && q.Tenant == Tenant;
     }
 
-    private bool GetFeature(string feature)
+    public void Check(IServiceProvider serviceProvider)
     {
-        return _featuresList.Contains(feature);
-    }
-
-    private int GetFeature(string feature, Func<int> @default)
-    {
-        var featureValue = GetFeatureValue(feature);
-
-        if (featureValue == null || !int.TryParse(featureValue, out var result))
+        foreach (var checker in serviceProvider.GetServices<ITenantQuotaFeatureChecker>())
         {
-            return @default();
+            if (!checker.Check(this))
+            {
+                throw new Exception(checker.Exception(this));
+            }
         }
 
-        return result;
-    }
-
-    private long GetFeature(string feature, Func<long> @default)
-    {
-        var featureValue = GetFeatureValue(feature);
-
-        if (featureValue == null || !long.TryParse(featureValue, out var result))
-        {
-            return @default();
-        }
-
-        return result;
-    }
-
-    private string GetFeatureValue(string feature)
-    {
-        var parsed = _featuresList.FirstOrDefault(f => f.StartsWith($"{feature}:"));
-
-        if (parsed == null)
-        {
-            return null;
-        }
-
-        return parsed.Replace($"{feature}:", "");
-    }
-
-    private void SetFeature(string feature, bool set)
-    {
-        if (set && !_featuresList.Contains(feature))
-        {
-            _featuresList.Add(feature);
-        }
-        else if (!set && _featuresList.Contains(feature))
-        {
-            _featuresList.Remove(feature);
-        }
-    }
-
-    private void SetFeature(string feature, int @value)
-    {
-        SetFeature(feature, @value > 0 ? value.ToString() : null);
-    }
-
-    private void SetFeature(string feature, long @value)
-    {
-        SetFeature(feature, @value > 0 ? value.ToString() : null);
-    }
-
-    internal void SetFeature(string feature, string @value)
-    {
-        var featureValue = _featuresList.FirstOrDefault(f => f.StartsWith($"{feature}:"));
-        _featuresList.Remove(featureValue);
-
-        if (!string.IsNullOrEmpty(@value))
-        {
-            _featuresList.Add($"{feature}:{@value}");
-        }
+        //if (MaxTotalSize != long.MaxValue
+        //    && false) throw new Exception("The used storage size should not exceed " + MaxTotalSize);
+        //if (ActiveUsers != int.MaxValue
+        //    && false) throw new Exception("The number of active users should not exceed " + ActiveUsers);
+        //if (CountAdmin != int.MaxValue
+        //    && false) throw new Exception("The number of managers should not exceed " + CountAdmin);
+        //if (CountRoom != int.MaxValue
+        //    && false) throw new Exception("The number of rooms should not exceed " + CountRoom);
     }
 
     public static TenantQuota operator *(TenantQuota quota, int quantity)
@@ -308,24 +329,9 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
 
         newQuota.Price *= quantity;
 
-        if (newQuota.MaxTotalSize != long.MaxValue)
+        for (var i = 0; i < newQuota.TenantQuotaFeatures.Count; i++)
         {
-            newQuota.MaxTotalSize *= quantity;
-        }
-
-        if (newQuota.ActiveUsers != int.MaxValue)
-        {
-            newQuota.ActiveUsers *= quantity;
-        }
-
-        if (newQuota.CountAdmin != int.MaxValue)
-        {
-            newQuota.CountAdmin *= quantity;
-        }
-
-        if (newQuota.CountRoom != int.MaxValue)
-        {
-            newQuota.CountRoom *= quantity;
+            newQuota.TenantQuotaFeatures[i].Multiply(quantity);
         }
 
         return newQuota;
@@ -345,58 +351,49 @@ public class TenantQuota : ICloneable, IMapFrom<DbQuota>
         newQuota.Visible &= quota.Visible;
         newQuota.ProductId = "";
 
-        var features = newQuota._featuresList.Concat(quota._featuresList).ToList();
-
-        for (var i = 0; i < features.Count - 1; i++)
+        foreach (var f in newQuota.TenantQuotaFeatures)
         {
-            for (var j = i + 1; j < features.Count; j++)
+            if (f is TenantQuotaFeature<int> count)
             {
-                if (features[i].Contains(':'))
-                {
-                    if (features[j].Contains(':'))
-                    {
-                        var pref1 = features[i].Split(':')[0];
-                        var pref2 = features[j].Split(':')[0];
-                        if (pref1 == pref2)
-                        {
-                            if (int.TryParse(features[i].Replace(pref1 + ":", ""), out var val1) &&
-                                int.TryParse(features[j].Replace(pref1 + ":", ""), out var val2))
-                            {
-                                features[i] = $"{pref1}:{val1 + val2}";
-                                features.RemoveAt(j);
-                                j--;
-                            }
-                            else if (long.TryParse(features[i].Replace(pref1 + ":", ""), out var val3) &&
-                                     long.TryParse(features[j].Replace(pref1 + ":", ""), out var val4))
-                            {
-                                features[i] = $"{pref1}:{val3 + val4}";
-                                features.RemoveAt(j);
-                                j--;
-                            }
-                        }
-                    }
-                }
-                else if (features[i] == features[j])
-                {
-                    features.RemoveAt(j);
-                    j--;
-                }
+                count.Value += quota.GetFeature<int>(f.Name).Value;
+            }
+            else if (f is TenantQuotaFeatureLength length)
+            {
+                length.Value += quota.GetFeature<long>(f.Name).Value;
+            }
+            else if (f is TenantQuotaFeatureFlag flag)
+            {
+                flag.Value |= quota.GetFeature<bool>(f.Name).Value;
             }
         }
 
-        newQuota._featuresList = features;
-
         return newQuota;
-    }
-
-    public object Clone()
-    {
-        return MemberwiseClone();
     }
 
     public void Mapping(Profile profile)
     {
         profile.CreateMap<DbQuota, TenantQuota>()
             .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInBytes(src.MaxFileSize)));
+    }
+
+    internal TenantQuotaFeature<T> GetFeature<T>(string name)
+    {
+        return TenantQuotaFeatures.OfType<TenantQuotaFeature<T>>().FirstOrDefault(r => r.Name == name);
+    }
+
+    internal string GetFeature(string name)
+    {
+        return _featuresList.FirstOrDefault(f => f.StartsWith($"{name}"));
+    }
+
+    internal void ReplaceFeature<T>(string name, T value)
+    {
+        var featureValue = GetFeature(name);
+        _featuresList.Remove(featureValue);
+
+        if (!EqualityComparer<T>.Default.Equals(value, default))
+        {
+            _featuresList.Add($"{name}:{value}");
+        }
     }
 }
