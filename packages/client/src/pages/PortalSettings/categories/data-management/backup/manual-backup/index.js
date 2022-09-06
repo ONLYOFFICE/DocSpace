@@ -97,7 +97,15 @@ class ManualBackup extends React.Component {
   };
 
   componentDidMount() {
-    const { fetchTreeFolders, rootFoldersTitles } = this.props;
+    const { fetchTreeFolders, rootFoldersTitles, isNotPaid } = this.props;
+
+    if (isNotPaid) {
+      this.setState({
+        isEmptyContentBeforeLoader: false,
+      });
+
+      return;
+    }
     this.timerId = setTimeout(() => {
       this.setState({ isInitialLoading: true });
     }, 200);

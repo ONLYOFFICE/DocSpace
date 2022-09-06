@@ -10,7 +10,13 @@ import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import config from "PACKAGE_FILE";
 
-const Backup = ({ helpUrlCreatingBackup, buttonSize, t, history }) => {
+const Backup = ({
+  helpUrlCreatingBackup,
+  buttonSize,
+  t,
+  history,
+  isNotPaid,
+}) => {
   const renderTooltip = (helpInfo) => {
     return (
       <>
@@ -67,13 +73,15 @@ const Backup = ({ helpUrlCreatingBackup, buttonSize, t, history }) => {
     );
   };
 
-  return (
+  return isNotPaid ? (
+    <ManualBackup buttonSize={buttonSize} renderTooltip={renderTooltip} />
+  ) : (
     <Submenu data={data} startSelect={data[0]} onSelect={(e) => onSelect(e)} />
   );
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore } = auth;
+  const { settingsStore, isNotPaid } = auth;
   const { helpUrlCreatingBackup, isTabletView } = settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
@@ -81,5 +89,6 @@ export default inject(({ auth }) => {
   return {
     helpUrlCreatingBackup,
     buttonSize,
+    isNotPaid,
   };
 })(observer(withTranslation(["Settings", "Common"])(Backup)));
