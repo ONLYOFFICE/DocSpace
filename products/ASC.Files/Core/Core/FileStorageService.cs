@@ -82,7 +82,7 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
     private readonly StudioNotifyService _studioNotifyService;
-    private readonly DocSpaceLinksHelper _roomLinksService;
+    private readonly DocSpaceLinksHelper _docSpaceLinksService;
 
     public FileStorageService(
         Global global,
@@ -136,7 +136,7 @@ public class FileStorageService<T> //: IFileStorageService
         FileShareParamsHelper fileShareParamsHelper,
         EncryptionLoginProvider encryptionLoginProvider,
         StudioNotifyService studioNotifyService,
-        DocSpaceLinksHelper roomLinksService)
+        DocSpaceLinksHelper docSpaceLinksService)
     {
         _global = global;
         _globalStore = globalStore;
@@ -189,7 +189,7 @@ public class FileStorageService<T> //: IFileStorageService
         _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
         _studioNotifyService = studioNotifyService;
-        _roomLinksService = roomLinksService;
+        _docSpaceLinksService = docSpaceLinksService;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -2509,7 +2509,7 @@ public class FileStorageService<T> //: IFileStorageService
 
                         if (!string.IsNullOrEmpty(ace.Email))
                         {
-                            var link = _roomLinksService.GenerateInvitationRoomLink(entry.Id, (int)ace.Share, EmployeeType.User, ace.SubjectId);
+                            var link = _docSpaceLinksService.GenerateInvitationRoomLink(entry.Id, (int)ace.Share, EmployeeType.User, ace.SubjectId);
                             _studioNotifyService.SendEmailRoomInvite(ace.Email, link);
                         }
                     }

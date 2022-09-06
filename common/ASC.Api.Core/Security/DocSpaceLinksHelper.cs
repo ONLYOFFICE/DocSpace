@@ -30,11 +30,11 @@ namespace ASC.Api.Core.Security;
 public class DocSpaceLinksHelper
 {
     private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly IDbContextFactory<MessagesContext> _dbContextFactory;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly MessageService _messageService;
     private readonly MessageTarget _messageTarget;
     private readonly UserManager _userManager;
-    private readonly MessageService _messageService;
-    private readonly IDbContextFactory<MessagesContext> _dbContextFactory;
 
     public DocSpaceLinksHelper(
         CommonLinkUtility commonLinkUtility,
@@ -91,14 +91,6 @@ public class DocSpaceLinksHelper
         return message.Date + interval > DateTime.UtcNow;
     }
 
-    private void SaveVisitLinkInfo(string id, string email, string key)
-    {
-        var headers = _httpContextAccessor?.HttpContext?.Request?.Headers;
-        var target = _messageTarget.CreateFromGroupValues(email != null ? new[] { id, email } : new[] { id });
-
-        _messageService.Send(headers, MessageAction.RoomInviteLinkUsed, target, key);
-    }
-
     private AuditEvent GetLinkInfo(string id, string email, string key)
     {
         using var context = _dbContextFactory.CreateDbContext();
@@ -113,5 +105,13 @@ public class DocSpaceLinksHelper
             a.DescriptionRaw == description).FirstOrDefault();
 
         return message;
+    }
+
+    private void SaveVisitLinkInfo(string id, string email, string key)
+    {
+        var headers = _httpContextAccessor?.HttpContext?.Request?.Headers;
+        var target = _messageTarget.CreateFromGroupValues(email != null ? new[] { id, email } : new[] { id });
+
+        _messageService.Send(headers, MessageAction.RoomInviteLinkUsed, target, key);
     }
 }
