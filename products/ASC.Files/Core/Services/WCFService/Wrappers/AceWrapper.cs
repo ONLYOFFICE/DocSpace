@@ -38,6 +38,7 @@ public class AceCollection<T>
 public class AceWrapper
 {
     public Guid SubjectId { get; set; }
+    public string Email { get; set; }
 
     [JsonPropertyName("title")]
     public string SubjectName { get; set; }
