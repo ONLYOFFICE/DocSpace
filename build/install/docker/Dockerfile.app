@@ -161,6 +161,7 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5034/$service_migration/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/localhost:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/localhost:5011/$service_login/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
 
 ## Doceditor ##
@@ -168,7 +169,13 @@ FROM noderun as doceditor
 WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
 
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/editor/ .
-EXPOSE 5013
+ENTRYPOINT ["node", "server.js"]
+
+## Login ##
+FROM noderun as login
+WORKDIR ${BUILD_PATH}/products/ASC.Login/login
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/login/ .
 ENTRYPOINT ["node", "server.js"]
 
 ## ASC.Data.Backup.BackgroundTasks ##

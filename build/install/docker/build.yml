@@ -134,6 +134,13 @@ services:
       target: doceditor
     image: "${REPO}/${STATUS}${DOCKER_IMAGE_PREFIX}-doceditor:${DOCKER_TAG}"
 
+  onlyoffice-login:
+    build:
+      context:  ./
+      dockerfile: "${DOCKERFILE}"
+      target: login
+    image: "${REPO}/${STATUS}${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}"
+    
   onlyoffice-proxy:
     build:
       context:  ./

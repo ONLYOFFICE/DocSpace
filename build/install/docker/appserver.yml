@@ -139,6 +139,13 @@ services:
     expose:
       - "5013"
 
+  onlyoffice-login:
+    image: "${REPO}/${STATUS}${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}"
+    container_name: ${LOGIN_HOST}
+    restart: always
+    expose:
+      - "5011"
+
   onlyoffice-proxy:
     image: "${REPO}/${STATUS}${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
     container_name: ${PROXY_HOST}
