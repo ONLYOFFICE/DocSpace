@@ -54,7 +54,7 @@ const StyledBody = styled.div`
   }
 `;
 
-let dueDate, fromDate, byDate, payerInfo;
+let dueDate, fromDate, byDate, payerInfo, delayDaysCount;
 const PaymentsPage = ({
   pricePerManager,
   setPortalPaymentsQuotas,
@@ -93,8 +93,17 @@ const PaymentsPage = ({
       ).format("LL");
 
       if (isGracePeriod) {
-        fromDate = moment(portalTariff.dueDate).format("L");
-        byDate = moment(portalTariff.delayDueDate).format("L");
+        const fromDateMoment = moment(portalTariff.dueDate);
+        const byDateMoment = moment(portalTariff.delayDueDate);
+
+        fromDate = fromDateMoment.format("L");
+        byDate = byDateMoment.format("L");
+
+        delayDaysCount = moment(portalTariff.dueDate).to(
+          moment(portalTariff.delayDueDate),
+          true
+        );
+
         return;
       }
     }
@@ -220,7 +229,9 @@ const PaymentsPage = ({
       {isGracePeriod && (
         <Text noSelect fontSize={"14"}>
           <Trans t={t} i18nKey="GracePeriodActivatedDescription" ns="Payments">
-            {{ fromDate }} {{ byDate }}
+            Grace period activated from <strong>{{ fromDate }}</strong> -
+            <strong>{{ byDate }}</strong> (<strong>{{ delayDaysCount }}</strong>
+            ).
           </Trans>
         </Text>
       )}
