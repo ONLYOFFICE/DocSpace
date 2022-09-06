@@ -17,26 +17,37 @@ import {
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const InfoPanelHeaderContent = (props) => {
-  const { t, setIsVisible, roomState, setRoomState, isGallery, isRoom } = props;
+  const {
+    t,
+    selection,
+    setIsVisible,
+    roomState,
+    setRoomState,
+    isGallery,
+  } = props;
   const closeInfoPanel = () => setIsVisible(false);
+
+  const setMembers = () => setRoomState("members");
+  const setHistory = () => setRoomState("history");
+  const setDetails = () => setRoomState("details");
 
   const submenuData = [
     {
       id: "members",
       name: "Members",
-      onClick: () => setRoomState("members"),
+      onClick: setMembers,
       content: null,
     },
     {
       id: "history",
       name: "History",
-      onClick: () => setRoomState("history"),
+      onClick: setHistory,
       content: null,
     },
     {
       id: "details",
       name: "Details",
-      onClick: () => setRoomState("details"),
+      onClick: setDetails,
       content: null,
     },
   ];
@@ -46,7 +57,7 @@ const InfoPanelHeaderContent = (props) => {
   );
 
   return (
-    <StyledInfoPanelHeader isRoom={isRoom}>
+    <StyledInfoPanelHeader isRoom={selection && selection.isRoom}>
       <div className="main">
         <Text className="header-text" fontSize="21px" fontWeight="700">
           {isGallery ? t("FormGallery:FormTemplateInfo") : t("Common:Info")}
@@ -72,7 +83,7 @@ const InfoPanelHeaderContent = (props) => {
         </ColorTheme>
       </div>
 
-      {isRoom && (
+      {selection?.isRoom && (
         <div className="submenu">
           <Submenu
             style={{ width: "100%" }}
@@ -86,8 +97,14 @@ const InfoPanelHeaderContent = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { setIsVisible, roomState, setRoomState, isRoom } = auth.infoPanelStore;
-  return { setIsVisible, roomState, setRoomState, isRoom };
+  const {
+    selection,
+    setIsVisible,
+    roomState,
+    setRoomState,
+    isRoom,
+  } = auth.infoPanelStore;
+  return { selection, setIsVisible, roomState, setRoomState, isRoom };
 })(
   withTranslation(["Common", "FormGallery"])(
     withLoader(observer(InfoPanelHeaderContent))(
