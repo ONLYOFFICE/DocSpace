@@ -32,6 +32,7 @@ const Modal = ({
   header,
   body,
   footer,
+  container,
   visible,
   withFooterBorder,
   modalSwipeOffset,
@@ -39,6 +40,7 @@ const Modal = ({
   const headerComponent = header ? header.props.children : null;
   const bodyComponent = body ? body.props.children : null;
   const footerComponent = footer ? footer.props.children : null;
+  const containerComponent = container ? container.props.children : null;
 
   const validateOnMouseDown = (e) => {
     if (e.target.id === "modal-onMouseDown-close") onClose();
@@ -90,54 +92,60 @@ const Modal = ({
               )
             ) : (
               <>
-                {header && (
-                  <StyledHeader
-                    id="modal-header-swipe"
-                    className={`modal-header ${header.props.className}`}
-                    currentDisplayType={currentDisplayType}
-                    {...header.props}
-                  >
-                    <Heading
-                      level={1}
-                      className={"heading"}
-                      size="medium"
-                      truncate={true}
-                    >
-                      {headerComponent}
-                    </Heading>
-                  </StyledHeader>
-                )}
-                {body && (
-                  <StyledBody
-                    className={`modal-body ${body.props.className}`}
-                    withBodyScroll={withBodyScroll}
-                    isScrollLocked={isScrollLocked}
-                    hasFooter={1 && footer}
-                    currentDisplayType={currentDisplayType}
-                    {...body.props}
-                  >
-                    {currentDisplayType === "aside" && withBodyScroll ? (
-                      <Scrollbar
-                        stype="mediumBlack"
-                        id="modal-scroll"
-                        className="modal-scroll"
+                {container && currentDisplayType !== "modal" ? (
+                  <>{containerComponent}</>
+                ) : (
+                  <>
+                    {header && (
+                      <StyledHeader
+                        id="modal-header-swipe"
+                        className={`modal-header ${header.props.className}`}
+                        currentDisplayType={currentDisplayType}
+                        {...header.props}
                       >
-                        {bodyComponent}
-                      </Scrollbar>
-                    ) : (
-                      bodyComponent
+                        <Heading
+                          level={1}
+                          className={"heading"}
+                          size="medium"
+                          truncate={true}
+                        >
+                          {headerComponent}
+                        </Heading>
+                      </StyledHeader>
                     )}
-                  </StyledBody>
-                )}
-                {footer && (
-                  <StyledFooter
-                    className={`modal-footer ${footer.props.className}`}
-                    withFooterBorder={withFooterBorder}
-                    currentDisplayType={currentDisplayType}
-                    {...footer.props}
-                  >
-                    {footerComponent}
-                  </StyledFooter>
+                    {body && (
+                      <StyledBody
+                        className={`modal-body ${body.props.className}`}
+                        withBodyScroll={withBodyScroll}
+                        isScrollLocked={isScrollLocked}
+                        hasFooter={1 && footer}
+                        currentDisplayType={currentDisplayType}
+                        {...body.props}
+                      >
+                        {currentDisplayType === "aside" && withBodyScroll ? (
+                          <Scrollbar
+                            stype="mediumBlack"
+                            id="modal-scroll"
+                            className="modal-scroll"
+                          >
+                            {bodyComponent}
+                          </Scrollbar>
+                        ) : (
+                          bodyComponent
+                        )}
+                      </StyledBody>
+                    )}
+                    {footer && (
+                      <StyledFooter
+                        className={`modal-footer ${footer.props.className}`}
+                        withFooterBorder={withFooterBorder}
+                        currentDisplayType={currentDisplayType}
+                        {...footer.props}
+                      >
+                        {footerComponent}
+                      </StyledFooter>
+                    )}
+                  </>
                 )}
               </>
             )}

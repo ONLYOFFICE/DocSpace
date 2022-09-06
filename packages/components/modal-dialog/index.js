@@ -19,6 +19,9 @@ Body.displayName = "DialogBody";
 const Footer = () => null;
 Footer.displayName = "DialogFooter";
 
+const Container = () => null;
+Container.displayName = "DialogContainer";
+
 const ModalDialog = ({
   id,
   style,
@@ -69,11 +72,12 @@ const ModalDialog = ({
     };
   }, []);
 
-  const [header, body, footer] = parseChildren(
+  const [header, body, footer, container] = parseChildren(
     children,
     Header.displayName,
     Body.displayName,
-    Footer.displayName
+    Footer.displayName,
+    Container.displayName
   );
 
   return (
@@ -96,6 +100,7 @@ const ModalDialog = ({
           header={header}
           body={body}
           footer={footer}
+          container={container}
           visible={visible}
           modalSwipeOffset={modalSwipeOffset}
         />
@@ -173,5 +178,6 @@ ModalDialog.defaultProps = {
 ModalDialog.Header = Header;
 ModalDialog.Body = Body;
 ModalDialog.Footer = Footer;
+ModalDialog.Container = Container;
 
 export default ModalDialog;
