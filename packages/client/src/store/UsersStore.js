@@ -1,39 +1,31 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "@docspace/common/api";
 import {
   EmployeeStatus,
   EmployeeActivationStatus,
 } from "@docspace/common/constants";
-import { isMobileOnly } from "react-device-detect";
 const { Filter } = api;
 
 class UsersStore {
   peopleStore = null;
+  authStore = null;
+
   users = [];
   providers = [];
+  accountsIsIsLoading = false;
 
-  constructor(peopleStore) {
+  constructor(peopleStore, authStore) {
     this.peopleStore = peopleStore;
-    makeObservable(this, {
-      users: observable,
-      providers: observable,
-      getUsersList: action,
-      setUsers: action,
-      setProviders: action,
-      createUser: action,
-      removeUser: action,
-      updateUserStatus: action,
-      updateUserType: action,
-      updateProfileInUsers: action,
-      peopleList: computed,
-    });
+    this.authStore = authStore;
+    makeAutoObservable(this);
   }
 
   getUsersList = async (filter) => {
-    let filterData = filter && filter.clone();
+    const filterData = filter ? filter.clone() : Filter.getDefault();
 
-    if (!filterData) {
-      filterData = Filter.getDefault();
+    if (!this.authStore.settingsStore.withPaging) {
+      filterData.page = 0;
+      filterData.pageCount = 100;
     }
 
     if (filterData.employeeStatus === EmployeeStatus.Active) {
@@ -89,10 +81,13 @@ class UsersStore {
     await this.getUsersList(filter);
   };
 
-  updateUserStatus = async (status, userIds, isRefetchPeople = false) => {
-    await api.people.updateUserStatus(status, userIds);
-    const filter = this.peopleStore.filterStore.filter;
-    isRefetchPeople && this.getUsersList(filter);
+  updateUserStatus = async (status, userIds) => {
+    const user = await api.people.updateUserStatus(status, userIds);
+
+    if (user) {
+      const userIndex = this.users.findIndex((x) => x.id === user[0].id);
+      if (userIndex !== -1) this.users[userIndex] = user[0];
+    }
   };
 
   updateUserType = async (type, userIds, filter) => {
@@ -229,6 +224,34 @@ class UsersStore {
   isUserSelected = (id) => {
     return this.peopleStore.selectionStore.selection.some((el) => el.id === id);
   };
+
+  setAccountsIsIsLoading = (accountsIsIsLoading) => {
+    this.accountsIsIsLoading = accountsIsIsLoading;
+  };
+
+  fetchMoreAccounts = async () => {
+    if (!this.hasMoreAccounts || this.accountsIsIsLoading) return;
+    // console.log("fetchMoreAccounts");
+
+    this.setAccountsIsIsLoading(true);
+
+    const { filter, setFilterParams } = this.peopleStore.filterStore;
+
+    const newFilter = filter.clone();
+    newFilter.page += 1;
+    setFilterParams(newFilter);
+
+    const res = await api.people.getUserList(newFilter);
+
+    runInAction(() => {
+      this.setUsers([...this.users, ...res.items]);
+      this.setAccountsIsIsLoading(false);
+    });
+  };
+
+  get hasMoreAccounts() {
+    return this.peopleList.length < this.peopleStore.filterStore.filterTotal;
+  }
 
   get peopleList() {
     const list = this.users.map((user) => {

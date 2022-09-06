@@ -54,6 +54,10 @@ const StyledSettingsComponent = styled.div`
     padding-bottom: 12px;
   }
 
+  .send-request-button {
+    height: 40px;
+  }
+
   @media (max-width: 599px) {
     ${(props) =>
       props.hasScroll &&
@@ -68,10 +72,19 @@ const StyledSettingsComponent = styled.div`
           padding-left: 16px;
         }
       `}
-  }
 
-  .settings-block {
-    margin-top: 8px;
+    .send-request-container {
+      box-sizing: border-box;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      padding: 16px;
+      width: 100%;
+    }
+
+    .send-request-button {
+      width: 100%;
+    }
   }
 
   @media (min-width: 600px) {
@@ -83,6 +96,12 @@ const StyledSettingsComponent = styled.div`
 
     .settings-block-description {
       display: none;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .send-request-button {
+      height: 32px;
     }
   }
 

@@ -11,6 +11,7 @@ const withLoading = (WrappedComponent) => {
       isLoadedSectionHeader,
       isLoadedSubmenu,
       isLoadedLngTZSettings,
+      isLoadedDNSSettings,
       isLoadedPortalRenaming,
       isLoadedCustomization,
       isLoadedCustomizationNavbar,
@@ -27,6 +28,7 @@ const withLoading = (WrappedComponent) => {
       isLoadedCustomization &&
       isLoadedLngTZSettings &&
       isLoadedWelcomePageSettings &&
+      isLoadedDNSSettings &&
       isLoadedPortalRenaming &&
       isLoadedArticleBody &&
       isLoadedArticleHeader &&
@@ -58,11 +60,19 @@ const withLoading = (WrappedComponent) => {
       isLoadedSectionHeader &&
       isLoadedPortalRenaming;
 
+    const isLoadedCustomizationSettingDNSSettings =
+      isLoadedArticleBody &&
+      isLoadedArticleHeader &&
+      isLoadedSectionHeader &&
+      isLoadedDNSSettings;
+
     const isLoadedPage =
       setting === "language-and-time-zone"
         ? isLoadedCustomizationSettingLngTZSettings
         : setting === "welcome-page-settings"
         ? isLoadedCustomizationSettingWelcomePageSettings
+        : setting === "dns-settings"
+        ? isLoadedCustomizationSettingDNSSettings
         : setting === "portal-renaming"
         ? isLoadedCustomizationSettingPortalRenaming
         : viewMobile
@@ -79,6 +89,7 @@ const withLoading = (WrappedComponent) => {
       isLoadedSectionHeader,
       isLoadedSubmenu,
       isLoadedLngTZSettings,
+      isLoadedDNSSettings,
       isLoadedPortalRenaming,
       isLoadedCustomization,
       isLoadedCustomizationNavbar,
@@ -91,6 +102,7 @@ const withLoading = (WrappedComponent) => {
       isLoadedSectionHeader,
       isLoadedSubmenu,
       isLoadedLngTZSettings,
+      isLoadedDNSSettings,
       isLoadedPortalRenaming,
       isLoadedCustomization,
       isLoadedCustomizationNavbar,

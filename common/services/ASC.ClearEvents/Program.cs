@@ -32,12 +32,13 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, null, (hostContext, services, diHelper) =>
-{
-    services.AddHostedService<ClearEventsService>();
-    diHelper.TryAdd<ClearEventsService>();
-    services.AddBaseDbContextPool<MessagesContext>();
-});
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
+
+builder.Services.AddClearEventsServices();
+
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
 {

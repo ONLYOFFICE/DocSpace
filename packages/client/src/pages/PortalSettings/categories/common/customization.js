@@ -6,6 +6,7 @@ import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./settingsCustomization/language-and-time-zone";
 import WelcomePageSettings from "./settingsCustomization/welcome-page-settings";
 import PortalRenaming from "./settingsCustomization/portal-renaming";
+import DNSSettings from "./settingsCustomization/dns-settings";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import CustomizationNavbar from "./customization-navbar";
 import { Base } from "@docspace/components/themes";
@@ -110,6 +111,7 @@ const Customization = (props) => {
       )}
       <LanguageAndTimeZone isMobileView={isMobile} />
       <WelcomePageSettings isMobileView={isMobile} />
+      <DNSSettings isMobileView={isMobile} />
       <PortalRenaming isMobileView={isMobile} />
     </StyledComponent>
   );
