@@ -532,6 +532,67 @@ class FilesStore {
     this.selection = selection;
   };
 
+  setSelections = (added, removed) => {
+    let newSelections = JSON.parse(JSON.stringify(this.selection));
+
+    for (let item of added) {
+      const value = item.getAttribute("value");
+      const splitValue = value && value.split("_");
+
+      const fileType = splitValue[0];
+      const id = splitValue.slice(1, -1).join("_");
+
+      if (fileType === "file") {
+        const isFound =
+          this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
+
+        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+          isFound &&
+            newSelections.push(
+              this.filesList.find((f) => f.id == id && !f.isFolder)
+            );
+        }
+      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+        const isFound =
+          this.selection.findIndex((f) => f.id == id && !f.isFolder) === -1;
+
+        const selectableFolder = this.filesList.find(
+          (f) => f.id == id && f.isFolder
+        );
+        selectableFolder.isFolder = true;
+
+        isFound && newSelections.push(selectableFolder);
+      }
+    }
+
+    for (let item of removed) {
+      const value = item.getAttribute("value");
+      const splitValue = value && value.split("_");
+
+      const fileType = splitValue[0];
+      const id = splitValue.slice(1, -1).join("_");
+
+      if (fileType === "file") {
+        if (this.activeFiles.findIndex((f) => f == id) === -1) {
+          newSelections = newSelections.filter(
+            (f) => !(f.id == id && !f.isFolder)
+          );
+        }
+      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
+        newSelections = newSelections.filter(
+          (f) => !(f.id == id && f.isFolder)
+        );
+      }
+    }
+
+    //need fo table view
+    const clearSelection = Object.values(
+      newSelections.reduce((item, n) => ((item[n.id] = n), item), {})
+    );
+
+    this.setSelection(clearSelection);
+  };
+
   setBufferSelection = (bufferSelection) => {
     this.bufferSelection = bufferSelection;
   };
@@ -2427,7 +2488,7 @@ class FilesStore {
     return this.getOptions(selection, true);
   };
 
-  setSelections = (items) => {
+  /*   setSelections = (items) => {
     if (!items.length && !this.selection.length) return;
 
     //if (items.length !== this.selection.length) {
@@ -2470,7 +2531,7 @@ class FilesStore {
 
     this.setSelection(clearSelection);
     //}
-  };
+  }; */
 
   getShareUsers(folderIds, fileIds) {
     return api.files.getShareFiles(fileIds, folderIds);
@@ -2637,13 +2698,13 @@ class FilesStore {
     // const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
     const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
 
-    console.log("hasMoreFiles isRooms", isRooms);
-    console.log("hasMoreFiles filesList", this.filesList.length);
-    console.log("hasMoreFiles this.filterTotal", this.filterTotal);
-    console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
-    console.log("hasMoreFiles filterTotal", filterTotal);
-    console.log("hasMoreFiles", this.filesList.length < filterTotal);
-    console.log("----------------------------");
+    // console.log("hasMoreFiles isRooms", isRooms);
+    // console.log("hasMoreFiles filesList", this.filesList.length);
+    // console.log("hasMoreFiles this.filterTotal", this.filterTotal);
+    // console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
+    // console.log("hasMoreFiles filterTotal", filterTotal);
+    // console.log("hasMoreFiles", this.filesList.length < filterTotal);
+    // console.log("----------------------------");
 
     return this.filesList.length < filterTotal;
   }

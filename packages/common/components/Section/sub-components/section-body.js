@@ -211,12 +211,6 @@ class SectionBody extends React.Component {
     this.focusRef = null;
   }
 
-  onScroll = (e) => {
-    this.props.selectoRef.current &&
-      this.props.selectoRef.current.checkScroll();
-    return e;
-  };
-
   render() {
     //console.log(" SectionBody render" );
     const {
@@ -260,7 +254,6 @@ class SectionBody extends React.Component {
               id="sectionScroll"
               scrollclass="section-scroll"
               stype="mediumBlack"
-              onScroll={this.onScroll}
             >
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>

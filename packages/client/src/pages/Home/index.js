@@ -503,6 +503,7 @@ class PureHome extends React.Component {
       showFilter,
       frameConfig,
       withPaging,
+      setSelections,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -520,7 +521,7 @@ class PureHome extends React.Component {
           withBodyAutoFocus={!isMobile}
           uploadFiles
           onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
-          setSelections={this.props.setSelections}
+          setSelections={setSelections}
           showPrimaryProgressBar={primaryProgressDataVisible}
           primaryProgressBarValue={primaryProgressDataPercent}
           primaryProgressBarIcon={primaryProgressDataIcon}

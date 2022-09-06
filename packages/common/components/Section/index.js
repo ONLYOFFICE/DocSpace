@@ -11,6 +11,7 @@ import {
 } from "@docspace/components/utils/device";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { Provider } from "@docspace/components/utils/context";
+import Selector from "@docspace/components/selector";
 import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
 
 import SectionContainer from "./sub-components/section-container";
@@ -150,7 +151,6 @@ class Section extends React.Component {
     this.intervalHandler = null;
 
     this.scroll = null;
-    this.selectoRef = React.createRef(null);
   }
 
   componentDidUpdate(prevProps) {
@@ -159,17 +159,13 @@ class Section extends React.Component {
     }
   }
 
-  componentDidMount() {}
-
   componentWillUnmount() {
     if (this.intervalHandler) clearInterval(this.intervalHandler);
     if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
   }
 
-  onSelect = (e) => {
-    if (this.props.dragging) return;
-    const items = e.selected;
-    this.props.setSelections(items);
+  onMove = ({ added, removed }) => {
+    this.props.setSelections(added, removed);
   };
 
   dragCondition = (e) => {
@@ -365,7 +361,6 @@ class Section extends React.Component {
                           isHomepage={isHomepage}
                           settingsStudio={settingsStudio}
                           withPaging={withPaging}
-                          selectoRef={this.selectoRef}
                         >
                           {isMobile && (
                             <StyledMainBar
@@ -491,36 +486,17 @@ class Section extends React.Component {
       );
     };
 
-    const scrollOptions = this.scroll
-      ? {
-          container: this.scroll,
-          throttleTime: 0,
-          threshold: 100,
-        }
-      : {};
-
     return (
       <>
-        {renderSection()}
-        {!isMobile && uploadFiles && !dragging && withPaging && (
-          <StyledSelectoWrapper>
-            <Selecto
-              ref={this.selectoRef}
-              boundContainer=".section-wrapper-content"
-              dragContainer=".section-wrapper"
-              selectableTargets={[".files-item"]}
-              hitRate={0}
-              selectByClick={false}
-              selectFromInside={true}
-              ratio={0}
-              continueSelect={false}
-              onSelect={this.onSelect}
-              dragCondition={this.dragCondition}
-              scrollOptions={scrollOptions}
-              onScroll={this.onScroll}
-            />
-          </StyledSelectoWrapper>
+        {!isMobile && uploadFiles && !dragging && (
+          <Selector
+            containerClass="section-scroll"
+            selectableClass="files-item"
+            onMove={this.onMove}
+            scroll={this.scroll}
+          />
         )}
+        {renderSection()}
       </>
     );
   }
