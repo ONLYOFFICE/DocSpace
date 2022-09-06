@@ -211,6 +211,6 @@ const RoomSelector = ({
   );
 };
 
-RoomSelector.defaultProp = { excludeItems: [] };
+RoomSelector.defaultProps = { excludeItems: [] };
 
 export default withTranslation(["RoomSelector", "Common"])(RoomSelector);
