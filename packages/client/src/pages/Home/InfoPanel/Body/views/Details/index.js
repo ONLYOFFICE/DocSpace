@@ -3,7 +3,7 @@ import EmptyScreen from "./EmptyScreen";
 import SeveralItems from "./SeveralItems";
 import SingleItem from "./SingleItem";
 
-const Info = ({
+const Details = ({
   t,
 
   selection,
@@ -68,4 +68,4 @@ const Info = ({
   );
 };
 
-export default Info;
+export default Details;

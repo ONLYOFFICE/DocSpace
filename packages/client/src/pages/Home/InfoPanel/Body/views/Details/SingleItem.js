@@ -11,7 +11,7 @@ import {
   StyledAccessItem,
   StyledOpenSharingPanel,
   StyledThumbnail,
-} from "../../styles/info.js";
+} from "../../styles/details.js";
 import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
 
 const SingleItem = ({
