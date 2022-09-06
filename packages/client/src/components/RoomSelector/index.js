@@ -152,24 +152,6 @@ const RoomSelector = ({
     onLoadNextPage(0);
   }, [searchValue]);
 
-  const setDefaultTranslations = () => {
-    headerLabel = headerLabel || t("RoomList");
-    searchPlaceholder = searchPlaceholder || t("Common:Search");
-    acceptButtonLabel = acceptButtonLabel || t("Common:SelectAction");
-    cancelButtonLabel = cancelButtonLabel || t("Common:CancelButton");
-
-    emptyScreenImage = emptyScreenImage || "images/empty_screen_corporate.png";
-    emptyScreenHeader = emptyScreenHeader || t("EmptyRoomsHeader");
-    emptyScreenDescription =
-      emptyScreenDescription || t("EmptyRoomsDescription");
-    searchEmptyScreenImage =
-      searchEmptyScreenImage || "images/empty_screen_corporate.png";
-    searchEmptyScreenHeader =
-      searchEmptyScreenHeader || t("SearchEmptyRoomsHeader");
-    searchEmptyScreenDescription =
-      searchEmptyScreenDescription || t("SearchEmptyRoomsDescription");
-  };
-
   setDefaultTranslations();
 
   return (
@@ -177,18 +159,18 @@ const RoomSelector = ({
       id={id}
       className={className}
       style={style}
-      headerLabel={headerLabel}
+      headerLabel={headerLabel || t("RoomList")}
       onBackClick={onBackClick}
-      searchPlaceholder={searchPlaceholder}
+      searchPlaceholder={searchPlaceholder || t("Common:Search")}
       searchValue={searchValue}
       onSearch={onSearchAction}
       onClearSearch={onClearSearchAction}
       onSelect={onSelect}
       items={items}
-      acceptButtonLabel={acceptButtonLabel}
+      acceptButtonLabel={acceptButtonLabel || t("Common:SelectAction")}
       onAccept={onAccept}
       withCancelButton={withCancelButton}
-      cancelButtonLabel={cancelButtonLabel}
+      cancelButtonLabel={cancelButtonLabel || t("Common:CancelButton")}
       onCancel={onCancel}
       isMultiSelect={isMultiSelect}
       selectedItems={selectedItems}
@@ -200,12 +182,20 @@ const RoomSelector = ({
       accessRights={accessRights}
       selectedAccessRight={selectedAccessRight}
       onAccessRightsChange={onAccessRightsChange}
-      emptyScreenImage={emptyScreenImage}
-      emptyScreenHeader={emptyScreenHeader}
-      emptyScreenDescription={emptyScreenDescription}
-      searchEmptyScreenImage={searchEmptyScreenImage}
-      searchEmptyScreenHeader={searchEmptyScreenHeader}
-      searchEmptyScreenDescription={searchEmptyScreenDescription}
+      emptyScreenImage={emptyScreenImage || "images/empty_screen_corporate.png"}
+      emptyScreenHeader={emptyScreenHeader || t("EmptyRoomsHeader")}
+      emptyScreenDescription={
+        emptyScreenDescription || t("EmptyRoomsDescription")
+      }
+      searchEmptyScreenImage={
+        searchEmptyScreenImage || "images/empty_screen_corporate.png"
+      }
+      searchEmptyScreenHeader={
+        searchEmptyScreenHeader || t("SearchEmptyRoomsHeader")
+      }
+      searchEmptyScreenDescription={
+        searchEmptyScreenDescription || t("SearchEmptyRoomsDescription")
+      }
       totalItems={total}
       hasNextPage={hasNextPage}
       isNextPageLoading={isNextPageLoading}
@@ -214,8 +204,9 @@ const RoomSelector = ({
       searchLoader={<Loaders.SelectorSearchLoader />}
       rowLoader={
         <Loaders.SelectorRowLoader
-          isMultiSelect={false}
+          isMultiSelect={isMultiSelect}
           isContainer={isFirstLoad}
+          isUser={false}
         />
       }
     />
