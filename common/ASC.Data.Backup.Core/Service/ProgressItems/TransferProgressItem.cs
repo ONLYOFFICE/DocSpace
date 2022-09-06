@@ -50,8 +50,6 @@
 */
 
 
-using ConfigurationProvider = ASC.Data.Backup.Utils.ConfigurationProvider;
-
 namespace ASC.Data.Backup.Services;
 
 [Transient]
@@ -61,16 +59,19 @@ public class TransferProgressItem : BaseBackupProgressItem
     private readonly ILogger<TransferProgressItem> _logger;
     private readonly NotifyHelper _notifyHelper;
     private TransferPortalTask _transferPortalTask;
+    private IConfiguration _configuration;
 
     public TransferProgressItem(
         ILogger<TransferProgressItem> logger,
         IServiceScopeFactory serviceScopeFactory,
-        NotifyHelper notifyHelper) :
+        NotifyHelper notifyHelper,
+        IConfiguration configuration) :
         base(logger, serviceScopeFactory)
     {
         _logger = logger;
         _notifyHelper = notifyHelper;
         BackupProgressItemEnum = BackupProgressItemEnum.Transfer;
+        _configuration = configuration;
     }
 
     public string TargetRegion { get; set; }
@@ -156,7 +157,8 @@ public class TransferProgressItem : BaseBackupProgressItem
 
     private string GetLink(string alias, bool isErrorLink)
     {
-        return "https://" + alias + "." + ConfigurationProvider.Open(isErrorLink ? "current" : TargetRegion).AppSettings.Settings["core:base-domain"].Value;
+        var domain = isErrorLink ? "core:base-domain" : $"{TargetRegion}:core:base-domain";
+        return "https://" + alias + "." + _configuration[domain];
     }
 
     public override object Clone()
