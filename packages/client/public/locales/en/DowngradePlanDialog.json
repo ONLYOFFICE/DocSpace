@@ -1,0 +1,8 @@
+{
+  "DowngradePlan": "Downgrade plan",
+  "CannotDowngradePlan": "You cannot downgrade your plan as the storage amount/manager numbers exceeds limitations according to the pricing plan selected",
+  "AllowedManagerNumber": "Number of managers allowed",
+  "CurrentManagerNumber": "Current number of managers",
+  "StorageSpaceSizeAllowed": "Storage space size allowed",
+  "CurrentStorageSpace": "Current storage space"
+}
