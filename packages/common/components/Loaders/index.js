@@ -34,6 +34,7 @@ import CreateEditRoomDilogHeaderLoader from "./CreateEditRoomLoader/CreateEditRo
 import DataBackupLoader from "./DataBackupLoader";
 import AutoBackupLoader from "./AutoBackupLoader";
 import RestoreBackupLoader from "./RestoreBackupLoader";
+import InfoPanelMemberListLoader from "./InfoPanelBodyLoader/InfoPanelMemberListLoader";
 
 export default {
   Rectangle,
@@ -72,4 +73,5 @@ export default {
   DataBackupLoader,
   AutoBackupLoader,
   RestoreBackupLoader,
+  InfoPanelMemberListLoader,
 };
