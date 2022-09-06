@@ -7,27 +7,16 @@ import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import Loaders from "@docspace/common/components/Loaders";
 
-const Members = ({ t, selfId, selection, setSelection, getShareUsers }) => {
+const Members = ({ t, selfId, selection, setSelection, getRoomMembers }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(async () => {
-    console.log(selection);
-    console.log("MEMBERS USE STATE");
-    if (selection.members) {
-      console.log("NO NEED TO REFETCH");
-      return;
-    }
+    if (selection.members) return;
 
-    console.log("NEED TO REFETCH");
     setIsLoading(true);
-    const getShareUsersData = selection.isFolder
-      ? [[selection.id], []]
-      : [[], [selection.id]];
-    const fetchedMembers = await getShareUsers(...getShareUsersData);
+    const fetchedMembers = await getRoomMembers(selection.id);
     setSelection({ ...selection, members: fetchedMembers });
     setIsLoading(false);
-
-    console.log("members", fetchedMembers);
   }, [selection.members]);
 
   if (!selection.members || isLoading)
