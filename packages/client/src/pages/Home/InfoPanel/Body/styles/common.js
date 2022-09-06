@@ -45,8 +45,8 @@ const StyledTitle = styled.div`
   flex-direction: row;
   align-items: center;
   width: 100%;
-  height: 44px;
-  padding: 23px 0;
+  height: 32px;
+  padding: 24px 0;
 
   ${(props) =>
     props.withBottomBorder &&
