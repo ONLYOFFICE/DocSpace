@@ -1,7 +1,7 @@
 {
   "AccessRightsAccessToProduct": "Accès au module {{product}} est accordé à",
   "AccessRightsAllUsers": "Tous {{users}}",
-  "AuditDownloadText": "Vous pouvez télécharger   le rapport des données accessibles lors d'une période sélectionnée pour voir  les statistiques détaillées. Veuillez noter que la fonction d'enregistrement est activée pour les modules Documents, Projets, CRM  et Personnes ainsi que pour les paramètres de portail. ",
+  "AuditDownloadText": "Vous pouvez télécharger le rapport des données accessibles lors d'une période sélectionnée pour voir les statistiques détaillées. Veuillez noter que la fonction d'enregistrement est activée pour les modules Documents, Projets, CRM  et Personnes ainsi que pour les paramètres de portail. ",
   "AuditTrailNav": "Piste d'audit ",
   "AccessRightsChangeOwnerConfirmText": "Les changements seront appliqués après la confirmation par e-mail.",
   "AccessRightsOwnerOpportunities": "Faire la même chose que les administrateurs du module|Nommer les administrateurs du module|Définir les droits d'accès aux modules|Gérer la configuration du portail|Gérer les comptes d'utilisateurs|Changer le propriétaire du portail|Créer une sauvegarde du portail|Désactiver ou supprimer le portail",
@@ -146,7 +146,7 @@
   "ThirdPartyPropsActivated": "Mis à jour avec succès",
   "ThirdPartyPropsDeactivated": "Désactivé avec succès",
   "ThirdPartyResource": "Ressource tierce",
-  "ThirdPartyResourceDescription": "La sauvegarde peut être enregistrée sur votre compte tiers (Dropbox, Box.com, OneDrive ou Google Drive). Il vous faut connecter votre compte tiers (Dropbox, Box.com, OneDrive ou Google Drive) au dossier Documents communs avant de pouvoir y enregistrer votre sauvegarde.",
+  "ThirdPartyResourceDescription": "La sauvegarde peut être enregistrée sur votre compte tiers (Dropbox, Box.com, OneDrive ou Google Drive). Il vous faut connecter votre compte tiers (Dropbox, Box.com, OneDrive ou Google Drive) avant de pouvoir y enregistrer votre sauvegarde.",
   "ThirdPartyStorage": "Moteur de stockage tiers",
   "ThirdPartyStorageDescription": "La sauvegarde peut être enregistrée sur un stockage tiers. Auparavant, il faut vous connecter le service correspondant dans la section 'Intégration'. Sinon, les paramètres suivants seront désactivés.",
   "ThirdPartyTitleDescription": "Avec les clés d'autorisation, vous pouvez connecter des services tiers à votre portail. Connectez vous facilement à Facebook, Twitter ou LinkedIn; travaillez avec des fichiers stockés sur Dropbox, Onedrive etc. depuis le module Documents.",

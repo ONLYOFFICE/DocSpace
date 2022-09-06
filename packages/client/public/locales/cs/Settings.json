@@ -144,7 +144,7 @@
   "ThirdPartyPropsActivated": "Úspěšně aktualizováno",
   "ThirdPartyPropsDeactivated": "Úspěšně deaktivováno",
   "ThirdPartyResource": "Zdroj třetí strany",
-  "ThirdPartyResourceDescription": "Zálohu lze uložit na účet třetí strany (Dropbox, Box.com, OneDrive nebo Disk Google). Předtím, než tam budete moci zálohu uložit, musíte účet třetí strany (Dropbox, Box.com, OneDrive nebo Disk Google) připojit ke složce Společné dokumenty.",
+  "ThirdPartyResourceDescription": "Zálohu lze uložit na účet třetí strany (Dropbox, Box.com, OneDrive nebo Disk Google). Předtím, než tam budete moci zálohu uložit, musíte účet třetí strany (Dropbox, Box.com, OneDrive nebo Disk Google).",
   "ThirdPartyStorage": "Úložiště třetích stran",
   "ThirdPartyStorageDescription": "Zálohu lze uložit do úložiště třetí strany. Předtím je třeba připojit příslušnou službu v části 'Integrace'. V opačném případě budou následující nastavení neaktivní.",
   "ThirdPartyTitleDescription": "Pomocí autorizačních klíčů můžete k portálu připojit služby třetích stran. Snadno se přihlásíte pomocí Facebooku, Twitteru nebo LinkedIn; z modulu Dokumenty přidáte Dropbox, OneDrive atd. a budete moci pracovat se soubory, které jsou tam uloženy.",

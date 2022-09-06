@@ -38,6 +38,7 @@ public class FolderDto<T> : FileEntryDto<T>
     public Logo Logo { get; set; }
     public bool Pinned { get; set; }
     public RoomType? RoomType { get; set; }
+    public bool Private { get; set; }
 
     protected internal override FileEntryType EntryType { get => FileEntryType.Folder; }
 
@@ -160,6 +161,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
         result.IsFavorite = folder.IsFavorite.NullIfDefault();
         result.New = folder.NewForMe;
         result.Pinned = folder.Pinned;
+        result.Private = folder.Private;
 
         return result;
     }

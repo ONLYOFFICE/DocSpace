@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import { mobile, tablet, hugeMobile } from "../utils/device";
 import Scrollbar from "../scrollbar";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 const reactWindowContainerStyles = css`
   height: 100%;
@@ -93,31 +93,36 @@ StyledTableContainer.defaultProps = { theme: Base };
 
 const StyledTableGroupMenu = styled.div`
   position: relative;
+
   background: ${(props) => props.theme.tableContainer.groupMenu.background};
   border-bottom: ${(props) =>
     props.theme.tableContainer.groupMenu.borderBottom};
+  box-shadow: ${(props) => props.theme.tableContainer.groupMenu.boxShadow};
+  border-radius: 0px 0px 6px 6px;
+
   display: flex;
   flex-direction: row;
   align-items: center;
+
   width: 100%;
+  height: 100%;
+
   z-index: 199;
-  height: 52px;
-  box-shadow: ${(props) => props.theme.tableContainer.groupMenu.boxShadow};
-  border-radius: 0px 0px 6px 6px;
+
   margin: 0;
-  width: 100%;
-
-  @media ${tablet} {
-    height: 60px;
-  }
-
-  @media ${mobile}, ${hugeMobile} {
-    height: 52px;
-  }
 
   .table-container_group-menu-checkbox {
-    margin-left: 24px;
+    margin-left: 28px;
     ${(props) => props.checkboxMargin && `margin-left: ${props.checkboxMargin}`}
+
+    @media ${tablet} {
+      margin-left: 24px;
+    }
+
+    ${isMobile &&
+    css`
+      margin-left: 24px;
+    `}
   }
 
   .table-container_group-menu-separator {
@@ -125,7 +130,25 @@ const StyledTableGroupMenu = styled.div`
       props.theme.tableContainer.groupMenu.borderRight};
     width: 2px;
     height: 20px;
-    margin: 0 8px;
+    margin: 0 16px 0 20px;
+
+    @media ${tablet} {
+      height: 36px;
+    }
+
+    ${isMobile &&
+    css`
+      height: 36px;
+    `}
+
+    @media ${mobile} {
+      height: 20px;
+    }
+
+    ${isMobileOnly &&
+    css`
+      height: 20px;
+    `}
   }
 
   .table-container_group-menu_button {
@@ -357,7 +380,7 @@ const StyledTableCell = styled.div`
 StyledTableCell.defaultProps = { theme: Base };
 
 const StyledTableSettings = styled.div`
-  margin: 14px 0 0px 8px;
+  margin: 14px 0 0px 2px;
   display: inline-block;
   position: relative;
   cursor: pointer;

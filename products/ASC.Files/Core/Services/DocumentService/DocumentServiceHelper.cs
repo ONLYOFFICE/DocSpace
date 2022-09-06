@@ -76,7 +76,7 @@ public class DocumentServiceHelper
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<(File<T> File, Configuration<T> Configuration)> GetParamsAsync<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth)
+    public async Task<(File<T> File, Configuration<T> Configuration, bool LocatedInPrivateRoom)> GetParamsAsync<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth)
     {
         var lastVersion = true;
         FileShare linkRight;
@@ -105,7 +105,7 @@ public class DocumentServiceHelper
         return await GetParamsAsync(file, lastVersion, linkRight, true, true, editPossible, tryEdit, tryCoauth);
     }
 
-    public async Task<(File<T> File, Configuration<T> Configuration)> GetParamsAsync<T>(File<T> file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth)
+    public async Task<(File<T> File, Configuration<T> Configuration, bool LocatedInPrivateRoom)> GetParamsAsync<T>(File<T> file, bool lastVersion, FileShare linkRight, bool rightToRename, bool rightToEdit, bool editPossible, bool tryEdit, bool tryCoauth)
     {
         if (file == null)
         {
@@ -148,7 +148,7 @@ public class DocumentServiceHelper
             && (linkRight == FileShare.ReadWrite
                 || await _fileSecurity.CanEditAsync(file));
 
-        rightToRename = rightToRename && rightToEdit && await _fileSecurity.CanEditAsync(file);
+        rightToRename = rightToRename && rightToEdit && await _fileSecurity.CanRenameAsync(file);
 
         rightToReview = rightToReview
                         && (linkRight == FileShare.Review || linkRight == FileShare.ReadWrite
@@ -213,8 +213,17 @@ public class DocumentServiceHelper
             rightToEdit = editPossible = false;
         }
 
+        var locatedInPrivateRoom = false;
+
+        if (file.RootFolderType == FolderType.VirtualRooms)
+        {
+            var folderDao = _daoFactory.GetFolderDao<T>();
+
+            locatedInPrivateRoom = await DocSpaceHelper.LocatedInPrivateRoomAsync(file, folderDao);
+        }
+
         if (file.Encrypted
-            && file.RootFolderType != FolderType.Privacy)
+            && file.RootFolderType != FolderType.Privacy && !locatedInPrivateRoom)
         {
             rightToEdit = editPossible = false;
             rightToReview = reviewPossible = false;
@@ -316,7 +325,7 @@ public class DocumentServiceHelper
             configuration.Document.Title += $" ({file.CreateOnString})";
         }
 
-        return (file, configuration);
+        return (file, configuration, locatedInPrivateRoom);
     }
 
     private async Task<bool> CanDownloadAsync<T>(FileSecurity fileSecurity, File<T> file, FileShare linkRight)

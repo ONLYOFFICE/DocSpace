@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "Recordarme",
   "RememberHelper": "La duración de la sesión por defecto es de 20 minutos. Marque esta opción para establecerla en 1 año. Para establecer su propio valor, vaya a Ajustes.",
-  "ResendCode": "Reenviar código"
+  "ResendCode": "Reenviar código",
+  "ErrorInvalidHeader": "Correo electrónico incorrecto o enlace expirado",
+  "ErrorInvalidText": "Dentro de 10 segundos se le redirigirá a la página de <1>inicio de sesión</1>"
 }

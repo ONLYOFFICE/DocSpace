@@ -1,4 +1,4 @@
-appserver ({{package_header_tag_version}}) unstable; urgency=medium
+{{product}} ({{package_header_tag_version}}) unstable; urgency=medium
 
   * Initial Release.
 

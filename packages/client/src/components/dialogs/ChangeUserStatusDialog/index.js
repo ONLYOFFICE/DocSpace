@@ -25,11 +25,12 @@ class ChangeUserStatusDialogComponent extends React.Component {
 
     const listUsers = selectedUsers.map((item, index) => {
       const disabled = userIds.find((x) => x === item.id);
-      return (selectedUsers[index] = {
+
+      return {
         ...selectedUsers[index],
         checked: disabled ? true : false,
         disabled: disabled ? false : true,
-      });
+      };
     });
 
     this.state = { isRequestRunning: false, listUsers, userIds };
@@ -45,7 +46,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
     } = this.props;
     const { userIds } = this.state;
     this.setState({ isRequestRunning: true }, () => {
-      updateUserStatus(userStatus, userIds, true)
+      updateUserStatus(userStatus, userIds)
         .then(() =>
           toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
         )
@@ -178,13 +179,21 @@ ChangeUserStatusDialog.propTypes = {
 };
 
 export default withRouter(
-  inject(({ peopleStore }, ownProps) => ({
-    updateUserStatus: peopleStore.usersStore.updateUserStatus,
-    selectedUsers: peopleStore.selectionStore.selection,
-    setSelected: peopleStore.selectionStore.setSelected,
-    userIds:
+  inject(({ peopleStore }, ownProps) => {
+    const updateUserStatus = peopleStore.usersStore.updateUserStatus;
+
+    const selectedUsers = peopleStore.selectionStore.selection;
+    const setSelected = peopleStore.selectionStore.setSelected;
+    const userIds =
       ownProps.userStatus === EmployeeStatus.Active
         ? peopleStore.selectionStore.getUsersToActivateIds
-        : peopleStore.selectionStore.getUsersToDisableIds,
-  }))(observer(ChangeUserStatusDialog))
+        : peopleStore.selectionStore.getUsersToDisableIds;
+
+    return {
+      updateUserStatus,
+      selectedUsers,
+      setSelected,
+      userIds,
+    };
+  })(observer(ChangeUserStatusDialog))
 );
