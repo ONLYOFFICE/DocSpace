@@ -312,8 +312,8 @@ export function isRetina() {
 
 export function convertLanguage(key) {
   switch (key) {
-    case "en-US":
-      return "en";
+    case "en":
+      return "en-GB";
     case "ru-RU":
       return "ru";
     case "de-DE":
