@@ -53,6 +53,7 @@ global using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
 
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
+global using ASC.Api.Core.Security;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
 global using ASC.AuditTrail.Models;
