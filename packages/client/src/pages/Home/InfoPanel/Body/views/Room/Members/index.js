@@ -5,32 +5,39 @@ import { StyledUserTypeHeader } from "../../../styles/members";
 
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
+import Loaders from "@docspace/common/components/Loaders";
 
-const Members = ({ t, selfId, selectedItem, getShareUsers }) => {
-  const [members, setMembers] = useState([]);
+const Members = ({ t, selfId, selection, setSelection, getShareUsers }) => {
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(async () => {
-    if (selectedItem.members) {
-      console.log("hasMembers");
-      setMembers(selectedItem.members);
+    console.log(selection);
+    console.log("MEMBERS USE STATE");
+    if (selection.members) {
+      console.log("NO NEED TO REFETCH");
       return;
     }
 
-    const getShareUsersData = selectedItem.isFolder
-      ? [[selectedItem.id], []]
-      : [[], [selectedItem.id]];
+    console.log("NEED TO REFETCH");
+    setIsLoading(true);
+    const getShareUsersData = selection.isFolder
+      ? [[selection.id], []]
+      : [[], [selection.id]];
     const fetchedMembers = await getShareUsers(...getShareUsersData);
-    setMembers(fetchedMembers);
-    selectedItem.members = fetchedMembers;
+    setSelection({ ...selection, members: fetchedMembers });
+    setIsLoading(false);
 
     console.log("members", fetchedMembers);
-  }, [selectedItem]);
+  }, [selection.members]);
+
+  if (!selection.members || isLoading)
+    return <Loaders.InfoPanelMemberListLoader />;
 
   return (
     <>
       <StyledUserTypeHeader>
         <Text className="title">
-          {t("Users in room")} : {members.length}
+          {t("Users in room")} : {selection.members.length}
         </Text>
         <IconButton
           className={"icon"}
@@ -43,7 +50,7 @@ const Members = ({ t, selfId, selectedItem, getShareUsers }) => {
         />
       </StyledUserTypeHeader>
 
-      <UserList t={t} users={members} selfId={selfId} />
+      <UserList t={t} users={selection.members} selfId={selfId} />
 
       {/* <StyledUserTypeHeader>
         <Text className="title">{`${t("Expect people")}:`}</Text>
