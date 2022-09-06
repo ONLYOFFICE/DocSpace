@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import RectangleLoader from "../RectangleLoader/RectangleLoader";
 
@@ -27,6 +27,12 @@ const StyledItem = styled.div`
 
   .avatar {
     margin-right: 8px;
+
+    ${(props) =>
+      props.isUser &&
+      css`
+        border-radius: 50px;
+      `}
   }
 
   .checkbox {
@@ -40,6 +46,7 @@ const SelectorRowLoader = ({
   style,
   isMultiSelect,
   isContainer,
+  isUser,
   ...rest
 }) => {
   const getRowItem = (key) => {
@@ -49,6 +56,7 @@ const SelectorRowLoader = ({
         className={className}
         style={style}
         isMultiSelect={isMultiSelect}
+        isUser={isUser}
         key={key}
         {...rest}
       >
