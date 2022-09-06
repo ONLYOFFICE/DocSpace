@@ -22,6 +22,7 @@ const Modal = ({
   className,
   currentDisplayType,
   withBodyScroll,
+  isScrollLocked,
   isLarge,
   zIndex,
   autoMaxHeight,
@@ -39,8 +40,13 @@ const Modal = ({
   const bodyComponent = body ? body.props.children : null;
   const footerComponent = footer ? footer.props.children : null;
 
+  const validateOnMouseDown = (e) => {
+    if (e.target.id === "modal-onMouseDown-close") onClose();
+  };
+
   return (
     <StyledModal
+      id={id}
       className={visible ? "modal-active" : ""}
       modalSwipeOffset={modalSwipeOffset}
     >
@@ -51,11 +57,11 @@ const Modal = ({
         modalSwipeOffset={modalSwipeOffset}
       >
         <Dialog
-          className={`${className} dialog not-selectable`}
+          id="modal-onMouseDown-close"
+          className={`${className} modalOnCloseBacdrop dialog not-selectable`}
           currentDisplayType={currentDisplayType}
-          id={id}
           style={style}
-          onClick={onClose}
+          onMouseDown={validateOnMouseDown}
         >
           <Content
             id="modal-dialog"
@@ -65,7 +71,6 @@ const Modal = ({
             autoMaxHeight={autoMaxHeight}
             autoMaxWidth={autoMaxWidth}
             modalSwipeOffset={modalSwipeOffset}
-            onClick={(e) => e.stopPropagation()}
           >
             <CloseButton
               currentDisplayType={currentDisplayType}
@@ -88,6 +93,7 @@ const Modal = ({
                 {header && (
                   <StyledHeader
                     id="modal-header-swipe"
+                    className={`modal-header ${header.props.className}`}
                     currentDisplayType={currentDisplayType}
                     {...header.props}
                   >
@@ -103,13 +109,21 @@ const Modal = ({
                 )}
                 {body && (
                   <StyledBody
+                    className={`modal-body ${body.props.className}`}
                     withBodyScroll={withBodyScroll}
+                    isScrollLocked={isScrollLocked}
                     hasFooter={1 && footer}
                     currentDisplayType={currentDisplayType}
                     {...body.props}
                   >
                     {currentDisplayType === "aside" && withBodyScroll ? (
-                      <Scrollbar stype="mediumBlack">{bodyComponent}</Scrollbar>
+                      <Scrollbar
+                        stype="mediumBlack"
+                        id="modal-scroll"
+                        className="modal-scroll"
+                      >
+                        {bodyComponent}
+                      </Scrollbar>
                     ) : (
                       bodyComponent
                     )}
@@ -117,6 +131,7 @@ const Modal = ({
                 )}
                 {footer && (
                   <StyledFooter
+                    className={`modal-footer ${footer.props.className}`}
                     withFooterBorder={withFooterBorder}
                     currentDisplayType={currentDisplayType}
                     {...footer.props}

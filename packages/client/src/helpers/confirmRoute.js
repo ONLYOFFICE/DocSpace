@@ -22,7 +22,7 @@ class ConfirmRoute extends React.Component {
     const { forUnauthorized, history, isAuthenticated } = this.props;
 
     if (forUnauthorized && isAuthenticated) {
-      this.props.logout(false);
+      this.props.logout();
     }
 
     const { location } = this.props;

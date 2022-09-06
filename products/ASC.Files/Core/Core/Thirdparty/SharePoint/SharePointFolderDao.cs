@@ -403,7 +403,13 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         else
         {
             newFolderId = (string)await ProviderInfo.RenameFolderAsync(folder.Id, newTitle);
+
+            if (DocSpaceHelper.IsRoom(ProviderInfo.FolderType) && ProviderInfo.FolderId != null && ProviderInfo.FolderId == oldId)
+            {
+                await DaoSelector.UpdateProviderFolderId(ProviderInfo, newFolderId);
+            }
         }
+
         await UpdatePathInDBAsync(oldId, newFolderId);
 
         return newFolderId;
@@ -422,7 +428,7 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return folder.ItemCount == 0;
     }
 
-    public bool UseTrashForRemove(Folder<string> folder)
+    public bool UseTrashForRemoveAsync(Folder<string> folder)
     {
         return false;
     }

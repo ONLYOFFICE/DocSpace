@@ -45,7 +45,7 @@ public class AuthenticationController : ControllerBase
     private readonly ICache _cache;
     private readonly MessageService _messageService;
     private readonly ProviderManager _providerManager;
-    private readonly IOptionsSnapshot<AccountLinker> _accountLinker;
+    private readonly AccountLinker _accountLinker;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly PersonalSettingsHelper _personalSettingsHelper;
     private readonly StudioNotifyService _studioNotifyService;
@@ -80,7 +80,7 @@ public class AuthenticationController : ControllerBase
         ICache cache,
         MessageService messageService,
         ProviderManager providerManager,
-        IOptionsSnapshot<AccountLinker> accountLinker,
+        AccountLinker accountLinker,
         CoreBaseSettings coreBaseSettings,
         PersonalSettingsHelper personalSettingsHelper,
         StudioNotifyService studioNotifyService,
@@ -543,8 +543,7 @@ public class AuthenticationController : ControllerBase
             }
         }
 
-        var linker = _accountLinker.Get("webstudio");
-        linker.AddLink(userInfo.Id.ToString(), loginProfile);
+        _accountLinker.AddLink(userInfo.Id.ToString(), loginProfile);
 
         return userInfo;
     }
@@ -590,7 +589,7 @@ public class AuthenticationController : ControllerBase
             return false;
         }
 
-        var linkedProfiles = _accountLinker.Get("webstudio").GetLinkedObjectsByHashId(hashId);
+        var linkedProfiles = _accountLinker.GetLinkedObjectsByHashId(hashId);
         var tmp = Guid.Empty;
         if (linkedProfiles.Any(profileId => Guid.TryParse(profileId, out tmp) && _userManager.UserExists(tmp)))
         {

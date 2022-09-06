@@ -3,7 +3,5 @@
   "Error403Text": "Žal je dostop zavrnjen.",
   "Error404Text": "Žal vira ni mogoče najti.",
   "ErrorEmptyResponse": "Prazen odziv",
-  "ErrorInvalidHeader": "Napačen email ali potekla povezava",
-  "ErrorInvalidText": "V 10 sekundah boste preusmerjeni na <1>Stran za prijavo</1>",
   "ErrorOfflineText": "Internetne povezave ni bilo mogoče najti."
 }

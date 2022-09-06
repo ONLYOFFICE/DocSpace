@@ -58,6 +58,7 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
     services.AddBaseDbContext<FilesDbContext>();
     services.AddBaseDbContext<NotifyDbContext>();
     services.AddBaseDbContext<UrlShortenerFakeDbContext>();
+    services.AddBaseDbContext<FirebaseDbContext>();
 });
 
 var app = builder.Build();

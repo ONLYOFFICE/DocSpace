@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { Trans } from "react-i18next";
 import Link from "@docspace/components/link";
-import Text from "@docspace/components/text";
 
 const StyledTooltip = styled.div`
   .font-size {
@@ -26,12 +25,12 @@ export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
 
   return (
     <StyledTooltip>
-      <Text className="font-size">
+      <div className="font-size">
         <Trans ns="Settings" i18nKey="LanguageTimeSettingsTooltip" text={text}>
-          <Text className="bold display-inline font-size">{{ text }}</Text>{" "}
+          <div className="bold display-inline font-size">{{ text }}</div>{" "}
         </Trans>
-      </Text>
-      <Text className="font-size">
+      </div>
+      <div className="font-size">
         <Trans
           ns="Settings"
           i18nKey="LanguageTimeSettingsTooltipDescription"
@@ -39,20 +38,18 @@ export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
           save={save}
         >
           {" "}
-          <Text className="bold display-inline font-size">
-            {" "}
-            {{ save }}
-          </Text>{" "}
+          <div className="bold display-inline font-size"> {{ save }}</div>{" "}
           <Link
             color={theme.client.settings.common.linkColorHelp}
             className="display-block font-size"
             isHovered={true}
+            target="_blank"
             href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
           >
             {{ learnMore }}
           </Link>
         </Trans>
-      </Text>
+      </div>
     </StyledTooltip>
   );
 };
@@ -64,7 +61,7 @@ export const CustomTitlesTooltip = ({ t }) => {
   const header = t("Common:Title");
   return (
     <StyledTooltip>
-      <Text className="font-size">
+      <div className="font-size">
         <Trans
           ns="Settings"
           i18nKey="CustomTitlesSettingsTooltip"
@@ -72,27 +69,56 @@ export const CustomTitlesTooltip = ({ t }) => {
           text={text}
           from={from}
         >
-          <Text className="bold display-inline font-size">
+          <div className="bold display-inline font-size">
             {" "}
             {{ welcomeText }}
-          </Text>{" "}
-          <Text className="bold display-inline font-size"> {{ text }}</Text>{" "}
-          <Text className="bold display-inline font-size"> {{ from }}</Text>{" "}
+          </div>{" "}
+          <div className="bold display-inline font-size"> {{ text }}</div>{" "}
+          <div className="bold display-inline font-size"> {{ from }}</div>{" "}
         </Trans>
-      </Text>
-      <Text className="font-size">
+      </div>
+      <div className="font-size">
         <Trans
           ns="Settings"
           i18nKey="CustomTitlesSettingsTooltipDescription"
           header={header}
         >
           {" "}
-          <Text className="bold display-inline font-size">
+          <div className="bold display-inline font-size">
             {" "}
             {{ header }}
-          </Text>{" "}
+          </div>{" "}
         </Trans>
-      </Text>
+      </div>
+    </StyledTooltip>
+  );
+};
+
+export const DNSSettingsTooltip = ({ t, theme, helpLink }) => {
+  const text = t("Settings:DNSSettingsTooltip");
+  const learnMore = t("Common:LearnMore");
+
+  return (
+    <StyledTooltip>
+      <div className="font-size">
+        <Trans
+          ns="Settings"
+          i18nKey="DNSSettingsTooltip"
+          text={text}
+          learnMore={learnMore}
+        >
+          <div className="display-inline font-size"> {{ text }}</div>{" "}
+          <Link
+            color={theme.client.settings.common.linkColorHelp}
+            className="display-block font-size"
+            isHovered={true}
+            target="_blank"
+            href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
+          >
+            {{ learnMore }}
+          </Link>
+        </Trans>
+      </div>
     </StyledTooltip>
   );
 };
@@ -104,29 +130,26 @@ export const PortalRenamingTooltip = ({ t }) => {
 
   return (
     <StyledTooltip>
-      <Text className="font-size">
+      <div className="font-size">
         <Trans
           ns="Settings"
           i18nKey="PortalRenamingSettingsTooltip"
           text={text}
         >
-          <Text className="display-inline font-size"> {{ text }}</Text>{" "}
+          <div className="display-inline font-size"> {{ text }}</div>{" "}
         </Trans>
-      </Text>
-      <Text className="font-size">
+      </div>
+      <div className="font-size">
         <Trans
           ns="Settings"
           i18nKey="PleaseNoteDescription"
           pleaseNote={pleaseNote}
           save={save}
         >
-          <Text className="bold display-inline font-size">
-            {" "}
-            {{ pleaseNote }}
-          </Text>{" "}
-          <Text className="bold display-inline font-size"> {{ save }}</Text>{" "}
+          <div className="bold display-inline font-size"> {{ pleaseNote }}</div>{" "}
+          <div className="bold display-inline font-size"> {{ save }}</div>{" "}
         </Trans>
-      </Text>
+      </div>
     </StyledTooltip>
   );
 };

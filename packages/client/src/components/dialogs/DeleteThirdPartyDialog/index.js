@@ -24,6 +24,8 @@ const DeleteThirdPartyDialog = (props) => {
     deleteThirdParty,
     setThirdPartyProviders,
     setDeleteThirdPartyDialogVisible,
+    isConnectionViaBackupModule,
+    updateInfo,
   } = props;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +40,18 @@ const DeleteThirdPartyDialog = (props) => {
   const onClose = () => setDeleteThirdPartyDialogVisible(false);
 
   const onDeleteThirdParty = () => {
+    if (isConnectionViaBackupModule) {
+      deleteThirdParty(+removeItem.provider_id)
+        .catch((err) => toastr.error(err))
+        .finally(() => {
+          updateInfo && updateInfo();
+          setIsLoading(false);
+          onClose();
+        });
+
+      return;
+    }
+
     const providerItem = providers.find((x) => x.provider_id === removeItem.id);
     const newProviders = providers.filter(
       (x) => x.provider_id !== removeItem.id
@@ -99,13 +113,16 @@ const DeleteThirdPartyDialog = (props) => {
 };
 
 export default inject(
-  ({
-    filesStore,
-    settingsStore,
-    dialogsStore,
-    treeFoldersStore,
-    selectedFolderStore,
-  }) => {
+  (
+    {
+      filesStore,
+      settingsStore,
+      dialogsStore,
+      treeFoldersStore,
+      selectedFolderStore,
+    },
+    { item, isConnectionViaBackupModule }
+  ) => {
     const {
       providers,
       setThirdPartyProviders,
@@ -123,8 +140,10 @@ export default inject(
     const {
       deleteThirdPartyDialogVisible: visible,
       setDeleteThirdPartyDialogVisible,
-      removeItem,
+      removeItem: storeItem,
     } = dialogsStore;
+
+    const removeItem = isConnectionViaBackupModule ? item : storeItem;
 
     return {
       currentFolderId: selectedFolderStore.id,

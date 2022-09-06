@@ -42,6 +42,10 @@ class FilterStore {
   setFilter = (filter) => {
     this.filter = filter;
   };
+
+  get filterTotal() {
+    return this.filter.total;
+  }
 }
 
 export default FilterStore;

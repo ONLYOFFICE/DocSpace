@@ -28,6 +28,12 @@ import SharingPanelLoader from "./SharingPanelLoader";
 import SharingPanelLoaderModal from "./SharingPanelLoader/modal";
 import InfoPanelBodyLoader from "./InfoPanelBodyLoader";
 import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
+import RoomTypeListLoader from "./CreateEditRoomLoader/RoomTypeListLoader";
+import SetRoomParamsLoader from "./CreateEditRoomLoader/SetRoomParamsLoader";
+import CreateEditRoomDilogHeaderLoader from "./CreateEditRoomLoader/CreateEditRoomDilogHeaderLoader";
+import DataBackupLoader from "./DataBackupLoader";
+import AutoBackupLoader from "./AutoBackupLoader";
+import RestoreBackupLoader from "./RestoreBackupLoader";
 
 export default {
   Rectangle,
@@ -60,4 +66,10 @@ export default {
   SharingPanelLoaderModal,
   InfoPanelBodyLoader,
   InfoPanelHeaderLoader,
+  RoomTypeListLoader,
+  SetRoomParamsLoader,
+  CreateEditRoomDilogHeaderLoader,
+  DataBackupLoader,
+  AutoBackupLoader,
+  RestoreBackupLoader,
 };

@@ -11,9 +11,9 @@ import {
   RoomSearchArea,
 } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
-import { isMobile, isTablet } from "react-device-detect";
+import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
-import { tablet } from "@docspace/components/utils/device";
+import { tablet, mobile } from "@docspace/components/utils/device";
 import { Consumer } from "@docspace/components/utils/context";
 import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
@@ -23,30 +23,66 @@ import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const StyledContainer = styled.div`
+  width: 100%;
+  height: 69px;
+
+  @media ${tablet} {
+    height: 61px;
+  }
+
+  ${isMobile &&
+  css`
+    height: 61px;
+  `}
+
+  @media ${mobile} {
+    height: 53px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    height: 53px;
+  `}
+
   .table-container_group-menu {
-    ${(props) =>
-      props.viewAs === "table"
-        ? css`
-            margin: 0px -20px;
-            width: calc(100% + 40px);
-          `
-        : css`
-            margin: 0px -20px;
-            width: calc(100% + 40px);
-          `}
+    margin: 0 0 0 -20px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
+    width: calc(100% + 40px);
+    height: 68px;
 
     @media ${tablet} {
-      margin: 0 -16px;
+      height: 60px;
+      margin: 0 0 0 -16px;
       width: calc(100% + 32px);
     }
 
     ${isMobile &&
     css`
-      margin: 0 -16px;
+      height: 60px;
+      margin: 0 0 0 -16px;
       width: calc(100% + 32px);
     `}
+
+    @media ${mobile} {
+      height: 52px;
+      margin: 0 0 0 -16px;
+      width: calc(100% + 32px);
+    }
+
+    ${isMobileOnly &&
+    css`
+      height: 52px;
+      margin: 0 0 0 -16px;
+      width: calc(100% + 32px);
+    `}
+  }
+
+  .header-container {
+    height: 100%;
   }
 `;
 
@@ -71,7 +107,6 @@ class SectionHeaderContent extends React.Component {
 
   onCreateRoom = () => {
     const event = new Event(Events.ROOM_CREATE);
-
     window.dispatchEvent(event);
   };
 
@@ -104,7 +139,7 @@ class SectionHeaderContent extends React.Component {
   uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
-    const { t, isPrivacyFolder, isRoomsFolder } = this.props;
+    const { t, isPrivacyFolder, isRoomsFolder, enablePlugins } = this.props;
 
     const options = isRoomsFolder
       ? [
@@ -176,6 +211,19 @@ class SectionHeaderContent extends React.Component {
         icon: "images/actions.upload.react.svg",
       },*/
         ];
+
+    if (enablePlugins) {
+      const pluginOptions = getMainButtonItems();
+
+      if (pluginOptions) {
+        pluginOptions.forEach((option) => {
+          options.splice(option.value.position, 0, {
+            key: option.key,
+            ...option.value,
+          });
+        });
+      }
+    }
 
     return options;
   };
@@ -553,6 +601,7 @@ export default inject(
       setEmptyTrashDialogVisible,
       setSelectFileDialogVisible,
       setIsFolderActions,
+      setCreateRoomDialogVisible,
     } = dialogsStore;
 
     const {
@@ -578,6 +627,8 @@ export default inject(
       pathParts,
       navigationPath,
     } = selectedFolderStore;
+
+    const { enablePlugins } = auth.settingsStore;
 
     const isRoom = !!roomType;
 
@@ -620,6 +671,7 @@ export default inject(
       backToParentFolder,
       getCheckboxItemLabel,
       setSelectFileDialogVisible,
+      setCreateRoomDialogVisible,
 
       isRecycleBinFolder,
       setEmptyTrashDialogVisible,
@@ -640,6 +692,8 @@ export default inject(
       setAlreadyFetchingRooms,
 
       categoryType,
+
+      enablePlugins,
     };
   }
 )(

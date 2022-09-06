@@ -15,6 +15,7 @@ import config from "PACKAGE_FILE";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
 //import { getDefaultFileName } from "@docspace/client/src/helpers/filesUtils";
 //import ItemIcon from "../components/ItemIcon";
+import { getCookie } from "@docspace/common/utils";
 
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
@@ -38,7 +39,7 @@ export default function withContent(WrappedContent) {
       const { culture, item, personal } = this.props;
       const { created, updated } = item;
 
-      const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+      const locale = personal ? getCookie(LANGUAGE) : culture;
 
       const date = create ? created : updated;
 
@@ -110,17 +111,9 @@ export default function withContent(WrappedContent) {
 
   return inject(
     (
-      {
-        filesActionsStore,
-        filesStore,
-        treeFoldersStore,
-        auth,
-        dialogsStore,
-        uploadDataStore,
-      },
+      { filesStore, treeFoldersStore, auth, dialogsStore, uploadDataStore },
       { item }
     ) => {
-      const { editCompleteAction } = filesActionsStore;
       const {
         createFile,
         createFolder,
@@ -133,9 +126,9 @@ export default function withContent(WrappedContent) {
         isUpdatingRowItem,
         passwordEntryProcess,
         addActiveItems,
-        gallerySelected,
         setCreatedItem,
       } = filesStore;
+
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
       const {
         isRecycleBinFolder,
@@ -164,7 +157,6 @@ export default function withContent(WrappedContent) {
         createFile,
         createFolder,
         culture,
-        editCompleteAction,
 
         folderFormValidation,
         homepage: config.homepage,
@@ -192,7 +184,6 @@ export default function withContent(WrappedContent) {
 
         titleWithoutExt,
 
-        gallerySelected,
         setCreatedItem,
         personal,
       };

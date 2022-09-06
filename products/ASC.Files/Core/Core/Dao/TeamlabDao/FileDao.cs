@@ -1079,9 +1079,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public bool UseTrashForRemove(File<int> file)
     {
+        if (file.Encrypted && file.RootFolderType == FolderType.VirtualRooms)
+        {
+            return false;
+        }
+
         return file.RootFolderType != FolderType.TRASH && file.RootFolderType != FolderType.Privacy;
     }
-
+     
     public string GetUniqFileDirectory(int fileId)
     {
         if (fileId == 0)

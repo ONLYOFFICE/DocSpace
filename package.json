@@ -25,12 +25,14 @@
     "storybook-build": "yarn workspace @docspace/components run storybook-build",
     "test": "yarn workspace @docspace/components test",
     "wipe": "shx rm -rf node_modules yarn.lock packages/**/node_modules",
+    "debug-info": "auto-changelog --unreleased-only --template debuginfo --output public/debuginfo.md",
     "e2e.test": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login}' run test:sequential",
     "e2e.test:sequential": "yarn workspace @docspace/client test:sequential && yarn workspace @docspace/login test:sequential",
     "e2e.test:model": "yarn workspace @docspace/client test:model && yarn workspace @docspace/login test:model",
     "e2e.test:translation": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login}' run test:translation:model"
   },
   "devDependencies": {
+    "auto-changelog": "file:./packages/auto-changelog-2.3.1.tgz",
     "shx": "^0.3.3",
     "terser": "^5.8.0"
   },

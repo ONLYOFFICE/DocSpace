@@ -86,7 +86,7 @@ const Dialog = ({
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
-          key="SendBtn"
+          key="GlobalSendBtn"
           label={t("Common:SaveButton")}
           size="normal"
           scale

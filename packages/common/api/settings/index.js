@@ -116,10 +116,17 @@ export function setLifetimeAuditSettings(data) {
   });
 }
 
-export function getAuditTrailReport() {
+export function getLoginHistoryReport() {
   return request({
     method: "post",
     url: "/security/audit/login/report.json",
+  });
+}
+
+export function getAuditTrailReport() {
+  return request({
+    method: "post",
+    url: "/security/audit/events/report.json",
   });
 }
 
@@ -154,6 +161,21 @@ export function restoreGreetingSettings() {
   return request({
     method: "post",
     url: `/settings/greetingsettings/restore.json`,
+  });
+}
+
+export function getAppearanceTheme() {
+  return request({
+    method: "get",
+    url: "/settings/colortheme.json",
+  });
+}
+
+export function sendAppearanceTheme(data) {
+  return request({
+    method: "put",
+    url: "/settings/colortheme.json",
+    data,
   });
 }
 
@@ -509,6 +531,28 @@ export function resetSsoForm() {
   return request(options);
 }
 
+export function getLifetimeAuditSettings(data) {
+  return request({
+    method: "get",
+    url: "/security/audit/settings/lifetime.json",
+    data,
+  });
+}
+
+export function getLoginHistory() {
+  return request({
+    method: "get",
+    url: "/security/audit/login/last.json",
+  });
+}
+
+export function getAuditTrail() {
+  return request({
+    method: "get",
+    url: "/security/audit/events/last.json",
+  });
+}
+
 export function loadXmlMetadata(data) {
   return axios.post("/sso/loadmetadata", data);
 }
@@ -531,4 +575,12 @@ export function getMetadata() {
 
 export function getOforms(url) {
   return axios.get(url);
+}
+
+export function getStorageRegions() {
+  const options = {
+    method: "get",
+    url: "/settings/storage/s3/regions",
+  };
+  return request(options);
 }
