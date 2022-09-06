@@ -1999,7 +1999,7 @@ const Base = {
     showAccessPanelTextColor: "#3b72a7",
 
     members: {
-      iconColor: "#3b72a7",
+      iconColor: "#A3A9AE",
     },
 
     history: {
