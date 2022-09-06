@@ -1,16 +1,16 @@
 import { makeAutoObservable } from "mobx";
 
 class InfoPanelStore {
+  selection = null;
   isVisible = false;
   roomState = "members";
-  isRoom = false;
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  setIsRoom = (isRoom) => {
-    this.isRoom = isRoom;
+  setSelection = (selection) => {
+    this.selection = selection;
   };
 
   toggleIsVisible = () => {

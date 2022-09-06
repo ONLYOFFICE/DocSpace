@@ -2,32 +2,30 @@ import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { ReactSVG } from "react-svg";
 
 import Gallery from "./views/Gallery";
 import Room from "./views/Room";
 import Info from "./views/Info";
-import { StyledInfoPanelBody, StyledTitle } from "./styles/common";
+import { StyledInfoPanelBody } from "./styles/common";
 
 import { Base } from "@docspace/components/themes";
 import withLoader from "../../../../HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
-import { Text } from "@docspace/components";
-import ItemContextOptions from "./sub-components/ItemContextOptions";
 import ItemTitle from "./sub-components/ItemTitle";
 
 const InfoPanelBodyContent = ({
   t,
+
+  selection,
+  setSelection,
+  roomState,
+
   selectedItems,
   selectedFolder,
 
   selfId,
   personal,
   culture,
-
-  isRoom,
-  roomState,
-  setIsRoom,
 
   getFolderInfo,
   onSelectItem,
@@ -112,12 +110,18 @@ const InfoPanelBodyContent = ({
     return newSelection;
   };
 
-  const selection = getSelection();
+  // useEffect(() => {
+  //   getSelection();
+  // }, []);
 
   useEffect(() => {
-    setIsRoom(selection.isRoom);
-  }, [selection]);
+    const newSelection = getSelection();
+    if (selection && selection.id === newSelection.id) return;
 
+    setSelection(newSelection);
+  }, [selectedItems, selectedFolder]);
+
+  if (!selection) return null;
   return (
     <StyledInfoPanelBody>
       <ItemTitle
@@ -130,8 +134,12 @@ const InfoPanelBodyContent = ({
 
       {isGallery ? (
         <Gallery selection={selection} {...galleryProps} />
-      ) : isRoom ? (
-        <Room selection={selection} {...roomProps} />
+      ) : selection.isRoom ? (
+        <Room
+          selection={selection}
+          setSelection={setSelection}
+          {...roomProps}
+        />
       ) : (
         <Info selection={selection} {...defaultProps} {...detailsProps} />
       )}
@@ -153,11 +161,11 @@ export default inject(
     oformsStore,
   }) => {
     const { personal, culture } = auth.settingsStore;
-    const { roomState, isRoom, setIsRoom } = auth.infoPanelStore;
+    const { selection, setSelection, roomState } = auth.infoPanelStore;
     const selfId = auth.userStore.user.id;
 
     const {
-      selection,
+      selection: filesStoreSelection,
       bufferSelection,
       getFolderInfo,
       getShareUsers,
@@ -186,7 +194,8 @@ export default inject(
     //   : bufferSelection
     //   ? [bufferSelection]
     //   : [];
-    const selectedItems = selection?.length > 0 ? [...selection] : [];
+    const selectedItems =
+      filesStoreSelection?.length > 0 ? [...filesStoreSelection] : [];
 
     const selectedFolder = {
       ...selectedFolderStore,
@@ -206,12 +215,12 @@ export default inject(
       personal,
       culture,
 
+      selection,
+      setSelection,
+      roomState,
+
       selectedItems,
       selectedFolder,
-
-      isRoom,
-      roomState,
-      setIsRoom,
 
       getFolderInfo,
       onSelectItem,
