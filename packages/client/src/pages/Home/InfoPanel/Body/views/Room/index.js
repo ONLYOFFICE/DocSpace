@@ -4,8 +4,10 @@ import History from "./History";
 import Members from "./Members";
 
 const Room = ({
-  selection,
   roomState,
+
+  selection,
+  setSelection,
 
   defaultProps,
   membersProps,
@@ -13,7 +15,12 @@ const Room = ({
   detailsProps,
 }) => {
   return roomState === "members" ? (
-    <Members selectedItem={selection} {...defaultProps} {...membersProps} />
+    <Members
+      selection={selection}
+      setSelection={setSelection}
+      {...defaultProps}
+      {...membersProps}
+    />
   ) : roomState === "history" ? (
     <History selectedItem={selection} {...defaultProps} {...historyProps} />
   ) : (
