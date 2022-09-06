@@ -52,13 +52,12 @@ const BenefitsContainer = ({ t, features }) => {
         {t("Benefits")}
       </Text>
       {features.map((item, index) => {
-        return item.title ? (
+        if (!item.title) return;
+        return (
           <div className="payment-benefits" key={index}>
             <div dangerouslySetInnerHTML={{ __html: item.image }} />
             <Text noSelect>{item.title}</Text>
           </div>
-        ) : (
-          <></>
         );
       })}
     </StyledBody>
