@@ -13,6 +13,7 @@ import { getUserRole } from "../../../../../../helpers/people-helpers";
 
 import LanguagesCombo from "./languagesCombo";
 import {
+  AvatarEditorDialog,
   ChangeEmailDialog,
   ChangePasswordDialog,
   ChangeNameDialog,
@@ -101,6 +102,7 @@ const MainProfile = (props) => {
     changePasswordDialogVisible,
     setChangePasswordDialogVisible,
   ] = useState(false);
+  const [avatarDialogVisible, setAvatarDialogVisible] = useState(false);
 
   console.log(profile);
   const role = getUserRole(profile);
@@ -114,7 +116,7 @@ const MainProfile = (props) => {
         source={profile.avatarMax}
         userName={profile.displayName}
         editing={true}
-        editAction={() => console.log("edit")}
+        editAction={() => setAvatarDialogVisible(true)}
       />
       <StyledInfo>
         <div className="row">
@@ -194,6 +196,14 @@ const MainProfile = (props) => {
           onClose={() => setChangeNameDialogVisible(false)}
           profile={profile}
           onSave={updateProfile}
+        />
+      )}
+
+      {avatarDialogVisible && (
+        <AvatarEditorDialog
+          t={t}
+          visible={avatarDialogVisible}
+          onClose={() => setAvatarDialogVisible(false)}
         />
       )}
     </StyledWrapper>
