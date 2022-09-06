@@ -82,7 +82,7 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
     private readonly StudioNotifyService _studioNotifyService;
-    private readonly RoomInvitationLinksService _roomLinksService;
+    private readonly DocSpaceLinksHelper _roomLinksService;
 
     public FileStorageService(
         Global global,
@@ -136,7 +136,7 @@ public class FileStorageService<T> //: IFileStorageService
         FileShareParamsHelper fileShareParamsHelper,
         EncryptionLoginProvider encryptionLoginProvider,
         StudioNotifyService studioNotifyService,
-        RoomInvitationLinksService roomLinksService)
+        DocSpaceLinksHelper roomLinksService)
     {
         _global = global;
         _globalStore = globalStore;
@@ -2509,7 +2509,7 @@ public class FileStorageService<T> //: IFileStorageService
 
                         if (!string.IsNullOrEmpty(ace.Email))
                         {
-                            var link = _roomLinksService.GenerateLink(entry.Id, (int)ace.Share, EmployeeType.User, ace.SubjectId);
+                            var link = _roomLinksService.GenerateInvitationRoomLink(entry.Id, (int)ace.Share, EmployeeType.User, ace.SubjectId);
                             _studioNotifyService.SendEmailRoomInvite(ace.Email, link);
                         }
                     }

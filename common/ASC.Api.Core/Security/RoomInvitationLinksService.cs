@@ -27,7 +27,7 @@
 namespace ASC.Api.Core.Security;
 
 [Scope]
-public class RoomInvitationLinksService
+public class DocSpaceLinksHelper
 {
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly IHttpContextAccessor _httpContextAccessor;
@@ -36,7 +36,7 @@ public class RoomInvitationLinksService
     private readonly MessageService _messageService;
     private readonly IDbContextFactory<MessagesContext> _dbContextFactory;
 
-    public RoomInvitationLinksService(
+    public DocSpaceLinksHelper(
         CommonLinkUtility commonLinkUtility,
         IHttpContextAccessor httpContextAccessor,
         MessageTarget messageTarget,
@@ -52,12 +52,12 @@ public class RoomInvitationLinksService
         _dbContextFactory = dbContextFactory;
     }
 
-    public string GenerateLink<T>(T id, int fileShare, EmployeeType employeeType, Guid guid)
+    public string GenerateInvitationRoomLink<T>(T id, int fileShare, EmployeeType employeeType, Guid guid)
     {
-        return GenerateLink(id, string.Empty, fileShare, employeeType, guid);
+        return GenerateInvitationRoomLink(id, string.Empty, fileShare, employeeType, guid);
     }
 
-    public string GenerateLink<T>(T id, string email, int fileShare, EmployeeType employeeType, Guid guid)
+    public string GenerateInvitationRoomLink<T>(T id, string email, int fileShare, EmployeeType employeeType, Guid guid)
     {
         var postifx = (int)employeeType + fileShare + id.ToString();
 
@@ -67,7 +67,7 @@ public class RoomInvitationLinksService
         return link;
     }
 
-    public bool VisitProcess(string id, string email, string key, TimeSpan interval)
+    public bool ProcessLinkVisit(string id, string email, string key, TimeSpan interval)
     {
         if (!string.IsNullOrEmpty(email))
         {

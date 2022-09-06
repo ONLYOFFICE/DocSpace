@@ -38,7 +38,7 @@ public class EmailValidationKeyModelHelper
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
     private readonly AuthManager _authentication;
-    private readonly RoomInvitationLinksService _roomLinksService;
+    private readonly DocSpaceLinksHelper _roomLinksService;
     private readonly AuditEventsRepository _auditEventsRepository;
     private readonly TenantUtil _tenantUtil;
     private readonly MessageTarget _messageTarget;
@@ -49,7 +49,7 @@ public class EmailValidationKeyModelHelper
         AuthContext authContext,
         UserManager userManager,
         AuthManager authentication,
-        RoomInvitationLinksService roomLinksService,
+        DocSpaceLinksHelper roomLinksService,
         AuditEventsRepository auditEventsRepository,
         TenantUtil tenantUtil,
         MessageTarget messageTarget)
@@ -121,7 +121,7 @@ public class EmailValidationKeyModelHelper
                 {
                     checkKeyResult = _provider.ValidateEmailKey(email + type + ((int)emplType + (int)fileShare + roomId), key, _provider.ValidEmailKeyInterval);
                     if (checkKeyResult == ValidationResult.Ok &&
-                        !_roomLinksService.VisitProcess(roomId, email, key, _provider.ValidVisitLinkInterval))
+                        !_roomLinksService.ProcessLinkVisit(roomId, email, key, _provider.ValidVisitLinkInterval))
                     {
                         checkKeyResult = ValidationResult.Expired;
                     }
