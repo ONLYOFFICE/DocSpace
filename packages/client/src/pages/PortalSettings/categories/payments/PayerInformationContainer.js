@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { HelpButton, Link } from "@docspace/components";
 import Avatar from "@docspace/components/avatar";
+import UnknownPayerInformationContainer from "./sub-components/UnknownPayerInformationContainer";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -17,6 +18,9 @@ const StyledContainer = styled.div`
   .payer-info_avatar {
     margin-right: 16px;
   }
+  .payer-info {
+    margin-right: 3px;
+  }
   .payer-info_wrapper {
     height: max-content;
     display: grid;
@@ -27,7 +31,7 @@ const StyledContainer = styled.div`
     .payer-info_description {
       display: flex;
       p {
-        margin-right: 8px;
+        margin-right: 3px;
       }
       div {
         margin: auto 0;
@@ -50,11 +54,7 @@ const PayerInformationContainer = ({
 }) => {
   const { t } = useTranslation("Payments");
 
-  const payerName = payerInfo
-    ? payerInfo.displayName + " (" + t("Payer") + ")"
-    : `${"Test Name" + " (" + t("Payer") + ")"}`;
-
-  const email = payerInfo ? payerInfo.email : "example email";
+  const email = payerInfo ? payerInfo.email : t("InvalidEmail");
 
   const isLinkAvailable = user.isOwner || payer;
 
@@ -82,28 +82,52 @@ const PayerInformationContainer = ({
       <div className="payer-info_wrapper">
         <div className="payer-info_description">
           <Text fontWeight={600} noSelect>
-            {payerName}
+            {payerInfo ? (
+              payerInfo.displayName
+            ) : (
+              <Trans t={t} i18nKey="UserNotFound" ns="Payments">
+                {{ email: "test email" }}
+              </Trans>
+            )}
           </Text>
+          <Text as="span" className="payer-info">
+            {" "}
+            {" (" + t("Payer") + ") "}
+          </Text>
+
           {renderTooltip()}
         </div>
-        {isLinkAvailable && accountLink ? (
-          <Link
-            noSelect
-            fontWeight={600}
-            href={accountLink}
-            className="payer-info_account-link"
-            color={theme.client.payments.linkColor}
-          >
-            {t("StripeCustomerPortal")}
-          </Link>
+
+        {!payerInfo ? (
+          <UnknownPayerInformationContainer
+            email={email}
+            t={t}
+            isLinkAvailable={isLinkAvailable}
+            accountLink={accountLink}
+            theme={theme}
+          />
         ) : (
-          <Link
-            fontWeight={600}
-            href={`mailto:${email}`}
-            color={theme.client.payments.linkColor}
-          >
-            {email}
-          </Link>
+          <>
+            {isLinkAvailable ? (
+              <Link
+                noSelect
+                fontWeight={600}
+                href={accountLink}
+                className="payer-info_account-link"
+                color={theme.client.payments.linkColor}
+              >
+                {t("StripeCustomerPortal")}
+              </Link>
+            ) : (
+              <Link
+                fontWeight={600}
+                href={`mailto:${email}`}
+                color={theme.client.payments.linkColor}
+              >
+                {email}
+              </Link>
+            )}
+          </>
         )}
       </div>
     </StyledContainer>

@@ -10,6 +10,7 @@
   "BusinessRequestDescription": "Тарифные планы с более чем {{peopleNumber}} менеджерами доступны только по запросу",
   "BusinessExpired": "Срок действия вашего Business тарифа истек {{date}}",
   "Bytes": "байт",
+  "ChangePayer": "Изменить плательщика",
   "ContactUs": "По вопросам продаж обращайтесь к нам по адресу",
   "DelayedPayment": "Просроченная оплата Business плана от {{date}}",
   "DowngradeNow": "Понизить прямо сейчас",
@@ -17,11 +18,13 @@
   "GracePeriodActivated": "Активирован льготный период",
   "GracePeriodActivatedDescription": "Активирован льготный период с {{fromDate}} - {{byDate}}. Во время льготного периода будут отключены функции создания комнат и добавления новых пользователей. По истечению срока портал будет полностью заблокирован. ",
   "Gigabyte": "Гб",
+  "InvalidEmail": "Неверный email",
   "Kilobyte": "Кб",
   "LatePayment": "Просрочка платежа",
   "ManagerTypesDescription": "Типы учетных записей менеджера и их привилегии",
   "ManagersNumber": "Число менеджеров",
   "Megabyte": "Мб",
+  "OwnerCanChangePayer": "Владелец портала может изменить плательщика",
   "PerUserMonth": "за менеджера/месяц",
   "PriceCalculation": "Рассчитайте свою цену",
   "Payer": "Плательщик",
@@ -40,5 +43,6 @@
   "SendRequest": "Отправить запрос",
   "Terabyte": "Тб",
   "UpgradeNow": "Обновить прямо сейчас",
+  "UserNotFound": "Пользователь {{email}} не найден",
   "YourPrice": "Ваша стоимость"
 }
