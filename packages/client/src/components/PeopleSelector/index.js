@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { I18nextProvider, withTranslation } from "react-i18next";
@@ -48,7 +48,6 @@ const PeopleSelector = ({
   const [itemsList, setItemsList] = useState(items);
   const [searchValue, setSearchValue] = useState("");
   const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
@@ -103,57 +102,42 @@ const PeopleSelector = ({
     loadNextPage(0, value);
   };
 
-  const setDefaultTranslations = () => {
-    headerLabel = headerLabel || t("ListAccounts");
-    searchPlaceholder = searchPlaceholder || t("Common:Search");
-    acceptButtonLabel = acceptButtonLabel || t("PeopleTranslations:AddMembers");
-    cancelButtonLabel = cancelButtonLabel || t("Common:CancelButton");
-    selectAllLabel = selectAllLabel || t("AllAccounts");
-    selectAllIcon =
-      selectAllIcon || "/static/images/catalog.accounts.react.svg";
-    emptyScreenImage =
-      emptyScreenImage || "/static/images/empty_screen_persons.png";
-    emptyScreenHeader = emptyScreenHeader || t("EmptyHeader");
-    emptyScreenDescription = emptyScreenDescription || t("EmptyDescription");
-    searchEmptyScreenImage =
-      searchEmptyScreenImage || "/static/images/empty_screen_persons.png";
-    searchEmptyScreenHeader = searchEmptyScreenHeader || t("SearchEmptyHeader");
-    searchEmptyScreenDescription =
-      searchEmptyScreenDescription || t("SearchEmptyDescription");
-  };
-
-  setDefaultTranslations();
-
   return (
     <Selector
       id={id}
       className={className}
       style={style}
-      headerLabel={headerLabel}
+      headerLabel={headerLabel || t("ListAccounts")}
       onBackClick={onBackClick}
-      searchPlaceholder={searchPlaceholder}
+      searchPlaceholder={searchPlaceholder || t("Common:Search")}
       searchValue={searchValue}
       onSearch={onSearch}
       items={itemsList}
       isMultiSelect={isMultiSelect}
       selectedItems={selectedItems}
-      acceptButtonLabel={acceptButtonLabel}
+      acceptButtonLabel={
+        acceptButtonLabel || t("PeopleTranslations:AddMembers")
+      }
       onAccept={onAccept}
       withSelectAll={withSelectAll}
-      selectAllLabel={selectAllLabel}
+      selectAllLabel={selectAllLabel || t("AllAccounts")}
       selectAllIcon={selectAllIcon}
       withAccessRights={withAccessRights}
       accessRights={accessRights}
       selectedAccessRight={selectedAccessRight}
       withCancelButton={withCancelButton}
-      cancelButtonLabel={cancelButtonLabel}
+      cancelButtonLabel={cancelButtonLabel || t("Common:CancelButton")}
       onCancel={onCancel}
       emptyScreenImage={emptyScreenImage}
-      emptyScreenHeader={emptyScreenHeader}
-      emptyScreenDescription={emptyScreenDescription}
+      emptyScreenHeader={emptyScreenHeader || t("EmptyHeader")}
+      emptyScreenDescription={emptyScreenDescription || t("EmptyDescription")}
       searchEmptyScreenImage={searchEmptyScreenImage}
-      searchEmptyScreenHeader={searchEmptyScreenHeader}
-      searchEmptyScreenDescription={searchEmptyScreenDescription}
+      searchEmptyScreenHeader={
+        searchEmptyScreenHeader || t("SearchEmptyHeader")
+      }
+      searchEmptyScreenDescription={
+        searchEmptyScreenDescription || t("SearchEmptyDescription")
+      }
       hasNextPage={hasNextPage}
       isNextPageLoading={isNextPageLoading}
       loadNextPage={loadNextPage}
@@ -164,6 +148,7 @@ const PeopleSelector = ({
         <Loaders.SelectorRowLoader
           isMultiSelect={false}
           isContainer={isFirstLoad}
+          isUser={true}
         />
       }
     />
@@ -172,7 +157,11 @@ const PeopleSelector = ({
 
 PeopleSelector.propTypes = {};
 
-PeopleSelector.defaultProps = {};
+PeopleSelector.defaultProps = {
+  selectAllIcon: "/static/images/catalog.accounts.react.svg",
+  emptyScreenImage: "/static/images/empty_screen_persons.png",
+  searchEmptyScreenImage: "/static/images/empty_screen_persons.png",
+};
 
 const ExtendedPeopleSelector = inject(({ auth }) => {
   return { theme: auth.settingsStore.theme };
