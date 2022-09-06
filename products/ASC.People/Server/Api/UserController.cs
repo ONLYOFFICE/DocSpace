@@ -497,6 +497,7 @@ public class UserController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFull(user);
     }
 
+    [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "LinkInvite,Everyone")]
     [HttpGet("{username}", Order = 1)]
     public async Task<EmployeeFullDto> GetById(string username)
