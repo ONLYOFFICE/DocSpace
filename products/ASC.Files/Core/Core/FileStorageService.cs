@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Net.Mail;
+
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -3216,15 +3218,15 @@ public class FileStorageService<T> //: IFileStorageService
     {
         foreach (var ace in aces)
         {
-            if (string.IsNullOrEmpty(ace.Email) || _userManager.GetUserByEmail(ace.Email) != Constants.LostUser)
+            if (string.IsNullOrEmpty(ace.Email) || !MailAddress.TryCreate(ace.Email, out var email) || _userManager.GetUserByEmail(ace.Email) != Constants.LostUser)
             {
                 continue;
             }
 
             var userInfo = new UserInfo
             {
-                Email = ace.Email,
-                UserName = ace.Email.Split('@').FirstOrDefault(),
+                Email = email.Address,
+                UserName = email.User,
                 LastName = string.Empty,
                 FirstName = string.Empty,
                 ActivationStatus = EmployeeActivationStatus.Pending,
