@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
-
+import toastr from "@docspace/components/toast/toastr";
 import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
-
+import isEqual from "lodash/isEqual";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import styled from "styled-components";
 
@@ -16,12 +16,154 @@ const StyledComponent = styled.div`
 `;
 
 const CompanyInfoSettings = (props) => {
-  const { t, isPortalPaid } = props;
-  const [companyName, setCompanyName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [website, setWebsite] = useState("");
-  const [address, setAddress] = useState("");
+  const {
+    t,
+    isPortalPaid,
+    getCompanyInfoSettings,
+    setCompanyInfoSettings,
+    restoreCompanyInfoSettings,
+    companyInfoSettingsData,
+  } = props;
+
+  const [companyName, setCompanyName] = useState(
+    companyInfoSettingsData.companyName
+  );
+  const [email, setEmail] = useState(companyInfoSettingsData.email);
+  const [phone, setPhone] = useState(companyInfoSettingsData.phone);
+  const [site, setSite] = useState(companyInfoSettingsData.site);
+  const [address, setAddress] = useState(companyInfoSettingsData.address);
+
+  const [hasErrorSite, setHasErrorSite] = useState(false);
+  const [hasErrorEmail, setHasErrorEmail] = useState(false);
+  const [hasErrorCompanyName, setHasErrorCompanyName] = useState(false);
+  const [hasErrorPhone, setHasErrorPhone] = useState(false);
+  const [hasErrorAddress, setHasErrorAddress] = useState(false);
+
+  const [isChangesSettings, setIsChangesSettings] = useState(false);
+  const [isFirstCompanyInfoSettings, setIsFirstCompanyInfoSettings] = useState(
+    localStorage.getItem("isFirstCompanyInfoSettings")
+  );
+
+  useEffect(() => {
+    const settings = {
+      IsLicensor: true,
+      address,
+      companyName,
+      email,
+      phone,
+      site,
+    };
+
+    const hasError =
+      hasErrorSite ||
+      hasErrorEmail ||
+      hasErrorCompanyName ||
+      hasErrorPhone ||
+      hasErrorAddress;
+
+    const noСhange = _.isEqual(settings, companyInfoSettingsData);
+
+    if (!(hasError || noСhange)) {
+      setIsChangesSettings(true);
+    } else {
+      setIsChangesSettings(false);
+    }
+  }, [
+    address,
+    companyName,
+    email,
+    phone,
+    site,
+    hasErrorSite,
+    hasErrorEmail,
+    hasErrorCompanyName,
+    hasErrorPhone,
+    hasErrorAddress,
+    companyInfoSettingsData,
+  ]);
+
+  const validateUrl = (url) => {
+    const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+    const hasError = !urlRegex.test(url);
+
+    setHasErrorSite(hasError);
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /.+@.+\..+/;
+    const hasError = !emailRegex.test(email);
+
+    setHasErrorEmail(hasError);
+  };
+
+  const validateEmpty = (value, type) => {
+    const hasError = value.trim() === "";
+
+    if (type === "companyName") {
+      setHasErrorCompanyName(hasError);
+    }
+
+    if (type === "phone") {
+      setHasErrorPhone(hasError);
+    }
+
+    if (type === "address") {
+      setHasErrorAddress(hasError);
+    }
+  };
+
+  const onChangeSite = (url) => {
+    validateUrl(url);
+    setSite(url);
+  };
+
+  const onChangeEmail = (email) => {
+    validateEmail(email);
+    setEmail(email);
+  };
+
+  const onChangeСompanyName = (companyName) => {
+    validateEmpty(companyName, "companyName");
+    setCompanyName(companyName);
+  };
+
+  const onChangePhone = (phone) => {
+    validateEmpty(phone, "phone");
+    setPhone(phone);
+  };
+
+  const onChangeAddress = (address) => {
+    validateEmpty(address, "address");
+    setAddress(address);
+  };
+
+  const onSave = () => {
+    setCompanyInfoSettings(address, companyName, email, phone, site)
+      .then(() => {
+        toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+        getCompanyInfoSettings();
+
+        if (!localStorage.getItem("isFirstCompanyInfoSettings")) {
+          localStorage.setItem("isFirstCompanyInfoSettings", true);
+
+          setIsFirstCompanyInfoSettings("true");
+        }
+      })
+      .catch((error) => {
+        toastr.error(error);
+      });
+  };
+
+  const onRestore = () => {
+    restoreCompanyInfoSettings()
+      .then(() => {
+        toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+        getCompanyInfoSettings();
+      })
+      .catch((error) => {
+        toastr.error(error);
+      });
+  };
 
   return (
     <StyledComponent>
@@ -41,7 +183,8 @@ const CompanyInfoSettings = (props) => {
             isDisabled={!isPortalPaid}
             scale={true}
             value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
+            hasError={hasErrorCompanyName}
+            onChange={(e) => onChangeСompanyName(e.target.value)}
           />
         </FieldContainer>
         <FieldContainer
@@ -56,7 +199,8 @@ const CompanyInfoSettings = (props) => {
             isDisabled={!isPortalPaid}
             scale={true}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            hasError={hasErrorEmail}
+            onChange={(e) => onChangeEmail(e.target.value)}
           />
         </FieldContainer>
         <FieldContainer
@@ -70,7 +214,8 @@ const CompanyInfoSettings = (props) => {
             isDisabled={!isPortalPaid}
             scale={true}
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            hasError={hasErrorPhone}
+            onChange={(e) => onChangePhone(e.target.value)}
           />
         </FieldContainer>
         <FieldContainer
@@ -83,8 +228,9 @@ const CompanyInfoSettings = (props) => {
             id="textInputContainerWebsite"
             isDisabled={!isPortalPaid}
             scale={true}
-            value={website}
-            onChange={(e) => setWebsite(e.target.value)}
+            value={site}
+            hasError={hasErrorSite}
+            onChange={(e) => onChangeSite(e.target.value)}
           />
         </FieldContainer>
         <FieldContainer
@@ -98,23 +244,40 @@ const CompanyInfoSettings = (props) => {
             isDisabled={!isPortalPaid}
             scale={true}
             value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            hasError={hasErrorAddress}
+            onChange={(e) => onChangeAddress(e.target.value)}
           />
         </FieldContainer>
       </div>
       <SaveCancelButtons
         className="save-cancel-buttons"
-        onSaveClick={() => console.log("click")}
-        onCancelClick={() => console.log("click")}
+        onSaveClick={onSave}
+        onCancelClick={onRestore}
         saveButtonLabel={t("Common:SaveButton")}
         cancelButtonLabel={t("Settings:RestoreDefaultButton")}
         displaySettings={true}
+        showReminder={isChangesSettings}
+        isFirstRestoreToDefault={isFirstCompanyInfoSettings}
       />
     </StyledComponent>
   );
 };
 
-export default inject(({ auth, setup, common }) => {})(
+export default inject(({ auth, setup, common }) => {
+  const { settingsStore } = auth;
+  const {
+    getCompanyInfoSettings,
+    setCompanyInfoSettings,
+    restoreCompanyInfoSettings,
+    companyInfoSettingsData,
+  } = settingsStore;
+  return {
+    getCompanyInfoSettings,
+    setCompanyInfoSettings,
+    restoreCompanyInfoSettings,
+    companyInfoSettingsData,
+  };
+})(
   withLoading(
     withTranslation(["Settings", "Common"])(observer(CompanyInfoSettings))
   )
