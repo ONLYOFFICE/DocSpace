@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import styled, { css } from "styled-components";
-import toastr from "client/toastr";
-import SalesDepartmentRequestDialog from "../../../../../../src/components/dialogs/SalesDepartmentRequestDialog";
+import RequestButtonContainer from "./RequestButtonContainer";
+import UpdatePlanButtonContainer from "./UpdatePlanButtonContainer";
 
 const StyledBody = styled.div`
   button {
@@ -11,80 +11,22 @@ const StyledBody = styled.div`
   }
 `;
 
-let timerId = null;
 const ButtonContainer = ({
-  updatePayment,
-  setIsLoading,
-  paymentLink,
   isNeedRequest,
   isAlreadyPaid,
-  managersCount,
   isDisabled,
   isLoading,
-  maxTariffManagers,
-  setPortalPaymentsQuotas,
-  isLessCountThanAcceptable,
   t,
   isNotPaid,
   isGracePeriod,
   accountLink,
 }) => {
-  const [isVisibleDialog, setIsVisibleDialog] = useState(false);
-
-  const updateMethod = async () => {
-    try {
-      timerId = setTimeout(() => {
-        setIsLoading(true);
-      }, 500);
-
-      await updatePayment(managersCount);
-      await setPortalPaymentsQuotas();
-    } catch (e) {
-      toastr.error(e);
-    }
-
-    setIsLoading(false);
-    clearTimeout(timerId);
-    timerId = null;
-  };
-
-  const onUpdateTariff = () => {
-    if (isAlreadyPaid) {
-      updateMethod();
-      return;
-    }
-
-    if (paymentLink) window.open(paymentLink, "_blank");
-  };
-
   const goToStripeAccount = () => {
     if (accountLink) window.open(accountLink, "_blank");
   };
 
-  const toDoRequest = () => {
-    setIsVisibleDialog(true);
-  };
-
-  const onClose = () => {
-    setIsVisibleDialog(false);
-  };
-  useEffect(() => {
-    return () => {
-      timerId && clearTimeout(timerId);
-      timerId = null;
-    };
-  }, []);
-
-  const isTheSameCount = managersCount === maxTariffManagers;
-
   return (
     <StyledBody>
-      {isVisibleDialog && (
-        <SalesDepartmentRequestDialog
-          visible={isVisibleDialog}
-          onClose={onClose}
-        />
-      )}
       {isNotPaid || isGracePeriod ? (
         <Button
           label={t("Pay")}
@@ -94,54 +36,26 @@ const ButtonContainer = ({
           onClick={goToStripeAccount}
           isLoading={isLoading}
         />
-      ) : (
-        <Button
-          label={isNeedRequest ? t("SendRequest") : t("UpgradeNow")}
-          size={"medium"}
-          primary
-          isDisabled={
-            (!isNeedRequest && isAlreadyPaid && isTheSameCount) ||
-            isLessCountThanAcceptable ||
-            isLoading ||
-            isDisabled
-          }
-          onClick={isNeedRequest ? toDoRequest : onUpdateTariff}
+      ) : isNeedRequest ? (
+        <RequestButtonContainer
           isLoading={isLoading}
+          isDisabled={isDisabled}
+          t={t}
         />
+      ) : (
+        <UpdatePlanButtonContainer isAlreadyPaid={isAlreadyPaid} t={t} />
       )}
     </StyledBody>
   );
 };
 
 export default inject(({ auth, payments }) => {
-  const {
-    portalPaymentQuotas,
-    setPortalPaymentsQuotas,
-    isNotPaid,
-    isGracePeriod,
-  } = auth;
-  const { countAdmin: maxTariffManagers } = portalPaymentQuotas;
-  const {
-    updatePayment,
-    setIsLoading,
-    paymentLink,
-    isNeedRequest,
-    isLoading,
-    managersCount,
-    isLessCountThanAcceptable,
-    accountLink,
-  } = payments;
+  const { isNotPaid, isGracePeriod } = auth;
+  const { isNeedRequest, isLoading, accountLink } = payments;
 
   return {
-    updatePayment,
-    setIsLoading,
-    paymentLink,
     isNeedRequest,
     isLoading,
-    managersCount,
-    maxTariffManagers,
-    setPortalPaymentsQuotas,
-    isLessCountThanAcceptable,
     isNotPaid,
     isGracePeriod,
     accountLink,

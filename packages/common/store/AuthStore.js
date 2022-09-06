@@ -31,6 +31,7 @@ class AuthStore {
 
   quota = {};
   portalPaymentQuotas = {};
+  portalQuota = {};
   portalTariff = {};
   pricePerManager = null;
   currencies = [];
