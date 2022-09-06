@@ -63,3 +63,5 @@ global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 
 global using Newtonsoft.Json;
+global using ASC.Notify;
+global using ASC.Notify.Extension;
