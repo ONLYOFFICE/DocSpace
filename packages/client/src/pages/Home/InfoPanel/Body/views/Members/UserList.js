@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import User from "./User";
 
-import { StyledUserList } from "../../../styles/members";
+import { StyledUserList } from "../../styles/members";
 
 const UserList = ({ t, users, selfId, isExpect }) => {
   return (

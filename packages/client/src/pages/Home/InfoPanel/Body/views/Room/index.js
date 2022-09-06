@@ -1,7 +1,7 @@
 import React from "react";
 import Info from "../Info";
-import History from "./History";
-import Members from "./Members";
+import History from "../History";
+import Members from "../Members";
 
 const Room = ({
   roomState,

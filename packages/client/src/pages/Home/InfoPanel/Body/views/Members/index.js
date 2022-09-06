@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import UserList from "./UserList";
-import { StyledUserTypeHeader } from "../../../styles/members";
+import { StyledUserTypeHeader } from "../../styles/members";
 
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
@@ -35,7 +35,7 @@ const Members = ({ t, selfId, selection, setSelection, getRoomMembers }) => {
           isFill={true}
           onClick={() => {}}
           size={16}
-          color={"#316DAA"}
+          color={"#A3A9AE"}
         />
       </StyledUserTypeHeader>
 
