@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,39 +24,20 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Feed.Core;
+namespace ASC.Web.Api.Mapping;
 
-public class FeedRow
+[Scope]
+public class DateTimeMappingConverter : ITypeConverter<DateTime, ApiDateTime>
 {
-    public DateTime AggregatedDate { get; set; }
-    public IList<Guid> Users { get; set; }
-    public int Tenant { get; set; }
-    public string Product { get; set; }
-    public Aggregator.Feed Feed { get; private set; }
-    public string Id => Feed.Id;
-    public bool ClearRightsBeforeInsert => Feed.Variate;
-    public string Module => Feed.Module;
-    public Guid Author => Feed.AuthorId;
-    public Guid ModifiedBy => Feed.ModifiedBy;
-    public DateTime CreatedDate => Feed.CreatedDate;
-    public DateTime ModifiedDate => Feed.ModifiedDate;
-    public string GroupId => Feed.GroupId;
-    public string Keywords => Feed.Keywords;
-    public string ContextId => Feed.ContextId;
-    public string Json
+    private readonly ApiDateTimeHelper _apiDateTimeHelper;
+
+    public DateTimeMappingConverter(ApiDateTimeHelper apiDateTimeHelper)
     {
-        get
-        {
-            return JsonConvert.SerializeObject(Feed, new JsonSerializerSettings
-            {
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc
-            });
-        }
+        _apiDateTimeHelper = apiDateTimeHelper;
     }
 
-    public FeedRow(Aggregator.Feed feed)
+    public ApiDateTime Convert(DateTime source, ApiDateTime destination, ResolutionContext context)
     {
-        Users = new List<Guid>();
-        Feed = feed;
+        return _apiDateTimeHelper.Get(source);
     }
 }
