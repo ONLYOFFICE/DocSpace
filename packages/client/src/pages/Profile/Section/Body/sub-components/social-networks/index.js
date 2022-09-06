@@ -49,7 +49,7 @@ const SocialNetworks = () => {
         </div>
         <div className="buttons-row">
           <SocialButton
-            iconName="static/images/share.twitter.react.svg"
+            iconName="static/images/twitter.react.svg"
             label={t("Common:SignInWithTwitter")}
           />
           <SocialButton
