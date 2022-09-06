@@ -314,10 +314,6 @@ public class TenantQuota : IMapFrom<DbQuota>
             }
         }
 
-        //if (MaxTotalSize != long.MaxValue
-        //    && false) throw new Exception("The used storage size should not exceed " + MaxTotalSize);
-        //if (ActiveUsers != int.MaxValue
-        //    && false) throw new Exception("The number of active users should not exceed " + ActiveUsers);
         //if (CountAdmin != int.MaxValue
         //    && false) throw new Exception("The number of managers should not exceed " + CountAdmin);
         //if (CountRoom != int.MaxValue

@@ -36,15 +36,16 @@ public class ActiveUsersFeature : TenantQuotaFeatureCount
 
 public class ActiveUsersChecker : ITenantQuotaFeatureChecker
 {
-    private readonly UserManager _userManager;
+    private readonly ITenantQuotaFeatureStatistic<ActiveUsersFeature> _tenantQuotaFeatureStatistic;
 
-    public ActiveUsersChecker(UserManager userManager)
+    public ActiveUsersChecker(ITenantQuotaFeatureStatistic<ActiveUsersFeature> tenantQuotaFeatureStatistic)
     {
-        _userManager = userManager;
+        _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
     }
+
     public bool Check(TenantQuota quota)
     {
-        return _userManager.GetUsersByGroup(Users.Constants.GroupUser.ID).Length >= quota.ActiveUsers;
+        return quota.ActiveUsers <= (int)_tenantQuotaFeatureStatistic.GetValue();
     }
 
     public string Exception(TenantQuota quota)

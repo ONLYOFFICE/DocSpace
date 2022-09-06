@@ -124,6 +124,12 @@ public abstract class BaseStartup
         services.AddScoped<ITenantQuotaFeatureStatistic<ActiveUsersFeature>, ActiveUsersStatistic>();
         services.AddScoped<ActiveUsersStatistic>();
 
+        services.AddScoped<ITenantQuotaFeatureChecker, MaxTotalSizeChecker>();
+        services.AddScoped<MaxTotalSizeChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStatistic<MaxTotalSizeFeature>, MaxTotalSizeStatistic>();
+        services.AddScoped<MaxTotalSizeStatistic>();
+
 
         DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 

@@ -147,7 +147,11 @@ public class QuotaHelper
 
             if (statisticProvider != null)
             {
-                result.Used = statisticProvider.GetValue();
+                result.Used = new FeatureUsedDto
+                {
+                    Value = statisticProvider.GetValue(),
+                    Title = Resource.ResourceManager.GetString($"TariffsFeature_used_{feature.Name}")
+                };
             }
 
             yield return result;

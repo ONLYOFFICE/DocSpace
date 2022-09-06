@@ -855,4 +855,10 @@
   <data name="Tariffs_admin" xml:space="preserve">
     <value>Business plan</value>
   </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Storage space used:</value>
+  </data>
+  <data name="TariffsFeature_used_users" xml:space="preserve">
+    <value>Managers added:</value>
+  </data>
 </root>

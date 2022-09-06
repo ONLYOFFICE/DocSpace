@@ -2212,6 +2212,24 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Storage space used:.
+        /// </summary>
+        public static string TariffsFeature_used_total_size {
+            get {
+                return ResourceManager.GetString("TariffsFeature_used_total_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Managers added:.
+        /// </summary>
+        public static string TariffsFeature_used_users {
+            get {
+                return ResourceManager.GetString("TariffsFeature_used_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unlimited number of users.
         /// </summary>
         public static string TariffsFeature_users {
