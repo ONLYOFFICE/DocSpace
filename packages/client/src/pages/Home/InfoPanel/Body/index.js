@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
+import withLoader from "@docspace/client/src/HOCs/withLoader";
+import Loaders from "@docspace/common/components/Loaders";
+
+import ItemTitle from "./sub-components/ItemTitle";
 import Gallery from "./views/Gallery";
 import Room from "./views/Room";
 import Info from "./views/Info";
-import { StyledInfoPanelBody } from "./styles/common";
 
-import { Base } from "@docspace/components/themes";
-import withLoader from "../../../../HOCs/withLoader";
-import Loaders from "@docspace/common/components/Loaders";
-import ItemTitle from "./sub-components/ItemTitle";
+import { StyledInfoPanelBody } from "./styles/common";
 
 const InfoPanelBodyContent = ({
   t,
@@ -48,6 +48,8 @@ const InfoPanelBodyContent = ({
 }) => {
   const defaultProps = {
     t,
+    selection,
+    setSelection,
     personal,
     culture,
     isFileCategory,
@@ -55,6 +57,13 @@ const InfoPanelBodyContent = ({
     isRecycleBinFolder,
     isRecentFolder,
     isFavoritesFolder,
+  };
+
+  const titleProps = {
+    selection,
+    isGallery,
+    isFileCategory,
+    getIcon,
   };
 
   const detailsProps = {
@@ -111,44 +120,27 @@ const InfoPanelBodyContent = ({
     return newSelection;
   };
 
-  // useEffect(() => {
-  //   getSelection();
-  // }, []);
-
   useEffect(() => {
     const newSelection = getSelection();
     if (selection && selection.id === newSelection.id) return;
-
     setSelection(newSelection);
   }, [selectedItems, selectedFolder]);
 
-  if (!selection) return null;
+  if (!selection) return <Loaders.InfoPanelBodyLoader />;
   return (
     <StyledInfoPanelBody>
-      <ItemTitle
-        t={t}
-        selection={selection}
-        isGallery={isGallery}
-        isFileCategory={isFileCategory}
-        getIcon={getIcon}
-      />
+      <ItemTitle {...defaultProps} {...titleProps} />
 
       {isGallery ? (
-        <Gallery selection={selection} {...galleryProps} />
+        <Gallery {...defaultProps} {...galleryProps} />
       ) : selection.isRoom ? (
-        <Room
-          selection={selection}
-          setSelection={setSelection}
-          {...roomProps}
-        />
+        <Room {...defaultProps} {...roomProps} />
       ) : (
-        <Info selection={selection} {...defaultProps} {...detailsProps} />
+        <Info {...defaultProps} {...detailsProps} />
       )}
     </StyledInfoPanelBody>
   );
 };
-
-InfoPanelBodyContent.defaultProps = { theme: Base };
 
 export default inject(
   ({
