@@ -37,11 +37,13 @@ const StyledSelectorHeader = styled.div`
 
 const StyledSelectorBody = styled.div`
   width: 100%;
-  height: 100%;
+
+  height: ${(props) =>
+    props.footerVisible
+      ? `calc(100% - 32px - ${props.footerHeight}px - ${props.headerHeight}px)`
+      : `calc(100% - 32px - ${props.headerHeight}px)`};
 
   padding: 16px 0;
-
-  box-sizing: border-box;
 
   .search-input,
   .search-loader {

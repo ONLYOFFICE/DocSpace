@@ -40,7 +40,6 @@ const Body = ({
   searchEmptyScreenHeader,
   searchEmptyScreenDescription,
   loadMoreItems,
-  isNextPageLoading,
   hasNextPage,
   totalItems,
   isLoading,
@@ -61,21 +60,19 @@ const Body = ({
     }
   }, [listOptionsRef.current]);
 
-  const onBodyRef = React.useCallback(
-    (node) => {
-      if (node) {
-        node.addEventListener("resize", onBodyResize);
-        bodyRef.current = node;
-        setBodyHeight(node.offsetHeight);
-      }
-    },
-    [onBodyResize]
-  );
+  // const onBodyRef = React.useCallback(
+  //   (node) => {
+  //     if (node) {
+  //       node.addEventListener("resize", onBodyResize);
+  //       bodyRef.current = node;
+  //       setBodyHeight(node.offsetHeight);
+  //     }
+  //   },
+  //   [onBodyResize]
+  // );
 
   const onBodyResize = React.useCallback(() => {
-    if (bodyRef.current.offsetHeight) {
-      setBodyHeight(bodyRef.current.offsetHeight);
-    }
+    setBodyHeight(bodyRef.current.offsetHeight);
   }, [bodyRef?.current?.offsetHeight]);
 
   const isItemLoaded = React.useCallback(
@@ -86,26 +83,34 @@ const Body = ({
   );
 
   React.useEffect(() => {
+    window.addEventListener("resize", onBodyResize);
     return () => {
-      bodyRef?.current?.removeEventListener("resize", onBodyResize);
+      window.removeEventListener("resize", onBodyResize);
     };
-  }, [onBodyResize]);
+  }, []);
+
+  React.useEffect(() => {
+    onBodyResize();
+  }, [isLoading, footerVisible]);
 
   React.useEffect(() => {
     resetCache();
   }, [resetCache, hasNextPage]);
 
-  let listHeight = bodyHeight - CONTAINER_PADDING - HEADER_HEIGHT;
+  let listHeight = bodyHeight - CONTAINER_PADDING;
 
   if (withSearch) listHeight -= SEARCH_HEIGHT;
-
-  if (footerVisible) listHeight -= FOOTER_HEIGHT;
 
   if (isMultiSelect && withSelectAll && !isSearch)
     listHeight -= SELECT_ALL_HEIGHT;
 
   return (
-    <StyledSelectorBody ref={onBodyRef}>
+    <StyledSelectorBody
+      ref={bodyRef}
+      footerHeight={FOOTER_HEIGHT}
+      headerHeight={HEADER_HEIGHT}
+      footerVisible={footerVisible}
+    >
       {isLoading ? (
         searchLoader
       ) : withSearch ? (
