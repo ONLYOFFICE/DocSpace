@@ -3,11 +3,12 @@ import styled from "styled-components";
 
 import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
+import Button from "@docspace/components/button";
 
 const StyledModalDialog = styled(ModalDialog)``;
 
 const AvatarEditorDialog = (props) => {
-  const { t, visible, onClose } = props;
+  const { t, visible, onClose, onSave } = props;
 
   return (
     <StyledModalDialog
@@ -23,7 +24,23 @@ const AvatarEditorDialog = (props) => {
         </Text>
       </ModalDialog.Header>
       <ModalDialog.Body></ModalDialog.Body>
-      <ModalDialog.Footer></ModalDialog.Footer>
+      <ModalDialog.Footer>
+        <Button
+          key="AvatarEditorSaveBtn"
+          label={t("Common:SaveButton")}
+          size="normal"
+          scale
+          primary={true}
+          onClick={onSave}
+        />
+        <Button
+          key="AvatarEditorCloseBtn"
+          label={t("Common:CancelButton")}
+          size="normal"
+          scale
+          onClick={onClose}
+        />
+      </ModalDialog.Footer>
     </StyledModalDialog>
   );
 };
