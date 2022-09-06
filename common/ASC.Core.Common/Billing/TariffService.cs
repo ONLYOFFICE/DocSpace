@@ -79,6 +79,8 @@ public class TariffService : ITariffService
     private readonly IDbContextFactory<CoreDbContext> _dbContextFactory;
     private readonly TariffServiceStorage _tariffServiceStorage;
     private readonly BillingClient _billingClient;
+    private readonly IServiceProvider _serviceProvider;
+
     //private readonly int _activeUsersMin;
     //private readonly int _activeUsersMax;
 
@@ -97,7 +99,8 @@ public class TariffService : ITariffService
         IDbContextFactory<CoreDbContext> coreDbContextManager,
         TariffServiceStorage tariffServiceStorage,
         ILogger<TariffService> logger,
-        BillingClient billingClient)
+        BillingClient billingClient,
+        IServiceProvider serviceProvider)
         : this()
 
     {
@@ -108,6 +111,7 @@ public class TariffService : ITariffService
         _coreSettings = coreSettings;
         _tariffServiceStorage = tariffServiceStorage;
         _billingClient = billingClient;
+        _serviceProvider = serviceProvider;
         _coreBaseSettings = coreBaseSettings;
         _paymentDelay = configuration.GetSection("core:payment").Get<PaymentConfiguration>().Delay;
 
@@ -261,7 +265,7 @@ public class TariffService : ITariffService
             updatedQuota += quota;
         }
 
-        CheckQuota(updatedQuota);
+        updatedQuota.Check(_serviceProvider);
 
         var productIds = newQuotas.Select(q => q.ProductId);
 
@@ -281,20 +285,6 @@ public class TariffService : ITariffService
         return true;
     }
 
-    // TODO: compare fields with current parameters
-    public bool CheckQuota(TenantQuota quota)
-    {
-        if (quota.MaxTotalSize != long.MaxValue
-            && false) throw new Exception("The used storage size should not exceed " + quota.MaxTotalSize);
-        if (quota.ActiveUsers != int.MaxValue
-            && false) throw new Exception("The number of active users should not exceed " + quota.ActiveUsers);
-        if (quota.CountAdmin != int.MaxValue
-            && false) throw new Exception("The number of managers should not exceed " + quota.CountAdmin);
-        if (quota.CountRoom != int.MaxValue
-            && false) throw new Exception("The number of rooms should not exceed " + quota.CountRoom);
-
-        return true;
-    }
 
     public void SetTariff(int tenantId, Tariff tariff)
     {
@@ -401,7 +391,7 @@ public class TariffService : ITariffService
                     updatedQuota += quota;
                 }
 
-                CheckQuota(updatedQuota);
+                updatedQuota.Check(_serviceProvider);
 
                 var productIds = newQuotas.Select(q => q.ProductId);
 
