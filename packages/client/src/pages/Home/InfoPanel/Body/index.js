@@ -30,6 +30,7 @@ const InfoPanelBodyContent = ({
   getFolderInfo,
   onSelectItem,
   getShareUsers,
+  getRoomMembers,
   setSharingPanelVisible,
 
   getIcon,
@@ -71,7 +72,7 @@ const InfoPanelBodyContent = ({
     defaultProps,
     membersProps: {
       selfId,
-      getShareUsers,
+      getRoomMembers,
     },
     historyProps: {
       personal,
@@ -169,6 +170,7 @@ export default inject(
       bufferSelection,
       getFolderInfo,
       getShareUsers,
+      getRoomMembers,
       createThumbnail,
     } = filesStore;
 
@@ -225,6 +227,7 @@ export default inject(
       getFolderInfo,
       onSelectItem,
       getShareUsers,
+      getRoomMembers,
       setSharingPanelVisible,
 
       getIcon,
