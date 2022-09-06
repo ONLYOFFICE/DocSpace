@@ -32,13 +32,10 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, configureServices: (hostContext, services, diHelper) =>
-{
-    services.AddHostedService<LdapNotifyService>();
-    diHelper.TryAdd<LdapNotifyService>();
-    services.AddBaseDbContextPool<FilesDbContext>();
-    services.AddBaseDbContextPool<BackupsContext>();
-});
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.WebHost.ConfigureDefaultKestrel();
 

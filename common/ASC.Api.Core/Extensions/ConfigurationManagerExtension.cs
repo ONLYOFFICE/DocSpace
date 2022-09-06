@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,29 +24,41 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var options = new WebApplicationOptions
+namespace ASC.Api.Core.Extensions;
+
+public static class ConfigurationManagerExtension
 {
-    Args = args,
-    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
-};
+    public static ConfigurationManager AddDefaultConfiguration(
+      this ConfigurationManager config,
+      IHostEnvironment env
+      )
+    {
+        var path = config["pathToConf"];
 
-var builder = WebApplication.CreateBuilder(options);
+        if (!Path.IsPathRooted(path))
+        {
+            path = Path.GetFullPath(CrossPlatform.PathCombine(env.ContentRootPath, path));
+        }
+              
+        config.SetBasePath(path);
 
-builder.Host.ConfigureDefault();
+        config.AddInMemoryCollection(new Dictionary<string, string>
+              {
+                      {"pathToConf", path }
+              });
 
-builder.Configuration.AddDefaultConfiguration(builder.Environment)
-                     .AddWebhookConfiguration()
-                     .AddEnvironmentVariables()
-                     .AddCommandLine(args);
+        config.AddJsonFile("appsettings.json")
+              .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
+              .AddJsonFile("storage.json")
+              .AddJsonFile("kafka.json")
+              .AddJsonFile($"kafka.{env.EnvironmentName}.json", true)
+              .AddJsonFile("rabbitmq.json")
+              .AddJsonFile($"rabbitmq.{env.EnvironmentName}.json", true)
+              .AddJsonFile("redis.json")
+              .AddJsonFile($"redis.{env.EnvironmentName}.json", true);
+                    
 
-builder.WebHost.ConfigureDefaultKestrel();
+        return config;
+    }
 
-var startup = new Startup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-var app = builder.Build();
-
-startup.Configure(app);
-
-await app.RunWithTasksAsync();
+}

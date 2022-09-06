@@ -24,29 +24,24 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var options = new WebApplicationOptions
+public class Startup : BaseWorkerStartup
 {
-    Args = args,
-    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
-};
+    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+        : base(configuration, hostEnvironment)
+    {
 
-var builder = WebApplication.CreateBuilder(options);
+    }
 
-builder.Host.ConfigureDefault();
+    public override void ConfigureServices(IServiceCollection services)
+    {   
+        base.ConfigureServices(services);
 
-builder.Configuration.AddDefaultConfiguration(builder.Environment)
-                     .AddWebhookConfiguration()
-                     .AddEnvironmentVariables()
-                     .AddCommandLine(args);
+        services.AddHttpClient();
 
-builder.WebHost.ConfigureDefaultKestrel();
-
-var startup = new Startup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-var app = builder.Build();
-
-startup.Configure(app);
-
-await app.RunWithTasksAsync();
+        DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
+        services.AddHostedService<ServiceLauncher>();
+        DIHelper.TryAdd<ServiceLauncher>();
+        NotifyConfigurationExtension.Register(DIHelper);
+        DIHelper.TryAdd<EmailSenderSink>();
+    }
+}

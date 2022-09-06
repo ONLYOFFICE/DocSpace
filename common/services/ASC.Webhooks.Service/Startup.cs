@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,29 +24,36 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-var options = new WebApplicationOptions
+namespace ASC.Webhooks.Service;
+public class Startup : BaseWorkerStartup
 {
-    Args = args,
-    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
-};
+    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : 
+        base(configuration, hostEnvironment)
+    {
+                    
+    }
 
-var builder = WebApplication.CreateBuilder(options);
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        base.ConfigureServices(services);
 
-builder.Host.ConfigureDefault();
+        services.AddHttpClient();
 
-builder.Configuration.AddDefaultConfiguration(builder.Environment)
-                     .AddWebhookConfiguration()
-                     .AddEnvironmentVariables()
-                     .AddCommandLine(args);
+        DIHelper.TryAdd<DbWorker>();
 
-builder.WebHost.ConfigureDefaultKestrel();
+        services.AddHostedService<WorkerService>();
+        DIHelper.TryAdd<WorkerService>();
 
-var startup = new Startup(builder.Configuration, builder.Environment);
+        services.AddHttpClient("webhook")
+        .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+        .AddPolicyHandler((s, request) =>
+        {
+            var settings = s.GetRequiredService<Settings>();
 
-startup.ConfigureServices(builder.Services);
-
-var app = builder.Build();
-
-startup.Configure(app);
-
-await app.RunWithTasksAsync();
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(settings.RepeatCount.HasValue ? settings.RepeatCount.Value : 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        });
+    }
+}
