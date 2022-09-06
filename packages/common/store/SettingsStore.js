@@ -130,7 +130,6 @@ class SettingsStore {
   hotkeyPanelVisible = false;
   frameConfig = null;
 
-
   appearanceTheme = [];
   selectedThemeId = null;
   currentColorScheme = null;
@@ -138,6 +137,7 @@ class SettingsStore {
   enablePlugins = false;
   pluginOptions = [];
 
+  companyInfoSettingsData = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -266,7 +266,11 @@ class SettingsStore {
     this.setIsLoading(true);
     const requests = [];
 
-    requests.push(this.getPortalSettings(), this.getAppearanceTheme());
+    requests.push(
+      this.getPortalSettings(),
+      this.getAppearanceTheme(),
+      this.getCompanyInfoSettings()
+    );
 
     this.tenantStatus !== TenantStatus.PortalRestore &&
       requests.push(this.getBuildVersionInfo());
@@ -314,6 +318,29 @@ class SettingsStore {
   setEncryptionKeys = async (keys) => {
     await api.files.setEncryptionKeys(keys);
     this.updateEncryptionKeys(keys);
+  };
+
+  setCompanyInfoSettingsData = (data) => {
+    this.companyInfoSettingsData = data;
+  };
+
+  setCompanyInfoSettings = async (address, companyName, email, phone, site) => {
+    const res = await api.settings.setCompanyInfoSettings(
+      address,
+      companyName,
+      email,
+      phone,
+      site
+    );
+  };
+
+  getCompanyInfoSettings = async () => {
+    const res = await api.settings.getCompanyInfoSettings();
+    this.setCompanyInfoSettingsData(res);
+  };
+
+  restoreCompanyInfoSettings = async () => {
+    const res = await api.settings.restoreCompanyInfoSettings();
   };
 
   getEncryptionKeys = async () => {
