@@ -1,10 +1,11 @@
 import React from "react";
 import { ReactSVG } from "react-svg";
 
-import { StyledTitle } from "../styles/common";
+import { Text } from "@docspace/components";
+
 import ItemContextOptions from "./ItemContextOptions";
 
-import { Text } from "@docspace/components";
+import { StyledTitle } from "../styles/common";
 
 const ItemTitle = ({ t, selection, isGallery, isFileCategory, getIcon }) => {
   if ((isFileCategory && selection.isSelectedFolder) || isGallery) return null;
