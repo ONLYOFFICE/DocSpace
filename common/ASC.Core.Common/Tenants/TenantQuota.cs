@@ -140,13 +140,6 @@ public class TenantQuota : IMapFrom<DbQuota>
         set => _docsEditionFeature.Value = value;
     }
 
-    private readonly TenantQuotaFeatureFlag _hasMigrationFeature;
-    public bool HasMigration
-    {
-        get => _hasMigrationFeature.Value;
-        set => _hasMigrationFeature.Value = value;
-    }
-
     private readonly TenantQuotaFeatureFlag _ldapFeature;
     public bool Ldap
     {
@@ -224,7 +217,6 @@ public class TenantQuota : IMapFrom<DbQuota>
         _updateFeature = new TenantQuotaFeatureFlag(this) { Name = "update", Visible = false };
         _auditFeature = new TenantQuotaFeatureFlag(this) { Name = "audit", Order = 7 };
         _docsEditionFeature = new TenantQuotaFeatureFlag(this) { Name = "docs", Visible = false };
-        _hasMigrationFeature = new TenantQuotaFeatureFlag(this) { Name = "migration", Visible = false };
         _ldapFeature = new TenantQuotaFeatureFlag(this) { Name = "ldap", Visible = false };
         _ssoFeature = new TenantQuotaFeatureFlag(this) { Name = "sso", Order = 5 };
         _whiteLabelFeature = new TenantQuotaFeatureFlag(this) { Name = "whitelabel", Order = 4 };
@@ -247,7 +239,6 @@ public class TenantQuota : IMapFrom<DbQuota>
             _updateFeature,
             _auditFeature,
             _docsEditionFeature,
-            _hasMigrationFeature,
             _ldapFeature,
             _ssoFeature,
             _whiteLabelFeature,
