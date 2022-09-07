@@ -2158,6 +2158,7 @@ __metadata:
     react-json-pretty: ^2.2.0
     react-lifecycles-compat: ^3.0.4
     react-onclickoutside: ^6.11.2
+    react-phone-input-2: ^2.15.1
     react-svg: ^12.1.0
     react-text-mask: ^5.4.3
     react-toastify: ^7.0.0
@@ -16530,10 +16531,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.reduce@npm:^4.6.0":
+  version: 4.6.0
+  resolution: "lodash.reduce@npm:4.6.0"
+  checksum: 81f2a1045440554f8427f895ef479f1de5c141edd7852dde85a894879312801efae0295116e5cf830c531c1a51cdab8f3628c3ad39fa21a9874bb9158d9ea075
+  languageName: node
+  linkType: hard
+
 "lodash.sortby@npm:^4.7.0":
   version: 4.7.0
   resolution: "lodash.sortby@npm:4.7.0"
   checksum: db170c9396d29d11fe9a9f25668c4993e0c1331bcb941ddbd48fb76f492e732add7f2a47cfdf8e9d740fa59ac41bbfaf931d268bc72aab3ab49e9f89354d718c
+  languageName: node
+  linkType: hard
+
+"lodash.startswith@npm:^4.2.1":
+  version: 4.2.1
+  resolution: "lodash.startswith@npm:4.2.1"
+  checksum: 1847371cbf6f32c4125a555847aff8a1ff1a977f40882b0ad4e2656a32e364793cfa7602915c9165cc0bba61fbd802e561888126d242faadcf3fc77215bab19b
   languageName: node
   linkType: hard
 
@@ -20651,6 +20666,23 @@ __metadata:
     react: ^15.5.x || ^16.x || ^17.x || ^18.x
     react-dom: ^15.5.x || ^16.x || ^17.x || ^18.x
   checksum: a0c7f4fbcf84e00d50b3fc18208e5fdc4e97b17daf910f176659e079038a560d2e299955804d20e6ca2bf375404d03fdb865dc7f5f85cab3e60b493be4375e77
+  languageName: node
+  linkType: hard
+
+"react-phone-input-2@npm:^2.15.1":
+  version: 2.15.1
+  resolution: "react-phone-input-2@npm:2.15.1"
+  dependencies:
+    classnames: ^2.2.6
+    lodash.debounce: ^4.0.8
+    lodash.memoize: ^4.1.2
+    lodash.reduce: ^4.6.0
+    lodash.startswith: ^4.2.1
+    prop-types: ^15.7.2
+  peerDependencies:
+    react: ^16.12.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+    react-dom: ^16.12.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^20.0.0 || ^21.0.0
+  checksum: 60cee455c7044da648a23312cae0077b4108dd24e26173a954904123decefae9875a1f8225a722a6c4d74c37b18ad3038ec6c302b64857f75089e544e8d48847
   languageName: node
   linkType: hard
 

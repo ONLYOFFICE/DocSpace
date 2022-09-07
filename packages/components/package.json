@@ -33,6 +33,7 @@
     "react-dropzone": "^11.4.2",
     "react-lifecycles-compat": "^3.0.4",
     "react-onclickoutside": "^6.11.2",
+    "react-phone-input-2": "^2.15.1",
     "react-svg": "^12.1.0",
     "react-text-mask": "^5.4.3",
     "react-toastify": "^7.0.0",

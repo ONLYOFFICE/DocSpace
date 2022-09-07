@@ -9,6 +9,13 @@ const StyledPhoneInput = styled(TextInput)`
   padding: 11px 0px 11px 5px;
 `;
 
+const StyledCodeInput = styled(TextInput)`
+  border: 0;
+  font-size: 16px;
+  padding: 11px 0px 11px 5px;
+  width: 20px;
+`;
+
 const StyledTriangle = styled.div`
   border-left: 3px solid transparent;
   border-right: 3px solid transparent;
@@ -31,6 +38,7 @@ const StyledDropDown = styled.div`
 `;
 
 const StyledCountryItem = styled(Box)`
+  margin: 10px 0;
   cursor: pointer;
   &:hover {
     background-color: ${(props) => props.theme.phoneInput.itemHoverColor};
@@ -59,7 +67,7 @@ const StyledSearchPanel = styled.div`
 
 const StyledInputBox = styled(Box)`
   display: flex;
-  border-radius: 3px 3px 3px 3px;
+  border-radius: 3px;
   border: 1px solid #d0d5da;
   width: ${(props) => props.theme.phoneInput.width};
   height: ${(props) => props.theme.phoneInput.height};
@@ -69,6 +77,7 @@ StyledDropDown.defaultProps = { theme: Base };
 StyledCountryItem.defaultProps = { theme: Base };
 StyledSearchPanel.defaultProps = { theme: Base };
 StyledInputBox.defaultProps = { theme: Base };
+StyledCodeInput.defaultProps = { theme: Base };
 
 export {
   StyledPhoneInput,
@@ -79,4 +88,5 @@ export {
   StyledSearchPanel,
   StyledInputBox,
   StyledDropDownWrapper,
+  StyledCodeInput,
 };
