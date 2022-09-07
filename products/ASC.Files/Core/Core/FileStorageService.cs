@@ -2484,7 +2484,7 @@ public class FileStorageService<T> //: IFileStorageService
             entries.Add(await folderDao.GetFolderAsync(folderId));
         }
 
-        aceCollection.Aces = ProcessAceEmails(aceCollection.Aces);
+        aceCollection.Aces = ProcessEmailAces(aceCollection.Aces);
 
         foreach (var entry in entries)
         {
@@ -2511,8 +2511,9 @@ public class FileStorageService<T> //: IFileStorageService
 
                         if (!string.IsNullOrEmpty(ace.Email))
                         {
-                            var link = _docSpaceLinksService.GenerateInvitationRoomLink(entry.Id, (int)ace.Share, EmployeeType.User, ace.SubjectId);
+                            var link = _docSpaceLinksService.GenerateInvitationRoomLink(ace.Email, EmployeeType.User, _authContext.CurrentAccount.ID, ace.SubjectId);
                             _studioNotifyService.SendEmailRoomInvite(ace.Email, link);
+                            _logger.Debug(link);
                         }
                     }
                 }
@@ -3214,11 +3215,19 @@ public class FileStorageService<T> //: IFileStorageService
         await SetAceObjectAsync(aceCollection, notify);
     }
 
-    private List<AceWrapper> ProcessAceEmails(List<AceWrapper> aces)
+    private List<AceWrapper> ProcessEmailAces(List<AceWrapper> aces)
     {
+        var processedAces = new List<AceWrapper>(aces.Count);
+
         foreach (var ace in aces)
         {
-            if (string.IsNullOrEmpty(ace.Email) || !MailAddress.TryCreate(ace.Email, out var email) || _userManager.GetUserByEmail(ace.Email) != Constants.LostUser)
+            if (string.IsNullOrEmpty(ace.Email))
+            {
+                processedAces.Add(ace);
+                continue;
+            }
+
+            if (!MailAddress.TryCreate(ace.Email, out var email) || _userManager.GetUserByEmail(ace.Email) != Constants.LostUser)
             {
                 continue;
             }
@@ -3236,9 +3245,11 @@ public class FileStorageService<T> //: IFileStorageService
             var user = _userManager.SaveUserInfo(userInfo);
 
             ace.SubjectId = user.Id;
+
+            processedAces.Add(ace);
         }
 
-        return aces;
+        return processedAces;
     }
 }
 
