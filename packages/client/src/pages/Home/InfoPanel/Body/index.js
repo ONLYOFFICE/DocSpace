@@ -6,10 +6,8 @@ import { withTranslation } from "react-i18next";
 import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
 
+import ViewHelper from "./helpers/ViewHelper";
 import ItemTitle from "./sub-components/ItemTitle";
-import Gallery from "./views/Gallery";
-import Room from "./views/Room";
-import Details from "./views/Details";
 
 import { StyledInfoPanelBody } from "./styles/common";
 
@@ -18,83 +16,55 @@ const InfoPanelBodyContent = ({
 
   selection,
   setSelection,
-  roomState,
+  roomView,
+  itemView,
 
   selectedItems,
   selectedFolder,
 
-  selfId,
-  personal,
-  culture,
-
-  getFolderInfo,
-  onSelectItem,
-  getShareUsers,
-  getRoomMembers,
-  setSharingPanelVisible,
-
   getIcon,
   getFolderIcon,
-  createThumbnail,
 
   isGallery,
-  gallerySelected,
-
   isFileCategory,
-  isRootFolder,
-  isFavoritesFolder,
-  isRecentFolder,
-  isRecycleBinFolder,
+  ...rest
 }) => {
-  const defaultProps = {
-    t,
-    selection,
-    setSelection,
-    personal,
-    culture,
-    isFileCategory,
-    isRootFolder,
-    isRecycleBinFolder,
-    isRecentFolder,
-    isFavoritesFolder,
-  };
-
-  const titleProps = {
-    selection,
-    isGallery,
-    isFileCategory,
-    getIcon,
-  };
-
-  const detailsProps = {
-    getFolderInfo,
-    getIcon,
-    getFolderIcon,
-    getShareUsers,
-    onSelectItem,
-    setSharingPanelVisible,
-    createThumbnail,
-  };
-
-  const roomProps = {
-    roomState,
-    defaultProps,
+  const viewHelper = new ViewHelper({
+    defaultProps: {
+      t,
+      selection,
+      setSelection,
+      personal: rest.personal,
+      culture: rest.culture,
+      isFileCategory,
+      isRootFolder: rest.isRootFolder,
+      isRecycleBinFolder: rest.isRecycleBinFolder,
+      isRecentFolder: rest.isRecentFolder,
+      isFavoritesFolder: rest.isFavoritesFolder,
+    },
+    detailsProps: {
+      getFolderInfo: rest.getFolderInfo,
+      getIcon,
+      getFolderIcon,
+      getShareUsers: rest.getShareUsers,
+      onSelectItem: rest.onSelectItem,
+      setSharingPanelVisible: rest.setSharingPanelVisible,
+      createThumbnail: rest.createThumbnail,
+    },
     membersProps: {
-      selfId,
-      getRoomMembers,
+      selfId: rest.selfId,
+      getRoomMembers: rest.getRoomMembers,
     },
     historyProps: {
-      personal,
-      culture,
+      personal: rest.personal,
+      culture: rest.culture,
     },
-    detailsProps,
-  };
-
-  const galleryProps = {
-    gallerySelected,
-    personal,
-    culture,
-  };
+    galleryProps: {
+      gallerySelected: rest.gallerySelected,
+      personal: rest.personal,
+      culture: rest.culture,
+    },
+  });
 
   const getSelection = () => {
     if (selectedItems.length > 1) return selectedItems;
@@ -120,24 +90,55 @@ const InfoPanelBodyContent = ({
     return newSelection;
   };
 
+  const getView = (selection) => {
+    if (Array.isArray(selection)) return viewHelper.SeveralItemsView();
+    if (isFileCategory && selection.isSelectedFolder)
+      return viewHelper.NoItemView();
+    if (isGallery) return viewHelper.GalleryView();
+
+    switch (selection.isRoom ? roomView : itemView) {
+      case "members": {
+        return viewHelper.MembersView();
+      }
+      case "history": {
+        return viewHelper.HistoryView();
+      }
+      case "details": {
+        return viewHelper.DetailsView();
+      }
+    }
+  };
+
   useEffect(() => {
     const newSelection = getSelection();
     if (selection && selection.id === newSelection.id) return;
     setSelection(newSelection);
   }, [selectedItems, selectedFolder]);
 
+  //////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    console.log(
+      "Selected items: ",
+      selectedItems,
+      "\nSelected folder: ",
+      selectedFolder
+    );
+  }, [selectedItems, selectedFolder]);
+
+  //////////////////////////////////////////////////////////
+
   if (!selection) return <Loaders.InfoPanelBodyLoader />;
   return (
     <StyledInfoPanelBody>
-      <ItemTitle {...defaultProps} {...titleProps} />
-
-      {isGallery ? (
-        <Gallery {...defaultProps} {...galleryProps} />
-      ) : selection.isRoom ? (
-        <Room {...defaultProps} {...roomProps} />
-      ) : (
-        <Details {...defaultProps} {...detailsProps} />
-      )}
+      <ItemTitle
+        t={t}
+        selection={selection}
+        isGallery={isGallery}
+        isFileCategory={isFileCategory}
+        getIcon={getIcon}
+      />
+      {getView(selection)}
     </StyledInfoPanelBody>
   );
 };
@@ -154,7 +155,7 @@ export default inject(
     oformsStore,
   }) => {
     const { personal, culture } = auth.settingsStore;
-    const { selection, setSelection, roomState } = auth.infoPanelStore;
+    const { selection, setSelection, roomView, itemView } = auth.infoPanelStore;
     const selfId = auth.userStore.user.id;
 
     const {
@@ -182,12 +183,6 @@ export default inject(
       isRootFolder &&
       (isRecycleBinFolder || isRecentFolder || isFavoritesFolder);
 
-    // const selectedItems =
-    // selection?.length > 0
-    //   ? [...selection]
-    //   : bufferSelection
-    //   ? [bufferSelection]
-    //   : [];
     const selectedItems =
       filesStoreSelection?.length > 0 ? [...filesStoreSelection] : [];
 
@@ -197,13 +192,6 @@ export default inject(
       isRoom: !!selectedFolderStore.roomType,
     };
 
-    console.log(
-      "Selected items: ",
-      selectedItems,
-      "\nSelected folder: ",
-      selectedFolder
-    );
-
     return {
       selfId,
       personal,
@@ -211,7 +199,8 @@ export default inject(
 
       selection,
       setSelection,
-      roomState,
+      roomView,
+      itemView,
 
       selectedItems,
       selectedFolder,
