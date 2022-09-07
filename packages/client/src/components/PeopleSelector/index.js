@@ -50,10 +50,10 @@ const PeopleSelector = ({
   const [total, setTotal] = useState(0);
   const [hasNextPage, setHasNextPage] = useState(true);
   const [isNextPageLoading, setIsNextPageLoading] = useState(false);
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsFirstLoad(true);
+    setIsLoading(true);
     loadNextPage(0);
   }, []);
 
@@ -93,18 +93,20 @@ const PeopleSelector = ({
         setTotal(response.total);
 
         setIsNextPageLoading(false);
-        isFirstLoad && setIsFirstLoad(false);
+        setIsLoading(false);
       })
       .catch((error) => console.log(error));
   };
 
   const onSearch = (value) => {
     setSearchValue(value);
+    setIsLoading(true);
     loadNextPage(0, value);
   };
 
   const onClearSearch = () => {
     setSearchValue("");
+    setIsLoading(true);
     loadNextPage(0, "");
   };
 
@@ -149,12 +151,12 @@ const PeopleSelector = ({
       isNextPageLoading={isNextPageLoading}
       loadNextPage={loadNextPage}
       totalItems={total}
-      isLoading={isFirstLoad}
+      isLoading={isLoading}
       searchLoader={<Loaders.SelectorSearchLoader />}
       rowLoader={
         <Loaders.SelectorRowLoader
           isMultiSelect={false}
-          isContainer={isFirstLoad}
+          isContainer={isLoading}
           isUser={true}
         />
       }
