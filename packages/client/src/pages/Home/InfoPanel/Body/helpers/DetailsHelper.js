@@ -58,7 +58,7 @@ const parseAndFormatDate = (date, personal, culture) => {
 
 // InfoHelper Class
 
-class InfoHelper {
+class DetailsHelper {
   constructor(t, item, personal, culture) {
     this.t = t;
     this.item = item;
@@ -274,4 +274,4 @@ class InfoHelper {
   };
 }
 
-export default InfoHelper;
+export default DetailsHelper;
