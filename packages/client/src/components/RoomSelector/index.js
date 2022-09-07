@@ -116,7 +116,7 @@ const RoomSelector = ({
     (startIndex) => {
       setIsNextPageLoading(true);
 
-      const page = startIndex / 100;
+      const page = startIndex / pageCount;
 
       const filter = RoomsFilter.getDefault();
 
