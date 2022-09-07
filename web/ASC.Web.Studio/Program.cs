@@ -32,15 +32,12 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.UseWindowsService();
-builder.Host.UseSystemd();
-builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.WebHost.ConfigureDefaultKestrel();
-
-builder.Host.ConfigureDefaultAppConfiguration(args);
-
-builder.Host.ConfigureNLogLogging();
 
 var startup = new Startup(builder.Configuration, builder.Environment);
 

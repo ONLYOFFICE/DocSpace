@@ -55,6 +55,9 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<ThirdPartyAppHandlerService>();
 
         NotifyConfigurationExtension.Register(DIHelper);
+
+        services.AddBaseDbContextPool<FilesDbContext>();
+
     }
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
