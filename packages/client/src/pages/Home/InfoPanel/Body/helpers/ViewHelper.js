@@ -1,25 +1,43 @@
+import React from "react";
+
+import Details from "../views/Details";
+import Gallery from "../views/Gallery";
+import History from "../views/History";
+import Members from "../views/Members";
+import NoItem from "../views/NoItem";
+import SeveralItems from "../views/SeveralItems";
+
 class ViewHelper {
   constructor(props) {
-    this.t = props.t;
-    this.item = props.selectedItem;
-    this.getContextOptions = props.getContextOptions;
-    this.getContextOptionActions = props.getContextOptionActions;
-
-    this.fixItemContextOptions();
+    this.defaultProps = props.defaultProps;
+    this.membersProps = props.membersProps;
+    this.historyProps = props.historyProps;
+    this.detailsProps = props.detailsProps;
+    this.galleryProps = props.galleryProps;
   }
 
-  fixItemContextOptions = () => {
-    let newContextOptions = this.item.contextOptions;
-
-    if (!newContextOptions)
-      newContextOptions = this.getContextOptions(this.item, false);
-    newContextOptions = newContextOptions.filter((co) => co !== "show-info");
-
-    this.item.contextOptions = newContextOptions;
+  MembersView = () => {
+    return <Members {...this.defaultProps} {...this.membersProps} />;
   };
 
-  getItemContextOptions = () => {
-    return this.getContextOptionActions(this.item, this.t);
+  HistoryView = () => {
+    return <History {...this.defaultProps} {...this.historyProps} />;
+  };
+
+  DetailsView = () => {
+    return <Details {...this.defaultProps} {...this.detailsProps} />;
+  };
+
+  GalleryView = () => {
+    return <Gallery {...this.defaultProps} {...this.galleryProps} />;
+  };
+
+  NoItemView = () => {
+    return <NoItem {...this.defaultProps} />;
+  };
+
+  SeveralItemsView = () => {
+    return <SeveralItems {...this.defaultProps} />;
   };
 }
 
