@@ -24,27 +24,46 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Notify.Push;
+namespace TMResourceData;
 
-public class PushServiceClient : BaseWcfClient<IPushService>, IPushService
+[Singletone]
+public class WhiteLabelHelper
 {
-    public string RegisterDevice(int tenantID, string userID, string token, MobileAppType type)
+    private readonly ILogger _logger;
+    private readonly ConcurrentDictionary<int, string> _whiteLabelDictionary;
+    public string DefaultLogoText { get; set; }
+
+    private readonly IConfiguration _configuration;
+
+    public WhiteLabelHelper(IConfiguration configuration, ILoggerProvider option)
     {
-        return Channel.RegisterDevice(tenantID, userID, token, type);
+        _logger = option.CreateLogger("ASC.Resources");
+        _whiteLabelDictionary = new ConcurrentDictionary<int, string>();
+        DefaultLogoText = string.Empty;
+        _configuration = configuration;
     }
 
-    public void DeregisterDevice(int tenantID, string userID, string token)
+    public void SetNewText(int tenantId, string newText)
     {
-        Channel.DeregisterDevice(tenantID, userID, token);
+        try
+        {
+            _whiteLabelDictionary.AddOrUpdate(tenantId, r => newText, (i, s) => newText);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorSetNewText(e);
+        }
     }
 
-    public void EnqueueNotification(int tenantID, string userID, PushNotification notification, List<string> targetDevices)
+    public void RestoreOldText(int tenantId)
     {
-        Channel.EnqueueNotification(tenantID, userID, notification, targetDevices);
-    }
-
-    public List<PushNotification> GetFeed(int tenantID, string userID, string deviceToken, DateTime from, DateTime to)
-    {
-        return Channel.GetFeed(tenantID, userID, deviceToken, from, to);
+        try
+        {
+            _whiteLabelDictionary.TryRemove(tenantId, out var text);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorRestoreOldText(e);
+        }
     }
 }
