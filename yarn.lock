@@ -1974,20 +1974,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@daybrush/utils@npm:1.6.0":
-  version: 1.6.0
-  resolution: "@daybrush/utils@npm:1.6.0"
-  checksum: 2579bc17e0d53ffbcb01c14c1f6baf32294f42b370e597d855e11cc5ab4de975502e91114c3e5bd05f76c8a6f83352c40ba60ac74c2fd1c3a741ce2e8899b137
-  languageName: node
-  linkType: hard
-
-"@daybrush/utils@npm:^1.0.0, @daybrush/utils@npm:^1.1.1, @daybrush/utils@npm:^1.3.1, @daybrush/utils@npm:^1.4.0, @daybrush/utils@npm:^1.7.1":
-  version: 1.9.1
-  resolution: "@daybrush/utils@npm:1.9.1"
-  checksum: b14ab6d26630657a76b6eace94fb1469a35df418bdca5b13c1e0f3f94985f0b8aca152f450ffe8e7b9f0059bf4ce489fc6acbb6790af3c5c8cfca2865ae0de3c
-  languageName: node
-  linkType: hard
-
 "@discoveryjs/json-ext@npm:^0.5.0":
   version: 0.5.7
   resolution: "@discoveryjs/json-ext@npm:0.5.7"
@@ -2076,7 +2062,6 @@ __metadata:
     react-resize-detector: ^6.7.6
     react-router: ^5.2.1
     react-router-dom: ^5.3.0
-    react-selecto: ^1.18.2
     react-tooltip: ^4.2.21
     react-viewer: ^3.2.2
     react-virtualized-auto-sizer: ^1.0.6
@@ -2302,22 +2287,6 @@ __metadata:
     winston-daily-rotate-file: ^4.7.1
   languageName: unknown
   linkType: soft
-
-"@egjs/children-differ@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@egjs/children-differ@npm:1.0.1"
-  dependencies:
-    "@egjs/list-differ": ^1.0.0
-  checksum: 087f286822a93cc5ac2ba0beb9f332f3828a8870fea0e9d0a177078c96fc265ce74979be827a78dab674a833e3a22d4fe60636112a1aae93252e0a38f58ff754
-  languageName: node
-  linkType: hard
-
-"@egjs/list-differ@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@egjs/list-differ@npm:1.0.0"
-  checksum: d1827d134ddab12a024358367cb8a3b70d2ba0f286e5beb6ce2a6bbd021594f26b02c38b2d8b3d1dfd76bd7d1fcda54de3b40decaa9b4fc939230f6e7d531d0c
-  languageName: node
-  linkType: hard
 
 "@electron/get@npm:^1.13.0":
   version: 1.14.1
@@ -3638,34 +3607,6 @@ __metadata:
     react: 15.x || 16.x || 16.4.0-alpha.0911da3
     react-dom: 15.x || 16.x || 16.4.0-alpha.0911da3
   checksum: f64372497e0464a9fdfd79283fec3f4fd01ee093f1599d8a8035e0a41fbce22113bfa46dcea63aa8b7b4e0796e916f134aa8e3fccd3974be397e7c19468de3c4
-  languageName: node
-  linkType: hard
-
-"@scena/dragscroll@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@scena/dragscroll@npm:1.2.1"
-  dependencies:
-    "@daybrush/utils": 1.6.0
-    "@scena/event-emitter": ^1.0.2
-  checksum: 217b0612b0b5d2e721cd41b7534cc1b831aca236a4256b30bdeb965b3b0b7cf9f3934801a7158cb38483242e2568f8b734eeccfaee43b5df4e5df9ead7653dd5
-  languageName: node
-  linkType: hard
-
-"@scena/event-emitter@npm:^1.0.2, @scena/event-emitter@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "@scena/event-emitter@npm:1.0.5"
-  dependencies:
-    "@daybrush/utils": ^1.1.1
-  checksum: 400e0f6ab847aff6c1a6a6b62a0187193bdf9dedbe002ac31764b104bddb3c3bd1631df4252f52aa1677879842e96359aca46e025ed78d53c01facf8c76a5559
-  languageName: node
-  linkType: hard
-
-"@scena/matrix@npm:^1.0.0":
-  version: 1.1.1
-  resolution: "@scena/matrix@npm:1.1.1"
-  dependencies:
-    "@daybrush/utils": ^1.4.0
-  checksum: e96aeab712e5fac4a437b1c1c2f5b445e47050c8b94dac2354bbece7d298b46bab5ea0049a24b360385f4edef8010538ee8d6f0ead570fbb83fdad9fe7e7b180
   languageName: node
   linkType: hard
 
@@ -10043,28 +9984,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"css-styled@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "css-styled@npm:1.0.0"
-  dependencies:
-    "@daybrush/utils": ^1.0.0
-    string-hash: ^1.1.3
-  peerDependencies:
-    "@daybrush/utils": ">=1.0.0"
-  checksum: 3f2f995938f03db4e691d1aa6e17e902eae8e6462da7f5b17964398c44466d7c799060268114b45de67824144498cafaa2f944c12257910a76c848581b969f44
-  languageName: node
-  linkType: hard
-
-"css-to-mat@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "css-to-mat@npm:1.0.3"
-  dependencies:
-    "@daybrush/utils": ^1.3.1
-    "@scena/matrix": ^1.0.0
-  checksum: a3fc98bfad2e500187736ad977f8753484c793a0aca453d811e11e778a4e26c320aa6419c1c12d7eb451c975d291d25a38139815a2c4b1a833bf044fc5501a4d
-  languageName: node
-  linkType: hard
-
 "css-to-react-native@npm:^3.0.0":
   version: 3.0.0
   resolution: "css-to-react-native@npm:3.0.0"
@@ -12667,13 +12586,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framework-utils@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "framework-utils@npm:1.1.0"
-  checksum: 01b61ead1756ad9bb0d281d22d35c83ee9df3e5e3d63b2d19eb9ca4ba9e69439b698c623ac8161df3744233331017bfd79d82c44e1e61fbb30f0ea6b48d883f9
-  languageName: node
-  linkType: hard
-
 "fresh@npm:0.5.2":
   version: 0.5.2
   resolution: "fresh@npm:0.5.2"
@@ -12937,16 +12849,6 @@ __metadata:
   version: 1.0.0-beta.2
   resolution: "gensync@npm:1.0.0-beta.2"
   checksum: a7437e58c6be12aa6c90f7730eac7fa9833dc78872b4ad2963d2031b00a3367a93f98aec75f9aaac7220848e4026d67a8655e870b24f20a543d103c0d65952ec
-  languageName: node
-  linkType: hard
-
-"gesto@npm:^1.11.1":
-  version: 1.12.2
-  resolution: "gesto@npm:1.12.2"
-  dependencies:
-    "@daybrush/utils": ^1.7.1
-    "@scena/event-emitter": ^1.0.2
-  checksum: 72fe3e7414c42317533abd27459a8c48b843cd02033f0b673b27b5bf95565f6bfc1076e58dd6cbbf979b8b02d65cce9e908cfd7be08b20b76a62a9241d90ed5b
   languageName: node
   linkType: hard
 
@@ -16089,24 +15991,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"keycode@npm:^2.2.0":
-  version: 2.2.1
-  resolution: "keycode@npm:2.2.1"
-  checksum: 7a5c775b2410a3b6d9c07a415ecb70639187a965be239d2c11c71079cb1ca2f9dede94b86426f3ece475dc8ae3debf2367531bbcafc0af8c82f157d9a4f7e6cb
-  languageName: node
-  linkType: hard
-
-"keycon@npm:^1.2.0":
-  version: 1.2.2
-  resolution: "keycon@npm:1.2.2"
-  dependencies:
-    "@daybrush/utils": ^1.7.1
-    "@scena/event-emitter": ^1.0.2
-    keycode: ^2.2.0
-  checksum: 81cd5a5e70640212165ba743b4451628b3c30b1773b7f26eb9d2fb5ba5c6529d2c8fecc2499bbf01fa899206356e14960dd42db6b983e5a6c27669718b23c8a8
-  languageName: node
-  linkType: hard
-
 "keygrip@npm:~1.0.2":
   version: 1.0.3
   resolution: "keygrip@npm:1.0.3"
@@ -18700,15 +18584,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"overlap-area@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "overlap-area@npm:1.1.0"
-  dependencies:
-    "@daybrush/utils": ^1.7.1
-  checksum: 718e48a54e11e02ec461f2ad3bc05f396e249a609325ee94ae3bffa568816cf16b3053f512ad549a27e4d644f4194c3e47e4c9c4af02826ae063df67026cbf58
-  languageName: node
-  linkType: hard
-
 "overlayscrollbars@npm:^1.13.1":
   version: 1.13.3
   resolution: "overlayscrollbars@npm:1.13.3"
@@ -20783,15 +20658,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-selecto@npm:^1.18.2":
-  version: 1.18.2
-  resolution: "react-selecto@npm:1.18.2"
-  dependencies:
-    selecto: ~1.18.2
-  checksum: f1207f66b0a806e0129e9e611b720c160f5362a28cc9c381f8428fca0c4dc1df92a0a03c31f3b61a6c3de02f615eabbcf43cb785d908103548cc5ef3d1acda27
-  languageName: node
-  linkType: hard
-
 "react-shallow-renderer@npm:^16.13.1":
   version: 16.15.0
   resolution: "react-shallow-renderer@npm:16.15.0"
@@ -22157,24 +22023,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selecto@npm:~1.18.2":
-  version: 1.18.2
-  resolution: "selecto@npm:1.18.2"
-  dependencies:
-    "@daybrush/utils": ^1.7.1
-    "@egjs/children-differ": ^1.0.1
-    "@scena/dragscroll": ^1.2.1
-    "@scena/event-emitter": ^1.0.5
-    css-styled: ^1.0.0
-    css-to-mat: ^1.0.3
-    framework-utils: ^1.1.0
-    gesto: ^1.11.1
-    keycon: ^1.2.0
-    overlap-area: ^1.1.0
-  checksum: 192221746c8688c11e20ea1fc5918de8674e5eeba2b6d3a15324fb6befec3005abfaa42625eda36095f79df5bc76036576e8aa9a29a0a05476e1528666809b1e
-  languageName: node
-  linkType: hard
-
 "selfsigned@npm:^1.10.11":
   version: 1.10.14
   resolution: "selfsigned@npm:1.10.14"
@@ -23182,13 +23030,6 @@ __metadata:
   version: 2.0.0
   resolution: "strict-uri-encode@npm:2.0.0"
   checksum: eaac4cf978b6fbd480f1092cab8b233c9b949bcabfc9b598dd79a758f7243c28765ef7639c876fa72940dac687181b35486ea01ff7df3e65ce3848c64822c581
-  languageName: node
-  linkType: hard
-
-"string-hash@npm:^1.1.3":
-  version: 1.1.3
-  resolution: "string-hash@npm:1.1.3"
-  checksum: 104b8667a5e0dc71bfcd29fee09cb88c6102e27bfb07c55f95535d90587d016731d52299380052e514266f4028a7a5172e0d9ac58e2f8f5001be61dc77c0754d
   languageName: node
   linkType: hard
 

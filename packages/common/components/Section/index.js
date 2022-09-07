@@ -29,14 +29,7 @@ import SubInfoPanelHeader from "./sub-components/info-panel-header";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
-import Selecto from "react-selecto";
 import styled, { css } from "styled-components";
-
-const StyledSelectoWrapper = styled.div`
-  .selecto-selection {
-    z-index: 200;
-  }
-`;
 
 const StyledMainBar = styled.div`
   box-sizing: border-box;
