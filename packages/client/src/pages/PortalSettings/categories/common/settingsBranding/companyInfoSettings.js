@@ -233,17 +233,19 @@ const CompanyInfoSettings = (props) => {
       </StyledModalDialog>
 
       <StyledComponent isPortalPaid={isPortalPaid}>
-        <div className="header">Company info settings</div>
+        <div className="header">{t("Settings:CompanyInfoSettings")}</div>
         <div className="description">
-          This information will be displayed in the
+          {t("Settings:CompanyInfoSettingsDescription")}
           {isPortalPaid ? (
             <Link className="link" onClick={onShowExample} noHover={true}>
-              &nbsp;About this program&nbsp;
+              &nbsp;{t("Common:AboutCompanyTitle")}&nbsp;
             </Link>
           ) : (
-            <span className="link">&nbsp;About this program&nbsp;</span>
+            <span className="link">
+              &nbsp;{t("Common:AboutCompanyTitle")}&nbsp;
+            </span>
           )}
-          window.
+          {t("Common:Window")}.
         </div>
         <div className="settings-block">
           <FieldContainer

@@ -47,7 +47,7 @@ const StyledComponent = styled.div`
   }
 `;
 
-const Branding = ({ isLoadedCompanyInfoSettingsData }) => {
+const Branding = ({ t, isLoadedCompanyInfoSettingsData }) => {
   const [isPortalPaid, setIsPortalPaid] = useState(true);
 
   if (!isDesktop) return <ForbiddenPage />;
@@ -58,8 +58,7 @@ const Branding = ({ isLoadedCompanyInfoSettingsData }) => {
       <hr />
       {isLoadedCompanyInfoSettingsData ? (
         <div className="section-description">
-          Specify your company information, add links to external resources, and
-          email addresses displayed within the online office interface.
+          {t("Settings:BrandingSectionDescription")}
         </div>
       ) : (
         <LoaderBrandingDescription />
