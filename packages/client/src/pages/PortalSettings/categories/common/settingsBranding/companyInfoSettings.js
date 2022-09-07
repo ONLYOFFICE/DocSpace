@@ -29,8 +29,17 @@ const StyledComponent = styled.div`
 `;
 
 const StyledModalDialog = styled(ModalDialog)`
+  .modal-body {
+    padding: 0;
+  }
+
   .modal-footer {
     display: none;
+  }
+
+  .img {
+    width: -webkit-fill-available;
+    padding-top: 5px;
   }
 `;
 
@@ -200,7 +209,7 @@ const CompanyInfoSettings = (props) => {
     <>
       <StyledModalDialog visible={showBackdrop} onClose={onCloseModal}>
         <ModalDialog.Body>
-          <img src="/static/images/about.this.program.png" />
+          <img className="img" src="/static/images/about.this.program.png" />
         </ModalDialog.Body>
         <ModalDialog.Footer className="modal-footer" />
       </StyledModalDialog>
