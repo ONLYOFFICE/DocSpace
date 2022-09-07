@@ -1,35 +1,39 @@
+import React from "react";
+import { inject, observer } from "mobx-react";
+import { withTranslation } from "react-i18next";
+import { isMobile as isMobileRDD } from "react-device-detect";
+
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
-import React from "react";
-import { withTranslation } from "react-i18next";
-import { inject, observer } from "mobx-react";
-import { StyledInfoPanelHeader } from "./styles/styles";
 import Loaders from "@docspace/common/components/Loaders";
-import withLoader from "../../../../HOCs/withLoader";
+import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Submenu from "@docspace/components/submenu";
-import { isMobile } from "react-device-detect";
 import {
   isDesktop,
-  isMobile as isMobileUtils,
+  isMobile,
   isTablet,
 } from "@docspace/components/utils/device";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
+import { StyledInfoPanelHeader } from "./styles/styles";
 
 const InfoPanelHeaderContent = (props) => {
   const {
     t,
     selection,
     setIsVisible,
-    roomState,
-    setRoomState,
+    roomView,
+    itemView,
+    setView,
     isGallery,
   } = props;
+
   const closeInfoPanel = () => setIsVisible(false);
 
-  const setMembers = () => setRoomState("members");
-  const setHistory = () => setRoomState("history");
-  const setDetails = () => setRoomState("details");
+  const setMembers = () => setView("members");
+  const setHistory = () => setView("history");
+  const setDetails = () => setView("details");
 
   const submenuData = [
     {
@@ -52,12 +56,11 @@ const InfoPanelHeaderContent = (props) => {
     },
   ];
 
-  const [submenuStartSelect] = submenuData.filter(
-    (submenuItem) => submenuItem.id === roomState
-  );
+  const roomSubmenu = [...submenuData];
+  const itemSubmenu = [submenuData[1], submenuData[2]];
 
   return (
-    <StyledInfoPanelHeader isRoom={selection && selection.isRoom}>
+    <StyledInfoPanelHeader withSubmenu={!!selection}>
       <div className="main">
         <Text className="header-text" fontSize="21px" fontWeight="700">
           {isGallery ? t("FormGallery:FormTemplateInfo") : t("Common:Info")}
@@ -69,7 +72,7 @@ const InfoPanelHeaderContent = (props) => {
           isRootFolder={true}
           isInfoPanelVisible={true}
         >
-          {!(isTablet() || isMobile || isMobileUtils() || !isDesktop()) && (
+          {!(isTablet() || isMobileRDD || isMobile() || !isDesktop()) && (
             <div className="info-panel-toggle-bg">
               <IconButton
                 className="info-panel-toggle"
@@ -83,15 +86,21 @@ const InfoPanelHeaderContent = (props) => {
         </ColorTheme>
       </div>
 
-      {selection?.isRoom && (
-        <div className="submenu">
+      <div className="submenu">
+        {selection?.isRoom ? (
           <Submenu
             style={{ width: "100%" }}
-            data={submenuData}
-            startSelect={submenuStartSelect}
+            data={roomSubmenu}
+            forsedActiveItemId={roomView}
           />
-        </div>
-      )}
+        ) : (
+          <Submenu
+            style={{ width: "100%" }}
+            data={itemSubmenu}
+            forsedActiveItemId={itemView}
+          />
+        )}
+      </div>
     </StyledInfoPanelHeader>
   );
 };
@@ -100,11 +109,11 @@ export default inject(({ auth }) => {
   const {
     selection,
     setIsVisible,
-    roomState,
-    setRoomState,
-    isRoom,
+    roomView,
+    itemView,
+    setView,
   } = auth.infoPanelStore;
-  return { selection, setIsVisible, roomState, setRoomState, isRoom };
+  return { selection, setIsVisible, roomView, itemView, setView };
 })(
   withTranslation(["Common", "FormGallery"])(
     withLoader(observer(InfoPanelHeaderContent))(
