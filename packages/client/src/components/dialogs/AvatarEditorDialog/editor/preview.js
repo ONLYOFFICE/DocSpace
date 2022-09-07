@@ -4,11 +4,17 @@ import styled from "styled-components";
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
 
+import { hugeMobile } from "@docspace/components/utils/device";
+
 const StyledWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 24px;
+
+  @media ${hugeMobile} {
+    display: none;
+  }
 
   .avatar {
     height: 124px;
