@@ -21,6 +21,8 @@ class CommonStore {
   isLoadedCustomizationNavbar = false;
   isLoadedWelcomePageSettings = false;
 
+  isLoadedCompanyInfoSettingsData = false;
+
   constructor() {
     this.authStore = authStore;
     makeAutoObservable(this);
@@ -120,6 +122,12 @@ class CommonStore {
   setIsLoadedCustomizationNavbar = (isLoadedCustomizationNavbar) => {
     runInAction(() => {
       this.isLoadedCustomizationNavbar = isLoadedCustomizationNavbar;
+    });
+  };
+
+  setIsLoadedCompanyInfoSettingsData = (isLoadedCompanyInfoSettingsData) => {
+    runInAction(() => {
+      this.isLoadedCompanyInfoSettingsData = isLoadedCompanyInfoSettingsData;
     });
   };
 
