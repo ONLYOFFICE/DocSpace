@@ -10,6 +10,7 @@ import withLoading from "SRC_DIR/HOCs/withLoading";
 import styled from "styled-components";
 import Link from "@docspace/components/link";
 import ModalDialog from "@docspace/components/modal-dialog";
+import LoaderCompanyInfoSettings from "../sub-components/loaderCompanyInfoSettings";
 
 const StyledComponent = styled.div`
   .link {
@@ -23,14 +24,20 @@ const StyledComponent = styled.div`
     color: ${(props) => !props.isPortalPaid && "#A3A9AE"};
   }
 
+  .text-input {
+    font-size: 13px;
+  }
+
   .save-cancel-buttons {
-    margin-top: 8px;
+    margin-top: 24px;
   }
 `;
 
 const StyledModalDialog = styled(ModalDialog)`
-  .modal-body {
-    padding: 0;
+  #modal-dialog {
+    width: 560px;
+    height: 291px;
+    max-height: none;
   }
 
   .modal-footer {
@@ -39,7 +46,7 @@ const StyledModalDialog = styled(ModalDialog)`
 
   .img {
     width: -webkit-fill-available;
-    padding-top: 5px;
+    height: 291px;
   }
 `;
 
@@ -51,6 +58,9 @@ const CompanyInfoSettings = (props) => {
     setCompanyInfoSettings,
     restoreCompanyInfoSettings,
     companyInfoSettingsData,
+    tReady,
+    setIsLoadedCompanyInfoSettingsData,
+    isLoadedCompanyInfoSettingsData,
   } = props;
 
   const [companyName, setCompanyName] = useState(
@@ -73,6 +83,12 @@ const CompanyInfoSettings = (props) => {
   );
 
   const [showBackdrop, setShowBackdrop] = useState(false);
+
+  useEffect(() => {
+    if (!(companyInfoSettingsData && tReady)) return;
+
+    setIsLoadedCompanyInfoSettingsData(true);
+  }, [companyInfoSettingsData, tReady]);
 
   useEffect(() => {
     const settings = {
@@ -205,7 +221,9 @@ const CompanyInfoSettings = (props) => {
     setShowBackdrop(false);
   };
 
-  return (
+  return !isLoadedCompanyInfoSettingsData ? (
+    <LoaderCompanyInfoSettings />
+  ) : (
     <>
       <StyledModalDialog visible={showBackdrop} onClose={onCloseModal}>
         <ModalDialog.Body>
@@ -236,6 +254,7 @@ const CompanyInfoSettings = (props) => {
           >
             <TextInput
               id="textInputContainerCompanyName"
+              className="text-input"
               isDisabled={!isPortalPaid}
               scale={true}
               value={companyName}
@@ -252,6 +271,7 @@ const CompanyInfoSettings = (props) => {
           >
             <TextInput
               id="textInputContainerEmail"
+              className="text-input"
               isDisabled={!isPortalPaid}
               scale={true}
               value={email}
@@ -267,6 +287,7 @@ const CompanyInfoSettings = (props) => {
           >
             <TextInput
               id="textInputContainerPhone"
+              className="text-input"
               isDisabled={!isPortalPaid}
               scale={true}
               value={phone}
@@ -282,6 +303,7 @@ const CompanyInfoSettings = (props) => {
           >
             <TextInput
               id="textInputContainerWebsite"
+              className="text-input"
               isDisabled={!isPortalPaid}
               scale={true}
               value={site}
@@ -297,6 +319,7 @@ const CompanyInfoSettings = (props) => {
           >
             <TextInput
               id="textInputContainerAddress"
+              className="text-input"
               isDisabled={!isPortalPaid}
               scale={true}
               value={address}
@@ -322,17 +345,26 @@ const CompanyInfoSettings = (props) => {
 
 export default inject(({ auth, setup, common }) => {
   const { settingsStore } = auth;
+
+  const {
+    setIsLoadedCompanyInfoSettingsData,
+    isLoadedCompanyInfoSettingsData,
+  } = common;
+
   const {
     getCompanyInfoSettings,
     setCompanyInfoSettings,
     restoreCompanyInfoSettings,
     companyInfoSettingsData,
   } = settingsStore;
+
   return {
     getCompanyInfoSettings,
     setCompanyInfoSettings,
     restoreCompanyInfoSettings,
     companyInfoSettingsData,
+    setIsLoadedCompanyInfoSettingsData,
+    isLoadedCompanyInfoSettingsData,
   };
 })(
   withLoading(
