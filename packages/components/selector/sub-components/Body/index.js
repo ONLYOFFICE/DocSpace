@@ -104,6 +104,8 @@ const Body = ({
   if (isMultiSelect && withSelectAll && !isSearch)
     listHeight -= SELECT_ALL_HEIGHT;
 
+  console.log(isSearch);
+
   return (
     <StyledSelectorBody
       ref={bodyRef}
@@ -111,7 +113,7 @@ const Body = ({
       headerHeight={HEADER_HEIGHT}
       footerVisible={footerVisible}
     >
-      {isLoading ? (
+      {isLoading && !isSearch ? (
         searchLoader
       ) : withSearch ? (
         <Search
@@ -126,7 +128,7 @@ const Body = ({
         rowLoader
       ) : itemsCount === 0 ? (
         <EmptyScreen
-          withSearch={isSearch}
+          withSearch={isSearch && value}
           image={emptyScreenImage}
           header={emptyScreenHeader}
           description={emptyScreenDescription}

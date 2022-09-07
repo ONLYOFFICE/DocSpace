@@ -64,18 +64,15 @@ const Selector = ({
   const onSearchAction = React.useCallback(
     (value) => {
       onSearch && onSearch(value);
-      if (value) {
-        setIsSearch(true);
-      } else {
-        setIsSearch(false);
-      }
+
+      setIsSearch(true);
     },
     [onSearch]
   );
 
   const onClearSearchAction = React.useCallback(() => {
     onClearSearch && onClearSearch();
-    setIsSearch(false);
+    setIsSearch(true);
   }, [onClearSearch]);
 
   const onSelectAction = (item) => {
