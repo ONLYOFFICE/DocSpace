@@ -87,10 +87,8 @@ public class EmailValidationKeyModelHelper
         request.TryGetValue("uid", out var userIdKey);
         Guid.TryParse(userIdKey, out var userId);
 
-        request.TryGetValue("access", out var fileShareRaw);
-        int.TryParse(fileShareRaw, out var fileShare);
-
-        request.TryGetValue("roomId", out var roomId);
+        request.TryGetValue("target", out var targetKey);
+        Guid.TryParse(targetKey, out var target);
 
         return new EmailValidationKeyModel
         {
@@ -99,14 +97,13 @@ public class EmailValidationKeyModelHelper
             Key = key,
             Type = cType,
             UiD = userId,
-            RoomAccess = fileShare,
-            RoomId = roomId
+            Target = target,
         };
     }
 
     public ValidationResult Validate(EmailValidationKeyModel inDto)
     {
-        var (key, emplType, email, uiD, type, fileShare, roomId) = inDto;
+        var (key, emplType, email, uiD, type, target) = inDto;
 
         ValidationResult checkKeyResult;
 
@@ -117,11 +114,10 @@ public class EmailValidationKeyModelHelper
                 break;
 
             case ConfirmType.LinkInvite:
-                if (fileShare != default && !string.IsNullOrEmpty(roomId))
+                if (target.HasValue && target.Value != default && emplType.HasValue)
                 {
-                    checkKeyResult = _provider.ValidateEmailKey(email + type + ((int)emplType + (int)fileShare + roomId), key, _provider.ValidEmailKeyInterval);
-                    if (checkKeyResult == ValidationResult.Ok &&
-                        !_docSpaceLinksHelper.ProcessLinkVisit(roomId, email, key, _provider.ValidVisitLinkInterval))
+                    checkKeyResult = _provider.ValidateEmailKey(DocSpaceLinksHelper.MakePayload(email, emplType.Value, target.Value), key, _provider.ValidEmailKeyInterval);
+                    if (checkKeyResult == ValidationResult.Ok && !_docSpaceLinksHelper.ProcessLinkVisit(email, key, _provider.ValidVisitLinkInterval))
                     {
                         checkKeyResult = ValidationResult.Expired;
                     }

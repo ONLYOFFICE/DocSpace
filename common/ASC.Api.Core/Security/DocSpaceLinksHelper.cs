@@ -52,38 +52,31 @@ public class DocSpaceLinksHelper
         _dbContextFactory = dbContextFactory;
     }
 
-    public string GenerateInvitationRoomLink<T>(T id, int fileShare, EmployeeType employeeType, Guid guid)
+    public static string MakePayload(string email, EmployeeType employeeType, Guid target)
     {
-        return GenerateInvitationRoomLink(id, string.Empty, fileShare, employeeType, guid);
+        return email + ConfirmType.LinkInvite.ToStringFast() + employeeType.ToStringFast() + target.ToString();
     }
 
-    public string GenerateInvitationRoomLink<T>(T id, string email, int fileShare, EmployeeType employeeType, Guid guid)
+    public string GenerateInvitationRoomLink(string email, EmployeeType employeeType, Guid createdBy, Guid target)
     {
-        var postifx = (int)employeeType + fileShare + id.ToString();
+        var link = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.LinkInvite, employeeType + target.ToString(), createdBy)
+            + $"&emplType={employeeType:d}";
 
-        var link = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.LinkInvite, postifx, guid)
-            + $"&emplType={employeeType:d}&roomId={id}&access={fileShare}";
+        if (target != default)
+        {
+            link += $"&target={target}";
+        }
 
         return link;
     }
 
-    public bool ProcessLinkVisit(string id, string email, string key, TimeSpan interval)
+    public bool ProcessLinkVisit(string email, string key, TimeSpan interval)
     {
-        if (!string.IsNullOrEmpty(email))
-        {
-            var user = _userManager.GetUserByEmail(email);
-
-            if (user != ASC.Core.Users.Constants.LostUser)
-            {
-                return false;
-            }
-        }
-
-        var message = GetLinkInfo(id, email, key);
+        var message = GetLinkInfo(email, key);
 
         if (message == null)
         {
-            SaveVisitLinkInfo(id, email, key);
+            SaveVisitLinkInfo(email, key);
 
             return true;
         }
@@ -91,10 +84,10 @@ public class DocSpaceLinksHelper
         return message.Date + interval > DateTime.UtcNow;
     }
 
-    private AuditEvent GetLinkInfo(string id, string email, string key)
+    private AuditEvent GetLinkInfo(string email, string key)
     {
         using var context = _dbContextFactory.CreateDbContext();
-        var target = _messageTarget.CreateFromGroupValues(email != null ? new[] { id, email } : new[] { id });
+        var target = _messageTarget.Create(email);
         var description = JsonConvert.SerializeObject(new[] { key },
             new JsonSerializerSettings
             {
@@ -107,10 +100,10 @@ public class DocSpaceLinksHelper
         return message;
     }
 
-    private void SaveVisitLinkInfo(string id, string email, string key)
+    private void SaveVisitLinkInfo(string email, string key)
     {
         var headers = _httpContextAccessor?.HttpContext?.Request?.Headers;
-        var target = _messageTarget.CreateFromGroupValues(email != null ? new[] { id, email } : new[] { id });
+        var target = _messageTarget.Create(email);
 
         _messageService.Send(headers, MessageAction.RoomInviteLinkUsed, target, key);
     }

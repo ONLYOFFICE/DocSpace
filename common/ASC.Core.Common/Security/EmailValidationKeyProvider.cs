@@ -59,11 +59,12 @@ public class EmailValidationKeyProvider
         }
         if (!TimeSpan.TryParse(configuration["visit:validinterval"], out var validVisitLinkInterval))
         {
-            ValidVisitLinkInterval = TimeSpan.FromMinutes(15);
+            validVisitLinkInterval = TimeSpan.FromMinutes(15);
         }
        
         ValidEmailKeyInterval = validInterval;
         ValidAuthKeyInterval = authValidInterval;
+        ValidVisitLinkInterval = validVisitLinkInterval;
         _logger = logger;
     }
 
@@ -168,11 +169,10 @@ public class EmailValidationKeyModel
     public string Email { get; set; }
     public Guid? UiD { get; set; }
     public ConfirmType? Type { get; set; }
-    public int RoomAccess { get; set; }
-    public string RoomId { get; set; }
+    public Guid? Target { get; set; }
 
-    public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out int roomAccess, out string roomId)
+    public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type, out Guid? target)
     {
-        (key, emplType, email, uiD, type, roomAccess, roomId) = (Key, EmplType, Email, UiD, Type, RoomAccess, RoomId);
+        (key, emplType, email, uiD, type, target) = (Key, EmplType, Email, UiD, Type, Target);
     }
 }
