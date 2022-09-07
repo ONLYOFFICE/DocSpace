@@ -348,6 +348,10 @@ class AuthStore {
     return this.portalTariff.state === TariffState.Delay;
   }
 
+  get isPaidPeriod() {
+    return this.portalTariff.state === TariffState.Paid;
+  }
+
   get isNotPaid() {
     return this.portalTariff.state === TariffState.NotPaid;
   }

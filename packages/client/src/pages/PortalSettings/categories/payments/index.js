@@ -73,6 +73,7 @@ const PaymentsPage = ({
   range,
   payerId,
   user,
+  isPaidPeriod,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -82,31 +83,29 @@ const PaymentsPage = ({
     setDocumentTitle(t("Settings:Payments"));
   }, [ready]);
 
+  const gracePeriodDays = () => {
+    const { dueDate, delayDueDate } = portalTariff;
+    const fromDateMoment = moment(dueDate);
+    const byDateMoment = moment(delayDueDate);
+
+    fromDate = fromDateMoment.format("L");
+    byDate = byDateMoment.format("L");
+
+    delayDaysCount = fromDateMoment.to(byDateMoment, true);
+  };
+
   useEffect(() => {
     moment.locale(language);
 
-    if (portalTariff) {
-      dueDate = moment(
-        isGracePeriod || isNotPaid
-          ? portalTariff.delayDueDate
-          : portalTariff.dueDate
-      ).format("LL");
+    if (Object.keys(portalTariff).length === 0) return;
 
-      if (isGracePeriod) {
-        const fromDateMoment = moment(portalTariff.dueDate);
-        const byDateMoment = moment(portalTariff.delayDueDate);
+    dueDate = moment(
+      isGracePeriod || isNotPaid
+        ? portalTariff.delayDueDate
+        : portalTariff.dueDate
+    ).format("LL");
 
-        fromDate = fromDateMoment.format("L");
-        byDate = byDateMoment.format("L");
-
-        delayDaysCount = moment(portalTariff.dueDate).to(
-          moment(portalTariff.delayDueDate),
-          true
-        );
-
-        return;
-      }
-    }
+    isGracePeriod && gracePeriodDays();
   }, [portalTariff]);
   useEffect(() => {
     (async () => {
@@ -117,12 +116,12 @@ const PaymentsPage = ({
         setRangeBound(range.value, range.min, range.max)
       );
 
-      if (Object.keys(portalPaymentQuotas).length === 0)
-        requests.push(setPortalPaymentsQuotas());
+      // if (Object.keys(portalPaymentQuotas).length === 0)
+      //   requests.push(setPortalPaymentsQuotas());
 
-      if (Object.keys(portalTariff).length === 0) {
-        requests.push(setPortalTariff(), setPaymentAccount());
-      }
+      // if (Object.keys(portalTariff).length === 0) {
+      //   requests.push(setPortalTariff(), setPaymentAccount());
+      // }
 
       if (portalTariff && portalTariff.state !== TariffState.Trial)
         requests.push(setPaymentAccount());
@@ -168,26 +167,65 @@ const PaymentsPage = ({
   const convertedPrice = `${currencySymbol}${pricePerManager}`;
   const payer = user.id === payerId;
 
+  const textComponent = (elem, className) => {
+    return (
+      <Text noSelect fontSize="16px" isBold className={className}>
+        {elem}
+      </Text>
+    );
+  };
+
+  const currentPlanTitle = () => {
+    if (isFreeTariff) {
+      return textComponent(t("StartupTitle"));
+    }
+
+    if (isPaidPeriod || isGracePeriod) {
+      return textComponent(t("BusinessTitle"));
+    }
+
+    return;
+  };
+
+  const expiredTitleSubscriptionWarning = () => {
+    return textComponent(
+      <Trans t={t} i18nKey="BusinessExpired" ns="Payments">
+        {{ date: dueDate }}
+      </Trans>,
+      "payment-info_expired-period"
+    );
+  };
+
+  const planSuggestion = () => {
+    if (isFreeTariff) {
+      return textComponent(t("StartupSuggestion"), "payment-info_suggestion");
+    }
+
+    if (isPaidPeriod) {
+      return textComponent(t("BusinessSuggestion"), "payment-info_suggestion");
+    }
+
+    if (isNotPaid) {
+      return textComponent(t("RenewSubscription"), "payment-info_suggestion");
+    }
+
+    if (isGracePeriod) {
+      return textComponent(
+        <Trans t={t} i18nKey="DelayedPayment" ns="Payments">
+          {{ date: dueDate }}
+        </Trans>,
+        "payment-info_grace-period"
+      );
+    }
+
+    return;
+  };
+
   return isInitialLoading ? (
     <Loaders.PaymentsLoader />
   ) : (
     <StyledBody theme={theme}>
-      {isNotPaid ? (
-        <Text
-          noSelect
-          fontSize="16px"
-          isBold
-          className="payment-info_expired-period"
-        >
-          <Trans t={t} i18nKey="BusinessExpired" ns="Payments">
-            {{ date: dueDate }}
-          </Trans>
-        </Text>
-      ) : (
-        <Text noSelect fontSize="16px" isBold>
-          {isFreeTariff ? t("StartupTitle") : t("BusinessTitle")}
-        </Text>
-      )}
+      {isNotPaid ? expiredTitleSubscriptionWarning() : currentPlanTitle()}
 
       {!isFreeTariff && (
         <PayerInformationContainer payerInfo={payerInfo} payer={payer} />
@@ -195,36 +233,7 @@ const PaymentsPage = ({
 
       <CurrentTariffContainer />
 
-      {isNotPaid ? (
-        <Text
-          noSelect
-          fontSize="16px"
-          isBold
-          className="payment-info_suggestion "
-        >
-          {t("RenewSubscription")}
-        </Text>
-      ) : isGracePeriod ? (
-        <Text
-          noSelect
-          fontSize="16px"
-          isBold
-          className="payment-info_grace-period"
-        >
-          <Trans t={t} i18nKey="DelayedPayment" ns="Payments">
-            {{ date: dueDate }}
-          </Trans>
-        </Text>
-      ) : (
-        <Text
-          noSelect
-          fontSize="16px"
-          isBold
-          className="payment-info_suggestion "
-        >
-          {isFreeTariff ? t("StartupSuggestion") : t("BusinessSuggestion")}
-        </Text>
-      )}
+      {planSuggestion()}
 
       {isGracePeriod && (
         <Text noSelect fontSize={"14"}>
@@ -236,13 +245,14 @@ const PaymentsPage = ({
         </Text>
       )}
 
-      {!isFreeTariff && !isGracePeriod && !isNotPaid && (
+      {isPaidPeriod && (
         <Text noSelect fontSize={"14"} className="payment-info_managers-price">
           <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
             {{ finalDate: dueDate }}
           </Trans>
         </Text>
       )}
+
       <div className="payment-info_wrapper">
         <Text
           noSelect
@@ -280,7 +290,7 @@ export default inject(({ auth, payments }) => {
     portalPaymentQuotas,
     isFreeTariff,
     isGracePeriod,
-
+    isPaidPeriod,
     setCurrencies,
     isNotPaid,
     userStore,
@@ -322,5 +332,6 @@ export default inject(({ auth, payments }) => {
     range,
     payerId,
     user,
+    isPaidPeriod,
   };
 })(withRouter(observer(PaymentsPage)));
