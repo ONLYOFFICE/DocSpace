@@ -20,7 +20,7 @@ const EmptyScreenContainer = styled.div`
   }
 `;
 
-const EmptyScreen = ({ t }) => {
+const NoItem = ({ t }) => {
   return (
     <EmptyScreenContainer>
       <div className="no-thumbnail-img-wrapper">
@@ -36,4 +36,4 @@ const EmptyScreen = ({ t }) => {
   );
 };
 
-export default withTranslation(["InfoPanel"])(EmptyScreen);
+export default withTranslation(["InfoPanel"])(NoItem);
