@@ -104,7 +104,6 @@ const MainProfile = (props) => {
   ] = useState(false);
   const [avatarDialogVisible, setAvatarDialogVisible] = useState(false);
 
-  console.log(profile);
   const role = getUserRole(profile);
 
   return (
@@ -204,6 +203,7 @@ const MainProfile = (props) => {
           t={t}
           visible={avatarDialogVisible}
           onClose={() => setAvatarDialogVisible(false)}
+          profile={profile}
         />
       )}
     </StyledWrapper>
