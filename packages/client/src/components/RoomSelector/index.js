@@ -91,6 +91,8 @@ const RoomSelector = ({
 
   const [items, setItems] = React.useState([]);
 
+  const timeoutRef = React.useRef(null);
+
   const onSearchAction = React.useCallback(
     (value) => {
       onSearch && onSearch(value);
@@ -142,9 +144,11 @@ const RoomSelector = ({
           }
         })
         .finally(() => {
-          setTimeout(() => {
-            setIsFirstLoad(false);
-          }, 500);
+          if (isFirstLoad) {
+            setTimeout(() => {
+              setIsFirstLoad(false);
+            }, 500);
+          }
 
           setIsNextPageLoading(false);
         });
