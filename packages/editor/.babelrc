@@ -6,7 +6,8 @@
         "bugfixes": true
       }
     ],
-    "@babel/preset-react"
+    "@babel/preset-react",
+    "@babel/preset-typescript"
   ],
   "plugins": [
     "@loadable/babel-plugin",

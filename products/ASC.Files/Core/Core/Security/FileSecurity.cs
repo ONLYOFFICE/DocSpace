@@ -54,6 +54,7 @@ public class FileSecurity : IFileSecurity
     public FileShare DefaultProjectsShare => FileShare.ReadWrite;
     public FileShare DefaultCommonShare => FileShare.Read;
     public FileShare DefaultPrivacyShare => FileShare.Restrict;
+    public FileShare DefaultVirtualRoomsShare => FileShare.Restrict;
 
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
@@ -640,6 +641,16 @@ public class FileSecurity : IFileSecurity
                     // all can read templates folder
                     return true;
                 }
+
+                if (action == FilesSecurityActions.Read && folder.FolderType == FolderType.VirtualRooms)
+                {
+                    return true;
+                }
+
+                if (action == FilesSecurityActions.Read && folder.FolderType == FolderType.Archive)
+                {
+                    return true;
+                }
             }
 
             if (e.RootFolderType == FolderType.COMMON && isAdmin)
@@ -701,6 +712,8 @@ public class FileSecurity : IFileSecurity
 
             var defaultShare = userId == FileConstant.ShareLinkId
                     ? FileShare.Restrict
+                    : e.RootFolderType == FolderType.VirtualRooms
+                    ? DefaultVirtualRoomsShare
                     : e.RootFolderType == FolderType.USER
                     ? DefaultMyShare
                 : e.RootFolderType == FolderType.Privacy

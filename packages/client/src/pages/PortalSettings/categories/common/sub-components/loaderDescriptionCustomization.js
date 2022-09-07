@@ -5,8 +5,9 @@ import { isTablet } from "react-device-detect";
 
 const tabletStyles = css`
   .description {
-    width: 684px;
-    padding-bottom: 20px;
+    width: 100%;
+    max-width: 700px;
+    padding-bottom: 16px;
   }
 `;
 
@@ -19,12 +20,6 @@ const StyledLoader = styled.div`
   css`
     ${tabletStyles}
   `}
-
-  @media (min-width: 1024px) {
-    .description {
-      width: 700px;
-    }
-  }
 `;
 
 const LoaderDescriptionCustomization = () => {

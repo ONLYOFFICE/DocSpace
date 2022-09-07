@@ -30,18 +30,13 @@ const StyledScroll = styled.div`
 `;
 
 const rowStyles = css`
-  .row-list-item,
-  .row-loader {
+  .row-list-item {
     padding-left: 16px;
     width: calc(100% - 33px) !important;
 
     @media ${mobile} {
       width: calc(100% - 24px) !important;
     }
-  }
-
-  .row-loader {
-    padding-left: 22px;
   }
 `;
 

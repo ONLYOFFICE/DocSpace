@@ -1,6 +1,6 @@
 import difference from "lodash/difference";
 import { LANGUAGE } from "@docspace/common/constants";
-import { getLanguage } from "@docspace/common/utils";
+import { getLanguage, getCookie } from "@docspace/common/utils";
 export const getBannerAttribute = () => {
   const bar = document.getElementById("bar-banner");
   const mainBar = document.getElementById("main-bar");
@@ -21,7 +21,7 @@ export const getBannerAttribute = () => {
   const loadLanguagePath = async () => {
     if (!window.firebaseHelper) return;
 
-    const lng = localStorage.getItem(LANGUAGE) || "en";
+    const lng = getCookie(LANGUAGE) || "en";
     const language = getLanguage(lng instanceof Array ? lng[0] : lng);
 
     const bar = (localStorage.getItem("bar") || "")

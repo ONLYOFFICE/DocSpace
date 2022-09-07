@@ -283,8 +283,8 @@ class ContextOptionsStore {
 
     const translations = {
       deleteOperation: t("Translations:DeleteOperation"),
-      successRemoveFile: t("FileRemoved"),
-      successRemoveFolder: t("FolderRemoved"),
+      successRemoveFile: t("Files:FileRemoved"),
+      successRemoveFolder: t("Files:FolderRemoved"),
       successRemoveRoom: "Remove room",
     };
 
@@ -966,8 +966,8 @@ class ContextOptionsStore {
               deleteOperation: t("Translations:DeleteOperation"),
               deleteFromTrash: t("Translations:DeleteFromTrash"),
               deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-              FileRemoved: t("Home:FileRemoved"),
-              FolderRemoved: t("Home:FolderRemoved"),
+              FileRemoved: t("Files:FileRemoved"),
+              FolderRemoved: t("Files:FolderRemoved"),
             };
 
             this.filesActionsStore

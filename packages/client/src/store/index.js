@@ -80,6 +80,7 @@ const dialogsStore = new DialogsStore(
   versionHistoryStore
 );
 const uploadDataStore = new UploadDataStore(
+  authStore,
   treeFoldersStore,
   selectedFolderStore,
   filesStore,
