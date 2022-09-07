@@ -11,6 +11,7 @@ import styled from "styled-components";
 import AdditionalResources from "./settingsBranding/additionalResources";
 
 import ForbiddenPage from "../ForbiddenPage";
+import LoaderBrandingDescription from "./sub-components/loaderBrandingDescription";
 
 const StyledComponent = styled.div`
   max-width: 700px;
@@ -22,7 +23,7 @@ const StyledComponent = styled.div`
     font-weight: 700;
     font-size: 16px;
     line-height: 22px;
-    padding-bottom: 16px;
+    padding-bottom: 9px;
   }
 
   .description {
@@ -46,7 +47,7 @@ const StyledComponent = styled.div`
   }
 `;
 
-const Branding = (props) => {
+const Branding = ({ isLoadedCompanyInfoSettingsData }) => {
   const [isPortalPaid, setIsPortalPaid] = useState(true);
 
   if (!isDesktop) return <ForbiddenPage />;
@@ -55,16 +56,24 @@ const Branding = (props) => {
     <StyledComponent>
       <Whitelabel isPortalPaid={isPortalPaid} />
       <hr />
-      <div className="section-description">
-        Specify your company information, add links to external resources, and
-        email addresses displayed within the online office interface.
-      </div>
+      {isLoadedCompanyInfoSettingsData ? (
+        <div className="section-description">
+          Specify your company information, add links to external resources, and
+          email addresses displayed within the online office interface.
+        </div>
+      ) : (
+        <LoaderBrandingDescription />
+      )}
       <CompanyInfoSettings isPortalPaid={isPortalPaid} />
       <AdditionalResources isPortalPaid={isPortalPaid} />
     </StyledComponent>
   );
 };
 
-export default inject(({ auth, setup, common }) => {})(
-  withLoading(withTranslation(["Settings", "Common"])(observer(Branding)))
-);
+export default inject(({ auth, setup, common }) => {
+  const { isLoadedCompanyInfoSettingsData } = common;
+
+  return {
+    isLoadedCompanyInfoSettingsData,
+  };
+})(withLoading(withTranslation(["Settings", "Common"])(observer(Branding))));
