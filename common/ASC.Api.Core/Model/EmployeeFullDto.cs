@@ -57,6 +57,8 @@ public class EmployeeFullDto : EmployeeDto
     public bool IsSSO { get; set; }
     public DarkThemeSettingsEnum? Theme { get; set; }
     public string QuotaLimit { get; set; }
+    public double UsedSpace { get; set; }
+
     public static new EmployeeFullDto GetSample()
     {
         return new EmployeeFullDto
@@ -196,6 +198,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         };
 
         await Init(result, userInfo);
+
+        result.UsedSpace = Math.Max(0, _userManager.FindUserQuotaRows(_context.Tenant.Id, userInfo.Id.ToString()).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
 
         var quotaSettings = _settingsManager.LoadForTenant<UserQuotaSettings>(_tenantManager.GetCurrentTenant().Id);
 

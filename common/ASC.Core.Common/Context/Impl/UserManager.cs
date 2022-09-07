@@ -891,7 +891,7 @@ public class UserManager
         _quotaService.SetUserQuotaRow(row, exchange);
     }
 
-    public List<UserQuotaRow> FindTenantQuotaRows(int tenantId, string userId)
+    public List<UserQuotaRow> FindUserQuotaRows(int tenantId, string userId)
     {
         return _quotaService.FindUserQuotaRows(tenantId, userId).ToList();
     }

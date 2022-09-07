@@ -31,6 +31,7 @@ class QuotaServiceCache
 {
     internal const string KeyQuota = "quota";
     internal const string KeyQuotaRows = "quotarows";
+    internal const string KeyUserQuotaRows = "userquotarows";
     internal readonly ICache Cache;
     internal readonly ICacheNotify<QuotaCacheItem> CacheNotify;
     internal readonly bool QuotaCacheEnabled;
@@ -142,12 +143,12 @@ class CachedQuotaService : IQuotaService
     public void SetUserQuotaRow(UserQuotaRow row, bool exchange)
     {
         Service.SetUserQuotaRow(row, exchange);
-        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.InsertOrUpdate);
+        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant, row.UserId) }, CacheNotifyAction.InsertOrUpdate);
     }
 
     public IEnumerable<UserQuotaRow> FindUserQuotaRows(int tenantId, string userId)
     {
-        var key = GetKey(tenantId);
+        var key = GetKey(tenantId, userId);
         var result = Cache.Get<IEnumerable<UserQuotaRow>>(key);
 
         if (result == null)
@@ -162,5 +163,10 @@ class CachedQuotaService : IQuotaService
     public string GetKey(int tenant)
     {
         return QuotaServiceCache.KeyQuotaRows + tenant;
+    }
+
+    public string GetKey(int tenant, string userId)
+    {
+        return QuotaServiceCache.KeyQuotaRows + tenant + userId;
     }
 }
