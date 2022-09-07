@@ -24,7 +24,7 @@ const ProfileRemoveForm = (props) => {
       .then((res) => {
         setIsLoading(false);
         setIsProfileDeleted(true);
-        return logout(false);
+        return logout();
       })
       .catch((e) => {
         setIsLoading(false);

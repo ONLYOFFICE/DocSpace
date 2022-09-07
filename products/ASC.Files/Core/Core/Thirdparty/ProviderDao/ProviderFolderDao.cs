@@ -377,12 +377,12 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return folderDao.IsEmptyAsync(selector.ConvertId(folderId));
     }
 
-    public bool UseTrashForRemove(Folder<string> folder)
+    public bool UseTrashForRemoveAsync(Folder<string> folder)
     {
         var selector = GetSelector(folder.Id);
         var folderDao = selector.GetFolderDao(folder.Id);
 
-        return folderDao.UseTrashForRemove(folder);
+        return folderDao.UseTrashForRemoveAsync(folder);
     }
 
     public bool UseRecursiveOperation<TTo>(string folderId, TTo toRootFolderId)

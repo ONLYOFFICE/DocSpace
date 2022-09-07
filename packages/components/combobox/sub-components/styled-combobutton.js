@@ -1,6 +1,23 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../../themes/base";
 import NoUserSelect from "../../utils/commonStyles";
+
+const modernViewButton = css`
+  height: ${(props) => props.theme.comboBox.button.heightModernView};
+  background: ${(props) =>
+    props.isOpen
+      ? props.theme.comboBox.button.activeBackgroundModernView
+      : props.theme.comboBox.button.backgroundModernView};
+
+  border: none;
+`;
+
+const hoverModernViewButton = css`
+  background: ${(props) =>
+    props.isOpen
+      ? props.theme.comboBox.button.activeBackgroundModernView
+      : props.theme.comboBox.button.hoverBackgroundModernView} !important;
+`;
 
 const StyledComboButton = styled.div`
   display: flex;
@@ -60,7 +77,11 @@ const StyledComboButton = styled.div`
     height: 32px;
   `}
 
+  ${(props) => props.modernView && modernViewButton}
+
   :hover {
+    ${(props) => props.modernView && hoverModernViewButton}
+
     border-color: ${(props) =>
       props.isOpen
         ? props.theme.comboBox.button.hoverBorderColorOpen

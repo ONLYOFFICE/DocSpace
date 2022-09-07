@@ -3,7 +3,5 @@
   "Error403Text": "Diemžēl piekļuve liegta",
   "Error404Text": "Diemžēl resursu nevar atrast.",
   "ErrorEmptyResponse": "Tukša atbilde",
-  "ErrorInvalidHeader": "Nepareizs e-pasts vai saite, kurai beidzies derīguma termiņš",
-  "ErrorInvalidText": "Pēc 10 sekundēm jūs tiksiet novirzīts uz <1>pieteikšanās lapu</1>",
   "ErrorOfflineText": "Interneta savienojums nav atrasts."
 }

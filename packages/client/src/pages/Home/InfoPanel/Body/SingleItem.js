@@ -14,6 +14,7 @@ import {
   StyledTitle,
 } from "./styles/styles.js";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
+import { getCookie } from "@docspace/common/utils/index";
 
 const SingleItem = (props) => {
   const {
@@ -83,7 +84,7 @@ const SingleItem = (props) => {
       };
 
       const parseAndFormatDate = (date) => {
-        const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+        const locale = personal ? getCookie(LANGUAGE) : culture;
         const correctDate = getCorrectDate(locale, date);
         return correctDate;
       };
@@ -162,7 +163,7 @@ const SingleItem = (props) => {
         },
         {
           id: "ByCreationDate",
-          title: t("Home:ByCreationDate"),
+          title: t("Files:ByCreationDate"),
           content: styledText(parseAndFormatDate(item.created)),
         },
       ];

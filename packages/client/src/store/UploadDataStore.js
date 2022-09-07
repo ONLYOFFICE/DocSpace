@@ -19,6 +19,7 @@ import {
 } from "@docspace/common/api/files";
 import toastr from "client/toastr";
 class UploadDataStore {
+  authStore;
   treeFoldersStore;
   selectedFolderStore;
   filesStore;
@@ -46,6 +47,7 @@ class UploadDataStore {
   isUploadingAndConversion = false;
 
   constructor(
+    authStore,
     treeFoldersStore,
     selectedFolderStore,
     filesStore,
@@ -55,6 +57,7 @@ class UploadDataStore {
     settingsStore
   ) {
     makeAutoObservable(this);
+    this.authStore = authStore;
     this.treeFoldersStore = treeFoldersStore;
     this.selectedFolderStore = selectedFolderStore;
     this.filesStore = filesStore;
@@ -582,6 +585,8 @@ class UploadDataStore {
       setFilter,
     } = this.filesStore;
 
+    const { withPaging } = this.authStore.settingsStore;
+
     if (window.location.pathname.indexOf("/history") === -1) {
       const newFiles = files;
       const newFolders = folders;
@@ -641,7 +646,7 @@ class UploadDataStore {
         filter.filterType ||
         filter.authorType ||
         filter.search ||
-        (this.filesStore.withPaging && filter.page !== 0);
+        (withPaging && filter.page !== 0);
 
       if ((!currentFile && !folderInfo) || isFiltered) return;
       if (folderInfo && this.selectedFolderStore.id === folderInfo.id) return;
@@ -654,7 +659,7 @@ class UploadDataStore {
         }
       }
 
-      if (filter.total >= filter.pageCount && this.filesStore.withPaging) {
+      if (filter.total >= filter.pageCount && withPaging) {
         if (files.length) {
           fileIndex === -1 && newFiles.pop();
           addNewFile();
@@ -927,7 +932,8 @@ class UploadDataStore {
   };
 
   finishUploadFiles = () => {
-    const { fetchFiles, filter, withPaging } = this.filesStore;
+    const { fetchFiles, filter } = this.filesStore;
+    const { withPaging } = this.authStore.settingsStore;
 
     const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
 

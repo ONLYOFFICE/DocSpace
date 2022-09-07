@@ -32,6 +32,12 @@ export const settingsTree = [
           {
             key: "0-0-2",
             icon: "",
+            link: "dns-settings",
+            tKey: "DNSSettings",
+          },
+          {
+            key: "0-0-3",
+            icon: "",
             link: "portal-renaming",
             tKey: "PortalRenaming",
           },
@@ -147,6 +153,20 @@ export const settingsTree = [
             tKey: "Admins",
           },
         ],
+      },
+      {
+        key: "1-2",
+        icon: "",
+        link: "login-history",
+        tKey: "LoginHistoryTitle",
+        isCategory: true,
+      },
+      {
+        key: "1-3",
+        icon: "",
+        link: "audit-trail",
+        tKey: "AuditTrailNav",
+        isCategory: true,
       },
     ],
   },
