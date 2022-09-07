@@ -108,7 +108,8 @@ public sealed class UserManagerWrapper
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
-    public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false)
+    public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
+        bool updateExistingUser = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
 
@@ -117,7 +118,7 @@ public sealed class UserManagerWrapper
             throw new Exception(Resource.ErrorIncorrectUserName);
         }
 
-        if (!CheckUniqueEmail(userInfo.Id, userInfo.Email))
+        if (!updateExistingUser && !CheckUniqueEmail(userInfo.Id, userInfo.Email))
         {
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
