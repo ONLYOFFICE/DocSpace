@@ -5,7 +5,6 @@ import { useTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { HelpButton, Link } from "@docspace/components";
 import Avatar from "@docspace/components/avatar";
-import UnknownPayerInformationContainer from "./sub-components/UnknownPayerInformationContainer";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -14,6 +13,10 @@ const StyledContainer = styled.div`
   padding: 16px;
   box-sizing: border-box;
   margin-top: 16px;
+
+  .change-payer {
+    margin-left: 3px;
+  }
 
   .payer-info_avatar {
     margin-right: 16px;
@@ -58,21 +61,79 @@ const PayerInformationContainer = ({
 
   const isLinkAvailable = user.isOwner || payer;
 
-  const renderTooltip = () => {
-    return (
-      <>
-        <HelpButton
-          iconName={"/static/images/help.react.svg"}
-          tooltipContent={
-            <>
-              <Text isBold>{t("Payer")}</Text>
-              <Text>{t("PayerDescription")}</Text>
-            </>
-          }
-        />
-      </>
-    );
-  };
+  const renderTooltip = (
+    <HelpButton
+      iconName={"/static/images/help.react.svg"}
+      tooltipContent={
+        <>
+          <Text isBold>{t("Payer")}</Text>
+          <Text>{t("PayerDescription")}</Text>
+        </>
+      }
+    />
+  );
+
+  const unknownPayerInformation = (
+    <div>
+      <Text as="span" fontSize="13px" isBold>
+        {email}
+        {"."}
+      </Text>
+      {isLinkAvailable ? (
+        <Link
+          noSelect
+          fontWeight={600}
+          href={accountLink}
+          className="change-payer"
+          color={theme.client.payments.linkColor}
+        >
+          {t("ChangePayer")}
+        </Link>
+      ) : (
+        <Text as="span" fontSize="13px" isBold className="change-payer">
+          {t("OwnerCanChangePayer")}
+          {"."}
+        </Text>
+      )}
+    </div>
+  );
+
+  const payerInformation = (
+    <>
+      {isLinkAvailable ? (
+        <Link
+          noSelect
+          fontWeight={600}
+          href={accountLink}
+          className="payer-info_account-link"
+          color={theme.client.payments.linkColor}
+        >
+          {t("StripeCustomerPortal")}
+        </Link>
+      ) : (
+        <Link
+          fontWeight={600}
+          href={`mailto:${email}`}
+          color={theme.client.payments.linkColor}
+        >
+          {email}
+        </Link>
+      )}
+    </>
+  );
+
+  const payerName = (
+    <Text fontWeight={600} noSelect>
+      {payerInfo ? (
+        payerInfo.displayName
+      ) : (
+        <Trans t={t} i18nKey="UserNotFound" ns="Payments">
+          {{ email: "test email" }}
+        </Trans>
+      )}
+    </Text>
+  );
+
   return (
     <StyledContainer style={style} theme={theme}>
       <div className="payer-info_avatar">
@@ -81,54 +142,17 @@ const PayerInformationContainer = ({
 
       <div className="payer-info_wrapper">
         <div className="payer-info_description">
-          <Text fontWeight={600} noSelect>
-            {payerInfo ? (
-              payerInfo.displayName
-            ) : (
-              <Trans t={t} i18nKey="UserNotFound" ns="Payments">
-                {{ email: "test email" }}
-              </Trans>
-            )}
-          </Text>
+          {payerName}
+
           <Text as="span" className="payer-info">
             {" "}
             {" (" + t("Payer") + ") "}
           </Text>
 
-          {renderTooltip()}
+          {renderTooltip}
         </div>
 
-        {!payerInfo ? (
-          <UnknownPayerInformationContainer
-            email={email}
-            t={t}
-            isLinkAvailable={isLinkAvailable}
-            accountLink={accountLink}
-            theme={theme}
-          />
-        ) : (
-          <>
-            {isLinkAvailable ? (
-              <Link
-                noSelect
-                fontWeight={600}
-                href={accountLink}
-                className="payer-info_account-link"
-                color={theme.client.payments.linkColor}
-              >
-                {t("StripeCustomerPortal")}
-              </Link>
-            ) : (
-              <Link
-                fontWeight={600}
-                href={`mailto:${email}`}
-                color={theme.client.payments.linkColor}
-              >
-                {email}
-              </Link>
-            )}
-          </>
-        )}
+        {!payerInfo ? unknownPayerInformation : payerInformation}
       </div>
     </StyledContainer>
   );

@@ -60,18 +60,16 @@ const UpdatePlanButtonContainer = ({
     };
   }, []);
 
-  const switchPlanButton = () => {
-    return (
-      <Button
-        label={t("UpgradeNow")}
-        size={"medium"}
-        primary
-        isDisabled={isLessCountThanAcceptable || isLoading || isDisabled}
-        onClick={onUpdateTariff}
-        isLoading={isLoading}
-      />
-    );
-  };
+  const switchPlanButton = (
+    <Button
+      label={t("UpgradeNow")}
+      size={"medium"}
+      primary
+      isDisabled={isLessCountThanAcceptable || isLoading || isDisabled}
+      onClick={onUpdateTariff}
+      isLoading={isLoading}
+    />
+  );
 
   const updatingPlanButton = () => {
     const isDowngradePlan = managersCount < maxTariffManagers;
@@ -97,7 +95,7 @@ const UpdatePlanButtonContainer = ({
 
   return (
     <StyledBody>
-      {isAlreadyPaid ? updatingPlanButton() : switchPlanButton()}
+      {isAlreadyPaid ? updatingPlanButton() : switchPlanButton}
     </StyledBody>
   );
 };
