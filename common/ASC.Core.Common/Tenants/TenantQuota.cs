@@ -182,18 +182,11 @@ public class TenantQuota : IMapFrom<DbQuota>
         set => _customFeature.Value = value;
     }
 
-    private readonly TenantQuotaFeatureFlag _restoreFeature;
-    public bool Restore
+    private readonly TenantQuotaFeatureFlag _autoBackupRestoreFeature;
+    public bool AutoBackupRestore
     {
-        get => _restoreFeature.Value;
-        set => _restoreFeature.Value = value;
-    }
-
-    private readonly TenantQuotaFeatureFlag _autoBackupFeature;
-    public bool AutoBackup
-    {
-        get => _autoBackupFeature.Value;
-        set => _autoBackupFeature.Value = value;
+        get => _autoBackupRestoreFeature.Value;
+        set => _autoBackupRestoreFeature.Value = value;
     }
 
     private readonly TenantQuotaFeatureFlag _oauthFeature;
@@ -237,8 +230,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         _whiteLabelFeature = new TenantQuotaFeatureFlag(this) { Name = "whitelabel", Order = 4 };
         _customizationFeature = new TenantQuotaFeatureFlag(this) { Name = "customization", Visible = false };
         _customFeature = new TenantQuotaFeatureFlag(this) { Name = "custom", Visible = false };
-        _restoreFeature = new TenantQuotaFeatureFlag(this) { Name = "restore", Order = 6 };
-        _autoBackupFeature = new TenantQuotaFeatureFlag(this) { Name = "autobackup", Visible = false };
+        _autoBackupRestoreFeature = new TenantQuotaFeatureFlag(this) { Name = "restore", Order = 6 };
         _oauthFeature = new TenantQuotaFeatureFlag(this) { Name = "oauth", Visible = false };
         _contentSearchFeature = new TenantQuotaFeatureFlag(this) { Name = "contentsearch", Visible = false };
         _thirdPartyFeature = new TenantQuotaFeatureFlag(this) { Name = "thirdparty", Visible = false };
@@ -261,8 +253,7 @@ public class TenantQuota : IMapFrom<DbQuota>
             _whiteLabelFeature,
             _customizationFeature,
             _customFeature,
-            _restoreFeature,
-            _autoBackupFeature,
+            _autoBackupRestoreFeature,
             _oauthFeature,
             _contentSearchFeature,
             _thirdPartyFeature

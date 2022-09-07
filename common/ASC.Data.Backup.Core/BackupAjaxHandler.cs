@@ -308,7 +308,7 @@ public class BackupAjaxHandler
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("Restore") ||
-            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Restore))
+            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
@@ -316,7 +316,7 @@ public class BackupAjaxHandler
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings("Restore")
-                || !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Restore))
+                || !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
@@ -327,7 +327,7 @@ public class BackupAjaxHandler
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("AutoBackup") ||
-            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackup))
+            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "AutoBackup");
         }
