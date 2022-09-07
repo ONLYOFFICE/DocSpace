@@ -339,21 +339,17 @@ const FilterBlock = ({
             {showSelector.isAuthor ? (
               <PeopleSelector
                 className="people-selector"
-                isOpen={showSelector.show}
-                withoutAside={true}
                 isMultiSelect={false}
-                onSelect={selectOption}
-                onArrowClick={onArrowClick}
+                onAccept={selectOption}
+                onBackClick={onArrowClick}
                 headerLabel={selectorLabel}
               />
             ) : (
               <GroupSelector
                 className="people-selector"
-                isOpen={showSelector.show}
-                withoutAside={true}
                 isMultiSelect={false}
-                onSelect={selectOption}
-                onArrowClick={onArrowClick}
+                onAccept={selectOption}
+                onBackClick={onArrowClick}
                 headerLabel={selectorLabel}
               />
             )}
