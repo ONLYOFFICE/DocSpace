@@ -11,7 +11,7 @@ import EmptyScreen from "../EmptyScreen";
 
 import { StyledSelectorBody } from "../../StyledSelector";
 
-const CONTAINER_PADDING = 32;
+const CONTAINER_PADDING = 16;
 const HEADER_HEIGHT = 54;
 const SEARCH_HEIGHT = 44;
 const SELECT_ALL_HEIGHT = 73;
