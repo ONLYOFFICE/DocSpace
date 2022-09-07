@@ -194,7 +194,6 @@ public class TariffService : ITariffService
                             || q.Trial
                             || q.Free
                             || q.NonProfit
-                            || q.Open
                             || q.Custom;
                     });
 

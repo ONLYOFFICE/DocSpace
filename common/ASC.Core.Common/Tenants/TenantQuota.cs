@@ -119,13 +119,6 @@ public class TenantQuota : IMapFrom<DbQuota>
         set => _freeFeature.Value = value;
     }
 
-    private readonly TenantQuotaFeatureFlag _openFeature;
-    public bool Open
-    {
-        get => _openFeature.Value;
-        set => _openFeature.Value = value;
-    }
-
     private readonly TenantQuotaFeatureFlag _updateFeature;
     public bool Update
     {
@@ -235,7 +228,6 @@ public class TenantQuota : IMapFrom<DbQuota>
         _nonProfitFeature = new TenantQuotaFeatureFlag(this) { Name = "non-profit", Visible = false };
         _trialFeature = new TenantQuotaFeatureFlag(this) { Name = "trial", Visible = false };
         _freeFeature = new TenantQuotaFeatureFlag(this) { Name = "free", Visible = false };
-        _openFeature = new TenantQuotaFeatureFlag(this) { Name = "open", Visible = false };
         _updateFeature = new TenantQuotaFeatureFlag(this) { Name = "update", Visible = false };
         _auditFeature = new TenantQuotaFeatureFlag(this) { Name = "audit", Order = 7 };
         _docsEditionFeature = new TenantQuotaFeatureFlag(this) { Name = "docs", Visible = false };
@@ -260,7 +252,6 @@ public class TenantQuota : IMapFrom<DbQuota>
             _nonProfitFeature,
             _trialFeature,
             _freeFeature,
-            _openFeature,
             _updateFeature,
             _auditFeature,
             _docsEditionFeature,
