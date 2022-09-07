@@ -26,12 +26,15 @@
 
 namespace ASC.Core.Common.Quota;
 
-public interface ITenantQuotaFeatureStatistic
+public interface ITenantQuotaFeatureStat<T>
 {
-    object GetValue();
+    T GetValue();
 }
 
-public interface ITenantQuotaFeatureStatistic<T> : ITenantQuotaFeatureStatistic where T : TenantQuotaFeature
+public interface ITenantQuotaFeatureStatisticCount<T> : ITenantQuotaFeatureStat<int> where T : TenantQuotaFeature<int>
 {
+}
 
+public interface ITenantQuotaFeatureStatisticLength<T> : ITenantQuotaFeatureStat<long> where T : TenantQuotaFeature<long>
+{
 }

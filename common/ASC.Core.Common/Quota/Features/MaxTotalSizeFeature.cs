@@ -36,16 +36,16 @@ public class MaxTotalSizeFeature : TenantQuotaFeatureLength
 
 public class MaxTotalSizeChecker : ITenantQuotaFeatureChecker
 {
-    private readonly ITenantQuotaFeatureStatistic<MaxTotalSizeFeature> _tenantQuotaFeatureStatistic;
+    private readonly ITenantQuotaFeatureStatisticLength<MaxTotalSizeFeature> _tenantQuotaFeatureStatistic;
 
-    public MaxTotalSizeChecker(ITenantQuotaFeatureStatistic<MaxTotalSizeFeature> tenantQuotaFeatureStatistic)
+    public MaxTotalSizeChecker(ITenantQuotaFeatureStatisticLength<MaxTotalSizeFeature> tenantQuotaFeatureStatistic)
     {
         _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
     }
 
     public bool Check(TenantQuota quota)
     {
-        return quota.MaxTotalSize <= (long)_tenantQuotaFeatureStatistic.GetValue();
+        return quota.MaxTotalSize <= _tenantQuotaFeatureStatistic.GetValue();
     }
 
     public string Exception(TenantQuota quota)
@@ -54,7 +54,7 @@ public class MaxTotalSizeChecker : ITenantQuotaFeatureChecker
     }
 }
 
-public class MaxTotalSizeStatistic : ITenantQuotaFeatureStatistic<MaxTotalSizeFeature>
+public class MaxTotalSizeStatistic : ITenantQuotaFeatureStatisticLength<MaxTotalSizeFeature>
 {
     private readonly TenantManager _tenantManager;
 
@@ -63,7 +63,7 @@ public class MaxTotalSizeStatistic : ITenantQuotaFeatureStatistic<MaxTotalSizeFe
         _tenantManager = tenantManager;
     }
 
-    public object GetValue()
+    public long GetValue()
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
 

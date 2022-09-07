@@ -67,6 +67,7 @@ public class QuotaHelper
             Features = features
         };
     }
+
     private decimal GetPrice(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
     {
         if (!string.IsNullOrEmpty(quota.ProductId) && priceInfo.ContainsKey(quota.ProductId))
@@ -143,13 +144,31 @@ public class QuotaHelper
                 }
             }
 
-            var statisticProvider = (ITenantQuotaFeatureStatistic)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStatistic<>).MakeGenericType(feature.GetType()));
+            object used = null;
+            if (feature is TenantQuotaFeature<long>)
+            {
+                var statisticProvider = (ITenantQuotaFeatureStat<long>)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStatisticLength<>).MakeGenericType(feature.GetType()));
 
-            if (statisticProvider != null)
+                if (statisticProvider != null)
+                {
+                    used = statisticProvider.GetValue();
+                }
+            }
+            else if (feature is TenantQuotaFeature<int>)
+            {
+                var statisticProvider = (ITenantQuotaFeatureStat<int>)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStatisticCount<>).MakeGenericType(feature.GetType()));
+
+                if (statisticProvider != null)
+                {
+                    used = statisticProvider.GetValue();
+                }
+            }
+
+            if (used != null)
             {
                 result.Used = new FeatureUsedDto
                 {
-                    Value = statisticProvider.GetValue(),
+                    Value = used,
                     Title = Resource.ResourceManager.GetString($"TariffsFeature_used_{feature.Name}")
                 };
             }

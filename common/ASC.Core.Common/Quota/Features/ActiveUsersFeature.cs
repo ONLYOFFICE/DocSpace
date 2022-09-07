@@ -36,16 +36,16 @@ public class ActiveUsersFeature : TenantQuotaFeatureCount
 
 public class ActiveUsersChecker : ITenantQuotaFeatureChecker
 {
-    private readonly ITenantQuotaFeatureStatistic<ActiveUsersFeature> _tenantQuotaFeatureStatistic;
+    private readonly ITenantQuotaFeatureStatisticCount<ActiveUsersFeature> _tenantQuotaFeatureStatistic;
 
-    public ActiveUsersChecker(ITenantQuotaFeatureStatistic<ActiveUsersFeature> tenantQuotaFeatureStatistic)
+    public ActiveUsersChecker(ITenantQuotaFeatureStatisticCount<ActiveUsersFeature> tenantQuotaFeatureStatistic)
     {
         _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
     }
 
     public bool Check(TenantQuota quota)
     {
-        return quota.ActiveUsers <= (int)_tenantQuotaFeatureStatistic.GetValue();
+        return quota.ActiveUsers <= _tenantQuotaFeatureStatistic.GetValue();
     }
 
     public string Exception(TenantQuota quota)
@@ -54,7 +54,7 @@ public class ActiveUsersChecker : ITenantQuotaFeatureChecker
     }
 }
 
-public class ActiveUsersStatistic : ITenantQuotaFeatureStatistic<ActiveUsersFeature>
+public class ActiveUsersStatistic : ITenantQuotaFeatureStatisticCount<ActiveUsersFeature>
 {
     private readonly UserManager _userManager;
 
@@ -63,7 +63,7 @@ public class ActiveUsersStatistic : ITenantQuotaFeatureStatistic<ActiveUsersFeat
         _userManager = userManager;
     }
 
-    public object GetValue()
+    public int GetValue()
     {
         return _userManager.GetUsersByGroup(Users.Constants.GroupUser.ID).Length;
     }
