@@ -48,7 +48,6 @@ class SectionBodyContent extends React.Component {
           viewAs === "table" ? (
             <>
               <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
-              <RoomSelector />
             </>
           ) : (
             <>
@@ -56,7 +55,6 @@ class SectionBodyContent extends React.Component {
                 sectionWidth={context.sectionWidth}
                 tReady={tReady}
               />
-              <RoomSelector />
             </>
           )
         }
