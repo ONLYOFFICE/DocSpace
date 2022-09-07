@@ -8,6 +8,7 @@ import { RoomsType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 
 import Selector from "@docspace/components/selector";
+import { Backdrop } from "@docspace/components";
 
 const pageCount = 100;
 
@@ -153,61 +154,78 @@ const RoomSelector = ({
   }, [searchValue]);
 
   return (
-    <Selector
-      id={id}
-      className={className}
-      style={style}
-      headerLabel={headerLabel || t("RoomList")}
-      onBackClick={onBackClick}
-      searchPlaceholder={searchPlaceholder || t("Common:Search")}
-      searchValue={searchValue}
-      onSearch={onSearchAction}
-      onClearSearch={onClearSearchAction}
-      onSelect={onSelect}
-      items={items}
-      acceptButtonLabel={acceptButtonLabel || t("Common:SelectAction")}
-      onAccept={onAccept}
-      withCancelButton={withCancelButton}
-      cancelButtonLabel={cancelButtonLabel || t("Common:CancelButton")}
-      onCancel={onCancel}
-      isMultiSelect={isMultiSelect}
-      selectedItems={selectedItems}
-      withSelectAll={withSelectAll}
-      selectAllLabel={selectAllLabel}
-      selectAllIcon={selectAllIcon}
-      onSelectAll={onSelectAll}
-      withAccessRights={withAccessRights}
-      accessRights={accessRights}
-      selectedAccessRight={selectedAccessRight}
-      onAccessRightsChange={onAccessRightsChange}
-      emptyScreenImage={emptyScreenImage || "images/empty_screen_corporate.png"}
-      emptyScreenHeader={emptyScreenHeader || t("EmptyRoomsHeader")}
-      emptyScreenDescription={
-        emptyScreenDescription || t("EmptyRoomsDescription")
-      }
-      searchEmptyScreenImage={
-        searchEmptyScreenImage || "images/empty_screen_corporate.png"
-      }
-      searchEmptyScreenHeader={
-        searchEmptyScreenHeader || t("SearchEmptyRoomsHeader")
-      }
-      searchEmptyScreenDescription={
-        searchEmptyScreenDescription || t("SearchEmptyRoomsDescription")
-      }
-      totalItems={total}
-      hasNextPage={hasNextPage}
-      isNextPageLoading={isNextPageLoading}
-      loadNextPage={onLoadNextPage}
-      isLoading={isFirstLoad}
-      searchLoader={<Loaders.SelectorSearchLoader />}
-      rowLoader={
-        <Loaders.SelectorRowLoader
+    <>
+      <Backdrop visible={true} withBackground={true} zIndex={500} />
+      <div
+        style={{
+          width: "480px",
+          height: "100%",
+          position: "fixed",
+          right: "0",
+          top: "0",
+          background: "white",
+          zIndex: 500,
+        }}
+      >
+        <Selector
+          id={id}
+          className={className}
+          style={style}
+          headerLabel={headerLabel || t("RoomList")}
+          onBackClick={onBackClick}
+          searchPlaceholder={searchPlaceholder || t("Common:Search")}
+          searchValue={searchValue}
+          onSearch={onSearchAction}
+          onClearSearch={onClearSearchAction}
+          onSelect={onSelect}
+          items={items}
+          acceptButtonLabel={acceptButtonLabel || t("Common:SelectAction")}
+          onAccept={onAccept}
+          withCancelButton={withCancelButton}
+          cancelButtonLabel={cancelButtonLabel || t("Common:CancelButton")}
+          onCancel={onCancel}
           isMultiSelect={isMultiSelect}
-          isContainer={isFirstLoad}
-          isUser={false}
+          selectedItems={selectedItems}
+          withSelectAll={withSelectAll}
+          selectAllLabel={selectAllLabel}
+          selectAllIcon={selectAllIcon}
+          onSelectAll={onSelectAll}
+          withAccessRights={withAccessRights}
+          accessRights={accessRights}
+          selectedAccessRight={selectedAccessRight}
+          onAccessRightsChange={onAccessRightsChange}
+          emptyScreenImage={
+            emptyScreenImage || "images/empty_screen_corporate.png"
+          }
+          emptyScreenHeader={emptyScreenHeader || t("EmptyRoomsHeader")}
+          emptyScreenDescription={
+            emptyScreenDescription || t("EmptyRoomsDescription")
+          }
+          searchEmptyScreenImage={
+            searchEmptyScreenImage || "images/empty_screen_corporate.png"
+          }
+          searchEmptyScreenHeader={
+            searchEmptyScreenHeader || t("SearchEmptyRoomsHeader")
+          }
+          searchEmptyScreenDescription={
+            searchEmptyScreenDescription || t("SearchEmptyRoomsDescription")
+          }
+          totalItems={total}
+          hasNextPage={hasNextPage}
+          isNextPageLoading={isNextPageLoading}
+          loadNextPage={onLoadNextPage}
+          isLoading={isFirstLoad}
+          searchLoader={<Loaders.SelectorSearchLoader />}
+          rowLoader={
+            <Loaders.SelectorRowLoader
+              isMultiSelect={isMultiSelect}
+              isContainer={isFirstLoad}
+              isUser={false}
+            />
+          }
         />
-      }
-    />
+      </div>
+    </>
   );
 };
 
