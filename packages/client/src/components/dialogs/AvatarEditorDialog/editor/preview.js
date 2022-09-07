@@ -23,6 +23,7 @@ const StyledWrapper = styled.div`
   }
 
   .name-preview {
+    max-width: 198px;
     display: flex;
     gap: 8px;
     align-items: center;
@@ -51,7 +52,7 @@ const AvatarPreview = ({ avatar, userName }) => {
           userName={userName}
           editing={false}
         />
-        <Text fontWeight={600} fontSize="15px" isTruncate>
+        <Text fontWeight={600} fontSize="15px" truncate={true}>
           {userName}
         </Text>
       </div>
