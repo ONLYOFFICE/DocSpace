@@ -20,5 +20,3 @@ export const basic = Template.bind({});
 basic.args = {
   locale: "GB",
 };
-
-

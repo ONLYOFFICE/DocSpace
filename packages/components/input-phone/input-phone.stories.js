@@ -1,15 +1,20 @@
 import { InputPhone } from ".";
+import { deviceType } from "react-device-detect";
 
 export default {
-  title: "InputPhone",
+  title: "Components/InputPhone",
   component: InputPhone,
 };
 
-const Template = (args) => <InputPhone {...args} />;
+const Template = (args) => (
+  <div style={{ height: "500px" }}>
+    <InputPhone {...args} />
+  </div>
+);
 
 export const Default = Template.bind({});
 
 Default.args = {
-  defaultCountry: "ru",
-  placeholder: "XXX XXX-XX-XX",
+  country: "ru",
+  enableSearch: true,
 };

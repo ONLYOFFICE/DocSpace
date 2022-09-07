@@ -10,8 +10,6 @@ import { options, countryCodes } from "./options";
 const PhoneInput = memo((props) => {
   const [country, setCountry] = useState(props.locale);
 
-  console.log(country);
-
   const onChangeCountry = useCallback((country) => setCountry(country), [
     country,
   ]);
@@ -23,7 +21,7 @@ const PhoneInput = memo((props) => {
 
   const getPlaceholder = (locale) =>
     options.find((o) => o.code === locale).mask === null
-      ? "XXX XXX-XX-XX"
+      ? "Enter phone number"
       : options
           .find((o) => o.code === locale)
           .mask.join("")
@@ -51,9 +49,9 @@ const PhoneInput = memo((props) => {
         />
       </Box>
       <Box displayProp="flex">
-        {/* <Box paddingProp={"11px 0 11px 16px"}>
+        <Box paddingProp={"11px 0 11px 16px"}>
           <Text fontSize={"16px"}>{getLocaleCode(country)}</Text>
-        </Box> */}
+        </Box>
         <div>
           <StyledPhoneInput
             mask={getMask(country)}
