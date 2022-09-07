@@ -266,11 +266,7 @@ class SettingsStore {
     this.setIsLoading(true);
     const requests = [];
 
-    requests.push(
-      this.getPortalSettings(),
-      this.getAppearanceTheme(),
-      this.getCompanyInfoSettings()
-    );
+    requests.push(this.getPortalSettings(), this.getAppearanceTheme());
 
     this.tenantStatus !== TenantStatus.PortalRestore &&
       requests.push(this.getBuildVersionInfo());
