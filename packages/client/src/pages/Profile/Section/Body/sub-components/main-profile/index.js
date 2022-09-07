@@ -91,7 +91,7 @@ const StyledInfo = styled.div`
 const MainProfile = (props) => {
   const { t, ready } = useTranslation(["Profile", "Common"]);
 
-  const { profile, cultureNames, culture, updateProfile } = props;
+  const { profile, cultureNames, culture, updateProfile, fetchProfile } = props;
   const { cultureName, currentCulture } = profile;
 
   const [changeNameDialogVisible, setChangeNameDialogVisible] = useState(false);
@@ -204,6 +204,7 @@ const MainProfile = (props) => {
           visible={avatarDialogVisible}
           onClose={() => setAvatarDialogVisible(false)}
           profile={profile}
+          fetchProfile={fetchProfile}
         />
       )}
     </StyledWrapper>

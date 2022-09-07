@@ -41,6 +41,7 @@ const SectionBodyContent = (props) => {
     changeEmailSubscription,
     tipsSubscription,
     updateProfile,
+    fetchProfile,
   } = props;
   const [tfa, setTfa] = useState(false);
   const [backupCodesCount, setBackupCodesCount] = useState(0);
@@ -70,7 +71,11 @@ const SectionBodyContent = (props) => {
 
   return (
     <Wrapper>
-      <MainProfile profile={profile} updateProfile={updateProfile} />
+      <MainProfile
+        profile={profile}
+        updateProfile={updateProfile}
+        fetchProfile={fetchProfile}
+      />
       {tfa && tfa !== "none" && (
         <LoginSettings
           profile={profile}
@@ -101,6 +106,7 @@ export default withRouter(
       changeEmailSubscription,
       tipsSubscription,
       updateProfile,
+      getTargetUser: fetchProfile,
     } = targetUserStore;
 
     const {
@@ -123,6 +129,7 @@ export default withRouter(
       changeEmailSubscription,
       tipsSubscription,
       updateProfile,
+      fetchProfile,
     };
   })(
     observer(
