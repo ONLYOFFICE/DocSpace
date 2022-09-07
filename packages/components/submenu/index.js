@@ -16,7 +16,14 @@ import LoaderSubmenu from "./loader";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const Submenu = (props) => {
-  const { data, startSelect = 0, onSelect, isLoading, ...rest } = props;
+  const {
+    data,
+    startSelect = 0,
+    forsedActiveItemId,
+    onSelect,
+    isLoading,
+    ...rest
+  } = props;
   if (!data) return null;
 
   const [currentItem, setCurrentItem] = useState(
@@ -26,11 +33,13 @@ const Submenu = (props) => {
   const submenuItemsRef = useRef();
 
   const selectSubmenuItem = (e) => {
-    const item = data.find((el) => el.id === e.currentTarget.id);
-    if (item) setCurrentItem(item);
-    const offset = countAutoFocus(item.name, data, submenuItemsRef);
-    submenuItemsRef.current.scrollLeft += offset;
-    onSelect && onSelect(item);
+    if (!forsedActiveItemId) {
+      const item = data.find((el) => el.id === e.currentTarget.id);
+      if (item) setCurrentItem(item);
+      const offset = countAutoFocus(item.name, data, submenuItemsRef);
+      submenuItemsRef.current.scrollLeft += offset;
+      onSelect && onSelect(item);
+    }
   };
 
   useEffect(() => {
@@ -84,7 +93,8 @@ const Submenu = (props) => {
           <div className="sticky">
             <StyledSubmenuItems ref={submenuItemsRef} role="list">
               {data.map((d) => {
-                const isActive = d.id === currentItem.id;
+                const isActive =
+                  d.id === (forsedActiveItemId || currentItem.id);
 
                 return (
                   <StyledSubmenuItem
@@ -133,6 +143,7 @@ const Submenu = (props) => {
 Submenu.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   startSelect: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+  forsedActiveItemId: PropTypes.any,
   onSelect: PropTypes.func,
   isLoading: PropTypes.bool,
 };
