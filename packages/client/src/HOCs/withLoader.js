@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import { observer, inject } from "mobx-react";
 import { isMobile } from "react-device-detect";
-
 import Loaders from "@docspace/common/components/Loaders";
+
+const StyledRowLoaders = styled(Loaders.Rows)`
+  padding-left: 16px;
+  width: calc(100% - 33px) !important;
+`;
 
 const pathname = window.location.pathname.toLowerCase();
 const isEditor = pathname.indexOf("doceditor") !== -1;
@@ -65,7 +70,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       ) : viewAs === "table" ? (
         <Loaders.TableLoader />
       ) : (
-        <Loaders.Rows />
+        <StyledRowLoaders />
       )
     ) : (
       <WrappedComponent {...props} />
