@@ -418,7 +418,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
         if (!quotaSettings.EnableUserQuota || user.QuotaLimit != Constants.UserNoQuota)
         {
             var quotaLimit = ByteConverter.ConvertSizeToBytes(user.QuotaLimit);
-            if (quotaLimit == -1 || (quotaLimit - await _globalSpace.GetUserUsedSpaceAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength))
+            var userUsedSpace = Math.Max(0, 
+                _userManager.FindUserQuotaRows(
+                        _tenantManager.GetCurrentTenant().Id, 
+                        file.Id == default ? _authContext.CurrentAccount.ID.ToString() : file.CreateBy.ToString()
+                    )
+                .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+
+            if (quotaLimit == -1 || (quotaLimit - userUsedSpace < file.ContentLength))
             {
                 throw FileSizeComment.GetPersonalFreeSpaceException(quotaLimit);
             }
