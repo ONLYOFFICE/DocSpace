@@ -3,7 +3,6 @@ import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import styled, { css } from "styled-components";
 import toastr from "client/toastr";
-import SwitchingDifferentPlanButtonContainer from "./SwitchingDifferentPlanButtonContainer";
 import DowngradePlanButtonContainer from "./DowngradePlanButtonContainer";
 
 const StyledBody = styled.div`
@@ -61,33 +60,44 @@ const UpdatePlanButtonContainer = ({
     };
   }, []);
 
-  const isTheSameCount = managersCount === maxTariffManagers;
-  const isDowngradePlan = managersCount < maxTariffManagers;
+  const switchPlanButton = () => {
+    return (
+      <Button
+        label={t("UpgradeNow")}
+        size={"medium"}
+        primary
+        isDisabled={isLessCountThanAcceptable || isLoading || isDisabled}
+        onClick={onUpdateTariff}
+        isLoading={isLoading}
+      />
+    );
+  };
+
+  const updatingPlanButton = () => {
+    const isDowngradePlan = managersCount < maxTariffManagers;
+    const isTheSameCount = managersCount === maxTariffManagers;
+
+    return isDowngradePlan ? (
+      <DowngradePlanButtonContainer
+        onUpdateTariff={onUpdateTariff}
+        t={t}
+        isDisabled={isDisabled}
+      />
+    ) : (
+      <Button
+        label={t("UpgradeNow")}
+        size={"medium"}
+        primary
+        isDisabled={isTheSameCount || isLoading || isDisabled}
+        onClick={onUpdateTariff}
+        isLoading={isLoading}
+      />
+    );
+  };
 
   return (
     <StyledBody>
-      {isAlreadyPaid ? (
-        isDowngradePlan ? (
-          <DowngradePlanButtonContainer onUpdateTariff={onUpdateTariff} t={t} />
-        ) : (
-          <Button
-            label={t("UpgradeNow")}
-            size={"medium"}
-            primary
-            isDisabled={isTheSameCount || isLoading || isDisabled}
-            onClick={onUpdateTariff}
-            isLoading={isLoading}
-          />
-        )
-      ) : (
-        <SwitchingDifferentPlanButtonContainer
-          t={t}
-          onUpdateTariff={onUpdateTariff}
-          isLessCountThanAcceptable={isLessCountThanAcceptable}
-          isLoading={isLoading}
-          isDisabled={isDisabled}
-        />
-      )}
+      {isAlreadyPaid ? updatingPlanButton() : switchPlanButton()}
     </StyledBody>
   );
 };

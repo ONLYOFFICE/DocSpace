@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Button from "@docspace/components/button";
 import styled, { css } from "styled-components";
 import SalesDepartmentRequestDialog from "../../../../../components/dialogs/SalesDepartmentRequestDialog";
+import { inject, observer } from "mobx-react";
 
 const StyledBody = styled.div`
   button {
@@ -40,4 +41,10 @@ const RequestButtonContainer = ({ isDisabled, isLoading, t }) => {
   );
 };
 
-export default RequestButtonContainer;
+export default inject(({ payments }) => {
+  const { isLoading } = payments;
+
+  return {
+    isLoading,
+  };
+})(observer(RequestButtonContainer));

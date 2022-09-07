@@ -37,13 +37,13 @@ const ButtonContainer = ({
           isLoading={isLoading}
         />
       ) : isNeedRequest ? (
-        <RequestButtonContainer
-          isLoading={isLoading}
-          isDisabled={isDisabled}
-          t={t}
-        />
+        <RequestButtonContainer isDisabled={isDisabled} t={t} />
       ) : (
-        <UpdatePlanButtonContainer isAlreadyPaid={isAlreadyPaid} t={t} />
+        <UpdatePlanButtonContainer
+          isAlreadyPaid={isAlreadyPaid}
+          t={t}
+          isDisabled={isDisabled}
+        />
       )}
     </StyledBody>
   );
