@@ -58,15 +58,16 @@ const PeopleSelector = ({
   }, []);
 
   const toListItem = (item) => {
+    const { id, avatar, icon, displayName } = item;
     return {
-      id: item.id,
-      avatar: item.avatar,
-      icon: item.icon,
-      label: item.displayName,
+      id,
+      avatar,
+      icon,
+      label: displayName,
     };
   };
 
-  const loadNextPage = (startIndex, search) => {
+  const loadNextPage = (startIndex, search = searchValue) => {
     const pageCount = 100;
 
     setIsNextPageLoading(true);
@@ -75,7 +76,7 @@ const PeopleSelector = ({
     filter.page = startIndex / pageCount;
     filter.pageCount = pageCount;
 
-    if (search) {
+    if (!!search.length) {
       filter.search = search;
     }
 
