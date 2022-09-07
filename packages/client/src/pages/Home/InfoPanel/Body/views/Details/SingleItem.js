@@ -5,7 +5,7 @@ import { FileType } from "@docspace/common/constants";
 import Text from "@docspace/components/text";
 import Tooltip from "@docspace/components/tooltip";
 
-import InfoHelper from "../../helpers/InfoHelper.js";
+import DetailsHelper from "../../helpers/DetailsHelper.js";
 import {
   StyledAccess,
   StyledAccessItem,
@@ -29,7 +29,7 @@ const SingleItem = ({
   createThumbnail,
   culture,
 }) => {
-  let infoHelper;
+  let detailsHelper;
 
   const [itemProperties, setItemProperties] = useState([]);
   const [itemAccess, setItemAccess] = useState(null);
@@ -43,7 +43,7 @@ const SingleItem = ({
   // }
 
   const updateItemsInfo = async (selectedItem) => {
-    setItemProperties(infoHelper.getPropertyList());
+    setItemProperties(detailsHelper.getPropertyList());
 
     // setItemAccess({
     //   access: {
@@ -173,7 +173,7 @@ const SingleItem = ({
   };
 
   useEffect(() => {
-    infoHelper = new InfoHelper(
+    detailsHelper = new DetailsHelper(
       t,
       selectedItem,
       personal,
