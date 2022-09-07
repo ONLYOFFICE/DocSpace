@@ -103,6 +103,11 @@ const PeopleSelector = ({
     loadNextPage(0, value);
   };
 
+  const onClearSearch = () => {
+    setSearchValue("");
+    loadNextPage(0, "");
+  };
+
   return (
     <Selector
       id={id}
@@ -113,6 +118,7 @@ const PeopleSelector = ({
       searchPlaceholder={searchPlaceholder || t("Common:Search")}
       searchValue={searchValue}
       onSearch={onSearch}
+      onClearSearch={onClearSearch}
       items={itemsList}
       isMultiSelect={isMultiSelect}
       selectedItems={selectedItems}
