@@ -8,10 +8,29 @@ import { inject, observer } from "mobx-react";
 import isEqual from "lodash/isEqual";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import styled from "styled-components";
+import Link from "@docspace/components/link";
+import ModalDialog from "@docspace/components/modal-dialog";
 
 const StyledComponent = styled.div`
+  .link {
+    font-weight: 600;
+    border-bottom: 1px dashed #333333;
+    border-color: ${(props) => !props.isPortalPaid && "#A3A9AE"};
+  }
+
+  .description,
+  .link {
+    color: ${(props) => !props.isPortalPaid && "#A3A9AE"};
+  }
+
   .save-cancel-buttons {
     margin-top: 8px;
+  }
+`;
+
+const StyledModalDialog = styled(ModalDialog)`
+  .modal-footer {
+    display: none;
   }
 `;
 
@@ -43,6 +62,8 @@ const CompanyInfoSettings = (props) => {
   const [isFirstCompanyInfoSettings, setIsFirstCompanyInfoSettings] = useState(
     localStorage.getItem("isFirstCompanyInfoSettings")
   );
+
+  const [showBackdrop, setShowBackdrop] = useState(false);
 
   useEffect(() => {
     const settings = {
@@ -165,101 +186,128 @@ const CompanyInfoSettings = (props) => {
       });
   };
 
+  const onShowExample = () => {
+    if (!isPortalPaid) return;
+
+    setShowBackdrop(true);
+  };
+
+  const onCloseModal = () => {
+    setShowBackdrop(false);
+  };
+
   return (
-    <StyledComponent>
-      <div className="header">Company info settings</div>
-      <div className="description">
-        This information will be displayed in the About this program window.
-      </div>
-      <div className="settings-block">
-        <FieldContainer
-          id="fieldContainerCompanyName"
-          className="field-container-width"
-          labelText={t("Common:CompanyName")}
-          isVertical={true}
-        >
-          <TextInput
-            id="textInputContainerCompanyName"
+    <>
+      <StyledModalDialog visible={showBackdrop} onClose={onCloseModal}>
+        <ModalDialog.Body>
+          <img src="/static/images/about.this.program.png" />
+        </ModalDialog.Body>
+        <ModalDialog.Footer className="modal-footer" />
+      </StyledModalDialog>
+
+      <StyledComponent isPortalPaid={isPortalPaid}>
+        <div className="header">Company info settings</div>
+        <div className="description">
+          This information will be displayed in the
+          {isPortalPaid ? (
+            <Link className="link" onClick={onShowExample} noHover={true}>
+              &nbsp;About this program&nbsp;
+            </Link>
+          ) : (
+            <span className="link">&nbsp;About this program&nbsp;</span>
+          )}
+          window.
+        </div>
+        <div className="settings-block">
+          <FieldContainer
+            id="fieldContainerCompanyName"
+            className="field-container-width"
+            labelText={t("Common:CompanyName")}
+            isVertical={true}
+          >
+            <TextInput
+              id="textInputContainerCompanyName"
+              isDisabled={!isPortalPaid}
+              scale={true}
+              value={companyName}
+              hasError={hasErrorCompanyName}
+              onChange={(e) => onChangeСompanyName(e.target.value)}
+            />
+          </FieldContainer>
+          <FieldContainer
+            id="fieldContainerEmail"
             isDisabled={!isPortalPaid}
-            scale={true}
-            value={companyName}
-            hasError={hasErrorCompanyName}
-            onChange={(e) => onChangeСompanyName(e.target.value)}
-          />
-        </FieldContainer>
-        <FieldContainer
-          id="fieldContainerEmail"
-          isDisabled={!isPortalPaid}
-          className="field-container-width"
-          labelText={t("Common:Email")}
-          isVertical={true}
-        >
-          <TextInput
-            id="textInputContainerEmail"
-            isDisabled={!isPortalPaid}
-            scale={true}
-            value={email}
-            hasError={hasErrorEmail}
-            onChange={(e) => onChangeEmail(e.target.value)}
-          />
-        </FieldContainer>
-        <FieldContainer
-          id="fieldContainerPhone"
-          className="field-container-width"
-          labelText={t("Common:Phone")}
-          isVertical={true}
-        >
-          <TextInput
-            id="textInputContainerPhone"
-            isDisabled={!isPortalPaid}
-            scale={true}
-            value={phone}
-            hasError={hasErrorPhone}
-            onChange={(e) => onChangePhone(e.target.value)}
-          />
-        </FieldContainer>
-        <FieldContainer
-          id="fieldContainerWebsite"
-          className="field-container-width"
-          labelText={t("Common:Website")}
-          isVertical={true}
-        >
-          <TextInput
-            id="textInputContainerWebsite"
-            isDisabled={!isPortalPaid}
-            scale={true}
-            value={site}
-            hasError={hasErrorSite}
-            onChange={(e) => onChangeSite(e.target.value)}
-          />
-        </FieldContainer>
-        <FieldContainer
-          id="fieldContainerAddress"
-          className="field-container-width"
-          labelText={t("Common:Address")}
-          isVertical={true}
-        >
-          <TextInput
-            id="textInputContainerAddress"
-            isDisabled={!isPortalPaid}
-            scale={true}
-            value={address}
-            hasError={hasErrorAddress}
-            onChange={(e) => onChangeAddress(e.target.value)}
-          />
-        </FieldContainer>
-      </div>
-      <SaveCancelButtons
-        className="save-cancel-buttons"
-        onSaveClick={onSave}
-        onCancelClick={onRestore}
-        saveButtonLabel={t("Common:SaveButton")}
-        cancelButtonLabel={t("Settings:RestoreDefaultButton")}
-        displaySettings={true}
-        showReminder={isChangesSettings}
-        isFirstRestoreToDefault={isFirstCompanyInfoSettings}
-      />
-    </StyledComponent>
+            className="field-container-width"
+            labelText={t("Common:Email")}
+            isVertical={true}
+          >
+            <TextInput
+              id="textInputContainerEmail"
+              isDisabled={!isPortalPaid}
+              scale={true}
+              value={email}
+              hasError={hasErrorEmail}
+              onChange={(e) => onChangeEmail(e.target.value)}
+            />
+          </FieldContainer>
+          <FieldContainer
+            id="fieldContainerPhone"
+            className="field-container-width"
+            labelText={t("Common:Phone")}
+            isVertical={true}
+          >
+            <TextInput
+              id="textInputContainerPhone"
+              isDisabled={!isPortalPaid}
+              scale={true}
+              value={phone}
+              hasError={hasErrorPhone}
+              onChange={(e) => onChangePhone(e.target.value)}
+            />
+          </FieldContainer>
+          <FieldContainer
+            id="fieldContainerWebsite"
+            className="field-container-width"
+            labelText={t("Common:Website")}
+            isVertical={true}
+          >
+            <TextInput
+              id="textInputContainerWebsite"
+              isDisabled={!isPortalPaid}
+              scale={true}
+              value={site}
+              hasError={hasErrorSite}
+              onChange={(e) => onChangeSite(e.target.value)}
+            />
+          </FieldContainer>
+          <FieldContainer
+            id="fieldContainerAddress"
+            className="field-container-width"
+            labelText={t("Common:Address")}
+            isVertical={true}
+          >
+            <TextInput
+              id="textInputContainerAddress"
+              isDisabled={!isPortalPaid}
+              scale={true}
+              value={address}
+              hasError={hasErrorAddress}
+              onChange={(e) => onChangeAddress(e.target.value)}
+            />
+          </FieldContainer>
+        </div>
+        <SaveCancelButtons
+          className="save-cancel-buttons"
+          onSaveClick={onSave}
+          onCancelClick={onRestore}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("Settings:RestoreDefaultButton")}
+          displaySettings={true}
+          showReminder={isPortalPaid && isChangesSettings}
+          isFirstRestoreToDefault={isFirstCompanyInfoSettings}
+        />
+      </StyledComponent>
+    </>
   );
 };
 
