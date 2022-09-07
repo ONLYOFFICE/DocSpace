@@ -11,7 +11,7 @@ import {
 } from "@docspace/components/utils/device";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { Provider } from "@docspace/components/utils/context";
-import Selector from "@docspace/components/selector";
+import SelectionArea from "@docspace/components/selection-area";
 import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
 
 import SectionContainer from "./sub-components/section-container";
@@ -164,8 +164,8 @@ class Section extends React.Component {
     if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
   }
 
-  onMove = ({ added, removed }) => {
-    this.props.setSelections(added, removed);
+  onMove = ({ added, removed, clear }) => {
+    this.props.setSelections(added, removed, clear);
   };
 
   dragCondition = (e) => {
@@ -489,7 +489,7 @@ class Section extends React.Component {
     return (
       <>
         {!isMobile && uploadFiles && !dragging && (
-          <Selector
+          <SelectionArea
             containerClass="section-scroll"
             selectableClass="files-item"
             onMove={this.onMove}

@@ -532,7 +532,11 @@ class FilesStore {
     this.selection = selection;
   };
 
-  setSelections = (added, removed) => {
+  setSelections = (added, removed, clear) => {
+    if (clear) {
+      this.selection = [];
+    }
+
     let newSelections = JSON.parse(JSON.stringify(this.selection));
 
     for (let item of added) {
@@ -2487,51 +2491,6 @@ class FilesStore {
   getExternalAccessOption = (selection) => {
     return this.getOptions(selection, true);
   };
-
-  /*   setSelections = (items) => {
-    if (!items.length && !this.selection.length) return;
-
-    //if (items.length !== this.selection.length) {
-    const newSelection = [];
-
-    for (let item of items) {
-      const value = item.getAttribute("value");
-      const splitValue = value && value.split("_");
-
-      const fileType = splitValue[0];
-      // const id =
-      //   splitValue[splitValue.length - 1] === "draggable"
-      //     ? splitValue.slice(1, -1).join("_")
-      //     : splitValue.slice(1, -1).join("_");
-
-      const id = splitValue.slice(1, -1).join("_");
-
-      if (fileType === "file") {
-        this.activeFiles.findIndex((f) => f == id) === -1 &&
-          //newSelection.push(this.files.find((f) => f.id == id));
-          newSelection.push(
-            this.filesList.find((f) => f.id == id && !f.isFolder)
-          );
-      } else if (this.activeFolders.findIndex((f) => f == id) === -1) {
-        //const selectableFolder = this.folders.find((f) => f.id == id);
-        const selectableFolder = this.filesList.find(
-          (f) => f.id == id && f.isFolder
-        );
-        selectableFolder.isFolder = true;
-        newSelection.push(selectableFolder);
-      }
-    }
-
-    //this.selected === "close" && this.setSelected("none");
-
-    //need fo table view
-    const clearSelection = Object.values(
-      newSelection.reduce((item, n) => ((item[n.id] = n), item), {})
-    );
-
-    this.setSelection(clearSelection);
-    //}
-  }; */
 
   getShareUsers(folderIds, fileIds) {
     return api.files.getShareFiles(fileIds, folderIds);
