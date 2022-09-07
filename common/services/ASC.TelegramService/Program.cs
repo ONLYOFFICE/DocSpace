@@ -32,11 +32,11 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config.AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-});
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddTelegramConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.WebHost.ConfigureDefaultKestrel();
 

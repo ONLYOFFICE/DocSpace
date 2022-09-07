@@ -11,8 +11,6 @@ import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 import PeopleRowContainer from "./RowView/PeopleRowContainer";
 import TableView from "./TableView/TableContainer";
 
-import RoomSelector from "SRC_DIR/components/RoomSelector";
-
 class SectionBodyContent extends React.Component {
   componentDidMount() {
     window.addEventListener("mousedown", this.onMouseDown);
@@ -48,7 +46,6 @@ class SectionBodyContent extends React.Component {
           viewAs === "table" ? (
             <>
               <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
-              <RoomSelector />
             </>
           ) : (
             <>
@@ -56,7 +53,6 @@ class SectionBodyContent extends React.Component {
                 sectionWidth={context.sectionWidth}
                 tReady={tReady}
               />
-              <RoomSelector />
             </>
           )
         }
