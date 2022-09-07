@@ -213,7 +213,7 @@ const Selector = ({
 
   const loadMoreItems = React.useCallback(
     (startIndex) => {
-      !isNextPageLoading && loadNextPage && loadNextPage(startIndex);
+      !isNextPageLoading && loadNextPage && loadNextPage(startIndex - 1);
     },
     [isNextPageLoading, loadNextPage]
   );
