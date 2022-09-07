@@ -18,30 +18,27 @@ const StyledWrapper = styled.div`
   }
 `;
 
-const AvatarEditor = ({
-  t,
-  profile,
-  avatar,
-  onChangeAvatar,
-  preview,
-  setPreview,
-}) => {
+const AvatarEditor = ({ t, profile, avatar, onChangeAvatar }) => {
+  const [preview, setPreview] = useState(null);
+
   const setUploadedFile = (file) =>
     onChangeAvatar({ ...avatar, uploadedFile: file });
 
   return (
     <StyledWrapper>
-      <div className="avatar-editor">
-        <AvatarCropper
-          t={t}
-          avatar={avatar}
-          onChangeAvatar={onChangeAvatar}
-          uploadedFile={avatar.uploadedFile}
-          setUploadedFile={setUploadedFile}
-          setPreviewAvatar={setPreview}
-        />
-        <AvatarPreview avatar={preview} userName={profile.displayName} />
-      </div>
+      {avatar.uploadedFile && (
+        <div className="avatar-editor">
+          <AvatarCropper
+            t={t}
+            avatar={avatar}
+            onChangeAvatar={onChangeAvatar}
+            uploadedFile={avatar.uploadedFile}
+            setUploadedFile={setUploadedFile}
+            setPreviewAvatar={setPreview}
+          />
+          <AvatarPreview avatar={preview} userName={profile.displayName} />
+        </div>
+      )}
       <Dropzone t={t} setUploadedFile={setUploadedFile} />
     </StyledWrapper>
   );

@@ -5,26 +5,58 @@ import { useTranslation } from "react-i18next";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
-
+import {
+  loadAvatar,
+  createThumbnailsAvatar,
+  deleteAvatar,
+} from "@docspace/common/api/people";
 import AvatarEditor from "./editor";
 
 const StyledModalDialog = styled(ModalDialog)``;
 
 const AvatarEditorDialog = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
-  const { visible, onClose, profile } = props;
+  const { visible, onClose, profile, fetchProfile } = props;
   const [avatar, setAvatar] = useState({
     uploadedFile: profile.avatarMax,
     x: 0.5,
     y: 0.5,
     zoom: 1,
   });
-  const [preview, setPreview] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const onChangeAvatar = (newAvatar) => setAvatar(newAvatar);
 
-  const onSaveClick = () => {
-    console.log("onSave");
+  const onSaveClick = async () => {
+    setIsLoading(true);
+
+    if (!avatar.uploadedFile) {
+      await deleteAvatar(profile.id);
+      await fetchProfile(profile.id);
+      onClose();
+      return;
+    }
+
+    let avatarData = new FormData();
+    avatarData.append("file", avatar.uploadedFile);
+    avatarData.append("Autosave", false);
+
+    try {
+      const res = await loadAvatar(profile.id, avatarData);
+      await createThumbnailsAvatar(profile.id, {
+        x: 0,
+        y: 0,
+        width: 192,
+        height: 192,
+        tmpFile: res.data,
+      });
+      await fetchProfile(profile.id);
+      onClose();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -45,8 +77,6 @@ const AvatarEditorDialog = (props) => {
           t={t}
           avatar={avatar}
           onChangeAvatar={onChangeAvatar}
-          preview={preview}
-          setPreview={setPreview}
           profile={profile}
         />
       </ModalDialog.Body>
@@ -58,6 +88,7 @@ const AvatarEditorDialog = (props) => {
           scale
           primary={true}
           onClick={onSaveClick}
+          isLoading={isLoading}
         />
         <Button
           key="AvatarEditorCloseBtn"
@@ -65,6 +96,7 @@ const AvatarEditorDialog = (props) => {
           size="normal"
           scale
           onClick={onClose}
+          isLoading={isLoading}
         />
       </ModalDialog.Footer>
     </StyledModalDialog>
