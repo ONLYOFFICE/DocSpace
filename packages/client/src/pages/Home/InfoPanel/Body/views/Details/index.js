@@ -1,6 +1,6 @@
 import React from "react";
-import EmptyScreen from "./EmptyScreen";
-import SeveralItems from "./SeveralItems";
+import EmptyScreen from "../NoItem";
+import SeveralItems from "../SeveralItems";
 import SingleItem from "./SingleItem";
 
 const Details = ({
@@ -59,13 +59,15 @@ const Details = ({
     );
   };
 
-  return isFileCategory && selection.isSelectedFolder ? (
-    <EmptyScreen />
-  ) : Array.isArray(selection) ? (
-    <SeveralItems selectedItems={selection} getIcon={getIcon} />
-  ) : (
-    singleItem(selection)
-  );
+  // return isFileCategory && selection.isSelectedFolder ? (
+  //   <EmptyScreen />
+  // ) : Array.isArray(selection) ? (
+  //   <SeveralItems selectedItems={selection} getIcon={getIcon} />
+  // ) : (
+  //   singleItem(selection)
+  // );
+
+  return singleItem(selection);
 };
 
 export default Details;
