@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,39 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Feed.Core;
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-public class FeedRow
+public class FeedDto : IMapFrom<FeedResultItem>
 {
-    public DateTime AggregatedDate { get; set; }
-    public IList<Guid> Users { get; set; }
-    public int Tenant { get; set; }
-    public string Product { get; set; }
-    public Aggregator.Feed Feed { get; private set; }
-    public string Id => Feed.Id;
-    public bool ClearRightsBeforeInsert => Feed.Variate;
-    public string Module => Feed.Module;
-    public Guid Author => Feed.AuthorId;
-    public Guid ModifiedBy => Feed.ModifiedBy;
-    public DateTime CreatedDate => Feed.CreatedDate;
-    public DateTime ModifiedDate => Feed.ModifiedDate;
-    public string GroupId => Feed.GroupId;
-    public string Keywords => Feed.Keywords;
-    public string ContextId => Feed.ContextId;
-    public string Json
-    {
-        get
-        {
-            return JsonConvert.SerializeObject(Feed, new JsonSerializerSettings
-            {
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc
-            });
-        }
-    }
+    public ApiDateTime AggregatedDate { get; set; }
+    public ApiDateTime CreatedDate { get; set; }
+    public ApiDateTime ModifiedDate { get; set; }
+    public ApiDateTime TimeReaded { get; set; }
+    public bool IsToday { get; set; }
+    public bool IsTomorrow { get; set; }
+    public bool IsYesterday { get; set; }
+    public IEnumerable<FeedDto> GroupedFeeds { get; set; }
+    public string Json { get; set; }
+    public string GroupId { get; set; }
+    public string Module { get; set; }
 
-    public FeedRow(Aggregator.Feed feed)
+    public void Mapping(Profile profile)
     {
-        Users = new List<Guid>();
-        Feed = feed;
+        profile.CreateMap<DateTime, ApiDateTime>()
+            .ConvertUsing<DateTimeMappingConverter>();
+
+        profile.CreateMap<FeedResultItem, FeedDto>();
     }
 }

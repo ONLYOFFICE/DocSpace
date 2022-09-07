@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-
 namespace ASC.Feed.Data;
 
 [Scope]
@@ -203,39 +201,51 @@ public class FeedAggregateDataProvider
     private List<FeedResultItem> GetFeedsInternal(FeedApiFilter filter)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        var q = feedDbContext.FeedAggregates
-            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
-            .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
-            .Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
-            .Where(r => r.users.UserId == _authContext.CurrentAccount.ID)
+        var q = feedDbContext.FeedAggregates.AsNoTracking()
+            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id);
+
+        var exp = GetIdSearchExpression(filter.Id, filter.Module, filter.WithRelated);
+
+        if (exp != null)
+        {
+            q = q.Where(exp);
+        }
+
+        var q1 = q.Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
             .OrderByDescending(r => r.aggregates.ModifiedDate)
             .Skip(filter.Offset)
             .Take(filter.Max);
 
+        if (exp == null)
+        {
+            q1 = q1.Where(r => r.aggregates.ModifiedBy != _authContext.CurrentAccount.ID).
+                Where(r => r.users.UserId == _authContext.CurrentAccount.ID);
+        }
+
         if (filter.OnlyNew)
         {
-            q = q.Where(r => r.aggregates.AggregateDate >= filter.From);
+            q1 = q1.Where(r => r.aggregates.AggregateDate >= filter.From);
         }
         else
         {
             if (1 < filter.From.Year)
             {
-                q = q.Where(r => r.aggregates.ModifiedDate >= filter.From);
+                q1 = q1.Where(r => r.aggregates.ModifiedDate >= filter.From);
             }
             if (filter.To.Year < 9999)
             {
-                q = q.Where(r => r.aggregates.ModifiedDate <= filter.To);
+                q1 = q1.Where(r => r.aggregates.ModifiedDate <= filter.To);
             }
         }
 
         if (!string.IsNullOrEmpty(filter.Product))
         {
-            q = q.Where(r => r.aggregates.Product == filter.Product);
+            q1 = q1.Where(r => r.aggregates.Product == filter.Product);
         }
 
         if (filter.Author != Guid.Empty)
         {
-            q = q.Where(r => r.aggregates.ModifiedBy == filter.Author);
+            q1 = q1.Where(r => r.aggregates.ModifiedBy == filter.Author);
         }
 
         if (filter.SearchKeys != null && filter.SearchKeys.Length > 0)
@@ -245,22 +255,22 @@ public class FeedAggregateDataProvider
                             .Select(s => s.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_"))
                             .ToList();
 
-            q = q.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
+            q1 = q1.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
         }
 
-        var news = q.Select(r => r.aggregates).AsEnumerable();
+        var news = q1.Select(r => r.aggregates).AsEnumerable();
 
         return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(news);
     }
 
-    public int GetNewFeedsCount(DateTime lastReadedTime, AuthContext authContext, TenantManager tenantManager)
+    public int GetNewFeedsCount(DateTime lastReadedTime)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var count = feedDbContext.FeedAggregates
-            .Where(r => r.Tenant == tenantManager.GetCurrentTenant().Id)
-            .Where(r => r.ModifiedBy != authContext.CurrentAccount.ID)
+            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
             .Join(feedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
-            .Where(r => r.user.UserId == authContext.CurrentAccount.ID);
+            .Where(r => r.user.UserId == _authContext.CurrentAccount.ID);
 
         if (1 < lastReadedTime.Year)
         {
@@ -312,70 +322,60 @@ public class FeedAggregateDataProvider
             tx.Commit();
         });
     }
+
+    private Expression<Func<FeedAggregate, bool>> GetIdSearchExpression(string id, string module, bool withRelated)
+    {
+        Expression<Func<FeedAggregate, bool>> exp = null;
+
+        if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(module))
+        {
+            return exp;
+        }
+
+        if (module == Constants.RoomsModule)
+        {
+            var roomId = $"{Constants.RoomItem}_{id}";
+            var sharedRoomId = $"{Constants.SharedRoomItem}_{id}";
+
+            exp = f => f.Id == roomId || f.Id.StartsWith(sharedRoomId);
+
+            if (withRelated)
+            {
+                exp = f => f.Id == roomId || f.Id.StartsWith(sharedRoomId) || f.ContextId == roomId;
+            }
+        }
+
+        if (module == Constants.FilesModule)
+        {
+            exp = f => f.Id.StartsWith($"{Constants.FileItem}_{id}") || f.Id.StartsWith($"{Constants.SharedFileItem}_{id}");
+        }
+
+        if (module == Constants.FoldersModule)
+        {
+            exp = f => f.Id == $"{Constants.FolderItem}_{id}" || f.Id.StartsWith($"{Constants.SharedFolderItem}_{id}");
+        }
+
+        return exp;
+    }
 }
 
 public class FeedResultItem : IMapFrom<FeedAggregate>
 {
-    public string Json { get; private set; }
-    public string Module { get; private set; }
-    public Guid AuthorId { get; private set; }
-    public Guid ModifiedById { get; private set; }
-    public string GroupId { get; private set; }
-    public bool IsToday { get; private set; }
-    public bool IsYesterday { get; private set; }
-    public bool IsTomorrow { get; private set; }
-    public DateTime CreatedDate { get; private set; }
-    public DateTime ModifiedDate { get; private set; }
-    public DateTime AggregatedDate { get; private set; }
-
-    public FeedResultItem() { }
-
-    public FeedResultItem(
-        string json,
-        string module,
-        Guid authorId,
-        Guid modifiedById,
-        string groupId,
-        DateTime createdDate,
-        DateTime modifiedDate,
-        DateTime aggregatedDate,
-        TenantUtil tenantUtil)
-    {
-        var now = tenantUtil.DateTimeFromUtc(DateTime.UtcNow);
-
-        Json = json;
-        Module = module;
-
-        AuthorId = authorId;
-        ModifiedById = modifiedById;
-
-        GroupId = groupId;
-
-        var compareDate = JsonNode.Parse(Json)["IsAllDayEvent"].GetValue<bool>()
-                ? tenantUtil.DateTimeToUtc(createdDate).Date
-                : createdDate.Date;
-
-        if (now.Date == compareDate.AddDays(-1))
-        {
-            IsTomorrow = true;
-        }
-        else if (now.Date == compareDate)
-        {
-            IsToday = true;
-        }
-        else if (now.Date == compareDate.AddDays(1))
-        {
-            IsYesterday = true;
-        }
-
-        CreatedDate = createdDate;
-        ModifiedDate = modifiedDate;
-        AggregatedDate = aggregatedDate;
-    }
+    public string Json { get; set; }
+    public string Module { get; set; }
+    public Guid AuthorId { get; set; }
+    public Guid ModifiedById { get; set; }
+    public string GroupId { get; set; }
+    public bool IsToday { get; set; }
+    public bool IsYesterday { get; set; }
+    public bool IsTomorrow { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime ModifiedDate { get; set; }
+    public DateTime AggregatedDate { get; set; }
 
     public void Mapping(Profile profile)
     {
         profile.CreateMap<FeedAggregate, FeedResultItem>()
-            .ConvertUsing<FeedTypeConverter>();
+            .AfterMap<FeedMappingAction>();
     }
 }
