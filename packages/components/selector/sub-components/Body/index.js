@@ -104,8 +104,6 @@ const Body = ({
   if (isMultiSelect && withSelectAll && !isSearch)
     listHeight -= SELECT_ALL_HEIGHT;
 
-  console.log(isSearch);
-
   return (
     <StyledSelectorBody
       ref={bodyRef}
