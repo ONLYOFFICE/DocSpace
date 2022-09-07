@@ -42,6 +42,9 @@ public class FileSharingAceHelper<T>
     private readonly FileTrackerHelper _fileTracker;
     private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly FilesSettingsHelper _filesSettingsHelper;
+    private readonly DocSpaceLinksHelper _docSpaceLinksHelper;
+    private readonly StudioNotifyService _studioNotifyService;
+    private readonly ILogger _logger;
 
     public FileSharingAceHelper(
         FileSecurity fileSecurity,
@@ -56,7 +59,10 @@ public class FileSharingAceHelper<T>
         FileSharingHelper fileSharingHelper,
         FileTrackerHelper fileTracker,
         FileSecurityCommon fileSecurityCommon,
-        FilesSettingsHelper filesSettingsHelper)
+        FilesSettingsHelper filesSettingsHelper,
+        DocSpaceLinksHelper docSpaceLinksHelper,
+        StudioNotifyService studioNotifyService,
+        ILoggerProvider loggerProvider)
     {
         _fileSecurity = fileSecurity;
         _coreBaseSettings = coreBaseSettings;
@@ -71,6 +77,9 @@ public class FileSharingAceHelper<T>
         _fileTracker = fileTracker;
         _filesSettingsHelper = filesSettingsHelper;
         _fileSecurityCommon = fileSecurityCommon;
+        _docSpaceLinksHelper = docSpaceLinksHelper;
+        _studioNotifyService = studioNotifyService;
+        _logger = loggerProvider.CreateLogger("ASC.Files");
     }
 
     public async Task<bool> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings, bool handleForRooms = false, bool invite = false)
@@ -100,6 +109,11 @@ public class FileSharingAceHelper<T>
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
+            if (!ProcessEmailAce(w))
+            {
+                continue;
+            }
+
             var subjects = _fileSecurity.GetUserSubjects(w.SubjectId);
 
             if (entry.RootFolderType == FolderType.COMMON && subjects.Contains(Constants.GroupAdmin.ID)
@@ -129,6 +143,13 @@ public class FileSharingAceHelper<T>
 
             await _fileSecurity.ShareAsync(entry.Id, entryType, w.SubjectId, share);
             changed = true;
+
+            if (!string.IsNullOrEmpty(w.Email))
+            {
+                var link = _docSpaceLinksHelper.GenerateInvitationRoomLink(w.Email, EmployeeType.User, _authContext.CurrentAccount.ID, w.SubjectId);
+                _studioNotifyService.SendEmailRoomInvite(w.Email, link);
+                _logger.Debug(link);
+            }
 
             if (w.SubjectId == FileConstant.ShareLinkId)
             {
@@ -292,6 +313,35 @@ public class FileSharingAceHelper<T>
         }
 
         return result;
+    }
+
+    private bool ProcessEmailAce(AceWrapper ace)
+    {
+        if (string.IsNullOrEmpty(ace.Email))
+        {
+            return true;
+        }
+
+        if (!MailAddress.TryCreate(ace.Email, out var email) || _userManager.GetUserByEmail(ace.Email) != Constants.LostUser)
+        {
+            return false;
+        }
+
+        var userInfo = new UserInfo
+        {
+            Email = email.Address,
+            UserName = email.User,
+            LastName = string.Empty,
+            FirstName = string.Empty,
+            ActivationStatus = EmployeeActivationStatus.Pending,
+            Status = EmployeeStatus.Active
+        };
+
+        var user = _userManager.SaveUserInfo(userInfo);
+
+        ace.SubjectId = user.Id;
+
+        return true;
     }
 }
 

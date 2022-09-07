@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Net.Mail;
-
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -83,8 +81,6 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly ILogger _logger;
     private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
-    private readonly StudioNotifyService _studioNotifyService;
-    private readonly DocSpaceLinksHelper _docSpaceLinksService;
 
     public FileStorageService(
         Global global,
@@ -136,9 +132,7 @@ public class FileStorageService<T> //: IFileStorageService
         ThirdPartySelector thirdPartySelector,
         ThumbnailSettings thumbnailSettings,
         FileShareParamsHelper fileShareParamsHelper,
-        EncryptionLoginProvider encryptionLoginProvider,
-        StudioNotifyService studioNotifyService,
-        DocSpaceLinksHelper docSpaceLinksService)
+        EncryptionLoginProvider encryptionLoginProvider)
     {
         _global = global;
         _globalStore = globalStore;
@@ -190,8 +184,6 @@ public class FileStorageService<T> //: IFileStorageService
         _thumbnailSettings = thumbnailSettings;
         _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
-        _studioNotifyService = studioNotifyService;
-        _docSpaceLinksService = docSpaceLinksService;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -2484,8 +2476,6 @@ public class FileStorageService<T> //: IFileStorageService
             entries.Add(await folderDao.GetFolderAsync(folderId));
         }
 
-        aceCollection.Aces = ProcessEmailAces(aceCollection.Aces);
-
         foreach (var entry in entries)
         {
             try
@@ -2507,13 +2497,6 @@ public class FileStorageService<T> //: IFileStorageService
                             _filesMessageService.Send(entry, GetHttpHeaders(),
                                                  entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccessFor : MessageAction.FileUpdatedAccessFor,
                                                  entry.Title, name, GetAccessString(ace.Share));
-                        }
-
-                        if (!string.IsNullOrEmpty(ace.Email))
-                        {
-                            var link = _docSpaceLinksService.GenerateInvitationRoomLink(ace.Email, EmployeeType.User, _authContext.CurrentAccount.ID, ace.SubjectId);
-                            _studioNotifyService.SendEmailRoomInvite(ace.Email, link);
-                            _logger.Debug(link);
                         }
                     }
                 }
@@ -3213,43 +3196,6 @@ public class FileStorageService<T> //: IFileStorageService
         };
 
         await SetAceObjectAsync(aceCollection, notify);
-    }
-
-    private List<AceWrapper> ProcessEmailAces(List<AceWrapper> aces)
-    {
-        var processedAces = new List<AceWrapper>(aces.Count);
-
-        foreach (var ace in aces)
-        {
-            if (string.IsNullOrEmpty(ace.Email))
-            {
-                processedAces.Add(ace);
-                continue;
-            }
-
-            if (!MailAddress.TryCreate(ace.Email, out var email) || _userManager.GetUserByEmail(ace.Email) != Constants.LostUser)
-            {
-                continue;
-            }
-
-            var userInfo = new UserInfo
-            {
-                Email = email.Address,
-                UserName = email.User,
-                LastName = string.Empty,
-                FirstName = string.Empty,
-                ActivationStatus = EmployeeActivationStatus.Pending,
-                Status = EmployeeStatus.Active
-            };
-
-            var user = _userManager.SaveUserInfo(userInfo);
-
-            ace.SubjectId = user.Id;
-
-            processedAces.Add(ace);
-        }
-
-        return processedAces;
     }
 }
 
