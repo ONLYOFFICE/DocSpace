@@ -142,7 +142,10 @@ const RoomSelector = ({
           }
         })
         .finally(() => {
-          setIsFirstLoad(false);
+          setTimeout(() => {
+            setIsFirstLoad(false);
+          }, 500);
+
           setIsNextPageLoading(false);
         });
     },
