@@ -13,6 +13,7 @@ import Text from "@docspace/components/text";
 import SelectorAddButton from "@docspace/components/selector-add-button";
 import Button from "@docspace/components/button";
 import Link from "@docspace/components/link";
+import toastr from "@docspace/components/toast/toastr";
 
 import {
   StyledOwnerInfo,
@@ -23,7 +24,6 @@ import {
   StyledSelectedOwner,
   StyledSelectedOwnerContainer,
 } from "./StyledDialog";
-import { toastr } from "@docspace/components";
 
 const filter = new Filter();
 
