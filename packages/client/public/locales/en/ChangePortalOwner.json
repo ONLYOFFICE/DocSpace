@@ -1,0 +1,17 @@
+{
+  "ChangeDescription": "Changes will be applied after the confirmation via email",
+  "ChangeUser": "Change user",
+  "OwnerRights": [
+    "— Do the same as administrators;",
+    "— Appoint administrators;",
+    "— Set access rights;",
+    "— Manage portal configuration;",
+    "— Manage user accounts;",
+    "— Change portal owner;",
+    "— Backup portal data;",
+    "— Deactivate or delete portal;"
+  ],
+  "NewPortalOwner": "New portal owner",
+  "ChangeInstruction": "To change the Portal owner please choose the Name of the new Portal owner below.",
+  "PortalOwnerCan": "Portal owner can:"
+}
