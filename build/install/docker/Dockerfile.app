@@ -136,7 +136,6 @@ RUN apt-get -y update && \
 COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
 COPY --from=base /etc/nginx/includes /etc/nginx/includes
 COPY --from=base ${SRC_PATH}/build/deploy/client ${BUILD_PATH}/client
-COPY --from=base ${SRC_PATH}/build/deploy/login ${BUILD_PATH}/login
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
