@@ -40,8 +40,8 @@ const settingsStudioStyles = css`
 `;
 
 const paddingStyles = css`
-  padding: ${({ viewAs }) =>
-    viewAs === "row" ? "19px 3px 16px 16px" : "19px 3px 16px 20px"};
+  padding: 19px 3px 16px 20px;
+  outline: none;
 
   ${settingsStudioStyles};
 
@@ -147,7 +147,9 @@ const StyledSectionBody = styled.div`
 const StyledDropZoneBody = styled(DragAndDrop)`
   max-width: 100vw !important;
 
-  ${commonStyles} .drag-and-drop {
+  ${commonStyles};
+
+  .drag-and-drop {
     user-select: none;
     height: 100%;
   }
