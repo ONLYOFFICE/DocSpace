@@ -10,7 +10,7 @@ import {
   getSharedRoomsTree,
   getThirdPartyCommonFolderTree,
 } from "@docspace/common/api/files";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashFolders,
