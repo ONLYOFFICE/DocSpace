@@ -32,76 +32,18 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config.AddJsonFile($"appsettings.services.json", true)
-          .AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
-          .AddJsonFile("elastic.json", true)
-          .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
-},
-(hostContext, services, diHelper) =>
-{
-    services.AddHttpClient();
-
-    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-
-    if (!bool.TryParse(hostContext.Configuration["disable_elastic"], out var disableElastic))
-    {
-        disableElastic = false;
-    }
-
-    if (!disableElastic)
-    {
-        services.AddHostedService<ElasticSearchIndexService>();
-        diHelper.TryAdd<FactoryIndexer>();
-        diHelper.TryAdd<ElasticSearchService>();
-        //diHelper.TryAdd<FileConverter>();
-        diHelper.TryAdd<FactoryIndexerFile>();
-        diHelper.TryAdd<FactoryIndexerFolder>();
-    }
-
-    services.AddHostedService<FeedAggregatorService>();
-    diHelper.TryAdd<FeedAggregatorService>();
-
-    services.AddHostedService<FeedCleanerService>();
-    diHelper.TryAdd<FeedCleanerService>();
-
-    diHelper.TryAdd<FileDataQueue>();
-
-    services.AddActivePassiveHostedService<FileConverterService<int>>();
-    diHelper.TryAdd<FileConverterService<int>>();
-
-    services.AddActivePassiveHostedService<FileConverterService<string>>();
-    diHelper.TryAdd<FileConverterService<string>>();
-
-    services.AddHostedService<ThumbnailBuilderService>();
-    diHelper.TryAdd<ThumbnailBuilderService>();
-
-    diHelper.TryAdd<ThumbnailRequestedIntegrationEventHandler>();
-
-    services.AddHostedService<Launcher>();
-    diHelper.TryAdd<Launcher>();
-
-    services.AddHostedService<DeleteExpiredService>();
-    diHelper.TryAdd<DeleteExpiredService>();
-
-    diHelper.TryAdd<AuthManager>();
-    diHelper.TryAdd<BaseCommonLinkUtility>();
-    diHelper.TryAdd<FeedAggregateDataProvider>();
-    diHelper.TryAdd<SecurityContext>();
-    diHelper.TryAdd<TenantManager>();
-    diHelper.TryAdd<UserManager>();
-
-    services.AddBaseDbContextPool<FilesDbContext>();
-});
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddFilesServiceConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
 {
     builder.Register(context.Configuration, true, false, "search.json", "feed.json");
 });
 
-var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
+var startup = new Startup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 

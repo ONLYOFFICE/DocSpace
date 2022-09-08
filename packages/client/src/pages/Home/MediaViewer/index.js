@@ -93,8 +93,8 @@ const FilesMediaViewer = (props) => {
   const onDeleteMediaFile = (id) => {
     const translations = {
       deleteOperation: t("Translations:DeleteOperation"),
-      successRemoveFolder: t("FolderRemoved"),
-      successRemoveFile: t("FileRemoved"),
+      successRemoveFolder: t("Files:FolderRemoved"),
+      successRemoveFile: t("Files:FileRemoved"),
     };
 
     if (files.length > 0) {
