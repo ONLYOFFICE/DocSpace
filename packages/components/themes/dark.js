@@ -1537,12 +1537,12 @@ const Dark = {
     },
 
     arrow: {
-      width: "8px",
-      flex: "0 0 8px",
+      width: "6px",
+      flex: "0 0 6px",
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "auto",
+      marginLeft: "-2px",
       fillColor: "#9c9c9c",
     },
 
@@ -2209,6 +2209,19 @@ const Dark = {
       hoverBorderColor: "#858585",
       focusBorderColor: grayMaxLight,
       placeholderColor: "#474747",
+    },
+  },
+
+  selector: {
+    border: `1px solid #474747`,
+
+    item: {
+      hoverBackground: "#3d3d3d",
+      selectedBackground: "#3d3d3d",
+    },
+
+    emptyScreen: {
+      descriptionColor: cyanBlueDarkShade,
     },
   },
 
