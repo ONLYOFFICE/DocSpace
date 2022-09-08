@@ -22,10 +22,7 @@ import {
   DeleteProfileEverDialog,
 } from "../../../../components/dialogs";
 import { inject, observer } from "mobx-react";
-import {
-  getUserStatus,
-  toEmployeeWrapper,
-} from "../../../../helpers/people-helpers";
+import { toEmployeeWrapper } from "../../../../helpers/people-helpers";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 
@@ -316,25 +313,31 @@ class SectionHeaderContent extends React.PureComponent {
   };
 
   getUserContextOptions = () => {
+    const {
+      setChangeEmailVisible,
+      setChangePasswordVisible,
+      setChangeAvatarVisible,
+    } = this.props;
+
     return [
       {
         key: "change-email",
         label: "Change email",
-        onClick: () => console.log("Change email"),
+        onClick: () => setChangeEmailVisible(true),
         disabled: false,
         icon: "/static/images/email.react.svg",
       },
       {
         key: "change-password",
         label: "Change password",
-        onClick: () => console.log("Change password"),
+        onClick: () => setChangePasswordVisible(true),
         disabled: false,
         icon: "/static/images/security.react.svg",
       },
       {
         key: "edit-photo",
         label: "Edit photo",
-        onClick: () => console.log("Edit photo"),
+        onClick: () => setChangeAvatarVisible(true),
         disabled: false,
         icon: "/static/images/image.react.svg",
       },
@@ -461,6 +464,14 @@ class SectionHeaderContent extends React.PureComponent {
 
 export default withRouter(
   inject(({ auth, peopleStore }) => {
+    const { targetUserStore } = peopleStore;
+
+    const {
+      setChangeEmailVisible,
+      setChangePasswordVisible,
+      setChangeAvatarVisible,
+    } = targetUserStore;
+
     return {
       isAdmin: auth.isAdmin,
       isLoaded: auth.isLoaded,
@@ -476,6 +487,9 @@ export default withRouter(
       isMe: peopleStore.targetUserStore.isMe,
       updateProfile: peopleStore.targetUserStore.updateProfile,
       getUserPhoto: peopleStore.targetUserStore.getUserPhoto,
+      setChangeEmailVisible,
+      setChangePasswordVisible,
+      setChangeAvatarVisible,
     };
   })(
     observer(

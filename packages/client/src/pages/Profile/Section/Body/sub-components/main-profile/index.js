@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
@@ -91,18 +92,22 @@ const StyledInfo = styled.div`
 const MainProfile = (props) => {
   const { t, ready } = useTranslation(["Profile", "Common"]);
 
-  const { profile, cultureNames, culture, updateProfile, fetchProfile } = props;
+  const {
+    profile,
+    cultureNames,
+    culture,
+    updateProfile,
+    fetchProfile,
+    changeEmailVisible,
+    setChangeEmailVisible,
+    changePasswordVisible,
+    setChangePasswordVisible,
+    changeNameVisible,
+    setChangeNameVisible,
+    changeAvatarVisible,
+    setChangeAvatarVisible,
+  } = props;
   const { cultureName, currentCulture } = profile;
-
-  const [changeNameDialogVisible, setChangeNameDialogVisible] = useState(false);
-  const [changeEmailDialogVisible, setChangeEmailDialogVisible] = useState(
-    false
-  );
-  const [
-    changePasswordDialogVisible,
-    setChangePasswordDialogVisible,
-  ] = useState(false);
-  const [avatarDialogVisible, setAvatarDialogVisible] = useState(false);
 
   const role = getUserRole(profile);
 
@@ -115,7 +120,7 @@ const MainProfile = (props) => {
         source={profile.avatarMax}
         userName={profile.displayName}
         editing={true}
-        editAction={() => setAvatarDialogVisible(true)}
+        editAction={() => setChangeAvatarVisible(true)}
       />
       <StyledInfo>
         <div className="row">
@@ -129,7 +134,7 @@ const MainProfile = (props) => {
             className="edit-button"
             iconName="/static/images/pencil.outline.react.svg"
             size="12"
-            onClick={() => setChangeNameDialogVisible(true)}
+            onClick={() => setChangeNameVisible(true)}
           />
         </div>
         <div className="row">
@@ -143,7 +148,7 @@ const MainProfile = (props) => {
             className="edit-button"
             iconName="/static/images/pencil.outline.react.svg"
             size="12"
-            onClick={() => setChangeEmailDialogVisible(true)}
+            onClick={() => setChangeEmailVisible(true)}
           />
         </div>
         <div className="row">
@@ -157,7 +162,7 @@ const MainProfile = (props) => {
             className="edit-button"
             iconName="/static/images/pencil.outline.react.svg"
             size="12"
-            onClick={() => setChangePasswordDialogVisible(true)}
+            onClick={() => setChangePasswordVisible(true)}
           />
         </div>
 
@@ -171,38 +176,38 @@ const MainProfile = (props) => {
         />
       </StyledInfo>
 
-      {changeEmailDialogVisible && (
+      {changeEmailVisible && (
         <ChangeEmailDialog
-          visible={changeEmailDialogVisible}
-          onClose={() => setChangeEmailDialogVisible(false)}
+          visible={changeEmailVisible}
+          onClose={() => setChangeEmailVisible(false)}
           user={profile}
         />
       )}
 
-      {changePasswordDialogVisible && (
+      {changePasswordVisible && (
         <ChangePasswordDialog
-          visible={changePasswordDialogVisible}
-          onClose={() => setChangePasswordDialogVisible(false)}
+          visible={changePasswordVisible}
+          onClose={() => setChangePasswordVisible(false)}
           email={profile.email}
         />
       )}
 
-      {changeNameDialogVisible && (
+      {changeNameVisible && (
         <ChangeNameDialog
           t={t}
           tReady={ready}
-          visible={changeNameDialogVisible}
-          onClose={() => setChangeNameDialogVisible(false)}
+          visible={changeNameVisible}
+          onClose={() => setChangeNameVisible(false)}
           profile={profile}
           onSave={updateProfile}
         />
       )}
 
-      {avatarDialogVisible && (
+      {changeAvatarVisible && (
         <AvatarEditorDialog
           t={t}
-          visible={avatarDialogVisible}
-          onClose={() => setAvatarDialogVisible(false)}
+          visible={changeAvatarVisible}
+          onClose={() => setChangeAvatarVisible(false)}
           profile={profile}
           fetchProfile={fetchProfile}
         />
@@ -211,4 +216,30 @@ const MainProfile = (props) => {
   );
 };
 
-export default withCultureNames(MainProfile);
+export default withCultureNames(
+  inject(({ peopleStore }) => {
+    const { targetUserStore } = peopleStore;
+
+    const {
+      changeEmailVisible,
+      setChangeEmailVisible,
+      changePasswordVisible,
+      setChangePasswordVisible,
+      changeNameVisible,
+      setChangeNameVisible,
+      changeAvatarVisible,
+      setChangeAvatarVisible,
+    } = targetUserStore;
+
+    return {
+      changeEmailVisible,
+      setChangeEmailVisible,
+      changePasswordVisible,
+      setChangePasswordVisible,
+      changeNameVisible,
+      setChangeNameVisible,
+      changeAvatarVisible,
+      setChangeAvatarVisible,
+    };
+  })(observer(MainProfile))
+);
