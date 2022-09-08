@@ -81,24 +81,40 @@ public static class ServiceCollectionExtension
             services.AddSingleton<IRabbitMQPersistentConnection>(sp =>
             {
                 var cfg = sp.GetRequiredService<IConfiguration>();
-                var settings = cfg.GetSection("RabbitMQ").Get<RabbitMQSettings>();
 
                 var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
                 var factory = new ConnectionFactory()
                 {
-                    HostName = settings.HostName,
                     DispatchConsumersAsync = true
                 };
 
-                if (!string.IsNullOrEmpty(settings.UserName))
+                if (!string.IsNullOrEmpty(rabbitMQConfiguration.EndpointUri))
                 {
-                    factory.UserName = settings.UserName;
+                    factory.Endpoint = new AmqpTcpEndpoint(new Uri(rabbitMQConfiguration.EndpointUri));
+                }
+                else
+                {
+                    factory.HostName = rabbitMQConfiguration.HostName;
+                    factory.UserName = rabbitMQConfiguration.UserName;
+                    factory.Password = rabbitMQConfiguration.Password;
+                    factory.Port = rabbitMQConfiguration.Port;
+                    factory.VirtualHost = rabbitMQConfiguration.VirtualHost;
                 }
 
-                if (!string.IsNullOrEmpty(settings.Password))
+                if (rabbitMQConfiguration.EnableSsl)
                 {
-                    factory.Password = settings.Password;
+                    factory.Ssl = new SslOption
+                    {
+                        Enabled = rabbitMQConfiguration.EnableSsl,
+                        Version = SslProtocols.Tls12
+                    };
+
+                    if (!string.IsNullOrEmpty(rabbitMQConfiguration.SslCertPath))
+                    {
+                        factory.Ssl.CertPath = rabbitMQConfiguration.SslCertPath;
+                        factory.Ssl.ServerName = rabbitMQConfiguration.SslServerName;
+                    }
                 }
 
                 var retryCount = 5;
