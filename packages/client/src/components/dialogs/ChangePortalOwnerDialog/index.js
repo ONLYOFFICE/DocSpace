@@ -79,7 +79,16 @@ const ChangePortalOwnerDialog = ({
     setSelectedUser(null);
   };
 
-  const ownerRights = t("OwnerRights").split("|");
+  const ownerRights = [
+    t("DoTheSame"),
+    t("AppointAdmin"),
+    t("SetAccessRights"),
+    t("ManagePortal"),
+    t("ManageUser"),
+    t("ChangeOwner"),
+    t("BackupPortal"),
+    t("DeactivateOrDeletePortal"),
+  ];
 
   return (
     <ModalDialog

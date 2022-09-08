@@ -1,7 +1,14 @@
 {
+  "AppointAdmin": "Appoint administrators",
+  "BackupPortal": "Backup portal data",
   "ChangeInstruction": "To change the Portal owner please choose the Name of the new Portal owner below.",
+  "ChangeOwner": "Change portal owner",
   "ChangeUser": "Change user",
+  "DeactivateOrDeletePortal": "Deactivate or delete portal",
+  "DoTheSame": "Do the same as administrators",
+  "ManagePortal": "Manage portal configuration",
+  "ManageUser": "Manage user accounts",
   "NewPortalOwner": "New portal owner",
-  "OwnerRights": "Do the same as administrators|Appoint administrators|Set access rights|Manage portal configuration|Manage user accounts|Change portal owner|Backup portal data|Deactivate or delete portal",
-  "PortalOwnerCan": "Portal owner can:"
+  "PortalOwnerCan": "Portal owner can:",
+  "SetAccessRights": "Set access rights"
 }
