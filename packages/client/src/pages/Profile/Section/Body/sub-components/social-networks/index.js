@@ -69,6 +69,14 @@ const SocialNetworks = (props) => {
     }
   };
 
+  const unlinkAccount = (providerName) => {
+    unlinkOAuth(providerName).then(() => {
+      getAuthProviders().then((providers) => {
+        setProviders(providers);
+      });
+    });
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -80,13 +88,25 @@ const SocialNetworks = (props) => {
       const { icon, label, iconOptions } = providersData[item.provider];
       if (!icon || !label) return <></>;
 
+      console.log(item);
+
+      const onClick = (e) => {
+        if (item.linked) {
+          unlinkAccount(item.provider);
+        } else {
+          linkAccount(item.provider, item.url, e);
+        }
+      };
+
       return (
         <div key={`${item.provider}ProviderItem`}>
           <SocialButton
             iconName={icon}
             label={getProviderTranslation(label, t)}
             $iconOptions={iconOptions}
-            onClick={(e) => linkAccount(item.provider, item.url, e)}
+            onClick={(e) => onClick(e)}
+            size="small"
+            isConnect={item.linked}
           />
         </div>
       );
