@@ -9,6 +9,7 @@ import { parseAddresses } from "@docspace/components/utils/email";
 import { ShareAccessRights } from "@docspace/common/constants";
 
 import { AddUsersPanel } from "../index";
+import { getAccessOptions } from "./accesses";
 
 import {
   StyledSubHeader,
@@ -59,7 +60,7 @@ const InviteInput = ({
   const searchByQuery = async (value) => {
     const query = value.trim();
 
-    if (query.length > 0) {
+    if (!!query.length) {
       const users = await getUsersByQuery(query);
       setUsersList(users);
     }
@@ -74,8 +75,9 @@ const InviteInput = ({
     const value = e.target.value;
     const clearValue = value.trim();
 
-    if ((!!usersList.length || clearValue.length > 1) && !panelVisible)
+    if ((!!usersList.length || clearValue.length > 1) && !panelVisible) {
       openInviteInputPanel();
+    }
 
     setInputValue(value);
     debouncedSearch(clearValue);
@@ -156,7 +158,7 @@ const InviteInput = ({
 
   const foundUsers = usersList.map((user) => getItemContent(user));
 
-  const accesses = Object.keys(ShareAccessRights);
+  const accessOptions = getAccessOptions(t, 5);
 
   return (
     <>
@@ -197,15 +199,15 @@ const InviteInput = ({
 
         {showUsersPanel && (
           <AddUsersPanel
-            onSharingPanelClose={onClose}
+            onParentPanelClose={onClose}
             onClose={closeUsersPanel}
             visible={showUsersPanel}
             shareDataItems={roomUsers}
             tempDataItems={inviteItems}
-            setShareDataItems={addItems}
-            accessOptions={accesses}
+            setDataItems={addItems}
+            accessOptions={accessOptions}
             isMultiSelect
-            withoutAdded
+            isEncrypted={true}
           />
         )}
       </StyledInviteInputContainer>
