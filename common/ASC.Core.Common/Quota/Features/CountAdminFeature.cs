@@ -26,11 +26,45 @@
 
 namespace ASC.Core.Common.Quota.Features;
 
-public class CountAdminFeature : TenantQuotaFeatureCount
+public class CountManagerFeature : TenantQuotaFeatureCount
 {
     public override bool Paid { get => true; }
     public override string Name { get => "admin"; }
-    public CountAdminFeature(TenantQuota tenantQuota) : base(tenantQuota)
+    public CountManagerFeature(TenantQuota tenantQuota) : base(tenantQuota)
     {
+    }
+}
+public class CountManagerChecker : ITenantQuotaFeatureChecker
+{
+    private readonly ITenantQuotaFeatureStatisticCount<CountManagerFeature> _tenantQuotaFeatureStatistic;
+
+    public CountManagerChecker(ITenantQuotaFeatureStatisticCount<CountManagerFeature> tenantQuotaFeatureStatistic)
+    {
+        _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
+    }
+
+    public bool Check(TenantQuota quota)
+    {
+        return quota.ActiveUsers <= _tenantQuotaFeatureStatistic.GetValue();
+    }
+
+    public string Exception(TenantQuota quota)
+    {
+        return "The number of active users should not exceed " + quota.ActiveUsers;
+    }
+}
+
+public class CountManagerStatistic : ITenantQuotaFeatureStatisticCount<CountManagerFeature>
+{
+    private readonly UserManager _userManager;
+
+    public CountManagerStatistic(UserManager userManager)
+    {
+        _userManager = userManager;
+    }
+
+    public int GetValue()
+    {
+        return _userManager.GetUsersByGroup(Users.Constants.GroupUser.ID).Length;
     }
 }

@@ -33,38 +33,3 @@ public class ActiveUsersFeature : TenantQuotaFeatureCount
     {
     }
 }
-
-public class ActiveUsersChecker : ITenantQuotaFeatureChecker
-{
-    private readonly ITenantQuotaFeatureStatisticCount<ActiveUsersFeature> _tenantQuotaFeatureStatistic;
-
-    public ActiveUsersChecker(ITenantQuotaFeatureStatisticCount<ActiveUsersFeature> tenantQuotaFeatureStatistic)
-    {
-        _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
-    }
-
-    public bool Check(TenantQuota quota)
-    {
-        return quota.ActiveUsers <= _tenantQuotaFeatureStatistic.GetValue();
-    }
-
-    public string Exception(TenantQuota quota)
-    {
-        return "The number of active users should not exceed " + quota.ActiveUsers;
-    }
-}
-
-public class ActiveUsersStatistic : ITenantQuotaFeatureStatisticCount<ActiveUsersFeature>
-{
-    private readonly UserManager _userManager;
-
-    public ActiveUsersStatistic(UserManager userManager)
-    {
-        _userManager = userManager;
-    }
-
-    public int GetValue()
-    {
-        return _userManager.GetUsersByGroup(Users.Constants.GroupUser.ID).Length;
-    }
-}

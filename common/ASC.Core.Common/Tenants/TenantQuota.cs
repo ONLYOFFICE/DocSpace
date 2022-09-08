@@ -84,7 +84,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         set => _activeUsersFeature.Value = value;
     }
 
-    private readonly CountAdminFeature _countAdminFeature;
+    private readonly CountManagerFeature _countAdminFeature;
     public int CountAdmin
     {
         get => _countAdminFeature.Value;
@@ -208,9 +208,9 @@ public class TenantQuota : IMapFrom<DbQuota>
         _featuresList = new List<string>();
 
         _activeUsersFeature = new ActiveUsersFeature(this) { Order = 1 };
-        _countAdminFeature = new CountAdminFeature(this);
+        _countAdminFeature = new CountManagerFeature(this);
         _countRoomFeature = new CountRoomFeature(this) { Order = 2 };
-        _maxTotalSizeFeature = new MaxTotalSizeFeature(this) { Order = 3 };
+        _maxTotalSizeFeature = new MaxTotalSizeFeature(this);
         _nonProfitFeature = new TenantQuotaFeatureFlag(this) { Name = "non-profit", Visible = false };
         _trialFeature = new TenantQuotaFeatureFlag(this) { Name = "trial", Visible = false };
         _freeFeature = new TenantQuotaFeatureFlag(this) { Name = "free", Visible = false };
@@ -346,7 +346,7 @@ public class TenantQuota : IMapFrom<DbQuota>
             .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInBytes(src.MaxFileSize)));
     }
 
-    internal TenantQuotaFeature<T> GetFeature<T>(string name)
+    public TenantQuotaFeature<T> GetFeature<T>(string name)
     {
         return TenantQuotaFeatures.OfType<TenantQuotaFeature<T>>().FirstOrDefault(r => r.Name == name);
     }

@@ -34,7 +34,7 @@ public class QuotaHelper
     private readonly TenantManager _tenantManager;
     private readonly RegionHelper _regionHelper;
     private readonly IServiceProvider _serviceProvider;
-
+    private const int Max = 999;
     public QuotaHelper(TenantManager tenantManager, RegionHelper regionHelper, IServiceProvider serviceProvider)
     {
         _tenantManager = tenantManager;
@@ -44,25 +44,33 @@ public class QuotaHelper
 
     public IEnumerable<QuotaDto> GetQuotas()
     {
+        var tenantQuota = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id);
         var quotaList = _tenantManager.GetTenantQuotas(false);
         var priceInfo = _tenantManager.GetProductPriceInfo();
         var currentRegion = _regionHelper.GetCurrentRegionInfo();
 
-        return quotaList.Select(x => ToQuotaDto(x, priceInfo, currentRegion)).ToList();
+        return quotaList.Select(x => ToQuotaDto(x, tenantQuota, priceInfo, currentRegion)).ToList();
     }
 
-    private QuotaDto ToQuotaDto(TenantQuota tenantQuota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
+    private QuotaDto ToQuotaDto(TenantQuota quota, TenantQuota tenantQuota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
     {
-        var features = GetFeatures(tenantQuota, priceInfo, currentRegion);
+        var price = GetPrice(quota, priceInfo, currentRegion);
+        var features = GetFeatures(quota, tenantQuota, GetPriceString(price, currentRegion));
 
         return new QuotaDto
         {
-            Id = tenantQuota.Tenant,
-            Title = Resource.ResourceManager.GetString($"Tariffs_{tenantQuota.Name}"),
+            Id = quota.Tenant,
+            Title = Resource.ResourceManager.GetString($"Tariffs_{quota.Name}"),
 
-            NonProfit = tenantQuota.NonProfit,
-            Free = tenantQuota.Free,
-            Trial = tenantQuota.Trial,
+            NonProfit = quota.NonProfit,
+            Free = quota.Free,
+            Trial = quota.Trial,
+
+            Price = new PriceDto
+            {
+                Value = price,
+                CurrencySymbol = currentRegion.CurrencySymbol
+            },
 
             Features = features
         };
@@ -92,41 +100,27 @@ public class QuotaHelper
         return string.Format("{0}{1}", currentRegion.CurrencySymbol, priceString);
     }
 
-    private IEnumerable<QuotaFeatureDto> GetFeatures(TenantQuota tenantQuota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
+    private IEnumerable<QuotaFeatureDto> GetFeatures(TenantQuota quota, TenantQuota tenantQuota, string price)
     {
         var assembly = GetType().Assembly;
 
-        var features = tenantQuota.Features.Split(' ', ',', ';');
+        var features = quota.Features.Split(' ', ',', ';');
 
-        foreach (var feature in tenantQuota.TenantQuotaFeatures.Where(r => r.Visible).OrderBy(r => r.Order))
+        foreach (var feature in quota.TenantQuotaFeatures.Where(r => r.Visible).OrderBy(r => r.Order))
         {
             var result = new QuotaFeatureDto();
 
-            if (feature.Paid || features.Length == 1)
+            if (feature.Paid)
             {
-                var val = GetPrice(tenantQuota, priceInfo, currentRegion);
                 result.Price = new FeaturePriceDto
                 {
-                    Value = val,
-                    CurrencySymbol = currentRegion.CurrencySymbol,
-                    Per = string.Format(Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}_price_per"), GetPriceString(val, currentRegion)),
-                    Count = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}_price_count"),
-                    Range = new FeaturePriceRangeDto
-                    {
-                        Value = 1,
-                        Min = 1,
-                        Max = 999,
-                    }
+                    Per = string.Format(Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}_price_per"), price),
+                    Count = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}_price_count")
                 };
             }
 
             result.Id = feature.Name;
             result.Title = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}");
-
-            if (feature.Name == "total_size") //TODO
-            {
-                result.Title = string.Format(result.Title, FileSizeComment.FilesSizeToString(tenantQuota.MaxTotalSize));
-            }
 
             var img = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.img.{feature.Name}.svg");
 
@@ -145,7 +139,7 @@ public class QuotaHelper
             }
 
             object used = null;
-            if (feature is TenantQuotaFeature<long>)
+            if (feature is TenantQuotaFeature<long> length)
             {
                 var statisticProvider = (ITenantQuotaFeatureStat<long>)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStatisticLength<>).MakeGenericType(feature.GetType()));
 
@@ -153,14 +147,34 @@ public class QuotaHelper
                 {
                     used = statisticProvider.GetValue();
                 }
+
+                if (feature.Paid && length.Value != long.MaxValue)
+                {
+                    result.Price.Range = new FeaturePriceRangeDto
+                    {
+                        Value = length.Value,
+                        Min = tenantQuota.GetFeature<long>(length.Name).Value, // must set to used quota
+                        Max = Max * length.Value,
+                    };
+                }
             }
-            else if (feature is TenantQuotaFeature<int>)
+            else if (feature is TenantQuotaFeature<int> count)
             {
                 var statisticProvider = (ITenantQuotaFeatureStat<int>)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStatisticCount<>).MakeGenericType(feature.GetType()));
 
                 if (statisticProvider != null)
                 {
                     used = statisticProvider.GetValue();
+                }
+
+                if (feature.Paid && count.Value != int.MaxValue)
+                {
+                    result.Price.Range = new FeaturePriceRangeDto
+                    {
+                        Value = count.Value,
+                        Min = tenantQuota.GetFeature<int>(count.Name).Value,
+                        Max = Max * count.Value,
+                    };
                 }
             }
 

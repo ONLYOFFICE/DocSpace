@@ -31,6 +31,8 @@ public class QuotaDto
     public int Id { get; set; }
     public string Title { get; set; }
 
+    public PriceDto Price { get; set; }
+
     public bool NonProfit { get; set; }
     public bool Free { get; set; }
     public bool Trial { get; set; }
@@ -60,10 +62,14 @@ public class QuotaFeatureDto : IEquatable<QuotaFeatureDto>
     public override int GetHashCode() => Id.GetHashCode();
 }
 
-public class FeaturePriceDto
+public class PriceDto
 {
     public decimal? Value { get; set; }
     public string CurrencySymbol { get; set; }
+}
+
+public class FeaturePriceDto
+{
     public string Count { get; set; }
     public string Per { get; set; }
     public FeaturePriceRangeDto Range { get; set; }
