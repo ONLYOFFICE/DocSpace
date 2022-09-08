@@ -24,10 +24,10 @@ ENV LANG=en_US.UTF-8 \
 
 RUN apt-get -y update && \
     apt-get install -yq \
-    sudo \
-    locales \
-    git \
-    npm  && \
+        sudo \
+        locales \
+        git \
+        npm  && \
     locale-gen en_US.UTF-8 && \
     npm install --global yarn && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && \
@@ -35,7 +35,7 @@ RUN apt-get -y update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN echo ${GIT_BRANCH}  && \
-    git clone --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/DocSpace.git ${SRC_PATH}
+    git clone --depth 1 --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/DocSpace.git ${SRC_PATH}
 
 RUN cd ${SRC_PATH} && \
     # mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
@@ -76,14 +76,13 @@ RUN mkdir -p /var/log/onlyoffice && \
     chown onlyoffice:onlyoffice /var/log -R && \
     chown onlyoffice:onlyoffice /var/www -R && \
     apt-get -y update && \
-    apt-get -y dist-upgrade && \
     apt-get install -yq \
-    sudo \
-    nano \
-    curl \
-    vim \
-    python3-pip \
-    libgdiplus && \
+        sudo \
+        nano \
+        curl \
+        vim \
+        python3-pip \
+        libgdiplus && \
     pip3 install --upgrade jsonpath-ng multipledispatch && \
     rm -rf /var/lib/apt/lists/*
 
@@ -107,8 +106,12 @@ RUN mkdir -p /var/log/onlyoffice && \
     chown onlyoffice:onlyoffice /var/log -R  && \
     chown onlyoffice:onlyoffice /var/www -R && \
     apt-get -y update && \
-    apt-get -y dist-upgrade && \
-    apt-get install -yq sudo nano curl vim python3-pip && \
+    apt-get install -yq \ 
+        sudo \
+        nano \
+        curl \
+        vim \
+        python3-pip && \
     pip3 install --upgrade jsonpath-ng multipledispatch && \
     rm -rf /var/lib/apt/lists/*
 
@@ -127,7 +130,6 @@ ENV DNS_NAMESERVER=127.0.0.11 \
     MAP_HASH_BUCKET_SIZE=""
 
 RUN apt-get -y update && \
-    apt-get -y dist-upgrade && \
     apt-get install -yq vim && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/share/nginx/html/* 
