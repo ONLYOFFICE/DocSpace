@@ -34,6 +34,8 @@ import CreateEditRoomDilogHeaderLoader from "./CreateEditRoomLoader/CreateEditRo
 import DataBackupLoader from "./DataBackupLoader";
 import AutoBackupLoader from "./AutoBackupLoader";
 import RestoreBackupLoader from "./RestoreBackupLoader";
+import SelectorSearchLoader from "./SelectorSearchLoader";
+import SelectorRowLoader from "./SelectorRowLoader";
 
 export default {
   Rectangle,
@@ -72,4 +74,6 @@ export default {
   DataBackupLoader,
   AutoBackupLoader,
   RestoreBackupLoader,
+  SelectorSearchLoader,
+  SelectorRowLoader,
 };

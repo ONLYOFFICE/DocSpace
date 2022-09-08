@@ -23,19 +23,6 @@ const PanelStyles = css`
     }
   }
 
-  .groupSelector,
-  .peopleSelector {
-    .combo-buttons_arrow-icon {
-      flex: 0 0 6px;
-      width: 6px;
-      margin-top: auto;
-      margin-bottom: auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-
   .footer {
     padding: 16px;
     width: 100%;
@@ -136,13 +123,6 @@ const StyledVersionHistoryPanel = styled.div`
 `;
 
 StyledVersionHistoryPanel.defaultProps = { theme: Base };
-
-const StyledAddUsersPanelPanel = styled.div`
-  ${PanelStyles}
-  .combo-button-label {
-    font-size: 14px;
-  }
-`;
 
 const StyledAddGroupsPanel = styled.div`
   ${PanelStyles}
@@ -695,7 +675,6 @@ StyledModalRowContainer.defaultProps = { theme: Base };
 export {
   StyledAsidePanel,
   StyledAddGroupsPanel,
-  StyledAddUsersPanelPanel,
   StyledEmbeddingPanel,
   StyledVersionHistoryPanel,
   StyledContent,
