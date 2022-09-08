@@ -212,7 +212,7 @@ const SortButton = ({
       sortDirection: selectedValue.sortDirection,
       sortId: selectedValue.sortId,
     });
-  }, []);
+  }, [getSortData, getSelectedSortData]);
 
   const toggleCombobox = React.useCallback(() => {
     setIsOpen((val) => !val);
