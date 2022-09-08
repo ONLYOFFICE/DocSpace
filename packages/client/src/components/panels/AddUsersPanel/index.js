@@ -16,7 +16,8 @@ const AddUsersPanel = ({
   onClose,
   onParentPanelClose,
   shareDataItems,
-  setShareDataItems,
+  tempDataItems,
+  setDataItems,
   t,
   visible,
   groupsCaption,
@@ -28,7 +29,7 @@ const AddUsersPanel = ({
     ? ShareAccessRights.FullAccess
     : ShareAccessRights.ReadOnly;
 
-  const onArrowClick = () => onClose();
+  const onBackClick = () => onClose();
 
   const onKeyPress = (e) => {
     if (e.key === "Esc" || e.key === "Escape") onClose();
@@ -45,27 +46,29 @@ const AddUsersPanel = ({
     onParentPanelClose();
   };
 
-  const onPeopleSelect = (users) => {
-    const items = shareDataItems;
+  const onUsersSelect = (users, access) => {
+    const items = [];
+
     for (let item of users) {
       const currentItem = shareDataItems.find((x) => x.sharedTo.id === item.id);
 
       if (!currentItem) {
         const newItem = {
-          access: accessRight,
-          isLocked: false,
-          isOwner: false,
-          sharedTo: item,
+          access: access.access,
+          email: item.email,
+          id: item.id,
+          displayName: item.label,
+          avatarSmall: item.avatar,
         };
         items.push(newItem);
       }
     }
 
-    setShareDataItems(items);
+    setDataItems(items);
     onClose();
   };
 
-  const onOwnerSelect = (owner) => {
+  const onUserSelect = (owner) => {
     const ownerItem = shareDataItems.find((x) => x.isOwner);
     ownerItem.sharedTo = owner[0];
 
@@ -73,23 +76,16 @@ const AddUsersPanel = ({
       owner[0].id = owner[0].key;
     }
 
-    setShareDataItems(shareDataItems);
+    setDataItems(shareDataItems);
     onClose();
   };
 
-  const accessRights = accessOptions.map((access) => {
-    return {
-      key: access,
-      label: t(access),
-    };
-  });
-
-  const selectedAccess = accesses.filter(
-    (access) => access.key === "Review"
+  const selectedAccess = accessOptions.filter(
+    (access) => access.access === accessRight
   )[0];
 
   return (
-    <div visible={visible}>
+    <>
       <Backdrop
         onClick={onClosePanels}
         visible={visible}
@@ -103,14 +99,9 @@ const AddUsersPanel = ({
       >
         <PeopleSelector
           isMultiSelect={isMultiSelect}
-          onAccept={isMultiSelect ? onPeopleSelect : onOwnerSelect}
-          onBackClick={onArrowClick}
-          headerLabel={
-            isMultiSelect
-              ? t("Common:AddUsers")
-              : t("PeopleTranslations:OwnerChange")
-          }
-          accessRights={accessRights}
+          onAccept={onUsersSelect}
+          onBackClick={onBackClick}
+          accessRights={accessOptions}
           selectedAccessRight={selectedAccess}
           onCancel={onClosePanels}
           withCancelButton={!isMultiSelect}
@@ -118,7 +109,7 @@ const AddUsersPanel = ({
           withSelectAll={isMultiSelect}
         />
       </Aside>
-    </div>
+    </>
   );
 };
 
