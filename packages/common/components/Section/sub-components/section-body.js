@@ -36,6 +36,7 @@ const settingsStudioStyles = css`
       : css`
           @media ${tablet} {
             padding: 19px 0 16px 24px;
+          }
         `}
 `;
 
@@ -117,23 +118,24 @@ const commonStyles = css`
 
 const StyledSectionBody = styled.div`
   max-width: 100vw !important;
-  ${commonStyles}
+
+  ${commonStyles};
+
   ${(props) =>
     props.withScroll &&
-    `
-    margin-left: -20px;
+    css`
+      margin-left: -20px;
 
-    @media ${tablet}{
-      margin-left: -24px;
-    }
-    
-    ${
-      isMobile &&
-      css`
+      @media ${tablet} {
         margin-left: -24px;
-      `
-    }
+      }
+    `}
+
+  ${isMobile &&
+  css`
+    margin-left: -24px;
   `}
+
     .additional-scroll-height {
     ${(props) =>
       !props.withScroll &&
@@ -156,20 +158,18 @@ const StyledDropZoneBody = styled(DragAndDrop)`
 
   ${(props) =>
     props.withScroll &&
-    `
-    margin-left: -20px;
+    css`
+      margin-left: -20px;
 
-    @media ${tablet}{
-      margin-left: -24px;
-    }
-    
-    ${
-      isMobile &&
+      @media ${tablet} {
+        margin-left: -24px;
+      }
+
+      ${isMobile &&
       css`
         margin-left: -24px;
-      `
-    }
-  `}
+      `}
+    `}
 `;
 
 const StyledSpacer = styled.div`
