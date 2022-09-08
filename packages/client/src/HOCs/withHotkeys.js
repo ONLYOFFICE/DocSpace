@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import throttle from "lodash/throttle";
 
 const withHotkeys = (Component) => {

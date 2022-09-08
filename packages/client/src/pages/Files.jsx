@@ -5,7 +5,7 @@ import { Switch, withRouter, Redirect } from "react-router-dom";
 //import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import {
   //combineUrl,
   updateTempContent,

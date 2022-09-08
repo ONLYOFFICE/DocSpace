@@ -5,9 +5,9 @@ import {
   getFromLocalStorage,
   removeLocalStorage,
 } from "../pages/PortalSettings/utils";
-import toastr from "../helpers/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { AutoBackupPeriod } from "@docspace/common/constants";
-import api from "@docspace/common/api";
+//import api from "@docspace/common/api";
 
 const { EveryDayType, EveryWeekType } = AutoBackupPeriod;
 
