@@ -28,7 +28,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
     };
   }
   onDeleteProfileEver = () => {
-    const { user, t, history, homepage, setFilter } = this.props;
+    const { user, t, history, homepage, setFilter, onClose } = this.props;
 
     const filter = Filter.getDefault();
     const params = filter.toUrlParams();
@@ -47,7 +47,8 @@ class DeleteProfileEverDialogComponent extends React.Component {
           setFilter(filter);
           return;
         })
-        .catch((error) => toastr.error(error));
+        .catch((error) => toastr.error(error))
+        .finally(() => onClose());
     });
   };
 
