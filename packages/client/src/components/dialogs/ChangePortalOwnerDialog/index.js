@@ -81,14 +81,6 @@ const ChangePortalOwnerDialog = ({
 
   const ownerRights = t("OwnerRights").split("|");
 
-  // const ownerRights = React.useMemo(() => {
-  //   if (Array.isArray(translationOwnerRights)) {
-  //     return translationOwnerRights;
-  //   }
-
-  //   return [];
-  // }, [Array.isArray(translationOwnerRights)]);
-
   return (
     <ModalDialog
       displayType={"aside"}
