@@ -1,9 +1,7 @@
 #!/bin/bash
 BUILD_NUMBER="$(date "+%Y%m%d%H")"
-REPO=$REPO
-STATUS=$STATUS
 
-docker-compose -f build.yml push
+STATUS=$STATUS REPO=$REPO docker-compose -f build.yml push
 
 # Get docker images name to array
 arrayImagesName=($(docker image ls | grep "$DOCKER_TAG" | grep "$STATUS" | grep "$REPO" | awk '{print $1}' ))
@@ -16,4 +14,4 @@ done
 
 # Push the same images with a new tag
 DOCKER_TAG=$DOCKER_TAG-$BUILD_NUMBER
-docker-compose -f build.yml push
+STATUS=$STATUS REPO=$REPO docker-compose -f build.yml push
