@@ -27,7 +27,6 @@ import { toastr } from "@docspace/components";
 
 const filter = new Filter();
 
-filter.activationStatus = 1;
 filter.employeeStatus = 1;
 
 const ChangePortalOwnerDialog = ({
@@ -166,8 +165,12 @@ const ChangePortalOwnerDialog = ({
               className="selector-add-button"
               onClick={onTogglePeopleSelector}
             />
-            <Text className="label" noSelect title={t("Settings:ChooseOwner")}>
-              {t("Settings:ChooseOwner")}
+            <Text
+              className="label"
+              noSelect
+              title={t("Translations:ChooseFromList")}
+            >
+              {t("Translations:ChooseFromList")}
             </Text>
           </StyledPeopleSelector>
         )}
