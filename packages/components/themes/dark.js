@@ -382,7 +382,7 @@ const Dark = {
   iconButton: { color: "#858585", hoverColor: grayMaxLight },
   selectorAddButton: {
     background: "#292929",
-    activeBackground: darkBlack,
+    activeBackground: "#292929",
 
     border: `none`,
     boxSizing: "border-box",
@@ -391,7 +391,7 @@ const Dark = {
     width: "32px",
     padding: "9px",
     color: "#858585",
-    hoverColor: grayMaxLight,
+    hoverColor: "#858585",
   },
 
   saveCancelButtons: {
