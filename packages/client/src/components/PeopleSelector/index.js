@@ -11,6 +11,7 @@ import UserTooltip from "./sub-components/UserTooltip";
 
 import { getUserList } from "@docspace/common/api/people";
 import Loaders from "@docspace/common/components/Loaders";
+import { getUserRole } from "SRC_DIR/helpers/people-helpers";
 
 const PeopleSelector = ({
   acceptButtonLabel,
@@ -59,11 +60,15 @@ const PeopleSelector = ({
 
   const toListItem = (item) => {
     const { id, avatar, icon, displayName } = item;
+
+    const role = getUserRole(item);
+
     return {
       id,
       avatar,
       icon,
       label: displayName,
+      role,
     };
   };
 
