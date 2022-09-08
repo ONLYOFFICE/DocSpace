@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
+import { getCategoryType } from "@docspace/client/src/helpers/utils";
+import { CategoryType } from "@docspace/client/src/helpers/constants";
 import Loaders from "@docspace/common/components/Loaders";
 
 import ViewHelper from "./helpers/ViewHelper";
@@ -16,87 +18,89 @@ const InfoPanelBodyContent = ({
 
   selection,
   setSelection,
-  roomView,
-  itemView,
-
-  selectedItems,
-  selectedFolder,
+  normalizeSelection,
+  currentRoomTitle,
+  setCurrentRoomTitle,
+  roomsView,
+  personalView,
 
   getIcon,
   getFolderIcon,
 
   isGallery,
   isFileCategory,
-  ...rest
+  ...props
 }) => {
+  const [selectedItems, setSelectedItems] = useState(props.selectedItems);
+  const [selectedFolder, setSelectedFolder] = useState(props.selectedFolder);
+
+  const categoryType = getCategoryType(location);
+  let isRoomCategory =
+    categoryType == CategoryType.Shared ||
+    categoryType == CategoryType.SharedRoom ||
+    categoryType == CategoryType.Archive ||
+    categoryType == CategoryType.ArchivedRoom;
+
   const viewHelper = new ViewHelper({
     defaultProps: {
       t,
       selection,
       setSelection,
-      personal: rest.personal,
-      culture: rest.culture,
+      personal: props.personal,
+      culture: props.culture,
+      isGallery,
       isFileCategory,
-      isRootFolder: rest.isRootFolder,
-      isRecycleBinFolder: rest.isRecycleBinFolder,
-      isRecentFolder: rest.isRecentFolder,
-      isFavoritesFolder: rest.isFavoritesFolder,
+      isRootFolder: props.isRootFolder,
+      isRecycleBinFolder: props.isRecycleBinFolder,
+      isRecentFolder: props.isRecentFolder,
+      isFavoritesFolder: props.isFavoritesFolder,
     },
     detailsProps: {
-      getFolderInfo: rest.getFolderInfo,
+      getFolderInfo: props.getFolderInfo,
       getIcon,
       getFolderIcon,
-      getShareUsers: rest.getShareUsers,
-      onSelectItem: rest.onSelectItem,
-      setSharingPanelVisible: rest.setSharingPanelVisible,
-      createThumbnail: rest.createThumbnail,
+      getShareUsers: props.getShareUsers,
+      onSelectItem: props.onSelectItem,
+      setSharingPanelVisible: props.setSharingPanelVisible,
+      createThumbnail: props.createThumbnail,
     },
     membersProps: {
-      selfId: rest.selfId,
-      getRoomMembers: rest.getRoomMembers,
+      selfId: props.selfId,
+      currentRoomMembers: props.currentRoomMembers,
+      setCurrentRoomMembers: props.setCurrentRoomMembers,
+      getRoomMembers: props.getRoomMembers,
     },
     historyProps: {
-      personal: rest.personal,
-      culture: rest.culture,
+      personal: props.personal,
+      culture: props.culture,
     },
     galleryProps: {
-      gallerySelected: rest.gallerySelected,
-      personal: rest.personal,
-      culture: rest.culture,
+      gallerySelected: props.gallerySelected,
+      getIcon,
+      personal: props.personal,
+      culture: props.culture,
     },
   });
 
   const getSelection = () => {
-    if (selectedItems.length > 1) return selectedItems;
-
-    const newSelection =
-      selectedItems.length === 0
-        ? { ...selectedFolder, isSelectedFolder: true }
-        : { ...selectedItems[0], isSelectedItem: true };
-
-    const getItemIcon = (size) =>
-      newSelection.isRoom
-        ? newSelection.logo && newSelection.logo.big
-          ? newSelection.logo.big
-          : newSelection.icon
-        : newSelection.isFolder
-        ? getFolderIcon(newSelection.providerKey, size)
-        : getIcon(size, newSelection.fileExst || ".file");
-
-    newSelection.icon = getItemIcon(32);
-    newSelection.hasCustonThumbnail = !!newSelection.thumbnailUrl;
-    newSelection.thumbnailUrl = newSelection.thumbnailUrl || getItemIcon(96);
-
-    return newSelection;
+    return selectedItems.length === 0
+      ? normalizeSelection({ ...selectedFolder, isSelectedFolder: true })
+      : selectedItems.length === 1
+      ? normalizeSelection({ ...selectedItems[0], isSelectedItem: true })
+      : [...Array(selectedItems.length).keys()];
   };
 
   const getView = (selection) => {
     if (Array.isArray(selection)) return viewHelper.SeveralItemsView();
-    if (isFileCategory && selection.isSelectedFolder)
+    if (
+      (isFileCategory && selection.isSelectedFolder) ||
+      (isGallery && !selectedItems.length)
+    )
       return viewHelper.NoItemView();
+
     if (isGallery) return viewHelper.GalleryView();
 
-    switch (selection.isRoom ? roomView : itemView) {
+    switch (isRoomCategory ? roomsView : personalView) {
       case "members": {
         return viewHelper.MembersView();
       }
@@ -110,20 +114,45 @@ const InfoPanelBodyContent = ({
   };
 
   useEffect(() => {
+    if (selection && selection.isContextMenuSelection)
+      setSelection({ ...selection, isContextMenuSelection: false });
+  }, [selection]);
+
+  useEffect(() => {
+    if (selection && selection.isContextMenuSelection) return;
+
     const newSelection = getSelection();
     if (selection && selection.id === newSelection.id) return;
     setSelection(newSelection);
+    setCurrentRoomTitle({
+      title: newSelection.title,
+      isRoom: newSelection.isRoom,
+      icon: newSelection.icon,
+      logo: newSelection.logo,
+    });
   }, [selectedItems, selectedFolder]);
 
   //////////////////////////////////////////////////////////
 
   useEffect(() => {
-    console.log(
-      "Selected items: ",
-      selectedItems,
-      "\nSelected folder: ",
-      selectedFolder
-    );
+    if (selectedItems.length !== props.selectedItems.length)
+      setSelectedItems(props.selectedItems);
+    else if (selectedItems[0]?.id !== props.selectedItems[0]?.id)
+      setSelectedItems(props.selectedItems);
+  }, [props.selectedItems]);
+
+  useEffect(() => {
+    if (selectedFolder.id !== props.selectedFolder.id) {
+      setSelectedFolder(props.selectedFolder);
+      console.log("\nSelected folder: ", selectedFolder);
+    }
+  }, [props.selectedFolder]);
+
+  //////////////////////////////////////////////////////////
+
+  useEffect(() => {
+    console.log("\nSelected items: ", selectedItems);
+    console.log("\nSelected folder: ", selectedFolder);
   }, [selectedItems, selectedFolder]);
 
   //////////////////////////////////////////////////////////
@@ -133,7 +162,12 @@ const InfoPanelBodyContent = ({
     <StyledInfoPanelBody>
       <ItemTitle
         t={t}
-        selection={selection}
+        roomsView={roomsView}
+        selection={
+          isRoomCategory && roomsView === "members" && !selection.isRoom
+            ? normalizeSelection(selectedFolder)
+            : selection
+        }
         isGallery={isGallery}
         isFileCategory={isFileCategory}
         getIcon={getIcon}
@@ -155,7 +189,17 @@ export default inject(
     oformsStore,
   }) => {
     const { personal, culture } = auth.settingsStore;
-    const { selection, setSelection, roomView, itemView } = auth.infoPanelStore;
+    const {
+      selection,
+      setSelection,
+      normalizeSelection,
+      currentRoomTitle,
+      setCurrentRoomTitle,
+      currentRoomMembers,
+      setCurrentRoomMembers,
+      roomsView,
+      personalView,
+    } = auth.infoPanelStore;
     const selfId = auth.userStore.user.id;
 
     const {
@@ -183,6 +227,12 @@ export default inject(
       isRootFolder &&
       (isRecycleBinFolder || isRecentFolder || isFavoritesFolder);
 
+    // const selectedItems =
+    //   selection?.length > 0
+    //     ? [...selection]
+    //     : bufferSelection
+    //     ? [bufferSelection]
+    //     : [];
     const selectedItems =
       filesStoreSelection?.length > 0 ? [...filesStoreSelection] : [];
 
@@ -199,8 +249,13 @@ export default inject(
 
       selection,
       setSelection,
-      roomView,
-      itemView,
+      normalizeSelection,
+      currentRoomTitle,
+      setCurrentRoomTitle,
+      currentRoomMembers,
+      setCurrentRoomMembers,
+      roomsView,
+      personalView,
 
       selectedItems,
       selectedFolder,
@@ -226,7 +281,13 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation(["InfoPanel", "Home", "Common", "Translations"])(
+    withTranslation([
+      "InfoPanel",
+      "FormGallery",
+      "Home",
+      "Common",
+      "Translations",
+    ])(
       withLoader(observer(InfoPanelBodyContent))(
         <Loaders.InfoPanelBodyLoader />
       )
