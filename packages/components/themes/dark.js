@@ -291,6 +291,7 @@ const Dark = {
     padding: "0",
     borderRadius: "2px",
     height: "40px",
+    heightSmall: "32px",
     textAlign: "left",
     stroke: " none",
     outline: "none",
@@ -298,7 +299,9 @@ const Dark = {
 
     background: black,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
+    connectBackground: "#3B72A7",
     hoverBackground: "#292929",
+    hoverConnectBackground: "#265A8F",
     activeBackground: "#292929",
     hoverBorder: "#292929",
 
@@ -322,6 +325,7 @@ const Dark = {
       whiteSpace: "nowrap",
       color: grayMaxLight,
       hoverColor: grayMaxLight,
+      connectColor: white,
     },
 
     svg: {
@@ -330,6 +334,7 @@ const Dark = {
       height: "18px",
       minWidth: "18px",
       minHeight: "18px",
+      fill: white,
     },
   },
 

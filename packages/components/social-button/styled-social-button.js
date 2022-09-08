@@ -32,7 +32,10 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   padding: ${(props) => props.theme.socialButton.padding};
   border-radius: ${(props) => props.theme.socialButton.borderRadius};
   width: ${(props) => props.theme.socialButton.width};
-  height: ${(props) => props.theme.socialButton.height};
+  height: ${(props) =>
+    props.size === "base"
+      ? props.theme.socialButton.height
+      : props.theme.socialButton.heightSmall};
   text-align: ${(props) => props.theme.socialButton.textAlign};
   border: ${(props) => props.theme.socialButton.border};
   touch-callout: none;
@@ -58,7 +61,10 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   ${(props) =>
     !props.isDisabled
       ? css`
-          background: ${(props) => props.theme.socialButton.background};
+          background: ${(props) =>
+            props.isConnect
+              ? props.theme.socialButton.connectBackground
+              : props.theme.socialButton.background};
           box-shadow: ${(props) => props.theme.socialButton.boxShadow};
 
           ${(props) =>
@@ -70,13 +76,17 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
                 box-shadow: ${(props) => props.theme.socialButton.boxShadow};
 
                 .social_button_text {
-                  color: ${(props) => props.theme.socialButton.text.hoverColor};
+                  color: ${(props) =>
+                    !props.isConnect &&
+                    props.theme.socialButton.text.hoverColor};
                 }
               }
 
               :hover {
                 background: ${(props) =>
-                  props.theme.socialButton.hoverBackground};
+                  props.isConnect
+                    ? props.theme.socialButton.hoverConnectBackground
+                    : props.theme.socialButton.hoverBackground};
               }
 
               :active {
@@ -105,7 +115,10 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   .social_button_text {
     position: relative;
     pointer-events: none;
-    color: ${(props) => props.theme.socialButton.text.color};
+    color: ${(props) =>
+      props.isConnect
+        ? props.theme.socialButton.text.connectColor
+        : props.theme.socialButton.text.color};
     width: ${(props) => props.theme.socialButton.text.width};
     height: ${(props) => props.theme.socialButton.text.height};
     font-family: Roboto, "Open Sans", sans-serif, Arial;
@@ -126,6 +139,10 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
     height: ${(props) => props.theme.socialButton.svg.height};
     min-width: ${(props) => props.theme.socialButton.svg.minWidth};
     min-height: ${(props) => props.theme.socialButton.svg.minHeight};
+
+    path {
+      fill: ${(props) => props.isConnect && props.theme.socialButton.svg.fill};
+    }
   }
 `;
 

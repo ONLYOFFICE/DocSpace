@@ -52,6 +52,8 @@ SocialButton.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   onClick: PropTypes.func,
   $iconOptions: PropTypes.object,
+  size: PropTypes.oneOf(["base", "small"]),
+  isConnect: PropTypes.bool,
 };
 
 SocialButton.defaultProps = {
@@ -60,6 +62,8 @@ SocialButton.defaultProps = {
   tabIndex: -1,
   isDisabled: false,
   $iconOptions: {},
+  size: "base",
+  isConnect: false,
 };
 
 export default SocialButton;
