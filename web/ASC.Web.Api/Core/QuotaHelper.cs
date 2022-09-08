@@ -34,7 +34,6 @@ public class QuotaHelper
     private readonly TenantManager _tenantManager;
     private readonly RegionHelper _regionHelper;
     private readonly IServiceProvider _serviceProvider;
-    private const int Max = 999;
 
     public QuotaHelper(TenantManager tenantManager, RegionHelper regionHelper, IServiceProvider serviceProvider)
     {
@@ -52,10 +51,19 @@ public class QuotaHelper
         return quotaList.Select(x => ToQuotaDto(x, priceInfo, currentRegion)).ToList();
     }
 
-    private QuotaDto ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
+    public QuotaDto GetCurrentQuota()
+    {
+        var quota = _tenantManager.GetCurrentTenantQuota();
+        var priceInfo = _tenantManager.GetProductPriceInfo();
+        var currentRegion = _regionHelper.GetCurrentRegionInfo();
+
+        return ToQuotaDto(quota, priceInfo, currentRegion, true);
+    }
+
+    private QuotaDto ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion, bool getUsed = false)
     {
         var price = GetPrice(quota, priceInfo, currentRegion);
-        var features = GetFeatures(quota, GetPriceString(price, currentRegion));
+        var features = GetFeatures(quota, GetPriceString(price, currentRegion), getUsed);
 
         return new QuotaDto
         {
@@ -100,7 +108,7 @@ public class QuotaHelper
         return string.Format("{0}{1}", currentRegion.CurrencySymbol, priceString);
     }
 
-    private IEnumerable<QuotaFeatureDto> GetFeatures(TenantQuota quota, string price)
+    private IEnumerable<QuotaFeatureDto> GetFeatures(TenantQuota quota, string price, bool getUsed)
     {
         var assembly = GetType().Assembly;
 
@@ -120,69 +128,67 @@ public class QuotaHelper
             }
 
             result.Id = feature.Name;
-            result.Title = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}");
-
-            var img = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.img.{feature.Name}.svg");
-
-            if (img != null)
-            {
-                try
-                {
-                    using var memoryStream = new MemoryStream();
-                    img.CopyTo(memoryStream);
-                    result.Image = Encoding.UTF8.GetString(memoryStream.ToArray());
-                }
-                catch (Exception)
-                {
-
-                }
-            }
 
             object used = null;
+
             if (feature is TenantQuotaFeature<long> length)
             {
+                var maxValue = length.Value == long.MaxValue;
+                result.Value = maxValue ? -1 : length.Value;
+
                 var statisticProvider = (ITenantQuotaFeatureStat<long>)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStatisticLength<>).MakeGenericType(feature.GetType()));
 
                 if (statisticProvider != null)
                 {
                     used = statisticProvider.GetValue();
                 }
-
-                if (feature.Paid && length.Value != long.MaxValue)
-                {
-                    result.Price.Range = new FeaturePriceRangeDto
-                    {
-                        Step = length.Value,
-                        Max = Max * length.Value
-                    };
-                }
             }
             else if (feature is TenantQuotaFeature<int> count)
             {
+                var maxValue = count.Value == int.MaxValue;
+                result.Value = maxValue ? -1 : count.Value;
+
                 var statisticProvider = (ITenantQuotaFeatureStat<int>)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStatisticCount<>).MakeGenericType(feature.GetType()));
 
                 if (statisticProvider != null)
                 {
                     used = statisticProvider.GetValue();
                 }
+            }
+            else if (feature is TenantQuotaFeature<bool> flag)
+            {
+                result.Value = flag.Value;
+            }
 
-                if (feature.Paid && count.Value != int.MaxValue)
+            if (getUsed)
+            {
+                if (used != null)
                 {
-                    result.Price.Range = new FeaturePriceRangeDto
+                    result.Used = new FeatureUsedDto
                     {
-                        Step = count.Value,
-                        Max = Max * count.Value
+                        Value = used,
+                        Title = Resource.ResourceManager.GetString($"TariffsFeature_used_{feature.Name}")
                     };
                 }
             }
-
-            if (used != null)
+            else
             {
-                result.Used = new FeatureUsedDto
+                result.Title = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}");
+                var img = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.img.{feature.Name}.svg");
+
+                if (img != null)
                 {
-                    Value = used,
-                    Title = Resource.ResourceManager.GetString($"TariffsFeature_used_{feature.Name}")
-                };
+                    try
+                    {
+                        using var memoryStream = new MemoryStream();
+                        img.CopyTo(memoryStream);
+                        result.Image = Encoding.UTF8.GetString(memoryStream.ToArray());
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
             }
 
             yield return result;

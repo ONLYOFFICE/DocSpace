@@ -148,6 +148,12 @@ public class PaymentController : ControllerBase
         return _quotaHelper.GetQuotas();
     }
 
+    [HttpGet("payment/quota")]
+    public QuotaDto GetQuota()
+    {
+        return _quotaHelper.GetCurrentQuota();
+    }
+
     [HttpPost("payment/request")]
     public void SendSalesRequest(SalesRequestsDto inDto)
     {

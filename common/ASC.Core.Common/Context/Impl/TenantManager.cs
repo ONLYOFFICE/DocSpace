@@ -266,6 +266,11 @@ public class TenantManager
         return QuotaService.GetTenantQuotas().Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
     }
 
+    public TenantQuota GetCurrentTenantQuota()
+    {
+        return GetTenantQuota(GetCurrentTenant().Id);
+    }
+
     public TenantQuota GetTenantQuota(int tenant)
     {
         var defaultQuota = QuotaService.GetTenantQuota(tenant) ?? QuotaService.GetTenantQuota(Tenant.DefaultTenant) ?? TenantQuota.Default;
