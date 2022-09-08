@@ -18,7 +18,7 @@ const ItemTitle = ({ t, selection, isGallery, isFileCategory, getIcon }) => {
         alt="thumbnail-icon"
       />
       <Text className="text">{selection.title}</Text>
-      <ItemContextOptions selectedItem={selection} />
+      <ItemContextOptions selection={selection} />
     </StyledTitle>
   ) : (
     <StyledTitle>
