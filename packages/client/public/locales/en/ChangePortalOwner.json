@@ -2,5 +2,15 @@
   "ChangeInstruction": "To change the Portal owner please choose the Name of the new Portal owner below.",
   "ChangeUser": "Change user",
   "NewPortalOwner": "New portal owner",
+  "OwnerRights": [
+    "— Do the same as administrators;",
+    "— Appoint administrators;",
+    "— Set access rights;",
+    "— Manage portal configuration;",
+    "— Manage user accounts;",
+    "— Change portal owner;",
+    "— Backup portal data;",
+    "— Deactivate or delete portal;"
+  ],
   "PortalOwnerCan": "Portal owner can:"
 }

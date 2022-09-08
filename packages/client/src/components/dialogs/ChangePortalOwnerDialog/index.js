@@ -79,7 +79,15 @@ const ChangePortalOwnerDialog = ({
     setSelectedUser(null);
   };
 
-  const ownerRights = t("Settings:AccessRightsOwnerOpportunities").split("|");
+  const translationOwnerRights = t("OwnerRights", { returnObjects: true });
+
+  const ownerRights = React.useMemo(() => {
+    if (Array.isArray(translationOwnerRights)) {
+      return translationOwnerRights;
+    }
+
+    return [];
+  }, [Array.isArray(translationOwnerRights)]);
 
   return (
     <ModalDialog
@@ -96,6 +104,7 @@ const ChangePortalOwnerDialog = ({
             withCancelButton
             filter={filter}
             excludeItems={[id]}
+            acceptButtonLabel={t("Common:Select")}
             onAccept={onAccept}
             onCancel={onBackClick}
             onBackClick={onBackClick}
@@ -169,7 +178,7 @@ const ChangePortalOwnerDialog = ({
 
           {ownerRights?.map((item) => (
             <Text key={item} className="list-item" noSelect title={item}>
-              — {item};
+              {item}
             </Text>
           ))}
         </StyledAvailableList>
@@ -186,6 +195,7 @@ const ChangePortalOwnerDialog = ({
               size="normal"
               primary
               scale
+              isDisabled={!selectedUser}
               onClick={onChangeAction}
               isLoading={isLoading}
             />
