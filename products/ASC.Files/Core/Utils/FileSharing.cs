@@ -84,7 +84,7 @@ public class FileSharingAceHelper<T>
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
-        
+
         if (entry is Folder<T> { Private: true } && advancedSettings is not { AllowSharingPrivateRoom: true })
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
@@ -239,7 +239,7 @@ public class FileSharingAceHelper<T>
 
     private async Task<List<AceWrapper>> FilterForRoomsAsync(FileEntry<T> entry, List<AceWrapper> aceWrappers, bool invite)
     {
-        if (entry.FileEntryType == FileEntryType.File || entry.RootFolderType == FolderType.Archive || invite || entry is Folder<T> { Private : true })
+        if (entry.FileEntryType == FileEntryType.File || entry.RootFolderType == FolderType.Archive || invite || entry is Folder<T> { Private: true })
         {
             return aceWrappers;
         }
@@ -303,13 +303,15 @@ public class FileSharingHelper
         GlobalFolderHelper globalFolderHelper,
         FileSecurity fileSecurity,
         AuthContext authContext,
-        UserManager userManager)
+        UserManager userManager,
+        CoreBaseSettings coreBaseSettings)
     {
         _global = global;
         _globalFolderHelper = globalFolderHelper;
         _fileSecurity = fileSecurity;
         _authContext = authContext;
         _userManager = userManager;
+        _coreBaseSettings = coreBaseSettings;
     }
 
     private readonly Global _global;
@@ -317,6 +319,7 @@ public class FileSharingHelper
     private readonly FileSecurity _fileSecurity;
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
 
     public async Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry, bool invite = false)
     {
@@ -327,17 +330,50 @@ public class FileSharingHelper
 
         var folder = entry as Folder<T>;
 
-        return
-            entry != null
-            && ((entry.RootFolderType == FolderType.COMMON && _global.IsAdministrator)
-            || (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsAdministrator || await _fileSecurity.CanShare(entry)))
-            || (folder != null && DocSpaceHelper.IsRoom(folder.FolderType) && await _fileSecurity.CanEditRoomAsync(entry))
-                || !_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)
-                    && (entry.RootFolderType == FolderType.USER
-                        && (Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanShare(entry))
-                        || entry.RootFolderType == FolderType.Privacy
-                            && entry is File<T>
-                            && (Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync) || await _fileSecurity.CanShare(entry))));
+        if (entry == null)
+        {
+            return false;
+        }
+
+        if (entry.RootFolderType == FolderType.COMMON && _global.IsAdministrator)
+        {
+            return true;
+        }
+
+        if (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsAdministrator || await _fileSecurity.CanShare(entry)))
+        {
+            return true;
+        }
+
+        if (folder != null && DocSpaceHelper.IsRoom(folder.FolderType) && await _fileSecurity.CanEditRoomAsync(entry))
+        {
+            return true;
+        }
+
+        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        {
+            return false;
+        }
+
+        if (_coreBaseSettings.DisableDocSpace)
+        {
+            if (entry.RootFolderType == FolderType.USER && Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanShare(entry))
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (entry.RootFolderType == FolderType.USER && Equals(entry.RootId, _globalFolderHelper.FolderMy))
+            {
+                return false;
+            }
+        }
+
+
+        return entry.RootFolderType == FolderType.Privacy
+                && entry is File<T>
+                && (Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync) || await _fileSecurity.CanShare(entry));
     }
 }
 
@@ -395,7 +431,8 @@ public class FileSharing
         {
             _logger.ErrorUserCanTGetSharedInfo(_authContext.CurrentAccount.ID, entry.FileEntryType, entry.Id.ToString());
 
-            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            return new List<AceWrapper>();
+            //throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
 
         var linkAccess = FileShare.Restrict;
