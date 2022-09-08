@@ -128,6 +128,8 @@ const profileActionsStore = new ProfileActionsStore(
   peopleStore
 );
 
+authStore.infoPanelStore.setSettingsStore(settingsStore);
+
 const store = {
   auth: authStore,
   payments: paymentStore,
