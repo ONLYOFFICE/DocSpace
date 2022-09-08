@@ -75,17 +75,16 @@ class DetailsHelper {
   };
 
   getNeededProperties = () => {
-    return this.item.isRoom
+    return (this.item.isRoom
       ? [
           "Owner",
-          "Storage Type",
-          "Storage account",
+          this.item.providerKey && "Storage Type",
           "Type",
           "Content",
           "Date modified",
           "Last modified by",
           "Creation date",
-          "Tags",
+          this.item.tags.length && "Tags",
         ]
       : this.item.isFolder
       ? [
@@ -108,7 +107,8 @@ class DetailsHelper {
           "Creation date",
           "Versions",
           "Comments",
-        ];
+        ]
+    ).filter((nP) => !!nP);
   };
 
   getPropertyTitle = (propertyId) => {
@@ -218,9 +218,7 @@ class DetailsHelper {
 
   getItemStorageType = () => {
     return styledText(
-      this.item.providerKey
-        ? connectedCloudsTypeTitleTranslation(this.item.providerKey, this.t)
-        : "ONLYOFFICE DocSpace"
+      connectedCloudsTypeTitleTranslation(this.item.providerKey, this.t)
     );
   };
 
