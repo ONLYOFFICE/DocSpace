@@ -4,7 +4,7 @@ import { Trans } from "react-i18next";
 
 import config from "PACKAGE_FILE";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
