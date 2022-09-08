@@ -2,7 +2,7 @@ name: 4testing multiarch-build
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "feature/github-action-build-docker" ]
 
 jobs:
   build:
