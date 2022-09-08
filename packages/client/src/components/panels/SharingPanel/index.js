@@ -773,7 +773,7 @@ class SharingPanelComponent extends React.Component {
 
             {showAddUsersPanel && (
               <AddUsersPanel
-                onSharingPanelClose={this.onClose}
+                onParentPanelClose={this.onClose}
                 onClose={this.onShowUsersPanel}
                 visible={showAddUsersPanel}
                 shareDataItems={filteredShareDataItems}
@@ -799,7 +799,7 @@ class SharingPanelComponent extends React.Component {
 
             {showChangeOwnerPanel && (
               <AddUsersPanel
-                onSharingPanelClose={this.onClose}
+                onParentPanelClose={this.onClose}
                 onClose={this.onShowChangeOwnerPanel}
                 visible={showChangeOwnerPanel}
                 shareDataItems={filteredShareDataItems}
