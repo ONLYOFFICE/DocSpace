@@ -3,7 +3,7 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import ModalDialogContainer from "../ModalDialogContainer";
 

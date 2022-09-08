@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 
 import ComboBox from "@docspace/components/combobox";
 import Text from "@docspace/components/text";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import { convertLanguage } from "@docspace/common/utils";
 import { smallTablet } from "@docspace/components/utils/device";
