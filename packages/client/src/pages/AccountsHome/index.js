@@ -22,7 +22,6 @@ import {
 } from "./Section";
 
 import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
-import { ChangePortalOwnerDialog } from "SRC_DIR/components/dialogs";
 
 const PureHome = ({
   isLoading,
@@ -77,7 +76,6 @@ const PureHome = ({
 
   return (
     <>
-      <ChangePortalOwnerDialog />
       <Section
         withBodyScroll
         withBodyAutoFocus={!isMobile}
