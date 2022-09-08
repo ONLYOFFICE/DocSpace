@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
 import { isMobile } from "react-device-detect";
-
 import Loaders from "@docspace/common/components/Loaders";
 
 const pathname = window.location.pathname.toLowerCase();

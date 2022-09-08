@@ -364,7 +364,6 @@ class Section extends React.Component {
                           viewAs={viewAs}
                           isHomepage={isHomepage}
                           settingsStudio={settingsStudio}
-                          withPaging={withPaging}
                           selectoRef={this.selectoRef}
                         >
                           {isMobile && (
