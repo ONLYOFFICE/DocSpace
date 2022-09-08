@@ -5,7 +5,7 @@ import EmptyContainer from "./EmptyContainer";
 import FilesFilter from "@docspace/common/api/files/filter";
 import Link from "@docspace/components/link";
 import IconButton from "@docspace/components/icon-button";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 const EmptyFilterContainer = ({
   t,

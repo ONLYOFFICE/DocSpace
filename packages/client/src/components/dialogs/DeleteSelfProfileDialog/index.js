@@ -9,7 +9,7 @@ import Text from "@docspace/components/text";
 import { Trans, withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { sendInstructionsToDelete } from "@docspace/common/api/people";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 class DeleteSelfProfileDialogComponent extends React.Component {
   constructor(props) {

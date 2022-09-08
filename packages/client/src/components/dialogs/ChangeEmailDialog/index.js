@@ -8,7 +8,7 @@ import FieldContainer from "@docspace/components/field-container";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { sendInstructionsToChangeEmail } from "@docspace/common/api/people";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { errorKeys } from "@docspace/components/utils/constants";
 import { inject, observer } from "mobx-react";
 class ChangeEmailDialogComponent extends React.Component {
