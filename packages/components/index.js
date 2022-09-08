@@ -64,4 +64,4 @@ export * as Themes from "./themes";
 export { default as Portal } from "./portal";
 export { default as TableContainer } from "./table-container";
 export { default as Slider } from "./slider";
-export { default as Selector } from "./Selector";
+export { default as Selector } from "./selector";
