@@ -28,12 +28,7 @@ const CreateRoomEvent = ({
   currrentFolderId,
   updateCurrentFolder,
 }) => {
-  const { t } = useTranslation([
-    "CreateEditRoomDialog",
-    "Common",
-    "Files",
-    "ToastHeaders",
-  ]);
+  const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
