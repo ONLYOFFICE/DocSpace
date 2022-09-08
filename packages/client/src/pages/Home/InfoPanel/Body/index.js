@@ -227,12 +227,6 @@ export default inject(
       isRootFolder &&
       (isRecycleBinFolder || isRecentFolder || isFavoritesFolder);
 
-    // const selectedItems =
-    //   selection?.length > 0
-    //     ? [...selection]
-    //     : bufferSelection
-    //     ? [bufferSelection]
-    //     : [];
     const selectedItems =
       filesStoreSelection?.length > 0 ? [...filesStoreSelection] : [];
 
