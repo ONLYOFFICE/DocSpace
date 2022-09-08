@@ -83,7 +83,6 @@ public class FeatureUsedDto
 
 public class FeaturePriceRangeDto
 {
-    public object Value { get; set; }
-    public object Min { get; set; }
+    public object Step { get; set; }
     public object Max { get; set; }
 }

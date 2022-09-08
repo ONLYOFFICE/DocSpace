@@ -35,6 +35,7 @@ public class QuotaHelper
     private readonly RegionHelper _regionHelper;
     private readonly IServiceProvider _serviceProvider;
     private const int Max = 999;
+
     public QuotaHelper(TenantManager tenantManager, RegionHelper regionHelper, IServiceProvider serviceProvider)
     {
         _tenantManager = tenantManager;
@@ -44,18 +45,17 @@ public class QuotaHelper
 
     public IEnumerable<QuotaDto> GetQuotas()
     {
-        var tenantQuota = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id);
         var quotaList = _tenantManager.GetTenantQuotas(false);
         var priceInfo = _tenantManager.GetProductPriceInfo();
         var currentRegion = _regionHelper.GetCurrentRegionInfo();
 
-        return quotaList.Select(x => ToQuotaDto(x, tenantQuota, priceInfo, currentRegion)).ToList();
+        return quotaList.Select(x => ToQuotaDto(x, priceInfo, currentRegion)).ToList();
     }
 
-    private QuotaDto ToQuotaDto(TenantQuota quota, TenantQuota tenantQuota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
+    private QuotaDto ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
     {
         var price = GetPrice(quota, priceInfo, currentRegion);
-        var features = GetFeatures(quota, tenantQuota, GetPriceString(price, currentRegion));
+        var features = GetFeatures(quota, GetPriceString(price, currentRegion));
 
         return new QuotaDto
         {
@@ -100,7 +100,7 @@ public class QuotaHelper
         return string.Format("{0}{1}", currentRegion.CurrencySymbol, priceString);
     }
 
-    private IEnumerable<QuotaFeatureDto> GetFeatures(TenantQuota quota, TenantQuota tenantQuota, string price)
+    private IEnumerable<QuotaFeatureDto> GetFeatures(TenantQuota quota, string price)
     {
         var assembly = GetType().Assembly;
 
@@ -152,9 +152,8 @@ public class QuotaHelper
                 {
                     result.Price.Range = new FeaturePriceRangeDto
                     {
-                        Value = length.Value,
-                        Min = tenantQuota.GetFeature<long>(length.Name).Value, // must set to used quota
-                        Max = Max * length.Value,
+                        Step = length.Value,
+                        Max = Max * length.Value
                     };
                 }
             }
@@ -171,9 +170,8 @@ public class QuotaHelper
                 {
                     result.Price.Range = new FeaturePriceRangeDto
                     {
-                        Value = count.Value,
-                        Min = tenantQuota.GetFeature<int>(count.Name).Value,
-                        Max = Max * count.Value,
+                        Step = count.Value,
+                        Max = Max * count.Value
                     };
                 }
             }

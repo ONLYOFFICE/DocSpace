@@ -825,10 +825,10 @@
   <data name="MessageRoomInvitationsSentOnEmail" xml:space="preserve">
     <value>Virtual room {0} invitations sent successfully.</value>
   </data>
-  <data name="TariffsFeature_admin_price_count" xml:space="preserve">
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
     <value>Number of managers</value>
   </data>
-  <data name="TariffsFeature_admin_price_per" xml:space="preserve">
+  <data name="TariffsFeature_manager_price_per" xml:space="preserve">
     <value>{0} per manager/month</value>
   </data>
   <data name="TariffsFeature_audit" xml:space="preserve">

@@ -29,11 +29,12 @@ namespace ASC.Core.Common.Quota.Features;
 public class CountManagerFeature : TenantQuotaFeatureCount
 {
     public override bool Paid { get => true; }
-    public override string Name { get => "admin"; }
+    public override string Name { get => "manager"; }
     public CountManagerFeature(TenantQuota tenantQuota) : base(tenantQuota)
     {
     }
 }
+
 public class CountManagerChecker : ITenantQuotaFeatureChecker
 {
     private readonly ITenantQuotaFeatureStatisticCount<CountManagerFeature> _tenantQuotaFeatureStatistic;

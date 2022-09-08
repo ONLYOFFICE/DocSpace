@@ -2158,29 +2158,29 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Tracking user logins &amp; action.
+        /// </summary>
+        public static string TariffsFeature_audit {
+            get {
+                return ResourceManager.GetString("TariffsFeature_audit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number of managers.
         /// </summary>
-        public static string TariffsFeature_admin_price_count {
+        public static string TariffsFeature_manager_price_count {
             get {
-                return ResourceManager.GetString("TariffsFeature_admin_price_count", resourceCulture);
+                return ResourceManager.GetString("TariffsFeature_manager_price_count", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to {0} per manager/month.
         /// </summary>
-        public static string TariffsFeature_admin_price_per {
+        public static string TariffsFeature_manager_price_per {
             get {
-                return ResourceManager.GetString("TariffsFeature_admin_price_per", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tracking user logins &amp; action.
-        /// </summary>
-        public static string TariffsFeature_audit {
-            get {
-                return ResourceManager.GetString("TariffsFeature_audit", resourceCulture);
+                return ResourceManager.GetString("TariffsFeature_manager_price_per", resourceCulture);
             }
         }
         
