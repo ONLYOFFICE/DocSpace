@@ -31,11 +31,10 @@ const StyledScroll = styled.div`
 
 const rowStyles = css`
   .row-list-item {
-    padding-left: 16px;
-    width: calc(100% - 33px) !important;
+    width: calc(100% - 17px) !important;
 
     @media ${mobile} {
-      width: calc(100% - 24px) !important;
+      width: calc(100% - 16px) !important;
     }
   }
 `;
