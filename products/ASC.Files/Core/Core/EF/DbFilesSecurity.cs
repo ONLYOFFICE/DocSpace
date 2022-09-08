@@ -33,10 +33,12 @@ public class DbFilesSecurity : BaseEntity, IDbFile, IMapFrom<FileShareRecord>
     public int TenantId { get; set; }
     public string EntryId { get; set; }
     public FileEntryType EntryType { get; set; }
+    public SubjectType SubjectType { get; set; }
     public Guid Subject { get; set; }
     public Guid Owner { get; set; }
     public FileShare Share { get; set; }
     public DateTime TimeStamp { get; set; }
+    public string FileShareOptions { get; set; }
 
     public override object[] GetKeys()
     {
@@ -46,7 +48,8 @@ public class DbFilesSecurity : BaseEntity, IDbFile, IMapFrom<FileShareRecord>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<FileShareRecord, DbFilesSecurity>()
-            .ForMember(dest => dest.TimeStamp, opt => opt.MapFrom(src => DateTime.UtcNow));
+            .ForMember(dest => dest.TimeStamp, opt => opt.MapFrom(src => DateTime.UtcNow))
+            .ForMember(dest => dest.FileShareOptions, opt => opt.MapFrom(src => JsonSerializer.Serialize(src.FileShareOptions, new JsonSerializerOptions())));
     }
 }
 
@@ -105,6 +108,14 @@ public static class DbFilesSecurityExtension
             entity.Property(e => e.TimeStamp)
                 .HasColumnName("timestamp")
                 .HasColumnType("timestamp");
+
+            entity.Property(e => e.SubjectType).HasColumnName("subject_type");
+
+            entity.Property(e => e.FileShareOptions)
+                .HasColumnName("options")
+                .HasColumnType("text")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
         });
     }
     public static void PgSqlAddDbFilesSecurity(this ModelBuilder modelBuilder)
@@ -146,6 +157,10 @@ public static class DbFilesSecurityExtension
             entity.Property(e => e.TimeStamp)
                 .HasColumnName("timestamp")
                 .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+            entity.Property(e => e.SubjectType).HasColumnName("subject_type");
+
+            entity.Property(e => e.FileShareOptions).HasColumnName("options");
         });
     }
 
