@@ -79,15 +79,15 @@ const ChangePortalOwnerDialog = ({
     setSelectedUser(null);
   };
 
-  const translationOwnerRights = t("OwnerRights", { returnObjects: true });
+  const ownerRights = t("OwnerRights").split("|");
 
-  const ownerRights = React.useMemo(() => {
-    if (Array.isArray(translationOwnerRights)) {
-      return translationOwnerRights;
-    }
+  // const ownerRights = React.useMemo(() => {
+  //   if (Array.isArray(translationOwnerRights)) {
+  //     return translationOwnerRights;
+  //   }
 
-    return [];
-  }, [Array.isArray(translationOwnerRights)]);
+  //   return [];
+  // }, [Array.isArray(translationOwnerRights)]);
 
   return (
     <ModalDialog
@@ -178,7 +178,7 @@ const ChangePortalOwnerDialog = ({
 
           {ownerRights?.map((item) => (
             <Text key={item} className="list-item" noSelect title={item}>
-              {item}
+              — {item};
             </Text>
           ))}
         </StyledAvailableList>
