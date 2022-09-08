@@ -32,43 +32,32 @@ namespace ASC.Files.Api;
 public class VirtualRoomsInternalController : VirtualRoomsController<int>
 {
     public VirtualRoomsInternalController(
-        FoldersControllerHelper<int> foldersControllerHelper,
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
         SecurityControllerHelper<int> securityControllerHelper,
         CoreBaseSettings coreBaseSettings,
         AuthContext authContext,
-        DocSpaceLinksHelper docSpaceLinksService,
         CustomTagsService<int> customTagsService,
         RoomLogoManager roomLogoManager,
-        StudioNotifyService studioNotifyService,
         FileStorageService<int> fileStorageService,
-        FileSecurity fileSecurity,
-        FileSecurityCommon fileSecurityCommon,
         EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper) : base(
-            foldersControllerHelper,
             globalFolderHelper,
             fileOperationDtoHelper,
             securityControllerHelper,
             coreBaseSettings,
             authContext,
-            docSpaceLinksService,
             customTagsService,
             roomLogoManager,
-            studioNotifyService,
             fileStorageService,
-            fileSecurity,
-            fileSecurityCommon,
             emailValidationKeyProvider,
             folderDtoHelper,
             fileDtoHelper,
             fileShareDtoHelper)
     {
     }
-
 
     /// <summary>
     /// Create a room in the virtual rooms section
@@ -99,36 +88,26 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
 public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
 {
     public VirtualRoomsThirdPartyController(
-        FoldersControllerHelper<string> foldersControllerHelper,
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
         SecurityControllerHelper<string> securityControllerHelper,
         CoreBaseSettings coreBaseSettings,
         AuthContext authContext,
-        DocSpaceLinksHelper docSpaceLinksHelper,
         CustomTagsService<string> customTagsService,
         RoomLogoManager roomLogoManager,
-        StudioNotifyService studioNotifyService,
         FileStorageService<string> fileStorageService,
-        FileSecurity fileSecurity,
-        FileSecurityCommon fileSecurityCommon,
         EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper) : base(
-            foldersControllerHelper,
             globalFolderHelper,
             fileOperationDtoHelper,
             securityControllerHelper,
             coreBaseSettings,
             authContext,
-            docSpaceLinksHelper,
             customTagsService,
             roomLogoManager,
-            studioNotifyService,
             fileStorageService,
-            fileSecurity,
-            fileSecurityCommon,
             emailValidationKeyProvider,
             folderDtoHelper,
             fileDtoHelper,
@@ -167,54 +146,39 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
 
 public abstract class VirtualRoomsController<T> : ApiControllerBase
 {
-    private readonly FoldersControllerHelper<T> _foldersControllerHelper;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
     private readonly SecurityControllerHelper<T> _securityControllerHelper;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly AuthContext _authContext;
-    private readonly DocSpaceLinksHelper _docSpaceLinksHelper;
     private readonly CustomTagsService<T> _customTagsService;
     private readonly RoomLogoManager _roomLogoManager;
-    private readonly StudioNotifyService _studioNotifyService;
     protected readonly FileStorageService<T> _fileStorageService;
-    private readonly FileSecurity _fileSecurity;
-    private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly FileShareDtoHelper _fileShareDtoHelper;
 
     protected VirtualRoomsController(
-        FoldersControllerHelper<T> foldersControllerHelper,
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
         SecurityControllerHelper<T> securityControllerHelper,
         CoreBaseSettings coreBaseSettings,
         AuthContext authContext,
-        DocSpaceLinksHelper docSpaceLinksHelper,
         CustomTagsService<T> customTagsService,
         RoomLogoManager roomLogoManager,
-        StudioNotifyService studioNotifyService,
         FileStorageService<T> fileStorageService,
-        FileSecurity fileSecurity,
-        FileSecurityCommon fileSecurityCommon,
         EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
-        _foldersControllerHelper = foldersControllerHelper;
         _globalFolderHelper = globalFolderHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
         _securityControllerHelper = securityControllerHelper;
         _coreBaseSettings = coreBaseSettings;
         _authContext = authContext;
-        _docSpaceLinksHelper = docSpaceLinksHelper;
         _customTagsService = customTagsService;
         _roomLogoManager = roomLogoManager;
-        _studioNotifyService = studioNotifyService;
         _fileStorageService = fileStorageService;
-        _fileSecurity = fileSecurity;
-        _fileSecurityCommon = fileSecurityCommon;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _fileShareDtoHelper = fileShareDtoHelper;
     }
@@ -560,6 +524,12 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    [HttpPost("rooms/{id}/resend")]
+    public async Task ResendEmailInvitationsAsync(T id, UserInvintationRequestDto inDto)
+    {
+        await _fileStorageService.ResendEmailInvitationsAsync(id, inDto.UsersIds);
+    }
+
     protected void ErrorIfNotDocSpace()
     {
         if (_coreBaseSettings.DisableDocSpace)
@@ -587,17 +557,6 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         await foreach (var s in _securityControllerHelper.SetFolderSecurityInfoAsync(id, new[] { share }, false, null, true))
         {
             yield return s;
-        }
-    }
-
-    private async Task ErrorIfNotRights(T id, FileShare share)
-    {
-        var room = await _fileStorageService.GetFolderAsync(id);
-
-        if ((share == FileShare.RoomManager && !_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
-            || !await _fileSecurity.CanEditRoomAsync(room))
-        {
-            throw new InvalidOperationException("You don't have the rights to invite users to the room");
         }
     }
 }

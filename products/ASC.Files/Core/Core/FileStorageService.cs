@@ -81,6 +81,8 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly ILogger _logger;
     private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
+    private readonly DocSpaceLinksHelper _docSpaceLinksHelper;
+    private readonly StudioNotifyService _studioNotifyService;
 
     public FileStorageService(
         Global global,
@@ -132,7 +134,9 @@ public class FileStorageService<T> //: IFileStorageService
         ThirdPartySelector thirdPartySelector,
         ThumbnailSettings thumbnailSettings,
         FileShareParamsHelper fileShareParamsHelper,
-        EncryptionLoginProvider encryptionLoginProvider)
+        EncryptionLoginProvider encryptionLoginProvider,
+        DocSpaceLinksHelper docSpaceLinksHelper,
+        StudioNotifyService studioNotifyService)
     {
         _global = global;
         _globalStore = globalStore;
@@ -184,6 +188,8 @@ public class FileStorageService<T> //: IFileStorageService
         _thumbnailSettings = thumbnailSettings;
         _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
+        _docSpaceLinksHelper = docSpaceLinksHelper;
+        _studioNotifyService = studioNotifyService;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -3056,6 +3062,37 @@ public class FileStorageService<T> //: IFileStorageService
         await Task.CompletedTask;
 
         return fileIds;
+    }
+
+    public async Task ResendEmailInvitationsAsync(T id, IEnumerable<Guid> usersIds)
+    {
+        ArgumentNullException.ThrowIfNull(usersIds);
+
+        var folderDao = _daoFactory.GetFolderDao<T>();
+        var room = await folderDao.GetFolderAsync(id);
+
+        ErrorIf(room == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+        ErrorIf(!await _fileSecurity.CanEditRoomAsync(room), FilesCommonResource.ErrorMassage_SecurityException);
+
+        var shares = (await _fileSharing.GetSharedInfoAsync(room)).ToDictionary(k => k.SubjectId, v => v);
+
+        foreach (var userId in usersIds)
+        {
+            if (!shares.TryGetValue(userId, out var share))
+            {
+                continue;
+            }
+
+            var user = _userManager.GetUser(share.SubjectId, null);
+
+            if (user.ActivationStatus != EmployeeActivationStatus.Pending)
+            {
+                continue;
+            }
+
+            var link = _docSpaceLinksHelper.GenerateInvitationRoomLink(user.Email, EmployeeType.User, _authContext.CurrentAccount.ID, user.Id);
+            _studioNotifyService.SendEmailRoomInvite(user.Email, link);
+        }
     }
 
     public string GetHelpCenter()
