@@ -72,15 +72,17 @@ const PeopleSelector = ({
 
     setIsNextPageLoading(true);
 
-    const filter = filter || Filter.getDefault();
-    filter.page = startIndex / pageCount;
-    filter.pageCount = pageCount;
+    console.log(filter);
+
+    const currentFilter = filter || Filter.getDefault();
+    currentFilter.page = startIndex / pageCount;
+    currentFilter.pageCount = pageCount;
 
     if (!!search.length) {
-      filter.search = search;
+      currentFilter.search = search;
     }
 
-    getUserList(filter)
+    getUserList(currentFilter)
       .then((response) => {
         let newItems = startIndex ? itemsList : [];
 
