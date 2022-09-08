@@ -7,26 +7,34 @@ import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import Loaders from "@docspace/common/components/Loaders";
 
-const Members = ({ t, selfId, selection, setSelection, getRoomMembers }) => {
+const Members = ({
+  t,
+  selfId,
+  selection,
+  setSelection,
+  currentRoomMembers,
+  setCurrentRoomMembers,
+  getRoomMembers,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(async () => {
-    if (selection.members) return;
+    if (currentRoomMembers) return;
 
     setIsLoading(true);
     const fetchedMembers = await getRoomMembers(selection.id);
-    setSelection({ ...selection, members: fetchedMembers });
+    setCurrentRoomMembers(fetchedMembers);
     setIsLoading(false);
-  }, [selection.members]);
+  }, [currentRoomMembers]);
 
-  if (!selection.members || isLoading)
+  if (!currentRoomMembers || isLoading)
     return <Loaders.InfoPanelMemberListLoader />;
 
   return (
     <>
       <StyledUserTypeHeader>
         <Text className="title">
-          {t("Users in room")} : {selection.members.length}
+          {t("Users in room")} : {currentRoomMembers.length}
         </Text>
         <IconButton
           className={"icon"}
@@ -39,7 +47,7 @@ const Members = ({ t, selfId, selection, setSelection, getRoomMembers }) => {
         />
       </StyledUserTypeHeader>
 
-      <UserList t={t} users={selection.members} selfId={selfId} />
+      <UserList t={t} users={currentRoomMembers} selfId={selfId} />
 
       {/* <StyledUserTypeHeader>
         <Text className="title">{`${t("Expect people")}:`}</Text>
