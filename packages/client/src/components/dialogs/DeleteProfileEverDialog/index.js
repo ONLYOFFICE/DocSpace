@@ -8,7 +8,7 @@ import Text from "@docspace/components/text";
 
 import { withTranslation, Trans } from "react-i18next";
 import api from "@docspace/common/api";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
 import config from "PACKAGE_FILE";
