@@ -28,21 +28,7 @@ const Wrapper = styled.div`
 `;
 
 const SectionBodyContent = (props) => {
-  const {
-    t,
-    profile,
-    culture,
-    resetTfaApp,
-    getNewBackupCodes,
-    backupCodes,
-    setBackupCodes,
-    getTfaType,
-    getBackupCodes,
-    changeEmailSubscription,
-    tipsSubscription,
-    updateProfile,
-    fetchProfile,
-  } = props;
+  const { setBackupCodes, getTfaType, getBackupCodes } = props;
   const [tfa, setTfa] = useState(false);
   const [backupCodesCount, setBackupCodesCount] = useState(0);
 
@@ -71,65 +57,26 @@ const SectionBodyContent = (props) => {
 
   return (
     <Wrapper>
-      <MainProfile
-        profile={profile}
-        updateProfile={updateProfile}
-        fetchProfile={fetchProfile}
-      />
+      <MainProfile />
       {tfa && tfa !== "none" && (
-        <LoginSettings
-          profile={profile}
-          resetTfaApp={resetTfaApp}
-          getNewBackupCodes={getNewBackupCodes}
-          backupCodes={backupCodes}
-          backupCodesCount={backupCodesCount}
-          setBackupCodes={setBackupCodes}
-        />
+        <LoginSettings backupCodesCount={backupCodesCount} />
       )}
       <SocialNetworks />
-      <Subscription
-        changeEmailSubscription={changeEmailSubscription}
-        tipsSubscription={tipsSubscription}
-      />
+      <Subscription />
       <InterfaceTheme />
     </Wrapper>
   );
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => {
+  inject(({ auth }) => {
     const { tfaStore } = auth;
-
-    const { targetUserStore } = peopleStore;
-    const {
-      targetUser: profile,
-      changeEmailSubscription,
-      tipsSubscription,
-      updateProfile,
-      getTargetUser: fetchProfile,
-    } = targetUserStore;
-
-    const {
-      getBackupCodes,
-      getNewBackupCodes,
-      unlinkApp: resetTfaApp,
-      getTfaType,
-      backupCodes,
-      setBackupCodes,
-    } = tfaStore;
+    const { getBackupCodes, getTfaType, setBackupCodes } = tfaStore;
 
     return {
-      profile,
       getBackupCodes,
-      getNewBackupCodes,
-      resetTfaApp,
       getTfaType,
-      backupCodes,
       setBackupCodes,
-      changeEmailSubscription,
-      tipsSubscription,
-      updateProfile,
-      fetchProfile,
     };
   })(
     observer(

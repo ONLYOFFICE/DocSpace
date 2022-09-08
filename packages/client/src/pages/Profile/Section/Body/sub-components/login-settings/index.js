@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
@@ -106,4 +107,24 @@ const LoginSettings = (props) => {
   );
 };
 
-export default LoginSettings;
+export default inject(({ auth, peopleStore }) => {
+  const { tfaStore } = auth;
+  const { targetUserStore } = peopleStore;
+
+  const { targetUser: profile } = targetUserStore;
+
+  const {
+    getNewBackupCodes,
+    unlinkApp: resetTfaApp,
+    backupCodes,
+    setBackupCodes,
+  } = tfaStore;
+
+  return {
+    profile,
+    resetTfaApp,
+    getNewBackupCodes,
+    backupCodes,
+    setBackupCodes,
+  };
+})(observer(LoginSettings));

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
@@ -44,4 +45,13 @@ const Subscription = (props) => {
   );
 };
 
-export default Subscription;
+export default inject(({ peopleStore }) => {
+  const { targetUserStore } = peopleStore;
+
+  const { changeEmailSubscription, tipsSubscription } = targetUserStore;
+
+  return {
+    changeEmailSubscription,
+    tipsSubscription,
+  };
+})(observer(Subscription));

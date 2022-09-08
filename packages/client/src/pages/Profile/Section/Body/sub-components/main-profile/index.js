@@ -7,7 +7,6 @@ import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 
-import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { smallTablet } from "@docspace/components/utils/device";
 
 import { getUserRole } from "../../../../../../helpers/people-helpers";
@@ -94,8 +93,6 @@ const MainProfile = (props) => {
 
   const {
     profile,
-    cultureNames,
-    culture,
     updateProfile,
     fetchProfile,
     changeEmailVisible,
@@ -107,7 +104,6 @@ const MainProfile = (props) => {
     changeAvatarVisible,
     setChangeAvatarVisible,
   } = props;
-  const { cultureName, currentCulture } = profile;
 
   const role = getUserRole(profile);
 
@@ -166,14 +162,7 @@ const MainProfile = (props) => {
           />
         </div>
 
-        <LanguagesCombo
-          t={t}
-          profile={profile}
-          cultureName={cultureName}
-          currentCulture={currentCulture}
-          culture={culture}
-          cultureNames={cultureNames}
-        />
+        <LanguagesCombo t={t} />
       </StyledInfo>
 
       {changeEmailVisible && (
@@ -216,30 +205,34 @@ const MainProfile = (props) => {
   );
 };
 
-export default withCultureNames(
-  inject(({ peopleStore }) => {
-    const { targetUserStore } = peopleStore;
+export default inject(({ peopleStore }) => {
+  const { targetUserStore } = peopleStore;
 
-    const {
-      changeEmailVisible,
-      setChangeEmailVisible,
-      changePasswordVisible,
-      setChangePasswordVisible,
-      changeNameVisible,
-      setChangeNameVisible,
-      changeAvatarVisible,
-      setChangeAvatarVisible,
-    } = targetUserStore;
+  const {
+    targetUser: profile,
+    updateProfile,
+    getTargetUser: fetchProfile,
+    changeEmailVisible,
+    setChangeEmailVisible,
+    changePasswordVisible,
+    setChangePasswordVisible,
+    changeNameVisible,
+    setChangeNameVisible,
+    changeAvatarVisible,
+    setChangeAvatarVisible,
+  } = targetUserStore;
 
-    return {
-      changeEmailVisible,
-      setChangeEmailVisible,
-      changePasswordVisible,
-      setChangePasswordVisible,
-      changeNameVisible,
-      setChangeNameVisible,
-      changeAvatarVisible,
-      setChangeAvatarVisible,
-    };
-  })(observer(MainProfile))
-);
+  return {
+    profile,
+    updateProfile,
+    fetchProfile,
+    changeEmailVisible,
+    setChangeEmailVisible,
+    changePasswordVisible,
+    setChangePasswordVisible,
+    changeNameVisible,
+    setChangeNameVisible,
+    changeAvatarVisible,
+    setChangeAvatarVisible,
+  };
+})(observer(MainProfile));

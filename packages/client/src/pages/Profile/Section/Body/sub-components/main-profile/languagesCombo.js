@@ -1,14 +1,16 @@
 import React from "react";
 import styled from "styled-components";
-
 import { inject, observer } from "mobx-react";
+
 import ComboBox from "@docspace/components/combobox";
 import Text from "@docspace/components/text";
-import { convertLanguage } from "@docspace/common/utils";
-import { isMobileOnly } from "react-device-detect";
 import toastr from "client/toastr";
 
+import { convertLanguage } from "@docspace/common/utils";
 import { smallTablet } from "@docspace/components/utils/device";
+import withCultureNames from "@docspace/common/hoc/withCultureNames";
+
+import { isMobileOnly } from "react-device-detect";
 
 const StyledRow = styled.div`
   display: flex;
@@ -39,11 +41,10 @@ const LanguagesCombo = (props) => {
     profile,
     updateProfileCulture,
     setIsLoading,
-    cultureName,
-    currentCulture,
     culture,
     cultureNames,
   } = props;
+  const { cultureName, currentCulture } = profile;
 
   const language = convertLanguage(cultureName || currentCulture || culture);
   const selectedLanguage = cultureNames.find((item) => item.key === language) ||
@@ -94,18 +95,21 @@ const LanguagesCombo = (props) => {
   );
 };
 
-export default inject(({ auth, peopleStore }) => {
-  const { loadingStore, targetUserStore } = peopleStore;
-  const { settingsStore } = auth;
+export default withCultureNames(
+  inject(({ auth, peopleStore }) => {
+    const { loadingStore, targetUserStore } = peopleStore;
+    const { settingsStore } = auth;
 
-  const { setIsLoading } = loadingStore;
-  const { updateProfileCulture } = targetUserStore;
+    const { setIsLoading } = loadingStore;
+    const { updateProfileCulture, targetUser: profile } = targetUserStore;
 
-  const { culture } = settingsStore;
+    const { culture } = settingsStore;
 
-  return {
-    setIsLoading,
-    updateProfileCulture,
-    culture,
-  };
-})(observer(LanguagesCombo));
+    return {
+      setIsLoading,
+      updateProfileCulture,
+      culture,
+      profile,
+    };
+  })(observer(LanguagesCombo))
+);
