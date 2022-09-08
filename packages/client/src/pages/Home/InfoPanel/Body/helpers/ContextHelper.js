@@ -1,7 +1,7 @@
 class ContextHelper {
   constructor(props) {
     this.t = props.t;
-    this.item = props.selectedItem;
+    this.selection = props.selection;
     this.getContextOptions = props.getContextOptions;
     this.getContextOptionActions = props.getContextOptionActions;
 
@@ -9,17 +9,17 @@ class ContextHelper {
   }
 
   fixItemContextOptions = () => {
-    let newContextOptions = this.item.contextOptions;
+    let newContextOptions = this.selection.contextOptions;
 
     if (!newContextOptions)
-      newContextOptions = this.getContextOptions(this.item, false);
+      newContextOptions = this.getContextOptions(this.selection, false);
     newContextOptions = newContextOptions.filter((co) => co !== "show-info");
 
-    this.item.contextOptions = newContextOptions;
+    this.selection.contextOptions = newContextOptions;
   };
 
   getItemContextOptions = () => {
-    return this.getContextOptionActions(this.item, this.t);
+    return this.getContextOptionActions(this.selection, this.t);
   };
 }
 
