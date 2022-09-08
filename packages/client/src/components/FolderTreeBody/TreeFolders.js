@@ -7,7 +7,7 @@ import {
   FolderType,
   ShareAccessRights,
 } from "@docspace/common/constants";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import { onConvertFiles } from "../../helpers/files-converter";
 import { ReactSVG } from "react-svg";

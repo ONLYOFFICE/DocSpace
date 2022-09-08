@@ -3,7 +3,7 @@ import IconButton from "@docspace/components/icon-button";
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import AvatarEditor from "@docspace/components/avatar-editor";
 import Headline from "@docspace/common/components/Headline";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
