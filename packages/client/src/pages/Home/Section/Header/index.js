@@ -340,7 +340,7 @@ class SectionHeaderContent extends React.Component {
         label: t("InfoPanel:ViewDetails"),
         onClick: this.onShowInfo,
         disabled: false,
-        icon: "/static/images/info.react.svg",
+        icon: "/static/images/info.outline.react.svg",
       },
       { key: "separator-2", isSeparator: true },
       {
