@@ -1,0 +1,7 @@
+{
+  "RoomList": "Room list",
+  "EmptyRoomsHeader": "No rooms here yet",
+  "EmptyRoomsDescription": "Please create the first room in Shared.",
+  "SearchEmptyRoomsHeader": "Nothing found",
+  "SearchEmptyRoomsDescription": "No rooms match this filter. Try a different one or clear filter to view all rooms."
+}

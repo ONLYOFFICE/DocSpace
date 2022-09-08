@@ -1540,12 +1540,12 @@ const Base = {
     },
 
     arrow: {
-      width: "8px",
-      flex: "0 0 8px",
+      width: "6px",
+      flex: "0 0 6px",
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "auto",
+      marginLeft: "-2px",
       fillColor: grayMain,
     },
 
@@ -2212,6 +2212,19 @@ const Base = {
       hoverBorderColor: grayMid,
       focusBorderColor: blueMain,
       placeholderColor: gray,
+    },
+  },
+
+  selector: {
+    border: `1px solid ${grayLightMid}`,
+
+    item: {
+      hoverBackground: grayLight,
+      selectedBackground: lightHover,
+    },
+
+    emptyScreen: {
+      descriptionColor: cyanBlueDarkShade,
     },
   },
 

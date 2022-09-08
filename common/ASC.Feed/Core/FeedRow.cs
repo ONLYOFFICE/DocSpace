@@ -42,6 +42,7 @@ public class FeedRow
     public DateTime ModifiedDate => Feed.ModifiedDate;
     public string GroupId => Feed.GroupId;
     public string Keywords => Feed.Keywords;
+    public string ContextId => Feed.ContextId;
     public string Json
     {
         get

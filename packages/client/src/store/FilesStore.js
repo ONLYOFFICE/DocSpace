@@ -2652,6 +2652,7 @@ class FilesStore {
     // console.log("hasMoreFiles", this.filesList.length < filterTotal);
     // console.log("----------------------------");
 
+    if (this.isLoading) return false;
     return this.filesList.length < filterTotal;
   }
 

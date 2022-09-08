@@ -35,6 +35,8 @@ import DataBackupLoader from "./DataBackupLoader";
 import AutoBackupLoader from "./AutoBackupLoader";
 import RestoreBackupLoader from "./RestoreBackupLoader";
 import InfoPanelMemberListLoader from "./InfoPanelBodyLoader/InfoPanelMemberListLoader";
+import SelectorSearchLoader from "./SelectorSearchLoader";
+import SelectorRowLoader from "./SelectorRowLoader";
 
 export default {
   Rectangle,
@@ -74,4 +76,6 @@ export default {
   AutoBackupLoader,
   RestoreBackupLoader,
   InfoPanelMemberListLoader,
+  SelectorSearchLoader,
+  SelectorRowLoader,
 };
