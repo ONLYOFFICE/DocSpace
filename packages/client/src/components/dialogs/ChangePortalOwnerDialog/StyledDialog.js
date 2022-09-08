@@ -46,7 +46,7 @@ const StyledPeopleSelectorInfo = styled.div`
     font-size: 13px;
     line-height: 20px;
 
-    color: ${(props) => props.theme.settings.owner.departmentColor};
+    color: ${(props) => props.theme.text.disableColor};
   }
 `;
 
@@ -63,7 +63,7 @@ const StyledPeopleSelector = styled.div`
     font-size: 13px;
     line-height: 20px;
 
-    color: ${(props) => props.theme.settings.owner.departmentColor};
+    color: ${(props) => props.theme.text.disableColor};
 
     margin-left: 8px;
   }

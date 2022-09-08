@@ -79,15 +79,7 @@ const ChangePortalOwnerDialog = ({
     setSelectedUser(null);
   };
 
-  const translationOwnerRights = t("OwnerRights", { returnObjects: true });
-
-  const ownerRights = React.useMemo(() => {
-    if (Array.isArray(translationOwnerRights)) {
-      return translationOwnerRights;
-    }
-
-    return [];
-  }, [Array.isArray(translationOwnerRights)]);
+  const ownerRights = t("Settings:AccessRightsOwnerOpportunities").split("|");
 
   return (
     <ModalDialog
@@ -177,7 +169,7 @@ const ChangePortalOwnerDialog = ({
 
           {ownerRights?.map((item) => (
             <Text key={item} className="list-item" noSelect title={item}>
-              {item}
+              — {item};
             </Text>
           ))}
         </StyledAvailableList>
@@ -185,7 +177,7 @@ const ChangePortalOwnerDialog = ({
       <ModalDialog.Footer>
         <StyledFooterWrapper>
           <Text className="info" noSelect>
-            {t("ChangeDescription")}
+            {t("Settings:AccessRightsChangeOwnerConfirmText")}
           </Text>
           <div className="button-wrapper">
             <Button
