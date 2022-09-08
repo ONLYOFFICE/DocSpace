@@ -4,6 +4,7 @@ import { inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import { ContextMenuButton } from "@docspace/components";
+
 import ContextHelper from "../helpers/ContextHelper";
 
 const StyledItemContextOptions = styled.div`
@@ -11,8 +12,9 @@ const StyledItemContextOptions = styled.div`
 `;
 
 const ItemContextOptions = (props) => {
-  const contextHelper = new ContextHelper(props);
+  if (!props.selection) return null;
 
+  const contextHelper = new ContextHelper(props);
   return (
     <StyledItemContextOptions>
       <ContextMenuButton
@@ -30,14 +32,9 @@ const ItemContextOptions = (props) => {
 };
 
 export default inject(({ filesStore, contextOptionsStore }) => {
-  const { getFilesContextOptions: getContextOptions } = filesStore;
-  const {
-    getFilesContextOptions: getContextOptionActions,
-  } = contextOptionsStore;
-
   return {
-    getContextOptions,
-    getContextOptionActions,
+    getContextOptions: filesStore.getFilesContextOptions,
+    getContextOptionActions: contextOptionsStore.getFilesContextOptions,
   };
 })(
   withTranslation([
