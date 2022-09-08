@@ -2,7 +2,7 @@ name: 4testing multiarch-build
 
 on:
   push:
-    branches: [ "feature/github-action-build-docker" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
@@ -32,9 +32,9 @@ jobs:
         run: |
           cd ./build/install/docker
           REPO=${{ secrets.DOCKERHUB_USERNAME }} \
-          DOCKER_IMAGE_PREFIX="appserver"
+          DOCKER_IMAGE_PREFIX="docspace" \
           STATUS="4testing-" \
-          DOCKER_TAG="test" \
+          DOCKER_TAG="develop" \
           DOCKERFILE="Dockerfile.app" \
           docker buildx bake -f build.yml \
           --set *.args.GIT_BRANCH="feature/github-action-build-docker" \
