@@ -7,7 +7,6 @@ export const InputPhone = () => {
   const [phoneValue, setPhoneValue] = useState("");
 
   const Wrapper = styled.div`
-    margin: 50px;
     width: 330px;
     border-radius: 3px;
     &:focus-within {
