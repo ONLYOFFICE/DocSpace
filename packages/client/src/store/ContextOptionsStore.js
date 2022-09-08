@@ -337,8 +337,13 @@ class ContextOptionsStore {
     return options;
   };
 
-  onShowInfoPanel = () => {
-    const { setIsVisible } = this.authStore.infoPanelStore;
+  onShowInfoPanel = (item) => {
+    const {
+      setSelection,
+      normalizeSelection,
+      setIsVisible,
+    } = this.authStore.infoPanelStore;
+    setSelection(normalizeSelection({ ...item, isContextMenuSelection: true }));
     setIsVisible(true);
   };
 
@@ -601,7 +606,7 @@ class ContextOptionsStore {
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
         icon: "/static/images/info.outline.react.svg",
-        onClick: this.onShowInfoPanel,
+        onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
       blockAction,
