@@ -1,12 +1,11 @@
-import React, { useState, useCallback } from "react";
-import debounce from "lodash.debounce";
+import React, { useState } from "react";
 import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import Avatar from "@docspace/components/avatar";
 
 import { parseAddresses } from "@docspace/components/utils/email";
-import { ShareAccessRights } from "@docspace/common/constants";
+import { getAccessOptions } from "./accesses";
 
 import {
   StyledRow,
@@ -29,52 +28,7 @@ const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
   const [inputValue, setInputValue] = useState(name);
   const [parseErrors, setParseErrors] = useState(errors);
 
-  const accesses = [
-    {
-      key: "roomManager",
-      label: "Room manager",
-      access: ShareAccessRights.FullAccess,
-      id,
-    },
-    {
-      key: "editor",
-      label: "Editor",
-      access: ShareAccessRights.CustomFilter,
-      id,
-    },
-    {
-      key: "formFiller",
-      label: "Form filler",
-      access: ShareAccessRights.FormFilling,
-      id,
-    },
-    {
-      key: "reviewer",
-      label: "Reviewer",
-      access: ShareAccessRights.Review,
-      id,
-    },
-    {
-      key: "commentator",
-      label: "Commentator",
-      access: ShareAccessRights.Comment,
-      id,
-    },
-    {
-      key: "viewer",
-      label: "Viewer",
-      access: ShareAccessRights.ReadOnly,
-      id,
-    },
-    {
-      key: "sep",
-      isSeparator: true,
-    },
-    {
-      key: "delete",
-      label: "Delete",
-    },
-  ];
+  const accesses = getAccessOptions(t, 5, true);
 
   const defaultAccess = accesses.find((option) => option.access === access);
 
@@ -120,9 +74,9 @@ const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
   };
 
   const selectItemAccess = (selected) => {
-    if (selected.key === "delete") return removeItem();
+    if (selected.key === "remove") return removeItem();
 
-    changeInviteItem(selected);
+    changeInviteItem({ id, access: selected.access });
   };
 
   const textProps = !!avatarSmall ? {} : { onClick: onEdit };
