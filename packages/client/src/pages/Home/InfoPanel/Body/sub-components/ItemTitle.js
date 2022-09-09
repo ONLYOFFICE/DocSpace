@@ -7,10 +7,27 @@ import ItemContextOptions from "./ItemContextOptions";
 
 import { StyledTitle } from "../styles/common";
 
-const ItemTitle = ({ t, selection, isGallery, isFileCategory, getIcon }) => {
-  if ((isFileCategory && selection.isSelectedFolder) || isGallery) return null;
-
-  return !Array.isArray(selection) ? (
+const ItemTitle = ({
+  t,
+  selection,
+  isGallery,
+  isSeveralItems,
+  setBufferSelection,
+  getIcon,
+}) => {
+  return isSeveralItems ? (
+    <StyledTitle>
+      <ReactSVG className="icon" src={getIcon(32, ".file")} />
+      <Text className="text">
+        {`${t("ItemsSelected")}: ${selection.length}`}
+      </Text>
+    </StyledTitle>
+  ) : isGallery ? (
+    <StyledTitle>
+      <ReactSVG className="icon" src={getIcon(32, ".docxf")} />
+      <Text className="text">{selection.attributes.name_form}</Text>
+    </StyledTitle>
+  ) : (
     <StyledTitle>
       <img
         className={`icon ${selection.isRoom && "is-room"}`}
@@ -18,14 +35,12 @@ const ItemTitle = ({ t, selection, isGallery, isFileCategory, getIcon }) => {
         alt="thumbnail-icon"
       />
       <Text className="text">{selection.title}</Text>
-      <ItemContextOptions selection={selection} />
-    </StyledTitle>
-  ) : (
-    <StyledTitle>
-      <ReactSVG className="icon" src={getIcon(32, ".file")} />
-      <Text className="text">
-        {`${t("ItemsSelected")}: ${selection.length}`}
-      </Text>
+      {selection && (
+        <ItemContextOptions
+          selection={selection}
+          setBufferSelection={setBufferSelection}
+        />
+      )}
     </StyledTitle>
   );
 };
