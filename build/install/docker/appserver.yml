@@ -172,6 +172,8 @@ services:
       - onlyoffice-api
       - onlyoffice-studio
       - onlyoffice-ssoauth
+      - onlyoffice-doceditor
+      - onlyoffice-login
     environment:
       - SERVICE_BACKUP=${SERVICE_BACKUP}
       - SERVICE_FILES=${SERVICE_FILES}
@@ -189,6 +191,7 @@ services:
       - SERVICE_STUDIO=${SERVICE_STUDIO}
       - SERVICE_SSOAUTH=${SERVICE_SSOAUTH}
       - SERVICE_DOCEDITOR=${SERVICE_DOCEDITOR}
+      - SERVICE_LOGIN=${SERVICE_LOGIN}
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:
