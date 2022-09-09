@@ -16,8 +16,8 @@ import {
   StyledButtons,
 } from "./StyledInvitePanel";
 
-import Items from "./items.js";
-import InviteInput from "./InviteInput";
+import ItemsList from "./sub-components/ItemsList";
+import InviteInput from "./sub-components/InviteInput";
 
 const InvitePanel = ({
   invitePanelOptions,
@@ -78,7 +78,12 @@ const InvitePanel = ({
         isAside={true}
         zIndex={210}
       />
-      <Aside className="invite_panel" visible={visible} onClose={onClose}>
+      <Aside
+        className="invite_panel"
+        visible={visible}
+        onClose={onClose}
+        withoutBodyScroll
+      >
         <StyledBlock>
           <StyledHeading>{t("InviteUsersToRoom")}</StyledHeading>
         </StyledBlock>
@@ -91,7 +96,7 @@ const InvitePanel = ({
 
         {!!inviteItems.length && (
           <>
-            <Items t={t} />
+            <ItemsList t={t} />
             <StyledButtons>
               <Button
                 scale={true}

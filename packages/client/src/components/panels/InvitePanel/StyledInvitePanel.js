@@ -17,7 +17,19 @@ import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 
 import Base from "@docspace/components/themes/base";
 
+const fillAvailableWidth = css`
+  width: 100%;
+  width: -moz-available;
+  width: -webkit-fill-available;
+  width: fill-available;
+`;
+
 const StyledInvitePanel = styled.div``;
+
+const ScrollList = styled.div`
+  width: 100%;
+  height: ${(props) => props.offsetTop && `calc(100% - ${props.offsetTop}px)`};
+`;
 
 const StyledBlock = styled.div`
   padding: ${(props) => (props.noPadding ? "0px" : "0 16px")};
@@ -25,13 +37,6 @@ const StyledBlock = styled.div`
 `;
 
 StyledBlock.defaultProps = { theme: Base };
-
-const fillAvailableWidth = css`
-  width: 100%;
-  width: -moz-available;
-  width: -webkit-fill-available;
-  width: fill-available;
-`;
 
 const StyledHeading = styled(Heading)`
   font-weight: 700;
@@ -42,11 +47,12 @@ const StyledSubHeader = styled(Heading)`
   font-weight: 700;
   font-size: 16px;
   padding-left: 16px;
+  padding-right: 16px;
   margin: 20px 0;
 `;
 
 const StyledRow = styled.div`
-  ${fillAvailableWidth}
+  width: calc(100% - 32px) !important;
 
   display: inline-flex;
   align-items: center;
@@ -65,14 +71,12 @@ const StyledRow = styled.div`
 `;
 
 const StyledInviteInput = styled(TextInput)`
-  ${fillAvailableWidth}
-
   margin-left: 16px;
-  margin-bottom: 20px;
+  margin-right: 16px;
 `;
 
 const StyledEditInput = styled(TextInput)`
-  ${fillAvailableWidth}
+  width: 100%;
 `;
 
 const StyledComboBox = styled(ComboBox)`
@@ -82,10 +86,20 @@ const StyledComboBox = styled(ComboBox)`
   .combo-button-label:hover {
     text-decoration: none;
   }
+
+  .combo-buttons_arrow-icon {
+    margin-top: 12px;
+    margin-right: 8px;
+    margin-left: 0px;
+  }
 `;
 
 const StyledInviteInputContainer = styled(Box)`
   position: relative;
+  display: flex;
+  align-items: center;
+  ${fillAvailableWidth}
+  margin-bottom: 20px;
 `;
 
 const StyledDropDown = styled(DropDown)`
@@ -191,4 +205,5 @@ export {
   StyledDeleteIcon,
   StyledButtons,
   StyledLink,
+  ScrollList,
 };

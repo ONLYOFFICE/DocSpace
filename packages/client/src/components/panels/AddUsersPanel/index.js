@@ -96,6 +96,7 @@ const AddUsersPanel = ({
         className="header_aside-panel"
         visible={visible}
         onClose={onClosePanels}
+        withoutBodyScroll
       >
         <PeopleSelector
           isMultiSelect={isMultiSelect}

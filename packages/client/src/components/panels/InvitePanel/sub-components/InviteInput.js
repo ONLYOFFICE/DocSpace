@@ -8,8 +8,10 @@ import DropDownItem from "@docspace/components/drop-down-item";
 import { parseAddresses } from "@docspace/components/utils/email";
 import { ShareAccessRights } from "@docspace/common/constants";
 
-import { AddUsersPanel } from "../index";
-import { getAccessOptions } from "./accesses";
+import { AddUsersPanel } from "../../index";
+import { getAccessOptions } from "../utils";
+
+import AccessSelector from "./AccessSelector";
 
 import {
   StyledSubHeader,
@@ -18,7 +20,7 @@ import {
   StyledInviteInputContainer,
   StyledDropDown,
   SearchItemText,
-} from "./StyledInvitePanel";
+} from "../StyledInvitePanel";
 
 const InviteInput = ({
   invitePanelOptions,
@@ -180,6 +182,7 @@ const InviteInput = ({
           placeholder={t("SearchPlaceholder")}
           value={inputValue}
         />
+        <AccessSelector t={t} roomType={5} />
         <StyledDropDown
           isDefaultMode={false}
           open={panelVisible}

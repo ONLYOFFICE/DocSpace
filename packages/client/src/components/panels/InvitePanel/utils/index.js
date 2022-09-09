@@ -11,6 +11,10 @@ export const getAccessOptions = (
     roomManager: {
       key: "roomManager",
       label: "Room manager",
+      title: "Room manager",
+      description: "Room manager",
+      quota: "Paid",
+      color: "#EDC409",
       access: ShareAccessRights.FullAccess,
     },
     editor: {

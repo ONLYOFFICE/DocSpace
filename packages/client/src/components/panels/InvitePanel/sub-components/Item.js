@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import Avatar from "@docspace/components/avatar";
 
 import { parseAddresses } from "@docspace/components/utils/email";
-import { getAccessOptions } from "./accesses";
+import { getAccessOptions } from "../utils";
 
 import {
-  StyledRow,
   StyledComboBox,
   StyledEditInput,
   StyledEditButton,
@@ -16,7 +14,7 @@ import {
   StyledCrossIcon,
   StyledHelpButton,
   StyledDeleteIcon,
-} from "./StyledInvitePanel";
+} from "../StyledInvitePanel";
 
 const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
   const { avatarSmall, displayName, email, id, errors, access } = item;
@@ -108,6 +106,11 @@ const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
           manualWidth="fit-content"
           selectedOption={defaultAccess}
           showDisabledItems
+          modernView
+          directionX="right"
+          directionY="bottom"
+          isDefaultMode={false}
+          fixedDirection={true}
         />
       )}
     </>
@@ -132,26 +135,4 @@ const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
   );
 };
 
-const Items = ({ t, setInviteItems, inviteItems, changeInviteItem }) => {
-  return inviteItems.map((item) => (
-    <StyledRow key={item.id}>
-      <Item
-        t={t}
-        item={item}
-        setInviteItems={setInviteItems}
-        changeInviteItem={changeInviteItem}
-        inviteItems={inviteItems}
-      />
-    </StyledRow>
-  ));
-};
-
-export default inject(({ dialogsStore }) => {
-  const { setInviteItems, inviteItems, changeInviteItem } = dialogsStore;
-
-  return {
-    setInviteItems,
-    inviteItems,
-    changeInviteItem,
-  };
-})(observer(Items));
+export default Item;
