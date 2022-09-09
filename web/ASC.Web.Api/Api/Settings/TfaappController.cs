@@ -142,7 +142,7 @@ public class TfaappController : BaseSettingsController
                                 ? ConfirmType.PhoneActivation
                                 : ConfirmType.PhoneAuth;
 
-            return _commonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, confirmType);
         }
 
         if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
@@ -151,7 +151,7 @@ public class TfaappController : BaseSettingsController
                 ? ConfirmType.TfaAuth
                 : ConfirmType.TfaActivation;
 
-            return _commonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, confirmType);
         }
 
         return string.Empty;
@@ -339,7 +339,7 @@ public class TfaappController : BaseSettingsController
         if (isMe)
         {
             await _cookiesManager.ResetTenantCookie();
-            return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation);
+            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation);
         }
 
         _studioNotifyService.SendMsgTfaReset(user);
