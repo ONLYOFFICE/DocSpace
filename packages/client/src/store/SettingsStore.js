@@ -3,7 +3,7 @@ import {
   setFavoritesSetting,
   setRecentSetting,
 } from "@docspace/common/api/files";
-import { FolderType, RoomsType } from "@docspace/common/constants";
+import { RoomsType } from "@docspace/common/constants";
 import axios from "axios";
 import { makeAutoObservable } from "mobx";
 import { presentInArray } from "../helpers/files-helpers";
@@ -172,40 +172,22 @@ class SettingsStore {
 
   setForcesave = (val) => (this.forcesave = val);
 
-  updateRootTreeFolders = (set, rootFolderIndex, folderType) => {
-    const {
-      getFoldersTree,
-      treeFolders,
-      setTreeFolders,
-    } = this.treeFoldersStore;
-
-    getFoldersTree().then((root) => {
-      if (set) {
-        const rootFolder = root.find((x) => x.rootFolderType === folderType);
-        const newTreeFolders = treeFolders;
-        newTreeFolders.splice(rootFolderIndex, 0, rootFolder);
-        setTreeFolders(newTreeFolders);
-      } else {
-        const newTreeFolders = treeFolders.filter(
-          (x) => x.rootFolderType !== folderType
-        );
-        setTreeFolders(newTreeFolders);
-      }
-    });
+  updateRootTreeFolders = () => {
+    const { getFoldersTree, setTreeFolders } = this.treeFoldersStore;
+    getFoldersTree().then((root) => setTreeFolders(root));
   };
 
   setFavoritesSetting = (set, setting) => {
     return setFavoritesSetting(set).then((res) => {
       this.setFilesSetting(setting, res);
-      this.updateRootTreeFolders(set, 2, FolderType.Favorites);
+      this.updateRootTreeFolders();
     });
   };
 
   setRecentSetting = (set, setting) => {
     return setRecentSetting(set).then((res) => {
       this.setFilesSetting(setting, res);
-      const index = this.treeFoldersStore.favoritesFolder ? 3 : 2;
-      this.updateRootTreeFolders(set, index, FolderType.Recent);
+      this.updateRootTreeFolders();
     });
   };
 

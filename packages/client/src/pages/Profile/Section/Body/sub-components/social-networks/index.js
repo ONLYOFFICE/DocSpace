@@ -63,6 +63,9 @@ const SocialNetworks = (props) => {
           callback: "loginCallback",
         })
       );
+
+      console.log(getLoginLink(token, code));
+
       tokenGetterWin.location.href = getLoginLink(token, code);
     } catch (err) {
       console.log(err);

@@ -108,7 +108,6 @@ class DeleteProfileEverDialogComponent extends React.Component {
             size="normal"
             scale
             onClick={onClose}
-            isLoading={isRequestRunning}
           />
         </ModalDialog.Footer>
       </ModalDialogContainer>

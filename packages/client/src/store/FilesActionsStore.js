@@ -5,7 +5,6 @@ import {
   downloadFiles,
   emptyTrash,
   finalizeVersion,
-  getSubfolders,
   lockFile,
   markAsRead,
   removeFiles,
@@ -20,9 +19,8 @@ import {
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
 import toastr from "@docspace/components/toast/toastr";
-
-import { Events, TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
-import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";
+import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
+import { checkProtocol } from "../helpers/files-helpers";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
@@ -647,7 +645,13 @@ class FilesActionStore {
           await this.uploadDataStore.loopFilesOperations(data, pbData);
           this.updateCurrentFolder(null, [itemId]);
         })
-        .then(() => toastr.success(translations?.successRemoveRoom));
+        .then(() =>
+          toastr.success(
+            items.length > 1
+              ? translations?.successRemoveRooms
+              : translations?.successRemoveRoom
+          )
+        );
     } else {
       addActiveItems(null, [itemId]);
       return deleteFolder(itemId).then(async (res) => {
@@ -945,8 +949,8 @@ class FilesActionStore {
 
   selectRowAction = (checked, file) => {
     const {
-      selected,
-      setSelected,
+      // selected,
+      // setSelected,
       selectFile,
       deselectFile,
       setBufferSelection,
@@ -962,14 +966,8 @@ class FilesActionStore {
   };
 
   openLocationAction = (locationId) => {
-    const { createNewExpandedKeys, setExpandedKeys } = this.treeFoldersStore;
-
     this.filesStore.setBufferSelection(null);
-    return this.filesStore.fetchFiles(locationId, null).then((data) => {
-      const pathParts = data.selectedFolder.pathParts;
-      const newExpandedKeys = createNewExpandedKeys(pathParts);
-      setExpandedKeys(newExpandedKeys);
-    });
+    return this.filesStore.fetchFiles(locationId, null);
   };
 
   setThirdpartyInfo = (providerKey) => {
@@ -1248,7 +1246,7 @@ class FilesActionStore {
     this.setArchiveAction("unarchive", items);
   };
 
-  deleteRooms = () => {
+  deleteRooms = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
@@ -1257,7 +1255,15 @@ class FilesActionStore {
       items.push(item.id);
     });
 
-    this.deleteItemAction(items, null, null, null, true);
+    const translations = {
+      deleteOperation: t("Translations:DeleteOperation"),
+      successRemoveFile: t("Files:FileRemoved"),
+      successRemoveFolder: t("Files:FolderRemoved"),
+      successRemoveRoom: t("Files:RoomRemoved"),
+      successRemoveRooms: t("Files:RoomsRemoved"),
+    };
+
+    this.deleteItemAction(items, translations, null, null, true);
   };
 
   getOption = (option, t) => {
@@ -1355,7 +1361,7 @@ class FilesActionStore {
         else
           return {
             label: t("Common:Delete"),
-            onClick: this.deleteRooms,
+            onClick: () => this.deleteRooms(t),
             iconUrl: "/static/images/delete.react.svg",
           };
 
@@ -1587,11 +1593,7 @@ class FilesActionStore {
       openDocEditor,
       isPrivacyFolder,
     } = this.filesStore;
-    const {
-      isRecycleBinFolder,
-      setExpandedKeys,
-      createNewExpandedKeys,
-    } = this.treeFoldersStore;
+    const { isRecycleBinFolder } = this.treeFoldersStore;
     const { setMediaViewerData } = this.mediaViewerDataStore;
     const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
 
@@ -1607,14 +1609,8 @@ class FilesActionStore {
 
     if (isFolder) {
       setIsLoading(true);
-      //addExpandedKeys(parentFolder + "");
 
       fetchFiles(id, null, true, false)
-        .then((data) => {
-          const pathParts = data.selectedFolder.pathParts;
-          const newExpandedKeys = createNewExpandedKeys(pathParts);
-          setExpandedKeys(newExpandedKeys);
-        })
         .catch((err) => {
           toastr.error(err);
           setIsLoading(false);

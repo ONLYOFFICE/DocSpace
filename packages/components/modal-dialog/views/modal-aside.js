@@ -36,6 +36,7 @@ const Modal = ({
   visible,
   withFooterBorder,
   modalSwipeOffset,
+  containerVisible,
 }) => {
   const headerComponent = header ? header.props.children : null;
   const bodyComponent = body ? body.props.children : null;
@@ -92,7 +93,9 @@ const Modal = ({
               )
             ) : (
               <>
-                {container && currentDisplayType !== "modal" ? (
+                {container &&
+                containerVisible &&
+                currentDisplayType !== "modal" ? (
                   <>{containerComponent}</>
                 ) : (
                   <>
