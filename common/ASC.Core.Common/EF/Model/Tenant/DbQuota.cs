@@ -62,7 +62,7 @@ public static class DbQuotaExtension
                     Name = "trial",
                     Description = null,
                     MaxFileSize = 100,
-                    Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,admin:1",
+                    Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,manager:1",
                     Price = decimal.Parse("0,00"),
                     ProductId = null,
                     Visible = false
@@ -73,7 +73,7 @@ public static class DbQuotaExtension
                     Name = "admin",
                     Description = null,
                     MaxFileSize = 1024,
-                    Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,admin:1",
+                    Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,manager:1",
                     Price = decimal.Parse("30,00"),
                     ProductId = "1002",
                     Visible = true
@@ -84,7 +84,7 @@ public static class DbQuotaExtension
                     Name = "startup",
                     Description = null,
                     MaxFileSize = 100,
-                    Features = "free,audit,ldap,sso,restore,total_size:2147483648,admin:5,rooms:3",
+                    Features = "free,audit,ldap,sso,restore,total_size:2147483648,manager:5,rooms:3",
                     Price = decimal.Parse("0,00"),
                     ProductId = null,
                     Visible = false

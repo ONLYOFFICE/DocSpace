@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.Quota;
+using ASC.Core.Common.Quota.Features;
+using ASC.Files.Core.Core;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -39,6 +43,12 @@ builder.Host.ConfigureDefault(args, configureServices: (hostContext, services, d
     services.AddBaseDbContextPool<FilesDbContext>();
     services.AddBaseDbContextPool<BackupsContext>();
     services.AddTransient<QuotaUsageDto>();
+
+    services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
+    services.AddScoped<CountRoomChecker>();
+
+    services.AddScoped<ITenantQuotaFeatureStatisticCount<CountRoomFeature>, CountRoomCheckerStatistic>();
+    services.AddScoped<CountRoomCheckerStatistic>();
 });
 
 builder.WebHost.ConfigureDefaultKestrel();

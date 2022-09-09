@@ -35,7 +35,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         MaxFileSize = 25 * 1024 * 1024, // 25Mb
         MaxTotalSize = long.MaxValue,
         ActiveUsers = int.MaxValue,
-        CountAdmin = int.MaxValue,
+        CountManager = int.MaxValue,
         CountRoom = int.MaxValue
     };
 
@@ -84,11 +84,11 @@ public class TenantQuota : IMapFrom<DbQuota>
         set => _activeUsersFeature.Value = value;
     }
 
-    private readonly CountAdminFeature _countAdminFeature;
-    public int CountAdmin
+    private readonly CountManagerFeature _countManagerFeature;
+    public int CountManager
     {
-        get => _countAdminFeature.Value;
-        set => _countAdminFeature.Value = value;
+        get => _countManagerFeature.Value;
+        set => _countManagerFeature.Value = value;
     }
 
     private readonly CountRoomFeature _countRoomFeature;
@@ -119,13 +119,6 @@ public class TenantQuota : IMapFrom<DbQuota>
         set => _freeFeature.Value = value;
     }
 
-    private readonly TenantQuotaFeatureFlag _openFeature;
-    public bool Open
-    {
-        get => _openFeature.Value;
-        set => _openFeature.Value = value;
-    }
-
     private readonly TenantQuotaFeatureFlag _updateFeature;
     public bool Update
     {
@@ -145,13 +138,6 @@ public class TenantQuota : IMapFrom<DbQuota>
     {
         get => _docsEditionFeature.Value;
         set => _docsEditionFeature.Value = value;
-    }
-
-    private readonly TenantQuotaFeatureFlag _hasMigrationFeature;
-    public bool HasMigration
-    {
-        get => _hasMigrationFeature.Value;
-        set => _hasMigrationFeature.Value = value;
     }
 
     private readonly TenantQuotaFeatureFlag _ldapFeature;
@@ -189,18 +175,11 @@ public class TenantQuota : IMapFrom<DbQuota>
         set => _customFeature.Value = value;
     }
 
-    private readonly TenantQuotaFeatureFlag _restoreFeature;
-    public bool Restore
+    private readonly TenantQuotaFeatureFlag _autoBackupRestoreFeature;
+    public bool AutoBackupRestore
     {
-        get => _restoreFeature.Value;
-        set => _restoreFeature.Value = value;
-    }
-
-    private readonly TenantQuotaFeatureFlag _autoBackupFeature;
-    public bool AutoBackup
-    {
-        get => _autoBackupFeature.Value;
-        set => _autoBackupFeature.Value = value;
+        get => _autoBackupRestoreFeature.Value;
+        set => _autoBackupRestoreFeature.Value = value;
     }
 
     private readonly TenantQuotaFeatureFlag _oauthFeature;
@@ -229,24 +208,21 @@ public class TenantQuota : IMapFrom<DbQuota>
         _featuresList = new List<string>();
 
         _activeUsersFeature = new ActiveUsersFeature(this) { Order = 1 };
-        _countAdminFeature = new CountAdminFeature(this);
+        _countManagerFeature = new CountManagerFeature(this);
         _countRoomFeature = new CountRoomFeature(this) { Order = 2 };
-        _maxTotalSizeFeature = new MaxTotalSizeFeature(this) { Order = 3 };
+        _maxTotalSizeFeature = new MaxTotalSizeFeature(this);
         _nonProfitFeature = new TenantQuotaFeatureFlag(this) { Name = "non-profit", Visible = false };
         _trialFeature = new TenantQuotaFeatureFlag(this) { Name = "trial", Visible = false };
         _freeFeature = new TenantQuotaFeatureFlag(this) { Name = "free", Visible = false };
-        _openFeature = new TenantQuotaFeatureFlag(this) { Name = "open", Visible = false };
         _updateFeature = new TenantQuotaFeatureFlag(this) { Name = "update", Visible = false };
         _auditFeature = new TenantQuotaFeatureFlag(this) { Name = "audit", Order = 7 };
         _docsEditionFeature = new TenantQuotaFeatureFlag(this) { Name = "docs", Visible = false };
-        _hasMigrationFeature = new TenantQuotaFeatureFlag(this) { Name = "migration", Visible = false };
         _ldapFeature = new TenantQuotaFeatureFlag(this) { Name = "ldap", Visible = false };
         _ssoFeature = new TenantQuotaFeatureFlag(this) { Name = "sso", Order = 5 };
         _whiteLabelFeature = new TenantQuotaFeatureFlag(this) { Name = "whitelabel", Order = 4 };
         _customizationFeature = new TenantQuotaFeatureFlag(this) { Name = "customization", Visible = false };
         _customFeature = new TenantQuotaFeatureFlag(this) { Name = "custom", Visible = false };
-        _restoreFeature = new TenantQuotaFeatureFlag(this) { Name = "restore", Order = 6 };
-        _autoBackupFeature = new TenantQuotaFeatureFlag(this) { Name = "autobackup", Visible = false };
+        _autoBackupRestoreFeature = new TenantQuotaFeatureFlag(this) { Name = "restore", Order = 6 };
         _oauthFeature = new TenantQuotaFeatureFlag(this) { Name = "oauth", Visible = false };
         _contentSearchFeature = new TenantQuotaFeatureFlag(this) { Name = "contentsearch", Visible = false };
         _thirdPartyFeature = new TenantQuotaFeatureFlag(this) { Name = "thirdparty", Visible = false };
@@ -254,24 +230,21 @@ public class TenantQuota : IMapFrom<DbQuota>
         TenantQuotaFeatures = new List<TenantQuotaFeature>
         {
             _activeUsersFeature,
-            _countAdminFeature,
+            _countManagerFeature,
             _countRoomFeature,
             _maxTotalSizeFeature,
             _nonProfitFeature,
             _trialFeature,
             _freeFeature,
-            _openFeature,
             _updateFeature,
             _auditFeature,
             _docsEditionFeature,
-            _hasMigrationFeature,
             _ldapFeature,
             _ssoFeature,
             _whiteLabelFeature,
             _customizationFeature,
             _customFeature,
-            _restoreFeature,
-            _autoBackupFeature,
+            _autoBackupRestoreFeature,
             _oauthFeature,
             _contentSearchFeature,
             _thirdPartyFeature
@@ -304,20 +277,15 @@ public class TenantQuota : IMapFrom<DbQuota>
         return obj is TenantQuota q && q.Tenant == Tenant;
     }
 
-    public void Check(IServiceProvider serviceProvider)
+    public async Task Check(IServiceProvider serviceProvider)
     {
         foreach (var checker in serviceProvider.GetServices<ITenantQuotaFeatureChecker>())
         {
-            if (!checker.Check(this))
+            if (!await checker.Check(this))
             {
                 throw new Exception(checker.Exception(this));
             }
         }
-
-        //if (CountAdmin != int.MaxValue
-        //    && false) throw new Exception("The number of managers should not exceed " + CountAdmin);
-        //if (CountRoom != int.MaxValue
-        //    && false) throw new Exception("The number of rooms should not exceed " + CountRoom);
     }
 
     public static TenantQuota operator *(TenantQuota quota, int quantity)
@@ -373,7 +341,7 @@ public class TenantQuota : IMapFrom<DbQuota>
             .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInBytes(src.MaxFileSize)));
     }
 
-    internal TenantQuotaFeature<T> GetFeature<T>(string name)
+    public TenantQuotaFeature<T> GetFeature<T>(string name)
     {
         return TenantQuotaFeatures.OfType<TenantQuotaFeature<T>>().FirstOrDefault(r => r.Name == name);
     }

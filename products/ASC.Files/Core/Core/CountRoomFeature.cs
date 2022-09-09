@@ -24,9 +24,44 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Quota;
-public interface ITenantQuotaFeatureChecker
+namespace ASC.Files.Core.Core;
+public class CountRoomChecker : ITenantQuotaFeatureChecker
 {
-    public Task<bool> Check(TenantQuota value);
-    public string Exception(TenantQuota value);
+    private readonly ITenantQuotaFeatureStatisticCount<CountRoomFeature> _tenantQuotaFeatureStatistic;
+
+    public CountRoomChecker(ITenantQuotaFeatureStatisticCount<CountRoomFeature> tenantQuotaFeatureStatistic)
+    {
+        _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
+    }
+
+    public async Task<bool> Check(TenantQuota quota)
+    {
+        return await _tenantQuotaFeatureStatistic.GetValue() <= quota.CountRoom;
+    }
+
+    public string Exception(TenantQuota quota)
+    {
+        return "The number of rooms should not exceed " + quota.MaxTotalSize;
+    }
+}
+
+public class CountRoomCheckerStatistic : ITenantQuotaFeatureStatisticCount<CountRoomFeature>
+{
+    private readonly IFolderDao<int> _folderDao;
+    private readonly GlobalFolderHelper _globalFolderHelper;
+
+    public CountRoomCheckerStatistic(
+        IFolderDao<int> folderDao,
+        GlobalFolderHelper globalFolderHelper)
+    {
+        _folderDao = folderDao;
+        _globalFolderHelper = globalFolderHelper;
+    }
+
+    public async Task<int> GetValue()
+    {
+        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<int>();
+
+        return await _folderDao.GetFoldersAsync(parentId).CountAsync();
+    }
 }

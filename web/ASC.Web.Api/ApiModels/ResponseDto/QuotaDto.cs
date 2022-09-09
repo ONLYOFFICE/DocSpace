@@ -31,11 +31,13 @@ public class QuotaDto
     public int Id { get; set; }
     public string Title { get; set; }
 
+    public PriceDto Price { get; set; }
+
     public bool NonProfit { get; set; }
     public bool Free { get; set; }
     public bool Trial { get; set; }
 
-    public IEnumerable<QuotaFeatureDto> Features { get; set; }
+    public IAsyncEnumerable<QuotaFeatureDto> Features { get; set; }
 }
 
 public class QuotaFeatureDto : IEquatable<QuotaFeatureDto>
@@ -43,6 +45,7 @@ public class QuotaFeatureDto : IEquatable<QuotaFeatureDto>
     public string Id { get; set; }
     public string Title { get; set; }
     public string Image { get; set; }
+    public object Value { get; set; }
     public FeatureUsedDto Used { get; set; }
     public FeaturePriceDto Price { get; set; }
 
@@ -60,24 +63,20 @@ public class QuotaFeatureDto : IEquatable<QuotaFeatureDto>
     public override int GetHashCode() => Id.GetHashCode();
 }
 
-public class FeaturePriceDto
+public class PriceDto
 {
     public decimal? Value { get; set; }
     public string CurrencySymbol { get; set; }
+}
+
+public class FeaturePriceDto
+{
     public string Count { get; set; }
     public string Per { get; set; }
-    public FeaturePriceRangeDto Range { get; set; }
 }
 
 public class FeatureUsedDto
 {
     public object Value { get; set; }
     public string Title { get; set; }
-}
-
-public class FeaturePriceRangeDto
-{
-    public object Value { get; set; }
-    public object Min { get; set; }
-    public object Max { get; set; }
 }

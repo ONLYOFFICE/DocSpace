@@ -2140,7 +2140,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Business plan.
+        ///   Looks up a localized string similar to Business.
         /// </summary>
         public static string Tariffs_admin {
             get {
@@ -2149,20 +2149,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of managers.
+        ///   Looks up a localized string similar to Startup.
         /// </summary>
-        public static string TariffsFeature_admin_price_count {
+        public static string Tariffs_startup {
             get {
-                return ResourceManager.GetString("TariffsFeature_admin_price_count", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} per manager/month.
-        /// </summary>
-        public static string TariffsFeature_admin_price_per {
-            get {
-                return ResourceManager.GetString("TariffsFeature_admin_price_per", resourceCulture);
+                return ResourceManager.GetString("Tariffs_startup", resourceCulture);
             }
         }
         
@@ -2172,6 +2163,24 @@ namespace ASC.Web.Core.PublicResources {
         public static string TariffsFeature_audit {
             get {
                 return ResourceManager.GetString("TariffsFeature_audit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of managers.
+        /// </summary>
+        public static string TariffsFeature_manager_price_count {
+            get {
+                return ResourceManager.GetString("TariffsFeature_manager_price_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} per manager/month.
+        /// </summary>
+        public static string TariffsFeature_manager_price_per {
+            get {
+                return ResourceManager.GetString("TariffsFeature_manager_price_per", resourceCulture);
             }
         }
         
@@ -2208,6 +2217,24 @@ namespace ASC.Web.Core.PublicResources {
         public static string TariffsFeature_total_size {
             get {
                 return ResourceManager.GetString("TariffsFeature_total_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Storage space.
+        /// </summary>
+        public static string TariffsFeature_total_size_price_count {
+            get {
+                return ResourceManager.GetString("TariffsFeature_total_size_price_count", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string TariffsFeature_total_size_price_per {
+            get {
+                return ResourceManager.GetString("TariffsFeature_total_size_price_per", resourceCulture);
             }
         }
         

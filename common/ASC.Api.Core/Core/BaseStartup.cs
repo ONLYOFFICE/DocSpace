@@ -118,16 +118,16 @@ public abstract class BaseStartup
         services.AddDistributedTaskQueue();
         services.AddCacheNotify(_configuration);
 
-        services.AddScoped<ITenantQuotaFeatureChecker, ActiveUsersChecker>();
-        services.AddScoped<ActiveUsersChecker>();
+        services.AddScoped<ITenantQuotaFeatureChecker, CountManagerChecker>();
+        services.AddScoped<CountManagerChecker>();
 
-        services.AddScoped<ITenantQuotaFeatureStatistic<ActiveUsersFeature>, ActiveUsersStatistic>();
-        services.AddScoped<ActiveUsersStatistic>();
+        services.AddScoped<ITenantQuotaFeatureStatisticCount<CountManagerFeature>, CountManagerStatistic>();
+        services.AddScoped<CountManagerStatistic>();
 
         services.AddScoped<ITenantQuotaFeatureChecker, MaxTotalSizeChecker>();
         services.AddScoped<MaxTotalSizeChecker>();
 
-        services.AddScoped<ITenantQuotaFeatureStatistic<MaxTotalSizeFeature>, MaxTotalSizeStatistic>();
+        services.AddScoped<ITenantQuotaFeatureStatisticLength<MaxTotalSizeFeature>, MaxTotalSizeStatistic>();
         services.AddScoped<MaxTotalSizeStatistic>();
 
 

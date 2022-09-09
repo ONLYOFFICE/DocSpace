@@ -83,8 +83,7 @@ public class StudioSmsNotificationSettingsHelper
         return _coreBaseSettings.Standalone
                 || ((!quota.Trial || _setupInfo.SmsTrial)
                     && !quota.NonProfit
-                    && !quota.Free
-                    && !quota.Open);
+                    && !quota.Free);
     }
 
     public bool Enable

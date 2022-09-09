@@ -86,7 +86,7 @@ internal class FileDataProvider
         )
         group by t.tenant
         */
-
+        //TODO
         using var filesDbContext = _coreContextFactory.CreateDbContext();
         var search =
             filesDbContext.Tariffs
