@@ -382,7 +382,7 @@ const Dark = {
   iconButton: { color: "#858585", hoverColor: grayMaxLight },
   selectorAddButton: {
     background: "#292929",
-    activeBackground: darkBlack,
+    activeBackground: "#292929",
 
     border: `none`,
     boxSizing: "border-box",
@@ -391,7 +391,7 @@ const Dark = {
     width: "32px",
     padding: "9px",
     color: "#858585",
-    hoverColor: grayMaxLight,
+    hoverColor: "#858585",
   },
 
   saveCancelButtons: {
@@ -1000,31 +1000,31 @@ const Dark = {
     },
 
     roleWrapperContainer: {
-      left: {
-        min: "-2px",
+      right: {
+        min: "-5px",
         small: "-2px",
         base: "-2px",
         medium: "-4px",
-        big: "0px",
+        big: "3px",
         max: "0px",
       },
 
       bottom: {
-        min: "3px",
+        min: "-5px",
         small: "3px",
         base: "4px",
         medium: "6px",
-        big: "5px",
+        big: "3px",
         max: "0px",
       },
 
       width: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
 
       height: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
     },
@@ -1537,12 +1537,12 @@ const Dark = {
     },
 
     arrow: {
-      width: "8px",
-      flex: "0 0 8px",
+      width: "6px",
+      flex: "0 0 6px",
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "auto",
+      marginLeft: "-2px",
       fillColor: "#9c9c9c",
     },
 
@@ -2209,6 +2209,19 @@ const Dark = {
       hoverBorderColor: "#858585",
       focusBorderColor: grayMaxLight,
       placeholderColor: "#474747",
+    },
+  },
+
+  selector: {
+    border: `1px solid #474747`,
+
+    item: {
+      hoverBackground: "#3d3d3d",
+      selectedBackground: "#3d3d3d",
+    },
+
+    emptyScreen: {
+      descriptionColor: cyanBlueDarkShade,
     },
   },
 

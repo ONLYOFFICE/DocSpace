@@ -10,7 +10,7 @@ import {
   loadAvatar,
   deleteAvatar,
 } from "@docspace/common/api/people";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import { toEmployeeWrapper } from "../../../../helpers/people-helpers";
 

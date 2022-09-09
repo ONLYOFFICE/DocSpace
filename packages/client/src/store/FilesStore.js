@@ -13,7 +13,7 @@ import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
 import { updateTempContent } from "@docspace/common/utils";
 import { isMobile, isMobileOnly } from "react-device-detect";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
@@ -2645,6 +2645,7 @@ class FilesStore {
     console.log("hasMoreFiles", this.filesList.length < filterTotal);
     console.log("----------------------------");
 
+    if (this.isLoading) return false;
     return this.filesList.length < filterTotal;
   }
 

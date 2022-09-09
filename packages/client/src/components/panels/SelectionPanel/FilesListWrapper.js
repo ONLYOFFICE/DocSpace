@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import FilesListBody from "./FilesListBody";
 import axios from "axios";
 import { combineUrl, getFolderOptions } from "@docspace/common/utils";

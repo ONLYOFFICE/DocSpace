@@ -26,6 +26,7 @@
 
 global using System.Data;
 global using System.Text.Json.Nodes;
+global using System.Linq.Expressions;
 
 global using ASC.Common;
 global using ASC.Common.Mapping;
@@ -47,5 +48,6 @@ global using AutoMapper;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Infrastructure;
 global using Microsoft.EntityFrameworkCore.Migrations;
+
 
 global using Newtonsoft.Json;

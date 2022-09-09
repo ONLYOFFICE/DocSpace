@@ -17,7 +17,7 @@ import withLoader from "../../../HOCs/withLoader";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 const ArticleMainButtonContent = (props) => {
   const {
