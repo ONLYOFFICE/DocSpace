@@ -48,7 +48,10 @@ class AuthStore {
 
     if (this.isAuthenticated) {
       !this.settingsStore.passwordSettings &&
-        requests.push(this.settingsStore.getPortalPasswordSettings());
+        requests.push(
+          this.settingsStore.getPortalPasswordSettings(),
+          this.settingsStore.getAdditionalResources()
+        );
     }
 
     return Promise.all(requests);

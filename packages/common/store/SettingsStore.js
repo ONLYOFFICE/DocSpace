@@ -130,7 +130,6 @@ class SettingsStore {
   hotkeyPanelVisible = false;
   frameConfig = null;
 
-
   appearanceTheme = [];
   selectedThemeId = null;
   currentColorScheme = null;
@@ -138,6 +137,7 @@ class SettingsStore {
   enablePlugins = false;
   pluginOptions = [];
 
+  additionalResourcesData = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -291,6 +291,24 @@ class SettingsStore {
 
   setCultures = (cultures) => {
     this.cultures = cultures;
+  };
+
+  setAdditionalResourcesData = (data) => {
+    this.additionalResourcesData = data;
+  };
+
+  //TODO: Add data
+  setAdditionalResources = async () => {
+    const res = await api.settings.setAdditionalResources();
+  };
+
+  getAdditionalResources = async () => {
+    const res = await api.settings.getAdditionalResources();
+    this.setAdditionalResourcesData(res);
+  };
+
+  restoreAdditionalResources = async () => {
+    const res = await api.settings.restoreAdditionalResources();
   };
 
   getPortalCultures = async () => {
