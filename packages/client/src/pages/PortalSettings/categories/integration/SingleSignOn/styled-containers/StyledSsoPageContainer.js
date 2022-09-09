@@ -106,13 +106,6 @@ const StyledSsoPage = styled.div`
     }
   }
 
-  .separator {
-    margin: 24px 0;
-    height: 1px;
-    border: none;
-    background-color: #eceef1;
-  }
-
   .service-provider-settings {
     display: ${(props) => (!props.hideSettings ? "none" : "block")};
   }

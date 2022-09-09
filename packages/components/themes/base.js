@@ -2773,6 +2773,8 @@ const Base = {
         expanderColor: "dimgray",
       },
 
+      separatorBorder: `1px solid ${grayLightMid}`,
+
       security: {
         arrowFill: black,
         descriptionColor: cyanBlueDarkShade,

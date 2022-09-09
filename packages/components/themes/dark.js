@@ -2780,6 +2780,8 @@ const Dark = {
         expanderColor: "#c4c4c4",
       },
 
+      separatorBorder: "1px solid #474747",
+
       security: {
         arrowFill: white,
         descriptionColor: "#858585",
