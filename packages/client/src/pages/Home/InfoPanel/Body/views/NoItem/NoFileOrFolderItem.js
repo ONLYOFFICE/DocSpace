@@ -1,27 +1,10 @@
 import React from "react";
-import styled from "styled-components";
 
-const EmptyScreenContainer = styled.div`
-  margin: 80px auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 32px;
-
-  .empty-screen-text {
-    font-family: "Open Sans";
-    font-style: normal;
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 16px;
-    text-align: center;
-  }
-`;
+import { StyledNoItemContainer } from "../../styles/noItem";
 
 const NoFileOrFolderItem = ({ t }) => {
   return (
-    <EmptyScreenContainer>
+    <StyledNoItemContainer>
       <div className="no-thumbnail-img-wrapper">
         <img
           size="96px"
@@ -30,8 +13,8 @@ const NoFileOrFolderItem = ({ t }) => {
         />
       </div>
 
-      <div className="empty-screen-text">{t("EmptyScreenText")}</div>
-    </EmptyScreenContainer>
+      <div className="no-item-text">{t("EmptyScreenText")}</div>
+    </StyledNoItemContainer>
   );
 };
 
