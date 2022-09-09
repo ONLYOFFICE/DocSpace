@@ -10,37 +10,43 @@ import Loaders from "@docspace/common/components/Loaders";
 const Members = ({
   t,
   selfId,
+
   selection,
-  setSelection,
+
   selectionParentRoom,
   setSelectionParentRoom,
+
   getRoomMembers,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [members, setMembers] = useState(null);
 
   useEffect(async () => {
-    console.log("FETCHING MEMBERS");
-    setIsLoading(true);
-
-    if (selectionParentRoom && !selectionParentRoom.members) {
-      const fetchedMembers = await getRoomMembers(selectionParentRoom.id);
-      setSelectionParentRoom({
-        ...selectionParentRoom,
-        members: fetchedMembers,
-      });
+    if (!selectionParentRoom) return;
+    if (selectionParentRoom.members) {
+      setMembers(selectionParentRoom.members);
+      return;
     }
-
-    setIsLoading(false);
+    const fetchedMembers = await getRoomMembers(selectionParentRoom.id);
+    setMembers(fetchedMembers);
+    setSelectionParentRoom({
+      ...selectionParentRoom,
+      members: fetchedMembers,
+    });
   }, [selectionParentRoom]);
 
-  if (!selectionParentRoom || !selectionParentRoom.members || isLoading)
-    return <Loaders.InfoPanelMemberListLoader />;
+  useEffect(async () => {
+    if (!selection.isRoom) return;
+    const fetchedMembers = await getRoomMembers(selection.id);
+    setMembers(fetchedMembers);
+  }, [selection]);
+
+  if (!members) return <Loaders.InfoPanelMemberListLoader />;
 
   return (
     <>
       <StyledUserTypeHeader>
         <Text className="title">
-          {t("Users in room")} : {selectionParentRoom.members.length}
+          {t("Users in room")} : {members?.length}
         </Text>
         <IconButton
           className={"icon"}
@@ -53,7 +59,7 @@ const Members = ({
         />
       </StyledUserTypeHeader>
 
-      <UserList t={t} users={selectionParentRoom.members} selfId={selfId} />
+      <UserList t={t} users={members} selfId={selfId} />
 
       {/* <StyledUserTypeHeader>
         <Text className="title">{`${t("Expect people")}:`}</Text>
