@@ -20,6 +20,7 @@ class CommonStore {
   isLoadedCustomization = false;
   isLoadedCustomizationNavbar = false;
   isLoadedWelcomePageSettings = false;
+  isLoadedAdditionalResources = false;
 
   constructor() {
     this.authStore = authStore;
@@ -120,6 +121,12 @@ class CommonStore {
   setIsLoadedCustomizationNavbar = (isLoadedCustomizationNavbar) => {
     runInAction(() => {
       this.isLoadedCustomizationNavbar = isLoadedCustomizationNavbar;
+    });
+  };
+
+  setIsLoadedAdditionalResources = (isLoadedAdditionalResources) => {
+    runInAction(() => {
+      this.isLoadedAdditionalResources = isLoadedAdditionalResources;
     });
   };
 
