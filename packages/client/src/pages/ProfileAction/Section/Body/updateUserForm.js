@@ -30,7 +30,7 @@ import {
   loadAvatar,
   deleteAvatar,
 } from "@docspace/common/api/people";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,

@@ -8,7 +8,7 @@ import Text from "@docspace/components/text";
 
 import { withTranslation, Trans } from "react-i18next";
 import api from "@docspace/common/api";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
 import config from "PACKAGE_FILE";
@@ -28,7 +28,7 @@ class DeleteProfileEverDialogComponent extends React.Component {
     };
   }
   onDeleteProfileEver = () => {
-    const { user, t, history, homepage, setFilter } = this.props;
+    const { user, t, history, homepage, setFilter, onClose } = this.props;
 
     const filter = Filter.getDefault();
     const params = filter.toUrlParams();
@@ -47,7 +47,8 @@ class DeleteProfileEverDialogComponent extends React.Component {
           setFilter(filter);
           return;
         })
-        .catch((error) => toastr.error(error));
+        .catch((error) => toastr.error(error))
+        .finally(() => onClose());
     });
   };
 

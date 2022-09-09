@@ -3,7 +3,7 @@ import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "PACKAGE_FILE";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { AppServerConfig } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
