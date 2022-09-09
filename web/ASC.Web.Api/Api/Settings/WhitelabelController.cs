@@ -69,13 +69,7 @@ public class WhitelabelController : BaseSettingsController
         DemandWhiteLabelPermission();
 
         var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
-        SaveWhiteLabelSettingsForTenant(settings, null, Tenant.Id, inDto);
 
-        return true;
-    }
-
-    private void SaveWhiteLabelSettingsForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId, WhiteLabelRequestsDto inDto)
-    {
         if (inDto.Logo != null)
         {
             var logoDict = new Dictionary<int, string>();
@@ -85,12 +79,13 @@ public class WhitelabelController : BaseSettingsController
                 logoDict.Add(Int32.Parse(l.Key), l.Value);
             }
 
-            _tenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, storage);
+            _tenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, null);
         }
 
         settings.SetLogoText(inDto.LogoText);
-        _tenantWhiteLabelSettingsHelper.Save(settings, tenantId, _tenantLogoManager);
+        _tenantWhiteLabelSettingsHelper.Save(settings, Tenant.Id, _tenantLogoManager);
 
+        return true;
     }
 
     ///<visible>false</visible>
@@ -107,24 +102,19 @@ public class WhitelabelController : BaseSettingsController
         }
 
         var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
-        SaveWhiteLabelSettingsFromFilesForTenant(settings, null, Tenant.Id);
 
-        return true;
-    }
-
-    private void SaveWhiteLabelSettingsFromFilesForTenant(TenantWhiteLabelSettings settings, IDataStore storage, int tenantId)
-    {
         foreach (var f in HttpContext.Request.Form.Files)
         {
             var parts = f.FileName.Split('.');
             var logoType = (WhiteLabelLogoTypeEnum)Convert.ToInt32(parts[0]);
             var fileExt = parts[1];
-            _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), storage);
+            _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), null);
         }
 
-        _settingsManager.SaveForTenant(settings, tenantId);
-    }
+        _settingsManager.SaveForTenant(settings, Tenant.Id);
 
+        return true;
+    }
 
     ///<visible>false</visible>
     [HttpGet("whitelabel/sizes")]
@@ -196,13 +186,6 @@ public class WhitelabelController : BaseSettingsController
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
 
-        RestoreWhiteLabelOptionsForCurrentTenant();
-
-        return true;
-    }
-
-    private void RestoreWhiteLabelOptionsForCurrentTenant()
-    {
         var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
         _tenantWhiteLabelSettingsHelper.RestoreDefault(settings, _tenantLogoManager, Tenant.Id, null);
@@ -210,8 +193,9 @@ public class WhitelabelController : BaseSettingsController
         var tenantInfoSettings = _settingsManager.Load<TenantInfoSettings>();
         _tenantInfoSettingsHelper.RestoreDefaultLogo(tenantInfoSettings, _tenantLogoManager);
         _settingsManager.Save(tenantInfoSettings);
-    }
 
+        return true;
+    }
 
     ///<visible>false</visible>
     [HttpGet("companywhitelabel")]
