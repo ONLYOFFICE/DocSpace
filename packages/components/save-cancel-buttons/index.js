@@ -44,7 +44,7 @@ class SaveCancelButtons extends React.Component {
       saveButtonLabel,
       cancelButtonLabel,
       hasScroll,
-      isFirstWelcomePageSettings,
+      isFirstRestoreToDefault,
       className,
       id,
       isSaving,
@@ -53,7 +53,7 @@ class SaveCancelButtons extends React.Component {
 
     const cancelButtonDisabled = cancelEnable
       ? false
-      : isFirstWelcomePageSettings === "true"
+      : isFirstRestoreToDefault === "true"
       ? false
       : !showReminder;
 
@@ -114,7 +114,7 @@ SaveCancelButtons.propTypes = {
   displaySettings: PropTypes.bool,
   hasScroll: PropTypes.bool,
   minwidth: PropTypes.string,
-  isFirstWelcomePageSettings: PropTypes.string,
+  isFirstRestoreToDefault: PropTypes.string,
   isSaving: PropTypes.bool,
   cancelEnable: PropTypes.bool,
 };
