@@ -39,15 +39,15 @@ const rowStyles = css`
 
   .row-list-item {
     padding-left: 16px;
-    width: calc(100% - 33px) !important;
+    width: calc(100% - 16px) !important;
 
     @media ${tablet} {
       padding-left: 20px;
-      width: calc(100% - 37px) !important;
+      width: calc(100% - 20px) !important;
     }
 
     @media ${mobile} {
-      width: calc(100% - 28px) !important;
+      width: calc(100% - 20px) !important;
     }
   }
 `;
