@@ -339,12 +339,8 @@ class ContextOptionsStore {
   };
 
   onShowInfoPanel = (item) => {
-    const {
-      setSelection,
-      normalizeSelection,
-      setIsVisible,
-    } = this.authStore.infoPanelStore;
-    setSelection(normalizeSelection({ ...item, isContextMenuSelection: true }));
+    const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+    setSelection({ ...item, isContextMenuSelection: true });
     setIsVisible(true);
   };
 
