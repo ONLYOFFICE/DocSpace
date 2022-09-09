@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "邮箱",
   "Remember": "记住我",
   "RememberHelper": "默认会话寿命为20分钟。勾选此选项以将其设为1年。如需自行设置其值，请前往设置。",
-  "ResendCode": "重新发送代码"
+  "ResendCode": "重新发送代码",
+  "ErrorInvalidHeader": "电子邮件不正确或链接已过期",
+  "ErrorInvalidText": "在10秒钟内，您将重定向到<1>登录页面</1>"
 }

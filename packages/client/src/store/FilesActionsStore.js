@@ -19,7 +19,7 @@ import {
   FileStatus,
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import { Events, TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";
@@ -226,6 +226,7 @@ class FilesActionStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
+    const { withPaging } = this.authStore.settingsStore;
 
     const selection = newSelection ? newSelection : this.filesStore.selection;
     const isThirdPartyFile = selection.some((f) => f.providerKey);
@@ -295,7 +296,7 @@ class FilesActionStore {
               return toastr.success(translations.FolderRemoved);
             };
 
-            if (this.filesStore.withPaging) {
+            if (withPaging) {
               this.updateCurrentFolder(fileIds, folderIds, false);
               showToast();
             } else {
@@ -608,6 +609,7 @@ class FilesActionStore {
 
   deleteItemOperation = (isFile, itemId, translations, isRoom) => {
     const { addActiveItems, getIsEmptyTrash } = this.filesStore;
+    const { withPaging } = this.authStore.settingsStore;
 
     const pbData = {
       icon: "trash",
@@ -622,7 +624,7 @@ class FilesActionStore {
         const data = res[0] ? res[0] : null;
         await this.uploadDataStore.loopFilesOperations(data, pbData);
 
-        if (this.filesStore.withPaging) {
+        if (withPaging) {
           this.updateCurrentFolder([itemId]);
           toastr.success(translations.successRemoveFile);
         } else {
@@ -653,7 +655,7 @@ class FilesActionStore {
         const data = res[0] ? res[0] : null;
         await this.uploadDataStore.loopFilesOperations(data, pbData);
 
-        if (this.filesStore.withPaging) {
+        if (withPaging) {
           this.updateCurrentFolder(null, [itemId]);
           toastr.success(translations.successRemoveFolder);
         } else {
@@ -1370,8 +1372,8 @@ class FilesActionStore {
                   deleteOperation: t("Translations:DeleteOperation"),
                   deleteFromTrash: t("Translations:DeleteFromTrash"),
                   deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-                  FileRemoved: t("Home:FileRemoved"),
-                  FolderRemoved: t("Home:FolderRemoved"),
+                  FileRemoved: t("Files:FileRemoved"),
+                  FolderRemoved: t("Files:FolderRemoved"),
                 };
 
                 this.deleteAction(translations).catch((err) =>

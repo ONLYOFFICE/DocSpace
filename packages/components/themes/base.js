@@ -383,7 +383,7 @@ const Base = {
     hoverColor: grayMain,
   },
   selectorAddButton: {
-    background: grayLight,
+    background: grayLightMid,
     activeBackground: grayLightMid,
 
     border: `none`,
@@ -391,9 +391,9 @@ const Base = {
     borderRadius: "3px",
     height: " 32px",
     width: "32px",
-    padding: "9px",
+    padding: "10px",
     color: black,
-    hoverColor: darkBlack,
+    hoverColor: black,
   },
 
   saveCancelButtons: {
@@ -1003,31 +1003,31 @@ const Base = {
     },
 
     roleWrapperContainer: {
-      left: {
-        min: "-2px",
+      right: {
+        min: "-5px",
         small: "-2px",
         base: "-2px",
         medium: "-4px",
-        big: "0px",
+        big: "3px",
         max: "0px",
       },
 
       bottom: {
-        min: "3px",
+        min: "-5px",
         small: "3px",
         base: "4px",
         medium: "6px",
-        big: "5px",
+        big: "3px",
         max: "0px",
       },
 
       width: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
 
       height: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
     },
@@ -1091,8 +1091,8 @@ const Base = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
 
     height: {
@@ -1100,8 +1100,8 @@ const Base = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
   },
 
@@ -1540,24 +1540,27 @@ const Base = {
     },
 
     arrow: {
-      width: "8px",
-      flex: "0 0 8px",
+      width: "6px",
+      flex: "0 0 6px",
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "auto",
+      marginLeft: "-2px",
       fillColor: grayMain,
     },
 
     button: {
       height: "18px",
       heightWithBorder: "30px",
+      heightModernView: "28px",
+
       paddingLeft: "8px",
 
       color: black,
       disabledColor: grayMid,
       background: white,
       backgroundWithBorder: "none",
+      backgroundModernView: "none",
 
       border: `1px solid ${grayMid}`,
       borderRadius: "3px",
@@ -1569,6 +1572,9 @@ const Base = {
       hoverBorderColor: gray,
       hoverBorderColorOpen: blueMain,
       hoverDisabledBorderColor: grayLightMid,
+      hoverBackgroundModernView: "#F8F9F9",
+
+      activeBackgroundModernView: "#F3F4F4",
     },
 
     label: {
@@ -2063,6 +2069,10 @@ const Base = {
       tileSortFill: black,
       tileSortColor: black,
     },
+
+    selectedItems: {
+      background: "#eceef1",
+    },
   },
 
   profileInfo: {
@@ -2194,6 +2204,19 @@ const Base = {
       hoverBorderColor: grayMid,
       focusBorderColor: blueMain,
       placeholderColor: gray,
+    },
+  },
+
+  selector: {
+    border: `1px solid ${grayLightMid}`,
+
+    item: {
+      hoverBackground: grayLight,
+      selectedBackground: lightHover,
+    },
+
+    emptyScreen: {
+      descriptionColor: cyanBlueDarkShade,
     },
   },
 

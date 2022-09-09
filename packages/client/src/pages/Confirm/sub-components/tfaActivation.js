@@ -10,7 +10,7 @@ import Section from "@docspace/common/components/Section";
 import { inject, observer } from "mobx-react";
 import Box from "@docspace/components/box";
 import withLoader from "../withLoader";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
 import Link from "@docspace/components/link";

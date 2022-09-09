@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Feed.Model.FeedAggregate", b =>
@@ -35,6 +35,12 @@ namespace ASC.Migrations.MySql.Migrations
                         .IsRequired()
                         .HasColumnType("char(38)")
                         .HasColumnName("author")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<string>("ContextId")
+                        .HasColumnType("text")
+                        .HasColumnName("context_id")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 

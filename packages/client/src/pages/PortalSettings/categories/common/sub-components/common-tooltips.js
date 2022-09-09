@@ -43,6 +43,7 @@ export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
             color={theme.client.settings.common.linkColorHelp}
             className="display-block font-size"
             isHovered={true}
+            target="_blank"
             href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
           >
             {{ learnMore }}
@@ -87,6 +88,35 @@ export const CustomTitlesTooltip = ({ t }) => {
             {" "}
             {{ header }}
           </div>{" "}
+        </Trans>
+      </div>
+    </StyledTooltip>
+  );
+};
+
+export const DNSSettingsTooltip = ({ t, theme, helpLink }) => {
+  const text = t("Settings:DNSSettingsTooltip");
+  const learnMore = t("Common:LearnMore");
+
+  return (
+    <StyledTooltip>
+      <div className="font-size">
+        <Trans
+          ns="Settings"
+          i18nKey="DNSSettingsTooltip"
+          text={text}
+          learnMore={learnMore}
+        >
+          <div className="display-inline font-size"> {{ text }}</div>{" "}
+          <Link
+            color={theme.client.settings.common.linkColorHelp}
+            className="display-block font-size"
+            isHovered={true}
+            target="_blank"
+            href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
+          >
+            {{ learnMore }}
+          </Link>
         </Trans>
       </div>
     </StyledTooltip>

@@ -5,7 +5,7 @@ import { StyledDeleteDialog } from "./StyledDeleteDialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 
 const DeleteDialogComponent = (props) => {
@@ -59,8 +59,8 @@ const DeleteDialogComponent = (props) => {
       deleteOperation: t("Translations:DeleteOperation"),
       deleteFromTrash: t("Translations:DeleteFromTrash"),
       deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-      FileRemoved: t("Home:FileRemoved"),
-      FolderRemoved: t("Home:FolderRemoved"),
+      FileRemoved: t("Files:FileRemoved"),
+      FolderRemoved: t("Files:FolderRemoved"),
     };
 
     if (!selection.length) return;
@@ -156,6 +156,7 @@ const DeleteDialog = withTranslation([
   "DeleteDialog",
   "Common",
   "Translations",
+  "Files",
 ])(DeleteDialogComponent);
 
 export default inject(

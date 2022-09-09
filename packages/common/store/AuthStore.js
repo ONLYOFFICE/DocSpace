@@ -1,17 +1,27 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { setWithCredentialsStatus } from "../api/client";
-import history from "../history";
 
 import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
-import { logout as logoutDesktop, desktopConstants } from "../desktop";
-import { combineUrl, isAdmin } from "../utils";
-import { AppServerConfig, LANGUAGE, TenantStatus } from "../constants";
+import {
+  logout as logoutDesktop,
+  desktopConstants,
+} from "../desktop";
+import {
+  combineUrl,
+  isAdmin,
+  setCookie,
+  getCookie,
+} from "../utils";import {
+  AppServerConfig,
+  LANGUAGE,
+  COOKIE_EXPIRATION_YEAR,
+  TenantStatus,
+} from "../constants";
 const { proxyURL } = AppServerConfig;
-
 class AuthStore {
   userStore = null;
 
@@ -57,10 +67,14 @@ class AuthStore {
   };
   setLanguage() {
     if (this.userStore.user?.cultureName) {
-      localStorage.getItem(LANGUAGE) !== this.userStore.user.cultureName &&
-        localStorage.setItem(LANGUAGE, this.userStore.user.cultureName);
+      getCookie(LANGUAGE) !== this.userStore.user.cultureName &&
+        setCookie(LANGUAGE, this.userStore.user.cultureName, {
+          "max-age": COOKIE_EXPIRATION_YEAR,
+        });
     } else {
-      localStorage.setItem(LANGUAGE, this.settingsStore.culture || "en-US");
+      setCookie(LANGUAGE, this.settingsStore.culture || "en-US", {
+        "max-age": COOKIE_EXPIRATION_YEAR,
+      });
     }
   }
   get isLoaded() {
@@ -158,7 +172,7 @@ class AuthStore {
     this.settingsStore = new SettingsStore();
   };
 
-  logout = async (redirectToLogin = true, redirectPath = null) => {
+  logout = async () => {
     await api.user.logout();
 
     //console.log("Logout response ", response);
@@ -169,22 +183,26 @@ class AuthStore {
 
     isDesktop && logoutDesktop();
 
-    if (redirectToLogin) {
-      if (redirectPath) {
-        return window.location.replace(redirectPath);
-      }
-      if (personal) {
-        return window.location.replace("/");
-      } else {
-        this.reset(true);
-        this.userStore.setUser(null);
-        this.init();
-        return history.push(combineUrl(proxyURL, "/login"));
-      }
-    } else {
-      this.reset();
-      this.init();
-    }
+    this.reset(true);
+    this.userStore.setUser(null);
+    this.init();
+
+    // if (redirectToLogin) {
+    //   if (redirectPath) {
+    //     return window.location.replace(redirectPath);
+    //   }
+    //   if (personal) {
+    //     return window.location.replace("/");
+    //   } else {
+    //     this.reset(true);
+    //     this.userStore.setUser(null);
+    //     this.init();
+    //     return history.push(combineUrl(proxyURL, "/login"));
+    //   }
+    // } else {
+    //   this.reset();
+    //   this.init();
+    // }
   };
 
   get isAuthenticated() {

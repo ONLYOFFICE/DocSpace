@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "E-mail",
   "Remember": "Reține-mă",
   "RememberHelper": "Durata sesiunii implicită este de 20 de minute. Bifați caseta de selectare pentru a prelungi durata până la un an. Pentru stabilirea perioadei personalizate, accesați Setările.",
-  "ResendCode": "Retrimite codul"
+  "ResendCode": "Retrimite codul",
+  "ErrorInvalidHeader": "Adresa e-mail invalidă sau link-ul expirat",
+  "ErrorInvalidText": "Veţi fi redirecționat în 10 secunde către <1>pagina de autentificare</1>"
 }

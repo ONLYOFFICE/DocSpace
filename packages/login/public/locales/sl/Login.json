@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "Zapomni si me",
   "RememberHelper": "Privzeta življenjska doba seje je 20 minut. Preverite to možnost, če jo želite nastaviti na 1 leto. Če želite nastaviti poljubno vrednost, pojdite v Nastavitve.",
-  "ResendCode": "Ponovno pošlji kodo"
+  "ResendCode": "Ponovno pošlji kodo",
+  "ErrorInvalidHeader": "Napačen email ali potekla povezava",
+  "ErrorInvalidText": "V 10 sekundah boste preusmerjeni na <1>Stran za prijavo</1>"
 }

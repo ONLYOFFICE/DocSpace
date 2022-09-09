@@ -89,3 +89,4 @@ global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;
 
 global using Newtonsoft.Json.Linq;
+global using ASC.Files.Extension;

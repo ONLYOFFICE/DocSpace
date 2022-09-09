@@ -1,40 +1,35 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import api from "@docspace/common/api";
 import {
   EmployeeStatus,
   EmployeeActivationStatus,
 } from "@docspace/common/constants";
-import { isMobileOnly } from "react-device-detect";
 const { Filter } = api;
-import store from "client/store";
-const { auth: authStore } = store;
+
 class UsersStore {
+  peopleStore = null;
+  authStore = null;
+
   users = [];
   providers = [];
+  accountsIsIsLoading = false;
 
-  constructor(peopleStore) {
+  constructor(peopleStore, authStore) {
     this.peopleStore = peopleStore;
-    makeObservable(this, {
-      users: observable,
-      providers: observable,
-      getUsersList: action,
-      setUsers: action,
-      setProviders: action,
-      createUser: action,
-      removeUser: action,
-      updateUserStatus: action,
-      updateUserType: action,
-      updateProfileInUsers: action,
-      peopleList: computed,
-    });
+    this.authStore = authStore;
+    makeAutoObservable(this);
   }
 
   getUsersList = async (filter) => {
-    let filterData = filter && filter.clone();
+    const filterData = filter ? filter.clone() : Filter.getDefault();
 
-    if (!filterData) {
-      filterData = Filter.getDefault();
-      filterData.employeeStatus = EmployeeStatus.Active;
+    if (!this.authStore.settingsStore.withPaging) {
+      filterData.page = 0;
+      filterData.pageCount = 100;
+    }
+
+    if (filterData.employeeStatus === EmployeeStatus.Active) {
+      filterData.employeeStatus = null;
     }
 
     if (filterData.group && filterData.group === "root")
@@ -86,10 +81,13 @@ class UsersStore {
     await this.getUsersList(filter);
   };
 
-  updateUserStatus = async (status, userIds, isRefetchPeople = false) => {
-    await api.people.updateUserStatus(status, userIds);
-    const filter = this.peopleStore.filterStore.filter;
-    isRefetchPeople && this.getUsersList(filter);
+  updateUserStatus = async (status, userIds) => {
+    const user = await api.people.updateUserStatus(status, userIds);
+
+    if (user) {
+      const userIndex = this.users.findIndex((x) => x.id === user[0].id);
+      if (userIndex !== -1) this.users[userIndex] = user[0];
+    }
   };
 
   updateUserType = async (type, userIds, filter) => {
@@ -165,21 +163,29 @@ class UsersStore {
     switch (statusType) {
       case "normal":
       case "unknown":
-        options.push("send-email");
-
-        if (hasMobileNumber && isMobileOnly) {
-          options.push("send-message");
+        if (isMySelf) {
+          options.push("profile");
+        } else {
+          options.push("details");
         }
 
-        options.push("separator");
-        options.push("edit");
-        options.push("change-password");
-        options.push("change-email");
+        options.push("separator-1");
 
         if (isMySelf) {
-          if (!isOwner) {
-            options.push("delete-self-profile");
-          }
+          options.push("change-name");
+        }
+
+        options.push("change-email");
+        options.push("change-password");
+
+        if (!isMySelf) {
+          options.push("reset-auth");
+        }
+
+        options.push("separator-2");
+
+        if (isMySelf && isOwner) {
+          options.push("change-owner");
         } else {
           options.push("disable");
         }
@@ -187,24 +193,26 @@ class UsersStore {
         break;
       case "disabled":
         options.push("enable");
-        //TODO: Need implementation
-        /*options.push("reassign-data");
-        options.push("delete-personal-data");*/
-        options.push("delete-profile");
+        options.push("details");
+        options.push("separator-1");
+        options.push("reassign-data");
+        options.push("delete-personal-data");
+        options.push("separator-2");
+        options.push("delete-user");
         break;
       case "pending":
-        options.push("edit");
+        // options.push("edit");
         options.push("invite-again");
+        options.push("details");
 
-        if (isMySelf) {
-          options.push("delete-profile");
+        options.push("separator-1");
+
+        if (status === EmployeeStatus.Active) {
+          options.push("disable");
         } else {
-          if (status === EmployeeStatus.Active) {
-            options.push("disable");
-          } else {
-            options.push("enable");
-          }
+          options.push("enable");
         }
+
         break;
       default:
         break;
@@ -216,6 +224,34 @@ class UsersStore {
   isUserSelected = (id) => {
     return this.peopleStore.selectionStore.selection.some((el) => el.id === id);
   };
+
+  setAccountsIsIsLoading = (accountsIsIsLoading) => {
+    this.accountsIsIsLoading = accountsIsIsLoading;
+  };
+
+  fetchMoreAccounts = async () => {
+    if (!this.hasMoreAccounts || this.accountsIsIsLoading) return;
+    // console.log("fetchMoreAccounts");
+
+    this.setAccountsIsIsLoading(true);
+
+    const { filter, setFilterParams } = this.peopleStore.filterStore;
+
+    const newFilter = filter.clone();
+    newFilter.page += 1;
+    setFilterParams(newFilter);
+
+    const res = await api.people.getUserList(newFilter);
+
+    runInAction(() => {
+      this.setUsers([...this.users, ...res.items]);
+      this.setAccountsIsIsLoading(false);
+    });
+  };
+
+  get hasMoreAccounts() {
+    return this.peopleList.length < this.peopleStore.filterStore.filterTotal;
+  }
 
   get peopleList() {
     const list = this.users.map((user) => {
@@ -233,13 +269,15 @@ class UsersStore {
         status,
         groups,
         title,
+        firstName,
+        lastName,
       } = user;
       const statusType = this.getStatusType(user);
       const role = this.getUserRole(user);
       const isMySelf =
-        authStore.userStore.user &&
-        user.userName === authStore.userStore.user.userName;
-      const isViewerAdmin = authStore.isAdmin;
+        this.peopleStore.authStore.userStore.user &&
+        user.userName === this.peopleStore.authStore.userStore.user.userName;
+      //const isViewerAdmin = this.peopleStore.authStore.isAdmin;
 
       const options = this.getUserContextOptions(
         isMySelf,
@@ -266,6 +304,8 @@ class UsersStore {
         options,
         groups,
         position: title,
+        firstName,
+        lastName,
       };
     });
 

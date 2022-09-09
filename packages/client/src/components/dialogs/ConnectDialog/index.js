@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Checkbox from "@docspace/components/checkbox";
@@ -9,6 +9,7 @@ import FieldContainer from "@docspace/components/field-container";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { runInAction } from "mobx";
+import { getOAuthToken } from "@docspace/common/utils";
 import { saveSettingsThirdParty } from "@docspace/common/api/files";
 
 const PureConnectDialogContainer = (props) => {
@@ -24,7 +25,6 @@ const PureConnectDialogContainer = (props) => {
     providers,
     selectedFolderId,
     selectedFolderFolders,
-    getOAuthToken,
     saveThirdParty,
     openConnectWindow,
     setConnectDialogVisible,
@@ -396,11 +396,7 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
-    const {
-      getOAuthToken,
-      personal,
-      folderFormValidation,
-    } = auth.settingsStore;
+    const { personal, folderFormValidation } = auth.settingsStore;
 
     const {
       treeFolders,
@@ -432,7 +428,6 @@ export default inject(
       setSaveThirdpartyResponse,
       folderFormValidation,
 
-      getOAuthToken,
       getSubfolders,
       saveThirdParty,
       openConnectWindow,

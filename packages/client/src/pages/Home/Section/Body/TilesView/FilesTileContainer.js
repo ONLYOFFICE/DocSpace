@@ -107,8 +107,9 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
   );
 };
 
-export default inject(({ filesStore }) => {
-  const { filesList, withPaging } = filesStore;
+export default inject(({ auth, filesStore }) => {
+  const { filesList } = filesStore;
+  const { withPaging } = auth.settingsStore;
 
   return {
     filesList,

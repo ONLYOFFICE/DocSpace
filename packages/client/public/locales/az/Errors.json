@@ -3,7 +3,5 @@
   "Error403Text": "Təəssüf ki, giriş rədd edilmişdir.",
   "Error404Text": "Təəssüf ki, resurs tapıla bilmir.",
   "ErrorEmptyResponse": "Boş cavab",
-  "ErrorInvalidHeader": "Yanlış e-poçt ünvanı və ya vaxtı bitmiş keçid",
-  "ErrorInvalidText": "10 saniyədə <1>giriş səhifəsinə</1> yönləndiriləcəksiniz",
   "ErrorOfflineText": "İnternet bağlantısı tapılmadı."
 }
