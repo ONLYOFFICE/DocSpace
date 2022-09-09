@@ -153,7 +153,7 @@ class PeopleStore {
 
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
-    const { setVisible, isVisible } = this.infoPanelStore;
+    const { setIsVisible, isVisible } = this.infoPanelStore;
 
     const options = [];
 
@@ -204,7 +204,7 @@ class PeopleStore {
         key: "info",
         label: t("Common:Info"),
         disabled: isVisible,
-        onClick: setVisible,
+        onClick: () => setIsVisible(true),
         iconUrl: "images/info.react.svg",
       },
       {

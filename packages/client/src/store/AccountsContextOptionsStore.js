@@ -162,7 +162,7 @@ class AccountsContextOptionsStore {
 
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
-    const { setVisible, isVisible } = this.peopleStore.infoPanelStore;
+    const { setIsVisible, isVisible } = this.peopleStore.infoPanelStore;
 
     const options = [];
 
@@ -212,7 +212,7 @@ class AccountsContextOptionsStore {
         key: "cm-info",
         label: t("Common:Info"),
         disabled: isVisible,
-        onClick: setVisible,
+        onClick: () => setIsVisible(true),
         icon: "images/info.react.svg",
       },
       {
@@ -375,9 +375,8 @@ class AccountsContextOptionsStore {
   };
 
   onDetailsClick = () => {
-    const { setVisible } = this.peopleStore.infoPanelStore;
-
-    setVisible();
+    const { setIsVisible } = this.peopleStore.infoPanelStore;
+    setIsVisible(true);
   };
 
   onInviteAgainClick = (t, item) => {
