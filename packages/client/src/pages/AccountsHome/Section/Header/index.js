@@ -192,7 +192,7 @@ const SectionHeaderContent = (props) => {
     cbMenuItems,
     getCheckboxItemLabel,
 
-    setInfoPanelVisible,
+    setInfoPanelIsVisible,
     isInfoPanelVisible,
   } = props;
 
@@ -249,6 +249,10 @@ const SectionHeaderContent = (props) => {
     toastr.warning("Work in progress (invite again)");
     console.log("invite again");
   }, []);
+
+  const onSetInfoPanelVisible = () => {
+    setInfoPanelIsVisible(true);
+  };
 
   const getContextOptions = () => {
     return [
@@ -349,7 +353,7 @@ const SectionHeaderContent = (props) => {
                           iconName="images/panel.react.svg"
                           size="16"
                           isFill={true}
-                          onClick={setInfoPanelVisible}
+                          onClick={onSetInfoPanelVisible}
                         />
                       </div>
                     )}
@@ -369,7 +373,7 @@ export default withRouter(
     const { settingsStore, isLoaded, isAdmin } = auth;
     const { customNames, isTabletView, showText } = settingsStore;
     const {
-      setVisible: setInfoPanelVisible,
+      setIsVisible: setInfoPanelIsVisible,
       isVisible: isInfoPanelVisible,
     } = auth.infoPanelStore;
 
@@ -425,7 +429,7 @@ export default withRouter(
       showText,
       cbMenuItems,
       getCheckboxItemLabel,
-      setInfoPanelVisible,
+      setInfoPanelIsVisible,
       isInfoPanelVisible,
     };
   })(
