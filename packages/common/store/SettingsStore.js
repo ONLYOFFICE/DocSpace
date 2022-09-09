@@ -1,12 +1,16 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
-import { LANGUAGE, TenantStatus } from "../constants";
-import { combineUrl } from "../utils";
+import { combineUrl, setCookie, getCookie } from "../utils";
 import FirebaseHelper from "../utils/firebase";
-import { AppServerConfig, ThemeKeys } from "../constants";
+import {
+  AppServerConfig,
+  ThemeKeys,
+  COOKIE_EXPIRATION_YEAR,
+  LANGUAGE,
+  TenantStatus
+} from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
-
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
 
@@ -103,6 +107,7 @@ class SettingsStore {
   wizardToken = null;
   passwordSettings = null;
   hasShortenService = false;
+  withPaging = false;
 
   customSchemaList = [];
   firebase = {
@@ -129,6 +134,10 @@ class SettingsStore {
   helpLink = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
+
+  appearanceTheme = [];
+  selectedThemeId = null;
+  currentColorScheme = null;
 
   enablePlugins = false;
   pluginOptions = [];
@@ -198,9 +207,11 @@ class SettingsStore {
             : newSettings[key]
         );
         if (key === "culture") {
-          const language = localStorage.getItem(LANGUAGE);
+          const language = getCookie(LANGUAGE);
           if (!language || language == "undefined") {
-            localStorage.setItem(LANGUAGE, newSettings[key]);
+            setCookie(LANGUAGE, newSettings[key], {
+              "max-age": COOKIE_EXPIRATION_YEAR,
+            });
           }
         }
         // if (key === "personal") {
@@ -260,7 +271,7 @@ class SettingsStore {
     this.setIsLoading(true);
     const requests = [];
 
-    requests.push(this.getPortalSettings());
+    requests.push(this.getPortalSettings(), this.getAppearanceTheme());
 
     this.tenantStatus !== TenantStatus.PortalRestore &&
       requests.push(this.getBuildVersionInfo());
@@ -313,34 +324,6 @@ class SettingsStore {
   getEncryptionKeys = async () => {
     const encryptionKeys = await api.files.getEncryptionKeys();
     this.updateEncryptionKeys(encryptionKeys);
-  };
-
-  getOAuthToken = (tokenGetterWin) => {
-    return new Promise((resolve, reject) => {
-      localStorage.removeItem("code");
-      let interval = null;
-      interval = setInterval(() => {
-        try {
-          const code = localStorage.getItem("code");
-
-          if (code) {
-            localStorage.removeItem("code");
-            clearInterval(interval);
-            resolve(code);
-          } else if (tokenGetterWin && tokenGetterWin.closed) {
-            clearInterval(interval);
-            reject();
-          }
-        } catch (e) {
-          clearInterval(interval);
-          reject(e);
-        }
-      }, 500);
-    });
-  };
-
-  getLoginLink = (token, code) => {
-    return combineUrl(proxyURL, `/login.ashx?p=${token}&code=${code}`);
   };
 
   setModuleInfo = (homepage, productId) => {
@@ -559,6 +542,34 @@ class SettingsStore {
   get isFrame() {
     return this.frameConfig?.name === window.name;
   }
+
+  setAppearanceTheme = (theme) => {
+    this.appearanceTheme = theme;
+  };
+
+  setSelectThemeId = (selected) => {
+    this.selectedThemeId = selected;
+  };
+
+  setCurrentColorScheme = (currentColorScheme) => {
+    this.currentColorScheme = currentColorScheme;
+  };
+
+  getAppearanceTheme = async () => {
+    const res = await api.settings.getAppearanceTheme();
+
+    const currentColorScheme = res.themes.find((theme) => {
+      return res.selected === theme.id;
+    });
+
+    this.setAppearanceTheme(res.themes);
+    this.setSelectThemeId(res.selected);
+    this.setCurrentColorScheme(currentColorScheme);
+  };
+
+  sendAppearanceTheme = async (data) => {
+    const res = await api.settings.sendAppearanceTheme(data);
+  };
 }
 
 export default SettingsStore;

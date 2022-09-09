@@ -288,7 +288,6 @@ export default function withFileActions(WrappedFileItem) {
         isRecycleBinFolder,
         isRoomsFolder,
         isArchiveFolder,
-        //addExpandedKeys,
       } = treeFoldersStore;
       const {
         dragging,
@@ -367,7 +366,6 @@ export default function withFileActions(WrappedFileItem) {
         canWebEdit,
         canViewedDocs,
         isTrashFolder: isRecycleBinFolder,
-        //addExpandedKeys,
         getFolderInfo,
         viewAs,
         isDesktop: auth.settingsStore.isDesktopClient,

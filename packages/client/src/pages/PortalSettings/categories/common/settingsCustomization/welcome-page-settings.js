@@ -65,12 +65,15 @@ class WelcomePageSettings extends React.Component {
       showReminder: false,
       hasScroll: false,
       isFirstWelcomePageSettings: isFirstWelcomePageSettings,
+      isCustomizationView: false,
     };
   }
 
   componentDidMount() {
     const { isLoaded, setIsLoadedWelcomePageSettings, tReady } = this.props;
     const { greetingTitleDefault, greetingTitle } = this.state;
+
+    this.checkInnerWidth();
     window.addEventListener("resize", this.checkInnerWidth);
 
     const isLoadedSetting = isLoaded && tReady;
@@ -121,11 +124,7 @@ class WelcomePageSettings extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener(
-      "resize",
-      this.checkInnerWidth,
-      checkScrollSettingsBlock
-    );
+    window.removeEventListener("resize", this.checkInnerWidth);
   }
 
   onChangeGreetingTitle = (e) => {
@@ -224,6 +223,10 @@ class WelcomePageSettings extends React.Component {
 
   checkInnerWidth = () => {
     if (!isSmallTablet()) {
+      this.setState({
+        isCustomizationView: true,
+      });
+
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -231,7 +234,10 @@ class WelcomePageSettings extends React.Component {
           "/portal-settings/common/customization"
         )
       );
-      return true;
+    } else {
+      this.setState({
+        isCustomizationView: false,
+      });
     }
   };
 
@@ -249,6 +255,7 @@ class WelcomePageSettings extends React.Component {
       showReminder,
       hasScroll,
       isFirstWelcomePageSettings,
+      isCustomizationView,
     } = this.state;
 
     const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
@@ -258,7 +265,7 @@ class WelcomePageSettings extends React.Component {
         <FieldContainer
           id="fieldContainerWelcomePage"
           className="field-container-width"
-          labelText={`${t("Common:Title")}:`}
+          labelText={`${t("Common:Title")}`}
           isVertical={true}
         >
           <TextInput
@@ -280,7 +287,7 @@ class WelcomePageSettings extends React.Component {
         hasScroll={hasScroll}
         className="category-item-wrapper"
       >
-        {this.checkInnerWidth() && !isMobileView && (
+        {isCustomizationView && !isMobileView && (
           <div className="category-item-heading">
             <div className="category-item-title">
               {t("CustomTitlesWelcome")}

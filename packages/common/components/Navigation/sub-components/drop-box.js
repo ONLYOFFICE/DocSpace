@@ -14,6 +14,7 @@ import StyledContainer from "../StyledNavigation";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import {
   tablet,
+  mobile,
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
@@ -26,6 +27,7 @@ const StyledBox = styled.div`
   left: ${isMobile ? "-16px" : "-20px"};
 
   padding: ${isMobile ? "0 16px " : "0 20px"};
+  padding-top: 18px;
 
   ${(props) => `width: ${props.dropBoxWidth}px;`};
 
@@ -44,12 +46,23 @@ const StyledBox = styled.div`
   @media ${tablet} {
     left: -16px;
     padding: 0 16px 0 16px;
+    padding-top: 14px;
+  }
+
+  ${isMobile &&
+  css`
+    padding-top: 14px;
+  `}
+
+  @media ${mobile} {
+    padding-top: 10px !important;
   }
 
   ${isMobileOnly &&
   css`
     margin-left: 16px;
     padding: 0 16px !important;
+    padding-top: 10px !important;
     max-height: ${(props) => props.maxHeight};
   `}
 `;

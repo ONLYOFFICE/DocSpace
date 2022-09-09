@@ -68,7 +68,7 @@ const config = {
     },
   },
   resolve: {
-    extensions: [".jsx", ".js", ".json"],
+    extensions: [".jsx", ".js", ".tsx", ".ts", ".json"],
     fallback: {
       crypto: false,
     },
@@ -154,13 +154,17 @@ const config = {
         ],
       },
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         exclude: /node_modules/,
         use: [
           {
             loader: "babel-loader",
             options: {
-              presets: ["@babel/preset-react", "@babel/preset-env"],
+              presets: [
+                "@babel/preset-react",
+                "@babel/preset-env",
+                "@babel/preset-typescript",
+              ],
               plugins: [
                 "@babel/plugin-transform-runtime",
                 "@babel/plugin-proposal-class-properties",
@@ -240,7 +244,6 @@ module.exports = (env, argv) => {
         "./Layout": "./src/components/Layout",
         "./Layout/context": "./src/components/Layout/context.js",
         "./Main": "./src/components/Main",
-        "./toastr": "./src/helpers/toastr",
         "./PreparationPortalDialog":
           "./src/components/dialogs/PreparationPortalDialog/PreparationPortalDialogWrapper.js",
         "./SharingDialog": "./src/components/panels/SharingDialog",

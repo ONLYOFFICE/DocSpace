@@ -6,37 +6,39 @@ set -e
 
 case "$1" in
 	configure)
-        db_get appserver/environment || true
+        db_get {{product}}/environment || true
         ENVIRONMENT="$RET"
-        db_get appserver/host || true
+        db_get {{product}}/host || true
         APP_HOST="$RET"
-        db_get appserver/port || true
+        db_get {{product}}/port || true
         APP_PORT="$RET"
         
-        db_get appserver/db-host || true
+        db_get {{product}}/db-host || true
         DB_HOST="$RET"
-        db_get appserver/db-name || true  
+        db_get {{product}}/db-name || true  
         DB_NAME="$RET"
-        db_get appserver/db-user || true  
+        db_get {{product}}/db-user || true  
         DB_USER="$RET"
-        db_get appserver/db-pwd || true  
+        db_get {{product}}/db-pwd || true  
         DB_PWD="$RET"
 
-        db_get appserver/kafka-host || true
-        KAFKA_HOST="$RET"
-        db_get appserver/kafka-port || true
-        KAFKA_PORT="$RET"
+        db_get {{product}}/redis-host || true
+        REDIS_HOST="$RET"
+        db_get {{product}}/redis-port || true
+        REDIS_PORT="$RET"
 
-        db_get appserver/zookeeper-host || true  
-        ZOOKEEPER_HOST="$RET"
-        db_get appserver/zookeeper-port || true
-        ZOOKEEPER_PORT="$RET"
+        db_get {{product}}/rabbitmq-host || true  
+        RABBITMQ_HOST="$RET"
+        db_get {{product}}/rabbitmq-user || true
+        RABBITMQ_USER="$RET"
+        db_get {{product}}/rabbitmq-password || true
+        RABBITMQ_PASSWORD="$RET"
 
-        db_get appserver/elasticsearch-sheme || true
+        db_get {{product}}/elasticsearch-sheme || true
         ELK_SHEME="$RET"
-        db_get appserver/elasticsearch-host || true
+        db_get {{product}}/elasticsearch-host || true
         ELK_HOST="$RET"
-        db_get appserver/elasticsearch-port || true
+        db_get {{product}}/elasticsearch-port || true
         ELK_PORT="$RET"
 
         db_get onlyoffice/db-host || true
@@ -44,8 +46,8 @@ case "$1" in
         db_get onlyoffice/ds-port || true  
         DOCUMENT_SERVER_PORT="$RET"
 
-        bash /usr/bin/appserver-configuration.sh -e $ENVIRONMENT -mysqlh $DB_HOST -mysqld $DB_NAME -mysqlu $DB_USER -mysqlp $DB_PWD -ash $APP_HOST -asp $APP_PORT \
-        -dsh $DOCUMENT_SERVER_HOST -dsp $DOCUMENT_SERVER_PORT -kh $KAFKA_HOST -kp $KAFKA_PORT -zkh $ZOOKEEPER_HOST -zkp $ZOOKEEPER_PORT -ess $ELK_SHEME -esh $ELK_HOST -esp $ELK_PORT
+        bash /usr/bin/{{product}}-configuration.sh -e $ENVIRONMENT -mysqlh $DB_HOST -mysqld $DB_NAME -mysqlu $DB_USER -mysqlp $DB_PWD -ash $APP_HOST -asp $APP_PORT \
+        -dsh $DOCUMENT_SERVER_HOST -dsp $DOCUMENT_SERVER_PORT -rdh $REDIS_HOST -rdp $REDIS_PORT -rbh $RABBITMQ_HOST -rbu $RABBITMQ_USER -rbp $RABBITMQ_PASSWORD -ess $ELK_SHEME -esh $ELK_HOST -esp $ELK_PORT
 	;;
 
 	abort-upgrade|abort-remove|abort-deconfigure)

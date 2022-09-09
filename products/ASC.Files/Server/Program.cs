@@ -32,15 +32,11 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config
-          .AddJsonFile("elastic.json", true)
-          .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
-}, (context, services, di) =>
-{
-    services.AddBaseDbContextPool<FilesDbContext>();
-});
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddFilesConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.WebHost.ConfigureDefaultKestrel((hostingContext, serverOptions) =>
 {

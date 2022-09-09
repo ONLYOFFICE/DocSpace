@@ -8,9 +8,9 @@ import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject, observer } from "mobx-react";
-import { LANGUAGE } from "@docspace/common/constants";
+import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { LanguageTimeSettingsTooltip } from "../sub-components/common-tooltips";
-import { combineUrl } from "@docspace/common/utils";
+import { combineUrl, setCookie } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import history from "@docspace/common/history";
@@ -71,6 +71,7 @@ class LanguageAndTimeZone extends React.Component {
       hasChanged: false,
       showReminder: false,
       hasScroll: false,
+      isCustomizationView: false,
     };
   }
 
@@ -94,7 +95,7 @@ class LanguageAndTimeZone extends React.Component {
     if (isLoadedSetting) {
       setIsLoadedLngTZSettings(isLoadedSetting);
     }
-
+    this.checkInnerWidth();
     window.addEventListener("resize", this.checkInnerWidth);
 
     if (
@@ -261,11 +262,7 @@ class LanguageAndTimeZone extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener(
-      "resize",
-      this.checkInnerWidth,
-      checkScrollSettingsBlock
-    );
+    window.removeEventListener("resize", this.checkInnerWidth);
   }
 
   onLanguageSelect = (language) => {
@@ -300,7 +297,9 @@ class LanguageAndTimeZone extends React.Component {
         .then(
           () =>
             !user.cultureName &&
-            localStorage.setItem(LANGUAGE, language.key || "en")
+            setCookie(LANGUAGE, language.key || "en", {
+              "max-age": COOKIE_EXPIRATION_YEAR,
+            })
         )
         .then(() => toastr.success(t("SuccessfullySaveSettingsMessage")))
         .then(
@@ -370,6 +369,10 @@ class LanguageAndTimeZone extends React.Component {
 
   checkInnerWidth = () => {
     if (!isSmallTablet()) {
+      this.setState({
+        isCustomizationView: true,
+      });
+
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -377,7 +380,10 @@ class LanguageAndTimeZone extends React.Component {
           "/portal-settings/common/customization"
         )
       );
-      return true;
+    } else {
+      this.setState({
+        isCustomizationView: false,
+      });
     }
   };
 
@@ -404,6 +410,7 @@ class LanguageAndTimeZone extends React.Component {
       timezone,
       showReminder,
       hasScroll,
+      isCustomizationView,
     } = this.state;
 
     const timezones = mapTimezonesToArray(rawTimezones);
@@ -413,11 +420,11 @@ class LanguageAndTimeZone extends React.Component {
       <LanguageTimeSettingsTooltip theme={theme} t={t} helpLink={helpLink} />
     );
 
-    const settingsBlock = (
+    const settingsBlock = !(language && timezone) ? null : (
       <div className="settings-block">
         <FieldContainer
           id="fieldContainerLanguage"
-          labelText={`${t("Common:Language")}:`}
+          labelText={`${t("Common:Language")}`}
           isVertical={true}
         >
           <ComboBox
@@ -435,7 +442,7 @@ class LanguageAndTimeZone extends React.Component {
         </FieldContainer>
         <FieldContainer
           id="fieldContainerTimezone"
-          labelText={`${t("TimeZone")}:`}
+          labelText={`${t("TimeZone")}`}
           isVertical={true}
         >
           <ComboBox
@@ -461,7 +468,7 @@ class LanguageAndTimeZone extends React.Component {
         hasScroll={hasScroll}
         className="category-item-wrapper"
       >
-        {this.checkInnerWidth() && !isMobileView && (
+        {isCustomizationView && !isMobileView && (
           <div className="category-item-heading">
             <div className="category-item-title">
               {t("StudioTimeLanguageSettings")}

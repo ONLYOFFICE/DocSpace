@@ -3,6 +3,8 @@
   "CodeSubtitle": "Na adresu {{email}} jsme zaslali šestimístný kód. Kód má omezenou dobu platnosti, zadejte jej co nejdříve.",
   "CodeTitle": "Kód vám byl zaslán e-mailem",
   "CookieSettingsTitle": "Trvání relace",
+  "ErrorInvalidHeader": "Nesprávný e-mail nebo neplatný odkaz",
+  "ErrorInvalidText": "Za 10 sekund budete přesměrováni na <1>přihlašovací stránku</1>",
   "ExpiredCode": "Tento kód již není platný. Vyžádejte si nový kód a zkuste to znovu",
   "ForgotPassword": "Zapomněli jste heslo?",
   "InvalidCode": "Tento kód je neplatný. Zkuste to znovu",

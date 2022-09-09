@@ -1,44 +1,67 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import Loaders from "@docspace/common/components/Loaders";
-import { isDesktop as isDesktopUtils } from "@docspace/components/utils/device";
-import { isTablet } from "react-device-detect";
-
-const tabletStyles = css`
-  padding-top: 12px;
-  .loader {
-    width: 184px;
-  }
-`;
+import { isTablet, isMobileOnly } from "react-device-detect";
 
 const StyledLoader = styled.div`
-  padding-top: 8px;
+  display: flex;
+  align-items: center;
 
-  .loader {
-    width: 273px;
+  .arrow {
+    padding-right: 12px;
   }
 
-  @media (min-width: 600px) {
-    ${tabletStyles}
-  }
-
-  ${isTablet &&
-  css`
-    ${tabletStyles}
-  `}
-
-  @media (min-width: 1025px) {
-    .loader {
-      width: 296px;
-    }
-  }
+  padding: ${(props) =>
+    props.isTabletView
+      ? "16px 0 17px"
+      : props.isDesktopView
+      ? "21px 0 23px"
+      : "14px 0 0"};
 `;
 
 const LoaderSectionHeader = () => {
-  const heightLoader = isDesktopUtils() ? "29px" : "37px";
+  const [isTabletView, setIsTabletView] = useState(false);
+  const [isDesktopView, setIsDesktopView] = useState(false);
+
+  const height = isTabletView ? "28" : "24";
+  const width = isTabletView ? "163" : "140";
+
+  const levelSettings = location.pathname.split("/").length - 1;
+
+  const checkInnerWidth = () => {
+    const isTabletView =
+      (window.innerWidth >= 600 && window.innerWidth <= 1024) ||
+      (isTablet && !isMobileOnly);
+
+    const isDesktopView = window.innerWidth > 1024;
+
+    if (isTabletView) {
+      setIsTabletView(true);
+    } else {
+      setIsTabletView(false);
+    }
+
+    if (isDesktopView) {
+      setIsDesktopView(true);
+    } else {
+      setIsDesktopView(false);
+    }
+  };
+
+  useEffect(() => {
+    checkInnerWidth();
+    window.addEventListener("resize", checkInnerWidth);
+
+    return () => window.removeEventListener("resize", checkInnerWidth);
+  });
+
   return (
-    <StyledLoader>
-      <Loaders.Rectangle height={heightLoader} className="loader" />
+    <StyledLoader isTabletView={isTabletView} isDesktopView={isDesktopView}>
+      {levelSettings === 4 && (
+        <Loaders.Rectangle width="17" height="17" className="arrow" />
+      )}
+
+      <Loaders.Rectangle width={width} height={height} className="loader" />
     </StyledLoader>
   );
 };

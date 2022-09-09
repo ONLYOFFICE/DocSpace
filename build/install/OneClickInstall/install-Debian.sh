@@ -4,7 +4,7 @@ set -e
 
 package_sysname="onlyoffice";
 DS_COMMON_NAME="onlyoffice";
-product="appserver"
+product="docspace"
 GIT_BRANCH="develop"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"

@@ -7,11 +7,13 @@ import authStore from "@docspace/common/store/AuthStore";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
+import { isMobile } from "react-device-detect";
 
 class SettingsSetupStore {
   selectionStore = null;
   authStore = null;
   isInit = false;
+  viewAs = isMobile ? "row" : "table";
 
   security = {
     accessRight: {
@@ -24,6 +26,13 @@ class SettingsSetupStore {
       selectorIsOpen: false,
       isLoading: false,
     },
+    loginHistory: {
+      users: [],
+    },
+    auditTrail: {
+      users: [],
+    },
+    trailReport: [],
   };
 
   headerAction = {
@@ -39,6 +48,8 @@ class SettingsSetupStore {
   dataManagement = {
     commonThirdPartyList: [],
   };
+
+  securityLifetime = [];
 
   constructor() {
     this.selectionStore = new SelectionStore(this);
@@ -81,6 +92,10 @@ class SettingsSetupStore {
 
   setTotalAdmins = (total) => {
     this.security.accessRight.adminsTotal = total;
+  };
+
+  setViewAs = (viewAs) => {
+    this.viewAs = viewAs;
   };
 
   setOwner = (owner) => {
@@ -219,18 +234,57 @@ class SettingsSetupStore {
     const res = await api.settings.setMailDomainSettings(dnsName, enable);
   };
 
+  getLifetimeAuditSettings = async (data) => {
+    const res = await api.settings.getLifetimeAuditSettings(data);
+    this.setSecurityLifeTime(res);
+  };
+
   setLifetimeAuditSettings = async (data) => {
-    const res = await api.settings.setLifetimeAuditSettings(data);
+    await api.settings.setLifetimeAuditSettings(data);
+  };
+
+  setSecurityLifeTime = (lifetime) => {
+    this.securityLifetime = lifetime;
+  };
+
+  setLoginHistoryUsers = (users) => {
+    this.security.loginHistory.users = users;
+  };
+
+  setAuditTrailUsers = (users) => {
+    this.security.auditTrail.users = users;
+  };
+
+  getLoginHistory = async () => {
+    const res = await api.settings.getLoginHistory();
+    return this.setLoginHistoryUsers(res);
+  };
+
+  getAuditTrail = async () => {
+    const res = await api.settings.getAuditTrail();
+    return this.setAuditTrailUsers(res);
+  };
+
+  getLoginHistoryReport = async () => {
+    const res = await api.settings.getLoginHistoryReport();
+    window.open(res);
+    return this.setAuditTrailReport(res);
   };
 
   getAuditTrailReport = async () => {
     const res = await api.settings.getAuditTrailReport();
+    window.open(res);
+    return this.setAuditTrailReport(res);
   };
 
   setGreetingTitle = async (greetingTitle) => {
     const res = await api.settings.setGreetingSettings(greetingTitle);
 
     //if (res) this.setGreetingSettings(greetingTitle);
+  };
+
+  setAuditTrailReport = (report) => {
+    this.security.trailReport = report;
   };
 
   setCurrentSchema = async (id) => {
