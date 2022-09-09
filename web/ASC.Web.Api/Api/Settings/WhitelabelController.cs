@@ -30,7 +30,6 @@ public class WhitelabelController : BaseSettingsController
 {
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
-    private readonly TenantExtra _tenantExtra;
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
     private readonly TenantInfoSettingsHelper _tenantInfoSettingsHelper;
@@ -38,11 +37,9 @@ public class WhitelabelController : BaseSettingsController
     private readonly TenantLogoManager _tenantLogoManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly StorageFactory _storageFactory;
 
     public WhitelabelController(
         ApiContext apiContext,
-        TenantExtra tenantExtra,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
         WebItemManager webItemManager,
@@ -52,10 +49,8 @@ public class WhitelabelController : BaseSettingsController
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
         IMemoryCache memoryCache,
-        StorageFactory storageFactory,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
-        _tenantExtra = tenantExtra;
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
         _tenantInfoSettingsHelper = tenantInfoSettingsHelper;
@@ -63,7 +58,6 @@ public class WhitelabelController : BaseSettingsController
         _tenantLogoManager = tenantLogoManager;
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
-        _storageFactory = storageFactory;
     }
 
     ///<visible>false</visible>
@@ -223,6 +217,8 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("companywhitelabel")]
     public List<CompanyWhiteLabelSettings> GetLicensorData()
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
         var result = new List<CompanyWhiteLabelSettings>();
 
         var instance = CompanyWhiteLabelSettings.Instance(_settingsManager);
@@ -241,12 +237,13 @@ public class WhitelabelController : BaseSettingsController
     [HttpPost("rebranding/company")]
     public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        DemandWhiteLabelPermission();
+
         if (companyWhiteLabelSettingsWrapper.Settings == null)
         {
             throw new ArgumentNullException("settings");
         }
-
-        DemandWhiteLabelPermission();
 
         companyWhiteLabelSettingsWrapper.Settings.IsLicensor = false;
 
@@ -259,6 +256,8 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/company")]
     public CompanyWhiteLabelSettings GetCompanyWhiteLabelSettings()
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
         return _settingsManager.Load<CompanyWhiteLabelSettings>();
     }
 
@@ -266,6 +265,7 @@ public class WhitelabelController : BaseSettingsController
     [HttpDelete("rebranding/company")]
     public CompanyWhiteLabelSettings DeleteCompanyWhiteLabelSettings()
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
 
         var defaultSettings = _settingsManager.GetDefault<CompanyWhiteLabelSettings>();
@@ -279,12 +279,13 @@ public class WhitelabelController : BaseSettingsController
     [HttpPost("rebranding/additional")]
     public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        DemandWhiteLabelPermission();
+
         if (wrapper.Settings == null)
         {
             throw new ArgumentNullException("settings");
         }
-
-        DemandWhiteLabelPermission();
 
         _settingsManager.Save(wrapper.Settings);
 
@@ -295,6 +296,8 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/additional")]
     public AdditionalWhiteLabelSettings GetAdditionalWhiteLabelSettings()
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
         return _settingsManager.Load<AdditionalWhiteLabelSettings>();
     }
 
@@ -302,6 +305,7 @@ public class WhitelabelController : BaseSettingsController
     [HttpDelete("rebranding/additional")]
     public AdditionalWhiteLabelSettings DeleteAdditionalWhiteLabelSettings()
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
 
         var defaultSettings = _settingsManager.GetDefault<AdditionalWhiteLabelSettings>();
@@ -313,23 +317,12 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPost("rebranding/mail")]
-    public bool SaveMailWhiteLabelSettingsFromBody([FromBody] MailWhiteLabelSettings settings)
+    public bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
     {
-        return SaveMailWhiteLabelSettings(settings);
-    }
-
-    ///<visible>false</visible>
-    [HttpPost("rebranding/mail")]
-    public bool SaveMailWhiteLabelSettingsFromForm([FromForm] MailWhiteLabelSettings settings)
-    {
-        return SaveMailWhiteLabelSettings(settings);
-    }
-
-    private bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
-    {
-        ArgumentNullException.ThrowIfNull(settings);
-
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
+
+        ArgumentNullException.ThrowIfNull(settings);
 
         _settingsManager.Save(settings);
         return true;
@@ -339,6 +332,7 @@ public class WhitelabelController : BaseSettingsController
     [HttpPut("rebranding/mail")]
     public bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsRequestsDto inDto)
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
 
         var settings = _settingsManager.Load<MailWhiteLabelSettings>();
@@ -354,6 +348,8 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/mail")]
     public MailWhiteLabelSettings GetMailWhiteLabelSettings()
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
         return _settingsManager.Load<MailWhiteLabelSettings>();
     }
 
@@ -361,6 +357,7 @@ public class WhitelabelController : BaseSettingsController
     [HttpDelete("rebranding/mail")]
     public MailWhiteLabelSettings DeleteMailWhiteLabelSettings()
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
 
         var defaultSettings = _settingsManager.GetDefault<MailWhiteLabelSettings>();
@@ -374,6 +371,8 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("enableWhitelabel")]
     public bool GetEnableWhitelabel()
     {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
         return _coreBaseSettings.Standalone || _tenantLogoManager.WhiteLabelEnabled && _tenantLogoManager.WhiteLabelPaid;
     }
 
