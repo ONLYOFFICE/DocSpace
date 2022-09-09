@@ -647,7 +647,13 @@ class FilesActionStore {
           await this.uploadDataStore.loopFilesOperations(data, pbData);
           this.updateCurrentFolder(null, [itemId]);
         })
-        .then(() => toastr.success(translations?.successRemoveRoom));
+        .then(() =>
+          toastr.success(
+            items.length > 1
+              ? translations?.successRemoveRooms
+              : translations?.successRemoveRoom
+          )
+        );
     } else {
       addActiveItems(null, [itemId]);
       return deleteFolder(itemId).then(async (res) => {
@@ -1248,7 +1254,7 @@ class FilesActionStore {
     this.setArchiveAction("unarchive", items);
   };
 
-  deleteRooms = () => {
+  deleteRooms = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
@@ -1257,7 +1263,15 @@ class FilesActionStore {
       items.push(item.id);
     });
 
-    this.deleteItemAction(items, null, null, null, true);
+    const translations = {
+      deleteOperation: t("Translations:DeleteOperation"),
+      successRemoveFile: t("Files:FileRemoved"),
+      successRemoveFolder: t("Files:FolderRemoved"),
+      successRemoveRoom: t("Files:RoomRemoved"),
+      successRemoveRooms: t("Files:RoomsRemoved"),
+    };
+
+    this.deleteItemAction(items, translations, null, null, true);
   };
 
   getOption = (option, t) => {
@@ -1355,7 +1369,7 @@ class FilesActionStore {
         else
           return {
             label: t("Common:Delete"),
-            onClick: this.deleteRooms,
+            onClick: () => this.deleteRooms(t),
             iconUrl: "/static/images/delete.react.svg",
           };
 
