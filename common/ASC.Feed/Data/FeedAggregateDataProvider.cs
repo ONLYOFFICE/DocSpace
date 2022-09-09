@@ -62,7 +62,7 @@ public class FeedAggregateDataProvider
         return value != default ? value.AddSeconds(1) : value;
     }
 
-    public void SaveFeeds(IEnumerable<FeedRow> feeds, string key, DateTime value)
+    public void SaveFeeds(IEnumerable<FeedRow> feeds, string key, DateTime value, int portionSize)
     {
         var feedLast = new FeedLast
         {
@@ -74,14 +74,13 @@ public class FeedAggregateDataProvider
         feedDbContext.AddOrUpdate(r => r.FeedLast, feedLast);
         feedDbContext.SaveChanges();
 
-        const int feedsPortionSize = 1000;
         var aggregatedDate = DateTime.UtcNow;
 
         var feedsPortion = new List<FeedRow>();
         foreach (var feed in feeds)
         {
             feedsPortion.Add(feed);
-            if (feedsPortion.Sum(f => f.Users.Count) <= feedsPortionSize)
+            if (feedsPortion.Sum(f => f.Users.Count) <= portionSize)
             {
                 continue;
             }
