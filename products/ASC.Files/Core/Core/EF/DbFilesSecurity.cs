@@ -48,8 +48,11 @@ public class DbFilesSecurity : BaseEntity, IDbFile, IMapFrom<FileShareRecord>
     public void Mapping(Profile profile)
     {
         profile.CreateMap<FileShareRecord, DbFilesSecurity>()
-            .ForMember(dest => dest.TimeStamp, opt => opt.MapFrom(src => DateTime.UtcNow))
-            .ForMember(dest => dest.FileShareOptions, opt => opt.MapFrom(src => JsonSerializer.Serialize(src.FileShareOptions, new JsonSerializerOptions())));
+            .AfterMap((src, dest) =>
+            {
+                dest.TimeStamp = DateTime.UtcNow;
+                dest.FileShareOptions = src.FileShareOptions != null ? JsonSerializer.Serialize(src.FileShareOptions) : null;
+            });
     }
 }
 

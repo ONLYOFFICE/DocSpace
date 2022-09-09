@@ -50,7 +50,9 @@ public class FileShareDto
 public class FileShareLink
 {
     public Guid Id { get; set; }
+    public string Title { get; set; }
     public string ShareLink { get; set; }
+    public ApiDateTime ExpirationDate { get; set; }
 }
 
 [Scope]
@@ -58,13 +60,16 @@ public class FileShareDtoHelper
 {
     private readonly UserManager _userManager;
     private readonly EmployeeFullDtoHelper _employeeWraperFullHelper;
+    private readonly ApiDateTimeHelper _apiDateTimeHelper;
 
     public FileShareDtoHelper(
         UserManager userManager,
-        EmployeeFullDtoHelper employeeWraperFullHelper)
+        EmployeeFullDtoHelper employeeWraperFullHelper,
+        ApiDateTimeHelper apiDateTimeHelper)
     {
         _userManager = userManager;
         _employeeWraperFullHelper = employeeWraperFullHelper;
+        _apiDateTimeHelper = apiDateTimeHelper;
     }
 
     public async Task<FileShareDto> Get(AceWrapper aceWrapper)
@@ -77,12 +82,16 @@ public class FileShareDtoHelper
 
         if (aceWrapper.SubjectGroup)
         {
-            if (aceWrapper.SubjectId == FileConstant.ShareLinkId)
+            if (!string.IsNullOrEmpty(aceWrapper.Link))
             {
+                var date = aceWrapper.FileShareOptions?.ExpirationDate;
+
                 result.SharedTo = new FileShareLink
                 {
                     Id = aceWrapper.SubjectId,
-                    ShareLink = aceWrapper.Link
+                    Title = aceWrapper.FileShareOptions?.Title,
+                    ShareLink = aceWrapper.Link,
+                    ExpirationDate = date.HasValue && date.Value != default ? _apiDateTimeHelper.Get(date) : null
                 };
             }
             else

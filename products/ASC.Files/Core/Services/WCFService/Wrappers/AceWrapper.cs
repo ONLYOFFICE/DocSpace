@@ -39,6 +39,8 @@ public class AceWrapper
 {
     public Guid SubjectId { get; set; }
     public string Email { get; set; }
+    public SubjectType SubjectType { get; set; }
+    public FileShareOptions FileShareOptions { get; set; }
 
     [JsonPropertyName("title")]
     public string SubjectName { get; set; }

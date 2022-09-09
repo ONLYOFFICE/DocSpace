@@ -371,6 +371,17 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         }
     }
 
+    [HttpPut("rooms/{id}/links")]
+    public async IAsyncEnumerable<FileShareDto> SetInvintationLink(T id, InvintationLinkRequestDto inDto)
+    {
+        var fileShares = await _fileStorageService.SetInvitationLink(id, inDto.Id, inDto.Title, inDto.Access);
+
+        foreach (var fileShareDto in fileShares)
+        {
+            yield return await _fileShareDtoHelper.Get(fileShareDto);
+        }
+    }
+
     /// <summary>
     /// Add tags for a virtual room
     /// </summary>

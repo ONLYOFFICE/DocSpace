@@ -2557,6 +2557,45 @@ public class FileStorageService<T> //: IFileStorageService
         }
     }
 
+    public async Task<List<AceWrapper>> SetInvitationLink(T roomId, Guid linkId, string title, FileShare share)
+    {
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
+
+        var folderDao = GetFolderDao();
+        var room = (await folderDao.GetFolderAsync(roomId)).NotFoundIfNull();
+
+        var aces = new List<AceWrapper>
+        {
+            new AceWrapper
+            {
+                Share = share,
+                SubjectId = linkId,
+                SubjectGroup = true,
+                SubjectType = SubjectType.InvintationLink,
+                FileShareOptions = new FileShareOptions
+                {
+                    Title = title,
+                    ExpirationDate = DateTime.UtcNow.AddDays(7)
+                }
+            }
+        };
+
+        try
+        {
+            var changed = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
+            if (changed)
+            {
+                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomInvintationUpdateAccess, room.Title, GetAccessString(share));
+            }
+        }
+        catch (Exception e)
+        {
+            throw GenerateException(e);
+        }
+
+        return await GetSharedInfoAsync(Array.Empty<T>(), new[] { roomId });
+    }
+
     public async Task<bool> SetAceLinkAsync(T fileId, FileShare share)
     {
         FileEntry<T> file;
