@@ -121,13 +121,13 @@ public abstract class BaseStartup
         services.AddScoped<ITenantQuotaFeatureChecker, CountManagerChecker>();
         services.AddScoped<CountManagerChecker>();
 
-        services.AddScoped<ITenantQuotaFeatureStatisticCount<CountManagerFeature>, CountManagerStatistic>();
+        services.AddScoped<ITenantQuotaFeatureStat<CountManagerFeature, int>, CountManagerStatistic>();
         services.AddScoped<CountManagerStatistic>();
 
         services.AddScoped<ITenantQuotaFeatureChecker, MaxTotalSizeChecker>();
         services.AddScoped<MaxTotalSizeChecker>();
 
-        services.AddScoped<ITenantQuotaFeatureStatisticLength<MaxTotalSizeFeature>, MaxTotalSizeStatistic>();
+        services.AddScoped<ITenantQuotaFeatureStat<MaxTotalSizeFeature, long>, MaxTotalSizeStatistic>();
         services.AddScoped<MaxTotalSizeStatistic>();
 
 

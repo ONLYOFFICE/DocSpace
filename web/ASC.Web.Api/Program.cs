@@ -44,7 +44,7 @@ builder.Host.ConfigureDefault(args, configureServices: (hostContext, services, d
     services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
     services.AddScoped<CountRoomChecker>();
 
-    services.AddScoped<ITenantQuotaFeatureStatisticCount<CountRoomFeature>, CountRoomCheckerStatistic>();
+    services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
     services.AddScoped<CountRoomCheckerStatistic>();
 });
 
