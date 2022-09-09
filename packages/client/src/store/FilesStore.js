@@ -1033,7 +1033,8 @@ class FilesStore {
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
       (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    const isFileOwner = item.createdBy.id === this.authStore.userStore.user.id;
+    const isFileOwner =
+      item.createdBy?.id === this.authStore.userStore.user?.id;
 
     const {
       isRecycleBinFolder,
