@@ -73,7 +73,7 @@ export const StyledPreview = styled.div`
   }
 
   .body {
-    width: 49px;
+    width: 100%;
     background: ${(props) => props.theme.backgroundColor};
     border: none;
     border-radius: 0 0 12px 0;
@@ -81,7 +81,7 @@ export const StyledPreview = styled.div`
     padding-top: 22px;
 
     .search-input {
-      width: 40px;
+      width: 100%;
       margin-top: 28px;
       margin-bottom: 4px;
       padding: 6px 8px;
