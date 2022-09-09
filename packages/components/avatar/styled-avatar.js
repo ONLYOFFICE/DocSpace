@@ -58,28 +58,31 @@ const AvatarWrapper = styled.div`
 `;
 AvatarWrapper.defaultProps = { theme: Base };
 
-const leftStyle = (props) =>
-  props.theme.avatar.roleWrapperContainer.left[props.size];
+const rightStyle = (props) =>
+  props.theme.avatar.roleWrapperContainer.right[props.size];
 const bottomStyle = (props) =>
   props.theme.avatar.roleWrapperContainer.bottom[props.size];
 
 const RoleWrapper = styled.div`
   position: absolute;
-  left: ${(props) => leftStyle(props)};
+  right: ${(props) => rightStyle(props)};
   bottom: ${(props) => bottomStyle(props)};
+
+  display: flex;
+  align-items: center;
 
   height: ${(props) =>
     (props.size === "max" &&
       props.theme.avatar.roleWrapperContainer.height.max) ||
     (props.size === "medium" &&
       props.theme.avatar.roleWrapperContainer.height.medium) ||
-    "12px"};
+    "16px"};
   width: ${(props) =>
     (props.size === "max" &&
       props.theme.avatar.roleWrapperContainer.width.max) ||
     (props.size === "medium" &&
       props.theme.avatar.roleWrapperContainer.width.medium) ||
-    "12px"};
+    "16px"};
 `;
 RoleWrapper.defaultProps = { theme: Base };
 
