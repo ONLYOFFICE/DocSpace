@@ -115,6 +115,8 @@ const SocialNetworks = (props) => {
       );
     });
 
+  if (providers.length === 0) return <></>;
+
   return (
     <StyledWrapper>
       <Text fontSize="16px" fontWeight={700}>
