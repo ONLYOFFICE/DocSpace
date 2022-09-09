@@ -51,12 +51,10 @@ const StyledComponent = styled.div`
 const StyledModalDialog = styled(ModalDialog)`
   #modal-dialog {
     width: auto;
-    max-height: none;
   }
 
   .modal-body {
     padding: 0;
-    height: 515px;
   }
   .modal-footer {
     display: none;
