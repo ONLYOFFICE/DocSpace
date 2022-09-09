@@ -1,73 +1,73 @@
-import React from "react";
-import EmptyScreen from "../NoItem";
-import SeveralItems from "../SeveralItems";
-import SingleItem from "./SingleItem";
+import React, { useEffect, useState } from "react";
 
-const Details = ({
-  t,
+import { FileType } from "@docspace/common/constants";
+import Text from "@docspace/components/text";
 
-  selection,
+import DetailsHelper from "../../helpers/DetailsHelper.js";
+import { StyledNoThumbnail, StyledThumbnail } from "../../styles/details.js";
+import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
 
-  getFolderInfo,
-  getIcon,
-  getFolderIcon,
-  getShareUsers,
-  onSelectItem,
-  setSharingPanelVisible,
-  createThumbnail,
+const SingleItem = ({ t, selection, setSelection, ...props }) => {
+  const [itemProperties, setItemProperties] = useState([]);
 
-  personal,
-  culture,
+  const detailsHelper = new DetailsHelper(t, selection, props);
 
-  isRoom,
+  useEffect(async () => {
+    setItemProperties(detailsHelper.getPropertyList());
 
-  isFileCategory,
-  isRootFolder,
-  isRecycleBinFolder,
-  isRecentFolder,
-  isFavoritesFolder,
-}) => {
-  const singleItem = (item) => {
-    const dontShowLocation = isRootFolder;
-    const dontShowSize = item.isFolder && (isFavoritesFolder || isRecentFolder);
-    const dontShowAccess =
-      isRecycleBinFolder ||
-      isRootFolder ||
-      item.rootFolderId === 7 ||
-      (item.isFolder && item.pathParts && item.pathParts[0] === 7);
-    const dontShowOwner = isRootFolder && (isFavoritesFolder || isRecentFolder);
+    if (
+      !selection.thumbnailUrl &&
+      !selection.isFolder &&
+      selection.thumbnailStatus === 0 &&
+      (selection.fileType === FileType.Image ||
+        selection.fileType === FileType.Spreadsheet ||
+        selection.fileType === FileType.Presentation ||
+        selection.fileType === FileType.Document)
+    ) {
+      await createThumbnail(selection.id);
+      setSelection({ ...selection, hasCustonThumbnail: true });
+    }
+  }, [selection]);
 
-    return (
-      <SingleItem
-        t={t}
-        isRoom={isRoom}
-        selectedItem={item}
-        onSelectItem={onSelectItem}
-        setSharingPanelVisible={setSharingPanelVisible}
-        getFolderInfo={getFolderInfo}
-        getIcon={getIcon}
-        getFolderIcon={getFolderIcon}
-        getShareUsers={getShareUsers}
-        dontShowLocation={dontShowLocation}
-        dontShowSize={dontShowSize}
-        dontShowAccess={dontShowAccess}
-        dontShowOwner={dontShowOwner}
-        personal={personal}
-        culture={culture}
-        createThumbnail={createThumbnail}
-      />
-    );
-  };
+  return (
+    <>
+      {selection?.hasCustonThumbnail ? (
+        <StyledThumbnail>
+          <img
+            src={selection.thumbnailUrl}
+            alt="thumbnail-image"
+            height={260}
+            width={360}
+          />
+        </StyledThumbnail>
+      ) : (
+        <StyledNoThumbnail>
+          <img
+            className={`no-thumbnail-img ${selection.isRoom && "is-room"}`}
+            src={selection.thumbnailUrl}
+            alt="thumbnail-icon-big"
+          />
+        </StyledNoThumbnail>
+      )}
 
-  // return isFileCategory && selection.isSelectedFolder ? (
-  //   <EmptyScreen />
-  // ) : Array.isArray(selection) ? (
-  //   <SeveralItems selectedItems={selection} getIcon={getIcon} />
-  // ) : (
-  //   singleItem(selection)
-  // );
+      <StyledSubtitle>
+        <Text fontWeight="600" fontSize="14px">
+          {t("SystemProperties")}
+        </Text>
+      </StyledSubtitle>
 
-  return singleItem(selection);
+      <StyledProperties>
+        {itemProperties.map((property) => {
+          return (
+            <div key={property.title} className="property">
+              <Text className="property-title">{property.title}</Text>
+              {property.content}
+            </div>
+          );
+        })}
+      </StyledProperties>
+    </>
+  );
 };
 
-export default Details;
+export default SingleItem;
