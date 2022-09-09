@@ -59,7 +59,7 @@ public class DocSpaceLinksHelper
 
     public string GenerateInvitationRoomLink(string email, EmployeeType employeeType, Guid createdBy, Guid target)
     {
-        var link = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.LinkInvite, employeeType + target.ToString(), createdBy)
+        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, employeeType + target.ToString(), createdBy)
             + $"&emplType={employeeType:d}";
 
         if (target != default)
