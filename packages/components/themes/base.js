@@ -1004,7 +1004,7 @@ const Base = {
 
     roleWrapperContainer: {
       right: {
-        min: "-7px",
+        min: "-5px",
         small: "-2px",
         base: "-2px",
         medium: "-4px",
@@ -1013,7 +1013,7 @@ const Base = {
       },
 
       bottom: {
-        min: "-7px",
+        min: "-5px",
         small: "3px",
         base: "4px",
         medium: "6px",
