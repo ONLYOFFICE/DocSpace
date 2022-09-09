@@ -134,6 +134,12 @@ class PeopleStore {
     }
   };
 
+  onOpenInfoPanel = (item) => {
+    const { setIsVisible } = this.infoPanelStore;
+    console.log(item);
+    setIsVisible(true);
+  };
+
   getHeaderMenu = (t) => {
     const {
       hasUsersToMakeEmployees,
@@ -153,7 +159,7 @@ class PeopleStore {
 
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
-    const { setIsVisible, isVisible } = this.infoPanelStore;
+    const { isVisible } = this.infoPanelStore;
 
     const options = [];
 
@@ -204,7 +210,7 @@ class PeopleStore {
         key: "info",
         label: t("Common:Info"),
         disabled: isVisible,
-        onClick: () => setIsVisible(true),
+        onClick: (item) => this.onOpenInfoPanel(item),
         iconUrl: "images/info.react.svg",
       },
       {
