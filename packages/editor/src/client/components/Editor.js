@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import withDialogs from "../helpers/withDialogs";
 import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
+import toastr from "@docspace/components/toast/toastr";
 
 toast.configure();
 
@@ -91,7 +92,7 @@ function Editor({
         window.location.href = error?.redirectPath;
       }
       const errorText = typeof error === "string" ? error : error.errorMessage;
-      window.toastr.error(errorText);
+      toastr.error(errorText);
     }
   }, [mfReady, error]);
 
@@ -558,7 +559,7 @@ function Editor({
 
       assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
     } catch (error) {
-      window.toastr.error(error.message, null, 0, true);
+      toastr.error(error.message, null, 0, true);
     }
   };
 
