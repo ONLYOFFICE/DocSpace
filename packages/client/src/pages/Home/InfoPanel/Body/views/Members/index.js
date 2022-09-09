@@ -12,29 +12,29 @@ const Members = ({
   selfId,
   selection,
   setSelection,
-  currentRoomMembers,
-  setCurrentRoomMembers,
+  selectionParentRoom,
+  setSelectionParentRoom,
   getRoomMembers,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(async () => {
-    if (currentRoomMembers) return;
+    // if (selectionParentRoom.members) return;
 
     setIsLoading(true);
     const fetchedMembers = await getRoomMembers(selection.id);
-    setCurrentRoomMembers(fetchedMembers);
+    // setselectionParentRoom.members(fetchedMembers);
     setIsLoading(false);
-  }, [currentRoomMembers]);
+  }, [selectionParentRoom]);
 
-  if (!currentRoomMembers || isLoading)
+  if (!selectionParentRoom || !selectionParentRoom.members || isLoading)
     return <Loaders.InfoPanelMemberListLoader />;
 
   return (
     <>
       <StyledUserTypeHeader>
         <Text className="title">
-          {t("Users in room")} : {currentRoomMembers.length}
+          {t("Users in room")} : {selectionParentRoom.members.length}
         </Text>
         <IconButton
           className={"icon"}
@@ -47,7 +47,7 @@ const Members = ({
         />
       </StyledUserTypeHeader>
 
-      <UserList t={t} users={currentRoomMembers} selfId={selfId} />
+      <UserList t={t} users={selectionParentRoom.members} selfId={selfId} />
 
       {/* <StyledUserTypeHeader>
         <Text className="title">{`${t("Expect people")}:`}</Text>

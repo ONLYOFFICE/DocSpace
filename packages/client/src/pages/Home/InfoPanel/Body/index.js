@@ -12,15 +12,16 @@ import ViewHelper from "./helpers/ViewHelper";
 import ItemTitle from "./sub-components/ItemTitle";
 
 import { StyledInfoPanelBody } from "./styles/common";
+import { getRoomInfo } from "@docspace/common/api/rooms";
 
 const InfoPanelBodyContent = ({
   t,
 
   selection,
   setSelection,
+  selectionParentRoom,
+  setSelectionParentRoom,
   normalizeSelection,
-  currentRoomTitle,
-  setCurrentRoomTitle,
   roomsView,
   personalView,
 
@@ -46,37 +47,34 @@ const InfoPanelBodyContent = ({
       t,
       selection,
       setSelection,
-      personal: props.personal,
-      culture: props.culture,
       isGallery,
       isFileCategory,
+      personal: props.personal,
+      culture: props.culture,
       isRootFolder: props.isRootFolder,
       isRecycleBinFolder: props.isRecycleBinFolder,
       isRecentFolder: props.isRecentFolder,
       isFavoritesFolder: props.isFavoritesFolder,
     },
     detailsProps: {
-      getFolderInfo: props.getFolderInfo,
       getIcon,
       getFolderIcon,
+      getFolderInfo: props.getFolderInfo,
       getShareUsers: props.getShareUsers,
       onSelectItem: props.onSelectItem,
       setSharingPanelVisible: props.setSharingPanelVisible,
       createThumbnail: props.createThumbnail,
     },
     membersProps: {
+      selectionParentRoom,
+      setSelectionParentRoom,
       selfId: props.selfId,
-      currentRoomMembers: props.currentRoomMembers,
-      setCurrentRoomMembers: props.setCurrentRoomMembers,
       getRoomMembers: props.getRoomMembers,
     },
-    historyProps: {
-      personal: props.personal,
-      culture: props.culture,
-    },
+    historyProps: {},
     galleryProps: {
-      gallerySelected: props.gallerySelected,
       getIcon,
+      gallerySelected: props.gallerySelected,
       personal: props.personal,
       culture: props.culture,
     },
@@ -124,12 +122,12 @@ const InfoPanelBodyContent = ({
     const newSelection = getSelection();
     if (selection && selection.id === newSelection.id) return;
     setSelection(newSelection);
-    setCurrentRoomTitle({
-      title: newSelection.title,
-      isRoom: newSelection.isRoom,
-      icon: newSelection.icon,
-      logo: newSelection.logo,
-    });
+    // setCurrentRoomTitle({
+    //   title: newSelection.title,
+    //   isRoom: newSelection.isRoom,
+    //   icon: newSelection.icon,
+    //   logo: newSelection.logo,
+    // });
   }, [selectedItems, selectedFolder]);
 
   //////////////////////////////////////////////////////////
@@ -149,6 +147,25 @@ const InfoPanelBodyContent = ({
   }, [props.selectedFolder]);
 
   //////////////////////////////////////////////////////////
+
+  // useEffect(() => {
+  //   console.log("\nSelected items: ", selectedItems);
+  //   console.log("\nSelected folder: ", selectedFolder);
+  // }, [selectedItems, selectedFolder]);
+
+  useEffect(async () => {
+    if (selectedFolder.pathParts[1]) {
+      const roomId = selectedFolder.pathParts[1];
+      const newSelectionParentRoom = await getRoomInfo(roomId);
+      console.log(roomId);
+      console.log("Parent room: ", newSelectionParentRoom);
+
+      if (selectionParentRoom.id !== newSelectionParentRoom.id) {
+        setSelectionParentRoom(newSelectionParentRoom);
+        console.log("Parent room: ", newSelectionParentRoom);
+      }
+    }
+  }, [selectedFolder]);
 
   useEffect(() => {
     console.log("\nSelected items: ", selectedItems);
@@ -192,11 +209,10 @@ export default inject(
     const {
       selection,
       setSelection,
+      selectionParentRoom,
+      setSelectionParentRoom,
       normalizeSelection,
-      currentRoomTitle,
-      setCurrentRoomTitle,
-      currentRoomMembers,
-      setCurrentRoomMembers,
+
       roomsView,
       personalView,
     } = auth.infoPanelStore;
@@ -243,11 +259,9 @@ export default inject(
 
       selection,
       setSelection,
+      selectionParentRoom,
+      setSelectionParentRoom,
       normalizeSelection,
-      currentRoomTitle,
-      setCurrentRoomTitle,
-      currentRoomMembers,
-      setCurrentRoomMembers,
       roomsView,
       personalView,
 
