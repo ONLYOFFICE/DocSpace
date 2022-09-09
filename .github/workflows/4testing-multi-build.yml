@@ -31,7 +31,7 @@ jobs:
         name: Build 4testing
         run: |
           cd ./build/install/docker
-          REPO=${{ secrets.DOCKERHUB_USERNAME }} \
+          REPO="onlyoffice" \
           DOCKER_IMAGE_PREFIX="docspace" \
           STATUS="4testing-" \
           DOCKER_TAG="test" \
