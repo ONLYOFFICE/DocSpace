@@ -27,8 +27,6 @@ export function getRoomInfo(id) {
   };
 
   return request(options).then((res) => {
-    res.files = decodeDisplayName(res.files);
-    res.folders = decodeDisplayName(res.folders);
     return res;
   });
 }
