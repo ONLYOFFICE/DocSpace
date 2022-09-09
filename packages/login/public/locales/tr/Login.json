@@ -3,6 +3,8 @@
   "CodeSubtitle": "{{email}} adresine 6 haneli bir kod gönderdik. Kodun sınırlı bir geçerlilik süresi vardır, kodu en kısa sürede girin.",
   "CodeTitle": "Kod tarafınıza e-posta olarak gönderildi",
   "CookieSettingsTitle": "Oturum ömrü",
+  "ErrorInvalidHeader": "Yanlış e-posta veya süresi dolmuş bağlantı",
+  "ErrorInvalidText": "10 saniye içinde <1>giriş sayfasına</1> yönlendirileceksiniz",
   "ExpiredCode": "Bu kod artık geçerli değil. Yeni bir kod isteyip tekrar deneyin",
   "ForgotPassword": "Şifrenizi mi unuttunuz?",
   "InvalidCode": "Bu kod geçersizdir. Tekrar deneyin",
@@ -27,7 +29,5 @@
   "RegistrationEmailWatermark": "E-posta",
   "Remember": "Beni hatırla",
   "RememberHelper": "Varsayılan oturum ömrü 20 dakikadır. 1 yıla ayarlamak için bu seçeneği işaretleyin. Kendi sürenizi ayarlamak için Ayarlar'a gidin.",
-  "ResendCode": "Kodu yeniden gönder",
-  "ErrorInvalidHeader": "Yanlış e-posta veya süresi dolmuş bağlantı",
-  "ErrorInvalidText": "10 saniye içinde <1>giriş sayfasına</1> yönlendirileceksiniz"
+  "ResendCode": "Kodu yeniden gönder"
 }
