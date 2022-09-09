@@ -11,6 +11,7 @@ import UserTooltip from "./sub-components/UserTooltip";
 
 import { getUserList } from "@docspace/common/api/people";
 import Loaders from "@docspace/common/components/Loaders";
+import { getUserRole } from "SRC_DIR/helpers/people-helpers";
 
 const PeopleSelector = ({
   acceptButtonLabel,
@@ -44,6 +45,7 @@ const PeopleSelector = ({
   withCancelButton,
   withSelectAll,
   filter,
+  excludeItems,
 }) => {
   const [itemsList, setItemsList] = useState(items);
   const [searchValue, setSearchValue] = useState("");
@@ -59,11 +61,15 @@ const PeopleSelector = ({
 
   const toListItem = (item) => {
     const { id, avatar, icon, displayName } = item;
+
+    const role = getUserRole(item);
+
     return {
       id,
       avatar,
       icon,
       label: displayName,
+      role,
     };
   };
 
@@ -72,25 +78,37 @@ const PeopleSelector = ({
 
     setIsNextPageLoading(true);
 
-    const filter = filter || Filter.getDefault();
-    filter.page = startIndex / pageCount;
-    filter.pageCount = pageCount;
+    const currentFilter = filter || Filter.getDefault();
+    currentFilter.page = startIndex / pageCount;
+    currentFilter.pageCount = pageCount;
 
     if (!!search.length) {
-      filter.search = search;
+      currentFilter.search = search;
     }
 
-    getUserList(filter)
+    getUserList(currentFilter)
       .then((response) => {
         let newItems = startIndex ? itemsList : [];
+        let totalDifferent = startIndex ? response.total - total : 0;
 
-        const items = response.items.map((item) => toListItem(item));
+        const items = response.items
+          .filter((item) => {
+            if (excludeItems.includes(item.id)) {
+              totalDifferent++;
+              return false;
+            } else {
+              return true;
+            }
+          })
+          .map((item) => toListItem(item));
 
         newItems = [...newItems, ...items];
 
-        setHasNextPage(newItems.length < response.total);
+        const newTotal = response.total - totalDifferent;
+
+        setHasNextPage(newItems.length < newTotal);
         setItemsList(newItems);
-        setTotal(response.total);
+        setTotal(newTotal);
 
         setIsNextPageLoading(false);
         setIsLoading(false);
@@ -164,9 +182,10 @@ const PeopleSelector = ({
   );
 };
 
-PeopleSelector.propTypes = {};
+PeopleSelector.propTypes = { excludeItems: PropTypes.array };
 
 PeopleSelector.defaultProps = {
+  excludeItems: [],
   selectAllIcon: "/static/images/catalog.accounts.react.svg",
   emptyScreenImage: "/static/images/empty_screen_persons.png",
   searchEmptyScreenImage: "/static/images/empty_screen_persons.png",

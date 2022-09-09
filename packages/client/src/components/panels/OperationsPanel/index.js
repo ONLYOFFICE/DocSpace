@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import SelectFolderDialog from "../SelectFolderDialog";
 
 let timerId;

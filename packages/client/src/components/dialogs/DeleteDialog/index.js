@@ -5,7 +5,7 @@ import { StyledDeleteDialog } from "./StyledDeleteDialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 
 const DeleteDialogComponent = (props) => {
