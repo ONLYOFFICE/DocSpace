@@ -11,12 +11,11 @@ const StyledItemContextOptions = styled.div`
   margin-left: auto;
 `;
 
-const ItemContextOptions = (props) => {
-  if (!props.selection) return null;
-
-  const contextHelper = new ContextHelper(props);
+const ItemContextOptions = ({ selection, setBufferSelection, ...props }) => {
+  const contextHelper = new ContextHelper(selection, setBufferSelection, props);
+  const setItemAsBufferSelection = () => setBufferSelection(selection);
   return (
-    <StyledItemContextOptions>
+    <StyledItemContextOptions onClick={setItemAsBufferSelection}>
       <ContextMenuButton
         zIndex={402}
         className="option-button"
