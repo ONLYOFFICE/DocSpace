@@ -37,11 +37,12 @@ const RootFolderContainer = (props) => {
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
   const trashHeader = t("EmptyScreenFolder");
+  const archiveHeader = t("ArchiveEmptyScreenHeader");
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
   const roomsDescription = "Please create the first room.";
-  const archiveRoomsDescription = "Archive rooms empty";
+  const archiveRoomsDescription = t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
   const privacyIcon = <img alt="" src="images/privacy.svg" />;
@@ -115,8 +116,9 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Archive:
         return {
+          headerText: archiveHeader,
           descriptionText: archiveRoomsDescription,
-          imageSrc: "images/empty_screen_corporate.png",
+          imageSrc: "images/empty_screen_archive.svg",
         };
       default:
         break;
