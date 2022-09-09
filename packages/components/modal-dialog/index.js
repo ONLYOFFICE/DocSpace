@@ -19,6 +19,9 @@ Body.displayName = "DialogBody";
 const Footer = () => null;
 Footer.displayName = "DialogFooter";
 
+const Container = () => null;
+Container.displayName = "DialogContainer";
+
 const ModalDialog = ({
   id,
   style,
@@ -37,6 +40,7 @@ const ModalDialog = ({
   modalLoaderBodyHeight,
   withFooterBorder,
   isScrollLocked,
+  containerVisible,
 }) => {
   const [currentDisplayType, setCurrentDisplayType] = useState(
     getCurrentDisplayType(displayType, displayTypeDetailed)
@@ -69,11 +73,12 @@ const ModalDialog = ({
     };
   }, []);
 
-  const [header, body, footer] = parseChildren(
+  const [header, body, footer, container] = parseChildren(
     children,
     Header.displayName,
     Body.displayName,
-    Footer.displayName
+    Footer.displayName,
+    Container.displayName
   );
 
   return (
@@ -96,8 +101,10 @@ const ModalDialog = ({
           header={header}
           body={body}
           footer={footer}
+          container={container}
           visible={visible}
           modalSwipeOffset={modalSwipeOffset}
+          containerVisible={containerVisible}
         />
       }
     />
@@ -158,6 +165,8 @@ ModalDialog.propTypes = {
 
   Sets modal dialog size equal to window */
   scale: PropTypes.bool,
+
+  containerVisible: PropTypes.bool,
 };
 
 ModalDialog.defaultProps = {
@@ -168,10 +177,12 @@ ModalDialog.defaultProps = {
   withoutCloseButton: false,
   withBodyScroll: false,
   withFooterBorder: false,
+  containerVisible: false,
 };
 
 ModalDialog.Header = Header;
 ModalDialog.Body = Body;
 ModalDialog.Footer = Footer;
+ModalDialog.Container = Container;
 
 export default ModalDialog;

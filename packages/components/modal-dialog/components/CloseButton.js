@@ -28,7 +28,7 @@ const StyledCloseButtonWrapper = styled.div`
           }
         `
       : css`
-          top: 10px;
+          top: 18px;
           left: -27px;
           @media ${smallTablet} {
             top: -27px;

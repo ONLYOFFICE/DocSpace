@@ -24,13 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Security.Authentication;
+
 namespace ASC.Common.Caching;
 
 [Singletone]
 public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<T>, new()
 {
     private IConnection _connection;
-    private readonly IConnectionFactory _connectionFactory;
+    private readonly ConnectionFactory _factory;
 
     private IModel _consumerChannel;
     private readonly Guid _instanceId;
@@ -53,14 +55,37 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
 
         var rabbitMQConfiguration = configuration.GetSection("rabbitmq").Get<RabbitMQSettings>();
 
-        _connectionFactory = new ConnectionFactory
-        {
-            HostName = rabbitMQConfiguration.HostName,
-            UserName = rabbitMQConfiguration.UserName,
-            Password = rabbitMQConfiguration.Password
-        };
+        _factory = new ConnectionFactory();
 
-        _connection = _connectionFactory.CreateConnection();
+        if (!string.IsNullOrEmpty(rabbitMQConfiguration.Uri))
+        {
+            _factory.Uri = new Uri(rabbitMQConfiguration.Uri);
+        }
+        else
+        {
+            _factory.HostName = rabbitMQConfiguration.HostName;
+            _factory.UserName = rabbitMQConfiguration.UserName;
+            _factory.Password = rabbitMQConfiguration.Password;
+            _factory.Port = rabbitMQConfiguration.Port;
+            _factory.VirtualHost = rabbitMQConfiguration.VirtualHost;
+        }
+
+        if (rabbitMQConfiguration.EnableSsl)
+        {
+            _factory.Ssl = new SslOption
+            {
+                Enabled = rabbitMQConfiguration.EnableSsl,
+                Version = SslProtocols.Tls12
+            };
+
+            if (!string.IsNullOrEmpty(rabbitMQConfiguration.SslCertPath))
+            {
+                _factory.Ssl.CertPath = rabbitMQConfiguration.SslCertPath;
+                _factory.Ssl.ServerName = rabbitMQConfiguration.SslServerName;
+            }
+        }
+
+        _connection = _factory.CreateConnection();
         _consumerChannel = CreateConsumerChannel();
 
         StartBasicConsume();
@@ -125,7 +150,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
                 return;
             }
 
-            _connection = _connectionFactory.CreateConnection();
+            _connection = _factory.CreateConnection();
             _connection.ConnectionShutdown += (s, e) => TryConnect();
             _connection.CallbackException += (s, e) => TryConnect();
             _connection.ConnectionBlocked += (s, e) => TryConnect();
@@ -214,5 +239,10 @@ public class RabbitMQSettings
     public string HostName { get; set; }
     public string UserName { get; set; }
     public string Password { get; set; }
-
+    public int Port { get; set; }
+    public string VirtualHost { get; set; }
+    public string Uri { get; set; }
+    public bool EnableSsl { get; set; }
+    public string SslServerName { get; set; }
+    public string SslCertPath { get; set; }
 }

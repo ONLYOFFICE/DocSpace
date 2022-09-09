@@ -91,6 +91,11 @@ const PeopleRowContainer = ({
   setViewAs,
   theme,
   infoPanelVisible,
+
+  fetchMoreAccounts,
+  hasMoreAccounts,
+  filterTotal,
+  withPaging,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -108,7 +113,15 @@ const PeopleRowContainer = ({
   }, [sectionWidth]);
 
   return peopleList.length > 0 ? (
-    <StyledRowContainer className="people-row-container" useReactWindow={false}>
+    <StyledRowContainer
+      className="people-row-container"
+      useReactWindow={!withPaging}
+      fetchMoreFiles={fetchMoreAccounts}
+      hasMoreFiles={hasMoreAccounts}
+      itemCount={filterTotal}
+      filesLength={peopleList.length}
+      itemHeight={58}
+    >
       {peopleList.map((item) => (
         <SimpleUserRow
           theme={theme}
@@ -124,9 +137,10 @@ const PeopleRowContainer = ({
 };
 
 export default inject(({ peopleStore, auth }) => {
-  const { usersStore, viewAs, setViewAs } = peopleStore;
-  const { theme } = auth.settingsStore;
-  const { peopleList } = usersStore;
+  const { usersStore, filterStore, viewAs, setViewAs } = peopleStore;
+  const { theme, withPaging } = auth.settingsStore;
+  const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
+  const { filterTotal } = filterStore;
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
@@ -136,5 +150,10 @@ export default inject(({ peopleStore, auth }) => {
     setViewAs,
     theme,
     infoPanelVisible,
+    withPaging,
+
+    fetchMoreAccounts,
+    hasMoreAccounts,
+    filterTotal,
   };
 })(observer(PeopleRowContainer));

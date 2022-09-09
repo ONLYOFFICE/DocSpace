@@ -12,6 +12,10 @@ import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import { Base } from "@docspace/components/themes";
 
+const TABLE_VERSION = "2";
+const COLUMNS_SIZE = `peopleColumnsSize_ver-${TABLE_VERSION}`;
+const INFO_PANEL_COLUMNS_SIZE = `infoPanelPeopleColumnsSize_ver-${TABLE_VERSION}`;
+
 const marginCss = css`
   margin-top: -1px;
   border-top: ${(props) =>
@@ -82,6 +86,7 @@ const StyledTableContainer = styled(TableContainer)`
           `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       }
     }
+  }
 `;
 
 StyledTableContainer.defaultProps = { theme: Base };
@@ -97,6 +102,11 @@ const Table = ({
   changeType,
   userId,
   infoPanelVisible,
+
+  fetchMoreAccounts,
+  hasMoreAccounts,
+  filterTotal,
+  withPaging,
 }) => {
   const ref = useRef(null);
 
@@ -115,10 +125,28 @@ const Table = ({
     }
   }, [sectionWidth]);
 
+  const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
+  const columnInfoPanelStorageName = `${INFO_PANEL_COLUMNS_SIZE}=${userId}`;
+
   return peopleList.length > 0 ? (
-    <StyledTableContainer forwardedRef={ref}>
-      <TableHeader sectionWidth={sectionWidth} containerRef={ref} />
-      <TableBody>
+    <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
+      <TableHeader
+        columnStorageName={columnStorageName}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
+        sectionWidth={sectionWidth}
+        containerRef={ref}
+      />
+      <TableBody
+        infoPanelVisible={infoPanelVisible}
+        columnInfoPanelStorageName={columnInfoPanelStorageName}
+        columnStorageName={columnStorageName}
+        fetchMoreFiles={fetchMoreAccounts}
+        hasMoreFiles={hasMoreAccounts}
+        itemCount={filterTotal}
+        filesLength={peopleList.length}
+        itemHeight={49}
+        useReactWindow={!withPaging}
+      >
         {peopleList.map((item) => (
           <TableRow
             theme={theme}
@@ -138,12 +166,18 @@ const Table = ({
 };
 
 export default inject(({ peopleStore, auth }) => {
-  const { usersStore, viewAs, setViewAs, changeType } = peopleStore;
-  const { theme } = auth.settingsStore;
-  const { peopleList } = usersStore;
+  const {
+    usersStore,
+    filterStore,
+    viewAs,
+    setViewAs,
+    changeType,
+  } = peopleStore;
+  const { theme, withPaging } = auth.settingsStore;
+  const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
+  const { filterTotal } = filterStore;
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
-
   const { isAdmin, isOwner, id: userId } = auth.userStore.user;
 
   return {
@@ -156,5 +190,10 @@ export default inject(({ peopleStore, auth }) => {
     changeType,
     userId,
     infoPanelVisible,
+    withPaging,
+
+    fetchMoreAccounts,
+    hasMoreAccounts,
+    filterTotal,
   };
 })(observer(Table));

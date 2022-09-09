@@ -26,6 +26,9 @@ const StyledPeopleRow = styled(TableRow)`
       cursor: pointer;
       background: ${(props) =>
         `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+      border-top: ${(props) =>
+        `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+      margin-top: -1px;
     }
 
     .table-container_user-name-cell {
@@ -39,8 +42,8 @@ const StyledPeopleRow = styled(TableRow)`
   }
 
   .table-container_cell {
-    height: 46px;
-    max-height: 46px;
+    height: 48px;
+    max-height: 48px;
 
     background: ${(props) =>
       (props.checked || props.isActive) &&
@@ -50,7 +53,7 @@ const StyledPeopleRow = styled(TableRow)`
   .table-container_row-checkbox-wrapper {
     padding-right: 0px;
     padding-left: 4px;
-    min-width: 46px;
+    min-width: 48px;
 
     .table-container_row-checkbox {
       margin-left: -4px;
@@ -83,7 +86,7 @@ const StyledPeopleRow = styled(TableRow)`
       margin-left: -8px;
 
       .combo-button-label {
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 400;
         color: ${(props) => props.sideInfoColor};
       }
@@ -273,7 +276,7 @@ const PeopleTableRow = (props) => {
             type="page"
             title={displayName}
             fontWeight="600"
-            fontSize="15px"
+            fontSize="13px"
             color={nameColor}
             isTextOverflow
             href={`/accounts/view/${userName}`}
@@ -305,7 +308,7 @@ const PeopleTableRow = (props) => {
             <Text
               type="page"
               title={position}
-              fontSize="12px"
+              fontSize="13px"
               fontWeight={400}
               color={sideInfoColor}
               truncate
@@ -321,7 +324,7 @@ const PeopleTableRow = (props) => {
             <Text
               type="page"
               title={position}
-              fontSize="12px"
+              fontSize="13px"
               fontWeight={400}
               color={sideInfoColor}
               truncate
@@ -334,7 +337,7 @@ const PeopleTableRow = (props) => {
             <Text
               type="page"
               title={position}
-              fontSize="12px"
+              fontSize="13px"
               fontWeight={400}
               color={sideInfoColor}
               truncate
@@ -360,7 +363,7 @@ const PeopleTableRow = (props) => {
           <Link
             type="page"
             title={email}
-            fontSize="12px"
+            fontSize="13px"
             fontWeight={400}
             color={sideInfoColor}
             onClick={onEmailClick}

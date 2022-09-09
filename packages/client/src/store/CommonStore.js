@@ -16,6 +16,7 @@ class CommonStore {
   isLoadedSectionHeader = false;
   isLoadedSubmenu = false;
   isLoadedLngTZSettings = false;
+  isLoadedDNSSettings = false;
   isLoadedPortalRenaming = false;
   isLoadedCustomization = false;
   isLoadedCustomizationNavbar = false;
@@ -110,6 +111,12 @@ class CommonStore {
   setIsLoadedPortalRenaming = (isLoadedPortalRenaming) => {
     runInAction(() => {
       this.isLoadedPortalRenaming = isLoadedPortalRenaming;
+    });
+  };
+
+  setIsLoadedDNSSettings = (isLoadedDNSSettings) => {
+    runInAction(() => {
+      this.isLoadedDNSSettings = isLoadedDNSSettings;
     });
   };
 

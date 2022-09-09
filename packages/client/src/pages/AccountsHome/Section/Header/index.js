@@ -24,7 +24,7 @@ import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu"
 import { Base } from "@docspace/components/themes";
 import IconButton from "@docspace/components/icon-button";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 
@@ -383,7 +383,7 @@ export default withRouter(
       getHeaderMenu,
       dialogStore,
     } = peopleStore;
-    const { getUsersList, removeUser, updateUserStatus } = usersStore;
+    const { getUsersList, removeUser } = usersStore;
     const {
       setSelected,
       selectByStatus,
@@ -418,7 +418,6 @@ export default withRouter(
       selectAll,
       deleteGroup,
       removeUser,
-      updateUserStatus,
       group,
       isTabletView,
       getHeaderMenu,

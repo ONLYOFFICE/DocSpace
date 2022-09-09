@@ -27,5 +27,7 @@
   "RegistrationEmailWatermark": "Adresse de courriel",
   "Remember": "Se souvenir de moi",
   "RememberHelper": "Par défaut, la durée de validité de la session est de 20 minutes. Cochez cette option pour la définir sur 1 an. Vous pouvez définir votre propre valeur en accédant aux paramètres.",
-  "ResendCode": "Renvoyer le code"
+  "ResendCode": "Renvoyer le code",
+  "ErrorInvalidHeader": "Adresse e-mail incorrecte ou lien expiré",
+  "ErrorInvalidText": "En 10 secondes, vous serez redirigé vers <1>login page</1>"
 }

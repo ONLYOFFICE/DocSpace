@@ -13,11 +13,15 @@ class SocialButton extends React.Component {
   }
 
   render() {
-    const { label, iconName, ...otherProps } = this.props;
+    const { label, iconName, IconComponent, ...otherProps } = this.props;
     return (
       <StyledSocialButton {...otherProps}>
         <div>
-          <ReactSVG className="iconWrapper" src={iconName} />
+          {IconComponent ? (
+            <IconComponent className="iconWrapper" />
+          ) : (
+            <ReactSVG className="iconWrapper" src={iconName} />
+          )}
         </div>
         <div>
           {label && (

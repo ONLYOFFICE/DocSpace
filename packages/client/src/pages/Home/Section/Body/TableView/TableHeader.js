@@ -358,7 +358,6 @@ export default inject(
       canShare,
       firstElemChecked,
       headerBorder,
-      withPaging,
       roomsFilter,
       fetchRooms,
     } = filesStore;
@@ -366,7 +365,7 @@ export default inject(
 
     const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
     const sortingVisible = !isRecentFolder;
-    const { personal } = auth.settingsStore;
+    const { personal, withPaging } = auth.settingsStore;
 
     return {
       isHeaderChecked,

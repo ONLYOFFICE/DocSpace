@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Section from "@docspace/common/components/Section";
 import Loaders from "@docspace/common/components/Loaders";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { linkOAuth } from "@docspace/common/api/people";
 import { getAuthProviders } from "@docspace/common/api/settings";
 

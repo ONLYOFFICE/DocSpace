@@ -1,12 +1,16 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
-import { LANGUAGE, TenantStatus } from "../constants";
-import { combineUrl } from "../utils";
+import { combineUrl, setCookie, getCookie } from "../utils";
 import FirebaseHelper from "../utils/firebase";
-import { AppServerConfig, ThemeKeys } from "../constants";
+import {
+  AppServerConfig,
+  ThemeKeys,
+  COOKIE_EXPIRATION_YEAR,
+  LANGUAGE,
+  TenantStatus,
+} from "../constants";
 import { version } from "../package.json";
 import SocketIOHelper from "../utils/socket";
-
 import { Dark, Base } from "@docspace/components/themes";
 import { initPluginStore } from "../../client/src/helpers/plugins";
 
@@ -103,6 +107,7 @@ class SettingsStore {
   wizardToken = null;
   passwordSettings = null;
   hasShortenService = false;
+  withPaging = false;
 
   customSchemaList = [];
   firebase = {
@@ -204,9 +209,11 @@ class SettingsStore {
             : newSettings[key]
         );
         if (key === "culture") {
-          const language = localStorage.getItem(LANGUAGE);
+          const language = getCookie(LANGUAGE);
           if (!language || language == "undefined") {
-            localStorage.setItem(LANGUAGE, newSettings[key]);
+            setCookie(LANGUAGE, newSettings[key], {
+              "max-age": COOKIE_EXPIRATION_YEAR,
+            });
           }
         }
         // if (key === "personal") {

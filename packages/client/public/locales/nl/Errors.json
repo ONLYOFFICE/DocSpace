@@ -3,7 +3,5 @@
   "Error403Text": "Sorry, toegang geweigerd.",
   "Error404Text": "Sorry, de bron kan niet worden gevonden.",
   "ErrorEmptyResponse": "Lege reactie",
-  "ErrorInvalidHeader": "Onjuiste e-mail of verlopen link",
-  "ErrorInvalidText": "Over 10 seconden wordt u doorverwezen naar de <1>login pagina</1>",
   "ErrorOfflineText": "Geen internetverbinding gevonden."
 }
