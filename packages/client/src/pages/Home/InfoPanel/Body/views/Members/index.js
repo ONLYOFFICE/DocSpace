@@ -19,11 +19,17 @@ const Members = ({
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(async () => {
-    // if (selectionParentRoom.members) return;
-
+    console.log("FETCHING MEMBERS");
     setIsLoading(true);
-    const fetchedMembers = await getRoomMembers(selection.id);
-    // setselectionParentRoom.members(fetchedMembers);
+
+    if (selectionParentRoom && !selectionParentRoom.members) {
+      const fetchedMembers = await getRoomMembers(selectionParentRoom.id);
+      setSelectionParentRoom({
+        ...selectionParentRoom,
+        members: fetchedMembers,
+      });
+    }
+
     setIsLoading(false);
   }, [selectionParentRoom]);
 

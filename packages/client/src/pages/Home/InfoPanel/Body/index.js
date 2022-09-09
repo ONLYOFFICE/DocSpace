@@ -154,16 +154,19 @@ const InfoPanelBodyContent = ({
   // }, [selectedItems, selectedFolder]);
 
   useEffect(async () => {
-    if (selectedFolder.pathParts[1]) {
-      const roomId = selectedFolder.pathParts[1];
-      const newSelectionParentRoom = await getRoomInfo(roomId);
-      console.log(roomId);
-      console.log("Parent room: ", newSelectionParentRoom);
+    const currentFolderRoomId = selectedFolder.pathParts[1];
+    const storeRoomId = selectionParentRoom?.id;
 
-      if (selectionParentRoom.id !== newSelectionParentRoom.id) {
-        setSelectionParentRoom(newSelectionParentRoom);
-        console.log("Parent room: ", newSelectionParentRoom);
-      }
+    if (selection && selection.isRoom) {
+      setSelectionParentRoom(selection);
+      return;
+    }
+    if (currentFolderRoomId === storeRoomId) return;
+
+    const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
+    if (storeRoomId !== newSelectionParentRoom.id) {
+      setSelectionParentRoom(newSelectionParentRoom);
+      console.log("Parent room: ", newSelectionParentRoom);
     }
   }, [selectedFolder]);
 
