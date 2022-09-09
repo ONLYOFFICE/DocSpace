@@ -1,5 +1,8 @@
 import { makeAutoObservable } from "mobx";
 
+import { getCategoryType } from "@docspace/client/src/helpers/utils";
+import { CategoryType } from "@docspace/client/src/helpers/constants";
+
 class InfoPanelStore {
   isVisible = false;
 
@@ -7,7 +10,7 @@ class InfoPanelStore {
   selectionParentRoom = null;
 
   roomsView = "members";
-  personalView = "history";
+  fileView = "history";
 
   settingsStore = null;
 
@@ -21,11 +24,22 @@ class InfoPanelStore {
   setSettingsStore = (settingsStore) => (this.settingsStore = settingsStore);
   setView = (view) => {
     this.roomsView = view;
-    this.personalView = view === "members" ? "history" : view;
+    this.fileView = view === "members" ? "history" : view;
+  };
+
+  normalizeSelection = (selection) => {
+    return {
+      ...selection,
+      isRoom: selection.isRoom || !!selection.roomType,
+      icon: this.getItemIcon(selection, 32),
+      hasCustonThumbnail: !!selection.thumbnailUrl,
+      thumbnailUrl: selection.thumbnailUrl || this.getItemIcon(selection, 96),
+      isContextMenuSelection: false,
+    };
   };
 
   getItemIcon = (item, size) => {
-    return item.isRoom
+    return item.isRoom || !!item.roomType
       ? item.logo && item.logo.big
         ? item.logo.big
         : item.icon
@@ -34,13 +48,29 @@ class InfoPanelStore {
       : this.settingsStore.getIcon(size, item.fileExst || ".file");
   };
 
-  normalizeSelection = (selection) => {
-    return {
-      ...selection,
-      icon: this.getItemIcon(selection, 32),
-      hasCustonThumbnail: !!selection.thumbnailUrl,
-      thumbnailUrl: selection.thumbnailUrl || this.getItemIcon(selection, 96),
-    };
+  getIsFileCategory = () => {
+    const categoryType = getCategoryType(location);
+    return (
+      categoryType == CategoryType.Personal ||
+      categoryType == CategoryType.Favorite ||
+      categoryType == CategoryType.Recent ||
+      categoryType == CategoryType.Trash
+    );
+  };
+
+  getIsRoomCategory = () => {
+    const categoryType = getCategoryType(location);
+    return (
+      categoryType == CategoryType.Shared ||
+      categoryType == CategoryType.SharedRoom ||
+      categoryType == CategoryType.Archive ||
+      categoryType == CategoryType.ArchivedRoom
+    );
+  };
+
+  getIsGallery = () => {
+    const pathname = window.location.pathname.toLowerCase();
+    return pathname.indexOf("form-gallery") !== -1;
   };
 }
 
