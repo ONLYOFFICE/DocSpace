@@ -36,7 +36,8 @@ public static class ConfigurationManagerExtension
       .AddJsonFile("notify.json")
       .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
       .AddJsonFile("elastic.json", true)
-      .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
+      .AddJsonFile($"elastic.{env.EnvironmentName}.json", true)
+      .AddJsonFile("feed.json", true);
 
 
         return config;
