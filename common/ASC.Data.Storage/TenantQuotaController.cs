@@ -72,6 +72,7 @@ public class TenantQuotaController : IQuotaController
         }
 
         SetTenantQuotaRow(module, domain, size, dataTag, true);
+        SetUserQuotaRow(module, domain, size, dataTag, true);
     }
 
     public void QuotaUsedDelete(string module, string domain, string dataTag, long size)
@@ -83,6 +84,7 @@ public class TenantQuotaController : IQuotaController
         }
 
         SetTenantQuotaRow(module, domain, size, dataTag, true);
+        SetUserQuotaRow(module, domain, size, dataTag, true);
     }
 
     public void QuotaUsedSet(string module, string domain, string dataTag, long size)
@@ -129,14 +131,19 @@ public class TenantQuotaController : IQuotaController
         _tenantManager.SetTenantQuotaRow(
             new TenantQuotaRow { Tenant = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
             exchange);
-       
-        if(new Guid(dataTag) != Guid.Empty)
+              
+    }
+
+    private void SetUserQuotaRow(string module, string domain, long size, string dataTag, bool exchange)
+    {
+
+        if (new Guid(dataTag) != Guid.Empty)
         {
             _userManager.SetUserQuotaRow(
                 new UserQuotaRow { Tenant = _tenant, UserId = _authContext.CurrentAccount.ID.ToString(), Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
                 exchange);
         }
-        
+
     }
 
     private bool UsedInQuota(string tag)
