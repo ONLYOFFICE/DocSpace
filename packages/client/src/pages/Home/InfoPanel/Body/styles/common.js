@@ -16,20 +16,6 @@ const StyledInfoPanelBody = styled.div`
     text-align: center;
   }
 
-  .no-thumbnail-img-wrapper {
-    height: auto;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    .no-thumbnail-img {
-      height: 96px;
-      width: 96px;
-    }
-    .is-room {
-      border-radius: 16px;
-    }
-  }
-
   .current-folder-loader-wrapper {
     width: 100%;
     display: flex;

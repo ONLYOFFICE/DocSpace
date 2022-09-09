@@ -17,6 +17,20 @@ const StyledThumbnail = styled.div`
   }
 `;
 
+const StyledNoThumbnail = styled.div`
+  height: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  .no-thumbnail-img {
+    height: 96px;
+    width: 96px;
+  }
+  .is-room {
+    border-radius: 16px;
+  }
+`;
+
 const StyledAccess = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -126,6 +140,7 @@ StyledOpenSharingPanel.defaultProps = { theme: Base };
 
 export {
   StyledThumbnail,
+  StyledNoThumbnail,
   StyledAccess,
   StyledAccessItem,
   StyledOpenSharingPanel,
