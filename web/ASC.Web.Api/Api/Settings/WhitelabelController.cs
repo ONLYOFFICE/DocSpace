@@ -250,7 +250,7 @@ public class WhitelabelController : BaseSettingsController
 
         companyWhiteLabelSettingsWrapper.Settings.IsLicensor = false;
 
-        _settingsManager.SaveForCurrentUser(companyWhiteLabelSettingsWrapper.Settings);
+        _settingsManager.Save(companyWhiteLabelSettingsWrapper.Settings);
 
         return true;
     }
@@ -259,7 +259,7 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/company")]
     public CompanyWhiteLabelSettings GetCompanyWhiteLabelSettings()
     {
-        return _settingsManager.LoadForCurrentUser<CompanyWhiteLabelSettings>();
+        return _settingsManager.Load<CompanyWhiteLabelSettings>();
     }
 
     ///<visible>false</visible>
@@ -270,7 +270,7 @@ public class WhitelabelController : BaseSettingsController
 
         var defaultSettings = _settingsManager.GetDefault<CompanyWhiteLabelSettings>();
 
-        _settingsManager.SaveForCurrentUser(defaultSettings);
+        _settingsManager.Save(defaultSettings);
 
         return defaultSettings;
     }
@@ -286,7 +286,7 @@ public class WhitelabelController : BaseSettingsController
 
         DemandWhiteLabelPermission();
 
-        _settingsManager.SaveForCurrentUser(wrapper.Settings);
+        _settingsManager.Save(wrapper.Settings);
 
         return true;
     }
@@ -295,7 +295,7 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/additional")]
     public AdditionalWhiteLabelSettings GetAdditionalWhiteLabelSettings()
     {
-        return _settingsManager.LoadForCurrentUser<AdditionalWhiteLabelSettings>();
+        return _settingsManager.Load<AdditionalWhiteLabelSettings>();
     }
 
     ///<visible>false</visible>
@@ -306,7 +306,7 @@ public class WhitelabelController : BaseSettingsController
 
         var defaultSettings = _settingsManager.GetDefault<AdditionalWhiteLabelSettings>();
 
-        _settingsManager.SaveForCurrentUser(defaultSettings);
+        _settingsManager.Save(defaultSettings);
 
         return defaultSettings;
     }
@@ -331,7 +331,7 @@ public class WhitelabelController : BaseSettingsController
 
         DemandWhiteLabelPermission();
 
-        _settingsManager.SaveForCurrentUser(settings);
+        _settingsManager.Save(settings);
         return true;
     }
 
@@ -341,11 +341,11 @@ public class WhitelabelController : BaseSettingsController
     {
         DemandWhiteLabelPermission();
 
-        var settings = _settingsManager.LoadForCurrentUser<MailWhiteLabelSettings>();
+        var settings = _settingsManager.Load<MailWhiteLabelSettings>();
 
         settings.FooterEnabled = inDto.FooterEnabled;
 
-        _settingsManager.SaveForCurrentUser(settings);
+        _settingsManager.Save(settings);
 
         return true;
     }
@@ -354,7 +354,7 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/mail")]
     public MailWhiteLabelSettings GetMailWhiteLabelSettings()
     {
-        return _settingsManager.LoadForCurrentUser<MailWhiteLabelSettings>();
+        return _settingsManager.Load<MailWhiteLabelSettings>();
     }
 
     ///<visible>false</visible>
@@ -365,7 +365,7 @@ public class WhitelabelController : BaseSettingsController
 
         var defaultSettings = _settingsManager.GetDefault<MailWhiteLabelSettings>();
 
-        _settingsManager.SaveForCurrentUser(defaultSettings);
+        _settingsManager.Save(defaultSettings);
 
         return defaultSettings;
     }
