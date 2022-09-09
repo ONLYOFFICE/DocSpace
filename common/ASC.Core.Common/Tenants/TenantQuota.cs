@@ -35,7 +35,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         MaxFileSize = 25 * 1024 * 1024, // 25Mb
         MaxTotalSize = long.MaxValue,
         ActiveUsers = int.MaxValue,
-        CountAdmin = int.MaxValue,
+        CountManager = int.MaxValue,
         CountRoom = int.MaxValue
     };
 
@@ -84,11 +84,11 @@ public class TenantQuota : IMapFrom<DbQuota>
         set => _activeUsersFeature.Value = value;
     }
 
-    private readonly CountManagerFeature _countAdminFeature;
-    public int CountAdmin
+    private readonly CountManagerFeature _countManagerFeature;
+    public int CountManager
     {
-        get => _countAdminFeature.Value;
-        set => _countAdminFeature.Value = value;
+        get => _countManagerFeature.Value;
+        set => _countManagerFeature.Value = value;
     }
 
     private readonly CountRoomFeature _countRoomFeature;
@@ -208,7 +208,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         _featuresList = new List<string>();
 
         _activeUsersFeature = new ActiveUsersFeature(this) { Order = 1 };
-        _countAdminFeature = new CountManagerFeature(this);
+        _countManagerFeature = new CountManagerFeature(this);
         _countRoomFeature = new CountRoomFeature(this) { Order = 2 };
         _maxTotalSizeFeature = new MaxTotalSizeFeature(this);
         _nonProfitFeature = new TenantQuotaFeatureFlag(this) { Name = "non-profit", Visible = false };
@@ -230,7 +230,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         TenantQuotaFeatures = new List<TenantQuotaFeature>
         {
             _activeUsersFeature,
-            _countAdminFeature,
+            _countManagerFeature,
             _countRoomFeature,
             _maxTotalSizeFeature,
             _nonProfitFeature,
@@ -277,20 +277,15 @@ public class TenantQuota : IMapFrom<DbQuota>
         return obj is TenantQuota q && q.Tenant == Tenant;
     }
 
-    public void Check(IServiceProvider serviceProvider)
+    public async Task Check(IServiceProvider serviceProvider)
     {
         foreach (var checker in serviceProvider.GetServices<ITenantQuotaFeatureChecker>())
         {
-            if (!checker.Check(this))
+            if (!await checker.Check(this))
             {
                 throw new Exception(checker.Exception(this));
             }
         }
-
-        //if (CountAdmin != int.MaxValue
-        //    && false) throw new Exception("The number of managers should not exceed " + CountAdmin);
-        //if (CountRoom != int.MaxValue
-        //    && false) throw new Exception("The number of rooms should not exceed " + CountRoom);
     }
 
     public static TenantQuota operator *(TenantQuota quota, int quantity)

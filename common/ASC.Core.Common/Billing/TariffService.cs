@@ -222,11 +222,13 @@ public class TariffService : ITariffService
         return tariff;
     }
 
-    public bool PaymentChange(int tenantId, Dictionary<string, int> quantity)
+    public async Task<bool> PaymentChange(int tenantId, Dictionary<string, int> quantity)
     {
         if (quantity == null || !quantity.Any()
             || !_billingClient.Configured)
+        {
             return false;
+        }
 
         var allQuotas = _quotaService.GetTenantQuotas().Where(q => !string.IsNullOrEmpty(q.ProductId));
         var newQuotas = quantity.Keys.Select(name => allQuotas.FirstOrDefault(q => q.Name == name));
@@ -264,7 +266,7 @@ public class TariffService : ITariffService
             updatedQuota += quota;
         }
 
-        updatedQuota.Check(_serviceProvider);
+        await updatedQuota.Check(_serviceProvider);
 
         var productIds = newQuotas.Select(q => q.ProductId);
 
@@ -272,7 +274,10 @@ public class TariffService : ITariffService
         {
             var changed = _billingClient.ChangePayment(GetPortalId(tenantId), productIds.ToArray(), quantity.Values.ToArray());
 
-            if (!changed) return false;
+            if (!changed)
+            {
+                return false;
+            }
 
             ClearCache(tenantId);
         }
@@ -366,7 +371,7 @@ public class TariffService : ITariffService
         return payments;
     }
 
-    public Uri GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null)
+    public async Task<Uri> GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null)
     {
         var hasQuantity = quantity != null && quantity.Any();
         var key = "shopingurl_" + (hasQuantity ? string.Join('_', quantity.Keys.ToArray()) : "all");
@@ -390,7 +395,7 @@ public class TariffService : ITariffService
                     updatedQuota += quota;
                 }
 
-                updatedQuota.Check(_serviceProvider);
+                await updatedQuota.Check(_serviceProvider);
 
                 var productIds = newQuotas.Select(q => q.ProductId);
 

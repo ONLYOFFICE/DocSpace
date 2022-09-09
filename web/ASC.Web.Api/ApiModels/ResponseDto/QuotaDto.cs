@@ -37,7 +37,7 @@ public class QuotaDto
     public bool Free { get; set; }
     public bool Trial { get; set; }
 
-    public IEnumerable<QuotaFeatureDto> Features { get; set; }
+    public IAsyncEnumerable<QuotaFeatureDto> Features { get; set; }
 }
 
 public class QuotaFeatureDto : IEquatable<QuotaFeatureDto>

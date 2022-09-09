@@ -44,14 +44,14 @@ public class CountManagerChecker : ITenantQuotaFeatureChecker
         _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
     }
 
-    public bool Check(TenantQuota quota)
+    public async Task<bool> Check(TenantQuota quota)
     {
-        return quota.ActiveUsers <= _tenantQuotaFeatureStatistic.GetValue();
+        return await _tenantQuotaFeatureStatistic.GetValue() <= quota.ActiveUsers;
     }
 
     public string Exception(TenantQuota quota)
     {
-        return "The number of active users should not exceed " + quota.ActiveUsers;
+        return "The number of managers should not exceed  " + quota.CountManager;
     }
 }
 
@@ -64,8 +64,8 @@ public class CountManagerStatistic : ITenantQuotaFeatureStatisticCount<CountMana
         _userManager = userManager;
     }
 
-    public int GetValue()
+    public Task<int> GetValue()
     {
-        return _userManager.GetUsersByGroup(Users.Constants.GroupUser.ID).Length;
+        return Task.FromResult(_userManager.GetUsersByGroup(Users.Constants.GroupUser.ID).Length);
     }
 }

@@ -75,7 +75,7 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPut("payment/url")]
-    public Uri GetPaymentUrl(PaymentUrlRequestsDto inDto)
+    public async Task<Uri> GetPaymentUrl(PaymentUrlRequestsDto inDto)
     {
         if (_tariffService.GetPayments(Tenant.Id).Any() ||
             !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
@@ -85,7 +85,7 @@ public class PaymentController : ControllerBase
 
         var currency = _regionHelper.GetCurrencyFromRequest();
 
-        return _tariffService.GetShoppingUri(Tenant.Id, currency,
+        return await _tariffService.GetShoppingUri(Tenant.Id, currency,
             Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
             _userManager.GetUsers(_securityContext.CurrentAccount.ID).Email,
             inDto.Quantity,
@@ -93,7 +93,7 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPut("payment/update")]
-    public bool PaymentUpdate(PaymentUrlRequestsDto inDto)
+    public async Task<bool> PaymentUpdate(PaymentUrlRequestsDto inDto)
     {
         if (!_tariffService.GetPayments(Tenant.Id).Any() ||
             !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
@@ -101,7 +101,7 @@ public class PaymentController : ControllerBase
             return false;
         }
 
-        return _tariffService.PaymentChange(Tenant.Id, inDto.Quantity);
+        return await _tariffService.PaymentChange(Tenant.Id, inDto.Quantity);
     }
 
     [HttpGet("payment/account")]

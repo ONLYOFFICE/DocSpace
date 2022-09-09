@@ -28,7 +28,7 @@ namespace ASC.Core.Common.Quota;
 
 public interface ITenantQuotaFeatureStat<T>
 {
-    T GetValue();
+    Task<T> GetValue();
 }
 
 public interface ITenantQuotaFeatureStatisticCount<T> : ITenantQuotaFeatureStat<int> where T : TenantQuotaFeature<int>

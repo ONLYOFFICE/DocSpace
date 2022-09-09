@@ -44,9 +44,9 @@ public class MaxTotalSizeChecker : ITenantQuotaFeatureChecker
         _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
     }
 
-    public bool Check(TenantQuota quota)
+    public async Task<bool> Check(TenantQuota quota)
     {
-        return quota.MaxTotalSize <= _tenantQuotaFeatureStatistic.GetValue();
+        return await _tenantQuotaFeatureStatistic.GetValue() <= quota.MaxTotalSize;
     }
 
     public string Exception(TenantQuota quota)
@@ -64,12 +64,12 @@ public class MaxTotalSizeStatistic : ITenantQuotaFeatureStatisticLength<MaxTotal
         _tenantManager = tenantManager;
     }
 
-    public long GetValue()
+    public Task<long> GetValue()
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
 
-        return _tenantManager.FindTenantQuotaRows(tenant)
+        return Task.FromResult(_tenantManager.FindTenantQuotaRows(tenant)
             .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty)
-            .Sum(r => r.Counter);
+            .Sum(r => r.Counter));
     }
 }

@@ -108,7 +108,7 @@ public class QuotaHelper
         return string.Format("{0}{1}", currentRegion.CurrencySymbol, priceString);
     }
 
-    private IEnumerable<QuotaFeatureDto> GetFeatures(TenantQuota quota, string price, bool getUsed)
+    private async IAsyncEnumerable<QuotaFeatureDto> GetFeatures(TenantQuota quota, string price, bool getUsed)
     {
         var assembly = GetType().Assembly;
 
@@ -140,7 +140,7 @@ public class QuotaHelper
 
                 if (statisticProvider != null)
                 {
-                    used = statisticProvider.GetValue();
+                    used = await statisticProvider.GetValue();
                 }
             }
             else if (feature is TenantQuotaFeature<int> count)
@@ -152,7 +152,7 @@ public class QuotaHelper
 
                 if (statisticProvider != null)
                 {
-                    used = statisticProvider.GetValue();
+                    used = await statisticProvider.GetValue();
                 }
             }
             else if (feature is TenantQuotaFeature<bool> flag)
