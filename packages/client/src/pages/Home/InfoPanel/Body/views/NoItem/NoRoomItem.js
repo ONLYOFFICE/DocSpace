@@ -1,25 +1,16 @@
 import React from "react";
-import styled from "styled-components";
 import Text from "@docspace/components/text";
 
-const StyledNoRoomItem = styled.div`
-  .info-panel_gallery-empty-screen-img {
-    display: block;
-    margin: 0 auto;
-    padding: 56px 0 48px 0;
-  }
-`;
+import { StyledNoItemContainer } from "../../styles/noItem";
 
 const NoRoomItem = ({ t }) => {
   return (
-    <StyledNoRoomItem className="info-panel_gallery-empty-screen">
-      <img
-        className="info-panel_gallery-empty-screen-img"
-        src="images/form-gallery-search.react.svg"
-        alt="Empty Screen Gallery image"
-      />
-      <Text textAlign="center">{t("GalleryEmptyScreenDescription")}</Text>
-    </StyledNoRoomItem>
+    <StyledNoItemContainer className="info-panel_gallery-empty-screen">
+      <img src="images/info-panel-room-empty-screen.svg" alt="No Room Image" />
+      <Text className="no-item-text" textAlign="center">
+        {t("See rooms details here")}
+      </Text>
+    </StyledNoItemContainer>
   );
 };
 export default NoRoomItem;
