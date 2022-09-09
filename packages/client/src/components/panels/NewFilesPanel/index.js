@@ -10,7 +10,7 @@ import Row from "@docspace/components/row";
 import Box from "@docspace/components/box";
 import Button from "@docspace/components/button";
 import { withTranslation } from "react-i18next";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { ReactSVG } from "react-svg";
 import {
   StyledAsidePanel,

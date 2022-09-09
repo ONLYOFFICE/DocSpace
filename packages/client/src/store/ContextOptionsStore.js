@@ -3,7 +3,7 @@ import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "PACKAGE_FILE";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { AppServerConfig } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
@@ -285,7 +285,8 @@ class ContextOptionsStore {
       deleteOperation: t("Translations:DeleteOperation"),
       successRemoveFile: t("Files:FileRemoved"),
       successRemoveFolder: t("Files:FolderRemoved"),
-      successRemoveRoom: "Remove room",
+      successRemoveRoom: t("Files:RoomRemoved"),
+      successRemoveRooms: t("Files:RoomsRemoved"),
     };
 
     this.filesActionsStore.deleteItemAction(
@@ -821,7 +822,7 @@ class ContextOptionsStore {
           key: "delete-rooms",
           label: t("Common:Delete"),
           icon: "images/trash.react.svg",
-          onClick: deleteRooms,
+          onClick: () => deleteRooms(t),
         });
       }
 

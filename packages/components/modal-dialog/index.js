@@ -40,6 +40,7 @@ const ModalDialog = ({
   modalLoaderBodyHeight,
   withFooterBorder,
   isScrollLocked,
+  containerVisible,
 }) => {
   const [currentDisplayType, setCurrentDisplayType] = useState(
     getCurrentDisplayType(displayType, displayTypeDetailed)
@@ -103,6 +104,7 @@ const ModalDialog = ({
           container={container}
           visible={visible}
           modalSwipeOffset={modalSwipeOffset}
+          containerVisible={containerVisible}
         />
       }
     />
@@ -163,6 +165,8 @@ ModalDialog.propTypes = {
 
   Sets modal dialog size equal to window */
   scale: PropTypes.bool,
+
+  containerVisible: PropTypes.bool,
 };
 
 ModalDialog.defaultProps = {
@@ -173,6 +177,7 @@ ModalDialog.defaultProps = {
   withoutCloseButton: false,
   withBodyScroll: false,
   withFooterBorder: false,
+  containerVisible: false,
 };
 
 ModalDialog.Header = Header;

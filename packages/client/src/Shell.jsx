@@ -10,7 +10,7 @@ import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
 import history from "@docspace/common/history";
 import Toast from "@docspace/components/toast";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { combineUrl, updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
