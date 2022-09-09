@@ -131,6 +131,8 @@
   "PunycodeDomain": "Domény Punycode nie sú podporované",
   "PunycodeLocalPart": "Miestna časť Punycode nie je podporovaná",
   "RequiredField": "Požadované pole",
+  "RecoverTitle": "Obnova prístupu",
+  "RecoverDescribeYourProblemPlaceholder": "Opíšte svoj problém",
   "ResetApplication": "Resetovať aplikáciu",
   "Restore": "Obnoviť",
   "RestoreHere": "Obnoviť tu",

@@ -131,6 +131,8 @@
   "PunycodeDomain": "Домен содержит запрещенные символы",
   "PunycodeLocalPart": "Имя почтового ящика содержит запрещенные символы",
   "RequiredField": "Обязательное поле",
+  "RecoverDescribeYourProblemPlaceholder": "Пожалуйста, опишите вашу проблему",
+  "RecoverTitle": "Доступ к порталу",
   "ResetApplication": "Сбросить приложение",
   "Restore": "Восстановить",
   "RestoreHere": "Восстановить сюда",

@@ -130,6 +130,8 @@
   "PunycodeDomain": "Punycode տիրույթները չեն աջակցվում",
   "PunycodeLocalPart": "Punycode տեղական մասը չի աջակցվում",
   "RequiredField": "Պարտադիր դաշտ",
+  "RecoverTitle": "Մատչման վերականգնում",
+  "RecoverDescribeYourProblemPlaceholder": "Նկարագրեք Ձեր խնդիրը",
   "ResetApplication": "Վերակայել հավելվածը",
   "Restore": "Վերականգնել",
   "RestoreHere": "Վերականգնել այստեղ",

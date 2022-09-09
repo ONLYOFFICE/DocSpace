@@ -130,6 +130,8 @@
   "PunycodeDomain": "Οι τομείς Punycode δεν υποστηρίζονται",
   "PunycodeLocalPart": "Το τοπικό τμήμα Punycode δεν υποστηρίζεται",
   "RequiredField": "Υποχρεωτικό πεδίο",
+  "RecoverTitle": "Ανάκτηση πρόσβασης",
+  "RecoverDescribeYourProblemPlaceholder": "Περιγράψτε το πρόβλημά σας",
   "ResetApplication": "Επαναφορά εφαρμογής",
   "Restore": "Επαναφορά",
   "RestoreHere": "Επαναφορά εδώ",

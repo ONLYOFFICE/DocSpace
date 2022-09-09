@@ -146,6 +146,7 @@ class PaymentStore {
       toastr.error(e);
     }
   };
+
   // setPaymentTariff = async () => {
   //   try {
   //     const res = await api.portal.getPaymentTariff();

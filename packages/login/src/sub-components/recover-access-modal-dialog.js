@@ -34,7 +34,13 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
 `;
 
-const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
+const RecoverAccessModalDialog = ({
+  t,
+  visible,
+  onClose,
+  emailPlaceholderText,
+  textBody,
+}) => {
   const [loading, setLoading] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -90,7 +96,7 @@ const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
     >
       <ModalDialog.Header>
         <Text isBold={true} fontSize="21px">
-          {t("RecoverTitle")}
+          {t("Common:RecoverTitle")}
         </Text>
       </ModalDialog.Header>
       <ModalDialog.Body>
@@ -100,7 +106,7 @@ const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
           isBold={false}
           fontSize="13px"
         >
-          {t("RecoverTextBody")}
+          {textBody ? textBody : t("RecoverTextBody")}
         </Text>
         <FieldContainer
           key="e-mail"
@@ -117,7 +123,11 @@ const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
             size="base"
             scale={true}
             tabIndex={3}
-            placeholder={t("RecoverContactEmailPlaceholder")}
+            placeholder={
+              emailPlaceholderText
+                ? emailPlaceholderText
+                : t("RecoverContactEmailPlaceholder")
+            }
             isAutoFocussed={true}
             isDisabled={loading}
             value={email}
@@ -135,7 +145,7 @@ const RecoverAccessModalDialog = ({ t, visible, onClose }) => {
           <Textarea
             heightScale={false}
             hasError={descErr}
-            placeholder={t("RecoverDescribeYourProblemPlaceholder")}
+            placeholder={t("Common:RecoverDescribeYourProblemPlaceholder")}
             tabIndex={3}
             value={description}
             onChange={onChangeDescription}

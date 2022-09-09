@@ -131,6 +131,8 @@
   "PunycodeDomain": "Domen icazəsi olmayan simvollardan ibarətdir",
   "PunycodeLocalPart": "Lokal yolda icazə verilməyən simvollardan istifadə olunur",
   "RequiredField": "Tələb olunan sahə",
+  "RecoverTitle": "Girişin bərpası",
+  "RecoverDescribeYourProblemPlaceholder": "Probleminizi təsvir edin",
   "ResetApplication": "Tətbiqi sıfırlayın",
   "Restore": "Bərpa et",
   "RestoreHere": "Burada bərpa edin",

@@ -130,6 +130,8 @@
   "PunycodeDomain": "지원되지 않는 퓨니코드 도메인입니다",
   "PunycodeLocalPart": "지원되지 않는 퓨니코드 로컬 파트입니다",
   "RequiredField": "필수 항목입니다",
+  "RecoverTitle": "액세스 복원",
+  "RecoverDescribeYourProblemPlaceholder": "겪고 계신 문제를 설명해주세요",
   "ResetApplication": "애플리케이션 리셋",
   "Restore": "복원",
   "RestoreHere": "여기에 복원",

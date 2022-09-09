@@ -131,6 +131,8 @@
   "PunycodeDomain": "Домейните на Punycode не се поддържат",
   "PunycodeLocalPart": "Местните части на Punycode не се поддържат",
   "RequiredField": "Задължително поле",
+  "RecoverTitle": "Възстановяване на достъп",
+  "RecoverDescribeYourProblemPlaceholder": "Опишете проблема си",
   "ResetApplication": "Нулирай приложението",
   "Restore": "Възстанови",
   "RestoreHere": "Възстанови тук",

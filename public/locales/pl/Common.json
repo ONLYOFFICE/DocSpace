@@ -131,6 +131,8 @@
   "PunycodeDomain": "Domeny Punycode nie są obsługiwane",
   "PunycodeLocalPart": "Identyfikator użytkownika Punycode nie jest obsługiwany",
   "RequiredField": "Pole wymagane",
+  "RecoverTitle": "Odzyskiwanie dostępu",
+  "RecoverDescribeYourProblemPlaceholder": "Opisz swój problem",
   "ResetApplication": "Zresetuj aplikację",
   "Restore": "Odzyskaj",
   "RestoreHere": "Odzyskaj tutaj",

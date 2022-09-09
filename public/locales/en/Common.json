@@ -138,6 +138,8 @@
   "PunycodeLocalPart": "Punycode local part is not supported",
   "Plugin": "Plugin",
   "RequiredField": "Required field",
+  "RecoverTitle": "Access recovery",
+  "RecoverDescribeYourProblemPlaceholder": "Describe your problem",
   "ResetApplication": "Reset application",
   "Restore": "Restore",
   "RestoreHere": "Restore here",

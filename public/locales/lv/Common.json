@@ -131,6 +131,8 @@
   "PunycodeDomain": "Punycode domēni netiek atbalstīti",
   "PunycodeLocalPart": "Punycode lokālā daļa netiek atbalstīta",
   "RequiredField": "Obligāts lauks",
+  "RecoverTitle": "Piekļuves atkopšana",
+  "RecoverDescribeYourProblemPlaceholder": "Aprakstiet savu problēmu",
   "ResetApplication": "Atiestatīt lietojumprogrammu",
   "Restore": "Atjaunot",
   "RestoreHere": "Atjaunot šeit",

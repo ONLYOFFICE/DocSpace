@@ -131,6 +131,8 @@
   "PunycodeDomain": "Các tên miền punycode không được hỗ trợ",
   "PunycodeLocalPart": "Phần cục bộ Punycode không được hỗ trợ",
   "RequiredField": "Trường bắt buộc",
+  "RecoverTitle": "Khôi phục truy cập",
+  "RecoverDescribeYourProblemPlaceholder": "Mô tả vấn đề của bạn",  
   "ResetApplication": "Đặt lại ứng dụng",
   "Restore": "Khôi phục",
   "RestoreHere": "Khôi phục ở đây",

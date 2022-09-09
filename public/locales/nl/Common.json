@@ -131,6 +131,8 @@
   "PunycodeDomain": "Punycode domeinen worden niet ondersteund",
   "PunycodeLocalPart": "Punycode lokaal deel wordt niet ondersteund",
   "RequiredField": "Verplicht veld",
+  "RecoverTitle": "Toegang herstel",
+  "RecoverDescribeYourProblemPlaceholder": "Beschrijf uw probleem",
   "ResetApplication": "Toepassing resetten",
   "Restore": "Herstel",
   "RestoreHere": "Herstel hier",

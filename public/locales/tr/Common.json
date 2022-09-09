@@ -131,6 +131,8 @@
   "PunycodeDomain": "Punycode domainler desteklenmemektedir",
   "PunycodeLocalPart": "Punycode yerel kısmı desteklenmiyor",
   "RequiredField": "Gerekli alan",
+  "RecoverTitle": "Erişim kurtarma",
+  "RecoverDescribeYourProblemPlaceholder": "Sorununuzu tarif edin",
   "ResetApplication": "Uygulamayı sıfırla",
   "Restore": "Onar",
   "RestoreHere": "Buraya restore et",

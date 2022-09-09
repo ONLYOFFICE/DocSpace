@@ -131,6 +131,8 @@
   "PunycodeDomain": "Os domínios Punycode não são suportados",
   "PunycodeLocalPart": "A peça local Punycode não é suportada",
   "RequiredField": "Campo obrigatório",
+  "RecoverTitle": "Recuperação de acesso",
+  "RecoverDescribeYourProblemPlaceholder": "Descreva seu problema",
   "ResetApplication": "Redefinir aplicativo",
   "Restore": "Restaurar",
   "RestoreHere": "Restaurar aqui",

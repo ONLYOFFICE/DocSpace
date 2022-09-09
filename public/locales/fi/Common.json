@@ -131,6 +131,8 @@
   "PunycodeDomain": "Paikallisia verkkotunnuksia ei tueta",
   "PunycodeLocalPart": "Punycode-verkkotunnuksia ei tueta",
   "RequiredField": "Pakollinen kenttä",
+  "RecoverTitle": "Käytä palautusta",
+  "RecoverDescribeYourProblemPlaceholder": "Kuvaile ongelmasi",
   "ResetApplication": "Nollaa sovellus",
   "Restore": "Palauttaa",
   "RestoreHere": "Palauta tähän",

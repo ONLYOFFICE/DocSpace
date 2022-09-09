@@ -131,6 +131,8 @@
   "PunycodeDomain": "Домени в панікоді не підтримуються",
   "PunycodeLocalPart": "Локальна частина в панікоді не підтримується",
   "RequiredField": "Обов'язкове поле",
+  "RecoverTitle": "Відновлення доступу",
+  "RecoverDescribeYourProblemPlaceholder": "Опишіть свою проблему",
   "ResetApplication": "Скинути налаштування програми",
   "Restore": "Відновити",
   "RestoreHere": "Відновити тут",

@@ -130,6 +130,8 @@
   "PunycodeDomain": "Domeniile Punycode nu sunt acceptate",
   "PunycodeLocalPart": "Partea locală Punycode nu este acceptată",
   "RequiredField": "Câmp obligatoriu",
+  "RecoverTitle": "Restabilirea accesului",
+  "RecoverDescribeYourProblemPlaceholder": "Descrieți problema",
   "ResetApplication": "Resetare aplicație",
   "Restore": "Restabilire",
   "RestoreHere": "Restaurează aici",

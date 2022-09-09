@@ -129,6 +129,8 @@
   "PunycodeDomain": "ບໍ່ຮອງຮັບໂດເມນ Punycode",
   "PunycodeLocalPart": "ພື້ນທີ່ບໍ່ຮອງຮັບ Punycode",
   "RequiredField": "ຟີວທີ່ຈຳເປັນ",
+  "RecoverTitle": "ການເຂົ້າເຖິງການກູ້ຄືນ",
+  "RecoverDescribeYourProblemPlaceholder": "ອະທິບາຍບັນຫາຂອງທ່ານ",
   "ResetApplication": "ຕັ້ງຄ່າແອບຄືນ",
   "Restore": "ກູ້ຄືນ",
   "RestoreHere": "ຟື້ນຟູ ນີ້",
