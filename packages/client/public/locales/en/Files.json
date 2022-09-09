@@ -3,6 +3,8 @@
   "All": "All",
   "AllFiles": "All files",
   "Archives": "Archives",
+  "ArchiveEmptyScreen": "You can archive rooms you don’t use and restore them in your DocSpace at any moment or delete them permanently. These rooms will appear here.",
+  "ArchiveEmptyScreenHeader": "No archived rooms here yet",
   "BackToParentFolderButton": "Back to parent folder",
   "ByAuthor": "Author",
   "ByOwner": "Owner",
