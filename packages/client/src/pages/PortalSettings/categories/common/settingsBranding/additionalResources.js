@@ -8,6 +8,7 @@ import Checkbox from "@docspace/components/checkbox";
 import toastr from "@docspace/components/toast/toastr";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Link from "@docspace/components/link";
+import LoaderAdditionalResources from "../sub-components/loaderAdditionalResources";
 
 const StyledComponent = styled.div`
   margin-top: 40px;
@@ -15,8 +16,35 @@ const StyledComponent = styled.div`
   .branding-checkbox {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
     margin-bottom: 24px;
+  }
+
+  .additional-header {
+    padding-bottom: 2px;
+  }
+
+  .additional-description {
+    padding-bottom: 1px;
+  }
+
+  .link {
+    font-weight: 600;
+    border-bottom: 1px dashed #333333;
+    border-color: ${(props) => !props.isPortalPaid && "#A3A9AE"};
+  }
+
+  .description,
+  .link {
+    color: ${(props) => !props.isPortalPaid && "#A3A9AE"};
+  }
+
+  .save-cancel-buttons {
+    margin-top: 24px;
+  }
+
+  .checkbox {
+    margin-right: 9px;
   }
 `;
 
@@ -38,23 +66,30 @@ const StyledModalDialog = styled(ModalDialog)`
 const AdditionalResources = (props) => {
   const {
     t,
+    tReady,
     isPortalPaid,
     getAdditionalResources,
     setAdditionalResources,
     restoreAdditionalResources,
     additionalResourcesData,
+    setIsLoadedAdditionalResources,
+    isLoadedAdditionalResources,
   } = props;
+
   const [showFeedback, setShowFeedback] = useState(
     additionalResourcesData.feedbackAndSupportEnabled
   );
+
   const [showVideoGuides, setShowVideoGuides] = useState(
     additionalResourcesData.videoGuidesEnabled
   );
+
   const [showHelpCenter, setShowHelpCenter] = useState(
     additionalResourcesData.helpCenterEnabled
   );
 
   const [hasChange, setHasChange] = useState(false);
+
   const [isFirstAdditionalResources, setIsFirstAdditionalResources] = useState(
     localStorage.getItem("isFirstAdditionalResources")
   );
@@ -73,6 +108,12 @@ const AdditionalResources = (props) => {
     }
   }, [showFeedback, showVideoGuides, showHelpCenter, additionalResourcesData]);
 
+  useEffect(() => {
+    if (!(additionalResourcesData && tReady)) return;
+
+    setIsLoadedAdditionalResources(true);
+  }, [additionalResourcesData, tReady]);
+
   const onSave = () => {
     //TODO: Add data
     setAdditionalResources()
@@ -82,7 +123,7 @@ const AdditionalResources = (props) => {
 
         if (!localStorage.getItem("isFirstAdditionalResources")) {
           localStorage.setItem("isFirstAdditionalResources", true);
-          setIsFirstCompanyInfoSettings("true");
+          setIsFirstAdditionalResources("true");
         }
       })
       .catch((error) => {
@@ -110,6 +151,8 @@ const AdditionalResources = (props) => {
     setShowModal(false);
   };
 
+  if (!isLoadedAdditionalResources) return <LoaderAdditionalResources />;
+
   return (
     <>
       {showModal && (
@@ -121,13 +164,20 @@ const AdditionalResources = (props) => {
         </StyledModalDialog>
       )}
 
-      <StyledComponent>
-        <div className="header">Additional resources</div>
-        <div className="description">
-          Choose whether you want to display links to additional resources in
-          <Link className="link" onClick={onShowExample} noHover={true}>
-            &nbsp;DocSpace menu.&nbsp;
-          </Link>
+      <StyledComponent isPortalPaid={isPortalPaid}>
+        <div className="header">
+          <div className="additional-header">
+            {t("Settings:AdditionalResources")}
+          </div>
+        </div>
+        <div className="description additional-description">
+          <div className="additional-description">
+            {t("Settings:AdditionalResourcesDescription")}
+            <Link className="link" onClick={onShowExample} noHover={true}>
+              &nbsp;{t("Settings:DocSpaceMenu")}
+            </Link>
+            .
+          </div>
         </div>
         <div className="branding-checkbox">
           <Checkbox
@@ -157,7 +207,7 @@ const AdditionalResources = (props) => {
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
           showReminder={isPortalPaid && hasChange}
-          // isFirstRestoreToDefault={isFirstCompanyInfoSettings}
+          isFirstRestoreToDefault={isFirstAdditionalResources}
         />
       </StyledComponent>
     </>
@@ -166,6 +216,12 @@ const AdditionalResources = (props) => {
 
 export default inject(({ auth, setup, common }) => {
   const { settingsStore } = auth;
+
+  const {
+    setIsLoadedAdditionalResources,
+    isLoadedAdditionalResources,
+  } = common;
+
   const {
     getAdditionalResources,
     setAdditionalResources,
@@ -178,6 +234,8 @@ export default inject(({ auth, setup, common }) => {
     setAdditionalResources,
     restoreAdditionalResources,
     additionalResourcesData,
+    setIsLoadedAdditionalResources,
+    isLoadedAdditionalResources,
   };
 })(
   withLoading(
