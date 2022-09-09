@@ -4,22 +4,24 @@ class InfoPanelStore {
   isVisible = false;
 
   selection = null;
-
-  currentRoomTitle = null;
-  currentRoomMembers = null;
+  selectionParentRoom = null;
 
   roomsView = "members";
   personalView = "history";
 
   settingsStore = null;
-  setSettingsStore = (settingsStore) => (this.settingsStore = settingsStore);
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  setSelection = (selection) => {
-    this.selection = selection;
+  setSelection = (selection) => (this.selection = selection);
+  setSelectionParentRoom = (obj) => (this.selectionParentRoom = obj);
+  setIsVisible = (bool) => (this.isVisible = bool);
+  setSettingsStore = (settingsStore) => (this.settingsStore = settingsStore);
+  setView = (view) => {
+    this.roomsView = view;
+    this.personalView = view === "members" ? "history" : view;
   };
 
   getItemIcon = (item, size) => {
@@ -39,31 +41,6 @@ class InfoPanelStore {
       hasCustonThumbnail: !!selection.thumbnailUrl,
       thumbnailUrl: selection.thumbnailUrl || this.getItemIcon(selection, 96),
     };
-  };
-
-  setCurrentRoomTitle = (currentRoomTitle) => {
-    this.currentRoomTitle = currentRoomTitle;
-  };
-
-  setCurrentRoomMembers = (currentRoomMembers) => {
-    this.currentRoomMembers = currentRoomMembers;
-  };
-
-  toggleIsVisible = () => {
-    this.isVisible = !this.isVisible;
-  };
-
-  setVisible = () => {
-    this.isVisible = true;
-  };
-
-  setIsVisible = (bool) => {
-    this.isVisible = bool;
-  };
-
-  setView = (view) => {
-    this.roomsView = view;
-    this.personalView = view === "members" ? "history" : view;
   };
 }
 
