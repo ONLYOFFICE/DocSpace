@@ -167,6 +167,8 @@ var config = {
         "./roomsLogin": "./src/RoomsLogin.jsx",
         "./codeLogin": "./src/CodeLogin.jsx",
         "./moreLogin": "./src/sub-components/more-login.js",
+        "./recoverAccessModalDialog":
+          "./src/sub-components/recover-access-modal-dialog.js",
       },
       shared: {
         ...deps,
