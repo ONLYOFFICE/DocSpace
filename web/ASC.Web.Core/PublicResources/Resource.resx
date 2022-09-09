@@ -870,4 +870,7 @@
   <data name="TariffsFeature_total_size_price_per" xml:space="preserve">
     <value />
   </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Max file size</value>
+  </data>
 </root>

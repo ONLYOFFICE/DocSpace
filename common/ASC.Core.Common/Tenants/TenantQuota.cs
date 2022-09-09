@@ -44,7 +44,6 @@ public class TenantQuota : IMapFrom<DbQuota>
     public decimal Price { get; set; }
     public string ProductId { get; set; }
     public bool Visible { get; set; }
-    public long MaxFileSize { get; set; }
 
     [JsonIgnore]
     public IReadOnlyList<TenantQuotaFeature> TenantQuotaFeatures { get; private set; }
@@ -68,6 +67,13 @@ public class TenantQuota : IMapFrom<DbQuota>
                 _featuresList = new List<string>();
             }
         }
+    }
+
+    private readonly MaxFileSizeFeature _maxFileSizeFeature;
+    public long MaxFileSize
+    {
+        get => ByteConverter.GetInBytes(_maxFileSizeFeature.Value);
+        set => _maxFileSizeFeature.Value = ByteConverter.GetInMBytes(value);
     }
 
     private readonly MaxTotalSizeFeature _maxTotalSizeFeature;
@@ -211,6 +217,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         _countManagerFeature = new CountManagerFeature(this);
         _countRoomFeature = new CountRoomFeature(this) { Order = 2 };
         _maxTotalSizeFeature = new MaxTotalSizeFeature(this);
+        _maxFileSizeFeature = new MaxFileSizeFeature(this);
         _nonProfitFeature = new TenantQuotaFeatureFlag(this) { Name = "non-profit", Visible = false };
         _trialFeature = new TenantQuotaFeatureFlag(this) { Name = "trial", Visible = false };
         _freeFeature = new TenantQuotaFeatureFlag(this) { Name = "free", Visible = false };
@@ -233,6 +240,7 @@ public class TenantQuota : IMapFrom<DbQuota>
             _countManagerFeature,
             _countRoomFeature,
             _maxTotalSizeFeature,
+            _maxFileSizeFeature,
             _nonProfitFeature,
             _trialFeature,
             _freeFeature,
@@ -310,15 +318,17 @@ public class TenantQuota : IMapFrom<DbQuota>
         }
 
         var newQuota = new TenantQuota(quota);
-
-        newQuota.MaxFileSize = Math.Max(newQuota.MaxFileSize, quota.MaxFileSize);
         newQuota.Price += quota.Price;
         newQuota.Visible &= quota.Visible;
         newQuota.ProductId = "";
 
         foreach (var f in newQuota.TenantQuotaFeatures)
         {
-            if (f is TenantQuotaFeature<int> count)
+            if (f is MaxFileSizeFeature fileSize)
+            {
+                fileSize.Value = Math.Max(fileSize.Value, quota.MaxFileSize);
+            }
+            else if (f is TenantQuotaFeature<int> count)
             {
                 count.Value += quota.GetFeature<int>(f.Name).Value;
             }
@@ -337,8 +347,7 @@ public class TenantQuota : IMapFrom<DbQuota>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<DbQuota, TenantQuota>()
-            .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInBytes(src.MaxFileSize)));
+        profile.CreateMap<DbQuota, TenantQuota>();
     }
 
     public TenantQuotaFeature<T> GetFeature<T>(string name)

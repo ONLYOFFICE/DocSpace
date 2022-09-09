@@ -51,6 +51,10 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                 name: "max_total_size",
                 table: "tenants_quota");
 
+            migrationBuilder.DropColumn(
+                name: "max_file_size",
+                table: "tenants_quota");
+
             migrationBuilder.RenameColumn(
                 name: "avangate_id",
                 table: "tenants_quota",
@@ -86,18 +90,18 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                 table: "tenants_quota",
                 keyColumn: "tenant",
                 keyValue: -1,
-                columns: new[] { "features", "max_file_size", "name", "product_id" },
-                values: new object[] { "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,manager:1", 100L, "trial", null });
+                columns: new[] { "features", "name", "product_id" },
+                values: new object[] { "trial,audit,ldap,sso,whitelabel,restore,total_size:107374182400,file_size:100,manager:1", "trial", null });
 
             migrationBuilder.InsertData(
                 table: "tenants_quota",
-                columns: new[] { "tenant", "description", "features", "max_file_size", "name", "product_id" },
-                values: new object[] { -3, null, "free,audit,ldap,sso,restore,total_size:2147483648,manager:5,rooms:3", 100L, "startup", null });
+                columns: new[] { "tenant", "description", "features", "name", "product_id" },
+                values: new object[] { -3, null, "free,audit,ldap,sso,restore,total_size:2147483648,file_size:100,manager:5,rooms:3", "startup", null });
 
             migrationBuilder.InsertData(
                 table: "tenants_quota",
-                columns: new[] { "tenant", "description", "features", "max_file_size", "name", "price", "product_id", "visible" },
-                values: new object[] { -2, null, "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,manager:1", 1024L, "admin", 30.00m, "1002", true });
+                columns: new[] { "tenant", "description", "features", "name", "price", "product_id", "visible" },
+                values: new object[] { -2, null, "audit,ldap,sso,whitelabel,restore,total_size:107374182400,file_size:1024,manager:1", "admin", 30.00m, "1002", true });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -147,6 +151,13 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
 
             migrationBuilder.AddColumn<long>(
                 name: "max_total_size",
+                table: "tenants_quota",
+                type: "bigint",
+                nullable: false,
+                defaultValueSql: "'0'");
+
+            migrationBuilder.AddColumn<long>(
+                name: "max_file_size",
                 table: "tenants_quota",
                 type: "bigint",
                 nullable: false,
