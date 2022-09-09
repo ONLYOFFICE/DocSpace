@@ -5,7 +5,6 @@ import {
   downloadFiles,
   emptyTrash,
   finalizeVersion,
-  getSubfolders,
   lockFile,
   markAsRead,
   removeFiles,
@@ -20,9 +19,8 @@ import {
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
 import toastr from "@docspace/components/toast/toastr";
-
-import { Events, TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
-import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";
+import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
+import { checkProtocol } from "../helpers/files-helpers";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
@@ -951,8 +949,8 @@ class FilesActionStore {
 
   selectRowAction = (checked, file) => {
     const {
-      selected,
-      setSelected,
+      // selected,
+      // setSelected,
       selectFile,
       deselectFile,
       setBufferSelection,
@@ -968,14 +966,8 @@ class FilesActionStore {
   };
 
   openLocationAction = (locationId) => {
-    const { createNewExpandedKeys, setExpandedKeys } = this.treeFoldersStore;
-
     this.filesStore.setBufferSelection(null);
-    return this.filesStore.fetchFiles(locationId, null).then((data) => {
-      const pathParts = data.selectedFolder.pathParts;
-      const newExpandedKeys = createNewExpandedKeys(pathParts);
-      setExpandedKeys(newExpandedKeys);
-    });
+    return this.filesStore.fetchFiles(locationId, null);
   };
 
   setThirdpartyInfo = (providerKey) => {
@@ -1601,11 +1593,7 @@ class FilesActionStore {
       openDocEditor,
       isPrivacyFolder,
     } = this.filesStore;
-    const {
-      isRecycleBinFolder,
-      setExpandedKeys,
-      createNewExpandedKeys,
-    } = this.treeFoldersStore;
+    const { isRecycleBinFolder } = this.treeFoldersStore;
     const { setMediaViewerData } = this.mediaViewerDataStore;
     const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
 
@@ -1621,14 +1609,8 @@ class FilesActionStore {
 
     if (isFolder) {
       setIsLoading(true);
-      //addExpandedKeys(parentFolder + "");
 
       fetchFiles(id, null, true, false)
-        .then((data) => {
-          const pathParts = data.selectedFolder.pathParts;
-          const newExpandedKeys = createNewExpandedKeys(pathParts);
-          setExpandedKeys(newExpandedKeys);
-        })
         .catch((err) => {
           toastr.error(err);
           setIsLoading(false);

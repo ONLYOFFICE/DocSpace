@@ -1,14 +1,12 @@
 import { makeAutoObservable } from "mobx";
 import { getFoldersTree, getSubfolders } from "@docspace/common/api/files";
 import { FolderType } from "@docspace/common/constants";
-import { createTreeFolders } from "../helpers/files-helpers";
 
 class TreeFoldersStore {
   selectedFolderStore;
 
   treeFolders = [];
   selectedTreeNode = [];
-  expandedKeys = [];
   expandedPanelKeys = null;
   rootFoldersTitles = {};
   isLoadingNodes = false;
@@ -34,10 +32,6 @@ class TreeFoldersStore {
     });
   };
 
-  get sharedRoomId() {
-    return this.rootFoldersTitles[FolderType.Rooms]?.id;
-  }
-
   getFoldersTree = () => getFoldersTree();
 
   setTreeFolders = (treeFolders) => {
@@ -53,20 +47,8 @@ class TreeFoldersStore {
     }
   };
 
-  setExpandedKeys = (expandedKeys) => {
-    this.expandedKeys = expandedKeys;
-  };
-
   setExpandedPanelKeys = (expandedPanelKeys) => {
     this.expandedPanelKeys = expandedPanelKeys;
-  };
-
-  addExpandedKeys = (item) => {
-    !this.expandedKeys.includes(item) && this.expandedKeys.push(item);
-  };
-
-  createNewExpandedKeys = (pathParts) => {
-    return createTreeFolders(pathParts, this.expandedKeys);
   };
 
   updateRootBadge = (id, count) => {
@@ -89,6 +71,10 @@ class TreeFoldersStore {
   };
 
   getSubfolders = (folderId) => getSubfolders(folderId);
+
+  get sharedRoomId() {
+    return this.rootFoldersTitles[FolderType.Rooms]?.id;
+  }
 
   get myFolder() {
     return this.treeFolders.find((x) => x.rootFolderType === FolderType.USER);
@@ -146,10 +132,6 @@ class TreeFoldersStore {
 
   get archiveFolderId() {
     return this.archiveFolder ? this.archiveFolder.id : null;
-  }
-
-  get isMyFolder() {
-    return this.myFolder && this.myFolder.id === this.selectedFolderStore.id;
   }
 
   get isShareFolder() {
@@ -210,24 +192,6 @@ class TreeFoldersStore {
       this.archiveFolder &&
       this.selectedFolderStore.id === this.archiveFolder.id
     );
-  }
-
-  get operationsFolders() {
-    if (this.isPrivacyFolder) {
-      return this.treeFolders.filter(
-        (folder) => folder.rootFolderType === FolderType.Privacy && folder
-      );
-    } else {
-      return this.treeFolders.filter(
-        (folder) =>
-          (folder.rootFolderType === FolderType.USER ||
-            folder.rootFolderType === FolderType.COMMON ||
-            folder.rootFolderType === FolderType.Projects ||
-            folder.rootFolderType === FolderType.SHARE ||
-            folder.rootFolderType === FolderType.Rooms) &&
-          folder
-      );
-    }
   }
 
   get selectedKeys() {
