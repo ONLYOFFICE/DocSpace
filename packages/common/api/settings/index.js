@@ -224,10 +224,17 @@ export function getCustomSchemaList() {
   });
 }
 
-//TODO: Add data
-export function setAdditionalResources() {
+export function setAdditionalResources(
+  feedbackAndSupportEnabled,
+  videoGuidesEnabled,
+  helpCenterEnabled
+) {
   const data = {
-    settings: {},
+    settings: {
+      helpCenterEnabled,
+      feedbackAndSupportEnabled,
+      videoGuidesEnabled,
+    },
   };
 
   return request({

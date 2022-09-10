@@ -304,9 +304,16 @@ class SettingsStore {
     this.additionalResourcesData = data;
   };
 
-  //TODO: Add data
-  setAdditionalResources = async () => {
-    const res = await api.settings.setAdditionalResources();
+  setAdditionalResources = async (
+    feedbackAndSupportEnabled,
+    videoGuidesEnabled,
+    helpCenterEnabled
+  ) => {
+    const res = await api.settings.setAdditionalResources(
+      feedbackAndSupportEnabled,
+      videoGuidesEnabled,
+      helpCenterEnabled
+    );
   };
 
   getAdditionalResources = async () => {
