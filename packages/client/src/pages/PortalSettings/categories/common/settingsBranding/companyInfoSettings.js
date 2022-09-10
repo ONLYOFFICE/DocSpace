@@ -35,18 +35,15 @@ const StyledComponent = styled.div`
 
 const StyledModalDialog = styled(ModalDialog)`
   #modal-dialog {
-    width: 560px;
-    height: 291px;
-    max-height: none;
+    width: auto;
   }
 
   .modal-footer {
     display: none;
   }
 
-  .img {
-    width: -webkit-fill-available;
-    height: 291px;
+  .modal-body {
+    padding: 0;
   }
 `;
 
@@ -82,13 +79,21 @@ const CompanyInfoSettings = (props) => {
     localStorage.getItem("isFirstCompanyInfoSettings")
   );
 
-  const [showBackdrop, setShowBackdrop] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (!(companyInfoSettingsData && tReady)) return;
 
     setIsLoadedCompanyInfoSettingsData(true);
   }, [companyInfoSettingsData, tReady]);
+
+  useEffect(() => {
+    setCompanyName(companyInfoSettingsData.companyName);
+    setEmail(companyInfoSettingsData.email);
+    setPhone(companyInfoSettingsData.phone);
+    setSite(companyInfoSettingsData.site);
+    setAddress(companyInfoSettingsData.address);
+  }, [companyInfoSettingsData]);
 
   useEffect(() => {
     const settings = {
@@ -214,20 +219,20 @@ const CompanyInfoSettings = (props) => {
   const onShowExample = () => {
     if (!isPortalPaid) return;
 
-    setShowBackdrop(true);
+    setShowModal(true);
   };
 
   const onCloseModal = () => {
-    setShowBackdrop(false);
+    setShowModal(false);
   };
 
   return !isLoadedCompanyInfoSettingsData ? (
     <LoaderCompanyInfoSettings />
   ) : (
     <>
-      <StyledModalDialog visible={showBackdrop} onClose={onCloseModal}>
+      <StyledModalDialog visible={showModal} onClose={onCloseModal}>
         <ModalDialog.Body>
-          <img className="img" src="/static/images/about.this.program.png" />
+          <img className="img" src="/static/images/about.this.program.svg" />
         </ModalDialog.Body>
         <ModalDialog.Footer className="modal-footer" />
       </StyledModalDialog>
