@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbButton", b =>
@@ -206,6 +206,44 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasDatabaseName("tenant");
 
                     b.ToTable("tenants_tariff", (string)null);
+
+                    b.HasAnnotation("MySql:CharSet", "utf8");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbUsersQuotaRow", b =>
+                {
+                    b.Property<int>("Tenant")
+                        .HasColumnType("int")
+                        .HasColumnName("tenant");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(36)")
+                        .HasColumnName("user_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("path")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<long>("Counter")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("counter")
+                        .HasDefaultValueSql("'0'");
+
+                    b.Property<string>("Tag")
+                        .HasColumnType("varchar(36)")
+                        .HasColumnName("tag")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.HasKey("Tenant", "UserId", "Path")
+                        .HasName("PRIMARY");
+
+                    b.ToTable("users_quotarow", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
                 });
