@@ -3,7 +3,5 @@
   "Error403Text": "Valitettavasti pääsy on estetty.",
   "Error404Text": "Valitettavasti resurssia ei löydy.",
   "ErrorEmptyResponse": "Tyhjä vastaus",
-  "ErrorInvalidHeader": "Väärä sähköposti tai vanhentunut linkki",
-  "ErrorInvalidText": "10 sekunnin kuluttua sinut ohjataan <1>kirjautumissivulle</1>",
   "ErrorOfflineText": "Internet-yhteyttä ei löydy."
 }

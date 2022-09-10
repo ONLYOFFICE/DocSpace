@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-//import toastr from "client/toastr";
+//import toastr from "@docspace/components/toast/toastr";
 import {
   // AppServerConfig,
   // FileAction,
@@ -15,6 +15,7 @@ import config from "PACKAGE_FILE";
 import { getTitleWithoutExst } from "../helpers/files-helpers";
 //import { getDefaultFileName } from "@docspace/client/src/helpers/filesUtils";
 //import ItemIcon from "../components/ItemIcon";
+import { getCookie } from "@docspace/common/utils";
 
 export default function withContent(WrappedContent) {
   class WithContent extends React.Component {
@@ -38,7 +39,7 @@ export default function withContent(WrappedContent) {
       const { culture, item, personal } = this.props;
       const { created, updated } = item;
 
-      const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
+      const locale = personal ? getCookie(LANGUAGE) : culture;
 
       const date = create ? created : updated;
 

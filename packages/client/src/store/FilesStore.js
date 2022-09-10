@@ -13,20 +13,16 @@ import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
 import { updateTempContent } from "@docspace/common/utils";
 import { isMobile, isMobileOnly } from "react-device-detect";
-import toastr from "client/toastr";
-
+import toastr from "@docspace/components/toast/toastr";
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import { loopTreeFolders } from "../helpers/files-helpers";
 import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
-import { CategoryType } from "SRC_DIR/helpers/constants";
 import {
   getCategoryType,
   getCategoryTypeByFolderType,
 } from "SRC_DIR/helpers/utils";
 import { isDesktop } from "@docspace/components/utils/device";
-
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
 
@@ -91,7 +87,6 @@ class FilesStore {
   isHidePagination = false;
   trashIsEmpty = false;
   filesIsLoading = false;
-  withPaging = false;
 
   constructor(
     authStore,
@@ -109,7 +104,7 @@ class FilesStore {
     this.treeFoldersStore = treeFoldersStore;
     this.filesSettingsStore = filesSettingsStore;
 
-    const { socketHelper } = authStore.settingsStore;
+    const { socketHelper, withPaging } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
       //console.log("Call s:modify-folder", opt);
@@ -126,7 +121,7 @@ class FilesStore {
 
             const newFiles = [file, ...this.files];
 
-            if (newFiles.length > this.filter.pageCount && this.withPaging) {
+            if (newFiles.length > this.filter.pageCount && withPaging) {
               newFiles.pop(); // Remove last
             }
 
@@ -564,7 +559,7 @@ class FilesStore {
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
-    if (!this.withPaging) filter.pageCount = 100;
+    if (!this.authStore.settingsStore.withPaging) filter.pageCount = 100;
 
     this.setFilterUrl(filter, true);
     this.roomsFilter = filter;
@@ -583,7 +578,7 @@ class FilesStore {
   };
 
   setFilter = (filter) => {
-    if (!this.withPaging) filter.pageCount = 100;
+    if (!this.authStore.settingsStore.withPaging) filter.pageCount = 100;
     this.filter = filter;
   };
 
@@ -652,11 +647,7 @@ class FilesStore {
     withSubfolders = false,
     clearSelection = true
   ) => {
-    const {
-      treeFolders,
-      setSelectedNode,
-      getSubfolders,
-    } = this.treeFoldersStore;
+    const { setSelectedNode } = this.treeFoldersStore;
 
     this.scrollToTop();
 
@@ -675,7 +666,7 @@ class FilesStore {
       filterData.sortOrder = splitFilter[2];
     }
 
-    if (!this.withPaging) {
+    if (!this.authStore.settingsStore.withPaging) {
       filterData.page = 0;
       filterData.pageCount = 100;
     }
@@ -690,8 +681,6 @@ class FilesStore {
         .then(async (data) => {
           const isRecycleBinFolder =
             data.current.rootFolderType === FolderType.TRASH;
-
-          !isRecycleBinFolder && this.checkUpdateNode(data, folderId);
 
           filterData.total = data.total;
 
@@ -710,13 +699,6 @@ class FilesStore {
             }
           }
 
-          if (!isRecycleBinFolder && withSubfolders) {
-            const path = data.pathParts.slice(0);
-            const foldersCount = data.current.foldersCount;
-            const subfolders = await getSubfolders(folderId);
-            loopTreeFolders(path, treeFolders, subfolders, foldersCount);
-          }
-
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
@@ -726,12 +708,6 @@ class FilesStore {
               data.current.parentId
             );
           });
-
-          // console.log("fetchFiles", {
-          //   categoryType: this.categoryType,
-          //   rootFolderType: data.current.rootFolderType,
-          //   parentId: data.current.parentId,
-          // });
 
           this.setFilesFilter(filterData); //TODO: FILTER
 
@@ -748,18 +724,30 @@ class FilesStore {
 
           const navigationPath = await Promise.all(
             data.pathParts.map(async (folder) => {
-              const data = await api.files.getFolderInfo(folder);
+              const folderInfo =
+                data.current.id === folder
+                  ? data.current
+                  : await api.files.getFolderInfo(folder);
+
+              const {
+                id,
+                title,
+                roomType,
+                rootFolderId,
+                rootFolderType,
+              } = folderInfo;
+
+              const { Rooms, Archive } = FolderType;
 
               const isRootRoom =
-                data.rootFolderId === data.id &&
-                (data.rootFolderType === FolderType.Rooms ||
-                  data.rootFolderType === FolderType.Archive);
+                rootFolderId === id &&
+                (rootFolderType === Rooms || rootFolderType === Archive);
 
               return {
                 id: folder,
-                title: data.title,
-                isRoom: !!data.roomType,
-                isRootRoom: isRootRoom,
+                title,
+                isRoom: !!roomType,
+                isRootRoom,
               };
             })
           ).then((res) => {
@@ -844,7 +832,7 @@ class FilesStore {
       filterData.sortOrder = splitFilter[2];
     }
 
-    if (!this.withPaging) {
+    if (!this.authStore.settingsStore.withPaging) {
       filterData.page = 0;
       filterData.pageCount = 100;
     }
@@ -946,37 +934,6 @@ class FilesStore {
 
   setAlreadyFetchingRooms = (alreadyFetchingRooms) => {
     this.alreadyFetchingRooms = alreadyFetchingRooms;
-  };
-
-  checkUpdateNode = async (data, folderId) => {
-    const { treeFolders, getSubfolders } = this.treeFoldersStore;
-    const { pathParts, current } = data;
-
-    if (current.parentId === 0) return;
-
-    const somePath = pathParts.slice(0);
-    const path = pathParts.slice(0);
-    let newItems = treeFolders;
-
-    while (somePath.length !== 1) {
-      const folderItem = newItems.find((x) => x.id === somePath[0]);
-      newItems = folderItem?.folders
-        ? folderItem.folders
-        : somePath.length > 1
-        ? []
-        : null;
-      if (!newItems) {
-        return;
-      }
-
-      somePath.shift();
-    }
-
-    if (!newItems.find((x) => x.id == folderId)) {
-      path.splice(pathParts.length - 1, 1);
-      const subfolders = await getSubfolders(current.parentId);
-      loopTreeFolders(path, treeFolders, subfolders, 0);
-    }
   };
 
   isFileSelected = (fileId, parentId) => {
@@ -1718,7 +1675,7 @@ class FilesStore {
   };
 
   scrollToTop = () => {
-    if (this.withPaging) return;
+    if (this.authStore.settingsStore.withPaging) return;
 
     const scrollElm = isMobileOnly
       ? document.querySelector("#customScrollBar > .scroll-body")
@@ -2646,6 +2603,7 @@ class FilesStore {
     console.log("hasMoreFiles", this.filesList.length < filterTotal);
     console.log("----------------------------");
 
+    if (this.isLoading) return false;
     return this.filesList.length < filterTotal;
   }
 

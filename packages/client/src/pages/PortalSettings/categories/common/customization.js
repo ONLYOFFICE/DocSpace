@@ -6,6 +6,7 @@ import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./settingsCustomization/language-and-time-zone";
 import WelcomePageSettings from "./settingsCustomization/welcome-page-settings";
 import PortalRenaming from "./settingsCustomization/portal-renaming";
+import DNSSettings from "./settingsCustomization/dns-settings";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import CustomizationNavbar from "./customization-navbar";
 import { Base } from "@docspace/components/themes";
@@ -13,6 +14,7 @@ import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderDescriptionCustomization from "./sub-components/loaderDescriptionCustomization";
 import { withRouter } from "react-router";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
 
 const StyledComponent = styled.div`
   width: 100%;
@@ -29,11 +31,6 @@ const StyledComponent = styled.div`
     max-width: 700px;
   }
 
-  .category-item-wrapper:not(:last-child) {
-    border-bottom: 1px solid #eceef1;
-    margin-bottom: 24px;
-    padding-bottom: 24px;
-  }
 
   .category-item-description {
     color: ${(props) => props.theme.client.settings.common.descriptionColor};
@@ -109,7 +106,11 @@ const Customization = (props) => {
         )}`}</div>
       )}
       <LanguageAndTimeZone isMobileView={isMobile} />
+      <StyledSettingsSeparator />
       <WelcomePageSettings isMobileView={isMobile} />
+      <StyledSettingsSeparator />
+      <DNSSettings isMobileView={isMobile} />
+      <StyledSettingsSeparator />
       <PortalRenaming isMobileView={isMobile} />
     </StyledComponent>
   );

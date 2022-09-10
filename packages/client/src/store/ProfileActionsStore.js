@@ -89,7 +89,7 @@ class ProfileActionsStore {
     this.authStore.logout().then(() => {
       this.filesStore.reset();
       this.peopleStore.reset();
-      history.push(combineUrl(proxyURL, "/login"));
+      window.location.replace(combineUrl(proxyURL, "/login"));
     });
   };
 

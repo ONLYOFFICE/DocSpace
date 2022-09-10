@@ -150,12 +150,7 @@ export default inject(({ auth, settingsStore, treeFoldersStore }) => {
     setRecentSetting,
   } = settingsStore;
 
-  const {
-    treeFolders,
-    myFolderId,
-    commonFolderId,
-    getSubfolders,
-  } = treeFoldersStore;
+  const { myFolderId, commonFolderId } = treeFoldersStore;
 
   return {
     storeOriginalFiles,

@@ -11,6 +11,7 @@ import HideButton from "./sub-components/HideButton";
 import IdpSettings from "./IdpSettings";
 import ProviderMetadata from "./ProviderMetadata";
 import StyledSsoPage from "./styled-containers/StyledSsoPageContainer";
+import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
 import SubmitResetButtons from "./SubmitButton";
 import ToggleSSO from "./sub-components/ToggleSSO";
 
@@ -51,7 +52,7 @@ const SingleSignOn = (props) => {
         <SubmitResetButtons />
       </Box>
 
-      <hr className="separator" />
+      <StyledSettingsSeparator />
 
       <HideButton
         text={t("SpMetadata")}

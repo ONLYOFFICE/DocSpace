@@ -12,6 +12,7 @@ import AdminMessageSection from "./adminMessage";
 import SessionLifetimeSection from "./sessionLifetime";
 import MobileView from "./mobileView";
 import CategoryWrapper from "../sub-components/category-wrapper";
+import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
 import { size } from "@docspace/components/utils/device";
 import { inject, observer } from "mobx-react";
 
@@ -43,7 +44,7 @@ const AccessPortal = (props) => {
         tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
       />
       <PasswordStrengthSection />
-      <hr />
+      <StyledSettingsSeparator />
       <CategoryWrapper
         t={t}
         title={t("TwoFactorAuth")}
@@ -51,7 +52,7 @@ const AccessPortal = (props) => {
         tooltipUrl={`${helpLink}/administration/two-factor-authentication.aspx`}
       />
       <TfaSection />
-      <hr />
+      <StyledSettingsSeparator />
       <CategoryWrapper
         t={t}
         title={t("TrustedMail")}
@@ -59,7 +60,7 @@ const AccessPortal = (props) => {
         tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
       />
       <TrustedMailSection />
-      <hr />
+      <StyledSettingsSeparator />
       <CategoryWrapper
         t={t}
         title={t("IPSecurity")}
@@ -67,7 +68,7 @@ const AccessPortal = (props) => {
         tooltipTitle={t("IPSecurityDescription")}
       />
       <IpSecuritySection />
-      <hr />
+      <StyledSettingsSeparator />
       <CategoryWrapper
         t={t}
         title={t("AdminsMessage")}
@@ -76,7 +77,7 @@ const AccessPortal = (props) => {
       />
       <AdminMessageSection />
 
-      <hr />
+      <StyledSettingsSeparator />
       <CategoryWrapper
         t={t}
         title={t("SessionLifetime")}

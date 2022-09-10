@@ -12,7 +12,7 @@ import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-s
 import { FixedSizeList as List, areEqual } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { EmployeeStatus } from "@docspace/common/constants";
 import ModalDialogContainer from "../ModalDialogContainer";
 import { inject, observer } from "mobx-react";
@@ -46,7 +46,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
     } = this.props;
     const { userIds } = this.state;
     this.setState({ isRequestRunning: true }, () => {
-      updateUserStatus(userStatus, userIds, true)
+      updateUserStatus(userStatus, userIds)
         .then(() =>
           toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
         )

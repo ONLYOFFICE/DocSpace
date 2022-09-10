@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Feed.Model.FeedAggregate", b =>
@@ -37,6 +37,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("author")
                         .IsFixedLength();
+
+                    b.Property<string>("ContextId")
+                        .HasColumnType("text")
+                        .HasColumnName("context_id");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone")
