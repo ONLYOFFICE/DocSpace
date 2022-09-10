@@ -14,7 +14,7 @@ const StyledAboutBody = styled.div`
 
   .avatar {
     margin-top: ${isDesktop ? "0px" : "32px"};
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
 
   .row-el {
@@ -22,10 +22,16 @@ const StyledAboutBody = styled.div`
   }
 
   .copyright {
-    margin-top: 16px;
+    margin-top: 14px;
+    margin-bottom: 4px;
+    font-weight: 700;
   }
   .no-select {
     ${NoUserSelect}
+  }
+
+  .row {
+    line-height: 20px;
   }
 
   .tel-title,
@@ -71,7 +77,7 @@ const AboutContent = (props) => {
             <img
               src={
                 theme.isBase
-                  ? "/images/dark_general.png"
+                  ? "/images/docspace.about.svg"
                   : "/images/white_general.png"
               }
               alt="Logo"
@@ -133,7 +139,7 @@ const AboutContent = (props) => {
         </div>
 
         <Text className="copyright" fontSize="14px" fontWeight="600" noSelect>
-          © Ascensio System SIA
+          © {companyInfoSettingsData.companyName}
         </Text>
 
         <div className="row">
@@ -147,7 +153,7 @@ const AboutContent = (props) => {
 
         <div className="row">
           <Text className="tel-title" fontSize="13px" noSelect>
-            {t("AboutCompanyTelTitle")}:{" "}
+            {t("Common:Phone")}:{" "}
           </Text>
           <Text className="tel-title select-el" fontSize="13px">
             {companyInfoSettingsData.phone}
@@ -173,6 +179,10 @@ const AboutContent = (props) => {
         </div>
 
         <div className="row">
+          <Text className="row-el" fontSize="13px" noSelect>
+            {t("Site")}:
+          </Text>
+
           <ColorTheme
             {...props}
             tag="a"
@@ -183,7 +193,7 @@ const AboutContent = (props) => {
             target="_blank"
             href={companyInfoSettingsData.site}
           >
-            {companyInfoSettingsData.site.split("/").pop()}
+            &nbsp;{companyInfoSettingsData.site.split("/").pop()}
           </ColorTheme>
         </div>
       </StyledAboutBody>
