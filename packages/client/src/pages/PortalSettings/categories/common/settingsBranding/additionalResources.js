@@ -74,15 +74,15 @@ const AdditionalResources = (props) => {
     isLoadedAdditionalResources,
   } = props;
 
-  const [showFeedback, setShowFeedback] = useState(
+  const [feedbackAndSupportEnabled, setShowFeedback] = useState(
     additionalResourcesData.feedbackAndSupportEnabled
   );
 
-  const [showVideoGuides, setShowVideoGuides] = useState(
+  const [videoGuidesEnabled, setShowVideoGuides] = useState(
     additionalResourcesData.videoGuidesEnabled
   );
 
-  const [showHelpCenter, setShowHelpCenter] = useState(
+  const [helpCenterEnabled, setShowHelpCenter] = useState(
     additionalResourcesData.helpCenterEnabled
   );
 
@@ -95,16 +95,28 @@ const AdditionalResources = (props) => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    setShowFeedback(additionalResourcesData.feedbackAndSupportEnabled);
+    setShowVideoGuides(additionalResourcesData.videoGuidesEnabled);
+    setShowHelpCenter(additionalResourcesData.helpCenterEnabled);
+  }, [additionalResourcesData]);
+
+  useEffect(() => {
     if (
-      showFeedback !== additionalResourcesData.feedbackAndSupportEnabled ||
-      showVideoGuides !== additionalResourcesData.videoGuidesEnabled ||
-      showHelpCenter !== additionalResourcesData.helpCenterEnabled
+      feedbackAndSupportEnabled !==
+        additionalResourcesData.feedbackAndSupportEnabled ||
+      videoGuidesEnabled !== additionalResourcesData.videoGuidesEnabled ||
+      helpCenterEnabled !== additionalResourcesData.helpCenterEnabled
     ) {
       setHasChange(true);
     } else {
       setHasChange(false);
     }
-  }, [showFeedback, showVideoGuides, showHelpCenter, additionalResourcesData]);
+  }, [
+    feedbackAndSupportEnabled,
+    videoGuidesEnabled,
+    helpCenterEnabled,
+    additionalResourcesData,
+  ]);
 
   useEffect(() => {
     if (!(additionalResourcesData && tReady)) return;
@@ -113,8 +125,11 @@ const AdditionalResources = (props) => {
   }, [additionalResourcesData, tReady]);
 
   const onSave = () => {
-    //TODO: Add data
-    setAdditionalResources()
+    setAdditionalResources(
+      feedbackAndSupportEnabled,
+      videoGuidesEnabled,
+      helpCenterEnabled
+    )
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
         getAdditionalResources();
@@ -181,21 +196,21 @@ const AdditionalResources = (props) => {
           <Checkbox
             isDisabled={!isPortalPaid}
             label={t("ShowFeedbackAndSupport")}
-            isChecked={showFeedback}
-            onChange={() => setShowFeedback(!showFeedback)}
+            isChecked={feedbackAndSupportEnabled}
+            onChange={() => setShowFeedback(!feedbackAndSupportEnabled)}
           />
 
           <Checkbox
             isDisabled={!isPortalPaid}
             label={t("ShowVideoGuides")}
-            isChecked={showVideoGuides}
-            onChange={() => setShowVideoGuides(!showVideoGuides)}
+            isChecked={videoGuidesEnabled}
+            onChange={() => setShowVideoGuides(!videoGuidesEnabled)}
           />
           <Checkbox
             isDisabled={!isPortalPaid}
             label={t("ShowHelpCenter")}
-            isChecked={showHelpCenter}
-            onChange={() => setShowHelpCenter(!showHelpCenter)}
+            isChecked={helpCenterEnabled}
+            onChange={() => setShowHelpCenter(!helpCenterEnabled)}
           />
         </div>
         <SaveCancelButtons
