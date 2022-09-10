@@ -8,8 +8,3 @@ export default {
 const Template = (args) => <InputPhone {...args} />;
 
 export const Default = Template.bind({});
-
-Default.args = {
-  country: "ru",
-  enableSearch: true,
-};
