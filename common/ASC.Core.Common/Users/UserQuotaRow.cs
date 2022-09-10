@@ -30,7 +30,7 @@ namespace ASC.Core.Tenants;
 public class UserQuotaRow : IMapFrom<DbUsersQuotaRow>
 {
     public int Tenant { get; set; }
-    public string UserId { get; set; }
+    public Guid UserId { get; set; }
     public string Path { get; set; }
     public long Counter { get; set; }
     public string Tag { get; set; }

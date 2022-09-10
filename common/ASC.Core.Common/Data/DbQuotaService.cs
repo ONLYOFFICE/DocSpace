@@ -160,7 +160,7 @@ class DbQuotaService : IQuotaService
         });
     }
 
-    public IEnumerable<UserQuotaRow> FindUserQuotaRows(int tenantId, string userId)
+    public IEnumerable<UserQuotaRow> FindUserQuotaRows(int tenantId, Guid userId)
     {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
         IQueryable<DbUsersQuotaRow> q = coreDbContext.UserQuotaRows;

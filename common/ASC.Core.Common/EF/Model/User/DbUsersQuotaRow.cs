@@ -29,14 +29,14 @@ namespace ASC.Core.Common.EF;
 public class DbUsersQuotaRow : BaseEntity, IMapFrom<UserQuotaRow>
 {
     public int Tenant { get; set; }
-    public string UserId { get; set; }
+    public Guid UserId { get; set; }
     public string Path { get; set; }
     public long Counter { get; set; }
     public string Tag { get; set; }
 
     public override object[] GetKeys()
     {
-        return new object[] { Tenant, UserId, Path};
+        return new object[] { Tenant, UserId, Path };
     }
 }
 

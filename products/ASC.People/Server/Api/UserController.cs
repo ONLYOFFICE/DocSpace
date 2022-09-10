@@ -1110,7 +1110,7 @@ public class UserController : PeopleControllerBase
                 var usedSpace = Math.Max(0,
                     _userManager.FindUserQuotaRows(
                             _tenantManager.GetCurrentTenant().Id,
-                            user.Id.ToString()
+                            user.Id
                         )
                 .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
 

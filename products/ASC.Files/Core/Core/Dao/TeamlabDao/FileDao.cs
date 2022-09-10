@@ -418,10 +418,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
         if (!quotaSettings.EnableUserQuota || user.QuotaLimit != Constants.UserNoQuota)
         {
             var quotaLimit = ByteConverter.ConvertSizeToBytes(user.QuotaLimit);
-            var userUsedSpace = Math.Max(0, 
+            var userUsedSpace = Math.Max(0,
                 _userManager.FindUserQuotaRows(
-                        _tenantManager.GetCurrentTenant().Id, 
-                        file.Id == default ? _authContext.CurrentAccount.ID.ToString() : file.CreateBy.ToString()
+                        _tenantManager.GetCurrentTenant().Id,
+                        file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy
                     )
                 .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
 
@@ -1105,7 +1105,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         return file.RootFolderType != FolderType.TRASH && file.RootFolderType != FolderType.Privacy;
     }
-     
+
     public string GetUniqFileDirectory(int fileId)
     {
         if (fileId == 0)
