@@ -3,6 +3,5 @@
   "ConvertMessage": "Se optar por converter o ficheiro para um formato diferente do original, alguns dados poderão perder-se.",
   "ConvertToZip": "Os ficheiros serão comprimidos para o ficheiro .zip",
   "CustomFormat": "Formato personalizado",
-  "OriginalFormat": "Formato original",
-  "Other": "Outros"
+  "OriginalFormat": "Formato original"
 }

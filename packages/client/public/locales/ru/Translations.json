@@ -55,5 +55,6 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Яндекс.Диск",
-  "TypeTitlekDrive": "kDrive"
+  "TypeTitlekDrive": "kDrive",
+  "Other": "Другой"
 }

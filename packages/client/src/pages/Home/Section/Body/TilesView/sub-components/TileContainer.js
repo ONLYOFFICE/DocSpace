@@ -188,6 +188,7 @@ class TileContainer extends React.PureComponent {
       style,
       headingFolders,
       headingFiles,
+      headingRooms,
     } = this.props;
 
     const { selectedFilterData } = this.state;
@@ -227,7 +228,7 @@ class TileContainer extends React.PureComponent {
             id={"room-tile-heading"}
             className="tile-items-heading"
           >
-            {"Rooms"}
+            {headingRooms}
           </Heading>
         )}
 
