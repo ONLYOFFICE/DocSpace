@@ -55,6 +55,14 @@ const StyledAboutBody = styled.div`
       }
     }
   }
+
+  .logo-docspace-theme {
+    svg {
+      path:nth-child(4) {
+        fill: ${(props) => props.theme.client.about.logoColor};
+      }
+    }
+  }
 `;
 
 const AboutContent = (props) => {
@@ -74,14 +82,10 @@ const AboutContent = (props) => {
               className="logo-theme no-select"
             />
           ) : (
-            <img
-              src={
-                theme.isBase
-                  ? "/images/docspace.about.svg"
-                  : "/images/white_general.png"
-              }
+            <ReactSVG
+              src="/images/docspace.about.svg"
               alt="Logo"
-              className="no-select"
+              className="logo-docspace-theme no-select"
             />
           )}
         </div>
