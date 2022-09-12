@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
+import toastr from "@docspace/components/toast/toastr";
 import {
   loadAvatar,
   createThumbnailsAvatar,
@@ -15,7 +16,7 @@ import AvatarEditor from "./editor";
 const StyledModalDialog = styled(ModalDialog)``;
 
 const AvatarEditorDialog = (props) => {
-  const { t } = useTranslation(["Profile", "Common"]);
+  const { t } = useTranslation(["Profile", "ProfileAction", "Common"]);
   const { visible, onClose, profile, fetchProfile } = props;
   const [avatar, setAvatar] = useState({
     uploadedFile: profile.avatarMax,
@@ -51,9 +52,11 @@ const AvatarEditorDialog = (props) => {
         tmpFile: res.data,
       });
       await fetchProfile(profile.id);
+      toastr.success(t("ProfileAction:ChangesSavedSuccessfully"));
       onClose();
     } catch (error) {
       console.error(error);
+      toastr.error(error);
     } finally {
       setIsLoading(false);
     }
