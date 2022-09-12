@@ -260,6 +260,8 @@ const StyledFilterBlockFooter = styled.div`
   padding: 0 16px;
   margin: 0;
 
+  gap: 10px;
+
   display: flex;
   align-items: center;
   justify-content: center;

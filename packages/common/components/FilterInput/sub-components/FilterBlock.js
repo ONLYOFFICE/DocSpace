@@ -412,9 +412,15 @@ const FilterBlock = ({
               <Button
                 size="normal"
                 primary={true}
-                label={t("AddFilter")}
+                label={t("ApplyButton")}
                 scale={true}
                 onClick={onFilterAction}
+              />
+              <Button
+                size="normal"
+                label={t("CancelButton")}
+                scale={true}
+                onClick={hideFilterBlock}
               />
             </StyledFilterBlockFooter>
           )}
