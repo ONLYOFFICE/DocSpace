@@ -116,7 +116,7 @@ const MainButtonMobile = (props) => {
     onClose,
     sectionWidth,
     alert,
-    isButton,
+    withMenu,
     onClick,
   } = props;
 
@@ -210,7 +210,7 @@ const MainButtonMobile = (props) => {
   };
 
   const onMainButtonClick = (e) => {
-    if (isButton) {
+    if (!withMenu) {
       onClick && onClick(e);
       return;
     }
@@ -430,6 +430,10 @@ MainButtonMobile.propTypes = {
   opened: PropTypes.bool,
   /** If you need close drop down  */
   onClose: PropTypes.func,
+};
+
+MainButtonMobile.defaultProps = {
+  withMenu: true,
 };
 
 export default MainButtonMobile;

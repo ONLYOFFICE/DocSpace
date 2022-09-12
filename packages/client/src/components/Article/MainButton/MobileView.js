@@ -46,7 +46,7 @@ const MobileView = ({
   secondaryProgressDataStoreCurrentFile,
   secondaryProgressDataStoreCurrentFilesCount,
   clearSecondaryProgressData,
-  isButton,
+  withMenu,
   onMainButtonClick,
 }) => {
   const [isOpenButton, setIsOpenButton] = React.useState(false);
@@ -161,7 +161,7 @@ const MobileView = ({
       title={titleProp}
       withoutButton={isRooms}
       alert={primaryProgressDataAlert}
-      isButton={isRooms}
+      withMenu={!isRooms}
       onClick={onMainButtonClick}
     />
   );
