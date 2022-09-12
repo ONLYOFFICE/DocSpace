@@ -231,7 +231,7 @@ restart_services() {
 
 	systemctl start ${PRODUCT}-migration-runner || true
 
-	for SVC in api urlshortener socket studio-notify notify \
+	for SVC in login api urlshortener socket studio-notify notify \
 	people-server files files-services studio backup telegram-service \
 	webhooks-service clear-events backup-background migration ssoauth doceditor
 	do

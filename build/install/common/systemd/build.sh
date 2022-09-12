@@ -61,6 +61,7 @@ SERVICE_NAME=(
 	migration
 	doceditor
 	migration-runner
+	login
 	)
 
 reassign_values (){
@@ -153,6 +154,10 @@ reassign_values (){
 	migration-runner )
 		WORK_DIR="${BASE_DIR}/services/ASC.Migration.Runner/"
 		EXEC_FILE="ASC.Migration.Runner.dll"
+	;;
+	login )
+		WORK_DIR="${BASE_DIR}/products/ASC.Login/login/"
+		EXEC_FILE="server.js"
 	;;
   esac
   SERVICE_NAME="$1"

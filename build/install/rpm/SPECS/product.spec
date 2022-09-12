@@ -43,6 +43,7 @@ Requires:       %name-studio-notify = %version-%release
 Requires:       %name-telegram-service = %version-%release
 Requires:       %name-urlshortener = %version-%release
 Requires:       %name-webhooks-service = %version-%release
+Requires:       %name-login = %version-%release
 
 %description
 App Server is a platform for building your own online office by connecting ONLYOFFICE modules packed as separate apps.

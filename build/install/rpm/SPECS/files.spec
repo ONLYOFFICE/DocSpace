@@ -74,7 +74,6 @@
 %{_sysconfdir}/nginx/conf.d/*
 %{buildpath}/public/
 %{buildpath}/client/
-%{buildpath}/login/
 
 %files studio-notify
 %defattr(-, onlyoffice, onlyoffice, -)
@@ -189,3 +188,10 @@
 %{buildpath}/services/ASC.Migration.Runner/
 /usr/lib/systemd/system/%{product}-migration-runner.service
 %dir %{buildpath}/services/
+
+%files login
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/products/ASC.Login/login
+/usr/lib/systemd/system/%{product}-login.service
+%dir %{buildpath}/products/
+%dir %{buildpath}/ASC.Login/
