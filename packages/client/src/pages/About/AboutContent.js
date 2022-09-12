@@ -66,11 +66,31 @@ const StyledAboutBody = styled.div`
 `;
 
 const AboutContent = (props) => {
-  const { personal, buildVersionInfo, theme, companyInfoSettingsData } = props;
+  const {
+    personal,
+    buildVersionInfo,
+    theme,
+    companyInfoSettingsData,
+    previewData,
+  } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
   const linkAppServer = "https://github.com/ONLYOFFICE/AppServer";
   const linkDocs = "https://github.com/ONLYOFFICE/DocumentServer";
+
+  const companyName = previewData
+    ? previewData.companyName
+    : companyInfoSettingsData.companyName;
+
+  const email = previewData ? previewData.email : companyInfoSettingsData.email;
+
+  const phone = previewData ? previewData.phone : companyInfoSettingsData.phone;
+
+  const site = previewData ? previewData.site : companyInfoSettingsData.site;
+
+  const address = previewData
+    ? previewData.address
+    : companyInfoSettingsData.address;
 
   return (
     companyInfoSettingsData && (
@@ -143,7 +163,7 @@ const AboutContent = (props) => {
         </div>
 
         <Text className="copyright" fontSize="14px" fontWeight="600" noSelect>
-          © {companyInfoSettingsData.companyName}
+          © {companyName}
         </Text>
 
         <div className="row">
@@ -151,7 +171,7 @@ const AboutContent = (props) => {
             {t("AboutCompanyAddressTitle")}:{" "}
           </Text>
           <Text className="address-title select-el" fontSize="13px">
-            {companyInfoSettingsData.address}
+            {address}
           </Text>
         </div>
 
@@ -160,7 +180,7 @@ const AboutContent = (props) => {
             {t("Common:Phone")}:{" "}
           </Text>
           <Text className="tel-title select-el" fontSize="13px">
-            {companyInfoSettingsData.phone}
+            {phone}
           </Text>
         </div>
 
@@ -178,7 +198,7 @@ const AboutContent = (props) => {
             fontWeight="600"
             href={`mailto:${companyInfoSettingsData.email}`}
           >
-            &nbsp;{companyInfoSettingsData.email}
+            &nbsp;{email}
           </ColorTheme>
         </div>
 
@@ -195,9 +215,9 @@ const AboutContent = (props) => {
             fontSize="13px"
             fontWeight="600"
             target="_blank"
-            href={companyInfoSettingsData.site}
+            href={site}
           >
-            &nbsp;{companyInfoSettingsData.site.split("/").pop()}
+            &nbsp;{site.split("/").pop()}
           </ColorTheme>
         </div>
       </StyledAboutBody>
