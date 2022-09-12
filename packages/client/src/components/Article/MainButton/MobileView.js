@@ -46,7 +46,6 @@ const MobileView = ({
   secondaryProgressDataStoreCurrentFile,
   secondaryProgressDataStoreCurrentFilesCount,
   clearSecondaryProgressData,
-  withMenu,
   onMainButtonClick,
 }) => {
   const [isOpenButton, setIsOpenButton] = React.useState(false);
