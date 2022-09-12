@@ -25,8 +25,8 @@ const StyledWrapper = styled.div`
   }
 
   .themes-container {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 20px;
 
     @media ${smallTablet} {
