@@ -8,7 +8,7 @@ import utils from "@docspace/components/utils";
 import { FilterType } from "@docspace/common/constants";
 import isEqual from "lodash/isEqual";
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 const { desktop } = utils.device;
 class SelectFileDialog extends React.Component {
@@ -83,7 +83,6 @@ class SelectFileDialog extends React.Component {
     const {
       treeFolders,
       foldersType,
-      id,
       onSetBaseFolderPath,
       onSelectFolder,
       foldersList,
@@ -91,6 +90,7 @@ class SelectFileDialog extends React.Component {
       displayType,
       setFolderId,
       folderId,
+      withoutBasicSelection,
     } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
@@ -110,7 +110,7 @@ class SelectFileDialog extends React.Component {
         onSetBaseFolderPath,
         onSelectFolder,
         foldersList,
-        true
+        withoutBasicSelection
       );
     } catch (e) {
       toastr.error(e);
@@ -122,7 +122,7 @@ class SelectFileDialog extends React.Component {
 
     if (tree.length === 0) {
       this.setState({ isAvailable: false });
-      onSelectFolder(null);
+      onSelectFolder && onSelectFolder(null);
       return;
     }
 
@@ -199,17 +199,8 @@ class SelectFileDialog extends React.Component {
   };
 
   onClickSave = () => {
-    const {
-      onSetFileNameAndLocation,
-      onClose,
-      onSelectFile,
-      fileInfo,
-      folderId,
-    } = this.props;
+    const { onClose, onSelectFile, fileInfo } = this.props;
 
-    const fileName = fileInfo.title;
-
-    onSetFileNameAndLocation && onSetFileNameAndLocation(fileName, folderId);
     onSelectFile && onSelectFile(fileInfo);
     onClose && onClose();
   };

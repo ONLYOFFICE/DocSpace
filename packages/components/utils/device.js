@@ -1,3 +1,5 @@
+import { checkIsSSR } from "@docspace/common/utils";
+
 export const size = {
   mobile: 375,
   hugeMobile: 428,
@@ -35,7 +37,9 @@ export const isTablet = () => {
 };
 
 export const isDesktop = () => {
-  return window.innerWidth >= size.desktop;
+  if (!checkIsSSR()) {
+    return window.innerWidth >= size.desktop;
+  } else return false;
 };
 
 export const isTouchDevice = !!(

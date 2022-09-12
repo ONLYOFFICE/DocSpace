@@ -11,9 +11,12 @@
   "LblSetActive": "Set active",
   "LblSetDisabled": "Set disabled",
   "MakeInvitationLink": "Create invitation link",
+  "Manager": "Manager",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <1>{{email}}</1> email address",
   "NotFoundDescription": "Try a different filter or clear it to view all people in the section.",
   "NotFoundTitle": "No teammates found",
+  "NotFoundUsers": "No users found",
+  "NotFoundUsersDescription": "No people matching you filter can be displayed. Please select other filter options or clear filter to view all the people in this section",
   "ReassignmentData": "Data reassignment",
   "SuccessfullyRemovedGroup": "Group has been removed successfully",
   "UserStatus": "Status"

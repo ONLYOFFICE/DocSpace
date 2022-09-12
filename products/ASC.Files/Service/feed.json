@@ -17,6 +17,15 @@
         }
       ],
       "instanceScope": "perlifetimescope"
+    },
+    {
+      "type": "ASC.Files.Service.Core.RoomsModule, ASC.Files.Service",
+      "services": [
+        {
+          "type": "ASC.Feed.Aggregator.Modules.IFeedModule, ASC.Feed.Aggregator"
+        }
+      ],
+      "instanceScope": "perlifetimescope"
     }
   ]
 }

@@ -8,7 +8,7 @@ const StyledScrollbar = styled(Scrollbars)`
       props.color
         ? props.color
         : props.theme.scrollbar.backgroundColorVertical};
-    z-index: 1;
+    z-index: 201;
   }
   .nav-thumb-horizontal {
     background-color: ${(props) =>

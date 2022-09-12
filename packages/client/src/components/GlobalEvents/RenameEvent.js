@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import { getTitleWithoutExst } from "../../helpers/files-helpers";
 
@@ -48,7 +48,7 @@ const RenameEvent = ({
     if (isSameTitle) {
       setStartValue(originalTitle);
 
-      return editCompleteAction(item.id, item, isSameTitle, type);
+      return editCompleteAction(item, type);
     } else {
       timerId = setTimeout(() => {
         isFile ? addActiveItems([item.id]) : addActiveItems(null, [item.id]);
@@ -57,7 +57,7 @@ const RenameEvent = ({
 
     isFile
       ? updateFile(item.id, value)
-          .then(() => editCompleteAction(item.id, item, false, type))
+          .then(() => editCompleteAction(item, type))
           .then(() =>
             toastr.success(
               t("FileRenamed", {
@@ -68,7 +68,7 @@ const RenameEvent = ({
           )
           .catch((err) => {
             toastr.error(err);
-            editCompleteAction(item.id, item, false, type);
+            editCompleteAction(item, type);
           })
           .finally(() => {
             clearTimeout(timerId);
@@ -79,7 +79,7 @@ const RenameEvent = ({
             onClose();
           })
       : renameFolder(item.id, value)
-          .then(() => editCompleteAction(item.id, item, false, type))
+          .then(() => editCompleteAction(item, type))
           .then(() =>
             toastr.success(
               t("FolderRenamed", {
@@ -90,7 +90,7 @@ const RenameEvent = ({
           )
           .catch((err) => {
             toastr.error(err);
-            editCompleteAction(item.id, item, false, type);
+            editCompleteAction(item, type);
           })
           .finally(() => {
             clearTimeout(timerId);

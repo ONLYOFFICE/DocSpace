@@ -2,6 +2,12 @@
   "RabbitMQ": {
     "Hostname": "localhost",
     "UserName": "guest",
-    "Password": "guest"
-  }
+    "Password": "guest",
+    "Port": 5672,
+    "VirtualHost": "/",
+    "Uri": "",
+	"EnableSsl": false,
+	"SslServerName": "",
+	"SslCertPath": ""
+  } 
 }

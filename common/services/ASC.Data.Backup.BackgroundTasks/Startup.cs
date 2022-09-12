@@ -69,5 +69,8 @@ public class Startup : BaseStartup
         services.AddActivePassiveHostedService<BackupCleanerService>();
         services.AddActivePassiveHostedService<BackupSchedulerService>();
 
+        services.AddBaseDbContextPool<BackupsContext>();
+        services.AddBaseDbContextPool<FilesDbContext>();
+
     }
 }

@@ -3,6 +3,8 @@
   "CodeSubtitle": "我们向{{email}}发送了6位数的代码。该代码有有限的有效期，请尽快输入它。",
   "CodeTitle": "代码已通过电子邮件发送给您的",
   "CookieSettingsTitle": "会话寿命",
+  "ErrorInvalidHeader": "电子邮件不正确或链接已过期",
+  "ErrorInvalidText": "在10秒钟内，您将重定向到<1>登录页面</1>",
   "ExpiredCode": "此代码已不再有效。请求新的代码并重试",
   "ForgotPassword": "忘记密码？",
   "InvalidCode": "代码无效。请再试一次",

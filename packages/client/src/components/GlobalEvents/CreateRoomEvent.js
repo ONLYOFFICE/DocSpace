@@ -1,65 +1,203 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
+import { CreateRoomDialog } from "../dialogs";
 
-import toastr from "client/toastr";
+const CreateRoomEvent = ({
+  visible,
+  onClose,
 
-import { RoomsType } from "@docspace/common/constants";
+  createRoom,
+  createRoomInThirdpary,
+  createTag,
+  addTagsToRoom,
+  calculateRoomLogoParams,
+  uploadRoomLogo,
+  addLogoToRoom,
+  fetchTags,
 
-import Dialog from "./sub-components/Dialog";
+  connectItems,
+  connectDialogVisible,
+  setConnectDialogVisible,
+  setRoomCreation,
+  saveThirdpartyResponse,
+  openConnectWindow,
+  setConnectItem,
+  getOAuthToken,
 
-const CreateRoomEvent = ({ createRoom, updateCurrentFolder, id, onClose }) => {
-  const options = [
-    { key: RoomsType.CustomRoom, label: "Custom room" },
-    { key: RoomsType.FillingFormsRoom, label: "Filling form room" },
-    { key: RoomsType.EditingRoom, label: "Editing room" },
-    { key: RoomsType.ReviewRoom, label: "Review room" },
-    { key: RoomsType.ReadOnlyRoom, label: "View-only room" },
-  ];
+  currrentFolderId,
+  updateCurrentFolder,
+}) => {
+  const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
+  const [fetchedTags, setFetchedTags] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [selectedOption, setSelectedOption] = React.useState(options[0]);
+  const onCreate = async (roomParams) => {
+    const createRoomData = {
+      roomType: roomParams.type,
+      title: roomParams.title || t("Files:NewRoom"),
+    };
 
-  const { t } = useTranslation(["Translations", "Common"]);
+    const isThirdparty =
+      roomParams.isThirdparty &&
+      roomParams.storageLocation.isConnected &&
+      roomParams.storageLocation.thirdpartyFolderId;
 
-  const onSelect = (item) => {
-    setSelectedOption(item);
+    const addTagsData = roomParams.tags.map((tag) => tag.name);
+
+    const createTagsData = roomParams.tags
+      .filter((t) => t.isNew)
+      .map((t) => t.name);
+
+    const uploadLogoData = new FormData();
+    uploadLogoData.append(0, roomParams.icon.uploadedFile);
+
+    try {
+      setIsLoading(true);
+
+      const room = isThirdparty
+        ? await createRoomInThirdpary(
+            roomParams.storageLocation.thirdpartyFolderId,
+            createRoomData
+          )
+        : await createRoom(createRoomData);
+
+      for (let i = 0; i < createTagsData.length; i++)
+        await createTag(createTagsData[i]);
+
+      await addTagsToRoom(room.id, addTagsData);
+
+      if (roomParams.icon.uploadedFile)
+        await uploadRoomLogo(uploadLogoData).then((response) => {
+          const url = URL.createObjectURL(roomParams.icon.uploadedFile);
+          const img = new Image();
+          img.onload = async () => {
+            const { x, y, zoom } = roomParams.icon;
+            await addLogoToRoom(room.id, {
+              tmpFile: response.data,
+              ...calculateRoomLogoParams(img, x, y, zoom),
+            });
+            URL.revokeObjectURL(img.src);
+          };
+          img.src = url;
+        });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      await updateCurrentFolder(null, currrentFolderId);
+      setIsLoading(false);
+      onClose();
+    }
   };
 
-  const onSave = (e, value) => {
-    createRoom(value, selectedOption.key)
-      .then(() => {
-        updateCurrentFolder(null, id);
-      })
-      .finally(() => {
-        onClose();
-        toastr.success(`${value} success created`);
-      });
-  };
+  useEffect(async () => {
+    let tags = await fetchTags();
+    setFetchedTags(tags);
+  }, []);
 
   return (
-    <Dialog
+    <CreateRoomDialog
       t={t}
-      title={"Create room"}
-      startValue={"New room"}
-      visible={true}
-      options={options}
-      selectedOption={selectedOption}
-      onSelect={onSelect}
-      onSave={onSave}
-      onCancel={onClose}
+      visible={visible && !connectDialogVisible}
       onClose={onClose}
+      onCreate={onCreate}
+      fetchedTags={fetchedTags}
+      isLoading={isLoading}
+      connectItems={connectItems}
+      connectDialogVisible={connectDialogVisible}
+      setConnectDialogVisible={setConnectDialogVisible}
+      setRoomCreation={setRoomCreation}
+      saveThirdpartyResponse={saveThirdpartyResponse}
+      openConnectWindow={openConnectWindow}
+      setConnectItem={setConnectItem}
+      getOAuthToken={getOAuthToken}
     />
   );
 };
 
 export default inject(
-  ({ filesStore, filesActionsStore, selectedFolderStore }) => {
-    const { createRoom } = filesStore;
+  ({
+    auth,
+    filesStore,
+    tagsStore,
+    filesActionsStore,
+    selectedFolderStore,
+    settingsStore,
+    dialogsStore,
+  }) => {
+    const {
+      createRoom,
+      createRoomInThirdpary,
+      addTagsToRoom,
+      calculateRoomLogoParams,
+      uploadRoomLogo,
+      addLogoToRoom,
+    } = filesStore;
+    const { createTag, fetchTags } = tagsStore;
 
+    const { id: currrentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
 
-    const { id } = selectedFolderStore;
+    const thirdPartyStore = settingsStore.thirdPartyStore;
 
-    return { createRoom, updateCurrentFolder, id };
+    const { openConnectWindow } = settingsStore.thirdPartyStore;
+
+    const connectItems = [
+      thirdPartyStore.googleConnectItem,
+      thirdPartyStore.boxConnectItem,
+      thirdPartyStore.dropboxConnectItem,
+      thirdPartyStore.oneDriveConnectItem,
+      thirdPartyStore.nextCloudConnectItem,
+      thirdPartyStore.kDriveConnectItem,
+      thirdPartyStore.yandexConnectItem,
+      thirdPartyStore.ownCloudConnectItem,
+      thirdPartyStore.webDavConnectItem,
+      thirdPartyStore.sharePointConnectItem,
+    ]
+      .map(
+        (item) =>
+          item && {
+            isAvialable: !!item,
+            id: item[0],
+            providerName: item[0],
+            isOauth: item.length > 1,
+            oauthHref: item.length > 1 ? item[1] : "",
+          }
+      )
+      .filter((item) => !!item);
+
+    const { getOAuthToken } = auth.settingsStore;
+
+    const {
+      setConnectItem,
+      connectDialogVisible,
+      setConnectDialogVisible,
+      setRoomCreation,
+      saveThirdpartyResponse,
+    } = dialogsStore;
+
+    return {
+      createRoom,
+      createRoomInThirdpary,
+      createTag,
+      fetchTags,
+      addTagsToRoom,
+      calculateRoomLogoParams,
+      uploadRoomLogo,
+      addLogoToRoom,
+
+      setConnectItem,
+      connectDialogVisible,
+      setConnectDialogVisible,
+      setRoomCreation,
+      saveThirdpartyResponse,
+      saveThirdpartyResponse,
+      openConnectWindow,
+      connectItems,
+      getOAuthToken,
+
+      currrentFolderId,
+      updateCurrentFolder,
+    };
   }
 )(observer(CreateRoomEvent));

@@ -43,8 +43,11 @@ public static class NotifyConstants
     #region  Tags
 
     public static readonly string TagFolderID = "FolderID";
+    public static readonly string TagFolderParentId = "FolderParentId";
+    public static readonly string TagFolderRootFolderType = "FolderRootFolderType";
     public static readonly string TagDocumentTitle = "DocumentTitle";
     public static readonly string TagDocumentUrl = "DocumentURL";
+    public static readonly string TagDocumentExtension = "DocumentExtension";
     public static readonly string TagAccessRights = "AccessRights";
     public static readonly string TagMessage = "Message";
     public static readonly string TagMailsCount = "MailsCount";

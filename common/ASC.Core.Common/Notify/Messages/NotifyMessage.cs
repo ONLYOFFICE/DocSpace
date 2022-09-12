@@ -65,6 +65,12 @@ public class NotifyMessage : IMapFrom<NotifyQueue>
     [ProtoMember(12)]
     public int TenantId { get; set; }
 
+    [ProtoMember(13)]
+    public string ProductID { get; set; }
+
+    [ProtoMember(14)]
+    public string Data { get; set; }
+
     public void Mapping(Profile profile)
     {
         profile.CreateMap<NotifyQueue, NotifyMessage>()

@@ -13,6 +13,7 @@ import Loader from "@docspace/components/loader";
 import { Base } from "@docspace/components/themes";
 import Tags from "@docspace/common/components/Tags";
 import Tag from "@docspace/components/tag";
+import { RoomsTypeTranslations } from "@docspace/common/constants";
 
 const svgLoader = () => <div style={{ width: "96px" }} />;
 
@@ -466,6 +467,7 @@ class Tile extends React.PureComponent {
       t,
       columnCount,
       selectTag,
+      selectType,
     } = this.props;
     const { isFolder, isRoom, id, fileExst } = item;
 
@@ -596,7 +598,11 @@ class Tile extends React.PureComponent {
                     tags={item.tags}
                   />
                 ) : (
-                  <Tag label={t("NoTag")} onClick={selectTag} />
+                  <Tag
+                    isDefault
+                    label={t(RoomsTypeTranslations[item.roomType])}
+                    onClick={() => selectType(item.roomType)}
+                  />
                 )}
               </div>
             </>

@@ -20,6 +20,9 @@ import ChangeUserTypeDialog from "./ChangeUserTypeDialog";
 import DataLossWarningDialog from "./DataLossWarningDialog";
 import ResetApplicationDialog from "./ResetApplicationDialog";
 import BackupCodesDialog from "./BackupCodesDialog";
+import CreateRoomDialog from "./CreateEditRoomDialog/CreateRoomDialog";
+import EditRoomDialog from "./CreateEditRoomDialog/EditRoomDialog";
+import ChangePortalOwnerDialog from "./ChangePortalOwnerDialog";
 
 export {
   EmptyTrashDialog,
@@ -44,4 +47,7 @@ export {
   DataLossWarningDialog,
   ResetApplicationDialog,
   BackupCodesDialog,
+  CreateRoomDialog,
+  EditRoomDialog,
+  ChangePortalOwnerDialog,
 };

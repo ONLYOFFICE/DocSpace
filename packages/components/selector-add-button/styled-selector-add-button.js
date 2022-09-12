@@ -17,7 +17,7 @@ const StyledButton = styled.div`
     ${(props) =>
       !props.isDisabled &&
       `
-    fill: ${props.theme.selectorAddButton.color};
+    fill: ${props.theme.selectorAddButton.color} !important;
     `}
   }
 
@@ -26,7 +26,7 @@ const StyledButton = styled.div`
       ${(props) =>
         !props.isDisabled &&
         `
-    fill: ${props.theme.selectorAddButton.hoverColor};
+    fill: ${props.theme.selectorAddButton.hoverColor} !important;
     `}
     }
   }

@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
@@ -103,7 +103,7 @@ const CreateEvent = ({
           addActiveItems(null, [folder.id]);
           setCreatedItem({ id: createdFolderId, type: "folder" });
         })
-        .then(() => editCompleteAction(id, item, false, type))
+        .then(() => editCompleteAction(item, type, true))
         .catch((e) => toastr.error(e))
         .finally(() => {
           const folderIds = [+id];
@@ -123,7 +123,7 @@ const CreateEvent = ({
 
             open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(id, item, false, type))
+          .then(() => editCompleteAction(item, type))
           .catch((err) => {
             if (err.indexOf("password") == -1) {
               toastr.error(err, t("Common:Warning"));
@@ -173,7 +173,7 @@ const CreateEvent = ({
 
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(id, item, false, type))
+          .then(() => editCompleteAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
@@ -209,7 +209,7 @@ const CreateEvent = ({
 
             return open && openDocEditor(file.id, file.providerKey, tab);
           })
-          .then(() => editCompleteAction(id, item, false, type))
+          .then(() => editCompleteAction(item, type))
           .catch((e) => toastr.error(e))
           .finally(() => {
             const fileIds = [+id];
@@ -252,6 +252,7 @@ export default inject(
     treeFoldersStore,
     uploadDataStore,
     dialogsStore,
+    oformsStore,
   }) => {
     const {
       setIsLoading,
@@ -260,9 +261,10 @@ export default inject(
       addActiveItems,
       openDocEditor,
       setIsUpdatingRowItem,
-      gallerySelected,
       setCreatedItem,
     } = filesStore;
+
+    const { gallerySelected } = oformsStore;
 
     const { editCompleteAction } = filesActionsStore;
 

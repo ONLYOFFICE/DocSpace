@@ -3,6 +3,8 @@
   "CodeSubtitle": "Abbiamo inviato un codice di 6 cifre a {{email}}. Il codice ha un periodo di validità limitato, inseriscilo il prima possibile.",
   "CodeTitle": "Il codice ti è stato inviato via email",
   "CookieSettingsTitle": "Durata della sessione",
+  "ErrorInvalidHeader": "Email errata o link scaduto",
+  "ErrorInvalidText": "Tra 10 secondi sarai reindirizzato alla <1>pagina di login</1>",
   "ExpiredCode": "Questo codice non è più valido. Richiedi un nuovo codice e riprova",
   "ForgotPassword": "Password dimenticata?",
   "InvalidCode": "Questo codice non è valido. Riprova",

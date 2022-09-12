@@ -27,34 +27,6 @@
 namespace ASC.Core.Tenants;
 
 [Scope]
-class ConfigureTenantUtil : IConfigureNamedOptions<TenantUtil>
-{
-    private readonly IOptionsSnapshot<TenantManager> _tenantManager;
-    private readonly TimeZoneConverter _timeZoneConverter;
-
-    public ConfigureTenantUtil(
-        IOptionsSnapshot<TenantManager> tenantManager,
-        TimeZoneConverter timeZoneConverter
-        )
-    {
-        _tenantManager = tenantManager;
-        _timeZoneConverter = timeZoneConverter;
-    }
-
-    public void Configure(string name, TenantUtil options)
-    {
-        Configure(options);
-        options._tenantManager = _tenantManager.Get(name);
-    }
-
-    public void Configure(TenantUtil options)
-    {
-        options._timeZoneConverter = _timeZoneConverter;
-        options._tenantManager = _tenantManager.Value;
-    }
-}
-
-[Scope(typeof(ConfigureTenantUtil))]
 public class TenantUtil
 {
     internal TenantManager _tenantManager;
