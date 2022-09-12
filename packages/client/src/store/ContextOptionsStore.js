@@ -4,7 +4,7 @@ import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "PACKAGE_FILE";
 import toastr from "@docspace/components/toast/toastr";
-import { AppServerConfig } from "@docspace/common/constants";
+import { AppServerConfig, ShareAccessRights } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
   isMobile as isMobileUtils,
@@ -355,7 +355,9 @@ class ContextOptionsStore {
 
     this.dialogsStore.setInvitePanelOptions({
       visible: true,
-      id: action,
+      roomId: action,
+      hideSelector: false,
+      defaultAccess: ShareAccessRights.FullAccess,
     });
   };
 

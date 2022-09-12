@@ -1,5 +1,5 @@
 import { getNewFiles } from "@docspace/common/api/files";
-import { FileAction } from "@docspace/common/constants";
+import { FileAction, ShareAccessRights } from "@docspace/common/constants";
 import { makeAutoObservable, runInAction } from "mobx";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 
@@ -28,7 +28,11 @@ class DialogsStore {
   convertPasswordDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
-  invitePanelOptions = { visible: false };
+  invitePanelOptions = {
+    visible: false,
+    hideSelector: false,
+    defaultAccess: ShareAccessRights.FullAccess,
+  };
 
   removeItem = null;
   connectItem = null;
