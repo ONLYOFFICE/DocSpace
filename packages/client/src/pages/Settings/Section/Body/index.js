@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Error403 from "client/Error403";
 import Error520 from "client/Error520";
 import ConnectClouds from "./ConnectedClouds";
@@ -6,7 +6,7 @@ import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
-import TabsContainer from "@docspace/components/tabs-container";
+import Submenu from "@docspace/components/submenu";
 import CommonSettings from "./CommonSettings";
 import AdminSettings from "./AdminSettings";
 
@@ -17,112 +17,102 @@ const SectionBodyContent = ({
   settingsIsLoaded,
   isErrorSettings,
   history,
-  setExpandSettingsTree,
-  setSelectedNode,
   isPersonal,
   t,
 }) => {
+  const [currentTab, setCurrentTab] = useState(0);
+
   const commonSettings = {
+    id: "common",
+    name: t("CommonSettings"),
     content: <CommonSettings t={t} />,
-    key: "common",
-    title: t("CommonSettings"),
   };
 
   const adminSettings = {
+    id: "admin",
+    name: t("Common:AdminSettings"),
     content: <AdminSettings t={t} />,
-    key: "admin",
-    title: t("Common:AdminSettings"),
   };
 
   const connectedCloud = {
+    id: "connected-clouds",
+    name: t("ThirdPartySettings"),
     content: <ConnectClouds />,
-    key: "connected-clouds",
-    title: t("ThirdPartySettings"),
   };
 
-  const elements = [];
+  const data = [];
 
-  if (isAdmin && !isPersonal) {
-    elements.push(adminSettings);
+  if (isAdmin) {
+    data.push(adminSettings);
   }
 
-  if (!isPersonal) {
-    elements.push(commonSettings);
-  }
+  data.push(commonSettings);
 
   if (enableThirdParty) {
-    elements.push(connectedCloud);
+    data.push(connectedCloud);
   }
 
-  const onSelect = React.useCallback(
-    (data) => {
-      const { key } = data;
+  const onSelect = useCallback(
+    (e) => {
+      const { id } = e;
 
-      if (key === setting) return;
+      if (id === setting) return;
 
-      setSelectedNode([key]);
-      setExpandSettingsTree([key]);
+      // setSelectedNode([key]);
+      // setExpandSettingsTree([key]);
 
       history.push(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `/settings/${key}`
-        )
+        combineUrl(AppServerConfig.proxyURL, config.homepage, `/settings/${id}`)
       );
     },
-    [setting, history, setExpandSettingsTree, setSelectedNode]
+    [setting, history]
   );
 
-  const selectedTab = React.useCallback(() => {
-    switch (setting) {
-      case "common":
-        return isAdmin ? 1 : 0;
-      case "admin":
-        return 0;
-      case "connected-clouds":
-        return isPersonal ? 0 : isAdmin ? 2 : 1;
-      default:
-        return isAdmin ? 1 : 0;
+  // const selectedTab = React.useCallback(() => {
+  //   switch (setting) {
+  //     case "common":
+  //       return isAdmin ? 1 : 0;
+  //     case "admin":
+  //       return 0;
+  //     case "connected-clouds":
+  //       return isPersonal ? 0 : isAdmin ? 2 : 1;
+  //     default:
+  //       return isAdmin ? 1 : 0;
+  //   }
+  // }, [setting, isAdmin, isPersonal]);
+
+  useEffect(() => {
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+    if (currentTab !== -1) {
+      setCurrentTab(currentTab);
     }
-  }, [setting, isAdmin, isPersonal]);
+  }, []);
 
   return !settingsIsLoaded ? null : (!enableThirdParty &&
       setting === "connected-clouds") ||
-    (!isAdmin && setting === "admin") ||
-    (isPersonal && setting !== "connected-clouds") ? (
+    (!isAdmin && setting === "admin") ? (
     <Error403 />
   ) : isErrorSettings ? (
     <Error520 />
-  ) : !isPersonal ? (
+  ) : (
     <div>
-      <TabsContainer
-        elements={elements}
+      <Submenu
+        data={data}
+        startSelect={currentTab}
         onSelect={onSelect}
-        selectedItem={selectedTab()}
+        //selectedItem={selectedTab()}
       />
     </div>
-  ) : (
-    <div>{elements[0].content}</div>
   );
 };
 
-export default inject(({ auth, treeFoldersStore, settingsStore }) => {
-  const {
-    enableThirdParty,
-    settingsIsLoaded,
+export default inject(({ auth, settingsStore }) => {
+  const { enableThirdParty, settingsIsLoaded } = settingsStore;
 
-    setExpandSettingsTree,
-  } = settingsStore;
-
-  const { setSelectedNode } = treeFoldersStore;
   return {
     isAdmin: auth.isAdmin,
-    isPersonal: auth.settingsStore.personal,
     enableThirdParty,
     settingsIsLoaded,
-
-    setExpandSettingsTree,
-    setSelectedNode,
   };
 })(observer(SectionBodyContent));
