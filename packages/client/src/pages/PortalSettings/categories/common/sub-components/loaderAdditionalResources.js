@@ -6,7 +6,7 @@ const StyledLoader = styled.div`
   margin-top: 40px;
 
   .item {
-    padding-bottom: 14px;
+    padding-bottom: 15px;
   }
 
   .loader-header {
@@ -25,6 +25,7 @@ const StyledLoader = styled.div`
   .button {
     padding-top: 10px;
   }
+
   .save {
     padding-right: 8px;
   }
