@@ -56,7 +56,7 @@ public class EmployeeFullDto : EmployeeDto
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
     public bool IsSSO { get; set; }
     public DarkThemeSettingsEnum? Theme { get; set; }
-    public string QuotaLimit { get; set; }
+    public long QuotaLimit { get; set; }
     public double UsedSpace { get; set; }
 
     public static new EmployeeFullDto GetSample()

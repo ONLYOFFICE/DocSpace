@@ -29,5 +29,5 @@ namespace ASC.People.ApiModels.RequestDto;
 public class UpdateMembersQuotaRequestDto
 {
     public IEnumerable<Guid> UserIds { get; set; }
-    public string Quota { get; set; }
+    public long Quota { get; set; }
 }

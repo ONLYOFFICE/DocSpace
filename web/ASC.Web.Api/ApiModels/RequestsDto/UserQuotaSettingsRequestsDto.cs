@@ -29,6 +29,6 @@ namespace ASC.Web.Api.ApiModel.RequestsDto;
 public class UserQuotaSettingsRequestsDto
 {
     public bool EnableUserQuota { get; set; }
-    public string DefaultUserQuota { get; set; }
+    public long DefaultUserQuota { get; set; }
 
 }

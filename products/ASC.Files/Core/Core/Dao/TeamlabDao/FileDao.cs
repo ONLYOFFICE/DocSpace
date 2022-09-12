@@ -415,9 +415,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
         var user = _userManager.GetUsers(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
         var quotaSettings = _settingsManager.LoadForTenant<UserQuotaSettings>(_tenantManager.GetCurrentTenant().Id);
 
-        if (!quotaSettings.EnableUserQuota || user.QuotaLimit != Constants.UserNoQuota)
+        if (!quotaSettings.EnableUserQuota || user.QuotaLimit != -1)
         {
-            var quotaLimit = ByteConverter.ConvertSizeToBytes(user.QuotaLimit);
+            var quotaLimit = user.QuotaLimit;
             var userUsedSpace = Math.Max(0, 
                 _userManager.FindUserQuotaRows(
                         _tenantManager.GetCurrentTenant().Id, 

@@ -1105,14 +1105,12 @@ public class UserController : PeopleControllerBase
 
         foreach (var user in users)
         {
-            if (inDto.Quota != Constants.UserNoQuota)
+            if (inDto.Quota != -1)
             {
                 var usedSpace = await _globalSpace.GetUserUsedSpaceAsync(user.Id);
-                var quotaBytes = ByteConverter.ConvertSizeToBytes(inDto.Quota);
                 var tenanSpaceQuota = _tenantExtra.GetTenantQuota().MaxTotalSize;
 
-
-                if (tenanSpaceQuota < quotaBytes || usedSpace > quotaBytes)
+                if (tenanSpaceQuota < inDto.Quota || usedSpace > inDto.Quota)
                 {
                     continue;
                 }

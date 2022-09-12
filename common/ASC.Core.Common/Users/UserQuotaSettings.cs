@@ -31,14 +31,14 @@ public class UserQuotaSettings : ISettings<UserQuotaSettings>
 {
     public bool EnableUserQuota { get; set; }
 
-    public string DefaultUserQuota { get; set; }
+    public long DefaultUserQuota { get; set; }
 
     public UserQuotaSettings GetDefault()
     {
         return new UserQuotaSettings
         {
             EnableUserQuota = false,
-            DefaultUserQuota = ""
+            DefaultUserQuota = -1
         };
     }
 

@@ -82,3 +82,5 @@ global using Novell.Directory.Ldap;
 global using Novell.Directory.Ldap.Controls;
 global using Novell.Directory.Ldap.Rfc2251;
 global using Novell.Directory.Ldap.Utilclass;
+
+global using ByteConverter = ASC.Core.Common.ByteConverter;
