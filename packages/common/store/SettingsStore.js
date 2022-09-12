@@ -345,7 +345,17 @@ class SettingsStore {
 
   getCompanyInfoSettings = async () => {
     const res = await api.settings.getCompanyInfoSettings();
+
+    delete res.IsLicensor;
+
     this.setCompanyInfoSettingsData(res);
+
+    if (!localStorage.getItem("defaultDataCompanyInfoSettings")) {
+      localStorage.setItem(
+        "defaultDataCompanyInfoSettings",
+        JSON.stringify(res)
+      );
+    }
   };
 
   restoreCompanyInfoSettings = async () => {
