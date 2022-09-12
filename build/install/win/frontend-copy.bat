@@ -18,7 +18,5 @@ if defined SecondArg (
 
 xcopy "%PathToRepository%\build\deploy\public" "%PathToAppFolder%\public" /s /y /b /i
 xcopy "%PathToRepository%\build\deploy\client" "%PathToAppFolder%\client" /s /y /b /i
-xcopy "%PathToRepository%\build\deploy\login" "%PathToAppFolder%\login" /s /y /b /i
-xcopy "%PathToRepository%\build\deploy\editor" "%PathToAppFolder%\products\ASC.Files\editor" /s /y /b /i
 xcopy "%PathToRepository%\config\nginx" "%PathToAppFolder%\nginx\conf" /s /y /b /i
 xcopy "%PathToRepository%\config\*" "%PathToAppFolder%\config" /y /b /i

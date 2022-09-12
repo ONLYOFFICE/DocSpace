@@ -20,6 +20,8 @@ copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\SsoAuth.exe
 copy build\install\win\tools\SsoAuth.xml "build\install\win\Files\tools\SsoAuth.xml" /y
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\DocEditor.exe" /y
 copy build\install\win\tools\DocEditor.xml "build\install\win\Files\tools\DocEditor.xml" /y
+copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Login.exe" /y
+copy build\install\win\tools\Login.xml "build\install\win\Files\tools\Login.xml" /y
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
 rmdir build\install\win\publish /s /q
 

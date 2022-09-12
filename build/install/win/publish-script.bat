@@ -33,7 +33,7 @@ dotnet publish "%PathToRepository%\common\services\ASC.Webhooks.Service\ASC.Webh
 dotnet publish "%PathToRepository%\web\ASC.Web.Api\ASC.Web.Api.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Web.Api\service"
 dotnet publish "%PathToRepository%\web\ASC.Web.Studio\ASC.Web.Studio.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Web.Studio\service"
 
-rem backend services (Nodejs)
+rem backend services (Nodejs) in directory 'services'
 mkdir "%PathToAppFolder%\services\ASC.UrlShortener\service"
 xcopy "%PathToRepository%\common\ASC.UrlShortener" "%PathToAppFolder%\services\ASC.UrlShortener\service" /s /y /b /i
 
@@ -42,3 +42,10 @@ xcopy "%PathToRepository%\common\ASC.Socket.IO" "%PathToAppFolder%\services\ASC.
 
 mkdir "%PathToAppFolder%\services\ASC.SsoAuth\service"
 xcopy "%PathToRepository%\common\ASC.SsoAuth" "%PathToAppFolder%\services\ASC.SsoAuth\service" /s /y /b /i
+
+rem backend services (Nodejs) in directory 'products'
+mkdir "%PathToAppFolder%\products\ASC.Login\login"
+xcopy "%PathToRepository%\build\deploy\login" "%PathToAppFolder%\products\ASC.Login\login" /s /y /b /i
+
+mkdir "%PathToAppFolder%\products\ASC.Files\editor"
+xcopy "%PathToRepository%\build\deploy\editor" "%PathToAppFolder%\products\ASC.Files\editor" /s /y /b /i
