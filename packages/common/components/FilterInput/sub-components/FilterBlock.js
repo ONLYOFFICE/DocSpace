@@ -31,6 +31,8 @@ const FilterBlock = ({
   hideFilterBlock,
   onFilter,
   selectorLabel,
+  isPersonalRoom,
+  isRooms,
 }) => {
   const [showSelector, setShowSelector] = React.useState({
     show: false,
@@ -74,13 +76,21 @@ const FilterBlock = ({
             if (groupItem.isMultiSelect) {
               groupItem.isSelected = currentFilter.key.includes(groupItem.key);
             }
+            if (groupItem.withOptions) {
+              groupItem.isSelected = currentFilter.key.includes(groupItem.key);
+            }
           });
         } else {
-          item.groupItem.forEach((groupItem) => {
+          item.groupItem.forEach((groupItem, idx) => {
             groupItem.isSelected = false;
             if (groupItem.isSelector) {
               groupItem.selectedKey = null;
               groupItem.selectedLabel = null;
+            }
+            if (groupItem.withOptions) {
+              item.groupItem[idx].options.forEach((x, index) => {
+                item.groupItem[idx].options[index].isSelected = false;
+              });
             }
           });
         }
@@ -244,7 +254,7 @@ const FilterBlock = ({
 
     setTimeout(() => {
       setIsLoading(false);
-    }, 300);
+    }, 500);
   }, []);
 
   React.useEffect(() => {
@@ -372,7 +382,10 @@ const FilterBlock = ({
           </StyledFilterBlockHeader>
           <div className="filter-body">
             {isLoading ? (
-              <Loaders.FilterBlock />
+              <Loaders.FilterBlock
+                isPersonalRoom={isPersonalRoom}
+                isRooms={isRooms}
+              />
             ) : (
               <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
                 {filterData.map((item) => {
