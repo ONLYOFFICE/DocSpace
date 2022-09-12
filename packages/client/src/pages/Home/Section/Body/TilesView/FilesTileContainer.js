@@ -78,8 +78,9 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
       className="tile-container"
       draggable
       useReactWindow={!withPaging}
-      headingFolders={t("Folders")}
-      headingFiles={t("Files")}
+      headingFolders={t("Translations:Folders")}
+      headingFiles={t("Translations:Files")}
+      headingRooms={t("Common:Rooms")}
     >
       {filesList.map((item, index) => {
         return index == 0 ? (
