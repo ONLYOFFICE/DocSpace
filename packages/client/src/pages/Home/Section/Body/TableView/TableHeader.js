@@ -167,7 +167,6 @@ class FilesTableHeader extends React.Component {
 
   componentDidMount() {
     this.customScrollElm = document.getElementsByClassName("section-scroll")[0];
-
     this.customScrollElm.addEventListener("scroll", this.onBeginScroll);
   }
 
@@ -301,6 +300,7 @@ class FilesTableHeader extends React.Component {
       columnInfoPanelStorageName,
       filesColumnInfoPanelStorageName,
       roomsColumnInfoPanelStorageName,
+      withPaging,
     } = this.props;
 
     // const { sortBy, sortOrder } = filter;
@@ -340,6 +340,7 @@ class FilesTableHeader extends React.Component {
         resetColumnsSize={resetColumnsSize || needReset}
         sortingVisible={sortingVisible}
         infoPanelVisible={infoPanelVisible}
+        useReactWindow={!withPaging}
       />
     );
   }
@@ -357,7 +358,6 @@ export default inject(
       canShare,
       firstElemChecked,
       headerBorder,
-
       roomsFilter,
       fetchRooms,
     } = filesStore;
@@ -365,7 +365,7 @@ export default inject(
 
     const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
     const sortingVisible = !isRecentFolder;
-    const { personal } = auth.settingsStore;
+    const { personal, withPaging } = auth.settingsStore;
 
     return {
       isHeaderChecked,
@@ -385,6 +385,7 @@ export default inject(
       headerBorder,
 
       infoPanelVisible,
+      withPaging,
     };
   }
 )(

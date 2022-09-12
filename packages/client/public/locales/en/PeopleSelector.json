@@ -1,7 +1,13 @@
 {
+  "AllAccounts": "All accounts",
   "AllUsers": "All users",
   "CustomAllGroups": "All {{ groupsCaption, lowercase }}",
+  "EmptyDescription": "The list of users previously invited to DocSpace or separate rooms will appear here. You will be able to invite these users for collaboration at any time.",
+  "EmptyHeader": "No other accounts here yet",
   "EmptySearchUsersResult": "There are no users with such name",
   "EmptyUsers": "There are no users",
+  "ListAccounts": "List accounts",
+  "SearchEmptyDescription": "No people matching your filter can be displayed in this section. Please select other filter options or clear filter to view all the people in this section.",
+  "SearchEmptyHeader": "No users found",
   "SearchUsersPlaceholder": "Search users"
 }

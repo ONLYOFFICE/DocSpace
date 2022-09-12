@@ -38,6 +38,7 @@
     "react-toastify": "^7.0.0",
     "react-tooltip": "^4.2.21",
     "react-transition-group": "^4.4.1",
+    "react-virtualized": "^9.22.3",
     "react-window": "^1.8.6",
     "resize-image": "^0.1.0"
   },

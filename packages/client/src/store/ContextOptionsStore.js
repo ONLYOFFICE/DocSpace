@@ -3,7 +3,7 @@ import copy from "copy-to-clipboard";
 import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "PACKAGE_FILE";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { AppServerConfig } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
@@ -11,6 +11,7 @@ import {
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
 
 class ContextOptionsStore {
   authStore;
@@ -282,9 +283,10 @@ class ContextOptionsStore {
 
     const translations = {
       deleteOperation: t("Translations:DeleteOperation"),
-      successRemoveFile: t("FileRemoved"),
-      successRemoveFolder: t("FolderRemoved"),
-      successRemoveRoom: "Remove room",
+      successRemoveFile: t("Files:FileRemoved"),
+      successRemoveFolder: t("Files:FolderRemoved"),
+      successRemoveRoom: t("Files:RoomRemoved"),
+      successRemoveRooms: t("Files:RoomsRemoved"),
     };
 
     this.filesActionsStore.deleteItemAction(
@@ -341,8 +343,10 @@ class ContextOptionsStore {
     setIsVisible(true);
   };
 
-  onClickEditRoom = () => {
-    console.log("edit room");
+  onClickEditRoom = (item) => {
+    const event = new Event(Events.ROOM_EDIT);
+    event.item = item;
+    window.dispatchEvent(event);
   };
 
   onClickInviteUsers = () => {
@@ -367,6 +371,9 @@ class ContextOptionsStore {
 
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
+
+    const { enablePlugins } = this.authStore.settingsStore;
+
     const isRootThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
 
@@ -531,7 +538,7 @@ class ContextOptionsStore {
         key: "edit-room",
         label: "Edit room",
         icon: "images/settings.react.svg",
-        onClick: () => this.onClickEditRoom(),
+        onClick: () => this.onClickEditRoom(item),
         disabled: false,
       },
       {
@@ -720,6 +727,30 @@ class ContextOptionsStore {
 
     const options = this.filterModel(optionsModel, contextOptions);
 
+    if (enablePlugins) {
+      const pluginOptions = getContextMenuItems();
+
+      if (pluginOptions) {
+        pluginOptions.forEach((option) => {
+          if (contextOptions.includes(option.key)) {
+            const value = option.value;
+            if (!value.onClick) {
+              options.splice(value.position, 0, {
+                key: option.key,
+                ...value,
+              });
+            } else {
+              options.splice(value.position, 0, {
+                key: option.key,
+                label: value.label,
+                icon: value.icon,
+                onClick: () => value.onClick(item),
+              });
+            }
+          }
+        });
+      }
+    }
     return options;
   };
 
@@ -793,7 +824,7 @@ class ContextOptionsStore {
           key: "delete-rooms",
           label: t("Common:Delete"),
           icon: "images/trash.react.svg",
-          onClick: deleteRooms,
+          onClick: () => deleteRooms(t),
         });
       }
 
@@ -929,8 +960,8 @@ class ContextOptionsStore {
               deleteOperation: t("Translations:DeleteOperation"),
               deleteFromTrash: t("Translations:DeleteFromTrash"),
               deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-              FileRemoved: t("Home:FileRemoved"),
-              FolderRemoved: t("Home:FolderRemoved"),
+              FileRemoved: t("Files:FileRemoved"),
+              FolderRemoved: t("Files:FolderRemoved"),
             };
 
             this.filesActionsStore

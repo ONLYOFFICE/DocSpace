@@ -48,6 +48,7 @@ public enum FolderType
     ReadOnlyRoom = 18,
     CustomRoom = 19,
     Archive = 20,
+    ThirdpartyBackup = 21
 }
 
 public interface IFolder
@@ -73,6 +74,7 @@ public class Folder<T> : FileEntry<T>, IFolder
     public int NewForMe { get; set; }
     public string FolderUrl { get; set; }
     public bool Pinned { get; set; }
+    public bool Private { get; set; }
     public override bool IsNew
     {
         get => Convert.ToBoolean(NewForMe);

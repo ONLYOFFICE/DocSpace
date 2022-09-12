@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import SelectFolderDialog from "../SelectFolderDialog";
 
 let timerId;
@@ -20,7 +20,6 @@ const OperationsPanelComponent = (props) => {
     setDestFolderId,
     setIsFolderActions,
     currentFolderId,
-    operationsFolders,
     setCopyPanelVisible,
     setExpandedPanelKeys,
     setMoveToPanelVisible,
@@ -193,11 +192,7 @@ export default inject(
     { isCopy }
   ) => {
     const { filter, selection, bufferSelection } = filesStore;
-    const {
-      isRecycleBinFolder,
-      operationsFolders,
-      setExpandedPanelKeys,
-    } = treeFoldersStore;
+    const { isRecycleBinFolder, setExpandedPanelKeys } = treeFoldersStore;
     const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
     const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
 
@@ -226,7 +221,6 @@ export default inject(
       parentFolderId: selectedFolderStore.parentId,
       isRecycleBin: isRecycleBinFolder,
       filter,
-      operationsFolders,
       visible: copyPanelVisible || moveToPanelVisible,
       provider,
       selection: selectionsWithoutEditing,

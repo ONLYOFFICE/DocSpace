@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -34,12 +32,10 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, configureServices: (hostContext, services, diHelper) =>
-{
-    services.AddHostedService<LdapNotifyService>();
-    diHelper.TryAdd<LdapNotifyService>();
-    services.AddBaseDbContextPool<FilesDbContext>();
-});
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.WebHost.ConfigureDefaultKestrel();
 

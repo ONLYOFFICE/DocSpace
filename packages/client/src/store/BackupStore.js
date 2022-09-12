@@ -1,11 +1,13 @@
 import { getBackupProgress } from "@docspace/common/api/portal";
 import { makeAutoObservable } from "mobx";
 import {
-  saveToSessionStorage,
-  getFromSessionStorage,
+  saveToLocalStorage,
+  getFromLocalStorage,
+  removeLocalStorage,
 } from "../pages/PortalSettings/utils";
-import toastr from "../helpers/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { AutoBackupPeriod } from "@docspace/common/constants";
+//import api from "@docspace/common/api";
 
 const { EveryDayType, EveryWeekType } = AutoBackupPeriod;
 
@@ -50,6 +52,21 @@ class BackupStore {
   temporaryLink = null;
   timerId = null;
 
+  isThirdStorageChanged = false;
+
+  formSettings = {};
+  requiredFormSettings = {};
+  defaultFormSettings = {};
+  errorsFieldsBeforeSafe = {};
+
+  selectedEnableSchedule = false;
+  defaultEnableSchedule = false;
+
+  isSavingProcess = false;
+  isResetProcess = false;
+
+  storageRegions = [];
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -85,6 +102,11 @@ class BackupStore {
 
     this.selectedWeekdayLabel = this.defaultWeekdayLabel;
     this.selectedWeekday = this.defaultWeekday;
+
+    this.selectedEnableSchedule = false;
+    this.defaultEnableSchedule = false;
+
+    this.setIsThirdStorageChanged(false);
   };
   get isChanged() {
     if (this.selectedHour !== this.defaultHour) {
@@ -119,6 +141,8 @@ class BackupStore {
 
     if (this.selectedStorageId !== this.defaultStorageId) return true;
 
+    if (this.selectedEnableSchedule !== this.defaultEnableSchedule) return true;
+
     return false;
   }
 
@@ -136,6 +160,14 @@ class BackupStore {
     this.selectedWeekday = this.defaultWeekday;
     this.selectedStorageId = this.defaultStorageId;
     this.selectedFolderId = this.defaultFolderId;
+
+    this.selectedEnableSchedule = this.defaultEnableSchedule;
+
+    if (this.defaultFormSettings) {
+      this.setFormSettings({ ...this.defaultFormSettings });
+    }
+
+    this.setIsThirdStorageChanged(false);
   };
 
   setDefaultOptions = (t, periodObj, weekdayArr) => {
@@ -147,15 +179,29 @@ class BackupStore {
         storageParams,
       } = this.backupSchedule;
 
-      const { folderId } = storageParams;
+      const { folderId, module } = storageParams;
       const { period, day, hour } = cronParams;
 
+      let defaultFormSettings = {};
+      for (let variable in storageParams) {
+        if (variable === "module") continue;
+        defaultFormSettings[variable] = storageParams[variable];
+      }
+      if (defaultFormSettings) {
+        this.setFormSettings({ ...defaultFormSettings });
+        this.setDefaultFormSettings({ ...defaultFormSettings });
+        this.isThirdStorageChanged && this.setIsThirdStorageChanged(false);
+      }
+
+      this.defaultEnableSchedule = true;
+      this.selectedEnableSchedule = true;
       this.defaultDay = `${day}`;
       this.defaultHour = `${hour}:00`;
       this.defaultPeriodNumber = `${period}`;
       this.defaultMaxCopiesNumber = `${backupsStored}`;
       this.defaultStorageType = `${storageType}`;
       this.defaultFolderId = `${folderId}`;
+      if (module) this.defaultStorageId = `${module}`;
 
       this.selectedDay = this.defaultDay;
       this.selectedHour = this.defaultHour;
@@ -166,6 +212,7 @@ class BackupStore {
 
       this.defaultPeriodLabel = periodObj[+this.defaultPeriodNumber].label;
       this.selectedPeriodLabel = this.defaultPeriodLabel;
+      if (module) this.selectedStorageId = this.defaultStorageId;
 
       this.defaultMonthDay =
         +this.defaultPeriodNumber === +EveryWeekType ||
@@ -209,6 +256,8 @@ class BackupStore {
       this.selectedWeekdayLabel = this.defaultWeekdayLabel;
       this.selectedWeekday = this.defaultWeekday;
     }
+
+    this.setIsThirdStorageChanged(false);
   };
 
   setThirdPartyStorage = (list) => {
@@ -269,29 +318,44 @@ class BackupStore {
     if (folderId !== this.selectedFolderId) this.selectedFolderId = folderId;
   };
 
-  setStorageId = (selectedStorage, defaultStorage) => {
-    if (defaultStorage) {
-      this.defaultStorageId = defaultStorage;
-      this.selectedStorageId = defaultStorage;
-    } else {
-      this.selectedStorageId = selectedStorage;
-    }
+  setStorageId = (selectedStorage) => {
+    this.selectedStorageId = selectedStorage;
   };
 
-  clearSessionStorage = () => {
-    saveToSessionStorage("LocalCopyStorageType", "");
+  clearLocalStorage = () => {
+    removeLocalStorage("LocalCopyStorageType");
 
-    getFromSessionStorage("LocalCopyPath") &&
-      saveToSessionStorage("LocalCopyPath", "");
+    getFromLocalStorage("LocalCopyFolder") &&
+      removeLocalStorage("LocalCopyFolder");
 
-    getFromSessionStorage("LocalCopyFolder") &&
-      saveToSessionStorage("LocalCopyFolder", "");
+    getFromLocalStorage("LocalCopyStorage") &&
+      removeLocalStorage("LocalCopyStorage");
 
-    getFromSessionStorage("LocalCopyStorage") &&
-      saveToSessionStorage("LocalCopyStorage", "");
+    getFromLocalStorage("LocalCopyThirdPartyStorageType") &&
+      removeLocalStorage("LocalCopyThirdPartyStorageType");
 
-    getFromSessionStorage("LocalCopyThirdPartyStorageType") &&
-      saveToSessionStorage("LocalCopyThirdPartyStorageType", "");
+    getFromLocalStorage("LocalCopyThirdPartyStorageValues") &&
+      removeLocalStorage("LocalCopyThirdPartyStorageValues");
+  };
+
+  saveToLocalStorage = (
+    isStorage,
+    moduleName,
+    selectedId,
+    selectedStorageTitle
+  ) => {
+    saveToLocalStorage("LocalCopyStorageType", moduleName);
+
+    if (isStorage) {
+      saveToLocalStorage("LocalCopyStorage", `${selectedId}`);
+      saveToLocalStorage(
+        "LocalCopyThirdPartyStorageType",
+        selectedStorageTitle
+      );
+      saveToLocalStorage("LocalCopyThirdPartyStorageValues", this.formSettings);
+    } else {
+      saveToLocalStorage("LocalCopyFolder", `${selectedId}`);
+    }
   };
 
   getProgress = async (t) => {
@@ -310,13 +374,17 @@ class BackupStore {
           if (progress !== 100) {
             this.getIntervalProgress(t);
           } else {
-            this.clearSessionStorage();
+            //this.clearLocalStorage();
           }
+        } else {
+          this.downloadingProgress = 100;
+          clearInterval(this.timerId);
+          //this.clearLocalStorage();
         }
       }
     } catch (e) {
       toastr.error(t("BackupCreatedError"));
-      this.clearSessionStorage();
+      // this.clearLocalStorage();
     }
   };
   getIntervalProgress = (t) => {
@@ -342,7 +410,7 @@ class BackupStore {
             clearInterval(timerId);
             this.timerId && toastr.error(t("BackupCreatedError"));
             this.timerId = null;
-            this.clearSessionStorage();
+            //this.clearLocalStorage();
             this.downloadingProgress = 100;
             return;
           }
@@ -353,7 +421,7 @@ class BackupStore {
 
           if (progress === 100) {
             clearInterval(this.timerId);
-            this.clearSessionStorage();
+            //this.clearLocalStorage();
 
             if (link && link.slice(0, 1) === "/") {
               this.temporaryLink = link;
@@ -365,8 +433,10 @@ class BackupStore {
             return;
           }
         } else {
+          this.timerId && toastr.error(t("BackupCreatedError"));
+          this.downloadingProgress = 100;
           clearInterval(this.timerId);
-          this.clearSessionStorage();
+          // this.clearLocalStorage();
           this.timerId = null;
           return;
         }
@@ -374,7 +444,7 @@ class BackupStore {
         isWaitRequest = false;
       } catch (e) {
         clearInterval(this.timerId);
-        this.clearSessionStorage();
+        // this.clearLocalStorage();
         this.downloadingProgress = 100;
         this.timerId && toastr.error(t("BackupCreatedError"));
         this.timerId = null;
@@ -393,6 +463,157 @@ class BackupStore {
 
   setTemporaryLink = (link) => {
     this.temporaryLink = link;
+  };
+
+  setFormSettings = (obj) => {
+    this.formSettings = obj;
+  };
+
+  addValueInFormSettings = (name, value) => {
+    this.setFormSettings({ ...this.formSettings, [name]: value });
+  };
+
+  deleteValueFormSetting = (key) => {
+    delete this.formSettings[key];
+  };
+  getStorageParams = (
+    isCheckedThirdPartyStorage,
+    selectedFolderId,
+    selectedStorageId
+  ) => {
+    let storageParams = [
+      {
+        key: isCheckedThirdPartyStorage ? "module" : "folderId",
+        value: isCheckedThirdPartyStorage
+          ? selectedStorageId
+          : selectedFolderId,
+      },
+    ];
+
+    if (isCheckedThirdPartyStorage) {
+      const arraySettings = Object.entries(this.formSettings);
+
+      for (let i = 0; i < arraySettings.length; i++) {
+        const tmpObj = {
+          key: arraySettings[i][0],
+          value: arraySettings[i][1],
+        };
+
+        storageParams.push(tmpObj);
+      }
+    }
+
+    return storageParams;
+  };
+
+  setRequiredFormSettings = (array) => {
+    this.requiredFormSettings = array;
+  };
+
+  setStorageRegions = (regions) => {
+    this.storageRegions = regions;
+  };
+  setDefaultFormSettings = (obj) => {
+    this.defaultFormSettings = obj;
+  };
+
+  get isValidForm() {
+    if (Object.keys(this.requiredFormSettings).length == 0) return;
+
+    for (let key of this.requiredFormSettings) {
+      const elem = this.formSettings[key];
+      if (!elem) return false;
+      if (!elem.trim()) return false;
+    }
+    return true;
+  }
+  isFormReady = () => {
+    let errors = {};
+    let firstError = false;
+
+    for (let key of this.requiredFormSettings) {
+      const elem = this.formSettings[key];
+
+      errors[key] = !elem.trim();
+
+      if (!elem.trim() && !firstError) {
+        firstError = true;
+      }
+    }
+    this.setErrorsFormFields(errors);
+
+    return !firstError;
+  };
+
+  setErrorsFormFields = (errors) => {
+    this.errorsFieldsBeforeSafe = errors;
+  };
+  setCompletedFormFields = (values, module) => {
+    let formSettingsTemp = {};
+
+    if (module && module === this.defaultStorageId) {
+      this.setFormSettings({ ...this.defaultFormSettings });
+      return;
+    }
+
+    for (const [key, value] of Object.entries(values)) {
+      formSettingsTemp[key] = value;
+    }
+
+    this.setFormSettings({ ...formSettingsTemp });
+    this.setErrorsFormFields({});
+  };
+
+  setIsThirdStorageChanged = (changed) => {
+    if (changed !== this.isThirdStorageChanged) {
+      this.isThirdStorageChanged = changed;
+    }
+  };
+
+  setSelectedEnableSchedule = () => {
+    const isEnable = this.selectedEnableSchedule;
+    this.selectedEnableSchedule = !isEnable;
+  };
+  setSavingProcess = (process) => {
+    if (process !== this.isSavingProcess) this.isSavingProcess = process;
+  };
+
+  setResetProcess = (process) => {
+    if (process !== this.isResetProcess) this.isResetProcess = process;
+  };
+
+  convertServiceName = (serviceName) => {
+    //Docusign, OneDrive, Wordpress
+    switch (serviceName) {
+      case "GoogleDrive":
+        return "google";
+      case "Box":
+        return "box";
+      case "DropboxV2":
+        return "dropbox";
+      case "OneDrive":
+        return "onedrive";
+      default:
+        return "";
+    }
+  };
+
+  oAuthPopup = (url, modal) => {
+    let newWindow = modal;
+
+    if (modal) {
+      newWindow.location = url;
+    }
+
+    try {
+      let params =
+        "height=600,width=1020,resizable=0,status=0,toolbar=0,menubar=0,location=1";
+      newWindow = modal ? newWindow : window.open(url, "Authorization", params);
+    } catch (err) {
+      newWindow = modal ? newWindow : window.open(url, "Authorization");
+    }
+
+    return newWindow;
   };
 }
 

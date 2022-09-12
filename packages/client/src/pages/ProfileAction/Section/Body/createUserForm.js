@@ -27,7 +27,7 @@ import {
   createThumbnailsAvatar,
   loadAvatar,
 } from "@docspace/common/api/people";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import {

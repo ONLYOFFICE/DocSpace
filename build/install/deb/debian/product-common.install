@@ -1,0 +1,3 @@
+../../../config/*.json                  etc/onlyoffice/{{product}}
+../../../config/*.config                etc/onlyoffice/{{product}}
+../common/{{product}}-configuration.sh  usr/bin

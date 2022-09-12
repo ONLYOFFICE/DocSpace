@@ -60,8 +60,8 @@ StyledBlock.defaultProps = { theme: Base };
 const StyledControlContainer = styled.div`
   display: flex;
 
-  width: 24px;
-  height: 24px;
+  width: 17px;
+  height: 17px;
   position: absolute;
 
   border-radius: 100px;
@@ -71,16 +71,16 @@ const StyledControlContainer = styled.div`
   justify-content: center;
   z-index: 450;
 
-  top: 14px;
-  left: -34px;
+  top: 18px;
+  left: -27px;
 
   ${isMobile &&
   css`
-    top: 14px;
+    top: 18px;
   `}
 
   @media (max-width: 428px) {
-    top: -34px;
+    top: -27px;
     right: 10px;
     left: unset;
   }

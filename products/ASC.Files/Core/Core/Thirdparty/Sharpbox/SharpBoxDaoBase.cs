@@ -219,7 +219,14 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
     protected string MakePath(object entryId)
     {
-        return $"/{Convert.ToString(entryId, CultureInfo.InvariantCulture).Trim('/')}";
+        var id = Convert.ToString(entryId, CultureInfo.InvariantCulture);
+
+        if (!string.IsNullOrEmpty(id))
+        {
+            id = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(id)).Trim('/');
+        }
+
+        return $"/{id}";
     }
 
     protected override string MakeId(string path = null)
@@ -245,7 +252,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         {
             path = entry.Id;
         }
-        var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + path.Replace('/', '|'));
+        var p = string.IsNullOrEmpty(path) || path == "/" ? "" : ("-" + WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(path)));
 
         return $"{PathPrefix}{p}";
     }
@@ -302,6 +309,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         folder.Title = MakeTitle(fsEntry);
         folder.FilesCount = 0; /*fsEntry.Count - childFoldersCount NOTE: Removed due to performance isssues*/
         folder.FoldersCount = 0; /*childFoldersCount NOTE: Removed due to performance isssues*/
+        folder.Private = ProviderInfo.Private;
         SetFolderType(folder, isRoot);
 
         if (folder.CreateOn != DateTime.MinValue && folder.CreateOn.Kind == DateTimeKind.Utc)
@@ -387,6 +395,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         file.NativeAccessor = fsEntry;
         file.Title = MakeTitle(fsEntry);
         file.RootId = RootFolderMakeId();
+        file.Encrypted = ProviderInfo.Private;
 
         return file;
     }

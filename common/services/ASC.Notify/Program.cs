@@ -32,37 +32,13 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config.AddJsonFile($"appsettings.services.json", true)
-          .AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-},
-(hostContext, services, diHelper) =>
-{
-    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddNotifyConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
-    services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
-
-    diHelper.TryAdd<NotifySenderService>();
-    diHelper.TryAdd<NotifyCleanerService>();
-    diHelper.TryAdd<TenantManager>();
-    diHelper.TryAdd<TenantWhiteLabelSettingsHelper>();
-    diHelper.TryAdd<SettingsManager>();
-    diHelper.TryAdd<JabberSender>();
-    diHelper.TryAdd<SmtpSender>();
-    diHelper.TryAdd<AWSSender>(); // fix private
-
-    diHelper.TryAdd<NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
-    diHelper.TryAdd<NotifySendMessageRequestedIntegrationEventHandler>();
-
-    services.AddActivePassiveHostedService<NotifySenderService>();
-    services.AddActivePassiveHostedService<NotifyCleanerService>();
-
-    services.AddBaseDbContextPool<NotifyDbContext>();
-});
-
-var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
+var startup = new Startup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 

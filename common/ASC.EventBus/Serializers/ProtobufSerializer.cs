@@ -26,18 +26,40 @@
 
 #nullable enable
 
+using System.Reflection;
+
 namespace ASC.EventBus.Serializers;
 
 public class ProtobufSerializer : IIntegrationEventSerializer
 {
     private readonly SynchronizedCollection<string> _processedProtoTypes;
-    private readonly int _baseFieldNumber;
+    private int _baseFieldNumber;
 
     public ProtobufSerializer()
     {
         _processedProtoTypes = new SynchronizedCollection<string>();
         _baseFieldNumber = 100;
+
+        Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => BuildTypeModelFromAssembly(a));
     }
+
+    private void BuildTypeModelFromAssembly(Assembly assembly)
+    {
+        var name = assembly.GetName().Name;
+        if (name == null || !name.StartsWith("ASC."))
+        {
+            return;
+        }
+
+        var types = assembly.GetExportedTypes()
+                  .Where(t => t.GetCustomAttributes<ProtoContractAttribute>().Any());
+
+        foreach (var type in types)
+        {
+            ProcessProtoType(type);
+        }
+    }
+
 
     /// <inheritdoc/>
     public byte[] Serialize<T>(T? item)
@@ -46,8 +68,6 @@ public class ProtobufSerializer : IIntegrationEventSerializer
         {
             return Array.Empty<byte>();
         }
-
-        ProcessProtoType(item.GetType());
 
         using var ms = new MemoryStream();
 
@@ -59,8 +79,6 @@ public class ProtobufSerializer : IIntegrationEventSerializer
     /// <inheritdoc/>
     public T Deserialize<T>(byte[] serializedObject)
     {
-        ProcessProtoType(typeof(T));
-
         using var ms = new MemoryStream(serializedObject);
 
         return Serializer.Deserialize<T>(ms);
@@ -69,8 +87,6 @@ public class ProtobufSerializer : IIntegrationEventSerializer
     /// <inheritdoc/>
     public object Deserialize(byte[] serializedObject, Type returnType)
     {
-        ProcessProtoType(returnType);
-
         using var ms = new MemoryStream(serializedObject);
 
         return Serializer.Deserialize(returnType, ms);
@@ -83,7 +99,7 @@ public class ProtobufSerializer : IIntegrationEventSerializer
             return;
         }
 
-        if (protoType.BaseType == null && protoType.BaseType == typeof(object))
+        if (protoType.BaseType == null || protoType.BaseType == typeof(object))
         {
             return;
         }
@@ -95,9 +111,11 @@ public class ProtobufSerializer : IIntegrationEventSerializer
         if (!baseType.GetSubtypes().Any(s => s.DerivedType == itemType))
         {
             baseType.AddSubType(_baseFieldNumber, protoType);
-        }
 
-        _processedProtoTypes.Add(protoType.FullName);
+            _baseFieldNumber++;
+
+            _processedProtoTypes.Add(protoType.FullName);
+        }
     }
 
 }

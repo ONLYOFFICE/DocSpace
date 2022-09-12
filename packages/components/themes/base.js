@@ -242,12 +242,13 @@ const Base = {
     hoverBackgroundColor: orangeHover,
     clickBackgroundColor: orangePressed,
 
-    padding: "5px 10px",
+    padding: "5px 14px 5px 12px",
     borderRadius: "3px",
     lineHeight: "22px",
-    fontSize: "15px",
+    fontSize: "16px",
     fontWeight: 700,
     textColor: white,
+    textColorDisabled: white,
 
     cornerRoundsTopRight: "0",
     cornerRoundsBottomRight: "0",
@@ -273,8 +274,9 @@ const Base = {
     arrowDropdown: {
       borderLeft: "4px solid transparent",
       borderRight: "4px solid transparent",
-      borderTop: "4px solid white",
-      right: "10px",
+      borderTop: "5px solid white",
+      borderTopDisabled: `5px solid white`,
+      right: "14px",
       top: "50%",
       width: "0",
       height: "0",
@@ -381,7 +383,7 @@ const Base = {
     hoverColor: grayMain,
   },
   selectorAddButton: {
-    background: grayLight,
+    background: grayLightMid,
     activeBackground: grayLightMid,
 
     border: `none`,
@@ -389,9 +391,9 @@ const Base = {
     borderRadius: "3px",
     height: " 32px",
     width: "32px",
-    padding: "9px",
+    padding: "10px",
     color: black,
-    hoverColor: darkBlack,
+    hoverColor: black,
   },
 
   saveCancelButtons: {
@@ -908,7 +910,7 @@ const Base = {
   tabsContainer: {
     scrollbar: {
       width: "100%",
-      height: "50px",
+      height: "44px",
     },
 
     label: {
@@ -955,8 +957,8 @@ const Base = {
       margin: "0 0 16px 0",
 
       label: {
-        lineHeight: "13px",
-        height: "15px",
+        lineHeight: "20px",
+        height: "20px",
       },
 
       labelIcon: {
@@ -1001,31 +1003,31 @@ const Base = {
     },
 
     roleWrapperContainer: {
-      left: {
-        min: "-2px",
+      right: {
+        min: "-5px",
         small: "-2px",
         base: "-2px",
         medium: "-4px",
-        big: "0px",
+        big: "3px",
         max: "0px",
       },
 
       bottom: {
-        min: "3px",
+        min: "-5px",
         small: "3px",
         base: "4px",
         medium: "6px",
-        big: "5px",
+        big: "3px",
         max: "0px",
       },
 
       width: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
 
       height: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
     },
@@ -1089,8 +1091,8 @@ const Base = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
 
     height: {
@@ -1098,8 +1100,8 @@ const Base = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
   },
 
@@ -1538,24 +1540,27 @@ const Base = {
     },
 
     arrow: {
-      width: "8px",
-      flex: "0 0 8px",
+      width: "6px",
+      flex: "0 0 6px",
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "auto",
+      marginLeft: "-2px",
       fillColor: grayMain,
     },
 
     button: {
       height: "18px",
       heightWithBorder: "30px",
+      heightModernView: "28px",
+
       paddingLeft: "8px",
 
       color: black,
       disabledColor: grayMid,
       background: white,
       backgroundWithBorder: "none",
+      backgroundModernView: "none",
 
       border: `1px solid ${grayMid}`,
       borderRadius: "3px",
@@ -1567,6 +1572,9 @@ const Base = {
       hoverBorderColor: gray,
       hoverBorderColorOpen: blueMain,
       hoverDisabledBorderColor: grayLightMid,
+      hoverBackgroundModernView: "#F8F9F9",
+
+      activeBackgroundModernView: "#F3F4F4",
     },
 
     label: {
@@ -1861,7 +1869,7 @@ const Base = {
         height: "16px",
 
         fill: "#657077",
-
+        isActiveFill: "#4781D1",
         tablet: {
           width: "20px",
           height: "20px",
@@ -1873,13 +1881,14 @@ const Base = {
       marginLeft: "8px",
       lineHeight: "20px",
       color: cyanBlueDarkShade,
+      isActiveColor: "#4781D1",
       fontSize: "13px",
       fontWeight: 600,
       tablet: {
         marginLeft: "12px",
         lineHeight: "16px",
-        fontSize: "14px",
-        fontWeight: "bold",
+        fontSize: "15px",
+        fontWeight: "600",
       },
     },
     initialText: {
@@ -2060,6 +2069,10 @@ const Base = {
       tileSortFill: black,
       tileSortColor: black,
     },
+
+    selectedItems: {
+      background: "#eceef1",
+    },
   },
 
   profileInfo: {
@@ -2127,6 +2140,7 @@ const Base = {
 
       editingIconColor: "#3b72a7",
       shareHoverColor: "#3b72a7",
+      pinColor: "#3b72a7",
     },
 
     tableView: {
@@ -2193,6 +2207,19 @@ const Base = {
     },
   },
 
+  selector: {
+    border: `1px solid ${grayLightMid}`,
+
+    item: {
+      hoverBackground: grayLight,
+      selectedBackground: lightHover,
+    },
+
+    emptyScreen: {
+      descriptionColor: cyanBlueDarkShade,
+    },
+  },
+
   floatingButton: {
     backgroundColor: "#3B72A7",
     color: white,
@@ -2200,8 +2227,8 @@ const Base = {
     fill: white,
 
     alert: {
-      fill: "#F58D31",
-      path: white,
+      fill: "",
+      path: "",
     },
   },
 
@@ -2251,6 +2278,113 @@ const Base = {
     connectBtnIconBg: white,
     connectBtnTextBorder: grayMid,
     connectBtnIconBorder: grayMid,
+  },
+
+  createEditRoomDialog: {
+    commonParam: {
+      descriptionColor: "#a3a9ae",
+    },
+
+    roomType: {
+      listItem: {
+        background: "none",
+        borderColor: "#ECEEF1",
+        descriptionText: "#A3A9AE",
+      },
+      dropdownButton: {
+        background: "none",
+        borderColor: "#ECEEF1",
+        isOpenBorderColor: "#2DA7DB",
+        descriptionText: "#A3A9AE",
+      },
+      dropdownItem: {
+        background: "#ffffff",
+        hoverBackground: "#f3f4f4",
+        descriptionText: "#A3A9AE",
+      },
+      displayItem: {
+        background: "#f8f8f8",
+        borderColor: "#f8f8f8",
+        descriptionText: "#555F65",
+      },
+    },
+
+    roomTypeDropdown: {
+      desktop: {
+        background: "#ffffff",
+        borderColor: "#d0d5da",
+      },
+      mobile: {
+        background: "#ffffff",
+      },
+    },
+
+    permanentSettings: {
+      background: "#f8f9f9",
+      isPrivateIcon: "#35ad17",
+      descriptionColor: "#555f65",
+    },
+
+    dropdown: {
+      background: "#ffffff",
+      borderColor: "#d0d5da",
+      item: {
+        hoverBackground: "#f3f4f4",
+      },
+    },
+
+    isPrivate: {
+      limitations: {
+        background: "#f8f9f9",
+        iconColor: "#ed7309",
+        titleColor: "#ed7309",
+        descriptionColor: "#555f65",
+        linkColor: "#555f65",
+      },
+    },
+
+    thirdpartyStorage: {
+      combobox: {
+        background: "#ffffff",
+        dropdownBorderColor: "#d0d5da",
+        hoverDropdownBorderColor: "#a3a9ae",
+        isOpenDropdownBorderColor: "#2DA7DB",
+        arrowFill: "#a3a9ae",
+      },
+      folderInput: {
+        background: "#ffffff",
+        borderColor: "#d0d5da",
+        hoverBorderColor: "#a3a9ae",
+        focusBorderColor: "#35abd8",
+        rootLabelColor: "#a3a9ae",
+        iconFill: "#657177",
+      },
+    },
+
+    iconCropper: {
+      gridColor: "#333333",
+      deleteButton: {
+        background: "#f8f9f9",
+        hoverBackground: "#f3f4f4",
+        borderColor: "#f8f9f9",
+        hoverBorderColor: "#f3f4f4",
+        color: "#555f65",
+        iconColor: "#657077",
+      },
+    },
+
+    previewTile: {
+      background: "#ffffff",
+      borderColor: "#d0d5da",
+      iconBorderColor: "#eceef1",
+    },
+
+    dropzone: {
+      borderColor: "#eceef1",
+      linkMainColor: "#316daa",
+      linkSecondaryColor: "#333333",
+      exstsColor: "#a3a9ae",
+    },
   },
 
   filesThirdPartyDialog: {
@@ -2639,6 +2773,8 @@ const Base = {
         expanderColor: "dimgray",
       },
 
+      separatorBorder: `1px solid ${grayLightMid}`,
+
       security: {
         arrowFill: black,
         descriptionColor: cyanBlueDarkShade,
@@ -2702,6 +2838,7 @@ const Base = {
       backup: {
         rectangleBackgroundColor: "#f8f9f9",
         separatorBorder: "1px solid #eceef1",
+        contextBorder: "1px solid #D0D5DA",
       },
     },
 
@@ -2747,9 +2884,11 @@ const Base = {
   },
 
   tag: {
+    color: black,
     background: "#f3f4f4",
     hoverBackground: "#eceef1",
     disabledBackground: "#f8f9f9",
+    defaultTagColor: "#A3A9AE",
     newTagBackground: "#eceef1",
   },
 };

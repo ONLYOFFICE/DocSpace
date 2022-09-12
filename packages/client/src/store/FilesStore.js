@@ -12,27 +12,25 @@ import {
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
 import { updateTempContent } from "@docspace/common/utils";
-import { isMobile } from "react-device-detect";
-import toastr from "client/toastr";
-
+import { isMobile, isMobileOnly } from "react-device-detect";
+import toastr from "@docspace/components/toast/toastr";
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import { loopTreeFolders } from "../helpers/files-helpers";
 import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
-import { CategoryType } from "SRC_DIR/helpers/constants";
 import {
   getCategoryType,
   getCategoryTypeByFolderType,
 } from "SRC_DIR/helpers/utils";
+import { isDesktop } from "@docspace/components/utils/device";
+import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
+import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
 
 class FilesStore {
   authStore;
-  settingsStore;
-  userStore;
 
   selectedFolderStore;
   treeFoldersStore;
@@ -80,8 +78,6 @@ class FilesStore {
   headerBorder = false;
 
   enabledHotkeys = true;
-  oformFiles = null;
-  gallerySelected = null;
 
   createdItem = null;
   scrollToItem = null;
@@ -90,12 +86,10 @@ class FilesStore {
   pageItemsLength = null;
   isHidePagination = false;
   trashIsEmpty = false;
+  filesIsLoading = false;
 
   constructor(
     authStore,
-    settingsStore,
-    userStore,
-
     selectedFolderStore,
     treeFoldersStore,
     filesSettingsStore
@@ -105,14 +99,12 @@ class FilesStore {
 
     makeAutoObservable(this);
     this.authStore = authStore;
-    this.settingsStore = settingsStore;
-    this.userStore = userStore;
 
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
     this.filesSettingsStore = filesSettingsStore;
 
-    const { socketHelper } = authStore.settingsStore;
+    const { socketHelper, withPaging } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
       //console.log("Call s:modify-folder", opt);
@@ -129,7 +121,7 @@ class FilesStore {
 
             const newFiles = [file, ...this.files];
 
-            if (newFiles.length > this.filter.pageCount) {
+            if (newFiles.length > this.filter.pageCount && withPaging) {
               newFiles.pop(); // Remove last
             }
 
@@ -177,6 +169,10 @@ class FilesStore {
                 return index !== foundIndex;
               })
             );
+
+            const newFilter = this.filter.clone();
+            newFilter.total -= 1;
+            this.setFilter(newFilter);
 
             // Hide pagination when deleting files
             runInAction(() => {
@@ -354,11 +350,11 @@ class FilesStore {
       getPortalCultures,
       getIsEncryptionSupport,
       getEncryptionKeys,
-      setModuleInfo,
-    } = this.settingsStore;
-    const { isDesktopClient } = settingsStore;
+      //setModuleInfo,
+      isDesktopClient,
+    } = settingsStore;
 
-    setModuleInfo(config.homepage, config.id);
+    //setModuleInfo(config.homepage, config.id);
 
     const requests = [];
 
@@ -380,34 +376,32 @@ class FilesStore {
       }
     }
     requests.push(getFilesSettings());
-    requests.push(this.getOforms());
     requests.push(this.getIsEmptyTrash());
 
     return Promise.all(requests).then(() => (this.isInit = true));
   };
 
-  getOforms = async () => {
-    const oformData = await this.authStore.getOforms();
+  reset = () => {
+    this.isInit = false;
+    this.isLoaded = false;
+    this.isLoading = false;
+    this.firstLoad = true;
 
-    runInAction(() => {
-      this.oformFiles = oformData?.data?.data ? oformData.data.data : [];
-    });
+    this.alreadyFetchingRooms = false;
+
+    this.files = [];
+    this.folders = [];
+
+    this.selection = [];
+    this.bufferSelection = null;
+    this.selected = "close";
   };
-
-  get hasGalleryFiles() {
-    return this.oformFiles && !!this.oformFiles.length;
-  }
-
-  setGallerySelected = (gallerySelected) => {
-    this.gallerySelected = gallerySelected;
-  };
-
   setFirstLoad = (firstLoad) => {
     this.firstLoad = firstLoad;
   };
 
   setFiles = (files) => {
-    const { socketHelper } = this.settingsStore;
+    const { socketHelper } = this.authStore.settingsStore;
     if (files.length === 0 && this.files.length === 0) return;
 
     if (this.files?.length > 0) {
@@ -521,9 +515,7 @@ class FilesStore {
   };
 
   setHotkeyCaret = (hotkeyCaret) => {
-    if (hotkeyCaret) {
-      this.hotkeyCaret = hotkeyCaret;
-    } else if (this.hotkeyCaret) {
+    if (hotkeyCaret || this.hotkeyCaret) {
       this.hotkeyCaret = hotkeyCaret;
     }
   };
@@ -542,7 +534,7 @@ class FilesStore {
 
   //TODO: FILTER
   setFilesFilter = (filter) => {
-    const key = `UserFilter=${this.userStore.user.id}`;
+    const key = `UserFilter=${this.authStore.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
@@ -563,9 +555,11 @@ class FilesStore {
   };
 
   setRoomsFilter = (filter) => {
-    const key = `UserRoomsFilter=${this.userStore.user.id}`;
+    const key = `UserRoomsFilter=${this.authStore.userStore.user.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
+
+    if (!this.authStore.settingsStore.withPaging) filter.pageCount = 100;
 
     this.setFilterUrl(filter, true);
     this.roomsFilter = filter;
@@ -584,6 +578,7 @@ class FilesStore {
   };
 
   setFilter = (filter) => {
+    if (!this.authStore.settingsStore.withPaging) filter.pageCount = 100;
     this.filter = filter;
   };
 
@@ -652,20 +647,16 @@ class FilesStore {
     withSubfolders = false,
     clearSelection = true
   ) => {
-    const {
-      treeFolders,
-      setSelectedNode,
-      getSubfolders,
-      selectedTreeNode,
-    } = this.treeFoldersStore;
-    const { id } = this.selectedFolderStore;
+    const { setSelectedNode } = this.treeFoldersStore;
+
+    this.scrollToTop();
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
     const filterStorageItem =
-      this.userStore.user?.id &&
-      localStorage.getItem(`UserFilter=${this.userStore.user.id}`);
+      this.authStore.userStore.user?.id &&
+      localStorage.getItem(`UserFilter=${this.authStore.userStore.user.id}`);
 
     if (filterStorageItem && !filter) {
       const splitFilter = filterStorageItem.split(",");
@@ -673,6 +664,11 @@ class FilesStore {
       filterData.sortBy = splitFilter[0];
       filterData.pageCount = +splitFilter[1];
       filterData.sortOrder = splitFilter[2];
+    }
+
+    if (!this.authStore.settingsStore.withPaging) {
+      filterData.page = 0;
+      filterData.pageCount = 100;
     }
 
     setSelectedNode([folderId + ""]);
@@ -685,8 +681,6 @@ class FilesStore {
         .then(async (data) => {
           const isRecycleBinFolder =
             data.current.rootFolderType === FolderType.TRASH;
-
-          !isRecycleBinFolder && this.checkUpdateNode(data, folderId);
 
           filterData.total = data.total;
 
@@ -705,13 +699,6 @@ class FilesStore {
             }
           }
 
-          if (!isRecycleBinFolder && withSubfolders) {
-            const path = data.pathParts.slice(0);
-            const foldersCount = data.current.foldersCount;
-            const subfolders = await getSubfolders(folderId);
-            loopTreeFolders(path, treeFolders, subfolders, foldersCount);
-          }
-
           const isPrivacyFolder =
             data.current.rootFolderType === FolderType.Privacy;
 
@@ -721,12 +708,6 @@ class FilesStore {
               data.current.parentId
             );
           });
-
-          // console.log("fetchFiles", {
-          //   categoryType: this.categoryType,
-          //   rootFolderType: data.current.rootFolderType,
-          //   parentId: data.current.parentId,
-          // });
 
           this.setFilesFilter(filterData); //TODO: FILTER
 
@@ -743,18 +724,30 @@ class FilesStore {
 
           const navigationPath = await Promise.all(
             data.pathParts.map(async (folder) => {
-              const data = await api.files.getFolderInfo(folder);
+              const folderInfo =
+                data.current.id === folder
+                  ? data.current
+                  : await api.files.getFolderInfo(folder);
+
+              const {
+                id,
+                title,
+                roomType,
+                rootFolderId,
+                rootFolderType,
+              } = folderInfo;
+
+              const { Rooms, Archive } = FolderType;
 
               const isRootRoom =
-                data.rootFolderId === data.id &&
-                (data.rootFolderType === FolderType.Rooms ||
-                  data.rootFolderType === FolderType.Archive);
+                rootFolderId === id &&
+                (rootFolderType === Rooms || rootFolderType === Archive);
 
               return {
                 id: folder,
-                title: data.title,
-                isRoom: !!data.roomType,
-                isRootRoom: isRootRoom,
+                title,
+                isRoom: !!roomType,
+                isRootRoom,
               };
             })
           ).then((res) => {
@@ -796,6 +789,7 @@ class FilesStore {
           return Promise.resolve(selectedFolder);
         })
         .catch((err) => {
+          console.error(err);
           toastr.error(err);
           if (!requestCounter) return;
           requestCounter--;
@@ -807,7 +801,7 @@ class FilesStore {
           } else {
             this.treeFoldersStore.fetchTreeFolders();
             return this.fetchFiles(
-              this.userStore.user.isVisitor ? "@common" : "@my"
+              this.authStore.userStore.user.isVisitor ? "@common" : "@my"
             );
           }
         });
@@ -827,7 +821,7 @@ class FilesStore {
     const filterData = !!filter ? filter.clone() : RoomsFilter.getDefault();
 
     const filterStorageItem = localStorage.getItem(
-      `UserRoomsFilter=${this.userStore.user.id}`
+      `UserRoomsFilter=${this.authStore.userStore.user.id}`
     );
 
     if (filterStorageItem && !filter) {
@@ -836,6 +830,11 @@ class FilesStore {
       filterData.sortBy = splitFilter[0];
       filterData.pageCount = +splitFilter[1];
       filterData.sortOrder = splitFilter[2];
+    }
+
+    if (!this.authStore.settingsStore.withPaging) {
+      filterData.page = 0;
+      filterData.pageCount = 100;
     }
 
     if (folderId) setSelectedNode([folderId + ""]);
@@ -937,37 +936,6 @@ class FilesStore {
     this.alreadyFetchingRooms = alreadyFetchingRooms;
   };
 
-  checkUpdateNode = async (data, folderId) => {
-    const { treeFolders, getSubfolders } = this.treeFoldersStore;
-    const { pathParts, current } = data;
-
-    if (current.parentId === 0) return;
-
-    const somePath = pathParts.slice(0);
-    const path = pathParts.slice(0);
-    let newItems = treeFolders;
-
-    while (somePath.length !== 1) {
-      const folderItem = newItems.find((x) => x.id === somePath[0]);
-      newItems = folderItem?.folders
-        ? folderItem.folders
-        : somePath.length > 1
-        ? []
-        : null;
-      if (!newItems) {
-        return;
-      }
-
-      somePath.shift();
-    }
-
-    if (!newItems.find((x) => x.id == folderId)) {
-      path.splice(pathParts.length - 1, 1);
-      const subfolders = await getSubfolders(current.parentId);
-      loopTreeFolders(path, treeFolders, subfolders, 0);
-    }
-  };
-
   isFileSelected = (fileId, parentId) => {
     const item = this.selection.find(
       (x) => x.id === fileId && x.parentId === parentId
@@ -1003,7 +971,9 @@ class FilesStore {
 
   getFilesContextOptions = (item, canOpenPlayer) => {
     const isVisitor =
-      (this.userStore.user && this.userStore.user.isVisitor) || false;
+      (this.authStore.userStore.user &&
+        this.authStore.userStore.user.isVisitor) ||
+      false;
     const isFile = !!item.fileExst || item.contentLength;
     const isRoom = !!item.roomType;
     const isFavorite =
@@ -1018,7 +988,7 @@ class FilesStore {
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
       (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    const isFileOwner = item.createdBy.id === this.userStore.user.id;
+    const isFileOwner = item.createdBy.id === this.authStore.userStore.user.id;
 
     const {
       isRecycleBinFolder,
@@ -1038,14 +1008,19 @@ class FilesStore {
       canFormFillingDocs,
     } = this.filesSettingsStore;
 
+    const { enablePlugins } = this.authStore.settingsStore;
+
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
     const isShareItem = isShare(item.rootFolderType);
     const isCommonFolder = isCommon(item.rootFolderType);
     const isMyFolder = isMy(item.rootFolderType);
 
-    const { personal } = this.settingsStore;
+    const { personal } = this.authStore.settingsStore;
     const { isDesktopClient } = this.authStore.settingsStore;
+
+    const pluginAllKeys =
+      enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
@@ -1231,6 +1206,17 @@ class FilesStore {
         ]);
       } else {
         fileOptions = this.removeOptions(fileOptions, ["restore"]);
+
+        if (enablePlugins) {
+          const pluginFilesKeys = getContextMenuKeysByType(
+            PluginContextMenuItemType.Files
+          );
+
+          pluginAllKeys &&
+            pluginAllKeys.forEach((key) => fileOptions.push(key));
+          pluginFilesKeys &&
+            pluginFilesKeys.forEach((key) => fileOptions.push(key));
+        }
       }
 
       if (!isFullAccess) {
@@ -1384,6 +1370,17 @@ class FilesStore {
           "delete",
           "unarchive-room",
         ]);
+
+        if (enablePlugins) {
+          const pluginRoomsKeys = getContextMenuKeysByType(
+            PluginContextMenuItemType.Rooms
+          );
+
+          pluginAllKeys &&
+            pluginAllKeys.forEach((key) => roomOptions.push(key));
+          pluginRoomsKeys &&
+            pluginRoomsKeys.forEach((key) => roomOptions.push(key));
+        }
       }
 
       return roomOptions;
@@ -1460,6 +1457,17 @@ class FilesStore {
         ]);
       } else {
         folderOptions = this.removeOptions(folderOptions, ["restore"]);
+
+        if (enablePlugins) {
+          const pluginFoldersKeys = getContextMenuKeysByType(
+            PluginContextMenuItemType.Folders
+          );
+
+          pluginAllKeys &&
+            pluginAllKeys.forEach((key) => folderOptions.push(key));
+          pluginFoldersKeys &&
+            pluginFoldersKeys.forEach((key) => folderOptions.push(key));
+        }
       }
 
       if (!isFullAccess) {
@@ -1571,8 +1579,60 @@ class FilesStore {
     return api.files.createFolder(parentFolderId, title);
   }
 
-  createRoom(title, type) {
-    return api.rooms.createRoom({ title, roomType: type });
+  createRoom(roomParams) {
+    return api.rooms.createRoom(roomParams);
+  }
+
+  createRoomInThirdpary(thirpartyFolderId, roomParams) {
+    console.log(thirpartyFolderId, roomParams);
+    return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
+  }
+
+  editRoom(id, roomParams) {
+    return api.rooms.editRoom(id, roomParams);
+  }
+
+  addTagsToRoom(id, tagArray) {
+    return api.rooms.addTagsToRoom(id, tagArray);
+  }
+
+  removeTagsFromRoom(id, tagArray) {
+    return api.rooms.removeTagsFromRoom(id, tagArray);
+  }
+
+  calculateRoomLogoParams(img, x, y, zoom) {
+    let imgWidth, imgHeight, dimensions;
+    if (img.width > img.height) {
+      imgWidth = Math.min(1280, img.width);
+      imgHeight = Math.round(img.height / (img.width / imgWidth));
+      dimensions = Math.round(imgHeight / zoom);
+    } else {
+      imgHeight = Math.min(1280, img.height);
+      imgWidth = Math.round(img.width / (img.height / imgHeight));
+      dimensions = Math.round(imgWidth / zoom);
+    }
+
+    const croppedX = Math.round(x * imgWidth - dimensions / 2);
+    const croppedY = Math.round(y * imgHeight - dimensions / 2);
+
+    return {
+      x: croppedX,
+      y: croppedY,
+      width: dimensions,
+      height: dimensions,
+    };
+  }
+
+  uploadRoomLogo(formData) {
+    return api.rooms.uploadRoomLogo(formData);
+  }
+
+  addLogoToRoom(id, icon) {
+    return api.rooms.addLogoToRoom(id, icon);
+  }
+
+  removeLogoFromRoom(id) {
+    return api.rooms.removeLogoFromRoom(id);
   }
 
   setFile = (file) => {
@@ -1614,6 +1674,63 @@ class FilesStore {
     this.folders[idx].pinned = !this.folders[idx].pinned;
   };
 
+  scrollToTop = () => {
+    if (this.authStore.settingsStore.withPaging) return;
+
+    const scrollElm = isMobileOnly
+      ? document.querySelector("#customScrollBar > .scroll-body")
+      : document.querySelector("#sectionScroll > .scroll-body");
+
+    scrollElm && scrollElm.scrollTo(0, 0);
+  };
+
+  addFile = (item, isFolder) => {
+    const filter = this.filter.clone();
+    filter.total += 1;
+    this.setFilter(filter);
+
+    isFolder ? this.folders.unshift(item) : this.files.unshift(item);
+
+    this.scrollToTop();
+  };
+
+  removeFiles = (fileIds, folderIds, showToast) => {
+    const newFilter = this.filter.clone();
+    const deleteCount = fileIds.length + folderIds.length;
+    newFilter.startIndex =
+      (newFilter.page + 1) * newFilter.pageCount - deleteCount;
+    newFilter.pageCount = deleteCount;
+
+    api.files
+      .getFolder(newFilter.folder, newFilter)
+      .then((res) => {
+        const files = fileIds
+          ? this.files.filter((x) => !fileIds.includes(x.id))
+          : [];
+        const folders = folderIds
+          ? this.folders.filter((x) => !folderIds.includes(x.id))
+          : [];
+
+        const newFiles = [...files, ...res.files];
+        const newFolders = [...folders, ...res.folders];
+
+        const filter = this.filter.clone();
+        filter.total = res.total;
+
+        runInAction(() => {
+          this.setFilter(filter);
+          this.setFiles(newFiles);
+          this.setFolders(newFolders);
+        });
+
+        showToast && showToast();
+      })
+      .catch(() => {
+        toastr.error(err);
+        console.log("Need page reload");
+      });
+  };
+
   updateFile = (fileId, title) => {
     return api.files
       .updateFile(fileId, title)
@@ -1638,7 +1755,8 @@ class FilesStore {
   };
 
   canShareOwnerChange = (item) => {
-    const userId = this.userStore.user && this.userStore.user.id;
+    const userId =
+      this.authStore.userStore.user && this.authStore.userStore.user.id;
 
     if (item.providerKey || !this.hasCommonFolder) {
       return false;
@@ -1654,7 +1772,9 @@ class FilesStore {
   get canShare() {
     const folderType = this.selectedFolderStore.rootFolderType;
     const isVisitor =
-      (this.userStore.user && this.userStore.user.isVisitor) || false;
+      (this.authStore.userStore.user &&
+        this.authStore.userStore.user.isVisitor) ||
+      false;
 
     if (isVisitor) {
       return false;
@@ -1747,7 +1867,7 @@ class FilesStore {
       case FolderType.Privacy:
         return (
           this.authStore.settingsStore.isDesktopClient &&
-          this.settingsStore.isEncryptionSupport
+          this.authStore.settingsStore.isEncryptionSupport
         );
       case FolderType.COMMON:
         return this.authStore.isAdmin;
@@ -1815,6 +1935,7 @@ class FilesStore {
         folderId,
         foldersCount,
         id,
+        logo,
         locked,
         parentId,
         pureContentLength,
@@ -1918,6 +2039,7 @@ class FilesStore {
         icon,
         id,
         isFolder,
+        logo,
         locked,
         new: item.new,
         parentId,
@@ -2455,6 +2577,77 @@ class FilesStore {
 
   setTrashIsEmpty = (isEmpty) => {
     this.trashIsEmpty = isEmpty;
+  };
+
+  get roomsFilterTotal() {
+    return this.roomsFilter.total;
+  }
+
+  get filterTotal() {
+    return this.filter.total;
+  }
+
+  get hasMoreFiles() {
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+
+    const isRooms = isRoomsFolder || isArchiveFolder;
+
+    // const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
+    const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
+
+    console.log("hasMoreFiles isRooms", isRooms);
+    console.log("hasMoreFiles filesList", this.filesList.length);
+    console.log("hasMoreFiles this.filterTotal", this.filterTotal);
+    console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
+    console.log("hasMoreFiles filterTotal", filterTotal);
+    console.log("hasMoreFiles", this.filesList.length < filterTotal);
+    console.log("----------------------------");
+
+    if (this.isLoading) return false;
+    return this.filesList.length < filterTotal;
+  }
+
+  setFilesIsLoading = (filesIsLoading) => {
+    this.filesIsLoading = filesIsLoading;
+  };
+
+  fetchMoreFiles = async () => {
+    if (!this.hasMoreFiles || this.filesIsLoading || this.isLoading) return;
+
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+
+    const isRooms = isRoomsFolder || isArchiveFolder;
+
+    this.setFilesIsLoading(true);
+    // console.log("fetchMoreFiles");
+
+    const newFilter = isRooms ? this.roomsFilter.clone() : this.filter.clone();
+    newFilter.page += 1;
+    if (isRooms) this.setRoomsFilter(newFilter);
+    else this.setFilter(newFilter);
+
+    const newFiles = isRooms
+      ? await api.rooms.getRooms(newFilter)
+      : await api.files.getFolder(newFilter.folder, newFilter);
+
+    runInAction(() => {
+      this.setFiles([...this.files, ...newFiles.files]);
+      this.setFolders([...this.folders, ...newFiles.folders]);
+      this.setFilesIsLoading(false);
+    });
+  };
+
+  //Duplicate of countTilesInRow, used to update the number of tiles in a row after the window is resized.
+  getCountTilesInRow = () => {
+    const isDesktopView = isDesktop();
+    const tileGap = isDesktopView ? 16 : 14;
+    const minTileWidth = 216 + tileGap;
+    const sectionPadding = isDesktopView ? 24 : 16;
+
+    const body = document.getElementById("section");
+    const sectionWidth = body ? body.offsetWidth - sectionPadding : 0;
+
+    return Math.floor(sectionWidth / minTileWidth);
   };
 }
 

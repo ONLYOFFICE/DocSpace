@@ -190,6 +190,8 @@ class ArticleBodyContent extends React.Component {
         return t("Backup");
       case "ManagementCategoryDataManagement":
         return t("ManagementCategoryDataManagement");
+      case "RestoreBackup":
+        return t("RestoreBackup");
       default:
         throw new Error("Unexpected translation key");
     }
@@ -197,7 +199,7 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText } = this.props;
+    const { showText, t } = this.props;
 
     const items = [];
 
@@ -215,6 +217,18 @@ class ArticleBodyContent extends React.Component {
         />
       );
     });
+
+    const settingsHeader = (
+      <CatalogItem
+        key={"settings-header"}
+        isHeader={true}
+        isFirstHeader={true}
+        showText={showText}
+        text={`${t("Common:Settings")}`}
+      />
+    );
+
+    items.unshift(settingsHeader);
 
     return items;
   };

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import styled from "styled-components";
 
 import { CheckToastIcon, DangerToastIcon, InfoToastIcon } from "./svg";
-import IconButton from "../icon-button";
+
 import Text from "../text";
 import {
   StyledCloseWrapper,
@@ -12,6 +12,22 @@ import {
   StyledIconButton,
 } from "./styled-toastr";
 import commonIconsStyles from "../utils/common-icons-style";
+
+const getTitle = (type) => {
+  const commonKeys =
+    (window.i18n &&
+      Object.getOwnPropertyNames(window.i18n.loaded).filter(
+        (k) => k.indexOf("/Common.json") > -1
+      )) ||
+    [];
+
+  if (commonKeys.length === 0) return undefined;
+
+  const key = commonKeys.length === 1 ? commonKeys[0] : commonKeys[1];
+  const title = window.i18n.loaded[key].data[type];
+
+  return title;
+};
 
 const StyledCheckToastIcon = styled(CheckToastIcon)`
   ${commonIconsStyles}
@@ -90,7 +106,14 @@ const notify = (
 };
 
 function success(data, title, timeout, withCross, centerPosition) {
-  return notify("success", data, title, timeout, withCross, centerPosition);
+  return notify(
+    "success",
+    data,
+    title || getTitle("Done"),
+    timeout,
+    withCross,
+    centerPosition
+  );
 }
 
 function error(data, title, timeout, withCross, centerPosition) {
@@ -104,15 +127,36 @@ function error(data, title, timeout, withCross, centerPosition) {
       ? data.message
       : "";
 
-  return notify("error", message, title, timeout, withCross, centerPosition);
+  return notify(
+    "error",
+    message,
+    title || getTitle("Warning"),
+    timeout,
+    withCross,
+    centerPosition
+  );
 }
 
 function warning(data, title, timeout, withCross, centerPosition) {
-  return notify("warning", data, title, timeout, withCross, centerPosition);
+  return notify(
+    "warning",
+    data,
+    title || getTitle("Alert"),
+    timeout,
+    withCross,
+    centerPosition
+  );
 }
 
 function info(data, title, timeout, withCross, centerPosition) {
-  return notify("info", data, title, timeout, withCross, centerPosition);
+  return notify(
+    "info",
+    data,
+    title || getTitle("Info"),
+    timeout,
+    withCross,
+    centerPosition
+  );
 }
 
 function clear() {

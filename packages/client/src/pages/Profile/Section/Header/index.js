@@ -3,7 +3,7 @@ import IconButton from "@docspace/components/icon-button";
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import AvatarEditor from "@docspace/components/avatar-editor";
 import Headline from "@docspace/common/components/Headline";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { withRouter } from "react-router";
 import { withTranslation, Trans } from "react-i18next";
 import styled from "styled-components";
@@ -233,7 +233,9 @@ class SectionHeaderContent extends React.PureComponent {
     });
 
   onEditClick = () => {
-    const { history, isMy } = this.props;
+    const { history, isMy, setIsEditTargetUser } = this.props;
+
+    setIsEditTargetUser(true);
 
     const editUrl = isMy
       ? combineUrl(AppServerConfig.proxyURL, `/my?action=edit`)
@@ -548,6 +550,7 @@ export default withRouter(
       updateUserStatus: peopleStore.usersStore.updateUserStatus,
       resetProfile: peopleStore.targetUserStore.resetTargetUser,
       fetchProfile: peopleStore.targetUserStore.getTargetUser,
+      setIsEditTargetUser: peopleStore.targetUserStore.setIsEditTargetUser,
       profile: peopleStore.targetUserStore.targetUser,
       isMe: peopleStore.targetUserStore.isMe,
       updateProfile: peopleStore.targetUserStore.updateProfile,

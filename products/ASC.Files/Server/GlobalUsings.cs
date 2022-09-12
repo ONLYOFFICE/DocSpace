@@ -53,6 +53,7 @@ global using ASC.Files.Core.ApiModels.RequestDto;
 global using ASC.Files.Core.ApiModels.ResponseDto;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Helpers;
+global using ASC.Files.Core.Resources;
 global using ASC.Files.Core.Security;
 global using ASC.Files.Core.Services.OFormService;
 global using ASC.Files.Core.VirtualRooms;
@@ -89,3 +90,4 @@ global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;
 
 global using Newtonsoft.Json.Linq;
+global using ASC.Files.Extension;

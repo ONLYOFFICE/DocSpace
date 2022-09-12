@@ -1,7 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Row from "@docspace/components/row";
 import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
+import VersionSvg from "@docspace/client/public/images/versionrevision_active.react.svg";
 
 const StyledBody = styled.div`
   height: 100%;
@@ -278,4 +279,32 @@ const StyledVersionRow = styled(Row)`
 
 StyledVersionRow.defaultProps = { theme: Base };
 
-export { StyledBody, StyledVersionRow, StyledVersionList };
+const StyledVersionSvg = styled(VersionSvg)`
+  path {
+    fill: ${(props) =>
+      !props.isVersion
+        ? props.theme.filesVersionHistory.badge.defaultFill
+        : props.index === 0
+        ? props.theme.filesVersionHistory.badge.fill
+        : props.theme.filesVersionHistory.badge.badgeFill};
+    stroke: ${(props) =>
+      !props.isVersion
+        ? props.theme.filesVersionHistory.badge.stroke
+        : props.index === 0
+        ? props.theme.filesVersionHistory.badge.fill
+        : props.theme.filesVersionHistory.badge.badgeFill};
+
+    stroke-dasharray: ${(props) => (props.isVersion ? "2 0" : "3 1")};
+    stroke-linejoin: ${(props) => (props.isVersion ? "unset" : "round")};
+
+    ${(props) =>
+      props.isVersion &&
+      css`
+        stroke-width: 2;
+      `}
+  }
+`;
+
+StyledVersionSvg.defaultProps = { theme: Base };
+
+export { StyledBody, StyledVersionRow, StyledVersionList, StyledVersionSvg };

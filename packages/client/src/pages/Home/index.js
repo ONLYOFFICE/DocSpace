@@ -28,8 +28,6 @@ import {
   Bar,
 } from "./Section";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
-
-import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
@@ -50,8 +48,6 @@ class PureHome extends React.Component {
       //homepage,
       setIsLoading,
       setFirstLoad,
-      expandedKeys,
-      setExpandedKeys,
       setToPreviewFile,
       playlist,
       isMediaOrImage,
@@ -200,25 +196,10 @@ class PureHome extends React.Component {
 
         if (filter) {
           if (isRooms) {
-            return fetchRooms(null, filter).then((data) => {
-              const pathParts = data.selectedFolder.pathParts;
-              const newExpandedKeys = createTreeFolders(
-                pathParts,
-                expandedKeys
-              );
-              setExpandedKeys(newExpandedKeys);
-            });
+            return fetchRooms(null, filter);
           } else {
             const folderId = filter.folder;
-
-            return fetchFiles(folderId, filter).then((data) => {
-              const pathParts = data.selectedFolder.pathParts;
-              const newExpandedKeys = createTreeFolders(
-                pathParts,
-                expandedKeys
-              );
-              setExpandedKeys(newExpandedKeys);
-            });
+            return fetchFiles(folderId, filter);
           }
         }
 
@@ -502,6 +483,7 @@ class PureHome extends React.Component {
       showTitle,
       showFilter,
       frameConfig,
+      withPaging,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -513,6 +495,7 @@ class PureHome extends React.Component {
         <MediaViewer />
         <DragTooltip />
         <Section
+          withPaging={withPaging}
           dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -581,9 +564,11 @@ class PureHome extends React.Component {
             <InfoPanelBodyContent />
           </Section.InfoPanelBody>
 
-          <Section.SectionPaging>
-            <SectionPagingContent tReady={tReady} />
-          </Section.SectionPaging>
+          {withPaging && (
+            <Section.SectionPaging>
+              <SectionPagingContent tReady={tReady} />
+            </Section.SectionPaging>
+          )}
         </Section>
       </>
     );
@@ -601,6 +586,7 @@ export default inject(
     mediaViewerDataStore,
     settingsStore,
     filesActionsStore,
+    oformsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -622,7 +608,6 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
-      gallerySelected,
       setIsUpdatingRowItem,
 
       folders,
@@ -636,12 +621,9 @@ export default inject(
       setViewAs,
     } = filesStore;
 
-    const {
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      expandedKeys,
-      setExpandedKeys,
-    } = treeFoldersStore;
+    const { gallerySelected } = oformsStore;
+
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
     const {
       visible: primaryProgressDataVisible,
@@ -687,6 +669,7 @@ export default inject(
       setFrameConfig,
       frameConfig,
       isFrame,
+      withPaging,
     } = auth.settingsStore;
 
     if (!firstLoad) {
@@ -710,7 +693,6 @@ export default inject(
       checkedMaintenance,
       setMaintenanceExist,
       snackbarExist,
-      expandedKeys,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -732,7 +714,6 @@ export default inject(
       itemsSelectionLength,
       itemsSelectionTitle,
 
-      setExpandedKeys,
       setFirstLoad,
       setDragging,
       setIsLoading,
@@ -770,6 +751,7 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
+      withPaging,
     };
   }
 )(withRouter(observer(Home)));

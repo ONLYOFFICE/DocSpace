@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# see: dh_installdeb(1)
+
+set -e
+
+DIR="/var/www/{{product}}"
+
+python3 -m pip install --upgrade pip
+python3 -m pip install --upgrade requests
+python3 -m pip install --upgrade setuptools 
+python3 -m pip install --upgrade radicale==3.0.5
+python3 -m pip install --upgrade ${DIR}/Tools/radicale/plugins/app_auth_plugin/.
+python3 -m pip install --upgrade ${DIR}/Tools/radicale/plugins/app_store_plugin/.
+python3 -m pip install --upgrade ${DIR}/Tools/radicale/plugins/app_rights_plugin/.
