@@ -80,17 +80,21 @@ const AboutContent = (props) => {
 
   const companyName = previewData
     ? previewData.companyName
-    : companyInfoSettingsData.companyName;
+    : companyInfoSettingsData?.companyName;
 
-  const email = previewData ? previewData.email : companyInfoSettingsData.email;
+  const email = previewData
+    ? previewData.email
+    : companyInfoSettingsData?.email;
 
-  const phone = previewData ? previewData.phone : companyInfoSettingsData.phone;
+  const phone = previewData
+    ? previewData.phone
+    : companyInfoSettingsData?.phone;
 
-  const site = previewData ? previewData.site : companyInfoSettingsData.site;
+  const site = previewData ? previewData.site : companyInfoSettingsData?.site;
 
   const address = previewData
     ? previewData.address
-    : companyInfoSettingsData.address;
+    : companyInfoSettingsData?.address;
 
   return (
     companyInfoSettingsData && (
