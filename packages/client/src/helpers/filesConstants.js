@@ -22,6 +22,7 @@ export const FilterGroups = Object.freeze({
   filterType: "filter-filterType",
   filterAuthor: "filter-author",
   filterFolders: "filter-folders",
+  filterContent: "filter-withContent",
   roomFilterType: "filter-type",
   roomFilterOwner: "filter-owner",
   roomFilterTags: "filter-tags",
