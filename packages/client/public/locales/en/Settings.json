@@ -217,6 +217,9 @@
   "UserAgreement": "I confirm and want to proceed",
   "Users": "Users",
   "WhiteLabel": "White label",
+  "WhiteLabelSubtitle": "Enter your company name, upload the logo, and customize the styling to match your branding.",
+  "WhiteLabelHelper": "Use PNG images with a transparent background",
+  "WhiteLabelTooltip": "The sizes are shown for the Retina displays. For the displays with standard resolutions the logo width and height will be resized accordingly upon upload.",
   "YouHaveUnsavedChanges": "You have unsaved changes",
   "YourCurrentDomain": "Your current domain"
 }
