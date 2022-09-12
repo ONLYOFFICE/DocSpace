@@ -314,6 +314,7 @@ class SectionHeaderContent extends React.PureComponent {
 
   getUserContextOptions = () => {
     const {
+      t,
       setChangeEmailVisible,
       setChangePasswordVisible,
       setChangeAvatarVisible,
@@ -322,21 +323,21 @@ class SectionHeaderContent extends React.PureComponent {
     return [
       {
         key: "change-email",
-        label: "Change email",
+        label: t("PeopleTranslations:EmailChangeButton"),
         onClick: () => setChangeEmailVisible(true),
         disabled: false,
         icon: "/static/images/email.react.svg",
       },
       {
         key: "change-password",
-        label: "Change password",
+        label: t("PeopleTranslations:PasswordChangeButton"),
         onClick: () => setChangePasswordVisible(true),
         disabled: false,
         icon: "/static/images/security.react.svg",
       },
       {
         key: "edit-photo",
-        label: "Edit photo",
+        label: t("Profile:EditPhoto"),
         onClick: () => setChangeAvatarVisible(true),
         disabled: false,
         icon: "/static/images/image.react.svg",
@@ -344,7 +345,7 @@ class SectionHeaderContent extends React.PureComponent {
       { key: "separator", isSeparator: true },
       {
         key: "delete-profile",
-        label: "Delete profile",
+        label: t("PeopleTranslations:DeleteSelfProfile"),
         onClick: () => console.log("Delete profile"),
         disabled: false,
         icon: "/static/images/catalog.trash.react.svg",
