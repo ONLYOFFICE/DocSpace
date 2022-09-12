@@ -35,13 +35,12 @@ public class LdapObjectExtension
 {
     private readonly TenantUtil _tenantUtil;
     private readonly SettingsManager _settingsManager;
-    private readonly TenantManager _tenantManager;
     private readonly ILogger<LdapObjectExtension> _logger;
-    public LdapObjectExtension(TenantUtil tenantUtil, SettingsManager settingsManager, TenantManager tenantManager, ILogger<LdapObjectExtension> logger)
+
+    public LdapObjectExtension(TenantUtil tenantUtil, SettingsManager settingsManager, ILogger<LdapObjectExtension> logger)
     {
         _tenantUtil = tenantUtil;
         _settingsManager = settingsManager;
-        _tenantManager = tenantManager;
         _logger = logger;
     }
     public string GetAttribute(LdapObject ldapObject, string attribute)
@@ -149,7 +148,7 @@ public class LdapObjectExtension
         var emails = GetContacts(ldapUser, Mapping.AdditionalMail, settings);
         var skype = GetContacts(ldapUser, Mapping.Skype, settings);
 
-        var quotaSettings = _settingsManager.LoadForTenant<UserQuotaSettings>(_tenantManager.GetCurrentTenant().Id);
+        var quotaSettings = _settingsManager.Load<UserQuotaSettings>();
         var quota = settings.LdapMapping.ContainsKey(Mapping.UserQuotaLimit) ? ByteConverter.ConvertSizeToBytes(GetAttribute(ldapUser, settings.LdapMapping[Mapping.UserQuotaLimit])) : quotaSettings.DefaultUserQuota;
 
         if (string.IsNullOrEmpty(userName))

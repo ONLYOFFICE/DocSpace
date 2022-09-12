@@ -176,7 +176,7 @@ public interface IFolderDao<T>
     /// </summary>
     /// <param name="folder"></param>
     /// <returns></returns>
-    bool UseTrashForRemove(Folder<T> folder);
+    bool UseTrashForRemoveAsync(Folder<T> folder);
 
     /// <summary>
     /// Check the need to use recursion for operations
@@ -341,8 +341,9 @@ public interface IFolderDao<T>
     /// <param name="folderIDs"></param>
     /// <returns></returns>
     Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<T> folderIDs);
-
+    IAsyncEnumerable<FolderWithShare> GetFeedsForRoomsAsync(int tenant, DateTime from, DateTime to);
     IAsyncEnumerable<FolderWithShare> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to);
+    IAsyncEnumerable<ParentRoomPair> GetParentRoomsAsync(IEnumerable<int> foldersIds);
 
     IAsyncEnumerable<T> GetTenantsWithFeedsForFoldersAsync(DateTime fromTime);
 

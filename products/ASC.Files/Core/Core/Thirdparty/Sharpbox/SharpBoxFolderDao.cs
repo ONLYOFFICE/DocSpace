@@ -484,7 +484,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         return Task.FromResult(GetFolderById(folderId).Count == 0);
     }
 
-    public bool UseTrashForRemove(Folder<string> folder)
+    public bool UseTrashForRemoveAsync(Folder<string> folder)
     {
         return false;
     }

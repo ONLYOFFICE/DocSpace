@@ -413,21 +413,20 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         var user = _userManager.GetUsers(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
-        var quotaSettings = _settingsManager.LoadForTenant<UserQuotaSettings>(_tenantManager.GetCurrentTenant().Id);
+        var quotaSettings = _settingsManager.Load<UserQuotaSettings>();
 
-        if (!quotaSettings.EnableUserQuota || user.QuotaLimit != -1)
+        if (quotaSettings.EnableUserQuota && user.QuotaLimit != -1)
         {
             var quotaLimit = user.QuotaLimit;
-            var userUsedSpace = Math.Max(0, 
-                _userManager.FindUserQuotaRows(
-                        _tenantManager.GetCurrentTenant().Id, 
-                        file.Id == default ? _authContext.CurrentAccount.ID.ToString() : file.CreateBy.ToString()
-                    )
-                .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
 
-            if (quotaLimit == -1 || (quotaLimit - userUsedSpace < file.ContentLength))
+            if (quotaLimit != -1)
             {
-                throw FileSizeComment.GetPersonalFreeSpaceException(quotaLimit);
+                var userUsedSpace = Math.Max(0, _userManager.FindUserQuotaRows(TenantID, user.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+
+                if (quotaLimit - userUsedSpace < file.ContentLength)
+                {
+                    throw FileSizeComment.GetPersonalFreeSpaceException(quotaLimit);
+                }
             }
         }
 
@@ -1098,6 +1097,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public bool UseTrashForRemove(File<int> file)
     {
+        if (file.Encrypted && file.RootFolderType == FolderType.VirtualRooms)
+        {
+            return false;
+        }
+
         return file.RootFolderType != FolderType.TRASH && file.RootFolderType != FolderType.Privacy;
     }
 

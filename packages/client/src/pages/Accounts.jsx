@@ -2,11 +2,11 @@ import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { Redirect, Switch } from "react-router-dom";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
 import { /*combineUrl,*/ updateTempContent } from "@docspace/common/utils";
-import Home from "./PeopleHome";
+import Home from "./AccountsHome";
 import Profile from "./Profile";
 import ProfileAction from "./ProfileAction";
 

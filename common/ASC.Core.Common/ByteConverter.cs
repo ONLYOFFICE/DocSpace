@@ -77,10 +77,10 @@ public static class ByteConverter
                 return bytes;
             }
         }
-        catch(Exception e)
+        catch (Exception)
         {
-            return -1;
         }
+
         return -1;
     }
 }

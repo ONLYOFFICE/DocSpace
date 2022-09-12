@@ -49,4 +49,8 @@ public class CreateRoomRequestDto
 {
     public string Title { get; set; }
     public RoomType RoomType { get; set; }
+    public bool Private { get; set; }
+    public IEnumerable<FileShareParams> Share { get; set; }
+    public bool Notify { get; set; }
+    public string SharingMessage { get; set; }
 }

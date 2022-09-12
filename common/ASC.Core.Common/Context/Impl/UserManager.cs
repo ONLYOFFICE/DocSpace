@@ -364,7 +364,7 @@ public class UserManager
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
         if (oldUserData == null) //new user
         {
-            var quotaSettings = _settingsManager.LoadForTenant<UserQuotaSettings>(_tenantManager.GetCurrentTenant().Id);
+            var quotaSettings = _settingsManager.Load<UserQuotaSettings>();
 
             if (quotaSettings.EnableUserQuota)
             {
@@ -732,7 +732,7 @@ public class UserManager
 
         if (group == null)
         {
-                group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID) ?? Constants.LostGroupInfo);
+            group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID) ?? Constants.LostGroupInfo);
         }
 
         if (group == null)
@@ -891,7 +891,7 @@ public class UserManager
         _quotaService.SetUserQuotaRow(row, exchange);
     }
 
-    public List<UserQuotaRow> FindUserQuotaRows(int tenantId, string userId)
+    public List<UserQuotaRow> FindUserQuotaRows(int tenantId, Guid userId)
     {
         return _quotaService.FindUserQuotaRows(tenantId, userId).ToList();
     }

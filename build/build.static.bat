@@ -36,7 +36,6 @@ powershell -Command "(gc build\deploy\nginx\onlyoffice.conf) -replace '#', '' | 
 xcopy config\nginx\sites-enabled\* build\deploy\nginx\sites-enabled\ /E /R /Y
 
 REM fix paths
-powershell -Command "(gc build\deploy\nginx\sites-enabled\onlyoffice-login.conf) -replace 'ROOTPATH', '%~dp0deploy\login' -replace '\\', '/' | Out-File -encoding ASCII build\deploy\nginx\sites-enabled\onlyoffice-login.conf"
 powershell -Command "(gc build\deploy\nginx\sites-enabled\onlyoffice-client.conf) -replace 'ROOTPATH', '%~dp0deploy\client' -replace '\\', '/' | Out-File -encoding ASCII build\deploy\nginx\sites-enabled\onlyoffice-client.conf"
 
 REM restart nginx

@@ -2,7 +2,6 @@ import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
-import authStore from "@docspace/common/store/AuthStore";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 
@@ -19,11 +18,16 @@ const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
 
 class ProfileActionsStore {
   authStore = null;
+  filesStore = null;
+  peopleStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
 
-  constructor() {
+  constructor(authStore, filesStore, peopleStore) {
     this.authStore = authStore;
+    this.filesStore = filesStore;
+    this.peopleStore = peopleStore;
+
     makeAutoObservable(this);
   }
 
@@ -82,7 +86,11 @@ class ProfileActionsStore {
   };
 
   onLogoutClick = () => {
-    this.authStore.logout && this.authStore.logout();
+    this.authStore.logout().then(() => {
+      this.filesStore.reset();
+      this.peopleStore.reset();
+      window.location.replace(combineUrl(proxyURL, "/login"));
+    });
   };
 
   onDebugClick = () => {

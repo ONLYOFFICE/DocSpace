@@ -27,6 +27,8 @@ import commonIconsStyles from "../utils/common-icons-style";
 
 import { isMobileOnly } from "react-device-detect";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
@@ -359,6 +361,7 @@ const MainButtonMobile = (props) => {
           onClick={onMainButtonClick}
           percent={percent}
         />
+
         <StyledDropDown
           open={isOpen}
           withBackdrop={false}

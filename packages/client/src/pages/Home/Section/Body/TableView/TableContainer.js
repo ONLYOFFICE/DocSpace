@@ -209,7 +209,7 @@ const Table = ({
         infoPanelVisible={infoPanelVisible}
         columnInfoPanelStorageName={columnInfoPanelStorageName}
         selectedFolderId={selectedFolderId}
-        itemHeight={isRooms ? 49 : 41}
+        itemHeight={49}
       >
         {filesList.map((item, index) => {
           return index === 0 && item.isRoom ? (
@@ -267,9 +267,10 @@ export default inject(
       fetchMoreFiles,
       hasMoreFiles,
       filterTotal,
-      withPaging,
       roomsFilterTotal,
     } = filesStore;
+
+    const { withPaging, theme } = auth.settingsStore;
 
     return {
       filesList,
@@ -277,7 +278,7 @@ export default inject(
       setViewAs,
       setFirsElemChecked,
       setHeaderBorder,
-      theme: auth.settingsStore.theme,
+      theme,
       userId: auth.userStore.user.id,
       infoPanelVisible,
       fetchMoreFiles,

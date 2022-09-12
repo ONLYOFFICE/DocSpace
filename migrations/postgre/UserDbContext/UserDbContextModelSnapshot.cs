@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Acl", b =>
@@ -1244,6 +1244,12 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("character varying(512)")
                         .HasColumnName("notes")
                         .HasDefaultValueSql("NULL");
+
+                    b.Property<string>("QuotaLimit")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasColumnName("quota_limit")
+                        .HasDefaultValueSql("'0'");
 
                     b.Property<bool>("Removed")
                         .HasColumnType("boolean")

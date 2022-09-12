@@ -2,11 +2,13 @@ export const parseChildren = (
   children,
   headerDisplayName,
   bodyDisplayName,
-  footerDisplayName
+  footerDisplayName,
+  containerDisplayName
 ) => {
   let header = null,
     body = null,
-    footer = null;
+    footer = null,
+    container = null;
 
   children.forEach((child) => {
     const childType =
@@ -22,9 +24,12 @@ export const parseChildren = (
       case footerDisplayName:
         footer = child;
         break;
+      case containerDisplayName:
+        container = child;
+        break;
       default:
         break;
     }
   });
-  return [header, body, footer];
+  return [header, body, footer, container];
 };

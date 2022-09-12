@@ -131,7 +131,7 @@ public class TenantQuotaController : IQuotaController
         _tenantManager.SetTenantQuotaRow(
             new TenantQuotaRow { Tenant = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
             exchange);
-              
+
     }
 
     private void SetUserQuotaRow(string module, string domain, long size, string dataTag, bool exchange)
@@ -140,7 +140,7 @@ public class TenantQuotaController : IQuotaController
         if (new Guid(dataTag) != Guid.Empty)
         {
             _userManager.SetUserQuotaRow(
-                new UserQuotaRow { Tenant = _tenant, UserId = _authContext.CurrentAccount.ID.ToString(), Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
+                new UserQuotaRow { Tenant = _tenant, UserId = _authContext.CurrentAccount.ID, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
                 exchange);
         }
 

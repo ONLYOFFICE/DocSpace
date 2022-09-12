@@ -20,7 +20,7 @@ import { showLoader, hideLoader } from "@docspace/common/utils";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import { withTranslation } from "react-i18next";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 
@@ -45,6 +45,7 @@ const ArticleBodyContent = (props) => {
     theme,
     toggleArticleOpen,
     categoryType,
+    isAdmin,
     filesIsLoading,
   } = props;
 
@@ -158,7 +159,7 @@ const ArticleBodyContent = (props) => {
         showText={showText}
         onHide={toggleArticleOpen}
       />
-      {!personal && <AccountsItem />}
+      {!personal && isAdmin && <AccountsItem />}
       {!personal && !firstLoad && <SettingsItem />}
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
@@ -196,12 +197,7 @@ export default inject(
       filesIsLoading,
     } = filesStore;
 
-    const {
-      treeFolders,
-      setTreeFolders,
-      roomsFolderId,
-      archiveFolderId,
-    } = treeFoldersStore;
+    const { roomsFolderId, archiveFolderId } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
@@ -227,11 +223,11 @@ export default inject(
 
     return {
       toggleArticleOpen,
-      treeFolders,
       showText,
       articleOpen,
       enableThirdParty: settingsStore.enableThirdParty,
       isVisitor: auth.userStore.user.isVisitor,
+      isAdmin: auth.userStore.user.isAdmin,
       homepage: config.homepage,
 
       fetchRooms,
@@ -245,7 +241,6 @@ export default inject(
       setFirstLoad,
       fetchFiles,
 
-      setTreeFolders,
       setNewFilesPanelVisible,
       firstLoad,
       isDesktopClient,

@@ -17,11 +17,12 @@ import withLoader from "../../../HOCs/withLoader";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
+import toastr from "@docspace/components/toast/toastr";
+
 const ArticleMainButtonContent = (props) => {
   const {
     t,
     isMobileArticle,
-    showText,
     isDisabled,
     canCreate,
     isPrivacy,
@@ -41,8 +42,13 @@ const ArticleMainButtonContent = (props) => {
     currentFolderId,
     isRoomsFolder,
     isArchiveFolder,
+
+    selectedTreeNode,
+
     enablePlugins,
   } = props;
+  const isAccountsPage = selectedTreeNode[0] === "accounts";
+
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
 
@@ -116,6 +122,17 @@ const ArticleMainButtonContent = (props) => {
     );
   };
 
+  const onInvite = React.useCallback((e) => {
+    const type = e.action;
+    toastr.warning("Work in progress " + type);
+    console.log("invite ", type);
+  }, []);
+
+  const onInviteAgain = React.useCallback(() => {
+    console.log("invite again");
+    toastr.warning("Work in progress (invite again)");
+  }, []);
+
   React.useEffect(() => {
     const folderUpload = !isMobile
       ? [
@@ -166,7 +183,37 @@ const ArticleMainButtonContent = (props) => {
       },
     ];
 
-    const actions = isRoomsFolder
+    const actions = isAccountsPage
+      ? [
+          {
+            id: "main-button_administrator",
+            className: "main-button_drop-down",
+            icon: "/static/images/person.admin.react.svg",
+            label: t("People:Administrator"),
+            onClick: onInvite,
+            action: "administrator",
+            key: "administrator",
+          },
+          {
+            id: "main-button_manager",
+            className: "main-button_drop-down",
+            icon: "/static/images/person.manager.react.svg",
+            label: t("People:Manager"),
+            onClick: onInvite,
+            action: "manager",
+            key: "manager",
+          },
+          {
+            id: "main-button_user",
+            className: "main-button_drop-down",
+            icon: "/static/images/person.user.react.svg",
+            label: t("Common:User"),
+            onClick: onInvite,
+            action: "user",
+            key: "user",
+          },
+        ]
+      : isRoomsFolder
       ? [
           {
             id: "main-button_new-room",
@@ -217,17 +264,29 @@ const ArticleMainButtonContent = (props) => {
           },
         ];
 
-    const uploadActions = [
-      {
-        id: "main-button_upload-files",
-        className: "main-button_drop-down",
-        icon: "images/actions.upload.react.svg",
-        label: t("UploadFiles"),
-        onClick: onUploadFileClick,
-        key: "upload-files",
-      },
-      ...folderUpload,
-    ];
+    const uploadActions = isAccountsPage
+      ? [
+          {
+            id: "main-button_invite-again",
+            className: "main-button_drop-down",
+            icon: "/static/images/invite.again.react.svg",
+            label: t("People:LblInviteAgain"),
+            onClick: onInviteAgain,
+            action: "invite-again",
+            key: "invite-again",
+          },
+        ]
+      : [
+          {
+            id: "main-button_upload-files",
+            className: "main-button_drop-down",
+            icon: "images/actions.upload.react.svg",
+            label: t("UploadFiles"),
+            onClick: onUploadFileClick,
+            key: "upload-files",
+          },
+          ...folderUpload,
+        ];
 
     const menuModel = [...actions];
 
@@ -260,13 +319,24 @@ const ArticleMainButtonContent = (props) => {
     isPrivacy,
     currentFolderId,
     isRoomsFolder,
+
+    isAccountsPage,
+
     enablePlugins,
+
     onCreate,
     onCreateRoom,
+    onInvite,
+    onInviteAgain,
     onShowSelectFileDialog,
     onUploadFileClick,
     onUploadFolderClick,
   ]);
+
+  const canInvite = isAccountsPage && selectedTreeNode[1] === "filter";
+  const mainButtonText = isAccountsPage
+    ? t("Common:Invite")
+    : t("Common:Actions");
 
   return (
     <>
@@ -279,7 +349,7 @@ const ArticleMainButtonContent = (props) => {
             !isRecycleBinFolder &&
             !isArchiveFolder &&
             !isArticleLoading &&
-            canCreate && (
+            (canCreate || canInvite) && (
               <MobileView
                 t={t}
                 titleProp={t("Upload")}
@@ -292,9 +362,9 @@ const ArticleMainButtonContent = (props) => {
       ) : (
         <MainButton
           id="files_main-button"
-          isDisabled={isDisabled ? isDisabled : !canCreate}
+          isDisabled={isDisabled ? isDisabled : !canCreate && !canInvite}
           isDropdown={true}
-          text={t("Common:Actions")}
+          text={mainButtonText}
           model={model}
         />
       )}
@@ -343,6 +413,7 @@ export default inject(
       isShareFolder,
       isRoomsFolder,
       isArchiveFolder,
+      selectedTreeNode,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
     const {
@@ -369,6 +440,7 @@ export default inject(
       isShareFolder,
       isRoomsFolder,
       isArchiveFolder,
+      selectedTreeNode,
 
       canCreate,
 
@@ -386,7 +458,7 @@ export default inject(
     };
   }
 )(
-  withTranslation(["Article", "UploadPanel", "Common", "Files"])(
+  withTranslation(["Article", "UploadPanel", "Common", "Files", "People"])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
       <Loaders.ArticleButton />
     )

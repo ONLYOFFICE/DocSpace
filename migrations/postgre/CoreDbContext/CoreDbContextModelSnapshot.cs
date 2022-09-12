@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbButton", b =>
@@ -196,6 +196,39 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasDatabaseName("tenant_tenants_tariff");
 
                     b.ToTable("tenants_tariff", "onlyoffice");
+                });
+
+            modelBuilder.Entity("ASC.Core.Common.EF.DbUsersQuotaRow", b =>
+                {
+                    b.Property<int>("Tenant")
+                        .HasColumnType("integer")
+                        .HasColumnName("tenant");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Path")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("path");
+
+                    b.Property<long>("Counter")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("counter")
+                        .HasDefaultValueSql("'0'");
+
+                    b.Property<string>("Tag")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("character varying(36)")
+                        .HasColumnName("tag")
+                        .HasDefaultValueSql("'0'");
+
+                    b.HasKey("Tenant", "UserId", "Path")
+                        .HasName("tenants_userquotarow_pkey");
+
+                    b.ToTable("users_quotarow", "onlyoffice");
                 });
 #pragma warning restore 612, 618
         }

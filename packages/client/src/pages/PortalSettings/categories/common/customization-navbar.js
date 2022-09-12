@@ -34,12 +34,17 @@ const StyledComponent = styled.div`
       color: #657077;
       font-size: 13px;
       max-width: 1024px;
+      line-height: 20px;
     }
 
     .inherit-title-link {
       margin-right: 4px;
       font-size: 16px;
       font-weight: 700;
+    }
+    .link-learn-more {
+      line-height: 15px;
+      font-weight: 600;
     }
   }
 `;
@@ -89,6 +94,7 @@ const CustomizationNavbar = ({
         </Text>
         <Box paddingProp="10px 0 3px 0">
           <Link
+            className="link-learn-more"
             color={theme.client.settings.common.linkColorHelp}
             target="_blank"
             isHovered={true}
@@ -117,6 +123,37 @@ const CustomizationNavbar = ({
           {t("CustomTitlesSettingsDescription")}
         </Text>
       </div>
+
+      <div className="category-item-wrapper">
+        <div className="category-item-heading">
+          <Link
+            truncate={true}
+            className="inherit-title-link header"
+            onClick={onClickLink}
+            href={combineUrl(
+              AppServerConfig.proxyURL,
+              "/portal-settings/common/customization/dns-settings"
+            )}
+          >
+            {t("DNSSettings")}
+          </Link>
+          <StyledArrowRightIcon size="small" color="#333333" />
+        </div>
+        <Text className="category-item-description">
+          {t("DNSSettingsDescription")}
+        </Text>
+        <Box paddingProp="10px 0 3px 0">
+          <Link
+            color={theme.client.settings.common.linkColorHelp}
+            target="_blank"
+            isHovered={true}
+            href={helpUrlCommonSettings}
+          >
+            {t("Common:LearnMore")}
+          </Link>
+        </Box>
+      </div>
+
       <div className="category-item-wrapper">
         <div className="category-item-heading">
           <Link

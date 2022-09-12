@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations.FilesDb
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbQuota", b =>
@@ -2451,6 +2451,10 @@ namespace ASC.Migrations.MySql.Migrations.FilesDb
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
+                    b.Property<bool>("Private")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("private");
+
                     b.Property<string>("Provider")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -2629,6 +2633,10 @@ namespace ASC.Migrations.MySql.Migrations.FilesDb
                         .HasColumnType("int")
                         .HasColumnName("parent_id")
                         .HasDefaultValueSql("'0'");
+
+                    b.Property<bool>("Private")
+                        .HasColumnType("tinyint(1)")
+                        .HasColumnName("private");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("int")

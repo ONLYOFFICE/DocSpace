@@ -146,7 +146,7 @@ class CachedQuotaService : IQuotaService
         CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant, row.UserId) }, CacheNotifyAction.InsertOrUpdate);
     }
 
-    public IEnumerable<UserQuotaRow> FindUserQuotaRows(int tenantId, string userId)
+    public IEnumerable<UserQuotaRow> FindUserQuotaRows(int tenantId, Guid userId)
     {
         var key = GetKey(tenantId, userId);
         var result = Cache.Get<IEnumerable<UserQuotaRow>>(key);
@@ -165,7 +165,7 @@ class CachedQuotaService : IQuotaService
         return QuotaServiceCache.KeyQuotaRows + tenant;
     }
 
-    public string GetKey(int tenant, string userId)
+    public string GetKey(int tenant, Guid userId)
     {
         return QuotaServiceCache.KeyQuotaRows + tenant + userId;
     }

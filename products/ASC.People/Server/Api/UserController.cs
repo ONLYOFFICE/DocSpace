@@ -1107,7 +1107,13 @@ public class UserController : PeopleControllerBase
         {
             if (inDto.Quota != -1)
             {
-                var usedSpace = await _globalSpace.GetUserUsedSpaceAsync(user.Id);
+                var usedSpace = Math.Max(0,
+                    _userManager.FindUserQuotaRows(
+                            _tenantManager.GetCurrentTenant().Id,
+                            user.Id
+                        )
+                .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+
                 var tenanSpaceQuota = _tenantExtra.GetTenantQuota().MaxTotalSize;
 
                 if (tenanSpaceQuota < inDto.Quota || usedSpace > inDto.Quota)

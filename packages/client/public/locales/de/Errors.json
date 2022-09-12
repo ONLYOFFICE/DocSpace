@@ -3,7 +3,5 @@
   "Error403Text": "Zugriff verweigert.",
   "Error404Text": "Die Ressource kann nicht gefunden werden.",
   "ErrorEmptyResponse": "Leere Antwort",
-  "ErrorInvalidHeader": "Inkorrekte E-Mail oder ungültiger Link",
-  "ErrorInvalidText": "In 10 Sekunden werden Sie auf die <1>Anmeldeseite</1> weitergeleitet",
   "ErrorOfflineText": "Keine Internetverbindung gefunden"
 }

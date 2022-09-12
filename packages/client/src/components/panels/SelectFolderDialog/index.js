@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import throttle from "lodash/throttle";
 import SelectFolderDialogAsideView from "./AsideView";
 import utils from "@docspace/components/utils";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 import { FilterType } from "@docspace/common/constants";
 
@@ -217,7 +217,7 @@ class SelectFolderDialog extends React.Component {
     //console.log("Render Folder Component?", this.state);
 
     const folderSelectionDisabled =
-      folderId === sharedRoomId || folderId === sharedRoomId.toString();
+      folderId === sharedRoomId || folderId === sharedRoomId?.toString();
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
