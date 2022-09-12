@@ -30,3 +30,21 @@ public interface ITenantQuotaFeatureChecker
     public Task<bool> Check(TenantQuota value);
     public string Exception(TenantQuota value);
 }
+
+
+public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChecker where T : TenantQuotaFeature<T1> where T1 : IComparable<T1>
+{
+    private readonly ITenantQuotaFeatureStat<T, T1> _tenantQuotaFeatureStatistic;
+
+    public TenantQuotaFeatureChecker(ITenantQuotaFeatureStat<T, T1> tenantQuotaFeatureStatistic)
+    {
+        _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
+    }
+
+    public virtual async Task<bool> Check(TenantQuota quota)
+    {
+        return (await _tenantQuotaFeatureStatistic.GetValue()).CompareTo(quota.GetFeature<T>().Value) <= 0;
+    }
+
+    public abstract string Exception(TenantQuota quota);
+}

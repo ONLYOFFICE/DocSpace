@@ -24,9 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.Quota;
-using ASC.Core.Common.Quota.Features;
-using ASC.Files.Core.Core;
 
 var options = new WebApplicationOptions
 {
@@ -47,7 +44,7 @@ builder.Host.ConfigureDefault(args, configureServices: (hostContext, services, d
     services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
     services.AddScoped<CountRoomChecker>();
 
-    services.AddScoped<ITenantQuotaFeatureStatisticCount<CountRoomFeature>, CountRoomCheckerStatistic>();
+    services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
     services.AddScoped<CountRoomCheckerStatistic>();
 });
 

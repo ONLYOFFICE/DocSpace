@@ -31,7 +31,6 @@ public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
     public int Tenant { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public long MaxFileSize { get; set; }
     public string Features { get; set; }
     public decimal Price { get; set; }
     public string ProductId { get; set; }
@@ -44,8 +43,7 @@ public class DbQuota : BaseEntity, IMapFrom<TenantQuota>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<TenantQuota, DbQuota>()
-            .ForMember(dest => dest.MaxFileSize, opt => opt.MapFrom(src => ByteConverter.GetInMBytes(src.MaxFileSize)));
+        profile.CreateMap<TenantQuota, DbQuota>();
     }
 }
 public static class DbQuotaExtension
@@ -61,8 +59,7 @@ public static class DbQuotaExtension
                     Tenant = -1,
                     Name = "trial",
                     Description = null,
-                    MaxFileSize = 100,
-                    Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,manager:1",
+                    Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:100,manager:1",
                     Price = decimal.Parse("0,00"),
                     ProductId = null,
                     Visible = false
@@ -72,8 +69,7 @@ public static class DbQuotaExtension
                     Tenant = -2,
                     Name = "admin",
                     Description = null,
-                    MaxFileSize = 1024,
-                    Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,manager:1",
+                    Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:1024,manager:1",
                     Price = decimal.Parse("30,00"),
                     ProductId = "1002",
                     Visible = true
@@ -83,8 +79,7 @@ public static class DbQuotaExtension
                     Tenant = -3,
                     Name = "startup",
                     Description = null,
-                    MaxFileSize = 100,
-                    Features = "free,audit,ldap,sso,restore,total_size:2147483648,manager:5,rooms:3",
+                    Features = "free,audit,ldap,sso,restore,total_size:2147483648,file_size:100,manager:5,rooms:3",
                     Price = decimal.Parse("0,00"),
                     ProductId = null,
                     Visible = false
@@ -123,10 +118,6 @@ public static class DbQuotaExtension
             entity.Property(e => e.Features)
                 .HasColumnName("features")
                 .HasColumnType("text");
-
-            entity.Property(e => e.MaxFileSize)
-                .HasColumnName("max_file_size")
-                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Name)
                 .HasColumnName("name")
@@ -168,10 +159,6 @@ public static class DbQuotaExtension
                 .HasColumnType("character varying");
 
             entity.Property(e => e.Features).HasColumnName("features");
-
-            entity.Property(e => e.MaxFileSize)
-                .HasColumnName("max_file_size")
-                .HasDefaultValueSql("'0'");
 
             entity.Property(e => e.Name)
                 .HasColumnName("name")

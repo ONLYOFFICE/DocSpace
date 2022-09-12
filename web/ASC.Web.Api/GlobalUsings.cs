@@ -69,6 +69,8 @@ global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.Notify;
 global using ASC.Core.Common.Notify.Push;
+global using ASC.Core.Common.Quota;
+global using ASC.Core.Common.Quota.Features;
 global using ASC.Core.Common.Security;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Configuration;
@@ -88,6 +90,7 @@ global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.Helpers;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
+global using ASC.Files.Core.Core;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Helpers;
 global using ASC.Geolocation;
@@ -143,7 +146,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;
-global using Microsoft.Extensions.Options;
 
 global using MimeKit;
 

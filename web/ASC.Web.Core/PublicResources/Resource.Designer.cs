@@ -2167,6 +2167,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Max file size.
+        /// </summary>
+        public static string TariffsFeature_file_size {
+            get {
+                return ResourceManager.GetString("TariffsFeature_file_size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number of managers.
         /// </summary>
         public static string TariffsFeature_manager_price_count {

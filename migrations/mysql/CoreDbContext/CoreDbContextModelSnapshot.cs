@@ -35,12 +35,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("text")
                         .HasColumnName("features");
 
-                    b.Property<long>("MaxFileSize")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("max_file_size")
-                        .HasDefaultValueSql("'0'");
-
                     b.Property<string>("Name")
                         .HasColumnType("varchar(128)")
                         .HasColumnName("name")
@@ -76,8 +70,7 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -1,
-                            Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,manager:1",
-                            MaxFileSize = 100L,
+                            Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:100,manager:1",
                             Name = "trial",
                             Price = 0.00m,
                             Visible = false
@@ -85,8 +78,7 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -2,
-                            Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,manager:1",
-                            MaxFileSize = 1024L,
+                            Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:1024,manager:1",
                             Name = "admin",
                             Price = 30.00m,
                             ProductId = "1002",
@@ -95,8 +87,7 @@ namespace ASC.Migrations.MySql.Migrations
                         new
                         {
                             Tenant = -3,
-                            Features = "free,audit,ldap,sso,restore,total_size:2147483648,manager:5,rooms:3",
-                            MaxFileSize = 100L,
+                            Features = "free,audit,ldap,sso,restore,total_size:2147483648,file_size:100,manager:5,rooms:3",
                             Name = "startup",
                             Price = 0.00m,
                             Visible = false

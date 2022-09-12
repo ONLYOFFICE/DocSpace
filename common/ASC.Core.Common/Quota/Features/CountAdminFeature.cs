@@ -35,27 +35,19 @@ public class CountManagerFeature : TenantQuotaFeatureCount
     }
 }
 
-public class CountManagerChecker : ITenantQuotaFeatureChecker
+public class CountManagerChecker : TenantQuotaFeatureChecker<CountManagerFeature, int>
 {
-    private readonly ITenantQuotaFeatureStatisticCount<CountManagerFeature> _tenantQuotaFeatureStatistic;
-
-    public CountManagerChecker(ITenantQuotaFeatureStatisticCount<CountManagerFeature> tenantQuotaFeatureStatistic)
+    public CountManagerChecker(ITenantQuotaFeatureStat<CountManagerFeature, int> tenantQuotaFeatureStatistic) : base(tenantQuotaFeatureStatistic)
     {
-        _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
     }
 
-    public async Task<bool> Check(TenantQuota quota)
-    {
-        return await _tenantQuotaFeatureStatistic.GetValue() <= quota.ActiveUsers;
-    }
-
-    public string Exception(TenantQuota quota)
+    public override string Exception(TenantQuota quota)
     {
         return "The number of managers should not exceed  " + quota.CountManager;
     }
 }
 
-public class CountManagerStatistic : ITenantQuotaFeatureStatisticCount<CountManagerFeature>
+public class CountManagerStatistic : ITenantQuotaFeatureStat<CountManagerFeature, int>
 {
     private readonly UserManager _userManager;
 

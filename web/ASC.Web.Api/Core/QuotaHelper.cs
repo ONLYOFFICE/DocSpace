@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.Quota;
-
 namespace ASC.Web.Api.Core;
 
 [Scope]
@@ -136,24 +134,14 @@ public class QuotaHelper
                 var maxValue = length.Value == long.MaxValue;
                 result.Value = maxValue ? -1 : length.Value;
 
-                var statisticProvider = (ITenantQuotaFeatureStat<long>)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStatisticLength<>).MakeGenericType(feature.GetType()));
-
-                if (statisticProvider != null)
-                {
-                    used = await statisticProvider.GetValue();
-                }
+                await GetStat<long>();
             }
             else if (feature is TenantQuotaFeature<int> count)
             {
                 var maxValue = count.Value == int.MaxValue;
                 result.Value = maxValue ? -1 : count.Value;
 
-                var statisticProvider = (ITenantQuotaFeatureStat<int>)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStatisticCount<>).MakeGenericType(feature.GetType()));
-
-                if (statisticProvider != null)
-                {
-                    used = await statisticProvider.GetValue();
-                }
+                await GetStat<int>();
             }
             else if (feature is TenantQuotaFeature<bool> flag)
             {
@@ -192,6 +180,16 @@ public class QuotaHelper
             }
 
             yield return result;
+
+            async Task GetStat<T>()
+            {
+                var statisticProvider = (ITenantQuotaFeatureStat<T>)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStat<,>).MakeGenericType(feature.GetType(), typeof(T)));
+
+                if (statisticProvider != null)
+                {
+                    used = await statisticProvider.GetValue();
+                }
+            }
         }
     }
 }

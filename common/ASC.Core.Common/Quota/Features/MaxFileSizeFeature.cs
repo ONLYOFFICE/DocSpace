@@ -24,14 +24,17 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Quota;
+namespace ASC.Core.Common.Quota.Features;
 
-public interface ITenantQuotaFeatureStat<T>
+internal class MaxFileSizeFeature : TenantQuotaFeatureLength
 {
-    Task<T> GetValue();
-}
+    public override string Name { get => "file_size"; }
+    public MaxFileSizeFeature(TenantQuota tenantQuota) : base(tenantQuota)
+    {
+    }
 
-public interface ITenantQuotaFeatureStat<T, T1> : ITenantQuotaFeatureStat<T1> where T : TenantQuotaFeature<T1>
-{
-}
+    protected internal override void Multiply(int quantity)
+    {
 
+    }
+}

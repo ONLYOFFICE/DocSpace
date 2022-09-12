@@ -35,27 +35,19 @@ public class MaxTotalSizeFeature : TenantQuotaFeatureLength
     }
 }
 
-public class MaxTotalSizeChecker : ITenantQuotaFeatureChecker
+public class MaxTotalSizeChecker : TenantQuotaFeatureChecker<MaxTotalSizeFeature, long>
 {
-    private readonly ITenantQuotaFeatureStatisticLength<MaxTotalSizeFeature> _tenantQuotaFeatureStatistic;
-
-    public MaxTotalSizeChecker(ITenantQuotaFeatureStatisticLength<MaxTotalSizeFeature> tenantQuotaFeatureStatistic)
+    public MaxTotalSizeChecker(ITenantQuotaFeatureStat<MaxTotalSizeFeature, long> tenantQuotaFeatureStatistic) : base(tenantQuotaFeatureStatistic)
     {
-        _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
     }
 
-    public async Task<bool> Check(TenantQuota quota)
-    {
-        return await _tenantQuotaFeatureStatistic.GetValue() <= quota.MaxTotalSize;
-    }
-
-    public string Exception(TenantQuota quota)
+    public override string Exception(TenantQuota quota)
     {
         return "The used storage size should not exceed " + quota.MaxTotalSize;
     }
 }
 
-public class MaxTotalSizeStatistic : ITenantQuotaFeatureStatisticLength<MaxTotalSizeFeature>
+public class MaxTotalSizeStatistic : ITenantQuotaFeatureStat<MaxTotalSizeFeature, long>
 {
     private readonly TenantManager _tenantManager;
 
