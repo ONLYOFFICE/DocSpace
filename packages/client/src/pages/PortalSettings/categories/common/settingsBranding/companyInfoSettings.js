@@ -240,17 +240,15 @@ const CompanyInfoSettings = (props) => {
       <StyledComponent isPortalPaid={isPortalPaid}>
         <div className="header">{t("Settings:CompanyInfoSettings")}</div>
         <div className="description">
-          {t("Settings:CompanyInfoSettingsDescription")}
+          {t("Settings:CompanyInfoSettingsDescription")}&nbsp;
           {isPortalPaid ? (
             <Link className="link" onClick={onShowExample} noHover={true}>
-              &nbsp;{t("Common:AboutCompanyTitle")}&nbsp;
+              {t("Common:AboutCompanyTitle")}
             </Link>
           ) : (
-            <span className="link">
-              &nbsp;{t("Common:AboutCompanyTitle")}&nbsp;
-            </span>
+            <span className="link">{t("Common:AboutCompanyTitle")}</span>
           )}
-          {t("Common:Window")}.
+          &nbsp;{t("Common:Window")}.
         </div>
         <div className="settings-block">
           <FieldContainer
