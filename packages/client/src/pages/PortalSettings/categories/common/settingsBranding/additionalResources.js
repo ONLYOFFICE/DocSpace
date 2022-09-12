@@ -44,6 +44,7 @@ const StyledComponent = styled.div`
   }
 
   .checkbox {
+    width: max-content;
     margin-right: 9px;
   }
 `;
@@ -185,15 +186,16 @@ const AdditionalResources = (props) => {
         </div>
         <div className="description additional-description">
           <div className="additional-description">
-            {t("Settings:AdditionalResourcesDescription")}
+            {t("Settings:AdditionalResourcesDescription")}&nbsp;
             <Link className="link" onClick={onShowExample} noHover={true}>
-              &nbsp;{t("Settings:DocSpaceMenu")}
+              {t("Settings:DocSpaceMenu")}
             </Link>
             .
           </div>
         </div>
         <div className="branding-checkbox">
           <Checkbox
+            className="checkbox"
             isDisabled={!isPortalPaid}
             label={t("ShowFeedbackAndSupport")}
             isChecked={feedbackAndSupportEnabled}
@@ -201,12 +203,14 @@ const AdditionalResources = (props) => {
           />
 
           <Checkbox
+            className="checkbox"
             isDisabled={!isPortalPaid}
             label={t("ShowVideoGuides")}
             isChecked={videoGuidesEnabled}
             onChange={() => setShowVideoGuides(!videoGuidesEnabled)}
           />
           <Checkbox
+            className="checkbox"
             isDisabled={!isPortalPaid}
             label={t("ShowHelpCenter")}
             isChecked={helpCenterEnabled}
@@ -227,7 +231,7 @@ const AdditionalResources = (props) => {
   );
 };
 
-export default inject(({ auth, setup, common }) => {
+export default inject(({ auth, common }) => {
   const { settingsStore } = auth;
 
   const {
