@@ -20,30 +20,29 @@ import ItemsList from "./sub-components/ItemsList";
 import InviteInput from "./sub-components/InviteInput";
 
 const InvitePanel = ({
-  invitePanelOptions,
-  setInvitePanelOptions,
-  visible,
-  t,
-  getFolderInfo,
   folders,
-  setInviteItems,
+  getFolderInfo,
   inviteItems,
+  roomId,
+  setInviteItems,
+  setInvitePanelOptions,
+  t,
+  visible,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
 
   useEffect(() => {
-    const { id } = invitePanelOptions;
-    const room = folders.find((folder) => folder.id === id);
+    const room = folders.find((folder) => folder.id === roomId);
 
     if (room) {
       setSelectedRoom(room);
     } else {
-      getFolderInfo(id).then((info) => {
+      getFolderInfo(roomId).then((info) => {
         setSelectedRoom(info);
       });
     }
-  }, [invitePanelOptions]);
+  }, [roomId]);
 
   const onClose = () => {
     setInvitePanelOptions({ visible: false });
@@ -135,9 +134,9 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { getFolderInfo, folders, getShareUsers } = filesStore;
 
   return {
-    invitePanelOptions,
     setInvitePanelOptions,
     visible: invitePanelOptions.visible,
+    roomId: invitePanelOptions.roomId,
     theme,
     getUsersByQuery,
     getFolderInfo,
@@ -147,7 +146,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     inviteItems,
   };
 })(
-  withTranslation(["InviteDialog", "SharingPanel", "Common"])(
+  withTranslation(["InviteDialog", "SharingPanel", "Translations", "Common"])(
     observer(InvitePanel)
   )
 );

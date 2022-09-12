@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import debounce from "lodash.debounce";
 import { inject, observer } from "mobx-react";
 
@@ -23,25 +23,29 @@ import {
 } from "../StyledInvitePanel";
 
 const InviteInput = ({
-  invitePanelOptions,
+  defaultAccess,
   getShareUsers,
-  setInviteItems,
-  inviteItems,
   getUsersByQuery,
-  t,
+  hideSelector,
+  inviteItems,
   onClose,
+  roomId,
+  setInviteItems,
+  t,
+  ...props
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
   const [panelVisible, setPanelVisible] = useState(false);
   const [roomUsers, setRoomUsers] = useState([]);
   const [showUsersPanel, setShowUsersPanel] = useState(false);
+  const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
+
+  const inputsRef = useRef();
 
   useEffect(() => {
-    const { id } = invitePanelOptions;
-
-    getShareUsers([id]).then((users) => setRoomUsers(users));
-  }, [invitePanelOptions]);
+    getShareUsers([roomId]).then((users) => setRoomUsers(users));
+  }, [roomId]);
 
   const inRoom = (id) => {
     return roomUsers.some((user) => user.sharedTo.id === id);
@@ -90,7 +94,7 @@ const InviteInput = ({
 
     const invited = inRoom(id);
 
-    item.access = ShareAccessRights.ReadOnly; //TODO: get from main selector;
+    item.access = selectedAccess;
 
     const addUser = () => {
       setInviteItems([...inviteItems, item]);
@@ -162,6 +166,10 @@ const InviteInput = ({
 
   const accessOptions = getAccessOptions(t, 5);
 
+  const onSelectAccess = (item) => {
+    setSelectedAccess(item.access);
+  };
+
   return (
     <>
       <StyledSubHeader>
@@ -176,13 +184,21 @@ const InviteInput = ({
         </StyledLink>
       </StyledSubHeader>
 
-      <StyledInviteInputContainer>
+      <StyledInviteInputContainer ref={inputsRef}>
         <StyledInviteInput
           onChange={onChange}
           placeholder={t("SearchPlaceholder")}
           value={inputValue}
+          {...props}
         />
-        <AccessSelector t={t} roomType={5} />
+        {!hideSelector && (
+          <AccessSelector
+            t={t}
+            roomType={5}
+            onSelectAccess={onSelectAccess}
+            containerRef={inputsRef}
+          />
+        )}
         <StyledDropDown
           isDefaultMode={false}
           open={panelVisible}
@@ -211,6 +227,7 @@ const InviteInput = ({
             accessOptions={accessOptions}
             isMultiSelect
             isEncrypted={true}
+            defaultAccess={selectedAccess}
           />
         )}
       </StyledInviteInputContainer>
@@ -229,6 +246,8 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     setInviteItems,
     inviteItems,
     getUsersByQuery,
-    invitePanelOptions,
+    roomId: invitePanelOptions.id,
+    hideSelector: invitePanelOptions.hideSelector,
+    defaultAccess: invitePanelOptions.defaultAccess,
   };
 })(observer(InviteInput));

@@ -72,6 +72,10 @@ const StyledRow = styled.div`
 
 const StyledInviteInput = styled(TextInput)`
   margin-left: 16px;
+  margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
+`;
+
+const StyledAccessSelector = styled.div`
   margin-right: 16px;
 `;
 
@@ -94,7 +98,7 @@ const StyledComboBox = styled(ComboBox)`
   }
 `;
 
-const StyledInviteInputContainer = styled(Box)`
+const StyledInviteInputContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
@@ -206,4 +210,5 @@ export {
   StyledButtons,
   StyledLink,
   ScrollList,
+  StyledAccessSelector,
 };

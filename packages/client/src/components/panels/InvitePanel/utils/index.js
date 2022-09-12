@@ -10,36 +10,40 @@ export const getAccessOptions = (
   const accesses = {
     roomManager: {
       key: "roomManager",
-      label: "Room manager",
-      title: "Room manager",
-      description: "Room manager",
-      quota: "Paid",
+      label: t("Translations:RoleRoomManager"),
+      description: t("Translations:RoleRoomManagerDescription"),
+      quota: t("Common:Paid"),
       color: "#EDC409",
       access: ShareAccessRights.FullAccess,
     },
     editor: {
       key: "editor",
-      label: "Editor",
+      label: t("Translations:RoleEditor"),
+      description: t("Translations:RoleEditorDescription"),
       access: ShareAccessRights.CustomFilter,
     },
     formFiller: {
       key: "formFiller",
-      label: "Form filler",
+      label: t("Translations:RoleFormFiller"),
+      description: t("Translations:RoleFormFillerDescription"),
       access: ShareAccessRights.FormFilling,
     },
     reviewer: {
       key: "reviewer",
-      label: "Reviewer",
+      label: t("Translations:RoleReviewer"),
+      description: t("Translations:RoleReviewerDescription"),
       access: ShareAccessRights.Review,
     },
     commentator: {
       key: "commentator",
-      label: "Commentator",
+      label: t("Translations:RoleCommentator"),
+      description: t("Translations:RoleCommentatorDescription"),
       access: ShareAccessRights.Comment,
     },
     viewer: {
       key: "viewer",
-      label: "Viewer",
+      label: t("Translations:RoleViewer"),
+      description: t("Translations:RoleViewerDescription"),
       access: ShareAccessRights.ReadOnly,
     },
   };
@@ -97,7 +101,7 @@ export const getAccessOptions = (
     },
     {
       key: "remove",
-      label: "Remove",
+      label: t("Translations:Remove"),
     },
   ];
 

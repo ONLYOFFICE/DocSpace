@@ -13,6 +13,7 @@ import withLoader from "../../../HOCs/withLoader";
 
 const AddUsersPanel = ({
   isEncrypted,
+  defaultAccess,
   onClose,
   onParentPanelClose,
   shareDataItems,
@@ -25,7 +26,9 @@ const AddUsersPanel = ({
   isMultiSelect,
   theme,
 }) => {
-  const accessRight = isEncrypted
+  const accessRight = defaultAccess
+    ? defaultAccess
+    : isEncrypted
     ? ShareAccessRights.FullAccess
     : ShareAccessRights.ReadOnly;
 
