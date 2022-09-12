@@ -194,4 +194,4 @@
 %{buildpath}/products/ASC.Login/login
 /usr/lib/systemd/system/%{product}-login.service
 %dir %{buildpath}/products/
-%dir %{buildpath}/ASC.Login/
+%dir %{buildpath}/products/ASC.Login/
