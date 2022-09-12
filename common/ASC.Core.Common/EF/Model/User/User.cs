@@ -53,7 +53,7 @@ public class User : BaseEntity, IMapFrom<UserInfo>
     public bool Removed { get; set; }
     public DateTime CreateDate { get; set; }
     public DateTime LastModified { get; set; }
-    public string QuotaLimit { get; set; }
+    public long QuotaLimit { get; set; }
 
     public override object[] GetKeys()
     {
