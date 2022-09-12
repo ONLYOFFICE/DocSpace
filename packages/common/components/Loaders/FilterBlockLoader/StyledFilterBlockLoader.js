@@ -14,16 +14,22 @@ const StyledContainer = styled.div`
 const StyledBlock = styled.div`
   padding: 12px 0 6px;
 
-  margin-bottom: 6px;
+  margin-bottom: 0;
 
   width: 100%;
-  height: auto;
+  height: 128px;
 
   display: flex;
 
+  box-sizing: border-box;
+
   flex-direction: column;
 
-  border-bottom: 1px solid #eceef1;
+  ${(props) =>
+    !props.isLast &&
+    css`
+      border-bottom: 1px solid #eceef1;
+    `}
 
   .row-loader {
     display: flex;
