@@ -6,8 +6,6 @@ import withLoading from "SRC_DIR/HOCs/withLoading";
 import styled from "styled-components";
 import Checkbox from "@docspace/components/checkbox";
 import toastr from "@docspace/components/toast/toastr";
-import ModalDialog from "@docspace/components/modal-dialog";
-import Link from "@docspace/components/link";
 import LoaderAdditionalResources from "../sub-components/loaderAdditionalResources";
 
 const StyledComponent = styled.div`
@@ -28,14 +26,7 @@ const StyledComponent = styled.div`
     padding-bottom: 1px;
   }
 
-  .link {
-    font-weight: 600;
-    border-bottom: 1px dashed #333333;
-    border-color: ${(props) => !props.isPortalPaid && "#A3A9AE"};
-  }
-
-  .description,
-  .link {
+  .description {
     color: ${(props) => !props.isPortalPaid && "#A3A9AE"};
   }
 
@@ -46,19 +37,6 @@ const StyledComponent = styled.div`
   .checkbox {
     width: max-content;
     margin-right: 9px;
-  }
-`;
-
-const StyledModalDialog = styled(ModalDialog)`
-  #modal-dialog {
-    width: auto;
-  }
-
-  .modal-body {
-    padding: 0;
-  }
-  .modal-footer {
-    display: none;
   }
 `;
 
@@ -92,8 +70,6 @@ const AdditionalResources = (props) => {
   const [isFirstAdditionalResources, setIsFirstAdditionalResources] = useState(
     localStorage.getItem("isFirstAdditionalResources")
   );
-
-  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     setShowFeedback(additionalResourcesData.feedbackAndSupportEnabled);
@@ -156,28 +132,10 @@ const AdditionalResources = (props) => {
       });
   };
 
-  const onShowExample = () => {
-    if (!isPortalPaid) return;
-    setShowModal(true);
-  };
-
-  const onCloseModal = () => {
-    setShowModal(false);
-  };
-
   if (!isLoadedAdditionalResources) return <LoaderAdditionalResources />;
 
   return (
     <>
-      {showModal && (
-        <StyledModalDialog visible={showModal} onClose={onCloseModal}>
-          <ModalDialog.Body>
-            <img className="img" src="/static/images/docspace.menu.svg" />
-          </ModalDialog.Body>
-          <ModalDialog.Footer className="modal-footer" />
-        </StyledModalDialog>
-      )}
-
       <StyledComponent isPortalPaid={isPortalPaid}>
         <div className="header">
           <div className="additional-header">
@@ -186,11 +144,7 @@ const AdditionalResources = (props) => {
         </div>
         <div className="description additional-description">
           <div className="additional-description">
-            {t("Settings:AdditionalResourcesDescription")}&nbsp;
-            <Link className="link" onClick={onShowExample} noHover={true}>
-              {t("Settings:DocSpaceMenu")}
-            </Link>
-            .
+            {t("Settings:AdditionalResourcesDescription")}
           </div>
         </div>
         <div className="branding-checkbox">
