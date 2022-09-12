@@ -188,6 +188,10 @@ class SettingsStore {
     this.defaultPage = defaultPage;
   };
 
+  setGreetingSettings = (greetingSettings) => {
+    this.greetingSettings = greetingSettings;
+  };
+
   getSettings = async () => {
     let newSettings = null;
 
@@ -226,6 +230,8 @@ class SettingsStore {
         this.setValue("hashSettings", newSettings[key]);
       }
     });
+
+    this.setGreetingSettings(newSettings.greetingSettings);
 
     return newSettings;
   };
