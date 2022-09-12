@@ -149,6 +149,9 @@ const FilterBlockItem = ({
         displaySelectedOption={true}
         scaled={true}
         scaledOptions={true}
+        isDefaultMode={false}
+        directionY={"bottom"}
+        fixedDirection
       />
     );
   };
