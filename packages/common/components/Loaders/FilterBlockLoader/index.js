@@ -12,8 +12,6 @@ const FilterBlockLoader = ({
   isRooms,
   ...rest
 }) => {
-  console.log(isPersonalRoom, isRooms);
-
   return (
     <StyledContainer id={id} className={className} style={style} {...rest}>
       {!isRooms && (
