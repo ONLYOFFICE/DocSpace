@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [linux/amd64,linux/arm64]
+        platform: [linux/amd64]
     steps:
       - 
         name: Checkout
@@ -32,8 +32,7 @@ jobs:
         run: |
           cd ./build/install/docker
           REPO="onlyoffice" \
-          DOCKER_IMAGE_PREFIX="docspace" \
-          STATUS="4testing-" \
+          DOCKER_IMAGE_PREFIX="4testing-docspace" \
           DOCKER_TAG="test" \
           DOCKERFILE="Dockerfile.app" \
           docker buildx bake -f build.yml \
