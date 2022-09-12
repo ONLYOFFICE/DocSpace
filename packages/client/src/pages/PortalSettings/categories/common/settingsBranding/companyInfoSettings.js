@@ -63,11 +63,15 @@ const CompanyInfoSettings = (props) => {
   const [hasErrorAddress, setHasErrorAddress] = useState(false);
 
   const [isChangesSettings, setIsChangesSettings] = useState(false);
-  const [isFirstCompanyInfoSettings, setIsFirstCompanyInfoSettings] = useState(
-    localStorage.getItem("isFirstCompanyInfoSettings")
+  const [hasChangesDefaultSettings, setHasChangesDefaultSettings] = useState(
+    false
   );
 
   const [showModal, setShowModal] = useState(false);
+
+  const defaultDataCompanyInfoSettings = JSON.parse(
+    localStorage.getItem("defaultDataCompanyInfoSettings")
+  );
 
   const previewData = { companyName, email, phone, site, address };
 
@@ -87,7 +91,6 @@ const CompanyInfoSettings = (props) => {
 
   useEffect(() => {
     const settings = {
-      IsLicensor: true,
       address,
       companyName,
       email,
@@ -103,6 +106,17 @@ const CompanyInfoSettings = (props) => {
       hasErrorAddress;
 
     const noСhange = _.isEqual(settings, companyInfoSettingsData);
+
+    const hasСhangeDefaul = !_.isEqual(
+      settings,
+      defaultDataCompanyInfoSettings
+    );
+
+    if (hasСhangeDefaul) {
+      setHasChangesDefaultSettings(true);
+    } else {
+      setHasChangesDefaultSettings(false);
+    }
 
     if (!(hasError || noСhange)) {
       setIsChangesSettings(true);
@@ -121,6 +135,7 @@ const CompanyInfoSettings = (props) => {
     hasErrorPhone,
     hasErrorAddress,
     companyInfoSettingsData,
+    defaultDataCompanyInfoSettings,
   ]);
 
   const validateUrl = (url) => {
@@ -183,12 +198,6 @@ const CompanyInfoSettings = (props) => {
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
         getCompanyInfoSettings();
-
-        if (!localStorage.getItem("isFirstCompanyInfoSettings")) {
-          localStorage.setItem("isFirstCompanyInfoSettings", true);
-
-          setIsFirstCompanyInfoSettings("true");
-        }
       })
       .catch((error) => {
         toastr.error(error);
@@ -332,7 +341,7 @@ const CompanyInfoSettings = (props) => {
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
           showReminder={isPortalPaid && isChangesSettings}
-          isFirstRestoreToDefault={isFirstCompanyInfoSettings}
+          disableRestoreToDefault={!hasChangesDefaultSettings}
         />
       </StyledComponent>
     </>
