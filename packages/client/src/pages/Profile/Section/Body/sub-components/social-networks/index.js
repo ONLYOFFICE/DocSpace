@@ -5,9 +5,11 @@ import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";
+import toastr from "@docspace/components/toast/toastr";
 
 import { hugeMobile } from "@docspace/components/utils/device";
 import { getAuthProviders } from "@docspace/common/api/settings";
+import { unlinkOAuth, linkOAuth } from "@docspace/common/api/people";
 import {
   getProviderTranslation,
   getOAuthToken,
@@ -76,12 +78,25 @@ const SocialNetworks = (props) => {
     unlinkOAuth(providerName).then(() => {
       getAuthProviders().then((providers) => {
         setProviders(providers);
+        toastr.success(t("ProviderSuccessfullyDisconnected"));
+      });
+    });
+  };
+
+  const loginCallback = (profile) => {
+    linkOAuth(profile).then((resp) => {
+      getAuthProviders().then((providers) => {
+        setProviders(providers);
+        toastr.success(t("ProviderSuccessfullyConnected"));
       });
     });
   };
 
   useEffect(() => {
     fetchData();
+    window.loginCallback = loginCallback;
+
+    return () => (window.loginCallback = null);
   }, []);
 
   const providerButtons =
