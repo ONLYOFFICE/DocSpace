@@ -9,8 +9,8 @@ import isEqual from "lodash/isEqual";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import styled from "styled-components";
 import Link from "@docspace/components/link";
-import ModalDialog from "@docspace/components/modal-dialog";
 import LoaderCompanyInfoSettings from "../sub-components/loaderCompanyInfoSettings";
+import AboutDialog from "../../../../About/AboutDialog";
 
 const StyledComponent = styled.div`
   .link {
@@ -33,20 +33,6 @@ const StyledComponent = styled.div`
   }
 `;
 
-const StyledModalDialog = styled(ModalDialog)`
-  #modal-dialog {
-    width: auto;
-  }
-
-  .modal-footer {
-    display: none;
-  }
-
-  .modal-body {
-    padding: 0;
-  }
-`;
-
 const CompanyInfoSettings = (props) => {
   const {
     t,
@@ -58,6 +44,8 @@ const CompanyInfoSettings = (props) => {
     tReady,
     setIsLoadedCompanyInfoSettingsData,
     isLoadedCompanyInfoSettingsData,
+    buildVersionInfo,
+    personal,
   } = props;
 
   const [companyName, setCompanyName] = useState(
@@ -80,6 +68,8 @@ const CompanyInfoSettings = (props) => {
   );
 
   const [showModal, setShowModal] = useState(false);
+
+  const previewData = { companyName, email, phone, site, address };
 
   useEffect(() => {
     if (!(companyInfoSettingsData && tReady)) return;
@@ -230,12 +220,13 @@ const CompanyInfoSettings = (props) => {
     <LoaderCompanyInfoSettings />
   ) : (
     <>
-      <StyledModalDialog visible={showModal} onClose={onCloseModal}>
-        <ModalDialog.Body>
-          <img className="img" src="/static/images/about.this.program.svg" />
-        </ModalDialog.Body>
-        <ModalDialog.Footer className="modal-footer" />
-      </StyledModalDialog>
+      <AboutDialog
+        visible={showModal}
+        onClose={onCloseModal}
+        buildVersionInfo={buildVersionInfo}
+        personal={personal}
+        previewData={previewData}
+      />
 
       <StyledComponent isPortalPaid={isPortalPaid}>
         <div className="header">{t("Settings:CompanyInfoSettings")}</div>
@@ -348,7 +339,7 @@ const CompanyInfoSettings = (props) => {
   );
 };
 
-export default inject(({ auth, setup, common }) => {
+export default inject(({ auth, common }) => {
   const { settingsStore } = auth;
 
   const {
@@ -361,6 +352,8 @@ export default inject(({ auth, setup, common }) => {
     setCompanyInfoSettings,
     restoreCompanyInfoSettings,
     companyInfoSettingsData,
+    buildVersionInfo,
+    personal,
   } = settingsStore;
 
   return {
@@ -370,6 +363,8 @@ export default inject(({ auth, setup, common }) => {
     companyInfoSettingsData,
     setIsLoadedCompanyInfoSettingsData,
     isLoadedCompanyInfoSettingsData,
+    buildVersionInfo,
+    personal,
   };
 })(
   withLoading(
