@@ -116,6 +116,8 @@ const MainButtonMobile = (props) => {
     onClose,
     sectionWidth,
     alert,
+    isButton,
+    onClick,
   } = props;
 
   const [isOpen, setIsOpen] = useState(opened);
@@ -208,6 +210,11 @@ const MainButtonMobile = (props) => {
   };
 
   const onMainButtonClick = (e) => {
+    if (isButton) {
+      onClick && onClick(e);
+      return;
+    }
+
     toggle(!isOpen);
   };
 
