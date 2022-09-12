@@ -215,8 +215,8 @@ class FilesFilter {
       dtoFilter[PREVIEW] = URLParams.preview;
     }
 
-    if (URLParams.searchInContent) {
-      dtoFilter[SEARCH_IN_CONTENT] = URLParams.searchInContent;
+    if (searchInContent) {
+      dtoFilter[SEARCH_IN_CONTENT] = searchInContent;
     }
 
     dtoFilter[PAGE] = page + 1;
