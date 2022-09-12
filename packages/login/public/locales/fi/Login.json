@@ -3,6 +3,8 @@
   "CodeSubtitle": "Lähetimme 6-numeroisen koodin osoitteeseen {{email}}. Koodilla on rajoitettu voimassaoloaika, syötä se mahdollisimman pian.",
   "CodeTitle": "Koodi lähetettiin sinulle sähköpostitse",
   "CookieSettingsTitle": "Istunnon kesto",
+  "ErrorInvalidHeader": "Väärä sähköposti tai vanhentunut linkki",
+  "ErrorInvalidText": "10 sekunnin kuluttua sinut ohjataan <1>kirjautumissivulle</1>",
   "ExpiredCode": "Tämä koodi ei ole enää voimassa. Pyydä uutta koodia ja yritä uudelleen",
   "ForgotPassword": "Unohditko salasanasi?",
   "InvalidCode": "Tämä koodi ei kelpaa. Yritä uudelleen",
@@ -27,7 +29,5 @@
   "RegistrationEmailWatermark": "sähköposti",
   "Remember": "Muista minut",
   "RememberHelper": "Istunnon oletuskesto on 20 minuuttia. Valitse tämä vaihtoehto, jos haluat asettaa sen 1 vuodeksi. Voit asettaa oman arvon Asetuksissa.",
-  "ResendCode": "Lähetä koodi uudelleen",
-  "ErrorInvalidHeader": "Väärä sähköposti tai vanhentunut linkki",
-  "ErrorInvalidText": "10 sekunnin kuluttua sinut ohjataan <1>kirjautumissivulle</1>"
+  "ResendCode": "Lähetä koodi uudelleen"
 }

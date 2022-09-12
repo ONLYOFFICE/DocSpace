@@ -197,12 +197,7 @@ export default inject(
       filesIsLoading,
     } = filesStore;
 
-    const {
-      treeFolders,
-      setTreeFolders,
-      roomsFolderId,
-      archiveFolderId,
-    } = treeFoldersStore;
+    const { roomsFolderId, archiveFolderId } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
@@ -228,7 +223,6 @@ export default inject(
 
     return {
       toggleArticleOpen,
-      treeFolders,
       showText,
       articleOpen,
       enableThirdParty: settingsStore.enableThirdParty,
@@ -247,7 +241,6 @@ export default inject(
       setFirstLoad,
       fetchFiles,
 
-      setTreeFolders,
       setNewFilesPanelVisible,
       firstLoad,
       isDesktopClient,

@@ -5,7 +5,7 @@
     "Password": "guest",
     "Port": 5672,
     "VirtualHost": "/",
-    "EndpointUri": "",
+    "Uri": "",
 	"EnableSsl": false,
 	"SslServerName": "",
 	"SslCertPath": ""

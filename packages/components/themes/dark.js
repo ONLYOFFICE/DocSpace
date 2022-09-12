@@ -382,7 +382,7 @@ const Dark = {
   iconButton: { color: "#858585", hoverColor: grayMaxLight },
   selectorAddButton: {
     background: "#292929",
-    activeBackground: darkBlack,
+    activeBackground: "#292929",
 
     border: `none`,
     boxSizing: "border-box",
@@ -391,7 +391,7 @@ const Dark = {
     width: "32px",
     padding: "9px",
     color: "#858585",
-    hoverColor: grayMaxLight,
+    hoverColor: "#858585",
   },
 
   saveCancelButtons: {
@@ -1000,31 +1000,31 @@ const Dark = {
     },
 
     roleWrapperContainer: {
-      left: {
-        min: "-2px",
+      right: {
+        min: "-5px",
         small: "-2px",
         base: "-2px",
         medium: "-4px",
-        big: "0px",
+        big: "3px",
         max: "0px",
       },
 
       bottom: {
-        min: "3px",
+        min: "-5px",
         small: "3px",
         base: "4px",
         medium: "6px",
-        big: "5px",
+        big: "3px",
         max: "0px",
       },
 
       width: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
 
       height: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
     },
@@ -2779,6 +2779,8 @@ const Dark = {
         fillIcon: "#c4c4c4",
         expanderColor: "#c4c4c4",
       },
+
+      separatorBorder: "1px solid #474747",
 
       security: {
         arrowFill: white,

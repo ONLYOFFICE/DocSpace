@@ -312,7 +312,6 @@ class AccountsContextOptionsStore {
     const { setChangeOwnerDialogVisible } = this.peopleStore.dialogStore;
 
     setChangeOwnerDialogVisible(true);
-    toastr.warning("Work at progress");
   };
 
   onEnableClick = (t, item) => {
