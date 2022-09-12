@@ -28,6 +28,7 @@ const StyledNav = styled.nav`
   }
   .icon-profile-menu {
     cursor: pointer;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 
   ${isMobile &&

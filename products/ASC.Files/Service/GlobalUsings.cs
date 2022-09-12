@@ -80,5 +80,6 @@ global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;
 
 global using SixLabors.ImageSharp;
-
+global using ASC.Files.Service.Extension;
 global using static ASC.Files.Core.Helpers.DocumentService;
+global using ASC.Files.Service;

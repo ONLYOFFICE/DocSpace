@@ -142,7 +142,7 @@ const Layout = (props) => {
       // }
 
       const bannerHeight = isBannerVisible ? 80 : 0;
-      let vh = (windowHeight - 48 - bannerHeight) * 0.01;
+      let vh = (windowHeight - bannerHeight) * 0.01;
       document.documentElement.style.setProperty("--vh", `${vh}px`);
       setContentHeight(height);
     };

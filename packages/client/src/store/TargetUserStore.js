@@ -1,6 +1,8 @@
 import api from "@docspace/common/api";
-import { LANGUAGE } from "@docspace/common/constants";
+import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
+import { setCookie } from "@docspace/common/utils";
+import store from "client/store";
 
 class TargetUserStore {
   peopleStore = null;
@@ -84,7 +86,9 @@ class TargetUserStore {
     this.setTargetUser(res);
     //caches.delete("api-cache");
     //await this.peopleStore.authStore.settingsStore.init();
-    localStorage.setItem(LANGUAGE, culture);
+    setCookie(LANGUAGE, culture, {
+      "max-age": COOKIE_EXPIRATION_YEAR,
+    });
   };
 
   getUserPhoto = async (id) => {

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Loaders from "@docspace/common/components/Loaders";
+import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
 
 const StyledLoader = styled.div`
   .submenu {
@@ -21,12 +22,6 @@ const StyledLoader = styled.div`
     margin-top: 24px;
     width: 238px;
   }
-
-  hr {
-    margin-top: 24px;
-    border: none;
-    border-top: 1px solid #eceef1;
-  }
 `;
 
 const SSOLoader = () => {
@@ -40,7 +35,7 @@ const SSOLoader = () => {
       <Loaders.Rectangle height="64px" />
 
       <Loaders.Rectangle className="category" height="22px" />
-      <hr />
+      <StyledSettingsSeparator />
       <Loaders.Rectangle className="category" height="22px" />
     </StyledLoader>
   );

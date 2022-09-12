@@ -14,7 +14,7 @@ import LoadingStore from "./LoadingStore";
 import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
 import { isMobile } from "react-device-detect";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 const fullAccessId = "00000000-0000-0000-0000-000000000000";
 
@@ -41,7 +41,7 @@ class PeopleStore {
   constructor(authStore, infoPanelStore, setupStore) {
     this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
-    this.usersStore = new UsersStore(this);
+    this.usersStore = new UsersStore(this, authStore);
     this.targetUserStore = new TargetUserStore(this);
     this.selectedGroupStore = new SelectedGroupStore(this);
     this.editingFormStore = new EditingFormStore(this);
