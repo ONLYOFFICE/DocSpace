@@ -1,29 +1,19 @@
 import styled from "styled-components";
 import Base from "../themes/base";
 
-const StyledAccessRightWrapper = styled.div`
+const StyledWrapper = styled.div`
   display: flex;
   align-items: center;
 
-  .access-right__icon {
-    display: flex;
-    align-items: center;
-    path {
-      fill: ${(props) => props.theme.dropDownItem.icon.color};
-    }
-  }
-
   .combo-button {
-    padding-left: 4px;
+    padding-left: 16px;
+    padding-right: 8px;
   }
 `;
-StyledAccessRightWrapper.defaultProps = { theme: Base };
 
-const StyledAccessRightIcon = styled.img`
-  margin-right: 4px;
-`;
+StyledWrapper.defaultProps = { theme: Base };
 
-const StyledAccessRightItem = styled.div`
+const StyledItem = styled.div`
   width: auto;
 
   display: flex;
@@ -37,7 +27,9 @@ const StyledAccessRightItem = styled.div`
   font-style: normal;
 `;
 
-const StyledAccessRightDescriptionItem = styled.div`
+StyledItem.defaultProps = { theme: Base };
+
+const StyledItemDescription = styled.div`
   margin: 1px 0px;
 
   font-size: 13px;
@@ -47,27 +39,26 @@ const StyledAccessRightDescriptionItem = styled.div`
   color: #a3a9ae;
 `;
 
-const StyledAccessRightItemIcon = styled.img`
+const StyledItemIcon = styled.img`
   margin-right: 8px;
 `;
 
-const StyledAccessRightItemContent = styled.div`
+const StyledItemContent = styled.div`
   width: 100%;
   white-space: normal;
 `;
 
-const StyledAccessRightItemTitleAndBadge = styled.div`
+const StyledItemTitle = styled.div`
   display: flex;
   align-items: center;
+  gap: 8px;
 `;
 
-StyledAccessRightItem.defaultProps = { theme: Base };
 export {
-  StyledAccessRightItem,
-  StyledAccessRightDescriptionItem,
-  StyledAccessRightItemIcon,
-  StyledAccessRightItemContent,
-  StyledAccessRightItemTitleAndBadge,
-  StyledAccessRightWrapper,
-  StyledAccessRightIcon,
+  StyledItemTitle,
+  StyledItemContent,
+  StyledItemIcon,
+  StyledItemDescription,
+  StyledItem,
+  StyledWrapper,
 };
