@@ -364,7 +364,7 @@ public class UserManager
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
         if (oldUserData == null) //new user
         {
-            var quotaSettings = _settingsManager.LoadForTenant<UserQuotaSettings>(_tenantManager.GetCurrentTenant().Id);
+            var quotaSettings = _settingsManager.Load<UserQuotaSettings>();
 
             if (quotaSettings.EnableUserQuota)
             {
