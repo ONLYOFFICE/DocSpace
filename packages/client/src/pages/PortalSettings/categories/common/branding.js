@@ -10,8 +10,9 @@ import CompanyInfoSettings from "./settingsBranding/companyInfoSettings";
 import styled from "styled-components";
 import AdditionalResources from "./settingsBranding/additionalResources";
 
-import ForbiddenPage from "../ForbiddenPage";
 import LoaderBrandingDescription from "./sub-components/loaderBrandingDescription";
+
+import BreakpointWarning from "../../../../components/BreakpointWarning/index";
 
 const StyledComponent = styled.div`
   max-width: 700px;
@@ -49,8 +50,25 @@ const StyledComponent = styled.div`
 
 const Branding = ({ t, isLoadedCompanyInfoSettingsData }) => {
   const [isPortalPaid, setIsPortalPaid] = useState(true);
+  const [viewDesktop, setViewDesktop] = useState(false);
 
-  if (!isDesktop) return <ForbiddenPage />;
+  useEffect(() => {
+    onCheckView();
+    window.addEventListener("resize", onCheckView);
+
+    return () => window.removeEventListener("resize", onCheckView);
+  }, []);
+
+  const onCheckView = () => {
+    if (isDesktop && window.innerWidth > 1024) {
+      setViewDesktop(true);
+    } else {
+      setViewDesktop(false);
+    }
+  };
+
+  if (!viewDesktop)
+    return <BreakpointWarning content={t("Settings:TheBrandingSettings")} />;
 
   return (
     <StyledComponent>
