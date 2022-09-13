@@ -9,11 +9,13 @@ import {
   StyledFloatingButton,
   IconBox,
 } from "./StyledPreview";
+import { withTranslation } from "react-i18next";
 
 import ButtonPlusIcon from "../../../../../../../../public/images/actions.button.plus.react.svg";
 
 const Preview = (props) => {
   const {
+t,
     selectAccentColor,
     themePreview,
     selectThemeId,

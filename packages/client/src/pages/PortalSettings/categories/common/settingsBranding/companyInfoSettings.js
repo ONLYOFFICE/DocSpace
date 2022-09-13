@@ -9,10 +9,20 @@ import { inject, observer } from "mobx-react";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import styled from "styled-components";
 
-const StyledComponent = styled.div``;
+const StyledComponent = styled.div`
+  .save-cancel-buttons {
+    margin-top: 8px;
+  }
+`;
 
 const CompanyInfoSettings = (props) => {
-  const { t } = props;
+  const { t, isPortalPaid } = props;
+  const [companyName, setCompanyName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [website, setWebsite] = useState("");
+  const [address, setAddress] = useState("");
+
   return (
     <StyledComponent>
       <div className="header">Company info settings</div>
@@ -23,49 +33,79 @@ const CompanyInfoSettings = (props) => {
         <FieldContainer
           id="fieldContainerCompanyName"
           className="field-container-width"
-          labelText="Company name:"
+          labelText={t("Common:CompanyName")}
           isVertical={true}
         >
-          <TextInput id="textInputContainerCompanyName" scale={true} />
+          <TextInput
+            id="textInputContainerCompanyName"
+            isDisabled={!isPortalPaid}
+            scale={true}
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
+          />
         </FieldContainer>
         <FieldContainer
           id="fieldContainerEmail"
+          isDisabled={!isPortalPaid}
           className="field-container-width"
-          labelText="Email:"
+          labelText={t("Common:Email")}
           isVertical={true}
         >
-          <TextInput id="textInputContainerEmail" scale={true} />
+          <TextInput
+            id="textInputContainerEmail"
+            isDisabled={!isPortalPaid}
+            scale={true}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </FieldContainer>
         <FieldContainer
           id="fieldContainerPhone"
           className="field-container-width"
-          labelText="Phone:"
+          labelText={t("Common:Phone")}
           isVertical={true}
         >
-          <TextInput id="textInputContainerPhone" scale={true} />
+          <TextInput
+            id="textInputContainerPhone"
+            isDisabled={!isPortalPaid}
+            scale={true}
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+          />
         </FieldContainer>
         <FieldContainer
           id="fieldContainerWebsite"
           className="field-container-width"
-          labelText="Website:"
+          labelText={t("Common:Website")}
           isVertical={true}
         >
-          <TextInput id="textInputContainerWebsite" scale={true} />
+          <TextInput
+            id="textInputContainerWebsite"
+            isDisabled={!isPortalPaid}
+            scale={true}
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+          />
         </FieldContainer>
         <FieldContainer
           id="fieldContainerAddress"
           className="field-container-width"
-          labelText="Address:"
+          labelText={t("Common:Address")}
           isVertical={true}
         >
-          <TextInput id="textInputContainerAddress" scale={true} />
+          <TextInput
+            id="textInputContainerAddress"
+            isDisabled={!isPortalPaid}
+            scale={true}
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+          />
         </FieldContainer>
       </div>
       <SaveCancelButtons
-        id="buttonsCompanyInfoSettings"
         className="save-cancel-buttons"
-        // onSaveClick={onSavePortalRename}
-        // onCancelClick={onCancelPortalName}
+        onSaveClick={() => console.log("click")}
+        onCancelClick={() => console.log("click")}
         saveButtonLabel={t("Common:SaveButton")}
         cancelButtonLabel={t("Settings:RestoreDefaultButton")}
         displaySettings={true}
