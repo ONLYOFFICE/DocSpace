@@ -22,7 +22,7 @@ import withLoading from "SRC_DIR/HOCs/withLoading";
 
 let greetingTitleFromSessionStorage = "";
 let greetingTitleDefaultFromSessionStorage = "";
-let isFirstWelcomePageSettings = "";
+let defaultWelcomePageSettings = "";
 const settingNames = ["greetingTitle"];
 
 class WelcomePageSettings extends React.Component {
@@ -37,8 +37,8 @@ class WelcomePageSettings extends React.Component {
       "greetingTitleDefault"
     );
 
-    isFirstWelcomePageSettings = localStorage.getItem(
-      "isFirstWelcomePageSettings"
+    defaultWelcomePageSettings = localStorage.getItem(
+      "defaultWelcomePageSettings"
     );
 
     setDocumentTitle(t("CustomTitlesWelcome"));
@@ -64,8 +64,9 @@ class WelcomePageSettings extends React.Component {
       hasChanged: false,
       showReminder: false,
       hasScroll: false,
-      isFirstWelcomePageSettings: isFirstWelcomePageSettings,
+      defaultWelcomePageSettings,
       isCustomizationView: false,
+      hasСhangeDefault: false,
     };
   }
 
@@ -83,6 +84,8 @@ class WelcomePageSettings extends React.Component {
     if (greetingTitleDefault || greetingTitle) {
       this.checkChanges();
     }
+
+    this.onChangeDefault();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -93,7 +96,7 @@ class WelcomePageSettings extends React.Component {
       greetingSettings,
     } = this.props;
 
-    const { hasScroll } = this.state;
+    const { hasScroll, greetingTitle } = this.state;
 
     if (isLoaded !== prevProps.isLoaded || tReady !== prevProps.tReady) {
       const isLoadedSetting = isLoaded && tReady;
@@ -129,10 +132,36 @@ class WelcomePageSettings extends React.Component {
       });
     }
 
-    if (this.state.greetingTitleDefault || this.state.greetingTitle) {
+    if (this.state.greetingTitleDefault || greetingTitle) {
       this.checkChanges();
     }
+
+    if (greetingTitle !== prevProps.greetingTitle) {
+      this.onChangeDefault();
+    }
   }
+
+  onChangeDefault = () => {
+    const {
+      defaultWelcomePageSettings,
+      greetingTitle,
+      hasСhangeDefault,
+    } = this.state;
+
+    if (defaultWelcomePageSettings !== greetingTitle) {
+      if (hasСhangeDefault) return;
+
+      this.setState({
+        hasСhangeDefault: true,
+      });
+    } else {
+      if (!hasСhangeDefault) return;
+
+      this.setState({
+        hasСhangeDefault: false,
+      });
+    }
+  };
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.checkInnerWidth);
@@ -174,13 +203,6 @@ class WelcomePageSettings extends React.Component {
 
     saveToSessionStorage("greetingTitle", greetingTitle);
     saveToSessionStorage("greetingTitleDefault", greetingTitle);
-
-    if (!localStorage.getItem("isFirstWelcomePageSettings")) {
-      localStorage.setItem("isFirstWelcomePageSettings", true);
-      this.setState({
-        isFirstWelcomePageSettings: "true",
-      });
-    }
   };
 
   onRestoreGreetingSettings = () => {
@@ -271,7 +293,7 @@ class WelcomePageSettings extends React.Component {
       isLoadingGreetingRestore,
       showReminder,
       hasScroll,
-      isFirstWelcomePageSettings,
+      hasСhangeDefault,
       isCustomizationView,
     } = this.state;
 
@@ -332,7 +354,7 @@ class WelcomePageSettings extends React.Component {
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
           hasScroll={hasScroll}
-          isFirstRestoreToDefault={isFirstWelcomePageSettings}
+          disableRestoreToDefault={!hasСhangeDefault}
         />
       </StyledSettingsComponent>
     );
