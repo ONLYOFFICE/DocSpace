@@ -3,6 +3,8 @@
   "CodeSubtitle": "Chúng tôi đã gửi một mã 6 chữ số đến{{email}}. Thời gian hiệu lực của mã là có hạn, hãy nhập mã càng sớm càng tốt.",
   "CodeTitle": "Mã đã được gửi qua email cho bạn",
   "CookieSettingsTitle": "Thời lượng của phiên",
+  "ErrorInvalidHeader": "Email không chính xác hoặc liên kết hết hạn",
+  "ErrorInvalidText": "Trong 10 giây, bạn sẽ được chuyển hướng đến <1>trang đăng nhập</1>",
   "ExpiredCode": "Mã này không còn hợp lệ. Yêu cầu mã mới và thử lại",
   "ForgotPassword": "Bạn quên mật khẩu?",
   "InvalidCode": "Mã này không hợp lệ. Thử lại",
@@ -27,7 +29,5 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "Nhớ tôi",
   "RememberHelper": "Thời lượng của phiên mặc định là 20 phút. Hãy chọn tùy chọn này để đặt thành 1 năm. Để đặt giá trị của riêng bạn, hãy đi đến Cài đặt.",
-  "ResendCode": "Gửi lại mã",
-  "ErrorInvalidHeader": "Email không chính xác hoặc liên kết hết hạn",
-  "ErrorInvalidText": "Trong 10 giây, bạn sẽ được chuyển hướng đến <1>trang đăng nhập</1>"
+  "ResendCode": "Gửi lại mã"
 }

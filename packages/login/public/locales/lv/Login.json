@@ -3,6 +3,8 @@
   "CodeSubtitle": "Mēs nosūtījām sešu ciparu kodu uz {{email}}. Kodam ir ierobežots derīguma termiņš, ievadiet to pēc iespējas ātrāk.",
   "CodeTitle": "Kods jums tika nosūtīts pa e-pastu",
   "CookieSettingsTitle": "Sesijas laiks",
+  "ErrorInvalidHeader": "Nepareizs e-pasts vai saite, kurai beidzies derīguma termiņš",
+  "ErrorInvalidText": "Pēc 10 sekundēm jūs tiksiet novirzīts uz <1>pieteikšanās lapu</1>",
   "ExpiredCode": "Šis kods vairs nav derīgs. Pieprasiet jaunu kodu un mēģiniet vēlreiz",
   "ForgotPassword": "Vai aizmirsāt savu paroli?",
   "InvalidCode": "Šis kods nav derīgs. Mēģiniet vēlreiz",
@@ -27,7 +29,5 @@
   "RegistrationEmailWatermark": "E-pasts",
   "Remember": "Atcerēties mani",
   "RememberHelper": "Noklusējuma sesijas ilgums ir 20 minūtes. Atzīmējiet šo opciju, lai iestatītu to uz vienu gadu. Lai iestatītu savu vērtību, dodieties uz Iestatījumi.",
-  "ResendCode": "Atkārtoti nosūtīt kodu",
-  "ErrorInvalidHeader": "Nepareizs e-pasts vai saite, kurai beidzies derīguma termiņš",
-  "ErrorInvalidText": "Pēc 10 sekundēm jūs tiksiet novirzīts uz <1>pieteikšanās lapu</1>"
+  "ResendCode": "Atkārtoti nosūtīt kodu"
 }
