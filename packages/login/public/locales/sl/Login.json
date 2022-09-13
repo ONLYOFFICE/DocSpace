@@ -3,6 +3,8 @@
   "CodeSubtitle": "Na {{email}} smo poslali 6-mestno kodo. Koda ima omejeno trajanje veljavnosti, vnesite jo čim prej.",
   "CodeTitle": "Koda vam je bila poslana po e-pošti",
   "CookieSettingsTitle": "Življenjska doba seje",
+  "ErrorInvalidHeader": "Napačen email ali potekla povezava",
+  "ErrorInvalidText": "V 10 sekundah boste preusmerjeni na <1>Stran za prijavo</1>",
   "ExpiredCode": "Ta koda ni več veljavna. Zahtevajte novo kodo in poskusite znova",
   "ForgotPassword": "Ste pozabili geslo?",
   "InvalidCode": "Ta koda je napačna. Poskusite znova",
@@ -27,7 +29,5 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "Zapomni si me",
   "RememberHelper": "Privzeta življenjska doba seje je 20 minut. Preverite to možnost, če jo želite nastaviti na 1 leto. Če želite nastaviti poljubno vrednost, pojdite v Nastavitve.",
-  "ResendCode": "Ponovno pošlji kodo",
-  "ErrorInvalidHeader": "Napačen email ali potekla povezava",
-  "ErrorInvalidText": "V 10 sekundah boste preusmerjeni na <1>Stran za prijavo</1>"
+  "ResendCode": "Ponovno pošlji kodo"
 }

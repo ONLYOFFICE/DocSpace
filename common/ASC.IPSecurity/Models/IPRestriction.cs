@@ -27,9 +27,16 @@
 namespace ASC.IPSecurity;
 
 [Serializable]
-public class IPRestriction : IMapFrom<TenantIpRestrictions>
+public class IPRestriction : IpRestrictionBase, IMapFrom<TenantIpRestrictions>
 {
     public int Id { get; set; }
+
     public int Tenant { get; set; }
+}
+
+public class IpRestrictionBase
+{
     public string Ip { get; set; }
+
+    public bool ForAdmin { get; set; }
 }

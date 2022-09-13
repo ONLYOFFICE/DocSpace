@@ -13,8 +13,7 @@ const InfiniteLoaderComponent = (props) => {
     : document.querySelector("#sectionScroll > .scroll-body");
 
   if (scroll) {
-    if (viewAs === "row") scroll.style.paddingRight = 0;
-    else scroll.style.paddingRight = isMobile() ? "8px" : "17px";
+    scroll.style.paddingRight = isMobile() ? "8px" : "17px";
   }
 
   return viewAs === "tile" ? (
