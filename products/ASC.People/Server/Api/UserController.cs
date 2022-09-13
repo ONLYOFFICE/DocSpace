@@ -62,7 +62,8 @@ public class UserController : PeopleControllerBase
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
     private readonly SettingsManager _settingsManager;
-    private readonly EmailValidationKeyProvider _validationKeyProvider;
+    private readonly RoomLinkService _roomLinkService;
+    private readonly FileSecurity _fileSecurity;
 
     public UserController(
         ICache cache,
@@ -100,7 +101,8 @@ public class UserController : PeopleControllerBase
         IHttpClientFactory httpClientFactory,
         IHttpContextAccessor httpContextAccessor,
         SettingsManager settingsManager,
-        EmailValidationKeyProvider validationKeyProvider)
+        RoomLinkService roomLinkService,
+        FileSecurity fileSecurity)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
@@ -132,7 +134,8 @@ public class UserController : PeopleControllerBase
         _authContext = authContext;
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
-        _validationKeyProvider = validationKeyProvider;
+        _roomLinkService = roomLinkService;
+        _fileSecurity = fileSecurity;
     }
 
     [HttpPost("active")]
@@ -200,22 +203,25 @@ public class UserController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
+        var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email) : null;
+
+        if (options != null && !options.IsCorrect)
+        {
+            throw new InvalidDataException();
+        }
+
         var user = new UserInfo();
 
-        var updateExistingUser = false;
+        var byEmail = options != null && options.Type == LinkType.InvintationByEmail;
 
-        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.Key))
+        if (byEmail)
         {
-            updateExistingUser = true;
-            var result = _validationKeyProvider.ValidateEmailKey(DocSpaceLinksHelper.MakePayload(inDto.Email, EmployeeType.User, inDto.Target), inDto.Key,
-                _validationKeyProvider.ValidEmailKeyInterval);
+            user = _userManager.GetUserByEmail(inDto.Email);
 
-            if (result != EmailValidationKeyProvider.ValidationResult.Ok)
+            if (user == Constants.LostUser || user.ActivationStatus != EmployeeActivationStatus.Pending)
             {
-                throw new SecurityException("Invalid data");
+                throw new InvalidOperationException();
             }
-
-            user.Id = inDto.Target;
         }
 
         inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
@@ -253,13 +259,27 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user);
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true, updateExistingUser);
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true, byEmail);
 
         UpdateDepartments(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
             await UpdatePhotoUrl(inDto.Files, user);
+        }
+
+        if (options != null && options.Type == LinkType.InvintationToRoom)
+        {
+            var success = int.TryParse(options.RoomId, out var id);
+
+            if (success)
+            {
+                await _fileSecurity.ShareAsync(id, Files.Core.FileEntryType.Folder, user.Id, options.Share);
+            }
+            else
+            {
+                await _fileSecurity.ShareAsync(options.RoomId, Files.Core.FileEntryType.Folder, user.Id, options.Share);
+            }
         }
 
         var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
