@@ -19,6 +19,7 @@ import { withLayoutSize } from "@docspace/common/utils";
 import { getDefaultRoomName } from "@docspace/client/src/helpers/filesUtils";
 
 import withLoader from "../../../../HOCs/withLoader";
+import { toastr } from "@docspace/components";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -28,7 +29,7 @@ const getFilterType = (filterValues) => {
     "key"
   );
 
-  return filterType ? +filterType : null;
+  return filterType ? (+filterType ? +filterType : filterType) : null;
 };
 
 const getAuthorType = (filterValues) => {
@@ -87,16 +88,16 @@ const getOwner = (filterValues) => {
 //   return filterFolders ? filterFolders : null;
 // };
 
-// const getFilterContent = (filterValues) => {
-//   const filterContent = result(
-//     find(filterValues, (value) => {
-//       return value.group === FilterGroups.roomFilterContent;
-//     }),
-//     "key"
-//   );
+const getFilterContent = (filterValues) => {
+  const filterContent = result(
+    find(filterValues, (value) => {
+      return value.group === FilterGroups.filterContent;
+    }),
+    "key"
+  );
 
-//   return filterContent ? filterContent : null;
-// };
+  return filterContent ? filterContent : null;
+};
 
 const getTags = (filterValues) => {
   const filterTags = filterValues.find(
@@ -127,6 +128,7 @@ const SectionFilterContent = ({
   infoPanelVisible,
   isRooms,
   userId,
+  isPersonalRoom,
   setCurrentRoomsFilter,
 }) => {
   const onFilter = React.useCallback(
@@ -181,18 +183,30 @@ const SectionFilterContent = ({
         );
       } else {
         const filterType = getFilterType(data) || null;
+
         const authorType = !!getAuthorType(data)
           ? getAuthorType(data).includes("user_")
             ? getAuthorType(data)
             : `user_${getAuthorType(data)}`
           : null;
         const withSubfolders = getSearchParams(data);
+        const withContent = getFilterContent(data);
 
         const newFilter = filter.clone();
         newFilter.page = 0;
-        newFilter.filterType = filterType;
+
+        if (filterType === "master-forms" || filterType === "forms") {
+          newFilter.filterType = null;
+
+          toastr.warning(`The ${filterType} type is still under development`);
+        } else {
+          newFilter.filterType = filterType;
+        }
+
         newFilter.authorType = authorType;
-        newFilter.withSubfolders = withSubfolders;
+        newFilter.withSubfolders =
+          withSubfolders === FilterKeys.excludeSubfolders ? "false" : "true";
+        newFilter.searchInContent = withContent === "true" ? "true" : null;
 
         setIsLoading(true);
 
@@ -386,10 +400,26 @@ const SectionFilterContent = ({
         });
       }
     } else {
+      if (filter.withSubfolders === "false") {
+        filterValues.push({
+          key: FilterKeys.excludeSubfolders,
+          label: t("ExcludeSubfolders"),
+          group: FilterGroups.filterFolders,
+        });
+      }
+
+      if (filter.searchInContent) {
+        filterValues.push({
+          key: "true",
+          label: t("FileContents"),
+          group: FilterGroups.filterContent,
+        });
+      }
+
       if (filter.filterType) {
         let label = "";
 
-        switch (filter.filterType) {
+        switch (filter.filterType.toString()) {
           case FilterType.DocumentsOnly.toString():
             label = t("Common:Documents");
             break;
@@ -414,11 +444,17 @@ const SectionFilterContent = ({
           case FilterType.FilesOnly.toString():
             label = t("AllFiles");
             break;
+          case "master-forms":
+            label = t("MasterForms");
+            break;
+          case "forms":
+            label = t("Forms");
+            break;
         }
 
         filterValues.push({
           key: `${filter.filterType}`,
-          label: label,
+          label: label.toLowerCase(),
           group: FilterGroups.filterType,
         });
       }
@@ -431,14 +467,6 @@ const SectionFilterContent = ({
           label: user.displayName,
         });
       }
-
-      if (filter.withSubfolders === "false") {
-        filterValues.push({
-          key: filter.withSubfolders,
-          label: "Exclude subfolders",
-          group: FilterGroups.filterFolders,
-        });
-      }
     }
 
     return filterValues;
@@ -446,6 +474,7 @@ const SectionFilterContent = ({
     filter.withSubfolders,
     filter.authorType,
     filter.filterType,
+    filter.searchInContent,
     roomsFilter.type,
     roomsFilter.subjectId,
     roomsFilter.tags,
@@ -465,18 +494,7 @@ const SectionFilterContent = ({
             {
               key: FilterType.FoldersOnly.toString(),
               group: FilterGroups.filterType,
-              label: t("Translations:Folders"),
-            },
-          ]
-        : "";
-
-    const allFiles =
-      !isFavoritesFolder && !isRecentFolder
-        ? [
-            {
-              key: FilterType.FilesOnly.toString(),
-              group: FilterGroups.filterType,
-              label: t("AllFiles"),
+              label: t("Translations:Folders").toLowerCase(),
             },
           ]
         : "";
@@ -486,7 +504,7 @@ const SectionFilterContent = ({
           {
             key: FilterType.ImagesOnly.toString(),
             group: FilterGroups.filterType,
-            label: t("Images"),
+            label: t("Images").toLowerCase(),
           },
         ]
       : "";
@@ -496,7 +514,7 @@ const SectionFilterContent = ({
           {
             key: FilterType.ArchiveOnly.toString(),
             group: FilterGroups.filterType,
-            label: t("Archives"),
+            label: t("Archives").toLowerCase(),
           },
         ]
       : "";
@@ -506,7 +524,7 @@ const SectionFilterContent = ({
           {
             key: FilterType.MediaOnly.toString(),
             group: FilterGroups.filterType,
-            label: t("Media"),
+            label: t("Media").toLowerCase(),
           },
         ]
       : "";
@@ -551,27 +569,38 @@ const SectionFilterContent = ({
             group: FilterGroups.filterType,
             label: t("Common:Type"),
             isHeader: true,
-          },
-          {
-            key: FilterType.DocumentsOnly.toString(),
-            group: FilterGroups.filterType,
-            label: t("Common:Documents"),
+            isLast: true,
           },
           ...folders,
           {
-            key: FilterType.SpreadsheetsOnly.toString(),
+            key: FilterType.DocumentsOnly.toString(),
             group: FilterGroups.filterType,
-            label: t("Translations:Spreadsheets"),
+            label: t("Common:Documents").toLowerCase(),
           },
-          ...archives,
           {
             key: FilterType.PresentationsOnly.toString(),
             group: FilterGroups.filterType,
-            label: t("Translations:Presentations"),
+            label: t("Translations:Presentations").toLowerCase(),
           },
+          {
+            key: FilterType.SpreadsheetsOnly.toString(),
+            group: FilterGroups.filterType,
+            label: t("Translations:Spreadsheets").toLowerCase(),
+          },
+          {
+            key: "master-forms",
+            group: FilterGroups.filterType,
+            label: t("MasterForms").toLowerCase(),
+          },
+          {
+            key: "forms",
+            group: FilterGroups.filterType,
+            label: t("Forms").toLowerCase(),
+          },
+          ...archives,
+
           ...images,
           ...media,
-          ...allFiles,
         ];
 
     const ownerOptions = [
@@ -672,7 +701,49 @@ const SectionFilterContent = ({
         filterOptions.push(...tagsOptions);
       }
     } else {
-      if (!personal) {
+      if (!isRecentFolder && !isFavoritesFolder) {
+        const foldersOptions = [
+          {
+            key: FilterGroups.filterFolders,
+            group: FilterGroups.filterFolders,
+            label: t("Common:Search"),
+            isHeader: true,
+            withoutSeparator: true,
+          },
+          {
+            key: "folders",
+            group: FilterGroups.filterFolders,
+            label: "",
+            withOptions: true,
+            options: [
+              { key: FilterKeys.withSubfolders, label: t("WithSubfolders") },
+              {
+                key: FilterKeys.excludeSubfolders,
+                label: t("ExcludeSubfolders"),
+              },
+            ],
+          },
+        ];
+
+        const contentOptions = [
+          {
+            key: FilterGroups.filterContent,
+            group: FilterGroups.filterContent,
+            isHeader: true,
+            withoutHeader: true,
+          },
+          {
+            key: "true",
+            group: FilterGroups.filterContent,
+            label: t("SearchByContent"),
+            isCheckbox: true,
+          },
+        ];
+        filterOptions.push(...foldersOptions);
+        filterOptions.push(...contentOptions);
+      }
+
+      if (!isPersonalRoom) {
         filterOptions.push(
           {
             key: FilterGroups.filterAuthor,
@@ -690,29 +761,10 @@ const SectionFilterContent = ({
       }
 
       filterOptions.push(...typeOptions);
-
-      if (!isRecentFolder && !isFavoritesFolder) {
-        filterOptions.push(
-          {
-            key: FilterGroups.filterFolders,
-            group: FilterGroups.filterFolders,
-            label: t("Translations:Folders"),
-            isHeader: true,
-            withoutHeader: true,
-            isLast: true,
-          },
-          {
-            key: "false",
-            group: FilterGroups.filterFolders,
-            label: t("NoSubfolders"),
-            isToggle: true,
-          }
-        );
-      }
     }
 
     return filterOptions;
-  }, [isFavoritesFolder, isRecentFolder, isRooms, t, personal]);
+  }, [isFavoritesFolder, isRecentFolder, isRooms, t, personal, isPersonalRoom]);
 
   const getViewSettingsData = React.useCallback(() => {
     const viewSettings = [
@@ -735,14 +787,14 @@ const SectionFilterContent = ({
   const getSortData = React.useCallback(() => {
     const commonOptions = isRooms
       ? [
-          { key: "AZ", label: "Name", default: true },
+          { key: "AZ", label: t("Common:Name"), default: true },
           { key: "roomType", label: t("Common:Type"), default: true },
           { key: "Tags", label: t("Tags"), default: true },
           { key: "Author", label: t("Common:Owner"), default: true },
           { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
         ]
       : [
-          { key: "AZ", label: t("ByTitle"), default: true },
+          { key: "AZ", label: t("Common:Name"), default: true },
           { key: "Type", label: t("Common:Type"), default: true },
           { key: "Size", label: t("Common:Size"), default: true },
           {
@@ -820,7 +872,10 @@ const SectionFilterContent = ({
           newFilter.authorType = null;
         }
         if (group === FilterGroups.filterFolders) {
-          newFilter.withSubfolders = null;
+          newFilter.withSubfolders = "true";
+        }
+        if (group === FilterGroups.filterContent) {
+          newFilter.searchInContent = null;
         }
 
         newFilter.page = 0;
@@ -862,6 +917,8 @@ const SectionFilterContent = ({
       view={t("Common:View")}
       isFavoritesFolder={isFavoritesFolder}
       isRecentFolder={isRecentFolder}
+      isPersonalRoom={isPersonalRoom}
+      isRooms={isRooms}
       removeSelectedItem={removeSelectedItem}
     />
   );
@@ -890,6 +947,7 @@ export default inject(
       isRecentFolder,
       isRoomsFolder,
       isArchiveFolder,
+      isPersonalRoom,
     } = treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
@@ -918,6 +976,7 @@ export default inject(
       createThumbnails,
 
       personal,
+      isPersonalRoom,
       infoPanelVisible,
       setCurrentRoomsFilter,
     };
