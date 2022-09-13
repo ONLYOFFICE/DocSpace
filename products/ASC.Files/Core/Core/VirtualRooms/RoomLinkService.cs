@@ -55,23 +55,62 @@ public class RoomLinkService
         return link;
     }
 
-    public async Task<bool> IsCorrectAsync(string key, string email)
+    public async Task<LinkOptions> GetOptionsAsync(string key, string email)
     {
-        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
+        var options = new LinkOptions();
+
+        if (string.IsNullOrEmpty(key))
+        {
+            options.Type = LinkType.DefaultInvintation;
+            options.IsCorrect = true;
+        }
 
         var payload = _docSpaceLinksHelper.Parse(key);
 
-        return (payload != default && await IsCorrectInternalAsync(payload))
-            || (_docSpaceLinksHelper.Validate(key, email) == EmailValidationKeyProvider.ValidationResult.Ok);
+        if (payload != default)
+        {
+            var record = await GetRecordAsync(payload);
+
+            if (record != null)
+            {
+                options.IsCorrect = true;
+                options.Type = LinkType.InvintationToRoom;
+                options.RoomId = record.EntryId.ToString();
+                options.Share = record.Share;
+            }
+        }
+        else if (_docSpaceLinksHelper.Validate(key, email) == EmailValidationKeyProvider.ValidationResult.Ok)
+        {
+            options.IsCorrect = true;
+            options.Type = LinkType.InvintationByEmail;
+        }
+
+        return options;
     }
 
-    private async Task<bool> IsCorrectInternalAsync(Guid key)
+    private async Task<FileShareRecord> GetRecordAsync(Guid key)
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
         var share = await securityDao.GetSharesAsync(new[] { key })
             .Where(s => s.SubjectType == SubjectType.InvintationLink)
             .FirstOrDefaultAsync();
 
-        return share != null && share.FileShareOptions.ExpirationDate > DateTime.UtcNow;
+        return share;
     }
+}
+
+public class LinkOptions
+{
+    public string RoomId { get; set; }
+    public FileShare Share { get; set; }
+    public LinkType Type { get; set; }
+    public bool IsCorrect { get; set; }
+}
+
+[EnumExtensions]
+public enum LinkType
+{
+    DefaultInvintation,
+    InvintationByEmail,
+    InvintationToRoom,
 }
