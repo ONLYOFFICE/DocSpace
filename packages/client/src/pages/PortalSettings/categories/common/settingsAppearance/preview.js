@@ -57,11 +57,7 @@ const Preview = (props) => {
             </div>
 
             <div className="main-button-container">
-              <MainButton
-                className="main-button-preview"
-                text="Actions"
-                isDisabled={true}
-              />
+              <Loaders.Rectangle height="32" className="main-button-preview" />
             </div>
 
             <div className="menu-section">
