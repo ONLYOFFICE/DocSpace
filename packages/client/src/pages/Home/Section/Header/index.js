@@ -27,24 +27,6 @@ import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: 69px;
-
-  @media ${tablet} {
-    height: 61px;
-  }
-  ${isMobile &&
-  css`
-    height: 61px;
-  `}
-
-  @media ${mobile} {
-    height: 53px;
-  }
-
-  ${isMobileOnly &&
-  css`
-    height: 53px;
-  `}
 
   .table-container_group-menu {
     margin: 0 0 0 -20px;

@@ -9,6 +9,8 @@ import Base from "@docspace/components/themes/base";
 
 const StyledSectionHeader = styled.div`
   position: relative;
+  display: flex;
+
   height: 69px;
   min-height: 69px;
 
