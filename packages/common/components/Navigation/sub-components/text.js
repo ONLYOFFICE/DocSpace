@@ -26,8 +26,6 @@ const StyledTextContainer = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-
-  margin-bottom: ${(props) => !props.isOpen && "2px"};
 `;
 
 const StyledHeading = styled(Heading)`
