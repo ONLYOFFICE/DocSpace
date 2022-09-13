@@ -137,7 +137,7 @@ public class MigrationCreator
                                 {
                                     var t = (TableInfo)state;
                                     var dataAdapter = _dbFactory.CreateDataAdapter();
-                                    dataAdapter.SelectCommand = module.CreateSelectCommand(connection.Fix(), _tenant, t, _limit, offset).WithTimeout(600);
+                                    dataAdapter.SelectCommand = module.CreateSelectCommand(connection.Fix(), _tenant, t, _limit, offset, id).WithTimeout(600);
                                     counts = ((DbDataAdapter)dataAdapter).Fill(data);
                                     offset += _limit;
                                 } while (counts == _limit);
