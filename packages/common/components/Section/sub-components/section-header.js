@@ -17,6 +17,11 @@ const StyledSectionHeader = styled.div`
   @media ${tablet} {
     height: 61px;
     min-height: 61px;
+
+    .header-container {
+      margin-bottom: 1px;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
   }
 
   ${isMobile &&
@@ -35,11 +40,6 @@ const StyledSectionHeader = styled.div`
     height: 53px;
     min-height: 53px;
   `}
-
-  .header-container {
-    margin-bottom: 1px;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  }
 
   padding-right: 20px;
 
