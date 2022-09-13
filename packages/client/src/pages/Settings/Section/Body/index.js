@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
+import styled, { css } from "styled-components";
 import Error403 from "client/Error403";
 import Error520 from "client/Error520";
-import ConnectClouds from "./ConnectedClouds";
+//import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
@@ -9,6 +10,16 @@ import config from "PACKAGE_FILE";
 import Submenu from "@docspace/components/submenu";
 import CommonSettings from "./CommonSettings";
 import AdminSettings from "./AdminSettings";
+import { isDesktop } from "@docspace/components/utils/device";
+
+const StyledContainer = styled.div`
+  margin-top: -22px;
+
+  ${isDesktop &&
+  css`
+    margin-top: -19px;
+  `}
+`;
 
 const SectionBodyContent = ({
   setting,
@@ -34,11 +45,11 @@ const SectionBodyContent = ({
     content: <AdminSettings t={t} />,
   };
 
-  const connectedCloud = {
-    id: "connected-clouds",
-    name: t("ThirdPartySettings"),
-    content: <ConnectClouds />,
-  };
+  // const connectedCloud = {
+  //   id: "connected-clouds",
+  //   name: t("ThirdPartySettings"),
+  //   content: <ConnectClouds />,
+  // };
 
   const data = [];
 
@@ -48,9 +59,9 @@ const SectionBodyContent = ({
 
   data.push(commonSettings);
 
-  if (enableThirdParty) {
-    data.push(connectedCloud);
-  }
+  // if (enableThirdParty) {
+  //   data.push(connectedCloud);
+  // }
 
   const onSelect = useCallback(
     (e) => {
@@ -96,14 +107,14 @@ const SectionBodyContent = ({
   ) : isErrorSettings ? (
     <Error520 />
   ) : (
-    <div>
+    <StyledContainer>
       <Submenu
         data={data}
         startSelect={currentTab}
         onSelect={onSelect}
         //selectedItem={selectedTab()}
       />
-    </div>
+    </StyledContainer>
   );
 };
 

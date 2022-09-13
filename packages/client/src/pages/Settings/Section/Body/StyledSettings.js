@@ -1,6 +1,9 @@
 import styled from "styled-components";
 
 const StyledSettings = styled.div`
+  margin-top: 15px;
+  width: 100%;
+
   display: grid;
   grid-gap: 19px;
 
@@ -9,8 +12,8 @@ const StyledSettings = styled.div`
   }
 
   .heading {
-    margin-bottom: 1px;
-    margin-top: 26px;
+    margin-bottom: -2px;
+    margin-top: 3px;
   }
 
   .toggle-button-text {

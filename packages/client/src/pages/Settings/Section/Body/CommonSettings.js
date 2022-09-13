@@ -98,18 +98,18 @@ const CommonSettings = ({
             onChange={onChangeFavorites}
             isChecked={favoritesSection}
           />
-          <ToggleButton
+          {/* <ToggleButton
             isDisabled={true}
             className="toggle-btn"
             label={t("DisplayTemplates")}
             onChange={(e) => console.log(e)}
             isChecked={false}
-          />
+          /> */}
         </>
       )}
       {!isVisitor && (
         <>
-          <Heading className="heading" level={2} size="small">
+          <Heading className="heading" level={2} size="xsmall">
             {t("StoringFileVersion")}
           </Heading>
           <ToggleButton
