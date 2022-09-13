@@ -38,7 +38,7 @@ public class EmailValidationKeyModelHelper
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
     private readonly AuthManager _authentication;
-    private readonly DocSpaceLinksHelper _docSpaceLinksHelper;
+    private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
     private readonly AuditEventsRepository _auditEventsRepository;
     private readonly TenantUtil _tenantUtil;
     private readonly MessageTarget _messageTarget;
@@ -49,7 +49,7 @@ public class EmailValidationKeyModelHelper
         AuthContext authContext,
         UserManager userManager,
         AuthManager authentication,
-        DocSpaceLinksHelper docSpaceLinksHelper,
+        DocSpaceLinkHelper docSpaceLinkHelper,
         AuditEventsRepository auditEventsRepository,
         TenantUtil tenantUtil,
         MessageTarget messageTarget)
@@ -59,7 +59,7 @@ public class EmailValidationKeyModelHelper
         _authContext = authContext;
         _userManager = userManager;
         _authentication = authentication;
-        _docSpaceLinksHelper = docSpaceLinksHelper;
+        _docSpaceLinkHelper = docSpaceLinkHelper;
         _auditEventsRepository = auditEventsRepository;
         _tenantUtil = tenantUtil;
         _messageTarget = messageTarget;
@@ -114,17 +114,12 @@ public class EmailValidationKeyModelHelper
                 break;
 
             case ConfirmType.LinkInvite:
-                if (target.HasValue && target.Value != default && emplType.HasValue)
-                {
-                    checkKeyResult = _provider.ValidateEmailKey(DocSpaceLinksHelper.MakePayload(email, emplType.Value, target.Value), key, _provider.ValidEmailKeyInterval);
-                    if (checkKeyResult == ValidationResult.Ok && !_docSpaceLinksHelper.ProcessLinkVisit(email, key, _provider.ValidVisitLinkInterval))
-                    {
-                        checkKeyResult = ValidationResult.Expired;
-                    }
-                    break;
-                }
+                checkKeyResult = _docSpaceLinkHelper.Validate(key, email);
 
-                checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)emplType, key, _provider.ValidEmailKeyInterval);
+                if (checkKeyResult == ValidationResult.Invalid)
+                {
+                    checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)emplType, key, _provider.ValidEmailKeyInterval);
+                }
                 break;
 
             case ConfirmType.PortalOwnerChange:

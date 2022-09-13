@@ -42,7 +42,7 @@ public class FileSharingAceHelper<T>
     private readonly FileTrackerHelper _fileTracker;
     private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-    private readonly DocSpaceLinksHelper _docSpaceLinksHelper;
+    private readonly RoomLinkService _roomLinkService;
     private readonly StudioNotifyService _studioNotifyService;
     private readonly ILogger _logger;
 
@@ -60,7 +60,7 @@ public class FileSharingAceHelper<T>
         FileTrackerHelper fileTracker,
         FileSecurityCommon fileSecurityCommon,
         FilesSettingsHelper filesSettingsHelper,
-        DocSpaceLinksHelper docSpaceLinksHelper,
+        RoomLinkService roomLinkService,
         StudioNotifyService studioNotifyService,
         ILoggerProvider loggerProvider)
     {
@@ -77,7 +77,7 @@ public class FileSharingAceHelper<T>
         _fileTracker = fileTracker;
         _filesSettingsHelper = filesSettingsHelper;
         _fileSecurityCommon = fileSecurityCommon;
-        _docSpaceLinksHelper = docSpaceLinksHelper;
+        _roomLinkService = roomLinkService;
         _studioNotifyService = studioNotifyService;
         _logger = loggerProvider.CreateLogger("ASC.Files");
     }
@@ -146,7 +146,7 @@ public class FileSharingAceHelper<T>
 
             if (!string.IsNullOrEmpty(w.Email))
             {
-                var link = _docSpaceLinksHelper.GenerateInvitationRoomLink(w.Email, EmployeeType.User, _authContext.CurrentAccount.ID, w.SubjectId);
+                var link = _roomLinkService.GetInvitationLink(w.Email, _authContext.CurrentAccount.ID);
                 _studioNotifyService.SendEmailRoomInvite(w.Email, link);
                 _logger.Debug(link);
             }

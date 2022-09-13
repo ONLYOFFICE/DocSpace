@@ -81,7 +81,8 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly ILogger _logger;
     private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
-    private readonly DocSpaceLinksHelper _docSpaceLinksHelper;
+    private readonly RoomLinkService _roomLinkService;
+    private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
     private readonly StudioNotifyService _studioNotifyService;
 
     public FileStorageService(
@@ -135,7 +136,8 @@ public class FileStorageService<T> //: IFileStorageService
         ThumbnailSettings thumbnailSettings,
         FileShareParamsHelper fileShareParamsHelper,
         EncryptionLoginProvider encryptionLoginProvider,
-        DocSpaceLinksHelper docSpaceLinksHelper,
+        RoomLinkService roomLinkService,
+        DocSpaceLinkHelper docSpaceLinkHelper,
         StudioNotifyService studioNotifyService)
     {
         _global = global;
@@ -188,7 +190,8 @@ public class FileStorageService<T> //: IFileStorageService
         _thumbnailSettings = thumbnailSettings;
         _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
-        _docSpaceLinksHelper = docSpaceLinksHelper;
+        _roomLinkService = roomLinkService;
+        _docSpaceLinkHelper = docSpaceLinkHelper;
         _studioNotifyService = studioNotifyService;
     }
 
@@ -2575,7 +2578,7 @@ public class FileStorageService<T> //: IFileStorageService
                 FileShareOptions = new FileShareOptions
                 {
                     Title = title,
-                    ExpirationDate = DateTime.UtcNow.AddDays(7)
+                    ExpirationDate = DateTime.UtcNow.Add(_docSpaceLinkHelper.ExpirationInterval)
                 }
             }
         };
@@ -3129,7 +3132,7 @@ public class FileStorageService<T> //: IFileStorageService
                 continue;
             }
 
-            var link = _docSpaceLinksHelper.GenerateInvitationRoomLink(user.Email, EmployeeType.User, _authContext.CurrentAccount.ID, user.Id);
+            var link = _roomLinkService.GetInvitationLink(user.Email, _authContext.CurrentAccount.ID);
             _studioNotifyService.SendEmailRoomInvite(user.Email, link);
         }
     }

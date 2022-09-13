@@ -30,14 +30,48 @@ namespace ASC.Files.Core.VirtualRooms;
 public class RoomLinkService
 {
     private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly IDaoFactory _daoFactory;
+    private readonly DocSpaceLinkHelper _docSpaceLinksHelper;
 
-    public RoomLinkService(CommonLinkUtility commonLinkUtility)
+    public RoomLinkService(CommonLinkUtility commonLinkUtility, IDaoFactory daoFactory, DocSpaceLinkHelper docSpaceLinksHelper)
     {
         _commonLinkUtility = commonLinkUtility;
+        _daoFactory = daoFactory;
+        _docSpaceLinksHelper = docSpaceLinksHelper;
     }
 
     public string GetInvitationLink(Guid linkId, Guid createdBy)
     {
-        return _commonLinkUtility.GetConfirmationUrl(linkId.ToString(), ConfirmType.LinkInvite, createdBy);
+        var key = _docSpaceLinksHelper.MakeKey(linkId);
+
+        return _commonLinkUtility.GetConfirmationUrl(key, ConfirmType.LinkInvite, createdBy);
+    }
+
+    public string GetInvitationLink(string email, Guid createdBy)
+    {
+        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, EmployeeType.User, createdBy)
+            + $"&emplType={EmployeeType.User:d}";
+
+        return link;
+    }
+
+    public async Task<bool> IsCorrectAsync(string key, string email)
+    {
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
+
+        var payload = _docSpaceLinksHelper.Parse(key);
+
+        return (payload != default && await IsCorrectInternalAsync(payload))
+            || (_docSpaceLinksHelper.Validate(key, email) == EmailValidationKeyProvider.ValidationResult.Ok);
+    }
+
+    private async Task<bool> IsCorrectInternalAsync(Guid key)
+    {
+        var securityDao = _daoFactory.GetSecurityDao<int>();
+        var share = await securityDao.GetSharesAsync(new[] { key })
+            .Where(s => s.SubjectType == SubjectType.InvintationLink)
+            .FirstOrDefaultAsync();
+
+        return share != null && share.FileShareOptions.ExpirationDate > DateTime.UtcNow;
     }
 }

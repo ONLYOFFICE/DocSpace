@@ -24,53 +24,89 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ValidationResult = ASC.Security.Cryptography.EmailValidationKeyProvider.ValidationResult;
+
 namespace ASC.Api.Core.Security;
 
 [Scope]
-public class DocSpaceLinksHelper
+public class DocSpaceLinkHelper
 {
-    private readonly CommonLinkUtility _commonLinkUtility;
     private readonly IDbContextFactory<MessagesContext> _dbContextFactory;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MessageService _messageService;
     private readonly MessageTarget _messageTarget;
-    private readonly UserManager _userManager;
+    private readonly Signature _signature;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
 
-    public DocSpaceLinksHelper(
-        CommonLinkUtility commonLinkUtility,
+    public TimeSpan ExpirationInterval => _emailValidationKeyProvider.ValidEmailKeyInterval;
+    public TimeSpan ExpirationVisitInterval => _emailValidationKeyProvider.ValidVisitLinkInterval;
+
+    public DocSpaceLinkHelper(
         IHttpContextAccessor httpContextAccessor,
         MessageTarget messageTarget,
-        UserManager userManager,
         MessageService messageService,
-        IDbContextFactory<MessagesContext> dbContextFactory)
+        Signature signature,
+        IDbContextFactory<MessagesContext> dbContextFactory,
+        EmailValidationKeyProvider emailValidationKeyProvider)
     {
-        _commonLinkUtility = commonLinkUtility;
         _httpContextAccessor = httpContextAccessor;
         _messageTarget = messageTarget;
-        _userManager = userManager;
         _messageService = messageService;
         _dbContextFactory = dbContextFactory;
+        _signature = signature;
+        _emailValidationKeyProvider = emailValidationKeyProvider;
     }
 
-    public static string MakePayload(string email, EmployeeType employeeType, Guid target)
+    public string MakeKey(Guid linkId)
     {
-        return email + ConfirmType.LinkInvite.ToStringFast() + employeeType.ToStringFast() + target.ToString();
+        return _signature.Create(linkId);
     }
 
-    public string GenerateInvitationRoomLink(string email, EmployeeType employeeType, Guid createdBy, Guid target)
+    public string MakeKey(string email)
     {
-        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, employeeType + target.ToString(), createdBy)
-            + $"&emplType={employeeType:d}";
+        return email + ConfirmType.LinkInvite.ToStringFast() + EmployeeType.User.ToStringFast();
+    }
 
-        if (target != default)
+    public Guid Parse(string key)
+    {
+        return _signature.Read<Guid>(key);
+    }
+
+    public ValidationResult Validate(string key, string email)
+    {
+        return string.IsNullOrEmpty(email) ? ValidateExternalLink(key) : ValidateEmailLink(email, key);
+    }
+
+    private ValidationResult ValidateEmailLink(string email, string key)
+    {
+        var result = _emailValidationKeyProvider.ValidateEmailKey(MakeKey(email), key, ExpirationInterval);
+
+        if (result == ValidationResult.Ok)
         {
-            link += $"&target={target}";
+            var canUsed = CanUsed(email, key, ExpirationVisitInterval);
+
+            if (!canUsed)
+            {
+                return ValidationResult.Expired;
+            }
         }
 
-        return link;
+        return result;
     }
 
-    public bool ProcessLinkVisit(string email, string key, TimeSpan interval)
+    private ValidationResult ValidateExternalLink(string key)
+    {
+        var payload = Parse(key);
+
+        if (payload == default)
+        {
+            return ValidationResult.Invalid;
+        }
+
+        return ValidationResult.Ok;
+    }
+
+    private bool CanUsed(string email, string key, TimeSpan interval)
     {
         var message = GetLinkInfo(email, key);
 

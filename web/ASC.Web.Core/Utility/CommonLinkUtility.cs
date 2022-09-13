@@ -562,7 +562,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     public string GetConfirmationUrlRelative(string key, ConfirmType confirmType, Guid userId = default)
     {
-        return $"confirm/{confirmType}?key={key}&uid={userId}";
+        return $"confirm/type={confirmType}&key={key}&uid={userId}";
     }
 
     public string GetToken(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
