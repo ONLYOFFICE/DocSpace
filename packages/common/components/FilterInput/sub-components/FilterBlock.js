@@ -373,12 +373,14 @@ const FilterBlock = ({
         <StyledFilterBlock showFooter={showFooter}>
           <StyledFilterBlockHeader>
             <Heading size="medium">{filterHeader}</Heading>
-            <IconButton
-              iconName="/static/images/clear.react.svg"
-              isFill={true}
-              onClick={onClearFilter}
-              size={17}
-            />
+            {showFooter && (
+              <IconButton
+                iconName="/static/images/clear.react.svg"
+                isFill={true}
+                onClick={onClearFilter}
+                size={17}
+              />
+            )}
           </StyledFilterBlockHeader>
           <div className="filter-body">
             {isLoading ? (

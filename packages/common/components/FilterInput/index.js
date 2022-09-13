@@ -7,6 +7,7 @@ import {
 } from "@docspace/components/utils/device";
 
 import ViewSelector from "@docspace/components/view-selector";
+import Link from "@docspace/components/link";
 
 import FilterButton from "./sub-components/FilterButton";
 import SortButton from "./sub-components/SortButton";
@@ -164,6 +165,18 @@ const FilterInput = React.memo(
                 removeSelectedItem={removeSelectedItemAction}
               />
             ))}
+            {selectedItems.length > 1 && (
+              <Link
+                className={"clear-all-link"}
+                isHovered
+                fontWeight={600}
+                isSemitransparent
+                type="action"
+                onClick={() => onFilter([])}
+              >
+                {t("ClearAll")}
+              </Link>
+            )}
           </div>
         )}
       </StyledFilterInput>

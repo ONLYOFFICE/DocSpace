@@ -54,6 +54,12 @@ const StyledFilterBlock = styled.div`
 
     .combo-button {
       justify-content: space-between;
+
+      .combo-button-label {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 20px;
+      }
     }
   }
 `;
@@ -76,6 +82,10 @@ const StyledFilterBlockHeader = styled.div`
   align-items: center;
   justify-content: ${(props) => (props.isSelector ? "start" : "space-between")};
 
+  h1 {
+    font-weight: 700;
+  }
+
   .arrow-button {
     margin-right: 12px;
   }
@@ -89,7 +99,7 @@ StyledFilterBlockHeader.defaultProps = { theme: Base };
 
 const StyledFilterBlockItem = styled.div`
   padding: ${(props) =>
-    !props.withoutHeader ? "12px 16px 0px 16px" : "6px 16px 0px 16px"};
+    !props.withoutHeader ? "12px 15px 0px 16px" : "5px 15px 0px 16px"};
 
   display: flex;
   flex-direction: column;
@@ -147,8 +157,8 @@ const selectedItemTag = css`
 `;
 
 const StyledFilterBlockItemTag = styled.div`
-  height: 30px;
-  max-height: 30px;
+  height: 28px;
+  max-height: 28px;
 
   display: flex;
   flex-direction: row;
@@ -161,7 +171,7 @@ const StyledFilterBlockItemTag = styled.div`
 
   padding: 4px 15px;
 
-  margin: 0 6px 12px 0;
+  margin: 0 7px 8px 0;
 
   cursor: pointer;
 
@@ -174,12 +184,13 @@ StyledFilterBlockItemTag.defaultProps = { theme: Base };
 
 const selectedItemTagText = css`
   color: ${(props) => props.theme.filterInput.filter.selectedItem.color};
+  font-weight: 600;
 `;
 
 const StyledFilterBlockItemTagText = styled(Text)`
   height: 20px;
 
-  font-weight: normal;
+  font-weight: 400;
   font-size: 13px;
   line-height: 20px;
 
@@ -226,7 +237,15 @@ const StyledFilterBlockItemToggleButton = styled(ToggleButton)`
   grid-gap: 0px;
 `;
 const StyledFilterBlockItemCheckboxContainer = styled.div`
-  margin: 7px 0 11px;
+  margin: 7px 0 13px;
+
+  .checkbox {
+    margin-right: 8px !important;
+  }
+
+  .checkbox-text {
+    line-height: 20px;
+  }
 `;
 
 const StyledFilterBlockItemSeparator = styled.div`
@@ -237,7 +256,7 @@ const StyledFilterBlockItemSeparator = styled.div`
 
   background: ${(props) => props.theme.filterInput.filter.separatorColor};
 
-  margin: 2px 0 0 0;
+  margin: 4px 0 4px 0;
 `;
 
 StyledFilterBlockItemToggleButton.defaultProps = { theme: Base };
