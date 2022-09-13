@@ -16,6 +16,7 @@ export const Events = Object.freeze({
   RENAME: "rename",
   ROOM_CREATE: "create_room",
   ROOM_EDIT: "edit_room",
+  CHANGE_COLUMN: "change_column",
 });
 
 export const FilterGroups = Object.freeze({
