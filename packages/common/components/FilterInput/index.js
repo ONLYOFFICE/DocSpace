@@ -174,7 +174,7 @@ const FilterInput = React.memo(
                 type="action"
                 onClick={() => onFilter([])}
               >
-                {t("ClearAll")}
+                {t("Common:ClearAll")}
               </Link>
             )}
           </div>
