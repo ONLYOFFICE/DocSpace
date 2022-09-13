@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
+import { Trans } from "react-i18next";
 
 import ComboBox from "@docspace/components/combobox";
 import Text from "@docspace/components/text";
+import Link from "@docspace/components/link";
+import HelpButton from "@docspace/components/help-button";
 import toastr from "@docspace/components/toast/toastr";
 
 import { convertLanguage } from "@docspace/common/utils";
@@ -23,6 +26,9 @@ const StyledRow = styled.div`
   }
 
   .label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     min-width: 75px;
     max-width: 75px;
     white-space: nowrap;
@@ -49,6 +55,8 @@ const LanguagesCombo = (props) => {
     setIsLoading,
     culture,
     cultureNames,
+    helpLink,
+    theme,
   } = props;
   const { cultureName, currentCulture } = profile;
 
@@ -74,10 +82,38 @@ const LanguagesCombo = (props) => {
       });
   };
 
+  const supportEmail = "documentation@onlyoffice.com";
+
+  const tooltipLanguage = (
+    <Text fontSize="13px">
+      <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
+        "In case you cannot find your language in the list of the available
+        ones, feel free to write to us at
+        <Link
+          href={`mailto:${supportEmail}`}
+          isHovered={true}
+          color={theme.profileInfo.tooltipLinkColor}
+        >
+          {{ supportEmail }}
+        </Link>
+        to take part in the translation and get up to 1 year free of charge."
+      </Trans>{" "}
+      <Link
+        color={theme.profileInfo.tooltipLinkColor}
+        isHovered={true}
+        href={`${helpLink}/guides/become-translator.aspx`}
+        target="_blank"
+      >
+        {t("Common:LearnMore")}
+      </Link>
+    </Text>
+  );
+
   return (
     <StyledRow>
       <Text as="div" color="#A3A9AE" className="label">
         {t("Common:Language")}
+        <HelpButton size={12} tooltipContent={tooltipLanguage} />
       </Text>
       <ComboBox
         className="lang-combo"
@@ -109,13 +145,15 @@ export default withCultureNames(
     const { setIsLoading } = loadingStore;
     const { updateProfileCulture, targetUser: profile } = targetUserStore;
 
-    const { culture } = settingsStore;
+    const { culture, helpLink, theme } = settingsStore;
 
     return {
       setIsLoading,
       updateProfileCulture,
       culture,
       profile,
+      helpLink,
+      theme,
     };
   })(observer(LanguagesCombo))
 );
