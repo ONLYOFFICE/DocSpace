@@ -318,7 +318,7 @@ const Items = ({
           isHeader={true}
           isFirstHeader={true}
           showText={showText}
-          text={"Rooms"}
+          text={t("Common:Rooms")}
         />
       );
 
@@ -328,7 +328,7 @@ const Items = ({
           isHeader={true}
           isFirstHeader={false}
           showText={showText}
-          text={"Files"}
+          text={t("Translations:Files")}
         />
       );
 
@@ -338,7 +338,7 @@ const Items = ({
           isHeader={true}
           isFirstHeader={false}
           showText={showText}
-          text={"Other"}
+          text={t("Translations:Other")}
         />
       );
 
