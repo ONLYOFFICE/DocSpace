@@ -13,8 +13,6 @@
   "EmptyFieldErrorMessage": "The field is empty",
   "Encryption": "Encryption",
   "FirstName": "First Name",
-  "ForbiddenPageDescription": "To make changes to this section, go to the desktop version.",
-  "ForbiddenPageHeader": "Section unavailable.",
   "GenerateCertificate": "Generate New Self-Signed Certificate",
   "Hide": "Hide",
   "HideAdditionalParameters": "Hide advanced settings",
