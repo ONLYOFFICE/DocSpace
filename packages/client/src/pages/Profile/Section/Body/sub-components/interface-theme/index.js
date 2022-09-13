@@ -46,7 +46,13 @@ const StyledWrapper = styled.div`
 
 const InterfaceTheme = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
-  const { theme, changeTheme, setIsLoading } = props;
+  const {
+    theme,
+    changeTheme,
+    setIsLoading,
+    currentColorScheme,
+    selectedThemeId,
+  } = props;
 
   const themeChange = async (theme) => {
     try {
@@ -94,19 +100,21 @@ const InterfaceTheme = (props) => {
       </div>
       <div className="themes-container">
         <ThemePreview
-          t={t}
           label={t("LightTheme")}
           isDisabled={isSystemTheme}
-          theme={Base}
+          theme="Light"
+          accentColor={currentColorScheme.accentColor}
+          themeId={selectedThemeId}
           value={ThemeKeys.BaseStr}
           isChecked={theme === ThemeKeys.BaseStr}
           onChangeTheme={onChangeTheme}
         />
         <ThemePreview
-          t={t}
           label={t("DarkTheme")}
           isDisabled={isSystemTheme}
-          theme={Dark}
+          theme="Dark"
+          accentColor={currentColorScheme.accentColor}
+          themeId={selectedThemeId}
           value={ThemeKeys.DarkStr}
           isChecked={theme === ThemeKeys.DarkStr}
           onChangeTheme={onChangeTheme}
@@ -132,14 +140,17 @@ const InterfaceTheme = (props) => {
 };
 
 export default inject(({ auth, peopleStore }) => {
-  const { userStore } = auth;
+  const { userStore, settingsStore } = auth;
   const { loadingStore } = peopleStore;
 
   const { changeTheme, user } = userStore;
+  const { currentColorScheme, selectedThemeId } = settingsStore;
 
   return {
     changeTheme,
     theme: user.theme,
     setIsLoading: loadingStore.setIsLoading,
+    currentColorScheme,
+    selectedThemeId,
   };
 })(observer(InterfaceTheme));
