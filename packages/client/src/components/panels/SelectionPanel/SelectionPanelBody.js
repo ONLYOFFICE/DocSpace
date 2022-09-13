@@ -72,7 +72,7 @@ const SelectionPanelBody = ({
                 fontSize="18px"
                 className="selection-panel_folder-title"
               >
-                {t("Common:Documents")}
+                {t("Common:Rooms")}
               </Text>
 
               {folderId && resultingFolderTree ? (
