@@ -127,7 +127,7 @@ public class MigrationRunner
 
     private void SetTenantActive(int tenantId)
     {
-        using var connection = _dbFactory.OpenConnection();
+        using var connection = _dbFactory.OpenConnection(region: _region);
         var commandText = string.Format(
             "update tenants_tenants " +
             "set " +
