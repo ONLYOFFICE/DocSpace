@@ -186,6 +186,6 @@ export default inject(({ auth, bannerStore }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
     setIsTabletView: auth.settingsStore.setIsTabletView,
-    isBannerVisible: false, // bannerStore.isBannerVisible, TODO: use isBannerVisible from bannerStore after fix
+    isBannerVisible: bannerStore.isBannerVisible,
   };
 })(observer(Layout));

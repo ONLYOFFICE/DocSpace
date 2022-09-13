@@ -285,7 +285,8 @@ class ContextOptionsStore {
       deleteOperation: t("Translations:DeleteOperation"),
       successRemoveFile: t("Files:FileRemoved"),
       successRemoveFolder: t("Files:FolderRemoved"),
-      successRemoveRoom: "Remove room",
+      successRemoveRoom: t("Files:RoomRemoved"),
+      successRemoveRooms: t("Files:RoomsRemoved"),
     };
 
     this.filesActionsStore.deleteItemAction(
@@ -823,7 +824,7 @@ class ContextOptionsStore {
           key: "delete-rooms",
           label: t("Common:Delete"),
           icon: "images/trash.react.svg",
-          onClick: deleteRooms,
+          onClick: () => deleteRooms(t),
         });
       }
 

@@ -3,6 +3,5 @@
   "ConvertMessage": "Dosyayı orijinalinden farklı bir türe dönüştürmeyi seçerseniz, bazı veriler kaybolabilir.",
   "ConvertToZip": "Dosyalar .zip dosyasına sıkıştırılacak",
   "CustomFormat": "Özel tür",
-  "OriginalFormat": "Orijinal tür",
-  "Other": "Diğer"
+  "OriginalFormat": "Orijinal tür"
 }
