@@ -4,8 +4,8 @@ import { withTranslation } from "react-i18next";
 
 import StyledBreakpointWarning from "./sub-components/StyledBreakpointWarning";
 import Loader from "./sub-components/loader";
-const BreakpointWarning = ({ t, content, isLoading }) => {
-  return isLoading ? (
+const BreakpointWarning = ({ t, content, tReady }) => {
+  return !tReady ? (
     <Loader />
   ) : (
     <StyledBreakpointWarning>
