@@ -318,7 +318,21 @@ class SettingsStore {
 
   getAdditionalResources = async () => {
     const res = await api.settings.getAdditionalResources();
+
+    delete res.buyUrl;
+    delete res.feedbackAndSupportUrl;
+    delete res.licenseAgreementsEnabled;
+    delete res.licenseAgreementsUrl;
+    delete res.salesEmail;
+    delete res.startDocsEnabled;
+    delete res.userForumEnabled;
+    delete res.videoGuidesUrl;
+
     this.setAdditionalResourcesData(res);
+
+    if (!localStorage.getItem("defaultAdditionalResources")) {
+      localStorage.setItem("defaultAdditionalResources", JSON.stringify(res));
+    }
   };
 
   restoreAdditionalResources = async () => {
