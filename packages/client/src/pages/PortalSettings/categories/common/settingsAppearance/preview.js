@@ -13,7 +13,7 @@ import {
 import ButtonPlusIcon from "../../../../../../../../public/images/actions.button.plus.react.svg";
 
 const Preview = (props) => {
-  const { selectAccentColor, themePreview, selectThemeId } = props;
+  const { selectAccentColor, themePreview, selectThemeId, withBorder } = props;
 
   const [colorPreview, setColorPreview] = useState(selectAccentColor);
   const [isViewTablet, setIsViewTablet] = useState(false);
@@ -43,6 +43,7 @@ const Preview = (props) => {
       themePreview={themePreview}
       selectThemeId={selectThemeId}
       isViewTablet={isViewTablet}
+      withBorder={withBorder}
     >
       <div className="menu border-color">
         {!isViewTablet ? (
@@ -397,6 +398,10 @@ const Preview = (props) => {
       </div>
     </StyledComponent>
   );
+};
+
+Preview.defaultProps = {
+  withBorder: true,
 };
 
 export default Preview;
