@@ -103,11 +103,11 @@ public class TenantQuotaFeatureCount : TenantQuotaFeature<int>
     }
 }
 
-public class TenantQuotaFeatureLength : TenantQuotaFeature<long>
+public class TenantQuotaFeatureSize : TenantQuotaFeature<long>
 {
     protected override long Default => long.MaxValue;
 
-    public TenantQuotaFeatureLength(TenantQuota tenantQuota) : base(tenantQuota)
+    public TenantQuotaFeatureSize(TenantQuota tenantQuota) : base(tenantQuota)
     {
     }
 

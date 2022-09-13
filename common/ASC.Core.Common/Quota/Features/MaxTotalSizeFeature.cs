@@ -26,7 +26,7 @@
 
 namespace ASC.Core.Common.Quota.Features;
 
-public class MaxTotalSizeFeature : TenantQuotaFeatureLength
+public class MaxTotalSizeFeature : TenantQuotaFeatureSize
 {
     public override string Name { get => "total_size"; }
     public override bool Paid { get => true; }

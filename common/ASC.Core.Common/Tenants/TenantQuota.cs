@@ -328,11 +328,11 @@ public class TenantQuota : IMapFrom<DbQuota>
             {
                 fileSize.Value = Math.Max(fileSize.Value, quota.MaxFileSize);
             }
-            else if (f is TenantQuotaFeature<int> count)
+            else if (f is TenantQuotaFeatureCount count)
             {
                 count.Value += quota.GetFeature<int>(f.Name).Value;
             }
-            else if (f is TenantQuotaFeatureLength length)
+            else if (f is TenantQuotaFeatureSize length)
             {
                 length.Value += quota.GetFeature<long>(f.Name).Value;
             }

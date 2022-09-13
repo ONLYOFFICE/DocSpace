@@ -106,7 +106,7 @@ public class QuotaHelper
         return string.Format("{0}{1}", currentRegion.CurrencySymbol, priceString);
     }
 
-    private async IAsyncEnumerable<QuotaFeatureDto> GetFeatures(TenantQuota quota, string price, bool getUsed)
+    private async IAsyncEnumerable<TenantQuotaFeatureDto> GetFeatures(TenantQuota quota, string price, bool getUsed)
     {
         var assembly = GetType().Assembly;
 
@@ -114,7 +114,7 @@ public class QuotaHelper
 
         foreach (var feature in quota.TenantQuotaFeatures.Where(r => r.Visible).OrderBy(r => r.Order))
         {
-            var result = new QuotaFeatureDto();
+            var result = new TenantQuotaFeatureDto();
 
             if (feature.Paid)
             {
@@ -129,23 +129,24 @@ public class QuotaHelper
 
             object used = null;
 
-            if (feature is TenantQuotaFeature<long> length)
+            if (feature is TenantQuotaFeatureSize size)
             {
-                var maxValue = length.Value == long.MaxValue;
-                result.Value = maxValue ? -1 : length.Value;
+                result.Value = size.Value == long.MaxValue ? -1 : size.Value;
+                result.Type = "size";
 
                 await GetStat<long>();
             }
-            else if (feature is TenantQuotaFeature<int> count)
+            else if (feature is TenantQuotaFeatureCount count)
             {
-                var maxValue = count.Value == int.MaxValue;
-                result.Value = maxValue ? -1 : count.Value;
+                result.Value = count.Value == int.MaxValue ? -1 : count.Value;
+                result.Type = "count";
 
                 await GetStat<int>();
             }
-            else if (feature is TenantQuotaFeature<bool> flag)
+            else if (feature is TenantQuotaFeatureFlag flag)
             {
                 result.Value = flag.Value;
+                result.Type = "flag";
             }
 
             if (getUsed)
