@@ -14,10 +14,9 @@ const StyledContainer = styled.div`
 const StyledBlock = styled.div`
   padding: 12px 0 6px;
 
-  margin-bottom: 0;
-
   width: 100%;
-  height: 128px;
+  min-height: 122px;
+  height: auto;
 
   display: flex;
 
