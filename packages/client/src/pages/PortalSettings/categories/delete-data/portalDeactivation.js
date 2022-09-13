@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import { inject } from "mobx-react";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
-import toastr from "SRC_DIR/helpers/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { MainContainer } from "./StyledDeleteData";
 import { setDocumentTitle } from "../../../../helpers/utils";
 import api from "@docspace/common/api";
