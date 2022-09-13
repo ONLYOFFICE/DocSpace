@@ -1072,7 +1072,7 @@ const Base = {
 
     editContainer: {
       right: "0px",
-      bottom: "0px",
+      bottom: "-8px",
       fill: white,
       backgroundColor: blueLightMid,
       borderRadius: "50%",

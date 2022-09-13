@@ -1069,7 +1069,7 @@ const Dark = {
 
     editContainer: {
       right: "0px",
-      bottom: "0px",
+      bottom: "-8px",
       fill: black,
       backgroundColor: "#b2b2b2",
       borderRadius: "50%",
