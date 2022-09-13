@@ -7,6 +7,7 @@ import styled from "styled-components";
 import Checkbox from "@docspace/components/checkbox";
 import toastr from "@docspace/components/toast/toastr";
 import LoaderAdditionalResources from "../sub-components/loaderAdditionalResources";
+import isEqual from "lodash/isEqual";
 
 const StyledComponent = styled.div`
   margin-top: 40px;
@@ -67,8 +68,12 @@ const AdditionalResources = (props) => {
 
   const [hasChange, setHasChange] = useState(false);
 
-  const [isFirstAdditionalResources, setIsFirstAdditionalResources] = useState(
-    localStorage.getItem("isFirstAdditionalResources")
+  const [hasChangesDefaultSettings, setHasChangesDefaultSettings] = useState(
+    false
+  );
+
+  const defaultAdditionalResources = JSON.parse(
+    localStorage.getItem("defaultAdditionalResources")
   );
 
   useEffect(() => {
@@ -78,21 +83,33 @@ const AdditionalResources = (props) => {
   }, [additionalResourcesData]);
 
   useEffect(() => {
-    if (
-      feedbackAndSupportEnabled !==
-        additionalResourcesData.feedbackAndSupportEnabled ||
-      videoGuidesEnabled !== additionalResourcesData.videoGuidesEnabled ||
-      helpCenterEnabled !== additionalResourcesData.helpCenterEnabled
-    ) {
+    const settings = {
+      feedbackAndSupportEnabled,
+      videoGuidesEnabled,
+      helpCenterEnabled,
+    };
+
+    const hasСhange = !_.isEqual(settings, additionalResourcesData);
+
+    const hasСhangeDefaul = !_.isEqual(settings, defaultAdditionalResources);
+
+    if (hasСhange) {
       setHasChange(true);
     } else {
       setHasChange(false);
+    }
+
+    if (hasСhangeDefaul) {
+      setHasChangesDefaultSettings(true);
+    } else {
+      setHasChangesDefaultSettings(false);
     }
   }, [
     feedbackAndSupportEnabled,
     videoGuidesEnabled,
     helpCenterEnabled,
     additionalResourcesData,
+    defaultAdditionalResources,
   ]);
 
   useEffect(() => {
@@ -178,7 +195,7 @@ const AdditionalResources = (props) => {
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
           showReminder={isPortalPaid && hasChange}
-          isFirstRestoreToDefault={isFirstAdditionalResources}
+          disableRestoreToDefault={!hasChangesDefaultSettings}
         />
       </StyledComponent>
     </>
