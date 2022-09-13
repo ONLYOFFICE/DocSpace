@@ -233,6 +233,13 @@ class SettingsStore {
 
     this.setGreetingSettings(newSettings.greetingSettings);
 
+    if (!localStorage.getItem("defaultWelcomePageSettings")) {
+      localStorage.setItem(
+        "defaultWelcomePageSettings",
+        newSettings.greetingSettings
+      );
+    }
+
     return newSettings;
   };
 
