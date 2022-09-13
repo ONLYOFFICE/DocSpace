@@ -52,7 +52,6 @@ const StyledPeopleRow = styled(TableRow)`
 
   .table-container_row-checkbox-wrapper {
     padding-right: 0px;
-    padding-left: 4px;
     min-width: 48px;
 
     .table-container_row-checkbox {
