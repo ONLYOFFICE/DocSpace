@@ -33,11 +33,6 @@ const StyledWrapper = styled.div`
     align-items: center;
     padding: 0;
   }
-
-  .avatar {
-    height: 124px;
-    width: 124px;
-  }
 `;
 
 const StyledInfo = styled.div`
@@ -60,8 +55,8 @@ const StyledInfo = styled.div`
     }
 
     .label {
-      min-width: 60px;
-      max-width: 60px;
+      min-width: 75px;
+      max-width: 75px;
       white-space: nowrap;
     }
 
@@ -110,7 +105,6 @@ const MainProfile = (props) => {
   return (
     <StyledWrapper>
       <Avatar
-        className="avatar"
         size="max"
         role={role}
         source={profile.avatarMax}

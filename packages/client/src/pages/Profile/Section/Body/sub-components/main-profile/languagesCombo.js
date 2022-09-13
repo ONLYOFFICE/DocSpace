@@ -22,6 +22,12 @@ const StyledRow = styled.div`
     }
   }
 
+  .label {
+    min-width: 75px;
+    max-width: 75px;
+    white-space: nowrap;
+  }
+
   @media ${smallTablet} {
     width: 100%;
     flex-direction: column;
