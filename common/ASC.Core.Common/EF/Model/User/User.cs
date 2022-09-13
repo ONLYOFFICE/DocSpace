@@ -239,7 +239,7 @@ public static class DbUserExtension
 
             entity.Property(e => e.QuotaLimit)
                .HasColumnName("quota_limit")
-               .HasDefaultValueSql("'0'");
+               .HasDefaultValueSql("'-1'");
         });
     }
 
@@ -354,7 +354,7 @@ public static class DbUserExtension
 
             entity.Property(e => e.QuotaLimit)
                 .HasColumnName("quota_limit")
-                .HasDefaultValueSql("'0'");
+                .HasDefaultValueSql("'-1'");
 
             entity.Property(e => e.WorkFromDate).HasColumnName("workfromdate");
         });
