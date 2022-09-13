@@ -6,7 +6,7 @@ import { combineUrl } from "@docspace/common/utils";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import { inject, observer } from "mobx-react";
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
-const Admins = lazy(() => import("./categories/security/access-rights/admins"));
+
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
 const PasswordStrengthPage = lazy(() =>
   import("./categories/security/access-portal/passwordStrength")
@@ -195,7 +195,7 @@ const Settings = (props) => {
           <Route exact path={TEAM_TEMPLATE_URL} component={TeamTemplate} />
 
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
-          <Route path={ADMINS_URL} component={Admins} />
+
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />
           <Route
             exact

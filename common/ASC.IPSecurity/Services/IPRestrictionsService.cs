@@ -78,7 +78,7 @@ public class IPRestrictionsService
         return restrictions;
     }
 
-    public IEnumerable<string> Save(IEnumerable<string> ips, int tenant)
+    public IEnumerable<IpRestrictionBase> Save(IEnumerable<IpRestrictionBase> ips, int tenant)
     {
         var restrictions = _ipRestrictionsRepository.Save(ips, tenant);
         _notify.Publish(new IPRestrictionItem { TenantId = tenant }, CacheNotifyAction.InsertOrUpdate);

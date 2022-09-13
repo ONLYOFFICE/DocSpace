@@ -8,7 +8,7 @@ import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
 import api from "@docspace/common/api";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import EmptyFolderContainer from "SRC_DIR/components/EmptyContainer/EmptyContainer";
 import { initPlugin } from "SRC_DIR/helpers/plugins";

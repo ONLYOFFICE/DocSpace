@@ -26,6 +26,9 @@ const StyledPeopleRow = styled(TableRow)`
       cursor: pointer;
       background: ${(props) =>
         `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+      border-top: ${(props) =>
+        `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+      margin-top: -1px;
     }
 
     .table-container_user-name-cell {
@@ -39,8 +42,8 @@ const StyledPeopleRow = styled(TableRow)`
   }
 
   .table-container_cell {
-    height: 46px;
-    max-height: 46px;
+    height: 48px;
+    max-height: 48px;
 
     background: ${(props) =>
       (props.checked || props.isActive) &&
@@ -49,8 +52,7 @@ const StyledPeopleRow = styled(TableRow)`
 
   .table-container_row-checkbox-wrapper {
     padding-right: 0px;
-    padding-left: 4px;
-    min-width: 46px;
+    min-width: 48px;
 
     .table-container_row-checkbox {
       margin-left: -4px;

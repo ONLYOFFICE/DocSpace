@@ -7,7 +7,7 @@ import {
   FolderType,
   ShareAccessRights,
 } from "@docspace/common/constants";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import { onConvertFiles } from "../../helpers/files-converter";
 import { ReactSVG } from "react-svg";
@@ -237,13 +237,8 @@ class TreeFolders extends React.Component {
 
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
-
-      const showBadge = item.newItems
-        ? item.newItems > 0 && this.props.needUpdate
-        : false;
-
+      const showBadge = false;
       const provider = item.providerKey;
-
       const serviceFolder = !!item.providerKey;
 
       let value = "",
@@ -438,11 +433,8 @@ class TreeFolders extends React.Component {
         this.onLoadData(treeNode.node, true);
       }
     }
-    if (this.props.needUpdate) {
-      this.props.setExpandedKeys(expandedKeys);
-    } else {
-      this.props.setExpandedPanelKeys(expandedKeys);
-    }
+
+    this.props.setExpandedPanelKeys(expandedKeys);
   };
 
   onDragOver = (data) => {
@@ -543,7 +535,6 @@ class TreeFolders extends React.Component {
 
 TreeFolders.defaultProps = {
   selectedKeys: [],
-  needUpdate: true,
 };
 
 export default inject(
@@ -565,7 +556,6 @@ export default inject(
       myFolderId,
       commonFolderId,
       isPrivacyFolder,
-      setExpandedKeys,
       setExpandedPanelKeys,
       getSubfolders,
       setIsLoadingNodes,
@@ -595,7 +585,6 @@ export default inject(
       setDragging,
       setIsLoading,
       setTreeFolders,
-      setExpandedKeys,
       setExpandedPanelKeys,
       getSubfolders,
       setIsLoadingNodes,

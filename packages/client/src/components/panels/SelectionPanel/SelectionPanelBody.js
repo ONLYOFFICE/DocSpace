@@ -10,7 +10,7 @@ import {
   getSharedRoomsTree,
   getThirdPartyCommonFolderTree,
 } from "@docspace/common/api/files";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import {
   exceptSortedByTagsFolders,
   exceptPrivacyTrashFolders,
@@ -72,7 +72,7 @@ const SelectionPanelBody = ({
                 fontSize="18px"
                 className="selection-panel_folder-title"
               >
-                {t("Common:Documents")}
+                {t("Common:Rooms")}
               </Text>
 
               {folderId && resultingFolderTree ? (

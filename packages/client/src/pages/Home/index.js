@@ -2,10 +2,6 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-import {
-  isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-} from "@docspace/components/utils/device";
 import axios from "axios";
 import toastr from "@docspace/components/toast/toastr";
 import Section from "@docspace/common/components/Section";
@@ -28,8 +24,6 @@ import {
   Bar,
 } from "./Section";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
-
-import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
@@ -50,8 +44,6 @@ class PureHome extends React.Component {
       //homepage,
       setIsLoading,
       setFirstLoad,
-      expandedKeys,
-      setExpandedKeys,
       setToPreviewFile,
       playlist,
       isMediaOrImage,
@@ -200,25 +192,10 @@ class PureHome extends React.Component {
 
         if (filter) {
           if (isRooms) {
-            return fetchRooms(null, filter).then((data) => {
-              const pathParts = data.selectedFolder.pathParts;
-              const newExpandedKeys = createTreeFolders(
-                pathParts,
-                expandedKeys
-              );
-              setExpandedKeys(newExpandedKeys);
-            });
+            return fetchRooms(null, filter);
           } else {
             const folderId = filter.folder;
-
-            return fetchFiles(folderId, filter).then((data) => {
-              const pathParts = data.selectedFolder.pathParts;
-              const newExpandedKeys = createTreeFolders(
-                pathParts,
-                expandedKeys
-              );
-              setExpandedKeys(newExpandedKeys);
-            });
+            return fetchFiles(folderId, filter);
           }
         }
 
@@ -642,12 +619,7 @@ export default inject(
 
     const { gallerySelected } = oformsStore;
 
-    const {
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      expandedKeys,
-      setExpandedKeys,
-    } = treeFoldersStore;
+    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
     const {
       visible: primaryProgressDataVisible,
@@ -717,7 +689,6 @@ export default inject(
       checkedMaintenance,
       setMaintenanceExist,
       snackbarExist,
-      expandedKeys,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -739,7 +710,6 @@ export default inject(
       itemsSelectionLength,
       itemsSelectionTitle,
 
-      setExpandedKeys,
       setFirstLoad,
       setDragging,
       setIsLoading,

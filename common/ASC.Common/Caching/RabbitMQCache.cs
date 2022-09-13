@@ -57,9 +57,9 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
 
         _factory = new ConnectionFactory();
 
-        if (!string.IsNullOrEmpty(rabbitMQConfiguration.EndpointUri))
+        if (!string.IsNullOrEmpty(rabbitMQConfiguration.Uri))
         {
-            _factory.Endpoint = new AmqpTcpEndpoint(new Uri(rabbitMQConfiguration.EndpointUri));
+            _factory.Uri = new Uri(rabbitMQConfiguration.Uri);
         }
         else
         {
@@ -241,7 +241,7 @@ public class RabbitMQSettings
     public string Password { get; set; }
     public int Port { get; set; }
     public string VirtualHost { get; set; }
-    public string EndpointUri { get; set; }
+    public string Uri { get; set; }
     public bool EnableSsl { get; set; }
     public string SslServerName { get; set; }
     public string SslCertPath { get; set; }
