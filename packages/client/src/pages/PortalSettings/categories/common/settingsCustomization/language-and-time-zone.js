@@ -437,7 +437,7 @@ class LanguageAndTimeZone extends React.Component {
             scaled={true}
             scaledOptions={true}
             dropDownMaxHeight={300}
-            className="dropdown-item-width"
+            className="dropdown-item-width combo-box-settings"
           />
         </FieldContainer>
         <FieldContainer
@@ -455,7 +455,7 @@ class LanguageAndTimeZone extends React.Component {
             scaled={true}
             scaledOptions={true}
             dropDownMaxHeight={300}
-            className="dropdown-item-width"
+            className="dropdown-item-width combo-box-settings"
           />
         </FieldContainer>
       </div>
