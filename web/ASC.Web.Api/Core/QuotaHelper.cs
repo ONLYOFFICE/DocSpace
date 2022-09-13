@@ -61,7 +61,7 @@ public class QuotaHelper
     private QuotaDto ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion, bool getUsed = false)
     {
         var price = GetPrice(quota, priceInfo, currentRegion);
-        var features = GetFeatures(quota, GetPriceString(price, currentRegion), getUsed);
+        var features = GetFeatures(quota, getUsed);
 
         return new QuotaDto
         {
@@ -95,18 +95,7 @@ public class QuotaHelper
         return quota.Price;
     }
 
-    private string GetPriceString(decimal price, RegionInfo currentRegion)
-    {
-        var inEuro = "EUR".Equals(currentRegion.ISOCurrencySymbol);
-
-        var priceString = inEuro && Math.Truncate(price) != price ?
-            price.ToString(CultureInfo.InvariantCulture) :
-            ((int)price).ToString(CultureInfo.InvariantCulture);
-
-        return string.Format("{0}{1}", currentRegion.CurrencySymbol, priceString);
-    }
-
-    private async IAsyncEnumerable<TenantQuotaFeatureDto> GetFeatures(TenantQuota quota, string price, bool getUsed)
+    private async IAsyncEnumerable<TenantQuotaFeatureDto> GetFeatures(TenantQuota quota, bool getUsed)
     {
         var assembly = GetType().Assembly;
 
@@ -118,11 +107,7 @@ public class QuotaHelper
 
             if (feature.Paid)
             {
-                result.Price = new FeaturePriceDto
-                {
-                    Per = string.Format(Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}_price_per"), price),
-                    Count = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}_price_count")
-                };
+                result.PriceTitle = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}_price_count");
             }
 
             result.Id = feature.Name;

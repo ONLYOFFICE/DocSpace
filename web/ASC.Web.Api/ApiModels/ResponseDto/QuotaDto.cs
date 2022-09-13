@@ -48,7 +48,7 @@ public class TenantQuotaFeatureDto : IEquatable<TenantQuotaFeatureDto>
     public object Value { get; set; }
     public string Type { get; set; }
     public FeatureUsedDto Used { get; set; }
-    public FeaturePriceDto Price { get; set; }
+    public string PriceTitle { get; set; }
 
     public bool Equals(TenantQuotaFeatureDto other)
     {
@@ -68,12 +68,6 @@ public class PriceDto
 {
     public decimal? Value { get; set; }
     public string CurrencySymbol { get; set; }
-}
-
-public class FeaturePriceDto
-{
-    public string Count { get; set; }
-    public string Per { get; set; }
 }
 
 public class FeatureUsedDto

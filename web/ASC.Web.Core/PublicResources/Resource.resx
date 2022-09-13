@@ -828,9 +828,6 @@
   <data name="TariffsFeature_manager_price_count" xml:space="preserve">
     <value>Number of managers</value>
   </data>
-  <data name="TariffsFeature_manager_price_per" xml:space="preserve">
-    <value>{0} per manager/month</value>
-  </data>
   <data name="TariffsFeature_audit" xml:space="preserve">
     <value>Tracking user logins &amp; action</value>
   </data>
@@ -866,9 +863,6 @@
   </data>
   <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
     <value>Storage space</value>
-  </data>
-  <data name="TariffsFeature_total_size_price_per" xml:space="preserve">
-    <value />
   </data>
   <data name="TariffsFeature_file_size" xml:space="preserve">
     <value>Max file size</value>
