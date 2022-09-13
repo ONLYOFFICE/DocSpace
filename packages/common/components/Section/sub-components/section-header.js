@@ -36,6 +36,11 @@ const StyledSectionHeader = styled.div`
     min-height: 53px;
   `}
 
+  .header-container {
+    margin-bottom: 1px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
   padding-right: 20px;
 
   box-sizing: border-box;
