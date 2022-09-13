@@ -36,13 +36,13 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
     private const string _bunchRightNodeStartCrmOpportunity = "crm/opportunity/";
     private const string _bunchRightNodeStartMy = "files/my/";
     private const string _bunchRightNodeStartTrash = "files/trash/";
+    private const string _bunchRightNodeStartPrivacy = "files/privacy/";
 
     private static readonly Regex _regexIsInteger = new Regex(@"^\d+$", RegexOptions.Compiled);
     private readonly Helpers _helpers;
     private readonly ILogger<ModuleProvider> _logger;
     private readonly TableInfo[] _tables = new[]
     {
-            new TableInfo("files_bunch_objects", "tenant_id"),
             new TableInfo("files_file", "tenant_id", "id", IdType.Integer)
             {
                 UserIDColumns = new[] {"create_by", "modified_by"},
@@ -53,6 +53,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
                 UserIDColumns = new[] {"create_by", "modified_by"},
                 DateColumns = new Dictionary<string, bool> {{"create_on", false}, {"modified_on", false}}
             },
+            new TableInfo("files_bunch_objects", "tenant_id"),
             new TableInfo("files_folder_tree"),
             new TableInfo("files_security", "tenant_id") {UserIDColumns = new[] {"owner"}},
             new TableInfo("files_thirdparty_account", "tenant_id", "id")
@@ -70,7 +71,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
                 {
                     var rightNode = Convert.ToString(x["right_node"]);
 
-                    return rightNode.StartsWith(_bunchRightNodeStartMy) || rightNode.StartsWith(_bunchRightNodeStartTrash);
+                    return rightNode.StartsWith(_bunchRightNodeStartMy) || rightNode.StartsWith(_bunchRightNodeStartTrash) || rightNode.StartsWith(_bunchRightNodeStartPrivacy);
                 }),
             new RelationInfo("core_user", "id", "files_security", "subject", typeof(TenantsModuleSpecifics)),
             new RelationInfo("core_group", "id", "files_security", "subject", typeof(TenantsModuleSpecifics)),
@@ -169,7 +170,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
     }
 
     protected override bool TryPrepareRow(bool dump, DbConnection connection, ColumnMapper columnMapper, TableInfo table, DataRowInfo row, out Dictionary<string, object> preparedRow)
-    {
+    { 
         if (row.TableName == "files_thirdparty_id_mapping")
         {
             //todo: think...
@@ -286,7 +287,7 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
 
     private static string GetStart(string value)
     {
-        var allStarts = new[] { _bunchRightNodeStartProject, _bunchRightNodeStartMy, _bunchRightNodeStartTrash, _bunchRightNodeStartCrmOpportunity };
+        var allStarts = new[] { _bunchRightNodeStartProject, _bunchRightNodeStartMy, _bunchRightNodeStartPrivacy, _bunchRightNodeStartTrash, _bunchRightNodeStartCrmOpportunity };
 
         return allStarts.FirstOrDefault(value.StartsWith);
     }

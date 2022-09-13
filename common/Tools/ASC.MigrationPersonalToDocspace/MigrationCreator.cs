@@ -33,6 +33,7 @@ public class MigrationCreator
     private readonly IDbContextFactory<FilesDbContext> _filesDbContext;
     private readonly IHostEnvironment _hostEnvironment;
     private readonly IConfiguration _configuration;
+    private readonly TenantDomainValidator _tenantDomainValidator;
     private readonly TempStream _tempStream;
     private readonly DbFactory _dbFactory;
     private readonly StorageFactory _storageFactory;
@@ -63,6 +64,7 @@ public class MigrationCreator
         _storageFactoryConfig = serviceProvider.GetService<StorageFactoryConfig>();
         _hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
         _configuration = serviceProvider.GetService<IConfiguration>();
+        _tenantDomainValidator = serviceProvider.GetService<TenantDomainValidator>();
         
 
         var moduleProvider = serviceProvider.GetService<ModuleProvider>();
@@ -135,7 +137,7 @@ public class MigrationCreator
                                 {
                                     var t = (TableInfo)state;
                                     var dataAdapter = _dbFactory.CreateDataAdapter();
-                                    dataAdapter.SelectCommand = module.CreateSelectCommand(connection.Fix(), _tenant, t, _limit, offset, id).WithTimeout(600);
+                                    dataAdapter.SelectCommand = module.CreateSelectCommand(connection.Fix(), _tenant, t, _limit, offset).WithTimeout(600);
                                     counts = ((DbDataAdapter)dataAdapter).Fill(data);
                                     offset += _limit;
                                 } while (counts == _limit);
@@ -175,16 +177,22 @@ public class MigrationCreator
     {
         var aliases = GetAliases();
         var newAlias = _userName;
-        if (aliases.Contains(_userName))
+        while (true)
         {
-            while (true)
+            try
             {
-                Console.WriteLine($"\"{newAlias}\" is busy, write another alias");
-                newAlias = Console.ReadLine();
-                if (!aliases.Contains(newAlias))
+                _tenantDomainValidator.ValidateDomainLength(newAlias);
+                _tenantDomainValidator.ValidateDomainCharacters(newAlias);
+                if (aliases.Contains(newAlias))
                 {
-                    break;
+                    throw new Exception($"Alias is busy");
                 }
+                break;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                newAlias = Console.ReadLine();
             }
         }
         data.Rows[0]["alias"] = newAlias;
@@ -198,7 +206,7 @@ public class MigrationCreator
             var dataAdapter = _dbFactory.CreateDataAdapter();
 
             var command = connection.CreateCommand();
-            command.CommandText = "select alias from tenants_tenants";
+            command.CommandText = "select alias from tenants_tenants left outer join tenants_forbiden on alias = address";
             using (var reader = command.ExecuteReader())
             {
                 if (reader.HasRows)
