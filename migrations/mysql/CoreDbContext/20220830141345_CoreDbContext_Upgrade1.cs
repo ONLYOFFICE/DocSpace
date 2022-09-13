@@ -63,7 +63,8 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
             migrationBuilder.AddColumn<string>(
                 name: "customer_id",
                 table: "tenants_tariff",
-                type: "varchar(36)",
+                type: "varchar(255)",
+                maxLength: 255,
                 nullable: false,
                 defaultValue: "",
                 collation: "utf8_general_ci")

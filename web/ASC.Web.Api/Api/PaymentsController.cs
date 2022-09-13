@@ -108,8 +108,9 @@ public class PaymentController : ControllerBase
     public Uri GetPaymentAccount(string backUrl)
     {
         var payerId = _tariffService.GetTariff(Tenant.Id).CustomerId;
+        var payer = _userManager.GetUserByEmail(payerId);
 
-        if (_securityContext.CurrentAccount.ID != payerId &&
+        if (_securityContext.CurrentAccount.ID != payer.Id &&
             _securityContext.CurrentAccount.ID != Tenant.OwnerId)
         {
             return null;

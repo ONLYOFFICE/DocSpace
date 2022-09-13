@@ -151,8 +151,8 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
                     b.Property<Guid>("CustomerId")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(36)
-                        .HasColumnType("uuid")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("customer_id")
                         .HasDefaultValueSql("NULL");
 

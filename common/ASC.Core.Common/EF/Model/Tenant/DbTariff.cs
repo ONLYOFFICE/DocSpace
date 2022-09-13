@@ -31,7 +31,7 @@ public class DbTariff
     public int Id { get; set; }
     public int Tenant { get; set; }
     public DateTime Stamp { get; set; }
-    public Guid CustomerId { get; set; }
+    public string CustomerId { get; set; }
     public string Comment { get; set; }
     public DateTime CreateOn { get; set; }
 }
@@ -73,7 +73,7 @@ public static class DbTariffExtension
 
             entity.Property(e => e.CustomerId)
                 .HasColumnName("customer_id")
-                .HasColumnType("varchar(36)")
+                .HasColumnType("varchar(255)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
@@ -104,7 +104,7 @@ public static class DbTariffExtension
 
             entity.Property(e => e.CustomerId)
                 .HasColumnName("customer_id")
-                .HasMaxLength(36)
+                .HasMaxLength(255)
                 .HasDefaultValueSql("NULL");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");

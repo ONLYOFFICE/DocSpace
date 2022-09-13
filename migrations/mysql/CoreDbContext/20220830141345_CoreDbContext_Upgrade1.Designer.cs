@@ -163,7 +163,7 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
 
                     b.Property<string>("CustomerId")
                         .IsRequired()
-                        .HasColumnType("varchar(36)")
+                        .HasColumnType("varchar(255)")
                         .HasColumnName("customer_id")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");

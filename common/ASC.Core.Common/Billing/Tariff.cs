@@ -34,7 +34,7 @@ public class Tariff
     public DateTime DueDate { get; set; }
     public DateTime DelayDueDate { get; set; }
     public DateTime LicenseDate { get; set; }
-    public Guid CustomerId { get; set; }
+    public string CustomerId { get; set; }
     public List<Tuple<int, int>> Quotas { get; set; }
 
     public static Tariff CreateDefault(bool empty = false)
@@ -48,7 +48,7 @@ public class Tariff
             DueDate = DateTime.MaxValue,
             DelayDueDate = DateTime.MaxValue,
             LicenseDate = DateTime.MaxValue,
-            CustomerId = Guid.Empty,
+            CustomerId = "",
             Quotas = quotas
         };
     }

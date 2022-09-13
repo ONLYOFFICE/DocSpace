@@ -174,8 +174,7 @@ public class TariffService : ITariffService
 
                     if (!string.IsNullOrEmpty(email))
                     {
-                        var customer = _userService.GetUser(tenantId, email);
-                        asynctariff.CustomerId = customer != null && !customer.Removed ? customer.Id : Guid.Empty;
+                        asynctariff.CustomerId = email;
                     }
 
                     if (SaveBillingInfo(tenantId, asynctariff))
