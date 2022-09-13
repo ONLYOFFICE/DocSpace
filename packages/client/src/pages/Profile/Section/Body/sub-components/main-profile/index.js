@@ -12,6 +12,8 @@ import { smallTablet } from "@docspace/components/utils/device";
 import { getUserRole } from "../../../../../../helpers/people-helpers";
 
 import LanguagesCombo from "./languagesCombo";
+import TimezoneCombo from "./timezoneCombo";
+
 import {
   AvatarEditorDialog,
   ChangeEmailDialog,
@@ -157,6 +159,7 @@ const MainProfile = (props) => {
         </div>
 
         <LanguagesCombo t={t} />
+        <TimezoneCombo />
       </StyledInfo>
 
       {changeEmailVisible && (
