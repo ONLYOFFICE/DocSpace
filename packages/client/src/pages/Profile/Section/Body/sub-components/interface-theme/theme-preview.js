@@ -33,6 +33,7 @@ const ThemePreview = (props) => {
         selectAccentColor={accentColor}
         themePreview={theme}
         withBorder={false}
+        withTileActions={false}
       />
     </StyledWrapper>
   );
