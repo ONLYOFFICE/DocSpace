@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
 import ComboBox from "@docspace/components/combobox";
@@ -8,22 +7,7 @@ import toastr from "@docspace/components/toast/toastr";
 
 import { isMobileOnly } from "react-device-detect";
 
-const StyledRow = styled.div`
-  display: flex;
-  gap: 24px;
-
-  .label {
-    min-width: 75px;
-    max-width: 75px;
-    white-space: nowrap;
-  }
-
-  .lang-combo {
-    & > div {
-      padding: 0 !important;
-    }
-  }
-`;
+import { StyledRow } from "./styled";
 
 const TimezoneCombo = () => {
   const { t } = useTranslation("Settings");
@@ -38,7 +22,7 @@ const TimezoneCombo = () => {
       </Text>
       <ComboBox
         onClick={() => toastr.warning("Work in progress (timezones)")}
-        className="lang-combo"
+        className="combo"
         directionY="both"
         options={timezones}
         selectedOption={selectedTimezone}

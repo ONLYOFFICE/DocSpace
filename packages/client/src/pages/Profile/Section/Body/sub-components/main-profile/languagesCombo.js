@@ -10,42 +10,11 @@ import HelpButton from "@docspace/components/help-button";
 import toastr from "@docspace/components/toast/toastr";
 
 import { convertLanguage } from "@docspace/common/utils";
-import { smallTablet } from "@docspace/components/utils/device";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 
 import { isMobileOnly } from "react-device-detect";
 
-const StyledRow = styled.div`
-  display: flex;
-  gap: 24px;
-
-  .lang-combo {
-    & > div {
-      padding: 0 !important;
-    }
-  }
-
-  .label {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    min-width: 75px;
-    max-width: 75px;
-    white-space: nowrap;
-  }
-
-  @media ${smallTablet} {
-    width: 100%;
-    flex-direction: column;
-    gap: 4px;
-
-    .lang-combo {
-      & > div {
-        padding-left: 8px !important;
-      }
-    }
-  }
-`;
+import { StyledRow } from "./styled";
 
 const LanguagesCombo = (props) => {
   const {
@@ -116,7 +85,7 @@ const LanguagesCombo = (props) => {
         <HelpButton size={12} tooltipContent={tooltipLanguage} />
       </Text>
       <ComboBox
-        className="lang-combo"
+        className="combo"
         directionY="both"
         options={cultureNames}
         selectedOption={selectedLanguage}
