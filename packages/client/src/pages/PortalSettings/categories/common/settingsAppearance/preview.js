@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Badge from "@docspace/components/badge";
 import Loaders from "@docspace/common/components/Loaders";
-import MainButton from "@docspace/components/main-button";
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import { isTablet } from "react-device-detect";
 import {
@@ -9,13 +8,11 @@ import {
   StyledFloatingButton,
   IconBox,
 } from "./StyledPreview";
-import { withTranslation } from "react-i18next";
 
 import ButtonPlusIcon from "../../../../../../../../public/images/actions.button.plus.react.svg";
 
 const Preview = (props) => {
   const {
-t,
     selectAccentColor,
     themePreview,
     selectThemeId,
