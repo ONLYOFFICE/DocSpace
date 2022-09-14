@@ -8,6 +8,7 @@ export const StyledRow = styled.div`
   .combo {
     & > div {
       padding: 0 !important;
+      justify-content: flex-start !important;
     }
   }
 
