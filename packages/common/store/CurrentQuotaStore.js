@@ -1,8 +1,8 @@
 import { makeAutoObservable } from "mobx";
-import toastr from "client/toastr";
+
 import api from "../api";
 import { PortalFeaturesLimitations } from "../constants";
-import PaymentQuotasStore from "./PaymentQuotasStore";
+
 class QuotasStore {
   currentPortalQuota = {};
   currentPortalQuotaFeatures = [];
@@ -151,6 +151,16 @@ class QuotasStore {
     });
 
     return result;
+  }
+
+  get maxUsersCountInRoom() {
+    const result = this.currentPortalQuotaFeatures.find(
+      (obj) => obj.id === "usersInRoom"
+    );
+
+    if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
+
+    return result.value;
   }
   setPortalQuota = async () => {
     const res = await api.portal.getPortalQuota();
