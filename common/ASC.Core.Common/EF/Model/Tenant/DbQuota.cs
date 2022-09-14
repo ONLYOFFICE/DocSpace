@@ -79,7 +79,7 @@ public static class DbQuotaExtension
                     Tenant = -3,
                     Name = "startup",
                     Description = null,
-                    Features = "free,audit,ldap,sso,restore,total_size:2147483648,file_size:100,manager:5,rooms:3",
+                    Features = "free,audit,ldap,sso,restore,total_size:2147483648,file_size:100,manager:5,rooms:3,usersInRoom:3",
                     Price = decimal.Parse("0,00"),
                     ProductId = null,
                     Visible = false
