@@ -3,6 +3,8 @@ import styled from "styled-components";
 import Text from "@docspace/components/text";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import { PortalFeaturesLimitations } from "@docspace/common/constants";
+import { getConvertedSize } from "../../utils/getConvertedSize";
 
 const StyledCurrentTariffContainer = styled.div`
   display: flex;
@@ -28,67 +30,51 @@ const StyledCurrentTariffContainer = styled.div`
   }
 `;
 
-const CurrentTariffContainer = ({ quota, portalPaymentQuotas, style }) => {
+const CurrentTariffContainer = ({ style, quotaCharacteristics }) => {
   const { t } = useTranslation("Payments");
-
-  const { usedSize } = quota;
-  const { maxTotalSize, countRoom } = portalPaymentQuotas;
-
-  const addedRooms = 1;
-  const maxManagers = 50;
-  const addedManagers = 5;
-  const convertedBytes = (bytes) => {
-    const sizeNames = [
-      t("Bytes"),
-      t("Kilobyte"),
-      t("Megabyte"),
-      t("Gigabyte"),
-      t("Terabyte"),
-    ];
-    if (bytes == 0) return `${"0" + " " + t("Bytes")}`;
-
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-
-    return (
-      parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + " " + sizeNames[i]
-    );
-  };
-
-  const storageSizeConverted = convertedBytes(maxTotalSize);
-  const usedSizeConverted = convertedBytes(usedSize);
 
   return (
     <StyledCurrentTariffContainer style={style}>
-      <div>
-        <Text isBold noSelect>
-          {t("Room")}:
-          <Text className="current-tariff_count" as="span" isBold>
-            {countRoom > 10000 ? addedRooms : addedRooms + "/" + countRoom}
-          </Text>
-        </Text>
-      </div>
-      <div>
-        <Text isBold noSelect>
-          {t("AddedManagers")}:
-          <Text className="current-tariff_count" as="span" isBold>
-            {addedManagers}/{maxManagers}
-          </Text>
-        </Text>
-      </div>
-      <div>
-        <Text isBold noSelect>
-          {t("StorageSpace")}:
-          <Text className="current-tariff_count" as="span" isBold>
-            {usedSizeConverted}/{storageSizeConverted}
-          </Text>
-        </Text>
-      </div>
+      {quotaCharacteristics.map((item, index) => {
+        const maxValue = item.value;
+        const usedValue = item.used.value;
+
+        if (maxValue === PortalFeaturesLimitations.Unavailable) return;
+
+        const isExistsMaxValue =
+          maxValue !== PortalFeaturesLimitations.Limitless;
+
+        const resultingMaxValue =
+          item.type === "size" && isExistsMaxValue
+            ? getConvertedSize(t, maxValue)
+            : isExistsMaxValue
+            ? maxValue
+            : null;
+
+        const resultingUsedValue =
+          item.type === "size" ? getConvertedSize(t, usedValue) : usedValue;
+
+        return (
+          <div key={index}>
+            <Text isBold noSelect>
+              {item.used.title}
+              <Text className="current-tariff_count" as="span" isBold>
+                {resultingUsedValue}
+                {resultingMaxValue ? `/${resultingMaxValue}` : ""}
+              </Text>
+            </Text>
+          </div>
+        );
+      })}
     </StyledCurrentTariffContainer>
   );
 };
 
 export default inject(({ auth }) => {
-  const { quota, portalPaymentQuotas } = auth;
+  const { currentQuotaStore } = auth;
+  const { quotaCharacteristics } = currentQuotaStore;
 
-  return { quota, portalPaymentQuotas };
+  return {
+    quotaCharacteristics,
+  };
 })(observer(CurrentTariffContainer));

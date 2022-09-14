@@ -141,6 +141,17 @@ class QuotasStore {
     return this.currentPortalQuota.title;
   }
 
+  get quotaCharacteristics() {
+    const result = [];
+
+    this.currentPortalQuotaFeatures.forEach((elem) => {
+      elem.id === "room" && result.splice(0, 0, elem);
+      elem.id === "manager" && result.splice(1, 0, elem);
+      elem.id === "total_size" && result.splice(2, 0, elem);
+    });
+
+    return result;
+  }
   setPortalQuota = async () => {
     const res = await api.portal.getPortalQuota();
     if (!res) return;
