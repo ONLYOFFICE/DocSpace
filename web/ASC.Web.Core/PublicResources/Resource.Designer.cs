@@ -2185,15 +2185,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} per manager/month.
-        /// </summary>
-        public static string TariffsFeature_manager_price_per {
-            get {
-                return ResourceManager.GetString("TariffsFeature_manager_price_per", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Automatic backup &amp; recovery.
         /// </summary>
         public static string TariffsFeature_restore {
@@ -2239,11 +2230,20 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Managers added:.
         /// </summary>
-        public static string TariffsFeature_total_size_price_per {
+        public static string TariffsFeature_used_manager {
             get {
-                return ResourceManager.GetString("TariffsFeature_total_size_price_per", resourceCulture);
+                return ResourceManager.GetString("TariffsFeature_used_manager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room:.
+        /// </summary>
+        public static string TariffsFeature_used_room {
+            get {
+                return ResourceManager.GetString("TariffsFeature_used_room", resourceCulture);
             }
         }
         
@@ -2257,11 +2257,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Managers added:.
+        ///   Looks up a localized string similar to Users in room:.
         /// </summary>
-        public static string TariffsFeature_used_users {
+        public static string TariffsFeature_used_usersInRoom {
             get {
-                return ResourceManager.GetString("TariffsFeature_used_users", resourceCulture);
+                return ResourceManager.GetString("TariffsFeature_used_usersInRoom", resourceCulture);
             }
         }
         
@@ -2271,6 +2271,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string TariffsFeature_users {
             get {
                 return ResourceManager.GetString("TariffsFeature_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users in room.
+        /// </summary>
+        public static string TariffsFeature_usersInRoom {
+            get {
+                return ResourceManager.GetString("TariffsFeature_usersInRoom", resourceCulture);
             }
         }
         

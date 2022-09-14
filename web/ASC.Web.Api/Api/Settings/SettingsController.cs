@@ -726,6 +726,11 @@ public class SettingsController : BaseSettingsController
         var currentQuota = _tenantExtra.GetTenantQuota();
         var currentTariff = _tenantExtra.GetCurrentTariff();
 
+        if (!int.TryParse(_configuration["core:payment:max-quantity"], out var maxQuotaQuantity))
+        {
+            maxQuotaQuantity = 999;
+        }
+
         return
             new
             {
@@ -737,7 +742,8 @@ public class SettingsController : BaseSettingsController
                 {
                     currentQuota.Trial,
                     currentTariff.DueDate.Date
-                }
+                },
+                max = maxQuotaQuantity
             };
     }
 

@@ -67,12 +67,12 @@ namespace ASC.Migrations.PostgreSql.Migrations.CoreDb
                 table: "tenants_quota",
                 newName: "product_id");
 
-            migrationBuilder.AddColumn<Guid>(
+            migrationBuilder.AddColumn<string>(
                 name: "customer_id",
                 schema: "onlyoffice",
                 table: "tenants_tariff",
-                type: "uuid",
-                maxLength: 36,
+                type: "character varying(255)",
+                maxLength: 255,
                 nullable: false,
                 defaultValueSql: "NULL");
 
