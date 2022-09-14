@@ -132,7 +132,7 @@ public sealed class UserManagerWrapper
             userInfo.WorkFromDate = _tenantUtil.DateTimeNow();
         }
 
-        if (!_coreBaseSettings.Personal && !fromInviteLink)
+        if (!_coreBaseSettings.Personal && (!fromInviteLink || updateExising))
         {
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }

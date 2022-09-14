@@ -207,7 +207,7 @@ public class UserController : PeopleControllerBase
 
         if (options != null && !options.IsCorrect)
         {
-            throw new InvalidDataException();
+            throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
 
         var user = new UserInfo();
@@ -220,7 +220,7 @@ public class UserController : PeopleControllerBase
 
             if (user == Constants.LostUser || user.ActivationStatus != EmployeeActivationStatus.Pending)
             {
-                throw new InvalidOperationException();
+                throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
             }
         }
 
