@@ -143,8 +143,13 @@ class SettingsStore {
   pluginOptions = [];
 
   additionalResourcesData = null;
-
   companyInfoSettingsData = null;
+
+  whiteLabel = {
+    logoSizes: [],
+    logoText: null,
+    logoUrls: [],
+  };
 
   constructor() {
     makeAutoObservable(this);
@@ -391,6 +396,18 @@ class SettingsStore {
     );
   };
 
+  setLogoText = (text) => {
+    this.whiteLabel.logoText = text;
+  };
+
+  setLogoSizes = (sizes) => {
+    this.whiteLabel.logoSizes = sizes;
+  };
+
+  setLogoUrls = (urls) => {
+    this.whiteLabel.logoUrls = urls;
+  };
+
   getCompanyInfoSettings = async () => {
     const res = await api.settings.getCompanyInfoSettings();
 
@@ -410,6 +427,21 @@ class SettingsStore {
         JSON.stringify(defaultCompanyInfoSettings)
       );
     }
+  };
+
+  getWhiteLabelLogoText = async () => {
+    const res = await api.settings.getLogoText();
+    this.setLogoText(res);
+  };
+
+  getWhiteLabelLogoSizes = async () => {
+    const res = await api.settings.getLogoSizes();
+    this.setLogoSizes(res);
+  };
+
+  getWhiteLabelLogoUrls = async () => {
+    const res = await api.settings.getLogoUrls();
+    this.setLogoUrls(Object.values(res));
   };
 
   restoreCompanyInfoSettings = async () => {
