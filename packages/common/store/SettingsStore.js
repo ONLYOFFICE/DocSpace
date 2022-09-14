@@ -325,7 +325,7 @@ class SettingsStore {
     videoGuidesEnabled,
     helpCenterEnabled
   ) => {
-    const res = await api.settings.setAdditionalResources(
+    return await api.settings.setAdditionalResources(
       feedbackAndSupportEnabled,
       videoGuidesEnabled,
       helpCenterEnabled
@@ -352,7 +352,7 @@ class SettingsStore {
   };
 
   restoreAdditionalResources = async () => {
-    const res = await api.settings.restoreAdditionalResources();
+    return await api.settings.restoreAdditionalResources();
   };
 
   getPortalCultures = async () => {
@@ -383,7 +383,7 @@ class SettingsStore {
   };
 
   setCompanyInfoSettings = async (address, companyName, email, phone, site) => {
-    const res = await api.settings.setCompanyInfoSettings(
+    return api.settings.setCompanyInfoSettings(
       address,
       companyName,
       email,
@@ -423,7 +423,7 @@ class SettingsStore {
   };
 
   restoreCompanyInfoSettings = async () => {
-    const res = await api.settings.restoreCompanyInfoSettings();
+    return await api.settings.restoreCompanyInfoSettings();
   };
 
   getEncryptionKeys = async () => {
@@ -701,7 +701,7 @@ class SettingsStore {
   };
 
   sendAppearanceTheme = async (data) => {
-    const res = await api.settings.sendAppearanceTheme(data);
+    return api.settings.sendAppearanceTheme(data);
   };
 }
 
