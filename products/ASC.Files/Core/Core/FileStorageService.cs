@@ -2573,7 +2573,6 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 Share = share,
                 SubjectId = linkId,
-                SubjectGroup = true,
                 SubjectType = SubjectType.InvintationLink,
                 FileShareOptions = new FileShareOptions
                 {
