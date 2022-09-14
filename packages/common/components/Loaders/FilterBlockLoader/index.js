@@ -24,7 +24,7 @@ const FilterBlockLoader = ({
             className={"loader-item"}
           />
           <RectangleLoader
-            width={"448"}
+            width={"100%"}
             height={"32"}
             borderRadius={"3"}
             className={"loader-item"}
@@ -49,7 +49,7 @@ const FilterBlockLoader = ({
       {!isPersonalRoom && !isAccounts && (
         <StyledBlock>
           <RectangleLoader
-            width={"50"}
+            width={"51"}
             height={"16"}
             borderRadius={"3"}
             className={"loader-item"}
@@ -62,7 +62,7 @@ const FilterBlockLoader = ({
               className={"loader-item"}
             />
             <RectangleLoader
-              width={"67"}
+              width={"76"}
               height={"28"}
               borderRadius={"16"}
               className={"loader-item"}
@@ -76,7 +76,7 @@ const FilterBlockLoader = ({
               className={"loader-item"}
             />
             <RectangleLoader
-              width={"76"}
+              width={"103"}
               height={"16"}
               borderRadius={"3"}
               className={"loader-item"}
@@ -94,45 +94,62 @@ const FilterBlockLoader = ({
             className={"loader-item"}
           />
           <div className="row-loader">
-            <RectangleLoader
-              width={"79"}
-              height={"28"}
-              borderRadius={"16"}
-              className={"loader-item tag-item"}
-            />
-            <RectangleLoader
-              width={"79"}
-              height={"28"}
-              borderRadius={"16"}
-              className={"loader-item tag-item"}
-            />
-            <RectangleLoader
-              width={"79"}
-              height={"28"}
-              borderRadius={"16"}
-              className={"loader-item tag-item"}
-            />
-            {!isAccounts && (
+            {isAccounts ? (
               <>
                 <RectangleLoader
-                  width={"79"}
+                  width={"67"}
                   height={"28"}
                   borderRadius={"16"}
                   className={"loader-item tag-item"}
                 />
                 <RectangleLoader
-                  width={"79"}
+                  width={"80"}
                   height={"28"}
                   borderRadius={"16"}
                   className={"loader-item tag-item"}
                 />
                 <RectangleLoader
-                  width={"79"}
+                  width={"83"}
                   height={"28"}
                   borderRadius={"16"}
                   className={"loader-item tag-item"}
                 />
               </>
+            ) : isRooms ? (
+              <>
+                <RectangleLoader
+                  width={"77"}
+                  height={"28"}
+                  borderRadius={"16"}
+                  className={"loader-item tag-item"}
+                />
+                <RectangleLoader
+                  width={"98"}
+                  height={"28"}
+                  borderRadius={"16"}
+                  className={"loader-item tag-item"}
+                />
+                <RectangleLoader
+                  width={"112"}
+                  height={"28"}
+                  borderRadius={"16"}
+                  className={"loader-item tag-item"}
+                />
+                <RectangleLoader
+                  width={"73"}
+                  height={"28"}
+                  borderRadius={"16"}
+                  className={"loader-item tag-item"}
+                />
+                <RectangleLoader
+                  width={"89"}
+                  height={"28"}
+                  borderRadius={"16"}
+                  className={"loader-item tag-item"}
+                />
+              </>
+            ) : (
+              <></>
             )}
           </div>
         </StyledBlock>
@@ -146,40 +163,118 @@ const FilterBlockLoader = ({
           className={"loader-item"}
         />
         <div className="row-loader">
-          <RectangleLoader
-            width={"79"}
-            height={"28"}
-            borderRadius={"16"}
-            className={"loader-item tag-item"}
-          />
-          <RectangleLoader
-            width={"79"}
-            height={"28"}
-            borderRadius={"16"}
-            className={"loader-item tag-item"}
-          />
-          <RectangleLoader
-            width={"79"}
-            height={"28"}
-            borderRadius={"16"}
-            className={"loader-item tag-item"}
-          />
-          {!isAccounts && (
+          {isAccounts ? (
             <>
               <RectangleLoader
-                width={"79"}
+                width={"114"}
                 height={"28"}
                 borderRadius={"16"}
                 className={"loader-item tag-item"}
               />
               <RectangleLoader
-                width={"79"}
+                width={"84"}
                 height={"28"}
                 borderRadius={"16"}
                 className={"loader-item tag-item"}
               />
               <RectangleLoader
-                width={"79"}
+                width={"59"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+            </>
+          ) : isRooms ? (
+            <>
+              <RectangleLoader
+                width={"67"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"73"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"67"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"74"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"65"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"72"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+            </>
+          ) : (
+            <>
+              <RectangleLoader
+                width={"73"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"99"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"114"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"112"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"130"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"66"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"81"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"74"}
+                height={"28"}
+                borderRadius={"16"}
+                className={"loader-item tag-item"}
+              />
+              <RectangleLoader
+                width={"68"}
                 height={"28"}
                 borderRadius={"16"}
                 className={"loader-item tag-item"}
