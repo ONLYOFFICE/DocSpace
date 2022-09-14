@@ -18,4 +18,9 @@ export const StyledWrapper = styled.div`
     padding: 12px 20px;
     border-bottom: ${(props) => props.theme.profile.themePreview.border};
   }
+
+  .floating-btn {
+    bottom: 100px !important;
+    right: 30px !important;
+  }
 `;

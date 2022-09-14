@@ -29,6 +29,7 @@ const ThemePreview = (props) => {
         />
       </div>
       <Preview
+        floatingButtonClass="floating-btn"
         selectThemeId={themeId}
         selectAccentColor={accentColor}
         themePreview={theme}

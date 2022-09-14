@@ -18,6 +18,7 @@ const Preview = (props) => {
     selectThemeId,
     withBorder,
     withTileActions,
+    floatingButtonClass,
   } = props;
 
   const [colorPreview, setColorPreview] = useState(selectAccentColor);
@@ -385,6 +386,7 @@ const Preview = (props) => {
 
         {isViewTablet && (
           <StyledFloatingButton
+            className={floatingButtonClass}
             colorPreview={colorPreview}
             themePreview={themePreview}
             selectThemeId={selectThemeId}

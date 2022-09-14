@@ -3,7 +3,6 @@ import { Base } from "@docspace/components/themes";
 
 const StyledComponent = styled.div`
   display: inline-flex;
-  max-width: 575px;
   width: 100%;
 
   .menu {
