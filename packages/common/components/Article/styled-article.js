@@ -318,7 +318,7 @@ const StyledUserName = styled.div`
 `;
 
 const StyledProfileWrapper = styled.div`
-  z-index: 301;
+  z-index: 209;
   position: fixed;
   bottom: 0;
   left: 0;
