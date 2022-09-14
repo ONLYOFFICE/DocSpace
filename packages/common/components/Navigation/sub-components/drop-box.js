@@ -29,7 +29,7 @@ const StyledBox = styled.div`
   padding: ${isMobile ? "0 16px " : "0 20px"};
   padding-top: 18px;
 
-  ${(props) => `width: ${props.dropBoxWidth}px;`};
+  width: unset;
 
   height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
   max-height: calc(100vh - 48px);
@@ -45,6 +45,7 @@ const StyledBox = styled.div`
   border-radius: 0px 0px 6px 6px;
 
   @media ${tablet} {
+    width: ${({ dropBoxWidth }) => dropBoxWidth + "px"};
     left: -16px;
     padding: 0 16px;
     padding-top: 14px;
@@ -52,6 +53,7 @@ const StyledBox = styled.div`
 
   ${isMobile &&
   css`
+    width: ${({ dropBoxWidth }) => dropBoxWidth + "px"};
     padding-top: 14px;
   `}
 

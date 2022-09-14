@@ -125,7 +125,7 @@ const Navigation = ({
                 visible={isOpen}
                 withBackground={false}
                 withoutBlur={true}
-                zIndex={400}
+                zIndex={203}
               />
 
               <DropBox
