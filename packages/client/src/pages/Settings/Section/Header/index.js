@@ -51,6 +51,7 @@ const StyledContainer = styled.div`
       line-height: 24px;
 
       @media ${tablet} {
+        font-size: 21px;
         line-height: 28px;
       }
 
