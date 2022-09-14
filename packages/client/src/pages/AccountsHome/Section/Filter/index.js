@@ -338,6 +338,7 @@ const SectionFilterContent = ({
       viewAs={viewAs}
       viewSelectorVisible={false}
       removeSelectedItem={removeSelectedItem}
+      isAccounts={true}
     />
   ) : (
     <Loaders.Filter />

@@ -33,6 +33,7 @@ const FilterBlock = ({
   selectorLabel,
   isPersonalRoom,
   isRooms,
+  isAccounts,
 }) => {
   const [showSelector, setShowSelector] = React.useState({
     show: false,
@@ -387,6 +388,7 @@ const FilterBlock = ({
               <Loaders.FilterBlock
                 isPersonalRoom={isPersonalRoom}
                 isRooms={isRooms}
+                isAccounts={isAccounts}
               />
             ) : (
               <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">

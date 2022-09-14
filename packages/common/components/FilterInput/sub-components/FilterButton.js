@@ -20,6 +20,7 @@ const FilterButton = ({
 
   isPersonalRoom,
   isRooms,
+  isAccounts,
 }) => {
   const [showFilterBlock, setShowFilterBlock] = React.useState(false);
 
@@ -47,6 +48,7 @@ const FilterButton = ({
           selectorLabel={selectorLabel}
           isPersonalRoom={isPersonalRoom}
           isRooms={isRooms}
+          isAccounts={isAccounts}
         />
       )}
     </>
