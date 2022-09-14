@@ -34,8 +34,9 @@ const StyledBox = styled.div`
   height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
   max-height: calc(100vh - 48px);
 
-  z-index: 401;
-  display: flex;
+  z-index: 204;
+  display: table;
+  margin: auto;
   flex-direction: column;
 
   background: ${(props) => props.theme.navigation.background};
@@ -45,7 +46,7 @@ const StyledBox = styled.div`
 
   @media ${tablet} {
     left: -16px;
-    padding: 0 16px 0 16px;
+    padding: 0 16px;
     padding-top: 14px;
   }
 
