@@ -56,7 +56,10 @@ class AuthStore {
         requests.push(
           this.settingsStore.getPortalPasswordSettings(),
           this.settingsStore.getAdditionalResources(),
-          this.settingsStore.getCompanyInfoSettings()
+          this.settingsStore.getCompanyInfoSettings(),
+          this.settingsStore.getWhiteLabelLogoUrls(),
+          this.settingsStore.getWhiteLabelLogoText(),
+          this.settingsStore.getWhiteLabelLogoSizes()
         );
     }
 
