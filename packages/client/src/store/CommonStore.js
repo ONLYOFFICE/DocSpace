@@ -3,6 +3,9 @@ import authStore from "@docspace/common/store/AuthStore";
 import api from "@docspace/common/api";
 
 class CommonStore {
+  whiteLabelLogoSizes = [];
+  whiteLabelLogoText = null;
+
   isInit = false;
   isLoaded = false;
   isLoadedArticleBody = false;
@@ -31,10 +34,30 @@ class CommonStore {
     const requests = [];
     requests.push(
       authStore.settingsStore.getPortalTimezones(),
-      authStore.settingsStore.getPortalCultures()
+      authStore.settingsStore.getPortalCultures(),
+      this.getWhiteLabelLogoText(),
+      this.getWhiteLabelLogoSizes()
     );
 
     return Promise.all(requests).finally(() => this.setIsLoaded(true));
+  };
+
+  setLogoText = (text) => {
+    this.whiteLabelLogoText = text;
+  };
+
+  setLogoSizes = (sizes) => {
+    this.whiteLabelLogoSizes = sizes;
+  };
+
+  getWhiteLabelLogoText = async () => {
+    const res = await api.settings.getLogoText();
+    this.setLogoText(res);
+  };
+
+  getWhiteLabelLogoSizes = async () => {
+    const res = await api.settings.getLogoSizes();
+    this.setLogoSizes(res);
   };
 
   setIsLoadedArticleBody = (isLoadedArticleBody) => {
