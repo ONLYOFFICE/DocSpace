@@ -37,6 +37,7 @@ REM echo ######## Edit nginx conf files ########
 %sed% -i "s!/etc/nginx/includes!includes!g" build/install/win/Files/nginx/conf/onlyoffice.conf
 %sed% -i "s!/var/www!..!g" build/install/win/Files/nginx/conf/onlyoffice-*.conf
 %sed% -i "s!/var/www!..!g" build/install/win/Files/nginx/conf/includes/onlyoffice-*.conf
+del /f /q build\install\win\Files\nginx\conf\onlyoffice-login.conf
 
 REM echo ######## Edit json files ########
 %sed% -i "s!\(\"machinekey\":\).\".*\"!\1 \"1123askdasjklasbnd\"!g" build/install/win/Files/config/appsettings*.json
