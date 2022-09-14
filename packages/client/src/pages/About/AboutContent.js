@@ -72,6 +72,7 @@ const AboutContent = (props) => {
     theme,
     companyInfoSettingsData,
     previewData,
+    whiteLabel,
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
@@ -96,7 +97,8 @@ const AboutContent = (props) => {
     ? previewData.address
     : companyInfoSettingsData?.address;
 
-  //TODO: Add a logo request from the backend, when add white label methods
+  const logoDocSpace = whiteLabel.logoUrls[1];
+
   return (
     companyInfoSettingsData && (
       <StyledAboutBody>
@@ -108,7 +110,7 @@ const AboutContent = (props) => {
             />
           ) : (
             <ReactSVG
-              src="/static/images/logo.docspace.react.svg"
+              src={logoDocSpace}
               alt="Logo"
               className="logo-docspace-theme no-select"
             />
@@ -233,7 +235,7 @@ const AboutContent = (props) => {
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
 
-  const { theme, companyInfoSettingsData } = settingsStore;
+  const { theme, companyInfoSettingsData, whiteLabel } = settingsStore;
 
-  return { theme, companyInfoSettingsData };
+  return { theme, companyInfoSettingsData, whiteLabel };
 })(observer(AboutContent));
