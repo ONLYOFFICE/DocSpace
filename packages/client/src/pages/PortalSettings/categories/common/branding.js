@@ -68,7 +68,7 @@ const Branding = ({ t, isLoadedCompanyInfoSettingsData }) => {
   };
 
   if (!viewDesktop)
-    return <BreakpointWarning content={t("Settings:TheBrandingSettings")} />;
+    return <BreakpointWarning content="the Branding settings" />;
 
   return (
     <StyledComponent>

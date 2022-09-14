@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { withTranslation } from "react-i18next";
+import { Trans, withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
@@ -74,6 +74,8 @@ const CompanyInfoSettings = (props) => {
   );
 
   const previewData = { companyName, email, phone, site, address };
+
+  const link = "About this program";
 
   useEffect(() => {
     if (!(companyInfoSettingsData && tReady)) return;
@@ -245,15 +247,17 @@ const CompanyInfoSettings = (props) => {
       <StyledComponent isPortalPaid={isPortalPaid}>
         <div className="header">{t("Settings:CompanyInfoSettings")}</div>
         <div className="description">
-          {t("Settings:CompanyInfoSettingsDescription")}&nbsp;
-          {isPortalPaid ? (
-            <Link className="link" onClick={onShowExample} noHover={true}>
-              {t("Common:AboutCompanyTitle")}
-            </Link>
-          ) : (
-            <span className="link">{t("Common:AboutCompanyTitle")}</span>
-          )}
-          &nbsp;{t("Common:Window")}.
+          <Trans t={t} i18nKey="CompanyInfoSettingsDescription" ns="Settings">
+            "This information will be displayed in the
+            {isPortalPaid ? (
+              <Link className="link" onClick={onShowExample} noHover={true}>
+                {{ link }}
+              </Link>
+            ) : (
+              <span className="link"> {{ link }}</span>
+            )}
+            window."
+          </Trans>
         </div>
         <div className="settings-block">
           <FieldContainer
