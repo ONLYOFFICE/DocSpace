@@ -34,7 +34,7 @@ const StyledBox = styled.div`
   height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
   max-height: calc(100vh - 48px);
 
-  z-index: 204;
+  z-index: 401;
   display: table;
   margin: auto;
   flex-direction: column;
