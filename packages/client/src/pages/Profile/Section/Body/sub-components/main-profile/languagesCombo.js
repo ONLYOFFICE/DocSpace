@@ -82,7 +82,12 @@ const LanguagesCombo = (props) => {
     <StyledRow>
       <Text as="div" color="#A3A9AE" className="label">
         {t("Common:Language")}
-        <HelpButton size={12} tooltipContent={tooltipLanguage} />
+        <HelpButton
+          size={12}
+          offsetRight={0}
+          place="right"
+          tooltipContent={tooltipLanguage}
+        />
       </Text>
       <ComboBox
         className="combo"
