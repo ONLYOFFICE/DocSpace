@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 const StyledSettings = styled.div`
-  margin-top: 15px;
+  margin-top: 10px;
   width: 100%;
 
   display: grid;
-  grid-gap: 19px;
+  grid-gap: 32px;
 
   .toggle-btn {
     position: relative;
@@ -13,11 +13,16 @@ const StyledSettings = styled.div`
 
   .heading {
     margin-bottom: -2px;
-    margin-top: 3px;
+    margin-top: 0;
   }
 
   .toggle-button-text {
     margin-top: -1px;
+  }
+
+  .settings-section {
+    display: grid;
+    grid-gap: 18px;
   }
 `;
 

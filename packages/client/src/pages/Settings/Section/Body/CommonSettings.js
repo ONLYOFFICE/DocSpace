@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 
 import ToggleButton from "@docspace/components/toggle-button";
 import Heading from "@docspace/components/heading";
-
+import Box from "@docspace/components/box";
 import StyledSettings from "./StyledSettings";
 
 const CommonSettings = ({
@@ -69,20 +69,26 @@ const CommonSettings = ({
 
   return (
     <StyledSettings>
-      <ToggleButton
-        className="toggle-btn"
-        label={t("OriginalCopy")}
-        onChange={onChangeOriginalCopy}
-        isChecked={storeOriginalFiles}
-      />
-      <ToggleButton
-        className="toggle-btn"
-        label={t("DisplayNotification")}
-        onChange={onChangeDeleteConfirm}
-        isChecked={confirmDelete}
-      />
+      <Box className="settings-section">
+        <ToggleButton
+          className="toggle-btn"
+          label={t("OriginalCopy")}
+          onChange={onChangeOriginalCopy}
+          isChecked={storeOriginalFiles}
+        />
+        <ToggleButton
+          className="toggle-btn"
+          label={t("DisplayNotification")}
+          onChange={onChangeDeleteConfirm}
+          isChecked={confirmDelete}
+        />
+      </Box>
+
       {!isVisitor && (
-        <>
+        <Box className="settings-section">
+          <Heading className="heading" level={2} size="xsmall">
+            {t("AdditionalSections")}
+          </Heading>
           <ToggleButton
             isDisabled={isLoadingRecent}
             className="toggle-btn"
@@ -105,27 +111,30 @@ const CommonSettings = ({
             onChange={(e) => console.log(e)}
             isChecked={false}
           /> */}
-        </>
+        </Box>
       )}
-      {!isVisitor && (
-        <>
-          <Heading className="heading" level={2} size="xsmall">
-            {t("StoringFileVersion")}
-          </Heading>
-          <ToggleButton
-            className="toggle-btn"
-            label={t("UpdateOrCreate")}
-            onChange={onChangeUpdateIfExist}
-            isChecked={updateIfExist}
-          />
-          <ToggleButton
-            className="toggle-btn"
-            label={t("KeepIntermediateVersion")}
-            onChange={onChangeForceSave}
-            isChecked={forceSave}
-          />
-        </>
-      )}
+
+      <Box className="settings-section">
+        {!isVisitor && (
+          <>
+            <Heading className="heading" level={2} size="xsmall">
+              {t("StoringFileVersion")}
+            </Heading>
+            <ToggleButton
+              className="toggle-btn"
+              label={t("UpdateOrCreate")}
+              onChange={onChangeUpdateIfExist}
+              isChecked={updateIfExist}
+            />
+            <ToggleButton
+              className="toggle-btn"
+              label={t("KeepIntermediateVersion")}
+              onChange={onChangeForceSave}
+              isChecked={forceSave}
+            />
+          </>
+        )}
+      </Box>
     </StyledSettings>
   );
 };
