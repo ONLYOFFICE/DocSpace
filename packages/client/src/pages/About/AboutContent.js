@@ -75,7 +75,7 @@ const AboutContent = (props) => {
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
-  const linkAppServer = "https://github.com/ONLYOFFICE/AppServer";
+  const linkAppServer = "https://github.com/ONLYOFFICE/DocSpace";
   const linkDocs = "https://github.com/ONLYOFFICE/DocumentServer";
 
   const companyName = previewData
