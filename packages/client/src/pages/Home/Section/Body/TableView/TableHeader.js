@@ -2,6 +2,7 @@ import React from "react";
 import TableHeader from "@docspace/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import { Events } from "SRC_DIR/helpers/filesConstants";
 
 class FilesTableHeader extends React.Component {
   constructor(props) {
@@ -246,6 +247,10 @@ class FilesTableHeader extends React.Component {
 
     const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
+
+    const event = new Event(Events.CHANGE_COLUMN);
+
+    window.dispatchEvent(event);
   };
 
   onFilter = (sortBy) => {

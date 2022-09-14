@@ -20,6 +20,7 @@ import { getDefaultRoomName } from "@docspace/client/src/helpers/filesUtils";
 
 import withLoader from "../../../../HOCs/withLoader";
 import { toastr } from "@docspace/components";
+import { TableVersions } from "SRC_DIR/helpers/constants";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -108,6 +109,14 @@ const getTags = (filterValues) => {
 
   return tags;
 };
+
+const TABLE_COLUMNS = `filesTableColumns_ver-${TableVersions.Files}`;
+const COLUMNS_SIZE = `filesColumnsSize_ver-${TableVersions.Files}`;
+const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TableVersions.Files}`;
+
+const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TableVersions.Rooms}`;
+const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TableVersions.Rooms}`;
+const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TableVersions.Rooms}`;
 
 const SectionFilterContent = ({
   t,
@@ -785,35 +794,132 @@ const SectionFilterContent = ({
   }, [createThumbnails]);
 
   const getSortData = React.useCallback(() => {
-    const commonOptions = isRooms
-      ? [
-          { key: "AZ", label: t("Common:Name"), default: true },
-          { key: "roomType", label: t("Common:Type"), default: true },
-          { key: "Tags", label: t("Tags"), default: true },
-          { key: "Author", label: t("Common:Owner"), default: true },
-          { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
-        ]
-      : [
-          { key: "AZ", label: t("Common:Name"), default: true },
-          { key: "Type", label: t("Common:Type"), default: true },
-          { key: "Size", label: t("Common:Size"), default: true },
-          {
-            key: "DateAndTimeCreation",
-            label: t("ByCreationDate"),
-            default: true,
-          },
-          { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
-        ];
+    const commonOptions = [];
 
-    if (!personal && !isRooms) {
-      commonOptions.splice(1, 0, {
-        key: "Author",
-        label: t("ByAuthor"),
-        default: true,
-      });
+    const name = { key: "AZ", label: t("Common:Name"), default: true };
+    const modifiedDate = {
+      key: "DateAndTime",
+      label: t("ByLastModifiedDate"),
+      default: true,
+    };
+
+    const type = { key: "Type", label: t("Common:Type"), default: true };
+    const size = { key: "Size", label: t("Common:Size"), default: true };
+    const creationDate = {
+      key: "DateAndTimeCreation",
+      label: t("ByCreationDate"),
+      default: true,
+    };
+    const authorOption = {
+      key: "Author",
+      label: t("ByAuthor"),
+      default: true,
+    };
+
+    const owner = { key: "Author", label: t("Common:Owner"), default: true };
+    const tags = { key: "Tags", label: t("Tags"), default: true };
+    const roomType = {
+      key: "roomType",
+      label: t("Common:Type"),
+      default: true,
+    };
+
+    commonOptions.push(name);
+
+    if (viewAs === "table") {
+      if (isRooms) {
+        const availableSort = localStorage
+          .getItem(`${TABLE_ROOMS_COLUMNS}=${userId}`)
+          .split(",");
+
+        const infoPanelColumnsSize = localStorage
+          ?.getItem(`${COLUMNS_SIZE_INFO_PANEL}=${userId}`)
+          ?.split(" ");
+
+        if (availableSort.includes("Type")) {
+          const idx = availableSort.findIndex((x) => x === "Type");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(roomType);
+        }
+
+        if (availableSort.includes("Tags")) {
+          const idx = availableSort.findIndex((x) => x === "Tags");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(tags);
+        }
+
+        if (availableSort.includes("Owner")) {
+          const idx = availableSort.findIndex((x) => x === "Owner");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(owner);
+        }
+
+        if (availableSort.includes("Activity")) {
+          const idx = availableSort.findIndex((x) => x === "Activity");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(modifiedDate);
+        }
+      } else {
+        const availableSort = localStorage
+          .getItem(`${TABLE_COLUMNS}=${userId}`)
+          .split(",");
+
+        const infoPanelColumnsSize = localStorage
+          ?.getItem(`${COLUMNS_SIZE_INFO_PANEL}=${userId}`)
+          ?.split(" ");
+
+        if (availableSort.includes("Author") && !isPersonalRoom) {
+          const idx = availableSort.findIndex((x) => x === "Author");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(authorOption);
+        }
+        if (availableSort.includes("Create")) {
+          const idx = availableSort.findIndex((x) => x === "Create");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(creationDate);
+        }
+        if (availableSort.includes("Modified")) {
+          const idx = availableSort.findIndex((x) => x === "Modified");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(modifiedDate);
+        }
+        if (availableSort.includes("Size")) {
+          const idx = availableSort.findIndex((x) => x === "Size");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(size);
+        }
+        if (availableSort.includes("Type")) {
+          const idx = availableSort.findIndex((x) => x === "Type");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(type);
+        }
+      }
+    } else {
+      if (isRooms) {
+        commonOptions.push(roomType);
+        commonOptions.push(tags);
+        commonOptions.push(owner);
+        commonOptions.push(modifiedDate);
+      } else {
+        commonOptions.push(authorOption);
+        commonOptions.push(creationDate);
+        commonOptions.push(modifiedDate);
+        commonOptions.push(size);
+        commonOptions.push(type);
+      }
     }
+
     return commonOptions;
-  }, [personal, isRooms, t]);
+  }, [personal, isRooms, t, userId, infoPanelVisible, viewAs, isPersonalRoom]);
 
   const removeSelectedItem = React.useCallback(
     ({ key, group }) => {
