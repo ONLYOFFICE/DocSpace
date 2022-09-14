@@ -201,8 +201,6 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("companywhitelabel")]
     public List<CompanyWhiteLabelSettings> GetLicensorData()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
         var result = new List<CompanyWhiteLabelSettings>();
 
         var instance = CompanyWhiteLabelSettings.Instance(_settingsManager);
@@ -240,8 +238,6 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/company")]
     public CompanyWhiteLabelSettings GetCompanyWhiteLabelSettings()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
         return _settingsManager.Load<CompanyWhiteLabelSettings>();
     }
 
@@ -280,8 +276,6 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/additional")]
     public AdditionalWhiteLabelSettings GetAdditionalWhiteLabelSettings()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
         return _settingsManager.Load<AdditionalWhiteLabelSettings>();
     }
 
@@ -332,8 +326,6 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/mail")]
     public MailWhiteLabelSettings GetMailWhiteLabelSettings()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
         return _settingsManager.Load<MailWhiteLabelSettings>();
     }
 
