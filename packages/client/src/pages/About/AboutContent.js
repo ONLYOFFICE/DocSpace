@@ -96,6 +96,7 @@ const AboutContent = (props) => {
     ? previewData.address
     : companyInfoSettingsData?.address;
 
+  //TODO: Add a logo request from the backend, when add white label methods
   return (
     companyInfoSettingsData && (
       <StyledAboutBody>
@@ -107,7 +108,7 @@ const AboutContent = (props) => {
             />
           ) : (
             <ReactSVG
-              src="/images/docspace.about.svg"
+              src="/static/images/logo.docspace.react.svg"
               alt="Logo"
               className="logo-docspace-theme no-select"
             />
