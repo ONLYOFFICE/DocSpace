@@ -113,12 +113,9 @@ const CompanyInfoSettings = (props) => {
       hasErrorPhone ||
       hasErrorAddress;
 
-    const noСhange = _.isEqual(settings, dataСompanyInfoSettings);
+    const noСhange = isEqual(settings, dataСompanyInfoSettings);
 
-    const hasСhangeDefault = !_.isEqual(
-      settings,
-      defaultDataCompanyInfoSettings
-    );
+    const hasСhangeDefault = !isEqual(settings, defaultDataCompanyInfoSettings);
 
     if (hasСhangeDefault) {
       setHasChangesDefaultSettings(true);

@@ -96,9 +96,9 @@ const AdditionalResources = (props) => {
       helpCenterEnabled: additionalResourcesData.helpCenterEnabled,
     };
 
-    const hasСhange = !_.isEqual(settings, dataAdditionalResources);
+    const hasСhange = !isEqual(settings, dataAdditionalResources);
 
-    const hasСhangeDefault = !_.isEqual(settings, defaultAdditionalResources);
+    const hasСhangeDefault = !isEqual(settings, defaultAdditionalResources);
 
     if (hasСhange) {
       setHasChange(true);
