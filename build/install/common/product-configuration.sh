@@ -232,13 +232,15 @@ install_json() {
 }
 
 restart_services() {
-	echo -n "Restarting services... "
-
 	sed -e "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" -e "s/environment=.*/environment=$ENVIRONMENT/" -i $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
+	echo -n "Updating database... "
 	systemctl start ${PRODUCT}-migration-runner >/dev/null 2>&1 || true
+	sleep 15
+	echo "OK"
 
+	echo -n "Restarting services... "
 	for SVC in login api urlshortener socket studio-notify notify \
 	people-server files files-services studio backup telegram-service \
 	webhooks-service clear-events backup-background migration ssoauth doceditor
