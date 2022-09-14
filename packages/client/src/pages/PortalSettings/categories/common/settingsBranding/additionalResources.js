@@ -89,7 +89,14 @@ const AdditionalResources = (props) => {
       helpCenterEnabled,
     };
 
-    const hasСhange = !_.isEqual(settings, additionalResourcesData);
+    const dataAdditionalResources = {
+      feedbackAndSupportEnabled:
+        additionalResourcesData.feedbackAndSupportEnabled,
+      videoGuidesEnabled: additionalResourcesData.videoGuidesEnabled,
+      helpCenterEnabled: additionalResourcesData.helpCenterEnabled,
+    };
+
+    const hasСhange = !_.isEqual(settings, dataAdditionalResources);
 
     const hasСhangeDefaul = !_.isEqual(settings, defaultAdditionalResources);
 

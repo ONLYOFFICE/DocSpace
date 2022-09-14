@@ -98,6 +98,14 @@ const CompanyInfoSettings = (props) => {
       site,
     };
 
+    const dataСompanyInfoSettings = {
+      address: companyInfoSettingsData.address,
+      companyName: companyInfoSettingsData.companyName,
+      email: companyInfoSettingsData.email,
+      phone: companyInfoSettingsData.phone,
+      site: companyInfoSettingsData.site,
+    };
+
     const hasError =
       hasErrorSite ||
       hasErrorEmail ||
@@ -105,7 +113,7 @@ const CompanyInfoSettings = (props) => {
       hasErrorPhone ||
       hasErrorAddress;
 
-    const noСhange = _.isEqual(settings, companyInfoSettingsData);
+    const noСhange = _.isEqual(settings, dataСompanyInfoSettings);
 
     const hasСhangeDefaul = !_.isEqual(
       settings,
