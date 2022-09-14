@@ -4,7 +4,7 @@ import Text from "@docspace/components/text";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { PortalFeaturesLimitations } from "@docspace/common/constants";
-import { getConvertedSize } from "../../utils/getConvertedSize";
+import { getConvertedSize } from "@docspace/common/utils";
 
 const StyledCurrentTariffContainer = styled.div`
   display: flex;

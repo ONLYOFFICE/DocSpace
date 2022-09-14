@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
-
+import { getConvertedSize } from "@docspace/common/utils";
+import toastr from "client/toastr";
 class PaymentQuotasStore {
   portalPaymentQuotas = {};
   portalPaymentQuotasFeatures = [];
@@ -36,7 +37,23 @@ class PaymentQuotasStore {
   get tariffTitle() {
     return this.portalPaymentQuotas.title;
   }
-  setPortalPaymentQuotas = async () => {
+
+  replaceFeaturesValues = (t) => {
+    this.replaceTotalSizeValue(t);
+  };
+
+  replaceTotalSizeValue = (t) => {
+    const totalSizeObj = this.portalPaymentQuotasFeatures.find(
+      (el) => el.id === "total_size"
+    );
+    const replacedValue = totalSizeObj.title.replace(
+      "{0}",
+      getConvertedSize(t, totalSizeObj.value)
+    );
+
+    totalSizeObj.title = replacedValue;
+  };
+  setPortalPaymentQuotas = async (t) => {
     if (this.isLoaded) return;
 
     try {

@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { useTranslation, Trans } from "react-i18next";
 import PropTypes from "prop-types";
-import Section from "@docspace/common/components/Section";
 import Loaders from "@docspace/common/components/Loaders";
 import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import { inject, observer } from "mobx-react";
@@ -73,6 +72,8 @@ const PaymentsPage = ({
   dueDate,
   delayDueDate,
   portalStatus,
+  replaceFeaturesValues,
+  portalPaymentQuotasFeatures,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -81,6 +82,10 @@ const PaymentsPage = ({
   useEffect(() => {
     setDocumentTitle(t("Settings:Payments"));
   }, [ready]);
+  useEffect(() => {
+    if (ready && portalPaymentQuotasFeatures.length !== 0)
+      replaceFeaturesValues(t);
+  }, [ready, portalPaymentQuotasFeatures]);
 
   const gracePeriodDays = () => {
     const fromDateMoment = moment(dueDate);
@@ -93,7 +98,6 @@ const PaymentsPage = ({
   };
 
   const setPortalDates = () => {
-  
     paymentTerm = moment(
       isGracePeriod || isNotPaidPeriod ? delayDueDate : dueDate
     ).format("LL");
@@ -212,7 +216,7 @@ const PaymentsPage = ({
     return;
   };
 
-  return isInitialLoading ? (
+  return isInitialLoading || !ready ? (
     <Loaders.PaymentsLoader />
   ) : (
     <StyledBody theme={theme}>
@@ -291,7 +295,12 @@ export default inject(({ auth, payments }) => {
     portalStatus,
   } = currentTariffStatusStore;
 
-  const { setPortalPaymentQuotas, planCost } = paymentQuotasStore;
+  const {
+    setPortalPaymentQuotas,
+    planCost,
+    replaceFeaturesValues,
+    portalPaymentQuotasFeatures,
+  } = paymentQuotasStore;
   const { organizationName, theme } = auth.settingsStore;
 
   const {
@@ -324,5 +333,7 @@ export default inject(({ auth, payments }) => {
     dueDate,
     delayDueDate,
     portalStatus,
+    replaceFeaturesValues,
+    portalPaymentQuotasFeatures,
   };
 })(withRouter(observer(PaymentsPage)));
