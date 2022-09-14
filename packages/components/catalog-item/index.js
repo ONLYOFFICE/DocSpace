@@ -86,7 +86,7 @@ const CatalogItem = (props) => {
           isDragActive={isDragActive}
           onClick={onClickAction}
           onMouseUp={onMouseUpAction}
-        ></StyledCatalogItemSibling>
+        />
 
         <StyledCatalogItemImg isActive={isActive}>
           <ReactSVG className="icon" src={icon} />
