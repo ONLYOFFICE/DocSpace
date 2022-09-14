@@ -143,10 +143,6 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("whitelabel/logos")]
     public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        DemandWhiteLabelPermission();
-
         Dictionary<string, string> result;
 
         var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
