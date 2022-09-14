@@ -112,7 +112,7 @@ public class FileSharingAceHelper<T>
 
             if (w.SubjectId == FileConstant.ShareLinkId)
             {
-                if (w.Share == FileShare.ReadWrite && _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+                if (w.Share == FileShare.ReadWrite && _userManager.IsVisitor(_authContext.CurrentAccount.ID))
                 {
                     throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
                 }
@@ -350,7 +350,7 @@ public class FileSharingHelper
             return true;
         }
 
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             return false;
         }
@@ -486,7 +486,7 @@ public class FileSharing
                     continue;
                 }
             }
-            else if (u.IsVisitor(_userManager) && new FileShareRecord.ShareComparer().Compare(FileShare.Read, share) > 0)
+            else if (_userManager.IsVisitor(u) && new FileShareRecord.ShareComparer().Compare(FileShare.Read, share) > 0)
             {
                 share = FileShare.Read;
             }
