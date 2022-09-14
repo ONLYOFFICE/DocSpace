@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledSettings = styled.div`
-  margin-top: 10px;
+  margin-top: ${(props) => (props.showTitle ? 24 : 34)}px;
   width: 100%;
 
   display: grid;

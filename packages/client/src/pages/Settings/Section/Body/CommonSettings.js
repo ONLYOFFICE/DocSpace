@@ -69,7 +69,7 @@ const CommonSettings = ({
   );
 
   return (
-    <StyledSettings>
+    <StyledSettings showTitle={showTitle}>
       <Box className="settings-section">
         {showTitle && (
           <Heading className="heading" level={2} size="xsmall">

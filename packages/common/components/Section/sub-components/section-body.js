@@ -90,6 +90,12 @@ const commonStyles = css`
         padding-left: 20px;
       `}
 
+    ${(props) =>
+      props.viewAs == "settings" &&
+      css`
+        padding-top: 0;
+      `}
+
     .section-wrapper {
       display: flex;
       flex-direction: column;
