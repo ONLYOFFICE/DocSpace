@@ -3,6 +3,5 @@
   "ConvertMessage": "Dacă doriți să convertiți fișierul într-un alt format decât cel de origine, unele date se pot pierde.",
   "ConvertToZip": "Fișiere vor fi comprimate în format .zip",
   "CustomFormat": "Format particularizat",
-  "OriginalFormat": "Formatul original",
-  "Other": "Altă"
+  "OriginalFormat": "Formatul original"
 }

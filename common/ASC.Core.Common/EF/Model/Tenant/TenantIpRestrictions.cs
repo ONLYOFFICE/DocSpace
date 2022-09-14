@@ -31,6 +31,7 @@ public class TenantIpRestrictions
     public int Id { get; set; }
     public int Tenant { get; set; }
     public string Ip { get; set; }
+    public bool ForAdmin { get; set; }
 }
 
 public static class TenantIpRestrictionsExtension
@@ -63,6 +64,11 @@ public static class TenantIpRestrictionsExtension
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
 
+            entity.Property(e => e.ForAdmin)
+                .IsRequired()
+                .HasColumnName("for_admin")
+                .HasColumnType("TINYINT(1)");
+
             entity.Property(e => e.Tenant).HasColumnName("tenant");
         });
     }
@@ -82,6 +88,11 @@ public static class TenantIpRestrictionsExtension
                 .IsRequired()
                 .HasColumnName("ip")
                 .HasMaxLength(50);
+
+            entity.Property(e => e.ForAdmin)
+                .IsRequired()
+                .HasColumnName("for_admin")
+                .HasColumnType("TINYINT(1)");
 
             entity.Property(e => e.Tenant).HasColumnName("tenant");
         });

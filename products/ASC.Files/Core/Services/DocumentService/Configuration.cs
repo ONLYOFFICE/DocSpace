@@ -262,7 +262,7 @@ public class EditorConfiguration<T>
                 return null;
             }
 
-            if (!_authContext.IsAuthenticated || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+            if (!_authContext.IsAuthenticated || _userManager.IsVisitor(_authContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -295,7 +295,7 @@ public class EditorConfiguration<T>
     {
         get
         {
-            if (!_authContext.IsAuthenticated || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+            if (!_authContext.IsAuthenticated || _userManager.IsVisitor(_authContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -347,7 +347,7 @@ public class EditorConfiguration<T>
         set { }
         get
         {
-            if (!_authContext.IsAuthenticated || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+            if (!_authContext.IsAuthenticated || _userManager.IsVisitor(_authContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -487,7 +487,7 @@ public class InfoConfig<T>
                 return _favorite;
             }
 
-            if (!_securityContext.IsAuthenticated || _userManager.GetUsers(_securityContext.CurrentAccount.ID).IsVisitor(_userManager))
+            if (!_securityContext.IsAuthenticated || _userManager.IsVisitor(_securityContext.CurrentAccount.ID))
             {
                 return null;
             }
