@@ -28,7 +28,7 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 
 public class InvintationLinkRequestDto
 {
-    public Guid Id { get; set; }
+    public Guid LinkId { get; set; }
     public string Title { get; set; }
     public FileShare Access { get; set; }
 }

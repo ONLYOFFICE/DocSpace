@@ -350,21 +350,21 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
             await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
         }
 
-        await foreach (var s in GetRoomSecurityInfo(id))
+        await foreach (var s in GetRoomSecurityInfoAsync(id))
         {
             yield return s;
         }
     }
 
     /// <summary>
-    /// Getting security information about a room
+    /// Setting access rights for a virtual room
     /// </summary>
     /// <param name="id">
     /// Room ID
     /// </param>
     /// <returns>Room security info</returns>
     [HttpGet("rooms/{id}/share")]
-    public async IAsyncEnumerable<FileShareDto> GetRoomSecurityInfo(T id)
+    public async IAsyncEnumerable<FileShareDto> GetRoomSecurityInfoAsync(T id)
     {
         var fileShares = await _fileStorageService.GetSharedInfoAsync(Array.Empty<T>(), new[] { id });
 
@@ -374,10 +374,26 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         }
     }
 
+    /// <summary>
+    /// Setting an external invite link
+    /// </summary>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="linkId">
+    /// Link ID
+    /// </param>
+    /// <param name="title">
+    /// External link name
+    /// </param>
+    /// /// <param name="access">
+    /// Access level
+    /// </param>
+    /// <returns>Room security info</returns>
     [HttpPut("rooms/{id}/links")]
-    public async IAsyncEnumerable<FileShareDto> SetInvintationLink(T id, InvintationLinkRequestDto inDto)
+    public async IAsyncEnumerable<FileShareDto> SetInvintationLinkAsync(T id, InvintationLinkRequestDto inDto)
     {
-        var fileShares = await _fileStorageService.SetInvitationLink(id, inDto.Id, inDto.Title, inDto.Access);
+        var fileShares = await _fileStorageService.SetInvitationLink(id, inDto.LinkId, inDto.Title, inDto.Access);
 
         foreach (var fileShareDto in fileShares)
         {
@@ -538,6 +554,18 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         return await _folderDtoHelper.GetAsync(room);
     }
 
+    /// <summary>
+    /// Resend room invitations
+    /// </summary>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="usersIds">
+    /// User IDs
+    /// </param>
+    /// <returns>
+    /// Void
+    /// </returns>
     [HttpPost("rooms/{id}/resend")]
     public async Task ResendEmailInvitationsAsync(T id, UserInvintationRequestDto inDto)
     {
@@ -549,28 +577,6 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
         if (_coreBaseSettings.DisableDocSpace)
         {
             throw new NotSupportedException();
-        }
-    }
-
-    private async IAsyncEnumerable<FileShareDto> SetRoomSecurityByLinkAsync(T id, Guid userId, FileShare access, string key)
-    {
-        var result = _emailValidationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.LinkInvite + ((int)EmployeeType.User + (int)access + id.ToString()), key,
-                _emailValidationKeyProvider.ValidEmailKeyInterval);
-
-        if (result != EmailValidationKeyProvider.ValidationResult.Ok)
-        {
-            throw new InvalidDataException();
-        }
-
-        var share = new FileShareParams
-        {
-            ShareTo = userId,
-            Access = access
-        };
-
-        await foreach (var s in _securityControllerHelper.SetFolderSecurityInfoAsync(id, new[] { share }, false, null))
-        {
-            yield return s;
         }
     }
 }
@@ -828,7 +834,15 @@ public class VirtualRoomsCommonController : ApiControllerBase
         return result;
     }
 
-
+    /// <summary>
+    /// Accept an invitation in a room via an external link
+    /// </summary>
+    /// <param name="key">
+    /// Link key
+    /// </param>
+    /// <returns>
+    /// Void
+    /// </returns>
     [HttpPost("rooms/accept")]
     public async Task SetSecurityByLink(AcceptInvitationDto inDto)
     {
