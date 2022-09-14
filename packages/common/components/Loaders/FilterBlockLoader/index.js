@@ -97,39 +97,39 @@ const FilterBlockLoader = ({
               width={"79"}
               height={"28"}
               borderRadius={"16"}
-              className={"loader-item"}
+              className={"loader-item tag-item"}
             />
             <RectangleLoader
               width={"79"}
               height={"28"}
               borderRadius={"16"}
-              className={"loader-item"}
+              className={"loader-item tag-item"}
             />
             <RectangleLoader
               width={"79"}
               height={"28"}
               borderRadius={"16"}
-              className={"loader-item"}
+              className={"loader-item tag-item"}
             />
             <RectangleLoader
               width={"79"}
               height={"28"}
               borderRadius={"16"}
-              className={"loader-item"}
+              className={"loader-item tag-item"}
             />
             <RectangleLoader
               width={"79"}
               height={"28"}
               borderRadius={"16"}
-              className={"loader-item"}
+              className={"loader-item tag-item"}
+            />
+            <RectangleLoader
+              width={"79"}
+              height={"28"}
+              borderRadius={"16"}
+              className={"loader-item tag-item"}
             />
           </div>
-          <RectangleLoader
-            width={"79"}
-            height={"28"}
-            borderRadius={"16"}
-            className={"loader-item"}
-          />
         </StyledBlock>
       )}
 
@@ -145,39 +145,39 @@ const FilterBlockLoader = ({
             width={"79"}
             height={"28"}
             borderRadius={"16"}
-            className={"loader-item"}
+            className={"loader-item tag-item"}
           />
           <RectangleLoader
             width={"79"}
             height={"28"}
             borderRadius={"16"}
-            className={"loader-item"}
+            className={"loader-item tag-item"}
           />
           <RectangleLoader
             width={"79"}
             height={"28"}
             borderRadius={"16"}
-            className={"loader-item"}
+            className={"loader-item tag-item"}
           />
           <RectangleLoader
             width={"79"}
             height={"28"}
             borderRadius={"16"}
-            className={"loader-item"}
+            className={"loader-item tag-item"}
           />
           <RectangleLoader
             width={"79"}
             height={"28"}
             borderRadius={"16"}
-            className={"loader-item"}
+            className={"loader-item tag-item"}
+          />
+          <RectangleLoader
+            width={"79"}
+            height={"28"}
+            borderRadius={"16"}
+            className={"loader-item tag-item"}
           />
         </div>
-        <RectangleLoader
-          width={"79"}
-          height={"28"}
-          borderRadius={"16"}
-          className={"loader-item"}
-        />
       </StyledBlock>
     </StyledContainer>
   );
