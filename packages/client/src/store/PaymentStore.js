@@ -34,11 +34,6 @@ class PaymentStore {
     makeAutoObservable(this);
   }
 
-  setSalesEmail = async () => {
-    const newSettings = await getPaymentSettings();
-    const { salesEmail } = newSettings;
-    this.salesEmail = salesEmail;
-  };
   getSettingsPayment = async () => {
     const newSettings = await getPaymentSettings();
     const {
@@ -47,12 +42,15 @@ class PaymentStore {
       currentLicense,
       standalone: standaloneMode,
       feedbackAndSupportUrl: helpUrl,
+      max,
     } = newSettings;
 
     this.buyUrl = buyUrl;
     this.salesEmail = salesEmail;
     this.helpUrl = helpUrl;
     this.standaloneMode = standaloneMode;
+    this.maxAvailableManagersCount = max;
+
     if (currentLicense) {
       if (currentLicense.date)
         this.currentLicense.expiresDate = new Date(currentLicense.date);
@@ -78,8 +76,6 @@ class PaymentStore {
 
     return response;
   };
-
-  // ------------ For docspace -----------
 
   setPaymentAccount = async () => {
     try {
@@ -181,9 +177,6 @@ class PaymentStore {
     this.stepByQuotaForTotalSize =
       authStore.paymentQuotasStore.stepAddingQuotaTotalSize;
     this.minAvailableTotalSizeValue = this.stepByQuotaForManager;
-
-   
-    //this.maxAvailableManagersCount = max; TODO: Move to another function
   };
 
   sendPaymentRequest = async (email, userName, message) => {

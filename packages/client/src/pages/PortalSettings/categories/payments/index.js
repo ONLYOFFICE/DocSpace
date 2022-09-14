@@ -62,7 +62,7 @@ const PaymentsPage = ({
   theme,
   setPaymentAccount,
   isNotPaidPeriod,
-  setSalesEmail,
+  getSettingsPayment,
   setRangeBound,
   payerId,
   user,
@@ -111,7 +111,7 @@ const PaymentsPage = ({
 
       const requests = [];
 
-      requests.push(setSalesEmail());
+      requests.push(getSettingsPayment());
 
       if (!currencySymbol && !startValue)
         requests.push(setPortalPaymentQuotas());
@@ -306,7 +306,7 @@ export default inject(({ auth, payments }) => {
   const {
     tariffsInfo,
     setPaymentAccount,
-    setSalesEmail,
+    getSettingsPayment,
     setRangeBound,
   } = payments;
 
@@ -324,7 +324,7 @@ export default inject(({ auth, payments }) => {
     currencySymbol: planCost.currencySymbol,
     startValue: planCost.value,
     isNotPaidPeriod,
-    setSalesEmail,
+    getSettingsPayment,
     setRangeBound,
     payerId: customerId,
     user,
