@@ -1,5 +1,7 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
+import { withRouter } from "react-router";
 import Error403 from "client/Error403";
 import Error520 from "client/Error520";
 //import ConnectClouds from "./ConnectedClouds";
@@ -28,10 +30,8 @@ const SectionBodyContent = ({
   settingsIsLoaded,
   isErrorSettings,
   history,
-  isPersonal,
-  t,
 }) => {
-  const [currentTab, setCurrentTab] = useState(0);
+  const { t } = useTranslation(["FilesSettings", "Common"]);
 
   const commonSettings = {
     id: "common",
@@ -69,36 +69,12 @@ const SectionBodyContent = ({
 
       if (id === setting) return;
 
-      // setSelectedNode([key]);
-      // setExpandSettingsTree([key]);
-
       history.push(
         combineUrl(AppServerConfig.proxyURL, config.homepage, `/settings/${id}`)
       );
     },
     [setting, history]
   );
-
-  // const selectedTab = React.useCallback(() => {
-  //   switch (setting) {
-  //     case "common":
-  //       return isAdmin ? 1 : 0;
-  //     case "admin":
-  //       return 0;
-  //     case "connected-clouds":
-  //       return isPersonal ? 0 : isAdmin ? 2 : 1;
-  //     default:
-  //       return isAdmin ? 1 : 0;
-  //   }
-  // }, [setting, isAdmin, isPersonal]);
-
-  useEffect(() => {
-    const path = location.pathname;
-    const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) {
-      setCurrentTab(currentTab);
-    }
-  }, []);
 
   return !settingsIsLoaded ? null : (!enableThirdParty &&
       setting === "connected-clouds") ||
@@ -110,9 +86,8 @@ const SectionBodyContent = ({
     <StyledContainer>
       <Submenu
         data={data}
-        startSelect={currentTab}
+        startSelect={setting === "common" ? commonSettings : adminSettings}
         onSelect={onSelect}
-        //selectedItem={selectedTab()}
       />
     </StyledContainer>
   );
@@ -126,4 +101,4 @@ export default inject(({ auth, settingsStore }) => {
     enableThirdParty,
     settingsIsLoaded,
   };
-})(observer(SectionBodyContent));
+})(withRouter(observer(SectionBodyContent)));

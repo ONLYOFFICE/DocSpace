@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { useTranslation } from "react-i18next";
 import Headline from "@docspace/common/components/Headline";
 import { Consumer } from "@docspace/components/utils/context";
 import { isMobile, isMobileOnly } from "react-device-detect";
@@ -85,7 +86,8 @@ const StyledContainer = styled.div`
   }
 `;
 
-const SectionHeaderContent = ({ title }) => {
+const SectionHeaderContent = () => {
+  const { t } = useTranslation("Common");
   return (
     <Consumer>
       {(context) => (
@@ -97,7 +99,7 @@ const SectionHeaderContent = ({ title }) => {
               type="content"
               truncate={true}
             >
-              {title}
+              {t("Common:Settings")}
             </Headline>
           </div>
         </StyledContainer>
