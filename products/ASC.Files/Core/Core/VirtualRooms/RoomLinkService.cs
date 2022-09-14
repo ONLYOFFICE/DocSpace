@@ -77,6 +77,7 @@ public class RoomLinkService
                 options.Type = LinkType.InvintationToRoom;
                 options.RoomId = record.EntryId.ToString();
                 options.Share = record.Share;
+                options.Id = record.Subject;
             }
         }
         else if (_docSpaceLinksHelper.Validate(key, email) == EmailValidationKeyProvider.ValidationResult.Ok)
@@ -101,6 +102,7 @@ public class RoomLinkService
 
 public class LinkOptions
 {
+    public Guid Id { get; set; }
     public string RoomId { get; set; }
     public FileShare Share { get; set; }
     public LinkType Type { get; set; }

@@ -113,4 +113,5 @@ public class AceAdvancedSettingsWrapper
     public bool DenyDownload { get; set; }
     public bool DenySharing { get; set; }
     public bool AllowSharingPrivateRoom { get; set; }
+    public bool InvitationLink { get; set; }
 }
