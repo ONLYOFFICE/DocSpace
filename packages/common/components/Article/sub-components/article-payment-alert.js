@@ -26,6 +26,7 @@ const ArticlePaymentAlert = ({
   theme,
   currencySymbol,
   setPortalPaymentQuotas,
+  currentTariffPlanTitle,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -55,7 +56,13 @@ const ArticlePaymentAlert = ({
     >
       <div>
         <Text className="article-payment_border">
-          {isFreeTariff ? t("FreeStartupPlan") : t("LatePayment")}
+          {isFreeTariff ? (
+            <Trans t={t} i18nKey="FreeStartupPlan" ns="Payments">
+              {{ planName: currentTariffPlanTitle }}
+            </Trans>
+          ) : (
+            t("LatePayment")
+          )}
         </Text>
         <Text fontWeight={600}>
           {isFreeTariff ? t("ActivateBusinessPlan") : t("GracePeriodActivated")}
@@ -84,8 +91,9 @@ const ArticlePaymentAlert = ({
 
 export default withRouter(
   inject(({ auth }) => {
-    const { paymentQuotasStore } = auth;
-    const { theme } = auth.settingsStore;
+    const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
+    const { currentTariffPlanTitle } = currentQuotaStore;
+    const { theme } = auth;
     const { setPortalPaymentQuotas, planCost } = paymentQuotasStore;
 
     return {
@@ -93,6 +101,7 @@ export default withRouter(
       pricePerManager: planCost.value,
       theme,
       currencySymbol: planCost.currencySymbol,
+      currentTariffPlanTitle,
     };
   })(observer(ArticlePaymentAlert))
 );

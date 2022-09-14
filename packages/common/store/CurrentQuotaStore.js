@@ -137,7 +137,7 @@ class QuotasStore {
     return result.value;
   }
 
-  get currentTariffPlan() {
+  get currentTariffPlanTitle() {
     return this.currentPortalQuota.title;
   }
 

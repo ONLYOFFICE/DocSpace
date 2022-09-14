@@ -74,6 +74,7 @@ const PaymentsPage = ({
   portalStatus,
   replaceFeaturesValues,
   portalPaymentQuotasFeatures,
+  currentTariffPlanTitle,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
@@ -172,11 +173,19 @@ const PaymentsPage = ({
 
   const currentPlanTitle = () => {
     if (isFreeTariff) {
-      return textComponent(t("StartupTitle"));
+      return textComponent(
+        <Trans t={t} i18nKey="StartupTitle" ns="Payments">
+          {{ planName: currentTariffPlanTitle }}
+        </Trans>
+      );
     }
 
     if (isPaidPeriod || isGracePeriod) {
-      return textComponent(t("BusinessTitle"));
+      return textComponent(
+        <Trans t={t} i18nKey="BusinessTitle" ns="Payments">
+          {{ planName: currentTariffPlanTitle }}
+        </Trans>
+      );
     }
 
     return;
@@ -185,7 +194,7 @@ const PaymentsPage = ({
   const expiredTitleSubscriptionWarning = () => {
     return textComponent(
       <Trans t={t} i18nKey="BusinessExpired" ns="Payments">
-        {{ date: paymentTerm }}
+        {{ date: paymentTerm }} {{ planName: currentTariffPlanTitle }}
       </Trans>,
       "payment-info_expired-period"
     );
@@ -193,21 +202,36 @@ const PaymentsPage = ({
 
   const planSuggestion = () => {
     if (isFreeTariff) {
-      return textComponent(t("StartupSuggestion"), "payment-info_suggestion");
+      return textComponent(
+        <Trans t={t} i18nKey="StartupSuggestion" ns="Payments">
+          {{ planName: currentTariffPlanTitle }}
+        </Trans>,
+        "payment-info_suggestion"
+      );
     }
 
     if (isPaidPeriod) {
-      return textComponent(t("BusinessSuggestion"), "payment-info_suggestion");
+      return textComponent(
+        <Trans t={t} i18nKey="BusinessSuggestion" ns="Payments">
+          {{ planName: currentTariffPlanTitle }}
+        </Trans>,
+        "payment-info_suggestion"
+      );
     }
 
     if (isNotPaidPeriod) {
-      return textComponent(t("RenewSubscription"), "payment-info_suggestion");
+      return textComponent(
+        <Trans t={t} i18nKey="RenewSubscription" ns="Payments">
+          {{ planName: currentTariffPlanTitle }}
+        </Trans>,
+        "payment-info_suggestion"
+      );
     }
 
     if (isGracePeriod) {
       return textComponent(
         <Trans t={t} i18nKey="DelayedPayment" ns="Payments">
-          {{ date: paymentTerm }}
+          {{ date: paymentTerm }} {{ planName: currentTariffPlanTitle }}
         </Trans>,
         "payment-info_grace-period"
       );
@@ -284,7 +308,7 @@ export default inject(({ auth, payments }) => {
     userStore,
   } = auth;
 
-  const { isFreeTariff } = currentQuotaStore;
+  const { isFreeTariff, currentTariffPlanTitle } = currentQuotaStore;
   const {
     isNotPaidPeriod,
     isPaidPeriod,
@@ -335,5 +359,6 @@ export default inject(({ auth, payments }) => {
     portalStatus,
     replaceFeaturesValues,
     portalPaymentQuotasFeatures,
+    currentTariffPlanTitle,
   };
 })(withRouter(observer(PaymentsPage)));
