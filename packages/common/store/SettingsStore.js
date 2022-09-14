@@ -145,11 +145,7 @@ class SettingsStore {
   additionalResourcesData = null;
   companyInfoSettingsData = null;
 
-  whiteLabel = {
-    logoSizes: [],
-    logoText: null,
-    logoUrls: [],
-  };
+  whiteLabelLogoUrls = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -396,16 +392,8 @@ class SettingsStore {
     );
   };
 
-  setLogoText = (text) => {
-    this.whiteLabel.logoText = text;
-  };
-
-  setLogoSizes = (sizes) => {
-    this.whiteLabel.logoSizes = sizes;
-  };
-
   setLogoUrls = (urls) => {
-    this.whiteLabel.logoUrls = urls;
+    this.whiteLabelLogoUrls = urls;
   };
 
   getCompanyInfoSettings = async () => {
@@ -427,16 +415,6 @@ class SettingsStore {
         JSON.stringify(defaultCompanyInfoSettings)
       );
     }
-  };
-
-  getWhiteLabelLogoText = async () => {
-    const res = await api.settings.getLogoText();
-    this.setLogoText(res);
-  };
-
-  getWhiteLabelLogoSizes = async () => {
-    const res = await api.settings.getLogoSizes();
-    this.setLogoSizes(res);
   };
 
   getWhiteLabelLogoUrls = async () => {
