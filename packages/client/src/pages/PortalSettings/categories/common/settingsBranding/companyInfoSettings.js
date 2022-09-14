@@ -115,12 +115,12 @@ const CompanyInfoSettings = (props) => {
 
     const noСhange = _.isEqual(settings, dataСompanyInfoSettings);
 
-    const hasСhangeDefaul = !_.isEqual(
+    const hasСhangeDefault = !_.isEqual(
       settings,
       defaultDataCompanyInfoSettings
     );
 
-    if (hasСhangeDefaul) {
+    if (hasСhangeDefault) {
       setHasChangesDefaultSettings(true);
     } else {
       setHasChangesDefaultSettings(false);

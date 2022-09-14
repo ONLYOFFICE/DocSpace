@@ -98,7 +98,7 @@ const AdditionalResources = (props) => {
 
     const hasСhange = !_.isEqual(settings, dataAdditionalResources);
 
-    const hasСhangeDefaul = !_.isEqual(settings, defaultAdditionalResources);
+    const hasСhangeDefault = !_.isEqual(settings, defaultAdditionalResources);
 
     if (hasСhange) {
       setHasChange(true);
@@ -106,7 +106,7 @@ const AdditionalResources = (props) => {
       setHasChange(false);
     }
 
-    if (hasСhangeDefaul) {
+    if (hasСhangeDefault) {
       setHasChangesDefaultSettings(true);
     } else {
       setHasChangesDefaultSettings(false);
