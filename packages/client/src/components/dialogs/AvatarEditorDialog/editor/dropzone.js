@@ -7,6 +7,8 @@ import resizeImage from "resize-image";
 
 import { Base } from "@docspace/components/themes";
 
+import { hugeMobile } from "@docspace/components/utils/device";
+
 const StyledDropzone = styled.div`
   cursor: pointer;
   box-sizing: border-box;
@@ -47,6 +49,10 @@ const StyledDropzone = styled.div`
         font-weight: 400;
         color: ${(props) =>
           props.theme.createEditRoomDialog.dropzone.linkSecondaryColor};
+      }
+
+      @media ${hugeMobile} {
+        flex-direction: column;
       }
     }
 
