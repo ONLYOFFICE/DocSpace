@@ -31,7 +31,8 @@ ELK_PORT="9200"
 
 RABBITMQ_HOST="localhost"
 RABBITMQ_USER="guest"
-RABBITMQ_PWD="guest"
+RABBITMQ_PASSWORD="guest"
+RABBITMQ_PORT="5672"
 	
 REDIS_HOST="localhost"
 REDIS_PORT="6379"
@@ -156,9 +157,16 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-rbp | --rabbitmqpassword )
+		-rbpw | --rabbitmqpassword )
 			if [ "$2" != "" ]; then
 				RABBITMQ_PASSWORD=$2
+				shift
+			fi
+		;;
+
+		-rbp | --rabbitmqport )
+			if [ "$2" != "" ]; then
+				RABBITMQ_PORT=$2
 				shift
 			fi
 		;;
@@ -229,7 +237,7 @@ restart_services() {
 	sed -e "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" -e "s/environment=.*/environment=$ENVIRONMENT/" -i $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
-	systemctl start ${PRODUCT}-migration-runner || true
+	systemctl start ${PRODUCT}-migration-runner >/dev/null 2>&1 || true
 
 	for SVC in login api urlshortener socket studio-notify notify \
 	people-server files files-services studio backup telegram-service \
@@ -485,7 +493,7 @@ setup_docs() {
 	local DOCUMENT_SERVER_DB_PASSWORD=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbPass)
 	local DS_CONNECTION_STRING="Host=${DOCUMENT_SERVER_DB_HOST};Port=${DOCUMENT_SERVER_DB_PORT};Database=${DOCUMENT_SERVER_DB_NAME};Username=${DOCUMENT_SERVER_DB_USERNAME};Password=${DOCUMENT_SERVER_DB_PASSWORD};"
 
-	sed "s/Host=.*/$DS_CONNECTION_STRING;\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
+	sed "s/Host=.*/$DS_CONNECTION_STRING\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
 	
 	echo "OK"
 }
@@ -576,7 +584,7 @@ setup_redis() {
 setup_rabbitmq() {
 	echo -n "Configuring rabbitmq... "
 
-	$JSON $APP_DIR/rabbitmq.json -e "this.RabbitMQ={'Hostname': \"${RABBITMQ_HOST}\",'UserName': \"${RABBITMQ_USER}\",'Password': \"${RABBITMQ_PASSWORD}\" }" >/dev/null 2>&1
+	$JSON $APP_DIR/rabbitmq.json -e "this.RabbitMQ={'Hostname': \"${RABBITMQ_HOST}\",'UserName': \"${RABBITMQ_USER}\",'Password': \"${RABBITMQ_PASSWORD}\",'Port': \"${RABBITMQ_PORT}\",'VirtualHost': \"/\" }" >/dev/null 2>&1
 	
 	systemctl enable rabbitmq-server >/dev/null 2>&1
 	systemctl restart rabbitmq-server

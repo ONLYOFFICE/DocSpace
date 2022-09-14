@@ -156,27 +156,31 @@ reassign_values (){
 		EXEC_FILE="ASC.Migration.Runner.dll"
 	;;
 	login )
+		SERVICE_PORT="5011"
 		WORK_DIR="${BASE_DIR}/products/ASC.Login/login/"
 		EXEC_FILE="server.js"
 	;;
   esac
   SERVICE_NAME="$1"
   if [[ "${EXEC_FILE}" == *".js" ]]; then
-  	SERVICE_TYPE="simple"
+	SERVICE_TYPE="simple"
+	RESTART="always"
 	EXEC_START="${NODE_RUN} ${WORK_DIR}${EXEC_FILE} --app.port=${SERVICE_PORT} --app.appsettings=${PATH_TO_CONF} --app.environment=${ENVIRONMENT}"
   elif [[ "${SERVICE_NAME}" = "migration-runner" ]]; then
-    SERVICE_TYPE="notify"
+	SERVICE_TYPE="simple"
+	RESTART="no"
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE}"
   else
-  	SERVICE_TYPE="notify"	
+	SERVICE_TYPE="notify"	
+	RESTART="always"
 	EXEC_START="${DOTNET_RUN} ${WORK_DIR}${EXEC_FILE} --urls=${APP_URLS}:${SERVICE_PORT} --pathToConf=${PATH_TO_CONF} \
 	--'\$STORAGE_ROOT'=${STORAGE_ROOT} --log:dir=${LOG_DIR} --log:name=${SERVICE_NAME}${CORE}${ENVIRONMENT}"
   fi
 }
 
 write_to_file () {
-  sed -i -e 's#${SERVICE_NAME}#'$SERVICE_NAME'#g' -e 's#${WORK_DIR}#'$WORK_DIR'#g' -e \
-  "s#\${EXEC_START}#$EXEC_START#g" -e "s#\${SERVICE_TYPE}#$SERVICE_TYPE#g" $BUILD_PATH/${PRODUCT}-${SERVICE_NAME[$i]}.service
+  sed -i -e 's#${SERVICE_NAME}#'$SERVICE_NAME'#g' -e 's#${WORK_DIR}#'$WORK_DIR'#g' -e -e "s#\${RESTART}#$RESTART#g" \
+  "s#\${EXEC_START}#$EXEC_START#g" -e "s#\${SERVICE_TYPE}#$SERVICE_TYPE#g"  $BUILD_PATH/${PRODUCT}-${SERVICE_NAME[$i]}.service
 }
 
 mkdir -p $BUILD_PATH
