@@ -814,20 +814,20 @@ const WhiteLabel = (props) => {
 export default inject(({ setup, auth, common }) => {
   const { setWhiteLabelSettings, restoreWhiteLabelSettings } = setup;
 
+  const { whiteLabelLogoSizes, whiteLabelLogoText } = common;
+
   const {
-    whiteLabel,
+    whiteLabelLogoUrls,
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,
   } = auth.settingsStore;
 
-  const { logoText, logoSizes, logoUrls } = whiteLabel;
-
   return {
     theme: auth.settingsStore.theme,
-    logoText,
-    logoSizes,
-    logoUrls,
+    logoText: whiteLabelLogoText,
+    logoSizes: whiteLabelLogoSizes,
+    logoUrls: whiteLabelLogoUrls,
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,

@@ -72,7 +72,7 @@ const AboutContent = (props) => {
     theme,
     companyInfoSettingsData,
     previewData,
-    whiteLabel,
+    whiteLabelLogoUrls,
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
@@ -97,7 +97,7 @@ const AboutContent = (props) => {
     ? previewData.address
     : companyInfoSettingsData?.address;
 
-  const logoDocSpace = whiteLabel.logoUrls[1];
+  const logoDocSpace = whiteLabelLogoUrls[1];
 
   return (
     companyInfoSettingsData && (
@@ -235,7 +235,7 @@ const AboutContent = (props) => {
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
 
-  const { theme, companyInfoSettingsData, whiteLabel } = settingsStore;
+  const { theme, companyInfoSettingsData, whiteLabelLogoUrls } = settingsStore;
 
-  return { theme, companyInfoSettingsData, whiteLabel };
+  return { theme, companyInfoSettingsData, whiteLabelLogoUrls };
 })(observer(AboutContent));
