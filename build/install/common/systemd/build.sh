@@ -179,8 +179,8 @@ reassign_values (){
 }
 
 write_to_file () {
-  sed -i -e 's#${SERVICE_NAME}#'$SERVICE_NAME'#g' -e 's#${WORK_DIR}#'$WORK_DIR'#g' -e -e "s#\${RESTART}#$RESTART#g" \
-  "s#\${EXEC_START}#$EXEC_START#g" -e "s#\${SERVICE_TYPE}#$SERVICE_TYPE#g"  $BUILD_PATH/${PRODUCT}-${SERVICE_NAME[$i]}.service
+  sed -i -e 's#${SERVICE_NAME}#'$SERVICE_NAME'#g' -e 's#${WORK_DIR}#'$WORK_DIR'#g' -e "s#\${RESTART}#$RESTART#g" \
+  -e "s#\${EXEC_START}#$EXEC_START#g" -e "s#\${SERVICE_TYPE}#$SERVICE_TYPE#g"  $BUILD_PATH/${PRODUCT}-${SERVICE_NAME[$i]}.service
 }
 
 mkdir -p $BUILD_PATH
