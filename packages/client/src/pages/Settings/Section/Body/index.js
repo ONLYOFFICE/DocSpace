@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
-import Error403 from "client/Error403";
 import Error520 from "client/Error520";
 //import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
@@ -23,15 +22,12 @@ const StyledContainer = styled.div`
   `}
 `;
 
-const SectionBodyContent = ({
-  setting,
-  isAdmin,
-  //enableThirdParty,
-  settingsIsLoaded,
-  isErrorSettings,
-  history,
-}) => {
+const SectionBodyContent = ({ isAdmin, isErrorSettings, history }) => {
   const { t } = useTranslation(["FilesSettings", "Common"]);
+
+  const setting = window.location.pathname.endsWith("/settings/common")
+    ? "common"
+    : "admin";
 
   const commonSettings = {
     id: "common",
@@ -51,13 +47,7 @@ const SectionBodyContent = ({
   //   content: <ConnectClouds />,
   // };
 
-  const data = [];
-
-  if (isAdmin) {
-    data.push(adminSettings);
-  }
-
-  data.push(commonSettings);
+  const data = [adminSettings, commonSettings];
 
   // if (enableThirdParty) {
   //   data.push(connectedCloud);
@@ -80,11 +70,15 @@ const SectionBodyContent = ({
     <Error520 />
   ) : (
     <StyledContainer>
-      <Submenu
-        data={data}
-        startSelect={setting === "common" ? commonSettings : adminSettings}
-        onSelect={onSelect}
-      />
+      {!isAdmin ? (
+        <CommonSettings t={t} showTitle={true} />
+      ) : (
+        <Submenu
+          data={data}
+          startSelect={setting === "common" ? commonSettings : adminSettings}
+          onSelect={onSelect}
+        />
+      )}
     </StyledContainer>
   );
 };

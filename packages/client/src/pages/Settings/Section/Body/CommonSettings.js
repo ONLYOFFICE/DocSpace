@@ -27,6 +27,7 @@ const CommonSettings = ({
   setRecentSetting,
 
   t,
+  showTitle,
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
@@ -70,6 +71,11 @@ const CommonSettings = ({
   return (
     <StyledSettings>
       <Box className="settings-section">
+        {showTitle && (
+          <Heading className="heading" level={2} size="xsmall">
+            {t("CommonSettings")}
+          </Heading>
+        )}
         <ToggleButton
           className="toggle-btn"
           label={t("OriginalCopy")}

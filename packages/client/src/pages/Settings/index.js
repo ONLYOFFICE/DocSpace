@@ -9,15 +9,12 @@ import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import { inject, observer } from "mobx-react";
 
 const PureSettings = ({
-  match,
   t,
   tReady,
   isLoading,
   isLoadedSettingsTree,
   setFirstLoad,
 }) => {
-  const { setting } = match.params;
-
   useEffect(() => {
     setFirstLoad(false);
   }, [setFirstLoad]);
@@ -45,11 +42,7 @@ const PureSettings = ({
       </Section.SectionHeader>
 
       <Section.SectionBody>
-        {inLoad ? (
-          <Loaders.SettingsFiles />
-        ) : (
-          <SectionBodyContent setting={setting} />
-        )}
+        {inLoad ? <Loaders.SettingsFiles /> : <SectionBodyContent />}
       </Section.SectionBody>
     </Section>
   );
