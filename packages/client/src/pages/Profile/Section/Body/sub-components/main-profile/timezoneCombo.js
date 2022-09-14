@@ -34,7 +34,7 @@ const TimezoneCombo = () => {
         size="content"
         showDisabledItems={true}
         dropDownMaxHeight={364}
-        manualWidth="320px"
+        manualWidth="208px"
         isDefaultMode={!isMobileOnly}
         withBlur={isMobileOnly}
         fillIcon={false}
