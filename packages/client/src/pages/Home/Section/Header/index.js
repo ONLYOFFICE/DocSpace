@@ -27,25 +27,6 @@ import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const StyledContainer = styled.div`
   width: 100%;
-  height: 69px;
-
-  @media ${tablet} {
-    height: 61px;
-  }
-
-  ${isMobile &&
-  css`
-    height: 61px;
-  `}
-
-  @media ${mobile} {
-    height: 53px;
-  }
-
-  ${isMobileOnly &&
-  css`
-    height: 53px;
-  `}
 
   .table-container_group-menu {
     margin: 0 0 0 -20px;
@@ -119,8 +100,7 @@ class SectionHeaderContent extends React.Component {
   createForm = () => this.onCreate("docxf");
 
   createFormFromFile = () => {
-    const { setSelectFileDialogVisible } = this.props;
-    setSelectFileDialogVisible(true);
+    this.props.setSelectFileDialogVisible(true);
   };
 
   onShowGallery = () => {
@@ -478,7 +458,6 @@ class SectionHeaderContent extends React.Component {
       personal,
       navigationPath,
       getHeaderMenu,
-      viewAs,
       isRecycleBinFolder,
       isEmptyFilesList,
       isHeaderVisible,
@@ -494,17 +473,7 @@ class SectionHeaderContent extends React.Component {
     return (
       <Consumer>
         {(context) => (
-          <StyledContainer
-            width={context.sectionWidth}
-            isRootFolder={isRootFolder}
-            canCreate={canCreate}
-            isRecycleBinFolder={isRecycleBinFolder}
-            isTitle={title}
-            isDesktop={isDesktop}
-            isTabletView={isTabletView}
-            isLoading={isLoading}
-            viewAs={viewAs}
-          >
+          <StyledContainer>
             {isHeaderVisible ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
@@ -569,8 +538,6 @@ export default inject(
   }) => {
     const {
       setSelected,
-      setSelection,
-
       canCreate,
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -581,7 +548,6 @@ export default inject(
       isEmptyFilesList,
       getFolderInfo,
       setBufferSelection,
-      viewAs,
       setIsLoading,
       fetchFiles,
       fetchRooms,
@@ -601,14 +567,12 @@ export default inject(
       setEmptyTrashDialogVisible,
       setSelectFileDialogVisible,
       setIsFolderActions,
-      setCreateRoomDialogVisible,
     } = dialogsStore;
 
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
       isRoomsFolder,
-      isArchiveFolder,
     } = treeFoldersStore;
     const {
       deleteAction,
@@ -623,7 +587,6 @@ export default inject(
       title,
       id,
       roomType,
-      rootFolderType,
       pathParts,
       navigationPath,
     } = selectedFolderStore;
@@ -638,7 +601,6 @@ export default inject(
       isRootFolder: pathParts?.length === 1,
       title,
       isRoom,
-      rootFolderType,
       currentFolderId: id,
       pathParts: pathParts,
       navigationPath: navigationPath,
@@ -657,7 +619,6 @@ export default inject(
       getFolderInfo,
 
       setSelected,
-      setSelection,
 
       setSharingPanelVisible,
       setMoveToPanelVisible,
@@ -671,13 +632,11 @@ export default inject(
       backToParentFolder,
       getCheckboxItemLabel,
       setSelectFileDialogVisible,
-      setCreateRoomDialogVisible,
 
       isRecycleBinFolder,
       setEmptyTrashDialogVisible,
       isEmptyFilesList,
       isPrivacyFolder,
-      viewAs,
 
       setIsLoading,
       fetchFiles,
@@ -687,7 +646,6 @@ export default inject(
       activeFolders,
 
       isRoomsFolder,
-      isArchiveFolder,
 
       setAlreadyFetchingRooms,
 
