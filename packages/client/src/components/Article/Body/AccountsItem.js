@@ -15,6 +15,7 @@ const PureAccountsItem = ({
   setSelectedFolder,
   selectedTreeNode,
   setSelectedNode,
+  toggleArticleOpen,
   history,
   t,
 }) => {
@@ -26,6 +27,7 @@ const PureAccountsItem = ({
     history.push(
       combineUrl(AppServerConfig.proxyURL, config.homepage, "/accounts")
     );
+    toggleArticleOpen();
   }, [setSelectedFolder, setSelectedNode, history]);
 
   const isActive = selectedTreeNode[0] === "accounts";
@@ -50,10 +52,13 @@ const AccountsItem = withTranslation(["FilesSettings", "Common"])(
 export default inject(({ auth, treeFoldersStore, selectedFolderStore }) => {
   const { setSelectedFolder } = selectedFolderStore;
   const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
+  const { toggleArticleOpen, showText } = auth.settingsStore;
+
   return {
-    showText: auth.settingsStore.showText,
+    showText,
     setSelectedFolder,
     selectedTreeNode,
     setSelectedNode,
+    toggleArticleOpen,
   };
 })(observer(AccountsItem));

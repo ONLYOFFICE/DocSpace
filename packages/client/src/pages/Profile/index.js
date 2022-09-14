@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Section from "@docspace/common/components/Section";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";

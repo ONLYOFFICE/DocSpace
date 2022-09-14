@@ -144,7 +144,7 @@ const Table = ({
         hasMoreFiles={hasMoreAccounts}
         itemCount={filterTotal}
         filesLength={peopleList.length}
-        itemHeight={47}
+        itemHeight={49}
         useReactWindow={!withPaging}
       >
         {peopleList.map((item) => (

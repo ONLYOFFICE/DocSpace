@@ -17,20 +17,59 @@ import withLoader from "../../../HOCs/withLoader";
 import { Events } from "@docspace/client/src/helpers/filesConstants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
+import styled from "styled-components";
+import Button from "@docspace/components/button";
+
+const StyledButton = styled(Button)`
+  font-weight: 700;
+  font-size: 16px;
+  padding: 0;
+  opacity: 1;
+
+  background-color: ${({ currentColorScheme }) =>
+    currentColorScheme.accentColor};
+
+  :hover {
+    background-color: ${({ currentColorScheme }) =>
+      currentColorScheme.accentColor};
+    opacity: 0.85;
+  }
+
+  :active {
+    background-color: ${({ currentColorScheme }) =>
+      currentColorScheme.accentColor};
+
+    opacity: 1;
+    filter: brightness(90%);
+    cursor: pointer;
+  }
+
+  .button-content {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+    box-sizing: border-box;
+    padding: 5px 14px 5px 12px;
+    line-height: 22px;
+    border-radius: 3px;
+
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+`;
 
 const ArticleMainButtonContent = (props) => {
   const {
     t,
     isMobileArticle,
-    isDisabled,
     canCreate,
     isPrivacy,
     encryptedFile,
     encrypted,
     startUpload,
     setAction,
-    setCreateRoomDialogVisible,
     setSelectFileDialogVisible,
     isArticleLoading,
     isFavoritesFolder,
@@ -46,6 +85,8 @@ const ArticleMainButtonContent = (props) => {
     selectedTreeNode,
 
     enablePlugins,
+
+    currentColorScheme,
   } = props;
   const isAccountsPage = selectedTreeNode[0] === "accounts";
 
@@ -134,6 +175,8 @@ const ArticleMainButtonContent = (props) => {
   }, []);
 
   React.useEffect(() => {
+    if (isRoomsFolder) return;
+
     const folderUpload = !isMobile
       ? [
           {
@@ -213,18 +256,6 @@ const ArticleMainButtonContent = (props) => {
             key: "user",
           },
         ]
-      : isRoomsFolder
-      ? [
-          {
-            id: "main-button_new-room",
-            className: "main-button_drop-down",
-            icon: "images/folder.locked.react.svg",
-            label: t("Files:NewRoom"),
-            onClick: onCreateRoom,
-            action: "room",
-            key: "room",
-          },
-        ]
       : [
           {
             id: "main-button_new-document",
@@ -290,15 +321,14 @@ const ArticleMainButtonContent = (props) => {
 
     const menuModel = [...actions];
 
-    if (!isRoomsFolder) {
-      menuModel.push({
-        isSeparator: true,
-        key: "separator",
-      });
+    menuModel.push({
+      isSeparator: true,
+      key: "separator",
+    });
 
-      menuModel.push(...uploadActions);
-      setUploadActions(uploadActions);
-    }
+    menuModel.push(...uploadActions);
+    setUploadActions(uploadActions);
+
     if (enablePlugins) {
       const pluginOptions = getMainButtonItems();
 
@@ -318,12 +348,9 @@ const ArticleMainButtonContent = (props) => {
     t,
     isPrivacy,
     currentFolderId,
-    isRoomsFolder,
-
     isAccountsPage,
-
     enablePlugins,
-
+    isRoomsFolder,
     onCreate,
     onCreateRoom,
     onInvite,
@@ -337,6 +364,8 @@ const ArticleMainButtonContent = (props) => {
   const mainButtonText = isAccountsPage
     ? t("Common:Invite")
     : t("Common:Actions");
+
+  const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
 
   return (
     <>
@@ -356,13 +385,25 @@ const ArticleMainButtonContent = (props) => {
                 actionOptions={actions}
                 buttonOptions={uploadActions}
                 isRooms={isRoomsFolder}
+                onMainButtonClick={onCreateRoom}
               />
             )}
         </>
+      ) : isRoomsFolder ? (
+        <StyledButton
+          className="create-room-button"
+          label={t("Files:NewRoom")}
+          onClick={onCreateRoom}
+          currentColorScheme={currentColorScheme}
+          isDisabled={isDisabled}
+          size="small"
+          primary
+          scale
+        />
       ) : (
         <MainButton
           id="files_main-button"
-          isDisabled={isDisabled ? isDisabled : !canCreate && !canInvite}
+          isDisabled={isDisabled}
           isDropdown={true}
           text={mainButtonText}
           model={model}
@@ -416,14 +457,11 @@ export default inject(
       selectedTreeNode,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
-    const {
-      setCreateRoomDialogVisible,
-      setSelectFileDialogVisible,
-    } = dialogsStore;
+    const { setSelectFileDialogVisible } = dialogsStore;
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
-    const { enablePlugins } = auth.settingsStore;
+    const { enablePlugins, currentColorScheme } = auth.settingsStore;
 
     const currentFolderId = selectedFolderStore.id;
 
@@ -446,7 +484,6 @@ export default inject(
 
       startUpload,
 
-      setCreateRoomDialogVisible,
       setSelectFileDialogVisible,
 
       isLoading,
@@ -455,6 +492,7 @@ export default inject(
       currentFolderId,
 
       enablePlugins,
+      currentColorScheme,
     };
   }
 )(

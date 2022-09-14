@@ -55,6 +55,11 @@ const Template = ({ onOk, ...args }) => {
             onClick={closeModal}
           />
         </ModalDialog.Footer>
+        <ModalDialog.Container>
+          <div style={{ width: "100%", height: "100%", background: "red" }}>
+            123
+          </div>
+        </ModalDialog.Container>
       </ModalDialog>
     </>
   );
@@ -68,7 +73,7 @@ export const Default = Template.bind({});
 Default.args = {
   displayType: "aside",
   displayTypeDetailed: {
-    desktop: "modal",
+    desktop: "aside",
     tablet: "aside",
     smallTablet: "modal",
     mobile: "aside",
