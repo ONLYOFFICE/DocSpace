@@ -223,13 +223,34 @@
     <ROW Fragment="WelcomePrereqDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomePrereqDlg.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonFileComponent">
-    <ROW JsonFile="Newfile.json_1" FileName="APPSET~1.JSO|appsettings.test.json" DirProperty="config_Dir" Component="AI_ExePath" RootProperty="Root_1" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json" FileName="ELASTI~1.JSO|elastic.test.json" DirProperty="config_Dir" Component="config" RootProperty="Root" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json_1" FileName="APPSET~1.JSO|appsettings.test.json" DirProperty="config_Dir" Component="config" RootProperty="Root_1" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json_2" FileName="RABBIT~1.JSO|rabbitmq.test.json" DirProperty="config_Dir" Component="config" RootProperty="Root_2" Flags="22" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json_3" FileName="REDIST~1.JSO|redis.test.json" DirProperty="config_Dir" Component="config" RootProperty="Root_3" Flags="22" IndentUnits="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonPropertyComponent">
     <ROW JsonProperty="ConnectionStrings_1" Parent="Root_1" Name="ConnectionStrings" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Host" Parent="elastic" Name="Host" Condition="1" Order="0" Flags="57" Value="[ELASTICSEARCH_HOST]"/>
+    <ROW JsonProperty="Host_1" Parent="_" Name="Host" Condition="1" Order="0" Flags="57" Value="[REDIS_HOST_PROP]"/>
+    <ROW JsonProperty="Hostname" Parent="RabbitMQ" Name="Hostname" Condition="1" Order="0" Flags="57" Value="[RABBITMQ_HOSTNAME_PROP]"/>
+    <ROW JsonProperty="Hosts" Parent="Redis" Name="Hosts" Condition="1" Order="0" Flags="61"/>
+    <ROW JsonProperty="Password" Parent="RabbitMQ" Name="Password" Condition="1" Order="2" Flags="57" Value="[RABBITMQ_PASSWORD_PROP]"/>
+    <ROW JsonProperty="Port" Parent="elastic" Name="Port" Condition="1" Order="2" Flags="57" Value="[ELASTICSEARCH_PORT]"/>
+    <ROW JsonProperty="Port_1" Parent="RabbitMQ" Name="Port" Condition="1" Order="3" Flags="59" Value="[RABBITMQ_PORT_PROP]"/>
+    <ROW JsonProperty="Port_2" Parent="_" Name="Port" Condition="1" Order="1" Flags="57" Value="[REDIS_PORT_PROP]"/>
+    <ROW JsonProperty="RabbitMQ" Parent="Root_2" Name="RabbitMQ" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Redis" Parent="Root_3" Name="Redis" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root" Name="Root" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="Root_1" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_2" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_3" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Scheme" Parent="elastic" Name="Scheme" Condition="1" Order="1" Flags="57" Value="[ELASTICSEARCH_SCHEME]"/>
+    <ROW JsonProperty="UserName" Parent="RabbitMQ" Name="UserName" Condition="1" Order="1" Flags="57" Value="[RABBITMQ_USERNAME_PROP]"/>
+    <ROW JsonProperty="VirtualHost" Parent="RabbitMQ" Name="VirtualHost" Condition="1" Order="4" Flags="57" Value="[RABBITMQ_VIRTUALHOST_PROP]"/>
+    <ROW JsonProperty="_" Parent="Hosts" Name="0" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="connectionString_1" Parent="default_1" Name="connectionString" Condition="1" Order="0" Flags="57" Value="Server=[SERVER_PROP];Port=3306;Database=[DATABASE_PROP];User ID=[USERNAME_PROP];Password=[PASSWORD_PROP];Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none"/>
     <ROW JsonProperty="default_1" Parent="ConnectionStrings_1" Name="default" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="elastic" Parent="Root" Name="elastic" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="enabled" Parent="migration" Name="enabled" Condition="1" Order="0" Flags="57" Value="[DATABASE_MIGRATION]"/>
     <ROW JsonProperty="migration" Parent="Root_1" Name="migration" Condition="1" Order="1" Flags="60"/>
   </COMPONENT>
@@ -793,13 +814,13 @@
     <ROW Registry="VersionMinor" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName] [ProductVersion]" Name="VersionMinor" Value="#0" Component_="AI_CustomARPName" VirtualValue="#"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServConfigComponent">
-    <ROW MsiServiceConfig="ServiceName_Login" Name="[ServiceName_Login]" Event="1" ConfigType="3" Argument="1" Component_="Login.exe"/>
     <ROW MsiServiceConfig="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
     <ROW MsiServiceConfig="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Data.Backup.exe"/>
     <ROW MsiServiceConfig="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" Event="1" ConfigType="3" Argument="1" Component_="ASC.ClearEvents.exe"/>
     <ROW MsiServiceConfig="ServiceName_DocEditor" Name="[ServiceName_DocEditor]" Event="1" ConfigType="3" Argument="1" Component_="DocEditor.exe"/>
     <ROW MsiServiceConfig="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Files.exe"/>
     <ROW MsiServiceConfig="ServiceName_FileService" Name="[ServiceName_FileService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Files.Service.exe"/>
+    <ROW MsiServiceConfig="ServiceName_Login" Name="[ServiceName_Login]" Event="1" ConfigType="3" Argument="1" Component_="Login.exe"/>
     <ROW MsiServiceConfig="ServiceName_Migration" Name="[ServiceName_Migration]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Migration.exe"/>
     <ROW MsiServiceConfig="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Notify.exe"/>
     <ROW MsiServiceConfig="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.People.exe"/>
@@ -814,13 +835,13 @@
     <ROW MsiServiceConfig="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Webhooks.Service.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServConfigFailureActionsComponent">
-    <ROW MsiServiceConfigFailureActions="ServiceName_Login" Name="[ServiceName_Login]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="Login.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Data.Backup.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.ClearEvents.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_DocEditor" Name="[ServiceName_DocEditor]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="DocEditor.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Files.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_FileService" Name="[ServiceName_FileService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Files.Service.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Login" Name="[ServiceName_Login]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="Login.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_Migration" Name="[ServiceName_Migration]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Migration.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Notify.exe"/>
     <ROW MsiServiceConfigFailureActions="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.People.exe"/>
@@ -835,13 +856,13 @@
     <ROW MsiServiceConfigFailureActions="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Webhooks.Service.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
-    <ROW ServiceControl="ServiceName_Login" Name="[ServiceName_Login]" Event="161" Wait="0" Component_="Login.exe"/>
     <ROW ServiceControl="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="161" Wait="0" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
     <ROW ServiceControl="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="161" Wait="0" Component_="ASC.Data.Backup.exe"/>
     <ROW ServiceControl="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" Event="161" Wait="0" Component_="ASC.ClearEvents.exe"/>
     <ROW ServiceControl="ServiceName_DocEditor" Name="[ServiceName_DocEditor]" Event="161" Wait="0" Component_="DocEditor.exe"/>
     <ROW ServiceControl="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="161" Wait="0" Component_="ASC.Files.exe"/>
     <ROW ServiceControl="ServiceName_FileService" Name="[ServiceName_FileService]" Event="161" Wait="0" Component_="ASC.Files.Service.exe"/>
+    <ROW ServiceControl="ServiceName_Login" Name="[ServiceName_Login]" Event="161" Wait="0" Component_="Login.exe"/>
     <ROW ServiceControl="ServiceName_Migration" Name="[ServiceName_Migration]" Event="161" Wait="0" Component_="ASC.Migration.exe"/>
     <ROW ServiceControl="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="161" Wait="0" Component_="ASC.Notify.exe"/>
     <ROW ServiceControl="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="161" Wait="0" Component_="ASC.People.exe"/>
@@ -856,15 +877,14 @@
     <ROW ServiceControl="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" Event="161" Wait="0" Component_="ASC.Webhooks.Service.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServInstComponent">
-    <ROW ServiceInstall="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" DisplayName="[ServiceName_ClearEvents]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5027 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.ClearEvents.exe"/>
     <ROW ServiceInstall="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" DisplayName="[ServiceName_BackgroundTasks]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5032 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
-    <ROW ServiceInstall="ServiceName_Migration" Name="[ServiceName_Migration]" DisplayName="[ServiceName_Migration]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5018 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Migration.exe"/>
-    <ROW ServiceInstall="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" DisplayName="[ServiceName_WebhooksService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5031 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Webhooks.Service.exe"/>
-    <ROW ServiceInstall="ServiceName_Login" Name="[ServiceName_Login]" DisplayName="[ServiceName_Login]" ServiceType="16" StartType="2" ErrorControl="1" Component_="Login.exe"/>
     <ROW ServiceInstall="ServiceName_BackupService" Name="[ServiceName_BackupService]" DisplayName="[ServiceName_BackupService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5012 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Data.Backup.exe"/>
+    <ROW ServiceInstall="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" DisplayName="[ServiceName_ClearEvents]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5027 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.ClearEvents.exe"/>
     <ROW ServiceInstall="ServiceName_DocEditor" Name="[ServiceName_DocEditor]" DisplayName="[ServiceName_DocEditor]" ServiceType="16" StartType="2" ErrorControl="1" Component_="DocEditor.exe"/>
     <ROW ServiceInstall="ServiceName_FileServer" Name="[ServiceName_FileServer]" DisplayName="[ServiceName_FileServer]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5007 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_FileServer] [SUBFOLDER_SERVER]" Component_="ASC.Files.exe"/>
     <ROW ServiceInstall="ServiceName_FileService" Name="[ServiceName_FileService]" DisplayName="[ServiceName_FileService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5009 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_FileService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Files.Service.exe"/>
+    <ROW ServiceInstall="ServiceName_Login" Name="[ServiceName_Login]" DisplayName="[ServiceName_Login]" ServiceType="16" StartType="2" ErrorControl="1" Component_="Login.exe"/>
+    <ROW ServiceInstall="ServiceName_Migration" Name="[ServiceName_Migration]" DisplayName="[ServiceName_Migration]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5018 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Migration.exe"/>
     <ROW ServiceInstall="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" DisplayName="[ServiceName_NotifyService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5005 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_NotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Notify.exe"/>
     <ROW ServiceInstall="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" DisplayName="[ServiceName_PeopleServer]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5004 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_PeopleServer] [SUBFOLDER_SERVER]" Component_="ASC.People.exe"/>
     <ROW ServiceInstall="ServiceName_Proxy" Name="[ServiceName_Proxy]" DisplayName="[ServiceName_Proxy]" ServiceType="16" StartType="2" ErrorControl="1" Component_="Proxy.exe"/>
@@ -875,6 +895,7 @@
     <ROW ServiceInstall="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" DisplayName="[ServiceName_UrlShortenerService]" ServiceType="16" StartType="2" ErrorControl="1" Component_="UrlShortener.exe"/>
     <ROW ServiceInstall="ServiceName_WebApi" Name="[ServiceName_WebApi]" DisplayName="[ServiceName_WebApi]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5000 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_WebApi] [SUBFOLDER_SERVER]" Component_="ASC.Web.Api.exe"/>
     <ROW ServiceInstall="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" DisplayName="[ServiceName_WebStudio]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5003 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_WebStudio] [SUBFOLDER_SERVER]" Component_="ASC.Web.Studio.exe"/>
+    <ROW ServiceInstall="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" DisplayName="[ServiceName_WebhooksService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5031 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Webhooks.Service.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>
@@ -940,14 +961,12 @@
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateComponent">
     <ROW Name="ReplaceAppDir" TxtUpdateSet="xml" FindPattern="{APPDIR}" ReplacePattern="[APPDIR]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceAppDir" TxtUpdateSet="appsettings.test.json" FindPattern="{APPDIRCONF}" ReplacePattern="[APPDIR_FORWARD_SLASH]" Options="2" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceElasticHost" TxtUpdateSet="YourFile.txt" FindPattern=".Host.:.*" ReplacePattern="&quot;Host&quot;: &quot;localhost&quot;," Options="3" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceWinVol" TxtUpdateSet="xml" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="1" FileEncoding="-1"/>
     <ROW Name="ReplaceAppDir" TxtUpdateSet="json" FindPattern="{APPDIRCONF}" ReplacePattern="[APPDIR_FORWARD_SLASH]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceAppDir" TxtUpdateSet="config.json" FindPattern="{APPDIRCONF}" ReplacePattern="[APPDIR_FORWARD_SLASH]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceAppDir" TxtUpdateSet="config.json_1" FindPattern="{APPDIRCONF}" ReplacePattern="[APPDIR_FORWARD_SLASH]" Options="2" Order="0" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
-    <ROW Key="YourFile.txt" Component="AI_ExePath" FileName="elastic.json" Directory="config_Dir" Options="17"/>
     <ROW Key="appsettings.test.json" Component="Socket.IO.exe" FileName="*.json" Directory="config_Dir" Options="17"/>
     <ROW Key="config.json" Component="SsoAuth.exe" FileName="config.json" Directory="config_2_Dir" Options="17"/>
     <ROW Key="config.json_1" Component="Socket.IO.exe" FileName="config.json" Directory="NewFolder_1_Dir" Options="17"/>
