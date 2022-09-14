@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { options } from "./options";
+// import { FixedSizeList as List } from 'react-window';
 import ComboBox from "@docspace/components/combobox";
 import Box from "@docspace/components/box";
-import SearchInput from "@docspace/components/search-input";
+import InputBlock from "@docspace/components/input-block";
 import DropDown from "@docspace/components/drop-down";
 import DropDownItem from "@docspace/components/drop-down-item";
 import TextInput from "@docspace/components/text-input";
@@ -12,13 +13,33 @@ const StyledComboBox = styled(ComboBox)`
   .combo-button-label {
     font-weight: 400;
     line-height: 22px;
+    padding: 10px;
+    text-align: center;
+    margin: 0;
   }
   .combo-button {
     height: 44px;
     border-right: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+    cursor: pointer;
+    padding-left: 0;
+    &:focus-within {
+      border-color: red;
+    }
   }
+`;
+
+const StyledInput = styled(TextInput)`
+  padding-left: 10px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+`;
+
+const CountryFlag = styled.div`
+  border: 1px solid #aeaeae;
+  margin-right: 10px;
+  padding: 0 5px;
 `;
 
 const CountryTitle = styled.h3`
@@ -39,77 +60,92 @@ const CountryDialCode = styled.p`
 `;
 
 export const InputPhone = () => {
-  const [phoneValue, setPhoneValue] = useState("");
-  const [open, setOpen] = useState(false);
+  const [phoneValue, setPhoneValue] = useState("+");
+  const [searchValue, setSearchValue] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleChange = (e) => {
-    setPhoneValue(e.target.value.replace(/\D/g, ""));
+    if (e.target.value === "") {
+      setPhoneValue("+");
+    } else {
+      setPhoneValue(e.target.value);
+    }
   };
-
-  // const newOptions = [];
-
-  // options.map((option) => {
-  //   newOptions.push({
-  //     key: option.code,
-  //     icon: option.flag,
-  //     label: option.name,
-  //   });
-  // });
 
   return (
     <Box
       displayProp="flex"
       alignContent="center"
-      widthProp="320px"
-      style={{ position: "relative" }}
+      style={{ position: "relative", maxWidth: "320px" }}
     >
-      <Box>
+      <Box style={{ cursor: "pointer" }}>
         <StyledComboBox
-          onClick={() => setOpen(true)}
+          onClick={() => setIsOpen(!isOpen)}
           options={[]}
           scaled={true}
           selectedOption={{
             key: options[0].code,
-            label: options[0].dialCode,
+            label: "Flag",
           }}
-          style={{ cursor: "pointer" }}
         />
       </Box>
-      <TextInput
+      <StyledInput
+        onKeyPress={(e) => {
+          if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
         type="text"
+        maxLength={15}
         value={phoneValue}
         onChange={handleChange}
-        style={{
-          paddingLeft: "10px",
-          borderTopLeftRadius: "0",
-          borderBottomLeftRadius: "0",
-        }}
+        className="phone-input"
       />
+
       <DropDown
-        open
+        // isDropdown
+        open={isOpen}
+        clickOutsideAction={() => setIsOpen(!isOpen)}
         isDefaultMode={false}
+        // maxHeight={200}
+        manualWidth="100%"
         style={{
           padding: "12px 16px",
-          width: "320px",
-          height: "165px",
           boxSizing: "border-box",
           marginTop: "4px",
         }}
       >
-        <SearchInput />
-        {options.map((country) => {
-          return (
+        <InputBlock
+          type="text"
+          iconName="static/images/search.react.svg"
+          placeholder="Search"
+          value={searchValue}
+          scale={true}
+          onChange={(e) => setSearchValue(e.target.value)}
+          style={{ height: "32px" }}
+        />
+
+        {options
+          .filter((val) => val.name.toLowerCase().includes(searchValue))
+          .map((country) => (
             <DropDownItem
+              // noHover
+              onClick={() => {
+                setPhoneValue(country.dialCode), setIsOpen(!isOpen);
+              }}
+              key={country.code}
               style={{
                 padding: "9px 0",
                 boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
               }}
             >
+              <CountryFlag>Flag</CountryFlag>
               <CountryTitle>{country.name}</CountryTitle>
               <CountryDialCode>{country.dialCode}</CountryDialCode>
             </DropDownItem>
-          );
-        })}
+          ))}
       </DropDown>
     </Box>
   );
