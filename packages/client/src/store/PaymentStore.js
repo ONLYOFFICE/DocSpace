@@ -6,6 +6,7 @@ import {
 import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
 import toastr from "client/toastr";
+import authStore from "@docspace/common/store/AuthStore";
 
 class PaymentStore {
   salesEmail = "sales@onlyoffice.com";
@@ -24,8 +25,10 @@ class PaymentStore {
   totalPrice = 30;
   managersCount = 1;
   maxAvailableManagersCount = 999;
-  minAvailableManagersCount = 1;
-  paymentTariff = [];
+  stepByQuotaForManager = 1;
+  minAvailableManagersValue = 1;
+  stepByQuotaForTotalSize = 107374182400;
+  minAvailableTotalSizeValue = 107374182400;
 
   constructor() {
     makeAutoObservable(this);
@@ -117,8 +120,45 @@ class PaymentStore {
     this.isLoading = isLoading;
   };
 
-  setTotalPrice = (price) => {
-    if (price > 0 && price !== this.totalPrice) this.totalPrice = price;
+  getTotalCostByFormula = (value) => {
+    const costValuePerManager = authStore.paymentQuotasStore.planCost.value;
+    return value * costValuePerManager;
+  };
+
+  initializeInfo = (isAlreadyPaid) => {
+    this.initializeTotalPrice();
+    this.initializeManagersCount();
+    !isAlreadyPaid && this.setStartPaymentLink();
+  };
+  initializeTotalPrice = () => {
+    const currentTotalPrice = authStore.currentQuotaStore.currentPlanCost;
+
+    if (currentTotalPrice !== 0) {
+      this.totalPrice = currentTotalPrice.value;
+    } else {
+      this.totalPrice = getTotalCostByFormula(this.minAvailableManagersValue);
+    }
+  };
+
+  initializeManagersCount = () => {
+    const currentPaidValueManagers =
+      authStore.currentQuotaStore.maxCountManagersByQuota;
+
+    if (currentPaidValueManagers !== 0) {
+      this.managersCount = currentPaidValueManagers;
+    } else {
+      this.managersCount = this.minAvailableManagersValue;
+    }
+  };
+
+  setStartPaymentLink = async () => {
+    const link = await api.portal.getPaymentLink(this.managersCount);
+    setPaymentLink(link);
+  };
+
+  setTotalPrice = (value) => {
+    const price = this.getTotalCostByFormula(value);
+    if (price !== this.totalPrice) this.totalPrice = price;
   };
 
   setManagersCount = (managers) => {
@@ -130,12 +170,20 @@ class PaymentStore {
   }
 
   get isLessCountThanAcceptable() {
-    return this.managersCount < this.minAvailableManagersCount;
+    return this.managersCount < this.minAvailableManagersValue;
   }
 
-  setRangeBound = (managerStep, min, max) => {
-    this.minAvailableManagersCount = min;
-    this.maxAvailableManagersCount = max;
+  setRangeBound = () => {
+    this.stepByQuotaForManager =
+      authStore.paymentQuotasStore.stepAddingQuotaManagers;
+    this.minAvailableManagersValue = this.stepByQuotaForManager;
+
+    this.stepByQuotaForTotalSize =
+      authStore.paymentQuotasStore.stepAddingQuotaTotalSize;
+    this.minAvailableTotalSizeValue = this.stepByQuotaForManager;
+
+   
+    //this.maxAvailableManagersCount = max; TODO: Move to another function
   };
 
   sendPaymentRequest = async (email, userName, message) => {
@@ -146,15 +194,6 @@ class PaymentStore {
       toastr.error(e);
     }
   };
-
-  // setPaymentTariff = async () => {
-  //   try {
-  //     const res = await api.portal.getPaymentTariff();
-  //     if (res) {
-  //       this.paymentTariff = res;
-  //     }
-  //   } catch (e) {}
-  // };
 }
 
 export default PaymentStore;

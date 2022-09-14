@@ -97,9 +97,9 @@ class ManualBackup extends React.Component {
   };
 
   componentDidMount() {
-    const { fetchTreeFolders, rootFoldersTitles, isNotPaid } = this.props;
+    const { fetchTreeFolders, rootFoldersTitles, isNotPaidPeriod } = this.props;
 
-    if (isNotPaid) {
+    if (isNotPaidPeriod) {
       this.setState({
         isEmptyContentBeforeLoader: false,
       });
@@ -218,7 +218,7 @@ class ManualBackup extends React.Component {
       renderTooltip,
       //isDocSpace,
       rootFoldersTitles,
-      isNotPaid,
+      isNotPaidPeriod,
     } = this.props;
     const {
       isInitialLoading,
@@ -310,13 +310,13 @@ class ManualBackup extends React.Component {
             </div>
           )}
         </StyledModules>
-        <StyledModules isDisabled={isNotPaid}>
+        <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
             label={t("RoomsModule")}
             name={"isCheckedDocuments"}
             key={1}
             isChecked={isCheckedDocuments}
-            isDisabled={!isMaxProgress || isNotPaid}
+            isDisabled={!isMaxProgress || isNotPaidPeriod}
             {...commonRadioButtonProps}
           />
           <Text className="backup-description module-documents">
@@ -332,13 +332,13 @@ class ManualBackup extends React.Component {
           )}
         </StyledModules>
 
-        <StyledModules isDisabled={isNotPaid}>
+        <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
             label={t("ThirdPartyResource")}
             name={"isCheckedThirdParty"}
             key={2}
             isChecked={isCheckedThirdParty}
-            isDisabled={!isMaxProgress || isNotPaid}
+            isDisabled={!isMaxProgress || isNotPaidPeriod}
             {...commonRadioButtonProps}
           />
           <Text className="backup-description">
@@ -346,13 +346,13 @@ class ManualBackup extends React.Component {
           </Text>
           {isCheckedThirdParty && <ThirdPartyModule {...commonModulesProps} />}
         </StyledModules>
-        <StyledModules isDisabled={isNotPaid}>
+        <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
             label={t("ThirdPartyStorage")}
             name={"isCheckedThirdPartyStorage"}
             key={3}
             isChecked={isCheckedThirdPartyStorage}
-            isDisabled={!isMaxProgress || isNotPaid}
+            isDisabled={!isMaxProgress || isNotPaidPeriod}
             {...commonRadioButtonProps}
           />
           <Text className="backup-description">
@@ -393,12 +393,13 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     setStorageRegions,
     saveToLocalStorage,
   } = backup;
-  const { isNotPaid } = auth;
+  const { quotasStore } = auth;
   const { organizationName } = auth.settingsStore;
   const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
+  const { isNotPaidPeriod } = quotasStore;
 
   return {
-    isNotPaid,
+    isNotPaidPeriod,
     organizationName,
     setThirdPartyStorage,
     clearProgressInterval,

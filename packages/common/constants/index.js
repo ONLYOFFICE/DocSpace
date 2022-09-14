@@ -254,3 +254,12 @@ export const TariffState = Object.freeze({
   Delay: 2,
   NotPaid: 3,
 });
+
+/**
+ * Enum for theme keys.
+ * @readonly
+ */
+export const PortalFeaturesLimitations = Object.freeze({
+  Limitless: -1,
+  Unavailable: 0,
+});

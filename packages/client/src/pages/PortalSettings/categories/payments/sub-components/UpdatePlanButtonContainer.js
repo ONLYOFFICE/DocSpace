@@ -20,8 +20,7 @@ const UpdatePlanButtonContainer = ({
   managersCount,
   isDisabled,
   isLoading,
-  maxTariffManagers,
-  setPortalPaymentsQuotas,
+  maxCountManagersByQuota,
   setPortalQuota,
   isLessCountThanAcceptable,
   t,
@@ -34,7 +33,7 @@ const UpdatePlanButtonContainer = ({
 
       await updatePayment(managersCount);
 
-      await Promise.all([setPortalQuota(), setPortalPaymentsQuotas()]);
+      await setPortalQuota();
     } catch (e) {
       toastr.error(e);
     }
@@ -72,8 +71,8 @@ const UpdatePlanButtonContainer = ({
   );
 
   const updatingPlanButton = () => {
-    const isDowngradePlan = managersCount < maxTariffManagers;
-    const isTheSameCount = managersCount === maxTariffManagers;
+    const isDowngradePlan = managersCount < maxCountManagersByQuota;
+    const isTheSameCount = managersCount === maxCountManagersByQuota;
 
     return isDowngradePlan ? (
       <DowngradePlanButtonContainer
@@ -101,14 +100,11 @@ const UpdatePlanButtonContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const {
-    portalQuota,
-    setPortalPaymentsQuotas,
-    setPortalQuota,
-    isNotPaid,
-    isGracePeriod,
-  } = auth;
-  const { countAdmin: maxTariffManagers } = portalQuota;
+  const { currentTariffStatusStore, currentQuotaStore } = auth;
+  const { maxCountManagersByQuota, setPortalQuota } = currentQuotaStore;
+
+  const { isNotPaidPeriod, isGracePeriod } = currentTariffStatusStore;
+
   const {
     updatePayment,
     setIsLoading,
@@ -127,11 +123,10 @@ export default inject(({ auth, payments }) => {
     isNeedRequest,
     isLoading,
     managersCount,
-    maxTariffManagers,
-    setPortalPaymentsQuotas,
+    maxCountManagersByQuota,
     setPortalQuota,
     isLessCountThanAcceptable,
-    isNotPaid,
+    isNotPaidPeriod,
     isGracePeriod,
     accountLink,
   };

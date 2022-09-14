@@ -6,14 +6,12 @@ import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
+import CurrentQuotasStore from "./CurrentQuotaStore";
+import CurrentTariffStatusStore from "./CurrentTariffStatusStore";
+import PaymentQuotasStore from "./PaymentQuotasStore";
 import { logout as logoutDesktop, desktopConstants } from "../desktop";
 import { combineUrl, isAdmin } from "../utils";
-import {
-  AppServerConfig,
-  LANGUAGE,
-  TariffState,
-  TenantStatus,
-} from "../constants";
+import { AppServerConfig, LANGUAGE, TenantStatus } from "../constants";
 const { proxyURL } = AppServerConfig;
 
 class AuthStore {
@@ -42,7 +40,9 @@ class AuthStore {
     this.settingsStore = new SettingsStore();
     this.tfaStore = new TfaStore();
     this.infoPanelStore = new InfoPanelStore();
-
+    this.currentQuotaStore = new CurrentQuotasStore();
+    this.currentTariffStatusStore = new CurrentTariffStatusStore();
+    this.paymentQuotasStore = new PaymentQuotasStore();
     makeAutoObservable(this);
   }
 
@@ -61,10 +61,8 @@ class AuthStore {
 
     if (this.isAuthenticated) {
       requests.push(
-        this.setPortalPaymentsQuotas(),
-        this.setPortalTariff(),
-        this.setPortalQuota()
-        //this.setCurrencies()
+        this.currentQuotaStore.init(),
+        this.currentTariffStatusStore.init()
       );
 
       !this.settingsStore.passwordSettings &&
@@ -321,49 +319,6 @@ class AuthStore {
   setQuota = async () => {
     const res = await api.settings.getPortalQuota();
     if (res) this.quota = res;
-  };
-
-  setPortalPaymentsQuotas = async () => {
-    const res = await api.portal.getPortalPaymentQuotas();
-    if (res) {
-      this.portalPaymentQuotas = res[0];
-      this.priceInfoPerManager = res[0].features.find(
-        (obj) => obj.id === "admin"
-      ).price;
-    }
-  };
-
-  setPortalQuota = async () => {
-    const res = await api.portal.getPortalQuota();
-    if (res) {
-      this.portalQuota = res;
-    }
-  };
-
-  get isFreeTariff() {
-    return this.portalPaymentQuotas.trial || this.portalPaymentQuotas.free;
-  }
-
-  get isGracePeriod() {
-    return this.portalTariff.state === TariffState.Delay;
-  }
-
-  get isPaidPeriod() {
-    return this.portalTariff.state === TariffState.Paid;
-  }
-
-  get isNotPaid() {
-    return this.portalTariff.state === TariffState.NotPaid;
-  }
-
-  setPortalTariff = async () => {
-    const res = await api.portal.getPortalTariff();
-    if (res) this.portalTariff = res;
-  };
-
-  setCurrencies = async () => {
-    const res = await api.portal.getCurrencies();
-    if (res) this.currencies = res;
   };
 }
 

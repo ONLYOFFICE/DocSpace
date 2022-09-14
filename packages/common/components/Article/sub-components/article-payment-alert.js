@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { useTranslation, Trans } from "react-i18next";
@@ -25,8 +25,13 @@ const ArticlePaymentAlert = ({
   isFreeTariff,
   theme,
   currencySymbol,
+  setPortalPaymentQuotas,
 }) => {
   const { t, ready } = useTranslation("Payments");
+
+  useEffect(() => {
+    isFreeTariff && setPortalPaymentQuotas();
+  }, []);
 
   const onClick = () => {
     const paymentPageUrl = combineUrl(
@@ -38,7 +43,9 @@ const ArticlePaymentAlert = ({
 
   const convertedPrice = `${currencySymbol}${pricePerManager}`;
 
-  return !ready ? (
+  const isShowLoader = !ready;
+
+  return isShowLoader ? (
     <Loaders.Rectangle width="210px" height="88px" />
   ) : (
     <StyledArticlePaymentAlert
@@ -55,9 +62,15 @@ const ArticlePaymentAlert = ({
         </Text>
         <Text noSelect fontSize={"12px"}>
           {isFreeTariff ? (
-            <Trans t={t} i18nKey="StartPrice" ns="Payments">
-              {{ price: convertedPrice }}
-            </Trans>
+            <>
+              {pricePerManager ? (
+                <Trans t={t} i18nKey="StartPrice" ns="Payments">
+                  {{ price: convertedPrice }}
+                </Trans>
+              ) : (
+                <></>
+              )}
+            </>
           ) : (
             t("PayBeforeTheEndGracePeriod")
           )}
@@ -71,14 +84,15 @@ const ArticlePaymentAlert = ({
 
 export default withRouter(
   inject(({ auth }) => {
-    const { priceInfoPerManager } = auth;
+    const { paymentQuotasStore } = auth;
     const { theme } = auth.settingsStore;
+    const { setPortalPaymentQuotas, planCost } = paymentQuotasStore;
 
-    const { value, currencySymbol } = priceInfoPerManager;
     return {
-      pricePerManager: value,
+      setPortalPaymentQuotas,
+      pricePerManager: planCost.value,
       theme,
-      currencySymbol: currencySymbol,
+      currencySymbol: planCost.currencySymbol,
     };
   })(observer(ArticlePaymentAlert))
 );

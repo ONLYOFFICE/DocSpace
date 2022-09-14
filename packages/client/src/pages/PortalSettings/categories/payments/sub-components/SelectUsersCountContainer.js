@@ -104,27 +104,25 @@ const SelectUsersCountContainer = ({
   theme,
   isDisabled,
   isLoading,
-  minAvailableManagersCount,
+  minAvailableManagersValue,
   isAlreadyPaid,
   maxAvailableManagersCount,
   setManagersCount,
   setTotalPrice,
-  pricePerManager,
-
   isLessCountThanAcceptable,
 }) => {
   const { t } = useTranslation("Payments");
 
   const onSliderChange = (e) => {
     const count = parseFloat(e.target.value);
-    if (count > minAvailableManagersCount) {
+    if (count > minAvailableManagersValue) {
       setShoppingLink(count);
       setManagersCount(count);
-      setTotalPrice(count * pricePerManager);
+      setTotalPrice(count);
     } else {
-      setShoppingLink(minAvailableManagersCount);
-      setManagersCount(minAvailableManagersCount);
-      setTotalPrice(minAvailableManagersCount * pricePerManager);
+      setShoppingLink(minAvailableManagersValue);
+      setManagersCount(minAvailableManagersValue);
+      setTotalPrice(minAvailableManagersValue);
     }
   };
 
@@ -142,7 +140,7 @@ const SelectUsersCountContainer = ({
       if (managersCount > maxAvailableManagersCount) {
         value = maxAvailableManagersCount;
       } else {
-        if (managersCount > minAvailableManagersCount) {
+        if (managersCount > minAvailableManagersValue) {
           value -= step;
         }
       }
@@ -151,7 +149,7 @@ const SelectUsersCountContainer = ({
     if (value !== +managersCount) {
       setShoppingLink(value);
       setManagersCount(value);
-      setTotalPrice(value * pricePerManager);
+      setTotalPrice(value);
     }
   };
   const onChangeNumber = (e) => {
@@ -167,13 +165,13 @@ const SelectUsersCountContainer = ({
     if (isNaN(numberValue)) return;
 
     if (numberValue === 0) {
-      setManagersCount(minAvailableManagersCount);
+      setManagersCount(minAvailableManagersValue);
       return;
     }
 
     setShoppingLink(numberValue);
     setManagersCount(numberValue);
-    setTotalPrice(numberValue * pricePerManager);
+    setTotalPrice(numberValue);
   };
 
   const value =
@@ -218,18 +216,18 @@ const SelectUsersCountContainer = ({
         isDisabled={isDisabled || isUpdatingTariff}
         isReadOnly={isDisabled || isUpdatingTariff}
         type="range"
-        min={minAvailableManagersCount}
+        min={minAvailableManagersValue}
         max={(maxAvailableManagersCount + 1).toString()}
         step={step}
         withPouring
         value={
-          isLessCountThanAcceptable ? minAvailableManagersCount : managersCount
+          isLessCountThanAcceptable ? minAvailableManagersValue : managersCount
         }
         {...onChangeSlideProp}
       />
       <div className="slider-track">
         <Text className="slider-track-value_min" noSelect>
-          {minAvailableManagersCount}
+          {minAvailableManagersValue}
         </Text>
         <Text className="slider-track-value_max" noSelect>
           {maxAvailableManagersCount + "+"}
@@ -240,12 +238,10 @@ const SelectUsersCountContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { priceInfoPerManager } = auth;
-  const { value } = priceInfoPerManager;
   const { theme } = auth.settingsStore;
   const {
     isLoading,
-    minAvailableManagersCount,
+    minAvailableManagersValue,
     managersCount,
     maxAvailableManagersCount,
     setManagersCount,
@@ -256,12 +252,11 @@ export default inject(({ auth, payments }) => {
   return {
     theme,
     isLoading,
-    minAvailableManagersCount,
+    minAvailableManagersValue,
     managersCount,
     maxAvailableManagersCount,
     setManagersCount,
     setTotalPrice,
-    pricePerManager: value,
     isLessCountThanAcceptable,
   };
 })(observer(SelectUsersCountContainer));

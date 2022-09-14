@@ -171,7 +171,7 @@ export function getPortalPaymentQuotas() {
 }
 
 export function getPortalQuota() {
-  return request({ method: "get", url: "/portal/quota" });
+  return request({ method: "get", url: "/portal/payment/quota" });
 }
 
 export function getPortalTariff() {

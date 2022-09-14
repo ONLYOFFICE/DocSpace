@@ -10,6 +10,7 @@ import { inject, observer } from "mobx-react";
 import { isMe } from "../../utils";
 import combineUrl from "../../utils/combineUrl";
 import { AppServerConfig, TenantStatus } from "../../constants";
+import CurrentTariffStatus from "../../store/CurrentTariffStatusStore";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -27,7 +28,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     personal,
     location,
     tenantStatus,
-    isNotPaid,
+    isNotPaidPeriod,
   } = rest;
 
   const windowPath = window.location.pathname;
@@ -93,7 +94,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     }
 
     if (
-      isNotPaid &&
+      isNotPaidPeriod &&
       isLoaded &&
       isAuthenticated &&
       (user.isOwner || user.isAdmin) &&
@@ -114,7 +115,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     }
 
     if (
-      isNotPaid &&
+      isNotPaidPeriod &&
       isLoaded &&
       isAuthenticated &&
       !user.isOwner &&
@@ -201,8 +202,9 @@ export default inject(({ auth }) => {
     isLoaded,
     isAdmin,
     settingsStore,
-    isNotPaid,
+    currentTariffStatusStore,
   } = auth;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
 
   const {
@@ -213,7 +215,7 @@ export default inject(({ auth }) => {
   } = settingsStore;
 
   return {
-    isNotPaid,
+    isNotPaidPeriod,
     user,
     isAuthenticated,
     isAdmin,

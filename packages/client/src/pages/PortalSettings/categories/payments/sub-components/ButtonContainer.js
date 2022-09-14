@@ -17,7 +17,7 @@ const ButtonContainer = ({
   isDisabled,
   isLoading,
   t,
-  isNotPaid,
+  isNotPaidPeriod,
   isGracePeriod,
   accountLink,
 }) => {
@@ -27,7 +27,7 @@ const ButtonContainer = ({
 
   return (
     <StyledBody>
-      {isNotPaid || isGracePeriod ? (
+      {isNotPaidPeriod || isGracePeriod ? (
         <Button
           label={t("Pay")}
           size={"medium"}
@@ -50,13 +50,13 @@ const ButtonContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { isNotPaid, isGracePeriod } = auth;
+  const { currentTariffStatusStore } = auth;
   const { isNeedRequest, isLoading, accountLink } = payments;
-
+  const { isNotPaidPeriod, isGracePeriod } = currentTariffStatusStore;
   return {
     isNeedRequest,
     isLoading,
-    isNotPaid,
+    isNotPaidPeriod,
     isGracePeriod,
     accountLink,
   };

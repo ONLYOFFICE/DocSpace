@@ -159,13 +159,12 @@ const PayerInformationContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { quota, userStore } = auth;
+  const { userStore } = auth;
   const { accountLink } = payments;
 
   const { user } = userStore;
 
   return {
-    quota,
     theme: auth.settingsStore.theme,
     user,
     accountLink,

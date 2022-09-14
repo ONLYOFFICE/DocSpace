@@ -25,7 +25,7 @@
   "ManagersNumber": "Number of managers",
   "Megabyte": "MB",
   "OwnerCanChangePayer": "The portal owner can change the payer",
-  "PerUserMonth": "per manager/month",
+  "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per manager/month",
   "PriceCalculation": "Calculate your price",
   "Payer": "Payer",
   "Pay": "Pay",

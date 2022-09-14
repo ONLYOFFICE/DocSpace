@@ -2842,6 +2842,10 @@ const Base = {
         separatorBorder: "1px solid #eceef1",
         contextBorder: "1px solid #D0D5DA",
       },
+
+      payment: {
+        priceColor: "#A3A9AE",
+      },
     },
 
     wizard: {

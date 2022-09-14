@@ -38,38 +38,18 @@ const PriceCalculation = ({
   theme,
   setPaymentLink,
   setIsLoading,
-  setTotalPrice,
-  pricePerManager,
-  minAvailableManagersCount,
-  setManagersCount,
   maxAvailableManagersCount,
   isFreeTariff,
-  portalQuota,
   payer,
   isGracePeriod,
-  isNotPaid,
+  isNotPaidPeriod,
+  initializeInfo,
 }) => {
-  const { countAdmin, price } = portalQuota;
-
   const isAlreadyPaid = !isFreeTariff;
 
-  const initialUsersCount = isAlreadyPaid
-    ? countAdmin
-    : minAvailableManagersCount;
-
-  const setStartLink = async () => {
-    if (isAlreadyPaid) return;
-    const link = await api.portal.getPaymentLink(initialUsersCount);
-    setPaymentLink(link);
-  };
-
   useEffect(() => {
-    setStartLink();
-    setTotalPrice(
-      isAlreadyPaid ? price : minAvailableManagersCount * pricePerManager
-    );
+    initializeInfo(isAlreadyPaid);
 
-    setManagersCount(initialUsersCount);
     return () => {
       timeout && clearTimeout(timeout);
       timeout = null;
@@ -128,9 +108,11 @@ const PriceCalculation = ({
   return (
     <StyledBody>
       <Text fontSize="16px" fontWeight={600} noSelect {...color}>
-        {!isGracePeriod && !isNotPaid ? t("PriceCalculation") : t("YourPrice")}
+        {!isGracePeriod && !isNotPaidPeriod
+          ? t("PriceCalculation")
+          : t("YourPrice")}
       </Text>
-      {!isGracePeriod && !isNotPaid && (
+      {!isGracePeriod && !isNotPaidPeriod && (
         <SelectUsersCountContainer
           isDisabled={isDisabled}
           setShoppingLink={setShoppingLink}
@@ -152,22 +134,15 @@ export default inject(({ auth, payments }) => {
     tariffsInfo,
     setPaymentLink,
     setIsLoading,
-    setTotalPrice,
-    minAvailableManagersCount,
     setManagersCount,
     maxAvailableManagersCount,
+    initializeInfo,
   } = payments;
   const { theme } = auth.settingsStore;
-  const {
-    priceInfoPerManager,
-    isFreeTariff,
-    userStore,
-    portalQuota,
-    isGracePeriod,
-    isNotPaid,
-  } = auth;
+  const { userStore, currentTariffStatusStore, currentQuotaStore } = auth;
+  const { isFreeTariff } = currentQuotaStore;
+  const { isNotPaidPeriod, isGracePeriod } = currentTariffStatusStore;
   const { user } = userStore;
-  const { value } = priceInfoPerManager;
 
   return {
     isFreeTariff,
@@ -176,13 +151,10 @@ export default inject(({ auth, payments }) => {
     theme,
     setPaymentLink,
     setIsLoading,
-    pricePerManager: value,
-    setTotalPrice,
-    minAvailableManagersCount,
     maxAvailableManagersCount,
     user,
-    portalQuota,
     isGracePeriod,
-    isNotPaid,
+    isNotPaidPeriod,
+    initializeInfo,
   };
 })(observer(PriceCalculation));

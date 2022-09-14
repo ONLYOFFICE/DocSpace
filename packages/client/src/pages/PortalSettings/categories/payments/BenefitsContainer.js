@@ -65,11 +65,11 @@ const BenefitsContainer = ({ t, features }) => {
 };
 
 export default inject(({ auth }) => {
-  const { portalPaymentQuotas } = auth;
+  const { paymentQuotasStore } = auth;
 
-  const { features } = portalPaymentQuotas;
+  const { portalPaymentQuotasFeatures } = paymentQuotasStore;
 
   return {
-    features: features,
+    features: portalPaymentQuotasFeatures,
   };
 })(observer(BenefitsContainer));

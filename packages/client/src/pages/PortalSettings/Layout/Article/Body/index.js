@@ -203,12 +203,12 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText, isNotPaid, t } = this.props;
+    const { showText, isNotPaidPeriod, t } = this.props;
 
     const items = [];
     let resultTree = [...settingsTree];
 
-    if (isNotPaid) {
+    if (isNotPaidPeriod) {
       resultTree = [...settingsTree].filter((e) => {
         return e.tKey === "Backup" || e.tKey === "Payments";
       });
@@ -259,14 +259,14 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(({ auth, common }) => {
   const { isLoaded, setIsLoadedArticleBody } = common;
-  const { isNotPaid } = auth;
-
+  const { currentTariffStatusStore } = auth;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
   return {
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
     isLoaded,
     setIsLoadedArticleBody,
-    isNotPaid,
+    isNotPaidPeriod,
   };
 })(
   withLoading(

@@ -2849,6 +2849,10 @@ const Dark = {
         separatorBorder: "1px solid #474747",
         contextBorder: "1px solid #D0D5DA",
       },
+
+      payment: {
+        priceColor: "#A3A9AE",
+      },
     },
 
     wizard: {

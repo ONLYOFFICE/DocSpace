@@ -15,7 +15,7 @@ const Backup = ({
   buttonSize,
   t,
   history,
-  isNotPaid,
+  isNotPaidPeriod,
 }) => {
   const renderTooltip = (helpInfo) => {
     return (
@@ -73,7 +73,7 @@ const Backup = ({
     );
   };
 
-  return isNotPaid ? (
+  return isNotPaidPeriod ? (
     <ManualBackup buttonSize={buttonSize} renderTooltip={renderTooltip} />
   ) : (
     <Submenu data={data} startSelect={data[0]} onSelect={(e) => onSelect(e)} />
@@ -81,7 +81,9 @@ const Backup = ({
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore, isNotPaid } = auth;
+  const { settingsStore, quotasStore } = auth;
+  const { isNotPaidPeriod } = quotasStore;
+
   const { helpUrlCreatingBackup, isTabletView } = settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
@@ -89,6 +91,6 @@ export default inject(({ auth }) => {
   return {
     helpUrlCreatingBackup,
     buttonSize,
-    isNotPaid,
+    isNotPaidPeriod,
   };
 })(observer(withTranslation(["Settings", "Common"])(Backup)));

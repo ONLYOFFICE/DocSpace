@@ -25,7 +25,7 @@
   "ManagersNumber": "Число менеджеров",
   "Megabyte": "Мб",
   "OwnerCanChangePayer": "Владелец портала может изменить плательщика",
-  "PerUserMonth": "за менеджера/месяц",
+  "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> за менеджера/месяц",
   "PriceCalculation": "Рассчитайте свою цену",
   "Payer": "Плательщик",
   "Pay": "Оплатить",

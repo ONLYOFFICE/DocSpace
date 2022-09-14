@@ -57,11 +57,11 @@ const StyledBody = styled.div`
 const TotalTariffContainer = ({
   t,
   maxAvailableManagersCount,
-  pricePerManager,
   isDisabled,
   theme,
   totalPrice,
   isNeedRequest,
+  priceManagerPerMonth,
   currencySymbol,
 }) => {
   const color = isDisabled ? { color: theme.text.disableColor } : {};
@@ -69,17 +69,27 @@ const TotalTariffContainer = ({
   return (
     <StyledBody>
       <div className="payment_price_user">
-        <Text fontSize="16px" textAlign="center" isBold noSelect {...color}>
-          {`${currencySymbol}${pricePerManager}`}
-        </Text>
         <Text
-          fontSize="11px"
-          textAlign="center"
-          fontWeight={600}
-          color={"#A3A9AE"}
           noSelect
+          fontSize={"11px"}
+          color={theme.client.settings.payment.priceColor}
+          fontWeight={600}
         >
-          {t("PerUserMonth")}
+          <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+            ""
+            <Text
+              fontSize="16px"
+              isBold
+              as="span"
+              color={theme.text.disableColor.color}
+            >
+              {{ currencySymbol }}
+            </Text>
+            <Text fontSize="16px" isBold as="span" color="black">
+              {{ price: priceManagerPerMonth }}
+            </Text>
+            per manager/month
+          </Trans>
         </Text>
       </div>
       <div className="payment_price_total-price">
@@ -125,7 +135,7 @@ const TotalTariffContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { priceInfoPerManager, currencies } = auth;
+  const { paymentQuotasStore } = auth;
   const { theme } = auth.settingsStore;
   const {
     isLoading,
@@ -134,14 +144,14 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
   } = payments;
 
-  const { value, currencySymbol } = priceInfoPerManager;
+  const { planCost } = paymentQuotasStore;
   return {
     theme,
-    pricePerManager: value,
     totalPrice,
     isLoading,
     isNeedRequest,
     maxAvailableManagersCount,
-    currencySymbol: currencySymbol,
+    priceManagerPerMonth: planCost.value,
+    currencySymbol: planCost.currencySymbol,
   };
 })(observer(TotalTariffContainer));
