@@ -26,7 +26,7 @@ const StyledContainer = styled.div`
 const SectionBodyContent = ({
   setting,
   isAdmin,
-  enableThirdParty,
+  //enableThirdParty,
   settingsIsLoaded,
   isErrorSettings,
   history,
@@ -76,11 +76,7 @@ const SectionBodyContent = ({
     [setting, history]
   );
 
-  return !settingsIsLoaded ? null : (!enableThirdParty &&
-      setting === "connected-clouds") ||
-    (!isAdmin && setting === "admin") ? (
-    <Error403 />
-  ) : isErrorSettings ? (
+  return isErrorSettings ? (
     <Error520 />
   ) : (
     <StyledContainer>
@@ -94,11 +90,10 @@ const SectionBodyContent = ({
 };
 
 export default inject(({ auth, settingsStore }) => {
-  const { enableThirdParty, settingsIsLoaded } = settingsStore;
+  const { settingsIsLoaded } = settingsStore;
 
   return {
     isAdmin: auth.isAdmin,
-    enableThirdParty,
     settingsIsLoaded,
   };
 })(withRouter(observer(SectionBodyContent)));
