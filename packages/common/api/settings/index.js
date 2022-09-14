@@ -224,6 +224,40 @@ export function getCustomSchemaList() {
   });
 }
 
+export function setAdditionalResources(
+  feedbackAndSupportEnabled,
+  videoGuidesEnabled,
+  helpCenterEnabled
+) {
+  const data = {
+    settings: {
+      helpCenterEnabled,
+      feedbackAndSupportEnabled,
+      videoGuidesEnabled,
+    },
+  };
+
+  return request({
+    method: "post",
+    url: `/settings/rebranding/additional.json`,
+    data,
+  });
+}
+
+export function getAdditionalResources() {
+  return request({
+    method: "get",
+    url: `/settings/rebranding/additional.json`,
+  });
+}
+
+export function restoreAdditionalResources() {
+  return request({
+    method: "delete",
+    url: `/settings/rebranding/additional.json`,
+  });
+}
+
 export function setCurrentSchema(id) {
   return request({
     method: "post",

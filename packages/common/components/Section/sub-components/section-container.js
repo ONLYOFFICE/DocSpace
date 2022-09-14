@@ -13,7 +13,6 @@ import { Base } from "@docspace/components/themes";
 
 const tabletProps = css`
   .section-body_header {
-    display: block;
     position: sticky;
     top: 0;
     background: ${(props) => props.theme.section.header.background};
