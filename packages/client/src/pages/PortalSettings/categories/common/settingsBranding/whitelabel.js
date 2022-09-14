@@ -819,7 +819,7 @@ export default inject(({ setup, auth, common }) => {
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,
-  } = common;
+  } = auth.settingsStore;
 
   const { logoText, logoSizes, logoUrls } = whiteLabel;
 
