@@ -9,11 +9,12 @@ import {
   StyledFloatingButton,
   IconBox,
 } from "./StyledPreview";
+import { withTranslation } from "react-i18next";
 
 import ButtonPlusIcon from "../../../../../../../../public/images/actions.button.plus.react.svg";
 
 const Preview = (props) => {
-  const { selectAccentColor, themePreview, selectThemeId } = props;
+  const { t, selectAccentColor, themePreview, selectThemeId } = props;
 
   const [colorPreview, setColorPreview] = useState(selectAccentColor);
   const [isViewTablet, setIsViewTablet] = useState(false);
@@ -58,7 +59,7 @@ const Preview = (props) => {
             <div className="main-button-container">
               <MainButton
                 className="main-button-preview"
-                text="Actions"
+                text={t("Common:Actions")}
                 isDisabled={true}
               />
             </div>
@@ -399,4 +400,4 @@ const Preview = (props) => {
   );
 };
 
-export default Preview;
+export default withTranslation("Common")(Preview);

@@ -1,42 +1,9 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import ContextMenuButton from "@docspace/components/context-menu-button";
 import IconButton from "@docspace/components/icon-button";
 import { isMobile } from "react-device-detect";
 import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
-
-const StyledContainer = styled.div`
-  margin-left: 20px;
-  display: flex;
-  align-items: center;
-
-  height: 32px;
-
-  .add-button {
-    margin-right: 16px;
-    min-width: 15px;
-
-    @media ${tablet} {
-      display: none;
-    }
-
-    ${isMobile &&
-    css`
-      display: none;
-    `}
-  }
-
-  .option-button {
-    margin-right: 16px;
-    min-width: 15px;
-  }
-
-  .trash-button {
-    margin-right: 16px;
-    min-width: 15px;
-  }
-`;
 
 const StyledInfoPanelToggleWrapper = styled.div`
   display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
