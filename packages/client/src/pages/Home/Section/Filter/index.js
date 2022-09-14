@@ -599,7 +599,7 @@ const SectionFilterContent = ({
           {
             key: "master-forms",
             group: FilterGroups.filterType,
-            label: t("MasterForms").toLowerCase(),
+            label: t("FormsTemplates").toLowerCase(),
           },
           {
             key: "forms",
