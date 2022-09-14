@@ -134,11 +134,6 @@ const AdditionalResources = (props) => {
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
         getAdditionalResources();
-
-        if (!localStorage.getItem("isFirstAdditionalResources")) {
-          localStorage.setItem("isFirstAdditionalResources", true);
-          setIsFirstAdditionalResources("true");
-        }
       })
       .catch((error) => {
         toastr.error(error);
