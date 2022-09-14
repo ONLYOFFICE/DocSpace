@@ -334,19 +334,19 @@ class SettingsStore {
   getAdditionalResources = async () => {
     const res = await api.settings.getAdditionalResources();
 
-    delete res.buyUrl;
-    delete res.feedbackAndSupportUrl;
-    delete res.licenseAgreementsEnabled;
-    delete res.licenseAgreementsUrl;
-    delete res.salesEmail;
-    delete res.startDocsEnabled;
-    delete res.userForumEnabled;
-    delete res.videoGuidesUrl;
-
     this.setAdditionalResourcesData(res);
 
+    const defaultAdditionalResources = {
+      feedbackAndSupportEnabled: res.feedbackAndSupportEnabled,
+      videoGuidesEnabled: res.videoGuidesEnabled,
+      helpCenterEnabled: res.helpCenterEnabled,
+    };
+
     if (!localStorage.getItem("defaultAdditionalResources")) {
-      localStorage.setItem("defaultAdditionalResources", JSON.stringify(res));
+      localStorage.setItem(
+        "defaultAdditionalResources",
+        JSON.stringify(defaultAdditionalResources)
+      );
     }
   };
 
@@ -394,14 +394,20 @@ class SettingsStore {
   getCompanyInfoSettings = async () => {
     const res = await api.settings.getCompanyInfoSettings();
 
-    delete res.IsLicensor;
-
     this.setCompanyInfoSettingsData(res);
+
+    const defaultCompanyInfoSettings = {
+      companyName: res.companyName,
+      email: res.email,
+      phone: res.phone,
+      site: res.site,
+      address: res.address,
+    };
 
     if (!localStorage.getItem("defaultDataCompanyInfoSettings")) {
       localStorage.setItem(
         "defaultDataCompanyInfoSettings",
-        JSON.stringify(res)
+        JSON.stringify(defaultCompanyInfoSettings)
       );
     }
   };
