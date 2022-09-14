@@ -13,20 +13,6 @@ const StyledBody = styled.div`
     max-width: 520px;
   }
 
-  .payment_price_user {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f3f4f4;
-    margin-top: 24px;
-    p:first-child {
-      margin-right: 8px;
-    }
-    p {
-      margin-bottom: 5px;
-      margin-top: 5px;
-    }
-  }
   .payment_price_total-price {
     display: flex;
     justify-content: center;
@@ -61,37 +47,12 @@ const TotalTariffContainer = ({
   theme,
   totalPrice,
   isNeedRequest,
-  priceManagerPerMonth,
   currencySymbol,
 }) => {
   const color = isDisabled ? { color: theme.text.disableColor } : {};
 
   return (
     <StyledBody>
-      <div className="payment_price_user">
-        <Text
-          noSelect
-          fontSize={"11px"}
-          color={theme.client.settings.payment.priceColor}
-          fontWeight={600}
-        >
-          <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
-            ""
-            <Text
-              fontSize="16px"
-              isBold
-              as="span"
-              color={theme.text.disableColor.color}
-            >
-              {{ currencySymbol }}
-            </Text>
-            <Text fontSize="16px" isBold as="span" color="black">
-              {{ price: priceManagerPerMonth }}
-            </Text>
-            per manager/month
-          </Trans>
-        </Text>
-      </div>
       <div className="payment_price_total-price">
         {isNeedRequest ? (
           <Text
@@ -151,7 +112,6 @@ export default inject(({ auth, payments }) => {
     isLoading,
     isNeedRequest,
     maxAvailableManagersCount,
-    priceManagerPerMonth: planCost.value,
     currencySymbol: planCost.currencySymbol,
   };
 })(observer(TotalTariffContainer));

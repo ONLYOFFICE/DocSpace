@@ -9,8 +9,8 @@ import toastr from "client/toastr";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import axios from "axios";
 import { combineUrl } from "@docspace/common/utils";
-import api from "@docspace/common/api";
 import ButtonContainer from "./sub-components/ButtonContainer";
+import { Trans } from "react-i18next";
 
 const StyledBody = styled.div`
   border-radius: 12px;
@@ -25,6 +25,21 @@ const StyledBody = styled.div`
   box-sizing: border-box;
   p {
     margin-bottom: 24px;
+  }
+
+  .payment_price_user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f4;
+    margin-top: 24px;
+    p:first-child {
+      margin-right: 8px;
+    }
+    p {
+      margin-bottom: 5px;
+      margin-top: 5px;
+    }
   }
 `;
 
@@ -44,6 +59,8 @@ const PriceCalculation = ({
   isGracePeriod,
   isNotPaidPeriod,
   initializeInfo,
+  priceManagerPerMonth,
+  currencySymbol,
 }) => {
   const isAlreadyPaid = !isFreeTariff;
 
@@ -119,6 +136,31 @@ const PriceCalculation = ({
           isAlreadyPaid={isAlreadyPaid}
         />
       )}
+      <div className="payment_price_user">
+        <Text
+          noSelect
+          fontSize={"11px"}
+          color={theme.client.settings.payment.priceColor}
+          fontWeight={600}
+        >
+          <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+            ""
+            <Text
+              fontSize="16px"
+              isBold
+              as="span"
+              color={theme.text.disableColor.color}
+            >
+              {{ currencySymbol }}
+            </Text>
+            <Text fontSize="16px" isBold as="span" color="black">
+              {{ price: priceManagerPerMonth }}
+            </Text>
+            per manager/month
+          </Trans>
+        </Text>
+      </div>
+
       <TotalTariffContainer t={t} isDisabled={isDisabled} />
       <ButtonContainer
         isDisabled={isDisabled}
@@ -139,8 +181,14 @@ export default inject(({ auth, payments }) => {
     initializeInfo,
   } = payments;
   const { theme } = auth.settingsStore;
-  const { userStore, currentTariffStatusStore, currentQuotaStore } = auth;
+  const {
+    userStore,
+    currentTariffStatusStore,
+    currentQuotaStore,
+    paymentQuotasStore,
+  } = auth;
   const { isFreeTariff } = currentQuotaStore;
+  const { planCost } = paymentQuotasStore;
   const { isNotPaidPeriod, isGracePeriod } = currentTariffStatusStore;
   const { user } = userStore;
 
@@ -156,5 +204,7 @@ export default inject(({ auth, payments }) => {
     isGracePeriod,
     isNotPaidPeriod,
     initializeInfo,
+    priceManagerPerMonth: planCost.value,
+    currencySymbol: planCost.currencySymbol,
   };
 })(observer(PriceCalculation));
