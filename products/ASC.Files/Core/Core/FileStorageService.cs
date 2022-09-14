@@ -2453,9 +2453,9 @@ public class FileStorageService<T> //: IFileStorageService
 
     #endregion
 
-    public Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, bool invite = false)
+    public Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
     {
-        return _fileSharing.GetSharedInfoAsync(fileIds, folderIds, invite);
+        return _fileSharing.GetSharedInfoAsync(fileIds, folderIds);
     }
 
     public Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync(T fileId)
@@ -2468,7 +2468,7 @@ public class FileStorageService<T> //: IFileStorageService
         return _fileSharing.GetSharedInfoShortFolderAsync(folderId);
     }
 
-    public async Task SetAceObjectAsync(AceCollection<T> aceCollection, bool notify, bool invite = false)
+    public async Task SetAceObjectAsync(AceCollection<T> aceCollection, bool notify)
     {
         var fileDao = GetFileDao();
         var folderDao = GetFolderDao();
@@ -2489,7 +2489,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             try
             {
-                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings, !_coreBaseSettings.DisableDocSpace, invite);
+                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings, !_coreBaseSettings.DisableDocSpace);
                 if (changed)
                 {
                     foreach (var ace in aceCollection.Aces)

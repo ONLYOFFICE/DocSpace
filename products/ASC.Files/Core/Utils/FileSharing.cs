@@ -89,7 +89,7 @@ public class FileSharingAceHelper<T>
             throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
         }
 
-        if (!await _fileSharingHelper.CanSetAccessAsync(entry, invite))
+        if (!await _fileSharingHelper.CanSetAccessAsync(entry) && advancedSettings is not { InvitationLink: true })
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -105,7 +105,7 @@ public class FileSharingAceHelper<T>
         var usersWithoutRight = new List<Guid>();
         var changed = false;
 
-        aceWrappers = handleForRooms ? await FilterForRoomsAsync(entry, aceWrappers, invite) : aceWrappers;
+        aceWrappers = advancedSettings is not { InvitationLink: true } ? await FilterForRoomsAsync(entry, aceWrappers) : aceWrappers;
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
@@ -258,9 +258,9 @@ public class FileSharingAceHelper<T>
         await _fileMarker.RemoveMarkAsNewAsync(entry);
     }
 
-    private async Task<List<AceWrapper>> FilterForRoomsAsync(FileEntry<T> entry, List<AceWrapper> aceWrappers, bool invite)
+    private async Task<List<AceWrapper>> FilterForRoomsAsync(FileEntry<T> entry, List<AceWrapper> aceWrappers)
     {
-        if (entry.FileEntryType == FileEntryType.File || entry.RootFolderType == FolderType.Archive || invite || entry is Folder<T> { Private: true })
+        if (entry.FileEntryType == FileEntryType.File || entry.RootFolderType == FolderType.Archive || entry is Folder<T> { Private: true })
         {
             return aceWrappers;
         }
@@ -371,13 +371,8 @@ public class FileSharingHelper
     private readonly UserManager _userManager;
     private readonly CoreBaseSettings _coreBaseSettings;
 
-    public async Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry, bool invite = false)
+    public async Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
     {
-        if (invite)
-        {
-            return true;
-        }
-
         var folder = entry as Folder<T>;
 
         if (entry == null)
@@ -468,19 +463,19 @@ public class FileSharing
         _roomLinkService = roomLinkService;
     }
 
-    public Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry, bool invite = false)
+    public Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
     {
-        return _fileSharingHelper.CanSetAccessAsync(entry, invite);
+        return _fileSharingHelper.CanSetAccessAsync(entry);
     }
 
-    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(FileEntry<T> entry, bool invite = false)
+    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(FileEntry<T> entry)
     {
         if (entry == null)
         {
             throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
         }
 
-        if (!await CanSetAccessAsync(entry, invite))
+        if (!await CanSetAccessAsync(entry))
         {
             _logger.ErrorUserCanTGetSharedInfo(_authContext.CurrentAccount.ID, entry.FileEntryType, entry.Id.ToString());
 
@@ -663,7 +658,7 @@ public class FileSharing
         return result;
     }
 
-    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds, bool invite = false)
+    public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
     {
         if (!_authContext.IsAuthenticated)
         {
@@ -685,7 +680,7 @@ public class FileSharing
             IEnumerable<AceWrapper> acesForObject;
             try
             {
-                acesForObject = await GetSharedInfoAsync(entry, invite);
+                acesForObject = await GetSharedInfoAsync(entry);
             }
             catch (Exception e)
             {

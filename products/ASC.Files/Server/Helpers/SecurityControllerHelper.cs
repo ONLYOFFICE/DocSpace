@@ -105,9 +105,9 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         return GetSecurityInfoAsync(new List<T> { }, new List<T> { folderId });
     }
 
-    public async IAsyncEnumerable<FileShareDto> GetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, bool invite = false)
+    public async IAsyncEnumerable<FileShareDto> GetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
     {
-        var fileShares = await _fileStorageService.GetSharedInfoAsync(fileIds, folderIds, invite);
+        var fileShares = await _fileStorageService.GetSharedInfoAsync(fileIds, folderIds);
 
         foreach (var fileShareDto in fileShares)
         {
@@ -122,12 +122,12 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         return true;
     }
 
-    public IAsyncEnumerable<FileShareDto> SetFolderSecurityInfoAsync(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage, bool invite = false)
+    public IAsyncEnumerable<FileShareDto> SetFolderSecurityInfoAsync(T folderId, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
-        return SetSecurityInfoAsync(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage, invite);
+        return SetSecurityInfoAsync(new List<T>(), new List<T> { folderId }, share, notify, sharingMessage);
     }
 
-    public async IAsyncEnumerable<FileShareDto> SetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage, bool invite = false)
+    public async IAsyncEnumerable<FileShareDto> SetSecurityInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         if (share != null && share.Any())
         {
@@ -141,10 +141,10 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
                 Message = sharingMessage
             };
 
-            await _fileStorageService.SetAceObjectAsync(aceCollection, notify, invite);
+            await _fileStorageService.SetAceObjectAsync(aceCollection, notify);
         }
 
-        await foreach (var s in GetSecurityInfoAsync(fileIds, folderIds, invite))
+        await foreach (var s in GetSecurityInfoAsync(fileIds, folderIds))
         {
             yield return s;
         }
