@@ -34,6 +34,8 @@ const FilterBlockItem = ({
   withoutSeparator,
   changeFilterValue,
   showSelector,
+  isFirst,
+  withMultiItems,
 }) => {
   const changeFilterValueAction = (
     key,
@@ -192,14 +194,18 @@ const FilterBlockItem = ({
   };
 
   return (
-    <StyledFilterBlockItem withoutHeader={withoutHeader}>
+    <StyledFilterBlockItem isFirst={isFirst} withoutHeader={withoutHeader}>
       {!withoutHeader && (
         <StyledFilterBlockItemHeader>
           <Heading size="xsmall">{label}</Heading>
         </StyledFilterBlockItemHeader>
       )}
 
-      <StyledFilterBlockItemContent withoutHeader={withoutHeader}>
+      <StyledFilterBlockItemContent
+        withMultiItems={withMultiItems}
+        withoutHeader={withoutHeader}
+        withoutSeparator={withoutSeparator}
+      >
         {groupItem.map((item) => {
           if (item.isSelector === true) return getSelectorItem(item);
           if (item.isToggle === true) return getToggleItem(item);

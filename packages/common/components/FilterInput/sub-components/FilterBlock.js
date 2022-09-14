@@ -390,7 +390,7 @@ const FilterBlock = ({
               />
             ) : (
               <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
-                {filterData.map((item) => {
+                {filterData.map((item, index) => {
                   return (
                     <FilterBlockItem
                       key={item.key}
@@ -399,10 +399,12 @@ const FilterBlock = ({
                       group={item.group}
                       groupItem={item.groupItem}
                       isLast={item.isLast}
+                      isFirst={index === 0}
                       withoutHeader={item.withoutHeader}
                       withoutSeparator={item.withoutSeparator}
                       changeFilterValue={changeFilterValue}
                       showSelector={changeShowSelector}
+                      withMultiItems={item.withMultiItems}
                     />
                   );
                 })}
