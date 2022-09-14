@@ -454,7 +454,7 @@ const SectionFilterContent = ({
             label = t("AllFiles");
             break;
           case "master-forms":
-            label = t("MasterForms");
+            label = t("FormsTemplates");
             break;
           case "forms":
             label = t("Forms");
@@ -618,6 +618,7 @@ const SectionFilterContent = ({
         group: FilterGroups.roomFilterOwner,
         label: t("Common:Owner"),
         isHeader: true,
+        withMultiItems: true,
       },
       {
         key: FilterKeys.me,

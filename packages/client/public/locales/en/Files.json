@@ -43,7 +43,7 @@
   "MarkAsFavorite": "Mark as favorite",
   "MarkRead": "Mark as read",
   "MarkedAsFavorite": "Added to favorites",
-  "MasterForms": "Master forms",
+  "FormsTemplates": "Forms templates",
   "Media": "Media",
   "MoveItem": "<strong>{{title}}</strong> moved",
   "MoveItems": "<strong>{{qty}}</strong> elements have been moved",
