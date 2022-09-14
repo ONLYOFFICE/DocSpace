@@ -96,8 +96,6 @@ const StyledBody = styled.div`
   }
 `;
 
-const step = 1;
-
 const SelectUsersCountContainer = ({
   managersCount,
   setShoppingLink,
@@ -110,6 +108,7 @@ const SelectUsersCountContainer = ({
   setManagersCount,
   setTotalPrice,
   isLessCountThanAcceptable,
+  step,
 }) => {
   const { t } = useTranslation("Payments");
 
@@ -247,7 +246,10 @@ export default inject(({ auth, payments }) => {
     setManagersCount,
     setTotalPrice,
     isLessCountThanAcceptable,
+    stepByQuotaForManager,
   } = payments;
+
+  const step = stepByQuotaForManager;
 
   return {
     theme,
@@ -258,5 +260,6 @@ export default inject(({ auth, payments }) => {
     setManagersCount,
     setTotalPrice,
     isLessCountThanAcceptable,
+    step,
   };
 })(observer(SelectUsersCountContainer));
