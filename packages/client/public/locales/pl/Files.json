@@ -5,7 +5,7 @@
   "BackToParentFolderButton": "Wróć do folderu nadrzędnego",
   "ByAuthor": "Autor",
   "ByCreation": "Utworzono",
-  "ByLastModifiedDate": "Zmodyfikowano",
+  "ByLastModified": "Zmodyfikowano",
   "ByTitle": "Tytuł",
   "CommonEmptyContainerDescription": "Sekcja 'Wspólne' zawiera pliki udostępnione wszystkim użytkownikom przez administratora portalu. Tylko on może tworzyć w niej nowe pliki. Użytkownicy mogą uzyskać pełen dostęp do pewnych folderów znajdujących się w tej sekcji. Dzięki temu będą w stanie tworzyć/wgrywać w nich dowolne pliki.  ",
   "ContainsSpecCharacter": "Tytuł nie może zawierać następujących znaków: *+:\"<>?|/",

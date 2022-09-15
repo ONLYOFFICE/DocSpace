@@ -5,7 +5,7 @@
   "BackToParentFolderButton": "상위 폴더로 돌아가기",
   "ByAuthor": "생성자",
   "ByCreation": "생성일",
-  "ByLastModifiedDate": "수정일",
+  "ByLastModified": "수정일",
   "ByTitle": "제목",
   "CommonEmptyContainerDescription": "'공통' 섹션은 포털 관리자에 의해 모든 사용자에게 공유된 파일을 포함합니다. 포털 관리자만 공통 섹션에 파일을 생성할 수 있습니다. 사용자는 해당 섹션 내 특정 폴더에 대한 전체 액세스 권한을 부여 받을 수 있습니다. 그리고 이러한 방식으로 해당 폴더에 파일을 생성/업로드할 수 있습니다.",
   "ContainsSpecCharacter": "제목에는 다음 문자가 포함될 수 없습니다: *+:\"<>?|/",

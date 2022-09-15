@@ -5,7 +5,7 @@
   "BackToParentFolderButton": "親フォルダに戻る",
   "ByAuthor": "作成者",
   "ByCreation": "作成",
-  "ByLastModifiedDate": "変更",
+  "ByLastModified": "変更",
   "ByTitle": "タイトル",
   "CommonEmptyContainerDescription": "「共通」セクションには、ポータル管理者が全ユーザに共有するファイルがあります。ここにファイルを作成できるのは、ポータル管理者のみです。ユーザーは、セクション内の特定のフォルダへのフルアクセスを許可することができます。この場合、ユーザーは、このフォルダにファイルを作成／アップロードすることができます。 ",
   "ContainsSpecCharacter": "タイトルには以下の文字*+:\"<>?|/は使用できません。",

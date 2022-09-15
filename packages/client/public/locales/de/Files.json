@@ -5,7 +5,7 @@
   "BackToParentFolderButton": "Zurück zum übergeordneten Ordner",
   "ByAuthor": "Verfasser",
   "ByCreation": "Erstellt",
-  "ByLastModifiedDate": "Verändert",
+  "ByLastModified": "Verändert",
   "ByTitle": "Titel",
   "CommonEmptyContainerDescription": "In gemeinsamen Dokumenten finden Sie Dateien, auf denen alle Benutzer Zugriff haben. Nur Portaladministratoren können dort Dateien erstellen. Benutzern kann der vollständigen Zugriff auf einen bestimmten Ordner innerhalb des Abschnitts erteilt werden. Dann können Sie Dateien in diesem Ordner erstellen / hochladen.",
   "ContainsSpecCharacter": "Der Titel darf diese Symbole nicht beinhalten: *+:\"<>?|/",

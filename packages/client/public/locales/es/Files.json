@@ -5,7 +5,7 @@
   "BackToParentFolderButton": "Volver a la carpeta principal",
   "ByAuthor": "Autor",
   "ByCreation": "Creado",
-  "ByLastModifiedDate": "Modificado",
+  "ByLastModified": "Modificado",
   "ByTitle": "Título",
   "CommonEmptyContainerDescription": "La sección 'Documentos comunes' contiene archivos compartidos por el administrador del portal con todos los usuarios. Sólo los administradores del portal pueden crear archivos allí. Los usuarios pueden tener acceso completo a una determinada carpeta dentro de la sección. De esta manera podrán crear/subir archivos en esta misma carpeta.  ",
   "ContainsSpecCharacter": "El título no puede contener ninguno de los siguientes caracteres: *+:\"<>?|/",

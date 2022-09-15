@@ -67,7 +67,7 @@ class FilesTableHeader extends React.Component {
         },
         {
           key: "Activity",
-          title: t("ByLastModifiedDate"),
+          title: t("ByLastModified"),
           enable: true,
           resizable: true,
           sortBy: "DateAndTime",
@@ -117,7 +117,7 @@ class FilesTableHeader extends React.Component {
         },
         {
           key: "Modified",
-          title: t("ByLastModifiedDate"),
+          title: t("ByLastModified"),
           enable: true,
           resizable: true,
           sortBy: "DateAndTime",

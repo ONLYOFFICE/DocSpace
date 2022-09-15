@@ -5,7 +5,7 @@
   "BackToParentFolderButton": "Atpakaļ uz vecāku mapi",
   "ByAuthor": "Autors",
   "ByCreation": "Izveidots",
-  "ByLastModifiedDate": "Modificēts",
+  "ByLastModified": "Modificēts",
   "ByTitle": "Nosaukums",
   "CommonEmptyContainerDescription": "Sadaļā 'Kopējs' ir faili, kurus visiem lietotājiem ir kopīgojis portāla administrators. Failus tur var izveidot tikai portāla administratori. Lietotājiem var piešķirt pilnu piekļuvi noteiktai sadaļas mapei. Tādā veidā viņi varēs izveidot/augšupielādēt failus tieši šajā mapē.  ",
   "ContainsSpecCharacter": "Nosaukumā nedrīkst būt neviena no šīm rakstzīmēm: *+:\"<>?|/",

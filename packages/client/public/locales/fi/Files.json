@@ -5,7 +5,7 @@
   "BackToParentFolderButton": "Takaisin pääkansioon",
   "ByAuthor": "Tekijä",
   "ByCreation": "Luotu",
-  "ByLastModifiedDate": "Muokattu",
+  "ByLastModified": "Muokattu",
   "ByTitle": "Otsikko",
   "CommonEmptyContainerDescription": "’Yleinen’ -osio sisältää tiedostoja, jotka portaalin ylläpitäjä on jakanut kaikille käyttäjille. Vain portaalin ylläpitäjät voivat luoda tiedostoja sinne. Käyttäjille voidaan myöntää täysi käyttöoikeus tiettyyn osion kansioon. Tällä tavalla he voivat luoda/ladata tiedostoja juuri tähän kansioon.  ",
   "ContainsSpecCharacter": "Otsikko ei voi sisältää mitään seuraavista merkeistä: *+: \"<>? |/",
