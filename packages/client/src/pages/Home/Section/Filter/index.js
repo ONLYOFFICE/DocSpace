@@ -19,7 +19,6 @@ import { withLayoutSize } from "@docspace/common/utils";
 import { getDefaultRoomName } from "@docspace/client/src/helpers/filesUtils";
 
 import withLoader from "../../../../HOCs/withLoader";
-import { toastr } from "@docspace/components";
 import { TableVersions } from "SRC_DIR/helpers/constants";
 
 const getFilterType = (filterValues) => {
@@ -30,7 +29,7 @@ const getFilterType = (filterValues) => {
     "key"
   );
 
-  return filterType ? (+filterType ? +filterType : filterType) : null;
+  return filterType ? +filterType : null;
 };
 
 const getAuthorType = (filterValues) => {
