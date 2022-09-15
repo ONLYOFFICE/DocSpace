@@ -13,7 +13,7 @@ import SettingsItem from "./SettingsItem";
 import AccountsItem from "./AccountsItem";
 import { combineUrl } from "@docspace/common/utils";
 import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
-import ThirdPartyList from "./ThirdPartyList";
+//import ThirdPartyList from "./ThirdPartyList";
 import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
 import { showLoader, hideLoader } from "@docspace/common/utils";
@@ -163,7 +163,7 @@ const ArticleBodyContent = (props) => {
       {!personal && !firstLoad && <SettingsItem />}
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
-          {enableThirdParty && !isVisitor && <ThirdPartyList />}
+          {/* {enableThirdParty && !isVisitor && <ThirdPartyList />} */}
           <DownloadAppList theme={theme} />
           {(isDesktop || isTablet) &&
             personal &&
