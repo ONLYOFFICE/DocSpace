@@ -823,35 +823,35 @@ const SectionFilterContent = ({
     if (viewAs === "table") {
       if (isRooms) {
         const availableSort = localStorage
-          .getItem(`${TABLE_ROOMS_COLUMNS}=${userId}`)
-          .split(",");
+          ?.getItem(`${TABLE_ROOMS_COLUMNS}=${userId}`)
+          ?.split(",");
 
         const infoPanelColumnsSize = localStorage
           ?.getItem(`${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`)
           ?.split(" ");
 
-        if (availableSort.includes("Type")) {
+        if (availableSort?.includes("Type")) {
           const idx = availableSort.findIndex((x) => x === "Type");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(roomType);
         }
 
-        if (availableSort.includes("Tags")) {
+        if (availableSort?.includes("Tags")) {
           const idx = availableSort.findIndex((x) => x === "Tags");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(tags);
         }
 
-        if (availableSort.includes("Owner")) {
+        if (availableSort?.includes("Owner")) {
           const idx = availableSort.findIndex((x) => x === "Owner");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(owner);
         }
 
-        if (availableSort.includes("Activity")) {
+        if (availableSort?.includes("Activity")) {
           const idx = availableSort.findIndex((x) => x === "Activity");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
@@ -859,38 +859,38 @@ const SectionFilterContent = ({
         }
       } else {
         const availableSort = localStorage
-          .getItem(`${TABLE_COLUMNS}=${userId}`)
-          .split(",");
+          ?.getItem(`${TABLE_COLUMNS}=${userId}`)
+          ?.split(",");
 
         const infoPanelColumnsSize = localStorage
           ?.getItem(`${COLUMNS_SIZE_INFO_PANEL}=${userId}`)
           ?.split(" ");
 
-        if (availableSort.includes("Author") && !isPersonalRoom) {
+        if (availableSort?.includes("Author") && !isPersonalRoom) {
           const idx = availableSort.findIndex((x) => x === "Author");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(authorOption);
         }
-        if (availableSort.includes("Create")) {
+        if (availableSort?.includes("Create")) {
           const idx = availableSort.findIndex((x) => x === "Create");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(creationDate);
         }
-        if (availableSort.includes("Modified")) {
+        if (availableSort?.includes("Modified")) {
           const idx = availableSort.findIndex((x) => x === "Modified");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(modifiedDate);
         }
-        if (availableSort.includes("Size")) {
+        if (availableSort?.includes("Size")) {
           const idx = availableSort.findIndex((x) => x === "Size");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(size);
         }
-        if (availableSort.includes("Type")) {
+        if (availableSort?.includes("Type")) {
           const idx = availableSort.findIndex((x) => x === "Type");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
