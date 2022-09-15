@@ -72,7 +72,7 @@ const AboutContent = (props) => {
     theme,
     companyInfoSettingsData,
     previewData,
-    whiteLabelLogoUrls,
+    docSpaceLogo,
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
@@ -97,8 +97,6 @@ const AboutContent = (props) => {
     ? previewData.address
     : companyInfoSettingsData?.address;
 
-  const logoDocSpace = whiteLabelLogoUrls[1];
-
   return (
     companyInfoSettingsData && (
       <StyledAboutBody>
@@ -110,7 +108,7 @@ const AboutContent = (props) => {
             />
           ) : (
             <ReactSVG
-              src={logoDocSpace}
+              src={docSpaceLogo}
               alt="Logo"
               className="logo-docspace-theme no-select"
             />
@@ -235,7 +233,7 @@ const AboutContent = (props) => {
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
 
-  const { theme, companyInfoSettingsData, whiteLabelLogoUrls } = settingsStore;
+  const { theme, companyInfoSettingsData, docSpaceLogo } = settingsStore;
 
-  return { theme, companyInfoSettingsData, whiteLabelLogoUrls };
+  return { theme, companyInfoSettingsData, docSpaceLogo };
 })(observer(AboutContent));
