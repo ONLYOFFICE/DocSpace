@@ -75,7 +75,7 @@ const CompanyInfoSettings = (props) => {
 
   const previewData = { companyName, email, phone, site, address };
 
-  const link = "About this program";
+  const link = t("Common:AboutCompanyTitle");
 
   useEffect(() => {
     if (!(companyInfoSettingsData && tReady)) return;
