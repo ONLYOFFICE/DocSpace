@@ -37,15 +37,8 @@ public class ModuleProvider
             {
                 new TenantsModuleSpecifics(coreSettings,helpers),
                 new AuditModuleSpecifics(helpers),
-                new CommunityModuleSpecifics(helpers),
-                new CalendarModuleSpecifics(helpers),
-                new ProjectsModuleSpecifics(helpers),
-                new CrmModuleSpecifics(helpers),
                 new FilesModuleSpecifics(logger,helpers),
-                new MailModuleSpecifics(logger,helpers),
-                new CrmModuleSpecifics2(helpers),
                 new FilesModuleSpecifics2(helpers),
-                new CrmInvoiceModuleSpecifics(helpers),
                 new WebStudioModuleSpecifics(helpers),
                 new CoreModuleSpecifics(helpers)
             }
@@ -56,10 +49,6 @@ public class ModuleProvider
         return storageModuleName switch
         {
             "files" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Files),
-            "projects" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Projects),
-            "crm" => AllModules.FirstOrDefault(m => m.ModuleName == (storageDomainName == "mail_messages" ? ModuleName.Crm2 : ModuleName.Crm)),
-            "forum" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Community),
-            "mailaggregator" => AllModules.FirstOrDefault(m => m.ModuleName == ModuleName.Mail),
             _ => null,
         };
     }
