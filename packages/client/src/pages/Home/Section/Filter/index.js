@@ -807,7 +807,7 @@ const SectionFilterContent = ({
     const size = { key: "Size", label: t("Common:Size"), default: true };
     const creationDate = {
       key: "DateAndTimeCreation",
-      label: t("ByCreationDate"),
+      label: t("ByCreation"),
       default: true,
     };
     const authorOption = {
