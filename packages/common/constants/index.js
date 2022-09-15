@@ -45,6 +45,8 @@ export const FilterType = Object.freeze({
   ArchiveOnly: 10,
   ByExtension: 11,
   MediaOnly: 12,
+  OFormTemplateOnly: 18,
+  OFormOnly: 19,
 });
 /**
  * Enum for file type.
@@ -59,6 +61,8 @@ export const FileType = Object.freeze({
   Spreadsheet: 5,
   Presentation: 6,
   Document: 7,
+  OFormTemplate: 8,
+  OForm: 9,
 });
 /**
  * Enum for room type.
