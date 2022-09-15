@@ -1,5 +1,6 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { tablet } from "@docspace/components/utils/device";
+import { isMobile } from "react-device-detect";
 
 const StyledSettings = styled.div`
   margin-top: ${(props) => (props.showTitle ? 24 : 34)}px;
@@ -7,6 +8,11 @@ const StyledSettings = styled.div`
   @media ${tablet} {
     margin-top: 8px;
   }
+
+  ${isMobile &&
+  css`
+    margin-top: 8px;
+  `}
 
   width: 100%;
 
