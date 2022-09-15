@@ -355,7 +355,7 @@ const Appearance = (props) => {
   );
 
   return viewMobile ? (
-    <BreakpointWarning content="the Appearance settings" />
+    <BreakpointWarning sectionName={t("Settings:Appearance")} />
   ) : !tReady ? (
     <Loader />
   ) : (

@@ -3,7 +3,7 @@ import { Trans, withTranslation } from "react-i18next";
 import StyledBreakpointWarning from "./sub-components/StyledBreakpointWarning";
 import Loader from "./sub-components/loader";
 
-const BreakpointWarning = ({ t, content, tReady }) => {
+const BreakpointWarning = ({ t, sectionName, tReady }) => {
   return !tReady ? (
     <Loader />
   ) : (
@@ -14,7 +14,8 @@ const BreakpointWarning = ({ t, content, tReady }) => {
         <div className="text-breakpoint">{t("BreakpointWarningText")}</div>
         <div className="text-prompt">
           <Trans t={t} i18nKey="BreakpointWarningTextPrompt" ns="Settings">
-            "Please use the desktop site to access {{ content }}"
+            "Please use the desktop site to access the {{ sectionName }}
+            settings."
           </Trans>
         </div>
       </div>
