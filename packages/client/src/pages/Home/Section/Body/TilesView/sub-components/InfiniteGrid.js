@@ -129,12 +129,11 @@ const InfiniteGrid = (props) => {
   });
 
   const type = checkType(!!cards.length);
-  const otherClassName = type;
 
   if (hasMoreFiles) {
     // If cards elements are full, it will add the full line of loaders
     if (cards.length === countTilesInRow) {
-      addItemToList("loaded-row", otherClassName, true);
+      addItemToList("loaded-row", type, true);
     }
 
     // Added line of loaders
@@ -143,17 +142,17 @@ const InfiniteGrid = (props) => {
       cards.push(
         <Loaders.Tile
           key={key}
-          className={`tiles-loader ${otherClassName}`}
+          className={`tiles-loader ${type}`}
           isFolder={type === "isFolder"}
         />
       );
     }
 
-    addItemToList("loaded-row", otherClassName);
+    addItemToList("loaded-row", type);
   } else if (cards.length) {
     // Adds loaders until the row is full
     const listKey = uniqueid("list-item_");
-    addItemToList(listKey, otherClassName);
+    addItemToList(listKey, type);
   }
 
   // console.log("InfiniteGrid render", list);
@@ -184,6 +183,7 @@ export default inject(
       fetchMoreFiles,
       getCountTilesInRow,
       roomsFilterTotal,
+      isLoading,
     } = filesStore;
 
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
@@ -199,6 +199,7 @@ export default inject(
       filesLength,
       getCountTilesInRow,
       selectedFolderId: selectedFolderStore.id,
+      isLoading,
     };
   }
 )(observer(InfiniteGrid));
