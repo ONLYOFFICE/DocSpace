@@ -94,6 +94,10 @@ const commonStyles = css`
       props.viewAs == "settings" &&
       css`
         padding-top: 0;
+
+        @media ${tablet} {
+          padding-top: 0;
+        }
       `}
 
     .section-wrapper {
