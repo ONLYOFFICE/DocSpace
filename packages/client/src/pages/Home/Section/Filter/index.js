@@ -111,11 +111,11 @@ const getTags = (filterValues) => {
 };
 
 const TABLE_COLUMNS = `filesTableColumns_ver-${TableVersions.Files}`;
-const COLUMNS_SIZE = `filesColumnsSize_ver-${TableVersions.Files}`;
+
 const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TableVersions.Files}`;
 
 const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TableVersions.Rooms}`;
-const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TableVersions.Rooms}`;
+
 const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TableVersions.Rooms}`;
 
 const SectionFilterContent = ({
@@ -204,13 +204,7 @@ const SectionFilterContent = ({
         const newFilter = filter.clone();
         newFilter.page = 0;
 
-        if (filterType === "master-forms" || filterType === "forms") {
-          newFilter.filterType = null;
-
-          toastr.warning(`The ${filterType} type is still under development`);
-        } else {
-          newFilter.filterType = filterType;
-        }
+        newFilter.filterType = filterType;
 
         newFilter.authorType = authorType;
         newFilter.withSubfolders =
@@ -453,10 +447,10 @@ const SectionFilterContent = ({
           case FilterType.FilesOnly.toString():
             label = t("AllFiles");
             break;
-          case "master-forms":
+          case FilterType.OFormTemplateOnly.toString():
             label = t("FormsTemplates");
             break;
-          case "forms":
+          case FilterType.OFormOnly.toString():
             label = t("Forms");
             break;
         }
@@ -597,12 +591,12 @@ const SectionFilterContent = ({
             label: t("Translations:Spreadsheets").toLowerCase(),
           },
           {
-            key: "master-forms",
+            key: FilterType.OFormTemplateOnly.toString(),
             group: FilterGroups.filterType,
             label: t("FormsTemplates").toLowerCase(),
           },
           {
-            key: "forms",
+            key: FilterType.OFormOnly.toString(),
             group: FilterGroups.filterType,
             label: t("Forms").toLowerCase(),
           },
@@ -834,7 +828,7 @@ const SectionFilterContent = ({
           .split(",");
 
         const infoPanelColumnsSize = localStorage
-          ?.getItem(`${COLUMNS_SIZE_INFO_PANEL}=${userId}`)
+          ?.getItem(`${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`)
           ?.split(" ");
 
         if (availableSort.includes("Type")) {
