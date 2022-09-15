@@ -52,7 +52,9 @@ const StyledDropzone = styled.div`
       }
 
       @media ${hugeMobile} {
-        flex-direction: column;
+        &-secondary {
+          display: none;
+        }
       }
     }
 
