@@ -53,6 +53,19 @@ class PaymentQuotasStore {
 
     totalSizeObj.title = replacedValue;
   };
+
+  get usedTotalStorageSizeTitle() {
+    const result = this.portalPaymentQuotasFeatures.find(
+      (obj) => obj.id === "total_size"
+    );
+    return result.priceTitle;
+  }
+  get addedManagersCountTitle() {
+    const result = this.portalPaymentQuotasFeatures.find(
+      (obj) => obj.id === "managers"
+    );
+    return result.priceTitle;
+  }
   setPortalPaymentQuotas = async (t) => {
     if (this.isLoaded) return;
 

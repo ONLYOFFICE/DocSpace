@@ -145,7 +145,10 @@ class PaymentStore {
       authStore.currentQuotaStore.maxCountManagersByQuota;
 
     if (currentPaidValueManagers !== 0) {
-      this.managersCount = currentPaidValueManagers;
+      this.managersCount =
+        currentPaidValueManagers > this.maxAvailableManagersCount
+          ? this.maxAvailableManagersCount + 1
+          : currentPaidValueManagers;
     } else {
       this.managersCount = this.minAvailableManagersValue;
     }
@@ -162,7 +165,9 @@ class PaymentStore {
   };
 
   setManagersCount = (managers) => {
-    this.managersCount = managers;
+    if (managers > this.maxAvailableManagersCount)
+      this.managersCount = this.maxAvailableManagersCount + 1;
+    else this.managersCount = managers;
   };
 
   get isNeedRequest() {

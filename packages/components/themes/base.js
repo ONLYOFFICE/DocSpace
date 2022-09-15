@@ -2845,6 +2845,7 @@ const Base = {
 
       payment: {
         priceColor: "#A3A9AE",
+        storageSizeTitle: "#A3A9AE",
       },
     },
 

@@ -67,13 +67,6 @@ class QuotasStore {
     return result.used.value;
   }
 
-  get usedTotalStorageSizeTitle() {
-    const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "total_size"
-    );
-    return result.used.title;
-  }
-
   get maxFileSizeByQuota() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === "file_size"

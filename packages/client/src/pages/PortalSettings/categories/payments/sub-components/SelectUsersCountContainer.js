@@ -8,6 +8,7 @@ import MinusIcon from "../../../../../../public/images/minus.react.svg";
 import { smallTablet } from "@docspace/components/utils/device";
 import TextInput from "@docspace/components/text-input";
 import { inject, observer } from "mobx-react";
+import SelectTotalSizeContainer from "./SelectTotalSizeContainer";
 
 const StyledBody = styled.div`
   max-width: 272px;
@@ -91,7 +92,7 @@ const StyledBody = styled.div`
   }
 
   .payment-users_text {
-    margin-bottom: 12px;
+    margin-bottom: 4px;
     text-align: center;
   }
 `;
@@ -173,10 +174,11 @@ const SelectUsersCountContainer = ({
     setTotalPrice(numberValue);
   };
 
-  const value =
-    managersCount > maxAvailableManagersCount
-      ? maxAvailableManagersCount + "+"
-      : managersCount + "";
+  const isNeedPlusSign = managersCount > maxAvailableManagersCount;
+
+  const value = isNeedPlusSign
+    ? maxAvailableManagersCount + "+"
+    : managersCount + "";
 
   const isUpdatingTariff = isLoading && isAlreadyPaid;
 
@@ -194,6 +196,7 @@ const SelectUsersCountContainer = ({
       <Text noSelect fontWeight={600} className="payment-users_text" {...color}>
         {t("ManagersNumber")}
       </Text>
+      <SelectTotalSizeContainer isNeedPlusSign={isNeedPlusSign} />
       <div className="payment-users">
         <div className="circle" {...onClickProp} data-operation={"minus"}>
           <MinusIcon {...onClickProp} className="payment-score" />

@@ -23,9 +23,7 @@ const StyledBody = styled.div`
 
   padding: 24px;
   box-sizing: border-box;
-  p {
-    margin-bottom: 24px;
-  }
+
 
   .payment_price_user {
     display: flex;
