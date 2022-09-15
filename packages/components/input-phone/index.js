@@ -1,63 +1,18 @@
 import { useState } from "react";
 import { options } from "./options";
 // import { FixedSizeList as List } from 'react-window';
-import ComboBox from "@docspace/components/combobox";
 import Box from "@docspace/components/box";
 import InputBlock from "@docspace/components/input-block";
-import DropDown from "@docspace/components/drop-down";
-import DropDownItem from "@docspace/components/drop-down-item";
-import TextInput from "@docspace/components/text-input";
-import styled from "styled-components";
-
-const StyledComboBox = styled(ComboBox)`
-  .combo-button-label {
-    font-weight: 400;
-    line-height: 22px;
-    padding: 10px;
-    text-align: center;
-    margin: 0;
-  }
-  .combo-button {
-    height: 44px;
-    border-right: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    cursor: pointer;
-    padding-left: 0;
-    &:focus-within {
-      border-color: red;
-    }
-  }
-`;
-
-const StyledInput = styled(TextInput)`
-  padding-left: 10px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-`;
-
-const CountryFlag = styled.div`
-  border: 1px solid #aeaeae;
-  margin-right: 10px;
-  padding: 0 5px;
-`;
-
-const CountryTitle = styled.h3`
-  font-size: 13px;
-  font-weight: 400;
-  color: #33333;
-  margin: 0;
-  margin-right: 5px;
-  line-height: 20px;
-`;
-
-const CountryDialCode = styled.p`
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 20px;
-  margin: 0;
-  color: #a3a9ae;
-`;
+import {
+  StyledBox,
+  StyledComboBox,
+  StyledInput,
+  StyledDropDown,
+  StyledDropDownItem,
+  CountryFlag,
+  CountryName,
+  CountryDialCode,
+} from "./styled-input-phone";
 
 export const InputPhone = () => {
   const [phoneValue, setPhoneValue] = useState("+");
@@ -65,20 +20,36 @@ export const InputPhone = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleChange = (e) => {
-    if (e.target.value === "") {
+    const onlyDigits = e.target.value.replace(/[^+\d]/g, "");
+    if (onlyDigits === "") {
       setPhoneValue("+");
     } else {
-      setPhoneValue(e.target.value);
+      setPhoneValue(onlyDigits);
     }
   };
 
+  // const mask = [
+  //   "+",
+  //   /\d/,
+  //   " ",
+  //   /\d/,
+  //   /\d/,
+  //   /\d/,
+  //   " ",
+  //   /\d/,
+  //   /\d/,
+  //   /\d/,
+  //   "-",
+  //   /\d/,
+  //   /\d/,
+  //   "-",
+  //   /\d/,
+  //   /\d/,
+  // ];
+
   return (
-    <Box
-      displayProp="flex"
-      alignContent="center"
-      style={{ position: "relative", maxWidth: "320px" }}
-    >
-      <Box style={{ cursor: "pointer" }}>
+    <StyledBox displayProp="flex" alignContent="center">
+      <Box>
         <StyledComboBox
           onClick={() => setIsOpen(!isOpen)}
           options={[]}
@@ -90,30 +61,22 @@ export const InputPhone = () => {
         />
       </Box>
       <StyledInput
-        onKeyPress={(e) => {
-          if (!/[0-9]/.test(e.key)) {
-            e.preventDefault();
-          }
-        }}
-        type="text"
-        maxLength={15}
+        type="tel"
+        placeholder="+7 XXX XXX-XX-XX"
+        // mask={mask}
+        maxLength={20}
+        isAutoFocussed={true}
         value={phoneValue}
         onChange={handleChange}
         className="phone-input"
       />
 
-      <DropDown
-        // isDropdown
+      <StyledDropDown
         open={isOpen}
         clickOutsideAction={() => setIsOpen(!isOpen)}
         isDefaultMode={false}
         // maxHeight={200}
         manualWidth="100%"
-        style={{
-          padding: "12px 16px",
-          boxSizing: "border-box",
-          marginTop: "4px",
-        }}
       >
         <InputBlock
           type="text"
@@ -126,27 +89,24 @@ export const InputPhone = () => {
         />
 
         {options
-          .filter((val) => val.name.toLowerCase().includes(searchValue))
+          .filter(
+            (val) =>
+              val.name.toLowerCase().includes(searchValue) ||
+              val.dialCode.includes(searchValue)
+          )
           .map((country) => (
-            <DropDownItem
-              // noHover
+            <StyledDropDownItem
+              key={country.code}
               onClick={() => {
                 setPhoneValue(country.dialCode), setIsOpen(!isOpen);
               }}
-              key={country.code}
-              style={{
-                padding: "9px 0",
-                boxSizing: "border-box",
-                display: "flex",
-                alignItems: "center",
-              }}
             >
               <CountryFlag>Flag</CountryFlag>
-              <CountryTitle>{country.name}</CountryTitle>
+              <CountryName>{country.name}</CountryName>
               <CountryDialCode>{country.dialCode}</CountryDialCode>
-            </DropDownItem>
+            </StyledDropDownItem>
           ))}
-      </DropDown>
-    </Box>
+      </StyledDropDown>
+    </StyledBox>
   );
 };

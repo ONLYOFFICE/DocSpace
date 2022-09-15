@@ -1,4 +1,4 @@
-import { InputPhone } from ".";
+import { InputPhone } from "./index";
 
 export default {
   title: "Components/InputPhone",

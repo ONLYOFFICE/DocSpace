@@ -9,6 +9,7 @@ import { default as AI } from "./flags/anguilla.react.svg";
 import { default as AG } from "./flags/antiguaAndBarbuda.react.svg";
 import { default as AR } from "./flags/argentina.react.svg";
 import { default as AM } from "./flags/armenia.react.svg";
+import { default as RU } from "./flags/russia.react.svg";
 
 export const options = [
   {
@@ -87,5 +88,12 @@ export const options = [
     code: "AM",
     mask: null,
     flag: "./flags/armenia.react.svg",
+  },
+  {
+    name: "Russia",
+    dialCode: "+7",
+    code: "RU",
+    mask: null,
+    flag: "./flags/russia.react.svg",
   },
 ];

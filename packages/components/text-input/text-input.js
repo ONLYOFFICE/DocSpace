@@ -22,7 +22,7 @@ TextInput.propTypes = {
   /** Used as HTML `name` property */
   name: PropTypes.string,
   /** Supported type of the input fields. */
-  type: PropTypes.oneOf(["text", "password", "email"]),
+  type: PropTypes.oneOf(["text", "password", "email", "tel"]),
   /** Value of the input */
   value: PropTypes.string.isRequired,
   maxLength: PropTypes.number,
