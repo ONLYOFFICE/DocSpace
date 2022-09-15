@@ -320,6 +320,11 @@ const SectionFilterContent = ({
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
+  const clearAll = () => {
+    setIsLoading(true);
+    fetchPeople().finally(() => setIsLoading(false));
+  };
+
   return isLoaded && tReady ? (
     <FilterInput
       t={t}
@@ -339,6 +344,7 @@ const SectionFilterContent = ({
       viewSelectorVisible={false}
       removeSelectedItem={removeSelectedItem}
       isAccounts={true}
+      clearAll={clearAll}
     />
   ) : (
     <Loaders.Filter />
