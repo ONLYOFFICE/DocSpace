@@ -224,27 +224,29 @@ class ProfileActionsStore {
     const actionsArray = actions;
 
     const feedbackAndSupportEnabled = this.authStore.settingsStore
-      .additionalResourcesData.feedbackAndSupportEnabled;
+      .additionalResourcesData?.feedbackAndSupportEnabled;
     const videoGuidesEnabled = this.authStore.settingsStore
-      .additionalResourcesData.videoGuidesEnabled;
+      .additionalResourcesData?.videoGuidesEnabled;
     const helpCenterEnabled = this.authStore.settingsStore
-      .additionalResourcesData.helpCenterEnabled;
+      .additionalResourcesData?.helpCenterEnabled;
 
     if (!feedbackAndSupportEnabled) {
-      const index = actionsArray.findIndex((item) => item.key === "SupportBtn");
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "SupportBtn"
+      );
 
       actionsArray.splice(index, 1);
     }
 
     if (!videoGuidesEnabled) {
-      const index = actionsArray.findIndex((item) => item.key === "VideoBtn");
+      const index = actionsArray.findIndex((item) => item?.key === "VideoBtn");
 
       actionsArray.splice(index, 1);
     }
 
     if (!helpCenterEnabled) {
       const index = actionsArray.findIndex(
-        (item) => item.key === "HelpCenterBtn"
+        (item) => item?.key === "HelpCenterBtn"
       );
 
       actionsArray.splice(index, 1);

@@ -25,7 +25,7 @@ const tabletProps = css`
     `}
 
     ${(props) =>
-      props.settingsStudio &&
+      (props.settingsStudio || props.viewAs == "settings") &&
       isMobileOnly &&
       css`
         background: ${(props) => props.theme.section.header.backgroundColor};
