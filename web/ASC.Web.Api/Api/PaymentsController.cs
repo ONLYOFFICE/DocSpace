@@ -78,7 +78,7 @@ public class PaymentController : ControllerBase
     public async Task<Uri> GetPaymentUrl(PaymentUrlRequestsDto inDto)
     {
         if (_tariffService.GetPayments(Tenant.Id).Any() ||
-            !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
+            !_userManager.IsAdmin(_securityContext.CurrentAccount.ID))
         {
             return null;
         }
@@ -96,7 +96,7 @@ public class PaymentController : ControllerBase
     public async Task<bool> PaymentUpdate(PaymentUrlRequestsDto inDto)
     {
         if (!_tariffService.GetPayments(Tenant.Id).Any() ||
-            !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager))
+            !_userManager.IsAdmin(_securityContext.CurrentAccount.ID))
         {
             return false;
         }

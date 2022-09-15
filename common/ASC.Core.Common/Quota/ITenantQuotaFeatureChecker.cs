@@ -27,24 +27,43 @@
 namespace ASC.Core.Common.Quota;
 public interface ITenantQuotaFeatureChecker
 {
-    public Task<bool> Check(TenantQuota value);
-    public string Exception(TenantQuota value);
+    public Task CheckUsed(TenantQuota value);
+    string Exception { get; }
 }
 
 
 public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChecker where T : TenantQuotaFeature<T1> where T1 : IComparable<T1>
 {
     private readonly ITenantQuotaFeatureStat<T, T1> _tenantQuotaFeatureStatistic;
+    private readonly TenantManager _tenantManager;
 
-    public TenantQuotaFeatureChecker(ITenantQuotaFeatureStat<T, T1> tenantQuotaFeatureStatistic)
+    public abstract string Exception { get; }
+
+    public TenantQuotaFeatureChecker(ITenantQuotaFeatureStat<T, T1> tenantQuotaFeatureStatistic, TenantManager tenantManager)
     {
         _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
+        _tenantManager = tenantManager;
     }
 
-    public virtual async Task<bool> Check(TenantQuota quota)
+    public async Task CheckUsed(TenantQuota quota)
     {
-        return (await _tenantQuotaFeatureStatistic.GetValue()).CompareTo(quota.GetFeature<T>().Value) <= 0;
+        var used = await _tenantQuotaFeatureStatistic.GetValue();
+        Check(quota, used);
     }
 
-    public abstract string Exception(TenantQuota quota);
+    public void CheckAdd(T1 newValue)
+    {
+        var quota = _tenantManager.GetCurrentTenantQuota();
+        Check(quota, newValue);
+    }
+
+    private void Check(TenantQuota quota, T1 newValue)
+    {
+        var val = quota.GetFeature<T>().Value;
+
+        if (newValue.CompareTo(val) > 0)
+        {
+            throw new Exception(string.Format(Exception, val));
+        }
+    }
 }

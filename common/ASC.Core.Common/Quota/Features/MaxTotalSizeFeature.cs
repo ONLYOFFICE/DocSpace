@@ -37,13 +37,10 @@ public class MaxTotalSizeFeature : TenantQuotaFeatureSize
 
 public class MaxTotalSizeChecker : TenantQuotaFeatureChecker<MaxTotalSizeFeature, long>
 {
-    public MaxTotalSizeChecker(ITenantQuotaFeatureStat<MaxTotalSizeFeature, long> tenantQuotaFeatureStatistic) : base(tenantQuotaFeatureStatistic)
-    {
-    }
+    public override string Exception => "The used storage size should not exceed {0}";
 
-    public override string Exception(TenantQuota quota)
+    public MaxTotalSizeChecker(ITenantQuotaFeatureStat<MaxTotalSizeFeature, long> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
-        return "The used storage size should not exceed " + quota.MaxTotalSize;
     }
 }
 

@@ -25,6 +25,8 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
+using ASC.Files.Core.Core;
+
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -82,6 +84,8 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly ILogger _logger;
     private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
+    private readonly CountRoomChecker _countRoomChecker;
+    private readonly CountRoomCheckerStatistic _countRoomCheckerStatistic;
 
     public FileStorageService(
         Global global,
@@ -133,7 +137,9 @@ public class FileStorageService<T> //: IFileStorageService
         ThirdPartySelector thirdPartySelector,
         ThumbnailSettings thumbnailSettings,
         FileShareParamsHelper fileShareParamsHelper,
-        EncryptionLoginProvider encryptionLoginProvider)
+        EncryptionLoginProvider encryptionLoginProvider,
+        CountRoomChecker countRoomChecker,
+        CountRoomCheckerStatistic countRoomCheckerStatistic)
     {
         _global = global;
         _globalStore = globalStore;
@@ -185,6 +191,8 @@ public class FileStorageService<T> //: IFileStorageService
         _thumbnailSettings = thumbnailSettings;
         _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
+        _countRoomChecker = countRoomChecker;
+        _countRoomCheckerStatistic = countRoomCheckerStatistic;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -455,6 +463,8 @@ public class FileStorageService<T> //: IFileStorageService
     public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
+
+        _countRoomChecker.CheckAdd((await _countRoomCheckerStatistic.GetValue()) + 1);
 
         if (@private && (share == null || !share.Any()))
         {
