@@ -93,32 +93,30 @@ class SettingsStore {
   };
 
   getFilesSettings = () => {
-    if (!this.isLoadedSettingsTree) {
-      return api.files
-        .getSettingsFiles()
-        .then((settings) => {
-          this.setFilesSettings(settings);
-          if (settings.enableThirdParty) {
-            this.setIsLoaded(true);
-            return axios
-              .all([
-                api.files.getThirdPartyCapabilities(),
-                api.files.getThirdPartyList(),
-              ])
-              .then(([capabilities, providers]) => {
-                for (let item of capabilities) {
-                  item.splice(1, 1);
-                }
-                this.thirdPartyStore.setThirdPartyCapabilities(capabilities); //TODO: Out of bounds read: 1
-                this.thirdPartyStore.setThirdPartyProviders(providers);
-              });
-          }
-          return this.setIsLoaded(true);
-        })
-        .catch(() => this.setIsErrorSettings(true));
-    } else {
-      return Promise.resolve();
-    }
+    if (this.isLoadedSettingsTree) return Promise.resolve();
+
+    return api.files
+      .getSettingsFiles()
+      .then((settings) => {
+        this.setFilesSettings(settings);
+        this.setIsLoaded(true);
+
+        if (!settings.enableThirdParty) return;
+
+        return axios
+          .all([
+            api.files.getThirdPartyCapabilities(),
+            api.files.getThirdPartyList(),
+          ])
+          .then(([capabilities, providers]) => {
+            for (let item of capabilities) {
+              item.splice(1, 1);
+            }
+            this.thirdPartyStore.setThirdPartyCapabilities(capabilities); //TODO: Out of bounds read: 1
+            this.thirdPartyStore.setThirdPartyProviders(providers);
+          });
+      })
+      .catch(() => this.setIsErrorSettings(true));
   };
 
   setFilesSetting = (setting, val) => {
