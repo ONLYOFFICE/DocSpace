@@ -8,6 +8,7 @@ import TableBody from "@docspace/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
 import { Base } from "@docspace/components/themes";
+import { TableVersions } from "SRC_DIR/helpers/constants";
 
 const marginCss = css`
   margin-top: -1px;
@@ -98,15 +99,13 @@ const StyledTableContainer = styled(TableContainer)`
 
 StyledTableContainer.defaultProps = { theme: Base };
 
-const TABLE_VERSION = "2";
-const TABLE_COLUMNS = `filesTableColumns_ver-${TABLE_VERSION}`;
-const COLUMNS_SIZE = `filesColumnsSize_ver-${TABLE_VERSION}`;
-const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TABLE_VERSION}`;
+const TABLE_COLUMNS = `filesTableColumns_ver-${TableVersions.Files}`;
+const COLUMNS_SIZE = `filesColumnsSize_ver-${TableVersions.Files}`;
+const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TableVersions.Files}`;
 
-const TABLE_ROOMS_VERSION = "1";
-const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TABLE_ROOMS_VERSION}`;
-const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TABLE_ROOMS_VERSION}`;
-const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TABLE_ROOMS_VERSION}`;
+const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TableVersions.Rooms}`;
+const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TableVersions.Rooms}`;
+const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TableVersions.Rooms}`;
 
 const Table = ({
   filesList,
