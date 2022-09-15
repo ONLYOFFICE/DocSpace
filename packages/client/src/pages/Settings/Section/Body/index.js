@@ -11,15 +11,14 @@ import config from "PACKAGE_FILE";
 import Submenu from "@docspace/components/submenu";
 import CommonSettings from "./CommonSettings";
 import AdminSettings from "./AdminSettings";
-import { isDesktop } from "@docspace/components/utils/device";
+import { tablet } from "@docspace/components/utils/device";
 
 const StyledContainer = styled.div`
   margin-top: -22px;
 
-  ${isDesktop &&
-  css`
-    margin-top: -19px;
-  `}
+  @media ${tablet} {
+    margin-top: 0px;
+  }
 `;
 
 const SectionBodyContent = ({ isAdmin, isErrorSettings, history }) => {

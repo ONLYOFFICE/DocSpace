@@ -1,7 +1,13 @@
 import styled from "styled-components";
+import { tablet } from "@docspace/components/utils/device";
 
 const StyledSettings = styled.div`
   margin-top: ${(props) => (props.showTitle ? 24 : 34)}px;
+
+  @media ${tablet} {
+    margin-top: 8px;
+  }
+
   width: 100%;
 
   display: grid;
