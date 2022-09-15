@@ -7,7 +7,7 @@ import ToggleParam from "../Params/ToggleParam";
 import ThirpartyComboBox from "./ThirpartyComboBox";
 
 import Toast from "@docspace/components/toast";
-import toastrHelper from "@docspace/client/src/helpers/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import FolderInput from "./FolderInput";
 
 const StyledThirdPartyStorage = styled(StyledParam)`
@@ -36,12 +36,12 @@ const ThirdPartyStorage = ({
   const checkForProviders = () => {
     if (connectItems.length) onChangeIsThirdparty();
     else
-      toastrHelper.warning(
+      toastr.warning(
         <div>
           <div>{t("ThirdPartyStorageNoStorageAlert")}</div>
           <a href="#">Third-party services</a>
         </div>,
-        "Alert",
+        null,
         5000,
         true,
         false

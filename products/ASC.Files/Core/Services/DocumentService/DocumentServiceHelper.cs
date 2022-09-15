@@ -128,7 +128,7 @@ public class DocumentServiceHelper
 
         var rightModifyFilter = rightToEdit;
 
-        if (linkRight == FileShare.Restrict && _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        if (linkRight == FileShare.Restrict && _userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             rightToEdit = false;
             rightToReview = false;

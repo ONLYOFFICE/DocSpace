@@ -47,7 +47,7 @@ const ArticleProfile = (props) => {
         <div ref={ref}>
           <Avatar
             size={avatarSize}
-            role={userRole}
+            role={"user"}
             source={user.avatar}
             userName={user.displayName}
             onClick={onAvatarClick}

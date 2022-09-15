@@ -2,8 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import {
-  desktop,
-  size,
   tablet,
   mobile,
   isMobile as isMobileUtils,
@@ -11,7 +9,7 @@ import {
 } from "@docspace/components/utils/device";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { Provider } from "@docspace/components/utils/context";
-import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 import SectionContainer from "./sub-components/section-container";
 import SubSectionHeader from "./sub-components/section-header";
@@ -206,16 +204,12 @@ class Section extends React.Component {
       showSecondaryButtonAlert,
       uploadFiles,
       viewAs,
-      //withBodyAutoFocus,
       withBodyScroll,
       children,
       isHeaderVisible,
-      //headerBorderBottom,
       onOpenUploadPanel,
       isTabletView,
-      firstLoad,
       dragging,
-      isDesktop,
       isHomepage,
       maintenanceExist,
       setMaintenanceExist,
@@ -364,7 +358,6 @@ class Section extends React.Component {
                           viewAs={viewAs}
                           isHomepage={isHomepage}
                           settingsStudio={settingsStudio}
-                          withPaging={withPaging}
                           selectoRef={this.selectoRef}
                         >
                           {isMobile && (
@@ -529,7 +522,6 @@ class Section extends React.Component {
 Section.propTypes = {
   children: PropTypes.any,
   withBodyScroll: PropTypes.bool,
-  withBodyAutoFocus: PropTypes.bool,
   showPrimaryProgressBar: PropTypes.bool,
   primaryProgressBarValue: PropTypes.number,
   showPrimaryButtonAlert: PropTypes.bool,
@@ -542,12 +534,10 @@ Section.propTypes = {
   onDrop: PropTypes.func,
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
-  hideAside: PropTypes.bool,
   viewAs: PropTypes.string,
   onOpenUploadPanel: PropTypes.func,
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
-  firstLoad: PropTypes.bool,
   isHomepage: PropTypes.bool,
   isInfoPanelAvailable: PropTypes.bool,
   settingsStudio: PropTypes.bool,
@@ -556,7 +546,6 @@ Section.propTypes = {
 
 Section.defaultProps = {
   withBodyScroll: true,
-  withBodyAutoFocus: false,
   isInfoPanelAvailable: true,
   settingsStudio: false,
   withPaging: true,
@@ -570,11 +559,10 @@ Section.SectionBody = SectionBody;
 Section.SectionPaging = SectionPaging;
 
 export default inject(({ auth }) => {
-  const { infoPanelStore, isLoaded, settingsStore } = auth;
+  const { infoPanelStore, settingsStore } = auth;
   const {
     isHeaderVisible,
     isTabletView,
-    isDesktopClient,
     maintenanceExist,
     snackbarExist,
     setMaintenanceExist,
@@ -584,14 +572,12 @@ export default inject(({ auth }) => {
   const { isVisible: infoPanelIsVisible } = infoPanelStore;
 
   return {
-    isLoaded,
     isTabletView,
     isHeaderVisible,
 
     maintenanceExist,
     snackbarExist,
     setMaintenanceExist,
-    isDesktop: isDesktopClient,
 
     showText,
 

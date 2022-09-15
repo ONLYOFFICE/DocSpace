@@ -14,7 +14,7 @@ import LoadingStore from "./LoadingStore";
 import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
 import { isMobile } from "react-device-detect";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 const fullAccessId = "00000000-0000-0000-0000-000000000000";
 

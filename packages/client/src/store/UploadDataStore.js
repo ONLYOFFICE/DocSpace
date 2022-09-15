@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
-import { loopTreeFolders } from "../helpers/files-helpers";
 import uniqueid from "lodash/uniqueId";
 import sumBy from "lodash/sumBy";
 import { ConflictResolveType } from "@docspace/common/constants";
@@ -17,7 +16,7 @@ import {
   moveToFolder,
   fileCopyAs,
 } from "@docspace/common/api/files";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 class UploadDataStore {
   authStore;
   treeFoldersStore;
@@ -670,27 +669,6 @@ class UploadDataStore {
       } else {
         addNewFile();
       }
-
-      if (!!folderInfo) {
-        const {
-          expandedKeys,
-          setExpandedKeys,
-          treeFolders,
-        } = this.treeFoldersStore;
-
-        const newExpandedKeys = expandedKeys.filter(
-          (x) => x !== newPath[newPath.length - 1] + ""
-        );
-
-        setExpandedKeys(newExpandedKeys);
-
-        loopTreeFolders(
-          newPath,
-          treeFolders,
-          this.filesStore.folders.length === 1 ? this.filesStore.folders : [],
-          this.filesStore.folders.length
-        );
-      }
     }
   };
 
@@ -1159,7 +1137,6 @@ class UploadDataStore {
   };
 
   moveToCopyTo = (destFolderId, pbData, isCopy, fileIds, folderIds) => {
-    const { treeFolders, setTreeFolders } = this.treeFoldersStore;
     const {
       fetchFiles,
       filter,
@@ -1181,45 +1158,36 @@ class UploadDataStore {
       updatedFolder = destFolderId;
     }
 
-    getFolder(receivedFolder).then((data) => {
-      let newTreeFolders = treeFolders;
-      let path = data.pathParts.slice(0);
-      let folders = data.folders;
-      let foldersCount = data.current.foldersCount;
-      loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+    if (!isCopy || destFolderId === this.selectedFolderStore.id) {
+      let newFilter;
 
-      if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-        let newFilter;
-
-        if (isEmptyLastPageAfterOperation()) {
-          newFilter = resetFilterPage();
-        }
-
-        fetchFiles(
-          updatedFolder,
-          newFilter ? newFilter : filter,
-          true,
-          true,
-          false
-        ).finally(() => {
-          this.clearActiveOperations(fileIds, folderIds);
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          this.dialogsStore.setIsFolderActions(false);
-        });
-      } else {
-        this.clearActiveOperations(fileIds, folderIds);
-        setSecondaryProgressBarData({
-          icon: pbData.icon,
-          label: pbData.label || label,
-          percent: 100,
-          visible: true,
-          alert: false,
-        });
-
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-        setTreeFolders(newTreeFolders);
+      if (isEmptyLastPageAfterOperation()) {
+        newFilter = resetFilterPage();
       }
-    });
+
+      fetchFiles(
+        updatedFolder,
+        newFilter ? newFilter : filter,
+        true,
+        true,
+        false
+      ).finally(() => {
+        this.clearActiveOperations(fileIds, folderIds);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        this.dialogsStore.setIsFolderActions(false);
+      });
+    } else {
+      this.clearActiveOperations(fileIds, folderIds);
+      setSecondaryProgressBarData({
+        icon: pbData.icon,
+        label: pbData.label || label,
+        percent: 100,
+        visible: true,
+        alert: false,
+      });
+
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+    }
   };
 
   getOperationProgress = async (id) => {
