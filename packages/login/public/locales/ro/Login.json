@@ -3,6 +3,8 @@
   "CodeSubtitle": "Codul din 6 cifre a fost trimis la adresa {{email}}. Codul este cu valabilitatea limitată, trebuie să-l introduceți cât mai curând posibil.",
   "CodeTitle": "Codul v-a fost trimis",
   "CookieSettingsTitle": "Durata sesiunii",
+  "ErrorInvalidHeader": "Adresa e-mail invalidă sau link-ul expirat",
+  "ErrorInvalidText": "Veţi fi redirecționat în 10 secunde către <1>pagina de autentificare</1>",
   "ExpiredCode": "Codul nu mai este valabil. Solicitați un nou cod și încercați din nou",
   "ForgotPassword": "Ați uitat parola?",
   "InvalidCode": "Codul nevalid. Încercaţi din nou",

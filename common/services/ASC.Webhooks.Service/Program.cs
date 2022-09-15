@@ -32,32 +32,16 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config.AddJsonFile($"appsettings.services.json", true);
-}, (hostContext, services, diHelper) =>
-{
-    diHelper.TryAdd<DbWorker>();
+builder.Host.ConfigureDefault();
 
-    services.AddHostedService<WorkerService>();
-    diHelper.TryAdd<WorkerService>();
-
-    services.AddHttpClient("webhook")
-    .SetHandlerLifetime(TimeSpan.FromMinutes(5))
-    .AddPolicyHandler((s, request) =>
-    {
-        var settings = s.GetRequiredService<Settings>();
-
-        return HttpPolicyExtensions
-            .HandleTransientHttpError()
-            .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
-            .WaitAndRetryAsync(settings.RepeatCount.HasValue ? settings.RepeatCount.Value : 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
-    });
-});
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddWebhookConfiguration()
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.WebHost.ConfigureDefaultKestrel();
 
-var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
+var startup = new Startup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 

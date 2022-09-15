@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Notify.Extension;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -32,24 +34,15 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config.AddJsonFile($"appsettings.services.json", true)
-          .AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-},
-(hostContext, services, diHelper) =>
-{
-    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
-    services.AddHostedService<ServiceLauncher>();
-    diHelper.TryAdd<ServiceLauncher>();
-    NotifyConfigurationExtension.Register(diHelper);
-    diHelper.TryAdd<EmailSenderSink>();
-});
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddStudioNotifyConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.WebHost.ConfigureDefaultKestrel();
 
-var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
+var startup = new Startup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 

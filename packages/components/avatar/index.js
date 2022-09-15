@@ -83,7 +83,7 @@ const Avatar = (props) => {
       <AvatarWrapper source={source} userName={userName}>
         {avatarContent}
       </AvatarWrapper>
-      {editing && size === "max" && (
+      {editing && size === "max" ? (
         <EditContainer>
           <IconButton
             className="edit_icon"
@@ -92,8 +92,9 @@ const Avatar = (props) => {
             size={16}
           />
         </EditContainer>
+      ) : (
+        <RoleWrapper size={size}>{roleIcon}</RoleWrapper>
       )}
-      <RoleWrapper size={size}>{roleIcon}</RoleWrapper>
     </StyledAvatar>
   );
 };

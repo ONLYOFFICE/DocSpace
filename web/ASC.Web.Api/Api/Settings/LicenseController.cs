@@ -130,7 +130,7 @@ public class LicenseController : BaseSettingsController
             throw new NotSupportedException();
         }
 
-        if (!_userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager))
+        if (!_userManager.IsAdmin(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException();
         }

@@ -54,6 +54,7 @@ public class FileSecurity : IFileSecurity
     public FileShare DefaultProjectsShare => FileShare.ReadWrite;
     public FileShare DefaultCommonShare => FileShare.Read;
     public FileShare DefaultPrivacyShare => FileShare.Restrict;
+    public FileShare DefaultVirtualRoomsShare => FileShare.Restrict;
 
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
@@ -401,14 +402,14 @@ public class FileSecurity : IFileSecurity
     private async Task<bool> CanAsync<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
     {
         var user = _userManager.GetUsers(userId);
-        var isOutsider = user.IsOutsider(_userManager);
+        var isOutsider = _userManager.IsOutsider(user);
 
         if (isOutsider && action != FilesSecurityActions.Read)
         {
             return false;
         }
 
-        var isVisitor = user.IsVisitor(_userManager);
+        var isVisitor = _userManager.IsVisitor(user);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
         var isAdmin = _fileSecurityCommon.IsAdministrator(userId);
 
@@ -437,14 +438,14 @@ public class FileSecurity : IFileSecurity
     private async IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanAsync<T>(IAsyncEnumerable<FileEntry<T>> entry, Guid userId, FilesSecurityActions action)
     {
         var user = _userManager.GetUsers(userId);
-        var isOutsider = user.IsOutsider(_userManager);
+        var isOutsider = _userManager.IsOutsider(user);
 
         if (isOutsider && action != FilesSecurityActions.Read)
         {
             yield break;
         }
 
-        var isVisitor = user.IsVisitor(_userManager);
+        var isVisitor = _userManager.IsVisitor(user);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
         var isAdmin = _fileSecurityCommon.IsAdministrator(userId);
 
@@ -457,7 +458,7 @@ public class FileSecurity : IFileSecurity
     private IAsyncEnumerable<FileEntry<T>> FilterAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId)
     {
         var user = _userManager.GetUsers(userId);
-        var isOutsider = user.IsOutsider(_userManager);
+        var isOutsider = _userManager.IsOutsider(user);
 
         if (isOutsider && action != FilesSecurityActions.Read)
         {
@@ -469,7 +470,7 @@ public class FileSecurity : IFileSecurity
 
     private async IAsyncEnumerable<FileEntry<T>> InternalFilterAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, UserInfo user, bool isOutsider)
     {
-        var isVisitor = user.IsVisitor(_userManager);
+        var isVisitor = _userManager.IsVisitor(user);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
         var isAdmin = _fileSecurityCommon.IsAdministrator(userId);
 
@@ -640,6 +641,16 @@ public class FileSecurity : IFileSecurity
                     // all can read templates folder
                     return true;
                 }
+
+                if (action == FilesSecurityActions.Read && folder.FolderType == FolderType.VirtualRooms)
+                {
+                    return true;
+                }
+
+                if (action == FilesSecurityActions.Read && folder.FolderType == FolderType.Archive)
+                {
+                    return true;
+                }
             }
 
             if (e.RootFolderType == FolderType.COMMON && isAdmin)
@@ -701,6 +712,8 @@ public class FileSecurity : IFileSecurity
 
             var defaultShare = userId == FileConstant.ShareLinkId
                     ? FileShare.Restrict
+                    : e.RootFolderType == FolderType.VirtualRooms
+                    ? DefaultVirtualRoomsShare
                     : e.RootFolderType == FolderType.USER
                     ? DefaultMyShare
                 : e.RootFolderType == FolderType.Privacy
@@ -1216,7 +1229,7 @@ public class FileSecurity : IFileSecurity
                                 && f.RootCreateBy != _authContext.CurrentAccount.ID // don't show my files
             );
 
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             data = data.Where(r => !r.ProviderEntry);
         }

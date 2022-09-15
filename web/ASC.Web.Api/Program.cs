@@ -33,20 +33,10 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, configureServices: (hostContext, services, diHelper) =>
-{
-    services.AddHostedService<LdapNotifyService>();
-    diHelper.TryAdd<LdapNotifyService>();
-    services.AddBaseDbContextPool<FilesDbContext>();
-    services.AddBaseDbContextPool<BackupsContext>();
-    services.AddTransient<QuotaUsageDto>();
-
-    services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
-    services.AddScoped<CountRoomChecker>();
-
-    services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
-    services.AddScoped<CountRoomCheckerStatistic>();
-});
+builder.Host.ConfigureDefault();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.WebHost.ConfigureDefaultKestrel();
 

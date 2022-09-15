@@ -78,8 +78,9 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
       className="tile-container"
       draggable
       useReactWindow={!withPaging}
-      headingFolders={t("Folders")}
-      headingFiles={t("Files")}
+      headingFolders={t("Translations:Folders")}
+      headingFiles={t("Translations:Files")}
+      headingRooms={t("Common:Rooms")}
     >
       {filesList.map((item, index) => {
         return index == 0 ? (
@@ -107,8 +108,9 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
   );
 };
 
-export default inject(({ filesStore }) => {
-  const { filesList, withPaging } = filesStore;
+export default inject(({ auth, filesStore }) => {
+  const { filesList } = filesStore;
+  const { withPaging } = auth.settingsStore;
 
   return {
     filesList,

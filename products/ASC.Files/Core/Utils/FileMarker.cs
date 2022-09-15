@@ -165,7 +165,7 @@ public class FileMarker
             }
             if (obj.FileEntry.ProviderEntry)
             {
-                userIDs = userIDs.Where(u => !_userManager.GetUsers(u).IsVisitor(_userManager)).ToList();
+                userIDs = userIDs.Where(u => !_userManager.IsVisitor(u)).ToList();
             }
 
             foreach (var parentFolder in parentFolders)

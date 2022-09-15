@@ -1,8 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
-//import classnames from "classnames";
 import PropTypes from "prop-types";
-//import { LayoutContextConsumer } from "client/Layout/context";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import { tablet, mobile } from "@docspace/components/utils/device";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
@@ -11,6 +9,37 @@ import Base from "@docspace/components/themes/base";
 
 const StyledSectionHeader = styled.div`
   position: relative;
+  display: flex;
+
+  height: 69px;
+  min-height: 69px;
+
+  @media ${tablet} {
+    height: 61px;
+    min-height: 61px;
+
+    .header-container {
+      margin-bottom: 1px;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+  }
+
+  ${isMobile &&
+  css`
+    height: 61px;
+    min-height: 61px;
+  `}
+
+  @media ${mobile} {
+    height: 53px;
+    min-height: 53px;
+  }
+
+  ${isMobileOnly &&
+  css`
+    height: 53px;
+    min-height: 53px;
+  `}
 
   padding-right: 20px;
 

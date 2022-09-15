@@ -131,7 +131,7 @@ public class TenantExtra
             return _coreBaseSettings.Standalone &&
                 !string.IsNullOrEmpty(_setupInfo.ControlPanelUrl) &&
                 GetCurrentTariff().State < TariffState.NotPaid &&
-                _userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager);
+                _userManager.IsAdmin(_authContext.CurrentAccount.ID);
         }
     }
 

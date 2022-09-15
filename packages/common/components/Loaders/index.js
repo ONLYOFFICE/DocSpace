@@ -15,7 +15,7 @@ import Text from "./TextLoader";
 import Filter from "./FilterLoader";
 import FilterBlock from "./FilterBlockLoader";
 import ProfileView from "./ProfileViewLoader";
-import SettingsFiles from "./SettingsFilesLoader";
+
 import Group from "./GroupLoader";
 import HistoryRows from "./HistoryRowsLoader";
 import Tile from "./TileLoader";
@@ -35,6 +35,12 @@ import DataBackupLoader from "./DataBackupLoader";
 import AutoBackupLoader from "./AutoBackupLoader";
 import RestoreBackupLoader from "./RestoreBackupLoader";
 import PaymentsLoader from "./PaymentsLoader";
+import SelectorSearchLoader from "./SelectorSearchLoader";
+import SelectorRowLoader from "./SelectorRowLoader";
+
+import SettingsHeader from "./SettingsLoader/SettingsHeaderLoader";
+import SettingsAdmin from "./SettingsLoader/SettingsAdminLoader";
+import SettingsCommon from "./SettingsLoader/SettingsCommonLoader";
 
 export default {
   Rectangle,
@@ -50,7 +56,7 @@ export default {
   Filter,
   FilterBlock,
   ProfileView,
-  SettingsFiles,
+
   Group,
   HistoryRows,
   Tile,
@@ -74,4 +80,10 @@ export default {
   AutoBackupLoader,
   RestoreBackupLoader,
   PaymentsLoader,
+  SelectorSearchLoader,
+  SelectorRowLoader,
+
+  SettingsHeader,
+  SettingsAdmin,
+  SettingsCommon,
 };

@@ -4,7 +4,7 @@ import { Trans } from "react-i18next";
 
 import config from "PACKAGE_FILE";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
@@ -312,14 +312,13 @@ class AccountsContextOptionsStore {
     const { setChangeOwnerDialogVisible } = this.peopleStore.dialogStore;
 
     setChangeOwnerDialogVisible(true);
-    toastr.warning("Work at progress");
   };
 
   onEnableClick = (t, item) => {
     const { id } = item;
     const { updateUserStatus } = this.peopleStore.usersStore;
 
-    updateUserStatus(EmployeeStatus.Active, [id], true)
+    updateUserStatus(EmployeeStatus.Active, [id])
       .then(() =>
         toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
       )
@@ -330,7 +329,7 @@ class AccountsContextOptionsStore {
     const { id } = item;
     const { updateUserStatus } = this.peopleStore.usersStore;
 
-    updateUserStatus(EmployeeStatus.Disabled, [id], true)
+    updateUserStatus(EmployeeStatus.Disabled, [id])
       .then(() =>
         toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
       )

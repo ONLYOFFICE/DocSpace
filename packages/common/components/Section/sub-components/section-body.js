@@ -35,23 +35,14 @@ const settingsStudioStyles = css`
         `
       : css`
           @media ${tablet} {
-            padding: ${({ viewAs, withPaging }) =>
-              viewAs === "tile"
-                ? "19px 0 16px 24px"
-                : withPaging
-                ? "19px 0 16px 24px"
-                : "19px 0 16px 8px"};
+            padding: 19px 0 16px 24px;
           }
         `}
 `;
 
 const paddingStyles = css`
-  padding: ${({ viewAs, withPaging }) =>
-    viewAs === "row"
-      ? withPaging
-        ? "19px 3px 16px 16px"
-        : "19px 3px 16px 0px"
-      : "19px 3px 16px 20px"};
+  padding: 19px 3px 16px 20px;
+  outline: none;
 
   ${settingsStudioStyles};
 
@@ -99,6 +90,16 @@ const commonStyles = css`
         padding-left: 20px;
       `}
 
+    ${(props) =>
+      props.viewAs == "settings" &&
+      css`
+        padding-top: 0;
+
+        @media ${tablet} {
+          padding-top: 0;
+        }
+      `}
+
     .section-wrapper {
       display: flex;
       flex-direction: column;
@@ -127,23 +128,24 @@ const commonStyles = css`
 
 const StyledSectionBody = styled.div`
   max-width: 100vw !important;
-  ${commonStyles}
+
+  ${commonStyles};
+
   ${(props) =>
     props.withScroll &&
-    `
-    margin-left: -20px;
+    css`
+      margin-left: -20px;
 
-    @media ${tablet}{
-      margin-left: -24px;
-    }
-    
-    ${
-      isMobile &&
-      css`
+      @media ${tablet} {
         margin-left: -24px;
-      `
-    }
+      }
+    `}
+
+  ${isMobile &&
+  css`
+    margin-left: -24px;
   `}
+
     .additional-scroll-height {
     ${(props) =>
       !props.withScroll &&
@@ -157,27 +159,27 @@ const StyledSectionBody = styled.div`
 const StyledDropZoneBody = styled(DragAndDrop)`
   max-width: 100vw !important;
 
-  ${commonStyles} .drag-and-drop {
+  ${commonStyles};
+
+  .drag-and-drop {
     user-select: none;
     height: 100%;
   }
 
   ${(props) =>
     props.withScroll &&
-    `
-    margin-left: -20px;
+    css`
+      margin-left: -20px;
 
-    @media ${tablet}{
-      margin-left: -24px;
-    }
-    
-    ${
-      isMobile &&
+      @media ${tablet} {
+        margin-left: -24px;
+      }
+
+      ${isMobile &&
       css`
         margin-left: -24px;
-      `
-    }
-  `}
+      `}
+    `}
 `;
 
 const StyledSpacer = styled.div`
@@ -231,7 +233,6 @@ class SectionBody extends React.Component {
       isDesktop,
       isHomepage,
       settingsStudio,
-      withPaging,
     } = this.props;
 
     const focusProps = autoFocus
@@ -251,7 +252,6 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
-        withPaging={withPaging}
         className="section-body"
       >
         {withScroll ? (
@@ -292,7 +292,6 @@ class SectionBody extends React.Component {
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
-        withPaging={withPaging}
       >
         {withScroll ? (
           !isMobileOnly ? (

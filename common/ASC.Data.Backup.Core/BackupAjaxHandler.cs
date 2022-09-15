@@ -72,7 +72,7 @@ public class BackupAjaxHandler
         _tempPath = tempPath;
     }
 
-    public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams, bool backupMail)
+    public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams)
     {
         DemandPermissionsBackup();
 
@@ -80,7 +80,6 @@ public class BackupAjaxHandler
         {
             TenantId = GetCurrentTenantId(),
             UserId = _securityContext.CurrentAccount.ID,
-            BackupMail = backupMail,
             StorageType = storageType,
             StorageParams = storageParams
         };
@@ -141,7 +140,7 @@ public class BackupAjaxHandler
         return _backupService.GetBackupHistory(GetCurrentTenantId());
     }
 
-    public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams, bool backupMail)
+    public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams)
     {
         DemandPermissionsBackup();
 
@@ -155,7 +154,6 @@ public class BackupAjaxHandler
         var scheduleRequest = new CreateScheduleRequest
         {
             TenantId = _tenantManager.GetCurrentTenant().Id,
-            BackupMail = backupMail,
             Cron = cronParams.ToString(),
             NumberOfBackupsStored = backupsStored,
             StorageType = storageType,
@@ -198,7 +196,6 @@ public class BackupAjaxHandler
             StorageType = response.StorageType,
             StorageParams = response.StorageParams.ToDictionary(r => r.Key, r => r.Value) ?? new Dictionary<string, string>(),
             CronParams = new CronParams(response.Cron),
-            BackupMail = response.BackupMail.NullIfDefault(),
             BackupsStored = response.NumberOfBackupsStored.NullIfDefault(),
             LastBackupTime = response.LastBackupTime
         };
@@ -224,7 +221,6 @@ public class BackupAjaxHandler
             var Schedule = new CreateScheduleRequest
             {
                 TenantId = _tenantManager.GetCurrentTenant().Id,
-                BackupMail = schedule.BackupMail != null && (bool)schedule.BackupMail,
                 Cron = schedule.CronParams.ToString(),
                 NumberOfBackupsStored = schedule.BackupsStored == null ? 0 : (int)schedule.BackupsStored,
                 StorageType = schedule.StorageType,
@@ -337,7 +333,7 @@ public class BackupAjaxHandler
 
     #region transfer
 
-    public void StartTransfer(string targetRegion, bool notifyUsers, bool transferMail)
+    public void StartTransfer(string targetRegion, bool notifyUsers)
     {
         DemandPermissionsTransfer();
 
@@ -347,7 +343,6 @@ public class BackupAjaxHandler
             {
                 TenantId = GetCurrentTenantId(),
                 TargetRegion = targetRegion,
-                BackupMail = transferMail,
                 NotifyUsers = notifyUsers
             });
 
@@ -405,7 +400,6 @@ public class BackupAjaxHandler
         public BackupStorageType StorageType { get; set; }
         public Dictionary<string, string> StorageParams { get; set; }
         public CronParams CronParams { get; set; }
-        public bool? BackupMail { get; set; }
         public int? BackupsStored { get; set; }
         public DateTime LastBackupTime { get; set; }
     }

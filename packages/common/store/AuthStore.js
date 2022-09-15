@@ -9,11 +9,22 @@ import InfoPanelStore from "./InfoPanelStore";
 import CurrentQuotasStore from "./CurrentQuotaStore";
 import CurrentTariffStatusStore from "./CurrentTariffStatusStore";
 import PaymentQuotasStore from "./PaymentQuotasStore";
-import { logout as logoutDesktop, desktopConstants } from "../desktop";
-import { combineUrl, isAdmin } from "../utils";
-import { AppServerConfig, LANGUAGE, TenantStatus } from "../constants";
+import {
+  logout as logoutDesktop,
+  desktopConstants,
+} from "../desktop";
+import {
+  combineUrl,
+  isAdmin,
+  setCookie,
+  getCookie,
+} from "../utils";import {
+  AppServerConfig,
+  LANGUAGE,
+  COOKIE_EXPIRATION_YEAR,
+  TenantStatus,
+} from "../constants";
 const { proxyURL } = AppServerConfig;
-
 class AuthStore {
   userStore = null;
 
@@ -66,17 +77,24 @@ class AuthStore {
       );
 
       !this.settingsStore.passwordSettings &&
-        requests.push(this.settingsStore.getPortalPasswordSettings());
+        requests.push(
+          this.settingsStore.getPortalPasswordSettings(),
+          this.settingsStore.getAdditionalResources()
+        );
     }
 
     return Promise.all(requests);
   };
   setLanguage() {
     if (this.userStore.user?.cultureName) {
-      localStorage.getItem(LANGUAGE) !== this.userStore.user.cultureName &&
-        localStorage.setItem(LANGUAGE, this.userStore.user.cultureName);
+      getCookie(LANGUAGE) !== this.userStore.user.cultureName &&
+        setCookie(LANGUAGE, this.userStore.user.cultureName, {
+          "max-age": COOKIE_EXPIRATION_YEAR,
+        });
     } else {
-      localStorage.setItem(LANGUAGE, this.settingsStore.culture || "en-US");
+      setCookie(LANGUAGE, this.settingsStore.culture || "en-US", {
+        "max-age": COOKIE_EXPIRATION_YEAR,
+      });
     }
   }
   get isLoaded() {

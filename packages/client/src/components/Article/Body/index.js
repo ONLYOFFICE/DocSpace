@@ -13,14 +13,14 @@ import SettingsItem from "./SettingsItem";
 import AccountsItem from "./AccountsItem";
 import { combineUrl } from "@docspace/common/utils";
 import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
-import ThirdPartyList from "./ThirdPartyList";
+//import ThirdPartyList from "./ThirdPartyList";
 import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
 import { showLoader, hideLoader } from "@docspace/common/utils";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import { withTranslation } from "react-i18next";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 
@@ -39,8 +39,8 @@ const ArticleBodyContent = (props) => {
     firstLoad,
     showText,
     isDesktopClient,
-    enableThirdParty,
-    isVisitor,
+    // enableThirdParty,
+    // isVisitor,
     FirebaseHelper,
     theme,
     toggleArticleOpen,
@@ -163,7 +163,7 @@ const ArticleBodyContent = (props) => {
       {!personal && !firstLoad && <SettingsItem />}
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
-          {enableThirdParty && !isVisitor && <ThirdPartyList />}
+          {/* {enableThirdParty && !isVisitor && <ThirdPartyList />} */}
           <DownloadAppList theme={theme} />
           {(isDesktop || isTablet) &&
             personal &&
@@ -197,12 +197,7 @@ export default inject(
       filesIsLoading,
     } = filesStore;
 
-    const {
-      treeFolders,
-      setTreeFolders,
-      roomsFolderId,
-      archiveFolderId,
-    } = treeFoldersStore;
+    const { roomsFolderId, archiveFolderId } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
@@ -228,7 +223,6 @@ export default inject(
 
     return {
       toggleArticleOpen,
-      treeFolders,
       showText,
       articleOpen,
       enableThirdParty: settingsStore.enableThirdParty,
@@ -247,7 +241,6 @@ export default inject(
       setFirstLoad,
       fetchFiles,
 
-      setTreeFolders,
       setNewFilesPanelVisible,
       firstLoad,
       isDesktopClient,

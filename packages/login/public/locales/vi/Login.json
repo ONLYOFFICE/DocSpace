@@ -3,6 +3,8 @@
   "CodeSubtitle": "Chúng tôi đã gửi một mã 6 chữ số đến{{email}}. Thời gian hiệu lực của mã là có hạn, hãy nhập mã càng sớm càng tốt.",
   "CodeTitle": "Mã đã được gửi qua email cho bạn",
   "CookieSettingsTitle": "Thời lượng của phiên",
+  "ErrorInvalidHeader": "Email không chính xác hoặc liên kết hết hạn",
+  "ErrorInvalidText": "Trong 10 giây, bạn sẽ được chuyển hướng đến <1>trang đăng nhập</1>",
   "ExpiredCode": "Mã này không còn hợp lệ. Yêu cầu mã mới và thử lại",
   "ForgotPassword": "Bạn quên mật khẩu?",
   "InvalidCode": "Mã này không hợp lệ. Thử lại",

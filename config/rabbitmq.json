@@ -2,6 +2,8 @@
   "RabbitMQ": {
     "Hostname": "localhost",
     "UserName": "guest",
-    "Password": "guest"
+    "Password": "guest",
+    "Port": 5672,
+    "VirtualHost": "/"
   }
 }

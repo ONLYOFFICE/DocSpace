@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-
-import { withRouter } from "react-router";
+import React, { useEffect } from "react";
 import Section from "@docspace/common/components/Section";
 import Loaders from "@docspace/common/components/Loaders";
 import { showLoader, hideLoader } from "@docspace/common/utils";
@@ -11,28 +9,16 @@ import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import { inject, observer } from "mobx-react";
 
 const PureSettings = ({
-  match,
   t,
+  tReady,
   isLoading,
   isLoadedSettingsTree,
-  history,
   setFirstLoad,
-  capabilities,
-  tReady,
-  isPersonal,
+  isAdmin,
 }) => {
-  const [title, setTitle] = useState("");
-  const { setting } = match.params;
-
   useEffect(() => {
     setFirstLoad(false);
   }, [setFirstLoad]);
-
-  useEffect(() => {
-    isPersonal
-      ? setTitle(t("ThirdPartySettings"))
-      : setTitle(t("Common:Settings"));
-  }, [t, tReady]);
 
   useEffect(() => {
     if (isLoading) {
@@ -45,41 +31,42 @@ const PureSettings = ({
   //console.log("render settings");
 
   useEffect(() => {
-    setDocumentTitle(title);
-  }, [title, t]);
+    setDocumentTitle(t("Common:Settings"));
+  }, [t, tReady]);
+
+  const inLoad = (!isLoadedSettingsTree && isLoading) || isLoading || !tReady;
+
+  const setting = window.location.pathname.endsWith("/settings/common")
+    ? "common"
+    : "admin";
 
   return (
-    <Section isInfoPanelAvailable={false}>
+    <Section isInfoPanelAvailable={false} viewAs={"settings"}>
       <Section.SectionHeader>
-        {(!isLoadedSettingsTree && isLoading) || isLoading || !tReady ? (
-          <Loaders.SectionHeader />
-        ) : (
-          <SectionHeaderContent title={title} />
-        )}
+        {inLoad ? <Loaders.SettingsHeader /> : <SectionHeaderContent />}
       </Section.SectionHeader>
 
       <Section.SectionBody>
-        {(!isLoadedSettingsTree && isLoading) ||
-        isLoading ||
-        !tReady ||
-        !capabilities ? (
-          setting === "thirdParty" ? (
-            <Loaders.Rows />
+        {inLoad ? (
+          setting === "common" ? (
+            <Loaders.SettingsCommon isAdmin={isAdmin} />
           ) : (
-            <Loaders.SettingsFiles />
+            <Loaders.SettingsAdmin />
           )
         ) : (
-          <SectionBodyContent
-            title={title}
-            setting={setting}
-            history={history}
-            t={t}
-          />
+          <SectionBodyContent />
         )}
       </Section.SectionBody>
     </Section>
   );
 };
+
+/* 
+SettingsHeader,
+  SettingsAdmin,
+  SettingsCommon
+
+*/
 
 const Settings = withTranslation(["FilesSettings", "Common"])(PureSettings);
 
@@ -87,12 +74,7 @@ export default inject(
   ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
     const { setFirstLoad, isLoading } = filesStore;
     const { setSelectedNode } = treeFoldersStore;
-    const {
-      getFilesSettings,
-      isLoadedSettingsTree,
-      thirdPartyStore,
-    } = settingsStore;
-    const { capabilities } = thirdPartyStore;
+    const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
 
     return {
       isLoading,
@@ -100,8 +82,7 @@ export default inject(
       setFirstLoad,
       setSelectedNode,
       getFilesSettings,
-      capabilities,
-      isPersonal: auth.settingsStore.personal,
+      isAdmin: auth.isAdmin,
     };
   }
-)(withRouter(observer(Settings)));
+)(observer(Settings));

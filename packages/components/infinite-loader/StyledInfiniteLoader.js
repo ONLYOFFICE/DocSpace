@@ -30,18 +30,25 @@ const StyledScroll = styled.div`
 `;
 
 const rowStyles = css`
-  .row-list-item,
-  .row-loader {
-    padding-left: 16px;
-    width: calc(100% - 33px) !important;
+  margin-left: -20px;
+  width: ${({ width }) => width + 20 + "px !important"};
 
-    @media ${mobile} {
-      width: calc(100% - 24px) !important;
-    }
+  .ReactVirtualized__Grid__innerScrollContainer {
+    max-width: ${({ width }) => width + 20 + "px !important"};
   }
 
-  .row-loader {
-    padding-left: 22px;
+  .row-list-item {
+    padding-left: 16px;
+    width: calc(100% - 16px) !important;
+
+    @media ${tablet} {
+      padding-left: 20px;
+      width: calc(100% - 20px) !important;
+    }
+
+    @media ${mobile} {
+      width: calc(100% - 20px) !important;
+    }
   }
 `;
 

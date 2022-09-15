@@ -16,10 +16,12 @@ class CommonStore {
   isLoadedSectionHeader = false;
   isLoadedSubmenu = false;
   isLoadedLngTZSettings = false;
+  isLoadedDNSSettings = false;
   isLoadedPortalRenaming = false;
   isLoadedCustomization = false;
   isLoadedCustomizationNavbar = false;
   isLoadedWelcomePageSettings = false;
+  isLoadedAdditionalResources = false;
 
   constructor() {
     this.authStore = authStore;
@@ -111,6 +113,12 @@ class CommonStore {
     });
   };
 
+  setIsLoadedDNSSettings = (isLoadedDNSSettings) => {
+    runInAction(() => {
+      this.isLoadedDNSSettings = isLoadedDNSSettings;
+    });
+  };
+
   setIsLoadedCustomization = (isLoadedCustomization) => {
     runInAction(() => {
       this.isLoadedCustomization = isLoadedCustomization;
@@ -120,6 +128,12 @@ class CommonStore {
   setIsLoadedCustomizationNavbar = (isLoadedCustomizationNavbar) => {
     runInAction(() => {
       this.isLoadedCustomizationNavbar = isLoadedCustomizationNavbar;
+    });
+  };
+
+  setIsLoadedAdditionalResources = (isLoadedAdditionalResources) => {
+    runInAction(() => {
+      this.isLoadedAdditionalResources = isLoadedAdditionalResources;
     });
   };
 

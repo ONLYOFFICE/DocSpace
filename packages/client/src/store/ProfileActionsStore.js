@@ -92,7 +92,7 @@ class ProfileActionsStore {
     this.authStore.logout().then(() => {
       this.filesStore.reset();
       this.peopleStore.reset();
-      history.push(combineUrl(proxyURL, "/login"));
+      window.location.replace(combineUrl(proxyURL, "/login"));
     });
   };
 
@@ -220,7 +220,42 @@ class ProfileActionsStore {
       }
     }
 
-    return actions;
+    return this.checkEnabledActions(actions);
+  };
+
+  checkEnabledActions = (actions) => {
+    const actionsArray = actions;
+
+    const feedbackAndSupportEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.helpCenterEnabled;
+
+    if (!feedbackAndSupportEnabled) {
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "SupportBtn"
+      );
+
+      actionsArray.splice(index, 1);
+    }
+
+    if (!videoGuidesEnabled) {
+      const index = actionsArray.findIndex((item) => item?.key === "VideoBtn");
+
+      actionsArray.splice(index, 1);
+    }
+
+    if (!helpCenterEnabled) {
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "HelpCenterBtn"
+      );
+
+      actionsArray.splice(index, 1);
+    }
+
+    return actionsArray;
   };
 }
 

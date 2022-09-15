@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 
 import ToggleButton from "@docspace/components/toggle-button";
 import Heading from "@docspace/components/heading";
-
+import Box from "@docspace/components/box";
 import StyledSettings from "./StyledSettings";
 
 const CommonSettings = ({
@@ -27,6 +27,7 @@ const CommonSettings = ({
   setRecentSetting,
 
   t,
+  showTitle,
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
@@ -68,21 +69,32 @@ const CommonSettings = ({
   );
 
   return (
-    <StyledSettings>
-      <ToggleButton
-        className="toggle-btn"
-        label={t("OriginalCopy")}
-        onChange={onChangeOriginalCopy}
-        isChecked={storeOriginalFiles}
-      />
-      <ToggleButton
-        className="toggle-btn"
-        label={t("DisplayNotification")}
-        onChange={onChangeDeleteConfirm}
-        isChecked={confirmDelete}
-      />
+    <StyledSettings showTitle={showTitle}>
+      <Box className="settings-section">
+        {showTitle && (
+          <Heading className="heading" level={2} size="xsmall">
+            {t("CommonSettings")}
+          </Heading>
+        )}
+        <ToggleButton
+          className="toggle-btn"
+          label={t("OriginalCopy")}
+          onChange={onChangeOriginalCopy}
+          isChecked={storeOriginalFiles}
+        />
+        <ToggleButton
+          className="toggle-btn"
+          label={t("DisplayNotification")}
+          onChange={onChangeDeleteConfirm}
+          isChecked={confirmDelete}
+        />
+      </Box>
+
       {!isVisitor && (
-        <>
+        <Box className="settings-section">
+          <Heading className="heading" level={2} size="xsmall">
+            {t("AdditionalSections")}
+          </Heading>
           <ToggleButton
             isDisabled={isLoadingRecent}
             className="toggle-btn"
@@ -98,34 +110,37 @@ const CommonSettings = ({
             onChange={onChangeFavorites}
             isChecked={favoritesSection}
           />
-          <ToggleButton
+          {/* <ToggleButton
             isDisabled={true}
             className="toggle-btn"
             label={t("DisplayTemplates")}
             onChange={(e) => console.log(e)}
             isChecked={false}
-          />
-        </>
+          /> */}
+        </Box>
       )}
-      {!isVisitor && (
-        <>
-          <Heading className="heading" level={2} size="small">
-            {t("StoringFileVersion")}
-          </Heading>
-          <ToggleButton
-            className="toggle-btn"
-            label={t("UpdateOrCreate")}
-            onChange={onChangeUpdateIfExist}
-            isChecked={updateIfExist}
-          />
-          <ToggleButton
-            className="toggle-btn"
-            label={t("KeepIntermediateVersion")}
-            onChange={onChangeForceSave}
-            isChecked={forceSave}
-          />
-        </>
-      )}
+
+      <Box className="settings-section">
+        {!isVisitor && (
+          <>
+            <Heading className="heading" level={2} size="xsmall">
+              {t("StoringFileVersion")}
+            </Heading>
+            <ToggleButton
+              className="toggle-btn"
+              label={t("UpdateOrCreate")}
+              onChange={onChangeUpdateIfExist}
+              isChecked={updateIfExist}
+            />
+            <ToggleButton
+              className="toggle-btn"
+              label={t("KeepIntermediateVersion")}
+              onChange={onChangeForceSave}
+              isChecked={forceSave}
+            />
+          </>
+        )}
+      </Box>
     </StyledSettings>
   );
 };
@@ -150,12 +165,7 @@ export default inject(({ auth, settingsStore, treeFoldersStore }) => {
     setRecentSetting,
   } = settingsStore;
 
-  const {
-    treeFolders,
-    myFolderId,
-    commonFolderId,
-    getSubfolders,
-  } = treeFoldersStore;
+  const { myFolderId, commonFolderId } = treeFoldersStore;
 
   return {
     storeOriginalFiles,
