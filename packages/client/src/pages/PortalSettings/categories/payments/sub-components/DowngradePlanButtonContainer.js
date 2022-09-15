@@ -16,6 +16,10 @@ const DowngradePlanButtonContainer = ({
   isLessCountThanAcceptable,
   t,
   onUpdateTariff,
+  addedManagersCount,
+  usedTotalStorageSizeCount,
+  allowedStorageSizeByQuota,
+  managersCount,
 }) => {
   const [
     isVisibleDowngradePlanDialog,
@@ -23,13 +27,16 @@ const DowngradePlanButtonContainer = ({
   ] = useState(false);
 
   const isPassesByQuota = () => {
-    return false;
+    if (addedManagersCount > managersCount) return false;
+    if (usedTotalStorageSizeCount > allowedStorageSizeByQuota) return false;
+    return true;
   };
   const onDowngradeTariff = () => {
     if (!isPassesByQuota()) {
       setIsVisibleDowngradePlanDialog(true);
       return;
     }
+
     onUpdateTariff && onUpdateTariff();
   };
 
@@ -57,11 +64,21 @@ const DowngradePlanButtonContainer = ({
   );
 };
 
-export default inject(({ payments }) => {
-  const { isLoading, isLessCountThanAcceptable } = payments;
-
+export default inject(({ auth, payments }) => {
+  const { currentQuotaStore } = auth;
+  const {
+    isLoading,
+    isLessCountThanAcceptable,
+    allowedStorageSizeByQuota,
+    managersCount,
+  } = payments;
+  const { addedManagersCount, usedTotalStorageSizeCount } = currentQuotaStore;
   return {
     isLoading,
     isLessCountThanAcceptable,
+    addedManagersCount,
+    usedTotalStorageSizeCount,
+    allowedStorageSizeByQuota,
+    managersCount,
   };
 })(observer(DowngradePlanButtonContainer));
