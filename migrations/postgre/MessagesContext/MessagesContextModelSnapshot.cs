@@ -292,12 +292,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("notes")
                         .HasDefaultValueSql("NULL");
 
-                    b.Property<long>("QuotaLimit")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("quota_limit")
-                        .HasDefaultValueSql("'-1'");
-
                     b.Property<bool>("Removed")
                         .HasColumnType("boolean")
                         .HasColumnName("removed");
@@ -382,7 +376,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             LastModified = new DateTime(2021, 3, 9, 9, 52, 55, 765, DateTimeKind.Utc).AddTicks(1420),
                             LastName = "",
                             MobilePhoneActivation = 0,
-                            QuotaLimit = 0L,
                             Removed = false,
                             Status = 1,
                             Tenant = 1,

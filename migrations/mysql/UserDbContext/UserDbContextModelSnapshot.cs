@@ -1262,12 +1262,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<long>("QuotaLimit")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("quota_limit")
-                        .HasDefaultValueSql("'-1'");
-
                     b.Property<bool>("Removed")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("tinyint(1)")
@@ -1354,7 +1348,6 @@ namespace ASC.Migrations.MySql.Migrations
                             LastModified = new DateTime(2021, 3, 9, 9, 52, 55, 765, DateTimeKind.Utc).AddTicks(1420),
                             LastName = "",
                             MobilePhoneActivation = 0,
-                            QuotaLimit = 0L,
                             Removed = false,
                             Status = 1,
                             Tenant = 1,
