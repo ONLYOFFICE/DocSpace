@@ -28,28 +28,28 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class SsoController : BaseSettingsController
 {
+    private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
     private readonly PermissionContext _permissionContext;
-    private readonly TenantExtra _tenantExtra;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly UserManager _userManager;
     private readonly MessageService _messageService;
 
     public SsoController(
+        TenantManager tenantManager,
         ApiContext apiContext,
         WebItemManager webItemManager,
         IMemoryCache memoryCache,
         IHttpContextAccessor httpContextAccessor,
         SettingsManager settingsManager,
         PermissionContext permissionContext,
-        TenantExtra tenantExtra,
         CoreBaseSettings coreBaseSettings,
         UserManager userManager,
         MessageService messageService) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
+        _tenantManager = tenantManager;
         _settingsManager = settingsManager;
         _permissionContext = permissionContext;
-        _tenantExtra = tenantExtra;
         _coreBaseSettings = coreBaseSettings;
         _userManager = userManager;
         _messageService = messageService;
@@ -255,7 +255,7 @@ public class SsoController : BaseSettingsController
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
-                || !_tenantExtra.GetTenantQuota().Sso))
+                || !_tenantManager.GetCurrentTenantQuota().Sso))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Sso");
         }

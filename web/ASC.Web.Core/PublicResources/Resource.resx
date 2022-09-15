@@ -876,4 +876,7 @@
   <data name="TariffsFeature_usersInRoom" xml:space="preserve">
     <value>Users in room</value>
   </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>The number of rooms should not exceed {0}</value>
+  </data>
 </root>

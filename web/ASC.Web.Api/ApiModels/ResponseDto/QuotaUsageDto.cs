@@ -65,7 +65,6 @@ public class QuotaUsageDto
         TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
         CoreConfiguration configuration,
-        TenantExtra tenantExtra,
         TenantStatisticsProvider tenantStatisticsProvider,
         AuthContext authContext,
         SettingsManager settingsManager,
@@ -73,7 +72,7 @@ public class QuotaUsageDto
         Constants constants)
     {
         var tenant = tenantManager.GetCurrentTenant();
-        var quota = tenantExtra.GetTenantQuota();
+        var quota = tenantManager.GetCurrentTenantQuota();
         var quotaRows = tenantStatisticsProvider.GetQuotaRows(tenant.Id).ToList();
 
         StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize);

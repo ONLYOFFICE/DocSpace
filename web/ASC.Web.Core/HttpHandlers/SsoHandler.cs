@@ -53,7 +53,6 @@ public class SsoHandlerService
     private readonly CookiesManager _cookiesManager;
     private readonly Signature _signature;
     private readonly SecurityContext _securityContext;
-    private readonly TenantExtra _tenantExtra;
     private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly UserFormatter _userFormatter;
     private readonly UserManagerWrapper _userManagerWrapper;
@@ -77,7 +76,6 @@ public class SsoHandlerService
         CookiesManager cookiesManager,
         Signature signature,
         SecurityContext securityContext,
-        TenantExtra tenantExtra,
         TenantStatisticsProvider tenantStatisticsProvider,
         UserFormatter userFormatter,
         UserManagerWrapper userManagerWrapper,
@@ -94,7 +92,6 @@ public class SsoHandlerService
         _cookiesManager = cookiesManager;
         _signature = signature;
         _securityContext = securityContext;
-        _tenantExtra = tenantExtra;
         _tenantStatisticsProvider = tenantStatisticsProvider;
         _userFormatter = userFormatter;
         _userManagerWrapper = userManagerWrapper;
@@ -183,7 +180,7 @@ public class SsoHandlerService
                 userInfo = AddUser(userInfo);
 
                 var authKey = _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSSO);
-                
+
                 context.Response.Redirect(_commonLinkUtility.GetDefault() + "?token=" + HttpUtility.UrlEncode(authKey), false);
 
             }
@@ -261,7 +258,7 @@ public class SsoHandlerService
 
             if (string.IsNullOrEmpty(newUserInfo.UserName))
             {
-                var limitExceeded = _tenantStatisticsProvider.GetUsersCount() >= _tenantExtra.GetTenantQuota().ActiveUsers;
+                var limitExceeded = _tenantStatisticsProvider.GetUsersCount() >= _tenantManager.GetCurrentTenantQuota().ActiveUsers;
 
                 newUserInfo = _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
                     false, isVisitor: limitExceeded);

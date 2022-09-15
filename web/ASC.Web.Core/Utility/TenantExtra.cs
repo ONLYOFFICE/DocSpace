@@ -154,16 +154,6 @@ public class TenantExtra
         return _tariffService.GetTariff(_tenantManager.GetCurrentTenant().Id, withRequestToPaymentSystem);
     }
 
-    public TenantQuota GetTenantQuota()
-    {
-        return GetTenantQuota(_tenantManager.GetCurrentTenant().Id);
-    }
-
-    public TenantQuota GetTenantQuota(int tenant)
-    {
-        return _tenantManager.GetTenantQuota(tenant);
-    }
-
     public IEnumerable<TenantQuota> GetTenantQuotas()
     {
         return _tenantManager.GetTenantQuotas();
@@ -215,11 +205,6 @@ public class TenantExtra
                                      && !q.Trial);
     }
 
-    public int GetRemainingCountUsers()
-    {
-        return GetTenantQuota().ActiveUsers - _tenantStatisticsProvider.GetUsersCount();
-    }
-
     public void DemandControlPanelPermission()
     {
         if (!_coreBaseSettings.Standalone || _settingsManager.Load<TenantControlPanelSettings>().LimitedAccess)
@@ -251,7 +236,7 @@ public class TenantExtra
     {
         get
         {
-            var diskQuota = GetTenantQuota();
+            var diskQuota = _tenantManager.GetCurrentTenantQuota();
             if (diskQuota != null)
             {
                 var usedSize = _tenantStatisticsProvider.GetUsedSize();

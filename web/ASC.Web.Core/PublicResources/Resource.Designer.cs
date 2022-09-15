@@ -2203,6 +2203,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of rooms should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_room_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_room_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SSO.
         /// </summary>
         public static string TariffsFeature_sso {

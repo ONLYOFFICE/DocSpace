@@ -135,7 +135,7 @@ public class LicenseController : BaseSettingsController
             throw new SecurityException();
         }
 
-        var curQuota = _tenantExtra.GetTenantQuota();
+        var curQuota = _tenantManager.GetCurrentTenantQuota();
         if (curQuota.Tenant != Tenant.DefaultTenant)
         {
             return false;
@@ -212,7 +212,7 @@ public class LicenseController : BaseSettingsController
             return dueDate >= DateTime.UtcNow.Date
                                     ? Resource.LicenseUploaded
                                     : string.Format(
-                                        _tenantExtra.GetTenantQuota().Update
+                                        _tenantManager.GetCurrentTenantQuota().Update
                                             ? Resource.LicenseUploadedOverdueSupport
                                             : Resource.LicenseUploadedOverdue,
                                                     "",
