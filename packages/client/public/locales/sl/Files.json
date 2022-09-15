@@ -4,7 +4,7 @@
   "Archives": "Arhivi",
   "BackToParentFolderButton": "Nazaj na starševsko mapo",
   "ByAuthor": "Avtor",
-  "ByCreationDate": "Ustvarjeno",
+  "ByCreation": "Ustvarjeno",
   "ByLastModifiedDate": "Popravljeno",
   "ByTitle": "Naslov",
   "CommonEmptyContainerDescription": "'Skupen' razdelek vsebuje datoteke, ki jih skrbnik portala deli z vsemi uporabniki. Samo skrbniki portala lahko tam ustvarjajo datoteke. Uporabniki lahko dobijo popoln dostop do določene mape v razdelku. Tako bodo lahko ustvarili/naložili datoteke ravno v tej mapi.  ",

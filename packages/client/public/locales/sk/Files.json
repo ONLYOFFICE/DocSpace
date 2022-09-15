@@ -4,7 +4,7 @@
   "Archives": "Archívy",
   "BackToParentFolderButton": "Späť do nadradeného priečinka",
   "ByAuthor": "Autor",
-  "ByCreationDate": "Vytvorené",
+  "ByCreation": "Vytvorené",
   "ByLastModifiedDate": "Upravené",
   "ByTitle": "Názov",
   "CommonEmptyContainerDescription": "Sekcia 'Spoločné' obsahuje súbory zdieľané všetkým používateľom správcom portálu. Súbory tam môžu vytvárať iba správcovia portálu. Používateľom môže byť udelený úplný prístup k určitému priečinku v rámci sekcie. Týmto spôsobom budú môcť vytvárať/nahrávať súbory práve do tohto priečinka.",

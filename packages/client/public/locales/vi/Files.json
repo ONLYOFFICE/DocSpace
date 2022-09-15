@@ -4,7 +4,7 @@
   "Archives": "Lưu trữ",
   "BackToParentFolderButton": "Quay lại thư mục gốc",
   "ByAuthor": "Tác giả",
-  "ByCreationDate": "Đã tạo",
+  "ByCreation": "Đã tạo",
   "ByLastModifiedDate": "Đã sửa đổi",
   "ByTitle": "Tiêu đề",
   "CommonEmptyContainerDescription": "Phần Chung chứa các tệp được quản trị viên cổng thông tin chia sẻ cho tất cả người dùng. Chỉ quản trị viên cổng thông tin mới có thể tạo ệp ở đó. Người dùng có thể được cấp toàn quyền truy cập vào một thư mục nhất định trong phần này. Bằng cách này họ sẽ có thể tạo/tải lên các tệp trong chính thư mục này.",

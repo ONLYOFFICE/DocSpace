@@ -4,7 +4,7 @@
   "Archives": "Arquivos",
   "BackToParentFolderButton": "Voltar para pasta principal",
   "ByAuthor": "Autor",
-  "ByCreationDate": "Criado",
+  "ByCreation": "Criado",
   "ByLastModifiedDate": "Modificado",
   "ByTitle": "Titulo",
   "CommonEmptyContainerDescription": "A seção 'Comum' contém arquivos compartilhados a todos os usuários pelo administrador do portal. Somente os administradores do portal podem criar arquivos lá. Os usuários podem ter acesso total a uma determinada pasta dentro da seção. Desta forma, eles poderão criar/enviar arquivos nesta mesma pasta.",

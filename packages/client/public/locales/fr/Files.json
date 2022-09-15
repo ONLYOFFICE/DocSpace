@@ -4,7 +4,7 @@
   "Archives": "Archives",
   "BackToParentFolderButton": "Retour vers le dossier précédent",
   "ByAuthor": "Auteur",
-  "ByCreationDate": "Créé",
+  "ByCreation": "Créé",
   "ByLastModifiedDate": "Modifié",
   "ByTitle": "Titre",
   "CommonEmptyContainerDescription": "La section \"Documents Communs\" contient des fichiers partagés par l'administrateur du portail avec tous les utilisateurs. Seuls les administrateurs du portail peuvent y créer des fichiers. Les utilisateurs peuvent obtenir un accès complet à un certain dossier de la section. Ainsi, ils pourront créer/télécharger des fichiers dans ce même dossier.  ",

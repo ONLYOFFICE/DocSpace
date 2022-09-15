@@ -163,7 +163,7 @@ const SingleItem = (props) => {
         },
         {
           id: "ByCreationDate",
-          title: t("Files:ByCreationDate"),
+          title: t("Files:ByCreation"),
           content: styledText(parseAndFormatDate(item.created)),
         },
       ];

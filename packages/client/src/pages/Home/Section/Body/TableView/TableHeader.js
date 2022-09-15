@@ -108,7 +108,7 @@ class FilesTableHeader extends React.Component {
         authorOption,
         {
           key: "Created",
-          title: t("ByCreationDate"),
+          title: t("ByCreation"),
           enable: true,
           resizable: true,
           sortBy: "DateAndTimeCreation",
