@@ -47,6 +47,8 @@ const ArticleBodyContent = (props) => {
     categoryType,
     isAdmin,
     filesIsLoading,
+    roomsFolderId,
+    archiveFolderId,
   } = props;
 
   const campaigns = (localStorage.getItem("campaigns") || "")
@@ -65,8 +67,6 @@ const ArticleBodyContent = (props) => {
 
         homepage,
         history,
-        roomsFolderId,
-        archiveFolderId,
       } = props;
 
       if (filesIsLoading) return;
@@ -144,7 +144,7 @@ const ArticleBodyContent = (props) => {
           });
       }
     },
-    [categoryType]
+    [categoryType, roomsFolderId, archiveFolderId]
   );
 
   const onShowNewFilesPanel = React.useCallback((folderId) => {
