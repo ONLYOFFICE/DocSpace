@@ -19,6 +19,7 @@ import { withLayoutSize } from "@docspace/common/utils";
 import { getDefaultRoomName } from "@docspace/client/src/helpers/filesUtils";
 
 import withLoader from "../../../../HOCs/withLoader";
+import { TableVersions } from "SRC_DIR/helpers/constants";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -87,16 +88,16 @@ const getOwner = (filterValues) => {
 //   return filterFolders ? filterFolders : null;
 // };
 
-// const getFilterContent = (filterValues) => {
-//   const filterContent = result(
-//     find(filterValues, (value) => {
-//       return value.group === FilterGroups.roomFilterContent;
-//     }),
-//     "key"
-//   );
+const getFilterContent = (filterValues) => {
+  const filterContent = result(
+    find(filterValues, (value) => {
+      return value.group === FilterGroups.filterContent;
+    }),
+    "key"
+  );
 
-//   return filterContent ? filterContent : null;
-// };
+  return filterContent ? filterContent : null;
+};
 
 const getTags = (filterValues) => {
   const filterTags = filterValues.find(
@@ -107,6 +108,14 @@ const getTags = (filterValues) => {
 
   return tags;
 };
+
+const TABLE_COLUMNS = `filesTableColumns_ver-${TableVersions.Files}`;
+
+const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TableVersions.Files}`;
+
+const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TableVersions.Rooms}`;
+
+const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TableVersions.Rooms}`;
 
 const SectionFilterContent = ({
   t,
@@ -127,6 +136,7 @@ const SectionFilterContent = ({
   infoPanelVisible,
   isRooms,
   userId,
+  isPersonalRoom,
   setCurrentRoomsFilter,
 }) => {
   const onFilter = React.useCallback(
@@ -181,18 +191,24 @@ const SectionFilterContent = ({
         );
       } else {
         const filterType = getFilterType(data) || null;
+
         const authorType = !!getAuthorType(data)
           ? getAuthorType(data).includes("user_")
             ? getAuthorType(data)
             : `user_${getAuthorType(data)}`
           : null;
         const withSubfolders = getSearchParams(data);
+        const withContent = getFilterContent(data);
 
         const newFilter = filter.clone();
         newFilter.page = 0;
+
         newFilter.filterType = filterType;
+
         newFilter.authorType = authorType;
-        newFilter.withSubfolders = withSubfolders;
+        newFilter.withSubfolders =
+          withSubfolders === FilterKeys.excludeSubfolders ? "false" : "true";
+        newFilter.searchInContent = withContent === "true" ? "true" : null;
 
         setIsLoading(true);
 
@@ -296,7 +312,13 @@ const SectionFilterContent = ({
   );
 
   const getSelectedInputValue = React.useCallback(() => {
-    return isRooms ? roomsFilter.filterValue : filter.search;
+    return isRooms
+      ? roomsFilter.filterValue
+        ? roomsFilter.filterValue
+        : ""
+      : filter.search
+      ? filter.search
+      : "";
   }, [isRooms, roomsFilter.filterValue, filter.search]);
 
   const getSelectedSortData = React.useCallback(() => {
@@ -386,10 +408,26 @@ const SectionFilterContent = ({
         });
       }
     } else {
+      if (filter.withSubfolders === "false") {
+        filterValues.push({
+          key: FilterKeys.excludeSubfolders,
+          label: t("ExcludeSubfolders"),
+          group: FilterGroups.filterFolders,
+        });
+      }
+
+      if (filter.searchInContent) {
+        filterValues.push({
+          key: "true",
+          label: t("FileContents"),
+          group: FilterGroups.filterContent,
+        });
+      }
+
       if (filter.filterType) {
         let label = "";
 
-        switch (filter.filterType) {
+        switch (filter.filterType.toString()) {
           case FilterType.DocumentsOnly.toString():
             label = t("Common:Documents");
             break;
@@ -414,11 +452,17 @@ const SectionFilterContent = ({
           case FilterType.FilesOnly.toString():
             label = t("AllFiles");
             break;
+          case FilterType.OFormTemplateOnly.toString():
+            label = t("FormsTemplates");
+            break;
+          case FilterType.OFormOnly.toString():
+            label = t("Forms");
+            break;
         }
 
         filterValues.push({
           key: `${filter.filterType}`,
-          label: label,
+          label: label.toLowerCase(),
           group: FilterGroups.filterType,
         });
       }
@@ -431,14 +475,6 @@ const SectionFilterContent = ({
           label: user.displayName,
         });
       }
-
-      if (filter.withSubfolders === "false") {
-        filterValues.push({
-          key: filter.withSubfolders,
-          label: "Exclude subfolders",
-          group: FilterGroups.filterFolders,
-        });
-      }
     }
 
     return filterValues;
@@ -446,6 +482,7 @@ const SectionFilterContent = ({
     filter.withSubfolders,
     filter.authorType,
     filter.filterType,
+    filter.searchInContent,
     roomsFilter.type,
     roomsFilter.subjectId,
     roomsFilter.tags,
@@ -465,18 +502,7 @@ const SectionFilterContent = ({
             {
               key: FilterType.FoldersOnly.toString(),
               group: FilterGroups.filterType,
-              label: t("Translations:Folders"),
-            },
-          ]
-        : "";
-
-    const allFiles =
-      !isFavoritesFolder && !isRecentFolder
-        ? [
-            {
-              key: FilterType.FilesOnly.toString(),
-              group: FilterGroups.filterType,
-              label: t("AllFiles"),
+              label: t("Translations:Folders").toLowerCase(),
             },
           ]
         : "";
@@ -486,7 +512,7 @@ const SectionFilterContent = ({
           {
             key: FilterType.ImagesOnly.toString(),
             group: FilterGroups.filterType,
-            label: t("Images"),
+            label: t("Images").toLowerCase(),
           },
         ]
       : "";
@@ -496,7 +522,7 @@ const SectionFilterContent = ({
           {
             key: FilterType.ArchiveOnly.toString(),
             group: FilterGroups.filterType,
-            label: t("Archives"),
+            label: t("Archives").toLowerCase(),
           },
         ]
       : "";
@@ -506,7 +532,7 @@ const SectionFilterContent = ({
           {
             key: FilterType.MediaOnly.toString(),
             group: FilterGroups.filterType,
-            label: t("Media"),
+            label: t("Media").toLowerCase(),
           },
         ]
       : "";
@@ -551,27 +577,38 @@ const SectionFilterContent = ({
             group: FilterGroups.filterType,
             label: t("Common:Type"),
             isHeader: true,
-          },
-          {
-            key: FilterType.DocumentsOnly.toString(),
-            group: FilterGroups.filterType,
-            label: t("Common:Documents"),
+            isLast: true,
           },
           ...folders,
           {
-            key: FilterType.SpreadsheetsOnly.toString(),
+            key: FilterType.DocumentsOnly.toString(),
             group: FilterGroups.filterType,
-            label: t("Translations:Spreadsheets"),
+            label: t("Common:Documents").toLowerCase(),
           },
-          ...archives,
           {
             key: FilterType.PresentationsOnly.toString(),
             group: FilterGroups.filterType,
-            label: t("Translations:Presentations"),
+            label: t("Translations:Presentations").toLowerCase(),
           },
+          {
+            key: FilterType.SpreadsheetsOnly.toString(),
+            group: FilterGroups.filterType,
+            label: t("Translations:Spreadsheets").toLowerCase(),
+          },
+          {
+            key: FilterType.OFormTemplateOnly.toString(),
+            group: FilterGroups.filterType,
+            label: t("FormsTemplates").toLowerCase(),
+          },
+          {
+            key: FilterType.OFormOnly.toString(),
+            group: FilterGroups.filterType,
+            label: t("Forms").toLowerCase(),
+          },
+          ...archives,
+
           ...images,
           ...media,
-          ...allFiles,
         ];
 
     const ownerOptions = [
@@ -580,6 +617,7 @@ const SectionFilterContent = ({
         group: FilterGroups.roomFilterOwner,
         label: t("Common:Owner"),
         isHeader: true,
+        withMultiItems: true,
       },
       {
         key: FilterKeys.me,
@@ -672,7 +710,49 @@ const SectionFilterContent = ({
         filterOptions.push(...tagsOptions);
       }
     } else {
-      if (!personal) {
+      if (!isRecentFolder && !isFavoritesFolder) {
+        const foldersOptions = [
+          {
+            key: FilterGroups.filterFolders,
+            group: FilterGroups.filterFolders,
+            label: t("Common:Search"),
+            isHeader: true,
+            withoutSeparator: true,
+          },
+          {
+            key: "folders",
+            group: FilterGroups.filterFolders,
+            label: "",
+            withOptions: true,
+            options: [
+              { key: FilterKeys.withSubfolders, label: t("WithSubfolders") },
+              {
+                key: FilterKeys.excludeSubfolders,
+                label: t("ExcludeSubfolders"),
+              },
+            ],
+          },
+        ];
+
+        const contentOptions = [
+          {
+            key: FilterGroups.filterContent,
+            group: FilterGroups.filterContent,
+            isHeader: true,
+            withoutHeader: true,
+          },
+          {
+            key: "true",
+            group: FilterGroups.filterContent,
+            label: t("SearchByContent"),
+            isCheckbox: true,
+          },
+        ];
+        filterOptions.push(...foldersOptions);
+        filterOptions.push(...contentOptions);
+      }
+
+      if (!isPersonalRoom) {
         filterOptions.push(
           {
             key: FilterGroups.filterAuthor,
@@ -690,29 +770,10 @@ const SectionFilterContent = ({
       }
 
       filterOptions.push(...typeOptions);
-
-      if (!isRecentFolder && !isFavoritesFolder) {
-        filterOptions.push(
-          {
-            key: FilterGroups.filterFolders,
-            group: FilterGroups.filterFolders,
-            label: t("Translations:Folders"),
-            isHeader: true,
-            withoutHeader: true,
-            isLast: true,
-          },
-          {
-            key: "false",
-            group: FilterGroups.filterFolders,
-            label: t("NoSubfolders"),
-            isToggle: true,
-          }
-        );
-      }
     }
 
     return filterOptions;
-  }, [isFavoritesFolder, isRecentFolder, isRooms, t, personal]);
+  }, [isFavoritesFolder, isRecentFolder, isRooms, t, personal, isPersonalRoom]);
 
   const getViewSettingsData = React.useCallback(() => {
     const viewSettings = [
@@ -733,35 +794,132 @@ const SectionFilterContent = ({
   }, [createThumbnails]);
 
   const getSortData = React.useCallback(() => {
-    const commonOptions = isRooms
-      ? [
-          { key: "AZ", label: "Name", default: true },
-          { key: "roomType", label: t("Common:Type"), default: true },
-          { key: "Tags", label: t("Tags"), default: true },
-          { key: "Author", label: t("Common:Owner"), default: true },
-          { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
-        ]
-      : [
-          { key: "AZ", label: t("ByTitle"), default: true },
-          { key: "Type", label: t("Common:Type"), default: true },
-          { key: "Size", label: t("Common:Size"), default: true },
-          {
-            key: "DateAndTimeCreation",
-            label: t("ByCreationDate"),
-            default: true,
-          },
-          { key: "DateAndTime", label: t("ByLastModifiedDate"), default: true },
-        ];
+    const commonOptions = [];
 
-    if (!personal && !isRooms) {
-      commonOptions.splice(1, 0, {
-        key: "Author",
-        label: t("ByAuthor"),
-        default: true,
-      });
+    const name = { key: "AZ", label: t("Common:Name"), default: true };
+    const modifiedDate = {
+      key: "DateAndTime",
+      label: t("ByLastModified"),
+      default: true,
+    };
+
+    const type = { key: "Type", label: t("Common:Type"), default: true };
+    const size = { key: "Size", label: t("Common:Size"), default: true };
+    const creationDate = {
+      key: "DateAndTimeCreation",
+      label: t("ByCreation"),
+      default: true,
+    };
+    const authorOption = {
+      key: "Author",
+      label: t("ByAuthor"),
+      default: true,
+    };
+
+    const owner = { key: "Author", label: t("Common:Owner"), default: true };
+    const tags = { key: "Tags", label: t("Tags"), default: true };
+    const roomType = {
+      key: "roomType",
+      label: t("Common:Type"),
+      default: true,
+    };
+
+    commonOptions.push(name);
+
+    if (viewAs === "table") {
+      if (isRooms) {
+        const availableSort = localStorage
+          ?.getItem(`${TABLE_ROOMS_COLUMNS}=${userId}`)
+          ?.split(",");
+
+        const infoPanelColumnsSize = localStorage
+          ?.getItem(`${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`)
+          ?.split(" ");
+
+        if (availableSort?.includes("Type")) {
+          const idx = availableSort.findIndex((x) => x === "Type");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(roomType);
+        }
+
+        if (availableSort?.includes("Tags")) {
+          const idx = availableSort.findIndex((x) => x === "Tags");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(tags);
+        }
+
+        if (availableSort?.includes("Owner")) {
+          const idx = availableSort.findIndex((x) => x === "Owner");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(owner);
+        }
+
+        if (availableSort?.includes("Activity")) {
+          const idx = availableSort.findIndex((x) => x === "Activity");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(modifiedDate);
+        }
+      } else {
+        const availableSort = localStorage
+          ?.getItem(`${TABLE_COLUMNS}=${userId}`)
+          ?.split(",");
+
+        const infoPanelColumnsSize = localStorage
+          ?.getItem(`${COLUMNS_SIZE_INFO_PANEL}=${userId}`)
+          ?.split(" ");
+
+        if (availableSort?.includes("Author") && !isPersonalRoom) {
+          const idx = availableSort.findIndex((x) => x === "Author");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(authorOption);
+        }
+        if (availableSort?.includes("Create")) {
+          const idx = availableSort.findIndex((x) => x === "Create");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(creationDate);
+        }
+        if (availableSort?.includes("Modified")) {
+          const idx = availableSort.findIndex((x) => x === "Modified");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(modifiedDate);
+        }
+        if (availableSort?.includes("Size")) {
+          const idx = availableSort.findIndex((x) => x === "Size");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(size);
+        }
+        if (availableSort?.includes("Type")) {
+          const idx = availableSort.findIndex((x) => x === "Type");
+          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+
+          !hide && commonOptions.push(type);
+        }
+      }
+    } else {
+      if (isRooms) {
+        commonOptions.push(roomType);
+        commonOptions.push(tags);
+        commonOptions.push(owner);
+        commonOptions.push(modifiedDate);
+      } else {
+        commonOptions.push(authorOption);
+        commonOptions.push(creationDate);
+        commonOptions.push(modifiedDate);
+        commonOptions.push(size);
+        commonOptions.push(type);
+      }
     }
+
     return commonOptions;
-  }, [personal, isRooms, t]);
+  }, [personal, isRooms, t, userId, infoPanelVisible, viewAs, isPersonalRoom]);
 
   const removeSelectedItem = React.useCallback(
     ({ key, group }) => {
@@ -820,7 +978,10 @@ const SectionFilterContent = ({
           newFilter.authorType = null;
         }
         if (group === FilterGroups.filterFolders) {
-          newFilter.withSubfolders = null;
+          newFilter.withSubfolders = "true";
+        }
+        if (group === FilterGroups.filterContent) {
+          newFilter.searchInContent = null;
         }
 
         newFilter.page = 0;
@@ -842,6 +1003,18 @@ const SectionFilterContent = ({
     ]
   );
 
+  const clearAll = () => {
+    if (isRooms) {
+      setIsLoading(true);
+
+      fetchRooms(selectedFolderId).finally(() => setIsLoading(false));
+    } else {
+      setIsLoading(true);
+
+      fetchFiles(selectedFolderId).finally(() => setIsLoading(false));
+    }
+  };
+
   return (
     <FilterInput
       t={t}
@@ -862,7 +1035,10 @@ const SectionFilterContent = ({
       view={t("Common:View")}
       isFavoritesFolder={isFavoritesFolder}
       isRecentFolder={isRecentFolder}
+      isPersonalRoom={isPersonalRoom}
+      isRooms={isRooms}
       removeSelectedItem={removeSelectedItem}
+      clearAll={clearAll}
     />
   );
 };
@@ -890,6 +1066,7 @@ export default inject(
       isRecentFolder,
       isRoomsFolder,
       isArchiveFolder,
+      isPersonalRoom,
     } = treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
@@ -918,6 +1095,7 @@ export default inject(
       createThumbnails,
 
       personal,
+      isPersonalRoom,
       infoPanelVisible,
       setCurrentRoomsFilter,
     };
