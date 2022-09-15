@@ -57,7 +57,7 @@ const FilterInput = React.memo(
     React.useEffect(() => {
       const value = getSelectedInputValue && getSelectedInputValue();
 
-      if (value) setInputValue(value);
+      setInputValue(value);
     }, [getSelectedInputValue]);
 
     React.useEffect(() => {

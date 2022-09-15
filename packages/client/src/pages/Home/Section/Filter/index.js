@@ -312,7 +312,13 @@ const SectionFilterContent = ({
   );
 
   const getSelectedInputValue = React.useCallback(() => {
-    return isRooms ? roomsFilter.filterValue : filter.search;
+    return isRooms
+      ? roomsFilter.filterValue
+        ? roomsFilter.filterValue
+        : ""
+      : filter.search
+      ? filter.search
+      : "";
   }, [isRooms, roomsFilter.filterValue, filter.search]);
 
   const getSelectedSortData = React.useCallback(() => {
