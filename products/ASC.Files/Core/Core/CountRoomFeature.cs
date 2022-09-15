@@ -28,13 +28,9 @@ namespace ASC.Files.Core.Core;
 
 public class CountRoomChecker : TenantQuotaFeatureChecker<CountRoomFeature, int>
 {
-    public CountRoomChecker(ITenantQuotaFeatureStat<CountRoomFeature, int> tenantQuotaFeatureStatistic) : base(tenantQuotaFeatureStatistic)
+    public override string Exception => "The number of rooms should not exceed {0}";
+    public CountRoomChecker(ITenantQuotaFeatureStat<CountRoomFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
-    }
-
-    public override string Exception(TenantQuota quota)
-    {
-        return "The number of rooms should not exceed " + quota.MaxTotalSize;
     }
 }
 

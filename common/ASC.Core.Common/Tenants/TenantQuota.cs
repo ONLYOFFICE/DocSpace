@@ -298,10 +298,7 @@ public class TenantQuota : IMapFrom<DbQuota>
     {
         foreach (var checker in serviceProvider.GetServices<ITenantQuotaFeatureChecker>())
         {
-            if (!await checker.Check(this))
-            {
-                throw new Exception(checker.Exception(this));
-            }
+            await checker.CheckUsed(this);
         }
     }
 

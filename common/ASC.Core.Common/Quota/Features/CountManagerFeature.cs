@@ -37,13 +37,10 @@ public class CountManagerFeature : TenantQuotaFeatureCount
 
 public class CountManagerChecker : TenantQuotaFeatureChecker<CountManagerFeature, int>
 {
-    public CountManagerChecker(ITenantQuotaFeatureStat<CountManagerFeature, int> tenantQuotaFeatureStatistic) : base(tenantQuotaFeatureStatistic)
-    {
-    }
+    public override string Exception => "The number of managers should not exceed  {0}";
 
-    public override string Exception(TenantQuota quota)
+    public CountManagerChecker(ITenantQuotaFeatureStat<CountManagerFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
-        return "The number of managers should not exceed  " + quota.CountManager;
     }
 }
 

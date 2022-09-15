@@ -73,7 +73,7 @@ public class BaseWorkerStartup
         services.AddEventBus(Configuration);
         services.AddDistributedTaskQueue();
         services.AddCacheNotify(Configuration);
-
+        services.AddHttpClient();
 
         DIHelper.Configure(services);
     }
