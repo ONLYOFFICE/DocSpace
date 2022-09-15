@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import styled, { css } from "styled-components";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import DowngradePlanButtonContainer from "./DowngradePlanButtonContainer";
 
 const StyledBody = styled.div`

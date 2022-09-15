@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { getConvertedSize } from "@docspace/common/utils";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 class PaymentQuotasStore {
   portalPaymentQuotas = {};
   portalPaymentQuotasFeatures = [];

@@ -5,7 +5,7 @@ import { inject, observer } from "mobx-react";
 import SelectUsersCountContainer from "./sub-components/SelectUsersCountContainer";
 import TotalTariffContainer from "./sub-components/TotalTariffContainer";
 import { smallTablet } from "@docspace/components/utils/device";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
 import axios from "axios";
 import { combineUrl } from "@docspace/common/utils";

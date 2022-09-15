@@ -5,7 +5,7 @@ import {
 } from "@docspace/common/api/settings";
 import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import authStore from "@docspace/common/store/AuthStore";
 
 class PaymentStore {
