@@ -224,7 +224,7 @@ const AboutContent = (props) => {
             target="_blank"
             href={site}
           >
-            &nbsp;{site.split("/").pop()}
+            &nbsp;{site.replace(/^https?\:\/\//i, "")}
           </ColorTheme>
         </div>
       </StyledAboutBody>
