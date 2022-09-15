@@ -62,7 +62,7 @@ class PaymentQuotasStore {
   }
   get addedManagersCountTitle() {
     const result = this.portalPaymentQuotasFeatures.find(
-      (obj) => obj.id === "managers"
+      (obj) => obj.id === "manager"
     );
     return result.priceTitle;
   }

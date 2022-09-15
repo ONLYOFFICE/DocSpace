@@ -24,7 +24,9 @@ const StyledBody = styled.div`
   padding: 24px;
   box-sizing: border-box;
 
-
+  .payment_main-title {
+    margin-bottom: 24px;
+  }
   .payment_price_user {
     display: flex;
     align-items: center;
@@ -122,7 +124,13 @@ const PriceCalculation = ({
 
   return (
     <StyledBody>
-      <Text fontSize="16px" fontWeight={600} noSelect {...color}>
+      <Text
+        fontSize="16px"
+        fontWeight={600}
+        noSelect
+        {...color}
+        className="payment_main-title"
+      >
         {!isGracePeriod && !isNotPaidPeriod
           ? t("PriceCalculation")
           : t("YourPrice")}

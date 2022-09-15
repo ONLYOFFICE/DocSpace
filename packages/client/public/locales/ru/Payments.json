@@ -19,7 +19,6 @@
   "InvalidEmail": "Неверный email",
   "LatePayment": "Просрочка платежа",
   "ManagerTypesDescription": "Типы учетных записей менеджера и их привилегии",
-  "ManagersNumber": "Число менеджеров",
   "OwnerCanChangePayer": "Владелец портала может изменить плательщика",
   "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> за менеджера/месяц",
   "PriceCalculation": "Рассчитайте свою цену",

@@ -19,7 +19,6 @@
   "InvalidEmail": "Invalid email",
   "LatePayment": "Late payment",
   "ManagerTypesDescription": "Manager account types and their privileges",
-  "ManagersNumber": "Number of managers",
   "OwnerCanChangePayer": "The portal owner can change the payer",
   "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per manager/month",
   "PriceCalculation": "Calculate your price",

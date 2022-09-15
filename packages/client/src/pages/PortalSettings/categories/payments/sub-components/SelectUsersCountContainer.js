@@ -110,6 +110,7 @@ const SelectUsersCountContainer = ({
   setTotalPrice,
   isLessCountThanAcceptable,
   step,
+  addedManagersCountTitle,
 }) => {
   const { t } = useTranslation("Payments");
 
@@ -194,7 +195,7 @@ const SelectUsersCountContainer = ({
   return (
     <StyledBody theme={theme} isDisabled={isDisabled || isUpdatingTariff}>
       <Text noSelect fontWeight={600} className="payment-users_text" {...color}>
-        {t("ManagersNumber")}
+        {addedManagersCountTitle}
       </Text>
       <SelectTotalSizeContainer isNeedPlusSign={isNeedPlusSign} />
       <div className="payment-users">
@@ -240,6 +241,7 @@ const SelectUsersCountContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
+  const { paymentQuotasStore } = auth;
   const { theme } = auth.settingsStore;
   const {
     isLoading,
@@ -251,6 +253,7 @@ export default inject(({ auth, payments }) => {
     isLessCountThanAcceptable,
     stepByQuotaForManager,
   } = payments;
+  const { addedManagersCountTitle } = paymentQuotasStore;
 
   const step = stepByQuotaForManager;
 
@@ -264,5 +267,6 @@ export default inject(({ auth, payments }) => {
     setTotalPrice,
     isLessCountThanAcceptable,
     step,
+    addedManagersCountTitle,
   };
 })(observer(SelectUsersCountContainer));
