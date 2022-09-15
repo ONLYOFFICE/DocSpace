@@ -248,3 +248,15 @@ export const ThemeKeys = Object.freeze({
   System: "2",
   SystemStr: "System",
 });
+
+/**
+ * Enum for global events.
+ * @readonly
+ */
+export const Events = Object.freeze({
+  CREATE: "create",
+  RENAME: "rename",
+  ROOM_CREATE: "create_room",
+  ROOM_EDIT: "edit_room",
+  CHANGE_COLUMN: "change_column",
+});

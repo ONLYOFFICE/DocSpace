@@ -2,7 +2,7 @@ import React from "react";
 import TableHeader from "@docspace/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { Events } from "SRC_DIR/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 
 const WITH_AUTHOR = "withAuthorColumn";
 

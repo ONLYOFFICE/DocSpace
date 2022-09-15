@@ -11,14 +11,6 @@ export const thumbnailStatuses = {
 
 export const ADS_TIMEOUT = 300000; // 5 min
 
-export const Events = Object.freeze({
-  CREATE: "create",
-  RENAME: "rename",
-  ROOM_CREATE: "create_room",
-  ROOM_EDIT: "edit_room",
-  CHANGE_COLUMN: "change_column",
-});
-
 export const FilterGroups = Object.freeze({
   filterType: "filter-filterType",
   filterAuthor: "filter-author",

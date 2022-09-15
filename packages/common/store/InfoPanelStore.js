@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { Events } from "SRC_DIR/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 
 class InfoPanelStore {
   isVisible = false;
