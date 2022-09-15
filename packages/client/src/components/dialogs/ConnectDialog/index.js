@@ -153,6 +153,7 @@ const PureConnectDialogContainer = (props) => {
       loginValue,
       passwordValue,
       oAuthToken,
+      false,
       customerTitle,
       provider_key || key,
       provider_id,

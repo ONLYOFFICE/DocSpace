@@ -55,15 +55,15 @@ const AdditionalResources = (props) => {
   } = props;
 
   const [feedbackAndSupportEnabled, setShowFeedback] = useState(
-    additionalResourcesData.feedbackAndSupportEnabled
+    additionalResourcesData?.feedbackAndSupportEnabled
   );
 
   const [videoGuidesEnabled, setShowVideoGuides] = useState(
-    additionalResourcesData.videoGuidesEnabled
+    additionalResourcesData?.videoGuidesEnabled
   );
 
   const [helpCenterEnabled, setShowHelpCenter] = useState(
-    additionalResourcesData.helpCenterEnabled
+    additionalResourcesData?.helpCenterEnabled
   );
 
   const [hasChange, setHasChange] = useState(false);
@@ -77,9 +77,9 @@ const AdditionalResources = (props) => {
   );
 
   useEffect(() => {
-    setShowFeedback(additionalResourcesData.feedbackAndSupportEnabled);
-    setShowVideoGuides(additionalResourcesData.videoGuidesEnabled);
-    setShowHelpCenter(additionalResourcesData.helpCenterEnabled);
+    setShowFeedback(additionalResourcesData?.feedbackAndSupportEnabled);
+    setShowVideoGuides(additionalResourcesData?.videoGuidesEnabled);
+    setShowHelpCenter(additionalResourcesData?.helpCenterEnabled);
   }, [additionalResourcesData]);
 
   useEffect(() => {

@@ -41,7 +41,6 @@ public class StartBackupRequest
 {
     public int TenantId { get; set; }
     public Guid UserId { get; set; }
-    public bool BackupMail { get; set; }
     public BackupStorageType StorageType { get; set; }
     public string StorageBasePath { get; set; }
     public Dictionary<string, string> StorageParams { get; set; }
@@ -61,7 +60,6 @@ public class StartTransferRequest
     public int TenantId { get; set; }
     public string TargetRegion { get; set; }
     public bool NotifyUsers { get; set; }
-    public bool BackupMail { get; set; }
 }
 
 public class TransferRegion
@@ -91,7 +89,6 @@ public class ScheduleResponse
 {
     public BackupStorageType StorageType { get; set; }
     public string StorageBasePath { get; set; }
-    public bool BackupMail { get; set; }
     public int NumberOfBackupsStored { get; set; }
     public string Cron { get; set; }
     public DateTime LastBackupTime { get; set; }
