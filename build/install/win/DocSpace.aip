@@ -662,7 +662,7 @@
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
     <ROW Action="Set_APPDIR_FORWARD_SLASH" Type="38" Target="Script Text" TargetUnformatted="Session.Property(&quot;APPDIR_FORWARD_SLASH&quot;) = Replace(Session.Property(&quot;APPDIR&quot;), &quot;\&quot;, &quot;/&quot;)&#13;&#10;" AdditionalSeq="AI_DATA_SETTER_6"/>
     <ROW Action="StartElasticSearchService" Type="3073" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_13"/>
-    <ROW Action="StartMigrationRunner" Type="3106" Source="service_6_Dir" Target="&quot;[APPDIR]services\ASC.Migration.Runner\service\ASC.Migration.Runner.exe&quot;"/>
+    <ROW Action="StartMigrationRunner" Type="3074" Source="viewer.exe" Target="/EnforcedRunAsAdmin /RunAsAdmin /HideWindow /dir APPDIR\services\ASC.Migration.Runner\service &quot;[APPDIR]services\ASC.Migration.Runner\service\ASC.Migration.Runner.exe&quot;" Options="1"/>
     <ROW Action="StartMySQLService" Type="1" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_11"/>
     <ROW Action="StopElasticSearchService" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_12"/>
     <ROW Action="StopMySQLService" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_10"/>
