@@ -106,6 +106,8 @@ const SingleItem = (props) => {
           case FileType.Presentation:
             return t("Home:Presentation");
           case FileType.Document:
+          case FileType.OForm:
+          case FileType.OFormTemplate:
             return t("Home:Document");
           default:
             return t("Home:Folder");
