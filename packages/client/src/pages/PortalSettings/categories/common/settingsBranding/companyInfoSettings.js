@@ -274,6 +274,7 @@ const CompanyInfoSettings = (props) => {
               value={companyName}
               hasError={hasErrorCompanyName}
               onChange={(e) => onChangeСompanyName(e.target.value)}
+              tabIndex={3}
             />
           </FieldContainer>
           <FieldContainer
@@ -291,6 +292,7 @@ const CompanyInfoSettings = (props) => {
               value={email}
               hasError={hasErrorEmail}
               onChange={(e) => onChangeEmail(e.target.value)}
+              tabIndex={4}
             />
           </FieldContainer>
           <FieldContainer
@@ -307,6 +309,7 @@ const CompanyInfoSettings = (props) => {
               value={phone}
               hasError={hasErrorPhone}
               onChange={(e) => onChangePhone(e.target.value)}
+              tabIndex={5}
             />
           </FieldContainer>
           <FieldContainer
@@ -323,6 +326,7 @@ const CompanyInfoSettings = (props) => {
               value={site}
               hasError={hasErrorSite}
               onChange={(e) => onChangeSite(e.target.value)}
+              tabIndex={6}
             />
           </FieldContainer>
           <FieldContainer
@@ -339,6 +343,7 @@ const CompanyInfoSettings = (props) => {
               value={address}
               hasError={hasErrorAddress}
               onChange={(e) => onChangeAddress(e.target.value)}
+              tabIndex={7}
             />
           </FieldContainer>
         </div>
