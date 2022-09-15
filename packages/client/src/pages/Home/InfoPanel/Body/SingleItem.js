@@ -149,7 +149,7 @@ const SingleItem = (props) => {
           content: styledText(itemSize),
         },
         {
-          id: "ByLastModifiedDate",
+          id: "ByLastModified",
           title: t("Files:ByLastModified"),
           content: styledText(parseAndFormatDate(item.updated)),
         },
