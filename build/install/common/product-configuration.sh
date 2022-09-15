@@ -437,12 +437,26 @@ setup_nginx(){
 		if $(getenforce) >/dev/null 2>&1; then
 			case $(getenforce) in
 				enforcing|permissive)
-					PORTS+=('8081') #Storybook
-					PORTS+=("$DOCUMENT_SERVER_PORT")
-					PORTS+=('5001') #ASC.Web.Studio
-					PORTS+=('5002') #ASC.People
-					PORTS+=('5008') #ASC.Files/client
+					PORTS+=('5000') #ASC.Web.Api
+					PORTS+=('5001') #client
+					PORTS+=('5003') #ASC.Web.Studio
+					PORTS+=('5004') #ASC.People
+					PORTS+=('5005') #ASC.Notify
+					PORTS+=('5006') #ASC.Studio.Notify
+					PORTS+=('5007') #ASC.Files/server
+					PORTS+=('5009') #ASC.Files/service
+					PORTS+=('5011') #ASC.Login
+					PORTS+=('5012') #ASC.Data.Backup
 					PORTS+=('5013') #ASC.Files/editor
+					PORTS+=('5018') #ASC.Migration
+					PORTS+=('5027') #ASC.ClearEvents
+					PORTS+=('5028') #ASC.Socket.IO
+					PORTS+=('5029') #ASC.UrlShortener
+					PORTS+=('5031') #ASC.Webhooks.Service
+					PORTS+=('5032') #ASC.Data.Backup.BackgroundTasks
+					PORTS+=('8081') #Storybook
+					PORTS+=('9834') #ASC.SsoAuth
+					PORTS+=('51702') #ASC.TelegramService
 					setsebool -P httpd_can_network_connect on
 				;;
 				disabled)
@@ -458,7 +472,6 @@ setup_nginx(){
 		fi
 	fi
     chown nginx:nginx /etc/nginx/* -R
-    sudo sed -e 's/#//' -i $NGINX_CONF/onlyoffice.conf
 	systemctl enable nginx >/dev/null 2>&1
 	systemctl restart nginx
 	echo "OK"
