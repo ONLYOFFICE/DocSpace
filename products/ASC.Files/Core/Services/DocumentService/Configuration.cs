@@ -312,6 +312,14 @@ public class EditorConfiguration<T>
                     filter = FilterType.DocumentsOnly;
                     break;
 
+                case FileType.OForm:
+                    filter = FilterType.OFormOnly;
+                    break;
+
+                case FileType.OFormTemplate:
+                    filter = FilterType.OFormTemplateOnly;
+                    break;
+
                 case FileType.Spreadsheet:
                     filter = FilterType.SpreadsheetsOnly;
                     break;
@@ -363,6 +371,14 @@ public class EditorConfiguration<T>
             {
                 case FileType.Document:
                     filter = FilterType.DocumentsOnly;
+                    break;
+
+                case FileType.OForm:
+                    filter = FilterType.OFormOnly;
+                    break;
+
+                case FileType.OFormTemplate:
+                    filter = FilterType.OFormTemplateOnly;
                     break;
 
                 case FileType.Spreadsheet:
@@ -442,6 +458,8 @@ public class EditorConfiguration<T>
         switch (fileType)
         {
             case FileType.Document:
+            case FileType.OForm:
+            case FileType.OFormTemplate:
                 title = FilesJSResource.TitleNewFileText;
                 break;
 
