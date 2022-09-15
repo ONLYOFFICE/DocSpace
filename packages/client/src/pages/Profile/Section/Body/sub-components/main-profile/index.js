@@ -1,13 +1,10 @@
 import React from "react";
-import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
-
-import { smallTablet } from "@docspace/components/utils/device";
 
 import { getUserRole } from "../../../../../../helpers/people-helpers";
 
@@ -21,69 +18,7 @@ import {
   ChangeNameDialog,
 } from "../../../../../../components/dialogs";
 
-const StyledWrapper = styled.div`
-  display: flex;
-  padding: 24px;
-  gap: 40px;
-  background: ${(props) => props.theme.profile.main.background};
-  border-radius: 12px;
-
-  @media ${smallTablet} {
-    background: none;
-    flex-direction: column;
-    gap: 24px;
-    align-items: center;
-    padding: 0;
-  }
-`;
-
-const StyledInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-
-  @media ${smallTablet} {
-    width: 100%;
-  }
-
-  .row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .field {
-      display: flex;
-      gap: 24px;
-    }
-
-    .label {
-      min-width: 75px;
-      max-width: 75px;
-      white-space: nowrap;
-    }
-
-    @media ${smallTablet} {
-      gap: 8px;
-      background: ${(props) => props.theme.profile.main.background};
-      padding: 12px 16px;
-      border-radius: 6px;
-
-      .field {
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .label {
-        min-width: 100%;
-        max-width: 100%;
-      }
-
-      .edit-button {
-        margin-left: auto;
-      }
-    }
-  }
-`;
+import { StyledWrapper, StyledInfo } from "./styled";
 
 const MainProfile = (props) => {
   const { t, ready } = useTranslation(["Profile", "Common"]);
