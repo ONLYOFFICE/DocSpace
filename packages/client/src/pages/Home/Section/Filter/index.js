@@ -794,7 +794,7 @@ const SectionFilterContent = ({
     const name = { key: "AZ", label: t("Common:Name"), default: true };
     const modifiedDate = {
       key: "DateAndTime",
-      label: t("ByLastModified"),
+      label: t("ByLastModifiedDate"),
       default: true,
     };
 
