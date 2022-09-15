@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Profile = AutoMapper.Profile;
-
 namespace ASC.Files.Core;
 
 [Flags]
@@ -93,6 +91,10 @@ public class File<T> : FileEntry<T>, IFileEntry<T>
                     return FilterType.ImagesOnly;
                 case FileType.Document:
                     return FilterType.DocumentsOnly;
+                case FileType.OForm:
+                    return FilterType.OFormOnly;
+                case FileType.OFormTemplate:
+                    return FilterType.OFormTemplateOnly;
                 case FileType.Presentation:
                     return FilterType.PresentationsOnly;
                 case FileType.Spreadsheet:
