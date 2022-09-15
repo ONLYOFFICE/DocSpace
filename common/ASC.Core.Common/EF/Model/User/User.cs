@@ -53,7 +53,6 @@ public class User : BaseEntity, IMapFrom<UserInfo>
     public bool Removed { get; set; }
     public DateTime CreateDate { get; set; }
     public DateTime LastModified { get; set; }
-    public long QuotaLimit { get; set; }
 
     public override object[] GetKeys()
     {
@@ -236,10 +235,6 @@ public static class DbUserExtension
             entity.Property(e => e.WorkFromDate)
                 .HasColumnName("workfromdate")
                 .HasColumnType("datetime");
-
-            entity.Property(e => e.QuotaLimit)
-               .HasColumnName("quota_limit")
-               .HasDefaultValueSql("'-1'");
         });
     }
 
@@ -351,10 +346,6 @@ public static class DbUserExtension
                 .IsRequired()
                 .HasColumnName("username")
                 .HasMaxLength(255);
-
-            entity.Property(e => e.QuotaLimit)
-                .HasColumnName("quota_limit")
-                .HasDefaultValueSql("'-1'");
 
             entity.Property(e => e.WorkFromDate).HasColumnName("workfromdate");
         });

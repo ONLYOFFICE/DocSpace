@@ -148,7 +148,7 @@ public class LdapObjectExtension
         var emails = GetContacts(ldapUser, Mapping.AdditionalMail, settings);
         var skype = GetContacts(ldapUser, Mapping.Skype, settings);
 
-        var quotaSettings = _settingsManager.Load<UserQuotaSettings>();
+        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
         var quota = settings.LdapMapping.ContainsKey(Mapping.UserQuotaLimit) ? ByteConverter.ConvertSizeToBytes(GetAttribute(ldapUser, settings.LdapMapping[Mapping.UserQuotaLimit])) : quotaSettings.DefaultUserQuota;
 
         if (string.IsNullOrEmpty(userName))
@@ -173,9 +173,13 @@ public class LdapObjectExtension
             Title = !string.IsNullOrEmpty(title) ? title : string.Empty,
             Location = !string.IsNullOrEmpty(location) ? location : string.Empty,
             WorkFromDate = _tenantUtil.DateTimeNow(),
-            ContactsList = contacts,
-            QuotaLimit = quotaSettings.EnableUserQuota ? quota : -1
+            ContactsList = contacts
         };
+
+        if (quotaSettings.EnableUserQuota)
+        {
+            _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = quota }, Guid.Parse(user.Sid));
+        }
 
         if (!string.IsNullOrEmpty(firstName))
         {

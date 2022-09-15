@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,24 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Users;
+namespace ASC.Core.Tenants;
 
 [Serializable]
-public class UserQuotaSettings : ISettings<UserQuotaSettings>
+public class TenantUserQuotaSettings : ISettings<TenantUserQuotaSettings>
 {
-    public long UserQuota { get; set; }
+    public bool EnableUserQuota { get; set; }
 
-    public UserQuotaSettings GetDefault()
+    public long DefaultUserQuota { get; set; }
+
+    public TenantUserQuotaSettings GetDefault()
     {
-        return new UserQuotaSettings
+        return new TenantUserQuotaSettings
         {
-            UserQuota = -1
+            EnableUserQuota = false,
+            DefaultUserQuota = -1
         };
     }
 
     [JsonIgnore]
     public Guid ID
     {
-        get { return new Guid("{5A097CFA-1A8E-45CB-A4BB-FE8D2B5E5908}"); }
+        get { return new Guid("{5FE28053-BCD4-466B-8A4B-71B612F0D6FC}"); }
     }
 }

@@ -199,11 +199,12 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         result.UsedSpace = Math.Max(0, _userManager.FindUserQuotaRows(_context.Tenant.Id, userInfo.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
 
-        var quotaSettings = _settingsManager.Load<UserQuotaSettings>();
+        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+        var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(userInfo.IsSSO() ? Guid.Parse(userInfo.Sid) : userInfo.Id);
 
         if (quotaSettings.EnableUserQuota)
         {
-            result.QuotaLimit = userInfo.QuotaLimit;
+            result.QuotaLimit = userQuotaSettings != null ? userQuotaSettings.UserQuota : quotaSettings.DefaultUserQuota;
         }
 
         if (userInfo.Sex.HasValue)

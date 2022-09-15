@@ -413,11 +413,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
 
         var user = _userManager.GetUsers(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
-        var quotaSettings = _settingsManager.Load<UserQuotaSettings>();
+        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+        var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(user.IsLDAP() ? Guid.Parse(user.Sid) : user.Id);
 
-        if (quotaSettings.EnableUserQuota && user.QuotaLimit != -1)
+        if (quotaSettings.EnableUserQuota && userQuotaSettings.UserQuota != -1)
         {
-            var quotaLimit = user.QuotaLimit;
+            var quotaLimit = userQuotaSettings.UserQuota;
 
             if (quotaLimit != -1)
             {

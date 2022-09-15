@@ -1122,8 +1122,9 @@ public class UserController : PeopleControllerBase
                 }
             }
 
-            user.QuotaLimit = inDto.Quota;
-            _userManager.SaveUserInfo(user, syncCardDav: true);
+            var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+
+            _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = inDto.Quota }, user.IsLDAP() ? Guid.Parse(user.Sid) : user.Id);
 
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
