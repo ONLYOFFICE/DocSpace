@@ -4,6 +4,8 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { Events } from "SRC_DIR/helpers/filesConstants";
 
+const WITH_AUTHOR = "withAuthorColumn";
+
 class FilesTableHeader extends React.Component {
   constructor(props) {
     super(props);
@@ -14,9 +16,16 @@ class FilesTableHeader extends React.Component {
   }
 
   getTableColumns = (fromUpdate = false) => {
-    const { t, personal, tableStorageName, isRooms } = this.props;
+    const {
+      t,
+      personal,
+      tableStorageName,
+      isRooms,
+      isPersonalRoom,
+    } = this.props;
 
     const defaultColumns = [];
+
     if (isRooms) {
       const columns = [
         {
@@ -69,6 +78,22 @@ class FilesTableHeader extends React.Component {
 
       defaultColumns.push(...columns);
     } else {
+      const authorOption = {
+        key: "Author",
+        title: t("ByAuthor"),
+        enable: false,
+        resizable: true,
+        sortBy: "Author",
+
+        isDisabled: isPersonalRoom,
+        onClick: this.onFilter,
+        onChange: this.onColumnChange,
+      };
+
+      if (isPersonalRoom) {
+        authorOption.defaultSize = 0;
+      }
+
       const columns = [
         {
           key: "Name",
@@ -80,15 +105,7 @@ class FilesTableHeader extends React.Component {
           minWidth: 210,
           onClick: this.onFilter,
         },
-        {
-          key: "Author",
-          title: t("ByAuthor"),
-          enable: false,
-          resizable: true,
-          sortBy: "Author",
-          onClick: this.onFilter,
-          onChange: this.onColumnChange,
-        },
+        authorOption,
         {
           key: "Created",
           title: t("ByCreationDate"),
@@ -152,12 +169,14 @@ class FilesTableHeader extends React.Component {
         columns: columns,
         resetColumnsSize: resetColumnsSize,
         isRooms: isRooms,
+        isPersonalRoom: isPersonalRoom,
       });
     } else {
       this.state = {
         columns: columns,
         resetColumnsSize: resetColumnsSize,
         isRooms: isRooms,
+        isPersonalRoom: isPersonalRoom,
       };
     }
   };
@@ -199,6 +218,10 @@ class FilesTableHeader extends React.Component {
       return this.getTableColumns(true);
     }
 
+    if (this.props.isPersonalRoom !== this.state.isPersonalRoom) {
+      return this.getTableColumns(true);
+    }
+
     const { columns } = this.state;
     if (this.props.withContent !== prevProps.withContent) {
       const columnIndex = columns.findIndex((c) => c.key === "Share");
@@ -221,12 +244,30 @@ class FilesTableHeader extends React.Component {
     this.customScrollElm.removeEventListener("scroll", this.onBeginScroll);
   }
   getColumns = (defaultColumns, splitColumns) => {
+    const { isPersonalRoom, isRooms } = this.props;
+
     const columns = [];
 
     if (splitColumns) {
       for (let col of defaultColumns) {
         const column = splitColumns.find((key) => key === col.key);
         column ? (col.enable = true) : (col.enable = false);
+
+        if (!isRooms) {
+          if (column === "Author" && isPersonalRoom) {
+            col.enable = false;
+          }
+
+          if (col.key === "Author" && !isPersonalRoom) {
+            if (!col.enable) {
+              const withAuthor = localStorage.getItem(WITH_AUTHOR);
+
+              if (withAuthor === "true") {
+                col.enable = true;
+              }
+            }
+          }
+        }
 
         columns.push(col);
       }
@@ -247,6 +288,10 @@ class FilesTableHeader extends React.Component {
 
     const tableColumns = columns.map((c) => c.enable && c.key);
     this.setTableColumns(tableColumns);
+
+    if (key === "Author") {
+      localStorage.setItem(WITH_AUTHOR, columns[columnIndex].enable);
+    }
 
     const event = new Event(Events.CHANGE_COLUMN);
 
@@ -366,7 +411,11 @@ export default inject(
       roomsFilter,
       fetchRooms,
     } = filesStore;
-    const { isPrivacyFolder, isRecentFolder } = treeFoldersStore;
+    const {
+      isPrivacyFolder,
+      isRecentFolder,
+      isPersonalRoom,
+    } = treeFoldersStore;
 
     const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
     const sortingVisible = !isRecentFolder;
@@ -391,6 +440,8 @@ export default inject(
 
       infoPanelVisible,
       withPaging,
+
+      isPersonalRoom,
     };
   }
 )(
