@@ -1,5 +1,10 @@
 resolver $DNS_NAMESERVER valid=30s;
 
+map $SERVICE_LOGIN $service_login {
+    volatile;
+    $SERVICE_LOGIN $SERVICE_LOGIN;
+}
+
 map $SERVICE_DOCEDITOR $service_doceditor {
     volatile;
     $SERVICE_DOCEDITOR $SERVICE_DOCEDITOR;

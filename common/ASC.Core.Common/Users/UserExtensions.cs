@@ -43,19 +43,36 @@ public static class UserExtensions
         return ui != null && ui.Id == authContext.CurrentAccount.ID;
     }
 
-    public static bool IsAdmin(this UserInfo ui, UserManager UserManager)
+    public static bool IsAdmin(this UserManager userManager, Guid id)
     {
-        return ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupAdmin.ID);
+        var ui = userManager.GetUsers(id);
+        return userManager.IsAdmin(ui);
     }
 
-    public static bool IsVisitor(this UserInfo ui, UserManager UserManager)
+    public static bool IsAdmin(this UserManager userManager, UserInfo ui)
     {
-        return ui != null && UserManager.IsUserInGroup(ui.Id, Constants.GroupVisitor.ID);
+        return ui != null && userManager.IsUserInGroup(ui.Id, Constants.GroupAdmin.ID);
     }
 
-    public static bool IsOutsider(this UserInfo ui, UserManager userManager)
+    public static bool IsVisitor(this UserManager userManager, Guid id)
     {
-        return IsVisitor(ui, userManager) && ui.Id == Constants.OutsideUser.Id;
+        var ui = userManager.GetUsers(id);
+        return userManager.IsVisitor(ui);
+    }
+
+    public static bool IsVisitor(this UserManager userManager, UserInfo ui)
+    {
+        return ui != null && userManager.IsUserInGroup(ui.Id, Constants.GroupVisitor.ID);
+    }
+
+    public static bool IsOutsider(this UserManager userManager, Guid id)
+    {
+        return userManager.IsVisitor(id) && id == Constants.OutsideUser.Id;
+    }
+
+    public static bool IsOutsider(this UserManager userManager, UserInfo ui)
+    {
+        return userManager.IsVisitor(ui) && ui.Id == Constants.OutsideUser.Id;
     }
 
     public static bool IsLDAP(this UserInfo ui)
