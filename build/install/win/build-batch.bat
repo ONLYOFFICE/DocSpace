@@ -24,6 +24,8 @@ copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Login.exe" 
 copy build\install\win\tools\Login.xml "build\install\win\Files\tools\Login.xml" /y
 copy "build\install\win\nginx.conf" "build\install\win\Files\nginx\conf\nginx.conf" /y
 rmdir build\install\win\publish /s /q
+del /f /q build\install\win\Files\nginx\conf\onlyoffice-login.conf
+
 
 REM echo ######## Build Utils ########
 %nuget% install %cd%\build\install\win\CustomActions\C#\Utils\packages.config -OutputDirectory %cd%\build\install\win\CustomActions\C#\Utils\packages
@@ -31,26 +33,6 @@ REM echo ######## Build Utils ########
 copy build\install\win\CustomActions\C#\Utils\bin\Debug\Utils.CA.dll build\install\win\Utils.CA.dll /y
 rmdir build\install\win\CustomActions\C#\Utils\bin /s /q
 rmdir build\install\win\CustomActions\C#\Utils\obj /s /q
-
-REM echo ######## Edit nginx conf files ########
-%sed% -i "s!#rewrite!rewrite!g" build/install/win/Files/nginx/conf/onlyoffice.conf
-%sed% -i "s!/etc/nginx/includes!includes!g" build/install/win/Files/nginx/conf/onlyoffice.conf
-%sed% -i "s!/var/www!..!g" build/install/win/Files/nginx/conf/onlyoffice-*.conf
-%sed% -i "s!/var/www!..!g" build/install/win/Files/nginx/conf/includes/onlyoffice-*.conf
-del /f /q build\install\win\Files\nginx\conf\onlyoffice-login.conf
-
-REM echo ######## Edit json files ########
-%sed% -i "s!\(\"machinekey\":\).\".*\"!\1 \"1123askdasjklasbnd\"!g" build/install/win/Files/config/appsettings*.json
-%sed% -i "s!\(\"folder\":\).\".*\"!\1 \"{APPDIRCONF}products\"!g" build/install/win/Files/config/appsettings*.json
-%sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.Socket.IO\/service\"!g" build/install/win/Files/config/socket*.json
-%sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.Thumbnails\/service\"!g" build/install/win/Files/config/thumb*.json
-%sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.UrlShortener\/service\/index.js\"!g" build/install/win/Files/config/urlshortener*.json
-%sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.SsoAuth\/service\"!g" build/install/win/Files/config/ssoauth*.json
-%sed% -i "s!\(\"path\":\).\".*\"!\1 \"{APPDIRCONF}services\/ASC.UrlShortener\/service\/index.js\"!g" build/install/win/Files/config/appsettings.services.json
-%sed% -i "s!\(\"log\":\).\".*\"!\1 \"{APPDIRCONF}Logs\/urlshortener.log\"!g" build/install/win/Files/config/appsettings.services.json
-%sed% -i "s!\(\"appsettings\":\).\".*\"!\1 \"{APPDIRCONF}config\"!g" build/install/win/Files/services/ASC.UrlShortener/service/config/config.json
-%sed% -i "s!\(\"appsettings\":\).\".*\"!\1 \"{APPDIRCONF}config\"!g" build/install/win/Files/services/ASC.Socket.IO/service/config/config.json
-%sed% -i "s!\(\"appsettings\":\).\".*\"!\1 \"{APPDIRCONF}config\"!g" build/install/win/Files/services/ASC.SsoAuth/service/config/config.json
 
 REM echo ######## Delete temp files ########
 del /f /q build\install\win\Files\config\sed*
