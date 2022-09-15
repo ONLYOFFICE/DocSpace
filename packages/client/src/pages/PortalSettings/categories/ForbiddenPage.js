@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
 
 const ForbiddenPage = () => {
-  const { t } = useTranslation("SingleSignOn");
+  const { t } = useTranslation("Settings");
 
   return (
     <EmptyScreenContainer

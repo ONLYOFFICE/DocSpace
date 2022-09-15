@@ -820,6 +820,8 @@ public class EntryManager
             case FilterType.PresentationsOnly:
             case FilterType.ImagesOnly:
             case FilterType.DocumentsOnly:
+            case FilterType.OFormOnly:
+            case FilterType.OFormTemplateOnly:
             case FilterType.ArchiveOnly:
             case FilterType.FilesOnly:
             case FilterType.MediaOnly:
@@ -1298,7 +1300,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(file) || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)))
+        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(file) || _userManager.IsVisitor(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1481,7 +1483,7 @@ public class EntryManager
                 && !await _fileSecurity.CanReviewAsync(file, userId)
                 && !await _fileSecurity.CanFillFormsAsync(file, userId)
                 && !await _fileSecurity.CanCommentAsync(file, userId)
-                || _userManager.GetUsers(userId).IsVisitor(_userManager)))
+                || _userManager.IsVisitor(userId)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1532,7 +1534,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(fromFile) || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)))
+        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(fromFile) || _userManager.IsVisitor(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1654,7 +1656,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && (!await _fileSecurity.CanEditAsync(fileVersion) || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)))
+        if (checkRight && (!await _fileSecurity.CanEditAsync(fileVersion) || _userManager.IsVisitor(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1717,7 +1719,7 @@ public class EntryManager
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }
 
-        if (!await _fileSecurity.CanDeleteAsync(file) && _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        if (!await _fileSecurity.CanDeleteAsync(file) && _userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }

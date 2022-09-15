@@ -73,7 +73,6 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
             {
                 _backupWorker.StartScheduledBackup(new EF.Model.BackupSchedule
                 {
-                    BackupMail = @event.BackupMail,
                     BackupsStored = @event.BackupsStored,
                     StorageBasePath = @event.StorageBasePath,
                     StorageParams = JsonConvert.SerializeObject(@event.StorageParams),
@@ -83,7 +82,7 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
             }
             else
             {
-                _backupAjaxHandler.StartBackup(@event.StorageType, @event.StorageParams, @event.BackupMail);
+                _backupAjaxHandler.StartBackup(@event.StorageType, @event.StorageParams);
             }
 
             await Task.CompletedTask;
