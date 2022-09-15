@@ -5,10 +5,10 @@ import { inject, observer } from "mobx-react";
 import { isDesktop } from "react-device-detect";
 
 import withLoading from "SRC_DIR/HOCs/withLoading";
-import Whitelabel from "./settingsBranding/whitelabel";
-import CompanyInfoSettings from "./settingsBranding/companyInfoSettings";
+import Whitelabel from "./Branding/whitelabel";
+import CompanyInfoSettings from "./Branding/companyInfoSettings";
 import styled from "styled-components";
-import AdditionalResources from "./settingsBranding/additionalResources";
+import AdditionalResources from "./Branding/additionalResources";
 
 import LoaderBrandingDescription from "./sub-components/loaderBrandingDescription";
 

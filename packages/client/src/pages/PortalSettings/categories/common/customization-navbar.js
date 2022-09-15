@@ -11,7 +11,7 @@ import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import history from "@docspace/common/history";
 import { Base } from "@docspace/components/themes";
 import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavbar";
-import { StyledArrowRightIcon } from "../common/settingsCustomization/StyledSettings";
+import { StyledArrowRightIcon } from "./Customization/StyledSettings";
 import { withRouter } from "react-router";
 const StyledComponent = styled.div`
   padding-top: 13px;

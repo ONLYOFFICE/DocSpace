@@ -6,7 +6,7 @@ import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 
 import TabContainer from "@docspace/components/tabs-container";
-import Preview from "./settingsAppearance/preview";
+import Preview from "./Appearance/preview";
 
 import ColorSchemeDialog from "./sub-components/colorSchemeDialog";
 
@@ -18,7 +18,7 @@ import { isMobileOnly } from "react-device-detect";
 
 import Loader from "./sub-components/loaderAppearance";
 
-import { StyledComponent } from "./settingsAppearance/StyledApperance.js";
+import { StyledComponent } from "./Appearance/StyledApperance.js";
 
 import BreakpointWarning from "../../../../components/BreakpointWarning/index";
 
