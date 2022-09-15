@@ -298,28 +298,24 @@ public class SecurityController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var attemptsCount = loginSettingsRequestDto.AttemptCount;
-        var checkPeriod = loginSettingsRequestDto.CheckPeriod;
-        var blockTime = loginSettingsRequestDto.BlockTime;
+        var settings = _mapper.Map<LoginSettingsRequestDto, LoginSettings>(loginSettingsRequestDto);
+
+        var attemptsCount = settings.AttemptCount;
+        var checkPeriod = settings.CheckPeriod;
+        var blockTime = settings.BlockTime;
 
         if (attemptsCount < 1)
         {
-            throw new ArgumentOutOfRangeException("attemptsCount");
+            throw new ArgumentOutOfRangeException(nameof(attemptsCount));
         }
         if (checkPeriod < 1)
         {
-            throw new ArgumentOutOfRangeException("checkPeriod");
+            throw new ArgumentOutOfRangeException(nameof(checkPeriod));
         }
         if (blockTime < 0)
         {
-            throw new ArgumentOutOfRangeException("blockTime");
+            throw new ArgumentOutOfRangeException(nameof(blockTime));
         }
-
-        var settings = new LoginSettings {
-            AttemptCount = attemptsCount, 
-            CheckPeriod = checkPeriod, 
-            BlockTime = blockTime 
-        };
 
         _settingsManager.Save(settings);
 

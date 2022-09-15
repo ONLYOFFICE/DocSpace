@@ -24,84 +24,117 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.Extensions.Caching.Distributed;
+
+using ProtoBuf;
+
 namespace ASC.Web.Core;
 [Scope]
 public class BruteForceLoginManager
 {
-    private readonly LoginSettings _settings;
-    private readonly ICache _cache;
-    private string _login;
-    private string _requestIp;
+    private readonly SettingsManager _settingsManager;
+    private readonly IDistributedCache _distributedCache;
+    private static readonly object _lock = new object();
 
-    public BruteForceLoginManager(SettingsManager settingsManager, ICache cache)
+    public BruteForceLoginManager(SettingsManager settingsManager, IDistributedCache distributedCache)
     {
-        _settings = settingsManager.Load<LoginSettings>();
-        _cache = cache;
+        _settingsManager = settingsManager;
+        _distributedCache = distributedCache;
     }
 
-    public void Init(string login, string requestIp)
-    {
-        _login = login;
-        _requestIp = requestIp;
-    }
-
-    private string GetBlockCacheKey()
-    {
-        return "loginblock/" + _login + _requestIp;
-    }
-
-    private string GetHistoryCacheKey()
-    {
-        return "loginsec/" + _login + _requestIp;
-    }
-
-    public bool Increment(out bool showRecaptcha)
+    public bool Increment(string login, string requestIp, out bool showRecaptcha)
     {
         showRecaptcha = true;
 
-        var blockCacheKey = GetBlockCacheKey();
-
-        if (_cache.Get<string>(blockCacheKey) != null)
+        lock (_lock)
         {
-            return false;
+            var blockCacheKey = GetBlockCacheKey(login, requestIp);
+
+            if (GetFromCache<bool>(blockCacheKey))
+            {
+                return false;
+            }
+
+            var historyCacheKey = GetHistoryCacheKey(login, requestIp);
+
+            var history = GetFromCache<List<DateTime>>(historyCacheKey) ?? new List<DateTime>();
+
+            var now = DateTime.UtcNow;
+
+            var settings = _settingsManager.Load<LoginSettings>();
+
+            var checkTime = now.Subtract(TimeSpan.FromSeconds(settings.CheckPeriod));
+
+            history = history.Where(item => item > checkTime).ToList();
+
+            history.Add(now);
+
+            showRecaptcha = history.Count > settings.AttemptCount - 1;
+
+            if (history.Count > settings.AttemptCount)
+            {
+                SetToCache(blockCacheKey, "block", now.Add(TimeSpan.FromSeconds(settings.BlockTime)));
+                _distributedCache.Remove(historyCacheKey);
+                return false;
+            }
+
+            SetToCache(historyCacheKey, history, now.Add(TimeSpan.FromSeconds(settings.CheckPeriod)));
         }
-
-        var historyCacheKey = GetHistoryCacheKey();
-
-        var history = _cache.Get<List<DateTime>>(historyCacheKey) ?? new List<DateTime>();
-
-        var now = DateTime.UtcNow;
-
-        var checkTime = now.Subtract(TimeSpan.FromSeconds(_settings.CheckPeriod));
-
-        history = history.Where(item => item > checkTime).ToList();
-
-        history.Add(now);
-
-        showRecaptcha = history.Count > _settings.AttemptCount - 1;
-
-        if (history.Count > _settings.AttemptCount)
-        {
-            _cache.Insert(blockCacheKey, "block", now.Add(TimeSpan.FromSeconds(_settings.BlockTime)));
-            _cache.Remove(historyCacheKey);
-            return false;
-        }
-
-        _cache.Insert(historyCacheKey, history, now.Add(TimeSpan.FromSeconds(_settings.CheckPeriod)));
         return true;
     }
 
-    public void Decrement()
+    public void Decrement(string login, string requestIp)
     {
-        var historyCacheKey = GetHistoryCacheKey();
+        var historyCacheKey = GetHistoryCacheKey(login, requestIp);
 
-        var history = _cache.Get<List<DateTime>>(historyCacheKey) ?? new List<DateTime>();
-
-        if (history.Count > 0)
+        lock (_lock)
         {
-            history.RemoveAt(history.Count - 1);
+            var history = GetFromCache<List<DateTime>>(historyCacheKey) ?? new List<DateTime>();
+
+            if (history.Count > 0)
+            {
+                history.RemoveAt(history.Count - 1);
+            }
+
+            var settings = _settingsManager.Load<LoginSettings>();
+
+            SetToCache(historyCacheKey, history, DateTime.UtcNow.Add(TimeSpan.FromSeconds(settings.CheckPeriod)));
+        }
+    }
+
+    private T GetFromCache<T>(string key)
+    {
+        var serializedObject = _distributedCache.Get(key);
+
+        if (serializedObject == null)
+        {
+            return default(T);
         }
 
-        _cache.Insert(historyCacheKey, history, DateTime.UtcNow.Add(TimeSpan.FromSeconds(_settings.CheckPeriod)));
+        using var ms = new MemoryStream(serializedObject);
+
+        return Serializer.Deserialize<T>(ms);
+    }
+
+    private void SetToCache<T>(string key, T obj, DateTime ExpirationPeriod)
+    {
+        using var ms = new MemoryStream();
+
+        Serializer.Serialize(ms, obj);
+
+        _distributedCache.Set(key, ms.ToArray(), new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = ExpirationPeriod
+        });
+    }
+
+    private string GetBlockCacheKey(string login, string requestIp)
+    {
+        return "loginblock/" + login + requestIp;
+    }
+
+    private string GetHistoryCacheKey(string login, string requestIp)
+    {
+        return "loginsec/" + login + requestIp;
     }
 }

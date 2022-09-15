@@ -67,7 +67,6 @@ public class AuthenticationController : ControllerBase
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly BruteForceLoginManager _bruteForceLoginManager;
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public AuthenticationController(
         UserManager userManager,
@@ -101,8 +100,7 @@ public class AuthenticationController : ControllerBase
         AuthContext authContext,
         CookieStorage cookieStorage,
         DbLoginEventsManager dbLoginEventsManager,
-        BruteForceLoginManager bruteForceLoginManager,
-        IHttpContextAccessor httpContextAccessor)
+        BruteForceLoginManager bruteForceLoginManager)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -136,7 +134,6 @@ public class AuthenticationController : ControllerBase
         _dbLoginEventsManager = dbLoginEventsManager;
         _userManagerWrapper = userManagerWrapper;
         _bruteForceLoginManager = bruteForceLoginManager;
-        _httpContextAccessor = httpContextAccessor;
     }
 
 
@@ -361,8 +358,7 @@ public class AuthenticationController : ControllerBase
                 var secretEmail = SetupInfo.IsSecretEmail(inDto.UserName);
 
                 var requestIp = MessageSettings.GetIP(Request);
-                _bruteForceLoginManager.Init(inDto.UserName, requestIp);
-                var bruteForceSuccessAttempt = _bruteForceLoginManager.Increment(out var _);
+                var bruteForceSuccessAttempt = _bruteForceLoginManager.Increment(inDto.UserName, requestIp, out _);
 
                 if (!secretEmail && !bruteForceSuccessAttempt)
                 {
@@ -393,7 +389,7 @@ public class AuthenticationController : ControllerBase
 
                 if (!secretEmail)
                 {
-                    _bruteForceLoginManager.Decrement();
+                    _bruteForceLoginManager.Decrement(inDto.UserName, requestIp);
                 }
             }
             else
