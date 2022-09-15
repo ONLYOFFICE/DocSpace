@@ -256,7 +256,6 @@
     <ROW JsonProperty="Host_1" Parent="_" Name="Host" Condition="1" Order="0" Flags="57" Value="[REDIS_HOST_PROP]"/>
     <ROW JsonProperty="Hostname" Parent="RabbitMQ" Name="Hostname" Condition="1" Order="0" Flags="57" Value="[RABBITMQ_HOSTNAME_PROP]"/>
     <ROW JsonProperty="Hosts" Parent="Redis" Name="Hosts" Condition="1" Order="0" Flags="61"/>
-    <ROW JsonProperty="machinekey_2" Parent="core_1" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="PORT" Parent="Root_9" Name="PORT" Condition="1" Order="1" Flags="57" Value="[Login_Port]"/>
     <ROW JsonProperty="PORT_1" Parent="Root_10" Name="PORT" Condition="1" Order="1" Flags="57" Value="[Editor_Port]"/>
     <ROW JsonProperty="Password" Parent="RabbitMQ" Name="Password" Condition="1" Order="2" Flags="57" Value="[RABBITMQ_PASSWORD_PROP]"/>
@@ -305,6 +304,7 @@
     <ROW JsonProperty="logPath" Parent="Root_4" Name="logPath" Condition="1" Order="1" Flags="57" Value="[APPDIR_FORWARD_SLASH]Logs"/>
     <ROW JsonProperty="machinekey" Parent="core_2" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="machinekey_1" Parent="app_1" Name="machinekey" Condition="1" Order="3" Flags="57" Value="[MACHINE_KEY]"/>
+    <ROW JsonProperty="machinekey_2" Parent="core_1" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="migration" Parent="Root_1" Name="migration" Condition="1" Order="1" Flags="60"/>
     <ROW JsonProperty="port" Parent="app" Name="port" Condition="1" Order="0" Flags="57" Value="[Socket.IO_Port]"/>
     <ROW JsonProperty="port_1" Parent="app_1" Name="port" Condition="1" Order="0" Flags="57" Value="[SsoAuth_port]"/>
@@ -830,7 +830,7 @@
     <ROW Action="StartMySQLService" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1608"/>
     <ROW Action="AI_DATA_SETTER_11" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1607"/>
     <ROW Action="StartMigrationRunner" Condition="( NOT Installed )" Sequence="5826"/>
-    <ROW Action="SetMACHINEKEY" Condition="( NOT Installed ) AND ( MACHINE_KEY = &quot;fakevalue&quot; )" Sequence="1601"/>
+    <ROW Action="SetMACHINEKEY" Condition="( NOT Installed )" Sequence="1601"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
