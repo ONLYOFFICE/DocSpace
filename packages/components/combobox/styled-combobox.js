@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
 const StyledComboBox = styled.div`
@@ -13,6 +13,14 @@ const StyledComboBox = styled.div`
   position: relative;
   outline: 0;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  padding: 4px 0;
+
+  ${(props) =>
+    props.isOpen &&
+    props.noBorder &&
+    css`
+      background: #dfe2e3;
+    `}
 
   .dropdown-container {
     padding: ${(props) =>

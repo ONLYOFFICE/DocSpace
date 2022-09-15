@@ -139,6 +139,7 @@ class ComboBox extends React.Component {
         data={selectedOption}
         onClick={this.comboBoxClick}
         toggleAction={toggleAction}
+        isOpen={isOpen}
         {...this.props}
       >
         <ComboButton
