@@ -35,6 +35,7 @@ const FilterInput = React.memo(
 
     filterHeader,
     selectorLabel,
+    clearAll,
 
     isRecentFolder,
     removeSelectedItem,
@@ -174,7 +175,7 @@ const FilterInput = React.memo(
                 fontWeight={600}
                 isSemitransparent
                 type="action"
-                onClick={() => onFilter([])}
+                onClick={clearAll}
               >
                 {t("Common:ClearAll")}
               </Link>

@@ -11,6 +11,8 @@ import {
   FilterKeys,
 } from "@docspace/client/src/helpers/filesConstants";
 
+import FilesFilter from "@docspace/common/api/people/filter";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getUser } from "@docspace/common/api/people";
 import { FilterType, RoomsType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
@@ -1003,6 +1005,18 @@ const SectionFilterContent = ({
     ]
   );
 
+  const clearAll = () => {
+    if (isRooms) {
+      setIsLoading(true);
+
+      fetchRooms(selectedFolderId).finally(() => setIsLoading(false));
+    } else {
+      setIsLoading(true);
+
+      fetchFiles(selectedFolderId).finally(() => setIsLoading(false));
+    }
+  };
+
   return (
     <FilterInput
       t={t}
@@ -1026,6 +1040,7 @@ const SectionFilterContent = ({
       isPersonalRoom={isPersonalRoom}
       isRooms={isRooms}
       removeSelectedItem={removeSelectedItem}
+      clearAll={clearAll}
     />
   );
 };
