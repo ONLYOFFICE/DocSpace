@@ -131,12 +131,14 @@ class PaymentStore {
     !isAlreadyPaid && this.setStartPaymentLink();
   };
   initializeTotalPrice = () => {
-    const currentTotalPrice = authStore.currentQuotaStore.currentPlanCost;
+    const currentTotalPrice = authStore.currentQuotaStore.currentPlanCost.value;
 
     if (currentTotalPrice !== 0) {
       this.totalPrice = currentTotalPrice.value;
     } else {
-      this.totalPrice = getTotalCostByFormula(this.minAvailableManagersValue);
+      this.totalPrice = this.getTotalCostByFormula(
+        this.minAvailableManagersValue
+      );
     }
   };
 
@@ -156,7 +158,7 @@ class PaymentStore {
 
   setStartPaymentLink = async () => {
     const link = await api.portal.getPaymentLink(this.managersCount);
-    setPaymentLink(link);
+    this.setPaymentLink(link);
   };
 
   setTotalPrice = (value) => {

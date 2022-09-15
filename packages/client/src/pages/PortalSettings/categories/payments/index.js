@@ -17,7 +17,7 @@ import moment from "moment";
 import { HelpButton } from "@docspace/components";
 import PayerInformationContainer from "./PayerInformationContainer";
 import { TariffState } from "@docspace/common/constants";
-import { getUser } from "@docspace/common/api/people";
+import { getUser, getUserByEmail } from "@docspace/common/api/people";
 
 const StyledBody = styled.div`
   max-width: 660px;
@@ -53,7 +53,11 @@ const StyledBody = styled.div`
   }
 `;
 
-let paymentTerm, fromDate, byDate, payerInfo, delayDaysCount;
+let paymentTerm,
+  fromDate,
+  byDate,
+  delayDaysCount,
+  payerInfo = null;
 const PaymentsPage = ({
   setPortalPaymentQuotas,
   language,
@@ -129,10 +133,9 @@ const PaymentsPage = ({
       }
 
       try {
-        if (isFreeTariff) return;
-        payerInfo = await getUser(payerId);
+        if (!isFreeTariff) payerInfo = await getUser(payerId);
       } catch (e) {
-        payerInfo = null;
+        console.error(e);
       }
 
       setIsInitialLoading(false);
@@ -239,7 +242,7 @@ const PaymentsPage = ({
 
     return;
   };
-
+  console.log("isInitialLoading", isInitialLoading, ready);
   return isInitialLoading || !ready ? (
     <Loaders.PaymentsLoader />
   ) : (
