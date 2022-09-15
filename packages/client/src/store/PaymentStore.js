@@ -121,6 +121,10 @@ class PaymentStore {
     return value * costValuePerManager;
   };
 
+  get allowedStorageSizeByQuota() {
+    return this.managersCount * this.stepByQuotaForTotalSize;
+  }
+
   initializeInfo = (isAlreadyPaid) => {
     this.initializeTotalPrice();
     this.initializeManagersCount();

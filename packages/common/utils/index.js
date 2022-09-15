@@ -402,14 +402,18 @@ export const getConvertedSize = (t, size) => {
   let sizeNames;
 
   if (size < 1024 * 1024) {
-    sizeNames = [t("Megabyte"), t("Gigabyte"), t("Terabyte")];
+    sizeNames = [
+      t("Common:Megabyte"),
+      t("Common:Gigabyte"),
+      t("Common:Terabyte"),
+    ];
   } else {
     sizeNames = [
-      t("Bytes"),
-      t("Kilobyte"),
-      t("Megabyte"),
-      t("Gigabyte"),
-      t("Terabyte"),
+      t("Common:Bytes"),
+      t("Common:Kilobyte"),
+      t("Common:Megabyte"),
+      t("Common:Gigabyte"),
+      t("Common:Terabyte"),
     ];
   }
 

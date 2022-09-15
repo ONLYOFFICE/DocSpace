@@ -1,11 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 import ModalDialog from "@docspace/components/modal-dialog";
 import { inject, observer } from "mobx-react";
+import { getConvertedSize } from "@docspace/common/utils";
 
 const ModalDialogContainer = styled(ModalDialog)`
   .allowed-number-managers,
@@ -25,12 +26,63 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
 `;
 
-const DowngradePlanDialog = ({ visible, onClose }) => {
+const DowngradePlanDialog = ({
+  visible,
+  onClose,
+  addedManagersCount,
+  minAvailableManagersValue,
+  managersCount,
+  allowedStorageSizeByQuota,
+  usedTotalStorageSizeCount,
+}) => {
   const { t, ready } = useTranslation(["DowngradePlanDialog", "Common"]);
 
   const onCloseModal = () => {
     onClose && onClose();
   };
+
+  const allowedStorageSpace = getConvertedSize(t, allowedStorageSizeByQuota);
+  const currentStorageSpace = getConvertedSize(t, usedTotalStorageSizeCount);
+
+  const allowedManagersCountByQuotaComponent = (
+    <Text as="span" fontSize="13px">
+      <Trans t={t} i18nKey="AllowedManagerNumber" ns="DowngradePlanDialog">
+        Number of managers allowed:
+        <strong>
+          {managersCount !== minAvailableManagersValue
+            ? { valuesRange: minAvailableManagersValue + "-" + managersCount }
+            : { valuesRange: minAvailableManagersValue }}
+        </strong>
+      </Trans>
+    </Text>
+  );
+
+  const currentAddedManagersCountComponent = (
+    <Text as="span" fontSize="13px" className="current-characteristics">
+      <Trans t={t} i18nKey="CurrentManagerNumber" ns="DowngradePlanDialog">
+        Current number of managers:
+        <strong>{{ currentCount: addedManagersCount }}</strong>
+      </Trans>
+    </Text>
+  );
+
+  const allowedStorageSpaceByQuotaComponent = (
+    <Text as="span" fontSize="13px">
+      <Trans t={t} i18nKey="StorageSpaceSizeAllowed" ns="DowngradePlanDialog">
+        Storage space size allowed:
+        <strong>{{ size: allowedStorageSpace }}</strong>
+      </Trans>
+    </Text>
+  );
+
+  const currentStorageSpaceByQuotaComponent = (
+    <Text as="span" fontSize="13px" className="current-characteristics">
+      <Trans t={t} i18nKey="CurrentStorageSpace" ns="DowngradePlanDialog">
+        Storage space size allowed:
+        <strong>{{ size: currentStorageSpace }}</strong>
+      </Trans>
+    </Text>
+  );
 
   return (
     <ModalDialogContainer
@@ -49,41 +101,11 @@ const DowngradePlanDialog = ({ visible, onClose }) => {
         <Text fontSize="13px" isBold className="cannot-downgrade-plan">
           {t("CannotDowngradePlan")} {":"}
         </Text>
-
-        <Text as="span" fontSize="13px">
-          {t("AllowedManagerNumber")}
-          {":"}
-          <Text as="span" isBold className="allowed-number-managers">
-            {"1 - 50"}
-          </Text>
-          {"."}
-        </Text>
-        <Text as="span" fontSize="13px" className="current-characteristics">
-          {t("CurrentManagerNumber")}
-          {":"}
-          <Text as="span" isBold className="current-number-managers_number">
-            {"56"}
-          </Text>
-          {"."}
-        </Text>
+        {allowedManagersCountByQuotaComponent}
+        {currentAddedManagersCountComponent}
         <br />
-        {/* TODO: Add converting size */}
-        <Text as="span" fontSize="13px">
-          {t("StorageSpaceSizeAllowed")}
-          {":"}
-          <Text as="span" isBold className="current-number-managers_number">
-            {"4000"}
-          </Text>
-          {"."}
-        </Text>
-        <Text as="span" fontSize="13px" className="current-characteristics">
-          {t("CurrentStorageSpace")}
-          {":"}
-          <Text as="span" isBold className="current-number-managers_number">
-            {"4350"}
-          </Text>
-          {"."}
-        </Text>
+        {allowedStorageSpaceByQuotaComponent}
+        {currentStorageSpaceByQuotaComponent}
 
         <Text fontSize="13px" className="save-or-change">
           {t("SaveOrChange")}
@@ -113,8 +135,19 @@ DowngradePlanDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default inject(({ payments }) => {
-  const {} = payments;
-
-  return {};
+export default inject(({ auth, payments }) => {
+  const {
+    minAvailableManagersValue,
+    managersCount,
+    allowedStorageSizeByQuota,
+  } = payments;
+  const { currentQuotaStore } = auth;
+  const { addedManagersCount, usedTotalStorageSizeCount } = currentQuotaStore;
+  return {
+    minAvailableManagersValue,
+    managersCount,
+    addedManagersCount,
+    allowedStorageSizeByQuota,
+    usedTotalStorageSizeCount,
+  };
 })(observer(DowngradePlanDialog));

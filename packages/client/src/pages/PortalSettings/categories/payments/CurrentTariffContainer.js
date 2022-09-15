@@ -31,7 +31,7 @@ const StyledCurrentTariffContainer = styled.div`
 `;
 
 const CurrentTariffContainer = ({ style, quotaCharacteristics }) => {
-  const { t } = useTranslation("Payments");
+  const { t } = useTranslation(["Payments", "Common"]);
 
   return (
     <StyledCurrentTariffContainer style={style}>
