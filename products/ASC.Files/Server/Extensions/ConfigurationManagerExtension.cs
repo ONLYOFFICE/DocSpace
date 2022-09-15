@@ -34,7 +34,7 @@ public static class ConfigurationManagerExtension
     {
         config
               .AddJsonFile("elastic.json", optional: false, reloadOnChange: true)
-              .AddJsonFile($"elastic.{env.EnvironmentName}.json", optional: false, reloadOnChange: true);
+              .AddJsonFile($"elastic.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
         return config;
     }
