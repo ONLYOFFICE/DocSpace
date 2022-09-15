@@ -232,7 +232,7 @@ export const settingsTree = [
         isCategory: true,
       },
       {
-        key: "4-1",
+        key: "5-1",
         icon: "",
         link: "auto-backup",
         tKey: "AutoBackup",
@@ -249,7 +249,7 @@ export const settingsTree = [
     isHeader: true,
     children: [
       {
-        key: "5-0",
+        key: "6-0",
         icon: "",
         link: "restore-backup",
         tKey: "RestoreBackup",

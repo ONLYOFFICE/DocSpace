@@ -8,7 +8,6 @@ import {
   deleteBackupSchedule,
   getBackupSchedule,
   createBackupSchedule,
-  enableAutoBackup,
 } from "@docspace/common/api/portal";
 import toastr from "@docspace/components/toast/toastr";
 import {
@@ -83,6 +82,7 @@ class AutomaticBackup extends React.PureComponent {
       //setCommonThirdPartyList,
       getProgress,
       setStorageRegions,
+      isRestoreAndAutoBackupAvailable,
     } = this.props;
 
     try {
@@ -92,13 +92,11 @@ class AutomaticBackup extends React.PureComponent {
         ///thirdPartyList,
         backupSchedule,
         backupStorage,
-        enableAuto,
         storageRegions,
       ] = await Promise.all([
         //getThirdPartyCommonFolderTree(),
         getBackupSchedule(),
         getBackupStorage(),
-        enableAutoBackup(),
         getStorageRegions(),
       ]);
 
@@ -115,7 +113,7 @@ class AutomaticBackup extends React.PureComponent {
       this.setState({
         isEmptyContentBeforeLoader: false,
         isInitialLoading: false,
-        isEnableAuto: enableAuto,
+        isEnableAuto: isRestoreAndAutoBackupAvailable,
       });
     } catch (error) {
       toastr.error(error);
@@ -546,7 +544,8 @@ class AutomaticBackup extends React.PureComponent {
   }
 }
 export default inject(({ auth, backup, treeFoldersStore }) => {
-  const { language, settingsStore } = auth;
+  const { language, settingsStore, currentQuotaStore } = auth;
+  const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
   const { organizationName, theme } = settingsStore;
   const {
     downloadingProgress,
@@ -588,6 +587,7 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
 
   const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
   return {
+    isRestoreAndAutoBackupAvailable,
     fetchTreeFolders,
     rootFoldersTitles,
     downloadingProgress,

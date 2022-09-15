@@ -81,8 +81,8 @@ const Backup = ({
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore, quotasStore } = auth;
-  const { isNotPaidPeriod } = quotasStore;
+  const { settingsStore, currentTariffStatusStore } = auth;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
 
   const { helpUrlCreatingBackup, isTabletView } = settingsStore;
 

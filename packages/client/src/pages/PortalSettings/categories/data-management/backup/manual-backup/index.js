@@ -393,10 +393,10 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     setStorageRegions,
     saveToLocalStorage,
   } = backup;
-  const { quotasStore } = auth;
+  const { currentTariffStatusStore } = auth;
   const { organizationName } = auth.settingsStore;
   const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
-  const { isNotPaidPeriod } = quotasStore;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
 
   return {
     isNotPaidPeriod,
