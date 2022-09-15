@@ -54,36 +54,39 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
 
     public async Task Handle(BackupRequestIntegrationEvent @event)
     {
-        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
-
-        if (!@event.Redelivered)
+        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
-            if (_backupWorker.IsInstanceTooBusy())
+            _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
+
+            if (!@event.Redelivered)
             {
-                throw new IntegrationEventRejectExeption(@event.Id);
+                if (_backupWorker.IsInstanceTooBusy())
+                {
+                    throw new IntegrationEventRejectExeption(@event.Id);
+                }
             }
-        }
 
-        _tenantManager.SetCurrentTenant(@event.TenantId);
-        _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
+            _tenantManager.SetCurrentTenant(@event.TenantId);
+            _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
 
-        if (@event.IsScheduled)
-        {
-            _backupWorker.StartScheduledBackup(new EF.Model.BackupSchedule
+            if (@event.IsScheduled)
             {
-                BackupMail = @event.BackupMail,
-                BackupsStored = @event.BackupsStored,
-                StorageBasePath = @event.StorageBasePath,
-                StorageParams = JsonConvert.SerializeObject(@event.StorageParams),
-                StorageType = @event.StorageType,
-                TenantId = @event.TenantId
-            });
-        }
-        else
-        {
-            _backupAjaxHandler.StartBackup(@event.StorageType, @event.StorageParams, @event.BackupMail);
-        }
+                _backupWorker.StartScheduledBackup(new EF.Model.BackupSchedule
+                {
+                    BackupMail = @event.BackupMail,
+                    BackupsStored = @event.BackupsStored,
+                    StorageBasePath = @event.StorageBasePath,
+                    StorageParams = JsonConvert.SerializeObject(@event.StorageParams),
+                    StorageType = @event.StorageType,
+                    TenantId = @event.TenantId
+                });
+            }
+            else
+            {
+                _backupAjaxHandler.StartBackup(@event.StorageType, @event.StorageParams, @event.BackupMail);
+            }
 
-        await Task.CompletedTask;
+            await Task.CompletedTask;
+        }
     }
 }

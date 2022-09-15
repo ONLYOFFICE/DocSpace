@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using NLog;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -32,32 +34,61 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault();
 builder.Configuration.AddDefaultConfiguration(builder.Environment)
                      .AddFilesServiceConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 
-builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+var logger = NLog.LogManager.Setup()
+                            .SetupExtensions(s =>
+                            {
+                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                            })
+                            .LoadConfiguration(builder.Configuration, builder.Environment)
+                            .GetLogger(typeof(Startup).Namespace);
+
+try
 {
-    builder.Register(context.Configuration, true, false, "search.json", "feed.json");
-});
+    logger.Info("Configuring web host ({applicationContext})...", Program.AppName);
 
-var startup = new Startup(builder.Configuration, builder.Environment);
+    builder.Host.ConfigureDefault();
+    builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+    {
+        builder.Register(context.Configuration, true, false, "search.json", "feed.json");
+    });
 
-startup.ConfigureServices(builder.Services);
+    var startup = new Startup(builder.Configuration, builder.Environment);
 
-var app = builder.Build();
+    startup.ConfigureServices(builder.Services);
 
-startup.Configure(app);
+    var app = builder.Build();
 
-var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+    startup.Configure(app);
 
-eventBus.Subscribe<ThumbnailRequestedIntegrationEvent, ThumbnailRequestedIntegrationEventHandler>();
+    var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
 
-await app.RunWithTasksAsync();
+    eventBus.Subscribe<ThumbnailRequestedIntegrationEvent, ThumbnailRequestedIntegrationEventHandler>();
+
+    logger.Info("Starting web host ({applicationContext})...", Program.AppName);
+    await app.RunWithTasksAsync();
+}
+catch (Exception ex)
+{
+    if (logger != null)
+    {
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
+    }
+
+    throw;
+}
+finally
+{
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    NLog.LogManager.Shutdown();
+}
 
 public partial class Program
 {
-    public static string AppName = Assembly.GetExecutingAssembly().GetName().Name;
+    public static string Namespace = typeof(Startup).Namespace;
+    public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.', Namespace.LastIndexOf('.') - 1) + 1);
 }

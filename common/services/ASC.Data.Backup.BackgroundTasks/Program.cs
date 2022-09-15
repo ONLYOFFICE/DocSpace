@@ -24,7 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Data.Backup.Extension;
+using NLog;
 
 var options = new WebApplicationOptions
 {
@@ -34,35 +34,61 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault();
-
 builder.Configuration.AddDefaultConfiguration(builder.Environment)
                      .AddBackupBackgroundTasksConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 
-builder.WebHost.ConfigureDefaultKestrel();
+var logger = NLog.LogManager.Setup()
+                            .SetupExtensions(s =>
+                            {
+                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                            })
+                            .LoadConfiguration(builder.Configuration, builder.Environment)
+                            .GetLogger(typeof(Startup).Namespace);
 
-var startup = new Startup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+try
 {
-    startup.ConfigureContainer(containerBuilder);
-});
+    logger.Info("Configuring web host ({applicationContext})...", Program.AppName);
+    builder.Host.ConfigureDefault();
+    builder.WebHost.ConfigureDefaultKestrel();
 
-var app = builder.Build();
+    var startup = new Startup(builder.Configuration, builder.Environment);
 
-startup.Configure(app, app.Environment);
+    startup.ConfigureServices(builder.Services);
 
-var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+    builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+    {
+        startup.ConfigureContainer(containerBuilder);
+    });
 
-eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequestedIntegrationEventHandler>();
-eventBus.Subscribe<BackupRestoreRequestIntegrationEvent, BackupRestoreRequestedIntegrationEventHandler>();
-eventBus.Subscribe<IntegrationEvent, BackupDeleteScheldureRequestedIntegrationEventHandler>();
+    var app = builder.Build();
 
-await app.RunWithTasksAsync();
+    startup.Configure(app, app.Environment);
+
+    var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+
+    eventBus.Subscribe<BackupRequestIntegrationEvent, BackupRequestedIntegrationEventHandler>();
+    eventBus.Subscribe<BackupRestoreRequestIntegrationEvent, BackupRestoreRequestedIntegrationEventHandler>();
+    eventBus.Subscribe<IntegrationEvent, BackupDeleteScheldureRequestedIntegrationEventHandler>();
+
+    logger.Info("Starting web host ({applicationContext})...", Program.AppName);
+    await app.RunWithTasksAsync();
+}
+catch (Exception ex)
+{
+    if (logger != null)
+    {
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
+    }
+
+    throw;
+}
+finally
+{
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    NLog.LogManager.Shutdown();
+}
 
 
 public partial class Program

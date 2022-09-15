@@ -24,35 +24,44 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.TelegramService.IntegrationEvents.EventHandling;
+using NLog.AWS.Logger;
 
-[Scope]
-public class TelegramSendMessageRequestedIntegrationEventHandler : IIntegrationEventHandler<NotifySendTelegramMessageRequestedIntegrationEvent>
+namespace ASC.Api.Core.Extensions;
+public static class ISetupBuilderExtension
 {
-    private readonly ILogger _logger;
-    private readonly TelegramHandler _telegramHandler;
-
-    private TelegramSendMessageRequestedIntegrationEventHandler() : base()
+    public static ISetupBuilder LoadConfiguration(this ISetupBuilder loggingBuilder, IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
+        var conf = new XmlLoggingConfiguration(CrossPlatform.PathCombine(configuration["pathToConf"], "nlog.config"));
 
-    }
+        var settings = new ConfigurationExtension(configuration).GetSetting<NLogSettings>("log");
 
-    public TelegramSendMessageRequestedIntegrationEventHandler(
-        ILogger<TelegramSendMessageRequestedIntegrationEventHandler> logger,
-        TelegramHandler telegramHandler
-      )
-    {
-        _logger = logger;
-        _telegramHandler = telegramHandler;
-    }
-
-    public async Task Handle(NotifySendTelegramMessageRequestedIntegrationEvent @event)
-    {
-        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
+        if (!string.IsNullOrEmpty(settings.Name))
         {
-            _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
-
-            await _telegramHandler.SendMessage(@event.NotifyMessage);
+            conf.Variables["name"] = settings.Name;
         }
+
+        if (!string.IsNullOrEmpty(settings.Dir))
+        {
+            var dir = Path.IsPathRooted(settings.Dir) ? settings.Dir : CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, settings.Dir);
+            conf.Variables["dir"] = dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
+        }
+
+        if (!string.IsNullOrEmpty(settings.AWSSecretAccessKey))
+        {
+            foreach (var targetName in new[] { "aws", "aws_sql" })
+            {
+                var awsTarget = conf.FindTargetByName<AWSTarget>(targetName);
+
+                //hack
+                if (!string.IsNullOrEmpty(settings.Name))
+                {
+                    awsTarget.LogGroup = awsTarget.LogGroup.Replace("${var:name}", settings.Name);
+                }
+
+                awsTarget.Credentials = new Amazon.Runtime.BasicAWSCredentials(settings.AWSAccessKeyId, settings.AWSSecretAccessKey);
+            }
+        }
+
+        return loggingBuilder.LoadConfiguration(conf);
     }
 }
