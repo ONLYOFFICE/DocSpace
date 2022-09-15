@@ -11,8 +11,6 @@ import {
   FilterKeys,
 } from "@docspace/client/src/helpers/filesConstants";
 
-import FilesFilter from "@docspace/common/api/people/filter";
-import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getUser } from "@docspace/common/api/people";
 import { FilterType, RoomsType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
