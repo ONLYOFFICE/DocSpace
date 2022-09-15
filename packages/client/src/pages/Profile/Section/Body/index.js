@@ -61,7 +61,7 @@ const SectionBodyContent = (props) => {
       {tfa && tfa !== "none" && (
         <LoginSettings backupCodesCount={backupCodesCount} />
       )}
-      <SocialNetworks />
+      {/*<SocialNetworks /> TODO: uncomment after oAuth fix*/}
       <Subscription />
       <InterfaceTheme />
     </Wrapper>
