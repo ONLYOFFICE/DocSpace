@@ -74,69 +74,63 @@ const StyledHistoryBlock = styled.div`
         color: #a3a9ae;
       }
     }
+  }
+`;
 
-    .block-content {
-      .appointing {
-        .appointing-user {
-          font-weight: 600;
-          font-size: 13px;
-        }
-      }
+const StyledHistoryBlockMessage = styled.div`
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 20px;
+`;
 
-      .users {
-        .user-list {
-          .space {
-            width: 4px;
-            display: inline-block;
-          }
-        }
-      }
+const StyledHistoryBlockFilesList = styled.div`
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  background: ${(props) => props.theme.infoPanel.history.fileBlockBg};
+  border-radius: 3px;
+`;
 
-      .files-list {
-        margin-top: 10px;
-        display: flex;
-        flex-direction: column;
-        padding: 8px 0;
-        background: ${(props) => props.theme.infoPanel.history.fileBlockBg};
-        border-radius: 3px;
-        .file {
-          padding: 4px 16px;
-          display: flex;
-          gap: 8px;
-          flex-direction: row;
-          align-items: center;
-          justify-content: start;
+const StyledHistoryBlockFile = styled.div`
+  padding: 4px 16px;
+  display: flex;
+  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
 
-          .icon {
-            min-width: 24px;
-          }
-
-          .file-title {
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            min-width: 0;
-            gap: 0;
-
-            .name {
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              overflow: hidden;
-            }
-
-            .exst {
-              flex-shrink: 0;
-              color: #a3a9ae;
-            }
-          }
-
-          .location-btn {
-            margin-left: auto;
-            min-width: 16px;
-          }
-        }
-      }
+  .icon {
+    width: 24px;
+    height: 24px;
+    svg {
+      width: 24px;
+      height: 24px;
     }
+  }
+
+  .item-title {
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    min-width: 0;
+    gap: 0;
+
+    .name {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .exst {
+      flex-shrink: 0;
+      color: #a3a9ae;
+    }
+  }
+
+  .location-btn {
+    margin-left: auto;
+    min-width: 16px;
   }
 `;
 
@@ -147,4 +141,7 @@ export {
   StyledHistorySubtitle,
   StyledUserNameLink,
   StyledHistoryBlock,
+  StyledHistoryBlockMessage,
+  StyledHistoryBlockFilesList,
+  StyledHistoryBlockFile,
 };
