@@ -7,6 +7,12 @@ import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
 import Loaders from "@docspace/common/components/Loaders";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
+import { combineUrl } from "@docspace/common/utils";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { AppServerConfig } from "@docspace/common/constants";
+import history from "@docspace/common/history";
+import config from "PACKAGE_FILE";
 
 const RootFolderContainer = (props) => {
   const {
@@ -31,6 +37,9 @@ const RootFolderContainer = (props) => {
     linkStyles,
     isLoading,
     viewAs,
+    fetchRooms,
+    setAlreadyFetchingRooms,
+    categoryType,
   } = props;
   const subheadingText = t("SubheadingEmptyText");
   const myDescription = t("MyEmptyContainerDescription");
@@ -59,6 +68,29 @@ const RootFolderContainer = (props) => {
     const newFilter = filter.clone();
     setIsLoading(true);
     fetchFiles(myFolderId, newFilter).finally(() => setIsLoading(false));
+  };
+
+  const onGoToShared = () => {
+    setIsLoading(true);
+
+    setAlreadyFetchingRooms(true);
+    fetchRooms(null, null)
+      .then(() => {
+        const filter = RoomsFilter.getDefault();
+
+        const filterParamsStr = filter.toUrlParams();
+
+        const url = getCategoryUrl(categoryType, filter.folder);
+
+        const pathname = `${url}?${filterParamsStr}`;
+
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
+        );
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const getEmptyFolderProps = () => {
@@ -119,6 +151,7 @@ const RootFolderContainer = (props) => {
           headerText: archiveHeader,
           descriptionText: archiveRoomsDescription,
           imageSrc: "images/empty_screen_archive.svg",
+          buttons: archiveButtons,
         };
       default:
         break;
@@ -228,6 +261,20 @@ const RootFolderContainer = (props) => {
     </div>
   );
 
+  const archiveButtons = (
+    <div className="empty-folder_container-links">
+      <img
+        className="empty-folder_container_folder-image"
+        src="images/empty-folder-image.svg"
+        onClick={onGoToShared}
+        alt="folder_icon"
+      />
+      <Link onClick={onGoToShared} {...linkStyles}>
+        {t("GoToShared")}
+      </Link>
+    </div>
+  );
+
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
   const subheadingTextProp =
     isPrivacyFolder || isRecycleBinFolder || isRoomsFolder || isArchiveFolder
@@ -282,6 +329,9 @@ export default inject(
       isLoading,
       setIsLoading,
       viewAs,
+      fetchRooms,
+      categoryType,
+      setAlreadyFetchingRooms,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
     const {
@@ -310,6 +360,9 @@ export default inject(
       setIsLoading,
       rootFolderType,
       viewAs,
+      fetchRooms,
+      categoryType,
+      setAlreadyFetchingRooms,
     };
   }
 )(withTranslation("Files")(observer(RootFolderContainer)));
