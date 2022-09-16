@@ -125,7 +125,7 @@ const DNSSettings = (props) => {
             iconName="static/images/combined.shape.svg"
             size={12}
             tooltipContent={tooltipDNSSettingsTooltip}
-            className="dns-setting_helpbutton settings_unavailable"
+            className="dns-setting_helpbutton "
           />
           {!isSettingPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
         </div>
