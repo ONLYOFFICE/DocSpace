@@ -20,6 +20,7 @@ const StyledComboBox = styled.div`
     props.noBorder &&
     css`
       background: #dfe2e3;
+      border-radius: 3px;
     `}
 
   .dropdown-container {

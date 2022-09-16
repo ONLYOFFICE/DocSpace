@@ -1354,7 +1354,7 @@ const Dark = {
     maxWidth: "500px",
     border: "0px",
     margin: "0px",
-    padding: "0px 16px",
+    padding: "0px 8px",
     lineHeight: "32px",
     tabletLineHeight: "36px",
 
