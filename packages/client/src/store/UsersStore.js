@@ -153,11 +153,14 @@ class UsersStore {
 
   getUserContextOptions = (
     isMySelf,
-    isOwner,
+    isUserOwner,
+    isUserAdmin,
     statusType,
-    status,
-    hasMobileNumber
+    userRole,
+    status
   ) => {
+    const { isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
     const options = [];
 
     switch (statusType) {
@@ -173,48 +176,83 @@ class UsersStore {
 
         if (isMySelf) {
           options.push("change-name");
-        }
+          options.push("change-email");
+          options.push("change-password");
 
-        options.push("change-email");
-        options.push("change-password");
-
-        if (!isMySelf) {
-          options.push("reset-auth");
-        }
-
-        options.push("separator-2");
-
-        if (isMySelf && isOwner) {
-          options.push("change-owner");
+          if (isOwner) {
+            options.push("separator-2");
+            options.push("change-owner");
+          }
         } else {
+          // TODO: add check on manager type
+          if (
+            isOwner ||
+            (isAdmin && !isUserAdmin && !isUserOwner) ||
+            userRole === "user"
+          ) {
+            options.push("change-email");
+            options.push("change-password");
+            options.push("reset-auth");
+          }
+        }
+
+        // TODO: add check on manager type
+        if (
+          (isOwner && !isMySelf) ||
+          (isAdmin && !isUserAdmin && !isUserOwner) ||
+          userRole === "user"
+        ) {
+          options.push("separator-2");
           options.push("disable");
         }
 
         break;
       case "disabled":
-        options.push("enable");
-        options.push("details");
-        options.push("separator-1");
-        // options.push("reassign-data");
-        // options.push("delete-personal-data");
-        // options.push("separator-2");
-        options.push("delete-user");
-        break;
-      case "pending":
-        // options.push("edit");
-        options.push("invite-again");
-        options.push("details");
-
-        options.push("separator-1");
-
-        if (status === EmployeeStatus.Active) {
-          options.push("disable");
-        } else {
+        // TODO: add check on manager type
+        if (
+          isOwner ||
+          (isAdmin && !isUserAdmin && !isUserOwner) ||
+          userRole === "user"
+        ) {
           options.push("enable");
+
+          options.push("details");
+
+          options.push("separator-1");
+          options.push("delete-user");
+        } else {
+          options.push("details");
         }
 
         break;
-      default:
+
+      case "pending":
+        // TODO: add check on manager type
+        if (
+          (isOwner && !isMySelf) ||
+          (isAdmin && !isUserAdmin && !isUserOwner) ||
+          userRole === "user"
+        ) {
+          options.push("invite-again");
+        }
+
+        options.push("details");
+
+        // TODO: add check on manager type
+        if (
+          (isOwner && !isMySelf) ||
+          (isAdmin && !isUserAdmin && !isUserOwner) ||
+          userRole === "user"
+        ) {
+          options.push("separator-1");
+
+          if (status === EmployeeStatus.Active) {
+            options.push("disable");
+          } else {
+            options.push("enable");
+          }
+        }
+
         break;
     }
 
@@ -282,7 +320,9 @@ class UsersStore {
       const options = this.getUserContextOptions(
         isMySelf,
         isOwner,
+        isAdministrator,
         statusType,
+        role,
         status,
         !!mobilePhone
       );
