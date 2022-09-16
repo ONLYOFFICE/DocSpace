@@ -147,9 +147,7 @@ const SectionFilterContent = ({
         const owner = getOwner(data) || null;
 
         const subjectId =
-          owner === FilterKeys.other
-            ? null
-            : owner === FilterKeys.me
+          owner === FilterKeys.other || owner === FilterKeys.me
             ? userId
             : owner;
 
@@ -182,7 +180,7 @@ const SectionFilterContent = ({
           newFilter.withoutTags = false;
         }
 
-        newFilter.withoutMe = withoutMe;
+        newFilter.excludeSubject = withoutMe;
         // newFilter.withSubfolders = withSubfolders;
         // newFilter.searchInContent = withContent;
 
@@ -369,7 +367,11 @@ const SectionFilterContent = ({
 
       if (roomsFilter.subjectId) {
         const isMe = userId === roomsFilter.subjectId;
-        let label = isMe ? t("Common:MeLabel") : null;
+        let label = isMe
+          ? roomsFilter.excludeSubject
+            ? t("Common:OtherLabel")
+            : t("Common:MeLabel")
+          : null;
 
         if (!isMe) {
           const user = await getUser(roomsFilter.subjectId);
@@ -381,14 +383,6 @@ const SectionFilterContent = ({
           key: isMe ? FilterKeys.me : roomsFilter.subjectId,
           group: FilterGroups.roomFilterOwner,
           label: label,
-        });
-      }
-
-      if (roomsFilter.withoutMe) {
-        filterValues.push({
-          key: FilterKeys.other,
-          group: FilterGroups.roomFilterOwner,
-          label: t("Common:OtherLabel"),
         });
       }
 
@@ -487,7 +481,7 @@ const SectionFilterContent = ({
     roomsFilter.subjectId,
     roomsFilter.tags,
     roomsFilter.tags?.length,
-    roomsFilter.withoutMe,
+    roomsFilter.excludeSubject,
     roomsFilter.withoutTags,
     // roomsFilter.withSubfolders,
     // roomsFilter.searchInContent,
@@ -934,7 +928,7 @@ const SectionFilterContent = ({
 
         if (group === FilterGroups.roomFilterOwner) {
           newFilter.subjectId = null;
-          newFilter.withoutMe = false;
+          newFilter.excludeSubject = false;
         }
 
         if (group === FilterGroups.roomFilterTags) {
