@@ -37,6 +37,7 @@
   "FolderRenamed": "The folder '{{folderTitle}}' is renamed to '{{newFoldedTitle}}'",
   "FromArchive": "Move from archive",
   "GoToMyButton": "Go to My Documents",
+  "GoToShared": "Go to Shared",
   "Images": "Images",
   "LinkForPortalUsers": "Link for portal users",
   "MarkAsFavorite": "Mark as favorite",
