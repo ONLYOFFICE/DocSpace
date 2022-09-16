@@ -53,6 +53,7 @@ class TargetUserStore {
 
   setTargetUser = (user) => {
     this.targetUser = user;
+    this.peopleStore.authStore.userStore.setUser(user); //TODO
   };
 
   updateProfile = async (profile) => {
