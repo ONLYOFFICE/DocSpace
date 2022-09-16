@@ -83,6 +83,7 @@ class PureHome extends React.Component {
 
     if (
       categoryType == CategoryType.Shared ||
+      categoryType == CategoryType.SharedRoom ||
       categoryType == CategoryType.Archive
     ) {
       filterObj = RoomsFilter.getFilter(window.location);
