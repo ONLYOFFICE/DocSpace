@@ -31,6 +31,9 @@ const FilterBlock = ({
   hideFilterBlock,
   onFilter,
   selectorLabel,
+  isPersonalRoom,
+  isRooms,
+  isAccounts,
 }) => {
   const [showSelector, setShowSelector] = React.useState({
     show: false,
@@ -74,13 +77,21 @@ const FilterBlock = ({
             if (groupItem.isMultiSelect) {
               groupItem.isSelected = currentFilter.key.includes(groupItem.key);
             }
+            if (groupItem.withOptions) {
+              groupItem.isSelected = currentFilter.key.includes(groupItem.key);
+            }
           });
         } else {
-          item.groupItem.forEach((groupItem) => {
+          item.groupItem.forEach((groupItem, idx) => {
             groupItem.isSelected = false;
             if (groupItem.isSelector) {
               groupItem.selectedKey = null;
               groupItem.selectedLabel = null;
+            }
+            if (groupItem.withOptions) {
+              item.groupItem[idx].options.forEach((x, index) => {
+                item.groupItem[idx].options[index].isSelected = false;
+              });
             }
           });
         }
@@ -244,7 +255,7 @@ const FilterBlock = ({
 
     setTimeout(() => {
       setIsLoading(false);
-    }, 300);
+    }, 500);
   }, []);
 
   React.useEffect(() => {
@@ -363,19 +374,25 @@ const FilterBlock = ({
         <StyledFilterBlock showFooter={showFooter}>
           <StyledFilterBlockHeader>
             <Heading size="medium">{filterHeader}</Heading>
-            <IconButton
-              iconName="/static/images/clear.react.svg"
-              isFill={true}
-              onClick={onClearFilter}
-              size={17}
-            />
+            {showFooter && (
+              <IconButton
+                iconName="/static/images/clear.react.svg"
+                isFill={true}
+                onClick={onClearFilter}
+                size={17}
+              />
+            )}
           </StyledFilterBlockHeader>
           <div className="filter-body">
             {isLoading ? (
-              <Loaders.FilterBlock />
+              <Loaders.FilterBlock
+                isPersonalRoom={isPersonalRoom}
+                isRooms={isRooms}
+                isAccounts={isAccounts}
+              />
             ) : (
               <Scrollbar className="filter-body__scrollbar" stype="mediumBlack">
-                {filterData.map((item) => {
+                {filterData.map((item, index) => {
                   return (
                     <FilterBlockItem
                       key={item.key}
@@ -384,10 +401,12 @@ const FilterBlock = ({
                       group={item.group}
                       groupItem={item.groupItem}
                       isLast={item.isLast}
+                      isFirst={index === 0}
                       withoutHeader={item.withoutHeader}
                       withoutSeparator={item.withoutSeparator}
                       changeFilterValue={changeFilterValue}
                       showSelector={changeShowSelector}
+                      withMultiItems={item.withMultiItems}
                     />
                   );
                 })}
@@ -399,9 +418,15 @@ const FilterBlock = ({
               <Button
                 size="normal"
                 primary={true}
-                label={t("AddFilter")}
+                label={t("ApplyButton")}
                 scale={true}
                 onClick={onFilterAction}
+              />
+              <Button
+                size="normal"
+                label={t("CancelButton")}
+                scale={true}
+                onClick={hideFilterBlock}
               />
             </StyledFilterBlockFooter>
           )}
