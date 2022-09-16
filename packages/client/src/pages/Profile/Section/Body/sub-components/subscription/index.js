@@ -13,10 +13,9 @@ const StyledWrapper = styled.div`
 
   .toggle-btn {
     position: relative;
-
-    .toggle-button-text {
-      margin-top: -1px;
-    }
+    align-items: center;
+    height: 20px;
+    grid-gap: 12px !important;
   }
 `;
 
