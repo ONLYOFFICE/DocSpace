@@ -30,6 +30,8 @@ const InfoPanelBodyContent = ({
   getIsRoomCategory,
   getIsGallery,
 
+  gallerySelected,
+
   setBufferSelection,
 
   isRootFolder,
@@ -77,12 +79,14 @@ const InfoPanelBodyContent = ({
       selfId: props.selfId,
       getRoomMembers: props.getRoomMembers,
     },
-    historyProps: {},
+    historyProps: {
+      getRoomHistory: props.getRoomHistory,
+      getItemIcon: props.getItemIcon,
+      openFileAction: props.openFileAction,
+    },
     galleryProps: {
       getIcon,
-      gallerySelected: props.gallerySelected,
-      personal: props.personal,
-      culture: props.culture,
+      gallerySelected,
     },
   });
 
@@ -95,10 +99,9 @@ const InfoPanelBodyContent = ({
   };
 
   const getView = () => {
-    if (isSeveralItems) return viewHelper.SeveralItemsView();
     if (isNoItem) return viewHelper.NoItemView();
-    console.log(selection);
     if (isGallery) return viewHelper.GalleryView();
+    if (isSeveralItems) return viewHelper.SeveralItemsView();
 
     switch (isRoomCategory ? roomsView : fileView) {
       case "members": {
@@ -117,12 +120,13 @@ const InfoPanelBodyContent = ({
 
   // Removing mark set with choosing item from context menu
   // for it to updated after selctedItems or selectedFolder change
+  // (only for non-oforms items)
   useEffect(() => {
-    if (selection && selection.isContextMenuSelection)
-      setSelection(normalizeSelection(selection));
+    if (isGallery || !selection?.isContextMenuSelection) return;
+    setSelection(normalizeSelection(selection));
   }, [selection]);
 
-  // Setting selection after selctedItems or selectedFolder update
+  // Setting selection after selectedItems or selectedFolder update
   useEffect(() => {
     if (selection && selection.isContextMenuSelection) return;
     const newSelection = getSelection();
@@ -133,8 +137,8 @@ const InfoPanelBodyContent = ({
   //////////////////////////////////////////////////////////
 
   // Updating SelectedItems only if
-  //   a) Length of an array changed
-  //   b) Single chosen item changed
+  // a) Length of an array changed
+  // b) Single chosen item changed
   useEffect(() => {
     const selectedItemsLengthChanged =
       selectedItems.length !== props.selectedItems.length;
@@ -155,6 +159,8 @@ const InfoPanelBodyContent = ({
   // Updating selectionParentRoom after selectFolder change
   // if it is located in another room
   useEffect(async () => {
+    if (isGallery) return;
+
     const currentFolderRoomId = selectedFolder.pathParts[1];
     const storeRoomId = selectionParentRoom?.id;
 
@@ -164,15 +170,15 @@ const InfoPanelBodyContent = ({
     const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
     if (storeRoomId !== newSelectionParentRoom.id) {
       setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
-      console.log("Parent room: ", newSelectionParentRoom);
+      console.log("\nfor-dev  Parent room: ", newSelectionParentRoom);
     }
   }, [selectedFolder]);
 
   //////////////////////////////////////////////////////////
 
   useEffect(() => {
-    console.log("\nSelected items: ", selectedItems);
-    console.log("\nSelected folder: ", selectedFolder);
+    console.log("\nfor-dev  Selected items: ", selectedItems);
+    console.log("\nfor-dev  Selected folder: ", selectedFolder);
   }, [selectedItems, selectedFolder]);
 
   //////////////////////////////////////////////////////////
@@ -209,14 +215,13 @@ export default inject(
     settingsStore,
     filesActionsStore,
     dialogsStore,
-    treeFoldersStore,
     selectedFolderStore,
     oformsStore,
   }) => {
     const selfId = auth.userStore.user.id;
     const { personal, culture } = auth.settingsStore;
     const { getIcon, getFolderIcon } = settingsStore;
-    const { onSelectItem } = filesActionsStore;
+    const { onSelectItem, openFileAction } = filesActionsStore;
     const { setSharingPanelVisible } = dialogsStore;
     const { isRootFolder } = selectedFolderStore;
     const { gallerySelected } = oformsStore;
@@ -229,6 +234,7 @@ export default inject(
       normalizeSelection,
       roomsView,
       fileView,
+      getItemIcon,
       getIsFileCategory,
       getIsRoomCategory,
       getIsGallery,
@@ -241,10 +247,9 @@ export default inject(
       getFolderInfo,
       getShareUsers,
       getRoomMembers,
+      getRoomHistory,
       createThumbnail,
     } = filesStore;
-
-    console.log(filesStoreSelection, bufferSelection);
 
     const selectedItems =
       filesStoreSelection?.length > 0 ? [...filesStoreSelection] : [];
@@ -274,6 +279,7 @@ export default inject(
       normalizeSelection,
       roomsView,
       fileView,
+      getItemIcon,
       getIsFileCategory,
       getIsRoomCategory,
       getIsGallery,
@@ -286,11 +292,13 @@ export default inject(
       onSelectItem,
       getShareUsers,
       getRoomMembers,
+      getRoomHistory,
       setSharingPanelVisible,
 
       getIcon,
       getFolderIcon,
       createThumbnail,
+      openFileAction,
 
       gallerySelected,
 
