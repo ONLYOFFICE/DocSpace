@@ -220,6 +220,7 @@ class Section extends React.Component {
       settingsStudio,
       clearUploadedFilesHistory,
       withPaging,
+      isEmptyFilesList,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -335,18 +336,20 @@ class Section extends React.Component {
                           : null}
                       </SubSectionHeader>
                     )}
-                    {isSectionFilterAvailable && !isMobile && (
-                      <>
-                        <SubSectionFilter
-                          className="section-header_filter"
-                          viewAs={viewAs}
-                        >
-                          {sectionFilterContent
-                            ? sectionFilterContent.props.children
-                            : null}
-                        </SubSectionFilter>
-                      </>
-                    )}
+                    {isSectionFilterAvailable &&
+                      !isMobile &&
+                      !isEmptyFilesList && (
+                        <>
+                          <SubSectionFilter
+                            className="section-header_filter"
+                            viewAs={viewAs}
+                          >
+                            {sectionFilterContent
+                              ? sectionFilterContent.props.children
+                              : null}
+                          </SubSectionFilter>
+                        </>
+                      )}
 
                     {isSectionBodyAvailable && (
                       <>
@@ -558,7 +561,7 @@ Section.SectionFilter = SectionFilter;
 Section.SectionBody = SectionBody;
 Section.SectionPaging = SectionPaging;
 
-export default inject(({ auth }) => {
+export default inject(({ auth, filesStore }) => {
   const { infoPanelStore, settingsStore } = auth;
   const {
     isHeaderVisible,
@@ -571,6 +574,8 @@ export default inject(({ auth }) => {
 
   const { isVisible: infoPanelIsVisible } = infoPanelStore;
 
+  const { isEmptyFilesList } = filesStore;
+
   return {
     isTabletView,
     isHeaderVisible,
@@ -582,5 +587,7 @@ export default inject(({ auth }) => {
     showText,
 
     infoPanelIsVisible,
+
+    isEmptyFilesList,
   };
 })(observer(Section));
