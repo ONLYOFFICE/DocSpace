@@ -41,6 +41,8 @@ const ModalDialogContainer = styled(ModalDialog)`
 const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
   visible,
   onClose,
+  textBody,
+  emailPlaceholderText,
 }) => {
   const [loading, setLoading] = useState(false);
 
