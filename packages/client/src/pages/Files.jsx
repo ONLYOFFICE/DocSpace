@@ -73,7 +73,7 @@ const FilesArticle = React.memo(({ history }) => {
   );
 });
 
-const FilesSection = React.memo(() => {
+const FilesSection = React.memo(({ withAccounts }) => {
   return (
     <Switch>
       {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
@@ -118,8 +118,10 @@ const FilesSection = React.memo(() => {
       {/* <PrivateRoute path={"/#preview"} component={Home} /> */}
       {/* <PrivateRoute path={"/rooms"} component={Home} /> */}
       {/* <PrivateRoute path={ROOMS_URL} component={VirtualRooms} /> */}
+
       <PrivateRoute
         exact
+        restricted
         path={[
           "/accounts",
           "/accounts/filter",
@@ -130,6 +132,7 @@ const FilesSection = React.memo(() => {
         ]}
         component={Accounts}
       />
+
       <PrivateRoute
         exact
         restricted
@@ -209,7 +212,7 @@ class FilesContent extends React.Component {
   }
 
   render() {
-    const { showArticle, isFrame } = this.props;
+    const { showArticle, isFrame, withAccounts } = this.props;
 
     return (
       <>
@@ -235,6 +238,7 @@ const Files = inject(({ auth, filesStore }) => {
     setEncryptionKeys,
     isEncryptionSupport,
   } = auth.settingsStore;
+
   return {
     isDesktop: isDesktopClient,
     isFrame,
