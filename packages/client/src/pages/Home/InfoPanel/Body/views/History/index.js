@@ -1,64 +1,121 @@
-import React from "react";
-
-import { fillingFormsVR } from "../mock_data";
+import React, { useState, useEffect } from "react";
 
 import {
   StyledHistoryBlock,
   StyledHistoryList,
   StyledHistorySubtitle,
 } from "../../styles/history";
-import HistoryBlockContent from "./historyBlockContent";
 
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
+import { getUser } from "@docspace/common/api/people";
+import { parseAndFormatDate } from "../../helpers/DetailsHelper";
+import HistoryBlockMessage from "./HistoryBlockMessage";
+import HistoryBlockItemList from "./HistoryBlockItemList";
 
-const History = ({ t, personal, culture }) => {
-  const data = fillingFormsVR;
+const History = ({
+  t,
+  selection,
+  setSelection,
+  personal,
+  culture,
+  getItemIcon,
 
-  const parseAndFormatDate = (date) => {
-    const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
-    const correctDate = getCorrectDate(locale, date);
-    return correctDate;
+  getRoomHistory,
+  openFileAction,
+}) => {
+  const [history, setHistory] = useState(null);
+
+  const parseHistoryJSON = async (fetchedHistory) => {
+    let feeds = fetchedHistory.feeds;
+    let newFeeds = [];
+    for (let i = 0; i < feeds.length; i++) {
+      const feedsJSON = JSON.parse(feeds[i].json);
+      feedsJSON.author = await getUser(feedsJSON.AuthorId);
+
+      let groupFeeds = feeds[i].groupedFeeds;
+      let newGroupFeeds = [];
+      for (let j = 0; j < groupFeeds.length; j++) {
+        const groupFeedsJSON = JSON.parse(groupFeeds[j].json);
+        groupFeedsJSON.author = await getUser(groupFeedsJSON.AuthorId);
+        newGroupFeeds.push(groupFeedsJSON);
+      }
+
+      newFeeds.push({
+        ...feeds[i],
+        json: feedsJSON,
+        groupedFeeds: newGroupFeeds,
+      });
+    }
+
+    return { ...fetchedHistory, feeds: newFeeds };
   };
 
+  useEffect(async () => {
+    if (selection.history) {
+      setHistory(selection.history);
+      return;
+    }
+
+    if (!selection.isRoom) return;
+    let fetchedHistory = await getRoomHistory(selection.id);
+    fetchedHistory = await parseHistoryJSON(fetchedHistory);
+    console.log(fetchedHistory);
+
+    setHistory(fetchedHistory);
+    setSelection({ ...selection, history: fetchedHistory });
+  }, [selection]);
+
+  if (!selection || !history) return null;
   return (
     <>
       <StyledHistoryList>
-        <StyledHistorySubtitle>Recent activities</StyledHistorySubtitle>
+        <StyledHistorySubtitle>{t("RecentActivities")}</StyledHistorySubtitle>
 
-        {data.history.map((operation) => (
-          <StyledHistoryBlock key={operation.id}>
+        {history.feeds.map((feed) => (
+          <StyledHistoryBlock key={feed.json.ModifiedDate}>
             <Avatar
               role="user"
               className="avatar"
               size="min"
               source={
-                operation.user.avatar ||
-                (operation.user.displayName
+                feed.json.author.avatar ||
+                (feed.json.author.displayName
                   ? ""
-                  : operation.user.email && "/static/images/@.react.svg")
+                  : feed.json.author.email && "/static/images/@.react.svg")
               }
-              userName={operation.user.displayName}
+              userName={feed.json.author.displayName}
             />
             <div className="info">
               <div className="title">
-                <Text className="name">{operation.user.displayName}</Text>
-                {operation.user.isOwner && (
+                <Text className="name">{feed.json.author.displayName}</Text>
+                {feed.json.author.isOwner && (
                   <Text className="secondary-info">
                     {t("Common:Owner").toLowerCase()}
                   </Text>
                 )}
                 <Text className="date">
-                  {parseAndFormatDate(operation.date)}
+                  {parseAndFormatDate(
+                    feed.json.ModifiedDate,
+                    personal,
+                    culture
+                  )}
                 </Text>
               </div>
 
-              <HistoryBlockContent
+              <HistoryBlockMessage
                 t={t}
-                action={operation.action}
-                details={operation.details}
+                action={feed.json}
+                groupedActions={feed.groupedFeeds}
               />
+
+              <HistoryBlockItemList
+                items={[feed.json, ...feed.groupedFeeds]}
+                getItemIcon={getItemIcon}
+                openFileAction={openFileAction}
+              />
+              {/* <HistoryBlockContent t={t} feed={feed.json} /> */}
             </div>
           </StyledHistoryBlock>
         ))}
