@@ -114,7 +114,7 @@ export const useThemeDetector = () => {
 };
 
 export const getCategoryType = (location) => {
-  let categoryType = CategoryType.Personal;
+  let categoryType = CategoryType.Shared;
   const { pathname } = location;
 
   if (pathname.startsWith("/rooms")) {
