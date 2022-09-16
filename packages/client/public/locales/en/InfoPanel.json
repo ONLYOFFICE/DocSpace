@@ -1,4 +1,17 @@
 {
+  "Added": "added",
+  "Created": "created",
+  "New": "new",
+
+  "In": "in",
+  "IntoThe": "into the",
+
+  "File": "file",
+  "Files": "files",
+  "Folder": "folder",
+  "Folders": "folders",
+  "Room": "room",
+
   "AccountsEmptyScreenText": "See users details here",
   "Data": "Data",
   "EmptyScreenText": "See file and folder details here",
@@ -11,5 +24,6 @@
   "SystemProperties": "System properties",
   "Versions": "Versions",
   "ViewDetails": "View Details",
-  "WhoHasAccess": "Who has access"
+  "WhoHasAccess": "Who has access",
+  "RecentActivities": "Недавние действия"
 }

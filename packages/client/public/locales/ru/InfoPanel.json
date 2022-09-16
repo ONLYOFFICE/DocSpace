@@ -1,12 +1,29 @@
 {
+  "Added": "добавил",
+  "Created": "создал",
+  "New": "новый",
+
+  "In": "в",
+  "IntoThe": "в",
+
+  "File": "файл",
+  "Files": "файла",
+  "Folder": "папку",
+  "Folders": "папки",
+  "Room": "комнату",
+
+  "AccountsEmptyScreenText": "Здесь будут представлены подробности о пользователях",
+  "Data": "Данные",
   "EmptyScreenText": "Здесь будут представлены свойства файлов и папок",
   "FileExtension": "Расширение файла",
   "ItemsSelected": "Выбрано элементов",
   "LastModifiedBy": "Автор последнего корректива",
   "Members": "участников",
   "OpenSharingSettings": "Открыть настройки общего доступа",
+  "SelectedUsers": "Выбранные пользователи",
   "SystemProperties": "Системные свойства",
   "Versions": "Версии",
   "ViewDetails": "Просмотреть подробную информацию",
-  "WhoHasAccess": "У кого есть доступ"
+  "WhoHasAccess": "У кого есть доступ",
+  "RecentActivities": "Недавние действия"
 }
