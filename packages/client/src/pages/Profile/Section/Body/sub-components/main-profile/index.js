@@ -50,49 +50,50 @@ const MainProfile = (props) => {
         editAction={() => setChangeAvatarVisible(true)}
       />
       <StyledInfo>
-        <div className="row">
-          <div className="field">
-            <Text as="div" color="#A3A9AE" className="label">
-              {t("Common:Name")}
-            </Text>
-            <Text fontWeight={600}>{profile.displayName}</Text>
+        <div className="rows-container">
+          <div className="row">
+            <div className="field">
+              <Text as="div" color="#A3A9AE" className="label">
+                {t("Common:Name")}
+              </Text>
+              <Text fontWeight={600}>{profile.displayName}</Text>
+            </div>
+            <IconButton
+              className="edit-button"
+              iconName="/static/images/pencil.outline.react.svg"
+              size="12"
+              onClick={() => setChangeNameVisible(true)}
+            />
           </div>
-          <IconButton
-            className="edit-button"
-            iconName="/static/images/pencil.outline.react.svg"
-            size="12"
-            onClick={() => setChangeNameVisible(true)}
-          />
-        </div>
-        <div className="row">
-          <div className="field">
-            <Text as="div" color="#A3A9AE" className="label">
-              {t("Common:Email")}
-            </Text>
-            <Text fontWeight={600}>{profile.email}</Text>
+          <div className="row">
+            <div className="field">
+              <Text as="div" color="#A3A9AE" className="label">
+                {t("Common:Email")}
+              </Text>
+              <Text fontWeight={600}>{profile.email}</Text>
+            </div>
+            <IconButton
+              className="edit-button"
+              iconName="/static/images/pencil.outline.react.svg"
+              size="12"
+              onClick={() => setChangeEmailVisible(true)}
+            />
           </div>
-          <IconButton
-            className="edit-button"
-            iconName="/static/images/pencil.outline.react.svg"
-            size="12"
-            onClick={() => setChangeEmailVisible(true)}
-          />
-        </div>
-        <div className="row">
-          <div className="field">
-            <Text as="div" color="#A3A9AE" className="label">
-              {t("Common:Password")}
-            </Text>
-            <Text fontWeight={600}>********</Text>
+          <div className="row">
+            <div className="field">
+              <Text as="div" color="#A3A9AE" className="label">
+                {t("Common:Password")}
+              </Text>
+              <Text fontWeight={600}>********</Text>
+            </div>
+            <IconButton
+              className="edit-button"
+              iconName="/static/images/pencil.outline.react.svg"
+              size="12"
+              onClick={() => setChangePasswordVisible(true)}
+            />
           </div>
-          <IconButton
-            className="edit-button"
-            iconName="/static/images/pencil.outline.react.svg"
-            size="12"
-            onClick={() => setChangePasswordVisible(true)}
-          />
         </div>
-
         <LanguagesCombo t={t} />
         <TimezoneCombo />
       </StyledInfo>

@@ -13,7 +13,7 @@ import Subscription from "./sub-components/subscription";
 import InterfaceTheme from "./sub-components/interface-theme";
 import SocialNetworks from "./sub-components/social-networks";
 
-import { tablet } from "@docspace/components/utils/device";
+import { tablet, hugeMobile } from "@docspace/components/utils/device";
 
 const Wrapper = styled.div`
   max-width: 660px;
@@ -24,6 +24,10 @@ const Wrapper = styled.div`
   @media ${tablet} {
     width: 100%;
     max-width: 100%;
+  }
+
+  @media ${hugeMobile} {
+    gap: 32px;
   }
 `;
 

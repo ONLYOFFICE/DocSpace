@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { smallTablet } from "@docspace/components/utils/device";
+import { hugeMobile, smallTablet } from "@docspace/components/utils/device";
 
 export const StyledWrapper = styled.div`
   display: flex;
-  padding: 24px 24px 18px 24px;
+  padding: 24px 24px 20px 24px;
   gap: 40px;
   background: ${(props) => props.theme.profile.main.background};
   border-radius: 12px;
@@ -24,6 +24,16 @@ export const StyledInfo = styled.div`
 
   @media ${smallTablet} {
     width: 100%;
+  }
+
+  .rows-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @media ${hugeMobile} {
+      gap: 8px;
+    }
   }
 
   .row {
