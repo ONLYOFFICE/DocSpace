@@ -473,8 +473,17 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected bool CheckInvalidFilter(FilterType filterType)
     {
-        return filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly
-            or FilterType.SpreadsheetsOnly or FilterType.ArchiveOnly or FilterType.MediaOnly;
+        return filterType is
+            FilterType.FilesOnly or
+            FilterType.ByExtension or
+            FilterType.DocumentsOnly or
+            FilterType.OFormOnly or
+            FilterType.OFormTemplateOnly or
+            FilterType.ImagesOnly or
+            FilterType.PresentationsOnly or
+            FilterType.SpreadsheetsOnly or
+            FilterType.ArchiveOnly or
+            FilterType.MediaOnly;
     }
 
     protected abstract string MakeId(string path = null);

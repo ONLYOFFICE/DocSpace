@@ -1571,8 +1571,17 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
     private bool CheckInvalidFilter(FilterType filterType)
     {
-        return filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly
-            or FilterType.SpreadsheetsOnly or FilterType.ArchiveOnly or FilterType.MediaOnly;
+        return filterType is
+            FilterType.FilesOnly or
+            FilterType.ByExtension or
+            FilterType.DocumentsOnly or
+            FilterType.OFormOnly or
+            FilterType.OFormTemplateOnly or
+            FilterType.ImagesOnly or
+            FilterType.PresentationsOnly or
+            FilterType.SpreadsheetsOnly or
+            FilterType.ArchiveOnly or
+            FilterType.MediaOnly;
     }
 
     private FolderType GetRoomTypeFilter(FilterType filterType)

@@ -134,6 +134,12 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             case FilterType.DocumentsOnly:
                 files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                 break;
+            case FilterType.OFormOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OForm);
+                break;
+            case FilterType.OFormTemplateOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OFormTemplate);
+                break;
             case FilterType.PresentationsOnly:
                 files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
                 break;
@@ -150,7 +156,6 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
                 files = files.Where(x =>
                 {
                     var fileType = FileUtility.GetFileTypeByFileName(x.Title);
-
                     return fileType == FileType.Audio || fileType == FileType.Video;
                 });
                 break;
@@ -206,6 +211,12 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
                 yield break;
             case FilterType.DocumentsOnly:
                 files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
+                break;
+            case FilterType.OFormOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OForm);
+                break;
+            case FilterType.OFormTemplateOnly:
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OFormTemplate);
                 break;
             case FilterType.PresentationsOnly:
                 files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);

@@ -236,6 +236,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         switch (filterType)
         {
+            case FilterType.OFormOnly:
+            case FilterType.OFormTemplateOnly:
             case FilterType.DocumentsOnly:
             case FilterType.ImagesOnly:
             case FilterType.PresentationsOnly:
@@ -337,6 +339,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         switch (filterType)
         {
+            case FilterType.OFormOnly:
+            case FilterType.OFormTemplateOnly:
             case FilterType.DocumentsOnly:
             case FilterType.ImagesOnly:
             case FilterType.PresentationsOnly:
@@ -1091,7 +1095,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         return file.RootFolderType != FolderType.TRASH && file.RootFolderType != FolderType.Privacy;
     }
-     
+
     public string GetUniqFileDirectory(int fileId)
     {
         if (fileId == 0)
@@ -1271,6 +1275,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         switch (filterType)
         {
+            case FilterType.OFormOnly:
+            case FilterType.OFormTemplateOnly:
             case FilterType.DocumentsOnly:
             case FilterType.ImagesOnly:
             case FilterType.PresentationsOnly:
@@ -1627,6 +1633,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
            switch (filterType)
            {
+               case FilterType.OFormOnly:
+               case FilterType.OFormTemplateOnly:
                case FilterType.DocumentsOnly:
                case FilterType.ImagesOnly:
                case FilterType.PresentationsOnly:
