@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 
 import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
@@ -17,7 +18,13 @@ const StyledModalDialog = styled(ModalDialog)``;
 
 const AvatarEditorDialog = (props) => {
   const { t } = useTranslation(["Profile", "ProfileAction", "Common"]);
-  const { visible, onClose, profile, fetchProfile } = props;
+  const {
+    visible,
+    onClose,
+    profile,
+    updateProfile,
+    updateCreatedAvatar,
+  } = props;
   const [avatar, setAvatar] = useState({
     uploadedFile: profile.avatarMax,
     x: 0.5,
@@ -32,8 +39,9 @@ const AvatarEditorDialog = (props) => {
     setIsLoading(true);
 
     if (!avatar.uploadedFile) {
-      await deleteAvatar(profile.id);
-      await fetchProfile(profile.id);
+      const avatars = await deleteAvatar(profile.id);
+      updateCreatedAvatar(avatars);
+      updateProfile(profile);
       onClose();
       return;
     }
@@ -44,14 +52,16 @@ const AvatarEditorDialog = (props) => {
 
     try {
       const res = await loadAvatar(profile.id, avatarData);
-      await createThumbnailsAvatar(profile.id, {
+      const avatars = await createThumbnailsAvatar(profile.id, {
         x: 0,
         y: 0,
         width: 192,
         height: 192,
         tmpFile: res.data,
       });
-      await fetchProfile(profile.id);
+      updateCreatedAvatar(avatars);
+      updateProfile(profile);
+
       toastr.success(t("ProfileAction:ChangesSavedSuccessfully"));
       onClose();
     } catch (error) {
@@ -106,4 +116,18 @@ const AvatarEditorDialog = (props) => {
   );
 };
 
-export default AvatarEditorDialog;
+export default inject(({ peopleStore }) => {
+  const { targetUserStore } = peopleStore;
+
+  const {
+    targetUser: profile,
+    updateProfile,
+    updateCreatedAvatar,
+  } = targetUserStore;
+
+  return {
+    profile,
+    updateProfile,
+    updateCreatedAvatar,
+  };
+})(observer(AvatarEditorDialog));
