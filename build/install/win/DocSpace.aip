@@ -1030,8 +1030,8 @@
     <ROW Name="ReplaceAppDir" TxtUpdateSet="xml" FindPattern="{APPDIR}" ReplacePattern="[APPDIR]" Options="2" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceWinVol" TxtUpdateSet="xml" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="1" FileEncoding="-1"/>
     <ROW Name="ReplaceInclude" TxtUpdateSet="YourFile.txt" FindPattern="/etc/nginx/includes" ReplacePattern="includes" Options="2" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_1" FindPattern="var/www" ReplacePattern=".." Options="2" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_2" FindPattern="var/www" ReplacePattern=".." Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_1" FindPattern="/var/www" ReplacePattern=".." Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_2" FindPattern="/var/www" ReplacePattern=".." Options="2" Order="0" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
     <ROW Key="YourFile.txt" Component="conf" FileName="onlyoffice.conf" Directory="conf_Dir" Options="17"/>
