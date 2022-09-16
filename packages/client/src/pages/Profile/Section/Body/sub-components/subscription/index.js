@@ -1,23 +1,11 @@
 import React from "react";
-import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
 
-const StyledWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  .toggle-btn {
-    position: relative;
-    align-items: center;
-    height: 20px;
-    grid-gap: 12px !important;
-  }
-`;
+import { StyledWrapper } from "./styled-subscriptions";
 
 const Subscription = (props) => {
   const { t } = useTranslation("Profile");

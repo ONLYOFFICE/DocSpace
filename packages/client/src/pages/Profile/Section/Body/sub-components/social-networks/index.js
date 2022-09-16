@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -7,7 +6,6 @@ import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";
 import toastr from "@docspace/components/toast/toastr";
 
-import { hugeMobile } from "@docspace/components/utils/device";
 import { getAuthProviders } from "@docspace/common/api/settings";
 import { unlinkOAuth, linkOAuth } from "@docspace/common/api/people";
 import {
@@ -17,22 +15,7 @@ import {
 } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 
-const StyledWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-
-  .buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-column-gap: 20px;
-    grid-row-gap: 12px;
-
-    @media ${hugeMobile} {
-      grid-template-columns: 1fr;
-    }
-  }
-`;
+import { StyledWrapper } from "./styled-social-networks";
 
 const SocialNetworks = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);

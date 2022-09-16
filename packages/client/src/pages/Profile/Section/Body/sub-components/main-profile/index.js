@@ -18,7 +18,7 @@ import {
   ChangeNameDialog,
 } from "SRC_DIR/components/dialogs";
 
-import { StyledWrapper, StyledInfo } from "./styled";
+import { StyledWrapper, StyledInfo } from "./styled-main-profile";
 
 const MainProfile = (props) => {
   const { t, ready } = useTranslation(["Profile", "Common"]);

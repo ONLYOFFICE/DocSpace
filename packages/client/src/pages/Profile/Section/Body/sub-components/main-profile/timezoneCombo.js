@@ -7,7 +7,7 @@ import toastr from "@docspace/components/toast/toastr";
 
 import { isMobileOnly } from "react-device-detect";
 
-import { StyledRow } from "./styled";
+import { StyledRow } from "./styled-main-profile";
 
 const TimezoneCombo = () => {
   const { t } = useTranslation("Settings");

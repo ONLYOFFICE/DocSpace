@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -7,42 +6,12 @@ import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import Link from "@docspace/components/link";
 
-import { hugeMobile } from "@docspace/components/utils/device";
-
 import {
   ResetApplicationDialog,
   BackupCodesDialog,
 } from "SRC_DIR/components/dialogs";
 
-const StyledWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-
-  .header {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .actions {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-
-    @media ${hugeMobile} {
-      flex-direction: column;
-      gap: 12px;
-      align-items: flex-start;
-
-      .button {
-        width: 100%;
-        height: 40px;
-        font-size: 14px;
-      }
-    }
-  }
-`;
+import { StyledWrapper } from "./styled-login-settings";
 
 const LoginSettings = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
