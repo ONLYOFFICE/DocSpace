@@ -256,9 +256,14 @@ class UsersStore {
   }
 
   getUsersByQuery = async (query) => {
-    const users = await api.people.getUsersByQuery(query);
+    const filter = Filter.getDefault();
 
-    return users;
+    filter.search = query;
+    filter.pageCount = 100;
+
+    const res = await api.people.getUserList(filter);
+
+    return res.items;
   };
 
   get peopleList() {
