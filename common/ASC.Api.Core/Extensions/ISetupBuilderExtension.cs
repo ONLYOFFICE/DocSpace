@@ -46,18 +46,20 @@ public static class ISetupBuilderExtension
             conf.Variables["dir"] = dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
         }
 
-        if (!string.IsNullOrEmpty(settings.AWSSecretAccessKey))
+        foreach (var targetName in new[] { "aws", "aws_sql" })
         {
-            foreach (var targetName in new[] { "aws", "aws_sql" })
+            var awsTarget = conf.FindTargetByName<AWSTarget>(targetName);
+
+            if (awsTarget == null) continue;
+
+            //hack
+            if (!string.IsNullOrEmpty(settings.Name))
             {
-                var awsTarget = conf.FindTargetByName<AWSTarget>(targetName);
+                awsTarget.LogGroup = awsTarget.LogGroup.Replace("${var:name}", settings.Name);
+            }
 
-                //hack
-                if (!string.IsNullOrEmpty(settings.Name))
-                {
-                    awsTarget.LogGroup = awsTarget.LogGroup.Replace("${var:name}", settings.Name);
-                }
-
+            if (!string.IsNullOrEmpty(settings.AWSSecretAccessKey))
+            {
                 awsTarget.Credentials = new Amazon.Runtime.BasicAWSCredentials(settings.AWSAccessKeyId, settings.AWSSecretAccessKey);
             }
         }

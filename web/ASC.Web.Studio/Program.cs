@@ -86,5 +86,5 @@ finally
 public partial class Program
 {
     public static string Namespace = typeof(Startup).Namespace;
-    public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.') + 1);
+    public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.', Namespace.LastIndexOf('.') - 1) + 1).Replace(".","");
 }
