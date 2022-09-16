@@ -1,38 +1,18 @@
 import React from "react";
-import { inject, observer } from "mobx-react";
-import { withTranslation, Trans } from "react-i18next";
-import { LANGUAGE } from "@docspace/common/constants";
 import Text from "@docspace/components/text";
 import { ReactSVG } from "react-svg";
-import {
-  StyledProperties,
-  StyledSubtitle,
-  StyledGalleryThumbnail,
-  StyledTitle,
-} from "../../styles/common.js";
-import getCorrectDate from "@docspace/components/utils/getCorrectDate";
-import { getCookie } from "@docspace/common/utils/index";
+
+import { parseAndFormatDate } from "../../helpers/DetailsHelper.js";
+import { StyledGalleryThumbnail } from "../../styles/gallery.js";
+import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
 
 const Gallery = ({ t, selection, getIcon, culture, personal }) => {
-  const parseAndFormatDate = (date) => {
-    const locale = personal ? getCookie(LANGUAGE) : culture;
-    const correctDate = getCorrectDate(locale, date);
-    return correctDate;
-  };
-
-  const src = getIcon(32, ".docxf");
   const thumbnailBlank = getIcon(96, ".docxf");
-
   const thumbnailUrl =
     selection?.attributes?.template_image?.data.attributes?.formats?.small?.url;
 
   return (
     <>
-      <StyledTitle>
-        <ReactSVG className="icon" src={src} />
-        <Text className="text">{selection.attributes.name_form}</Text>
-      </StyledTitle>
-
       {thumbnailUrl ? (
         <StyledGalleryThumbnail>
           <img className="info-panel_gallery-img" src={thumbnailUrl} alt="" />
@@ -55,7 +35,11 @@ const Gallery = ({ t, selection, getIcon, culture, personal }) => {
             {t("Files:ByLastModifiedDate")}
           </Text>
           <Text className="property-content">
-            {parseAndFormatDate(selection.attributes.updatedAt)}
+            {parseAndFormatDate(
+              selection.attributes.updatedAt,
+              personal,
+              culture
+            )}
           </Text>
         </div>
         <div className="property">
