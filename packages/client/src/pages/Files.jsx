@@ -73,7 +73,7 @@ const FilesArticle = React.memo(({ history }) => {
   );
 });
 
-const FilesSection = React.memo(({ withAccounts }) => {
+const FilesSection = React.memo(({}) => {
   return (
     <Switch>
       {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
@@ -86,22 +86,29 @@ const FilesSection = React.memo(({ withAccounts }) => {
       <PrivateRoute
         exact
         path={["/", "/rooms"]}
-        component={() => <Redirect to="/rooms/personal" />}
+        component={() => <Redirect to="/rooms/shared" />}
       />
       <PrivateRoute
+        restricted
+        withManager
         path={[
           "/rooms/personal",
           "/rooms/personal/filter",
-
-          "/rooms/shared",
-          "/rooms/shared/filter",
-          "/rooms/shared/:room",
-          "/rooms/shared/:room/filter",
 
           "/rooms/archived",
           "/rooms/archived/filter",
           "/rooms/archived/:room",
           "/rooms/archived/:room/filter",
+        ]}
+        component={Home}
+      />
+
+      <PrivateRoute
+        path={[
+          "/rooms/shared",
+          "/rooms/shared/filter",
+          "/rooms/shared/:room",
+          "/rooms/shared/:room/filter",
 
           "/files/favorite",
           "/files/favorite/filter",
