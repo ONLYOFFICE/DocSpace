@@ -4,9 +4,6 @@ import { Events } from "@docspace/common/constants";
 import { getCategoryType } from "@docspace/client/src/helpers/utils";
 import { CategoryType } from "@docspace/client/src/helpers/constants";
 
-import { getCategoryType } from "@docspace/client/src/helpers/utils";
-import { CategoryType } from "@docspace/client/src/helpers/constants";
-
 class InfoPanelStore {
   isVisible = false;
 
