@@ -148,6 +148,7 @@ const PeopleTableRow = (props) => {
     position,
     role,
     rooms,
+    id,
   } = item;
 
   const isPending = statusType === "pending" || statusType === "disabled";
@@ -187,6 +188,7 @@ const PeopleTableRow = (props) => {
 
     isAdmin && options.push(managerOption);
 
+    // TODO: add check on manager type
     options.push(userOption);
 
     return options;
@@ -217,7 +219,7 @@ const PeopleTableRow = (props) => {
     return <>{options.map((option) => option)}</>;
   }, []);
 
-  const getRoomTypeLabel = React.useCallback((role) => {
+  const getUserTypeLabel = React.useCallback((role) => {
     switch (role) {
       case "owner":
         return t("Common:Owner");
@@ -230,7 +232,7 @@ const PeopleTableRow = (props) => {
     }
   }, []);
 
-  const typeLabel = getRoomTypeLabel(role);
+  const typeLabel = getUserTypeLabel(role);
 
   const isChecked = checkedProps.checked;
 
@@ -241,6 +243,67 @@ const PeopleTableRow = (props) => {
 
     setBufferSelection(item);
   }, [isSeveralSelection, isChecked, item, setBufferSelection]);
+
+  const renderTypeCell = () => {
+    const typesOptions = getTypesOptions();
+
+    const combobox = (
+      <ComboBox
+        className="type-combobox"
+        selectedOption={
+          typesOptions.find((option) => option.key === role) || {}
+        }
+        options={typesOptions}
+        onSelect={onTypeChange}
+        scaled={false}
+        size="content"
+        displaySelectedOption
+        modernView
+      />
+    );
+
+    const text = (
+      <Text
+        type="page"
+        title={position}
+        fontSize="13px"
+        fontWeight={400}
+        color={sideInfoColor}
+        truncate
+        noSelect
+        style={{ paddingLeft: "8px" }}
+      >
+        {typeLabel}
+      </Text>
+    );
+
+    if (userId === id) return text;
+
+    switch (role) {
+      case "owner":
+        return text;
+
+      case "admin":
+      case "manager":
+        if (isOwner) {
+          return combobox;
+        } else {
+          return text;
+        }
+
+      case "user":
+        if (isOwner || isAdmin) {
+          return combobox;
+        } else {
+          return text;
+        }
+
+      default:
+        return text;
+    }
+  };
+
+  const typeCell = renderTypeCell();
 
   return (
     <StyledWrapper
@@ -286,38 +349,7 @@ const PeopleTableRow = (props) => {
           </Link>
           <Badges statusType={statusType} />
         </TableCell>
-        <TableCell className={"table-cell_type"}>
-          {((isOwner && role !== "owner") ||
-            (isAdmin && !isOwner && role !== "admin")) &&
-          statusType !== "disabled" &&
-          userId !== item.id ? (
-            <ComboBox
-              className="type-combobox"
-              selectedOption={getTypesOptions().find(
-                (option) => option.key === role
-              )}
-              options={getTypesOptions()}
-              onSelect={onTypeChange}
-              scaled={false}
-              size="content"
-              displaySelectedOption
-              modernView
-            />
-          ) : (
-            <Text
-              type="page"
-              title={position}
-              fontSize="13px"
-              fontWeight={400}
-              color={sideInfoColor}
-              truncate
-              noSelect
-              style={{ paddingLeft: "8px" }}
-            >
-              {typeLabel}
-            </Text>
-          )}
-        </TableCell>
+        <TableCell className={"table-cell_type"}>{typeCell}</TableCell>
         <TableCell className="table-cell_room">
           {!rooms?.length ? (
             <Text

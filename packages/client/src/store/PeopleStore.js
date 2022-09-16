@@ -141,8 +141,6 @@ class PeopleStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
-      getUsersToRemoveIds,
-      selection,
     } = this.selectionStore;
     const {
       setActiveDialogVisible,

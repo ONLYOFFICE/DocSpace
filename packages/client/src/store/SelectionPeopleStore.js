@@ -126,34 +126,60 @@ class SelectionStore {
   }
 
   get hasUsersToMakeEmployees() {
-    const isOwner = this.peopleStore.authStore.userStore.user.isOwner;
-    const users = this.selection.filter((x) => {
-      return (
-        (!x.isOwner &&
-          !x.isAdmin &&
-          x.status !== EmployeeStatus.Disabled &&
-          x.id !== this.peopleStore.authStore.userStore.user.id) ||
-        (x.isAdmin &&
-          isOwner &&
-          x.status !== EmployeeStatus.Disabled &&
-          x.id !== this.peopleStore.authStore.userStore.user.id)
-      );
-    });
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
 
-    return users.length > 0;
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
+      );
+
+      return users.length > 0;
+    }
+
+    // TODO: add check on manager type
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status !== EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.length > 0;
+    }
+
+    return false;
   }
 
   get getUsersToMakeEmployeesIds() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
       );
-    });
-    return users.map((u) => u.id);
+
+      return users.map((u) => u.id);
+    }
+
+    // TODO: add check on manager type
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status !== EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    return false;
   }
 
+  //TODO: delete this
   get hasUsersToMakeGuests() {
     const users = this.selection.filter((x) => {
       return (
@@ -166,7 +192,7 @@ class SelectionStore {
     });
     return !!users.length;
   }
-
+  //TODO: delete this
   get getUsersToMakeGuestsIds() {
     const users = this.selection.filter((x) => {
       return (
@@ -181,74 +207,292 @@ class SelectionStore {
   }
 
   get hasUsersToActivate() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Active && x.id !== id
+      );
+
+      return users.length > 0;
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status !== EmployeeStatus.Active &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.length > 0;
+    }
+
+    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
-        !x.isOwner &&
         x.status !== EmployeeStatus.Active &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner
     );
-    return !!users.length;
+
+    return users.length > 0;
   }
 
   get getUsersToActivateIds() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Active && x.id !== id
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status !== EmployeeStatus.Active &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
-        !x.isOwner &&
         x.status !== EmployeeStatus.Active &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner
     );
+
     return users.map((u) => u.id);
   }
 
   get hasUsersToDisable() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
+      );
+
+      return users.length > 0;
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status !== EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.length > 0;
+    }
+
+    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
-        !x.isOwner &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner
     );
-    return !!users.length;
+
+    return users.length > 0;
   }
 
   get getUsersToDisableIds() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Active && x.id !== id
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status !== EmployeeStatus.Active &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
+        x.status !== EmployeeStatus.Active &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner
     );
+
     return users.map((u) => u.id);
   }
 
   get hasUsersToInvite() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.activationStatus === EmployeeActivationStatus.Pending &&
+          x.status === EmployeeStatus.Active &&
+          x.id !== id
+      );
+
+      return users.length > 0;
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.activationStatus === EmployeeActivationStatus.Pending &&
+          x.status === EmployeeStatus.Active &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.length > 0;
+    }
+
+    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
         x.activationStatus === EmployeeActivationStatus.Pending &&
-        x.status === EmployeeStatus.Active
+        x.status === EmployeeStatus.Active &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner
     );
-    return !!users.length;
+
+    return users.length > 0;
   }
 
   get getUsersToInviteIds() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.activationStatus === EmployeeActivationStatus.Pending &&
+          x.status === EmployeeStatus.Active &&
+          x.id !== id
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.activationStatus === EmployeeActivationStatus.Pending &&
+          x.status === EmployeeStatus.Active &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
         x.activationStatus === EmployeeActivationStatus.Pending &&
-        x.status === EmployeeStatus.Active
+        x.status === EmployeeStatus.Active &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner
     );
+
     return users.map((u) => u.id);
   }
 
   get hasUsersToRemove() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status === EmployeeStatus.Disabled && x.id !== id
+      );
+
+      return users.length > 0;
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status === EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.length > 0;
+    }
+
+    // TODO: add check on manager type
     const users = this.selection.filter(
-      (x) => x.status === EmployeeStatus.Disabled
+      (x) =>
+        x.status === EmployeeStatus.Disabled &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner
     );
-    return !!users.length;
+
+    return users.length > 0;
   }
 
   get getUsersToRemoveIds() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status === EmployeeStatus.Disabled && x.id !== id
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status === EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    // TODO: add check on manager type
     const users = this.selection.filter(
-      (x) => x.status === EmployeeStatus.Disabled
+      (x) =>
+        x.status === EmployeeStatus.Disabled &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner
     );
+
     return users.map((u) => u.id);
   }
 }

@@ -157,6 +157,8 @@ const SectionHeaderContent = (props) => {
     getCheckboxItemLabel,
     setInfoPanelVisible,
     isInfoPanelVisible,
+    isOwner,
+    isAdmin,
   } = props;
 
   //console.log("SectionHeaderContent render");
@@ -208,7 +210,7 @@ const SectionHeaderContent = (props) => {
 
   const getContextOptions = () => {
     return [
-      {
+      isOwner && {
         id: "main-button_administrator",
         className: "main-button_drop-down",
         icon: "/static/images/person.admin.react.svg",
@@ -217,7 +219,7 @@ const SectionHeaderContent = (props) => {
         "data-action": "administrator",
         key: "administrator",
       },
-      {
+      isAdmin && {
         id: "main-button_manager",
         className: "main-button_drop-down",
         icon: "/static/images/person.manager.react.svg",
@@ -317,6 +319,8 @@ export default withRouter(
       isVisible: isInfoPanelVisible,
     } = auth.infoPanelStore;
 
+    const { isOwner, isAdmin } = auth.userStore.user;
+
     const { selectionStore, headerMenuStore, getHeaderMenu } = peopleStore;
 
     const {
@@ -339,6 +343,8 @@ export default withRouter(
       getCheckboxItemLabel,
       setInfoPanelVisible,
       isInfoPanelVisible,
+      isOwner,
+      isAdmin,
     };
   })(
     withTranslation([

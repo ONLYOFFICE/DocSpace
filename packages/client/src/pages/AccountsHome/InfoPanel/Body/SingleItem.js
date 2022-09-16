@@ -24,7 +24,7 @@ const SingleItem = ({
   const [statusLabel, setStatusLabel] = React.useState("");
 
   const user = selection[0];
-  const { role, statusType, options } = user;
+  const { role, statusType, options, id } = user;
 
   React.useEffect(() => {
     getStatusLabel();
@@ -45,7 +45,7 @@ const SingleItem = ({
 
   const isPending = statusType === "pending";
 
-  const getRoomTypeLabel = React.useCallback((role) => {
+  const getUserTypeLabel = React.useCallback((role) => {
     switch (role) {
       case "owner":
         return t("Common:Owner");
@@ -84,6 +84,7 @@ const SingleItem = ({
 
     isAdmin && options.push(managerOption);
 
+    // TODO: add check on manager type
     options.push(userOption);
 
     return options;
@@ -96,13 +97,74 @@ const SingleItem = ({
     [user, changeUserType, t]
   );
 
-  const typeLabel = getRoomTypeLabel(role);
+  const typeLabel = getUserTypeLabel(role);
 
   const getData = () => {
     const newOptions = options.filter((option) => option !== "details");
 
     return getUserContextOptions(t, newOptions, user);
   };
+
+  const renderTypeData = () => {
+    const typesOptions = getTypesOptions();
+
+    const combobox = (
+      <ComboBox
+        className="type-combobox"
+        selectedOption={
+          typesOptions.find((option) => option.key === role) || {}
+        }
+        options={typesOptions}
+        onSelect={onTypeChange}
+        scaled={false}
+        size="content"
+        displaySelectedOption
+        modernView
+      />
+    );
+
+    const text = (
+      <Text
+        type="page"
+        title={typeLabel}
+        fontSize="13px"
+        fontWeight={600}
+        truncate
+        noSelect
+      >
+        {typeLabel}
+      </Text>
+    );
+
+    if (userId === id) return text;
+
+    console.log(userId, id);
+
+    switch (role) {
+      case "owner":
+        return text;
+
+      case "admin":
+      case "manager":
+        if (isOwner) {
+          return combobox;
+        } else {
+          return text;
+        }
+
+      case "user":
+        if (isOwner || isAdmin) {
+          return combobox;
+        } else {
+          return text;
+        }
+
+      default:
+        return text;
+    }
+  };
+
+  const typeData = renderTypeData();
 
   return (
     <>
@@ -150,34 +212,7 @@ const SingleItem = ({
           <Text className={"info_field"} noSelect title={t("Common:Type")}>
             {t("Common:Type")}
           </Text>
-          {((isOwner && role !== "owner") ||
-            (isAdmin && !isOwner && role !== "admin")) &&
-          statusType !== "disabled" &&
-          userId !== user.id ? (
-            <ComboBox
-              className="type-combobox"
-              selectedOption={getTypesOptions().find(
-                (option) => option.key === role
-              )}
-              options={getTypesOptions()}
-              onSelect={onTypeChange}
-              scaled={false}
-              size="content"
-              displaySelectedOption
-              modernView
-            />
-          ) : (
-            <Text
-              type="page"
-              title={typeLabel}
-              fontSize="13px"
-              fontWeight={600}
-              truncate
-              noSelect
-            >
-              {typeLabel}
-            </Text>
-          )}
+          {typeData}
           <Text className={"info_field"} noSelect title={t("UserStatus")}>
             {t("UserStatus")}
           </Text>

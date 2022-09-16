@@ -11,7 +11,7 @@ import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { withRouter } from "react-router";
 
 import MobileView from "./MobileView";
-import { combineUrl } from "@docspace/common/utils";
+import { combineUrl, isAdmin } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
 import { Events } from "@docspace/common/constants";
@@ -87,6 +87,9 @@ const ArticleMainButtonContent = (props) => {
     enablePlugins,
 
     currentColorScheme,
+
+    isOwner,
+    isAdmin,
   } = props;
   const isAccountsPage = selectedTreeNode[0] === "accounts";
 
@@ -177,6 +180,8 @@ const ArticleMainButtonContent = (props) => {
   React.useEffect(() => {
     if (isRoomsFolder) return;
 
+    console.log(isOwner, isAdmin);
+
     const folderUpload = !isMobile
       ? [
           {
@@ -228,7 +233,7 @@ const ArticleMainButtonContent = (props) => {
 
     const actions = isAccountsPage
       ? [
-          {
+          isOwner && {
             id: "main-button_administrator",
             className: "main-button_drop-down",
             icon: "/static/images/person.admin.react.svg",
@@ -237,7 +242,7 @@ const ArticleMainButtonContent = (props) => {
             action: "administrator",
             key: "administrator",
           },
-          {
+          isAdmin && {
             id: "main-button_manager",
             className: "main-button_drop-down",
             icon: "/static/images/person.manager.react.svg",
@@ -351,6 +356,8 @@ const ArticleMainButtonContent = (props) => {
     isAccountsPage,
     enablePlugins,
     isRoomsFolder,
+    isOwner,
+    isAdmin,
     onCreate,
     onCreateRoom,
     onInvite,
@@ -465,6 +472,8 @@ export default inject(
 
     const currentFolderId = selectedFolderStore.id;
 
+    const { isOwner, isAdmin } = auth.userStore.user;
+
     return {
       showText: auth.settingsStore.showText,
       isMobileArticle: auth.settingsStore.isMobileArticle,
@@ -493,6 +502,9 @@ export default inject(
 
       enablePlugins,
       currentColorScheme,
+
+      isOwner,
+      isAdmin,
     };
   }
 )(
