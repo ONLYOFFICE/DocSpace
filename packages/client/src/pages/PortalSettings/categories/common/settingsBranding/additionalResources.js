@@ -27,10 +27,6 @@ const StyledComponent = styled.div`
     padding-bottom: 1px;
   }
 
-  .description {
-    color: ${(props) => !props.isPortalPaid && "#A3A9AE"};
-  }
-
   .save-cancel-buttons {
     margin-top: 24px;
   }
@@ -45,7 +41,7 @@ const AdditionalResources = (props) => {
   const {
     t,
     tReady,
-    isPortalPaid,
+    isSettingPaid,
     getAdditionalResources,
     setAdditionalResources,
     restoreAdditionalResources,
@@ -153,13 +149,13 @@ const AdditionalResources = (props) => {
 
   return (
     <>
-      <StyledComponent isPortalPaid={isPortalPaid}>
+      <StyledComponent>
         <div className="header">
-          <div className="additional-header">
+          <div className="additional-header branding_unavailable">
             {t("Settings:AdditionalResources")}
           </div>
         </div>
-        <div className="description additional-description">
+        <div className="branding_unavailable additional-description">
           <div className="additional-description">
             {t("Settings:AdditionalResourcesDescription")}
           </div>
@@ -167,7 +163,7 @@ const AdditionalResources = (props) => {
         <div className="branding-checkbox">
           <Checkbox
             className="checkbox"
-            isDisabled={!isPortalPaid}
+            isDisabled={!isSettingPaid}
             label={t("ShowFeedbackAndSupport")}
             isChecked={feedbackAndSupportEnabled}
             onChange={() => setShowFeedback(!feedbackAndSupportEnabled)}
@@ -175,28 +171,30 @@ const AdditionalResources = (props) => {
 
           <Checkbox
             className="checkbox"
-            isDisabled={!isPortalPaid}
+            isDisabled={!isSettingPaid}
             label={t("ShowVideoGuides")}
             isChecked={videoGuidesEnabled}
             onChange={() => setShowVideoGuides(!videoGuidesEnabled)}
           />
           <Checkbox
             className="checkbox"
-            isDisabled={!isPortalPaid}
+            isDisabled={!isSettingPaid}
             label={t("ShowHelpCenter")}
             isChecked={helpCenterEnabled}
             onChange={() => setShowHelpCenter(!helpCenterEnabled)}
           />
         </div>
-        <SaveCancelButtons
-          onSaveClick={onSave}
-          onCancelClick={onRestore}
-          saveButtonLabel={t("Common:SaveButton")}
-          cancelButtonLabel={t("Settings:RestoreDefaultButton")}
-          displaySettings={true}
-          showReminder={isPortalPaid && hasChange}
-          disableRestoreToDefault={!hasChangesDefaultSettings}
-        />
+        {isSettingPaid && (
+          <SaveCancelButtons
+            onSaveClick={onSave}
+            onCancelClick={onRestore}
+            saveButtonLabel={t("Common:SaveButton")}
+            cancelButtonLabel={t("Settings:RestoreDefaultButton")}
+            displaySettings={true}
+            showReminder={isSettingPaid && hasChange}
+            disableRestoreToDefault={!hasChangesDefaultSettings}
+          />
+        )}
       </StyledComponent>
     </>
   );

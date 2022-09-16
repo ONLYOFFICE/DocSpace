@@ -98,7 +98,7 @@ class QuotasStore {
     return result.used.value;
   }
 
-  get isWhiteLabelAvailable() {
+  get isBrandingAndCustomizationAvailable() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === "whitelabel"
     );
