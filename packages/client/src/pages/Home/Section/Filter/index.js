@@ -878,8 +878,8 @@ const SectionFilterContent = ({
 
           !hide && commonOptions.push(authorOption);
         }
-        if (availableSort?.includes("Create")) {
-          const idx = availableSort.findIndex((x) => x === "Create");
+        if (availableSort?.includes("Created")) {
+          const idx = availableSort.findIndex((x) => x === "Created");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(creationDate);
