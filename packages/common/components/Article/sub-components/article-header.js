@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useHistory, useLocation } from "react-router";
 import Loaders from "@docspace/common/components/Loaders";
 import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
-import Link from "@docspace/components/link";
+import { Link } from "react-router-dom";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import {
@@ -60,9 +60,16 @@ const ArticleHeader = ({
         <Loaders.ArticleHeader height="24px" width="211px" />
       ) : (
         <StyledHeading showText={showText} size="large">
-          <Link href={showText ? "/" : null} onClick={onLogoClick}>
-            <img src="/static/images/logo.docspace.react.svg" />
-          </Link>
+          {isTabletView ? (
+            <img
+              src="/static/images/logo.docspace.react.svg"
+              onClick={onLogoClick}
+            />
+          ) : (
+            <Link to="/">
+              <img src="/static/images/logo.docspace.react.svg" />
+            </Link>
+          )}
         </StyledHeading>
       )}
     </StyledArticleHeader>
