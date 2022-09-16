@@ -19,8 +19,13 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
 
+  .checkbox {
+    height: 20px;
+    margin-right: 8px !important;
+  }
+
   .system-theme-description {
-    padding: 4px 0 4px 30px;
+    padding: 4px 0 4px 24px;
     max-width: 295px;
   }
 
