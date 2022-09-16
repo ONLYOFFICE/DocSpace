@@ -142,11 +142,16 @@ class SectionHeaderContent extends React.Component {
   }
 
   isAvailableSettings = (key) => {
-    const { isBrandingAndCustomizationAvailable } = this.props;
+    const {
+      isBrandingAndCustomizationAvailable,
+      isRestoreAndAutoBackupAvailable,
+    } = this.props;
     console.log("key", key);
     switch (key) {
       case "DNSSettings":
         return isBrandingAndCustomizationAvailable;
+      case "RestoreBackup":
+        return isRestoreAndAutoBackupAvailable;
       default:
         return true;
     }
@@ -177,8 +182,7 @@ class SectionHeaderContent extends React.Component {
 
     const isNeedPaidIcon = !this.isAvailableSettings(header);
 
-    !isCategoryOrHeader &&
-      this.state.isNeedPaidIcon !== isNeedPaidIcon &&
+    this.state.isNeedPaidIcon !== isNeedPaidIcon &&
       this.setState({ isNeedPaidIcon });
 
     header !== this.state.header && this.setState({ header });
@@ -308,7 +312,7 @@ class SectionHeaderContent extends React.Component {
             <Headline type="content" truncate={true}>
               <div className="settings-section_header">
                 {t(header)}
-                {isNeedPaidIcon && !isCategoryOrHeader ? (
+                {isNeedPaidIcon ? (
                   <Badge
                     backgroundColor="#EDC409"
                     label="Paid"
@@ -340,7 +344,10 @@ class SectionHeaderContent extends React.Component {
 export default inject(({ auth, setup, common }) => {
   const { currentQuotaStore } = auth;
   const { customNames } = auth.settingsStore;
-  const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
+  const {
+    isBrandingAndCustomizationAvailable,
+    isRestoreAndAutoBackupAvailable,
+  } = currentQuotaStore;
   const { addUsers, removeAdmins } = setup.headerAction;
   const { toggleSelector } = setup;
   const {
@@ -373,6 +380,7 @@ export default inject(({ auth, setup, common }) => {
     isLoaded,
     setIsLoadedSectionHeader,
     isBrandingAndCustomizationAvailable,
+    isRestoreAndAutoBackupAvailable,
   };
 })(
   withLoading(

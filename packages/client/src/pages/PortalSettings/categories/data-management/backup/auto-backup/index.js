@@ -28,6 +28,7 @@ import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import AutoBackupLoader from "@docspace/common/components/Loaders/AutoBackupLoader";
 import FloatingButton from "@docspace/common/components/FloatingButton";
+import Badge from "@docspace/components/badge";
 
 const {
   DocumentModuleType,
@@ -46,7 +47,6 @@ class AutomaticBackup extends React.PureComponent {
       isInitialLoading: false,
       isEmptyContentBeforeLoader: true,
       isError: false,
-      isEnableAuto: false,
     };
 
     this.periodsObject = [
@@ -82,7 +82,6 @@ class AutomaticBackup extends React.PureComponent {
       //setCommonThirdPartyList,
       getProgress,
       setStorageRegions,
-      isRestoreAndAutoBackupAvailable,
     } = this.props;
 
     try {
@@ -113,7 +112,6 @@ class AutomaticBackup extends React.PureComponent {
       this.setState({
         isEmptyContentBeforeLoader: false,
         isInitialLoading: false,
-        isEnableAuto: isRestoreAndAutoBackupAvailable,
       });
     } catch (error) {
       toastr.error(error);
@@ -394,13 +392,13 @@ class AutomaticBackup extends React.PureComponent {
       selectedEnableSchedule,
       organizationName,
       rootFoldersTitles,
+      isEnableAuto,
     } = this.props;
 
     const {
       isInitialLoading,
       isLoadingData,
       isError,
-      isEnableAuto,
       isEmptyContentBeforeLoader,
     } = this.state;
 
@@ -442,8 +440,15 @@ class AutomaticBackup extends React.PureComponent {
               " " +
               t("AutoBackupHelpNote", { organizationName })
           )}
+          {!isEnableAuto && (
+            <Badge
+              backgroundColor="#EDC409"
+              label="Paid"
+              className="auto-backup_badge"
+            />
+          )}
         </div>
-        <Text className="backup_modules-description">
+        <Text className="backup_modules-description settings_unavailable">
           {t("AutoBackupDescription")}
         </Text>
         <div className="backup_toggle-wrapper">
@@ -454,7 +459,7 @@ class AutomaticBackup extends React.PureComponent {
             isChecked={selectedEnableSchedule}
             isDisabled={isLoadingData || !isEnableAuto}
           />
-          <Text className="backup_toggle-btn-description">
+          <Text className="backup_toggle-btn-description settings_unavailable">
             {t("EnableAutomaticBackupDescription")}
           </Text>
         </div>
@@ -586,8 +591,9 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     selectedStorageType === `${StorageModuleType}`;
 
   const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
+
   return {
-    isRestoreAndAutoBackupAvailable,
+    isEnableAuto: isRestoreAndAutoBackupAvailable,
     fetchTreeFolders,
     rootFoldersTitles,
     downloadingProgress,
