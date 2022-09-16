@@ -43,14 +43,14 @@ const styledTagList = (tags) => (
 
 // Functional Helpers
 
-const decodeString = (str) => {
+export const decodeString = (str) => {
   const regex = /&#([0-9]{1,4});/gi;
   return str
     ? str.replace(regex, (match, numStr) => String.fromCharCode(+numStr))
     : "...";
 };
 
-const parseAndFormatDate = (date, personal, culture) => {
+export const parseAndFormatDate = (date, personal, culture) => {
   const locale = personal ? localStorage.getItem(LANGUAGE) : culture;
   const correctDate = getCorrectDate(locale, date);
   return correctDate;
