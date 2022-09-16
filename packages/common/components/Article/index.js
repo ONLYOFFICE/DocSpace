@@ -34,6 +34,7 @@ const Article = ({
   setIsMobileArticle,
   isLoadedPage,
   children,
+  withMainButton,
 
   isBannerVisible,
   hideProfileBlock,
@@ -125,7 +126,10 @@ const Article = ({
         >
           {articleHeaderContent ? articleHeaderContent.props.children : null}
         </SubArticleHeader>
-        {articleMainButtonContent && !isMobileOnly && !isMobileUtils() ? (
+        {articleMainButtonContent &&
+        withMainButton &&
+        !isMobileOnly &&
+        !isMobileUtils() ? (
           <SubArticleMainButton showText={showText}>
             {articleMainButtonContent.props.children}
           </SubArticleMainButton>
