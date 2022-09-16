@@ -92,7 +92,7 @@ export default inject(({ filesStore, selectedFolderStore }) => {
   const { navigationPath, parentId } = selectedFolderStore;
 
   let isRootRoom, isRoom, id;
-  if (navigationPath.length) {
+  if (navigationPath && navigationPath.length) {
     isRootRoom = navigationPath.at(-1).isRootRoom;
     isRoom = navigationPath.at(-1).isRoom;
     id = navigationPath.at(-1).id;

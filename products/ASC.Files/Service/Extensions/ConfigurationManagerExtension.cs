@@ -32,13 +32,12 @@ public static class ConfigurationManagerExtension
     this ConfigurationManager config,
     IHostEnvironment env)
     {
-        config.AddJsonFile($"appsettings.services.json", true)
-      .AddJsonFile("notify.json")
-      .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
-      .AddJsonFile("elastic.json", true)
-      .AddJsonFile($"elastic.{env.EnvironmentName}.json", true)
-      .AddJsonFile("feed.json", true);
-
+        config.AddJsonFile($"appsettings.services.json", optional: false, reloadOnChange: true)
+      .AddJsonFile("notify.json", optional: false, reloadOnChange: true)
+      .AddJsonFile($"notify.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+      .AddJsonFile("elastic.json", optional: false, reloadOnChange: true)
+      .AddJsonFile($"elastic.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+      .AddJsonFile("feed.json", optional: false, reloadOnChange: true);
 
         return config;
     }

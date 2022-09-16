@@ -456,16 +456,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return rooms.Where(f => f.FolderType == filter || filter == FolderType.DEFAULT);
     }
 
-    protected IAsyncEnumerable<Folder<string>> FilterByOwner(IAsyncEnumerable<Folder<string>> rooms, Guid ownerId, bool withoutMe)
+    protected IAsyncEnumerable<Folder<string>> FilterBySubject(IAsyncEnumerable<Folder<string>> rooms, Guid subjectId, bool excludeSubject)
     {
-        if (ownerId != Guid.Empty && !withoutMe)
+        if (subjectId != Guid.Empty)
         {
-            rooms = rooms.Where(f => f.CreateBy == ownerId);
-        }
-
-        if (ownerId == Guid.Empty && withoutMe)
-        {
-            rooms = rooms.Where((f => f.CreateBy != _authContext.CurrentAccount.ID));
+            rooms = excludeSubject ? rooms.Where(f => f.CreateBy != subjectId) : rooms.Where(f => f.CreateBy == subjectId);
         }
 
         return rooms;

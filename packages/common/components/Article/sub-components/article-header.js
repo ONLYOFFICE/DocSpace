@@ -3,15 +3,13 @@ import PropTypes from "prop-types";
 import { useHistory, useLocation } from "react-router";
 import Loaders from "@docspace/common/components/Loaders";
 import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
+import Link from "@docspace/components/link";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
-import { ReactSVG } from "react-svg";
-import styled, { css } from "styled-components";
 import {
   StyledArticleHeader,
   StyledHeading,
   StyledIconBox,
-  StyledMenuIcon,
 } from "../styled-article";
 
 const ArticleHeader = ({
@@ -62,10 +60,9 @@ const ArticleHeader = ({
         <Loaders.ArticleHeader height="24px" width="211px" />
       ) : (
         <StyledHeading showText={showText} size="large">
-          <img
-            src="/static/images/logo.docspace.react.svg"
-            onClick={onLogoClick}
-          />
+          <Link href={showText ? "/" : null} onClick={onLogoClick}>
+            <img src="/static/images/logo.docspace.react.svg" />
+          </Link>
         </StyledHeading>
       )}
     </StyledArticleHeader>
