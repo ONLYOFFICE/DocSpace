@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { Trans } from "react-i18next";
 
@@ -14,7 +13,7 @@ import withCultureNames from "@docspace/common/hoc/withCultureNames";
 
 import { isMobileOnly } from "react-device-detect";
 
-import { StyledRow } from "./styled";
+import { StyledRow } from "./styled-main-profile";
 
 const LanguagesCombo = (props) => {
   const {
@@ -102,7 +101,7 @@ const LanguagesCombo = (props) => {
         size="content"
         showDisabledItems={true}
         dropDownMaxHeight={364}
-        manualWidth="208px"
+        manualWidth="250px"
         isDefaultMode={!isMobileOnly}
         withBlur={isMobileOnly}
         fillIcon={false}
