@@ -4,9 +4,9 @@ import NoRoomItem from "./NoRoomItem";
 import NoFileOrFolderItem from "./NoFileOrFolderItem";
 
 const NoItem = ({ t, isGallery, isRoomCategory, isFileCategory }) => {
+  if (isGallery) return <NoGalleryItem t={t} />;
   if (isFileCategory) return <NoFileOrFolderItem t={t} />;
   if (isRoomCategory) return <NoRoomItem t={t} />;
-  if (isGallery) return <NoGalleryItem t={t} />;
   return null;
 };
 
