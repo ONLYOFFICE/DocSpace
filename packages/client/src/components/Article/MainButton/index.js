@@ -91,6 +91,7 @@ const ArticleMainButtonContent = (props) => {
     isOwner,
     isAdmin,
   } = props;
+
   const isAccountsPage = selectedTreeNode[0] === "accounts";
 
   const inputFilesElement = React.useRef(null);
@@ -179,8 +180,6 @@ const ArticleMainButtonContent = (props) => {
 
   React.useEffect(() => {
     if (isRoomsFolder) return;
-
-    console.log(isOwner, isAdmin);
 
     const folderUpload = !isMobile
       ? [
@@ -374,9 +373,11 @@ const ArticleMainButtonContent = (props) => {
 
   const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
 
+  // TODO: add check on manager type
+
   return (
     <>
-      {isMobileArticle ? (
+      {!isOwner && !isAdmin && isRoomsFolder ? null : isMobileArticle ? (
         <>
           {!isFavoritesFolder &&
             !isRecentFolder &&

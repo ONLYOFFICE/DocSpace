@@ -51,19 +51,21 @@ import Accounts from "./Accounts";
 
 const Error404 = React.lazy(() => import("client/Error404"));
 
-const FilesArticle = React.memo(({ history }) => {
+const FilesArticle = React.memo(({ history, withMainButton }) => {
   const isFormGallery = history.location.pathname
     .split("/")
     .includes("form-gallery");
 
   return !isFormGallery ? (
-    <Article>
+    <Article withMainButton={withMainButton}>
       <Article.Header>
         <ArticleHeaderContent />
       </Article.Header>
+
       <Article.MainButton>
         <ArticleMainButtonContent />
       </Article.MainButton>
+
       <Article.Body>
         <ArticleBodyContent />
       </Article.Body>
@@ -219,7 +221,7 @@ class FilesContent extends React.Component {
   }
 
   render() {
-    const { showArticle, isFrame, withAccounts } = this.props;
+    const { showArticle, isFrame, withMainButton } = this.props;
 
     return (
       <>
@@ -228,7 +230,10 @@ class FilesContent extends React.Component {
         {isFrame ? (
           showArticle && <FilesArticle history={this.props.history} />
         ) : (
-          <FilesArticle history={this.props.history} />
+          <FilesArticle
+            history={this.props.history}
+            withMainButton={withMainButton}
+          />
         )}
         <FilesSection />
       </>
@@ -236,7 +241,7 @@ class FilesContent extends React.Component {
   }
 }
 
-const Files = inject(({ auth, filesStore }) => {
+const Files = inject(({ auth, filesStore, treeFoldersStore }) => {
   const {
     frameConfig,
     isFrame,
@@ -245,6 +250,14 @@ const Files = inject(({ auth, filesStore }) => {
     setEncryptionKeys,
     isEncryptionSupport,
   } = auth.settingsStore;
+
+  const { isRoomsFolder } = treeFoldersStore;
+
+  const { isAdmin, isOwner } = auth.userStore.user;
+
+  // TODO: add check on manager type
+
+  const withMainButton = (isAdmin && isOwner) || !isRoomsFolder;
 
   return {
     isDesktop: isDesktopClient,
@@ -256,6 +269,7 @@ const Files = inject(({ auth, filesStore }) => {
     isEncryption: isEncryptionSupport,
     isLoaded: auth.isLoaded && filesStore.isLoaded,
     setIsLoaded: filesStore.setIsLoaded,
+    withMainButton,
 
     setEncryptionKeys: setEncryptionKeys,
     loadFilesInfo: async () => {
