@@ -23,7 +23,6 @@ const Header = (props) => {
     isAdmin,
     filter,
     setFilter,
-    resetProfile,
     profile,
     isMe,
     setChangeEmailVisible,
@@ -67,8 +66,6 @@ const Header = (props) => {
   };
 
   const onClickBack = () => {
-    resetProfile();
-
     const url = filter.toUrlParams();
     const backUrl = combineUrl(
       AppServerConfig.proxyURL,
@@ -124,7 +121,7 @@ export default withRouter(
 
     const { filter, setFilterParams } = filterStore;
 
-    const { resetTargetUser, targetUser, isMe } = targetUserStore;
+    const { targetUser, isMe } = targetUserStore;
 
     const {
       setChangeEmailVisible,
@@ -136,7 +133,6 @@ export default withRouter(
       isAdmin,
       filter,
       setFilter: setFilterParams,
-      resetProfile: resetTargetUser,
       profile: targetUser,
       isMe,
       setChangeEmailVisible,

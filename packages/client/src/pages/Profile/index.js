@@ -72,13 +72,6 @@ class Profile extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    const { isEditTargetUser } = this.props;
-    if (!isEditTargetUser) {
-      this.props.resetProfile();
-    }
-  }
-
   render() {
     //console.log("Profile render");
 
@@ -112,7 +105,6 @@ export default withRouter(
     const { setDocumentTitle, isAdmin, language } = auth;
     const { targetUserStore, loadingStore } = peopleStore;
     const {
-      resetTargetUser: resetProfile,
       getTargetUser: fetchProfile,
       targetUser: profile,
       isEditTargetUser,
@@ -123,7 +115,6 @@ export default withRouter(
       setDocumentTitle,
       isAdmin,
       language,
-      resetProfile,
       fetchProfile,
       profile,
       setFirstLoad,

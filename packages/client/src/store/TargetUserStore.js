@@ -55,12 +55,6 @@ class TargetUserStore {
     this.targetUser = user;
   };
 
-  resetTargetUser = () => {
-    if (!this.isEditTargetUser) {
-      this.targetUser = null;
-    }
-  };
-
   updateProfile = async (profile) => {
     const member = this.peopleStore.usersStore.employeeWrapperToMemberModel(
       profile
@@ -109,9 +103,12 @@ class TargetUserStore {
   };
 
   setChangeEmailVisible = (visible) => (this.changeEmailVisible = visible);
+
   setChangePasswordVisible = (visible) =>
     (this.changePasswordVisible = visible);
+
   setChangeNameVisible = (visible) => (this.changeNameVisible = visible);
+
   setChangeAvatarVisible = (visible) => (this.changeAvatarVisible = visible);
 }
 
