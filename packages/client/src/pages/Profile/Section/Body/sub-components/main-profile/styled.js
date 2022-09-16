@@ -43,7 +43,7 @@ export const StyledInfo = styled.div`
 
     .field {
       display: flex;
-      gap: 24px;
+      gap: 16px;
 
       & > p {
         padding-left: 8px;
@@ -89,7 +89,7 @@ export const StyledInfo = styled.div`
 
 export const StyledRow = styled.div`
   display: flex;
-  gap: 24px;
+  gap: 16px;
 
   .combo {
     & > div {
