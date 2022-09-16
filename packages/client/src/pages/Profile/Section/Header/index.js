@@ -8,11 +8,11 @@ import ContextMenuButton from "@docspace/components/context-menu-button";
 import Headline from "@docspace/common/components/Headline";
 import Loaders from "@docspace/common/components/Loaders";
 import { AppServerConfig } from "@docspace/common/constants";
-import { DeleteSelfProfileDialog } from "../../../../components/dialogs";
+import { DeleteSelfProfileDialog } from "SRC_DIR/components/dialogs";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
-import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
+import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 
 import { StyledHeader } from "./StyledHeader";
 

@@ -6,7 +6,7 @@ import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 
-import { getUserRole } from "../../../../../../helpers/people-helpers";
+import { getUserRole } from "SRC_DIR/helpers/people-helpers";
 
 import LanguagesCombo from "./languagesCombo";
 import TimezoneCombo from "./timezoneCombo";
@@ -16,7 +16,7 @@ import {
   ChangeEmailDialog,
   ChangePasswordDialog,
   ChangeNameDialog,
-} from "../../../../../../components/dialogs";
+} from "SRC_DIR/components/dialogs";
 
 import { StyledWrapper, StyledInfo } from "./styled";
 

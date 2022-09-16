@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -9,8 +9,6 @@ import RadioButtonGroup from "@docspace/components/radio-button-group";
 import { ThemeKeys } from "@docspace/common/constants";
 
 import ThemePreview from "./theme-preview";
-
-import { Base, Dark } from "@docspace/components/themes";
 
 import { smallTablet } from "@docspace/components/utils/device";
 

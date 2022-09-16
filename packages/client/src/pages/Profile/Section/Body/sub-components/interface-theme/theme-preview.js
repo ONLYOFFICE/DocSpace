@@ -2,7 +2,7 @@ import React from "react";
 import RadioButton from "@docspace/components/radio-button";
 
 import { StyledWrapper } from "./styled-preview";
-import Preview from "../../../../../PortalSettings/categories/common/settingsAppearance/preview";
+import Preview from "SRC_DIR/pages/PortalSettings/categories/common/settingsAppearance/preview";
 
 const ThemePreview = (props) => {
   const {

@@ -12,7 +12,7 @@ import { hugeMobile } from "@docspace/components/utils/device";
 import {
   ResetApplicationDialog,
   BackupCodesDialog,
-} from "../../../../../../components/dialogs";
+} from "SRC_DIR/components/dialogs";
 
 const StyledWrapper = styled.div`
   display: flex;
