@@ -17,11 +17,7 @@ const Error404 = React.lazy(() => import("client/Error404"));
 const PeopleSection = React.memo(() => {
   return (
     <Switch>
-      <PrivateRoute
-        exact
-        path={["/accounts/view/:userId"]}
-        component={Profile}
-      />
+      <PrivateRoute exact path={["/accounts/view/@self"]} component={Profile} />
       <PrivateRoute
         exact
         path={["/accounts"]}

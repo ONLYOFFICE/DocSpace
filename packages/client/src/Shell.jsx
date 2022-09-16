@@ -440,8 +440,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 "/accounts/filter",
 
                 "/accounts/create/:type",
-                "/accounts/edit/:userId",
-                "/accounts/view/:userId",
                 "/accounts/view/@self",
 
                 "/settings",
