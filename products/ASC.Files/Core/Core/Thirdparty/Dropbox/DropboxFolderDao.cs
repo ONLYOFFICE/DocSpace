@@ -77,7 +77,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         return GetRootFolderAsync(fileId);
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject)
     {
         if (CheckInvalidFilter(filterType))
         {
@@ -87,7 +87,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         var rooms = GetFoldersAsync(parentId);
 
         rooms = FilterByRoomType(rooms, filterType);
-        rooms = FilterByOwner(rooms, ownerId, withoutMe);
+        rooms = FilterBySubject(rooms, subjectId, excludeSubject);
 
         if (!string.IsNullOrEmpty(searchText))
         {
@@ -99,7 +99,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         return rooms;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject)
     {
         if (CheckInvalidFilter(filterType))
         {
@@ -109,7 +109,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         var folders = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
         folders = FilterByRoomType(folders, filterType);
-        folders = FilterByOwner(folders, ownerId, withoutMe);
+        folders = FilterBySubject(folders, subjectId, excludeSubject);
 
         if (!string.IsNullOrEmpty(searchText))
         {
@@ -130,7 +130,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool withoutMe = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool excludeSubject = false)
     {
         if (CheckInvalidFilter(filterType))
         {
@@ -165,7 +165,7 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         return folders;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, bool withoutMe = false)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, bool excludeSubject = false)
     {
         if (CheckInvalidFilter(filterType))
         {

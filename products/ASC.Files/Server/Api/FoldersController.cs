@@ -122,9 +122,9 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5) or ImagesOnly (7)">Filter type</param>
     /// <returns>Folder contents</returns>
     [HttpGet("{folderId}", Order = 1)]
-    public async Task<FolderContentDto<T>> GetFolderAsync(T folderId, Guid? userIdOrGroupId, FilterType? filterType, bool? searchInContent, bool? withsubfolders, bool? withoutMe)
+    public async Task<FolderContentDto<T>> GetFolderAsync(T folderId, Guid? userIdOrGroupId, FilterType? filterType, bool? searchInContent, bool? withsubfolders, bool? excludeSubject)
     {
-        var folder = await _foldersControllerHelper.GetFolderAsync(folderId, userIdOrGroupId, filterType, searchInContent, withsubfolders, withoutMe);
+        var folder = await _foldersControllerHelper.GetFolderAsync(folderId, userIdOrGroupId, filterType, searchInContent, withsubfolders, excludeSubject);
 
         return folder.NotFoundIfNull();
     }
