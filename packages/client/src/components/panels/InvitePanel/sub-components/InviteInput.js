@@ -36,9 +36,10 @@ const InviteInput = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
-  const [panelVisible, setPanelVisible] = useState(false);
   const [roomUsers, setRoomUsers] = useState([]);
-  const [showUsersPanel, setShowUsersPanel] = useState(false);
+  const [searchPanelVisible, setSearchPanelVisible] = useState(false);
+  const [addUsersPanelVisible, setAddUsersPanelVisible] = useState(false);
+
   const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
 
   const inputsRef = useRef();
@@ -81,7 +82,7 @@ const InviteInput = ({
     const value = e.target.value;
     const clearValue = value.trim();
 
-    if ((!!usersList.length || clearValue.length > 1) && !panelVisible) {
+    if ((!!usersList.length || clearValue.length > 1) && !searchPanelVisible) {
       openInviteInputPanel();
     }
 
@@ -97,7 +98,7 @@ const InviteInput = ({
     item.access = selectedAccess;
 
     const addUser = () => {
-      setInviteItems([...inviteItems, item]);
+      setInviteItems([item, ...inviteItems]);
       closeInviteInputPanel();
     };
 
@@ -126,12 +127,12 @@ const InviteInput = ({
 
     item.access = ShareAccessRights.ReadOnly; //TODO: get from main selector;
 
-    setInviteItems([...inviteItems, item]);
+    setInviteItems([item, ...inviteItems]);
     closeInviteInputPanel();
   };
 
   const addItems = (users) => {
-    const items = [...inviteItems, ...users];
+    const items = [...users, ...inviteItems];
 
     const filtered = items.reduce((unique, o) => {
       !unique.some((obj) => obj.email === o.email) && unique.push(o);
@@ -146,20 +147,20 @@ const InviteInput = ({
 
   const openUsersPanel = () => {
     setInputValue("");
-    setShowUsersPanel(true);
+    setAddUsersPanelVisible(true);
   };
 
   const closeUsersPanel = () => {
-    setShowUsersPanel(false);
+    setAddUsersPanelVisible(false);
   };
 
   const openInviteInputPanel = () => {
-    setPanelVisible(true);
+    setSearchPanelVisible(true);
   };
 
   const closeInviteInputPanel = () => {
     setInputValue("");
-    setPanelVisible(false);
+    setSearchPanelVisible(false);
   };
 
   const foundUsers = usersList.map((user) => getItemContent(user));
@@ -189,19 +190,10 @@ const InviteInput = ({
           onChange={onChange}
           placeholder={t("SearchPlaceholder")}
           value={inputValue}
-          {...props}
         />
-        {!hideSelector && (
-          <AccessSelector
-            t={t}
-            roomType={5}
-            onSelectAccess={onSelectAccess}
-            containerRef={inputsRef}
-          />
-        )}
         <StyledDropDown
           isDefaultMode={false}
-          open={panelVisible}
+          open={searchPanelVisible}
           manualX="16px"
           showDisabledItems
           clickOutsideAction={closeInviteInputPanel}
@@ -216,11 +208,20 @@ const InviteInput = ({
               )}
         </StyledDropDown>
 
-        {showUsersPanel && (
+        {!hideSelector && (
+          <AccessSelector
+            t={t}
+            roomType={5}
+            onSelectAccess={onSelectAccess}
+            containerRef={inputsRef}
+          />
+        )}
+
+        {addUsersPanelVisible && (
           <AddUsersPanel
             onParentPanelClose={onClose}
             onClose={closeUsersPanel}
-            visible={showUsersPanel}
+            visible={addUsersPanelVisible}
             shareDataItems={roomUsers}
             tempDataItems={inviteItems}
             setDataItems={addItems}
@@ -246,7 +247,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     setInviteItems,
     inviteItems,
     getUsersByQuery,
-    roomId: invitePanelOptions.id,
+    roomId: invitePanelOptions.roomId,
     hideSelector: invitePanelOptions.hideSelector,
     defaultAccess: invitePanelOptions.defaultAccess,
   };
