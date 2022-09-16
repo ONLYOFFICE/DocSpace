@@ -5,7 +5,7 @@ class ContextHelper {
     this.getContextOptions = props.getContextOptions;
     this.getContextOptionActions = props.getContextOptionActions;
 
-    this.fixItemContextOptions();
+    if (this.selection) this.fixItemContextOptions();
   }
 
   fixItemContextOptions = () => {
