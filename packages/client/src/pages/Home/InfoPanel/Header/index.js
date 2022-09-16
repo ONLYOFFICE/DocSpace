@@ -9,14 +9,14 @@ import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Submenu from "@docspace/components/submenu";
 import {
-  isDesktop,
-  isMobile,
-  isTablet,
+  isDesktop as isDesktopUtils,
+  isMobile as isMobileUtils,
+  isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
-import { StyledInfoPanelHeader } from "./styles/styles";
+import { StyledInfoPanelHeader } from "./styles/common";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -73,8 +73,11 @@ const InfoPanelHeaderContent = (props) => {
   const roomsSubmenu = [...submenuData];
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
+  const isTablet =
+    isTabletUtils() || isMobileUtils() || isMobileRDD || !isDesktopUtils();
+
   return (
-    <StyledInfoPanelHeader withSubmenu={withSubmenu}>
+    <StyledInfoPanelHeader isTablet={isTablet} withSubmenu={withSubmenu}>
       <div className="main">
         <Text className="header-text" fontSize="21px" fontWeight="700">
           {t("Common:Info")}
@@ -86,7 +89,7 @@ const InfoPanelHeaderContent = (props) => {
           isRootFolder={true}
           isInfoPanelVisible={true}
         >
-          {!(isTablet() || isMobileRDD || isMobile() || !isDesktop()) && (
+          {!isTablet && (
             <div className="info-panel-toggle-bg">
               <IconButton
                 className="info-panel-toggle"
