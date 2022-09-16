@@ -42,6 +42,17 @@ export function getRoomMembers(id) {
   });
 }
 
+export function getRoomHistory(id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=rooms&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
 export function createRoom(data) {
   const options = { method: "post", url: `/files/rooms`, data };
 
