@@ -12,8 +12,15 @@ const StyledItemContextOptions = styled.div`
 `;
 
 const ItemContextOptions = ({ selection, setBufferSelection, ...props }) => {
-  const contextHelper = new ContextHelper(selection, setBufferSelection, props);
+  if (!selection) return null;
+
+  const contextHelper = new ContextHelper({
+    selection,
+    ...props,
+  });
+
   const setItemAsBufferSelection = () => setBufferSelection(selection);
+
   return (
     <StyledItemContextOptions onClick={setItemAsBufferSelection}>
       <ContextMenuButton
