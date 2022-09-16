@@ -193,17 +193,10 @@ class UsersStore {
             options.push("change-email");
             options.push("change-password");
             options.push("reset-auth");
-          }
-        }
 
-        // TODO: add check on manager type
-        if (
-          (isOwner && !isMySelf) ||
-          (isAdmin && !isUserAdmin && !isUserOwner) ||
-          userRole === "user"
-        ) {
-          options.push("separator-2");
-          options.push("disable");
+            options.push("separator-2");
+            options.push("disable");
+          }
         }
 
         break;
@@ -234,16 +227,8 @@ class UsersStore {
           userRole === "user"
         ) {
           options.push("invite-again");
-        }
+          options.push("details");
 
-        options.push("details");
-
-        // TODO: add check on manager type
-        if (
-          (isOwner && !isMySelf) ||
-          (isAdmin && !isUserAdmin && !isUserOwner) ||
-          userRole === "user"
-        ) {
           options.push("separator-1");
 
           if (status === EmployeeStatus.Active) {
@@ -251,6 +236,8 @@ class UsersStore {
           } else {
             options.push("enable");
           }
+        } else {
+          options.push("details");
         }
 
         break;
@@ -323,8 +310,7 @@ class UsersStore {
         isAdministrator,
         statusType,
         role,
-        status,
-        !!mobilePhone
+        status
       );
 
       return {
