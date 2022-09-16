@@ -226,7 +226,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
     }
 
-    public async IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+    public async IAsyncEnumerable<Folder<int>> GetFoldersAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool withoutMe = false)
     {
         if (CheckInvalidFilter(filterType))
         {
@@ -280,13 +280,18 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             }
         }
 
+        if (withoutMe)
+        {
+            q = q.Where(r => r.CreateBy != _authContext.CurrentAccount.ID);
+        }
+
         await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFolderQuery, Folder<int>>(e);
         }
     }
 
-    public async IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+    public async IAsyncEnumerable<Folder<int>> GetFoldersAsync(IEnumerable<int> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, bool withoutMe = false)
     {
         if (CheckInvalidFilter(filterType))
         {
@@ -332,6 +337,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             {
                 q = q.Where(r => r.CreateBy == subjectID);
             }
+        }
+
+        if (withoutMe)
+        {
+            q = q.Where(r => r.CreateBy != _authContext.CurrentAccount.ID);
         }
 
         await foreach (var e in (checkShare ? FromQueryWithShared(filesDbContext, q) : FromQuery(filesDbContext, q)).AsAsyncEnumerable().Distinct())

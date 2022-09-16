@@ -112,7 +112,7 @@ public interface IFileDao<T>
     /// <remarks>
     ///    Return only the latest versions of files of a folder
     /// </remarks>
-    IAsyncEnumerable<File<T>> GetFilesAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false);
+    IAsyncEnumerable<File<T>> GetFilesAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool withoutMe = false);
 
     /// <summary>
     /// Get stream of file

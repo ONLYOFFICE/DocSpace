@@ -273,7 +273,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool withoutMe = false)
     {
         if (filterType == FilterType.FoldersOnly)
         {
@@ -351,6 +351,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
                     q = BuildSearch(q, searchText, SearhTypeEnum.End);
                 }
                 break;
+        }
+
+        if (withoutMe)
+        {
+            q = q.Where(r => r.CreateBy != _authContext.CurrentAccount.ID);
         }
 
         await foreach (var e in FromQueryWithShared(filesDbContext, q).AsAsyncEnumerable())
