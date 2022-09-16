@@ -186,7 +186,7 @@ const Navigation = ({
               titles={titles}
             />
           </StyledContainer>
-          {isDesktop && (
+          {isDesktop && !isEmptyFilesList && (
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}
               toggleInfoPanel={toggleInfoPanel}
