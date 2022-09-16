@@ -50,7 +50,7 @@ public class BruteForceLoginManager
         {
             var blockCacheKey = GetBlockCacheKey(login, requestIp);
 
-            if (GetFromCache<bool>(blockCacheKey))
+            if (GetFromCache<string>(blockCacheKey) != null)
             {
                 return false;
             }
@@ -116,11 +116,11 @@ public class BruteForceLoginManager
         return Serializer.Deserialize<T>(ms);
     }
 
-    private void SetToCache<T>(string key, T obj, DateTime ExpirationPeriod)
+    private void SetToCache<T>(string key, T value, DateTime ExpirationPeriod)
     {
         using var ms = new MemoryStream();
 
-        Serializer.Serialize(ms, obj);
+        Serializer.Serialize(ms, value);
 
         _distributedCache.Set(key, ms.ToArray(), new DistributedCacheEntryOptions
         {
