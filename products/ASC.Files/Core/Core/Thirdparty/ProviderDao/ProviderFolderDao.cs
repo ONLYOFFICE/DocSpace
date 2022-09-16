@@ -90,11 +90,11 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return folderDao.GetRootFolderByFileAsync(selector.ConvertId(fileId));
     }
 
-    public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject)
     {
         var selector = GetSelector(parentId);
         var folderDao = selector.GetFolderDao(parentId);
-        var rooms = folderDao.GetRoomsAsync(selector.ConvertId(parentId), filterType, tags, ownerId, searchText, withSubfolders, withoutTags, withoutMe);
+        var rooms = folderDao.GetRoomsAsync(selector.ConvertId(parentId), filterType, tags, subjectId, searchText, withSubfolders, withoutTags, excludeSubject);
         var result = await rooms.Where(r => r != null).ToListAsync();
 
         await SetSharedPropertyAsync(result);
@@ -105,7 +105,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid ownerId, string searchText, bool withSubfolders, bool withoutTags, bool withoutMe)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject)
     {
         var result = AsyncEnumerable.Empty<Folder<string>>();
 
@@ -125,7 +125,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
                 {
                     var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
 
-                    return folderDao.GetRoomsAsync(matchedId.Select(selectorLocal.ConvertId).ToList(), filterType, tags, ownerId, searchText, withSubfolders, withoutTags, withoutMe);
+                    return folderDao.GetRoomsAsync(matchedId.Select(selectorLocal.ConvertId).ToList(), filterType, tags, subjectId, searchText, withSubfolders, withoutTags, excludeSubject);
                 })
                 .Where(r => r != null));
         }
@@ -142,11 +142,11 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return folders.Where(r => r != null);
     }
 
-    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false)
+    public async IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool excludeSubject = false)
     {
         var selector = GetSelector(parentId);
         var folderDao = selector.GetFolderDao(parentId);
-        var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders);
+        var folders = folderDao.GetFoldersAsync(selector.ConvertId(parentId), orderBy, filterType, subjectGroup, subjectID, searchText, withSubfolders, excludeSubject);
         var result = await folders.Where(r => r != null).ToListAsync();
 
         await SetSharedPropertyAsync(result);
@@ -157,7 +157,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         }
     }
 
-    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true)
+    public IAsyncEnumerable<Folder<string>> GetFoldersAsync(IEnumerable<string> folderIds, FilterType filterType = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, bool excludeSubject = false)
     {
         var result = AsyncEnumerable.Empty<Folder<string>>();
 
@@ -178,7 +178,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
                     var folderDao = selectorLocal.GetFolderDao(matchedId.FirstOrDefault());
 
                     return folderDao.GetFoldersAsync(matchedId.Select(selectorLocal.ConvertId).ToList(),
-                        filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare);
+                        filterType, subjectGroup, subjectID, searchText, searchSubfolders, checkShare, excludeSubject);
                 })
                 .Where(r => r != null));
         }
