@@ -26,7 +26,6 @@ const MainProfile = (props) => {
   const {
     profile,
     updateProfile,
-    fetchProfile,
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,
@@ -130,8 +129,6 @@ const MainProfile = (props) => {
           t={t}
           visible={changeAvatarVisible}
           onClose={() => setChangeAvatarVisible(false)}
-          profile={profile}
-          fetchProfile={fetchProfile}
         />
       )}
     </StyledWrapper>
@@ -144,7 +141,6 @@ export default inject(({ peopleStore }) => {
   const {
     targetUser: profile,
     updateProfile,
-    getTargetUser: fetchProfile,
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,
@@ -158,7 +154,6 @@ export default inject(({ peopleStore }) => {
   return {
     profile,
     updateProfile,
-    fetchProfile,
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,

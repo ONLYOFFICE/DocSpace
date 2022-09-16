@@ -7,7 +7,7 @@ import {
 
 export const StyledWrapper = styled.div`
   display: flex;
-  padding: 24px 24px 20px 24px;
+  padding: 24px 24px 18px 24px;
   gap: 40px;
   background: ${(props) => props.theme.profile.main.background};
   border-radius: 12px;
@@ -99,6 +99,10 @@ export const StyledInfo = styled.div`
 export const StyledRow = styled.div`
   display: flex;
   gap: 16px;
+
+  @media ${desktop} {
+    height: 28px;
+  }
 
   .combo {
     & > div {
