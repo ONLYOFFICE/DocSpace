@@ -3,7 +3,7 @@ import { smallTablet } from "@docspace/components/utils/device";
 
 export const StyledWrapper = styled.div`
   display: flex;
-  padding: 24px;
+  padding: 24px 24px 18px 24px;
   gap: 40px;
   background: ${(props) => props.theme.profile.main.background};
   border-radius: 12px;
@@ -54,16 +54,20 @@ export const StyledInfo = styled.div`
 
       .field {
         flex-direction: column;
-        gap: 4px;
+        gap: 2px;
 
         & > p {
           padding-left: 0;
+          font-size: 12px !important;
+          line-height: 16px !important;
         }
       }
 
       .label {
         min-width: 100%;
         max-width: 100%;
+        font-size: 12px !important;
+        line-height: 16px !important;
       }
 
       .edit-button {
