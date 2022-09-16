@@ -22,12 +22,12 @@ const ChangeNameDialog = (props) => {
       setIsSaving(true);
       await onSave(newProfile);
       toastr.success(t("ProfileAction:ChangesSavedSuccessfully"));
-      onClose();
     } catch (error) {
       console.error(error);
       toastr.error(error);
     } finally {
       setIsSaving(false);
+      onClose();
     }
   };
 
