@@ -14,19 +14,15 @@ import { combineUrl } from "@docspace/common/utils";
 import { updateTempContent } from "@docspace/common/utils";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
-
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import { loopTreeFolders } from "../helpers/files-helpers";
 import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
-import { CategoryType } from "SRC_DIR/helpers/constants";
 import {
   getCategoryType,
   getCategoryTypeByFolderType,
 } from "SRC_DIR/helpers/utils";
 import { isDesktop } from "@docspace/components/utils/device";
-
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
 
@@ -651,11 +647,7 @@ class FilesStore {
     withSubfolders = false,
     clearSelection = true
   ) => {
-    const {
-      treeFolders,
-      setSelectedNode,
-      getSubfolders,
-    } = this.treeFoldersStore;
+    const { setSelectedNode } = this.treeFoldersStore;
 
     this.scrollToTop();
 
@@ -687,11 +679,6 @@ class FilesStore {
       api.files
         .getFolder(folderId, filterData)
         .then(async (data) => {
-          const isRecycleBinFolder =
-            data.current.rootFolderType === FolderType.TRASH;
-
-          !isRecycleBinFolder && this.checkUpdateNode(data, folderId);
-
           filterData.total = data.total;
 
           if (data.total > 0) {
@@ -709,16 +696,6 @@ class FilesStore {
             }
           }
 
-          if (!isRecycleBinFolder && withSubfolders) {
-            const path = data.pathParts.slice(0);
-            const foldersCount = data.current.foldersCount;
-            const subfolders = await getSubfolders(folderId);
-            loopTreeFolders(path, treeFolders, subfolders, foldersCount);
-          }
-
-          const isPrivacyFolder =
-            data.current.rootFolderType === FolderType.Privacy;
-
           runInAction(() => {
             this.categoryType = getCategoryTypeByFolderType(
               data.current.rootFolderType,
@@ -726,13 +703,10 @@ class FilesStore {
             );
           });
 
-          // console.log("fetchFiles", {
-          //   categoryType: this.categoryType,
-          //   rootFolderType: data.current.rootFolderType,
-          //   parentId: data.current.parentId,
-          // });
-
           this.setFilesFilter(filterData); //TODO: FILTER
+
+          const isPrivacyFolder =
+            data.current.rootFolderType === FolderType.Privacy;
 
           runInAction(() => {
             this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
@@ -747,18 +721,40 @@ class FilesStore {
 
           const navigationPath = await Promise.all(
             data.pathParts.map(async (folder) => {
-              const data = await api.files.getFolderInfo(folder);
+              const { Rooms, Archive } = FolderType;
+
+              let folderId = folder;
+
+              if (
+                data.current.providerKey &&
+                data.current.rootFolderType === Rooms &&
+                this.treeFoldersStore.sharedRoomId
+              ) {
+                folderId = this.treeFoldersStore.sharedRoomId;
+              }
+
+              const folderInfo =
+                data.current.id === folderId
+                  ? data.current
+                  : await api.files.getFolderInfo(folderId);
+
+              const {
+                id,
+                title,
+                roomType,
+                rootFolderId,
+                rootFolderType,
+              } = folderInfo;
 
               const isRootRoom =
-                data.rootFolderId === data.id &&
-                (data.rootFolderType === FolderType.Rooms ||
-                  data.rootFolderType === FolderType.Archive);
+                rootFolderId === id &&
+                (rootFolderType === Rooms || rootFolderType === Archive);
 
               return {
-                id: folder,
-                title: data.title,
-                isRoom: !!data.roomType,
-                isRootRoom: isRootRoom,
+                id: folderId,
+                title,
+                isRoom: !!roomType,
+                isRootRoom,
               };
             })
           ).then((res) => {
@@ -948,37 +944,6 @@ class FilesStore {
 
   setAlreadyFetchingRooms = (alreadyFetchingRooms) => {
     this.alreadyFetchingRooms = alreadyFetchingRooms;
-  };
-
-  checkUpdateNode = async (data, folderId) => {
-    const { treeFolders, getSubfolders } = this.treeFoldersStore;
-    const { pathParts, current } = data;
-
-    if (current.parentId === 0) return;
-
-    const somePath = pathParts.slice(0);
-    const path = pathParts.slice(0);
-    let newItems = treeFolders;
-
-    while (somePath.length !== 1) {
-      const folderItem = newItems.find((x) => x.id === somePath[0]);
-      newItems = folderItem?.folders
-        ? folderItem.folders
-        : somePath.length > 1
-        ? []
-        : null;
-      if (!newItems) {
-        return;
-      }
-
-      somePath.shift();
-    }
-
-    if (!newItems.find((x) => x.id == folderId)) {
-      path.splice(pathParts.length - 1, 1);
-      const subfolders = await getSubfolders(current.parentId);
-      loopTreeFolders(path, treeFolders, subfolders, 0);
-    }
   };
 
   isFileSelected = (fileId, parentId) => {

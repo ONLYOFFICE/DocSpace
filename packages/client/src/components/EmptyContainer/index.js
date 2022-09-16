@@ -5,7 +5,7 @@ import EmptyFilterContainer from "./EmptyFilterContainer";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import { FileAction } from "@docspace/common/constants";
 import { isMobile } from "react-device-detect";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 
 const linkStyles = {
   isHovered: true,

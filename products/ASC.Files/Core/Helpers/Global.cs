@@ -345,7 +345,7 @@ public class GlobalFolder
         return (T)Convert.ChangeType(await GetFolderProjectsAsync(daoFactory), typeof(T));
     }
 
-    internal static readonly ConcurrentDictionary<string, int> DocSpaceFolderCache = 
+    internal static readonly ConcurrentDictionary<string, int> DocSpaceFolderCache =
         new ConcurrentDictionary<string, int>();
 
     public async ValueTask<int> GetFolderVirtualRoomsAsync(IDaoFactory daoFactory)
@@ -411,7 +411,7 @@ public class GlobalFolder
             return default;
         }
 
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             return default;
         }
@@ -517,7 +517,7 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             return 0;
         }
@@ -546,7 +546,7 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             return 0;
         }
@@ -575,7 +575,7 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             return 0;
         }
@@ -609,7 +609,7 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             return 0;
         }
@@ -706,10 +706,10 @@ public class GlobalFolder
 
     private async Task SaveStartDocumentAsync(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate)
     {
-            var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false).ToListAsync();
-            foreach (var file in files)
+        var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false).ToListAsync();
+        foreach (var file in files)
         {
-                await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files);
+            await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files);
         }
 
         await foreach (var folderName in storeTemplate.ListDirectoriesRelativeAsync(path, false))
@@ -724,17 +724,17 @@ public class GlobalFolder
         }
     }
 
-        private async Task SaveFileAsync(FileMarker fileMarker, FileDao fileDao, int folder, string filePath, IDataStore storeTemp, IEnumerable<string> files)
+    private async Task SaveFileAsync(FileMarker fileMarker, FileDao fileDao, int folder, string filePath, IDataStore storeTemp, IEnumerable<string> files)
     {
         try
         {
-                var fileName = Path.GetFileName(filePath);
-                foreach (var ext in Enum.GetValues<ThumbnailExtension>())
-                {
-                    if (FileUtility.GetFileExtension(filePath) == "." + ext
-                        && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
-                        return;
-                }
+            var fileName = Path.GetFileName(filePath);
+            foreach (var ext in Enum.GetValues<ThumbnailExtension>())
+            {
+                if (FileUtility.GetFileExtension(filePath) == "." + ext
+                    && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
+                    return;
+            }
 
             var file = _serviceProvider.GetService<File<int>>();
 
@@ -756,7 +756,7 @@ public class GlobalFolder
         }
     }
 
-    public bool IsOutsider => _userManager.GetUsers(_authContext.CurrentAccount.ID).IsOutsider(_userManager);
+    public bool IsOutsider => _userManager.IsOutsider(_authContext.CurrentAccount.ID);
 }
 
 [Scope]

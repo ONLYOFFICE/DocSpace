@@ -2,14 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import Loaders from "@docspace/common/components/Loaders";
 import { tablet } from "@docspace/components/utils/device";
+import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
 
 const StyledLoader = styled.div`
-  hr {
-    margin: 24px 0;
-    border: none;
-    border-top: 1px solid #eceef1;
-  }
-
   .submenu {
     width: 296px;
     height: 29px;
@@ -147,7 +142,9 @@ const SecurityLoader = () => {
         </div>
         <Loaders.Rectangle className="buttons" height="100%" />
       </div>
-      <hr />
+
+      <StyledSettingsSeparator />
+
       <div className="tfa-settings">
         <Loaders.Rectangle className="header" height="22px" />
         <div className="radio-buttons">
@@ -157,7 +154,9 @@ const SecurityLoader = () => {
         </div>
         <Loaders.Rectangle className="buttons" height="100%" />
       </div>
-      <hr />
+
+      <StyledSettingsSeparator />
+
       <div className="domain-settings">
         <Loaders.Rectangle className="header" height="22px" />
         <div className="radio-buttons">

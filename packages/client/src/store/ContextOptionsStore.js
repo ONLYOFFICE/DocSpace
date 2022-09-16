@@ -10,7 +10,7 @@ import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
 
 class ContextOptionsStore {

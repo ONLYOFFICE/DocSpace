@@ -9,13 +9,11 @@ import {
   StyledSubtitle,
   StyledGalleryThumbnail,
   StyledTitle,
-<<<<<<<< HEAD:products/ASC.Files/Client/src/pages/Home/InfoPanel/Body/views/Gallery/GalleryItem.js
 } from "../../styles/styles.js";
 import getCorrectDate from "@appserver/components/utils/getCorrectDate";
-========
-} from "./styles/styles.js";
+
 import getCorrectDate from "@docspace/components/utils/getCorrectDate";
->>>>>>>> develop:packages/client/src/pages/Home/InfoPanel/Body/GalleryItem.js
+import { getCookie } from "@docspace/common/utils/index";
 
 const SingleItem = (props) => {
   const { t, selectedItem, getIcon, culture, personal } = props;

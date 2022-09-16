@@ -3,6 +3,8 @@
   "CodeSubtitle": "Wij hebben een 6-cijferige code naar {{email}} gestuurd. De code heeft een beperkte geldigheidsduur, voer hem zo snel mogelijk in.",
   "CodeTitle": "De code is naar u gemaild",
   "CookieSettingsTitle": "Sessieduur",
+  "ErrorInvalidHeader": "Onjuiste e-mail of verlopen link",
+  "ErrorInvalidText": "Over 10 seconden wordt u doorverwezen naar de <1>login pagina</1>",
   "ExpiredCode": "Deze code is niet meer geldig. Vraag een nieuwe code aan en probeer het opnieuw",
   "ForgotPassword": "Wachtwoord vergeten?",
   "InvalidCode": "Deze code is ongeldig. Probeer het opnieuw",
@@ -27,7 +29,5 @@
   "RegistrationEmailWatermark": "E-mail",
   "Remember": "Mij onthouden",
   "RememberHelper": "De standaard sessieduur is 20 minuten. Vink deze optie aan om deze in te stellen op 1 jaar. Om uw eigen waarde in te stellen, ga naar Instellingen.",
-  "ResendCode": "Code opnieuw versturen",
-  "ErrorInvalidHeader": "Onjuiste e-mail of verlopen link",
-  "ErrorInvalidText": "Over 10 seconden wordt u doorverwezen naar de <1>login pagina</1>"
+  "ResendCode": "Code opnieuw versturen"
 }

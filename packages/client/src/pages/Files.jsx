@@ -78,7 +78,11 @@ const FilesSection = React.memo(() => {
     <Switch>
       {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
       {/* <PrivateRoute path={"/private"} component={PrivateRoomsPage} /> */}
-
+      <PrivateRoute
+        exact
+        path={"/settings"}
+        component={() => <Redirect to="/settings/common" />}
+      />
       <PrivateRoute
         exact
         path={["/", "/rooms"]}
@@ -128,9 +132,11 @@ const FilesSection = React.memo(() => {
       />
       <PrivateRoute
         exact
-        path={["/setiings", "/settings/:setting"]}
+        restricted
+        path={"/settings/admin"}
         component={Settings}
       />
+      <PrivateRoute exact path={"/settings/common"} component={Settings} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );

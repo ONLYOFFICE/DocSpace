@@ -8,7 +8,6 @@ import PasswordInput from "@docspace/components/password-input";
 import FieldContainer from "@docspace/components/field-container";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { runInAction } from "mobx";
 import { getOAuthToken } from "@docspace/common/utils";
 import { saveSettingsThirdParty } from "@docspace/common/api/files";
 
@@ -18,10 +17,7 @@ const PureConnectDialogContainer = (props) => {
     t,
     tReady,
     item,
-    treeFolders,
     fetchThirdPartyProviders,
-    myFolderId,
-    commonFolderId,
     providers,
     selectedFolderId,
     selectedFolderFolders,
@@ -29,7 +25,6 @@ const PureConnectDialogContainer = (props) => {
     openConnectWindow,
     setConnectDialogVisible,
     personal,
-    getSubfolders,
     folderFormValidation,
     updateInfo,
     isConnectionViaBackupModule,
@@ -158,7 +153,7 @@ const PureConnectDialogContainer = (props) => {
       loginValue,
       passwordValue,
       oAuthToken,
-      isCorporate,
+      false,
       customerTitle,
       provider_key || key,
       provider_id,
@@ -166,13 +161,6 @@ const PureConnectDialogContainer = (props) => {
     )
       .then(async (res) => {
         setSaveThirdpartyResponse(res);
-
-        const folderId = isCorporate ? commonFolderId : myFolderId;
-        const subfolders = await getSubfolders(folderId);
-        const node = treeFolders.find((x) => x.id === folderId);
-
-        runInAction(() => (node.folders = subfolders));
-
         await fetchThirdPartyProviders();
       })
       .catch((err) => {
@@ -185,13 +173,10 @@ const PureConnectDialogContainer = (props) => {
         setIsLoading(false);
       });
   }, [
-    commonFolderId,
     customerTitle,
     fetchThirdPartyProviders,
-    isCorporate,
     link,
     loginValue,
-    myFolderId,
     oAuthToken,
     onClose,
     passwordValue,
@@ -199,8 +184,6 @@ const PureConnectDialogContainer = (props) => {
     provider_key,
     selectedFolderFolders,
     selectedFolderId,
-    showUrlField,
-    treeFolders,
     urlValue,
     saveThirdParty,
   ]);
@@ -380,14 +363,7 @@ const ConnectDialog = withTranslation([
 
 export default inject(
   (
-    {
-      auth,
-      filesStore,
-      settingsStore,
-      treeFoldersStore,
-      selectedFolderStore,
-      dialogsStore,
-    },
+    { auth, settingsStore, selectedFolderStore, dialogsStore },
     { passedItem, isConnectionViaBackupModule }
   ) => {
     const {
@@ -398,12 +374,6 @@ export default inject(
     } = settingsStore.thirdPartyStore;
     const { personal, folderFormValidation } = auth.settingsStore;
 
-    const {
-      treeFolders,
-      myFolderId,
-      commonFolderId,
-      getSubfolders,
-    } = treeFoldersStore;
     const { id, folders } = selectedFolderStore;
     const {
       connectDialogVisible: visible,
@@ -418,9 +388,6 @@ export default inject(
     return {
       selectedFolderId: id,
       selectedFolderFolders: folders,
-      treeFolders,
-      myFolderId,
-      commonFolderId,
       providers,
       visible,
       item,
@@ -428,7 +395,6 @@ export default inject(
       setSaveThirdpartyResponse,
       folderFormValidation,
 
-      getSubfolders,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,

@@ -51,59 +51,59 @@ services:
       - "9300"
   onlyoffice-backup-background-tasks:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-backup-background:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup-background:${DOCKER_TAG}"
     container_name: ${BACKUP_BACKGRUOND_TASKS_HOST}
 
   onlyoffice-backup:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-backup:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup:${DOCKER_TAG}"
     container_name: ${BACKUP_HOST}
   
   onlyoffice-clear-events:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-clear-events:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-clear-events:${DOCKER_TAG}"
     container_name: ${CLEAR_EVENTS_HOST}
 
   onlyoffice-migration:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-migration:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration:${DOCKER_TAG}"
     container_name: ${MIGRATION_HOST}
 
   onlyoffice-files:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-files:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-files:${DOCKER_TAG}"
     container_name: ${FILES_HOST}
 
   onlyoffice-files-services:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-files-services:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-files-services:${DOCKER_TAG}"
     container_name: ${FILES_SERVICES_HOST}
   
   onlyoffice-people-server:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-people-server:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-people-server:${DOCKER_TAG}"
     container_name: ${PEOPLE_SERVER_HOST}
 
   onlyoffice-socket:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-socket:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-socket:${DOCKER_TAG}"
     container_name: ${SOCKET_HOST}
     expose:
     - ${SERVICE_PORT}
   
   onlyoffice-studio-notify:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-studio-notify:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio-notify:${DOCKER_TAG}"
     container_name: ${STUDIO_NOTIFY_HOST}
 
   onlyoffice-telegram-service:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-telegram-service:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-telegram-service:${DOCKER_TAG}"
     container_name: ${TELEGRAM_SERVICE_HOST}
 
   onlyoffice-urlshortener:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-urlshortener:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-urlshortener:${DOCKER_TAG}"
     container_name: ${URLSHORTENER_HOST}
     expose:
     - ${SERVICE_PORT}
@@ -111,17 +111,17 @@ services:
 
   onlyoffice-api:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-api:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api:${DOCKER_TAG}"
     container_name: ${API_HOST}
 
   onlyoffice-studio:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-studio:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio:${DOCKER_TAG}"
     container_name: ${STUDIO_HOST}
    
   onlyoffice-ssoauth:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-ssoauth:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
     container_name: ${SSOAUTH_HOST}
     expose:
     - ${SERVICE_PORT}
@@ -129,18 +129,25 @@ services:
 
   onlyoffice-webhooks-service:
     <<: *x-service-base
-    image: "${REPO}/${STATUS}appserver-webhooks-service:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-webhooks-service:${DOCKER_TAG}"
     container_name: ${WEBHOOKS_SERVICE_HOST}  
 
   onlyoffice-doceditor:
-    image: "${REPO}/${STATUS}appserver-doceditor:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-doceditor:${DOCKER_TAG}"
     container_name: ${DOCEDITOR_HOST}
     restart: always
     expose:
       - "5013"
 
+  onlyoffice-login:
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}"
+    container_name: ${LOGIN_HOST}
+    restart: always
+    expose:
+      - "5011"
+
   onlyoffice-proxy:
-    image: "${REPO}/${STATUS}appserver-proxy:${DOCKER_TAG}"
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
     container_name: ${PROXY_HOST}
     restart: always
     expose:
@@ -165,6 +172,8 @@ services:
       - onlyoffice-api
       - onlyoffice-studio
       - onlyoffice-ssoauth
+      - onlyoffice-doceditor
+      - onlyoffice-login
     environment:
       - SERVICE_BACKUP=${SERVICE_BACKUP}
       - SERVICE_FILES=${SERVICE_FILES}
@@ -182,6 +191,7 @@ services:
       - SERVICE_STUDIO=${SERVICE_STUDIO}
       - SERVICE_SSOAUTH=${SERVICE_SSOAUTH}
       - SERVICE_DOCEDITOR=${SERVICE_DOCEDITOR}
+      - SERVICE_LOGIN=${SERVICE_LOGIN}
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
     volumes:

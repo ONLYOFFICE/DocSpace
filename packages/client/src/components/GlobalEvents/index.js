@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, memo } from "react";
 
 import { FileAction } from "@docspace/common/constants";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 
 import CreateEvent from "./CreateEvent";
 import RenameEvent from "./RenameEvent";

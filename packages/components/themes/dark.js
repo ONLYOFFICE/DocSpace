@@ -1883,7 +1883,7 @@ const Dark = {
       fontWeight: 600,
       tablet: {
         marginLeft: "12px",
-        lineHeight: "16px",
+        lineHeight: "20px",
         fontSize: "14px",
         fontWeight: "600",
       },
@@ -2787,6 +2787,8 @@ const Dark = {
         fillIcon: "#c4c4c4",
         expanderColor: "#c4c4c4",
       },
+
+      separatorBorder: "1px solid #474747",
 
       security: {
         arrowFill: white,

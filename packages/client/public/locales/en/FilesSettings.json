@@ -1,6 +1,7 @@
 {
+  "AdditionalSections": "Additional sections",
   "Clouds": "Clouds",
-  "CommonSettings": "Common settings",
+  "CommonSettings": "Common",
   "ConnectAdminDescription": "For successful connection, enter the necessary data on <1>this page</1>.",
   "ConnectCloud": "Connect cloud",
   "ConnectDescriptionText": "You haven't connected any third-party clouds yet.",
@@ -15,8 +16,10 @@
   "IntermediateVersion": "Keep all saved intermediate versions",
   "KeepIntermediateVersion": "Keep intermediate versions when editing",
   "OriginalCopy": "Save the file copy in the original format as well",
-  "StoringFileVersion": "Storing file versions",
+
+  "ThirdPartyAccounts": "Third-party accounts",
   "ThirdPartyBtn": "Allow users to connect third-party storages",
   "ThirdPartySettings": "Connected clouds",
-  "UpdateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created."
+  "UpdateOrCreate": "Update the file version for the existing file with the same name. Otherwise, a copy of the file will be created.",
+  "StoringFileVersion": "Storing file versions"
 }

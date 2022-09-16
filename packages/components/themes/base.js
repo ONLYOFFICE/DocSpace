@@ -1886,7 +1886,7 @@ const Base = {
       fontWeight: 600,
       tablet: {
         marginLeft: "12px",
-        lineHeight: "16px",
+        lineHeight: "20px",
         fontSize: "15px",
         fontWeight: "600",
       },
@@ -2780,6 +2780,8 @@ const Base = {
         fillIcon: "dimgray",
         expanderColor: "dimgray",
       },
+
+      separatorBorder: `1px solid ${grayLightMid}`,
 
       security: {
         arrowFill: black,

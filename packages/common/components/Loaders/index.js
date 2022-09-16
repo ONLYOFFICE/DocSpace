@@ -15,7 +15,7 @@ import Text from "./TextLoader";
 import Filter from "./FilterLoader";
 import FilterBlock from "./FilterBlockLoader";
 import ProfileView from "./ProfileViewLoader";
-import SettingsFiles from "./SettingsFilesLoader";
+
 import Group from "./GroupLoader";
 import HistoryRows from "./HistoryRowsLoader";
 import Tile from "./TileLoader";
@@ -38,6 +38,10 @@ import InfoPanelMemberListLoader from "./InfoPanelBodyLoader/InfoPanelMemberList
 import SelectorSearchLoader from "./SelectorSearchLoader";
 import SelectorRowLoader from "./SelectorRowLoader";
 
+import SettingsHeader from "./SettingsLoader/SettingsHeaderLoader";
+import SettingsAdmin from "./SettingsLoader/SettingsAdminLoader";
+import SettingsCommon from "./SettingsLoader/SettingsCommonLoader";
+
 export default {
   Rectangle,
   Circle,
@@ -52,7 +56,7 @@ export default {
   Filter,
   FilterBlock,
   ProfileView,
-  SettingsFiles,
+
   Group,
   HistoryRows,
   Tile,
@@ -78,4 +82,8 @@ export default {
   InfoPanelMemberListLoader,
   SelectorSearchLoader,
   SelectorRowLoader,
+
+  SettingsHeader,
+  SettingsAdmin,
+  SettingsCommon,
 };

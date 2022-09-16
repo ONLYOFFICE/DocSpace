@@ -89,9 +89,9 @@ public static class ServiceCollectionExtension
                     DispatchConsumersAsync = true
                 };
 
-                if (!string.IsNullOrEmpty(rabbitMQConfiguration.EndpointUri))
+                if (!string.IsNullOrEmpty(rabbitMQConfiguration.Uri))
                 {
-                    factory.Endpoint = new AmqpTcpEndpoint(new Uri(rabbitMQConfiguration.EndpointUri));
+                    factory.Uri = new Uri(rabbitMQConfiguration.Uri);
                 }
                 else
                 {

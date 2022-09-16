@@ -2,10 +2,6 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-import {
-  isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-} from "@docspace/components/utils/device";
 import axios from "axios";
 import toastr from "@docspace/components/toast/toastr";
 import Section from "@docspace/common/components/Section";
@@ -27,14 +23,12 @@ import {
   SectionPagingContent,
   Bar,
 } from "./Section";
-
-import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 //import config from "PACKAGE_FILE";
 import { Consumer } from "@docspace/components/utils/context";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
@@ -50,8 +44,6 @@ class PureHome extends React.Component {
       //homepage,
       setIsLoading,
       setFirstLoad,
-      expandedKeys,
-      setExpandedKeys,
       setToPreviewFile,
       playlist,
       isMediaOrImage,
@@ -200,25 +192,10 @@ class PureHome extends React.Component {
 
         if (filter) {
           if (isRooms) {
-            return fetchRooms(null, filter).then((data) => {
-              const pathParts = data.selectedFolder.pathParts;
-              const newExpandedKeys = createTreeFolders(
-                pathParts,
-                expandedKeys
-              );
-              setExpandedKeys(newExpandedKeys);
-            });
+            return fetchRooms(null, filter);
           } else {
             const folderId = filter.folder;
-
-            return fetchFiles(folderId, filter).then((data) => {
-              const pathParts = data.selectedFolder.pathParts;
-              const newExpandedKeys = createTreeFolders(
-                pathParts,
-                expandedKeys
-              );
-              setExpandedKeys(newExpandedKeys);
-            });
+            return fetchFiles(folderId, filter);
           }
         }
 
@@ -731,7 +708,6 @@ export default inject(
       checkedMaintenance,
       setMaintenanceExist,
       snackbarExist,
-      expandedKeys,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
