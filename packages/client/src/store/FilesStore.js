@@ -1685,6 +1685,14 @@ class FilesStore {
     return api.rooms.getRoomMembers(id);
   }
 
+  getRoomHistory(id) {
+    return api.rooms.getRoomHistory(id);
+  }
+
+  getFileHistory(id) {
+    return api.rooms.getFileHistory(id);
+  }
+
   setFile = (file) => {
     const fileIndex = this.files.findIndex((f) => f.id === file.id);
     if (fileIndex !== -1) this.files[fileIndex] = file;
