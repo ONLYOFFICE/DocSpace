@@ -25,7 +25,7 @@ const ItemTitle = ({
   ) : isGallery ? (
     <StyledTitle>
       <ReactSVG className="icon" src={getIcon(32, ".docxf")} />
-      <Text className="text">{selection.attributes.name_form}</Text>
+      <Text className="text">{selection?.attributes?.name_form}</Text>
     </StyledTitle>
   ) : (
     <StyledTitle>
