@@ -1,5 +1,9 @@
 import styled from "styled-components";
-import { hugeMobile, smallTablet } from "@docspace/components/utils/device";
+import {
+  hugeMobile,
+  smallTablet,
+  desktop,
+} from "@docspace/components/utils/device";
 
 export const StyledWrapper = styled.div`
   display: flex;
@@ -20,10 +24,11 @@ export const StyledWrapper = styled.div`
 export const StyledInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 
   @media ${smallTablet} {
     width: 100%;
+    gap: 16px;
   }
 
   .rows-container {
@@ -40,6 +45,10 @@ export const StyledInfo = styled.div`
     display: flex;
     align-items: center;
     gap: 8px;
+
+    @media ${desktop} {
+      height: 20px;
+    }
 
     .field {
       display: flex;
