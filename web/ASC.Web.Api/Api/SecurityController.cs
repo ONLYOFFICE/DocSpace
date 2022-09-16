@@ -35,7 +35,6 @@ namespace ASC.Web.Api.Controllers;
 public class SecurityController : ControllerBase
 {
     private readonly PermissionContext _permissionContext;
-    private readonly TenantExtra _tenantExtra;
     private readonly TenantManager _tenantManager;
     private readonly MessageService _messageService;
     private readonly LoginEventsRepository _loginEventsRepository;
@@ -49,7 +48,6 @@ public class SecurityController : ControllerBase
 
     public SecurityController(
         PermissionContext permissionContext,
-        TenantExtra tenantExtra,
         TenantManager tenantManager,
         MessageService messageService,
         LoginEventsRepository loginEventsRepository,
@@ -62,7 +60,6 @@ public class SecurityController : ControllerBase
         ApiContext apiContext)
     {
         _permissionContext = permissionContext;
-        _tenantExtra = tenantExtra;
         _tenantManager = tenantManager;
         _messageService = messageService;
         _loginEventsRepository = loginEventsRepository;
@@ -109,7 +106,7 @@ public class SecurityController : ControllerBase
 
         action = action == 0 ? MessageAction.None : action;
 
-        if (!_tenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+        if (!_tenantManager.GetCurrentTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
         {
             return GetLastLoginEvents();
         }
@@ -140,7 +137,7 @@ public class SecurityController : ControllerBase
 
         action = action == 0 ? MessageAction.None : action;
 
-        if (!_tenantExtra.GetTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+        if (!_tenantManager.GetCurrentTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
         {
             return GetLastAuditEvents();
         }
@@ -274,7 +271,7 @@ public class SecurityController : ControllerBase
     {
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString())
-                || !_tenantExtra.GetTenantQuota().Audit))
+                || !_tenantManager.GetCurrentTenantQuota().Audit))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
         }

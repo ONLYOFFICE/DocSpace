@@ -35,7 +35,6 @@ public class FileUploader
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
-    private readonly TenantExtra _tenantExtra;
     private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly FileMarker _fileMarker;
     private readonly FileConverter _fileConverter;
@@ -56,7 +55,6 @@ public class FileUploader
         TenantManager tenantManager,
         AuthContext authContext,
         SetupInfo setupInfo,
-        TenantExtra tenantExtra,
         TenantStatisticsProvider tenantStatisticsProvider,
         FileMarker fileMarker,
         FileConverter fileConverter,
@@ -76,7 +74,6 @@ public class FileUploader
         _tenantManager = tenantManager;
         _authContext = authContext;
         _setupInfo = setupInfo;
-        _tenantExtra = tenantExtra;
         _tenantStatisticsProvider = tenantStatisticsProvider;
         _fileMarker = fileMarker;
         _fileConverter = fileConverter;
@@ -233,7 +230,7 @@ public class FileUploader
 
     #region chunked upload
 
-        public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
+    public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
     {
         var maxUploadSize = await GetMaxFileSizeAsync(folderId, true);
 
@@ -288,7 +285,7 @@ public class FileUploader
         file.ParentId = folderId;
         file.Title = fileName;
         file.ContentLength = contentLength;
-            file.CreateOn = createOn;
+        file.CreateOn = createOn;
 
         var dao = _daoFactory.GetFileDao<T>();
         var uploadSession = await dao.CreateUploadSessionAsync(file, contentLength);
@@ -319,7 +316,7 @@ public class FileUploader
 
         if (chunkLength > _setupInfo.ChunkUploadSize)
         {
-            throw FileSizeComment.GetFileSizeException(_setupInfo.MaxUploadSize(_tenantExtra, _tenantStatisticsProvider));
+            throw FileSizeComment.GetFileSizeException(_setupInfo.MaxUploadSize(_tenantManager, _tenantStatisticsProvider));
         }
 
         var maxUploadSize = await GetMaxFileSizeAsync(uploadSession.FolderId, uploadSession.BytesTotal > 0);

@@ -164,7 +164,7 @@ public class PortalController : ControllerBase
             opensource = _tenantExtra.Opensource,
             enterprise = _tenantExtra.Enterprise,
             tariff = _tenantExtra.GetCurrentTariff(),
-            quota = _tenantExtra.GetTenantQuota(),
+            quota = _tenantManager.GetCurrentTenantQuota(),
             notPaid = _tenantExtra.IsNotPaid(),
             licenseAccept = _settingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting,
             enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
@@ -419,7 +419,7 @@ public class PortalController : ControllerBase
 
         var showAutoRenewText = !_coreBaseSettings.Standalone &&
                         _tariffService.GetPayments(Tenant.Id).Any() &&
-                        !_tenantExtra.GetTenantQuota().Trial;
+                        !_tenantManager.GetCurrentTenantQuota().Trial;
 
         _studioNotifyService.SendMsgPortalDeletion(Tenant, _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
 

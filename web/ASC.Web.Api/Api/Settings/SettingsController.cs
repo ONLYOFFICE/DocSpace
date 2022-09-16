@@ -723,7 +723,7 @@ public class SettingsController : BaseSettingsController
     public object PaymentSettings()
     {
         var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
-        var currentQuota = _tenantExtra.GetTenantQuota();
+        var currentQuota = _tenantManager.GetCurrentTenantQuota();
         var currentTariff = _tenantExtra.GetCurrentTariff();
 
         if (!int.TryParse(_configuration["core:payment:max-quantity"], out var maxQuotaQuantity))

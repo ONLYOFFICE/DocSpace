@@ -47,24 +47,24 @@ public class StudioSmsNotificationSettings : ISettings<StudioSmsNotificationSett
 [Scope]
 public class StudioSmsNotificationSettingsHelper
 {
-    private readonly TenantExtra _tenantExtra;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly SetupInfo _setupInfo;
     private readonly SettingsManager _settingsManager;
     private readonly SmsProviderManager _smsProviderManager;
+    private readonly TenantManager _tenantManager;
 
     public StudioSmsNotificationSettingsHelper(
-        TenantExtra tenantExtra,
         CoreBaseSettings coreBaseSettings,
         SetupInfo setupInfo,
         SettingsManager settingsManager,
-        SmsProviderManager smsProviderManager)
+        SmsProviderManager smsProviderManager,
+        TenantManager tenantManager)
     {
-        _tenantExtra = tenantExtra;
         _coreBaseSettings = coreBaseSettings;
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
         _smsProviderManager = smsProviderManager;
+        _tenantManager = tenantManager;
     }
 
     public bool IsVisibleSettings()
@@ -79,7 +79,7 @@ public class StudioSmsNotificationSettingsHelper
 
     public bool IsAvailableSettings()
     {
-        var quota = _tenantExtra.GetTenantQuota();
+        var quota = _tenantManager.GetCurrentTenantQuota();
         return _coreBaseSettings.Standalone
                 || ((!quota.Trial || _setupInfo.SmsTrial)
                     && !quota.NonProfit

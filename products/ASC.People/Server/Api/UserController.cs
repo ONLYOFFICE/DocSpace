@@ -24,11 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common.Caching;
-
-using Module = ASC.Api.Core.Module;
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.People.Api;
 
 public class UserController : PeopleControllerBase
@@ -48,7 +43,6 @@ public class UserController : PeopleControllerBase
     private readonly QueueWorkerReassign _queueWorkerReassign;
     private readonly QueueWorkerRemove _queueWorkerRemove;
     private readonly Recaptcha _recaptcha;
-    private readonly TenantExtra _tenantExtra;
     private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly TenantUtil _tenantUtil;
     private readonly UserFormatter _userFormatter;
@@ -82,7 +76,6 @@ public class UserController : PeopleControllerBase
         QueueWorkerReassign queueWorkerReassign,
         QueueWorkerRemove queueWorkerRemove,
         Recaptcha recaptcha,
-        TenantExtra tenantExtra,
         TenantStatisticsProvider tenantStatisticsProvider,
         TenantUtil tenantUtil,
         UserFormatter userFormatter,
@@ -122,7 +115,6 @@ public class UserController : PeopleControllerBase
         _queueWorkerReassign = queueWorkerReassign;
         _queueWorkerRemove = queueWorkerRemove;
         _recaptcha = recaptcha;
-        _tenantExtra = tenantExtra;
         _tenantStatisticsProvider = tenantStatisticsProvider;
         _tenantUtil = tenantUtil;
         _userFormatter = userFormatter;
@@ -978,7 +970,7 @@ public class UserController : PeopleControllerBase
 
         if (!self && !inDto.IsVisitor && _userManager.IsVisitor(user))
         {
-            var usersQuota = _tenantExtra.GetTenantQuota().ActiveUsers;
+            var usersQuota = _tenantManager.GetCurrentTenantQuota().ActiveUsers;
             if (_tenantStatisticsProvider.GetUsersCount() < usersQuota)
             {
                 _userManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
@@ -1023,7 +1015,7 @@ public class UserController : PeopleControllerBase
                 case EmployeeStatus.Active:
                     if (user.Status == EmployeeStatus.Terminated)
                     {
-                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers || _userManager.IsVisitor(user))
+                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantManager.GetCurrentTenantQuota().ActiveUsers || _userManager.IsVisitor(user))
                         {
                             user.Status = EmployeeStatus.Active;
                             _userManager.SaveUserInfo(user, syncCardDav: true);
@@ -1069,7 +1061,7 @@ public class UserController : PeopleControllerBase
                 case EmployeeType.User:
                     if (_userManager.IsVisitor(user))
                     {
-                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers)
+                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantManager.GetCurrentTenantQuota().ActiveUsers)
                         {
                             _userManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
                             _webItemSecurityCache.ClearCache(Tenant.Id);
@@ -1077,7 +1069,7 @@ public class UserController : PeopleControllerBase
                     }
                     break;
                 case EmployeeType.Visitor:
-                    if (_coreBaseSettings.Standalone || _tenantStatisticsProvider.GetVisitorsCount() < _tenantExtra.GetTenantQuota().ActiveUsers * _constants.CoefficientOfVisitors)
+                    if (_coreBaseSettings.Standalone || _tenantStatisticsProvider.GetVisitorsCount() < _tenantManager.GetCurrentTenantQuota().ActiveUsers * _constants.CoefficientOfVisitors)
                     {
                         _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
                         _webItemSecurityCache.ClearCache(Tenant.Id);

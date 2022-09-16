@@ -985,8 +985,7 @@ public class PluginsConfig
     private readonly ConsumerFactory _consumerFactory;
 
     private readonly CoreBaseSettings _coreBaseSettings;
-
-    private readonly TenantExtra _tenantExtra;
+    private readonly TenantManager _tenantManager;
 
     public string[] PluginsData
     {
@@ -994,7 +993,7 @@ public class PluginsConfig
         {
             var plugins = new List<string>();
 
-            if (_coreBaseSettings.Standalone || !_tenantExtra.GetTenantQuota().Free)
+            if (_coreBaseSettings.Standalone || !_tenantManager.GetCurrentTenantQuota().Free)
             {
                 var easyBibHelper = _consumerFactory.Get<EasyBibHelper>();
                 if (!string.IsNullOrEmpty(easyBibHelper.AppKey))
@@ -1019,12 +1018,12 @@ public class PluginsConfig
         ConsumerFactory consumerFactory,
         BaseCommonLinkUtility baseCommonLinkUtility,
         CoreBaseSettings coreBaseSettings,
-        TenantExtra tenantExtra)
+        TenantManager tenantManager)
     {
         _consumerFactory = consumerFactory;
         _baseCommonLinkUtility = baseCommonLinkUtility;
         _coreBaseSettings = coreBaseSettings;
-        _tenantExtra = tenantExtra;
+        _tenantManager = tenantManager;
     }
 }
 

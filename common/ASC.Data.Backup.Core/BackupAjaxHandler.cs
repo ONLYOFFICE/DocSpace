@@ -360,7 +360,7 @@ public class BackupAjaxHandler
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Migration))
         || !currentUser.IsOwner(_tenantManager.GetCurrentTenant())
-        || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantExtra.GetTenantQuota().AutoBackupRestore)
+        || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantManager.GetCurrentTenantQuota().AutoBackupRestore)
         {
             throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
         }

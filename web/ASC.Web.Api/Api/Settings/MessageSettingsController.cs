@@ -181,7 +181,7 @@ public class MessageSettingsController : BaseSettingsController
             var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
             if (!_coreBaseSettings.Personal)
             {
-                var enableInviteUsers = _tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers;
+                var enableInviteUsers = _tenantStatisticsProvider.GetUsersCount() < _tenantManager.GetCurrentTenantQuota().ActiveUsers;
 
                 if (!enableInviteUsers)
                 {
