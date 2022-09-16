@@ -11,6 +11,7 @@ import styled, { css } from "styled-components";
 import AdditionalResources from "./settingsBranding/additionalResources";
 
 import ForbiddenPage from "../ForbiddenPage";
+import { UnavailableStyles } from "../../utils/commonSettingsStyles";
 
 const StyledComponent = styled.div`
   max-width: 700px;
@@ -45,21 +46,7 @@ const StyledComponent = styled.div`
     border-top: 1px solid #eceef1;
   }
 
-  .branding_unavailable {
-     {
-      ${(props) =>
-        !props.isSettingPaid &&
-        css`
-          color: ${(props) => props.theme.text.disableColor};
-          pointer-events: none;
-          cursor: default;
-
-          label {
-            color: ${(props) => props.theme.text.disableColor};
-          }
-        `}
-    }
-  }
+  ${(props) => !props.isSettingPaid && UnavailableStyles}
 `;
 
 const Branding = ({ isSettingPaid }) => {
@@ -69,7 +56,7 @@ const Branding = ({ isSettingPaid }) => {
     <StyledComponent isSettingPaid={isSettingPaid}>
       <Whitelabel isSettingPaid={isSettingPaid} />
       <hr />
-      <div className="section-description branding_unavailable">
+      <div className="section-description settings_unavailable">
         Specify your company information, add links to external resources, and
         email addresses displayed within the online office interface.
       </div>
@@ -83,8 +70,7 @@ export default inject(({ auth }) => {
   const { currentQuotaStore } = auth;
   const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
 
-  const isSettingPaid = isBrandingAndCustomizationAvailable;
   return {
-    isSettingPaid,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(withLoading(withTranslation(["Settings", "Common"])(observer(Branding))));

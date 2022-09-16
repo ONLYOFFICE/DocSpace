@@ -347,17 +347,17 @@ const WhiteLabel = (props) => {
         {!isSettingPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
       </div>
 
-      <Text className="wl-subtitle branding_unavailable" fontSize="12px">
+      <Text className="wl-subtitle settings_unavailable" fontSize="12px">
         {t("WhiteLabelSubtitle")}
       </Text>
 
       <div className="wl-helper">
-        <Text className="branding_unavailable">{t("WhiteLabelHelper")}</Text>
+        <Text className="settings_unavailable">{t("WhiteLabelHelper")}</Text>
         <HelpButton
           tooltipContent={t("WhiteLabelTooltip")}
           place="right"
           offsetRight={0}
-          className="branding_unavailable"
+          className="settings_unavailable"
         />
       </div>
 
@@ -366,7 +366,7 @@ const WhiteLabel = (props) => {
           id="fieldContainerCompanyName"
           labelText={t("CompanyNameForCanvasLogo")}
           isVertical={true}
-          className="branding_unavailable"
+          className="settings_unavailable"
         >
           <TextInput
             className="input"
@@ -394,7 +394,7 @@ const WhiteLabel = (props) => {
             <Text
               fontSize="15px"
               fontWeight="600"
-              className="branding_unavailable"
+              className="settings_unavailable"
             >
               {portalHeaderLabel}
             </Text>
@@ -438,7 +438,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                className="branding_unavailable "
+                className="settings_unavailable "
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -449,7 +449,7 @@ const WhiteLabel = (props) => {
             <Text
               fontSize="15px"
               fontWeight="600"
-              className="branding_unavailable "
+              className="settings_unavailable "
             >
               {logoCompactLabel}
             </Text>
@@ -493,7 +493,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                className="branding_unavailable"
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -504,7 +504,7 @@ const WhiteLabel = (props) => {
             <Text
               fontSize="15px"
               fontWeight="600"
-              className="branding_unavailable"
+              className="settings_unavailable"
             >
               {loginPageLabel}
             </Text>
@@ -548,7 +548,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                className="branding_unavailable"
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -559,7 +559,7 @@ const WhiteLabel = (props) => {
             <Text
               fontSize="15px"
               fontWeight="600"
-              className="branding_unavailable"
+              className="settings_unavailable"
             >
               {logoAboutLabel}
             </Text>
@@ -603,7 +603,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                className="branding_unavailable"
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -614,7 +614,7 @@ const WhiteLabel = (props) => {
             <Text
               fontSize="15px"
               fontWeight="600"
-              className="branding_unavailable"
+              className="settings_unavailable"
             >
               {faviconLabel}
             </Text>
@@ -659,7 +659,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                className="branding_unavailable"
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -670,7 +670,7 @@ const WhiteLabel = (props) => {
             <Text
               fontSize="15px"
               fontWeight="600"
-              className="branding_unavailable"
+              className="settings_unavailable"
             >
               {editorsHeaderLabel}
             </Text>
@@ -763,7 +763,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                className="branding_unavailable"
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -774,7 +774,7 @@ const WhiteLabel = (props) => {
             <Text
               fontSize="15px"
               fontWeight="600"
-              className="branding_unavailable"
+              className="settings_unavailable"
             >
               {logoEditorsEmbeddedLabel}
             </Text>
@@ -819,7 +819,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                className="branding_unavailable"
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>

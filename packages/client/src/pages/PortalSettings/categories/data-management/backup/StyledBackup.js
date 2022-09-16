@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import commonSettingsStyles from "../../../utils/commonSettingsStyles";
+import { commonSettingsStyles } from "../../../utils/commonSettingsStyles";
 import globalColors from "@docspace/components/utils/globalColors";
 import { isMobileOnly } from "react-device-detect";
 import { mobile } from "@docspace/components/utils/device";

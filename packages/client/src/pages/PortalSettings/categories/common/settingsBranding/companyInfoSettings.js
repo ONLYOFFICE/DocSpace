@@ -25,14 +25,14 @@ const CompanyInfoSettings = (props) => {
 
   return (
     <StyledComponent>
-      <div className="header branding_unavailable">Company info settings</div>
-      <div className="description branding_unavailable">
+      <div className="header settings_unavailable">Company info settings</div>
+      <div className="description settings_unavailable">
         This information will be displayed in the About this program window.
       </div>
       <div className="settings-block">
         <FieldContainer
           id="fieldContainerCompanyName"
-          className="field-container-width branding_unavailable"
+          className="field-container-width settings_unavailable"
           labelText={t("Common:CompanyName")}
           isVertical={true}
         >
@@ -47,7 +47,7 @@ const CompanyInfoSettings = (props) => {
         <FieldContainer
           id="fieldContainerEmail"
           isDisabled={!isSettingPaid}
-          className="field-container-width branding_unavailable"
+          className="field-container-width settings_unavailable"
           labelText={t("Common:Email")}
           isVertical={true}
         >
@@ -61,7 +61,7 @@ const CompanyInfoSettings = (props) => {
         </FieldContainer>
         <FieldContainer
           id="fieldContainerPhone"
-          className="field-container-width branding_unavailable"
+          className="field-container-width settings_unavailable"
           labelText={t("Common:Phone")}
           isVertical={true}
         >
@@ -75,7 +75,7 @@ const CompanyInfoSettings = (props) => {
         </FieldContainer>
         <FieldContainer
           id="fieldContainerWebsite"
-          className="field-container-width branding_unavailable"
+          className="field-container-width settings_unavailable"
           labelText={t("Common:Website")}
           isVertical={true}
         >
@@ -89,7 +89,7 @@ const CompanyInfoSettings = (props) => {
         </FieldContainer>
         <FieldContainer
           id="fieldContainerAddress"
-          className="field-container-width branding_unavailable"
+          className="field-container-width settings_unavailable"
           labelText={t("Common:Address")}
           isVertical={true}
         >

@@ -151,11 +151,11 @@ const AdditionalResources = (props) => {
     <>
       <StyledComponent>
         <div className="header">
-          <div className="additional-header branding_unavailable">
+          <div className="additional-header settings_unavailable">
             {t("Settings:AdditionalResources")}
           </div>
         </div>
-        <div className="branding_unavailable additional-description">
+        <div className="settings_unavailable additional-description">
           <div className="additional-description">
             {t("Settings:AdditionalResourcesDescription")}
           </div>
