@@ -169,7 +169,7 @@ class ComboBox extends React.Component {
             open={isOpen}
             forwardedRef={this.ref}
             clickOutsideAction={this.handleClickOutside}
-            style={{ padding: "6px 0px", "margin-top": "4px" }}
+            style={{ padding: "6px 0px", marginTop: "4px" }}
             {...dropDownMaxHeightProp}
             {...dropDownManualWidthProp}
             showDisabledItems={showDisabledItems}
