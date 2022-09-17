@@ -78,7 +78,7 @@ class Profile extends React.Component {
     const { profile, showCatalog, isAdmin } = this.props;
 
     return (
-      <Section withBodyAutoFocus>
+      <Section withBodyAutoFocus viewAs="profile">
         <Section.SectionHeader>
           <SectionHeaderContent profile={profile} />
         </Section.SectionHeader>
