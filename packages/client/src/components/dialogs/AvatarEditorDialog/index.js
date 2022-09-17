@@ -109,7 +109,6 @@ const AvatarEditorDialog = (props) => {
           size="normal"
           scale
           onClick={onClose}
-          isLoading={isLoading}
         />
       </ModalDialog.Footer>
     </StyledModalDialog>
