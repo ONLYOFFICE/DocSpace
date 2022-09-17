@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Badge from "@docspace/components/badge";
 import Loaders from "@docspace/common/components/Loaders";
 import ContextMenuButton from "@docspace/components/context-menu-button";
 import { isTablet } from "react-device-detect";
@@ -114,19 +113,12 @@ const Preview = (props) => {
                   height="8"
                   className="color-loaders"
                 />
-                <Badge
+                <Loaders.Rectangle
+                  animate={false}
+                  width="22"
+                  height="16"
+                  borderRadius="8"
                   className="menu-badge color-badge"
-                  color={
-                    themePreview === "Dark" && props.selectThemeId === 7
-                      ? "#444444"
-                      : "#FFFFFF"
-                  }
-                  label={21}
-                  fontSize="11px"
-                  fontWeight={800}
-                  borderRadius="11px"
-                  padding="0 5px"
-                  lineHeight="1.46"
                 />
               </div>
               <div className="flex">
@@ -272,19 +264,12 @@ const Preview = (props) => {
 
                 {withTileActions && (
                   <div className="action-button">
-                    <Badge
+                    <Loaders.Rectangle
+                      animate={false}
+                      width="16"
+                      height="16"
+                      borderRadius="50"
                       className="section-badge color-badge"
-                      color={
-                        themePreview === "Dark" && props.selectThemeId === 7
-                          ? "#444444"
-                          : "#FFFFFF"
-                      }
-                      label={3}
-                      fontSize="11px"
-                      fontWeight={800}
-                      borderRadius="11px"
-                      padding="0 5px"
-                      lineHeight="1.46"
                     />
                     <svg
                       className="pin"

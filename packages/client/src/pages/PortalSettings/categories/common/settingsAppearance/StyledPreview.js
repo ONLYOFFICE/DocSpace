@@ -125,15 +125,11 @@ const StyledComponent = styled.div`
     border-radius: 3px;
   }
 
-  .color-badge > div {
-    background-color: ${(props) =>
+  .color-badge rect {
+    fill: ${(props) =>
       props.themePreview === "Dark" && props.selectThemeId === 7
         ? "#FFFFFF"
         : props.colorPreview} !important;
-  }
-
-  .color-badge > p {
-    color: ${(props) => props.color} !important;
   }
 
   .color-loaders rect {
@@ -265,10 +261,7 @@ const StyledComponent = styled.div`
   }
 
   .section-badge {
-    border: none;
-    cursor: auto;
     padding-right: 12px;
-    font-size: 9px;
   }
 
   .pin {
