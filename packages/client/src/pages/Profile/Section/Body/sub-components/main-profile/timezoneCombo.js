@@ -10,7 +10,7 @@ import { isMobileOnly } from "react-device-detect";
 import { StyledRow } from "./styled-main-profile";
 
 const TimezoneCombo = () => {
-  const { t } = useTranslation("Settings");
+  const { t } = useTranslation("Wizard");
 
   const timezones = [{ key: "03", label: "(UTC) +03 Moscow" }];
   const selectedTimezone = { key: "03", label: "(UTC) +03 Moscow" };
@@ -18,7 +18,7 @@ const TimezoneCombo = () => {
   return (
     <StyledRow>
       <Text as="div" color="#A3A9AE" className="label">
-        {t("Settings:Timezone")}
+        {t("Wizard:Timezone")}
       </Text>
       <ComboBox
         onClick={() => toastr.warning("Work in progress (timezones)")}
