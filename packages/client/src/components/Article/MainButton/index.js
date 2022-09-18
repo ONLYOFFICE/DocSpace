@@ -366,6 +366,7 @@ const ArticleMainButtonContent = (props) => {
     : t("Common:Actions");
 
   const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
+  const isProfile = history.location.pathname === "/accounts/view/@self";
 
   return (
     <>
@@ -378,6 +379,7 @@ const ArticleMainButtonContent = (props) => {
             !isRecycleBinFolder &&
             !isArchiveFolder &&
             !isArticleLoading &&
+            !isProfile &&
             (canCreate || canInvite) && (
               <MobileView
                 t={t}
