@@ -92,6 +92,8 @@ const SocialNetworks = (props) => {
       console.log(item);
 
       const onClick = (e) => {
+        return toastr.warning("Work in progress (social buttons)"); //TODO: delete after oAuth fix
+
         if (item.linked) {
           unlinkAccount(item.provider);
         } else {
