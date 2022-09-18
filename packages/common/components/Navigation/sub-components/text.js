@@ -7,7 +7,7 @@ import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import Heading from "@docspace/components/heading";
 
 import { tablet } from "@docspace/components/utils/device";
-import { isMobile } from "react-device-detect";
+import { isMobile, isTablet } from "react-device-detect";
 import { Base } from "@docspace/components/themes";
 
 const StyledTextContainer = styled.div`
@@ -30,15 +30,26 @@ const StyledTextContainer = styled.div`
 
 const StyledHeading = styled(Heading)`
   font-weight: 700;
-  font-size: ${isMobile ? "21px !important" : "18px"};
-  line-height: ${isMobile ? "28px !important" : "24px"};
+  font-size: 18px;
+  line-height: 24px;
 
   margin: 0;
 
-  @media ${tablet} {
+  @media (min-width: 600px) {
     font-size: 21px;
     line-height: 28px;
   }
+
+  @media (min-width: 1024px) {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  ${isTablet &&
+  css`
+    font-size: 21px;
+    line-height: 28px;
+  `}
 `;
 
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
