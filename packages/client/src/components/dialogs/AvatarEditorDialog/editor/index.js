@@ -24,9 +24,13 @@ const AvatarEditor = ({ t, profile, avatar, onChangeAvatar }) => {
   const setUploadedFile = (file) =>
     onChangeAvatar({ ...avatar, uploadedFile: file });
 
+  const isDefaultAvatar =
+    typeof avatar.uploadedFile === "string" &&
+    avatar.uploadedFile.includes("default_user_photo");
+
   return (
     <StyledWrapper>
-      {avatar.uploadedFile && (
+      {avatar.uploadedFile && !isDefaultAvatar && (
         <div className="avatar-editor">
           <AvatarCropper
             t={t}
