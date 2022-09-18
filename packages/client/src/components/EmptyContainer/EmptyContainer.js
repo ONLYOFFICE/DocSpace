@@ -1,7 +1,22 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
+
+const isRootFolderStyles = css`
+  padding: 0 36px 64px 12px;
+
+  @media (min-width: 600px) {
+    padding: 40px 68px 64px 93px;
+    grid-column-gap: 33px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 40px 0px 64px 0px;
+    grid-column-gap: 40px;
+    grid-template-columns: 100px 1fr;
+  }
+`;
 
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {
@@ -44,6 +59,8 @@ const EmptyFolderWrapper = styled.div`
       position: relative;
       bottom: 16px;
     }
+
+    ${(props) => props.isRootStyles && `${isRootFolderStyles}`}
   }
 `;
 
@@ -58,10 +75,11 @@ const EmptyFoldersContainer = (props) => {
     style,
     imageStyle,
     buttonStyle,
+    isRootStyles,
   } = props;
 
   return (
-    <EmptyFolderWrapper>
+    <EmptyFolderWrapper isRootStyles={isRootStyles}>
       <EmptyScreenContainer
         className="empty-folder_container"
         style={style}
@@ -73,6 +91,7 @@ const EmptyFoldersContainer = (props) => {
         subheadingText={subheadingText}
         descriptionText={descriptionText}
         buttons={buttons}
+        isRootStyles={isRootStyles}
       />
     </EmptyFolderWrapper>
   );
