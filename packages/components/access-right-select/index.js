@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
-import ComboBox from "../combobox/index.js";
 import DropDownItem from "../drop-down-item/index.js";
 import Badge from "../badge/index.js";
 
@@ -75,20 +74,18 @@ const AccessRightSelect = ({
     : formatToAccessRightItem(accessOptions);
 
   return (
-    <StyledWrapper>
-      <ComboBox
-        advancedOptions={formattedOptions}
-        onSelect={onSelectCurrentItem}
-        options={[]}
-        selectedOption={{
-          icon: currentItem.icon,
-          default: true,
-          key: currentItem?.key,
-          label: currentItem?.label,
-        }}
-        {...props}
-      />
-    </StyledWrapper>
+    <StyledWrapper
+      advancedOptions={formattedOptions}
+      onSelect={onSelectCurrentItem}
+      options={[]}
+      selectedOption={{
+        icon: currentItem.icon,
+        default: true,
+        key: currentItem?.key,
+        label: currentItem?.label,
+      }}
+      {...props}
+    />
   );
 };
 

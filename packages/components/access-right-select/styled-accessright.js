@@ -1,10 +1,8 @@
 import styled from "styled-components";
+import ComboBox from "../combobox/index.js";
 import Base from "../themes/base";
 
-const StyledWrapper = styled.div`
-  display: flex;
-  align-items: center;
-
+const StyledWrapper = styled(ComboBox)`
   .combo-button {
     padding-left: 16px;
     padding-right: 8px;
