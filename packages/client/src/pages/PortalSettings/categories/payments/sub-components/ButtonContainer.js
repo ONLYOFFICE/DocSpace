@@ -8,6 +8,9 @@ import UpdatePlanButtonContainer from "./UpdatePlanButtonContainer";
 const StyledBody = styled.div`
   button {
     width: 100%;
+    background: ${(props) => props.theme.client.settings.payment.buttonColor};
+    border-color: ${(props) => props.theme.client.settings.payment.buttonColor};
+    color: ${(props) => props.theme.client.settings.payment.buttonTextColor};
   }
 `;
 

@@ -15,6 +15,8 @@ import { Trans } from "react-i18next";
 const StyledBody = styled.div`
   border-radius: 12px;
   border: 1px solid #d0d5da;
+  background: ${(props) =>
+    props.theme.client.settings.payment.backgroundPriceContainer};
   max-width: 320px;
 
   @media ${smallTablet} {
@@ -31,7 +33,8 @@ const StyledBody = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f3f4f4;
+    background: ${(props) =>
+      props.theme.client.settings.payment.backgroundPrice};
     margin-top: 24px;
     p:first-child {
       margin-right: 8px;

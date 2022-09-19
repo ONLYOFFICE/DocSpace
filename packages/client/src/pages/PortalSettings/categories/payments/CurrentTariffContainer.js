@@ -9,7 +9,7 @@ import { getConvertedSize } from "@docspace/common/utils";
 const StyledCurrentTariffContainer = styled.div`
   display: flex;
   min-height: 40px;
-  background: #f8f9f9;
+  background: ${(props) => props.theme.client.settings.payment.backgroundColor};
   margin-bottom: 24px;
   flex-wrap: wrap;
   margin-top: 16px;
@@ -24,7 +24,9 @@ const StyledCurrentTariffContainer = styled.div`
 
   p {
     margin-bottom: 0;
+    color: ${(props) => props.theme.client.settings.payment.tariffText};
     .current-tariff_count {
+      color: ${(props) => props.theme.client.settings.payment.tariffText};
       margin-left: 5px;
     }
   }

@@ -2862,6 +2862,18 @@ const Base = {
         priceColor: "#555F65",
         disabledPriceColor: "#A3A9AE",
         storageSizeTitle: "#A3A9AE",
+
+        backgroundColor: "#f8f9f9",
+        linkColor: "#316DAA",
+        tariffText: "#555F65",
+        border: "1px solid #f8f9f9",
+        backgroundBenefitsColor: "#f8f9f9",
+        rectangleColor: "#f3f4f4",
+
+        backgroundPrice: "#f3f4f4",
+        backgroundPriceContainer: "transparent",
+        buttonColor: "#2DA7DB",
+        buttonTextColor: "#FFFFFF",
       },
     },
 

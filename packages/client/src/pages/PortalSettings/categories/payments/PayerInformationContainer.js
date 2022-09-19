@@ -8,7 +8,7 @@ import Avatar from "@docspace/components/avatar";
 
 const StyledContainer = styled.div`
   display: flex;
-  background: #f8f9f9;
+  background: ${(props) => props.theme.client.settings.payment.backgroundColor};
   min-height: 72px;
   padding: 16px;
   box-sizing: border-box;
@@ -86,7 +86,7 @@ const PayerInformationContainer = ({
           fontWeight={600}
           href={accountLink}
           className="change-payer"
-          color={theme.client.payments.linkColor}
+          color={theme.client.settings.payment.linkColor}
         >
           {t("ChangePayer")}
         </Link>

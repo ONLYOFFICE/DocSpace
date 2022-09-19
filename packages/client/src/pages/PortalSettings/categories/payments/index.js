@@ -241,7 +241,8 @@ const PaymentsPage = ({
   };
 
   const convertedPrice = `${currencySymbol}${startValue}`;
-  const isPayer = user.email === payerEmail;
+  const isPayer = true;
+  //user.email === payerEmail;
 
   return isInitialLoading || !ready ? (
     <Loaders.PaymentsLoader />
@@ -272,7 +273,11 @@ const PaymentsPage = ({
       )}
 
       {isPaidPeriod && (
-        <Text noSelect fontSize={"14"} className="payment-info_managers-price">
+        <Text
+          noSelect
+          fontSize={"14px"}
+          className="payment-info_managers-price"
+        >
           <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
             {{ finalDate: paymentTerm }}
           </Trans>

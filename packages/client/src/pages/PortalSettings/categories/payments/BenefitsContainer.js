@@ -6,7 +6,7 @@ import { smallTablet } from "@docspace/components/utils/device";
 
 const StyledBody = styled.div`
   border-radius: 12px;
-  border: 1px solid #f8f9f9;
+  border: ${(props) => props.theme.client.settings.payment.border};
   max-width: 320px;
 
   @media ${smallTablet} {
@@ -15,7 +15,8 @@ const StyledBody = styled.div`
 
   padding: 24px;
   box-sizing: border-box;
-  background: #f8f9f9;
+  background: ${(props) =>
+    props.theme.client.settings.payment.backgroundBenefitsColor};
 
   p {
     margin-bottom: 24px;

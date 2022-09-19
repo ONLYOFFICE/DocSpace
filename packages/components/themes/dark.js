@@ -2866,9 +2866,20 @@ const Dark = {
       },
 
       payment: {
-        priceColor: "#555F65",
+        priceColor: "#858585",
         disabledPriceColor: "#A3A9AE",
         storageSizeTitle: "#A3A9AE",
+
+        backgroundColor: "#282828",
+        linkColor: "#316DAA",
+        tariffText: "#858585",
+        border: "1px solid #474747",
+        backgroundBenefitsColor: "#3333",
+        rectangleColor: "#3D3D3D",
+        backgroundPrice: "#282828",
+        backgroundPriceContainer: "#282828",
+        buttonColor: "#CCCCCC",
+        buttonTextColor: "#333333",
       },
     },
 

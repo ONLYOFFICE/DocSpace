@@ -46,11 +46,12 @@ const StyledBody = styled.div`
     text-align: center;
     margin-left: 20px;
     margin-right: 20px;
+
     ${(props) =>
       props.isDisabled &&
       css`
         color: ${props.theme.text.disableColor};
-      `}
+      `};
   }
 
   .payment-users {
@@ -73,15 +74,25 @@ const StyledBody = styled.div`
       cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
     }
     .circle {
-      background: #f3f4f4;
+      background: ${(props) =>
+        props.theme.client.settings.payment.rectangleColor};
       display: flex;
-      border: 1px solid #f3f4f4;
+      border: 1px solid
+        ${(props) => props.theme.client.settings.payment.rectangleColor};
       border-radius: 50%;
       width: 40px;
       height: 40px;
       justify-content: center;
       -ms-align-items: center;
       align-items: center;
+      svg {
+        path {
+          fill: ${(props) =>
+            props.isDisabled
+              ? props.theme.text.disableColor
+              : props.theme.text.color};
+        }
+      }
     }
   }
   .payment-users_count {
