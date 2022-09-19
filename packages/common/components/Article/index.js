@@ -181,8 +181,8 @@ Article.Body = () => {
 Article.Body.displayName = "Body";
 
 export default inject(({ auth, bannerStore }) => {
-  const { settingsStore, isFreeTariff, isGracePeriod } = auth;
-
+  const { settingsStore, isFreeTariff, currentTariffStatusStore } = auth;
+  const { isGracePeriod } = currentTariffStatusStore;
   const { isBannerVisible } = bannerStore;
 
   const {
