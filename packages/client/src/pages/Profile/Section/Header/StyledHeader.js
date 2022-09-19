@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 export const StyledHeader = styled.div`
   position: relative;
@@ -34,6 +34,10 @@ export const StyledHeader = styled.div`
   }
 
   .header-headline {
-    margin-left: 16px;
+    ${(props) =>
+      !props.isVisitor &&
+      css`
+        margin-left: 16px;
+      `}
   }
 `;
