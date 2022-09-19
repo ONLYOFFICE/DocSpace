@@ -220,7 +220,7 @@ class Section extends React.Component {
       settingsStudio,
       clearUploadedFilesHistory,
       withPaging,
-      isEmptyFilesList,
+      isEmptyPage,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -263,7 +263,7 @@ class Section extends React.Component {
     });
 
     const isSectionHeaderAvailable = !!sectionHeaderContent,
-      isSectionFilterAvailable = !!sectionFilterContent && !isEmptyFilesList,
+      isSectionFilterAvailable = !!sectionFilterContent && !isEmptyPage,
       isSectionPagingAvailable = !!sectionPagingContent,
       isSectionBodyAvailable =
         !!sectionBodyContent ||
@@ -572,7 +572,7 @@ export default inject(({ auth, filesStore }) => {
 
   const { isVisible: infoPanelIsVisible } = infoPanelStore;
 
-  const { isEmptyFilesList } = filesStore;
+  const { isEmptyFilesList: isEmptyPage } = filesStore;
 
   return {
     isTabletView,
@@ -586,6 +586,6 @@ export default inject(({ auth, filesStore }) => {
 
     infoPanelIsVisible,
 
-    isEmptyFilesList,
+    isEmptyPage,
   };
 })(observer(Section));
