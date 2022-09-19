@@ -43,7 +43,6 @@ public class UserController : PeopleControllerBase
     private readonly QueueWorkerReassign _queueWorkerReassign;
     private readonly QueueWorkerRemove _queueWorkerRemove;
     private readonly Recaptcha _recaptcha;
-    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly TenantUtil _tenantUtil;
     private readonly UserFormatter _userFormatter;
     private readonly UserManagerWrapper _userManagerWrapper;
@@ -61,6 +60,8 @@ public class UserController : PeopleControllerBase
     private readonly FileSecurity _fileSecurity;
     private readonly IDaoFactory _daoFactory;
     private readonly EmailValidationKeyProvider _validationKeyProvider;
+    private readonly CountManagerChecker _countManagerChecker;
+    private readonly ActiveUsersChecker _activeUsersChecker;
 
     public UserController(
         ICache cache,
@@ -76,7 +77,6 @@ public class UserController : PeopleControllerBase
         QueueWorkerReassign queueWorkerReassign,
         QueueWorkerRemove queueWorkerRemove,
         Recaptcha recaptcha,
-        TenantStatisticsProvider tenantStatisticsProvider,
         TenantUtil tenantUtil,
         UserFormatter userFormatter,
         UserManagerWrapper userManagerWrapper,
@@ -99,7 +99,9 @@ public class UserController : PeopleControllerBase
         SettingsManager settingsManager,
         FileSecurity fileSecurity,
         IDaoFactory daoFactory,
-        EmailValidationKeyProvider validationKeyProvider)
+        EmailValidationKeyProvider validationKeyProvider,
+        CountManagerChecker countManagerChecker,
+        ActiveUsersChecker activeUsersChecker)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
@@ -115,7 +117,6 @@ public class UserController : PeopleControllerBase
         _queueWorkerReassign = queueWorkerReassign;
         _queueWorkerRemove = queueWorkerRemove;
         _recaptcha = recaptcha;
-        _tenantStatisticsProvider = tenantStatisticsProvider;
         _tenantUtil = tenantUtil;
         _userFormatter = userFormatter;
         _userManagerWrapper = userManagerWrapper;
@@ -133,6 +134,8 @@ public class UserController : PeopleControllerBase
         _fileSecurity = fileSecurity;
         _daoFactory = daoFactory;
         _validationKeyProvider = validationKeyProvider;
+        _countManagerChecker = countManagerChecker;
+        _activeUsersChecker = activeUsersChecker;
     }
 
     [HttpPost("active")]
@@ -964,22 +967,15 @@ public class UserController : PeopleControllerBase
 
         if (inDto.IsVisitor && !_userManager.IsVisitor(user) && canBeGuestFlag)
         {
-            _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
+            _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
         if (!self && !inDto.IsVisitor && _userManager.IsVisitor(user))
         {
-            var usersQuota = _tenantManager.GetCurrentTenantQuota().ActiveUsers;
-            if (_tenantStatisticsProvider.GetUsersCount() < usersQuota)
-            {
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
-                _webItemSecurityCache.ClearCache(Tenant.Id);
-            }
-            else
-            {
-                throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", usersQuota));
-            }
+            await _countManagerChecker.CheckUsed();
+            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+            _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
         _userManager.SaveUserInfo(user, inDto.IsVisitor, true);
@@ -1015,11 +1011,17 @@ public class UserController : PeopleControllerBase
                 case EmployeeStatus.Active:
                     if (user.Status == EmployeeStatus.Terminated)
                     {
-                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantManager.GetCurrentTenantQuota().ActiveUsers || _userManager.IsVisitor(user))
+                        if (!_userManager.IsVisitor(user))
                         {
-                            user.Status = EmployeeStatus.Active;
-                            _userManager.SaveUserInfo(user, syncCardDav: true);
+                            await _countManagerChecker.CheckUsed();
                         }
+                        else
+                        {
+                            await _activeUsersChecker.CheckUsed();
+                        }
+
+                        user.Status = EmployeeStatus.Active;
+                        _userManager.SaveUserInfo(user, syncCardDav: true);
                     }
                     break;
                 case EmployeeStatus.Terminated:
@@ -1059,21 +1061,14 @@ public class UserController : PeopleControllerBase
             switch (type)
             {
                 case EmployeeType.User:
-                    if (_userManager.IsVisitor(user))
-                    {
-                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantManager.GetCurrentTenantQuota().ActiveUsers)
-                        {
-                            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupVisitor.ID);
-                            _webItemSecurityCache.ClearCache(Tenant.Id);
-                        }
-                    }
+                    await _countManagerChecker.CheckUsed();
+                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                    _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
                 case EmployeeType.Visitor:
-                    if (_coreBaseSettings.Standalone || _tenantStatisticsProvider.GetVisitorsCount() < _tenantManager.GetCurrentTenantQuota().ActiveUsers * _constants.CoefficientOfVisitors)
-                    {
-                        _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
-                        _webItemSecurityCache.ClearCache(Tenant.Id);
-                    }
+                    await _activeUsersChecker.CheckUsed();
+                    _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
+                    _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
             }
         }
@@ -1249,10 +1244,10 @@ public class UserController : PeopleControllerBase
             switch (employeeType)
             {
                 case EmployeeType.User:
-                    excludeGroups.Add(Constants.GroupVisitor.ID);
+                    excludeGroups.Add(Constants.GroupUser.ID);
                     break;
                 case EmployeeType.Visitor:
-                    includeGroups.Add(new List<Guid> { Constants.GroupVisitor.ID });
+                    includeGroups.Add(new List<Guid> { Constants.GroupUser.ID });
                     break;
             }
         }

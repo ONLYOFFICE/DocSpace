@@ -422,7 +422,7 @@ public class StudioPeriodicNotify
                     var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                     Thread.CurrentThread.CurrentCulture = culture;
                     Thread.CurrentThread.CurrentUICulture = culture;
-                    var rquota = _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
+                    var rquota = await _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
 
                     client.SendNoticeToAsync(
                         action,
@@ -458,7 +458,7 @@ public class StudioPeriodicNotify
         _log.InformationEndSendSaasTariffLetters();
     }
 
-    public void SendEnterpriseLetters(string senderName, DateTime scheduleDate)
+    public async Task SendEnterpriseLetters(string senderName, DateTime scheduleDate)
     {
         var nowDate = scheduleDate.Date;
 
@@ -815,7 +815,7 @@ public class StudioPeriodicNotify
                     Thread.CurrentThread.CurrentCulture = culture;
                     Thread.CurrentThread.CurrentUICulture = culture;
 
-                    var rquota = _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
+                    var rquota = await _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
 
                     client.SendNoticeToAsync(
                         action,

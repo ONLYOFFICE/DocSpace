@@ -84,16 +84,16 @@ public sealed class Constants
         Name = AuthConst.Everyone.Name,
     };
 
-    public static readonly GroupInfo GroupVisitor = new GroupInfo(SysGroupCategoryId)
-    {
-        ID = AuthConst.Visitor.ID,
-        Name = AuthConst.Visitor.Name,
-    };
-
     public static readonly GroupInfo GroupUser = new GroupInfo(SysGroupCategoryId)
     {
         ID = AuthConst.User.ID,
         Name = AuthConst.User.Name,
+    };
+
+    public static readonly GroupInfo GroupManager = new GroupInfo(SysGroupCategoryId)
+    {
+        ID = AuthConst.Manager.ID,
+        Name = AuthConst.Manager.Name,
     };
 
     public static readonly GroupInfo GroupAdmin = new GroupInfo(SysGroupCategoryId)
@@ -105,8 +105,8 @@ public sealed class Constants
     public static readonly GroupInfo[] BuildinGroups = new[]
     {
             GroupEveryone,
-            GroupVisitor,
             GroupUser,
+            GroupManager,
             GroupAdmin,
         };
 

@@ -59,6 +59,7 @@ public class SettingsController : BaseSettingsController
     private readonly DnsSettings _dnsSettings;
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
     private readonly CustomColorThemesSettingsHelper _customColorThemesSettingsHelper;
+    private readonly QuotaUsageManager _quotaUsageManager;
 
     public SettingsController(
         IServiceScopeFactory serviceScopeFactory,
@@ -92,7 +93,8 @@ public class SettingsController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
         AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
-        CustomColorThemesSettingsHelper customColorThemesSettingsHelper
+        CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
+        QuotaUsageManager quotaUsageManager
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -123,6 +125,7 @@ public class SettingsController : BaseSettingsController
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
         _customColorThemesSettingsHelper = customColorThemesSettingsHelper;
+        _quotaUsageManager = quotaUsageManager;
     }
 
     [HttpGet("")]
@@ -253,10 +256,9 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpGet("quota")]
-    public QuotaUsageDto GetQuotaUsed()
+    public async Task<QuotaUsageDto> GetQuotaUsed()
     {
-        using var scope = _serviceScopeFactory.CreateScope();
-        return scope.ServiceProvider.GetRequiredService<QuotaUsageDto>();
+        return await _quotaUsageManager.Get();
     }
 
     [AllowAnonymous]

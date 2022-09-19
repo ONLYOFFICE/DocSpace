@@ -2176,6 +2176,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of managers should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_manager_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_manager_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number of managers.
         /// </summary>
         public static string TariffsFeature_manager_price_count {
@@ -2230,6 +2239,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The used storage size should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_total_size_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_total_size_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Storage space.
         /// </summary>
         public static string TariffsFeature_total_size_price_count {
@@ -2280,6 +2298,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string TariffsFeature_users {
             get {
                 return ResourceManager.GetString("TariffsFeature_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The number of users should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_users_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_users_exception", resourceCulture);
             }
         }
         

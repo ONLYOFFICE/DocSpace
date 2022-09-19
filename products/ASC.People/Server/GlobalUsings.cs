@@ -64,10 +64,10 @@ global using ASC.Web.Api.Routing;
 global using ASC.Web.Core;
 global using ASC.Web.Core.Mobile;
 global using ASC.Web.Core.PublicResources;
+global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
-global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 
 global using Autofac;

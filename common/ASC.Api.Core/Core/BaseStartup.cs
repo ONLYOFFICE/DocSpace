@@ -119,10 +119,18 @@ public abstract class BaseStartup
         services.AddCacheNotify(_configuration);
 
         services.AddScoped<ITenantQuotaFeatureChecker, CountManagerChecker>();
+        services.AddScoped<TenantQuotaFeatureChecker<CountManagerFeature, int>, CountManagerChecker>();
         services.AddScoped<CountManagerChecker>();
 
         services.AddScoped<ITenantQuotaFeatureStat<CountManagerFeature, int>, CountManagerStatistic>();
         services.AddScoped<CountManagerStatistic>();
+
+        services.AddScoped<ITenantQuotaFeatureChecker, ActiveUsersChecker>();
+        services.AddScoped<TenantQuotaFeatureChecker<ActiveUsersFeature, int>, ActiveUsersChecker>();
+        services.AddScoped<ActiveUsersChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStat<ActiveUsersFeature, int>, ActiveUsersStatistic>();
+        services.AddScoped<ActiveUsersStatistic>();
 
         services.AddScoped<ITenantQuotaFeatureChecker, MaxTotalSizeChecker>();
         services.AddScoped<MaxTotalSizeChecker>();

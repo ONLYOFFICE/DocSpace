@@ -879,4 +879,13 @@
   <data name="TariffsFeature_room_exception" xml:space="preserve">
     <value>The number of rooms should not exceed {0}</value>
   </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>The number of managers should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>The used storage size should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>The number of users should not exceed {0}</value>
+  </data>
 </root>

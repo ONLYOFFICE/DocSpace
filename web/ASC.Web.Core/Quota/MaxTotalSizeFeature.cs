@@ -24,31 +24,33 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.Core;
+namespace ASC.Web.Core.Quota;
 
-public class CountRoomChecker : TenantQuotaFeatureChecker<CountRoomFeature, int>
+public class MaxTotalSizeChecker : TenantQuotaFeatureChecker<MaxTotalSizeFeature, long>
 {
-    public override string Exception => Resource.TariffsFeature_room_exception;
-    public CountRoomChecker(ITenantQuotaFeatureStat<CountRoomFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
+    public override string Exception => Resource.TariffsFeature_total_size_exception;
+
+    public MaxTotalSizeChecker(ITenantQuotaFeatureStat<MaxTotalSizeFeature, long> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
     }
 }
 
-public class CountRoomCheckerStatistic : ITenantQuotaFeatureStat<CountRoomFeature, int>
+public class MaxTotalSizeStatistic : ITenantQuotaFeatureStat<MaxTotalSizeFeature, long>
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public CountRoomCheckerStatistic(IServiceProvider serviceProvider)
+    public MaxTotalSizeStatistic(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<int> GetValue()
+    public Task<long> GetValue()
     {
-        var folderDao = _serviceProvider.GetService<IFolderDao<int>>();
-        var globalFolderHelper = _serviceProvider.GetService<GlobalFolderHelper>();
+        var tenantManager = _serviceProvider.GetService<TenantManager>();
+        var tenant = tenantManager.GetCurrentTenant().Id;
 
-        var parentId = await globalFolderHelper.GetFolderVirtualRooms<int>();
-        return await folderDao.GetFoldersAsync(parentId).CountAsync();
+        return Task.FromResult(tenantManager.FindTenantQuotaRows(tenant)
+            .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty)
+            .Sum(r => r.Counter));
     }
 }

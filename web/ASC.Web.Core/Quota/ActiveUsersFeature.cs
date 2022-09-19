@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -26,54 +26,29 @@
 
 using Constants = ASC.Core.Users.Constants;
 
-namespace ASC.Web.Studio.UserControls.Statistics;
+namespace ASC.Web.Core.Quota;
 
-[Scope]
-public class TenantStatisticsProvider
+public class ActiveUsersChecker : TenantQuotaFeatureChecker<ActiveUsersFeature, int>
 {
-    private readonly UserManager _userManager;
-    private readonly TenantManager _tenantManager;
+    public override string Exception => Resource.TariffsFeature_users_exception;
 
-    public TenantStatisticsProvider(UserManager userManager, TenantManager tenantManager)
+    public ActiveUsersChecker(ITenantQuotaFeatureStat<ActiveUsersFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
-        _userManager = userManager;
-        _tenantManager = tenantManager;
+    }
+}
+
+public class ActiveUsersStatistic : ITenantQuotaFeatureStat<ActiveUsersFeature, int>
+{
+    private readonly IServiceProvider _serviceProvider;
+
+    public ActiveUsersStatistic(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
     }
 
-    public int GetUsersCount()
+    public Task<int> GetValue()
     {
-        return _userManager.GetUsersByGroup(Constants.GroupUser.ID).Length;
-    }
-
-    public int GetVisitorsCount()
-    {
-        return _userManager.GetUsersByGroup(Constants.GroupVisitor.ID).Length;
-    }
-
-    public int GetAdminsCount()
-    {
-        return _userManager.GetUsersByGroup(Constants.GroupAdmin.ID).Length;
-    }
-
-
-    public long GetUsedSize()
-    {
-        return GetUsedSize(_tenantManager.GetCurrentTenant().Id);
-    }
-
-    public long GetUsedSize(int tenant)
-    {
-        return GetQuotaRows(tenant).Sum(r => r.Counter);
-    }
-
-    public long GetUsedSize(Guid moduleId)
-    {
-        return GetQuotaRows(_tenantManager.GetCurrentTenant().Id).Where(r => new Guid(r.Tag).Equals(moduleId)).Sum(r => r.Counter);
-    }
-
-    public IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)
-    {
-        return _tenantManager.FindTenantQuotaRows(tenant)
-            .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty);
+        var userManager = _serviceProvider.GetService<UserManager>();
+        return Task.FromResult(userManager.GetUsersByGroup(Constants.GroupUser.ID).Length);
     }
 }

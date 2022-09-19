@@ -111,7 +111,7 @@ public class OwnerController : BaseSettingsController
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (_userManager.IsUserInGroup(newOwner.Id, Constants.GroupVisitor.ID))
+        if (_userManager.IsUserInGroup(newOwner.Id, Constants.GroupUser.ID))
         {
             throw new Exception(Resource.ErrorUserNotFound);
         }

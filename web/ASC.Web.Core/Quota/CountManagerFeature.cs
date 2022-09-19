@@ -24,31 +24,32 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.Core;
 
-public class CountRoomChecker : TenantQuotaFeatureChecker<CountRoomFeature, int>
+
+namespace ASC.Web.Core.Quota;
+
+public class CountManagerChecker : TenantQuotaFeatureChecker<CountManagerFeature, int>
 {
-    public override string Exception => Resource.TariffsFeature_room_exception;
-    public CountRoomChecker(ITenantQuotaFeatureStat<CountRoomFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
+    public override string Exception => Resource.TariffsFeature_manager_exception;
+
+    public CountManagerChecker(ITenantQuotaFeatureStat<CountManagerFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
     }
+
 }
 
-public class CountRoomCheckerStatistic : ITenantQuotaFeatureStat<CountRoomFeature, int>
+public class CountManagerStatistic : ITenantQuotaFeatureStat<CountManagerFeature, int>
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public CountRoomCheckerStatistic(IServiceProvider serviceProvider)
+    public CountManagerStatistic(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<int> GetValue()
+    public Task<int> GetValue()
     {
-        var folderDao = _serviceProvider.GetService<IFolderDao<int>>();
-        var globalFolderHelper = _serviceProvider.GetService<GlobalFolderHelper>();
-
-        var parentId = await globalFolderHelper.GetFolderVirtualRooms<int>();
-        return await folderDao.GetFoldersAsync(parentId).CountAsync();
+        var _userManager = _serviceProvider.GetService<UserManager>();
+        return Task.FromResult(_userManager.GetUsersByGroup(ASC.Core.Users.Constants.GroupManager.ID).Length);
     }
 }
