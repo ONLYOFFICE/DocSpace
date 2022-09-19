@@ -32,7 +32,6 @@ public class UserController : PeopleControllerBase
 
     private readonly ICache _cache;
     private readonly TenantManager _tenantManager;
-    private readonly Constants _constants;
     private readonly CookiesManager _cookiesManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CustomNamingPeople _customNamingPeople;
@@ -61,12 +60,11 @@ public class UserController : PeopleControllerBase
     private readonly IDaoFactory _daoFactory;
     private readonly EmailValidationKeyProvider _validationKeyProvider;
     private readonly CountManagerChecker _countManagerChecker;
-    private readonly CountUserChecker _activeUsersChecker;
+    private readonly CountUserChecker _countUserChecker;
 
     public UserController(
         ICache cache,
         TenantManager tenantManager,
-        Constants constants,
         CookiesManager cookiesManager,
         CoreBaseSettings coreBaseSettings,
         CustomNamingPeople customNamingPeople,
@@ -106,7 +104,6 @@ public class UserController : PeopleControllerBase
     {
         _cache = cache;
         _tenantManager = tenantManager;
-        _constants = constants;
         _cookiesManager = cookiesManager;
         _coreBaseSettings = coreBaseSettings;
         _customNamingPeople = customNamingPeople;
@@ -135,7 +132,7 @@ public class UserController : PeopleControllerBase
         _daoFactory = daoFactory;
         _validationKeyProvider = validationKeyProvider;
         _countManagerChecker = countManagerChecker;
-        _activeUsersChecker = activeUsersChecker;
+        _countUserChecker = activeUsersChecker;
     }
 
     [HttpPost("active")]
@@ -967,6 +964,7 @@ public class UserController : PeopleControllerBase
 
         if (inDto.IsVisitor && !_userManager.IsVisitor(user) && canBeGuestFlag)
         {
+            await _countUserChecker.CheckUsed();
             _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
@@ -1017,7 +1015,7 @@ public class UserController : PeopleControllerBase
                         }
                         else
                         {
-                            await _activeUsersChecker.CheckUsed();
+                            await _countUserChecker.CheckUsed();
                         }
 
                         user.Status = EmployeeStatus.Active;
@@ -1066,7 +1064,7 @@ public class UserController : PeopleControllerBase
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
                 case EmployeeType.Visitor:
-                    await _activeUsersChecker.CheckUsed();
+                    await _countUserChecker.CheckUsed();
                     _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;

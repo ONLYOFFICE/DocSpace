@@ -155,7 +155,7 @@ public class LicenseController : BaseSettingsController
         var quota = new TenantQuota(-1000)
         {
             Name = "apirequest",
-            ActiveUsers = curQuota.ActiveUsers,
+            CountUser = curQuota.CountUser,
             MaxFileSize = curQuota.MaxFileSize,
             MaxTotalSize = curQuota.MaxTotalSize,
             Features = curQuota.Features

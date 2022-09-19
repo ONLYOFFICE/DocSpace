@@ -77,7 +77,7 @@ public class QuotaUsageManager
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter)),
             MaxUsersCount = quota.CountManager,
             UsersCount = _coreBaseSettings.Personal ? 1 : await _countManagerStatistic.GetValue(),
-            MaxVisitors = _coreBaseSettings.Standalone ? -1 : quota.ActiveUsers,
+            MaxVisitors = _coreBaseSettings.Standalone ? -1 : quota.CountUser,
             VisitorsCount = _coreBaseSettings.Personal ? 0 : await _activeUsersStatistic.GetValue(),
 
             StorageUsage = quotaRows

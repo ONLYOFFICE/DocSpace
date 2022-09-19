@@ -34,7 +34,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         Name = "Default",
         MaxFileSize = 25 * 1024 * 1024, // 25Mb
         MaxTotalSize = long.MaxValue,
-        ActiveUsers = int.MaxValue,
+        CountUser = int.MaxValue,
         CountManager = int.MaxValue,
         CountRoom = int.MaxValue
     };
@@ -84,7 +84,7 @@ public class TenantQuota : IMapFrom<DbQuota>
     }
 
     private readonly CountUserFeature _countUserFeature;
-    public int ActiveUsers
+    public int CountUser
     {
         get => _countUserFeature.Value;
         set => _countUserFeature.Value = value;

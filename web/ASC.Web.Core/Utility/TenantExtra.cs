@@ -138,9 +138,9 @@ public class TenantExtra
         var needUsersCount = await _countManagerStatistic.GetValue();
         var quotas = GetTenantQuotas();
 
-        return quotas.OrderBy(q => q.ActiveUsers)
+        return quotas.OrderBy(q => q.CountUser)
                      .FirstOrDefault(q =>
-                                     q.ActiveUsers > needUsersCount
+                                     q.CountUser > needUsersCount
                                      && q.MaxTotalSize > usedSpace
                                      && !q.Free
                                      && !q.Trial);
