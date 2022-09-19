@@ -399,13 +399,15 @@ class Section extends React.Component {
                             </SubSectionHeader>
                           )}
 
-                          {isSectionFilterAvailable && isMobile && (
-                            <SubSectionFilter className="section-body_filter">
-                              {sectionFilterContent
-                                ? sectionFilterContent.props.children
-                                : null}
-                            </SubSectionFilter>
-                          )}
+                          {isSectionFilterAvailable &&
+                            isMobile &&
+                            !isEmptyFilesList && (
+                              <SubSectionFilter className="section-body_filter">
+                                {sectionFilterContent
+                                  ? sectionFilterContent.props.children
+                                  : null}
+                              </SubSectionFilter>
+                            )}
 
                           <SubSectionBodyContent>
                             {sectionBodyContent
