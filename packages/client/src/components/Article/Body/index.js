@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import config from "PACKAGE_FILE";
-import { AppServerConfig } from "@docspace/common/constants";
+import { AppServerConfig, RoomSearchArea } from "@docspace/common/constants";
 import Items from "./Items";
 import { isMobile, tablet } from "@docspace/components/utils/device";
 import FilesFilter from "@docspace/common/api/files/filter";
@@ -47,6 +47,8 @@ const ArticleBodyContent = (props) => {
     categoryType,
     isAdmin,
     filesIsLoading,
+    roomsFolderId,
+    archiveFolderId,
   } = props;
 
   const campaigns = (localStorage.getItem("campaigns") || "")
@@ -65,8 +67,6 @@ const ArticleBodyContent = (props) => {
 
         homepage,
         history,
-        roomsFolderId,
-        archiveFolderId,
       } = props;
 
       if (filesIsLoading) return;
@@ -80,27 +80,30 @@ const ArticleBodyContent = (props) => {
 
       if (folderId === roomsFolderId || folderId === archiveFolderId) {
         setAlreadyFetchingRooms(true);
-        fetchRooms(folderId, null)
+
+        const filter = RoomsFilter.getDefault();
+        filter.searchArea =
+          folderId === archiveFolderId
+            ? RoomSearchArea.Archive
+            : RoomSearchArea.Active;
+
+        fetchRooms(folderId, filter)
           .then(() => {
-            if (filesSection) {
-              const filter = RoomsFilter.getDefault();
+            const url = getCategoryUrl(
+              folderId === archiveFolderId
+                ? CategoryType.Archive
+                : CategoryType.Shared
+            );
 
-              const url = getCategoryUrl(
-                folderId === archiveFolderId
-                  ? CategoryType.Archive
-                  : CategoryType.Shared
-              );
+            const filterParamsStr = filter.toUrlParams();
 
-              const filterParamsStr = filter.toUrlParams();
-
-              history.push(
-                combineUrl(
-                  AppServerConfig.proxyURL,
-                  homepage,
-                  `${url}?${filterParamsStr}`
-                )
-              );
-            }
+            history.push(
+              combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                `${url}?${filterParamsStr}`
+              )
+            );
           })
           .finally(() => {
             if (isMobileOnly || isMobile()) {
@@ -144,7 +147,7 @@ const ArticleBodyContent = (props) => {
           });
       }
     },
-    [categoryType]
+    [categoryType, roomsFolderId, archiveFolderId]
   );
 
   const onShowNewFilesPanel = React.useCallback((folderId) => {

@@ -146,9 +146,11 @@ const PeopleTableRow = (props) => {
     statusType,
     userName,
     position,
-    role,
     rooms,
+    // role
   } = item;
+
+  const role = item.role === "guest" ? "user" : item.role; // TODO: remove after getting valid 'role' field
 
   const isPending = statusType === "pending" || statusType === "disabled";
 
@@ -242,6 +244,8 @@ const PeopleTableRow = (props) => {
     setBufferSelection(item);
   }, [isSeveralSelection, isChecked, item, setBufferSelection]);
 
+  const typesOptions = getTypesOptions();
+
   return (
     <StyledWrapper
       className={`user-item ${
@@ -293,10 +297,10 @@ const PeopleTableRow = (props) => {
           userId !== item.id ? (
             <ComboBox
               className="type-combobox"
-              selectedOption={getTypesOptions().find(
+              selectedOption={typesOptions.find(
                 (option) => option.key === role
               )}
-              options={getTypesOptions()}
+              options={typesOptions}
               onSelect={onTypeChange}
               scaled={false}
               size="content"

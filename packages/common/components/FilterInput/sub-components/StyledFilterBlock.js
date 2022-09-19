@@ -51,6 +51,16 @@ const StyledFilterBlock = styled.div`
 
   .filter-body {
     height: ${(props) => (props.showFooter ? "calc(100% - 125px)" : "100%")};
+
+    .combo-button {
+      justify-content: space-between;
+
+      .combo-button-label {
+        font-size: 13px;
+        font-weight: 400;
+        line-height: 20px;
+      }
+    }
   }
 `;
 
@@ -72,6 +82,10 @@ const StyledFilterBlockHeader = styled.div`
   align-items: center;
   justify-content: ${(props) => (props.isSelector ? "start" : "space-between")};
 
+  h1 {
+    font-weight: 700;
+  }
+
   .arrow-button {
     margin-right: 12px;
   }
@@ -84,8 +98,9 @@ const StyledFilterBlockHeader = styled.div`
 StyledFilterBlockHeader.defaultProps = { theme: Base };
 
 const StyledFilterBlockItem = styled.div`
-  padding: ${(props) =>
-    !props.withoutHeader ? "12px 16px 0px 16px" : "6px 16px 0px 16px"};
+  margin: ${(props) =>
+    props.withoutHeader ? "0" : props.isFirst ? "12px 0 0 0" : "16px 0 0 0"};
+  padding: 0 15px 0 16px;
 
   display: flex;
   flex-direction: column;
@@ -102,8 +117,8 @@ const StyledFilterBlockItemHeader = styled.div`
 `;
 
 const StyledFilterBlockItemContent = styled.div`
-  margin-top: ${(props) => !props.withoutHeader && "12px"};
-  margin-right: -16px;
+  margin: ${(props) =>
+    props.withoutSeparator ? "12px -16px 0 0" : "12px -16px 16px 0"};
 
   height: fit-content;
 
@@ -111,6 +126,8 @@ const StyledFilterBlockItemContent = styled.div`
   flex-direction: row;
   align-items: center;
   flex-wrap: wrap;
+
+  gap: ${(props) => (props.withMultiItems ? "12px 8px" : "8px")};
 `;
 
 const StyledFilterBlockItemSelector = styled.div`
@@ -120,8 +137,6 @@ const StyledFilterBlockItemSelector = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-
-  margin: 0 0 11px;
 `;
 
 const StyledFilterBlockItemSelectorText = styled(Text)`
@@ -143,8 +158,8 @@ const selectedItemTag = css`
 `;
 
 const StyledFilterBlockItemTag = styled.div`
-  height: 30px;
-  max-height: 30px;
+  height: 28px;
+  max-height: 28px;
 
   display: flex;
   flex-direction: row;
@@ -157,8 +172,6 @@ const StyledFilterBlockItemTag = styled.div`
 
   padding: 4px 15px;
 
-  margin: 0 6px 12px 0;
-
   cursor: pointer;
 
   ${(props) => props.isSelected && selectedItemTag}
@@ -170,12 +183,13 @@ StyledFilterBlockItemTag.defaultProps = { theme: Base };
 
 const selectedItemTagText = css`
   color: ${(props) => props.theme.filterInput.filter.selectedItem.color};
+  font-weight: 600;
 `;
 
 const StyledFilterBlockItemTagText = styled(Text)`
   height: 20px;
 
-  font-weight: normal;
+  font-weight: 400;
   font-size: 13px;
   line-height: 20px;
 
@@ -222,7 +236,13 @@ const StyledFilterBlockItemToggleButton = styled(ToggleButton)`
   grid-gap: 0px;
 `;
 const StyledFilterBlockItemCheckboxContainer = styled.div`
-  margin: 7px 0 11px;
+  .checkbox {
+    margin-right: 8px !important;
+  }
+
+  .checkbox-text {
+    line-height: 20px;
+  }
 `;
 
 const StyledFilterBlockItemSeparator = styled.div`
@@ -232,8 +252,6 @@ const StyledFilterBlockItemSeparator = styled.div`
   margin-right: 16px;
 
   background: ${(props) => props.theme.filterInput.filter.separatorColor};
-
-  margin: 2px 0 0 0;
 `;
 
 StyledFilterBlockItemToggleButton.defaultProps = { theme: Base };
@@ -255,6 +273,8 @@ const StyledFilterBlockFooter = styled.div`
 
   padding: 0 16px;
   margin: 0;
+
+  gap: 10px;
 
   display: flex;
   align-items: center;

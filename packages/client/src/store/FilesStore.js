@@ -679,9 +679,6 @@ class FilesStore {
       api.files
         .getFolder(folderId, filterData)
         .then(async (data) => {
-          const isRecycleBinFolder =
-            data.current.rootFolderType === FolderType.TRASH;
-
           filterData.total = data.total;
 
           if (data.total > 0) {
@@ -699,9 +696,6 @@ class FilesStore {
             }
           }
 
-          const isPrivacyFolder =
-            data.current.rootFolderType === FolderType.Privacy;
-
           runInAction(() => {
             this.categoryType = getCategoryTypeByFolderType(
               data.current.rootFolderType,
@@ -710,6 +704,9 @@ class FilesStore {
           });
 
           this.setFilesFilter(filterData); //TODO: FILTER
+
+          const isPrivacyFolder =
+            data.current.rootFolderType === FolderType.Privacy;
 
           runInAction(() => {
             this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
@@ -724,10 +721,22 @@ class FilesStore {
 
           const navigationPath = await Promise.all(
             data.pathParts.map(async (folder) => {
+              const { Rooms, Archive } = FolderType;
+
+              let folderId = folder;
+
+              if (
+                data.current.providerKey &&
+                data.current.rootFolderType === Rooms &&
+                this.treeFoldersStore.sharedRoomId
+              ) {
+                folderId = this.treeFoldersStore.sharedRoomId;
+              }
+
               const folderInfo =
-                data.current.id === folder
+                data.current.id === folderId
                   ? data.current
-                  : await api.files.getFolderInfo(folder);
+                  : await api.files.getFolderInfo(folderId);
 
               const {
                 id,
@@ -737,14 +746,12 @@ class FilesStore {
                 rootFolderType,
               } = folderInfo;
 
-              const { Rooms, Archive } = FolderType;
-
               const isRootRoom =
                 rootFolderId === id &&
                 (rootFolderType === Rooms || rootFolderType === Archive);
 
               return {
-                id: folder,
+                id: folderId,
                 title,
                 isRoom: !!roomType,
                 isRootRoom,
@@ -838,16 +845,6 @@ class FilesStore {
     }
 
     if (folderId) setSelectedNode([folderId + ""]);
-
-    const searchArea = folderId
-      ? folderId === roomsFolderId
-        ? RoomSearchArea.Active
-        : RoomSearchArea.Archive
-      : RoomSearchArea.Active;
-
-    if (filterData.searchArea !== searchArea) {
-      filterData.searchArea = searchArea;
-    }
 
     const request = () =>
       api.rooms
