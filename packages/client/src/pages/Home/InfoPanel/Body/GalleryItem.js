@@ -56,9 +56,7 @@ const SingleItem = (props) => {
 
       <StyledProperties>
         <div className="property">
-          <Text className="property-title">
-            {t("Files:ByLastModifiedDate")}
-          </Text>
+          <Text className="property-title">{t("Files:ByLastModified")}</Text>
           <Text className="property-content">
             {parseAndFormatDate(selectedItem.attributes.updatedAt)}
           </Text>

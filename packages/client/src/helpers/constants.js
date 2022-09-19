@@ -51,6 +51,16 @@ export const CategoryType = Object.freeze({
   Trash: 7,
 });
 
+/**
+ * Enum for table columns version
+ * @readonly
+ */
+export const TableVersions = Object.freeze({
+  Files: "2",
+  Rooms: "1",
+  Accounts: "2",
+});
+
 export const BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
 export const BINDING_REDIRECT =
   "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";

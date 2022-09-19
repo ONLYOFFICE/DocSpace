@@ -14,7 +14,7 @@ import MobileView from "./MobileView";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 import toastr from "@docspace/components/toast/toastr";

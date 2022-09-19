@@ -60,7 +60,7 @@ public class RegisterInstanceManager<T> : IRegisterInstanceManager<T> where T : 
         {
             var firstAliceInstance = GetFirstAliveInstance(instances);
 
-            if (firstAliceInstance != null && firstAliceInstance.InstanceRegistrationId == instance.InstanceRegistrationId)
+            if (firstAliceInstance == null || firstAliceInstance.InstanceRegistrationId == instance.InstanceRegistrationId)
             {
                 instance.IsActive = true;
             }
