@@ -653,7 +653,7 @@ public class UserController : PeopleControllerBase
                 throw new Exception(Resource.ErrorAccessDenied);
             }
 
-            if (viewer.IsAdmin(_userManager) || viewer.Id == user.Id)
+            if (_userManager.IsAdmin(viewer) || viewer.Id == user.Id)
             {
                 if (user.ActivationStatus == EmployeeActivationStatus.Activated)
                 {
@@ -669,7 +669,7 @@ public class UserController : PeopleControllerBase
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                if (user.IsVisitor(_userManager))
+                if (_userManager.IsVisitor(user))
                 {
                     _studioNotifyService.GuestInfoActivation(user);
                 }
@@ -766,7 +766,7 @@ public class UserController : PeopleControllerBase
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
-        if (!viewer.IsAdmin(_userManager))
+        if (!_userManager.IsAdmin(viewer))
         {
             _studioNotifyService.SendEmailChangeInstructions(user, email);
         }
@@ -938,15 +938,15 @@ public class UserController : PeopleControllerBase
         }
 
         // change user type
-        var canBeGuestFlag = !user.IsOwner(Tenant) && !user.IsAdmin(_userManager) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
+        var canBeGuestFlag = !user.IsOwner(Tenant) && !_userManager.IsAdmin(user) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
 
-        if (inDto.IsVisitor && !user.IsVisitor(_userManager) && canBeGuestFlag)
+        if (inDto.IsVisitor && !_userManager.IsVisitor(user) && canBeGuestFlag)
         {
             _userManager.AddUserIntoGroup(user.Id, Constants.GroupVisitor.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
-        if (!self && !inDto.IsVisitor && user.IsVisitor(_userManager))
+        if (!self && !inDto.IsVisitor && _userManager.IsVisitor(user))
         {
             var usersQuota = _tenantExtra.GetTenantQuota().ActiveUsers;
             if (_tenantStatisticsProvider.GetUsersCount() < usersQuota)
@@ -993,7 +993,7 @@ public class UserController : PeopleControllerBase
                 case EmployeeStatus.Active:
                     if (user.Status == EmployeeStatus.Terminated)
                     {
-                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers || user.IsVisitor(_userManager))
+                        if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers || _userManager.IsVisitor(user))
                         {
                             user.Status = EmployeeStatus.Active;
                             _userManager.SaveUserInfo(user, syncCardDav: true);
@@ -1028,7 +1028,7 @@ public class UserController : PeopleControllerBase
 
         foreach (var user in users)
         {
-            if (user.IsOwner(Tenant) || user.IsAdmin(_userManager)
+            if (user.IsOwner(Tenant) || _userManager.IsAdmin(user)
                 || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity, _webItemManager).Count > 0)
             {
                 continue;
@@ -1037,7 +1037,7 @@ public class UserController : PeopleControllerBase
             switch (type)
             {
                 case EmployeeType.User:
-                    if (user.IsVisitor(_userManager))
+                    if (_userManager.IsVisitor(user))
                     {
                         if (_tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers)
                         {
@@ -1211,7 +1211,7 @@ public class UserController : PeopleControllerBase
             throw new MethodAccessException("Method not available");
         }
 
-        var isAdmin = _userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager) ||
+        var isAdmin = _userManager.IsAdmin(_securityContext.CurrentAccount.ID) ||
                       _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
 
         var includeGroups = new List<List<Guid>>();

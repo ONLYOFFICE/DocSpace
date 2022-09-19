@@ -62,7 +62,7 @@ public class EncryptionKeyPairDtoHelper
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(privateKeyEnc);
 
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        if (!_authContext.IsAuthenticated || user.IsVisitor(_userManager))
+        if (!_authContext.IsAuthenticated || _userManager.IsVisitor(user))
         {
             throw new SecurityException();
         }
@@ -118,7 +118,7 @@ public class EncryptionKeyPairDtoHelper
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
 
-        var locatedInPrivateRoom = file.RootFolderType == FolderType.VirtualRooms 
+        var locatedInPrivateRoom = file.RootFolderType == FolderType.VirtualRooms
             && await DocSpaceHelper.LocatedInPrivateRoomAsync(file, folderDao);
 
         if (file.RootFolderType != FolderType.Privacy && !locatedInPrivateRoom)

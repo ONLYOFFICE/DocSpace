@@ -1,7 +1,5 @@
 import styled, { css } from "styled-components";
 
-import RectangleLoader from "../RectangleLoader";
-
 const StyledContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -12,28 +10,33 @@ const StyledContainer = styled.div`
 `;
 
 const StyledBlock = styled.div`
-  padding: 12px 0 6px;
+  padding: 12px 0 16px;
 
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 
   width: 100%;
   height: auto;
 
   display: flex;
-
   flex-direction: column;
 
-  border-bottom: 1px solid #eceef1;
+  gap: 12px 8px;
+
+  box-sizing: border-box;
+
+  ${(props) =>
+    !props.isLast &&
+    css`
+      border-bottom: 1px solid #eceef1;
+    `}
 
   .row-loader {
     display: flex;
 
     align-items: center;
-  }
+    flex-wrap: wrap;
 
-  .loader-item {
-    margin-bottom: 12px;
-    margin-right: 8px;
+    gap: 8px;
   }
 `;
 

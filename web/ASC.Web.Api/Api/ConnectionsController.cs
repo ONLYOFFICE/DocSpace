@@ -156,7 +156,7 @@ public class ConnectionsController : ControllerBase
     [HttpPut("activeconnections/logoutall/{userId}")]
     public async Task LogOutAllActiveConnectionsForUser(Guid userId)
     {
-        if (!_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsAdmin(_userManager)
+        if (!_userManager.IsAdmin(_securityContext.CurrentAccount.ID)
             && !_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID))
         {
             throw new SecurityException("Method not available");

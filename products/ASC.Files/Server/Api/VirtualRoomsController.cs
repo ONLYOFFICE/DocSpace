@@ -648,14 +648,14 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// <param name="tags">
     /// Filter by tags
     /// </param>
-    /// <param name="withoutMe">
-    /// Exclude your rooms from search
+    /// <param name="excludeSubject">
+    /// Exclude subject from search
     /// </param>
     /// <returns>
     /// Virtual Rooms content
     /// </returns>
     [HttpGet("rooms")]
-    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomFilterType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? withoutMe)
+    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomFilterType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject)
     {
         ErrorIfNotDocSpace();
 
@@ -685,8 +685,8 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var filterValue = _apiContext.FilterValue;
 
-        var content = await _fileStorageServiceInt.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
-            searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, withoutMe ?? false);
+        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
+            searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
 
