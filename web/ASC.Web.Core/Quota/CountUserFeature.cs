@@ -24,12 +24,31 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Quota.Features;
+using Constants = ASC.Core.Users.Constants;
 
-public class ActiveUsersFeature : TenantQuotaFeatureCount
+namespace ASC.Web.Core.Quota;
+
+public class CountUserChecker : TenantQuotaFeatureChecker<CountUserFeature, int>
 {
-    public override string Name { get => "users"; }
-    public ActiveUsersFeature(TenantQuota tenantQuota) : base(tenantQuota)
+    public override string Exception => Resource.TariffsFeature_users_exception;
+
+    public CountUserChecker(ITenantQuotaFeatureStat<CountUserFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
+    }
+}
+
+public class CountUserStatistic : ITenantQuotaFeatureStat<CountUserFeature, int>
+{
+    private readonly IServiceProvider _serviceProvider;
+
+    public CountUserStatistic(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
+    public Task<int> GetValue()
+    {
+        var userManager = _serviceProvider.GetService<UserManager>();
+        return Task.FromResult(userManager.GetUsersByGroup(Constants.GroupUser.ID).Length);
     }
 }

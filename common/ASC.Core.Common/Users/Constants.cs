@@ -57,20 +57,6 @@ public sealed class Constants
         }
     }
 
-    public int CoefficientOfVisitors
-    {
-        get
-        {
-            int count;
-            if (!int.TryParse(_configuration["core:coefficient-of-visitors"], out count))
-            {
-                count = 2;
-            }
-
-            return count;
-        }
-    }
-
     private readonly IConfiguration _configuration;
 
 

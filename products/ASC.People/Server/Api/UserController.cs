@@ -61,7 +61,7 @@ public class UserController : PeopleControllerBase
     private readonly IDaoFactory _daoFactory;
     private readonly EmailValidationKeyProvider _validationKeyProvider;
     private readonly CountManagerChecker _countManagerChecker;
-    private readonly ActiveUsersChecker _activeUsersChecker;
+    private readonly CountUserChecker _activeUsersChecker;
 
     public UserController(
         ICache cache,
@@ -101,7 +101,7 @@ public class UserController : PeopleControllerBase
         IDaoFactory daoFactory,
         EmailValidationKeyProvider validationKeyProvider,
         CountManagerChecker countManagerChecker,
-        ActiveUsersChecker activeUsersChecker)
+        CountUserChecker activeUsersChecker)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;

@@ -39,7 +39,7 @@ public class QuotaUsageManager
     private readonly WebItemManager _webItemManager;
     private readonly Constants _constants;
     private readonly CountManagerStatistic _countManagerStatistic;
-    private readonly ActiveUsersStatistic _activeUsersStatistic;
+    private readonly CountUserStatistic _activeUsersStatistic;
 
     public QuotaUsageManager(
         TenantManager tenantManager,
@@ -50,7 +50,7 @@ public class QuotaUsageManager
         WebItemManager webItemManager,
         Constants constants,
         CountManagerStatistic countManagerStatistic,
-        ActiveUsersStatistic activeUsersStatistic)
+        CountUserStatistic activeUsersStatistic)
     {
         _tenantManager = tenantManager;
         _coreBaseSettings = coreBaseSettings;
@@ -75,9 +75,9 @@ public class QuotaUsageManager
         {
             StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize),
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter)),
-            MaxUsersCount = quota.ActiveUsers,
+            MaxUsersCount = quota.CountManager,
             UsersCount = _coreBaseSettings.Personal ? 1 : await _countManagerStatistic.GetValue(),
-            MaxVisitors = _coreBaseSettings.Standalone ? -1 : _constants.CoefficientOfVisitors * quota.ActiveUsers,
+            MaxVisitors = _coreBaseSettings.Standalone ? -1 : quota.ActiveUsers,
             VisitorsCount = _coreBaseSettings.Personal ? 0 : await _activeUsersStatistic.GetValue(),
 
             StorageUsage = quotaRows

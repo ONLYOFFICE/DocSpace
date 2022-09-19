@@ -83,11 +83,11 @@ public class TenantQuota : IMapFrom<DbQuota>
         set => _maxTotalSizeFeature.Value = ByteConverter.GetInMBytes(value);
     }
 
-    private readonly ActiveUsersFeature _activeUsersFeature;
+    private readonly CountUserFeature _countUserFeature;
     public int ActiveUsers
     {
-        get => _activeUsersFeature.Value;
-        set => _activeUsersFeature.Value = value;
+        get => _countUserFeature.Value;
+        set => _countUserFeature.Value = value;
     }
 
     private readonly CountManagerFeature _countManagerFeature;
@@ -220,7 +220,7 @@ public class TenantQuota : IMapFrom<DbQuota>
     {
         _featuresList = new List<string>();
 
-        _activeUsersFeature = new ActiveUsersFeature(this) { Order = 1 };
+        _countUserFeature = new CountUserFeature(this) { Order = 1 };
         _countManagerFeature = new CountManagerFeature(this);
         _usersInRoomFeature = new UsersInRoomFeature(this) { Order = 8 };
         _countRoomFeature = new CountRoomFeature(this) { Order = 2 };
@@ -244,7 +244,7 @@ public class TenantQuota : IMapFrom<DbQuota>
 
         TenantQuotaFeatures = new List<TenantQuotaFeature>
         {
-            _activeUsersFeature,
+            _countUserFeature,
             _countManagerFeature,
             _usersInRoomFeature,
             _countRoomFeature,

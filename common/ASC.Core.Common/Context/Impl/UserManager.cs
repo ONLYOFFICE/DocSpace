@@ -62,7 +62,7 @@ public class UserManager
     private readonly ILogger<UserManager> _log;
     private readonly ICache _cache;
     private readonly TenantQuotaFeatureChecker<CountManagerFeature, int> _tenantQuotaFeatureChecker;
-    private readonly TenantQuotaFeatureChecker<ActiveUsersFeature, int> _activeUsersFeatureChecker;
+    private readonly TenantQuotaFeatureChecker<CountUserFeature, int> _activeUsersFeatureChecker;
     private readonly Constants _constants;
 
     private Tenant _tenant;
@@ -86,7 +86,7 @@ public class UserManager
         ILogger<UserManager> log,
         ICache cache,
         TenantQuotaFeatureChecker<CountManagerFeature, int> tenantQuotaFeatureChecker,
-        TenantQuotaFeatureChecker<ActiveUsersFeature, int> activeUsersFeatureChecker
+        TenantQuotaFeatureChecker<CountUserFeature, int> activeUsersFeatureChecker
         )
     {
         _userService = service;
@@ -118,7 +118,7 @@ public class UserManager
         ILogger<UserManager> log,
         ICache cache,
         TenantQuotaFeatureChecker<CountManagerFeature, int> tenantQuotaFeatureChecker,
-        TenantQuotaFeatureChecker<ActiveUsersFeature, int> activeUsersFeatureChecker,
+        TenantQuotaFeatureChecker<CountUserFeature, int> activeUsersFeatureChecker,
         IHttpContextAccessor httpContextAccessor)
         : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker)
     {
