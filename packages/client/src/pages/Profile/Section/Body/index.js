@@ -89,6 +89,9 @@ export default withRouter(
         "Common",
         "PeopleTranslations",
         "ProfileAction",
+        "ResetApplicationDialog",
+        "BackupCodesDialog",
+        "DeleteSelfProfileDialog",
       ])(withPeopleLoader(SectionBodyContent)(<Loaders.ProfileView />))
     )
   )
