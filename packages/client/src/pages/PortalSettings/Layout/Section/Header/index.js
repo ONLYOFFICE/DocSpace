@@ -224,8 +224,6 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderVisible,
       selection,
-      isLoadedPage,
-      location,
     } = this.props;
     const { header, isCategoryOrHeader } = this.state;
     const arrayOfParams = this.getArrayOfParams();
@@ -250,11 +248,7 @@ class SectionHeaderContent extends React.Component {
       },
     ];
 
-    const commonSettings =
-      location.pathname.includes("common/customization") ||
-      location.pathname === "/portal-settings";
-
-    const showLoader = commonSettings ? !isLoadedPage : !tReady;
+    const showLoader = !tReady;
 
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>

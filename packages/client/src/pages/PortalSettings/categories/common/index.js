@@ -12,14 +12,7 @@ import Appearance from "./appearance";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 
 const SubmenuCommon = (props) => {
-  const {
-    t,
-    history,
-    isLoaded,
-    tReady,
-    setIsLoadedSubmenu,
-    isLoadedPage,
-  } = props;
+  const { t, history, isLoaded, tReady, setIsLoadedSubmenu } = props;
   const [currentTab, setCurrentTab] = useState(0);
 
   const isLoadedSetting = isLoaded && tReady;
@@ -69,7 +62,6 @@ const SubmenuCommon = (props) => {
       data={data}
       startSelect={currentTab}
       onSelect={(e) => onSelect(e)}
-      isLoading={!isLoadedPage}
     />
   );
 };
