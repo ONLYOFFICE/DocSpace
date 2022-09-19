@@ -60,7 +60,12 @@ public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChec
 
     public void CheckAdd(T1 newValue)
     {
-        var quota = _tenantManager.GetCurrentTenantQuota();
+        CheckAdd(_tenantManager.GetCurrentTenant().Id, newValue);
+    }
+
+    public void CheckAdd(int tenantId, T1 newValue)
+    {
+        var quota = _tenantManager.GetTenantQuota(tenantId);
         Check(quota, newValue);
     }
 

@@ -72,15 +72,15 @@ public class TenantQuota : IMapFrom<DbQuota>
     private readonly MaxFileSizeFeature _maxFileSizeFeature;
     public long MaxFileSize
     {
-        get => ByteConverter.GetInBytes(_maxFileSizeFeature.Value);
-        set => _maxFileSizeFeature.Value = ByteConverter.GetInMBytes(value);
+        get => _maxFileSizeFeature.Value;
+        set => _maxFileSizeFeature.Value = value;
     }
 
     private readonly MaxTotalSizeFeature _maxTotalSizeFeature;
     public long MaxTotalSize
     {
-        get => ByteConverter.GetInBytes(_maxTotalSizeFeature.Value);
-        set => _maxTotalSizeFeature.Value = ByteConverter.GetInMBytes(value);
+        get => _maxTotalSizeFeature.Value;
+        set => _maxTotalSizeFeature.Value = value;
     }
 
     private readonly CountUserFeature _countUserFeature;

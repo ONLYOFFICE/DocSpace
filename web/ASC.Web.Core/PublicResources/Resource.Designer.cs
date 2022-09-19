@@ -2176,6 +2176,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file size should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_file_size_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_file_size_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The number of managers should not exceed {0}.
         /// </summary>
         public static string TariffsFeature_manager_exception {

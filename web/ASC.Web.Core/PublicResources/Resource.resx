@@ -888,4 +888,7 @@
   <data name="TariffsFeature_users_exception" xml:space="preserve">
     <value>The number of users should not exceed {0}</value>
   </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>The file size should not exceed {0}</value>
+  </data>
 </root>

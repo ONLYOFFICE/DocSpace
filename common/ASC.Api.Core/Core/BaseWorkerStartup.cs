@@ -58,6 +58,8 @@ public class BaseWorkerStartup
         services.AddBaseDbContextPool<MessagesContext>();
         services.AddBaseDbContextPool<WebhooksDbContext>();
 
+        services.RegisterFeature();
+
         services.AddAutoMapper(GetAutoMapperProfileAssemblies());
 
         if (!HostEnvironment.IsDevelopment())

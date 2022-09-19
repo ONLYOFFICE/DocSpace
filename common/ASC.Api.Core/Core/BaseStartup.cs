@@ -118,26 +118,7 @@ public abstract class BaseStartup
         services.AddDistributedTaskQueue();
         services.AddCacheNotify(_configuration);
 
-        services.AddScoped<ITenantQuotaFeatureChecker, CountManagerChecker>();
-        services.AddScoped<TenantQuotaFeatureChecker<CountManagerFeature, int>, CountManagerChecker>();
-        services.AddScoped<CountManagerChecker>();
-
-        services.AddScoped<ITenantQuotaFeatureStat<CountManagerFeature, int>, CountManagerStatistic>();
-        services.AddScoped<CountManagerStatistic>();
-
-        services.AddScoped<ITenantQuotaFeatureChecker, CountUserChecker>();
-        services.AddScoped<TenantQuotaFeatureChecker<CountUserFeature, int>, CountUserChecker>();
-        services.AddScoped<CountUserChecker>();
-
-        services.AddScoped<ITenantQuotaFeatureStat<CountUserFeature, int>, CountUserStatistic>();
-        services.AddScoped<CountUserStatistic>();
-
-        services.AddScoped<ITenantQuotaFeatureChecker, MaxTotalSizeChecker>();
-        services.AddScoped<MaxTotalSizeChecker>();
-
-        services.AddScoped<ITenantQuotaFeatureStat<MaxTotalSizeFeature, long>, MaxTotalSizeStatistic>();
-        services.AddScoped<MaxTotalSizeStatistic>();
-
+        services.RegisterFeature();
 
         DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 

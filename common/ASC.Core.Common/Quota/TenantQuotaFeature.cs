@@ -43,7 +43,7 @@ public class TenantQuotaFeature<T> : TenantQuotaFeature
 {
     private readonly TenantQuota _tenantQuota;
 
-    public T Value
+    public virtual T Value
     {
         get
         {
@@ -122,6 +122,12 @@ public class TenantQuotaFeatureSize : TenantQuotaFeature<long>
         {
             Value *= quantity;
         }
+    }
+
+    public override long Value
+    {
+        get => ByteConverter.GetInBytes(base.Value);
+        set => base.Value = ByteConverter.GetInMBytes(value);
     }
 }
 

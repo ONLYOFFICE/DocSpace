@@ -24,17 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Quota.Features;
+namespace ASC.Web.Core.Quota;
 
-public class MaxFileSizeFeature : TenantQuotaFeatureSize
+public class MaxFileSizeChecker : TenantQuotaFeatureChecker<MaxFileSizeFeature, long>
 {
-    public override string Name { get => "file_size"; }
-    public MaxFileSizeFeature(TenantQuota tenantQuota) : base(tenantQuota)
+    public override string Exception => Resource.TariffsFeature_file_size_exception;
+
+    public MaxFileSizeChecker(ITenantQuotaFeatureStat<MaxFileSizeFeature, long> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
+    {
+    }
+}
+
+public class MaxFileSizeStatistic : ITenantQuotaFeatureStat<MaxFileSizeFeature, long>
+{
+    public MaxFileSizeStatistic()
     {
     }
 
-    protected internal override void Multiply(int quantity)
+    public Task<long> GetValue()
     {
-
+        return Task.FromResult(0L);
     }
 }
