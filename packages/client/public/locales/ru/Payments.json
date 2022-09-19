@@ -37,6 +37,6 @@
   "StripeCustomerPortal": "перейти на клиентский портал Stripe",
   "SendRequest": "Отправить запрос",
   "UpgradeNow": "Обновить прямо сейчас",
-  "UserNotFound": "Пользователь {{email}} не найден",
+  "UserNotFound": "Пользователь <1>«{{email}}»</1> не найден",
   "YourPrice": "Ваша стоимость"
 }

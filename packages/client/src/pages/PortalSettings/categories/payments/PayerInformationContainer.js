@@ -52,14 +52,15 @@ const PayerInformationContainer = ({
   theme,
   user,
   accountLink,
-  payer,
+  isPayer,
   payerInfo,
+  payerEmail,
 }) => {
   const { t } = useTranslation("Payments");
 
-  const email = payerInfo ? payerInfo.email : t("InvalidEmail");
+  const email = payerEmail;
 
-  const isLinkAvailable = user.isOwner || payer;
+  const isLinkAvailable = user.isOwner || isPayer;
 
   const renderTooltip = (
     <HelpButton
@@ -75,8 +76,8 @@ const PayerInformationContainer = ({
 
   const unknownPayerInformation = (
     <div>
-      <Text as="span" fontSize="13px" isBold>
-        {email}
+      <Text as="span" fontSize="13px" isBold noSelect>
+        {t("InvalidEmail")}
         {"."}
       </Text>
       {isLinkAvailable ? (
@@ -128,7 +129,11 @@ const PayerInformationContainer = ({
         payerInfo.displayName
       ) : (
         <Trans t={t} i18nKey="UserNotFound" ns="Payments">
-          {{ email: "test email" }}
+          User
+          <Text as="span" color={"#F21C0E"} fontWeight={600}>
+            {{ email }}
+          </Text>
+          is not found
         </Trans>
       )}
     </Text>

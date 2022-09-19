@@ -55,14 +55,14 @@ const PriceCalculation = ({
   setIsLoading,
   maxAvailableManagersCount,
   isFreeTariff,
-  payer,
+  isPayer,
   isGracePeriod,
   isNotPaidPeriod,
   initializeInfo,
   priceManagerPerMonth,
   currencySymbol,
 }) => {
-  const isAlreadyPaid = !isFreeTariff;
+  const isAlreadyPaid = !isFreeTariff; //TODO:
 
   useEffect(() => {
     initializeInfo(isAlreadyPaid);
@@ -118,7 +118,7 @@ const PriceCalculation = ({
 
   const isDisabled = isFreeTariff
     ? false
-    : (!user.isOwner && !user.isAdmin) || !payer;
+    : (!user.isOwner && !user.isAdmin) || !isPayer;
 
   const color = isDisabled ? { color: theme.text.disableColor } : {};
 
@@ -146,7 +146,11 @@ const PriceCalculation = ({
         <Text
           noSelect
           fontSize={"11px"}
-          color={theme.client.settings.payment.priceColor}
+          color={
+            isDisabled
+              ? theme.client.settings.payment.disabledPriceColor
+              : theme.client.settings.payment.priceColor
+          }
           fontWeight={600}
         >
           <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
@@ -155,11 +159,16 @@ const PriceCalculation = ({
               fontSize="16px"
               isBold
               as="span"
-              color={theme.text.disableColor.color}
+              fontWeight={600}
+              color={
+                isDisabled
+                  ? theme.client.settings.payment.disabledPriceColor
+                  : theme.client.settings.payment.priceColor
+              }
             >
               {{ currencySymbol }}
             </Text>
-            <Text fontSize="16px" isBold as="span" color="black">
+            <Text fontSize="16px" isBold as="span" fontWeight={600}>
               {{ price: priceManagerPerMonth }}
             </Text>
             per manager/month

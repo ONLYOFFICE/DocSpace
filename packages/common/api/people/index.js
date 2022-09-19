@@ -46,7 +46,7 @@ export function getUser(userName = null) {
 export function getUserByEmail(userEmail) {
   return request({
     method: "get",
-    url: `/people4/email`,
+    url: `/people/email?email=${userEmail}`,
   }).then((user) => {
     if (user && user.displayName) {
       user.displayName = Encoder.htmlDecode(user.displayName);

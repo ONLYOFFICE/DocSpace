@@ -134,7 +134,7 @@ class PaymentStore {
     const currentTotalPrice = authStore.currentQuotaStore.currentPlanCost.value;
 
     if (currentTotalPrice !== 0) {
-      this.totalPrice = currentTotalPrice.value;
+      this.totalPrice = currentTotalPrice;
     } else {
       this.totalPrice = this.getTotalCostByFormula(
         this.minAvailableManagersValue
@@ -143,14 +143,14 @@ class PaymentStore {
   };
 
   initializeManagersCount = () => {
-    const currentPaidValueManagers =
+    const maxCountManagersByQuota =
       authStore.currentQuotaStore.maxCountManagersByQuota;
 
-    if (currentPaidValueManagers !== 0) {
+    if (maxCountManagersByQuota !== 0) {
       this.managersCount =
-        currentPaidValueManagers > this.maxAvailableManagersCount
+        maxCountManagersByQuota > this.maxAvailableManagersCount
           ? this.maxAvailableManagersCount + 1
-          : currentPaidValueManagers;
+          : maxCountManagersByQuota;
     } else {
       this.managersCount = this.minAvailableManagersValue;
     }

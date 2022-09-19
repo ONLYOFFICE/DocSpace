@@ -85,7 +85,9 @@ const UpdatePlanButtonContainer = ({
         label={t("UpgradeNow")}
         size={"medium"}
         primary
-        isDisabled={isTheSameCount || isLoading || isDisabled}
+        isDisabled={
+          isLessCountThanAcceptable || isTheSameCount || isLoading || isDisabled
+        }
         onClick={onUpdateTariff}
         isLoading={isLoading}
       />

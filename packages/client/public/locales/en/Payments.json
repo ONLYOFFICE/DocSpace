@@ -36,6 +36,6 @@
   "StripeCustomerPortal": "go to the Stripe customer portal",
   "SendRequest": "Send request",
   "UpgradeNow": "Upgrade now",
-  "UserNotFound": "User {{email}} is not found",
+  "UserNotFound": "User <1>«{{email}}»</1> is not found",
   "YourPrice": "Your price"
 }

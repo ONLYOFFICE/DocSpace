@@ -17,7 +17,7 @@ import moment from "moment";
 import { HelpButton } from "@docspace/components";
 import PayerInformationContainer from "./PayerInformationContainer";
 import { TariffState } from "@docspace/common/constants";
-import { getUser, getUserByEmail } from "@docspace/common/api/people";
+import { getUserByEmail } from "@docspace/common/api/people";
 
 const StyledBody = styled.div`
   max-width: 660px;
@@ -68,7 +68,7 @@ const PaymentsPage = ({
   isNotPaidPeriod,
   getSettingsPayment,
   setRangeBound,
-  payerId,
+  payerEmail,
   user,
   isPaidPeriod,
   currencySymbol,
@@ -133,7 +133,7 @@ const PaymentsPage = ({
       }
 
       try {
-        if (!isFreeTariff) payerInfo = await getUser(payerId);
+        if (!isFreeTariff) payerInfo = await getUserByEmail(payerEmail);
       } catch (e) {
         console.error(e);
       }
@@ -162,9 +162,6 @@ const PaymentsPage = ({
       </>
     );
   };
-
-  const convertedPrice = `${currencySymbol}${startValue}`;
-  const payer = user.id === payerId;
 
   const textComponent = (elem, className) => {
     return (
@@ -242,7 +239,10 @@ const PaymentsPage = ({
 
     return;
   };
-  console.log("isInitialLoading", isInitialLoading, ready);
+
+  const convertedPrice = `${currencySymbol}${startValue}`;
+  const isPayer = user.email === payerEmail;
+
   return isInitialLoading || !ready ? (
     <Loaders.PaymentsLoader />
   ) : (
@@ -250,7 +250,11 @@ const PaymentsPage = ({
       {isNotPaidPeriod ? expiredTitleSubscriptionWarning() : currentPlanTitle()}
 
       {!isFreeTariff && (
-        <PayerInformationContainer payerInfo={payerInfo} payer={payer} />
+        <PayerInformationContainer
+          payerInfo={payerInfo}
+          isPayer={isPayer}
+          payerEmail={payerEmail}
+        />
       )}
 
       <CurrentTariffContainer />
@@ -290,7 +294,7 @@ const PaymentsPage = ({
         {renderTooltip()}
       </div>
       <div className="payment-info">
-        <PriceCalculation t={t} payer={payer} />
+        <PriceCalculation t={t} isPayer={isPayer} />
         {!isGracePeriod && !isNotPaidPeriod && <BenefitsContainer t={t} />}
       </div>
       <ContactContainer t={t} />
@@ -353,7 +357,7 @@ export default inject(({ auth, payments }) => {
     isNotPaidPeriod,
     getSettingsPayment,
     setRangeBound,
-    payerId: customerId,
+    payerEmail: customerId,
     user,
     isPaidPeriod,
     setPortalPaymentQuotas,

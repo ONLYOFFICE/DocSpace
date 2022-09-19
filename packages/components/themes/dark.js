@@ -2866,7 +2866,8 @@ const Dark = {
       },
 
       payment: {
-        priceColor: "#A3A9AE",
+        priceColor: "#555F65",
+        disabledPriceColor: "#A3A9AE",
         storageSizeTitle: "#A3A9AE",
       },
     },
