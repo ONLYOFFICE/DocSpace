@@ -685,7 +685,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var count = Convert.ToInt32(_apiContext.Count);
         var filterValue = _apiContext.FilterValue;
 
-        var content = await _fileStorageService.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
+        var content = await _fileStorageServiceInt.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
             searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
@@ -844,8 +844,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
             new AceWrapper
             {
                 Access = options.Share,
-                Id = _authContext.CurrentAccount.ID,
-                SubjectGroup = false,
+                Id = _authContext.CurrentAccount.ID
             }
         };
 
