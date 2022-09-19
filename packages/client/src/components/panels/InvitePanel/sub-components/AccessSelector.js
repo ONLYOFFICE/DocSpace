@@ -16,6 +16,7 @@ const AccessSelector = ({ t, roomType, onSelectAccess, containerRef }) => {
         noBorder={false}
         directionX="right"
         manualWidth={width + "px"}
+        isDefaultMode={false}
       />
     </StyledAccessSelector>
   );

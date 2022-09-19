@@ -70,7 +70,8 @@ const StyledRow = styled.div`
   }
 `;
 
-const StyledInviteInput = styled(TextInput)`
+const StyledInviteInput = styled.div`
+  ${fillAvailableWidth}
   margin-left: 16px;
   margin-right: ${(props) => (props.hideSelector ? "16px" : "8px")};
 `;
@@ -107,8 +108,7 @@ const StyledInviteInputContainer = styled.div`
 `;
 
 const StyledDropDown = styled(DropDown)`
-  ${fillAvailableWidth}
-
+  ${(props) => props.width && `width: ${props.width}px`};
   .list-item {
     display: flex;
     align-items: center;
