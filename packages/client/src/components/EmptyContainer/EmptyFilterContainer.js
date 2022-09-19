@@ -18,7 +18,9 @@ const EmptyFilterContainer = ({
   isRooms,
 }) => {
   const subheadingText = t("EmptyFilterSubheadingText");
-  const descriptionText = t("EmptyFilterDescriptionText");
+  const descriptionText = isRooms
+    ? t("EmptyFilterDescriptionTextRooms")
+    : t("EmptyFilterDescriptionText");
 
   const onResetFilter = () => {
     setIsLoading(true);
