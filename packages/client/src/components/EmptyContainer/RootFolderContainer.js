@@ -37,6 +37,7 @@ const RootFolderContainer = (props) => {
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
   const trashHeader = t("EmptyScreenFolder");
+  const recentHeader = t("NoFilesHereYet");
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
@@ -87,8 +88,10 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Recent:
         return {
+          headerText: recentHeader,
           descriptionText: recentDescription,
-          imageSrc: "images/empty_screen_recent.png",
+          imageSrc: "images/empty_screen_recent.svg",
+          buttons: recentButtons,
         };
       case FolderType.Privacy:
         return {
@@ -223,6 +226,17 @@ const RootFolderContainer = (props) => {
       <Link onClick={onCreateRoom} {...linkStyles}>
         Create room
       </Link>
+    </div>
+  );
+
+  const recentButtons = (
+    <div className="empty-folder_container-links">
+      <img
+        className="empty-folder_container_person-image"
+        src="images/person.svg"
+        alt="person_icon"
+      />
+      <Link {...linkStyles}>{t("GoToPersonal")}</Link>
     </div>
   );
 
