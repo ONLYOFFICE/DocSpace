@@ -2,19 +2,21 @@ import React from "react";
 import styled, { css } from "styled-components";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
+import { tablet, smallTablet } from "@docspace/components/utils/device";
 
 const EmptyPageStyles = css`
-  padding: 0 36px 64px 12px;
+  padding: 44px 0px 64px 0px;
 
-  @media (min-width: 600px) {
-    padding: 40px 68px 64px 93px;
+  grid-column-gap: 40px;
+  grid-template-columns: 100px 1fr;
+
+  @media ${tablet} {
+    padding: 44px 68px 64px 93px;
     grid-column-gap: 33px;
   }
 
-  @media (min-width: 1024px) {
-    padding: 40px 0px 64px 0px;
-    grid-column-gap: 40px;
-    grid-template-columns: 100px 1fr;
+  @media ${smallTablet} {
+    padding: 20px 45px 64px 11px;
   }
 `;
 
