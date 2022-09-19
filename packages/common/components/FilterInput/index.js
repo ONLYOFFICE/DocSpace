@@ -7,6 +7,7 @@ import {
 } from "@docspace/components/utils/device";
 
 import ViewSelector from "@docspace/components/view-selector";
+import Link from "@docspace/components/link";
 
 import FilterButton from "./sub-components/FilterButton";
 import SortButton from "./sub-components/SortButton";
@@ -34,9 +35,14 @@ const FilterInput = React.memo(
 
     filterHeader,
     selectorLabel,
+    clearAll,
 
     isRecentFolder,
     removeSelectedItem,
+
+    isPersonalRoom,
+    isRooms,
+    isAccounts,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
@@ -52,7 +58,7 @@ const FilterInput = React.memo(
     React.useEffect(() => {
       const value = getSelectedInputValue && getSelectedInputValue();
 
-      if (value) setInputValue(value);
+      setInputValue(value);
     }, [getSelectedInputValue]);
 
     React.useEffect(() => {
@@ -116,6 +122,9 @@ const FilterInput = React.memo(
             selectedFilterValue={selectedFilterValue}
             filterHeader={filterHeader}
             selectorLabel={selectorLabel}
+            isPersonalRoom={isPersonalRoom}
+            isRooms={isRooms}
+            isAccounts={isAccounts}
           />
           {!isRecentFolder && (
             <SortButton
@@ -159,6 +168,18 @@ const FilterInput = React.memo(
                 removeSelectedItem={removeSelectedItemAction}
               />
             ))}
+            {selectedItems.length > 1 && (
+              <Link
+                className={"clear-all-link"}
+                isHovered
+                fontWeight={600}
+                isSemitransparent
+                type="action"
+                onClick={clearAll}
+              >
+                {t("Common:ClearAll")}
+              </Link>
+            )}
           </div>
         )}
       </StyledFilterInput>

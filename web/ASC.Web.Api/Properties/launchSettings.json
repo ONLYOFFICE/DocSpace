@@ -7,7 +7,7 @@
       "environmentVariables": {
         "$STORAGE_ROOT": "../../Data",
         "log__dir": "../../Logs",
-        "log__name": "api",
+        "log__name": "web.api",
         "ASPNETCORE_URLS": "http://localhost:5000",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -19,7 +19,7 @@
       "environmentVariables": {
         "$STORAGE_ROOT": "../../Data",
         "log__dir": "../../Logs",
-        "log__name": "api",
+        "log__name": "web.api",
         "ASPNETCORE_URLS": "http://localhost:5000",
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

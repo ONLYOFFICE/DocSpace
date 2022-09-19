@@ -270,35 +270,3 @@ public abstract class BaseStartup
     }
 }
 
-public static class LogNLogConfigureExtenstion
-{
-    private static LoggingConfiguration GetXmlLoggingConfiguration(IHostEnvironment hostEnvironment, IConfiguration configuration)
-    {
-        var loggerConfiguration = new XmlLoggingConfiguration(CrossPlatform.PathCombine(configuration["pathToConf"], "nlog.config"));
-
-        var settings = new ConfigurationExtension(configuration).GetSetting<NLogSettings>("log");
-
-        if (!string.IsNullOrEmpty(settings.Name))
-        {
-            loggerConfiguration.Variables["name"] = settings.Name;
-        }
-
-        if (!string.IsNullOrEmpty(settings.Dir))
-        {
-            var dir = Path.IsPathRooted(settings.Dir) ? settings.Dir : CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, settings.Dir);
-            loggerConfiguration.Variables["dir"] = dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
-        }
-
-        return loggerConfiguration;
-    }
-
-    public static IHostBuilder ConfigureNLogLogging(this IHostBuilder hostBuilder)
-    {
-        return hostBuilder.ConfigureLogging((hostBuildexContext, r) =>
-        {
-            LogManager.ThrowConfigExceptions = false;
-
-            r.AddNLog(GetXmlLoggingConfiguration(hostBuildexContext.HostingEnvironment, hostBuildexContext.Configuration));
-        });
-    }
-}
