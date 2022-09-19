@@ -263,7 +263,7 @@ class Section extends React.Component {
     });
 
     const isSectionHeaderAvailable = !!sectionHeaderContent,
-      isSectionFilterAvailable = !!sectionFilterContent,
+      isSectionFilterAvailable = !!sectionFilterContent && !isEmptyFilesList,
       isSectionPagingAvailable = !!sectionPagingContent,
       isSectionBodyAvailable =
         !!sectionBodyContent ||
@@ -336,20 +336,18 @@ class Section extends React.Component {
                           : null}
                       </SubSectionHeader>
                     )}
-                    {isSectionFilterAvailable &&
-                      !isMobile &&
-                      !isEmptyFilesList && (
-                        <>
-                          <SubSectionFilter
-                            className="section-header_filter"
-                            viewAs={viewAs}
-                          >
-                            {sectionFilterContent
-                              ? sectionFilterContent.props.children
-                              : null}
-                          </SubSectionFilter>
-                        </>
-                      )}
+                    {isSectionFilterAvailable && !isMobile && (
+                      <>
+                        <SubSectionFilter
+                          className="section-header_filter"
+                          viewAs={viewAs}
+                        >
+                          {sectionFilterContent
+                            ? sectionFilterContent.props.children
+                            : null}
+                        </SubSectionFilter>
+                      </>
+                    )}
 
                     {isSectionBodyAvailable && (
                       <>
@@ -399,15 +397,13 @@ class Section extends React.Component {
                             </SubSectionHeader>
                           )}
 
-                          {isSectionFilterAvailable &&
-                            isMobile &&
-                            !isEmptyFilesList && (
-                              <SubSectionFilter className="section-body_filter">
-                                {sectionFilterContent
-                                  ? sectionFilterContent.props.children
-                                  : null}
-                              </SubSectionFilter>
-                            )}
+                          {isSectionFilterAvailable && isMobile && (
+                            <SubSectionFilter className="section-body_filter">
+                              {sectionFilterContent
+                                ? sectionFilterContent.props.children
+                                : null}
+                            </SubSectionFilter>
+                          )}
 
                           <SubSectionBodyContent>
                             {sectionBodyContent
