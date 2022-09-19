@@ -1,1 +1,1 @@
-export default from "./recover-access-modal-dialog";
+export default from "./recover-access-modal-dialog.tsx";
