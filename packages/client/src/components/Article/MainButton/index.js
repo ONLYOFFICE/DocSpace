@@ -366,6 +366,7 @@ const ArticleMainButtonContent = (props) => {
     : t("Common:Actions");
 
   const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
+  const isDisplayImageMainButton = !isArchiveFolder;
 
   return (
     <>
@@ -404,6 +405,7 @@ const ArticleMainButtonContent = (props) => {
         <MainButton
           id="files_main-button"
           isDisabled={isDisabled}
+          isDisplayImage={isDisplayImageMainButton}
           isDropdown={true}
           text={mainButtonText}
           model={model}
