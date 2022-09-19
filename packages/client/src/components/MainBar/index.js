@@ -19,6 +19,15 @@ const StyledContainer = styled.div`
     margin-right: -16px;
     margin-top: 48px;
   `}
+
+  #bar-banner {
+    margin-bottom: -3px;
+  }
+
+  #bar-frame {
+    min-width: 100%;
+    max-width: 100%;
+  }
 `;
 
 const MainBar = ({
@@ -27,6 +36,10 @@ const MainBar = ({
   snackbarExist,
   setMaintenanceExist,
 }) => {
+  React.useEffect(() => {
+    return () => setMaintenanceExist && setMaintenanceExist(false);
+  }, []);
+
   return (
     <StyledContainer id={"main-bar"} className={"main-bar"}>
       {/* {checkedMaintenance && !snackbarExist && (
