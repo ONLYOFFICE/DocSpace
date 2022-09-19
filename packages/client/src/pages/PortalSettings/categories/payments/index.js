@@ -241,8 +241,7 @@ const PaymentsPage = ({
   };
 
   const convertedPrice = `${currencySymbol}${startValue}`;
-  const isPayer = true;
-  //user.email === payerEmail;
+  const isPayer = user.email === payerEmail;
 
   return isInitialLoading || !ready ? (
     <Loaders.PaymentsLoader />
@@ -250,7 +249,7 @@ const PaymentsPage = ({
     <StyledBody theme={theme}>
       {isNotPaidPeriod ? expiredTitleSubscriptionWarning() : currentPlanTitle()}
 
-      {!isFreeTariff && (
+      {(!isFreeTariff || (isFreeTariff && isNotPaidPeriod)) && (
         <PayerInformationContainer
           payerInfo={payerInfo}
           isPayer={isPayer}

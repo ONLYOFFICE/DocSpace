@@ -65,7 +65,7 @@ const PriceCalculation = ({
   priceManagerPerMonth,
   currencySymbol,
 }) => {
-  const isAlreadyPaid = !isFreeTariff; //TODO:
+  const isAlreadyPaid = !isFreeTariff || (isFreeTariff && isNotPaidPeriod);
 
   useEffect(() => {
     initializeInfo(isAlreadyPaid);
