@@ -36,6 +36,10 @@ const EmptyFolderWrapper = styled.div`
       flex-wrap: wrap;
     }
 
+    .empty-folder_container_folder-image {
+      cursor: pointer;
+    }
+
     .empty-folder_container_up-image,
     .empty-folder_container_plus-image {
       margin: 4px 8px 0 0;
