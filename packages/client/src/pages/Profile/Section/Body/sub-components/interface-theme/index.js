@@ -11,6 +11,7 @@ import { ThemeKeys } from "@docspace/common/constants";
 import ThemePreview from "./theme-preview";
 
 import { smallTablet } from "@docspace/components/utils/device";
+import { showLoader, hideLoader } from "@docspace/common/utils";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -49,20 +50,15 @@ const StyledWrapper = styled.div`
 
 const InterfaceTheme = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
-  const {
-    theme,
-    changeTheme,
-    setIsLoading,
-    currentColorScheme,
-    selectedThemeId,
-  } = props;
+  const { theme, changeTheme, currentColorScheme, selectedThemeId } = props;
 
   const themeChange = async (theme) => {
+    showLoader();
+
     try {
-      setIsLoading(true);
       await changeTheme(theme);
     } finally {
-      setIsLoading(false);
+      hideLoader();
     }
   };
 
@@ -142,9 +138,8 @@ const InterfaceTheme = (props) => {
   );
 };
 
-export default inject(({ auth, peopleStore }) => {
+export default inject(({ auth }) => {
   const { userStore, settingsStore } = auth;
-  const { loadingStore } = peopleStore;
 
   const { changeTheme, user } = userStore;
   const { currentColorScheme, selectedThemeId } = settingsStore;
@@ -152,7 +147,6 @@ export default inject(({ auth, peopleStore }) => {
   return {
     changeTheme,
     theme: user.theme,
-    setIsLoading: loadingStore.setIsLoading,
     currentColorScheme,
     selectedThemeId,
   };
