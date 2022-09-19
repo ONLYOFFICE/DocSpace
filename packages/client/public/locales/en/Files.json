@@ -19,6 +19,7 @@
   "Document": "Document",
   "EmptyFile": "Empty file",
   "EmptyFilterDescriptionText": "No files or folders match this filter. Try a different one or clear filter to view all files. ",
+  "EmptyFilterDescriptionTextRooms": "No rooms match this filter. Try a different one or clear filter to view all rooms.",
   "EmptyFilterSubheadingText": "No files to be displayed for this filter here",
   "EmptyFolderDecription": "Drop files here or create new ones.",
   "EmptyFolderHeader": "No files in this folder",
