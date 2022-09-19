@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 
-const isRootFolderStyles = css`
+const EmptyPageStyles = css`
   padding: 0 36px 64px 12px;
 
   @media (min-width: 600px) {
@@ -64,7 +64,7 @@ const EmptyFolderWrapper = styled.div`
       bottom: 16px;
     }
 
-    ${(props) => props.isRootStyles && `${isRootFolderStyles}`}
+    ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
   }
 `;
 
@@ -79,11 +79,11 @@ const EmptyFoldersContainer = (props) => {
     style,
     imageStyle,
     buttonStyle,
-    isRootStyles,
+    isEmptyPage,
   } = props;
 
   return (
-    <EmptyFolderWrapper isRootStyles={isRootStyles}>
+    <EmptyFolderWrapper isEmptyPage={isEmptyPage}>
       <EmptyScreenContainer
         className="empty-folder_container"
         style={style}
@@ -95,7 +95,7 @@ const EmptyFoldersContainer = (props) => {
         subheadingText={subheadingText}
         descriptionText={descriptionText}
         buttons={buttons}
-        isRootStyles={isRootStyles}
+        isEmptyPage={isEmptyPage}
       />
     </EmptyFolderWrapper>
   );
