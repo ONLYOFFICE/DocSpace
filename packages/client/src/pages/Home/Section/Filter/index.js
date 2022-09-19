@@ -220,6 +220,7 @@ const SectionFilterContent = ({
       }
     },
     [
+      isRooms,
       fetchFiles,
       fetchRooms,
       setIsLoading,
@@ -253,6 +254,7 @@ const SectionFilterContent = ({
       }
     },
     [
+      isRooms,
       setIsLoading,
       fetchFiles,
       fetchRooms,
@@ -285,6 +287,7 @@ const SectionFilterContent = ({
       }
     },
     [
+      isRooms,
       setIsLoading,
       fetchFiles,
       fetchRooms,
@@ -1025,6 +1028,7 @@ const SectionFilterContent = ({
       }
     },
     [
+      isRooms,
       fetchFiles,
       fetchRooms,
       setIsLoading,
