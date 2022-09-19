@@ -79,6 +79,7 @@
   "RemovedFromFavorites": "Removed from favorites",
   "Rename": "Rename",
   "ReviewRooms": "Review",
+  "RoomEmptyContainerDescription": "Please create the first room.",
   "RoomRemoved": "Room removed",
   "RoomsRemoved": "Rooms removed",
   "SearchByContent": "Search by file contents",

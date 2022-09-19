@@ -50,7 +50,7 @@ const RootFolderContainer = (props) => {
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
-  const roomsDescription = "Please create the first room.";
+  const roomsDescription = t("RoomEmptyContainerDescription");
   const archiveRoomsDescription = t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
