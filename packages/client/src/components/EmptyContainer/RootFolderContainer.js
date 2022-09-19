@@ -63,15 +63,18 @@ const RootFolderContainer = (props) => {
   ];
 
   const [showLoader, setShowLoader] = React.useState(false);
-  const [applyRootStyles, setApplyRootStyles] = React.useState(false);
+  const [isEmptyPage, setIsEmptyPage] = React.useState(false);
 
   React.useEffect(() => {
-    if (rootFolderType === 20) {
-      setApplyRootStyles(true);
+    if (
+      rootFolderType !== FolderType.USER &&
+      rootFolderType !== FolderType.COMMON
+    ) {
+      setIsEmptyPage(true);
     } else {
-      setApplyRootStyles(false);
+      setIsEmptyPage(false);
     }
-  }, [rootFolderType, setApplyRootStyles]);
+  }, [isEmptyPage, setIsEmptyPage]);
 
   const onGoToMyDocuments = () => {
     const newFilter = filter.clone();
@@ -314,7 +317,7 @@ const RootFolderContainer = (props) => {
       ) : (
         <EmptyContainer
           headerText={headerText}
-          isRootStyles={applyRootStyles}
+          isEmptyPage={isEmptyPage}
           {...subheadingTextProp}
           {...emptyFolderProps}
         />
