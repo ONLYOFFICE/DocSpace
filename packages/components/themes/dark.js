@@ -1079,7 +1079,7 @@ const Dark = {
 
     image: {
       width: "100%",
-      height: "auto",
+      height: "100%",
       borderRadius: "50%",
     },
 
