@@ -198,7 +198,7 @@ public class LicenseReader
 
         var quota = new TenantQuota(-1000)
         {
-            ActiveUsers = _constants.MaxEveryoneCount,
+            CountUser = _constants.MaxEveryoneCount,
             MaxFileSize = defaultQuota.MaxFileSize,
             MaxTotalSize = defaultQuota.MaxTotalSize,
             Name = "license",
