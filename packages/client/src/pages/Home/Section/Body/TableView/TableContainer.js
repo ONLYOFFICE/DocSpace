@@ -8,6 +8,7 @@ import TableBody from "@docspace/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 import styled, { css } from "styled-components";
 import { Base } from "@docspace/components/themes";
+import { TableVersions } from "SRC_DIR/helpers/constants";
 
 const marginCss = css`
   margin-top: -1px;
@@ -98,15 +99,13 @@ const StyledTableContainer = styled(TableContainer)`
 
 StyledTableContainer.defaultProps = { theme: Base };
 
-const TABLE_VERSION = "2";
-const TABLE_COLUMNS = `filesTableColumns_ver-${TABLE_VERSION}`;
-const COLUMNS_SIZE = `filesColumnsSize_ver-${TABLE_VERSION}`;
-const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TABLE_VERSION}`;
+const TABLE_COLUMNS = `filesTableColumns_ver-${TableVersions.Files}`;
+const COLUMNS_SIZE = `filesColumnsSize_ver-${TableVersions.Files}`;
+const COLUMNS_SIZE_INFO_PANEL = `filesColumnsSizeInfoPanel_ver-${TableVersions.Files}`;
 
-const TABLE_ROOMS_VERSION = "1";
-const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TABLE_ROOMS_VERSION}`;
-const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TABLE_ROOMS_VERSION}`;
-const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TABLE_ROOMS_VERSION}`;
+const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TableVersions.Rooms}`;
+const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TableVersions.Rooms}`;
+const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TableVersions.Rooms}`;
 
 const Table = ({
   filesList,
@@ -122,7 +121,6 @@ const Table = ({
   hasMoreFiles,
   filterTotal,
   isRooms,
-  selectedFolderId,
   withPaging,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
@@ -208,7 +206,6 @@ const Table = ({
         useReactWindow={!withPaging}
         infoPanelVisible={infoPanelVisible}
         columnInfoPanelStorageName={columnInfoPanelStorageName}
-        selectedFolderId={selectedFolderId}
         itemHeight={49}
       >
         {filesList.map((item, index) => {
@@ -250,43 +247,40 @@ const Table = ({
   );
 };
 
-export default inject(
-  ({ filesStore, treeFoldersStore, auth, selectedFolderStore }) => {
-    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+export default inject(({ filesStore, treeFoldersStore, auth }) => {
+  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
-    const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
-    const isRooms = isRoomsFolder || isArchiveFolder;
+  const isRooms = isRoomsFolder || isArchiveFolder;
 
-    const {
-      filesList,
-      viewAs,
-      setViewAs,
-      setFirsElemChecked,
-      setHeaderBorder,
-      fetchMoreFiles,
-      hasMoreFiles,
-      filterTotal,
-      roomsFilterTotal,
-    } = filesStore;
+  const {
+    filesList,
+    viewAs,
+    setViewAs,
+    setFirsElemChecked,
+    setHeaderBorder,
+    fetchMoreFiles,
+    hasMoreFiles,
+    filterTotal,
+    roomsFilterTotal,
+  } = filesStore;
 
-    const { withPaging, theme } = auth.settingsStore;
+  const { withPaging, theme } = auth.settingsStore;
 
-    return {
-      filesList,
-      viewAs,
-      setViewAs,
-      setFirsElemChecked,
-      setHeaderBorder,
-      theme,
-      userId: auth.userStore.user.id,
-      infoPanelVisible,
-      fetchMoreFiles,
-      hasMoreFiles,
-      filterTotal: isRooms ? roomsFilterTotal : filterTotal,
-      isRooms,
-      selectedFolderId: selectedFolderStore.id,
-      withPaging,
-    };
-  }
-)(observer(Table));
+  return {
+    filesList,
+    viewAs,
+    setViewAs,
+    setFirsElemChecked,
+    setHeaderBorder,
+    theme,
+    userId: auth.userStore.user.id,
+    infoPanelVisible,
+    fetchMoreFiles,
+    hasMoreFiles,
+    filterTotal: isRooms ? roomsFilterTotal : filterTotal,
+    isRooms,
+    withPaging,
+  };
+})(observer(Table));

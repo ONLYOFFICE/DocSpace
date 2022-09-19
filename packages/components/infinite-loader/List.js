@@ -17,13 +17,8 @@ const ListComponent = ({
   className,
   scroll,
   infoPanelVisible,
-  selectedFolderId,
 }) => {
   const loaderRef = createRef();
-
-  useEffect(() => {
-    setTimeout(() => loaderRef?.current?.resetLoadMoreRowsCache(true), 1000);
-  }, [loaderRef, selectedFolderId, filesLength]);
 
   const renderRow = ({ key, index, style }) => {
     const isLoaded = isItemLoaded({ index });

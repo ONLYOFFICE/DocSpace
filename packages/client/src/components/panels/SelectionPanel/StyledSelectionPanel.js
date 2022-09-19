@@ -21,6 +21,8 @@ const commonStyles = css`
 const StyledModalDialog = styled(ModalDialog)`
   #modal-dialog {
     max-height: 560px;
+    display: flex;
+    flex-direction: column;
   }
 
   .select-panel-modal-header {
@@ -56,9 +58,9 @@ const StyledBody = styled.div`
       display: grid;
       grid-template-rows: max-content auto;
     }
-    .selection-panel_files-list-body {
+    /* .selection-panel_files-list-body {
       height: 384px;
-    }
+    } */
     .selection-panel_tree-body {
       grid-area: tree;
       height: 100%;
