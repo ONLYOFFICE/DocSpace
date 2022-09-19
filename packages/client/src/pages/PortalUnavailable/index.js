@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { ReactSVG } from "react-svg";
 import Button from "@docspace/components/button";
-import RecoverAccessModalDialog from "login/recoverAccessModalDialog";
+import RecoverAccessModalDialog from "@docspace/common/components/RecoverAccessModalDialog";
 
 const StyledBodyContent = styled.div`
   max-width: 480px;

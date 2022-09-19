@@ -14,6 +14,8 @@ import { useTranslation } from "react-i18next";
 interface IRecoverAccessModalDialogProps {
   visible: boolean;
   onClose: () => void;
+  textBody: string;
+  emailPlaceholderText: string;
 }
 
 const ModalDialogContainer = styled(ModalDialog)`
@@ -111,7 +113,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
           isBold={false}
           fontSize="13px"
         >
-          {textBody ? textBody : t("RecoverTextBody")}
+          {textBody}
         </Text>
         <FieldContainer
           key="e-mail"
@@ -128,11 +130,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
             size="base"
             scale={true}
             tabIndex={3}
-            placeholder={
-              emailPlaceholderText
-                ? emailPlaceholderText
-                : t("RecoverContactEmailPlaceholder")
-            }
+            placeholder={emailPlaceholderText}
             isAutoFocussed={true}
             isDisabled={loading}
             value={email}
