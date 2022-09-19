@@ -278,12 +278,7 @@ const FilterBlock = ({
         show: false,
       }));
 
-      changeFilterValue(
-        showSelector.group,
-        items[0].key,
-        false,
-        items[0].label
-      );
+      changeFilterValue(showSelector.group, items[0].id, false, items[0].label);
     },
     [showSelector.group, changeFilterValue]
   );

@@ -14,6 +14,7 @@ const DEFAULT_AUTHOR_TYPE = null;
 const DEFAULT_SELECTED_ITEM = {};
 const DEFAULT_FOLDER = "@my";
 const DEFAULT_SEARCH_IN_CONTENT = null;
+const DEFAULT_EXCLUDE_SUBJECT = null;
 
 const SEARCH_TYPE = "withSubfolders";
 const AUTHOR_TYPE = "authorType";
@@ -27,6 +28,7 @@ const PAGE_COUNT = "count";
 const FOLDER = "folder";
 const PREVIEW = "preview";
 const SEARCH_IN_CONTENT = "searchInContent";
+const EXCLUDE_SUBJECT = "excludeSubject";
 
 // TODO: add next params
 // subjectGroup bool
@@ -69,6 +71,8 @@ class FilesFilter {
     const folder = urlFilter[FOLDER] || defaultFilter.folder;
     const searchInContent =
       urlFilter[SEARCH_IN_CONTENT] || defaultFilter.searchInContent;
+    const excludeSubject =
+      urlFilter[EXCLUDE_SUBJECT] || defaultFilter.excludeSubject;
 
     const newFilter = new FilesFilter(
       page,
@@ -83,7 +87,8 @@ class FilesFilter {
       authorType,
       defaultFilter.selectedItem,
       folder,
-      searchInContent
+      searchInContent,
+      excludeSubject
     );
 
     return newFilter;
@@ -102,7 +107,8 @@ class FilesFilter {
     authorType = DEFAULT_AUTHOR_TYPE,
     selectedItem = DEFAULT_SELECTED_ITEM,
     folder = DEFAULT_FOLDER,
-    searchInContent = DEFAULT_SEARCH_IN_CONTENT
+    searchInContent = DEFAULT_SEARCH_IN_CONTENT,
+    excludeSubject = DEFAULT_EXCLUDE_SUBJECT
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -117,6 +123,7 @@ class FilesFilter {
     this.selectedItem = selectedItem;
     this.folder = folder;
     this.searchInContent = searchInContent;
+    this.excludeSubject = excludeSubject;
   }
 
   getStartIndex = () => {
@@ -143,6 +150,7 @@ class FilesFilter {
       withSubfolders,
       startIndex,
       searchInContent,
+      excludeSubject,
     } = this;
 
     const isFilterSet =
@@ -165,6 +173,7 @@ class FilesFilter {
       withSubfolders: isFilterSet,
       userIdOrGroupId,
       searchInContent,
+      excludeSubject,
     };
 
     const str = toUrlParams(dtoFilter, true);
@@ -183,6 +192,7 @@ class FilesFilter {
       sortOrder,
       withSubfolders,
       searchInContent,
+      excludeSubject,
     } = this;
 
     const dtoFilter = {};
@@ -219,6 +229,10 @@ class FilesFilter {
       dtoFilter[SEARCH_IN_CONTENT] = searchInContent;
     }
 
+    if (excludeSubject) {
+      dtoFilter[EXCLUDE_SUBJECT] = excludeSubject;
+    }
+
     dtoFilter[PAGE] = page + 1;
     dtoFilter[SORT_BY] = sortBy;
     dtoFilter[SORT_ORDER] = sortOrder;
@@ -245,7 +259,8 @@ class FilesFilter {
       this.authorType,
       this.selectedItem,
       this.folder,
-      this.searchInContent
+      this.searchInContent,
+      this.excludeSubject
     );
   }
 
@@ -262,7 +277,8 @@ class FilesFilter {
       this.selectedItem.key === filter.selectedItem.key &&
       this.folder === filter.folder &&
       this.pageCount === filter.pageCount &&
-      this.searchInContent === filter.searchInContent;
+      this.searchInContent === filter.searchInContent &&
+      this.excludeSubject === filter.excludeSubject;
 
     return equals;
   }

@@ -6,7 +6,7 @@
       "environmentVariables": {
         "$STORAGE_ROOT": "../../Data",
         "log__dir": "../../Logs",
-        "log__name": "api",
+        "log__name": "web.studio",
         "ASPNETCORE_URLS": "http://localhost:5003",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -16,7 +16,7 @@
       "launchBrowser": false,
       "environmentVariables": {
         "$STORAGE_ROOT": "../../Data",
-        "log__name": "studio",
+        "log__name": "web.studio",
         "log__dir": "../../Logs",
         "ASPNETCORE_URLS": "http://localhost:5003",
         "ASPNETCORE_ENVIRONMENT": "Development"
