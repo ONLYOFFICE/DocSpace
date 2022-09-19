@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { mobile, tablet } from "../utils/device";
 import NoUserSelect from "../utils/commonStyles";
 
-const isRootFolderStyles = css`
+const EmptyPageStyles = css`
   .ec-image {
     height: 72px;
     margin-top: 21px;
@@ -164,7 +164,7 @@ const EmptyContentBody = styled.div`
     }
   }
 
-  ${(props) => props.isRootStyles && `${isRootFolderStyles}`}
+  ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
 `;
 
 const EmptyContentImage = styled.img.attrs((props) => ({
