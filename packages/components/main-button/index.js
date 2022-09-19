@@ -19,6 +19,7 @@ const MainButton = (props) => {
     isDisabled,
     clickAction,
     clickActionSecondary,
+    isDisplayImage,
   } = props;
 
   const ref = useRef();
@@ -68,10 +69,12 @@ const MainButton = (props) => {
         themeId={ThemeType.MainButton}
       >
         <Text className="main-button_text">{text}</Text>
-        <img
-          className="main-button_img"
-          src="/static/images/triangle-main-button.svg"
-        />
+        {isDisplayImage && (
+          <img
+            className="main-button_img"
+            src="/static/images/triangle-main-button.svg"
+          />
+        )}
       </ColorTheme>
 
       {isDropdown ? (
@@ -114,6 +117,8 @@ MainButton.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Menu data model */
   model: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Indicates when to display an image in a button */
+  isDisplayImage: PropTypes.bool,
 };
 
 MainButton.defaultProps = {
@@ -121,6 +126,7 @@ MainButton.defaultProps = {
   isDisabled: false,
   isDropdown: true,
   iconName: "/static/images/people.react.svg",
+  isDisplayImage: true,
 };
 
 export default MainButton;
