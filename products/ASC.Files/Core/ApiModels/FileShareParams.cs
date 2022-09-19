@@ -47,10 +47,10 @@ public class FileShareParamsHelper
     {
         return new AceWrapper
         {
-            Share = fileShareParams.Access,
-            SubjectId = fileShareParams.ShareTo,
+            Access = fileShareParams.Access,
+            Id = fileShareParams.ShareTo,
             Email = fileShareParams.Email,
-            SubjectGroup = !string.IsNullOrEmpty(fileShareParams.Email) ? false : !_userManager.UserExists(fileShareParams.ShareTo)
+            SubjectGroup = string.IsNullOrEmpty(fileShareParams.Email) && !_userManager.UserExists(fileShareParams.ShareTo)
         };
     }
 }

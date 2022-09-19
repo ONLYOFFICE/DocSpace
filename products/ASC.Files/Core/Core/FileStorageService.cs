@@ -2494,18 +2494,18 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     foreach (var ace in aceCollection.Aces)
                     {
-                        var name = ace.SubjectGroup ? _userManager.GetGroupInfo(ace.SubjectId).Name : _userManager.GetUsers(ace.SubjectId).DisplayUserName(false, _displayUserSettingsHelper);
+                        var name = ace.SubjectGroup ? _userManager.GetGroupInfo(ace.Id).Name : _userManager.GetUsers(ace.Id).DisplayUserName(false, _displayUserSettingsHelper);
 
                         if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
                         {
-                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, entry.Title, name, GetAccessString(ace.Share));
+                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, entry.Title, name, GetAccessString(ace.Access));
                         }
                         else
                         {
 
                             _filesMessageService.Send(entry, GetHttpHeaders(),
                                                  entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccessFor : MessageAction.FileUpdatedAccessFor,
-                                                 entry.Title, name, GetAccessString(ace.Share));
+                                                 entry.Title, name, GetAccessString(ace.Access));
                         }
                     }
                 }
@@ -2571,8 +2571,8 @@ public class FileStorageService<T> //: IFileStorageService
         {
             new AceWrapper
             {
-                Share = share,
-                SubjectId = linkId,
+                Access = share,
+                Id = linkId,
                 SubjectType = SubjectType.InvintationLink,
                 FileShareOptions = new FileShareOptions
                 {
@@ -2607,8 +2607,8 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 new AceWrapper
                 {
-                    Share = share,
-                    SubjectId = FileConstant.ShareLinkId,
+                    Access = share,
+                    Id = FileConstant.ShareLinkId,
                     SubjectGroup = true,
                 }
             };
@@ -2653,8 +2653,8 @@ public class FileStorageService<T> //: IFileStorageService
         if (await _fileSharing.CanSetAccessAsync(file))
         {
             var access = await _fileSharing.GetSharedInfoAsync(file);
-            usersIdWithAccess = access.Where(aceWrapper => !aceWrapper.SubjectGroup && aceWrapper.Share != FileShare.Restrict)
-                                      .Select(aceWrapper => aceWrapper.SubjectId)
+            usersIdWithAccess = access.Where(aceWrapper => !aceWrapper.SubjectGroup && aceWrapper.Access != FileShare.Restrict)
+                                      .Select(aceWrapper => aceWrapper.Id)
                                       .ToList();
         }
         else
@@ -2752,8 +2752,8 @@ public class FileStorageService<T> //: IFileStorageService
                         {
                             new AceWrapper
                             {
-                                Share = FileShare.Read,
-                                SubjectId = recipient.Id,
+                                Access = FileShare.Read,
+                                Id = recipient.Id,
                                 SubjectGroup = false,
                             }
                         };
@@ -2763,7 +2763,7 @@ public class FileStorageService<T> //: IFileStorageService
                     {
                         foreach (var ace in aces)
                         {
-                            _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccessFor, file.Title, _userManager.GetUsers(ace.SubjectId).DisplayUserName(false, _displayUserSettingsHelper), GetAccessString(ace.Share));
+                            _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccessFor, file.Title, _userManager.GetUsers(ace.Id).DisplayUserName(false, _displayUserSettingsHelper), GetAccessString(ace.Access));
                         }
                     }
                     recipients.Add(recipient.Id);
@@ -3115,7 +3115,7 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(room == null, FilesCommonResource.ErrorMassage_FolderNotFound);
         ErrorIf(!await _fileSecurity.CanEditRoomAsync(room), FilesCommonResource.ErrorMassage_SecurityException);
 
-        var shares = (await _fileSharing.GetSharedInfoAsync(room)).ToDictionary(k => k.SubjectId, v => v);
+        var shares = (await _fileSharing.GetSharedInfoAsync(room)).ToDictionary(k => k.Id, v => v);
 
         foreach (var userId in usersIds)
         {
@@ -3124,7 +3124,7 @@ public class FileStorageService<T> //: IFileStorageService
                 continue;
             }
 
-            var user = _userManager.GetUser(share.SubjectId, null);
+            var user = _userManager.GetUser(share.Id, null);
 
             if (user.ActivationStatus != EmployeeActivationStatus.Pending)
             {
@@ -3223,7 +3223,7 @@ public class FileStorageService<T> //: IFileStorageService
 
     private List<AceWrapper> GetFullAceWrappers(IEnumerable<FileShareParams> share)
     {
-        var dict = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject)).ToDictionary(k => k.SubjectId, v => v);
+        var dict = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject)).ToDictionary(k => k.Id, v => v);
 
         var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
         var onlyFilesAdmins = _userManager.GetUsersByGroup(WebItemManager.DocumentsProductID);
@@ -3234,8 +3234,8 @@ public class FileStorageService<T> //: IFileStorageService
         {
             dict[userInfo.Id] = new AceWrapper
             {
-                Share = FileShare.ReadWrite,
-                SubjectId = userInfo.Id
+                Access = FileShare.ReadWrite,
+                Id = userInfo.Id
             };
         }
 
@@ -3244,7 +3244,7 @@ public class FileStorageService<T> //: IFileStorageService
 
     private void CheckEncryptionKeys(IEnumerable<AceWrapper> aceWrappers)
     {
-        var users = aceWrappers.Select(s => s.SubjectId).ToList();
+        var users = aceWrappers.Select(s => s.Id).ToList();
         var keys = _encryptionLoginProvider.GetKeys(users);
 
         foreach (var user in users)

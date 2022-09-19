@@ -88,7 +88,7 @@ public class FileShareDtoHelper
 
                 result.SharedTo = new FileShareLink
                 {
-                    Id = aceWrapper.SubjectId,
+                    Id = aceWrapper.Id,
                     Title = aceWrapper.FileShareOptions?.Title,
                     ShareLink = aceWrapper.Link,
                     ExpirationDate = date.HasValue && date.Value != default ? _apiDateTimeHelper.Get(date) : null
@@ -97,15 +97,15 @@ public class FileShareDtoHelper
             else
             {
                 //Shared to group
-                result.SharedTo = new GroupSummaryDto(_userManager.GetGroupInfo(aceWrapper.SubjectId), _userManager);
+                result.SharedTo = new GroupSummaryDto(_userManager.GetGroupInfo(aceWrapper.Id), _userManager);
             }
         }
         else
         {
-            result.SharedTo = await _employeeWraperFullHelper.GetFull(_userManager.GetUsers(aceWrapper.SubjectId));
+            result.SharedTo = await _employeeWraperFullHelper.GetFull(_userManager.GetUsers(aceWrapper.Id));
         }
 
-        result.Access = aceWrapper.Share;
+        result.Access = aceWrapper.Access;
 
         return result;
     }

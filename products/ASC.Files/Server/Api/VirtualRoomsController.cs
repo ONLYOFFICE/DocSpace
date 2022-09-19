@@ -32,28 +32,24 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
     public VirtualRoomsInternalController(
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
-        SecurityControllerHelper<int> securityControllerHelper,
         CoreBaseSettings coreBaseSettings,
         CustomTagsService<int> customTagsService,
         RoomLogoManager roomLogoManager,
         FileStorageService<int> fileStorageService,
-        EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
-        FileShareParamsHelper fileShareParamsHelper) : base(
+        IMapper mapper) : base(
             globalFolderHelper,
             fileOperationDtoHelper,
-            securityControllerHelper,
             coreBaseSettings,
             customTagsService,
             roomLogoManager,
             fileStorageService,
-            emailValidationKeyProvider,
             folderDtoHelper,
             fileDtoHelper,
             fileShareDtoHelper,
-            fileShareParamsHelper)
+            mapper)
     {
     }
 
@@ -88,28 +84,24 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
     public VirtualRoomsThirdPartyController(
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
-        SecurityControllerHelper<string> securityControllerHelper,
         CoreBaseSettings coreBaseSettings,
         CustomTagsService<string> customTagsService,
         RoomLogoManager roomLogoManager,
         FileStorageService<string> fileStorageService,
-        EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
-        FileShareParamsHelper fileShareParamsHelper) : base(
+        IMapper mapper) : base(
             globalFolderHelper,
             fileOperationDtoHelper,
-            securityControllerHelper,
             coreBaseSettings,
             customTagsService,
             roomLogoManager,
             fileStorageService,
-            emailValidationKeyProvider,
             folderDtoHelper,
             fileDtoHelper,
             fileShareDtoHelper,
-            fileShareParamsHelper)
+            mapper)
     {
     }
 
@@ -146,39 +138,33 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
 {
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
-    private readonly SecurityControllerHelper<T> _securityControllerHelper;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CustomTagsService<T> _customTagsService;
     private readonly RoomLogoManager _roomLogoManager;
     protected readonly FileStorageService<T> _fileStorageService;
-    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly FileShareDtoHelper _fileShareDtoHelper;
-    private readonly FileShareParamsHelper _fileShareParamsHelper;
+    private readonly IMapper _mapper;
 
     protected VirtualRoomsController(
         GlobalFolderHelper globalFolderHelper,
         FileOperationDtoHelper fileOperationDtoHelper,
-        SecurityControllerHelper<T> securityControllerHelper,
         CoreBaseSettings coreBaseSettings,
         CustomTagsService<T> customTagsService,
         RoomLogoManager roomLogoManager,
         FileStorageService<T> fileStorageService,
-        EmailValidationKeyProvider emailValidationKeyProvider,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
         FileShareDtoHelper fileShareDtoHelper,
-        FileShareParamsHelper fileShareParamsHelper) : base(folderDtoHelper, fileDtoHelper)
+        IMapper mapper) : base(folderDtoHelper, fileDtoHelper)
     {
         _globalFolderHelper = globalFolderHelper;
         _fileOperationDtoHelper = fileOperationDtoHelper;
-        _securityControllerHelper = securityControllerHelper;
         _coreBaseSettings = coreBaseSettings;
         _customTagsService = customTagsService;
         _roomLogoManager = roomLogoManager;
         _fileStorageService = fileStorageService;
-        _emailValidationKeyProvider = emailValidationKeyProvider;
         _fileShareDtoHelper = fileShareDtoHelper;
-        _fileShareParamsHelper = fileShareParamsHelper;
+        _mapper = mapper;
     }
 
     /// <summary>
@@ -331,20 +317,20 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// Room security info
     /// </returns>
     [HttpPut("rooms/{id}/share")]
-    public async IAsyncEnumerable<FileShareDto> SetRoomSecurityAsync(T id, SecurityInfoRequestDto inDto)
+    public async IAsyncEnumerable<FileShareDto> SetRoomSecurityAsync(T id, RoomInvitationRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
-        if (inDto.Share != null && inDto.Share.Any())
+        if (inDto.Invitations != null && inDto.Invitations.Any())
         {
-            var list = new List<AceWrapper>(inDto.Share.Select(_fileShareParamsHelper.ToAceObject));
+            var wrappers = _mapper.Map<IEnumerable<RoomInvitation>, List<AceWrapper>>(inDto.Invitations);
 
             var aceCollection = new AceCollection<T>
             {
                 Files = Array.Empty<T>(),
                 Folders = new[] { id },
-                Aces = list,
-                Message = inDto.SharingMessage
+                Aces = wrappers,
+                Message = inDto.Message
             };
 
             await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
@@ -857,8 +843,8 @@ public class VirtualRoomsCommonController : ApiControllerBase
         {
             new AceWrapper
             {
-                Share = options.Share,
-                SubjectId = _authContext.CurrentAccount.ID,
+                Access = options.Share,
+                Id = _authContext.CurrentAccount.ID,
                 SubjectGroup = false,
             }
         };

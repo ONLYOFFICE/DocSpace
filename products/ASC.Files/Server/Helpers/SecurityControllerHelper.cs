@@ -63,17 +63,17 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
         var file = await GetFileInfoAsync(fileId);
 
         var tmpInfo = await _fileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
-        var sharedInfo = tmpInfo.Find(r => r.SubjectId == FileConstant.ShareLinkId);
+        var sharedInfo = tmpInfo.Find(r => r.Id == FileConstant.ShareLinkId);
 
-        if (sharedInfo == null || sharedInfo.Share != share)
+        if (sharedInfo == null || sharedInfo.Access != share)
         {
             var list = new List<AceWrapper>
             {
                 new AceWrapper
                 {
-                    SubjectId = FileConstant.ShareLinkId,
+                    Id = FileConstant.ShareLinkId,
                     SubjectGroup = true,
-                    Share = share
+                    Access = share
                 }
             };
 
@@ -87,7 +87,7 @@ public class SecurityControllerHelper<T> : FilesHelperBase<T>
             await _fileStorageService.SetAceObjectAsync(aceCollection, false);
 
             tmpInfo = await _fileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
-            sharedInfo = tmpInfo.Find(r => r.SubjectId == FileConstant.ShareLinkId);
+            sharedInfo = tmpInfo.Find(r => r.Id == FileConstant.ShareLinkId);
         }
 
         return sharedInfo.Link;
