@@ -3,10 +3,10 @@ import debounce from "lodash.debounce";
 import { inject, observer } from "mobx-react";
 
 import Avatar from "@docspace/components/avatar";
+import TextInput from "@docspace/components/text-input";
 import DropDownItem from "@docspace/components/drop-down-item";
 
 import { parseAddresses } from "@docspace/components/utils/email";
-import { ShareAccessRights } from "@docspace/common/constants";
 
 import { AddUsersPanel } from "../../index";
 import { getAccessOptions } from "../utils";
@@ -32,7 +32,6 @@ const InviteInput = ({
   roomId,
   setInviteItems,
   t,
-  ...props
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
@@ -43,6 +42,7 @@ const InviteInput = ({
   const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
 
   const inputsRef = useRef();
+  const searchRef = useRef();
 
   useEffect(() => {
     getShareUsers([roomId]).then((users) => setRoomUsers(users));
@@ -91,7 +91,7 @@ const InviteInput = ({
   };
 
   const getItemContent = (item) => {
-    const { avatarSmall, displayName, email, id } = item;
+    const { avatar, displayName, email, id } = item;
 
     const invited = inRoom(id);
 
@@ -110,7 +110,7 @@ const InviteInput = ({
         height={48}
         className="list-item"
       >
-        <Avatar size="min" role="user" source={avatarSmall} />
+        <Avatar size="min" role="user" source={avatar} />
         <div>
           <SearchItemText primary disabled={invited}>
             {displayName}
@@ -125,7 +125,7 @@ const InviteInput = ({
   const addItem = () => {
     const item = toUserItem(inputValue);
 
-    item.access = ShareAccessRights.ReadOnly; //TODO: get from main selector;
+    item.access = selectedAccess;
 
     setInviteItems([item, ...inviteItems]);
     closeInviteInputPanel();
@@ -154,12 +154,13 @@ const InviteInput = ({
     setAddUsersPanelVisible(false);
   };
 
-  const openInviteInputPanel = () => {
+  const openInviteInputPanel = (e) => {
     setSearchPanelVisible(true);
   };
 
-  const closeInviteInputPanel = () => {
-    setInputValue("");
+  const closeInviteInputPanel = (e) => {
+    if (e?.target.tagName.toUpperCase() == "INPUT") return;
+
     setSearchPanelVisible(false);
   };
 
@@ -186,12 +187,17 @@ const InviteInput = ({
       </StyledSubHeader>
 
       <StyledInviteInputContainer ref={inputsRef}>
-        <StyledInviteInput
-          onChange={onChange}
-          placeholder={t("SearchPlaceholder")}
-          value={inputValue}
-        />
+        <StyledInviteInput ref={searchRef}>
+          <TextInput
+            scale
+            onChange={onChange}
+            placeholder={t("SearchPlaceholder")}
+            value={inputValue}
+            onFocus={openInviteInputPanel}
+          />
+        </StyledInviteInput>
         <StyledDropDown
+          width={searchRef?.current?.offsetWidth}
           isDefaultMode={false}
           open={searchPanelVisible}
           manualX="16px"

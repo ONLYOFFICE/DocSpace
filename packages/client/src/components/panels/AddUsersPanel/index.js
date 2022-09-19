@@ -61,7 +61,7 @@ const AddUsersPanel = ({
           email: item.email,
           id: item.id,
           displayName: item.label,
-          avatarSmall: item.avatar,
+          avatar: item.avatar,
         };
         items.push(newItem);
       }

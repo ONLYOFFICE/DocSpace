@@ -17,10 +17,10 @@ import {
 } from "../StyledInvitePanel";
 
 const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
-  const { avatarSmall, displayName, email, id, errors, access } = item;
+  const { avatar, displayName, email, id, errors, access } = item;
 
-  const name = !!avatarSmall ? displayName : email;
-  const source = !!avatarSmall ? avatarSmall : "/static/images/@.react.svg";
+  const name = !!avatar ? displayName : email;
+  const source = !!avatar ? avatar : "/static/images/@.react.svg";
 
   const [edit, setEdit] = useState(false);
   const [inputValue, setInputValue] = useState(name);
@@ -77,7 +77,7 @@ const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
     changeInviteItem({ id, access: selected.access });
   };
 
-  const textProps = !!avatarSmall ? {} : { onClick: onEdit };
+  const textProps = !!avatar ? {} : { onClick: onEdit };
 
   const displayBody = (
     <>
