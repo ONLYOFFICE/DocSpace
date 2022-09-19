@@ -1,42 +1,39 @@
 import styled, { css } from "styled-components";
-import { mobile, tablet } from "../utils/device";
+import { mobile, tablet, smallTablet } from "../utils/device";
 import NoUserSelect from "../utils/commonStyles";
 
 const EmptyPageStyles = css`
-  .ec-image {
-    height: 72px;
-    margin-top: 21px;
-  }
+  grid-row-gap: 9px;
 
-  .ec-header {
-    padding-top: 16px;
-    font-size: 16px;
-    background: ${(props) => !!props.descriptionText && "red"};
+  .ec-image {
+    height: 100px;
   }
 
   .ec-desc {
-    margin-top: -2px;
+    max-width: 618px;
+  }
+
+  .ec-header {
+    font-size: 16px;
+  }
+
+  .ec-desc {
     line-height: 16px;
+    margin-top: 0;
   }
 
   .empty-folder_container-links {
     align-items: center;
-    margin: 17px 0 !important;
+    margin: 16px 0 !important;
   }
 
-  @media (min-width: 600px) {
+  @media ${smallTablet} {
     .ec-image {
-      height: 100px;
+      height: 72px;
     }
 
     .ec-header {
-      padding-top: 21px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .ec-desc {
-      max-width: 618px;
+      padding-top: 22px;
     }
   }
 `;
@@ -77,7 +74,6 @@ const EmptyContentBody = styled.div`
 
   .ec-subheading {
     grid-area: subheadingText;
-    margin-top: -1px;
   }
 
   .ec-desc {
@@ -88,40 +84,6 @@ const EmptyContentBody = styled.div`
 
   .ec-buttons {
     grid-area: button;
-    margin-top: -1px;
-  }
-
-  @media (max-width: 600px) {
-    ${(props) =>
-      props.isRootStyles &&
-      css`
-        grid-template-areas:
-          "img img img"
-          "headerText headerText headerText"
-          ${(props) =>
-            props.subheadingText &&
-            `"subheadingText subheadingText subheadingText"`}
-          ${(props) =>
-            props.descriptionText &&
-            `"descriptionText descriptionText descriptionText"`}
-          "button button button";
-
-        .ec-header {
-          padding-top: 0px;
-        }
-        .ec-header,
-        .ec-subheading,
-        .ec-desc,
-        .ec-image,
-        .ec-buttons {
-          padding-left: 16px;
-        }
-
-        .ec-image {
-          height: 75px;
-          margin-left: 0;
-        }
-      `}
   }
 
   @media (orientation: portrait) {
