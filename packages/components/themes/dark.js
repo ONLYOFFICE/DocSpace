@@ -2910,6 +2910,7 @@ const Dark = {
   profile: {
     main: {
       background: "#1f1f1f",
+      textColor: white,
     },
     themePreview: {
       border: "1px solid #858585",

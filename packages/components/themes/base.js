@@ -2903,6 +2903,7 @@ const Base = {
   profile: {
     main: {
       background: "#F8F9F9",
+      textColor: black,
     },
     themePreview: {
       border: "1px solid #eceef1",
