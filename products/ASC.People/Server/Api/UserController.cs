@@ -61,6 +61,8 @@ public class UserController : PeopleControllerBase
     private readonly EmailValidationKeyProvider _validationKeyProvider;
     private readonly CountManagerChecker _countManagerChecker;
     private readonly CountUserChecker _countUserChecker;
+    private readonly UsersInRoomChecker _usersInRoomChecker;
+    private readonly UsersInRoomStatistic _usersInRoomStatistic;
 
     public UserController(
         ICache cache,
@@ -99,7 +101,9 @@ public class UserController : PeopleControllerBase
         IDaoFactory daoFactory,
         EmailValidationKeyProvider validationKeyProvider,
         CountManagerChecker countManagerChecker,
-        CountUserChecker activeUsersChecker)
+        CountUserChecker activeUsersChecker,
+        UsersInRoomChecker usersInRoomChecker,
+        UsersInRoomStatistic usersInRoomStatistic)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
@@ -133,6 +137,8 @@ public class UserController : PeopleControllerBase
         _validationKeyProvider = validationKeyProvider;
         _countManagerChecker = countManagerChecker;
         _countUserChecker = activeUsersChecker;
+        _usersInRoomChecker = usersInRoomChecker;
+        _usersInRoomStatistic = usersInRoomStatistic;
     }
 
     [HttpPost("active")]
@@ -287,13 +293,13 @@ public class UserController : PeopleControllerBase
         {
             if (success)
             {
-                _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
-                    .GetAwaiter().GetResult();
+                _usersInRoomChecker.CheckAdd(await _usersInRoomStatistic.GetValue(id) + 1);
+                await _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess);
             }
             else
             {
-                _fileSecurity.ShareAsync(inDto.RoomId, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
-                    .GetAwaiter().GetResult();
+                _usersInRoomChecker.CheckAdd(await _usersInRoomStatistic.GetValue(inDto.RoomId) + 1);
+                await _fileSecurity.ShareAsync(inDto.RoomId, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess);
             }
 
             var messageAction = inDto.IsVisitor ? MessageAction.GuestCreatedAndAddedToRoom : MessageAction.UserCreatedAndAddedToRoom;

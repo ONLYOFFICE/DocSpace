@@ -24,58 +24,42 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Quota;
-public interface ITenantQuotaFeatureChecker
+namespace ASC.Files.Core.Core;
+
+public class UsersInRoomChecker : TenantQuotaFeatureChecker<UsersInRoomFeature, int>
 {
-    public Task CheckUsed(TenantQuota value);
-    string Exception { get; }
+    public override string Exception => Resource.TariffsFeature_usersInRoom_exception;
+
+    public UsersInRoomChecker(ITenantQuotaFeatureStat<UsersInRoomFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
+    {
+    }
 }
 
-
-public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChecker where T : TenantQuotaFeature<T1> where T1 : IComparable<T1>
+public class UsersInRoomStatistic : ITenantQuotaFeatureStat<UsersInRoomFeature, int>
 {
-    protected readonly ITenantQuotaFeatureStat<T, T1> _tenantQuotaFeatureStatistic;
-    protected readonly TenantManager _tenantManager;
+    private readonly IServiceProvider _serviceProvider;
 
-    public abstract string Exception { get; }
-
-    public TenantQuotaFeatureChecker(ITenantQuotaFeatureStat<T, T1> tenantQuotaFeatureStatistic, TenantManager tenantManager)
+    public UsersInRoomStatistic(IServiceProvider serviceProvider)
     {
-        _tenantQuotaFeatureStatistic = tenantQuotaFeatureStatistic;
-        _tenantManager = tenantManager;
+        _serviceProvider = serviceProvider;
     }
 
-    public async Task CheckUsed()
+    public Task<int> GetValue()
     {
-        var quota = _tenantManager.GetCurrentTenantQuota();
-        var used = await _tenantQuotaFeatureStatistic.GetValue();
-        Check(quota, used);
+        return Task.FromResult(0);
     }
 
-    public async Task CheckUsed(TenantQuota quota)
+    public async Task<int> GetValue<T>(T roomId)
     {
-        var used = await _tenantQuotaFeatureStatistic.GetValue();
-        Check(quota, used);
-    }
+        var folderDao = _serviceProvider.GetService<IFolderDao<T>>();
+        var securityDao = _serviceProvider.GetService<ISecurityDao<T>>();
+        var folder = await folderDao.GetFolderAsync(roomId);
 
-    public void CheckAdd(T1 newValue)
-    {
-        CheckAdd(_tenantManager.GetCurrentTenant().Id, newValue);
-    }
-
-    public void CheckAdd(int tenantId, T1 newValue)
-    {
-        var quota = _tenantManager.GetTenantQuota(tenantId);
-        Check(quota, newValue);
-    }
-
-    protected void Check(TenantQuota quota, T1 newValue)
-    {
-        var val = quota.GetFeature<T>().Value;
-
-        if (newValue.CompareTo(val) > 0)
+        if (folder == null)
         {
-            throw new TenantQuotaException(string.Format(Exception, val));
+            return 0;
         }
+
+        return await securityDao.GetPureShareRecordsAsync(folder).CountAsync();
     }
 }
