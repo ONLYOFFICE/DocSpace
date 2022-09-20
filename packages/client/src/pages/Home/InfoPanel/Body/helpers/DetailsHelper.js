@@ -9,20 +9,21 @@ import Text from "@docspace/components/text";
 import Tag from "@docspace/components/tag";
 
 import {
-  connectedCloudsTypeTitleTranslation,
+  connectedCloudsTypeTitleTranslation as getProviderTranslation,
   getDefaultRoomName,
   getFileTypeName,
 } from "@docspace/client/src/helpers/filesUtils";
+import CommentEditor from "../sub-components/CommentEditor";
 
 // Property Content Components
 
-const styledText = (text) => (
+const text = (text) => (
   <Text truncate className="property-content">
     {text}
   </Text>
 );
 
-const styledLink = (text, href) => (
+const link = (text, href) => (
   <Link
     isTextOverflow
     className="property-content"
@@ -33,7 +34,7 @@ const styledLink = (text, href) => (
   </Link>
 );
 
-const styledTagList = (tags) => (
+const tagList = (tags) => (
   <div className="property-tag_list">
     {tags.map((tag, i) => (
       <Tag key={i} className="property-tag" label={tag} />
@@ -59,11 +60,11 @@ export const parseAndFormatDate = (date, personal, culture) => {
 // InfoHelper Class
 
 class DetailsHelper {
-  constructor(t, item, personal, culture) {
-    this.t = t;
-    this.item = item;
-    this.personal = personal;
-    this.culture = culture;
+  constructor(props) {
+    this.t = props.t;
+    this.item = props.item;
+    this.personal = props.personal;
+    this.culture = props.culture;
   }
 
   getPropertyList = () => {
@@ -134,11 +135,11 @@ class DetailsHelper {
         return this.t("Common:Size");
 
       case "Date modified":
-        return this.t("Files:ByLastModifiedDate");
+        return this.t("DateModified");
       case "Last modified by":
         return this.t("LastModifiedBy");
       case "Creation date":
-        return this.t("Files:ByCreationDate");
+        return this.t("CreationDate");
 
       case "Versions":
         return this.t("InfoPanel:Versions");
@@ -191,19 +192,19 @@ class DetailsHelper {
 
   getItemOwner = () => {
     return this.personal
-      ? styledText(decodeString(this.item.createdBy?.displayName))
-      : styledLink(
+      ? text(decodeString(this.item.createdBy?.displayName))
+      : link(
           decodeString(this.item.createdBy?.displayName),
           this.item.createdBy?.profileUrl
         );
   };
 
   getItemLocation = () => {
-    return styledText("...");
+    return text("...");
   };
 
   getItemType = () => {
-    return styledText(
+    return text(
       this.item.isRoom
         ? getDefaultRoomName(this.item.roomType, this.t)
         : getFileTypeName(this.item.fileType, this.t)
@@ -211,23 +212,21 @@ class DetailsHelper {
   };
 
   getItemFileExtention = () => {
-    return styledText(
+    return text(
       this.item.fileExst ? this.item.fileExst.split(".")[1].toUpperCase() : "-"
     );
   };
 
   getItemStorageType = () => {
-    return styledText(
-      connectedCloudsTypeTitleTranslation(this.item.providerKey, this.t)
-    );
+    return text(getProviderTranslation(this.item.providerKey, this.t));
   };
 
   getItemStorageAccount = () => {
-    return styledText("...");
+    return text("...");
   };
 
   getItemContent = () => {
-    return styledText(
+    return text(
       `${this.t("Translations:Folders")}: ${this.item.foldersCount} | ${this.t(
         "Translations:Files"
       )}: ${this.item.filesCount}`
@@ -235,40 +234,40 @@ class DetailsHelper {
   };
 
   getItemSize = () => {
-    return styledText(this.item.contentLength);
+    return text(this.item.contentLength);
   };
 
   getItemDateModified = () => {
-    return styledText(
+    return text(
       parseAndFormatDate(this.item.updated, this.personal, this.culture)
     );
   };
 
   getItemLastModifiedBy = () => {
     return this.personal
-      ? styledText(decodeString(this.item.updatedBy?.displayName))
-      : styledLink(
+      ? text(decodeString(this.item.updatedBy?.displayName))
+      : link(
           decodeString(this.item.updatedBy?.displayName),
           this.item.updatedBy?.profileUrl
         );
   };
 
   getItemCreationDate = () => {
-    return styledText(
+    return text(
       parseAndFormatDate(this.item.created, this.personal, this.culture)
     );
   };
 
   getItemVersions = () => {
-    return styledText(this.item.version);
+    return text(this.item.version);
   };
 
   getItemComments = () => {
-    return styledText(this.item.comment);
+    return <CommentEditor t={this.t} item={this.item} />;
   };
 
   getItemTags = () => {
-    return styledTagList(this.item.tags);
+    return tagList(this.item.tags);
   };
 }
 
