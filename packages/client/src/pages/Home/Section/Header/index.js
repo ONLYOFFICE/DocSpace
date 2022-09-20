@@ -27,6 +27,7 @@ import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const StyledContainer = styled.div`
   width: 100%;
+  height: 32px;
 
   .table-container_group-menu {
     margin: 0 0 0 -20px;
