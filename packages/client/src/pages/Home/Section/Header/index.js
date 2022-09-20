@@ -4,12 +4,7 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
-import {
-  AppServerConfig,
-  FileAction,
-  FolderType,
-  RoomSearchArea,
-} from "@docspace/common/constants";
+import { AppServerConfig } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -475,6 +470,8 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderIndeterminate,
       showText,
+      toggleInfoPanel,
+      isRoomsFolder,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -524,6 +521,8 @@ class SectionHeaderContent extends React.Component {
                     titles={{
                       trash: t("EmptyRecycleBin"),
                     }}
+                    withMenu={!isRoomsFolder}
+                    onPlusClick={this.onCreateRoom}
                   />
                 )}
               </div>

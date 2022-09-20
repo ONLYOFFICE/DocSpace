@@ -63,19 +63,49 @@ export default inject(
     treeFoldersStore,
     selectedFolderStore,
   }) => {
+    const { filter, roomsFilter } = filesStore;
+
     const {
       authorType,
       search,
       withSubfolders,
       filterType,
-    } = filesStore.filter;
-    const { isPrivacyFolder } = treeFoldersStore;
+      searchInContent,
+    } = filter;
+    const {
+      subjectId,
+      filterValue,
+      type,
+      withSubfolders: withRoomsSubfolders,
+      searchInContent: searchInContentRooms,
+      tags,
+      withoutTags,
+    } = roomsFilter;
+
+    const {
+      isPrivacyFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+    } = treeFoldersStore;
+
+    const isRooms = isRoomsFolder || isArchiveFolder;
 
     const { setCreateRoomDialogVisible } = dialogsStore;
 
-    const isFiltered =
-      (authorType || search || !withSubfolders || filterType) &&
-      !(isPrivacyFolder && isMobile);
+    const isFiltered = isRooms
+      ? filterValue ||
+        type ||
+        withRoomsSubfolders ||
+        searchInContentRooms ||
+        subjectId ||
+        tags ||
+        withoutTags
+      : (authorType ||
+          search ||
+          !withSubfolders ||
+          filterType ||
+          searchInContent) &&
+        !(isPrivacyFolder && isMobile);
 
     return {
       theme: auth.settingsStore.theme,

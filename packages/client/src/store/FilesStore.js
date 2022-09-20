@@ -847,16 +847,6 @@ class FilesStore {
 
     if (folderId) setSelectedNode([folderId + ""]);
 
-    const searchArea = folderId
-      ? folderId === roomsFolderId
-        ? RoomSearchArea.Active
-        : RoomSearchArea.Archive
-      : RoomSearchArea.Active;
-
-    if (filterData.searchArea !== searchArea) {
-      filterData.searchArea = searchArea;
-    }
-
     const request = () =>
       api.rooms
         .getRooms(filterData)

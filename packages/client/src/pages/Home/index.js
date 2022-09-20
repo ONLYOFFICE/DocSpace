@@ -21,7 +21,6 @@ import {
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
-  Bar,
 } from "./Section";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
@@ -535,16 +534,6 @@ class PureHome extends React.Component {
               <SectionHeaderContent />
             )}
           </Section.SectionHeader>
-
-          <Section.SectionBar>
-            {checkedMaintenance && !snackbarExist && (
-              <Bar
-                firstLoad={firstLoad}
-                personal={personal}
-                setMaintenanceExist={setMaintenanceExist}
-              />
-            )}
-          </Section.SectionBar>
 
           <Section.SectionFilter>
             {isFrame ? (
