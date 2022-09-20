@@ -3,9 +3,14 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import PropTypes from "prop-types";
 
-const ButtonWrapper = ({ label, iconName, isDisabled, noHover, ...props }) => (
-  <button type="button" {...props}></button>
-);
+const ButtonWrapper = ({
+  label,
+  iconName,
+  isDisabled,
+  noHover,
+  isConnect,
+  ...props
+}) => <button type="button" {...props}></button>;
 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
@@ -14,11 +19,13 @@ ButtonWrapper.propTypes = {
   isDisabled: PropTypes.bool,
   onClick: PropTypes.func,
   $iconOptions: PropTypes.object,
+  isConnect: PropTypes.bool,
 };
 
 const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled ? "disabled" : "",
   tabIndex: props.tabIndex,
+  isConnect: props.isConnect,
 }))`
   font-family: ${(props) => props.theme.fontFamily};
   border: none;
