@@ -69,7 +69,6 @@ const HeaderContainer = styled.div`
     h1 {
       font-size: 18px;
       line-height: 59px !important;
-      padding-bottom: 6px;
     }
 
     .settings-section_header {
