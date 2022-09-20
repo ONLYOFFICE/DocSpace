@@ -71,6 +71,10 @@ const HeaderContainer = styled.div`
       line-height: 59px !important;
       padding-bottom: 6px;
     }
+
+    .settings-section_header {
+      padding-top: 6px;
+    }
   }
 `;
 
