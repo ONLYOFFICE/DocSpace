@@ -10,7 +10,7 @@ import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
 const SingleItem = ({ t, selection, setSelection, ...props }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
-  const detailsHelper = new DetailsHelper(t, selection, props);
+  const detailsHelper = new DetailsHelper({ t, item: selection, ...props });
 
   useEffect(async () => {
     setItemProperties(detailsHelper.getPropertyList());
