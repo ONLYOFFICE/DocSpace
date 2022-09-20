@@ -18,7 +18,6 @@ import {
   SectionBodyContent,
   SectionFilterContent,
   SectionPagingContent,
-  Bar,
 } from "./Section";
 
 import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
@@ -87,11 +86,7 @@ const PureHome = ({
         <Section.SectionHeader>
           <SectionHeaderContent />
         </Section.SectionHeader>
-        <Section.SectionBar>
-          {checkedMaintenance && !snackbarExist && (
-            <Bar setMaintenanceExist={setMaintenanceExist} />
-          )}
-        </Section.SectionBar>
+
         <Section.SectionFilter>
           <SectionFilterContent />
         </Section.SectionFilter>

@@ -29,6 +29,7 @@ import { useThemeDetector } from "SRC_DIR/helpers/utils";
 import { isMobileOnly } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
+import MainBar from "./components/MainBar";
 
 // const { proxyURL } = AppServerConfig;
 // const homepage = config.homepage;
@@ -404,71 +405,77 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         <Toast />
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || !isMobileOnly ? <></> : <NavMenu />}
+        {isMobileOnly && <MainBar />}
         <IndicatorLoader />
         <ScrollToTop />
         <DialogsWrapper t={t} />
         <Main isDesktop={isDesktop}>
-          <Switch>
-            <PrivateRoute
-              exact
-              path={[
-                "/",
+          {!isMobileOnly && <MainBar />}
+          <div className="main-container">
+            <Switch>
+              <PrivateRoute
+                exact
+                path={[
+                  "/",
 
-                "/rooms/personal",
-                "/rooms/personal/filter",
+                  "/rooms/personal",
+                  "/rooms/personal/filter",
 
-                "/rooms/shared",
-                "/rooms/shared/filter",
-                "/rooms/shared/:room",
-                "/rooms/shared/:room/filter",
+                  "/rooms/shared",
+                  "/rooms/shared/filter",
+                  "/rooms/shared/:room",
+                  "/rooms/shared/:room/filter",
 
-                "/rooms/archived",
-                "/rooms/archived/filter",
-                "/rooms/archived/:room",
-                "/rooms/archived/:room/filter",
+                  "/rooms/archived",
+                  "/rooms/archived/filter",
+                  "/rooms/archived/:room",
+                  "/rooms/archived/:room/filter",
 
-                "/files/favorite",
-                "/files/favorite/filter",
+                  "/files/favorite",
+                  "/files/favorite/filter",
 
-                "/files/recent",
-                "/files/recent/filter",
+                  "/files/recent",
+                  "/files/recent/filter",
 
-                "/files/trash",
-                "/files/trash/filter",
+                  "/files/trash",
+                  "/files/trash/filter",
 
-                "/accounts",
-                "/accounts/filter",
+                  "/accounts",
+                  "/accounts/filter",
 
-                "/accounts/create/:type",
-                "/accounts/view/@self",
+                  "/accounts/create/:type",
+                  "/accounts/edit/:userId",
+                  "/accounts/view/:userId",
+                  "/accounts/view/@self",
 
-                "/settings",
-                "/settings/common",
-                "/settings/admin",
-                //"/settings/connected-clouds",
-              ]}
-              component={FilesRoute}
-            />
-            <PrivateRoute
-              path={"/form-gallery/:folderId"}
-              component={FormGalleryRoute}
-            />
-            <PublicRoute exact path={"/wizard"} component={WizardRoute} />
-            <PrivateRoute path={"/about"} component={AboutRoute} />
-            <Route path={"/confirm"} component={ConfirmRoute} />
-            <PrivateRoute path={"/payments"} component={PaymentsRoute} />
-            <PrivateRoute
-              restricted
-              path={"/portal-settings"}
-              component={PortalSettingsRoute}
-            />
-            <PrivateRoute
-              path={"/preparation-portal"}
-              component={PreparationPortalRoute}
-            />
-            <PrivateRoute path={"/error401"} component={Error401Route} />
-            <PrivateRoute component={Error404Route} />
-          </Switch>
+                  "/settings",
+                  "/settings/common",
+                  "/settings/admin",
+                  //"/settings/connected-clouds",
+                ]}
+                component={FilesRoute}
+              />
+              <PrivateRoute
+                path={"/form-gallery/:folderId"}
+                component={FormGalleryRoute}
+              />
+              <PublicRoute exact path={"/wizard"} component={WizardRoute} />
+              <PrivateRoute path={"/about"} component={AboutRoute} />
+              <Route path={"/confirm"} component={ConfirmRoute} />
+              <PrivateRoute path={"/payments"} component={PaymentsRoute} />
+              <PrivateRoute
+                restricted
+                path={"/portal-settings"}
+                component={PortalSettingsRoute}
+              />
+              <PrivateRoute
+                path={"/preparation-portal"}
+                component={PreparationPortalRoute}
+              />
+              <PrivateRoute path={"/error401"} component={Error401Route} />
+              <PrivateRoute component={Error404Route} />
+            </Switch>
+          </div>
         </Main>
       </Router>
     </Layout>
