@@ -29,7 +29,7 @@ const StyledContainer = styled.div`
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: max-content max-content;
-    grid-gap: 6px;
+    grid-gap: 4px;
 
     .payer-info_description {
       display: flex;
@@ -124,7 +124,7 @@ const PayerInformationContainer = ({
   );
 
   const payerName = (
-    <Text fontWeight={600} noSelect>
+    <Text fontWeight={600} noSelect fontSize={"14px"}>
       {payerInfo ? (
         payerInfo.displayName
       ) : (
@@ -142,7 +142,11 @@ const PayerInformationContainer = ({
   return (
     <StyledContainer style={style} theme={theme}>
       <div className="payer-info_avatar">
-        <Avatar size={"min"} source={user.avatar} userName={user.displayName} />
+        <Avatar
+          size={"base"}
+          source={user.avatar}
+          userName={user.displayName}
+        />
       </div>
 
       <div className="payer-info_wrapper">

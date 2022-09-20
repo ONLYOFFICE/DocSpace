@@ -36,6 +36,7 @@ const StyledBody = styled.div`
     background: ${(props) =>
       props.theme.client.settings.payment.backgroundPrice};
     margin-top: 24px;
+    min-height: 38px;
     p:first-child {
       margin-right: 8px;
     }
@@ -125,6 +126,41 @@ const PriceCalculation = ({
 
   const color = isDisabled ? { color: theme.text.disableColor } : {};
 
+  const priceInfoPerManager = (
+    <div className="payment_price_user">
+      <Text
+        noSelect
+        fontSize={"13px"}
+        color={
+          isDisabled
+            ? theme.client.settings.payment.disabledPriceColor
+            : theme.client.settings.payment.priceColor
+        }
+        fontWeight={600}
+      >
+        <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+          ""
+          <Text
+            fontSize="16px"
+            isBold
+            as="span"
+            fontWeight={600}
+            color={
+              isDisabled
+                ? theme.client.settings.payment.disabledPriceColor
+                : theme.client.settings.payment.priceColor
+            }
+          >
+            {{ currencySymbol }}
+          </Text>
+          <Text fontSize="16px" isBold as="span" fontWeight={600}>
+            {{ price: priceManagerPerMonth }}
+          </Text>
+          per manager/month
+        </Trans>
+      </Text>
+    </div>
+  );
   return (
     <StyledBody>
       <Text
@@ -145,39 +181,8 @@ const PriceCalculation = ({
           isAlreadyPaid={isAlreadyPaid}
         />
       )}
-      <div className="payment_price_user">
-        <Text
-          noSelect
-          fontSize={"11px"}
-          color={
-            isDisabled
-              ? theme.client.settings.payment.disabledPriceColor
-              : theme.client.settings.payment.priceColor
-          }
-          fontWeight={600}
-        >
-          <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
-            ""
-            <Text
-              fontSize="16px"
-              isBold
-              as="span"
-              fontWeight={600}
-              color={
-                isDisabled
-                  ? theme.client.settings.payment.disabledPriceColor
-                  : theme.client.settings.payment.priceColor
-              }
-            >
-              {{ currencySymbol }}
-            </Text>
-            <Text fontSize="16px" isBold as="span" fontWeight={600}>
-              {{ price: priceManagerPerMonth }}
-            </Text>
-            per manager/month
-          </Trans>
-        </Text>
-      </div>
+
+      {priceInfoPerManager}
 
       <TotalTariffContainer t={t} isDisabled={isDisabled} />
       <ButtonContainer

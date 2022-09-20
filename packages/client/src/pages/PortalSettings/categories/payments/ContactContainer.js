@@ -11,7 +11,7 @@ const StyledContactContainer = styled.div`
   display: flex;
   width: max-content;
   p {
-    margin-right: 8px;
+    margin-right: 4px;
   }
 `;
 

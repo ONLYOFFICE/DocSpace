@@ -25,14 +25,14 @@ const StyledBody = styled.div`
     margin-bottom: 20px;
   }
   .payment-benefits {
-    display: flex;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     align-items: flex-start;
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    grid-gap: 10px;
     p {
-      margin-left: 8px;
       margin-bottom: 0;
     }
-
     svg {
       path {
         //fill: red !important;
@@ -41,7 +41,7 @@ const StyledBody = styled.div`
   }
 `;
 
-const BenefitsContainer = ({ t, features }) => {
+const BenefitsContainer = ({ t, features, theme }) => {
   return (
     <StyledBody>
       <Text
@@ -53,11 +53,17 @@ const BenefitsContainer = ({ t, features }) => {
         {t("Benefits")}
       </Text>
       {features.map((item, index) => {
-        if (!item.title) return;
+        if (!item.title || !item.image) return;
         return (
           <div className="payment-benefits" key={index}>
             <div dangerouslySetInnerHTML={{ __html: item.image }} />
-            <Text noSelect>{item.title}</Text>
+            <Text
+              noSelect
+              fontWeight={"600"}
+              color={theme.client.settings.payment.benefitsTextColor}
+            >
+              {item.title}
+            </Text>
           </div>
         );
       })}
@@ -66,11 +72,12 @@ const BenefitsContainer = ({ t, features }) => {
 };
 
 export default inject(({ auth }) => {
-  const { paymentQuotasStore } = auth;
-
+  const { paymentQuotasStore, settingsStore } = auth;
+  const { theme } = settingsStore;
   const { portalPaymentQuotasFeatures } = paymentQuotasStore;
 
   return {
+    theme,
     features: portalPaymentQuotasFeatures,
   };
 })(observer(BenefitsContainer));

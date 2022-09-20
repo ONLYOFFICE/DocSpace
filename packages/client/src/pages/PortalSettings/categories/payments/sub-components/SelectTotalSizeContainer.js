@@ -11,7 +11,7 @@ import { inject, observer } from "mobx-react";
 import { getConvertedSize } from "@docspace/common/utils";
 const StyledBody = styled.div`
   .select-total-size_title {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     margin-left: auto;
     margin-right: auto;
     width: max-content;

@@ -14,6 +14,10 @@ const StyledBody = styled.div`
   max-width: 272px;
   margin: 0 auto;
 
+  .payment-slider {
+    margin-top: 20px;
+  }
+
   @media ${smallTablet} {
     max-width: 520px;
   }
@@ -21,7 +25,8 @@ const StyledBody = styled.div`
   .slider-track {
     display: flex;
     position: relative;
-    margin-top: -10px;
+    margin-top: -8px;
+    margin-left: -3px;
     height: 16px;
 
     .slider-track-value_min,
@@ -41,12 +46,13 @@ const StyledBody = styled.div`
   }
 
   .payment-operations_input {
-    width: 111px;
+    width: 101px;
+    height: 60px;
     font-size: 44px;
     text-align: center;
     margin-left: 20px;
     margin-right: 20px;
-
+    padding: 0;
     ${(props) =>
       props.isDisabled &&
       css`
@@ -80,8 +86,8 @@ const StyledBody = styled.div`
       border: 1px solid
         ${(props) => props.theme.client.settings.payment.rectangleColor};
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       justify-content: center;
       -ms-align-items: center;
       align-items: center;
@@ -227,6 +233,10 @@ const SelectUsersCountContainer = ({
       </div>
 
       <Slider
+        thumbBorderWidth={"8px"}
+        thumbHeight={"32px"}
+        thumbWidth={"32px"}
+        runnableTrackHeight={"12px"}
         isDisabled={isDisabled || isUpdatingTariff}
         isReadOnly={isDisabled || isUpdatingTariff}
         type="range"
@@ -238,6 +248,7 @@ const SelectUsersCountContainer = ({
           isLessCountThanAcceptable ? minAvailableManagersValue : managersCount
         }
         {...onChangeSlideProp}
+        className="payment-slider"
       />
       <div className="slider-track">
         <Text className="slider-track-value_min" noSelect>

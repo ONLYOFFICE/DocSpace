@@ -42,13 +42,13 @@ const StyledBody = styled.div`
   }
   .payment-info_wrapper {
     display: flex;
-    margin-bottom: 20px;
-    margin-top: 12px;
+    margin-bottom: 18px;
+    margin-top: 11px;
     div {
       margin: auto 0;
     }
     .payment-info_managers-price {
-      margin-right: 8px;
+      margin-right: 6px;
     }
   }
 `;
@@ -262,7 +262,7 @@ const PaymentsPage = ({
       {planSuggestion()}
 
       {isGracePeriod && (
-        <Text noSelect fontSize={"14px"}>
+        <Text noSelect fontSize={"14px"} lineHeight={"16px"}>
           <Trans t={t} i18nKey="GracePeriodActivatedDescription" ns="Payments">
             Grace period activated from <strong>{{ fromDate }}</strong> -
             <strong>{{ byDate }}</strong> (<strong>{{ delayDaysCount }}</strong>
@@ -275,6 +275,7 @@ const PaymentsPage = ({
         <Text
           noSelect
           fontSize={"14px"}
+          lineHeight={"16px"}
           className="payment-info_managers-price"
         >
           <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
@@ -287,7 +288,7 @@ const PaymentsPage = ({
         <Text
           noSelect
           fontWeight={600}
-          fontSize={"14"}
+          fontSize={"14px"}
           className="payment-info_managers-price"
         >
           <Trans t={t} i18nKey="StartPrice" ns="Payments">

@@ -146,7 +146,7 @@ class SectionHeaderContent extends React.Component {
       isBrandingAndCustomizationAvailable,
       isRestoreAndAutoBackupAvailable,
     } = this.props;
-    console.log("key", key);
+
     switch (key) {
       case "DNSSettings":
         return isBrandingAndCustomizationAvailable;

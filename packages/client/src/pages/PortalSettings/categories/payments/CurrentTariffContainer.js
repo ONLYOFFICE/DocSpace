@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { PortalFeaturesLimitations } from "@docspace/common/constants";
 import { getConvertedSize } from "@docspace/common/utils";
+import { mobile } from "@docspace/components/utils/device";
 
 const StyledCurrentTariffContainer = styled.div`
   display: flex;
@@ -12,13 +13,18 @@ const StyledCurrentTariffContainer = styled.div`
   background: ${(props) => props.theme.client.settings.payment.backgroundColor};
   margin-bottom: 24px;
   flex-wrap: wrap;
-  margin-top: 16px;
+  margin-top: 14px;
   padding: 12px 16px;
   box-sizing: border-box;
   padding-bottom: 0;
 
+  @media ${mobile} {
+    flex-direction: column;
+    margin-bottom: 27px;
+  }
+
   div {
-    padding-bottom: 12px;
+    padding-bottom: 8px;
     margin-right: 24px;
   }
 
@@ -27,7 +33,7 @@ const StyledCurrentTariffContainer = styled.div`
     color: ${(props) => props.theme.client.settings.payment.tariffText};
     .current-tariff_count {
       color: ${(props) => props.theme.client.settings.payment.tariffText};
-      margin-left: 5px;
+      margin-left: 4px;
     }
   }
 `;
@@ -58,9 +64,14 @@ const CurrentTariffContainer = ({ style, quotaCharacteristics }) => {
 
         return (
           <div key={index}>
-            <Text isBold noSelect>
+            <Text isBold noSelect fontSize={"14px"}>
               {item.used.title}
-              <Text className="current-tariff_count" as="span" isBold>
+              <Text
+                className="current-tariff_count"
+                as="span"
+                isBold
+                fontSize={"14px"}
+              >
                 {resultingUsedValue}
                 {resultingMaxValue ? `/${resultingMaxValue}` : ""}
               </Text>

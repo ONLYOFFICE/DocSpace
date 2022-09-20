@@ -28,10 +28,13 @@ const StyledBody = styled.div`
     .payment_price_description {
       margin-top: 16px;
     }
-
+    .total-tariff_description {
+      margin: auto;
+    }
     .payment_price_month-text {
       margin: auto 0;
-      margin-bottom: 13px;
+      margin-bottom: 9px;
+      margin-left: 8px;
     }
   }
 
