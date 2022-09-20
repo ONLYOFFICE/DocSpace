@@ -39,7 +39,7 @@ const ArticleHeader = ({
         </StyledIconBox>
       )}
 
-      {isBurgerLoading ? (
+      {!isTabletView && isBurgerLoading ? (
         <Loaders.ArticleHeader height="28px" width="211px" />
       ) : (
         <StyledHeading showText={showText} size="large">
