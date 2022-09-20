@@ -257,71 +257,61 @@ const SectionHeaderContent = (props) => {
   };
 
   return (
-    <Consumer>
-      {(context) => (
-        <StyledContainer
-          isHeaderVisible={isHeaderVisible}
-          isLoaded={isLoaded}
-          width={context.sectionWidth}
-          isTabletView={isTabletView}
-          showText={showText}
-        >
-          {isHeaderVisible ? (
-            <div className="group-button-menu-container">
-              <TableGroupMenu
-                checkboxOptions={getMenuItems()}
-                onChange={onChange}
-                isChecked={isHeaderChecked}
-                isIndeterminate={isHeaderIndeterminate}
-                headerMenu={headerMenu}
-                withoutInfoPanelToggler={true}
-              />
-            </div>
-          ) : (
-            <div className="header-container">
-              <>
-                <Headline
-                  className="headline-header"
-                  type="content"
-                  truncate={true}
-                >
-                  {t("Accounts")}
-                </Headline>
-                <ContextMenuButton
-                  className="action-button"
-                  directionX="left"
-                  title={t("Common:Actions")}
-                  iconName="images/plus.svg"
-                  size={17}
-                  getData={getContextOptions}
-                  isDisabled={false}
-                />
-                {!isInfoPanelVisible && (
-                  <StyledInfoPanelToggleWrapper>
-                    {!(
-                      isTablet() ||
-                      isMobile ||
-                      isMobileUtils() ||
-                      !isDesktop()
-                    ) && (
-                      <div className="info-panel-toggle-bg">
-                        <IconButton
-                          className="info-panel-toggle"
-                          iconName="images/panel.react.svg"
-                          size="16"
-                          isFill={true}
-                          onClick={onSetInfoPanelVisible}
-                        />
-                      </div>
-                    )}
-                  </StyledInfoPanelToggleWrapper>
+    <StyledContainer>
+      {isHeaderVisible ? (
+        <div className="group-button-menu-container">
+          <TableGroupMenu
+            checkboxOptions={getMenuItems()}
+            onChange={onChange}
+            isChecked={isHeaderChecked}
+            isIndeterminate={isHeaderIndeterminate}
+            headerMenu={headerMenu}
+            withoutInfoPanelToggler={true}
+          />
+        </div>
+      ) : (
+        <div className="header-container">
+          <>
+            <Headline
+              className="headline-header"
+              type="content"
+              truncate={true}
+            >
+              {t("Accounts")}
+            </Headline>
+            <ContextMenuButton
+              className="action-button"
+              directionX="left"
+              title={t("Common:Actions")}
+              iconName="images/plus.svg"
+              size={15}
+              getData={getContextOptions}
+              isDisabled={false}
+            />
+            {!isInfoPanelVisible && (
+              <StyledInfoPanelToggleWrapper>
+                {!(
+                  isTablet() ||
+                  isMobile ||
+                  isMobileUtils() ||
+                  !isDesktop()
+                ) && (
+                  <div className="info-panel-toggle-bg">
+                    <IconButton
+                      className="info-panel-toggle"
+                      iconName="images/panel.react.svg"
+                      size="16"
+                      isFill={true}
+                      onClick={onSetInfoPanelVisible}
+                    />
+                  </div>
                 )}
-              </>
-            </div>
-          )}
-        </StyledContainer>
+              </StyledInfoPanelToggleWrapper>
+            )}
+          </>
+        </div>
       )}
-    </Consumer>
+    </StyledContainer>
   );
 };
 
