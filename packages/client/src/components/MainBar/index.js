@@ -30,30 +30,37 @@ const StyledContainer = styled.div`
   }
 `;
 
+//TODO: remove commented code after update bar logic
+
 const MainBar = ({
   firstLoad,
   checkedMaintenance,
   snackbarExist,
   setMaintenanceExist,
 }) => {
+  // const [isVisible, setIsVisible] = React.useState(false);
+
   React.useEffect(() => {
+    // setTimeout(() => setIsVisible(true), 9000);
     return () => setMaintenanceExist && setMaintenanceExist(false);
   }, []);
 
   return (
     <StyledContainer id={"main-bar"} className={"main-bar"}>
-      {/* {checkedMaintenance && !snackbarExist && (
+      {checkedMaintenance && !snackbarExist && (
         <Bar firstLoad={firstLoad} setMaintenanceExist={setMaintenanceExist} />
+      )}
+      {/* {isVisible && (
+        <SnackBar
+          headerText={"Rooms is about to be exceeded: 10 / 12"}
+          text={
+            "You can archived the unnecessary rooms or click here to find a better pricing plan for your portal."
+          }
+          isCampaigns={false}
+          opacity={1}
+          onLoad={() => console.log("load snackbar")}
+        />
       )} */}
-      <SnackBar
-        headerText={"Rooms is about to be exceeded: 10 / 12"}
-        text={
-          "You can archived the unnecessary rooms or click here to find a better pricing plan for your portal."
-        }
-        isCampaigns={false}
-        opacity={1}
-        onLoad={() => console.log("load snackbar")}
-      />
     </StyledContainer>
   );
 };
