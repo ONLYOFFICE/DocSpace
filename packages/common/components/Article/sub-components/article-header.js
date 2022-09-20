@@ -16,19 +16,10 @@ const ArticleHeader = ({
   showText,
   children,
   onClick,
-  isLoaded,
-  tReady,
-  setIsLoadedArticleHeader,
   isBurgerLoading,
   ...rest
 }) => {
   const history = useHistory();
-
-  const isLoadedSetting = isLoaded;
-
-  useEffect(() => {
-    if (isLoadedSetting) setIsLoadedArticleHeader(isLoadedSetting);
-  }, [isLoadedSetting]);
 
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
 
@@ -76,13 +67,10 @@ ArticleHeader.propTypes = {
 
 ArticleHeader.displayName = "Header";
 
-export default inject(({ common, auth }) => {
-  const { isLoaded, setIsLoadedArticleHeader } = common;
+export default inject(({ auth }) => {
   const { settingsStore } = auth;
   const { isBurgerLoading } = settingsStore;
   return {
-    isLoaded,
-    setIsLoadedArticleHeader,
     isBurgerLoading,
   };
 })(observer(ArticleHeader));
