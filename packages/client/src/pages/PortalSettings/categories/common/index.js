@@ -10,6 +10,7 @@ import Customization from "./customization";
 import Branding from "./branding";
 import Appearance from "./appearance";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+import LoaderSubmenu from "./sub-components/loaderSubmenu";
 
 const SubmenuCommon = (props) => {
   const { t, history, isLoaded, tReady, setIsLoadedSubmenu } = props;
@@ -56,6 +57,8 @@ const SubmenuCommon = (props) => {
       )
     );
   };
+
+  if (!isLoadedSetting) return <LoaderSubmenu />;
 
   return (
     <Submenu
