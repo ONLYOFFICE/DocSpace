@@ -405,12 +405,12 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         <Toast />
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || !isMobileOnly ? <></> : <NavMenu />}
-        {isMobileOnly && !isEditor && <MainBar />}
+        {isMobileOnly && <MainBar />}
         <IndicatorLoader />
         <ScrollToTop />
         <DialogsWrapper t={t} />
         <Main isDesktop={isDesktop}>
-          {!isMobileOnly && !isEditor && <MainBar />}
+          {!isMobileOnly && <MainBar />}
           <div className="main-container">
             <Switch>
               <PrivateRoute
