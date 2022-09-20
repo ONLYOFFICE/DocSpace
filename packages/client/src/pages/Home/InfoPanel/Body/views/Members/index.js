@@ -26,6 +26,10 @@ const Members = ({
       setMembers(selectionParentRoom.members);
       return;
     }
+
+    setMembers(null);
+    console.log("FETCH MEMBERS ON SELECTION PARENT ROOM CHANGE");
+
     const fetchedMembers = await getRoomMembers(selectionParentRoom.id);
     setMembers(fetchedMembers);
     setSelectionParentRoom({
@@ -36,8 +40,17 @@ const Members = ({
 
   useEffect(async () => {
     if (!selection.isRoom) return;
+    if (selectionParentRoom && selectionParentRoom.id === selection.id) return;
+
+    setMembers(null);
+    console.log("FETCH MEMBERS ON SELECTION CHANGE");
+
     const fetchedMembers = await getRoomMembers(selection.id);
     setMembers(fetchedMembers);
+    setSelectionParentRoom({
+      ...selection,
+      members: fetchedMembers,
+    });
   }, [selection]);
 
   if (!members) return <Loaders.InfoPanelMemberListLoader />;
