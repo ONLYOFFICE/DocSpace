@@ -62,7 +62,7 @@ class RoomsFilter {
       defaultFilter.pageCount;
 
     const filterValue =
-      (urlFilter[FILTER_VALUE] && +urlFilter[FILTER_VALUE]) ||
+      (urlFilter[FILTER_VALUE] && urlFilter[FILTER_VALUE]) ||
       defaultFilter.filterValue;
 
     const type = (urlFilter[TYPE] && urlFilter[TYPE]) || defaultFilter.type;

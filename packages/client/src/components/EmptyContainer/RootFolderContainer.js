@@ -7,6 +7,12 @@ import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
 import Loaders from "@docspace/common/components/Loaders";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
+import { combineUrl } from "@docspace/common/utils";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { AppServerConfig } from "@docspace/common/constants";
+import history from "@docspace/common/history";
+import config from "PACKAGE_FILE";
 
 const RootFolderContainer = (props) => {
   const {
@@ -31,18 +37,22 @@ const RootFolderContainer = (props) => {
     linkStyles,
     isLoading,
     viewAs,
+    fetchRooms,
+    setAlreadyFetchingRooms,
+    categoryType,
   } = props;
   const subheadingText = t("SubheadingEmptyText");
   const myDescription = t("MyEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
   const trashHeader = t("EmptyScreenFolder");
+  const archiveHeader = t("ArchiveEmptyScreenHeader");
   const recentHeader = t("NoFilesHereYet");
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
-  const roomsDescription = "Please create the first room.";
-  const archiveRoomsDescription = "Archive rooms empty";
+  const roomsDescription = t("RoomEmptyContainerDescription");
+  const archiveRoomsDescription = t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
   const privacyIcon = <img alt="" src="images/privacy.svg" />;
@@ -54,11 +64,46 @@ const RootFolderContainer = (props) => {
   ];
 
   const [showLoader, setShowLoader] = React.useState(false);
+  const [isEmptyPage, setIsEmptyPage] = React.useState(false);
+
+  React.useEffect(() => {
+    if (
+      rootFolderType !== FolderType.USER &&
+      rootFolderType !== FolderType.COMMON
+    ) {
+      setIsEmptyPage(true);
+    } else {
+      setIsEmptyPage(false);
+    }
+  }, [isEmptyPage, setIsEmptyPage]);
 
   const onGoToMyDocuments = () => {
     const newFilter = filter.clone();
     setIsLoading(true);
     fetchFiles(myFolderId, newFilter).finally(() => setIsLoading(false));
+  };
+
+  const onGoToShared = () => {
+    setIsLoading(true);
+
+    setAlreadyFetchingRooms(true);
+    fetchRooms(null, null)
+      .then(() => {
+        const filter = RoomsFilter.getDefault();
+
+        const filterParamsStr = filter.toUrlParams();
+
+        const url = getCategoryUrl(categoryType, filter.folder);
+
+        const pathname = `${url}?${filterParamsStr}`;
+
+        history.push(
+          combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
+        );
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   const getEmptyFolderProps = () => {
@@ -118,8 +163,10 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Archive:
         return {
+          headerText: archiveHeader,
           descriptionText: archiveRoomsDescription,
-          imageSrc: "images/empty_screen_corporate.png",
+          imageSrc: "images/empty_screen_archive.svg",
+          buttons: archiveButtons,
         };
       default:
         break;
@@ -229,6 +276,20 @@ const RootFolderContainer = (props) => {
     </div>
   );
 
+  const archiveButtons = (
+    <div className="empty-folder_container-links">
+      <img
+        className="empty-folder_container_folder-image"
+        src="images/empty-folder-image.svg"
+        onClick={onGoToShared}
+        alt="folder_icon"
+      />
+      <Link onClick={onGoToShared} {...linkStyles}>
+        {t("GoToShared")}
+      </Link>
+    </div>
+  );
+
   const recentButtons = (
     <div className="empty-folder_container-links">
       <img
@@ -270,6 +331,7 @@ const RootFolderContainer = (props) => {
       ) : (
         <EmptyContainer
           headerText={headerText}
+          isEmptyPage={isEmptyPage}
           {...subheadingTextProp}
           {...emptyFolderProps}
         />
@@ -294,6 +356,9 @@ export default inject(
       isLoading,
       setIsLoading,
       viewAs,
+      fetchRooms,
+      categoryType,
+      setAlreadyFetchingRooms,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
     const {
@@ -322,6 +387,9 @@ export default inject(
       setIsLoading,
       rootFolderType,
       viewAs,
+      fetchRooms,
+      categoryType,
+      setAlreadyFetchingRooms,
     };
   }
 )(withTranslation("Files")(observer(RootFolderContainer)));

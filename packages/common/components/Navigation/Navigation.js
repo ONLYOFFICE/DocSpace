@@ -55,6 +55,8 @@ const Navigation = ({
     (!isMobile && !isTabletUtils() && !isMobileUtils()) ||
     (isDesktopUtils() && !isMobile);
 
+  const infoPanelIsVisible = isDesktop && !isEmptyFilesList;
+
   const onMissClick = React.useCallback(
     (e) => {
       e.preventDefault;
@@ -186,7 +188,7 @@ const Navigation = ({
               titles={titles}
             />
           </StyledContainer>
-          {isDesktop && (
+          {infoPanelIsVisible && (
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}
               toggleInfoPanel={toggleInfoPanel}
