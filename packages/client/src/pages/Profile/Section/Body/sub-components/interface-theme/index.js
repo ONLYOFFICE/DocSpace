@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -6,12 +6,14 @@ import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
-import { ThemeKeys } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
-import ThemePreview from "./theme-preview";
+import { ThemeKeys } from "@docspace/common/constants";
 
 import { smallTablet } from "@docspace/components/utils/device";
 import { showLoader, hideLoader } from "@docspace/common/utils";
+
+import ThemePreview from "./theme-preview";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -51,14 +53,17 @@ const StyledWrapper = styled.div`
 const InterfaceTheme = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
   const { theme, changeTheme, currentColorScheme, selectedThemeId } = props;
+  const [currentTheme, setCurrentTheme] = useState(theme);
 
   const themeChange = async (theme) => {
     showLoader();
 
     try {
+      setCurrentTheme(theme);
       await changeTheme(theme);
-    } finally {
-      hideLoader();
+    } catch (error) {
+      console.error(error);
+      toastr.error(error);
     }
   };
 
@@ -78,7 +83,7 @@ const InterfaceTheme = (props) => {
     }
   };
 
-  const isSystemTheme = theme === ThemeKeys.SystemStr;
+  const isSystemTheme = currentTheme === ThemeKeys.SystemStr;
 
   return (
     <StyledWrapper>
@@ -105,7 +110,7 @@ const InterfaceTheme = (props) => {
           accentColor={currentColorScheme.accentColor}
           themeId={selectedThemeId}
           value={ThemeKeys.BaseStr}
-          isChecked={theme === ThemeKeys.BaseStr}
+          isChecked={currentTheme === ThemeKeys.BaseStr}
           onChangeTheme={onChangeTheme}
         />
         <ThemePreview
@@ -115,7 +120,7 @@ const InterfaceTheme = (props) => {
           accentColor={currentColorScheme.accentColor}
           themeId={selectedThemeId}
           value={ThemeKeys.DarkStr}
-          isChecked={theme === ThemeKeys.DarkStr}
+          isChecked={currentTheme === ThemeKeys.DarkStr}
           onChangeTheme={onChangeTheme}
         />
       </div>
