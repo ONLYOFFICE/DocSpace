@@ -107,10 +107,15 @@ const StyledProperties = styled.div`
     }
 
     .property-content {
+      max-width: 100%;
       margin: auto 0;
 
       font-weight: 600;
       font-size: 13px;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .property-tag_list {
@@ -125,6 +130,43 @@ const StyledProperties = styled.div`
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+        }
+      }
+    }
+    .property-comment_editor {
+      &-display {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .edit_toggle {
+          cursor: pointer;
+          display: flex;
+          flex-direction: row;
+          gap: 6px;
+          &-icon {
+            svg {
+              width: 12px;
+              height: 12px;
+            }
+          }
+          &-text {
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            text-underline-offset: 2px;
+          }
+        }
+      }
+
+      &-editor {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        &-buttons {
+          display: flex;
+          flex-direction: row;
+          gap: 4px;
         }
       }
     }
