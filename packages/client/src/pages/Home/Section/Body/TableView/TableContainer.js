@@ -107,6 +107,11 @@ const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TableVersions.Rooms}`;
 const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TableVersions.Rooms}`;
 const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TableVersions.Rooms}`;
 
+const elementResizeDetector = elementResizeDetectorMaker({
+  strategy: "scroll",
+  callOnAdd: false,
+});
+
 const Table = ({
   filesList,
   sectionWidth,
@@ -168,11 +173,8 @@ const Table = ({
 
   const onSetTagRef = React.useCallback((node) => {
     if (node) {
+      tagRef.current = node;
       onResize(node);
-      const elementResizeDetector = elementResizeDetectorMaker({
-        strategy: "scroll",
-        callOnAdd: false,
-      });
 
       elementResizeDetector.listenTo(node, onResize);
     }
