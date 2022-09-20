@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { inject, observer } from "mobx-react";
-import elementResizeDetectorMaker from "element-resize-detector";
+// import elementResizeDetectorMaker from "element-resize-detector";
 import TileContainer from "./sub-components/TileContainer";
 import FileTile from "./FileTile";
 
@@ -28,28 +28,27 @@ const getThumbSize = (width) => {
   return `${imgWidth}x300`;
 };
 
-const elementResizeDetector = elementResizeDetectorMaker({
-  strategy: "scroll",
-  callOnAdd: false,
-});
+// const elementResizeDetector = elementResizeDetectorMaker({
+//   strategy: "scroll",
+//   callOnAdd: false,
+// });
 
 const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
   const firstRef = useRef(null);
   const [thumbSize, setThumbSize] = useState("");
   const [columnCount, setColumnCount] = useState(null);
 
-  useEffect(() => {
-    return () => {
-      if (!firstRef?.current) return;
-      elementResizeDetector.uninstall(firstRef.current);
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     if (!firstRef?.current) return;
+  //     elementResizeDetector.uninstall(firstRef.current);
+  //   };
+  // }, []);
 
   const onResize = useCallback(
     (node) => {
-      const element = node;
-      if (!element) return;
-      const { width } = element.getBoundingClientRect();
+      if (!node) return;
+      const { width } = node.getBoundingClientRect();
 
       const size = getThumbSize(width);
 
