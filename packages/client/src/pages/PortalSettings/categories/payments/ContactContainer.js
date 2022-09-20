@@ -3,9 +3,8 @@ import styled from "styled-components";
 import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import Text from "@docspace/components/text";
-import Link from "@docspace/components/link";
 
 const StyledContactContainer = styled.div`
   display: flex;
@@ -21,14 +20,14 @@ const ContactContainer = ({ t, salesEmail, theme }) => {
       <Text noSelect fontWeight={600}>
         {t("ContactUs")}
       </Text>
-
-      <Link
-        fontWeight={600}
+      <ColorTheme
+        tag="a"
+        themeId={ThemeType.Link}
+        fontWeight="600"
         href={`mailto:${salesEmail}`}
-        color={theme.client.payments.linkColor}
       >
         {salesEmail}
-      </Link>
+      </ColorTheme>
     </StyledContactContainer>
   );
 };

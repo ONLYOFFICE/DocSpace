@@ -26,10 +26,7 @@ const StyledBody = styled.div`
   .payment-info_grace-period {
     margin-bottom: 12px;
   }
-  .payment-info_grace-period,
-  .payment-info_expired-period {
-    color: ${(props) => props.theme.client.payments.delayColor};
-  }
+ 
   .payment-info {
     display: grid;
     grid-template-columns: repeat(2, minmax(100px, 320px));
@@ -193,10 +190,14 @@ const PaymentsPage = ({
 
   const expiredTitleSubscriptionWarning = () => {
     return textComponent(
-      <Trans t={t} i18nKey="BusinessExpired" ns="Payments">
+      <Trans
+        t={t}
+        i18nKey="BusinessExpired"
+        ns="Payments"
+        color={theme.client.settings.payment.warningColor}
+      >
         {{ date: paymentTerm }} {{ planName: currentTariffPlanTitle }}
-      </Trans>,
-      "payment-info_expired-period"
+      </Trans>
     );
   };
 
@@ -230,7 +231,12 @@ const PaymentsPage = ({
 
     if (isGracePeriod) {
       return textComponent(
-        <Trans t={t} i18nKey="DelayedPayment" ns="Payments">
+        <Trans
+          t={t}
+          i18nKey="DelayedPayment"
+          ns="Payments"
+          color={theme.client.settings.payment.warningColor}
+        >
           {{ date: paymentTerm }} {{ planName: currentTariffPlanTitle }}
         </Trans>,
         "payment-info_grace-period"

@@ -2874,9 +2874,7 @@ const Base = {
 
         backgroundPrice: "#f3f4f4",
         backgroundPriceContainer: "transparent",
-        buttonColor: "#2DA7DB",
-        buttonTextColor: "#FFFFFF",
-        benefitsTextColor: "#657077",
+        warningColor: "#F21C0E",
       },
     },
 

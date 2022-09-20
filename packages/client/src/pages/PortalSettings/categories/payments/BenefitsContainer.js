@@ -57,13 +57,7 @@ const BenefitsContainer = ({ t, features, theme }) => {
         return (
           <div className="payment-benefits" key={index}>
             <div dangerouslySetInnerHTML={{ __html: item.image }} />
-            <Text
-              noSelect
-              fontWeight={"600"}
-              color={theme.client.settings.payment.benefitsTextColor}
-            >
-              {item.title}
-            </Text>
+            <Text noSelect>{item.title}</Text>
           </div>
         );
       })}

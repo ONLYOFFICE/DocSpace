@@ -1848,9 +1848,9 @@ const Dark = {
 
     paymentAlert: {
       color: "#ed7309",
-      warningColor: "#F21C0E",
+      warningColor: "#E06451",
       border: "1px solid #ed7309",
-      warningBorder: "1px solid #F21C0E",
+      warningBorder: "1px solid #E06451",
     },
   },
 
@@ -2880,9 +2880,7 @@ const Dark = {
         rectangleColor: "#3D3D3D",
         backgroundPrice: "#282828",
         backgroundPriceContainer: "#282828",
-        buttonColor: "#CCCCCC",
-        buttonTextColor: "#333333",
-        benefitsTextColor: "#FFFFFF",
+        warningColor: "#E06451",
       },
     },
 

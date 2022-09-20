@@ -5,6 +5,7 @@ import { useTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { HelpButton, Link } from "@docspace/components";
 import Avatar from "@docspace/components/avatar";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const StyledContainer = styled.div`
   display: flex;
@@ -81,15 +82,16 @@ const PayerInformationContainer = ({
         {"."}
       </Text>
       {isLinkAvailable ? (
-        <Link
+        <ColorTheme
           noSelect
           fontWeight={600}
           href={accountLink}
           className="change-payer"
-          color={theme.client.settings.payment.linkColor}
+          tag="a"
+          themeId={ThemeType.Link}
         >
           {t("ChangePayer")}
-        </Link>
+        </ColorTheme>
       ) : (
         <Text as="span" fontSize="13px" isBold className="change-payer">
           {t("OwnerCanChangePayer")}
@@ -102,23 +104,25 @@ const PayerInformationContainer = ({
   const payerInformation = (
     <>
       {isLinkAvailable ? (
-        <Link
+        <ColorTheme
           noSelect
           fontWeight={600}
           href={accountLink}
           className="payer-info_account-link"
-          color={theme.client.payments.linkColor}
+          tag="a"
+          themeId={ThemeType.Link}
         >
           {t("StripeCustomerPortal")}
-        </Link>
+        </ColorTheme>
       ) : (
-        <Link
+        <ColorTheme
           fontWeight={600}
           href={`mailto:${email}`}
-          color={theme.client.payments.linkColor}
+          tag="a"
+          themeId={ThemeType.Link}
         >
           {email}
-        </Link>
+        </ColorTheme>
       )}
     </>
   );
@@ -130,7 +134,11 @@ const PayerInformationContainer = ({
       ) : (
         <Trans t={t} i18nKey="UserNotFound" ns="Payments">
           User
-          <Text as="span" color={"#F21C0E"} fontWeight={600}>
+          <Text
+            as="span"
+            color={theme.client.settings.payment.warningColor}
+            fontWeight={600}
+          >
             {{ email }}
           </Text>
           is not found
