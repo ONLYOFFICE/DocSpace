@@ -2,6 +2,10 @@ import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { getConvertedSize } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
+
+const MANAGER = "manager";
+const TOTAL_SIZE = "total_size";
+
 class PaymentQuotasStore {
   portalPaymentQuotas = {};
   portalPaymentQuotasFeatures = [];
@@ -22,14 +26,14 @@ class PaymentQuotasStore {
 
   get stepAddingQuotaManagers() {
     const result = this.portalPaymentQuotasFeatures.find(
-      (obj) => obj.id === "manager"
+      (obj) => obj.id === MANAGER
     );
     return result.value;
   }
 
   get stepAddingQuotaTotalSize() {
     const result = this.portalPaymentQuotasFeatures.find(
-      (obj) => obj.id === "total_size"
+      (obj) => obj.id === TOTAL_SIZE
     );
     return result.value;
   }
@@ -44,7 +48,7 @@ class PaymentQuotasStore {
 
   replaceTotalSizeValue = (t) => {
     const totalSizeObj = this.portalPaymentQuotasFeatures.find(
-      (el) => el.id === "total_size"
+      (el) => el.id === TOTAL_SIZE
     );
     const replacedValue = totalSizeObj.title.replace(
       "{0}",
@@ -56,13 +60,13 @@ class PaymentQuotasStore {
 
   get usedTotalStorageSizeTitle() {
     const result = this.portalPaymentQuotasFeatures.find(
-      (obj) => obj.id === "total_size"
+      (obj) => obj.id === TOTAL_SIZE
     );
     return result.priceTitle;
   }
   get addedManagersCountTitle() {
     const result = this.portalPaymentQuotasFeatures.find(
-      (obj) => obj.id === "manager"
+      (obj) => obj.id === MANAGER
     );
     return result.priceTitle;
   }

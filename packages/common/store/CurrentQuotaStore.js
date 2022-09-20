@@ -3,6 +3,12 @@ import { makeAutoObservable } from "mobx";
 import api from "../api";
 import { PortalFeaturesLimitations } from "../constants";
 
+const MANAGER = "manager";
+const TOTAL_SIZE = "total_size";
+const FILE_SIZE = "file_size";
+const ROOM = "room";
+const USERS = "users";
+const USERS_IN_ROOM = "usersInRoom";
 class QuotasStore {
   currentPortalQuota = {};
   currentPortalQuotaFeatures = [];
@@ -36,7 +42,7 @@ class QuotasStore {
 
   get maxCountManagersByQuota() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "manager"
+      (obj) => obj.id === MANAGER
     );
 
     return result.value;
@@ -44,7 +50,7 @@ class QuotasStore {
 
   get addedManagersCount() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "manager"
+      (obj) => obj.id === MANAGER
     );
 
     return result.used.value;
@@ -52,7 +58,7 @@ class QuotasStore {
 
   get maxTotalSizeByQuota() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "total_size"
+      (obj) => obj.id === TOTAL_SIZE
     );
 
     if (!result.value) return PortalFeaturesLimitations.Limitless;
@@ -62,14 +68,14 @@ class QuotasStore {
 
   get usedTotalStorageSizeCount() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "total_size"
+      (obj) => obj.id === TOTAL_SIZE
     );
     return result.used.value;
   }
 
   get maxFileSizeByQuota() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "file_size"
+      (obj) => obj.id === FILE_SIZE
     );
 
     return result.value;
@@ -77,7 +83,7 @@ class QuotasStore {
 
   get maxCountUsersByQuota() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "users"
+      (obj) => obj.id === USERS
     );
     if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
     return result.value;
@@ -85,7 +91,7 @@ class QuotasStore {
 
   get maxCountRoomsByQuota() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "room"
+      (obj) => obj.id === ROOM
     );
     if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
     return result.value;
@@ -93,7 +99,7 @@ class QuotasStore {
 
   get usedRoomsCount() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "room"
+      (obj) => obj.id === ROOM
     );
     return result.used.value;
   }
@@ -124,7 +130,7 @@ class QuotasStore {
 
   get isAuditAvailable() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "restore"
+      (obj) => obj.id === "audit"
     );
 
     return result.value;
@@ -138,9 +144,9 @@ class QuotasStore {
     const result = [];
 
     this.currentPortalQuotaFeatures.forEach((elem) => {
-      elem.id === "room" && result.splice(0, 0, elem);
-      elem.id === "manager" && result.splice(1, 0, elem);
-      elem.id === "total_size" && result.splice(2, 0, elem);
+      elem.id === ROOM && result.splice(0, 0, elem);
+      elem.id === MANAGER && result.splice(1, 0, elem);
+      elem.id === TOTAL_SIZE && result.splice(2, 0, elem);
     });
 
     return result;
@@ -148,7 +154,7 @@ class QuotasStore {
 
   get maxUsersCountInRoom() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "usersInRoom"
+      (obj) => obj.id === USERS_IN_ROOM
     );
 
     if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
