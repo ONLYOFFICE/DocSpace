@@ -62,7 +62,7 @@ class QuotasStore {
 
   get usedTotalStorageSizeCount() {
     const result = this.currentPortalQuotaFeatures.find(
-      (obj) => obj.id === "manager"
+      (obj) => obj.id === "total_size"
     );
     return result.used.value;
   }
