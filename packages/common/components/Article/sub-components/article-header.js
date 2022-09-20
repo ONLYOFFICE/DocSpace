@@ -40,7 +40,7 @@ const ArticleHeader = ({
       )}
 
       {isBurgerLoading ? (
-        <Loaders.ArticleHeader height="28px" width="210px" />
+        <Loaders.ArticleHeader height="28px" width="211px" />
       ) : (
         <StyledHeading showText={showText} size="large">
           {isTabletView ? (
