@@ -38,24 +38,40 @@ const StyledSlider = styled.input.attrs((props) => ({
     width: ${(props) =>
       props.theme.avatarEditorBody.slider.runnableTrack.width};
     height: ${(props) =>
-      props.theme.avatarEditorBody.slider.runnableTrack.height};
+      props.runnableTrackHeight
+        ? props.runnableTrackHeight
+        : props.theme.avatarEditorBody.slider.runnableTrack.height};
     cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
   }
 
   &::-webkit-slider-thumb {
     margin-top: ${(props) =>
       props.theme.avatarEditorBody.slider.sliderThumb.marginTop};
-    width: ${(props) => props.theme.avatarEditorBody.slider.sliderThumb.width};
+    width: ${(props) =>
+      props.thumbWidth
+        ? props.thumbWidth
+        : props.theme.avatarEditorBody.slider.sliderThumb.width};
     height: ${(props) =>
-      props.theme.avatarEditorBody.slider.sliderThumb.height};
+      props.thumbHeight
+        ? props.thumbHeight
+        : props.theme.avatarEditorBody.slider.sliderThumb.height};
 
     background: ${(props) =>
       props.isDisabled
         ? props.theme.avatarEditorBody.slider.sliderThumb.disabledBackground
         : props.theme.avatarEditorBody.slider.sliderThumb.background};
 
-    border: ${(props) =>
-      props.theme.avatarEditorBody.slider.sliderThumb.border};
+    border-width: ${(props) =>
+      props.thumbBorderWidth
+        ? props.thumbBorderWidth
+        : props.theme.avatarEditorBody.slider.sliderThumb.borderWidth};
+
+    border-style: ${(props) =>
+      props.theme.avatarEditorBody.slider.sliderThumb.borderStyle};
+
+    border-color: ${(props) =>
+      props.theme.avatarEditorBody.slider.sliderThumb.borderColor};
+
     border-radius: ${(props) =>
       props.theme.avatarEditorBody.slider.sliderThumb.height};
     cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
