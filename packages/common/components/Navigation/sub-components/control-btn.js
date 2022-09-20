@@ -102,6 +102,8 @@ const ControlButtons = ({
   toggleDropBox,
   isDesktop,
   titles,
+  withMenu,
+  onPlusClick,
 }) => {
   const toggleInfoPanelAction = () => {
     toggleInfoPanel && toggleInfoPanel();
@@ -116,6 +118,8 @@ const ControlButtons = ({
             <PlusButton
               className="add-button"
               getData={getContextOptionsPlus}
+              withMenu={withMenu}
+              onPlusClick={onPlusClick}
             />
           )}
           {!personal && (
@@ -144,6 +148,8 @@ const ControlButtons = ({
             <PlusButton
               className="add-button"
               getData={getContextOptionsPlus}
+              withMenu={withMenu}
+              onPlusClick={onPlusClick}
             />
           )}
           {!isDesktop && (
