@@ -7,8 +7,17 @@ const StyledMain = styled.main`
   width: 100vw;
   z-index: 0;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   box-sizing: border-box;
+
+  .main-container {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+  }
 
   ${isMobileOnly &&
   css`

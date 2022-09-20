@@ -21,7 +21,6 @@ import {
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
-  Bar,
 } from "./Section";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 import MediaViewer from "./MediaViewer";
@@ -523,16 +522,6 @@ class PureHome extends React.Component {
               <SectionHeaderContent />
             )}
           </Section.SectionHeader>
-
-          <Section.SectionBar>
-            {checkedMaintenance && !snackbarExist && (
-              <Bar
-                firstLoad={firstLoad}
-                personal={personal}
-                setMaintenanceExist={setMaintenanceExist}
-              />
-            )}
-          </Section.SectionBar>
 
           <Section.SectionFilter>
             {isFrame ? (
