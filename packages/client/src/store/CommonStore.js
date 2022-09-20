@@ -12,7 +12,6 @@ class CommonStore {
   isInit = false;
   isLoaded = false;
   isLoadedArticleBody = false;
-  isLoadedArticleHeader = false;
   isLoadedSectionHeader = false;
   isLoadedSubmenu = false;
   isLoadedLngTZSettings = false;
@@ -73,10 +72,6 @@ class CommonStore {
 
   setIsLoadedArticleBody = (isLoadedArticleBody) => {
     this.isLoadedArticleBody = isLoadedArticleBody;
-  };
-
-  setIsLoadedArticleHeader = (isLoadedArticleHeader) => {
-    this.isLoadedArticleHeader = isLoadedArticleHeader;
   };
 
   setIsLoadedSectionHeader = (isLoadedSectionHeader) => {
