@@ -366,7 +366,16 @@ const ArticleMainButtonContent = (props) => {
     : t("Common:Actions");
 
   const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
-  const isDisplayImageMainButton = !isArchiveFolder;
+  const isSettingFolder = window.location.pathname.endsWith("/settings/common")
+    ? "common"
+    : "admin";
+
+  const isDisplayImageMainButton =
+    !isArchiveFolder &&
+    !isFavoritesFolder &&
+    !isRecentFolder &&
+    !isRecycleBinFolder &&
+    !isSettingFolder;
 
   return (
     <>
