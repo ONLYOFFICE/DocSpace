@@ -28,50 +28,57 @@ const getThumbSize = (width) => {
   return `${imgWidth}x300`;
 };
 
+const elementResizeDetector = elementResizeDetectorMaker({
+  strategy: "scroll",
+  callOnAdd: false,
+});
+
 const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
-  const firstRef = useRef();
+  const firstRef = useRef(null);
   const [thumbSize, setThumbSize] = useState("");
   const [columnCount, setColumnCount] = useState(null);
 
   useEffect(() => {
-    if (!firstRef?.current) return;
-
-    onResize(); //Rerender tiles here
-
-    const elementResizeDetector = elementResizeDetectorMaker({
-      strategy: "scroll",
-      callOnAdd: false,
-    });
-
-    elementResizeDetector.listenTo(firstRef.current, onResize);
-
     return () => {
       if (!firstRef?.current) return;
-
       elementResizeDetector.uninstall(firstRef.current);
     };
-  }, [firstRef, filesList]);
+  }, []);
 
-  const onResize = useCallback(() => {
-    if (!firstRef?.current) return;
-    const { width } = firstRef.current.getBoundingClientRect();
+  const onResize = useCallback(
+    (node) => {
+      const element = node;
+      if (!element) return;
+      const { width } = element.getBoundingClientRect();
 
-    const size = getThumbSize(width);
+      const size = getThumbSize(width);
 
-    const widthWithoutPadding = width - 32;
+      const widthWithoutPadding = width - 32;
 
-    const columns = Math.floor(widthWithoutPadding / 80);
+      const columns = Math.floor(widthWithoutPadding / 80);
 
-    if (columns != columnCount) setColumnCount(columns);
+      if (columns != columnCount) setColumnCount(columns);
 
-    // console.log(
-    //   `Body width: ${document.body.clientWidth} Tile width: ${width} ThumbSize: ${size}`
-    // );
+      // console.log(
+      //   `Body width: ${document.body.clientWidth} Tile width: ${width} ThumbSize: ${size}`
+      // );
 
-    if (size === thumbSize) return;
+      if (size === thumbSize) return;
 
-    setThumbSize(size);
-  }, [firstRef]);
+      setThumbSize(size);
+    },
+    [columnCount, thumbSize]
+  );
+
+  const onSetFirstRef = React.useCallback((node) => {
+    if (node) {
+      onResize(node);
+
+      firstRef.current = node;
+
+      // elementResizeDetector.listenTo(node, onResize);
+    }
+  }, []);
 
   return (
     <TileContainer
@@ -89,7 +96,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             key={`${item.id}_${index}`}
             item={item}
             sectionWidth={sectionWidth}
-            selectableRef={firstRef}
+            selectableRef={onSetFirstRef}
             thumbSize={thumbSize}
             columnCount={columnCount}
           />
