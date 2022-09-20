@@ -36,21 +36,19 @@ public class CountRoomChecker : TenantQuotaFeatureChecker<CountRoomFeature, int>
 
 public class CountRoomCheckerStatistic : ITenantQuotaFeatureStat<CountRoomFeature, int>
 {
-    private readonly IFolderDao<int> _folderDao;
-    private readonly GlobalFolderHelper _globalFolderHelper;
+    private readonly IServiceProvider _serviceProvider;
 
-    public CountRoomCheckerStatistic(
-        IFolderDao<int> folderDao,
-        GlobalFolderHelper globalFolderHelper)
+    public CountRoomCheckerStatistic(IServiceProvider serviceProvider)
     {
-        _folderDao = folderDao;
-        _globalFolderHelper = globalFolderHelper;
+        _serviceProvider = serviceProvider;
     }
 
     public async Task<int> GetValue()
     {
-        var parentId = await _globalFolderHelper.GetFolderVirtualRooms<int>();
+        var folderDao = _serviceProvider.GetService<IFolderDao<int>>();
+        var globalFolderHelper = _serviceProvider.GetService<GlobalFolderHelper>();
 
-        return await _folderDao.GetFoldersAsync(parentId).CountAsync();
+        var parentId = await globalFolderHelper.GetFolderVirtualRooms<int>();
+        return await folderDao.GetFoldersAsync(parentId).CountAsync();
     }
 }

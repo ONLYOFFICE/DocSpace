@@ -34,7 +34,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         Name = "Default",
         MaxFileSize = 25 * 1024 * 1024, // 25Mb
         MaxTotalSize = long.MaxValue,
-        ActiveUsers = int.MaxValue,
+        CountUser = int.MaxValue,
         CountManager = int.MaxValue,
         CountRoom = int.MaxValue
     };
@@ -72,22 +72,22 @@ public class TenantQuota : IMapFrom<DbQuota>
     private readonly MaxFileSizeFeature _maxFileSizeFeature;
     public long MaxFileSize
     {
-        get => ByteConverter.GetInBytes(_maxFileSizeFeature.Value);
-        set => _maxFileSizeFeature.Value = ByteConverter.GetInMBytes(value);
+        get => _maxFileSizeFeature.Value;
+        set => _maxFileSizeFeature.Value = value;
     }
 
     private readonly MaxTotalSizeFeature _maxTotalSizeFeature;
     public long MaxTotalSize
     {
-        get => ByteConverter.GetInBytes(_maxTotalSizeFeature.Value);
-        set => _maxTotalSizeFeature.Value = ByteConverter.GetInMBytes(value);
+        get => _maxTotalSizeFeature.Value;
+        set => _maxTotalSizeFeature.Value = value;
     }
 
-    private readonly ActiveUsersFeature _activeUsersFeature;
-    public int ActiveUsers
+    private readonly CountUserFeature _countUserFeature;
+    public int CountUser
     {
-        get => _activeUsersFeature.Value;
-        set => _activeUsersFeature.Value = value;
+        get => _countUserFeature.Value;
+        set => _countUserFeature.Value = value;
     }
 
     private readonly CountManagerFeature _countManagerFeature;
@@ -220,7 +220,7 @@ public class TenantQuota : IMapFrom<DbQuota>
     {
         _featuresList = new List<string>();
 
-        _activeUsersFeature = new ActiveUsersFeature(this) { Order = 1 };
+        _countUserFeature = new CountUserFeature(this) { Order = 1 };
         _countManagerFeature = new CountManagerFeature(this);
         _usersInRoomFeature = new UsersInRoomFeature(this) { Order = 8 };
         _countRoomFeature = new CountRoomFeature(this) { Order = 2 };
@@ -244,7 +244,7 @@ public class TenantQuota : IMapFrom<DbQuota>
 
         TenantQuotaFeatures = new List<TenantQuotaFeature>
         {
-            _activeUsersFeature,
+            _countUserFeature,
             _countManagerFeature,
             _usersInRoomFeature,
             _countRoomFeature,

@@ -34,27 +34,3 @@ public class CountManagerFeature : TenantQuotaFeatureCount
     {
     }
 }
-
-public class CountManagerChecker : TenantQuotaFeatureChecker<CountManagerFeature, int>
-{
-    public override string Exception => "The number of managers should not exceed  {0}";
-
-    public CountManagerChecker(ITenantQuotaFeatureStat<CountManagerFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
-    {
-    }
-}
-
-public class CountManagerStatistic : ITenantQuotaFeatureStat<CountManagerFeature, int>
-{
-    private readonly UserManager _userManager;
-
-    public CountManagerStatistic(UserManager userManager)
-    {
-        _userManager = userManager;
-    }
-
-    public Task<int> GetValue()
-    {
-        return Task.FromResult(_userManager.GetUsersByGroup(Users.Constants.GroupUser.ID).Length);
-    }
-}

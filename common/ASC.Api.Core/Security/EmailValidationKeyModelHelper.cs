@@ -106,7 +106,7 @@ public class EmailValidationKeyModelHelper
 
     public ValidationResult Validate(EmailValidationKeyModel inDto)
     {
-        var (key, emplType, email, uiD, type, fileShare, roomId) = inDto;
+        var (key, emplType, email, uiD, type, roomAccess, roomId) = inDto;
 
         ValidationResult checkKeyResult;
 
@@ -117,9 +117,9 @@ public class EmailValidationKeyModelHelper
                 break;
 
             case ConfirmType.LinkInvite:
-                if (fileShare != default && !string.IsNullOrEmpty(roomId))
+                if (roomAccess != default && !string.IsNullOrEmpty(roomId))
                 {
-                    checkKeyResult = _provider.ValidateEmailKey(email + type + ((int)emplType + (int)fileShare + roomId), key, _provider.ValidEmailKeyInterval);
+                    checkKeyResult = _provider.ValidateEmailKey(email + type + ((int)emplType + (int)roomAccess + roomId), key, _provider.ValidEmailKeyInterval);
                     if (checkKeyResult == ValidationResult.Ok &&
                         !_roomLinksService.VisitProcess(roomId, email, key, _provider.ValidVisitLinkInterval))
                     {

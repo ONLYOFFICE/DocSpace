@@ -28,6 +28,80 @@ using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
+[Scope]
+public class QuotaUsageManager
+{
+    private readonly TenantManager _tenantManager;
+    private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly CoreConfiguration _configuration;
+    private readonly AuthContext _authContext;
+    private readonly SettingsManager _settingsManager;
+    private readonly WebItemManager _webItemManager;
+    private readonly Constants _constants;
+    private readonly CountManagerStatistic _countManagerStatistic;
+    private readonly CountUserStatistic _activeUsersStatistic;
+
+    public QuotaUsageManager(
+        TenantManager tenantManager,
+        CoreBaseSettings coreBaseSettings,
+        CoreConfiguration configuration,
+        AuthContext authContext,
+        SettingsManager settingsManager,
+        WebItemManager webItemManager,
+        Constants constants,
+        CountManagerStatistic countManagerStatistic,
+        CountUserStatistic activeUsersStatistic)
+    {
+        _tenantManager = tenantManager;
+        _coreBaseSettings = coreBaseSettings;
+        _configuration = configuration;
+        _authContext = authContext;
+        _settingsManager = settingsManager;
+        _webItemManager = webItemManager;
+        _constants = constants;
+        _countManagerStatistic = countManagerStatistic;
+        _activeUsersStatistic = activeUsersStatistic;
+    }
+
+    public async Task<QuotaUsageDto> Get()
+    {
+        var tenant = _tenantManager.GetCurrentTenant();
+        var quota = _tenantManager.GetCurrentTenantQuota();
+        var quotaRows = _tenantManager.FindTenantQuotaRows(tenant.Id)
+            .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty)
+            .ToList();
+
+        var result = new QuotaUsageDto
+        {
+            StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize),
+            UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter)),
+            MaxUsersCount = quota.CountManager,
+            UsersCount = _coreBaseSettings.Personal ? 1 : await _countManagerStatistic.GetValue(),
+            MaxVisitors = _coreBaseSettings.Standalone ? -1 : quota.CountUser,
+            VisitorsCount = _coreBaseSettings.Personal ? 0 : await _activeUsersStatistic.GetValue(),
+
+            StorageUsage = quotaRows
+                .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })
+                .ToList()
+        };
+
+        if (_coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
+        {
+            result.UserStorageSize = _configuration.PersonalMaxSpace(_settingsManager);
+
+            var webItem = _webItemManager[WebItemManager.DocumentsProductID];
+            if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)
+            {
+                result.UserUsedSize = await spaceUsageManager.GetUserSpaceUsageAsync(_authContext.CurrentAccount.ID);
+            }
+        }
+
+        result.MaxFileSize = Math.Min(result.AvailableSize, (ulong)quota.MaxFileSize);
+
+        return result;
+    }
+}
+
 public class QuotaUsageDto
 {
     public ulong StorageSize { get; set; }
@@ -60,49 +134,10 @@ public class QuotaUsageDto
 
     public long MaxVisitors { get; set; }
     public long VisitorsCount { get; set; }
+}
 
-    public QuotaUsageDto(
-        TenantManager tenantManager,
-        CoreBaseSettings coreBaseSettings,
-        CoreConfiguration configuration,
-        TenantStatisticsProvider tenantStatisticsProvider,
-        AuthContext authContext,
-        SettingsManager settingsManager,
-        WebItemManager webItemManager,
-        Constants constants)
-    {
-        var tenant = tenantManager.GetCurrentTenant();
-        var quota = tenantManager.GetCurrentTenantQuota();
-        var quotaRows = tenantStatisticsProvider.GetQuotaRows(tenant.Id).ToList();
-
-        StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize);
-        UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter));
-        MaxUsersCount = quota.ActiveUsers;
-        UsersCount = coreBaseSettings.Personal ? 1 : tenantStatisticsProvider.GetUsersCount();
-        MaxVisitors = coreBaseSettings.Standalone ? -1 : constants.CoefficientOfVisitors * quota.ActiveUsers;
-        VisitorsCount = coreBaseSettings.Personal ? 0 : tenantStatisticsProvider.GetVisitorsCount();
-
-        StorageUsage = quotaRows
-                .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })
-                .ToList();
-
-        if (coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
-        {
-            UserStorageSize = configuration.PersonalMaxSpace(settingsManager);
-
-            var webItem = webItemManager[WebItemManager.DocumentsProductID];
-            if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)
-            {
-                UserUsedSize = spaceUsageManager.GetUserSpaceUsageAsync(authContext.CurrentAccount.ID).Result;
-            }
-        }
-
-        MaxFileSize = Math.Min(AvailableSize, (ulong)quota.MaxFileSize);
-    }
-
-    public class QuotaUsage
-    {
-        public string Path { get; set; }
-        public long Size { get; set; }
-    }
+public class QuotaUsage
+{
+    public string Path { get; set; }
+    public long Size { get; set; }
 }

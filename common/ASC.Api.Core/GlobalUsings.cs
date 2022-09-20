@@ -83,6 +83,7 @@ global using ASC.MessagingSystem.EF.Model;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Core;
+global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Studio.Utility;
 global using ASC.Webhooks.Core;

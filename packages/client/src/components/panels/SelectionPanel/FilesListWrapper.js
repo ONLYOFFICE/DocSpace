@@ -117,6 +117,7 @@ class FilesListWrapper extends React.Component {
       folderSelection = false,
       fileId,
       folderId,
+      maxHeight,
     } = this.props;
     const { hasNextPage, isNextPageLoading, files, page } = this.state;
 
@@ -133,6 +134,7 @@ class FilesListWrapper extends React.Component {
         folderSelection={folderSelection}
         fileId={fileId}
         page={page}
+        maxHeight={maxHeight}
       />
     );
   }

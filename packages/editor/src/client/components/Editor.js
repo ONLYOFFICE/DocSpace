@@ -493,8 +493,7 @@ function Editor({
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
             AppServerConfig.proxyURL,
-            "products/files/",
-            `/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
+            `/products/files/httphandlers/filehandler.ashx?action=create&doctype=text&title=${encodeURIComponent(
               defaultFileName
             )}`
           );

@@ -43,7 +43,6 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<LdapNotifyService>();
         services.AddBaseDbContextPool<FilesDbContext>();
         services.AddBaseDbContextPool<BackupsContext>();
-        services.AddTransient<QuotaUsageDto>();
 
         services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
         services.AddScoped<CountRoomChecker>();

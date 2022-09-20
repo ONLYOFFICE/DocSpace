@@ -35,7 +35,7 @@ public class FileUploader
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
-    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
+    private readonly MaxTotalSizeStatistic _maxTotalSizeStatistic;
     private readonly FileMarker _fileMarker;
     private readonly FileConverter _fileConverter;
     private readonly IDaoFactory _daoFactory;
@@ -55,7 +55,7 @@ public class FileUploader
         TenantManager tenantManager,
         AuthContext authContext,
         SetupInfo setupInfo,
-        TenantStatisticsProvider tenantStatisticsProvider,
+        MaxTotalSizeStatistic maxTotalSizeStatistic,
         FileMarker fileMarker,
         FileConverter fileConverter,
         IDaoFactory daoFactory,
@@ -74,7 +74,7 @@ public class FileUploader
         _tenantManager = tenantManager;
         _authContext = authContext;
         _setupInfo = setupInfo;
-        _tenantStatisticsProvider = tenantStatisticsProvider;
+        _maxTotalSizeStatistic = maxTotalSizeStatistic;
         _fileMarker = fileMarker;
         _fileConverter = fileConverter;
         _daoFactory = daoFactory;
@@ -316,7 +316,7 @@ public class FileUploader
 
         if (chunkLength > _setupInfo.ChunkUploadSize)
         {
-            throw FileSizeComment.GetFileSizeException(_setupInfo.MaxUploadSize(_tenantManager, _tenantStatisticsProvider));
+            throw FileSizeComment.GetFileSizeException(_setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
         }
 
         var maxUploadSize = await GetMaxFileSizeAsync(uploadSession.FolderId, uploadSession.BytesTotal > 0);

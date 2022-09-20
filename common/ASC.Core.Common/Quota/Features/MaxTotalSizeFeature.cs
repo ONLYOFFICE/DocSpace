@@ -34,31 +34,3 @@ public class MaxTotalSizeFeature : TenantQuotaFeatureSize
     {
     }
 }
-
-public class MaxTotalSizeChecker : TenantQuotaFeatureChecker<MaxTotalSizeFeature, long>
-{
-    public override string Exception => "The used storage size should not exceed {0}";
-
-    public MaxTotalSizeChecker(ITenantQuotaFeatureStat<MaxTotalSizeFeature, long> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
-    {
-    }
-}
-
-public class MaxTotalSizeStatistic : ITenantQuotaFeatureStat<MaxTotalSizeFeature, long>
-{
-    private readonly TenantManager _tenantManager;
-
-    public MaxTotalSizeStatistic(TenantManager tenantManager)
-    {
-        _tenantManager = tenantManager;
-    }
-
-    public Task<long> GetValue()
-    {
-        var tenant = _tenantManager.GetCurrentTenant().Id;
-
-        return Task.FromResult(_tenantManager.FindTenantQuotaRows(tenant)
-            .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty)
-            .Sum(r => r.Counter));
-    }
-}

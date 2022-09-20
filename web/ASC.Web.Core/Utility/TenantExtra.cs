@@ -58,9 +58,8 @@ public class TenantExtraConfig
 public class TenantExtra
 {
     private readonly TenantExtraConfig _tenantExtraConfig;
-    private readonly UserManager _userManager;
-    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
-    private readonly AuthContext _authContext;
+    private readonly CountManagerStatistic _countManagerStatistic;
+    private readonly MaxTotalSizeStatistic _maxTotalSizeStatistic;
     private readonly TenantManager _tenantManager;
     private readonly ITariffService _tariffService;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -69,20 +68,16 @@ public class TenantExtra
     private readonly SettingsManager _settingsManager;
 
     public TenantExtra(
-        UserManager userManager,
-        TenantStatisticsProvider tenantStatisticsProvider,
-        AuthContext authContext,
         TenantManager tenantManager,
         ITariffService tariffService,
         CoreBaseSettings coreBaseSettings,
         LicenseReader licenseReader,
         SetupInfo setupInfo,
         SettingsManager settingsManager,
-        TenantExtraConfig tenantExtraConfig)
+        TenantExtraConfig tenantExtraConfig,
+        CountManagerStatistic countManagerStatistic,
+        MaxTotalSizeStatistic maxTotalSizeStatistic)
     {
-        _userManager = userManager;
-        _tenantStatisticsProvider = tenantStatisticsProvider;
-        _authContext = authContext;
         _tenantManager = tenantManager;
         _tariffService = tariffService;
         _coreBaseSettings = coreBaseSettings;
@@ -90,6 +85,8 @@ public class TenantExtra
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
         _tenantExtraConfig = tenantExtraConfig;
+        _countManagerStatistic = countManagerStatistic;
+        _maxTotalSizeStatistic = maxTotalSizeStatistic;
     }
 
     public bool EnableTariffSettings
@@ -124,31 +121,6 @@ public class TenantExtra
         return Enterprise && GetCurrentTariff(withRequestToPaymentSystem).State < TariffState.NotPaid;
     }
 
-    public bool EnableControlPanel
-    {
-        get
-        {
-            return _coreBaseSettings.Standalone &&
-                !string.IsNullOrEmpty(_setupInfo.ControlPanelUrl) &&
-                GetCurrentTariff().State < TariffState.NotPaid &&
-                _userManager.IsAdmin(_authContext.CurrentAccount.ID);
-        }
-    }
-
-    public bool EnableDocbuilder
-    {
-        get { return !Opensource; }
-    }
-    public string GetAppsPageLink()
-    {
-        return VirtualPathUtility.ToAbsolute("~/AppInstall.aspx");
-    }
-
-    public string GetTariffPageLink()
-    {
-        return VirtualPathUtility.ToAbsolute("~/Tariffs.aspx");
-    }
-
     public Tariff GetCurrentTariff(bool withRequestToPaymentSystem = true)
     {
         return _tariffService.GetTariff(_tenantManager.GetCurrentTenant().Id, withRequestToPaymentSystem);
@@ -159,47 +131,16 @@ public class TenantExtra
         return _tenantManager.GetTenantQuotas();
     }
 
-    private TenantQuota GetPrevQuota(TenantQuota curQuota)
+
+    public async Task<TenantQuota> GetRightQuota()
     {
-        TenantQuota prev = null;
-        foreach (var quota in GetTenantQuotas().OrderBy(r => r.ActiveUsers))
-        {
-            if (quota.Tenant == curQuota.Tenant)
-            {
-                return prev;
-            }
-
-            prev = quota;
-        }
-        return null;
-    }
-
-    public int GetPrevUsersCount(TenantQuota quota)
-    {
-        var prevQuota = GetPrevQuota(quota);
-        if (prevQuota == null || prevQuota.Trial)
-        {
-            return 1;
-        }
-
-        return prevQuota.ActiveUsers + 1;
-    }
-
-    public int GetRightQuotaId()
-    {
-        var q = GetRightQuota();
-        return q != null ? q.Tenant : 0;
-    }
-
-    public TenantQuota GetRightQuota()
-    {
-        var usedSpace = _tenantStatisticsProvider.GetUsedSize();
-        var needUsersCount = _tenantStatisticsProvider.GetUsersCount();
+        var usedSpace = await _maxTotalSizeStatistic.GetValue();
+        var needUsersCount = await _countManagerStatistic.GetValue();
         var quotas = GetTenantQuotas();
 
-        return quotas.OrderBy(q => q.ActiveUsers)
+        return quotas.OrderBy(q => q.CountUser)
                      .FirstOrDefault(q =>
-                                     q.ActiveUsers > needUsersCount
+                                     q.CountUser > needUsersCount
                                      && q.MaxTotalSize > usedSpace
                                      && !q.Free
                                      && !q.Trial);
@@ -239,7 +180,7 @@ public class TenantExtra
             var diskQuota = _tenantManager.GetCurrentTenantQuota();
             if (diskQuota != null)
             {
-                var usedSize = _tenantStatisticsProvider.GetUsedSize();
+                var usedSize = _maxTotalSizeStatistic.GetValue().Result;
                 var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
                 return Math.Min(freeSize, diskQuota.MaxFileSize);
             }

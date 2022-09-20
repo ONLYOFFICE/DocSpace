@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,56 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Constants = ASC.Core.Users.Constants;
+namespace ASC.Core.Common.Quota.Features;
 
-namespace ASC.Web.Studio.UserControls.Statistics;
-
-[Scope]
-public class TenantStatisticsProvider
+public class CountUserFeature : TenantQuotaFeatureCount
 {
-    private readonly UserManager _userManager;
-    private readonly TenantManager _tenantManager;
-
-    public TenantStatisticsProvider(UserManager userManager, TenantManager tenantManager)
+    public override string Name { get => "users"; }
+    public CountUserFeature(TenantQuota tenantQuota) : base(tenantQuota)
     {
-        _userManager = userManager;
-        _tenantManager = tenantManager;
-    }
-
-    public int GetUsersCount()
-    {
-        return _userManager.GetUsersByGroup(Constants.GroupUser.ID).Length;
-    }
-
-    public int GetVisitorsCount()
-    {
-        return _userManager.GetUsersByGroup(Constants.GroupVisitor.ID).Length;
-    }
-
-    public int GetAdminsCount()
-    {
-        return _userManager.GetUsersByGroup(Constants.GroupAdmin.ID).Length;
-    }
-
-
-    public long GetUsedSize()
-    {
-        return GetUsedSize(_tenantManager.GetCurrentTenant().Id);
-    }
-
-    public long GetUsedSize(int tenant)
-    {
-        return GetQuotaRows(tenant).Sum(r => r.Counter);
-    }
-
-    public long GetUsedSize(Guid moduleId)
-    {
-        return GetQuotaRows(_tenantManager.GetCurrentTenant().Id).Where(r => new Guid(r.Tag).Equals(moduleId)).Sum(r => r.Counter);
-    }
-
-    public IEnumerable<TenantQuotaRow> GetQuotaRows(int tenant)
-    {
-        return _tenantManager.FindTenantQuotaRows(tenant)
-            .Where(r => !string.IsNullOrEmpty(r.Tag) && new Guid(r.Tag) != Guid.Empty);
     }
 }

@@ -125,6 +125,7 @@ global using ASC.Web.Core;
 global using ASC.Web.Core.Files;
 global using ASC.Web.Core.ModuleManagement.Common;
 global using ASC.Web.Core.PublicResources;
+global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Subscriptions;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Core.Utility.Skins;
@@ -147,7 +148,6 @@ global using ASC.Web.Files.ThirdPartyApp;
 global using ASC.Web.Files.Utils;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
-global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 
 global using AutoMapper;

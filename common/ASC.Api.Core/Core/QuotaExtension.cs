@@ -24,12 +24,30 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Quota.Features;
-
-public class ActiveUsersFeature : TenantQuotaFeatureCount
+namespace ASC.Api.Core.Core;
+internal static class QuotaExtension
 {
-    public override string Name { get => "users"; }
-    public ActiveUsersFeature(TenantQuota tenantQuota) : base(tenantQuota)
+    public static void RegisterFeature(this IServiceCollection services)
     {
+        services.AddScoped<ITenantQuotaFeatureChecker, CountManagerChecker>();
+        services.AddScoped<TenantQuotaFeatureChecker<CountManagerFeature, int>, CountManagerChecker>();
+        services.AddScoped<CountManagerChecker>();
+        services.AddScoped<ITenantQuotaFeatureStat<CountManagerFeature, int>, CountManagerStatistic>();
+        services.AddScoped<CountManagerStatistic>();
+
+        services.AddScoped<ITenantQuotaFeatureChecker, CountUserChecker>();
+        services.AddScoped<TenantQuotaFeatureChecker<CountUserFeature, int>, CountUserChecker>();
+        services.AddScoped<CountUserChecker>();
+        services.AddScoped<ITenantQuotaFeatureStat<CountUserFeature, int>, CountUserStatistic>();
+        services.AddScoped<CountUserStatistic>();
+
+        services.AddScoped<ITenantQuotaFeatureChecker, MaxTotalSizeChecker>();
+        services.AddScoped<TenantQuotaFeatureChecker<MaxTotalSizeFeature, long>, MaxTotalSizeChecker>();
+        services.AddScoped<MaxTotalSizeChecker>();
+        services.AddScoped<ITenantQuotaFeatureStat<MaxTotalSizeFeature, long>, MaxTotalSizeStatistic>();
+        services.AddScoped<MaxTotalSizeStatistic>();
+
+        services.AddScoped<TenantQuotaFeatureChecker<MaxFileSizeFeature, long>, MaxFileSizeChecker>();
+        services.AddScoped<ITenantQuotaFeatureStat<MaxFileSizeFeature, long>, MaxFileSizeStatistic>();
     }
 }

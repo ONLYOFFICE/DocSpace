@@ -57,20 +57,6 @@ public sealed class Constants
         }
     }
 
-    public int CoefficientOfVisitors
-    {
-        get
-        {
-            int count;
-            if (!int.TryParse(_configuration["core:coefficient-of-visitors"], out count))
-            {
-                count = 2;
-            }
-
-            return count;
-        }
-    }
-
     private readonly IConfiguration _configuration;
 
 
@@ -84,16 +70,16 @@ public sealed class Constants
         Name = AuthConst.Everyone.Name,
     };
 
-    public static readonly GroupInfo GroupVisitor = new GroupInfo(SysGroupCategoryId)
-    {
-        ID = AuthConst.Visitor.ID,
-        Name = AuthConst.Visitor.Name,
-    };
-
     public static readonly GroupInfo GroupUser = new GroupInfo(SysGroupCategoryId)
     {
         ID = AuthConst.User.ID,
         Name = AuthConst.User.Name,
+    };
+
+    public static readonly GroupInfo GroupManager = new GroupInfo(SysGroupCategoryId)
+    {
+        ID = AuthConst.Manager.ID,
+        Name = AuthConst.Manager.Name,
     };
 
     public static readonly GroupInfo GroupAdmin = new GroupInfo(SysGroupCategoryId)
@@ -105,8 +91,8 @@ public sealed class Constants
     public static readonly GroupInfo[] BuildinGroups = new[]
     {
             GroupEveryone,
-            GroupVisitor,
             GroupUser,
+            GroupManager,
             GroupAdmin,
         };
 

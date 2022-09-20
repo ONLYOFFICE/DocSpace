@@ -54,7 +54,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         TenantManager tenantManager,
         TenantUtil tenantUtil,
         SetupInfo setupInfo,
-        TenantStatisticsProvider tenantStatisticProvider,
+        MaxTotalSizeStatistic maxTotalSizeStatistic,
         CoreBaseSettings coreBaseSettings,
         CoreConfiguration coreConfiguration,
         SettingsManager settingsManager,
@@ -78,7 +78,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
               tenantManager,
               tenantUtil,
               setupInfo,
-              tenantStatisticProvider,
+              maxTotalSizeStatistic,
               coreBaseSettings,
               coreConfiguration,
               settingsManager,
@@ -273,7 +273,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false)
     {
         if (filterType == FilterType.FoldersOnly)
         {
@@ -331,7 +331,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
             else
             {
-                q = q.Where(r => r.CreateBy == subjectID);
+                q = excludeSubject ? q.Where(r => r.CreateBy != subjectID) : q.Where(r => r.CreateBy == subjectID);
             }
         }
 
@@ -394,7 +394,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantManager, _tenantStatisticProvider);
+        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
         if (checkQuota && maxChunkedUploadSize < file.ContentLength)
         {
             throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
@@ -563,7 +563,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
-        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantManager, _tenantStatisticProvider);
+        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
 
         if (maxChunkedUploadSize < file.ContentLength)
         {

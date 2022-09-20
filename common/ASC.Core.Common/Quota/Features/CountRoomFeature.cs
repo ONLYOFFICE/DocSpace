@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Core.Common.Quota.Features;
+
 public class CountRoomFeature : TenantQuotaFeatureCount
 {
     public override string Name { get => "room"; }
