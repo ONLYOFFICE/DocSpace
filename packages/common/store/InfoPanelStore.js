@@ -75,6 +75,18 @@ class InfoPanelStore {
     const pathname = window.location.pathname.toLowerCase();
     return pathname.indexOf("form-gallery") !== -1;
   };
+
+  getCanDisplay = () => {
+    const pathname = window.location.pathname.toLowerCase();
+
+    const isRooms = pathname.indexOf("rooms") !== -1;
+    const isFiles = pathname.indexOf("files") !== -1;
+    const isGallery = pathname.indexOf("form-gallery") !== -1;
+    const isAccountsHome =
+      pathname.indexOf("accounts") !== -1 && !(pathname.indexOf("view") !== -1);
+
+    return isRooms || isFiles || isGallery || isAccountsHome;
+  };
 }
 
 export default InfoPanelStore;
