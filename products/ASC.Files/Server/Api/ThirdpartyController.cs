@@ -86,7 +86,7 @@ public class ThirdpartyController : ApiControllerBase
     {
         var result = new List<List<string>>();
 
-        if (_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsVisitor(_userManager)
+        if (_userManager.IsVisitor(_securityContext.CurrentAccount.ID)
                 || (!_filesSettingsHelper.EnableThirdParty
                 && !_coreBaseSettings.Personal))
         {
@@ -203,7 +203,8 @@ public class ThirdpartyController : ApiControllerBase
     public async Task<FolderDto<string>> GetBackupThirdPartyAccountAsync()
     {
         var folder = await _fileStorageServiceThirdparty.GetBackupThirdPartyAsync();
-        if (folder != null) {
+        if (folder != null)
+        {
 
             return await _folderDtoHelper.GetAsync(folder);
         }

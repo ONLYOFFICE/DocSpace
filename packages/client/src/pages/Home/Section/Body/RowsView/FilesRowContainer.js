@@ -68,7 +68,6 @@ const FilesRowContainer = ({
   fetchMoreFiles,
   hasMoreFiles,
   isRooms,
-  selectedFolderId,
   withPaging,
 }) => {
   useEffect(() => {
@@ -95,7 +94,6 @@ const FilesRowContainer = ({
       hasMoreFiles={hasMoreFiles}
       draggable
       useReactWindow={!withPaging}
-      selectedFolderId={selectedFolderId}
       itemHeight={58}
     >
       {filesList.map((item, index) => (
@@ -111,34 +109,31 @@ const FilesRowContainer = ({
   );
 };
 
-export default inject(
-  ({ filesStore, auth, treeFoldersStore, selectedFolderStore }) => {
-    const {
-      filesList,
-      viewAs,
-      setViewAs,
-      filterTotal,
-      fetchMoreFiles,
-      hasMoreFiles,
-      roomsFilterTotal,
-    } = filesStore;
-    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
-    const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
-    const { withPaging } = auth.settingsStore;
+export default inject(({ filesStore, auth, treeFoldersStore }) => {
+  const {
+    filesList,
+    viewAs,
+    setViewAs,
+    filterTotal,
+    fetchMoreFiles,
+    hasMoreFiles,
+    roomsFilterTotal,
+  } = filesStore;
+  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+  const { withPaging } = auth.settingsStore;
 
-    const isRooms = isRoomsFolder || isArchiveFolder;
+  const isRooms = isRoomsFolder || isArchiveFolder;
 
-    return {
-      filesList,
-      viewAs,
-      setViewAs,
-      infoPanelVisible,
-      filterTotal: isRooms ? roomsFilterTotal : filterTotal,
-      fetchMoreFiles,
-      hasMoreFiles,
-      isRooms,
-      selectedFolderId: selectedFolderStore.id,
-      withPaging,
-    };
-  }
-)(observer(FilesRowContainer));
+  return {
+    filesList,
+    viewAs,
+    setViewAs,
+    infoPanelVisible,
+    filterTotal: isRooms ? roomsFilterTotal : filterTotal,
+    fetchMoreFiles,
+    hasMoreFiles,
+    isRooms,
+    withPaging,
+  };
+})(observer(FilesRowContainer));

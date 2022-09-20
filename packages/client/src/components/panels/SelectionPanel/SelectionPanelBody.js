@@ -118,6 +118,7 @@ const SelectionPanelBody = ({
                   folderSelection={folderSelection}
                   newFilter={newFilter}
                   fileId={fileId}
+                  maxHeight={!header ? 384 : 310}
                 />
               </>
             </div>

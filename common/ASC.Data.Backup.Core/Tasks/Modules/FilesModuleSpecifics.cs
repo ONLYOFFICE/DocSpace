@@ -74,11 +74,6 @@ public class FilesModuleSpecifics : ModuleSpecificsBase
                 }),
             new RelationInfo("core_user", "id", "files_security", "subject", typeof(TenantsModuleSpecifics)),
             new RelationInfo("core_group", "id", "files_security", "subject", typeof(TenantsModuleSpecifics)),
-            new RelationInfo("crm_deal", "id", "files_bunch_objects", "right_node", typeof(CrmModuleSpecifics),
-                x => Convert.ToString(x["right_node"]).StartsWith(_bunchRightNodeStartCrmOpportunity)),
-
-            new RelationInfo("projects_projects", "id", "files_bunch_objects", "right_node", typeof(ProjectsModuleSpecifics),
-                x => Convert.ToString(x["right_node"]).StartsWith(_bunchRightNodeStartProject, StringComparison.InvariantCultureIgnoreCase)),
 
             new RelationInfo("files_folder", "id", "files_bunch_objects", "left_node"),
             new RelationInfo("files_folder", "id", "files_file", "folder_id"),
@@ -318,18 +313,6 @@ public class FilesModuleSpecifics2 : ModuleSpecificsBase
 
     private readonly RelationInfo[] _rels = new[]
     {
-            new RelationInfo("projects_messages", "id", "files_tag", "name", typeof(ProjectsModuleSpecifics),
-                x => Convert.ToString(x["name"]).StartsWith(_tagStartMessage, StringComparison.InvariantCultureIgnoreCase)),
-
-            new RelationInfo("projects_tasks", "id", "files_tag", "name", typeof(ProjectsModuleSpecifics),
-                x => Convert.ToString(x["name"]).StartsWith(_tagStartTask, StringComparison.InvariantCultureIgnoreCase)),
-
-            new RelationInfo("projects_projects", "id", "files_tag", "name", typeof(ProjectsModuleSpecifics),
-                x => Convert.ToString(x["name"]).StartsWith(_tagStartProject, StringComparison.InvariantCultureIgnoreCase)),
-
-            new RelationInfo("crm_relationship_event", "id", "files_tag", "name", typeof(CrmModuleSpecifics2),
-                x => Convert.ToString(x["name"]).StartsWith(_tagStartRelationshipEvent, StringComparison.InvariantCultureIgnoreCase)),
-
             new RelationInfo("files_tag", "id", "files_tag_link", "tag_id", typeof(FilesModuleSpecifics)),
 
             new RelationInfo("files_file", "id", "files_tag_link", "entry_id", typeof(FilesModuleSpecifics),

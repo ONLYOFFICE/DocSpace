@@ -69,7 +69,7 @@ public class RoomInvitationLinksService
         var postifx = (int)employeeType + fileShare + id.ToString();
 
         var link = _commonLinkUtility.GetConfirmationUrl(email, ConfirmType.LinkInvite, postifx, guid)
-            + $"&emplType={employeeType:d}&roomId={id}&access={fileShare}";
+            + $"&emplType={employeeType:d}&roomId={id}&roomAccess={fileShare}";
 
         return link;
     }
