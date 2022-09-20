@@ -24,43 +24,46 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Notify.IntegrationEvents.EventHandling;
+using NLog.AWS.Logger;
 
-[Scope]
-public class NotifySendMessageRequestedIntegrationEventHandler : IIntegrationEventHandler<NotifySendMessageRequestedIntegrationEvent>
+namespace ASC.Api.Core.Extensions;
+public static class ISetupBuilderExtension
 {
-    private readonly ILogger<NotifySendMessageRequestedIntegrationEventHandler> _logger;
-    private readonly DbWorker _db;
-
-    public NotifySendMessageRequestedIntegrationEventHandler(
-        ILogger<NotifySendMessageRequestedIntegrationEventHandler> logger,
-        DbWorker db)
+    public static ISetupBuilder LoadConfiguration(this ISetupBuilder loggingBuilder, IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
-        _logger = logger;
-        _db = db;
-    }
+        var conf = new XmlLoggingConfiguration(CrossPlatform.PathCombine(configuration["pathToConf"], "nlog.config"));
 
-    private void SendNotifyMessage(NotifyMessage notifyMessage)
-    {
-        try
+        var settings = new ConfigurationExtension(configuration).GetSetting<NLogSettings>("log");
+
+        if (!string.IsNullOrEmpty(settings.Name))
         {
-            _db.SaveMessage(notifyMessage);
+            conf.Variables["name"] = settings.Name;
         }
-        catch (Exception e)
+
+        if (!string.IsNullOrEmpty(settings.Dir))
         {
-            _logger.ErrorWithException(e);
+            var dir = Path.IsPathRooted(settings.Dir) ? settings.Dir : CrossPlatform.PathCombine(hostEnvironment.ContentRootPath, settings.Dir);
+            conf.Variables["dir"] = dir.TrimEnd('/').TrimEnd('\\') + Path.DirectorySeparatorChar;
         }
-    }
 
-    public async Task Handle(NotifySendMessageRequestedIntegrationEvent @event)
-    {
-        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
+        foreach (var targetName in new[] { "aws", "aws_sql" })
         {
-            _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
+            var awsTarget = conf.FindTargetByName<AWSTarget>(targetName);
 
-            SendNotifyMessage(@event.NotifyMessage);
+            if (awsTarget == null) continue;
 
-            await Task.CompletedTask;
+            //hack
+            if (!string.IsNullOrEmpty(settings.Name))
+            {
+                awsTarget.LogGroup = awsTarget.LogGroup.Replace("${var:name}", settings.Name);
+            }
+
+            if (!string.IsNullOrEmpty(settings.AWSSecretAccessKey))
+            {
+                awsTarget.Credentials = new Amazon.Runtime.BasicAWSCredentials(settings.AWSAccessKeyId, settings.AWSSecretAccessKey);
+            }
         }
+
+        return loggingBuilder.LoadConfiguration(conf);
     }
 }

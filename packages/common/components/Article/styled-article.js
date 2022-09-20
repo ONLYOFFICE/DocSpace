@@ -165,6 +165,8 @@ const StyledArticleHeader = styled.div`
 StyledArticleHeader.defaultProps = { theme: Base };
 
 const StyledHeading = styled.div`
+  height: 24px;
+
   margin: 0;
   padding: 0;
   cursor: pointer;
@@ -191,6 +193,7 @@ const StyledHeading = styled.div`
 `;
 
 const StyledIconBox = styled.div`
+  cursor: pointer;
   display: none;
   align-items: center;
   height: 20px;

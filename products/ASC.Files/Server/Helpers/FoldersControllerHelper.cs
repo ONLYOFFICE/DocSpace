@@ -77,9 +77,9 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         return await _folderDtoHelper.GetAsync(folder);
     }
 
-    public async Task<FolderContentDto<T>> GetFolderAsync(T folderId, Guid? userIdOrGroupId, FilterType? filterType, bool? searchInContent, bool? withSubFolders)
+    public async Task<FolderContentDto<T>> GetFolderAsync(T folderId, Guid? userIdOrGroupId, FilterType? filterType, bool? searchInContent, bool? withSubFolders, bool? excludeSubject = false)
     {
-        var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId ?? Guid.Empty, filterType ?? FilterType.None, searchInContent ?? false, withSubFolders ?? false);
+        var folderContentWrapper = await ToFolderContentWrapperAsync(folderId, userIdOrGroupId ?? Guid.Empty, filterType ?? FilterType.None, searchInContent ?? false, withSubFolders ?? false, excludeSubject ?? false);
 
         return folderContentWrapper.NotFoundIfNull();
     }
@@ -166,7 +166,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         return await _folderDtoHelper.GetAsync(folder);
     }
 
-    private async Task<FolderContentDto<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders)
+    private async Task<FolderContentDto<T>> ToFolderContentWrapperAsync(T folderId, Guid userIdOrGroupId, FilterType filterType, bool searchInContent, bool withSubFolders, bool excludeSubject)
     {
         OrderBy orderBy = null;
         if (SortedByTypeExtensions.TryParse(_apiContext.SortBy, true, out var sortBy))
@@ -175,7 +175,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         }
 
         var startIndex = Convert.ToInt32(_apiContext.StartIndex);
-        var items = await _fileStorageService.GetFolderItemsAsync(folderId, startIndex, Convert.ToInt32(_apiContext.Count), filterType, filterType == FilterType.ByUser, userIdOrGroupId.ToString(), _apiContext.FilterValue, searchInContent, withSubFolders, orderBy);
+        var items = await _fileStorageService.GetFolderItemsAsync(folderId, startIndex, Convert.ToInt32(_apiContext.Count), filterType, filterType == FilterType.ByUser, userIdOrGroupId.ToString(), _apiContext.FilterValue, searchInContent, withSubFolders, orderBy, excludeSubject: excludeSubject);
 
         return await _folderContentDtoHelper.GetAsync(items, startIndex);
     }

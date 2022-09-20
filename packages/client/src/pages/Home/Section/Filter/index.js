@@ -147,9 +147,7 @@ const SectionFilterContent = ({
         const owner = getOwner(data) || null;
 
         const subjectId =
-          owner === FilterKeys.other
-            ? null
-            : owner === FilterKeys.me
+          owner === FilterKeys.other || owner === FilterKeys.me
             ? userId
             : owner;
 
@@ -182,7 +180,7 @@ const SectionFilterContent = ({
           newFilter.withoutTags = false;
         }
 
-        newFilter.withoutMe = withoutMe;
+        newFilter.excludeSubject = withoutMe;
         // newFilter.withSubfolders = withSubfolders;
         // newFilter.searchInContent = withContent;
 
@@ -192,11 +190,8 @@ const SectionFilterContent = ({
       } else {
         const filterType = getFilterType(data) || null;
 
-        const authorType = !!getAuthorType(data)
-          ? getAuthorType(data).includes("user_")
-            ? getAuthorType(data)
-            : `user_${getAuthorType(data)}`
-          : null;
+        const authorType = getAuthorType(data);
+
         const withSubfolders = getSearchParams(data);
         const withContent = getFilterContent(data);
 
@@ -205,7 +200,14 @@ const SectionFilterContent = ({
 
         newFilter.filterType = filterType;
 
-        newFilter.authorType = authorType;
+        if (authorType === FilterKeys.me || authorType === FilterKeys.other) {
+          newFilter.authorType = `user_${userId}`;
+          newFilter.excludeSubject = authorType === FilterKeys.other;
+        } else {
+          newFilter.authorType = authorType ? `user_${authorType}` : null;
+          newFilter.excludeSubject = null;
+        }
+
         newFilter.withSubfolders =
           withSubfolders === FilterKeys.excludeSubfolders ? "false" : "true";
         newFilter.searchInContent = withContent === "true" ? "true" : null;
@@ -218,6 +220,7 @@ const SectionFilterContent = ({
       }
     },
     [
+      isRooms,
       fetchFiles,
       fetchRooms,
       setIsLoading,
@@ -251,6 +254,7 @@ const SectionFilterContent = ({
       }
     },
     [
+      isRooms,
       setIsLoading,
       fetchFiles,
       fetchRooms,
@@ -283,6 +287,7 @@ const SectionFilterContent = ({
       }
     },
     [
+      isRooms,
       setIsLoading,
       fetchFiles,
       fetchRooms,
@@ -369,7 +374,11 @@ const SectionFilterContent = ({
 
       if (roomsFilter.subjectId) {
         const isMe = userId === roomsFilter.subjectId;
-        let label = isMe ? t("Common:MeLabel") : null;
+        let label = isMe
+          ? roomsFilter.excludeSubject
+            ? t("Common:OtherLabel")
+            : t("Common:MeLabel")
+          : null;
 
         if (!isMe) {
           const user = await getUser(roomsFilter.subjectId);
@@ -381,14 +390,6 @@ const SectionFilterContent = ({
           key: isMe ? FilterKeys.me : roomsFilter.subjectId,
           group: FilterGroups.roomFilterOwner,
           label: label,
-        });
-      }
-
-      if (roomsFilter.withoutMe) {
-        filterValues.push({
-          key: FilterKeys.other,
-          group: FilterGroups.roomFilterOwner,
-          label: t("Common:OtherLabel"),
         });
       }
 
@@ -468,11 +469,28 @@ const SectionFilterContent = ({
       }
 
       if (filter.authorType) {
-        const user = await getUser(filter.authorType.replace("user_", ""));
+        const isMe = userId === filter.authorType.replace("user_", "");
+
+        let label = isMe
+          ? filter.excludeSubject
+            ? t("Common:OtherLabel")
+            : t("Common:MeLabel")
+          : null;
+
+        if (!isMe) {
+          const user = await getUser(filter.authorType.replace("user_", ""));
+
+          label = user.displayName;
+        }
+
         filterValues.push({
-          key: `${filter.authorType}`,
+          key: isMe
+            ? filter.excludeSubject
+              ? FilterKeys.other
+              : FilterKeys.me
+            : filter.authorType.replace("user_", ""),
           group: FilterGroups.filterAuthor,
-          label: user.displayName,
+          label: label,
         });
       }
     }
@@ -483,11 +501,12 @@ const SectionFilterContent = ({
     filter.authorType,
     filter.filterType,
     filter.searchInContent,
+    filter.excludeSubject,
     roomsFilter.type,
     roomsFilter.subjectId,
     roomsFilter.tags,
     roomsFilter.tags?.length,
-    roomsFilter.withoutMe,
+    roomsFilter.excludeSubject,
     roomsFilter.withoutTags,
     // roomsFilter.withSubfolders,
     // roomsFilter.searchInContent,
@@ -753,20 +772,33 @@ const SectionFilterContent = ({
       }
 
       if (!isPersonalRoom) {
-        filterOptions.push(
+        const authorOption = [
           {
             key: FilterGroups.filterAuthor,
             group: FilterGroups.filterAuthor,
             label: t("ByAuthor"),
             isHeader: true,
+            withMultiItems: true,
           },
           {
-            key: "user",
+            key: FilterKeys.me,
+            group: FilterGroups.filterAuthor,
+            label: t("Common:MeLabel"),
+          },
+          {
+            key: FilterKeys.other,
+            group: FilterGroups.filterAuthor,
+            label: t("Common:OtherLabel"),
+          },
+          {
+            key: FilterKeys.user,
             group: FilterGroups.filterAuthor,
             label: t("Translations:AddAuthor"),
             isSelector: true,
-          }
-        );
+          },
+        ];
+
+        filterOptions.push(...authorOption);
       }
 
       filterOptions.push(...typeOptions);
@@ -878,8 +910,8 @@ const SectionFilterContent = ({
 
           !hide && commonOptions.push(authorOption);
         }
-        if (availableSort?.includes("Create")) {
-          const idx = availableSort.findIndex((x) => x === "Create");
+        if (availableSort?.includes("Created")) {
+          const idx = availableSort.findIndex((x) => x === "Created");
           const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(creationDate);
@@ -934,7 +966,7 @@ const SectionFilterContent = ({
 
         if (group === FilterGroups.roomFilterOwner) {
           newFilter.subjectId = null;
-          newFilter.withoutMe = false;
+          newFilter.excludeSubject = false;
         }
 
         if (group === FilterGroups.roomFilterTags) {
@@ -971,11 +1003,13 @@ const SectionFilterContent = ({
         );
       } else {
         const newFilter = filter.clone();
+
         if (group === FilterGroups.filterType) {
           newFilter.filterType = null;
         }
         if (group === FilterGroups.filterAuthor) {
           newFilter.authorType = null;
+          newFilter.excludeSubject = null;
         }
         if (group === FilterGroups.filterFolders) {
           newFilter.withSubfolders = "true";
@@ -994,6 +1028,7 @@ const SectionFilterContent = ({
       }
     },
     [
+      isRooms,
       fetchFiles,
       fetchRooms,
       setIsLoading,

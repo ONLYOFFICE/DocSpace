@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using NLog.Web;
+
 namespace ASC.Api.Core.Extensions;
 
 public static class HostBuilderExtension
@@ -33,8 +35,10 @@ public static class HostBuilderExtension
         hostBuilder.UseSystemd();
         hostBuilder.UseWindowsService();
         hostBuilder.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-        hostBuilder.ConfigureNLogLogging();
+        hostBuilder.UseNLog();
 
         return hostBuilder;
     }
+
+
 }
