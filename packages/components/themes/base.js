@@ -1139,7 +1139,9 @@ const Base = {
         height: "24px",
         background: blueMain,
         disabledBackground: "#A6DCF2",
-        border: `6px solid ${white}`,
+        borderWidth: "6px",
+        borderStyle: "solid",
+        borderColor: `${white}`,
         borderRadius: "30px",
         boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
       },
@@ -2874,6 +2876,7 @@ const Base = {
         backgroundPriceContainer: "transparent",
         buttonColor: "#2DA7DB",
         buttonTextColor: "#FFFFFF",
+        benefitsTextColor: "#657077",
       },
     },
 

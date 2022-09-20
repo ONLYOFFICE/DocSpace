@@ -1136,7 +1136,9 @@ const Dark = {
         height: "24px",
         background: grayMaxLight,
         disabledBackground: "#A6DCF2",
-        border: `6px solid ${black}`,
+        borderWidth: "6px",
+        borderStyle: "solid",
+        borderColor: `${black}`,
         borderRadius: "30px",
         boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
       },
@@ -2880,6 +2882,7 @@ const Dark = {
         backgroundPriceContainer: "#282828",
         buttonColor: "#CCCCCC",
         buttonTextColor: "#333333",
+        benefitsTextColor: "#FFFFFF",
       },
     },
 
