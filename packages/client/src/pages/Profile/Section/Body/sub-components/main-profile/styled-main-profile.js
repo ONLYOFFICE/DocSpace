@@ -124,6 +124,11 @@ export const StyledRow = styled.div`
     flex-direction: column;
     gap: 4px;
 
+    .label {
+      font-weight: 600;
+      color: ${(props) => props.theme.profile.main.textColor};
+    }
+
     .combo {
       & > div {
         padding-left: 8px !important;
