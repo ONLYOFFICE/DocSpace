@@ -41,6 +41,8 @@ const Navigation = ({
   toggleInfoPanel,
   isInfoPanelVisible,
   titles,
+  withMenu,
+  onPlusClick,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -54,6 +56,8 @@ const Navigation = ({
   const isDesktop =
     (!isMobile && !isTabletUtils() && !isMobileUtils()) ||
     (isDesktopUtils() && !isMobile);
+
+  const infoPanelIsVisible = isDesktop && !isEmptyFilesList;
 
   const onMissClick = React.useCallback(
     (e) => {
@@ -184,9 +188,11 @@ const Navigation = ({
               isInfoPanelVisible={isInfoPanelVisible}
               isDesktop={isDesktop}
               titles={titles}
+              withMenu={withMenu}
+              onPlusClick={onPlusClick}
             />
           </StyledContainer>
-          {isDesktop && (
+          {infoPanelIsVisible && (
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}
               toggleInfoPanel={toggleInfoPanel}
