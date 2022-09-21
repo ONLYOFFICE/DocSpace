@@ -41,11 +41,7 @@ public class WebStudioModuleSpecifics : ModuleSpecificsBase
             new TableInfo("webstudio_uservisit", "tenantid") {InsertMethod = InsertMethod.None}
         };
 
-    private readonly RelationInfo[] _relations = new[]
-    {
-            new RelationInfo("crm_organisation_logo", "id", "webstudio_settings", "Data", typeof(CrmInvoiceModuleSpecifics),
-                x => _crmSettingsId == new Guid(Convert.ToString(x["ID"])))
-        };
+    private readonly RelationInfo[] _relations = new RelationInfo[0];
 
     public WebStudioModuleSpecifics(Helpers helpers) : base(helpers) { }
 

@@ -12,13 +12,8 @@ const GridComponent = ({
   children,
   className,
   scroll,
-  selectedFolderId,
 }) => {
   const loaderRef = createRef();
-
-  useEffect(() => {
-    setTimeout(() => loaderRef?.current?.resetLoadMoreRowsCache(true), 1000);
-  }, [loaderRef, selectedFolderId, filesLength]);
 
   const isItemLoaded = useCallback(
     ({ index }) => {

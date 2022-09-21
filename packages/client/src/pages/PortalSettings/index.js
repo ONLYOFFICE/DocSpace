@@ -4,7 +4,6 @@ import { withRouter } from "react-router";
 import Layout from "./Layout";
 import { combineUrl } from "@docspace/common/utils";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
-import { inject, observer } from "mobx-react";
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
 
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
@@ -165,13 +164,7 @@ const DELETE_DATA_URLS = [
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
-const Settings = (props) => {
-  const { loadBaseInfo } = props;
-
-  useEffect(() => {
-    loadBaseInfo();
-  }, []);
-
+const Settings = () => {
   return (
     <Layout key="1">
       <Suspense fallback={null}>
@@ -240,10 +233,4 @@ const Settings = (props) => {
   );
 };
 
-export default inject(({ common }) => {
-  return {
-    loadBaseInfo: async () => {
-      await common.initSettings();
-    },
-  };
-})(withRouter(observer(Settings)));
+export default withRouter(Settings);

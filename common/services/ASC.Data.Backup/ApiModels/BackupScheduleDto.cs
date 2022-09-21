@@ -32,7 +32,6 @@ public class BackupScheduleDto
     public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
     public string BackupsStored { get; set; }
     public Cron CronParams { get; set; }
-    public bool BackupMail { get; set; }
 }
 
 public class Cron

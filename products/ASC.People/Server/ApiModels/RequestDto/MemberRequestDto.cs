@@ -44,10 +44,9 @@ public class MemberRequestDto
     public string Password { get; set; }
     public string PasswordHash { get; set; }
     public bool FromInviteLink { get; set; }
-    public int RoomAccess { get; set; }
-    public string RoomId { get; set; }
     public string Key { get; set; }
     public string CultureName { get; set; }
+    public Guid Target { get; set; }
 }
 
 public class UpdateMemberRequestDto : MemberRequestDto

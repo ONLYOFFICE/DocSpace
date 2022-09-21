@@ -1,6 +1,8 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import ToggleButton from "@docspace/components/toggle-button";
+import Heading from "@docspace/components/heading";
+import Box from "@docspace/components/box";
 import StyledSettings from "./StyledSettings";
 
 const AdminSettings = ({
@@ -20,18 +22,28 @@ const AdminSettings = ({
 
   return (
     <StyledSettings>
-      <ToggleButton
-        className="toggle-btn"
-        label={t("IntermediateVersion")}
-        onChange={onChangeStoreForceSave}
-        isChecked={storeForceSave}
-      />
-      <ToggleButton
-        className="toggle-btn"
-        label={t("ThirdPartyBtn")}
-        onChange={onChangeThirdParty}
-        isChecked={enableThirdParty}
-      />
+      <Box className="settings-section">
+        <Heading className="heading" level={2} size="xsmall">
+          {t("StoringFileVersion")}
+        </Heading>
+        <ToggleButton
+          className="toggle-btn"
+          label={t("IntermediateVersion")}
+          onChange={onChangeStoreForceSave}
+          isChecked={storeForceSave}
+        />
+      </Box>
+      <Box className="settings-section">
+        <Heading className="heading" level={2} size="xsmall">
+          {t("ThirdPartyAccounts")}
+        </Heading>
+        <ToggleButton
+          className="toggle-btn"
+          label={t("ThirdPartyBtn")}
+          onChange={onChangeThirdParty}
+          isChecked={enableThirdParty}
+        />
+      </Box>
     </StyledSettings>
   );
 };

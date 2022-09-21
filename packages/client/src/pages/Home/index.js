@@ -21,7 +21,6 @@ import {
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
-  Bar,
 } from "./Section";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 import MediaViewer from "./MediaViewer";
@@ -29,7 +28,7 @@ import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 //import config from "PACKAGE_FILE";
 import { Consumer } from "@docspace/components/utils/context";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
@@ -480,6 +479,7 @@ class PureHome extends React.Component {
       showFilter,
       frameConfig,
       withPaging,
+      isEmptyFilesList,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -524,23 +524,15 @@ class PureHome extends React.Component {
             )}
           </Section.SectionHeader>
 
-          <Section.SectionBar>
-            {checkedMaintenance && !snackbarExist && (
-              <Bar
-                firstLoad={firstLoad}
-                personal={personal}
-                setMaintenanceExist={setMaintenanceExist}
-              />
-            )}
-          </Section.SectionBar>
-
-          <Section.SectionFilter>
-            {isFrame ? (
-              showFilter && <SectionFilterContent />
-            ) : (
-              <SectionFilterContent />
-            )}
-          </Section.SectionFilter>
+          {!isEmptyFilesList && (
+            <Section.SectionFilter>
+              {isFrame ? (
+                showFilter && <SectionFilterContent />
+              ) : (
+                <SectionFilterContent />
+              )}
+            </Section.SectionFilter>
+          )}
 
           <Section.SectionBody>
             <Consumer>
@@ -615,6 +607,7 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
+      isEmptyFilesList,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -748,6 +741,7 @@ export default inject(
       refreshFiles,
       setViewAs,
       withPaging,
+      isEmptyFilesList,
     };
   }
 )(withRouter(observer(Home)));
