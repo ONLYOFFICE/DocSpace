@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import difference from "lodash/difference";
 
-import SnackBar from "@docspace/components/snackbar";
-import { Consumer } from "@docspace/components/utils/context";
+import { ADS_TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
+
 import { getBannerAttribute } from "@docspace/components/utils/banner";
 
-import { ADS_TIMEOUT } from "SRC_DIR/helpers/constants";
+import SnackBar from "@docspace/components/snackbar";
 
 const bannerHOC = (props) => {
   const { firstLoad, setMaintenanceExist } = props;
@@ -45,7 +45,6 @@ const bannerHOC = (props) => {
   useEffect(() => {
     const updateTimeout = setTimeout(() => updateBanner(), 1000);
     const updateInterval = setInterval(updateBanner, ADS_TIMEOUT);
-
     return () => {
       clearTimeout(updateTimeout);
       clearInterval(updateInterval);
@@ -66,17 +65,12 @@ const bannerHOC = (props) => {
   };
 
   return htmlLink && !firstLoad ? (
-    <Consumer>
-      {(context) => (
-        <SnackBar
-          sectionWidth={context.sectionWidth}
-          onLoad={onLoad}
-          clickAction={onClose}
-          isCampaigns={true}
-          htmlContent={htmlLink}
-        />
-      )}
-    </Consumer>
+    <SnackBar
+      onLoad={onLoad}
+      clickAction={onClose}
+      isCampaigns={true}
+      htmlContent={htmlLink}
+    />
   ) : null;
 };
 
