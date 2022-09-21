@@ -2329,6 +2329,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of users in room should not exceed {0}.
+        /// </summary>
+        public static string TariffsFeature_usersInRoom_exception {
+            get {
+                return ResourceManager.GetString("TariffsFeature_usersInRoom_exception", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Branding &amp; customization.
         /// </summary>
         public static string TariffsFeature_whitelabel {
