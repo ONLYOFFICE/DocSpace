@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "V sekci 'Sdíleno se mnou' se zobrazují soubory které vám nasdíleli spoluhráči. Pokud jste neviděli poslední změny jsou označeny jako nové. Soubory můžete ze seznamu odstranit pomocí kontextové nabídky.",
   "ShowVersionHistory": "Zobrazit historii verzí",
   "Spreadsheet": "Tabulka",
-  "SubheadingEmptyText": "V této sekci se nezobrazují žádné soubory",
   "TooltipElementCopyMessage": "Zkopírovat {{element}}",
   "TooltipElementsCopyMessage": "Zkopírovat prvky {{element}}",
   "TooltipElementsMoveMessage": "Přesunout prvky {{element}}",

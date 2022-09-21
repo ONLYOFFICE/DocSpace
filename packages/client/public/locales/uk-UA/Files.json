@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "У розділі 'Я маю доступ' відображаються файли, спільний доступ до яких вам надали члени команди. Якщо ви не переглянули останні зміни, вони позначаються як нові. Ви можете видалити файли зі списку за допомогою контекстного меню. ",
   "ShowVersionHistory": "Показати історію версій",
   "Spreadsheet": "Електронна таблиця",
-  "SubheadingEmptyText": "У цьому розділі немає файлів для відображення",
   "TooltipElementCopyMessage": "Копіювати {{element}}",
   "TooltipElementsCopyMessage": "Копіювати елементи {{element}}",
   "TooltipElementsMoveMessage": "Перемістити елементи {{element}}",
