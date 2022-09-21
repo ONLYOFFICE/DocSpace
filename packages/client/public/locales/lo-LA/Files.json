@@ -56,7 +56,6 @@
   "PrivateRoomDescriptionUnbreakable": "ສູດການຄິດໄລ່ AES-256 ບໍ່ສາມາດ ທຳລາຍໄດ້.",
   "PrivateRoomHeader": "ຍິນດີຕ້ອນຮັບເຂົ້າສູ່ ONLYOFFICE ສ່ວນຕົວ ທີ່ທຸກໆສັນຍາລັກທີ່ທ່ານພິມຖືກເຂົ້າລະຫັດ",
   "PrivateRoomSupport": "ເຮັດວຽກຢູ່ໃນຫ້ອງສ່ວນຕົວໄດ້ທາງ {{organizationName}} desktop app. <3> ຄຳແນະນຳ </3>",
-  "RecentEmptyContainerDescription": "ສ່ວນ 'ລ້າສຸດ' ຈະສະແດງໃຫ້ທ່ານເຫັນໄຟລ໌ທີ່ຖືກເບິ່ງ ແລະ ແກ້ໄຂຄັ້ງສຸດທ້າຍ.",
   "RemoveFromFavorites": "ລຶບອອກຈາກລາຍການທີ່ມັກ",
   "RemoveFromList": "ລຶບອອກຈາກລາຍການ",
   "RemovedFromFavorites": "ລຶບອອກຈາກລາຍການທີ່ມັກແລ້ວ",

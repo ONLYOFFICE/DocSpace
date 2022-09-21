@@ -58,7 +58,6 @@
   "PrivateRoomDescriptionUnbreakable": "解読できないAES-256アルゴリズムを採用。",
   "PrivateRoomHeader": "ONLYOFFICEプライベートルームへようこそ！入力されるすべての記号が暗号化します。",
   "PrivateRoomSupport": "プライベートルームでの作業は、{{organizationName}}デスクトップアプリで可能です。<3>操作方法</3",
-  "RecentEmptyContainerDescription": "「最近」セクションでは、最後に閲覧または編集したファイルが表示されます。",
   "RemoveFromFavorites": "お気に入りから削除",
   "RemoveFromList": "リストからの削除",
   "RemovedFromFavorites": "お気に入りから削除",
