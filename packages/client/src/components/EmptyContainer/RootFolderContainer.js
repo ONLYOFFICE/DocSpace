@@ -41,6 +41,7 @@ const RootFolderContainer = (props) => {
     setAlreadyFetchingRooms,
     categoryType,
     isRecentFolder,
+    isFavoritesFolder,
   } = props;
   const subheadingText = t("SubheadingEmptyText");
   const myDescription = t("MyEmptyContainerDescription");
@@ -48,7 +49,7 @@ const RootFolderContainer = (props) => {
   const commonDescription = t("CommonEmptyContainerDescription");
   const trashHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
-  const recentHeader = t("NoFilesHereYet");
+  const noFilesHeader = t("NoFilesHereYet");
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
@@ -128,16 +129,17 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Favorites:
         return {
+          headerText: noFilesHeader,
           descriptionText: favoritesDescription,
-          imageStyle: { margin: "0px 0 0 auto" },
-          imageSrc: "images/empty_screen_favorites.png",
+          imageSrc: "images/empty_screen_favorites.svg",
+          buttons: goToPersonalButtons,
         };
       case FolderType.Recent:
         return {
-          headerText: recentHeader,
+          headerText: noFilesHeader,
           descriptionText: recentDescription,
           imageSrc: "images/empty_screen_recent.svg",
-          buttons: recentButtons,
+          buttons: goToPersonalButtons,
         };
       case FolderType.Privacy:
         return {
@@ -291,7 +293,7 @@ const RootFolderContainer = (props) => {
     </div>
   );
 
-  const recentButtons = (
+  const goToPersonalButtons = (
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
@@ -311,7 +313,8 @@ const RootFolderContainer = (props) => {
     isRecycleBinFolder ||
     isRoomsFolder ||
     isArchiveFolder ||
-    isRecentFolder
+    isRecentFolder ||
+    isFavoritesFolder
       ? {}
       : { subheadingText };
   const emptyFolderProps = getEmptyFolderProps();
@@ -376,6 +379,7 @@ export default inject(
       isRoomsFolder,
       isArchiveFolder,
       isRecentFolder,
+      isFavoritesFolder,
     } = treeFoldersStore;
 
     return {
@@ -387,6 +391,7 @@ export default inject(
       isDesktop: isDesktopClient,
       isEncryptionSupport,
       isRecentFolder,
+      isFavoritesFolder,
       organizationName,
       privacyInstructions,
       title,
