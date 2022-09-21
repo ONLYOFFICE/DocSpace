@@ -196,6 +196,7 @@ class ComboBox extends React.Component {
                       disabled={disabled}
                       onClick={this.optionClick.bind(this, option)}
                       fillIcon={fillIcon}
+                      isModern={noBorder}
                     />
                   );
                 })}
