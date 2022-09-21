@@ -6,18 +6,16 @@ import Backdrop from "@docspace/components/backdrop";
 import Aside from "@docspace/components/aside";
 import Button from "@docspace/components/button";
 
-import { EmbeddingPanel } from "../index";
-
 import {
   StyledBlock,
   StyledHeading,
   StyledInvitePanel,
-  StyledSubHeader,
   StyledButtons,
 } from "./StyledInvitePanel";
 
 import ItemsList from "./sub-components/ItemsList";
 import InviteInput from "./sub-components/InviteInput";
+import ExternalLinks from "./sub-components/ExternalLinks";
 
 const InvitePanel = ({
   folders,
@@ -87,9 +85,7 @@ const InvitePanel = ({
           <StyledHeading>{t("InviteUsersToRoom")}</StyledHeading>
         </StyledBlock>
 
-        <StyledBlock noPadding>
-          <StyledSubHeader>{t("SharingPanel:ExternalLink")}</StyledSubHeader>
-        </StyledBlock>
+        <ExternalLinks t={t} />
 
         <InviteInput t={t} onClose={onClose} />
 

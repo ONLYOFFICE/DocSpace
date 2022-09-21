@@ -8,6 +8,7 @@ import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import HelpButton from "@docspace/components/help-button";
 import Link from "@docspace/components/link";
+import ToggleButton from "@docspace/components/toggle-button";
 
 import CheckIcon from "PUBLIC_DIR/images/check.edit.react.svg";
 import CrossIcon from "PUBLIC_DIR/images/cross.edit.react.svg";
@@ -49,6 +50,14 @@ const StyledSubHeader = styled(Heading)`
   padding-left: 16px;
   padding-right: 16px;
   margin: 20px 0;
+
+  ${(props) =>
+    props.inline &&
+    css`
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+    `};
 `;
 
 const StyledRow = styled.div`
@@ -109,6 +118,7 @@ const StyledInviteInputContainer = styled.div`
 
 const StyledDropDown = styled(DropDown)`
   ${(props) => props.width && `width: ${props.width}px`};
+
   .list-item {
     display: flex;
     align-items: center;
@@ -190,6 +200,11 @@ const StyledLink = styled(Link)`
 
 StyledButtons.defaultProps = { theme: Base };
 
+const StyledToggleButton = styled(ToggleButton)`
+  right: 8px;
+  margin-top: -4px;
+`;
+
 export {
   StyledBlock,
   StyledHeading,
@@ -211,4 +226,5 @@ export {
   StyledLink,
   ScrollList,
   StyledAccessSelector,
+  StyledToggleButton,
 };
