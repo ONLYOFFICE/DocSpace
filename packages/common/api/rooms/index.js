@@ -202,3 +202,48 @@ export function removeLogoFromRoom(id) {
     return res;
   });
 }
+
+export const getInvitationLinks = async (id, access) => {
+  const options = {
+    method: "get",
+    url: `/files/rooms/${id}/links`,
+    data: {
+      access,
+    },
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const setInvitationLinks = async (id, linkId, title, access) => {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/links`,
+    data: {
+      id,
+      linkId,
+      title,
+      access,
+    },
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const resendEmailInvitations = async (id, usersIds) => {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/resend`,
+    data: {
+      usersIds,
+    },
+  };
+
+  const res = await request(options);
+
+  return res;
+};
