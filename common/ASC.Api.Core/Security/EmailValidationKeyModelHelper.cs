@@ -87,9 +87,6 @@ public class EmailValidationKeyModelHelper
         request.TryGetValue("uid", out var userIdKey);
         Guid.TryParse(userIdKey, out var userId);
 
-        request.TryGetValue("target", out var targetKey);
-        Guid.TryParse(targetKey, out var target);
-
         return new EmailValidationKeyModel
         {
             Email = _email,
@@ -97,13 +94,12 @@ public class EmailValidationKeyModelHelper
             Key = key,
             Type = cType,
             UiD = userId,
-            Target = target,
         };
     }
 
     public ValidationResult Validate(EmailValidationKeyModel inDto)
     {
-        var (key, emplType, email, uiD, type, target) = inDto;
+        var (key, emplType, email, uiD, type) = inDto;
 
         ValidationResult checkKeyResult;
 
