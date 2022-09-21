@@ -20,8 +20,9 @@ const StyledCloseButtonWrapper = styled.div`
   ${(props) =>
     props.currentDisplayType === "modal"
       ? css`
-          top: 0;
+          top: 18px;
           right: -34px;
+
           @media ${smallTablet} {
             right: 10px;
             top: -27px;
