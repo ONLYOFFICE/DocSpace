@@ -40,6 +40,7 @@ const RootFolderContainer = (props) => {
     fetchRooms,
     setAlreadyFetchingRooms,
     categoryType,
+    isRecentFolder,
   } = props;
   const subheadingText = t("SubheadingEmptyText");
   const myDescription = t("MyEmptyContainerDescription");
@@ -47,6 +48,7 @@ const RootFolderContainer = (props) => {
   const commonDescription = t("CommonEmptyContainerDescription");
   const trashHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
+  const recentHeader = t("NoFilesHereYet");
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
@@ -76,7 +78,7 @@ const RootFolderContainer = (props) => {
     }
   }, [isEmptyPage, setIsEmptyPage, rootFolderType]);
 
-  const onGoToMyDocuments = () => {
+  const onGoToPersonal = () => {
     const newFilter = filter.clone();
     setIsLoading(true);
     fetchFiles(myFolderId, newFilter).finally(() => setIsLoading(false));
@@ -132,8 +134,10 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Recent:
         return {
+          headerText: recentHeader,
           descriptionText: recentDescription,
-          imageSrc: "images/empty_screen_recent.png",
+          imageSrc: "images/empty_screen_recent.svg",
+          buttons: recentButtons,
         };
       case FolderType.Privacy:
         return {
@@ -251,10 +255,10 @@ const RootFolderContainer = (props) => {
         src="images/empty_screen_people.svg"
         width="12px"
         alt=""
-        onClick={onGoToMyDocuments}
+        onClick={onGoToPersonal}
       />
-      <Link onClick={onGoToMyDocuments} {...linkStyles}>
-        {t("GoToMyButton")}
+      <Link onClick={onGoToPersonal} {...linkStyles}>
+        {t("GoToPersonal")}
       </Link>
     </div>
   );
@@ -276,7 +280,7 @@ const RootFolderContainer = (props) => {
   const archiveButtons = (
     <div className="empty-folder_container-links">
       <img
-        className="empty-folder_container_folder-image"
+        className="empty-folder_container-image"
         src="images/empty-folder-image.svg"
         onClick={onGoToShared}
         alt="folder_icon"
@@ -287,9 +291,27 @@ const RootFolderContainer = (props) => {
     </div>
   );
 
+  const recentButtons = (
+    <div className="empty-folder_container-links">
+      <img
+        className="empty-folder_container-image"
+        src="images/person.svg"
+        alt="person_icon"
+        onClick={onGoToPersonal}
+      />
+      <Link onClick={onGoToPersonal} {...linkStyles}>
+        {t("GoToPersonal")}
+      </Link>
+    </div>
+  );
+
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
   const subheadingTextProp =
-    isPrivacyFolder || isRecycleBinFolder || isRoomsFolder || isArchiveFolder
+    isPrivacyFolder ||
+    isRecycleBinFolder ||
+    isRoomsFolder ||
+    isArchiveFolder ||
+    isRecentFolder
       ? {}
       : { subheadingText };
   const emptyFolderProps = getEmptyFolderProps();
@@ -353,6 +375,7 @@ export default inject(
       isRecycleBinFolder,
       isRoomsFolder,
       isArchiveFolder,
+      isRecentFolder,
     } = treeFoldersStore;
 
     return {
@@ -363,6 +386,7 @@ export default inject(
       isArchiveFolder,
       isDesktop: isDesktopClient,
       isEncryptionSupport,
+      isRecentFolder,
       organizationName,
       privacyInstructions,
       title,

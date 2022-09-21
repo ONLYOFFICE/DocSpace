@@ -62,7 +62,6 @@
   "PrivateRoomDescriptionUnbreakable": "Стойкий алгоритм AES-256.",
   "PrivateRoomHeader": "Добро пожаловать в Приватную комнату ONLYOFFICE, где каждый символ, который вы вводите, шифруется",
   "PrivateRoomSupport": "Работа в Приватной комнате доступна через десктопное приложение {{organizationName}}. <3>Инструкции</3>",
-  "RecentEmptyContainerDescription": "В разделе 'Последние' отображаются файлы, которые вы недавно открывали.",
   "RemoveFromFavorites": "Удалить из избранного",
   "RemoveFromList": "Убрать из списка",
   "RemovedFromFavorites": "Удалено из избранного",
