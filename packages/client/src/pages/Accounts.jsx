@@ -23,7 +23,7 @@ const PeopleSection = React.memo(() => {
         path={["/accounts"]}
         component={HomeRedirectToFilter}
       />
-      <PrivateRoute path={"/accounts/filter"} component={Home} />
+      <PrivateRoute path={"/accounts/filter"} restricted component={Home} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );
