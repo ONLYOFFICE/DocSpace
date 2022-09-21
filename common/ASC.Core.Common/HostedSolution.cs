@@ -206,7 +206,7 @@ public class HostedSolution
         var quota = QuotaService.GetTenantQuotas().FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
         if (quota != null)
         {
-            TariffService.SetTariff(tenant, new Tariff { Quotas = new List<Tuple<int, int>> { new Tuple<int, int>(quota.Tenant, 1) }, DueDate = DateTime.MaxValue, });
+            TariffService.SetTariff(tenant, new Tariff { Quotas = new List<Quota> { new Quota(quota.Tenant, 1) }, DueDate = DateTime.MaxValue, });
         }
     }
 

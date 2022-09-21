@@ -212,7 +212,7 @@ public class LicenseReader
 
         var tariff = new Tariff
         {
-            Quotas = new List<Tuple<int, int>> { new Tuple<int, int>(quota.Tenant, 1) },
+            Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
             DueDate = license.DueDate,
         };
 

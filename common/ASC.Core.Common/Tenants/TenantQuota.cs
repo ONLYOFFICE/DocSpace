@@ -358,7 +358,7 @@ public class TenantQuota : IMapFrom<DbQuota>
 
     public TenantQuotaFeature<T> GetFeature<T>(string name)
     {
-        return TenantQuotaFeatures.OfType<TenantQuotaFeature<T>>().FirstOrDefault(r => r.Name == name);
+        return TenantQuotaFeatures.OfType<TenantQuotaFeature<T>>().FirstOrDefault(f => string.Equals(f.Name.Split(':')[0], $"{name}", StringComparison.OrdinalIgnoreCase));
     }
 
     public T GetFeature<T>() where T : TenantQuotaFeature
