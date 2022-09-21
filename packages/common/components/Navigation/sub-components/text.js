@@ -6,7 +6,7 @@ import ExpanderDownIcon from "@docspace/components/public/static/images/expander
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import Heading from "@docspace/components/heading";
 
-import { tablet, smallTablet } from "@docspace/components/utils/device";
+import { tablet } from "@docspace/components/utils/device";
 import { isMobile, isTablet } from "react-device-detect";
 import { Base } from "@docspace/components/themes";
 
@@ -40,10 +40,11 @@ const StyledHeading = styled(Heading)`
     line-height: 28px;
   }
 
-  @media ${smallTablet} {
-    font-size: 18px;
-    line-height: 24px;
-  }
+  ${isMobile &&
+  css`
+    font-size: 18px !important;
+    line-height: 24px !important;
+  `}
 
   ${isTablet &&
   css`
