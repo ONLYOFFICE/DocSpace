@@ -70,6 +70,10 @@ class PaymentQuotasStore {
     );
     return result.priceTitle;
   }
+
+  get tariffPlanTitle() {
+    return this.portalPaymentQuotas.title;
+  }
   setPortalPaymentQuotas = async (t) => {
     if (this.isLoaded) return;
 

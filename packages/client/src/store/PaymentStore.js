@@ -125,10 +125,9 @@ class PaymentStore {
     return this.managersCount * this.stepByQuotaForTotalSize;
   }
 
-  initializeInfo = (isAlreadyPaid) => {
+  initializeInfo = () => {
     this.initializeTotalPrice();
     this.initializeManagersCount();
-    !isAlreadyPaid && this.setStartPaymentLink();
   };
   initializeTotalPrice = () => {
     const currentTotalPrice = authStore.currentQuotaStore.currentPlanCost.value;

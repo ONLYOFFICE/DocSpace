@@ -1,7 +1,7 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import RequestButtonContainer from "./RequestButtonContainer";
 import UpdatePlanButtonContainer from "./UpdatePlanButtonContainer";
 
@@ -20,6 +20,7 @@ const ButtonContainer = ({
   isNotPaidPeriod,
   isGracePeriod,
   accountLink,
+  isFreeAfterPaidPeriod,
 }) => {
   const goToStripeAccount = () => {
     if (accountLink) window.open(accountLink, "_blank");
@@ -27,7 +28,7 @@ const ButtonContainer = ({
 
   return (
     <StyledBody>
-      {isNotPaidPeriod || isGracePeriod ? (
+      {isNotPaidPeriod || isGracePeriod || isFreeAfterPaidPeriod ? (
         <Button
           label={t("Pay")}
           size={"medium"}
@@ -53,6 +54,7 @@ export default inject(({ auth, payments }) => {
   const { currentTariffStatusStore } = auth;
   const { isNeedRequest, isLoading, accountLink } = payments;
   const { isNotPaidPeriod, isGracePeriod } = currentTariffStatusStore;
+
   return {
     isNeedRequest,
     isLoading,

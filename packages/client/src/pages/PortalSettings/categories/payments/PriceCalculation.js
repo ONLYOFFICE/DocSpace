@@ -65,11 +65,13 @@ const PriceCalculation = ({
   initializeInfo,
   priceManagerPerMonth,
   currencySymbol,
+  isAlreadyPaid,
+  isFreeAfterPaidPeriod,
+  setStartPaymentLink,
 }) => {
-  const isAlreadyPaid = !isFreeTariff || (isFreeTariff && isNotPaidPeriod);
-
   useEffect(() => {
-    initializeInfo(isAlreadyPaid);
+    initializeInfo();
+    !isAlreadyPaid && setStartPaymentLink();
 
     return () => {
       timeout && clearTimeout(timeout);
@@ -170,11 +172,13 @@ const PriceCalculation = ({
         {...color}
         className="payment_main-title"
       >
-        {!isGracePeriod && !isNotPaidPeriod
-          ? t("PriceCalculation")
-          : t("YourPrice")}
+        {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod
+          ? t("YourPrice")
+          : t("PriceCalculation")}
       </Text>
-      {!isGracePeriod && !isNotPaidPeriod && (
+      {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod ? (
+        <></>
+      ) : (
         <SelectUsersCountContainer
           isDisabled={isDisabled}
           setShoppingLink={setShoppingLink}
@@ -189,6 +193,7 @@ const PriceCalculation = ({
         isDisabled={isDisabled}
         t={t}
         isAlreadyPaid={isAlreadyPaid}
+        isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
       />
     </StyledBody>
   );
@@ -202,6 +207,7 @@ export default inject(({ auth, payments }) => {
     setManagersCount,
     maxAvailableManagersCount,
     initializeInfo,
+    setStartPaymentLink,
   } = payments;
   const { theme } = auth.settingsStore;
   const {
@@ -216,6 +222,7 @@ export default inject(({ auth, payments }) => {
   const { user } = userStore;
 
   return {
+    setStartPaymentLink,
     isFreeTariff,
     setManagersCount,
     tariffsInfo,

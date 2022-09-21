@@ -26,7 +26,7 @@ const StyledBody = styled.div`
   .payment-info_grace-period {
     margin-bottom: 12px;
   }
- 
+
   .payment-info {
     display: grid;
     grid-template-columns: repeat(2, minmax(100px, 320px));
@@ -51,6 +51,7 @@ const StyledBody = styled.div`
 `;
 
 let paymentTerm,
+  isValidDelayDueDate,
   fromDate,
   byDate,
   delayDaysCount,
@@ -76,10 +77,13 @@ const PaymentsPage = ({
   replaceFeaturesValues,
   portalPaymentQuotasFeatures,
   currentTariffPlanTitle,
+  tariffPlanTitle,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Settings"]);
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+  const isAlreadyPaid = payerEmail.length !== 0 || !isFreeTariff;
 
   useEffect(() => {
     setDocumentTitle(t("Settings:Payments"));
@@ -103,6 +107,9 @@ const PaymentsPage = ({
     paymentTerm = moment(
       isGracePeriod || isNotPaidPeriod ? delayDueDate : dueDate
     ).format("LL");
+    const paymentTermYear = moment(delayDueDate).year();
+
+    isValidDelayDueDate = paymentTermYear !== 9999;
 
     isGracePeriod && gracePeriodDays();
   };
@@ -130,7 +137,7 @@ const PaymentsPage = ({
       }
 
       try {
-        if (!isFreeTariff) payerInfo = await getUserByEmail(payerEmail);
+        if (isAlreadyPaid) payerInfo = await getUserByEmail(payerEmail);
       } catch (e) {
         console.error(e);
       }
@@ -160,86 +167,100 @@ const PaymentsPage = ({
     );
   };
 
-  const textComponent = (elem, className) => {
+  const currentPlanTitle = () => {
+    if (isPaidPeriod || isGracePeriod) {
+      return (
+        <Text noSelect fontSize="16px" isBold>
+          <Trans t={t} i18nKey="BusinessTitle" ns="Payments">
+            {{ planName: currentTariffPlanTitle }}
+          </Trans>
+        </Text>
+      );
+    }
+
     return (
-      <Text noSelect fontSize="16px" isBold className={className}>
-        {elem}
+      <Text noSelect fontSize="16px" isBold>
+        <Trans t={t} i18nKey="StartupTitle" ns="Payments">
+          {{ planName: currentTariffPlanTitle }}
+        </Trans>
       </Text>
     );
   };
 
-  const currentPlanTitle = () => {
-    if (isFreeTariff) {
-      return textComponent(
-        <Trans t={t} i18nKey="StartupTitle" ns="Payments">
-          {{ planName: currentTariffPlanTitle }}
-        </Trans>
-      );
-    }
-
-    if (isPaidPeriod || isGracePeriod) {
-      return textComponent(
-        <Trans t={t} i18nKey="BusinessTitle" ns="Payments">
-          {{ planName: currentTariffPlanTitle }}
-        </Trans>
-      );
-    }
-
-    return;
-  };
-
   const expiredTitleSubscriptionWarning = () => {
-    return textComponent(
-      <Trans
-        t={t}
-        i18nKey="BusinessExpired"
-        ns="Payments"
+    return (
+      <Text
+        noSelect
+        fontSize="16px"
+        isBold
         color={theme.client.settings.payment.warningColor}
       >
-        {{ date: paymentTerm }} {{ planName: currentTariffPlanTitle }}
-      </Trans>
+        <Trans t={t} i18nKey="BusinessExpired" ns="Payments">
+          {{ date: paymentTerm }} {{ planName: tariffPlanTitle }}
+        </Trans>
+      </Text>
     );
   };
 
   const planSuggestion = () => {
     if (isFreeTariff) {
-      return textComponent(
-        <Trans t={t} i18nKey="StartupSuggestion" ns="Payments">
-          {{ planName: currentTariffPlanTitle }}
-        </Trans>,
-        "payment-info_suggestion"
+      return (
+        <Text
+          noSelect
+          fontSize="16px"
+          isBold
+          className={"payment-info_suggestion"}
+        >
+          <Trans t={t} i18nKey="StartupSuggestion" ns="Payments">
+            {{ planName: tariffPlanTitle }}
+          </Trans>
+        </Text>
       );
     }
 
     if (isPaidPeriod) {
-      return textComponent(
-        <Trans t={t} i18nKey="BusinessSuggestion" ns="Payments">
-          {{ planName: currentTariffPlanTitle }}
-        </Trans>,
-        "payment-info_suggestion"
+      return (
+        <Text
+          noSelect
+          fontSize="16px"
+          isBold
+          className={"payment-info_suggestion"}
+        >
+          <Trans t={t} i18nKey="BusinessSuggestion" ns="Payments">
+            {{ planName: tariffPlanTitle }}
+          </Trans>
+        </Text>
       );
     }
 
     if (isNotPaidPeriod) {
-      return textComponent(
-        <Trans t={t} i18nKey="RenewSubscription" ns="Payments">
-          {{ planName: currentTariffPlanTitle }}
-        </Trans>,
-        "payment-info_suggestion"
+      return (
+        <Text
+          noSelect
+          fontSize="16px"
+          isBold
+          className={"payment-info_suggestion"}
+        >
+          <Trans t={t} i18nKey="RenewSubscription" ns="Payments">
+            {{ planName: tariffPlanTitle }}
+          </Trans>
+        </Text>
       );
     }
 
     if (isGracePeriod) {
-      return textComponent(
-        <Trans
-          t={t}
-          i18nKey="DelayedPayment"
-          ns="Payments"
+      return (
+        <Text
+          noSelect
+          fontSize="16px"
+          isBold
+          className={"payment-info_grace-period"}
           color={theme.client.settings.payment.warningColor}
         >
-          {{ date: paymentTerm }} {{ planName: currentTariffPlanTitle }}
-        </Trans>,
-        "payment-info_grace-period"
+          <Trans t={t} i18nKey="DelayedPayment" ns="Payments">
+            {{ date: paymentTerm }} {{ planName: currentTariffPlanTitle }}
+          </Trans>
+        </Text>
       );
     }
 
@@ -249,13 +270,17 @@ const PaymentsPage = ({
   const convertedPrice = `${currencySymbol}${startValue}`;
   const isPayer = user.email === payerEmail;
 
+  const isFreeAfterPaidPeriod = isFreeTariff && payerEmail.length !== 0;
+
   return isInitialLoading || !ready ? (
     <Loaders.PaymentsLoader />
   ) : (
     <StyledBody theme={theme}>
-      {isNotPaidPeriod ? expiredTitleSubscriptionWarning() : currentPlanTitle()}
+      {isNotPaidPeriod && isValidDelayDueDate
+        ? expiredTitleSubscriptionWarning()
+        : currentPlanTitle()}
 
-      {(!isFreeTariff || (isFreeTariff && isNotPaidPeriod)) && (
+      {isAlreadyPaid && (
         <PayerInformationContainer
           payerInfo={payerInfo}
           isPayer={isPayer}
@@ -277,7 +302,7 @@ const PaymentsPage = ({
         </Text>
       )}
 
-      {isPaidPeriod && (
+      {isPaidPeriod && !isFreeAfterPaidPeriod && (
         <Text
           noSelect
           fontSize={"14px"}
@@ -305,8 +330,18 @@ const PaymentsPage = ({
         {renderTooltip()}
       </div>
       <div className="payment-info">
-        <PriceCalculation t={t} isPayer={isPayer} />
-        {!isGracePeriod && !isNotPaidPeriod && <BenefitsContainer t={t} />}
+        <PriceCalculation
+          t={t}
+          isPayer={isPayer}
+          isAlreadyPaid={isAlreadyPaid}
+          isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
+        />
+
+        {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod ? (
+          <></>
+        ) : (
+          <BenefitsContainer t={t} />
+        )}
       </div>
       <ContactContainer t={t} />
     </StyledBody>
@@ -342,6 +377,7 @@ export default inject(({ auth, payments }) => {
     planCost,
     replaceFeaturesValues,
     portalPaymentQuotasFeatures,
+    tariffPlanTitle,
   } = paymentQuotasStore;
   const { organizationName, theme } = auth.settingsStore;
 
@@ -356,7 +392,7 @@ export default inject(({ auth, payments }) => {
 
   return {
     isFreeTariff,
-
+    tariffPlanTitle,
     language,
     organizationName,
     tariffsInfo,
