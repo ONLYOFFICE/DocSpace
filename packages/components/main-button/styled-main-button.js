@@ -26,18 +26,12 @@ const notDropdown = css`
   &:after {
     display: none;
   }
-
-  border-top-right-radius: ${(props) =>
-    props.theme.mainButton.cornerRoundsTopRight};
-  border-bottom-right-radius: ${(props) =>
-    props.theme.mainButton.cornerRoundsBottomRight};
 `;
 
 const GroupMainButton = styled.div`
   position: relative;
   display: grid;
-  grid-template-columns: ${(props) => (props.isDropdown ? "1fr" : "1fr 32px")};
-  ${(props) => !props.isDropdown && "grid-column-gap: 1px"};
+  grid-template-columns: 1fr;
 `;
 
 const StyledDropDown = styled(DropDown)`
@@ -97,37 +91,4 @@ const StyledMainButton = styled.div`
 `;
 StyledMainButton.defaultProps = { theme: Base };
 
-const StyledSecondaryButton = styled(StyledMainButton)`
-  display: inline-block;
-  height: ${(props) => props.theme.mainButton.secondaryButton.height};
-  padding: ${(props) => props.theme.mainButton.secondaryButton.padding};
-  border-radius: ${(props) =>
-    props.theme.mainButton.secondaryButton.borderRadius};
-  -moz-border-radius: ${(props) =>
-    props.theme.mainButton.secondaryButton.borderRadius};
-  -webkit-border-radius: ${(props) =>
-    props.theme.mainButton.secondaryButton.borderRadius};
-
-  border-top-left-radius: ${(props) =>
-    props.theme.mainButton.secondaryButton.cornerRoundsTopLeft};
-  border-bottom-left-radius: ${(props) =>
-    props.theme.mainButton.secondaryButton.cornerRoundsBottomLeft};
-
-  svg {
-    width: 16px;
-    min-width: 16px;
-    height: 16px;
-    min-height: 16px;
-    path {
-      fill: ${(props) => props.theme.mainButton.svg.fill};
-    }
-  }
-`;
-StyledSecondaryButton.defaultProps = { theme: Base };
-
-export {
-  StyledSecondaryButton,
-  StyledMainButton,
-  StyledDropDown,
-  GroupMainButton,
-};
+export { StyledMainButton, StyledDropDown, GroupMainButton };

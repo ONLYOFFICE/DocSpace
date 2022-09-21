@@ -75,7 +75,7 @@ const RootFolderContainer = (props) => {
     } else {
       setIsEmptyPage(false);
     }
-  }, [isEmptyPage, setIsEmptyPage]);
+  }, [isEmptyPage, setIsEmptyPage, rootFolderType]);
 
   const onGoToMyDocuments = () => {
     const newFilter = filter.clone();

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { inject, observer } from "mobx-react";
-import elementResizeDetectorMaker from "element-resize-detector";
+// import elementResizeDetectorMaker from "element-resize-detector";
 import TileContainer from "./sub-components/TileContainer";
 import FileTile from "./FileTile";
 
@@ -28,50 +28,56 @@ const getThumbSize = (width) => {
   return `${imgWidth}x300`;
 };
 
+// const elementResizeDetector = elementResizeDetectorMaker({
+//   strategy: "scroll",
+//   callOnAdd: false,
+// });
+
 const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
-  const firstRef = useRef();
+  const firstRef = useRef(null);
   const [thumbSize, setThumbSize] = useState("");
   const [columnCount, setColumnCount] = useState(null);
 
-  useEffect(() => {
-    if (!firstRef?.current) return;
+  // useEffect(() => {
+  //   return () => {
+  //     if (!firstRef?.current) return;
+  //     elementResizeDetector.uninstall(firstRef.current);
+  //   };
+  // }, []);
 
-    onResize(); //Rerender tiles here
+  const onResize = useCallback(
+    (node) => {
+      if (!node) return;
+      const { width } = node.getBoundingClientRect();
 
-    const elementResizeDetector = elementResizeDetectorMaker({
-      strategy: "scroll",
-      callOnAdd: false,
-    });
+      const size = getThumbSize(width);
 
-    elementResizeDetector.listenTo(firstRef.current, onResize);
+      const widthWithoutPadding = width - 32;
 
-    return () => {
-      if (!firstRef?.current) return;
+      const columns = Math.floor(widthWithoutPadding / 80);
 
-      elementResizeDetector.uninstall(firstRef.current);
-    };
-  }, [firstRef, filesList]);
+      if (columns != columnCount) setColumnCount(columns);
 
-  const onResize = useCallback(() => {
-    if (!firstRef?.current) return;
-    const { width } = firstRef.current.getBoundingClientRect();
+      // console.log(
+      //   `Body width: ${document.body.clientWidth} Tile width: ${width} ThumbSize: ${size}`
+      // );
 
-    const size = getThumbSize(width);
+      if (size === thumbSize) return;
 
-    const widthWithoutPadding = width - 32;
+      setThumbSize(size);
+    },
+    [columnCount, thumbSize]
+  );
 
-    const columns = Math.floor(widthWithoutPadding / 80);
+  const onSetFirstRef = React.useCallback((node) => {
+    if (node) {
+      onResize(node);
 
-    if (columns != columnCount) setColumnCount(columns);
+      firstRef.current = node;
 
-    // console.log(
-    //   `Body width: ${document.body.clientWidth} Tile width: ${width} ThumbSize: ${size}`
-    // );
-
-    if (size === thumbSize) return;
-
-    setThumbSize(size);
-  }, [firstRef]);
+      // elementResizeDetector.listenTo(node, onResize);
+    }
+  }, []);
 
   return (
     <TileContainer
@@ -89,7 +95,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             key={`${item.id}_${index}`}
             item={item}
             sectionWidth={sectionWidth}
-            selectableRef={firstRef}
+            selectableRef={onSetFirstRef}
             thumbSize={thumbSize}
             columnCount={columnCount}
           />

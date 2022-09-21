@@ -41,6 +41,8 @@ const Navigation = ({
   toggleInfoPanel,
   isInfoPanelVisible,
   titles,
+  withMenu,
+  onPlusClick,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -186,6 +188,8 @@ const Navigation = ({
               isInfoPanelVisible={isInfoPanelVisible}
               isDesktop={isDesktop}
               titles={titles}
+              withMenu={withMenu}
+              onPlusClick={onPlusClick}
             />
           </StyledContainer>
           {infoPanelIsVisible && (

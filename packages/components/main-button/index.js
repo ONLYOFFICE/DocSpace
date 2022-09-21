@@ -2,25 +2,12 @@ import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 import Text from "../text";
-import {
-  StyledSecondaryButton,
-  StyledMainButton,
-  GroupMainButton,
-} from "./styled-main-button";
+import { GroupMainButton } from "./styled-main-button";
 import ContextMenu from "../context-menu";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const MainButton = (props) => {
-  const {
-    text,
-    model,
-    iconName,
-    isDropdown,
-    isDisabled,
-    clickAction,
-    clickActionSecondary,
-    isDisplayImage,
-  } = props;
+  const { text, model, isDropdown, isDisabled, clickAction } = props;
 
   const ref = useRef();
   const menuRef = useRef(null);
@@ -51,16 +38,6 @@ const MainButton = (props) => {
     }
   };
 
-  const onSecondaryButtonClick = (e) => {
-    if (!isDisabled) {
-      clickActionSecondary && clickActionSecondary();
-    } else {
-      stopAction(e);
-    }
-  };
-
-  const sideIcon = <ReactSVG src={iconName} width="16px" height="16px" />;
-
   return (
     <GroupMainButton {...props} ref={ref}>
       <ColorTheme
@@ -69,27 +46,23 @@ const MainButton = (props) => {
         themeId={ThemeType.MainButton}
       >
         <Text className="main-button_text">{text}</Text>
-        {isDisplayImage && (
-          <img
-            className="main-button_img"
-            src="/static/images/triangle-main-button.svg"
-          />
+        {isDropdown && (
+          <>
+            <img
+              className="main-button_img"
+              src="/static/images/triangle-main-button.svg"
+            />
+
+            <ContextMenu
+              model={model}
+              containerRef={ref}
+              ref={menuRef}
+              onHide={onHide}
+              scaled={true}
+            />
+          </>
         )}
       </ColorTheme>
-
-      {isDropdown ? (
-        <ContextMenu
-          model={model}
-          containerRef={ref}
-          ref={menuRef}
-          onHide={onHide}
-          scaled={true}
-        />
-      ) : (
-        <StyledSecondaryButton {...props} onClick={onSecondaryButtonClick}>
-          {iconName && sideIcon}
-        </StyledSecondaryButton>
-      )}
     </GroupMainButton>
   );
 };
@@ -105,8 +78,6 @@ MainButton.propTypes = {
   clickAction: PropTypes.func,
   /** What the secondary button will trigger when clicked  */
   clickActionSecondary: PropTypes.func,
-  /** Icon inside button */
-  iconName: PropTypes.string,
   /** Open DropDown */
   opened: PropTypes.bool, //TODO: Make us whole
   /** Accepts class */
@@ -117,16 +88,12 @@ MainButton.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Menu data model */
   model: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Indicates when to display an image in a button */
-  isDisplayImage: PropTypes.bool,
 };
 
 MainButton.defaultProps = {
   text: "Button",
   isDisabled: false,
   isDropdown: true,
-  iconName: "/static/images/people.react.svg",
-  isDisplayImage: true,
 };
 
 export default MainButton;

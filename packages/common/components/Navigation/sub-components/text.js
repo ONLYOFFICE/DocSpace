@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 
 import ExpanderDownIcon from "@docspace/components/public/static/images/expander-down.react.svg";
@@ -35,15 +35,16 @@ const StyledHeading = styled(Heading)`
 
   margin: 0;
 
-  @media (min-width: 600px) {
+  @media ${tablet} {
     font-size: 21px;
     line-height: 28px;
   }
 
-  @media (min-width: 1024px) {
-    font-size: 18px;
-    line-height: 24px;
-  }
+  ${isMobile &&
+  css`
+    font-size: 18px !important;
+    line-height: 24px !important;
+  `}
 
   ${isTablet &&
   css`
