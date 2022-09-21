@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "'与我共享'部分将展示团队成员分享给您的文件。如果您尚未看到最近变更，其已被标记为新变更。您可使用上下文菜单从列表中移除文件。",
   "ShowVersionHistory": "显示版本历史记录",
   "Spreadsheet": "电子表格",
-  "SubheadingEmptyText": "此部分中无可展示的文件",
   "TooltipElementCopyMessage": "复制{{element}}",
   "TooltipElementsCopyMessage": "复制{{element}}元素",
   "TooltipElementsMoveMessage": "移动{{element}}元素",

@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "「私と共有」には、他の方からあなたに共有されたファイルが表示されます。最新の変更点を見ていない場合は、新しいとマークされています。コンテキストメニューを使って、リストからファイルを削除することができます。",
   "ShowVersionHistory": "バージョン履歴の表示",
   "Spreadsheet": "スプレッドシート",
-  "SubheadingEmptyText": "このセクションで表示されるファイルはありません",
   "TooltipElementCopyMessage": "{{element}}をコピー",
   "TooltipElementsCopyMessage": " {{element}} 要素をコピー",
   "TooltipElementsMoveMessage": " {{element}} 要素を移動",

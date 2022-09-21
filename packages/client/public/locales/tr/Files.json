@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "'Benimle Paylaşılanlar' bölümü, ekip arkadaşları tarafından sizinle paylaşılan dosyaları gösterir. En son değişiklikleri görmediyseniz, bunlar yeni olarak işaretlenir. İçerik menüsünü kullanarak dosyaları listeden kaldırabilirsiniz.",
   "ShowVersionHistory": "Sürüm geçmişini göster",
   "Spreadsheet": "Elektronik tablo",
-  "SubheadingEmptyText": "Bu bölümde gösterilecek dosya yok",
   "TooltipElementCopyMessage": "Kopyala {{element}}",
   "TooltipElementsCopyMessage": "{{element}} öğelerini kopyala",
   "TooltipElementsMoveMessage": "{{element}} öğelerini taşı",

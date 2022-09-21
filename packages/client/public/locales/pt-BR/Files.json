@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "A seção 'Compartilhado comigo' mostra arquivos compartilhados por colegas de equipe. Se você ainda não viu as últimas mudanças, elas são marcadas como novas. Você pode remover os arquivos da lista usando o menu de contexto. ",
   "ShowVersionHistory": "Exibir histórico de versão",
   "Spreadsheet": "Planilha",
-  "SubheadingEmptyText": "Não há arquivos a serem exibidos nesta seção",
   "TooltipElementCopyMessage": "Cópia {{element}}",
   "TooltipElementsCopyMessage": "Cópia {{element}} elementos",
   "TooltipElementsMoveMessage": "Mover {{element}} elementos",
