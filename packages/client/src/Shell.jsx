@@ -69,6 +69,8 @@ const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
 
 const FormGallery = React.lazy(() => import("./pages/FormGallery"));
 
+const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
+
 const PortalSettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -153,6 +155,14 @@ const FormGalleryRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
       <FormGallery {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
+const PortalUnavailableRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <ErrorUnavailable {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -471,6 +481,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <PrivateRoute
                 path={"/preparation-portal"}
                 component={PreparationPortalRoute}
+              />
+              <PrivateRoute
+                path={"/portalUnavailable"}
+                component={PortalUnavailableRoute}
               />
               <PrivateRoute path={"/error401"} component={Error401Route} />
               <PrivateRoute component={Error404Route} />
