@@ -26,9 +26,9 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
-public class SecurityInfoRequestDto : BaseBatchRequestDto
+public class InvintationLinkRequestDto
 {
-    public IEnumerable<FileShareParams> Share { get; set; }
-    public bool Notify { get; set; }
-    public string SharingMessage { get; set; }
+    public Guid LinkId { get; set; }
+    public string Title { get; set; }
+    public FileShare Access { get; set; }
 }

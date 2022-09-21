@@ -70,8 +70,16 @@ class WelcomePageSettings extends React.Component {
   }
 
   componentDidMount() {
-    const { isLoaded, setIsLoadedWelcomePageSettings, tReady } = this.props;
+    const {
+      isLoaded,
+      setIsLoadedWelcomePageSettings,
+      tReady,
+      initSettings,
+      setIsLoaded,
+    } = this.props;
     const { greetingTitleDefault, greetingTitle } = this.state;
+
+    if (!isLoaded) initSettings().then(() => setIsLoaded(true));
 
     this.checkInnerWidth();
     window.addEventListener("resize", this.checkInnerWidth);
@@ -325,7 +333,12 @@ class WelcomePageSettings extends React.Component {
 export default inject(({ auth, setup, common }) => {
   const { greetingSettings, organizationName, theme } = auth.settingsStore;
   const { setGreetingTitle, restoreGreetingTitle } = setup;
-  const { isLoaded, setIsLoadedWelcomePageSettings } = common;
+  const {
+    isLoaded,
+    setIsLoadedWelcomePageSettings,
+    initSettings,
+    setIsLoaded,
+  } = common;
   return {
     theme,
     greetingSettings,
@@ -334,6 +347,8 @@ export default inject(({ auth, setup, common }) => {
     restoreGreetingTitle,
     isLoaded,
     setIsLoadedWelcomePageSettings,
+    initSettings,
+    setIsLoaded,
   };
 })(
   withLoading(

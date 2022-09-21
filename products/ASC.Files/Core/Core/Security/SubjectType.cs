@@ -24,11 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.ApiModels.RequestDto;
+namespace ASC.Files.Core.Security;
 
-public class SecurityInfoRequestDto : BaseBatchRequestDto
+public enum SubjectType
 {
-    public IEnumerable<FileShareParams> Share { get; set; }
-    public bool Notify { get; set; }
-    public string SharingMessage { get; set; }
+    UserOrGroup = 0,
+    ExternalLink = 1,
+    Restriction = 2,
+    InvintationLink = 3,
 }
