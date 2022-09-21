@@ -357,7 +357,7 @@ class ContextOptionsStore {
       visible: true,
       roomId: action,
       hideSelector: false,
-      defaultAccess: ShareAccessRights.FullAccess,
+      defaultAccess: ShareAccessRights.ReadOnly,
     });
   };
 
