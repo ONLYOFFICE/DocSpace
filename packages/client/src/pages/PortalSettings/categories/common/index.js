@@ -13,10 +13,15 @@ import withLoading from "SRC_DIR/HOCs/withLoading";
 import LoaderSubmenu from "./sub-components/loaderSubmenu";
 
 const SubmenuCommon = (props) => {
-  const { t, history, isLoaded, tReady, setIsLoadedSubmenu } = props;
+  const {
+    t,
+    history,
+    tReady,
+    setIsLoadedSubmenu,
+    loadBaseInfo,
+    isLoadedSubmenu,
+  } = props;
   const [currentTab, setCurrentTab] = useState(0);
-
-  const isLoadedSetting = isLoaded && tReady;
 
   useEffect(() => {
     const path = location.pathname;
@@ -27,8 +32,15 @@ const SubmenuCommon = (props) => {
   }, []);
 
   useEffect(() => {
-    if (isLoadedSetting) setIsLoadedSubmenu(isLoadedSetting);
-  }, [isLoadedSetting]);
+    if (tReady) setIsLoadedSubmenu(true);
+    if (isLoadedSubmenu) {
+      load();
+    }
+  }, [tReady, isLoadedSubmenu]);
+
+  const load = async () => {
+    await loadBaseInfo();
+  };
 
   const data = [
     {
@@ -58,7 +70,7 @@ const SubmenuCommon = (props) => {
     );
   };
 
-  if (!isLoadedSetting) return <LoaderSubmenu />;
+  if (!isLoadedSubmenu) return <LoaderSubmenu />;
 
   return (
     <Submenu
@@ -70,10 +82,19 @@ const SubmenuCommon = (props) => {
 };
 
 export default inject(({ common }) => {
-  const { isLoaded, setIsLoadedSubmenu } = common;
-  return {
+  const {
     isLoaded,
     setIsLoadedSubmenu,
+    initSettings,
+    isLoadedSubmenu,
+  } = common;
+  return {
+    loadBaseInfo: async () => {
+      await initSettings();
+    },
+    isLoaded,
+    setIsLoadedSubmenu,
+    isLoadedSubmenu,
   };
 })(
   withLoading(withRouter(withTranslation("Settings")(observer(SubmenuCommon))))
