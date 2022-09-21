@@ -2188,6 +2188,7 @@ __metadata:
     "@loadable/component": ^5.15.2
     "@loadable/server": ^5.15.2
     "@loadable/webpack-plugin": ^5.15.0
+    "@onlyoffice/document-editor-react": "file:../onlyoffice-document-editor-react-0.3.0.tgz"
     "@svgr/webpack": ^6.2.1
     babel-loader: ^8.2.2
     babel-plugin-styled-components: ^1.12.0
@@ -3507,6 +3508,16 @@ __metadata:
     mkdirp: ^1.0.4
     rimraf: ^3.0.2
   checksum: 52dc02259d98da517fae4cb3a0a3850227bdae4939dda1980b788a7670636ca2b4a01b58df03dd5f65c1e3cb70c50fa8ce5762b582b3f499ec30ee5ce1fd9380
+  languageName: node
+  linkType: hard
+
+"@onlyoffice/document-editor-react@file:../onlyoffice-document-editor-react-0.3.0.tgz::locator=%40docspace%2Feditor%40workspace%3Apackages%2Feditor":
+  version: 0.3.0
+  resolution: "@onlyoffice/document-editor-react@file:../onlyoffice-document-editor-react-0.3.0.tgz::locator=%40docspace%2Feditor%40workspace%3Apackages%2Feditor"
+  peerDependencies:
+    react: ^16.9.0 || ^17 || ^18
+    react-dom: ^16.9.0 || ^17 || ^18
+  checksum: c1b63c4dc8b068e6f86efb69953d2db842c75919ad5d51f8e38dd347e00c7bf92cecd33f5a7da380446104937169295f4fbdae656726c41952c6b0e817df8681
   languageName: node
   linkType: hard
 
