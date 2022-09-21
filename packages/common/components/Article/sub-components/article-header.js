@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router";
 import Loaders from "@docspace/common/components/Loaders";
