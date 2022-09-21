@@ -49,6 +49,7 @@ const Panels = (props) => {
     hotkeyPanelVisible,
     convertPasswordDialogVisible,
     createRoomDialogVisible,
+    restoreAllPanelVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
@@ -66,8 +67,12 @@ const Panels = (props) => {
       />
     ),
     ownerPanelVisible && <ChangeOwnerPanel key="change-owner-panel" />,
-    (moveToPanelVisible || copyPanelVisible) && (
-      <OperationsPanel key="operation-panel" isCopy={copyPanelVisible} />
+    (moveToPanelVisible || copyPanelVisible || restoreAllPanelVisible) && (
+      <OperationsPanel
+        key="operation-panel"
+        isCopy={copyPanelVisible}
+        isRestore={restoreAllPanelVisible}
+      />
     ),
     thirdPartyMoveDialogVisible && (
       <ThirdPartyMoveDialog key="thirdparty-move-dialog" />
@@ -132,6 +137,7 @@ export default inject(
       createRoomDialogVisible,
       convertPasswordDialogVisible,
       connectItem, //TODO:
+      restoreAllPanelVisible,
 
       createMasterForm,
       selectFileDialogVisible,
@@ -165,6 +171,7 @@ export default inject(
       createMasterForm,
       setSelectFileDialogVisible,
       hotkeyPanelVisible,
+      restoreAllPanelVisible,
     };
   }
 )(observer(Panels));

@@ -58,7 +58,6 @@
   "PrivateRoomDescriptionUnbreakable": "牢不可破的AES-256算法。",
   "PrivateRoomHeader": "欢迎来到ONLYOFFICE私密房间，在这里您所输入的每一个字符都将被加密",
   "PrivateRoomSupport": "您可在{{organizationName}}桌面应用中使用私密房间。<3>操作指南</3>",
-  "RecentEmptyContainerDescription": "'最近'部分中将展示您最近查看或编辑的文件。",
   "RemoveFromFavorites": "从收藏中移除",
   "RemoveFromList": "从列表中移除",
   "RemovedFromFavorites": "已从收藏中删除",

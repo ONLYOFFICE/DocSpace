@@ -58,7 +58,6 @@
   "PrivateRoomDescriptionUnbreakable": "Неразбиваем AES-256 алгоритъм.",
   "PrivateRoomHeader": "Добре дошли в частната стая на ONLYOFFICE, където всеки написан от Вас символ е криптиран",
   "PrivateRoomSupport": "Работата в Частна Стая е достъпна чрез настолно приложение {{organizationName}}. <3>Инструкции</3>",
-  "RecentEmptyContainerDescription": "Разделът 'Скорошни' Ви показва последно гледаните и редактираните файлове.",
   "RemoveFromFavorites": "Премахни от любими",
   "RemoveFromList": "Премахни от списък",
   "RemovedFromFavorites": "Премахнат от любими",
