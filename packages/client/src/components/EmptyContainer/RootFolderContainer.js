@@ -251,10 +251,9 @@ const RootFolderContainer = (props) => {
   const trashButtons = (
     <div className="empty-folder_container-links">
       <img
-        className="empty-folder_container_up-image"
-        src="images/empty_screen_people.svg"
-        width="12px"
-        alt=""
+        className="empty-folder_container-image"
+        src="images/person.svg"
+        alt="person_icon"
         onClick={onGoToPersonal}
       />
       <Link onClick={onGoToPersonal} {...linkStyles}>
