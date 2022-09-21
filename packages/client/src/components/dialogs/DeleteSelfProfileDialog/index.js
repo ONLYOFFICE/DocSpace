@@ -77,7 +77,7 @@ class DeleteSelfProfileDialogComponent extends React.Component {
           />
           <Button
             key="CloseBtn"
-            label={t("Common:CloseButton")}
+            label={t("Common:CancelButton")}
             size="normal"
             scale
             onClick={onClose}
