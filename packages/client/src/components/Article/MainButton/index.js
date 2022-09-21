@@ -96,6 +96,7 @@ const ArticleMainButtonContent = (props) => {
   const [actions, setActions] = React.useState([]);
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
+  const [isDropdownMainButton, setIsDropdownMainButton] = React.useState(true);
 
   const onCreate = React.useCallback(
     (e) => {
@@ -173,6 +174,31 @@ const ArticleMainButtonContent = (props) => {
     console.log("invite again");
     toastr.warning("Work in progress (invite again)");
   }, []);
+
+  React.useEffect(() => {
+    const isSettingFolder =
+      window.location.pathname.endsWith("/settings/common") ||
+      window.location.pathname.endsWith("/settings/admin");
+
+    const isFolderHiddenDropdown =
+      isArchiveFolder ||
+      isFavoritesFolder ||
+      isRecentFolder ||
+      isRecycleBinFolder ||
+      isSettingFolder;
+
+    if (isFolderHiddenDropdown) {
+      setIsDropdownMainButton(false);
+    } else {
+      setIsDropdownMainButton(true);
+    }
+  }, [
+    isArchiveFolder,
+    isFavoritesFolder,
+    isRecentFolder,
+    isRecycleBinFolder,
+    window.location.pathname,
+  ]);
 
   React.useEffect(() => {
     if (isRoomsFolder) return;
@@ -406,7 +432,7 @@ const ArticleMainButtonContent = (props) => {
         <MainButton
           id="files_main-button"
           isDisabled={isDisabled}
-          isDropdown={true}
+          isDropdown={isDropdownMainButton}
           text={mainButtonText}
           model={model}
         />
