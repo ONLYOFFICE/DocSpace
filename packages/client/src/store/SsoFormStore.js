@@ -15,10 +15,6 @@ import isEqual from "lodash/isEqual";
 class SsoFormStore {
   isSsoEnabled = false;
 
-  set isSsoEnabled(value) {
-    this.isSsoEnabled = value;
-  }
-
   enableSso = false;
 
   uploadXmlUrl = "";
@@ -128,9 +124,9 @@ class SsoFormStore {
   load = async () => {
     try {
       const res = await getCurrentSsoSettings();
-      this.isSsoEnabled = res.enableSso;
-      this.spMetadata = res.enableSso;
-      this.defaultSettings = res;
+      this.setIsSsoEnabled(res.enableSso);
+      this.setSpMetadata(res.enableSso);
+      this.setDefaultSettings(res);
       this.setFields(res);
     } catch (err) {
       console.log(err);
@@ -191,8 +187,16 @@ class SsoFormStore {
     this.spAction = option.key;
   };
 
-  disableSso = () => {
-    this.isSsoEnabled = false;
+  setIsSsoEnabled = (isSsoEnabled) => {
+    this.isSsoEnabled = isSsoEnabled;
+  };
+
+  setSpMetadata = (spMetadata) => {
+    this.spMetadata = spMetadata;
+  };
+
+  setDefaultSettings = (defaultSettings) => {
+    this.defaultSettings = defaultSettings;
   };
 
   openConfirmationDisableModal = () => {
@@ -212,16 +216,16 @@ class SsoFormStore {
   };
 
   confirmDisable = () => {
-    this.disableSso();
+    this.setIsSsoEnabled(false);
     this.ssoToggle();
     this.confirmationDisableModal = false;
   };
 
   confirmReset = () => {
     this.resetForm();
-    this.disableSso();
+    this.setIsSsoEnabled(false);
     this.serviceProviderSettings = false;
-    this.spMetadata = false;
+    this.setSpMetadata(false);
     this.confirmationResetModal = false;
   };
 
@@ -345,8 +349,8 @@ class SsoFormStore {
       await submitSsoForm(data);
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
       this.isSubmitLoading = false;
-      this.spMetadata = true;
-      this.defaultSettings = settings;
+      this.setSpMetadata(true);
+      this.setDefaultSettings(settings);
     } catch (err) {
       toastr.error(err);
       console.error(err);
