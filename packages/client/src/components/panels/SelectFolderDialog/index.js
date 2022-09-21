@@ -214,7 +214,7 @@ class SelectFolderDialog extends React.Component {
       : t("Common:SaveHereButton");
     const name = dialogName ? dialogName : t("Common:SaveButton");
 
-    //console.log("Render Folder Component?", this.state);
+    // console.log("Render Folder Component?", this.state);
 
     const folderSelectionDisabled =
       folderId === sharedRoomId || folderId === sharedRoomId?.toString();

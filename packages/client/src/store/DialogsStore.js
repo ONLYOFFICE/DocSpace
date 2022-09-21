@@ -28,6 +28,7 @@ class DialogsStore {
   convertPasswordDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
+  restoreAllPanelVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -73,6 +74,10 @@ class DialogsStore {
   setMoveToPanelVisible = (moveToPanelVisible) => {
     !moveToPanelVisible && this.deselectActiveFiles();
     this.moveToPanelVisible = moveToPanelVisible;
+  };
+
+  setRestoreAllPanelVisible = (restoreAllPanelVisible) => {
+    this.restoreAllPanelVisible = restoreAllPanelVisible;
   };
 
   setCopyPanelVisible = (copyPanelVisible) => {
