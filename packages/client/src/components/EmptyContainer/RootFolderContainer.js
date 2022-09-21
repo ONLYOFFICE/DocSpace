@@ -19,9 +19,6 @@ const RootFolderContainer = (props) => {
     t,
     theme,
     isPrivacyFolder,
-    isRecycleBinFolder,
-    isRoomsFolder,
-    isArchiveFolder,
     isDesktop,
     isEncryptionSupport,
     organizationName,
@@ -40,10 +37,7 @@ const RootFolderContainer = (props) => {
     fetchRooms,
     setAlreadyFetchingRooms,
     categoryType,
-    isRecentFolder,
-    isFavoritesFolder,
   } = props;
-  const subheadingText = t("SubheadingEmptyText");
   const myDescription = t("MyEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
@@ -362,26 +356,13 @@ export default inject(
       setAlreadyFetchingRooms,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
-    const {
-      isPrivacyFolder,
-      myFolderId,
-      isRecycleBinFolder,
-      isRoomsFolder,
-      isArchiveFolder,
-      isRecentFolder,
-      isFavoritesFolder,
-    } = treeFoldersStore;
+    const { isPrivacyFolder, myFolderId } = treeFoldersStore;
 
     return {
       theme,
       isPrivacyFolder,
-      isRecycleBinFolder,
-      isRoomsFolder,
-      isArchiveFolder,
       isDesktop: isDesktopClient,
       isEncryptionSupport,
-      isRecentFolder,
-      isFavoritesFolder,
       organizationName,
       privacyInstructions,
       title,
