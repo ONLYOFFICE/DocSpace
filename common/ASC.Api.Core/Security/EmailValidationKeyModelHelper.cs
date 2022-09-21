@@ -38,7 +38,7 @@ public class EmailValidationKeyModelHelper
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
     private readonly AuthManager _authentication;
-    private readonly RoomInvitationLinksService _roomLinksService;
+    private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
     private readonly AuditEventsRepository _auditEventsRepository;
     private readonly TenantUtil _tenantUtil;
     private readonly MessageTarget _messageTarget;
@@ -49,7 +49,7 @@ public class EmailValidationKeyModelHelper
         AuthContext authContext,
         UserManager userManager,
         AuthManager authentication,
-        RoomInvitationLinksService roomLinksService,
+        DocSpaceLinkHelper docSpaceLinkHelper,
         AuditEventsRepository auditEventsRepository,
         TenantUtil tenantUtil,
         MessageTarget messageTarget)
@@ -59,7 +59,7 @@ public class EmailValidationKeyModelHelper
         _authContext = authContext;
         _userManager = userManager;
         _authentication = authentication;
-        _roomLinksService = roomLinksService;
+        _docSpaceLinkHelper = docSpaceLinkHelper;
         _auditEventsRepository = auditEventsRepository;
         _tenantUtil = tenantUtil;
         _messageTarget = messageTarget;
@@ -87,11 +87,6 @@ public class EmailValidationKeyModelHelper
         request.TryGetValue("uid", out var userIdKey);
         Guid.TryParse(userIdKey, out var userId);
 
-        request.TryGetValue("access", out var fileShareRaw);
-        int.TryParse(fileShareRaw, out var fileShare);
-
-        request.TryGetValue("roomId", out var roomId);
-
         return new EmailValidationKeyModel
         {
             Email = _email,
@@ -99,14 +94,12 @@ public class EmailValidationKeyModelHelper
             Key = key,
             Type = cType,
             UiD = userId,
-            RoomAccess = fileShare,
-            RoomId = roomId
         };
     }
 
     public ValidationResult Validate(EmailValidationKeyModel inDto)
     {
-        var (key, emplType, email, uiD, type, roomAccess, roomId) = inDto;
+        var (key, emplType, email, uiD, type) = inDto;
 
         ValidationResult checkKeyResult;
 
@@ -117,18 +110,12 @@ public class EmailValidationKeyModelHelper
                 break;
 
             case ConfirmType.LinkInvite:
-                if (roomAccess != default && !string.IsNullOrEmpty(roomId))
-                {
-                    checkKeyResult = _provider.ValidateEmailKey(email + type + ((int)emplType + (int)roomAccess + roomId), key, _provider.ValidEmailKeyInterval);
-                    if (checkKeyResult == ValidationResult.Ok &&
-                        !_roomLinksService.VisitProcess(roomId, email, key, _provider.ValidVisitLinkInterval))
-                    {
-                        checkKeyResult = ValidationResult.Expired;
-                    }
-                    break;
-                }
+                checkKeyResult = _docSpaceLinkHelper.Validate(key, email);
 
-                checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)emplType, key, _provider.ValidEmailKeyInterval);
+                if (checkKeyResult == ValidationResult.Invalid)
+                {
+                    checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)emplType, key, _provider.ValidEmailKeyInterval);
+                }
                 break;
 
             case ConfirmType.PortalOwnerChange:
