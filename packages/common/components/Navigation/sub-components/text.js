@@ -1,12 +1,12 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 
 import ExpanderDownIcon from "@docspace/components/public/static/images/expander-down.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import Heading from "@docspace/components/heading";
 
-import { tablet } from "@docspace/components/utils/device";
+import { tablet, smallTablet } from "@docspace/components/utils/device";
 import { isMobile, isTablet } from "react-device-detect";
 import { Base } from "@docspace/components/themes";
 
@@ -35,12 +35,12 @@ const StyledHeading = styled(Heading)`
 
   margin: 0;
 
-  @media (min-width: 600px) {
+  @media ${tablet} {
     font-size: 21px;
     line-height: 28px;
   }
 
-  @media (min-width: 1024px) {
+  @media ${smallTablet} {
     font-size: 18px;
     line-height: 24px;
   }
