@@ -100,9 +100,7 @@ class CommonStore {
   };
 
   setIsLoadedCompanyInfoSettingsData = (isLoadedCompanyInfoSettingsData) => {
-    runInAction(() => {
-      this.isLoadedCompanyInfoSettingsData = isLoadedCompanyInfoSettingsData;
-    });
+    this.isLoadedCompanyInfoSettingsData = isLoadedCompanyInfoSettingsData;
   };
 
   setIsLoaded = (isLoaded) => {
