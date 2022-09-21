@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "’Jaettu kanssani’-osiossa näkyy tiiminjäsenten jakamat tiedostot.\n Jos et ole nähnyt uusimpia muutoksia, ne merkitään uusiksi. Voit poistaa tiedostot luettelosta kontekstivalikon avulla. ",
   "ShowVersionHistory": "Näytä versiohistoria",
   "Spreadsheet": "Laskentataulukko",
-  "SubheadingEmptyText": "Tässä osiossa ei näytetä tiedostoja",
   "TooltipElementCopyMessage": "Kopioi {{element}}",
   "TooltipElementsCopyMessage": "Kopioi {{element}} elementit",
   "TooltipElementsMoveMessage": "Siirrä {{element}} elementit",

@@ -19,9 +19,6 @@ const RootFolderContainer = (props) => {
     t,
     theme,
     isPrivacyFolder,
-    isRecycleBinFolder,
-    isRoomsFolder,
-    isArchiveFolder,
     isDesktop,
     isEncryptionSupport,
     organizationName,
@@ -40,15 +37,13 @@ const RootFolderContainer = (props) => {
     fetchRooms,
     setAlreadyFetchingRooms,
     categoryType,
-    isRecentFolder,
   } = props;
-  const subheadingText = t("SubheadingEmptyText");
   const myDescription = t("MyEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
   const trashHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
-  const recentHeader = t("NoFilesHereYet");
+  const noFilesHeader = t("NoFilesHereYet");
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
@@ -128,16 +123,17 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Favorites:
         return {
+          headerText: noFilesHeader,
           descriptionText: favoritesDescription,
-          imageStyle: { margin: "0px 0 0 auto" },
-          imageSrc: "images/empty_screen_favorites.png",
+          imageSrc: "images/empty_screen_favorites.svg",
+          buttons: goToPersonalButtons,
         };
       case FolderType.Recent:
         return {
-          headerText: recentHeader,
+          headerText: noFilesHeader,
           descriptionText: recentDescription,
           imageSrc: "images/empty_screen_recent.svg",
-          buttons: recentButtons,
+          buttons: goToPersonalButtons,
         };
       case FolderType.Privacy:
         return {
@@ -251,10 +247,9 @@ const RootFolderContainer = (props) => {
   const trashButtons = (
     <div className="empty-folder_container-links">
       <img
-        className="empty-folder_container_up-image"
-        src="images/empty_screen_people.svg"
-        width="12px"
-        alt=""
+        className="empty-folder_container-image"
+        src="images/person.svg"
+        alt="person_icon"
         onClick={onGoToPersonal}
       />
       <Link onClick={onGoToPersonal} {...linkStyles}>
@@ -291,7 +286,7 @@ const RootFolderContainer = (props) => {
     </div>
   );
 
-  const recentButtons = (
+  const goToPersonalButtons = (
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
@@ -306,14 +301,6 @@ const RootFolderContainer = (props) => {
   );
 
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
-  const subheadingTextProp =
-    isPrivacyFolder ||
-    isRecycleBinFolder ||
-    isRoomsFolder ||
-    isArchiveFolder ||
-    isRecentFolder
-      ? {}
-      : { subheadingText };
   const emptyFolderProps = getEmptyFolderProps();
 
   React.useEffect(() => {
@@ -340,7 +327,6 @@ const RootFolderContainer = (props) => {
         <EmptyContainer
           headerText={headerText}
           isEmptyPage={isEmptyPage}
-          {...subheadingTextProp}
           {...emptyFolderProps}
         />
       )}
@@ -369,24 +355,13 @@ export default inject(
       setAlreadyFetchingRooms,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
-    const {
-      isPrivacyFolder,
-      myFolderId,
-      isRecycleBinFolder,
-      isRoomsFolder,
-      isArchiveFolder,
-      isRecentFolder,
-    } = treeFoldersStore;
+    const { isPrivacyFolder, myFolderId } = treeFoldersStore;
 
     return {
       theme,
       isPrivacyFolder,
-      isRecycleBinFolder,
-      isRoomsFolder,
-      isArchiveFolder,
       isDesktop: isDesktopClient,
       isEncryptionSupport,
-      isRecentFolder,
       organizationName,
       privacyInstructions,
       title,

@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "La section 'Partagés avec moi' affiche les fichiers que vos coéquipiers ont partagés avec vous. Si vous n'avez pas vu les dernières modifications, ils sont marqués comme nouveaux. Vous pouvez supprimer les fichiers de la liste en utilisant le menu contextuel. ",
   "ShowVersionHistory": "Afficher l'historique des versions",
   "Spreadsheet": "Feuille de calcul",
-  "SubheadingEmptyText": "Aucun fichier à afficher dans cette section",
   "TooltipElementCopyMessage": "Copier {{element}}",
   "TooltipElementsCopyMessage": "Copier {{element}} des éléments",
   "TooltipElementsMoveMessage": "Déplacer les éléments {{element}}",

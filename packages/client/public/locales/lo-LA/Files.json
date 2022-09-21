@@ -64,7 +64,6 @@
   "Share": "ແບ່ງປັນ",
   "SharedEmptyContainerDescription": "ສ່ວນ 'ແບ່ງປັນກັບຂ້ອຍ' ສະແດງໄຟລ໌ທີ່ແບ່ງປັນໃຫ້ທ່ານໂດຍເພື່ອນຮ່ວມທີມ. ຖ້າທ່ານບໍ່ໄດ້ເຫັນການປ່ຽນແປງໃໝ່ຫຼ້າສຸດ, ມັນຈະຖືກໝາຍເປັນໃໝ່. ທ່ານສາມາດເອົາໄຟລ໌ອອກຈາກບັນຊີໂດຍໃຊ້ເມນູ",
   "ShowVersionHistory": "ສະແດງປະຫວັດສະບັບ",
-  "SubheadingEmptyText": "ບໍ່ມີເອກະສານທີ່ຈະສະແດງໃນສ່ວນນີ້",
   "TooltipElementCopyMessage": "ຄັດລອກ {{element}}",
   "TooltipElementsCopyMessage": "ຄັດລອກ {{element}} ອົງປະກອບ",
   "TooltipElementsMoveMessage": "ຍ້າຍ {{element}} ອົງປະກອບ",
