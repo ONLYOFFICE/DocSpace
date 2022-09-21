@@ -87,6 +87,7 @@ class FilesStore {
   isHidePagination = false;
   trashIsEmpty = false;
   filesIsLoading = false;
+  invitationLinks = [];
 
   constructor(
     authStore,
@@ -2655,6 +2656,29 @@ class FilesStore {
     const sectionWidth = body ? body.offsetWidth - sectionPadding : 0;
 
     return Math.floor(sectionWidth / minTileWidth);
+  };
+
+  getInvitationLinks = async (id, access) => {
+    let links = await api.rooms.getInvitationLinks(id, access);
+
+    if (typeof links === "string") {
+      links = [
+        {
+          id: 0,
+          title: "InvitationLink",
+          shareLink: links,
+          expirationDate: new Date().toISOString(),
+        },
+      ];
+    }
+
+    this.invitationLinks = links;
+
+    return links;
+  };
+
+  setInvitationLinks = async (id, linkId, title, access) => {
+    return await api.rooms.setInvitationLinks(id, linkId, title, access);
   };
 }
 
