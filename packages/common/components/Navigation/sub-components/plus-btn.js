@@ -8,7 +8,7 @@ const PlusButton = (props) => {
   const ref = useRef(null);
   const menuRef = useRef(null);
 
-  const { className, getData } = props;
+  const { className, getData, withMenu, onPlusClick } = props;
 
   const toggle = (e, isOpen) => {
     isOpen ? menuRef.current.show(e) : menuRef.current.hide(e);
@@ -16,7 +16,8 @@ const PlusButton = (props) => {
   };
 
   const onClick = (e) => {
-    toggle(e, !isOpen);
+    if (withMenu) toggle(e, !isOpen);
+    else onPlusClick && onPlusClick();
   };
 
   const onHide = () => {
@@ -48,6 +49,11 @@ const PlusButton = (props) => {
 PlusButton.propTypes = {
   className: PropTypes.string,
   getData: PropTypes.func.isRequired,
+  onPlusClick: PropTypes.func,
+};
+
+PlusButton.defaultProps = {
+  withMenu: true,
 };
 
 export default PlusButton;

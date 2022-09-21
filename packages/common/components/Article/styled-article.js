@@ -68,8 +68,7 @@ const StyledArticle = styled.article`
     position: fixed;
     margin: 0;
     padding: 0;
-    margin-top: ${(props) =>
-      props.isBannerVisible ? "-16px" : "64px"} !important;
+    top: ${(props) => (props.isBannerVisible ? "-16px" : "64px")} !important;
     height: calc(100% - 64px) !important;
   `}
 
@@ -165,6 +164,8 @@ const StyledArticleHeader = styled.div`
 StyledArticleHeader.defaultProps = { theme: Base };
 
 const StyledHeading = styled.div`
+  height: 24px;
+
   margin: 0;
   padding: 0;
   cursor: pointer;
@@ -191,6 +192,7 @@ const StyledHeading = styled.div`
 `;
 
 const StyledIconBox = styled.div`
+  cursor: pointer;
   display: none;
   align-items: center;
   height: 20px;

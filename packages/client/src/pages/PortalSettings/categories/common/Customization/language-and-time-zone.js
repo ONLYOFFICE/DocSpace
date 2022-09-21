@@ -88,9 +88,14 @@ class LanguageAndTimeZone extends React.Component {
       portalLanguage,
       tReady,
       setIsLoadedLngTZSettings,
+      initSettings,
+      setIsLoaded,
     } = this.props;
 
-    const isLoadedSetting = isLoaded && tReady;
+    if (!isLoaded) initSettings().then(() => setIsLoaded(true));
+
+    const isLoadedSetting =
+      isLoaded && tReady && this.state.timezone && this.state.language;
 
     if (isLoadedSetting) {
       setIsLoadedLngTZSettings(isLoadedSetting);
@@ -171,8 +176,14 @@ class LanguageAndTimeZone extends React.Component {
       setIsLoadedLngTZSettings,
     } = this.props;
 
-    if (isLoaded !== prevProps.isLoaded || tReady !== prevProps.tReady) {
-      const isLoadedSetting = isLoaded && tReady;
+    if (
+      isLoaded !== prevProps.isLoaded ||
+      tReady !== prevProps.tReady ||
+      this.state.language !== prevState.language ||
+      this.state.timezone !== prevState.timezone
+    ) {
+      const isLoadedSetting =
+        isLoaded && tReady && this.state.timezone && this.state.language;
 
       if (isLoadedSetting) {
         setIsLoadedLngTZSettings(isLoadedSetting);
@@ -518,7 +529,12 @@ export default inject(({ auth, setup, common }) => {
   const { user } = auth.userStore;
 
   const { setLanguageAndTime } = setup;
-  const { isLoaded, setIsLoadedLngTZSettings } = common;
+  const {
+    isLoaded,
+    setIsLoadedLngTZSettings,
+    initSettings,
+    setIsLoaded,
+  } = common;
   return {
     theme: auth.settingsStore.theme,
     user,
@@ -536,6 +552,8 @@ export default inject(({ auth, setup, common }) => {
     setIsLoadedLngTZSettings,
     cultures,
     helpLink,
+    initSettings,
+    setIsLoaded,
   };
 })(
   withLoading(

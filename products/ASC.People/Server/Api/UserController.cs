@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common.Caching;
-
 using Module = ASC.Api.Core.Module;
 using SecurityContext = ASC.Core.SecurityContext;
 
@@ -64,9 +62,8 @@ public class UserController : PeopleControllerBase
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
     private readonly SettingsManager _settingsManager;
+    private readonly RoomLinkService _roomLinkService;
     private readonly FileSecurity _fileSecurity;
-    private readonly IDaoFactory _daoFactory;
-    private readonly EmailValidationKeyProvider _validationKeyProvider;
 
     public UserController(
         ICache cache,
@@ -104,9 +101,8 @@ public class UserController : PeopleControllerBase
         IHttpClientFactory httpClientFactory,
         IHttpContextAccessor httpContextAccessor,
         SettingsManager settingsManager,
-        FileSecurity fileSecurity,
-        IDaoFactory daoFactory,
-        EmailValidationKeyProvider validationKeyProvider)
+        RoomLinkService roomLinkService,
+        FileSecurity fileSecurity)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
@@ -138,9 +134,8 @@ public class UserController : PeopleControllerBase
         _authContext = authContext;
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
+        _roomLinkService = roomLinkService;
         _fileSecurity = fileSecurity;
-        _daoFactory = daoFactory;
-        _validationKeyProvider = validationKeyProvider;
     }
 
     [HttpPost("active")]
@@ -208,40 +203,24 @@ public class UserController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
-        var success = int.TryParse(inDto.RoomId, out var id);
+        var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email) : null;
 
-        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
+        if (options != null && !options.IsCorrect)
         {
-            var employeeType = inDto.IsVisitor ? EmployeeType.Visitor : EmployeeType.User;
-            var resultWithEmail = _validationKeyProvider.ValidateEmailKey(inDto.Email + ConfirmType.LinkInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
-                _validationKeyProvider.ValidEmailKeyInterval);
-            var resultWithoutEmail = _validationKeyProvider.ValidateEmailKey(string.Empty + ConfirmType.LinkInvite + ((int)employeeType + inDto.RoomAccess + inDto.RoomId), inDto.Key,
-                _validationKeyProvider.ValidEmailKeyInterval);
+            throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
+        }
 
-            if (resultWithEmail != EmailValidationKeyProvider.ValidationResult.Ok && resultWithoutEmail != EmailValidationKeyProvider.ValidationResult.Ok)
+        var user = new UserInfo();
+
+        var byEmail = options != null && options.Type == LinkType.InvintationByEmail;
+
+        if (byEmail)
+        {
+            user = _userManager.GetUserByEmail(inDto.Email);
+
+            if (user == Constants.LostUser || user.ActivationStatus != EmployeeActivationStatus.Pending)
             {
-                throw new SecurityException("Invalid data");
-            }
-
-            if (success)
-            {
-                var folderDao = _daoFactory.GetFolderDao<int>();
-                var folder = await folderDao.GetFolderAsync(id);
-
-                if (folder == null)
-                {
-                    throw new ItemNotFoundException("Virtual room not found");
-                }
-            }
-            else
-            {
-                var folderDao = _daoFactory.GetFolderDao<string>();
-                var folder = await folderDao.GetFolderAsync(inDto.RoomId);
-
-                if (folder == null)
-                {
-                    throw new ItemNotFoundException("Virtual room not found");
-                }
+                throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
             }
         }
 
@@ -260,8 +239,6 @@ public class UserController : PeopleControllerBase
             }
             inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
         }
-
-        var user = new UserInfo();
 
         //Validate email
         var address = new MailAddress(inDto.Email);
@@ -282,7 +259,7 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user);
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true);
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true, byEmail);
 
         UpdateDepartments(inDto.Department, user);
 
@@ -291,27 +268,22 @@ public class UserController : PeopleControllerBase
             await UpdatePhotoUrl(inDto.Files, user);
         }
 
-        if (inDto.FromInviteLink && !string.IsNullOrEmpty(inDto.RoomId))
+        if (options != null && options.Type == LinkType.InvintationToRoom)
         {
+            var success = int.TryParse(options.RoomId, out var id);
+
             if (success)
             {
-                _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
-                    .GetAwaiter().GetResult();
+                await _fileSecurity.ShareAsync(id, Files.Core.FileEntryType.Folder, user.Id, options.Share);
             }
             else
             {
-                _fileSecurity.ShareAsync(inDto.RoomId, FileEntryType.Folder, user.Id, (Files.Core.Security.FileShare)inDto.RoomAccess)
-                    .GetAwaiter().GetResult();
+                await _fileSecurity.ShareAsync(options.RoomId, Files.Core.FileEntryType.Folder, user.Id, options.Share);
             }
+        }
 
-            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreatedAndAddedToRoom : MessageAction.UserCreatedAndAddedToRoom;
-            _messageService.Send(messageAction, _messageTarget.Create(new[] { user.Id.ToString(), inDto.RoomId }), user.DisplayUserName(false, _displayUserSettingsHelper));
-        }
-        else
-        {
-            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
-            _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-        }
+        var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
+        _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await _employeeFullDtoHelper.GetFull(user);
     }

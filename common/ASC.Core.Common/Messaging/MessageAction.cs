@@ -469,6 +469,7 @@ public enum MessageAction
     RoomUnarchived = 5073,
     RoomDeleted = 5074,
     RoomUpdateAccess = 5075,
+    RoomInvintationUpdateAccess = 5082,
 
     TagCreated = 5076,
     TagsDeleted = 5077,
