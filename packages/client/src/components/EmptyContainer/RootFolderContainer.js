@@ -254,7 +254,7 @@ const RootFolderContainer = (props) => {
         onClick={onGoToMyDocuments}
       />
       <Link onClick={onGoToMyDocuments} {...linkStyles}>
-        {t("GoToMyButton")}
+        {t("GoToPersonal")}
       </Link>
     </div>
   );
