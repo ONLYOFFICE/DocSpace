@@ -52,8 +52,6 @@ const Panels = (props) => {
     restoreAllPanelVisible,
   } = props;
 
-  console.log(restoreAllPanelVisible);
-
   const { t } = useTranslation(["Translations", "SelectFile"]);
 
   const onClose = () => {
