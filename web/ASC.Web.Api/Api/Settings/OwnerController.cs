@@ -85,7 +85,7 @@ public class OwnerController : BaseSettingsController
             return new { Status = 0, Message = Resource.ErrorAccessDenied };
         }
 
-        var confirmLink = _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalOwnerChange, newOwner.Id, newOwner.Id);
+        var confirmLink = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalOwnerChange, newOwner.Id, newOwner.Id);
         _studioNotifyService.SendMsgConfirmChangeOwner(owner, newOwner, confirmLink);
 
         _messageService.Send(MessageAction.OwnerSentChangeOwnerInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));

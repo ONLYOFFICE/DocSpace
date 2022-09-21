@@ -26,9 +26,9 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
-public class SecurityInfoRequestDto : BaseBatchRequestDto
+public class RoomInvitationRequestDto
 {
-    public IEnumerable<FileShareParams> Share { get; set; }
+    public IEnumerable<RoomInvitation> Invitations { get; set; }
     public bool Notify { get; set; }
-    public string SharingMessage { get; set; }
+    public string Message { get; set; }
 }
