@@ -12,6 +12,7 @@ import {
   createThumbnailsAvatar,
   deleteAvatar,
 } from "@docspace/common/api/people";
+import { dataUrlToFile } from "@docspace/common/utils/dataUrlToFile";
 import AvatarEditor from "./editor";
 
 const StyledModalDialog = styled(ModalDialog)``;
@@ -32,6 +33,7 @@ const AvatarEditorDialog = (props) => {
     zoom: 1,
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [preview, setPreview] = useState(null);
 
   const onChangeAvatar = (newAvatar) => setAvatar(newAvatar);
 
@@ -46,8 +48,9 @@ const AvatarEditorDialog = (props) => {
       return;
     }
 
+    const file = await dataUrlToFile(preview);
     let avatarData = new FormData();
-    avatarData.append("file", avatar.uploadedFile);
+    avatarData.append("file", file);
     avatarData.append("Autosave", false);
 
     try {
@@ -91,6 +94,8 @@ const AvatarEditorDialog = (props) => {
           avatar={avatar}
           onChangeAvatar={onChangeAvatar}
           profile={profile}
+          preview={preview}
+          setPreview={setPreview}
         />
       </ModalDialog.Body>
       <ModalDialog.Footer>

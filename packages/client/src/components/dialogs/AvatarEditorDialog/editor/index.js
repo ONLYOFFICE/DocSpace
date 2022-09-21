@@ -18,9 +18,14 @@ const StyledWrapper = styled.div`
   }
 `;
 
-const AvatarEditor = ({ t, profile, avatar, onChangeAvatar }) => {
-  const [preview, setPreview] = useState(null);
-
+const AvatarEditor = ({
+  t,
+  profile,
+  avatar,
+  onChangeAvatar,
+  preview,
+  setPreview,
+}) => {
   const setUploadedFile = (file) =>
     onChangeAvatar({ ...avatar, uploadedFile: file });
 
