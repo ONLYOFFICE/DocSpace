@@ -308,15 +308,6 @@ const RootFolderContainer = (props) => {
   );
 
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
-  const subheadingTextProp =
-    isPrivacyFolder ||
-    isRecycleBinFolder ||
-    isRoomsFolder ||
-    isArchiveFolder ||
-    isRecentFolder ||
-    isFavoritesFolder
-      ? {}
-      : { subheadingText };
   const emptyFolderProps = getEmptyFolderProps();
 
   React.useEffect(() => {
@@ -343,7 +334,6 @@ const RootFolderContainer = (props) => {
         <EmptyContainer
           headerText={headerText}
           isEmptyPage={isEmptyPage}
-          {...subheadingTextProp}
           {...emptyFolderProps}
         />
       )}
