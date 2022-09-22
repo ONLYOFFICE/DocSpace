@@ -33,4 +33,5 @@ internal class PaymentConfiguration
     public string Key { get; set; }
     public string Secret { get; set; }
     public int Delay { get; set; }
+    public bool TrialEnabled { get; set; }
 }

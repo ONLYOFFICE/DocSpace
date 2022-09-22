@@ -281,9 +281,9 @@ public class TenantManager
             TenantQuota currentQuota = null;
             foreach (var tariffRow in tariff.Quotas)
             {
-                var qty = tariffRow.Item2;
+                var qty = tariffRow.Quantity;
 
-                var quota = QuotaService.GetTenantQuota(tariffRow.Item1);
+                var quota = QuotaService.GetTenantQuota(tariffRow.Id);
 
                 quota *= qty;
                 currentQuota += quota;

@@ -35,24 +35,7 @@ public class Tariff
     public DateTime DelayDueDate { get; set; }
     public DateTime LicenseDate { get; set; }
     public string CustomerId { get; set; }
-    public List<Tuple<int, int>> Quotas { get; set; }
-
-    public static Tariff CreateDefault(bool empty = false)
-    {
-        var quotas = new List<Tuple<int, int>>();
-        if (!empty) quotas.Add(new Tuple<int, int>(Tenant.DefaultTenant, 1));
-
-        return new Tariff
-        {
-            State = TariffState.Paid,
-            DueDate = DateTime.MaxValue,
-            DelayDueDate = DateTime.MaxValue,
-            LicenseDate = DateTime.MaxValue,
-            CustomerId = "",
-            Quotas = quotas
-        };
-    }
-
+    public List<Quota> Quotas { get; set; }
 
     public override int GetHashCode()
     {
@@ -71,5 +54,22 @@ public class Tariff
             && t.Quotas.Count == Quotas.Count
             && t.Quotas.Any(q => Quotas.Contains(q))
             && t.CustomerId == CustomerId;
+    }
+}
+
+public class Quota : IEquatable<Quota>
+{
+    public int Id { get; set; }
+    public int Quantity { get; set; }
+
+    public Quota(int id, int quantity)
+    {
+        Id = id;
+        Quantity = quantity;
+    }
+
+    public bool Equals(Quota other)
+    {
+        return other != null && other.Id == Id && other.Quantity == Quantity;
     }
 }
