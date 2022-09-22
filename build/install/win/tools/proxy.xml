@@ -7,6 +7,7 @@
 	<onfailure action="restart" delay="1 sec"/>
 	<executable>&quot;{APPDIR}nginx\nginx.exe&quot;</executable>
 	<workingdirectory>{APPDIR}nginx</workingdirectory>
+	<logpath>&quot;{APPDIR}nginx\logs&quot;</logpath>
 	<log mode="roll-by-size">
   		<sizeThreshold>10240</sizeThreshold>
   		<keepFiles>8</keepFiles>

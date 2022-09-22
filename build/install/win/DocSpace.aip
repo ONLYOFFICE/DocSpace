@@ -140,9 +140,20 @@
     <ROW Directory="service_9_Dir" Directory_Parent="ASC.Notify_Dir" DefaultDir="service" DirectoryOptions="12"/>
     <ROW Directory="service_Dir" Directory_Parent="ASC.ClearEvents_Dir" DefaultDir="service" DirectoryOptions="12"/>
     <ROW Directory="services_Dir" Directory_Parent="APPDIR" DefaultDir="services" DirectoryOptions="12"/>
-    <ROW Directory="temp_1_Dir" Directory_Parent="service_2_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_10_Dir" Directory_Parent="service_16_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_11_Dir" Directory_Parent="NewFolder_3_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_12_Dir" Directory_Parent="service_12_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_13_Dir" Directory_Parent="server_2_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_14_Dir" Directory_Parent="server_5_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_1_Dir" Directory_Parent="service_Dir" DefaultDir="temp" DirectoryOptions="12"/>
     <ROW Directory="temp_2_Dir" Directory_Parent="service_3_Dir" DefaultDir="temp" DirectoryOptions="12"/>
     <ROW Directory="temp_3_Dir" Directory_Parent="service_7_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_4_Dir" Directory_Parent="service_2_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_5_Dir" Directory_Parent="service_4_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_6_Dir" Directory_Parent="service_6_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_7_Dir" Directory_Parent="service_9_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_8_Dir" Directory_Parent="service_11_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_9_Dir" Directory_Parent="service_15_Dir" DefaultDir="temp" DirectoryOptions="12"/>
     <ROW Directory="temp_Dir" Directory_Parent="nginx_Dir" DefaultDir="temp" DirectoryOptions="12"/>
     <ROW Directory="tools_Dir" Directory_Parent="APPDIR" DefaultDir="tools" DirectoryOptions="12"/>
   </COMPONENT>
@@ -220,9 +231,20 @@
     <ROW Component="service_ASC.WebApi" ComponentId="{C9664C57-4333-4E95-B94E-E78C6CB28058}" Directory_="service_15_Dir" Attributes="0"/>
     <ROW Component="service_ASC.Webhooks.Service" ComponentId="{EB2FD18F-FEAD-4C36-9B8B-556E7D84AE28}" Directory_="NewFolder_3_Dir" Attributes="0"/>
     <ROW Component="services" ComponentId="{8F9FE4E0-772E-487A-A61D-7019807D88D4}" Directory_="services_Dir" Attributes="0"/>
-    <ROW Component="temp_ASC.Data.Backup" ComponentId="{0D0BC98A-425B-4217-B420-4DA6B25F23DD}" Directory_="temp_1_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.ClearEvents" ComponentId="{0D0BC98A-425B-4217-B420-4DA6B25F23DD}" Directory_="temp_1_Dir" Attributes="0"/>
     <ROW Component="temp_ASC.Data.Backup.BackgroundTasks" ComponentId="{29E2557D-6012-44B2-A9D4-D773157411E2}" Directory_="temp_2_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Data.Buckup" ComponentId="{53DD808E-59C8-471C-8F2B-05F7ED92D2A7}" Directory_="temp_4_Dir" Attributes="0"/>
     <ROW Component="temp_ASC.File.Service" ComponentId="{D36D733E-3659-46FB-9127-876F179702BD}" Directory_="temp_3_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Files" ComponentId="{B25665D3-EB6F-4010-A93A-2423983A426A}" Directory_="temp_13_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Migration" ComponentId="{BEA71B3C-222C-4565-B0D1-A5671BE029F5}" Directory_="temp_5_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Migration.Runner" ComponentId="{3B95B108-8CEE-487D-AE0B-2E93C1749611}" Directory_="temp_6_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Notify" ComponentId="{471221C5-3F91-476D-B87F-F504AC55D9A6}" Directory_="temp_7_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.People" ComponentId="{F4E45171-654B-455B-A261-A7C52830AEC0}" Directory_="temp_14_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Studio.Notify" ComponentId="{F61A9699-F7DF-47F7-BE8B-B57ED43CCAC6}" Directory_="temp_8_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.TelegramService" ComponentId="{0BF04783-7F52-4926-B269-E1C6B9C90CF8}" Directory_="temp_12_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Web.Api" ComponentId="{BBE4771E-AF81-4B40-84C8-AACD26A8AAEE}" Directory_="temp_9_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Web.Studio" ComponentId="{50C05886-70FB-42A5-B4F9-333B317B1E25}" Directory_="temp_10_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Webhooks.Service" ComponentId="{21F5F636-660F-4116-9DB2-9BFDC0365708}" Directory_="temp_11_Dir" Attributes="0"/>
     <ROW Component="temp_nginx" ComponentId="{44C32C3C-30B2-4FB2-B6C0-F88B4C3F3F26}" Directory_="temp_Dir" Attributes="0"/>
     <ROW Component="tools" ComponentId="{3BE057FE-EC94-4514-8961-A8660D9E6EB4}" Directory_="tools_Dir" Attributes="0"/>
   </COMPONENT>
@@ -751,9 +773,20 @@
     <ROW Directory_="Logs_Dir" Component_="Logs" ManualDelete="false"/>
     <ROW Directory_="temp_Dir" Component_="temp_nginx" ManualDelete="false"/>
     <ROW Directory_="logs_Dir" Component_="logs" ManualDelete="false"/>
-    <ROW Directory_="temp_1_Dir" Component_="temp_ASC.Data.Backup" ManualDelete="false"/>
+    <ROW Directory_="temp_1_Dir" Component_="temp_ASC.ClearEvents" ManualDelete="false"/>
     <ROW Directory_="temp_2_Dir" Component_="temp_ASC.Data.Backup.BackgroundTasks" ManualDelete="false"/>
     <ROW Directory_="temp_3_Dir" Component_="temp_ASC.File.Service" ManualDelete="false"/>
+    <ROW Directory_="temp_4_Dir" Component_="temp_ASC.Data.Buckup" ManualDelete="false"/>
+    <ROW Directory_="temp_5_Dir" Component_="temp_ASC.Migration" ManualDelete="false"/>
+    <ROW Directory_="temp_6_Dir" Component_="temp_ASC.Migration.Runner" ManualDelete="false"/>
+    <ROW Directory_="temp_7_Dir" Component_="temp_ASC.Notify" ManualDelete="false"/>
+    <ROW Directory_="temp_8_Dir" Component_="temp_ASC.Studio.Notify" ManualDelete="false"/>
+    <ROW Directory_="temp_9_Dir" Component_="temp_ASC.Web.Api" ManualDelete="false"/>
+    <ROW Directory_="temp_10_Dir" Component_="temp_ASC.Web.Studio" ManualDelete="false"/>
+    <ROW Directory_="temp_11_Dir" Component_="temp_ASC.Webhooks.Service" ManualDelete="false"/>
+    <ROW Directory_="temp_12_Dir" Component_="temp_ASC.TelegramService" ManualDelete="false"/>
+    <ROW Directory_="temp_13_Dir" Component_="temp_ASC.Files" ManualDelete="false"/>
+    <ROW Directory_="temp_14_Dir" Component_="temp_ASC.People" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
@@ -920,9 +953,20 @@
     <ROW Feature_="MainFeature" Component_="Logs"/>
     <ROW Feature_="MainFeature" Component_="temp_nginx"/>
     <ROW Feature_="MainFeature" Component_="logs"/>
-    <ROW Feature_="MainFeature" Component_="temp_ASC.Data.Backup"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.ClearEvents"/>
     <ROW Feature_="MainFeature" Component_="temp_ASC.Data.Backup.BackgroundTasks"/>
     <ROW Feature_="MainFeature" Component_="temp_ASC.File.Service"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Data.Buckup"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Migration"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Migration.Runner"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Notify"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Studio.Notify"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Web.Api"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Web.Studio"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Webhooks.Service"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.TelegramService"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Files"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.People"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="icon.exe" SourcePath="Resources\icon.ico" Index="0"/>
@@ -1054,6 +1098,17 @@
     <ROW LockObject="temp_1_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
     <ROW LockObject="temp_2_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
     <ROW LockObject="temp_3_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_4_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_5_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_6_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_7_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_8_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_9_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_10_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_11_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_12_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_13_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_14_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
