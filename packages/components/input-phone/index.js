@@ -14,6 +14,7 @@ import {
   StyledText,
   CountryName,
   CountryDialCode,
+  ErrorText,
 } from "./styled-input-phone";
 
 const defaultCountry = {
@@ -27,6 +28,7 @@ export const InputPhone = memo(() => {
   const [searchValue, setSearchValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isValid, setIsValid] = useState(true);
 
   const handleChange = (e) => {
     if (e.target.value === "") {
@@ -78,58 +80,64 @@ export const InputPhone = memo(() => {
   };
 
   return (
-    <StyledBox displayProp="flex" alignContent="center">
-      <Box>
-        <StyledComboBox
-          onClick={() => setIsOpen(!isOpen)}
-          options={[]}
-          scaled={true}
-          selectedOption={country}
-        />
-      </Box>
-      <StyledInput
-        type="tel"
-        placeholder="+7 XXX XXX-XX-XX"
-        mask={getMask(country.locale)}
-        maxLength={20}
-        isAutoFocussed={true}
-        value={country.dialCode}
-        onChange={handleChange}
-        className="phone-input"
-      />
-
-      <StyledDropDown
-        open={isOpen}
-        clickOutsideAction={() => setIsOpen(!isOpen)}
-        isDefaultMode={false}
-        manualWidth="100%"
-      >
-        <InputBlock
-          type="text"
-          iconName="static/images/search.react.svg"
-          placeholder="Search"
-          value={searchValue}
-          scale={true}
-          onChange={(e) => setSearchValue(e.target.value)}
-          style={{ height: "32px", marginBottom: "6px" }}
-        />
+    <>
+      <StyledBox>
         <Box>
-          {filteredOptions.length ? (
-            <List
-              itemData={filteredOptions}
-              height={108}
-              itemCount={filteredOptions.length}
-              itemSize={36}
-              outerElementType={CustomScrollbarsVirtualList}
-              width="auto"
-            >
-              {Row}
-            </List>
-          ) : (
-            <StyledText>Country Not Found</StyledText>
-          )}
+          <StyledComboBox
+            onClick={() => setIsOpen(!isOpen)}
+            options={[]}
+            scaled={true}
+            noBorder={true}
+            hasError={!isValid}
+            selectedOption={country}
+          />
         </Box>
-      </StyledDropDown>
-    </StyledBox>
+
+        <StyledInput
+          type="tel"
+          hasError={!isValid}
+          placeholder="+7 XXX XXX-XX-XX"
+          mask={getMask(country.locale)}
+          isAutoFocussed={true}
+          withBorder={false}
+          value={country.dialCode}
+          onChange={handleChange}
+        />
+
+        <StyledDropDown
+          open={isOpen}
+          clickOutsideAction={() => setIsOpen(!isOpen)}
+          isDefaultMode={false}
+          manualWidth="100%"
+        >
+          <InputBlock
+            type="text"
+            iconName="static/images/search.react.svg"
+            placeholder="Search"
+            value={searchValue}
+            scale={true}
+            onChange={(e) => setSearchValue(e.target.value)}
+            style={{ marginBottom: "6px" }}
+          />
+          <Box>
+            {filteredOptions.length ? (
+              <List
+                itemData={filteredOptions}
+                height={108}
+                itemCount={filteredOptions.length}
+                itemSize={36}
+                outerElementType={CustomScrollbarsVirtualList}
+                width="auto"
+              >
+                {Row}
+              </List>
+            ) : (
+              <StyledText>Country Not Found</StyledText>
+            )}
+          </Box>
+        </StyledDropDown>
+      </StyledBox>
+      {!isValid && <ErrorText>Сountry code is invalid</ErrorText>}
+    </>
   );
 });

@@ -3,12 +3,19 @@ import ComboBox from "@docspace/components/combobox";
 import DropDown from "@docspace/components/drop-down";
 import DropDownItem from "@docspace/components/drop-down-item";
 import TextInput from "@docspace/components/text-input";
-
 import styled from "styled-components";
 
 export const StyledBox = styled(Box)`
+  display: flex;
+  align-items: center;
   position: relative;
+  box-sizing: border-box;
   max-width: 320px;
+  border: 1px solid #d0d5da;
+  border-radius: 3px;
+  :focus-within {
+    border-color: #2da7db;
+  }
 `;
 
 export const StyledComboBox = styled(ComboBox)`
@@ -45,27 +52,20 @@ export const StyledComboBox = styled(ComboBox)`
   }
 `;
 
-export const StyledText = styled.p`
-  color: #d0d5da;
-  text-align: center;
-  font-size: 14px;
-  padding: 50px 0;
-  margin: 0;
-`;
-
 export const StyledInput = styled(TextInput)`
   height: 44px;
   padding-left: 10px;
+
+  border-left: 1px solid #d0d5da !important;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  }
 `;
 
 export const StyledDropDown = styled(DropDown)`
   padding: 12px 16px;
   box-sizing: border-box;
   margin-top: 4px;
-  border: 1px solid #d0d5da;
+  outline: 1px solid #d0d5da;
   border-radius: 3px;
   box-shadow: none;
 `;
@@ -80,29 +80,17 @@ export const StyledDropDownItem = styled(DropDownItem)`
     width: 36px !important;
     height: 36px !important;
   }
+
   .drop-down-icon {
     width: 36px;
     height: 36px;
     margin-right: 0;
     svg {
       path:last-child {
-        fill: transparent;
+        fill: none;
       }
     }
   }
-`;
-
-export const CountryFlag = styled.div`
-  box-sizing: border-box;
-  border: 1px solid #d0d5da;
-  margin-right: 10px;
-  width: 24px;
-  height: 24px;
-  padding: 3px 0;
-  font-size: 0.6rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 export const CountryName = styled.h3`
@@ -121,4 +109,22 @@ export const CountryDialCode = styled.p`
   margin: 0;
   margin-left: 5px;
   color: #a3a9ae;
+`;
+
+export const StyledText = styled.p`
+  color: #d0d5da;
+  text-align: center;
+  font-size: 14px;
+  padding: 50px 0;
+  margin: 0;
+`;
+
+export const ErrorText = styled.span`
+  display: inline-block;
+  margin: 0;
+  margin-top: 5px;
+  color: #f21c0e;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 14px;
 `;
