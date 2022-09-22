@@ -24,18 +24,17 @@ import {
 
 const InviteInput = ({
   defaultAccess,
-  getShareUsers,
   getUsersByQuery,
   hideSelector,
   inviteItems,
   onClose,
   roomId,
   setInviteItems,
+  roomUsers,
   t,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
-  const [roomUsers, setRoomUsers] = useState([]);
   const [searchPanelVisible, setSearchPanelVisible] = useState(false);
   const [addUsersPanelVisible, setAddUsersPanelVisible] = useState(false);
 
@@ -44,23 +43,32 @@ const InviteInput = ({
   const inputsRef = useRef();
   const searchRef = useRef();
 
-  useEffect(() => {
-    getShareUsers([roomId]).then((users) => setRoomUsers(users));
-  }, [roomId]);
-
   const inRoom = (id) => {
     return roomUsers.some((user) => user.sharedTo.id === id);
   };
 
-  const toUserItem = (email) => {
-    const emails = parseAddresses(email);
+  const toUserItems = (query) => {
+    const addresses = parseAddresses(query);
     const uid = () => Math.random().toString(36).slice(-6);
 
+    if (addresses.length > 1) {
+      return addresses.map((address) => {
+        return {
+          email: address.email,
+          id: uid(),
+          access: selectedAccess,
+          displayName: address.email,
+          errors: address.parseErrors,
+        };
+      });
+    }
+
     return {
-      email,
+      email: addresses[0].email,
       id: uid(),
-      displayName: email,
-      errors: emails[0].parseErrors,
+      access: selectedAccess,
+      displayName: addresses[0].email,
+      errors: addresses[0].parseErrors,
     };
   };
 
@@ -70,6 +78,8 @@ const InviteInput = ({
     if (!!query.length) {
       const users = await getUsersByQuery(query);
       setUsersList(users);
+    } else {
+      closeInviteInputPanel();
     }
   };
 
@@ -122,12 +132,10 @@ const InviteInput = ({
     );
   };
 
-  const addItem = () => {
-    const item = toUserItem(inputValue);
+  const addEmail = () => {
+    const items = toUserItems(inputValue);
 
-    item.access = selectedAccess;
-
-    setInviteItems([item, ...inviteItems]);
+    setInviteItems([...items, ...inviteItems]);
     closeInviteInputPanel();
   };
 
@@ -208,7 +216,12 @@ const InviteInput = ({
           {!!usersList.length
             ? foundUsers
             : inputValue.length > 2 && (
-                <DropDownItem onClick={addItem} height={48}>
+                <DropDownItem
+                  style={{ width: "inherit" }}
+                  textOverflow
+                  onClick={addEmail}
+                  height={48}
+                >
                   {t("Add")} «{inputValue}»
                 </DropDownItem>
               )}
@@ -246,11 +259,9 @@ const InviteInput = ({
 export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
   const { getUsersByQuery } = peopleStore.usersStore;
-  const { getShareUsers } = filesStore;
   const { invitePanelOptions, setInviteItems, inviteItems } = dialogsStore;
 
   return {
-    getShareUsers,
     setInviteItems,
     inviteItems,
     getUsersByQuery,

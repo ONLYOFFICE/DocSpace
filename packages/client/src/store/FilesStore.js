@@ -87,7 +87,6 @@ class FilesStore {
   isHidePagination = false;
   trashIsEmpty = false;
   filesIsLoading = false;
-  invitationLinks = [];
 
   constructor(
     authStore,
@@ -2593,13 +2592,13 @@ class FilesStore {
     // const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
     const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
 
-    console.log("hasMoreFiles isRooms", isRooms);
+    /*     console.log("hasMoreFiles isRooms", isRooms);
     console.log("hasMoreFiles filesList", this.filesList.length);
     console.log("hasMoreFiles this.filterTotal", this.filterTotal);
     console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
     console.log("hasMoreFiles filterTotal", filterTotal);
     console.log("hasMoreFiles", this.filesList.length < filterTotal);
-    console.log("----------------------------");
+    console.log("----------------------------"); */
 
     if (this.isLoading) return false;
     return this.filesList.length < filterTotal;
@@ -2648,27 +2647,20 @@ class FilesStore {
     return Math.floor(sectionWidth / minTileWidth);
   };
 
-  getInvitationLinks = async (id, access) => {
-    let links = await api.rooms.getInvitationLinks(id, access);
-
-    if (typeof links === "string") {
-      links = [
-        {
-          id: 0,
-          title: "InvitationLink",
-          shareLink: links,
-          expirationDate: new Date().toISOString(),
-        },
-      ];
-    }
-
-    this.invitationLinks = links;
-
-    return links;
-  };
-
   setInvitationLinks = async (id, linkId, title, access) => {
     return await api.rooms.setInvitationLinks(id, linkId, title, access);
+  };
+
+  resendEmailInvitations = async (id, usersIds) => {
+    return await api.rooms.resendEmailInvitations(id, usersIds);
+  };
+
+  getRoomSecurityInfo = async (id) => {
+    return await api.rooms.getRoomSecurityInfo(id);
+  };
+
+  setRoomSecurity = async (id, data) => {
+    return await api.rooms.setRoomSecurity(id, data);
   };
 }
 

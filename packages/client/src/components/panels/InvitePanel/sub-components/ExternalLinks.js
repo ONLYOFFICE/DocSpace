@@ -25,18 +25,12 @@ const ExternalLinks = ({
   hideSelector,
   roomId,
   defaultAccess,
-  getInvitationLinks,
+  shareLinks,
 }) => {
   const [linksVisible, setLinksVisible] = useState(false);
-  const [shareLinks, setShareLinks] = useState([]);
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
 
   const inputsRef = useRef();
-  const actionLinkRef = useRef();
-
-  useEffect(() => {
-    getInvitationLinks(roomId).then((links) => setShareLinks(links));
-  }, [roomId]);
 
   const toggleLinks = (e) => {
     setLinksVisible(!linksVisible);
@@ -148,12 +142,10 @@ const ExternalLinks = ({
 
 export default inject(({ dialogsStore, filesStore }) => {
   const { invitePanelOptions } = dialogsStore;
-  const { getInvitationLinks } = filesStore;
 
   return {
     roomId: invitePanelOptions.roomId,
     hideSelector: invitePanelOptions.hideSelector,
     defaultAccess: invitePanelOptions.defaultAccess,
-    getInvitationLinks,
   };
 })(observer(ExternalLinks));

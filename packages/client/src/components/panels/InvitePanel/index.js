@@ -26,9 +26,13 @@ const InvitePanel = ({
   setInvitePanelOptions,
   t,
   visible,
+  setRoomSecurity,
+  getRoomSecurityInfo,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
+  const [shareLinks, setShareLinks] = useState([]);
+  const [roomUsers, setRoomUsers] = useState([]);
 
   useEffect(() => {
     const room = folders.find((folder) => folder.id === roomId);
@@ -40,6 +44,26 @@ const InvitePanel = ({
         setSelectedRoom(info);
       });
     }
+
+    getRoomSecurityInfo(roomId).then((users) => {
+      let links = [];
+
+      users.map((user) => {
+        const { shareLink, id, title, expirationDate } = user.sharedTo;
+
+        if (!!shareLink) {
+          links.push({
+            id,
+            title,
+            shareLink,
+            expirationDate,
+          });
+        }
+      });
+
+      setShareLinks(links);
+      setRoomUsers(users);
+    });
   }, [roomId]);
 
   const onClose = () => {
@@ -55,16 +79,27 @@ const InvitePanel = ({
     return () => document.removeEventListener("keyup", onKeyPress);
   });
 
-  const onClickSend = (e) => {
-    const toSend = inviteItems.map((item) => {
+  const onClickSend = async (e) => {
+    const invitations = inviteItems.map((item) => {
       let newItem = { access: item.access };
 
-      item.avatarSmall ? (newItem.id = item.id) : (newItem.email = item.email);
+      item.avatar ? (newItem.id = item.id) : (newItem.email = item.email);
 
       return newItem;
     });
 
-    console.log("send", toSend);
+    const data = {
+      invitations,
+      notify: true,
+      message: "Invitation message",
+    };
+
+    try {
+      await setRoomSecurity(roomId, data);
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -85,9 +120,9 @@ const InvitePanel = ({
           <StyledHeading>{t("InviteUsersToRoom")}</StyledHeading>
         </StyledBlock>
 
-        <ExternalLinks t={t} />
+        <ExternalLinks t={t} shareLinks={shareLinks} />
 
-        <InviteInput t={t} onClose={onClose} />
+        <InviteInput t={t} onClose={onClose} roomUsers={roomUsers} />
 
         {!!inviteItems.length && (
           <>
@@ -121,25 +156,31 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { getUsersByQuery } = peopleStore.usersStore;
 
   const {
-    invitePanelOptions,
-    setInvitePanelOptions,
-    setInviteItems,
     inviteItems,
+    invitePanelOptions,
+    setInviteItems,
+    setInvitePanelOptions,
   } = dialogsStore;
 
-  const { getFolderInfo, folders, getShareUsers } = filesStore;
+  const {
+    getFolderInfo,
+    setRoomSecurity,
+    getRoomSecurityInfo,
+    folders,
+  } = filesStore;
 
   return {
-    setInvitePanelOptions,
-    visible: invitePanelOptions.visible,
-    roomId: invitePanelOptions.roomId,
-    theme,
-    getUsersByQuery,
-    getFolderInfo,
     folders,
-    getShareUsers,
-    setInviteItems,
+    getUsersByQuery,
+    getRoomSecurityInfo,
     inviteItems,
+    roomId: invitePanelOptions.roomId,
+    setInviteItems,
+    setInvitePanelOptions,
+    setRoomSecurity,
+    theme,
+    visible: invitePanelOptions.visible,
+    getFolderInfo,
   };
 })(
   withTranslation(["InviteDialog", "SharingPanel", "Translations", "Common"])(
