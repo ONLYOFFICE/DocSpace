@@ -85,7 +85,6 @@ class Body extends Component {
 
   async componentDidMount() {
     const {
-      t,
       wizardToken,
       getPortalPasswordSettings,
       getPortalCultures,
@@ -138,7 +137,6 @@ class Body extends Component {
             },
           });
           setIsWizardLoaded(true);
-          setDocumentTitle(t("WizardTitle"));
         })
         .catch((e) => {
           console.error(e);
@@ -160,6 +158,13 @@ class Body extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { tReady, t } = this.props;
+
+    if (tReady && prevProps.tReady !== tReady) {
+      setDocumentTitle(t("WizardTitle"));
+    }
+  }
   componentWillUnmount() {
     window.removeEventListener("keyup", this.onKeyPressHandler);
   }
@@ -382,7 +387,7 @@ class Body extends Component {
       cultureNames,
       theme,
     } = this.props;
-
+    console.log("asfas", t("WizardTitle"));
     const {
       sending,
       selectLanguage,
