@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "Разделът 'Споделено с мен' показва файлове, споделени с Вас от съотборниците Ви. Ако не сте видели последните промени, те са маркирани като нови. Можете да премахвате файловете от списъка с помощта на контекстното меню.",
   "ShowVersionHistory": "Покажи история на версията",
   "Spreadsheet": "Таблица",
-  "SubheadingEmptyText": "Няма файлове за показване в този раздел",
   "TooltipElementCopyMessage": "Копирай {{element}}",
   "TooltipElementsCopyMessage": "Копирай {{element}} елемента",
   "TooltipElementsMoveMessage": "Премести {{element}} елемента",

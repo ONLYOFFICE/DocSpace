@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "'Für mich freigegeben' ist der Bereich mit geteilten Dateien. Wenn Sie die letzten Änderungen nicht gesehen haben, werden diese als neue gekennzeichnet. Im Kontextmenü können Sie die Dateien aus der Liste entfernen.",
   "ShowVersionHistory": "Versionshistorie anzeigen",
   "Spreadsheet": "Tabellenkalkulation",
-  "SubheadingEmptyText": "In dieser Sektion gibt es keine Dateien zum Anzeigen.",
   "TooltipElementCopyMessage": "Kopieren {{element}}",
   "TooltipElementsCopyMessage": "Kopieren {{element}} Element(e)",
   "TooltipElementsMoveMessage": "{{element}} Element(e) verschieben",

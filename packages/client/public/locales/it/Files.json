@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "La sezione 'Condivisi con me' mostra i file condivisi dai tuoi colleghi del gruppo. Se non hai visto le ultime modifiche, vengono contrassegnate come nuove. È possibile rimuovere i file dall'elenco utilizzando il menù contestuale.",
   "ShowVersionHistory": "Visualizza lo storico delle versioni",
   "Spreadsheet": "Foglio elettronico di calcolo",
-  "SubheadingEmptyText": "Nessun file da visualizzare in questa sezione",
   "TooltipElementCopyMessage": "Copia {{element}}",
   "TooltipElementsCopyMessage": "Copia {{element}} elementi",
   "TooltipElementsMoveMessage": "Sposta {{element}} elementi",

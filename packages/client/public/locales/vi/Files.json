@@ -67,7 +67,6 @@
   "SharedEmptyContainerDescription": "Phần 'Được chia sẻ với tôi' hiển thị các tệp được đồng đội chia sẻ với bạn. Nếu bạn chưa thấy những thay đổi mới nhất, chúng được đánh dấu là mới. Bạn có thể xóa các tệp khỏi danh sách bằng menu thuộc tính. ",
   "ShowVersionHistory": "Hiển thị lịch sử phiên bản",
   "Spreadsheet": "Bảng tính",
-  "SubheadingEmptyText": "Không có tệp nào được hiển thị trong phần này",
   "TooltipElementCopyMessage": "Sao chép {{element}}",
   "TooltipElementsCopyMessage": "Sao chép {{element}} thành phần",
   "TooltipElementsMoveMessage": "Di chuyển {{element}} thành phần",
