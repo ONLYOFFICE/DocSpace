@@ -29,6 +29,7 @@
     <PackageReference Include="ARSoft.Tools.NetStandard.DXSdata" Version="1.0.0" />
     <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
     <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="AWS.Logger.NLog" Version="3.1.0" />
     <PackageReference Include="Confluent.Kafka" Version="1.9.0" />
     <PackageReference Include="Google.Protobuf" Version="3.21.4" />
     <PackageReference Include="Grpc.Tools" Version="2.47.0">
@@ -54,7 +55,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference> -->
-    <PackageReference Include="NLog" Version="5.0.1" />
+    <PackageReference Include="NLog" Version="5.0.4" />
     <PackageReference Include="NVelocity" Version="1.2.0" />
     <PackageReference Include="protobuf-net" Version="3.1.17" />
     <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />

@@ -21,7 +21,6 @@ import {
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
-  Bar,
 } from "./Section";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 import MediaViewer from "./MediaViewer";
@@ -481,6 +480,7 @@ class PureHome extends React.Component {
       showFilter,
       frameConfig,
       withPaging,
+      isEmptyFilesList,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -525,23 +525,15 @@ class PureHome extends React.Component {
             )}
           </Section.SectionHeader>
 
-          <Section.SectionBar>
-            {checkedMaintenance && !snackbarExist && (
-              <Bar
-                firstLoad={firstLoad}
-                personal={personal}
-                setMaintenanceExist={setMaintenanceExist}
-              />
-            )}
-          </Section.SectionBar>
-
-          <Section.SectionFilter>
-            {isFrame ? (
-              showFilter && <SectionFilterContent />
-            ) : (
-              <SectionFilterContent />
-            )}
-          </Section.SectionFilter>
+          {!isEmptyFilesList && (
+            <Section.SectionFilter>
+              {isFrame ? (
+                showFilter && <SectionFilterContent />
+              ) : (
+                <SectionFilterContent />
+              )}
+            </Section.SectionFilter>
+          )}
 
           <Section.SectionBody>
             <Consumer>
@@ -616,6 +608,7 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
+      isEmptyFilesList,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -749,6 +742,7 @@ export default inject(
       refreshFiles,
       setViewAs,
       withPaging,
+      isEmptyFilesList,
     };
   }
 )(withRouter(observer(Home)));

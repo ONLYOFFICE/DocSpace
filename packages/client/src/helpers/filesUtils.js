@@ -102,7 +102,7 @@ export const getDataSaveAs = async (params) => {
     const data = await request({
       baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
       method: "get",
-      url: `/httphandlers/filehandler.ashx?${params}`,
+      url: `/products/files/httphandlers/filehandler.ashx?${params}`,
       responseType: "text",
     });
 

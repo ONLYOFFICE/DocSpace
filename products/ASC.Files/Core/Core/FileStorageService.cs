@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -82,6 +81,9 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly ILogger _logger;
     private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
+    private readonly RoomLinkService _roomLinkService;
+    private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
+    private readonly StudioNotifyService _studioNotifyService;
 
     public FileStorageService(
         Global global,
@@ -133,7 +135,10 @@ public class FileStorageService<T> //: IFileStorageService
         ThirdPartySelector thirdPartySelector,
         ThumbnailSettings thumbnailSettings,
         FileShareParamsHelper fileShareParamsHelper,
-        EncryptionLoginProvider encryptionLoginProvider)
+        EncryptionLoginProvider encryptionLoginProvider,
+        RoomLinkService roomLinkService,
+        DocSpaceLinkHelper docSpaceLinkHelper,
+        StudioNotifyService studioNotifyService)
     {
         _global = global;
         _globalStore = globalStore;
@@ -185,6 +190,9 @@ public class FileStorageService<T> //: IFileStorageService
         _thumbnailSettings = thumbnailSettings;
         _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
+        _roomLinkService = roomLinkService;
+        _docSpaceLinkHelper = docSpaceLinkHelper;
+        _studioNotifyService = studioNotifyService;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -258,7 +266,7 @@ public class FileStorageService<T> //: IFileStorageService
         SearchArea searchArea = SearchArea.Active,
         bool withoutTags = false,
         IEnumerable<string> tagNames = null,
-        bool withoutMe = false)
+        bool excludeSubject = false)
     {
         var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
@@ -308,7 +316,7 @@ public class FileStorageService<T> //: IFileStorageService
         try
         {
             (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea,
-                withoutTags, tagNames, withoutMe);
+                withoutTags, tagNames, excludeSubject);
         }
         catch (Exception e)
         {
@@ -2445,9 +2453,9 @@ public class FileStorageService<T> //: IFileStorageService
 
     #endregion
 
-    public Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds, bool invite = false)
+    public Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
     {
-        return _fileSharing.GetSharedInfoAsync(fileIds, folderIds, invite);
+        return _fileSharing.GetSharedInfoAsync(fileIds, folderIds);
     }
 
     public Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync(T fileId)
@@ -2460,7 +2468,7 @@ public class FileStorageService<T> //: IFileStorageService
         return _fileSharing.GetSharedInfoShortFolderAsync(folderId);
     }
 
-    public async Task SetAceObjectAsync(AceCollection<T> aceCollection, bool notify, bool invite = false)
+    public async Task SetAceObjectAsync(AceCollection<T> aceCollection, bool notify)
     {
         var fileDao = GetFileDao();
         var folderDao = GetFolderDao();
@@ -2481,23 +2489,23 @@ public class FileStorageService<T> //: IFileStorageService
         {
             try
             {
-                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings, !_coreBaseSettings.DisableDocSpace, invite);
+                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings, !_coreBaseSettings.DisableDocSpace);
                 if (changed)
                 {
                     foreach (var ace in aceCollection.Aces)
                     {
-                        var name = ace.SubjectGroup ? _userManager.GetGroupInfo(ace.SubjectId).Name : _userManager.GetUsers(ace.SubjectId).DisplayUserName(false, _displayUserSettingsHelper);
+                        var name = ace.SubjectGroup ? _userManager.GetGroupInfo(ace.Id).Name : _userManager.GetUsers(ace.Id).DisplayUserName(false, _displayUserSettingsHelper);
 
                         if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
                         {
-                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, entry.Title, name, GetAccessString(ace.Share));
+                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, entry.Title, name, GetAccessString(ace.Access));
                         }
                         else
                         {
 
                             _filesMessageService.Send(entry, GetHttpHeaders(),
                                                  entry.FileEntryType == FileEntryType.Folder ? MessageAction.FolderUpdatedAccessFor : MessageAction.FileUpdatedAccessFor,
-                                                 entry.Title, name, GetAccessString(ace.Share));
+                                                 entry.Title, name, GetAccessString(ace.Access));
                         }
                     }
                 }
@@ -2552,6 +2560,44 @@ public class FileStorageService<T> //: IFileStorageService
         }
     }
 
+    public async Task<List<AceWrapper>> SetInvitationLink(T roomId, Guid linkId, string title, FileShare share)
+    {
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
+
+        var folderDao = GetFolderDao();
+        var room = (await folderDao.GetFolderAsync(roomId)).NotFoundIfNull();
+
+        var aces = new List<AceWrapper>
+        {
+            new AceWrapper
+            {
+                Access = share,
+                Id = linkId,
+                SubjectType = SubjectType.InvintationLink,
+                FileShareOptions = new FileShareOptions
+                {
+                    Title = title,
+                    ExpirationDate = DateTime.UtcNow.Add(_docSpaceLinkHelper.ExpirationInterval)
+                }
+            }
+        };
+
+        try
+        {
+            var changed = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
+            if (changed)
+            {
+                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomInvintationUpdateAccess, room.Title, GetAccessString(share));
+            }
+        }
+        catch (Exception e)
+        {
+            throw GenerateException(e);
+        }
+
+        return await GetSharedInfoAsync(Array.Empty<T>(), new[] { roomId });
+    }
+
     public async Task<bool> SetAceLinkAsync(T fileId, FileShare share)
     {
         FileEntry<T> file;
@@ -2561,8 +2607,8 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 new AceWrapper
                 {
-                    Share = share,
-                    SubjectId = FileConstant.ShareLinkId,
+                    Access = share,
+                    Id = FileConstant.ShareLinkId,
                     SubjectGroup = true,
                 }
             };
@@ -2607,8 +2653,8 @@ public class FileStorageService<T> //: IFileStorageService
         if (await _fileSharing.CanSetAccessAsync(file))
         {
             var access = await _fileSharing.GetSharedInfoAsync(file);
-            usersIdWithAccess = access.Where(aceWrapper => !aceWrapper.SubjectGroup && aceWrapper.Share != FileShare.Restrict)
-                                      .Select(aceWrapper => aceWrapper.SubjectId)
+            usersIdWithAccess = access.Where(aceWrapper => !aceWrapper.SubjectGroup && aceWrapper.Access != FileShare.Restrict)
+                                      .Select(aceWrapper => aceWrapper.Id)
                                       .ToList();
         }
         else
@@ -2706,8 +2752,8 @@ public class FileStorageService<T> //: IFileStorageService
                         {
                             new AceWrapper
                             {
-                                Share = FileShare.Read,
-                                SubjectId = recipient.Id,
+                                Access = FileShare.Read,
+                                Id = recipient.Id,
                                 SubjectGroup = false,
                             }
                         };
@@ -2717,7 +2763,7 @@ public class FileStorageService<T> //: IFileStorageService
                     {
                         foreach (var ace in aces)
                         {
-                            _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccessFor, file.Title, _userManager.GetUsers(ace.SubjectId).DisplayUserName(false, _displayUserSettingsHelper), GetAccessString(ace.Share));
+                            _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccessFor, file.Title, _userManager.GetUsers(ace.Id).DisplayUserName(false, _displayUserSettingsHelper), GetAccessString(ace.Access));
                         }
                     }
                     recipients.Add(recipient.Id);
@@ -3059,6 +3105,37 @@ public class FileStorageService<T> //: IFileStorageService
         return fileIds;
     }
 
+    public async Task ResendEmailInvitationsAsync(T id, IEnumerable<Guid> usersIds)
+    {
+        ArgumentNullException.ThrowIfNull(usersIds);
+
+        var folderDao = _daoFactory.GetFolderDao<T>();
+        var room = await folderDao.GetFolderAsync(id);
+
+        ErrorIf(room == null, FilesCommonResource.ErrorMassage_FolderNotFound);
+        ErrorIf(!await _fileSecurity.CanEditRoomAsync(room), FilesCommonResource.ErrorMassage_SecurityException);
+
+        var shares = (await _fileSharing.GetSharedInfoAsync(room)).ToDictionary(k => k.Id, v => v);
+
+        foreach (var userId in usersIds)
+        {
+            if (!shares.TryGetValue(userId, out var share))
+            {
+                continue;
+            }
+
+            var user = _userManager.GetUser(share.Id, null);
+
+            if (user.ActivationStatus != EmployeeActivationStatus.Pending)
+            {
+                continue;
+            }
+
+            var link = _roomLinkService.GetInvitationLink(user.Email, _authContext.CurrentAccount.ID);
+            _studioNotifyService.SendEmailRoomInvite(user.Email, link);
+        }
+    }
+
     public string GetHelpCenter()
     {
         return string.Empty; //TODO: Studio.UserControls.Common.HelpCenter.HelpCenter.RenderControlToString();
@@ -3146,7 +3223,7 @@ public class FileStorageService<T> //: IFileStorageService
 
     private List<AceWrapper> GetFullAceWrappers(IEnumerable<FileShareParams> share)
     {
-        var dict = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject)).ToDictionary(k => k.SubjectId, v => v);
+        var dict = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject)).ToDictionary(k => k.Id, v => v);
 
         var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
         var onlyFilesAdmins = _userManager.GetUsersByGroup(WebItemManager.DocumentsProductID);
@@ -3157,8 +3234,8 @@ public class FileStorageService<T> //: IFileStorageService
         {
             dict[userInfo.Id] = new AceWrapper
             {
-                Share = FileShare.ReadWrite,
-                SubjectId = userInfo.Id
+                Access = FileShare.ReadWrite,
+                Id = userInfo.Id
             };
         }
 
@@ -3167,7 +3244,7 @@ public class FileStorageService<T> //: IFileStorageService
 
     private void CheckEncryptionKeys(IEnumerable<AceWrapper> aceWrappers)
     {
-        var users = aceWrappers.Select(s => s.SubjectId).ToList();
+        var users = aceWrappers.Select(s => s.Id).ToList();
         var keys = _encryptionLoginProvider.GetKeys(users);
 
         foreach (var user in users)

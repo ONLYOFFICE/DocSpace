@@ -146,9 +146,11 @@ const PeopleTableRow = (props) => {
     statusType,
     userName,
     position,
-    role,
     rooms,
+
     id,
+
+    role,
   } = item;
 
   const isPending = statusType === "pending" || statusType === "disabled";
@@ -349,7 +351,9 @@ const PeopleTableRow = (props) => {
           </Link>
           <Badges statusType={statusType} />
         </TableCell>
+
         <TableCell className={"table-cell_type"}>{typeCell}</TableCell>
+
         <TableCell className="table-cell_room">
           {!rooms?.length ? (
             <Text

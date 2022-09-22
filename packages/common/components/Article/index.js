@@ -32,7 +32,6 @@ const Article = ({
   toggleShowText,
   toggleArticleOpen,
   setIsMobileArticle,
-  isLoadedPage,
   children,
   withMainButton,
 
@@ -119,11 +118,7 @@ const Article = ({
         isBannerVisible={isBannerVisible}
         {...rest}
       >
-        <SubArticleHeader
-          isLoadedPage={isLoadedPage}
-          showText={showText}
-          onClick={toggleShowText}
-        >
+        <SubArticleHeader showText={showText} onClick={toggleShowText}>
           {articleHeaderContent ? articleHeaderContent.props.children : null}
         </SubArticleHeader>
         {articleMainButtonContent &&

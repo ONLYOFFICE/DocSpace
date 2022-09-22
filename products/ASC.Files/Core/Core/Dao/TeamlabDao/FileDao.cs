@@ -275,7 +275,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false)
     {
         if (filterType == FilterType.FoldersOnly)
         {
@@ -333,7 +333,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
             else
             {
-                q = q.Where(r => r.CreateBy == subjectID);
+                q = excludeSubject ? q.Where(r => r.CreateBy != subjectID) : q.Where(r => r.CreateBy == subjectID);
             }
         }
 

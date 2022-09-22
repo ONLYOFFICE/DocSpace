@@ -31,10 +31,19 @@ public class FileShareRecord : IMapFrom<DbFilesSecurity>
     public int TenantId { get; set; }
     public object EntryId { get; set; }
     public FileEntryType EntryType { get; set; }
+    public SubjectType SubjectType { get; set; }
     public Guid Subject { get; set; }
     public Guid Owner { get; set; }
     public FileShare Share { get; set; }
+    public FileShareOptions FileShareOptions { get; set; }
     public int Level { get; set; }
+    public bool IsLink => SubjectType == SubjectType.InvintationLink || SubjectType == SubjectType.ExternalLink;
+
+    public void Mapping(AutoMapper.Profile profile)
+    {
+        profile.CreateMap<DbFilesSecurity, FileShareRecord>()
+            .ForMember(dest => dest.FileShareOptions, opt => opt.MapFrom(src => JsonSerializer.Deserialize<FileShareOptions>(src.FileShareOptions, new JsonSerializerOptions())));
+    }
 
     public class ShareComparer : IComparer<FileShare>
     {
