@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { mobile, tablet, smallTablet } from "../utils/device";
+import { mobile, tablet, smallTablet, desktop } from "../utils/device";
 import NoUserSelect from "../utils/commonStyles";
 
 const EmptyPageStyles = css`
@@ -10,7 +10,7 @@ const EmptyPageStyles = css`
   }
 
   .ec-desc {
-    max-width: 618px;
+    max-width: 348px;
   }
 
   .ec-header {
@@ -34,6 +34,16 @@ const EmptyPageStyles = css`
 
     .ec-header {
       padding-top: 22px;
+    }
+
+    .ec-desc {
+      max-width: 287px;
+    }
+  }
+
+  @media ${desktop} {
+    .ec-desc {
+      max-width: 618px;
     }
   }
 `;

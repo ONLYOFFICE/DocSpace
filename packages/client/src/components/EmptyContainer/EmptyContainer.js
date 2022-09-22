@@ -11,12 +11,12 @@ const EmptyPageStyles = css`
   grid-template-columns: 100px 1fr;
 
   @media ${tablet} {
-    padding: 44px 68px 64px 93px;
+    padding: 44px 0px 64px 93px;
     grid-column-gap: 33px;
   }
 
   @media ${smallTablet} {
-    padding: 20px 45px 64px 11px;
+    padding: 20px 0px 64px 11px;
   }
 `;
 
@@ -38,7 +38,7 @@ const EmptyFolderWrapper = styled.div`
       flex-wrap: wrap;
     }
 
-    .empty-folder_container_folder-image {
+    .empty-folder_container-image {
       cursor: pointer;
     }
 
