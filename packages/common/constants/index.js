@@ -130,6 +130,8 @@ export const ShareAccessRights = Object.freeze({
   Comment: 6,
   FormFilling: 7,
   CustomFilter: 8,
+  RoomManager: 9,
+  Editing: 10,
 });
 export const ConflictResolveType = Object.freeze({
   Skip: 0,

@@ -14,13 +14,13 @@ export const getAccessOptions = (
       description: t("Translations:RoleRoomManagerDescription"),
       quota: t("Common:Paid"),
       color: "#EDC409",
-      access: ShareAccessRights.FullAccess,
+      access: ShareAccessRights.RoomManager,
     },
     editor: {
       key: "editor",
       label: t("Translations:RoleEditor"),
       description: t("Translations:RoleEditorDescription"),
-      access: ShareAccessRights.CustomFilter,
+      access: ShareAccessRights.Editing,
     },
     formFiller: {
       key: "formFiller",
