@@ -107,6 +107,11 @@ const TABLE_ROOMS_COLUMNS = `roomsTableColumns_ver-${TableVersions.Rooms}`;
 const COLUMNS_ROOMS_SIZE = `roomsColumnsSize_ver-${TableVersions.Rooms}`;
 const COLUMNS_ROOMS_SIZE_INFO_PANEL = `roomsColumnsSizeInfoPanel_ver-${TableVersions.Rooms}`;
 
+const elementResizeDetector = elementResizeDetectorMaker({
+  strategy: "scroll",
+  callOnAdd: false,
+});
+
 const Table = ({
   filesList,
   sectionWidth,
@@ -144,33 +149,36 @@ const Table = ({
   }, [sectionWidth]);
 
   React.useEffect(() => {
-    if (!tagRef?.current) return;
-
-    onResize();
-
-    const elementResizeDetector = elementResizeDetectorMaker({
-      strategy: "scroll",
-      callOnAdd: false,
-    });
-
-    elementResizeDetector.listenTo(tagRef.current, onResize);
-
     return () => {
       if (!tagRef?.current) return;
 
       elementResizeDetector.uninstall(tagRef.current);
     };
-  }, [tagRef, filesList]);
+  }, []);
 
-  const onResize = React.useCallback(() => {
-    if (tagRef?.current) {
-      const { width } = tagRef.current.getBoundingClientRect();
+  const onResize = React.useCallback(
+    (node) => {
+      const element = tagRef?.current ? tagRef?.current : node;
 
-      const columns = Math.floor(width / 100);
+      if (element) {
+        const { width } = element.getBoundingClientRect();
 
-      if (columns != tagCount) setTagCount(columns);
+        const columns = Math.floor(width / 100);
+
+        if (columns != tagCount) setTagCount(columns);
+      }
+    },
+    [tagCount]
+  );
+
+  const onSetTagRef = React.useCallback((node) => {
+    if (node) {
+      tagRef.current = node;
+      onResize(node);
+
+      elementResizeDetector.listenTo(node, onResize);
     }
-  }, [tagRef, tagCount]);
+  }, []);
 
   const tableColumns = isRooms
     ? `${TABLE_ROOMS_COLUMNS}=${userId}`
@@ -221,7 +229,7 @@ const Table = ({
               tableColumns={tableColumns}
               columnStorageName={columnStorageName}
               columnInfoPanelStorageName={columnInfoPanelStorageName}
-              tagRef={tagRef}
+              tagRef={onSetTagRef}
               tagCount={tagCount}
               isRooms={isRooms}
             />
