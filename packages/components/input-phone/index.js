@@ -1,51 +1,81 @@
-import { useState } from "react";
+import { useState, useEffect, memo } from "react";
 import { options } from "./options";
-// import { FixedSizeList as List } from 'react-window';
+import { FixedSizeList as List } from "react-window";
+import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import Box from "@docspace/components/box";
 import InputBlock from "@docspace/components/input-block";
+
 import {
   StyledBox,
   StyledComboBox,
   StyledInput,
   StyledDropDown,
   StyledDropDownItem,
-  CountryFlag,
+  StyledText,
   CountryName,
   CountryDialCode,
 } from "./styled-input-phone";
 
-export const InputPhone = () => {
-  const [phoneValue, setPhoneValue] = useState("+");
+const defaultCountry = {
+  locale: options[16].code, // RU default Russia
+  dialCode: options[16].dialCode, // +7 default Russia
+  icon: options[16].flag, // flag default Russia
+};
+
+export const InputPhone = memo(() => {
+  const [country, setCountry] = useState(defaultCountry);
   const [searchValue, setSearchValue] = useState("");
+  const [filteredOptions, setFilteredOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
   const handleChange = (e) => {
-    const onlyDigits = e.target.value.replace(/[^+\d]/g, "");
-    if (onlyDigits === "") {
-      setPhoneValue("+");
+    if (e.target.value === "") {
+      setCountry((prev) => ({ ...prev, dialCode: "+" }));
     } else {
-      setPhoneValue(onlyDigits);
+      setCountry((prev) => ({ ...prev, dialCode: e.target.value }));
     }
   };
 
-  // const mask = [
-  //   "+",
-  //   /\d/,
-  //   " ",
-  //   /\d/,
-  //   /\d/,
-  //   /\d/,
-  //   " ",
-  //   /\d/,
-  //   /\d/,
-  //   /\d/,
-  //   "-",
-  //   /\d/,
-  //   /\d/,
-  //   "-",
-  //   /\d/,
-  //   /\d/,
-  // ];
+  const getMask = (locale) => {
+    return options.find((option) => option.code === locale).mask;
+  };
+
+  useEffect(() => {
+    if (isOpen) {
+      setFilteredOptions(
+        options.filter(
+          (val) =>
+            val.name.toLowerCase().includes(searchValue) ||
+            val.dialCode.includes(searchValue)
+        )
+      );
+    }
+  }, [isOpen, searchValue]);
+
+  const Row = ({ data, index, style }) => {
+    const country = data[index];
+
+    return (
+      <StyledDropDownItem
+        key={country.code}
+        style={{ ...style }}
+        data-option={country.code}
+        icon={country.flag}
+        fillIcon={false}
+        onClick={() => {
+          setIsOpen(!isOpen);
+          setCountry({
+            locale: country.code,
+            dialCode: country.dialCode,
+            icon: country.flag,
+          });
+        }}
+      >
+        <CountryName>{country.name}</CountryName>
+        <CountryDialCode>{country.dialCode}</CountryDialCode>
+      </StyledDropDownItem>
+    );
+  };
 
   return (
     <StyledBox displayProp="flex" alignContent="center">
@@ -54,19 +84,16 @@ export const InputPhone = () => {
           onClick={() => setIsOpen(!isOpen)}
           options={[]}
           scaled={true}
-          selectedOption={{
-            key: options[0].code,
-            label: "Flag",
-          }}
+          selectedOption={country}
         />
       </Box>
       <StyledInput
         type="tel"
         placeholder="+7 XXX XXX-XX-XX"
-        // mask={mask}
+        mask={getMask(country.locale)}
         maxLength={20}
         isAutoFocussed={true}
-        value={phoneValue}
+        value={country.dialCode}
         onChange={handleChange}
         className="phone-input"
       />
@@ -75,7 +102,6 @@ export const InputPhone = () => {
         open={isOpen}
         clickOutsideAction={() => setIsOpen(!isOpen)}
         isDefaultMode={false}
-        // maxHeight={200}
         manualWidth="100%"
       >
         <InputBlock
@@ -85,28 +111,25 @@ export const InputPhone = () => {
           value={searchValue}
           scale={true}
           onChange={(e) => setSearchValue(e.target.value)}
-          style={{ height: "32px" }}
+          style={{ height: "32px", marginBottom: "6px" }}
         />
-
-        {options
-          .filter(
-            (val) =>
-              val.name.toLowerCase().includes(searchValue) ||
-              val.dialCode.includes(searchValue)
-          )
-          .map((country) => (
-            <StyledDropDownItem
-              key={country.code}
-              onClick={() => {
-                setPhoneValue(country.dialCode), setIsOpen(!isOpen);
-              }}
+        <Box>
+          {filteredOptions.length ? (
+            <List
+              itemData={filteredOptions}
+              height={108}
+              itemCount={filteredOptions.length}
+              itemSize={36}
+              outerElementType={CustomScrollbarsVirtualList}
+              width="auto"
             >
-              <CountryFlag>Flag</CountryFlag>
-              <CountryName>{country.name}</CountryName>
-              <CountryDialCode>{country.dialCode}</CountryDialCode>
-            </StyledDropDownItem>
-          ))}
+              {Row}
+            </List>
+          ) : (
+            <StyledText>Country Not Found</StyledText>
+          )}
+        </Box>
       </StyledDropDown>
     </StyledBox>
   );
-};
+});

@@ -1,0 +1,17 @@
+export { default as Afghanistan } from "./afghanistan.svg";
+export { default as AlandIslands } from "./alandIslands.svg";
+export { default as Albania } from "./albania.svg";
+export { default as Algeria } from "./algeria.svg";
+export { default as AmericanSamoa } from "./american-samoa.svg";
+export { default as Andorra } from "./andorra.svg";
+export { default as Angola } from "./angola.svg";
+export { default as Anguilla } from "./anguilla.svg";
+export { default as Antarctica } from "./antarctica.svg";
+export { default as AntiguaAndBarbuda } from "./antigu-and-barbuda.svg";
+export { default as Argentina } from "./argentina.svg";
+export { default as Armenia } from "./armenia.svg";
+export { default as Aruba } from "./aruba.svg";
+export { default as Australia } from "./australia.svg";
+export { default as Austria } from "./austria.svg";
+export { default as Azerbaijan } from "./azerbaijan.svg";
+export { default as Russia } from "./russia.svg";

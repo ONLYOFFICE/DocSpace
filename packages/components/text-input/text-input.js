@@ -32,7 +32,10 @@ TextInput.propTypes = {
   tabIndex: PropTypes.number,
   /** input text mask */
   mask: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
+  /** When true, adding or deleting characters will not affect the positions of existing characters. */
   keepCharPositions: PropTypes.bool,
+  /** When guide is true, Text Mask always shows both placeholder characters and non-placeholder mask characters. */
+  guide: PropTypes.bool,
   /** Supported size of the input fields. */
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   /** Indicates the input field has scale */
@@ -79,6 +82,7 @@ TextInput.defaultProps = {
   autoComplete: "off",
   withBorder: true,
   keepCharPositions: false,
+  guide: false,
   isBold: false,
 };
 

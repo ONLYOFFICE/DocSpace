@@ -38,7 +38,7 @@ const DropDownItem = (props) => {
       isActive={isActive}
     >
       {icon && (
-        <IconWrapper>
+        <IconWrapper className="drop-down-icon">
           {!withoutIcon ? (
             icon.includes("https://") || icon.includes("http://") ? (
               <img src={icon} />
