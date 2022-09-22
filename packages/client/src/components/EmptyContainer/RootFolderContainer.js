@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
 import { withTranslation, Trans } from "react-i18next";
@@ -13,6 +14,13 @@ import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
+import PlusIcon from "@docspace/client/public/images/plus.react.svg";
+
+const StyledPlusIcon = styled(PlusIcon)`
+  path {
+    fill: #657077;
+  }
+`;
 
 const RootFolderContainer = (props) => {
   const {
@@ -38,10 +46,10 @@ const RootFolderContainer = (props) => {
     setAlreadyFetchingRooms,
     categoryType,
   } = props;
-  const myDescription = t("MyEmptyContainerDescription");
+  const personalDescription = t("PersonalEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
-  const trashHeader = t("EmptyScreenFolder");
+  const emptyScreenHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
   const noFilesHeader = t("NoFilesHereYet");
   const trashDescription = t("TrashEmptyDescription");
@@ -63,10 +71,7 @@ const RootFolderContainer = (props) => {
   const [isEmptyPage, setIsEmptyPage] = React.useState(false);
 
   React.useEffect(() => {
-    if (
-      rootFolderType !== FolderType.USER &&
-      rootFolderType !== FolderType.COMMON
-    ) {
+    if (rootFolderType !== FolderType.COMMON) {
       setIsEmptyPage(true);
     } else {
       setIsEmptyPage(false);
@@ -106,8 +111,9 @@ const RootFolderContainer = (props) => {
     switch (rootFolderType) {
       case FolderType.USER:
         return {
-          descriptionText: myDescription,
-          imageSrc: "/static/images/empty_screen.png",
+          headerText: emptyScreenHeader,
+          descriptionText: personalDescription,
+          imageSrc: "images/empty_screen_personal.svg",
           buttons: commonButtons,
         };
       case FolderType.SHARE:
@@ -143,7 +149,7 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.TRASH:
         return {
-          headerText: trashHeader,
+          headerText: emptyScreenHeader,
           descriptionText: trashDescription,
           style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
           imageSrc: theme.isBase
@@ -207,13 +213,13 @@ const RootFolderContainer = (props) => {
   const commonButtons = (
     <span>
       <div className="empty-folder_container-links">
-        <img
-          className="empty-folder_container_plus-image"
-          src="images/plus.svg"
+        <StyledPlusIcon
+          className="empty-folder_container-image"
           data-format="docx"
           onClick={onCreate}
           alt="plus_icon"
         />
+
         <Box className="flex-wrapper_container">
           <Link data-format="docx" onClick={onCreate} {...linkStyles}>
             {t("Document")},
@@ -222,7 +228,7 @@ const RootFolderContainer = (props) => {
             {t("Spreadsheet")},
           </Link>
           <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
-            {t("Presentation")}
+            {t("Presentation")},
           </Link>
           <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
             {t("Translations:NewForm")}
@@ -231,9 +237,8 @@ const RootFolderContainer = (props) => {
       </div>
 
       <div className="empty-folder_container-links">
-        <img
-          className="empty-folder_container_plus-image"
-          src="images/plus.svg"
+        <StyledPlusIcon
+          className="empty-folder_container-image"
           onClick={onCreate}
           alt="plus_icon"
         />
