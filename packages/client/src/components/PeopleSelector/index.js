@@ -67,7 +67,7 @@ const PeopleSelector = ({
       email,
       avatar,
       icon,
-      label: displayName,
+      label: displayName || email,
       role,
     };
   };
