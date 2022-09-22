@@ -7,6 +7,7 @@
 	<onfailure action="restart" delay="10 sec"/>
 	<executable>node</executable>
 	<arguments>&quot;{APPDIR}services\ASC.UrlShortener\service\index.js&quot;</arguments>
+	<logpath>&quot;{APPDIR}Logs&quot;</logpath>
 	<log mode="roll-by-size">
   		<sizeThreshold>10240</sizeThreshold>
   		<keepFiles>8</keepFiles>
