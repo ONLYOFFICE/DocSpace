@@ -270,8 +270,8 @@ public class GwsMigratingFiles : MigratingFiles
 
                             list.Add(new AceWrapper
                             {
-                                Share = shareType.Value,
-                                SubjectId = entryGuid,
+                                Access = shareType.Value,
+                                Id = entryGuid,
                                 SubjectGroup = false
                             });
                         }

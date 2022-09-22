@@ -225,8 +225,8 @@ public class NCMigratingFiles : MigratingFiles
                     var entryGuid = userToShare == null ? groupToShare.Guid : userToShare.Guid;
                     list.Add(new AceWrapper
                     {
-                        Share = shareType.Value,
-                        SubjectId = entryGuid,
+                        Access = shareType.Value,
+                        Id = entryGuid,
                         SubjectGroup = false
                     });
                 }

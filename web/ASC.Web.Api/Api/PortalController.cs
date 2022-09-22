@@ -140,7 +140,7 @@ public class PortalController : ControllerBase
             throw new SecurityException("Method not available");
         }
 
-        return _commonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
+        return _commonLinkUtility.GetConfirmationEmailUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
                 + $"&emplType={employeeType:d}";
     }
 
@@ -364,7 +364,7 @@ public class PortalController : ControllerBase
             return string.Empty;
         }
 
-        return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
+        return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.Auth);
     }
 
     [HttpDelete("deleteportalimmediately")]
@@ -405,8 +405,8 @@ public class PortalController : ControllerBase
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         var owner = _userManager.GetUsers(Tenant.OwnerId);
-        var suspendUrl = _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalSuspend);
-        var continueUrl = _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalContinue);
+        var suspendUrl = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalSuspend);
+        var continueUrl = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalContinue);
 
         _studioNotifyService.SendMsgPortalDeactivation(Tenant, suspendUrl, continueUrl);
 
@@ -423,7 +423,7 @@ public class PortalController : ControllerBase
                         _paymentManager.GetTariffPayments(Tenant.Id).Any() &&
                         !_tenantExtra.GetTenantQuota().Trial;
 
-        _studioNotifyService.SendMsgPortalDeletion(Tenant, _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
+        _studioNotifyService.SendMsgPortalDeletion(Tenant, _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
 
         _messageService.Send(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
