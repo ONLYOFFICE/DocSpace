@@ -387,7 +387,7 @@ class Body extends Component {
       cultureNames,
       theme,
     } = this.props;
-    console.log("asfas", t("WizardTitle"));
+
     const {
       sending,
       selectLanguage,
