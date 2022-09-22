@@ -34,10 +34,6 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
   const windowPath = window.location.pathname;
 
   const isPortal = windowPath === "/preparation-portal";
-  const isPaymentsPage =
-    windowPath === "/portal-settings/payments/portal-payments";
-  const isPortalUnavailable = windowPath === "/portal-unavailable";
-  const isBackupPage = windowPath === "/portal-settings/backup/data-backup";
 
   const { params, path } = computedMatch;
   const { userId } = params;
@@ -65,6 +61,14 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       // );
     }
 
+    if (
+      isLoaded &&
+      !isNotPaidPeriod &&
+      props.location.pathname === "/portal-unavailable"
+    ) {
+      return window.location.replace("/");
+    }
+
     if (location.pathname === "/" && personal) {
       return (
         <Redirect
@@ -76,12 +80,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    if (
-      isLoaded &&
-      isAuthenticated &&
-      tenantStatus === TenantStatus.PortalRestore &&
-      !isPortal
-    ) {
+    if (isLoaded && tenantStatus === TenantStatus.PortalRestore && !isPortal) {
       return (
         <Redirect
           to={{
@@ -98,10 +97,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     if (
       isNotPaidPeriod &&
       isLoaded &&
-      isAuthenticated &&
       (user.isOwner || user.isAdmin) &&
-      !isPaymentsPage &&
-      !isBackupPage
+      props.location.pathname !== "/portal-settings/payments/portal-payments" &&
+      props.location.pathname !== "/portal-settings/backup/data-backup"
     ) {
       return (
         <Redirect
@@ -119,10 +117,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     if (
       isNotPaidPeriod &&
       isLoaded &&
-      isAuthenticated &&
       !user.isOwner &&
       !user.isAdmin &&
-      !isPortalUnavailable
+      props.location.pathname !== "/portal-unavailable"
     ) {
       return (
         <Redirect
