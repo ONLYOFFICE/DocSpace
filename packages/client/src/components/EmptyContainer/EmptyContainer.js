@@ -29,7 +29,7 @@ const EmptyPageStyles = css`
   }
 
   @media ${tablet} {
-    padding: 44px 0px 64px 93px;
+    padding: 44px 0px 64px 97px;
     grid-column-gap: 33px;
   }
 
