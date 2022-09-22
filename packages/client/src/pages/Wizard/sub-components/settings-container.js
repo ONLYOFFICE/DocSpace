@@ -81,12 +81,14 @@ const SettingsContainer = ({
           key: selectLanguage.key,
           label: selectLanguage.label,
         }}
-        noBorder={true}
+        noBorder
         scaled={false}
+        scaledOptions={false}
         size="content"
         dropDownMaxHeight={300}
         onSelect={onSelectLanguageHandler}
-        textOverflow={true}
+        fillIcon={false}
+        manualWidth="250px"
       />
 
       <Text className="title" fontSize="13px">
