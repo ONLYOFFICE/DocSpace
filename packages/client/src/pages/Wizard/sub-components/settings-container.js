@@ -12,7 +12,7 @@ const StyledContainer = styled(Box)`
   width: 311px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: min-content auto;
+  grid-template-columns: min-content minmax(100px, 480px);
   grid-auto-columns: min-content;
   grid-row-gap: 12px;
 
@@ -27,6 +27,13 @@ const StyledContainer = styled(Box)`
 
   .drop-down {
     margin-left: 6px;
+    max-width: 100%;
+    .combo-button {
+      width: 100%;
+      .combo-button-label {
+        max-width: 100%;
+      }
+    }
   }
 
   @media ${tablet} {
@@ -107,6 +114,7 @@ const SettingsContainer = ({
         size="content"
         onSelect={onSelectTimezoneHandler}
         textOverflow={true}
+        manualWidth="280px"
       />
     </StyledContainer>
   );
