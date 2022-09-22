@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import InfiniteLoaderComponent from "@docspace/components/infinite-loader";
 import { StyledCard, StyledItem, StyledHeaderItem } from "./StyledInfiniteGrid";
@@ -63,7 +63,7 @@ const InfiniteGrid = (props) => {
     ...rest
   } = props;
 
-  const countTilesInRow = getCountTilesInRow();
+  const [countTilesInRow, setCountTilesInRow] = useState(getCountTilesInRow());
 
   let cards = [];
   const list = [];
@@ -92,6 +92,24 @@ const InfiniteGrid = (props) => {
 
     return "isRoom";
   };
+
+  const setTilesCount = () => {
+    const newCount = getCountTilesInRow();
+    if (countTilesInRow !== newCount) setCountTilesInRow(newCount);
+  };
+
+  const onResize = () => {
+    setTilesCount();
+  };
+
+  useEffect(() => {
+    setTilesCount();
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  });
 
   React.Children.map(children.props.children, (child) => {
     if (child) {
