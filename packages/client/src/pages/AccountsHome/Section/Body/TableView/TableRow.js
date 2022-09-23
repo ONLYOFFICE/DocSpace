@@ -129,7 +129,6 @@ const PeopleTableRow = (props) => {
     checkedProps,
     onContentRowSelect,
     onEmailClick,
-    onUserNameClick,
     isAdmin,
     isOwner,
     theme,
@@ -282,9 +281,8 @@ const PeopleTableRow = (props) => {
             fontSize="13px"
             color={nameColor}
             isTextOverflow
-            href={`/accounts/view/${userName}`}
-            onClick={onUserNameClick}
             className="table-cell_username"
+            noHover
           >
             {statusType === "pending" ? email : displayName}
           </Link>

@@ -8,7 +8,6 @@ import AppLoader from "@docspace/common/components/AppLoader";
 import { /*combineUrl,*/ updateTempContent } from "@docspace/common/utils";
 import Home from "./AccountsHome";
 import Profile from "./Profile";
-import ProfileAction from "./ProfileAction";
 
 import Filter from "@docspace/common/api/people/filter";
 import { showLoader, hideLoader } from "@docspace/common/utils";
@@ -18,28 +17,13 @@ const Error404 = React.lazy(() => import("client/Error404"));
 const PeopleSection = React.memo(() => {
   return (
     <Switch>
-      <PrivateRoute
-        exact
-        path={["/accounts/view/:userId"]}
-        component={Profile}
-      />
-      <PrivateRoute
-        path={["/accounts/edit/:userId"]}
-        restricted
-        allowForMe
-        component={ProfileAction}
-      />
-      <PrivateRoute
-        path={["/accounts/create/:type"]}
-        restricted
-        component={ProfileAction}
-      />
+      <PrivateRoute exact path={["/accounts/view/@self"]} component={Profile} />
       <PrivateRoute
         exact
         path={["/accounts"]}
         component={HomeRedirectToFilter}
       />
-      <PrivateRoute path={"/accounts/filter"} component={Home} />
+      <PrivateRoute path={"/accounts/filter"} restricted component={Home} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );
