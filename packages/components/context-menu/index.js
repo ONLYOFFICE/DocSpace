@@ -291,10 +291,16 @@ class ContextMenu extends Component {
     );
 
     const changeView = this.state.changeView;
+    const isIconExist = this.props.header?.icon;
 
     return (
       <>
-        <StyledContextMenu changeView={changeView} isRoom={this.props.isRoom}>
+        <StyledContextMenu
+          changeView={changeView}
+          isRoom={this.props.isRoom}
+          fillIcon={this.props.fillIcon}
+          isIconExist={isIconExist}
+        >
           <CSSTransition
             nodeRef={this.menuRef}
             classNames="p-contextmenu"
@@ -316,12 +322,14 @@ class ContextMenu extends Component {
             >
               {changeView && (
                 <div className="contextmenu-header">
-                  <div className="icon-wrapper">
-                    <ReactSVG
-                      src={this.props.header.icon}
-                      className="drop-down-item_icon"
-                    />
-                  </div>
+                  {isIconExist && (
+                    <div className="icon-wrapper">
+                      <ReactSVG
+                        src={this.props.header.icon}
+                        className="drop-down-item_icon"
+                      />
+                    </div>
+                  )}
                   <Text className="text" truncate={true}>
                     {this.props.header.title}
                   </Text>
@@ -411,6 +419,7 @@ ContextMenu.defaultProps = {
   scaled: false,
   containerRef: null,
   leftOffset: 0,
+  fillIcon: true,
 };
 
 export default ContextMenu;
