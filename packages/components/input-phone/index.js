@@ -18,9 +18,9 @@ import {
 } from "./styled-input-phone";
 
 const defaultCountry = {
-  locale: options[16].code, // RU default Russia
-  dialCode: options[16].dialCode, // +7 default Russia
-  icon: options[16].flag, // flag default Russia
+  locale: options[0].code, // RU default Russia
+  dialCode: options[0].dialCode, // +7 default Russia
+  icon: options[0].flag, // flag default Russia
 };
 
 export const InputPhone = memo(() => {
