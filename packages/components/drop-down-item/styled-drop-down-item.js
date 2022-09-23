@@ -130,7 +130,13 @@ const IconWrapper = styled.div`
   align-items: center;
   width: ${(props) => props.theme.dropDownItem.icon.width};
   margin-right: ${(props) => props.theme.dropDownItem.icon.marginRight};
-  line-height: ${(props) => props.theme.dropDownItem.icon.lineHeight};
+  //line-height: ${(props) => props.theme.dropDownItem.icon.lineHeight};
+
+  height: 20px;
+
+  div {
+    height: 16px;
+  }
   svg {
     &:not(:root) {
       width: 100%;

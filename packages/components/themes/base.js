@@ -2753,6 +2753,7 @@ const Base = {
     },
 
     home: {
+      logoColor: black,
       textColorError: red,
     },
 

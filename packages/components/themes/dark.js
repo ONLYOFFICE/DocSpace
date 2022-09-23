@@ -2760,6 +2760,7 @@ const Dark = {
     },
 
     home: {
+      logoColor: "rgba(255, 255, 255, 0.92)",
       textColorError: red,
     },
 
