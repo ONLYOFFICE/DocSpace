@@ -91,7 +91,7 @@ const commonStyles = css`
       `}
 
     ${(props) =>
-      props.viewAs == "settings" &&
+      (props.viewAs == "settings" || props.viewAs == "profile") &&
       css`
         padding-top: 0;
 

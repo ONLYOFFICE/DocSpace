@@ -49,7 +49,7 @@ class ResetApplicationDialogComponent extends React.Component {
           />
           <Button
             key="CloseBtn"
-            label={t("Common:CloseButton")}
+            label={t("Common:CancelButton")}
             size="normal"
             scale
             primary={false}
