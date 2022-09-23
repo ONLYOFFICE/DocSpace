@@ -254,6 +254,11 @@ public class DbSettingsManager
         return LoadSettingsFor<T>(TenantID, userId);
     }
 
+    public T LoadForUser<T>(UserInfo user) where T : class, ISettings<T>
+    {
+        return LoadSettingsFor<T>(TenantID, user.IsLDAP() ? Guid.Parse(user.Sid) : user.Id);
+    }
+
     public T LoadForDefaultTenant<T>() where T : class, ISettings<T>
     {
         return LoadForTenant<T>(Tenant.DefaultTenant);
@@ -277,6 +282,11 @@ public class DbSettingsManager
     public bool SaveForUser<T>(T data, Guid userId) where T : class, ISettings<T>
     {
         return SaveSettingsFor(data, TenantID, userId);
+    }
+
+    public bool SaveForUser<T>(T data, UserInfo user) where T : class, ISettings<T>
+    {
+        return SaveSettingsFor(data, TenantID, user.IsLDAP() ? Guid.Parse(user.Sid) : user.Id);
     }
 
     public bool SaveForDefaultTenant<T>(T data) where T : class, ISettings<T>

@@ -1124,7 +1124,7 @@ public class UserController : PeopleControllerBase
 
             var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
 
-            _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = inDto.Quota }, user.IsLDAP() ? Guid.Parse(user.Sid) : user.Id);
+            _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
 
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
