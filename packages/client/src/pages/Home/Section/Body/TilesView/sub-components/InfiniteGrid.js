@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import InfiniteLoaderComponent from "@docspace/components/infinite-loader";
 import { StyledCard, StyledItem, StyledHeaderItem } from "./StyledInfiniteGrid";
@@ -63,7 +63,7 @@ const InfiniteGrid = (props) => {
     ...rest
   } = props;
 
-  const countTilesInRow = getCountTilesInRow();
+  const [countTilesInRow, setCountTilesInRow] = useState(getCountTilesInRow());
 
   let cards = [];
   const list = [];
@@ -78,20 +78,41 @@ const InfiniteGrid = (props) => {
   };
 
   const checkType = (useTempList = true) => {
+    const card = cards[cards.length - 1];
+    const listItem = list[list.length - 1];
+
     const isFile = useTempList
-      ? cards.at(-1).props.children.props.className.includes("file")
-      : list.at(-1).props.className.includes("isFile");
+      ? card.props.children.props.className.includes("file")
+      : listItem.props.className.includes("isFile");
 
     if (isFile) return "isFile";
 
     const isFolder = useTempList
-      ? cards.at(-1).props.children.props.className.includes("folder")
-      : list.at(-1).props.className.includes("isFolder");
+      ? card.props.children.props.className.includes("folder")
+      : listItem.props.className.includes("isFolder");
 
     if (isFolder) return "isFolder";
 
     return "isRoom";
   };
+
+  const setTilesCount = () => {
+    const newCount = getCountTilesInRow();
+    if (countTilesInRow !== newCount) setCountTilesInRow(newCount);
+  };
+
+  const onResize = () => {
+    setTilesCount();
+  };
+
+  useEffect(() => {
+    setTilesCount();
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  });
 
   React.Children.map(children.props.children, (child) => {
     if (child) {

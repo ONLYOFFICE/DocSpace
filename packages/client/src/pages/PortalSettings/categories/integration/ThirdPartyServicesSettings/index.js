@@ -6,48 +6,35 @@ import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import toastr from "@docspace/components/toast/toastr";
-import { tablet, mobile } from "@docspace/components/utils/device";
 import { showLoader, hideLoader } from "@docspace/common/utils";
 import ConsumerItem from "./sub-components/consumerItem";
 import ConsumerModalDialog from "./sub-components/consumerModalDialog";
 import { inject, observer } from "mobx-react";
-import { Base } from "@docspace/components/themes";
+import { mobile } from "@docspace/components/utils/device";
 
 const RootContainer = styled(Box)`
-  .title-description-container {
-    max-width: 700px;
-  }
-
-  @media ${tablet} {
-    margin: 0;
-
-    .consumers-list-container {
-      margin: 32px 0 40px 0;
-    }
-  }
-
-  @media ${tablet} {
-    .consumer-item-wrapper {
-      margin: 0 0 24px 0;
-    }
-  }
-`;
-const StyledConsumer = styled(Box)`
-  width: 400px;
-
-  @media ${tablet} {
-    width: 496px;
-  }
+  max-width: 700px;
+  width: 100%;
 
   @media ${mobile} {
-    width: 343px;
+    width: calc(100% - 8px);
+  }
+
+  .consumers-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(293px, 1fr));
+    gap: 20px;
+  }
+
+  .consumer-item-wrapper {
+    border: ${(props) =>
+      props.theme.client.settings.integration.separatorBorder};
+
+    border-radius: 6px;
+    min-height: 116px;
+    padding: 12px 12px 8px 20px;
   }
 `;
-const Separator = styled.div`
-  border: ${(props) => props.theme.client.settings.integration.separatorBorder};
-`;
-
-Separator.defaultProps = { theme: Base };
 
 class ThirdPartyServices extends React.Component {
   constructor(props) {
@@ -140,54 +127,36 @@ class ThirdPartyServices extends React.Component {
 
     return (
       <>
-        <RootContainer
-          displayProp="flex"
-          flexDirection="column"
-          marginProp="0 88px 0 0"
-        >
-          <Box className="title-description-container">
-            <Text>{t("ThirdPartyTitleDescription")}</Text>
-            <Box marginProp="16px 0 0 0">
-              <Link
-                color={theme.client.settings.integration.linkColor}
-                isHovered={false}
-                target="_blank"
-                href={urlAuthKeys}
-              >
-                {t("Common:LearnMore")}
-              </Link>
-            </Box>
+        <RootContainer className="RootContainer">
+          <Text>{t("ThirdPartyTitleDescription")}</Text>
+          <Box marginProp="8px 0 24px 0">
+            <Link
+              color={theme.client.settings.integration.linkColor}
+              isHovered
+              target="_blank"
+              href={urlAuthKeys}
+            >
+              {t("Common:LearnMore")}
+            </Link>
           </Box>
-          <Box
-            className="consumers-list-container"
-            widthProp="100%"
-            displayProp="flex"
-            flexWrap="wrap"
-            marginProp="32px 176px 40px 0"
-          >
+
+          <div className="consumers-list-container">
             {consumers.map((consumer) => (
-              <StyledConsumer
-                className="consumer-item-wrapper"
-                key={consumer.name}
-                marginProp="0 24px 24px 0"
-              >
-                <Separator />
-                <Box displayProp="flex" className="consumer-item-container">
-                  <ConsumerItem
-                    consumer={consumer}
-                    dialogVisible={dialogVisible}
-                    isLoading={isLoading}
-                    onChangeLoading={onChangeLoading}
-                    onModalClose={onModalClose}
-                    onModalOpen={onModalOpen}
-                    setConsumer={setConsumer}
-                    updateConsumerProps={updateConsumerProps}
-                    t={t}
-                  />
-                </Box>
-              </StyledConsumer>
+              <Box className="consumer-item-wrapper" key={consumer.name}>
+                <ConsumerItem
+                  consumer={consumer}
+                  dialogVisible={dialogVisible}
+                  isLoading={isLoading}
+                  onChangeLoading={onChangeLoading}
+                  onModalClose={onModalClose}
+                  onModalOpen={onModalOpen}
+                  setConsumer={setConsumer}
+                  updateConsumerProps={updateConsumerProps}
+                  t={t}
+                />
+              </Box>
             ))}
-          </Box>
+          </div>
         </RootContainer>
         {dialogVisible && (
           <ConsumerModalDialog
