@@ -2588,19 +2588,15 @@ class FilesStore {
     return this.filter.total;
   }
 
-  get isShowFilter() {
+  get isPageWithoutFiles() {
     const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
     const isRooms = isRoomsFolder || isArchiveFolder;
 
-    let showFilter;
-
     if (isRooms) {
-      showFilter = !this.isEmptyFilesList || !!this.roomsFilterValue;
+      return this.isEmptyFilesList && !this.roomsFilterValue;
     } else {
-      showFilter = !this.isEmptyFilesList || !!this.filterSearch;
+      return this.isEmptyFilesList && !this.filterSearch;
     }
-
-    return showFilter;
   }
 
   get hasMoreFiles() {
