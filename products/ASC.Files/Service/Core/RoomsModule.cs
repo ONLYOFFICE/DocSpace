@@ -117,19 +117,16 @@ public class RoomsModule : FeedModule
             {
                 Item = SharedRoomItem,
                 ItemId = string.Format("{0}_{1}_{2}", folder.Id, shareRecord.Subject, shareRecord.TimeStamp.Ticks),
-                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
                 Product = Product,
                 Module = Name,
                 Title = folder.Title,
-                ExtraLocation = FilesUCResource.VirtualRooms,
-                ExtraLocationUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.RootId, false),
+                ExtraLocationTitle = FilesUCResource.VirtualRooms,
+                ExtraLocation = folder.ParentId.ToString(),
                 Keywords = folder.Title,
                 AdditionalInfo = ((int)folder.FolderType).ToString(),
                 AdditionalInfo2 = ((int)shareRecord.Share).ToString(),
                 AdditionalInfo3 = ((int)shareRecord.SubjectType).ToString(),
                 AdditionalInfo4 = folder.Private ? "private" : null,
-                HasPreview = false,
-                CanComment = false,
                 Target = shareRecord.Subject,
                 GroupId = GetGroupId(SharedRoomItem, shareRecord.Owner, folder.ParentId.ToString())
             };
@@ -141,18 +138,14 @@ public class RoomsModule : FeedModule
         {
             Item = RoomItem,
             ItemId = folder.Id.ToString(),
-            ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
             Product = Product,
             Module = Name,
             Title = folder.Title,
-            ExtraLocation = FilesUCResource.VirtualRooms,
-            ExtraLocationUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.RootId, false),
+            ExtraLocationTitle = FilesUCResource.VirtualRooms,
+            ExtraLocation = folder.ParentId.ToString(),
             Keywords = folder.Title,
             AdditionalInfo = ((int)folder.FolderType).ToString(),
             AdditionalInfo4 = folder.Private ? "private" : null,
-            HasPreview = false,
-            CanComment = false,
-            Target = null,
             GroupId = GetGroupId(RoomItem, folder.CreateBy, folder.ParentId.ToString())
         };
     }

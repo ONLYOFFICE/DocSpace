@@ -36,8 +36,8 @@ public class Feed
     public DateTime ModifiedDate { get; set; }
     public string Product { get; set; }
     public string Module { get; set; }
+    public string ExtraLocationTitle { get; set; }
     public string ExtraLocation { get; set; }
-    public string ExtraLocationUrl { get; set; }
     public FeedAction Action { get; set; }
     public string Title { get; set; }
     public string ItemUrl { get; set; }
