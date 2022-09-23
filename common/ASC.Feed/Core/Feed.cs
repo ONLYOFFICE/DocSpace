@@ -55,6 +55,7 @@ public class Feed
     public string Keywords { get; set; }
     public string Id => $"{Item}_{ItemId}";
     public string ContextId { get; set; }
+    public bool IsAllDayEvent { get; set; }
 
     // это значит, что новость может обновляться (пр. добавление комментариев);
     // следовательно и права доступа могут устаревать

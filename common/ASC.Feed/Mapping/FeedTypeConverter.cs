@@ -44,9 +44,11 @@ public class FeedMappingAction : IMappingAction<FeedAggregate, FeedResultItem>
         destination.ModifiedDate = _tenantUtil.DateTimeFromUtc(source.ModifiedDate);
         destination.AggregatedDate = _tenantUtil.DateTimeFromUtc(source.AggregateDate);
 
-        var node = JsonNode.Parse(destination.Json)["IsAllDayEvent"];
+        var feed = System.Text.Json.JsonSerializer.Deserialize<Aggregator.Feed>(source.Json);
 
-        var compareDate = node != null && node.GetValue<bool>()
+        destination.TargetId = feed.Target;
+
+        var compareDate = feed.IsAllDayEvent
                 ? _tenantUtil.DateTimeToUtc(source.CreatedDate).Date
                 : destination.CreatedDate.Date;
 

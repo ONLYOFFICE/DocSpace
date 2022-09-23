@@ -258,7 +258,7 @@ public class FeedAggregateDataProvider
             q1 = q1.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
         }
 
-        var news = q1.Select(r => r.aggregates).AsEnumerable();
+        var news = q1.Select(r => r.aggregates).Distinct().AsEnumerable();
 
         return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(news);
     }
@@ -364,7 +364,8 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
     public string Json { get; set; }
     public string Module { get; set; }
     public Guid AuthorId { get; set; }
-    public Guid ModifiedById { get; set; }
+    public Guid ModifiedBy { get; set; }
+    public object TargetId { get; set; }
     public string GroupId { get; set; }
     public bool IsToday { get; set; }
     public bool IsYesterday { get; set; }
