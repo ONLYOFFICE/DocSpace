@@ -21,6 +21,7 @@ import withDialogs from "../helpers/withDialogs";
 import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
+import { DocumentEditor } from "@onlyoffice/document-editor-react";
 
 toast.configure();
 
@@ -54,6 +55,9 @@ let documentIsReady = false;
 let docSaved = null;
 let docTitle = null;
 let docEditor;
+let newConfig;
+let documentserverUrl = "http://192.168.31.38:8085"; //TODO: change to backend url
+let editorId = "docspace_editor";
 
 function Editor({
   config,
@@ -97,33 +101,34 @@ function Editor({
   }, [mfReady, error]);
 
   useEffect(() => {
-    if (config) {
-      document.getElementById("scripDocServiceAddress").onload = onLoad();
-      setDocumentTitle(config?.document?.title);
+    if (!config) return;
 
-      if (isIOS && deviceType === "tablet") {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty("--vh", `${vh}px`);
-      }
+    setDocumentTitle(config?.document?.title);
 
-      if (
-        !view &&
-        fileInfo &&
-        fileInfo.canWebRestrictedEditing &&
-        fileInfo.canFillForms &&
-        !fileInfo.canEdit
-      ) {
-        try {
-          initForm();
-        } catch (err) {
-          console.error(err);
-        }
-      }
+    if (isIOS && deviceType === "tablet") {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    }
 
-      if (view) {
-        config.editorConfig.mode = "view";
+    if (
+      !view &&
+      fileInfo &&
+      fileInfo.canWebRestrictedEditing &&
+      fileInfo.canFillForms &&
+      !fileInfo.canEdit
+    ) {
+      try {
+        initForm();
+      } catch (err) {
+        console.error(err);
       }
     }
+
+    if (view) {
+      config.editorConfig.mode = "view";
+    }
+
+    init();
   }, []);
 
   useEffect(() => {
@@ -342,11 +347,14 @@ function Editor({
   };
 
   const onDocumentReady = () => {
+    docEditor = window.DocEditor.instances[editorId];
     documentIsReady = true;
 
     if (isSharingAccess) {
       loadUsersRightsList(docEditor);
     }
+
+    assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
   };
 
   const updateFavorite = (favorite) => {
@@ -428,10 +436,8 @@ function Editor({
     }
   };
 
-  const onLoad = () => {
+  const init = () => {
     try {
-      if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
-
       if (isMobile) {
         config.type = "mobile";
       }
@@ -549,14 +555,7 @@ function Editor({
         },
       };
 
-      const newConfig = Object.assign(config, events);
-
-      docEditor = window.docEditor = window.DocsAPI.DocEditor(
-        "editor",
-        newConfig
-      );
-
-      assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
+      newConfig = Object.assign(config, events);
     } catch (error) {
       toastr.error(error.message, null, 0, true);
     }
@@ -564,7 +563,17 @@ function Editor({
 
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
-      <div id="editor"></div>
+      {newConfig && (
+        <DocumentEditor
+          id={editorId}
+          documentserverUrl={documentserverUrl}
+          config={newConfig}
+          height="100%"
+          width="100%"
+          events_onDocumentReady={onDocumentReady}
+        ></DocumentEditor>
+      )}
+
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}
