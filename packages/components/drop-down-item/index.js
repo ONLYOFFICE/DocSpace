@@ -99,6 +99,7 @@ DropDownItem.propTypes = {
   isSubMenu: PropTypes.bool,
   isActive: PropTypes.bool,
   withoutIcon: PropTypes.bool,
+  isModern: PropTypes.bool,
 };
 
 DropDownItem.defaultProps = {

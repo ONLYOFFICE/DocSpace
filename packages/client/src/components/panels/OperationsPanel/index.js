@@ -164,7 +164,7 @@ const OperationsPanelComponent = (props) => {
           ? t("Common:Restore")
           : isCopy
           ? t("Translations:Copy")
-          : t("Home:MoveTo")
+          : t("Files:MoveTo")
       }
       buttonName={
         isRecycleBin

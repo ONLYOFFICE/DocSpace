@@ -118,7 +118,7 @@ const TfaActivationForm = withLoader((props) => {
         history.push(url || "/");
       } else {
         const url = await loginWithCodeAndCookie(code, linkData.confirmHeader);
-        history.push(url || "/");
+        history.push("/");
       }
     } catch (e) {
       setError(e);
