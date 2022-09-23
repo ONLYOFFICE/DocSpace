@@ -2580,8 +2580,27 @@ class FilesStore {
     return this.roomsFilter.total;
   }
 
+  get roomsFilterValue() {
+    return this.roomsFilter.filterValue;
+  }
+
   get filterTotal() {
     return this.filter.total;
+  }
+
+  get isShowFilter() {
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+    const isRooms = isRoomsFolder || isArchiveFolder;
+
+    let showFilter;
+
+    if (isRooms) {
+      showFilter = !this.isEmptyFilesList || !!this.roomsFilterValue;
+    } else {
+      showFilter = !this.isEmptyFilesList || !!this.filterSearch;
+    }
+
+    return showFilter;
   }
 
   get hasMoreFiles() {
