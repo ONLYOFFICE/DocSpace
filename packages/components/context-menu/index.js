@@ -400,6 +400,8 @@ ContextMenu.propTypes = {
   containerRef: PropTypes.any,
   /** Scale with by container component*/
   scaled: PropTypes.bool,
+  /** If you want to fill icons with default colors or not  */
+  fillIcon: PropTypes.bool,
 
   getContextModel: PropTypes.func,
 
