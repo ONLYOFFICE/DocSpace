@@ -295,7 +295,7 @@ public class LdapUserManager
                     var notifuEngineQueue = scope.ServiceProvider.GetRequiredService<NotifyEngineQueue>();
                     var client = workContext.NotifyContext.RegisterClient(notifuEngineQueue, source);
 
-                    var confirmLink = _commonLinkUtility.GetConfirmationUrl(ldapUserInfo.Email, ConfirmType.EmailActivation);
+                    var confirmLink = _commonLinkUtility.GetConfirmationEmailUrl(ldapUserInfo.Email, ConfirmType.EmailActivation);
 
                     client.SendNoticeToAsync(
                         NotifyConstants.ActionLdapActivation,

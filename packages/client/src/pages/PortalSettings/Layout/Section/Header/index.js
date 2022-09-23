@@ -160,11 +160,9 @@ class SectionHeaderContent extends React.Component {
     }
   };
   componentDidUpdate() {
-    const { isLoaded, tReady, setIsLoadedSectionHeader } = this.props;
+    const { tReady, setIsLoadedSectionHeader } = this.props;
 
-    const isLoadedSetting = isLoaded && tReady;
-
-    if (isLoadedSetting) setIsLoadedSectionHeader(isLoadedSetting);
+    if (tReady) setIsLoadedSectionHeader(true);
 
     const arrayOfParams = this.getArrayOfParams();
 
@@ -249,14 +247,12 @@ class SectionHeaderContent extends React.Component {
   render() {
     const {
       t,
-      tReady,
+      isLoadedSectionHeader,
       addUsers,
       isHeaderIndeterminate,
       isHeaderChecked,
       isHeaderVisible,
       selection,
-      isLoadedPage,
-      location,
     } = this.props;
     const { header, isCategoryOrHeader, isNeedPaidIcon } = this.state;
     const arrayOfParams = this.getArrayOfParams();
@@ -281,12 +277,6 @@ class SectionHeaderContent extends React.Component {
       },
     ];
 
-    const commonSettings =
-      location.pathname.includes("common/customization") ||
-      location.pathname === "/portal-settings";
-
-    const showLoader = commonSettings ? !isLoadedPage : !tReady;
-
     return (
       <StyledContainer isHeaderVisible={isHeaderVisible}>
         {isHeaderVisible ? (
@@ -299,7 +289,7 @@ class SectionHeaderContent extends React.Component {
               headerMenu={headerMenu}
             />
           </div>
-        ) : showLoader ? (
+        ) : !isLoadedSectionHeader ? (
           <LoaderSectionHeader />
         ) : (
           <HeaderContainer>
@@ -364,7 +354,7 @@ export default inject(({ auth, setup, common }) => {
     selection,
   } = setup.selectionStore;
   const { admins, selectorIsOpen } = setup.security.accessRight;
-  const { isLoaded, setIsLoadedSectionHeader } = common;
+  const { isLoadedSectionHeader, setIsLoadedSectionHeader } = common;
   return {
     addUsers,
     removeAdmins,
@@ -380,7 +370,7 @@ export default inject(({ auth, setup, common }) => {
     toggleSelector,
     selectorIsOpen,
     selection,
-    isLoaded,
+    isLoadedSectionHeader,
     setIsLoadedSectionHeader,
     isBrandingAndCustomizationAvailable,
     isRestoreAndAutoBackupAvailable,

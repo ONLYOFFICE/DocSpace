@@ -2176,6 +2176,12 @@ namespace ASC.Migrations.MySql.Migrations.FilesDb
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
+                    b.Property<string>("FileShareOptions")
+                        .HasColumnType("text")
+                        .HasColumnName("options")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
                     b.Property<string>("Owner")
                         .IsRequired()
                         .HasColumnType("char(38)")
@@ -2186,6 +2192,10 @@ namespace ASC.Migrations.MySql.Migrations.FilesDb
                     b.Property<int>("Share")
                         .HasColumnType("int")
                         .HasColumnName("security");
+
+                    b.Property<int>("SubjectType")
+                        .HasColumnType("int")
+                        .HasColumnName("subject_type");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("timestamp")

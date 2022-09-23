@@ -102,6 +102,8 @@ const ControlButtons = ({
   toggleDropBox,
   isDesktop,
   titles,
+  withMenu,
+  onPlusClick,
 }) => {
   const toggleInfoPanelAction = () => {
     toggleInfoPanel && toggleInfoPanel();
@@ -110,12 +112,15 @@ const ControlButtons = ({
 
   return (
     <StyledContainer isDropBox={isDropBox}>
-      {!isRootFolder && canCreate ? (
+      {(!isRootFolder && canCreate) ||
+      (isRecycleBinFolder && !isEmptyFilesList) ? (
         <>
-          {!isMobile && (
+          {!isMobile && canCreate && (
             <PlusButton
               className="add-button"
               getData={getContextOptionsPlus}
+              withMenu={withMenu}
+              onPlusClick={onPlusClick}
             />
           )}
           {!personal && (
@@ -144,26 +149,10 @@ const ControlButtons = ({
             <PlusButton
               className="add-button"
               getData={getContextOptionsPlus}
+              withMenu={withMenu}
+              onPlusClick={onPlusClick}
             />
           )}
-          {!isDesktop && (
-            <ToggleInfoPanelButton
-              isRootFolder={isRootFolder}
-              isInfoPanelVisible={isInfoPanelVisible}
-              toggleInfoPanel={toggleInfoPanelAction}
-            />
-          )}
-        </>
-      ) : isRecycleBinFolder && !isEmptyFilesList ? (
-        <>
-          <IconButton
-            iconName="images/clear.trash.react.svg"
-            size={15}
-            isFill={true}
-            onClick={clearTrash}
-            className="trash-button"
-            title={(titles && titles["trash"]) || ""}
-          />
           {!isDesktop && (
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}

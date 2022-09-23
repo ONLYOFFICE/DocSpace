@@ -219,7 +219,7 @@ public class AuthenticationController : ControllerBase
                 return new AuthenticationTokenDto
                 {
                     Sms = true,
-                    ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation)
+                    ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneActivation)
                 };
             }
 
@@ -230,7 +230,7 @@ public class AuthenticationController : ControllerBase
                 Sms = true,
                 PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
                 Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval)),
-                ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneAuth)
+                ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneAuth)
             };
         }
 
@@ -242,14 +242,14 @@ public class AuthenticationController : ControllerBase
                 {
                     Tfa = true,
                     TfaKey = _tfaManager.GenerateSetupCode(user).ManualEntryKey,
-                    ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation)
+                    ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation)
                 };
             }
 
             return new AuthenticationTokenDto
             {
                 Tfa = true,
-                ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaAuth)
+                ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaAuth)
             };
         }
 

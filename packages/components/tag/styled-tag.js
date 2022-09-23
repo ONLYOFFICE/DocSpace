@@ -7,7 +7,7 @@ import Base from "../themes/base";
 const StyledTag = styled.div`
   width: fit-content;
 
-  max-width: ${(props) => props.tagMaxWidth};
+  max-width: ${(props) => (props.tagMaxWidth ? props.tagMaxWidth : "100%")};
 
   display: flex;
   align-items: center;

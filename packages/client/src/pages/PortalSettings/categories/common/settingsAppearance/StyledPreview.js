@@ -1,9 +1,8 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { Base } from "@docspace/components/themes";
 
 const StyledComponent = styled.div`
   display: inline-flex;
-  max-width: 575px;
   width: 100%;
 
   .menu {
@@ -16,9 +15,13 @@ const StyledComponent = styled.div`
     height: 100%;
     background: ${(props) =>
       props.themePreview === "Light" ? "#f8f9f9" : "#292929"};
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 16px 0px 0px 16px;
+    ${(props) =>
+      props.withBorder &&
+      css`
+        border-width: 1px;
+        border-style: solid;
+        border-radius: 16px 0px 0px 16px;
+      `}
   }
 
   .tablet-header {
@@ -71,10 +74,14 @@ const StyledComponent = styled.div`
   .section {
     position: relative;
     width: ${(props) => (props.isViewTablet ? "89%" : "56%")};
-    border-width: 1px;
-    border-style: solid;
-    border-left-style: none;
-    border-radius: 0px 16px 16px 0px;
+    ${(props) =>
+      props.withBorder &&
+      css`
+        border-width: 1px;
+        border-style: solid;
+        border-left-style: none;
+        border-radius: 0px 16px 16px 0px;
+      `}
     background: ${(props) =>
       props.themePreview === "Light" ? "#FFFFFF" : "#333333"};
   }
@@ -118,15 +125,11 @@ const StyledComponent = styled.div`
     border-radius: 3px;
   }
 
-  .color-badge > div {
-    background-color: ${(props) =>
+  .color-badge rect {
+    fill: ${(props) =>
       props.themePreview === "Dark" && props.selectThemeId === 7
         ? "#FFFFFF"
         : props.colorPreview} !important;
-  }
-
-  .color-badge > p {
-    color: ${(props) => props.color} !important;
   }
 
   .color-loaders rect {
@@ -258,10 +261,7 @@ const StyledComponent = styled.div`
   }
 
   .section-badge {
-    border: none;
-    cursor: auto;
     padding-right: 12px;
-    font-size: 9px;
   }
 
   .pin {

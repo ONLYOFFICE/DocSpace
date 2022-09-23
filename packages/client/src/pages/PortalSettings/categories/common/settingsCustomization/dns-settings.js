@@ -28,6 +28,8 @@ const DNSSettings = (props) => {
     isLoadedPage,
     helpLink,
     theme,
+    initSettings,
+    setIsLoaded,
     isSettingPaid,
   } = props;
   const [hasScroll, setHasScroll] = useState(false);
@@ -36,6 +38,8 @@ const DNSSettings = (props) => {
 
   useEffect(() => {
     setDocumentTitle(t("DNSSettings"));
+
+    if (!isLoaded) initSettings().then(() => setIsLoaded(true));
 
     const checkScroll = checkScrollSettingsBlock();
     checkInnerWidth();
@@ -151,7 +155,12 @@ const DNSSettings = (props) => {
 
 export default inject(({ auth, common }) => {
   const { theme, helpLink } = auth.settingsStore;
-  const { isLoaded, setIsLoadedDNSSettings } = common;
+  const {
+    isLoaded,
+    setIsLoadedDNSSettings,
+    initSettings,
+    setIsLoaded,
+  } = common;
   const { currentQuotaStore } = auth;
   const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
   return {
@@ -159,6 +168,8 @@ export default inject(({ auth, common }) => {
     isLoaded,
     setIsLoadedDNSSettings,
     helpLink,
+    initSettings,
+    setIsLoaded,
     isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(withLoading(withTranslation(["Settings", "Common"])(observer(DNSSettings))));

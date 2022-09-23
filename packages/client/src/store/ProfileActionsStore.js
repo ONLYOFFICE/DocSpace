@@ -23,13 +23,23 @@ class ProfileActionsStore {
   authStore = null;
   filesStore = null;
   peopleStore = null;
+  treeFoldersStore = null;
+  selectedFolderStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
 
-  constructor(authStore, filesStore, peopleStore) {
+  constructor(
+    authStore,
+    filesStore,
+    peopleStore,
+    treeFoldersStore,
+    selectedFolderStore
+  ) {
     this.authStore = authStore;
     this.filesStore = filesStore;
     this.peopleStore = peopleStore;
+    this.treeFoldersStore = treeFoldersStore;
+    this.selectedFolderStore = selectedFolderStore;
 
     makeAutoObservable(this);
   }
@@ -53,6 +63,8 @@ class ProfileActionsStore {
   };
 
   onProfileClick = () => {
+    this.selectedFolderStore.setSelectedFolder(null);
+    this.treeFoldersStore.setSelectedNode(["accounts"]);
     history.push(PROFILE_SELF_URL);
   };
 

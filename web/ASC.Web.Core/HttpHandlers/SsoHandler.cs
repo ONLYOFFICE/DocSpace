@@ -58,6 +58,7 @@ public class SsoHandlerService
     private readonly MessageService _messageService;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly TenantUtil _tenantUtil;
+    private readonly Action<string> _signatureResolver;
     private readonly CountManagerChecker _countManagerChecker;
     private const string MOB_PHONE = "mobphone";
     private const string EXT_MOB_PHONE = "extmobphone";
@@ -97,6 +98,17 @@ public class SsoHandlerService
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _tenantUtil = tenantUtil;
         _countManagerChecker = countManagerChecker;
+        _signatureResolver = signature =>
+        {
+            int.TryParse(signature.Substring(signature.Length - 1), out var lastSignChar);
+            signature = signature.Remove(signature.Length - 1);
+
+            while (lastSignChar > 0)
+            {
+                signature = signature + "=";
+                lastSignChar--;
+    }
+        };
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -138,7 +150,7 @@ public class SsoHandlerService
 
             if (context.Request.Query["auth"] == "true")
             {
-                var userData = _signature.Read<SsoUserData>(data);
+                var userData = _signature.Read<SsoUserData>(data, _signatureResolver);
 
                 if (userData == null)
                 {
@@ -184,7 +196,7 @@ public class SsoHandlerService
             }
             else if (context.Request.Query["logout"] == "true")
             {
-                var logoutSsoUserData = _signature.Read<LogoutSsoUserData>(data);
+                var logoutSsoUserData = _signature.Read<LogoutSsoUserData>(data, _signatureResolver);
 
                 if (logoutSsoUserData == null)
                 {

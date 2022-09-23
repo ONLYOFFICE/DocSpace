@@ -2145,6 +2145,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("subject")
                         .IsFixedLength();
 
+                    b.Property<string>("FileShareOptions")
+                        .HasColumnType("text")
+                        .HasColumnName("options");
+
                     b.Property<Guid>("Owner")
                         .HasMaxLength(38)
                         .HasColumnType("uuid")
@@ -2154,6 +2158,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<int>("Share")
                         .HasColumnType("integer")
                         .HasColumnName("security");
+
+                    b.Property<int>("SubjectType")
+                        .HasColumnType("integer")
+                        .HasColumnName("subject_type");
 
                     b.Property<DateTime>("TimeStamp")
                         .ValueGeneratedOnAdd()

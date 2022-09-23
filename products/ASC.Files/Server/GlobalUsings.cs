@@ -29,13 +29,13 @@ global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
+global using System.Security;
 global using System.Web;
 
 global using ASC.Api.Core;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Extensions;
 global using ASC.Api.Core.Routing;
-global using ASC.Api.Core.Security;
 global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Threading;
@@ -93,3 +93,6 @@ global using Microsoft.Extensions.Logging;
 
 global using Newtonsoft.Json.Linq;
 global using ASC.Files.Extension;
+
+global using SecurityContext = ASC.Core.SecurityContext;
+global using FileShare = ASC.Files.Core.Security.FileShare;

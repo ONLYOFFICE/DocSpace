@@ -29,6 +29,7 @@ import { useThemeDetector } from "SRC_DIR/helpers/utils";
 import { isMobileOnly } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
+import MainBar from "./components/MainBar";
 
 // const { proxyURL } = AppServerConfig;
 // const homepage = config.homepage;
@@ -410,10 +411,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         <Toast />
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || !isMobileOnly ? <></> : <NavMenu />}
+        {isMobileOnly && <MainBar />}
         <IndicatorLoader />
         <ScrollToTop />
         <DialogsWrapper t={t} />
         <Main isDesktop={isDesktop}>
+          {!isMobileOnly && <MainBar />}
+          <div className="main-container">
           <Switch>
             <PrivateRoute
               exact
@@ -481,6 +485,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
             <PrivateRoute path={"/error401"} component={Error401Route} />
             <PrivateRoute component={Error404Route} />
           </Switch>
+          </div>
         </Main>
       </Router>
     </Layout>

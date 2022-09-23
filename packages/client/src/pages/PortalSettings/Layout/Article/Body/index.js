@@ -129,11 +129,9 @@ class ArticleBodyContent extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { isLoaded, tReady, setIsLoadedArticleBody } = this.props;
+    const { tReady, setIsLoadedArticleBody } = this.props;
 
-    const isLoadedSetting = isLoaded && tReady;
-
-    if (isLoadedSetting) setIsLoadedArticleBody(isLoadedSetting);
+    if (tReady) setIsLoadedArticleBody(true);
 
     if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
       const { selectedKeys } = this.state;
@@ -245,26 +243,20 @@ class ArticleBodyContent extends React.Component {
 
   render() {
     const items = this.catalogItems();
-    const { isLoadedPage, location, tReady } = this.props;
+    const { isLoadedArticleBody } = this.props;
 
-    const commonSettings =
-      location.pathname.includes("common/customization") ||
-      location.pathname === "/portal-settings";
-
-    const showLoader = commonSettings ? !isLoadedPage : !tReady;
-
-    return showLoader ? <LoaderArticleBody /> : <>{items}</>;
+    return !isLoadedArticleBody ? <LoaderArticleBody /> : <>{items}</>;
   }
 }
 
 export default inject(({ auth, common }) => {
-  const { isLoaded, setIsLoadedArticleBody } = common;
+  const { isLoadedArticleBody, setIsLoadedArticleBody } = common;
   const { currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   return {
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
-    isLoaded,
+    isLoadedArticleBody,
     setIsLoadedArticleBody,
     isNotPaidPeriod,
   };
