@@ -1,7 +1,24 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
+import { tablet, smallTablet } from "@docspace/components/utils/device";
+
+const EmptyPageStyles = css`
+  padding: 44px 0px 64px 0px;
+
+  grid-column-gap: 40px;
+  grid-template-columns: 100px 1fr;
+
+  @media ${tablet} {
+    padding: 44px 0px 64px 93px;
+    grid-column-gap: 33px;
+  }
+
+  @media ${smallTablet} {
+    padding: 20px 0px 64px 11px;
+  }
+`;
 
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {
@@ -19,6 +36,10 @@ const EmptyFolderWrapper = styled.div`
     .flex-wrapper_container {
       display: flex;
       flex-wrap: wrap;
+    }
+
+    .empty-folder_container-image {
+      cursor: pointer;
     }
 
     .empty-folder_container_up-image,
@@ -44,6 +65,8 @@ const EmptyFolderWrapper = styled.div`
       position: relative;
       bottom: 16px;
     }
+
+    ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
   }
 `;
 
@@ -58,10 +81,11 @@ const EmptyFoldersContainer = (props) => {
     style,
     imageStyle,
     buttonStyle,
+    isEmptyPage,
   } = props;
 
   return (
-    <EmptyFolderWrapper>
+    <EmptyFolderWrapper isEmptyPage={isEmptyPage}>
       <EmptyScreenContainer
         className="empty-folder_container"
         style={style}
@@ -73,6 +97,7 @@ const EmptyFoldersContainer = (props) => {
         subheadingText={subheadingText}
         descriptionText={descriptionText}
         buttons={buttons}
+        isEmptyPage={isEmptyPage}
       />
     </EmptyFolderWrapper>
   );

@@ -1,7 +1,7 @@
 import { getNewFiles } from "@docspace/common/api/files";
 import { FileAction } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 
 class DialogsStore {
   authStore;
@@ -28,6 +28,7 @@ class DialogsStore {
   convertPasswordDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
+  restoreAllPanelVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -73,6 +74,10 @@ class DialogsStore {
   setMoveToPanelVisible = (moveToPanelVisible) => {
     !moveToPanelVisible && this.deselectActiveFiles();
     this.moveToPanelVisible = moveToPanelVisible;
+  };
+
+  setRestoreAllPanelVisible = (restoreAllPanelVisible) => {
+    this.restoreAllPanelVisible = restoreAllPanelVisible;
   };
 
   setCopyPanelVisible = (copyPanelVisible) => {

@@ -147,36 +147,42 @@ const SingleItem = ({
           >
             {statusLabel}
           </Text>
-          <Text className={"info_field"} noSelect title={t("Common:Type")}>
-            {t("Common:Type")}
-          </Text>
-          {((isOwner && role !== "owner") ||
-            (isAdmin && !isOwner && role !== "admin")) &&
-          statusType !== "disabled" &&
-          userId !== user.id ? (
-            <ComboBox
-              className="type-combobox"
-              selectedOption={getTypesOptions().find(
-                (option) => option.key === role
-              )}
-              options={getTypesOptions()}
-              onSelect={onTypeChange}
-              scaled={false}
-              size="content"
-              displaySelectedOption
-              modernView
-            />
-          ) : (
-            <Text
-              type="page"
-              title={typeLabel}
-              fontSize="13px"
-              fontWeight={600}
-              truncate
-              noSelect
-            >
-              {typeLabel}
-            </Text>
+          {role !== "guest" && ( //TODO: delete this condition after remove guest type
+            <>
+              <Text className={"info_field"} noSelect title={t("Common:Type")}>
+                {t("Common:Type")}
+              </Text>
+              <>
+                {((isOwner && role !== "owner") ||
+                  (isAdmin && !isOwner && role !== "admin")) &&
+                statusType !== "disabled" &&
+                userId !== user.id ? (
+                  <ComboBox
+                    className="type-combobox"
+                    selectedOption={getTypesOptions().find(
+                      (option) => option.key === role
+                    )}
+                    options={getTypesOptions()}
+                    onSelect={onTypeChange}
+                    scaled={false}
+                    size="content"
+                    displaySelectedOption
+                    modernView
+                  />
+                ) : (
+                  <Text
+                    type="page"
+                    title={typeLabel}
+                    fontSize="13px"
+                    fontWeight={600}
+                    truncate
+                    noSelect
+                  >
+                    {typeLabel}
+                  </Text>
+                )}
+              </>
+            </>
           )}
           <Text className={"info_field"} noSelect title={t("UserStatus")}>
             {t("UserStatus")}

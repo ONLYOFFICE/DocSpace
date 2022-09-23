@@ -47,7 +47,7 @@ public class IPRestrictionsRepository
             .ToList();
     }
 
-    public List<string> Save(IEnumerable<string> ips, int tenant)
+    public List<IpRestrictionBase> Save(IEnumerable<IpRestrictionBase> ips, int tenant)
     {
         using var tenantDbContext = _dbContextManager.CreateDbContext();
         var strategy = tenantDbContext.Database.CreateExecutionStrategy();
@@ -64,7 +64,9 @@ public class IPRestrictionsRepository
             var ipsList = ips.Select(r => new TenantIpRestrictions
             {
                 Tenant = tenant,
-                Ip = r
+                Ip = r.Ip,
+                ForAdmin = r.ForAdmin
+                
             });
 
             tenantDbContext.TenantIpRestrictions.AddRange(ipsList);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
@@ -7,15 +7,23 @@ import ComboBox from "@docspace/components/combobox";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import { tablet } from "@docspace/components/utils/device";
+import { isMobileOnly } from "react-device-detect";
+import ContextMenu from "@docspace/components/context-menu";
 
 const StyledContainer = styled(Box)`
   width: 311px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: min-content auto;
+  grid-template-columns: min-content minmax(100px, 480px);
   grid-auto-columns: min-content;
   grid-row-gap: 12px;
 
+  .settings-container_mobile-view {
+    p {
+      margin-left: 16px;
+      text-decoration: underline dashed;
+    }
+  }
   .title {
     white-space: nowrap;
   }
@@ -27,6 +35,13 @@ const StyledContainer = styled(Box)`
 
   .drop-down {
     margin-left: 6px;
+    max-width: 100%;
+    .combo-button {
+      width: 100%;
+      .combo-button-label {
+        max-width: 100%;
+      }
+    }
   }
 
   @media ${tablet} {
@@ -34,6 +49,8 @@ const StyledContainer = styled(Box)`
   }
 `;
 
+let newLanguagesArray = [],
+  newTimezoneArray = [];
 const SettingsContainer = ({
   selectLanguage,
   selectTimezone,
@@ -47,8 +64,30 @@ const SettingsContainer = ({
   onClickChangeEmail,
   onSelectLanguageHandler,
   onSelectTimezoneHandler,
+  onSelectContextLanguage,
+  onSelectContextTimezones,
 }) => {
+  const addedActionToArray = () => {
+    const cultures = [...languages].map((culture) => {
+      culture.onClick = onSelectContextLanguage;
+      return culture;
+    });
+    const timezonesArray = [...timezones].map((timezone) => {
+      timezone.onClick = onSelectContextTimezones;
+      return timezone;
+    });
+
+    return [cultures, timezonesArray];
+  };
+
+  useEffect(() => {
+    if (isMobileOnly)
+      [newLanguagesArray, newTimezoneArray] = addedActionToArray();
+  }, []);
+
   const titleEmail = !emailNeeded ? <Text>{t("Common:Email")}</Text> : null;
+  const languageRef = useRef(null);
+  const timezoneRef = useRef(null);
 
   const contentEmail = !emailNeeded ? (
     <Link
@@ -63,17 +102,50 @@ const SettingsContainer = ({
     </Link>
   ) : null;
 
-  return (
-    <StyledContainer>
-      <Text fontSize="13px">{t("Domain")}</Text>
-      <Text className="machine-name-value" fontSize="13px" fontWeight="600">
-        {machineName}
-      </Text>
+  const onLanguageContextMenu = (e) => {
+    languageRef.current.show(e);
+  };
+  const onTimezoneContextMenu = (e) => {
+    timezoneRef.current.show(e);
+  };
 
-      {titleEmail}
-      {contentEmail}
+  const mobileLanguageContainer = () => {
+    return (
+      <div className="settings-container_mobile-view">
+        <Text onClick={onLanguageContextMenu} fontWeight="600">
+          {selectLanguage.label}
+        </Text>
+        <ContextMenu
+          getContextModel={() => newLanguagesArray}
+          ref={languageRef}
+          header={{ title: t("Common:Language") }}
+          withBackdrop={true}
+          isRoom={true}
+          fillIcon={false}
+        />
+      </div>
+    );
+  };
+  const mobileTimezoneContainer = () => {
+    return (
+      <div className="settings-container_mobile-view">
+        <Text onClick={onTimezoneContextMenu} fontWeight="600">
+          {selectTimezone.label}
+        </Text>
+        <ContextMenu
+          getContextModel={() => newTimezoneArray}
+          ref={timezoneRef}
+          header={{ title: t("Timezone") }}
+          withBackdrop={true}
+          isRoom={true}
+          fillIcon={false}
+        />
+      </div>
+    );
+  };
 
-      <Text fontSize="13px">{t("Common:Language")}:</Text>
+  const languageContainer = () => {
+    return (
       <ComboBox
         className="drop-down"
         options={languages}
@@ -81,17 +153,20 @@ const SettingsContainer = ({
           key: selectLanguage.key,
           label: selectLanguage.label,
         }}
-        noBorder={true}
+        noBorder
         scaled={false}
+        scaledOptions={false}
         size="content"
         dropDownMaxHeight={300}
         onSelect={onSelectLanguageHandler}
-        textOverflow={true}
+        fillIcon={false}
+        manualWidth="250px"
       />
+    );
+  };
 
-      <Text className="title" fontSize="13px">
-        {t("Timezone")}
-      </Text>
+  const timezoneContainer = () => {
+    return (
       <ComboBox
         className="drop-down"
         options={timezones}
@@ -105,7 +180,30 @@ const SettingsContainer = ({
         size="content"
         onSelect={onSelectTimezoneHandler}
         textOverflow={true}
+        manualWidth="280px"
       />
+    );
+  };
+
+  return (
+    <StyledContainer>
+      <Text fontSize="13px">{t("Domain")}</Text>
+      <Text className="machine-name-value" fontSize="13px" fontWeight="600">
+        {machineName}
+      </Text>
+
+      {titleEmail}
+      {contentEmail}
+
+      <Text fontSize="13px">{t("Common:Language")}:</Text>
+
+      {isMobileOnly ? mobileLanguageContainer() : languageContainer()}
+
+      <Text className="title" fontSize="13px">
+        {t("Timezone")}
+      </Text>
+
+      {isMobileOnly ? mobileTimezoneContainer() : timezoneContainer()}
     </StyledContainer>
   );
 };

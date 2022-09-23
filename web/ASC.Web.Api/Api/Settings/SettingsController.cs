@@ -370,7 +370,7 @@ public class SettingsController : BaseSettingsController
 
         var collaboratorPopupSettings = _settingsManager.LoadForCurrentUser<CollaboratorSettings>();
 
-        if (!(currentUser.IsVisitor(_userManager) && collaboratorPopupSettings.FirstVisit && !currentUser.IsOutsider(_userManager)))
+        if (!(_userManager.IsVisitor(currentUser) && collaboratorPopupSettings.FirstVisit && !_userManager.IsOutsider(currentUser)))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -461,7 +461,7 @@ public class SettingsController : BaseSettingsController
     [HttpPut("closeadminhelper")]
     public void CloseAdminHelper()
     {
-        if (!_userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
+        if (!_userManager.IsAdmin(_authContext.CurrentAccount.ID) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
         {
             throw new NotSupportedException("Not available.");
         }

@@ -148,10 +148,10 @@ public class UserManager
         switch (type)
         {
             case EmployeeType.User:
-                users = users.Where(u => !u.IsVisitor(this));
+                users = users.Where(u => !this.IsVisitor(u));
                 break;
             case EmployeeType.Visitor:
-                users = users.Where(u => u.IsVisitor(this));
+                users = users.Where(u => this.IsVisitor(u));
                 break;
         }
 

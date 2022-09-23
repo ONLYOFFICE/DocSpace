@@ -3,6 +3,5 @@
   "ConvertMessage": "Jos päätät muuntaa tiedoston muuhun muotoon kuin alkuperäinen, jotkut tiedot saattavat kadota.",
   "ConvertToZip": "Tiedostot pakataan .zip -tiedostoon",
   "CustomFormat": "Muokattu muoto",
-  "OriginalFormat": "Alkuperäinen muoto",
-  "Other": "Muu"
+  "OriginalFormat": "Alkuperäinen muoto"
 }

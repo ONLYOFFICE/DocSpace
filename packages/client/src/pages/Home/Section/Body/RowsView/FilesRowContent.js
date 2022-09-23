@@ -159,7 +159,9 @@ const FilesRowContent = ({
           {isRooms
             ? tags
             : !fileExst && !contentLength && !providerKey && !isMobileOnly
-            ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
+            ? `${foldersCount} ${t("Translations:Folders")} | ${filesCount} ${t(
+                "Translations:Files"
+              )}`
             : fileExst
             ? `${fileExst.toUpperCase().replace(/^\./, "")}`
             : ""}

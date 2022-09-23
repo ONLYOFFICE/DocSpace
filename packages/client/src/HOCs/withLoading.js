@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { observer, inject } from "mobx-react";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
@@ -7,7 +7,6 @@ const withLoading = (WrappedComponent) => {
   const withLoading = (props) => {
     const {
       isLoadedArticleBody,
-      isLoadedArticleHeader,
       isLoadedSectionHeader,
       isLoadedSubmenu,
       isLoadedLngTZSettings,
@@ -16,7 +15,17 @@ const withLoading = (WrappedComponent) => {
       isLoadedCustomization,
       isLoadedCustomizationNavbar,
       isLoadedWelcomePageSettings,
+      isBurgerLoading,
+      setIsBurgerLoading,
     } = props;
+
+    useEffect(() => {
+      if (isLoadedArticleBody) {
+        setIsBurgerLoading(false);
+      } else {
+        setIsBurgerLoading(true);
+      }
+    }, [isLoadedArticleBody, setIsBurgerLoading]);
 
     const pathname = location.pathname;
     const index = pathname.lastIndexOf("/");
@@ -31,38 +40,38 @@ const withLoading = (WrappedComponent) => {
       isLoadedDNSSettings &&
       isLoadedPortalRenaming &&
       isLoadedArticleBody &&
-      isLoadedArticleHeader &&
+      !isBurgerLoading &&
       isLoadedSectionHeader &&
       isLoadedSubmenu;
 
     const isLoadedCustomizationNavbarSettings =
       isLoadedCustomizationNavbar &&
       isLoadedArticleBody &&
-      isLoadedArticleHeader &&
+      !isBurgerLoading &&
       isLoadedSectionHeader &&
       isLoadedSubmenu;
 
     const isLoadedCustomizationSettingLngTZSettings =
       isLoadedArticleBody &&
-      isLoadedArticleHeader &&
+      !isBurgerLoading &&
       isLoadedSectionHeader &&
       isLoadedLngTZSettings;
 
     const isLoadedCustomizationSettingWelcomePageSettings =
       isLoadedArticleBody &&
-      isLoadedArticleHeader &&
+      !isBurgerLoading &&
       isLoadedSectionHeader &&
       isLoadedWelcomePageSettings;
 
     const isLoadedCustomizationSettingPortalRenaming =
       isLoadedArticleBody &&
-      isLoadedArticleHeader &&
+      !isBurgerLoading &&
       isLoadedSectionHeader &&
       isLoadedPortalRenaming;
 
     const isLoadedCustomizationSettingDNSSettings =
       isLoadedArticleBody &&
-      isLoadedArticleHeader &&
+      !isBurgerLoading &&
       isLoadedSectionHeader &&
       isLoadedDNSSettings;
 
@@ -82,10 +91,9 @@ const withLoading = (WrappedComponent) => {
     return <WrappedComponent {...props} isLoadedPage={isLoadedPage} />;
   };
 
-  return inject(({ common }) => {
+  return inject(({ common, auth }) => {
     const {
       isLoadedArticleBody,
-      isLoadedArticleHeader,
       isLoadedSectionHeader,
       isLoadedSubmenu,
       isLoadedLngTZSettings,
@@ -96,9 +104,10 @@ const withLoading = (WrappedComponent) => {
       isLoadedWelcomePageSettings,
     } = common;
 
+    const { isBurgerLoading, setIsBurgerLoading } = auth.settingsStore;
+
     return {
       isLoadedArticleBody,
-      isLoadedArticleHeader,
       isLoadedSectionHeader,
       isLoadedSubmenu,
       isLoadedLngTZSettings,
@@ -107,6 +116,8 @@ const withLoading = (WrappedComponent) => {
       isLoadedCustomization,
       isLoadedCustomizationNavbar,
       isLoadedWelcomePageSettings,
+      isBurgerLoading,
+      setIsBurgerLoading,
     };
   })(observer(withLoading));
 };

@@ -20,13 +20,23 @@ class ProfileActionsStore {
   authStore = null;
   filesStore = null;
   peopleStore = null;
+  treeFoldersStore = null;
+  selectedFolderStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
 
-  constructor(authStore, filesStore, peopleStore) {
+  constructor(
+    authStore,
+    filesStore,
+    peopleStore,
+    treeFoldersStore,
+    selectedFolderStore
+  ) {
     this.authStore = authStore;
     this.filesStore = filesStore;
     this.peopleStore = peopleStore;
+    this.treeFoldersStore = treeFoldersStore;
+    this.selectedFolderStore = selectedFolderStore;
 
     makeAutoObservable(this);
   }
@@ -50,6 +60,8 @@ class ProfileActionsStore {
   };
 
   onProfileClick = () => {
+    this.selectedFolderStore.setSelectedFolder(null);
+    this.treeFoldersStore.setSelectedNode(["accounts"]);
     history.push(PROFILE_SELF_URL);
   };
 
@@ -217,7 +229,42 @@ class ProfileActionsStore {
       }
     }
 
-    return actions;
+    return this.checkEnabledActions(actions);
+  };
+
+  checkEnabledActions = (actions) => {
+    const actionsArray = actions;
+
+    const feedbackAndSupportEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.helpCenterEnabled;
+
+    if (!feedbackAndSupportEnabled) {
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "SupportBtn"
+      );
+
+      actionsArray.splice(index, 1);
+    }
+
+    if (!videoGuidesEnabled) {
+      const index = actionsArray.findIndex((item) => item?.key === "VideoBtn");
+
+      actionsArray.splice(index, 1);
+    }
+
+    if (!helpCenterEnabled) {
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "HelpCenterBtn"
+      );
+
+      actionsArray.splice(index, 1);
+    }
+
+    return actionsArray;
   };
 }
 

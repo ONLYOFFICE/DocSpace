@@ -110,7 +110,12 @@ const StyledContextMenu = styled.div`
       font-size: ${(props) => props.theme.menuItem.text.header.fontSize};
       font-weight: 600;
       line-height: ${(props) => props.theme.menuItem.text.header.lineHeight};
-      margin: ${(props) => props.theme.menuItem.text.margin};
+      ${(props) =>
+        props.isIconExist &&
+        css`
+          margin: ${(props) => props.theme.menuItem.text.margin};
+        `}
+
       color: ${(props) => props.theme.menuItem.text.color};
       text-align: left;
       text-transform: none;
@@ -216,16 +221,22 @@ const StyledContextMenu = styled.div`
       height: 16px;
       width: 16px;
     }
-    path[fill],
-    circle[fill],
-    rect[fill] {
-      fill: ${(props) => props.theme.dropDownItem.icon.color};
-    }
+     {
+      ${(props) =>
+        props.fillIcon &&
+        css`
+          path[fill],
+          circle[fill],
+          rect[fill] {
+            fill: ${(props) => props.theme.dropDownItem.icon.color};
+          }
 
-    path[stroke],
-    circle[stroke],
-    rect[stroke] {
-      stroke: ${(props) => props.theme.dropDownItem.icon.color};
+          path[stroke],
+          circle[stroke],
+          rect[stroke] {
+            stroke: ${(props) => props.theme.dropDownItem.icon.color};
+          }
+        `}
     }
 
     &.p-disabled {

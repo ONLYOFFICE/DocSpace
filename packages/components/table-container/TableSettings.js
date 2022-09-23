@@ -43,6 +43,8 @@ const TableSettings = ({ columns, infoPanelVisible }) => {
         withBackdrop={false}
       >
         {columns.map((column) => {
+          if (column.isDisabled) return;
+
           const onChange = (e) =>
             column.onChange && column.onChange(column.key, e);
 

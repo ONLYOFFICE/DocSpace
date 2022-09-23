@@ -106,6 +106,8 @@ const SingleItem = (props) => {
           case FileType.Presentation:
             return t("Home:Presentation");
           case FileType.Document:
+          case FileType.OForm:
+          case FileType.OFormTemplate:
             return t("Home:Document");
           default:
             return t("Home:Folder");
@@ -147,8 +149,8 @@ const SingleItem = (props) => {
           content: styledText(itemSize),
         },
         {
-          id: "ByLastModifiedDate",
-          title: t("Files:ByLastModifiedDate"),
+          id: "ByLastModified",
+          title: t("Files:ByLastModified"),
           content: styledText(parseAndFormatDate(item.updated)),
         },
         {
@@ -162,8 +164,8 @@ const SingleItem = (props) => {
               ),
         },
         {
-          id: "ByCreationDate",
-          title: t("Files:ByCreationDate"),
+          id: "ByCreation",
+          title: t("Files:ByCreation"),
           content: styledText(parseAndFormatDate(item.created)),
         },
       ];

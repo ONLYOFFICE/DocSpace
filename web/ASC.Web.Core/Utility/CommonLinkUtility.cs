@@ -540,9 +540,14 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     #region confirm links
 
-    public string GetConfirmationUrl(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+    public string GetConfirmationEmailUrl(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
     {
         return GetFullAbsolutePath(GetConfirmationUrlRelative(email, confirmType, postfix, userId));
+    }
+
+    public string GetConfirmationUrl(string key, ConfirmType confirmType, Guid userId = default)
+    {
+        return GetFullAbsolutePath(GetConfirmationUrlRelative(key, confirmType, userId));
     }
 
     public string GetConfirmationUrlRelative(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
@@ -553,6 +558,11 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     public string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
     {
         return $"confirm/{confirmType}?{GetToken(tenantId, email, confirmType, postfix, userId)}";
+    }
+
+    public string GetConfirmationUrlRelative(string key, ConfirmType confirmType, Guid userId = default)
+    {
+        return $"confirm/{confirmType}?type={confirmType}&key={key}&uid={userId}";
     }
 
     public string GetToken(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)

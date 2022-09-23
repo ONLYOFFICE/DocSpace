@@ -90,6 +90,16 @@ const commonStyles = css`
         padding-left: 20px;
       `}
 
+    ${(props) =>
+      (props.viewAs == "settings" || props.viewAs == "profile") &&
+      css`
+        padding-top: 0;
+
+        @media ${tablet} {
+          padding-top: 0;
+        }
+      `}
+
     .section-wrapper {
       display: flex;
       flex-direction: column;

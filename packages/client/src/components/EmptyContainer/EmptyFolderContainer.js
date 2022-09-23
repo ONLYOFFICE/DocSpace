@@ -8,16 +8,19 @@ import Box from "@docspace/components/box";
 const EmptyFolderContainer = ({
   t,
   onCreate,
-  filter,
   fetchFiles,
+  fetchRooms,
   setIsLoading,
   parentId,
   linkStyles,
+  isRooms,
 }) => {
   const onBackToParentFolder = () => {
-    const newFilter = filter.clone();
     setIsLoading(true);
-    fetchFiles(parentId, newFilter).finally(() => setIsLoading(false));
+
+    isRooms
+      ? fetchRooms(parentId).finally(() => setIsLoading(false))
+      : fetchFiles(parentId).finally(() => setIsLoading(false));
   };
 
   const buttons = (
@@ -85,12 +88,21 @@ const EmptyFolderContainer = ({
 };
 
 export default inject(({ filesStore, selectedFolderStore }) => {
-  const { filter, fetchFiles } = filesStore;
+  const { fetchFiles, fetchRooms } = filesStore;
+  const { navigationPath, parentId } = selectedFolderStore;
+
+  let isRootRoom, isRoom, id;
+  if (navigationPath && navigationPath.length) {
+    isRootRoom = navigationPath[navigationPath.length - 1].isRootRoom;
+    isRoom = navigationPath[navigationPath.length - 1].isRoom;
+    id = navigationPath[navigationPath.length - 1].id;
+  }
 
   return {
-    filter,
     fetchFiles,
+    fetchRooms,
     setIsLoading: filesStore.setIsLoading,
-    parentId: selectedFolderStore.parentId,
+    parentId: id ?? parentId,
+    isRooms: isRoom || isRootRoom,
   };
 })(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));

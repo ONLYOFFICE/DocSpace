@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using NLog;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -32,19 +34,52 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault();
 builder.Configuration.AddDefaultConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 
-builder.Services.AddClearEventsServices();
+var logger = NLog.LogManager.Setup()
+                            .SetupExtensions(s =>
+                            {
+                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                            })
+                            .LoadConfiguration(builder.Configuration, builder.Environment)
+                            .GetLogger("ASC.ClearEvents");
 
-
-builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+try
 {
-    builder.Register(context.Configuration, false, false);
-});
+    logger.Info("Configuring web host ({applicationContext})...", Program.AppName);
+    builder.Host.ConfigureDefault();
+    builder.Services.AddClearEventsServices();
 
-var app = builder.Build();
+    builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+    {
+        builder.Register(context.Configuration, false, false);
+    });
 
-await app.RunWithTasksAsync();
+    var app = builder.Build();
+
+    logger.Info("Starting web host ({applicationContext})...", Program.AppName);
+    await app.RunWithTasksAsync();
+}
+catch (Exception ex)
+{
+    if (logger != null)
+    {
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
+    }
+
+    throw;
+}
+finally
+{
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    NLog.LogManager.Shutdown();
+}
+
+public partial class Program
+{
+    public static string Namespace = "ASC.ClearEvents";
+    public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.') + 1);
+}
+
