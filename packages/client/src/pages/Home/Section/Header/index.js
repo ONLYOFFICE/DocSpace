@@ -484,6 +484,7 @@ class SectionHeaderContent extends React.Component {
       showText,
       toggleInfoPanel,
       isRoomsFolder,
+      isPageWithoutFiles,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -535,6 +536,7 @@ class SectionHeaderContent extends React.Component {
                     }}
                     withMenu={!isRoomsFolder}
                     onPlusClick={this.onCreateRoom}
+                    isPageWithoutFiles={isPageWithoutFiles}
                   />
                 )}
               </div>
@@ -578,6 +580,7 @@ export default inject(
       setAlreadyFetchingRooms,
 
       categoryType,
+      isPageWithoutFiles,
     } = filesStore;
 
     const {
@@ -676,6 +679,7 @@ export default inject(
       enablePlugins,
 
       setRestoreAllPanelVisible,
+      isPageWithoutFiles,
     };
   }
 )(
