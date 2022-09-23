@@ -49,6 +49,7 @@ const paddingStyles = css`
   ${isMobile &&
   css`
     padding: 0 0 16px 24px !important;
+    margin-left: -1px;
   `};
 
   ${isMobileOnly &&
