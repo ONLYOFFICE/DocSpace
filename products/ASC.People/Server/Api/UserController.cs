@@ -210,21 +210,21 @@ public class UserController : PeopleControllerBase
         if (options != null && !options.IsCorrect)
         {
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
-            }
+        }
 
         var user = new UserInfo();
 
         var byEmail = options != null && options.Type == LinkType.InvintationByEmail;
 
         if (byEmail)
-                {
+        {
             user = _userManager.GetUserByEmail(inDto.Email);
 
             if (user == Constants.LostUser || user.ActivationStatus != EmployeeActivationStatus.Pending)
-                {
+            {
                 throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
-                }
             }
+        }
 
         inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
         if (string.IsNullOrEmpty(inDto.PasswordHash))
@@ -276,20 +276,18 @@ public class UserController : PeopleControllerBase
 
             if (success)
             {
-                    .GetAwaiter().GetResult();
                 _usersInRoomChecker.CheckAdd(await _usersInRoomStatistic.GetValue(id) + 1);
                 await _fileSecurity.ShareAsync(id, Files.Core.FileEntryType.Folder, user.Id, options.Share);
             }
             else
             {
-                    .GetAwaiter().GetResult();
-                _usersInRoomChecker.CheckAdd(await _usersInRoomStatistic.GetValue(inDto.RoomId) + 1);
+                _usersInRoomChecker.CheckAdd(await _usersInRoomStatistic.GetValue(options.RoomId) + 1);
                 await _fileSecurity.ShareAsync(options.RoomId, Files.Core.FileEntryType.Folder, user.Id, options.Share);
             }
         }
 
-            var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
-            _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
+        _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await _employeeFullDtoHelper.GetFull(user);
     }
