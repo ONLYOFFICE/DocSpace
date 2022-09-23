@@ -26,8 +26,6 @@
 
 using Microsoft.EntityFrameworkCore.Migrations;
 
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-
 #nullable disable
 
 namespace ASC.Migrations.PostgreSql.Migrations.CoreDb
@@ -80,8 +78,6 @@ namespace ASC.Migrations.PostgreSql.Migrations.CoreDb
                 name: "TariffRows",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     TariffId = table.Column<int>(type: "integer", nullable: false),
                     Quota = table.Column<int>(type: "integer", nullable: false),
                     Quantity = table.Column<int>(type: "integer", nullable: false),
@@ -89,7 +85,7 @@ namespace ASC.Migrations.PostgreSql.Migrations.CoreDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TariffRows", x => x.Id);
+                    table.PrimaryKey("PK_TariffRows", x => new { x.Tenant, x.TariffId, x.Quota });
                 });
 
             migrationBuilder.UpdateData(

@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -74,8 +73,6 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                 name: "tenants_tariffrow",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     tariff_id = table.Column<int>(type: "int", nullable: false),
                     quota = table.Column<int>(type: "int", nullable: false),
                     quantity = table.Column<int>(type: "int", nullable: false),
@@ -83,7 +80,7 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PRIMARY", x => x.id);
+                    table.PrimaryKey("PRIMARY", x => new { x.tenant, x.tariff_id, x.quota });
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 

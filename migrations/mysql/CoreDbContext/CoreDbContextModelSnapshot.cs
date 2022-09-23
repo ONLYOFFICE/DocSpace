@@ -177,11 +177,6 @@ namespace ASC.Migrations.MySql.Migrations
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbTariffRow", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int")
                         .HasColumnName("quantity");
@@ -198,8 +193,8 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("int")
                         .HasColumnName("tenant");
 
-                    b.HasKey("Id")
-                        .HasName("PRIMARY");
+                    b.HasKey("Tenant", "TariffId", "Quota")
+                       .HasName("PRIMARY");
 
                     b.ToTable("tenants_tariffrow", (string)null);
                 });

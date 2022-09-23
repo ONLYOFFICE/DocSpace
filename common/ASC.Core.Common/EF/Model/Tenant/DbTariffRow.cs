@@ -26,13 +26,17 @@
 
 namespace ASC.Core.Common.EF;
 
-public class DbTariffRow
+public class DbTariffRow : BaseEntity
 {
-    public int Id { get; set; }
     public int TariffId { get; set; }
     public int Quota { get; set; }
     public int Quantity { get; set; }
     public int Tenant { get; set; }
+
+    public override object[] GetKeys()
+    {
+        return new object[] { Tenant, TariffId, Quota };
+    }
 }
 public static class DbTariffRowExtension
 {
@@ -49,11 +53,8 @@ public static class DbTariffRowExtension
         {
             entity.ToTable("tenants_tariffrow");
 
-            entity.HasKey(e => e.Id)
+            entity.HasKey(e => new { e.Tenant, e.TariffId, e.Quota })
                 .HasName("PRIMARY");
-
-            entity.Property(e => e.Id)
-                .HasColumnName("id");
 
             entity.Property(e => e.TariffId)
                 .HasColumnName("tariff_id")

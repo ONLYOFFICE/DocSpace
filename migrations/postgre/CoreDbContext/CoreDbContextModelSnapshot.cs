@@ -174,11 +174,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbTariffRow", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
                     b.Property<int>("Quantity")
                         .HasColumnType("integer");
 
@@ -191,7 +186,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<int>("Tenant")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.HasKey("Tenant", "TariffId", "Quota");
 
                     b.ToTable("TariffRows");
                 });
