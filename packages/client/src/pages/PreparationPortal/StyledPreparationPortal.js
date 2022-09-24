@@ -35,7 +35,9 @@ const StyledBodyPreparationPortal = styled.div`
     .preparation-portal_percent {
       position: absolute;
       right: 50%;
-      ${(props) => props.percent > 50 && "color: white"}
+      ${(props) => props.percent > 50 && "color: white"};
+      top: 2px;
+      left: 46%;
     }
   }
 
