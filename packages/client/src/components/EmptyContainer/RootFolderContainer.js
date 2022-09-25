@@ -45,6 +45,8 @@ const RootFolderContainer = (props) => {
     fetchRooms,
     setAlreadyFetchingRooms,
     categoryType,
+    isEmptyPage,
+    setIsEmptyPage,
   } = props;
   const personalDescription = t("PersonalEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
@@ -68,7 +70,6 @@ const RootFolderContainer = (props) => {
   ];
 
   const [showLoader, setShowLoader] = React.useState(false);
-  const [isEmptyPage, setIsEmptyPage] = React.useState(false);
 
   React.useEffect(() => {
     if (rootFolderType !== FolderType.COMMON) {
@@ -76,6 +77,10 @@ const RootFolderContainer = (props) => {
     } else {
       setIsEmptyPage(false);
     }
+
+    return () => {
+      setIsEmptyPage(false);
+    };
   }, [isEmptyPage, setIsEmptyPage, rootFolderType]);
 
   const onGoToPersonal = () => {
@@ -358,6 +363,8 @@ export default inject(
       fetchRooms,
       categoryType,
       setAlreadyFetchingRooms,
+      isEmptyPage,
+      setIsEmptyPage,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId } = treeFoldersStore;
@@ -380,6 +387,8 @@ export default inject(
       fetchRooms,
       categoryType,
       setAlreadyFetchingRooms,
+      isEmptyPage,
+      setIsEmptyPage,
     };
   }
 )(withTranslation("Files")(observer(RootFolderContainer)));
