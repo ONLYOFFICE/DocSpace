@@ -88,6 +88,8 @@ class FilesStore {
   trashIsEmpty = false;
   filesIsLoading = false;
 
+  isEmptyPage = false;
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -313,6 +315,10 @@ class FilesStore {
       (x) => !x.providerKey || x.id !== x.rootFolderId
     ); // removed root thirdparty folders
     this.startDrag = startDrag;
+  };
+
+  setIsEmptyPage = (isEmptyPage) => {
+    this.isEmptyPage = isEmptyPage;
   };
 
   get tooltipOptions() {
@@ -2580,23 +2586,8 @@ class FilesStore {
     return this.roomsFilter.total;
   }
 
-  get roomsFilterValue() {
-    return this.roomsFilter.filterValue;
-  }
-
   get filterTotal() {
     return this.filter.total;
-  }
-
-  get isPageWithoutFiles() {
-    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
-    const isRooms = isRoomsFolder || isArchiveFolder;
-
-    if (isRooms) {
-      return this.isEmptyFilesList && !this.roomsFilterValue;
-    } else {
-      return this.isEmptyFilesList && !this.filterSearch;
-    }
   }
 
   get hasMoreFiles() {
