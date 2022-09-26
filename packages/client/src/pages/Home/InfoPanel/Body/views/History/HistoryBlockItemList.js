@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
@@ -12,10 +12,14 @@ import {
 import { RoomsType } from "@docspace/common/constants";
 
 export const HistoryBlockItemList = ({
+  t,
   items,
   getItemIcon,
   openFileAction,
 }) => {
+  const [isShowMore, setIsShowMore] = useState(items.length <= 3);
+  const onShowMore = () => setIsShowMore(true);
+
   const changeUrl = (item) => {
     const id = item.ExtraLocationUrl.split("folderid=")[1];
     const viewUrl = item.ExtraLocationUrl;
@@ -40,22 +44,30 @@ export const HistoryBlockItemList = ({
 
   return (
     <StyledHistoryBlockFilesList>
-      {parsedItems.map((item, i) => (
-        <StyledHistoryBlockFile isRoom={item.isRoom} key={i}>
-          <ReactSVG className="icon" src={getItemIcon(item, 24)} />
-          <div className="item-title">
-            <span className="name">{item.title}</span>
-            {item.fileExst && <span className="exst">{item.fileExst}</span>}
-          </div>
-          <IconButton
-            className="location-btn"
-            iconName="/static/images/folder-location.react.svg"
-            size="16"
-            isFill={true}
-            onClick={() => changeUrl(item)}
-          />
-        </StyledHistoryBlockFile>
-      ))}
+      {parsedItems.map((item, i) => {
+        if (!isShowMore && i > 2) return null;
+        return (
+          <StyledHistoryBlockFile isRoom={item.isRoom} key={i}>
+            <ReactSVG className="icon" src={getItemIcon(item, 24)} />
+            <div className="item-title">
+              <span className="name">{item.title}</span>
+              {item.fileExst && <span className="exst">{item.fileExst}</span>}
+            </div>
+            <IconButton
+              className="location-btn"
+              iconName="/static/images/folder-location.react.svg"
+              size="16"
+              isFill={true}
+              onClick={() => changeUrl(item)}
+            />
+          </StyledHistoryBlockFile>
+        );
+      })}
+      {!isShowMore && (
+        <Text className="show_more-link" onClick={onShowMore}>
+          {t("Common:ShowMore")}
+        </Text>
+      )}
     </StyledHistoryBlockFilesList>
   );
 };
