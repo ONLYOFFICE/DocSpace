@@ -90,6 +90,17 @@ const StyledHistoryBlockFilesList = styled.div`
   padding: 8px 0;
   background: ${(props) => props.theme.infoPanel.history.fileBlockBg};
   border-radius: 3px;
+
+  .show_more-link {
+    cursor: pointer;
+    margin: 10px 0 3px 20px;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 15px;
+    text-decoration: underline;
+    text-decoration-style: dashed;
+    text-underline-offset: 2px;
+  }
 `;
 
 const StyledHistoryBlockFile = styled.div`
