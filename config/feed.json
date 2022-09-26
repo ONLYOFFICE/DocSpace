@@ -1,6 +1,3 @@
 {
-  "feed": {
-    "aggregatePeriod": "00:01:00",
-    "portionSize": 5
-  }
+  "feed": {}
 }
