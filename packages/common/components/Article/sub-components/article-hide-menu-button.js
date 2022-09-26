@@ -21,7 +21,10 @@ const StyledHideArticleMenuButton = styled.div`
   max-width: ${({ showText }) => (showText ? "243px" : "60px")};
 
   @media ${desktop} {
-    display: none;
+    ${!isTablet &&
+    css`
+      display: none;
+    `}
   }
 
   @media ${mobile} {
