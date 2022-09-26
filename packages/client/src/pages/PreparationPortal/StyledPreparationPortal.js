@@ -18,7 +18,7 @@ const StyledBodyPreparationPortal = styled.div`
     position: relative;
     .preparation-portal_progress-bar {
       border-radius: 2px;
-      margin-right: 8px;
+   
       width: 100%;
 
       height: 24px;
@@ -35,7 +35,7 @@ const StyledBodyPreparationPortal = styled.div`
     }
     .preparation-portal_percent {
       position: absolute;
-      right: 50%;
+
       ${(props) => props.percent > 50 && "color: white"};
       top: 2px;
       left: 50%;
