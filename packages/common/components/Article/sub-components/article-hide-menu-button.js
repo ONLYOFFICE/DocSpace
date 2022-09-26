@@ -11,7 +11,7 @@ const StyledHideArticleMenuButton = styled.div`
   align-items: center;
   position: fixed;
   height: 44px;
-  z-index: 210;
+  z-index: 209;
   bottom: 89px;
   left: 0;
   cursor: pointer;
@@ -21,7 +21,10 @@ const StyledHideArticleMenuButton = styled.div`
   max-width: ${({ showText }) => (showText ? "243px" : "60px")};
 
   @media ${desktop} {
-    display: none;
+    ${!isTablet &&
+    css`
+      display: none;
+    `}
   }
 
   @media ${mobile} {
