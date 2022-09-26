@@ -1,61 +1,53 @@
 import React from "react";
 
+import { FeedActions } from "@docspace/common/constants";
+
 import { StyledHistoryBlockMessage } from "../../styles/history";
 
 const HistoryBlockMessage = ({ t, action, groupedActions }) => {
-  const added = t("Added");
-  const created = t("Created");
-  const newLabel = t("New");
+  const getActionType = () => {
+    return FeedActions[action.Action];
+    // switch (action.Action) {
+    //   case 0:
+    //     return "Create";
+    //   case 1:
+    //     return "Update";
+    //   default:
+    //     return "Create";
+    // }
+  };
 
-  const intoThe = t("IntoThe");
-  const inLabel = t("In");
-
-  const file = t("File");
-  const files = t("Files");
-  const folder = t("Folder");
-  const folders = t("Folders");
-  const room = t("Room");
-
-  let res = [];
-
-  const count = groupedActions.length + 1;
-
-  if (action.Action === 0) {
-    res = [added];
-    if (action.Item === "file") {
-      if (count === 1) {
-        res = [...res, file, intoThe, folder, `«${action.ExtraLocation}»`];
-      } else {
-        res = [
-          ...res,
-          count,
-          newLabel,
-          files,
-          intoThe,
-          folder,
-          `«${action.ExtraLocation}»`,
-        ];
-      }
-    } else if (action.Item === "folder") {
-      res = [created];
-      if (count === 1) {
-        res = [...res, folder, inLabel, `«${action.ExtraLocation}»`];
-      } else {
-        res = [
-          ...res,
-          count,
-          newLabel,
-          folders,
-          inLabel,
-          `«${action.ExtraLocation}»`,
-        ];
-      }
-    } else if (action.Item === "room") {
-      res = [created, room, `«${action.Title}»`];
+  const getActionItem = () => {
+    switch (action.Item) {
+      case "file":
+        return "File";
+      case "folder":
+        return "Folder";
+      case "room":
+        return "Room";
+      case "sharedRoom":
+        return "User";
+      default:
+        return "File";
     }
-  }
+  };
 
-  return <StyledHistoryBlockMessage>{res.join(" ")}</StyledHistoryBlockMessage>;
+  const getFolderLabel = () => {
+    const folderTitle = action.ExtraLocation;
+    if (!folderTitle || (action.Item !== "file" && action.Item !== "folder"))
+      return "";
+    return t("FeedLocationLabel", { folderTitle });
+  };
+
+  let res = "Feed";
+  res += getActionType();
+  res += getActionItem();
+
+  return (
+    <StyledHistoryBlockMessage>
+      {t(res)} {t(getFolderLabel())}
+    </StyledHistoryBlockMessage>
+  );
 
   // return <StyledHistoryMessageContent />;
 };
