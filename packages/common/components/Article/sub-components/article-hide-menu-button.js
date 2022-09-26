@@ -73,8 +73,6 @@ const StyledHideArticleMenuButton = styled.div`
 const HideArticleMenuButton = ({ showText, toggleShowText }) => {
   const hideMenuTranslate = "Hide menu";
 
-  console.log("showText", showText);
-
   return (
     <StyledHideArticleMenuButton showText={showText} onClick={toggleShowText}>
       {showText ? (
