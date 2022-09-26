@@ -42,10 +42,32 @@ export function getRoomMembers(id) {
   });
 }
 
+export function getHistory(module, id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=${module}&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
 export function getRoomHistory(id) {
   const options = {
     method: "get",
     url: `/feed/filter?module=rooms&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function getFileHistory(id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=files&withRelated=true&id=${id}`,
   };
 
   return request(options).then((res) => {
