@@ -4,6 +4,7 @@ import Text from "@docspace/components/text";
 import { ReactSVG } from "react-svg";
 import { desktop, mobile, tablet } from "@docspace/components/utils/device";
 import { isTablet, isMobileOnly } from "react-device-detect";
+import { useTranslation } from "react-i18next";
 
 const StyledHideArticleMenuButton = styled.div`
   display: flex;
@@ -71,7 +72,7 @@ const StyledHideArticleMenuButton = styled.div`
 `;
 
 const HideArticleMenuButton = ({ showText, toggleShowText }) => {
-  const hideMenuTranslate = "Hide menu";
+  const { t } = useTranslation("Common");
 
   return (
     <StyledHideArticleMenuButton showText={showText} onClick={toggleShowText}>
@@ -89,7 +90,7 @@ const HideArticleMenuButton = ({ showText, toggleShowText }) => {
             truncate
             color="#3B72A7"
           >
-            {hideMenuTranslate}
+            {t("HideArticleMenu")}
           </Text>
         </div>
       ) : (
