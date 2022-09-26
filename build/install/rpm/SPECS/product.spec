@@ -30,6 +30,7 @@ Requires:       %name-clear-events = %version-%release
 Requires:       %name-doceditor = %version-%release
 Requires:       %name-files = %version-%release
 Requires:       %name-files-services = %version-%release
+Requires:       %name-login = %version-%release
 Requires:       %name-migration = %version-%release
 Requires:       %name-migration-runner = %version-%release
 Requires:       %name-notify = %version-%release

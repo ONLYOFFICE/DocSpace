@@ -142,15 +142,32 @@ export default inject(
 
     const { openConnectWindow } = settingsStore.thirdPartyStore;
 
+    let nextCloudConnectItem = [],
+      ownCloudConnectItem = [];
+
+    if (thirdPartyStore.nextCloudConnectItem) {
+      nextCloudConnectItem.push(
+        ...thirdPartyStore.nextCloudConnectItem,
+        "Nextcloud"
+      );
+    }
+
+    if (thirdPartyStore.ownCloudConnectItem) {
+      ownCloudConnectItem.push(
+        ...thirdPartyStore.ownCloudConnectItem,
+        "ownCloud"
+      );
+    }
+
     const connectItems = [
       thirdPartyStore.googleConnectItem,
       thirdPartyStore.boxConnectItem,
       thirdPartyStore.dropboxConnectItem,
       thirdPartyStore.oneDriveConnectItem,
-      thirdPartyStore.nextCloudConnectItem,
+      nextCloudConnectItem,
       thirdPartyStore.kDriveConnectItem,
       thirdPartyStore.yandexConnectItem,
-      thirdPartyStore.ownCloudConnectItem,
+      ownCloudConnectItem,
       thirdPartyStore.webDavConnectItem,
       thirdPartyStore.sharePointConnectItem,
     ]
@@ -160,8 +177,11 @@ export default inject(
             isAvialable: !!item,
             id: item[0],
             providerName: item[0],
-            isOauth: item.length > 1,
-            oauthHref: item.length > 1 ? item[1] : "",
+            isOauth: item.length > 1 && item[0] !== "WebDav",
+            oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
+            ...(item[0] === "WebDav" && {
+              category: item[item.length - 1],
+            }),
           }
       )
       .filter((item) => !!item);
