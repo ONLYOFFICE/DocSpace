@@ -127,6 +127,7 @@ const History = ({
               />
 
               <HistoryBlockItemList
+                t={t}
                 items={[feed.json, ...feed.groupedFeeds]}
                 getItemIcon={getItemIcon}
                 openFileAction={openFileAction}
