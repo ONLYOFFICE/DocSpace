@@ -2,7 +2,11 @@ import React from "react";
 import styled, { css } from "styled-components";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
-import { tablet, smallTablet } from "@docspace/components/utils/device";
+import {
+  tablet,
+  smallTablet,
+  desktop,
+} from "@docspace/components/utils/device";
 
 const EmptyPageStyles = css`
   padding: 44px 0px 64px 0px;
@@ -10,8 +14,22 @@ const EmptyPageStyles = css`
   grid-column-gap: 40px;
   grid-template-columns: 100px 1fr;
 
+  .empty-folder_link:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  .empty-folder_link {
+    margin-right: 9px;
+  }
+
+  @media ${desktop} {
+    .empty-folder_link:not(:last-child) {
+      margin-bottom: 2px;
+    }
+  }
+
   @media ${tablet} {
-    padding: 44px 0px 64px 93px;
+    padding: 44px 0px 64px 97px;
     grid-column-gap: 33px;
   }
 
@@ -39,6 +57,7 @@ const EmptyFolderWrapper = styled.div`
     }
 
     .empty-folder_container-image {
+      margin-top: 3px;
       cursor: pointer;
     }
 
