@@ -11,4 +11,4 @@ import { Plugin } from "src/entities/plugin.entity";
   controllers: [PluginsController],
   providers: [PluginsService],
 })
-export class PluginsModule {}
+export class PluginsModule { }

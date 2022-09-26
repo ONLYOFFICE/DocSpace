@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { useHistory } from "react-router";
 import Loaders from "@docspace/common/components/Loaders";
@@ -6,6 +6,7 @@ import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { Link } from "react-router-dom";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { ReactSVG } from "react-svg";
 import {
   StyledArticleHeader,
   StyledHeading,
@@ -44,13 +45,17 @@ const ArticleHeader = ({
       ) : (
         <StyledHeading showText={showText} size="large">
           {isTabletView ? (
-            <img
+            <ReactSVG
+              className="logo-icon_svg"
               src="/static/images/logo.docspace.react.svg"
               onClick={onLogoClick}
             />
           ) : (
             <Link to="/">
-              <img src="/static/images/logo.docspace.react.svg" />
+              <ReactSVG
+                className="logo-icon_svg"
+                src="/static/images/logo.docspace.react.svg"
+              />
             </Link>
           )}
         </StyledHeading>

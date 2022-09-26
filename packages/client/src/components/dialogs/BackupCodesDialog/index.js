@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
@@ -6,8 +7,20 @@ import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
 import ModalDialogContainer from "../ModalDialogContainer";
 import toastr from "@docspace/components/toast/toastr";
-// import Link from "@docspace/components/link";
-// import styled from "styled-components";
+import Link from "@docspace/components/link";
+import { isDesktop } from "react-device-detect";
+
+const StyledModal = styled(ModalDialogContainer)`
+  .backup-codes-counter {
+    margin-top: 16px;
+  }
+
+  .backup-codes-print-link-wrapper {
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+  }
+`;
 
 class BackupCodesDialogComponent extends React.Component {
   constructor(props) {
@@ -52,7 +65,7 @@ class BackupCodesDialogComponent extends React.Component {
     } = this.props;
 
     return (
-      <ModalDialogContainer
+      <StyledModal
         isLoading={!tReady}
         visible={visible}
         onClose={onClose}
@@ -69,7 +82,11 @@ class BackupCodesDialogComponent extends React.Component {
               {t("BackupCodesSecondDescription")}
             </Text>
 
-            <Text className="backup-codes-counter" isBold={true}>
+            <Text
+              className="backup-codes-counter"
+              fontWeight={600}
+              color="#A3A9AE"
+            >
               {backupCodesCount} {t("CodesCounter")}
             </Text>
 
@@ -101,13 +118,21 @@ class BackupCodesDialogComponent extends React.Component {
             size="normal"
             onClick={this.props.onClose}
           />
-          {/* <div className="backup-codes-print-link-wrapper">
-            <Link type="action" fontSize="13px" isBold={true} isHovered={true}>
-              {t("PrintButton")}
-            </Link>
-          </div> */}
+          {isDesktop && (
+            <div className="backup-codes-print-link-wrapper">
+              <Link
+                type="action"
+                fontSize="13px"
+                fontWeight={600}
+                isHovered={true}
+                onClick={this.printPage}
+              >
+                {t("PrintButton")}
+              </Link>
+            </div>
+          )}
         </ModalDialog.Footer>
-      </ModalDialogContainer>
+      </StyledModal>
     );
   }
 }

@@ -4,16 +4,7 @@ import { withTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import Heading from "@docspace/components/heading";
-import ContextMenu from "@docspace/components/context-menu";
-import CustomScrollbarsVirtualList from "@docspace/components/scrollbar";
-import { isMobile } from "react-device-detect";
-import {
-  tablet,
-  desktop,
-  isTablet,
-  isMobile as isMobileUtils,
-} from "@docspace/components/utils/device";
-
+import { tablet, desktop } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 import InfiniteGrid from "./InfiniteGrid";
 
