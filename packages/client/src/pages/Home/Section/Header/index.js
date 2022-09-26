@@ -283,6 +283,15 @@ class SectionHeaderContent extends React.Component {
     this.props.setEmptyTrashDialogVisible(true);
   };
 
+  onRestoreAllAction = () => {
+    const { activeFiles, activeFolders } = this.props;
+    const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
+
+    if (isExistActiveItems) return;
+
+    this.props.setRestoreAllPanelVisible(true);
+  };
+
   onShowInfo = () => {
     const { setIsInfoPanelVisible } = this.props;
     setIsInfoPanelVisible(true);
@@ -294,50 +303,64 @@ class SectionHeaderContent extends React.Component {
   };
 
   getContextOptionsFolder = () => {
-    const { t, personal } = this.props;
+    const { t, toggleInfoPanel, personal } = this.props;
 
     return [
       {
         key: "sharing-settings",
         label: t("SharingPanel:SharingSettingsTitle"),
         onClick: this.onOpenSharingPanel,
-        disabled: personal ? true : false,
+        disabled: true,
         icon: "/static/images/share.react.svg",
       },
       {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
-        disabled: personal ? true : false,
+        disabled: true,
         icon: "/static/images/invitation.link.react.svg",
+      },
+      {
+        key: "empty-trash",
+        label: t("RecycleBinAction"),
+        onClick: this.onEmptyTrashAction,
+        disabled: !isRecycleBinFolder,
+        icon: "images/clear.trash.react.svg",
+      },
+      {
+        key: "restore-all",
+        label: t("RestoreAll"),
+        onClick: this.onRestoreAllAction,
+        disabled: !isRecycleBinFolder,
+        icon: "images/subtract.react.svg",
       },
       {
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
         onClick: this.onShowInfo,
-        disabled: false,
+        disabled: isRecycleBinFolder,
         icon: "/static/images/info.outline.react.svg",
       },
-      { key: "separator-2", isSeparator: true },
+      { key: "separator-2", isSeparator: true, disabled: isRecycleBinFolder },
       {
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
-        disabled: false,
+        disabled: isRecycleBinFolder,
         icon: "images/move.react.svg",
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
-        disabled: false,
+        disabled: isRecycleBinFolder,
         icon: "/static/images/copy.react.svg",
       },
       {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
-        disabled: false,
+        disabled: isRecycleBinFolder,
         icon: "images/download.react.svg",
       },
       {
@@ -351,7 +374,7 @@ class SectionHeaderContent extends React.Component {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
-        disabled: false,
+        disabled: isRecycleBinFolder,
         icon: "/static/images/catalog.trash.react.svg",
       },
     ];
@@ -576,6 +599,7 @@ export default inject(
       setEmptyTrashDialogVisible,
       setSelectFileDialogVisible,
       setIsFolderActions,
+      setRestoreAllPanelVisible,
     } = dialogsStore;
 
     const {
@@ -661,6 +685,8 @@ export default inject(
       categoryType,
 
       enablePlugins,
+
+      setRestoreAllPanelVisible,
     };
   }
 )(

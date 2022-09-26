@@ -259,14 +259,6 @@ const Base = {
       fill: white,
     },
 
-    secondaryButton: {
-      height: "32px",
-      padding: "0",
-      borderRadius: "3px",
-      cornerRoundsTopLeft: "0",
-      cornerRoundsBottomLeft: "0",
-    },
-
     dropDown: {
       top: "100%",
     },
@@ -285,11 +277,12 @@ const Base = {
   },
 
   socialButton: {
-    fontWeight: "600",
+    fontWeight: "500",
     textDecoration: "none",
     padding: "0",
     borderRadius: "2px",
     height: "40px",
+    heightSmall: "32px",
     textAlign: "left",
     stroke: " none",
     outline: "none",
@@ -297,7 +290,9 @@ const Base = {
 
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
+    connectBackground: "#3B72A7",
     hoverBackground: white,
+    hoverConnectBackground: "#265A8F",
     activeBackground: "grayMaxLight",
     hoverBorder: "#1877f2",
 
@@ -319,8 +314,9 @@ const Base = {
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
-      color: "#757575",
-      hoverColor: "#1877f2",
+      color: "#A3A9AE",
+      hoverColor: black,
+      connectColor: white,
     },
 
     svg: {
@@ -329,6 +325,7 @@ const Base = {
       height: "18px",
       minWidth: "18px",
       minHeight: "18px",
+      fill: white,
     },
   },
 
@@ -1077,7 +1074,7 @@ const Base = {
 
     image: {
       width: "100%",
-      height: "auto",
+      height: "100%",
       borderRadius: "50%",
     },
 
@@ -1960,6 +1957,9 @@ const Base = {
   article: {
     background: grayLight,
     pinBorderColor: grayLightMid,
+    catalogItemHeader: "#A3A9AE",
+    catalogItemText: "#555F65",
+    catalogItemActiveBackground: "#DFE2E3",
   },
 
   section: {
@@ -2761,6 +2761,7 @@ const Base = {
     },
 
     home: {
+      logoColor: black,
       textColorError: red,
     },
 
@@ -2833,7 +2834,7 @@ const Base = {
       },
 
       integration: {
-        separatorBorder: `1px solid ${grayLightMid}`,
+        separatorBorder: `1px solid ${grayMid}`,
         linkColor: link,
 
         sso: {
@@ -2898,6 +2899,16 @@ const Base = {
     disabledBackground: "#f8f9f9",
     defaultTagColor: "#A3A9AE",
     newTagBackground: "#eceef1",
+  },
+
+  profile: {
+    main: {
+      background: "#F8F9F9",
+      textColor: black,
+    },
+    themePreview: {
+      border: "1px solid #eceef1",
+    },
   },
 };
 

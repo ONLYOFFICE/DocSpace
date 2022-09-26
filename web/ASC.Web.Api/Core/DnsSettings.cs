@@ -155,7 +155,7 @@ public class DnsSettings
         var postfix = string.Join(string.Empty, new[] { dnsName, tenantAlias });
 
         var sb = new StringBuilder();
-        sb.Append(_commonLinkUtility.GetConfirmationUrl(email, confirmType, postfix));
+        sb.Append(_commonLinkUtility.GetConfirmationEmailUrl(email, confirmType, postfix));
         if (!string.IsNullOrEmpty(dnsName))
         {
             sb.AppendFormat("&dns={0}", dnsName);

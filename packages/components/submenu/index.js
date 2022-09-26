@@ -1,17 +1,14 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
-import Text from "../text";
 import { countAutoFocus, countAutoOffset } from "./autoOffset";
 import {
   StyledSubmenu,
   StyledSubmenuBottomLine,
   StyledSubmenuContentWrapper,
   StyledSubmenuItem,
-  StyledSubmenuItemLabel,
   StyledSubmenuItems,
   StyledSubmenuItemText,
 } from "./styled-submenu";
-import LoaderSubmenu from "./loader";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
@@ -21,7 +18,6 @@ const Submenu = (props) => {
     startSelect = 0,
     forsedActiveItemId,
     onSelect,
-    isLoading,
     ...rest
   } = props;
   if (!data) return null;
@@ -86,53 +82,47 @@ const Submenu = (props) => {
 
   return (
     <StyledSubmenu {...rest}>
-      {isLoading ? (
-        <LoaderSubmenu />
-      ) : (
-        <>
-          <div className="sticky">
-            <StyledSubmenuItems ref={submenuItemsRef} role="list">
-              {data.map((d) => {
-                const isActive =
-                  d.id === (forsedActiveItemId || currentItem.id);
+      <div className="sticky">
+        <StyledSubmenuItems ref={submenuItemsRef} role="list">
+          {data.map((d) => {
+            const isActive = d.id === (forsedActiveItemId || currentItem.id);
 
-                return (
-                  <StyledSubmenuItem
-                    key={d.id}
-                    id={d.id}
-                    onClick={(e) => {
-                      d.onClick && d.onClick();
-                      selectSubmenuItem(e);
-                    }}
+            return (
+              <StyledSubmenuItem
+                key={d.id}
+                id={d.id}
+                onClick={(e) => {
+                  d.onClick && d.onClick();
+                  selectSubmenuItem(e);
+                }}
+              >
+                <StyledSubmenuItemText isActive={isActive}>
+                  <ColorTheme
+                    {...props}
+                    themeId={ThemeType.SubmenuText}
+                    className="item-text"
+                    fontSize="13px"
+                    fontWeight="600"
+                    truncate={false}
+                    isActive={isActive}
                   >
-                    <StyledSubmenuItemText isActive={isActive}>
-                      <ColorTheme
-                        {...props}
-                        themeId={ThemeType.SubmenuText}
-                        className="item-text"
-                        fontSize="13px"
-                        fontWeight="600"
-                        truncate={false}
-                        isActive={isActive}
-                      >
-                        {d.name}
-                      </ColorTheme>
-                    </StyledSubmenuItemText>
+                    {d.name}
+                  </ColorTheme>
+                </StyledSubmenuItemText>
 
-                    <ColorTheme
-                      {...props}
-                      themeId={ThemeType.SubmenuItemLabel}
-                      isActive={isActive}
-                    />
-                  </StyledSubmenuItem>
-                );
-              })}
-            </StyledSubmenuItems>
-            <StyledSubmenuBottomLine />
-          </div>
-          <div className="sticky-indent"></div>
-        </>
-      )}
+                <ColorTheme
+                  {...props}
+                  themeId={ThemeType.SubmenuItemLabel}
+                  isActive={isActive}
+                />
+              </StyledSubmenuItem>
+            );
+          })}
+        </StyledSubmenuItems>
+        <StyledSubmenuBottomLine />
+      </div>
+      <div className="sticky-indent"></div>
+
       <StyledSubmenuContentWrapper>
         {currentItem.content}
       </StyledSubmenuContentWrapper>
@@ -145,7 +135,6 @@ Submenu.propTypes = {
   startSelect: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
   forsedActiveItemId: PropTypes.any,
   onSelect: PropTypes.func,
-  isLoading: PropTypes.bool,
 };
 
 export default Submenu;

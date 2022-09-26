@@ -48,7 +48,7 @@ const paddingStyles = css`
 
   ${isMobile &&
   css`
-    padding: 0 0 16px 24px !important;
+    padding: 0 0 16px 23px !important;
   `};
 
   ${isMobileOnly &&
@@ -91,7 +91,7 @@ const commonStyles = css`
       `}
 
     ${(props) =>
-      props.viewAs == "settings" &&
+      (props.viewAs == "settings" || props.viewAs == "profile") &&
       css`
         padding-top: 0;
 

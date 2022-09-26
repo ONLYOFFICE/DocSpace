@@ -24,11 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Core.Helpers;
-using ASC.Web.Files.ThirdPartyApp;
-
-using FileShare = ASC.Files.Core.Security.FileShare;
-
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]

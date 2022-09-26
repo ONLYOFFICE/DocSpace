@@ -64,6 +64,14 @@ class ChangeEmailDialogComponent extends React.Component {
   onValidateEmail = () => {
     const { isEmailValid, email, emailErrors } = this.state;
     const { t, user } = this.props;
+
+    if (email.trim() === "") {
+      return this.setState({
+        errorMessage: t("Common:IncorrectEmail"),
+        hasError: true,
+      });
+    }
+
     if (isEmailValid) {
       const sameEmailError = email.toLowerCase() === user.email.toLowerCase();
       if (sameEmailError) {
