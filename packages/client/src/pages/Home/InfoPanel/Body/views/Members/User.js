@@ -5,6 +5,8 @@ import Avatar from "@docspace/components/avatar";
 import LinkWithDropdown from "@docspace/components/link-with-dropdown";
 
 const User = ({ t, user, selfId, isExpect }) => {
+  if (!user.displayName) return null;
+
   return (
     <StyledUser
       isExpect={isExpect}
