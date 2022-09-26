@@ -8,11 +8,11 @@ import {
 
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
-import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 import { getUser } from "@docspace/common/api/people";
 import { parseAndFormatDate } from "../../helpers/DetailsHelper";
 import HistoryBlockMessage from "./HistoryBlockMessage";
 import HistoryBlockItemList from "./HistoryBlockItemList";
+import Loaders from "@docspace/common/components/Loaders";
 
 const History = ({
   t,
@@ -22,10 +22,11 @@ const History = ({
   culture,
   getItemIcon,
 
-  getRoomHistory,
+  getHistory,
   openFileAction,
 }) => {
   const [history, setHistory] = useState(null);
+  const [showLoader, setShowLoader] = useState(false);
 
   const parseHistoryJSON = async (fetchedHistory) => {
     let feeds = fetchedHistory.feeds;
@@ -34,22 +35,43 @@ const History = ({
       const feedsJSON = JSON.parse(feeds[i].json);
       feedsJSON.author = await getUser(feedsJSON.AuthorId);
 
-      let groupFeeds = feeds[i].groupedFeeds;
-      let newGroupFeeds = [];
-      for (let j = 0; j < groupFeeds.length; j++) {
-        const groupFeedsJSON = JSON.parse(groupFeeds[j].json);
-        groupFeedsJSON.author = await getUser(groupFeedsJSON.AuthorId);
-        newGroupFeeds.push(groupFeedsJSON);
+      let newGroupedFeeds = [];
+      if (feeds[i].groupedFeeds) {
+        let groupFeeds = feeds[i].groupedFeeds;
+        for (let j = 0; j < groupFeeds.length; j++) {
+          const groupFeedsJSON = JSON.parse(groupFeeds[j].json);
+          newGroupedFeeds.push(groupFeedsJSON);
+        }
       }
 
       newFeeds.push({
         ...feeds[i],
         json: feedsJSON,
-        groupedFeeds: newGroupFeeds,
+        groupedFeeds: newGroupedFeeds,
       });
     }
 
     return { ...fetchedHistory, feeds: newFeeds };
+  };
+
+  const fetchHistory = async (itemId) => {
+    let module = "files";
+    if (selection.isRoom) module = "rooms";
+    else if (selection.isFolder) module = "folders";
+
+    let timerId;
+    if (history) timerId = setTimeout(() => setShowLoader(true), 1500);
+
+    let fetchedHistory = await getHistory(module, itemId);
+    fetchedHistory = await parseHistoryJSON(fetchedHistory);
+
+    clearTimeout(timerId);
+
+    console.log(fetchedHistory);
+
+    setHistory(fetchedHistory);
+    setSelection({ ...selection, history: fetchedHistory });
+    setShowLoader(false);
   };
 
   useEffect(async () => {
@@ -57,17 +79,11 @@ const History = ({
       setHistory(selection.history);
       return;
     }
-
-    if (!selection.isRoom) return;
-    let fetchedHistory = await getRoomHistory(selection.id);
-    fetchedHistory = await parseHistoryJSON(fetchedHistory);
-    console.log(fetchedHistory);
-
-    setHistory(fetchedHistory);
-    setSelection({ ...selection, history: fetchedHistory });
+    fetchHistory(selection.id);
   }, [selection]);
 
-  if (!selection || !history) return null;
+  if (!history || showLoader)
+    return <Loaders.InfoPanelViewLoader view="history" />;
   return (
     <>
       <StyledHistoryList>
@@ -115,7 +131,6 @@ const History = ({
                 getItemIcon={getItemIcon}
                 openFileAction={openFileAction}
               />
-              {/* <HistoryBlockContent t={t} feed={feed.json} /> */}
             </div>
           </StyledHistoryBlock>
         ))}
