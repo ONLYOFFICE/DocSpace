@@ -19,6 +19,31 @@ const Members = ({
   getRoomMembers,
 }) => {
   const [members, setMembers] = useState(null);
+  const [showLoader, setShowLoader] = useState(false);
+  const [loaderData, setLoaderData] = useState({
+    membersCount: 4,
+    pendingMembersCount: 4,
+  });
+
+  const fetchMembers = async (roomId) => {
+    let timerId;
+    if (members) timerId = setTimeout(() => setShowLoader(true), 1500);
+
+    const fetchedMembers = await getRoomMembers(roomId);
+
+    clearTimeout(timerId);
+
+    setMembers(fetchedMembers);
+    setSelectionParentRoom({
+      ...selection,
+      members: fetchedMembers,
+    });
+    setLoaderData({
+      membersCount: Math.min(fetchedMembers.length, 4),
+      pendingMembersCount: Math.min(0, 4),
+    });
+    setShowLoader(false);
+  };
 
   useEffect(async () => {
     if (!selectionParentRoom) return;
@@ -26,35 +51,17 @@ const Members = ({
       setMembers(selectionParentRoom.members);
       return;
     }
-
-    setMembers(null);
-    console.log("FETCH MEMBERS ON SELECTION PARENT ROOM CHANGE");
-
-    const fetchedMembers = await getRoomMembers(selectionParentRoom.id);
-    setMembers(fetchedMembers);
-    setSelectionParentRoom({
-      ...selectionParentRoom,
-      members: fetchedMembers,
-    });
+    fetchMembers(selectionParentRoom.id);
   }, [selectionParentRoom]);
 
   useEffect(async () => {
     if (!selection.isRoom) return;
     if (selectionParentRoom && selectionParentRoom.id === selection.id) return;
-
-    setMembers(null);
-    console.log("FETCH MEMBERS ON SELECTION CHANGE");
-
-    const fetchedMembers = await getRoomMembers(selection.id);
-    setMembers(fetchedMembers);
-    setSelectionParentRoom({
-      ...selection,
-      members: fetchedMembers,
-    });
+    fetchMembers(selection.id);
   }, [selection]);
 
-  if (!members) return <Loaders.InfoPanelMemberListLoader />;
-
+  if (!members || showLoader)
+    return <Loaders.InfoPanelViewLoader view="members" data={loaderData} />;
   return (
     <>
       <StyledUserTypeHeader>
