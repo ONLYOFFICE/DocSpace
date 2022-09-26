@@ -18,5 +18,27 @@
   "Versions": "Versions",
   "ViewDetails": "View Details",
   "WhoHasAccess": "Who has access",
-  "RecentActivities": "Recent activities"
+  "RecentActivities": "Recent activities",
+
+  "FeedCreateFile": "Files created.",
+  "FeedCreateFolder": "Folders created.",
+  "FeedCreateRoom": "Room created.",
+  "FeedCreateUser": "Users added.",
+
+  "FeedRenameFile": "Files renamed.",
+  "FeedRenameFolder": "Folders renamed.",
+  "FeedRenameRoom": "Room renamed.",
+
+  "FeedUpdateFile": "Files updated.",
+  "FeedUpdateRoom": "Room avatar changed.",
+  "FeedUpdateUser": "Users appointed room manager.",
+
+  "FeedMoveFile": "Files moved.",
+  "FeedMoveFolder": "Folders moved.",
+
+  "FeedDeleteFile": "Files deleted.",
+  "FeedDeleteFolder": "Folders deleted.",
+  "FeedDeleteUser": "Users deleted.",
+
+  "FeedLocationLabel": "Folder «{{folderTitle}}»"
 }
