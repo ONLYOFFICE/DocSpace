@@ -80,7 +80,9 @@ const InfoPanelBodyContent = ({
       getRoomMembers: props.getRoomMembers,
     },
     historyProps: {
+      getHistory: props.getHistory,
       getRoomHistory: props.getRoomHistory,
+      getFileHistory: props.getFileHistory,
       getItemIcon: props.getItemIcon,
       openFileAction: props.openFileAction,
     },
@@ -183,7 +185,7 @@ const InfoPanelBodyContent = ({
 
   //////////////////////////////////////////////////////////
 
-  if (!selection) return <Loaders.InfoPanelBodyLoader />;
+  if (!selection) return null;
   return (
     <StyledInfoPanelBody>
       {!isNoItem && (
@@ -247,7 +249,9 @@ export default inject(
       getFolderInfo,
       getShareUsers,
       getRoomMembers,
+      getHistory,
       getRoomHistory,
+      getFileHistory,
       createThumbnail,
     } = filesStore;
 
@@ -292,7 +296,9 @@ export default inject(
       onSelectItem,
       getShareUsers,
       getRoomMembers,
+      getHistory,
       getRoomHistory,
+      getFileHistory,
       setSharingPanelVisible,
 
       getIcon,
@@ -307,16 +313,8 @@ export default inject(
   }
 )(
   withRouter(
-    withTranslation([
-      "InfoPanel",
-      "FormGallery",
-      "Home",
-      "Common",
-      "Translations",
-    ])(
-      withLoader(observer(InfoPanelBodyContent))(
-        <Loaders.InfoPanelBodyLoader />
-      )
+    withTranslation(["InfoPanel", "FormGallery", "Common", "Translations"])(
+      observer(InfoPanelBodyContent)
     )
   )
 );
