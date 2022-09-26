@@ -302,7 +302,7 @@ const PaymentsPage = ({
         </Text>
       )}
 
-      {isPaidPeriod && !isFreeAfterPaidPeriod && (
+      {isPaidPeriod && !isFreeTariff && (
         <Text
           noSelect
           fontSize={"14px"}

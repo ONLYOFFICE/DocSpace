@@ -32,7 +32,7 @@ class QuotasStore {
   };
 
   get isFreeTariff() {
-    return this.currentPortalQuota.trial || this.currentPortalQuota.free;
+    return this.currentPortalQuota.free;
   }
 
   get currentPlanCost() {

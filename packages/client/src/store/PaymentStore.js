@@ -126,12 +126,12 @@ class PaymentStore {
   }
 
   initializeInfo = () => {
-    this.initializeTotalPrice();
-    this.initializeManagersCount();
-  };
-  initializeTotalPrice = () => {
     const currentTotalPrice = authStore.currentQuotaStore.currentPlanCost.value;
 
+    this.initializeTotalPrice(currentTotalPrice);
+    this.initializeManagersCount(currentTotalPrice);
+  };
+  initializeTotalPrice = (currentTotalPrice) => {
     if (currentTotalPrice !== 0) {
       this.totalPrice = currentTotalPrice;
     } else {
@@ -141,11 +141,11 @@ class PaymentStore {
     }
   };
 
-  initializeManagersCount = () => {
+  initializeManagersCount = (currentTotalPrice) => {
     const maxCountManagersByQuota =
       authStore.currentQuotaStore.maxCountManagersByQuota;
 
-    if (maxCountManagersByQuota !== 0) {
+    if (maxCountManagersByQuota !== 0 && currentTotalPrice !== 0) {
       this.managersCount =
         maxCountManagersByQuota > this.maxAvailableManagersCount
           ? this.maxAvailableManagersCount + 1
