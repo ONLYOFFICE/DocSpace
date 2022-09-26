@@ -12,9 +12,7 @@ import {
   isMobile as isMobileUtils,
 } from "@docspace/components/utils/device";
 
-import Heading from "@docspace/components/heading";
 import { Base } from "@docspace/components/themes";
-
 import MenuIcon from "@docspace/components/public/static/images/menu.react.svg";
 import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
 
