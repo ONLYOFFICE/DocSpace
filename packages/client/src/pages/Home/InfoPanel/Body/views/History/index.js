@@ -90,7 +90,7 @@ const History = ({
         <StyledHistorySubtitle>{t("RecentActivities")}</StyledHistorySubtitle>
 
         {history.feeds.map((feed) => (
-          <StyledHistoryBlock key={feed.json.ModifiedDate}>
+          <StyledHistoryBlock key={feed.json.Id}>
             <Avatar
               role="user"
               className="avatar"
