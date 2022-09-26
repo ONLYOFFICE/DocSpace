@@ -15,7 +15,7 @@ export class PluginsService {
   constructor(
     @InjectRepository(Plugin)
     private pluginsRepository: Repository<Plugin>
-  ) {}
+  ) { }
 
   findAll(): Promise<Plugin[]> {
     return this.pluginsRepository.find();

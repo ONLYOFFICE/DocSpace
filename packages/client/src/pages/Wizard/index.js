@@ -85,7 +85,6 @@ class Body extends Component {
 
   async componentDidMount() {
     const {
-      t,
       wizardToken,
       getPortalPasswordSettings,
       getPortalCultures,
@@ -138,7 +137,6 @@ class Body extends Component {
             },
           });
           setIsWizardLoaded(true);
-          setDocumentTitle(t("WizardTitle"));
         })
         .catch((e) => {
           console.error(e);
@@ -160,6 +158,13 @@ class Body extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { tReady, t } = this.props;
+
+    if (tReady && prevProps.tReady !== tReady) {
+      setDocumentTitle(t("WizardTitle"));
+    }
+  }
   componentWillUnmount() {
     window.removeEventListener("keyup", this.onKeyPressHandler);
   }
@@ -346,6 +351,22 @@ class Body extends Component {
       },
     });
 
+  onSelectContextLanguage = (obj) => {
+    this.setState({
+      selectLanguage: {
+        key: obj.item.key,
+        label: obj.item.label,
+      },
+    });
+  };
+  onSelectContextTimezones = (obj) => {
+    this.setState({
+      selectTimezone: {
+        key: obj.item.key,
+        label: obj.item.label,
+      },
+    });
+  };
   onInputFileHandler = (file) => {
     const {
       setLicense,
@@ -470,6 +491,8 @@ class Body extends Component {
               onClickChangeEmail={this.onClickChangeEmail}
               onSelectLanguageHandler={this.onSelectLanguageHandler}
               onSelectTimezoneHandler={this.onSelectTimezoneHandler}
+              onSelectContextLanguage={this.onSelectContextLanguage}
+              onSelectContextTimezones={this.onSelectContextTimezones}
             />
 
             <ButtonContainer

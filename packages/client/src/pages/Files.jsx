@@ -124,8 +124,6 @@ const FilesSection = React.memo(() => {
           "/accounts",
           "/accounts/filter",
           "/accounts/create/:type",
-          "/accounts/edit/:userId",
-          "/accounts/view/:userId",
           "/accounts/view/@self",
         ]}
         component={Accounts}

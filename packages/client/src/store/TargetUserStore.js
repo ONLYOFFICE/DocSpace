@@ -2,13 +2,16 @@ import api from "@docspace/common/api";
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
 import { setCookie } from "@docspace/common/utils";
-import store from "client/store";
 
 class TargetUserStore {
   peopleStore = null;
   targetUser = null;
   isEditTargetUser = false;
   tipsSubscription = null;
+  changeEmailVisible = false;
+  changePasswordVisible = false;
+  changeNameVisible = false;
+  changeAvatarVisible = false;
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
@@ -50,12 +53,7 @@ class TargetUserStore {
 
   setTargetUser = (user) => {
     this.targetUser = user;
-  };
-
-  resetTargetUser = () => {
-    if (!this.isEditTargetUser) {
-      this.targetUser = null;
-    }
+    this.peopleStore.authStore.userStore.setUser(user); //TODO
   };
 
   updateProfile = async (profile) => {
@@ -104,6 +102,15 @@ class TargetUserStore {
     this.tipsSubscription = enabled;
     this.tipsSubscription = await api.settings.toggleTipsSubscription();
   };
+
+  setChangeEmailVisible = (visible) => (this.changeEmailVisible = visible);
+
+  setChangePasswordVisible = (visible) =>
+    (this.changePasswordVisible = visible);
+
+  setChangeNameVisible = (visible) => (this.changeNameVisible = visible);
+
+  setChangeAvatarVisible = (visible) => (this.changeAvatarVisible = visible);
 }
 
 export default TargetUserStore;

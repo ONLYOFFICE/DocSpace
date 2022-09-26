@@ -37,7 +37,6 @@ const UserContent = ({
   item,
   sectionWidth,
 
-  onUserNameClick,
   t,
   theme,
 }) => {
@@ -66,13 +65,12 @@ const UserContent = ({
       <Link
         containerWidth="28%"
         type="page"
-        href={`/accounts/view/${userName}`}
         title={displayName}
         fontWeight={600}
-        onClick={onUserNameClick}
         fontSize="15px"
         color={nameColor}
         isTextOverflow={true}
+        noHover
       >
         {statusType === "pending" ? email : displayName}
       </Link>

@@ -65,7 +65,7 @@ const StyledBox = styled.div`
   css`
     margin-left: 16px;
     padding: 0 16px !important;
-    padding-top: 10px !important;
+    padding-top: 14px !important;
     max-height: ${(props) => props.maxHeight};
   `}
 `;

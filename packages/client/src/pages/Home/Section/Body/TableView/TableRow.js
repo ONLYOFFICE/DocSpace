@@ -294,7 +294,7 @@ const FilesTableRow = (props) => {
     showHotkeyBorder,
     tableColumns,
     id,
-    tagRef,
+
     isRooms,
     onSelectType,
   } = props;
@@ -468,7 +468,6 @@ const FilesTableRow = (props) => {
           >
             <TagsCell
               sideColor={theme.filesSection.tableView.row.sideColor}
-              ref={tagRef}
               {...props}
             />
           </TableCell>

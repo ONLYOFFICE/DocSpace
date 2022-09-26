@@ -147,7 +147,6 @@ const StyledArticleHeader = styled.div`
   @media ${mobile} {
     border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
     padding: 12px 0 12px;
-    // margin-bottom: 16px !important;
   }
 
   ${isMobileOnly &&
@@ -155,7 +154,6 @@ const StyledArticleHeader = styled.div`
     border-bottom: ${(props) =>
       props.theme.catalog.header.borderBottom} !important;
     padding: 12px 0 12px !important;
-    // margin-bottom: 16px !important;
   `}
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -169,6 +167,14 @@ const StyledHeading = styled.div`
   margin: 0;
   padding: 0;
   cursor: pointer;
+
+  .logo-icon_svg {
+    svg {
+      path:last-child {
+        fill: ${(props) => props.theme.client.home.logoColor};
+      }
+    }
+  }
 
   @media ${tablet} {
     display: ${(props) => (props.showText ? "block" : "none")};
