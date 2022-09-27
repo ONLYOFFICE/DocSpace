@@ -22,7 +22,9 @@ const Header = (props) => {
     history,
     isAdmin,
     filter,
+    roomsFilter,
     setFilter,
+    setRoomsFilter,
     profile,
     isMe,
     setChangeEmailVisible,
@@ -76,11 +78,18 @@ const Header = (props) => {
       );
 
       history.push(backUrl, url);
+      setFilter(filter);
     } else {
-      history.goBack();
+      const url = roomsFilter.toUrlParams();
+      console.log(url);
+      const backUrl = combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `rooms/shared/filter?/${url}`
+      );
+      history.push(backUrl, url);
+      setRoomsFilter(roomsFilter);
     }
-
-    setFilter(filter);
   };
 
   return (
@@ -126,8 +135,10 @@ const Header = (props) => {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => {
+  inject(({ auth, peopleStore, filesStore }) => {
     const { isAdmin } = auth;
+
+    const { roomsFilter, setRoomsFilter } = filesStore;
 
     const { targetUserStore, filterStore } = peopleStore;
 
@@ -144,7 +155,9 @@ export default withRouter(
     return {
       isAdmin,
       filter,
+      roomsFilter,
       setFilter: setFilterParams,
+      setRoomsFilter,
       profile: targetUser,
       isMe,
       setChangeEmailVisible,
