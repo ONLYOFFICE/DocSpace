@@ -82,7 +82,7 @@ const Header = (props) => {
   return (
     <StyledHeader
       showContextButton={(isAdmin && !profile?.isOwner) || isMe}
-      isVisitor={profile.isVisitor}
+      isVisitor={!isAdmin}
     >
       {isAdmin && (
         <IconButton
