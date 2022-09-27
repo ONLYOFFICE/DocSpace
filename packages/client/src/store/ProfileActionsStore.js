@@ -68,8 +68,6 @@ class ProfileActionsStore {
       this.treeFoldersStore.setSelectedNode(["accounts"]);
     }
 
-    console.log("click");
-
     history.push(PROFILE_SELF_URL);
   };
 
