@@ -1159,8 +1159,6 @@ class FilesActionStore {
     const { userAccess } = this.filesStore;
 
     switch (option) {
-      case "share":
-        return isAccessedSelected && !personal; //isFavoritesFolder ||isRecentFolder
       case "showInfo":
       case "copy":
       case "download":
@@ -1276,16 +1274,6 @@ class FilesActionStore {
     } = this.dialogsStore;
 
     switch (option) {
-      case "share":
-        if (!this.isAvailableOption("share")) return null;
-        else
-          return {
-            label: t("Share"),
-            onClick: () => setSharingPanelVisible(true),
-            iconUrl: "/static/images/share.react.svg",
-            title: t("Translations:ButtonShareAccess"),
-          };
-
       case "copy":
         if (!this.isAvailableOption("copy")) return null;
         else
@@ -1416,7 +1404,6 @@ class FilesActionStore {
   };
 
   getAnotherFolderOptions = (itemsCollection, t) => {
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const moveTo = this.getOption("moveTo", t);
@@ -1425,7 +1412,6 @@ class FilesActionStore {
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("moveTo", moveTo)
@@ -1437,14 +1423,13 @@ class FilesActionStore {
   };
 
   getRecentFolderOptions = (itemsCollection, t) => {
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
+
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("copy", copy)
@@ -1456,14 +1441,13 @@ class FilesActionStore {
   getShareFolderOptions = (itemsCollection, t) => {
     const { setDeleteDialogVisible, setUnsubscribe } = this.dialogsStore;
 
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
+
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("copy", copy)
@@ -1497,15 +1481,12 @@ class FilesActionStore {
 
   getFavoritesFolderOptions = (itemsCollection, t) => {
     const { selection } = this.filesStore;
-
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("copy", copy)
