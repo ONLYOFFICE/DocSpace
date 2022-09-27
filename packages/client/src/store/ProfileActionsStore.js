@@ -60,8 +60,14 @@ class ProfileActionsStore {
   };
 
   onProfileClick = () => {
-    this.selectedFolderStore.setSelectedFolder(null);
-    this.treeFoldersStore.setSelectedNode(["accounts"]);
+    //TODO: add check manager
+    const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    if (isAdmin || isOwner) {
+      this.selectedFolderStore.setSelectedFolder(null);
+      this.treeFoldersStore.setSelectedNode(["accounts"]);
+    }
+
     history.push(PROFILE_SELF_URL);
   };
 
