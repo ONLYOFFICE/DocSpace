@@ -178,8 +178,8 @@ class AccountsContextOptionsStore {
     const managerOption = {
       id: "context-menu_manager",
       className: "context-menu_drop-down",
-      label: t("Manager"),
-      title: t("Manager"),
+      label: t("RoomAdmin"),
+      title: t("RoomAdmin"),
       onClick: (e) => onChangeType(e, t),
       action: "manager",
       key: "cm-manager",

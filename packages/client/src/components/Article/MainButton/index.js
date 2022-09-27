@@ -271,7 +271,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_manager",
             className: "main-button_drop-down",
             icon: "/static/images/person.manager.react.svg",
-            label: t("People:Manager"),
+            label: t("People:RoomAdmin"),
             onClick: onInvite,
             action: "manager",
             key: "manager",

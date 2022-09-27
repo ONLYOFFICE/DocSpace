@@ -223,7 +223,7 @@ const SectionHeaderContent = (props) => {
         id: "main-button_manager",
         className: "main-button_drop-down",
         icon: "/static/images/person.manager.react.svg",
-        label: t("Manager"),
+        label: t("RoomAdmin"),
         onClick: onInvite,
         "data-action": "manager",
         key: "manager",

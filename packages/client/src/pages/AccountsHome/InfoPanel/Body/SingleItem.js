@@ -52,7 +52,7 @@ const SingleItem = ({
       case "admin":
         return t("PeopleTranslations:Administrator");
       case "manager":
-        return t("PeopleTranslations:Manager");
+        return t("PeopleTranslations:RoomAdmin");
       case "user":
         return t("Common:User");
     }
@@ -69,8 +69,8 @@ const SingleItem = ({
     };
     const managerOption = {
       key: "manager",
-      title: t("PeopleTranslations:Manager"),
-      label: t("PeopleTranslations:Manager"),
+      title: t("PeopleTranslations:RoomAdmin"),
+      label: t("PeopleTranslations:RoomAdmin"),
       action: "manager",
     };
     const userOption = {
