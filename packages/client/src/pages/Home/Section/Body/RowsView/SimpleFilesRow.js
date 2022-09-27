@@ -136,13 +136,9 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 8px;
   }
 
-  ${(props) =>
-    props.sectionWidth > 500 &&
-    `
-      .badge:last-child {
-        margin-right: 0px;
-      }
-  `}
+  .badge:last-child {
+    margin-right: 0px;
+  }
 
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
