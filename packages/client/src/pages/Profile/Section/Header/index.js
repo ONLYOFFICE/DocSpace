@@ -22,9 +22,9 @@ const Header = (props) => {
     history,
     isAdmin,
     filter,
-    roomsFilter,
+
     setFilter,
-    setRoomsFilter,
+
     profile,
     isMe,
     setChangeEmailVisible,
@@ -122,10 +122,8 @@ const Header = (props) => {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore, filesStore }) => {
+  inject(({ auth, peopleStore }) => {
     const { isAdmin } = auth;
-
-    const { roomsFilter, setRoomsFilter } = filesStore;
 
     const { targetUserStore, filterStore } = peopleStore;
 
@@ -142,9 +140,9 @@ export default withRouter(
     return {
       isAdmin,
       filter,
-      roomsFilter,
+
       setFilter: setFilterParams,
-      setRoomsFilter,
+
       profile: targetUser,
       isMe,
       setChangeEmailVisible,
