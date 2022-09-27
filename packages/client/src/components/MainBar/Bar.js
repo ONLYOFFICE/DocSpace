@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { inject, observer } from "mobx-react";
 import difference from "lodash/difference";
 
 import { ADS_TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
@@ -6,9 +7,11 @@ import { ADS_TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 import { getBannerAttribute } from "@docspace/components/utils/banner";
 
 import SnackBar from "@docspace/components/snackbar";
+import { EmployeeActivationStatus } from "@docspace/common/constants";
+import QuotasBar from "./QuotasBar";
 
-const bannerHOC = (props) => {
-  const { firstLoad, setMaintenanceExist } = props;
+const Bar = (props) => {
+  const { firstLoad, isAdmin, setMaintenanceExist, activationStatus } = props;
 
   const [htmlLink, setHtmlLink] = useState();
   const [campaigns, setCampaigns] = useState();
@@ -64,7 +67,11 @@ const bannerHOC = (props) => {
     setMaintenanceExist(true);
   };
 
-  return htmlLink && !firstLoad ? (
+  return isAdmin && false ? (
+    <></>
+  ) : activationStatus !== EmployeeActivationStatus.Activated ? (
+    <QuotasBar type={"confirm-email"} />
+  ) : htmlLink && !firstLoad ? (
     <SnackBar
       onLoad={onLoad}
       clickAction={onClose}
@@ -74,4 +81,10 @@ const bannerHOC = (props) => {
   ) : null;
 };
 
-export default bannerHOC;
+export default inject(({ auth }) => {
+  const { isAdmin, activationStatus } = auth.userStore.user;
+
+  console.log(auth.userStore.user);
+
+  return { isAdmin, activationStatus };
+})(observer(Bar));
