@@ -68,28 +68,15 @@ const Header = (props) => {
   };
 
   const onClickBack = () => {
-    //TODO: add check manager
-    if (isAdmin) {
-      const url = filter.toUrlParams();
-      const backUrl = combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `/accounts/filter?/${url}`
-      );
+    const url = filter.toUrlParams();
+    const backUrl = combineUrl(
+      AppServerConfig.proxyURL,
+      config.homepage,
+      `/accounts/filter?/${url}`
+    );
 
-      history.push(backUrl, url);
-      setFilter(filter);
-    } else {
-      const url = roomsFilter.toUrlParams();
-      console.log(url);
-      const backUrl = combineUrl(
-        AppServerConfig.proxyURL,
-        config.homepage,
-        `rooms/shared/filter?/${url}`
-      );
-      history.push(backUrl, url);
-      setRoomsFilter(roomsFilter);
-    }
+    history.push(backUrl, url);
+    setFilter(filter);
   };
 
   return (
@@ -97,7 +84,7 @@ const Header = (props) => {
       showContextButton={(isAdmin && !profile?.isOwner) || isMe}
       isVisitor={profile.isVisitor}
     >
-      {!profile.isVisitor && (
+      {isAdmin && (
         <IconButton
           iconName="/static/images/arrow.path.react.svg"
           size="17"
