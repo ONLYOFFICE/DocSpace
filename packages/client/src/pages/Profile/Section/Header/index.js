@@ -66,14 +66,20 @@ const Header = (props) => {
   };
 
   const onClickBack = () => {
-    const url = filter.toUrlParams();
-    const backUrl = combineUrl(
-      AppServerConfig.proxyURL,
-      config.homepage,
-      `/accounts/filter?/${url}`
-    );
+    //TODO: add check manager
+    if (isAdmin) {
+      const url = filter.toUrlParams();
+      const backUrl = combineUrl(
+        AppServerConfig.proxyURL,
+        config.homepage,
+        `/accounts/filter?/${url}`
+      );
 
-    history.push(backUrl, url);
+      history.push(backUrl, url);
+    } else {
+      history.goBack();
+    }
+
     setFilter(filter);
   };
 
@@ -122,6 +128,7 @@ const Header = (props) => {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { isAdmin } = auth;
+
     const { targetUserStore, filterStore } = peopleStore;
 
     const { filter, setFilterParams } = filterStore;
