@@ -114,12 +114,6 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 7px;
   }
 
-  /* .row_context-menu-wrapper {
-    width: fit-content;
-    justify-content: space-between;
-    flex: 1 1 auto;
-  } */
-
   .row_content {
     ${(props) =>
       props.sectionWidth > 500 && `max-width: fit-content;`}//min-width: auto
