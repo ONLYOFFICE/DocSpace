@@ -18,9 +18,9 @@ import {
 } from "./styled-input-phone";
 
 const defaultCountry = {
-  locale: options[0].code, // RU default Russia
-  dialCode: options[0].dialCode, // +7 default Russia
-  icon: options[0].flag, // flag default Russia
+  locale: options[0].code,
+  dialCode: options[0].dialCode, 
+  icon: options[0].flag, 
 };
 
 export const InputPhone = memo(() => {
@@ -100,6 +100,7 @@ export const InputPhone = memo(() => {
           mask={getMask(country.locale)}
           isAutoFocussed={true}
           withBorder={false}
+          tabIndex={1}
           value={country.dialCode}
           onChange={handleChange}
         />
@@ -115,6 +116,7 @@ export const InputPhone = memo(() => {
             iconName="static/images/search.react.svg"
             placeholder="Search"
             value={searchValue}
+            tabIndex={2}
             scale={true}
             onChange={(e) => setSearchValue(e.target.value)}
             style={{ marginBottom: "6px" }}

@@ -148,7 +148,104 @@ import {
   Morocco,
   Mozambique,
   Myanmar,
+  Namibia,
+  Nauru,
+  Nepal,
+  NetherlandsAntilles,
+  Netherlands,
+  NewCaledonia,
+  NewGuinea,
+  NewZealand,
+  Nicaragua,
+  Niger,
+  Nigeria,
+  Niue,
+  NorfolkIslands,
+  NorthKorea,
+  NorthenMarianaIslands,
+  Norway,
+  Oman,
+  Pakistan,
+  Palau,
+  Palestine,
+  Panama,
+  Paraguay,
+  Peru,
+  Phillipines,
+  PitcairnIslands,
+  Poland,
+  Polynesia,
+  Portugal,
+  PuertoRico,
+  Qatar,
+  RepublicOfTheCongo,
+  Reunion,
+  Romania,
   Russia,
+  Rwanda,
+  SainVincentAndGrenadines,
+  SaintBarthelemy,
+  SaintKittsAndNevis,
+  SaintLucia,
+  SaintMartin,
+  SaintPierreAndMiquelon,
+  Samoa,
+  SanMarino,
+  SaoTomeAndPrincipe,
+  SaudiArabia,
+  Senegal,
+  Serbia,
+  Seychelles,
+  SierraLeone,
+  Singapore,
+  SintMaarten,
+  Slovakia,
+  Slovenia,
+  SolomonIslands,
+  Somalia,
+  SouthAfrica,
+  SouthGeorgiaAndSandwichIslands,
+  SouthKorea,
+  SouthSudan,
+  Spain,
+  SriLanka,
+  Sudan,
+  Suriname,
+  SvalbardAndJanMayen,
+  Swaziland,
+  Sweden,
+  Switzerland,
+  Syria,
+  Taiwan,
+  Tajikistan,
+  Tanzania,
+  Thailand,
+  TimorLeste,
+  Togo,
+  Tokelau,
+  Tonga,
+  TrinidadAndTobago,
+  Tunisia,
+  Turkey,
+  Turkmenistan,
+  TurksAndCaicosIslands,
+  Tuvalu,
+  Uganda,
+  Ukraine,
+  UnitedArabEmirates,
+  UnitedKingdom,
+  UnitedStatesVirginIslands,
+  UnitedStates,
+  Uruguay,
+  Uzbekistan,
+  Vatican,
+  Venezuela,
+  Vietnam,
+  Vunuatu,
+  WallisAndFutuna,
+  Yemen,
+  Zambia,
+  Zimbabwe,
 } from "./svg";
 
 export const options = [
@@ -1196,10 +1293,689 @@ export const options = [
     flag: Myanmar
   },
   {
+    name: "Namibia",
+    dialCode: "+264",
+    code: "NA",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Namibia
+  },
+  {
+    name: "Nauru",
+    dialCode: "+674",
+    code: "NR",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Nauru
+  },
+  {
+    name: "Nepal",
+    dialCode: "+977",
+    code: "NP",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Nepal
+  },
+  {
+    name: "Netherlands Antilles",
+    dialCode: "+599",
+    code: "AN",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: NetherlandsAntilles
+  },
+  {
+    name: "Netherlands",
+    dialCode: "+31",
+    code: "NL",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Netherlands
+  },
+  {
+    name: "New Caledonia",
+    dialCode: "+687",
+    code: "NC",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: NewCaledonia
+  },
+  {
+    name: "New Guinea",
+    dialCode: "+675",
+    code: "PG",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: NewGuinea
+  },
+  {
+    name: "New Zealand",
+    dialCode: "+64",
+    code: "NZ",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: NewZealand
+  },
+  {
+    name: "Nicaragua",
+    dialCode: "+505",
+    code: "NI",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Nicaragua
+  },
+  {
+    name: "Niger",
+    dialCode: "+227",
+    code: "NE",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Niger
+  },
+  {
+    name: "Nigeria",
+    dialCode: "+234",
+    code: "NG",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Nigeria
+  },
+  {
+    name: "Niue",
+    dialCode: "+683",
+    code: "NU",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/],
+    flag: Niue
+  },
+  {
+    name: "Norfolk Island",
+    dialCode: "+672",
+    code: "NF",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: NorfolkIslands
+  },
+  {
+    name: "North Korea",
+    dialCode: "+850",
+    code: "KP",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: NorthKorea
+  },
+  {
+    name: "Northern Mariana Islands",
+    dialCode: "+1670",
+    code: "MP",
+    mask: ["+", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: NorthenMarianaIslands
+  },
+  {
+    name: "Norway",
+    dialCode: "+47",
+    code: "NO",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Norway
+  },
+  {
+    name: "Oman",
+    dialCode: "+968",
+    code: "OM",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Oman
+  },
+  {
+    name: "Pakistan",
+    dialCode: "+92",
+    code: "PK",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Pakistan
+  },
+  {
+    name: "Palau",
+    dialCode: "+680",
+    code: "PW",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Palau
+  },
+  {
+    name: "Palestine",
+    dialCode: "+970",
+    code: "PS",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Palestine
+  },
+  {
+    name: "Panama",
+    dialCode: "+507",
+    code: "PA",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Panama
+  },
+  {
+    name: "Paraguay",
+    dialCode: "+595",
+    code: "PY",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Paraguay
+  },
+  {
+    name: "Peru",
+    dialCode: "+51",
+    code: "PE",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Peru
+  },
+  {
+    name: "Philippines",
+    dialCode: "+63",
+    code: "PH",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Phillipines
+  },
+  {
+    name: "Pitcairn Islands",
+    dialCode: "+872",
+    code: "PN",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: PitcairnIslands
+  },
+  {
+    name: "Poland",
+    dialCode: "+48",
+    code: "PL",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Poland
+  },
+  {
+    name: "Polynesia",
+    dialCode: "+689",
+    code: "PF",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/],
+    flag: Polynesia
+  },
+  {
+    name: "Portugal",
+    dialCode: "+351",
+    code: "PT",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Portugal
+  },
+  {
+    name: "Puerto Rico",
+    dialCode: "+1939",
+    code: "PR",
+    mask: ["+", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/],
+    flag: PuertoRico
+  },
+  {
+    name: "Qatar",
+    dialCode: "+974",
+    code: "QA",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Qatar
+  },
+  {
+    name: "Republic of the Congo",
+    dialCode: "+242",
+    code: "CG",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/,  "-", /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: RepublicOfTheCongo,
+  },
+  {
+    name: "Reunion",
+    dialCode: "+262",
+    code: "RE",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Reunion
+  },
+  {
+    name: "Romania",
+    dialCode: "+40",
+    code: "RO",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Romania
+  },
+  {
     name: "Russia",
     dialCode: "+7",
     code: "RU",
     mask: ["+", /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/],
     flag: Russia,
+  },
+  {
+    name: "Rwanda",
+    dialCode: "+250",
+    code: "RW",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Rwanda
+  },
+  {
+    name: "Saint Vincent and the Grenadines",
+    dialCode: "+1784",
+    code: "VC",
+    mask: ["+", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: SainVincentAndGrenadines
+  },
+  {
+    name: "Saint Barthelemy",
+    dialCode: "+590",
+    code: "BL",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/],
+    flag: SaintBarthelemy
+  },
+  {
+    name: "Saint Kitts and Nevis",
+    dialCode: "+1869",
+    code: "KN",
+    mask: ["+", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: SaintKittsAndNevis
+  },
+  {
+    name: "Saint Lucia",
+    dialCode: "+1758",
+    code: "LC",
+    mask: ["+", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: SaintLucia
+  },
+  {
+    name: "Saint Martin",
+    dialCode: "+590",
+    code: "MF",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: SaintMartin
+  },
+  {
+    name: "Saint Pierre and Miquelon",
+    dialCode: "+508",
+    code: "PM",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: SaintPierreAndMiquelon
+  },
+  {
+    name: "Samoa",
+    dialCode: "+685",
+    code: "WS",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Samoa
+  },
+  {
+    name: "San Marino",
+    dialCode: "+378",
+    code: "SM",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: SanMarino
+  },
+  {
+    name: "Sao Tome and Principe",
+    dialCode: "+239",
+    code: "ST",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: SaoTomeAndPrincipe
+  },
+  {
+    name: "Saudi Arabia",
+    dialCode: "+966",
+    code: "SA",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: SaudiArabia
+  },
+  {
+    name: "Senegal",
+    dialCode: "+221",
+    code: "SN",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Senegal
+  },
+  {
+    name: "Serbia",
+    dialCode: "+381",
+    code: "RS",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Serbia
+  },
+  {
+    name: "Seychelles",
+    dialCode: "+248",
+    code: "SC",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Seychelles
+  },
+  {
+    name: "Sierra Leone",
+    dialCode: "+232",
+    code: "SL",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: SierraLeone
+  },
+  {
+    name: "Singapore",
+    dialCode: "+65",
+    code: "SG",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Singapore
+  },
+  {
+    name: "Sint Maarten",
+    dialCode: "+1721",
+    code: "SX",
+    mask: ["+", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: SintMaarten,
+  },
+  {
+    name: "Slovakia",
+    dialCode: "+421",
+    code: "SK",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Slovakia
+  },
+  {
+    name: "Slovenia",
+    dialCode: "+386",
+    code: "SI",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Slovenia
+  },
+  {
+    name: "Solomon Islands",
+    dialCode: "+677",
+    code: "SB",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: SolomonIslands
+  },
+  {
+    name: "Somalia",
+    dialCode: "+252",
+    code: "SO",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Somalia
+  },
+  {
+    name: "South Africa",
+    dialCode: "+27",
+    code: "ZA",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: SouthAfrica
+  },
+  {
+    name: "South Georgia and Sandwich Islands",
+    dialCode: "+500",
+    code: "GS",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: SouthGeorgiaAndSandwichIslands
+  },
+  {
+    name: "South Korea",
+    dialCode: "+82",
+    code: "KR",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: SouthKorea
+  },
+  {
+    name: "South Sudan",
+    dialCode: "+211",
+    code: "SS",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: SouthSudan,
+  },
+  {
+    name: "Spain",
+    dialCode: "+34",
+    code: "ES",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Spain
+  },
+  {
+    name: "Sri Lanka",
+    dialCode: "+94",
+    code: "LK",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: SriLanka
+  },
+  {
+    name: "Sudan",
+    dialCode: "+249",
+    code: "SD",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Sudan
+  },
+  {
+    name: "Suriname",
+    dialCode: "+597",
+    code: "SR",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Suriname
+  },
+  {
+    name: "Svalbard and Jan Mayen",
+    dialCode: "+47",
+    code: "SJ",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: SvalbardAndJanMayen
+  },
+  {
+    name: "Swaziland",
+    dialCode: "+268",
+    code: "SZ",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Swaziland
+  },
+  {
+    name: "Sweden",
+    dialCode: "+46",
+    code: "SE",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Sweden
+  },
+  {
+    name: "Switzerland",
+    dialCode: "+41",
+    code: "CH",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Switzerland
+  },
+  {
+    name: "Syria",
+    dialCode: "+963",
+    code: "SY",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Syria
+  },
+  {
+    name: "Taiwan",
+    dialCode: "+886",
+    code: "TW",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Taiwan
+  },
+  {
+    name: "Tajikistan",
+    dialCode: "+992",
+    code: "TJ",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Tajikistan
+  },
+  {
+    name: "Tanzania",
+    dialCode: "+255",
+    code: "TZ",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Tanzania
+  },
+  {
+    name: "Thailand",
+    dialCode: "+66",
+    code: "TH",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Thailand
+  },
+  {
+    name: "Timor-Leste",
+    dialCode: "+670",
+    code: "TL",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: TimorLeste
+  },
+  {
+    name: "Togo",
+    dialCode: "+228",
+    code: "TG",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Togo
+  },
+  {
+    name: "Tokelau",
+    dialCode: "+690",
+    code: "TK",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/],
+    flag: Tokelau
+  },
+  {
+    name: "Tonga",
+    dialCode: "+676",
+    code: "TO",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: Tonga
+  },
+  {
+    name: "Trinidad and Tobago",
+    dialCode: "+1868",
+    code: "TT",
+    mask: ["+", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: TrinidadAndTobago
+  },
+  {
+    name: "Tunisia",
+    dialCode: "+216",
+    code: "TN",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Tunisia
+  },
+  {
+    name: "Turkey",
+    dialCode: "+90",
+    code: "TR",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Turkey
+  },
+  {
+    name: "Turkmenistan",
+    dialCode: "+993",
+    code: "TM",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Turkmenistan
+  },
+  {
+    name: "Turks and Caicos Islands",
+    dialCode: "+1649",
+    code: "TC",
+    mask: ["+", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: TurksAndCaicosIslands
+  },
+  {
+    name: "Tuvalu",
+    dialCode: "+688",
+    code: "TV",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: Tuvalu
+  },
+  {
+    name: "Uganda",
+    dialCode: "+256",
+    code: "UG",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Uganda
+  },
+  {
+    name: "Ukraine",
+    dialCode: "+380",
+    code: "UA",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/],
+    flag: Ukraine
+  },
+  {
+    name: "United Arab Emirates",
+    dialCode: "+971",
+    code: "AE",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: UnitedArabEmirates
+  },
+  {
+    name: "United Kingdom",
+    dialCode: "+44",
+    code: "GB",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: UnitedKingdom
+  },
+  {
+    name: "United States Virgin Islands",
+    dialCode: "+1340",
+    code: "VI",
+    mask: ["+", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: UnitedStatesVirginIslands
+  },
+  {
+    name: "United States",
+    dialCode: "+1",
+    code: "US",
+    mask: ["+", /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: UnitedStates
+  },
+  {
+    name: "Uruguay",
+    dialCode: "+598",
+    code: "UY",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/],
+    flag: Uruguay
+  },
+  {
+    name: "Uzbekistan",
+    dialCode: "+998",
+    code: "UZ",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/],
+    flag: Uzbekistan
+  },
+  {
+    name: "Vanuatu",
+    dialCode: "+678",
+    code: "VU",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: Vunuatu
+  },
+  {
+    name: "Vatican",
+    dialCode: "+379",
+    code: "VA",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: Vatican
+  },
+  {
+    name: "Venezuela",
+    dialCode: "+58",
+    code: "VE",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Venezuela
+  },
+  {
+    name: "Vietnam",
+    dialCode: "+84",
+    code: "VN",
+    mask: ["+", /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Vietnam
+  },
+  {
+    name: "Wallis and Futuna",
+    dialCode: "+681",
+    code: "WF",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: WallisAndFutuna
+  },
+  {
+    name: "Yemen",
+    dialCode: "+967",
+    code: "YE",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    flag: Yemen
+  },
+  {
+    name: "Zambia",
+    dialCode: "+260",
+    code: "ZM",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, /\d/, "-", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    flag: Zambia
+  },
+  {
+    name: "Zimbabwe",
+    dialCode: "+263",
+    code: "ZW",
+    mask: ["+", /\d/, /\d/, /\d/, " ", /\d/, "-", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    flag: Zimbabwe
   },
 ];
