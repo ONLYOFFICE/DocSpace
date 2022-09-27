@@ -751,7 +751,7 @@ public class FileMarker
     {
         var tagDao = _daoFactory.GetTagDao<T>();
         var folderDao = _daoFactory.GetFolderDao<T>();
-        var totalTags = await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, parent, false).ToListAsync();
+        var totalTags = await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, parent, true).ToListAsync();
 
         if (totalTags.Count <= 0)
         {
@@ -764,8 +764,15 @@ public class FileMarker
                                     : totalTags.FirstOrDefault(tag => tag.EntryType == FileEntryType.Folder && Equals(tag.EntryId, parent.Id));
 
         totalTags = totalTags.Where(e => e != parentFolderTag).ToList();
+
         var countSubNew = 0;
-        totalTags.ForEach(tag => countSubNew += tag.Count);
+        totalTags.ForEach(tag =>
+        {
+            if (tag.EntryType == FileEntryType.File)
+            {
+                countSubNew += tag.Count;
+            }
+        });
 
         if (parentFolderTag == null)
         {
