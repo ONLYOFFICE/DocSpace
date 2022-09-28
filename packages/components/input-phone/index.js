@@ -18,9 +18,10 @@ import {
 } from "./styled-input-phone";
 
 const defaultCountry = {
-  locale: options[0].code,
-  dialCode: options[0].dialCode, 
-  icon: options[0].flag, 
+  locale: options[182].code, // default locale RU
+  dialCode: options[182].dialCode, // default dialCode +7
+  mask: options[182].mask, // default dialCode +7
+  icon: options[182].flag, // default flag Russia
 };
 
 export const InputPhone = memo(() => {
@@ -31,15 +32,33 @@ export const InputPhone = memo(() => {
   const [isValid, setIsValid] = useState(true);
 
   const handleChange = (e) => {
-    if (e.target.value === "") {
-      setCountry((prev) => ({ ...prev, dialCode: "+" }));
+    const str = e.target.value.replace(/\s/g, "");
+    const el = options.find((option) => option.dialCode === str);
+
+    console.log("el", el);
+
+    // if (e.target.value === "") {
+    //   setCountry((prev) => ({ ...prev, dialCode: "+" }));
+    // } else {
+    //   setCountry((prev) => ({ ...prev, dialCode: e.target.value }));
+    // }
+
+    if (el) {
+      setCountry(() => ({
+        ...prev,
+        dialCode: e.target.value,
+        mask: el.mask,
+        icon: el.flag,
+      }));
+      setIsValid(true);
     } else {
-      setCountry((prev) => ({ ...prev, dialCode: e.target.value }));
+      setIsValid(false);
     }
   };
+  console.log("country", country);
 
   const getMask = (locale) => {
-    return options.find((option) => option.code === locale).mask;
+    return options.find((option) => option.code === setCountry()).mask;
   };
 
   useEffect(() => {
