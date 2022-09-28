@@ -28,7 +28,6 @@ class SelectFolderDialog extends React.Component {
 
   async componentDidMount() {
     const {
-      treeFolders,
       foldersType,
       onSetBaseFolderPath,
       onSelectFolder,
@@ -41,6 +40,7 @@ class SelectFolderDialog extends React.Component {
       id,
       storeFolderId,
       withoutBasicSelection = false,
+      roomsFolderId,
     } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
@@ -48,6 +48,11 @@ class SelectFolderDialog extends React.Component {
     const initialFolderId = withInput ? id : storeFolderId;
 
     let resultingFolderTree, resultingId;
+
+    const treeFolders = await this.props.fetchTreeFolders();
+    const roomsFolder = treeFolders.find((f) => f.id == roomsFolderId);
+    const hasSharedFolder =
+      roomsFolder && roomsFolder.foldersCount ? true : false;
 
     if (!withInput && !isNeedArrowIcon) {
       try {
@@ -60,7 +65,9 @@ class SelectFolderDialog extends React.Component {
           initialFolderId,
           onSetBaseFolderPath,
           onSelectFolder,
-          foldersList
+          foldersList,
+          false,
+          hasSharedFolder
         );
       } catch (e) {
         toastr.error(e);
@@ -320,6 +327,8 @@ export default inject(
       treeFolders,
       setExpandedPanelKeys,
       sharedRoomId,
+      fetchTreeFolders,
+      roomsFolderId,
     } = treeFoldersStore;
 
     const { filter } = filesStore;
@@ -353,6 +362,8 @@ export default inject(
       filter,
       setSelectedItems,
       sharedRoomId,
+      fetchTreeFolders,
+      roomsFolderId,
     };
   }
 )(

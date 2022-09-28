@@ -18,6 +18,8 @@ import {
 import { StyledBody, StyledModalDialog } from "./StyledSelectionPanel";
 import Text from "@docspace/components/text";
 import Loaders from "@docspace/common/components/Loaders";
+import { FolderType } from "@docspace/common/constants";
+
 const SelectionPanelBody = ({
   t,
   isPanelVisible,
@@ -177,7 +179,8 @@ class SelectionPanel extends React.Component {
     onSetBaseFolderPath,
     onSelectFolder,
     foldersList,
-    withoutBasicSelection = false
+    withoutBasicSelection = false,
+    hasSharedFolder
   ) => {
     const getRequestFolderTree = () => {
       switch (foldersType) {
@@ -215,10 +218,14 @@ class SelectionPanel extends React.Component {
     };
 
     const filterFoldersTree = (folders, arrayOfExceptions) => {
+      const arr = !hasSharedFolder
+        ? [...arrayOfExceptions, FolderType.Rooms]
+        : arrayOfExceptions;
+
       let newArray = [];
 
       for (let i = 0; i < folders.length; i++) {
-        if (!arrayOfExceptions.includes(folders[i].rootFolderType)) {
+        if (!arr.includes(folders[i].rootFolderType)) {
           newArray.push(folders[i]);
         }
       }

@@ -81,7 +81,6 @@ class SelectFileDialog extends React.Component {
 
   async componentDidMount() {
     const {
-      treeFolders,
       foldersType,
       onSetBaseFolderPath,
       onSelectFolder,
@@ -91,6 +90,7 @@ class SelectFileDialog extends React.Component {
       setFolderId,
       folderId,
       withoutBasicSelection,
+      roomsFolderId,
     } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
@@ -98,6 +98,11 @@ class SelectFileDialog extends React.Component {
     this.setFilter();
 
     let resultingFolderTree, resultingId;
+
+    const treeFolders = await this.props.fetchTreeFolders();
+    const roomsFolder = treeFolders.find((f) => f.id == roomsFolderId);
+    const hasSharedFolder =
+      roomsFolder && roomsFolder.foldersCount ? true : false;
 
     try {
       [
@@ -110,7 +115,8 @@ class SelectFileDialog extends React.Component {
         onSetBaseFolderPath,
         onSelectFolder,
         foldersList,
-        withoutBasicSelection
+        withoutBasicSelection,
+        hasSharedFolder
       );
     } catch (e) {
       toastr.error(e);
@@ -329,7 +335,11 @@ export default inject(
       setFile,
     } = selectFileDialogStore;
 
-    const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
+    const {
+      setExpandedPanelKeys,
+      fetchTreeFolders,
+      roomsFolderId,
+    } = treeFoldersStore;
     const { filter } = filesStore;
     const { id: storeFolderId } = selectedFolderStore;
 
@@ -342,12 +352,13 @@ export default inject(
       setFile,
       setFolderId,
       filter,
-      treeFolders,
       storeFolderId,
 
       folderId,
       theme: theme,
       setExpandedPanelKeys,
+      fetchTreeFolders,
+      roomsFolderId,
     };
   }
 )(
