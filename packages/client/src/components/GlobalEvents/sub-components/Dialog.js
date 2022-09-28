@@ -6,6 +6,7 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
 import ComboBox from "@docspace/components/combobox";
+import { isSafari, isTablet } from "react-device-detect";
 
 const Dialog = ({
   t,
@@ -43,8 +44,13 @@ const Dialog = ({
     e.target.select();
   }, []);
 
+  const returnWindowPositionAfterKeyboard = () => {
+    isSafari && isTablet && window.scrollTo(0, 0);
+  };
+
   const onSaveAction = React.useCallback(
     (e) => {
+      returnWindowPositionAfterKeyboard();
       setIsDisabled(true);
       onSave && onSave(e, value);
     },
@@ -52,7 +58,13 @@ const Dialog = ({
   );
 
   const onCancelAction = React.useCallback((e) => {
+    returnWindowPositionAfterKeyboard();
     onCancel && onCancel(e);
+  }, []);
+
+  const onCloseAction = React.useCallback((e) => {
+    returnWindowPositionAfterKeyboard();
+    onClose && onClose(e);
   }, []);
 
   return (
@@ -60,7 +72,7 @@ const Dialog = ({
       visible={visible}
       displayType={"modal"}
       scale={true}
-      onClose={onClose}
+      onClose={onCloseAction}
     >
       <ModalDialog.Header>{title}</ModalDialog.Header>
       <ModalDialog.Body>
