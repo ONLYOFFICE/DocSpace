@@ -26,6 +26,7 @@ const defaultCountry = {
 
 export const InputPhone = memo(() => {
   const [country, setCountry] = useState(defaultCountry);
+  const [phoneValue, setPhoneValue] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -35,30 +36,26 @@ export const InputPhone = memo(() => {
     const str = e.target.value.replace(/\s/g, "");
     const el = options.find((option) => option.dialCode === str);
 
-    console.log("el", el);
-
-    // if (e.target.value === "") {
-    //   setCountry((prev) => ({ ...prev, dialCode: "+" }));
-    // } else {
-    //   setCountry((prev) => ({ ...prev, dialCode: e.target.value }));
-    // }
-
     if (el) {
-      setCountry(() => ({
-        ...prev,
-        dialCode: e.target.value,
+      setIsValid(true);
+      setCountry({
+        locale: el.code,
+        dialCode: el.dialCode,
         mask: el.mask,
         icon: el.flag,
-      }));
-      setIsValid(true);
-    } else {
-      setIsValid(false);
+      });
+      setPhoneValue(e.target.value);
     }
   };
-  console.log("country", country);
+
+  // console.log("phoneValue", phoneValue);
+
+  const handleSearch = (e) => {
+    setSearchValue(e.target.value);
+  };
 
   const getMask = (locale) => {
-    return options.find((option) => option.code === setCountry()).mask;
+    return options.find((option) => option.code === locale).mask;
   };
 
   useEffect(() => {
@@ -137,7 +134,7 @@ export const InputPhone = memo(() => {
             value={searchValue}
             tabIndex={2}
             scale={true}
-            onChange={(e) => setSearchValue(e.target.value)}
+            onChange={handleSearch}
             style={{ marginBottom: "6px" }}
           />
           <Box>
