@@ -166,6 +166,24 @@ public class FileMarker
             if (obj.FileEntry.ProviderEntry)
             {
                 userIDs = userIDs.Where(u => !_userManager.IsVisitor(u)).ToList();
+
+                if (obj.FileEntry.RootFolderType == FolderType.VirtualRooms)
+                {
+                    var parents = new List<Folder<T>>();
+
+                    foreach (var folder in parentFolders)
+                    {
+                        if (DocSpaceHelper.IsRoom(folder.FolderType))
+                        {
+                            parents.Add(folder);
+                            break;
+                        }
+
+                        parents.Add(folder);
+                    }
+
+                    parentFolders = parents;
+                }
             }
 
             foreach (var parentFolder in parentFolders)
