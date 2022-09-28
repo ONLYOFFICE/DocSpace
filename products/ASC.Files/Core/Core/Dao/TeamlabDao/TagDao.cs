@@ -969,7 +969,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             tempTags = tempTags.Concat(_projectsQuery(filesDbContext, tenantId, subject));
         }
 
-        if (!deepSearch)
+        if (!deepSearch && parentFolder.FolderType != FolderType.VirtualRooms)
         {
             await foreach (var e in tempTags)
             {

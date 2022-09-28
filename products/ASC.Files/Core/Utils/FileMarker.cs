@@ -259,7 +259,25 @@ public class FileMarker
             else if (obj.FileEntry.RootFolderType == FolderType.VirtualRooms)
             {
                 var virtualRoomsFolderId = await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory);
-                userIDs.ForEach(userID => RemoveFromCahce(virtualRoomsFolderId, userID));
+
+                if (obj.FileEntry.ProviderEntry)
+                {
+                    var virtualRoomsFolder = await _daoFactory.GetFolderDao<int>().GetFolderAsync(virtualRoomsFolderId);
+
+                    userIDs.ForEach(userID =>
+                    {
+                        if (userEntriesData.TryGetValue(userID, out var value))
+                        {
+                            value.Add(virtualRoomsFolder);
+                        }
+                        else
+                        {
+                            userEntriesData.Add(userID, new List<FileEntry> { virtualRoomsFolder });
+                        }
+
+                        RemoveFromCahce(virtualRoomsFolderId, userID);
+                    });
+                }
             }
             else if (obj.FileEntry.RootFolderType == FolderType.Privacy)
             {
@@ -751,7 +769,7 @@ public class FileMarker
     {
         var tagDao = _daoFactory.GetTagDao<T>();
         var folderDao = _daoFactory.GetFolderDao<T>();
-        var totalTags = await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, parent, true).ToListAsync();
+        var totalTags = await tagDao.GetNewTagsAsync(_authContext.CurrentAccount.ID, parent, false).ToListAsync();
 
         if (totalTags.Count <= 0)
         {
@@ -768,10 +786,7 @@ public class FileMarker
         var countSubNew = 0;
         totalTags.ForEach(tag =>
         {
-            if (tag.EntryType == FileEntryType.File)
-            {
-                countSubNew += tag.Count;
-            }
+            countSubNew += tag.Count;
         });
 
         if (parentFolderTag == null)
