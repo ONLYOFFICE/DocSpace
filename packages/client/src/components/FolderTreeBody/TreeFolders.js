@@ -83,7 +83,7 @@ class TreeFolders extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { isExpand: false };
+    this.state = { isExpand: false, isLoading: false };
     this.selectionFoldersId = [];
   }
 
@@ -399,8 +399,11 @@ class TreeFolders extends React.Component {
   onLoadData = (treeNode, isExpand) => {
     const { data: incomingDate, certainFolders } = this.props;
     isExpand && this.setState({ isExpand: true });
-    this.props.setIsLoading && this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
+
+    this.setState({
+      isLoading: true,
+    });
 
     if (this.state.isExpand && !isExpand) {
       return Promise.resolve();
@@ -421,8 +424,7 @@ class TreeFolders extends React.Component {
       })
       .catch((err) => console.log("err", err))
       .finally(() => {
-        this.setState({ isExpand: false });
-        this.props.setIsLoading && this.props.setIsLoading(false);
+        this.setState({ isExpand: false, isLoading: false });
       });
   };
 
@@ -489,10 +491,8 @@ class TreeFolders extends React.Component {
   render() {
     const {
       selectedKeys,
-      isLoading,
       onSelect,
       dragging,
-
       expandedPanelKeys,
       treeFolders,
       data,
@@ -501,6 +501,8 @@ class TreeFolders extends React.Component {
       isPanel,
       isLoadingNodes,
     } = this.props;
+
+    const { isLoading } = this.state;
 
     return (
       <StyledTreeMenu
@@ -542,13 +544,7 @@ export default inject(
     { auth, filesStore, treeFoldersStore, selectedFolderStore },
     { useDefaultSelectedKeys, selectedKeys }
   ) => {
-    const {
-      selection,
-      setIsLoading,
-      isLoading,
-      dragging,
-      setDragging,
-    } = filesStore;
+    const { selection, dragging, setDragging } = filesStore;
 
     const {
       treeFolders,
@@ -577,13 +573,11 @@ export default inject(
       isPrivacy: isPrivacyFolder,
       draggableItems: dragging ? selection : null,
       treeFolders,
-      isLoading,
       selectedKeys: useDefaultSelectedKeys
         ? treeFoldersStore.selectedKeys
         : selectedKeys,
 
       setDragging,
-      setIsLoading,
       setTreeFolders,
       setExpandedPanelKeys,
       getSubfolders,
