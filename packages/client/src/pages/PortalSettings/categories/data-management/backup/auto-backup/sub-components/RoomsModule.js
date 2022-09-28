@@ -55,7 +55,6 @@ class RoomsModule extends React.PureComponent {
             isDisabled={isLoadingData}
             id={passedId}
             isReset={isResetProcess}
-            isSuccessSave={isSavingProcess}
             withoutBasicSelection={isDocumentsDefault ? false : true}
           />
         </div>

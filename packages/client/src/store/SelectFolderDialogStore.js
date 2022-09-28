@@ -1,27 +1,55 @@
-import { makeObservable, action, observable } from "mobx";
+import { makeAutoObservable, action, observable } from "mobx";
 
 class SelectFolderDialogStore {
-  folderId = null;
+  resultingFolderId = null;
   fileInfo = null;
   folderTitle = "";
   providerKey = null;
   baseFolderPath = "";
+  newFolderPath = "";
+  isPathError = false;
+  isLoading = false;
+  resultingFolderTree = [];
 
   constructor() {
-    makeObservable(this, {
-      fileInfo: observable,
-      folderId: observable,
-      folderTitle: observable,
-      providerKey: observable,
-
-      setFolderId: action,
-      setProviderKey: action,
-      setFolderTitle: action,
-    });
+    makeAutoObservable(this);
   }
 
-  setFolderId = (id) => {
-    this.folderId = id;
+  toDefault = () => {
+    this.resultingFolderId = null;
+    this.resultingFolderTree = [];
+    this.baseFolderPath = "";
+    this.newFolderPath = "";
+    this.folderTitle = "";
+    this.isLoading = false;
+    this.isPathError = false;
+    this.setProviderKey(null);
+  };
+
+  updateBaseFolderPath = () => {
+    this.baseFolderPath = this.newFolderPath;
+    this.setIsPathError(false);
+  };
+
+  resetNewFolderPath = (id) => {
+    this.newFolderPath = this.baseFolderPath;
+    this.setIsPathError(false);
+    this.setResultingFolderId(id);
+  };
+
+  setBaseFolderPath = (baseFolderPath) => {
+    this.baseFolderPath = baseFolderPath;
+  };
+
+  setIsPathError = (isPathError) => {
+    this.isPathError = isPathError;
+  };
+
+  setNewFolderPath = (newFolderPath) => {
+    this.newFolderPath = newFolderPath;
+  };
+  setResultingFolderId = (id) => {
+    this.resultingFolderId = id;
   };
 
   setFolderTitle = (title) => {
@@ -30,6 +58,14 @@ class SelectFolderDialogStore {
 
   setProviderKey = (providerKey) => {
     this.providerKey = providerKey;
+  };
+
+  setIsLoading = (isLoading) => {
+    this.isLoading = isLoading;
+  };
+
+  setResultingFoldersTree = (tree) => {
+    this.resultingFolderTree = tree;
   };
 }
 

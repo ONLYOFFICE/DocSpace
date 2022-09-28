@@ -55,12 +55,10 @@ class ThirdPartyModule extends React.PureComponent {
       isError,
       isLoadingData,
       isReset,
-      isSuccessSave,
+
       passedId,
       //commonThirdPartyList,
       isResourcesDefault,
-      isResetProcess,
-      isSavingProcess,
       t,
       ...rest
     } = this.props;
@@ -79,7 +77,7 @@ class ThirdPartyModule extends React.PureComponent {
               isDisabled={commonThirdPartyList.length === 0 || isLoadingData}
               id={passedId}
               isReset={isResetProcess}
-              isSuccessSave={isSavingProcess}
+        
               foldersList={commonThirdPartyList}
               withoutBasicSelection={isResourcesDefault ? false : true}
             />
@@ -98,8 +96,6 @@ class ThirdPartyModule extends React.PureComponent {
             isPanelVisible={isPanelVisible}
             withoutBasicSelection={isResourcesDefault ? false : true}
             isError={isError}
-            isReset={isResetProcess}
-            isSuccessSave={isSavingProcess}
             id={passedId}
           />
         </div>
@@ -115,8 +111,6 @@ export default inject(({ backup }) => {
     defaultStorageType,
     commonThirdPartyList,
     defaultFolderId,
-    isResetProcess,
-    isSavingProcess,
   } = backup;
 
   const isResourcesDefault =
@@ -124,8 +118,6 @@ export default inject(({ backup }) => {
   const passedId = isResourcesDefault ? defaultFolderId : "";
 
   return {
-    isResetProcess,
-    isSavingProcess,
     setSelectedFolder,
     passedId,
     commonThirdPartyList,

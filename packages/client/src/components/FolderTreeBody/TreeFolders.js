@@ -223,7 +223,7 @@ class TreeFolders extends React.Component {
 
       let isDisabledNode = false;
       if (item.id == roomsFolderId) {
-        isDisabledNode = expandedPanelKeys.includes(roomsFolderId + "");
+        isDisabledNode = expandedPanelKeys?.includes(roomsFolderId + "");
       }
 
       if (this.selectionFoldersId && this.selectionFoldersId.includes(item.id))

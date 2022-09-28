@@ -176,47 +176,9 @@ class SelectionPanel extends React.Component {
     treeFolders,
     foldersType,
     id,
-    onSetBaseFolderPath,
-    onSelectFolder,
-    foldersList,
-    withoutBasicSelection = false,
+    foldersList = [],
     hasSharedFolder
   ) => {
-    const getRequestFolderTree = () => {
-      switch (foldersType) {
-        case "exceptSortedByTags":
-        case "exceptPrivacyTrashFolders":
-          try {
-            return getFoldersTree();
-          } catch (err) {
-            console.error(err);
-          }
-          break;
-        case "common":
-          try {
-            return getCommonFoldersTree();
-          } catch (err) {
-            console.error(err);
-          }
-          break;
-
-        case "third-party":
-          try {
-            return getThirdPartyCommonFolderTree();
-          } catch (err) {
-            console.error(err);
-          }
-          break;
-
-        default:
-          try {
-            return getFoldersTree();
-          } catch (err) {
-            console.error(err);
-          }
-      }
-    };
-
     const filterFoldersTree = (folders, arrayOfExceptions) => {
       const arr = !hasSharedFolder
         ? [...arrayOfExceptions, FolderType.Rooms]
@@ -242,31 +204,11 @@ class SelectionPanel extends React.Component {
       }
     };
 
-    let requestedTreeFolders, filteredTreeFolders;
+    let filteredTreeFolders;
 
-    const treeFoldersLength = treeFolders?.length;
-
-    if (treeFoldersLength === 0 || !treeFoldersLength) {
-      try {
-        requestedTreeFolders = foldersList
-          ? foldersList
-          : await getRequestFolderTree();
-      } catch (e) {
-        toastr.error(e);
-        return;
-      }
-    }
-
-    const foldersTree =
-      treeFoldersLength > 0 ? treeFolders : requestedTreeFolders;
+    const foldersTree = foldersList.length > 0 ? foldersList : treeFolders;
 
     const passedId = id ? id : foldersTree[0]?.id;
-
-    !withoutBasicSelection &&
-      onSetBaseFolderPath &&
-      onSetBaseFolderPath(passedId);
-
-    !withoutBasicSelection && onSelectFolder && onSelectFolder(passedId);
 
     if (
       foldersType === "exceptSortedByTags" ||

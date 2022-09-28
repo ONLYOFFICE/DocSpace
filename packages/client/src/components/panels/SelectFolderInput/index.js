@@ -12,111 +12,25 @@ import { FolderType } from "@docspace/common/constants";
 class SelectFolderInput extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { id, foldersType, withoutBasicSelection } = this.props;
+    const { id, withoutBasicSelection, setIsLoading } = this.props;
 
-    const isNeedLoader =
-      !!id || !withoutBasicSelection || foldersType === "common";
-
-    this.state = {
-      isLoading: isNeedLoader,
-      baseFolderPath: "",
-      newFolderPath: "",
-      resultingFolderTree: [],
-      baseId: "",
-    };
+    const isNeedLoadPath = !!id || !withoutBasicSelection;
+    setIsLoading(isNeedLoadPath);
 
     this._isMount = false;
   }
-
-  setBaseInfo = async () => {
-    const {
-      foldersType,
-      id,
-      onSelectFolder,
-      foldersList,
-      withoutBasicSelection,
-    } = this.props;
-
-    let resultingFolderTree, resultingId;
-
-    try {
-      [
-        resultingFolderTree,
-        resultingId,
-      ] = await SelectionPanel.getBasicFolderInfo(
-        null,
-        foldersType,
-        id,
-        this.onSetBaseFolderPath,
-        onSelectFolder,
-        foldersList,
-        withoutBasicSelection
-      );
-    } catch (e) {
-      toastr.error(e);
-      this._isMount &&
-        this.setState({
-          isLoading: false,
-        });
-      return;
-    }
-
-    this._isMount &&
-      this.setState({
-        isPathError: false,
-        resultingFolderTree,
-        baseId: resultingId,
-        baseFolderPath: "",
-        newFolderPath: "",
-        ...(withoutBasicSelection && { isLoading: false }),
-      });
-  };
 
   componentDidMount() {
     this._isMount = true;
 
-    const { setFirstLoad, isWaitingUpdate } = this.props;
+    const { setFirstLoad } = this.props;
 
     setFirstLoad(false);
-    !isWaitingUpdate && this.setBaseInfo();
-  }
-
-  componentDidUpdate(prevProps) {
-    const {
-      isSuccessSave,
-      isReset,
-      id,
-
-      isWaitingUpdate,
-    } = this.props;
-    const { newFolderPath, baseFolderPath } = this.state;
-
-    if (!isSuccessSave && isSuccessSave !== prevProps.isSuccessSave) {
-      newFolderPath &&
-        this.setState({
-          baseFolderPath: newFolderPath,
-          baseId: id,
-          newId: null,
-          isPathError: false,
-        });
-    }
-
-    if (!isReset && isReset !== prevProps.isReset) {
-      this.setState({
-        newFolderPath: baseFolderPath,
-        baseId: id,
-        newId: null,
-        isPathError: false,
-      });
-    }
-
-    if (!isWaitingUpdate && isWaitingUpdate !== prevProps.isWaitingUpdate) {
-      this.setBaseInfo();
-    }
   }
 
   componentWillUnmount() {
     this._isMount = false;
+    this.props.toDefault();
   }
   setFolderPath = async (folderId) => {
     const foldersArray = await getFolderPath(folderId);
@@ -143,48 +57,53 @@ class SelectFolderInput extends React.PureComponent {
     return convertFoldersArray;
   };
   onSetNewFolderPath = async (folderId) => {
+    const { setIsLoading, setNewFolderPath, setIsPathError } = this.props;
     let timerId = setTimeout(() => {
-      this._isMount && this.setState({ isLoading: true });
+      setIsLoading(true);
     }, 500);
-    try {
-      const convertFoldersArray = await this.setFolderPath(folderId);
-      clearTimeout(timerId);
-      timerId = null;
-      this._isMount &&
-        this.setState({
-          newFolderPath: convertFoldersArray,
-          isLoading: false,
-          newId: folderId,
-          isPathError: false,
-        });
-    } catch (e) {
-      toastr.error(e);
-      clearTimeout(timerId);
-      timerId = null;
-      this._isMount &&
-        this.setState({
-          isLoading: false,
-          isPathError: true,
-        });
-    }
-  };
-  onSetBaseFolderPath = async (folderId) => {
+
     try {
       const convertFoldersArray = await this.setFolderPath(folderId);
 
-      this._isMount &&
-        this.setState({
-          baseFolderPath: convertFoldersArray,
-          isLoading: false,
-          ...(!convertFoldersArray && { isPathError: true }),
-        });
+      setNewFolderPath(convertFoldersArray);
+
+      clearTimeout(timerId);
+      timerId = null;
+      setIsPathError(false);
+      setIsLoading(false);
     } catch (e) {
       toastr.error(e);
-      this._isMount &&
-        this.setState({
-          isLoading: false,
-          isPathError: true,
-        });
+      clearTimeout(timerId);
+      setIsLoading(false);
+      timerId = null;
+      setIsPathError(true);
+    }
+  };
+  onSetBaseFolderPath = async (folderId) => {
+    const {
+      setIsLoading,
+      setBaseFolderPath,
+      setIsPathError,
+      setResultingFolderId,
+      resultingFolderTree,
+    } = this.props;
+
+    try {
+      const convertFoldersArray = await this.setFolderPath(folderId);
+      setBaseFolderPath(convertFoldersArray);
+      setIsLoading(false);
+      if (!convertFoldersArray) {
+        setIsPathError(true);
+        console.log("resultingFolderTree", resultingFolderTree);
+        this.onSetFolderInfo(resultingFolderTree[0].id);
+        setResultingFolderId(resultingFolderTree[0].id);
+      }
+    } catch (e) {
+      toastr.error(e);
+      setIsLoading(false);
+      setIsPathError(true);
+      this.onSetFolderInfo(resultingFolderTree[0].id);
+      setResultingFolderId(resultingFolderTree[0].id);
     }
   };
   onSelectFolder = (folderId) => {
@@ -195,25 +114,19 @@ class SelectFolderInput extends React.PureComponent {
   };
   onSetFolderInfo = (folderId) => {
     const { setExpandedPanelKeys, setParentId } = this.props;
+
     getFolder(folderId)
       .then((data) => {
         const pathParts = data.pathParts.map((item) => item.toString());
         pathParts?.pop();
+
         setExpandedPanelKeys(pathParts);
         setParentId(data.current.parentId);
       })
       .catch((e) => toastr.error(e));
   };
+
   render() {
-    const {
-      isLoading,
-      baseFolderPath,
-      newFolderPath,
-      baseId,
-      resultingFolderTree,
-      newId,
-      isPathError,
-    } = this.state;
     const {
       onClickInput,
       isError,
@@ -222,14 +135,19 @@ class SelectFolderInput extends React.PureComponent {
       maxInputWidth,
       isDisabled,
       isPanelVisible,
-      id,
+
       theme,
       isFolderTreeLoading = false,
       onSelectFolder,
+      isLoading,
+      newFolderPath,
+      baseFolderPath,
+      isPathError,
+      isWaitingUpdate,
       ...rest
     } = this.props;
 
-    const passedId = newId ? newId : baseId;
+    const isReady = !isFolderTreeLoading && !isWaitingUpdate;
 
     return (
       <StyledComponent maxWidth={maxInputWidth}>
@@ -240,19 +158,12 @@ class SelectFolderInput extends React.PureComponent {
           isError={isError || isPathError}
           onClickInput={onClickInput}
           placeholder={placeholder}
-          isDisabled={
-            isFolderTreeLoading ||
-            isDisabled ||
-            isLoading ||
-            resultingFolderTree?.length === 0
-          }
+          isDisabled={isFolderTreeLoading || isDisabled || isLoading}
         />
-        {!isFolderTreeLoading && isPanelVisible && (
+        {isReady && (
           <SelectFolderDialog
             {...rest}
-            withInput={true}
-            folderTree={resultingFolderTree}
-            id={passedId}
+            selectFolderInputExist
             isPanelVisible={isPanelVisible}
             onSetBaseFolderPath={this.onSetBaseFolderPath}
             onSetNewFolderPath={this.onSetNewFolderPath}
@@ -271,7 +182,6 @@ SelectFolderInput.propTypes = {
   isUpdateInfo: PropTypes.bool,
   placeholder: PropTypes.string,
   foldersType: PropTypes.oneOf([
-    "common",
     "third-party",
     "exceptSortedByTags",
     "exceptPrivacyTrashFolders",
@@ -297,14 +207,36 @@ export default inject(
   }) => {
     const { setFirstLoad } = filesStore;
     const { setExpandedPanelKeys } = treeFoldersStore;
-    const { setFolderId } = selectFolderDialogStore;
+    const {
+      isLoading,
+      setIsLoading,
+      baseFolderPath,
+      setBaseFolderPath,
+      newFolderPath,
+      setNewFolderPath,
+      toDefault,
+      setIsPathError,
+      isPathError,
+      resultingFolderTree,
+      setResultingFolderId,
+    } = selectFolderDialogStore;
     const { setParentId } = selectedFolderStore;
+
     return {
       setFirstLoad,
-
-      setFolderId,
       setExpandedPanelKeys,
       setParentId,
+      isLoading,
+      setIsLoading,
+      setBaseFolderPath,
+      baseFolderPath,
+      newFolderPath,
+      setNewFolderPath,
+      toDefault,
+      setIsPathError,
+      isPathError,
+      resultingFolderTree,
+      setResultingFolderId,
     };
   }
 )(observer(withTranslation("Translations")(SelectFolderInput)));

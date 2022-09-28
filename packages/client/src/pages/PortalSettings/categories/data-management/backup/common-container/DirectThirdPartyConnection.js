@@ -33,8 +33,6 @@ const DirectThirdPartyConnection = (props) => {
     isPanelVisible,
     isError,
     id,
-    isReset,
-    isSuccessSave,
     withoutBasicSelection,
     onSelectFile,
     isFileSelection = false,
@@ -372,8 +370,6 @@ const DirectThirdPartyConnection = (props) => {
           isError={isError}
           foldersList={[folderList]}
           withoutBasicSelection={withoutBasicSelection}
-          isReset={isReset}
-          isSuccessSave={isSuccessSave}
           isWaitingUpdate={isInitialLoading || isUpdatingInfo ? true : false}
         />
       )}

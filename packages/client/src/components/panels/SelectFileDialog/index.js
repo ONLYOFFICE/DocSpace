@@ -112,10 +112,7 @@ class SelectFileDialog extends React.Component {
         treeFolders,
         foldersType,
         folderId,
-        onSetBaseFolderPath,
-        onSelectFolder,
         foldersList,
-        withoutBasicSelection,
         hasSharedFolder
       );
     } catch (e) {
