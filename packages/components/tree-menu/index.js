@@ -33,6 +33,22 @@ const StyledTree = styled(Tree)`
       }
     }
 
+    .disable-folder {
+      span.rc-tree-node-content-wrapper {
+        pointer-events: none;
+        span.rc-tree-iconEle {
+          svg {
+            path {
+              fill: ${(props) => props.theme.treeNode.disableColor};
+            }
+          }
+        }
+        span.rc-tree-title {
+          color: ${(props) => props.theme.treeNode.disableColor} !important;
+        }
+      }
+    }
+
     .rc-tree-treenode {
       height: 36px;
       display: flex;

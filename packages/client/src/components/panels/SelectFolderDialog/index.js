@@ -219,6 +219,9 @@ class SelectFolderDialog extends React.Component {
     const folderSelectionDisabled =
       folderId === sharedRoomId || folderId === sharedRoomId?.toString();
 
+    const buttonIsDisabled =
+      isDisableButton || (isRecycleBin && currentFolderId === folderId);
+
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
         folderSelectionDisabled={folderSelectionDisabled}
@@ -244,9 +247,7 @@ class SelectFolderDialog extends React.Component {
         }
         isAvailable={isAvailable}
         isDisableTree={isDisableTree}
-        isDisableButton={
-          isDisableButton || (isRecycleBin && currentFolderId === folderId)
-        }
+        isDisableButton={buttonIsDisabled}
       />
     ) : (
       <SelectionPanel
@@ -272,9 +273,7 @@ class SelectFolderDialog extends React.Component {
         isDisableTree={isDisableTree}
         folderSelection
         newFilter={this.newFilter}
-        isDisableButton={
-          isDisableButton || (isRecycleBin && currentFolderId === folderId)
-        }
+        isDisableButton={buttonIsDisabled}
       />
     );
   }
