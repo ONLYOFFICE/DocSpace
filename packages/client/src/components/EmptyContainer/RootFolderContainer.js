@@ -69,6 +69,12 @@ const RootFolderContainer = (props) => {
     t("PrivateRoomDescriptionUnbreakable"),
   ];
 
+  const roomHeader = (
+    <Trans t={t} i18nKey="RoomEmptyContainerHeader" ns="Files">
+      Welcome to {{ organizationName }}
+    </Trans>
+  );
+
   const [showLoader, setShowLoader] = React.useState(false);
 
   React.useEffect(() => {
@@ -164,7 +170,7 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Rooms:
         return {
-          headerText: "Welcome to DocSpace!",
+          headerText: roomHeader,
           descriptionText: roomsDescription,
           imageSrc: "images/empty_screen_corporate.png",
           buttons: roomsButtons,
