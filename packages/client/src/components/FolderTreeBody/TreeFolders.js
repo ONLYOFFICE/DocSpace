@@ -417,12 +417,14 @@ class TreeFolders extends React.Component {
       });
   };
 
-  onExpand = (expandedKeys, treeNode) => {
+  onExpand = (expandedKeys, treeNode, isRoom = false) => {
     this.expand = true;
     if (treeNode.node && !treeNode.node.children) {
       if (treeNode.expanded) {
         this.onLoadData(treeNode.node, true);
       }
+    } else if (isRoom) {
+      this.props.onSelect([treeNode.node.children[0].id], treeNode);
     }
 
     this.props.setExpandedPanelKeys(expandedKeys);
@@ -435,7 +437,8 @@ class TreeFolders extends React.Component {
     newExpandedPanelKeys.push(folder[0]);
 
     if (folder[0] == roomsFolderId) {
-      this.onExpand(newExpandedPanelKeys, treeNode);
+      this.onExpand(newExpandedPanelKeys, treeNode, true);
+
       return;
     }
 
@@ -553,7 +556,6 @@ export default inject(
       setTreeFolders,
       myFolderId,
       commonFolderId,
-      isPrivacyFolder,
       setExpandedPanelKeys,
       getSubfolders,
       setIsLoadingNodes,
@@ -569,7 +571,6 @@ export default inject(
       currentId: id,
       myId: myFolderId,
       commonId: commonFolderId,
-      isPrivacy: isPrivacyFolder,
       draggableItems: dragging ? selection : null,
       treeFolders,
       selectedKeys: useDefaultSelectedKeys
