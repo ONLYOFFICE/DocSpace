@@ -689,17 +689,13 @@ class FilesActionStore {
   };
 
   finalizeVersionAction = (id) => {
-    const { setFile, setIsLoading } = this.filesStore;
+    const { setFile } = this.filesStore;
 
-    setIsLoading(true);
-
-    return finalizeVersion(id, 0, false)
-      .then((res) => {
-        if (res && res[0]) {
-          setFile(res[0]);
-        }
-      })
-      .finally(() => setIsLoading(false));
+    return finalizeVersion(id, 0, false).then((res) => {
+      if (res && res[0]) {
+        setFile(res[0]);
+      }
+    });
   };
 
   duplicateAction = (item, label) => {
