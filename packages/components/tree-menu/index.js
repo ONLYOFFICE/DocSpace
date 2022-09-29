@@ -8,6 +8,11 @@ import Badge from "../badge";
 import Base from "../themes/base";
 
 const StyledTree = styled(Tree)`
+  span.rc-tree-node-content-wrapper,
+  span.rc-tree-switcher {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
   .rc-tree-list-holder-inner {
     .disable-node {
       span.rc-tree-node-content-wrapper {
