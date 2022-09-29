@@ -7,7 +7,7 @@ import SelectFolderDialogAsideView from "./AsideView";
 import utils from "@docspace/components/utils";
 import toastr from "@docspace/components/toast/toastr";
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
-import { FilterType } from "@docspace/common/constants";
+import { FilterType, FolderType } from "@docspace/common/constants";
 
 const { desktop } = utils.device;
 
@@ -42,7 +42,6 @@ class SelectFolderDialog extends React.Component {
       storeFolderId,
       withoutBasicSelection,
       setResultingFoldersTree,
-      roomsFolderId,
     } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
@@ -55,7 +54,7 @@ class SelectFolderDialog extends React.Component {
       treeFolders = await this.props.fetchTreeFolders();
 
       const roomsFolder = treeFolders.find(
-        (f) => f.rootFolderType == roomsFolderId
+        (f) => f.rootFolderType == FolderType.Rooms
       );
 
       const hasSharedFolder =
@@ -316,7 +315,6 @@ export default inject(
       setExpandedPanelKeys,
       sharedRoomId,
       fetchTreeFolders,
-      roomsFolderId,
     } = treeFoldersStore;
 
     const { filter } = filesStore;
@@ -358,7 +356,6 @@ export default inject(
       resultingFolderTree,
       toDefault,
       setResultingFoldersTree,
-	  roomsFolderId
     };
   }
 )(
