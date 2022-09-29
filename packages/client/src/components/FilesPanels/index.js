@@ -101,7 +101,7 @@ const Panels = (props) => {
         onSelectFile={createMasterForm}
         isPanelVisible={selectFileDialogVisible}
         onClose={onClose}
-        filteredType="exceptPrivacyTrashFolders"
+        filteredType="exceptPrivacyTrashArchiveFolders"
         ByExtension
         searchParam={".docx"}
         dialogName={t("Translations:CreateMasterFormFromFile")}

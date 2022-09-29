@@ -296,7 +296,7 @@ SelectFileDialog.propTypes = {
   filteredType: PropTypes.oneOf([
     "third-party",
     "exceptSortedByTags",
-    "exceptPrivacyTrashFolders",
+    "exceptPrivacyTrashArchiveFolders",
   ]),
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   withoutProvider: PropTypes.bool,

@@ -179,11 +179,10 @@ SelectFolderInput.propTypes = {
   onClickInput: PropTypes.func,
   hasError: PropTypes.bool,
   isDisabled: PropTypes.bool,
-  isUpdateInfo: PropTypes.bool,
   placeholder: PropTypes.string,
   filteredType: PropTypes.oneOf([
     "exceptSortedByTags",
-    "exceptPrivacyTrashFolders",
+    "exceptPrivacyTrashArchiveFolders",
     "",
   ]),
 };

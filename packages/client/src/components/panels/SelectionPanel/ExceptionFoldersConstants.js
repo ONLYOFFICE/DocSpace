@@ -8,7 +8,7 @@ export const exceptSortedByTagsFolders = [
   FolderType.Archive,
 ];
 
-export const exceptPrivacyTrashFolders = [
+export const exceptPrivacyTrashArchiveFolders = [
   FolderType.Privacy,
   FolderType.TRASH,
   FolderType.Archive,

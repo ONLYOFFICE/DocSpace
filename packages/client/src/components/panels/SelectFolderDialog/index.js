@@ -282,7 +282,7 @@ SelectFolderDialog.propTypes = {
   isPanelVisible: PropTypes.bool.isRequired,
   filteredType: PropTypes.oneOf([
     "exceptSortedByTags",
-    "exceptPrivacyTrashFolders",
+    "exceptPrivacyTrashArchiveFolders",
     "",
   ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),

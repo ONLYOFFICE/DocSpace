@@ -13,7 +13,7 @@ import {
 import toastr from "@docspace/components/toast/toastr";
 import {
   exceptSortedByTagsFolders,
-  exceptPrivacyTrashFolders,
+  exceptPrivacyTrashArchiveFolders,
 } from "./ExceptionFoldersConstants";
 import { StyledBody, StyledModalDialog } from "./StyledSelectionPanel";
 import Text from "@docspace/components/text";
@@ -199,8 +199,11 @@ class SelectionPanel extends React.Component {
       switch (filteredType) {
         case "exceptSortedByTags":
           return filterFoldersTree(treeFolders, exceptSortedByTagsFolders);
-        case "exceptPrivacyTrashFolders":
-          return filterFoldersTree(treeFolders, exceptPrivacyTrashFolders);
+        case "exceptPrivacyTrashArchiveFolders":
+          return filterFoldersTree(
+            treeFolders,
+            exceptPrivacyTrashArchiveFolders
+          );
       }
     };
 
@@ -213,7 +216,7 @@ class SelectionPanel extends React.Component {
 
     if (
       filteredType === "exceptSortedByTags" ||
-      filteredType === "exceptPrivacyTrashFolders"
+      filteredType === "exceptPrivacyTrashArchiveFolders"
     ) {
       filteredTreeFolders = getExceptionsFolders(foldersTree);
     }
