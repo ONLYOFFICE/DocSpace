@@ -98,7 +98,7 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    let iconUrl = "images/catalog.folder.react.svg";
+    let iconUrl = "/static/images/catalog.folder.react.svg";
 
     switch (item.rootFolderType) {
       case FolderType.USER:
