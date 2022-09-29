@@ -82,10 +82,8 @@ class SelectFileDialog extends React.Component {
   async componentDidMount() {
     const {
       foldersType,
-      onSetBaseFolderPath,
       onSelectFolder,
       foldersList,
-      treeFromInput,
       displayType,
       setFolderId,
       folderId,
@@ -121,7 +119,7 @@ class SelectFileDialog extends React.Component {
       return;
     }
 
-    const tree = treeFromInput ? treeFromInput : resultingFolderTree;
+    const tree = resultingFolderTree;
 
     if (tree.length === 0) {
       this.setState({ isAvailable: false });
@@ -130,6 +128,10 @@ class SelectFileDialog extends React.Component {
     }
 
     setFolderId(resultingId);
+
+    if (!withoutBasicSelection) {
+      onSelectFolder && onSelectFolder(resultingId);
+    }
 
     this.setState({
       resultingFolderTree: tree,

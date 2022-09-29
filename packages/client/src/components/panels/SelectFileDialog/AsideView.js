@@ -70,7 +70,7 @@ const SelectFileDialogAsideView = ({
                 files={files}
                 folderTree={resultingFolderTree}
                 isFolderTreeLoading={!!!resultingFolderTree}
-                isNeedArrowIcon
+                withFileSelectDialog
                 maxInputWidth={maxInputWidth ? maxInputWidth : "446px"}
               />
 

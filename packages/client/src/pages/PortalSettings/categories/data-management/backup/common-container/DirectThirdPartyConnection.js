@@ -335,7 +335,7 @@ const DirectThirdPartyConnection = (props) => {
 
       {isFileSelection ? (
         <SelectFileInput
-          foldersList={[folderList]}
+          passedFoldersTree={[folderList]}
           onClose={onClose}
           onSelectFile={onSelectFile}
           onClickInput={onClickInput}
@@ -368,7 +368,7 @@ const DirectThirdPartyConnection = (props) => {
           }
           isPanelVisible={isPanelVisible}
           isError={isError}
-          foldersList={[folderList]}
+          passedFoldersTree={[folderList]}
           withoutBasicSelection={withoutBasicSelection}
           isWaitingUpdate={isInitialLoading || isUpdatingInfo ? true : false}
         />

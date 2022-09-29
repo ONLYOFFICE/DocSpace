@@ -65,27 +65,6 @@ class ThirdPartyModule extends React.PureComponent {
 
     return (
       <>
-        {/* {!isDocSpace ? (
-          <div className="auto-backup_folder-input">
-            <SelectFolderInput
-              onSelectFolder={this.onSelectFolder}
-              onClose={this.onClose}
-              onClickInput={this.onClickInput}
-              isPanelVisible={isPanelVisible}
-              isError={isError}
-              foldersType="third-party"
-              isDisabled={commonThirdPartyList.length === 0 || isLoadingData}
-              id={passedId}
-              isReset={isResetProcess}
-        
-              foldersList={commonThirdPartyList}
-              withoutBasicSelection={isResourcesDefault ? false : true}
-            />
-          </div>
-        ) : ( */}
-
-        {/* )} */}
-
         <div className="auto-backup_third-party-module">
           <DirectThirdPartyConnection
             t={t}

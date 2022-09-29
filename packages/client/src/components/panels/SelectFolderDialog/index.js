@@ -34,7 +34,7 @@ class SelectFolderDialog extends React.Component {
       onSelectFolder,
       foldersList,
       displayType,
-      isNeedArrowIcon = false,
+      withFileSelectDialog = false,
       folderTree,
       setResultingFolderId,
       selectFolderInputExist,
@@ -50,16 +50,16 @@ class SelectFolderDialog extends React.Component {
 
     let resultingFolderTree, resultingId;
 
-    treeFolders = await this.props.fetchTreeFolders();
+    if (!withFileSelectDialog) {
+      treeFolders = await this.props.fetchTreeFolders();
 
-    const roomsFolder = treeFolders.find(
-      (f) => f.rootFolderType == FolderType.Rooms
-    );
+      const roomsFolder = treeFolders.find(
+        (f) => f.rootFolderType == FolderType.Rooms
+      );
 
-    const hasSharedFolder =
-      roomsFolder && roomsFolder.foldersCount ? true : false;
+      const hasSharedFolder =
+        roomsFolder && roomsFolder.foldersCount ? true : false;
 
-    if (!isNeedArrowIcon) {
       try {
         [
           resultingFolderTree,
@@ -78,10 +78,17 @@ class SelectFolderDialog extends React.Component {
       }
     }
 
-    const tree = isNeedArrowIcon ? folderTree : resultingFolderTree;
+    const tree = withFileSelectDialog ? folderTree : resultingFolderTree;
+
+    if (tree.length === 0) {
+      this.setState({ isAvailable: false });
+      onSelectFolder && onSelectFolder(null);
+      return;
+    }
+
     setResultingFoldersTree(tree);
 
-    const resId = isNeedArrowIcon ? id : resultingId;
+    const resId = withFileSelectDialog ? id : resultingId;
 
     if (!withoutBasicSelection) {
       onSelectFolder && onSelectFolder(resId);
@@ -128,10 +135,14 @@ class SelectFolderDialog extends React.Component {
       onClose,
 
       selectFolderInputExist,
-      isNeedArrowIcon,
+      withFileSelectDialog,
     } = this.props;
 
-    if (!treeFolders.length && !selectFolderInputExist && !isNeedArrowIcon) {
+    if (
+      !treeFolders.length &&
+      !selectFolderInputExist &&
+      !withFileSelectDialog
+    ) {
       setExpandedPanelKeys(null);
     }
     onClose && onClose();
@@ -173,7 +184,7 @@ class SelectFolderDialog extends React.Component {
       isPanelVisible,
       zIndex,
       withoutProvider,
-      isNeedArrowIcon, //for aside view when selected file
+      withFileSelectDialog, 
       header,
       dialogName,
       footer,
@@ -216,18 +227,20 @@ class SelectFolderDialog extends React.Component {
         zIndex={zIndex}
         onClose={this.onCloseAside}
         withoutProvider={withoutProvider}
-        isNeedArrowIcon={isNeedArrowIcon}
+        withFileSelectDialog={withFileSelectDialog}
         certainFolders={true}
         folderId={resultingFolderId}
         resultingFolderTree={resultingFolderTree}
         onSelectFolder={this.onSelect}
         onButtonClick={this.onButtonClick}
         header={header}
-        dialogName={isNeedArrowIcon ? t("Translations:FolderSelection") : name}
+        dialogName={
+          withFileSelectDialog ? t("Translations:FolderSelection") : name
+        }
         footer={footer}
         isLoadingData={isLoadingData}
         primaryButtonName={
-          isNeedArrowIcon ? t("Common:SelectAction") : primaryButtonName
+          withFileSelectDialog ? t("Common:SelectAction") : primaryButtonName
         }
         isAvailable={isAvailable}
         isDisableTree={isDisableTree}
