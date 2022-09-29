@@ -32,7 +32,7 @@ class SelectFolderDialog extends React.Component {
       foldersType,
       onSetBaseFolderPath,
       onSelectFolder,
-      foldersList,
+      passedFoldersTree,
       displayType,
       withFileSelectDialog = false,
       folderTree,
@@ -68,7 +68,7 @@ class SelectFolderDialog extends React.Component {
           treeFolders,
           foldersType,
           initialFolderId,
-          foldersList,
+          passedFoldersTree,
           hasSharedFolder
         );
       } catch (e) {
@@ -184,7 +184,7 @@ class SelectFolderDialog extends React.Component {
       isPanelVisible,
       zIndex,
       withoutProvider,
-      withFileSelectDialog, 
+      withFileSelectDialog,
       header,
       dialogName,
       footer,

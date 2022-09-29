@@ -83,7 +83,7 @@ class SelectFileDialog extends React.Component {
     const {
       foldersType,
       onSelectFolder,
-      foldersList,
+      passedFoldersTree,
       displayType,
       setFolderId,
       folderId,
@@ -110,7 +110,7 @@ class SelectFileDialog extends React.Component {
         treeFolders,
         foldersType,
         folderId,
-        foldersList,
+        passedFoldersTree,
         hasSharedFolder
       );
     } catch (e) {

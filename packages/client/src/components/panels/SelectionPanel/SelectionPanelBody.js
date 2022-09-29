@@ -176,7 +176,7 @@ class SelectionPanel extends React.Component {
     treeFolders,
     foldersType,
     id,
-    foldersList = [],
+    passedFoldersTree = [],
     hasSharedFolder
   ) => {
     const filterFoldersTree = (folders, arrayOfExceptions) => {
@@ -206,9 +206,10 @@ class SelectionPanel extends React.Component {
 
     let filteredTreeFolders;
 
-    const foldersTree = foldersList.length > 0 ? foldersList : treeFolders;
+    const foldersTree =
+      passedFoldersTree.length > 0 ? passedFoldersTree : treeFolders;
 
-    const passedId = id ? id : foldersTree[0]?.id;
+    const passedId = id ? id : foldersTree[0].id;
 
     if (
       foldersType === "exceptSortedByTags" ||
