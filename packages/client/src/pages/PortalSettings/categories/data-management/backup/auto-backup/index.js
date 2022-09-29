@@ -115,7 +115,7 @@ class AutomaticBackup extends React.PureComponent {
       this.setState({
         isEmptyContentBeforeLoader: false,
         isInitialLoading: false,
-        isEnableAuto: true,
+        isEnableAuto: enableAuto,
       });
     } catch (error) {
       toastr.error(error);
