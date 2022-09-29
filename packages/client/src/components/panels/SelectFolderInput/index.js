@@ -181,11 +181,9 @@ SelectFolderInput.propTypes = {
   isDisabled: PropTypes.bool,
   isUpdateInfo: PropTypes.bool,
   placeholder: PropTypes.string,
-  foldersType: PropTypes.oneOf([
-    "third-party",
+  filteredType: PropTypes.oneOf([
     "exceptSortedByTags",
     "exceptPrivacyTrashFolders",
-    "rooms",
     "",
   ]),
 };
@@ -195,7 +193,7 @@ SelectFolderInput.defaultProps = {
   isDisabled: false,
   isWaitingUpdate: false,
   placeholder: "",
-  foldersType: "",
+  filteredType: "",
 };
 
 export default inject(

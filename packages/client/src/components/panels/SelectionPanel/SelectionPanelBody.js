@@ -174,7 +174,7 @@ class SelectionPanel extends React.Component {
   };
   static getBasicFolderInfo = async (
     treeFolders,
-    foldersType,
+    filteredType,
     id,
     passedFoldersTree = [],
     hasSharedFolder
@@ -196,7 +196,7 @@ class SelectionPanel extends React.Component {
     };
 
     const getExceptionsFolders = (treeFolders) => {
-      switch (foldersType) {
+      switch (filteredType) {
         case "exceptSortedByTags":
           return filterFoldersTree(treeFolders, exceptSortedByTagsFolders);
         case "exceptPrivacyTrashFolders":
@@ -212,8 +212,8 @@ class SelectionPanel extends React.Component {
     const passedId = id ? id : foldersTree[0].id;
 
     if (
-      foldersType === "exceptSortedByTags" ||
-      foldersType === "exceptPrivacyTrashFolders"
+      filteredType === "exceptSortedByTags" ||
+      filteredType === "exceptPrivacyTrashFolders"
     ) {
       filteredTreeFolders = getExceptionsFolders(foldersTree);
     }

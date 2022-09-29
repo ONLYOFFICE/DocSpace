@@ -22,7 +22,7 @@ const SelectFileDialog = ({
           module: "./SelectFileDialog",
         }}
         resetTreeFolders
-        foldersType="exceptPrivacyTrashFolders"
+        filteredType="exceptPrivacyTrashFolders"
         isPanelVisible={isVisible}
         onClose={onCloseFileDialog}
         onSelectFile={onSelectFile}

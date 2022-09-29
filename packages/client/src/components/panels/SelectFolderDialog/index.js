@@ -29,7 +29,7 @@ class SelectFolderDialog extends React.Component {
 
   async componentDidMount() {
     const {
-      foldersType,
+      filteredType,
       onSetBaseFolderPath,
       onSelectFolder,
       passedFoldersTree,
@@ -66,7 +66,7 @@ class SelectFolderDialog extends React.Component {
           resultingId,
         ] = await SelectionPanel.getBasicFolderInfo(
           treeFolders,
-          foldersType,
+          filteredType,
           initialFolderId,
           passedFoldersTree,
           hasSharedFolder
@@ -280,12 +280,9 @@ SelectFolderDialog.propTypes = {
   onSelectFolder: PropTypes.func,
   onClose: PropTypes.func,
   isPanelVisible: PropTypes.bool.isRequired,
-  foldersType: PropTypes.oneOf([
-    "common",
-    "third-party",
+  filteredType: PropTypes.oneOf([
     "exceptSortedByTags",
     "exceptPrivacyTrashFolders",
-    "rooms",
     "",
   ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),
@@ -299,6 +296,7 @@ SelectFolderDialog.defaultProps = {
   withoutProvider: false,
   withoutImmediatelyClose: false,
   isDisableTree: false,
+  filteredType: "",
 };
 
 export default inject(

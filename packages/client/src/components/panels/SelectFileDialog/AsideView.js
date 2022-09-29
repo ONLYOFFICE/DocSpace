@@ -26,7 +26,7 @@ const SelectFileDialogAsideView = ({
   resultingFolderTree,
   footer,
   fileId,
-  foldersType,
+  filteredType,
   onCloseSelectFolderDialog,
   onClickInput,
   isFolderPanelVisible,
@@ -59,7 +59,7 @@ const SelectFileDialogAsideView = ({
                 onClose={onCloseSelectFolderDialog}
                 onSelectFolder={onSelectFolder}
                 isPanelVisible={isFolderPanelVisible}
-                foldersType={foldersType}
+                filteredType={filteredType}
                 withoutProvider={withoutProvider}
                 id={folderId}
                 onSelectFile={onSelectFile}

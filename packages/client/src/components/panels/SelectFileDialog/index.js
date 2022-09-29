@@ -83,7 +83,7 @@ class SelectFileDialog extends React.Component {
 
   async componentDidMount() {
     const {
-      foldersType,
+      filteredType,
       onSelectFolder,
       passedFoldersTree,
       displayType,
@@ -109,7 +109,7 @@ class SelectFileDialog extends React.Component {
         resultingId,
       ] = await SelectionPanel.getBasicFolderInfo(
         treeFolders,
-        foldersType,
+        filteredType,
         folderId,
         passedFoldersTree,
         hasSharedFolder
@@ -211,7 +211,7 @@ class SelectFileDialog extends React.Component {
       t,
       isPanelVisible,
       onClose,
-      foldersType,
+      filteredType,
       withoutProvider,
       filesListTitle,
       theme,
@@ -259,7 +259,7 @@ class SelectFileDialog extends React.Component {
         filesListTitle={filesListTitle}
         fileId={selectedFileInfo.id}
         newFilter={this.newFilter}
-        foldersType={foldersType}
+        filteredType={filteredType}
         onClickInput={this.onClickInput}
         onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
         maxInputWidth={maxInputWidth}
@@ -293,8 +293,7 @@ SelectFileDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
   onSelectFile: PropTypes.func.isRequired,
-  foldersType: PropTypes.oneOf([
-    "common",
+  filteredType: PropTypes.oneOf([
     "third-party",
     "exceptSortedByTags",
     "exceptPrivacyTrashFolders",
