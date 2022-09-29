@@ -234,7 +234,7 @@ class AutomaticBackup extends React.PureComponent {
       selectedFolderId,
       isFormReady,
     } = this.props;
-    console.log("selectedFolderId", selectedFolderId);
+
     if (
       (isCheckedDocuments && !selectedFolderId) ||
       (isCheckedThirdParty && !selectedFolderId)
