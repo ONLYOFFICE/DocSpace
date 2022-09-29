@@ -580,6 +580,10 @@ class HotkeyStore {
       // }
     }
 
+    if (nextForTileDown.isFolder === undefined) {
+      nextForTileDown.isFolder = !!nextForTileDown.parentId;
+    }
+
     return nextForTileDown;
   }
 
@@ -611,6 +615,11 @@ class HotkeyStore {
     } else if (!prevTileFile) {
       prevForTileUp = hotkeyCaret;
     }
+
+    if (prevForTileUp.isFolder === undefined) {
+      prevForTileUp.isFolder = !!prevForTileUp.parentId;
+    }
+
     return prevForTileUp;
   }
 
