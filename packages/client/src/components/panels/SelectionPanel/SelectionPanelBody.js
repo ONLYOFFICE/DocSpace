@@ -13,11 +13,13 @@ import {
 import toastr from "@docspace/components/toast/toastr";
 import {
   exceptSortedByTagsFolders,
-  exceptPrivacyTrashFolders,
+  exceptPrivacyTrashArchiveFolders,
 } from "./ExceptionFoldersConstants";
 import { StyledBody, StyledModalDialog } from "./StyledSelectionPanel";
 import Text from "@docspace/components/text";
 import Loaders from "@docspace/common/components/Loaders";
+import { FolderType } from "@docspace/common/constants";
+
 const SelectionPanelBody = ({
   t,
   isPanelVisible,
@@ -172,53 +174,20 @@ class SelectionPanel extends React.Component {
   };
   static getBasicFolderInfo = async (
     treeFolders,
-    foldersType,
+    filteredType,
     id,
-    onSetBaseFolderPath,
-    onSelectFolder,
-    foldersList,
-    withoutBasicSelection = false
+    passedFoldersTree = [],
+    hasSharedFolder
   ) => {
-    const getRequestFolderTree = () => {
-      switch (foldersType) {
-        case "exceptSortedByTags":
-        case "exceptPrivacyTrashFolders":
-          try {
-            return getFoldersTree();
-          } catch (err) {
-            console.error(err);
-          }
-          break;
-        case "common":
-          try {
-            return getCommonFoldersTree();
-          } catch (err) {
-            console.error(err);
-          }
-          break;
-
-        case "third-party":
-          try {
-            return getThirdPartyCommonFolderTree();
-          } catch (err) {
-            console.error(err);
-          }
-          break;
-
-        default:
-          try {
-            return getFoldersTree();
-          } catch (err) {
-            console.error(err);
-          }
-      }
-    };
-
     const filterFoldersTree = (folders, arrayOfExceptions) => {
+      const arr = !hasSharedFolder
+        ? [...arrayOfExceptions, FolderType.Rooms]
+        : arrayOfExceptions;
+
       let newArray = [];
 
       for (let i = 0; i < folders.length; i++) {
-        if (!arrayOfExceptions.includes(folders[i].rootFolderType)) {
+        if (!arr.includes(folders[i].rootFolderType)) {
           newArray.push(folders[i]);
         }
       }
@@ -227,43 +196,27 @@ class SelectionPanel extends React.Component {
     };
 
     const getExceptionsFolders = (treeFolders) => {
-      switch (foldersType) {
+      switch (filteredType) {
         case "exceptSortedByTags":
           return filterFoldersTree(treeFolders, exceptSortedByTagsFolders);
-        case "exceptPrivacyTrashFolders":
-          return filterFoldersTree(treeFolders, exceptPrivacyTrashFolders);
+        case "exceptPrivacyTrashArchiveFolders":
+          return filterFoldersTree(
+            treeFolders,
+            exceptPrivacyTrashArchiveFolders
+          );
       }
     };
 
-    let requestedTreeFolders, filteredTreeFolders;
-
-    const treeFoldersLength = treeFolders?.length;
-
-    if (treeFoldersLength === 0 || !treeFoldersLength) {
-      try {
-        requestedTreeFolders = foldersList
-          ? foldersList
-          : await getRequestFolderTree();
-      } catch (e) {
-        toastr.error(e);
-        return;
-      }
-    }
+    let filteredTreeFolders;
 
     const foldersTree =
-      treeFoldersLength > 0 ? treeFolders : requestedTreeFolders;
+      passedFoldersTree.length > 0 ? passedFoldersTree : treeFolders;
 
-    const passedId = id ? id : foldersTree[0]?.id;
-
-    !withoutBasicSelection &&
-      onSetBaseFolderPath &&
-      onSetBaseFolderPath(passedId);
-
-    !withoutBasicSelection && onSelectFolder && onSelectFolder(passedId);
+    const passedId = id ? id : foldersTree[0].id;
 
     if (
-      foldersType === "exceptSortedByTags" ||
-      foldersType === "exceptPrivacyTrashFolders"
+      filteredType === "exceptSortedByTags" ||
+      filteredType === "exceptPrivacyTrashArchiveFolders"
     ) {
       filteredTreeFolders = getExceptionsFolders(foldersTree);
     }
