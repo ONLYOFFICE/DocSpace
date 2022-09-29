@@ -33,7 +33,7 @@ const Dialog = ({
       if (e.keyCode === 27) onCancelAction(e);
       if (e.keyCode === 13) onSaveAction(e);
     },
-    [onSaveAction, onCancelAction, value]
+    [value]
   );
   useEffect(() => {
     document.addEventListener("keyup", onKeyUpHandler, false);
