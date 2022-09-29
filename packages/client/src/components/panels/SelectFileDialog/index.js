@@ -294,7 +294,6 @@ SelectFileDialog.propTypes = {
   isPanelVisible: PropTypes.bool.isRequired,
   onSelectFile: PropTypes.func.isRequired,
   filteredType: PropTypes.oneOf([
-    "third-party",
     "exceptSortedByTags",
     "exceptPrivacyTrashArchiveFolders",
   ]),

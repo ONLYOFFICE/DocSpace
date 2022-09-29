@@ -94,7 +94,7 @@ class SelectFolderInput extends React.PureComponent {
       setIsLoading(false);
       if (!convertFoldersArray) {
         setIsPathError(true);
-        console.log("resultingFolderTree", resultingFolderTree);
+
         this.onSetFolderInfo(resultingFolderTree[0].id);
         setResultingFolderId(resultingFolderTree[0].id);
       }
