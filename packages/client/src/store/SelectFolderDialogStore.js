@@ -1,4 +1,4 @@
-import { makeAutoObservable, action, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 
 class SelectFolderDialogStore {
   resultingFolderId = null;
