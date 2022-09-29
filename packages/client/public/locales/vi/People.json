@@ -11,7 +11,7 @@
   "LblSetActive": "Kích hoạt ",
   "LblSetDisabled": "Vô hiệu hóa",
   "MakeInvitationLink": "Tạo liên kết mời",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Email hướng dẫn kích hoạt đã được gửi đến địa chỉ email <1>{{email}}</1>",
+  "MessageEmailActivationInstructionsSentOnEmail": "Email hướng dẫn kích hoạt đã được gửi đến địa chỉ email <1>{{email}}</1>",
   "NotFoundDescription": "Hãy thử một bộ lọc khác hoặc xóa bộ lọc đó để xem tất cả mọi người trong mục này.",
   "NotFoundTitle": "Không tìm thấy đồng đội",
   "ReassignmentData": "Chuyển dữ liệu cho người khác",

@@ -11,7 +11,7 @@
   "LblSetActive": "Ορισμός ως ενεργού",
   "LblSetDisabled": "Ορισμός ως ανενεργού",
   "MakeInvitationLink": "Δημιουργία συνδέσμου πρόσκλησης",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Οι οδηγίες ενεργοποίησης μέσω email έχουν σταλεί στη διεύθυνση email <1>{{email}}</1>",
+  "MessageEmailActivationInstructionsSentOnEmail": "Οι οδηγίες ενεργοποίησης μέσω email έχουν σταλεί στη διεύθυνση email <1>{{email}}</1>",
   "NotFoundDescription": "Δοκιμάστε ένα διαφορετικό φίλτρο ή καταργήστε το για να δείτε όλα τα άτομα στο τμήμα.",
   "NotFoundTitle": "Δεν βρέθηκαν συνάδελφοι",
   "ReassignmentData": "Νέα αντιστοίχιση δεδομένων",

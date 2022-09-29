@@ -11,7 +11,7 @@
   "LblSetActive": "Etkinleştir",
   "LblSetDisabled": "Devre dışı bırak",
   "MakeInvitationLink": "Davet bağlantısı oluştur",
-  "MessageEmailActivationInstuctionsSentOnEmail": "E-posta etkinleştirme talimatları <1>{{email}}</1> e-posta adresine gönderildi",
+  "MessageEmailActivationInstructionsSentOnEmail": "E-posta etkinleştirme talimatları <1>{{email}}</1> e-posta adresine gönderildi",
   "NotFoundDescription": "Farklı bir filtre deneyin veya bölümdeki tüm kişileri görüntülemek için filtreyi temizleyin.",
   "NotFoundTitle": "Takım arkadaşı bulunamadı",
   "ReassignmentData": "Veri yeniden ataması",

@@ -11,7 +11,7 @@
   "LblSetActive": "Actief instellen",
   "LblSetDisabled": "Uitgeschakeld instellen",
   "MakeInvitationLink": "Uitnodigingslink maken",
-  "MessageEmailActivationInstuctionsSentOnEmail": "De e-mail activatie instructies zijn verzonden naar het <1>{{email}}</1> e-mailadres",
+  "MessageEmailActivationInstructionsSentOnEmail": "De e-mail activatie instructies zijn verzonden naar het <1>{{email}}</1> e-mailadres",
   "NotFoundDescription": "Probeer een ander filter of verwijder het filter om alle mensen in de sectie te zien.",
   "NotFoundTitle": "Geen teamleden gevonden",
   "ReassignmentData": "Herschikking van gegevens",

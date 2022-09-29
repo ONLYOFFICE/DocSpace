@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Invită din nou",
   "LightTheme": "Tema luminoasă",
   "LoginSettings": "Setări de conexiune",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Instrucțiunile de activare a adresei e-mail au fost trimise la <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstructionsSentOnEmail": "Instrucțiunile de activare a adresei e-mail au fost trimise la <strong>{{ email }}</strong>",
   "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Furnizorul a fost conectat cu succes",
   "ProviderSuccessfullyDisconnected": "Furnizorul a fost deconectat cu succes",

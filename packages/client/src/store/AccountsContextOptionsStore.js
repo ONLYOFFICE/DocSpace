@@ -385,7 +385,7 @@ class AccountsContextOptionsStore {
       .then(() =>
         toastr.success(
           <Trans
-            i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
+            i18nKey="MessageEmailActivationInstructionsSentOnEmail"
             ns="People"
             t={t}
           >

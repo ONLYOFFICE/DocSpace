@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Zaproś ponownie",
   "LightTheme": "Motyw jasny",
   "LoginSettings": "Ustawienia logowania",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Instrukcje dotyczące aktywacji adresu e-mail zostały wysłane na adres <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstructionsSentOnEmail": "Instrukcje dotyczące aktywacji adresu e-mail zostały wysłane na adres <strong>{{ email }}</strong>",
   "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Dostawca został pomyślnie podłączony",
   "ProviderSuccessfullyDisconnected": "Dostawca został pomyślnie rozłączony",

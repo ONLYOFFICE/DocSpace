@@ -11,7 +11,7 @@
   "InviteAgainLbl": "再次邀请",
   "LightTheme": "浅色主题",
   "LoginSettings": "登录设置",
-  "MessageEmailActivationInstuctionsSentOnEmail": "邮件激活指示已发送至<strong>{{ email }}</strong>邮件地址",
+  "MessageEmailActivationInstructionsSentOnEmail": "邮件激活指示已发送至<strong>{{ email }}</strong>邮件地址",
   "PhoneLbl": "电话",
   "ProviderSuccessfullyConnected": "供应方成功连接",
   "ProviderSuccessfullyDisconnected": "供应方成功断开连接",

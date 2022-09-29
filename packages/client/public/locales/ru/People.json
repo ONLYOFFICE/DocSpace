@@ -11,7 +11,7 @@
   "LblSetActive": "Разблокировать",
   "LblSetDisabled": "Заблокировать",
   "MakeInvitationLink": "Создать пригласительную ссылку",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
+  "MessageEmailActivationInstructionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
   "NotFoundDescription": "Попробуйте изменить или очистить настройки фильтра, чтобы увидеть всех людей в разделе.",
   "NotFoundTitle": "Сотрудников не найдено",
   "ReassignmentData": "Переназначение данных",

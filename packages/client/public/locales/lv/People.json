@@ -11,7 +11,7 @@
   "LblSetActive": "Iestatīt kā aktīvs",
   "LblSetDisabled": "Iestatīt kā atspējots",
   "MakeInvitationLink": "Izveidot ielūguma saiti",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Norādījumi par e-pasta aktivizēšanu ir nosūtīti uz <1>{{email}}</1> e-pasta adresi",
+  "MessageEmailActivationInstructionsSentOnEmail": "Norādījumi par e-pasta aktivizēšanu ir nosūtīti uz <1>{{email}}</1> e-pasta adresi",
   "NotFoundDescription": "Izmēģiniet citu filtru vai notīriet to, lai skatītu visus sadaļā esošos cilvēkus.",
   "NotFoundTitle": "Nav atrasts neviens komandas biedrs",
   "ReassignmentData": "Datu atkārtota piešķiršana",

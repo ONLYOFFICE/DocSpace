@@ -11,7 +11,7 @@
   "LblSetActive": "Aktivieren",
   "LblSetDisabled": "Deaktivieren",
   "MakeInvitationLink": "Einladungslink erstellen",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Anleitungen zur Änderung eines Passworts wurden an <1>{{email}}</1> gesendet",
+  "MessageEmailActivationInstructionsSentOnEmail": "Anleitungen zur Änderung eines Passworts wurden an <1>{{email}}</1> gesendet",
   "NotFoundDescription": "Ändern oder entfernen Sie Filterungsoptionen, um alle Personen im Bereich zu sehen.",
   "NotFoundTitle": "Keine Teammitglieder gefunden",
   "ReassignmentData": "Neuzuweisung von Daten",

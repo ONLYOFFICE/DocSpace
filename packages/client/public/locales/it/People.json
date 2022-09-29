@@ -11,7 +11,7 @@
   "LblSetActive": "Imposta attivo",
   "LblSetDisabled": "Imposta disattivato",
   "MakeInvitationLink": "Crea collegamento di invito",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Le istruzioni per l'attivazione sono state inviate tramite posta elettronica all'indirizzo <1>{{email}}</1>",
+  "MessageEmailActivationInstructionsSentOnEmail": "Le istruzioni per l'attivazione sono state inviate tramite posta elettronica all'indirizzo <1>{{email}}</1>",
   "NotFoundDescription": "Prova un filtro diverso o deselezionalo per visualizzare tutte le persone nella sezione.",
   "NotFoundTitle": "Nessun utente del gruppo trovato",
   "ReassignmentData": "Riassegnazione dei dati",

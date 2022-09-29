@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Активировать адрес email ещё раз",
   "LightTheme": "Светлая тема",
   "LoginSettings": "Вход через социальные сети",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Инструкция по активации почты пользователя была отправлена по адресу <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstructionsSentOnEmail": "Инструкция по активации почты пользователя была отправлена по адресу <strong>{{ email }}</strong>",
   "PhoneLbl": "Основной телефон",
   "ProviderSuccessfullyConnected": "Провайдер успешно подключен",
   "ProviderSuccessfullyDisconnected": "Провайдер успешно отключен",

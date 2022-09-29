@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Запросити знову",
   "LightTheme": "Світла тема",
   "LoginSettings": "Параметри входу",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Інструкції з активації електронної пошти надіслано на адресу <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstructionsSentOnEmail": "Інструкції з активації електронної пошти надіслано на адресу <strong>{{ email }}</strong>",
   "PhoneLbl": "Телефон",
   "ProviderSuccessfullyConnected": "Провайдер успішно підключений",
   "ProviderSuccessfullyDisconnected": "Провайдер успішно відключений",

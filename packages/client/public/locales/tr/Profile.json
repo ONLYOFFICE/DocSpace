@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Tekrar davet et",
   "LightTheme": "Açık tema",
   "LoginSettings": "Giriş ayarları",
-  "MessageEmailActivationInstuctionsSentOnEmail": "E-posta etkinleştirme talimatları <strong>{{ email }}</strong> e-posta adresine gönderildi",
+  "MessageEmailActivationInstructionsSentOnEmail": "E-posta etkinleştirme talimatları <strong>{{ email }}</strong> e-posta adresine gönderildi",
   "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Sağlayıcı başarıyla bağlandı",
   "ProviderSuccessfullyDisconnected": "Sağlayıcının bağlantısı başarıyla kesildi",

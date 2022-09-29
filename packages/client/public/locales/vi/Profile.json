@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Mời lại",
   "LightTheme": "Nền sáng",
   "LoginSettings": "Thiết lập đăng nhập",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Email hướng dẫn kích hoạt đã được gửi thành công đến địa chỉ email <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstructionsSentOnEmail": "Email hướng dẫn kích hoạt đã được gửi thành công đến địa chỉ email <strong>{{ email }}</strong>",
   "PhoneLbl": "Điện thoại",
   "ProviderSuccessfullyConnected": "Đã kết nối nhà cung cấp thành công",
   "ProviderSuccessfullyDisconnected": " Đã ngắt kết nối nhà cung cấp thành công",
