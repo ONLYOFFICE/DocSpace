@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { inject, observer } from "mobx-react";
 
 import toastr from "@docspace/components/toast/toastr";
@@ -21,8 +21,8 @@ const Dialog = ({
   onCancel,
   onClose,
 }) => {
-  const [value, setValue] = React.useState("");
-  const [isDisabled, setIsDisabled] = React.useState(false);
+  const [value, setValue] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
     if (startValue) setValue(startValue);
