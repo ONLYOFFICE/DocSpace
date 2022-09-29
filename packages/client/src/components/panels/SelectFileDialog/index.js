@@ -300,7 +300,6 @@ SelectFileDialog.propTypes = {
   ]),
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   withoutProvider: PropTypes.bool,
-  ignoreSelectedFolderTree: PropTypes.bool,
   headerName: PropTypes.string,
   filesListTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
 };
@@ -309,7 +308,6 @@ SelectFileDialog.defaultProps = {
   id: "",
   filesListTitle: "",
   withoutProvider: false,
-  ignoreSelectedFolderTree: false,
 };
 
 export default inject(
