@@ -47,6 +47,8 @@ const RenameEvent = ({
 
     if (isSameTitle) {
       setStartValue(originalTitle);
+      setIsLoading(false);
+      onClose();
 
       return editCompleteAction(item, type);
     } else {
