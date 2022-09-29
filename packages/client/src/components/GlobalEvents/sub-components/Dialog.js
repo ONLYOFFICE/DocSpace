@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { inject, observer } from "mobx-react";
 
 import toastr from "@docspace/components/toast/toastr";
@@ -21,14 +21,29 @@ const Dialog = ({
   onCancel,
   onClose,
 }) => {
-  const [value, setValue] = React.useState("");
-  const [isDisabled, setIsDisabled] = React.useState(false);
+  const [value, setValue] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (startValue) setValue(startValue);
   }, [startValue]);
 
-  const onChange = React.useCallback((e) => {
+  const onKeyUpHandler = useCallback(
+    (e) => {
+      if (e.keyCode === 27) onCancelAction(e);
+      if (e.keyCode === 13) onSaveAction(e);
+    },
+    [value]
+  );
+  useEffect(() => {
+    document.addEventListener("keyup", onKeyUpHandler, false);
+
+    return () => {
+      document.removeEventListener("keyup", onKeyUpHandler, false);
+    };
+  }, [onKeyUpHandler]);
+
+  const onChange = useCallback((e) => {
     let newValue = e.target.value;
 
     if (newValue.match(folderFormValidation)) {
@@ -40,7 +55,7 @@ const Dialog = ({
     setValue(newValue);
   }, []);
 
-  const onFocus = React.useCallback((e) => {
+  const onFocus = useCallback((e) => {
     e.target.select();
   }, []);
 
@@ -48,7 +63,7 @@ const Dialog = ({
     isSafari && isTablet && window.scrollTo(0, 0);
   };
 
-  const onSaveAction = React.useCallback(
+  const onSaveAction = useCallback(
     (e) => {
       returnWindowPositionAfterKeyboard();
       setIsDisabled(true);
@@ -57,12 +72,12 @@ const Dialog = ({
     [onSave, value]
   );
 
-  const onCancelAction = React.useCallback((e) => {
+  const onCancelAction = useCallback((e) => {
     returnWindowPositionAfterKeyboard();
     onCancel && onCancel(e);
   }, []);
 
-  const onCloseAction = React.useCallback((e) => {
+  const onCloseAction = useCallback((e) => {
     returnWindowPositionAfterKeyboard();
     onClose && onClose(e);
   }, []);
