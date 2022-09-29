@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import throttle from "lodash/throttle";
 import SelectFileDialogAsideView from "./AsideView";
 import utils from "@docspace/components/utils";
-import { FilterType } from "@docspace/common/constants";
+import { FilterType, FolderType } from "@docspace/common/constants";
 import isEqual from "lodash/isEqual";
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 import toastr from "@docspace/components/toast/toastr";
@@ -89,7 +89,6 @@ class SelectFileDialog extends React.Component {
       displayType,
       folderId,
       withoutBasicSelection,
-      roomsFolderId,
     } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
@@ -99,7 +98,9 @@ class SelectFileDialog extends React.Component {
     let resultingFolderTree, resultingId;
 
     const treeFolders = await this.props.fetchTreeFolders();
-    const roomsFolder = treeFolders.find((f) => f.id == roomsFolderId);
+    const roomsFolder = treeFolders.find(
+      (f) => f.rootFolderType == FolderType.Rooms
+    );
     const hasSharedFolder =
       roomsFolder && roomsFolder.foldersCount ? true : false;
 
@@ -324,11 +325,7 @@ export default inject(
       setFile,
     } = selectFileDialogStore;
 
-    const {
-      setExpandedPanelKeys,
-      fetchTreeFolders,
-      roomsFolderId,
-    } = treeFoldersStore;
+    const { setExpandedPanelKeys, fetchTreeFolders } = treeFoldersStore;
     const { filter } = filesStore;
     const { id: storeFolderId } = selectedFolderStore;
 
@@ -347,7 +344,6 @@ export default inject(
       theme: theme,
       setExpandedPanelKeys,
       fetchTreeFolders,
-      roomsFolderId,
     };
   }
 )(
