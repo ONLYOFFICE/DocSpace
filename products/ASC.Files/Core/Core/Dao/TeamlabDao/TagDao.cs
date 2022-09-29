@@ -969,7 +969,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             tempTags = tempTags.Concat(_projectsQuery(filesDbContext, tenantId, subject));
         }
 
-        if (!deepSearch && parentFolder.FolderType != FolderType.VirtualRooms)
+        if (!deepSearch && parentFolder.RootFolderType != FolderType.VirtualRooms)
         {
             await foreach (var e in tempTags)
             {
@@ -1024,6 +1024,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                 result = result.Concat(_newTagsForSBoxQuery(filesDbContext, tenantId, subject, thirdpartyFolderIds));
             }
         }
+
         if (parentFolder.FolderType == FolderType.VirtualRooms)
         {
             result = result.Concat(_newTagsThirdpartyRoomsQuery(filesDbContext, tenantId, subject));

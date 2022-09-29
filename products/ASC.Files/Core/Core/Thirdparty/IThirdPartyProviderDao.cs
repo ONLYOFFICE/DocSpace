@@ -645,7 +645,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var entryIDs = await filesDbContext.ThirdpartyIdMapping
-                   .Where(r => r.Id.StartsWith(parentFolder.Id))
+                   .Where(r => r.Id.StartsWith(PathPrefix))
                    .Select(r => r.HashId)
                    .ToListAsync();
 

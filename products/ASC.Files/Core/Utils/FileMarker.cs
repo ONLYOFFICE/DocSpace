@@ -151,7 +151,7 @@ public class FileMarker
                     userEntriesData.Add(userID, entries);
                 }
 
-                RemoveFromCahce(projectsFolder, userID);
+                RemoveFromCahce(projectsFolder, userID);    
             });
         }
         else
@@ -811,6 +811,11 @@ public class FileMarker
         {
             parentFolderTag = Tag.New(_authContext.CurrentAccount.ID, parent, 0);
             parentFolderTag.Id = -1;
+        }
+
+        if (parent.FolderType != FolderType.VirtualRooms && parent.RootFolderType == FolderType.VirtualRooms && parent.ProviderEntry)
+        {
+            countSubNew = parentFolderTag.Count;
         }
 
         if (parentFolderTag.Count != countSubNew)
