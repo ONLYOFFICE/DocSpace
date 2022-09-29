@@ -14,13 +14,15 @@ const { desktop } = utils.device;
 class SelectFileDialog extends React.Component {
   constructor(props) {
     super(props);
-    const { filter } = props;
+    const { filter, folderId, fileInfo } = props;
 
     this.state = {
       isVisible: false,
-      files: [],
+      selectedFileInfo: {},
       displayType: this.getDisplayType(),
       isAvailableFolderList: true,
+      selectedFolderId: folderId,
+      selectedFileInfo: fileInfo,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.newFilter = filter.clone();
@@ -85,7 +87,6 @@ class SelectFileDialog extends React.Component {
       onSelectFolder,
       passedFoldersTree,
       displayType,
-      setFolderId,
       folderId,
       withoutBasicSelection,
       roomsFolderId,
@@ -127,14 +128,13 @@ class SelectFileDialog extends React.Component {
       return;
     }
 
-    setFolderId(resultingId);
-
     if (!withoutBasicSelection) {
       onSelectFolder && onSelectFolder(resultingId);
     }
 
     this.setState({
       resultingFolderTree: tree,
+      selectedFolderId: resultingId,
     });
   }
 
@@ -145,20 +145,8 @@ class SelectFileDialog extends React.Component {
   }
 
   componentWillUnmount() {
-    const {
-      setFolderId,
-      setFile,
-      setExpandedPanelKeys,
-      withoutResetFolderTree,
-    } = this.props;
     this.throttledResize && this.throttledResize.cancel();
     window.removeEventListener("resize", this.throttledResize);
-
-    if (!withoutResetFolderTree) {
-      setExpandedPanelKeys(null);
-      setFolderId(null);
-      setFile(null);
-    }
   }
 
   getDisplayType = () => {
@@ -188,25 +176,33 @@ class SelectFileDialog extends React.Component {
 
   onSelectFolder = (folder) => {
     const { displayType } = this.state;
-    const { setFolderId, setFile, folderId } = this.props;
+    const { folderId } = this.props;
     const id = displayType === "aside" ? folder : folder[0];
 
     if (id !== folderId) {
-      setFolderId(id);
-      setFile(null);
+      this.setState({
+        selectedFolderId: id,
+      });
     }
   };
 
   onSelectFile = (item, index) => {
-    const { setFile } = this.props;
-
-    setFile(item);
+    this.setState({
+      selectedFileInfo: item,
+    });
   };
 
   onClickSave = () => {
-    const { onClose, onSelectFile, fileInfo } = this.props;
+    const { onClose, onSelectFile, setFile, setFolderId } = this.props;
+    const { selectedFileInfo, selectedFolderId } = this.state;
 
-    onSelectFile && onSelectFile(fileInfo);
+    setFile(selectedFileInfo);
+
+    if (selectedFileInfo.folderId.toString() === selectedFolderId.toString()) {
+      setFolderId(selectedFolderId);
+    }
+
+    onSelectFile && onSelectFile(selectedFileInfo);
     onClose && onClose();
   };
 
@@ -224,8 +220,6 @@ class SelectFileDialog extends React.Component {
       dialogName,
       creationButtonPrimary,
       maxInputWidth,
-      folderId,
-      fileInfo,
     } = this.props;
     const {
       isVisible,
@@ -233,6 +227,8 @@ class SelectFileDialog extends React.Component {
       isAvailableFolderList,
       resultingFolderTree,
       isLoadingData,
+      selectedFileInfo,
+      selectedFolderId,
     } = this.state;
 
     const buttonName = creationButtonPrimary
@@ -249,7 +245,7 @@ class SelectFileDialog extends React.Component {
         isFolderPanelVisible={isVisible}
         onClose={onClose}
         withoutProvider={withoutProvider}
-        folderId={folderId}
+        folderId={selectedFolderId}
         resultingFolderTree={resultingFolderTree}
         onButtonClick={this.onClickSave}
         header={header}
@@ -261,7 +257,7 @@ class SelectFileDialog extends React.Component {
         onSelectFolder={this.onSelectFolder}
         onSelectFile={this.onSelectFile}
         filesListTitle={filesListTitle}
-        fileId={fileInfo?.id}
+        fileId={selectedFileInfo.id}
         newFilter={this.newFilter}
         foldersType={foldersType}
         onClickInput={this.onClickInput}
@@ -275,7 +271,7 @@ class SelectFileDialog extends React.Component {
         isPanelVisible={isPanelVisible}
         onClose={onClose}
         withoutProvider={withoutProvider}
-        folderId={folderId}
+        folderId={selectedFolderId}
         resultingFolderTree={resultingFolderTree}
         onButtonClick={this.onClickSave}
         header={header}
@@ -287,7 +283,7 @@ class SelectFileDialog extends React.Component {
         onSelectFolder={this.onSelectFolder}
         onSelectFile={this.onSelectFile}
         filesListTitle={filesListTitle}
-        fileId={fileInfo?.id}
+        fileId={selectedFileInfo.id}
         newFilter={this.newFilter}
       />
     );
@@ -308,7 +304,6 @@ SelectFileDialog.propTypes = {
   ignoreSelectedFolderTree: PropTypes.bool,
   headerName: PropTypes.string,
   filesListTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  withoutResetFolderTree: PropTypes.bool,
 };
 
 SelectFileDialog.defaultProps = {
@@ -316,7 +311,6 @@ SelectFileDialog.defaultProps = {
   filesListTitle: "",
   withoutProvider: false,
   ignoreSelectedFolderTree: false,
-  withoutResetFolderTree: false,
 };
 
 export default inject(

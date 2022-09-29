@@ -12,7 +12,7 @@ class RoomsModule extends React.Component {
         isArchiveOnly
         searchParam=".gz"
         filesListTitle={t("SelectFileInGZFormat")}
-        withoutResetFolderTree
+        withSubfolders={false}
         ignoreSelectedFolderTree
         maxFolderInputWidth="446px"
         withoutBasicSelection
