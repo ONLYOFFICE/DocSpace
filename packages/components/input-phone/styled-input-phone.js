@@ -11,17 +11,16 @@ export const StyledBox = styled(Box)`
   position: relative;
   box-sizing: border-box;
   max-width: 320px;
-  border: 1px solid #d0d5da;
+  border: 1px solid ${(props) => (props.hasError ? "#f21c0e" : "#d0d5da")};
   border-radius: 3px;
   :focus-within {
-    border-color: #2da7db;
+    border-color: ${(props) => (props.hasError ? "#f21c0e" : "#2da7db;")};
   }
 `;
 
 export const StyledComboBox = styled(ComboBox)`
   width: 57px;
   height: 44px;
-
   .combo-button {
     width: 100%;
     height: 100%;
@@ -55,7 +54,6 @@ export const StyledComboBox = styled(ComboBox)`
 export const StyledInput = styled(TextInput)`
   height: 44px;
   padding-left: 10px;
-
   border-left: 1px solid #d0d5da !important;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;

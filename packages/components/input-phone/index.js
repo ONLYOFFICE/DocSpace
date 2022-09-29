@@ -1,6 +1,7 @@
 import { useState, useEffect, memo } from "react";
 import { options } from "./options";
 import { FixedSizeList as List } from "react-window";
+import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import Box from "@docspace/components/box";
 import InputBlock from "@docspace/components/input-block";
@@ -16,17 +17,8 @@ import {
   CountryDialCode,
   ErrorText,
 } from "./styled-input-phone";
-
-const defaultCountry = {
-  locale: options[182].code, // default locale RU
-  dialCode: options[182].dialCode, // default dialCode +7
-  mask: options[182].mask, // default dialCode +7
-  icon: options[182].flag, // default flag Russia
-};
-
-export const InputPhone = memo(() => {
-  const [country, setCountry] = useState(defaultCountry);
-  const [phoneValue, setPhoneValue] = useState("");
+export const InputPhone = memo((props) => {
+  const [country, setCountry] = useState(props.defaultCountry);
   const [searchValue, setSearchValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -36,6 +28,11 @@ export const InputPhone = memo(() => {
     const str = e.target.value.replace(/\s/g, "");
     const el = options.find((option) => option.dialCode === str);
 
+    if (e.target.value === "") {
+      setCountry((prev) => ({ ...prev, dialCode: "+" }));
+      setIsValid(false);
+    }
+
     if (el) {
       setIsValid(true);
       setCountry({
@@ -44,11 +41,8 @@ export const InputPhone = memo(() => {
         mask: el.mask,
         icon: el.flag,
       });
-      setPhoneValue(e.target.value);
     }
   };
-
-  // console.log("phoneValue", phoneValue);
 
   const handleSearch = (e) => {
     setSearchValue(e.target.value);
@@ -56,6 +50,10 @@ export const InputPhone = memo(() => {
 
   const getMask = (locale) => {
     return options.find((option) => option.code === locale).mask;
+  };
+
+  const handleClick = () => {
+    setIsOpen(!isOpen), setIsValid(true);
   };
 
   useEffect(() => {
@@ -85,6 +83,7 @@ export const InputPhone = memo(() => {
           setCountry({
             locale: country.code,
             dialCode: country.dialCode,
+            mask: country.mask,
             icon: country.flag,
           });
         }}
@@ -97,24 +96,21 @@ export const InputPhone = memo(() => {
 
   return (
     <>
-      <StyledBox>
+      <StyledBox hasError={!isValid}>
         <Box>
           <StyledComboBox
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={handleClick}
             options={[]}
             scaled={true}
             noBorder={true}
-            hasError={!isValid}
             selectedOption={country}
           />
         </Box>
 
         <StyledInput
           type="tel"
-          hasError={!isValid}
-          placeholder="+7 XXX XXX-XX-XX"
+          placeholder={props.phonePlaceholderText}
           mask={getMask(country.locale)}
-          isAutoFocussed={true}
           withBorder={false}
           tabIndex={1}
           value={country.dialCode}
@@ -130,7 +126,7 @@ export const InputPhone = memo(() => {
           <InputBlock
             type="text"
             iconName="static/images/search.react.svg"
-            placeholder="Search"
+            placeholder={props.searchPlaceholderText}
             value={searchValue}
             tabIndex={2}
             scale={true}
@@ -150,12 +146,46 @@ export const InputPhone = memo(() => {
                 {Row}
               </List>
             ) : (
-              <StyledText>Country Not Found</StyledText>
+              <StyledText>{props.searchEmptyMessage}</StyledText>
             )}
           </Box>
         </StyledDropDown>
       </StyledBox>
-      {!isValid && <ErrorText>Сountry code is invalid</ErrorText>}
+      {!isValid && <ErrorText>{props.errorMessage}</ErrorText>}
     </>
   );
 });
+
+InputPhone.propTypes = {
+  /** Default selected country Russia */
+  defaultCountry: PropTypes.object.isRequired,
+  /** Text displayed on the Input placeholder */
+  phonePlaceholderText: PropTypes.string,
+  /** Text displayed on the SearchInput placeholder */
+  searchPlaceholderText: PropTypes.string,
+  /** Called when field is clicked */
+  onClick: PropTypes.func,
+  /** Called when value is changed */
+  onChange: PropTypes.func,
+  /** Gets the country mask  */
+  getMask: PropTypes.func,
+  /** Text is displayed when nothing found */
+  searchEmptyMessage: PropTypes.string,
+  /** Text is displayed when invalid country dial code */
+  errorMessage: PropTypes.string,
+};
+
+InputPhone.defaultProps = {
+  defaultCountry: {
+    locale: options[182].code, // default locale RU
+    dialCode: options[182].dialCode, // default dialCode +7
+    mask: options[182].mask, // default dialCode +7
+    icon: options[182].flag, // default flag Russia
+  },
+  phonePlaceholderText: "+7 XXX XXX-XX-XX",
+  searchPlaceholderText: "Search",
+  searchEmptyMessage: "Nothing found",
+  errorMessage: "Сountry code is invalid",
+};
+
+InputPhone.displayName = "InputPhone";
