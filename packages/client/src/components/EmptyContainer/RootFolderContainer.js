@@ -69,11 +69,7 @@ const RootFolderContainer = (props) => {
     t("PrivateRoomDescriptionUnbreakable"),
   ];
 
-  const roomHeader = (
-    <Trans t={t} i18nKey="RoomEmptyContainerHeader" ns="Files">
-      Welcome to {{ organizationName }}
-    </Trans>
-  );
+  const roomHeader = "Welcome to DocSpace";
 
   const [showLoader, setShowLoader] = React.useState(false);
 

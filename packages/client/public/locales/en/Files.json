@@ -84,7 +84,6 @@
   "Rename": "Rename",
   "ReviewRooms": "Review",
   "RoomEmptyContainerDescription": "Please create the first room.",
-  "RoomEmptyContainerHeader": "Welcome to {{organizationName}}!",
   "RoomRemoved": "Room removed",
   "RoomsRemoved": "Rooms removed",
   "RestoreAll": "Restore all",
