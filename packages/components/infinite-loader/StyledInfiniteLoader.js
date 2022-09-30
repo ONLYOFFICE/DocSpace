@@ -31,10 +31,10 @@ const StyledScroll = styled.div`
 
 const rowStyles = css`
   margin-left: -20px;
-  width: ${({ width }) => width + 40 + "px !important"};
+  width: ${({ width }) => width + 36 + "px !important"};
 
   .ReactVirtualized__Grid__innerScrollContainer {
-    max-width: ${({ width }) => width + 40 + "px !important"};
+    max-width: ${({ width }) => width + 36 + "px !important"};
   }
 
   @media ${tablet} {
@@ -55,7 +55,7 @@ const rowStyles = css`
 
   .row-list-item {
     padding-left: 16px;
-    width: calc(100% - 36px) !important;
+    width: calc(100% - 32px) !important;
 
     @media ${tablet} {
       padding-left: 20px;
