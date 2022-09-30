@@ -594,7 +594,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.FromResult(tagInfo);
     }
 
-    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
+    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
         return new List<Tag>();
     }
@@ -604,7 +604,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return new List<Tag>();
     }
 
-    public void UpdateNewTags(IEnumerable<Tag> tag)
+    public void UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
     }
 

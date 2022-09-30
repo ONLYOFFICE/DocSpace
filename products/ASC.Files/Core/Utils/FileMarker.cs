@@ -69,7 +69,7 @@ public class FileMarker
 {
     private readonly ICache _cache;
 
-    private const string _cacheKeyFormat = "MarkedAsNew/{0}/folder_{1}";
+    private const string CacheKeyFormat = "MarkedAsNew/{0}/folder_{1}";
 
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
@@ -358,12 +358,12 @@ public class FileMarker
 
         if (updateTags.Count > 0)
         {
-            tagDao.UpdateNewTags(updateTags);
+            tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
         }
 
         if (newTags.Count > 0)
         {
-            tagDao.SaveTags(newTags);
+            tagDao.SaveTags(newTags, obj.CurrentAccountId);
         }
 
         async Task GetNewTagsAsync<T1>(Guid userID, List<FileEntry<T1>> entries)
@@ -919,13 +919,13 @@ public class FileMarker
 
     private void InsertToCahce(object folderId, int count)
     {
-        var key = string.Format(_cacheKeyFormat, _authContext.CurrentAccount.ID, folderId);
+        var key = string.Format(CacheKeyFormat, _authContext.CurrentAccount.ID, folderId);
         _cache.Insert(key, count.ToString(), TimeSpan.FromMinutes(10));
     }
 
     private int GetCountFromCahce(object folderId)
     {
-        var key = string.Format(_cacheKeyFormat, _authContext.CurrentAccount.ID, folderId);
+        var key = string.Format(CacheKeyFormat, _authContext.CurrentAccount.ID, folderId);
         var count = _cache.Get<string>(key);
 
         return count == null ? -1 : int.Parse(count);
@@ -938,7 +938,7 @@ public class FileMarker
 
     private void RemoveFromCahce(object folderId, Guid userId)
     {
-        var key = string.Format(_cacheKeyFormat, userId, folderId);
+        var key = string.Format(CacheKeyFormat, userId, folderId);
         _cache.Remove(key);
     }
 }

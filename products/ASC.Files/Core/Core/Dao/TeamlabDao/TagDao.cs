@@ -303,7 +303,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         return _mapper.Map<DbFilesTag, TagInfo>(tag.Entity);
     }
 
-    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tags)
+    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tags, Guid createdBy = default)
     {
         var result = new List<Tag>();
 
@@ -334,7 +334,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                 var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
                 var cacheTagId = new Dictionary<string, int>();
 
-                result.AddRange(tags.Select(t => SaveTagAsync(t, cacheTagId, createOn).Result));
+                result.AddRange(tags.Select(t => SaveTagAsync(t, cacheTagId, createOn, createdBy).Result));
 
                 tx.Commit();
             });
@@ -412,7 +412,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         filesDbContext.SaveChanges();
     }
 
-    private async Task<Tag> SaveTagAsync(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn)
+    private async Task<Tag> SaveTagAsync(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn, Guid createdBy = default)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
@@ -454,7 +454,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             TagId = id,
             EntryId = (await MappingIDAsync(t.EntryId, true)).ToString(),
             EntryType = t.EntryType,
-            CreateBy = _authContext.CurrentAccount.ID,
+            CreateBy = createdBy != default ? createdBy : _authContext.CurrentAccount.ID,
             CreateOn = createOn,
             Count = t.Count
         };
@@ -465,7 +465,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         return t;
     }
 
-    public void UpdateNewTags(IEnumerable<Tag> tags)
+    public void UpdateNewTags(IEnumerable<Tag> tags, Guid createdBy = default)
     {
         if (tags == null || !tags.Any())
         {
@@ -485,7 +485,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
                 foreach (var tag in tags)
                 {
-                    UpdateNewTagsInDbAsync(tag, createOn).Wait();
+                    UpdateNewTagsInDbAsync(tag, createOn, createdBy).Wait();
                 }
 
                 tx.Commit();
@@ -508,17 +508,17 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         }
     }
 
-    private Task UpdateNewTagsInDbAsync(Tag tag, DateTime createOn)
+    private Task UpdateNewTagsInDbAsync(Tag tag, DateTime createOn, Guid createdBy = default)
     {
         if (tag == null)
         {
             return Task.CompletedTask;
         }
 
-        return InternalUpdateNewTagsInDbAsync(tag, createOn);
+        return InternalUpdateNewTagsInDbAsync(tag, createOn, createdBy);
     }
 
-    private async Task InternalUpdateNewTagsInDbAsync(Tag tag, DateTime createOn)
+    private async Task InternalUpdateNewTagsInDbAsync(Tag tag, DateTime createOn, Guid createdBy = default)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var mappedId = (await MappingIDAsync(tag.EntryId)).ToString();
@@ -529,7 +529,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         foreach (var f in forUpdate)
         {
-            f.CreateBy = _authContext.CurrentAccount.ID;
+            f.CreateBy = createdBy != default ? createdBy : _authContext.CurrentAccount.ID;
             f.CreateOn = createOn;
             f.Count = tag.Count;
         }
