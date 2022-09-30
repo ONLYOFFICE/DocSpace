@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
 
 import { inject, observer } from "mobx-react";
-import { isDesktop } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import Whitelabel from "./settingsBranding/whitelabel";
@@ -49,7 +49,7 @@ const StyledComponent = styled.div`
 const Branding = (props) => {
   const [isPortalPaid, setIsPortalPaid] = useState(true);
 
-  if (!isDesktop) return <ForbiddenPage />;
+  if (isMobile) return <ForbiddenPage />;
 
   return (
     <StyledComponent>

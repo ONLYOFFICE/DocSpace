@@ -2,7 +2,7 @@ let timer = null;
 
 const startInterval = () => {
   const elem = document.getElementById("infinite-page-loader");
-  elem.style.display = "block";
+  if (elem) elem.style.display = "block";
 };
 
 export function showLoader() {

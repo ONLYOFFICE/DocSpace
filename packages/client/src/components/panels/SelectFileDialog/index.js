@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import throttle from "lodash/throttle";
 import SelectFileDialogAsideView from "./AsideView";
 import utils from "@docspace/components/utils";
-import { FilterType } from "@docspace/common/constants";
+import { FilterType, FolderType } from "@docspace/common/constants";
 import isEqual from "lodash/isEqual";
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 import toastr from "@docspace/components/toast/toastr";
@@ -14,13 +14,15 @@ const { desktop } = utils.device;
 class SelectFileDialog extends React.Component {
   constructor(props) {
     super(props);
-    const { filter } = props;
+    const { filter, folderId, fileInfo } = props;
 
     this.state = {
       isVisible: false,
-      files: [],
+      selectedFileInfo: {},
       displayType: this.getDisplayType(),
       isAvailableFolderList: true,
+      selectedFolderId: folderId,
+      selectedFileInfo: fileInfo,
     };
     this.throttledResize = throttle(this.setDisplayType, 300);
     this.newFilter = filter.clone();
@@ -81,14 +83,10 @@ class SelectFileDialog extends React.Component {
 
   async componentDidMount() {
     const {
-      treeFolders,
-      foldersType,
-      onSetBaseFolderPath,
+      filteredType,
       onSelectFolder,
-      foldersList,
-      treeFromInput,
+      passedFoldersTree,
       displayType,
-      setFolderId,
       folderId,
       withoutBasicSelection,
     } = this.props;
@@ -99,18 +97,23 @@ class SelectFileDialog extends React.Component {
 
     let resultingFolderTree, resultingId;
 
+    const treeFolders = await this.props.fetchTreeFolders();
+    const roomsFolder = treeFolders.find(
+      (f) => f.rootFolderType == FolderType.Rooms
+    );
+    const hasSharedFolder =
+      roomsFolder && roomsFolder.foldersCount ? true : false;
+
     try {
       [
         resultingFolderTree,
         resultingId,
       ] = await SelectionPanel.getBasicFolderInfo(
         treeFolders,
-        foldersType,
+        filteredType,
         folderId,
-        onSetBaseFolderPath,
-        onSelectFolder,
-        foldersList,
-        withoutBasicSelection
+        passedFoldersTree,
+        hasSharedFolder
       );
     } catch (e) {
       toastr.error(e);
@@ -118,7 +121,7 @@ class SelectFileDialog extends React.Component {
       return;
     }
 
-    const tree = treeFromInput ? treeFromInput : resultingFolderTree;
+    const tree = resultingFolderTree;
 
     if (tree.length === 0) {
       this.setState({ isAvailable: false });
@@ -126,10 +129,13 @@ class SelectFileDialog extends React.Component {
       return;
     }
 
-    setFolderId(resultingId);
+    if (!withoutBasicSelection) {
+      onSelectFolder && onSelectFolder(resultingId);
+    }
 
     this.setState({
       resultingFolderTree: tree,
+      selectedFolderId: resultingId,
     });
   }
 
@@ -140,20 +146,8 @@ class SelectFileDialog extends React.Component {
   }
 
   componentWillUnmount() {
-    const {
-      setFolderId,
-      setFile,
-      setExpandedPanelKeys,
-      withoutResetFolderTree,
-    } = this.props;
     this.throttledResize && this.throttledResize.cancel();
     window.removeEventListener("resize", this.throttledResize);
-
-    if (!withoutResetFolderTree) {
-      setExpandedPanelKeys(null);
-      setFolderId(null);
-      setFile(null);
-    }
   }
 
   getDisplayType = () => {
@@ -183,25 +177,33 @@ class SelectFileDialog extends React.Component {
 
   onSelectFolder = (folder) => {
     const { displayType } = this.state;
-    const { setFolderId, setFile, folderId } = this.props;
+    const { folderId } = this.props;
     const id = displayType === "aside" ? folder : folder[0];
 
     if (id !== folderId) {
-      setFolderId(id);
-      setFile(null);
+      this.setState({
+        selectedFolderId: id,
+      });
     }
   };
 
   onSelectFile = (item, index) => {
-    const { setFile } = this.props;
-
-    setFile(item);
+    this.setState({
+      selectedFileInfo: item,
+    });
   };
 
   onClickSave = () => {
-    const { onClose, onSelectFile, fileInfo } = this.props;
+    const { onClose, onSelectFile, setFile, setFolderId } = this.props;
+    const { selectedFileInfo, selectedFolderId } = this.state;
 
-    onSelectFile && onSelectFile(fileInfo);
+    setFile(selectedFileInfo);
+
+    if (selectedFileInfo.folderId.toString() === selectedFolderId.toString()) {
+      setFolderId(selectedFolderId);
+    }
+
+    onSelectFile && onSelectFile(selectedFileInfo);
     onClose && onClose();
   };
 
@@ -210,7 +212,7 @@ class SelectFileDialog extends React.Component {
       t,
       isPanelVisible,
       onClose,
-      foldersType,
+      filteredType,
       withoutProvider,
       filesListTitle,
       theme,
@@ -219,8 +221,6 @@ class SelectFileDialog extends React.Component {
       dialogName,
       creationButtonPrimary,
       maxInputWidth,
-      folderId,
-      fileInfo,
     } = this.props;
     const {
       isVisible,
@@ -228,6 +228,8 @@ class SelectFileDialog extends React.Component {
       isAvailableFolderList,
       resultingFolderTree,
       isLoadingData,
+      selectedFileInfo,
+      selectedFolderId,
     } = this.state;
 
     const buttonName = creationButtonPrimary
@@ -244,7 +246,7 @@ class SelectFileDialog extends React.Component {
         isFolderPanelVisible={isVisible}
         onClose={onClose}
         withoutProvider={withoutProvider}
-        folderId={folderId}
+        folderId={selectedFolderId}
         resultingFolderTree={resultingFolderTree}
         onButtonClick={this.onClickSave}
         header={header}
@@ -256,9 +258,9 @@ class SelectFileDialog extends React.Component {
         onSelectFolder={this.onSelectFolder}
         onSelectFile={this.onSelectFile}
         filesListTitle={filesListTitle}
-        fileId={fileInfo?.id}
+        fileId={selectedFileInfo.id}
         newFilter={this.newFilter}
-        foldersType={foldersType}
+        filteredType={filteredType}
         onClickInput={this.onClickInput}
         onCloseSelectFolderDialog={this.onCloseSelectFolderDialog}
         maxInputWidth={maxInputWidth}
@@ -270,7 +272,7 @@ class SelectFileDialog extends React.Component {
         isPanelVisible={isPanelVisible}
         onClose={onClose}
         withoutProvider={withoutProvider}
-        folderId={folderId}
+        folderId={selectedFolderId}
         resultingFolderTree={resultingFolderTree}
         onButtonClick={this.onClickSave}
         header={header}
@@ -282,7 +284,7 @@ class SelectFileDialog extends React.Component {
         onSelectFolder={this.onSelectFolder}
         onSelectFile={this.onSelectFile}
         filesListTitle={filesListTitle}
-        fileId={fileInfo?.id}
+        fileId={selectedFileInfo.id}
         newFilter={this.newFilter}
       />
     );
@@ -292,26 +294,20 @@ SelectFileDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPanelVisible: PropTypes.bool.isRequired,
   onSelectFile: PropTypes.func.isRequired,
-  foldersType: PropTypes.oneOf([
-    "common",
-    "third-party",
+  filteredType: PropTypes.oneOf([
     "exceptSortedByTags",
-    "exceptPrivacyTrashFolders",
+    "exceptPrivacyTrashArchiveFolders",
   ]),
   id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   withoutProvider: PropTypes.bool,
-  ignoreSelectedFolderTree: PropTypes.bool,
   headerName: PropTypes.string,
   filesListTitle: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  withoutResetFolderTree: PropTypes.bool,
 };
 
 SelectFileDialog.defaultProps = {
   id: "",
   filesListTitle: "",
   withoutProvider: false,
-  ignoreSelectedFolderTree: false,
-  withoutResetFolderTree: false,
 };
 
 export default inject(
@@ -329,7 +325,7 @@ export default inject(
       setFile,
     } = selectFileDialogStore;
 
-    const { treeFolders, setExpandedPanelKeys } = treeFoldersStore;
+    const { setExpandedPanelKeys, fetchTreeFolders } = treeFoldersStore;
     const { filter } = filesStore;
     const { id: storeFolderId } = selectedFolderStore;
 
@@ -342,12 +338,12 @@ export default inject(
       setFile,
       setFolderId,
       filter,
-      treeFolders,
       storeFolderId,
 
       folderId,
       theme: theme,
       setExpandedPanelKeys,
+      fetchTreeFolders,
     };
   }
 )(

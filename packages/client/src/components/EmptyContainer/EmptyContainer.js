@@ -72,6 +72,9 @@ const EmptyFolderWrapper = styled.div`
       line-height: unset;
       ${NoUserSelect}
     }
+    .empty-folder_container_up-image {
+      ${NoUserSelect}
+    }
 
     .empty-folder_container-icon {
       height: 20px;

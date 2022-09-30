@@ -69,6 +69,8 @@ const RootFolderContainer = (props) => {
     t("PrivateRoomDescriptionUnbreakable"),
   ];
 
+  const roomHeader = "Welcome to DocSpace";
+
   const [showLoader, setShowLoader] = React.useState(false);
 
   React.useEffect(() => {
@@ -164,7 +166,7 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Rooms:
         return {
-          headerText: "Welcome to DocSpace!",
+          headerText: roomHeader,
           descriptionText: roomsDescription,
           imageSrc: "images/empty_screen_corporate.png",
           buttons: roomsButtons,
@@ -277,7 +279,7 @@ const RootFolderContainer = (props) => {
         alt="plus_icon"
       />
       <Link onClick={onCreateRoom} {...linkStyles}>
-        Create room
+        {t("CreateEditRoomDialog:CreateRoom")}
       </Link>
     </div>
   );
@@ -391,4 +393,8 @@ export default inject(
       setIsEmptyPage,
     };
   }
-)(withTranslation("Files")(observer(RootFolderContainer)));
+)(
+  withTranslation(["Files", "CreateEditRoomDialog"])(
+    observer(RootFolderContainer)
+  )
+);
