@@ -175,10 +175,6 @@ const StyledSimpleFilesRow = styled(Row)`
   .expandButton {
     margin-left: 6px;
     padding-top: 0px;
-    margin-right: 16px;
-    @media ${tablet} {
-      margin-right: 12px;
-    }
   }
 `;
 
