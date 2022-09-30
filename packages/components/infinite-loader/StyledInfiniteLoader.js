@@ -31,10 +31,18 @@ const StyledScroll = styled.div`
 
 const rowStyles = css`
   margin-left: -20px;
-  width: ${({ width }) => width + 20 + "px !important"};
+  width: ${({ width }) => width + 38 + "px !important"};
 
   .ReactVirtualized__Grid__innerScrollContainer {
-    max-width: ${({ width }) => width + 20 + "px !important"};
+    max-width: ${({ width }) => width + 38 + "px !important"};
+  }
+
+  @media ${tablet} {
+    width: ${({ width }) => width + 34 + "px !important"};
+
+    .ReactVirtualized__Grid__innerScrollContainer {
+      max-width: ${({ width }) => width + 34 + "px !important"};
+    }
   }
 
   .row-list-item {
