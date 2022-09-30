@@ -39,6 +39,7 @@ const StyledWrapper = styled.div`
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
+  height: 57px;
 
   ${(props) =>
     !isMobile &&
@@ -146,11 +147,6 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-top: 1px;
   }
 
-  .expandButton {
-    margin-left: 6px;
-    padding-top: 7px;
-  }
-
   .row_context-menu-wrapper {
     width: min-content;
     justify-content: space-between;
@@ -177,6 +173,7 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .expandButton {
+    margin-left: 6px;
     padding-top: 0px;
   }
 `;
