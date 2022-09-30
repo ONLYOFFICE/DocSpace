@@ -39,6 +39,7 @@ const StyledWrapper = styled.div`
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
+  height: 58px;
 
   ${(props) =>
     !isMobile &&
