@@ -13,7 +13,7 @@ const NoFileOrFolderItem = ({ t }) => {
         />
       </div>
 
-      <div className="no-item-text">{t("EmptyScreenText")}</div>
+      <div className="no-item-text">{t("FilesEmptyScreenTent")}</div>
     </StyledNoItemContainer>
   );
 };
