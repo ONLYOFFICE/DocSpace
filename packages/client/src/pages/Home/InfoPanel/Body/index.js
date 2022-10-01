@@ -1,11 +1,6 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
-import { withTranslation } from "react-i18next";
-
-import withLoader from "@docspace/client/src/HOCs/withLoader";
-
-import Loaders from "@docspace/common/components/Loaders";
 
 import ViewHelper from "./helpers/ViewHelper";
 import ItemTitle from "./sub-components/ItemTitle";
@@ -15,56 +10,49 @@ import { getRoomInfo } from "@docspace/common/api/rooms";
 
 const InfoPanelBodyContent = ({
   t,
-
   selection,
   setSelection,
   normalizeSelection,
-
   selectionParentRoom,
   setSelectionParentRoom,
-
   roomsView,
   fileView,
-
-  getIsFileCategory,
-  getIsRoomCategory,
+  getIsFiles,
+  getIsRooms,
+  getIsAccounts,
   getIsGallery,
-
   gallerySelected,
-
   setBufferSelection,
-
   isRootFolder,
-
   getIcon,
   getFolderIcon,
-
   ...props
 }) => {
   const [selectedItems, setSelectedItems] = useState(props.selectedItems);
   const [selectedFolder, setSelectedFolder] = useState(props.selectedFolder);
 
-  const isFileCategory = getIsFileCategory();
-  const isRoomCategory = getIsRoomCategory();
+  const isFiles = getIsFiles();
+  const isRooms = getIsRooms();
+  const isAccounts = getIsAccounts();
   const isGallery = getIsGallery();
-
-  const isNoItem = (isRootFolder || isGallery) && selection?.isSelectedFolder;
+  const isNoItem =
+    (isGallery && !gallerySelected) ||
+    ((isRootFolder || isAccounts) && !!selection?.isSelectedFolder);
   const isSeveralItems = selectedItems.length > 1;
 
   const viewHelper = new ViewHelper({
     defaultProps: {
-      t,
       selection,
-      setSelection,
-      isFileCategory,
-      isRoomCategory,
+      isFiles,
+      isRooms,
+      isAccounts,
       isGallery,
       isRootFolder,
-
       personal: props.personal,
       culture: props.culture,
     },
     detailsProps: {
+      setSelection,
       getIcon,
       getFolderIcon,
       getFolderInfo: props.getFolderInfo,
@@ -77,14 +65,24 @@ const InfoPanelBodyContent = ({
       selectionParentRoom,
       setSelectionParentRoom,
       selfId: props.selfId,
+      isOwner: props.isOwner,
+      isAdmin: props.isAdmin,
       getRoomMembers: props.getRoomMembers,
+      changeUserType: props.changeUserType,
     },
     historyProps: {
+      setSelection,
       getHistory: props.getHistory,
       getRoomHistory: props.getRoomHistory,
       getFileHistory: props.getFileHistory,
       getItemIcon: props.getItemIcon,
-      openFileAction: props.openFileAction,
+      openLocationAction: props.openLocationAction,
+    },
+    accountsProps: {
+      selfId: props.selfId,
+      isOwner: props.isOwner,
+      isAdmin: props.isAdmin,
+      changeUserType: props.changeUserType,
     },
     galleryProps: {
       getIcon,
@@ -104,8 +102,9 @@ const InfoPanelBodyContent = ({
     if (isNoItem) return viewHelper.NoItemView();
     if (isGallery) return viewHelper.GalleryView();
     if (isSeveralItems) return viewHelper.SeveralItemsView();
+    if (isAccounts) return viewHelper.AccountsView();
 
-    switch (isRoomCategory ? roomsView : fileView) {
+    switch (isRooms ? roomsView : fileView) {
       case "members": {
         return viewHelper.MembersView();
       }
@@ -161,7 +160,7 @@ const InfoPanelBodyContent = ({
   // Updating selectionParentRoom after selectFolder change
   // if it is located in another room
   useEffect(async () => {
-    if (isGallery) return;
+    if (isGallery || isAccounts) return;
 
     const currentFolderRoomId = selectedFolder.pathParts[1];
     const storeRoomId = selectionParentRoom?.id;
@@ -185,24 +184,24 @@ const InfoPanelBodyContent = ({
 
   //////////////////////////////////////////////////////////
 
-  if (!selection) return null;
+  if (!selection && !isGallery) return null;
+
   return (
     <StyledInfoPanelBody>
       {!isNoItem && (
         <ItemTitle
-          t={t}
-          selection={
-            isRoomCategory &&
-            roomsView === "members" &&
-            !selection.isRoom &&
-            selectionParentRoom
-              ? selectionParentRoom
-              : selection
-          }
+          selection={selection}
+          selectionParentRoom={selectionParentRoom}
+          roomsView={roomsView}
+          isRooms={isRooms}
+          isAccounts={isAccounts}
           isSeveralItems={isSeveralItems}
           isGallery={isGallery}
           getIcon={getIcon}
           setBufferSelection={setBufferSelection}
+          getContextOptions={props.getContextOptions}
+          getContextOptionActions={props.getContextOptionActions}
+          getUserContextOptions={props.getUserContextOptions}
         />
       )}
       {getView()}
@@ -219,14 +218,20 @@ export default inject(
     dialogsStore,
     selectedFolderStore,
     oformsStore,
+    contextOptionsStore,
+    peopleStore,
   }) => {
-    const selfId = auth.userStore.user.id;
+    const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { personal, culture } = auth.settingsStore;
     const { getIcon, getFolderIcon } = settingsStore;
-    const { onSelectItem, openFileAction } = filesActionsStore;
+    const { onSelectItem, openLocationAction } = filesActionsStore;
+    const { changeType: changeUserType } = peopleStore;
     const { setSharingPanelVisible } = dialogsStore;
     const { isRootFolder } = selectedFolderStore;
     const { gallerySelected } = oformsStore;
+    const {
+      getFilesContextOptions: getContextOptionActions,
+    } = contextOptionsStore;
 
     const {
       selection,
@@ -237,14 +242,15 @@ export default inject(
       roomsView,
       fileView,
       getItemIcon,
-      getIsFileCategory,
-      getIsRoomCategory,
+      getIsFiles,
+      getIsRooms,
+      getIsAccounts,
       getIsGallery,
     } = auth.infoPanelStore;
 
     const {
       selection: filesStoreSelection,
-      bufferSelection,
+      getFilesContextOptions: getContextOptions,
       setBufferSelection,
       getFolderInfo,
       getShareUsers,
@@ -255,16 +261,21 @@ export default inject(
       createThumbnail,
     } = filesStore;
 
-    const selectedItems =
+    const {
+      selection: peopleStoreSelection,
+      bufferSelection: peopleStoreBufferSelection,
+    } = peopleStore.selectionStore;
+    const { getUserContextOptions } = peopleStore.contextOptionsStore;
+
+    const selectedFiles =
       filesStoreSelection?.length > 0 ? [...filesStoreSelection] : [];
+    const selectedUsers = peopleStoreSelection.length
+      ? [...peopleStoreSelection]
+      : peopleStoreBufferSelection
+      ? [peopleStoreBufferSelection]
+      : [];
 
-    // const selectedItems =
-    //   filesStoreSelection?.length > 0
-    //     ? [...filesStoreSelection]
-    //     : bufferSelection
-    //     ? [bufferSelection]
-    //     : [];
-
+    const selectedItems = getIsAccounts() ? selectedUsers : selectedFiles;
     const selectedFolder = {
       ...selectedFolderStore,
       isFolder: true,
@@ -273,6 +284,8 @@ export default inject(
 
     return {
       selfId,
+      isOwner,
+      isAdmin,
       personal,
       culture,
 
@@ -284,18 +297,24 @@ export default inject(
       roomsView,
       fileView,
       getItemIcon,
-      getIsFileCategory,
-      getIsRoomCategory,
+      getIsFiles,
+      getIsRooms,
+      getIsAccounts,
       getIsGallery,
 
       selectedItems,
       selectedFolder,
       setBufferSelection,
 
+      getContextOptions,
+      getContextOptionActions,
+      getUserContextOptions,
+
       getFolderInfo,
       onSelectItem,
       getShareUsers,
       getRoomMembers,
+      changeUserType,
       getHistory,
       getRoomHistory,
       getFileHistory,
@@ -304,17 +323,11 @@ export default inject(
       getIcon,
       getFolderIcon,
       createThumbnail,
-      openFileAction,
+      openLocationAction,
 
       gallerySelected,
 
       isRootFolder,
     };
   }
-)(
-  withRouter(
-    withTranslation(["InfoPanel", "FormGallery", "Common", "Translations"])(
-      observer(InfoPanelBodyContent)
-    )
-  )
-);
+)(withRouter(observer(InfoPanelBodyContent)));
