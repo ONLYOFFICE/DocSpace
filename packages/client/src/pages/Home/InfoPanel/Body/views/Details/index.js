@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { withTranslation } from "react-i18next";
+
+import withLoader from "@docspace/client/src/HOCs/withLoader";
+import Loaders from "@docspace/common/components/Loaders/index.js";
 
 import { FileType } from "@docspace/common/constants";
 import Text from "@docspace/components/text";
@@ -7,7 +11,7 @@ import DetailsHelper from "../../helpers/DetailsHelper.js";
 import { StyledNoThumbnail, StyledThumbnail } from "../../styles/details.js";
 import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
 
-const SingleItem = ({ t, selection, setSelection, ...props }) => {
+const Details = ({ t, selection, setSelection, ...props }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
   const detailsHelper = new DetailsHelper({ t, item: selection, ...props });
@@ -43,7 +47,9 @@ const SingleItem = ({ t, selection, setSelection, ...props }) => {
       ) : (
         <StyledNoThumbnail>
           <img
-            className={`no-thumbnail-img ${selection.isRoom && "is-room"}`}
+            className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
+              selection.isRoom && selection.logo?.large && "custom-logo"
+            }`}
             src={selection.thumbnailUrl}
             alt="thumbnail-icon-big"
           />
@@ -52,7 +58,7 @@ const SingleItem = ({ t, selection, setSelection, ...props }) => {
 
       <StyledSubtitle>
         <Text fontWeight="600" fontSize="14px">
-          {t("SystemProperties")}
+          {t("Properties")}
         </Text>
       </StyledSubtitle>
 
@@ -70,4 +76,6 @@ const SingleItem = ({ t, selection, setSelection, ...props }) => {
   );
 };
 
-export default SingleItem;
+export default withTranslation(["InfoPanel", "Common", "Translations"])(
+  withLoader(Details)(<Loaders.InfoPanelViewLoader view="details" />)
+);
