@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { Base } from "@docspace/components/themes";
 import { mobile } from "@docspace/components/utils/device";
@@ -13,17 +13,31 @@ const StyledHistorySubtitle = styled.div`
   font-weight: 600;
   font-size: 13px;
   line-height: 20px;
-  color: #a3a9ae;
+  color: ${(props) => props.theme.infoPanel.history.subtitleColor};
 `;
 
 const StyledUserNameLink = styled.span`
+  display: inline-block;
+
   white-space: normal;
   margin: 1px 0;
+
   .username {
     font-size: 13px;
     font-weight: 600;
     display: inline-block;
+  }
+
+  .link {
+    text-decoration: underline;
+    text-decoration-style: dashed;
     text-underline-offset: 2px;
+  }
+
+  .space {
+    display: inline-block;
+    width: 4px;
+    height: 15px;
   }
 `;
 
@@ -41,7 +55,7 @@ const StyledHistoryBlock = styled.div`
   .info {
     width: calc(100% - 40px);
     max-width: calc(100% - 40px);
-    display: flex;
+    display: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
     flex-direction: column;
     gap: 2px;
 
@@ -56,7 +70,7 @@ const StyledHistoryBlock = styled.div`
         white-space: nowrap;
         overflow: hidden;
       }
-      .secondary-info {
+      /* .secondary-info {
         white-space: nowrap;
         font-weight: 400;
         font-size: 14px;
@@ -64,23 +78,44 @@ const StyledHistoryBlock = styled.div`
         @media ${mobile} {
           display: none;
         }
-      }
+      } */
       .date {
         white-space: nowrap;
         display: inline-block;
         margin-left: auto;
         font-weight: 600;
         font-size: 12px;
-        color: #a3a9ae;
+        color: ${(props) => props.theme.infoPanel.history.dateColor};
       }
     }
   }
+
+  ${(props) =>
+    props.isUserAction &&
+    css`
+      .info {
+        flex-direction: row;
+        flex-wrap: wrap;
+        .message {
+          display: inline-block;
+          margin-right: 4px;
+        }
+      }
+    `}
 `;
 
 const StyledHistoryBlockMessage = styled.div`
   font-weight: 400;
   font-size: 13px;
   line-height: 20px;
+
+  strong {
+    font-weight: 600;
+  }
+
+  .folderLabel {
+    color: ${(props) => props.theme.infoPanel.history.locationIconColor};
+  }
 `;
 
 const StyledHistoryBlockFilesList = styled.div`
@@ -94,12 +129,16 @@ const StyledHistoryBlockFilesList = styled.div`
   .show_more-link {
     cursor: pointer;
     margin: 10px 0 3px 20px;
-    font-weight: 600;
+    font-weight: 400;
     font-size: 13px;
     line-height: 15px;
-    text-decoration: underline;
-    text-decoration-style: dashed;
-    text-underline-offset: 2px;
+
+    strong {
+      font-weight: 600;
+      text-decoration: underline;
+      text-decoration-style: dashed;
+      text-underline-offset: 2px;
+    }
   }
 `;
 
@@ -135,7 +174,7 @@ const StyledHistoryBlockFile = styled.div`
 
     .exst {
       flex-shrink: 0;
-      color: #a3a9ae;
+      color: ${(props) => props.theme.infoPanel.history.fileExstColor};
     }
   }
 
@@ -145,7 +184,11 @@ const StyledHistoryBlockFile = styled.div`
   }
 `;
 
+StyledHistorySubtitle.defaultProps = { theme: Base };
 StyledHistoryBlock.defaultProps = { theme: Base };
+StyledHistoryBlockMessage.defaultProps = { theme: Base };
+StyledHistoryBlockFilesList.defaultProps = { theme: Base };
+StyledHistoryBlockFile.defaultProps = { theme: Base };
 
 export {
   StyledHistoryList,
