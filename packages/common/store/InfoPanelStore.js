@@ -1,8 +1,4 @@
 import { makeAutoObservable } from "mobx";
-import { Events } from "@docspace/common/constants";
-
-import { getCategoryType } from "@docspace/client/src/helpers/utils";
-import { CategoryType } from "@docspace/client/src/helpers/constants";
 
 class InfoPanelStore {
   isVisible = false;
@@ -34,15 +30,18 @@ class InfoPanelStore {
       isRoom: selection.isRoom || !!selection.roomType,
       icon: this.getItemIcon(selection, 32),
       hasCustonThumbnail: !!selection.thumbnailUrl,
-      thumbnailUrl: selection.thumbnailUrl || this.getItemIcon(selection, 96),
+      thumbnailUrl:
+        selection.isRoom && selection.logo?.large
+          ? selection.logo.large
+          : selection.thumbnailUrl || this.getItemIcon(selection, 96),
       isContextMenuSelection: false,
     };
   };
 
   getItemIcon = (item, size) => {
     return item.isRoom || !!item.roomType
-      ? item.logo && item.logo.big
-        ? item.logo.big
+      ? item.logo && item.logo.medium
+        ? item.logo.medium
         : item.icon
         ? item.icon
         : this.settingsStore.getIcon(size, null, null, null, item.roomType)
@@ -51,41 +50,39 @@ class InfoPanelStore {
       : this.settingsStore.getIcon(size, item.fileExst || ".file");
   };
 
-  getIsFileCategory = () => {
-    const categoryType = getCategoryType(location);
+  getIsFiles = (givenPathName) => {
+    const pathname = givenPathName || window.location.pathname.toLowerCase();
     return (
-      categoryType == CategoryType.Personal ||
-      categoryType == CategoryType.Favorite ||
-      categoryType == CategoryType.Recent ||
-      categoryType == CategoryType.Trash
+      pathname.indexOf("files") !== -1 || pathname.indexOf("personal") !== -1
     );
   };
 
-  getIsRoomCategory = () => {
-    const categoryType = getCategoryType(location);
+  getIsRooms = (givenPathName) => {
+    const pathname = givenPathName || window.location.pathname.toLowerCase();
     return (
-      categoryType == CategoryType.Shared ||
-      categoryType == CategoryType.SharedRoom ||
-      categoryType == CategoryType.Archive ||
-      categoryType == CategoryType.ArchivedRoom
+      pathname.indexOf("rooms") !== -1 && !(pathname.indexOf("personal") !== -1)
     );
   };
 
-  getIsGallery = () => {
-    const pathname = window.location.pathname.toLowerCase();
+  getIsAccounts = (givenPathName) => {
+    const pathname = givenPathName || window.location.pathname.toLowerCase();
+    return (
+      pathname.indexOf("accounts") !== -1 && !(pathname.indexOf("view") !== -1)
+    );
+  };
+
+  getIsGallery = (givenPathName) => {
+    const pathname = givenPathName || window.location.pathname.toLowerCase();
     return pathname.indexOf("form-gallery") !== -1;
   };
 
   getCanDisplay = () => {
     const pathname = window.location.pathname.toLowerCase();
-
-    const isRooms = pathname.indexOf("rooms") !== -1;
-    const isFiles = pathname.indexOf("files") !== -1;
-    const isGallery = pathname.indexOf("form-gallery") !== -1;
-    const isAccountsHome =
-      pathname.indexOf("accounts") !== -1 && !(pathname.indexOf("view") !== -1);
-
-    return isRooms || isFiles || isGallery || isAccountsHome;
+    const isFiles = this.getIsFiles(pathname);
+    const isRooms = this.getIsRooms(pathname);
+    const isAccounts = this.getIsAccounts(pathname);
+    const isGallery = this.getIsGallery(pathname);
+    return isRooms || isFiles || isGallery || isAccounts;
   };
 }
 
