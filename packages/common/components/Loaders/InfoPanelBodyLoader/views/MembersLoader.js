@@ -45,7 +45,7 @@ const StyledMemberLoader = styled.div`
   }
 `;
 
-const MembersLoader = ({ data }) => {
+const MembersLoader = () => {
   return (
     <StyledMembersLoader>
       <StyledSubtitleLoader>
@@ -53,7 +53,7 @@ const MembersLoader = ({ data }) => {
         <RectangleLoader width={"16px"} height={"16px"} borderRadius={"3px"} />
       </StyledSubtitleLoader>
 
-      {[...Array(data.membersCount).keys()].map((i) => (
+      {[...Array(4).keys()].map((i) => (
         <StyledMemberLoader key={i}>
           <RectangleLoader
             className="avatar"
@@ -75,22 +75,12 @@ const MembersLoader = ({ data }) => {
         </StyledMemberLoader>
       ))}
 
-      {!!data.pendingMembersCount && (
-        <StyledSubtitleLoader className="pending_users">
-          <RectangleLoader
-            width={"111px"}
-            height={"16px"}
-            borderRadius={"3px"}
-          />
-          <RectangleLoader
-            width={"16px"}
-            height={"16px"}
-            borderRadius={"3px"}
-          />
-        </StyledSubtitleLoader>
-      )}
+      <StyledSubtitleLoader className="pending_users">
+        <RectangleLoader width={"111px"} height={"16px"} borderRadius={"3px"} />
+        <RectangleLoader width={"16px"} height={"16px"} borderRadius={"3px"} />
+      </StyledSubtitleLoader>
 
-      {[...Array(data.pendingMembersCount).keys()].map((i) => (
+      {[...Array(4).keys()].map((i) => (
         <StyledMemberLoader key={i}>
           <RectangleLoader
             className="avatar"
