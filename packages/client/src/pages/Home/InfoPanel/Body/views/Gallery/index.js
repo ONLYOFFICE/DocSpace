@@ -1,15 +1,23 @@
 import React from "react";
-import Text from "@docspace/components/text";
+import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
+
+import withLoader from "@docspace/client/src/HOCs/withLoader";
+import Loaders from "@docspace/common/components/Loaders/index.js";
+
+import Text from "@docspace/components/text";
 
 import { parseAndFormatDate } from "../../helpers/DetailsHelper.js";
 import { StyledGalleryThumbnail } from "../../styles/gallery.js";
 import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
 
-const Gallery = ({ t, selection, getIcon, culture, personal }) => {
+const Gallery = ({ t, gallerySelected, getIcon, culture, personal }) => {
+  console.log(gallerySelected);
+
   const thumbnailBlank = getIcon(96, ".docxf");
   const thumbnailUrl =
-    selection?.attributes?.template_image?.data.attributes?.formats?.small?.url;
+    gallerySelected?.attributes?.template_image?.data.attributes?.formats?.small
+      ?.url;
 
   return (
     <>
@@ -36,7 +44,7 @@ const Gallery = ({ t, selection, getIcon, culture, personal }) => {
           </Text>
           <Text className="property-content">
             {parseAndFormatDate(
-              selection.attributes.updatedAt,
+              gallerySelected.attributes.updatedAt,
               personal,
               culture
             )}
@@ -45,13 +53,13 @@ const Gallery = ({ t, selection, getIcon, culture, personal }) => {
         <div className="property">
           <Text className="property-title">{t("Common:Size")}</Text>
           <Text className="property-content">
-            {selection.attributes.file_size}
+            {gallerySelected.attributes.file_size}
           </Text>
         </div>
         <div className="property">
           <Text className="property-title">{t("Common:Pages")}</Text>
           <Text className="property-content">
-            {selection.attributes.file_pages}
+            {gallerySelected.attributes.file_pages}
           </Text>
         </div>
       </StyledProperties>
@@ -59,4 +67,9 @@ const Gallery = ({ t, selection, getIcon, culture, personal }) => {
   );
 };
 
-export default Gallery;
+export default withTranslation([
+  "InfoPanel",
+  "FormGallery",
+  "Common",
+  "Translations",
+])(withLoader(Gallery)(<Loaders.InfoPanelViewLoader view="gallery" />));
