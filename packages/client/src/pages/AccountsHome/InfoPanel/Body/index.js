@@ -56,6 +56,8 @@ export default inject(({ auth, peopleStore }) => {
     ? [bufferSelection]
     : [];
 
+  console.log(selectedUsers);
+
   return {
     selection: selectedUsers,
     getUserContextOptions,
