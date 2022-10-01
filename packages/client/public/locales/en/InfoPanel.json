@@ -1,44 +1,52 @@
 {
-  "DateModified": "Date modified",
-  "CreationDate": "Creation date",
+  "ViewDetails": "View Details",
 
   "AccountsEmptyScreenText": "See users details here",
-  "EmptyScrenRooms": "See rooms details here",
+  "RoomsEmptyScreenTent": "See rooms details here",
+  "FilesEmptyScreenTent": "See file and folder details here",
 
-  "Data": "Data",
-  "EmptyScreenText": "See file and folder details here",
-  "FileExtension": "File extension",
-  "ItemsSelected": "Items selected",
-  "LastModifiedBy": "Last modified by",
-  "Members": "members",
-  "OFORMsDescription": "",
-  "OpenSharingSettings": "Open sharing settings",
-  "SelectedUsers": "Selected users",
-  "SystemProperties": "System properties",
-  "Versions": "Versions",
-  "ViewDetails": "View Details",
-  "WhoHasAccess": "Who has access",
+  "SubmenuMembers": "Members",
+  "SubmenuHistory": "History",
+  "SubmenuDetails": "Details",
+
   "RecentActivities": "Recent activities",
+  "UsersInRoom": "Users in room",
+  "Properties": "Properties",
+  "Data": "Data",
 
-  "FeedCreateFile": "Files created.",
-  "FeedCreateFolder": "Folders created.",
-  "FeedCreateRoom": "Room created.",
-  "FeedCreateUser": "Users added.",
+  "FileExtension": "File extension",
+  "DateModified": "Date modified",
+  "LastModifiedBy": "Last modified by",
+  "CreationDate": "Creation date",
+  "Versions": "Versions",
 
-  "FeedRenameFile": "Files renamed.",
-  "FeedRenameFolder": "Folders renamed.",
-  "FeedRenameRoom": "Room renamed.",
+  "ItemsSelected": "Items selected",
+  "SelectedUsers": "Selected users",
 
-  "FeedUpdateFile": "Files updated.",
-  "FeedUpdateRoom": "Room avatar changed.",
-  "FeedUpdateUser": "Users appointed room manager.",
+  "FeedCreateFileSingle": "File created.",
+  "FeedCreateFileSeveral": "Files added.",
+  "FeedCreateFolderSingle": "Folder created.",
+  "FeedCreateFolderSeveral": "Folders added.",
+  "FeedCreateRoom": "<strong>«{{roomTitle}}»</strong> room created",
+  "FeedCreateRoomTag": "Tags added.",
+  "FeedCreateUser": "Users added. ",
+
+  "FeedRenameFile": "File renamed.",
+  "FeedRenameFolder": "Folder renamed.",
+  "FeedRenameRoom": "Room <strong>«{{oldRoomTitle}}»</strong> renamed to <strong>«{{roomTitle}}»</strong>.",
+
+  "FeedUpdateFile": "File updated.",
+  "FeedUpdateRoom": "Icon changed.",
+  "FeedUpdateUser": "has been assigned role {{role}}",
 
   "FeedMoveFile": "Files moved.",
   "FeedMoveFolder": "Folders moved.",
 
-  "FeedDeleteFile": "Files deleted.",
-  "FeedDeleteFolder": "Folders deleted.",
-  "FeedDeleteUser": "Users deleted.",
+  "FeedDeleteFile": "Files removed.",
+  "FeedDeleteFolder": "Folders removed.",
+  "FeedDeleteRoomTag": "Tags removed.",
+  "FeedDeleteUser": "User removed",
 
-  "FeedLocationLabel": "Folder «{{folderTitle}}»"
+  "FeedLocationLabel": "Folder «{{folderTitle}}»",
+  "AndMoreLabel": "and <strong>{{count}} more</strong>"
 }
