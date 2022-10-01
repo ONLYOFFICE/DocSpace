@@ -21,27 +21,25 @@ import { StyledInfoPanelHeader } from "./styles/common";
 const InfoPanelHeaderContent = (props) => {
   const {
     t,
-
     selection,
     setIsVisible,
-
     roomsView,
     fileView,
     setView,
-
-    getIsRoomCategory,
+    getIsRooms,
     getIsGallery,
-
+    getIsAccounts,
     isRootFolder,
   } = props;
 
-  const isRoomCategory = getIsRoomCategory();
+  const isRooms = getIsRooms();
   const isGallery = getIsGallery();
+  const isAccounts = getIsAccounts();
 
   const isNoItem = isRootFolder && selection?.isSelectedFolder;
   const isSeveralItems = selection && Array.isArray(selection);
 
-  const withSubmenu = !isNoItem && !isSeveralItems && !isGallery;
+  const withSubmenu = !isNoItem && !isSeveralItems && !isGallery && !isAccounts;
 
   const closeInfoPanel = () => setIsVisible(false);
 
@@ -52,19 +50,19 @@ const InfoPanelHeaderContent = (props) => {
   const submenuData = [
     {
       id: "members",
-      name: "Members",
+      name: t("InfoPanel:SubmenuMembers"),
       onClick: setMembers,
       content: null,
     },
     {
       id: "history",
-      name: "History",
+      name: t("InfoPanel:SubmenuHistory"),
       onClick: setHistory,
       content: null,
     },
     {
       id: "details",
-      name: "Details",
+      name: t("InfoPanel:SubmenuDetails"),
       onClick: setDetails,
       content: null,
     },
@@ -105,7 +103,7 @@ const InfoPanelHeaderContent = (props) => {
 
       {withSubmenu && (
         <div className="submenu">
-          {isRoomCategory ? (
+          {isRooms ? (
             <Submenu
               style={{ width: "100%" }}
               data={roomsSubmenu}
@@ -131,9 +129,10 @@ export default inject(({ auth, selectedFolderStore }) => {
     roomsView,
     fileView,
     setView,
-    getIsFileCategory,
-    getIsRoomCategory,
+    getIsFiles,
+    getIsRooms,
     getIsGallery,
+    getIsAccounts,
   } = auth.infoPanelStore;
   const { isRootFolder } = selectedFolderStore;
 
@@ -143,14 +142,15 @@ export default inject(({ auth, selectedFolderStore }) => {
     roomsView,
     fileView,
     setView,
-    getIsFileCategory,
-    getIsRoomCategory,
+    getIsFiles,
+    getIsRooms,
     getIsGallery,
+    getIsAccounts,
 
     isRootFolder,
   };
 })(
-  withTranslation(["Common"])(
+  withTranslation(["Common", "InfoPanel"])(
     withLoader(observer(InfoPanelHeaderContent))(
       <Loaders.InfoPanelHeaderLoader />
     )
