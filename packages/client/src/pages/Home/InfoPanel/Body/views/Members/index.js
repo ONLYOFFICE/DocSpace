@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { withTranslation } from "react-i18next";
+import toastr from "@docspace/components/toast/toastr";
 
-import UserList from "./UserList";
-import { StyledUserTypeHeader } from "../../styles/members";
+import withLoader from "@docspace/client/src/HOCs/withLoader";
+import Loaders from "@docspace/common/components/Loaders";
+
+import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
 
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
-import Loaders from "@docspace/common/components/Loaders";
+import User from "./User";
 
 const Members = ({
   t,
   selfId,
+  isOwner,
+  isAdmin,
 
   selection,
 
@@ -17,32 +23,22 @@ const Members = ({
   setSelectionParentRoom,
 
   getRoomMembers,
+  changeUserType,
 }) => {
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
-  const [loaderData, setLoaderData] = useState({
-    membersCount: 4,
-    pendingMembersCount: 4,
-  });
 
   const fetchMembers = async (roomId) => {
     let timerId;
     if (members) timerId = setTimeout(() => setShowLoader(true), 1500);
-
-    const fetchedMembers = await getRoomMembers(roomId);
-
+    let fetchedMembers = await getRoomMembers(roomId);
+    fetchedMembers = fetchedMembers.filter(
+      (m) => m.sharedTo.email || m.sharedTo.displayName
+    );
     clearTimeout(timerId);
-
     setMembers(fetchedMembers);
-    setSelectionParentRoom({
-      ...selection,
-      members: fetchedMembers,
-    });
-    setLoaderData({
-      membersCount: Math.min(fetchedMembers.length, 4),
-      pendingMembersCount: Math.min(0, 4),
-    });
     setShowLoader(false);
+    return fetchedMembers;
   };
 
   useEffect(async () => {
@@ -51,35 +47,59 @@ const Members = ({
       setMembers(selectionParentRoom.members);
       return;
     }
-    fetchMembers(selectionParentRoom.id);
+    const fetchedMembers = await fetchMembers(selection.id);
+    setSelectionParentRoom({
+      ...selectionParentRoom,
+      members: fetchedMembers,
+    });
   }, [selectionParentRoom]);
 
   useEffect(async () => {
     if (!selection.isRoom) return;
     if (selectionParentRoom && selectionParentRoom.id === selection.id) return;
-    fetchMembers(selection.id);
+    const fetchedMembers = await fetchMembers(selection.id);
+    setSelectionParentRoom({
+      ...selection,
+      members: fetchedMembers,
+    });
   }, [selection]);
 
+  const onAddUsers = () => {
+    toastr.warning("Work in progress");
+  };
+
   if (!members || showLoader)
-    return <Loaders.InfoPanelViewLoader view="members" data={loaderData} />;
+    return <Loaders.InfoPanelViewLoader view="members" />;
   return (
     <>
       <StyledUserTypeHeader>
         <Text className="title">
-          {t("Users in room")} : {members?.length}
+          {t("UsersInRoom")} : {members.length}
         </Text>
         <IconButton
           className={"icon"}
           title={t("Common:AddUsers")}
           iconName="/static/images/person+.react.svg"
           isFill={true}
-          onClick={() => {}}
+          onClick={onAddUsers}
           size={16}
           color={"#A3A9AE"}
         />
       </StyledUserTypeHeader>
 
-      <UserList t={t} users={members} selfId={selfId} />
+      <StyledUserList>
+        {Object.values(members).map((user) => (
+          <User
+            key={user.sharedTo.id}
+            t={t}
+            user={user.sharedTo}
+            isOwner={isOwner}
+            isAdmin={isAdmin}
+            selfId={selfId}
+            changeUserType={changeUserType}
+          />
+        ))}
+      </StyledUserList>
 
       {/* <StyledUserTypeHeader>
         <Text className="title">{`${t("Expect people")}:`}</Text>
@@ -99,4 +119,11 @@ const Members = ({
   );
 };
 
-export default Members;
+export default withTranslation([
+  "InfoPanel",
+  "Common",
+  "Translations",
+  "People",
+  "PeopleTranslations",
+  "Settings",
+])(withLoader(Members)(<Loaders.InfoPanelViewLoader view="members" />));
