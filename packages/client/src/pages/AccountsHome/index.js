@@ -11,7 +11,7 @@ import Section from "@docspace/common/components/Section";
 
 import { showLoader, hideLoader } from "@docspace/common/utils";
 
-import { InfoPanelHeaderContent, InfoPanelBodyContent } from "./InfoPanel";
+// import { InfoPanelHeaderContent, InfoPanelBodyContent } from "./InfoPanel";
 
 import {
   SectionHeaderContent,
@@ -21,6 +21,10 @@ import {
 } from "./Section";
 
 import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
+import {
+  InfoPanelHeaderContent,
+  InfoPanelBodyContent,
+} from "../Home/InfoPanel";
 
 const PureHome = ({
   isLoading,
