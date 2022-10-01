@@ -2003,7 +2003,12 @@ const Base = {
     },
 
     history: {
+      subtitleColor: "#a3a9ae",
       fileBlockBg: "#f8f9f9",
+      dateColor: "#A3A9AE",
+      fileExstColor: "#A3A9AE",
+      locationIconColor: "#A3A9AE",
+      folderLabelColor: "#A3A9AE",
     },
   },
 
