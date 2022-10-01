@@ -29,6 +29,9 @@ const StyledNoThumbnail = styled.div`
   .is-room {
     border-radius: 16px;
   }
+  .custom-logo {
+    border: 1px solid #eceef1;
+  }
 `;
 
 const StyledAccess = styled.div`
