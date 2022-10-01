@@ -1,16 +1,16 @@
 import React from "react";
-import { withTranslation } from "react-i18next";
+import { StyledSeveralItemsContainer } from "../../styles/severalItems";
 
-const SeveralItems = () => {
+const SeveralItems = ({ isAccounts }) => {
+  const imgSrc = isAccounts
+    ? "static/images/empty_screen-accounts-info-panel.png"
+    : "images/empty_screen_info_panel.png";
+
   return (
-    <div className="no-thumbnail-img-wrapper">
-      <img
-        size="96px"
-        className="no-thumbnail-img"
-        src="images/empty_screen.png"
-      />
-    </div>
+    <StyledSeveralItemsContainer className="no-thumbnail-img-wrapper">
+      <img size="96px" src={imgSrc} />
+    </StyledSeveralItemsContainer>
   );
 };
 
-export default withTranslation(["InfoPanel"])(SeveralItems);
+export default SeveralItems;
