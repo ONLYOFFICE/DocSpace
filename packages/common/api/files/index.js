@@ -54,7 +54,6 @@ export function getFolderPath(folderId) {
 export function getFolder(folderId, filter) {
   const options = getFolderOptions(folderId, filter);
   return request(options).then((res) => {
-    console.log("for-dev GET FOLDER BY ID", res);
     res.files = decodeDisplayName(res.files);
     res.folders = decodeDisplayName(res.folders);
 
