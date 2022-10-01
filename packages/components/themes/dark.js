@@ -1996,11 +1996,16 @@ const Dark = {
     showAccessPanelTextColor: "#E06A1B",
 
     members: {
-      iconColor: "#E06A1B",
+      iconColor: "#A3A9AE",
     },
 
     history: {
+      subtitleColor: "#A3A9AE",
       fileBlockBg: "#292929",
+      dateColor: "#A3A9AE",
+      fileExstColor: "#A3A9AE",
+      locationIconColor: "#A3A9AE",
+      folderLabelColor: "#A3A9AE",
     },
   },
 
