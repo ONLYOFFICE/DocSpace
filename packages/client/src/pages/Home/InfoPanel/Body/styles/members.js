@@ -66,22 +66,17 @@ const StyledUser = styled.div`
     line-height: 20px;
     white-space: nowrap;
 
-    .role {
-      a {
-        padding-right: ${(props) => (props.canEditRole ? "16px" : "0")};
-        margin-right: ${(props) => (props.canEditRole ? "-6px" : "0")};
-        span {
-          color: ${(props) => (props.canEditRole ? "#555f65" : "#A3A9AE")};
-        }
-        &:hover {
-          text-decoration: none;
-        }
+    .disabled-role-combobox {
+      color: #a3a9ae;
+    }
 
-        svg {
-          ${(props) => !props.canEditRole && "display: none"};
-          path {
-            fill: #a3a9ae;
-          }
+    .role-combobox {
+      .combo-button-label {
+        color: #a3a9ae;
+      }
+      .combo-buttons_arrow-icon {
+        path {
+          fill: #a3a9ae;
         }
       }
     }
