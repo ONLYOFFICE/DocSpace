@@ -1992,14 +1992,13 @@ const Base = {
     closeButtonSize: "17px",
     closeButtonBg: "transparent",
 
-    accessGroupBg: grayLightMid,
-    accessGroupText: black,
-
-    showAccessUsersTextColor: gray,
-    showAccessPanelTextColor: "#3b72a7",
-
     members: {
       iconColor: "#A3A9AE",
+      subtitleColor: "#a3a9ae",
+      meLabelColor: "#a3a9ae",
+      roleSelectorColor: "#a3a9ae",
+      disabledRoleSelectorColor: "#a3a9ae",
+      roleSelectorArrowColor: "#a3a9ae",
     },
 
     history: {
@@ -2009,6 +2008,15 @@ const Base = {
       fileExstColor: "#A3A9AE",
       locationIconColor: "#A3A9AE",
       folderLabelColor: "#A3A9AE",
+    },
+
+    details: {
+      customLogoBorderColor: "#eceef1",
+      commentEditorIconColor: "#333",
+    },
+
+    gallery: {
+      borderColor: "#d0d5da",
     },
   },
 
