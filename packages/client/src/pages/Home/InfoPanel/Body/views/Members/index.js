@@ -83,7 +83,6 @@ const Members = ({
           isFill={true}
           onClick={onAddUsers}
           size={16}
-          color={"#A3A9AE"}
         />
       </StyledUserTypeHeader>
 
@@ -110,7 +109,6 @@ const Members = ({
           isFill={true}
           onClick={() => {}}
           size={16}
-          color={"#316DAA"}
         />
       </StyledUserTypeHeader>
 
