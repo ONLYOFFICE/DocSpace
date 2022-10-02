@@ -119,7 +119,7 @@ const Submenu = (props) => {
             );
           })}
         </StyledSubmenuItems>
-        <StyledSubmenuBottomLine />
+        <StyledSubmenuBottomLine className="bottom-line" />
       </div>
       <div className="sticky-indent"></div>
 
