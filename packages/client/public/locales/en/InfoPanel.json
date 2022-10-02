@@ -3,7 +3,7 @@
 
   "AccountsEmptyScreenText": "See users details here",
   "RoomsEmptyScreenTent": "See rooms details here",
-  "FilesEmptyScreenTent": "See file and folder details here",
+  "FilesEmptyScreenText": "See file and folder details here",
 
   "SubmenuMembers": "Members",
   "SubmenuHistory": "History",

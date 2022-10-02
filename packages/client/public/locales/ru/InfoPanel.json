@@ -3,7 +3,7 @@
 
   "AccountsEmptyScreenText": "Здесь будут представлены подробности о пользователях",
   "RoomsEmptyScreenTent": "Здесь будут представлены подробности о комнатах",
-  "FilesEmptyScreenTent": "Здесь будут представлены свойства файлов и папок",
+  "FilesEmptyScreenText": "Здесь будут представлены свойства файлов и папок",
 
   "SubmenuMembers": "Участники",
   "SubmenuHistory": "История",
