@@ -213,12 +213,14 @@ class AutomaticBackup extends React.PureComponent {
       toDefault,
       isCheckedThirdParty,
       isCheckedDocuments,
-      setResetProcess,
+      resetNewFolderPath,
+
+      defaultFolderId,
     } = this.props;
-
+    console.log("defaultFolderId", defaultFolderId);
     toDefault();
-
-    (isCheckedThirdParty || isCheckedDocuments) && setResetProcess(true);
+    (isCheckedThirdParty || isCheckedDocuments) &&
+      resetNewFolderPath(defaultFolderId);
     this.setState({
       ...(isError && { isError: false }),
     });
@@ -326,11 +328,11 @@ class AutomaticBackup extends React.PureComponent {
 
       isCheckedThirdParty,
       isCheckedDocuments,
-      setSavingProcess,
+      updateBaseFolderPath,
     } = this.props;
 
     try {
-      (isCheckedThirdParty || isCheckedDocuments) && setSavingProcess(true);
+      (isCheckedThirdParty || isCheckedDocuments) && updateBaseFolderPath();
 
       await createBackupSchedule(
         storageType,
@@ -354,7 +356,7 @@ class AutomaticBackup extends React.PureComponent {
     } catch (e) {
       toastr.error(e);
 
-      (isCheckedThirdParty || isCheckedDocuments) && setSavingProcess(true);
+      (isCheckedThirdParty || isCheckedDocuments) && updateBaseFolderPath();
 
       this.setState({
         isLoadingData: false,
@@ -498,12 +500,7 @@ class AutomaticBackup extends React.PureComponent {
                 {t("ThirdPartyResourceDescription")}
               </Text>
               {isCheckedThirdParty && (
-                <ThirdPartyModule
-                  {...commonProps}
-                  isError={isError}
-                  defaultSelectedFolder={this.defaultSelectedFolder}
-                  onSetDefaultFolderPath={this.onSetDefaultFolderPath}
-                />
+                <ThirdPartyModule {...commonProps} isError={isError} />
               )}
             </StyledModules>
             <StyledModules>
@@ -545,91 +542,100 @@ class AutomaticBackup extends React.PureComponent {
     );
   }
 }
-export default inject(({ auth, backup, treeFoldersStore }) => {
-  const { language, settingsStore } = auth;
-  const { organizationName, theme } = settingsStore;
-  const {
-    downloadingProgress,
-    backupSchedule,
-    //commonThirdPartyList,
-    clearProgressInterval,
-    deleteSchedule,
-    getProgress,
-    setThirdPartyStorage,
-    setDefaultOptions,
-    setBackupSchedule,
-    selectedStorageType,
-    seStorageType,
-    //setCommonThirdPartyList,
-    selectedPeriodLabel,
-    selectedWeekdayLabel,
-    selectedWeekday,
-    selectedHour,
-    selectedMonthDay,
-    selectedMaxCopiesNumber,
-    selectedPeriodNumber,
-    selectedFolderId,
-    selectedStorageId,
-    toDefault,
-    isFormReady,
-    getStorageParams,
-    setSelectedEnableSchedule,
-    selectedEnableSchedule,
-    updatePathSettings,
-    setSavingProcess,
-    setResetProcess,
-    setStorageRegions,
-  } = backup;
+export default inject(
+  ({ auth, backup, treeFoldersStore, selectFolderDialogStore }) => {
+    const { language, settingsStore } = auth;
+    const { organizationName, theme } = settingsStore;
+    const {
+      downloadingProgress,
+      backupSchedule,
+      //commonThirdPartyList,
+      clearProgressInterval,
+      deleteSchedule,
+      getProgress,
+      setThirdPartyStorage,
+      setDefaultOptions,
+      setBackupSchedule,
+      selectedStorageType,
+      seStorageType,
+      //setCommonThirdPartyList,
+      selectedPeriodLabel,
+      selectedWeekdayLabel,
+      selectedWeekday,
+      selectedHour,
+      selectedMonthDay,
+      selectedMaxCopiesNumber,
+      selectedPeriodNumber,
+      selectedFolderId,
+      selectedStorageId,
+      toDefault,
+      isFormReady,
+      getStorageParams,
+      setSelectedEnableSchedule,
+      selectedEnableSchedule,
+      updatePathSettings,
 
-  const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
-  const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
-  const isCheckedThirdPartyStorage =
-    selectedStorageType === `${StorageModuleType}`;
+      setStorageRegions,
+      defaultFolderId,
+    } = backup;
 
-  const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
-  return {
-    fetchTreeFolders,
-    rootFoldersTitles,
-    downloadingProgress,
-    theme,
-    language,
-    isFormReady,
-    organizationName,
-    backupSchedule,
-    //commonThirdPartyList,
-    clearProgressInterval,
-    deleteSchedule,
-    getProgress,
-    setThirdPartyStorage,
-    setDefaultOptions,
-    setBackupSchedule,
-    selectedStorageType,
-    seStorageType,
-    //setCommonThirdPartyList,
-    selectedPeriodLabel,
-    selectedWeekdayLabel,
-    selectedWeekday,
-    selectedHour,
-    selectedMonthDay,
-    selectedMaxCopiesNumber,
-    selectedPeriodNumber,
-    selectedFolderId,
-    selectedStorageId,
+    const {
+      updateBaseFolderPath,
+      resetNewFolderPath,
+    } = selectFolderDialogStore;
 
-    toDefault,
+    const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
+    const isCheckedThirdParty =
+      selectedStorageType === `${ResourcesModuleType}`;
+    const isCheckedThirdPartyStorage =
+      selectedStorageType === `${StorageModuleType}`;
 
-    isCheckedThirdPartyStorage,
-    isCheckedThirdParty,
-    isCheckedDocuments,
+    const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
+    return {
+      defaultFolderId,
+      fetchTreeFolders,
+      rootFoldersTitles,
+      downloadingProgress,
+      theme,
+      language,
+      isFormReady,
+      organizationName,
+      backupSchedule,
+      //commonThirdPartyList,
+      clearProgressInterval,
+      deleteSchedule,
+      getProgress,
+      setThirdPartyStorage,
+      setDefaultOptions,
+      setBackupSchedule,
+      selectedStorageType,
+      seStorageType,
+      //setCommonThirdPartyList,
+      selectedPeriodLabel,
+      selectedWeekdayLabel,
+      selectedWeekday,
+      selectedHour,
+      selectedMonthDay,
+      selectedMaxCopiesNumber,
+      selectedPeriodNumber,
+      selectedFolderId,
+      selectedStorageId,
 
-    getStorageParams,
+      toDefault,
 
-    setSelectedEnableSchedule,
-    selectedEnableSchedule,
+      isCheckedThirdPartyStorage,
+      isCheckedThirdParty,
+      isCheckedDocuments,
 
-    updatePathSettings,
-    setSavingProcess,
-    setResetProcess,
-    setStorageRegions,
-  };
-})(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));
+      getStorageParams,
+
+      setSelectedEnableSchedule,
+      selectedEnableSchedule,
+
+      updatePathSettings,
+      resetNewFolderPath,
+      setStorageRegions,
+      updateBaseFolderPath,
+    };
+  }
+)(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

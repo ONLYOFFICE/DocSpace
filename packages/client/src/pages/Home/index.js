@@ -481,7 +481,7 @@ class PureHome extends React.Component {
       showFilter,
       frameConfig,
       withPaging,
-      isEmptyFilesList,
+      isEmptyPage,
     } = this.props;
 
     const categoryType = getCategoryType(location);
@@ -536,7 +536,7 @@ class PureHome extends React.Component {
             )}
           </Section.SectionHeader>
 
-          {!isEmptyFilesList && (
+          {!isEmptyPage && (
             <Section.SectionFilter>
               {isFrame ? (
                 showFilter && <SectionFilterContent />
@@ -619,7 +619,7 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
-      isEmptyFilesList,
+      isEmptyPage,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -764,7 +764,7 @@ export default inject(
       refreshFiles,
       setViewAs,
       withPaging,
-      isEmptyFilesList,
+      isEmptyPage,
     };
   }
 )(withRouter(observer(Home)));

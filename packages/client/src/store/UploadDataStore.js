@@ -935,7 +935,7 @@ class UploadDataStore {
       withPaging && fetchFiles(toFolderId, filter);
 
       if (toFolderId) {
-        const { socketHelper } = this.filesStore.settingsStore;
+        const { socketHelper } = this.authStore.settingsStore;
 
         socketHelper.emit({
           command: "refresh-folder",

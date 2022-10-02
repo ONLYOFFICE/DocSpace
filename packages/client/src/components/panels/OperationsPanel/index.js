@@ -153,7 +153,7 @@ const OperationsPanelComponent = (props) => {
     <SelectFolderDialog
       selectionFiles={selection}
       isDisableTree={isLoading}
-      foldersType="exceptSortedByTags"
+      filteredType="exceptSortedByTags"
       isPanelVisible={isVisible}
       onSubmit={onSubmit}
       onClose={onClose}

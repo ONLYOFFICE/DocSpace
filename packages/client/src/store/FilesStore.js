@@ -88,6 +88,8 @@ class FilesStore {
   trashIsEmpty = false;
   filesIsLoading = false;
 
+  isEmptyPage = false;
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -313,6 +315,10 @@ class FilesStore {
       (x) => !x.providerKey || x.id !== x.rootFolderId
     ); // removed root thirdparty folders
     this.startDrag = startDrag;
+  };
+
+  setIsEmptyPage = (isEmptyPage) => {
+    this.isEmptyPage = isEmptyPage;
   };
 
   get tooltipOptions() {

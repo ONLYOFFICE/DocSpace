@@ -179,5 +179,6 @@
   "AboutCompanyTitle": "О программе",
   "LogoutButton": "Выйти",
   "HelpCenter": "Справочный центр",
-  "SelectFile": "Выбрать файл"
+  "SelectFile": "Выбрать файл",
+  "HideArticleMenu": "Скрыть меню"
 }

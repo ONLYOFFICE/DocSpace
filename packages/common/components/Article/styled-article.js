@@ -1,20 +1,13 @@
 import styled, { css } from "styled-components";
 
-import {
-  isMobile,
-  isMobileOnly,
-  isTablet,
-  isDesktop,
-} from "react-device-detect";
+import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
 import {
   mobile,
   tablet,
   isMobile as isMobileUtils,
 } from "@docspace/components/utils/device";
 
-import Heading from "@docspace/components/heading";
 import { Base } from "@docspace/components/themes";
-
 import MenuIcon from "@docspace/components/public/static/images/menu.react.svg";
 import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
 
@@ -84,7 +77,6 @@ const StyledArticle = styled.article`
     .scroll-body {
       overflow-x: hidden !important;
       height: calc(100% - 200px);
-      ${!isDesktop && "padding-top:  16px"};
       padding: 0 20px;
 
       @media ${tablet} {
