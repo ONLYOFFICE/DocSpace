@@ -59,7 +59,7 @@ const StyledContainer = styled.div`
   }
 
   .header-container {
-    height: 100%;
+    min-height: 33px;
   }
 `;
 
