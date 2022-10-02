@@ -8,9 +8,8 @@ const getHeaderHeight = ({ withSubmenu, isTablet }) => {
   return `${res}px`;
 };
 
-const getMainHeight = ({ withSubmenu, isTablet }) => {
+const getMainHeight = ({ isTablet }) => {
   let res = isTablet ? 52 : 68;
-  if (withSubmenu) res += 1;
   return `${res}px`;
 };
 
@@ -55,6 +54,9 @@ const StyledInfoPanelHeader = styled.div`
       display: flex;
       flex-direction: column;
       align-items: center;
+      .bottom-line {
+        background-color: ${(props) => props.theme.infoPanel.borderColor};
+      }
     }
   }
 `;
