@@ -51,13 +51,6 @@ const FilesItemTitle = ({
   );
 };
 
-// isGallery ? (
-//     <StyledTitle>
-//       <ReactSVG className="icon" src={getIcon(32, ".docxf")} />
-//       <Text className="text">{selection?.attributes?.name_form}</Text>
-//     </StyledTitle>
-//   ) :
-
 export default withTranslation([
   "Files",
   "Common",
