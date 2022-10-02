@@ -1,11 +1,14 @@
 import styled from "styled-components";
 
+import { Base } from "@docspace/components/themes";
+
 const StyledGalleryThumbnail = styled.div`
   box-sizing: border-box;
   width: 100%;
   height: 346px;
   overflow: hidden;
-  border: 1px solid #d0d5da;
+  border: ${(props) =>
+    `solid 1px ${props.theme.infoPanel.gallery.borderColor}`};
   border-radius: 6px;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -14,5 +17,7 @@ const StyledGalleryThumbnail = styled.div`
     margin: 0 auto;
   }
 `;
+
+StyledGalleryThumbnail.defaultProps = { theme: Base };
 
 export { StyledGalleryThumbnail };
