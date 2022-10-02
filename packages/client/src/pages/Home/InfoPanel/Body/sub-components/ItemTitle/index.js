@@ -65,10 +65,4 @@ const ItemTitle = ({
   );
 };
 
-export default withTranslation([
-  "Files",
-  "Common",
-  "Translations",
-  "InfoPanel",
-  "SharingPanel",
-])(ItemTitle);
+export default ItemTitle;
