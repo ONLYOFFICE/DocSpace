@@ -12,7 +12,7 @@ const StyledUserTypeHeader = styled.div`
     font-weight: 600;
     font-size: 13px;
     line-height: 20px;
-    color: #a3a9ae;
+    color: ${(props) => props.theme.infoPanel.members.subtitleColor};
   }
 
   .icon {
@@ -53,7 +53,7 @@ const StyledUser = styled.div`
   .me-label {
     font-weight: 600;
     font-size: 14px;
-    color: #a3a9ae;
+    color: ${(props) => props.theme.infoPanel.members.meLabelColor};
     margin-left: -8px;
   }
 
@@ -67,16 +67,18 @@ const StyledUser = styled.div`
     white-space: nowrap;
 
     .disabled-role-combobox {
-      color: #a3a9ae;
+      color: ${(props) =>
+        props.theme.infoPanel.members.disabledRoleSelectorColor};
     }
 
     .role-combobox {
       .combo-button-label {
-        color: #a3a9ae;
+        color: ${(props) => props.theme.infoPanel.members.roleSelectorColor};
       }
       .combo-buttons_arrow-icon {
         path {
-          fill: #a3a9ae;
+          fill: ${(props) =>
+            props.theme.infoPanel.members.roleSelectorArrowColor};
         }
       }
     }
