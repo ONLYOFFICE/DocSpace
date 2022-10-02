@@ -148,6 +148,10 @@ const StyledProperties = styled.div`
             svg {
               width: 12px;
               height: 12px;
+              path {
+                fill: ${(props) =>
+                  props.theme.infoPanel.details.commentEditorIconColor};
+              }
             }
           }
           &-text {
