@@ -1,19 +1,10 @@
 import React from "react";
-import { withTranslation } from "react-i18next";
-import { ReactSVG } from "react-svg";
 
-import { Text } from "@docspace/components";
-
-import ItemContextOptions from "./ItemContextOptions";
-
-import { StyledTitle } from "../../styles/common";
 import AccountsItemTitle from "./AccountsItemTitle";
 import FilesItemTitle from "./FilesItemTitle";
 import GalleryItemTitle from "./GalleryItemTitle";
 
 const ItemTitle = ({
-  t,
-
   selection,
   selectionParentRoom,
   roomsView,
