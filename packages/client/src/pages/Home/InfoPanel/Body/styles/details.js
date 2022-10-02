@@ -30,7 +30,8 @@ const StyledNoThumbnail = styled.div`
     border-radius: 16px;
   }
   .custom-logo {
-    border: 1px solid #eceef1;
+    border: ${(props) =>
+      `solid 1px ${props.theme.infoPanel.details.customLogoBorderColor}`};
   }
 `;
 
@@ -137,6 +138,7 @@ const StyledOpenSharingPanel = styled.div`
 `;
 
 StyledThumbnail.defaultProps = { theme: Base };
+StyledNoThumbnail.defaultProps = { theme: Base };
 StyledAccess.defaultProps = { theme: Base };
 StyledAccessItem.defaultProps = { theme: Base };
 StyledOpenSharingPanel.defaultProps = { theme: Base };
