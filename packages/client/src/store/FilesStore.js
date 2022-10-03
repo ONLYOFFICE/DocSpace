@@ -660,6 +660,9 @@ class FilesStore {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
+    if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
+      return this.fetchRooms();
+
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
       localStorage.getItem(`UserFilter=${this.authStore.userStore.user.id}`);
