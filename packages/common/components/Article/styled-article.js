@@ -1,11 +1,6 @@
 import styled, { css } from "styled-components";
 
-import {
-  isMobile,
-  isMobileOnly,
-  isTablet,
-  isDesktop,
-} from "react-device-detect";
+import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
 import {
   mobile,
   tablet,
@@ -82,7 +77,6 @@ const StyledArticle = styled.article`
     .scroll-body {
       overflow-x: hidden !important;
       height: calc(100% - 200px);
-      ${!isDesktop && "padding-top:  16px"};
       padding: 0 20px;
 
       @media ${tablet} {
