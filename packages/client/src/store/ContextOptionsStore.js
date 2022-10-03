@@ -138,6 +138,9 @@ class ContextOptionsStore {
 
   lockFile = (item, t) => {
     const { id, locked } = item;
+    const {
+      setSelection: setInfoPanelSelection,
+    } = this.authStore.infoPanelStore;
 
     this.filesActionsStore
       .lockFileAction(id, !locked)
@@ -146,6 +149,7 @@ class ContextOptionsStore {
           ? toastr.success(t("Translations:FileUnlocked"))
           : toastr.success(t("Translations:FileLocked"))
       )
+      .then(() => setInfoPanelSelection({ ...item, locked: !locked }))
       .catch((err) => toastr.error(err));
   };
 
