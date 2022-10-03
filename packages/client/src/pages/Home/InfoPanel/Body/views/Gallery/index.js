@@ -39,9 +39,7 @@ const Gallery = ({ t, gallerySelected, getIcon, culture, personal }) => {
 
       <StyledProperties>
         <div className="property">
-          <Text className="property-title">
-            {t("Files:ByLastModifiedDate")}
-          </Text>
+          <Text className="property-title">{t("InfoPanel:DateModified")}</Text>
           <Text className="property-content">
             {parseAndFormatDate(
               gallerySelected.attributes.updatedAt,
