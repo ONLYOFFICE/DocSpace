@@ -521,4 +521,10 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
         return Task.FromResult(chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize));
     }
+
+    public override bool CheckInvalidFilter(FilterType filterType)
+    {
+        return base.CheckInvalidFilter(filterType) || filterType is FilterType.BoxOnly or FilterType.DropboxV2Only or FilterType.SharePointOnly
+            or FilterType.GoogleDriveOnly or FilterType.OneDriveOnly;
+    }
 }

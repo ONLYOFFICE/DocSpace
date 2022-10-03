@@ -519,4 +519,10 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
 
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
     }
+
+    public override bool CheckInvalidFilter(FilterType filterType)
+    {
+        return base.CheckInvalidFilter(filterType) || filterType is FilterType.BoxOnly or FilterType.GoogleDriveOnly or FilterType.kDriveOnly or FilterType.SharePointOnly
+            or FilterType.YandexOnly or FilterType.WebDavOnly or FilterType.OneDriveOnly;
+    }
 }

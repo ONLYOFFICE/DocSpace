@@ -466,7 +466,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return rooms;
     }
 
-    protected bool CheckInvalidFilter(FilterType filterType)
+    public virtual bool CheckInvalidFilter(FilterType filterType)
     {
         return filterType is
             FilterType.FilesOnly or

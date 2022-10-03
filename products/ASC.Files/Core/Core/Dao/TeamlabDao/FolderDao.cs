@@ -1566,7 +1566,15 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             FilterType.PresentationsOnly or
             FilterType.SpreadsheetsOnly or
             FilterType.ArchiveOnly or
-            FilterType.MediaOnly;
+            FilterType.MediaOnly or
+            FilterType.BoxOnly or
+            FilterType.DropboxV2Only or 
+            FilterType.GoogleDriveOnly or
+            FilterType.OneDriveOnly or 
+            FilterType.SharePointOnly or
+            FilterType.WebDavOnly or
+            FilterType.kDriveOnly or
+            FilterType.YandexOnly;
     }
 
     private FolderType GetRoomTypeFilter(FilterType filterType)

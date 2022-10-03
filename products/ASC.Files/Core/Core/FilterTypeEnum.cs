@@ -47,4 +47,12 @@ public enum FilterType
     [EnumMember] CustomRooms = 17,
     [EnumMember] OFormTemplateOnly = 18,
     [EnumMember] OFormOnly = 19,
+    [EnumMember] BoxOnly = 20,
+    [EnumMember] DropboxV2Only = 21,
+    [EnumMember] GoogleDriveOnly = 22,
+    [EnumMember] OneDriveOnly = 23,
+    [EnumMember] SharePointOnly = 24,
+    [EnumMember] WebDavOnly = 25,
+    [EnumMember] kDriveOnly = 26,
+    [EnumMember] YandexOnly = 27,
 }

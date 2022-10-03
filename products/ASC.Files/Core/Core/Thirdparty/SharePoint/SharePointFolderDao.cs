@@ -455,4 +455,10 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
     {
         return Task.FromResult(2L * 1024L * 1024L * 1024L);
     }
+
+    public override bool CheckInvalidFilter(FilterType filterType)
+    {
+        return base.CheckInvalidFilter(filterType) || filterType is FilterType.BoxOnly or FilterType.DropboxV2Only or FilterType.kDriveOnly or FilterType.GoogleDriveOnly
+            or FilterType.YandexOnly or FilterType.WebDavOnly or FilterType.OneDriveOnly;
+    }
 }

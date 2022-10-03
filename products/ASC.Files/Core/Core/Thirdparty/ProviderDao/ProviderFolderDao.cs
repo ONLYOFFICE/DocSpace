@@ -95,7 +95,8 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var selector = GetSelector(parentId);
         var folderDao = selector.GetFolderDao(parentId);
         var rooms = folderDao.GetRoomsAsync(selector.ConvertId(parentId), filterType, tags, subjectId, searchText, withSubfolders, withoutTags, excludeSubject);
-        var result = await rooms.Where(r => r != null).ToListAsync();
+
+        var result = await FilterByProviders(rooms.Where(r => r != null), filterType).ToListAsync();
 
         await SetSharedPropertyAsync(result);
 
@@ -129,6 +130,8 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
                 })
                 .Where(r => r != null));
         }
+
+        result = FilterByProviders(result, filterType);
 
         return result.Distinct();
     }
@@ -434,5 +437,23 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         }
 
         return storageMaxUploadSize;
+    }
+
+    private IAsyncEnumerable<Folder<string>> FilterByProviders(IAsyncEnumerable<Folder<string>> folders, FilterType filterType)
+    {
+        if (filterType != FilterType.WebDavOnly && filterType != FilterType.YandexOnly && filterType != FilterType.kDriveOnly)
+        {
+            return folders;
+        }
+
+        var providerKey = filterType switch
+        {
+            FilterType.YandexOnly => ProviderTypes.Yandex.ToStringFast(),
+            FilterType.WebDavOnly => ProviderTypes.WebDav.ToStringFast(),
+            FilterType.kDriveOnly => ProviderTypes.kDrive.ToStringFast(),
+            _ => throw new NotImplementedException(),
+        };
+
+        return folders.Where(x => providerKey == x.ProviderKey);
     }
 }

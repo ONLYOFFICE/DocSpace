@@ -670,6 +670,14 @@ public class VirtualRoomsCommonController : ApiControllerBase
             RoomFilterType.ReviewRoomOnly => FilterType.ReviewRooms,
             RoomFilterType.CustomRoomOnly => FilterType.CustomRooms,
             RoomFilterType.FoldersOnly => FilterType.FoldersOnly,
+            RoomFilterType.GoogleDriveOnly => FilterType.GoogleDriveOnly,
+            RoomFilterType.BoxOnly => FilterType.BoxOnly,
+            RoomFilterType.DropboxV2Only => FilterType.DropboxV2Only,
+            RoomFilterType.OneDriveOnly => FilterType.OneDriveOnly,
+            RoomFilterType.SharePointOnly => FilterType.SharePointOnly,
+            RoomFilterType.YandexOnly => FilterType.YandexOnly,
+            RoomFilterType.kDriveOnly => FilterType.kDriveOnly,
+            RoomFilterType.WebDavOnly => FilterType.WebDavOnly,
             _ => FilterType.None
         };
 
