@@ -245,3 +245,4 @@ export { default as WallisAndFutuna } from "./wallis-and-futuna.svg";
 export { default as Yemen } from "./yemen.svg";
 export { default as Zambia } from "./zambia.svg";
 export { default as Zimbabwe } from "./zimbabwe.svg";
+export { default as InvalidFlag } from "./invalid.svg";

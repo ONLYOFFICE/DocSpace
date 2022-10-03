@@ -29,6 +29,12 @@ export const StyledComboBox = styled(ComboBox)`
     border-bottom-right-radius: 0;
     cursor: pointer;
     padding-left: 0;
+    .invalid-flag {
+      width: 24px;
+      height: 18px;
+      margin-left: 6px;
+      margin-top: 9px;
+    }
     .forceColor {
       width: 36px;
       height: 36px;

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import Box from "@docspace/components/box";
 import InputBlock from "@docspace/components/input-block";
+import { InvalidFlag } from "./svg";
 
 import {
   StyledBox,
@@ -29,7 +30,7 @@ export const InputPhone = memo((props) => {
     const el = options.find((option) => option.dialCode === str);
 
     if (e.target.value === "") {
-      setCountry((prev) => ({ ...prev, dialCode: "+" }));
+      setCountry((prev) => ({ ...prev, dialCode: "+", icon: InvalidFlag }));
       setIsValid(false);
     }
 
