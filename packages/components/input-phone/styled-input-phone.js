@@ -6,8 +6,6 @@ import TextInput from "@docspace/components/text-input";
 import styled from "styled-components";
 
 export const StyledBox = styled(Box)`
-  display: flex;
-  align-items: center;
   position: relative;
   box-sizing: border-box;
   max-width: 320px;
@@ -20,7 +18,7 @@ export const StyledBox = styled(Box)`
 
 export const StyledComboBox = styled(ComboBox)`
   width: 57px;
-  height: 44px;
+
   .combo-button {
     width: 100%;
     height: 100%;
@@ -29,12 +27,14 @@ export const StyledComboBox = styled(ComboBox)`
     border-bottom-right-radius: 0;
     cursor: pointer;
     padding-left: 0;
+
     .invalid-flag {
-      width: 24px;
-      height: 18px;
+      width: 26px;
+      height: 20px;
       margin-left: 6px;
       margin-top: 9px;
     }
+
     .forceColor {
       width: 36px;
       height: 36px;
@@ -85,6 +85,10 @@ export const StyledDropDownItem = styled(DropDownItem)`
     height: 36px !important;
   }
 
+  .drop-down-icon > div {
+    height: 36px;
+  }
+
   .drop-down-icon {
     width: 36px;
     height: 36px;
@@ -95,40 +99,4 @@ export const StyledDropDownItem = styled(DropDownItem)`
       }
     }
   }
-`;
-
-export const CountryName = styled.h3`
-  font-size: 13px;
-  font-weight: 400;
-  color: #33333;
-  margin: 0;
-  margin-left: 10px;
-  line-height: 20px;
-`;
-
-export const CountryDialCode = styled.p`
-  font-size: 13px;
-  font-weight: 400;
-  line-height: 20px;
-  margin: 0;
-  margin-left: 5px;
-  color: #a3a9ae;
-`;
-
-export const StyledText = styled.p`
-  color: #d0d5da;
-  text-align: center;
-  font-size: 14px;
-  padding: 50px 0;
-  margin: 0;
-`;
-
-export const ErrorText = styled.span`
-  display: inline-block;
-  margin: 0;
-  margin-top: 5px;
-  color: #f21c0e;
-  font-weight: 400;
-  font-size: 11px;
-  line-height: 14px;
 `;

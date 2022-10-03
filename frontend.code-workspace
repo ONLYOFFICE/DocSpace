@@ -29,7 +29,7 @@
     "window.zoomLevel": 0,
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "liveServer.settings.multiRootWorkspaceName": "🌐 root",
+    "liveServer.settings.multiRootWorkspaceName": "✨ docspace",
     "cSpell.words": ["docspace", "browserslist", "debuginfo", "doceditor"],
     "jest.autoRun": "false"
   },

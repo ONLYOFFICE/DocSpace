@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import Box from "@docspace/components/box";
 import InputBlock from "@docspace/components/input-block";
+import Text from "@docspace/components/text";
 import { InvalidFlag } from "./svg";
 
 import {
@@ -13,11 +14,8 @@ import {
   StyledInput,
   StyledDropDown,
   StyledDropDownItem,
-  StyledText,
-  CountryName,
-  CountryDialCode,
-  ErrorText,
 } from "./styled-input-phone";
+
 export const InputPhone = memo((props) => {
   const [country, setCountry] = useState(props.defaultCountry);
   const [searchValue, setSearchValue] = useState("");
@@ -57,6 +55,16 @@ export const InputPhone = memo((props) => {
     setIsOpen(!isOpen), setIsValid(true);
   };
 
+  const countrySelection = (country) => {
+    setIsOpen(!isOpen);
+    setCountry({
+      locale: country.code,
+      dialCode: country.dialCode,
+      mask: country.mask,
+      icon: country.flag,
+    });
+  };
+
   useEffect(() => {
     if (isOpen) {
       setFilteredOptions(
@@ -75,29 +83,25 @@ export const InputPhone = memo((props) => {
     return (
       <StyledDropDownItem
         key={country.code}
-        style={{ ...style }}
+        style={style}
         data-option={country.code}
         icon={country.flag}
         fillIcon={false}
-        onClick={() => {
-          setIsOpen(!isOpen);
-          setCountry({
-            locale: country.code,
-            dialCode: country.dialCode,
-            mask: country.mask,
-            icon: country.flag,
-          });
-        }}
+        onClick={() => countrySelection(country)}
       >
-        <CountryName>{country.name}</CountryName>
-        <CountryDialCode>{country.dialCode}</CountryDialCode>
+        <Text color="#33333" style={{ marginLeft: "10px" }}>
+          {country.name}
+        </Text>
+        <Text color="#a3a9ae" style={{ marginLeft: "5px" }}>
+          {country.dialCode}
+        </Text>
       </StyledDropDownItem>
     );
   };
 
   return (
     <>
-      <StyledBox hasError={!isValid}>
+      <StyledBox hasError={!isValid} displayProp="flex" alignItems="center">
         <Box>
           <StyledComboBox
             onClick={handleClick}
@@ -120,7 +124,7 @@ export const InputPhone = memo((props) => {
 
         <StyledDropDown
           open={isOpen}
-          clickOutsideAction={() => setIsOpen(!isOpen)}
+          clickOutsideAction={handleClick}
           isDefaultMode={false}
           manualWidth="100%"
         >
@@ -147,12 +151,29 @@ export const InputPhone = memo((props) => {
                 {Row}
               </List>
             ) : (
-              <StyledText>{props.searchEmptyMessage}</StyledText>
+              <Text
+                color="#d0d5da"
+                textAlign="center"
+                fontSize="14px"
+                style={{ padding: "30px 0" }}
+              >
+                {props.searchEmptyMessage}
+              </Text>
             )}
           </Box>
         </StyledDropDown>
       </StyledBox>
-      {!isValid && <ErrorText>{props.errorMessage}</ErrorText>}
+      {!isValid && (
+        <Text
+          display="inline-block"
+          color="#f21c0e"
+          fontSize="11px"
+          lineHeight="14px"
+          style={{ marginTop: "5px" }}
+        >
+          {props.errorMessage}
+        </Text>
+      )}
     </>
   );
 });
