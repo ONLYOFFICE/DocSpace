@@ -17,8 +17,8 @@ const HistoryBlockMessage = ({ t, action, groupedActions }) => {
           return "Rename";
         case FeedActionTypes.Move:
           return "Move";
-        case FeedActionTypes.Update:
-          return "Update";
+        case FeedActionTypes.Delete:
+          return "Delete";
       }
     };
 
@@ -36,6 +36,12 @@ const HistoryBlockMessage = ({ t, action, groupedActions }) => {
     };
 
     const getActionCount = () => {
+      if (
+        !action.Action === FeedActionTypes.Create ||
+        !action.Action === FeedActionTypes.Delete
+      )
+        return "";
+
       switch (action.Item) {
         case "file":
           return !groupedActions.length ? "Single" : "Several";
