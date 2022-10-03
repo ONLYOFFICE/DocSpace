@@ -1,20 +1,17 @@
 import { useState, useEffect, memo } from "react";
 import { options } from "./options";
 import { FixedSizeList as List } from "react-window";
+import { StyledBox } from "./styled-input-phone";
+import { InvalidFlag } from "./svg";
 import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import Box from "@docspace/components/box";
+import ComboBox from "@docspace/components/combobox";
+import TextInput from "@docspace/components/text-input";
 import InputBlock from "@docspace/components/input-block";
+import DropDown from "@docspace/components/drop-down";
+import DropDownItem from "@docspace/components/drop-down-item";
 import Text from "@docspace/components/text";
-import { InvalidFlag } from "./svg";
-
-import {
-  StyledBox,
-  StyledComboBox,
-  StyledInput,
-  StyledDropDown,
-  StyledDropDownItem,
-} from "./styled-input-phone";
 
 export const InputPhone = memo((props) => {
   const [country, setCountry] = useState(props.defaultCountry);
@@ -55,16 +52,6 @@ export const InputPhone = memo((props) => {
     setIsOpen(!isOpen), setIsValid(true);
   };
 
-  const countrySelection = (country) => {
-    setIsOpen(!isOpen);
-    setCountry({
-      locale: country.code,
-      dialCode: country.dialCode,
-      mask: country.mask,
-      icon: country.flag,
-    });
-  };
-
   useEffect(() => {
     if (isOpen) {
       setFilteredOptions(
@@ -80,101 +67,105 @@ export const InputPhone = memo((props) => {
   const Row = ({ data, index, style }) => {
     const country = data[index];
 
+    const countrySelection = () => {
+      setIsOpen(!isOpen);
+      setCountry({
+        locale: country.code,
+        dialCode: country.dialCode,
+        mask: country.mask,
+        icon: country.flag,
+      });
+    };
+
     return (
-      <StyledDropDownItem
+      <DropDownItem
         key={country.code}
         style={style}
-        data-option={country.code}
         icon={country.flag}
         fillIcon={false}
-        onClick={() => countrySelection(country)}
+        className="country-item"
+        data-option={country.code}
+        onClick={countrySelection}
       >
-        <Text color="#33333" style={{ marginLeft: "10px" }}>
-          {country.name}
-        </Text>
-        <Text color="#a3a9ae" style={{ marginLeft: "5px" }}>
-          {country.dialCode}
-        </Text>
-      </StyledDropDownItem>
+        <Text className="country-name">{country.name}</Text>
+        <Text className="country-dialcode">{country.dialCode}</Text>
+      </DropDownItem>
     );
   };
 
   return (
-    <>
-      <StyledBox hasError={!isValid} displayProp="flex" alignItems="center">
-        <Box>
-          <StyledComboBox
-            onClick={handleClick}
-            options={[]}
-            scaled={true}
-            noBorder={true}
-            selectedOption={country}
-          />
-        </Box>
+    <StyledBox hasError={!isValid} displayProp="flex" alignItems="center">
+      <ComboBox
+        onClick={handleClick}
+        options={[]}
+        scaled={true}
+        noBorder={true}
+        className="country-box"
+        selectedOption={country}
+      />
 
-        <StyledInput
-          type="tel"
-          placeholder={props.phonePlaceholderText}
-          mask={getMask(country.locale)}
-          withBorder={false}
-          tabIndex={1}
-          value={country.dialCode}
-          onChange={handleChange}
+      <TextInput
+        type="tel"
+        className="input-phone"
+        placeholder={props.phonePlaceholderText}
+        mask={getMask(country.locale)}
+        withBorder={false}
+        tabIndex={1}
+        value={country.dialCode}
+        onChange={handleChange}
+      />
+
+      <DropDown
+        open={isOpen}
+        clickOutsideAction={handleClick}
+        isDefaultMode={false}
+        className="drop-down"
+        manualWidth="100%"
+      >
+        <InputBlock
+          type="text"
+          iconName="static/images/search.react.svg"
+          placeholder={props.searchPlaceholderText}
+          value={searchValue}
+          tabIndex={2}
+          scale={true}
+          onChange={handleSearch}
         />
-
-        <StyledDropDown
-          open={isOpen}
-          clickOutsideAction={handleClick}
-          isDefaultMode={false}
-          manualWidth="100%"
-        >
-          <InputBlock
-            type="text"
-            iconName="static/images/search.react.svg"
-            placeholder={props.searchPlaceholderText}
-            value={searchValue}
-            tabIndex={2}
-            scale={true}
-            onChange={handleSearch}
-            style={{ marginBottom: "6px" }}
-          />
-          <Box>
-            {filteredOptions.length ? (
-              <List
-                itemData={filteredOptions}
-                height={108}
-                itemCount={filteredOptions.length}
-                itemSize={36}
-                outerElementType={CustomScrollbarsVirtualList}
-                width="auto"
-              >
-                {Row}
-              </List>
-            ) : (
-              <Text
-                color="#d0d5da"
-                textAlign="center"
-                fontSize="14px"
-                style={{ padding: "30px 0" }}
-              >
-                {props.searchEmptyMessage}
-              </Text>
-            )}
-          </Box>
-        </StyledDropDown>
-      </StyledBox>
+        <Box marginProp="6px 0 0">
+          {filteredOptions.length ? (
+            <List
+              itemData={filteredOptions}
+              height={108}
+              itemCount={filteredOptions.length}
+              itemSize={36}
+              outerElementType={CustomScrollbarsVirtualList}
+              width="auto"
+            >
+              {Row}
+            </List>
+          ) : (
+            <Text
+              color="#d0d5da"
+              textAlign="center"
+              fontSize="14px"
+              style={{ padding: "30px 0" }}
+            >
+              {props.searchEmptyMessage}
+            </Text>
+          )}
+        </Box>
+      </DropDown>
       {!isValid && (
         <Text
-          display="inline-block"
+          className="error-text"
           color="#f21c0e"
           fontSize="11px"
           lineHeight="14px"
-          style={{ marginTop: "5px" }}
         >
           {props.errorMessage}
         </Text>
       )}
-    </>
+    </StyledBox>
   );
 });
 
