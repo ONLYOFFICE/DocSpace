@@ -1,25 +1,36 @@
 import Box from "@docspace/components/box";
 import styled from "styled-components";
+import Base from "../themes/base";
 
 export const StyledBox = styled(Box)`
   position: relative;
-  max-width: 320px;
-  border: 1px solid ${(props) => (props.hasError ? "#f21c0e" : "#d0d5da")};
+  max-width: ${(props) => props.theme.inputPhone.width};
+  border: 1px solid ${(props) =>
+    props.hasError
+      ? props.theme.inputPhone.errorBorderColor
+      : props.theme.inputPhone.inactiveBorderColor};
   border-radius: 3px;
   :focus-within {
-    border-color: ${(props) => (props.hasError ? "#f21c0e" : "#2da7db;")};
+    border-color: ${(props) =>
+      props.hasError
+        ? props.theme.inputPhone.errorBorderColor
+        : props.theme.inputPhone.activeBorderColor};
   }
 
   .country-box {
     width: 57px;
+    background: ${(props) => props.theme.inputPhone.backgroundColor};
+    border-radius: 3px;
   }
 
   .input-phone {
-    height: 44px;
+    height: ${(props) => props.theme.inputPhone.height};
     padding-left: 10px;
-    border-left: 1px solid #d0d5da !important;
+    border-left: 1px solid ${(props) =>
+      props.theme.inputPhone.inactiveBorderColor} !important;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+    background: ${(props) => props.theme.inputPhone.backgroundColor};
   }
 
   .combo-button {
@@ -64,19 +75,29 @@ export const StyledBox = styled(Box)`
     padding: 12px 16px;
     box-sizing: border-box;
     margin-top: 5px;
-    outline: 1px solid #d0d5da;
+    outline: 1px solid ${(props) => props.theme.inputPhone.inactiveBorderColor};
     border-radius: 3px;
     box-shadow: none;
   }
 
+  .search-input {
+    border-color: ${(props) => props.theme.inputPhone.inactiveBorderColor};
+    :focus-within {
+      border-color: ${(props) => props.theme.inputPhone.activeBorderColor};
+    }
+    ::placeholder {
+      color: ${(props) => props.theme.inputPhone.placeholderColor}
+    }
+  }
+
   .country-name {
     margin-left: 10px;
-    color: #33333;
+    color: ${(props) => props.theme.inputPhone.color};
   }
 
   .country-dialcode {
     margin-left: 5px;
-    color: #a3a9ae;
+    color: ${(props) => props.theme.inputPhone.dialCodeColor};
   }
 
   .country-item {
@@ -88,7 +109,7 @@ export const StyledBox = styled(Box)`
       width: 36px !important;
       height: 36px !important;
     }
-  
+
     .drop-down-icon > div {
       height: 36px;
     }
@@ -105,9 +126,23 @@ export const StyledBox = styled(Box)`
     }
   }
 
+  .empty-message {
+    padding: 30px 0;
+    color: ${(props) => props.theme.inputPhone.placeholderColor};
+  }
+
+  .nav-thumb-vertical {
+    background: ${(props) => props.theme.inputPhone.placeholderColor};
+    cursor: pointer;
+    :hover {
+      background: ${(props) => props.theme.inputPhone.scrollBackground};
+    }
+  }
+
   .error-text {
     position: absolute;
     top: 48px;
   }
 }
 `;
+StyledBox.defaultProps = { theme: Base };

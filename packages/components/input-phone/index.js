@@ -127,6 +127,7 @@ export const InputPhone = memo((props) => {
           iconName="static/images/search.react.svg"
           placeholder={props.searchPlaceholderText}
           value={searchValue}
+          className="search-input"
           tabIndex={2}
           scale={true}
           onChange={handleSearch}
@@ -144,12 +145,7 @@ export const InputPhone = memo((props) => {
               {Row}
             </List>
           ) : (
-            <Text
-              color="#d0d5da"
-              textAlign="center"
-              fontSize="14px"
-              style={{ padding: "30px 0" }}
-            >
+            <Text textAlign="center" className="empty-message" fontSize="14px">
               {props.searchEmptyMessage}
             </Text>
           )}
