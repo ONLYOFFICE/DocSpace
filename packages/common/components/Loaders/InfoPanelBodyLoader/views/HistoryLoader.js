@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 
+import { Base } from "@docspace/components/themes";
+
 import RectangleLoader from "../../RectangleLoader/RectangleLoader";
 
 const StyledHistoryLoader = styled.div`
@@ -27,7 +29,7 @@ const StyledHistoryBlockLoader = styled.div`
 
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #eceef1;
+  border-bottom: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
 
   .content {
     width: 100%;
@@ -51,6 +53,8 @@ const StyledHistoryBlockLoader = styled.div`
     }
   }
 `;
+
+StyledHistoryBlockLoader.defaultProps = { theme: Base };
 
 const HistoryLoader = ({}) => {
   return (
