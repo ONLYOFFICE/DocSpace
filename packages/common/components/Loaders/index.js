@@ -37,7 +37,6 @@ import SelectorSearchLoader from "./SelectorSearchLoader";
 import SelectorRowLoader from "./SelectorRowLoader";
 
 import InfoPanelViewLoader from "./InfoPanelBodyLoader/InfoPanelViewLoader";
-import InfoPanelBodyLoader from "./InfoPanelBodyLoader";
 import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
 
 import SettingsHeader from "./SettingsLoader/SettingsHeaderLoader";
@@ -83,7 +82,6 @@ export default {
   SelectorSearchLoader,
   SelectorRowLoader,
 
-  InfoPanelBodyLoader,
   InfoPanelHeaderLoader,
   InfoPanelViewLoader,
 
