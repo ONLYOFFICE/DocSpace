@@ -95,7 +95,7 @@ const InfoPanelBodyContent = ({
       ? normalizeSelection({ ...selectedFolder, isSelectedFolder: true })
       : selectedItems.length === 1
       ? normalizeSelection({ ...selectedItems[0], isSelectedItem: true })
-      : [...Array(selectedItems.length).keys()];
+      : [...Array(props.selectedItems.length).keys()];
   };
 
   const getView = () => {
@@ -131,7 +131,8 @@ const InfoPanelBodyContent = ({
   useEffect(() => {
     if (selection && selection.isContextMenuSelection) return;
     const newSelection = getSelection();
-    if (selection && selection.id === newSelection.id) return;
+    if (selection && selection.id === newSelection.id && !newSelection.length)
+      return;
     setSelection(newSelection);
   }, [selectedItems, selectedFolder]);
 
@@ -169,10 +170,8 @@ const InfoPanelBodyContent = ({
     if (currentFolderRoomId === storeRoomId) return;
 
     const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
-    if (storeRoomId !== newSelectionParentRoom.id) {
+    if (storeRoomId !== newSelectionParentRoom.id)
       setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
-      console.log("\nfor-dev  Parent room: ", newSelectionParentRoom);
-    }
   }, [selectedFolder]);
 
   //////////////////////////////////////////////////////////
