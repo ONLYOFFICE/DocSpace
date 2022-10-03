@@ -74,9 +74,9 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         return GetRootFolderAsync(fileId);
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider)
     {
-        if (CheckInvalidFilter(filterType))
+        if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.OneDrive))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
@@ -96,9 +96,9 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         return rooms;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider)
     {
-        if (CheckInvalidFilter(filterType))
+        if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.OneDrive))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
@@ -531,11 +531,5 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         var storageMaxUploadSize = storage.MaxChunkedUploadFileSize;
 
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
-    }
-
-    public override bool CheckInvalidFilter(FilterType filterType)
-    {
-        return base.CheckInvalidFilter(filterType) || filterType is FilterType.BoxOnly or FilterType.DropboxV2Only or FilterType.kDriveOnly or FilterType.SharePointOnly
-            or FilterType.YandexOnly or FilterType.WebDavOnly or FilterType.GoogleDriveOnly;
     }
 }

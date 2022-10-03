@@ -166,9 +166,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return GetFoldersAsync(parentId, default, FilterType.None, false, default, string.Empty);
     }
 
-    public async IAsyncEnumerable<Folder<int>> GetRoomsAsync(int parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject)
+    public async IAsyncEnumerable<Folder<int>> GetRoomsAsync(int parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider)
     {
-        if (CheckInvalidFilter(filterType))
+        if (CheckInvalidFilter(filterType) || provider != ProviderFilter.None)
         {
             yield break;
         }
@@ -196,9 +196,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
     }
 
-    public async IAsyncEnumerable<Folder<int>> GetRoomsAsync(IEnumerable<int> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject)
+    public async IAsyncEnumerable<Folder<int>> GetRoomsAsync(IEnumerable<int> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider)
     {
-        if (CheckInvalidFilter(filterType))
+        if (CheckInvalidFilter(filterType) || provider != ProviderFilter.None)
         {
             yield break;
         }
@@ -1566,15 +1566,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             FilterType.PresentationsOnly or
             FilterType.SpreadsheetsOnly or
             FilterType.ArchiveOnly or
-            FilterType.MediaOnly or
-            FilterType.BoxOnly or
-            FilterType.DropboxV2Only or 
-            FilterType.GoogleDriveOnly or
-            FilterType.OneDriveOnly or 
-            FilterType.SharePointOnly or
-            FilterType.WebDavOnly or
-            FilterType.kDriveOnly or
-            FilterType.YandexOnly;
+            FilterType.MediaOnly;
     }
 
     private FolderType GetRoomTypeFilter(FilterType filterType)

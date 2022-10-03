@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Thirdparty;
+
 namespace ASC.Files.Api;
 
 [ConstraintRoute("int")]
@@ -655,7 +657,8 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// Virtual Rooms content
     /// </returns>
     [HttpGet("rooms")]
-    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomFilterType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject)
+    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomFilterType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject,
+        ProviderFilter? provider)
     {
         ErrorIfNotDocSpace();
 
@@ -670,14 +673,6 @@ public class VirtualRoomsCommonController : ApiControllerBase
             RoomFilterType.ReviewRoomOnly => FilterType.ReviewRooms,
             RoomFilterType.CustomRoomOnly => FilterType.CustomRooms,
             RoomFilterType.FoldersOnly => FilterType.FoldersOnly,
-            RoomFilterType.GoogleDriveOnly => FilterType.GoogleDriveOnly,
-            RoomFilterType.BoxOnly => FilterType.BoxOnly,
-            RoomFilterType.DropboxV2Only => FilterType.DropboxV2Only,
-            RoomFilterType.OneDriveOnly => FilterType.OneDriveOnly,
-            RoomFilterType.SharePointOnly => FilterType.SharePointOnly,
-            RoomFilterType.YandexOnly => FilterType.YandexOnly,
-            RoomFilterType.kDriveOnly => FilterType.kDriveOnly,
-            RoomFilterType.WebDavOnly => FilterType.WebDavOnly,
             _ => FilterType.None
         };
 
@@ -694,7 +689,8 @@ public class VirtualRoomsCommonController : ApiControllerBase
         var filterValue = _apiContext.FilterValue;
 
         var content = await _fileStorageServiceInt.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
-            searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false);
+            searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false, 
+            provider ?? ProviderFilter.None);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
 

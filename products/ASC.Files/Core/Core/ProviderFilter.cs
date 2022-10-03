@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -26,25 +26,16 @@
 
 namespace ASC.Files.Core;
 
-public enum FilterType
+[EnumExtensions]
+public enum ProviderFilter
 {
-    [EnumMember] None = 0,
-    [EnumMember] FilesOnly = 1,
-    [EnumMember] FoldersOnly = 2,
-    [EnumMember] DocumentsOnly = 3,
-    [EnumMember] PresentationsOnly = 4,
-    [EnumMember] SpreadsheetsOnly = 5,
-    [EnumMember] ImagesOnly = 7,
-    [EnumMember] ByUser = 8,
-    [EnumMember] ByDepartment = 9,
-    [EnumMember] ArchiveOnly = 10,
-    [EnumMember] ByExtension = 11,
-    [EnumMember] MediaOnly = 12,
-    [EnumMember] FillingFormsRooms = 13,
-    [EnumMember] EditingRooms = 14,
-    [EnumMember] ReviewRooms = 15,
-    [EnumMember] ReadOnlyRooms = 16,
-    [EnumMember] CustomRooms = 17,
-    [EnumMember] OFormTemplateOnly = 18,
-    [EnumMember] OFormOnly = 19,
+    None,
+    Box,
+    DropBox,
+    GoogleDrive,
+    kDrive,
+    OneDrive,
+    SharePoint,
+    WebDav,
+    Yandex
 }

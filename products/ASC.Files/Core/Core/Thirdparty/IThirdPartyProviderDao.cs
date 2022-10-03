@@ -438,9 +438,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected IAsyncEnumerable<Folder<string>> FilterByRoomType(IAsyncEnumerable<Folder<string>> rooms, FilterType filterType)
     {
-        if (filterType == FilterType.None || filterType == FilterType.FoldersOnly || filterType == FilterType.GoogleDriveOnly || filterType == FilterType.OneDriveOnly || 
-            filterType == FilterType.BoxOnly || filterType == FilterType.DropboxV2Only || filterType == FilterType.YandexOnly || filterType == FilterType.SharePointOnly ||
-            filterType == FilterType.kDriveOnly || filterType == FilterType.WebDavOnly)
+        if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
         {
             return rooms;
         }
@@ -468,7 +466,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return rooms;
     }
 
-    public virtual bool CheckInvalidFilter(FilterType filterType)
+    protected bool CheckInvalidFilter(FilterType filterType)
     {
         return filterType is
             FilterType.FilesOnly or

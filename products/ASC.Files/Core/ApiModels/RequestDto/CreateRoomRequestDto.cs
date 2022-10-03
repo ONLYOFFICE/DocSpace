@@ -43,14 +43,6 @@ public enum RoomFilterType
     ReadOnlyRoomOnly = 4,
     CustomRoomOnly = 5,
     FoldersOnly = 6,
-    BoxOnly = 7,
-    DropboxV2Only = 8,
-    GoogleDriveOnly = 9,
-    OneDriveOnly = 10,
-    SharePointOnly = 11,
-    WebDavOnly = 12,
-    kDriveOnly = 13,
-    YandexOnly = 14,
 }
 
 public class CreateRoomRequestDto

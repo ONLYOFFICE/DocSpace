@@ -75,9 +75,9 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
-        bool withoutTags, bool excludeSubject)
+        bool withoutTags, bool excludeSubject, ProviderFilter provider)
     {
-        if (CheckInvalidFilter(filterType))
+        if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.Box))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
@@ -98,9 +98,9 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
-        bool withSubfolders, bool withoutTags, bool excludeSubject)
+        bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider)
     {
-        if (CheckInvalidFilter(filterType))
+        if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.Box))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
@@ -528,11 +528,5 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
         var storageMaxUploadSize = await storage.GetMaxUploadSizeAsync();
 
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
-    }
-
-    public override bool CheckInvalidFilter(FilterType filterType)
-    {
-        return base.CheckInvalidFilter(filterType) || filterType is FilterType.GoogleDriveOnly or FilterType.DropboxV2Only or FilterType.kDriveOnly or FilterType.SharePointOnly
-            or FilterType.YandexOnly or FilterType.WebDavOnly or FilterType.OneDriveOnly;
     }
 }
