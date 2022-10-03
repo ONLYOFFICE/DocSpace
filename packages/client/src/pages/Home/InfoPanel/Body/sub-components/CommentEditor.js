@@ -31,11 +31,15 @@ const CommentEditor = ({
   const onSave = async () => {
     setIsLoading(true);
 
-    await fetchFileVersions(id);
-    updateCommentVersion(id, inputValue, version).catch((err) =>
-      toastr.error(err)
-    );
-    await fetchFileVersions(id);
+    await fetchFileVersions(id).catch((err) => {
+      toastr.error(err);
+      setIsLoading(false);
+    });
+
+    updateCommentVersion(id, inputValue, version).catch((err) => {
+      toastr.error(err);
+      setIsLoading(false);
+    });
 
     setSelection({ ...item, comment: inputValue });
     setIsEdit(false);
