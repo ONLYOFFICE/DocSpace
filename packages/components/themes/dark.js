@@ -238,7 +238,7 @@ const Dark = {
   },
 
   mainButton: {
-    backgroundColor: "#F59931",
+    backgroundColor: "#ED7309",
     disableBackgroundColor: "#4C3B2D",
     hoverBackgroundColor: "#FFAD3D",
     clickBackgroundColor: "#E6842E",
@@ -248,7 +248,7 @@ const Dark = {
     lineHeight: "22px",
     fontSize: "16px",
     fontWeight: 700,
-    textColor: "#FFFFFF",
+    textColor: black,
     textColorDisabled: black,
 
     cornerRoundsTopRight: "0",
@@ -258,14 +258,6 @@ const Dark = {
       margin: "auto",
       height: "100%",
       fill: black,
-    },
-
-    secondaryButton: {
-      height: "32px",
-      padding: "0",
-      borderRadius: "3px",
-      cornerRoundsTopLeft: "0",
-      cornerRoundsBottomLeft: "0",
     },
 
     dropDown: {
@@ -286,11 +278,12 @@ const Dark = {
   },
 
   socialButton: {
-    fontWeight: "600",
+    fontWeight: "500",
     textDecoration: "none",
     padding: "0",
     borderRadius: "2px",
     height: "40px",
+    heightSmall: "32px",
     textAlign: "left",
     stroke: " none",
     outline: "none",
@@ -298,7 +291,9 @@ const Dark = {
 
     background: black,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
+    connectBackground: "#3B72A7",
     hoverBackground: "#292929",
+    hoverConnectBackground: "#265A8F",
     activeBackground: "#292929",
     hoverBorder: "#292929",
 
@@ -322,6 +317,7 @@ const Dark = {
       whiteSpace: "nowrap",
       color: grayMaxLight,
       hoverColor: grayMaxLight,
+      connectColor: white,
     },
 
     svg: {
@@ -330,6 +326,7 @@ const Dark = {
       height: "18px",
       minWidth: "18px",
       minHeight: "18px",
+      fill: white,
     },
   },
 
@@ -382,7 +379,7 @@ const Dark = {
   iconButton: { color: "#858585", hoverColor: grayMaxLight },
   selectorAddButton: {
     background: "#292929",
-    activeBackground: darkBlack,
+    activeBackground: "#292929",
 
     border: `none`,
     boxSizing: "border-box",
@@ -391,7 +388,7 @@ const Dark = {
     width: "32px",
     padding: "9px",
     color: "#858585",
-    hoverColor: grayMaxLight,
+    hoverColor: "#858585",
   },
 
   saveCancelButtons: {
@@ -1010,31 +1007,31 @@ const Dark = {
     },
 
     roleWrapperContainer: {
-      left: {
-        min: "-2px",
+      right: {
+        min: "-5px",
         small: "-2px",
         base: "-2px",
         medium: "-4px",
-        big: "0px",
+        big: "3px",
         max: "0px",
       },
 
       bottom: {
-        min: "3px",
+        min: "-5px",
         small: "3px",
         base: "4px",
         medium: "6px",
-        big: "5px",
+        big: "3px",
         max: "0px",
       },
 
       width: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
 
       height: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
     },
@@ -1084,7 +1081,7 @@ const Dark = {
 
     image: {
       width: "100%",
-      height: "auto",
+      height: "100%",
       borderRadius: "50%",
     },
 
@@ -1098,8 +1095,8 @@ const Dark = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
 
     height: {
@@ -1107,8 +1104,8 @@ const Dark = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
   },
 
@@ -1547,12 +1544,12 @@ const Dark = {
     },
 
     arrow: {
-      width: "8px",
-      flex: "0 0 8px",
+      width: "6px",
+      flex: "0 0 6px",
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "auto",
+      marginLeft: "-2px",
       fillColor: "#9c9c9c",
     },
 
@@ -1893,7 +1890,7 @@ const Dark = {
       fontWeight: 600,
       tablet: {
         marginLeft: "12px",
-        lineHeight: "16px",
+        lineHeight: "20px",
         fontSize: "14px",
         fontWeight: "600",
       },
@@ -1967,6 +1964,9 @@ const Dark = {
   article: {
     background: "#292929",
     pinBorderColor: "#474747",
+    catalogItemHeader: "#858585",
+    catalogItemText: "rgba(255, 255, 255, 0.6)",
+    catalogItemActiveBackground: "#333333",
   },
 
   section: {
@@ -2219,6 +2219,19 @@ const Dark = {
       hoverBorderColor: "#858585",
       focusBorderColor: grayMaxLight,
       placeholderColor: "#474747",
+    },
+  },
+
+  selector: {
+    border: `1px solid #474747`,
+
+    item: {
+      hoverBackground: "#3d3d3d",
+      selectedBackground: "#3d3d3d",
+    },
+
+    emptyScreen: {
+      descriptionColor: cyanBlueDarkShade,
     },
   },
 
@@ -2757,6 +2770,7 @@ const Dark = {
     },
 
     home: {
+      logoColor: "rgba(255, 255, 255, 0.92)",
       textColorError: red,
     },
 
@@ -2776,6 +2790,8 @@ const Dark = {
         fillIcon: "#c4c4c4",
         expanderColor: "#c4c4c4",
       },
+
+      separatorBorder: "1px solid #474747",
 
       security: {
         arrowFill: white,
@@ -2892,6 +2908,16 @@ const Dark = {
     disabledBackground: "#858585",
     defaultTagColor: "#858585",
     newTagBackground: "#333333",
+  },
+
+  profile: {
+    main: {
+      background: "#1f1f1f",
+      textColor: white,
+    },
+    themePreview: {
+      border: "1px solid #858585",
+    },
   },
 };
 

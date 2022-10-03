@@ -80,6 +80,7 @@ class DialogStore {
   closeDialogs = () => {
     this.setChangeEmailDialogVisible(false);
     this.setChangePasswordDialogVisible(false);
+    this.setChangeOwnerDialogVisible(false);
     this.setDeleteSelfProfileDialogVisible(false);
     this.setDeleteProfileDialogVisible(false);
     this.setDialogData({});

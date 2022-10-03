@@ -6,7 +6,8 @@
   "AddButton": "Добавить",
   "AddFilter": "Добавить фильтр",
   "AddUsers": "Добавить пользователей",
-  "AdminSettings": "Настройки администратора",
+  "AdminSettings": "Администратора",
+  "Alert": "Предупреждение",
   "Archive": "Архив",
   "Attention": "Внимание",
   "Audio": "Аудио",
@@ -63,7 +64,9 @@
   "Department": "Отдел",
   "Disconnect": "Отключить",
   "Documents": "Документы",
+  "Rooms": "Комнаты",
   "DomainIpAddress": "IP адрес в качестве домена не поддерживается",
+  "Done": "Успешно",
   "Download": "Скачать",
   "Duplicate": "Создать копию",
   "EditAvatar": "Изменить",
@@ -176,5 +179,6 @@
   "AboutCompanyTitle": "О программе",
   "LogoutButton": "Выйти",
   "HelpCenter": "Справочный центр",
-  "SelectFile": "Выбрать файл"
+  "SelectFile": "Выбрать файл",
+  "HideArticleMenu": "Скрыть меню"
 }

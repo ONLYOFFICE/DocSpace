@@ -4,18 +4,6 @@ import DirectThirdPartyConnection from "../../common-container/DirectThirdPartyC
 
 const ThirdPartyResources = (props) => {
   return (
-    // return !isDocSpace ? (
-    //   <SelectFileInput
-    //     {...props}
-    //     foldersType="third-party"
-    //     searchParam=".gz"
-    //     filesListTitle={t("SelectFileInGZFormat")}
-    //     withoutResetFolderTree
-    //     ignoreSelectedFolderTree
-    //     isArchiveOnly
-    //     maxFolderInputWidth="446px"
-    //   />
-    // ) : (
     <div className={"restore-backup_third-party-module"}>
       <DirectThirdPartyConnection
         {...props}

@@ -6,14 +6,9 @@ import EmailInput from "@docspace/components/email-input";
 import Button from "@docspace/components/button";
 import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
-import { tablet } from "@docspace/components/utils/device";
 
 const BtnContainer = styled(Box)`
-  width: 100px;
-
-  @media ${tablet} {
-    width: 293px;
-  }
+  width: 100%;
 `;
 
 const BodyContainer = styled(Box)`

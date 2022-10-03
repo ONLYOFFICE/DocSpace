@@ -50,7 +50,9 @@ public class FileShareDto
 public class FileShareLink
 {
     public Guid Id { get; set; }
+    public string Title { get; set; }
     public string ShareLink { get; set; }
+    public ApiDateTime ExpirationDate { get; set; }
 }
 
 [Scope]
@@ -58,13 +60,16 @@ public class FileShareDtoHelper
 {
     private readonly UserManager _userManager;
     private readonly EmployeeFullDtoHelper _employeeWraperFullHelper;
+    private readonly ApiDateTimeHelper _apiDateTimeHelper;
 
     public FileShareDtoHelper(
         UserManager userManager,
-        EmployeeFullDtoHelper employeeWraperFullHelper)
+        EmployeeFullDtoHelper employeeWraperFullHelper,
+        ApiDateTimeHelper apiDateTimeHelper)
     {
         _userManager = userManager;
         _employeeWraperFullHelper = employeeWraperFullHelper;
+        _apiDateTimeHelper = apiDateTimeHelper;
     }
 
     public async Task<FileShareDto> Get(AceWrapper aceWrapper)
@@ -77,26 +82,30 @@ public class FileShareDtoHelper
 
         if (aceWrapper.SubjectGroup)
         {
-            if (aceWrapper.SubjectId == FileConstant.ShareLinkId)
+            if (!string.IsNullOrEmpty(aceWrapper.Link))
             {
+                var date = aceWrapper.FileShareOptions?.ExpirationDate;
+
                 result.SharedTo = new FileShareLink
                 {
-                    Id = aceWrapper.SubjectId,
-                    ShareLink = aceWrapper.Link
+                    Id = aceWrapper.Id,
+                    Title = aceWrapper.FileShareOptions?.Title,
+                    ShareLink = aceWrapper.Link,
+                    ExpirationDate = date.HasValue && date.Value != default ? _apiDateTimeHelper.Get(date) : null
                 };
             }
             else
             {
                 //Shared to group
-                result.SharedTo = new GroupSummaryDto(_userManager.GetGroupInfo(aceWrapper.SubjectId), _userManager);
+                result.SharedTo = new GroupSummaryDto(_userManager.GetGroupInfo(aceWrapper.Id), _userManager);
             }
         }
         else
         {
-            result.SharedTo = await _employeeWraperFullHelper.GetFull(_userManager.GetUsers(aceWrapper.SubjectId));
+            result.SharedTo = await _employeeWraperFullHelper.GetFull(_userManager.GetUsers(aceWrapper.Id));
         }
 
-        result.Access = aceWrapper.Share;
+        result.Access = aceWrapper.Access;
 
         return result;
     }

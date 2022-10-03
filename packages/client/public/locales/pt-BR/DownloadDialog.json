@@ -3,6 +3,5 @@
   "ConvertMessage": "Se você optar por converter o arquivo para um formato diferente do original, alguns dados poderão ser perdidos.",
   "ConvertToZip": "Os arquivos serão compactados no arquivo .zip",
   "CustomFormat": "Personalizar formato",
-  "OriginalFormat": "Formato Original",
-  "Other": "Outro"
+  "OriginalFormat": "Formato Original"
 }

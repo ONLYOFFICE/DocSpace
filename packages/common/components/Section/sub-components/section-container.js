@@ -13,7 +13,6 @@ import { Base } from "@docspace/components/themes";
 
 const tabletProps = css`
   .section-body_header {
-    display: block;
     position: sticky;
     top: 0;
     background: ${(props) => props.theme.section.header.background};
@@ -26,7 +25,7 @@ const tabletProps = css`
     `}
 
     ${(props) =>
-      props.settingsStudio &&
+      (props.settingsStudio || props.viewAs == "settings") &&
       isMobileOnly &&
       css`
         background: ${(props) => props.theme.section.header.backgroundColor};
@@ -72,7 +71,6 @@ const StyledSectionContainer = styled.section`
   css`
     width: 100vw !important;
     max-width: 100vw !important;
-    margin-top: 48px !important;
   `}
 
   .layout-progress-bar {

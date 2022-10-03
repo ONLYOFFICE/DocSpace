@@ -2,21 +2,12 @@ import React from "react";
 import TreeMenu from "@docspace/components/tree-menu";
 import TreeNode from "@docspace/components/tree-menu/sub-components/tree-node";
 import styled from "styled-components";
-import {
-  ConflictResolveType,
-  FolderType,
-  ShareAccessRights,
-} from "@docspace/common/constants";
-import toastr from "client/toastr";
-
+import { FolderType, ShareAccessRights } from "@docspace/common/constants";
 import { onConvertFiles } from "../../helpers/files-converter";
 import { ReactSVG } from "react-svg";
 import ExpanderDownIcon from "PUBLIC_DIR/images/expander-down.react.svg";
 import ExpanderRightIcon from "PUBLIC_DIR/images/expander-right.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import withLoader from "../../HOCs/withLoader";
-import Loaders from "@docspace/common/components/Loaders";
-
 import { observer, inject } from "mobx-react";
 import { runInAction } from "mobx";
 import { withTranslation } from "react-i18next";
@@ -83,7 +74,7 @@ class TreeFolders extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { isExpand: false };
+    this.state = { isExpand: false, isLoading: false };
     this.selectionFoldersId = [];
   }
 
@@ -107,7 +98,7 @@ class TreeFolders extends React.Component {
   };
 
   getFolderIcon = (item) => {
-    let iconUrl = "images/catalog.folder.react.svg";
+    let iconUrl = "/static/images/catalog.folder.react.svg";
 
     switch (item.rootFolderType) {
       case FolderType.USER:
@@ -181,24 +172,13 @@ class TreeFolders extends React.Component {
   };
 
   showDragItems = (item) => {
-    const {
-      isAdmin,
-      myId,
-      commonId,
-      //rootFolderType,
-      currentId,
-      draggableItems,
-    } = this.props;
+    const { isAdmin, myId, commonId, currentId, draggableItems } = this.props;
     if (item.id === currentId) {
       return false;
     }
 
     if (!draggableItems || draggableItems.find((x) => x.id === item.id))
       return false;
-
-    // const isMy = rootFolderType === FolderType.USER;
-    // const isCommon = rootFolderType === FolderType.COMMON;
-    // const isShare = rootFolderType === FolderType.SHARE;
 
     if (
       item.rootFolderType === FolderType.SHARE &&
@@ -208,7 +188,6 @@ class TreeFolders extends React.Component {
     }
 
     if (isAdmin) {
-      //if (isMy || isCommon || isShare) {
       if (
         (item.pathParts &&
           (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
@@ -217,41 +196,40 @@ class TreeFolders extends React.Component {
       ) {
         return true;
       }
-      //}
     } else {
-      //if (isMy || isCommon || isShare) {
       if (
         (item.pathParts && item.pathParts[0] === myId) ||
         item.rootFolderType === FolderType.USER
       ) {
         return true;
       }
-      //}
     }
 
     return false;
   };
 
   getItems = (data) => {
-    const { theme } = this.props;
-
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
-
-      const showBadge = item.newItems
-        ? item.newItems > 0 && this.props.needUpdate
-        : false;
-
+      const showBadge = false;
       const provider = item.providerKey;
-
       const serviceFolder = !!item.providerKey;
 
       let value = "",
         disableNodeValue = "";
       if (dragging) value = `${item.id} dragging ${provider}`;
 
+      const { roomsFolderId, expandedPanelKeys } = this.props;
+
+      let isDisabledNode = false;
+      if (item.id == roomsFolderId) {
+        isDisabledNode = expandedPanelKeys?.includes(roomsFolderId + "");
+      }
+
       if (this.selectionFoldersId && this.selectionFoldersId.includes(item.id))
         disableNodeValue = "disable-node";
+
+      if (isDisabledNode) disableNodeValue += " disable-folder ";
 
       if ((item.folders && item.folders.length > 0) || serviceFolder) {
         return (
@@ -402,10 +380,13 @@ class TreeFolders extends React.Component {
   };
 
   onLoadData = (treeNode, isExpand) => {
-    const { data: incomingDate, certainFolders } = this.props;
+    const { data: incomingDate, certainFolders, roomsFolderId } = this.props;
     isExpand && this.setState({ isExpand: true });
-    this.props.setIsLoading && this.props.setIsLoading(true);
     //console.log("load data...", treeNode);
+
+    this.setState({
+      isLoading: true,
+    });
 
     if (this.state.isExpand && !isExpand) {
       return Promise.resolve();
@@ -423,26 +404,45 @@ class TreeFolders extends React.Component {
 
         this.getNewTreeData(treeData, listIds, data.folders, data.level);
         !certainFolders && this.props.setTreeFolders(treeData);
+
+        if (data.listIds[0] == roomsFolderId && this.props.onSelect) {
+          const roomsIndex = treeData.findIndex((f) => f.id == roomsFolderId);
+          const firstRoomsNodeId = treeData[roomsIndex]?.folders[0]?.id;
+          this.props.onSelect([firstRoomsNodeId], treeNode);
+        }
       })
       .catch((err) => console.log("err", err))
       .finally(() => {
-        this.setState({ isExpand: false });
-        this.props.setIsLoading && this.props.setIsLoading(false);
+        this.setState({ isExpand: false, isLoading: false });
       });
   };
 
-  onExpand = (expandedKeys, treeNode) => {
+  onExpand = (expandedKeys, treeNode, isRoom = false) => {
     this.expand = true;
     if (treeNode.node && !treeNode.node.children) {
       if (treeNode.expanded) {
         this.onLoadData(treeNode.node, true);
       }
+    } else if (isRoom) {
+      this.props.onSelect([treeNode.node.children[0].id], treeNode);
     }
-    if (this.props.needUpdate) {
-      this.props.setExpandedKeys(expandedKeys);
-    } else {
-      this.props.setExpandedPanelKeys(expandedKeys);
+
+    this.props.setExpandedPanelKeys(expandedKeys);
+  };
+
+  onSelect = (folder, treeNode) => {
+    const { onSelect, expandedPanelKeys, roomsFolderId } = this.props;
+
+    const newExpandedPanelKeys = JSON.parse(JSON.stringify(expandedPanelKeys));
+    newExpandedPanelKeys.push(folder[0]);
+
+    if (folder[0] == roomsFolderId) {
+      this.onExpand(newExpandedPanelKeys, treeNode, true);
+
+      return;
     }
+
+    onSelect && onSelect(folder, treeNode);
   };
 
   onDragOver = (data) => {
@@ -494,21 +494,20 @@ class TreeFolders extends React.Component {
       firstLoadScroll();
     }
   };
+
   render() {
     const {
       selectedKeys,
-      isLoading,
-      onSelect,
       dragging,
-
       expandedPanelKeys,
       treeFolders,
       data,
       disabled,
-      theme,
       isPanel,
       isLoadingNodes,
     } = this.props;
+
+    const { isLoading } = this.state;
 
     return (
       <StyledTreeMenu
@@ -520,7 +519,7 @@ class TreeFolders extends React.Component {
         multiple={false}
         showIcon
         switcherIcon={this.switcherIcon}
-        onSelect={onSelect}
+        onSelect={this.onSelect}
         selectedKeys={selectedKeys}
         loadData={this.onLoadData}
         expandedKeys={expandedPanelKeys}
@@ -543,7 +542,6 @@ class TreeFolders extends React.Component {
 
 TreeFolders.defaultProps = {
   selectedKeys: [],
-  needUpdate: true,
 };
 
 export default inject(
@@ -551,56 +549,42 @@ export default inject(
     { auth, filesStore, treeFoldersStore, selectedFolderStore },
     { useDefaultSelectedKeys, selectedKeys }
   ) => {
-    const {
-      selection,
-      setIsLoading,
-      isLoading,
-      dragging,
-      setDragging,
-    } = filesStore;
+    const { selection, dragging, setDragging } = filesStore;
 
     const {
       treeFolders,
       setTreeFolders,
       myFolderId,
       commonFolderId,
-      isPrivacyFolder,
-      setExpandedKeys,
       setExpandedPanelKeys,
       getSubfolders,
       setIsLoadingNodes,
       isLoadingNodes,
+      roomsFolderId,
     } = treeFoldersStore;
-    const {
-      id,
-      parentId: selectedNodeParentId /* rootFolderType */,
-    } = selectedFolderStore;
+    const { id, parentId: selectedNodeParentId } = selectedFolderStore;
 
     return {
       isAdmin: auth.isAdmin,
       isDesktop: auth.settingsStore.isDesktopClient,
       dragging,
-      //rootFolderType,
       currentId: id,
       myId: myFolderId,
       commonId: commonFolderId,
-      isPrivacy: isPrivacyFolder,
       draggableItems: dragging ? selection : null,
       treeFolders,
-      isLoading,
       selectedKeys: useDefaultSelectedKeys
         ? treeFoldersStore.selectedKeys
         : selectedKeys,
 
       setDragging,
-      setIsLoading,
       setTreeFolders,
-      setExpandedKeys,
       setExpandedPanelKeys,
       getSubfolders,
       setIsLoadingNodes,
       isLoadingNodes,
       selectedNodeParentId,
+      roomsFolderId,
     };
   }
 )(withTranslation(["Files", "Common"])(observer(TreeFolders)));

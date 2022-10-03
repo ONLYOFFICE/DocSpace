@@ -32,9 +32,9 @@ public static class ConfigurationManagerExtension
     this ConfigurationManager config,
     IHostEnvironment env)
     {
-        config.AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
-          .AddJsonFile("backup.json");
+        config.AddJsonFile("notify.json", optional: false, reloadOnChange: true)
+          .AddJsonFile($"notify.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+          .AddJsonFile("backup.json", optional: false, reloadOnChange: true);
 
         return config;
     }

@@ -30,18 +30,41 @@ const StyledScroll = styled.div`
 `;
 
 const rowStyles = css`
-  .row-list-item,
-  .row-loader {
-    padding-left: 16px;
-    width: calc(100% - 33px) !important;
+  margin-left: -20px;
+  width: ${({ width }) => width + 36 + "px !important"};
 
-    @media ${mobile} {
-      width: calc(100% - 24px) !important;
+  .ReactVirtualized__Grid__innerScrollContainer {
+    max-width: ${({ width }) => width + 36 + "px !important"};
+  }
+
+  @media ${tablet} {
+    width: ${({ width }) => width + 36 + "px !important"};
+
+    .ReactVirtualized__Grid__innerScrollContainer {
+      max-width: ${({ width }) => width + 36 + "px !important"};
     }
   }
 
-  .row-loader {
-    padding-left: 22px;
+  @media ${mobile} {
+    width: ${({ width }) => width + 28 + "px !important"};
+
+    .ReactVirtualized__Grid__innerScrollContainer {
+      max-width: ${({ width }) => width + 28 + "px !important"};
+    }
+  }
+
+  .row-list-item {
+    padding-left: 16px;
+    width: calc(100% - 32px) !important;
+
+    @media ${tablet} {
+      padding-left: 20px;
+      width: calc(100% - 36px) !important;
+    }
+
+    @media ${mobile} {
+      width: calc(100% - 28px) !important;
+    }
   }
 `;
 

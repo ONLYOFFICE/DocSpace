@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import config from "PACKAGE_FILE";
-import { AppServerConfig } from "@docspace/common/constants";
+import { AppServerConfig, RoomSearchArea } from "@docspace/common/constants";
 import Items from "./Items";
 import { isMobile, tablet } from "@docspace/components/utils/device";
 import FilesFilter from "@docspace/common/api/files/filter";
@@ -13,14 +13,14 @@ import SettingsItem from "./SettingsItem";
 import AccountsItem from "./AccountsItem";
 import { combineUrl } from "@docspace/common/utils";
 import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
-import ThirdPartyList from "./ThirdPartyList";
+//import ThirdPartyList from "./ThirdPartyList";
 import DownloadAppList from "./DownloadAppList";
 import Banner from "./Banner";
 import { showLoader, hideLoader } from "@docspace/common/utils";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
 import { withTranslation } from "react-i18next";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 
@@ -39,14 +39,16 @@ const ArticleBodyContent = (props) => {
     firstLoad,
     showText,
     isDesktopClient,
-    enableThirdParty,
-    isVisitor,
+    // enableThirdParty,
+    // isVisitor,
     FirebaseHelper,
     theme,
     toggleArticleOpen,
     categoryType,
     isAdmin,
     filesIsLoading,
+    roomsFolderId,
+    archiveFolderId,
   } = props;
 
   const campaigns = (localStorage.getItem("campaigns") || "")
@@ -65,8 +67,6 @@ const ArticleBodyContent = (props) => {
 
         homepage,
         history,
-        roomsFolderId,
-        archiveFolderId,
       } = props;
 
       if (filesIsLoading) return;
@@ -80,27 +80,30 @@ const ArticleBodyContent = (props) => {
 
       if (folderId === roomsFolderId || folderId === archiveFolderId) {
         setAlreadyFetchingRooms(true);
-        fetchRooms(folderId, null)
+
+        const filter = RoomsFilter.getDefault();
+        filter.searchArea =
+          folderId === archiveFolderId
+            ? RoomSearchArea.Archive
+            : RoomSearchArea.Active;
+
+        fetchRooms(folderId, filter)
           .then(() => {
-            if (filesSection) {
-              const filter = RoomsFilter.getDefault();
+            const url = getCategoryUrl(
+              folderId === archiveFolderId
+                ? CategoryType.Archive
+                : CategoryType.Shared
+            );
 
-              const url = getCategoryUrl(
-                folderId === archiveFolderId
-                  ? CategoryType.Archive
-                  : CategoryType.Shared
-              );
+            const filterParamsStr = filter.toUrlParams();
 
-              const filterParamsStr = filter.toUrlParams();
-
-              history.push(
-                combineUrl(
-                  AppServerConfig.proxyURL,
-                  homepage,
-                  `${url}?${filterParamsStr}`
-                )
-              );
-            }
+            history.push(
+              combineUrl(
+                AppServerConfig.proxyURL,
+                homepage,
+                `${url}?${filterParamsStr}`
+              )
+            );
           })
           .finally(() => {
             if (isMobileOnly || isMobile()) {
@@ -144,7 +147,7 @@ const ArticleBodyContent = (props) => {
           });
       }
     },
-    [categoryType]
+    [categoryType, roomsFolderId, archiveFolderId]
   );
 
   const onShowNewFilesPanel = React.useCallback((folderId) => {
@@ -163,7 +166,7 @@ const ArticleBodyContent = (props) => {
       {!personal && !firstLoad && <SettingsItem />}
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
-          {enableThirdParty && !isVisitor && <ThirdPartyList />}
+          {/* {enableThirdParty && !isVisitor && <ThirdPartyList />} */}
           <DownloadAppList theme={theme} />
           {(isDesktop || isTablet) &&
             personal &&
@@ -197,12 +200,7 @@ export default inject(
       filesIsLoading,
     } = filesStore;
 
-    const {
-      treeFolders,
-      setTreeFolders,
-      roomsFolderId,
-      archiveFolderId,
-    } = treeFoldersStore;
+    const { roomsFolderId, archiveFolderId } = treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
@@ -228,7 +226,6 @@ export default inject(
 
     return {
       toggleArticleOpen,
-      treeFolders,
       showText,
       articleOpen,
       enableThirdParty: settingsStore.enableThirdParty,
@@ -247,7 +244,6 @@ export default inject(
       setFirstLoad,
       fetchFiles,
 
-      setTreeFolders,
       setNewFilesPanelVisible,
       firstLoad,
       isDesktopClient,

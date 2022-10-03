@@ -4,9 +4,10 @@ import { withRouter } from "react-router";
 import Layout from "./Layout";
 import { combineUrl } from "@docspace/common/utils";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
-import { inject, observer } from "mobx-react";
+import Panels from "../../components/FilesPanels";
+
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
-const Admins = lazy(() => import("./categories/security/access-rights/admins"));
+
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
 const PasswordStrengthPage = lazy(() =>
   import("./categories/security/access-portal/passwordStrength")
@@ -157,15 +158,10 @@ const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
-const Settings = (props) => {
-  const { loadBaseInfo } = props;
-
-  useEffect(() => {
-    loadBaseInfo();
-  }, []);
-
+const Settings = () => {
   return (
     <Layout key="1">
+      <Panels />
       <Suspense fallback={null}>
         <Switch>
           <Route exact path={COMMON_URLS} component={CommonSettings} />
@@ -187,7 +183,7 @@ const Settings = (props) => {
           <Route exact path={TEAM_TEMPLATE_URL} component={TeamTemplate} />
 
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
-          <Route path={ADMINS_URL} component={Admins} />
+
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />
           <Route
             exact
@@ -228,10 +224,4 @@ const Settings = (props) => {
   );
 };
 
-export default inject(({ common }) => {
-  return {
-    loadBaseInfo: async () => {
-      await common.initSettings();
-    },
-  };
-})(withRouter(observer(Settings)));
+export default withRouter(Settings);

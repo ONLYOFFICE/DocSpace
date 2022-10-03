@@ -7,7 +7,7 @@ import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import { withTranslation, Trans } from "react-i18next";
 import { sendInstructionsToChangePassword } from "@docspace/common/api/people";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 class ChangePasswordDialogComponent extends React.Component {
   constructor() {

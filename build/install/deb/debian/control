@@ -16,6 +16,7 @@ Depends: {{product}}-api (= {{package_header_tag_version}}),
          {{product}}-doceditor(= {{package_header_tag_version}}),
          {{product}}-files (= {{package_header_tag_version}}),
          {{product}}-files-services (= {{package_header_tag_version}}),
+         {{product}}-login (= {{package_header_tag_version}}),
          {{product}}-migration (= {{package_header_tag_version}}),
          {{product}}-migration-runner (= {{package_header_tag_version}}),
          {{product}}-notify (= {{package_header_tag_version}}),
@@ -186,6 +187,14 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
 Description: Description
 
 Package: {{product}}-doceditor
+Architecture: any
+Depends: {{product}}-common (= {{package_header_tag_version}}),
+ nodejs (>=14),
+ ${misc:Depends},
+ ${shlibs:Depends}
+Description: Description
+
+Package: {{product}}-login
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
  nodejs (>=14),

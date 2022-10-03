@@ -2,7 +2,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import { AppServerConfig } from "@docspace/common/constants";
 import { combineUrl } from "@docspace/common/utils";
@@ -46,8 +46,10 @@ const CreateEvent = ({
 
   replaceFileStream,
   setEncryptionAccess,
+
+  setEventDialogVisible,
+  eventDialogVisible,
 }) => {
-  const [visible, setVisible] = React.useState(false);
   const [headerTitle, setHeaderTitle] = React.useState(null);
   const [startValue, setStartValue] = React.useState("");
 
@@ -65,7 +67,7 @@ const CreateEvent = ({
     }
 
     setHeaderTitle(defaultName);
-    setVisible(true);
+    setEventDialogVisible(true);
   }, [extension, title, fromTemplate]);
 
   const onSave = (e, value, open = true) => {
@@ -132,7 +134,7 @@ const CreateEvent = ({
 
             toastr.error(t("Translations:FileProtected"), t("Common:Warning"));
 
-            setVisible(false);
+            setEventDialogVisible(false);
 
             setFormCreationInfo({
               newTitle: `${newValue}.${extension}`,
@@ -233,7 +235,7 @@ const CreateEvent = ({
   return (
     <Dialog
       t={t}
-      visible={visible}
+      visible={eventDialogVisible}
       title={headerTitle}
       startValue={startValue}
       onSave={onSave}
@@ -280,11 +282,14 @@ export default inject(
 
     const {
       setConvertPasswordDialogVisible,
-
+      setEventDialogVisible,
       setFormCreationInfo,
+      eventDialogVisible,
     } = dialogsStore;
 
     return {
+      setEventDialogVisible,
+      eventDialogVisible,
       setIsLoading,
       createFile,
       createFolder,

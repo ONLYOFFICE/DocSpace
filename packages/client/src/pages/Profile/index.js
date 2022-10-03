@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Section from "@docspace/common/components/Section";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 
 import { SectionHeaderContent, SectionBodyContent } from "./Section";
 import { withRouter } from "react-router";
@@ -12,7 +12,6 @@ import { withTranslation } from "react-i18next";
 class Profile extends React.Component {
   componentDidMount() {
     const {
-      match,
       fetchProfile,
       profile,
       location,
@@ -23,12 +22,10 @@ class Profile extends React.Component {
       setIsEditTargetUser,
       setLoadedProfile,
     } = this.props;
-    let { userId } = match.params;
+    const userId = "@self";
 
     setFirstLoad(false);
     setIsEditTargetUser(false);
-
-    if (!userId) userId = "@self";
 
     setDocumentTitle(t("Common:Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");
@@ -75,20 +72,13 @@ class Profile extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    const { isEditTargetUser } = this.props;
-    if (!isEditTargetUser) {
-      this.props.resetProfile();
-    }
-  }
-
   render() {
     //console.log("Profile render");
 
     const { profile, showCatalog, isAdmin } = this.props;
 
     return (
-      <Section withBodyAutoFocus>
+      <Section withBodyAutoFocus viewAs="profile">
         <Section.SectionHeader>
           <SectionHeaderContent profile={profile} />
         </Section.SectionHeader>
@@ -115,7 +105,6 @@ export default withRouter(
     const { setDocumentTitle, isAdmin, language } = auth;
     const { targetUserStore, loadingStore } = peopleStore;
     const {
-      resetTargetUser: resetProfile,
       getTargetUser: fetchProfile,
       targetUser: profile,
       isEditTargetUser,
@@ -126,7 +115,6 @@ export default withRouter(
       setDocumentTitle,
       isAdmin,
       language,
-      resetProfile,
       fetchProfile,
       profile,
       setFirstLoad,

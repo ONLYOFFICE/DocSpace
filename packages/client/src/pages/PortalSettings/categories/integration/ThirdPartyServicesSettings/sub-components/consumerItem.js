@@ -47,41 +47,37 @@ class ConsumerItem extends React.Component {
 
     return (
       <>
-        <Box displayProp="flex" flexDirection="column" widthProp="100%">
-          <Box
-            displayProp="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            widthProp="100%"
-            heightProp="56px"
+        <Box
+          displayProp="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          widthProp="100%"
+        >
+          <StyledBox
+            isSet={
+              !consumer.canSet || consumer.props.find((p) => p.value)
+                ? true
+                : false
+            }
+            isLinkedIn={consumer.name === "linkedin"}
           >
-            <StyledBox
-              isSet={
-                !consumer.canSet || consumer.props.find((p) => p.value)
-                  ? true
-                  : false
-              }
-              isLinkedIn={consumer.name === "linkedin"}
-            >
-              <ReactSVG
-                src={logo}
-                className={"consumer-icon"}
-                alt={consumer.name}
-              />
-            </StyledBox>
-            <Box onClick={setConsumer} data-consumer={consumer.name}>
-              <ConsumerToggle
-                consumer={consumer}
-                onModalOpen={onModalOpen}
-                updateConsumerProps={updateConsumerProps}
-                t={t}
-              />
-            </Box>
-          </Box>
-          <Box displayProp="flex" marginProp="21px 0 0 0">
-            <Text>{consumer.description}</Text>
+            <ReactSVG
+              src={logo}
+              className={"consumer-icon"}
+              alt={consumer.name}
+            />
+          </StyledBox>
+          <Box onClick={setConsumer} data-consumer={consumer.name}>
+            <ConsumerToggle
+              consumer={consumer}
+              onModalOpen={onModalOpen}
+              updateConsumerProps={updateConsumerProps}
+              t={t}
+            />
           </Box>
         </Box>
+
+        <Text>{consumer.description}</Text>
       </>
     );
   }

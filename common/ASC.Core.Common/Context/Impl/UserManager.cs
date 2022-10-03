@@ -144,10 +144,10 @@ public class UserManager
         switch (type)
         {
             case EmployeeType.User:
-                users = users.Where(u => !u.IsVisitor(this));
+                users = users.Where(u => !this.IsVisitor(u));
                 break;
             case EmployeeType.Visitor:
-                users = users.Where(u => u.IsVisitor(this));
+                users = users.Where(u => this.IsVisitor(u));
                 break;
         }
 
@@ -715,7 +715,7 @@ public class UserManager
 
         if (group == null)
         {
-                group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID) ?? Constants.LostGroupInfo);
+            group = ToGroup(Constants.BuildinGroups.FirstOrDefault(r => r.ID == groupID) ?? Constants.LostGroupInfo);
         }
 
         if (group == null)

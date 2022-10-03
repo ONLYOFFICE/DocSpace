@@ -5,7 +5,6 @@ import {
   downloadFiles,
   emptyTrash,
   finalizeVersion,
-  getSubfolders,
   lockFile,
   markAsRead,
   removeFiles,
@@ -19,10 +18,9 @@ import {
   FileStatus,
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
-import toastr from "client/toastr";
-
-import { Events, TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
-import { loopTreeFolders, checkProtocol } from "../helpers/files-helpers";
+import toastr from "@docspace/components/toast/toastr";
+import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
+import { checkProtocol } from "../helpers/files-helpers";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
@@ -647,7 +645,13 @@ class FilesActionStore {
           await this.uploadDataStore.loopFilesOperations(data, pbData);
           this.updateCurrentFolder(null, [itemId]);
         })
-        .then(() => toastr.success(translations?.successRemoveRoom));
+        .then(() =>
+          toastr.success(
+            items.length > 1
+              ? translations?.successRemoveRooms
+              : translations?.successRemoveRoom
+          )
+        );
     } else {
       addActiveItems(null, [itemId]);
       return deleteFolder(itemId).then(async (res) => {
@@ -685,17 +689,13 @@ class FilesActionStore {
   };
 
   finalizeVersionAction = (id) => {
-    const { setFile, setIsLoading } = this.filesStore;
+    const { setFile } = this.filesStore;
 
-    setIsLoading(true);
-
-    return finalizeVersion(id, 0, false)
-      .then((res) => {
-        if (res && res[0]) {
-          setFile(res[0]);
-        }
-      })
-      .finally(() => setIsLoading(false));
+    return finalizeVersion(id, 0, false).then((res) => {
+      if (res && res[0]) {
+        setFile(res[0]);
+      }
+    });
   };
 
   duplicateAction = (item, label) => {
@@ -945,8 +945,8 @@ class FilesActionStore {
 
   selectRowAction = (checked, file) => {
     const {
-      selected,
-      setSelected,
+      // selected,
+      // setSelected,
       selectFile,
       deselectFile,
       setBufferSelection,
@@ -962,14 +962,8 @@ class FilesActionStore {
   };
 
   openLocationAction = (locationId) => {
-    const { createNewExpandedKeys, setExpandedKeys } = this.treeFoldersStore;
-
     this.filesStore.setBufferSelection(null);
-    return this.filesStore.fetchFiles(locationId, null).then((data) => {
-      const pathParts = data.selectedFolder.pathParts;
-      const newExpandedKeys = createNewExpandedKeys(pathParts);
-      setExpandedKeys(newExpandedKeys);
-    });
+    return this.filesStore.fetchFiles(locationId, null);
   };
 
   setThirdpartyInfo = (providerKey) => {
@@ -1161,8 +1155,6 @@ class FilesActionStore {
     const { userAccess } = this.filesStore;
 
     switch (option) {
-      case "share":
-        return isAccessedSelected && !personal; //isFavoritesFolder ||isRecentFolder
       case "showInfo":
       case "copy":
       case "download":
@@ -1248,7 +1240,7 @@ class FilesActionStore {
     this.setArchiveAction("unarchive", items);
   };
 
-  deleteRooms = () => {
+  deleteRooms = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
@@ -1257,7 +1249,15 @@ class FilesActionStore {
       items.push(item.id);
     });
 
-    this.deleteItemAction(items, null, null, null, true);
+    const translations = {
+      deleteOperation: t("Translations:DeleteOperation"),
+      successRemoveFile: t("Files:FileRemoved"),
+      successRemoveFolder: t("Files:FolderRemoved"),
+      successRemoveRoom: t("Files:RoomRemoved"),
+      successRemoveRooms: t("Files:RoomsRemoved"),
+    };
+
+    this.deleteItemAction(items, translations, null, null, true);
   };
 
   getOption = (option, t) => {
@@ -1270,16 +1270,6 @@ class FilesActionStore {
     } = this.dialogsStore;
 
     switch (option) {
-      case "share":
-        if (!this.isAvailableOption("share")) return null;
-        else
-          return {
-            label: t("Share"),
-            onClick: () => setSharingPanelVisible(true),
-            iconUrl: "/static/images/share.react.svg",
-            title: t("Translations:ButtonShareAccess"),
-          };
-
       case "copy":
         if (!this.isAvailableOption("copy")) return null;
         else
@@ -1355,7 +1345,7 @@ class FilesActionStore {
         else
           return {
             label: t("Common:Delete"),
-            onClick: this.deleteRooms,
+            onClick: () => this.deleteRooms(t),
             iconUrl: "/static/images/delete.react.svg",
           };
 
@@ -1372,8 +1362,8 @@ class FilesActionStore {
                   deleteOperation: t("Translations:DeleteOperation"),
                   deleteFromTrash: t("Translations:DeleteFromTrash"),
                   deleteSelectedElem: t("Translations:DeleteSelectedElem"),
-                  FileRemoved: t("Home:FileRemoved"),
-                  FolderRemoved: t("Home:FolderRemoved"),
+                  FileRemoved: t("Files:FileRemoved"),
+                  FolderRemoved: t("Files:FolderRemoved"),
                 };
 
                 this.deleteAction(translations).catch((err) =>
@@ -1410,7 +1400,6 @@ class FilesActionStore {
   };
 
   getAnotherFolderOptions = (itemsCollection, t) => {
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const moveTo = this.getOption("moveTo", t);
@@ -1419,7 +1408,6 @@ class FilesActionStore {
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("moveTo", moveTo)
@@ -1431,14 +1419,13 @@ class FilesActionStore {
   };
 
   getRecentFolderOptions = (itemsCollection, t) => {
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
+
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("copy", copy)
@@ -1450,14 +1437,13 @@ class FilesActionStore {
   getShareFolderOptions = (itemsCollection, t) => {
     const { setDeleteDialogVisible, setUnsubscribe } = this.dialogsStore;
 
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
+
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("copy", copy)
@@ -1491,15 +1477,12 @@ class FilesActionStore {
 
   getFavoritesFolderOptions = (itemsCollection, t) => {
     const { selection } = this.filesStore;
-
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("copy", copy)
@@ -1587,11 +1570,7 @@ class FilesActionStore {
       openDocEditor,
       isPrivacyFolder,
     } = this.filesStore;
-    const {
-      isRecycleBinFolder,
-      setExpandedKeys,
-      createNewExpandedKeys,
-    } = this.treeFoldersStore;
+    const { isRecycleBinFolder } = this.treeFoldersStore;
     const { setMediaViewerData } = this.mediaViewerDataStore;
     const { setConvertDialogVisible, setConvertItem } = this.dialogsStore;
 
@@ -1607,14 +1586,8 @@ class FilesActionStore {
 
     if (isFolder) {
       setIsLoading(true);
-      //addExpandedKeys(parentFolder + "");
 
       fetchFiles(id, null, true, false)
-        .then((data) => {
-          const pathParts = data.selectedFolder.pathParts;
-          const newExpandedKeys = createNewExpandedKeys(pathParts);
-          setExpandedKeys(newExpandedKeys);
-        })
         .catch((err) => {
           toastr.error(err);
           setIsLoading(false);

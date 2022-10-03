@@ -6,6 +6,7 @@ import { EmployeeType, EmployeeStatus } from "@docspace/common/constants";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
+  ChangePortalOwnerDialog,
   DeleteSelfProfileDialog,
   DeleteProfileEverDialog,
   ChangeUserTypeDialog,
@@ -18,6 +19,7 @@ import {
 const Dialogs = ({
   changeEmail,
   changePassword,
+  changeOwner,
   deleteSelfProfile,
   deleteProfileEver,
   data,
@@ -45,6 +47,9 @@ const Dialogs = ({
           onClose={closeDialogs}
           email={data.email}
         />
+      )}
+      {changeOwner && (
+        <ChangePortalOwnerDialog visible={changeOwner} onClose={closeDialogs} />
       )}
       {deleteSelfProfile && (
         <DeleteSelfProfileDialog
@@ -116,6 +121,7 @@ export default inject(({ peopleStore }) => {
   const {
     changeEmail,
     changePassword,
+    changeOwner,
     deleteSelfProfile,
     deleteProfileEver,
     data,
@@ -133,6 +139,7 @@ export default inject(({ peopleStore }) => {
   return {
     changeEmail,
     changePassword,
+    changeOwner,
     deleteSelfProfile,
     deleteProfileEver,
     data,
