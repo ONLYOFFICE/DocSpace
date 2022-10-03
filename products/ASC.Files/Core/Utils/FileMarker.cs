@@ -664,7 +664,8 @@ public class FileMarker
 
         if (Equals(folder.Id, _globalFolder.GetFolderMy(this, _daoFactory)) ||
             Equals(folder.Id, await _globalFolder.GetFolderCommonAsync(this, _daoFactory)) ||
-            Equals(folder.Id, await _globalFolder.GetFolderShareAsync(_daoFactory)))
+            Equals(folder.Id, await _globalFolder.GetFolderShareAsync(_daoFactory)) ||
+            Equals(folder.Id, await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory)))
         {
             var folderTags = tags.Where(tag => tag.EntryType == FileEntryType.Folder && (tag.EntryId is string));
 
