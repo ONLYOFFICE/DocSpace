@@ -526,7 +526,7 @@ export default inject(
 )(
   withTranslation(["Article", "UploadPanel", "Common", "Files", "People"])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
-      <Loaders.ArticleButton />
+      <Loaders.ArticleButton height="28px" />
     )
   )
 );
