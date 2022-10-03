@@ -438,7 +438,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected IAsyncEnumerable<Folder<string>> FilterByRoomType(IAsyncEnumerable<Folder<string>> rooms, FilterType filterType)
     {
-        if (filterType == FilterType.None || filterType == FilterType.FoldersOnly)
+        if (filterType == FilterType.None || filterType == FilterType.FoldersOnly || filterType == FilterType.GoogleDriveOnly || filterType == FilterType.OneDriveOnly || 
+            filterType == FilterType.BoxOnly || filterType == FilterType.DropboxV2Only || filterType == FilterType.YandexOnly || filterType == FilterType.SharePointOnly ||
+            filterType == FilterType.kDriveOnly || filterType == FilterType.WebDavOnly)
         {
             return rooms;
         }
@@ -453,14 +455,14 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             _ => FolderType.DEFAULT,
         };
 
-        return rooms.Where(f => f.FolderType == filter || filter == FolderType.DEFAULT);
+        return rooms.Where(f => f != null && (f.FolderType == filter || filter == FolderType.DEFAULT));
     }
 
     protected IAsyncEnumerable<Folder<string>> FilterBySubject(IAsyncEnumerable<Folder<string>> rooms, Guid subjectId, bool excludeSubject)
     {
         if (subjectId != Guid.Empty)
         {
-            rooms = excludeSubject ? rooms.Where(f => f.CreateBy != subjectId) : rooms.Where(f => f.CreateBy == subjectId);
+            rooms = excludeSubject ? rooms.Where(f => f != null && f.CreateBy != subjectId) : rooms.Where(f => f != null && f.CreateBy == subjectId);
         }
 
         return rooms;
