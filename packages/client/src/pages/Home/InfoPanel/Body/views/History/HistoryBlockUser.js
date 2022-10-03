@@ -9,9 +9,8 @@ const HistoryBlockUser = ({ user, withComma }) => {
   return (
     <StyledUserNameLink key={user.id} className="user">
       {user.profileUrl ? (
-        <Link className="username link" href={user.profileUrl}>
-          {username}
-        </Link>
+        // <Link className="username link" href={user.profileUrl}>
+        <Link className="username link">{username}</Link>
       ) : (
         <div className="username text">{username}</div>
       )}
