@@ -26,23 +26,59 @@
 
 namespace ASC.Web.Studio.Core.TFA;
 
-[Serializable]
-public class TfaAppAuthSettings : ISettings<TfaAppAuthSettings>
+public class TfaAppAuthSettings : TfaSettingsBase<TfaAppAuthSettings>
 {
     [JsonIgnore]
-    public Guid ID
+    public override Guid ID
     {
         get { return new Guid("{822CA059-AA8F-4588-BEE3-6CD2AA920CDB}"); }
     }
 
-    public TfaAppAuthSettings GetDefault()
+    public override TfaAppAuthSettings GetDefault()
     {
-        return new TfaAppAuthSettings { EnableSetting = false, };
+        return new TfaAppAuthSettings();
+    }
+}
+
+[Scope]
+public class TfaAppAuthSettingsHelper : TfaSettingsHelperBase
+{
+    private readonly SettingsManager _settingsManager;
+
+    public TfaAppAuthSettingsHelper(
+        IHttpContextAccessor httpContextAccessor,
+        UserManager userManager,
+        SettingsManager settingsManager) 
+        : base(httpContextAccessor, userManager)
+    {
+        _settingsManager = settingsManager;
     }
 
-    [JsonPropertyName("Enable")]
-    public bool EnableSetting { get; set; }
+    public bool TfaEnabledForUser(Guid userGuid)
+    {
+        var settings = _settingsManager.Load<TfaAppAuthSettings>();
 
+        return TfaEnabledForUser(settings, userGuid);
+    }
+
+    public bool Enable
+    {
+        get { return _settingsManager.Load<TfaAppAuthSettings>().EnableSetting; }
+        set
+        {
+            TfaAppAuthSettings settings;
+            if (value)
+            {
+                settings = _settingsManager.Load<TfaAppAuthSettings>();
+                settings.EnableSetting = value;
+            }
+            else
+            {
+                settings = new TfaAppAuthSettings();
+            }
+            _settingsManager.Save(settings);
+        }
+    }
 
     public static bool IsVisibleSettings
     {

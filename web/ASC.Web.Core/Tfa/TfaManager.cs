@@ -95,7 +95,7 @@ public class TfaManager
 
     public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true, bool isEntryPoint = false)
     {
-        if (!TfaAppAuthSettings.IsVisibleSettings
+        if (!TfaAppAuthSettingsHelper.IsVisibleSettings
             || !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
         {
             return false;

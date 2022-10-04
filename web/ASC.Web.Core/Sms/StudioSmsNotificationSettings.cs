@@ -26,26 +26,22 @@
 
 namespace ASC.Web.Studio.Core.SMS;
 
-[Serializable]
-public class StudioSmsNotificationSettings : ISettings<StudioSmsNotificationSettings>
+public class StudioSmsNotificationSettings : TfaSettingsBase<StudioSmsNotificationSettings>
 {
     [JsonIgnore]
-    public Guid ID
+    public override Guid ID
     {
         get { return new Guid("{2802df61-af0d-40d4-abc5-a8506a5352ff}"); }
     }
 
-    public StudioSmsNotificationSettings GetDefault()
+    public override StudioSmsNotificationSettings GetDefault()
     {
-        return new StudioSmsNotificationSettings { EnableSetting = false, };
+        return new StudioSmsNotificationSettings();
     }
-
-    [JsonPropertyName("Enable")]
-    public bool EnableSetting { get; set; }
 }
 
 [Scope]
-public class StudioSmsNotificationSettingsHelper
+public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase
 {
     private readonly TenantExtra _tenantExtra;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -54,11 +50,14 @@ public class StudioSmsNotificationSettingsHelper
     private readonly SmsProviderManager _smsProviderManager;
 
     public StudioSmsNotificationSettingsHelper(
+        IHttpContextAccessor httpContextAccessor,
         TenantExtra tenantExtra,
         CoreBaseSettings coreBaseSettings,
         SetupInfo setupInfo,
         SettingsManager settingsManager,
-        SmsProviderManager smsProviderManager)
+        SmsProviderManager smsProviderManager,
+        UserManager userManager) 
+        : base(httpContextAccessor, userManager)
     {
         _tenantExtra = tenantExtra;
         _coreBaseSettings = coreBaseSettings;
@@ -67,7 +66,7 @@ public class StudioSmsNotificationSettingsHelper
         _smsProviderManager = smsProviderManager;
     }
 
-    public bool IsVisibleSettings()
+    public static bool IsVisibleSettings()
     {
         return SetupInfo.IsVisibleSettings<StudioSmsNotificationSettings>();
     }
@@ -87,13 +86,28 @@ public class StudioSmsNotificationSettingsHelper
                     && !quota.Open);
     }
 
+    public bool TfaEnabledForUser(Guid userGuid)
+    {
+        var settings = _settingsManager.Load<StudioSmsNotificationSettings>();
+
+        return TfaEnabledForUser(settings, userGuid);
+    }
+
     public bool Enable
     {
         get { return _settingsManager.Load<StudioSmsNotificationSettings>().EnableSetting && _smsProviderManager.Enabled(); }
         set
         {
-            var settings = _settingsManager.Load<StudioSmsNotificationSettings>();
-            settings.EnableSetting = value;
+            StudioSmsNotificationSettings settings;
+            if (value)
+            {
+                settings = _settingsManager.Load<StudioSmsNotificationSettings>();
+                settings.EnableSetting = value;
+            }
+            else
+            {
+                settings = new StudioSmsNotificationSettings();
+            }
             _settingsManager.Save(settings);
         }
     }

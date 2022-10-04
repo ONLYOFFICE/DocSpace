@@ -67,6 +67,7 @@ public class AuthenticationController : ControllerBase
     private readonly CookieStorage _cookieStorage;
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly UserManagerWrapper _userManagerWrapper;
+    private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
 
     public AuthenticationController(
         UserManager userManager,
@@ -100,7 +101,8 @@ public class AuthenticationController : ControllerBase
         ApiContext apiContext,
         AuthContext authContext,
         CookieStorage cookieStorage,
-        DbLoginEventsManager dbLoginEventsManager)
+        DbLoginEventsManager dbLoginEventsManager,
+        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -134,6 +136,7 @@ public class AuthenticationController : ControllerBase
         _cookieStorage = cookieStorage;
         _dbLoginEventsManager = dbLoginEventsManager;
         _userManagerWrapper = userManagerWrapper;
+        _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
     }
 
 
@@ -149,16 +152,16 @@ public class AuthenticationController : ControllerBase
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
         var user = GetUser(inDto, out _);
-
         var sms = false;
+
         try
         {
-            if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+            if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 sms = true;
                 _smsManager.ValidateSmsCode(user, inDto.Code, true);
             }
-            else if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            else if (TfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 if (_tfaManager.ValidateAuthCode(user, inDto.Code, true, true))
                 {
@@ -212,7 +215,7 @@ public class AuthenticationController : ControllerBase
         bool viaEmail;
         var user = GetUser(inDto, out viaEmail);
 
-        if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+        if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
         {
             if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
             {
@@ -234,7 +237,7 @@ public class AuthenticationController : ControllerBase
             };
         }
 
-        if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+        if (TfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
         {
             if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
             {
