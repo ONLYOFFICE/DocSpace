@@ -14,7 +14,7 @@ const StyledLink = styled(Link)`
   color: #316daa;
 `;
 
-const QuotasBar = ({ t, type }) => {
+const QuotasBar = ({ t, type, onClick, onClose }) => {
   const quota = { header: "", description: "" };
 
   switch (type) {
@@ -27,7 +27,7 @@ const QuotasBar = ({ t, type }) => {
       quota.description = (
         <>
           {t("ConfirmEmailDescription")}{" "}
-          <StyledLink>{t("RequestActivation")}</StyledLink>
+          <StyledLink onClick={onClick}>{t("RequestActivation")}</StyledLink>
         </>
       );
       break;
@@ -51,8 +51,10 @@ const QuotasBar = ({ t, type }) => {
     description: (
       <Trans i18nKey="StorageQuotaQuotaDescription" t={t}>
         You can remove the unnecessary files or
-        <StyledLink>{{ clickHere: t("ClickHere") }}</StyledLink> to find a
-        better pricing plan for your portal.
+        <StyledLink onClick={onClick}>
+          {{ clickHere: t("ClickHere") }}
+        </StyledLink>{" "}
+        to find a better pricing plan for your portal.
       </Trans>
     ),
   };
@@ -64,6 +66,7 @@ const QuotasBar = ({ t, type }) => {
       isCampaigns={false}
       opacity={1}
       onLoad={() => console.log("load snackbar " + type)}
+      clickAction={onClose}
     />
   );
 };

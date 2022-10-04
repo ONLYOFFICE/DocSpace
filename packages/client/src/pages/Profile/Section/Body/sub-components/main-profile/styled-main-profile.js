@@ -6,11 +6,20 @@ import {
 } from "@docspace/components/utils/device";
 
 export const StyledWrapper = styled.div`
+  width: 100%;
+  max-width: 100%;
+
   display: flex;
   padding: 24px 24px 18px 24px;
   gap: 40px;
   background: ${(props) => props.theme.profile.main.background};
   border-radius: 12px;
+
+  box-sizing: border-box;
+
+  .avatar {
+    min-width: 124px;
+  }
 
   @media ${smallTablet} {
     background: none;
@@ -22,6 +31,15 @@ export const StyledWrapper = styled.div`
 `;
 
 export const StyledInfo = styled.div`
+  width: 100%;
+  max-width: 100%;
+
+  box-sizing: border-box;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -59,10 +77,71 @@ export const StyledInfo = styled.div`
       }
     }
 
+    .email-text-container {
+      padding-left: 8px;
+    }
+
+    .send-again-text {
+      line-height: 15px;
+
+      color: #316daa;
+
+      border-bottom: 1px solid #316daa;
+
+      width: fit-content;
+
+      display: none;
+
+      @media ${smallTablet} {
+        display: block;
+
+        cursor: pointer;
+      }
+    }
+
+    .send-again-icon {
+      display: none;
+
+      @media ${smallTablet} {
+        display: block;
+      }
+    }
+
+    .send-again-container {
+      display: flex;
+      align-items: center;
+
+      margin-left: 8px;
+
+      cursor: pointer;
+
+      .send-again-text {
+        display: block;
+
+        margin-left: 4px;
+      }
+      .send-again-icon {
+        display: block;
+      }
+
+      @media ${smallTablet} {
+        display: none;
+
+        .send-again-text,
+        .send-again-icon {
+          display: none;
+        }
+      }
+    }
+
     .label {
       min-width: 75px;
       max-width: 75px;
       white-space: nowrap;
+    }
+
+    .edit-button {
+      min-width: 12px;
     }
 
     @media ${smallTablet} {
@@ -74,6 +153,22 @@ export const StyledInfo = styled.div`
       .field {
         flex-direction: column;
         gap: 2px;
+
+        .email-text-container {
+          display: flex;
+
+          .send-again-icon {
+            margin-left: 4px;
+
+            display: flex;
+            align-items: center;
+
+            div {
+              display: flex;
+              align-items: center;
+            }
+          }
+        }
 
         & > p {
           padding-left: 0;
@@ -91,6 +186,7 @@ export const StyledInfo = styled.div`
 
       .edit-button {
         margin-left: auto;
+        min-width: 12px;
       }
     }
   }

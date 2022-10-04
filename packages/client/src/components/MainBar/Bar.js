@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import difference from "lodash/difference";
+import { withTranslation } from "react-i18next";
 
 import { ADS_TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 
@@ -11,7 +12,15 @@ import { EmployeeActivationStatus } from "@docspace/common/constants";
 import QuotasBar from "./QuotasBar";
 
 const Bar = (props) => {
-  const { firstLoad, isAdmin, setMaintenanceExist, activationStatus } = props;
+  const {
+    t,
+    firstLoad,
+    isAdmin,
+    setMaintenanceExist,
+    withActivationBar,
+    sendActivationLink,
+    setHideActivationBar,
+  } = props;
 
   const [htmlLink, setHtmlLink] = useState();
   const [campaigns, setCampaigns] = useState();
@@ -54,6 +63,14 @@ const Bar = (props) => {
     };
   }, []);
 
+  const sendActivationLinkAction = () => {
+    sendActivationLink && sendActivationLink(t);
+  };
+
+  const onCloseActivationBar = () => {
+    setHideActivationBar && setHideActivationBar(true);
+  };
+
   const onClose = () => {
     setMaintenanceExist(false);
     const closeItems = JSON.parse(localStorage.getItem("barClose")) || [];
@@ -69,8 +86,12 @@ const Bar = (props) => {
 
   return isAdmin && false ? (
     <></>
-  ) : activationStatus !== EmployeeActivationStatus.Activated ? (
-    <QuotasBar type={"confirm-email"} />
+  ) : withActivationBar ? (
+    <QuotasBar
+      type={"confirm-email"}
+      onClick={sendActivationLinkAction}
+      onClose={onCloseActivationBar}
+    />
   ) : htmlLink && !firstLoad ? (
     <SnackBar
       onLoad={onLoad}
@@ -82,9 +103,19 @@ const Bar = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { isAdmin, activationStatus } = auth.userStore.user;
+  const {
+    user,
+    withActivationBar,
+    sendActivationLink,
+    setHideActivationBar,
+  } = auth.userStore;
 
-  console.log(auth.userStore.user);
+  const { isAdmin } = user;
 
-  return { isAdmin, activationStatus };
-})(observer(Bar));
+  return {
+    isAdmin,
+    withActivationBar,
+    sendActivationLink,
+    setHideActivationBar,
+  };
+})(withTranslation(["Profile"])(observer(Bar)));
