@@ -62,15 +62,10 @@ const History = ({
     if (selection.isRoom) module = "rooms";
     else if (selection.isFolder) module = "folders";
 
-    let timerId;
-    if (history) timerId = setTimeout(() => setShowLoader(true), 1500);
-
+    let timerId = setTimeout(() => setShowLoader(true), 1500);
     let fetchedHistory = await getHistory(module, itemId);
     fetchedHistory = parseHistoryJSON(fetchedHistory);
-
     clearTimeout(timerId);
-
-    console.log(fetchedHistory);
 
     setHistory(fetchedHistory);
     setSelection({ ...selection, history: fetchedHistory });
@@ -85,8 +80,8 @@ const History = ({
     fetchHistory(selection.id);
   }, [selection]);
 
-  if (!history || showLoader)
-    return <Loaders.InfoPanelViewLoader view="history" />;
+  if (showLoader) return <Loaders.InfoPanelViewLoader view="history" />;
+  if (!history) return null;
 
   return (
     <>
@@ -160,6 +155,10 @@ const History = ({
   );
 };
 
+// export default withTranslation(["InfoPanel", "Common", "Translations"])(
+//   withLoader(History)(<Loaders.InfoPanelViewLoader view="history" />)
+// );
+
 export default withTranslation(["InfoPanel", "Common", "Translations"])(
-  withLoader(History)(<Loaders.InfoPanelViewLoader view="history" />)
+  History
 );
