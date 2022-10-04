@@ -72,6 +72,8 @@ const EmptyContentBody = styled.div`
   grid-column-gap: 16px;
   grid-row-gap: 10px;
   max-width: 800px;
+  width: max-content;
+
   grid-template-rows: max-content;
   .ec-image {
     grid-area: img;
