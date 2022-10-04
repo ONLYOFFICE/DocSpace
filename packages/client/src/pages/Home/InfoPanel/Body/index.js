@@ -12,6 +12,8 @@ const InfoPanelBodyContent = ({
   t,
   selection,
   setSelection,
+  updateSelection,
+  setUpdateSelection,
   normalizeSelection,
   selectionParentRoom,
   setSelectionParentRoom,
@@ -37,8 +39,8 @@ const InfoPanelBodyContent = ({
   const isGallery = getIsGallery();
   const isNoItem =
     (isGallery && !gallerySelected) ||
-    ((isRootFolder || isAccounts) && !!selection?.isSelectedFolder);
-  const isSeveralItems = selectedItems.length > 1;
+    ((isRootFolder || isAccounts) && props.selectedItems.length === 0);
+  const isSeveralItems = props.selectedItems.length > 1;
 
   const viewHelper = new ViewHelper({
     defaultProps: {
@@ -100,8 +102,8 @@ const InfoPanelBodyContent = ({
 
   const getView = () => {
     if (isNoItem) return viewHelper.NoItemView();
-    if (isGallery) return viewHelper.GalleryView();
     if (isSeveralItems) return viewHelper.SeveralItemsView();
+    if (isGallery) return viewHelper.GalleryView();
     if (isAccounts) return viewHelper.AccountsView();
 
     switch (isRooms ? roomsView : fileView) {
@@ -131,7 +133,7 @@ const InfoPanelBodyContent = ({
   useEffect(() => {
     if (selection && selection.isContextMenuSelection) return;
     const newSelection = getSelection();
-    if (selection && selection.id === newSelection.id && !newSelection.length)
+    if (selection && selection?.id === newSelection.id && !newSelection.length)
       return;
     setSelection(newSelection);
   }, [selectedItems, selectedFolder]);
@@ -147,6 +149,10 @@ const InfoPanelBodyContent = ({
     const singleSelectedItemChanged =
       selectedItems[0]?.id !== props.selectedItems[0]?.id;
 
+    console.log(
+      selectedItemsLengthChanged && "selectedItemsLengthChanged",
+      props.selectedItems.length
+    );
     if (selectedItemsLengthChanged || singleSelectedItemChanged)
       setSelectedItems(props.selectedItems);
   }, [props.selectedItems]);
@@ -235,6 +241,8 @@ export default inject(
     const {
       selection,
       setSelection,
+      updateSelection,
+      setUpdateSelection,
       selectionParentRoom,
       setSelectionParentRoom,
       normalizeSelection,
@@ -290,6 +298,8 @@ export default inject(
 
       selection,
       setSelection,
+      updateSelection,
+      setUpdateSelection,
       selectionParentRoom,
       setSelectionParentRoom,
       normalizeSelection,
