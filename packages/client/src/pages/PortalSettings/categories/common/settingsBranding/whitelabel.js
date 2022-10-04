@@ -443,7 +443,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -494,7 +494,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -545,7 +545,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -596,7 +596,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -648,7 +648,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -748,7 +748,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -800,7 +800,7 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
               >
                 {t("ChangeLogoButton")}
               </Link>
