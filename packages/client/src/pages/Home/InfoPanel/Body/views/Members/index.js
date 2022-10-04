@@ -68,8 +68,9 @@ const Members = ({
     toastr.warning("Work in progress");
   };
 
-  if (!members || showLoader)
-    return <Loaders.InfoPanelViewLoader view="members" />;
+  if (showLoader) return <Loaders.InfoPanelViewLoader view="members" />;
+  if (!members) return null;
+
   return (
     <>
       <StyledUserTypeHeader>
@@ -117,6 +118,15 @@ const Members = ({
   );
 };
 
+// export default withTranslation([
+//   "InfoPanel",
+//   "Common",
+//   "Translations",
+//   "People",
+//   "PeopleTranslations",
+//   "Settings",
+// ])(withLoader(Members)(<Loaders.InfoPanelViewLoader view="members" />));
+
 export default withTranslation([
   "InfoPanel",
   "Common",
@@ -124,4 +134,4 @@ export default withTranslation([
   "People",
   "PeopleTranslations",
   "Settings",
-])(withLoader(Members)(<Loaders.InfoPanelViewLoader view="members" />));
+])(Members);
