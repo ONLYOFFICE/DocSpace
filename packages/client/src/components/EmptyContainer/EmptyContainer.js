@@ -28,9 +28,14 @@ const EmptyPageStyles = css`
     }
   }
 
+  @media screen and (max-width: 1325px) {
+    margin-left: 98px;
+  }
+
   @media ${tablet} {
-    padding: 44px 0px 64px 97px;
+    padding: 44px 0px 64px 0px;
     grid-column-gap: 33px;
+    margin-left: auto;
   }
 
   @media ${smallTablet} {
