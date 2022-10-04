@@ -209,12 +209,14 @@ class AutomaticBackup extends React.PureComponent {
       toDefault,
       isCheckedThirdParty,
       isCheckedDocuments,
-      setResetProcess,
+      resetNewFolderPath,
+
+      defaultFolderId,
     } = this.props;
-
+    console.log("defaultFolderId", defaultFolderId);
     toDefault();
-
-    (isCheckedThirdParty || isCheckedDocuments) && setResetProcess(true);
+    (isCheckedThirdParty || isCheckedDocuments) &&
+      resetNewFolderPath(defaultFolderId);
     this.setState({
       ...(isError && { isError: false }),
     });
@@ -322,11 +324,11 @@ class AutomaticBackup extends React.PureComponent {
 
       isCheckedThirdParty,
       isCheckedDocuments,
-      setSavingProcess,
+      updateBaseFolderPath,
     } = this.props;
 
     try {
-      (isCheckedThirdParty || isCheckedDocuments) && setSavingProcess(true);
+      (isCheckedThirdParty || isCheckedDocuments) && updateBaseFolderPath();
 
       await createBackupSchedule(
         storageType,
@@ -350,7 +352,7 @@ class AutomaticBackup extends React.PureComponent {
     } catch (e) {
       toastr.error(e);
 
-      (isCheckedThirdParty || isCheckedDocuments) && setSavingProcess(true);
+      (isCheckedThirdParty || isCheckedDocuments) && updateBaseFolderPath();
 
       this.setState({
         isLoadingData: false,
@@ -501,12 +503,7 @@ class AutomaticBackup extends React.PureComponent {
                 {t("ThirdPartyResourceDescription")}
               </Text>
               {isCheckedThirdParty && (
-                <ThirdPartyModule
-                  {...commonProps}
-                  isError={isError}
-                  defaultSelectedFolder={this.defaultSelectedFolder}
-                  onSetDefaultFolderPath={this.onSetDefaultFolderPath}
-                />
+                <ThirdPartyModule {...commonProps} isError={isError} />
               )}
             </StyledModules>
             <StyledModules>
@@ -548,7 +545,8 @@ class AutomaticBackup extends React.PureComponent {
     );
   }
 }
-export default inject(({ auth, backup, treeFoldersStore }) => {
+export default inject(
+  ({ auth, backup, treeFoldersStore, selectFolderDialogStore }) => {
   const { language, settingsStore, currentQuotaStore } = auth;
   const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
   const { organizationName, theme } = settingsStore;
@@ -580,19 +578,26 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     setSelectedEnableSchedule,
     selectedEnableSchedule,
     updatePathSettings,
-    setSavingProcess,
-    setResetProcess,
+
     setStorageRegions,
+      defaultFolderId,
   } = backup;
 
+    const {
+      updateBaseFolderPath,
+      resetNewFolderPath,
+    } = selectFolderDialogStore;
+
   const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
-  const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
+    const isCheckedThirdParty =
+      selectedStorageType === `${ResourcesModuleType}`;
   const isCheckedThirdPartyStorage =
     selectedStorageType === `${StorageModuleType}`;
 
   const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
 
   return {
+      defaultFolderId,
     isEnableAuto: isRestoreAndAutoBackupAvailable,
     fetchTreeFolders,
     rootFoldersTitles,
@@ -634,8 +639,9 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     selectedEnableSchedule,
 
     updatePathSettings,
-    setSavingProcess,
-    setResetProcess,
+      resetNewFolderPath,
     setStorageRegions,
+      updateBaseFolderPath,
   };
-})(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));
+  }
+)(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

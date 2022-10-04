@@ -2,7 +2,7 @@ import React from "react";
 import { withTranslation } from "react-i18next";
 
 import { inject, observer } from "mobx-react";
-import { isDesktop } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import Whitelabel from "./settingsBranding/whitelabel";
@@ -50,7 +50,7 @@ const StyledComponent = styled.div`
 `;
 
 const Branding = ({ isSettingPaid }) => {
-  if (!isDesktop) return <ForbiddenPage />;
+  if (isMobile) return <ForbiddenPage />;
 
   return (
     <StyledComponent isSettingPaid={isSettingPaid}>

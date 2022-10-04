@@ -31,14 +31,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     isNotPaidPeriod,
   } = rest;
 
-  const windowPath = window.location.pathname;
-
-  const isPortal = windowPath === "/preparation-portal";
-
   const { params, path } = computedMatch;
   const { userId } = params;
 
   const renderComponent = (props) => {
+    const isPortalUrl = props.location.pathname === "/preparation-portal";
+
     if (isLoaded && !isAuthenticated) {
       if (personal) {
         window.location.replace("/");
@@ -80,7 +78,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
-    if (isLoaded && tenantStatus === TenantStatus.PortalRestore && !isPortal) {
+    if (
+      isLoaded &&
+      isAuthenticated &&
+      tenantStatus === TenantStatus.PortalRestore &&
+      !isPortalUrl
+    ) {
       return (
         <Redirect
           to={{
@@ -112,6 +115,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
           }}
         />
       );
+    }
+
+    if (tenantStatus !== TenantStatus.PortalRestore && isPortalUrl) {
+      return window.location.replace("/");
     }
 
     if (

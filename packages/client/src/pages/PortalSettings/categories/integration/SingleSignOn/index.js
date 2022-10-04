@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { isDesktop } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -21,7 +21,7 @@ const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
   const { t } = useTranslation("SingleSignOn");
 
-  if (!isDesktop) return <ForbiddenPage />;
+  if (isMobile) return <ForbiddenPage />;
 
   useEffect(() => {
     load();

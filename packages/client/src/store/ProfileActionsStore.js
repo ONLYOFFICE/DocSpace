@@ -63,8 +63,14 @@ class ProfileActionsStore {
   };
 
   onProfileClick = () => {
-    this.selectedFolderStore.setSelectedFolder(null);
-    this.treeFoldersStore.setSelectedNode(["accounts"]);
+    //TODO: add check manager
+    const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    if (isAdmin || isOwner) {
+      this.selectedFolderStore.setSelectedFolder(null);
+      this.treeFoldersStore.setSelectedNode(["accounts"]);
+    }
+
     history.push(PROFILE_SELF_URL);
   };
 
@@ -132,7 +138,6 @@ class ProfileActionsStore {
           icon: "/static/images/catalog.settings.react.svg",
           label: t("Common:Settings"),
           onClick: () => this.onSettingsClick(settingsUrl),
-          url: settingsUrl,
         }
       : null;
 
@@ -159,7 +164,6 @@ class ProfileActionsStore {
         icon: "/static/images/profile.react.svg",
         label: t("Common:Profile"),
         onClick: this.onProfileClick,
-        url: PROFILE_SELF_URL,
       },
       settings,
       {
@@ -167,28 +171,24 @@ class ProfileActionsStore {
         icon: "/static/images/payments.react.svg",
         label: t("Common:PaymentsTitle"),
         onClick: this.onPaymentsClick,
-        url: PAYMENTS_URL,
       },
       {
         key: "HelpCenterBtn",
         icon: "/static/images/help.center.react.svg",
         label: t("Common:HelpCenter"),
         onClick: this.onHelpCenterClick,
-        url: HELP_URL,
       },
       {
         key: "SupportBtn",
         icon: "/static/images/support.react.svg",
         label: t("Common:FeedbackAndSupport"),
         onClick: this.onSupportClick,
-        url: SUPPORT_URL,
       },
       {
         key: "VideoBtn",
         icon: "/static/images/video.guides.react.svg",
         label: t("Common:VideoGuides"),
         onClick: this.onVideoGuidesClick,
-        url: VIDEO_GUIDES_URL,
       },
       hotkeys,
       {

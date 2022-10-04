@@ -139,6 +139,8 @@ const StyledAvatar = styled.div`
   font-family: ${(props) => props.theme.fontFamily};
   font-style: normal;
 
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+
   .admin_icon {
     rect:nth-child(1) {
       fill: ${(props) => props.theme.avatar.administrator.fill};
