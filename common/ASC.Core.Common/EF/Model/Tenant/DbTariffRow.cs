@@ -43,15 +43,44 @@ public static class DbTariffRowExtension
     public static ModelBuilderWrapper AddDbTariffRow(this ModelBuilderWrapper modelBuilder)
     {
         modelBuilder
-            .Add(MySqlAddDbTariffRow, Provider.MySql);
+            .Add(MySqlAddDbTariffRow, Provider.MySql)
+            .Add(PgSqlAddDbTariffRow, Provider.PostgreSql);
 
         return modelBuilder;
     }
+
     public static void MySqlAddDbTariffRow(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<DbTariffRow>(entity =>
         {
             entity.ToTable("tenants_tariffrow");
+
+            entity.HasKey(e => new { e.Tenant, e.TariffId, e.Quota })
+                .HasName("PRIMARY");
+
+            entity.Property(e => e.TariffId)
+                .HasColumnName("tariff_id")
+                .HasColumnType("int");
+
+            entity.Property(e => e.Quota)
+                .HasColumnName("quota")
+                .HasColumnType("int");
+
+            entity.Property(e => e.Quantity)
+                .HasColumnName("quantity")
+                .HasColumnType("int");
+
+            entity.Property(e => e.Tenant)
+                .HasColumnName("tenant")
+                .HasColumnType("int");
+        });
+    }
+
+    public static void PgSqlAddDbTariffRow(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<DbTariffRow>(entity =>
+        {
+            entity.ToTable("tenants_tariffrow", "onlyoffice");
 
             entity.HasKey(e => new { e.Tenant, e.TariffId, e.Quota })
                 .HasName("PRIMARY");

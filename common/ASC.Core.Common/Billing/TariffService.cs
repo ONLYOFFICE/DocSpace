@@ -169,6 +169,8 @@ public class TariffService : ITariffService
                             throw new InvalidOperationException($"Quota with id {currentPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
                         }
 
+                        asynctariff.Id = currentPayment.PaymentId;
+
                         var paymentEndDate = 9999 <= currentPayment.EndDate.Year ? DateTime.MaxValue : currentPayment.EndDate;
                         asynctariff.DueDate = DateTime.Compare(asynctariff.DueDate, paymentEndDate) < 0 ? asynctariff.DueDate : paymentEndDate;
 
@@ -652,13 +654,14 @@ public class TariffService : ITariffService
 
                 var efTariff = new DbTariff
                 {
+                    Id = tariffInfo.Id,
                     Tenant = tenant,
                     Stamp = tariffInfo.DueDate,
                     CustomerId = tariffInfo.CustomerId,
                     CreateOn = DateTime.UtcNow
                 };
 
-                efTariff = dbContext.Tariffs.Add(efTariff).Entity;
+                efTariff = dbContext.AddOrUpdate(r => r.Tariffs, efTariff);
                 dbContext.SaveChanges();
 
                 var tariffRows = tariffInfo.Quotas.Select(q => new DbTariffRow

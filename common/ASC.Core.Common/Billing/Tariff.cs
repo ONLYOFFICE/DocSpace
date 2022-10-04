@@ -30,6 +30,7 @@ namespace ASC.Core.Billing;
 [Serializable]
 public class Tariff
 {
+    public int Id { get; set; }
     public TariffState State { get; set; }
     public DateTime DueDate { get; set; }
     public DateTime DelayDueDate { get; set; }
