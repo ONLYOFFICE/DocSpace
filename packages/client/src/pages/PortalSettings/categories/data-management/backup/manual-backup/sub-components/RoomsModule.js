@@ -80,7 +80,7 @@ class RoomsModule extends React.Component {
             onClickInput={this.onClickInput}
             isPanelVisible={isPanelVisible}
             isDisabled={isModuleDisabled}
-            foldersType="exceptSortedByTags"
+            filteredType="exceptSortedByTags"
             {...(selectedFolder && { id: selectedFolder })}
             withoutBasicSelection={selectedFolder ? false : true}
           />

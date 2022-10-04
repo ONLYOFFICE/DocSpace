@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 //import equal from "fast-deep-equal/react";
 //import { LayoutContextConsumer } from "client/Layout/context";
-import { isMobile, isMobileOnly, isDesktop } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@docspace/components/scrollbar";
@@ -48,7 +48,7 @@ const paddingStyles = css`
 
   ${isMobile &&
   css`
-    padding: 0 0 16px 24px !important;
+    padding: 0 0 16px 23px !important;
   `};
 
   ${isMobileOnly &&
@@ -91,7 +91,7 @@ const commonStyles = css`
       `}
 
     ${(props) =>
-      props.viewAs == "settings" &&
+      (props.viewAs == "settings" || props.viewAs == "profile") &&
       css`
         padding-top: 0;
 
@@ -110,7 +110,7 @@ const commonStyles = css`
     .files-row-container {
       margin-top: -22px;
 
-      ${isDesktop &&
+      ${!isMobile &&
       css`
         margin-top: -17px;
       `}

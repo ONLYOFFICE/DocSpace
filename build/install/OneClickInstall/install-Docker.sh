@@ -48,7 +48,8 @@ DIST="";
 REV="";
 KERNEL="";
 
-INSTALL_KAFKA="true";
+INSTALL_REDIS="true";
+INSTALL_RABBITMQ="true";
 INSTALL_MYSQL_SERVER="true";
 INSTALL_DOCUMENT_SERVER="true";
 INSTALL_PRODUCT="true";
@@ -58,6 +59,7 @@ HUB="";
 USERNAME="";
 PASSWORD="";
 
+MYSQL_VERSION=""
 MYSQL_DATABASE=""
 MYSQL_USER=""
 MYSQL_PASSWORD=""
@@ -65,19 +67,17 @@ MYSQL_ROOT_PASSWORD=""
 MYSQL_HOST=""
 DATABASE_MIGRATION="true"
 
-ZOO_PORT=""
-ZOO_HOST=""
-KAFKA_HOST=""
-
+ELK_VERSION=""
 ELK_HOST=""
 
 DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/4testing-documentserver-ee:latest
 DOCUMENT_SERVER_JWT_SECRET=""
+DOCUMENT_SERVER_JWT_HEADER=""
 DOCUMENT_SERVER_HOST=""
 
 APP_CORE_BASE_DOMAIN=""
 APP_CORE_MACHINEKEY=""
-APP_DOTNET_ENV=""
+ENV_EXTENSION=""
 
 HELP_TARGET="install-Docker.sh";
 
@@ -138,9 +138,16 @@ while [ "$1" != "" ]; do
 			fi
 		;;		
 		
-		-ikafka | --installkafka )
+		-ira | --installrabbitmq )
 			if [ "$2" != "" ]; then
-				INSTALL_KAFKA=$2
+				INSTALL_RABBITMQ=$2
+				shift
+			fi
+		;;
+
+		-ire | --installredis )
+			if [ "$2" != "" ]; then
+				INSTALL_REDIS=$2
 				shift
 			fi
 		;;
@@ -183,27 +190,6 @@ while [ "$1" != "" ]; do
 		-mysqlp | --mysqlpassword )
 			if [ "$2" != "" ]; then
 				MYSQL_PASSWORD=$2
-				shift
-			fi
-		;;
-
-		-zp | --zookeeperport )
-			if [ "$2" != "" ]; then
-				ZOO_PORT=$2
-				shift
-			fi
-		;;
-
-		-zh | --zookeeperhost )
-			if [ "$2" != "" ]; then
-				ZOO_HOST=$2
-				shift
-			fi
-		;;
-
-		-kh | --kafkahost )
-			if [ "$2" != "" ]; then
-				KAFKA_HOST=$2
 				shift
 			fi
 		;;
@@ -252,7 +238,7 @@ while [ "$1" != "" ]; do
 		
 		-env | --environment )
 			if [ "$2" != "" ]; then
-				APP_DOTNET_ENV=$2
+				ENV_EXTENSION=$2
 				shift
 			fi
 		;;
@@ -311,16 +297,14 @@ while [ "$1" != "" ]; do
 			echo "      -ids, --installdocumentserver     install or update document server (true|false)"
 			echo "      -di, --documentserverimage        document server image name"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
-			echo "      -ikafka, --installkafka           install or update kafka (true|false)"
+			echo "      -ira, --installrabbitmq           install or update rabbitmq (true|false)"	
+			echo "      -ire, --installredis              install or update redis (true|false)"
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
 			echo "      -mysqld, --mysqldatabase          $PRODUCT database name"
 			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
 			echo "      -dsh, --docspdcehost              $PRODUCT host"
-			echo "      -zp, --zookeeperport              zookeeper port (default value 2181)"
-			echo "      -zh, --zookeeperhost              zookeeper host"
-			echo "      -kh, --kafkahost                  kafka host"
 			echo "      -esh, --elasticsearchhost         elasticsearch host"
 			echo "      -env, --environment               $PRODUCT environment"
 			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
@@ -826,6 +810,7 @@ install_mysql_server () {
 		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-"$MYSQL_PASSWORD"}
 	fi
 
+	reconfigure MYSQL_VERSION ${MYSQL_VERSION}
 	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
 	reconfigure MYSQL_USER ${MYSQL_USER}
 	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
@@ -842,35 +827,47 @@ install_document_server () {
 	fi
 
 	reconfigure DOCUMENT_SERVER_IMAGE_NAME ${DOCUMENT_SERVER_IMAGE_NAME}
+	reconfigure DOCUMENT_SERVER_JWT_HEADER ${DOCUMENT_SERVER_JWT_HEADER}
 	reconfigure DOCUMENT_SERVER_JWT_SECRET ${DOCUMENT_SERVER_JWT_SECRET}
 	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
 
 	docker-compose -f $BASE_DIR/ds.yml up -d
 }
 
-install_kafka () {
-	reconfigure ZOO_PORT ${ZOO_PORT}
-	reconfigure ZOO_HOST ${ZOO_HOST}
-	reconfigure KAFKA_HOST ${KAFKA_HOST}
+install_rabbitmq () {
+	if ! command_exists docker-compose; then
+		install_docker_compose
+	fi
 
-	docker-compose -f $BASE_DIR/kafka.yml up -d
+	docker-compose -f $BASE_DIR/rabbitmq.yml up -d
+}
+
+install_redis () {
+	if ! command_exists docker-compose; then
+		install_docker_compose
+	fi
+
+	docker-compose -f $BASE_DIR/redis.yml up -d
 }
 
 install_product () {
 	if ! command_exists docker-compose; then
 		install_docker_compose
 	fi
+	reconfigure ENV_EXTENSION ${ENV_EXTENSION}
 	reconfigure ELK_HOST ${ELK_HOST}
+	reconfigure ELK_VERSION ${ELK_VERSION}
 	reconfigure SERVICE_PORT ${SERVICE_PORT}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
 	if [[ -n $EXTERNAL_PORT ]]; then
-		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/$PRODUCT.yml
+		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/appserver.yml
 	fi
 
-	docker-compose -f $BASE_DIR/$PRODUCT.yml up -d
+	docker-compose -f $BASE_DIR/migration-runner.yml up -d
+	docker-compose -f $BASE_DIR/appserver.yml up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
 }
 
@@ -903,7 +900,7 @@ check_image_RepoDigest() {
 }
 
 docker_image_update() {
-    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/$PRODUCT.yml down --volumes
+    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/appserver.yml down --volumes
     docker-compose -f $BASE_DIR/build.yml pull
 }
 
@@ -943,16 +940,14 @@ save_parameters_from_configs() {
 	MYSQL_ROOT_PASSWORD=$(save_parameter MYSQL_ROOT_PASSWORD $MYSQL_ROOT_PASSWORD)
 	MYSQL_HOST=$(save_parameter MYSQL_HOST $MYSQL_HOST)
 	DOCUMENT_SERVER_JWT_SECRET=$(save_parameter DOCUMENT_SERVER_JWT_SECRET $DOCUMENT_SERVER_JWT_SECRET)
+	DOCUMENT_SERVER_JWT_HEADER=$(save_parameter DOCUMENT_SERVER_JWT_HEADER $DOCUMENT_SERVER_JWT_HEADER)
 	DOCUMENT_SERVER_HOST=$(save_parameter DOCUMENT_SERVER_HOST $DOCUMENT_SERVER_HOST)
-	ZOO_PORT=$(save_parameter ZOO_PORT $ZOO_PORT)
-	ZOO_HOST=$(save_parameter ZOO_HOST $ZOO_HOST)
-	KAFKA_HOST=$(save_parameter KAFKA_HOST $KAFKA_HOST)
 	ELK_HOST=$(save_parameter ELK_HOST $ELK_HOST)
 	SERVICE_PORT=$(save_parameter SERVICE_PORT $SERVICE_PORT)
 	APP_CORE_MACHINEKEY=$(save_parameter APP_CORE_MACHINEKEY $APP_CORE_MACHINEKEY)
 	APP_CORE_BASE_DOMAIN=$(save_parameter APP_CORE_BASE_DOMAIN $APP_CORE_BASE_DOMAIN)
 	if [ ${EXTERNAL_PORT} = "8092" ]; then 
-		EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' /app/onlyoffice/$PRODUCT.yml)
+		EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' /app/onlyoffice/appserver.yml)
 	fi
 }
 
@@ -1004,8 +999,12 @@ start_installation () {
 		install_document_server
 	fi
 
-	if [ "$INSTALL_KAFKA" == "true" ]; then
-		install_kafka
+	if [ "$INSTALL_RABBITMQ" == "true" ]; then
+		install_rabbitmq
+	fi
+
+	if [ "$INSTALL_REDIS" == "true" ]; then
+		install_redis
 	fi
 
 	if [ "$INSTALL_PRODUCT" == "true" ]; then

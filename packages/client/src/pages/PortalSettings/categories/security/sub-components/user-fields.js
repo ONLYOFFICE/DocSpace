@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import { PlusIcon, TrashIcon } from "./svg";
+import { TrashIcon } from "./svg";
+import PlusIcon from "@docspace/client/public/images/plus.react.svg";
 import Link from "@docspace/components/link";
 import TextInput from "@docspace/components/text-input";
 import { Base } from "@docspace/components/themes";

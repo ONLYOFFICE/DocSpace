@@ -11,19 +11,20 @@ const EmptyPageStyles = css`
 
   .ec-desc {
     max-width: 348px;
+    line-height: 16px;
+    margin-top: 0;
   }
 
   .ec-header {
     font-size: 16px;
   }
 
-  .ec-desc {
-    line-height: 16px;
-    margin-top: 0;
+  .ec-buttons {
+    max-width: 285px;
   }
 
   .empty-folder_container-links {
-    align-items: center;
+    align-items: start;
     margin: 16px 0 !important;
   }
 
@@ -37,13 +38,17 @@ const EmptyPageStyles = css`
     }
 
     .ec-desc {
-      max-width: 287px;
+      max-width: 282px;
     }
   }
 
   @media ${desktop} {
     .ec-desc {
       max-width: 618px;
+    }
+
+    .ec-buttons {
+      max-width: none;
     }
   }
 `;

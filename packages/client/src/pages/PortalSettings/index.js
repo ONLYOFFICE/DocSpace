@@ -4,6 +4,8 @@ import { withRouter } from "react-router";
 import Layout from "./Layout";
 import { combineUrl } from "@docspace/common/utils";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
+import Panels from "../../components/FilesPanels";
+
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
 
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
@@ -159,6 +161,7 @@ const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 const Settings = () => {
   return (
     <Layout key="1">
+      <Panels />
       <Suspense fallback={null}>
         <Switch>
           <Route exact path={COMMON_URLS} component={CommonSettings} />

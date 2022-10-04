@@ -93,9 +93,11 @@ export default inject(({ filesStore, selectedFolderStore }) => {
 
   let isRootRoom, isRoom, id;
   if (navigationPath && navigationPath.length) {
-    isRootRoom = navigationPath.at(-1).isRootRoom;
-    isRoom = navigationPath.at(-1).isRoom;
-    id = navigationPath.at(-1).id;
+    const elem = navigationPath[0];
+
+    isRootRoom = elem.isRootRoom;
+    isRoom = elem.isRoom;
+    id = elem.id;
   }
 
   return {

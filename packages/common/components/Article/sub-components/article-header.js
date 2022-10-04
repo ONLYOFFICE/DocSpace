@@ -6,6 +6,7 @@ import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { Link } from "react-router-dom";
 import { isTablet, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { ReactSVG } from "react-svg";
 import {
   StyledArticleHeader,
   StyledHeading,
@@ -22,11 +23,7 @@ const ArticleHeader = ({
   const history = useHistory();
 
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
-
-  const onLogoClick = () => {
-    if (showText && isTabletView) onClick();
-    else history.push("/");
-  };
+  const onLogoClick = () => history.push("/");
 
   if (isMobileOnly) return <></>;
   return (
@@ -35,7 +32,7 @@ const ArticleHeader = ({
         <Loaders.ArticleHeader height="28px" width="28px" />
       ) : (
         <StyledIconBox name="article-burger" showText={showText}>
-          <img src="/static/images/logo.icon.react.svg" onClick={onClick} />
+          <img src="/static/images/logo.icon.react.svg" onClick={onLogoClick} />
         </StyledIconBox>
       )}
 
@@ -44,13 +41,17 @@ const ArticleHeader = ({
       ) : (
         <StyledHeading showText={showText} size="large">
           {isTabletView ? (
-            <img
+            <ReactSVG
+              className="logo-icon_svg"
               src="/static/images/logo.docspace.react.svg"
               onClick={onLogoClick}
             />
           ) : (
             <Link to="/">
-              <img src="/static/images/logo.docspace.react.svg" />
+              <ReactSVG
+                className="logo-icon_svg"
+                src="/static/images/logo.docspace.react.svg"
+              />
             </Link>
           )}
         </StyledHeading>

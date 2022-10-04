@@ -209,10 +209,12 @@ const SingleItem = ({
           >
             {statusLabel}
           </Text>
+
           <Text className={"info_field"} noSelect title={t("Common:Type")}>
             {t("Common:Type")}
           </Text>
           {typeData}
+
           <Text className={"info_field"} noSelect title={t("UserStatus")}>
             {t("UserStatus")}
           </Text>

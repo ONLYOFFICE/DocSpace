@@ -10,7 +10,7 @@ WorkingDirectory=${WORK_DIR}
 ExecStart=${EXEC_START}
 TimeoutSec=600
 
-Restart=always
+Restart=${RESTART}
 PrivateTmp=false
 
 [Install]

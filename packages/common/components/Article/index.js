@@ -2,7 +2,6 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { isMobile, isMobileOnly } from "react-device-detect";
-import { Resizable } from "re-resizable";
 
 import {
   isDesktop as isDesktopUtils,
@@ -17,13 +16,7 @@ import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
 
 import { StyledArticle } from "./styled-article";
-
-const enable = {
-  top: false,
-  right: false,
-  bottom: false,
-  left: false,
-};
+import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
 
 const Article = ({
   showText,
@@ -118,7 +111,7 @@ const Article = ({
         isBannerVisible={isBannerVisible}
         {...rest}
       >
-        <SubArticleHeader showText={showText} onClick={toggleShowText}>
+        <SubArticleHeader showText={showText}>
           {articleHeaderContent ? articleHeaderContent.props.children : null}
         </SubArticleHeader>
         {articleMainButtonContent &&
@@ -131,6 +124,10 @@ const Article = ({
         ) : null}
         <SubArticleBody showText={showText}>
           {articleBodyContent ? articleBodyContent.props.children : null}
+          <HideArticleMenuButton
+            showText={showText}
+            toggleShowText={toggleShowText}
+          />
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}

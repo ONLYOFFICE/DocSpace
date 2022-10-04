@@ -203,6 +203,7 @@ const Table = ({
         filesColumnInfoPanelStorageName={`${COLUMNS_SIZE_INFO_PANEL}=${userId}`}
         roomsColumnInfoPanelStorageName={`${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`}
         isRooms={isRooms}
+        tagRef={onSetTagRef}
       />
 
       <TableBody
@@ -216,40 +217,22 @@ const Table = ({
         columnInfoPanelStorageName={columnInfoPanelStorageName}
         itemHeight={49}
       >
-        {filesList.map((item, index) => {
-          return index === 0 && item.isRoom ? (
-            <TableRow
-              id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-              key={`${item.id}_${index}`}
-              item={item}
-              index={index}
-              setFirsElemChecked={setFirsElemChecked}
-              setHeaderBorder={setHeaderBorder}
-              theme={theme}
-              tableColumns={tableColumns}
-              columnStorageName={columnStorageName}
-              columnInfoPanelStorageName={columnInfoPanelStorageName}
-              tagRef={onSetTagRef}
-              tagCount={tagCount}
-              isRooms={isRooms}
-            />
-          ) : (
-            <TableRow
-              id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-              key={`${item.id}_${index}`}
-              item={item}
-              index={index}
-              setFirsElemChecked={setFirsElemChecked}
-              setHeaderBorder={setHeaderBorder}
-              theme={theme}
-              tableColumns={tableColumns}
-              columnStorageName={columnStorageName}
-              columnInfoPanelStorageName={columnInfoPanelStorageName}
-              tagCount={tagCount}
-              isRooms={isRooms}
-            />
-          );
-        })}
+        {filesList.map((item, index) => (
+          <TableRow
+            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+            key={`${item.id}_${index}`}
+            item={item}
+            index={index}
+            setFirsElemChecked={setFirsElemChecked}
+            setHeaderBorder={setHeaderBorder}
+            theme={theme}
+            tableColumns={tableColumns}
+            columnStorageName={columnStorageName}
+            columnInfoPanelStorageName={columnInfoPanelStorageName}
+            tagCount={tagCount}
+            isRooms={isRooms}
+          />
+        ))}
       </TableBody>
     </StyledTableContainer>
   );
