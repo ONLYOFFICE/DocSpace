@@ -81,13 +81,17 @@ export const StyledBox = styled(Box)`
   }
 
   .search-input {
-    border-color: ${(props) => props.theme.inputPhone.inactiveBorderColor};
-    :focus-within {
-      border-color: ${(props) => props.theme.inputPhone.activeBorderColor};
+    .search-input-block {
+      font-weight: 400;
+      border-color: ${(props) => props.theme.inputPhone.inactiveBorderColor};
+      :focus-within {
+        border-color: ${(props) => props.theme.inputPhone.activeBorderColor};
+      }
+      ::placeholder {
+        color: ${(props) => props.theme.inputPhone.placeholderColor}
+      }
     }
-    ::placeholder {
-      color: ${(props) => props.theme.inputPhone.placeholderColor}
-    }
+
   }
 
   .country-name {

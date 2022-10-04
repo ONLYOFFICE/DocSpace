@@ -8,7 +8,7 @@ import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-
 import Box from "@docspace/components/box";
 import ComboBox from "@docspace/components/combobox";
 import TextInput from "@docspace/components/text-input";
-import InputBlock from "@docspace/components/input-block";
+import SearchInput from "@docspace/components/search-input";
 import DropDown from "@docspace/components/drop-down";
 import DropDownItem from "@docspace/components/drop-down-item";
 import Text from "@docspace/components/text";
@@ -44,8 +44,12 @@ const InputPhone = (props) => {
     props.onChange && props.onChange(e);
   };
 
-  const onCountrySearch = (e) => {
-    setSearchValue(e.target.value);
+  const onCountrySearch = (value) => {
+    setSearchValue(value);
+  };
+
+  const onClearSearch = () => {
+    setSearchValue("");
   };
 
   const getMask = (locale) => {
@@ -68,18 +72,21 @@ const InputPhone = (props) => {
     }
   }, [isOpen, searchValue]);
 
+  const onCountryClick = (e) => {
+    const data = e.currentTarget.dataset.option;
+    const country = filteredOptions[data];
+
+    setIsOpen(!isOpen);
+    setCountry({
+      locale: country.code,
+      mask: country.mask,
+      icon: country.flag,
+    });
+    setPhoneValue(country.dialCode);
+  };
+
   const Row = ({ data, index, style }) => {
     const country = data[index];
-
-    const onCountryClick = () => {
-      setIsOpen(!isOpen);
-      setCountry({
-        locale: country.code,
-        mask: country.mask,
-        icon: country.flag,
-      });
-      setPhoneValue(country.dialCode);
-    };
 
     return (
       <DropDownItem
@@ -126,14 +133,13 @@ const InputPhone = (props) => {
         className="drop-down"
         manualWidth="100%"
       >
-        <InputBlock
-          type="text"
-          iconName="static/images/search.react.svg"
+        <SearchInput
           placeholder={props.searchPlaceholderText}
           value={searchValue}
           className="search-input"
-          tabIndex={2}
           scale={true}
+          onClearSearch={onClearSearch}
+          refreshTimeout={100}
           onChange={onCountrySearch}
         />
         <Box marginProp="6px 0 0">
