@@ -26,7 +26,7 @@
 
 namespace ASC.Core.Common.EF;
 
-public class DbTariff
+public class DbTariff : BaseEntity
 {
     public int Id { get; set; }
     public int Tenant { get; set; }
@@ -34,7 +34,13 @@ public class DbTariff
     public string CustomerId { get; set; }
     public string Comment { get; set; }
     public DateTime CreateOn { get; set; }
+
+    public override object[] GetKeys()
+    {
+        return new object[] { Id };
+    }
 }
+
 public static class DbTariffExtension
 {
     public static ModelBuilderWrapper AddDbTariff(this ModelBuilderWrapper modelBuilder)
@@ -72,6 +78,7 @@ public static class DbTariffExtension
                 .HasColumnType("datetime");
 
             entity.Property(e => e.CustomerId)
+                .IsRequired()
                 .HasColumnName("customer_id")
                 .HasColumnType("varchar(255)")
                 .HasCharSet("utf8")
@@ -103,6 +110,7 @@ public static class DbTariffExtension
             entity.Property(e => e.Stamp).HasColumnName("stamp");
 
             entity.Property(e => e.CustomerId)
+                .IsRequired()
                 .HasColumnName("customer_id")
                 .HasMaxLength(255)
                 .HasDefaultValueSql("NULL");

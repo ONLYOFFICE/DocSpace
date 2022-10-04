@@ -60,7 +60,7 @@ public static class DbQuotaExtension
                     Name = "trial",
                     Description = null,
                     Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:100,manager:1",
-                    Price = decimal.Parse("0,00"),
+                    Price = decimal.Parse("0.00"),
                     ProductId = null,
                     Visible = false
                 },
@@ -70,7 +70,7 @@ public static class DbQuotaExtension
                     Name = "admin",
                     Description = null,
                     Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:1024,manager:1",
-                    Price = decimal.Parse("30,00"),
+                    Price = decimal.Parse("30.00"),
                     ProductId = "1002",
                     Visible = true
                 },
@@ -80,7 +80,7 @@ public static class DbQuotaExtension
                     Name = "startup",
                     Description = null,
                     Features = "free,audit,ldap,sso,restore,total_size:2147483648,file_size:100,manager:1,rooms:12,usersInRoom:3",
-                    Price = decimal.Parse("0,00"),
+                    Price = decimal.Parse("0.00"),
                     ProductId = null,
                     Visible = false
                 }
