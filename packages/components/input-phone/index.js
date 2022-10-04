@@ -13,34 +13,38 @@ import DropDown from "@docspace/components/drop-down";
 import DropDownItem from "@docspace/components/drop-down-item";
 import Text from "@docspace/components/text";
 
-export const InputPhone = memo((props) => {
+const InputPhone = (props) => {
   const [country, setCountry] = useState(props.defaultCountry);
+  const [phoneValue, setPhoneValue] = useState(country.dialCode);
   const [searchValue, setSearchValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isValid, setIsValid] = useState(true);
 
-  const handleChange = (e) => {
+  const onInputChange = (e) => {
     const str = e.target.value.replace(/\s/g, "");
     const el = options.find((option) => option.dialCode === str);
 
     if (e.target.value === "") {
-      setCountry((prev) => ({ ...prev, dialCode: "+", icon: InvalidFlag }));
+      setPhoneValue("+");
       setIsValid(false);
+      setCountry((prev) => ({ ...prev, icon: InvalidFlag }));
+    } else {
+      setPhoneValue(e.target.value);
     }
 
     if (el) {
       setIsValid(true);
       setCountry({
         locale: el.code,
-        dialCode: el.dialCode,
         mask: el.mask,
         icon: el.flag,
       });
     }
+    props.onChange && props.onChange(e);
   };
 
-  const handleSearch = (e) => {
+  const onCountrySearch = (e) => {
     setSearchValue(e.target.value);
   };
 
@@ -57,8 +61,8 @@ export const InputPhone = memo((props) => {
       setFilteredOptions(
         options.filter(
           (val) =>
-            val.name.toLowerCase().includes(searchValue) ||
-            val.dialCode.includes(searchValue)
+            val.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+            val.dialCode.includes(searchValue.toLowerCase())
         )
       );
     }
@@ -67,14 +71,14 @@ export const InputPhone = memo((props) => {
   const Row = ({ data, index, style }) => {
     const country = data[index];
 
-    const onClickCountrySelect = () => {
+    const onCountryClick = () => {
       setIsOpen(!isOpen);
       setCountry({
         locale: country.code,
-        dialCode: country.dialCode,
         mask: country.mask,
         icon: country.flag,
       });
+      setPhoneValue(country.dialCode);
     };
 
     return (
@@ -84,8 +88,8 @@ export const InputPhone = memo((props) => {
         icon={country.flag}
         fillIcon={false}
         className="country-item"
-        data-option={country.code}
-        onClick={onClickCountrySelect}
+        data-option={index}
+        onClick={onCountryClick}
       >
         <Text className="country-name">{country.name}</Text>
         <Text className="country-dialcode">{country.dialCode}</Text>
@@ -111,8 +115,8 @@ export const InputPhone = memo((props) => {
         mask={getMask(country.locale)}
         withBorder={false}
         tabIndex={1}
-        value={country.dialCode}
-        onChange={handleChange}
+        value={phoneValue}
+        onChange={onInputChange}
       />
 
       <DropDown
@@ -130,7 +134,7 @@ export const InputPhone = memo((props) => {
           className="search-input"
           tabIndex={2}
           scale={true}
-          onChange={handleSearch}
+          onChange={onCountrySearch}
         />
         <Box marginProp="6px 0 0">
           {filteredOptions.length ? (
@@ -163,7 +167,9 @@ export const InputPhone = memo((props) => {
       )}
     </StyledBox>
   );
-});
+};
+
+export default memo(InputPhone);
 
 InputPhone.propTypes = {
   /** Default selected country Russia */
@@ -191,10 +197,10 @@ InputPhone.defaultProps = {
     mask: options[182].mask, // default dialCode +7
     icon: options[182].flag, // default flag Russia
   },
-  phonePlaceholderText: "+7 XXX XXX-XX-XX",
-  searchPlaceholderText: "Search",
-  searchEmptyMessage: "Nothing found",
-  errorMessage: "Сountry code is invalid",
+  phonePlaceholderText: "",
+  searchPlaceholderText: "",
+  searchEmptyMessage: "",
+  errorMessage: "",
 };
 
 InputPhone.displayName = "InputPhone";
