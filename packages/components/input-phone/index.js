@@ -67,7 +67,7 @@ export const InputPhone = memo((props) => {
   const Row = ({ data, index, style }) => {
     const country = data[index];
 
-    const countrySelection = () => {
+    const onClickCountrySelect = () => {
       setIsOpen(!isOpen);
       setCountry({
         locale: country.code,
@@ -85,7 +85,7 @@ export const InputPhone = memo((props) => {
         fillIcon={false}
         className="country-item"
         data-option={country.code}
-        onClick={countrySelection}
+        onClick={onClickCountrySelect}
       >
         <Text className="country-name">{country.name}</Text>
         <Text className="country-dialcode">{country.dialCode}</Text>
