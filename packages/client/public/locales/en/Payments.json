@@ -23,6 +23,7 @@
   "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per manager/month",
   "PriceCalculation": "Calculate your price",
   "Payer": "Payer",
+  "PayerDescription": "This user has access to payment details and is the only user that can adjust the quota and make payments. The DocSpace owner, as well as the paying manager themselves, can reassign the paying manger role using the Stripe client portal.",
   "Pay": "Pay",
   "PayBeforeTheEndGracePeriod": "Pay before the end of the grace period",
   "Room": "Room",
