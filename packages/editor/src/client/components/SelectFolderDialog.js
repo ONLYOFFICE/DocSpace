@@ -63,7 +63,7 @@ const SelectFolderDialog = ({
         folderId={folderId}
         isPanelVisible={isVisible}
         onClose={onCloseFolderDialog}
-        foldersType="exceptSortedByTags"
+        filteredType="exceptSortedByTags"
         onSave={onClickSaveSelectFolder}
         isDisableButton={!titleSelectorFolder.trim()}
         {...headerProps}

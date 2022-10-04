@@ -660,6 +660,9 @@ class FilesStore {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
+    if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
+      return this.fetchRooms();
+
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
       localStorage.getItem(`UserFilter=${this.authStore.userStore.user.id}`);
@@ -2598,13 +2601,13 @@ class FilesStore {
     // const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
     const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
 
-    console.log("hasMoreFiles isRooms", isRooms);
-    console.log("hasMoreFiles filesList", this.filesList.length);
-    console.log("hasMoreFiles this.filterTotal", this.filterTotal);
-    console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
-    console.log("hasMoreFiles filterTotal", filterTotal);
-    console.log("hasMoreFiles", this.filesList.length < filterTotal);
-    console.log("----------------------------");
+    // console.log("hasMoreFiles isRooms", isRooms);
+    // console.log("hasMoreFiles filesList", this.filesList.length);
+    // console.log("hasMoreFiles this.filterTotal", this.filterTotal);
+    // console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
+    // console.log("hasMoreFiles filterTotal", filterTotal);
+    // console.log("hasMoreFiles", this.filesList.length < filterTotal);
+    // console.log("----------------------------");
 
     if (this.isLoading) return false;
     return this.filesList.length < filterTotal;

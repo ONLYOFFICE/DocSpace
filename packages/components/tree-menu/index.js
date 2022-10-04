@@ -8,6 +8,11 @@ import Badge from "../badge";
 import Base from "../themes/base";
 
 const StyledTree = styled(Tree)`
+  span.rc-tree-node-content-wrapper,
+  span.rc-tree-switcher {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
   .rc-tree-list-holder-inner {
     .disable-node {
       span.rc-tree-node-content-wrapper {
@@ -29,6 +34,22 @@ const StyledTree = styled(Tree)`
           path {
             fill: ${(props) => props.theme.treeNode.disableColor};
           }
+        }
+      }
+    }
+
+    .disable-folder {
+      span.rc-tree-node-content-wrapper {
+        pointer-events: none;
+        span.rc-tree-iconEle {
+          svg {
+            path {
+              fill: ${(props) => props.theme.treeNode.disableColor};
+            }
+          }
+        }
+        span.rc-tree-title {
+          color: ${(props) => props.theme.treeNode.disableColor} !important;
         }
       }
     }

@@ -28,7 +28,9 @@
     <ROW Property="ELASTICSEARCH_PORT" Value="9200" ValueLocId="-"/>
     <ROW Property="ELASTICSEARCH_SCHEME" Value="http" ValueLocId="-"/>
     <ROW Property="ENVIRONMENT" Value="test"/>
+    <ROW Property="Editor_Port" Value="5013"/>
     <ROW Property="INSTALL_ROOT_FOLDER_NAME" Value="[|Manufacturer]"/>
+    <ROW Property="Login_Port" Value="5011"/>
     <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:3"/>
     <ROW Property="MYSQLODBCDRIVER" Value="MySQL ODBC 8.0 Unicode Driver"/>
     <ROW Property="Manufacturer" Value="Ascensio System SIA"/>
@@ -56,8 +58,10 @@
     <ROW Property="ServiceName_BackgroundTasks" Value="ASC.Data.Backup.BackgroundTasks"/>
     <ROW Property="ServiceName_BackupService" Value="ASC.BackupService"/>
     <ROW Property="ServiceName_ClearEvents" Value="ASC.ClearEvents"/>
+    <ROW Property="ServiceName_DocEditor" Value="ASC.DocEditor"/>
     <ROW Property="ServiceName_FileServer" Value="ASC.FileServer"/>
     <ROW Property="ServiceName_FileService" Value="ASC.FileService"/>
+    <ROW Property="ServiceName_Login" Value="ASC.Login"/>
     <ROW Property="ServiceName_Migration" Value="ASC.Migration"/>
     <ROW Property="ServiceName_MigrationRunner" Value="ASC.MigrationRunner"/>
     <ROW Property="ServiceName_NotifyService" Value="ASC.NotifyService"/>
@@ -71,8 +75,11 @@
     <ROW Property="ServiceName_WebApi" Value="ASC.WebApi"/>
     <ROW Property="ServiceName_WebStudio" Value="ASC.WebStudio"/>
     <ROW Property="ServiceName_WebhooksService" Value="ASC.WebhooksService"/>
+    <ROW Property="Socket.IO_Port" Value="9899"/>
+    <ROW Property="SsoAuth_port" Value="9834"/>
     <ROW Property="USERNAME_PROP" Value="root"/>
     <ROW Property="UpgradeCode" Value="{FFA9CD16-E087-45F3-8D34-3BBA1EF8A897}"/>
+    <ROW Property="UrlShortener_Port" Value="9999"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
     <ROW Property="WindowsType9XDisplay" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>
     <ROW Property="WindowsTypeNT40" MultiBuildValue="DefaultBuild:Windows NT 4.0" ValueLocId="-"/>
@@ -83,82 +90,163 @@
     <ROW Property="WindowsTypeNT5XDisplay" MultiBuildValue="DefaultBuild:Windows XP/2003" ValueLocId="-"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
-    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
-    <ROW Directory="ASC.ClearEvents_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.CLE|ASC.ClearEvents"/>
-    <ROW Directory="ASC.Data.Backup.BackgroundTasks_Dir" Directory_Parent="services_Dir" DefaultDir="ASCDAT~2.BAC|ASC.Data.Backup.BackgroundTasks"/>
-    <ROW Directory="ASC.Data.Backup_Dir" Directory_Parent="services_Dir" DefaultDir="ASCDAT~1.BAC|ASC.Data.Backup"/>
-    <ROW Directory="ASC.Files.Service_Dir" Directory_Parent="services_Dir" DefaultDir="ASCFIL~1.SER|ASC.Files.Service"/>
-    <ROW Directory="ASC.Files_Dir" Directory_Parent="products_Dir" DefaultDir="ASC~1.FIL|ASC.Files"/>
-    <ROW Directory="ASC.Migration.Runner_Dir" Directory_Parent="services_Dir" DefaultDir="ASCMIG~1.RUN|ASC.Migration.Runner"/>
-    <ROW Directory="ASC.Migration_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.MIG|ASC.Migration"/>
-    <ROW Directory="ASC.Notify_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.NOT|ASC.Notify"/>
-    <ROW Directory="ASC.People_Dir" Directory_Parent="products_Dir" DefaultDir="ASC~1.PEO|ASC.People"/>
-    <ROW Directory="ASC.Socket.IO_Dir" Directory_Parent="services_Dir" DefaultDir="ASCSOC~1.IO|ASC.Socket.IO"/>
-    <ROW Directory="ASC.SsoAuth_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.SSO|ASC.SsoAuth"/>
-    <ROW Directory="ASC.Studio.Notify_Dir" Directory_Parent="services_Dir" DefaultDir="ASCSTU~1.NOT|ASC.Studio.Notify"/>
-    <ROW Directory="ASC.TelegramService_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.TEL|ASC.TelegramService"/>
-    <ROW Directory="ASC.UrlShortener_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.URL|ASC.UrlShortener"/>
-    <ROW Directory="ASC.Web.Api_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.API|ASC.Web.Api"/>
-    <ROW Directory="ASC.Web.Studio_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.STU|ASC.Web.Studio"/>
-    <ROW Directory="ASC.Webhooks.Service_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.SER|ASC.Webhooks.Service"/>
-    <ROW Directory="NewFolder_1_Dir" Directory_Parent="service_1_Dir" DefaultDir="config"/>
-    <ROW Directory="NewFolder_3_Dir" Directory_Parent="ASC.Webhooks.Service_Dir" DefaultDir="service"/>
-    <ROW Directory="NewFolder_Dir" Directory_Parent="ASC.UrlShortener_Dir" DefaultDir="service"/>
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1" DirectoryOptions="12"/>
+    <ROW Directory="ASC.ClearEvents_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.CLE|ASC.ClearEvents" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Data.Backup.BackgroundTasks_Dir" Directory_Parent="services_Dir" DefaultDir="ASCDAT~2.BAC|ASC.Data.Backup.BackgroundTasks" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Data.Backup_Dir" Directory_Parent="services_Dir" DefaultDir="ASCDAT~1.BAC|ASC.Data.Backup" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Files.Service_Dir" Directory_Parent="services_Dir" DefaultDir="ASCFIL~1.SER|ASC.Files.Service" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Files_Dir" Directory_Parent="products_Dir" DefaultDir="ASC~1.FIL|ASC.Files" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Login_Dir" Directory_Parent="products_Dir" DefaultDir="ASC~1.LOG|ASC.Login" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Migration.Runner_Dir" Directory_Parent="services_Dir" DefaultDir="ASCMIG~1.RUN|ASC.Migration.Runner" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Migration_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.MIG|ASC.Migration" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Notify_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.NOT|ASC.Notify" DirectoryOptions="12"/>
+    <ROW Directory="ASC.People_Dir" Directory_Parent="products_Dir" DefaultDir="ASC~1.PEO|ASC.People" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Socket.IO_Dir" Directory_Parent="services_Dir" DefaultDir="ASCSOC~1.IO|ASC.Socket.IO" DirectoryOptions="12"/>
+    <ROW Directory="ASC.SsoAuth_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.SSO|ASC.SsoAuth" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Studio.Notify_Dir" Directory_Parent="services_Dir" DefaultDir="ASCSTU~1.NOT|ASC.Studio.Notify" DirectoryOptions="12"/>
+    <ROW Directory="ASC.TelegramService_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.TEL|ASC.TelegramService" DirectoryOptions="12"/>
+    <ROW Directory="ASC.UrlShortener_Dir" Directory_Parent="services_Dir" DefaultDir="ASC~1.URL|ASC.UrlShortener" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Web.Api_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.API|ASC.Web.Api" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Web.Studio_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.STU|ASC.Web.Studio" DirectoryOptions="12"/>
+    <ROW Directory="ASC.Webhooks.Service_Dir" Directory_Parent="services_Dir" DefaultDir="ASCWEB~1.SER|ASC.Webhooks.Service" DirectoryOptions="12"/>
+    <ROW Directory="Logs_Dir" Directory_Parent="APPDIR" DefaultDir="Logs" DirectoryOptions="12"/>
+    <ROW Directory="NewFolder_1_Dir" Directory_Parent="service_1_Dir" DefaultDir="config" DirectoryOptions="12"/>
+    <ROW Directory="NewFolder_3_Dir" Directory_Parent="ASC.Webhooks.Service_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="NewFolder_Dir" Directory_Parent="ASC.UrlShortener_Dir" DefaultDir="service" DirectoryOptions="12"/>
     <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
-    <ROW Directory="config_1_Dir" Directory_Parent="NewFolder_Dir" DefaultDir="config"/>
-    <ROW Directory="config_2_Dir" Directory_Parent="service_5_Dir" DefaultDir="config"/>
-    <ROW Directory="config_Dir" Directory_Parent="APPDIR" DefaultDir="config"/>
-    <ROW Directory="products_Dir" Directory_Parent="APPDIR" DefaultDir="products"/>
-    <ROW Directory="public_Dir" Directory_Parent="APPDIR" DefaultDir="public"/>
-    <ROW Directory="server_2_Dir" Directory_Parent="ASC.Files_Dir" DefaultDir="server"/>
-    <ROW Directory="server_5_Dir" Directory_Parent="ASC.People_Dir" DefaultDir="server"/>
-    <ROW Directory="service_11_Dir" Directory_Parent="ASC.Studio.Notify_Dir" DefaultDir="service"/>
-    <ROW Directory="service_12_Dir" Directory_Parent="ASC.TelegramService_Dir" DefaultDir="service"/>
-    <ROW Directory="service_15_Dir" Directory_Parent="ASC.Web.Api_Dir" DefaultDir="service"/>
-    <ROW Directory="service_16_Dir" Directory_Parent="ASC.Web.Studio_Dir" DefaultDir="service"/>
-    <ROW Directory="service_1_Dir" Directory_Parent="ASC.Socket.IO_Dir" DefaultDir="service"/>
-    <ROW Directory="service_2_Dir" Directory_Parent="ASC.Data.Backup_Dir" DefaultDir="service"/>
-    <ROW Directory="service_3_Dir" Directory_Parent="ASC.Data.Backup.BackgroundTasks_Dir" DefaultDir="service"/>
-    <ROW Directory="service_4_Dir" Directory_Parent="ASC.Migration_Dir" DefaultDir="service"/>
-    <ROW Directory="service_5_Dir" Directory_Parent="ASC.SsoAuth_Dir" DefaultDir="service"/>
-    <ROW Directory="service_6_Dir" Directory_Parent="ASC.Migration.Runner_Dir" DefaultDir="service"/>
-    <ROW Directory="service_7_Dir" Directory_Parent="ASC.Files.Service_Dir" DefaultDir="service"/>
-    <ROW Directory="service_9_Dir" Directory_Parent="ASC.Notify_Dir" DefaultDir="service"/>
-    <ROW Directory="service_Dir" Directory_Parent="ASC.ClearEvents_Dir" DefaultDir="service"/>
-    <ROW Directory="services_Dir" Directory_Parent="APPDIR" DefaultDir="services"/>
-    <ROW Directory="tools_Dir" Directory_Parent="APPDIR" DefaultDir="tools"/>
+    <ROW Directory="conf_Dir" Directory_Parent="nginx_Dir" DefaultDir="conf" DirectoryOptions="12"/>
+    <ROW Directory="config_1_Dir" Directory_Parent="NewFolder_Dir" DefaultDir="config" DirectoryOptions="12"/>
+    <ROW Directory="config_2_Dir" Directory_Parent="service_5_Dir" DefaultDir="config" DirectoryOptions="12"/>
+    <ROW Directory="config_Dir" Directory_Parent="APPDIR" DefaultDir="config" DirectoryOptions="12"/>
+    <ROW Directory="editor_Dir" Directory_Parent="ASC.Files_Dir" DefaultDir="editor" DirectoryOptions="12"/>
+    <ROW Directory="includes_Dir" Directory_Parent="conf_Dir" DefaultDir="includes" DirectoryOptions="12"/>
+    <ROW Directory="login_Dir" Directory_Parent="ASC.Login_Dir" DefaultDir="login" DirectoryOptions="12"/>
+    <ROW Directory="logs_Dir" Directory_Parent="nginx_Dir" DefaultDir="logs" DirectoryOptions="12"/>
+    <ROW Directory="nginx_Dir" Directory_Parent="APPDIR" DefaultDir="nginx" DirectoryOptions="12"/>
+    <ROW Directory="products_Dir" Directory_Parent="APPDIR" DefaultDir="products" DirectoryOptions="12"/>
+    <ROW Directory="server_2_Dir" Directory_Parent="ASC.Files_Dir" DefaultDir="server" DirectoryOptions="12"/>
+    <ROW Directory="server_5_Dir" Directory_Parent="ASC.People_Dir" DefaultDir="server" DirectoryOptions="12"/>
+    <ROW Directory="service_11_Dir" Directory_Parent="ASC.Studio.Notify_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_12_Dir" Directory_Parent="ASC.TelegramService_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_15_Dir" Directory_Parent="ASC.Web.Api_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_16_Dir" Directory_Parent="ASC.Web.Studio_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_1_Dir" Directory_Parent="ASC.Socket.IO_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_2_Dir" Directory_Parent="ASC.Data.Backup_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_3_Dir" Directory_Parent="ASC.Data.Backup.BackgroundTasks_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_4_Dir" Directory_Parent="ASC.Migration_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_5_Dir" Directory_Parent="ASC.SsoAuth_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_6_Dir" Directory_Parent="ASC.Migration.Runner_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_7_Dir" Directory_Parent="ASC.Files.Service_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_9_Dir" Directory_Parent="ASC.Notify_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="service_Dir" Directory_Parent="ASC.ClearEvents_Dir" DefaultDir="service" DirectoryOptions="12"/>
+    <ROW Directory="services_Dir" Directory_Parent="APPDIR" DefaultDir="services" DirectoryOptions="12"/>
+    <ROW Directory="temp_10_Dir" Directory_Parent="service_16_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_11_Dir" Directory_Parent="NewFolder_3_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_12_Dir" Directory_Parent="service_12_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_13_Dir" Directory_Parent="server_2_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_14_Dir" Directory_Parent="server_5_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_1_Dir" Directory_Parent="service_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_2_Dir" Directory_Parent="service_3_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_3_Dir" Directory_Parent="service_7_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_4_Dir" Directory_Parent="service_2_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_5_Dir" Directory_Parent="service_4_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_6_Dir" Directory_Parent="service_6_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_7_Dir" Directory_Parent="service_9_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_8_Dir" Directory_Parent="service_11_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_9_Dir" Directory_Parent="service_15_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="temp_Dir" Directory_Parent="nginx_Dir" DefaultDir="temp" DirectoryOptions="12"/>
+    <ROW Directory="tools_Dir" Directory_Parent="APPDIR" DefaultDir="tools" DirectoryOptions="12"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="AI_CustomARPName" ComponentId="{5283455D-3786-42EC-9887-FCF453E2FBF9}" Directory_="APPDIR" Attributes="4" KeyPath="DisplayName" Options="1"/>
     <ROW Component="AI_DisableModify" ComponentId="{E036B14F-E2E4-4247-B9AB-55C1F6142BF9}" Directory_="APPDIR" Attributes="4" KeyPath="NoModify" Options="1"/>
     <ROW Component="AI_ExePath" ComponentId="{EDF666FF-8C56-4EB7-8255-67DA879A090C}" Directory_="APPDIR" Attributes="4" KeyPath="AI_ExePath"/>
     <ROW Component="APPDIR" ComponentId="{E32A4F89-E985-4E8E-AB26-DFCD685A316B}" Directory_="APPDIR" Attributes="0"/>
+    <ROW Component="ASC.ClearEvents" ComponentId="{73FB7C9B-9AA8-4BB6-A2C3-E85F6B5BE1D5}" Directory_="ASC.ClearEvents_Dir" Attributes="0"/>
     <ROW Component="ASC.ClearEvents.exe" ComponentId="{208F2E9D-F72D-47D8-8B6E-0B85E3EAD12E}" Directory_="service_Dir" Attributes="0" KeyPath="ASC.ClearEvents.exe"/>
+    <ROW Component="ASC.Data.Backup" ComponentId="{DDE1435C-947F-4507-B55B-B0594193F8E4}" Directory_="ASC.Data.Backup_Dir" Attributes="0"/>
+    <ROW Component="ASC.Data.Backup.BackgroundTasks" ComponentId="{E6D04525-2108-45E9-8DC2-AD692A66026A}" Directory_="ASC.Data.Backup.BackgroundTasks_Dir" Attributes="0"/>
     <ROW Component="ASC.Data.Backup.BackgroundTasks.exe" ComponentId="{CB715B3B-BFC0-4A4D-8B47-B1DB7A99A49E}" Directory_="service_3_Dir" Attributes="0" KeyPath="ASC.Data.Backup.BackgroundTasks.exe"/>
     <ROW Component="ASC.Data.Backup.exe" ComponentId="{240665F1-DDCF-4FFB-ABEE-2F784ACD87E6}" Directory_="service_2_Dir" Attributes="256" KeyPath="ASC.Data.Backup.exe"/>
+    <ROW Component="ASC.Files" ComponentId="{7D4356CB-8A55-4528-8CF6-E3C6181DC119}" Directory_="ASC.Files_Dir" Attributes="0"/>
+    <ROW Component="ASC.Files.Service" ComponentId="{10E5C648-6B24-40DB-926A-4E26E7ABBE7E}" Directory_="ASC.Files.Service_Dir" Attributes="0"/>
     <ROW Component="ASC.Files.Service.exe" ComponentId="{14D153CC-E7A6-4818-A310-9CE1F332DCDA}" Directory_="service_7_Dir" Attributes="256" KeyPath="ASC.Files.Service.exe"/>
     <ROW Component="ASC.Files.exe" ComponentId="{4D48DD81-BABF-4E1C-A216-C72C1EA8428B}" Directory_="server_2_Dir" Attributes="256" KeyPath="ASC.Files.exe"/>
+    <ROW Component="ASC.Login" ComponentId="{323B1636-C7E9-4DA2-8575-92D939FA381F}" Directory_="ASC.Login_Dir" Attributes="0"/>
+    <ROW Component="ASC.Migration" ComponentId="{26C33C84-C6FC-4DDB-8DFA-F7012F29C4EC}" Directory_="ASC.Migration_Dir" Attributes="0"/>
+    <ROW Component="ASC.Migration.Runner" ComponentId="{C03F968B-6259-4CE7-89C7-3236EDD2170C}" Directory_="ASC.Migration.Runner_Dir" Attributes="0"/>
     <ROW Component="ASC.Migration.Runner.exe" ComponentId="{124E8A20-2ECA-4DC0-ACD9-DBEA64CCF2CF}" Directory_="service_6_Dir" Attributes="256" KeyPath="ASC.Migration.Runner.exe"/>
     <ROW Component="ASC.Migration.exe" ComponentId="{C65B4FF9-AAE7-41EF-B05F-737FF78DEB4F}" Directory_="service_4_Dir" Attributes="0" KeyPath="ASC.Migration.exe"/>
+    <ROW Component="ASC.Notify" ComponentId="{A94C4D5B-1426-4B3D-ACF5-0C316E4E792D}" Directory_="ASC.Notify_Dir" Attributes="0"/>
     <ROW Component="ASC.Notify.exe" ComponentId="{7457E31A-B6FC-4A71-A5C0-174C9E965051}" Directory_="service_9_Dir" Attributes="256" KeyPath="ASC.Notify.exe"/>
+    <ROW Component="ASC.People" ComponentId="{8FDAD389-26DF-47BE-8DC5-A9DE5DF3BD22}" Directory_="ASC.People_Dir" Attributes="0"/>
     <ROW Component="ASC.People.exe" ComponentId="{044D57BC-8BAC-4D64-AB36-141BAA1F2E15}" Directory_="server_5_Dir" Attributes="256" KeyPath="ASC.People.exe"/>
+    <ROW Component="ASC.Socket.IO" ComponentId="{A22A1FDB-2706-4133-812D-0AA1E5B5BF02}" Directory_="ASC.Socket.IO_Dir" Attributes="0"/>
+    <ROW Component="ASC.SsoAuth" ComponentId="{0A4502F2-6D3B-491B-86B1-BDC54C78FE18}" Directory_="ASC.SsoAuth_Dir" Attributes="0"/>
+    <ROW Component="ASC.Studio.Notify" ComponentId="{49CD6FD5-5B49-4CB9-8EDD-654922F11F88}" Directory_="ASC.Studio.Notify_Dir" Attributes="0"/>
     <ROW Component="ASC.Studio.Notify.exe" ComponentId="{AFB3D13A-4F5B-46E1-8819-3517A228C22B}" Directory_="service_11_Dir" Attributes="256" KeyPath="ASC.Studio.Notify.exe"/>
+    <ROW Component="ASC.TelegramService" ComponentId="{57B76E6A-DEF4-4242-96D4-E43AEBC68A97}" Directory_="ASC.TelegramService_Dir" Attributes="0"/>
     <ROW Component="ASC.TelegramService.exe" ComponentId="{475A1DBC-3864-434E-86E2-497D70D39BDE}" Directory_="service_12_Dir" Attributes="256" KeyPath="ASC.TelegramService.exe"/>
+    <ROW Component="ASC.UrlShortener" ComponentId="{B5FB450A-789E-4096-BE2D-7E9E92FA665C}" Directory_="ASC.UrlShortener_Dir" Attributes="0"/>
+    <ROW Component="ASC.Web.Api" ComponentId="{CFFB4D5A-23D0-4BD6-BB8D-A62FCE92B883}" Directory_="ASC.Web.Api_Dir" Attributes="0"/>
     <ROW Component="ASC.Web.Api.exe" ComponentId="{E726DF21-2E7E-4C62-8F6E-C63C65B041EC}" Directory_="service_15_Dir" Attributes="256" KeyPath="ASC.Web.Api.exe"/>
+    <ROW Component="ASC.Web.Studio" ComponentId="{8C58AEA7-5FC3-4506-ACF6-611A801D0426}" Directory_="ASC.Web.Studio_Dir" Attributes="0"/>
     <ROW Component="ASC.Web.Studio.exe" ComponentId="{00F95035-98D9-44AD-9DB4-B34306EE2170}" Directory_="service_16_Dir" Attributes="256" KeyPath="ASC.Web.Studio.exe"/>
+    <ROW Component="ASC.Webhooks.Service" ComponentId="{9B39D301-7EAD-48C8-A88C-A3570C132D08}" Directory_="ASC.Webhooks.Service_Dir" Attributes="0"/>
     <ROW Component="ASC.Webhooks.Service.exe" ComponentId="{9D6002C5-A610-4B28-982C-2DB794571878}" Directory_="NewFolder_3_Dir" Attributes="0" KeyPath="ASC.Webhooks.Service.exe"/>
+    <ROW Component="DocEditor.exe" ComponentId="{FBE9155F-9ACD-4A1A-9198-891ED73BA90C}" Directory_="tools_Dir" Attributes="0" KeyPath="DocEditor.exe"/>
+    <ROW Component="Login.exe" ComponentId="{FBE9155F-9ACD-4A1A-9198-891ED73BA202}" Directory_="tools_Dir" Attributes="0" KeyPath="Login.exe"/>
+    <ROW Component="Logs" ComponentId="{6C28AF1C-0190-4DE3-A753-430496711F3C}" Directory_="Logs_Dir" Attributes="0"/>
     <ROW Component="ProductInformation" ComponentId="{5FB28D19-6A7D-4078-901F-58C2DF0DE176}" Directory_="APPDIR" Attributes="4" KeyPath="Version"/>
+    <ROW Component="Proxy.exe" ComponentId="{913596AD-5C75-4418-8C3A-FAB2A70530DB}" Directory_="tools_Dir" Attributes="0" KeyPath="Proxy.exe"/>
     <ROW Component="Socket.IO.exe" ComponentId="{D08CDE1C-FB16-49AB-98A2-92FD887774F1}" Directory_="tools_Dir" Attributes="0" KeyPath="Socket.IO.exe"/>
     <ROW Component="SsoAuth.exe" ComponentId="{B4A48C44-5FC0-43D8-9CFB-EB4A4AAB4169}" Directory_="tools_Dir" Attributes="0" KeyPath="SsoAuth.exe"/>
     <ROW Component="UrlShortener.exe" ComponentId="{1F1D4189-385A-4AE1-8011-A82ED137DA22}" Directory_="tools_Dir" Attributes="0" KeyPath="UrlShortener.exe"/>
+    <ROW Component="conf" ComponentId="{88EC3AED-DF73-4B66-A228-9A87CFB5519D}" Directory_="conf_Dir" Attributes="0"/>
     <ROW Component="config" ComponentId="{B58E086D-0CB4-4F53-8411-3AE5A46D1DE4}" Directory_="config_Dir" Attributes="0"/>
     <ROW Component="config_socketio" ComponentId="{4F28A197-AD56-48D0-9E97-9F88A73BE24E}" Directory_="NewFolder_1_Dir" Attributes="0"/>
     <ROW Component="config_ssoauth" ComponentId="{D51A4591-143D-4C91-8665-BED153555AC0}" Directory_="config_2_Dir" Attributes="0"/>
     <ROW Component="config_urlshortener" ComponentId="{3A8A13E2-9BAA-485B-9E09-A6AD3EF70127}" Directory_="config_1_Dir" Attributes="0"/>
-    <ROW Component="favicon.ico" ComponentId="{31B18A50-6FF2-4C5E-8A1F-018247C8C55C}" Directory_="public_Dir" Attributes="0" KeyPath="favicon.ico" Type="0"/>
-    <ROW Component="proxy.exe" ComponentId="{913596AD-5C75-4418-8C3A-FAB2A70530DB}" Directory_="tools_Dir" Attributes="0" KeyPath="proxy.exe"/>
-    <ROW Component="proxy.xml" ComponentId="{92B2BA6A-009B-4731-A0E2-A6C729DC8A68}" Directory_="tools_Dir" Attributes="0" KeyPath="proxy.xml" Type="0"/>
-    <ROW Component="public" ComponentId="{025757D9-89DC-4136-A278-2B273D3A741A}" Directory_="public_Dir" Attributes="0"/>
+    <ROW Component="editor" ComponentId="{7BB6D12C-B38B-435D-8A86-2D5D2AB0543F}" Directory_="editor_Dir" Attributes="0"/>
+    <ROW Component="includes" ComponentId="{6F7827D0-7F14-4F09-BB3C-98E0633F5D1B}" Directory_="includes_Dir" Attributes="0"/>
+    <ROW Component="login" ComponentId="{17166A18-3A7B-44FF-A6A3-0938FD45B107}" Directory_="login_Dir" Attributes="0"/>
+    <ROW Component="logs" ComponentId="{183C2BF5-A348-407D-BEB4-8A5A6C3D7DB8}" Directory_="logs_Dir" Attributes="0"/>
+    <ROW Component="nginx" ComponentId="{F6782189-7D44-4DDE-B1A5-5DF8D2B839F5}" Directory_="nginx_Dir" Attributes="0"/>
+    <ROW Component="products" ComponentId="{5A3B0279-AFE0-456F-9685-5422D5E731B6}" Directory_="products_Dir" Attributes="0"/>
+    <ROW Component="server_ASC.Files" ComponentId="{8B02814C-6260-4A36-8C09-26AF31CDE52A}" Directory_="server_2_Dir" Attributes="0"/>
+    <ROW Component="server_ASC.People" ComponentId="{BDBA6378-A15F-44CC-BD6E-232FB7CFBA59}" Directory_="server_5_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.ClearEvents" ComponentId="{1BDE62CE-18DF-4372-9B95-41287FA84740}" Directory_="service_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Data.Backup" ComponentId="{F5899AA1-8093-4BB3-862C-34A782831A72}" Directory_="service_2_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Data.Backup.BachgroundTasks" ComponentId="{CCF47514-0441-44B9-A77D-C4E5619638BB}" Directory_="service_3_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.File.Service" ComponentId="{C94C9F5B-91E0-4AE3-8A7B-752198128A1E}" Directory_="service_7_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Migration" ComponentId="{F209787D-632E-4E20-8415-7D71DBAE5B5A}" Directory_="service_4_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Migration.Runner" ComponentId="{A21DD084-2228-4E0E-9F32-7A04F6766F8D}" Directory_="service_6_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Notify" ComponentId="{1A0897FF-9EBE-4D01-AFC5-3CBF264CA6C2}" Directory_="service_9_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Socket.IO" ComponentId="{F050F8C3-24CF-45F6-AFA4-05F2C121BA1E}" Directory_="service_1_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.SsoAuth" ComponentId="{1DD71548-898E-4C6D-9D54-7DB4ABF7E976}" Directory_="service_5_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Studio.Notify" ComponentId="{C30289A6-F81B-4C4B-9C77-969DBD83EF66}" Directory_="service_11_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.TelegramService" ComponentId="{1CB6D2E9-EE2F-4FEC-82E6-77B775303032}" Directory_="service_12_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Urlshortner" ComponentId="{B8D83118-B7EA-4C8D-85AD-01A0098561D9}" Directory_="NewFolder_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Web.Studio" ComponentId="{24E30A59-BC9C-4497-9B31-9FDD1130851B}" Directory_="service_16_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.WebApi" ComponentId="{C9664C57-4333-4E95-B94E-E78C6CB28058}" Directory_="service_15_Dir" Attributes="0"/>
+    <ROW Component="service_ASC.Webhooks.Service" ComponentId="{EB2FD18F-FEAD-4C36-9B8B-556E7D84AE28}" Directory_="NewFolder_3_Dir" Attributes="0"/>
+    <ROW Component="services" ComponentId="{8F9FE4E0-772E-487A-A61D-7019807D88D4}" Directory_="services_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.ClearEvents" ComponentId="{0D0BC98A-425B-4217-B420-4DA6B25F23DD}" Directory_="temp_1_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Data.Backup.BackgroundTasks" ComponentId="{29E2557D-6012-44B2-A9D4-D773157411E2}" Directory_="temp_2_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Data.Buckup" ComponentId="{53DD808E-59C8-471C-8F2B-05F7ED92D2A7}" Directory_="temp_4_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.File.Service" ComponentId="{D36D733E-3659-46FB-9127-876F179702BD}" Directory_="temp_3_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Files" ComponentId="{B25665D3-EB6F-4010-A93A-2423983A426A}" Directory_="temp_13_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Migration" ComponentId="{BEA71B3C-222C-4565-B0D1-A5671BE029F5}" Directory_="temp_5_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Migration.Runner" ComponentId="{3B95B108-8CEE-487D-AE0B-2E93C1749611}" Directory_="temp_6_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Notify" ComponentId="{471221C5-3F91-476D-B87F-F504AC55D9A6}" Directory_="temp_7_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.People" ComponentId="{F4E45171-654B-455B-A261-A7C52830AEC0}" Directory_="temp_14_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Studio.Notify" ComponentId="{F61A9699-F7DF-47F7-BE8B-B57ED43CCAC6}" Directory_="temp_8_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.TelegramService" ComponentId="{0BF04783-7F52-4926-B269-E1C6B9C90CF8}" Directory_="temp_12_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Web.Api" ComponentId="{BBE4771E-AF81-4B40-84C8-AACD26A8AAEE}" Directory_="temp_9_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Web.Studio" ComponentId="{50C05886-70FB-42A5-B4F9-333B317B1E25}" Directory_="temp_10_Dir" Attributes="0"/>
+    <ROW Component="temp_ASC.Webhooks.Service" ComponentId="{21F5F636-660F-4116-9DB2-9BFDC0365708}" Directory_="temp_11_Dir" Attributes="0"/>
+    <ROW Component="temp_nginx" ComponentId="{44C32C3C-30B2-4FB2-B6C0-F88B4C3F3F26}" Directory_="temp_Dir" Attributes="0"/>
+    <ROW Component="tools" ComponentId="{3BE057FE-EC94-4514-8961-A8660D9E6EB4}" Directory_="tools_Dir" Attributes="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0"/>
@@ -174,20 +262,17 @@
     <ROW File="ASC.TelegramService.exe" Component_="ASC.TelegramService.exe" FileName="ASCTEL~1.EXE|ASC.TelegramService.exe" Attributes="0" SourcePath="Files\services\ASC.TelegramService\service\ASC.TelegramService.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Web.Studio.exe" Component_="ASC.Web.Studio.exe" FileName="ASCWEB~1.EXE|ASC.Web.Studio.exe" Attributes="0" SourcePath="Files\services\ASC.Web.Studio\service\ASC.Web.Studio.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Web.Api.exe" Component_="ASC.Web.Api.exe" FileName="ASCWEB~1.EXE|ASC.Web.Api.exe" Attributes="0" SourcePath="Files\services\ASC.Web.Api\service\ASC.Web.Api.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="proxy.exe" Component_="proxy.exe" FileName="ONLYO~13.EXE|proxy.exe" Attributes="0" SourcePath="Files\tools\proxy.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="proxy.xml" Component_="proxy.xml" FileName="ONLYO~13.XML|proxy.xml" Attributes="0" SourcePath="Files\tools\proxy.xml" SelfReg="false"/>
+    <ROW File="Proxy.exe" Component_="Proxy.exe" FileName="Proxy.exe" Attributes="0" SourcePath="Files\tools\Proxy.exe" SelfReg="false" DigSign="true"/>
     <ROW File="Socket.IO.exe" Component_="Socket.IO.exe" FileName="SOCKET~1.EXE|Socket.IO.exe" Attributes="0" SourcePath="Files\tools\Socket.IO.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="Socket.IO.xml" Component_="proxy.xml" FileName="SOCKET~1.XML|Socket.IO.xml" Attributes="0" SourcePath="Files\tools\Socket.IO.xml" SelfReg="false"/>
     <ROW File="SsoAuth.exe" Component_="SsoAuth.exe" FileName="SsoAuth.exe" Attributes="0" SourcePath="Files\tools\SsoAuth.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="SsoAuth.xml" Component_="proxy.xml" FileName="SsoAuth.xml" Attributes="0" SourcePath="Files\tools\SsoAuth.xml" SelfReg="false"/>
     <ROW File="UrlShortener.exe" Component_="UrlShortener.exe" FileName="URLSHO~1.EXE|UrlShortener.exe" Attributes="0" SourcePath="Files\tools\UrlShortener.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="UrlShortener.xml" Component_="proxy.xml" FileName="URLSHO~1.XML|UrlShortener.xml" Attributes="0" SourcePath="Files\tools\UrlShortener.xml" SelfReg="false"/>
     <ROW File="ASC.ClearEvents.exe" Component_="ASC.ClearEvents.exe" FileName="ASCCLE~1.EXE|ASC.ClearEvents.exe" Attributes="0" SourcePath="Files\services\ASC.ClearEvents\service\ASC.ClearEvents.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Data.Backup.BackgroundTasks.exe" Component_="ASC.Data.Backup.BackgroundTasks.exe" FileName="ASCDAT~1.EXE|ASC.Data.Backup.BackgroundTasks.exe" Attributes="0" SourcePath="Files\services\ASC.Data.Backup.BackgroundTasks\service\ASC.Data.Backup.BackgroundTasks.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Migration.exe" Component_="ASC.Migration.exe" FileName="ASCMIG~1.EXE|ASC.Migration.exe" Attributes="0" SourcePath="Files\services\ASC.Migration\service\ASC.Migration.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Webhooks.Service.exe" Component_="ASC.Webhooks.Service.exe" FileName="ASCWEB~1.EXE|ASC.Webhooks.Service.exe" Attributes="0" SourcePath="Files\services\ASC.Webhooks.Service\service\ASC.Webhooks.Service.exe" SelfReg="false" DigSign="true"/>
     <ROW File="ASC.Migration.Runner.exe" Component_="ASC.Migration.Runner.exe" FileName="ASCMIG~2.EXE|ASC.Migration.Runner.exe" Attributes="0" SourcePath="Files\services\ASC.Migration.Runner\service\ASC.Migration.Runner.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="favicon.ico" Component_="favicon.ico" FileName="favicon.ico" Attributes="0" SourcePath="Files\public\favicon.ico" SelfReg="false" DigSign="true"/>
+    <ROW File="DocEditor.exe" Component_="DocEditor.exe" FileName="DOCEDI~1.EXE|DocEditor.exe" Attributes="0" SourcePath="Files\tools\DocEditor.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="Login.exe" Component_="Login.exe" FileName="LOGIN~1.EXE|Login.exe" Attributes="0" SourcePath="Files\tools\Login.exe" SelfReg="false" DigSign="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
     <ROW BootstrOptKey="GlobalOptions" DownloadFolder="[AppDataFolder][|Manufacturer]\[|ProductName]\prerequisites" Options="2"/>
@@ -222,15 +307,79 @@
     <ROW Fragment="WelcomePrereqDlg.aip" Path="&lt;AI_THEMES&gt;classic\fragments\WelcomePrereqDlg.aip"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonFileComponent">
-    <ROW JsonFile="Newfile.json_1" FileName="APPSET~1.JSO|appsettings.test.json" DirProperty="config_Dir" Component="AI_ExePath" RootProperty="Root_1" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json" FileName="ELASTI~1.JSO|elastic.test.json" DirProperty="config_Dir" Component="config" RootProperty="Root" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json_1" FileName="APPSET~1.JSO|appsettings.test.json" DirProperty="config_Dir" Component="config" RootProperty="Root_1" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json_2" FileName="RABBIT~1.JSO|rabbitmq.test.json" DirProperty="config_Dir" Component="config" RootProperty="Root_2" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json_3" FileName="REDIST~1.JSO|redis.test.json" DirProperty="config_Dir" Component="config" RootProperty="Root_3" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json_4" FileName="APPSET~2.JSO|appsettings.services.json" DirProperty="config_Dir" Component="config" RootProperty="Root_4" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json_5" FileName="APPSET~3.JSO|appsettings.json" DirProperty="config_Dir" Component="config" RootProperty="Root_5" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="Newfile.json_6" FileName="CONFIG~1.JSO|config.json" DirProperty="NewFolder_1_Dir" Component="config_socketio" RootProperty="Root_6" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="config.json" FileName="CONFIG~1.JSO|config.json" DirProperty="config_2_Dir" Component="config_ssoauth" RootProperty="Root_7" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="config.json_1" FileName="CONFIG~1.JSO|config.json" DirProperty="config_1_Dir" Component="config_urlshortener" RootProperty="Root_8" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="config.json_2" FileName="CONFIG~1.JSO|config.json" DirProperty="login_Dir" Component="login" RootProperty="Root_9" Flags="6" IndentUnits="2"/>
+    <ROW JsonFile="config.json_3" FileName="CONFIG~1.JSO|config.json" DirProperty="editor_Dir" Component="editor" RootProperty="Root_10" Flags="6" IndentUnits="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.JsonPropertyComponent">
     <ROW JsonProperty="ConnectionStrings_1" Parent="Root_1" Name="ConnectionStrings" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Host" Parent="elastic" Name="Host" Condition="1" Order="0" Flags="57" Value="[ELASTICSEARCH_HOST]"/>
+    <ROW JsonProperty="Host_1" Parent="_" Name="Host" Condition="1" Order="0" Flags="57" Value="[REDIS_HOST_PROP]"/>
+    <ROW JsonProperty="Hostname" Parent="RabbitMQ" Name="Hostname" Condition="1" Order="0" Flags="57" Value="[RABBITMQ_HOSTNAME_PROP]"/>
+    <ROW JsonProperty="Hosts" Parent="Redis" Name="Hosts" Condition="1" Order="0" Flags="61"/>
+    <ROW JsonProperty="PORT" Parent="Root_9" Name="PORT" Condition="1" Order="1" Flags="57" Value="[Login_Port]"/>
+    <ROW JsonProperty="PORT_1" Parent="Root_10" Name="PORT" Condition="1" Order="1" Flags="57" Value="[Editor_Port]"/>
+    <ROW JsonProperty="Password" Parent="RabbitMQ" Name="Password" Condition="1" Order="2" Flags="57" Value="[RABBITMQ_PASSWORD_PROP]"/>
+    <ROW JsonProperty="Port" Parent="elastic" Name="Port" Condition="1" Order="2" Flags="57" Value="[ELASTICSEARCH_PORT]"/>
+    <ROW JsonProperty="Port_1" Parent="RabbitMQ" Name="Port" Condition="1" Order="3" Flags="59" Value="[RABBITMQ_PORT_PROP]"/>
+    <ROW JsonProperty="Port_2" Parent="_" Name="Port" Condition="1" Order="1" Flags="57" Value="[REDIS_PORT_PROP]"/>
+    <ROW JsonProperty="RabbitMQ" Parent="Root_2" Name="RabbitMQ" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Redis" Parent="Root_3" Name="Redis" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root" Name="Root" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="Root_1" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_10" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_2" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_3" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_4" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_5" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_6" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_7" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_8" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Root_9" Name="Root" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="Scheme" Parent="elastic" Name="Scheme" Condition="1" Order="1" Flags="57" Value="[ELASTICSEARCH_SCHEME]"/>
+    <ROW JsonProperty="UserName" Parent="RabbitMQ" Name="UserName" Condition="1" Order="1" Flags="57" Value="[RABBITMQ_USERNAME_PROP]"/>
+    <ROW JsonProperty="VirtualHost" Parent="RabbitMQ" Name="VirtualHost" Condition="1" Order="4" Flags="57" Value="[RABBITMQ_VIRTUALHOST_PROP]"/>
+    <ROW JsonProperty="_" Parent="Hosts" Name="0" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="app" Parent="Root_6" Name="app" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="app_1" Parent="Root_7" Name="app" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="app_2" Parent="Root_8" Name="app" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="app_3" Parent="Root_9" Name="app" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="app_4" Parent="Root_10" Name="app" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="appsettings" Parent="app" Name="appsettings" Condition="1" Order="1" Flags="57" Value="[APPDIR_FORWARD_SLASH]config"/>
+    <ROW JsonProperty="appsettings_1" Parent="app_1" Name="appsettings" Condition="1" Order="1" Flags="57" Value="[APPDIR_FORWARD_SLASH]config"/>
+    <ROW JsonProperty="appsettings_2" Parent="app_2" Name="appsettings" Condition="1" Order="1" Flags="57" Value="[APPDIR_FORWARD_SLASH]config"/>
+    <ROW JsonProperty="appsettings_3" Parent="app_3" Name="appsettings" Condition="1" Order="0" Flags="57" Value="[APPDIR_FORWARD_SLASH]config"/>
+    <ROW JsonProperty="appsettings_4" Parent="app_4" Name="appsettings" Condition="1" Order="0" Flags="57" Value="[APPDIR_FORWARD_SLASH]config"/>
     <ROW JsonProperty="connectionString_1" Parent="default_1" Name="connectionString" Condition="1" Order="0" Flags="57" Value="Server=[SERVER_PROP];Port=3306;Database=[DATABASE_PROP];User ID=[USERNAME_PROP];Password=[PASSWORD_PROP];Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none"/>
+    <ROW JsonProperty="core" Parent="Root_4" Name="core" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="core_1" Parent="Root_5" Name="core" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="core_2" Parent="Root_1" Name="core" Condition="1" Order="2" Flags="60"/>
     <ROW JsonProperty="default_1" Parent="ConnectionStrings_1" Name="default" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="elastic" Parent="Root" Name="elastic" Condition="1" Order="0" Flags="60"/>
     <ROW JsonProperty="enabled" Parent="migration" Name="enabled" Condition="1" Order="0" Flags="57" Value="[DATABASE_MIGRATION]"/>
+    <ROW JsonProperty="environment" Parent="app" Name="environment" Condition="1" Order="2" Flags="57" Value="[ENVIRONMENT]"/>
+    <ROW JsonProperty="environment_1" Parent="app_1" Name="environment" Condition="1" Order="2" Flags="57" Value="[ENVIRONMENT]"/>
+    <ROW JsonProperty="environment_2" Parent="app_2" Name="environment" Condition="1" Order="2" Flags="57" Value="[ENVIRONMENT]"/>
+    <ROW JsonProperty="folder" Parent="products" Name="folder" Condition="1" Order="0" Flags="57" Value="[APPDIR_FORWARD_SLASH]products"/>
+    <ROW JsonProperty="folder_1" Parent="products_1" Name="folder" Condition="1" Order="0" Flags="57" Value="[APPDIR_FORWARD_SLASH]products"/>
+    <ROW JsonProperty="logPath" Parent="Root_4" Name="logPath" Condition="1" Order="1" Flags="57" Value="[APPDIR_FORWARD_SLASH]Logs"/>
+    <ROW JsonProperty="machinekey" Parent="core_2" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
+    <ROW JsonProperty="machinekey_1" Parent="app_1" Name="machinekey" Condition="1" Order="3" Flags="57" Value="[MACHINE_KEY]"/>
+    <ROW JsonProperty="machinekey_2" Parent="core_1" Name="machinekey" Condition="1" Order="0" Flags="57" Value="[MACHINE_KEY]"/>
     <ROW JsonProperty="migration" Parent="Root_1" Name="migration" Condition="1" Order="1" Flags="60"/>
+    <ROW JsonProperty="port" Parent="app" Name="port" Condition="1" Order="0" Flags="57" Value="[Socket.IO_Port]"/>
+    <ROW JsonProperty="port_1" Parent="app_1" Name="port" Condition="1" Order="0" Flags="57" Value="[SsoAuth_port]"/>
+    <ROW JsonProperty="port_2" Parent="app_2" Name="port" Condition="1" Order="0" Flags="57" Value="[UrlShortener_Port]"/>
+    <ROW JsonProperty="products" Parent="core" Name="products" Condition="1" Order="0" Flags="60"/>
+    <ROW JsonProperty="products_1" Parent="core_2" Name="products" Condition="1" Order="1" Flags="60"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiActionTextComponent">
     <ROW Action="AI_ConfigFailActions" Description="Configure service failure actions" DescriptionLocId="ActionText.Description.AI_ConfigFailActions" Template="Service: [1]" TemplateLocId="ActionText.Template.AI_ConfigFailActions"/>
@@ -255,7 +404,6 @@
     <ROW Property="AI_SETUPEXEPATH" Signature_="AI_EXE_PATH_CU" Builds="DefaultBuild"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
-    <ROW Name="PowerShellScriptLauncher.dll" SourcePath="&lt;AI_CUSTACTS&gt;PowerShellScriptLauncher.dll"/>
     <ROW Name="Prereq.dll" SourcePath="&lt;AI_CUSTACTS&gt;Prereq.dll"/>
     <ROW Name="SoftwareDetector.dll" SourcePath="&lt;AI_CUSTACTS&gt;SoftwareDetector.dll"/>
     <ROW Name="TxtUpdater.dll" SourcePath="&lt;AI_CUSTACTS&gt;TxtUpdater.dll"/>
@@ -265,6 +413,7 @@
     <ROW Name="dialog.bmp" SourcePath="Resources\dialog.bmp"/>
     <ROW Name="jsonCfg.dll" SourcePath="&lt;AI_CUSTACTS&gt;jsonCfg.dll"/>
     <ROW Name="lzmaextractor.dll" SourcePath="&lt;AI_CUSTACTS&gt;lzmaextractor.dll"/>
+    <ROW Name="userAccounts.dll" SourcePath="&lt;AI_CUSTACTS&gt;userAccounts.dll"/>
     <ROW Name="utils.vbs" SourcePath="utils.vbs"/>
     <ROW Name="viewer.exe" SourcePath="&lt;AI_CUSTACTS&gt;viewer.exe"/>
   </COMPONENT>
@@ -578,12 +727,72 @@
     <ROW Directory_="config_1_Dir" Component_="config_urlshortener" ManualDelete="false"/>
     <ROW Directory_="config_2_Dir" Component_="config_ssoauth" ManualDelete="false"/>
     <ROW Directory_="NewFolder_1_Dir" Component_="config_socketio" ManualDelete="false"/>
-    <ROW Directory_="public_Dir" Component_="public" ManualDelete="true"/>
+    <ROW Directory_="login_Dir" Component_="login" ManualDelete="false"/>
+    <ROW Directory_="editor_Dir" Component_="editor" ManualDelete="false"/>
+    <ROW Directory_="conf_Dir" Component_="conf" ManualDelete="false"/>
+    <ROW Directory_="includes_Dir" Component_="includes" ManualDelete="false"/>
+    <ROW Directory_="nginx_Dir" Component_="nginx" ManualDelete="false"/>
+    <ROW Directory_="tools_Dir" Component_="tools" ManualDelete="false"/>
+    <ROW Directory_="products_Dir" Component_="products" ManualDelete="false"/>
+    <ROW Directory_="ASC.Files_Dir" Component_="ASC.Files" ManualDelete="false"/>
+    <ROW Directory_="server_2_Dir" Component_="server_ASC.Files" ManualDelete="false"/>
+    <ROW Directory_="ASC.Login_Dir" Component_="ASC.Login" ManualDelete="false"/>
+    <ROW Directory_="ASC.People_Dir" Component_="ASC.People" ManualDelete="false"/>
+    <ROW Directory_="server_5_Dir" Component_="server_ASC.People" ManualDelete="false"/>
+    <ROW Directory_="services_Dir" Component_="services" ManualDelete="false"/>
+    <ROW Directory_="ASC.Migration.Runner_Dir" Component_="ASC.Migration.Runner" ManualDelete="false"/>
+    <ROW Directory_="service_6_Dir" Component_="service_ASC.Migration.Runner" ManualDelete="false"/>
+    <ROW Directory_="ASC.ClearEvents_Dir" Component_="ASC.ClearEvents" ManualDelete="false"/>
+    <ROW Directory_="service_Dir" Component_="service_ASC.ClearEvents" ManualDelete="false"/>
+    <ROW Directory_="ASC.UrlShortener_Dir" Component_="ASC.UrlShortener" ManualDelete="false"/>
+    <ROW Directory_="NewFolder_Dir" Component_="service_ASC.Urlshortner" ManualDelete="false"/>
+    <ROW Directory_="ASC.Data.Backup.BackgroundTasks_Dir" Component_="ASC.Data.Backup.BackgroundTasks" ManualDelete="false"/>
+    <ROW Directory_="service_3_Dir" Component_="service_ASC.Data.Backup.BachgroundTasks" ManualDelete="false"/>
+    <ROW Directory_="ASC.Socket.IO_Dir" Component_="ASC.Socket.IO" ManualDelete="false"/>
+    <ROW Directory_="service_1_Dir" Component_="service_ASC.Socket.IO" ManualDelete="false"/>
+    <ROW Directory_="ASC.Data.Backup_Dir" Component_="ASC.Data.Backup" ManualDelete="false"/>
+    <ROW Directory_="service_2_Dir" Component_="service_ASC.Data.Backup" ManualDelete="false"/>
+    <ROW Directory_="ASC.Migration_Dir" Component_="ASC.Migration" ManualDelete="false"/>
+    <ROW Directory_="service_4_Dir" Component_="service_ASC.Migration" ManualDelete="false"/>
+    <ROW Directory_="ASC.Files.Service_Dir" Component_="ASC.Files.Service" ManualDelete="false"/>
+    <ROW Directory_="service_7_Dir" Component_="service_ASC.File.Service" ManualDelete="false"/>
+    <ROW Directory_="ASC.TelegramService_Dir" Component_="ASC.TelegramService" ManualDelete="false"/>
+    <ROW Directory_="service_12_Dir" Component_="service_ASC.TelegramService" ManualDelete="false"/>
+    <ROW Directory_="ASC.Notify_Dir" Component_="ASC.Notify" ManualDelete="false"/>
+    <ROW Directory_="service_9_Dir" Component_="service_ASC.Notify" ManualDelete="false"/>
+    <ROW Directory_="ASC.SsoAuth_Dir" Component_="ASC.SsoAuth" ManualDelete="false"/>
+    <ROW Directory_="service_5_Dir" Component_="service_ASC.SsoAuth" ManualDelete="false"/>
+    <ROW Directory_="ASC.Studio.Notify_Dir" Component_="ASC.Studio.Notify" ManualDelete="false"/>
+    <ROW Directory_="service_11_Dir" Component_="service_ASC.Studio.Notify" ManualDelete="false"/>
+    <ROW Directory_="ASC.Web.Api_Dir" Component_="ASC.Web.Api" ManualDelete="false"/>
+    <ROW Directory_="service_15_Dir" Component_="service_ASC.WebApi" ManualDelete="false"/>
+    <ROW Directory_="ASC.Web.Studio_Dir" Component_="ASC.Web.Studio" ManualDelete="false"/>
+    <ROW Directory_="service_16_Dir" Component_="service_ASC.Web.Studio" ManualDelete="false"/>
+    <ROW Directory_="ASC.Webhooks.Service_Dir" Component_="ASC.Webhooks.Service" ManualDelete="false"/>
+    <ROW Directory_="NewFolder_3_Dir" Component_="service_ASC.Webhooks.Service" ManualDelete="false"/>
+    <ROW Directory_="Logs_Dir" Component_="Logs" ManualDelete="false"/>
+    <ROW Directory_="temp_Dir" Component_="temp_nginx" ManualDelete="false"/>
+    <ROW Directory_="logs_Dir" Component_="logs" ManualDelete="false"/>
+    <ROW Directory_="temp_1_Dir" Component_="temp_ASC.ClearEvents" ManualDelete="false"/>
+    <ROW Directory_="temp_2_Dir" Component_="temp_ASC.Data.Backup.BackgroundTasks" ManualDelete="false"/>
+    <ROW Directory_="temp_3_Dir" Component_="temp_ASC.File.Service" ManualDelete="false"/>
+    <ROW Directory_="temp_4_Dir" Component_="temp_ASC.Data.Buckup" ManualDelete="false"/>
+    <ROW Directory_="temp_5_Dir" Component_="temp_ASC.Migration" ManualDelete="false"/>
+    <ROW Directory_="temp_6_Dir" Component_="temp_ASC.Migration.Runner" ManualDelete="false"/>
+    <ROW Directory_="temp_7_Dir" Component_="temp_ASC.Notify" ManualDelete="false"/>
+    <ROW Directory_="temp_8_Dir" Component_="temp_ASC.Studio.Notify" ManualDelete="false"/>
+    <ROW Directory_="temp_9_Dir" Component_="temp_ASC.Web.Api" ManualDelete="false"/>
+    <ROW Directory_="temp_10_Dir" Component_="temp_ASC.Web.Studio" ManualDelete="false"/>
+    <ROW Directory_="temp_11_Dir" Component_="temp_ASC.Webhooks.Service" ManualDelete="false"/>
+    <ROW Directory_="temp_12_Dir" Component_="temp_ASC.TelegramService" ManualDelete="false"/>
+    <ROW Directory_="temp_13_Dir" Component_="temp_ASC.Files" ManualDelete="false"/>
+    <ROW Directory_="temp_14_Dir" Component_="temp_ASC.People" ManualDelete="false"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
     <ROW Action="AI_AppSearchEx" Type="1" Source="Prereq.dll" Target="DoAppSearchEx"/>
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH_ORIGINAL" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_ConfigFailActions" Type="11265" Source="aicustact.dll" Target="ConfigureServFailActions" WithoutSeq="true"/>
+    <ROW Action="AI_ConfigPermissions" Type="1" Source="userAccounts.dll" Target="OnConfigPermissions" AdditionalSeq="AI_DATA_SETTER_4"/>
     <ROW Action="AI_DATA_SETTER" Type="51" Source="CustomActionData" Target="[ELASTICSEARCH_MSG]&#13;\n[ELASTICSEARCH_SCHEME]://[ELASTICSEARCH_HOST]:[ELASTICSEARCH_PORT] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_1" Type="51" Source="CustomActionData" Target="HOST=[ELASTICSEARCH_HOST];PORT=[ELASTICSEARCH_PORT];OUTPUT=ELK_CONNECTION"/>
     <ROW Action="AI_DATA_SETTER_10" Type="51" Source="CustomActionData" Target="MySQL80"/>
@@ -594,6 +803,7 @@
     <ROW Action="AI_DATA_SETTER_18" Type="51" Source="CustomActionData" Target="[RabbitMQServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_2" Type="51" Source="CustomActionData" Target="[AI_SETUPEXEPATH]"/>
     <ROW Action="AI_DATA_SETTER_3" Type="51" Source="CustomActionData" Target="[~]"/>
+    <ROW Action="AI_DATA_SETTER_4" Type="51" Source="CustomActionData" Target="[~]"/>
     <ROW Action="AI_DATA_SETTER_5" Type="51" Source="CustomActionData" Target="[RedisServerConnectionError] |[ProductName] Setup |MB_OK,MB_ICONWARNING,MB_DEFBUTTON1||[CLIENTPROCESSID]"/>
     <ROW Action="AI_DATA_SETTER_6" Type="51" Source="CustomActionData" Target="[APPDIR_FORWARD_SLASH]"/>
     <ROW Action="AI_DATA_SETTER_7" Type="51" Source="CustomActionData" Target="[~]"/>
@@ -620,13 +830,17 @@
     <ROW Action="AI_JsonRollback" Type="11521" Source="jsonCfg.dll" Target="OnJsonRollback" WithoutSeq="true"/>
     <ROW Action="AI_JsonUninstall" Type="1" Source="jsonCfg.dll" Target="OnJsonUninstall" AdditionalSeq="AI_DATA_SETTER_8"/>
     <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_PrepareRevokePermissions" Type="1" Source="userAccounts.dll" Target="OnPrepareRevokePermissions"/>
     <ROW Action="AI_ProcessFailActions" Type="1" Source="aicustact.dll" Target="ProcessFailActions" AdditionalSeq="AI_DATA_SETTER_3"/>
     <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Type="51" Source="AI_SETUPEXEPATH" Target="[AI_SETUPEXEPATH_ORIGINAL]"/>
     <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
     <ROW Action="AI_ResolveKnownFolders" Type="1" Source="aicustact.dll" Target="AI_ResolveKnownFolders"/>
+    <ROW Action="AI_ResolveLocalizedCredentials" Type="1" Source="aicustact.dll" Target="GetLocalizedCredentials"/>
     <ROW Action="AI_RestartElevated" Type="1" Source="aicustact.dll" Target="RestartElevated"/>
+    <ROW Action="AI_RevokePermissions" Type="11265" Source="userAccounts.dll" Target="OnRevokePermissions" WithoutSeq="true"/>
     <ROW Action="AI_SHOW_LOG" Type="65" Source="aicustact.dll" Target="LaunchLogFile" WithoutSeq="true"/>
     <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="AI_SetPermissions" Type="11265" Source="userAccounts.dll" Target="OnSetPermissions" WithoutSeq="true"/>
     <ROW Action="AI_TxtUpdaterCommit" Type="11777" Source="TxtUpdater.dll" Target="OnTxtUpdaterCommit" WithoutSeq="true"/>
     <ROW Action="AI_TxtUpdaterConfig" Type="11265" Source="TxtUpdater.dll" Target="OnTxtUpdaterConfig" WithoutSeq="true"/>
     <ROW Action="AI_TxtUpdaterInstall" Type="1" Source="TxtUpdater.dll" Target="OnTxtUpdaterInstall"/>
@@ -639,9 +853,10 @@
     <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]" MultiBuildTarget="DefaultBuild:[ProgramFilesFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
     <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]" MultiBuildTarget="DefaultBuild:[ProgramMenuFolder][INSTALL_ROOT_FOLDER_NAME]\DocSpace"/>
     <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+    <ROW Action="SetMACHINEKEY" Type="51" Source="MACHINE_KEY" Target="[ComputerName]"/>
     <ROW Action="Set_APPDIR_FORWARD_SLASH" Type="38" Target="Script Text" TargetUnformatted="Session.Property(&quot;APPDIR_FORWARD_SLASH&quot;) = Replace(Session.Property(&quot;APPDIR&quot;), &quot;\&quot;, &quot;/&quot;)&#13;&#10;" AdditionalSeq="AI_DATA_SETTER_6"/>
     <ROW Action="StartElasticSearchService" Type="3073" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_13"/>
-    <ROW Action="StartMigrationRunner" Type="3106" Source="service_6_Dir" Target="&quot;[APPDIR]services\ASC.Migration.Runner\service\ASC.Migration.Runner.exe&quot;"/>
+    <ROW Action="StartMigrationRunner" Type="3074" Source="viewer.exe" Target="/EnforcedRunAsAdmin /RunAsAdmin /HideWindow /dir &quot;[APPDIR]\services\ASC.Migration.Runner\service&quot; &quot;[APPDIR]services\ASC.Migration.Runner\service\ASC.Migration.Runner.exe&quot;" Options="1"/>
     <ROW Action="StartMySQLService" Type="1" Source="aicustact.dll" Target="StartWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_11"/>
     <ROW Action="StopElasticSearchService" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_12"/>
     <ROW Action="StopMySQLService" Type="1" Source="aicustact.dll" Target="StopWinService" Options="1" AdditionalSeq="AI_DATA_SETTER_10"/>
@@ -675,8 +890,7 @@
     <ROW Feature_="MainFeature" Component_="ASC.Web.Studio.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Files.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Web.Api.exe"/>
-    <ROW Feature_="MainFeature" Component_="proxy.xml"/>
-    <ROW Feature_="MainFeature" Component_="proxy.exe"/>
+    <ROW Feature_="MainFeature" Component_="Proxy.exe"/>
     <ROW Feature_="MainFeature" Component_="config"/>
     <ROW Feature_="MainFeature" Component_="AI_CustomARPName"/>
     <ROW Feature_="MainFeature" Component_="AI_DisableModify"/>
@@ -691,8 +905,68 @@
     <ROW Feature_="MainFeature" Component_="ASC.Migration.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Webhooks.Service.exe"/>
     <ROW Feature_="MainFeature" Component_="ASC.Migration.Runner.exe"/>
-    <ROW Feature_="MainFeature" Component_="favicon.ico"/>
-    <ROW Feature_="MainFeature" Component_="public"/>
+    <ROW Feature_="MainFeature" Component_="DocEditor.exe"/>
+    <ROW Feature_="MainFeature" Component_="Login.exe"/>
+    <ROW Feature_="MainFeature" Component_="login"/>
+    <ROW Feature_="MainFeature" Component_="editor"/>
+    <ROW Feature_="MainFeature" Component_="conf"/>
+    <ROW Feature_="MainFeature" Component_="includes"/>
+    <ROW Feature_="MainFeature" Component_="nginx"/>
+    <ROW Feature_="MainFeature" Component_="tools"/>
+    <ROW Feature_="MainFeature" Component_="products"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Files"/>
+    <ROW Feature_="MainFeature" Component_="server_ASC.Files"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Login"/>
+    <ROW Feature_="MainFeature" Component_="ASC.People"/>
+    <ROW Feature_="MainFeature" Component_="server_ASC.People"/>
+    <ROW Feature_="MainFeature" Component_="services"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Migration.Runner"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.Migration.Runner"/>
+    <ROW Feature_="MainFeature" Component_="ASC.ClearEvents"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.ClearEvents"/>
+    <ROW Feature_="MainFeature" Component_="ASC.UrlShortener"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.Urlshortner"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Data.Backup.BackgroundTasks"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.Data.Backup.BachgroundTasks"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Socket.IO"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.Socket.IO"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Data.Backup"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.Data.Backup"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Migration"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.Migration"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Files.Service"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.File.Service"/>
+    <ROW Feature_="MainFeature" Component_="ASC.TelegramService"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.TelegramService"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Notify"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.Notify"/>
+    <ROW Feature_="MainFeature" Component_="ASC.SsoAuth"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.SsoAuth"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Studio.Notify"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.Studio.Notify"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Web.Api"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.WebApi"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Web.Studio"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.Web.Studio"/>
+    <ROW Feature_="MainFeature" Component_="ASC.Webhooks.Service"/>
+    <ROW Feature_="MainFeature" Component_="service_ASC.Webhooks.Service"/>
+    <ROW Feature_="MainFeature" Component_="Logs"/>
+    <ROW Feature_="MainFeature" Component_="temp_nginx"/>
+    <ROW Feature_="MainFeature" Component_="logs"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.ClearEvents"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Data.Backup.BackgroundTasks"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.File.Service"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Data.Buckup"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Migration"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Migration.Runner"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Notify"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Studio.Notify"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Web.Api"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Web.Studio"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Webhooks.Service"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.TelegramService"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.Files"/>
+    <ROW Feature_="MainFeature" Component_="temp_ASC.People"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="icon.exe" SourcePath="Resources\icon.ico" Index="0"/>
@@ -702,8 +976,8 @@
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
     <ROW Action="AI_STORE_LOCATION" Condition="(Not Installed) OR REINSTALL" Sequence="1501"/>
     <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1397"/>
-    <ROW Action="AI_ResolveKnownFolders" Sequence="52"/>
-    <ROW Action="AI_EnableDebugLog" Sequence="51"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="53"/>
+    <ROW Action="AI_EnableDebugLog" Sequence="52"/>
     <ROW Action="AI_AppSearchEx" Sequence="103"/>
     <ROW Action="AI_DetectSoftware" Sequence="102"/>
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99" Builds="DefaultBuild"/>
@@ -724,35 +998,42 @@
     <ROW Action="AI_DATA_SETTER_7" Condition="(REMOVE &lt;&gt; &quot;ALL&quot;)" Sequence="5101"/>
     <ROW Action="AI_JsonUninstall" Condition="(REMOVE)" Sequence="3102"/>
     <ROW Action="AI_DATA_SETTER_8" Condition="(REMOVE)" Sequence="3101"/>
-    <ROW Action="StopMySQLService" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1605"/>
-    <ROW Action="AI_DATA_SETTER_10" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1604"/>
-    <ROW Action="StartMySQLService" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1607"/>
-    <ROW Action="AI_DATA_SETTER_11" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1606"/>
-    <ROW Action="Set_APPDIR_FORWARD_SLASH" Condition="( NOT Installed )" Sequence="1615"/>
-    <ROW Action="AI_DATA_SETTER_6" Condition="( NOT Installed )" Sequence="1614"/>
-    <ROW Action="MySQLConfigure" Condition="( NOT Installed )" Sequence="1601"/>
-    <ROW Action="DetectMySQLService" Condition="( ( NOT Installed AND NOT OLDPRODUCTS ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="1603"/>
-    <ROW Action="AI_DATA_SETTER_9" Condition="( ( NOT Installed AND NOT OLDPRODUCTS ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="1602"/>
-    <ROW Action="ElasticSearchSetup" Condition="( NOT Installed )" Sequence="1611"/>
-    <ROW Action="StopElasticSearchService" Condition="( NOT Installed )" Sequence="1609"/>
-    <ROW Action="AI_DATA_SETTER_12" Condition="( NOT Installed )" Sequence="1608"/>
-    <ROW Action="ElasticSearchInstallPlugin" Condition="( NOT Installed )" Sequence="1610"/>
-    <ROW Action="StartElasticSearchService" Condition="( NOT Installed )" Sequence="1613"/>
-    <ROW Action="AI_DATA_SETTER_13" Condition="( NOT Installed )" Sequence="1612"/>
+    <ROW Action="StopMySQLService" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1606"/>
+    <ROW Action="AI_DATA_SETTER_10" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1605"/>
+    <ROW Action="Set_APPDIR_FORWARD_SLASH" Condition="( NOT Installed )" Sequence="1616"/>
+    <ROW Action="AI_DATA_SETTER_6" Condition="( NOT Installed )" Sequence="1615"/>
+    <ROW Action="MySQLConfigure" Condition="( NOT Installed )" Sequence="1602"/>
+    <ROW Action="DetectMySQLService" Condition="( ( NOT Installed AND NOT OLDPRODUCTS ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="1604"/>
+    <ROW Action="AI_DATA_SETTER_9" Condition="( ( NOT Installed AND NOT OLDPRODUCTS ) OR ( Installed AND REMOVE &lt;&gt; &quot;ALL&quot; AND AI_INSTALL_MODE &lt;&gt; &quot;Remove&quot; ) )" Sequence="1603"/>
+    <ROW Action="ElasticSearchSetup" Condition="( NOT Installed )" Sequence="1612"/>
+    <ROW Action="StopElasticSearchService" Condition="( NOT Installed )" Sequence="1610"/>
+    <ROW Action="AI_DATA_SETTER_12" Condition="( NOT Installed )" Sequence="1609"/>
+    <ROW Action="ElasticSearchInstallPlugin" Condition="( NOT Installed )" Sequence="1611"/>
+    <ROW Action="StartElasticSearchService" Condition="( NOT Installed )" Sequence="1614"/>
+    <ROW Action="AI_DATA_SETTER_13" Condition="( NOT Installed )" Sequence="1613"/>
     <ROW Action="AI_GetArpIconPath" Sequence="1401"/>
+    <ROW Action="StartMySQLService" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1608"/>
+    <ROW Action="AI_DATA_SETTER_11" Condition="( NOT Installed AND NOT OLDPRODUCTS ) AND ( AI_PROCESS_STATE &lt;&gt; &quot;Not Found&quot; )" Sequence="1607"/>
     <ROW Action="StartMigrationRunner" Condition="( NOT Installed )" Sequence="5826"/>
+    <ROW Action="SetMACHINEKEY" Condition="( NOT Installed )" Sequence="1601"/>
+    <ROW Action="AI_DETECT_MODERNWIN" Condition="(VersionNT &gt;= 603)" Sequence="54" MsiKey="AI_DETECT_MODERNWIN"/>
+    <ROW Action="AI_ResolveLocalizedCredentials" Sequence="51"/>
+    <ROW Action="AI_ConfigPermissions" Condition="REMOVE &lt;&gt; &quot;ALL&quot;" Sequence="5852"/>
+    <ROW Action="AI_DATA_SETTER_4" Condition="REMOVE &lt;&gt; &quot;ALL&quot;" Sequence="5851"/>
+    <ROW Action="AI_PrepareRevokePermissions" Condition="REMOVE = &quot;ALL&quot;" Sequence="1699"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
-    <ROW Action="AI_ResolveKnownFolders" Sequence="54"/>
-    <ROW Action="AI_DpiContentScale" Sequence="53"/>
-    <ROW Action="AI_EnableDebugLog" Sequence="52"/>
+    <ROW Action="AI_ResolveKnownFolders" Sequence="55"/>
+    <ROW Action="AI_DpiContentScale" Sequence="54"/>
+    <ROW Action="AI_EnableDebugLog" Sequence="53"/>
     <ROW Action="AI_BACKUP_AI_SETUPEXEPATH" Sequence="99"/>
     <ROW Action="AI_RESTORE_AI_SETUPEXEPATH" Condition="AI_SETUPEXEPATH_ORIGINAL" Sequence="103"/>
     <ROW Action="AI_AppSearchEx" Sequence="102"/>
     <ROW Action="AI_DetectSoftware" Sequence="101"/>
     <ROW Action="MySQLConfigureGUI" Condition="( NOT Installed )" Sequence="1101"/>
-    <ROW Action="AI_RestartElevated" Sequence="51"/>
+    <ROW Action="AI_RestartElevated" Sequence="52"/>
+    <ROW Action="AI_ResolveLocalizedCredentials" Sequence="51"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiLaunchConditionsComponent">
     <ROW Condition="((VersionNT &lt;&gt; 501) AND (VersionNT &lt;&gt; 502))" Description="[ProductName] cannot be installed on [WindowsTypeNT5XDisplay]." DescriptionLocId="AI.LaunchCondition.NoNT5X" IsPredefined="true" Builds="DefaultBuild"/>
@@ -761,6 +1042,73 @@
     <ROW Condition="AI_DETECTED_INTERNET_CONNECTION" Description="[ProductName] requires an active Internet connection for installation. Please check your network configuration and proxy settings." DescriptionLocId="AI.LaunchCondition.Internet" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="SETUPEXEDIR OR (REMOVE=&quot;ALL&quot;)" Description="This package can only be run from a bootstrapper." DescriptionLocId="AI.LaunchCondition.RequireBootstrapper" IsPredefined="true" Builds="DefaultBuild"/>
     <ROW Condition="VersionNT" Description="[ProductName] cannot be installed on [WindowsType9XDisplay]." DescriptionLocId="AI.LaunchCondition.No9X" IsPredefined="true" Builds="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiLockPermComponent">
+    <ROW LockObject="APPDIR" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="config_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="nginx_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="conf_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="includes_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="tools_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="products_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="editor_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Files_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="login_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="server_2_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Login_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.People_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="server_5_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="services_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Migration.Runner_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_6_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.ClearEvents_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.UrlShortener_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="NewFolder_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="config_1_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="NewFolder_1_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Data.Backup.BackgroundTasks_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_3_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Socket.IO_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_1_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Data.Backup_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_2_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Migration_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_4_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Files.Service_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_7_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.TelegramService_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_12_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Notify_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_9_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.SsoAuth_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="config_2_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_5_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Studio.Notify_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_11_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Web.Api_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_15_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Web.Studio_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="service_16_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="ASC.Webhooks.Service_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="NewFolder_3_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1179785" Flags="2"/>
+    <ROW LockObject="Logs_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="logs_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_1_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_2_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_3_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_4_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_5_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_6_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_7_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_8_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_9_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_10_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_11_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_12_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_13_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
+    <ROW LockObject="temp_14_Dir" Table="CreateFolder" User="[USR_LOCAL_SERVICE]" Permission="1180063" Flags="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiRegLocatorComponent">
     <ROW Signature_="AI_EXE_PATH_CU" Root="1" Key="Software\Caphyon\Advanced Installer\LZMA\[ProductCode]\[ProductVersion]" Name="AI_ExePath" Type="2"/>
@@ -795,12 +1143,14 @@
     <ROW MsiServiceConfig="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
     <ROW MsiServiceConfig="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Data.Backup.exe"/>
     <ROW MsiServiceConfig="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" Event="1" ConfigType="3" Argument="1" Component_="ASC.ClearEvents.exe"/>
+    <ROW MsiServiceConfig="ServiceName_DocEditor" Name="[ServiceName_DocEditor]" Event="1" ConfigType="3" Argument="1" Component_="DocEditor.exe"/>
     <ROW MsiServiceConfig="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Files.exe"/>
     <ROW MsiServiceConfig="ServiceName_FileService" Name="[ServiceName_FileService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Files.Service.exe"/>
+    <ROW MsiServiceConfig="ServiceName_Login" Name="[ServiceName_Login]" Event="1" ConfigType="3" Argument="1" Component_="Login.exe"/>
     <ROW MsiServiceConfig="ServiceName_Migration" Name="[ServiceName_Migration]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Migration.exe"/>
     <ROW MsiServiceConfig="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Notify.exe"/>
     <ROW MsiServiceConfig="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ConfigType="3" Argument="1" Component_="ASC.People.exe"/>
-    <ROW MsiServiceConfig="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ConfigType="3" Argument="1" Component_="proxy.exe"/>
+    <ROW MsiServiceConfig="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ConfigType="3" Argument="1" Component_="Proxy.exe"/>
     <ROW MsiServiceConfig="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ConfigType="3" Argument="1" Component_="Socket.IO.exe"/>
     <ROW MsiServiceConfig="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ConfigType="3" Argument="1" Component_="SsoAuth.exe"/>
     <ROW MsiServiceConfig="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Studio.Notify.exe"/>
@@ -811,35 +1161,38 @@
     <ROW MsiServiceConfig="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" Event="1" ConfigType="3" Argument="1" Component_="ASC.Webhooks.Service.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServConfigFailureActionsComponent">
-    <ROW MsiServiceConfigFailureActions="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Data.Backup.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.ClearEvents.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Files.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_FileService" Name="[ServiceName_FileService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Files.Service.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_Migration" Name="[ServiceName_Migration]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Migration.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Notify.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.People.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="proxy.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="Socket.IO.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="SsoAuth.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Studio.Notify.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.TelegramService.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="UrlShortener.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Web.Api.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Web.Studio.exe"/>
-    <ROW MsiServiceConfigFailureActions="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="0[~]1[~]1" Component_="ASC.Webhooks.Service.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Data.Backup.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.ClearEvents.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_DocEditor" Name="[ServiceName_DocEditor]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="DocEditor.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Files.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_FileService" Name="[ServiceName_FileService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Files.Service.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Login" Name="[ServiceName_Login]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="Login.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Migration" Name="[ServiceName_Migration]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Migration.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Notify.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.People.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="Proxy.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="Socket.IO.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="SsoAuth.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Studio.Notify.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.TelegramService.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="UrlShortener.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Api.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Web.Studio.exe"/>
+    <ROW MsiServiceConfigFailureActions="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" Event="1" ResetPeriod="0" Actions="1[~]1[~]1" DelayActions="1[~]1[~]1" Component_="ASC.Webhooks.Service.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServCtrlComponent">
-    <ROW ServiceControl="ASC.ClearEvents.exe" Name="[ServiceName_ClearEvents]" Event="161" Wait="0" Component_="ASC.ClearEvents.exe"/>
-    <ROW ServiceControl="ASC.Data.Backup.BackgroundTasks.exe" Name="[ServiceName_BackgroundTasks]" Event="161" Wait="0" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
-    <ROW ServiceControl="ASC.Migration.exe" Name="[ServiceName_Migration]" Event="161" Wait="0" Component_="ASC.Migration.exe"/>
-    <ROW ServiceControl="ASC.Webhooks.Service.exe" Name="[ServiceName_WebhooksService]" Event="161" Wait="0" Component_="ASC.Webhooks.Service.exe"/>
+    <ROW ServiceControl="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" Event="161" Wait="0" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
     <ROW ServiceControl="ServiceName_BackupService" Name="[ServiceName_BackupService]" Event="161" Wait="0" Component_="ASC.Data.Backup.exe"/>
+    <ROW ServiceControl="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" Event="161" Wait="0" Component_="ASC.ClearEvents.exe"/>
+    <ROW ServiceControl="ServiceName_DocEditor" Name="[ServiceName_DocEditor]" Event="161" Wait="0" Component_="DocEditor.exe"/>
     <ROW ServiceControl="ServiceName_FileServer" Name="[ServiceName_FileServer]" Event="161" Wait="0" Component_="ASC.Files.exe"/>
     <ROW ServiceControl="ServiceName_FileService" Name="[ServiceName_FileService]" Event="161" Wait="0" Component_="ASC.Files.Service.exe"/>
+    <ROW ServiceControl="ServiceName_Login" Name="[ServiceName_Login]" Event="161" Wait="0" Component_="Login.exe"/>
+    <ROW ServiceControl="ServiceName_Migration" Name="[ServiceName_Migration]" Event="161" Wait="0" Component_="ASC.Migration.exe"/>
     <ROW ServiceControl="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" Event="161" Wait="0" Component_="ASC.Notify.exe"/>
     <ROW ServiceControl="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" Event="161" Wait="0" Component_="ASC.People.exe"/>
-    <ROW ServiceControl="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="161" Wait="0" Component_="proxy.exe"/>
+    <ROW ServiceControl="ServiceName_Proxy" Name="[ServiceName_Proxy]" Event="161" Wait="0" Component_="Proxy.exe"/>
     <ROW ServiceControl="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" Event="161" Wait="0" Component_="Socket.IO.exe"/>
     <ROW ServiceControl="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" Event="161" Wait="0" Component_="SsoAuth.exe"/>
     <ROW ServiceControl="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" Event="161" Wait="0" Component_="ASC.Studio.Notify.exe"/>
@@ -847,25 +1200,28 @@
     <ROW ServiceControl="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" Event="161" Wait="0" Component_="UrlShortener.exe"/>
     <ROW ServiceControl="ServiceName_WebApi" Name="[ServiceName_WebApi]" Event="161" Wait="0" Component_="ASC.Web.Api.exe"/>
     <ROW ServiceControl="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" Event="161" Wait="0" Component_="ASC.Web.Studio.exe"/>
+    <ROW ServiceControl="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" Event="161" Wait="0" Component_="ASC.Webhooks.Service.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiServInstComponent">
-    <ROW ServiceInstall="ASC.ClearEvents.exe" Name="[ServiceName_ClearEvents]" DisplayName="[ServiceName_ClearEvents]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5027 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.ClearEvents.exe"/>
-    <ROW ServiceInstall="ASC.Data.Backup.BackgroundTasks.exe" Name="[ServiceName_BackgroundTasks]" DisplayName="[ServiceName_BackgroundTasks]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5032 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
-    <ROW ServiceInstall="ASC.Migration.exe" Name="[ServiceName_Migration]" DisplayName="[ServiceName_Migration]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5018 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Migration.exe"/>
-    <ROW ServiceInstall="ASC.Webhooks.Service.exe" Name="[ServiceName_WebhooksService]" DisplayName="[ServiceName_WebhooksService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5031 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Webhooks.Service.exe"/>
-    <ROW ServiceInstall="ServiceName_BackupService" Name="[ServiceName_BackupService]" DisplayName="[ServiceName_BackupService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5012 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Data.Backup.exe"/>
-    <ROW ServiceInstall="ServiceName_FileServer" Name="[ServiceName_FileServer]" DisplayName="[ServiceName_FileServer]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5007 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_FileServer] [SUBFOLDER_SERVER]" Component_="ASC.Files.exe"/>
-    <ROW ServiceInstall="ServiceName_FileService" Name="[ServiceName_FileService]" DisplayName="[ServiceName_FileService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5009 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_FileService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Files.Service.exe"/>
-    <ROW ServiceInstall="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" DisplayName="[ServiceName_NotifyService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5005 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_NotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Notify.exe"/>
-    <ROW ServiceInstall="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" DisplayName="[ServiceName_PeopleServer]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5004 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_PeopleServer] [SUBFOLDER_SERVER]" Component_="ASC.People.exe"/>
-    <ROW ServiceInstall="ServiceName_Proxy" Name="[ServiceName_Proxy]" DisplayName="[ServiceName_Proxy]" ServiceType="16" StartType="2" ErrorControl="1" Component_="proxy.exe"/>
-    <ROW ServiceInstall="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" DisplayName="[ServiceName_Socket.IO]" ServiceType="16" StartType="2" ErrorControl="1" Component_="Socket.IO.exe"/>
-    <ROW ServiceInstall="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" DisplayName="[ServiceName_SsoAuth]" ServiceType="16" StartType="2" ErrorControl="1" Component_="SsoAuth.exe"/>
-    <ROW ServiceInstall="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" DisplayName="[ServiceName_StudioNotifyService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5006 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_StudioNotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Studio.Notify.exe"/>
-    <ROW ServiceInstall="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" DisplayName="[ServiceName_TelegramService]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:51702 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_TelegramService] [SUBFOLDER_SERVER]" Component_="ASC.TelegramService.exe"/>
-    <ROW ServiceInstall="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" DisplayName="[ServiceName_UrlShortenerService]" ServiceType="16" StartType="2" ErrorControl="1" Component_="UrlShortener.exe"/>
-    <ROW ServiceInstall="ServiceName_WebApi" Name="[ServiceName_WebApi]" DisplayName="[ServiceName_WebApi]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5000 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_WebApi] [SUBFOLDER_SERVER]" Component_="ASC.Web.Api.exe"/>
-    <ROW ServiceInstall="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" DisplayName="[ServiceName_WebStudio]" ServiceType="16" StartType="2" ErrorControl="1" Arguments="--urls=[APP_URLS]:5003 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_WebStudio] [SUBFOLDER_SERVER]" Component_="ASC.Web.Studio.exe"/>
+    <ROW ServiceInstall="ServiceName_BackgroundTasks" Name="[ServiceName_BackgroundTasks]" DisplayName="[ServiceName_BackgroundTasks]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5032 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Data.Backup.BackgroundTasks.exe"/>
+    <ROW ServiceInstall="ServiceName_BackupService" Name="[ServiceName_BackupService]" DisplayName="[ServiceName_BackupService]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5012 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Data.Backup.exe"/>
+    <ROW ServiceInstall="ServiceName_ClearEvents" Name="[ServiceName_ClearEvents]" DisplayName="[ServiceName_ClearEvents]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5027 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.ClearEvents.exe"/>
+    <ROW ServiceInstall="ServiceName_DocEditor" Name="[ServiceName_DocEditor]" DisplayName="[ServiceName_DocEditor]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Component_="DocEditor.exe"/>
+    <ROW ServiceInstall="ServiceName_FileServer" Name="[ServiceName_FileServer]" DisplayName="[ServiceName_FileServer]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5007 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_FileServer] [SUBFOLDER_SERVER]" Component_="ASC.Files.exe"/>
+    <ROW ServiceInstall="ServiceName_FileService" Name="[ServiceName_FileService]" DisplayName="[ServiceName_FileService]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5009 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_FileService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Files.Service.exe"/>
+    <ROW ServiceInstall="ServiceName_Login" Name="[ServiceName_Login]" DisplayName="[ServiceName_Login]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Component_="Login.exe"/>
+    <ROW ServiceInstall="ServiceName_Migration" Name="[ServiceName_Migration]" DisplayName="[ServiceName_Migration]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5018 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Migration.exe"/>
+    <ROW ServiceInstall="ServiceName_NotifyService" Name="[ServiceName_NotifyService]" DisplayName="[ServiceName_NotifyService]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5005 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_NotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Notify.exe"/>
+    <ROW ServiceInstall="ServiceName_PeopleServer" Name="[ServiceName_PeopleServer]" DisplayName="[ServiceName_PeopleServer]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5004 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_PeopleServer] [SUBFOLDER_SERVER]" Component_="ASC.People.exe"/>
+    <ROW ServiceInstall="ServiceName_Proxy" Name="[ServiceName_Proxy]" DisplayName="[ServiceName_Proxy]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Component_="Proxy.exe"/>
+    <ROW ServiceInstall="ServiceName_Socket.IO" Name="[ServiceName_Socket.IO]" DisplayName="[ServiceName_Socket.IO]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Component_="Socket.IO.exe"/>
+    <ROW ServiceInstall="ServiceName_SsoAuth" Name="[ServiceName_SsoAuth]" DisplayName="[ServiceName_SsoAuth]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Component_="SsoAuth.exe"/>
+    <ROW ServiceInstall="ServiceName_StudioNotifyService" Name="[ServiceName_StudioNotifyService]" DisplayName="[ServiceName_StudioNotifyService]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5006 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_StudioNotifyService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Studio.Notify.exe"/>
+    <ROW ServiceInstall="ServiceName_TelegramService" Name="[ServiceName_TelegramService]" DisplayName="[ServiceName_TelegramService]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:51702 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_TelegramService] [SUBFOLDER_SERVER]" Component_="ASC.TelegramService.exe"/>
+    <ROW ServiceInstall="ServiceName_UrlShortenerService" Name="[ServiceName_UrlShortenerService]" DisplayName="[ServiceName_UrlShortenerService]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Component_="UrlShortener.exe"/>
+    <ROW ServiceInstall="ServiceName_WebApi" Name="[ServiceName_WebApi]" DisplayName="[ServiceName_WebApi]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5000 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_WebApi] [SUBFOLDER_SERVER]" Component_="ASC.Web.Api.exe"/>
+    <ROW ServiceInstall="ServiceName_WebStudio" Name="[ServiceName_WebStudio]" DisplayName="[ServiceName_WebStudio]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5003 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_WebStudio] [SUBFOLDER_SERVER]" Component_="ASC.Web.Studio.exe"/>
+    <ROW ServiceInstall="ServiceName_WebhooksService" Name="[ServiceName_WebhooksService]" DisplayName="[ServiceName_WebhooksService]" ServiceType="16" StartType="2" ErrorControl="1" StartName="NT AUTHORITY\LocalService" Arguments="--urls=[APP_URLS]:5031 --ENVIRONMENT=[ENVIRONMENT] --pathToConf=&quot;[APPDIR]config&quot; --$STORAGE_ROOT=&quot;[APPDIR]Data&quot; --log:dir=&quot;[APPDIR]Logs&quot; --log:name=[ServiceName_BackupService] --core:products:folder=&quot;[APPDIR]products&quot; [SUBFOLDER_SERVER]" Component_="ASC.Webhooks.Service.exe"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>
@@ -930,19 +1286,15 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateComponent">
     <ROW Name="ReplaceAppDir" TxtUpdateSet="xml" FindPattern="{APPDIR}" ReplacePattern="[APPDIR]" Options="2" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceAppDir" TxtUpdateSet="appsettings.test.json" FindPattern="{APPDIRCONF}" ReplacePattern="[APPDIR_FORWARD_SLASH]" Options="2" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceElasticHost" TxtUpdateSet="YourFile.txt" FindPattern=".Host.:.*" ReplacePattern="&quot;Host&quot;: &quot;localhost&quot;," Options="3" Order="0" FileEncoding="-1"/>
     <ROW Name="ReplaceWinVol" TxtUpdateSet="xml" FindPattern="{WindowsVolume}" ReplacePattern="[WindowsVolume]" Options="2" Order="1" FileEncoding="-1"/>
-    <ROW Name="ReplaceAppDir" TxtUpdateSet="json" FindPattern="{APPDIRCONF}" ReplacePattern="[APPDIR_FORWARD_SLASH]" Options="2" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceAppDir" TxtUpdateSet="config.json" FindPattern="{APPDIRCONF}" ReplacePattern="[APPDIR_FORWARD_SLASH]" Options="2" Order="0" FileEncoding="-1"/>
-    <ROW Name="ReplaceAppDir" TxtUpdateSet="config.json_1" FindPattern="{APPDIRCONF}" ReplacePattern="[APPDIR_FORWARD_SLASH]" Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceInclude" TxtUpdateSet="YourFile.txt" FindPattern="/etc/nginx/includes" ReplacePattern="includes" Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_1" FindPattern="/var/www" ReplacePattern=".." Options="2" Order="0" FileEncoding="-1"/>
+    <ROW Name="ReplaceRoot" TxtUpdateSet="YourFile.txt_2" FindPattern="/var/www" ReplacePattern=".." Options="2" Order="0" FileEncoding="-1"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.TxtUpdateSetComponent">
-    <ROW Key="YourFile.txt" Component="AI_ExePath" FileName="elastic.json" Directory="config_Dir" Options="17"/>
-    <ROW Key="appsettings.test.json" Component="Socket.IO.exe" FileName="*.json" Directory="config_Dir" Options="17"/>
-    <ROW Key="config.json" Component="proxy.xml" FileName="config.json" Directory="config_2_Dir" Options="17"/>
-    <ROW Key="config.json_1" Component="proxy.xml" FileName="config.json" Directory="NewFolder_1_Dir" Options="17"/>
-    <ROW Key="json" Component="proxy.xml" FileName="config.json" Directory="config_1_Dir" Options="17"/>
+    <ROW Key="YourFile.txt" Component="conf" FileName="onlyoffice.conf" Directory="conf_Dir" Options="17"/>
+    <ROW Key="YourFile.txt_1" Component="conf" FileName="onlyoffice-client.conf" Directory="conf_Dir" Options="17"/>
+    <ROW Key="YourFile.txt_2" Component="includes" FileName="onlyoffice-public.conf" Directory="includes_Dir" Options="17"/>
     <ROW Key="xml" Component="AI_ExePath" FileName="*.xml" Directory="tools_Dir" Options="17"/>
   </COMPONENT>
 </DOCUMENT>
