@@ -289,6 +289,10 @@ const StyledArticleProfile = styled.div`
     padding: 16px 14px;
   `}
 
+  .profile-avatar {
+    cursor: pointer;
+  }
+
   .option-button {
     margin-left: auto;
     height: 32px;
