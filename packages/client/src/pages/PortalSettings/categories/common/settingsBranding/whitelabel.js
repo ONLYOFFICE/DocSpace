@@ -151,9 +151,8 @@ const WhiteLabel = (props) => {
   const [isCanvasProcessing, setIsCanvasProcessing] = useState(false);
   const [isUseTextAsLogo, setIsUseTextAsLogo] = useState(false);
 
-  const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState(logoText);
-
-  const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(logoUrls);
+  const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState(null);
+  const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
   const [logoUrlsChange, setLogoUrlsChange] = useState([]);
 
   const [portalHeaderLabel, setPortalHeaderLabel] = useState();
@@ -163,6 +162,18 @@ const WhiteLabel = (props) => {
   const [faviconLabel, setFaviconLabel] = useState();
   const [editorsHeaderLabel, setEditorsHeaderLabel] = useState();
   const [logoEditorsEmbeddedLabel, setLogoEditorsEmbeddedLabel] = useState();
+
+  useEffect(() => {
+    if (logoText) {
+      setLogoTextWhiteLabel(logoText);
+    }
+  }, [logoText]);
+
+  useEffect(() => {
+    if (logoUrls) {
+      setLogoUrlsWhiteLabel(logoUrls);
+    }
+  }, [logoUrls]);
 
   useEffect(() => {
     if (
