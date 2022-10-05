@@ -8,6 +8,7 @@ import {
   FileStatus,
   RoomSearchArea,
   RoomsType,
+  RoomsProviderType,
 } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
@@ -35,6 +36,7 @@ class FilesStore {
   selectedFolderStore;
   treeFoldersStore;
   filesSettingsStore;
+  thirdPartyStore;
 
   isLoaded = false;
   isLoading = false;
@@ -94,7 +96,8 @@ class FilesStore {
     authStore,
     selectedFolderStore,
     treeFoldersStore,
-    filesSettingsStore
+    filesSettingsStore,
+    thirdPartyStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
@@ -105,6 +108,7 @@ class FilesStore {
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
     this.filesSettingsStore = filesSettingsStore;
+    this.thirdPartyStore = thirdPartyStore;
 
     const { socketHelper, withPaging } = authStore.settingsStore;
 
@@ -1963,6 +1967,15 @@ class FilesStore {
         pinned,
       } = item;
 
+      const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIconSmall(
+        item.providerKey
+      );
+
+      const providerType =
+        RoomsProviderType[
+          Object.keys(RoomsProviderType).find((key) => key === item.providerKey)
+        ];
+
       const { canConvert, isMediaOrImage } = this.filesSettingsStore;
 
       const canOpenPlayer = isMediaOrImage(item.fileExst);
@@ -2075,6 +2088,8 @@ class FilesStore {
         isArchive,
         tags,
         pinned,
+        thirdPartyIcon,
+        providerType,
       };
     });
 
