@@ -930,14 +930,21 @@ class FilesActionStore {
     fetchRooms(id, newFilter).finally(() => setIsLoading(false));
   };
 
-  selectType = (type) => {
+  selectOption = ({ option, value }) => {
     const { roomsFilter, fetchRooms, setIsLoading } = this.filesStore;
     const { id } = this.selectedFolderStore;
 
     const newFilter = roomsFilter.clone();
     const tags = newFilter.tags ? [...newFilter.tags] : [];
     newFilter.tags = [...tags];
-    newFilter.type = type;
+
+    if (option === "defaultTypeRoom") {
+      newFilter.type = value;
+    }
+
+    if (option === "typeProvider") {
+      newFilter.provider = value;
+    }
 
     setIsLoading(true);
     fetchRooms(id, newFilter).finally(() => setIsLoading(false));
