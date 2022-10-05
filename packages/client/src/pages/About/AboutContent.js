@@ -6,14 +6,14 @@ import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
-import { isDesktop, isMobile } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const StyledAboutBody = styled.div`
   width: 100%;
 
   .avatar {
-    margin-top: ${isDesktop ? "0px" : "32px"};
+    margin-top: ${!isMobile ? "0px" : "32px"};
     margin-bottom: 16px;
   }
 

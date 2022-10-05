@@ -63,6 +63,11 @@ Type: string
 Default: localhost
 Description: RabbitMQ host:
 
+Template: {{product}}/rabbitmq-port
+Type: string
+Default: 5672
+Description: RabbitMQ port:
+
 Template: {{product}}/rabbitmq-user
 Type: string
 Default: guest

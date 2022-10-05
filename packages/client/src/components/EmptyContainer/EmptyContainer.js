@@ -2,7 +2,12 @@ import React from "react";
 import styled, { css } from "styled-components";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
-import { tablet, smallTablet } from "@docspace/components/utils/device";
+import {
+  tablet,
+  smallTablet,
+  desktop,
+} from "@docspace/components/utils/device";
+import { isMobile } from "react-device-detect";
 
 const EmptyPageStyles = css`
   padding: 44px 0px 64px 0px;
@@ -10,9 +15,24 @@ const EmptyPageStyles = css`
   grid-column-gap: 40px;
   grid-template-columns: 100px 1fr;
 
+  .empty-folder_link:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  .empty-folder_link {
+    margin-right: 9px;
+  }
+
+  @media ${desktop} {
+    .empty-folder_link:not(:last-child) {
+      margin-bottom: 2px;
+    }
+  }
+
   @media ${tablet} {
-    padding: 44px 0px 64px 93px;
+    padding: 44px 0px 64px 0px;
     grid-column-gap: 33px;
+    margin-left: auto;
   }
 
   @media ${smallTablet} {
@@ -39,6 +59,7 @@ const EmptyFolderWrapper = styled.div`
     }
 
     .empty-folder_container-image {
+      margin-top: 3px;
       cursor: pointer;
     }
 
@@ -53,6 +74,9 @@ const EmptyFolderWrapper = styled.div`
       line-height: unset;
       ${NoUserSelect}
     }
+    .empty-folder_container_up-image {
+      ${NoUserSelect}
+    }
 
     .empty-folder_container-icon {
       height: 20px;
@@ -64,6 +88,13 @@ const EmptyFolderWrapper = styled.div`
     .empty-connect_container-links {
       position: relative;
       bottom: 16px;
+    }
+
+    @media screen and (max-width: 1325px) {
+      ${!isMobile &&
+      css`
+        margin-left: 98px;
+      `};
     }
 
     ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
