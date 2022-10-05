@@ -826,7 +826,7 @@
     <value>Virtual room {0} invitations sent successfully.</value>
   </data>
   <data name="TariffsFeature_manager_price_count" xml:space="preserve">
-    <value>Number of managers</value>
+    <value>Number of admins</value>
   </data>
   <data name="TariffsFeature_audit" xml:space="preserve">
     <value>Tracking user logins &amp; action</value>
@@ -856,7 +856,7 @@
     <value>Storage space used:</value>
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Managers added:</value>
+    <value>Admins added:</value>
   </data>
   <data name="Tariffs_startup" xml:space="preserve">
     <value>Startup</value>
@@ -868,7 +868,7 @@
     <value>Max file size</value>
   </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
-    <value>Room:</value>
+    <value>Rooms:</value>
   </data>
   <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
     <value>Users in room:</value>
