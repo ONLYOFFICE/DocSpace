@@ -119,6 +119,36 @@ class ThirdPartyStore {
     }
   };
 
+  getThirdPartyIconSmall = (iconName) => {
+    switch (iconName) {
+      case "Box":
+        return "images/icon_box_small.react.svg";
+      case "DropboxV2":
+        return "images/icon_dropbox_small.react.svg";
+      case "GoogleDrive":
+        return "images/icon_google_drive_small.react.svg";
+      case "OneDrive":
+        return "images/icon_onedrive_small.react.svg";
+      case "SharePoint":
+        return "images/icon_sharepoint_small.react.svg";
+      case "kDrive":
+        return "images/icon_kdrive_small.react.svg";
+      case "Yandex":
+        return "images/icon_yandex_disk_small.react.svg";
+      case "OwnCloud":
+        return "images/icon_owncloud_small.react.svg";
+      case "NextCloud":
+        return "images/icon_nextcloud_small.react.svg";
+      case "OneDriveForBusiness":
+        return "images/icon_onedrive_small.react.svg";
+      case "WebDav":
+        return "images/icon_webdav_small.react.svg";
+
+      default:
+        return "";
+    }
+  };
+
   get googleConnectItem() {
     return (
       this.capabilities && this.capabilities.find((x) => x[0] === "GoogleDrive")
