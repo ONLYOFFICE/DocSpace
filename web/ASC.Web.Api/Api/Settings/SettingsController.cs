@@ -145,7 +145,7 @@ public class SettingsController : BaseSettingsController
         var settings = new SettingsDto
         {
             Culture = Tenant.GetCulture().ToString(),
-            GreetingSettings = Tenant.Name,
+            GreetingSettings = Tenant.Name == "" ? Resource.PortalName : Tenant.Name,
             Personal = _coreBaseSettings.Personal,
             DocSpace = !_coreBaseSettings.DisableDocSpace,
             Version = _configuration["version:number"] ?? "",

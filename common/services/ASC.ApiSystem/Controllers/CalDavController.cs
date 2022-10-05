@@ -124,7 +124,7 @@ public class CalDavController : ControllerBase
     }
 
     [HttpGet("caldav_delete_event")]
-    [Authorize(AuthenticationSchemes = "auth.allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip")]
     public IActionResult CaldavDeleteEvent(string eventInfo)
     {
         if (!GetTenant(eventInfo, out var tenant, out var error))
@@ -153,7 +153,7 @@ public class CalDavController : ControllerBase
     }
 
     [HttpPost("is_caldav_authenticated")]
-    [Authorize(AuthenticationSchemes = "auth.allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip")]
     public IActionResult IsCaldavAuthenticated(UserPassword userPassword)
     {
         if (userPassword == null || string.IsNullOrEmpty(userPassword.User) || string.IsNullOrEmpty(userPassword.Password))

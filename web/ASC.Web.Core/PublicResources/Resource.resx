@@ -828,4 +828,7 @@
   <data name="MessageRoomInvitationsSentOnEmail" xml:space="preserve">
     <value>Virtual room {0} invitations sent successfully.</value>
   </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Cloud space for your office docs</value>
+  </data>
 </root>

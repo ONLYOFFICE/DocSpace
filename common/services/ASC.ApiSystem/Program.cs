@@ -50,6 +50,8 @@
 */
 
 
+using ASC.ApiSystem;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -58,34 +60,14 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config.AddJsonFile($"appsettings.services.json", true)
-          .AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-},
-(hostContext, services, diHelper) =>
-{
-    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+builder.Host.ConfigureDefault();
 
-    diHelper.TryAdd<AuthHandler>();
-    diHelper.AddControllers();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddApiSystemConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
-    services.AddControllers()
-            .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.WriteIndented = false;
-                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            });
-
-    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
-
-    services.AddAuthentication()
-        .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip", _ => { })
-        .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
-});
-
-var startup = new BaseWorkerStartup(builder.Configuration);
+var startup = new Startup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 
@@ -96,6 +78,6 @@ builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
 
 var app = builder.Build();
 
-startup.Configure(app);
+startup.Configure(app, app.Environment);
 
 await app.RunAsync();

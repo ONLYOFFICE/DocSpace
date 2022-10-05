@@ -55,7 +55,7 @@ public class PortalController : ControllerBase
         SettingsManager settingsManager,
         ApiSystemHelper apiSystemHelper,
         CommonMethods commonMethods,
-        IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
+        HostedSolution hostedSolution,
         CoreSettings coreSettings,
         TenantDomainValidator tenantDomainValidator,
         UserFormatter userFormatter,
@@ -72,7 +72,7 @@ public class PortalController : ControllerBase
         SettingsManager = settingsManager;
         ApiSystemHelper = apiSystemHelper;
         CommonMethods = commonMethods;
-        HostedSolution = hostedSolutionOptions.Value;
+        HostedSolution = hostedSolution;
         CoreSettings = coreSettings;
         TenantDomainValidator = tenantDomainValidator;
         UserFormatter = userFormatter;
@@ -101,7 +101,8 @@ public class PortalController : ControllerBase
 
     [HttpPost("register")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth.allowskip.registerportal")]
+    [AllowAnonymous]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:registerportal")]
     public Task<IActionResult> RegisterAsync(TenantModel model)
     {
         if (model == null)
@@ -207,7 +208,7 @@ public class PortalController : ControllerBase
 
         var info = new TenantRegistrationInfo
         {
-            Name = Configuration["web:portal-name"] ?? "Cloud Office Applications",
+            Name = Configuration["web:portal-name"] ?? "",
             Address = model.PortalName,
             Culture = lang,
             FirstName = model.FirstName,
@@ -336,7 +337,7 @@ public class PortalController : ControllerBase
 
     [HttpDelete("remove")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth.allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip")]
     public IActionResult Remove([FromQuery] TenantModel model)
     {
         if (!CommonMethods.GetTenant(model, out var tenant))
@@ -371,7 +372,7 @@ public class PortalController : ControllerBase
 
     [HttpPut("status")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth.allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip")]
     public IActionResult ChangeStatus(TenantModel model)
     {
         if (!CommonMethods.GetTenant(model, out var tenant))
@@ -446,7 +447,7 @@ public class PortalController : ControllerBase
 
     [HttpGet("get")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth.allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip")]
     public IActionResult GetPortals([FromQuery] TenantModel model)
     {
         try

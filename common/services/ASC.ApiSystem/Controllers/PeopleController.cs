@@ -58,7 +58,7 @@ public class PeopleController : ControllerBase
 
     public PeopleController(
         ILogger<PeopleController> option,
-        IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
+        HostedSolution hostedSolution,
         UserFormatter userFormatter,
         ICache cache,
         CoreSettings coreSettings,
@@ -66,7 +66,7 @@ public class PeopleController : ControllerBase
         IHttpContextAccessor httpContextAccessor)
     {
         Log = option;
-        HostedSolution = hostedSolutionOptions.Value;
+        HostedSolution = hostedSolution;
         UserFormatter = userFormatter;
         Cache = cache;
         CoreSettings = coreSettings;
@@ -91,10 +91,10 @@ public class PeopleController : ControllerBase
 
     [HttpPost("find")]
     [AllowCrossSiteJson]
-    public IActionResult Find(IEnumerable<Guid> userIds)
+    public IActionResult Find(FindPeopleModel model)
     {
         var sw = Stopwatch.StartNew();
-        userIds = userIds ?? new List<Guid>();
+        var userIds = model.UserIds ?? new List<Guid>();
 
         var users = HostedSolution.FindUsers(userIds);
 

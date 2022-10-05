@@ -61,12 +61,12 @@ public class TariffController : ControllerBase
     private ILogger<TariffController> Log { get; }
     public TariffController(
         CommonMethods commonMethods,
-        IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
+        HostedSolution hostedSolution,
         ILogger<TariffController> option
         )
     {
         CommonMethods = commonMethods;
-        HostedSolution = hostedSolutionOptions.Value;
+        HostedSolution = hostedSolution;
         Log = option;
     }
 
@@ -87,7 +87,7 @@ public class TariffController : ControllerBase
 
     [HttpPut("set")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth.allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip")]
     public IActionResult SetTariff(TariffModel model)
     {
         if (!CommonMethods.GetTenant(model, out var tenant))
@@ -141,7 +141,7 @@ public class TariffController : ControllerBase
         var tariff = new Tariff
         {
             QuotaId = quota.Tenant,
-            DueDate = model.DueDate != default ? model.DueDate : DateTime.MaxValue,
+            DueDate = model.DueDate != default ? model.DueDate : DateTime.MaxValue.AddSeconds(-1),
         };
 
         HostedSolution.SetTariff(tenant.Id, tariff);
@@ -151,7 +151,7 @@ public class TariffController : ControllerBase
 
     [HttpGet("get")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth.allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip")]
     public IActionResult GetTariff([FromQuery] TariffModel model)
     {
         if (!CommonMethods.GetTenant(model, out var tenant))

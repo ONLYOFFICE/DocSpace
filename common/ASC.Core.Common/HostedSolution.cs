@@ -42,9 +42,33 @@ public class HostedSolution
     internal DbSettingsManager SettingsManager { get; set; }
     internal CoreSettings CoreSettings { get; set; }
 
-    public string Region { get; set; }
+    public string Region { get; private set; }
 
-    public HostedSolution() { }
+    public HostedSolution(ITenantService tenantService,
+        IUserService userService,
+        IQuotaService quotaService,
+        ITariffService tariffService,
+        UserFormatter userFormatter,
+        TenantManager clientTenantManager,
+        TenantUtil tenantUtil,
+        DbSettingsManager settingsManager,
+        CoreSettings coreSettings)
+    {
+        TenantService = tenantService;
+        UserService = userService;
+        QuotaService = quotaService;
+        TariffService = tariffService;
+        UserFormatter = userFormatter;
+        ClientTenantManager = clientTenantManager;
+        TenantUtil = tenantUtil;
+        SettingsManager = settingsManager;
+        CoreSettings = coreSettings;
+    }
+
+    public void Init(string region)
+    {
+        Region = region;
+    }
 
     public List<Tenant> GetTenants(DateTime from)
     {

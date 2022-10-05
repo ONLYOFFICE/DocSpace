@@ -25,6 +25,10 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 
+using System.Threading;
+
+using ASC.Common.Security.Authorizing;
+
 namespace ASC.ApiSystem.Classes;
 
 [Scope]
@@ -69,7 +73,7 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
         if (Convert.ToBoolean(Configuration[Scheme.Name] ?? "false"))
         {
             Log.LogDebug("Auth for {0} skipped", Scheme.Name);
-
+            Authenticate();
             return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
         }
 
@@ -95,7 +99,7 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
                 if (splitted.Length < 3)
                 {
                     Log.LogDebug("Auth failed: invalid token {0}.", header);
-
+                    
                     return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
                 }
 
@@ -148,6 +152,22 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 
         Log.LogInformation("Auth success {0}", Scheme.Name);
         if (HttpContextAccessor?.HttpContext != null) HttpContextAccessor.HttpContext.User = new CustomClaimsPrincipal(new ClaimsIdentity(Scheme.Name), identity);
+
+        Authenticate();
         return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, new AuthenticationProperties(), Scheme.Name)));
+    }
+
+    private void Authenticate()
+    {
+        var account = Core.Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == Core.Configuration.Constants.CoreSystem.ID);
+
+        var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Sid, account.ID.ToString()),
+                new Claim(ClaimTypes.Name, account.Name),
+                new Claim(ClaimTypes.Role, Role.System)
+            };
+
+        HttpContextAccessor.HttpContext.User = new CustomClaimsPrincipal(new ClaimsIdentity(account, claims), account);
     }
 }

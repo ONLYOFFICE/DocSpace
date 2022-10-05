@@ -218,7 +218,7 @@ public class DbTenantService : ITenantService
                 tenant.LastModified = DateTime.UtcNow;
 
                 var dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
-
+                dbTenant.Id = 0;
                 dbTenant = tenantDbContext.Tenants.Add(dbTenant).Entity;
                 tenantDbContext.SaveChanges();
                 tenant.Id = dbTenant.Id;
@@ -235,7 +235,7 @@ public class DbTenantService : ITenantService
                     dbTenant.MappedDomain = !string.IsNullOrEmpty(tenant.MappedDomain) ? tenant.MappedDomain.ToLowerInvariant() : null;
                     dbTenant.Version = tenant.Version;
                     dbTenant.VersionChanged = tenant.VersionChanged;
-                    dbTenant.Name = tenant.Name ?? tenant.Alias;
+                    dbTenant.Name = tenant.Name ?? "";
                     dbTenant.Language = tenant.Language;
                     dbTenant.TimeZone = tenant.TimeZone;
                     dbTenant.TrustedDomainsRaw = tenant.GetTrustedDomains();

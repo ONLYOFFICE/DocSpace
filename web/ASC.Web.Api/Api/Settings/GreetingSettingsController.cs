@@ -54,7 +54,7 @@ public class GreetingSettingsController : BaseSettingsController
     [HttpGet("greetingsettings")]
     public ContentResult GetGreetingSettings()
     {
-        return new ContentResult { Content = Tenant.Name };
+        return new ContentResult { Content = Tenant.Name == "" ? Resource.PortalName : Tenant.Name };
     }
 
     [HttpPost("greetingsettings")]
@@ -79,7 +79,7 @@ public class GreetingSettingsController : BaseSettingsController
 
         return new ContentResult
         {
-            Content = Tenant.Name
+            Content = Tenant.Name == "" ? Resource.PortalName : Tenant.Name
         };
     }
 }

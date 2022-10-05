@@ -52,6 +52,8 @@
 
 
 
+using ASC.Web.Core.PublicResources;
+
 namespace ASC.ApiSystem.Controllers;
 
 [Scope]
@@ -92,7 +94,7 @@ public class CommonMethods
         EmailValidationKeyProvider emailValidationKeyProvider,
         TimeZoneConverter timeZoneConverter, CommonConstants commonConstants,
         IMemoryCache memoryCache,
-        IOptionsSnapshot<HostedSolution> hostedSolutionOptions,
+        HostedSolution hostedSolution,
         CoreBaseSettings coreBaseSettings,
         TenantManager tenantManager,
         IHttpClientFactory clientFactory)
@@ -121,7 +123,8 @@ public class CommonMethods
 
         ClientFactory = clientFactory;
 
-        HostedSolution = hostedSolutionOptions.Get(CommonConstants.BaseDbConnKeyString);
+        HostedSolution = hostedSolution;
+        HostedSolution.Init(CommonConstants.BaseDbConnKeyString);
     }
 
 
@@ -134,7 +137,7 @@ public class CommonMethods
             hostedRegion = t.HostedRegion,
             industry = t.Industry,
             language = t.Language,
-            name = t.Name,
+            name = t.Name == "" ? Resource.PortalName : t.Name,
             ownerId = t.OwnerId,
             partnerId = t.PartnerId,
             paymentId = t.PaymentId,
@@ -172,6 +175,7 @@ public class CommonMethods
 
         var request = new HttpRequestMessage();
         request.Method = HttpMethod.Post;
+        request.RequestUri = new Uri(url);
         request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/x-www-form-urlencoded"));
 
         try
