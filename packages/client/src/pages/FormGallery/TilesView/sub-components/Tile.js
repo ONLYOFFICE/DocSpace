@@ -66,13 +66,6 @@ class Tile extends React.PureComponent {
     );
   };
 
-  onFileIconClick = () => {
-    if (isDesktop) return;
-
-    const { onSelect, item } = this.props;
-    onSelect && onSelect(true, item);
-  };
-
   getContextModel = () => {
     return [
       {
@@ -153,7 +146,6 @@ class Tile extends React.PureComponent {
         isSelected={isSelected}
         onContextMenu={onContextMenu}
         isActive={isActive}
-        isDesktop={isDesktop}
         showHotkeyBorder={showHotkeyBorder}
         onDoubleClick={this.onCreateForm}
         onClick={this.onSelectForm}
@@ -163,9 +155,7 @@ class Tile extends React.PureComponent {
 
         <StyledFileTileBottom isSelected={isSelected} isActive={isActive}>
           <div className="file-icon_container">
-            <div className="file-icon" onClick={this.onFileIconClick}>
-              {element}
-            </div>
+            <div className="file-icon">{element}</div>
           </div>
 
           <StyledContent>{children}</StyledContent>
@@ -201,7 +191,6 @@ Tile.propTypes = {
   contextOptions: PropTypes.array,
   data: PropTypes.object,
   id: PropTypes.string,
-  onSelect: PropTypes.func,
   tileContextClick: PropTypes.func,
 };
 

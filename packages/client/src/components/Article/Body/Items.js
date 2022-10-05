@@ -342,7 +342,7 @@ const Items = ({
         />
       );
 
-      items.splice(3, 0, filesHeader);
+      isAdmin && items.splice(3, 0, filesHeader);
       items.unshift(roomsHeader);
       items.push(otherHeader);
 
@@ -363,6 +363,7 @@ const Items = ({
       startUpload,
       uploadEmptyFolders,
       trashIsEmpty,
+      isAdmin,
     ]
   );
 
