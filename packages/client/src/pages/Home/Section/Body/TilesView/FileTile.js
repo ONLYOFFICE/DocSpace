@@ -43,7 +43,7 @@ const FileTile = (props) => {
     setSelection,
     id,
     onSelectTag,
-    onSelectType,
+    onSelectOption,
     columnCount,
   } = props;
 
@@ -111,7 +111,7 @@ const FileTile = (props) => {
           showHotkeyBorder={showHotkeyBorder}
           setSelection={setSelection}
           selectTag={onSelectTag}
-          selectType={onSelectType}
+          selectOption={onSelectOption}
           columnCount={columnCount}
         >
           <FilesTileContent
