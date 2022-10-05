@@ -63,6 +63,13 @@ const StyledDropdownItem = styled.div`
             ? props.theme.dropDownItem.icon.disableColor
             : props.theme.dropDownItem.icon.color};
       }
+
+      rect[fill] {
+        fill: ${(props) =>
+          props.disabled
+            ? props.theme.dropDownItem.icon.disableColor
+            : props.theme.dropDownItem.icon.color};
+      }
     }
   }
 
