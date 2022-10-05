@@ -1,6 +1,7 @@
 {
   "ChangeEmailSuccess": "Email has been changed successfully",
   "ChangesApplied": "Changes are applied",
+  "ConnectSocialNetworks": "Сonnect your social networks",
   "ContactInformation": "Contact Information",
   "CountCodesRemaining": "codes remaining",
   "DarkTheme": "Dark theme",
@@ -12,6 +13,7 @@
   "LightTheme": "Light theme",
   "LoginSettings": "Login settings",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
+  "MyProfile": "My profile",
   "PhoneLbl": "Phone",
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
@@ -20,6 +22,7 @@
   "SubscriptionTurnOffToast": "You have been successfully unsubscribed from the the mailing list. <1>Subscribe again</1>",
   "Subscriptions": "Subscriptions",
   "SystemTheme": "Use system theme",
+  "SystemThemeDescription": "Automatically switch between light and dark themes when your system does.",
   "TfaLoginSettings": "Login settings",
   "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin."
 }

@@ -1,20 +1,13 @@
 import styled, { css } from "styled-components";
 
-import {
-  isMobile,
-  isMobileOnly,
-  isTablet,
-  isDesktop,
-} from "react-device-detect";
+import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
 import {
   mobile,
   tablet,
   isMobile as isMobileUtils,
 } from "@docspace/components/utils/device";
 
-import Heading from "@docspace/components/heading";
 import { Base } from "@docspace/components/themes";
-
 import MenuIcon from "@docspace/components/public/static/images/menu.react.svg";
 import CrossIcon from "@docspace/components/public/static/images/cross.react.svg";
 
@@ -84,7 +77,6 @@ const StyledArticle = styled.article`
     .scroll-body {
       overflow-x: hidden !important;
       height: calc(100% - 200px);
-      ${!isDesktop && "padding-top:  16px"};
       padding: 0 20px;
 
       @media ${tablet} {
@@ -147,7 +139,6 @@ const StyledArticleHeader = styled.div`
   @media ${mobile} {
     border-bottom: ${(props) => props.theme.catalog.header.borderBottom};
     padding: 12px 0 12px;
-    // margin-bottom: 16px !important;
   }
 
   ${isMobileOnly &&
@@ -155,7 +146,6 @@ const StyledArticleHeader = styled.div`
     border-bottom: ${(props) =>
       props.theme.catalog.header.borderBottom} !important;
     padding: 12px 0 12px !important;
-    // margin-bottom: 16px !important;
   `}
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -169,6 +159,14 @@ const StyledHeading = styled.div`
   margin: 0;
   padding: 0;
   cursor: pointer;
+
+  .logo-icon_svg {
+    svg {
+      path:last-child {
+        fill: ${(props) => props.theme.client.home.logoColor};
+      }
+    }
+  }
 
   @media ${tablet} {
     display: ${(props) => (props.showText ? "block" : "none")};
@@ -290,6 +288,10 @@ const StyledArticleProfile = styled.div`
   css`
     padding: 16px 14px;
   `}
+
+  .profile-avatar {
+    cursor: pointer;
+  }
 
   .option-button {
     margin-left: auto;

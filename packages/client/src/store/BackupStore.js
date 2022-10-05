@@ -62,9 +62,6 @@ class BackupStore {
   selectedEnableSchedule = false;
   defaultEnableSchedule = false;
 
-  isSavingProcess = false;
-  isResetProcess = false;
-
   storageRegions = [];
 
   constructor() {
@@ -573,13 +570,6 @@ class BackupStore {
   setSelectedEnableSchedule = () => {
     const isEnable = this.selectedEnableSchedule;
     this.selectedEnableSchedule = !isEnable;
-  };
-  setSavingProcess = (process) => {
-    if (process !== this.isSavingProcess) this.isSavingProcess = process;
-  };
-
-  setResetProcess = (process) => {
-    if (process !== this.isResetProcess) this.isResetProcess = process;
   };
 
   convertServiceName = (serviceName) => {

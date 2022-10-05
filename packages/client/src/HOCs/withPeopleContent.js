@@ -92,7 +92,7 @@ export default function withContent(WrappedContent) {
 
     const groups = getFormattedGroups();
 
-    const redirectToProfile = () => {
+    /*const redirectToProfile = () => {
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -100,9 +100,9 @@ export default function withContent(WrappedContent) {
           `/accounts/view/${userName}`
         )
       );
-    };
+    };*/
 
-    const onUserNameClick = useCallback(
+    /*const onUserNameClick = useCallback(
       (e) => {
         const timer = setTimeout(() => redirectToProfile(), 500);
         e.preventDefault();
@@ -119,7 +119,7 @@ export default function withContent(WrappedContent) {
         });
       },
       [history, userName]
-    );
+    );*/
 
     const onPhoneClick = () => window.open(`sms:${mobilePhone}`);
     const onEmailClick = () => window.open(`mailto:${email}`);
@@ -143,7 +143,7 @@ export default function withContent(WrappedContent) {
         onContentRowSelect={onContentRowSelect}
         onPhoneClick={onPhoneClick}
         onEmailClick={onEmailClick}
-        onUserNameClick={onUserNameClick}
+        //onUserNameClick={onUserNameClick}
         groups={groups}
         checkedProps={checkedProps}
         element={element}

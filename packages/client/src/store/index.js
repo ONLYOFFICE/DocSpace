@@ -125,7 +125,9 @@ const hotkeyStore = new HotkeyStore(
 const profileActionsStore = new ProfileActionsStore(
   authStore,
   filesStore,
-  peopleStore
+  peopleStore,
+  treeFoldersStore,
+  selectedFolderStore
 );
 
 const store = {

@@ -4,19 +4,19 @@ set -e
 
 PRODUCT="docspace"
 ENVIRONMENT="production"
+PACKAGE_SYSNAME="onlyoffice"
 
-APP_DIR="/etc/onlyoffice/${PRODUCT}"
+APP_DIR="/etc/${PACKAGE_SYSNAME}/${PRODUCT}"
 PRODUCT_DIR="/var/www/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
+
 NGINX_DIR="/etc/nginx"
 NGINX_CONF="${NGINX_DIR}/conf.d"
-SYSTEMD_DIR="/lib/systemd/system"
 
-MYSQL=""
-DB_HOST=""
+DB_HOST="localhost"
 DB_PORT="3306"
-DB_NAME=""
-DB_USER=""
+DB_NAME="${PACKAGE_SYSNAME}"
+DB_USER="root"
 DB_PWD=""
 
 APP_HOST="localhost"
@@ -31,7 +31,8 @@ ELK_PORT="9200"
 
 RABBITMQ_HOST="localhost"
 RABBITMQ_USER="guest"
-RABBITMQ_PWD="guest"
+RABBITMQ_PASSWORD="guest"
+RABBITMQ_PORT="5672"
 	
 REDIS_HOST="localhost"
 REDIS_PORT="6379"
@@ -156,9 +157,16 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-rbp | --rabbitmqpassword )
+		-rbpw | --rabbitmqpassword )
 			if [ "$2" != "" ]; then
 				RABBITMQ_PASSWORD=$2
+				shift
+			fi
+		;;
+
+		-rbp | --rabbitmqport )
+			if [ "$2" != "" ]; then
+				RABBITMQ_PORT=$2
 				shift
 			fi
 		;;
@@ -176,8 +184,9 @@ while [ "$1" != "" ]; do
 			echo "      -rdh, --redishost                 	redis ip"
 			echo "      -rdp, --redisport                 	redis port (default 6379)"
 			echo "      -rbh, --rabbitmqhost                rabbitmq ip"
+			echo "      -rbp, --rabbitmqport                rabbitmq port"
 			echo "      -rbu, --rabbitmquser                rabbitmq user"
-			echo "      -rbp, --rabbitmqpassword            rabbitmq password"
+			echo "      -rbpw, --rabbitmqpassword           rabbitmq password"
 			echo "      -mysqlh, --mysqlhost                mysql server host"
 			echo "      -mysqld, --mysqldatabase            ${PRODUCT} database name"
 			echo "      -mysqlu, --mysqluser                ${PRODUCT} database user"
@@ -216,7 +225,7 @@ install_json() {
 	#Creating a user-defined .json
 	if [ ! -e $USER_CONF ]; then
 		echo "{}" >> $USER_CONF
-		chown onlyoffice:onlyoffice $USER_CONF
+		chown ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $USER_CONF
 	
 		set_core_machinekey
 		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
@@ -224,14 +233,16 @@ install_json() {
 }
 
 restart_services() {
-	echo -n "Restarting services... "
-
-	sed -e "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" -e "s/environment=.*/environment=$ENVIRONMENT/" -i $SYSTEMD_DIR/${PRODUCT}*.service >/dev/null 2>&1
+	sed -e "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" -e "s/environment=.*/environment=$ENVIRONMENT/" -i /lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
-	systemctl start ${PRODUCT}-migration-runner || true
+	echo -n "Updating database... "
+	systemctl start ${PRODUCT}-migration-runner >/dev/null 2>&1 || true
+	sleep 15
+	echo "OK"
 
-	for SVC in api urlshortener socket studio-notify notify \
+	echo -n "Restarting services... "
+	for SVC in login api urlshortener socket studio-notify notify \
 	people-server files files-services studio backup telegram-service \
 	webhooks-service clear-events backup-background migration ssoauth doceditor
 	do
@@ -412,7 +423,7 @@ setup_nginx(){
 	
 	# Remove default nginx website
 	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
-    sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/onlyoffice.conf
+    sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/${PACKAGE_SYSNAME}.conf
 
 	if [ "$DIST" = "RedHat" ]; then
 		# Remove default nginx settings
@@ -427,12 +438,26 @@ setup_nginx(){
 		if $(getenforce) >/dev/null 2>&1; then
 			case $(getenforce) in
 				enforcing|permissive)
-					PORTS+=('8081') #Storybook
-					PORTS+=("$DOCUMENT_SERVER_PORT")
-					PORTS+=('5001') #ASC.Web.Studio
-					PORTS+=('5002') #ASC.People
-					PORTS+=('5008') #ASC.Files/client
+					PORTS+=('5000') #ASC.Web.Api
+					PORTS+=('5001') #client
+					PORTS+=('5003') #ASC.Web.Studio
+					PORTS+=('5004') #ASC.People
+					PORTS+=('5005') #ASC.Notify
+					PORTS+=('5006') #ASC.Studio.Notify
+					PORTS+=('5007') #ASC.Files/server
+					PORTS+=('5009') #ASC.Files/service
+					PORTS+=('5011') #ASC.Login
+					PORTS+=('5012') #ASC.Data.Backup
 					PORTS+=('5013') #ASC.Files/editor
+					PORTS+=('5018') #ASC.Migration
+					PORTS+=('5027') #ASC.ClearEvents
+					PORTS+=('5028') #ASC.Socket.IO
+					PORTS+=('5029') #ASC.UrlShortener
+					PORTS+=('5031') #ASC.Webhooks.Service
+					PORTS+=('5032') #ASC.Data.Backup.BackgroundTasks
+					PORTS+=('8081') #Storybook
+					PORTS+=('9834') #ASC.SsoAuth
+					PORTS+=('51702') #ASC.TelegramService
 					setsebool -P httpd_can_network_connect on
 				;;
 				disabled)
@@ -448,7 +473,6 @@ setup_nginx(){
 		fi
 	fi
     chown nginx:nginx /etc/nginx/* -R
-    sudo sed -e 's/#//' -i $NGINX_CONF/onlyoffice.conf
 	systemctl enable nginx >/dev/null 2>&1
 	systemctl restart nginx
 	echo "OK"
@@ -456,13 +480,13 @@ setup_nginx(){
 
 setup_docs() {
 	echo -n "Configuring Docs... "
-	local DS_CONF="/etc/onlyoffice/documentserver/local.json"
+	local DS_CONF="/etc/${PACKAGE_SYSNAME}/documentserver/local.json"
 	local JSON_DSCONF="$JSON $DS_CONF -e"
 
 	#Changing the Docs port in nginx conf
 	sed -i "s/0.0.0.0:.*;/0.0.0.0:$DOCUMENT_SERVER_PORT;/" $NGINX_CONF/ds.conf
 	sed -i "s/]:.*;/]:$DOCUMENT_SERVER_PORT default_server;/g" $NGINX_CONF/ds.conf 
-	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/onlyoffice.conf 	
+	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/${PACKAGE_SYSNAME}.conf 	
 
 	#Enable JWT validation for Docs
 	$JSON_DSCONF "this.services.CoAuthoring.token.enable.browser='true'" >/dev/null 2>&1 
@@ -475,7 +499,7 @@ setup_docs() {
 	#Save Docs address and JWT in .json
 	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
-	'url': {'public': '/ds-vpath/','internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
+	'url': {'public': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\", 'internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
 	
 	#Docs Database Migration
 	local DOCUMENT_SERVER_DB_HOST=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbHost)
@@ -485,7 +509,7 @@ setup_docs() {
 	local DOCUMENT_SERVER_DB_PASSWORD=$(json -f ${DS_CONF} services.CoAuthoring.sql.dbPass)
 	local DS_CONNECTION_STRING="Host=${DOCUMENT_SERVER_DB_HOST};Port=${DOCUMENT_SERVER_DB_PORT};Database=${DOCUMENT_SERVER_DB_NAME};Username=${DOCUMENT_SERVER_DB_USERNAME};Password=${DOCUMENT_SERVER_DB_PASSWORD};"
 
-	sed "s/Host=.*/$DS_CONNECTION_STRING;\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
+	sed "s/Host=.*/$DS_CONNECTION_STRING\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.json
 	
 	echo "OK"
 }
@@ -576,7 +600,7 @@ setup_redis() {
 setup_rabbitmq() {
 	echo -n "Configuring rabbitmq... "
 
-	$JSON $APP_DIR/rabbitmq.json -e "this.RabbitMQ={'Hostname': \"${RABBITMQ_HOST}\",'UserName': \"${RABBITMQ_USER}\",'Password': \"${RABBITMQ_PASSWORD}\" }" >/dev/null 2>&1
+	$JSON $APP_DIR/rabbitmq.json -e "this.RabbitMQ={'Hostname': \"${RABBITMQ_HOST}\",'UserName': \"${RABBITMQ_USER}\",'Password': \"${RABBITMQ_PASSWORD}\",'Port': \"${RABBITMQ_PORT}\",'VirtualHost': \"/\" }" >/dev/null 2>&1
 	
 	systemctl enable rabbitmq-server >/dev/null 2>&1
 	systemctl restart rabbitmq-server
@@ -607,7 +631,7 @@ if $PACKAGE_MANAGER nginx >/dev/null 2>&1; then
     setup_nginx
 fi
 
-if $PACKAGE_MANAGER onlyoffice-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER onlyoffice-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER onlyoffice-documentserver-ee >/dev/null 2>&1; then
+if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
     setup_docs
 fi
 

@@ -153,7 +153,7 @@ const OperationsPanelComponent = (props) => {
     <SelectFolderDialog
       selectionFiles={selection}
       isDisableTree={isLoading}
-      foldersType="exceptSortedByTags"
+      filteredType="exceptSortedByTags"
       isPanelVisible={isVisible}
       onSubmit={onSubmit}
       onClose={onClose}
@@ -164,7 +164,7 @@ const OperationsPanelComponent = (props) => {
           ? t("Common:Restore")
           : isCopy
           ? t("Translations:Copy")
-          : t("Home:MoveTo")
+          : t("Files:MoveTo")
       }
       buttonName={
         isRecycleBin
