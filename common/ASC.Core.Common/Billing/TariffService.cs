@@ -781,12 +781,14 @@ public class TariffService : ITariffService
         }
 
         var delay = 0;
+        bool setDelay = true;
 
         if (_trialEnabled)
         {
             var trial = tariff.Quotas.Exists(q => _quotaService.GetTenantQuota(q.Id).Trial);
             if (trial)
             {
+                setDelay = false;
                 tariff.State = TariffState.Trial;
                 if (tariff.DueDate == DateTime.MinValue || tariff.DueDate == DateTime.MaxValue)
                 {
@@ -808,13 +810,14 @@ public class TariffService : ITariffService
                     }
                 }
             }
-            else
-            {
-                delay = _paymentDelay;
-            }
         }
 
-        if (tariff.DueDate != DateTime.MinValue && tariff.DueDate.Date < DateTime.Today && delay > 0)
+        if (setDelay)
+        {
+            delay = _paymentDelay;
+        }
+
+        if (tariff.DueDate != DateTime.MinValue && tariff.DueDate.Date < DateTime.UtcNow.Date && delay > 0)
         {
             tariff.State = TariffState.Delay;
 
@@ -822,7 +825,7 @@ public class TariffService : ITariffService
         }
 
         if (tariff.DueDate == DateTime.MinValue ||
-            tariff.DueDate != DateTime.MaxValue && tariff.DueDate.Date.AddDays(delay) < DateTime.Today)
+            tariff.DueDate != DateTime.MaxValue && tariff.DueDate.Date.AddDays(delay) < DateTime.UtcNow.Date)
         {
             tariff.State = TariffState.NotPaid;
         }
