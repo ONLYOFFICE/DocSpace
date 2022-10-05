@@ -12,7 +12,11 @@ import {
 } from "@docspace/client/src/helpers/filesConstants";
 
 import { getUser } from "@docspace/common/api/people";
-import { FilterType, RoomsType } from "@docspace/common/constants";
+import {
+  FilterType,
+  RoomsType,
+  RoomsProviderType,
+} from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 import FilterInput from "@docspace/common/components/FilterInput";
 import { withLayoutSize } from "@docspace/common/utils";
@@ -138,6 +142,7 @@ const SectionFilterContent = ({
   userId,
   isPersonalRoom,
   setCurrentRoomsFilter,
+  getThirdPartyIconSmall,
 }) => {
   const onFilter = React.useCallback(
     (data) => {
@@ -360,6 +365,20 @@ const SectionFilterContent = ({
       //   });
       // }
 
+      if (roomsFilter.provider) {
+        const provider = +roomsFilter.provider;
+
+        const providerKey = Object.entries(RoomsProviderType).find(
+          (item) => item[1] === provider
+        )[0];
+
+        filterValues.push({
+          key: provider,
+          icon: getThirdPartyIconSmall(providerKey),
+          group: FilterGroups.roomFilterProviderType,
+        });
+      }
+
       if (roomsFilter.type) {
         const key = +roomsFilter.type;
 
@@ -502,6 +521,7 @@ const SectionFilterContent = ({
     filter.filterType,
     filter.searchInContent,
     filter.excludeSubject,
+    roomsFilter.provider,
     roomsFilter.type,
     roomsFilter.subjectId,
     roomsFilter.tags,
@@ -512,6 +532,7 @@ const SectionFilterContent = ({
     // roomsFilter.searchInContent,
     userId,
     isRooms,
+    getThirdPartyIconSmall,
   ]);
 
   const getFilterData = React.useCallback(async () => {
@@ -960,6 +981,10 @@ const SectionFilterContent = ({
 
         const newFilter = roomsFilter.clone();
 
+        if (group === FilterGroups.roomFilterProviderType) {
+          newFilter.provider = null;
+        }
+
         if (group === FilterGroups.roomFilterType) {
           newFilter.type = null;
         }
@@ -1090,7 +1115,10 @@ export default inject(
       viewAs,
       createThumbnails,
       setCurrentRoomsFilter,
+      thirdPartyStore,
     } = filesStore;
+
+    const { getThirdPartyIconSmall } = thirdPartyStore;
 
     const { fetchTags } = tagsStore;
 
@@ -1133,6 +1161,7 @@ export default inject(
       isPersonalRoom,
       infoPanelVisible,
       setCurrentRoomsFilter,
+      getThirdPartyIconSmall,
     };
   }
 )(
