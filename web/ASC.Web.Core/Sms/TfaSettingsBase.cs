@@ -24,15 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-using ASC.MessagingSystem;
-
 namespace ASC.Web.Core.Sms;
+
+[Serializable]
 public abstract class TfaSettingsBase<T> : ISettings<T> where T : ISettings<T>
 {
     [JsonPropertyName("Enable")]
     public bool EnableSetting { get; set; }
-
     public abstract Guid ID { get; }
 
     [JsonPropertyName("TrustedIps")]
@@ -62,7 +60,7 @@ public abstract class TfaSettingsHelperBase
         _userManager = userManager;
     }
 
-    public bool TfaEnabledForUser<T>(TfaSettingsBase<T> settings,Guid userGuid) where T : ISettings<T>
+    public bool TfaEnabledForUser<T>(TfaSettingsBase<T> settings, Guid userGuid) where T : ISettings<T>
     {
         if (!settings.EnableSetting)
         {
@@ -85,9 +83,9 @@ public abstract class TfaSettingsHelperBase
             }
         }
 
-        var ips = MessageSettings.GetIP(_httpContextAccessor.HttpContext.Request);
+        var requestIP = MessageSettings.GetIP(_httpContextAccessor.HttpContext.Request);
 
-        if (settings.TrustedIps.Any(trustedIp => IPSecurity.IPSecurity.MatchIPs(ips, trustedIp)))
+        if (!string.IsNullOrWhiteSpace(requestIP) && settings.TrustedIps.Any(trustedIp => IPSecurity.IPSecurity.MatchIPs(requestIP, trustedIp)))
         {
             return false;
         }
