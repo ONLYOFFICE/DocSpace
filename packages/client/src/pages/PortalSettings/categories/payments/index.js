@@ -267,7 +267,6 @@ const PaymentsPage = ({
     return;
   };
 
-  const convertedPrice = `${currencySymbol}${startValue}`;
   const isPayer = user.email === payerEmail;
 
   const isFreeAfterPaidPeriod = isFreeTariff && payerEmail.length !== 0;
@@ -322,8 +321,9 @@ const PaymentsPage = ({
           fontSize={"14px"}
           className="payment-info_managers-price"
         >
-          <Trans t={t} i18nKey="StartPrice" ns="Payments">
-            {{ price: convertedPrice }}
+          <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+            From {{ currencySymbol }}
+            {{ price: startValue }} per admin/month
           </Trans>
         </Text>
 

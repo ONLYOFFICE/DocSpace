@@ -31,7 +31,6 @@
   "RoomManagerDescription": "Room administration and archiving, user invitation and management. Several admins can be assigned to the room.",
   "RenewSubscription": "Renew subscription to {{planName}} plan",
   "StorageSpace": "Storage space used",
-  "StartPrice": "From {{price}} per admin/month",
   "StartupTitle": "You are using free {{planName}} plan",
   "StartupSuggestion": "Do more with {{planName}} plan",
   "StripeCustomerPortal": "go to the Stripe customer portal",

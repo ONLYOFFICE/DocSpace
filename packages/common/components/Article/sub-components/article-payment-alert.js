@@ -42,8 +42,6 @@ const ArticlePaymentAlert = ({
     history.push(paymentPageUrl);
   };
 
-  const convertedPrice = `${currencySymbol}${pricePerManager}`;
-
   const isShowLoader = !ready;
 
   return isShowLoader ? (
@@ -71,8 +69,9 @@ const ArticlePaymentAlert = ({
           {isFreeTariff ? (
             <>
               {pricePerManager ? (
-                <Trans t={t} i18nKey="StartPrice" ns="Payments">
-                  {{ price: convertedPrice }}
+                <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+                  From {{ currencySymbol }}
+                  {{ price: pricePerManager }} per admin/month
                 </Trans>
               ) : (
                 <></>
