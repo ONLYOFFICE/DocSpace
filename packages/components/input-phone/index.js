@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import Box from "@docspace/components/box";
 import ComboBox from "@docspace/components/combobox";
+import Label from "@docspace/components/label";
 import TextInput from "@docspace/components/text-input";
 import SearchInput from "@docspace/components/search-input";
 import DropDown from "@docspace/components/drop-down";
@@ -26,12 +27,11 @@ const InputPhone = (props) => {
     const el = options.find((option) => option.dialCode === str);
 
     if (e.target.value === "") {
-      setPhoneValue("+");
       setIsValid(false);
       setCountry((prev) => ({ ...prev, icon: InvalidFlag }));
-    } else {
-      setPhoneValue(e.target.value);
     }
+
+    setPhoneValue(e.target.value);
 
     if (el) {
       setIsValid(true);
@@ -99,7 +99,7 @@ const InputPhone = (props) => {
         onClick={onCountryClick}
       >
         <Text className="country-name">{country.name}</Text>
-        <Text className="country-dialcode">{country.dialCode}</Text>
+        <Text className="country-dialcode">{`+${country.dialCode}`}</Text>
       </DropDownItem>
     );
   };
@@ -114,7 +114,7 @@ const InputPhone = (props) => {
         className="country-box"
         selectedOption={country}
       />
-
+      <Label text="+" className="prefix" />
       <TextInput
         type="tel"
         className="input-phone"
@@ -125,7 +125,6 @@ const InputPhone = (props) => {
         value={phoneValue}
         onChange={onInputChange}
       />
-
       <DropDown
         open={isOpen}
         clickOutsideAction={handleClick}

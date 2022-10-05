@@ -34,7 +34,7 @@ Default.args = {
     mask: options[182].mask, // default dialCode +7
     icon: options[182].flag, // default flag Russia
   },
-  phonePlaceholderText: "+7 XXX XXX-XX-XX",
+  phonePlaceholderText: "7 XXX XXX-XX-XX",
   searchPlaceholderText: "Search",
   searchEmptyMessage: "Nothing found",
   errorMessage: "Сountry code is invalid",

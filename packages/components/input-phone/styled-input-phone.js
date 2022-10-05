@@ -5,7 +5,7 @@ import Base from "../themes/base";
 export const StyledBox = styled(Box)`
   position: relative;
   max-width: ${(props) => props.theme.inputPhone.width};
-  border: 1px solid ${(props) =>
+  outline: 1px solid ${(props) =>
     props.hasError
       ? props.theme.inputPhone.errorBorderColor
       : props.theme.inputPhone.inactiveBorderColor};
@@ -25,12 +25,21 @@ export const StyledBox = styled(Box)`
 
   .input-phone {
     height: ${(props) => props.theme.inputPhone.height};
-    padding-left: 10px;
+    padding-left: 20px;
+    margin-left: -8px;
     border-left: 1px solid ${(props) =>
       props.theme.inputPhone.inactiveBorderColor} !important;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     background: ${(props) => props.theme.inputPhone.backgroundColor};
+  }
+
+  .prefix {
+    position: relative;
+    top: 0;
+    left: 12px;
+    font-size: 14px;
+    font-weight: 400;
   }
 
   .combo-button {
