@@ -391,7 +391,7 @@ public class GlobalFolder
         return result;
     }
 
-    public async ValueTask<T> GetFolderArchive<T>(IDaoFactory daoFactory)
+    public async ValueTask<T> GetFolderArchiveAsync<T>(IDaoFactory daoFactory)
     {
         return (T)Convert.ChangeType(await GetFolderArchiveAsync(daoFactory), typeof(T));
     }
