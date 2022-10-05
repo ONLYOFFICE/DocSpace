@@ -71,26 +71,40 @@ const TotalTariffContainer = ({
           </Text>
         ) : (
           <>
-            <Text
-              fontSize="48px"
-              isBold
-              textAlign={"center"}
-              className="payment_price_price-text"
-              noSelect
-              {...color}
-            >
-              {`${currencySymbol}${totalPrice}`}
-            </Text>
-            <Text
-              fontSize="16px"
-              isBold
-              textAlign={"center"}
-              className="payment_price_month-text"
-              noSelect
-              {...color}
-            >
-              {"/month"}
-            </Text>
+            <Trans t={t} i18nKey="TotalPricePerMonth" ns="Payments">
+              ""
+              <Text
+                fontSize="48px"
+                as="span"
+                textAlign={"center"}
+                fontWeight={600}
+                className="payment_price_price-text"
+                noSelect
+                {...color}
+              >
+                {{ currencySymbol }}
+              </Text>
+              <Text
+                fontSize="48px"
+                as="span"
+                fontWeight={600}
+                className="payment_price_price-text"
+                noSelect
+                {...color}
+              >
+                {{ price: totalPrice }}
+              </Text>
+              <Text
+                as="span"
+                fontWeight={600}
+                fontSize="16px"
+                className="payment_price_month-text"
+                noSelect
+                {...color}
+              >
+                /month
+              </Text>
+            </Trans>
           </>
         )}
       </div>

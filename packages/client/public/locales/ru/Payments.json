@@ -36,6 +36,7 @@
   "StartupSuggestion": "Делайте больше с помощью {{planName}} тарифа",
   "StripeCustomerPortal": "перейти на клиентский портал Stripe",
   "SendRequest": "Отправить запрос",
+  "TotalPricePerMonth": "<1>{{currencySymbol}}</1><2>{{price}}</2><3>/месяц</3>",
   "UpgradeNow": "Обновить прямо сейчас",
   "UserNotFound": "Пользователь <1>«{{email}}»</1> не найден",
   "YourPrice": "Ваша стоимость"

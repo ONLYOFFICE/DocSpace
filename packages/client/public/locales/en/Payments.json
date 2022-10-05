@@ -36,6 +36,7 @@
   "StartupSuggestion": "Do more with {{planName}} plan",
   "StripeCustomerPortal": "go to the Stripe customer portal",
   "SendRequest": "Send request",
+  "TotalPricePerMonth": "<1>{{currencySymbol}}</1><2>{{price}}</2><3>/month</3>",
   "UpgradeNow": "Upgrade now",
   "UserNotFound": "User <1>«{{email}}»</1> is not found",
   "YourPrice": "Your price"
