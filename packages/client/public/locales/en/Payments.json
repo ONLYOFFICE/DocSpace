@@ -26,7 +26,7 @@
   "Payer": "Payer",
   "PayerDescription": "This user has access to payment details and is the only user that can adjust the quota and make payments. The DocSpace owner, as well as the paying manager themselves, can reassign the paying manger role using the Stripe client portal.",
   "Pay": "Pay",
-  "PayBeforeTheEndGracePeriod": "Pay before the end of the grace period",
+  "PayBeforeTheEndGracePeriod": "Make sure to make payment before the grace period is due",
   "Room": "Room",
   "RoomManager": "Room admin",
   "RoomManagerDescription": "Room administration and archiving, user invitation and management. Several admins can be assigned to the room.",
