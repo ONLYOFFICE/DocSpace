@@ -83,6 +83,20 @@ export const RoomsTypeTranslations = Object.freeze({
   4: "Files:ViewOnlyRooms",
   5: "Files:CustomRooms",
 });
+/**
+ * Enum for room provider type.
+ * @readonly
+ */
+export const RoomsProviderType = Object.freeze({
+  Box: 1,
+  DropBox: 2,
+  GoogleDrive: 3,
+  kDrive: 4,
+  OneDrive: 5,
+  SharePoint: 6,
+  WebDav: 7,
+  Yandex: 8,
+});
 
 /**
  * Enum for room search area.
