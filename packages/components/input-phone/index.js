@@ -26,7 +26,7 @@ const InputPhone = (props) => {
     const str = e.target.value.replace(/\s/g, "");
     const el = options.find((option) => option.dialCode === str);
 
-    if (e.target.value === "") {
+    if (e.target.value.trim() === "") {
       setIsValid(false);
       setCountry((prev) => ({ ...prev, icon: InvalidFlag }));
     }
