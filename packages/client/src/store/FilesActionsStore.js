@@ -664,7 +664,7 @@ class FilesActionStore {
           toastr.success(translations.successRemoveFolder);
         } else {
           this.updateFilesAfterDelete([itemId]);
-          this.filesStore.removeFiles([itemId], null, () =>
+          this.filesStore.removeFiles(null, [itemId], () =>
             toastr.success(translations.successRemoveFolder)
           );
         }
