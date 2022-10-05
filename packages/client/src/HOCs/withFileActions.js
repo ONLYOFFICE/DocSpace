@@ -176,8 +176,8 @@ export default function withFileActions(WrappedFileItem) {
       this.props.selectTag(tag);
     };
 
-    onSelectType = (type) => {
-      this.props.selectType(type);
+    onSelectOption = (selectedOption) => {
+      this.props.selectOption(selectedOption);
     };
 
     getContextModel = () => {
@@ -241,7 +241,7 @@ export default function withFileActions(WrappedFileItem) {
           onMouseClick={this.onMouseClick}
           onHideContextMenu={this.onHideContextMenu}
           onSelectTag={this.onSelectTag}
-          onSelectType={this.onSelectType}
+          onSelectOption={this.onSelectOption}
           getClassName={this.getClassName}
           className={className}
           isDragging={isDragging}
@@ -276,7 +276,7 @@ export default function withFileActions(WrappedFileItem) {
       const {
         selectRowAction,
         selectTag,
-        selectType,
+        selectOption,
         onSelectItem,
         setNewBadgeCount,
         openFileAction,
@@ -345,7 +345,7 @@ export default function withFileActions(WrappedFileItem) {
         selectRowAction,
         onSelectItem,
         selectTag,
-        selectType,
+        selectOption,
         setSharingPanelVisible,
         isPrivacy: isPrivacyFolder,
         isRoomsFolder,
