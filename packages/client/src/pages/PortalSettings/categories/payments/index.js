@@ -97,8 +97,8 @@ const PaymentsPage = ({
     const fromDateMoment = moment(dueDate);
     const byDateMoment = moment(delayDueDate);
 
-    fromDate = fromDateMoment.format("L");
-    byDate = byDateMoment.format("L");
+    fromDate = fromDateMoment.format("LL");
+    byDate = byDateMoment.format("LL");
 
     delayDaysCount = fromDateMoment.to(byDateMoment, true);
   };
@@ -295,7 +295,7 @@ const PaymentsPage = ({
         <Text noSelect fontSize={"14px"} lineHeight={"16px"}>
           <Trans t={t} i18nKey="GracePeriodActivatedDescription" ns="Payments">
             Grace period activated from <strong>{{ fromDate }}</strong> -
-            <strong>{{ byDate }}</strong> (<strong>{{ delayDaysCount }}</strong>
+            <strong>{{ byDate }}</strong> ({{ delayDaysCount }}
             ).
           </Trans>
         </Text>
