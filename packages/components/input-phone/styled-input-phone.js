@@ -4,8 +4,8 @@ import Base from "../themes/base";
 
 export const StyledBox = styled(Box)`
   position: relative;
-  max-width: ${(props) => props.theme.inputPhone.width};
-  outline: 1px solid ${(props) =>
+  width: ${(props) => (props.scale ? "100%" : props.theme.inputPhone.width)};
+  border: 1px solid ${(props) =>
     props.hasError
       ? props.theme.inputPhone.errorBorderColor
       : props.theme.inputPhone.inactiveBorderColor};
@@ -28,7 +28,7 @@ export const StyledBox = styled(Box)`
     padding-left: 20px;
     margin-left: -8px;
     border-left: 1px solid ${(props) =>
-      props.theme.inputPhone.inactiveBorderColor} !important;
+      props.theme.inputPhone.inactiveBorderColor};
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     background: ${(props) => props.theme.inputPhone.backgroundColor};
@@ -89,7 +89,7 @@ export const StyledBox = styled(Box)`
     box-shadow: none;
   }
 
-  .search-input {
+  .search-country_input {
     .search-input-block {
       font-weight: 400;
       border-color: ${(props) => props.theme.inputPhone.inactiveBorderColor};
@@ -116,6 +116,7 @@ export const StyledBox = styled(Box)`
   .country-item {
     display: flex;
     align-items: center;
+    max-width: 100%;
     padding: 0;
     height: 36px;
     svg {
@@ -139,8 +140,9 @@ export const StyledBox = styled(Box)`
     }
   }
 
-  .empty-message {
+  .phone-input_empty-text {
     padding: 30px 0;
+    word-break: break-all;
     color: ${(props) => props.theme.inputPhone.placeholderColor};
   }
 
@@ -152,8 +154,9 @@ export const StyledBox = styled(Box)`
     }
   }
 
-  .error-text {
+  .phone-input_error-text {
     position: absolute;
+    word-break: break-all;
     top: 48px;
   }
 }

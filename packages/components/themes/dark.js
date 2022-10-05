@@ -770,17 +770,6 @@ const Dark = {
     width: "320px",
     height: "44px",
   },
-
-  phoneInput: {
-    width: "304px",
-    height: "44px",
-    itemTextColor: black,
-    itemBackgroundColor: white,
-    itemHoverColor: grayLightMid,
-    scrollBackground: "rgba(0, 0, 0, 0.1)",
-    placeholderColor: gray,
-  },
-
   textInput: {
     fontWeight: "normal",
     placeholderColor: "#474747",

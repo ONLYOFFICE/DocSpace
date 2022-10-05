@@ -57,7 +57,7 @@ const InputPhone = (props) => {
   };
 
   const handleClick = () => {
-    setIsOpen(!isOpen), setIsValid(true);
+    setIsOpen(!isOpen);
   };
 
   useEffect(() => {
@@ -82,6 +82,7 @@ const InputPhone = (props) => {
       mask: country.mask,
       icon: country.flag,
     });
+    setIsValid(true);
     setPhoneValue(country.dialCode);
   };
 
@@ -105,11 +106,15 @@ const InputPhone = (props) => {
   };
 
   return (
-    <StyledBox hasError={!isValid} displayProp="flex" alignItems="center">
+    <StyledBox
+      hasError={!isValid}
+      displayProp="flex"
+      alignItems="center"
+      scale={props.scale}
+    >
       <ComboBox
         onClick={handleClick}
         options={[]}
-        scaled={true}
         noBorder={true}
         className="country-box"
         selectedOption={country}
@@ -135,7 +140,7 @@ const InputPhone = (props) => {
         <SearchInput
           placeholder={props.searchPlaceholderText}
           value={searchValue}
-          className="search-input"
+          className="search-country_input"
           scale={true}
           onClearSearch={onClearSearch}
           refreshTimeout={100}
@@ -154,7 +159,11 @@ const InputPhone = (props) => {
               {Row}
             </List>
           ) : (
-            <Text textAlign="center" className="empty-message" fontSize="14px">
+            <Text
+              textAlign="center"
+              className="phone-input_empty-text"
+              fontSize="14px"
+            >
               {props.searchEmptyMessage}
             </Text>
           )}
@@ -162,7 +171,7 @@ const InputPhone = (props) => {
       </DropDown>
       {!isValid && (
         <Text
-          className="error-text"
+          className="phone-input_error-text"
           color="#f21c0e"
           fontSize="11px"
           lineHeight="14px"
@@ -174,8 +183,6 @@ const InputPhone = (props) => {
   );
 };
 
-export default memo(InputPhone);
-
 InputPhone.propTypes = {
   /** Default selected country Russia */
   defaultCountry: PropTypes.object.isRequired,
@@ -183,13 +190,11 @@ InputPhone.propTypes = {
   phonePlaceholderText: PropTypes.string,
   /** Text displayed on the SearchInput placeholder */
   searchPlaceholderText: PropTypes.string,
-  /** Called when field is clicked */
-  onClick: PropTypes.func,
+  /** Indicates the input field has scale */
+  scale: PropTypes.bool,
   /** Called when value is changed */
   onChange: PropTypes.func,
   /** Gets the country mask  */
-  getMask: PropTypes.func,
-  /** Text is displayed when nothing found */
   searchEmptyMessage: PropTypes.string,
   /** Text is displayed when invalid country dial code */
   errorMessage: PropTypes.string,
@@ -204,8 +209,11 @@ InputPhone.defaultProps = {
   },
   phonePlaceholderText: "",
   searchPlaceholderText: "",
+  scale: false,
   searchEmptyMessage: "",
   errorMessage: "",
 };
 
 InputPhone.displayName = "InputPhone";
+
+export default memo(InputPhone);
