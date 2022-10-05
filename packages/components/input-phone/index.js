@@ -26,8 +26,6 @@ const InputPhone = (props) => {
     const str = e.target.value.replace(/\s/g, "");
     const el = options.find((option) => option.dialCode === str);
 
-    console.log(phoneValue);
-
     if (e.target.value === "" || phoneValue) {
       setIsValid(false);
       setCountry((prev) => ({ ...prev, icon: InvalidFlag }));
@@ -112,7 +110,7 @@ const InputPhone = (props) => {
       hasError={!isValid}
       displayProp="flex"
       alignItems="center"
-      scale={props.scale}
+      scaled={props.scaled}
     >
       <ComboBox
         onClick={handleClick}
@@ -192,8 +190,8 @@ InputPhone.propTypes = {
   phonePlaceholderText: PropTypes.string,
   /** Text displayed on the SearchInput placeholder */
   searchPlaceholderText: PropTypes.string,
-  /** Indicates the input field has scale */
-  scale: PropTypes.bool,
+  /** Indicates the input field has scaled */
+  scaled: PropTypes.bool,
   /** Called when value is changed */
   onChange: PropTypes.func,
   /** Gets the country mask  */
@@ -211,7 +209,7 @@ InputPhone.defaultProps = {
   },
   phonePlaceholderText: "",
   searchPlaceholderText: "",
-  scale: false,
+  scaled: false,
   searchEmptyMessage: "",
   errorMessage: "",
 };

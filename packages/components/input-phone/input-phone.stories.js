@@ -36,7 +36,7 @@ Default.args = {
   },
   phonePlaceholderText: "7 XXX XXX-XX-XX",
   searchPlaceholderText: "Search",
-  scale: false,
+  scaled: false,
   searchEmptyMessage: "Nothing found",
   errorMessage: "Сountry code is invalid",
 };

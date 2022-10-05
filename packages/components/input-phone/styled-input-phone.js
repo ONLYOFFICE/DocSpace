@@ -4,7 +4,7 @@ import Base from "../themes/base";
 
 export const StyledBox = styled(Box)`
   position: relative;
-  width: ${(props) => (props.scale ? "100%" : props.theme.inputPhone.width)};
+  width: ${(props) => (props.scaled ? "100%" : props.theme.inputPhone.width)};
   border: 1px solid ${(props) =>
     props.hasError
       ? props.theme.inputPhone.errorBorderColor
