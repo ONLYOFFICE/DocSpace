@@ -101,7 +101,6 @@ public class PortalController : ControllerBase
 
     [HttpPost("register")]
     [AllowCrossSiteJson]
-    [AllowAnonymous]
     [Authorize(AuthenticationSchemes = "auth:allowskip:registerportal")]
     public Task<IActionResult> RegisterAsync(TenantModel model)
     {
