@@ -62,7 +62,7 @@ const User = ({
 
   const onTypeChange = React.useCallback(
     ({ action }) => {
-      changeUserType(action, [user], t, false);
+      changeUserType(action, [user], t, false, false);
     },
     [user, changeUserType, t]
   );
