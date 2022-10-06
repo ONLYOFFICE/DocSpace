@@ -103,7 +103,13 @@ class PeopleStore {
     this.changeType(action, getUsersToMakeEmployeesIds, t);
   };
 
-  changeType = (type, users, t, needClearSelection = true) => {
+  changeType = (
+    type,
+    users,
+    t,
+    needClearSelection = true,
+    needFetchUsers = true
+  ) => {
     const { changeAdmins } = this.setupStore;
     const { getUsersList } = this.usersStore;
     const { filter } = this.filterStore;
@@ -115,7 +121,7 @@ class PeopleStore {
 
     if (type === "admin") {
       changeAdmins(userIDs, fullAccessId, true).then((res) => {
-        getUsersList(filter);
+        needFetchUsers && getUsersList(filter);
         needClearSelection && clearSelection();
         toastr.success(t("Settings:AdministratorsAddedSuccessfully"));
       });
@@ -127,16 +133,15 @@ class PeopleStore {
 
     if (type === "user") {
       changeAdmins(userIDs, fullAccessId, false).then((res) => {
-        getUsersList(filter);
+        needFetchUsers && getUsersList(filter);
         needClearSelection && clearSelection();
         toastr.success(t("Settings:AdministratorsRemovedSuccessfully"));
       });
     }
   };
 
-  onOpenInfoPanel = (item) => {
+  onOpenInfoPanel = () => {
     const { setIsVisible } = this.infoPanelStore;
-    console.log(item);
     setIsVisible(true);
   };
 
