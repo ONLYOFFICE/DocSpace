@@ -164,7 +164,6 @@ const FilterInput = React.memo(
               <SelectedItem
                 key={`${item.key}_${item.group}`}
                 propKey={item.key}
-                icon={item.icon}
                 {...item}
                 removeSelectedItem={removeSelectedItemAction}
               />
