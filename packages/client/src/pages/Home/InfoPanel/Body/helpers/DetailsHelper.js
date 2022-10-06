@@ -23,12 +23,12 @@ const text = (text) => (
   </Text>
 );
 
-const link = (text, href) => (
+const link = (text, onClick) => (
   <Link
     isTextOverflow
     className="property-content"
-    href={href}
     isHovered={true}
+    onClick={onClick}
   >
     {text}
   </Link>
@@ -63,6 +63,8 @@ class DetailsHelper {
   constructor(props) {
     this.t = props.t;
     this.item = props.item;
+    this.history = props.history;
+    this.openUser = props.openUser;
     this.personal = props.personal;
     this.culture = props.culture;
   }
@@ -191,12 +193,12 @@ class DetailsHelper {
   /// Property  //
 
   getItemOwner = () => {
+    const onOpenUser = () =>
+      this.openUser(this.item.createdBy.id, this.history);
+
     return this.personal
       ? text(decodeString(this.item.createdBy?.displayName))
-      : link(
-          decodeString(this.item.createdBy?.displayName),
-          this.item.createdBy?.profileUrl
-        );
+      : link(decodeString(this.item.createdBy?.displayName), onOpenUser);
   };
 
   getItemLocation = () => {
@@ -244,12 +246,12 @@ class DetailsHelper {
   };
 
   getItemLastModifiedBy = () => {
+    const onOpenUser = () =>
+      this.openUser(this.item.updatedBy.id, this.history);
+
     return this.personal
       ? text(decodeString(this.item.updatedBy?.displayName))
-      : link(
-          decodeString(this.item.updatedBy?.displayName),
-          this.item.updatedBy?.profileUrl
-        );
+      : link(decodeString(this.item.updatedBy?.displayName), onOpenUser);
   };
 
   getItemCreationDate = () => {
