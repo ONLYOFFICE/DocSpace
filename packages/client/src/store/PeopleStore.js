@@ -12,7 +12,12 @@ import InviteLinksStore from "./InviteLinksStore";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
 import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
-import { isMobile } from "react-device-detect";
+import {
+  isMobile,
+  isTablet,
+  isDesktop,
+} from "@docspace/components/utils/device";
+import { isMobileRDD } from "react-device-detect";
 
 import toastr from "@docspace/components/toast/toastr";
 
@@ -36,7 +41,7 @@ class PeopleStore {
   infoPanelStore = null;
   setupStore = null;
   isInit = false;
-  viewAs = isMobile ? "row" : "table";
+  viewAs = isMobileRDD ? "row" : "table";
 
   constructor(authStore, infoPanelStore, setupStore) {
     this.authStore = authStore;
@@ -214,7 +219,9 @@ class PeopleStore {
       {
         key: "info",
         label: t("Common:Info"),
-        disabled: isVisible,
+        disabled:
+          isVisible ||
+          !(isTablet() || isMobile() || isMobileRDD || !isDesktop()),
         onClick: (item) => this.onOpenInfoPanel(item),
         iconUrl: "images/info.react.svg",
       },
