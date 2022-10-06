@@ -1,5 +1,11 @@
 import { makeAutoObservable } from "mobx";
 
+import { getUserRole } from "@docspace/client/src/helpers/people-helpers";
+import { getUserById } from "@docspace/common/api/people";
+import { combineUrl } from "@docspace/common/utils";
+import { AppServerConfig } from "@docspace/common/constants";
+import config from "PACKAGE_FILE";
+
 class InfoPanelStore {
   isVisible = false;
 
@@ -9,16 +15,21 @@ class InfoPanelStore {
   roomsView = "members";
   fileView = "history";
 
+  authStore = null;
   settingsStore = null;
+  peopleStore = null;
+  selectedFolderStore = null;
+  treeFoldersStore = null;
 
   constructor() {
     makeAutoObservable(this);
   }
 
+  setIsVisible = (bool) => (this.isVisible = bool);
+
   setSelection = (selection) => (this.selection = selection);
   setSelectionParentRoom = (obj) => (this.selectionParentRoom = obj);
-  setIsVisible = (bool) => (this.isVisible = bool);
-  setSettingsStore = (settingsStore) => (this.settingsStore = settingsStore);
+
   setView = (view) => {
     this.roomsView = view;
     this.fileView = view === "members" ? "history" : view;
@@ -29,11 +40,6 @@ class InfoPanelStore {
       ...selection,
       isRoom: selection.isRoom || !!selection.roomType,
       icon: this.getItemIcon(selection, 32),
-      hasCustonThumbnail: !!selection.thumbnailUrl,
-      thumbnailUrl:
-        selection.isRoom && selection.logo?.large
-          ? selection.logo.large
-          : selection.thumbnailUrl || this.getItemIcon(selection, 96),
       isContextMenuSelection: false,
     };
   };
@@ -48,6 +54,43 @@ class InfoPanelStore {
       : item.isFolder
       ? this.settingsStore.getFolderIcon(item.providerKey, size)
       : this.settingsStore.getIcon(size, item.fileExst || ".file");
+  };
+
+  openAccounts = (history, openSelfProfile = false) => {
+    const path = [AppServerConfig.proxyURL, config.homepage, "/accounts"];
+    if (openSelfProfile) path.push("/view/@self");
+    this.selectedFolderStore.setSelectedFolder(null);
+    this.treeFoldersStore.setSelectedNode(["accounts", "filter"]);
+    history.push(combineUrl(...path));
+  };
+
+  openUser = async (userId, history) => {
+    if (userId === this.authStore.userStore.user.id) {
+      this.openAccounts(history, true);
+      return;
+    }
+
+    const {
+      getStatusType,
+      getUserContextOptions,
+    } = this.peopleStore.usersStore;
+    const { selectUser } = this.peopleStore.selectionStore;
+
+    this.openAccounts(history, false);
+    const fetchedUser = await getUserById(userId);
+    fetchedUser.role = getUserRole(fetchedUser);
+    fetchedUser.statusType = getStatusType(fetchedUser);
+    fetchedUser.options = getUserContextOptions(
+      false,
+      fetchedUser.isOwner,
+      fetchedUser.statusType,
+      fetchedUser.status
+    );
+    selectUser(fetchedUser);
+  };
+
+  getItemNoThumbnail = (item) => {
+    this.getItemIcon(item, 96);
   };
 
   getIsFiles = (givenPathName) => {
