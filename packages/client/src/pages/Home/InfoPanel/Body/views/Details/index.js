@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
-
-import withLoader from "@docspace/client/src/HOCs/withLoader";
-import Loaders from "@docspace/common/components/Loaders/index.js";
 
 import { FileType } from "@docspace/common/constants";
 import Text from "@docspace/components/text";
@@ -14,16 +13,27 @@ import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
 const Details = ({
   t,
   selection,
-  setSelection,
+  personal,
+  culture,
   createThumbnail,
   getItemIcon,
-  ...props
+  openUser,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
+
   const [isThumbnailError, setIsThumbmailError] = useState(false);
   const onThumbnailError = () => setIsThumbmailError(true);
 
-  const detailsHelper = new DetailsHelper({ t, item: selection, ...props });
+  const history = useHistory();
+
+  const detailsHelper = new DetailsHelper({
+    t,
+    item: selection,
+    openUser,
+    history,
+    personal,
+    culture,
+  });
 
   useEffect(async () => {
     setItemProperties(detailsHelper.getPropertyList());
@@ -84,6 +94,13 @@ const Details = ({
   );
 };
 
-export default withTranslation(["InfoPanel", "Common", "Translations"])(
-  withLoader(Details)(<Loaders.InfoPanelViewLoader view="details" />)
-);
+export default inject(({ auth, filesStore }) => {
+  const { getItemIcon, openUser } = auth.infoPanelStore;
+  const { createThumbnail } = filesStore;
+
+  return {
+    createThumbnail,
+    getItemIcon,
+    openUser,
+  };
+})(withTranslation(["InfoPanel", "Common", "Translations"])(Details));
