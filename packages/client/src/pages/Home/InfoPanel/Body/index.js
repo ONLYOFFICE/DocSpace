@@ -55,12 +55,9 @@ const InfoPanelBodyContent = ({
     },
     detailsProps: {
       setSelection,
-      getIcon,
-      getFolderIcon,
+      getItemIcon: props.getItemIcon,
       getFolderInfo: props.getFolderInfo,
-      getShareUsers: props.getShareUsers,
       onSelectItem: props.onSelectItem,
-      setSharingPanelVisible: props.setSharingPanelVisible,
       createThumbnail: props.createThumbnail,
     },
     membersProps: {
