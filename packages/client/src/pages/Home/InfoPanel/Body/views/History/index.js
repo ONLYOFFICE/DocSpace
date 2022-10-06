@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
@@ -15,6 +16,7 @@ import HistoryBlockMessage from "./HistoryBlockMessage";
 import HistoryBlockItemList from "./HistoryBlockItemList";
 import Loaders from "@docspace/common/components/Loaders";
 import HistoryBlockUser from "./HistoryBlockUser";
+import { getUserById } from "@docspace/common/api/people";
 
 const History = ({
   t,
@@ -25,7 +27,15 @@ const History = ({
   getItemIcon,
 
   getHistory,
+
   openLocationAction,
+  setSelectedFolder,
+  setSelectedNode,
+
+  selfId,
+  selectUser,
+  getStatusType,
+  getUserContextOptions,
 }) => {
   const [history, setHistory] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
@@ -145,6 +155,13 @@ const History = ({
                     key={user.id}
                     user={user}
                     withComma={i !== feed.groupedFeeds.length}
+                    selectUser={selectUser}
+                    selfId={selfId}
+                    getUserById={getUserById}
+                    getStatusType={getStatusType}
+                    getUserContextOptions={getUserContextOptions}
+                    setSelectedFolder={setSelectedFolder}
+                    setSelectedNode={setSelectedNode}
                   />
                 ))}
             </div>
@@ -159,6 +176,40 @@ const History = ({
 //   withLoader(History)(<Loaders.InfoPanelViewLoader view="history" />)
 // );
 
-export default withTranslation(["InfoPanel", "Common", "Translations"])(
-  History
-);
+export default inject(
+  ({
+    auth,
+    treeFoldersStore,
+    selectedFolderStore,
+    filesStore,
+    filesActionsStore,
+    peopleStore,
+  }) => {
+    const { id: selfId } = auth.userStore.user;
+    const { selection, setSelection, getItemIcon } = auth.infoPanelStore;
+    const { getHistory } = filesStore;
+    const { openLocationAction } = filesActionsStore;
+    const { selectUser } = peopleStore.selectionStore;
+    const { getStatusType, getUserContextOptions } = peopleStore.usersStore;
+
+    const { setSelectedFolder } = selectedFolderStore;
+    const { setSelectedNode } = treeFoldersStore;
+
+    return {
+      selection,
+      setSelection,
+      getItemIcon,
+
+      getHistory,
+
+      setSelectedFolder,
+      setSelectedNode,
+      openLocationAction,
+
+      selfId,
+      selectUser,
+      getStatusType,
+      getUserContextOptions,
+    };
+  }
+)(withTranslation(["InfoPanel", "Common", "Translations"])(History));
