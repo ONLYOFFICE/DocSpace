@@ -878,12 +878,6 @@ class FilesStore {
             );
           });
 
-          // console.log("fetchRooms", {
-          //   categoryType: this.categoryType,
-          //   rootFolderType: data.current.rootFolderType,
-          //   parentId: data.current.parentId,
-          // });
-
           this.setRoomsFilter(filterData);
 
           runInAction(() => {
