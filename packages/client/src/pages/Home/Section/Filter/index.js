@@ -68,6 +68,16 @@ const getType = (filterValues) => {
   return type;
 };
 
+const getProviderType = (filterValues) => {
+  const filterType = filterValues.find(
+    (value) => value.group === FilterGroups.roomFilterProviderType
+  )?.key[0];
+
+  const type = filterType;
+
+  return type;
+};
+
 const getOwner = (filterValues) => {
   const filterOwner = result(
     find(filterValues, (value) => {
@@ -143,6 +153,7 @@ const SectionFilterContent = ({
   isPersonalRoom,
   setCurrentRoomsFilter,
   getThirdPartyIconSmall,
+  providers,
 }) => {
   const onFilter = React.useCallback(
     (data) => {
@@ -158,6 +169,7 @@ const SectionFilterContent = ({
 
         const withoutMe = owner === FilterKeys.other;
 
+        const providerType = getProviderType(data) || null;
         const tags = getTags(data) || null;
 
         // const withSubfolders =
@@ -170,6 +182,7 @@ const SectionFilterContent = ({
         const newFilter = roomsFilter.clone();
 
         newFilter.page = 0;
+        newFilter.provider = providerType ? providerType : null;
         newFilter.type = type ? type : null;
         newFilter.subjectId = subjectId ? subjectId : null;
         if (tags) {
@@ -723,6 +736,12 @@ const SectionFilterContent = ({
       filterOptions.push(...typeOptions);
 
       const tags = await fetchTags();
+      const connectedThirdParty = [];
+
+      providers.forEach((item) => {
+        if (connectedThirdParty.includes(item.provider_key)) return;
+        connectedThirdParty.push(item.provider_key);
+      });
 
       if (tags) {
         const tagsOptions = tags.map((tag) => ({
@@ -744,10 +763,30 @@ const SectionFilterContent = ({
           group: FilterGroups.roomFilterTags,
           label: t("Tags"),
           isHeader: true,
-          isLast: true,
         });
 
         filterOptions.push(...tagsOptions);
+      }
+
+      if (connectedThirdParty) {
+        const thirdPartyOptions = connectedThirdParty.map((thirdParty) => ({
+          key: Object.entries(RoomsProviderType).find(
+            (item) => item[0] === thirdParty
+          )[1],
+          group: FilterGroups.roomFilterProviderType,
+          label: thirdParty,
+          isMultiSelect: true,
+        }));
+
+        filterOptions.push({
+          key: FilterGroups.roomFilterProviderType,
+          group: FilterGroups.roomFilterProviderType,
+          label: t("ThirdPartyResource"),
+          isHeader: true,
+          isLast: true,
+        });
+
+        filterOptions.push(...thirdPartyOptions);
       }
     } else {
       if (!isRecentFolder && !isFavoritesFolder) {
@@ -1118,7 +1157,7 @@ export default inject(
       thirdPartyStore,
     } = filesStore;
 
-    const { getThirdPartyIconSmall } = thirdPartyStore;
+    const { getThirdPartyIconSmall, providers } = thirdPartyStore;
 
     const { fetchTags } = tagsStore;
 
@@ -1162,6 +1201,7 @@ export default inject(
       infoPanelVisible,
       setCurrentRoomsFilter,
       getThirdPartyIconSmall,
+      providers,
     };
   }
 )(
