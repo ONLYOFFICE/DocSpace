@@ -18,17 +18,13 @@ import HistoryBlockUser from "./HistoryBlockUser";
 
 const History = ({
   t,
-  selection,
-  setSelection,
   personal,
   culture,
+  selection,
+  setSelection,
   getItemIcon,
-
   getHistory,
-
   openLocationAction,
-
-  selectUser,
   openUser,
 }) => {
   const [history, setHistory] = useState(null);
@@ -168,16 +164,18 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     getItemIcon,
     openUser,
   } = auth.infoPanelStore;
+  const { personal, culture } = auth.settingsStore;
+
   const { getHistory } = filesStore;
   const { openLocationAction } = filesActionsStore;
 
   return {
+    personal,
+    culture,
     selection,
     setSelection,
     getItemIcon,
-
     getHistory,
-
     openLocationAction,
     openUser,
   };

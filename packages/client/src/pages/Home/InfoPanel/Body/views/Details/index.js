@@ -95,10 +95,14 @@ const Details = ({
 };
 
 export default inject(({ auth, filesStore }) => {
-  const { getItemIcon, openUser } = auth.infoPanelStore;
+  const { selection, getItemIcon, openUser } = auth.infoPanelStore;
   const { createThumbnail } = filesStore;
+  const { personal, culture } = auth.settingsStore;
 
   return {
+    personal,
+    culture,
+    selection,
     createThumbnail,
     getItemIcon,
     openUser,
