@@ -666,10 +666,17 @@ public class FileSecurity : IFileSecurity
                 return true;
             }
 
-            if (e.RootFolderType == FolderType.VirtualRooms && (isAdmin || e.CreateBy == userId))
+            if (e.RootFolderType == FolderType.VirtualRooms && !isVisitor)
             {
-                // administrator in VirtualRooms has all right
-                return true;
+                if (isAdmin || e.CreateBy == userId)
+                {
+                    return true;
+                }
+
+                var parentRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(e.ParentId)
+                    .Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.CreateBy == userId).FirstOrDefaultAsync();
+
+                return parentRoom != null;
             }
 
             if (e.RootFolderType == FolderType.ThirdpartyBackup && isAdmin)
