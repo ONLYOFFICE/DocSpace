@@ -55,7 +55,7 @@ class FilesListWrapper extends React.Component {
       folderId,
       setFolderTitle,
       setProviderKey,
-      setFolderId,
+      setResultingFolderId,
       folderSelection,
     } = this.props;
 
@@ -89,7 +89,7 @@ class FilesListWrapper extends React.Component {
         if (page === 0 && folderSelection) {
           setFolderTitle(data.current.title);
           setProviderKey(data.current.providerKey);
-          setFolderId(folderId);
+          setResultingFolderId(folderId);
         }
 
         const finalData = [...data.files];
@@ -144,7 +144,7 @@ export default inject(
   ({ selectedFolderStore, selectFolderDialogStore, auth }) => {
     const { id } = selectedFolderStore;
     const {
-      setFolderId,
+      setResultingFolderId,
       setFolderTitle,
       setProviderKey,
     } = selectFolderDialogStore;
@@ -155,7 +155,7 @@ export default inject(
     return {
       theme: theme,
       storeFolderId: id,
-      setFolderId,
+      setResultingFolderId,
       setFolderTitle,
       setProviderKey,
     };

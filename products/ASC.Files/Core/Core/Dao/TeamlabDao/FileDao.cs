@@ -416,12 +416,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
         }
 
-        var user = _userManager.GetUsers(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
         var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
-        var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(user);
 
-        if (quotaSettings.EnableUserQuota && userQuotaSettings.UserQuota != -1)
+        if (quotaSettings.EnableUserQuota)
         {
+            var user = _userManager.GetUsers(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
+            var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(user);
             var quotaLimit = userQuotaSettings.UserQuota;
 
             if (quotaLimit != -1)
