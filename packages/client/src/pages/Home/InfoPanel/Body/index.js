@@ -148,11 +148,6 @@ const InfoPanelBodyContent = ({
       selectedItems.length !== props.selectedItems.length;
     const singleSelectedItemChanged =
       selectedItems[0]?.id !== props.selectedItems[0]?.id;
-
-    console.log(
-      selectedItemsLengthChanged && "selectedItemsLengthChanged",
-      props.selectedItems.length
-    );
     if (selectedItemsLengthChanged || singleSelectedItemChanged)
       setSelectedItems(props.selectedItems);
   }, [props.selectedItems]);
@@ -182,15 +177,16 @@ const InfoPanelBodyContent = ({
 
   //////////////////////////////////////////////////////////
 
-  useEffect(() => {
-    console.log("\nfor-dev  Selected items: ", selectedItems);
-    console.log("\nfor-dev  Selected folder: ", selectedFolder);
-  }, [selectedItems, selectedFolder]);
+  // useEffect(() => {
+  //   console.log("\nfor-dev  Selected items: ", selectedItems);
+  //   console.log("\nfor-dev  Selected folder: ", selectedFolder);
+  // }, [selectedItems, selectedFolder]);
 
   //////////////////////////////////////////////////////////
 
   if (!selection && !isGallery) return null;
 
+  // console.log(props.selectedItems);
   return (
     <StyledInfoPanelBody>
       {!isNoItem && (
@@ -281,6 +277,8 @@ export default inject(
       : peopleStoreBufferSelection
       ? [peopleStoreBufferSelection]
       : [];
+
+    console.log(selectedUsers);
 
     const selectedItems = getIsAccounts() ? selectedUsers : selectedFiles;
     const selectedFolder = {
