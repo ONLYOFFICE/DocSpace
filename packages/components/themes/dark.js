@@ -1525,6 +1525,7 @@ const Dark = {
 
   comboBox: {
     padding: "6px 0px",
+    background: black,
 
     width: {
       base: "173px",
