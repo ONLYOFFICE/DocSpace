@@ -540,7 +540,7 @@ export const options = [
     name: "Canada",
     dialCode: "1",
     code: "CA",
-    mask: [/\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: Canada
   },
   {
