@@ -13,7 +13,7 @@ $CommandName = "$($args[0])";
 #Write-Output  "Starting $($CommandName) services at time: $(Get-Date -Format HH:mm:ss)"
 #Write-Output  ""
 
-Get-ChildItem -Path $WorkDir | ForEach-Object -ThrottleLimit 20 -Parallel  {
+Get-ChildItem -Path $WorkDir -File | ForEach-Object -ThrottleLimit 20 -Parallel  {
     $ServiceName = "Onlyoffice$([System.IO.Path]::GetFileNameWithoutExtension($_))";
 
     switch ( $Using:CommandName )
