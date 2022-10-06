@@ -385,7 +385,7 @@ public class BackupAjaxHandler
 
     public string GetTmpFilePath()
     {
-        var folder = Path.Combine(_tempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
+        var folder = Path.Combine(_tempPath.GetTempPath().Replace("\\ASC.Data.Backup\\", "\\ASC.Data.Backup.BackgroundTasks\\"), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
 
         if (!Directory.Exists(folder))
         {
