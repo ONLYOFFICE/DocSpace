@@ -12,8 +12,6 @@ import { StyledGalleryThumbnail } from "../../styles/gallery.js";
 import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
 
 const Gallery = ({ t, gallerySelected, getIcon, culture, personal }) => {
-  console.log(gallerySelected);
-
   const thumbnailBlank = getIcon(96, ".docxf");
   const thumbnailUrl =
     gallerySelected?.attributes?.template_image?.data.attributes?.formats?.small
