@@ -278,8 +278,6 @@ export default inject(
       ? [peopleStoreBufferSelection]
       : [];
 
-    console.log(selectedUsers);
-
     const selectedItems = getIsAccounts() ? selectedUsers : selectedFiles;
     const selectedFolder = {
       ...selectedFolderStore,
