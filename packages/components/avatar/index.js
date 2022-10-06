@@ -55,7 +55,15 @@ Initials.propTypes = {
 // eslint-disable-next-line react/display-name
 const Avatar = (props) => {
   //console.log("Avatar render");
-  const { size, source, userName, role, editing, editAction } = props;
+  const {
+    size,
+    source,
+    userName,
+    role,
+    editing,
+    editAction,
+    isDefaultSource = false,
+  } = props;
   let isDefault = false,
     isIcon = false;
 
@@ -72,6 +80,8 @@ const Avatar = (props) => {
     )
   ) : userName ? (
     <Initials userName={userName} size={size} />
+  ) : isDefaultSource ? (
+    <StyledImage isDefault />
   ) : (
     <EmptyIcon size="scale" />
   );
@@ -109,6 +119,8 @@ Avatar.propTypes = {
   /** Provide this and leave `source` empty to display as initials */
   userName: PropTypes.string,
   editing: PropTypes.bool,
+  /** Provide this and leave `source` empty to display as default icon */
+  isDefaultSource: PropTypes.bool,
   /** Function called when the avatar change button is pressed */
   editAction: PropTypes.func,
   /** Accepts class */

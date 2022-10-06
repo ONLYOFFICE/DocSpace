@@ -147,13 +147,16 @@ const PayerInformationContainer = ({
     </Text>
   );
 
+  const avatarUrl = payerInfo ? { source: payerInfo.avatar } : {};
+
   return (
     <StyledContainer style={style} theme={theme}>
       <div className="payer-info_avatar">
         <Avatar
           size={"base"}
-          source={user.avatar}
-          userName={user.displayName}
+          {...avatarUrl}
+          isDefaultSource
+          userName={payerInfo?.displayName}
         />
       </div>
 
@@ -162,7 +165,6 @@ const PayerInformationContainer = ({
           {payerName}
 
           <Text as="span" className="payer-info">
-            {" "}
             {" (" + t("Payer") + ") "}
           </Text>
 
@@ -176,13 +178,14 @@ const PayerInformationContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { userStore } = auth;
+  const { userStore, settingsStore } = auth;
   const { accountLink } = payments;
+  const { theme } = settingsStore;
 
   const { user } = userStore;
 
   return {
-    theme: auth.settingsStore.theme,
+    theme,
     user,
     accountLink,
   };
