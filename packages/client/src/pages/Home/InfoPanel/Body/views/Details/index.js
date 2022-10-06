@@ -11,8 +11,17 @@ import DetailsHelper from "../../helpers/DetailsHelper.js";
 import { StyledNoThumbnail, StyledThumbnail } from "../../styles/details.js";
 import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
 
-const Details = ({ t, selection, setSelection, ...props }) => {
+const Details = ({
+  t,
+  selection,
+  setSelection,
+  createThumbnail,
+  getItemIcon,
+  ...props
+}) => {
   const [itemProperties, setItemProperties] = useState([]);
+  const [isThumbnailError, setIsThumbmailError] = useState(false);
+  const onThumbnailError = () => setIsThumbmailError(true);
 
   const detailsHelper = new DetailsHelper({ t, item: selection, ...props });
 
@@ -20,7 +29,6 @@ const Details = ({ t, selection, setSelection, ...props }) => {
     setItemProperties(detailsHelper.getPropertyList());
 
     if (
-      !selection.thumbnailUrl &&
       !selection.isFolder &&
       selection.thumbnailStatus === 0 &&
       (selection.fileType === FileType.Image ||
@@ -29,19 +37,19 @@ const Details = ({ t, selection, setSelection, ...props }) => {
         selection.fileType === FileType.Document)
     ) {
       await createThumbnail(selection.id);
-      setSelection({ ...selection, hasCustonThumbnail: true });
     }
   }, [selection]);
 
   return (
     <>
-      {selection?.hasCustonThumbnail ? (
+      {selection.thumbnailUrl && !isThumbnailError ? (
         <StyledThumbnail>
           <img
             src={selection.thumbnailUrl}
             alt="thumbnail-image"
             height={260}
             width={360}
+            onError={onThumbnailError}
           />
         </StyledThumbnail>
       ) : (
@@ -50,7 +58,7 @@ const Details = ({ t, selection, setSelection, ...props }) => {
             className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
               selection.isRoom && selection.logo?.large && "custom-logo"
             }`}
-            src={selection.thumbnailUrl}
+            src={getItemIcon(selection, 96)}
             alt="thumbnail-icon-big"
           />
         </StyledNoThumbnail>
