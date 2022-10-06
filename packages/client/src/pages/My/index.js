@@ -13,7 +13,7 @@ import {
   SectionBodyContent as ViewBodyContent,
   SectionHeaderContent as ViewHeaderContent,
 } from "../Profile/Section";
-// import EditBodyContent from "../ProfileAction/Section/Body";
+import EditBodyContent from "../ProfileAction/Section/Body";
 import Link from "@docspace/components/link";
 import { Trans } from "react-i18next";
 
