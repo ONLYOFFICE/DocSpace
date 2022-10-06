@@ -1905,7 +1905,7 @@ export const options = [
     name: "United States",
     dialCode: "1",
     code: "US",
-    mask: [/\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: UnitedStates
   },
   {
