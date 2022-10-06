@@ -152,7 +152,6 @@ const SectionFilterContent = ({
   userId,
   isPersonalRoom,
   setCurrentRoomsFilter,
-  getThirdPartyIconSmall,
   providers,
 }) => {
   const onFilter = React.useCallback(
@@ -381,13 +380,13 @@ const SectionFilterContent = ({
       if (roomsFilter.provider) {
         const provider = +roomsFilter.provider;
 
-        const providerKey = Object.entries(RoomsProviderType).find(
+        const label = Object.entries(RoomsProviderType).find(
           (item) => item[1] === provider
         )[0];
 
         filterValues.push({
           key: provider,
-          icon: getThirdPartyIconSmall(providerKey),
+          label: label,
           group: FilterGroups.roomFilterProviderType,
         });
       }
@@ -545,7 +544,6 @@ const SectionFilterContent = ({
     // roomsFilter.searchInContent,
     userId,
     isRooms,
-    getThirdPartyIconSmall,
   ]);
 
   const getFilterData = React.useCallback(async () => {
@@ -1157,7 +1155,7 @@ export default inject(
       thirdPartyStore,
     } = filesStore;
 
-    const { getThirdPartyIconSmall, providers } = thirdPartyStore;
+    const { providers } = thirdPartyStore;
 
     const { fetchTags } = tagsStore;
 
@@ -1200,7 +1198,6 @@ export default inject(
       isPersonalRoom,
       infoPanelVisible,
       setCurrentRoomsFilter,
-      getThirdPartyIconSmall,
       providers,
     };
   }
