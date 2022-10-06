@@ -13,13 +13,6 @@ const InfoPanelHeaderLoader = () => {
   const isTablet =
     isTabletUtils() || isMobileUtils() || isMobileRDD || !isDesktopUtils();
 
-  const pathname = window.location.pathname.toLowerCase();
-  const isGallery = pathname.indexOf("form-gallery") !== -1;
-  const isRooms = pathname.indexOf("rooms") !== -1;
-  const isAccounts =
-    pathname.indexOf("accounts") !== -1 && !(pathname.indexOf("view") !== -1);
-  const withSubmenu = !isGallery && !isAccounts;
-
   return (
     <StyledInfoPanelHeader isTablet={isTablet} withSubmenu={false}>
       <div className="main">
@@ -34,28 +27,6 @@ const InfoPanelHeaderLoader = () => {
           </div>
         )}
       </div>
-
-      {/* {withSubmenu && (
-        <div className="submenu">
-          <RectangleLoader
-            width={"60px"}
-            height={"20px"}
-            borderRadius={"3px"}
-          />
-          <RectangleLoader
-            width={"60px"}
-            height={"20px"}
-            borderRadius={"3px"}
-          />
-          {isRooms && (
-            <RectangleLoader
-              width={"60px"}
-              height={"20px"}
-              borderRadius={"3px"}
-            />
-          )}
-        </div>
-      )} */}
     </StyledInfoPanelHeader>
   );
 };
