@@ -78,7 +78,6 @@ class VersionHistoryStore {
     const currentComment =
       versions[versions.length - currentVersionGroup].comment;
 
-    console.log("ASDASDASD", currentComment);
     const newFile = {
       ...file,
       comment: currentComment,
