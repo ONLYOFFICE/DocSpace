@@ -173,13 +173,9 @@ public class LdapObjectExtension
             Title = !string.IsNullOrEmpty(title) ? title : string.Empty,
             Location = !string.IsNullOrEmpty(location) ? location : string.Empty,
             WorkFromDate = _tenantUtil.DateTimeNow(),
-            ContactsList = contacts
+            ContactsList = contacts,
+            LdapQouta = quota
         };
-
-        if (quotaSettings.EnableUserQuota)
-        {
-            _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = quota }, Guid.Parse(user.Sid));
-        }
 
         if (!string.IsNullOrEmpty(firstName))
         {

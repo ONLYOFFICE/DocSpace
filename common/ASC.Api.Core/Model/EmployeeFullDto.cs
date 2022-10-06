@@ -197,13 +197,12 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         await Init(result, userInfo);
 
-        result.UsedSpace = Math.Max(0, _userManager.FindUserQuotaRows(_context.Tenant.Id, userInfo.IsLDAP() ? Guid.Parse(userInfo.Sid) : userInfo.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
-
         var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
-        var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(userInfo);
-
+       
         if (quotaSettings.EnableUserQuota)
         {
+            result.UsedSpace = Math.Max(0, _userManager.FindUserQuotaRows(_context.Tenant.Id, userInfo.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+            var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(userInfo);
             result.QuotaLimit = userQuotaSettings != null ? userQuotaSettings.UserQuota : quotaSettings.DefaultUserQuota;
         }
 
