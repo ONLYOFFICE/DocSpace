@@ -316,9 +316,26 @@ class AccountsContextOptionsStore {
 
   onEnableClick = (t, item) => {
     const { id } = item;
-    const { updateUserStatus } = this.peopleStore.usersStore;
+    const {
+      updateUserStatus,
+      getUserContextOptions,
+      getStatusType,
+    } = this.peopleStore.usersStore;
+    const { setSelection } = this.authStore.infoPanelStore;
 
     updateUserStatus(EmployeeStatus.Active, [id])
+      .then(() => {
+        const updatedUser = { ...item };
+        updatedUser.status = EmployeeStatus.Active;
+        updatedUser.statusType = getStatusType(updatedUser);
+        updatedUser.options = getUserContextOptions(
+          false,
+          false,
+          updatedUser.statusType,
+          EmployeeStatus.Active
+        );
+        setSelection(updatedUser);
+      })
       .then(() =>
         toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
       )
@@ -327,9 +344,26 @@ class AccountsContextOptionsStore {
 
   onDisableClick = (t, item) => {
     const { id } = item;
-    const { updateUserStatus } = this.peopleStore.usersStore;
+    const {
+      updateUserStatus,
+      getUserContextOptions,
+      getStatusType,
+    } = this.peopleStore.usersStore;
+    const { setSelection } = this.authStore.infoPanelStore;
 
     updateUserStatus(EmployeeStatus.Disabled, [id])
+      .then(() => {
+        const updatedUser = { ...item };
+        updatedUser.status = EmployeeStatus.Disabled;
+        updatedUser.statusType = getStatusType(updatedUser);
+        updatedUser.options = getUserContextOptions(
+          false,
+          false,
+          updatedUser.statusType,
+          EmployeeStatus.Disabled
+        );
+        setSelection(updatedUser);
+      })
       .then(() =>
         toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
       )
