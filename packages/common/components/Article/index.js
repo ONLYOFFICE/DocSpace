@@ -30,6 +30,7 @@ const Article = ({
   isBannerVisible,
   hideProfileBlock,
   isFreeTariff,
+  isAvailableArticlePaymentAlert,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -128,9 +129,9 @@ const Article = ({
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
-          {(isFreeTariff || isGracePeriod) && showText && (
-            <ArticlePaymentAlert isFreeTariff={isFreeTariff} />
-          )}
+          {isAvailableArticlePaymentAlert &&
+            (isFreeTariff || isGracePeriod) &&
+            showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -173,10 +174,19 @@ Article.Body = () => {
 Article.Body.displayName = "Body";
 
 export default inject(({ auth, bannerStore }) => {
-  const { settingsStore, currentQuotaStore, currentTariffStatusStore } = auth;
+  const {
+    settingsStore,
+    currentQuotaStore,
+    currentTariffStatusStore,
+    userStore,
+  } = auth;
   const { isFreeTariff } = currentQuotaStore;
   const { isGracePeriod } = currentTariffStatusStore;
   const { isBannerVisible } = bannerStore;
+
+  const { user } = userStore;
+
+  const isAvailableArticlePaymentAlert = user.isOwner || user.isAdmin;
 
   const {
     showText,
@@ -197,5 +207,6 @@ export default inject(({ auth, bannerStore }) => {
     isFreeTariff,
     isBannerVisible,
     isGracePeriod,
+    isAvailableArticlePaymentAlert,
   };
 })(observer(Article));
