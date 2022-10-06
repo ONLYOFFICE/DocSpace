@@ -124,10 +124,14 @@ const InputPhone = ({
       scaled={scaled}
     >
       <ComboBox
-        onClick={handleClick}
         options={[]}
         noBorder={true}
+        opened={isOpen}
+        data="country"
+        toggleAction={handleClick}
+        displayType="toggle"
         className="country-box"
+        fillIcon={true}
         selectedOption={country}
       />
       <Label text="+" className="prefix" />
@@ -180,6 +184,7 @@ const InputPhone = ({
           )}
         </Box>
       </DropDown>
+
       {!isValid && (
         <Text
           className="phone-input_error-text"

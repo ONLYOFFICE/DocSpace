@@ -5,10 +5,11 @@ import Base from "../themes/base";
 export const StyledBox = styled(Box)`
   position: relative;
   width: ${(props) => (props.scaled ? "100%" : props.theme.inputPhone.width)};
-  border: 1px solid ${(props) =>
-    props.hasError
-      ? props.theme.inputPhone.errorBorderColor
-      : props.theme.inputPhone.inactiveBorderColor};
+  border: 1px solid
+    ${(props) =>
+      props.hasError
+        ? props.theme.inputPhone.errorBorderColor
+        : props.theme.inputPhone.inactiveBorderColor};
   border-radius: 3px;
   :focus-within {
     border-color: ${(props) =>
@@ -19,6 +20,8 @@ export const StyledBox = styled(Box)`
 
   .country-box {
     width: 57px;
+    height: 44px;
+    padding: 0;
     background: ${(props) => props.theme.inputPhone.backgroundColor};
     border-radius: 3px;
   }
@@ -27,8 +30,8 @@ export const StyledBox = styled(Box)`
     height: ${(props) => props.theme.inputPhone.height};
     padding-left: 20px;
     margin-left: -8px;
-    border-left: 1px solid ${(props) =>
-      props.theme.inputPhone.inactiveBorderColor};
+    border-left: 1px solid
+      ${(props) => props.theme.inputPhone.inactiveBorderColor};
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     background: ${(props) => props.theme.inputPhone.backgroundColor};
@@ -59,8 +62,12 @@ export const StyledBox = styled(Box)`
     }
 
     .forceColor {
-      width: 36px;
-      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 0;
+      width: 100%;
+      height: 100%;
       svg {
         path:last-child {
           fill: none;
@@ -69,15 +76,23 @@ export const StyledBox = styled(Box)`
     }
   }
 
+  .combo-button_selected-icon {
+    height: 36px;
+    width: 36px;
+    margin-right: 6px;
+  }
+
   .combo-buttons_arrow-icon {
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 4px solid #a3a9ae;
     cursor: pointer;
     margin: 0;
     position: absolute;
-    top: 21px;
-    right: 10px;
+    top: 20px;
+    right: 8px;
+    svg {
+      path {
+        fill: ${(props) => props.theme.inputPhone.placeholderColor};
+      }
+    }
   }
 
   .drop-down {
@@ -97,10 +112,9 @@ export const StyledBox = styled(Box)`
         border-color: ${(props) => props.theme.inputPhone.activeBorderColor};
       }
       ::placeholder {
-        color: ${(props) => props.theme.inputPhone.placeholderColor}
+        color: ${(props) => props.theme.inputPhone.placeholderColor};
       }
     }
-
   }
 
   .country-name {
@@ -127,7 +141,7 @@ export const StyledBox = styled(Box)`
     .drop-down-icon > div {
       height: 36px;
     }
-  
+
     .drop-down-icon {
       width: 36px;
       height: 36px;
@@ -159,6 +173,6 @@ export const StyledBox = styled(Box)`
     word-break: break-all;
     top: 48px;
   }
-}
 `;
+
 StyledBox.defaultProps = { theme: Base };
