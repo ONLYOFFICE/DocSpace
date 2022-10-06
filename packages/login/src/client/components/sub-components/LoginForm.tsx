@@ -282,6 +282,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                   helpButton={
                     !checkIsSSR() && (
                       <HelpButton
+                        color="#D8D8D8"
                         helpButtonHeaderContent={t("CookieSettingsTitle")}
                         tooltipContent={
                           <Text fontSize="12px">{t("RememberHelper")}</Text>
