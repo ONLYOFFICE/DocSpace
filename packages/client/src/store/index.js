@@ -130,7 +130,11 @@ const profileActionsStore = new ProfileActionsStore(
   selectedFolderStore
 );
 
-authStore.infoPanelStore.setSettingsStore(settingsStore);
+authStore.infoPanelStore.authStore = authStore;
+authStore.infoPanelStore.settingsStore = settingsStore;
+authStore.infoPanelStore.peopleStore = peopleStore;
+authStore.infoPanelStore.selectedFolderStore = selectedFolderStore;
+authStore.infoPanelStore.treeFoldersStore = treeFoldersStore;
 
 const store = {
   auth: authStore,
