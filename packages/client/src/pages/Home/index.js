@@ -456,8 +456,6 @@ class PureHome extends React.Component {
       isHeaderVisible,
       isPrivacyFolder,
       isRecycleBinFolder,
-      isRoomsFolder,
-      isArchiveFolder,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -483,16 +481,6 @@ class PureHome extends React.Component {
       withPaging,
       isEmptyPage,
     } = this.props;
-
-    const categoryType = getCategoryType(location);
-    let isRooms = false;
-    if (
-      categoryType == CategoryType.Shared ||
-      categoryType == CategoryType.SharedRoom ||
-      categoryType == CategoryType.Archive ||
-      categoryType == CategoryType.ArchivedRoom
-    )
-      isRooms = true;
 
     if (window.parent && !frameConfig) {
       frameCallCommand("setConfig");
@@ -557,11 +545,11 @@ class PureHome extends React.Component {
           </Section.SectionBody>
 
           <Section.InfoPanelHeader>
-            <InfoPanelHeaderContent isRooms={isRooms} />
+            <InfoPanelHeaderContent />
           </Section.InfoPanelHeader>
 
           <Section.InfoPanelBody>
-            <InfoPanelBodyContent isRooms={isRooms} />
+            <InfoPanelBodyContent />
           </Section.InfoPanelBody>
 
           {withPaging && (
