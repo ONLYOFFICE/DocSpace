@@ -50,7 +50,7 @@ const StyledRowContainer = styled(RowContainer)`
     .files-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -3px;
+      margin-top: -1px;
       ${marginStyles}
     }
   }
@@ -94,7 +94,7 @@ const FilesRowContainer = ({
       hasMoreFiles={hasMoreFiles}
       draggable
       useReactWindow={!withPaging}
-      itemHeight={58}
+      itemHeight={59}
     >
       {filesList.map((item, index) => (
         <SimpleFilesRow

@@ -190,7 +190,7 @@ class ProfileActionsStore {
       hotkeys,
       {
         key: "AboutBtn",
-        icon: "/static/images/info.react.svg",
+        icon: "/static/images/info.outline.react.svg",
         label: t("Common:AboutCompanyTitle"),
         onClick: this.onAboutClick,
       },
@@ -210,7 +210,7 @@ class ProfileActionsStore {
     if (debugInfo) {
       actions.splice(3, 0, {
         key: "DebugBtn",
-        icon: "/static/images/info.react.svg",
+        icon: "/static/images/info.outline.react.svg",
         label: "Debug Info",
         onClick: this.onDebugClick,
       });

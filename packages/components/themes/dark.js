@@ -1614,10 +1614,11 @@ const Dark = {
   },
 
   toggleButton: {
-    fillColor: grayMaxLight,
+    fillColor: "#F0F0F0",
     fillColorOff: "#292929",
 
     disableFillColor: black,
+    disableFillColorOff: "#545454",
 
     borderColor: "#474747",
     borderColorOff: "#474747",
@@ -1625,11 +1626,11 @@ const Dark = {
     disableBorderColor: "#474747",
     disableBorderColorOff: "#646464",
 
-    fillCircleColor: "#FFFFFF",
+    fillCircleColor: "#292929",
     fillCircleColorOff: grayMaxLight,
 
-    disableFillCircleColor: "#333333",
-    disableFillCircleColorOff: "#797979",
+    disableFillCircleColor: "#545454",
+    disableFillCircleColorOff: black,
   },
 
   contextMenuButton: {

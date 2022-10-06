@@ -79,7 +79,9 @@ const MainContainerWrapper = styled.div`
       props.widthProp &&
       props.widthProp < size.tablet) ||
     props.isMobile
-      ? `${mainWrapperTabletStyle}`
+      ? css`
+          ${mainWrapperTabletStyle}
+        `
       : `
   `}
   @media ${tablet} {

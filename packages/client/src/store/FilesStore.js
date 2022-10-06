@@ -664,6 +664,9 @@ class FilesStore {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
+    if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
+      return this.fetchRooms();
+
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
       localStorage.getItem(`UserFilter=${this.authStore.userStore.user.id}`);
@@ -1703,7 +1706,8 @@ class FilesStore {
 
   removeFiles = (fileIds, folderIds, showToast) => {
     const newFilter = this.filter.clone();
-    const deleteCount = fileIds.length + folderIds.length;
+    const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
+
     newFilter.startIndex =
       (newFilter.page + 1) * newFilter.pageCount - deleteCount;
     newFilter.pageCount = deleteCount;
@@ -1713,10 +1717,10 @@ class FilesStore {
       .then((res) => {
         const files = fileIds
           ? this.files.filter((x) => !fileIds.includes(x.id))
-          : [];
+          : this.files;
         const folders = folderIds
           ? this.folders.filter((x) => !folderIds.includes(x.id))
-          : [];
+          : this.folders;
 
         const newFiles = [...files, ...res.files];
         const newFolders = [...folders, ...res.folders];
