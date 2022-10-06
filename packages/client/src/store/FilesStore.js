@@ -769,7 +769,6 @@ class FilesStore {
               .reverse();
           });
 
-          console.log("for-dev fetchFiles", data.current);
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,
             ...data.current,
@@ -890,8 +889,6 @@ class FilesStore {
               this.setSelected("close");
             }
           }
-
-          console.log("for-dev fetchrooms", data.current);
 
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,

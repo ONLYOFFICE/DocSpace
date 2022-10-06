@@ -93,7 +93,6 @@ class VersionHistoryStore {
 
   fetchFileVersions = (fileId) => {
     if (this.fileId !== fileId || !this.versions) {
-      console.log("for-dev fetchFileVersions");
       this.setVerHistoryFileId(fileId);
       return api.files
         .getFileVersionInfo(fileId)
