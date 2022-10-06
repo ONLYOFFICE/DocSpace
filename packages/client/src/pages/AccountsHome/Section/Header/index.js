@@ -266,7 +266,9 @@ const SectionHeaderContent = (props) => {
             isChecked={isHeaderChecked}
             isIndeterminate={isHeaderIndeterminate}
             headerMenu={headerMenu}
-            withoutInfoPanelToggler={true}
+            isInfoPanelVisible={isInfoPanelVisible}
+            toggleInfoPanel={onSetInfoPanelVisible}
+            withoutInfoPanelToggler={false}
           />
         </div>
       ) : (
