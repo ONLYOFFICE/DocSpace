@@ -37,8 +37,10 @@ const HistoryBlockMessage = ({ t, action, groupedActions }) => {
 
     const getActionCount = () => {
       if (
-        !action.Action === FeedActionTypes.Create ||
-        !action.Action === FeedActionTypes.Delete
+        !(
+          action.Action === FeedActionTypes.Create ||
+          action.Action === FeedActionTypes.Delete
+        )
       )
         return "";
 
