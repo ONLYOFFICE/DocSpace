@@ -21,11 +21,13 @@ class Profile extends React.Component {
       setIsLoading,
       setIsEditTargetUser,
       setLoadedProfile,
+      setSelectedNode,
     } = this.props;
     const userId = "@self";
 
     setFirstLoad(false);
     setIsEditTargetUser(false);
+    setSelectedNode(["accounts"]);
 
     setDocumentTitle(t("Common:Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");
@@ -101,7 +103,7 @@ Profile.propTypes = {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => {
+  inject(({ auth, peopleStore, treeFoldersStore }) => {
     const { setDocumentTitle, isAdmin, language } = auth;
     const { targetUserStore, loadingStore } = peopleStore;
     const {
@@ -111,6 +113,7 @@ export default withRouter(
       setIsEditTargetUser,
     } = targetUserStore;
     const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
+    const { setSelectedNode } = treeFoldersStore;
     return {
       setDocumentTitle,
       isAdmin,
@@ -123,6 +126,7 @@ export default withRouter(
       setIsEditTargetUser,
       setLoadedProfile,
       showCatalog: auth.settingsStore.showCatalog,
+      setSelectedNode,
     };
   })(
     observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile)))
