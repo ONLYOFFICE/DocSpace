@@ -14,8 +14,16 @@ import DropDown from "@docspace/components/drop-down";
 import DropDownItem from "@docspace/components/drop-down-item";
 import Text from "@docspace/components/text";
 
-const InputPhone = (props) => {
-  const [country, setCountry] = useState(props.defaultCountry);
+const InputPhone = ({
+  defaultCountry,
+  onChange,
+  scaled,
+  phonePlaceholderText,
+  searchPlaceholderText,
+  searchEmptyMessage,
+  errorMessage,
+} = props) => {
+  const [country, setCountry] = useState(defaultCountry);
   const [phoneValue, setPhoneValue] = useState(country.dialCode);
   const [searchValue, setSearchValue] = useState("");
   const [filteredOptions, setFilteredOptions] = useState([]);
@@ -26,7 +34,10 @@ const InputPhone = (props) => {
     const str = e.target.value.replace(/\s/g, "");
     const el = options.find((option) => option.dialCode === str);
 
-    if (e.target.value === "" || phoneValue) {
+    const singleСode = ["0", "2", "3", "4", "5", "6", "8", "9"];
+    const invalidCode = singleСode.find((code) => code === str);
+
+    if (e.target.value === "" || e.target.value === invalidCode) {
       setIsValid(false);
       setCountry((prev) => ({ ...prev, icon: InvalidFlag }));
     }
@@ -41,7 +52,7 @@ const InputPhone = (props) => {
         icon: el.flag,
       });
     }
-    props.onChange && props.onChange(e);
+    onChange && onChange(e);
   };
 
   const onCountrySearch = (value) => {
@@ -110,7 +121,7 @@ const InputPhone = (props) => {
       hasError={!isValid}
       displayProp="flex"
       alignItems="center"
-      scaled={props.scaled}
+      scaled={scaled}
     >
       <ComboBox
         onClick={handleClick}
@@ -123,7 +134,7 @@ const InputPhone = (props) => {
       <TextInput
         type="tel"
         className="input-phone"
-        placeholder={props.phonePlaceholderText}
+        placeholder={phonePlaceholderText}
         mask={getMask(country.locale)}
         withBorder={false}
         tabIndex={1}
@@ -138,7 +149,7 @@ const InputPhone = (props) => {
         manualWidth="100%"
       >
         <SearchInput
-          placeholder={props.searchPlaceholderText}
+          placeholder={searchPlaceholderText}
           value={searchValue}
           className="search-country_input"
           scale={true}
@@ -164,7 +175,7 @@ const InputPhone = (props) => {
               className="phone-input_empty-text"
               fontSize="14px"
             >
-              {props.searchEmptyMessage}
+              {searchEmptyMessage}
             </Text>
           )}
         </Box>
@@ -176,7 +187,7 @@ const InputPhone = (props) => {
           fontSize="11px"
           lineHeight="14px"
         >
-          {props.errorMessage}
+          {errorMessage}
         </Text>
       )}
     </StyledBox>
@@ -204,8 +215,8 @@ InputPhone.defaultProps = {
   defaultCountry: {
     locale: options[182].code, // default locale RU
     dialCode: options[182].dialCode, // default dialCode +7
-    mask: options[182].mask, // default dialCode +7
-    icon: options[182].flag, // default flag Russia
+    mask: options[182].mask, // default Russia mask
+    icon: options[182].flag, // default Russia flag
   },
   phonePlaceholderText: "",
   searchPlaceholderText: "",

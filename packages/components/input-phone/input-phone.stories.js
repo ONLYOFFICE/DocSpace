@@ -31,8 +31,8 @@ Default.args = {
   defaultCountry: {
     locale: options[182].code, // default locale RU
     dialCode: options[182].dialCode, // default dialCode +7
-    mask: options[182].mask, // default dialCode +7
-    icon: options[182].flag, // default flag Russia
+    mask: options[182].mask, // default Russia mask
+    icon: options[182].flag, // default Russia flag
   },
   phonePlaceholderText: "7 XXX XXX-XX-XX",
   searchPlaceholderText: "Search",
