@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 
@@ -30,8 +30,10 @@ const FilesItemTitle = ({
       </StyledTitle>
     );
 
+  const itemTitleRef = useRef();
+
   return (
-    <StyledTitle>
+    <StyledTitle ref={itemTitleRef}>
       <img
         className={`icon ${selection.isRoom && "is-room"}`}
         src={selection.icon}
@@ -41,6 +43,7 @@ const FilesItemTitle = ({
       {selection && (
         <ItemContextOptions
           t={t}
+          itemTitleRef={itemTitleRef}
           selection={selection}
           setBufferSelection={setBufferSelection}
           getContextOptions={getContextOptions}
