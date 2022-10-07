@@ -82,7 +82,8 @@ const HistoryBlockMessage = ({
 
     const itemLocationId = +action.ExtraLocation;
     if (selectedFolder.id === itemLocationId) return "";
-    // if (selectionParentRoom?.id === itemLocation) return "";
+    if (selection.isRoom && selectionParentRoom.id === itemLocationId)
+      return "";
 
     const folderTitle = action.ExtraLocationTitle;
     if (!folderTitle) return "";
