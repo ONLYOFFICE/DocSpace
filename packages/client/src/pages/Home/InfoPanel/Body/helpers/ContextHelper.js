@@ -9,13 +9,20 @@ class ContextHelper {
   }
 
   fixItemContextOptions = () => {
-    let newContextOptions = this.selection.contextOptions;
+    let options = this.selection.contextOptions;
+    if (!options) options = this.getContextOptions(this.selection, false);
 
-    if (!newContextOptions)
-      newContextOptions = this.getContextOptions(this.selection, false);
-    newContextOptions = newContextOptions.filter((co) => co !== "show-info");
+    const showInfoIndex = options.findIndex((i) => i === "show-info");
+    const lastIndex = options.length - 1;
+    const isLastIndex = showInfoIndex === lastIndex;
 
-    this.selection.contextOptions = newContextOptions;
+    if (!showInfoIndex && options[1].includes("separator"))
+      options = options.slice(2);
+    else if (isLastIndex && options[lastIndex - 1].includes("separator"))
+      options = options.slice(0, -2);
+    else options = options.filter((i) => i !== "show-info");
+
+    this.selection.contextOptions = options;
   };
 
   getItemContextOptions = () => {
