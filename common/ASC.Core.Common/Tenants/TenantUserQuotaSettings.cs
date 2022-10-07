@@ -27,12 +27,24 @@
 namespace ASC.Core.Tenants;
 
 [Serializable]
-public class TenantQuotaRow : IMapFrom<DbQuotaRow>
+public class TenantUserQuotaSettings : ISettings<TenantUserQuotaSettings>
 {
-    public int Tenant { get; set; }
-    public string Path { get; set; }
-    public long Counter { get; set; }
-    public string Tag { get; set; }
-    public Guid UserId { get; set; }
-    public DateTime LastModified { get; set; }
+    public bool EnableUserQuota { get; set; }
+
+    public long DefaultUserQuota { get; set; }
+
+    public TenantUserQuotaSettings GetDefault()
+    {
+        return new TenantUserQuotaSettings
+        {
+            EnableUserQuota = false,
+            DefaultUserQuota = -1
+        };
+    }
+
+    [JsonIgnore]
+    public Guid ID
+    {
+        get { return new Guid("{5FE28053-BCD4-466B-8A4B-71B612F0D6FC}"); }
+    }
 }
