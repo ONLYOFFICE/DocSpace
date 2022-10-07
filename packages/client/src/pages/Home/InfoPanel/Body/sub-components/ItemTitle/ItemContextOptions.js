@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
-import { inject } from "mobx-react";
-import { withTranslation } from "react-i18next";
 
-import { ContextMenuButton } from "@docspace/components";
+import {
+  ContextMenu,
+  ContextMenuButton,
+  IconButton,
+} from "@docspace/components";
 
 import ContextHelper from "../../helpers/ContextHelper";
 
@@ -11,8 +13,15 @@ const StyledItemContextOptions = styled.div`
   margin-left: auto;
 `;
 
-const ItemContextOptions = ({ selection, setBufferSelection, ...props }) => {
+const ItemContextOptions = ({
+  selection,
+  setBufferSelection,
+  itemTitleRef,
+  ...props
+}) => {
   if (!selection) return null;
+
+  const contextMenuRef = useRef();
 
   const contextHelper = new ContextHelper({
     selection,
@@ -21,17 +30,26 @@ const ItemContextOptions = ({ selection, setBufferSelection, ...props }) => {
 
   const setItemAsBufferSelection = () => setBufferSelection(selection);
 
+  const onContextMenu = (e) => {
+    e.button === 2;
+    if (!contextMenuRef.current.menuRef.current) itemTitleRef.current.click(e);
+    contextMenuRef.current.show(e);
+  };
+
   return (
     <StyledItemContextOptions onClick={setItemAsBufferSelection}>
+      <ContextMenu
+        ref={contextMenuRef}
+        getContextModel={contextHelper.getItemContextOptions}
+        withBackdrop={false}
+      />
       <ContextMenuButton
-        zIndex={402}
-        className="option-button expandButton"
-        iconName="images/vertical-dots.react.svg"
-        size={15}
+        className="expandButton"
+        title={"Show item actions"}
+        onClick={onContextMenu}
         getData={contextHelper.getItemContextOptions}
-        directionX="left"
-        displayType="dropdown"
-        isPortal
+        directionX="right"
+        isNew={true}
       />
     </StyledItemContextOptions>
   );
