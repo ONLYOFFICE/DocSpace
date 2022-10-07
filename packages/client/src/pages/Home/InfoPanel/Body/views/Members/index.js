@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 
-import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";
 
 import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
@@ -117,15 +116,6 @@ const Members = ({
     </>
   );
 };
-
-// export default withTranslation([
-//   "InfoPanel",
-//   "Common",
-//   "Translations",
-//   "People",
-//   "PeopleTranslations",
-//   "Settings",
-// ])(withLoader(Members)(<Loaders.InfoPanelViewLoader view="members" />));
 
 export default withTranslation([
   "InfoPanel",
