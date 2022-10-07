@@ -30,8 +30,6 @@ const InfoPanelBodyContent = ({
   getFolderIcon,
   ...props
 }) => {
-  console.log(selection);
-
   const [selectedItems, setSelectedItems] = useState(props.selectedItems);
   const [selectedFolder, setSelectedFolder] = useState(props.selectedFolder);
 
