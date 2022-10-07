@@ -36,11 +36,13 @@ class InfoPanelStore {
   };
 
   normalizeSelection = (selection) => {
+    const isContextMenuSelection = selection.isContextMenuSelection;
     return {
       ...selection,
       isRoom: selection.isRoom || !!selection.roomType,
       icon: this.getItemIcon(selection, 32),
       isContextMenuSelection: false,
+      wasContextMenuSelection: !!isContextMenuSelection,
     };
   };
 
