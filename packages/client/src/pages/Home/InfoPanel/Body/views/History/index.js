@@ -21,6 +21,8 @@ const History = ({
   personal,
   culture,
   selection,
+  selectedFolder,
+  selectionParentRoom,
   setSelection,
   getItemIcon,
   getHistory,
@@ -127,6 +129,9 @@ const History = ({
                 className="message"
                 action={feed.json}
                 groupedActions={feed.groupedFeeds}
+                selection={selection}
+                selectedFolder={selectedFolder}
+                selectionParentRoom={selectionParentRoom}
               />
 
               {(feed.json.Item === "file" || feed.json.Item === "folder") && (
@@ -145,7 +150,6 @@ const History = ({
                     key={user.id}
                     user={user}
                     withComma={i !== feed.groupedFeeds.length}
-                    selectUser={selectUser}
                     openUser={openUser}
                   />
                 ))}
@@ -160,6 +164,7 @@ const History = ({
 export default inject(({ auth, filesStore, filesActionsStore }) => {
   const {
     selection,
+    selectionParentRoom,
     setSelection,
     getItemIcon,
     openUser,
@@ -173,6 +178,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     personal,
     culture,
     selection,
+    selectionParentRoom,
     setSelection,
     getItemIcon,
     getHistory,

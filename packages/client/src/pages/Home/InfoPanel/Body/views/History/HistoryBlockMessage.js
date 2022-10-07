@@ -5,7 +5,14 @@ import { FeedActionTypes, FeedItemTypes } from "@docspace/common/constants";
 
 import { StyledHistoryBlockMessage } from "../../styles/history";
 
-const HistoryBlockMessage = ({ t, action, groupedActions }) => {
+const HistoryBlockMessage = ({
+  t,
+  action,
+  groupedActions,
+  selection,
+  selectedFolder,
+  selectionParentRoom,
+}) => {
   const getTranslationKey = () => {
     const getActionType = () => {
       switch (action.Action) {
@@ -72,6 +79,10 @@ const HistoryBlockMessage = ({ t, action, groupedActions }) => {
 
   const getFolderLabel = () => {
     if (action.Item !== "file" && action.Item !== "folder") return "";
+
+    const itemLocationId = +action.ExtraLocation;
+    if (selectedFolder.id === itemLocationId) return "";
+    // if (selectionParentRoom?.id === itemLocation) return "";
 
     const folderTitle = action.ExtraLocationTitle;
     if (!folderTitle) return "";
