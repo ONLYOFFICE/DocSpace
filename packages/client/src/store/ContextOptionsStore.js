@@ -557,7 +557,7 @@ class ContextOptionsStore {
         key: "room-info",
         label: "Info",
         icon: "/static/images/info.outline.react.svg",
-        onClick: this.onShowInfoPanel,
+        onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
       {

@@ -30,6 +30,8 @@ const InfoPanelBodyContent = ({
   getFolderIcon,
   ...props
 }) => {
+  console.log(selection);
+
   const [selectedItems, setSelectedItems] = useState(props.selectedItems);
   const [selectedFolder, setSelectedFolder] = useState(props.selectedFolder);
 
@@ -38,8 +40,10 @@ const InfoPanelBodyContent = ({
   const isAccounts = getIsAccounts();
   const isGallery = getIsGallery();
   const isNoItem =
-    (isGallery && !gallerySelected) ||
-    ((isRootFolder || isAccounts) && props.selectedItems.length === 0);
+    !(selection && selection.wasContextMenuSelection) &&
+    ((isGallery && !gallerySelected) ||
+      ((isRootFolder || isAccounts) && selectedItems.length === 0));
+
   const isSeveralItems = props.selectedItems.length > 1;
 
   const viewHelper = new ViewHelper({
@@ -111,16 +115,18 @@ const InfoPanelBodyContent = ({
   // for it to updated after selctedItems or selectedFolder change
   // (only for non-oforms items)
   useEffect(() => {
-    if (isGallery || !selection?.isContextMenuSelection) return;
+    if (isGallery) return;
+    if (!selection?.isContextMenuSelection) return;
     setSelection(normalizeSelection(selection));
   }, [selection]);
 
   // Setting selection after selectedItems or selectedFolder update
   useEffect(() => {
-    if (selection && selection.isContextMenuSelection) return;
+    if (selection?.isContextMenuSelection) return;
+
     const newSelection = getSelection();
-    if (selection && selection?.id === newSelection.id && !newSelection.length)
-      return;
+    if (selection?.id === newSelection.id && !newSelection.length) return;
+
     setSelection(newSelection);
   }, [selectedItems, selectedFolder]);
 
