@@ -44,16 +44,18 @@ public class TenantQuotaController : IQuotaController
 
     private readonly int _tenant;
     private readonly TenantManager _tenantManager;
+    private readonly AuthContext _authContext;
     private readonly Lazy<long> _lazyCurrentSize;
     private long _currentSize;
 
-    public TenantQuotaController(int tenant, TenantManager tenantManager)
+    public TenantQuotaController(int tenant, TenantManager tenantManager, AuthContext authContext)
     {
         _tenant = tenant;
         _tenantManager = tenantManager;
         _lazyCurrentSize = new Lazy<long>(() => _tenantManager.FindTenantQuotaRows(tenant)
             .Where(r => UsedInQuota(r.Tag))
             .Sum(r => r.Counter));
+        _authContext = authContext;
     }
 
     #region IQuotaController Members
@@ -67,7 +69,7 @@ public class TenantQuotaController : IQuotaController
             CurrentSize += size;
         }
 
-        SetTenantQuotaRow(module, domain, size, dataTag, true);
+        SetTenantQuotaRow(module, domain, size, dataTag, true, _authContext.CurrentAccount.ID);
     }
 
     public void QuotaUsedDelete(string module, string domain, string dataTag, long size)
@@ -78,7 +80,7 @@ public class TenantQuotaController : IQuotaController
             CurrentSize += size;
         }
 
-        SetTenantQuotaRow(module, domain, size, dataTag, true);
+        SetTenantQuotaRow(module, domain, size, dataTag, true, _authContext.CurrentAccount.ID);
     }
 
     public void QuotaUsedSet(string module, string domain, string dataTag, long size)
@@ -89,7 +91,7 @@ public class TenantQuotaController : IQuotaController
             CurrentSize += size;
         }
 
-        SetTenantQuotaRow(module, domain, size, dataTag, false);
+        SetTenantQuotaRow(module, domain, size, dataTag, false, Guid.Empty);
     }
 
     public void QuotaUsedCheck(long size)
@@ -120,11 +122,12 @@ public class TenantQuotaController : IQuotaController
         return CurrentSize;
     }
 
-    private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange)
+    private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange, Guid userId)
     {
         _tenantManager.SetTenantQuotaRow(
-            new TenantQuotaRow { Tenant = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
+            new TenantQuotaRow { Tenant = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag, UserId = userId, LastModified = DateTime.UtcNow },
             exchange);
+
     }
 
     private bool UsedInQuota(string tag)

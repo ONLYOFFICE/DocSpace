@@ -56,6 +56,8 @@ public class EmployeeFullDto : EmployeeDto
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
     public bool IsSSO { get; set; }
     public DarkThemeSettingsEnum? Theme { get; set; }
+    public long QuotaLimit { get; set; }
+    public double UsedSpace { get; set; }
 
     public static new EmployeeFullDto GetSample()
     {
@@ -97,6 +99,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
     private readonly WebItemSecurity _webItemSecurity;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly WebItemManager _webItemManager;
+    private readonly SettingsManager _settingsManager;
+    private readonly IQuotaService _quotaService;
 
     public EmployeeFullDtoHelper(
         ApiContext context,
@@ -106,13 +110,17 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         CommonLinkUtility commonLinkUtility,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         ApiDateTimeHelper apiDateTimeHelper,
-        WebItemManager webItemManager)
+        WebItemManager webItemManager,
+        SettingsManager settingsManager,
+        IQuotaService quotaService)
     : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager)
     {
         _context = context;
         _webItemSecurity = webItemSecurity;
         _apiDateTimeHelper = apiDateTimeHelper;
         _webItemManager = webItemManager;
+        _settingsManager = settingsManager;
+        _quotaService = quotaService;
     }
 
     public static Expression<Func<User, UserInfo>> GetExpression(ApiContext apiContext)
@@ -187,9 +195,19 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             IsOwner = userInfo.IsOwner(_context.Tenant),
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()
+
         };
 
         await Init(result, userInfo);
+
+        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+
+        if (quotaSettings.EnableUserQuota)
+        {
+            result.UsedSpace = Math.Max(0, _quotaService.FindUserQuotaRows(_context.Tenant.Id, userInfo.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+            var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(userInfo);
+            result.QuotaLimit = userQuotaSettings != null ? userQuotaSettings.UserQuota : quotaSettings.DefaultUserQuota;
+        }
 
         if (userInfo.Sex.HasValue)
         {

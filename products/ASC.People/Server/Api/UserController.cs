@@ -35,6 +35,7 @@ public class UserController : PeopleControllerBase
 
     private readonly ICache _cache;
     private readonly TenantManager _tenantManager;
+    private readonly GlobalSpace _globalSpace;
     private readonly Constants _constants;
     private readonly CookiesManager _cookiesManager;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -64,10 +65,12 @@ public class UserController : PeopleControllerBase
     private readonly SettingsManager _settingsManager;
     private readonly RoomLinkService _roomLinkService;
     private readonly FileSecurity _fileSecurity;
+    private readonly IQuotaService _quotaService;
 
     public UserController(
         ICache cache,
         TenantManager tenantManager,
+        GlobalSpace globalSpace,
         Constants constants,
         CookiesManager cookiesManager,
         CoreBaseSettings coreBaseSettings,
@@ -102,11 +105,13 @@ public class UserController : PeopleControllerBase
         IHttpContextAccessor httpContextAccessor,
         SettingsManager settingsManager,
         RoomLinkService roomLinkService,
-        FileSecurity fileSecurity)
+        FileSecurity fileSecurity,
+        IQuotaService quotaService)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
         _tenantManager = tenantManager;
+        _globalSpace = globalSpace;
         _constants = constants;
         _cookiesManager = cookiesManager;
         _coreBaseSettings = coreBaseSettings;
@@ -136,6 +141,7 @@ public class UserController : PeopleControllerBase
         _settingsManager = settingsManager;
         _roomLinkService = roomLinkService;
         _fileSecurity = fileSecurity;
+        _quotaService = quotaService;
     }
 
     [HttpPost("active")]
@@ -1063,6 +1069,42 @@ public class UserController : PeopleControllerBase
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
     }
+
+    [HttpPut("quota")]
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuota(UpdateMembersQuotaRequestDto inDto)
+    {
+        var users = inDto.UserIds
+            .Where(userId => !_userManager.IsSystemUser(userId))
+            .Select(userId => _userManager.GetUsers(userId))
+            .ToList();
+
+        foreach (var user in users)
+        {
+            if (inDto.Quota != -1)
+            {
+                var usedSpace = Math.Max(0,
+                    _quotaService.FindUserQuotaRows(
+                            _tenantManager.GetCurrentTenant().Id,
+                            user.Id
+                        )
+                .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+
+                var tenanSpaceQuota = _tenantExtra.GetTenantQuota().MaxTotalSize;
+
+                if (tenanSpaceQuota < inDto.Quota || usedSpace > inDto.Quota)
+                {
+                    continue;
+                }
+            }
+
+            var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+
+            _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
+
+            yield return await _employeeFullDtoHelper.GetFull(user);
+        }
+    }
+
 
     private void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
     {
