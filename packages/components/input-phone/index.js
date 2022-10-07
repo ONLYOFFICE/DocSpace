@@ -31,8 +31,7 @@ const InputPhone = ({
   const [isValid, setIsValid] = useState(true);
 
   const onInputChange = (e) => {
-    const str = e.target.value.replace(/\s/g, "");
-
+    const str = e.target.value.replace(/\D/g, "");
     const el = options.find((option) => option.dialCode === str);
 
     const singleСode = ["0", "2", "3", "4", "5", "6", "8", "9"];
@@ -100,6 +99,7 @@ const InputPhone = ({
 
   const Row = ({ data, index, style }) => {
     const country = data[index];
+    const prefix = "+";
 
     return (
       <DropDownItem
@@ -112,7 +112,8 @@ const InputPhone = ({
         onClick={onCountryClick}
       >
         <Text className="country-name">{country.name}</Text>
-        <Text className="country-dialcode">{`+${country.dialCode}`}</Text>
+        <Text className="country-prefix">{prefix}</Text>
+        <Text className="country-dialcode">{country.dialCode}</Text>
       </DropDownItem>
     );
   };

@@ -122,8 +122,12 @@ export const StyledBox = styled(Box)`
     color: ${(props) => props.theme.inputPhone.color};
   }
 
-  .country-dialcode {
+  .country-prefix {
     margin-left: 5px;
+    color: ${(props) => props.theme.inputPhone.dialCodeColor};
+  }
+
+  .country-dialcode {
     color: ${(props) => props.theme.inputPhone.dialCodeColor};
   }
 
