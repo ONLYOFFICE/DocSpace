@@ -123,7 +123,12 @@ class CachedQuotaService : IQuotaService
     public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
     {
         Service.SetTenantQuotaRow(row, exchange);
-        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.InsertOrUpdate);
+        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.Any);
+
+        if (row.UserId != Guid.Empty)
+        {
+            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant, row.UserId) }, CacheNotifyAction.Any);
+        }
     }
 
     public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
@@ -140,16 +145,10 @@ class CachedQuotaService : IQuotaService
         return result;
     }
 
-    public void SetUserQuotaRow(UserQuotaRow row, bool exchange)
-    {
-        Service.SetUserQuotaRow(row, exchange);
-        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant, row.UserId) }, CacheNotifyAction.InsertOrUpdate);
-    }
-
-    public IEnumerable<UserQuotaRow> FindUserQuotaRows(int tenantId, Guid userId)
+    public IEnumerable<TenantQuotaRow> FindUserQuotaRows(int tenantId, Guid userId)
     {
         var key = GetKey(tenantId, userId);
-        var result = Cache.Get<IEnumerable<UserQuotaRow>>(key);
+        var result = Cache.Get<IEnumerable<TenantQuotaRow>>(key);
 
         if (result == null)
         {

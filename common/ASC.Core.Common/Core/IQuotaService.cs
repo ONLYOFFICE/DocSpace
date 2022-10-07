@@ -31,10 +31,9 @@ public interface IQuotaService
 {
     IEnumerable<TenantQuota> GetTenantQuotas();
     IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId);
-    IEnumerable<UserQuotaRow> FindUserQuotaRows(int tenantId, Guid userId);
+    IEnumerable<TenantQuotaRow> FindUserQuotaRows(int tenantId, Guid userId);
     TenantQuota GetTenantQuota(int id);
     TenantQuota SaveTenantQuota(TenantQuota quota);
     void RemoveTenantQuota(int id);
     void SetTenantQuotaRow(TenantQuotaRow row, bool exchange);
-    void SetUserQuotaRow(UserQuotaRow row, bool exchange);
 }

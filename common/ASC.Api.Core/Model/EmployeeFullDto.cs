@@ -100,6 +100,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly WebItemManager _webItemManager;
     private readonly SettingsManager _settingsManager;
+    private readonly IQuotaService _quotaService;
 
     public EmployeeFullDtoHelper(
         ApiContext context,
@@ -110,7 +111,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         DisplayUserSettingsHelper displayUserSettingsHelper,
         ApiDateTimeHelper apiDateTimeHelper,
         WebItemManager webItemManager,
-        SettingsManager settingsManager)
+        SettingsManager settingsManager,
+        IQuotaService quotaService)
     : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager)
     {
         _context = context;
@@ -118,6 +120,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         _apiDateTimeHelper = apiDateTimeHelper;
         _webItemManager = webItemManager;
         _settingsManager = settingsManager;
+        _quotaService = quotaService;
     }
 
     public static Expression<Func<User, UserInfo>> GetExpression(ApiContext apiContext)
@@ -201,7 +204,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (quotaSettings.EnableUserQuota)
         {
-            result.UsedSpace = Math.Max(0, _userManager.FindUserQuotaRows(_context.Tenant.Id, userInfo.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+            result.UsedSpace = Math.Max(0, _quotaService.FindUserQuotaRows(_context.Tenant.Id, userInfo.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
             var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(userInfo);
             result.QuotaLimit = userQuotaSettings != null ? userQuotaSettings.UserQuota : quotaSettings.DefaultUserQuota;
         }

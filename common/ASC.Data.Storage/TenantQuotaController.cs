@@ -71,8 +71,7 @@ public class TenantQuotaController : IQuotaController
             CurrentSize += size;
         }
 
-        SetTenantQuotaRow(module, domain, size, dataTag, true);
-        SetUserQuotaRow(module, domain, size, dataTag, true);
+        SetTenantQuotaRow(module, domain, size, dataTag, true, _authContext.CurrentAccount.ID);
     }
 
     public void QuotaUsedDelete(string module, string domain, string dataTag, long size)
@@ -83,8 +82,7 @@ public class TenantQuotaController : IQuotaController
             CurrentSize += size;
         }
 
-        SetTenantQuotaRow(module, domain, size, dataTag, true);
-        SetUserQuotaRow(module, domain, size, dataTag, true);
+        SetTenantQuotaRow(module, domain, size, dataTag, true, _authContext.CurrentAccount.ID);
     }
 
     public void QuotaUsedSet(string module, string domain, string dataTag, long size)
@@ -95,7 +93,7 @@ public class TenantQuotaController : IQuotaController
             CurrentSize += size;
         }
 
-        SetTenantQuotaRow(module, domain, size, dataTag, false);
+        SetTenantQuotaRow(module, domain, size, dataTag, false, Guid.Empty);
     }
 
     public void QuotaUsedCheck(long size)
@@ -126,23 +124,11 @@ public class TenantQuotaController : IQuotaController
         return CurrentSize;
     }
 
-    private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange)
+    private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange, Guid userId)
     {
         _tenantManager.SetTenantQuotaRow(
-            new TenantQuotaRow { Tenant = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
+            new TenantQuotaRow { Tenant = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag, UserId = userId, LastModified = DateTime.UtcNow },
             exchange);
-
-    }
-
-    private void SetUserQuotaRow(string module, string domain, long size, string dataTag, bool exchange)
-    {
-
-        if (new Guid(dataTag) != Guid.Empty)
-        {
-            _userManager.SetUserQuotaRow(
-                new UserQuotaRow { Tenant = _tenant, UserId = _authContext.CurrentAccount.ID, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag },
-                exchange);
-        }
 
     }
 

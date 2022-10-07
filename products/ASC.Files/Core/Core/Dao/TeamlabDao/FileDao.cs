@@ -45,6 +45,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly Settings _settings;
     private readonly IMapper _mapper;
     private readonly ThumbnailSettings _thumbnailSettings;
+    private readonly IQuotaService _quotaService;
 
     public FileDao(
         ILogger<FileDao> logger,
@@ -72,7 +73,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         CrossDao crossDao,
         Settings settings,
         IMapper mapper,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        IQuotaService quotaService)
         : base(
               dbContextManager,
               userManager,
@@ -101,6 +103,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _settings = settings;
         _mapper = mapper;
         _thumbnailSettings = thumbnailSettings;
+        _quotaService = quotaService;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -426,7 +429,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
             if (quotaLimit != -1)
             {
-                var userUsedSpace = Math.Max(0, _userManager.FindUserQuotaRows(TenantID, user.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+                var userUsedSpace = Math.Max(0, _quotaService.FindUserQuotaRows(TenantID, user.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
 
                 if (quotaLimit - userUsedSpace < file.ContentLength)
                 {

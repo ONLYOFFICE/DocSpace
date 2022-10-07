@@ -65,6 +65,7 @@ public class UserController : PeopleControllerBase
     private readonly SettingsManager _settingsManager;
     private readonly RoomLinkService _roomLinkService;
     private readonly FileSecurity _fileSecurity;
+    private readonly IQuotaService _quotaService;
 
     public UserController(
         ICache cache,
@@ -104,7 +105,8 @@ public class UserController : PeopleControllerBase
         IHttpContextAccessor httpContextAccessor,
         SettingsManager settingsManager,
         RoomLinkService roomLinkService,
-        FileSecurity fileSecurity)
+        FileSecurity fileSecurity,
+        IQuotaService quotaService)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
@@ -139,6 +141,7 @@ public class UserController : PeopleControllerBase
         _settingsManager = settingsManager;
         _roomLinkService = roomLinkService;
         _fileSecurity = fileSecurity;
+        _quotaService = quotaService;
     }
 
     [HttpPost("active")]
@@ -1080,7 +1083,7 @@ public class UserController : PeopleControllerBase
             if (inDto.Quota != -1)
             {
                 var usedSpace = Math.Max(0,
-                    _userManager.FindUserQuotaRows(
+                    _quotaService.FindUserQuotaRows(
                             _tenantManager.GetCurrentTenant().Id,
                             user.Id
                         )

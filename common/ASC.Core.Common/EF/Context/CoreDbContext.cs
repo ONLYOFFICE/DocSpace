@@ -32,7 +32,6 @@ public class CoreDbContext : DbContext
     public DbSet<DbButton> Buttons { get; set; }
     public DbSet<DbQuota> Quotas { get; set; }
     public DbSet<DbQuotaRow> QuotaRows { get; set; }
-    public DbSet<DbUsersQuotaRow> UserQuotaRows { get; set; }
 
     public CoreDbContext(DbContextOptions<CoreDbContext> options) : base(options) { }
 
@@ -42,7 +41,6 @@ public class CoreDbContext : DbContext
               .From(modelBuilder, Database)
               .AddDbButton()
               .AddDbQuotaRow()
-              .AddDbUsersQuotaRow()
               .AddDbQuota()
               .AddDbTariff();
     }

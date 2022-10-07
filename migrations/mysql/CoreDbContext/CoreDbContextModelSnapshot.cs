@@ -121,7 +121,7 @@ namespace ASC.Migrations.MySql.Migrations
                             MaxFileSize = 102400L,
                             MaxTotalSize = 10995116277760L,
                             Name = "default",
-                            Price = 0.00m,
+                            Price = 0m,
                             Visible = false
                         });
                 });
@@ -131,6 +131,12 @@ namespace ASC.Migrations.MySql.Migrations
                     b.Property<int>("Tenant")
                         .HasColumnType("int")
                         .HasColumnName("tenant");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("user_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Path")
                         .HasColumnType("varchar(255)")
@@ -154,7 +160,7 @@ namespace ASC.Migrations.MySql.Migrations
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.HasKey("Tenant", "Path")
+                    b.HasKey("Tenant", "UserId", "Path")
                         .HasName("PRIMARY");
 
                     b.HasIndex("LastModified")
@@ -206,44 +212,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasDatabaseName("tenant");
 
                     b.ToTable("tenants_tariff", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
-                });
-
-            modelBuilder.Entity("ASC.Core.Common.EF.DbUsersQuotaRow", b =>
-                {
-                    b.Property<int>("Tenant")
-                        .HasColumnType("int")
-                        .HasColumnName("tenant");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("user_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("Path")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("path")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<long>("Counter")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("counter")
-                        .HasDefaultValueSql("'0'");
-
-                    b.Property<string>("Tag")
-                        .HasColumnType("varchar(36)")
-                        .HasColumnName("tag")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.HasKey("Tenant", "UserId", "Path")
-                        .HasName("PRIMARY");
-
-                    b.ToTable("users_quotarow", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
                 });

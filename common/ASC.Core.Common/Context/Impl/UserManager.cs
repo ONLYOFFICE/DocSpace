@@ -873,15 +873,4 @@ public class UserManager
             Sid = g.Sid
         };
     }
-
-    public void SetUserQuotaRow(UserQuotaRow row, bool exchange)
-    {
-        _quotaService.SetUserQuotaRow(row, exchange);
-    }
-
-    public List<UserQuotaRow> FindUserQuotaRows(int tenantId, Guid userId)
-    {
-        return _quotaService.FindUserQuotaRows(tenantId, userId).ToList();
-    }
-
 }
