@@ -53,13 +53,7 @@ const InfoPanelBodyContent = ({
       personal: props.personal,
       culture: props.culture,
     },
-    detailsProps: {
-      setSelection,
-      getItemIcon: props.getItemIcon,
-      getFolderInfo: props.getFolderInfo,
-      onSelectItem: props.onSelectItem,
-      createThumbnail: props.createThumbnail,
-    },
+    detailsProps: {},
     membersProps: {
       selectionParentRoom,
       setSelectionParentRoom,
@@ -70,12 +64,7 @@ const InfoPanelBodyContent = ({
       changeUserType: props.changeUserType,
     },
     historyProps: {
-      setSelection,
-      getHistory: props.getHistory,
-      getRoomHistory: props.getRoomHistory,
-      getFileHistory: props.getFileHistory,
-      getItemIcon: props.getItemIcon,
-      openLocationAction: props.openLocationAction,
+      selectedFolder: selectedFolder,
     },
     accountsProps: {
       selfId: props.selfId,
