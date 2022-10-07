@@ -1528,6 +1528,7 @@ const Base = {
 
   comboBox: {
     padding: "6px 0px",
+    background: lightGrayishStrongBlue,
 
     width: {
       base: "173px",

@@ -554,6 +554,13 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
+        key: "room-info",
+        label: "Info",
+        icon: "/static/images/info.outline.react.svg",
+        onClick: this.onShowInfoPanel,
+        disabled: false,
+      },
+      {
         key: "pin-room",
         label: t("Pin"),
         icon: "/static/images/pin.react.svg",

@@ -14,6 +14,7 @@ import {
   SendInviteDialog,
   DeleteUsersDialog,
   InviteDialog,
+  ChangeNameDialog,
 } from "SRC_DIR/components/dialogs";
 
 const Dialogs = ({
@@ -31,6 +32,10 @@ const Dialogs = ({
   sendInviteDialogVisible,
   deleteDialogVisible,
   invitationDialogVisible,
+
+  changeNameVisible,
+  setChangeNameVisible,
+  profile,
 }) => {
   return (
     <>
@@ -113,11 +118,19 @@ const Dialogs = ({
           onCloseButton={closeDialogs}
         />
       )}
+      {changeNameVisible && (
+        <ChangeNameDialog
+          visible={changeNameVisible}
+          onClose={() => setChangeNameVisible(false)}
+          profile={profile}
+          fromList
+        />
+      )}
     </>
   );
 };
 
-export default inject(({ peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   const {
     changeEmail,
     changePassword,
@@ -136,6 +149,13 @@ export default inject(({ peopleStore }) => {
     invitationDialogVisible,
   } = peopleStore.dialogStore;
 
+  const { user: profile } = auth.userStore;
+
+  const {
+    changeNameVisible,
+    setChangeNameVisible,
+  } = peopleStore.targetUserStore;
+
   return {
     changeEmail,
     changePassword,
@@ -152,5 +172,9 @@ export default inject(({ peopleStore }) => {
     sendInviteDialogVisible,
     deleteDialogVisible,
     invitationDialogVisible,
+
+    changeNameVisible,
+    setChangeNameVisible,
+    profile,
   };
 })(observer(Dialogs));
