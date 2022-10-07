@@ -11,8 +11,6 @@ import Section from "@docspace/common/components/Section";
 
 import { showLoader, hideLoader } from "@docspace/common/utils";
 
-// import { InfoPanelHeaderContent, InfoPanelBodyContent } from "./InfoPanel";
-
 import {
   SectionHeaderContent,
   SectionBodyContent,
