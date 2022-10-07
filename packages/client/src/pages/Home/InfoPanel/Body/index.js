@@ -172,7 +172,6 @@ const InfoPanelBodyContent = ({
 
   if (!selection && !isGallery) return null;
 
-  // console.log(props.selectedItems);
   return (
     <StyledInfoPanelBody>
       {!isNoItem && (
