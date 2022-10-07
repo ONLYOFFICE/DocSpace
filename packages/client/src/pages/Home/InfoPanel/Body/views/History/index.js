@@ -26,7 +26,7 @@ const History = ({
   setSelection,
   getItemIcon,
   getHistory,
-  openLocationAction,
+  checkAndOpenLocationAction,
   openUser,
 }) => {
   const [history, setHistory] = useState(null);
@@ -139,7 +139,7 @@ const History = ({
                   t={t}
                   items={[feed.json, ...feed.groupedFeeds]}
                   getItemIcon={getItemIcon}
-                  openLocationAction={openLocationAction}
+                  checkAndOpenLocationAction={checkAndOpenLocationAction}
                 />
               )}
 
@@ -172,7 +172,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
   const { personal, culture } = auth.settingsStore;
 
   const { getHistory } = filesStore;
-  const { openLocationAction } = filesActionsStore;
+  const { checkAndOpenLocationAction } = filesActionsStore;
 
   return {
     personal,
@@ -182,7 +182,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     setSelection,
     getItemIcon,
     getHistory,
-    openLocationAction,
+    checkAndOpenLocationAction,
     openUser,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations"])(History));

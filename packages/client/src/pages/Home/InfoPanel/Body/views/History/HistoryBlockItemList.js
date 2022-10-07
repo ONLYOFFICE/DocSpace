@@ -14,7 +14,7 @@ export const HistoryBlockItemList = ({
   t,
   items,
   getItemIcon,
-  openLocationAction,
+  checkAndOpenLocationAction,
 }) => {
   const [isShowMore, setIsShowMore] = useState(items.length <= 3);
   const onShowMore = () => setIsShowMore(true);
@@ -49,7 +49,7 @@ export const HistoryBlockItemList = ({
               iconName="/static/images/folder-location.react.svg"
               size="16"
               isFill={true}
-              onClick={() => openLocationAction(item.ExtraLocation)}
+              onClick={() => checkAndOpenLocationAction(item.ExtraLocation)}
             />
           </StyledHistoryBlockFile>
         );
