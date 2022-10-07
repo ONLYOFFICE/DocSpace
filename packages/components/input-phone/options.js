@@ -540,7 +540,7 @@ export const options = [
     name: "Canada",
     dialCode: "1",
     code: "CA",
-    mask: [/\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: null,
     flag: Canada
   },
   {
@@ -883,7 +883,7 @@ export const options = [
     name: "Guernsey",
     dialCode: "44",
     code: "GG",
-    mask: [/\d/, /\d/, " ",  /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    mask: null,
     flag: Guernsey
   },
   {
@@ -988,7 +988,7 @@ export const options = [
     name: "Isle of Man",
     dialCode: "44",
     code: "IM",
-    mask: [/\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    mask: null,
     flag: IsleOfMan
   },
   {
@@ -1023,7 +1023,7 @@ export const options = [
     name: "Jersey",
     dialCode: "44",
     code: "JE",
-    mask: [/\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+    mask: null,
     flag: Jersey
   },
   {
@@ -1035,9 +1035,9 @@ export const options = [
   },
   {
     name: "Kazakhstan",
-    dialCode: "77",
+    dialCode: "7",
     code: "KZ",
-    mask: [/\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, "-", /\d/, /\d/],
+    mask: null,
     flag: Kazakhstan
   },
   {
