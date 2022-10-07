@@ -99,7 +99,6 @@ public class UserManager
     }
 
     public UserManager(
-        IQuotaService quotaService,
         IUserService service,
         TenantManager tenantManager,
         PermissionContext permissionContext,
@@ -112,7 +111,7 @@ public class UserManager
         ILogger<UserManager> log,
         ICache cache,
         IHttpContextAccessor httpContextAccessor)
-        : this(quotaService, service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache)
+        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache)
     {
         _accessor = httpContextAccessor;
     }
