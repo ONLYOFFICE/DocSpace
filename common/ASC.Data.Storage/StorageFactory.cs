@@ -173,7 +173,7 @@ public class StorageFactory
     {
         int.TryParse(tenant, out var tenantId);
 
-        return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, _tenantManager, _userManager, _authContext));
+        return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, _tenantManager, _authContext));
     }
 
     public IDataStore GetStorage(string configpath, string tenant, string module, IQuotaController controller)
@@ -220,7 +220,7 @@ public class StorageFactory
 
         int.TryParse(tenant, out var tenantId);
 
-        return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager, _userManager, _authContext));
+        return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager, _authContext));
     }
 
     private IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
