@@ -39,7 +39,7 @@ const StyledWrapper = styled.div`
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
-  height: 57px;
+  height: 56px;
 
   ${(props) =>
     !isMobile &&
@@ -49,7 +49,7 @@ const StyledSimpleFilesRow = styled(Row)`
         cursor: pointer;
         ${checkedStyle}
 
-        margin-top: -3px;
+        margin-top: -1px;
         border-top: ${(props) =>
           `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       }
@@ -67,13 +67,13 @@ const StyledSimpleFilesRow = styled(Row)`
       /* cursor: wait; */
     `}
 
-  margin-top: -2px;
+  margin-top: 0px;
 
   ${(props) =>
     props.showHotkeyBorder &&
     css`
       border-top: 1px solid #2da7db !important;
-      margin-top: -3px;
+      margin-top: -1px;
       margin-left: -24px;
       margin-right: -24px;
       padding-left: 24px;
