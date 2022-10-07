@@ -881,7 +881,7 @@ export const options = [
   },
   {
     name: "Guernsey",
-    dialCode: "44",
+    dialCode: " 44",
     code: "GG",
     mask: [/\d/, /\d/, " ",  /\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
     flag: Guernsey
