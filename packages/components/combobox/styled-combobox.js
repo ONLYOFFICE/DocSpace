@@ -19,7 +19,7 @@ const StyledComboBox = styled.div`
     props.isOpen &&
     props.noBorder &&
     css`
-      background: #dfe2e3;
+      background: ${(props) => props.theme.comboBox.background};
       border-radius: 3px;
     `}
 
