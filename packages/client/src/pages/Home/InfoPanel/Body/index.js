@@ -40,7 +40,7 @@ const InfoPanelBodyContent = ({
   const isNoItem =
     !(selection && selection.wasContextMenuSelection) &&
     ((isGallery && !gallerySelected) ||
-      ((isRootFolder || isAccounts) && selectedItems.length === 0));
+      ((isRootFolder || isAccounts) && selection?.isSelectedFolder));
 
   const isSeveralItems = props.selectedItems.length > 1;
 
@@ -89,6 +89,31 @@ const InfoPanelBodyContent = ({
   };
 
   const getView = () => {
+    let res;
+    if (isNoItem) res = "NoItem";
+    else if (isSeveralItems) res = "SeveralItems";
+    else if (isGallery) res = "Gallery";
+    else if (isAccounts) res = "Accounts";
+
+    if (!res) {
+      switch (isRooms ? roomsView : fileView) {
+        case "members": {
+          res = "Members";
+          break;
+        }
+        case "history": {
+          res = "History";
+          break;
+        }
+        case "details": {
+          res = "Details";
+          break;
+        }
+      }
+    }
+
+    console.log(res);
+
     if (isNoItem) return viewHelper.NoItemView();
     if (isSeveralItems) return viewHelper.SeveralItemsView();
     if (isGallery) return viewHelper.GalleryView();
@@ -113,19 +138,16 @@ const InfoPanelBodyContent = ({
   // for it to updated after selctedItems or selectedFolder change
   // (only for non-oforms items)
   useEffect(() => {
-    if (isGallery) return;
-    if (!selection?.isContextMenuSelection) return;
-    setSelection(normalizeSelection(selection));
+    if (selection && selection.isContextMenuSelection)
+      setSelection({ ...selection, isContextMenuSelection: false });
   }, [selection]);
 
   // Setting selection after selectedItems or selectedFolder update
   useEffect(() => {
     if (selection?.isContextMenuSelection) return;
-
     const newSelection = getSelection();
     if (selection?.id === newSelection.id && !newSelection.length) return;
-
-    setSelection(newSelection);
+    setSelection(normalizeSelection(newSelection));
   }, [selectedItems, selectedFolder]);
 
   //////////////////////////////////////////////////////////
