@@ -32,9 +32,8 @@ const InputPhone = ({
 
   const onInputChange = (e) => {
     const str = e.target.value.replace(/\s/g, "");
-    const el = options.find(
-      (option) => option.dialCode === str && option.mask !== null
-    );
+
+    const el = options.find((option) => option.dialCode === str);
 
     const singleСode = ["0", "2", "3", "4", "5", "6", "8", "9"];
     const invalidCode = singleСode.find((code) => code === str);
