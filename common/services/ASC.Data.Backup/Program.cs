@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using NLog;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -32,29 +34,59 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddBackupConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
+
+var logger = NLog.LogManager.Setup()
+                            .SetupExtensions(s =>
+                            {
+                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                            })
+                            .LoadConfiguration(builder.Configuration, builder.Environment)
+                            .GetLogger(typeof(Startup).Namespace);
+try
 {
-    config.AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-}, (ctx, ser, di) =>
+    logger.Info("Configuring web host ({applicationContext})...", Program.AppName);
+
+    builder.Host.ConfigureDefault();
+    builder.WebHost.ConfigureDefaultKestrel();
+
+    var startup = new Startup(builder.Configuration, builder.Environment);
+
+    startup.ConfigureServices(builder.Services);
+
+    builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+    {
+        startup.ConfigureContainer(containerBuilder);
+    });
+
+    var app = builder.Build();
+
+    startup.Configure(app, app.Environment);
+
+    logger.Info("Starting web host ({applicationContext})...", Program.AppName);
+
+    await app.RunWithTasksAsync();
+}
+catch (Exception ex)
 {
-    ser.AddBaseDbContextPool<BackupsContext>();
-    ser.AddBaseDbContextPool<FilesDbContext>();
-});
+    if (logger != null)
+    {
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
+    }
 
-builder.WebHost.ConfigureDefaultKestrel();
-
-var startup = new Startup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+    throw;
+}
+finally
 {
-    startup.ConfigureContainer(containerBuilder);
-});
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    NLog.LogManager.Shutdown();
+}
 
-var app = builder.Build();
-
-startup.Configure(app, app.Environment);
-
-await app.RunWithTasksAsync();
+public partial class Program
+{
+    public static string Namespace = typeof(Startup).Namespace;
+    public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.') + 1);
+}

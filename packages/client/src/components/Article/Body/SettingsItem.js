@@ -53,9 +53,7 @@ const PureSettingsItem = ({
     history,
   ]);
 
-  const isActive = () => {
-    return window.location.pathname.indexOf("/settings") > 0;
-  };
+  const isActive = window.location.pathname.includes("settings");
 
   return (
     <CatalogItem
@@ -65,7 +63,7 @@ const PureSettingsItem = ({
       icon={iconUrl}
       showText={showText}
       onClick={onClick}
-      isActive={isActive()}
+      isActive={isActive}
     />
   );
 };

@@ -11,10 +11,10 @@ import EmptyScreen from "../EmptyScreen";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import { Base } from "@docspace/components/themes";
+import { TableVersions } from "SRC_DIR/helpers/constants";
 
-const TABLE_VERSION = "2";
-const COLUMNS_SIZE = `peopleColumnsSize_ver-${TABLE_VERSION}`;
-const INFO_PANEL_COLUMNS_SIZE = `infoPanelPeopleColumnsSize_ver-${TABLE_VERSION}`;
+const COLUMNS_SIZE = `peopleColumnsSize_ver-${TableVersions.Accounts}`;
+const INFO_PANEL_COLUMNS_SIZE = `infoPanelPeopleColumnsSize_ver-${TableVersions.Accounts}`;
 
 const marginCss = css`
   margin-top: -1px;
@@ -144,7 +144,7 @@ const Table = ({
         hasMoreFiles={hasMoreAccounts}
         itemCount={filterTotal}
         filesLength={peopleList.length}
-        itemHeight={47}
+        itemHeight={49}
         useReactWindow={!withPaging}
       >
         {peopleList.map((item) => (

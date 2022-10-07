@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-//import toastr from "client/toastr";
+//import toastr from "@docspace/components/toast/toastr";
 import {
   // AppServerConfig,
   // FileAction,
@@ -82,7 +82,7 @@ export default function withContent(WrappedContent) {
           ? { noHover: true }
           : { onClick: onFilesClick };
 
-      if (!isDesktop && !isTrashFolder) {
+      if (!isDesktop && !isTrashFolder && !isArchiveFolder) {
         linkStyles.href = href;
       }
 

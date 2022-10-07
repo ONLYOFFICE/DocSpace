@@ -318,7 +318,7 @@ const Items = ({
           isHeader={true}
           isFirstHeader={true}
           showText={showText}
-          text={"Rooms"}
+          text={t("Common:Rooms")}
         />
       );
 
@@ -328,7 +328,7 @@ const Items = ({
           isHeader={true}
           isFirstHeader={false}
           showText={showText}
-          text={"Files"}
+          text={t("Translations:Files")}
         />
       );
 
@@ -338,11 +338,11 @@ const Items = ({
           isHeader={true}
           isFirstHeader={false}
           showText={showText}
-          text={"Other"}
+          text={t("Translations:Other")}
         />
       );
 
-      items.splice(3, 0, filesHeader);
+      isAdmin && items.splice(3, 0, filesHeader);
       items.unshift(roomsHeader);
       items.push(otherHeader);
 
@@ -363,6 +363,7 @@ const Items = ({
       startUpload,
       uploadEmptyFolders,
       trashIsEmpty,
+      isAdmin,
     ]
   );
 

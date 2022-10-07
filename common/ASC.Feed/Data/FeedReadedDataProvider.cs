@@ -26,6 +26,7 @@
 
 namespace ASC.Feed.Data;
 
+[Scope]
 public class FeedReadedDataProvider
 {
     private readonly AuthContext _authContext;

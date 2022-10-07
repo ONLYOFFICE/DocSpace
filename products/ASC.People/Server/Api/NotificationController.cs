@@ -72,7 +72,7 @@ public class NotificationController : ApiControllerBase
 
         if (user.IsMe(_authContext))
         {
-            return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation);
+            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneActivation);
         }
 
         _studioNotifyService.SendMsgMobilePhoneChange(user);

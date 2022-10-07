@@ -34,8 +34,8 @@ const DEFAULT_SORT_BY = "DateAndTime";
 const SORT_ORDER = "sortorder";
 const DEFAULT_SORT_ORDER = "descending";
 
-const WITHOUT_ME = "withoutMe";
-const DEFAULT_WITHOUT_ME = false;
+const EXCLUDE_SUBJECT = "excludeSubject";
+const DEFAULT_EXCLUDE_SUBJECT = false;
 
 const WITHOUT_TAGS = "withoutTags";
 const DEFAULT_WITHOUT_TAGS = false;
@@ -62,7 +62,7 @@ class RoomsFilter {
       defaultFilter.pageCount;
 
     const filterValue =
-      (urlFilter[FILTER_VALUE] && +urlFilter[FILTER_VALUE]) ||
+      (urlFilter[FILTER_VALUE] && urlFilter[FILTER_VALUE]) ||
       defaultFilter.filterValue;
 
     const type = (urlFilter[TYPE] && urlFilter[TYPE]) || defaultFilter.type;
@@ -94,7 +94,8 @@ class RoomsFilter {
 
     const sortOrder = urlFilter[SORT_ORDER] || defaultFilter.sortOrder;
 
-    const withoutMe = urlFilter[WITHOUT_ME] || defaultFilter.withoutMe;
+    const excludeSubject =
+      urlFilter[EXCLUDE_SUBJECT] || defaultFilter.excludeSubject;
 
     const withoutTags = urlFilter[WITHOUT_TAGS] || defaultFilter.withoutTags;
 
@@ -111,7 +112,7 @@ class RoomsFilter {
       tags,
       sortBy,
       sortOrder,
-      withoutMe,
+      excludeSubject,
       withoutTags
     );
 
@@ -131,7 +132,7 @@ class RoomsFilter {
     tags = DEFAULT_TAGS,
     sortBy = DEFAULT_SORT_BY,
     sortOrder = DEFAULT_SORT_ORDER,
-    withoutMe = DEFAULT_WITHOUT_ME,
+    excludeSubject = DEFAULT_EXCLUDE_SUBJECT,
     withoutTags = DEFAULT_WITHOUT_TAGS
   ) {
     this.page = page;
@@ -146,7 +147,7 @@ class RoomsFilter {
     this.tags = tags;
     this.sortBy = sortBy;
     this.sortOrder = sortOrder;
-    this.withoutMe = withoutMe;
+    this.excludeSubject = excludeSubject;
     this.withoutTags = withoutTags;
   }
 
@@ -175,7 +176,7 @@ class RoomsFilter {
       tags,
       sortBy,
       sortOrder,
-      withoutMe,
+      excludeSubject,
       withoutTags,
     } = this;
 
@@ -192,7 +193,7 @@ class RoomsFilter {
       tags: tags,
       sortBy: sortBy,
       sortOrder: sortOrder,
-      withoutMe: withoutMe,
+      excludeSubject: excludeSubject,
       withoutTags: withoutTags,
     };
 
@@ -213,7 +214,7 @@ class RoomsFilter {
       tags,
       sortBy,
       sortOrder,
-      withoutMe,
+      excludeSubject,
       withoutTags,
     } = this;
 
@@ -247,8 +248,8 @@ class RoomsFilter {
       dtoFilter[PAGE_COUNT] = pageCount;
     }
 
-    if (withoutMe) {
-      dtoFilter[WITHOUT_ME] = withoutMe;
+    if (excludeSubject) {
+      dtoFilter[EXCLUDE_SUBJECT] = excludeSubject;
     }
 
     if (withoutTags) {
@@ -282,7 +283,7 @@ class RoomsFilter {
       this.tags,
       this.sortBy,
       this.sortOrder,
-      this.withoutMe,
+      this.excludeSubject,
       this.withoutTags
     );
   }
@@ -308,7 +309,7 @@ class RoomsFilter {
       tagsEqual &&
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
-      this.withoutMe === filter.withoutMe &&
+      this.excludeSubject === filter.excludeSubject &&
       this.withoutTags === filter.withoutTags;
 
     return equals;

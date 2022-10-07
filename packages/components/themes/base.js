@@ -259,14 +259,6 @@ const Base = {
       fill: white,
     },
 
-    secondaryButton: {
-      height: "32px",
-      padding: "0",
-      borderRadius: "3px",
-      cornerRoundsTopLeft: "0",
-      cornerRoundsBottomLeft: "0",
-    },
-
     dropDown: {
       top: "100%",
     },
@@ -285,11 +277,12 @@ const Base = {
   },
 
   socialButton: {
-    fontWeight: "600",
+    fontWeight: "500",
     textDecoration: "none",
     padding: "0",
     borderRadius: "2px",
     height: "40px",
+    heightSmall: "32px",
     textAlign: "left",
     stroke: " none",
     outline: "none",
@@ -297,7 +290,9 @@ const Base = {
 
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
+    connectBackground: "#3B72A7",
     hoverBackground: white,
+    hoverConnectBackground: "#265A8F",
     activeBackground: "grayMaxLight",
     hoverBorder: "#1877f2",
 
@@ -319,8 +314,9 @@ const Base = {
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
-      color: "#757575",
-      hoverColor: "#1877f2",
+      color: "#A3A9AE",
+      hoverColor: black,
+      connectColor: white,
     },
 
     svg: {
@@ -329,6 +325,7 @@ const Base = {
       height: "18px",
       minWidth: "18px",
       minHeight: "18px",
+      fill: white,
     },
   },
 
@@ -383,7 +380,7 @@ const Base = {
     hoverColor: grayMain,
   },
   selectorAddButton: {
-    background: grayLight,
+    background: grayLightMid,
     activeBackground: grayLightMid,
 
     border: `none`,
@@ -391,9 +388,9 @@ const Base = {
     borderRadius: "3px",
     height: " 32px",
     width: "32px",
-    padding: "9px",
+    padding: "10px",
     color: black,
-    hoverColor: darkBlack,
+    hoverColor: black,
   },
 
   saveCancelButtons: {
@@ -1003,31 +1000,31 @@ const Base = {
     },
 
     roleWrapperContainer: {
-      left: {
-        min: "-2px",
+      right: {
+        min: "-5px",
         small: "-2px",
         base: "-2px",
         medium: "-4px",
-        big: "0px",
+        big: "3px",
         max: "0px",
       },
 
       bottom: {
-        min: "3px",
+        min: "-5px",
         small: "3px",
         base: "4px",
         medium: "6px",
-        big: "5px",
+        big: "3px",
         max: "0px",
       },
 
       width: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
 
       height: {
-        medium: "14px",
+        medium: "16px",
         max: "24px",
       },
     },
@@ -1077,7 +1074,7 @@ const Base = {
 
     image: {
       width: "100%",
-      height: "auto",
+      height: "100%",
       borderRadius: "50%",
     },
 
@@ -1091,8 +1088,8 @@ const Base = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
 
     height: {
@@ -1100,8 +1097,8 @@ const Base = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
   },
 
@@ -1531,6 +1528,7 @@ const Base = {
 
   comboBox: {
     padding: "6px 0px",
+    background: lightGrayishStrongBlue,
 
     width: {
       base: "173px",
@@ -1540,12 +1538,12 @@ const Base = {
     },
 
     arrow: {
-      width: "8px",
-      flex: "0 0 8px",
+      width: "6px",
+      flex: "0 0 6px",
       marginTopWithBorder: "5px",
       marginTop: "12px",
       marginRight: "8px",
-      marginLeft: "auto",
+      marginLeft: "-2px",
       fillColor: grayMain,
     },
 
@@ -1886,7 +1884,7 @@ const Base = {
       fontWeight: 600,
       tablet: {
         marginLeft: "12px",
-        lineHeight: "16px",
+        lineHeight: "20px",
         fontSize: "15px",
         fontWeight: "600",
       },
@@ -1960,6 +1958,9 @@ const Base = {
   article: {
     background: grayLight,
     pinBorderColor: grayLightMid,
+    catalogItemHeader: "#A3A9AE",
+    catalogItemText: "#555F65",
+    catalogItemActiveBackground: "#DFE2E3",
   },
 
   section: {
@@ -2204,6 +2205,19 @@ const Base = {
       hoverBorderColor: grayMid,
       focusBorderColor: blueMain,
       placeholderColor: gray,
+    },
+  },
+
+  selector: {
+    border: `1px solid ${grayLightMid}`,
+
+    item: {
+      hoverBackground: grayLight,
+      selectedBackground: lightHover,
+    },
+
+    emptyScreen: {
+      descriptionColor: cyanBlueDarkShade,
     },
   },
 
@@ -2740,6 +2754,7 @@ const Base = {
     },
 
     home: {
+      logoColor: black,
       textColorError: red,
     },
 
@@ -2759,6 +2774,8 @@ const Base = {
         fillIcon: "dimgray",
         expanderColor: "dimgray",
       },
+
+      separatorBorder: `1px solid ${grayLightMid}`,
 
       security: {
         arrowFill: black,
@@ -2810,7 +2827,7 @@ const Base = {
       },
 
       integration: {
-        separatorBorder: `1px solid ${grayLightMid}`,
+        separatorBorder: `1px solid ${grayMid}`,
         linkColor: link,
 
         sso: {
@@ -2875,6 +2892,16 @@ const Base = {
     disabledBackground: "#f8f9f9",
     defaultTagColor: "#A3A9AE",
     newTagBackground: "#eceef1",
+  },
+
+  profile: {
+    main: {
+      background: "#F8F9F9",
+      textColor: black,
+    },
+    themePreview: {
+      border: "1px solid #eceef1",
+    },
   },
 };
 

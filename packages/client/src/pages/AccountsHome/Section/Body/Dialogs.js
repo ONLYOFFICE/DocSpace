@@ -6,6 +6,7 @@ import { EmployeeType, EmployeeStatus } from "@docspace/common/constants";
 import {
   ChangeEmailDialog,
   ChangePasswordDialog,
+  ChangePortalOwnerDialog,
   DeleteSelfProfileDialog,
   DeleteProfileEverDialog,
   ChangeUserTypeDialog,
@@ -13,11 +14,13 @@ import {
   SendInviteDialog,
   DeleteUsersDialog,
   InviteDialog,
+  ChangeNameDialog,
 } from "SRC_DIR/components/dialogs";
 
 const Dialogs = ({
   changeEmail,
   changePassword,
+  changeOwner,
   deleteSelfProfile,
   deleteProfileEver,
   data,
@@ -29,6 +32,10 @@ const Dialogs = ({
   sendInviteDialogVisible,
   deleteDialogVisible,
   invitationDialogVisible,
+
+  changeNameVisible,
+  setChangeNameVisible,
+  profile,
 }) => {
   return (
     <>
@@ -45,6 +52,9 @@ const Dialogs = ({
           onClose={closeDialogs}
           email={data.email}
         />
+      )}
+      {changeOwner && (
+        <ChangePortalOwnerDialog visible={changeOwner} onClose={closeDialogs} />
       )}
       {deleteSelfProfile && (
         <DeleteSelfProfileDialog
@@ -108,14 +118,23 @@ const Dialogs = ({
           onCloseButton={closeDialogs}
         />
       )}
+      {changeNameVisible && (
+        <ChangeNameDialog
+          visible={changeNameVisible}
+          onClose={() => setChangeNameVisible(false)}
+          profile={profile}
+          fromList
+        />
+      )}
     </>
   );
 };
 
-export default inject(({ peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   const {
     changeEmail,
     changePassword,
+    changeOwner,
     deleteSelfProfile,
     deleteProfileEver,
     data,
@@ -130,9 +149,17 @@ export default inject(({ peopleStore }) => {
     invitationDialogVisible,
   } = peopleStore.dialogStore;
 
+  const { user: profile } = auth.userStore;
+
+  const {
+    changeNameVisible,
+    setChangeNameVisible,
+  } = peopleStore.targetUserStore;
+
   return {
     changeEmail,
     changePassword,
+    changeOwner,
     deleteSelfProfile,
     deleteProfileEver,
     data,
@@ -145,5 +172,9 @@ export default inject(({ peopleStore }) => {
     sendInviteDialogVisible,
     deleteDialogVisible,
     invitationDialogVisible,
+
+    changeNameVisible,
+    setChangeNameVisible,
+    profile,
   };
 })(observer(Dialogs));

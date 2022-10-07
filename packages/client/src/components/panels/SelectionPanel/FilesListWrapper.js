@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import FilesListBody from "./FilesListBody";
 import axios from "axios";
 import { combineUrl, getFolderOptions } from "@docspace/common/utils";
@@ -55,7 +55,7 @@ class FilesListWrapper extends React.Component {
       folderId,
       setFolderTitle,
       setProviderKey,
-      setFolderId,
+      setResultingFolderId,
       folderSelection,
     } = this.props;
 
@@ -89,7 +89,7 @@ class FilesListWrapper extends React.Component {
         if (page === 0 && folderSelection) {
           setFolderTitle(data.current.title);
           setProviderKey(data.current.providerKey);
-          setFolderId(folderId);
+          setResultingFolderId(folderId);
         }
 
         const finalData = [...data.files];
@@ -117,6 +117,7 @@ class FilesListWrapper extends React.Component {
       folderSelection = false,
       fileId,
       folderId,
+      maxHeight,
     } = this.props;
     const { hasNextPage, isNextPageLoading, files, page } = this.state;
 
@@ -133,6 +134,7 @@ class FilesListWrapper extends React.Component {
         folderSelection={folderSelection}
         fileId={fileId}
         page={page}
+        maxHeight={maxHeight}
       />
     );
   }
@@ -142,7 +144,7 @@ export default inject(
   ({ selectedFolderStore, selectFolderDialogStore, auth }) => {
     const { id } = selectedFolderStore;
     const {
-      setFolderId,
+      setResultingFolderId,
       setFolderTitle,
       setProviderKey,
     } = selectFolderDialogStore;
@@ -153,7 +155,7 @@ export default inject(
     return {
       theme: theme,
       storeFolderId: id,
-      setFolderId,
+      setResultingFolderId,
       setFolderTitle,
       setProviderKey,
     };

@@ -29,6 +29,8 @@ const PortalRenaming = (props) => {
     setIsLoadedPortalRenaming,
     isLoadedPage,
     tenantAlias,
+    initSettings,
+    setIsLoaded,
   } = props;
 
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
@@ -71,6 +73,7 @@ const PortalRenaming = (props) => {
 
   useEffect(() => {
     setDocumentTitle(t("PortalRenaming"));
+    if (!isLoaded) initSettings().then(() => setIsLoaded(true));
 
     const checkScroll = checkScrollSettingsBlock();
     checkInnerWidth();
@@ -289,13 +292,20 @@ const PortalRenaming = (props) => {
 export default inject(({ auth, setup, common }) => {
   const { theme, tenantAlias } = auth.settingsStore;
   const { setPortalRename } = setup;
-  const { isLoaded, setIsLoadedPortalRenaming } = common;
+  const {
+    isLoaded,
+    setIsLoadedPortalRenaming,
+    initSettings,
+    setIsLoaded,
+  } = common;
   return {
     theme,
     setPortalRename,
     isLoaded,
     setIsLoadedPortalRenaming,
     tenantAlias,
+    initSettings,
+    setIsLoaded,
   };
 })(
   withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))

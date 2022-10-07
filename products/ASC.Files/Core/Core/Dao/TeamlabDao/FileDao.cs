@@ -45,6 +45,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly Settings _settings;
     private readonly IMapper _mapper;
     private readonly ThumbnailSettings _thumbnailSettings;
+    private readonly IQuotaService _quotaService;
 
     public FileDao(
         ILogger<FileDao> logger,
@@ -72,7 +73,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
         CrossDao crossDao,
         Settings settings,
         IMapper mapper,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        IQuotaService quotaService)
         : base(
               dbContextManager,
               userManager,
@@ -101,6 +103,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _settings = settings;
         _mapper = mapper;
         _thumbnailSettings = thumbnailSettings;
+        _quotaService = quotaService;
     }
 
     public Task InvalidateCacheAsync(int fileId)
@@ -236,6 +239,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         switch (filterType)
         {
+            case FilterType.OFormOnly:
+            case FilterType.OFormTemplateOnly:
             case FilterType.DocumentsOnly:
             case FilterType.ImagesOnly:
             case FilterType.PresentationsOnly:
@@ -273,7 +278,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         }
     }
 
-    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
+    public async IAsyncEnumerable<File<int>> GetFilesAsync(int parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false, bool excludeSubject = false)
     {
         if (filterType == FilterType.FoldersOnly)
         {
@@ -331,12 +336,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
             else
             {
-                q = q.Where(r => r.CreateBy == subjectID);
+                q = excludeSubject ? q.Where(r => r.CreateBy != subjectID) : q.Where(r => r.CreateBy == subjectID);
             }
         }
 
         switch (filterType)
         {
+            case FilterType.OFormOnly:
+            case FilterType.OFormTemplateOnly:
             case FilterType.DocumentsOnly:
             case FilterType.ImagesOnly:
             case FilterType.PresentationsOnly:
@@ -409,6 +416,25 @@ internal class FileDao : AbstractDao, IFileDao<int>
             if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
             {
                 throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
+            }
+        }
+
+        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+
+        if (quotaSettings.EnableUserQuota)
+        {
+            var user = _userManager.GetUsers(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
+            var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(user);
+            var quotaLimit = userQuotaSettings.UserQuota;
+
+            if (quotaLimit != -1)
+            {
+                var userUsedSpace = Math.Max(0, _quotaService.FindUserQuotaRows(TenantID, user.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+
+                if (quotaLimit - userUsedSpace < file.ContentLength)
+                {
+                    throw FileSizeComment.GetPersonalFreeSpaceException(quotaLimit);
+                }
             }
         }
 
@@ -1086,7 +1112,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         return file.RootFolderType != FolderType.TRASH && file.RootFolderType != FolderType.Privacy;
     }
-     
+
     public string GetUniqFileDirectory(int fileId)
     {
         if (fileId == 0)
@@ -1266,6 +1292,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         switch (filterType)
         {
+            case FilterType.OFormOnly:
+            case FilterType.OFormTemplateOnly:
             case FilterType.DocumentsOnly:
             case FilterType.ImagesOnly:
             case FilterType.PresentationsOnly:
@@ -1622,6 +1650,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
            switch (filterType)
            {
+               case FilterType.OFormOnly:
+               case FilterType.OFormTemplateOnly:
                case FilterType.DocumentsOnly:
                case FilterType.ImagesOnly:
                case FilterType.PresentationsOnly:

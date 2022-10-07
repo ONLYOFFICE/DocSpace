@@ -5,9 +5,9 @@ import {
   getFromLocalStorage,
   removeLocalStorage,
 } from "../pages/PortalSettings/utils";
-import toastr from "../helpers/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { AutoBackupPeriod } from "@docspace/common/constants";
-import api from "@docspace/common/api";
+//import api from "@docspace/common/api";
 
 const { EveryDayType, EveryWeekType } = AutoBackupPeriod;
 
@@ -61,9 +61,6 @@ class BackupStore {
 
   selectedEnableSchedule = false;
   defaultEnableSchedule = false;
-
-  isSavingProcess = false;
-  isResetProcess = false;
 
   storageRegions = [];
 
@@ -573,13 +570,6 @@ class BackupStore {
   setSelectedEnableSchedule = () => {
     const isEnable = this.selectedEnableSchedule;
     this.selectedEnableSchedule = !isEnable;
-  };
-  setSavingProcess = (process) => {
-    if (process !== this.isSavingProcess) this.isSavingProcess = process;
-  };
-
-  setResetProcess = (process) => {
-    if (process !== this.isResetProcess) this.isResetProcess = process;
   };
 
   convertServiceName = (serviceName) => {

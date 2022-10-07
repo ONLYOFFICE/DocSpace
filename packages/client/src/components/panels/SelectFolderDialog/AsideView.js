@@ -22,7 +22,7 @@ const SelectFolderDialogAsideView = ({
   isPanelVisible,
   onClose,
   withoutProvider,
-  isNeedArrowIcon,
+  withFileSelectDialog,
   isAvailable,
   folderId,
   isLoadingData,
@@ -50,7 +50,7 @@ const SelectFolderDialogAsideView = ({
     >
       <ModalDialog.Header theme={theme}>
         <StyledAsideHeader>
-          {isNeedArrowIcon && (
+          {withFileSelectDialog && (
             <IconButton
               theme={theme}
               className="selection-panel_aside-header-icon"

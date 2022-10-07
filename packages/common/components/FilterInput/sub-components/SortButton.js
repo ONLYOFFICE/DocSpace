@@ -14,6 +14,7 @@ import { Base } from "@docspace/components/themes";
 
 import SortDesc from "../../../../../public/images/sort.desc.react.svg";
 import Backdrop from "@docspace/components/backdrop";
+import { Events } from "@docspace/common/constants";
 
 const selectedViewIcon = css`
   svg {
@@ -191,7 +192,7 @@ const SortButton = ({
     sortId: null,
   });
 
-  React.useEffect(() => {
+  const getSortDataAction = React.useCallback(() => {
     const value = getSortData && getSortData();
     const selectedValue = getSelectedSortData && getSelectedSortData();
 
@@ -212,7 +213,15 @@ const SortButton = ({
       sortDirection: selectedValue.sortDirection,
       sortId: selectedValue.sortId,
     });
-  }, []);
+  }, [getSortData, getSelectedSortData, viewAs]);
+
+  React.useEffect(() => {
+    window.addEventListener(Events.CHANGE_COLUMN, getSortDataAction);
+    getSortDataAction();
+
+    return () =>
+      window.removeEventListener(Events.CHANGE_COLUMN, getSortDataAction);
+  }, [getSortDataAction]);
 
   const toggleCombobox = React.useCallback(() => {
     setIsOpen((val) => !val);

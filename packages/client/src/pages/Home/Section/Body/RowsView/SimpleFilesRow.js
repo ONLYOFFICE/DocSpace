@@ -39,6 +39,7 @@ const StyledWrapper = styled.div`
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
+  height: 56px;
 
   ${(props) =>
     !isMobile &&
@@ -48,7 +49,7 @@ const StyledSimpleFilesRow = styled(Row)`
         cursor: pointer;
         ${checkedStyle}
 
-        margin-top: -3px;
+        margin-top: -1px;
         border-top: ${(props) =>
           `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       }
@@ -66,13 +67,13 @@ const StyledSimpleFilesRow = styled(Row)`
       /* cursor: wait; */
     `}
 
-  margin-top: -2px;
+  margin-top: 0px;
 
   ${(props) =>
     props.showHotkeyBorder &&
     css`
       border-top: 1px solid #2da7db !important;
-      margin-top: -3px;
+      margin-top: -1px;
       margin-left: -24px;
       margin-right: -24px;
       padding-left: 24px;
@@ -114,12 +115,6 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 7px;
   }
 
-  .row_context-menu-wrapper {
-    width: fit-content;
-    justify-content: space-between;
-    flex: 1 1 auto;
-  }
-
   .row_content {
     ${(props) =>
       props.sectionWidth > 500 && `max-width: fit-content;`}//min-width: auto
@@ -136,13 +131,9 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-right: 8px;
   }
 
-  ${(props) =>
-    props.sectionWidth > 500 &&
-    `
-      .badge:last-child {
-        margin-right: 0px;
-      }
-  `}
+  .badge:last-child {
+    margin-right: 0px;
+  }
 
   .lock-file {
     cursor: ${(props) => (props.withAccess ? "pointer" : "default")};
@@ -156,43 +147,35 @@ const StyledSimpleFilesRow = styled(Row)`
     margin-top: 1px;
   }
 
-  .expandButton {
-    margin-left: 6px;
-    padding-top: 7px;
+  .row_context-menu-wrapper {
+    width: min-content;
+    justify-content: space-between;
+    flex: 0 1 auto;
   }
 
-  ${(props) =>
-    ((props.sectionWidth <= 1024 && props.sectionWidth > 500) || isTablet) &&
-    `
-    .row_context-menu-wrapper{
-      width: min-content;
-      justify-content: space-between;
-      flex: 0 1 auto;
-    } 
+  .row_content {
+    max-width: none;
+    min-width: 0;
+  }
 
-    .row_content {
-      max-width: none;
-      min-width: 0;
-    } 
+  .badges {
+    margin-bottom: 0px;
+  }
 
-    .badges {
-      margin-bottom: 0px;
+  .badge {
+    margin-right: 24px;
+  }
+
+  .lock-file {
+    svg {
+      height: 16px;
     }
+  }
 
-    .badge {
-      margin-right: 24px;
-    }
-
-    .lock-file{
-      svg {
-        height: 16px;
-      }
-    }
-
-    .expandButton {
-      padding-top: 0px;
-    }
-  `}
+  .expandButton {
+    margin-left: 6px;
+    padding-top: 0px;
+  }
 `;
 
 StyledSimpleFilesRow.defaultProps = { theme: Base };

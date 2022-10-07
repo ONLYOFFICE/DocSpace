@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import InfiniteLoaderComponent from "@docspace/components/infinite-loader";
 import { StyledCard, StyledItem, StyledHeaderItem } from "./StyledInfiniteGrid";
@@ -60,11 +60,10 @@ const InfiniteGrid = (props) => {
     filesLength,
     className,
     getCountTilesInRow,
-    selectedFolderId,
     ...rest
   } = props;
 
-  const countTilesInRow = getCountTilesInRow();
+  const [countTilesInRow, setCountTilesInRow] = useState(getCountTilesInRow());
 
   let cards = [];
   const list = [];
@@ -79,20 +78,41 @@ const InfiniteGrid = (props) => {
   };
 
   const checkType = (useTempList = true) => {
+    const card = cards[cards.length - 1];
+    const listItem = list[list.length - 1];
+
     const isFile = useTempList
-      ? cards.at(-1).props.children.props.className.includes("file")
-      : list.at(-1).props.className.includes("isFile");
+      ? card.props.children.props.className.includes("file")
+      : listItem.props.className.includes("isFile");
 
     if (isFile) return "isFile";
 
     const isFolder = useTempList
-      ? cards.at(-1).props.children.props.className.includes("folder")
-      : list.at(-1).props.className.includes("isFolder");
+      ? card.props.children.props.className.includes("folder")
+      : listItem.props.className.includes("isFolder");
 
     if (isFolder) return "isFolder";
 
     return "isRoom";
   };
+
+  const setTilesCount = () => {
+    const newCount = getCountTilesInRow();
+    if (countTilesInRow !== newCount) setCountTilesInRow(newCount);
+  };
+
+  const onResize = () => {
+    setTilesCount();
+  };
+
+  useEffect(() => {
+    setTilesCount();
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  });
 
   React.Children.map(children.props.children, (child) => {
     if (child) {
@@ -129,12 +149,11 @@ const InfiniteGrid = (props) => {
   });
 
   const type = checkType(!!cards.length);
-  const otherClassName = type;
 
   if (hasMoreFiles) {
     // If cards elements are full, it will add the full line of loaders
     if (cards.length === countTilesInRow) {
-      addItemToList("loaded-row", otherClassName, true);
+      addItemToList("loaded-row", type, true);
     }
 
     // Added line of loaders
@@ -143,17 +162,17 @@ const InfiniteGrid = (props) => {
       cards.push(
         <Loaders.Tile
           key={key}
-          className={`tiles-loader ${otherClassName}`}
+          className={`tiles-loader ${type}`}
           isFolder={type === "isFolder"}
         />
       );
     }
 
-    addItemToList("loaded-row", otherClassName);
+    addItemToList("loaded-row", type);
   } else if (cards.length) {
     // Adds loaders until the row is full
     const listKey = uniqueid("list-item_");
-    addItemToList(listKey, otherClassName);
+    addItemToList(listKey, type);
   }
 
   // console.log("InfiniteGrid render", list);
@@ -167,7 +186,6 @@ const InfiniteGrid = (props) => {
       itemCount={hasMoreFiles ? list.length + 1 : list.length}
       loadMoreItems={fetchMoreFiles}
       className={`TileList ${className}`}
-      selectedFolderId={selectedFolderId}
       {...rest}
     >
       {list}
@@ -175,30 +193,29 @@ const InfiniteGrid = (props) => {
   );
 };
 
-export default inject(
-  ({ filesStore, selectedFolderStore, treeFoldersStore }) => {
-    const {
-      filesList,
-      hasMoreFiles,
-      filterTotal,
-      fetchMoreFiles,
-      getCountTilesInRow,
-      roomsFilterTotal,
-    } = filesStore;
+export default inject(({ filesStore, treeFoldersStore }) => {
+  const {
+    filesList,
+    hasMoreFiles,
+    filterTotal,
+    fetchMoreFiles,
+    getCountTilesInRow,
+    roomsFilterTotal,
+    isLoading,
+  } = filesStore;
 
-    const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
-    const filesLength = filesList.length;
-    const isRooms = isRoomsFolder || isArchiveFolder;
+  const filesLength = filesList.length;
+  const isRooms = isRoomsFolder || isArchiveFolder;
 
-    return {
-      filesList,
-      hasMoreFiles,
-      filterTotal: isRooms ? roomsFilterTotal : filterTotal,
-      fetchMoreFiles,
-      filesLength,
-      getCountTilesInRow,
-      selectedFolderId: selectedFolderStore.id,
-    };
-  }
-)(observer(InfiniteGrid));
+  return {
+    filesList,
+    hasMoreFiles,
+    filterTotal: isRooms ? roomsFilterTotal : filterTotal,
+    fetchMoreFiles,
+    filesLength,
+    getCountTilesInRow,
+    isLoading,
+  };
+})(observer(InfiniteGrid));

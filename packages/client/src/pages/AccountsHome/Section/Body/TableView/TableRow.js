@@ -26,6 +26,9 @@ const StyledPeopleRow = styled(TableRow)`
       cursor: pointer;
       background: ${(props) =>
         `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+      border-top: ${(props) =>
+        `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+      margin-top: -1px;
     }
 
     .table-container_user-name-cell {
@@ -39,8 +42,8 @@ const StyledPeopleRow = styled(TableRow)`
   }
 
   .table-container_cell {
-    height: 46px;
-    max-height: 46px;
+    height: 48px;
+    max-height: 48px;
 
     background: ${(props) =>
       (props.checked || props.isActive) &&
@@ -49,8 +52,7 @@ const StyledPeopleRow = styled(TableRow)`
 
   .table-container_row-checkbox-wrapper {
     padding-right: 0px;
-    padding-left: 4px;
-    min-width: 46px;
+    min-width: 48px;
 
     .table-container_row-checkbox {
       margin-left: -4px;
@@ -83,7 +85,7 @@ const StyledPeopleRow = styled(TableRow)`
       margin-left: -8px;
 
       .combo-button-label {
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 400;
         color: ${(props) => props.sideInfoColor};
       }
@@ -127,7 +129,6 @@ const PeopleTableRow = (props) => {
     checkedProps,
     onContentRowSelect,
     onEmailClick,
-    onUserNameClick,
     isAdmin,
     isOwner,
     theme,
@@ -144,9 +145,11 @@ const PeopleTableRow = (props) => {
     statusType,
     userName,
     position,
-    role,
     rooms,
+    // role
   } = item;
+
+  const role = item.role === "guest" ? "user" : item.role; // TODO: remove after getting valid 'role' field
 
   const isPending = statusType === "pending" || statusType === "disabled";
 
@@ -240,6 +243,8 @@ const PeopleTableRow = (props) => {
     setBufferSelection(item);
   }, [isSeveralSelection, isChecked, item, setBufferSelection]);
 
+  const typesOptions = getTypesOptions();
+
   return (
     <StyledWrapper
       className={`user-item ${
@@ -273,12 +278,11 @@ const PeopleTableRow = (props) => {
             type="page"
             title={displayName}
             fontWeight="600"
-            fontSize="15px"
+            fontSize="13px"
             color={nameColor}
             isTextOverflow
-            href={`/accounts/view/${userName}`}
-            onClick={onUserNameClick}
             className="table-cell_username"
+            noHover
           >
             {statusType === "pending" ? email : displayName}
           </Link>
@@ -291,10 +295,10 @@ const PeopleTableRow = (props) => {
           userId !== item.id ? (
             <ComboBox
               className="type-combobox"
-              selectedOption={getTypesOptions().find(
+              selectedOption={typesOptions.find(
                 (option) => option.key === role
               )}
-              options={getTypesOptions()}
+              options={typesOptions}
               onSelect={onTypeChange}
               scaled={false}
               size="content"
@@ -305,7 +309,7 @@ const PeopleTableRow = (props) => {
             <Text
               type="page"
               title={position}
-              fontSize="12px"
+              fontSize="13px"
               fontWeight={400}
               color={sideInfoColor}
               truncate
@@ -321,7 +325,7 @@ const PeopleTableRow = (props) => {
             <Text
               type="page"
               title={position}
-              fontSize="12px"
+              fontSize="13px"
               fontWeight={400}
               color={sideInfoColor}
               truncate
@@ -334,7 +338,7 @@ const PeopleTableRow = (props) => {
             <Text
               type="page"
               title={position}
-              fontSize="12px"
+              fontSize="13px"
               fontWeight={400}
               color={sideInfoColor}
               truncate
@@ -360,7 +364,7 @@ const PeopleTableRow = (props) => {
           <Link
             type="page"
             title={email}
-            fontSize="12px"
+            fontSize="13px"
             fontWeight={400}
             color={sideInfoColor}
             onClick={onEmailClick}

@@ -63,6 +63,7 @@ public class SettingsController : BaseSettingsController
     private readonly DnsSettings _dnsSettings;
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
     private readonly CustomColorThemesSettingsHelper _customColorThemesSettingsHelper;
+    private readonly QuotaSyncOperation _quotaSyncOperation;
 
     public SettingsController(
         ILoggerProvider option,
@@ -99,7 +100,8 @@ public class SettingsController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
         AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
-        CustomColorThemesSettingsHelper customColorThemesSettingsHelper
+        CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
+        QuotaSyncOperation quotaSyncOperation
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -132,6 +134,7 @@ public class SettingsController : BaseSettingsController
         _constants = constants;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+        _quotaSyncOperation = quotaSyncOperation;
         _customColorThemesSettingsHelper = customColorThemesSettingsHelper;
     }
 
@@ -268,6 +271,16 @@ public class SettingsController : BaseSettingsController
         return new QuotaDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, WebItemManager, _constants);
     }
 
+    [HttpPost("userquotasettings")]
+    public object SaveUserQuotaSettings(UserQuotaSettingsRequestsDto inDto)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        _settingsManager.Save(new TenantUserQuotaSettings { EnableUserQuota = inDto.EnableUserQuota, DefaultUserQuota = inDto.DefaultUserQuota });
+
+        return Resource.SuccessfullySaveSettingsMessage;
+    }
+
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("cultures")]
@@ -317,39 +330,19 @@ public class SettingsController : BaseSettingsController
         return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
     }
 
-    //[HttpGet("recalculatequota")]
-    //public void RecalculateQuota()
-    //{
-    //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+    [HttpGet("recalculatequota")]
+    public void RecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        _quotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
 
-    //    var operations = quotaTasks.GetTasks()
-    //        .Where(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
-
-    //    if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
-    //    {
-    //        throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
-    //    }
-
-    //    var op = new QuotaSync(Tenant.Id, ServiceProvider);
-
-    //    quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
-    //}
-
-    //[HttpGet("checkrecalculatequota")]
-    //public bool CheckRecalculateQuota()
-    //{
-    //    PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-    //    var task = quotaTasks.GetTasks().FirstOrDefault(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
-
-    //    if (task != null && task.Status == DistributedTaskStatus.Completed)
-    //    {
-    //        quotaTasks.RemoveTask(task.Id);
-    //        return false;
-    //    }
-
-    //    return task != null;
-    //}
+    [HttpGet("checkrecalculatequota")]
+    public bool CheckRecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        return _quotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
 
     [HttpGet("logo")]
     public object GetLogo()
@@ -377,7 +370,7 @@ public class SettingsController : BaseSettingsController
 
         var collaboratorPopupSettings = _settingsManager.LoadForCurrentUser<CollaboratorSettings>();
 
-        if (!(currentUser.IsVisitor(_userManager) && collaboratorPopupSettings.FirstVisit && !currentUser.IsOutsider(_userManager)))
+        if (!(_userManager.IsVisitor(currentUser) && collaboratorPopupSettings.FirstVisit && !_userManager.IsOutsider(currentUser)))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -468,7 +461,7 @@ public class SettingsController : BaseSettingsController
     [HttpPut("closeadminhelper")]
     public void CloseAdminHelper()
     {
-        if (!_userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
+        if (!_userManager.IsAdmin(_authContext.CurrentAccount.ID) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
         {
             throw new NotSupportedException("Not available.");
         }

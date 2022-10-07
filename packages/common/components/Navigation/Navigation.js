@@ -41,6 +41,9 @@ const Navigation = ({
   toggleInfoPanel,
   isInfoPanelVisible,
   titles,
+  withMenu,
+  onPlusClick,
+  isEmptyPage,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -54,6 +57,8 @@ const Navigation = ({
   const isDesktop =
     (!isMobile && !isTabletUtils() && !isMobileUtils()) ||
     (isDesktopUtils() && !isMobile);
+
+  const infoPanelIsVisible = isDesktop && !isEmptyPage;
 
   const onMissClick = React.useCallback(
     (e) => {
@@ -184,9 +189,11 @@ const Navigation = ({
               isInfoPanelVisible={isInfoPanelVisible}
               isDesktop={isDesktop}
               titles={titles}
+              withMenu={withMenu}
+              onPlusClick={onPlusClick}
             />
           </StyledContainer>
-          {isDesktop && (
+          {infoPanelIsVisible && (
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}
               toggleInfoPanel={toggleInfoPanel}
@@ -213,6 +220,7 @@ Navigation.propTypes = {
   getContextOptionsFolder: PropTypes.func,
   onBackToParentFolder: PropTypes.func,
   titles: PropTypes.object,
+  isEmptyPage: PropTypes.bool,
 };
 
 export default React.memo(Navigation);

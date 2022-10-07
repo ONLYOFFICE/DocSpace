@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using NLog;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -32,57 +34,63 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddNotifyConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
+
+var logger = NLog.LogManager.Setup()
+                            .SetupExtensions(s =>
+                            {
+                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                            })
+                            .LoadConfiguration(builder.Configuration, builder.Environment)
+                            .GetLogger(typeof(Startup).Namespace);
+
+
+try
 {
-    config.AddJsonFile($"appsettings.services.json", true)
-          .AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-},
-(hostContext, services, diHelper) =>
+    logger.Info("Configuring web host ({applicationContext})...", Program.AppName);
+    builder.Host.ConfigureDefault();
+
+    var startup = new Startup(builder.Configuration, builder.Environment);
+
+    startup.ConfigureServices(builder.Services);
+
+    builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+    {
+        builder.Register(context.Configuration);
+    });
+
+    var app = builder.Build();
+
+    startup.Configure(app);
+
+    var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+
+    eventBus.Subscribe<NotifyInvokeSendMethodRequestedIntegrationEvent, NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
+    eventBus.Subscribe<NotifySendMessageRequestedIntegrationEvent, NotifySendMessageRequestedIntegrationEventHandler>();
+
+    logger.Info("Starting web host ({applicationContext})...", Program.AppName);
+    await app.RunWithTasksAsync();
+}
+catch (Exception ex)
 {
-    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+    if (logger != null)
+    {
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
+    }
 
-    services.Configure<NotifyServiceCfg>(hostContext.Configuration.GetSection("notify"));
-
-    diHelper.TryAdd<NotifySenderService>();
-    diHelper.TryAdd<NotifyCleanerService>();
-    diHelper.TryAdd<TenantManager>();
-    diHelper.TryAdd<TenantWhiteLabelSettingsHelper>();
-    diHelper.TryAdd<SettingsManager>();
-    diHelper.TryAdd<JabberSender>();
-    diHelper.TryAdd<SmtpSender>();
-    diHelper.TryAdd<AWSSender>(); // fix private
-
-    diHelper.TryAdd<NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
-    diHelper.TryAdd<NotifySendMessageRequestedIntegrationEventHandler>();
-
-    services.AddActivePassiveHostedService<NotifySenderService>();
-    services.AddActivePassiveHostedService<NotifyCleanerService>();
-
-    services.AddBaseDbContextPool<NotifyDbContext>();
-});
-
-var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+    throw;
+}
+finally
 {
-    builder.Register(context.Configuration);
-});
-
-var app = builder.Build();
-
-startup.Configure(app);
-
-var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
-
-eventBus.Subscribe<NotifyInvokeSendMethodRequestedIntegrationEvent, NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
-eventBus.Subscribe<NotifySendMessageRequestedIntegrationEvent, NotifySendMessageRequestedIntegrationEventHandler>();
-
-await app.RunWithTasksAsync();
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    NLog.LogManager.Shutdown();
+}
 
 public partial class Program
 {
-    public static string AppName = Assembly.GetExecutingAssembly().GetName().Name;
+    public static string Namespace = typeof(Startup).Namespace;
+    public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.') + 1);
 }
