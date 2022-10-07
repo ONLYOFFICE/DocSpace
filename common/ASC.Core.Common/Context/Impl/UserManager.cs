@@ -49,7 +49,6 @@ public class UserManager
 {
     private IDictionary<Guid, UserInfo> SystemUsers => _userManagerConstants.SystemUsers;
 
-    private readonly IQuotaService _quotaService;
     private readonly IHttpContextAccessor _accessor;
     private readonly IUserService _userService;
     private readonly TenantManager _tenantManager;
@@ -73,7 +72,6 @@ public class UserManager
     }
 
     public UserManager(
-        IQuotaService quotaService,
         IUserService service,
         TenantManager tenantManager,
         PermissionContext permissionContext,
@@ -86,7 +84,6 @@ public class UserManager
         ILogger<UserManager> log,
         ICache cache)
     {
-        _quotaService = quotaService;
         _userService = service;
         _tenantManager = tenantManager;
         _permissionContext = permissionContext;
@@ -358,7 +355,6 @@ public class UserManager
         }
 
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
-
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
 
         if (syncCardDav)

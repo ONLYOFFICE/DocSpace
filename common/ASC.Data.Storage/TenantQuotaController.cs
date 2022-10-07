@@ -44,19 +44,17 @@ public class TenantQuotaController : IQuotaController
 
     private readonly int _tenant;
     private readonly TenantManager _tenantManager;
-    private readonly UserManager _userManager;
     private readonly AuthContext _authContext;
     private readonly Lazy<long> _lazyCurrentSize;
     private long _currentSize;
 
-    public TenantQuotaController(int tenant, TenantManager tenantManager, UserManager userManager, AuthContext authContext)
+    public TenantQuotaController(int tenant, TenantManager tenantManager, AuthContext authContext)
     {
         _tenant = tenant;
         _tenantManager = tenantManager;
         _lazyCurrentSize = new Lazy<long>(() => _tenantManager.FindTenantQuotaRows(tenant)
             .Where(r => UsedInQuota(r.Tag))
             .Sum(r => r.Counter));
-        _userManager = userManager;
         _authContext = authContext;
     }
 
