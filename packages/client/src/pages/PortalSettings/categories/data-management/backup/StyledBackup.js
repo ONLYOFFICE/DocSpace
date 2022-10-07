@@ -237,7 +237,7 @@ const StyledModules = styled.div`
   margin-bottom: 24px;
   .backup-description {
     ${(props) => props.isDisabled && `color: #A3A9AE`};
-    margin-left: 24px;
+    margin-left: 29px;
     max-width: 700px;
   }
 `;
@@ -336,6 +336,13 @@ const StyledBackup = styled.div`
   .backup_third-party-combo {
     max-width: 310px;
     margin-right: 8px;
+    .combo-button {
+      justify-content: flex-start;
+      .combo-button-label {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
   }
 
   .backup_modules-separation {
@@ -369,6 +376,9 @@ const StyledBackup = styled.div`
         margin: auto 0 auto 7.29px;
       }
     }
+  }
+  .backup_third-party-context {
+    margin-top: 3px;
   }
 `;
 const StyledBackupList = styled.div`
