@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import { inject, observer } from "mobx-react";
 
 import toastr from "@docspace/components/toast/toastr";
@@ -6,7 +6,6 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
 import ComboBox from "@docspace/components/combobox";
-import { isSafari, isTablet } from "react-device-detect";
 
 const Dialog = ({
   t,
@@ -21,14 +20,29 @@ const Dialog = ({
   onCancel,
   onClose,
 }) => {
-  const [value, setValue] = React.useState("");
-  const [isDisabled, setIsDisabled] = React.useState(false);
+  const [value, setValue] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (startValue) setValue(startValue);
   }, [startValue]);
 
-  const onChange = React.useCallback((e) => {
+  const onKeyUpHandler = useCallback(
+    (e) => {
+      if (e.keyCode === 27) onCancelAction(e);
+      if (e.keyCode === 13) onSaveAction(e);
+    },
+    [value]
+  );
+  useEffect(() => {
+    document.addEventListener("keyup", onKeyUpHandler, false);
+
+    return () => {
+      document.removeEventListener("keyup", onKeyUpHandler, false);
+    };
+  }, [onKeyUpHandler]);
+
+  const onChange = useCallback((e) => {
     let newValue = e.target.value;
 
     if (newValue.match(folderFormValidation)) {
@@ -40,30 +54,23 @@ const Dialog = ({
     setValue(newValue);
   }, []);
 
-  const onFocus = React.useCallback((e) => {
+  const onFocus = useCallback((e) => {
     e.target.select();
   }, []);
 
-  const returnWindowPositionAfterKeyboard = () => {
-    isSafari && isTablet && window.scrollTo(0, 0);
-  };
-
-  const onSaveAction = React.useCallback(
+  const onSaveAction = useCallback(
     (e) => {
-      returnWindowPositionAfterKeyboard();
       setIsDisabled(true);
       onSave && onSave(e, value);
     },
     [onSave, value]
   );
 
-  const onCancelAction = React.useCallback((e) => {
-    returnWindowPositionAfterKeyboard();
+  const onCancelAction = useCallback((e) => {
     onCancel && onCancel(e);
   }, []);
 
-  const onCloseAction = React.useCallback((e) => {
-    returnWindowPositionAfterKeyboard();
+  const onCloseAction = useCallback((e) => {
     onClose && onClose(e);
   }, []);
 

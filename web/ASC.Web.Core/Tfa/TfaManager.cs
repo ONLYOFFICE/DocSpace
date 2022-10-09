@@ -114,7 +114,11 @@ public class TfaManager
         }
 
         int.TryParse(Cache.Get<string>("tfa/" + user.Id), out var counter);
-        if (++counter > _setupInfo.LoginThreshold)
+
+        var loginSettings = _settingsManager.Load<LoginSettings>();
+        var attemptsCount = loginSettings.AttemptCount;
+
+        if (++counter > attemptsCount)
         {
             throw new BruteForceCredentialException(Resource.TfaTooMuchError);
         }

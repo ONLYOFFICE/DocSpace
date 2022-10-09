@@ -43,7 +43,6 @@ public class AuthenticationController : ControllerBase
     private readonly PasswordHasher _passwordHasher;
     private readonly EmailValidationKeyModelHelper _emailValidationKeyModelHelper;
     private readonly ICache _cache;
-    private readonly SetupInfo _setupInfo;
     private readonly MessageService _messageService;
     private readonly ProviderManager _providerManager;
     private readonly AccountLinker _accountLinker;
@@ -68,6 +67,7 @@ public class AuthenticationController : ControllerBase
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
+    private readonly BruteForceLoginManager _bruteForceLoginManager;
 
     public AuthenticationController(
         UserManager userManager,
@@ -102,6 +102,7 @@ public class AuthenticationController : ControllerBase
         AuthContext authContext,
         CookieStorage cookieStorage,
         DbLoginEventsManager dbLoginEventsManager,
+        BruteForceLoginManager bruteForceLoginManager,
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper)
     {
         _userManager = userManager;
@@ -112,7 +113,6 @@ public class AuthenticationController : ControllerBase
         _passwordHasher = passwordHasher;
         _emailValidationKeyModelHelper = emailValidationKeyModelHelper;
         _cache = cache;
-        _setupInfo = setupInfo;
         _messageService = messageService;
         _providerManager = providerManager;
         _accountLinker = accountLinker;
@@ -136,6 +136,7 @@ public class AuthenticationController : ControllerBase
         _cookieStorage = cookieStorage;
         _dbLoginEventsManager = dbLoginEventsManager;
         _userManagerWrapper = userManagerWrapper;
+        _bruteForceLoginManager = bruteForceLoginManager;
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
     }
 
@@ -357,14 +358,6 @@ public class AuthenticationController : ControllerBase
                 {
                     inDto.PasswordHash.ThrowIfNull(new ArgumentException(@"PasswordHash empty", "PasswordHash"));
                 }
-                int counter;
-                int.TryParse(_cache.Get<string>("loginsec/" + inDto.UserName), out counter);
-                if (++counter > _setupInfo.LoginThreshold && !SetupInfo.IsSecretEmail(inDto.UserName))
-                {
-                    throw new BruteForceCredentialException();
-                }
-                _cache.Insert("loginsec/" + inDto.UserName, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
-
 
                 inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
 
@@ -378,18 +371,10 @@ public class AuthenticationController : ControllerBase
                     }
                 }
 
-                user = _userManager.GetUsersByPasswordHash(
-                    _tenantManager.GetCurrentTenant().Id,
-                    inDto.UserName,
-                    inDto.PasswordHash);
+                var requestIp = MessageSettings.GetIP(Request);
 
-                if (user == null || !_userManager.UserExists(user))
-                {
-                    throw new Exception("user not found");
+                user = _bruteForceLoginManager.Attempt(inDto.UserName, inDto.PasswordHash, requestIp, out _);
                 }
-
-                _cache.Insert("loginsec/" + inDto.UserName, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
-            }
             else
             {
                 if (!(_coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Oauth))

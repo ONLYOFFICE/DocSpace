@@ -1528,6 +1528,7 @@ const Base = {
 
   comboBox: {
     padding: "6px 0px",
+    background: lightGrayishStrongBlue,
 
     width: {
       base: "173px",
@@ -2567,7 +2568,7 @@ const Base = {
     background: "none",
     svgFill: black,
     header: {
-      height: "50px",
+      height: "49px",
       borderBottom: `1px solid ${grayLightMid}`,
       marginBottom: "6px",
     },
@@ -2577,7 +2578,7 @@ const Base = {
     padding: "0 12px",
     mobile: {
       height: "36px",
-      padding: "0 16px",
+      padding: "0 16px 6px",
     },
   },
   newContextMenu: {

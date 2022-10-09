@@ -414,13 +414,8 @@ export default inject(
       roomsFilter,
       fetchRooms,
     } = filesStore;
-    const {
-      isPrivacyFolder,
-      isRecentFolder,
-      isPersonalRoom,
-    } = treeFoldersStore;
-
-    const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
+    const { isRecentFolder, isPersonalRoom } = treeFoldersStore;
+    const withContent = canShare;
     const sortingVisible = !isRecentFolder;
     const { personal, withPaging } = auth.settingsStore;
 

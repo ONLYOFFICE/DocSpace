@@ -73,7 +73,6 @@ public sealed class Constants
 
     private readonly IConfiguration _configuration;
 
-
     #region system group and category groups
 
     public static readonly Guid SysGroupCategoryId = new Guid("{7717039D-FBE9-45ad-81C1-68A1AA10CE1F}");

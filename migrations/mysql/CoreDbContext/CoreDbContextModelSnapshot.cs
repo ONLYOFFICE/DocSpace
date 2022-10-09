@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbButton", b =>
@@ -121,7 +121,7 @@ namespace ASC.Migrations.MySql.Migrations
                             MaxFileSize = 102400L,
                             MaxTotalSize = 10995116277760L,
                             Name = "default",
-                            Price = 0.00m,
+                            Price = 0m,
                             Visible = false
                         });
                 });
@@ -131,6 +131,12 @@ namespace ASC.Migrations.MySql.Migrations
                     b.Property<int>("Tenant")
                         .HasColumnType("int")
                         .HasColumnName("tenant");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("user_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.Property<string>("Path")
                         .HasColumnType("varchar(255)")
@@ -154,7 +160,7 @@ namespace ASC.Migrations.MySql.Migrations
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.HasKey("Tenant", "Path")
+                    b.HasKey("Tenant", "UserId", "Path")
                         .HasName("PRIMARY");
 
                     b.HasIndex("LastModified")

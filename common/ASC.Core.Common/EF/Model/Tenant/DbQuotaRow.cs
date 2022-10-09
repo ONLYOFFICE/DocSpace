@@ -33,10 +33,10 @@ public class DbQuotaRow : BaseEntity, IMapFrom<TenantQuotaRow>
     public long Counter { get; set; }
     public string Tag { get; set; }
     public DateTime LastModified { get; set; }
-
+    public Guid UserId { get; set; }
     public override object[] GetKeys()
     {
-        return new object[] { Tenant, Path };
+        return new object[] { Tenant, UserId, Path };
     }
 }
 
@@ -55,7 +55,7 @@ public static class DbQuotaRowExtension
     {
         modelBuilder.Entity<DbQuotaRow>(entity =>
         {
-            entity.HasKey(e => new { e.Tenant, e.Path })
+            entity.HasKey(e => new { e.Tenant, e.UserId, e.Path })
                 .HasName("PRIMARY");
 
             entity.ToTable("tenants_quotarow")
@@ -83,6 +83,12 @@ public static class DbQuotaRowExtension
             entity.Property(e => e.Tag)
                 .HasColumnName("tag")
                 .HasColumnType("varchar(1024)")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
+
+            entity.Property(e => e.UserId)
+                .HasColumnName("user_id")
+                .HasColumnType("char(36)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
         });
@@ -117,6 +123,11 @@ public static class DbQuotaRowExtension
                 .HasColumnName("tag")
                 .HasMaxLength(1024)
                 .HasDefaultValueSql("'0'");
+
+            entity.Property(e => e.UserId)
+                .HasColumnName("user_id")
+                .HasMaxLength(36)
+                .HasDefaultValueSql("NULL");
         });
     }
 }

@@ -6,8 +6,7 @@ import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
 import ContextMenu from "@docspace/components/context-menu";
 import { tablet } from "@docspace/components/utils/device";
-import { isDesktop, isMobile } from "react-device-detect";
-
+import { isMobile } from "react-device-detect";
 import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
 import { Base } from "@docspace/components/themes";
@@ -191,7 +190,6 @@ const StyledTile = styled.div`
   :hover {
     ${(props) =>
       !props.dragging &&
-      props.isDesktop &&
       !props.inProgress &&
       !isMobile &&
       css`
@@ -414,7 +412,7 @@ class Tile extends React.PureComponent {
   };
 
   onFileIconClick = () => {
-    if (isDesktop) return;
+    if (!isMobile) return;
 
     const { onSelect, item } = this.props;
     onSelect && onSelect(true, item);
@@ -525,7 +523,6 @@ class Tile extends React.PureComponent {
         isActive={isActive}
         isRoom={isRoom}
         inProgress={inProgress}
-        isDesktop={isDesktop}
         showHotkeyBorder={showHotkeyBorder}
         onClick={this.onFileClick}
       >

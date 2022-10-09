@@ -21,9 +21,10 @@ const RenameEvent = ({
 
   editCompleteAction,
   clearActiveOperations,
-}) => {
-  const [visible, setVisible] = React.useState(false);
 
+  setEventDialogVisible,
+  eventDialogVisible,
+}) => {
   const [startValue, setStartValue] = React.useState("");
 
   const { t } = useTranslation(["Files"]);
@@ -31,7 +32,7 @@ const RenameEvent = ({
   React.useEffect(() => {
     setStartValue(getTitleWithoutExst(item, false));
 
-    setVisible(true);
+    setEventDialogVisible(true);
   }, [item]);
 
   const onUpdate = React.useCallback((e, value) => {
@@ -47,6 +48,8 @@ const RenameEvent = ({
 
     if (isSameTitle) {
       setStartValue(originalTitle);
+      setIsLoading(false);
+      onClose();
 
       return editCompleteAction(item, type);
     } else {
@@ -112,7 +115,7 @@ const RenameEvent = ({
   return (
     <Dialog
       t={t}
-      visible={visible}
+      visible={eventDialogVisible}
       title={t("Home: Rename")}
       startValue={startValue}
       onSave={onUpdate}
@@ -122,21 +125,31 @@ const RenameEvent = ({
   );
 };
 
-export default inject(({ filesStore, filesActionsStore, uploadDataStore }) => {
-  const { setIsLoading, addActiveItems, updateFile, renameFolder } = filesStore;
+export default inject(
+  ({ filesStore, filesActionsStore, uploadDataStore, dialogsStore }) => {
+    const {
+      setIsLoading,
+      addActiveItems,
+      updateFile,
+      renameFolder,
+    } = filesStore;
 
-  const { editCompleteAction } = filesActionsStore;
+    const { editCompleteAction } = filesActionsStore;
 
-  const { clearActiveOperations } = uploadDataStore;
+    const { clearActiveOperations } = uploadDataStore;
+    const { setEventDialogVisible, eventDialogVisible } = dialogsStore;
 
-  return {
-    setIsLoading,
-    addActiveItems,
-    updateFile,
-    renameFolder,
+    return {
+      setIsLoading,
+      addActiveItems,
+      updateFile,
+      renameFolder,
 
-    editCompleteAction,
+      editCompleteAction,
 
-    clearActiveOperations,
-  };
-})(observer(RenameEvent));
+      clearActiveOperations,
+      setEventDialogVisible,
+      eventDialogVisible,
+    };
+  }
+)(observer(RenameEvent));

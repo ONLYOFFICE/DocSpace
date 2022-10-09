@@ -40,6 +40,7 @@ public class SecurityController : BaseSettingsController
     private readonly WebItemManagerSecurity _webItemManagerSecurity;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly MessageTarget _messageTarget;
+    private readonly IMapper _mapper;
 
     public SecurityController(
         TenantExtra tenantExtra,
@@ -57,6 +58,7 @@ public class SecurityController : BaseSettingsController
         EmployeeDtoHelper employeeWraperHelper,
         MessageTarget messageTarget,
         IMemoryCache memoryCache,
+        IMapper mapper,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _employeeHelperDto = employeeWraperHelper;
@@ -71,6 +73,7 @@ public class SecurityController : BaseSettingsController
         _webItemManagerSecurity = webItemManagerSecurity;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _messageTarget = messageTarget;
+        _mapper = mapper;
     }
 
     [HttpGet("security")]
@@ -288,5 +291,49 @@ public class SecurityController : BaseSettingsController
         }
 
         return new { inDto.ProductId, inDto.UserId, inDto.Administrator };
+    }
+
+    [HttpPut("security/loginSettings")]
+    public LoginSettingsDto UpdateLoginSettings(LoginSettingsRequestDto loginSettingsRequestDto)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var attemptsCount = loginSettingsRequestDto.AttemptCount;
+        var checkPeriod = loginSettingsRequestDto.CheckPeriod;
+        var blockTime = loginSettingsRequestDto.BlockTime;
+
+        if (attemptsCount < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(attemptsCount));
+        }
+        if (checkPeriod < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(checkPeriod));
+        }
+        if (blockTime < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(blockTime));
+        }
+
+        var settings = new LoginSettings
+        {
+            AttemptCount = attemptsCount,
+            CheckPeriod = checkPeriod,
+            BlockTime = blockTime
+        };
+
+        _settingsManager.Save(settings);
+
+        return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
+    }
+
+    [HttpGet("security/loginSettings")]
+    public LoginSettingsDto GetLoginSettings()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var settings = _settingsManager.Load<LoginSettings>();
+
+        return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
     }
 }
