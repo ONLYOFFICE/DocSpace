@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Web.Core.Utility.Settings;
+
 public class LoginSettings : ISettings<LoginSettings>
 {
     public int AttemptCount { get; set; }
@@ -43,5 +44,21 @@ public class LoginSettings : ISettings<LoginSettings>
             BlockTime = 60,
             CheckPeriod = 60
         };
+    }
+}
+
+public class LoginSettingsWrapper
+{
+    private readonly LoginSettings _loginSettings;
+
+    public int AttemptCount { get => _loginSettings.AttemptCount; }
+
+    public TimeSpan BlockTime { get => TimeSpan.FromSeconds(_loginSettings.BlockTime); }
+
+    public TimeSpan CheckPeriod { get => TimeSpan.FromSeconds(_loginSettings.CheckPeriod); }
+
+    public LoginSettingsWrapper(LoginSettings loginSettings)
+    {
+        _loginSettings = loginSettings;
     }
 }

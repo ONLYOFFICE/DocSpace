@@ -355,16 +355,6 @@ public class AuthenticationController : ControllerBase
                     inDto.PasswordHash.ThrowIfNull(new ArgumentException(@"PasswordHash empty", "PasswordHash"));
                 }
 
-                var secretEmail = SetupInfo.IsSecretEmail(inDto.UserName);
-
-                var requestIp = MessageSettings.GetIP(Request);
-                var bruteForceSuccessAttempt = _bruteForceLoginManager.Increment(inDto.UserName, requestIp, out _);
-
-                if (!secretEmail && !bruteForceSuccessAttempt)
-                {
-                    throw new BruteForceCredentialException();
-                }
-
                 inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
 
                 if (string.IsNullOrEmpty(inDto.PasswordHash))
@@ -377,20 +367,9 @@ public class AuthenticationController : ControllerBase
                     }
                 }
 
-                user = _userManager.GetUsersByPasswordHash(
-                    _tenantManager.GetCurrentTenant().Id,
-                    inDto.UserName,
-                    inDto.PasswordHash);
+                var requestIp = MessageSettings.GetIP(Request);
 
-                if (user == null || !_userManager.UserExists(user))
-                {
-                    throw new Exception("user not found");
-                }
-
-                if (!secretEmail)
-                {
-                    _bruteForceLoginManager.Decrement(inDto.UserName, requestIp);
-                }
+                user = _bruteForceLoginManager.Attempt(inDto.UserName, inDto.PasswordHash, requestIp, out _);
             }
             else
             {

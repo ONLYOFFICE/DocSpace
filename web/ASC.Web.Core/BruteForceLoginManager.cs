@@ -24,82 +24,93 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.Extensions.Caching.Distributed;
-
-using ProtoBuf;
-
 namespace ASC.Web.Core;
+
 [Scope]
 public class BruteForceLoginManager
 {
     private readonly SettingsManager _settingsManager;
+    private readonly UserManager _userManager;
+    private readonly TenantManager _tenantManager;
     private readonly IDistributedCache _distributedCache;
     private static readonly object _lock = new object();
 
-    public BruteForceLoginManager(SettingsManager settingsManager, IDistributedCache distributedCache)
+    public BruteForceLoginManager(SettingsManager settingsManager, UserManager userManager, TenantManager tenantManager, IDistributedCache distributedCache)
     {
         _settingsManager = settingsManager;
+        _userManager = userManager;
+        _tenantManager = tenantManager;
         _distributedCache = distributedCache;
     }
 
-    public bool Increment(string login, string requestIp, out bool showRecaptcha)
+    public UserInfo Attempt(string login, string passwordHash, string requestIp, out bool showRecaptcha)
     {
+        UserInfo user = null;
+
         showRecaptcha = true;
 
+        var blockCacheKey = GetBlockCacheKey(login, requestIp);
+
+        if (GetFromCache<string>(blockCacheKey) != null)
+        {
+            throw new BruteForceCredentialException();
+        }
+
         lock (_lock)
         {
-            var blockCacheKey = GetBlockCacheKey(login, requestIp);
-
             if (GetFromCache<string>(blockCacheKey) != null)
             {
-                return false;
+                throw new BruteForceCredentialException();
             }
 
-            var historyCacheKey = GetHistoryCacheKey(login, requestIp);
-
-            var history = GetFromCache<List<DateTime>>(historyCacheKey) ?? new List<DateTime>();
-
+            string historyCacheKey = null;
             var now = DateTime.UtcNow;
+            LoginSettingsWrapper settings = null;
+            List<DateTime> history = null;
+            var secretEmail = SetupInfo.IsSecretEmail(login);
 
-            var settings = _settingsManager.Load<LoginSettings>();
-
-            var checkTime = now.Subtract(TimeSpan.FromSeconds(settings.CheckPeriod));
-
-            history = history.Where(item => item > checkTime).ToList();
-
-            history.Add(now);
-
-            showRecaptcha = history.Count > settings.AttemptCount - 1;
-
-            if (history.Count > settings.AttemptCount)
+            if (!secretEmail)
             {
-                SetToCache(blockCacheKey, "block", now.Add(TimeSpan.FromSeconds(settings.BlockTime)));
-                _distributedCache.Remove(historyCacheKey);
-                return false;
+                historyCacheKey = GetHistoryCacheKey(login, requestIp);
+
+                settings = new LoginSettingsWrapper(_settingsManager.Load<LoginSettings>());
+                var checkTime = now.Subtract(settings.CheckPeriod);
+
+                history = GetFromCache<List<DateTime>>(historyCacheKey) ?? new List<DateTime>();
+                history = history.Where(item => item > checkTime).ToList();
+                history.Add(now);
+
+                showRecaptcha = history.Count > settings.AttemptCount - 1;
+
+                if (history.Count > settings.AttemptCount)
+                {
+                    SetToCache(blockCacheKey, "block", now.Add(settings.BlockTime));
+                    _distributedCache.Remove(historyCacheKey);
+                    throw new BruteForceCredentialException();
+                }
+
+                SetToCache(historyCacheKey, history, now.Add(settings.CheckPeriod));
             }
 
-            SetToCache(historyCacheKey, history, now.Add(TimeSpan.FromSeconds(settings.CheckPeriod)));
-        }
-        return true;
-    }
+            user = _userManager.GetUsersByPasswordHash(
+                   _tenantManager.GetCurrentTenant().Id,
+                   login,
+                   passwordHash);
 
-    public void Decrement(string login, string requestIp)
-    {
-        var historyCacheKey = GetHistoryCacheKey(login, requestIp);
+            if (user == null || !_userManager.UserExists(user))
+            {
+                throw new Exception("user not found");
+            }
 
-        lock (_lock)
-        {
-            var history = GetFromCache<List<DateTime>>(historyCacheKey) ?? new List<DateTime>();
-
-            if (history.Count > 0)
+            if (!secretEmail)
             {
                 history.RemoveAt(history.Count - 1);
+
+                SetToCache(historyCacheKey, history, now.Add(settings.CheckPeriod));
             }
-
-            var settings = _settingsManager.Load<LoginSettings>();
-
-            SetToCache(historyCacheKey, history, DateTime.UtcNow.Add(TimeSpan.FromSeconds(settings.CheckPeriod)));
         }
+
+        return user;
     }
 
     private T GetFromCache<T>(string key)
@@ -108,7 +119,7 @@ public class BruteForceLoginManager
 
         if (serializedObject == null)
         {
-            return default(T);
+            return default;
         }
 
         using var ms = new MemoryStream(serializedObject);
@@ -128,13 +139,7 @@ public class BruteForceLoginManager
         });
     }
 
-    private string GetBlockCacheKey(string login, string requestIp)
-    {
-        return "loginblock/" + login + requestIp;
-    }
+    private static string GetBlockCacheKey(string login, string requestIp) => $"loginblock/{login}/{requestIp}";
 
-    private string GetHistoryCacheKey(string login, string requestIp)
-    {
-        return "loginsec/" + login + requestIp;
-    }
+    private static string GetHistoryCacheKey(string login, string requestIp) => $"loginsec/{login}/{requestIp}";
 }
