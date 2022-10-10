@@ -2006,11 +2006,32 @@ const Base = {
     closeButtonSize: "17px",
     closeButtonBg: "transparent",
 
-    accessGroupBg: grayLightMid,
-    accessGroupText: black,
+    members: {
+      iconColor: "#A3A9AE",
+      subtitleColor: "#a3a9ae",
+      meLabelColor: "#a3a9ae",
+      roleSelectorColor: "#a3a9ae",
+      disabledRoleSelectorColor: "#a3a9ae",
+      roleSelectorArrowColor: "#a3a9ae",
+    },
 
-    showAccessUsersTextColor: gray,
-    showAccessPanelTextColor: "#3b72a7",
+    history: {
+      subtitleColor: "#a3a9ae",
+      fileBlockBg: "#f8f9f9",
+      dateColor: "#A3A9AE",
+      fileExstColor: "#A3A9AE",
+      locationIconColor: "#A3A9AE",
+      folderLabelColor: "#A3A9AE",
+    },
+
+    details: {
+      customLogoBorderColor: "#eceef1",
+      commentEditorIconColor: "#333",
+    },
+
+    gallery: {
+      borderColor: "#d0d5da",
+    },
   },
 
   filesArticleBody: {

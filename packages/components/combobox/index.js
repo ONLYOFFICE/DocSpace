@@ -108,6 +108,7 @@ class ComboBox extends React.Component {
       isPersonal,
       offsetLeft,
       modernView,
+      withBackdrop,
 
       advancedOptionsCount,
     } = this.props;
@@ -190,6 +191,7 @@ class ComboBox extends React.Component {
             isExternalLink={isExternalLink}
             isPersonal={isPersonal}
             offsetLeft={offsetLeft}
+            withBackdrop={withBackdrop}
           >
             {advancedOptions
               ? advancedOptions
@@ -239,6 +241,8 @@ ComboBox.propTypes = {
   id: PropTypes.string,
   /** Accepts id for dropdown container */
   dropDownId: PropTypes.string,
+  /** Indicates that component will have backdrop */
+  withBackdrop: PropTypes.bool,
   /** Indicates that component is disabled */
   isDisabled: PropTypes.bool,
   /** Indicates that component is displayed without borders */
