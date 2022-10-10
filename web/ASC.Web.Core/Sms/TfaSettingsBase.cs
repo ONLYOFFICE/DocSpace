@@ -46,7 +46,7 @@ public abstract class TfaSettingsBase<T> : ISettings<T> where T : ISettings<T>
 }
 
 
-public abstract class TfaSettingsHelperBase<T> where T : TfaSettingsBase<T>
+public abstract class TfaSettingsHelperBase<T> where T : TfaSettingsBase<T>, new()
 {
     private readonly UserManager _userManager;
     private readonly SettingsManager _settingsManager;
@@ -100,5 +100,24 @@ public abstract class TfaSettingsHelperBase<T> where T : TfaSettingsBase<T>
     public bool IsVisibleSettings
     {
         get { return SetupInfo.IsVisibleSettings<T>(); }
+    }
+
+    public virtual bool Enable
+    {
+        get { return _settingsManager.Load<T>().EnableSetting; }
+        set
+        {
+            T settings;
+            if (value)
+            {
+                settings = _settingsManager.Load<T>();
+                settings.EnableSetting = value;
+            }
+            else
+            {
+                settings = new T();
+            }
+            _settingsManager.Save(settings);
+        }
     }
 }

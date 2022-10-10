@@ -44,33 +44,11 @@ public class TfaAppAuthSettings : TfaSettingsBase<TfaAppAuthSettings>
 [Scope]
 public class TfaAppAuthSettingsHelper : TfaSettingsHelperBase<TfaAppAuthSettings>
 {
-    private readonly SettingsManager _settingsManager;
-
     public TfaAppAuthSettingsHelper(
         IHttpContextAccessor httpContextAccessor,
         UserManager userManager,
         SettingsManager settingsManager)
         : base(settingsManager, httpContextAccessor, userManager)
     {
-        _settingsManager = settingsManager;
-    }
-
-    public bool Enable
-    {
-        get { return _settingsManager.Load<TfaAppAuthSettings>().EnableSetting; }
-        set
-        {
-            TfaAppAuthSettings settings;
-            if (value)
-            {
-                settings = _settingsManager.Load<TfaAppAuthSettings>();
-                settings.EnableSetting = value;
-            }
-            else
-            {
-                settings = new TfaAppAuthSettings();
-            }
-            _settingsManager.Save(settings);
-        }
     }
 }

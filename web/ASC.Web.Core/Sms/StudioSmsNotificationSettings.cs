@@ -82,22 +82,12 @@ public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase<StudioS
                     && !quota.Open);
     }
 
-    public bool Enable
+    public override bool Enable
     {
-        get { return _settingsManager.Load<StudioSmsNotificationSettings>().EnableSetting && _smsProviderManager.Enabled(); }
+        get { return base.Enable && _smsProviderManager.Enabled(); }
         set
         {
-            StudioSmsNotificationSettings settings;
-            if (value)
-            {
-                settings = _settingsManager.Load<StudioSmsNotificationSettings>();
-                settings.EnableSetting = value;
-            }
-            else
-            {
-                settings = new StudioSmsNotificationSettings();
-            }
-            _settingsManager.Save(settings);
+            base.Enable = value;
         }
     }
 }
