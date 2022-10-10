@@ -281,7 +281,7 @@ export const options = [
     name: "American Samoa",
     dialCode: "1684",
     code: "AS",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: AmericanSamoa,
   },
   {
@@ -302,7 +302,7 @@ export const options = [
     name: "Anguilla",
     dialCode: "1264",
     code: "AI",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: Anguilla,
   },
   {
@@ -316,7 +316,7 @@ export const options = [
     name: "Antigua and Barbuda",
     dialCode: "1268",
     code: "AG",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: AntiguaAndBarbuda,
   },
   {
@@ -365,7 +365,7 @@ export const options = [
     name: "Bahamas",
     dialCode: "1242",
     code: "BS",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/,],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/,],
     flag: Bahamas,
   },
   {
@@ -386,7 +386,7 @@ export const options = [
     name: "Barbados",
     dialCode: "1246",
     code: "BB",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: Barbados,
   },
   {
@@ -421,7 +421,7 @@ export const options = [
     name: "Bermuda",
     dialCode: "1441",
     code: "BM",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: Bermuda,
   },
   {
@@ -484,7 +484,7 @@ export const options = [
     name: "British Virgin Islands",
     dialCode: "1284",
     code: "VG",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: BritishVirginIslands
   },
   {
@@ -547,7 +547,7 @@ export const options = [
     name: "Cayman Islands",
     dialCode: "1345",
     code: "KY",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: CaymanIslands
   },
   {
@@ -687,14 +687,14 @@ export const options = [
     name: "Dominica",
     dialCode: "1767",
     code: "DM",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: Dominica
   },
   {
     name: "Dominican Republic",
     dialCode: "1849",
     code: "DO",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: DominicanRepublic
   },
   {
@@ -855,7 +855,7 @@ export const options = [
     name: "Grenada",
     dialCode: "1473",
     code: "GD",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ",  /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ",  /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: Grenada
   },
   {
@@ -869,7 +869,7 @@ export const options = [
     name: "Guam",
     dialCode: "1671",
     code: "GU",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ",  /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ",  /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: Guam
   },
   {
@@ -1009,7 +1009,7 @@ export const options = [
     name: "Jamaica",
     dialCode: "1876",
     code: "JM",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: Jamaica
   },
   {
@@ -1268,7 +1268,7 @@ export const options = [
     name: "Montserrat",
     dialCode: "1664",
     code: "MS",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: Montserrat
   },
   {
@@ -1394,7 +1394,7 @@ export const options = [
     name: "Northern Mariana Islands",
     dialCode: "1670",
     code: "MP",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: NorthenMarianaIslands
   },
   {
@@ -1492,7 +1492,7 @@ export const options = [
     name: "Puerto Rico",
     dialCode: "1939",
     code: "PR",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, /\d/],
     flag: PuertoRico
   },
   {
@@ -1541,7 +1541,7 @@ export const options = [
     name: "Saint Vincent and the Grenadines",
     dialCode: "1784",
     code: "VC",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: SainVincentAndGrenadines
   },
   {
@@ -1555,14 +1555,14 @@ export const options = [
     name: "Saint Kitts and Nevis",
     dialCode: "1869",
     code: "KN",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: SaintKittsAndNevis
   },
   {
     name: "Saint Lucia",
     dialCode: "1758",
     code: "LC",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: SaintLucia
   },
   {
@@ -1646,7 +1646,7 @@ export const options = [
     name: "Sint Maarten",
     dialCode: "1721",
     code: "SX",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: SintMaarten,
   },
   {
@@ -1828,7 +1828,7 @@ export const options = [
     name: "Trinidad and Tobago",
     dialCode: "1868",
     code: "TT",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: TrinidadAndTobago
   },
   {
@@ -1856,7 +1856,7 @@ export const options = [
     name: "Turks and Caicos Islands",
     dialCode: "1649",
     code: "TC",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/],
     flag: TurksAndCaicosIslands
   },
   {
@@ -1898,7 +1898,7 @@ export const options = [
     name: "United States Virgin Islands",
     dialCode: "1340",
     code: "VI",
-    mask: [/\d/, /\D/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
+    mask: [/\d/, /\d/, /\d/, /\d/, " ", /\d/, /\d/, /\d/, "-", /\d/, /\d/, /\d/, /\d/],
     flag: UnitedStatesVirginIslands
   },
   {

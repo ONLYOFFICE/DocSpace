@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect } from "react";
 import { options } from "./options";
 import { FixedSizeList as List } from "react-window";
 import { StyledBox } from "./styled-input-phone";
@@ -32,12 +32,14 @@ const InputPhone = ({
 
   const onInputChange = (e) => {
     const str = e.target.value.replace(/\D/g, "");
-    const el = options.find((option) => option.dialCode === str);
+    const el = options.find(
+      (option) => option.dialCode && str.startsWith(option.dialCode)
+    );
 
-    const singleСode = ["0", "2", "3", "4", "5", "6", "8", "9"];
+    const singleСode = ["1", "7"];
     const invalidCode = singleСode.find((code) => code === str);
 
-    if (e.target.value === "" || e.target.value === invalidCode) {
+    if (e.target.value === "" || !e.target.value.includes(invalidCode)) {
       setIsValid(false);
       setCountry((prev) => ({ ...prev, icon: InvalidFlag }));
     }
@@ -76,8 +78,8 @@ const InputPhone = ({
       setFilteredOptions(
         options.filter(
           (val) =>
-            val.name.toLowerCase().includes(searchValue.toLowerCase()) ||
-            val.dialCode.includes(searchValue.toLowerCase())
+            val.name.toLowerCase().startsWith(searchValue.toLowerCase()) ||
+            val.dialCode.startsWith(searchValue.toLowerCase())
         )
       );
     }
@@ -234,4 +236,4 @@ InputPhone.defaultProps = {
 
 InputPhone.displayName = "InputPhone";
 
-export default memo(InputPhone);
+export default InputPhone;
