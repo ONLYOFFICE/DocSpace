@@ -56,6 +56,7 @@ const Members = ({
   useEffect(async () => {
     if (!selection.isRoom) return;
     if (selectionParentRoom && selectionParentRoom.id === selection.id) return;
+    setMembers(null);
     const fetchedMembers = await fetchMembers(selection.id);
     setSelectionParentRoom({
       ...selection,
