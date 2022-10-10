@@ -12,6 +12,7 @@ const StyledOuter = styled.div`
     css`
       border: ${(props) => props.theme.client.settings.backup.contextBorder};
       width: 32px;
+      height: 32px;
       box-sizing: border-box;
       border-radius: 3px;
 
