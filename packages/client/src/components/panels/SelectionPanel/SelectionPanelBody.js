@@ -51,7 +51,7 @@ const SelectionPanelBody = ({
   parentId,
   selectionFiles,
   folderSelectionDisabled,
-  isSameFolder,
+  isCurrentFolder,
 }) => {
   return (
     <StyledModalDialog
@@ -144,7 +144,7 @@ const SelectionPanelBody = ({
             (!fileId && !folderSelection) ||
             !canCreate ||
             !(folderId && resultingFolderTree) ||
-            isSameFolder
+            isCurrentFolder
           }
           isLoading={isDisableTree}
         />

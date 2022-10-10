@@ -218,7 +218,7 @@ class SelectFolderDialog extends React.Component {
       isDisableButton ||
       (isRecycleBin && currentFolderId === resultingFolderId);
 
-    const isSameFolder = +currentFolderId === +resultingFolderId;
+    const isCurrentFolder = +currentFolderId === +resultingFolderId;
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
@@ -274,7 +274,7 @@ class SelectFolderDialog extends React.Component {
         folderSelection
         newFilter={this.newFilter}
         isDisableButton={buttonIsDisabled}
-        isSameFolder={isSameFolder}
+        isCurrentFolder={isCurrentFolder}
       />
     );
   }
