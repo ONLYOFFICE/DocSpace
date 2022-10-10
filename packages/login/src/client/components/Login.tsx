@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
 import Logo from "../../../../../public/images/docspace.big.react.svg";
@@ -33,6 +33,7 @@ const Login: React.FC<ILoginProps> = ({
   capabilities,
   isDesktopEditor,
   match,
+  isAuth,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
@@ -42,6 +43,10 @@ const Login: React.FC<ILoginProps> = ({
   const { ssoLabel, ssoUrl } = capabilities;
 
   const { t } = useTranslation(["Login", "Common"]);
+
+  useEffect(() => {
+    if (isAuth) window.location.href = "/";
+  }, []);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
