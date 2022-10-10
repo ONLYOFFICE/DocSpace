@@ -199,6 +199,7 @@ class SelectFolderDialog extends React.Component {
       selectionFiles,
       sharedRoomId,
       resultingFolderTree,
+      id,
     } = this.props;
     const { displayType, isLoadingData, isAvailable } = this.state;
 
@@ -216,6 +217,8 @@ class SelectFolderDialog extends React.Component {
     const buttonIsDisabled =
       isDisableButton ||
       (isRecycleBin && currentFolderId === resultingFolderId);
+
+    const isSameFolder = +currentFolderId === +resultingFolderId;
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
@@ -271,6 +274,7 @@ class SelectFolderDialog extends React.Component {
         folderSelection
         newFilter={this.newFilter}
         isDisableButton={buttonIsDisabled}
+        isSameFolder={isSameFolder}
       />
     );
   }
