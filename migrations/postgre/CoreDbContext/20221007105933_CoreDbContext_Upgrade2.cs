@@ -1,11 +1,10 @@
-using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace ASC.Migrations.PostgreSql.Migrations.CoreDb
 {
-    public partial class CoreDbContext_Upgrade1 : Migration
+    public partial class CoreDbContext_Upgrade2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
