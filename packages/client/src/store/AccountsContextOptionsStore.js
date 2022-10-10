@@ -50,7 +50,7 @@ class AccountsContextOptionsStore {
             key: option,
             icon: "images/pencil.react.svg",
             label: t("PeopleTranslations:NameChangeButton"),
-            onClick: () => this.toggleChangeNameDialog(item),
+            onClick: this.toggleChangeNameDialog,
           };
         case "change-email":
           return {
@@ -267,17 +267,10 @@ class AccountsContextOptionsStore {
     history.push(PROFILE_SELF_URL);
   };
 
-  toggleChangeNameDialog = (item) => {
-    const {
-      setDialogData,
-      setChangeNameDialogVisible,
-    } = this.peopleStore.dialogStore;
-    const { id, firstName, lastName } = item;
+  toggleChangeNameDialog = () => {
+    const { setChangeNameVisible } = this.peopleStore.targetUserStore;
 
-    setDialogData({ id, firstName, lastName });
-
-    setChangeNameDialogVisible(true);
-    toastr.warning("Work at progress");
+    setChangeNameVisible(true);
   };
 
   toggleChangeEmailDialog = (item) => {

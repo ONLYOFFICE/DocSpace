@@ -758,6 +758,18 @@ const Dark = {
     hoverIconColor: "#858585",
   },
 
+  inputPhone: {
+    activeBorderColor: "#2da7db",
+    inactiveBorderColor: "#474747",
+    errorBorderColor: "#f21c0e",
+    backgroundColor: "#33333",
+    color: "#fff",
+    scrollBackground: "#858585",
+    placeholderColor: "#858585",
+    dialCodeColor: "#858585",
+    width: "320px",
+    height: "44px",
+  },
   textInput: {
     fontWeight: "normal",
     placeholderColor: "#474747",
@@ -1525,6 +1537,7 @@ const Dark = {
 
   comboBox: {
     padding: "6px 0px",
+    background: black,
 
     width: {
       base: "173px",
@@ -1614,10 +1627,11 @@ const Dark = {
   },
 
   toggleButton: {
-    fillColor: grayMaxLight,
+    fillColor: "#F0F0F0",
     fillColorOff: "#292929",
 
     disableFillColor: black,
+    disableFillColorOff: "#545454",
 
     borderColor: "#474747",
     borderColorOff: "#474747",
@@ -1625,11 +1639,11 @@ const Dark = {
     disableBorderColor: "#474747",
     disableBorderColorOff: "#646464",
 
-    fillCircleColor: "#FFFFFF",
+    fillCircleColor: "#292929",
     fillCircleColorOff: grayMaxLight,
 
-    disableFillCircleColor: "#333333",
-    disableFillCircleColorOff: "#797979",
+    disableFillCircleColor: "#545454",
+    disableFillCircleColorOff: black,
   },
 
   contextMenuButton: {
@@ -2573,7 +2587,7 @@ const Dark = {
     background: "none",
     svgFill: "#eeeeee",
     header: {
-      height: "50px",
+      height: "49px",
       borderBottom: `1px solid #474747`,
       marginBottom: "6px",
     },
@@ -2583,7 +2597,7 @@ const Dark = {
     padding: "0 12px",
     mobile: {
       height: "36px",
-      padding: "0 16px",
+      padding: "0 16px 6px",
     },
   },
   newContextMenu: {

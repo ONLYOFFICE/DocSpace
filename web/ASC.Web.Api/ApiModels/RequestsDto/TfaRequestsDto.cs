@@ -30,6 +30,9 @@ public class TfaRequestsDto
 {
     public string Type { get; set; }
     public Guid? Id { get; set; }
+    public List<string> TrustedIps { get; set; }
+    public List<Guid> MandatoryUsers { get; set; }
+    public List<Guid> MandatoryGroups { get; set; }
 }
 
 public class TfaValidateRequestsDto

@@ -24,11 +24,10 @@ import {
 import { StyledWrapper, StyledInfo } from "./styled-main-profile";
 
 const MainProfile = (props) => {
-  const { t, ready } = useTranslation(["Profile", "Common"]);
+  const { t } = useTranslation(["Profile", "Common"]);
 
   const {
     profile,
-    updateProfile,
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,
@@ -171,12 +170,9 @@ const MainProfile = (props) => {
 
       {changeNameVisible && (
         <ChangeNameDialog
-          t={t}
-          tReady={ready}
           visible={changeNameVisible}
           onClose={() => setChangeNameVisible(false)}
           profile={profile}
-          onSave={updateProfile}
         />
       )}
 
@@ -198,7 +194,6 @@ export default inject(({ auth, peopleStore }) => {
 
   const {
     targetUser: profile,
-    updateProfile,
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,
@@ -211,7 +206,6 @@ export default inject(({ auth, peopleStore }) => {
 
   return {
     profile,
-    updateProfile,
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,

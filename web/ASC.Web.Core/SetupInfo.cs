@@ -109,7 +109,6 @@ public class SetupInfo
     public string RecaptchaPublicKey { get; private set; }
     public string RecaptchaPrivateKey { get; private set; }
     public string RecaptchaVerifyUrl { get; private set; }
-    public int LoginThreshold { get; private set; }
     public string AmiMetaUrl { get; private set; }
     private readonly IConfiguration _configuration;
 
@@ -167,11 +166,6 @@ public class SetupInfo
         RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", null);
         RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
         RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.recaptcha.net/recaptcha/api/siteverify");
-        LoginThreshold = Convert.ToInt32(GetAppSettings("web.login.threshold", "0"));
-        if (LoginThreshold < 1)
-        {
-            LoginThreshold = 5;
-        }
 
         _webDisplayMobappsBanner = (configuration["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
         ShareTwitterUrl = GetAppSettings("web.share.twitter", "https://twitter.com/intent/tweet?text={0}");
