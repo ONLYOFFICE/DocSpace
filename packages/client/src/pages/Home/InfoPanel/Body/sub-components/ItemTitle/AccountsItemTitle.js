@@ -48,6 +48,7 @@ const AccountsItemTitle = ({
           className={"info-text__name"}
           noSelect
           title={selection.displayName}
+          truncate
         >
           {isPending ? selection.email : selection.displayName}
         </Text>

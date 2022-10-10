@@ -9,17 +9,22 @@ const StyledAccountsItemTitle = styled.div`
   display: flex;
   align-items: center;
   justify-content: start;
+  gap: 16px;
 
   .avatar {
     padding-top: 24px;
+    min-width: 80px;
   }
 
   .info-panel__info-text {
     padding-top: 24px;
-    padding-left: 16px;
 
     display: flex;
     flex-direction: ${(props) => (props.isPending ? "row" : "column")};
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     .badges {
       height: 22px;
