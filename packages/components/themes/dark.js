@@ -758,6 +758,18 @@ const Dark = {
     hoverIconColor: "#858585",
   },
 
+  inputPhone: {
+    activeBorderColor: "#2da7db",
+    inactiveBorderColor: "#474747",
+    errorBorderColor: "#f21c0e",
+    backgroundColor: "#33333",
+    color: "#fff",
+    scrollBackground: "#858585",
+    placeholderColor: "#858585",
+    dialCodeColor: "#858585",
+    width: "320px",
+    height: "44px",
+  },
   textInput: {
     fontWeight: "normal",
     placeholderColor: "#474747",
@@ -2575,7 +2587,7 @@ const Dark = {
     background: "none",
     svgFill: "#eeeeee",
     header: {
-      height: "50px",
+      height: "49px",
       borderBottom: `1px solid #474747`,
       marginBottom: "6px",
     },
@@ -2585,7 +2597,7 @@ const Dark = {
     padding: "0 12px",
     mobile: {
       height: "36px",
-      padding: "0 16px",
+      padding: "0 16px 6px",
     },
   },
   newContextMenu: {

@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbButton", b =>
@@ -109,7 +109,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             MaxFileSize = 102400L,
                             MaxTotalSize = 10995116277760L,
                             Name = "default",
-                            Price = 0.00m,
+                            Price = 0m,
                             Visible = false
                         });
                 });
@@ -143,6 +143,13 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("character varying(1024)")
                         .HasColumnName("tag")
                         .HasDefaultValueSql("'0'");
+
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasDefaultValueSql("NULL");
 
                     b.HasKey("Tenant", "Path")
                         .HasName("tenants_quotarow_pkey");
