@@ -95,9 +95,9 @@ public class TfaappController : BaseSettingsController
     {
         var result = new List<TfaSettingsDto>();
 
-        var SmsVisible = StudioSmsNotificationSettingsHelper.IsVisibleSettings();
+        var SmsVisible = _studioSmsNotificationSettingsHelper.IsVisibleSettings;
         var SmsEnable = SmsVisible && _smsProviderManager.Enabled();
-        var TfaVisible = TfaAppAuthSettingsHelper.IsVisibleSettings;
+        var TfaVisible = _tfaAppAuthSettingsHelper.IsVisibleSettings;
 
         var tfaAppSettings = _settingsManager.Load<TfaAppAuthSettings>();
         var tfaSmsSettings = _settingsManager.Load<StudioSmsNotificationSettings>();
@@ -148,7 +148,7 @@ public class TfaappController : BaseSettingsController
     {
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
-        if (StudioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))// && smsConfirm.ToLower() != "true")
+        if (_studioSmsNotificationSettingsHelper.IsVisibleSettings && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))// && smsConfirm.ToLower() != "true")
         {
             var confirmType = string.IsNullOrEmpty(user.MobilePhone) ||
                             user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated
@@ -158,7 +158,7 @@ public class TfaappController : BaseSettingsController
             return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, confirmType);
         }
 
-        if (TfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
         {
             var confirmType = TfaAppUserSettings.EnableForUser(_settingsManager, _authContext.CurrentAccount.ID)
                 ? ConfirmType.TfaAuth
@@ -208,7 +208,7 @@ public class TfaappController : BaseSettingsController
                 break;
 
             case "app":
-                if (!TfaAppAuthSettingsHelper.IsVisibleSettings)
+                if (!_tfaAppAuthSettingsHelper.IsVisibleSettings)
                 {
                     throw new Exception(Resource.TfaAppNotAvailable);
                 }
@@ -280,7 +280,7 @@ public class TfaappController : BaseSettingsController
         ApiContext.AuthByClaim();
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
-        if (!TfaAppAuthSettingsHelper.IsVisibleSettings ||
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings ||
             !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting ||
             TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
         {
@@ -300,7 +300,7 @@ public class TfaappController : BaseSettingsController
     {
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
-        if (!TfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
@@ -318,7 +318,7 @@ public class TfaappController : BaseSettingsController
     {
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
-        if (!TfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
@@ -346,7 +346,7 @@ public class TfaappController : BaseSettingsController
             throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
         }
 
-        if (!TfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }

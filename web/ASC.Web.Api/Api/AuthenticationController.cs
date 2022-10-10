@@ -162,7 +162,7 @@ public class AuthenticationController : ControllerBase
                 sms = true;
                 _smsManager.ValidateSmsCode(user, inDto.Code, true);
             }
-            else if (TfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
+            else if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 if (_tfaManager.ValidateAuthCode(user, inDto.Code, true, true))
                 {
@@ -238,7 +238,7 @@ public class AuthenticationController : ControllerBase
             };
         }
 
-        if (TfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
         {
             if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
             {
@@ -374,7 +374,7 @@ public class AuthenticationController : ControllerBase
                 var requestIp = MessageSettings.GetIP(Request);
 
                 user = _bruteForceLoginManager.Attempt(inDto.UserName, inDto.PasswordHash, requestIp, out _);
-                }
+            }
             else
             {
                 if (!(_coreBaseSettings.Standalone || _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Oauth))

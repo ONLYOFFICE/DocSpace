@@ -42,7 +42,7 @@ public class StudioSmsNotificationSettings : TfaSettingsBase<StudioSmsNotificati
 }
 
 [Scope]
-public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase
+public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase<StudioSmsNotificationSettings>
 {
     private readonly TenantExtra _tenantExtra;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -57,8 +57,8 @@ public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase
         SetupInfo setupInfo,
         SettingsManager settingsManager,
         SmsProviderManager smsProviderManager,
-        UserManager userManager) 
-        : base(httpContextAccessor, userManager)
+        UserManager userManager)
+        : base(settingsManager, httpContextAccessor, userManager)
     {
         _tenantExtra = tenantExtra;
         _coreBaseSettings = coreBaseSettings;
@@ -67,14 +67,9 @@ public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase
         _smsProviderManager = smsProviderManager;
     }
 
-    public static bool IsVisibleSettings()
-    {
-        return SetupInfo.IsVisibleSettings<StudioSmsNotificationSettings>();
-    }
-
     public bool IsVisibleAndAvailableSettings()
     {
-        return IsVisibleSettings() && IsAvailableSettings();
+        return IsVisibleSettings && IsAvailableSettings();
     }
 
     public bool IsAvailableSettings()
@@ -85,13 +80,6 @@ public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase
                     && !quota.NonProfit
                     && !quota.Free
                     && !quota.Open);
-    }
-
-    public bool TfaEnabledForUser(Guid userGuid)
-    {
-        var settings = _settingsManager.Load<StudioSmsNotificationSettings>();
-
-        return TfaEnabledForUser(settings, userGuid);
     }
 
     public bool Enable

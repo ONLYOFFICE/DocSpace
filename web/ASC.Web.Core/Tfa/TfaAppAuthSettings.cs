@@ -42,24 +42,17 @@ public class TfaAppAuthSettings : TfaSettingsBase<TfaAppAuthSettings>
 }
 
 [Scope]
-public class TfaAppAuthSettingsHelper : TfaSettingsHelperBase
+public class TfaAppAuthSettingsHelper : TfaSettingsHelperBase<TfaAppAuthSettings>
 {
     private readonly SettingsManager _settingsManager;
 
     public TfaAppAuthSettingsHelper(
         IHttpContextAccessor httpContextAccessor,
         UserManager userManager,
-        SettingsManager settingsManager) 
-        : base(httpContextAccessor, userManager)
+        SettingsManager settingsManager)
+        : base(settingsManager, httpContextAccessor, userManager)
     {
         _settingsManager = settingsManager;
-    }
-
-    public bool TfaEnabledForUser(Guid userGuid)
-    {
-        var settings = _settingsManager.Load<TfaAppAuthSettings>();
-
-        return TfaEnabledForUser(settings, userGuid);
     }
 
     public bool Enable
@@ -79,10 +72,5 @@ public class TfaAppAuthSettingsHelper : TfaSettingsHelperBase
             }
             _settingsManager.Save(settings);
         }
-    }
-
-    public static bool IsVisibleSettings
-    {
-        get { return SetupInfo.IsVisibleSettings<TfaAppAuthSettings>(); }
     }
 }

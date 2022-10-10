@@ -46,22 +46,26 @@ public abstract class TfaSettingsBase<T> : ISettings<T> where T : ISettings<T>
 }
 
 
-public abstract class TfaSettingsHelperBase
+public abstract class TfaSettingsHelperBase<T> where T : TfaSettingsBase<T>
 {
-
     private readonly UserManager _userManager;
+    private readonly SettingsManager _settingsManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public TfaSettingsHelperBase(
+        SettingsManager settingsManager,
         IHttpContextAccessor httpContextAccessor,
         UserManager userManager)
     {
+        _settingsManager = settingsManager;
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
     }
 
-    public bool TfaEnabledForUser<T>(TfaSettingsBase<T> settings, Guid userGuid) where T : ISettings<T>
+    public bool TfaEnabledForUser(Guid userGuid)
     {
+        var settings = _settingsManager.Load<T>();
+
         if (!settings.EnableSetting)
         {
             return false;
@@ -91,5 +95,10 @@ public abstract class TfaSettingsHelperBase
         }
 
         return true;
+    }
+
+    public bool IsVisibleSettings
+    {
+        get { return SetupInfo.IsVisibleSettings<T>(); }
     }
 }
