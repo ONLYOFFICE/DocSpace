@@ -166,7 +166,7 @@ const InfoPanelBodyContent = ({
   // Updating selectionParentRoom after selectFolder change
   // if it is located in another room
   useEffect(async () => {
-    if (isGallery || isAccounts) return;
+    if (!isRooms) return;
 
     const currentFolderRoomId = selectedFolder.pathParts[1];
     const storeRoomId = selectionParentRoom?.id;
