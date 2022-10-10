@@ -27,25 +27,22 @@
 namespace ASC.Web.Studio.Core.SMS;
 
 [Serializable]
-public class StudioSmsNotificationSettings : ISettings<StudioSmsNotificationSettings>
+public class StudioSmsNotificationSettings : TfaSettingsBase<StudioSmsNotificationSettings>
 {
     [JsonIgnore]
-    public Guid ID
+    public override Guid ID
     {
         get { return new Guid("{2802df61-af0d-40d4-abc5-a8506a5352ff}"); }
     }
 
-    public StudioSmsNotificationSettings GetDefault()
+    public override StudioSmsNotificationSettings GetDefault()
     {
-        return new StudioSmsNotificationSettings { EnableSetting = false, };
+        return new StudioSmsNotificationSettings();
     }
-
-    [JsonPropertyName("Enable")]
-    public bool EnableSetting { get; set; }
 }
 
 [Scope]
-public class StudioSmsNotificationSettingsHelper
+public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase<StudioSmsNotificationSettings>
 {
     private readonly TenantExtra _tenantExtra;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -54,11 +51,14 @@ public class StudioSmsNotificationSettingsHelper
     private readonly SmsProviderManager _smsProviderManager;
 
     public StudioSmsNotificationSettingsHelper(
+        IHttpContextAccessor httpContextAccessor,
         TenantExtra tenantExtra,
         CoreBaseSettings coreBaseSettings,
         SetupInfo setupInfo,
         SettingsManager settingsManager,
-        SmsProviderManager smsProviderManager)
+        SmsProviderManager smsProviderManager,
+        UserManager userManager)
+        : base(settingsManager, httpContextAccessor, userManager)
     {
         _tenantExtra = tenantExtra;
         _coreBaseSettings = coreBaseSettings;
@@ -67,14 +67,9 @@ public class StudioSmsNotificationSettingsHelper
         _smsProviderManager = smsProviderManager;
     }
 
-    public bool IsVisibleSettings()
-    {
-        return SetupInfo.IsVisibleSettings<StudioSmsNotificationSettings>();
-    }
-
     public bool IsVisibleAndAvailableSettings()
     {
-        return IsVisibleSettings() && IsAvailableSettings();
+        return IsVisibleSettings && IsAvailableSettings();
     }
 
     public bool IsAvailableSettings()
@@ -87,14 +82,12 @@ public class StudioSmsNotificationSettingsHelper
                     && !quota.Open);
     }
 
-    public bool Enable
+    public override bool Enable
     {
-        get { return _settingsManager.Load<StudioSmsNotificationSettings>().EnableSetting && _smsProviderManager.Enabled(); }
+        get { return base.Enable && _smsProviderManager.Enabled(); }
         set
         {
-            var settings = _settingsManager.Load<StudioSmsNotificationSettings>();
-            settings.EnableSetting = value;
-            _settingsManager.Save(settings);
+            base.Enable = value;
         }
     }
 }

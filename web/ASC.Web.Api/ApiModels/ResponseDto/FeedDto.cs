@@ -32,6 +32,8 @@ public class FeedDto : IMapFrom<FeedResultItem>
     public ApiDateTime CreatedDate { get; set; }
     public ApiDateTime ModifiedDate { get; set; }
     public ApiDateTime TimeReaded { get; set; }
+    public EmployeeDto Initiator { get; set; }
+    public EmployeeDto Target { get; set; }
     public bool IsToday { get; set; }
     public bool IsTomorrow { get; set; }
     public bool IsYesterday { get; set; }
@@ -45,6 +47,7 @@ public class FeedDto : IMapFrom<FeedResultItem>
         profile.CreateMap<DateTime, ApiDateTime>()
             .ConvertUsing<DateTimeMappingConverter>();
 
-        profile.CreateMap<FeedResultItem, FeedDto>();
+        profile.CreateMap<FeedResultItem, FeedDto>()
+            .AfterMap<FeedDtoMappingAction>();
     }
 }

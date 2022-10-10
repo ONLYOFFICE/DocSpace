@@ -26,8 +26,7 @@ import DialogAsideLoader from "./DialogAsideLoader";
 import ListLoader from "./ListLoader";
 import SharingPanelLoader from "./SharingPanelLoader";
 import SharingPanelLoaderModal from "./SharingPanelLoader/modal";
-import InfoPanelBodyLoader from "./InfoPanelBodyLoader";
-import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
+
 import RoomTypeListLoader from "./CreateEditRoomLoader/RoomTypeListLoader";
 import SetRoomParamsLoader from "./CreateEditRoomLoader/SetRoomParamsLoader";
 import CreateEditRoomDilogHeaderLoader from "./CreateEditRoomLoader/CreateEditRoomDilogHeaderLoader";
@@ -36,6 +35,9 @@ import AutoBackupLoader from "./AutoBackupLoader";
 import RestoreBackupLoader from "./RestoreBackupLoader";
 import SelectorSearchLoader from "./SelectorSearchLoader";
 import SelectorRowLoader from "./SelectorRowLoader";
+
+import InfoPanelViewLoader from "./InfoPanelBodyLoader/InfoPanelViewLoader";
+import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
 
 import SettingsHeader from "./SettingsLoader/SettingsHeaderLoader";
 import SettingsAdmin from "./SettingsLoader/SettingsAdminLoader";
@@ -70,8 +72,7 @@ export default {
   NewTreeFolders,
   SharingPanelLoader,
   SharingPanelLoaderModal,
-  InfoPanelBodyLoader,
-  InfoPanelHeaderLoader,
+
   RoomTypeListLoader,
   SetRoomParamsLoader,
   CreateEditRoomDilogHeaderLoader,
@@ -80,6 +81,9 @@ export default {
   RestoreBackupLoader,
   SelectorSearchLoader,
   SelectorRowLoader,
+
+  InfoPanelHeaderLoader,
+  InfoPanelViewLoader,
 
   SettingsHeader,
   SettingsAdmin,

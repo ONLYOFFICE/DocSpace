@@ -13,7 +13,6 @@ import {
   SectionBodyContent as ViewBodyContent,
   SectionHeaderContent as ViewHeaderContent,
 } from "../Profile/Section";
-import { SectionHeaderContent as EditHeaderContent } from "../ProfileAction/Section";
 import EditBodyContent from "../ProfileAction/Section/Body";
 import Link from "@docspace/components/link";
 import { Trans } from "react-i18next";
@@ -106,7 +105,7 @@ class My extends React.Component {
       <Section withBodyAutoFocus>
         <Section.SectionHeader>
           {isEdit ? (
-            <EditHeaderContent isMy={true} tReady={tReady} />
+            <SectionHeaderContent isMy={true} tReady={tReady} />
           ) : (
             <ViewHeaderContent isMy={true} tReady={tReady} />
           )}
