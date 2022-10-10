@@ -102,6 +102,8 @@ const InvitePanel = ({
     }
   };
 
+  const roomType = selectedRoom ? selectedRoom.roomType : 5;
+
   return (
     <StyledInvitePanel>
       <Backdrop
@@ -120,13 +122,18 @@ const InvitePanel = ({
           <StyledHeading>{t("InviteUsersToRoom")}</StyledHeading>
         </StyledBlock>
 
-        <ExternalLinks t={t} shareLinks={shareLinks} />
+        <ExternalLinks t={t} shareLinks={shareLinks} roomType={roomType} />
 
-        <InviteInput t={t} onClose={onClose} roomUsers={roomUsers} />
+        <InviteInput
+          t={t}
+          onClose={onClose}
+          roomUsers={roomUsers}
+          roomType={roomType}
+        />
 
         {!!inviteItems.length && (
           <>
-            <ItemsList t={t} />
+            <ItemsList t={t} setHasError={setHasErrors} />
             <StyledButtons>
               <Button
                 scale={true}

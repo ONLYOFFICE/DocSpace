@@ -24,6 +24,7 @@ const ExternalLinks = ({
   t,
   hideSelector,
   roomId,
+  roomType,
   defaultAccess,
   shareLinks,
 }) => {
@@ -67,11 +68,29 @@ const ExternalLinks = ({
           subject,
           body,
         });
+
       window.open(mailtoLink, "_self");
 
       closeActionLinks();
     },
     [closeActionLinks, links, t]
+  );
+
+  const shareTwitter = useCallback(
+    (link) => {
+      const { shareLink } = link;
+
+      const twitterLink =
+        "https://twitter.com/intent/tweet" +
+        objectToGetParams({
+          text: shareLink,
+        });
+
+      window.open(twitterLink, "", "width=1000,height=670");
+
+      closeActionLinks();
+    },
+    [closeActionLinks, links]
   );
 
   const links =
@@ -94,7 +113,7 @@ const ExternalLinks = ({
           {!hideSelector && (
             <AccessSelector
               t={t}
-              roomType={5}
+              roomType={roomType}
               defaultAccess={defaultAccess}
               onSelectAccess={onSelectAccess}
               containerRef={inputsRef}
@@ -129,7 +148,7 @@ const ExternalLinks = ({
             />
             <DropDownItem
               label={`${t("SharingPanel:ShareVia")} Twitter`}
-              onClick={closeActionLinks}
+              onClick={() => shareTwitter(links[0])}
             />
           </DropDown>
         </div>

@@ -29,6 +29,7 @@ const InviteInput = ({
   inviteItems,
   onClose,
   roomId,
+  roomType,
   setInviteItems,
   roomUsers,
   t,
@@ -135,7 +136,15 @@ const InviteInput = ({
   const addEmail = () => {
     const items = toUserItems(inputValue);
 
-    setInviteItems([...items, ...inviteItems]);
+    const newItems =
+      items.length > 1 ? [...items, ...inviteItems] : [items, ...inviteItems];
+
+    const filtered = newItems.reduce((unique, o) => {
+      !unique.some((obj) => obj.email === o.email) && unique.push(o);
+      return unique;
+    }, []);
+
+    setInviteItems(filtered);
     closeInviteInputPanel();
   };
 
@@ -174,7 +183,7 @@ const InviteInput = ({
 
   const foundUsers = usersList.map((user) => getItemContent(user));
 
-  const accessOptions = getAccessOptions(t, 5);
+  const accessOptions = getAccessOptions(t, roomType);
 
   const onSelectAccess = (item) => {
     setSelectedAccess(item.access);
@@ -230,7 +239,7 @@ const InviteInput = ({
         {!hideSelector && (
           <AccessSelector
             t={t}
-            roomType={5}
+            roomType={roomType}
             defaultAccess={defaultAccess}
             onSelectAccess={onSelectAccess}
             containerRef={inputsRef}

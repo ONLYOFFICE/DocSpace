@@ -8,10 +8,18 @@ export const getAccessOptions = (
 ) => {
   let options = [];
   const accesses = {
-    roomManager: {
-      key: "roomManager",
-      label: t("Translations:RoleRoomManager"),
-      description: t("Translations:RoleRoomManagerDescription"),
+    docSpaceAdmin: {
+      key: "docSpaceAdmin",
+      label: t("Translations:RoleDocSpaceAdmin"),
+      description: t("Translations:RoleDocSpaceAdminDescription"),
+      quota: t("Common:Paid"),
+      color: "#EDC409",
+      access: ShareAccessRights.FullAccess,
+    },
+    roomAdmin: {
+      key: "roomAdmin",
+      label: t("Translations:RoleRoomAdmin"),
+      description: t("Translations:RoleRoomAdminDescription"),
       quota: t("Common:Paid"),
       color: "#EDC409",
       access: ShareAccessRights.RoomManager,
@@ -51,7 +59,7 @@ export const getAccessOptions = (
   switch (roomType) {
     case RoomsType.FillingFormsRoom:
       options = [
-        accesses.roomManager,
+        accesses.roomAdmin,
         { key: "s1", isSeparator: withSeparator },
         accesses.formFiller,
         accesses.viewer,
@@ -59,7 +67,7 @@ export const getAccessOptions = (
       break;
     case RoomsType.EditingRoom:
       options = [
-        accesses.roomManager,
+        accesses.roomAdmin,
         { key: "s1", isSeparator: withSeparator },
         accesses.editor,
         accesses.viewer,
@@ -67,7 +75,7 @@ export const getAccessOptions = (
       break;
     case RoomsType.ReviewRoom:
       options = [
-        accesses.roomManager,
+        accesses.roomAdmin,
         { key: "s1", isSeparator: withSeparator },
         accesses.reviewer,
         accesses.commentator,
@@ -76,14 +84,14 @@ export const getAccessOptions = (
       break;
     case RoomsType.ReadOnlyRoom:
       options = [
-        accesses.roomManager,
+        accesses.roomAdmin,
         { key: "s1", isSeparator: withSeparator },
         accesses.viewer,
       ];
       break;
     case RoomsType.CustomRoom:
       options = [
-        accesses.roomManager,
+        accesses.roomAdmin,
         { key: "s1", isSeparator: withSeparator },
         accesses.editor,
         accesses.formFiller,

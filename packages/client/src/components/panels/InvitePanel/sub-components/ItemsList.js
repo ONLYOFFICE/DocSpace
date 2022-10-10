@@ -23,6 +23,7 @@ const Row = memo(({ data, index, style }) => {
         item={item}
         setInviteItems={setInviteItems}
         changeInviteItem={changeInviteItem}
+        setHasErrors={setHasErrors}
         inviteItems={inviteItems}
       />
     </StyledRow>
