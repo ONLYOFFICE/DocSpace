@@ -168,7 +168,8 @@ const InfoPanelBodyContent = ({
   useEffect(async () => {
     if (!isRooms) return;
 
-    const currentFolderRoomId = selectedFolder.pathParts[1];
+    const currentFolderRoomId =
+      selectedFolder?.pathParts && selectedFolder.pathParts[1];
     const storeRoomId = selectionParentRoom?.id;
 
     if (!currentFolderRoomId) return;
