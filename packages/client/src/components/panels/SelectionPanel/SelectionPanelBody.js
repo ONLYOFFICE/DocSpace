@@ -141,7 +141,8 @@ const SelectionPanelBody = ({
             isDisableTree ||
             isLoadingData ||
             (!fileId && !folderSelection) ||
-            !canCreate
+            !canCreate ||
+            !(folderId && resultingFolderTree)
           }
           isLoading={isDisableTree}
         />
