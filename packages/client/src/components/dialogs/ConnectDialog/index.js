@@ -362,10 +362,7 @@ const ConnectDialog = withTranslation([
 ])(PureConnectDialogContainer);
 
 export default inject(
-  (
-    { auth, settingsStore, selectedFolderStore, dialogsStore, backup },
-    { isConnectionViaBackupModule }
-  ) => {
+  ({ auth, settingsStore, selectedFolderStore, dialogsStore, backup }) => {
     const {
       providers,
       saveThirdParty,
@@ -385,7 +382,7 @@ export default inject(
     } = dialogsStore;
 
     const item = backupConnectionItem ?? connectItem;
-   
+
     return {
       selectedFolderId: id,
       selectedFolderFolders: folders,
