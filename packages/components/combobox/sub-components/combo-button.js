@@ -79,18 +79,17 @@ class ComboButton extends React.Component {
             />
           </StyledIcon>
         )}
-        {selectedOption.label && (
-          <Text
-            noBorder={noBorder}
-            title={selectedOption.label}
-            as="div"
-            truncate={true}
-            fontWeight={600}
-            className="combo-button-label"
-          >
-            {selectedOption.label}
-          </Text>
-        )}
+
+        <Text
+          noBorder={noBorder}
+          title={selectedOption.label}
+          as="div"
+          truncate={true}
+          fontWeight={600}
+          className="combo-button-label"
+        >
+          {selectedOption.label}
+        </Text>
 
         <StyledArrowIcon
           needDisplay={withOptions || withAdvancedOptions}
