@@ -12,6 +12,8 @@ import {
 } from "@docspace/components/utils/device";
 import { Events } from "@docspace/common/constants";
 import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
+import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
+import { getOAuthToken } from "@docspace/common/utils";
 
 class ContextOptionsStore {
   authStore;
@@ -56,6 +58,61 @@ class ContextOptionsStore {
 
   onClickLinkFillForm = (item) => {
     return this.gotoDocEditor(false, item);
+  };
+
+  onClickReconnectStorage = async (item, t) => {
+    const { thirdPartyStore } = this.settingsStore;
+
+    const { openConnectWindow, connectItems } = thirdPartyStore;
+
+    const {
+      setRoomCreation,
+      setConnectItem,
+      setConnectDialogVisible,
+      setIsConnectDialogReconnect,
+      setSaveAfterReconnectOAuth,
+    } = this.dialogsStore;
+
+    setIsConnectDialogReconnect(true);
+
+    setRoomCreation(true);
+
+    const provider = connectItems.find(
+      (connectItem) => connectItem.providerName === item.providerKey
+    );
+
+    const itemThirdParty = {
+      title: connectedCloudsTypeTitleTranslation(provider.providerName, t),
+      customer_title: "NOTITLE",
+      provider_key: provider.providerName,
+      link: provider.oauthHref,
+    };
+
+    if (provider.isOauth) {
+      let authModal = window.open(
+        "",
+        "Authorization",
+        "height=600, width=1020"
+      );
+      await openConnectWindow(provider.providerName, authModal)
+        .then(getOAuthToken)
+        .then((token) => {
+          authModal.close();
+          setConnectItem({
+            ...itemThirdParty,
+            token,
+          });
+
+          setSaveAfterReconnectOAuth(true);
+        })
+        .catch((err) => {
+          if (!err) return;
+          toastr.error(err);
+        });
+    } else {
+      setConnectItem(itemThirdParty);
+      setConnectDialogVisible(true);
+    }
   };
 
   onClickMakeForm = (item, t) => {
@@ -532,6 +589,13 @@ class ContextOptionsStore {
         label: t("Common:MakeForm"),
         icon: "/static/images/form.plus.react.svg",
         onClick: () => this.onClickMakeForm(item, t),
+        disabled: false,
+      },
+      {
+        key: "reconnect-storage",
+        label: t("Common:ReconnectStorage"),
+        icon: "images/reconnect.svg",
+        onClick: () => this.onClickReconnectStorage(item, t),
         disabled: false,
       },
       {

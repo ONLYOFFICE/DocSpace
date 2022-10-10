@@ -30,6 +30,10 @@ const PureConnectDialogContainer = (props) => {
     isConnectionViaBackupModule,
     roomCreation,
     setSaveThirdpartyResponse,
+    isConnectDialogReconnect,
+    setIsConnectDialogReconnect,
+    saveAfterReconnectOAuth,
+    setSaveAfterReconnectOAuth,
   } = props;
   const {
     corporate,
@@ -65,6 +69,10 @@ const PureConnectDialogContainer = (props) => {
     key === "WebDav" ||
     key === "SharePoint";
 
+  const header = isConnectDialogReconnect
+    ? t("Common:ReconnectStorage")
+    : t("Translations:ConnectingAccount");
+
   const onChangeUrl = (e) => {
     setIsUrlValid(true);
     setUrlValue(e.target.value);
@@ -93,7 +101,16 @@ const PureConnectDialogContainer = (props) => {
 
   const onClose = useCallback(() => {
     !isLoading && setConnectDialogVisible(false);
-  }, [isLoading, setConnectDialogVisible]);
+
+    if (isConnectDialogReconnect) {
+      setIsConnectDialogReconnect(false);
+    }
+  }, [
+    isLoading,
+    setConnectDialogVisible,
+    isConnectDialogReconnect,
+    setIsConnectDialogReconnect,
+  ]);
 
   const onSave = useCallback(() => {
     const isTitleValid = !!customerTitle.trim();
@@ -161,6 +178,7 @@ const PureConnectDialogContainer = (props) => {
     )
       .then(async (res) => {
         setSaveThirdpartyResponse(res);
+        toastr.success(t("SuccessfulConnectionOfAThirdParty"));
         await fetchThirdPartyProviders();
       })
       .catch((err) => {
@@ -171,6 +189,7 @@ const PureConnectDialogContainer = (props) => {
       .finally(() => {
         onClose();
         setIsLoading(false);
+        setSaveAfterReconnectOAuth(false);
       });
   }, [
     customerTitle,
@@ -214,6 +233,12 @@ const PureConnectDialogContainer = (props) => {
     return setToken(token);
   }, [setToken, token]);
 
+  useEffect(() => {
+    if (saveAfterReconnectOAuth) {
+      onSave();
+    }
+  }, [saveAfterReconnectOAuth]);
+
   return (
     <ModalDialog
       isLoading={!tReady}
@@ -223,9 +248,7 @@ const PureConnectDialogContainer = (props) => {
       autoMaxHeight
       onClose={onClose}
     >
-      <ModalDialog.Header>
-        {t("Translations:ConnectingAccount")}
-      </ModalDialog.Header>
+      <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         {isAccount ? (
           <FieldContainer
@@ -381,6 +404,10 @@ export default inject(
       connectItem,
       roomCreation,
       setSaveThirdpartyResponse,
+      isConnectDialogReconnect,
+      setIsConnectDialogReconnect,
+      saveAfterReconnectOAuth,
+      setSaveAfterReconnectOAuth,
     } = dialogsStore;
 
     const item = isConnectionViaBackupModule ? passedItem : connectItem;
@@ -401,6 +428,10 @@ export default inject(
       setConnectDialogVisible,
 
       personal,
+      isConnectDialogReconnect,
+      saveAfterReconnectOAuth,
+      setSaveAfterReconnectOAuth,
+      setIsConnectDialogReconnect,
     };
   }
 )(observer(ConnectDialog));
