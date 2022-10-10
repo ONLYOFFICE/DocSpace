@@ -38,17 +38,6 @@ const InfoPanelBodyContent = ({
   const isAccounts = getIsAccounts();
   const isGallery = getIsGallery();
 
-  console.log(selection);
-
-  console.log(
-    isGallery,
-    gallerySelected,
-    isRootFolder,
-    isAccounts,
-    selection?.isSelectedFolder,
-    selection?.wasContextMenuSelection
-  );
-
   const isNoItem =
     (isGallery && !gallerySelected) ||
     ((isRootFolder || isAccounts) &&
@@ -110,33 +99,6 @@ const InfoPanelBodyContent = ({
   };
 
   const getView = () => {
-    console.log(selection);
-
-    let res;
-    if (isNoItem) res = "NoItem";
-    else if (isSeveralItems) res = "SeveralItems";
-    else if (isGallery) res = "Gallery";
-    else if (isAccounts) res = "Accounts";
-
-    if (!res) {
-      switch (isRooms ? roomsView : fileView) {
-        case "members": {
-          res = "Members";
-          break;
-        }
-        case "history": {
-          res = "History";
-          break;
-        }
-        case "details": {
-          res = "Details";
-          break;
-        }
-      }
-    }
-
-    console.log(res);
-
     if (isNoItem) return viewHelper.NoItemView();
     if (isSeveralItems) return viewHelper.SeveralItemsView();
     if (isGallery) return viewHelper.GalleryView();
