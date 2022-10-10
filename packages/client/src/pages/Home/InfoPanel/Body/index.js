@@ -37,10 +37,23 @@ const InfoPanelBodyContent = ({
   const isRooms = getIsRooms();
   const isAccounts = getIsAccounts();
   const isGallery = getIsGallery();
+
+  console.log(selection);
+
+  console.log(
+    isGallery,
+    gallerySelected,
+    isRootFolder,
+    isAccounts,
+    selection?.isSelectedFolder,
+    selection?.wasContextMenuSelection
+  );
+
   const isNoItem =
-    !(selection && selection.wasContextMenuSelection) &&
-    ((isGallery && !gallerySelected) ||
-      ((isRootFolder || isAccounts) && selection?.isSelectedFolder));
+    (isGallery && !gallerySelected) ||
+    ((isRootFolder || isAccounts) &&
+      selection?.isSelectedFolder &&
+      !selection?.wasContextMenuSelection);
 
   const isSeveralItems = props.selectedItems.length > 1;
 
@@ -82,13 +95,23 @@ const InfoPanelBodyContent = ({
 
   const getSelection = () => {
     return selectedItems.length === 0
-      ? normalizeSelection({ ...selectedFolder, isSelectedFolder: true })
+      ? normalizeSelection({
+          ...selectedFolder,
+          isSelectedFolder: true,
+          isSelectedItem: false,
+        })
       : selectedItems.length === 1
-      ? normalizeSelection({ ...selectedItems[0], isSelectedItem: true })
+      ? normalizeSelection({
+          ...selectedItems[0],
+          isSelectedFolder: false,
+          isSelectedItem: true,
+        })
       : [...Array(props.selectedItems.length).keys()];
   };
 
   const getView = () => {
+    console.log(selection);
+
     let res;
     if (isNoItem) res = "NoItem";
     else if (isSeveralItems) res = "SeveralItems";
@@ -145,8 +168,15 @@ const InfoPanelBodyContent = ({
   // Setting selection after selectedItems or selectedFolder update
   useEffect(() => {
     if (selection?.isContextMenuSelection) return;
+
     const newSelection = getSelection();
-    if (selection?.id === newSelection.id && !newSelection.length) return;
+    if (
+      selection?.id === newSelection.id &&
+      selection?.isFolder === newSelection.isFolder &&
+      !newSelection.length
+    )
+      return;
+
     setSelection(normalizeSelection(newSelection));
   }, [selectedItems, selectedFolder]);
 
