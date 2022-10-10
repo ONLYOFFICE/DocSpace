@@ -98,8 +98,8 @@ const DeleteThirdPartyDialog = (props) => {
 
 export default inject(
   (
-    { filesStore, settingsStore, dialogsStore, selectedFolderStore },
-    { item, isConnectionViaBackupModule }
+    { filesStore, settingsStore, dialogsStore, selectedFolderStore, backup },
+    { isConnectionViaBackupModule }
   ) => {
     const {
       providers,
@@ -107,14 +107,14 @@ export default inject(
       deleteThirdParty,
     } = settingsStore.thirdPartyStore;
     const { fetchFiles } = filesStore;
-
+    const { selectedThirdPartyAccount: backupConnectionItem } = backup;
     const {
       deleteThirdPartyDialogVisible: visible,
       setDeleteThirdPartyDialogVisible,
       removeItem: storeItem,
     } = dialogsStore;
 
-    const removeItem = isConnectionViaBackupModule ? item : storeItem;
+    const removeItem = backupConnectionItem ?? storeItem;
 
     return {
       currentFolderId: selectedFolderStore.id,

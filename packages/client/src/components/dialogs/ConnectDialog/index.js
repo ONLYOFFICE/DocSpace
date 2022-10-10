@@ -363,8 +363,8 @@ const ConnectDialog = withTranslation([
 
 export default inject(
   (
-    { auth, settingsStore, selectedFolderStore, dialogsStore },
-    { passedItem, isConnectionViaBackupModule }
+    { auth, settingsStore, selectedFolderStore, dialogsStore, backup },
+    { isConnectionViaBackupModule }
   ) => {
     const {
       providers,
@@ -375,6 +375,7 @@ export default inject(
     const { personal, folderFormValidation } = auth.settingsStore;
 
     const { id, folders } = selectedFolderStore;
+    const { selectedThirdPartyAccount: backupConnectionItem } = backup;
     const {
       connectDialogVisible: visible,
       setConnectDialogVisible,
@@ -383,8 +384,8 @@ export default inject(
       setSaveThirdpartyResponse,
     } = dialogsStore;
 
-    const item = isConnectionViaBackupModule ? passedItem : connectItem;
-
+    const item = backupConnectionItem ?? connectItem;
+   
     return {
       selectedFolderId: id,
       selectedFolderFolders: folders,
