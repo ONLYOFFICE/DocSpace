@@ -1350,6 +1350,7 @@ class FilesStore {
       return fileOptions;
     } else if (isRoom) {
       let roomOptions = [
+        "reconnect-storage",
         "edit-room",
         "invite-users-to-room",
         "room-info",
@@ -1360,6 +1361,10 @@ class FilesStore {
         "unarchive-room",
         "delete",
       ];
+
+      if (!item.providerKey) {
+        roomOptions = this.removeOptions(roomOptions, ["reconnect-storage"]);
+      }
 
       if (item.pinned) {
         roomOptions = this.removeOptions(roomOptions, ["pin-room"]);
