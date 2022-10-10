@@ -761,6 +761,19 @@ const Base = {
     hoverIconColor: grayMid,
   },
 
+  inputPhone: {
+    activeBorderColor: "#2da7db",
+    inactiveBorderColor: "#d0d5da",
+    errorBorderColor: "#f21c0e",
+    backgroundColor: "#fff",
+    color: "#33333",
+    scrollBackground: "#a3a9ae",
+    placeholderColor: "#a3a9ae",
+    dialCodeColor: "#a3a9ae",
+    width: "320px",
+    height: "44px",
+  },
+
   textInput: {
     fontWeight: "normal",
     placeholderColor: gray,
@@ -2589,7 +2602,7 @@ const Base = {
     background: "none",
     svgFill: black,
     header: {
-      height: "50px",
+      height: "49px",
       borderBottom: `1px solid ${grayLightMid}`,
       marginBottom: "6px",
     },
@@ -2599,7 +2612,7 @@ const Base = {
     padding: "0 12px",
     mobile: {
       height: "36px",
-      padding: "0 16px",
+      padding: "0 16px 6px",
     },
   },
   newContextMenu: {

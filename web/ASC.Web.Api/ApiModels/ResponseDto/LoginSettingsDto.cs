@@ -24,12 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api.ApiModel.RequestsDto;
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-public class TfaSettingsRequestsDto
+public class LoginSettingsDto : IMapFrom<LoginSettings>
 {
-    public string Id { get; set; }
-    public string Title { get; set; }
-    public bool Enabled { get; set; }
-    public bool Avaliable { get; set; }
+    public int AttemptCount { get; set; }
+
+    public int BlockTime { get; set; }
+
+    public int CheckPeriod { get; set; }
 }

@@ -93,6 +93,7 @@ global using ASC.FederatedLogin.Profile;
 global using ASC.Files.Core.EF;
 global using ASC.Files.Core.Helpers;
 global using ASC.IPSecurity;
+global using ASC.MessagingSystem;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.EF.Model;
 global using ASC.Notify.Cron;

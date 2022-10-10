@@ -84,18 +84,21 @@ const StyledContextMenu = styled.div`
       min-height: ${(props) =>
         props.isRoom ? "32px" : props.theme.menuItem.iconWrapper.header.height};
 
-      ${(props) =>
-        props.isRoom &&
-        css`
-          .drop-down-item_icon {
+      .drop-down-item_icon {
+        display: flex;
+        align-items: center;
+
+        ${(props) =>
+          props.isRoom &&
+          css`
             width: 100%;
             height: 100%;
 
             svg {
               border-radius: 6px;
             }
-          }
-        `}
+          `}
+      }
 
       svg {
         &:not(:root) {
@@ -105,11 +108,19 @@ const StyledContextMenu = styled.div`
       }
     }
 
+    .avatar-wrapper {
+      min-width: 32px;
+
+      box-sizing: border-box;
+
+      margin-right: 8px;
+    }
+
     .text {
       width: 100%;
       font-size: ${(props) => props.theme.menuItem.text.header.fontSize};
       font-weight: 600;
-      line-height: ${(props) => props.theme.menuItem.text.header.lineHeight};
+      line-height: 16px;
       ${(props) =>
         props.isIconExist &&
         css`

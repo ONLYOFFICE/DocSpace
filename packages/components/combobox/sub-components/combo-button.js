@@ -79,6 +79,7 @@ class ComboButton extends React.Component {
             />
           </StyledIcon>
         )}
+
         <Text
           noBorder={noBorder}
           title={selectedOption?.label}
@@ -89,6 +90,7 @@ class ComboButton extends React.Component {
         >
           {selectedOption?.label}
         </Text>
+
         <StyledArrowIcon
           needDisplay={withOptions || withAdvancedOptions}
           noBorder={noBorder}

@@ -427,8 +427,8 @@ public class SettingsController : BaseSettingsController
         {
             settings.Selected = inDto.Selected.Value;
             _settingsManager.Save(settings);
-        _messageService.Send(MessageAction.ColorThemeChanged);
-    }
+            _messageService.Send(MessageAction.ColorThemeChanged);
+        }
 
         return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
     }
