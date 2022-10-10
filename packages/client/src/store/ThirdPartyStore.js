@@ -206,6 +206,48 @@ class ThirdPartyStore {
       this.capabilities && this.capabilities.find((x) => x[0] === "WebDav")
     );
   }
+
+  get connectItems() {
+    let nextCloudConnectItem = [],
+      ownCloudConnectItem = [];
+
+    if (this.nextCloudConnectItem) {
+      nextCloudConnectItem.push(...this.nextCloudConnectItem, "Nextcloud");
+    }
+
+    if (this.ownCloudConnectItem) {
+      ownCloudConnectItem.push(...this.ownCloudConnectItem, "ownCloud");
+    }
+
+    const connectItems = [
+      this.googleConnectItem,
+      this.boxConnectItem,
+      this.dropboxConnectItem,
+      this.oneDriveConnectItem,
+      nextCloudConnectItem,
+      this.kDriveConnectItem,
+      this.yandexConnectItem,
+      ownCloudConnectItem,
+      this.webDavConnectItem,
+      this.sharePointConnectItem,
+    ]
+      .map(
+        (item) =>
+          item && {
+            isAvialable: !!item,
+            id: item[0],
+            providerName: item[0],
+            isOauth: item.length > 1 && item[0] !== "WebDav",
+            oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
+            ...(item[0] === "WebDav" && {
+              category: item[item.length - 1],
+            }),
+          }
+      )
+      .filter((item) => !!item);
+
+    return connectItems;
+  }
 }
 
 export default new ThirdPartyStore();
