@@ -139,7 +139,7 @@ public class SmsManager
     {
         if (await _smsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
         {
-            _tenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = _tenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1 }, true);
+            _tenantManager.SetTenantQuotaRow(new TenantQuotaRow { Tenant = _tenantManager.GetCurrentTenant().Id, Path = "/sms", Counter = 1, LastModified = DateTime.UtcNow }, true);
         }
     }
 

@@ -66,7 +66,7 @@ const StyledTableRow = styled(TableRow)`
           background: ${(props) =>
             `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
 
-          margin-top: -1px;
+          margin-top: ${(props) => (props.showHotkeyBorder ? "-2px" : "-1px")};
           ${(props) =>
             !props.showHotkeyBorder &&
             css`
@@ -168,13 +168,23 @@ const StyledTableRow = styled(TableRow)`
     props.showHotkeyBorder &&
     css`
       .table-container_cell {
-        margin-top: -1px;
-        border-top: 1px solid #2da7db;
+        margin-top: -2px;
+
+        border-top: 1px solid #2da7db !important;
         border-right: 0;
         border-left: 0;
       }
       .table-container_file-name-cell > .table-container_cell {
-        margin-top: 0;
+        margin-top: 2px;
+        border-top: 0px !important;
+      }
+
+      .item-file-name,
+      .row_update-text,
+      .expandButton,
+      .badges,
+      .table-container_cell > p {
+        margin-top: 2px;
       }
     `}
 `;

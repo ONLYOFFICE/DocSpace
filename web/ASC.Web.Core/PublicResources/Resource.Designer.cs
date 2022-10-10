@@ -2005,6 +2005,33 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to set the memory quota - the memory quota you set is greater than portals quota..
+        /// </summary>
+        public static string QuotaGreaterPortalError {
+            get {
+                return ResourceManager.GetString("QuotaGreaterPortalError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to set the memory quota - some users cannot use this quota..
+        /// </summary>
+        public static string QuotaGroupError {
+            get {
+                return ResourceManager.GetString("QuotaGroupError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to set the memory quota - the memory quota you set is less than used memory..
+        /// </summary>
+        public static string QuotaLessUsedMemoryError {
+            get {
+                return ResourceManager.GetString("QuotaLessUsedMemoryError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data reassign process for {0} is not complete..
         /// </summary>
         public static string ReassignDataRemoveUserError {

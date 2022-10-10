@@ -155,6 +155,13 @@ public class LdapUserManager
 
             portalUserInfo = _userManager.SaveUserInfo(ldapUserInfo);
 
+            var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+            if (quotaSettings.EnableUserQuota)
+            {
+                _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = ldapUserInfo.LdapQouta }, ldapUserInfo.Id);
+            }
+
+
             var passwordHash = LdapUtils.GeneratePassword();
 
             _logger.DebugSetUserPassword(portalUserInfo.Id);

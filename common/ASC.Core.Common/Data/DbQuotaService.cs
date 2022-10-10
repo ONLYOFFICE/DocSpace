@@ -31,7 +31,6 @@ class DbQuotaService : IQuotaService
 {
     private readonly IDbContextFactory<CoreDbContext> _dbContextFactory;
     private readonly IMapper _mapper;
-
     public DbQuotaService(IDbContextFactory<CoreDbContext> dbContextManager, IMapper mapper)
     {
         _dbContextFactory = dbContextManager;
@@ -102,27 +101,46 @@ class DbQuotaService : IQuotaService
             using var coreDbContext = _dbContextFactory.CreateDbContext();
             using var tx = coreDbContext.Database.BeginTransaction();
 
-            var counter = coreDbContext.QuotaRows
-                .Where(r => r.Path == row.Path && r.Tenant == row.Tenant)
+            AddQuota(coreDbContext, Guid.Empty);
+
+            if (row.UserId != Guid.Empty)
+            {
+                AddQuota(coreDbContext, row.UserId);
+            }
+
+            tx.Commit();
+        });
+
+        void AddQuota(CoreDbContext coreDbContext, Guid userId)
+        {
+            var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
+            dbTenantQuotaRow.UserId = userId;
+
+            if (exchange)
+            {
+                var counter = coreDbContext.QuotaRows
+                .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == userId)
                 .Select(r => r.Counter)
                 .Take(1)
                 .FirstOrDefault();
 
-            var dbQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
-            dbQuotaRow.Counter = exchange ? counter + row.Counter : row.Counter;
-            dbQuotaRow.LastModified = DateTime.UtcNow;
+                dbTenantQuotaRow.Counter = counter + row.Counter;
+            }
 
-            coreDbContext.AddOrUpdate(r => r.QuotaRows, dbQuotaRow);
+            coreDbContext.AddOrUpdate(r => r.QuotaRows, dbTenantQuotaRow);
             coreDbContext.SaveChanges();
-
-            tx.Commit();
-        });
+        }
     }
 
     public IEnumerable<TenantQuotaRow> FindTenantQuotaRows(int tenantId)
     {
+        return FindUserQuotaRows(tenantId, Guid.Empty);
+    }
+
+    public IEnumerable<TenantQuotaRow> FindUserQuotaRows(int tenantId, Guid userId)
+    {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
-        IQueryable<DbQuotaRow> q = coreDbContext.QuotaRows;
+        var q = coreDbContext.QuotaRows.Where(r => r.UserId == userId);
 
         if (tenantId != Tenant.DefaultTenant)
         {

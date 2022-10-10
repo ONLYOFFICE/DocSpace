@@ -108,6 +108,8 @@ class ComboBox extends React.Component {
       isPersonal,
       offsetLeft,
       modernView,
+
+      advancedOptionsCount,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -130,6 +132,14 @@ class ComboBox extends React.Component {
 
     const withAdvancedOptions = !!advancedOptions?.props.children;
 
+    let optionsCount = optionsLength;
+
+    if (withAdvancedOptions) {
+      optionsCount = advancedOptionsCount ? advancedOptionsCount : 6;
+    }
+
+    const disableMobileView = optionsCount < 5;
+
     return (
       <StyledComboBox
         ref={this.ref}
@@ -140,6 +150,7 @@ class ComboBox extends React.Component {
         onClick={this.comboBoxClick}
         toggleAction={toggleAction}
         isOpen={isOpen}
+        disableMobileView={disableMobileView}
         {...this.props}
       >
         <ComboButton
@@ -276,6 +287,9 @@ ComboBox.propTypes = {
 
   /**Tell when combo-box should displaying at modern view */
   modernView: PropTypes.bool,
+
+  /**Count of advanced options  */
+  advancedOptionsCount: PropTypes.number,
 };
 
 ComboBox.defaultProps = {
