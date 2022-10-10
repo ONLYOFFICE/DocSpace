@@ -72,7 +72,7 @@ namespace ASC.Migrations.MySql.Migrations
                             Tenant = -1,
                             Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:100,manager:1",
                             Name = "trial",
-                            Price = 0.00m,
+                            Price = 0m,
                             Visible = false
                         },
                         new
@@ -100,6 +100,12 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("int")
                         .HasColumnName("tenant");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("char(36)")
+                        .HasColumnName("user_id")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
+
                     b.Property<string>("Path")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("path")
@@ -122,7 +128,7 @@ namespace ASC.Migrations.MySql.Migrations
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.HasKey("Tenant", "Path")
+                    b.HasKey("Tenant", "UserId", "Path")
                         .HasName("PRIMARY");
 
                     b.HasIndex("LastModified")

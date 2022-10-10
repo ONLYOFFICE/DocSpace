@@ -78,6 +78,7 @@ global using ASC.Feed;
 global using ASC.Feed.Context;
 global using ASC.Feed.Data;
 global using ASC.IPSecurity;
+global using ASC.MessagingSystem;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.EF.Model;
 global using ASC.Notify;
@@ -120,6 +121,7 @@ global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
@@ -128,6 +130,8 @@ global using MimeKit.Utils;
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
+
+global using ProtoBuf;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Drawing.Processing;

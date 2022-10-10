@@ -32,6 +32,8 @@ public class UserController : PeopleControllerBase
 
     private readonly ICache _cache;
     private readonly TenantManager _tenantManager;
+    private readonly GlobalSpace _globalSpace;
+    private readonly Constants _constants;
     private readonly CookiesManager _cookiesManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CustomNamingPeople _customNamingPeople;
@@ -58,6 +60,7 @@ public class UserController : PeopleControllerBase
     private readonly SettingsManager _settingsManager;
     private readonly RoomLinkService _roomLinkService;
     private readonly FileSecurity _fileSecurity;
+    private readonly IQuotaService _quotaService;
     private readonly CountManagerChecker _countManagerChecker;
     private readonly CountUserChecker _countUserChecker;
     private readonly UsersInRoomChecker _usersInRoomChecker;
@@ -66,6 +69,8 @@ public class UserController : PeopleControllerBase
     public UserController(
         ICache cache,
         TenantManager tenantManager,
+        GlobalSpace globalSpace,
+        Constants constants,
         CookiesManager cookiesManager,
         CoreBaseSettings coreBaseSettings,
         CustomNamingPeople customNamingPeople,
@@ -98,16 +103,17 @@ public class UserController : PeopleControllerBase
         SettingsManager settingsManager,
         RoomLinkService roomLinkService,
         FileSecurity fileSecurity,
-        IDaoFactory daoFactory,
-        EmailValidationKeyProvider validationKeyProvider,
         CountManagerChecker countManagerChecker,
         CountUserChecker activeUsersChecker,
         UsersInRoomChecker usersInRoomChecker,
-        UsersInRoomStatistic usersInRoomStatistic)
+        UsersInRoomStatistic usersInRoomStatistic,
+        IQuotaService quotaService)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
         _tenantManager = tenantManager;
+        _globalSpace = globalSpace;
+        _constants = constants;
         _cookiesManager = cookiesManager;
         _coreBaseSettings = coreBaseSettings;
         _customNamingPeople = customNamingPeople;
@@ -138,6 +144,7 @@ public class UserController : PeopleControllerBase
         _countUserChecker = activeUsersChecker;
         _usersInRoomChecker = usersInRoomChecker;
         _usersInRoomStatistic = usersInRoomStatistic;
+        _quotaService = quotaService;
     }
 
     [HttpPost("active")]
@@ -1062,6 +1069,42 @@ public class UserController : PeopleControllerBase
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
     }
+
+    [HttpPut("quota")]
+    public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuota(UpdateMembersQuotaRequestDto inDto)
+    {
+        var users = inDto.UserIds
+            .Where(userId => !_userManager.IsSystemUser(userId))
+            .Select(userId => _userManager.GetUsers(userId))
+            .ToList();
+
+        foreach (var user in users)
+        {
+            if (inDto.Quota != -1)
+            {
+                var usedSpace = Math.Max(0,
+                    _quotaService.FindUserQuotaRows(
+                            _tenantManager.GetCurrentTenant().Id,
+                            user.Id
+                        )
+                .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+
+                var tenanSpaceQuota = _quotaService.GetTenantQuota(Tenant.Id).MaxTotalSize;
+
+                if (tenanSpaceQuota < inDto.Quota || usedSpace > inDto.Quota)
+                {
+                    continue;
+                }
+            }
+
+            var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+
+            _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
+
+            yield return await _employeeFullDtoHelper.GetFull(user);
+        }
+    }
+
 
     private void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
     {

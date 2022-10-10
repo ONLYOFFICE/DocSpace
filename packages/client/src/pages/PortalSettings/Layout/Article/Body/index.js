@@ -220,7 +220,7 @@ class ArticleBodyContent extends React.Component {
           showText={showText}
           text={this.mapKeys(item.tKey)}
           value={item.link}
-          isActive={item.key + "-0" === selectedKeys[0]}
+          isActive={item.key === selectedKeys[0][0]}
           onClick={() => this.onSelect(item.key)}
         />
       );

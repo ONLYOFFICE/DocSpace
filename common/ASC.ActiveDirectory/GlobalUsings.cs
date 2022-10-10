@@ -69,6 +69,7 @@ global using ASC.Web.Core;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Users;
+global using ASC.Web.Core.Utility;
 global using ASC.Web.Studio.Utility;
 
 global using Microsoft.EntityFrameworkCore;
@@ -81,3 +82,5 @@ global using Novell.Directory.Ldap;
 global using Novell.Directory.Ldap.Controls;
 global using Novell.Directory.Ldap.Rfc2251;
 global using Novell.Directory.Ldap.Utilclass;
+
+global using ByteConverter = ASC.Core.Common.ByteConverter;

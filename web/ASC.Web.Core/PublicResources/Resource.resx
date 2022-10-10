@@ -825,7 +825,15 @@
   <data name="MessageRoomInvitationsSentOnEmail" xml:space="preserve">
     <value>Virtual room {0} invitations sent successfully.</value>
   </data>
-  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+  <data name="QuotaGreaterPortalError" xml:space="preserve">
+    <value>Failed to set the memory quota - the memory quota you set is greater than portals quota.</value>
+  </data>
+  <data name="QuotaGroupError" xml:space="preserve">
+    <value>Failed to set the memory quota - some users cannot use this quota.</value>
+  </data>
+  <data name="QuotaLessUsedMemoryError" xml:space="preserve">
+    <value>Failed to set the memory quota - the memory quota you set is less than used memory.</value>
+  </data>  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
     <value>Number of admins</value>
   </data>
   <data name="TariffsFeature_audit" xml:space="preserve">

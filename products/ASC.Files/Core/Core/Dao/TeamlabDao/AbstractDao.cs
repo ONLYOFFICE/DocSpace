@@ -28,7 +28,7 @@ namespace ASC.Files.Core.Data;
 
 public class AbstractDao
 {
-    protected readonly ICache _cache;
+
     private int _tenantID;
     protected internal int TenantID
     {
@@ -43,6 +43,7 @@ public class AbstractDao
         }
     }
 
+    protected readonly ICache _cache;
     protected readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     protected readonly UserManager _userManager;
     protected readonly TenantManager _tenantManager;

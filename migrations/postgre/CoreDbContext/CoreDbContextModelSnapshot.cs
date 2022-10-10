@@ -67,7 +67,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             Tenant = -1,
                             Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:100,manager:1",
                             Name = "trial",
-                            Price = 0.00m,
+                            Price = 0m,
                             Visible = false
                         },
                         new
@@ -118,6 +118,13 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("character varying(1024)")
                         .HasColumnName("tag")
                         .HasDefaultValueSql("'0'");
+
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id")
+                        .HasDefaultValueSql("NULL");
 
                     b.HasKey("Tenant", "Path")
                         .HasName("tenants_quotarow_pkey");

@@ -60,6 +60,7 @@ public class SettingsController : BaseSettingsController
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
     private readonly CustomColorThemesSettingsHelper _customColorThemesSettingsHelper;
     private readonly QuotaUsageManager _quotaUsageManager;
+    private readonly QuotaSyncOperation _quotaSyncOperation;
 
     public SettingsController(
         IServiceScopeFactory serviceScopeFactory,
@@ -94,6 +95,7 @@ public class SettingsController : BaseSettingsController
         DnsSettings dnsSettings,
         AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
         CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
+        QuotaSyncOperation quotaSyncOperation,
         QuotaUsageManager quotaUsageManager
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
@@ -124,6 +126,7 @@ public class SettingsController : BaseSettingsController
         _telegramHelper = telegramHelper;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+        _quotaSyncOperation = quotaSyncOperation;
         _customColorThemesSettingsHelper = customColorThemesSettingsHelper;
         _quotaUsageManager = quotaUsageManager;
     }
@@ -261,6 +264,16 @@ public class SettingsController : BaseSettingsController
         return await _quotaUsageManager.Get();
     }
 
+    [HttpPost("userquotasettings")]
+    public object SaveUserQuotaSettings(UserQuotaSettingsRequestsDto inDto)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        _settingsManager.Save(new TenantUserQuotaSettings { EnableUserQuota = inDto.EnableUserQuota, DefaultUserQuota = inDto.DefaultUserQuota });
+
+        return Resource.SuccessfullySaveSettingsMessage;
+    }
+
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("cultures")]
@@ -310,39 +323,19 @@ public class SettingsController : BaseSettingsController
         return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
     }
 
-    //[HttpGet("recalculatequota")]
-    //public void RecalculateQuota()
-    //{
-    //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+    [HttpGet("recalculatequota")]
+    public void RecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        _quotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
 
-    //    var operations = quotaTasks.GetTasks()
-    //        .Where(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
-
-    //    if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
-    //    {
-    //        throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
-    //    }
-
-    //    var op = new QuotaSync(Tenant.Id, ServiceProvider);
-
-    //    quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
-    //}
-
-    //[HttpGet("checkrecalculatequota")]
-    //public bool CheckRecalculateQuota()
-    //{
-    //    PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-    //    var task = quotaTasks.GetTasks().FirstOrDefault(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
-
-    //    if (task != null && task.Status == DistributedTaskStatus.Completed)
-    //    {
-    //        quotaTasks.RemoveTask(task.Id);
-    //        return false;
-    //    }
-
-    //    return task != null;
-    //}
+    [HttpGet("checkrecalculatequota")]
+    public bool CheckRecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        return _quotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
 
     [HttpGet("logo")]
     public object GetLogo()
