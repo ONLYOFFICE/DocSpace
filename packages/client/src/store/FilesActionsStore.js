@@ -974,7 +974,7 @@ class FilesActionStore {
     const filterData = FilesFilter.getDefault();
     api.files
       .getFolder(locationId, filterData)
-      .then(() => openLocationAction(locationId))
+      .then(() => this.openLocationAction(locationId))
       .catch((err) => toastr.error(err));
   };
 
