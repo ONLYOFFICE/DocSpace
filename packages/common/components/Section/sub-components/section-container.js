@@ -97,22 +97,6 @@ const StyledSectionContainer = styled.section`
 StyledSectionContainer.defaultProps = { theme: Base };
 
 class SectionContainer extends React.Component {
-  /*shouldComponentUpdate() {
-    return false;
-  }*/
-  componentDidUpdate() {
-    const { pinned } = this.props;
-
-    if (
-      isIOS &&
-      isTablet &&
-      (isSafari || isChrome) &&
-      window.innerWidth <= size.smallTablet &&
-      pinned
-    ) {
-      this.props.unpinArticle();
-    }
-  }
   render() {
     //console.log("PageLayout Section render");
 
