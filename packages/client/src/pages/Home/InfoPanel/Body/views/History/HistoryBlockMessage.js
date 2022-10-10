@@ -81,8 +81,8 @@ const HistoryBlockMessage = ({
     if (action.Item !== "file" && action.Item !== "folder") return "";
 
     const itemLocationId = +action.ExtraLocation;
-    if (selectedFolder.id === itemLocationId) return "";
-    if (selection.isRoom && selectionParentRoom.id === itemLocationId)
+    if (selectedFolder?.id === itemLocationId) return "";
+    if (selection?.isRoom && selectionParentRoom?.id === itemLocationId)
       return "";
 
     const folderTitle = action.ExtraLocationTitle;
