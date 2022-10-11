@@ -49,9 +49,9 @@ public class SetupInfo
     /// <summary>
     /// Max possible file size for not chunked upload. Less or equal than 100 mb.
     /// </summary>
-    public long MaxUploadSize(TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider)
+    public long MaxUploadSize(TenantManager tenantManager, MaxTotalSizeStatistic maxTotalSizeStatistic)
     {
-        return Math.Min(AvailableFileSize, MaxChunkedUploadSize(tenantExtra, tenantStatisticsProvider));
+        return Math.Min(AvailableFileSize, MaxChunkedUploadSize(tenantManager, maxTotalSizeStatistic));
     }
 
     public long AvailableFileSize
@@ -109,7 +109,6 @@ public class SetupInfo
     public string RecaptchaPublicKey { get; private set; }
     public string RecaptchaPrivateKey { get; private set; }
     public string RecaptchaVerifyUrl { get; private set; }
-    public int LoginThreshold { get; private set; }
     public string AmiMetaUrl { get; private set; }
     private readonly IConfiguration _configuration;
 
@@ -167,11 +166,6 @@ public class SetupInfo
         RecaptchaPublicKey = GetAppSettings("web.recaptcha.public-key", null);
         RecaptchaPrivateKey = GetAppSettings("web.recaptcha.private-key", "");
         RecaptchaVerifyUrl = GetAppSettings("web.recaptcha.verify-url", "https://www.recaptcha.net/recaptcha/api/siteverify");
-        LoginThreshold = Convert.ToInt32(GetAppSettings("web.login.threshold", "0"));
-        if (LoginThreshold < 1)
-        {
-            LoginThreshold = 5;
-        }
 
         _webDisplayMobappsBanner = (configuration["web.display.mobapps.banner"] ?? "").Trim().Split(new char[] { ',', ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
         ShareTwitterUrl = GetAppSettings("web.share.twitter", "https://twitter.com/intent/tweet?text={0}");
@@ -207,12 +201,12 @@ public class SetupInfo
         return _hideSettings == null || !_hideSettings.Contains(settings, StringComparer.CurrentCultureIgnoreCase);
     }
 
-    public long MaxChunkedUploadSize(TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider)
+    public long MaxChunkedUploadSize(TenantManager tenantManager, MaxTotalSizeStatistic maxTotalSizeStatistic)
     {
-        var diskQuota = tenantExtra.GetTenantQuota();
+        var diskQuota = tenantManager.GetCurrentTenantQuota();
         if (diskQuota != null)
         {
-            var usedSize = tenantStatisticsProvider.GetUsedSize();
+            var usedSize = maxTotalSizeStatistic.GetValue().Result;
             var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
             return Math.Min(freeSize, diskQuota.MaxFileSize);
         }

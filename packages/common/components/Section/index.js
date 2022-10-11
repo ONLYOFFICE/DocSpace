@@ -143,7 +143,6 @@ class Section extends React.Component {
       onOpenUploadPanel,
       isTabletView,
       dragging,
-      isHomepage,
       maintenanceExist,
       setMaintenanceExist,
       snackbarExist,
@@ -266,7 +265,6 @@ class Section extends React.Component {
                           withScroll={withBodyScroll}
                           autoFocus={isMobile || isTabletView ? false : true}
                           viewAs={viewAs}
-                          isHomepage={isHomepage}
                           settingsStudio={settingsStudio}
                           selectoRef={this.selectoRef}
                         >
@@ -427,7 +425,6 @@ Section.propTypes = {
   onOpenUploadPanel: PropTypes.func,
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
-  isHomepage: PropTypes.bool,
   isInfoPanelAvailable: PropTypes.bool,
   settingsStudio: PropTypes.bool,
   withPaging: PropTypes.bool,

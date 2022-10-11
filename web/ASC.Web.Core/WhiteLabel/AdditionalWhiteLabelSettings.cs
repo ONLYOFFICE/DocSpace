@@ -169,7 +169,7 @@ public class AdditionalWhiteLabelSettingsHelper
     {
         get
         {
-            var email = _configuration["web:payment:email"];
+            var email = _configuration["core:payment:email"];
             return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
         }
     }

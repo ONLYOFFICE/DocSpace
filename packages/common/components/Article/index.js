@@ -14,7 +14,7 @@ import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
 import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
-
+import ArticlePaymentAlert from "./sub-components/article-payment-alert";
 import { StyledArticle } from "./styled-article";
 import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
 
@@ -26,9 +26,11 @@ const Article = ({
   toggleArticleOpen,
   setIsMobileArticle,
   children,
-
+  isGracePeriod,
   isBannerVisible,
   hideProfileBlock,
+  isFreeTariff,
+  isAvailableArticlePaymentAlert,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -127,6 +129,9 @@ const Article = ({
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
+          {isAvailableArticlePaymentAlert &&
+            (isFreeTariff || isGracePeriod) &&
+            showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -169,9 +174,19 @@ Article.Body = () => {
 Article.Body.displayName = "Body";
 
 export default inject(({ auth, bannerStore }) => {
-  const { settingsStore } = auth;
-
+  const {
+    settingsStore,
+    currentQuotaStore,
+    currentTariffStatusStore,
+    userStore,
+  } = auth;
+  const { isFreeTariff } = currentQuotaStore;
+  const { isGracePeriod } = currentTariffStatusStore;
   const { isBannerVisible } = bannerStore;
+
+  const { user } = userStore;
+
+  const isAvailableArticlePaymentAlert = user.isOwner || user.isAdmin;
 
   const {
     showText,
@@ -189,7 +204,9 @@ export default inject(({ auth, bannerStore }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
-
+    isFreeTariff,
     isBannerVisible,
+    isGracePeriod,
+    isAvailableArticlePaymentAlert,
   };
 })(observer(Article));

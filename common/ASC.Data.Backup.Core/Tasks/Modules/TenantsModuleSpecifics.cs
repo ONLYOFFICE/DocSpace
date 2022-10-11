@@ -44,7 +44,6 @@ public class TenantsModuleSpecifics : ModuleSpecificsBase
                 DateColumns = new Dictionary<string, bool> {{"creationdatetime", false}, {"statuschanged", false}, {"version_changed", false}}
             },
             new TableInfo("tenants_quotarow", "tenant") {InsertMethod = InsertMethod.Replace},
-            new TableInfo("tenants_partners", "tenant_id"),
             new TableInfo("core_user", "tenant", "id", IdType.Guid)
             {
                 DateColumns = new Dictionary<string, bool> {{"workfromdate", false}, {"terminateddate", false}, {"last_modified", false}}
@@ -58,7 +57,6 @@ public class TenantsModuleSpecifics : ModuleSpecificsBase
             new RelationInfo("tenants_tenants", "id", "tenants_quota", "tenant"),
             new RelationInfo("tenants_tenants", "id", "tenants_tariff", "tenant"),
             new RelationInfo("tenants_tenants", "id", "tenants_tariff", "tariff", x => Convert.ToInt32(x["tariff"]) > 0),
-            new RelationInfo("tenants_tenants", "id", "tenants_partners", "tenant_id"),
             new RelationInfo("core_user", "id", "tenants_tenants", "owner_id", null, null, RelationImportance.Low)
         };
 

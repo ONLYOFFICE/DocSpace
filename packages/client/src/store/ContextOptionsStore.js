@@ -195,6 +195,9 @@ class ContextOptionsStore {
 
   lockFile = (item, t) => {
     const { id, locked } = item;
+    const {
+      setSelection: setInfoPanelSelection,
+    } = this.authStore.infoPanelStore;
 
     this.filesActionsStore
       .lockFileAction(id, !locked)
@@ -203,6 +206,7 @@ class ContextOptionsStore {
           ? toastr.success(t("Translations:FileUnlocked"))
           : toastr.success(t("Translations:FileLocked"))
       )
+      .then(() => setInfoPanelSelection({ ...item, locked: !locked }))
       .catch((err) => toastr.error(err));
   };
 
@@ -395,8 +399,9 @@ class ContextOptionsStore {
     return options;
   };
 
-  onShowInfoPanel = () => {
-    const { setIsVisible } = this.authStore.infoPanelStore;
+  onShowInfoPanel = (item) => {
+    const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+    setSelection({ ...item, isContextMenuSelection: true });
     setIsVisible(true);
   };
 
@@ -600,14 +605,14 @@ class ContextOptionsStore {
       },
       {
         key: "edit-room",
-        label: "Edit room",
+        label: t("EditRoom"),
         icon: "images/settings.react.svg",
         onClick: () => this.onClickEditRoom(item),
         disabled: false,
       },
       {
         key: "invite-users-to-room",
-        label: "Invite users",
+        label: t("InviteUsers"),
         icon: "/static/images/person.react.svg",
         onClick: () => this.onClickInviteUsers(),
         disabled: false,
@@ -616,7 +621,7 @@ class ContextOptionsStore {
         key: "room-info",
         label: "Info",
         icon: "/static/images/info.outline.react.svg",
-        onClick: this.onShowInfoPanel,
+        onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
       {
@@ -673,7 +678,7 @@ class ContextOptionsStore {
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
         icon: "/static/images/info.outline.react.svg",
-        onClick: this.onShowInfoPanel,
+        onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
       blockAction,

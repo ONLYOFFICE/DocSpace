@@ -50,7 +50,7 @@ const VersionRow = (props) => {
 
   const title = `${new Date(info.updated).toLocaleString(
     culture
-  )} ${Encoder.htmlDecode(info.updatedBy.displayName)}`;
+  )} ${Encoder.htmlDecode(info.updatedBy?.displayName)}`;
 
   const linkStyles = { isHovered: true, type: "action" };
 

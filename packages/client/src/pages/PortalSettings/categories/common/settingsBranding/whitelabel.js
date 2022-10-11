@@ -124,7 +124,7 @@ StyledComponent.defaultProps = { theme: Base };
 
 const WhiteLabel = (props) => {
   const {
-    isPortalPaid,
+    isSettingPaid,
     logoText,
     logoSizes,
     logoUrls,
@@ -151,9 +151,8 @@ const WhiteLabel = (props) => {
   const [isCanvasProcessing, setIsCanvasProcessing] = useState(false);
   const [isUseTextAsLogo, setIsUseTextAsLogo] = useState(false);
 
-  const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState(logoText);
-
-  const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(logoUrls);
+  const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState(null);
+  const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
   const [logoUrlsChange, setLogoUrlsChange] = useState([]);
 
   const [portalHeaderLabel, setPortalHeaderLabel] = useState();
@@ -163,6 +162,18 @@ const WhiteLabel = (props) => {
   const [faviconLabel, setFaviconLabel] = useState();
   const [editorsHeaderLabel, setEditorsHeaderLabel] = useState();
   const [logoEditorsEmbeddedLabel, setLogoEditorsEmbeddedLabel] = useState();
+
+  useEffect(() => {
+    if (logoText) {
+      setLogoTextWhiteLabel(logoText);
+    }
+  }, [logoText]);
+
+  useEffect(() => {
+    if (logoUrls) {
+      setLogoUrlsWhiteLabel(logoUrls);
+    }
+  }, [logoUrls]);
 
   useEffect(() => {
     if (
@@ -344,19 +355,20 @@ const WhiteLabel = (props) => {
         <Text fontSize="16px" fontWeight="700">
           {t("WhiteLabel")}
         </Text>
-        {!isPortalPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
+        {!isSettingPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
       </div>
 
-      <Text className="wl-subtitle" fontSize="12px">
+      <Text className="wl-subtitle settings_unavailable" fontSize="12px">
         {t("WhiteLabelSubtitle")}
       </Text>
 
       <div className="wl-helper">
-        <Text>{t("WhiteLabelHelper")}</Text>
+        <Text className="settings_unavailable">{t("WhiteLabelHelper")}</Text>
         <HelpButton
           tooltipContent={t("WhiteLabelTooltip")}
           place="right"
           offsetRight={0}
+          className="settings_unavailable"
         />
       </div>
 
@@ -365,13 +377,14 @@ const WhiteLabel = (props) => {
           id="fieldContainerCompanyName"
           labelText={t("CompanyNameForCanvasLogo")}
           isVertical={true}
+          className="settings_unavailable"
         >
           <TextInput
             className="input"
             value={logoTextWhiteLabel}
             onChange={onChangeCompanyName}
-            isDisabled={!isPortalPaid}
-            isReadOnly={!isPortalPaid}
+            isDisabled={!isSettingPaid}
+            isReadOnly={!isSettingPaid}
             scale={true}
             isAutoFocussed={true}
             tabIndex={1}
@@ -383,13 +396,17 @@ const WhiteLabel = (props) => {
             label={t("UseAsLogoButton")}
             onClick={onUseTextAsLogo}
             tabIndex={2}
-            isDisabled={!isPortalPaid}
+            isDisabled={!isSettingPaid}
           />
         </FieldContainer>
 
         <div className="logos-container">
           <div className="logo-wrapper">
-            <Text fontSize="15px" fontWeight="600">
+            <Text
+              fontSize="15px"
+              fontWeight="600"
+              className="settings_unavailable"
+            >
               {portalHeaderLabel}
             </Text>
             <div>
@@ -426,13 +443,14 @@ const WhiteLabel = (props) => {
                 type="file"
                 className="hidden"
                 onChange={onChangeLogo}
-                disabled={!isPortalPaid}
+                disabled={!isSettingPaid}
               />
               <Link
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -440,7 +458,11 @@ const WhiteLabel = (props) => {
           </div>
 
           <div className="logo-wrapper">
-            <Text fontSize="15px" fontWeight="600">
+            <Text
+              fontSize="15px"
+              fontWeight="600"
+              className="settings_unavailable "
+            >
               {logoCompactLabel}
             </Text>
             <div>
@@ -477,13 +499,14 @@ const WhiteLabel = (props) => {
                 type="file"
                 className="hidden"
                 onChange={onChangeLogo}
-                disabled={!isPortalPaid}
+                disabled={!isSettingPaid}
               />
               <Link
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -491,7 +514,11 @@ const WhiteLabel = (props) => {
           </div>
 
           <div className="logo-wrapper">
-            <Text fontSize="15px" fontWeight="600">
+            <Text
+              fontSize="15px"
+              fontWeight="600"
+              className="settings_unavailable"
+            >
               {loginPageLabel}
             </Text>
             <div>
@@ -528,13 +555,14 @@ const WhiteLabel = (props) => {
                 type="file"
                 className="hidden"
                 onChange={onChangeLogo}
-                disabled={!isPortalPaid}
+                disabled={!isSettingPaid}
               />
               <Link
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -542,7 +570,11 @@ const WhiteLabel = (props) => {
           </div>
 
           <div className="logo-wrapper">
-            <Text fontSize="15px" fontWeight="600">
+            <Text
+              fontSize="15px"
+              fontWeight="600"
+              className="settings_unavailable"
+            >
               {logoAboutLabel}
             </Text>
             <div>
@@ -579,13 +611,14 @@ const WhiteLabel = (props) => {
                 type="file"
                 className="hidden"
                 onChange={onChangeLogo}
-                disabled={!isPortalPaid}
+                disabled={!isSettingPaid}
               />
               <Link
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -593,7 +626,11 @@ const WhiteLabel = (props) => {
           </div>
 
           <div className="logo-wrapper">
-            <Text fontSize="15px" fontWeight="600">
+            <Text
+              fontSize="15px"
+              fontWeight="600"
+              className="settings_unavailable"
+            >
               {faviconLabel}
             </Text>
             <div>
@@ -631,13 +668,14 @@ const WhiteLabel = (props) => {
                 type="file"
                 className="hidden"
                 onChange={onChangeLogo}
-                disabled={!isPortalPaid}
+                disabled={!isSettingPaid}
               />
               <Link
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -645,7 +683,11 @@ const WhiteLabel = (props) => {
           </div>
 
           <div className="logo-wrapper">
-            <Text fontSize="15px" fontWeight="600">
+            <Text
+              fontSize="15px"
+              fontWeight="600"
+              className="settings_unavailable"
+            >
               {editorsHeaderLabel}
             </Text>
             <div>
@@ -731,13 +773,14 @@ const WhiteLabel = (props) => {
                 type="file"
                 className="hidden"
                 onChange={onChangeLogo}
-                disabled={!isPortalPaid}
+                disabled={!isSettingPaid}
               />
               <Link
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -745,7 +788,11 @@ const WhiteLabel = (props) => {
           </div>
 
           <div className="logo-wrapper">
-            <Text fontSize="15px" fontWeight="600">
+            <Text
+              fontSize="15px"
+              fontWeight="600"
+              className="settings_unavailable"
+            >
               {logoEditorsEmbeddedLabel}
             </Text>
             <div>
@@ -783,13 +830,14 @@ const WhiteLabel = (props) => {
                 type="file"
                 className="hidden"
                 onChange={onChangeLogo}
-                disabled={!isPortalPaid}
+                disabled={!isSettingPaid}
               />
               <Link
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid && "#A3A9AE"}
+                color={!isPortalPaid ? "#A3A9AE" : ""}
+                className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
               </Link>
@@ -797,15 +845,17 @@ const WhiteLabel = (props) => {
           </div>
         </div>
 
-        <SaveCancelButtons
-          className="save-cancel-buttons"
-          onSaveClick={onSave}
-          onCancelClick={onRestoreLogo}
-          saveButtonLabel={t("Common:SaveButton")}
-          cancelButtonLabel={t("RestoreDefaultButton")}
-          displaySettings={true}
-          showReminder={true}
-        />
+        {isSettingPaid && (
+          <SaveCancelButtons
+            className="save-cancel-buttons"
+            onSaveClick={onSave}
+            onCancelClick={onRestoreLogo}
+            saveButtonLabel={t("Common:SaveButton")}
+            cancelButtonLabel={t("RestoreDefaultButton")}
+            displaySettings={true}
+            showReminder={true}
+          />
+        )}
       </div>
     </StyledComponent>
   );
