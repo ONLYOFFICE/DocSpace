@@ -139,7 +139,6 @@ public class CommonMethods
             language = t.Language,
             name = t.Name == "" ? Resource.PortalName : t.Name,
             ownerId = t.OwnerId,
-            partnerId = t.PartnerId,
             paymentId = t.PaymentId,
             portalName = t.Alias,
             status = t.Status.ToString(),

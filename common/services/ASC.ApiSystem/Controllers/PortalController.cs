@@ -222,15 +222,6 @@ public class PortalController : ControllerBase
             LimitedControlPanel = model.LimitedControlPanel
         };
 
-        if (!string.IsNullOrEmpty(model.PartnerId))
-        {
-            if (Guid.TryParse(model.PartnerId, out _))
-            {
-                // valid guid
-                info.PartnerId = model.PartnerId;
-            }
-        }
-
         if (!string.IsNullOrEmpty(model.AffiliateId))
         {
             info.AffiliateId = model.AffiliateId;
@@ -286,7 +277,7 @@ public class PortalController : ControllerBase
 
                 var tariff = new Tariff
                 {
-                    QuotaId = trialQuotaId,
+                    Quotas = new List<Quota> { new Quota(trialQuotaId, 1) },
                     DueDate = dueDate
                 };
                 HostedSolution.SetTariff(t.Id, tariff);

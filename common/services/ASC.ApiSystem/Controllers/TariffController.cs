@@ -114,7 +114,7 @@ public class TariffController : ControllerBase
 
         var quota = new TenantQuota(tenant.Id)
         {
-            ActiveUsers = 10000,
+            CountManager = 10000,
             Features = model.Features ?? "",
             MaxFileSize = 1024 * 1024 * 1024,
             MaxTotalSize = 1024L * 1024 * 1024 * 1024 - 1,
@@ -123,7 +123,7 @@ public class TariffController : ControllerBase
 
         if (model.ActiveUsers != default)
         {
-            quota.ActiveUsers = model.ActiveUsers;
+            quota.CountManager = model.ActiveUsers;
         }
 
         if (model.MaxTotalSize != default)
@@ -140,7 +140,7 @@ public class TariffController : ControllerBase
 
         var tariff = new Tariff
         {
-            QuotaId = quota.Tenant,
+            Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
             DueDate = model.DueDate != default ? model.DueDate : DateTime.MaxValue.AddSeconds(-1),
         };
 
@@ -184,8 +184,8 @@ public class TariffController : ControllerBase
     public IActionResult GetTariffs()
     {
         var tariffs = HostedSolution.GetTenantQuotas()
-            .Where(q => !q.Trial && !q.Free && !q.Open)
-            .OrderBy(q => q.ActiveUsers)
+            .Where(q => !q.Trial && !q.Free)
+            .OrderBy(q => q.CountManager)
             .ThenByDescending(q => q.Tenant)
             .Select(q => ToTariffWrapper(null, q));
 
@@ -216,7 +216,7 @@ public class TariffController : ControllerBase
     {
         return new
         {
-            activeUsers = q.ActiveUsers,
+            countManager = q.CountManager,
             dueDate = t == null ? DateTime.MaxValue : t.DueDate,
             features = q.Features,
             maxFileSize = q.MaxFileSize,

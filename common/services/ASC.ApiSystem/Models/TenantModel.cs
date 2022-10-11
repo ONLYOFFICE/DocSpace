@@ -60,9 +60,6 @@ public class TenantModel : IModel
 
     public string PasswordHash { get; set; }
 
-    [StringLength(255)]
-    public string PartnerId { get; set; }
-
     [StringLength(32)]
     public string Phone { get; set; }
 
