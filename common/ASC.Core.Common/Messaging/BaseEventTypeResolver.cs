@@ -27,20 +27,26 @@
 namespace ASC.MessagingSystem.Mapping;
 
 [Scope]
-public class BaseEventTypeConverter : ITypeConverter<LoginEvent, BaseEvent>
+public class BaseEventTypeIpResolver : IValueResolver<LoginEvent, BaseEvent, string>
+{
+    public string Resolve(LoginEvent source, BaseEvent destination, string destMember, ResolutionContext context)
+    {
+        return source.Ip.Split(':').Length > 1 ? source.Ip.Split(':')[0] : source.Ip;
+    }
+}
+
+[Scope]
+public class BaseEventTypeDateResolver : IValueResolver<LoginEvent, BaseEvent, DateTime>
 {
     private readonly TenantUtil _tenantUtil;
 
-    public BaseEventTypeConverter(TenantUtil tenantUtil)
+    public BaseEventTypeDateResolver(TenantUtil tenantUtil)
     {
         _tenantUtil = tenantUtil;
     }
 
-    public BaseEvent Convert(LoginEvent source, BaseEvent destination, ResolutionContext context)
+    public DateTime Resolve(LoginEvent source, BaseEvent destination, DateTime destMember, ResolutionContext context)
     {
-        var baseEvent = context.Mapper.Map<LoginEvent, BaseEvent>(source);
-        baseEvent.IP = source.Ip.Split(':').Length > 1 ? source.Ip.Split(':')[0] : source.Ip;
-        baseEvent.Date = _tenantUtil.DateTimeFromUtc(source.Date);
-        return baseEvent;
+        return _tenantUtil.DateTimeFromUtc(source.Date);
     }
 }
