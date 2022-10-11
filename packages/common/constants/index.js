@@ -260,3 +260,26 @@ export const Events = Object.freeze({
   ROOM_EDIT: "edit_room",
   CHANGE_COLUMN: "change_column",
 });
+
+/**
+ * Enum for feed action types.
+ * @readonly
+ */
+export const FeedActionTypes = Object.freeze({
+  Create: 0,
+  Update: 1,
+  Rename: 2,
+  Move: 3,
+  Delete: 4,
+});
+
+/**
+ * Enum for feed item types.
+ * @readonly
+ */
+export const FeedItemTypes = Object.freeze({
+  File: "file",
+  Folder: "folder",
+  Room: "room",
+  User: "sharedRoom",
+});

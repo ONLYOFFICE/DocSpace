@@ -176,7 +176,7 @@ public class FeedAggregatorService : FeedBaseService
                     }
                 }
 
-                feedAggregateDataProvider.SaveFeeds(result, module.GetType().Name, toTime);
+                feedAggregateDataProvider.SaveFeeds(result, module.GetType().Name, toTime, cfg.PortionSize);
 
                 foreach (var res in result)
                 {

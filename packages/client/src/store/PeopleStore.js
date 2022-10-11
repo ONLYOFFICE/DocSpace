@@ -12,7 +12,12 @@ import InviteLinksStore from "./InviteLinksStore";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
 import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
-import { isMobile } from "react-device-detect";
+import {
+  isMobile,
+  isTablet,
+  isDesktop,
+} from "@docspace/components/utils/device";
+import { isMobileRDD } from "react-device-detect";
 
 import toastr from "@docspace/components/toast/toastr";
 
@@ -36,7 +41,7 @@ class PeopleStore {
   infoPanelStore = null;
   setupStore = null;
   isInit = false;
-  viewAs = isMobile ? "row" : "table";
+  viewAs = isMobileRDD ? "row" : "table";
 
   constructor(authStore, infoPanelStore, setupStore) {
     this.authStore = authStore;
@@ -103,7 +108,13 @@ class PeopleStore {
     this.changeType(action, getUsersToMakeEmployeesIds, t);
   };
 
-  changeType = (type, users, t, needClearSelection = true) => {
+  changeType = (
+    type,
+    users,
+    t,
+    needClearSelection = true,
+    needFetchUsers = true
+  ) => {
     const { changeAdmins } = this.setupStore;
     const { getUsersList } = this.usersStore;
     const { filter } = this.filterStore;
@@ -115,7 +126,7 @@ class PeopleStore {
 
     if (type === "admin") {
       changeAdmins(userIDs, fullAccessId, true).then((res) => {
-        getUsersList(filter);
+        needFetchUsers && getUsersList(filter);
         needClearSelection && clearSelection();
         toastr.success(t("Settings:AdministratorsAddedSuccessfully"));
       });
@@ -127,11 +138,16 @@ class PeopleStore {
 
     if (type === "user") {
       changeAdmins(userIDs, fullAccessId, false).then((res) => {
-        getUsersList(filter);
+        needFetchUsers && getUsersList(filter);
         needClearSelection && clearSelection();
         toastr.success(t("Settings:AdministratorsRemovedSuccessfully"));
       });
     }
+  };
+
+  onOpenInfoPanel = () => {
+    const { setIsVisible } = this.infoPanelStore;
+    setIsVisible(true);
   };
 
   getHeaderMenu = (t) => {
@@ -151,7 +167,7 @@ class PeopleStore {
 
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
-    const { setVisible, isVisible } = this.infoPanelStore;
+    const { isVisible } = this.infoPanelStore;
 
     const options = [];
 
@@ -201,8 +217,10 @@ class PeopleStore {
       {
         key: "info",
         label: t("Common:Info"),
-        disabled: isVisible,
-        onClick: setVisible,
+        disabled:
+          isVisible ||
+          !(isTablet() || isMobile() || isMobileRDD || !isDesktop()),
+        onClick: (item) => this.onOpenInfoPanel(item),
         iconUrl: "images/info.react.svg",
       },
       {

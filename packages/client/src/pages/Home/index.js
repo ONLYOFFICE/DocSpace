@@ -22,7 +22,6 @@ import {
   SectionHeaderContent,
   SectionPagingContent,
 } from "./Section";
-import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
@@ -32,6 +31,7 @@ import { Events } from "@docspace/common/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
+import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -613,7 +613,14 @@ export default inject(
 
     const { gallerySelected } = oformsStore;
 
-    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+      expandedKeys,
+      setExpandedKeys,
+      isRoomsFolder,
+      isArchiveFolder,
+    } = treeFoldersStore;
 
     const {
       visible: primaryProgressDataVisible,
@@ -704,6 +711,10 @@ export default inject(
       itemsSelectionLength,
       itemsSelectionTitle,
 
+      isRoomsFolder,
+      isArchiveFolder,
+
+      setExpandedKeys,
       setFirstLoad,
       setDragging,
       setIsLoading,

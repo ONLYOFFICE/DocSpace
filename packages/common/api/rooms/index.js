@@ -27,8 +27,50 @@ export function getRoomInfo(id) {
   };
 
   return request(options).then((res) => {
-    res.files = decodeDisplayName(res.files);
-    res.folders = decodeDisplayName(res.folders);
+    return res;
+  });
+}
+
+export function getRoomMembers(id) {
+  const options = {
+    method: "get",
+    url: `/files/rooms/${id}/share`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function getHistory(module, id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=${module}&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function getRoomHistory(id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=rooms&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function getFileHistory(id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=files&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
     return res;
   });
 }
