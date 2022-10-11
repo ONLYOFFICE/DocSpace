@@ -52,6 +52,10 @@ const StyledFilterBlock = styled.div`
   .filter-body {
     height: ${(props) => (props.showFooter ? "calc(100% - 125px)" : "100%")};
 
+    .combo-item {
+      padding: 0;
+    }
+
     .combo-button {
       justify-content: space-between;
 
