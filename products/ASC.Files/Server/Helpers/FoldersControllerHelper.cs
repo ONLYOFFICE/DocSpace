@@ -155,7 +155,11 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         if (!_coreBaseSettings.DisableDocSpace)
         {
             yield return await _globalFolderHelper.FolderVirtualRoomsAsync;
-            yield return await _globalFolderHelper.FolderArchiveAsync;
+
+            if (!IsVisitor)
+            {
+                yield return await _globalFolderHelper.FolderArchiveAsync;
+            }
         }
     }
 
