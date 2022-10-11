@@ -130,14 +130,16 @@ const StyledCrossIcon = styled(CrossIcon)`
 
 StyledCrossIcon.defaultProps = { theme: Base };
 
-const InfoPanel = ({ children, isVisible, setIsVisible, viewAs, isFiles }) => {
-  if (!isVisible) return null;
+const InfoPanel = ({
+  children,
+  isVisible,
+  setIsVisible,
+  canDisplay,
+  viewAs,
+}) => {
+  if (!isVisible || !canDisplay) return null;
 
   const closeInfoPanel = () => setIsVisible(false);
-
-  useEffect(() => {
-    if (!isFiles) closeInfoPanel();
-  }, [isFiles]);
 
   useEffect(() => {
     const onMouseDown = (e) => {
@@ -188,12 +190,13 @@ StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
 export default inject(({ auth, filesStore }) => {
-  const { isVisible, setIsVisible } = auth.infoPanelStore;
-  const isFiles = true && filesStore;
+  const { isVisible, setIsVisible, getCanDisplay } = auth.infoPanelStore;
+
+  const canDisplay = getCanDisplay();
 
   return {
     isVisible,
     setIsVisible,
-    isFiles,
+    canDisplay,
   };
 })(InfoPanel);

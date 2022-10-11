@@ -10,7 +10,7 @@ import DropDownItem from "@docspace/components/drop-down-item";
 import LoaderSectionHeader from "../loaderSectionHeader";
 import { tablet } from "@docspace/components/utils/device";
 import withLoading from "SRC_DIR/HOCs/withLoading";
-
+import Badge from "@docspace/components/badge";
 import {
   getKeyByLink,
   settingsTree,
@@ -26,7 +26,13 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   max-width: calc(100vw - 32px);
-
+  .settings-section_header {
+    display: flex;
+    align-items: baseline;
+    .settings-section_badge {
+      margin-left: 8px;
+    }
+  }
   .action-wrapper {
     flex-grow: 1;
 
@@ -63,7 +69,10 @@ const HeaderContainer = styled.div`
     h1 {
       font-size: 18px;
       line-height: 59px !important;
-      padding-bottom: 6px;
+    }
+
+    .settings-section_header {
+      padding-top: 6px;
     }
   }
 `;
@@ -126,6 +135,7 @@ class SectionHeaderContent extends React.Component {
       settingsTree,
       "isHeader"
     );
+
     this.state = {
       header,
       isCategoryOrHeader: isCategory || isHeader,
@@ -134,6 +144,21 @@ class SectionHeaderContent extends React.Component {
     };
   }
 
+  isAvailableSettings = (key) => {
+    const {
+      isBrandingAndCustomizationAvailable,
+      isRestoreAndAutoBackupAvailable,
+    } = this.props;
+
+    switch (key) {
+      case "DNSSettings":
+        return isBrandingAndCustomizationAvailable;
+      case "RestoreBackup":
+        return isRestoreAndAutoBackupAvailable;
+      default:
+        return true;
+    }
+  };
   componentDidUpdate() {
     const { tReady, setIsLoadedSectionHeader } = this.props;
 
@@ -156,7 +181,13 @@ class SectionHeaderContent extends React.Component {
     );
     const isCategoryOrHeader = isCategory || isHeader;
 
+    const isNeedPaidIcon = !this.isAvailableSettings(header);
+
+    this.state.isNeedPaidIcon !== isNeedPaidIcon &&
+      this.setState({ isNeedPaidIcon });
+
     header !== this.state.header && this.setState({ header });
+
     isCategoryOrHeader !== this.state.isCategoryOrHeader &&
       this.setState({ isCategoryOrHeader });
   }
@@ -223,7 +254,7 @@ class SectionHeaderContent extends React.Component {
       isHeaderVisible,
       selection,
     } = this.props;
-    const { header, isCategoryOrHeader } = this.state;
+    const { header, isCategoryOrHeader, isNeedPaidIcon } = this.state;
     const arrayOfParams = this.getArrayOfParams();
 
     const menuItems = (
@@ -272,7 +303,18 @@ class SectionHeaderContent extends React.Component {
               />
             )}
             <Headline type="content" truncate={true}>
-              {t(header)}
+              <div className="settings-section_header">
+                {t(header)}
+                {isNeedPaidIcon ? (
+                  <Badge
+                    backgroundColor="#EDC409"
+                    label="Paid"
+                    className="settings-section_badge"
+                  />
+                ) : (
+                  ""
+                )}
+              </div>
             </Headline>
             {addUsers && (
               <div className="action-wrapper">
@@ -293,7 +335,12 @@ class SectionHeaderContent extends React.Component {
 }
 
 export default inject(({ auth, setup, common }) => {
+  const { currentQuotaStore } = auth;
   const { customNames } = auth.settingsStore;
+  const {
+    isBrandingAndCustomizationAvailable,
+    isRestoreAndAutoBackupAvailable,
+  } = currentQuotaStore;
   const { addUsers, removeAdmins } = setup.headerAction;
   const { toggleSelector } = setup;
   const {
@@ -325,6 +372,8 @@ export default inject(({ auth, setup, common }) => {
     selection,
     isLoadedSectionHeader,
     setIsLoadedSectionHeader,
+    isBrandingAndCustomizationAvailable,
+    isRestoreAndAutoBackupAvailable,
   };
 })(
   withLoading(

@@ -55,8 +55,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         TenantManager tenantManager,
         TenantUtil tenantUtil,
         SetupInfo setupInfo,
-        TenantExtra tenantExtra,
-        TenantStatisticsProvider tenantStatisticProvider,
+        MaxTotalSizeStatistic maxTotalSizeStatistic,
         CoreBaseSettings coreBaseSettings,
         CoreConfiguration coreConfiguration,
         SettingsManager settingsManager,
@@ -81,8 +80,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
               tenantManager,
               tenantUtil,
               setupInfo,
-              tenantExtra,
-              tenantStatisticProvider,
+              maxTotalSizeStatistic,
               coreBaseSettings,
               coreConfiguration,
               settingsManager,
@@ -399,7 +397,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantExtra, _tenantStatisticProvider);
+        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
         if (checkQuota && maxChunkedUploadSize < file.ContentLength)
         {
             throw FileSizeComment.GetFileSizeException(maxChunkedUploadSize);
@@ -587,7 +585,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
-        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantExtra, _tenantStatisticProvider);
+        var maxChunkedUploadSize = _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
 
         if (maxChunkedUploadSize < file.ContentLength)
         {

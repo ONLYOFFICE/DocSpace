@@ -39,7 +39,7 @@ public class SubscriptionManager
     {
         Constants.Admin.ID,
         Constants.Everyone.ID,
-        Constants.User.ID
+        Constants.Manager.ID
     };
 
     public SubscriptionManager(CachedSubscriptionService service, TenantManager tenantManager, ICache cache)

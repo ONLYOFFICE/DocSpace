@@ -6,8 +6,9 @@ import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
-
+import { UnavailableStyles } from "../../../utils/commonSettingsStyles";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
+import Badge from "@docspace/components/badge";
 
 const StyledTextInput = styled(TextInput)`
   margin-top: 4px;
@@ -74,6 +75,8 @@ const MainContainer = styled.div`
       width: 100%;
     }
   }
+
+  ${(props) => props.isSettingNotPaid && UnavailableStyles}
 `;
 
 const HistoryMainContent = (props) => {
@@ -92,6 +95,7 @@ const HistoryMainContent = (props) => {
     content,
     downloadReport,
     getReport,
+    isSettingNotPaid,
   } = props;
 
   const [lifeTime, setLifeTime] = useState(String(lifetime) || "180");
@@ -149,14 +153,18 @@ const HistoryMainContent = (props) => {
   }, [lifeTime]);
 
   return (
-    <MainContainer>
+    <MainContainer isSettingNotPaid={isSettingNotPaid}>
+      {isSettingNotPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
       <div className="main-wrapper">
-        <Text fontSize="13px" color="#657077">
+        <Text fontSize="13px" color="#657077" className="settings_unavailable">
           {subHeader}
         </Text>
-        <Text className="latest-text">{latestText} </Text>
+        <Text className="latest-text settings_unavailable">{latestText} </Text>
 
-        <label className="storage-label" htmlFor="storage-period">
+        <label
+          className="storage-label settings_unavailable"
+          htmlFor="storage-period"
+        >
           {storagePeriod}
         </label>
         <StyledTextInput
@@ -165,6 +173,7 @@ const HistoryMainContent = (props) => {
           size="base"
           id="storage-period"
           type="text"
+          isDisabled={isSettingNotPaid}
         />
         <SaveCancelButtons
           className="save-cancel"
@@ -175,8 +184,9 @@ const HistoryMainContent = (props) => {
           showReminder={showReminder}
           displaySettings={true}
           hasScroll={false}
+          isDisabled={isSettingNotPaid}
         />
-        <Text className="latest-text">{downloadText}</Text>
+        <Text className="latest-text settings_unavailable">{downloadText}</Text>
       </div>
       {content}
       <Button
@@ -186,6 +196,7 @@ const HistoryMainContent = (props) => {
         size="normal"
         minwidth="auto"
         onClick={() => getReport()}
+        isDisabled={isSettingNotPaid}
       />
     </MainContainer>
   );

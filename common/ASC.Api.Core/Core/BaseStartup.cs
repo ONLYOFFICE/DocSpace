@@ -24,11 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.IdentityModel.Tokens.Jwt;
-
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Net.Http.Headers;
-
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core;
@@ -122,6 +117,8 @@ public abstract class BaseStartup
         services.AddEventBus(_configuration);
         services.AddDistributedTaskQueue();
         services.AddCacheNotify(_configuration);
+
+        services.RegisterFeature();
 
         DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 

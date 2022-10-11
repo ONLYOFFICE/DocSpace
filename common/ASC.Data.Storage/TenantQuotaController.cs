@@ -45,20 +45,22 @@ public class TenantQuotaController : IQuotaController
     private readonly int _tenant;
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;
+    private readonly TenantQuotaFeatureChecker<MaxFileSizeFeature, long> _maxFileSizeChecker;
+    private readonly TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> _maxTotalSizeChecker;
     private readonly Lazy<long> _lazyCurrentSize;
     private long _currentSize;
 
-    public TenantQuotaController(int tenant, TenantManager tenantManager, AuthContext authContext)
+    public TenantQuotaController(int tenant, TenantManager tenantManager, AuthContext authContext, TenantQuotaFeatureChecker<MaxFileSizeFeature, long> maxFileSizeChecker, TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> maxTotalSizeChecker)
     {
         _tenant = tenant;
         _tenantManager = tenantManager;
+        _maxFileSizeChecker = maxFileSizeChecker;
+        _maxTotalSizeChecker = maxTotalSizeChecker;
         _lazyCurrentSize = new Lazy<long>(() => _tenantManager.FindTenantQuotaRows(tenant)
             .Where(r => UsedInQuota(r.Tag))
             .Sum(r => r.Counter));
         _authContext = authContext;
     }
-
-    #region IQuotaController Members
 
     public void QuotaUsedAdd(string module, string domain, string dataTag, long size, bool quotaCheckFileSize = true)
     {
@@ -104,23 +106,18 @@ public class TenantQuotaController : IQuotaController
         var quota = _tenantManager.GetTenantQuota(_tenant);
         if (quota != null)
         {
-            if (quotaCheckFileSize && quota.MaxFileSize != 0 && quota.MaxFileSize < size)
+            if (quota.MaxFileSize != 0 && quotaCheckFileSize)
             {
-                throw new TenantQuotaException(string.Format("Exceeds the maximum file size ({0}MB)", BytesToMegabytes(quota.MaxFileSize)));
+                _maxFileSizeChecker.CheckAdd(_tenant, size);
             }
-            if (quota.MaxTotalSize != 0 && quota.MaxTotalSize < CurrentSize + size)
+
+            if (quota.MaxTotalSize != 0)
             {
-                throw new TenantQuotaException(string.Format("Exceeded maximum amount of disk quota ({0}MB)", BytesToMegabytes(quota.MaxTotalSize)));
+                _maxTotalSizeChecker.CheckAdd(_tenant, CurrentSize + size);
             }
         }
     }
 
-    #endregion
-
-    public long QuotaCurrentGet()
-    {
-        return CurrentSize;
-    }
 
     private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange, Guid userId)
     {
@@ -133,10 +130,5 @@ public class TenantQuotaController : IQuotaController
     private bool UsedInQuota(string tag)
     {
         return !string.IsNullOrEmpty(tag) && new Guid(tag) != Guid.Empty;
-    }
-
-    private double BytesToMegabytes(long bytes)
-    {
-        return Math.Round(bytes / 1024d / 1024d, 1);
     }
 }

@@ -39,8 +39,8 @@ class ComboButton extends React.Component {
       modernView,
     } = this.props;
 
-    const defaultOption = selectedOption.default;
-    const isSelected = selectedOption.key !== 0;
+    const defaultOption = selectedOption?.default;
+    const isSelected = selectedOption?.key !== 0;
 
     return (
       <ColorTheme
@@ -79,16 +79,18 @@ class ComboButton extends React.Component {
             />
           </StyledIcon>
         )}
+
         <Text
           noBorder={noBorder}
-          title={selectedOption.label}
+          title={selectedOption?.label}
           as="div"
           truncate={true}
           fontWeight={600}
           className="combo-button-label"
         >
-          {selectedOption.label}
+          {selectedOption?.label}
         </Text>
+
         <StyledArrowIcon
           needDisplay={withOptions || withAdvancedOptions}
           noBorder={noBorder}

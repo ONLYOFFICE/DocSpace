@@ -74,4 +74,5 @@ public class SmallShareRecord
     public Guid Owner { get; set; }
     public DateTime TimeStamp { get; set; }
     public FileShare Share { get; set; }
+    public SubjectType SubjectType { get; set; }
 }

@@ -1,5 +1,8 @@
 import styled, { css } from "styled-components";
-import commonSettingsStyles from "../../../utils/commonSettingsStyles";
+import {
+  commonSettingsStyles,
+  UnavailableStyles,
+} from "../../../utils/commonSettingsStyles";
 import globalColors from "@docspace/components/utils/globalColors";
 import { isMobileOnly } from "react-device-detect";
 import { mobile } from "@docspace/components/utils/device";
@@ -113,10 +116,6 @@ const StyledAutoBackup = styled.div`
   .backup_toggle-btn-description {
     margin-left: 37px;
     max-width: 1024px;
-    color: ${(props) =>
-      props.isEnableAuto
-        ? props.theme.text.color
-        : props.theme.text.disableColor};
   }
   .toggle-button-text {
     font-weight: 600;
@@ -157,6 +156,11 @@ const StyledAutoBackup = styled.div`
   .auto-backup_buttons {
     ${!isMobileOnly && "margin-bottom: 24px"}
   }
+
+  .auto-backup_badge {
+    margin-left: 8px;
+  }
+  ${(props) => !props.isEnableAuto && UnavailableStyles}
 `;
 const StyledStoragesModule = styled.div`
   .backup_storages-buttons {
@@ -179,8 +183,7 @@ const StyledRestoreBackup = styled.div`
     margin-top: 24px;
     margin-bottom: 8px;
     font-size: 16px;
-    color: ${(props) =>
-      props.isEnableRestore ? "#F21C0E" : props.theme.text.disableColor};
+    color: #f21c0e;
   }
   .restore-backup_warning-link {
     margin: 16px 0 24px 0;
@@ -199,19 +202,8 @@ const StyledRestoreBackup = styled.div`
       white-space: normal;
     }
   }
-  .restore-backup_warning-link,
-  .restore-backup-checkbox_notification,
-  .restore-backup_warning-description {
-    color: ${(props) =>
-      props.isEnableRestore
-        ? props.theme.text.color
-        : props.theme.text.disableColor};
-  }
+
   .restore-backup_list {
-    color: ${(props) =>
-      props.isEnableRestore
-        ? props.theme.text.color
-        : props.theme.text.disableColor};
     text-decoration: underline dotted;
     cursor: ${(props) => (props.isEnableRestore ? "pointer" : "cursor")};
     font-weight: 600;
@@ -232,6 +224,7 @@ const StyledRestoreBackup = styled.div`
   .restore-backup_button {
     ${isMobileOnly && "width:100%"}
   }
+  ${(props) => !props.isEnableRestore && UnavailableStyles}
 `;
 const StyledModules = styled.div`
   margin-bottom: 24px;

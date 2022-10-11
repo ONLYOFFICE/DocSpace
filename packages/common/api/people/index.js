@@ -43,6 +43,17 @@ export function getUser(userName = null) {
   });
 }
 
+export function getUserByEmail(userEmail) {
+  return request({
+    method: "get",
+    url: `/people/email?email=${userEmail}`,
+  }).then((user) => {
+    if (user && user.displayName) {
+      user.displayName = Encoder.htmlDecode(user.displayName);
+    }
+    return user;
+  });
+}
 export function getUserFromConfirm(userId, confirmKey = null) {
   const options = {
     method: "get",

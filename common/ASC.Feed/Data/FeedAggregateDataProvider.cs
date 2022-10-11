@@ -62,7 +62,7 @@ public class FeedAggregateDataProvider
         return value != default ? value.AddSeconds(1) : value;
     }
 
-    public void SaveFeeds(IEnumerable<FeedRow> feeds, string key, DateTime value)
+    public void SaveFeeds(IEnumerable<FeedRow> feeds, string key, DateTime value, int portionSize)
     {
         var feedLast = new FeedLast
         {
@@ -74,14 +74,13 @@ public class FeedAggregateDataProvider
         feedDbContext.AddOrUpdate(r => r.FeedLast, feedLast);
         feedDbContext.SaveChanges();
 
-        const int feedsPortionSize = 1000;
         var aggregatedDate = DateTime.UtcNow;
 
         var feedsPortion = new List<FeedRow>();
         foreach (var feed in feeds)
         {
             feedsPortion.Add(feed);
-            if (feedsPortion.Sum(f => f.Users.Count) <= feedsPortionSize)
+            if (feedsPortion.Sum(f => f.Users.Count) <= portionSize)
             {
                 continue;
             }
@@ -258,7 +257,7 @@ public class FeedAggregateDataProvider
             q1 = q1.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
         }
 
-        var news = q1.Select(r => r.aggregates).AsEnumerable();
+        var news = q1.Select(r => r.aggregates).Distinct().AsEnumerable();
 
         return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(news);
     }
@@ -364,7 +363,8 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
     public string Json { get; set; }
     public string Module { get; set; }
     public Guid AuthorId { get; set; }
-    public Guid ModifiedById { get; set; }
+    public Guid ModifiedBy { get; set; }
+    public object TargetId { get; set; }
     public string GroupId { get; set; }
     public bool IsToday { get; set; }
     public bool IsYesterday { get; set; }

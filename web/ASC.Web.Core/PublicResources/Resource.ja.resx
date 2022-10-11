@@ -100,9 +100,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>正しくないメールアドレス</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>プロモーションコードが間違っているようです</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>この操作を実行するアクセス許可がありません</value>
   </data>

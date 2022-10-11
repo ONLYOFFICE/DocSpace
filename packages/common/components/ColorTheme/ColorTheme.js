@@ -278,10 +278,11 @@ export default inject(({ auth, loginStore }) => {
     const { currentColorScheme } = loginStore;
     return { currentColorScheme };
   } else {
+    if (!auth) return;
     const { settingsStore } = auth;
     const { currentColorScheme } = settingsStore;
     return {
-      currentColorScheme,
+      currentColorScheme: currentColorScheme || false,
     };
   }
 })(observer(ColorTheme));
