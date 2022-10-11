@@ -250,6 +250,14 @@
         "expires": "0:10:0",
 		"disableEncryption": true
       },
+	  {
+        "name": "backup_temp",
+        "visible": false,
+        "type": "disc",
+        "path": "$STORAGE_ROOT\\Studio\\{0}\\temp\\backup",
+        "expires": "0:10:0",
+		"disableEncryption": true
+      },
       {
         "name": "customnavigation",
         "data": "00000000-0000-0000-0000-000000000000",

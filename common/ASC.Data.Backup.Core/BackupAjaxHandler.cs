@@ -40,8 +40,9 @@ public class BackupAjaxHandler
     private readonly ConsumerFactory _consumerFactory;
     private readonly BackupService _backupService;
     private readonly TempPath _tempPath;
+    private readonly StorageFactory _storageFactory;
 
-    private const string BackupTempFolder = "backup";
+    private const string BackupTempModule = "backup_temp";
     private const string BackupFileName = "backup.tmp";
 
     #region backup
@@ -57,7 +58,8 @@ public class BackupAjaxHandler
         UserManager userManager,
         TenantExtra tenantExtra,
         ConsumerFactory consumerFactory,
-        TempPath tempPath)
+        TempPath tempPath,
+        StorageFactory storageFactory)
     {
         _tenantManager = tenantManager;
         _messageService = messageService;
@@ -70,6 +72,7 @@ public class BackupAjaxHandler
         _consumerFactory = consumerFactory;
         _backupService = backupService;
         _tempPath = tempPath;
+        _storageFactory = storageFactory;
     }
 
     public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams)
@@ -385,7 +388,8 @@ public class BackupAjaxHandler
 
     public string GetTmpFilePath()
     {
-        var folder = Path.Combine(_tempPath.GetTempPath().Replace("\\ASC.Data.Backup\\", "\\ASC.Data.Backup.BackgroundTasks\\"), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
+        var discStore = _storageFactory.GetStorage("", _tenantManager.GetCurrentTenant().Id.ToString(), BackupTempModule, null) as DiscDataStore;
+        var folder = discStore.GetPhysicalPath("", "");
 
         if (!Directory.Exists(folder))
         {
