@@ -6,7 +6,7 @@ import Box from "@docspace/components/box";
 //import FormStore from "@docspace/studio/src/store/SsoFormStore";
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
-
+import Badge from "@docspace/components/badge";
 import DisableSsoConfirmationModal from "./DisableSsoConfirmationModal";
 
 const borderProp = { radius: "6px" };
@@ -20,11 +20,17 @@ const ToggleSSO = (props) => {
     openConfirmationDisableModal,
     ssoToggle,
     confirmationDisableModal,
+    isSSOAvailable,
   } = props;
 
   return (
     <>
-      <Text className="intro-text" lineHeight="20px" color="#657077" noSelect>
+      <Text
+        className="intro-text settings_unavailable"
+        lineHeight="20px"
+        color="#657077"
+        noSelect
+      >
         {t("SsoIntro")}
       </Text>
 
@@ -43,13 +49,35 @@ const ToggleSSO = (props) => {
           onChange={
             isSsoEnabled && enableSso ? openConfirmationDisableModal : ssoToggle
           }
+          isDisabled={!isSSOAvailable}
         />
 
         <div className="toggle-caption">
-          <Text fontWeight={600} lineHeight="20px" noSelect>
-            {t("TurnOnSSO")}
-          </Text>
-          <Text fontSize="12px" fontWeight={400} lineHeight="16px" noSelect>
+          <div className="toggle-caption_title">
+            <Text
+              fontWeight={600}
+              lineHeight="20px"
+              noSelect
+              className="settings_unavailable"
+            >
+              {t("TurnOnSSO")}
+            </Text>
+            {!isSSOAvailable && (
+              <Badge
+                backgroundColor="#EDC409"
+                label="Paid"
+                maxWidth="31px"
+                className="toggle-caption_title_badge"
+              />
+            )}
+          </div>
+          <Text
+            fontSize="12px"
+            fontWeight={400}
+            lineHeight="16px"
+            className="settings_unavailable"
+            noSelect
+          >
             {t("TurnOnSSOCaption")}
           </Text>
         </div>

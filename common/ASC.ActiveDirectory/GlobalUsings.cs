@@ -56,7 +56,6 @@ global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Threading;
 global using ASC.Core;
 global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
@@ -68,7 +67,9 @@ global using ASC.Notify.Recipients;
 global using ASC.Security.Cryptography;
 global using ASC.Web.Core;
 global using ASC.Web.Core.PublicResources;
+global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Users;
+global using ASC.Web.Core.Utility;
 global using ASC.Web.Studio.Utility;
 
 global using Microsoft.EntityFrameworkCore;
@@ -81,3 +82,5 @@ global using Novell.Directory.Ldap;
 global using Novell.Directory.Ldap.Controls;
 global using Novell.Directory.Ldap.Rfc2251;
 global using Novell.Directory.Ldap.Utilclass;
+
+global using ByteConverter = ASC.Core.Common.ByteConverter;

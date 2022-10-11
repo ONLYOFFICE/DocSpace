@@ -35,7 +35,8 @@ public class RoomLogoManager
     private const string ModuleName = "room_logos";
     private const string TempDomainPath = "logos_temp";
     private static Size _originalLogoSize = new Size(1280, 1280);
-    private static Size _bigLogoSize = new Size(32, 32);
+    private static Size _largeLogoSize = new Size(96, 96);
+    private static Size _mediumLogoSize = new Size(32, 32);
     private static Size _smallLogoSize = new Size(16, 16);
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
@@ -139,7 +140,8 @@ public class RoomLogoManager
         return new Logo
         {
             Original = await GetOriginalLogoPath(id),
-            Big = await GetBigLogoPath(id),
+            Large = await GetLargeLogoPath(id),
+            Medium = await GetMediumLogoPath(id),
             Small = await GetSmallLogoPath(id),
         };
     }
@@ -192,8 +194,9 @@ public class RoomLogoManager
         using var stream = new MemoryStream(imageData);
         var path = await DataStore.SaveAsync(fileName, stream);
 
-        await ResizeAndSaveAsync(id, imageData, maxFileSize, _bigLogoSize, position, cropSize);
+        await ResizeAndSaveAsync(id, imageData, maxFileSize, _mediumLogoSize, position, cropSize);
         await ResizeAndSaveAsync(id, imageData, maxFileSize, _smallLogoSize, position, cropSize);
+        await ResizeAndSaveAsync(id, imageData, maxFileSize, _largeLogoSize, position, cropSize);
 
         return path.ToString();
     }
@@ -253,14 +256,19 @@ public class RoomLogoManager
         return path ?? string.Empty;
     }
 
-    public async ValueTask<string> GetBigLogoPath<T>(T id)
+    public async ValueTask<string> GetMediumLogoPath<T>(T id)
     {
-        return await GetLogoPath(id, _bigLogoSize);
+        return await GetLogoPath(id, _mediumLogoSize);
     }
 
     public async ValueTask<string> GetSmallLogoPath<T>(T id)
     {
         return await GetLogoPath(id, _smallLogoSize);
+    }
+
+    public async ValueTask<string> GetLargeLogoPath<T>(T id)
+    {
+        return await GetLogoPath(id, _largeLogoSize);
     }
 
     public async ValueTask<string> GetLogoPath<T>(T id, Size size)

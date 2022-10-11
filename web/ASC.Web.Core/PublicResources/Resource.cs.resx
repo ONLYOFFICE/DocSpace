@@ -88,9 +88,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Nesprávná e-mailová adresa</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Nesprávný promo kód</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Nemáte oprávnění k provedení této akce</value>
   </data>
