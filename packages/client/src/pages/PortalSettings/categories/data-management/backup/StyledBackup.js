@@ -64,6 +64,7 @@ const commonStyles = css`
     max-width: ${TEXT_LENGTH};
     font-size: 12px;
     line-height: 15px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   }
 `;
 
