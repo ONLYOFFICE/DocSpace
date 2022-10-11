@@ -24,13 +24,28 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Billing;
+
 namespace ASC.Files.Core.Core;
 
 public class CountRoomChecker : TenantQuotaFeatureChecker<CountRoomFeature, int>
 {
+    private readonly ITariffService _tariffService;
     public override string Exception => Resource.TariffsFeature_room_exception;
-    public CountRoomChecker(ITenantQuotaFeatureStat<CountRoomFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
+    public CountRoomChecker(ITenantQuotaFeatureStat<CountRoomFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager, ITariffService tariffService)
+        : base(tenantQuotaFeatureStatistic, tenantManager)
     {
+        _tariffService = tariffService;
+    }
+
+    public override void CheckAdd(int tenantId, int newValue)
+    {
+        if (_tariffService.GetTariff(tenantId).State != TariffState.Paid)
+        {
+            throw new BillingNotFoundException(Resource.ErrorNotAllowedOption, "room");
+        }
+
+        base.CheckAdd(tenantId, newValue);
     }
 }
 

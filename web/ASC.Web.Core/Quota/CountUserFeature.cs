@@ -30,10 +30,23 @@ namespace ASC.Web.Core.Quota;
 
 public class CountUserChecker : TenantQuotaFeatureChecker<CountUserFeature, int>
 {
+    private readonly ITariffService _tariffService;
     public override string Exception => Resource.TariffsFeature_users_exception;
 
-    public CountUserChecker(ITenantQuotaFeatureStat<CountUserFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
+    public CountUserChecker(ITenantQuotaFeatureStat<CountUserFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager, ITariffService tariffService)
+        : base(tenantQuotaFeatureStatistic, tenantManager)
     {
+        _tariffService = tariffService;
+    }
+
+    public override void CheckAdd(int tenantId, int newValue)
+    {
+        if (_tariffService.GetTariff(tenantId).State != TariffState.Paid)
+        {
+            throw new BillingNotFoundException(Resource.ErrorNotAllowedOption, "users");
+        }
+
+        base.CheckAdd(tenantId, newValue);
     }
 }
 
