@@ -94,7 +94,7 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
             migrationBuilder.InsertData(
                 table: "tenants_quota",
                 columns: new[] { "tenant", "description", "features", "name", "product_id" },
-                values: new object[] { -3, null, "free,audit,ldap,sso,restore,total_size:2147483648,file_size:100,manager:5,rooms:3", "startup", null });
+                values: new object[] { -3, null, "free,audit,ldap,sso,restore,total_size:2147483648,file_size:100,manager:5,room:3", "startup", null });
 
             migrationBuilder.InsertData(
                 table: "tenants_quota",

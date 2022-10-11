@@ -40,7 +40,7 @@ public class CountRoomChecker : TenantQuotaFeatureChecker<CountRoomFeature, int>
 
     public override void CheckAdd(int tenantId, int newValue)
     {
-        if (_tariffService.GetTariff(tenantId).State != TariffState.Paid)
+        if (_tariffService.GetTariff(tenantId).State > TariffState.Paid)
         {
             throw new BillingNotFoundException(Resource.ErrorNotAllowedOption, "room");
         }
