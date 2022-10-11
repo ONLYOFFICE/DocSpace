@@ -79,10 +79,15 @@ class FilesListWrapper extends React.Component {
             if (axios.isCancel(thrown)) {
               console.log("Request canceled", thrown.message);
             } else {
-              console.error(thrown);
+              const errorBody = thrown.response;
+
+              if (errorBody.data && errorBody.data.error) {
+                toastr.error(errorBody.data.error.message);
+              }
             }
             return;
           });
+
         if (!response) return;
         const data = response.data.response;
 
