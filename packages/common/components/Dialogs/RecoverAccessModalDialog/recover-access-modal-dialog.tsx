@@ -14,6 +14,8 @@ import { useTranslation } from "react-i18next";
 interface IRecoverAccessModalDialogProps {
   visible: boolean;
   onClose: () => void;
+  textBody: string;
+  emailPlaceholderText: string;
 }
 
 const ModalDialogContainer = styled(ModalDialog)`
@@ -41,6 +43,8 @@ const ModalDialogContainer = styled(ModalDialog)`
 const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
   visible,
   onClose,
+  textBody,
+  emailPlaceholderText,
 }) => {
   const [loading, setLoading] = useState(false);
 
@@ -99,7 +103,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
     >
       <ModalDialog.Header>
         <Text isBold={true} fontSize="21px">
-          {t("RecoverTitle")}
+          {t("Common:RecoverTitle")}
         </Text>
       </ModalDialog.Header>
       <ModalDialog.Body>
@@ -109,7 +113,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
           isBold={false}
           fontSize="13px"
         >
-          {t("RecoverTextBody")}
+          {textBody}
         </Text>
         <FieldContainer
           key="e-mail"
@@ -126,7 +130,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
             size="base"
             scale={true}
             tabIndex={3}
-            placeholder={t("RecoverContactEmailPlaceholder")}
+            placeholder={emailPlaceholderText}
             isAutoFocussed={true}
             isDisabled={loading}
             value={email}
@@ -144,7 +148,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
           <Textarea
             heightScale={false}
             hasError={descErr}
-            placeholder={t("RecoverDescribeYourProblemPlaceholder")}
+            placeholder={t("Common:RecoverDescribeYourProblemPlaceholder")}
             tabIndex={3}
             value={description}
             onChange={onChangeDescription}

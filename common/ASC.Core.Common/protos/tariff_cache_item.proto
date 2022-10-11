@@ -4,4 +4,5 @@ package ASC.Core.Billing;
 
 message TariffCacheItem {
     int32 tenant_id = 1;
+    int32 tariff_id = 2;
 }

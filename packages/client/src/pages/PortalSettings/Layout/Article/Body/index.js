@@ -51,6 +51,8 @@ const getTreeItems = (data, path, t) => {
         return t("Migration");
       case "Backup":
         return t("Backup");
+      case "Payments":
+        return t("Payments");
       case "SingleSignOn":
         return t("SingleSignOn");
       default:
@@ -186,6 +188,8 @@ class ArticleBodyContent extends React.Component {
         return t("Migration");
       case "Backup":
         return t("Backup");
+      case "Payments":
+        return t("Payments");
       case "ManagementCategoryDataManagement":
         return t("ManagementCategoryDataManagement");
       case "RestoreBackup":
@@ -197,11 +201,17 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText, t } = this.props;
+    const { showText, isNotPaidPeriod, t } = this.props;
 
     const items = [];
+    let resultTree = [...settingsTree];
 
-    settingsTree.map((item) => {
+    if (isNotPaidPeriod) {
+      resultTree = [...settingsTree].filter((e) => {
+        return e.tKey === "Backup" || e.tKey === "Payments";
+      });
+    }
+    resultTree.map((item) => {
       items.push(
         <CatalogItem
           key={item.key}
@@ -241,12 +251,14 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(({ auth, common }) => {
   const { isLoadedArticleBody, setIsLoadedArticleBody } = common;
-
+  const { currentTariffStatusStore } = auth;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
   return {
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
     isLoadedArticleBody,
     setIsLoadedArticleBody,
+    isNotPaidPeriod,
   };
 })(
   withLoading(

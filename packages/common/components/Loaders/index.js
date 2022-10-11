@@ -33,6 +33,7 @@ import CreateEditRoomDilogHeaderLoader from "./CreateEditRoomLoader/CreateEditRo
 import DataBackupLoader from "./DataBackupLoader";
 import AutoBackupLoader from "./AutoBackupLoader";
 import RestoreBackupLoader from "./RestoreBackupLoader";
+import PaymentsLoader from "./PaymentsLoader";
 import SelectorSearchLoader from "./SelectorSearchLoader";
 import SelectorRowLoader from "./SelectorRowLoader";
 
@@ -79,6 +80,7 @@ export default {
   DataBackupLoader,
   AutoBackupLoader,
   RestoreBackupLoader,
+  PaymentsLoader,
   SelectorSearchLoader,
   SelectorRowLoader,
 
