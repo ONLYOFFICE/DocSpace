@@ -169,8 +169,8 @@ class AccountsContextOptionsStore {
     const adminOption = {
       id: "context-menu_administrator",
       className: "context-menu_drop-down",
-      label: t("Administrator"),
-      title: t("Administrator"),
+      label: t("DocSpaceAdmin"),
+      title: t("DocSpaceAdmin"),
       onClick: (e) => onChangeType(e, t),
       action: "admin",
       key: "cm-administrator",

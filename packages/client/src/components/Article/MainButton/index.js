@@ -262,7 +262,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_administrator",
             className: "main-button_drop-down",
             icon: "/static/images/person.admin.react.svg",
-            label: t("People:Administrator"),
+            label: t("People:DocSpaceAdmin"),
             onClick: onInvite,
             action: "administrator",
             key: "administrator",

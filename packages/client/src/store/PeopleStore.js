@@ -174,8 +174,8 @@ class PeopleStore {
     const adminOption = {
       id: "group-menu_administrator",
       className: "group-menu_drop-down",
-      label: t("Administrator"),
-      title: t("Administrator"),
+      label: t("DocSpaceAdmin"),
+      title: t("DocSpaceAdmin"),
       onClick: (e) => this.onChangeType(e, t),
       "data-action": "admin",
       key: "administrator",

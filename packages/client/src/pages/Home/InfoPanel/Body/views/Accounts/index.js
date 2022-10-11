@@ -45,9 +45,9 @@ const Accounts = ({
       case "owner":
         return t("Common:Owner");
       case "admin":
-        return t("PeopleTranslations:Administrator");
+        return t("People:DocSpaceAdmin");
       case "manager":
-        return t("PeopleTranslations:RoomAdmin");
+        return t("People:RoomAdmin");
       case "user":
         return t("Common:User");
     }
@@ -58,8 +58,8 @@ const Accounts = ({
 
     const adminOption = {
       key: "admin",
-      title: t("PeopleTranslations:Administrator"),
-      label: t("PeopleTranslations:Administrator"),
+      title: t("People:DocSpaceAdmin"),
+      label: t("People:DocSpaceAdmin"),
       action: "admin",
     };
     const managerOption = {

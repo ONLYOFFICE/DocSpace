@@ -2,6 +2,7 @@
   "Administrator": "Administrator",
   "ChangeToGuest": "Change to {{guestCaption}}",
   "ChangeToUser": "Change to {{userCaption}}",
+  "DocSpaceAdmin": "DocSpace admin",
   "EmptyGroupDescription": "You can add new team members manually or invite them via link.",
   "EmptyGroupTitle": "No teammates here yet",
   "LblInviteAgain": "Invite again",
