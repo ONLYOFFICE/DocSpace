@@ -382,6 +382,7 @@ export default inject(
     } = dialogsStore;
 
     const item = backupConnectionItem ?? connectItem;
+    const isConnectionViaBackupModule = backupConnectionItem ? true : false;
 
     return {
       selectedFolderId: id,
@@ -392,7 +393,7 @@ export default inject(
       roomCreation,
       setSaveThirdpartyResponse,
       folderFormValidation,
-
+      isConnectionViaBackupModule,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,

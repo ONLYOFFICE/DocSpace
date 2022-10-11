@@ -378,13 +378,6 @@ const DirectThirdPartyConnection = (props) => {
         />
       )}
 
-      {connectDialogVisible && (
-        <ConnectDialog
-          updateInfo={updateAccountsInfo}
-          isConnectionViaBackupModule
-        />
-      )}
-
       {deleteThirdPartyDialogVisible && (
         <DeleteThirdPartyDialog
           updateInfo={updateAccountsInfo}
