@@ -325,10 +325,11 @@ const StyledBackup = styled.div`
   .backup_connection {
     display: flex;
     margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: minmax(100px, 310px) 32px;
+    grid-gap: 8px;
   }
   .backup_third-party-combo {
-    max-width: 310px;
-    margin-right: 8px;
     .combo-button {
       justify-content: flex-start;
       .combo-button-label {
@@ -371,7 +372,7 @@ const StyledBackup = styled.div`
     }
   }
   .backup_third-party-context {
-    margin-top: 3px;
+    margin-top: 4px;
   }
 `;
 const StyledBackupList = styled.div`
