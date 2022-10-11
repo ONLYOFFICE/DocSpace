@@ -253,30 +253,6 @@ public class DbTenantService : ITenantService
                 tenantDbContext.SaveChanges();
             }
 
-            if (string.IsNullOrEmpty(tenant.PartnerId) && string.IsNullOrEmpty(tenant.AffiliateId) && string.IsNullOrEmpty(tenant.Campaign))
-            {
-                var p = tenantDbContext.TenantPartner
-                    .Where(r => r.TenantId == tenant.Id)
-                    .FirstOrDefault();
-
-                if (p != null)
-                {
-                    tenantDbContext.TenantPartner.Remove(p);
-                }
-            }
-            else
-            {
-                var tenantPartner = new DbTenantPartner
-                {
-                    TenantId = tenant.Id,
-                    PartnerId = tenant.PartnerId,
-                    AffiliateId = tenant.AffiliateId,
-                    Campaign = tenant.Campaign
-                };
-
-                tenantDbContext.TenantPartner.Add(tenantPartner);
-            }
-
             tx.Commit();
         });
 

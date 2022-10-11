@@ -1,12 +1,52 @@
 {
-  "EmptyScreenText": "Здесь будут представлены свойства файлов и папок",
-  "FileExtension": "Расширение файла",
-  "ItemsSelected": "Выбрано элементов",
-  "LastModifiedBy": "Автор последнего корректива",
-  "Members": "участников",
-  "OpenSharingSettings": "Открыть настройки общего доступа",
-  "SystemProperties": "Системные свойства",
-  "Versions": "Версии",
   "ViewDetails": "Просмотреть подробную информацию",
-  "WhoHasAccess": "У кого есть доступ"
+
+  "AccountsEmptyScreenText": "Здесь будут представлены подробности о пользователях",
+  "RoomsEmptyScreenTent": "Здесь будут представлены подробности о комнатах",
+  "FilesEmptyScreenText": "Здесь будут представлены свойства файлов и папок",
+
+  "SubmenuMembers": "Участники",
+  "SubmenuHistory": "История",
+  "SubmenuDetails": "Детали",
+
+  "RecentActivities": "Недавние действия",
+  "UsersInRoom": "Пользователей в комнате",
+  "Properties": "Cвойства",
+  "Data": "Данные",
+
+  "FileExtension": "Расширение файла",
+  "DateModified": "Дата изменения",
+  "LastModifiedBy": "Автор последнего корректива",
+  "CreationDate": "Дата создания",
+  "Versions": "Версии",
+
+  "ItemsSelected": "Выбрано элементов",
+  "SelectedUsers": "Выбрано пользователей",
+
+  "FeedCreateFileSingle": "Создан файл.",
+  "FeedCreateFileSeveral": "Добавлены файлы.",
+  "FeedCreateFolderSingle": "Создана папка.",
+  "FeedCreateFolderSeveral": "Добавлены папки.",
+  "FeedCreateRoom": "Создана комната <strong>«{{roomTitle}}»</strong>",
+  "FeedCreateRoomTag": "Добавлены теги.",
+  "FeedCreateUser": "Добавлены пользователи. ",
+
+  "FeedRenameFile": "Переименован файл.",
+  "FeedRenameFolder": "Переименована папка.",
+  "FeedRenameRoom": "Комната <strong>«{{oldRoomTitle}}»</strong> переименована в <strong>«{{roomTitle}}»</strong>.",
+
+  "FeedUpdateFile": "Обновлен файл.",
+  "FeedUpdateRoom": "Изменена иконка",
+  "FeedUpdateUser": "назначена роль {{role}}",
+
+  "FeedMoveFile": "Перемещены файлы.",
+  "FeedMoveFolder": "Перемещены папки.",
+
+  "FeedDeleteFile": "Удалены файлы.",
+  "FeedDeleteFolder": "Удалены папки.",
+  "FeedDeleteRoomTag": "Удалены теги.",
+  "FeedDeleteUser": "Удален пользователь",
+
+  "FeedLocationLabel": "Папка «{{folderTitle}}»",
+  "AndMoreLabel": "и <strong>еще {{count}}</strong>"
 }

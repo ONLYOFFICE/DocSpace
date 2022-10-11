@@ -58,6 +58,11 @@ public class Startup : BaseStartup
 
         services.AddBaseDbContextPool<FilesDbContext>();
 
+        services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
+        services.AddScoped<CountRoomChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
+        services.AddScoped<CountRoomCheckerStatistic>();
     }
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

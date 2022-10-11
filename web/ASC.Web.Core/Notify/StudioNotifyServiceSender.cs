@@ -107,7 +107,7 @@ public class StudioNotifyServiceSender
     public void SendEnterpriseTariffLetters(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLetters(EMailSenderName, scheduleDate);
+        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLetters(EMailSenderName, scheduleDate).Wait();
     }
 
     public void SendOpensourceTariffLetters(DateTime scheduleDate)

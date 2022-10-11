@@ -88,9 +88,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Onjuist e-mailadres</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Onjuiste promocode</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Geen toestemming om deze actie uit te voeren</value>
   </data>

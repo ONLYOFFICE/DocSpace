@@ -517,9 +517,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Dirección de correo electrónico incorrecta</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Código de promocional incorrecto</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>No hay permisos para realizar esta acción</value>
   </data>
