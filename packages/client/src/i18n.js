@@ -36,6 +36,7 @@ newInstance
       "ConflictResolveDialog",
       "DeleteThirdPartyDialog",
       "ThirdPartyMoveDialog",
+      "PortalUnavailable",
     ],
 
     backend: {

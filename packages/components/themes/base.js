@@ -1148,7 +1148,10 @@ const Base = {
         width: "24px",
         height: "24px",
         background: blueMain,
-        border: `6px solid ${white}`,
+        disabledBackground: "#A6DCF2",
+        borderWidth: "6px",
+        borderStyle: "solid",
+        borderColor: `${white}`,
         borderRadius: "30px",
         boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
       },
@@ -1187,6 +1190,10 @@ const Base = {
         color: "transparent",
         width: "100%",
         height: "8px",
+      },
+
+      trackNumber: {
+        color: "#A3A9AE",
       },
 
       fillLower: {
@@ -1851,6 +1858,13 @@ const Base = {
     profile: {
       borderTop: "1px solid #eceef1",
       background: "#f3f4f4",
+    },
+
+    paymentAlert: {
+      color: "#ed7309",
+      warningColor: "#F21C0E",
+      border: "1px solid #ed7309",
+      warningBorder: "1px solid #F21C0E",
     },
   },
 
@@ -2792,6 +2806,11 @@ const Base = {
       textColorError: red,
     },
 
+    payments: {
+      linkColor: link,
+      delayColor: "#F21C0E",
+    },
+
     paymentsEnterprise: {
       background: grayLight,
 
@@ -2875,6 +2894,23 @@ const Base = {
         rectangleBackgroundColor: "#f8f9f9",
         separatorBorder: "1px solid #eceef1",
         contextBorder: "1px solid #D0D5DA",
+      },
+
+      payment: {
+        priceColor: "#555F65",
+        disabledPriceColor: "#A3A9AE",
+        storageSizeTitle: "#A3A9AE",
+
+        backgroundColor: "#f8f9f9",
+        linkColor: "#316DAA",
+        tariffText: "#555F65",
+        border: "1px solid #f8f9f9",
+        backgroundBenefitsColor: "#f8f9f9",
+        rectangleColor: "#f3f4f4",
+
+        backgroundPrice: "#f3f4f4",
+        backgroundPriceContainer: "transparent",
+        warningColor: "#F21C0E",
       },
     },
 

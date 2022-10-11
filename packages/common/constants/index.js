@@ -283,3 +283,23 @@ export const FeedItemTypes = Object.freeze({
   Room: "room",
   User: "sharedRoom",
 });
+
+/**
+ * Enum for theme keys.
+ * @readonly
+ */
+export const TariffState = Object.freeze({
+  Trial: 0,
+  Paid: 1,
+  Delay: 2,
+  NotPaid: 3,
+});
+
+/**
+ * Enum for theme keys.
+ * @readonly
+ */
+export const PortalFeaturesLimitations = Object.freeze({
+  Limitless: -1,
+  Unavailable: 0,
+});

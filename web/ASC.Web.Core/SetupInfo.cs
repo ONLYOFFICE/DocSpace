@@ -49,9 +49,9 @@ public class SetupInfo
     /// <summary>
     /// Max possible file size for not chunked upload. Less or equal than 100 mb.
     /// </summary>
-    public long MaxUploadSize(TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider)
+    public long MaxUploadSize(TenantManager tenantManager, MaxTotalSizeStatistic maxTotalSizeStatistic)
     {
-        return Math.Min(AvailableFileSize, MaxChunkedUploadSize(tenantExtra, tenantStatisticsProvider));
+        return Math.Min(AvailableFileSize, MaxChunkedUploadSize(tenantManager, maxTotalSizeStatistic));
     }
 
     public long AvailableFileSize
@@ -201,12 +201,12 @@ public class SetupInfo
         return _hideSettings == null || !_hideSettings.Contains(settings, StringComparer.CurrentCultureIgnoreCase);
     }
 
-    public long MaxChunkedUploadSize(TenantExtra tenantExtra, TenantStatisticsProvider tenantStatisticsProvider)
+    public long MaxChunkedUploadSize(TenantManager tenantManager, MaxTotalSizeStatistic maxTotalSizeStatistic)
     {
-        var diskQuota = tenantExtra.GetTenantQuota();
+        var diskQuota = tenantManager.GetCurrentTenantQuota();
         if (diskQuota != null)
         {
-            var usedSize = tenantStatisticsProvider.GetUsedSize();
+            var usedSize = maxTotalSizeStatistic.GetValue().Result;
             var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
             return Math.Min(freeSize, diskQuota.MaxFileSize);
         }

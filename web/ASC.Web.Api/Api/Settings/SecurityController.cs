@@ -28,6 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class SecurityController : BaseSettingsController
 {
+    private readonly TenantManager _tenantManager;
     private readonly TenantExtra _tenantExtra;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly MessageService _messageService;
@@ -43,6 +44,7 @@ public class SecurityController : BaseSettingsController
     private readonly IMapper _mapper;
 
     public SecurityController(
+        TenantManager tenantManager,
         TenantExtra tenantExtra,
         CoreBaseSettings coreBaseSettings,
         MessageService messageService,
@@ -62,6 +64,7 @@ public class SecurityController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _employeeHelperDto = employeeWraperHelper;
+        _tenantManager = tenantManager;
         _tenantExtra = tenantExtra;
         _coreBaseSettings = coreBaseSettings;
         _messageService = messageService;
@@ -269,7 +272,7 @@ public class SecurityController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var isStartup = !_coreBaseSettings.CustomMode && _tenantExtra.Saas && _tenantExtra.GetTenantQuota().Free;
+        var isStartup = !_coreBaseSettings.CustomMode && _tenantExtra.Saas && _tenantManager.GetCurrentTenantQuota().Free;
         if (isStartup)
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Administrator");

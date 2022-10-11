@@ -554,9 +554,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Falsche E-Mail-Adresse</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Ungültiger Werbecode</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Keine Berechtigung zum Durchführen dieser Aktion</value>
   </data>
