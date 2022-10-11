@@ -2017,11 +2017,32 @@ const Dark = {
     closeButtonSize: "12px",
     closeButtonBg: "#a2a2a2",
 
-    accessGroupBg: "#242424",
-    accessGroupText: white,
+    members: {
+      iconColor: "#A3A9AE",
+      subtitleColor: "#a3a9ae",
+      meLabelColor: "#a3a9ae",
+      roleSelectorColor: "#a3a9ae",
+      disabledRoleSelectorColor: "#a3a9ae",
+      roleSelectorArrowColor: "#a3a9ae",
+    },
 
-    showAccessUsersTextColor: gray,
-    showAccessPanelTextColor: "#E06A1B",
+    history: {
+      subtitleColor: "#A3A9AE",
+      fileBlockBg: "#292929",
+      dateColor: "#A3A9AE",
+      fileExstColor: "#A3A9AE",
+      locationIconColor: "#A3A9AE",
+      folderLabelColor: "#A3A9AE",
+    },
+
+    details: {
+      customLogoBorderColor: "#eceef1",
+      commentEditorIconColor: "#eee",
+    },
+
+    gallery: {
+      borderColor: "#292929",
+    },
   },
 
   filesArticleBody: {

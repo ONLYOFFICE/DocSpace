@@ -262,6 +262,29 @@ export const Events = Object.freeze({
 });
 
 /**
+ * Enum for feed action types.
+ * @readonly
+ */
+export const FeedActionTypes = Object.freeze({
+  Create: 0,
+  Update: 1,
+  Rename: 2,
+  Move: 3,
+  Delete: 4,
+});
+
+/**
+ * Enum for feed item types.
+ * @readonly
+ */
+export const FeedItemTypes = Object.freeze({
+  File: "file",
+  Folder: "folder",
+  Room: "room",
+  User: "sharedRoom",
+});
+
+/**
  * Enum for theme keys.
  * @readonly
  */
