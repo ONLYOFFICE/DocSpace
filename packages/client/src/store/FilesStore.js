@@ -880,12 +880,6 @@ class FilesStore {
             );
           });
 
-          // console.log("fetchRooms", {
-          //   categoryType: this.categoryType,
-          //   rootFolderType: data.current.rootFolderType,
-          //   parentId: data.current.parentId,
-          // });
-
           this.setRoomsFilter(filterData);
 
           runInAction(() => {
@@ -994,7 +988,8 @@ class FilesStore {
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
       (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    const isFileOwner = item.createdBy.id === this.authStore.userStore.user.id;
+    const isFileOwner =
+      item.createdBy?.id === this.authStore.userStore.user?.id;
 
     const {
       isRecycleBinFolder,
@@ -1348,7 +1343,7 @@ class FilesStore {
       let roomOptions = [
         "edit-room",
         "invite-users-to-room",
-        "room-info",
+        "show-info",
         "pin-room",
         "unpin-room",
         "separator0",
@@ -1639,6 +1634,22 @@ class FilesStore {
 
   removeLogoFromRoom(id) {
     return api.rooms.removeLogoFromRoom(id);
+  }
+
+  getRoomMembers(id) {
+    return api.rooms.getRoomMembers(id);
+  }
+
+  getHistory(module, id) {
+    return api.rooms.getHistory(module, id);
+  }
+
+  getRoomHistory(id) {
+    return api.rooms.getRoomHistory(id);
+  }
+
+  getFileHistory(id) {
+    return api.rooms.getFileHistory(id);
   }
 
   setFile = (file) => {

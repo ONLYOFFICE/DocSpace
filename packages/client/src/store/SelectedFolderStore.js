@@ -19,7 +19,13 @@ class SelectedFolderStore {
   pathParts = null;
   navigationPath = null;
   providerItem = null;
+  providerKey = null;
+  providerId = null;
   roomType = null;
+  pinned = null;
+  isRoom = null;
+  logo = null;
+  tags = null;
 
   settingsStore = null;
 
@@ -51,7 +57,13 @@ class SelectedFolderStore {
     this.pathParts = null;
     this.navigationPath = null;
     this.providerItem = null;
+    this.providerKey = null;
+    this.providerId = null;
     this.roomType = null;
+    this.pinned = null;
+    this.isRoom = null;
+    this.logo = null;
+    this.tags = null;
   };
 
   setParentId = (parentId) => {
