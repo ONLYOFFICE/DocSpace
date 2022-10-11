@@ -251,11 +251,9 @@ const Files = inject(({ auth, filesStore, treeFoldersStore }) => {
 
   const { isRoomsFolder } = treeFoldersStore;
 
-  const { isAdmin, isOwner } = auth.userStore.user;
+  const { isVisitor } = auth.userStore.user;
 
-  // TODO: add check on manager type
-
-  const withMainButton = (isAdmin && isOwner) || !isRoomsFolder;
+  const withMainButton = !isVisitor || !isRoomsFolder;
 
   return {
     isDesktop: isDesktopClient,

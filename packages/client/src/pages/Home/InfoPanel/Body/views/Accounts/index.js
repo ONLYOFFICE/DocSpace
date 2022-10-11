@@ -20,7 +20,7 @@ const Accounts = ({
 }) => {
   const [statusLabel, setStatusLabel] = React.useState("");
 
-  const { role, id } = selection;
+  const { role, id, isVisitor } = selection;
 
   React.useEffect(() => {
     getStatusLabel();
@@ -79,11 +79,10 @@ const Accounts = ({
 
     isAdmin && options.push(managerOption);
 
-    // TODO: add check on manager type
-    options.push(userOption);
+    isVisitor && options.push(userOption);
 
     return options;
-  }, [t, isAdmin, isOwner]);
+  }, [t, isAdmin, isOwner, isVisitor]);
 
   const onTypeChange = React.useCallback(
     ({ action }) => {

@@ -40,7 +40,7 @@ const ArticleBodyContent = (props) => {
     showText,
     isDesktopClient,
     // enableThirdParty,
-    // isVisitor,
+    isVisitor,
     FirebaseHelper,
     theme,
     toggleArticleOpen,
@@ -162,7 +162,7 @@ const ArticleBodyContent = (props) => {
         showText={showText}
         onHide={toggleArticleOpen}
       />
-      {!personal && isAdmin && <AccountsItem />}
+      {!personal && !isVisitor && <AccountsItem />}
       {!personal && !firstLoad && <SettingsItem />}
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>

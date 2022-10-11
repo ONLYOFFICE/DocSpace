@@ -28,8 +28,6 @@ class SelectionStore {
       hasAnybodySelected: computed,
       hasUsersToMakeEmployees: computed,
       getUsersToMakeEmployeesIds: computed,
-      hasUsersToMakeGuests: computed,
-      getUsersToMakeGuestsIds: computed,
       hasUsersToActivate: computed,
       getUsersToActivateIds: computed,
       hasUsersToDisable: computed,
@@ -136,14 +134,14 @@ class SelectionStore {
       return users.length > 0;
     }
 
-    // TODO: add check on manager type
     if (isAdmin && !isOwner) {
       const users = this.selection.filter(
         (x) =>
           x.status !== EmployeeStatus.Disabled &&
           x.id !== id &&
           !x.isAdmin &&
-          !x.isOwner
+          !x.isOwner &&
+          x.isVisitor
       );
 
       return users.length > 0;
@@ -163,47 +161,20 @@ class SelectionStore {
       return users.map((u) => u.id);
     }
 
-    // TODO: add check on manager type
     if (isAdmin && !isOwner) {
       const users = this.selection.filter(
         (x) =>
           x.status !== EmployeeStatus.Disabled &&
           x.id !== id &&
           !x.isAdmin &&
-          !x.isOwner
+          !x.isOwner &&
+          x.isVisitor
       );
 
       return users.map((u) => u.id);
     }
 
     return false;
-  }
-
-  //TODO: delete this
-  get hasUsersToMakeGuests() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        !x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-      );
-    });
-    return !!users.length;
-  }
-  //TODO: delete this
-  get getUsersToMakeGuestsIds() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        !x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-      );
-    });
-    return users.map((u) => u.id);
   }
 
   get hasUsersToActivate() {
@@ -229,13 +200,13 @@ class SelectionStore {
       return users.length > 0;
     }
 
-    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
         x.status !== EmployeeStatus.Active &&
         x.id !== id &&
         !x.isAdmin &&
-        !x.isOwner
+        !x.isOwner &&
+        x.isVisitor
     );
 
     return users.length > 0;
@@ -264,13 +235,13 @@ class SelectionStore {
       return users.map((u) => u.id);
     }
 
-    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
         x.status !== EmployeeStatus.Active &&
         x.id !== id &&
         !x.isAdmin &&
-        !x.isOwner
+        !x.isOwner &&
+        x.isVisitor
     );
 
     return users.map((u) => u.id);
@@ -299,13 +270,13 @@ class SelectionStore {
       return users.length > 0;
     }
 
-    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
         x.status !== EmployeeStatus.Disabled &&
         x.id !== id &&
         !x.isAdmin &&
-        !x.isOwner
+        !x.isOwner &&
+        x.isVisitor
     );
 
     return users.length > 0;
@@ -334,13 +305,13 @@ class SelectionStore {
       return users.map((u) => u.id);
     }
 
-    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
         x.status !== EmployeeStatus.Active &&
         x.id !== id &&
         !x.isAdmin &&
-        !x.isOwner
+        !x.isOwner &&
+        x.isVisitor
     );
 
     return users.map((u) => u.id);
@@ -373,14 +344,14 @@ class SelectionStore {
       return users.length > 0;
     }
 
-    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
         x.activationStatus === EmployeeActivationStatus.Pending &&
         x.status === EmployeeStatus.Active &&
         x.id !== id &&
         !x.isAdmin &&
-        !x.isOwner
+        !x.isOwner &&
+        x.isVisitor
     );
 
     return users.length > 0;
@@ -413,14 +384,14 @@ class SelectionStore {
       return users.map((u) => u.id);
     }
 
-    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
         x.activationStatus === EmployeeActivationStatus.Pending &&
         x.status === EmployeeStatus.Active &&
         x.id !== id &&
         !x.isAdmin &&
-        !x.isOwner
+        !x.isOwner &&
+        x.isVisitor
     );
 
     return users.map((u) => u.id);
@@ -449,13 +420,13 @@ class SelectionStore {
       return users.length > 0;
     }
 
-    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
         x.status === EmployeeStatus.Disabled &&
         x.id !== id &&
         !x.isAdmin &&
-        !x.isOwner
+        !x.isOwner &&
+        x.isVisitor
     );
 
     return users.length > 0;
@@ -484,13 +455,13 @@ class SelectionStore {
       return users.map((u) => u.id);
     }
 
-    // TODO: add check on manager type
     const users = this.selection.filter(
       (x) =>
         x.status === EmployeeStatus.Disabled &&
         x.id !== id &&
         !x.isAdmin &&
-        !x.isOwner
+        !x.isOwner &&
+        x.isVisitor
     );
 
     return users.map((u) => u.id);

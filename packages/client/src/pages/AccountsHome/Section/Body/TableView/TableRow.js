@@ -143,13 +143,15 @@ const PeopleTableRow = (props) => {
     displayName,
     email,
     statusType,
-    userName,
+
     position,
     rooms,
 
     id,
 
     role,
+
+    isVisitor,
   } = item;
 
   const isPending = statusType === "pending" || statusType === "disabled";
@@ -189,11 +191,10 @@ const PeopleTableRow = (props) => {
 
     isAdmin && options.push(managerOption);
 
-    // TODO: add check on manager type
-    options.push(userOption);
+    isVisitor && options.push(userOption);
 
     return options;
-  }, [t, isAdmin, isOwner]);
+  }, [t, isAdmin, isOwner, isVisitor]);
 
   // TODO: update after backend update
   const onTypeChange = React.useCallback(
@@ -347,7 +348,7 @@ const PeopleTableRow = (props) => {
           >
             {statusType === "pending" ? email : displayName}
           </Link>
-          <Badges statusType={statusType} />
+          <Badges statusType={statusType} isPaid={!isVisitor} />
         </TableCell>
 
         <TableCell className={"table-cell_type"}>{typeCell}</TableCell>

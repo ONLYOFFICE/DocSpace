@@ -147,8 +147,8 @@ class UsersStore {
     if (user.isOwner) return "owner";
     else if (user.isAdmin) return "admin";
     //TODO: Need refactoring
-    else if (user.isVisitor) return "guest";
-    else return "user";
+    else if (user.isVisitor) return "user";
+    else return "manager";
   };
 
   getUserContextOptions = (
@@ -184,10 +184,9 @@ class UsersStore {
             options.push("change-owner");
           }
         } else {
-          // TODO: add check on manager type
           if (
             isOwner ||
-            (isAdmin && !isUserAdmin && !isUserOwner) ||
+            (isAdmin && userRole === "manager") ||
             userRole === "user"
           ) {
             options.push("change-email");
@@ -201,10 +200,9 @@ class UsersStore {
 
         break;
       case "disabled":
-        // TODO: add check on manager type
         if (
           isOwner ||
-          (isAdmin && !isUserAdmin && !isUserOwner) ||
+          (isAdmin && userRole === "manager") ||
           userRole === "user"
         ) {
           options.push("enable");
@@ -220,10 +218,9 @@ class UsersStore {
         break;
 
       case "pending":
-        // TODO: add check on manager type
         if (
-          (isOwner && !isMySelf) ||
-          (isAdmin && !isUserAdmin && !isUserOwner) ||
+          isOwner ||
+          (isAdmin && userRole === "manager") ||
           userRole === "user"
         ) {
           options.push("invite-again");

@@ -58,8 +58,8 @@ class ProfileActionsStore {
 
     if (user.isOwner) return "owner";
     if (user.isAdmin || isModuleAdmin) return "admin";
-    if (user.isVisitor) return "guest";
-    return "user";
+    if (user.isVisitor) return "user";
+    return "manager";
   };
 
   onProfileClick = () => {

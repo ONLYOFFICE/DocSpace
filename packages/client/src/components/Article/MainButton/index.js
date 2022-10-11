@@ -90,6 +90,7 @@ const ArticleMainButtonContent = (props) => {
 
     isOwner,
     isAdmin,
+    isVisitor,
   } = props;
 
   const isAccountsPage = selectedTreeNode[0] === "accounts";
@@ -400,11 +401,9 @@ const ArticleMainButtonContent = (props) => {
   const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
   const isProfile = history.location.pathname === "/accounts/view/@self";
 
-  // TODO: add check on manager type
-
   return (
     <>
-      {!isOwner && !isAdmin && isRoomsFolder ? null : isMobileArticle ? (
+      {isVisitor && isRoomsFolder ? null : isMobileArticle ? (
         <>
           {!isFavoritesFolder &&
             !isRecentFolder &&
@@ -501,7 +500,7 @@ export default inject(
 
     const currentFolderId = selectedFolderStore.id;
 
-    const { isOwner, isAdmin } = auth.userStore.user;
+    const { isAdmin, isOwner, isVisitor } = auth.userStore.user;
 
     return {
       showText: auth.settingsStore.showText,
@@ -532,8 +531,9 @@ export default inject(
       enablePlugins,
       currentColorScheme,
 
-      isOwner,
       isAdmin,
+      isOwner,
+      isVisitor,
     };
   }
 )(

@@ -157,6 +157,7 @@ class PeopleStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
+      hasUsers,
     } = this.selectionStore;
     const {
       setActiveDialogVisible,
@@ -203,7 +204,7 @@ class PeopleStore {
 
     isAdmin && options.push(managerOption);
 
-    options.push(userOption);
+    hasUsers && options.push(userOption);
 
     const headerMenu = [
       {

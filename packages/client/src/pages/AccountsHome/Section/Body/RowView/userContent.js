@@ -40,7 +40,7 @@ const UserContent = ({
   t,
   theme,
 }) => {
-  const { userName, displayName, email, statusType, role } = item;
+  const { displayName, email, statusType, role, isVisitor } = item;
 
   const nameColor =
     statusType === "pending" || statusType === "disabled"
@@ -75,7 +75,7 @@ const UserContent = ({
         {statusType === "pending" ? email : displayName}
       </Link>
 
-      <Badges statusType={statusType} />
+      <Badges statusType={statusType} isPaid={!isVisitor} />
 
       <Link
         containerMinWidth="140px"
