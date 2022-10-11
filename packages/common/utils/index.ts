@@ -433,6 +433,8 @@ export const frameCallCommand = (command) => {
 export const getConvertedSize = (t, size) => {
   let sizeNames;
 
+  if (size < 0) return `${8 + " " + t("Common:Exabyte")}`;
+
   if (size < 1024 * 1024) {
     sizeNames = [
       t("Common:Megabyte"),
@@ -446,6 +448,8 @@ export const getConvertedSize = (t, size) => {
       t("Common:Megabyte"),
       t("Common:Gigabyte"),
       t("Common:Terabyte"),
+      t("Common:Petabyte"),
+      t("Common:Exabyte"),
     ];
   }
 
