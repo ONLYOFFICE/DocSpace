@@ -66,6 +66,12 @@ const InvitePanel = ({
     });
   }, [roomId]);
 
+  useEffect(() => {
+    const hasErrors = inviteItems.some((item) => !!item.errors?.length);
+
+    setHasErrors(hasErrors);
+  }, [inviteItems]);
+
   const onClose = () => {
     setInvitePanelOptions({ visible: false });
     setInviteItems([]);
@@ -133,7 +139,7 @@ const InvitePanel = ({
 
         {!!inviteItems.length && (
           <>
-            <ItemsList t={t} setHasError={setHasErrors} />
+            <ItemsList t={t} setHasErrors={setHasErrors} roomType={roomType} />
             <StyledButtons>
               <Button
                 scale={true}
