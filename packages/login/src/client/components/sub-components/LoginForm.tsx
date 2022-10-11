@@ -320,7 +320,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         id="submit"
         className="login-button"
         primary
-        size="normal"
+        size="medium"
         scale={true}
         label={
           isLoading ? t("Common:LoadingProcessing") : t("Common:LoginButton")
