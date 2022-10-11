@@ -16,19 +16,32 @@ import {
   StyledDeleteIcon,
 } from "../StyledInvitePanel";
 
-const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
+const Item = ({
+  t,
+  item,
+  setInviteItems,
+  inviteItems,
+  changeInviteItem,
+  setHasErrors,
+  roomType,
+}) => {
   const { avatar, displayName, email, id, errors, access } = item;
 
-  const name = !!avatar ? displayName : email;
+  const name = !!avatar ? (displayName !== "" ? displayName : email) : email;
   const source = !!avatar ? avatar : "/static/images/@.react.svg";
 
   const [edit, setEdit] = useState(false);
   const [inputValue, setInputValue] = useState(name);
   const [parseErrors, setParseErrors] = useState(errors);
 
-  const accesses = getAccessOptions(t, 5, true);
+  const accesses = getAccessOptions(t, roomType, true);
 
   const defaultAccess = accesses.find((option) => option.access === access);
+
+  const errorsInList = () => {
+    const hasErrors = inviteItems.some((item) => !!item.errors?.length);
+    setHasErrors(hasErrors);
+  };
 
   const onEdit = (e) => {
     if (e.detail === 2) {
@@ -54,7 +67,7 @@ const Item = ({ t, item, setInviteItems, inviteItems, changeInviteItem }) => {
     const errors = !!parseErrors.length ? parseErrors : [];
 
     setParseErrors(errors);
-    changeInviteItem({ id, email: value, errors });
+    changeInviteItem({ id, email: value, errors }).then(() => errorsInList());
   };
 
   const changeValue = (e) => {

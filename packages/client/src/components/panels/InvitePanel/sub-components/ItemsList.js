@@ -10,7 +10,14 @@ import { StyledRow, ScrollList } from "../StyledInvitePanel";
 const FOOTER_HEIGHT = 70;
 
 const Row = memo(({ data, index, style }) => {
-  const { inviteItems, setInviteItems, changeInviteItem, t } = data;
+  const {
+    inviteItems,
+    setInviteItems,
+    changeInviteItem,
+    t,
+    setHasErrors,
+    roomType,
+  } = data;
 
   if (inviteItems === undefined) return;
 
@@ -23,14 +30,22 @@ const Row = memo(({ data, index, style }) => {
         item={item}
         setInviteItems={setInviteItems}
         changeInviteItem={changeInviteItem}
-        setHasErrors={setHasErrors}
         inviteItems={inviteItems}
+        setHasErrors={setHasErrors}
+        roomType={roomType}
       />
     </StyledRow>
   );
 });
 
-const ItemsList = ({ t, setInviteItems, inviteItems, changeInviteItem }) => {
+const ItemsList = ({
+  t,
+  setInviteItems,
+  inviteItems,
+  changeInviteItem,
+  setHasErrors,
+  roomType,
+}) => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
   const bodyRef = useRef();
@@ -62,6 +77,8 @@ const ItemsList = ({ t, setInviteItems, inviteItems, changeInviteItem }) => {
           inviteItems,
           setInviteItems,
           changeInviteItem,
+          setHasErrors,
+          roomType,
           t,
         }}
         outerElementType={CustomScrollbarsVirtualList}
