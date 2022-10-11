@@ -21,7 +21,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
 
     storageTitle = getFromLocalStorage("LocalCopyThirdPartyStorageType");
     storageId = getFromLocalStorage("LocalCopyStorage");
-    console.log("storageId", storageId);
+
     this.state = {
       comboBoxOptions: [],
       storagesInfo: {},
@@ -122,6 +122,7 @@ class ThirdPartyStorageModule extends React.PureComponent {
             scaledOptions
             dropDownMaxHeight={400}
             className="backup_combo"
+            showDisabledItems
           />
 
           {selectedId === GoogleId && <GoogleCloudStorage {...commonProps} />}

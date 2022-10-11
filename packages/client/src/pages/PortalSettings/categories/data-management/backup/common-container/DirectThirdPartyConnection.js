@@ -314,6 +314,7 @@ const DirectThirdPartyConnection = (props) => {
           scaledOptions
           dropDownMaxHeight={300}
           tabIndex={1}
+          showDisabledItems
           isDisabled={
             !tReady ||
             isDisabled ||
