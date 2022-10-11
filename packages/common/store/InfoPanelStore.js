@@ -59,34 +59,6 @@ class InfoPanelStore {
       : this.settingsStore.getIcon(size, item.fileExst || ".file");
   };
 
-  openAccounts = async (history, openSelfProfile = false) => {
-    const path = [AppServerConfig.proxyURL, config.homepage, "/accounts"];
-    if (openSelfProfile) path.push("/view/@self");
-    this.selectedFolderStore.setSelectedFolder(null);
-
-    const { filter } = this.peopleStore.filterStore;
-    const { getUsersList } = this.peopleStore.usersStore;
-
-    const newFilter = Filter.getDefault();
-    newFilter.page = 0;
-    newFilter.search = "afiltnessc@wsj.com";
-    await getUsersList(newFilter);
-    path.push(`filter?${newFilter.toUrlParams()}`);
-
-    this.treeFoldersStore.setSelectedNode(["accounts", newFilter]);
-    history.push(combineUrl(...path));
-  };
-
-  filterUser = async (user) => {
-    const { filter } = this.peopleStore.filterStore;
-    const { getUsersList } = this.peopleStore.usersStore;
-
-    const newFilter = filter.clone();
-    newFilter.page = 0;
-    newFilter.search = user.email;
-    await getUsersList(newFilter);
-  };
-
   openSelfProfile = (history) => {
     const path = [
       AppServerConfig.proxyURL,
@@ -97,25 +69,6 @@ class InfoPanelStore {
     this.selectedFolderStore.setSelectedFolder(null);
     this.treeFoldersStore.setSelectedNode(["accounts", "filter"]);
     history.push(combineUrl(...path));
-  };
-
-  fetchUser = async (userId) => {
-    const {
-      getStatusType,
-      getUserContextOptions,
-    } = this.peopleStore.usersStore;
-
-    const fetchedUser = await getUserById(userId);
-    fetchedUser.role = getUserRole(fetchedUser);
-    fetchedUser.statusType = getStatusType(fetchedUser);
-    fetchedUser.options = getUserContextOptions(
-      false,
-      fetchedUser.isOwner,
-      fetchedUser.statusType,
-      fetchedUser.status
-    );
-
-    return fetchedUser;
   };
 
   openAccountsWithSelectedUser = async (user, history) => {
@@ -135,6 +88,25 @@ class InfoPanelStore {
     history.push(combineUrl(...path));
 
     selectUser(user);
+  };
+
+  fetchUser = async (userId) => {
+    const {
+      getStatusType,
+      getUserContextOptions,
+    } = this.peopleStore.usersStore;
+
+    const fetchedUser = await getUserById(userId);
+    fetchedUser.role = getUserRole(fetchedUser);
+    fetchedUser.statusType = getStatusType(fetchedUser);
+    fetchedUser.options = getUserContextOptions(
+      false,
+      fetchedUser.isOwner,
+      fetchedUser.statusType,
+      fetchedUser.status
+    );
+
+    return fetchedUser;
   };
 
   openUser = async (userId, history) => {
