@@ -403,7 +403,7 @@ const ArticleMainButtonContent = (props) => {
 
   return (
     <>
-      {isVisitor && isRoomsFolder ? null : isMobileArticle ? (
+      {isVisitor ? null : isMobileArticle ? (
         <>
           {!isFavoritesFolder &&
             !isRecentFolder &&
