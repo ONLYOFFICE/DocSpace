@@ -209,7 +209,7 @@ public class WhitelabelController : BaseSettingsController
 
         result.Add(instance);
 
-        if (!instance.IsDefault() && !instance.IsLicensor)
+        if (!instance.IsDefault && !instance.IsLicensor)
         {
             result.Add(_settingsManager.GetDefault<CompanyWhiteLabelSettings>());
         }
@@ -280,8 +280,6 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/additional")]
     public AdditionalWhiteLabelSettings GetAdditionalWhiteLabelSettings()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
         return _settingsManager.Load<AdditionalWhiteLabelSettings>();
     }
 
