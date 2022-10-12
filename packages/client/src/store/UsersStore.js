@@ -181,7 +181,11 @@ class UsersStore {
     userRole,
     status
   ) => {
-    const { isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+    const {
+      isOwner,
+      isAdmin,
+      isVisitor,
+    } = this.peopleStore.authStore.userStore.user;
 
     const options = [];
 
@@ -194,9 +198,9 @@ class UsersStore {
           options.push("details");
         }
 
-        options.push("separator-1");
-
         if (isMySelf) {
+          options.push("separator-1");
+
           options.push("change-name");
           options.push("change-email");
           options.push("change-password");
@@ -208,15 +212,19 @@ class UsersStore {
         } else {
           if (
             isOwner ||
-            (isAdmin && userRole === "manager") ||
+            ((isAdmin || !isVisitor) && userRole === "manager") ||
             userRole === "user"
           ) {
+            options.push("separator-1");
+
             options.push("change-email");
             options.push("change-password");
             options.push("reset-auth");
 
-            options.push("separator-2");
-            options.push("disable");
+            if (isAdmin || isOwner) {
+              options.push("separator-2");
+              options.push("disable");
+            }
           }
         }
 
@@ -242,21 +250,31 @@ class UsersStore {
       case "pending":
         if (
           isOwner ||
-          (isAdmin && userRole === "manager") ||
+          ((isAdmin || !isVisitor) && userRole === "manager") ||
           userRole === "user"
         ) {
           options.push("invite-again");
-          options.push("details");
-
-          options.push("separator-1");
-
-          if (status === EmployeeStatus.Active) {
-            options.push("disable");
+          if (isMySelf) {
+            options.push("profile");
           } else {
-            options.push("enable");
+            options.push("details");
+          }
+
+          if (isAdmin || isOwner) {
+            options.push("separator-1");
+
+            if (status === EmployeeStatus.Active) {
+              options.push("disable");
+            } else {
+              options.push("enable");
+            }
           }
         } else {
-          options.push("details");
+          if (isMySelf) {
+            options.push("profile");
+          } else {
+            options.push("details");
+          }
         }
 
         break;
