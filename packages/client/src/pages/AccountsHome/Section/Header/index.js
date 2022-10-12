@@ -224,7 +224,7 @@ const SectionHeaderContent = (props) => {
         "data-action": "administrator",
         key: "administrator",
       },
-      isAdmin && {
+      {
         id: "main-button_manager",
         className: "main-button_drop-down",
         icon: "/static/images/person.manager.react.svg",
