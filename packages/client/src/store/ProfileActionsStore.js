@@ -121,6 +121,7 @@ class ProfileActionsStore {
   getActions = (t) => {
     const { enablePlugins } = this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
+
     // const settingsModule = modules.find((module) => module.id === "settings");
     // const peopleAvailable = modules.some((m) => m.appName === "people");
     const settingsUrl = "/portal-settings";
@@ -166,7 +167,7 @@ class ProfileActionsStore {
         onClick: this.onProfileClick,
       },
       settings,
-      {
+      isAdmin && {
         key: "PaymentsBtn",
         icon: "/static/images/payments.react.svg",
         label: t("Common:PaymentsTitle"),
@@ -231,8 +232,8 @@ class ProfileActionsStore {
         });
       }
     }
-
-    return this.checkEnabledActions(actions);
+    return actions;
+    // return this.checkEnabledActions(actions);
   };
 
   checkEnabledActions = (actions) => {
