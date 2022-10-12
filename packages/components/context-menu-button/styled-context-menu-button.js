@@ -10,13 +10,18 @@ const StyledOuter = styled.div`
   ${(props) =>
     props.isNeedBorder &&
     css`
-      border: ${(props) => props.theme.client.settings.backup.contextBorder};
+      border: ${(props) => props.theme.comboBox.button.border};
       width: 32px;
+      height: 32px;
       box-sizing: border-box;
       border-radius: 3px;
 
       svg {
         padding: 7px 13px 7px 2px;
+      }
+      :hover {
+        border-color: ${(props) =>
+          props.theme.comboBox.button.hoverBorderColor};
       }
     `}
 `;
