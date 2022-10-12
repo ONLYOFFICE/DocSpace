@@ -34,7 +34,7 @@ public class CompanyWhiteLabelSettingsWrapper
 [Serializable]
 public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 {
-    private readonly CoreSettings _coreSettings;
+    private CoreSettings _coreSettings;
 
     public string CompanyName { get; set; }
 
@@ -61,14 +61,14 @@ public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 
     public bool IsDefault()
     {
-        var defaultSettings = GetDefault();
+         var defaultSettings = GetDefault();
 
-        return CompanyName == defaultSettings.CompanyName &&
-                Site == defaultSettings.Site &&
-                Email == defaultSettings.Email &&
-                Address == defaultSettings.Address &&
-                Phone == defaultSettings.Phone &&
-                IsLicensor == defaultSettings.IsLicensor;
+         return CompanyName == defaultSettings.CompanyName &&
+                 Site == defaultSettings.Site &&
+                 Email == defaultSettings.Email &&
+                 Address == defaultSettings.Address &&
+                 Phone == defaultSettings.Phone &&
+                 IsLicensor == defaultSettings.IsLicensor;
     }
 
     #region ISettings Members
@@ -84,7 +84,9 @@ public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
     {
         var settings = _coreSettings.GetSetting("CompanyWhiteLabelSettings");
 
-        return string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings(_coreSettings) : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
+        var companyWhiteLabelSettings = string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings(_coreSettings) : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
+        companyWhiteLabelSettings._coreSettings = _coreSettings;
+        return companyWhiteLabelSettings;
     }
 
     #endregion

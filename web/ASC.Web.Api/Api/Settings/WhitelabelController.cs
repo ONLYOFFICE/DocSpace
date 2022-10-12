@@ -37,6 +37,7 @@ public class WhitelabelController : BaseSettingsController
     private readonly TenantLogoManager _tenantLogoManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly IMapper _mapper;
 
     public WhitelabelController(
         ApiContext apiContext,
@@ -49,7 +50,8 @@ public class WhitelabelController : BaseSettingsController
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
         IMemoryCache memoryCache,
-        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
@@ -58,6 +60,7 @@ public class WhitelabelController : BaseSettingsController
         _tenantLogoManager = tenantLogoManager;
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
+        _mapper = mapper;
     }
 
     ///<visible>false</visible>
@@ -232,9 +235,9 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpGet("rebranding/company")]
-    public CompanyWhiteLabelSettings GetCompanyWhiteLabelSettings()
+    public CompanyWhiteLabelSettingsDto GetCompanyWhiteLabelSettings()
     {
-        return _settingsManager.Load<CompanyWhiteLabelSettings>();
+        return _mapper.Map<CompanyWhiteLabelSettings, CompanyWhiteLabelSettingsDto>(_settingsManager.Load<CompanyWhiteLabelSettings>());
     }
 
     ///<visible>false</visible>
@@ -270,9 +273,9 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpGet("rebranding/additional")]
-    public AdditionalWhiteLabelSettings GetAdditionalWhiteLabelSettings()
+    public AdditionalWhiteLabelSettingsDto GetAdditionalWhiteLabelSettings()
     {
-        return _settingsManager.Load<AdditionalWhiteLabelSettings>();
+        return _mapper.Map<AdditionalWhiteLabelSettings, AdditionalWhiteLabelSettingsDto>(_settingsManager.Load<AdditionalWhiteLabelSettings>());
     }
 
     ///<visible>false</visible>
