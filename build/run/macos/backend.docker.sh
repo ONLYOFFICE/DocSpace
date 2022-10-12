@@ -13,4 +13,5 @@ docker_dir="$( pwd )"
 echo "Docker directory:" $docker_dir
 
 docker compose --env-file .env.dev -f build.dev.yml build
+docker compose --env-file .env.dev -f docspace.dev.yml down -v
 docker compose --env-file .env.dev -f migration-runner.yml -f docspace.dev.yml up -d
