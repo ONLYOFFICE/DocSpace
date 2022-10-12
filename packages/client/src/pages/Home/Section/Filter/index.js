@@ -778,7 +778,7 @@ const SectionFilterContent = ({
         filterOptions.push({
           key: FilterGroups.roomFilterProviderType,
           group: FilterGroups.roomFilterProviderType,
-          label: t("ThirdPartyResource"),
+          label: t("Settings:ThirdPartyResource"),
           isHeader: true,
           isLast: true,
         });
@@ -1203,7 +1203,7 @@ export default inject(
 )(
   withRouter(
     withLayoutSize(
-      withTranslation(["Files", "Common", "Translations"])(
+      withTranslation(["Files", "Settings", "Common", "Translations"])(
         withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
       )
     )
