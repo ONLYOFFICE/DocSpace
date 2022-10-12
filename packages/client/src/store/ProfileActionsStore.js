@@ -11,7 +11,10 @@ const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
-const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
+const PAYMENTS_URL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/portal-settings/payments/portal-payments"
+);
 const HELP_URL = "https://onlyoffice.com/";
 const SUPPORT_URL = "https://onlyoffice.com/";
 const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
@@ -190,7 +193,7 @@ class ProfileActionsStore {
       hotkeys,
       {
         key: "AboutBtn",
-        icon: "/static/images/info.react.svg",
+        icon: "/static/images/info.outline.react.svg",
         label: t("Common:AboutCompanyTitle"),
         onClick: this.onAboutClick,
       },
@@ -210,7 +213,7 @@ class ProfileActionsStore {
     if (debugInfo) {
       actions.splice(3, 0, {
         key: "DebugBtn",
-        icon: "/static/images/info.react.svg",
+        icon: "/static/images/info.outline.react.svg",
         label: "Debug Info",
         onClick: this.onDebugClick,
       });

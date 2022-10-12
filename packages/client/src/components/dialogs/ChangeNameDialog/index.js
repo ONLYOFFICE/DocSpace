@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
+
 import ModalDialog from "@docspace/components/modal-dialog";
 import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
@@ -8,7 +11,19 @@ import toastr from "@docspace/components/toast/toastr";
 import ModalDialogContainer from "../ModalDialogContainer";
 
 const ChangeNameDialog = (props) => {
-  const { t, tReady, visible, onClose, profile, onSave } = props;
+  const { t, ready } = useTranslation([
+    "ProfileAction",
+    "PeopleTranslations",
+    "Common",
+  ]);
+  const {
+    visible,
+    onClose,
+    profile,
+    updateProfile,
+    updateProfileInUsers,
+    fromList,
+  } = props;
   const [firstName, setFirstName] = useState(profile.firstName);
   const [lastName, setLastName] = useState(profile.lastName);
   const [isSaving, setIsSaving] = useState(false);
@@ -20,7 +35,8 @@ const ChangeNameDialog = (props) => {
 
     try {
       setIsSaving(true);
-      await onSave(newProfile);
+      const currentProfile = await updateProfile(newProfile);
+      fromList && (await updateProfileInUsers(currentProfile));
       toastr.success(t("ProfileAction:ChangesSavedSuccessfully"));
     } catch (error) {
       console.error(error);
@@ -33,7 +49,7 @@ const ChangeNameDialog = (props) => {
 
   return (
     <ModalDialogContainer
-      isLoading={!tReady}
+      isLoading={!ready}
       visible={visible}
       onClose={onClose}
       displayType="modal"
@@ -92,4 +108,10 @@ const ChangeNameDialog = (props) => {
   );
 };
 
-export default ChangeNameDialog;
+export default inject(({ peopleStore }) => {
+  const { updateProfile } = peopleStore.targetUserStore;
+
+  const { updateProfileInUsers } = peopleStore.usersStore;
+
+  return { updateProfile, updateProfileInUsers };
+})(observer(ChangeNameDialog));

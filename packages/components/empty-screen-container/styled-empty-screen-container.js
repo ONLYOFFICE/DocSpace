@@ -72,11 +72,16 @@ const EmptyContentBody = styled.div`
   grid-column-gap: 16px;
   grid-row-gap: 10px;
   max-width: 800px;
+
   grid-template-rows: max-content;
   .ec-image {
     grid-area: img;
     margin: 16px 0 0 auto;
     ${NoUserSelect}
+  }
+
+  @media ${tablet} {
+    max-width: 480px;
   }
 
   .ec-header {
@@ -104,7 +109,6 @@ const EmptyContentBody = styled.div`
   @media (orientation: portrait) {
     @media (max-width: 768px) {
       padding-top: 0px;
-      max-width: 700px;
 
       .ec-image {
         max-height: 100px;

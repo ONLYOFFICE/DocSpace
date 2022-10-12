@@ -63,6 +63,8 @@ global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Common.Notify.Push;
+global using ASC.Core.Common.Quota;
+global using ASC.Core.Common.Quota.Features;
 global using ASC.Core.Common.Security;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Common.WhiteLabel;
@@ -76,6 +78,7 @@ global using ASC.Feed;
 global using ASC.Feed.Context;
 global using ASC.Feed.Data;
 global using ASC.IPSecurity;
+global using ASC.MessagingSystem;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.EF.Model;
 global using ASC.Notify;
@@ -93,6 +96,7 @@ global using ASC.Web.Core.Log;
 global using ASC.Web.Core.ModuleManagement.Common;
 global using ASC.Web.Core.Notify;
 global using ASC.Web.Core.PublicResources;
+global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Sms;
 global using ASC.Web.Core.Subscriptions;
 global using ASC.Web.Core.Users;
@@ -106,7 +110,6 @@ global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.UserControls.CustomNavigation;
 global using ASC.Web.Studio.UserControls.Management;
 global using ASC.Web.Studio.UserControls.Management.SingleSignOnSettings;
-global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 
 global using AutoMapper;
@@ -116,18 +119,19 @@ global using Google.Authenticator;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Http;
-global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.WebUtilities;
 global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Caching.Distributed;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
 
 global using MimeKit.Utils;
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
+
+global using ProtoBuf;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Drawing.Processing;

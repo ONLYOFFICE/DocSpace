@@ -209,20 +209,36 @@ export const settingsTree = [
   },
   {
     key: "4",
-    icon: "/images/backup-settings.svg",
+    icon: "/images/payment.react.svg",
+    link: "payments",
+    tKey: "Payments",
+    isHeader: true,
+    children: [
+      {
+        key: "4-0",
+        icon: "",
+        link: "portal-payments",
+        tKey: "Payments",
+        isCategory: true,
+      },
+    ],
+  },
+  {
+    key: "5",
+    icon: "/images/data-management.react.svg",
     link: "backup",
     tKey: "Backup",
     isHeader: true,
     children: [
       {
-        key: "4-0",
+        key: "5-0",
         icon: "",
         link: "data-backup",
         tKey: "Backup",
         isCategory: true,
       },
       {
-        key: "4-1",
+        key: "5-1",
         icon: "",
         link: "auto-backup",
         tKey: "AutoBackup",
@@ -232,14 +248,14 @@ export const settingsTree = [
   },
 
   {
-    key: "5",
+    key: "6",
     icon: "/images/restore.react.svg",
     link: "restore",
     tKey: "RestoreBackup",
     isHeader: true,
     children: [
       {
-        key: "5-0",
+        key: "6-0",
         icon: "",
         link: "restore-backup",
         tKey: "RestoreBackup",

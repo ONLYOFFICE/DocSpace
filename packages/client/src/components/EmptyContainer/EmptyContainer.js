@@ -7,6 +7,7 @@ import {
   smallTablet,
   desktop,
 } from "@docspace/components/utils/device";
+import { isMobile } from "react-device-detect";
 
 const EmptyPageStyles = css`
   padding: 44px 0px 64px 0px;
@@ -29,8 +30,9 @@ const EmptyPageStyles = css`
   }
 
   @media ${tablet} {
-    padding: 44px 0px 64px 97px;
+    padding: 44px 0px 64px 0px;
     grid-column-gap: 33px;
+    margin-left: auto;
   }
 
   @media ${smallTablet} {
@@ -86,6 +88,13 @@ const EmptyFolderWrapper = styled.div`
     .empty-connect_container-links {
       position: relative;
       bottom: 16px;
+    }
+
+    @media screen and (max-width: 1325px) {
+      ${!isMobile &&
+      css`
+        margin-left: 98px;
+      `};
     }
 
     ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}

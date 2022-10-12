@@ -16,6 +16,7 @@ import {
 import Backdrop from "../backdrop";
 import Text from "../text";
 import { ReactSVG } from "react-svg";
+import Avatar from "../avatar";
 
 class ContextMenu extends Component {
   constructor(props) {
@@ -292,6 +293,9 @@ class ContextMenu extends Component {
 
     const changeView = this.state.changeView;
     const isIconExist = this.props.header?.icon;
+    const isAvatarExist = this.props.header?.avatar;
+
+    const withHeader = !!this.props.header?.title;
 
     return (
       <>
@@ -300,6 +304,7 @@ class ContextMenu extends Component {
           isRoom={this.props.isRoom}
           fillIcon={this.props.fillIcon}
           isIconExist={isIconExist}
+          isAvatarExist={isAvatarExist}
         >
           <CSSTransition
             nodeRef={this.menuRef}
@@ -320,13 +325,22 @@ class ContextMenu extends Component {
               onClick={this.onMenuClick}
               onMouseEnter={this.onMenuMouseEnter}
             >
-              {changeView && (
+              {changeView && withHeader && (
                 <div className="contextmenu-header">
                   {isIconExist && (
                     <div className="icon-wrapper">
                       <ReactSVG
                         src={this.props.header.icon}
                         className="drop-down-item_icon"
+                      />
+                    </div>
+                  )}
+                  {isAvatarExist && (
+                    <div className="avatar-wrapper">
+                      <Avatar
+                        src={this.props.header.avatar}
+                        size={"min"}
+                        className="drop-down-item_avatar"
                       />
                     </div>
                   )}

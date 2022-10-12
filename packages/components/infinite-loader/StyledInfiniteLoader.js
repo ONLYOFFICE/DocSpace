@@ -1,7 +1,8 @@
 import { List } from "react-virtualized";
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
-import { desktop, mobile, tablet } from "../utils/device";
+import { mobile, tablet } from "../utils/device";
+import { isMobile } from "react-device-detect";
 
 const StyledScroll = styled.div`
   overflow: scroll;
@@ -31,10 +32,10 @@ const StyledScroll = styled.div`
 
 const rowStyles = css`
   margin-left: -20px;
-  width: ${({ width }) => width + 36 + "px !important"};
+  width: ${({ width }) => width + (isMobile ? 36 : 40) + "px !important"};
 
   .ReactVirtualized__Grid__innerScrollContainer {
-    max-width: ${({ width }) => width + 36 + "px !important"};
+    max-width: ${({ width }) => width + (isMobile ? 36 : 40) + "px !important"};
   }
 
   @media ${tablet} {

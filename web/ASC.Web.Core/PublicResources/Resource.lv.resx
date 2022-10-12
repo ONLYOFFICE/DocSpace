@@ -88,9 +88,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Nepareiza e-pasta adrese</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Nepareizs promo kods</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Nav atļaujas šajai darbībai</value>
   </data>
