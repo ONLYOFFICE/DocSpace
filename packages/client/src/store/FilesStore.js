@@ -1987,7 +1987,7 @@ class FilesStore {
         pinned,
       } = item;
 
-      const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIconSmall(
+      const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
         item.providerKey
       );
 
