@@ -38,9 +38,9 @@ public class MessageSettingsController : BaseSettingsController
     private readonly IPSecurity.IPSecurity _ipSecurity;
     private readonly TenantManager _tenantManager;
     private readonly CookiesManager _cookiesManager;
+    private readonly CountManagerChecker _countManagerChecker;
     private readonly UserManager _userManager;
     private readonly TenantExtra _tenantExtra;
-    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
@@ -51,7 +51,6 @@ public class MessageSettingsController : BaseSettingsController
         ApiContext apiContext,
         UserManager userManager,
         TenantExtra tenantExtra,
-        TenantStatisticsProvider tenantStatisticsProvider,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
         WebItemManager webItemManager,
@@ -61,17 +60,18 @@ public class MessageSettingsController : BaseSettingsController
         IMemoryCache memoryCache,
         IHttpContextAccessor httpContextAccessor,
         TenantManager tenantManager,
-        CookiesManager cookiesManager) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        CookiesManager cookiesManager,
+        CountManagerChecker countManagerChecker) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _customNamingPeople = customNamingPeople;
         _ipSecurity = ipSecurity;
         _tenantManager = tenantManager;
         _cookiesManager = cookiesManager;
+        _countManagerChecker = countManagerChecker;
         _messageService = messageService;
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
         _tenantExtra = tenantExtra;
-        _tenantStatisticsProvider = tenantStatisticsProvider;
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
@@ -144,7 +144,7 @@ public class MessageSettingsController : BaseSettingsController
 
     [AllowAnonymous]
     [HttpPost("sendjoininvite")]
-    public object SendJoinInviteMail(AdminMessageSettingsRequestsDto inDto)
+    public async Task<object> SendJoinInviteMail(AdminMessageSettingsRequestsDto inDto)
     {
         try
         {
@@ -181,7 +181,15 @@ public class MessageSettingsController : BaseSettingsController
             var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
             if (!_coreBaseSettings.Personal)
             {
-                var enableInviteUsers = _tenantStatisticsProvider.GetUsersCount() < _tenantExtra.GetTenantQuota().ActiveUsers;
+                var enableInviteUsers = true;
+                try
+                {
+                    await _countManagerChecker.CheckUsed();
+                }
+                catch (Exception)
+                {
+                    enableInviteUsers = false;
+                }
 
                 if (!enableInviteUsers)
                 {

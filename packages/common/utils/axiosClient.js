@@ -14,7 +14,10 @@ class AxiosClient {
     const origin = window.location.origin;
 
     const apiBaseURL = combineUrl(origin, proxyURL, apiPrefixURL);
-    const paymentsURL = combineUrl(proxyURL, "/payments");
+    const paymentsURL = combineUrl(
+      proxyURL,
+      "/portal-settings/payments/portal-payments"
+    );
     this.paymentsURL = paymentsURL;
 
     // window.AppServer = {
@@ -111,7 +114,7 @@ class AxiosClient {
             break;
           case 402:
             if (!window.location.pathname.includes("payments")) {
-              window.location.href = this.paymentsURL;
+              // window.location.href = this.paymentsURL;
             }
             break;
           default:

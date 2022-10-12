@@ -277,7 +277,7 @@ public class WebItemSecurity
         }
         if (administrator)
         {
-            if (_userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupVisitor.ID))
+            if (_userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupUser.ID))
             {
                 throw new SecurityException("Collaborator can not be an administrator");
             }

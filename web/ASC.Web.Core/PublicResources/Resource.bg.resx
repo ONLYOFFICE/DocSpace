@@ -97,9 +97,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Грешен имейл адрес</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Неправилен промо код</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Няма разрешения за извършване на това действие</value>
   </data>

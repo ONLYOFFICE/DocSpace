@@ -62,7 +62,7 @@ public static class UserExtensions
 
     public static bool IsVisitor(this UserManager userManager, UserInfo ui)
     {
-        return ui != null && userManager.IsUserInGroup(ui.Id, Constants.GroupVisitor.ID);
+        return ui != null && userManager.IsUserInGroup(ui.Id, Constants.GroupUser.ID);
     }
 
     public static bool IsOutsider(this UserManager userManager, Guid id)

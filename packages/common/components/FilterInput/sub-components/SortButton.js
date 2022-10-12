@@ -32,16 +32,6 @@ const notSelectedViewIcon = css`
   }
 `;
 
-const mobileView = css`
-  position: fixed;
-  top: auto;
-  left: 0;
-  bottom: 0;
-  width: 100vw;
-
-  z-index: 999;
-`;
-
 const StyledSortButton = styled.div`
   .combo-button {
     background: ${(props) =>
@@ -63,10 +53,6 @@ const StyledSortButton = styled.div`
       bottom: auto;
       min-width: 200px;
       margin-top: 3px;
-
-      @media (max-width: 428px) {
-        ${mobileView}
-      }
 
       .view-selector-item {
         display: flex;
@@ -299,6 +285,12 @@ const SortButton = ({
     </>
   );
 
+  let advancedOptionsCount = sortData.length;
+
+  if (viewSelectorVisible) {
+    advancedOptionsCount++;
+  }
+
   return (
     <>
       <Backdrop
@@ -327,6 +319,7 @@ const SortButton = ({
           disableItemClick={true}
           isDefaultMode={false}
           manualY={"102%"}
+          advancedOptionsCount={advancedOptionsCount}
         >
           <IconButton iconName="/static/images/sort.react.svg" size={16} />
         </ComboBox>
