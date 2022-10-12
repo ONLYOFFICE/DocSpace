@@ -676,7 +676,10 @@ public class FileSecurity : IFileSecurity
                 var parentRoom = await _daoFactory.GetFolderDao<T>().GetParentFoldersAsync(e.ParentId)
                     .Where(f => DocSpaceHelper.IsRoom(f.FolderType) && f.CreateBy == userId).FirstOrDefaultAsync();
 
-                return parentRoom != null;
+                if (parentRoom != null)
+                {
+                    return true;
+                }
             }
 
             if (e.RootFolderType == FolderType.ThirdpartyBackup && isAdmin)
