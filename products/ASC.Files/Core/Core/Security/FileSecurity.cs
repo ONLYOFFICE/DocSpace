@@ -666,7 +666,7 @@ public class FileSecurity : IFileSecurity
                 return true;
             }
 
-            if (e.RootFolderType == FolderType.VirtualRooms && !isVisitor)
+            if ((e.RootFolderType == FolderType.VirtualRooms || e.RootFolderType == FolderType.Archive) && !isVisitor)
             {
                 if (isAdmin || e.CreateBy == userId)
                 {
