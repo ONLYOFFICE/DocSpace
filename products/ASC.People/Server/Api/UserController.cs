@@ -32,8 +32,6 @@ public class UserController : PeopleControllerBase
 
     private readonly ICache _cache;
     private readonly TenantManager _tenantManager;
-    private readonly GlobalSpace _globalSpace;
-    private readonly Constants _constants;
     private readonly CookiesManager _cookiesManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CustomNamingPeople _customNamingPeople;
@@ -69,8 +67,6 @@ public class UserController : PeopleControllerBase
     public UserController(
         ICache cache,
         TenantManager tenantManager,
-        GlobalSpace globalSpace,
-        Constants constants,
         CookiesManager cookiesManager,
         CoreBaseSettings coreBaseSettings,
         CustomNamingPeople customNamingPeople,
@@ -112,8 +108,6 @@ public class UserController : PeopleControllerBase
     {
         _cache = cache;
         _tenantManager = tenantManager;
-        _globalSpace = globalSpace;
-        _constants = constants;
         _cookiesManager = cookiesManager;
         _coreBaseSettings = coreBaseSettings;
         _customNamingPeople = customNamingPeople;
