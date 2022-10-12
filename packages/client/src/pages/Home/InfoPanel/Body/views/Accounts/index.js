@@ -124,7 +124,9 @@ const Accounts = ({
       </Text>
     );
 
-    if (selfId === id) return text;
+    const status = getUserStatus(selection);
+
+    if (selfId === id || status === "disabled") return text;
 
     switch (role) {
       case "owner":
@@ -151,6 +153,8 @@ const Accounts = ({
   };
 
   const typeData = renderTypeData();
+
+  const statusText = isVisitor ? t("SmartBanner:Price") : t("Common:Paid");
 
   return (
     <>
@@ -189,7 +193,7 @@ const Accounts = ({
             noSelect
             title={statusLabel}
           >
-            {t("SmartBanner:Price")}
+            {statusText}
           </Text>
           {/* <Text className={"info_field"} noSelect title={t("Common:Room")}>
             {t("Common:Room")}

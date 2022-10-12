@@ -196,7 +196,6 @@ const PeopleTableRow = (props) => {
     return options;
   }, [t, isAdmin, isOwner, isVisitor]);
 
-  // TODO: update after backend update
   const onTypeChange = React.useCallback(
     ({ action }) => {
       changeUserType(action, [item], t, true);
@@ -279,7 +278,7 @@ const PeopleTableRow = (props) => {
       </Text>
     );
 
-    if (userId === id) return text;
+    if (userId === id || statusType === "disabled") return text;
 
     switch (role) {
       case "owner":
