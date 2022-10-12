@@ -69,8 +69,6 @@ class ChangeUserTypeDialogComponent extends React.Component {
     const firstType = fromType.length === 1 ? this.getType(fromType[0]) : null;
     const secondType = this.getType(toType);
 
-    console.log(fromType);
-
     const changeUserTypeMessage = firstType ? (
       <Trans i18nKey="ChangeUserTypeDialog" ns="ChangeUserTypeMessage" t={t}>
         Users with the <b>'{{ firstType }}'</b> type will be moved to{" "}
