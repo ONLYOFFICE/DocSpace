@@ -66,6 +66,8 @@ public class UserController : PeopleControllerBase
     private readonly RoomLinkService _roomLinkService;
     private readonly FileSecurity _fileSecurity;
     private readonly IQuotaService _quotaService;
+    private readonly FilesSpaceUsageStatManager _filesSpaceUsageStatManager;
+    private readonly UsersQuotaSyncOperation _usersQuotaSyncOperation;
 
     public UserController(
         ICache cache,
@@ -106,7 +108,9 @@ public class UserController : PeopleControllerBase
         SettingsManager settingsManager,
         RoomLinkService roomLinkService,
         FileSecurity fileSecurity,
-        IQuotaService quotaService)
+        IQuotaService quotaService,
+        FilesSpaceUsageStatManager filesSpaceUsageStatManager,
+        UsersQuotaSyncOperation usersQuotaSyncOperation)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
         _cache = cache;
@@ -142,6 +146,8 @@ public class UserController : PeopleControllerBase
         _roomLinkService = roomLinkService;
         _fileSecurity = fileSecurity;
         _quotaService = quotaService;
+        _filesSpaceUsageStatManager = filesSpaceUsageStatManager;
+        _usersQuotaSyncOperation = usersQuotaSyncOperation;
     }
 
     [HttpPost("active")]
@@ -1068,6 +1074,12 @@ public class UserController : PeopleControllerBase
         {
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
+    }
+    [HttpGet("recalculatequota")]
+    public void RecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        _usersQuotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
     }
 
     [HttpPut("quota")]
