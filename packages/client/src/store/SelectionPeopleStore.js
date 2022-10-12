@@ -27,7 +27,7 @@ class SelectionStore {
       setSelected: action,
       hasAnybodySelected: computed,
       hasUsersToMakeEmployees: computed,
-      getUsersToMakeEmployeesIds: computed,
+      getUsersToMakeEmployees: computed,
       hasUsersToActivate: computed,
       getUsersToActivateIds: computed,
       hasUsersToDisable: computed,
@@ -150,7 +150,7 @@ class SelectionStore {
     return false;
   }
 
-  get getUsersToMakeEmployeesIds() {
+  get getUsersToMakeEmployees() {
     const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
 
     if (isOwner) {
@@ -158,7 +158,7 @@ class SelectionStore {
         (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
       );
 
-      return users.map((u) => u.id);
+      return users.map((u) => u);
     }
 
     if (isAdmin && !isOwner) {
@@ -171,7 +171,7 @@ class SelectionStore {
           x.isVisitor
       );
 
-      return users.map((u) => u.id);
+      return users.map((u) => u);
     }
 
     return false;

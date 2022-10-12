@@ -2,9 +2,12 @@ import { makeAutoObservable, runInAction } from "mobx";
 import api from "@docspace/common/api";
 import {
   EmployeeStatus,
+  EmployeeType,
   EmployeeActivationStatus,
 } from "@docspace/common/constants";
 const { Filter } = api;
+
+const fullAccessId = "00000000-0000-0000-0000-000000000000";
 
 class UsersStore {
   peopleStore = null;
@@ -90,8 +93,27 @@ class UsersStore {
     }
   };
 
-  updateUserType = async (type, userIds, filter) => {
-    await api.people.updateUserType(type, userIds);
+  updateUserType = async (type, userIds, filter, fromType) => {
+    const { changeAdmins } = this.peopleStore.setupStore;
+
+    switch (type) {
+      case "admin":
+        await changeAdmins(userIds, fullAccessId, false);
+        break;
+      case "manager":
+      case EmployeeType.User:
+        const actions = [];
+        if (fromType.includes("admin")) {
+          actions.push(changeAdmins(userIds, fullAccessId, false));
+        }
+        if (fromType.includes("user")) {
+          actions.push(api.people.updateUserType(EmployeeType.User, userIds));
+        }
+
+        await Promise.all(actions);
+        break;
+    }
+
     await this.getUsersList(filter);
   };
 

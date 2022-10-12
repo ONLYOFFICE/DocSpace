@@ -21,8 +21,6 @@ import { isMobileRDD } from "react-device-detect";
 
 import toastr from "@docspace/components/toast/toastr";
 
-const fullAccessId = "00000000-0000-0000-0000-000000000000";
-
 class PeopleStore {
   contextOptionsStore = null;
   authStore = null;
@@ -103,46 +101,36 @@ class PeopleStore {
   onChangeType = (e, t) => {
     const action = e?.action ? e.action : e?.target?.dataset?.action;
 
-    const { getUsersToMakeEmployeesIds } = this.selectionStore;
+    const { getUsersToMakeEmployees } = this.selectionStore;
 
-    this.changeType(action, getUsersToMakeEmployeesIds, t);
+    this.changeType(action, getUsersToMakeEmployees);
   };
 
-  changeType = (
-    type,
-    users,
-    t,
-    needClearSelection = true,
-    needFetchUsers = true
-  ) => {
-    const { changeAdmins } = this.setupStore;
-    const { getUsersList } = this.usersStore;
-    const { filter } = this.filterStore;
-    const { clearSelection } = this.selectionStore;
+  changeType = (type, users) => {
+    const { setEmployeeDialogVisible, setDialogData } = this.dialogStore;
 
-    const userIDs = users.map((user) => {
-      return user?.id ? user.id : user;
-    });
+    let fromType =
+      users.length === 1 ? [users[0].role] : users.map((u) => u.role);
 
-    if (type === "admin") {
-      changeAdmins(userIDs, fullAccessId, true).then((res) => {
-        needFetchUsers && getUsersList(filter);
-        needClearSelection && clearSelection();
-        toastr.success(t("Settings:AdministratorsAddedSuccessfully"));
+    if (users.length > 1) {
+      fromType = fromType.filter(
+        (item, index) => fromType.indexOf(item) === index && item !== type
+      );
+
+      if (fromType.length === 0) fromType = [fromType[0]];
+    }
+
+    if (fromType.length === 1 && fromType[0] === type) return;
+
+    const userIDs = users
+      .filter((u) => u.role !== type)
+      .map((user) => {
+        return user?.id ? user.id : user;
       });
-    }
 
-    if (type === "manager") {
-      toastr.warning("Work at progress");
-    }
+    setDialogData({ toType: type, fromType, userIDs });
 
-    if (type === "user") {
-      changeAdmins(userIDs, fullAccessId, false).then((res) => {
-        needFetchUsers && getUsersList(filter);
-        needClearSelection && clearSelection();
-        toastr.success(t("Settings:AdministratorsRemovedSuccessfully"));
-      });
-    }
+    setEmployeeDialogVisible(true);
   };
 
   onOpenInfoPanel = () => {
