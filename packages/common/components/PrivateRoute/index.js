@@ -29,6 +29,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     location,
     tenantStatus,
     isNotPaidPeriod,
+    withManager,
   } = rest;
 
   const { params, path } = computedMatch;
@@ -164,6 +165,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     if (
       !restricted ||
       isAdmin ||
+      (withManager && !user.isVisitor) ||
       (allowForMe && userId && isMe(user, userId))
     ) {
       // console.log(
