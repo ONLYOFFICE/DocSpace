@@ -98,7 +98,7 @@ class UsersStore {
 
     switch (type) {
       case "admin":
-        await changeAdmins(userIds, fullAccessId, false);
+        await changeAdmins(userIds, fullAccessId, true);
         break;
       case "manager":
       case EmployeeType.User:
