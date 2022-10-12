@@ -31,3 +31,9 @@ public class AllowNotPaymentAttribute : Attribute
 {
 
 }
+
+[AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+public class AllowSuspendedAttribute : Attribute
+{
+
+}
