@@ -773,7 +773,6 @@ const SectionFilterContent = ({
           )[1],
           group: FilterGroups.roomFilterProviderType,
           label: thirdParty,
-          isMultiSelect: true,
         }));
 
         filterOptions.push({
