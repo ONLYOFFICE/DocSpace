@@ -47,6 +47,7 @@ const RootFolderContainer = (props) => {
     categoryType,
     isEmptyPage,
     setIsEmptyPage,
+    isVisitor,
   } = props;
   const personalDescription = t("PersonalEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
@@ -169,7 +170,7 @@ const RootFolderContainer = (props) => {
           headerText: roomHeader,
           descriptionText: roomsDescription,
           imageSrc: "images/empty_screen_corporate.png",
-          buttons: roomsButtons,
+          buttons: isVisitor ? null : roomsButtons,
         };
       case FolderType.Archive:
         return {
@@ -375,6 +376,7 @@ export default inject(
       theme,
       isPrivacyFolder,
       isDesktop: isDesktopClient,
+      isVisitor: auth.userStore.user.isVisitor,
       isEncryptionSupport,
       organizationName,
       privacyInstructions,
