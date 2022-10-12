@@ -1,17 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import Text from "@docspace/components/text";
 import MediaDeleteIcon from "../../../../public/images/media.delete.react.svg";
 import MediaDownloadIcon from "../../../../public/images/media.download.react.svg";
 import ImageViewer from "./sub-components/image-viewer";
 import VideoViewer from "./sub-components/video-viewer";
-import MediaScrollButton from "./sub-components/scroll-button";
-import ControlBtn from "./sub-components/control-btn";
-import StyledMediaViewer from "./StyledMediaViewer";
 import equal from "fast-deep-equal/react";
 import Hammer from "hammerjs";
-import IconButton from "@docspace/components/icon-button";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { isDesktop } from "react-device-detect";
 
@@ -60,6 +55,7 @@ class MediaViewer extends React.Component {
       playlist: props.playlist,
       playlistPos,
       fileUrl: item.src,
+      canSwipeImage: true,
     };
 
     this.detailsContainer = React.createRef();
@@ -346,6 +342,9 @@ class MediaViewer extends React.Component {
         ? playlist.find((file) => file.id === playlistPos).fileId
         : 0;
     this.props.onDelete && this.props.onDelete(currentFileId);
+    this.setState({
+      canSwipeImage: false,
+    });
   };
 
   onDownload = () => {
@@ -376,7 +375,7 @@ class MediaViewer extends React.Component {
     if (isActionKey) {
       switch (e.keyCode) {
         case ButtonKeys.leftArrow:
-          !this.props.deleteDialogVisible
+          this.state.canSwipeImage
             ? ctrIsPressed
               ? document.getElementsByClassName("iconContainer rotateLeft")
                   .length > 0 &&
@@ -387,7 +386,7 @@ class MediaViewer extends React.Component {
             : null;
           break;
         case ButtonKeys.rightArrow:
-          !this.props.deleteDialogVisible
+          this.state.canSwipeImage
             ? ctrIsPressed
               ? document.getElementsByClassName("iconContainer rotateRight")
                   .length > 0 &&
@@ -461,7 +460,6 @@ class MediaViewer extends React.Component {
       canDownload,
       errorLabel,
       isPreviewFile,
-      isFavoritesFolder,
     } = this.props;
 
     const currentFileId =
@@ -499,85 +497,26 @@ class MediaViewer extends React.Component {
       }*/
 
     return (
-      <StyledMediaViewer visible={visible}>
-        <div className="videoViewerOverlay"></div>
-        {!isImage && (
-          <>
-            <MediaScrollButton
-              orientation="right"
-              onClick={this.prevMedia}
-              inactive={playlist.length <= 1}
-            />
-            <MediaScrollButton
-              orientation="left"
-              onClick={this.nextMedia}
-              inactive={playlist.length <= 1}
-            />
-          </>
+      <>
+        {canOpen && (
+          <ImageViewer
+            userAccess={userAccess}
+            visible={visible}
+            title={title}
+            onClose={this.onClose}
+            images={[{ src: fileUrl, alt: "" }]}
+            inactive={playlist.length <= 1}
+            playlist={playlist}
+            playlistPos={playlistPos}
+            onNextClick={this.nextMedia}
+            onPrevClick={this.prevMedia}
+            onDeleteClick={this.onDelete}
+            isImage={isImage}
+            onDownloadClick={this.onDownload}
+            //    isFavoritesFolder={isFavoritesFolder}
+          />
         )}
-
-        <div>
-          <div className="details" ref={this.detailsContainer}>
-            <Text isBold fontSize="14px" className="title">
-              {title}
-            </Text>
-            <ControlBtn
-              onClick={onClose && onClose}
-              className="mediaPlayerClose"
-            >
-              <IconButton
-                iconName="/static/images/cross.react.svg"
-                size={25}
-                isClickable
-              />
-            </ControlBtn>
-          </div>
-        </div>
-        {canOpen &&
-          (isImage ? (
-            <ImageViewer
-              userAccess={userAccess}
-              visible={visible}
-              onClose={this.onClose}
-              images={[{ src: fileUrl, alt: "" }]}
-              inactive={playlist.length <= 1}
-              onNextClick={this.nextMedia}
-              onPrevClick={this.prevMedia}
-              onDeleteClick={this.onDelete}
-              onDownloadClick={this.onDownload}
-              isFavoritesFolder={isFavoritesFolder}
-            />
-          ) : (
-            <StyledVideoViewer
-              url={fileUrl}
-              isVideo={isVideo}
-              getOffset={this.getOffset}
-              errorLabel={errorLabel}
-            />
-          ))}
-        <div className="mediaViewerToolbox" ref={this.viewerToolbox}>
-          {!isImage && (
-            <span>
-              {canDelete(currentFileId) &&
-                !isPreviewFile &&
-                !isFavoritesFolder && (
-                  <ControlBtn onClick={this.onDelete}>
-                    <div className="deleteBtnContainer">
-                      <StyledMediaDeleteIcon size="scale" />
-                    </div>
-                  </ControlBtn>
-                )}
-              {canDownload(currentFileId) && (
-                <ControlBtn onClick={this.onDownload}>
-                  <div className="downloadBtnContainer">
-                    <StyledMediaDownloadIcon size="scale" />
-                  </div>
-                </ControlBtn>
-              )}
-            </span>
-          )}
-        </div>
-      </StyledMediaViewer>
+      </>
     );
   }
 }
@@ -599,7 +538,6 @@ MediaViewer.propTypes = {
   deleteDialogVisible: PropTypes.bool,
   errorLabel: PropTypes.string,
   isPreviewFile: PropTypes.bool,
-  isFavoritesFolder: PropTypes.bool,
   onChangeUrl: PropTypes.func,
 };
 
