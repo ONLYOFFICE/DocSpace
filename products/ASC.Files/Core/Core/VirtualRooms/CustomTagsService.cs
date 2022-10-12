@@ -35,10 +35,10 @@ public class CustomTagsService<T>
     private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly FilesMessageService _filesMessageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IMapper _mapper;
+    private readonly UserManager _userManager;
 
     public CustomTagsService(IDaoFactory daoFactory, FileSecurity fileSecurity, AuthContext authContext, FileSecurityCommon fileSecurityCommon,
-        FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor, UserManager userManager)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -46,7 +46,7 @@ public class CustomTagsService<T>
         _fileSecurityCommon = fileSecurityCommon;
         _filesMessageService = filesMessageService;
         _httpContextAccessor = httpContextAccessor;
-        _mapper = mapper;
+        _userManager = userManager;
     }
 
     private ITagDao<T> TagDao => _daoFactory.GetTagDao<T>();
@@ -55,7 +55,7 @@ public class CustomTagsService<T>
 
     public async Task<object> CreateTagAsync(string name)
     {
-        if (!_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
+        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException("You do not have permission to create tags");
         }
