@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Viewer from "react-viewer";
 import styled from "styled-components";
 
 import MediaZoomInIcon from "../../../../../public/images/media.zoomin.react.svg";
@@ -9,12 +8,17 @@ import MediaRotateLeftIcon from "../../../../../public/images/media.rotateleft.r
 import MediaRotateRightIcon from "../../../../../public/images/media.rotateright.react.svg";
 import MediaResetIcon from "../../../../../public/images/media.reset.react.svg";
 import MediaDeleteIcon from "../../../../../public/images/media.delete.react.svg";
-import MediaDownloadIcon from "../../../../../public/images/media.download.react.svg";
+import MediaDownloadIcon from "../../../../../public/images/download.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-import MediaScrollButton from "./scroll-button";
-import ControlBtn from "./control-btn";
+import ViewerSeparator from "../../../../../public/images/viewer.separator.react.svg";
+import MediaShare from "../../../../../public/images/share.react.svg";
+import MediaContextMenu from "../../../../../public/images/vertical-dots.react.svg";
+
+import DropDownItem from "@docspace/components/drop-down-item";
+import DropDown from "@docspace/components/drop-down";
 import equal from "fast-deep-equal/react";
 import { Base } from "@docspace/components/themes";
+import { Viewer } from "@docspace/components/viewer";
 
 const StyledMediaZoomInIcon = styled(MediaZoomInIcon)`
   ${commonIconsStyles}
@@ -28,15 +32,16 @@ const StyledMediaRotateLeftIcon = styled(MediaRotateLeftIcon)`
 const StyledMediaRotateRightIcon = styled(MediaRotateRightIcon)`
   ${commonIconsStyles}
 `;
-const StyledMediaResetIcon = styled(MediaResetIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
-  ${commonIconsStyles}
-`;
-const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
-  ${commonIconsStyles}
-`;
+// const StyledMediaResetIcon = styled(MediaResetIcon)`
+//   ${commonIconsStyles}
+// `;
+// const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
+//   ${commonIconsStyles}
+// `;
+// const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
+//   ${commonIconsStyles}
+// `;
+
 const StyledViewer = styled(Viewer)`
   .react-viewer-footer {
     bottom: 5px !important;
@@ -113,8 +118,8 @@ const StyledViewer = styled(Viewer)`
     right: 12px;
   }
   .iconContainer {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     line-height: 20px;
     margin: 3px auto;
 
@@ -154,6 +159,40 @@ const StyledViewer = styled(Viewer)`
 
 StyledViewer.defaultProps = { theme: Base };
 
+const dropDownElement = (
+  <DropDown
+    open={true}
+    withBackdrop={false}
+    //manualWidth={manualWidth || "400px"}
+    directionY="top"
+    directionX="right"
+    // isMobile={isMobile}
+    fixedDirection={true}
+    //  heightProp={height}
+    // sectionWidth={sectionWidth}
+    isDefaultMode={false}
+  >
+    <DropDownItem
+      key="download-as"
+      label={"DownloadAs"}
+      data-key={"download as"}
+      //   onClick={onSelect}
+    />
+    <DropDownItem
+      key="rename"
+      label={"Rename"} // add translation
+      data-key={"rename"}
+      // onClick={onSelect}
+    />
+    <DropDownItem
+      key="delete"
+      label={"Delete"}
+      data-key={"delete"}
+      //  onClick={onSelect}
+    />
+  </DropDown>
+);
+
 var customToolbar = [
   {
     key: "zoomIn",
@@ -165,20 +204,21 @@ var customToolbar = [
     ),
   },
   {
+    key: "percent",
+    noHover: true,
+    actionType: 999,
+    render: (
+      <div className="iconContainer zoomPercent" style={{ width: "auto" }}>
+        100%
+      </div>
+    ),
+  },
+  {
     key: "zoomOut",
     actionType: 2,
     render: (
       <div className="iconContainer zoomOut">
         <StyledMediaZoomOutIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "reset",
-    actionType: 7,
-    render: (
-      <div className="iconContainer reset">
-        <StyledMediaResetIcon size="scale" />
       </div>
     ),
   },
@@ -201,33 +241,52 @@ var customToolbar = [
     ),
   },
   {
-    key: "prev",
-    actionType: 3,
-    render: <MediaScrollButton orientation="right" className="scrollBtn" />,
-  },
-  {
-    key: "next",
-    actionType: 4,
-    render: <MediaScrollButton orientation="left" className="scrollBtn" />,
-  },
-  {
-    key: "delete",
+    key: "separator",
+    actionType: -1,
+    noHover: true,
     render: (
-      <ControlBtn className="controlBtn">
-        <div className="btnContainer">
-          <StyledMediaDeleteIcon size="scale" />
-        </div>
-      </ControlBtn>
+      <div className="separatortest" style={{ height: "16px" }}>
+        <ViewerSeparator size="scale" />
+      </div>
     ),
   },
   {
-    key: "customDownload",
+    key: "share",
+    actionType: 101,
     render: (
-      <ControlBtn className="controlBtn">
-        <div className="btnContainer">
-          <StyledMediaDownloadIcon size="scale" />
-        </div>
-      </ControlBtn>
+      <div className="iconContainer share" style={{ height: "16px" }}>
+        <MediaShare size="scale" />
+      </div>
+    ),
+  },
+  {
+    key: "download",
+    actionType: 102,
+    render: (
+      <div className="iconContainer download" style={{ height: "16px" }}>
+        <MediaDownloadIcon size="scale" />
+      </div>
+    ),
+  },
+  {
+    key: "separator",
+    actionType: -1,
+    noHover: true,
+    render: (
+      <div className="separatortest" style={{ height: "16px" }}>
+        <ViewerSeparator size="scale" />
+      </div>
+    ),
+  },
+  {
+    key: "context-menu",
+    actionType: -1,
+    render: (
+      <div className="context" style={{ height: "16px" }}>
+        <MediaContextMenu size="scale" />
+        {/* <DropDow */}
+        {dropDownElement}
+      </div>
     ),
   },
 ];
@@ -249,8 +308,12 @@ class ImageViewer extends React.Component {
       inactive,
       onClose,
       userAccess,
-
-      isFavoritesFolder,
+      title,
+      onPrevClick,
+      onNextClick,
+      playlist,
+      playlistPos,
+      isImage,
     } = this.props;
 
     customToolbar.forEach((button) => {
@@ -272,21 +335,25 @@ class ImageViewer extends React.Component {
       }
     });
 
-    const toolbars =
-      userAccess && !isFavoritesFolder
-        ? customToolbar
-        : customToolbar.filter((x) => x.key !== "delete");
+    const toolbars = userAccess
+      ? customToolbar
+      : customToolbar.filter((x) => x.key !== "delete");
 
     return (
       <div className={className}>
-        <StyledViewer
+        <Viewer
           inactive={inactive}
           visible={visible}
-          zoomSpeed={0.1}
+          zoomSpeed={0.25}
+          title={title}
+          isImage={isImage}
           onMaskClick={onClose}
+          onNextClick={onNextClick}
+          onPrevClick={onPrevClick}
+          playlist={playlist}
+          playlistPos={playlistPos}
           customToolbar={() => toolbars}
           images={images}
-          disableKeyboardSupport={true}
         />
       </div>
     );
