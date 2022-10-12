@@ -115,7 +115,7 @@ const Tag = ({
           style={style}
         >
           {icon ? (
-            <img src={icon} />
+            <ReactSVG className="third-party-tag" src={icon} />
           ) : (
             <>
               <Text

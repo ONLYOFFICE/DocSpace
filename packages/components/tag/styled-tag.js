@@ -40,6 +40,16 @@ const StyledTag = styled.div`
     cursor: pointer;
   }
 
+  .third-party-tag {
+    width: 20px;
+    height: 20px;
+
+    svg {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+
   ${(props) =>
     !props.isDisabled &&
     css`
