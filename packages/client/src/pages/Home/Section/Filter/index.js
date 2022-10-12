@@ -862,7 +862,15 @@ const SectionFilterContent = ({
     }
 
     return filterOptions;
-  }, [isFavoritesFolder, isRecentFolder, isRooms, t, personal, isPersonalRoom]);
+  }, [
+    isFavoritesFolder,
+    isRecentFolder,
+    isRooms,
+    t,
+    personal,
+    isPersonalRoom,
+    providers,
+  ]);
 
   const getViewSettingsData = React.useCallback(() => {
     const viewSettings = [
