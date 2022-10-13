@@ -259,10 +259,10 @@ class UsersStore {
           ((isAdmin || !isVisitor) && userRole === "manager") ||
           userRole === "user"
         ) {
-          options.push("invite-again");
           if (isMySelf) {
             options.push("profile");
           } else {
+            options.push("invite-again");
             options.push("details");
           }
 
