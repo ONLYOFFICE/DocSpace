@@ -147,7 +147,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             yield return await _globalFolderHelper.FolderTemplatesAsync;
         }
 
-        if (!withoutTrash)
+        if (!withoutTrash && !IsVisitor)
         {
             yield return (int)_globalFolderHelper.FolderTrash;
         }
