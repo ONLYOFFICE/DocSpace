@@ -98,6 +98,17 @@ export const RoomsProviderType = Object.freeze({
   Yandex: 8,
 });
 
+export const RoomsProviderTypeName = Object.freeze({
+  1: "Box",
+  2: "DropBox",
+  3: "Google Drive",
+  4: "kDrive",
+  5: "OneDrive",
+  6: "SharePoint",
+  7: "WebDav",
+  8: "Yandex",
+});
+
 /**
  * Enum for room search area.
  * @readonly
