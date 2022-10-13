@@ -1988,7 +1988,8 @@ class FilesStore {
       } = item;
 
       const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
-        item.providerKey
+        item.providerKey,
+        "small"
       );
 
       const providerType =
