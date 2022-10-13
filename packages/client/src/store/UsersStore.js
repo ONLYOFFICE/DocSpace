@@ -229,8 +229,7 @@ class UsersStore {
 
             if (
               isOwner ||
-              (isAdmin && userRole === "manager") ||
-              userRole === "user"
+              (isAdmin && (userRole === "manager" || userRole === "user"))
             ) {
               options.push("separator-2");
               options.push("disable");
@@ -242,8 +241,7 @@ class UsersStore {
       case "disabled":
         if (
           isOwner ||
-          (isAdmin && userRole === "manager") ||
-          userRole === "user"
+          (isAdmin && (userRole === "manager" || userRole === "user"))
         ) {
           options.push("enable");
 
@@ -272,8 +270,7 @@ class UsersStore {
 
           if (
             isOwner ||
-            (isAdmin && userRole === "manager") ||
-            userRole === "user"
+            (isAdmin && (userRole === "manager" || userRole === "user"))
           ) {
             options.push("separator-1");
 
