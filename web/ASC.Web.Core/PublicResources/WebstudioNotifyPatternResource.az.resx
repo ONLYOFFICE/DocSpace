@@ -1043,19 +1043,6 @@ Hörmətlə,
 ONLYOFFICE Komandası
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>Salam, $UserName!
-
-"${__VirtualRootPath}":"${__VirtualRootPath}" portalınız üçün sınaq müddəti bu gün başa çatır. ONLYOFFICE Business istifadə etməyə davam etmək üçün "abunəlik əldə edin":"$PricingPage".
-
-Sınaq müddətinizi uzatmaq üçün "satış komandamızla əlaqə saxlayın":"mailto:sales@onlyoffice.com".
-
-Siz "Ödənişlər səhifəsində":"$PricingPage" ödənişsiz Başlanğıc planına keçə bilərsiniz. Ödənişsiz planda 5-ə qədər istifadəçi və hər portal üçün 2Gb yaddaş var. Bəzi funksiyalar, o cümlədən LDAP, SSO, brendinq, avtomatik ehtiyat nüsxələr əlçatan olmayacaq. "Planları müqayisə et":"https://www.onlyoffice.com/saas.aspx".
-
-Hörmətlə,
-ONLYOFFICE Komandası
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Salam!
 
@@ -1356,9 +1343,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Yeniləmə bildirişi</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>ONLYOFFICE sınaq müddətiniz bu gün başa çatır</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>

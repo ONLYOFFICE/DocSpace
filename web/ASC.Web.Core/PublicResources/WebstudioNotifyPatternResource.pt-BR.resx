@@ -1041,19 +1041,6 @@ Atenciosamente,
 Equipe ONLYOFFICE
 "www.onlyoffice.com": "http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>Olá, $UserName!
-
-O período experimental de seu portal em "${__VirtualRootPath}": "${__VirtualRootPath}" deve expirar hoje. Para continuar usando ONLYOFFICE Business, "comprar assinatura":"$PricingPage".
-
-Para prolongar sua experiência, entre em contato com nossa "equipe de vendas": "mailto:sales@onlyoffice.com". 
-
-Você pode mudar para o plano inicial gratuito na "Página de pagamentos":"$PricingPage". O plano gratuito tem até 5 usuários e 2Gb de armazenamento por portal. Alguns recursos ficarão indisponíveis, incluindo LDAP, SSO, branding, backups automáticos. "Comparar planos": "https://www.onlyoffice.com/saas.aspx".
-
-Atenciosamente,
-Equipe ONLYOFFICE
-"www.onlyoffice.com": "http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Olá!
 
@@ -1357,9 +1344,6 @@ O link só é válido por 7 dias.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Notificação de renovação</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>Seu teste de ONLYOFFICE expira hoje</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Junte-se a ${__VirtualRootPath}</value>

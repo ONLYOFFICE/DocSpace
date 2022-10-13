@@ -1043,19 +1043,6 @@ Beste Grüße,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-Die Testversion für Ihr Portal "${__VirtualRootPath}":"${__VirtualRootPath}" läuft heute ab. Um ONLYOFFICE-Tarifplan für Business weiter benutzen zu können, "erwerben Sie ein Abo":"$PricingPage".
-
-Um die Testperiode zu verlängern, kontaktieren Sie unser "Verkaufsteam":"mailto:sales@onlyoffice.com". 
-
-Sie können zum kostenlosen Startup-Plan auf "Zahlungsseite":"$PricingPage" wechseln. Dieser kann bis 5 Benutzer umfassen und hat 2 GB Speicher pro Portal. Manche Funktionen wie LDAP, SSO, Branding, automatische Backups usw. werden unverfügbar. "Vergleichen Sie Tarifpläne":"https://www.onlyoffice.com/de/saas.aspx".
-
-Beste Grüße,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Hallo!
 
@@ -1351,9 +1338,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Benachrichtigung über Verlängerung des Abos</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>Ihre Testversion von ONLYOFFICE läuft heute ab</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>${__VirtualRootPath} beitreten</value>

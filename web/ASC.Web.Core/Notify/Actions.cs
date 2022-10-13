@@ -99,7 +99,6 @@ public static class Actions
 
     public static readonly INotifyAction SaasAdminComfortTipsV115 = new NotifyAction("saas_admin_comfort_tips_v115");
 
-    public static readonly INotifyAction SaasAdminTrialWarningV115 = new NotifyAction("saas_admin_trial_warning_v115");
     public static readonly INotifyAction SaasAdminTrialWarningAfter1V115 = new NotifyAction("saas_admin_trial_warning_after1_v115");
 
     public static readonly INotifyAction PersonalActivate = new NotifyAction("personal_activate");

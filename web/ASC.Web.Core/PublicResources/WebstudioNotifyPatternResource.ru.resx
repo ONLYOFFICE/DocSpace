@@ -1043,19 +1043,6 @@ $GreenButton
 Команда ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Пробный период для вашего портала "${__VirtualRootPath}":"${__VirtualRootPath}" истекает сегодня. Чтобы продолжить использование ONLYOFFICE Business, "купите подписку":"$PricingPage".
-
-Чтобы продлить пробный период, обратитесь в наш "отдел продаж":"mailto:sales@onlyoffice.com". 
-
-Вы можете перейти на бесплатный тарифный план Startup на "странице Платежей":"$PricingPage". Бесплатный тарифный план включает в себя до 5 пользователей и 2Гб дискового пространства на портале. Некоторые функции станут недоступны, включая LDAP, SSO, брендинг, автоматическое резервное копирование. "Сравните тарифные планы":"https://www.onlyoffice.com/ru/saas.aspx".
-
-С уважением,
-Команда ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Здравствуйте!
 
@@ -1351,9 +1338,6 @@ $GreenButton
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Уведомление о продлении подписки</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>Сегодня истекает пробный период ONLYOFFICE</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Стать участником ${__VirtualRootPath}</value>

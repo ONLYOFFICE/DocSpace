@@ -233,17 +233,6 @@ public class StudioPeriodicNotify
 
                     #region Trial warning letters
 
-
-                    #region SAAS TRIAL expires today to admins
-
-                    else if (dueDate == nowDate)
-                    {
-                        action = Actions.SaasAdminTrialWarningV115;
-                        toadmins = true;
-                    }
-
-                    #endregion
-
                     #region 1 day after SAAS TRIAL expired to admins
 
                     if (dueDateIsNotMax && dueDate.AddDays(1) == nowDate)

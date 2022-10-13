@@ -1040,19 +1040,6 @@ Cordialmente,
 Equipo de ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-El período de prueba de su portal en "${__VirtualRootPath}":"${__VirtualRootPath}" expira hoy. Para poder seguir usando ONLYOFFICE Business, "compre la suscripción:"$PricingPage".
-
-Para extender su prueba, póngase en contacto con nuestro "equipo de ventas":"mailto:sales@onlyoffice.com". 
-
-Usted puede optar por el plan gratuito Startup en la "Página de pagos":"$PricingPage". El plan gratuito tiene hasta 10 usuarios y 2Gb de almacenamiento por portal. Algunas características no estarán disponibles, incluyendo LDAP, SSO, personalización de marca, copias de seguridad automáticas. "Compare los planes":"https://www.onlyoffice.com/es/saas.aspx".
-
-Cordialmente,
-Equipo de ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>¡Hola!
 
@@ -1348,9 +1335,6 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Notificación de renovación</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>Su prueba de ONLYOFFICE expira hoy</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>

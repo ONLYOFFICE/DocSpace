@@ -1027,19 +1027,6 @@ Bien à vous,
 Equipe ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>Bonjour $UserName, 
-
-La période d'essai pour votre portail "${__VirtualRootPath}":"${__VirtualRootPath}" expire aujourd'hui. Pour continuer à utiliser ONLYOFFICE Business, "abonnez-vous":"$PricingPage".
-
-Pour prolonger la période d'essai, contactez notre "équipe des ventes":"mailto:sales@onlyoffice.com". 
-
-Vous pouvez passez au forfait gratuit Startup sur la "Page des paiements":"$PricingPage". Le plan tarifaire gratuit permet jusqu'au 5 utilisateurs et 2Go d'espace par portail. Certaines fonctionnalités ne sront pas disponibles, telles que LDAP, SSO, marque blanche, sauvegardes automatiques. "Comparer les forfaits":"https://www.onlyoffice.com/saas.aspx".
-
-Bien à vous,
-Equipe ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Bonjour !
 
@@ -1336,9 +1323,6 @@ Le lien est valide pendant 7 jours.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Avis de renouvellement</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
-    <value>Votre période d'essai pour ONLYOFFICE expire aujourd'hui</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>L'invitation à rejoindre le portail ${__VirtualRootPath}</value>

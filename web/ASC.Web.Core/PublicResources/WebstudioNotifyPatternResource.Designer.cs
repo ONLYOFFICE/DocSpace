@@ -2113,21 +2113,6 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///The trial period for your portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; is due to expire today. To continue using ONLYOFFICE Business, &quot;buy subscription&quot;:&quot;$PricingPage&quot;.
-        ///
-        ///To extend your trial, contact our &quot;sales team&quot;:&quot;mailto:sales@onlyoffice.com&quot;. 
-        ///
-        ///You can switch to free Startup plan on &quot;Payments page&quot;:&quot;$PricingPage&quot;. Free plan has up to 10 users and 2Gb of storage per portal. Some features will become unavailable, including LDAP, SSO, branding, automatic backups. &quot;Compare pla [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_saas_admin_trial_warning_v115 {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_trial_warning_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
         ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
@@ -3112,15 +3097,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_admin_trial_warning_after1_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_trial_warning_after1_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your ONLYOFFICE trial expires today.
-        /// </summary>
-        public static string subject_saas_admin_trial_warning_v115 {
-            get {
-                return ResourceManager.GetString("subject_saas_admin_trial_warning_v115", resourceCulture);
             }
         }
         
