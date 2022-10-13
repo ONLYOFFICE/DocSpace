@@ -118,6 +118,8 @@ const ThirdPartyStorage = ({
         <ThirpartyComboBox
           t={t}
           connectItems={connectItems}
+          onChangeProvider={onChangeProvider}
+          onChangeThirdpartyAccount={onChangeThirdpartyAccount}
           setConnectDialogVisible={setConnectDialogVisible}
           setRoomCreation={setRoomCreation}
           saveThirdParty={saveThirdParty}
@@ -127,8 +129,6 @@ const ThirdPartyStorage = ({
           setConnectItem={setConnectItem}
           getOAuthToken={getOAuthToken}
           storageLocation={storageLocation}
-          onChangeProvider={onChangeProvider}
-          onChangeStorageLocation={onChangeStorageLocation}
           setIsScrollLocked={setIsScrollLocked}
           setIsOauthWindowOpen={setIsOauthWindowOpen}
         />
