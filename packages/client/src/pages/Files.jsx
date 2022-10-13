@@ -132,12 +132,13 @@ const FilesSection = React.memo(({}) => {
         exact
         restricted
         withManager
-        path={[
-          "/accounts",
-          "/accounts/filter",
-          "/accounts/create/:type",
-          "/accounts/view/@self",
-        ]}
+        path={["/accounts", "/accounts/filter", "/accounts/create/:type"]}
+        component={Accounts}
+      />
+
+      <PrivateRoute
+        exact
+        path={["/accounts/view/@self"]}
         component={Accounts}
       />
 
@@ -241,7 +242,7 @@ class FilesContent extends React.Component {
   }
 }
 
-const Files = inject(({ auth, filesStore, treeFoldersStore }) => {
+const Files = inject(({ auth, filesStore }) => {
   const {
     frameConfig,
     isFrame,
@@ -251,11 +252,9 @@ const Files = inject(({ auth, filesStore, treeFoldersStore }) => {
     isEncryptionSupport,
   } = auth.settingsStore;
 
-  const { isRoomsFolder } = treeFoldersStore;
-
   const { isVisitor } = auth.userStore.user;
 
-  const withMainButton = !isVisitor || !isRoomsFolder;
+  const withMainButton = !isVisitor;
 
   return {
     isDesktop: isDesktopClient,
