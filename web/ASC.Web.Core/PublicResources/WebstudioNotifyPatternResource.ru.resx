@@ -1030,19 +1030,6 @@ $GreenButton
 
 ^Чтобы изменить тип оповещения, пожалуйста, настройте "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
-    <value>Истек срок действия подписки на ONLYOFFICE. Продлите ее, чтобы продолжить использование ONLYOFFICE.
-    
-$GreenButton
-
-Вы можете перейти на бесплатный тарифный план Startup на "странице Платежей":"$PricingPage". 
-
-Бесплатный тарифный план включает до 5 пользователей и 2Гб дискового пространства на портале. Некоторые функции станут недоступны, включая LDAP, SSO, брендинг, автоматическое резервное копирование. "Сравните тарифные планы":"https://www.onlyoffice.com/ru/saas.aspx"
-
-С уважением,
-Команда ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Здравствуйте!
 
@@ -1335,9 +1322,6 @@ $GreenButton
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Началось восстановление</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
-    <value>Уведомление о продлении подписки</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Стать участником ${__VirtualRootPath}</value>

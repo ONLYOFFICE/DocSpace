@@ -92,8 +92,6 @@ public class StudioNotifySource : NotifySource
                 Actions.EnterpriseAdminPaymentWarningV10,
                 Actions.EnterpriseWhitelabelAdminPaymentWarningV10,
 
-                Actions.SaasAdminTrialWarningAfter1V115,
-
                 Actions.SaasAdminModulesV1,
 
                 Actions.PersonalActivate,

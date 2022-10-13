@@ -2092,25 +2092,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your ONLYOFFICE subscription has expired. Renew your ONLYOFFICE subscription to continue using it.
-        ///    
-        ///$GreenButton
-        ///
-        ///You can switch to free Startup plan on &quot;Payments page&quot;:&quot;$PricingPage&quot;. 
-        ///
-        ///Free plan has up to 5 users and 2Gb of storage per portal. Some features will become unavailable, including LDAP, SSO, branding, automatic backups. &quot;Compare plans&quot;:&quot;https://www.onlyoffice.com/saas.aspx&quot;
-        ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
-        /// </summary>
-        public static string pattern_saas_admin_trial_warning_after1_v115 {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_trial_warning_after1_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
@@ -3088,15 +3069,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_admin_trial_warning_after_half_year_v1 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_trial_warning_after_half_year_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Renewal notification.
-        /// </summary>
-        public static string subject_saas_admin_trial_warning_after1_v115 {
-            get {
-                return ResourceManager.GetString("subject_saas_admin_trial_warning_after1_v115", resourceCulture);
             }
         }
         

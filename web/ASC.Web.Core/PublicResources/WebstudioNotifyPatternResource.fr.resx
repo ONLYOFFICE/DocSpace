@@ -1014,19 +1014,6 @@ Meilleures salutations,
 
 ^Pour changer le type de notification, veuillez gérer vos "paramètres d'abonnement":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
-    <value>Votre abonnement à ONLYOFFICE est expiré. Renouvelez votre abonnement à ONLYOFFICE pour continuer à l'utiliser.
-    
-$GreenButton
-
-Vous pouvez passer au plan tarifaire gratuit Startup sur la "Page des paiements":"$PricingPage". 
-
-Le forfait gratuit permet jusqu'à 5 utilisateurs et 2Go d'espace de stockage par portail. Certaines fonctionnalités ne seront plus disponibles, incluant LDAP, SSO, marque blanche, sauvegardes automatiques. "Comparer les forfaits":"https://www.onlyoffice.com/saas.aspx"
-
-Bien à vous,
-Equipe ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Bonjour !
 
@@ -1318,11 +1305,7 @@ Le lien est valide pendant 7 jours.</value>
     <value>${LetterLogoText}. Restauration terminée</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
-    <value>${LetterLogoText}. Restauration démarrée
-</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
-    <value>Avis de renouvellement</value>
+    <value>${LetterLogoText}. Restauration démarrée</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>L'invitation à rejoindre le portail ${__VirtualRootPath}</value>

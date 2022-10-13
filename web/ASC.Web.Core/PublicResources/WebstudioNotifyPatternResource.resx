@@ -1099,19 +1099,6 @@ ONLYOFFICE™ Support Team
 
 ^To change the notification type, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
-    <value>Your ONLYOFFICE subscription has expired. Renew your ONLYOFFICE subscription to continue using it.
-    
-$GreenButton
-
-You can switch to free Startup plan on "Payments page":"$PricingPage". 
-
-Free plan has up to 5 users and 2Gb of storage per portal. Some features will become unavailable, including LDAP, SSO, branding, automatic backups. "Compare plans":"https://www.onlyoffice.com/saas.aspx"
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Hello!
 
@@ -1426,9 +1413,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restore started</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
-    <value>Renewal notification</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>

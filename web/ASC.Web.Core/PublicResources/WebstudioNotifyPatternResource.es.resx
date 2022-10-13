@@ -1027,19 +1027,6 @@ Equipo de Asistencia ONLYOFFICE™
 
 ^Para cambiar el tipo de notificación, por favor administre su "configuración de la suscripción":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
-    <value>Su suscripción a ONLYOFFICE ha expirado. Renueve su suscripción a ONLYOFFICE para poder seguir utilizándolo.
-    
-$GreenButton
-
-Usted puede cambiar al plan gratuito Startup en la "Página de pagos":"$PricingPage". 
-
-El plan gratuito tiene hasta 5 usuarios y 2Gb de almacenamiento por portal. Algunas características no estarán disponibles, incluyendo LDAP, SSO, personalización de marca, copias de seguridad automáticas. "Comparar los planes":"https://www.onlyoffice.com/es/saas.aspx"
-
-Cordialmente,
-Equipo de ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>¡Hola!
 
@@ -1332,9 +1319,6 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restauración ha comenzado</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
-    <value>Notificación de renovación</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>

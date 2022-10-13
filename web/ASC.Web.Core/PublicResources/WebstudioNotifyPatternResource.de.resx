@@ -1030,19 +1030,6 @@ ONLYOFFICE™ Support Team
 
 ^Um den Benachrichtigungstyp zu ändern, verwalten Sie Ihre "Abonnement-Einstellungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
-    <value>Ihr Abonnement ist abgelaufen. Verlängern Sie dieses, um ONLYOFFICE weiter nutzen zu können.
-    
-$GreenButton
-
-Sie können zum kostenlosen Startup-Plan auf "Zahlungsseite":"$PricingPage" wechseln. 
-
-Dieser kann bis 5 Benutzer umfassen und hat 2 GB Speicher pro Portal. Manche Funktionen wie LDAP, SSO, Branding, automatische Backups usw. werden unverfügbar. "Vergleichen Sie Tarifpläne":"https://www.onlyoffice.com/de/saas.aspx".
-
-Beste Grüße,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Hallo!
 
@@ -1335,9 +1322,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Wiederherstellung startet</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
-    <value>Benachrichtigung über Verlängerung des Abos</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>${__VirtualRootPath} beitreten</value>

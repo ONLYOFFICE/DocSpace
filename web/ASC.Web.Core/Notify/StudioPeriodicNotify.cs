@@ -231,19 +231,6 @@ public class StudioPeriodicNotify
                     #endregion
                     #endregion
 
-                    #region Trial warning letters
-
-                    #region 1 day after SAAS TRIAL expired to admins
-
-                    if (dueDateIsNotMax && dueDate.AddDays(1) == nowDate)
-                    {
-                        action = Actions.SaasAdminTrialWarningAfter1V115;
-                        toadmins = true;
-
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonRenewNow;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx");
-                    }
-
                     #region 6 months after SAAS TRIAL expired
 
                     else if (dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
@@ -273,9 +260,6 @@ public class StudioPeriodicNotify
 
                     #endregion
 
-                    #endregion
-
-                    #endregion
                 }
 
                 else if (tariff.State >= TariffState.Paid)
