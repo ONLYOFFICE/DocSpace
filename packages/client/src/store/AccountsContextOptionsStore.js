@@ -152,6 +152,7 @@ class AccountsContextOptionsStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
+      hasFreeUsers,
     } = this.peopleStore.selectionStore;
     const {
       setActiveDialogVisible,
@@ -196,15 +197,15 @@ class AccountsContextOptionsStore {
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
-    options.push(userOption);
+    hasFreeUsers && options.push(userOption);
 
     const headerMenu = [
       {
         key: "cm-change-type",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
-        disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
+        disabled: !hasUsersToMakeEmployees,
         icon: "/static/images/change.to.employee.react.svg",
         items: options,
       },
