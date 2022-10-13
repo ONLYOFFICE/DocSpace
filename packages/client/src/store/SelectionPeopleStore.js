@@ -288,7 +288,7 @@ class SelectionStore {
 
     if (isOwner) {
       const users = this.selection.filter(
-        (x) => x.status !== EmployeeStatus.Active && x.id !== id
+        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
       );
 
       return users.map((u) => u.id);
@@ -297,7 +297,7 @@ class SelectionStore {
     if (isAdmin && !isOwner) {
       const users = this.selection.filter(
         (x) =>
-          x.status !== EmployeeStatus.Active &&
+          x.status !== EmployeeStatus.Disabled &&
           x.id !== id &&
           !x.isAdmin &&
           !x.isOwner
@@ -308,7 +308,7 @@ class SelectionStore {
 
     const users = this.selection.filter(
       (x) =>
-        x.status !== EmployeeStatus.Active &&
+        x.status !== EmployeeStatus.Disabled &&
         x.id !== id &&
         !x.isAdmin &&
         !x.isOwner &&
