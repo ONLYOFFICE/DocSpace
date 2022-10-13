@@ -15,7 +15,7 @@ ARG BUILD_ARGS="build"
 ARG DEPLOY_ARGS="deploy"
 ARG DEBUG_INFO="true"
 
-LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
+LABEL onlyoffice.docspace.release-date="${RELEASE_DATE}" \
     maintainer="Ascensio System SIA <support@onlyoffice.com>"
 
 ENV LANG=en_US.UTF-8 \
@@ -38,7 +38,6 @@ RUN echo ${GIT_BRANCH}  && \
     git clone --depth 1 --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/DocSpace.git ${SRC_PATH}
 
 RUN cd ${SRC_PATH} && \
-    # mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
     mkdir -p /app/onlyoffice/ && \
     find config/ -maxdepth 1 -name "*.json" | grep -v test | xargs tar -cvf config.tar && \
     tar -C "/app/onlyoffice/" -xvf config.tar && \
@@ -48,7 +47,6 @@ RUN cd ${SRC_PATH} && \
     sed -i "s/\"number\".*,/\"number\": \"${PRODUCT_VERSION}.${BUILD_NUMBER}\",/g" /app/onlyoffice/config/appsettings.json && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
     cd ${SRC_PATH}/build/install/common/ && \
-    # bash build-frontend.sh -sp "${SRC_PATH}" -ba "${BUILD_ARGS}" -da "${DEPLOY_ARGS}" -di "${DEBUG_INFO}" && \
     bash build-backend.sh -sp "${SRC_PATH}"  && \
     bash publish-backend.sh -sp "${SRC_PATH}" -bp "${BUILD_PATH}"  && \
     cp -rf ${SRC_PATH}/products/ASC.Files/Server/DocStore ${BUILD_PATH}/products/ASC.Files/server/ && \
@@ -137,8 +135,6 @@ RUN apt-get -y update && \
 # copy static services files and config values 
 COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
 COPY --from=base /etc/nginx/includes /etc/nginx/includes
-# COPY --from=base ${SRC_PATH}/build/deploy/client ${BUILD_PATH}/client
-# COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
@@ -149,36 +145,18 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     # changes for upstream configure
     sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
-    #sed -i 's/127.0.0.1:5021/$service_crm/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
-    #sed -i 's/127.0.0.1:5020/$service_projects_server/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
-    #sed -i 's/127.0.0.1:5023/$service_calendar/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:9899/$service_socket/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:9834/$service_sso/' /etc/nginx/conf.d/onlyoffice.conf && \
-    #sed -i 's/127.0.0.1:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5034/$service_migration/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5011/$service_login/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5001/$service_client/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
-
-## Doceditor ##
-# FROM noderun as doceditor
-# WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
-
-# COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/editor/ .
-# ENTRYPOINT ["node", "server.js"]
-
-## Login ##
-#FROM noderun as login
-#WORKDIR ${BUILD_PATH}/products/ASC.Login/login
-
-# COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/login/ .
-# ENTRYPOINT ["node", "server.js"]
 
 ## ASC.Data.Backup.BackgroundTasks ##
 FROM dotnetrun AS backup_background
@@ -340,10 +318,6 @@ ENTRYPOINT ["./docker-migration-entrypoint.sh"]
 FROM busybox:latest AS bin_share
 RUN mkdir -p /app/appserver/ASC.Files/server && \
     mkdir -p /app/appserver/ASC.People/server/ && \
-    #mkdir -p /app/appserver/ASC.CRM/server/ && \
-    #mkdir -p /app/appserver/ASC.Projects/server/ && \
-    #mkdir -p /app/appserver/ASC.Calendar/server/ && \
-    #mkdir -p /app/appserver/ASC.Mail/server/ && \
     addgroup --system --gid 107 onlyoffice && \
     adduser -u 104 onlyoffice --home /var/www/onlyoffice --system -G onlyoffice
 

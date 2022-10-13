@@ -178,9 +178,10 @@ services:
       - SERVICE_CLIENT=${SERVICE_CLIENT}
       - DOCUMENT_SERVER=${DOCUMENT_SERVER_HOST}
       - SERVICE_PORT=${SERVICE_PORT}
+      - GIT_BRANCH=${GIT_BRANCH}
     volumes:
       - proxy_log:/var/log/nginx
-      - /Users/holomoot/Documents/GitHub/AppServer/public:/var/www/public
+      - ${ROOT_DIR}/public:/var/www/public
 
 networks:
   default:
