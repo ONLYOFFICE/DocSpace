@@ -1124,7 +1124,7 @@ public class FileSecurity : IFileSecurity
         {
             var id = f.FileEntryType == FileEntryType.Folder ? f.Id : f.ParentId;
 
-            if (searchArea == SearchArea.Archive && f.RootFolderType == FolderType.Archive && (f.CreateBy == _authContext.CurrentAccount.ID || roomsIds[id] == FileShare.RoomManager))
+            if (searchArea == SearchArea.Archive && f.RootFolderType == FolderType.Archive)
             {
                 return true;
             }
@@ -1132,7 +1132,7 @@ public class FileSecurity : IFileSecurity
             {
                 return true;
             }
-            if (searchArea == SearchArea.Any && (f.RootFolderType == FolderType.VirtualRooms || (f.RootFolderType == FolderType.Archive && roomsIds[id] == FileShare.RoomManager)))
+            if (searchArea == SearchArea.Any && (f.RootFolderType == FolderType.VirtualRooms || f.RootFolderType == FolderType.Archive))
             {
                 return true;
             }
