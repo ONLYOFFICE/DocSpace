@@ -304,7 +304,7 @@ class SectionHeaderContent extends React.Component {
   };
 
   getContextOptionsFolder = () => {
-    const { t, toggleInfoPanel, personal } = this.props;
+    const { t, isRecycleBinFolder } = this.props;
 
     return [
       {
@@ -494,7 +494,6 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderIndeterminate,
       showText,
-      toggleInfoPanel,
       isRoomsFolder,
       isEmptyPage,
     } = this.props;
