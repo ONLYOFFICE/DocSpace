@@ -1043,21 +1043,6 @@ Hörmətlə,
 ONLYOFFICE Komandası
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Salam, $UserName!
-
-"${__VirtualRootPath}":"${__VirtualRootPath}" ünvanında hesabınız üçün sınaq müddəti 5 gün ərzində bitəcək.
-
-*Bu gün 10% endirimlə abunəlik alın!*
-
-Sadəcə alış zamanı bu kupon kodundan istifadə edin: *$Kupon*. Növbəti 10 gün ərzində etibarlı olacaq.
-
-$GreenButton
-
-Hörmətlə,
-ONLYOFFICE Komandası
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Salam, $UserName!
 
@@ -1371,9 +1356,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Yeniləmə bildirişi</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Sınaq müddətiniz bitmədən bu endirimdən istifadə edin</value>
   </data>
   <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>ONLYOFFICE sınaq müddətiniz bu gün başa çatır</value>

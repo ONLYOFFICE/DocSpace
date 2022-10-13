@@ -570,12 +570,6 @@ $activity.Key
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_saas_admin_user_docs_tips_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
-  <!-- saas admin user comfort tips v10 -->
-  <pattern id="saas_admin_trial_warning_before5_v115">
-    <subject resource="|subject_saas_admin_trial_warning_before5_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_saas_admin_trial_warning_before5_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
   <!-- saas admin user apps tips v10 -->
   <pattern id="saas_admin_trial_warning_v115">
     <subject resource="|subject_saas_admin_trial_warning_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />

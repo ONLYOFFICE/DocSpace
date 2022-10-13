@@ -1112,21 +1112,6 @@ Truly yours,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Hello, $UserName!
-
-The trial period for your account at "${__VirtualRootPath}":"${__VirtualRootPath}" will be over in 5 days.
-*Buy a subscription today with 10% off!*
-
-Just use this coupon code while purchasing: *$Coupon*. It will be valid within the next 10 days. 
-
-Use discount
-$GreenButton
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -1457,9 +1442,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Renewal notification</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Use this discount before your trial ends</value>
   </data>
   <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Your ONLYOFFICE trial expires today</value>

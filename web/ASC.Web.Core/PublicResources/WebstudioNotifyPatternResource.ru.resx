@@ -1043,22 +1043,6 @@ $GreenButton
 Команда ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Пробный период для вашего аккаунта на портале "${__VirtualRootPath}":"${__VirtualRootPath}" завершится через 5 дней.
-
-*Купите подписку сегодня со скидкой 10%!*
-
-Используйте этот код купона при покупке: *$Coupon*. Он будет действителен в течение следующих 10 дней.
-
-Воспользоваться скидкой
-$GreenButton
-
-С уважением,
-Команда ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Здравствуйте, $UserName!
 
@@ -1367,9 +1351,6 @@ $GreenButton
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Уведомление о продлении подписки</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Используйте эту скидку до завершения пробного периода</value>
   </data>
   <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Сегодня истекает пробный период ONLYOFFICE</value>

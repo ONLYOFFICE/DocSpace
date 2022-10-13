@@ -233,18 +233,6 @@ public class StudioPeriodicNotify
 
                     #region Trial warning letters
 
-                    #region 5 days before SAAS TRIAL ends to admins
-
-                    else if (!_coreBaseSettings.CustomMode && dueDateIsNotMax && dueDate.AddDays(-5) == nowDate)
-                    {
-                        toadmins = true;
-                        action = Actions.SaasAdminTrialWarningBefore5V115;
-
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
-                    }
-
-                    #endregion
 
                     #region SAAS TRIAL expires today to admins
 

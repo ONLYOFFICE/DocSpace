@@ -1027,21 +1027,6 @@ Bien à vous,
 Equipe ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-La période d'essai pour votre compte à "${__VirtualRootPath}":"${__VirtualRootPath}" va expirer dans 5 jours.
-
-*Abonnez-vous avec la réduction de 10% !*
-
-Veuillez saisir ce code promo lors de l'achat : *$Coupon*. Le code est valide pendant 10 jours seulement. 
-
-$GreenButton
-
-Bien à vous,
-Equipe ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Bonjour $UserName, 
 
@@ -1351,9 +1336,6 @@ Le lien est valide pendant 7 jours.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Avis de renouvellement</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Profitez de cette remise avant que votre période d'essai expire</value>
   </data>
   <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Votre période d'essai pour ONLYOFFICE expire aujourd'hui</value>

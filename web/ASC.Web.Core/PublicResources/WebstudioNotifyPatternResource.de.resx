@@ -1043,21 +1043,6 @@ Beste Grüße,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-Die Testversion für Ihr Konto "${__VirtualRootPath}":"${__VirtualRootPath}" läuft in 5 Tage ab.
-
-*Erwerben Sie das Abo heute mit 10% Rabatt!*
-
-Geben Sie einfach diesen Code beim Einkauf ein: *$Coupon*. Dieser wird innerhalb folgender 10 Tage gültig.
-
-$GreenButton
-
-Beste Grüße,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Hallo, $UserName!
 
@@ -1366,9 +1351,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Benachrichtigung über Verlängerung des Abos</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Bekommen Sie diesen Rabatt, bevor Ihre Testversion abläuft</value>
   </data>
   <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Ihre Testversion von ONLYOFFICE läuft heute ab</value>

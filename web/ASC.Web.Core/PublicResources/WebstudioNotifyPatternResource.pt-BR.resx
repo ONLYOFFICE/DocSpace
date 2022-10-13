@@ -1041,21 +1041,6 @@ Atenciosamente,
 Equipe ONLYOFFICE
 "www.onlyoffice.com": "http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Olá, $UserName!
-
-O período experimental para sua conta em "${__VirtualRootPath}": "${__VirtualRootPath}" terminará em 5 dias.
-
-*Compre uma assinatura hoje com 10% de desconto!
-
-Basta usar este código de cupom durante a compra: *$Coupon*. Ele será válido dentro dos próximos 10 dias. 
-
-$GreenButton
-
-Atenciosamente,
-Equipe ONLYOFFICE
-"www.onlyoffice.com": "http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Olá, $UserName!
 
@@ -1372,9 +1357,6 @@ O link só é válido por 7 dias.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Notificação de renovação</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_before5_v115" xml:space="preserve">
-    <value>Use este desconto antes do fim do período de avaliação</value>
   </data>
   <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Seu teste de ONLYOFFICE expira hoje</value>

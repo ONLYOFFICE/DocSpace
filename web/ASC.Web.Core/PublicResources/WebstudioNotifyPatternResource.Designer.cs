@@ -2113,27 +2113,6 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///The trial period for your account at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; will be over in 5 days.
-        ///*Buy a subscription today with 10% off!*
-        ///
-        ///Just use this coupon code while purchasing: *$Coupon*. It will be valid within the next 10 days. 
-        ///
-        ///Use discount
-        ///$GreenButton
-        ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
-        /// </summary>
-        public static string pattern_saas_admin_trial_warning_before5_v115 {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_trial_warning_before5_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
         ///The trial period for your portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; is due to expire today. To continue using ONLYOFFICE Business, &quot;buy subscription&quot;:&quot;$PricingPage&quot;.
         ///
         ///To extend your trial, contact our &quot;sales team&quot;:&quot;mailto:sales@onlyoffice.com&quot;. 
@@ -3133,15 +3112,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_admin_trial_warning_after1_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_trial_warning_after1_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this discount before your trial ends.
-        /// </summary>
-        public static string subject_saas_admin_trial_warning_before5_v115 {
-            get {
-                return ResourceManager.GetString("subject_saas_admin_trial_warning_before5_v115", resourceCulture);
             }
         }
         
