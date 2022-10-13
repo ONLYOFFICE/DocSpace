@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import {
   EmployeeStatus,
   EmployeeActivationStatus,
@@ -13,31 +13,8 @@ class SelectionStore {
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
-    makeObservable(this, {
-      selection: observable,
-      bufferSelection: observable,
-      selected: observable,
-      selectUser: action,
-      setBufferSelection: action,
-      deselectUser: action,
-      selectAll: action,
-      setSelection: action,
-      clearSelection: action,
-      selectByStatus: action,
-      setSelected: action,
-      hasAnybodySelected: computed,
-      hasUsersToMakeEmployees: computed,
-      getUsersToMakeEmployees: computed,
-      hasUsersToActivate: computed,
-      getUsersToActivateIds: computed,
-      hasUsersToDisable: computed,
-      getUsersToDisableIds: computed,
-      hasUsersToInvite: computed,
-      getUsersToInviteIds: computed,
-      hasUsersToRemove: computed,
-      getUsersToRemoveIds: computed,
-      hasFreeUsers: computed,
-    });
+
+    makeAutoObservable(this);
   }
 
   setSelection = (selection) => {
