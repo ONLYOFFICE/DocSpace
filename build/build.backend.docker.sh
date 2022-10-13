@@ -70,7 +70,7 @@ docker compose -f build.dev.yml build
 
 echo "Run DB migration"
 DOCKERFILE=Dockerfile.dev \
-docker compose -f migration-runner.yml
+docker compose -f migration-runner.yml up -d
 
 echo "Start all backend services"
 DOCKERFILE=Dockerfile.dev \
