@@ -180,7 +180,37 @@ export default inject(
 
     const thirdPartyStore = settingsStore.thirdPartyStore;
 
-    const { connectItems } = thirdPartyStore;
+    const connectItems = [
+      thirdPartyStore.googleConnectItem,
+      thirdPartyStore.boxConnectItem,
+      thirdPartyStore.dropboxConnectItem,
+      thirdPartyStore.oneDriveConnectItem,
+      thirdPartyStore.nextCloudConnectItem && [
+        ...thirdPartyStore.nextCloudConnectItem,
+        "Nextcloud",
+      ],
+      thirdPartyStore.kDriveConnectItem,
+      thirdPartyStore.yandexConnectItem,
+      thirdPartyStore.ownCloudConnectItem && [
+        ...thirdPartyStore.ownCloudConnectItem,
+        "ownCloud",
+      ],
+      thirdPartyStore.webDavConnectItem,
+      thirdPartyStore.sharePointConnectItem,
+    ]
+      .map(
+        (item) =>
+          item && {
+            id: item[0],
+            providerKey: item[0],
+            isOauth: item.length > 1 && item[0] !== "WebDav",
+            oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
+            ...(item[0] === "WebDav" && {
+              category: item[item.length - 1],
+            }),
+          }
+      )
+      .filter((item) => !!item);
 
     return {
       connectItems,
