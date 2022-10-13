@@ -30,12 +30,14 @@ const StyledModalDialog = styled(ModalDialog)`
 const CreateRoomDialog = ({
   t,
   visible,
-  onClose,
+  closeEvent,
   onCreate,
 
   fetchedTags,
   isLoading,
-  folderFormValidation,
+  setIsLoading,
+
+  deleteThirdParty,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
   const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
@@ -75,11 +77,23 @@ const CreateRoomDialog = ({
     }));
   };
 
-  const onCreateRoom = () => onCreate(roomParams);
+  const onCreateRoom = async () => {
+    await onCreate({ ...roomParams });
+    setRoomParams(startRoomParams);
+  };
 
-  const isChooseRoomType = roomParams.type === undefined;
   const goBack = () => {
     setRoomParams({ ...startRoomParams });
+  };
+
+  const onClose = async () => {
+    if (!!roomParams.storageLocation.thirdpartyAccount) {
+      setIsLoading(true);
+      await deleteThirdParty(
+        roomParams.storageLocation.thirdpartyAccount.providerId
+      ).finally(() => setIsLoading(false));
+    }
+    closeEvent();
   };
 
   return (
@@ -94,13 +108,13 @@ const CreateRoomDialog = ({
     >
       <ModalDialog.Header>
         <DialogHeader
-          isChooseRoomType={isChooseRoomType}
+          isChooseRoomType={!roomParams.type}
           onArrowClick={goBack}
         />
       </ModalDialog.Header>
 
       <ModalDialog.Body>
-        {isChooseRoomType ? (
+        {!roomParams.type ? (
           <RoomTypeList t={t} setRoomType={setRoomType} />
         ) : (
           <SetRoomParams
@@ -115,7 +129,7 @@ const CreateRoomDialog = ({
         )}
       </ModalDialog.Body>
 
-      {!isChooseRoomType && (
+      {!!roomParams.type && (
         <ModalDialog.Footer>
           <Button
             tabIndex={5}
