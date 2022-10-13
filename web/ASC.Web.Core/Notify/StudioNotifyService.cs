@@ -353,25 +353,23 @@ public class StudioNotifyService
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
             notifyAction = defaultRebranding
-                               ? Actions.EnterpriseUserWelcomeV10
+                               ? Actions.EnterpriseUserWelcomeV1
                                    : _coreBaseSettings.CustomMode
                                      ? Actions.EnterpriseWhitelabelUserWelcomeCustomMode
-                                     : Actions.EnterpriseWhitelabelUserWelcomeV10;
+                                     : Actions.EnterpriseWhitelabelUserWelcomeV1;
             footer = null;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceUserWelcomeV11;
+            notifyAction = Actions.OpensourceUserWelcomeV1;
             footer = "opensource";
         }
         else
         {
-            notifyAction = Actions.SaasUserWelcomeV115;
+            notifyAction = Actions.SaasUserWelcomeV1;
         }
 
-        string greenButtonText() => _tenantExtra.Enterprise
-                              ? WebstudioNotifyPatternResource.ButtonAccessYourPortal
-                              : WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
+        string greenButtonText() => WebstudioNotifyPatternResource.CollaborateDocSpace;
 
         _client.SendNoticeToAsync(
         notifyAction,
@@ -379,7 +377,7 @@ public class StudioNotifyService
         new[] { EMailSenderName },
         new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
         new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
-            TagValues.GreenButton(greenButtonText, _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')),
+            TagValues.GreenButton(greenButtonText, $"{_commonLinkUtility.GetFullAbsolutePath("~")}/products/files/"),
         new TagValue(CommonTags.Footer, footer),
             new TagValue(CommonTags.MasterTemplate, _coreBaseSettings.Personal ? "HtmlMasterPersonal" : "HtmlMaster"));
     }
@@ -437,17 +435,17 @@ public class StudioNotifyService
         if (_tenantExtra.Enterprise)
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-            notifyAction = defaultRebranding ? Actions.EnterpriseUserActivationV10 : Actions.EnterpriseWhitelabelUserActivationV10;
+            notifyAction = defaultRebranding ? Actions.EnterpriseUserActivationV1 : Actions.EnterpriseWhitelabelUserActivationV1;
             footer = null;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceUserActivationV11;
+            notifyAction = Actions.OpensourceUserActivationV1;
             footer = "opensource";
         }
         else
         {
-            notifyAction = Actions.SaasUserActivationV115;
+            notifyAction = Actions.SaasUserActivationV1;
         }
 
         var confirmationUrl = GenerateActivationConfirmUrl(newUserInfo);
@@ -629,27 +627,21 @@ public class StudioNotifyService
         if (_tenantExtra.Enterprise)
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-            notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV10 : Actions.EnterpriseWhitelabelAdminWelcomeV10;
-
-            tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonAccessControlPanel, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl)));
-            tagValues.Add(new TagValue(Tags.ControlPanelUrl, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl).TrimEnd('/')));
+            notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV1 : Actions.EnterpriseWhitelabelAdminWelcomeV1;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceAdminWelcomeV11;
+            notifyAction = Actions.OpensourceAdminWelcomeV1;
             tagValues.Add(new TagValue(CommonTags.Footer, "opensource"));
-            tagValues.Add(new TagValue(Tags.ControlPanelUrl, _commonLinkUtility.GetFullAbsolutePath(_setupInfo.ControlPanelUrl).TrimEnd('/')));
         }
         else
         {
-            notifyAction = Actions.SaasAdminWelcomeV115;
-            //tagValues.Add(TagValues.GreenButton(() => WebstudioNotifyPatternResource.ButtonConfigureRightNow, CommonLinkUtility.GetFullAbsolutePath(CommonLinkUtility.GetAdministration(ManagementType.General))));
-
+            notifyAction = Actions.SaasAdminWelcomeV1;
             tagValues.Add(new TagValue(CommonTags.Footer, "common"));
-            tagValues.Add(new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx")));
         }
 
         tagValues.Add(new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()));
+        tagValues.Add(new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/payments")));
 
         _client.SendNoticeToAsync(
         notifyAction,
@@ -692,10 +684,10 @@ public class StudioNotifyService
 
     public void SendMsgPortalDeletionSuccess(UserInfo owner, string url)
     {
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
+        static string greenButtonText() => WebstudioNotifyPatternResource.LeaveFeedbackDocSpace;
 
         _client.SendNoticeToAsync(
-                Actions.PortalDeleteSuccessV115,
+                Actions.PortalDeleteSuccessV1,
                 new IRecipient[] { owner },
                 new[] { EMailSenderName },
                 TagValues.GreenButton(greenButtonText, url),
@@ -745,31 +737,29 @@ public class StudioNotifyService
             if (_tenantExtra.Enterprise)
             {
                 var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-                notifyAction = defaultRebranding ? Actions.EnterpriseAdminActivationV10 : Actions.EnterpriseWhitelabelAdminActivationV10;
+                notifyAction = defaultRebranding ? Actions.EnterpriseAdminActivationV1 : Actions.EnterpriseWhitelabelAdminActivationV1;
                 footer = null;
             }
             else if (_tenantExtra.Opensource)
             {
-                notifyAction = Actions.OpensourceAdminActivationV11;
+                notifyAction = Actions.OpensourceAdminActivationV1;
                 footer = "opensource";
             }
             else
             {
-                notifyAction = Actions.SaasAdminActivationV115;
+                notifyAction = Actions.SaasAdminActivationV1;
             }
 
             var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(u.Email, ConfirmType.EmailActivation);
             confirmationUrl += "&first=true";
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirm;
+            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmEmail;
 
             _client.SendNoticeToAsync(
             notifyAction,
                 _studioNotifyHelper.RecipientFromEmail(u.Email, false),
             new[] { EMailSenderName },
             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-            new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
-            new TagValue(Tags.ActivateUrl, confirmationUrl),
             TagValues.GreenButton(greenButtonText, confirmationUrl),
             new TagValue(CommonTags.Footer, footer));
         }

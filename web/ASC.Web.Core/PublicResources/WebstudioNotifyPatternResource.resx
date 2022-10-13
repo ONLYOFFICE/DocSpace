@@ -333,21 +333,6 @@ $GreenButton
 
 *Note*: this link is valid for 7 days only. Please complete the portal address change process within that period.</value>
   </data>
-  <data name="pattern_enterprise_admin_activation_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-You have just created the ONLYOFFICE portal, your team's cloud office that would enhance internal cooperation. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Please, confirm your email following the link
-
-$GreenButton
-
-You may change your email or password in your "personal profile page":"$MyStaffLink".
-
-To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions "here":"${__HelpLink}/installation/groups-smtp-settings.aspx".
-
-More information in ONLYOFFICE "Help Center":"${__HelpLink}".</value>
-  </data>
   <data name="pattern_enterprise_admin_customize_portal_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -457,38 +442,6 @@ Get free ONLYOFFICE apps to work on documents and projects from any of your devi
 #To edit documents on mobile devices, get Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 #To manage your team performance on the go, get Projects for "iOS":"https://apps.apple.com/us/app/onlyoffice-projects/id1353395928" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.projects". </value>
   </data>
-  <data name="pattern_enterprise_admin_user_docs_tips_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-We hope you enjoy using document editors available in your web-office. Here are some tips on how to make it more effective.
-
-$TableItemsTop $TableItem2 $TableItem1 $TableItem4 $TableItem3 $TableItem7 $TableItem6 $TableItem5 $TableItemsBtm</value>
-  </data>
-  <data name="pattern_enterprise_admin_welcome_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Here’s what you can do to make your web-office even more secure:
-
-*Get an SSL certificate* if you are going to provide not only local but also external portal access for your users. Generate a newly signed certificate in the Control Panel or purchase one from the provider you trust.
-
-*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our "Help Center":"${__HelpLink}/administration/control-panel-backup.aspx".
-
-*Adjust portal security settings*: restrict access using IP whitelisting, specify trusted mail domains, set password length and more. "More information &gt;&gt;":"${__HelpLink}/installation/workspace-enterprise-configure.aspx" 
-
-*Enable 2-factor authentication* via SMS or authenticator app. Instructions "here":"${__HelpLink}/administration/two-factor-authentication.aspx".
-
-*Use LDAP for access centralization*. Easily import the necessary users and groups from your LDAP server (e.g. OpenLDAP Server or Microsoft Active Directory) to your portal. Learn more "here":"${__HelpLink}/administration/control-panel-ldap.aspx".
-
-*Use own SMPT*. By default notifications for ONLYOFFICE Workspace Enterprise Edition users (for example, if they are granted access to a document) are provided by means of standard ONLYOFFICE SMPT server. Configure your own SMTP server so that your notifications won’t pass through any third-party server. "Instructions &gt;&gt;":"${__HelpLink}/installation/groups-smtp-settings.aspx"
-
-*Close all the unnecessary ports*. The list of all the ports which must be opened for ONLYOFFICE is "here":"${__HelpLink}/installation/groups-open-ports.aspx".
-
-Make your ONLYOFFICE more secure now.
-
-To access your web-office, follow the "the link":"$ControlPanelUrl"
-
-More information in our "Help Center":"${__HelpLink}".</value>
-  </data>
   <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -521,45 +474,6 @@ Your guest profile has been successfully added to "${__VirtualRootPath}":"${__Vi
 To access your web-office, follow the link
 $GreenButton</value>
   </data>
-  <data name="pattern_enterprise_user_activation_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-You are invited to join your company's safe and secure web-office that would enhance your collaboration. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Accept the invitation by following the link
-
-$GreenButton
-
-The link is only valid for 7 days.
-
-You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
-  </data>
-  <data name="pattern_enterprise_user_welcome_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Your user profile has been successfully added to the portal at "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
-
-1.	Create and edit Documents, work with forms, share them with teammates, and collaborate in real time.
-2.	Add your email accounts and manage all correspondence in one place with Mail.
-3.	Manage your workflow with Projects and your customer relationships using CRM.
-4.	Use Community to start your blogs, forums, add events, share bookmarks.
-5.	Organize your work schedule with the built-in Calendar.
-6.	Use Chat to exchange instant messages.
-
-To access your web-office, follow the link
-$GreenButton</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_activation_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-You have just created your corporate web-office, your team's cloud office that would enhance internal cooperation.  Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Please, confirm your email:
-
-$GreenButton
-
-You may change your email or password in your "personal profile page":"$MyStaffLink".</value>
-  </data>
   <data name="pattern_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -587,27 +501,6 @@ Please note that your web-office subscription expires today. To extend your subs
 Click on the link below to start the renewal process:
 "Pricing page":"$PricingPage"</value>
   </data>
-  <data name="pattern_enterprise_whitelabel_admin_welcome_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Here’s what you can do to make your web-office even more secure:
-
-*Get an SSL certificate* if you are going to provide not only local but also external portal access for your users. Generate a new signed certificate in the Control Panel or purchase one from the provider you trust.
-
-*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server from time to time.
-
-*Adjust portal security settings*: restrict access using IP whitelisting, specify trusted mail domains, set password length and more.
-
-*Enable 2-factor authentication* via SMS or authenticator app.
-
-*Use LDAP for access centralization*. Easily import the necessary users and groups from your LDAP server (e.g. OpenLDAP Server or Microsoft Active Directory) to your portal.
-
-*Use own SMPT* and close all the unnecessary ports.
-
-Make your online office more secure now.
-
-$GreenButton</value>
-  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -628,33 +521,6 @@ Your guest profile has been successfully added to "${__VirtualRootPath}":"${__Vi
 # View and comment the content available in the "Community":"${__VirtualRootPath}/Products/Community/" and "Projects":"${__VirtualRootPath}/Products/Projects/".
 # Add and download files available for you in the "Documents":"${__VirtualRootPath}/Products/Files/".
 # Organize your schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
-# Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
-
-$GreenButton</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_user_activation_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-$__AuthorName has invited you to join your company's safe and secure web-office that would enhance your collaboration. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Accept the invitation by clicking the link:
-
-$GreenButton
-
-The link is only valid for 7 days.
-
-You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_user_welcome_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Welcome to ONLYOFFICE! Your user profile has been successfully added to the portal at "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
-
-# Create and edit "Documents":"${__VirtualRootPath}/Products/Files/", share them with teammates, and collaborate in real time.
-# Add your email accounts and manage all correspondence in one place with "Mail":"${__VirtualRootPath}/addons/mail/".
-# Manage your workflow with "Projects":"${__VirtualRootPath}/Products/Projects/" and your customer relationships using "CRM":"${__VirtualRootPath}/Products/CRM/".
-# Use "Community":"${__VirtualRootPath}/Products/Community/" to start your blogs, forums, add events, share bookmarks.
-# Organize your work schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
 # Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
 
 $GreenButton</value>
@@ -783,59 +649,6 @@ $GreenButton
 
 If you received this email by mistake, please ignore it or contact your "$PortalUrl":"$PortalUrl" portal administrator to find out the details.</value>
   </data>
-  <data name="pattern_opensource_admin_activation_v11" xml:space="preserve">
-    <value>Hello, $UserName!
-
-You have just created the ONLYOFFICE portal, your team's cloud office that would enhance internal cooperation.  Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Please, confirm your email following the "link":"$ActivateUrl".
-
-You may change your email or password in your "personal profile page":"$MyStaffLink".
-
-To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions "here":"${__HelpLink}/server/windows/community/smtp-settings.aspx".
-
-More information in ONLYOFFICE "Help Center":"${__HelpLink}".</value>
-  </data>
-  <data name="pattern_opensource_admin_docs_tips_v11" xml:space="preserve">
-    <value>Hello, $UserName!
-
-We hope you enjoy using integrated ONLYOFFICE document editors. Here are some tips that might be useful: 
-
-*#1. Share documents* to individuals and groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access. Let other users apply their own filters in spreadsheets without disturbing co-authors. Restrict downloading and printing using "ONLYOFFICE API":"https://api.onlyoffice.com/editors/config/document/permissions". 
-
-*#2. Learn how document saving works* and adjust it to your own needs. "Learn more":"https://www.onlyoffice.com/blog/2020/04/save-and-force-save-in-onlyoffice-never-lose-a-document/"
-
-*#3. Get help* from the community by creating issues on "GitHub":"https://github.com/ONLYOFFICE/DocumentServer/issues" or asking questions on "our forum":"https://dev.onlyoffice.org/".  You can also buy subscription to premium support or just ask our support team to help in certain cases. "Learn more":"https://github.com/ONLYOFFICE/DocumentServer/issues"
-
-*#4. Get the free apps*.  To work on documents offline on Windows, Linux and macOS, download "this free desktop app":"https://www.onlyoffice.com/apps.aspx". To edit documents on mobile devices, get free Documents app for "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
-
-*#5. Activate private rooms for encrypted collaboration*. All the docs stored in these rooms as well as data transfer while collaboration are encrypted using the AES-256 encryption algorithm to prevent unwanted access. "Learn more":"${__HelpLink}".</value>
-  </data>
-  <data name="pattern_opensource_admin_welcome_v11" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Here’s what you can do to make your web-office even more secure:
-
-*Get an SSL certificate*, if you are going to provide not only local but also external portal access for your users. Generate a new signed certificate in the Control Panel or purchase one from the provider you trust.
-
-*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our "Help Center":"${__HelpLink}/server/controlpanel/enterprise/backup-restore.aspx".
-
-*Adjust portal security settings*: Easily import the necessary users and groups from your LDAP server (e.g. OpenLDAP Server or Microsoft Active Directory) to your portal. "Learn more &gt;&gt;":"${__HelpLink}/server/enterprise/configure-enterprise.aspx?_ga=2.111477636.160074001.1555312634-699576329.1539952318"
-
-*Enable 2-factor authentication* via SMS or authenticator app. Instructions "here":"${__HelpLink}/guides/two-factor-authentication.aspx?_ga=2.115795846.160074001.1555312634-699576329.1539952318".
-
-*Use LDAP for access centralization*. Easily import the necessary users and groups from your LDAP server (e.g. OpenLDAP Server or Microsoft Active Directory) to your portal. Learn more "here":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
-
-*Use own SMPT*. By default notifications for ONLYOFFICE users (for example, if they are granted access to a document) are provided by means of standard ONLYOFFICE SMPT server. Configure your own SMTP server so that your notifications won’t pass through any third-party server. "Instructions&gt;&gt;":"${__HelpLink}/installation/groups-smtp-settings.aspx"
-
-*Close all the unnecessary ports*. The list of all the ports which must be opened for ONLYOFFICE is "here":"${__HelpLink}/server/docker/community/open-ports.aspx".
-
-*Encrypt your data at rest*. To do so, follow "the instructions":"${__HelpLink}". If you want to protect collaboration process, activate Private Rooms. "Learn more":"${__HelpLink}"
-
-Make your ONLYOFFICE more secure now follow the "link":"$ControlPanelUrl"
-
-More information in our "Help Center":"${__HelpLink}".</value>
-  </data>
   <data name="pattern_opensource_guest_activation_v11" xml:space="preserve">
     <value>Hello!
 
@@ -866,57 +679,6 @@ To access your web-office, follow "the link":"${__VirtualRootPath}".
 
 If you want to create your own web-office, visit "ONLYOFFICE official website":"https://www.onlyoffice.com/". 
 </value>
-  </data>
-  <data name="pattern_opensource_user_activation_v11" xml:space="preserve">
-    <value>Hello!
-
-You are invited to join your company's safe and secure web-office that would enhance your collaboration. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
-
-Accept the invitation by following the "link":"$ActivateUrl"
-
-The link is only valid for 7 days.
-
-You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
-  </data>
-  <data name="pattern_opensource_user_docs_tips_v11" xml:space="preserve">
-    <value>Hello, $UserName!
-
-We hope you enjoy using integrated ONLYOFFICE document editors. Here are some tips that might be useful:
-
-*#1. Explore advanced formatting*. The doc editors provide you with the most complete set of styling and formatting tools.  
-
-*#2. Share documents* to individuals or user groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access. 
-
-*#3. Choose co-editing mode*. While co-editing a doc with your team in real time, switch to Fast mode to see changes as your co-author is typing or to Strict mode to get more privacy. "Watch video":"https://youtu.be/8z1iLv32J2M"
-
-*#4. Review, comment, and chat*. Use "Review":"https://youtu.be/D1tbffuQeUA" to suggest changes without modifying the original doc, add Comments to share your thoughts on a specific extract, or chat inside your doc via instant messages.
-
-*#5. Connect 3rd party clouds*, like Dropbox or Google Drive, to manage your files in one place.
-
-*#6. Get the apps*. To work on documents offline on Windows, Linux and macOS, download "this free desktop app":"https://www.onlyoffice.com/apps.aspx". To edit documents on mobile devices, get free Documents app for "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".</value>
-  </data>
-  <data name="pattern_opensource_user_welcome_v11" xml:space="preserve">
-    <value>Congratulations, $UserName!
-
-You have officially joined your team’s web-office at "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
-
-*Store, manage and share documents*. View pictures, play videos and audios. "Learn more":"${__HelpLink}/gettingstarted/documents.aspx"
-
-*Edit and co-author documents, spreadsheets, and presentations* using integrated ONLYOFFICE editors. Use hundreds of formatting tools and collaborate efficiently. "Watch video":"https://youtu.be/ep1VLGlmsdI"
-
-*Manage your tasks*. Use "ONLYOFFICE Projects":"${__HelpLink}/projects.aspx" to plan activities, set tasks and deadlines. 
-
-*Customer relationships*. Build your customer database, manage business processes, analyse potential deal success rate, and track sales with "ONLYOFFICE CRM":"${__HelpLink}/crm.aspx".
-
-*Create personal and shared calendars*. Arrange meetings, set reminders, create to-do lists! "Learn more":"${__HelpLink}/calendar.aspx"
-
-*Use internal wiki and social network*. Maintain an internal knowledge base to help new members get involved quickly. Share your thoughts with blogs, forums, and polls. "Learn more":"${__HelpLink}/community.aspx"
-
-*Handle all emails and create project mailboxes*. Gather correspondence from different accounts in one workspace or ask your admin to create a new corporate mailbox. "Learn more":"${__HelpLink}/mail.aspx"
-
-*Exchange instant messages* and quickly share files using Talk. "Learn more":"${__HelpLink}/talk.aspx"
-
-To access your web-office, follow the "link":"${__VirtualRootPath}".</value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Hello, $UserName
@@ -1001,18 +763,6 @@ h3.In case you collaborate with a team or manage a project, we suggest you to tr
 - Use advanced security features like SSO, 2FA or end-to-end encryption.
 
 Create a single collaborative workspace for you and your teammates "in the cloud":"https://www.onlyoffice.com/registration.aspx" or "on your server":"https://www.onlyoffice.com/download-workspace.aspx" and see how your workflow would immediately improve! You can take advantage of the "free tariff":"https://www.onlyoffice.com/saas.aspx" for teams with up to 5 users.
-
-Sincerely,
-ONLYOFFICE team</value>
-  </data>
-  <data name="pattern_personal_after_registration28" xml:space="preserve">
-    <value>$PersonalHeaderStart Get free ONLYOFFICE apps $PersonalHeaderEnd
-
-h3.Need to edit documents on the go? Looking for a reliable application to ensure you will be able to work offline when the Internet connection is unstable? Get free ONLYOFFICE apps to edit files from any of your devices.
-
-- To work on documents offline on Windows, Linux and macOS, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
-
-- To edit documents on mobile devices, get ONLYOFFICE Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 
 Sincerely,
 ONLYOFFICE team</value>
@@ -1154,19 +904,6 @@ If you have any questions or need assistance please feel free to contact us at "
 
 Best regards,
 ONLYOFFICE™ Support Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_portal_delete_success_v115" xml:space="preserve">
-    <value>Your ONLYOFFICE has been successfully deactivated. Please note that all of your data will be deleted in accordance with "our Privacy statement":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
-
-Why have you decided to leave? Share your experience with us.
-
-$GreenButton
-
-Thank you and good luck! 
-
-Truly yours,
-ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_portal_delete_tg" xml:space="preserve">
@@ -1362,21 +1099,6 @@ ONLYOFFICE™ Support Team
 
 ^To change the notification type, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_activation_v115" xml:space="preserve">
-    <value>Hello, $UserName!
-
-You have just created the ONLYOFFICE portal, your team's cloud office that would enhance internal cooperation. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}". 
-
-Please, confirm your email: 
-
-$GreenButton
-
-The link will be valid for 7 days.
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -1446,19 +1168,6 @@ Truly yours,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_trial_warning_after_half_year_v115" xml:space="preserve">
-    <value>You haven't entered your ONLYOFFICE "${__VirtualRootPath}":"${__VirtualRootPath}" for more than 6 months. Since you have decided not to use it anymore, your web-office and all the data will be deleted in accordance with "our Privacy statement":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
-
-We would appreciate your feedback. Why have you decided to stop using ONLYOFFICE?
-
-$GreenButton
-
-If you think this is a mistake and want to continue using ONLYOFFICE, please contact our "support team":"https://helpdesk.onlyoffice.com".
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Your ONLYOFFICE subscription has expired. Renew your ONLYOFFICE subscription to continue using it.
     
@@ -1513,98 +1222,6 @@ Truly yours,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115" xml:space="preserve">
-    <value>Hello, $UserName!
-
-We hope you enjoy using ONLYOFFICE editors. Here are some tips on how to make it more effective.
-
-$TableItemsTop $TableItem2 $TableItem1 $TableItem4 $TableItem3 $TableItem7 $TableItem6 $TableItem5 $TableItemsBtm
-
-$GreenButton
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_3rdparty" xml:space="preserve">
-    <value>Connect Dropbox, Google Drive or other services to manage your files in one place.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_3rdparty_hdr" xml:space="preserve">
-    <value>*Connect 3rd party clouds*</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_apps" xml:space="preserve">
-    <value>Create ready-to-fill-out forms together with your teammates, let other users fill them in, save forms as PDF files. "Learn more":"https://helpcenter.onlyoffice.com/userguides/docs-index.aspx"</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_apps_hdr" xml:space="preserve">
-    <value>*Create ready-to-fill-out forms*</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_attach" xml:space="preserve">
-    <value>Documents are integrated with all the other ONLYOFFICE modules, so you’ll forget about downloading docs and uploading them somewhere else forever.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_attach_hdr" xml:space="preserve">
-    <value>*Attach docs to projects and emails*</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_coediting" xml:space="preserve">
-    <value>While co-editing a doc with your team in real time, switch to Fast mode to see changes as your co-author is typing or to Strict mode to get more privacy.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr" xml:space="preserve">
-    <value>*Choose co-editing mode*</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_contentcontrols" xml:space="preserve">
-    <value>Create and co-edit "fillable document forms":"https://www.onlyoffice.com/form-creator.aspx" online, let other users fill them in, save forms as PDF files.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr" xml:space="preserve">
-    <value>*Create professional-looking forms*</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_differences" xml:space="preserve">
-    <value>Quickly find differences in two versions of the same document with the Compare documents feature.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_differences_hdr" xml:space="preserve">
-    <value>*Quickly find differences*</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_formatting" xml:space="preserve">
-    <value>ONLYOFFICE provides you with the most complete set of styling and formatting tools. "Learn more":"https://helpcenter.onlyoffice.com/userguides/docs-index.aspx"</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr" xml:space="preserve">
-    <value>*Explore advanced formatting*</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_review" xml:space="preserve">
-    <value>Use Review to suggest changes without modifying the original doc, add comments and tag other users for feedback. Exchange instant messages via built-in chat or Telegram, make video calls using Jitsi.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_review_hdr" xml:space="preserve">
-    <value>*Review, comment, and chat*</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_share" xml:space="preserve">
-    <value>Share docs to individuals or user groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access. To protect documents, you can restrict printing, downloading, copying, and sharing.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_share_hdr" xml:space="preserve">
-    <value>*Share documents*</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_spreadsheets" xml:space="preserve">
-    <value>Comfortably collaborate on spreadsheets with the Sheet Views feature that allows to create filter that only changes your view of the data, without affecting your team.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_spreadsheets_hdr" xml:space="preserve">
-    <value>*Comfortably collaborate on spreadsheets*</value>
-  </data>
-  <data name="pattern_saas_admin_welcome_v115" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Test ONLYOFFICE Business cloud for 30 days for free:
-
-# *Edit unlimited number of docs*, sheets, slides, and forms simultaneously.
-# *Customize your online office* style to match your branding.
-# *Ensure security:* enable 2FA, configure automatic backups, track user actions.
-# *Integrate with your infrastructure:* use LDAP, SSO, and your domain name for portal address.
-# *Connect apps for productive work:* Twilio, DocuSign, etc.
-
-If you need instructions on configuring/using ONLYOFFICE, visit our "Help Center":"${__HelpLink}".
-
-You can purchase subscription on "Payments page":"$PricingPage" or ask us to extend your trial if you need more time for testing.
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Hello!
 
@@ -1632,19 +1249,6 @@ Your guest profile has been successfully added to "${__VirtualRootPath}":"${__Vi
 $GreenButton
 
 If you need help, browse our "Help Center":"${__HelpLink}".
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_saas_user_activation_v115" xml:space="preserve">
-    <value>Hello!
-
-You are invited to join ONLYOFFICE at "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
-
-$GreenButton
-
-We will also send you useful tips and latest ONLYOFFICE news once in a while. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.
 
 Truly yours,
 ONLYOFFICE Team
@@ -1798,9 +1402,6 @@ The link is only valid for 7 days.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Change of portal address</value>
   </data>
-  <data name="subject_enterprise_admin_activation_v10" xml:space="preserve">
-    <value>Confirm your email</value>
-  </data>
   <data name="subject_enterprise_admin_customize_portal_v10" xml:space="preserve">
     <value>Customize ONLYOFFICE</value>
   </data>
@@ -1822,12 +1423,6 @@ The link is only valid for 7 days.</value>
   <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Get free desktop and mobile apps</value>
   </data>
-  <data name="subject_enterprise_admin_user_docs_tips_v10" xml:space="preserve">
-    <value>7 tips for effective work on your docs</value>
-  </data>
-  <data name="subject_enterprise_admin_welcome_v10" xml:space="preserve">
-    <value>Make your ONLYOFFICE more secure</value>
-  </data>
   <data name="subject_enterprise_admin_without_activity_v10" xml:space="preserve">
     <value>Follow up from ONLYOFFICE team</value>
   </data>
@@ -1836,15 +1431,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Welcome to your web-office</value>
-  </data>
-  <data name="subject_enterprise_user_activation_v10" xml:space="preserve">
-    <value>Join ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_enterprise_user_welcome_v10" xml:space="preserve">
-    <value>Welcome to your web-office</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_activation_v10" xml:space="preserve">
-    <value>Confirm your email</value>
   </data>
   <data name="subject_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
     <value>Customize your web-office</value>
@@ -1855,19 +1441,10 @@ The link is only valid for 7 days.</value>
   <data name="subject_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
     <value>Your web-office renewal notification</value>
   </data>
-  <data name="subject_enterprise_whitelabel_admin_welcome_v10" xml:space="preserve">
-    <value>Make your online office more secure</value>
-  </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Welcome to your web-office</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_user_activation_v10" xml:space="preserve">
-    <value>Join ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_user_welcome_v10" xml:space="preserve">
     <value>Welcome to your web-office</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
@@ -1891,28 +1468,10 @@ The link is only valid for 7 days.</value>
   <data name="subject_migration_success" xml:space="preserve">
     <value>${LetterLogoText}. Another region portal migration successfully completed</value>
   </data>
-  <data name="subject_opensource_admin_activation_v11" xml:space="preserve">
-    <value>Confirm your email</value>
-  </data>
-  <data name="subject_opensource_admin_docs_tips_v11" xml:space="preserve">
-    <value>5 tips for effective work on your docs</value>
-  </data>
-  <data name="subject_opensource_admin_welcome_v11" xml:space="preserve">
-    <value>Make your ONLYOFFICE more secure</value>
-  </data>
   <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>
   </data>
   <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Welcome to your web-office</value>
-  </data>
-  <data name="subject_opensource_user_activation_v11" xml:space="preserve">
-    <value>Join ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_opensource_user_docs_tips_v11" xml:space="preserve">
-    <value>6 tips for effective work on your docs</value>
-  </data>
-  <data name="subject_opensource_user_welcome_v11" xml:space="preserve">
     <value>Welcome to your web-office</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
@@ -1926,9 +1485,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_personal_after_registration21" xml:space="preserve">
     <value>Need more features? Give a try to ONLYOFFICE for teams</value>
-  </data>
-  <data name="subject_personal_after_registration28" xml:space="preserve">
-    <value>Get free ONLYOFFICE apps</value>
   </data>
   <data name="subject_personal_after_registration7" xml:space="preserve">
     <value>Connect your favorite cloud storage to ONLYOFFICE</value>
@@ -1944,9 +1500,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_portal_delete" xml:space="preserve">
     <value>Deletion of the ${__VirtualRootPath} portal</value>
-  </data>
-  <data name="subject_portal_delete_success_v115" xml:space="preserve">
-    <value>ONLYOFFICE has been deactivated</value>
   </data>
   <data name="subject_portal_rename" xml:space="preserve">
     <value>${LetterLogoText}. Change of portal address</value>
@@ -1984,9 +1537,6 @@ The link is only valid for 7 days.</value>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restore started</value>
   </data>
-  <data name="subject_saas_admin_activation_v115" xml:space="preserve">
-    <value>Confirm your email</value>
-  </data>
   <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Tips for comfortable work</value>
   </data>
@@ -1995,9 +1545,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Re-activate Business and save 20% of the price</value>
-  </data>
-  <data name="subject_saas_admin_trial_warning_after_half_year_v115" xml:space="preserve">
-    <value>Your ONLYOFFICE will be deleted</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Renewal notification</value>
@@ -2011,20 +1558,11 @@ The link is only valid for 7 days.</value>
   <data name="subject_saas_admin_user_apps_tips_v115" xml:space="preserve">
     <value>Get free ONLYOFFICE apps</value>
   </data>
-  <data name="subject_saas_admin_user_docs_tips_v115" xml:space="preserve">
-    <value>7 tips for effective work on your docs</value>
-  </data>
-  <data name="subject_saas_admin_welcome_v115" xml:space="preserve">
-    <value>Welcome to ONLYOFFICE!</value>
-  </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>
   </data>
   <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
     <value>Welcome to your ONLYOFFICE</value>
-  </data>
-  <data name="subject_saas_user_activation_v115" xml:space="preserve">
-    <value>Join ${__VirtualRootPath}</value>
   </data>
   <data name="subject_saas_user_welcome_v115" xml:space="preserve">
     <value>Welcome to your ONLYOFFICE</value>
@@ -2108,5 +1646,519 @@ Don’t want to change your password? Just ignore this message.</value>
   </data>
   <data name="subject_personal_already_exist" xml:space="preserve">
     <value>Log in to your ONLYOFFICE Personal account</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>CONFIRM</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
+
+Please confirm your email (the link is valid for 7 days):
+
+$GreenButton
+
+Your current tariff plan is STARTUP. It is absolutely free and includes:
+
+* 1 manager
+* Up to 12 rooms
+* Up to 3 users in each room
+* 2 GB disk space
+
+Enjoy a new way of document collaboration!
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
+
+Please confirm your email (the link is valid for 7 days):
+
+$GreenButton
+
+Your current tariff plan is STARTUP. It is absolutely free and includes:
+
+* 1 manager
+* Up to 12 rooms
+* Up to 3 users in each room
+* 2 GB disk space
+
+Enjoy a new way of document collaboration!
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
+
+Please confirm your email (the link is valid for 7 days):
+
+$GreenButton
+
+Your current tariff plan is STARTUP. It is absolutely free and includes:
+
+* 1 manager
+* Up to 12 rooms
+* Up to 3 users in each room
+* 2 GB disk space
+
+Enjoy a new way of document collaboration!
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
+
+Please confirm your email (the link is valid for 7 days):
+
+$GreenButton
+
+Your current tariff plan is STARTUP. It is absolutely free and includes:
+
+* 1 manager
+* Up to 12 rooms
+* Up to 3 users in each room
+* 2 GB disk space
+
+Enjoy a new way of document collaboration!
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Here are three simple questions for you which can help us make your user experience even more comfortable.
+
+* Do you have a big team or lots of customers and partners to collaborate with in your ONLYOFFICE DocSpace? 
+
+* Would you like to create any number of rooms to work with numerous documents? 
+
+* Do you want to use ONLYOFFICE DocSpace under your own brand?
+
+If you have at least one ‘yes’ answer, opt for the BUSINESS tariff plan which allows you to add any desired number of managers to your ONLYOFFICE DocSpace as well as apply branding options.
+
+To do so, please consult the "Payments section":"$PricingPage" of your ONLYOFFICE DocSpace. There, you will find an individual link to the Stripe Customer Portal where you can easily handle all the payment details. 
+
+_Please note: The person who pays the subscription becomes the payer. Only the payer is able to make changes to the subscription (adjust the number of managers). Users don’t have access to the payments details. The owner of the ONLYOFFICE DocSpace account is able to reassign the payer anytime later. _
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Here are three simple questions for you which can help us make your user experience even more comfortable.
+
+* Do you have a big team or lots of customers and partners to collaborate with in your ONLYOFFICE DocSpace? 
+
+* Would you like to create any number of rooms to work with numerous documents? 
+
+* Do you want to use ONLYOFFICE DocSpace under your own brand?
+
+If you have at least one ‘yes’ answer, opt for the BUSINESS tariff plan which allows you to add any desired number of managers to your ONLYOFFICE DocSpace as well as apply branding options.
+
+To do so, please consult the "Payments section":"$PricingPage" of your ONLYOFFICE DocSpace. There, you will find an individual link to the Stripe Customer Portal where you can easily handle all the payment details. 
+
+_Please note: The person who pays the subscription becomes the payer. Only the payer is able to make changes to the subscription (adjust the number of managers). Users don’t have access to the payments details. The owner of the ONLYOFFICE DocSpace account is able to reassign the payer anytime later. _
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Here are three simple questions for you which can help us make your user experience even more comfortable.
+
+* Do you have a big team or lots of customers and partners to collaborate with in your ONLYOFFICE DocSpace? 
+
+* Would you like to create any number of rooms to work with numerous documents? 
+
+* Do you want to use ONLYOFFICE DocSpace under your own brand?
+
+If you have at least one ‘yes’ answer, opt for the BUSINESS tariff plan which allows you to add any desired number of managers to your ONLYOFFICE DocSpace as well as apply branding options.
+
+To do so, please consult the "Payments section":"$PricingPage" of your ONLYOFFICE DocSpace. There, you will find an individual link to the Stripe Customer Portal where you can easily handle all the payment details. 
+
+_Please note: The person who pays the subscription becomes the payer. Only the payer is able to make changes to the subscription (adjust the number of managers). Users don’t have access to the payments details. The owner of the ONLYOFFICE DocSpace account is able to reassign the payer anytime later. _
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Here are three simple questions for you which can help us make your user experience even more comfortable.
+
+* Do you have a big team or lots of customers and partners to collaborate with in your ONLYOFFICE DocSpace? 
+
+* Would you like to create any number of rooms to work with numerous documents? 
+
+* Do you want to use ONLYOFFICE DocSpace under your own brand?
+
+If you have at least one ‘yes’ answer, opt for the BUSINESS tariff plan which allows you to add any desired number of managers to your ONLYOFFICE DocSpace as well as apply branding options.
+
+To do so, please consult the "Payments section":"$PricingPage" of your ONLYOFFICE DocSpace. There, you will find an individual link to the Stripe Customer Portal where you can easily handle all the payment details. 
+
+_Please note: The person who pays the subscription becomes the payer. Only the payer is able to make changes to the subscription (adjust the number of managers). Users don’t have access to the payments details. The owner of the ONLYOFFICE DocSpace account is able to reassign the payer anytime later. _
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Discover business subscription of ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Discover business subscription of ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Discover business subscription of ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Discover business subscription of ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="CollaborateDocSpace" xml:space="preserve">
+    <value>Collaborate in DocSpace</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
+
+*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+
+*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*#3. Co-author effectively.* Collaborate on documents with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls.
+
+*#4. Collaborate securely.* For sensitive or confidential documents, you can use private rooms where every symbol you type is encrypted end-to-end.
+
+*#5. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
+
+$GreenButton
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
+
+*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+
+*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*#3. Co-author effectively.* Collaborate on documents with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls.
+
+*#4. Collaborate securely.* For sensitive or confidential documents, you can use private rooms where every symbol you type is encrypted end-to-end.
+
+*#5. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
+
+$GreenButton
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
+
+*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+
+*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*#3. Co-author effectively.* Collaborate on documents with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls.
+
+*#4. Collaborate securely.* For sensitive or confidential documents, you can use private rooms where every symbol you type is encrypted end-to-end.
+
+*#5. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
+
+$GreenButton
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
+
+*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+
+*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*#3. Co-author effectively.* Collaborate on documents with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls.
+
+*#4. Collaborate securely.* For sensitive or confidential documents, you can use private rooms where every symbol you type is encrypted end-to-end.
+
+*#5. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
+
+$GreenButton
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>5 tips for effective work on your docs</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>5 tips for effective work on your docs</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>5 tips for effective work on your docs</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>5 tips for effective work on your docs</value>
+  </data>
+  <data name="LeaveFeedbackDocSpace" xml:space="preserve">
+    <value>LEAVE FEEDBACK</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
+
+*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+
+*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+
+*# Work with sensitive or confidential documents* when you are invited to the private rooms where every symbol you type is encrypted end-to-end. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
+
+*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+
+*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+
+*# Work with sensitive or confidential documents* when you are invited to the private rooms where every symbol you type is encrypted end-to-end. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
+
+*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+
+*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+
+*# Work with sensitive or confidential documents* when you are invited to the private rooms where every symbol you type is encrypted end-to-end. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>Your ONLYOFFICE DocSpace has been successfully deactivated. Please note that all of your data will be deleted in accordance with our "Privacy Policy":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+Why have you decided to leave? Share your experience with us.
+ 
+$GreenButton
+
+Thank you and good luck!
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>You haven't entered your ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}" for more than half a year. 
+
+Since you have decided not to use it anymore, your ONLYOFFICE DocSpace and all the data will be deleted in accordance with our "Privacy Policy":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+We would appreciate your feedback. Why have you decided to stop using ONLYOFFICE DocSpace?
+
+$GreenButton
+
+If you think this is a mistake and want to continue using ONLYOFFICE DocSpace, please contact our "support team":"https://www.onlyoffice.com/support-contact-form.aspx". 
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
+
+*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+
+*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+
+*# Work with sensitive or confidential documents* when you are invited to the private rooms where every symbol you type is encrypted end-to-end. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace has been deactivated</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Your ONLYOFFICE DocSpace will be deleted</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ACCEPT</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Hello!
+
+You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
+
+$GreenButton
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Hello!
+
+You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
+
+$GreenButton
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>Hello!
+
+You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
+
+$GreenButton
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>Hello!
+
+You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
+
+$GreenButton
+
+Truly yours,
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Join ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Join ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Join ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Join ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>Get free ONLYOFFICE apps</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Get free ONLYOFFICE apps to work on documents from any of your devices.
+
+# To work on documents offline on Windows, Linux and Mac, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#To edit documents on mobile devices, get ONLYOFFICE Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
 </root>

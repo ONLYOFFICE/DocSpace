@@ -440,15 +440,6 @@ Saygılarımızla,
 ONLYOFFICE™ Destek Ekibi
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_3rdparty" xml:space="preserve">
-    <value>Dosyalarınızı tek bir yerden yönetmek için Dropbox, Google Drive veya diğer hizmetleri bağlayın.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_attach" xml:space="preserve">
-    <value>Belgeler, diğer tüm ONLYOFFICE modülleriyle entegre edilmiştir, böylece belgeleri indirmeyi ve onları sonsuza kadar başka bir yere yüklemeyi unutacaksınız.</value>
-  </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_spreadsheets" xml:space="preserve">
-    <value>Ekibinizi etkilemeden yalnızca veri görünümünüzü değiştiren filtre oluşturmaya izin veren Sayfa Görünümleri özelliğiyle elektronik tablolar üzerinde rahatça işbirliği yapın.</value>
-  </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portal profil değişikliği bildirimi
 
@@ -513,17 +504,8 @@ ONLYOFFICE Ekibi</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Portal adres değişikliği</value>
   </data>
-  <data name="subject_enterprise_admin_activation_v10" xml:space="preserve">
-    <value>E-postanızı onaylayın</value>
-  </data>
   <data name="subject_enterprise_admin_customize_portal_v10" xml:space="preserve">
     <value>ONLYOFFICE'i özelleştirin</value>
-  </data>
-  <data name="subject_enterprise_admin_user_docs_tips_v10" xml:space="preserve">
-    <value>Belgeleriniz üzerinde etkili çalışma için 7 ipucu</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_activation_v10" xml:space="preserve">
-    <value>E-postanızı onaylayın</value>
   </data>
   <data name="subject_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
     <value>Web ofisinizi özelleştirin</value>
@@ -542,15 +524,6 @@ ONLYOFFICE Ekibi</value>
   </data>
   <data name="subject_migration_success" xml:space="preserve">
     <value>${LetterLogoText}. Başka bir bölgeye portal taşıma başarıyla tamamlandı</value>
-  </data>
-  <data name="subject_opensource_admin_activation_v11" xml:space="preserve">
-    <value>E-postanızı onaylayın</value>
-  </data>
-  <data name="subject_opensource_admin_docs_tips_v11" xml:space="preserve">
-    <value>Belgeleriniz üzerinde etkili çalışma için 5 ipucu</value>
-  </data>
-  <data name="subject_opensource_user_docs_tips_v11" xml:space="preserve">
-    <value>Belgeleriniz üzerinde etkili çalışma için 6 ipucu</value>
   </data>
   <data name="subject_personal_after_registration14" xml:space="preserve">
     <value>Serbest çalışma için birkaç ipucu</value>
@@ -587,12 +560,6 @@ ONLYOFFICE Ekibi</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Geri yükleme başlatıldı</value>
-  </data>
-  <data name="subject_saas_admin_activation_v115" xml:space="preserve">
-    <value>E-postanızı onaylayın</value>
-  </data>
-  <data name="subject_saas_admin_user_docs_tips_v115" xml:space="preserve">
-    <value>Belgeleriniz üzerinde etkili çalışma için 7 ipucu</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} portal profili değişiklik bildirimi</value>

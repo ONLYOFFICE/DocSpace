@@ -309,30 +309,6 @@ h3.В случай, че си сътрудничите с екип или упр
 
 Създайте едно съвместно работно пространство за вас и вашите съотборници. Регистрирайте пробен "в облака":"https://www.onlyoffice.com/registration.aspx" или "на вашия сървър":"https://www.onlyoffice.com/download-workspace.aspx?from=enterprise-edition"</value>
   </data>
-  <data name="pattern_personal_after_registration28" xml:space="preserve">
-    <value>$PersonalHeaderStart Как да се подобри сигурността на вашия уеб офис $PersonalHeaderEnd
-
-Търсите начини за защита на вашите данни?
-
-h3.Разгледайте допълнителните инструменти за съхраняване на вашите документи, които се предлагат в нашите решения за частни сървъри:
-
-- Получете пълен контрол върху данните си с *частен облак* на собствения си сървър;
-
-- Настройте *двуфакторна идентификация* и използвайте *Single Sign-On* с услуги на трети страни;
-
-- Прилагане на многостепенни *настройки за сигурност за влизане*;
-
-- Наблюдавайте *активността на потребителя* във вашия уеб-офис;
-
-- Изпълнете ръчно или автоматично *архивиране* на вашите данни.
-
-$GreenButton
-
-Научете повече за това как ONLYOFFICE запазва данните ви безопасни в нашия преглед на сигурността.
-
-С уважение,
-екип на ONLYOFFICE</value>
-  </data>
   <data name="pattern_personal_change_password" xml:space="preserve">
     <value>Налице е заявка за промяна на паролата, използвана за въвеждане на портал "${__VirtualRootPath}":"${__VirtualRootPath}".
 
@@ -532,9 +508,6 @@ h2.$activity.Key
   </data>
   <data name="subject_personal_after_registration21" xml:space="preserve">
     <value>Нуждаете се от повече функции? Опитайте ONLYOFFICE за екипи</value>
-  </data>
-  <data name="subject_personal_after_registration28" xml:space="preserve">
-    <value>Как да подобрим сигурността на вашия уеб офис</value>
   </data>
   <data name="subject_personal_after_registration7" xml:space="preserve">
     <value>Свържете любимото си облачно хранилище към ONLYOFFICE</value>

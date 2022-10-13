@@ -245,47 +245,13 @@ public class StudioPeriodicNotify
 
                     else if (createdDate.AddDays(7) == nowDate)
                     {
-                        action = Actions.SaasAdminUserDocsTipsV115;
+                        action = Actions.SaasAdminUserDocsTipsV1;
                         paymentMessage = false;
                         toadmins = true;
                         tousers = true;
 
-                        tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
-                        tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr;
-                        tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting;
-
-                        if (!_coreBaseSettings.CustomMode)
-                        {
-                            tableItemLearnMoreUrl1 = _studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
-                            tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
-                        }
-
-                        tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
-                        tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share_hdr;
-                        tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share;
-
-                        tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
-                        tableItemText3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr;
-                        tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting;
-
-                        tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
-                        tableItemText4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review_hdr;
-                        tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review;
-
-                        tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
-                        tableItemText5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr;
-                        tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_contentcontrols;
-
-                        tableItemImg6 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
-                        tableItemText6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_spreadsheets_hdr;
-                        tableItemComment6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_spreadsheets;
-
-                        tableItemImg7 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
-                        tableItemText7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_differences_hdr;
-                        tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_differences;
-
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/files/";
+                        greenButtonText = () => WebstudioNotifyPatternResource.CollaborateDocSpace;
+                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~")}/rooms/personal/";
                     }
 
                     #endregion
@@ -344,10 +310,10 @@ public class StudioPeriodicNotify
 
                     else if (dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
                     {
-                        action = Actions.SaasAdminTrialWarningAfterHalfYearV115;
+                        action = Actions.SaasAdminTrialWarningAfterHalfYearV1;
                         toowner = true;
 
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
+                        greenButtonText = () => WebstudioNotifyPatternResource.LeaveFeedbackDocSpace;
 
                         var owner = _userManager.GetUsers(tenant.OwnerId);
                         greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
@@ -382,10 +348,10 @@ public class StudioPeriodicNotify
 
                     if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
                     {
-                        action = Actions.SaasAdminTrialWarningAfterHalfYearV115;
+                        action = Actions.SaasAdminTrialWarningAfterHalfYearV1;
                         toowner = true;
 
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
+                        greenButtonText = () => WebstudioNotifyPatternResource.LeaveFeedbackDocSpace;
 
                         var owner = _userManager.GetUsers(tenant.OwnerId);
                         greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
@@ -640,47 +606,12 @@ public class StudioPeriodicNotify
 
                     else if (createdDate.AddDays(7) == nowDate)
                     {
-                        action = Actions.EnterpriseAdminUserDocsTipsV10;
+                        action = Actions.EnterpriseAdminUserDocsTipsV1;
                         paymentMessage = false;
                         toadmins = true;
                         tousers = true;
-
-                        tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-formatting-100.png");
-                        tableItemText1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr;
-                        tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_formatting;
-
-                        if (!_coreBaseSettings.CustomMode)
-                        {
-                            tableItemLearnMoreUrl1 = _studioNotifyHelper.Helplink + "/onlyoffice-editors/index.aspx";
-                            tableItemLearnMoreText1 = () => WebstudioNotifyPatternResource.LinkLearnMore;
-                        }
-
-                        tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-share-100.png");
-                        tableItemText2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share_hdr;
-                        tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_share;
-
-                        tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-coediting-100.png");
-                        tableItemText3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr;
-                        tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_coediting;
-
-                        tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-review-100.png");
-                        tableItemText4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review_hdr;
-                        tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_review;
-
-                        tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-3rdparty-100.png");
-                        tableItemText5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_3rdparty_hdr;
-                        tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_3rdparty;
-
-                        tableItemImg6 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-attach-100.png");
-                        tableItemText6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_attach_hdr;
-                        tableItemComment6 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_attach;
-
-                        tableItemImg7 = _studioNotifyHelper.GetNotificationImageUrl("tips-documents-apps-100.png");
-                        tableItemText7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_apps_hdr;
-                        tableItemComment7 = () => WebstudioNotifyPatternResource.pattern_saas_admin_user_docs_tips_v115_item_apps;
-
                         greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/files/";
+                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~")}/products/files/";
                     }
 
                     #endregion
@@ -879,9 +810,9 @@ public class StudioPeriodicNotify
 
                 #region After registration letters
 
-                #region 5 days after registration to admins
+                #region 7 days after registration to admins
 
-                if (createdDate.AddDays(5) == nowDate)
+                if (createdDate.AddDays(7) == nowDate)
                 {
                     var users = _studioNotifyHelper.GetRecipients(true, true, false);
 
@@ -893,7 +824,7 @@ public class StudioPeriodicNotify
                         Thread.CurrentThread.CurrentUICulture = culture;
 
                         client.SendNoticeToAsync(
-                                _userManager.IsAdmin(u) ? Actions.OpensourceAdminDocsTipsV11 : Actions.OpensourceUserDocsTipsV11,
+                                _userManager.IsAdmin(u) ? Actions.OpensourceAdminDocsTipsV1 : Actions.OpensourceUserDocsTipsV1,
                                 new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                             new[] { senderName },
                                 new TagValue(Tags.UserName, u.DisplayUserName(_displayUserSettingsHelper)),
@@ -966,15 +897,10 @@ public class StudioPeriodicNotify
                             action = Actions.PersonalAfterRegistration7;
                             break;
                         case 14:
-                            action = Actions.PersonalAfterRegistration14;
+                            action = Actions.PersonalAfterRegistration14V1;
                             break;
                         case 21:
                             action = Actions.PersonalAfterRegistration21;
-                            break;
-                        case 28:
-                            action = Actions.PersonalAfterRegistration28;
-                            greenButtonText = () => WebstudioNotifyPatternResource.ButtonStartFreeTrial;
-                            greenButtonUrl = "https://www.onlyoffice.com/download-workspace.aspx";
                             break;
                         default:
                             continue;

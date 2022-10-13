@@ -61,6 +61,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ACCEPT.
+        /// </summary>
+        public static string AcceptDocSpace {
+            get {
+                return ResourceManager.GetString("AcceptDocSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Blog was created at.
         /// </summary>
         public static string ActionCreateBlog {
@@ -304,6 +313,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CONFIRM.
+        /// </summary>
+        public static string ButtonConfirmEmail {
+            get {
+                return ResourceManager.GetString("ButtonConfirmEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm Portal Address Change.
         /// </summary>
         public static string ButtonConfirmPortalAddressChange {
@@ -435,6 +453,24 @@ namespace ASC.Web.Core.PublicResources {
         public static string ButtonUseDiscount {
             get {
                 return ResourceManager.GetString("ButtonUseDiscount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collaborate in DocSpace.
+        /// </summary>
+        public static string CollaborateDocSpace {
+            get {
+                return ResourceManager.GetString("CollaborateDocSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LEAVE FEEDBACK.
+        /// </summary>
+        public static string LeaveFeedbackDocSpace {
+            get {
+                return ResourceManager.GetString("LeaveFeedbackDocSpace", resourceCulture);
             }
         }
         
@@ -620,19 +656,28 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
         ///
-        ///Please, confirm your email following the link
+        ///Please confirm your email (the link is valid for 7 days):
         ///
         ///$GreenButton
         ///
-        ///You may change your email or password in your &quot;personal profile page&quot;:&quot;$MyStaffLink&quot;.
+        ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
-        ///To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions &quot;here&quot;:&quot;${__HelpLink}/installation/group [rest of string was truncated]&quot;;.
+        ///* 1 manager
+        ///* Up to 12 rooms
+        ///* Up to 3 users in each room
+        ///* 2 GB disk space
+        ///
+        ///Enjoy a new way of document collaboration!
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;w [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_admin_activation_v10 {
+        public static string pattern_enterprise_admin_activation_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_admin_activation_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_admin_activation_v1", resourceCulture);
             }
         }
         
@@ -846,28 +891,36 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///We hope you enjoy using document editors available in your web-office. Here are some tips on how to make it more effective.
+        ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///$TableItemsTop $TableItem2 $TableItem1 $TableItem4 $TableItem3 $TableItem7 $TableItem6 $TableItem5 $TableItemsBtm.
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+        ///
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_admin_user_docs_tips_v10 {
+        public static string pattern_enterprise_admin_user_docs_tips_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_admin_user_docs_tips_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_admin_user_docs_tips_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Here’s what you can do to make your web-office even more secure:
+        ///Here are three simple questions for you which can help us make your user experience even more comfortable.
         ///
-        ///*Get an SSL certificate* if you are going to provide not only local but also external portal access for your users. Generate a newly signed certificate in the Control Panel or purchase one from the provider you trust.
+        ///* Do you have a big team or lots of customers and partners to collaborate with in your ONLYOFFICE DocSpace? 
         ///
-        ///*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our &quot;Help [rest of string was truncated]&quot;;.
+        ///* Would you like to create any number of rooms to work with numerous documents? 
+        ///
+        ///* Do you want to use ONLYOFFICE DocSpace under your own brand?
+        ///
+        ///If you have at least one ‘yes’ answer, opt for the BUSINESS tariff plan which allows you to add any desired number of m [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_admin_welcome_v10 {
+        public static string pattern_enterprise_admin_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_admin_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_admin_welcome_v1", resourceCulture);
             }
         }
         
@@ -922,55 +975,64 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
+        ///   Looks up a localized string similar to Hello!
         ///
-        ///You are invited to join your company&apos;s safe and secure web-office that would enhance your collaboration. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
-        ///
-        ///Accept the invitation by following the link
+        ///You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
         ///
-        ///The link is only valid for 7 days.
-        ///
-        ///You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_enterprise_user_activation_v10 {
+        public static string pattern_enterprise_user_activation_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_user_activation_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_user_activation_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your user profile has been successfully added to the portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
         ///
-        ///1.	Create and edit Documents, work with forms, share them with teammates, and collaborate in real time.
-        ///2.	Add your email accounts and manage all correspondence in one place with Mail.
-        ///3.	Manage your workflow with Projects and your customer relationships using CRM.
-        ///4.	Use Community to start your blogs, forums, add events, share bookmarks.
-        ///5.	Organize your work sc [rest of string was truncated]&quot;;.
+        ///*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+        ///
+        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time usin [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_user_welcome_v10 {
+        public static string pattern_enterprise_user_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_user_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_user_welcome_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created your corporate web-office, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
         ///
-        ///Please, confirm your email:
+        ///Please confirm your email (the link is valid for 7 days):
         ///
         ///$GreenButton
         ///
-        ///You may change your email or password in your &quot;personal profile page&quot;:&quot;$MyStaffLink&quot;..
+        ///Your current tariff plan is STARTUP. It is absolutely free and includes:
+        ///
+        ///* 1 manager
+        ///* Up to 12 rooms
+        ///* Up to 3 users in each room
+        ///* 2 GB disk space
+        ///
+        ///Enjoy a new way of document collaboration!
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;w [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_admin_activation_v10 {
+        public static string pattern_enterprise_whitelabel_admin_activation_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_activation_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_activation_v1", resourceCulture);
             }
         }
         
@@ -1022,17 +1084,19 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Here’s what you can do to make your web-office even more secure:
+        ///Here are three simple questions for you which can help us make your user experience even more comfortable.
         ///
-        ///*Get an SSL certificate* if you are going to provide not only local but also external portal access for your users. Generate a new signed certificate in the Control Panel or purchase one from the provider you trust.
+        ///* Do you have a big team or lots of customers and partners to collaborate with in your ONLYOFFICE DocSpace? 
         ///
-        ///*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server from time to time.
+        ///* Would you like to create any number of rooms to work with numerous documents? 
         ///
-        ///*Adjust portal security settings*: restrict  [rest of string was truncated]&quot;;.
+        ///* Do you want to use ONLYOFFICE DocSpace under your own brand?
+        ///
+        ///If you have at least one ‘yes’ answer, opt for the BUSINESS tariff plan which allows you to add any desired number of m [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_admin_welcome_v10 {
+        public static string pattern_enterprise_whitelabel_admin_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_welcome_v1", resourceCulture);
             }
         }
         
@@ -1070,36 +1134,36 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
+        ///   Looks up a localized string similar to Hello!
         ///
-        ///$__AuthorName has invited you to join your company&apos;s safe and secure web-office that would enhance your collaboration. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
-        ///
-        ///Accept the invitation by clicking the link:
+        ///You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
         ///
-        ///The link is only valid for 7 days.
-        ///
-        ///You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_user_activation_v10 {
+        public static string pattern_enterprise_whitelabel_user_activation_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_user_activation_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_whitelabel_user_activation_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Welcome to ONLYOFFICE! Your user profile has been successfully added to the portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
         ///
-        ///# Create and edit &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;, share them with teammates, and collaborate in real time.
-        ///# Add your email accounts and manage all correspondence in one place with &quot;Mail&quot;:&quot;${__VirtualRootPath}/addons/mail/&quot;.
-        ///# Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot; and your custom [rest of string was truncated]&quot;;.
+        ///*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+        ///
+        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time usin [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_user_welcome_v10 {
+        public static string pattern_enterprise_whitelabel_user_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_user_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_whitelabel_user_welcome_v1", resourceCulture);
             }
         }
         
@@ -1284,47 +1348,64 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation.  Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
         ///
-        ///Please, confirm your email following the &quot;link&quot;:&quot;$ActivateUrl&quot;.
+        ///Please confirm your email (the link is valid for 7 days):
         ///
-        ///You may change your email or password in your &quot;personal profile page&quot;:&quot;$MyStaffLink&quot;.
+        ///$GreenButton
         ///
-        ///To send notifications, we use the SMTP settings of ONLYOFFICE mail server. To change them, please follow the instructions &quot;here&quot;:&quot;${__HelpLink}/server/windows/ [rest of string was truncated]&quot;;.
+        ///Your current tariff plan is STARTUP. It is absolutely free and includes:
+        ///
+        ///* 1 manager
+        ///* Up to 12 rooms
+        ///* Up to 3 users in each room
+        ///* 2 GB disk space
+        ///
+        ///Enjoy a new way of document collaboration!
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;w [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_admin_activation_v11 {
+        public static string pattern_opensource_admin_activation_v1 {
             get {
-                return ResourceManager.GetString("pattern_opensource_admin_activation_v11", resourceCulture);
+                return ResourceManager.GetString("pattern_opensource_admin_activation_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///We hope you enjoy using integrated ONLYOFFICE document editors. Here are some tips that might be useful: 
+        ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///*#1. Share documents* to individuals and groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access. Let other users apply their own filters in spreadsheets without disturbing co-authors. Restrict downloading and printing using &quot;ONLYOFFICE API&quot;:&quot;https://api.onlyoffice.com/editors/config/document/permissions&quot;. 
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
         ///
-        ///*#2. Learn how document saving wor [rest of string was truncated]&quot;;.
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_admin_docs_tips_v11 {
+        public static string pattern_opensource_admin_docs_tips_v1 {
             get {
-                return ResourceManager.GetString("pattern_opensource_admin_docs_tips_v11", resourceCulture);
+                return ResourceManager.GetString("pattern_opensource_admin_docs_tips_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Here’s what you can do to make your web-office even more secure:
+        ///Here are three simple questions for you which can help us make your user experience even more comfortable.
         ///
-        ///*Get an SSL certificate*, if you are going to provide not only local but also external portal access for your users. Generate a new signed certificate in the Control Panel or purchase one from the provider you trust.
+        ///* Do you have a big team or lots of customers and partners to collaborate with in your ONLYOFFICE DocSpace? 
         ///
-        ///*Enable automatic backups* in the Control Panel. We also recommend that you use third-party services and make a backup copy of the server with ONLYOFFICE installed from time to time. Instructions in our &quot; [rest of string was truncated]&quot;;.
+        ///* Would you like to create any number of rooms to work with numerous documents? 
+        ///
+        ///* Do you want to use ONLYOFFICE DocSpace under your own brand?
+        ///
+        ///If you have at least one ‘yes’ answer, opt for the BUSINESS tariff plan which allows you to add any desired number of m [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_admin_welcome_v11 {
+        public static string pattern_opensource_admin_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_opensource_admin_welcome_v11", resourceCulture);
+                return ResourceManager.GetString("pattern_opensource_admin_welcome_v1", resourceCulture);
             }
         }
         
@@ -1369,51 +1450,51 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
-        ///You are invited to join your company&apos;s safe and secure web-office that would enhance your collaboration. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.
+        ///You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
         ///
-        ///Accept the invitation by following the &quot;link&quot;:&quot;$ActivateUrl&quot;
+        ///$GreenButton
         ///
-        ///The link is only valid for 7 days.
-        ///
-        ///You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them..
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_opensource_user_activation_v11 {
+        public static string pattern_opensource_user_activation_v1 {
             get {
-                return ResourceManager.GetString("pattern_opensource_user_activation_v11", resourceCulture);
+                return ResourceManager.GetString("pattern_opensource_user_activation_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///We hope you enjoy using integrated ONLYOFFICE document editors. Here are some tips that might be useful:
+        ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///*#1. Explore advanced formatting*. The doc editors provide you with the most complete set of styling and formatting tools.  
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
         ///
-        ///*#2. Share documents* to individuals or user groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access. 
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*#3. Choose co-editing mode*. While co-editing a doc with your team in real time, switch to Fast mode to see chan [rest of string was truncated]&quot;;.
+        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_user_docs_tips_v11 {
+        public static string pattern_opensource_user_docs_tips_v1 {
             get {
-                return ResourceManager.GetString("pattern_opensource_user_docs_tips_v11", resourceCulture);
+                return ResourceManager.GetString("pattern_opensource_user_docs_tips_v1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Congratulations, $UserName!
+        ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have officially joined your team’s web-office at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
         ///
-        ///*Store, manage and share documents*. View pictures, play videos and audios. &quot;Learn more&quot;:&quot;${__HelpLink}/gettingstarted/documents.aspx&quot;
+        ///*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
         ///
-        ///*Edit and co-author documents, spreadsheets, and presentations* using integrated ONLYOFFICE editors. Use hundreds of formatting tools and collaborate efficiently. &quot;Watch video&quot;:&quot;https://youtu.be/ep1VLGlmsdI&quot;
+        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*Manage your tas [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time usin [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_user_welcome_v11 {
+        public static string pattern_opensource_user_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_opensource_user_welcome_v11", resourceCulture);
+                return ResourceManager.GetString("pattern_opensource_user_welcome_v1", resourceCulture);
             }
         }
         
@@ -1479,6 +1560,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
+        /// </summary>
+        public static string pattern_personal_after_registration14_v1 {
+            get {
+                return ResourceManager.GetString("pattern_personal_after_registration14_v1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to $PersonalHeaderStart Need more features and automation? Give a try to ONLYOFFICE for teams $PersonalHeaderEnd
         ///
         ///h3.In case you collaborate with a team or manage a project, we suggest you to try ONLYOFFICE for business. In addition to the online editors and document management features, you&apos;ll be able to:
@@ -1494,21 +1584,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string pattern_personal_after_registration21 {
             get {
                 return ResourceManager.GetString("pattern_personal_after_registration21", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to $PersonalHeaderStart Get free ONLYOFFICE apps $PersonalHeaderEnd
-        ///
-        ///h3.Need to edit documents on the go? Looking for a reliable application to ensure you will be able to work offline when the Internet connection is unstable? Get free ONLYOFFICE apps to edit files from any of your devices.
-        ///
-        ///- To work on documents offline on Windows, Linux and macOS, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;.
-        ///
-        ///- To edit documents on mobile devices, get ONLYOFFICE Documents app f [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_personal_after_registration28 {
-            get {
-                return ResourceManager.GetString("pattern_personal_after_registration28", resourceCulture);
             }
         }
         
@@ -1664,21 +1739,21 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your ONLYOFFICE has been successfully deactivated. Please note that all of your data will be deleted in accordance with &quot;our Privacy statement&quot;:&quot;https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;. 
+        ///   Looks up a localized string similar to Your ONLYOFFICE DocSpace has been successfully deactivated. Please note that all of your data will be deleted in accordance with our &quot;Privacy Policy&quot;:&quot;https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;. 
         ///
         ///Why have you decided to leave? Share your experience with us.
-        ///
+        /// 
         ///$GreenButton
         ///
-        ///Thank you and good luck! 
+        ///Thank you and good luck!
         ///
-        ///Truly yours,
+        ///Truly yours, 
         ///ONLYOFFICE Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_portal_delete_success_v115 {
+        public static string pattern_portal_delete_success_v1 {
             get {
-                return ResourceManager.GetString("pattern_portal_delete_success_v115", resourceCulture);
+                return ResourceManager.GetString("pattern_portal_delete_success_v1", resourceCulture);
             }
         }
         
@@ -1949,21 +2024,28 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You have just created the ONLYOFFICE portal, your team&apos;s cloud office that would enhance internal cooperation. Its address is &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. 
+        ///You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
         ///
-        ///Please, confirm your email: 
+        ///Please confirm your email (the link is valid for 7 days):
         ///
         ///$GreenButton
         ///
-        ///The link will be valid for 7 days.
+        ///Your current tariff plan is STARTUP. It is absolutely free and includes:
+        ///
+        ///* 1 manager
+        ///* Up to 12 rooms
+        ///* Up to 3 users in each room
+        ///* 2 GB disk space
+        ///
+        ///Enjoy a new way of document collaboration!
         ///
         ///Truly yours,
         ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///&quot;w [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_activation_v115 {
+        public static string pattern_saas_admin_activation_v1 {
             get {
-                return ResourceManager.GetString("pattern_saas_admin_activation_v115", resourceCulture);
+                return ResourceManager.GetString("pattern_saas_admin_activation_v1", resourceCulture);
             }
         }
         
@@ -2018,17 +2100,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You haven&apos;t entered your ONLYOFFICE &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; for more than 6 months. Since you have decided not to use it anymore, your web-office and all the data will be deleted in accordance with &quot;our Privacy statement&quot;:&quot;https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;.
+        ///   Looks up a localized string similar to You haven&apos;t entered your ONLYOFFICE DocSpace &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; for more than half a year. 
         ///
-        ///We would appreciate your feedback. Why have you decided to stop using ONLYOFFICE?
+        ///Since you have decided not to use it anymore, your ONLYOFFICE DocSpace and all the data will be deleted in accordance with our &quot;Privacy Policy&quot;:&quot;https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;. 
         ///
-        ///$GreenButton
-        ///
-        ///If you thi [rest of string was truncated]&quot;;.
+        ///We would appreciate your feedback. Why have you decided to stop using ONLYOFFICE DocSpac [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_trial_warning_after_half_year_v115 {
+        public static string pattern_saas_admin_trial_warning_after_half_year_v1 {
             get {
-                return ResourceManager.GetString("pattern_saas_admin_trial_warning_after_half_year_v115", resourceCulture);
+                return ResourceManager.GetString("pattern_saas_admin_trial_warning_after_half_year_v1", resourceCulture);
             }
         }
         
@@ -2104,218 +2184,36 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///We hope you enjoy using ONLYOFFICE editors. Here are some tips on how to make it more effective.
+        ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///$TableItemsTop $TableItem2 $TableItem1 $TableItem4 $TableItem3 $TableItem7 $TableItem6 $TableItem5 $TableItemsBtm
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
         ///
-        ///$GreenButton
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///Truly yours,
-        ///ONLYOFFICE Team
-        ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
+        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115 {
+        public static string pattern_saas_admin_user_docs_tips_v1 {
             get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connect Dropbox, Google Drive or other services to manage your files in one place..
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_3rdparty {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_3rdparty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to *Connect 3rd party clouds*.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_3rdparty_hdr {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_3rdparty_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create ready-to-fill-out forms together with your teammates, let other users fill them in, save forms as PDF files. &quot;Learn more&quot;:&quot;https://helpcenter.onlyoffice.com/userguides/docs-index.aspx&quot;.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_apps {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_apps", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to *Create ready-to-fill-out forms*.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_apps_hdr {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_apps_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Documents are integrated with all the other ONLYOFFICE modules, so you’ll forget about downloading docs and uploading them somewhere else forever..
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_attach {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_attach", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to *Attach docs to projects and emails*.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_attach_hdr {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_attach_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to While co-editing a doc with your team in real time, switch to Fast mode to see changes as your co-author is typing or to Strict mode to get more privacy..
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_coediting {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_coediting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to *Choose co-editing mode*.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_coediting_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create and co-edit &quot;fillable document forms&quot;:&quot;https://www.onlyoffice.com/form-creator.aspx&quot; online, let other users fill them in, save forms as PDF files..
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_contentcontrols {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_contentcontrols", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to *Create professional-looking forms*.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_contentcontrols_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Quickly find differences in two versions of the same document with the Compare documents feature..
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_differences {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_differences", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to *Quickly find differences*.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_differences_hdr {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_differences_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE provides you with the most complete set of styling and formatting tools. &quot;Learn more&quot;:&quot;https://helpcenter.onlyoffice.com/userguides/docs-index.aspx&quot;.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_formatting {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_formatting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to *Explore advanced formatting*.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_formatting_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use Review to suggest changes without modifying the original doc, add comments and tag other users for feedback. Exchange instant messages via built-in chat or Telegram, make video calls using Jitsi..
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_review {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_review", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to *Review, comment, and chat*.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_review_hdr {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_review_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Share docs to individuals or user groups. Choose their access level - Read Only, Comment, Form Filling, Review or Full Access. To protect documents, you can restrict printing, downloading, copying, and sharing..
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_share {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_share", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to *Share documents*.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_share_hdr {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_share_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Comfortably collaborate on spreadsheets with the Sheet Views feature that allows to create filter that only changes your view of the data, without affecting your team..
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_spreadsheets {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_spreadsheets", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to *Comfortably collaborate on spreadsheets*.
-        /// </summary>
-        public static string pattern_saas_admin_user_docs_tips_v115_item_spreadsheets_hdr {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v115_item_spreadsheets_hdr", resourceCulture);
+                return ResourceManager.GetString("pattern_saas_admin_user_docs_tips_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Test ONLYOFFICE Business cloud for 30 days for free:
+        ///Here are three simple questions for you which can help us make your user experience even more comfortable.
         ///
-        ///# *Edit unlimited number of docs*, sheets, slides, and forms simultaneously.
-        ///# *Customize your online office* style to match your branding.
-        ///# *Ensure security:* enable 2FA, configure automatic backups, track user actions.
-        ///# *Integrate with your infrastructure:* use LDAP, SSO, and your domain name for portal address.
-        ///# *Connect apps for productive work:* Twilio, DocuSign, etc.
+        ///* Do you have a big team or lots of customers and partners to collaborate with in your ONLYOFFICE DocSpace? 
         ///
-        ///If you need instructions on configuring/using ONLYO [rest of string was truncated]&quot;;.
+        ///* Would you like to create any number of rooms to work with numerous documents? 
+        ///
+        ///* Do you want to use ONLYOFFICE DocSpace under your own brand?
+        ///
+        ///If you have at least one ‘yes’ answer, opt for the BUSINESS tariff plan which allows you to add any desired number of m [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_welcome_v115 {
+        public static string pattern_saas_admin_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_saas_admin_welcome_v115", resourceCulture);
+                return ResourceManager.GetString("pattern_saas_admin_welcome_v1", resourceCulture);
             }
         }
         
@@ -2357,19 +2255,34 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
-        ///You are invited to join ONLYOFFICE at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
+        ///You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
-        ///
-        ///We will also send you useful tips and latest ONLYOFFICE news once in a while. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.
         ///
         ///Truly yours,
         ///ONLYOFFICE Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;.
         /// </summary>
-        public static string pattern_saas_user_activation_v115 {
+        public static string pattern_saas_user_activation_v1 {
             get {
-                return ResourceManager.GetString("pattern_saas_user_activation_v115", resourceCulture);
+                return ResourceManager.GetString("pattern_saas_user_activation_v1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
+        ///
+        ///*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
+        ///
+        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time usin [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string pattern_saas_user_welcome_v1 {
+            get {
+                return ResourceManager.GetString("pattern_saas_user_welcome_v1", resourceCulture);
             }
         }
         
@@ -2646,11 +2559,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm your email.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_enterprise_admin_activation_v10 {
+        public static string subject_enterprise_admin_activation_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_admin_activation_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_admin_activation_v1", resourceCulture);
             }
         }
         
@@ -2718,20 +2631,20 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 7 tips for effective work on your docs.
+        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
         /// </summary>
-        public static string subject_enterprise_admin_user_docs_tips_v10 {
+        public static string subject_enterprise_admin_user_docs_tips_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_admin_user_docs_tips_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_admin_user_docs_tips_v1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make your ONLYOFFICE more secure.
+        ///   Looks up a localized string similar to Discover business subscription of ONLYOFFICE DocSpace.
         /// </summary>
-        public static string subject_enterprise_admin_welcome_v10 {
+        public static string subject_enterprise_admin_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_admin_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_admin_welcome_v1", resourceCulture);
             }
         }
         
@@ -2763,29 +2676,29 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
+        ///   Looks up a localized string similar to Join ONLYOFFICE DocSpace.
         /// </summary>
-        public static string subject_enterprise_user_activation_v10 {
+        public static string subject_enterprise_user_activation_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_user_activation_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_user_activation_v1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your web-office.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_enterprise_user_welcome_v10 {
+        public static string subject_enterprise_user_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_user_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_user_welcome_v1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm your email.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_enterprise_whitelabel_admin_activation_v10 {
+        public static string subject_enterprise_whitelabel_admin_activation_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_whitelabel_admin_activation_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_whitelabel_admin_activation_v1", resourceCulture);
             }
         }
         
@@ -2817,11 +2730,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make your online office more secure.
+        ///   Looks up a localized string similar to Discover business subscription of ONLYOFFICE DocSpace.
         /// </summary>
-        public static string subject_enterprise_whitelabel_admin_welcome_v10 {
+        public static string subject_enterprise_whitelabel_admin_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_whitelabel_admin_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_whitelabel_admin_welcome_v1", resourceCulture);
             }
         }
         
@@ -2844,20 +2757,20 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
+        ///   Looks up a localized string similar to Join ONLYOFFICE DocSpace.
         /// </summary>
-        public static string subject_enterprise_whitelabel_user_activation_v10 {
+        public static string subject_enterprise_whitelabel_user_activation_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_whitelabel_user_activation_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_whitelabel_user_activation_v1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your web-office.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_enterprise_whitelabel_user_welcome_v10 {
+        public static string subject_enterprise_whitelabel_user_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_whitelabel_user_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_whitelabel_user_welcome_v1", resourceCulture);
             }
         }
         
@@ -2925,29 +2838,29 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm your email.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_opensource_admin_activation_v11 {
+        public static string subject_opensource_admin_activation_v1 {
             get {
-                return ResourceManager.GetString("subject_opensource_admin_activation_v11", resourceCulture);
+                return ResourceManager.GetString("subject_opensource_admin_activation_v1", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to 5 tips for effective work on your docs.
         /// </summary>
-        public static string subject_opensource_admin_docs_tips_v11 {
+        public static string subject_opensource_admin_docs_tips_v1 {
             get {
-                return ResourceManager.GetString("subject_opensource_admin_docs_tips_v11", resourceCulture);
+                return ResourceManager.GetString("subject_opensource_admin_docs_tips_v1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make your ONLYOFFICE more secure.
+        ///   Looks up a localized string similar to Discover business subscription of ONLYOFFICE DocSpace.
         /// </summary>
-        public static string subject_opensource_admin_welcome_v11 {
+        public static string subject_opensource_admin_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_opensource_admin_welcome_v11", resourceCulture);
+                return ResourceManager.GetString("subject_opensource_admin_welcome_v1", resourceCulture);
             }
         }
         
@@ -2970,29 +2883,29 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
+        ///   Looks up a localized string similar to Join ONLYOFFICE DocSpace.
         /// </summary>
-        public static string subject_opensource_user_activation_v11 {
+        public static string subject_opensource_user_activation_v1 {
             get {
-                return ResourceManager.GetString("subject_opensource_user_activation_v11", resourceCulture);
+                return ResourceManager.GetString("subject_opensource_user_activation_v1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 6 tips for effective work on your docs.
+        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
         /// </summary>
-        public static string subject_opensource_user_docs_tips_v11 {
+        public static string subject_opensource_user_docs_tips_v1 {
             get {
-                return ResourceManager.GetString("subject_opensource_user_docs_tips_v11", resourceCulture);
+                return ResourceManager.GetString("subject_opensource_user_docs_tips_v1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your web-office.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_opensource_user_welcome_v11 {
+        public static string subject_opensource_user_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_opensource_user_welcome_v11", resourceCulture);
+                return ResourceManager.GetString("subject_opensource_user_welcome_v1", resourceCulture);
             }
         }
         
@@ -3024,20 +2937,30 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Get free ONLYOFFICE apps to work on documents from any of your devices.
+        ///
+        ///# To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;.
+        ///
+        ///#To edit documents on mobile devices, get ONLYOFFICE Documents app for &quot;iOS&quot;:&quot;https://apps.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;.
+        ///
+        ///Truly yours, 
+        ///ONLYOFFICE Team
+        ///&quot; [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string subject_personal_after_registration14_v1 {
+            get {
+                return ResourceManager.GetString("subject_personal_after_registration14_v1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Need more features? Give a try to ONLYOFFICE for teams.
         /// </summary>
         public static string subject_personal_after_registration21 {
             get {
                 return ResourceManager.GetString("subject_personal_after_registration21", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
-        /// </summary>
-        public static string subject_personal_after_registration28 {
-            get {
-                return ResourceManager.GetString("subject_personal_after_registration28", resourceCulture);
             }
         }
         
@@ -3096,11 +3019,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE has been deactivated.
+        ///   Looks up a localized string similar to ONLYOFFICE DocSpace has been deactivated.
         /// </summary>
-        public static string subject_portal_delete_success_v115 {
+        public static string subject_portal_delete_success_v1 {
             get {
-                return ResourceManager.GetString("subject_portal_delete_success_v115", resourceCulture);
+                return ResourceManager.GetString("subject_portal_delete_success_v1", resourceCulture);
             }
         }
         
@@ -3213,11 +3136,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Confirm your email.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_saas_admin_activation_v115 {
+        public static string subject_saas_admin_activation_v1 {
             get {
-                return ResourceManager.GetString("subject_saas_admin_activation_v115", resourceCulture);
+                return ResourceManager.GetString("subject_saas_admin_activation_v1", resourceCulture);
             }
         }
         
@@ -3249,11 +3172,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your ONLYOFFICE will be deleted.
+        ///   Looks up a localized string similar to Your ONLYOFFICE DocSpace will be deleted.
         /// </summary>
-        public static string subject_saas_admin_trial_warning_after_half_year_v115 {
+        public static string subject_saas_admin_trial_warning_after_half_year_v1 {
             get {
-                return ResourceManager.GetString("subject_saas_admin_trial_warning_after_half_year_v115", resourceCulture);
+                return ResourceManager.GetString("subject_saas_admin_trial_warning_after_half_year_v1", resourceCulture);
             }
         }
         
@@ -3294,20 +3217,20 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 7 tips for effective work on your docs.
+        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
         /// </summary>
-        public static string subject_saas_admin_user_docs_tips_v115 {
+        public static string subject_saas_admin_user_docs_tips_v1 {
             get {
-                return ResourceManager.GetString("subject_saas_admin_user_docs_tips_v115", resourceCulture);
+                return ResourceManager.GetString("subject_saas_admin_user_docs_tips_v1", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to ONLYOFFICE!.
+        ///   Looks up a localized string similar to Discover business subscription of ONLYOFFICE DocSpace.
         /// </summary>
-        public static string subject_saas_admin_welcome_v115 {
+        public static string subject_saas_admin_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_saas_admin_welcome_v115", resourceCulture);
+                return ResourceManager.GetString("subject_saas_admin_welcome_v1", resourceCulture);
             }
         }
         
@@ -3330,11 +3253,20 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Join ${__VirtualRootPath}.
+        ///   Looks up a localized string similar to Join ONLYOFFICE DocSpace.
         /// </summary>
-        public static string subject_saas_user_activation_v115 {
+        public static string subject_saas_user_activation_v1 {
             get {
-                return ResourceManager.GetString("subject_saas_user_activation_v115", resourceCulture);
+                return ResourceManager.GetString("subject_saas_user_activation_v1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
+        /// </summary>
+        public static string subject_saas_user_welcome_v1 {
+            get {
+                return ResourceManager.GetString("subject_saas_user_welcome_v1", resourceCulture);
             }
         }
         

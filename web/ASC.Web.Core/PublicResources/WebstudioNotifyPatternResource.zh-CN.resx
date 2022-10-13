@@ -399,25 +399,6 @@ ONLYOFFICE™客服团队
 
 ^若想修改通知类型，请管理 "订阅设置”:"$RecipientSubscriptionConfigURL"。^</value>
   </data>
-  <data name="pattern_saas_admin_welcome_v115" xml:space="preserve">
-    <value>您好, $UserName!
-
-免费测试ONLYOFFICE商业云30天：
-
-# *同时编辑无限数量的文档*, 电子表格、幻灯片和表单。
-# *定制您的在线办公* 风格，以配合品牌建设。 
-# *确保安全：* 启用2FA，配置自动备份，跟踪用户行为。
-# *与您的基础设施整合：* 使用LDAP、SSO和您的域名作为门户地址。
-# *连接应用程序以实现高效工作：* Twilio、DocuSign等。
- 
-如果您需要关于配置/使用ONLYOFFICE的说明，请访问我们的 "帮助中心":"${__HelpLink}" 。
-
-您可以在 "支付页面":"$PricingPage"上购买订阅。如果您需要更多时间进行测试，可以要求我们延长您的试用期。
-
-此致敬礼,
-ONLYOFFICE团队
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 门户档案修改通知
 
