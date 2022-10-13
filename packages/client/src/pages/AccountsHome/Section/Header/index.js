@@ -23,6 +23,8 @@ import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 
 const StyledContainer = styled.div`
   width: 100%;
+  min-height: 33px;
+  height: 60px;
 
   .group-button-menu-container {
     margin: 0 0 0 -20px;
@@ -142,6 +144,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    margin-bottom: 1px;
   }
 `;
 

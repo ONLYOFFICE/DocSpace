@@ -45,6 +45,8 @@ public class TariffServiceStorage
         Notify = notify;
         Notify.Subscribe((i) =>
         {
+            Cache.Insert(TariffService.GetTariffNeedToUpdateCacheKey(i.TenantId), "update", _cacheExpiration);
+
             Cache.Remove(TariffService.GetTariffCacheKey(i.TenantId));
             Cache.Remove(TariffService.GetBillingUrlCacheKey(i.TenantId));
             Cache.Remove(TariffService.GetBillingPaymentCacheKey(i.TenantId)); // clear all payments
@@ -169,7 +171,11 @@ public class TariffService : ITariffService
         {
             tariff = GetBillingInfo(tenantId) ?? CreateDefault();
             tariff = CalculateTariff(tenantId, tariff);
-            tariffId = tariff.Id;
+
+            if (string.IsNullOrEmpty(_cache.Get<string>(GetTariffNeedToUpdateCacheKey(tenantId))))
+            {
+                tariffId = tariff.Id;
+            }
 
             if (_billingClient.Configured && withRequestToPaymentSystem)
             {
@@ -211,9 +217,8 @@ public class TariffService : ITariffService
                     {
                         asynctariff = CalculateTariff(tenantId, asynctariff);
                         tariff = asynctariff;
+                        tariffId = asynctariff.Id;
                     }
-
-                    tariffId = asynctariff.Id;
                 }
                 catch (BillingNotFoundException)
                 {
@@ -239,9 +244,8 @@ public class TariffService : ITariffService
                     {
                         asynctariff = CalculateTariff(tenantId, asynctariff);
                         tariff = asynctariff;
+                        tariffId = asynctariff.Id;
                     }
-
-                    tariffId = asynctariff.Id;
                 }
                 catch (Exception error)
                 {
@@ -367,6 +371,11 @@ public class TariffService : ITariffService
     internal static string GetTariffCacheKey(int tenantId)
     {
         return $"{tenantId}:tariff";
+    }
+
+    internal static string GetTariffNeedToUpdateCacheKey(int tenantId)
+    {
+        return $"{tenantId}:update";
     }
 
     internal static string GetBillingUrlCacheKey(int tenantId)
