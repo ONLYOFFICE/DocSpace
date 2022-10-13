@@ -547,6 +547,16 @@ const SectionFilterContent = ({
   ]);
 
   const getFilterData = React.useCallback(async () => {
+    const tags = await fetchTags();
+    const connectedThirdParty = [];
+
+    providers.forEach((item) => {
+      if (connectedThirdParty.includes(item.provider_key)) return;
+      connectedThirdParty.push(item.provider_key);
+    });
+
+    const isLastTypeOptionsRooms = !connectedThirdParty.length && !tags.length;
+
     const folders =
       !isFavoritesFolder && !isRecentFolder
         ? [
@@ -595,6 +605,7 @@ const SectionFilterContent = ({
             group: FilterGroups.roomFilterType,
             label: t("Common:Type"),
             isHeader: true,
+            isLast: isLastTypeOptionsRooms,
           },
           {
             key: RoomsType.CustomRoom,
@@ -733,15 +744,7 @@ const SectionFilterContent = ({
 
       filterOptions.push(...typeOptions);
 
-      const tags = await fetchTags();
-      const connectedThirdParty = [];
-
-      providers.forEach((item) => {
-        if (connectedThirdParty.includes(item.provider_key)) return;
-        connectedThirdParty.push(item.provider_key);
-      });
-
-      if (tags) {
+      if (tags.length > 0) {
         const tagsOptions = tags.map((tag) => ({
           key: tag,
           group: FilterGroups.roomFilterTags,
@@ -756,17 +759,20 @@ const SectionFilterContent = ({
         //   isMultiSelect: true,
         // });
 
+        const isLast = connectedThirdParty.length === 0;
+
         filterOptions.push({
           key: FilterGroups.roomFilterTags,
           group: FilterGroups.roomFilterTags,
           label: t("Tags"),
           isHeader: true,
+          isLast,
         });
 
         filterOptions.push(...tagsOptions);
       }
 
-      if (connectedThirdParty) {
+      if (connectedThirdParty.length > 0) {
         const thirdPartyOptions = connectedThirdParty.map((thirdParty) => {
           const key = Object.entries(RoomsProviderType).find(
             (item) => item[0] === thirdParty
