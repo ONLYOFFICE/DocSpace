@@ -684,15 +684,19 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Get free ONLYOFFICE apps to work on documents and projects from any of your devices.
+        ///Get free ONLYOFFICE apps to work on documents from any of your devices.
         ///
-        ///#To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;.
-        ///#To edit documents on mobile devices, get Documents app for &quot;iOS&quot;:&quot;https://apps.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;.
-        ///#To manage your team performance on th [rest of string was truncated]&quot;;.
+        ///# To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;.
+        ///
+        ///#To edit documents on mobile devices, get ONLYOFFICE Documents app for &quot;iOS&quot;:&quot;https://apps.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;.
+        ///
+        ///Truly yours, 
+        ///ONLYOFFICE Team
+        ///&quot; [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_admin_user_apps_tips_v10 {
+        public static string pattern_enterprise_admin_user_apps_tips_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_admin_user_apps_tips_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_admin_user_apps_tips_v1", resourceCulture);
             }
         }
         
@@ -1289,64 +1293,21 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to $PersonalHeaderStart A few tips for freelancers $PersonalHeaderEnd
+        ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///h3.ONLYOFFICE provides a number of features for freelance community whether you are on a contract or hiring for a project yourself:
+        ///Get free ONLYOFFICE apps to work on documents from any of your devices.
         ///
-        ///- Sharing for reads, reviews or collaboration;
+        ///# To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;.
         ///
-        ///- Real-time collaborative editing and commenting in Fast mode;
+        ///#To edit documents on mobile devices, get ONLYOFFICE Documents app for &quot;iOS&quot;:&quot;https://apps.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;.
         ///
-        ///- Strict co-editing mode for editing parts of the document privately;
-        ///
-        ///- Creating and filling out digital forms, e.g. a freelance project proposal;
-        ///
-        ///- Document comparison and Version Histo [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_personal_after_registration14 {
-            get {
-                return ResourceManager.GetString("pattern_personal_after_registration14", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
+        ///Truly yours, 
+        ///ONLYOFFICE Team
+        ///&quot; [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_after_registration14_v1 {
             get {
                 return ResourceManager.GetString("pattern_personal_after_registration14_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to $PersonalHeaderStart Need more features and automation? Give a try to ONLYOFFICE for teams $PersonalHeaderEnd
-        ///
-        ///h3.In case you collaborate with a team or manage a project, we suggest you to try ONLYOFFICE for business. In addition to the online editors and document management features, you&apos;ll be able to:
-        ///
-        ///- Control tasks and use Gantt chart in the project management module;
-        ///
-        ///- Track sales, relations with customers and create invoices in CRM;
-        ///
-        ///- Manage all your email accounts and create corporate mailboxes;
-        ///
-        /// [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_personal_after_registration21 {
-            get {
-                return ResourceManager.GetString("pattern_personal_after_registration21", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to $PersonalHeaderStart Connect your favorite cloud storage to ONLYOFFICE $PersonalHeaderEnd
-        ///
-        ///It has been a week since you created your cloud office, so we believe it&apos;s time to unveil some beneficial features you might have missed.
-        ///
-        ///Connect *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* or *Yandex.Disk* to ONLYOFFICE and create a single document management space for all your documents. You&apos;ll be able to edit external files in ONLYOFFICE and save them to the storage you keep documents in. [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_personal_after_registration7 {
-            get {
-                return ResourceManager.GetString("pattern_personal_after_registration7", resourceCulture);
             }
         }
         
@@ -1844,6 +1805,25 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
+        ///Get free ONLYOFFICE apps to work on documents from any of your devices.
+        ///
+        ///# To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;.
+        ///
+        ///#To edit documents on mobile devices, get ONLYOFFICE Documents app for &quot;iOS&quot;:&quot;https://apps.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;.
+        ///
+        ///Truly yours, 
+        ///ONLYOFFICE Team
+        ///&quot; [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string pattern_saas_admin_user_apps_tips_v1 {
+            get {
+                return ResourceManager.GetString("pattern_saas_admin_user_apps_tips_v1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
         ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
@@ -2228,11 +2208,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get free desktop and mobile apps.
+        ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
         /// </summary>
-        public static string subject_enterprise_admin_user_apps_tips_v10 {
+        public static string subject_enterprise_admin_user_apps_tips_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_admin_user_apps_tips_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_admin_user_apps_tips_v1", resourceCulture);
             }
         }
         
@@ -2498,48 +2478,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A few tips for freelance work.
-        /// </summary>
-        public static string subject_personal_after_registration14 {
-            get {
-                return ResourceManager.GetString("subject_personal_after_registration14", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///Get free ONLYOFFICE apps to work on documents from any of your devices.
-        ///
-        ///# To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;.
-        ///
-        ///#To edit documents on mobile devices, get ONLYOFFICE Documents app for &quot;iOS&quot;:&quot;https://apps.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps/details?id=com.onlyoffice.documents&quot;.
-        ///
-        ///Truly yours, 
-        ///ONLYOFFICE Team
-        ///&quot; [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
         /// </summary>
         public static string subject_personal_after_registration14_v1 {
             get {
                 return ResourceManager.GetString("subject_personal_after_registration14_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Need more features? Give a try to ONLYOFFICE for teams.
-        /// </summary>
-        public static string subject_personal_after_registration21 {
-            get {
-                return ResourceManager.GetString("subject_personal_after_registration21", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connect your favorite cloud storage to ONLYOFFICE.
-        /// </summary>
-        public static string subject_personal_after_registration7 {
-            get {
-                return ResourceManager.GetString("subject_personal_after_registration7", resourceCulture);
             }
         }
         
@@ -2729,6 +2672,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_admin_trial_warning_after_half_year_v1 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_trial_warning_after_half_year_v1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
+        /// </summary>
+        public static string subject_saas_admin_user_apps_tips_v1 {
+            get {
+                return ResourceManager.GetString("subject_saas_admin_user_apps_tips_v1", resourceCulture);
             }
         }
         

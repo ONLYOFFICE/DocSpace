@@ -285,15 +285,6 @@ $GreenButton
 
 *Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните изменение адреса портала в течение этого времени.</value>
   </data>
-  <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Скачайте бесплатные приложения ONLYOFFICE для работы с документами и проектами с любого устройства.
-
-# Чтобы работать с документами офлайн в ОС Windows, Linux и Mac, скачайте "десктопное приложение":"https://www.onlyoffice.com/ru/download-desktop.aspx".
-# Чтобы редактировать документы на мобильных устройствах, используйте приложение ONLYOFFICE Документы для "iOS":"https://apps.apple.com/ru/app/onlyoffice-documents/id944896972" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
-# Чтобы управлять работой команды, где бы вы ни были, скачайте приложение Проекты для "iOS":"https://apps.apple.com/ru/app/onlyoffice-projects/id1353395928" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.projects".</value>
-  </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Здравствуйте, $UserName!
 
@@ -526,80 +517,6 @@ h3.Возможности тестового облака Р7-Офис:
 
 С уважением,
 Команда Р7-Офис</value>
-  </data>
-  <data name="pattern_personal_after_registration14" xml:space="preserve">
-    <value>$PersonalHeaderStart Инструменты в помощь фрилансеру $PersonalHeaderEnd
-
-h3.Инструменты ONLYOFFICE будут полезны всем, кто работает на удаленной основе:
-
-- Предоставление доступа для просмотра документов, рецензирования или совместной работы;
-
-- Быстрый режим совместного редактирования и комментирования для работы в режиме реального времени;
-
-- Строгий режим совместного редактирования, позволяющий редактировать части документа приватно;
-
-- Создание и заполнение цифровых форм, например, предложений о выполнении проекта на удаленной основе;
-
-- Сравнение документов и История версий;
-
-- Возможность отслеживать и предлагать изменения;
-
-- Встроенный чат, плагины Telegram и Jitsi.
-
-Еще больше возможностей для удаленной работы  
-
-Мы также предоставляем облачный сервис для бизнеса, который позволяет управлять мероприятиями, почтой, задачами, общением с клиентами, совершать звонки и многое другое. Вы можете выбрать абсолютно бесплатный тариф для команд, объединяющих до 5 пользователей.
-
-"НАЧАТЬ ПРЯМО СЕЙЧАС":"https://www.onlyoffice.com/ru/registration.aspx"
-
-С уважением,
-команда ONLYOFFICE</value>
-  </data>
-  <data name="pattern_personal_after_registration21" xml:space="preserve">
-    <value>$PersonalHeaderStart Еще больше возможностей и инструментов автоматизации. Попробуйте ONLYOFFICE для командной работы $PersonalHeaderEnd
-
-h3.Если вы работаете с командой или управляете проектом, предлагаем вам воспользоваться решением для бизнеса ONLYOFFICE. В дополнение к функционалу по онлайн-редактированию и управлению документами, вы сможете:
-
-- Контролировать выполнение задач, в том числе при помощи диаграммы Ганта, в модуле управления проектами;
-
-- Управлять продажами, отношениями с клиентами и выставлять счета в CRM;
-
-- Управлять всеми аккаунтами электронной почты и создавать корпоративные почтовые ящики;
-
-- Создавать календари и предоставлять к ним доступ, планировать мероприятия для групп пользователей;
-
-- Использовать расширенные функции безопасности, например, SSO, двухфакторную аутентификацию или сквозное шифрование.
-
-Создайте единое пространство для совместной работы для вас и участников вашей команды "в облаке":"https://www.onlyoffice.com/ru/registration.aspx" или "на собственном сервере":"https://www.onlyoffice.com/ru/download-workspace.aspx", и вы сразу же увидите, как повысится эффективность работы! Вы можете воспользоваться "бесплатным тарифом":"https://www.onlyoffice.com/ru/saas.aspx" для команд, объединяющих до 5 пользователей.
-
-С уважением,
-команда ONLYOFFICE</value>
-  </data>
-  <data name="pattern_personal_after_registration7" xml:space="preserve">
-    <value>$PersonalHeaderStart Подключите свое облачное хранилище к ONLYOFFICE $PersonalHeaderEnd
-
-Прошла неделя с тех пор, как вы создали свой облачный офис, и мы хотели бы рассказать вам о некоторых полезных возможностях, которые вы могли не заметить.
-
-Подключите *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* или *Yandex.Disk* к ONLYOFFICE, чтобы создать единое пространство для управления всеми документами. Вы сможете редактировать сторонние файлы в ONLYOFFICE и сохранять их в том хранилище, где ведете документацию. Инструкции по подключению файловых хранилищ к ONLYOFFICE можно найти "здесь":"http://helpcenter.onlyoffice.com/tipstricks/add-resource.aspx".
-
-Вы также можете интегрировать редакторы ONLYOFFICE в Google Drive с помощью нашего "коннектора":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
-
-Еще больше возможностей для управления документами
-
-h3.Попробуйте бизнес-решения ONLYOFFICE "в облаке":"https://www.onlyoffice.com/cloud-office.aspx" или "на собственном сервере":"https://www.onlyoffice.com/server-solutions.aspx". Они бесплатны в течение 30 дней пробного периода и наряду с набором инструментов для бизнеса включают в себя расширенные возможности управления документами:
-
-- Управление проектной документацией;
-
-- Интеграция с CRM и электронной почтой;
-
-- Индивидуальные и групповые права доступа;
-
-- Оптимизация рабочего процесса с помощью инструментов для взаимодействия с командой.
-
-Узнайте больше о возможностях "бизнес-версий ONLYOFFICE":"http://www.onlyoffice.com/document-management.aspx".
-
-С уважением,
-команда ONLYOFFICE</value>
   </data>
   <data name="pattern_personal_change_email_v115" xml:space="preserve">
     <value>Хотите изменить адрес электронной почты в своем аккаунте ONLYOFFICE?
@@ -1054,9 +971,6 @@ $GreenButton
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Изменение адреса портала</value>
   </data>
-  <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
-    <value>Скачайте бесплатные десктопные и мобильные приложения</value>
-  </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Стать участником ${__VirtualRootPath}</value>
   </data>
@@ -1101,15 +1015,6 @@ $GreenButton
   </data>
   <data name="subject_personal_after_registration1" xml:space="preserve">
     <value>Добро пожаловать в ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_after_registration14" xml:space="preserve">
-    <value>Инструменты в помощь фрилансеру</value>
-  </data>
-  <data name="subject_personal_after_registration21" xml:space="preserve">
-    <value>Попробуйте ONLYOFFICE для командной работы</value>
-  </data>
-  <data name="subject_personal_after_registration7" xml:space="preserve">
-    <value>Подключите свое облачное хранилище к ONLYOFFICE</value>
   </data>
   <data name="subject_personal_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Пожалуйста, активируйте Ваш адрес электронной почты</value>

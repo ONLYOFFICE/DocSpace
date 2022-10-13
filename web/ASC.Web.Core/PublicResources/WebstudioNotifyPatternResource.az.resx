@@ -297,15 +297,6 @@ $GreenButton
 
 * Qeyd *: bu link yalnız 7 gün ərzində etibarlıdır. Bu müddət ərzində portal ünvanının dəyişdirilməsi prosesini tamamlayın.</value>
   </data>
-  <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-İstənilən cihazınızda sənədlər və layihələr üzərində işləmək üçün ödənişsiz ONLYOFFICE proqramları əldə edin.
-
-# Windows, Linux və Mac-də sənədlərlə oflayn işləmək üçün "ONLYOFFICE Desktop Editors" proqramını endirin:"https://www.onlyoffice.com/apps.aspx".
-# Mobil cihazlarda sənədləri redaktə etmək üçün "iOS" üçün ONLYOFFICE Sənədlər proqramı:"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" və ya "Android":"https://play.google .com/store/apps/details?id=com.onlyoffice.documents".
-# Komanda performansınıza yolda olarkən də nəzarət etmək üçün "iOS" üçün ONLYOFFICE Layihələri əldə edin:"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".</value>
-  </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Salam, $UserName!
 
@@ -538,56 +529,6 @@ h3. Sürətlə başlama üçün ONLYOFFICE ilə edə biləcəyiniz şeylər bunl
 - "Chrome genişləndirilməsi" ilə buludda şəxsi iş masanıza asanlıqla daxil olun: "https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
  
 Siz həmçinin pulsuz "masa üstü redaktorlarımız" vasitəsilə sənədləri oflayn rejimdə redaktə edə bilərsiniz: "https://www.onlyoffice.com/download-desktop.aspx" və ya "mobil redaktə dəsti" əldə edə bilərsiniz: "https://www.onlyoffice.com/mobile.aspx" iOS cihazınız üçün.
-
-Hörmətlə,
-ONLYOFFICE komandası</value>
-  </data>
-  <data name="pattern_personal_after_registration14" xml:space="preserve">
-    <value>$PersonalHeaderStart Frilanserlərə kömək etmək üçün ipucular $PersonalHeaderEnd
-
-h3. ONLYOFFICE, müqavilə əsasında və ya layihə üzrə fərdi işləməyinizdən asılı olmayaraq frilanser icmasına bir sıra funksiyalar təqdim edir:
-
-- Sənədlərə baxmaq, nəzərdən keçirmək və ya əməkdaşlıq etmək üçün girişin təmin edilməsi;
-
-- Real vaxt rejimində işləmək üçün Sürətli birgə redaktə və şərh rejimi;
-
-- Sənədin hissələrini özəl olaraq redaktə etməyə imkan verən Sərt birgə redaktə rejimi;
-
-- Versiya Tarixçəsi;
-
-- Dəyişiklikləri izləmək və təklif etmək;
-
-- Daxili söhbət.
-
-Faylları endirməyə və e-poçtla göndərməyə ehtiyac yoxdur. Sadəcə onları bulud iş ofisindən xarici linklərlə paylaşın və harada olursunuzsa olun üzərində işləyin.
-
-
-Daha çox iş alətləri lazımdır?
-
-Biznes üçün ONLYOFFICE həlləri 30 günlük sınaq müddəti üçün pulsuzdur və sizə sərbəst və uzaqdan iş üçün daha çox imkanlar verir. Məsələn, siz müştərilərinizə hesab-fakturalar yarada və təqdim edə, e-poçt və VoIP vasitəsilə onlarla əlaqə saxlaya bilərsiniz. Ticarət üçün ONLYOFFICE haqqında daha çox öyrənmək üçün "CRM İcmal ımıza baxın":"http://www.onlyoffice.com/crm.aspx"
-
-
-
-
-Hörmətlə,
-ONLYOFFICE komandası</value>
-  </data>
-  <data name="pattern_personal_after_registration21" xml:space="preserve">
-    <value>$PersonalHeaderStart Daha çox funksionallıq və avtomatlaşdırma lazımdır? komandaları üçün ONLYOFFICE-i sınayın $PersonalHeaderEnd
-
-h3.Əgər siz komanda ilə əməkdaşlıq edirsinizsə və ya layihəni idarə edirsinizsə, biz sizə biznes üçün ONLYOFFICE-i sınamağı təklif edirik. Onlayn redaktorlara və sənəd idarəetmə funksiyalarına əlavə olaraq siz aşağıdakıları edə biləcəksiniz:
-
-- Tapşırıqlara nəzarət edin və layihənin idarə edilməsi modulunda * Gantt * diaqramından istifadə edin;
-
-- Satışları, müştəri münasibətlərini izləmək və * CRM*-də faktura yaratmaq;
-
-- Bütün e-poçt hesablarınızı * e-poçt toplayıcısında * idarə edin;
-
-- Mesajlaşma, blog, forumlar və viki ilə komanda əlaqəsini qurun.
-
-Siz və komanda yoldaşlarınız üçün unikal əməkdaşlıq sahəsi yaradın.
-
-"Buludda sınağa başlayın":"https://www.onlyoffice.com/registration.aspx" və ya "serverinizdə":"https://www.onlyoffice.com/download-workspace.aspx?from= müəssisə nəşri "30 gün ərzində heç bir funksional məhdudiyyət olmadan və iş axınınızın dərhal necə yaxşılaşdığına baxın!
 
 Hörmətlə,
 ONLYOFFICE komandası</value>
@@ -1059,9 +1000,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Portal ünvanının dəyişdirilməsi</value>
   </data>
-  <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
-    <value>Ödənişsiz ONLYOFFICE tətbiqlərini əldə edin</value>
-  </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
   </data>
@@ -1106,15 +1044,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_personal_after_registration1" xml:space="preserve">
     <value>ONLYOFFICE Personala xoş gəlmisiniz</value>
-  </data>
-  <data name="subject_personal_after_registration14" xml:space="preserve">
-    <value>Frilans kimi işləmək üçün bir neçə məsləhət</value>
-  </data>
-  <data name="subject_personal_after_registration21" xml:space="preserve">
-    <value>Daha çox funksiya lazımdır? Komandalar üçün ONLYOFFICE-ı sınayın</value>
-  </data>
-  <data name="subject_personal_after_registration7" xml:space="preserve">
-    <value>Sevimli bulud yaddaşınızı ONLYOFFICE-ə qoşun</value>
   </data>
   <data name="subject_personal_change_password" xml:space="preserve">
     <value>ONLYOFFICE Personal parol yardımı</value>

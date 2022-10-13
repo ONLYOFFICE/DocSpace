@@ -513,12 +513,6 @@ ONLYOFFICE Ekibi</value>
   <data name="subject_migration_success" xml:space="preserve">
     <value>${LetterLogoText}. Başka bir bölgeye portal taşıma başarıyla tamamlandı</value>
   </data>
-  <data name="subject_personal_after_registration14" xml:space="preserve">
-    <value>Serbest çalışma için birkaç ipucu</value>
-  </data>
-  <data name="subject_personal_after_registration7" xml:space="preserve">
-    <value>Favori bulut depolamanızı ONLYOFFICE'a bağlayın</value>
-  </data>
   <data name="subject_portal_deactivate" xml:space="preserve">
     <value>${__VirtualRootPath} portal deaktivasyonu</value>
   </data>

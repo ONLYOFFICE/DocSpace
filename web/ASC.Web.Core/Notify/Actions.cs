@@ -83,8 +83,6 @@ public static class Actions
     public static readonly INotifyAction EnterpriseWhitelabelGuestWelcomeV10 = new NotifyAction("enterprise_whitelabel_guest_welcome_v10");
     public static readonly INotifyAction OpensourceGuestWelcomeV11 = new NotifyAction("opensource_guest_welcome_v11");
 
-    public static readonly INotifyAction EnterpriseAdminUserAppsTipsV10 = new NotifyAction("enterprise_admin_user_apps_tips_v10");
-
     public static readonly INotifyAction EnterpriseWhitelabelAdminPaymentWarningBefore7V10 = new NotifyAction("enterprise_whitelabel_admin_payment_warning_before7_v10");
     public static readonly INotifyAction EnterpriseWhitelabelAdminPaymentWarningV10 = new NotifyAction("enterprise_whitelabel_admin_payment_warning_v10");
 
@@ -92,9 +90,6 @@ public static class Actions
 
     public static readonly INotifyAction PersonalActivate = new NotifyAction("personal_activate");
     public static readonly INotifyAction PersonalAfterRegistration1 = new NotifyAction("personal_after_registration1");
-    public static readonly INotifyAction PersonalAfterRegistration7 = new NotifyAction("personal_after_registration7");
-    public static readonly INotifyAction PersonalAfterRegistration14 = new NotifyAction("personal_after_registration14");
-    public static readonly INotifyAction PersonalAfterRegistration21 = new NotifyAction("personal_after_registration21");
     public static readonly INotifyAction PersonalConfirmation = new NotifyAction("personal_confirmation");
     public static readonly INotifyAction PersonalEmailChangeV115 = new NotifyAction("personal_change_email_v115");
     public static readonly INotifyAction PersonalPasswordChangeV115 = new NotifyAction("personal_change_password_v115");
@@ -151,4 +146,7 @@ public static class Actions
     public static readonly INotifyAction PersonalAfterRegistration14V1 = new NotifyAction("personal_after_registration14_v1");
 
     public static readonly INotifyAction SaasAdminModulesV1 = new NotifyAction("saas_admin_modules_v1");
+
+    public static readonly INotifyAction SaasAdminUserAppsTipsV1 = new NotifyAction("saas_admin_user_apps_tips_v1");
+    public static readonly INotifyAction EnterpriseAdminUserAppsTipsV1 = new NotifyAction("enterprise_admin_user_apps_tips_v1");
 }

@@ -172,6 +172,19 @@ public class StudioPeriodicNotify
                     }
 
                     #endregion
+
+                    #region 14 days after registration to admins and users SAAS TRIAL
+
+                    else if (createdDate.AddDays(14) == nowDate)
+                    {
+                        action = Actions.SaasAdminUserAppsTipsV1;
+                        paymentMessage = false;
+                        toadmins = true;
+                        tousers = true;
+                    }
+
+                    #endregion
+
                     #endregion
 
                     #region 6 months after SAAS TRIAL expired
@@ -337,16 +350,16 @@ public class StudioPeriodicNotify
                         toadmins = true;
                         tousers = true;
                         greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~")}/products/files/";
+                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~")}/rooms/personal/";
                     }
 
                     #endregion
 
-                    #region 21 days after registration to admins and users ENTERPRISE TRIAL + defaultRebranding
+                    #region 14 days after registration to admins and users ENTERPRISE TRIAL + defaultRebranding
 
-                    else if (createdDate.AddDays(21) == nowDate)
+                    else if (createdDate.AddDays(14) == nowDate)
                     {
-                        action = Actions.EnterpriseAdminUserAppsTipsV10;
+                        action = Actions.EnterpriseAdminUserAppsTipsV1;
                         paymentMessage = false;
                         toadmins = true;
                         tousers = true;
@@ -378,7 +391,6 @@ public class StudioPeriodicNotify
                             new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                         new[] { senderName },
                         new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-                            new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
                             new TagValue(Tags.ActiveUsers, _userManager.GetUsers().Length),
                         new TagValue(Tags.Price, rquota.Price),
                         new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
@@ -505,14 +517,8 @@ public class StudioPeriodicNotify
 
                     switch (dayAfterRegister)
                     {
-                        case 7:
-                            action = Actions.PersonalAfterRegistration7;
-                            break;
                         case 14:
                             action = Actions.PersonalAfterRegistration14V1;
-                            break;
-                        case 21:
-                            action = Actions.PersonalAfterRegistration21;
                             break;
                         default:
                             continue;

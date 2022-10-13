@@ -477,9 +477,6 @@ ONLYOFFICE团队</value>
   <data name="subject_migration_success" xml:space="preserve">
     <value>${LetterLogoText} 。另一个地区门户迁移成功完成</value>
   </data>
-  <data name="subject_personal_after_registration14" xml:space="preserve">
-    <value>自由职业者工作的一些贴士</value>
-  </data>
   <data name="subject_portal_deactivate" xml:space="preserve">
     <value>禁用${__ VirtualRootPath}门户</value>
   </data>

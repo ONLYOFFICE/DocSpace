@@ -333,15 +333,6 @@ $GreenButton
 
 *Note*: this link is valid for 7 days only. Please complete the portal address change process within that period.</value>
   </data>
-  <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Get free ONLYOFFICE apps to work on documents and projects from any of your devices.
-
-#To work on documents offline on Windows, Linux and Mac, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
-#To edit documents on mobile devices, get Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
-#To manage your team performance on the go, get Projects for "iOS":"https://apps.apple.com/us/app/onlyoffice-projects/id1353395928" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.projects". </value>
-  </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -581,80 +572,6 @@ h3.For a quick start, here's what you can do in ONLYOFFICE:
 - Easily access your Personal cloud via "Chrome extension":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
 
 You can also edit documents offline with our free "desktop editors":"https://www.onlyoffice.com/download-desktop.aspx" or get a mobile editing suite for your "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" device.
-
-Sincerely,
-ONLYOFFICE team</value>
-  </data>
-  <data name="pattern_personal_after_registration14" xml:space="preserve">
-    <value>$PersonalHeaderStart A few tips for freelancers $PersonalHeaderEnd
-
-h3.ONLYOFFICE provides a number of features for freelance community whether you are on a contract or hiring for a project yourself:
-
-- Sharing for reads, reviews or collaboration;
-
-- Real-time collaborative editing and commenting in Fast mode;
-
-- Strict co-editing mode for editing parts of the document privately;
-
-- Creating and filling out digital forms, e.g. a freelance project proposal;
-
-- Document comparison and Version History;
-
-- Change tracking &amp; suggesting;
-
-- Built-in chat, Telegram and Jitsi plugins.
-
-Need more work instruments?  
-
-Try a business cloud which allows you to manage events and mails, tasks and clients, make calls, and more. You can choose an absolutely free tariff for teams with up to 5 users:
-
-"START NOW":"https://www.onlyoffice.com/registration.aspx"
-
-Sincerely,
-ONLYOFFICE team</value>
-  </data>
-  <data name="pattern_personal_after_registration21" xml:space="preserve">
-    <value>$PersonalHeaderStart Need more features and automation? Give a try to ONLYOFFICE for teams $PersonalHeaderEnd
-
-h3.In case you collaborate with a team or manage a project, we suggest you to try ONLYOFFICE for business. In addition to the online editors and document management features, you'll be able to:
-
-- Control tasks and use Gantt chart in the project management module;
-
-- Track sales, relations with customers and create invoices in CRM;
-
-- Manage all your email accounts and create corporate mailboxes;
-
-- Create and share calendars, schedule group meetings;
-
-- Use advanced security features like SSO, 2FA or end-to-end encryption.
-
-Create a single collaborative workspace for you and your teammates "in the cloud":"https://www.onlyoffice.com/registration.aspx" or "on your server":"https://www.onlyoffice.com/download-workspace.aspx" and see how your workflow would immediately improve! You can take advantage of the "free tariff":"https://www.onlyoffice.com/saas.aspx" for teams with up to 5 users.
-
-Sincerely,
-ONLYOFFICE team</value>
-  </data>
-  <data name="pattern_personal_after_registration7" xml:space="preserve">
-    <value>$PersonalHeaderStart Connect your favorite cloud storage to ONLYOFFICE $PersonalHeaderEnd
-
-It has been a week since you created your cloud office, so we believe it's time to unveil some beneficial features you might have missed.
-
-Connect *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* or *Yandex.Disk* to ONLYOFFICE and create a single document management space for all your documents. You'll be able to edit external files in ONLYOFFICE and save them to the storage you keep documents in. Read details about connecting file storages to ONLYOFFICE "here":"http://helpcenter.onlyoffice.com/tipstricks/add-resource.aspx".
-
-You can also integrate ONLYOFFICE editors into Google Drive using our "connector app":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
-
-Need more of document management?
-
-h3.Try ONLYOFFICE for business "in the cloud":"https://www.onlyoffice.com/cloud-office.aspx" or "on your server":"https://www.onlyoffice.com/server-solutions.aspx" for free for 30 days and check out extended document management opportunities together with a business toolset:
-
-- Manage team documents in projects;
-
-- Integrate documents with CRM and Email;
-
-- Share files to groups of users;
-
-- Optimize your workflow with team communication tools.
-
-Interested? Learn more about "ONLYOFFICE for business":"http://www.onlyoffice.com/document-management.aspx".
 
 Sincerely,
 ONLYOFFICE team</value>
@@ -1145,9 +1062,6 @@ The link is only valid for 7 days.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Change of portal address</value>
   </data>
-  <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
-    <value>Get free desktop and mobile apps</value>
-  </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>
   </data>
@@ -1192,15 +1106,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_personal_after_registration1" xml:space="preserve">
     <value>Welcome to ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_after_registration14" xml:space="preserve">
-    <value>A few tips for freelance work</value>
-  </data>
-  <data name="subject_personal_after_registration21" xml:space="preserve">
-    <value>Need more features? Give a try to ONLYOFFICE for teams</value>
-  </data>
-  <data name="subject_personal_after_registration7" xml:space="preserve">
-    <value>Connect your favorite cloud storage to ONLYOFFICE</value>
   </data>
   <data name="subject_personal_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Please activate your email address</value>
@@ -1838,9 +1743,6 @@ ONLYOFFICE Team
     <value>Join ONLYOFFICE DocSpace</value>
   </data>
   <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
-    <value>Get free ONLYOFFICE apps</value>
-  </data>
-  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
 Get free ONLYOFFICE apps to work on documents from any of your devices.
@@ -1852,6 +1754,9 @@ Get free ONLYOFFICE apps to work on documents from any of your devices.
 Truly yours, 
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Get free ONLYOFFICE apps</value>
   </data>
   <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
     <value>Hello, $UserName!
@@ -1882,5 +1787,37 @@ ONLYOFFICE Team
   </data>
   <data name="subject_saas_admin_modules_v1" xml:space="preserve">
     <value>Configure your ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Get free ONLYOFFICE apps to work on documents from any of your devices.
+
+# To work on documents offline on Windows, Linux and Mac, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#To edit documents on mobile devices, get ONLYOFFICE Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Get free ONLYOFFICE apps to work on documents from any of your devices.
+
+# To work on documents offline on Windows, Linux and Mac, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#To edit documents on mobile devices, get ONLYOFFICE Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Get free ONLYOFFICE apps</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Get free ONLYOFFICE apps</value>
   </data>
 </root>

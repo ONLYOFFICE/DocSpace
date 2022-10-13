@@ -78,15 +78,14 @@ public class StudioNotifySource : NotifySource
                 Actions.EnterpriseWhitelabelGuestWelcomeV10,
                 Actions.OpensourceGuestWelcomeV11,
 
-                Actions.EnterpriseAdminUserAppsTipsV10,
+                Actions.EnterpriseAdminUserAppsTipsV1,
+
+                Actions.SaasAdminUserAppsTipsV1,
 
                 Actions.SaasAdminModulesV1,
 
                 Actions.PersonalActivate,
                 Actions.PersonalAfterRegistration1,
-                Actions.PersonalAfterRegistration7,
-                Actions.PersonalAfterRegistration14,
-                Actions.PersonalAfterRegistration21,
                 Actions.PersonalAfterRegistration14V1,
                 Actions.PersonalConfirmation,
                 Actions.PersonalPasswordChangeV115,

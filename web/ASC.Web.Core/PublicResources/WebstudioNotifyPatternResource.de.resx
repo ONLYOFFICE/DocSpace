@@ -285,15 +285,6 @@ $GreenButton
 
 *Hinweis*: Dieser Link ist nur 7 Tage gültig. Bitte enden Sie Prozess von Änderung der Portaladresse innerhalb dieses Zeitraums.</value>
   </data>
-  <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-Laden Sie kostenlose ONLYOFFICE-Apps herunter, mit denen Sie Dokumente und Projekte von jedem Gerät aus bearbeiten können.
-
-# Bearbeiten Sie Dokumente offline auf Windows, Linux und Mac. Laden Sie "ONLYOFFICE Desktop Editoren":"https://www.onlyoffice.com/de/apps.aspx" herunter.
-# Bearbeiten Sie Dokumente auf Mobilgeräten mit ONLYOFFICE Documents-App für "iOS":"https://itunes.apple.com/de/app/onlyoffice-documents/id944896972" oder "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
-# Verwalten Sie Teamleistung auch unterwegs mit der ONLYOFFICE Projects-App für "iOS":"https://itunes.apple.com/de/app/onlyoffice-projects/id1353395928".</value>
-  </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Hallo, $UserName!
 
@@ -531,78 +522,6 @@ Sie können Dokumente auch offline mit unseren kostenlosen "Desktop Editoren":"h
 
 Mit freundlichen Grüßen
 ONLYOFFICE Team</value>
-  </data>
-  <data name="pattern_personal_after_registration14" xml:space="preserve">
-    <value>$PersonalHeaderStart Ein paar Tipps für Feelancers $PersonalHeaderEnd
-
-h3.ONLYOFFICE verfügt über eine Reihe von Funktionen für Freelance Community, angesehen davon, ob Sie einen Vertrag haben oder selbst für ein Projekt anstellen:
-
-- Schreibschutzoption, Überprüfung oder Zusammenarbeit;
-
-- Echtzeit-Zusammenarbeit und Kommentare im halbformalen Modus;
-
-- Formaler Bearbeitungs-Modus für private Bearbeitung von Teilen des Dokuments;
-
-- Versionshistorie;
-
-- Änderungsverfolgung &amp; Vorschläge;
-
-- der eingebaute Chat.
-
-Sie müssen keine Dateien herunterladen und per E-Mail versenden. Teilen Sie diese einfach mit externen Links aus Ihrem Cloud-Büro und arbeiten Sie von überall aus mit anderen zusammen.  
-
-Benötigen Sie mehr Instrumente?  
-
-ONLYOFFICE-Lösungen für Unternehmen verfügen über eine 30-tägige kostenlose Testphase und bieten noch mehr Möglichkeiten für Freelance und entfernte Arbeit. Zum Beispiel können Sie Rechnungen erstellen und diese an Ihre Kunden senden, sie über E-Mail und VoIP kontaktieren. Um mehr über ONLYOFFICE für das Geschäft zu erfahren, gehen Sie zu unserer "CRM Übersicht":"http://www.onlyoffice.com/crm.aspx".
-
-Mit freundliche Grüßen,
-ONLYOFFICE Team</value>
-  </data>
-  <data name="pattern_personal_after_registration21" xml:space="preserve">
-    <value>$PersonalHeaderStart Brauchen Sie mehr Funktionen und Automatisierung? Probieren Sie ONLYOFFICE für Teams $PersonalHeaderEnd
-
-h3.Arbeiten Sie mit Ihrem Team zusammen oder verwalten Sie Ihr Projekt mit ONLYOFFICE Workspace. Neben Online-Bearbeitung von Dokumenten und Dokumentenverwaltung können Sie:
-
-- Aufgaben kontrollieren und *Gantt* Diagramm im Projektmanagement-Modul nutzen;
-
-- Verkäufe und Kundenbeziehungen verfolgen und Rechnungen in *CRM* erstellen;
-
-- Alle ihre E-Mail-Konten im E-Mail-*Aggregator* verwalten;
-
-- Kommunikation ihres Teams über Chat, Blog, Foren und Wiki ermöglichen.
-
-Erstellen Sie eine gemeinsame Arbeitsumgebung für Sie und Ihr Team.
-
-Registrieren Sie sich für eine 30-Tage-Testversion von ONLYOFFICE "in der Cloud":"https://www.onlyoffice.com/registration.aspx" oder "auf Ihrem Server":"https://www.onlyoffice.com/download-workspace.aspx?from=enterprise-edition" ohne funktionale Einschränkungen und sehen Sie, wie sich Ihr Workflow sofort verbessert! 
-
-Mit freundlichen Grüßen,
-ONLYOFFICE Team</value>
-  </data>
-  <data name="pattern_personal_after_registration7" xml:space="preserve">
-    <value>$PersonalHeaderStart Verbinden Sie Ihren beliebigen Cloud-Speicher mit ONLYOFFICE $PersonalHeaderEnd
-
-Es ist gerade eine Woche her, seitdem Sie Ihr Cloud-Büro erstellt haben. Nun ist es die richtige Zeit, einige nützliche Funktionen zu entdecken, die Sie vielleicht übersehen haben.
-
-Verbinden Sie *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud* oder *Yandex.Disk* mit ONLYOFFICE und erstellen Sie einen einzigen Dokumentenverwaltungsraum für alle Ihre Dokumente. Sie können externe Dateien in ONLYOFFICE bearbeiten und sie in dem Speicher zu sichern, in dem Sie Dokumente aufbewahren. Lesen Sie Details zum Verbinden von Dateispeichern mit ONLYOFFICE "hier":"http://helpcenter.onlyoffice.com/tipstricks/add-resource.aspx".
-
-Sie können ONLYOFFICE-Editoren auch mit unserer "Connector-App" in Google Drive integrieren: "https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhellaoaibebeohcgkohkcgpn".
-
-Benötigen Sie mehr Dokumentenverwaltung?
-
-h3.Probieren Sie ONLYOFFICE für Business "in der Cloud":"https://www.onlyoffice.com/cloud-office.aspx" oder "auf Ihrem Server":"https://www.onlyoffice.com/server-solutions.aspx" für 30 Tage kostenlos und sehen Sie sich erweiterte Möglichkeiten für das Dokumentenmanagement in Kombination mit einem Business-Toolset an:
-
-- Verwalten Sie Teamdokumente in Projekten;
-
-- Integrieren Sie Dokumente mit CRM und E-Mail;
-
-- Teilen Sie Dateien für Benutzergruppen;
-
-- Optimieren Sie Ihren Workflow mit Teamkommunikations-Tools.
-
-Sind Sie daran interessiert? Erfahren Sie mehr über "ONLYOFFICE für Business":"http://www.onlyoffice.com/document-management.aspx".
-
-Mit freundlichen Grüßen,
-ONLYOFFICE team</value>
   </data>
   <data name="pattern_personal_change_email_v115" xml:space="preserve">
     <value>Möchten Sie Ihre E-Mail im ONLYOFFICE-Konto ändern?
@@ -1056,9 +975,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Änderung der Portaladresse</value>
   </data>
-  <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
-    <value>Laden Sie kostenlose ONLYOFFICE-Apps herunter</value>
-  </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath} beitreten</value>
   </data>
@@ -1104,15 +1020,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_personal_after_registration1" xml:space="preserve">
     <value>Willkommen auf ONLYOFFICE Personal</value>
-  </data>
-  <data name="subject_personal_after_registration14" xml:space="preserve">
-    <value>Einige Tipps für freiberufliche Arbeit</value>
-  </data>
-  <data name="subject_personal_after_registration21" xml:space="preserve">
-    <value>Brauchen Sie mehr Funktionen? Probieren Sie ONLYOFFICE für Teams</value>
-  </data>
-  <data name="subject_personal_after_registration7" xml:space="preserve">
-    <value>Verbinden Sie Ihren beliebigen Cloud-Speicher mit ONLYOFFICE</value>
   </data>
   <data name="subject_personal_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Bitte aktivieren Sie Ihre E-Mail-Adresse</value>
