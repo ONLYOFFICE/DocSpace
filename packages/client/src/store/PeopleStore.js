@@ -145,7 +145,7 @@ class PeopleStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
-      hasUsers,
+      hasFreeUsers,
     } = this.selectionStore;
     const {
       setActiveDialogVisible,
@@ -154,7 +154,7 @@ class PeopleStore {
       setDeleteDialogVisible,
     } = this.dialogStore;
 
-    const { isAdmin, isOwner, isVisitor } = this.authStore.userStore.user;
+    const { isOwner } = this.authStore.userStore.user;
 
     const { isVisible } = this.infoPanelStore;
 
@@ -192,13 +192,13 @@ class PeopleStore {
 
     options.push(managerOption);
 
-    options.push(userOption);
+    hasFreeUsers && options.push(userOption);
 
     const headerMenu = [
       {
         key: "change-user",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
-        disabled: !isVisitor && !hasUsersToMakeEmployees,
+        disabled: !hasUsersToMakeEmployees,
         iconUrl: "/static/images/change.to.employee.react.svg",
         withDropDown: true,
         options: options,
