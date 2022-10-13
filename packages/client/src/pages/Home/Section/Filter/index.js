@@ -530,7 +530,6 @@ const SectionFilterContent = ({
     filter.withSubfolders,
     filter.authorType,
     filter.filterType,
-    filter.provider,
     filter.searchInContent,
     filter.excludeSubject,
     roomsFilter.provider,
