@@ -297,60 +297,6 @@ $GreenButton
 
 * Qeyd *: bu link yalnız 7 gün ərzində etibarlıdır. Bu müddət ərzində portal ünvanının dəyişdirilməsi prosesini tamamlayın.</value>
   </data>
-  <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Bulud ofisiniz "${__VirtualRootPath}":"${__VirtualRootPath}" ünvanında hazırdır. Komanda yoldaşlarınızı dəvət etməyin vaxtı gəldi!
-
-Komandanızı əlavə etməyin ən asan yolu LDAP Serverindən (məsələn, OpenLDAP Server və ya Microsoft Active Directory) lazımi istifadəçiləri və qrupları idxal etməkdir. LDAP parametrləri İdarəetmə Panelinizdə mövcuddur. Təlimatlar "Yardım Mərkəzimiz":"${__HelpLink}/server/windows/community/ldap-settings.aspx" də mövcuddur.
-
-Siz həmçinin istifadəçiləri portala dəvət et seçimindən istifadə edərək dəvət linkini yaya və ya *İnsanlar* modulunda *Yeni Yarat...* düyməsindən istifadə edərək komanda yoldaşlarınızı əl ilə bir-bir əlavə edə və ya istifadəçiləri aşağıdakılardan ixrac edə bilərsiniz:
-     "Yahoo və ya Google hesabınız":"${__HelpLink}/administratorguides/import-contacts-from-web.aspx";
-     "poçt müştərinizin ünvan kitabçası":"${__HelpLink}/administratorguides/import-contacts-from-mail-client.aspx";
-     "a CSV faylı":"${__HelpLink}/administratorguides/import-contacts-from-csv.aspx".</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Nəzərə alın ki, ONLYOFFICE abunəliyiniz bir həftədən sonra başa çatmaq üzrədir. Abunəliyinizi uzatmaq üçün siz ONLYOFFICE üçün yenilənmiş məhsulu almalısınız.
-
-Yeniləmə prosesinə başlamaq üçün aşağıdakı linkə klikləyin:
-"Qiymətləndirmə səhifəsi":"$PricingPage"
-
-Hər hansı əlavə ONLYOFFICE quraşdırılması, aktivləşdirilməsi və texniki dəstək məsələləri üçün "https://support.onlyoffice.com/":"https://support.onlyoffice.com/" ünvanında dəstək komandamızla əlaqə saxlayın.</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Nəzərə alın ki, ONLYOFFICE abunəliyiniz bu gün başa çatır. Abunəliyinizi uzatmaq üçün siz ONLYOFFICE üçün yenilənmiş məhsulu almalısınız.
-
-Yeniləmə prosesinə başlamaq üçün aşağıdakı linkə klikləyin:
-"Qiymətləndirmə səhifəsi":"$PricingPage"
-
-Hər hansı əlavə məhsulun quraşdırılması, aktivləşdirilməsi və texniki dəstək məsələləri üçün "https://support.onlyoffice.com/":"https://support.onlyoffice.com/" ünvanında dəstək komandamızla əlaqə saxlayın.</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-ONLYOFFICE seçdiyiniz üçün təşəkkür edirik. Sadəcə sizə xatırlatmaq istəyirik ki, Enterprise Edition üçün sınaq müddəti yeddi gün ərzində başa çatacaq.
-
-Zəhmət olmasa, Enterprise Edition üçün bütün mövcud qiymət planlarını yoxlayın və biznesiniz üçün ən uyğununu seçin.
-
-$GreenButton
-
-$BlueButton
-
-Satınalma ilə bağlı hər hansı sualınız üçün "sales@onlyoffice.com":"mailto:sales@onlyoffice.com" ünvanında bizimlə əlaqə saxlayın. Hər hansı texniki problemi həll etmək üçün "support@onlyoffice.com ünvanına yazın":"mailto:support@onlyoffice.com"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-ONLYOFFICE İş Sahəsini seçdiyiniz üçün təşəkkür edirik. Sınaq müddətiniz bu gün bitir. Pro xüsusiyyətlərindən istifadə etməyə davam etmək üçün tam lisenziyanı satın alın.
-
-İndi satın alın: "https://www.onlyoffice.com/workspace-enterprise-prices.aspx":"https://www.onlyoffice.com/workspace-enterprise-prices.aspx"
-
-Satınalma ilə bağlı hər hansı sualınız üçün "sales@onlyoffice.com":"mailto:sales@onlyoffice.com" ünvanında bizimlə əlaqə saxlayın. Hər hansı texniki problemi həll etmək üçün "support@onlyoffice.com":"mailto:support@onlyoffice.com" ünvanına yazın</value>
-  </data>
   <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Salam, $UserName!
 
@@ -359,13 +305,6 @@ Satınalma ilə bağlı hər hansı sualınız üçün "sales@onlyoffice.com":"m
 # Windows, Linux və Mac-də sənədlərlə oflayn işləmək üçün "ONLYOFFICE Desktop Editors" proqramını endirin:"https://www.onlyoffice.com/apps.aspx".
 # Mobil cihazlarda sənədləri redaktə etmək üçün "iOS" üçün ONLYOFFICE Sənədlər proqramı:"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" və ya "Android":"https://play.google .com/store/apps/details?id=com.onlyoffice.documents".
 # Komanda performansınıza yolda olarkən də nəzarət etmək üçün "iOS" üçün ONLYOFFICE Layihələri əldə edin:"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".</value>
-  </data>
-  <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Ümid edirik ki, ONLYOFFICE istifadə etməkdən zövq alacaqsınız. Sınaq prosesi necə gedir? Bu barədə rəyinizi bildirsəniz, sizə minnətdar olarıq!
-
-Sualınız və ya bizimlə bölüşmək istədiyiniz ideyalarınız olduqda, lütfən "support.onlyoffice.com":"https://support.onlyoffice.com" ünvanında bizimlə əlaqə saxlayın.</value>
   </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Salam, $UserName!
@@ -390,22 +329,6 @@ Qonaq profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}" -a əlav�
 # Ani mesaj mübadiləsi üçün "Söhbət":"${__VirtualRootPath}/addons/talk/" istifadə edin.
 
 $GreenButton</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Nəzərə alın ki, veb-ofis abunəliyiniz bir həftədən sonra başa çatmaq üzrədir. Abunəliyinizi uzatmaq üçün yenilənmiş məhsulu satın almalısınız.
-
-Yeniləmə prosesinə başlamaq üçün aşağıdakı linkə klikləyin:
-"Qiymətləndirmə səhifəsi":"$PricingPage"</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Nəzərə alın ki, veb-ofis abunəliyiniz bu gün başa çatır. Abunəliyinizi uzatmaq üçün yenilənmiş məhsulu satın almalısınız.
-
-Yeniləmə prosesinə başlamaq üçün aşağıdakı linkə klikləyin:
-"Qiymətləndirmə səhifəsi":"$PricingPage"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Salam, $UserName!
@@ -1136,38 +1059,14 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Portal ünvanının dəyişdirilməsi</value>
   </data>
-  <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Komanda yoldaşlarınızı dəvət edin</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>ONLYOFFICE Yeniləmə Bildirişi</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>ONLYOFFICE Yeniləmə Bildirişi</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>Sınaq prosesiniz indiyə qədər necə gedir?</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>Enterprise Edition sınaq müddəti bu gün bitir</value>
-  </data>
   <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Ödənişsiz ONLYOFFICE tətbiqlərini əldə edin</value>
-  </data>
-  <data name="subject_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>ONLYOFFICE komandasından izləmə</value>
   </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Veb ofisinizə xoş gəlmisiniz</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Veb ofisinizin yenilənməsi barədə bildirişiniz</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Veb ofisinizin yenilənməsi barədə bildirişiniz</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>

@@ -285,62 +285,6 @@ $GreenButton
 
 *Обратите внимание*: эта ссылка действительна только 7 дней. Пожалуйста, выполните изменение адреса портала в течение этого времени.</value>
   </data>
-  <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Ваш облачный офис готов к работе по адресу "${__VirtualRootPath}":"${__VirtualRootPath}". Пора приглашать участников команды!
-
-Проще всего это сделать, импортировав нужных пользователей и группы с LDAP-сервера (например, OpenLDAP Server или Microsoft Active Directory). Настройки LDAP доступны в Панели управления. Инструкции можно найти в нашем "Справочном центре":"${__HelpLink}/ru/administration/control-panel-ldap.aspx".
-
-Вы также можете разослать пригласительную ссылку с помощью опции Пригласить пользователей или добавить участников команды вручную по одному с помощью кнопки *Создать...* в модуле *Люди*, или экспортировать пользователей из:
-    "вашего аккаунта Google":"${__HelpLink}/ru/administratorguides/import-contacts-from-web.aspx";
-    "адресной книги почтового клиента":"${__HelpLink}/ru/administratorguides/import-contacts-from-mail-client.aspx";
-    "файла CSV":"${__HelpLink}/ru/administratorguides/import-contacts-from-csv.aspx".</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Пожалуйста, обратите внимание, что срок действия вашей подписки на ONLYOFFICE истечет через неделю. Вам необходимо приобрести продление подписки на ONLYOFFICE.
-
-Нажмите на следующую ссылку, чтобы начать продление:
-"Страница с ценами":"$PricingPage"
-
-По вопросам установки, активации и технической поддержки ONLYOFFICE обращайтесь в нашу службу поддержки "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Пожалуйста, обратите внимание, что сегодня истекает срок действия вашей подписки на ONLYOFFICE. Вам необходимо приобрести продление подписки на ONLYOFFICE.
-
-Нажмите на следующую ссылку, чтобы начать продление:
-"Страница с ценами":"$PricingPage"
-
-По вопросам установки, активации и технической поддержки продукта обращайтесь в нашу службу поддержки "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Благодарим за выбор ONLYOFFICE. Мы просто хотим напомнить, что пробный период для Workspace Enterprise Edition завершится через семь дней.
-
-Пожалуйста, ознакомьтесь со всеми доступными тарифными планами для Workspace Enterprise Edition и выберите наиболее подходящий.
-
-"Узнать стоимость":"https://www.onlyoffice.com/ru/workspace-enterprise-prices.aspx"
-$GreenButton
-
-"Заказать звонок":"http://www.onlyoffice.com/ru/call-back-form.aspx"
-$BlueButton
-
-По вопросам покупки свяжитесь с нами по адресу "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". Для решения технических проблем пишите на "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Благодарим за выбор ONLYOFFICE Workspace. Сегодня истекает ваш пробный период. Чтобы продолжить использование профессиональных возможностей, приобретите полную лицензию.
-
-"Купить сейчас":"https://www.onlyoffice.com/ru/workspace-enterprise-prices.aspx"
-
-По вопросам покупки свяжитесь с нами по адресу "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". Для решения технических проблем пишите на "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
-  </data>
   <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Здравствуйте, $UserName!
 
@@ -349,13 +293,6 @@ $BlueButton
 # Чтобы работать с документами офлайн в ОС Windows, Linux и Mac, скачайте "десктопное приложение":"https://www.onlyoffice.com/ru/download-desktop.aspx".
 # Чтобы редактировать документы на мобильных устройствах, используйте приложение ONLYOFFICE Документы для "iOS":"https://apps.apple.com/ru/app/onlyoffice-documents/id944896972" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 # Чтобы управлять работой команды, где бы вы ни были, скачайте приложение Проекты для "iOS":"https://apps.apple.com/ru/app/onlyoffice-projects/id1353395928" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.projects".</value>
-  </data>
-  <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Мы надеемся, что вам нравится использовать ONLYOFFICE. Как проходит ваш пробный период? Мы будем очень благодарны вам за отзыв!
-
-Вы всегда можете написать нам на "support.onlyoffice.com":"https://support.onlyoffice.com", если у вас будут вопросы или идеи.</value>
   </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Здравствуйте, $UserName!
@@ -381,22 +318,6 @@ $GreenButton
 
 Чтобы получить доступ к вашему виртуальному офису, перейдите по следующей ссылке:
 $GreenButton</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Пожалуйста, обратите внимание, что срок действия вашей подписки на виртуальный офис истечет через неделю. Вам необходимо приобрести продление подписки.
-
-Нажмите на следующую ссылку, чтобы начать продление:
-"Страница с ценами":"$PricingPage"</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Пожалуйста, обратите внимание, что сегодня истекает срок действия вашей подписки. Вам необходимо приобрести продление подписки.
-
-Нажмите на следующую ссылку, чтобы начать продление:
-"Страница с ценами":"$PricingPage"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Здравствуйте, $UserName!
@@ -1133,38 +1054,14 @@ $GreenButton
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Изменение адреса портала</value>
   </data>
-  <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Пригласите коллег</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Уведомление о продлении подписки на ONLYOFFICE</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Уведомление о продлении подписки на ONLYOFFICE</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>Как проходит пробный период?</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>Сегодня истекает пробный период Enterprise Edition</value>
-  </data>
   <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Скачайте бесплатные десктопные и мобильные приложения</value>
-  </data>
-  <data name="subject_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Следите за новостями команды ONLYOFFICE</value>
   </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Стать участником ${__VirtualRootPath}</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Добро пожаловать в виртуальный офис</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Уведомление о продлении подписки на виртуальный офис</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Уведомление о продлении подписки на виртуальный офис</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Стать участником ${__VirtualRootPath}</value>

@@ -285,61 +285,6 @@ $GreenButton
 
 *Note*: este enlace tiene una validez sólo de 7 días. Por favor, complete el proceso de cambio de dirección del portal dentro de ese período.</value>
   </data>
-  <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Su oficina en la nube está lista en "${__VirtualRootPath}":"${__VirtualRootPath}". ¡Llegó el momento de invitar a sus compañeros de equipo!
-
-La forma más fácil de añadir su equipo es importar los usuarios y grupos necesarios de un Servidor LDAP (e.g. Servidor OpenLDAP o Microsoft Active Directory). Los ajustes LDAP están disponibles en el Panel de Control. Instrucciones se encuentran en nuestro "Centro de Ayuda":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
-
-También Usted puede distribuir el enlace de invitación usando la opción Invitar a usuarios al portal o añadir sus compañeros manualmente uno por uno usando el botón *Crear nuevo* en el módulo *Personas* o exportar la lista de usuarios de:
-
-   - "su cuenta Yahoo o Google":"${__HelpLink}/administratorguides/import-contacts-from-web.aspx";
-   - "libro de direcciones de su cliente de correo":"${__HelpLink}/administratorguides/import-contacts-from-mail-client.aspx";
-   - "un archivo CSV":"${__HelpLink}/administratorguides/import-contacts-from-csv.aspx".</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Note, por favor, que su suscripción de ONLYOFFICE expirará en una semana. Para renovar su suscripción, usted necesita adquirir renovación del producto para ONLYOFFICE.
-
-Haga clic en el enlace abajo para iniciar el proceso de renovación:
-"Página de precios":"$PricingPage"
-
-Para obtener asistencia sobre la instalación y activación del producto, soporte técnico, póngase en contacto con nuestro equipo de soporte en "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>¡Estimado/a $UserName!
-
-Note, por favor, que su suscripción de ONLYOFFICE expira hoy. Para prolongar su suscripción Usted necesita adquirir renovación del producto para ONLYOFFICE.
-
-Haga clic en el enlace abajo para iniciar el proceso de renovación:
-"Página de precios":"$PricingPage"
-
-Para obtener asistencia sobre la instalación y activación del producto, soporte técnico, póngase en contacto con nuestro equipo de soporte en "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Gracias por elegir ONLYOFFICE. Sólo queremos recordarle que el período de prueba para su Workspace Enterprise Edition expirará en siete días.
-
-Por favor, revise todos los planes de precios disponibles para Workspace Enterprise Edition y seleccione el más adecuado para su negocio.
-
-"Ver precios": "https://www.onlyoffice.com/es/workspace-enterprise-prices.aspx"
-
-"Solicitar una llamada": "http://www.onlyoffice.com/es/call-back-form.aspx"
-
-Si tiene algunas preguntas de ventas, contáctenos a través de "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". Para solucionar cualquier problema técnico, no dude en escribirnos a "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Gracias por elegir ONLYOFFICE Workspace. Su período de prueba expira hoy. Para poder seguir usándolo, adquiera la licencia completa.
-
-Comprar ahora: "https://www.onlyoffice.com/es/workspace-enterprise-prices.aspx"
-
-Si tiene algunas preguntas de ventas, contáctenos a través de "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". Para solucionar cualquier problema técnico, no dude en escribirnos a "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
-  </data>
   <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>¡Hola, $UserName!
 
@@ -348,13 +293,6 @@ Obtenga las aplicaciones de ONLYOFFICE gratuitas para trabajar en documentos y p
 # Para trabajar en documentos offline en Windows, Linux y Mac, descargue "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/es/apps.aspx".
 # Para editar documentos en dispositivos móviles, instale la aplicación ONLYOFFICE Documents para "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" o "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 # Para gestionar funcionamiento de su equipo sobre la marcha, obtenga la aplicación ONLYOFFICE Projects para "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928" o "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.projects".</value>
-  </data>
-  <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>¡Estimado/a $UserName!
-
-Esperamos que disfrute usando ONLYOFFICE. ¿Cómo está pasando su prueba? ¡Agradeceríamos sus comentarios!
-
-Por favor, no dude en ponerse en contacto con nosotros en "support.onlyoffice.com":"https://support.onlyoffice.com" si tiene algunas preguntas o ideas.</value>
   </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>¡Hola, $UserName!
@@ -380,22 +318,6 @@ Su perfil de invitado ha sido agregado con éxito al "${__VirtualRootPath}":"${_
 
 Para acceder a su oficina web, siga el enlace
 $GreenButton</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>¡Estimado/a $UserName!
-
-Note, por favor, que su suscripción para oficina web expirará en una semana. Para prolongar su suscripción Usted necesita adquirir renovación del producto.
-
-Haga clic en el enlace abajo para iniciar el proceso de renovación:
-"Página de precios":"$PricingPage"</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>¡Estimado/a $UserName!
-
-Note, por favor, que su suscripción para oficina web expira hoy. Para prolongar su suscripción Usted necesita adquirir renovación del producto.
-
-Haga clic en el enlace abajo para iniciar el proceso de renovación:
-"Página de precios":"$PricingPage"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>¡Buen día, $UserName!
@@ -1130,38 +1052,14 @@ El enlace es válido solo durante 7 días.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Cambio de dirección de portal</value>
   </data>
-  <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Invite a sus compañeros de equipo</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Notificación de renovación de ONLYOFFICE</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Notificación de renovación de ONLYOFFICE</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>¿Como se pasa su período de prueba?</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>El período de prueba para su Enterprise Edition va a expirar hoy</value>
-  </data>
   <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Obtenga aplicaciones gratuitas para ordenadores y móviles</value>
-  </data>
-  <data name="subject_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Siga noticias del equipo de ONLYOFFICE</value>
   </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Bienvenido a su oficina web</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Notificación de renovación de su oficina web</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Notificación de renovación de su oficina web</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>

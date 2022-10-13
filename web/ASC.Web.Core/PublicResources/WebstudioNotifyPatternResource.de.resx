@@ -285,60 +285,6 @@ $GreenButton
 
 *Hinweis*: Dieser Link ist nur 7 Tage gültig. Bitte enden Sie Prozess von Änderung der Portaladresse innerhalb dieses Zeitraums.</value>
   </data>
-  <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Hallo $UserName!
-
-Ihr Cloud-Office steht hier bereit: "${__VirtualRootPath}":"${__VirtualRootPath}". Nun ist es an der Zeit, Ihre Teammitglieder einzuladen.
-
-Der einfachste Weg, Ihr Team hinzuzufügen, ist der Import der benötigten Benutzer und Gruppen von einem LDAP-Server (z.B. OpenLDAP Server oder Microsoft Active Directory). Die LDAP-Einstellungen sind in Ihren Einstellungen zu finden. Anleitungen finden Sie in unserem "Help Center":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
-
-Sie können ebenfalls den Einladungs-Links verschicken, indem Sie die Option Benutzer zu Portal einladen nutzen oder fügen Sie Ihre Teammitglieder manuell mit der Schaltfläche  *Neuer...* im *People* Modul mit folgenden Optionen hinzufügen.
-    "ihr Yahoo oder Google Account":"${__HelpLink}/administratorguides/import-contacts-from-web.aspx",
-    "Adressbuch Ihres Mail-Clients":"${__HelpLink}/administratorguides/import-contacts-from-mail-client.aspx",
-    "eine CSV-Datei":"${__HelpLink}/administratorguides/import-contacts-from-csv.aspx". </value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Hallo $UserName!
-
-Bitte beachten Sie, dass Ihre ONLYOFFICE Abo in einer Woche endet. Um das Abo zu verlängern, müssen Sie eine Erneuerung bei ONLYOFFICE kaufen.
-
-Klicken Sie auf den unten stehenden Link, um Ihr Abo zu verlängern:
-"Preise":"$PricingPage"
-
-Bitte kontaktieren Sie unser Support -Team für weitere Installationen, Aktivierungen und technischen Support: "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Hallo $UserName!
-
-Bitte beachten Sie, dass Ihre ONLYOFFICE Abo heute endet. Um das Abo zu verlängern, müssen Sie eine Erneuerung bei ONLYOFFICE kaufen.
-
-Klicken Sie auf den unten stehenden Link, um Ihr Abo zu verlängern:
-"Preise":"$PricingPage"
-
-Bitte kontaktieren Sie unser Support -Team für weitere Installationen, Aktivierungen und technischen Support: "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-Vielen Dank, dass Sie sich für ONLYOFFICE entschieden haben. Wir möchten Sie nur daran erinnern, dass die Testversion für Ihre Enterprise Edition in sieben Tagen abgelaufen ist.
-
-Bitte überprüfen Sie alle für Enterprise Edition verfügbaren Preispläne und wählen Sie den am besten geeigneten aus.
-
-$GreenButton
-
-$BlueButton
-
-Bei Fragen zum Kauf kontaktieren Sie uns unter "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". Bei technischen Problemen wenden Sie sich bitte an "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-Vielen Dank, dass Sie sich für ONLYOFFICE Workspace entschieden haben. Ihre Testversion läuft heute ab. Erwerben Sie die vollständige Lizenz, um ONLYOFFICE weiter zu verwenden.
-
-Jetzt kaufen: "https://www.onlyoffice.com/workspace-enterprise-prices.aspx":"https://www.onlyoffice.com/workspace-enterprise-prices.aspx"
-
-Bei Fragen zum Kauf kontaktieren Sie uns unter "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". Bei technischen Fragen wenden Sie sich bitte an "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
-  </data>
   <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Hallo, $UserName!
 
@@ -347,13 +293,6 @@ Laden Sie kostenlose ONLYOFFICE-Apps herunter, mit denen Sie Dokumente und Proje
 # Bearbeiten Sie Dokumente offline auf Windows, Linux und Mac. Laden Sie "ONLYOFFICE Desktop Editoren":"https://www.onlyoffice.com/de/apps.aspx" herunter.
 # Bearbeiten Sie Dokumente auf Mobilgeräten mit ONLYOFFICE Documents-App für "iOS":"https://itunes.apple.com/de/app/onlyoffice-documents/id944896972" oder "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 # Verwalten Sie Teamleistung auch unterwegs mit der ONLYOFFICE Projects-App für "iOS":"https://itunes.apple.com/de/app/onlyoffice-projects/id1353395928".</value>
-  </data>
-  <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-Wir hoffen, dass ONLYOFFICE gefällt Ihnen. Wie läuft es mit der Testversion? Ihr Feedback ist uns sehr wichtig!
-
-Sie können uns jederzeit unter "support.onlyoffice.com":"https://support.onlyoffice.com" kontaktieren, wenn Sie irgendwelche Fragen oder Ideen haben.</value>
   </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Hallo, $UserName!
@@ -378,22 +317,6 @@ Ihr Gast-Profil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath
 # Mit "Chat":"${__VirtualRootPath}/addons/talk/" Sofortnachrichten austauschen.
 
 $GreenButton</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Hallo $UserName!
-
-Bitte beachten Sie, dass Ihre Abo für das Online-Büro in einer Woche endet. Um das Abo zu verlängern, müssen Sie eine Erneuerung kaufen.
-
-Klicken Sie auf den unten stehenden Link, um Ihr Abo zu verlängern:
-"Preise":"$PricingPage"</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Hallo $UserName!
-
-Bitte beachten Sie, dass Ihre Abo für das Online-Büro heute endet. Um das Abo zu verlängern, müssen Sie eine Erneuerung kaufen.
-
-Klicken Sie auf den unten stehenden Link, um Ihr Abo zu verlängern:
-"Preise":"$PricingPage"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Hallo, $UserName!
@@ -1133,38 +1056,14 @@ Dieser Link ist nur 7 Tage gültig.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Änderung der Portaladresse</value>
   </data>
-  <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Laden Sie Ihre Teammitglieder ein</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Benachrichtigung über Erneuerung von ONLYOFFICE</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Benachrichtigung über Erneuerung von ONLYOFFICE</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>Wie läuft es mit der Testversion?</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>Ihre Testversion von Enterprise Edition läuft heute ab</value>
-  </data>
   <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Laden Sie kostenlose ONLYOFFICE-Apps herunter</value>
-  </data>
-  <data name="subject_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Nützliche Informationen von ONLYOFFICE Team</value>
   </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath} beitreten</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Willkommen in Ihrem Web-Office</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Ihre Benachrichtigung über Erneuerung für Web-Office</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Ihre Benachrichtigung über Erneuerung für Web-Office</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath} beitreten</value>

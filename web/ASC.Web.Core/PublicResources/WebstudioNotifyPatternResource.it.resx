@@ -280,26 +280,6 @@ $GreenButton
 
 * Nota *: questo collegamento è valido solo per 7 giorni. Completa il processo di cambio di indirizzo del portale entro tale periodo.</value>
   </data>
-  <data name="pattern_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Salve, $UserName!
-
-Si prega di notare che l'abbonamento ONLYOFFICE scade tra una settimana. Per estendere l'abbonamento, è necessario acquistare un rinnovo del prodotto per ONLYOFFICE.
-
-Fai clic sul link di seguito per avviare la procedura di rinnovo:
-"Listino prezzi":"$PricingPage"
-
-Per ulteriori informazioni sull'installazione, attivazione e supporto tecnico del prodotto, non esitate a contattare il nostro team di supporto all'indirizzo "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Salve, $UserName!
-
-Si prega di notare che l'abbonamento ONLYOFFICE scade oggi. Per estendere l'abbonamento, è necessario acquistare un rinnovo del prodotto per ONLYOFFICE.
-
-Fai clic sul link di seguito per avviare la procedura di rinnovo:
-"Listino prezzi":"$PricingPage"
-
-Per ulteriori informazioni sull'installazione, attivazione e supporto tecnico del prodotto, non esitate a contattare il nostro team di supporto all'indirizzo "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
   <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Salve, $UserName!
 
@@ -308,13 +288,6 @@ Ottieni le app gratuite ONLYOFFICE per lavorare su documenti e progetti da quals
 # Per lavorare su documenti offline su Windows, Linux e Mac, scaricare "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/apps.aspx".
 # Per modificare documenti su dispositivi mobili, l'app ONLYOFFICE Documents per "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" o "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 # Per gestire le prestazioni del tuo team in viaggio, ottieni ONLYOFFICE Projects for "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".</value>
-  </data>
-  <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Salve, $UserName!
-
-Ci auguriamo che ti piaccia usare ONLYOFFICE. Come sta procedendo con la versione di prova? Gradiremmo molto il tuo feedback!
-
-Per favore, non esitare a contattarci a "support@onlyoffice.com":"mailto: support@onlyoffice.com" tutte le volte che avete domande o idee, suggerimenti.</value>
   </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Salve, $UserName!
@@ -871,38 +844,14 @@ il team di ONLYOFFICE</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Cambio dell'indirizzo del portale.</value>
   </data>
-  <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Invita i tuoi compagni di squadra</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Notifica di rinnovo ONLYOFFICE®</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Notifica di rinnovo ONLYOFFICE®</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>Come procede con il periodo di prova?</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>Il tuo periodo di prova della Enterprise Edition scade oggi</value>
-  </data>
   <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Ottieni apps di ONLYOFFICE gratis</value>
-  </data>
-  <data name="subject_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Attenzionato dal team ONLYOFFICE </value>
   </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Unirsi su ${__VirtualRootPath}</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Benvenuti sul vostro web-office</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>La tua notifica di rinnovo web-office</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>La tua notifica di rinnovo web-office</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Unirsi su ${__VirtualRootPath}</value>

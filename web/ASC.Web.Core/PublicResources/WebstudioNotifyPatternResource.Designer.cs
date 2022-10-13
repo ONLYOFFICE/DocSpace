@@ -684,88 +684,6 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your cloud office is ready at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. It&apos;s time to invite your teammates!
-        ///
-        ///The easiest way to add your team is to import the necessary users and groups from an LDAP Server (e.g. OpenLDAP Server or Microsoft Active Directory). The LDAP settings are available in your Control Panel. Instructions are available in our &quot;Help Center&quot;:&quot;&quot;${__HelpLink}/administration/control-panel-ldap.aspx&quot;.
-        ///
-        ///You can also distribute the invitation link using the Invite u [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_enterprise_admin_invite_teammates_v10 {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_invite_teammates_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///Please note that your ONLYOFFICE subscription is about to expire in a week. To extend your subscription, you need to purchase a product renewal for ONLYOFFICE.
-        ///
-        ///Click on the link below to start the renewal process:
-        ///&quot;Pricing page&quot;:&quot;$PricingPage&quot;
-        ///
-        ///For any further ONLYOFFICE installation, activation and technical support issues, please contact our support team  at &quot;https://support.onlyoffice.com/&quot;:&quot;https://support.onlyoffice.com/&quot;.
-        /// </summary>
-        public static string pattern_enterprise_admin_payment_warning_before7_v10 {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_payment_warning_before7_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///Please note that your ONLYOFFICE subscription expires today. To extend your subscription, you need to purchase a product renewal for ONLYOFFICE.
-        ///
-        ///Click on the link below to start the renewal process:
-        ///&quot;Pricing page&quot;:&quot;$PricingPage&quot;
-        ///
-        ///For any further product installation, activation and technical support issues, please contact our support team at &quot;https://support.onlyoffice.com/&quot;:&quot;https://support.onlyoffice.com/&quot;.
-        /// </summary>
-        public static string pattern_enterprise_admin_payment_warning_v10 {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_payment_warning_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///Thanks for choosing ONLYOFFICE. We just want to remind you that the trial period for your Workspace 
-        /// Enterprise Edition will be over in seven days.
-        ///
-        ///Please, check all the available pricing plans for Workspace Enterprise Edition and choose the most suitable one for your business.
-        ///
-        ///&quot;See prices&quot;:&quot;https://www.onlyoffice.com/workspace-enterprise-prices.aspx&quot;
-        ///
-        ///&quot;Request a call&quot;:&quot;http://www.onlyoffice.com/call-back-form.aspx&quot;
-        ///
-        ///For any purchase questions, contact us at &quot;sales@onlyoffice.com [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_enterprise_admin_trial_warning_before7_v10 {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_trial_warning_before7_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///Thanks for choosing ONLYOFFICE. Your trial expires today. To continue using it, purchase the full license.
-        ///
-        ///&quot;Buy now&quot;:&quot;https://www.onlyoffice.com/workspace-enterprise-prices.aspx&quot;
-        ///
-        ///For any purchase questions, contact us at &quot;sales@onlyoffice.com&quot;:&quot;mailto:sales@onlyoffice.com&quot;. For solving any technical problems, write to &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;.
-        /// </summary>
-        public static string pattern_enterprise_admin_trial_warning_v10 {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_trial_warning_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
         ///Get free ONLYOFFICE apps to work on documents and projects from any of your devices.
         ///
         ///#To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;.
@@ -811,19 +729,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string pattern_enterprise_admin_welcome_v1 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_admin_welcome_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///We hope you enjoy using ONLYOFFICE. How everything is going with your trial? We would really appreciate your feedback!
-        ///
-        ///Please, don’t hesitate to contact us at &quot;support.onlyoffice.com&quot;:&quot;https://support.onlyoffice.com&quot; whenever you have questions or ideas..
-        /// </summary>
-        public static string pattern_enterprise_admin_without_activity_v10 {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_without_activity_v10", resourceCulture);
             }
         }
         
@@ -923,34 +828,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string pattern_enterprise_whitelabel_admin_activation_v1 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_activation_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///Please note that your web-office subscription is about to expire in a week. To extend your subscription, you need to purchase a product renewal.
-        ///
-        ///Click on the link below to start the renewal process:
-        ///&quot;Pricing page&quot;:&quot;$PricingPage&quot;.
-        /// </summary>
-        public static string pattern_enterprise_whitelabel_admin_payment_warning_before7_v10 {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_payment_warning_before7_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///Please note that your web-office subscription expires today. To extend your subscription, you need to purchase a product renewal.
-        ///
-        ///Click on the link below to start the renewal process:
-        ///&quot;Pricing page&quot;:&quot;$PricingPage&quot;.
-        /// </summary>
-        public static string pattern_enterprise_whitelabel_admin_payment_warning_v10 {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_payment_warning_v10", resourceCulture);
             }
         }
         
@@ -2351,51 +2228,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invite your teammates.
-        /// </summary>
-        public static string subject_enterprise_admin_invite_teammates_v10 {
-            get {
-                return ResourceManager.GetString("subject_enterprise_admin_invite_teammates_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE Renewal Notification.
-        /// </summary>
-        public static string subject_enterprise_admin_payment_warning_before7_v10 {
-            get {
-                return ResourceManager.GetString("subject_enterprise_admin_payment_warning_before7_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE Renewal Notification.
-        /// </summary>
-        public static string subject_enterprise_admin_payment_warning_v10 {
-            get {
-                return ResourceManager.GetString("subject_enterprise_admin_payment_warning_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to How is your trial going so far?.
-        /// </summary>
-        public static string subject_enterprise_admin_trial_warning_before7_v10 {
-            get {
-                return ResourceManager.GetString("subject_enterprise_admin_trial_warning_before7_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your Enterprise Edition trial expires today.
-        /// </summary>
-        public static string subject_enterprise_admin_trial_warning_v10 {
-            get {
-                return ResourceManager.GetString("subject_enterprise_admin_trial_warning_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Get free desktop and mobile apps.
         /// </summary>
         public static string subject_enterprise_admin_user_apps_tips_v10 {
@@ -2419,15 +2251,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_enterprise_admin_welcome_v1 {
             get {
                 return ResourceManager.GetString("subject_enterprise_admin_welcome_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Follow up from ONLYOFFICE team.
-        /// </summary>
-        public static string subject_enterprise_admin_without_activity_v10 {
-            get {
-                return ResourceManager.GetString("subject_enterprise_admin_without_activity_v10", resourceCulture);
             }
         }
         
@@ -2473,24 +2296,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_enterprise_whitelabel_admin_activation_v1 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_admin_activation_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your web-office renewal notification.
-        /// </summary>
-        public static string subject_enterprise_whitelabel_admin_payment_warning_before7_v10 {
-            get {
-                return ResourceManager.GetString("subject_enterprise_whitelabel_admin_payment_warning_before7_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your web-office renewal notification.
-        /// </summary>
-        public static string subject_enterprise_whitelabel_admin_payment_warning_v10 {
-            get {
-                return ResourceManager.GetString("subject_enterprise_whitelabel_admin_payment_warning_v10", resourceCulture);
             }
         }
         

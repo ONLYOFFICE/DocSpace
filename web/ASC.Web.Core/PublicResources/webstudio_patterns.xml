@@ -492,18 +492,6 @@ $activity.Key
     <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_opensource_guest_welcome_v11|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
-  <!-- enterprise admin invite teammates v10 -->
-  <pattern id="enterprise_admin_invite_teammates_v10">
-    <subject resource="|subject_enterprise_admin_invite_teammates_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_admin_invite_teammates_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
-  <!-- enterprise admin without activity v10 -->
-  <pattern id="enterprise_admin_without_activity_v10">
-    <subject resource="|subject_enterprise_admin_without_activity_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_admin_without_activity_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
   <!-- enterprise admin user docs tips v1 for DocSpace -->
   <pattern id="enterprise_admin_user_docs_tips_v1">
     <subject resource="|subject_enterprise_admin_user_docs_tips_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
@@ -515,42 +503,6 @@ $activity.Key
     <subject resource="|subject_enterprise_admin_user_apps_tips_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_admin_user_apps_tips_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>  
-
-  <!-- enterprise admin trial warning before7 v10 -->
-  <pattern id="enterprise_admin_trial_warning_before7_v10">
-    <subject resource="|subject_enterprise_admin_trial_warning_before7_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_admin_trial_warning_before7_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
-  <!-- enterprise admin trial warning v10 -->
-  <pattern id="enterprise_admin_trial_warning_v10">
-    <subject resource="|subject_enterprise_admin_trial_warning_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_admin_trial_warning_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
-  <!-- enterprise admin payment warning before7 v10 -->
-  <pattern id="enterprise_admin_payment_warning_before7_v10">
-    <subject resource="|subject_enterprise_admin_payment_warning_before7_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_admin_payment_warning_before7_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
-  <!-- enterprise whitelabel admin payment warning before7 v10 -->
-  <pattern id="enterprise_whitelabel_admin_payment_warning_before7_v10">
-    <subject resource="|subject_enterprise_whitelabel_admin_payment_warning_before7_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_admin_payment_warning_before7_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
-  <!-- enterprise admin payment warning v10 -->
-  <pattern id="enterprise_admin_payment_warning_v10">
-    <subject resource="|subject_enterprise_admin_payment_warning_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_admin_payment_warning_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
-  <!-- enterprise whitelabel admin payment warning v10 -->
-  <pattern id="enterprise_whitelabel_admin_payment_warning_v10">
-    <subject resource="|subject_enterprise_whitelabel_admin_payment_warning_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_admin_payment_warning_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
  
   <!-- saas admin user docs tips v1 for DocSpace -->
   <pattern id="saas_admin_user_docs_tips_v1">

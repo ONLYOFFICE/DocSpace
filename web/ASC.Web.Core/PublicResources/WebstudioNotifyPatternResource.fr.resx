@@ -284,60 +284,6 @@ $GreenButton
 
 *Remarque* : ce lien est valable pour 7 jours seulement. Veuillez compléter le processus de changementle de l'adresse du  portail au courant de cette période.</value>
   </data>
-  <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Votre bureau dans le cloud est prêt à démarrer à "${__VirtualRootPath}":"${__VirtualRootPath}". Maintenant n'hésitez pas à inviter vos collègues !
-
-La voie la plus facile d'ajouter vos collègues c'est l'import des utilisateurs et des groupes nécessaires depuis le serveur LDAP (par exemple, OpenLDAP Server ou Microsoft Active Directory). Les paramètres LDAP sont disponibles dans votre Panneau de Configuration. Trouvez les consignes dans notre "Centre d'Aide":"${__HelpLink}/server/windows/community/ldap-settings.aspx".
-
-Vous pouvez également envoyer le lien d'invitation à l'aide de l'option du portail "Inviter des utilisateurs" ou ajouter vos collègues manuellement en utilisant le bouton *Créer...* dans le module *Personnes* ou faire l'export des utilisateurs à partir de :
-    "votre compte Yahoo ou Google":"${__HelpLink}/administratorguides/import-contacts-from-web.aspx";
-    "carnet d'adresse de votre client mail":"${__HelpLink}/administratorguides/import-contacts-from-mail-client.aspx";
-    "fichier CSV":"${__HelpLink}/administratorguides/import-contacts-from-csv.aspx".</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Veuillez noter que votre inscription à ONLYOFFICE expire dans une semaine. Pour continuer à utiliser ONLYOFFICE, vous avez besoin d'acheter le renouvellement de produit.
-
-Cliquez sur le lien ci-dessous pour démarrer le processus de renouvellement :
-"Pricing page":"$PricingPage"
-
-Pour toute question concernant l'installation, la mise en oeuvre et les problèmes d'ordre technique, contactez notre équipe d'assistance technique à "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Veuillez noter que votre abonnement à ONLYOFFICE expire aujourd'hui. Pour continuer à utiliser ONLYOFFICE, vous avez besoin d'acheter le renouvellement de produit.
-
-Cliquez sur le lien ci-dessous pour démarrer le processus de renouvellement :
-"Plans tarifaires":"$PricingPage"
-
-Pour toute question concernant l'installation, la mise en oeuvre et les problèmes d'ordre technique, contactez notre équipe d'assistance technique "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Merci d'avoir choisi ONLYOFFICE. Nous tenons à vous rappeler que votre période d'essai pour Enterprise Edition expire dans 7 jours.
-
-Consultez tous les plans tarifaires disponibles pour Enterprise Edition et choisissez celui qui vous correspond le mieux aux besoins de votre entreprise.
-
-$GreenButton
-
-$BlueButton
-
-Pour toutes les questions concernant les achats, contactez-nous à sales@onlyoffice.com":"mailto:sales@onlyoffice.com". En cas des problèmes d'ordre technique, écrivez-nous à "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Merci d'avoir choisi ONLYOFFICE. Votre période d'essai expire aujourd'hui. Pour continuer à l'utilisez, veuillez acheter une licence complète
-
-Acheter maintenant : "https://www.onlyoffice.com/enterprise-edition.aspx":"https://www.onlyoffice.com/enterprise-edition.aspx"
-
-Pour toute question concernant l'achat, contactez-nous par mail à  "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". En cas des problèmes d'ordre technique, écrivez-nous à "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
-  </data>
   <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Bonjour $UserName,
 
@@ -346,13 +292,6 @@ Profitez des applications gratuites ONLYOFFICE pour travailler sur vos documents
 # Pour travailler sur les documents hors ligne sous Windows, Linux et Mac, téléchargez "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/apps.aspx".
 # Pour éditer les documents sur les appareils mobiles, choisissez l'application ONLYOFFICE Documents pour "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" ou "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 # Pour gérer la performance de l'équipe en mobilité, optez pour ONLYOFFICE Projects pour "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".</value>
-  </data>
-  <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Nous espérons que vous avez aimé votre expérience d'utilisation de ONLYOFFICE. Est-ce que la période d'essai s'est bien passée ? Votre retour serait fortement apprécié !
-
-N'hésitez pas à nous contacter à "support.onlyoffice.com":"https://support.onlyoffice.com" pour toutes vos questions ou suggestions.</value>
   </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Bonjour $UserName,
@@ -365,7 +304,7 @@ Ce lien est valide pendant 7 jours.
 
 Nous allons partager avec vous les astuces pour profiter pleinement des fonctionnalités du bureau web. Vous pouvez vous désinscrire ou renouveler l'inscription à tout moment dans votre profil.</value>
   </data>
-  <data name="pattern_enterprise_guest_welcome_v10" xml:space="preserve">
+	<data name="pattern_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Bonjour $UserName,
 
 Votre profil d'invité a été ajouté avec succès au portail "${__VirtualRootPath}":"${__VirtualRootPath}". Maintenant vous pouvez :
@@ -375,22 +314,6 @@ Votre profil d'invité a été ajouté avec succès au portail "${__VirtualRootP
 # Ajouter et télécharger les fichiers qui sont disponibles dans le module "Documents":"${__VirtualRootPath}/Products/Files/".
 # Organiser votre agenda à l'aide du "Calendrier":"${__VirtualRootPath}/addons/calendar/".
 # Utiliser le "Chat":"${__VirtualRootPath}/addons/talk/" pour échanger à l'aide de la messagerie instantanée.</value>
-  </data
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Bonjour $UserName, 
-
-Veuillez noter que votre abonnement à ONLYOFFICE expire dans une semaine. Pour continuer à utiliser ONLYOFFICE, vous avez besoin d'acheter le renouvellement de produit.
-
-Cliquez sur le lien ci-dessous pour démarrer le processus de renouvellement :
-"Plans tarifaires":"$PricingPage"</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Veuillez noter que votre abonnement à ONLYOFFICE expire aujourd'hui. Pour continuer à utiliser ONLYOFFICE, vous avez besoin d'acheter le renouvellement de produit.
-
-Cliquez sur le lien ci-dessous pour démarrer le processus de renouvellement :
-"Plans tarifaires":"$PricingPage"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Bonjour $UserName,
@@ -1118,38 +1041,14 @@ Le lien est valide pendant 7 jours.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Changement de l'adresse du portail</value>
   </data>
-  <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Invitez vos collègues </value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Notification de renouvellement pour ONLYOFFICE</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Notification de renouvellement pour ONLYOFFICE</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>Comment se passe votre période d'essai?</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>La période d'évaluation de Enterprise Edition se termine aujourd'hui</value>
-  </data>
   <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Obtenez des applications gratuites d'ONLYOFFICE</value>
-  </data>
-  <data name="subject_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Suivi de la part de l'equipe d'ONLYOFFICE</value>
   </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Inscrivez-vous sur le portail ${__VirtualRootPath}</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Bienvenue dans votre office en ligne</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Notification de renouvellement d'abonnement sur votre office en ligne</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Notification de renouvellement d'abonnement sur votre office en ligne</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>L'invitation à rejoindre le portail ${__VirtualRootPath}</value>

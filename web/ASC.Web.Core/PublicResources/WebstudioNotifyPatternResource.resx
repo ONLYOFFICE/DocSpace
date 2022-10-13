@@ -333,62 +333,6 @@ $GreenButton
 
 *Note*: this link is valid for 7 days only. Please complete the portal address change process within that period.</value>
   </data>
-  <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Your cloud office is ready at "${__VirtualRootPath}":"${__VirtualRootPath}". It's time to invite your teammates!
-
-The easiest way to add your team is to import the necessary users and groups from an LDAP Server (e.g. OpenLDAP Server or Microsoft Active Directory). The LDAP settings are available in your Control Panel. Instructions are available in our "Help Center":""${__HelpLink}/administration/control-panel-ldap.aspx".
-
-You can also distribute the invitation link using the Invite users to portal option or add your teammates manually one by one using the *Create New*... button in the *People* module or export users from:
-
-    - "your Google account":"${__HelpLink}/administratorguides/import-contacts-from-web.aspx";
-    - "your mail client address book":"${__HelpLink}/administratorguides/import-contacts-from-mail-client.aspx";
-    - "a CSV file":"${__HelpLink}/administratorguides/import-contacts-from-csv.aspx".</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Please note that your ONLYOFFICE subscription is about to expire in a week. To extend your subscription, you need to purchase a product renewal for ONLYOFFICE.
-
-Click on the link below to start the renewal process:
-"Pricing page":"$PricingPage"
-
-For any further ONLYOFFICE installation, activation and technical support issues, please contact our support team  at "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Please note that your ONLYOFFICE subscription expires today. To extend your subscription, you need to purchase a product renewal for ONLYOFFICE.
-
-Click on the link below to start the renewal process:
-"Pricing page":"$PricingPage"
-
-For any further product installation, activation and technical support issues, please contact our support team at "https://support.onlyoffice.com/":"https://support.onlyoffice.com/"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Thanks for choosing ONLYOFFICE. We just want to remind you that the trial period for your Workspace 
- Enterprise Edition will be over in seven days.
-
-Please, check all the available pricing plans for Workspace Enterprise Edition and choose the most suitable one for your business.
-
-"See prices":"https://www.onlyoffice.com/workspace-enterprise-prices.aspx"
-
-"Request a call":"http://www.onlyoffice.com/call-back-form.aspx"
-
-For any purchase questions, contact us at "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". For solving any technical problems, write to "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
-  </data>
-  <data name="pattern_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Thanks for choosing ONLYOFFICE. Your trial expires today. To continue using it, purchase the full license.
-
-"Buy now":"https://www.onlyoffice.com/workspace-enterprise-prices.aspx"
-
-For any purchase questions, contact us at "sales@onlyoffice.com":"mailto:sales@onlyoffice.com". For solving any technical problems, write to "support@onlyoffice.com":"mailto:support@onlyoffice.com"</value>
-  </data>
   <data name="pattern_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -397,13 +341,6 @@ Get free ONLYOFFICE apps to work on documents and projects from any of your devi
 #To work on documents offline on Windows, Linux and Mac, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
 #To edit documents on mobile devices, get Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
 #To manage your team performance on the go, get Projects for "iOS":"https://apps.apple.com/us/app/onlyoffice-projects/id1353395928" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.projects". </value>
-  </data>
-  <data name="pattern_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-We hope you enjoy using ONLYOFFICE. How everything is going with your trial? We would really appreciate your feedback!
-
-Please, don’t hesitate to contact us at "support.onlyoffice.com":"https://support.onlyoffice.com" whenever you have questions or ideas.</value>
   </data>
   <data name="pattern_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Hello, $UserName!
@@ -429,22 +366,6 @@ Your guest profile has been successfully added to "${__VirtualRootPath}":"${__Vi
 
 To access your web-office, follow the link
 $GreenButton</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Please note that your web-office subscription is about to expire in a week. To extend your subscription, you need to purchase a product renewal.
-
-Click on the link below to start the renewal process:
-"Pricing page":"$PricingPage"</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Please note that your web-office subscription expires today. To extend your subscription, you need to purchase a product renewal.
-
-Click on the link below to start the renewal process:
-"Pricing page":"$PricingPage"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Hello, $UserName!
@@ -1224,38 +1145,14 @@ The link is only valid for 7 days.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Change of portal address</value>
   </data>
-  <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Invite your teammates</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>ONLYOFFICE Renewal Notification</value>
-  </data>
-  <data name="subject_enterprise_admin_payment_warning_v10" xml:space="preserve">
-    <value>ONLYOFFICE Renewal Notification</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_before7_v10" xml:space="preserve">
-    <value>How is your trial going so far?</value>
-  </data>
-  <data name="subject_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>Your Enterprise Edition trial expires today</value>
-  </data>
   <data name="subject_enterprise_admin_user_apps_tips_v10" xml:space="preserve">
     <value>Get free desktop and mobile apps</value>
-  </data>
-  <data name="subject_enterprise_admin_without_activity_v10" xml:space="preserve">
-    <value>Follow up from ONLYOFFICE team</value>
   </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Welcome to your web-office</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
-    <value>Your web-office renewal notification</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_payment_warning_v10" xml:space="preserve">
-    <value>Your web-office renewal notification</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>

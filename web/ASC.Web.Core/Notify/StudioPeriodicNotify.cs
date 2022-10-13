@@ -321,8 +321,6 @@ public class StudioPeriodicNotify
                 var tousers = false;
 
                 Func<string> greenButtonText = () => string.Empty;
-
-                string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                 var greenButtonUrl = string.Empty;
 
 
@@ -330,47 +328,9 @@ public class StudioPeriodicNotify
                 {
                     #region After registration letters
 
-                    #region 4 days after registration to admins ENTERPRISE TRIAL + only 1 user + defaultRebranding
-
-                    if (createdDate.AddDays(4) == nowDate && _userManager.GetUsers().Length == 1)
-                    {
-                        action = Actions.EnterpriseAdminInviteTeammatesV10;
-                        paymentMessage = false;
-                        toadmins = true;
-
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonInviteRightNow;
-                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/products/people/";
-                    }
-
-                    #endregion
-
-                    #region 5 days after registration to admins ENTERPRISE TRAIL + without activity in 1 or more days + defaultRebranding
-
-                    else if (createdDate.AddDays(5) == nowDate)
-                    {
-                        List<DateTime> datesWithActivity;
-
-                        datesWithActivity =
-                                _dbContextFactory.CreateDbContext().FeedAggregates
-                                .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
-                            .Where(r => r.CreatedDate <= nowDate.AddDays(-1))
-                            .GroupBy(r => r.CreatedDate.Date)
-                            .Select(r => r.Key)
-                            .ToList();
-
-                        if (datesWithActivity.Count < 5)
-                        {
-                            action = Actions.EnterpriseAdminWithoutActivityV10;
-                            paymentMessage = false;
-                            toadmins = true;
-                        }
-                    }
-
-                    #endregion
-
                     #region 7 days after registration to admins and users ENTERPRISE TRIAL + defaultRebranding
 
-                    else if (createdDate.AddDays(7) == nowDate)
+                    if (createdDate.AddDays(7) == nowDate)
                     {
                         action = Actions.EnterpriseAdminUserDocsTipsV1;
                         paymentMessage = false;
@@ -396,68 +356,7 @@ public class StudioPeriodicNotify
 
                     #endregion
 
-                    #region Trial warning letters
-
-                    #region 7 days before ENTERPRISE TRIAL ends to admins + defaultRebranding
-
-                    else if (dueDateIsNotMax && dueDate.AddDays(-7) == nowDate)
-                    {
-                        action = Actions.EnterpriseAdminTrialWarningBefore7V10;
-                        toadmins = true;
-
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
-                        greenButtonUrl = "http://www.onlyoffice.com/enterprise-edition.aspx";
-                    }
-
-                    #endregion
-
-                    #region ENTERPRISE TRIAL expires today to admins + defaultRebranding
-
-                    else if (dueDate == nowDate)
-                    {
-                        action = Actions.EnterpriseAdminTrialWarningV10;
-                        toadmins = true;
-                    }
-
-                    #endregion
-
-                    #endregion
                 }
-                else if (tariff.State == TariffState.Paid)
-                {
-                    #region Payment warning letters
-
-                    #region 7 days before ENTERPRISE PAID expired to admins
-
-                    if (dueDateIsNotMax && dueDate.AddDays(-7) == nowDate)
-                    {
-                        action = defaultRebranding
-                                     ? Actions.EnterpriseAdminPaymentWarningBefore7V10
-                                     : Actions.EnterpriseWhitelabelAdminPaymentWarningBefore7V10;
-                        toadmins = true;
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
-                    }
-
-                    #endregion
-
-                    #region ENTERPRISE PAID expires today to admins
-
-                    else if (dueDate == nowDate)
-                    {
-                        action = defaultRebranding
-                                     ? Actions.EnterpriseAdminPaymentWarningV10
-                                     : Actions.EnterpriseWhitelabelAdminPaymentWarningV10;
-                        toadmins = true;
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonSelectPricingPlans;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx");
-                    }
-
-                    #endregion
-
-                    #endregion
-                }
-
 
                 if (action == null)
                 {
@@ -485,7 +384,6 @@ public class StudioPeriodicNotify
                         new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                         new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
                         new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
-                        TagValues.BlueButton(blueButtonText, "http://www.onlyoffice.com/call-back-form.aspx"),
                         TagValues.GreenButton(greenButtonText, greenButtonUrl));
                 }
             }

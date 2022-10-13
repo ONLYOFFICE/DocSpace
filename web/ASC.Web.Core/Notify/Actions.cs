@@ -83,16 +83,9 @@ public static class Actions
     public static readonly INotifyAction EnterpriseWhitelabelGuestWelcomeV10 = new NotifyAction("enterprise_whitelabel_guest_welcome_v10");
     public static readonly INotifyAction OpensourceGuestWelcomeV11 = new NotifyAction("opensource_guest_welcome_v11");
 
-    public static readonly INotifyAction EnterpriseAdminInviteTeammatesV10 = new NotifyAction("enterprise_admin_invite_teammates_v10");
-    public static readonly INotifyAction EnterpriseAdminWithoutActivityV10 = new NotifyAction("enterprise_admin_without_activity_v10");
     public static readonly INotifyAction EnterpriseAdminUserAppsTipsV10 = new NotifyAction("enterprise_admin_user_apps_tips_v10");
 
-    public static readonly INotifyAction EnterpriseAdminTrialWarningBefore7V10 = new NotifyAction("enterprise_admin_trial_warning_before7_v10");
-    public static readonly INotifyAction EnterpriseAdminTrialWarningV10 = new NotifyAction("enterprise_admin_trial_warning_v10");
-
-    public static readonly INotifyAction EnterpriseAdminPaymentWarningBefore7V10 = new NotifyAction("enterprise_admin_payment_warning_before7_v10");
     public static readonly INotifyAction EnterpriseWhitelabelAdminPaymentWarningBefore7V10 = new NotifyAction("enterprise_whitelabel_admin_payment_warning_before7_v10");
-    public static readonly INotifyAction EnterpriseAdminPaymentWarningV10 = new NotifyAction("enterprise_admin_payment_warning_v10");
     public static readonly INotifyAction EnterpriseWhitelabelAdminPaymentWarningV10 = new NotifyAction("enterprise_whitelabel_admin_payment_warning_v10");
 
     public static readonly INotifyAction SaasAdminComfortTipsV115 = new NotifyAction("saas_admin_comfort_tips_v115");

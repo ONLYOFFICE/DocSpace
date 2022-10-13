@@ -78,17 +78,7 @@ public class StudioNotifySource : NotifySource
                 Actions.EnterpriseWhitelabelGuestWelcomeV10,
                 Actions.OpensourceGuestWelcomeV11,
 
-                Actions.EnterpriseAdminInviteTeammatesV10,
-                Actions.EnterpriseAdminWithoutActivityV10,
                 Actions.EnterpriseAdminUserAppsTipsV10,
-
-                Actions.EnterpriseAdminTrialWarningBefore7V10,
-                Actions.EnterpriseAdminTrialWarningV10,
-
-                Actions.EnterpriseAdminPaymentWarningBefore7V10,
-                Actions.EnterpriseWhitelabelAdminPaymentWarningBefore7V10,
-                Actions.EnterpriseAdminPaymentWarningV10,
-                Actions.EnterpriseWhitelabelAdminPaymentWarningV10,
 
                 Actions.SaasAdminModulesV1,
 

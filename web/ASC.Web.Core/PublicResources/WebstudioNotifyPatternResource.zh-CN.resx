@@ -462,9 +462,6 @@ ONLYOFFICE团队</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}。门户地址更改</value>
   </data>
-  <data name="subject_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>您的企业版试用版今天到期</value>
-  </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>向管理员发送的用户消息</value>
   </data>
