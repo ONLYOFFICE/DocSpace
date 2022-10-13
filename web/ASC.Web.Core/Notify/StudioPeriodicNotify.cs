@@ -135,64 +135,7 @@ public class StudioPeriodicNotify
                 var toowner = false;
 
                 Func<string> greenButtonText = () => string.Empty;
-
-                string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                 var greenButtonUrl = string.Empty;
-
-                Func<string> tableItemText1 = () => string.Empty;
-                Func<string> tableItemText2 = () => string.Empty;
-                Func<string> tableItemText3 = () => string.Empty;
-                Func<string> tableItemText4 = () => string.Empty;
-                Func<string> tableItemText5 = () => string.Empty;
-                Func<string> tableItemText6 = () => string.Empty;
-                Func<string> tableItemText7 = () => string.Empty;
-
-                var tableItemUrl1 = string.Empty;
-                var tableItemUrl2 = string.Empty;
-                var tableItemUrl3 = string.Empty;
-                var tableItemUrl4 = string.Empty;
-                var tableItemUrl5 = string.Empty;
-                var tableItemUrl6 = string.Empty;
-                var tableItemUrl7 = string.Empty;
-
-                var tableItemImg1 = string.Empty;
-                var tableItemImg2 = string.Empty;
-                var tableItemImg3 = string.Empty;
-                var tableItemImg4 = string.Empty;
-                var tableItemImg5 = string.Empty;
-                var tableItemImg6 = string.Empty;
-                var tableItemImg7 = string.Empty;
-
-                Func<string> tableItemComment1 = () => string.Empty;
-                Func<string> tableItemComment2 = () => string.Empty;
-                Func<string> tableItemComment3 = () => string.Empty;
-                Func<string> tableItemComment4 = () => string.Empty;
-                Func<string> tableItemComment5 = () => string.Empty;
-                Func<string> tableItemComment6 = () => string.Empty;
-                Func<string> tableItemComment7 = () => string.Empty;
-
-                Func<string> tableItemLearnMoreText1 = () => string.Empty;
-
-                string tableItemLearnMoreText2() => string.Empty;
-
-                string tableItemLearnMoreText3() => string.Empty;
-
-                string tableItemLearnMoreText4() => string.Empty;
-
-                string tableItemLearnMoreText5() => string.Empty;
-
-                string tableItemLearnMoreText6() => string.Empty;
-
-                string tableItemLearnMoreText7() => string.Empty;
-
-                var tableItemLearnMoreUrl1 = string.Empty;
-                var tableItemLearnMoreUrl2 = string.Empty;
-                var tableItemLearnMoreUrl3 = string.Empty;
-                var tableItemLearnMoreUrl4 = string.Empty;
-                var tableItemLearnMoreUrl5 = string.Empty;
-                var tableItemLearnMoreUrl6 = string.Empty;
-                var tableItemLearnMoreUrl7 = string.Empty;
-
 
                 if (quota.Free)
                 {
@@ -320,23 +263,12 @@ public class StudioPeriodicNotify
                             new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                         new[] { senderName },
                         new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-                            new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/tariffs.aspx")),
                             new TagValue(Tags.ActiveUsers, _userManager.GetUsers().Length),
                         new TagValue(Tags.Price, rquota.Price),
                         new TagValue(Tags.PricePeriod, rquota.Year3 ? UserControlsCommonResource.TariffPerYear3 : rquota.Year ? UserControlsCommonResource.TariffPerYear : UserControlsCommonResource.TariffPerMonth),
                         new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
                         new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
-                        TagValues.BlueButton(blueButtonText, "http://www.onlyoffice.com/call-back-form.aspx"),
                         TagValues.GreenButton(greenButtonText, greenButtonUrl),
-                        TagValues.TableTop(),
-                        TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),
-                        TagValues.TableItem(2, tableItemText2, tableItemUrl2, tableItemImg2, tableItemComment2, tableItemLearnMoreText2, tableItemLearnMoreUrl2),
-                        TagValues.TableItem(3, tableItemText3, tableItemUrl3, tableItemImg3, tableItemComment3, tableItemLearnMoreText3, tableItemLearnMoreUrl3),
-                        TagValues.TableItem(4, tableItemText4, tableItemUrl4, tableItemImg4, tableItemComment4, tableItemLearnMoreText4, tableItemLearnMoreUrl4),
-                        TagValues.TableItem(5, tableItemText5, tableItemUrl5, tableItemImg5, tableItemComment5, tableItemLearnMoreText5, tableItemLearnMoreUrl5),
-                        TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
-                        TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
-                        TagValues.TableBottom(),
                         new TagValue(CommonTags.Footer, _userManager.IsAdmin(u) ? "common" : "social"));
                 }
             }
