@@ -100,8 +100,8 @@ const ThirpartyComboBox = ({
   t,
 
   storageLocation,
-  onChangeStorageLocation,
   onChangeProvider,
+  onChangeThirdpartyAccount,
 
   connectItems,
   setConnectDialogVisible,
@@ -204,19 +204,11 @@ const ThirpartyComboBox = ({
   };
 
   useEffect(() => {
-    if (!saveThirdpartyResponse) return;
+    if (!saveThirdpartyResponse?.id) return;
 
     console.log(saveThirdpartyResponse);
-
-    if (saveThirdpartyResponse.id)
-      onChangeStorageLocation({
-        ...storageLocation,
-        thirdpartyAccount: saveThirdpartyResponse,
-      });
-    else
-      onChangeStorageLocation({
-        ...storageLocation,
-      });
+    onChangeThirdpartyAccount(saveThirdpartyResponse);
+    setSaveThirdpartyResponse(null);
   }, [saveThirdpartyResponse]);
 
   return (
