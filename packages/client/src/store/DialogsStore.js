@@ -28,6 +28,8 @@ class DialogsStore {
   convertPasswordDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
+  restoreAllPanelVisible = false;
+  eventDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -75,6 +77,10 @@ class DialogsStore {
     this.moveToPanelVisible = moveToPanelVisible;
   };
 
+  setRestoreAllPanelVisible = (restoreAllPanelVisible) => {
+    this.restoreAllPanelVisible = restoreAllPanelVisible;
+  };
+
   setCopyPanelVisible = (copyPanelVisible) => {
     !copyPanelVisible && this.deselectActiveFiles();
     this.copyPanelVisible = copyPanelVisible;
@@ -109,6 +115,10 @@ class DialogsStore {
   setDeleteDialogVisible = (deleteDialogVisible) => {
     !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;
+  };
+
+  setEventDialogVisible = (eventDialogVisible) => {
+    this.eventDialogVisible = eventDialogVisible;
   };
 
   setDownloadDialogVisible = (downloadDialogVisible) => {
@@ -258,7 +268,8 @@ class DialogsStore {
       this.convertDialogVisible ||
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
-      this.versionHistoryStore.isVisible
+      this.versionHistoryStore.isVisible ||
+      this.eventDialogVisible
     );
   }
 

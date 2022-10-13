@@ -90,7 +90,7 @@ const StyledHeader = styled.div`
     font-family: "Open Sans";
     color: ${(props) => props.theme.modalDialog.textColor};
     font-weight: 700;
-    font-size: 21px;
+    font-size: "21px";
   }
 `;
 

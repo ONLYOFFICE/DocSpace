@@ -53,6 +53,7 @@ class FilesTableHeader extends React.Component {
           enable: true,
           resizable: true,
           sortBy: "Tags",
+          withTagRef: true,
           onChange: this.onColumnChange,
           onClick: this.onRoomsFilter,
         },
@@ -351,6 +352,7 @@ class FilesTableHeader extends React.Component {
       filesColumnInfoPanelStorageName,
       roomsColumnInfoPanelStorageName,
       withPaging,
+      tagRef,
     } = this.props;
 
     // const { sortBy, sortOrder } = filter;
@@ -391,6 +393,7 @@ class FilesTableHeader extends React.Component {
         sortingVisible={sortingVisible}
         infoPanelVisible={infoPanelVisible}
         useReactWindow={!withPaging}
+        tagRef={tagRef}
       />
     );
   }
@@ -411,13 +414,8 @@ export default inject(
       roomsFilter,
       fetchRooms,
     } = filesStore;
-    const {
-      isPrivacyFolder,
-      isRecentFolder,
-      isPersonalRoom,
-    } = treeFoldersStore;
-
-    const withContent = canShare || (canShare && isPrivacyFolder && isDesktop);
+    const { isRecentFolder, isPersonalRoom } = treeFoldersStore;
+    const withContent = canShare;
     const sortingVisible = !isRecentFolder;
     const { personal, withPaging } = auth.settingsStore;
 

@@ -137,6 +137,7 @@
   "NotFoundDescription": "Change filter settings or add people to the section.",
   "PasswordMinLenght": "Minimal password length",
   "Path": "Path",
+  "Payments": "Plans & payments",
   "PeopleAdministratorsCan": "People module admins can create profiles and groups, import people, and invite users.",
   "PleaseNote": "Please note",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: your old portal address will become available to new users once you click the <2>{{save}}</2> button.",

@@ -71,6 +71,7 @@ public sealed class UserInfo : IDirectRecipient, ICloneable, IMapFrom<User>
     public string MobilePhone { get; set; }
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
     public string Sid { get; set; } // LDAP user identificator
+    public long LdapQouta { get; set; } // LDAP user quota attribute
     public string SsoNameId { get; set; } // SSO SAML user identificator
     public string SsoSessionId { get; set; } // SSO SAML user session identificator
     public DateTime CreateDate { get; set; }

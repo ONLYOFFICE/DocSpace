@@ -662,6 +662,7 @@ class TableHeader extends React.Component {
       sortingVisible,
       infoPanelVisible,
       showSettings,
+      tagRef,
       ...rest
     } = this.props;
 
@@ -693,6 +694,7 @@ class TableHeader extends React.Component {
                   defaultSize={column.defaultSize}
                   onMouseDown={this.onMouseDown}
                   sortingVisible={sortingVisible}
+                  tagRef={tagRef}
                 />
               );
             })}

@@ -203,7 +203,7 @@ public class WhitelabelController : BaseSettingsController
 
         result.Add(instance);
 
-        if (!instance.IsDefault() && !instance.IsLicensor)
+        if (!instance.IsDefault && !instance.IsLicensor)
         {
             result.Add(_settingsManager.GetDefault<CompanyWhiteLabelSettings>());
         }

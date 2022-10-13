@@ -650,3 +650,10 @@ export function getStorageRegions() {
   };
   return request(options);
 }
+
+export function getPortalQuota() {
+  return request({
+    method: "get",
+    url: `/settings/quota`,
+  });
+}

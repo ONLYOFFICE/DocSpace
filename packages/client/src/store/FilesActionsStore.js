@@ -24,6 +24,8 @@ import { checkProtocol } from "../helpers/files-helpers";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
+import FilesFilter from "@docspace/common/api/files/filter";
+import api from "@docspace/common/api";
 
 class FilesActionStore {
   authStore;
@@ -664,7 +666,7 @@ class FilesActionStore {
           toastr.success(translations.successRemoveFolder);
         } else {
           this.updateFilesAfterDelete([itemId]);
-          this.filesStore.removeFiles([itemId], null, () =>
+          this.filesStore.removeFiles(null, [itemId], () =>
             toastr.success(translations.successRemoveFolder)
           );
         }
@@ -689,17 +691,13 @@ class FilesActionStore {
   };
 
   finalizeVersionAction = (id) => {
-    const { setFile, setIsLoading } = this.filesStore;
+    const { setFile } = this.filesStore;
 
-    setIsLoading(true);
-
-    return finalizeVersion(id, 0, false)
-      .then((res) => {
-        if (res && res[0]) {
-          setFile(res[0]);
-        }
-      })
-      .finally(() => setIsLoading(false));
+    return finalizeVersion(id, 0, false).then((res) => {
+      if (res && res[0]) {
+        setFile(res[0]);
+      }
+    });
   };
 
   duplicateAction = (item, label) => {
@@ -965,9 +963,19 @@ class FilesActionStore {
     }
   };
 
-  openLocationAction = (locationId) => {
+  openLocationAction = async (locationId) => {
     this.filesStore.setBufferSelection(null);
-    return this.filesStore.fetchFiles(locationId, null);
+    const files = await this.filesStore.fetchFiles(locationId, null);
+    console.log(files);
+    return files;
+  };
+
+  checkAndOpenLocationAction = async (locationId) => {
+    const filterData = FilesFilter.getDefault();
+    api.files
+      .getFolder(locationId, filterData)
+      .then(() => this.openLocationAction(locationId))
+      .catch((err) => toastr.error(err));
   };
 
   setThirdpartyInfo = (providerKey) => {
@@ -1159,8 +1167,6 @@ class FilesActionStore {
     const { userAccess } = this.filesStore;
 
     switch (option) {
-      case "share":
-        return isAccessedSelected && !personal; //isFavoritesFolder ||isRecentFolder
       case "showInfo":
       case "copy":
       case "download":
@@ -1276,16 +1282,6 @@ class FilesActionStore {
     } = this.dialogsStore;
 
     switch (option) {
-      case "share":
-        if (!this.isAvailableOption("share")) return null;
-        else
-          return {
-            label: t("Share"),
-            onClick: () => setSharingPanelVisible(true),
-            iconUrl: "/static/images/share.react.svg",
-            title: t("Translations:ButtonShareAccess"),
-          };
-
       case "copy":
         if (!this.isAvailableOption("copy")) return null;
         else
@@ -1416,7 +1412,6 @@ class FilesActionStore {
   };
 
   getAnotherFolderOptions = (itemsCollection, t) => {
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const moveTo = this.getOption("moveTo", t);
@@ -1425,7 +1420,6 @@ class FilesActionStore {
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("moveTo", moveTo)
@@ -1437,14 +1431,13 @@ class FilesActionStore {
   };
 
   getRecentFolderOptions = (itemsCollection, t) => {
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
+
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("copy", copy)
@@ -1456,14 +1449,13 @@ class FilesActionStore {
   getShareFolderOptions = (itemsCollection, t) => {
     const { setDeleteDialogVisible, setUnsubscribe } = this.dialogsStore;
 
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
+
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("copy", copy)
@@ -1497,15 +1489,12 @@ class FilesActionStore {
 
   getFavoritesFolderOptions = (itemsCollection, t) => {
     const { selection } = this.filesStore;
-
-    const share = this.getOption("share", t);
     const download = this.getOption("download", t);
     const downloadAs = this.getOption("downloadAs", t);
     const copy = this.getOption("copy", t);
     const showInfo = this.getOption("showInfo", t);
 
     itemsCollection
-      .set("share", share)
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("copy", copy)

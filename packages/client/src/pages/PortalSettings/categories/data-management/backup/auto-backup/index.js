@@ -8,7 +8,6 @@ import {
   deleteBackupSchedule,
   getBackupSchedule,
   createBackupSchedule,
-  enableAutoBackup,
 } from "@docspace/common/api/portal";
 import toastr from "@docspace/components/toast/toastr";
 import {
@@ -29,6 +28,7 @@ import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import AutoBackupLoader from "@docspace/common/components/Loaders/AutoBackupLoader";
 import FloatingButton from "@docspace/common/components/FloatingButton";
+import Badge from "@docspace/components/badge";
 
 const {
   DocumentModuleType,
@@ -47,7 +47,6 @@ class AutomaticBackup extends React.PureComponent {
       isInitialLoading: false,
       isEmptyContentBeforeLoader: true,
       isError: false,
-      isEnableAuto: false,
     };
 
     this.periodsObject = [
@@ -92,13 +91,11 @@ class AutomaticBackup extends React.PureComponent {
         ///thirdPartyList,
         backupSchedule,
         backupStorage,
-        enableAuto,
         storageRegions,
       ] = await Promise.all([
         //getThirdPartyCommonFolderTree(),
         getBackupSchedule(),
         getBackupStorage(),
-        enableAutoBackup(),
         getStorageRegions(),
       ]);
 
@@ -115,7 +112,6 @@ class AutomaticBackup extends React.PureComponent {
       this.setState({
         isEmptyContentBeforeLoader: false,
         isInitialLoading: false,
-        isEnableAuto: enableAuto,
       });
     } catch (error) {
       toastr.error(error);
@@ -213,12 +209,14 @@ class AutomaticBackup extends React.PureComponent {
       toDefault,
       isCheckedThirdParty,
       isCheckedDocuments,
-      setResetProcess,
+      resetNewFolderPath,
+
+      defaultFolderId,
     } = this.props;
-
+    console.log("defaultFolderId", defaultFolderId);
     toDefault();
-
-    (isCheckedThirdParty || isCheckedDocuments) && setResetProcess(true);
+    (isCheckedThirdParty || isCheckedDocuments) &&
+      resetNewFolderPath(defaultFolderId);
     this.setState({
       ...(isError && { isError: false }),
     });
@@ -326,11 +324,11 @@ class AutomaticBackup extends React.PureComponent {
 
       isCheckedThirdParty,
       isCheckedDocuments,
-      setSavingProcess,
+      updateBaseFolderPath,
     } = this.props;
 
     try {
-      (isCheckedThirdParty || isCheckedDocuments) && setSavingProcess(true);
+      (isCheckedThirdParty || isCheckedDocuments) && updateBaseFolderPath();
 
       await createBackupSchedule(
         storageType,
@@ -354,7 +352,7 @@ class AutomaticBackup extends React.PureComponent {
     } catch (e) {
       toastr.error(e);
 
-      (isCheckedThirdParty || isCheckedDocuments) && setSavingProcess(true);
+      (isCheckedThirdParty || isCheckedDocuments) && updateBaseFolderPath();
 
       this.setState({
         isLoadingData: false,
@@ -396,13 +394,13 @@ class AutomaticBackup extends React.PureComponent {
       selectedEnableSchedule,
       organizationName,
       rootFoldersTitles,
+      isEnableAuto,
     } = this.props;
 
     const {
       isInitialLoading,
       isLoadingData,
       isError,
-      isEnableAuto,
       isEmptyContentBeforeLoader,
     } = this.state;
 
@@ -444,8 +442,15 @@ class AutomaticBackup extends React.PureComponent {
               " " +
               t("AutoBackupHelpNote", { organizationName })
           )}
+          {!isEnableAuto && (
+            <Badge
+              backgroundColor="#EDC409"
+              label="Paid"
+              className="auto-backup_badge"
+            />
+          )}
         </div>
-        <Text className="backup_modules-description">
+        <Text className="backup_modules-description settings_unavailable">
           {t("AutoBackupDescription")}
         </Text>
         <div className="backup_toggle-wrapper">
@@ -456,7 +461,7 @@ class AutomaticBackup extends React.PureComponent {
             isChecked={selectedEnableSchedule}
             isDisabled={isLoadingData || !isEnableAuto}
           />
-          <Text className="backup_toggle-btn-description">
+          <Text className="backup_toggle-btn-description settings_unavailable">
             {t("EnableAutomaticBackupDescription")}
           </Text>
         </div>
@@ -498,12 +503,7 @@ class AutomaticBackup extends React.PureComponent {
                 {t("ThirdPartyResourceDescription")}
               </Text>
               {isCheckedThirdParty && (
-                <ThirdPartyModule
-                  {...commonProps}
-                  isError={isError}
-                  defaultSelectedFolder={this.defaultSelectedFolder}
-                  onSetDefaultFolderPath={this.onSetDefaultFolderPath}
-                />
+                <ThirdPartyModule {...commonProps} isError={isError} />
               )}
             </StyledModules>
             <StyledModules>
@@ -545,8 +545,10 @@ class AutomaticBackup extends React.PureComponent {
     );
   }
 }
-export default inject(({ auth, backup, treeFoldersStore }) => {
-  const { language, settingsStore } = auth;
+export default inject(
+  ({ auth, backup, treeFoldersStore, selectFolderDialogStore }) => {
+  const { language, settingsStore, currentQuotaStore } = auth;
+  const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
   const { organizationName, theme } = settingsStore;
   const {
     downloadingProgress,
@@ -576,18 +578,27 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     setSelectedEnableSchedule,
     selectedEnableSchedule,
     updatePathSettings,
-    setSavingProcess,
-    setResetProcess,
+
     setStorageRegions,
+      defaultFolderId,
   } = backup;
 
+    const {
+      updateBaseFolderPath,
+      resetNewFolderPath,
+    } = selectFolderDialogStore;
+
   const isCheckedDocuments = selectedStorageType === `${DocumentModuleType}`;
-  const isCheckedThirdParty = selectedStorageType === `${ResourcesModuleType}`;
+    const isCheckedThirdParty =
+      selectedStorageType === `${ResourcesModuleType}`;
   const isCheckedThirdPartyStorage =
     selectedStorageType === `${StorageModuleType}`;
 
   const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
+
   return {
+      defaultFolderId,
+    isEnableAuto: isRestoreAndAutoBackupAvailable,
     fetchTreeFolders,
     rootFoldersTitles,
     downloadingProgress,
@@ -628,8 +639,9 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     selectedEnableSchedule,
 
     updatePathSettings,
-    setSavingProcess,
-    setResetProcess,
+      resetNewFolderPath,
     setStorageRegions,
+      updateBaseFolderPath,
   };
-})(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));
+  }
+)(withTranslation(["Settings", "Common"])(observer(AutomaticBackup)));

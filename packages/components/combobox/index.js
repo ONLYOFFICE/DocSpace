@@ -108,6 +108,9 @@ class ComboBox extends React.Component {
       isPersonal,
       offsetLeft,
       modernView,
+      withBackdrop,
+
+      advancedOptionsCount,
     } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -130,6 +133,14 @@ class ComboBox extends React.Component {
 
     const withAdvancedOptions = !!advancedOptions?.props.children;
 
+    let optionsCount = optionsLength;
+
+    if (withAdvancedOptions) {
+      optionsCount = advancedOptionsCount ? advancedOptionsCount : 6;
+    }
+
+    const disableMobileView = optionsCount < 5;
+
     return (
       <StyledComboBox
         ref={this.ref}
@@ -139,6 +150,8 @@ class ComboBox extends React.Component {
         data={selectedOption}
         onClick={this.comboBoxClick}
         toggleAction={toggleAction}
+        isOpen={isOpen}
+        disableMobileView={disableMobileView}
         {...this.props}
       >
         <ComboButton
@@ -178,6 +191,7 @@ class ComboBox extends React.Component {
             isExternalLink={isExternalLink}
             isPersonal={isPersonal}
             offsetLeft={offsetLeft}
+            withBackdrop={withBackdrop}
           >
             {advancedOptions
               ? advancedOptions
@@ -195,6 +209,7 @@ class ComboBox extends React.Component {
                       disabled={disabled}
                       onClick={this.optionClick.bind(this, option)}
                       fillIcon={fillIcon}
+                      isModern={noBorder}
                     />
                   );
                 })}
@@ -226,6 +241,8 @@ ComboBox.propTypes = {
   id: PropTypes.string,
   /** Accepts id for dropdown container */
   dropDownId: PropTypes.string,
+  /** Indicates that component will have backdrop */
+  withBackdrop: PropTypes.bool,
   /** Indicates that component is disabled */
   isDisabled: PropTypes.bool,
   /** Indicates that component is displayed without borders */
@@ -274,6 +291,9 @@ ComboBox.propTypes = {
 
   /**Tell when combo-box should displaying at modern view */
   modernView: PropTypes.bool,
+
+  /**Count of advanced options  */
+  advancedOptionsCount: PropTypes.number,
 };
 
 ComboBox.defaultProps = {

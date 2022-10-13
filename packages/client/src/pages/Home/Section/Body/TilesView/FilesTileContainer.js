@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
 import { inject, observer } from "mobx-react";
-// import elementResizeDetectorMaker from "element-resize-detector";
+import elementResizeDetectorMaker from "element-resize-detector";
 import TileContainer from "./sub-components/TileContainer";
 import FileTile from "./FileTile";
 
@@ -28,26 +28,29 @@ const getThumbSize = (width) => {
   return `${imgWidth}x300`;
 };
 
-// const elementResizeDetector = elementResizeDetectorMaker({
-//   strategy: "scroll",
-//   callOnAdd: false,
-// });
+const elementResizeDetector = elementResizeDetectorMaker({
+  strategy: "scroll",
+  callOnAdd: false,
+});
 
 const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
-  const firstRef = useRef(null);
+  const tileRef = useRef(null);
+  const timerRef = useRef(null);
   const [thumbSize, setThumbSize] = useState("");
   const [columnCount, setColumnCount] = useState(null);
 
-  // useEffect(() => {
-  //   return () => {
-  //     if (!firstRef?.current) return;
-  //     elementResizeDetector.uninstall(firstRef.current);
-  //   };
-  // }, []);
+  useEffect(() => {
+    return () => {
+      if (!tileRef?.current) return;
+      clearTimeout(timerRef.current);
+      elementResizeDetector.uninstall(tileRef.current);
+    };
+  }, []);
 
   const onResize = useCallback(
     (node) => {
       if (!node) return;
+
       const { width } = node.getBoundingClientRect();
 
       const size = getThumbSize(width);
@@ -69,13 +72,18 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
     [columnCount, thumbSize]
   );
 
-  const onSetFirstRef = React.useCallback((node) => {
+  const onSetTileRef = React.useCallback((node) => {
     if (node) {
-      onResize(node);
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        onResize(node);
 
-      firstRef.current = node;
+        if (tileRef?.current) elementResizeDetector.uninstall(tileRef.current);
 
-      // elementResizeDetector.listenTo(node, onResize);
+        tileRef.current = node;
+
+        elementResizeDetector.listenTo(node, onResize);
+      }, 100);
     }
   }, []);
 
@@ -89,15 +97,16 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
       headingRooms={t("Common:Rooms")}
     >
       {filesList.map((item, index) => {
-        return index == 0 ? (
+        return index % 11 == 0 ? (
           <FileTile
             id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
             key={`${item.id}_${index}`}
             item={item}
             sectionWidth={sectionWidth}
-            selectableRef={onSetFirstRef}
+            selectableRef={onSetTileRef}
             thumbSize={thumbSize}
             columnCount={columnCount}
+            withRef={true}
           />
         ) : (
           <FileTile

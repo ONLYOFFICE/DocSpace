@@ -392,6 +392,7 @@ const ArticleMainButtonContent = (props) => {
     : t("Common:Actions");
 
   const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
+  const isProfile = history.location.pathname === "/accounts/view/@self";
 
   return (
     <>
@@ -404,6 +405,7 @@ const ArticleMainButtonContent = (props) => {
             !isRecycleBinFolder &&
             !isArchiveFolder &&
             !isArticleLoading &&
+            !isProfile &&
             (canCreate || canInvite) && (
               <MobileView
                 t={t}
@@ -524,7 +526,7 @@ export default inject(
 )(
   withTranslation(["Article", "UploadPanel", "Common", "Files", "People"])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
-      <Loaders.ArticleButton />
+      <Loaders.ArticleButton height="28px" />
     )
   )
 );

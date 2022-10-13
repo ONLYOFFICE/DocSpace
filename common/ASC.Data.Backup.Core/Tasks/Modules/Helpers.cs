@@ -48,8 +48,8 @@ public class Helpers
             UserConstants.LostGroupInfo.ID,
             UserConstants.GroupAdmin.ID,
             UserConstants.GroupEveryone.ID,
-            UserConstants.GroupVisitor.ID,
             UserConstants.GroupUser.ID,
+            UserConstants.GroupManager.ID,
             new Guid("{EA942538-E68E-4907-9394-035336EE0BA8}"), //community product
             new Guid("{1e044602-43b5-4d79-82f3-fd6208a11960}"), //projects product
             new Guid("{6743007C-6F95-4d20-8C88-A8601CE5E76D}"), //crm product

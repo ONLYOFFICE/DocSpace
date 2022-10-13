@@ -23,6 +23,8 @@ import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 
 const StyledContainer = styled.div`
   width: 100%;
+  min-height: 33px;
+  height: 60px;
 
   .group-button-menu-container {
     margin: 0 0 0 -20px;
@@ -142,6 +144,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    margin-bottom: 1px;
   }
 `;
 
@@ -155,7 +158,8 @@ const SectionHeaderContent = (props) => {
     getHeaderMenu,
     cbMenuItems,
     getCheckboxItemLabel,
-    setInfoPanelVisible,
+
+    setInfoPanelIsVisible,
     isInfoPanelVisible,
   } = props;
 
@@ -205,6 +209,10 @@ const SectionHeaderContent = (props) => {
     toastr.warning("Work in progress (invite again)");
     console.log("invite again");
   }, []);
+
+  const onSetInfoPanelVisible = () => {
+    setInfoPanelIsVisible(true);
+  };
 
   const getContextOptions = () => {
     return [
@@ -261,7 +269,9 @@ const SectionHeaderContent = (props) => {
             isChecked={isHeaderChecked}
             isIndeterminate={isHeaderIndeterminate}
             headerMenu={headerMenu}
-            withoutInfoPanelToggler={true}
+            isInfoPanelVisible={isInfoPanelVisible}
+            toggleInfoPanel={onSetInfoPanelVisible}
+            withoutInfoPanelToggler={false}
           />
         </div>
       ) : (
@@ -297,7 +307,7 @@ const SectionHeaderContent = (props) => {
                       iconName="images/panel.react.svg"
                       size="16"
                       isFill={true}
-                      onClick={setInfoPanelVisible}
+                      onClick={onSetInfoPanelVisible}
                     />
                   </div>
                 )}
@@ -313,7 +323,7 @@ const SectionHeaderContent = (props) => {
 export default withRouter(
   inject(({ auth, peopleStore }) => {
     const {
-      setVisible: setInfoPanelVisible,
+      setIsVisible: setInfoPanelIsVisible,
       isVisible: isInfoPanelVisible,
     } = auth.infoPanelStore;
 
@@ -337,7 +347,7 @@ export default withRouter(
       getHeaderMenu,
       cbMenuItems,
       getCheckboxItemLabel,
-      setInfoPanelVisible,
+      setInfoPanelIsVisible,
       isInfoPanelVisible,
     };
   })(

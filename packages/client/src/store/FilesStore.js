@@ -88,6 +88,8 @@ class FilesStore {
   trashIsEmpty = false;
   filesIsLoading = false;
 
+  isEmptyPage = false;
+
   constructor(
     authStore,
     selectedFolderStore,
@@ -313,6 +315,10 @@ class FilesStore {
       (x) => !x.providerKey || x.id !== x.rootFolderId
     ); // removed root thirdparty folders
     this.startDrag = startDrag;
+  };
+
+  setIsEmptyPage = (isEmptyPage) => {
+    this.isEmptyPage = isEmptyPage;
   };
 
   get tooltipOptions() {
@@ -654,6 +660,9 @@ class FilesStore {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
+    if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
+      return this.fetchRooms();
+
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
       localStorage.getItem(`UserFilter=${this.authStore.userStore.user.id}`);
@@ -871,12 +880,6 @@ class FilesStore {
             );
           });
 
-          // console.log("fetchRooms", {
-          //   categoryType: this.categoryType,
-          //   rootFolderType: data.current.rootFolderType,
-          //   parentId: data.current.parentId,
-          // });
-
           this.setRoomsFilter(filterData);
 
           runInAction(() => {
@@ -985,7 +988,8 @@ class FilesStore {
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
       (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    const isFileOwner = item.createdBy.id === this.authStore.userStore.user.id;
+    const isFileOwner =
+      item.createdBy?.id === this.authStore.userStore.user?.id;
 
     const {
       isRecycleBinFolder,
@@ -1339,7 +1343,7 @@ class FilesStore {
       let roomOptions = [
         "edit-room",
         "invite-users-to-room",
-        "room-info",
+        "show-info",
         "pin-room",
         "unpin-room",
         "separator0",
@@ -1632,6 +1636,22 @@ class FilesStore {
     return api.rooms.removeLogoFromRoom(id);
   }
 
+  getRoomMembers(id) {
+    return api.rooms.getRoomMembers(id);
+  }
+
+  getHistory(module, id) {
+    return api.rooms.getHistory(module, id);
+  }
+
+  getRoomHistory(id) {
+    return api.rooms.getRoomHistory(id);
+  }
+
+  getFileHistory(id) {
+    return api.rooms.getFileHistory(id);
+  }
+
   setFile = (file) => {
     const fileIndex = this.files.findIndex((f) => f.id === file.id);
     if (fileIndex !== -1) this.files[fileIndex] = file;
@@ -1693,7 +1713,8 @@ class FilesStore {
 
   removeFiles = (fileIds, folderIds, showToast) => {
     const newFilter = this.filter.clone();
-    const deleteCount = fileIds.length + folderIds.length;
+    const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
+
     newFilter.startIndex =
       (newFilter.page + 1) * newFilter.pageCount - deleteCount;
     newFilter.pageCount = deleteCount;
@@ -1703,10 +1724,10 @@ class FilesStore {
       .then((res) => {
         const files = fileIds
           ? this.files.filter((x) => !fileIds.includes(x.id))
-          : [];
+          : this.files;
         const folders = folderIds
           ? this.folders.filter((x) => !folderIds.includes(x.id))
-          : [];
+          : this.folders;
 
         const newFiles = [...files, ...res.files];
         const newFolders = [...folders, ...res.folders];
@@ -2592,13 +2613,13 @@ class FilesStore {
     // const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
     const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
 
-    console.log("hasMoreFiles isRooms", isRooms);
-    console.log("hasMoreFiles filesList", this.filesList.length);
-    console.log("hasMoreFiles this.filterTotal", this.filterTotal);
-    console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
-    console.log("hasMoreFiles filterTotal", filterTotal);
-    console.log("hasMoreFiles", this.filesList.length < filterTotal);
-    console.log("----------------------------");
+    // console.log("hasMoreFiles isRooms", isRooms);
+    // console.log("hasMoreFiles filesList", this.filesList.length);
+    // console.log("hasMoreFiles this.filterTotal", this.filterTotal);
+    // console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
+    // console.log("hasMoreFiles filterTotal", filterTotal);
+    // console.log("hasMoreFiles", this.filesList.length < filterTotal);
+    // console.log("----------------------------");
 
     if (this.isLoading) return false;
     return this.filesList.length < filterTotal;

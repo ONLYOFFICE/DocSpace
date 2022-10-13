@@ -4,6 +4,7 @@ import Scrollbar from "@docspace/components/scrollbar";
 import ArrowRightIcon from "@docspace/client/public/images/arrow.right.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
+import { UnavailableStyles } from "../../../utils/commonSettingsStyles";
 
 const menuHeight = "48px";
 const sectionHeight = "50px";
@@ -32,6 +33,9 @@ const StyledScrollbar = styled(Scrollbar)`
 `;
 
 const StyledSettingsComponent = styled.div`
+  .dns-setting_helpbutton {
+    margin-right: 4px;
+  }
   .combo-button-label {
     max-width: 100%;
     font-weight: 400;
@@ -119,6 +123,7 @@ const StyledSettingsComponent = styled.div`
       }
     `}
   }
+  ${(props) => !props.isSettingPaid && UnavailableStyles}
 `;
 
 export { StyledSettingsComponent, StyledScrollbar, StyledArrowRightIcon };

@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
 import { withTranslation, Trans } from "react-i18next";
@@ -13,15 +14,19 @@ import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
+import PlusIcon from "@docspace/client/public/images/plus.react.svg";
+
+const StyledPlusIcon = styled(PlusIcon)`
+  path {
+    fill: #657077;
+  }
+`;
 
 const RootFolderContainer = (props) => {
   const {
     t,
     theme,
     isPrivacyFolder,
-    isRecycleBinFolder,
-    isRoomsFolder,
-    isArchiveFolder,
     isDesktop,
     isEncryptionSupport,
     organizationName,
@@ -40,13 +45,15 @@ const RootFolderContainer = (props) => {
     fetchRooms,
     setAlreadyFetchingRooms,
     categoryType,
+    isEmptyPage,
+    setIsEmptyPage,
   } = props;
-  const subheadingText = t("SubheadingEmptyText");
-  const myDescription = t("MyEmptyContainerDescription");
+  const personalDescription = t("PersonalEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
-  const trashHeader = t("EmptyScreenFolder");
+  const emptyScreenHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
+  const noFilesHeader = t("NoFilesHereYet");
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
@@ -62,21 +69,23 @@ const RootFolderContainer = (props) => {
     t("PrivateRoomDescriptionUnbreakable"),
   ];
 
+  const roomHeader = "Welcome to DocSpace";
+
   const [showLoader, setShowLoader] = React.useState(false);
-  const [isEmptyPage, setIsEmptyPage] = React.useState(false);
 
   React.useEffect(() => {
-    if (
-      rootFolderType !== FolderType.USER &&
-      rootFolderType !== FolderType.COMMON
-    ) {
+    if (rootFolderType !== FolderType.COMMON) {
       setIsEmptyPage(true);
     } else {
       setIsEmptyPage(false);
     }
+
+    return () => {
+      setIsEmptyPage(false);
+    };
   }, [isEmptyPage, setIsEmptyPage, rootFolderType]);
 
-  const onGoToMyDocuments = () => {
+  const onGoToPersonal = () => {
     const newFilter = filter.clone();
     setIsLoading(true);
     fetchFiles(myFolderId, newFilter).finally(() => setIsLoading(false));
@@ -109,8 +118,9 @@ const RootFolderContainer = (props) => {
     switch (rootFolderType) {
       case FolderType.USER:
         return {
-          descriptionText: myDescription,
-          imageSrc: "/static/images/empty_screen.png",
+          headerText: emptyScreenHeader,
+          descriptionText: personalDescription,
+          imageSrc: "images/empty_screen_personal.svg",
           buttons: commonButtons,
         };
       case FolderType.SHARE:
@@ -126,14 +136,17 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Favorites:
         return {
+          headerText: noFilesHeader,
           descriptionText: favoritesDescription,
-          imageStyle: { margin: "0px 0 0 auto" },
-          imageSrc: "images/empty_screen_favorites.png",
+          imageSrc: "images/empty_screen_favorites.svg",
+          buttons: goToPersonalButtons,
         };
       case FolderType.Recent:
         return {
+          headerText: noFilesHeader,
           descriptionText: recentDescription,
-          imageSrc: "images/empty_screen_recent.png",
+          imageSrc: "images/empty_screen_recent.svg",
+          buttons: goToPersonalButtons,
         };
       case FolderType.Privacy:
         return {
@@ -143,7 +156,7 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.TRASH:
         return {
-          headerText: trashHeader,
+          headerText: emptyScreenHeader,
           descriptionText: trashDescription,
           style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
           imageSrc: theme.isBase
@@ -153,7 +166,7 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Rooms:
         return {
-          headerText: "Welcome to DocSpace!",
+          headerText: roomHeader,
           descriptionText: roomsDescription,
           imageSrc: "images/empty_screen_corporate.png",
           buttons: roomsButtons,
@@ -207,13 +220,13 @@ const RootFolderContainer = (props) => {
   const commonButtons = (
     <span>
       <div className="empty-folder_container-links">
-        <img
-          className="empty-folder_container_plus-image"
-          src="images/plus.svg"
+        <StyledPlusIcon
+          className="empty-folder_container-image"
           data-format="docx"
           onClick={onCreate}
           alt="plus_icon"
         />
+
         <Box className="flex-wrapper_container">
           <Link data-format="docx" onClick={onCreate} {...linkStyles}>
             {t("Document")},
@@ -222,7 +235,7 @@ const RootFolderContainer = (props) => {
             {t("Spreadsheet")},
           </Link>
           <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
-            {t("Presentation")}
+            {t("Presentation")},
           </Link>
           <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
             {t("Translations:NewForm")}
@@ -231,9 +244,8 @@ const RootFolderContainer = (props) => {
       </div>
 
       <div className="empty-folder_container-links">
-        <img
-          className="empty-folder_container_plus-image"
-          src="images/plus.svg"
+        <StyledPlusIcon
+          className="empty-folder_container-image"
           onClick={onCreate}
           alt="plus_icon"
         />
@@ -247,14 +259,13 @@ const RootFolderContainer = (props) => {
   const trashButtons = (
     <div className="empty-folder_container-links">
       <img
-        className="empty-folder_container_up-image"
-        src="images/empty_screen_people.svg"
-        width="12px"
-        alt=""
-        onClick={onGoToMyDocuments}
+        className="empty-folder_container-image"
+        src="images/person.svg"
+        alt="person_icon"
+        onClick={onGoToPersonal}
       />
-      <Link onClick={onGoToMyDocuments} {...linkStyles}>
-        {t("GoToMyButton")}
+      <Link onClick={onGoToPersonal} {...linkStyles}>
+        {t("GoToPersonal")}
       </Link>
     </div>
   );
@@ -268,7 +279,7 @@ const RootFolderContainer = (props) => {
         alt="plus_icon"
       />
       <Link onClick={onCreateRoom} {...linkStyles}>
-        Create room
+        {t("CreateEditRoomDialog:CreateRoom")}
       </Link>
     </div>
   );
@@ -276,7 +287,7 @@ const RootFolderContainer = (props) => {
   const archiveButtons = (
     <div className="empty-folder_container-links">
       <img
-        className="empty-folder_container_folder-image"
+        className="empty-folder_container-image"
         src="images/empty-folder-image.svg"
         onClick={onGoToShared}
         alt="folder_icon"
@@ -287,11 +298,21 @@ const RootFolderContainer = (props) => {
     </div>
   );
 
+  const goToPersonalButtons = (
+    <div className="empty-folder_container-links">
+      <img
+        className="empty-folder_container-image"
+        src="images/person.svg"
+        alt="person_icon"
+        onClick={onGoToPersonal}
+      />
+      <Link onClick={onGoToPersonal} {...linkStyles}>
+        {t("GoToPersonal")}
+      </Link>
+    </div>
+  );
+
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
-  const subheadingTextProp =
-    isPrivacyFolder || isRecycleBinFolder || isRoomsFolder || isArchiveFolder
-      ? {}
-      : { subheadingText };
   const emptyFolderProps = getEmptyFolderProps();
 
   React.useEffect(() => {
@@ -318,7 +339,6 @@ const RootFolderContainer = (props) => {
         <EmptyContainer
           headerText={headerText}
           isEmptyPage={isEmptyPage}
-          {...subheadingTextProp}
           {...emptyFolderProps}
         />
       )}
@@ -345,22 +365,15 @@ export default inject(
       fetchRooms,
       categoryType,
       setAlreadyFetchingRooms,
+      isEmptyPage,
+      setIsEmptyPage,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
-    const {
-      isPrivacyFolder,
-      myFolderId,
-      isRecycleBinFolder,
-      isRoomsFolder,
-      isArchiveFolder,
-    } = treeFoldersStore;
+    const { isPrivacyFolder, myFolderId } = treeFoldersStore;
 
     return {
       theme,
       isPrivacyFolder,
-      isRecycleBinFolder,
-      isRoomsFolder,
-      isArchiveFolder,
       isDesktop: isDesktopClient,
       isEncryptionSupport,
       organizationName,
@@ -376,6 +389,12 @@ export default inject(
       fetchRooms,
       categoryType,
       setAlreadyFetchingRooms,
+      isEmptyPage,
+      setIsEmptyPage,
     };
   }
-)(withTranslation("Files")(observer(RootFolderContainer)));
+)(
+  withTranslation(["Files", "CreateEditRoomDialog"])(
+    observer(RootFolderContainer)
+  )
+);

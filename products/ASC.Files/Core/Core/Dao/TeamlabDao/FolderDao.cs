@@ -55,8 +55,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         TenantManager tenantManager,
         TenantUtil tenantUtil,
         SetupInfo setupInfo,
-        TenantExtra tenantExtra,
-        TenantStatisticsProvider tenantStatisticProvider,
+        MaxTotalSizeStatistic maxTotalSizeStatistic,
         CoreBaseSettings coreBaseSettings,
         CoreConfiguration coreConfiguration,
         SettingsManager settingsManager,
@@ -74,8 +73,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
               tenantManager,
               tenantUtil,
               setupInfo,
-              tenantExtra,
-              tenantStatisticProvider,
+              maxTotalSizeStatistic,
               coreBaseSettings,
               coreConfiguration,
               settingsManager,
@@ -944,7 +942,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             tmp = _coreConfiguration.PersonalMaxSpace(_settingsManager) - await _globalSpace.GetUserUsedSpaceAsync();
         }
 
-        return Math.Min(tmp, chunkedUpload ? _setupInfo.MaxChunkedUploadSize(_tenantExtra, _tenantStatisticProvider) : _setupInfo.MaxUploadSize(_tenantExtra, _tenantStatisticProvider));
+        return Math.Min(tmp, chunkedUpload ? _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic) : _setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
     }
 
     private async Task RecalculateFoldersCountAsync(int id)

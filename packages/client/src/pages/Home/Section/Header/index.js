@@ -22,6 +22,7 @@ import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const StyledContainer = styled.div`
   width: 100%;
+  min-height: 33px;
 
   .table-container_group-menu {
     margin: 0 0 0 -20px;
@@ -58,7 +59,8 @@ const StyledContainer = styled.div`
   }
 
   .header-container {
-    height: 100%;
+    min-height: 33px;
+    height: 60px;
   }
 `;
 
@@ -282,51 +284,84 @@ class SectionHeaderContent extends React.Component {
     this.props.setEmptyTrashDialogVisible(true);
   };
 
+  onRestoreAllAction = () => {
+    const { activeFiles, activeFolders } = this.props;
+    const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
+
+    if (isExistActiveItems) return;
+
+    this.props.setRestoreAllPanelVisible(true);
+  };
+
+  onShowInfo = () => {
+    const { setIsInfoPanelVisible } = this.props;
+    setIsInfoPanelVisible(true);
+  };
+
+  onToggleInfoPanel = () => {
+    const { isInfoPanelVisible, setIsInfoPanelVisible } = this.props;
+    setIsInfoPanelVisible(!isInfoPanelVisible);
+  };
+
   getContextOptionsFolder = () => {
-    const { t, toggleInfoPanel, personal } = this.props;
+    const { t, isRecycleBinFolder } = this.props;
 
     return [
       {
         key: "sharing-settings",
         label: t("SharingPanel:SharingSettingsTitle"),
         onClick: this.onOpenSharingPanel,
-        disabled: personal ? true : false,
+        disabled: true,
         icon: "/static/images/share.react.svg",
       },
       {
         key: "link-portal-users",
         label: t("LinkForPortalUsers"),
         onClick: this.createLinkForPortalUsers,
-        disabled: personal ? true : false,
+        disabled: true,
         icon: "/static/images/invitation.link.react.svg",
+      },
+      {
+        key: "empty-trash",
+        label: t("RecycleBinAction"),
+        onClick: this.onEmptyTrashAction,
+        disabled: !isRecycleBinFolder,
+        icon: "images/clear.trash.react.svg",
+      },
+      {
+        key: "restore-all",
+        label: t("RestoreAll"),
+        onClick: this.onRestoreAllAction,
+        disabled: !isRecycleBinFolder,
+        icon: "images/subtract.react.svg",
       },
       {
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
-        onClick: toggleInfoPanel,
-        disabled: false,
-        icon: "/static/images/info.react.svg",
+        onClick: this.onShowInfo,
+        disabled: isRecycleBinFolder,
+        icon: "/static/images/info.outline.react.svg",
       },
-      { key: "separator-2", isSeparator: true },
+      { key: "separator-2", isSeparator: true, disabled: isRecycleBinFolder },
       {
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
-        disabled: false,
+        disabled: isRecycleBinFolder,
         icon: "images/move.react.svg",
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
-        disabled: false,
+        disabled: isRecycleBinFolder,
         icon: "/static/images/copy.react.svg",
       },
       {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
-        disabled: false,
+        disabled: isRecycleBinFolder,
         icon: "images/download.react.svg",
       },
       {
@@ -340,7 +375,7 @@ class SectionHeaderContent extends React.Component {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
-        disabled: false,
+        disabled: isRecycleBinFolder,
         icon: "/static/images/catalog.trash.react.svg",
       },
     ];
@@ -459,8 +494,8 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderIndeterminate,
       showText,
-      toggleInfoPanel,
       isRoomsFolder,
+      isEmptyPage,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -478,7 +513,7 @@ class SectionHeaderContent extends React.Component {
                 isIndeterminate={isHeaderIndeterminate}
                 headerMenu={headerMenu}
                 isInfoPanelVisible={isInfoPanelVisible}
-                toggleInfoPanel={toggleInfoPanel}
+                toggleInfoPanel={this.onToggleInfoPanel}
               />
             ) : (
               <div className="header-container">
@@ -505,13 +540,14 @@ class SectionHeaderContent extends React.Component {
                     isEmptyFilesList={isEmptyFilesList}
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
-                    toggleInfoPanel={toggleInfoPanel}
+                    toggleInfoPanel={this.onToggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
                     titles={{
                       trash: t("EmptyRecycleBin"),
                     }}
                     withMenu={!isRoomsFolder}
                     onPlusClick={this.onCreateRoom}
+                    isEmptyPage={isEmptyPage}
                   />
                 )}
               </div>
@@ -555,6 +591,7 @@ export default inject(
       setAlreadyFetchingRooms,
 
       categoryType,
+      isEmptyPage,
     } = filesStore;
 
     const {
@@ -565,6 +602,7 @@ export default inject(
       setEmptyTrashDialogVisible,
       setSelectFileDialogVisible,
       setIsFolderActions,
+      setRestoreAllPanelVisible,
     } = dialogsStore;
 
     const {
@@ -579,7 +617,7 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
-    const { toggleIsVisible, isVisible } = auth.infoPanelStore;
+    const { setIsVisible, isVisible } = auth.infoPanelStore;
 
     const {
       title,
@@ -603,7 +641,7 @@ export default inject(
       pathParts: pathParts,
       navigationPath: navigationPath,
       canCreate,
-      toggleInfoPanel: toggleIsVisible,
+      setIsInfoPanelVisible: setIsVisible,
       isInfoPanelVisible: isVisible,
       isHeaderVisible,
       isHeaderIndeterminate,
@@ -650,6 +688,9 @@ export default inject(
       categoryType,
 
       enablePlugins,
+
+      setRestoreAllPanelVisible,
+      isEmptyPage,
     };
   }
 )(

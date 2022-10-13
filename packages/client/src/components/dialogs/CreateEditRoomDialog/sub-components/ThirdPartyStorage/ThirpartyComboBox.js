@@ -116,7 +116,9 @@ const ThirpartyComboBox = ({
 
   const thirdparties = connectItems.map((item) => ({
     ...item,
-    title: connectedCloudsTypeTitleTranslation(item.providerName, t),
+    title: item.category
+      ? item.category
+      : connectedCloudsTypeTitleTranslation(item.providerName, t),
   }));
 
   const [isOpen, setIsOpen] = useState(false);

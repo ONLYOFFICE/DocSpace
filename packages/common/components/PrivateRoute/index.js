@@ -10,6 +10,7 @@ import { inject, observer } from "mobx-react";
 import { isMe } from "../../utils";
 import combineUrl from "../../utils/combineUrl";
 import { AppServerConfig, TenantStatus } from "../../constants";
+import CurrentTariffStatus from "../../store/CurrentTariffStatusStore";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
   const {
@@ -27,12 +28,15 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     personal,
     location,
     tenantStatus,
+    isNotPaidPeriod,
   } = rest;
-  const isPortal = window.location.pathname === "/preparation-portal";
+
   const { params, path } = computedMatch;
   const { userId } = params;
 
   const renderComponent = (props) => {
+    const isPortalUrl = props.location.pathname === "/preparation-portal";
+
     if (isLoaded && !isAuthenticated) {
       if (personal) {
         window.location.replace("/");
@@ -55,6 +59,14 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       // );
     }
 
+    if (
+      isLoaded &&
+      !isNotPaidPeriod &&
+      props.location.pathname === "/portal-unavailable"
+    ) {
+      return window.location.replace("/");
+    }
+
     if (location.pathname === "/" && personal) {
       return (
         <Redirect
@@ -70,7 +82,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       isLoaded &&
       isAuthenticated &&
       tenantStatus === TenantStatus.PortalRestore &&
-      !isPortal
+      !isPortalUrl
     ) {
       return (
         <Redirect
@@ -78,6 +90,50 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
             pathname: combineUrl(
               AppServerConfig.proxyURL,
               "/preparation-portal"
+            ),
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
+    if (
+      isNotPaidPeriod &&
+      isLoaded &&
+      (user.isOwner || user.isAdmin) &&
+      props.location.pathname !== "/portal-settings/payments/portal-payments" &&
+      props.location.pathname !== "/portal-settings/backup/data-backup"
+    ) {
+      return (
+        <Redirect
+          to={{
+            pathname: combineUrl(
+              AppServerConfig.proxyURL,
+              "/portal-settings/payments/portal-payments"
+            ),
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
+    if (tenantStatus !== TenantStatus.PortalRestore && isPortalUrl) {
+      return window.location.replace("/");
+    }
+
+    if (
+      isNotPaidPeriod &&
+      isLoaded &&
+      !user.isOwner &&
+      !user.isAdmin &&
+      props.location.pathname !== "/portal-unavailable"
+    ) {
+      return (
+        <Redirect
+          to={{
+            pathname: combineUrl(
+              AppServerConfig.proxyURL,
+              "/portal-unavailable"
             ),
             state: { from: props.location },
           }}
@@ -146,7 +202,15 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 };
 
 export default inject(({ auth }) => {
-  const { userStore, isAuthenticated, isLoaded, isAdmin, settingsStore } = auth;
+  const {
+    userStore,
+    isAuthenticated,
+    isLoaded,
+    isAdmin,
+    settingsStore,
+    currentTariffStatusStore,
+  } = auth;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
 
   const {
@@ -157,6 +221,7 @@ export default inject(({ auth }) => {
   } = settingsStore;
 
   return {
+    isNotPaidPeriod,
     user,
     isAuthenticated,
     isAdmin,

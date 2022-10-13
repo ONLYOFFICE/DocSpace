@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { withTranslation } from "react-i18next";
 
 import { inject, observer } from "mobx-react";
-import { isDesktop } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import Whitelabel from "./Branding/whitelabel";
@@ -13,6 +13,8 @@ import AdditionalResources from "./Branding/additionalResources";
 import LoaderBrandingDescription from "./sub-components/loaderBrandingDescription";
 
 import BreakpointWarning from "../../../../components/BreakpointWarning/index";
+
+import { UnavailableStyles } from "../../utils/commonSettingsStyles";
 
 const StyledComponent = styled.div`
   max-width: 700px;
@@ -46,10 +48,11 @@ const StyledComponent = styled.div`
     border: none;
     border-top: 1px solid #eceef1;
   }
+
+  ${(props) => !props.isSettingPaid && UnavailableStyles}
 `;
 
-const Branding = ({ t, isLoadedCompanyInfoSettingsData }) => {
-  const [isPortalPaid, setIsPortalPaid] = useState(true);
+const Branding = ({ t, isLoadedCompanyInfoSettingsData, isSettingPaid }) => {
   const [viewDesktop, setViewDesktop] = useState(false);
 
   useEffect(() => {
@@ -71,26 +74,29 @@ const Branding = ({ t, isLoadedCompanyInfoSettingsData }) => {
     return <BreakpointWarning sectionName={t("Settings:Branding")} />;
 
   return (
-    <StyledComponent>
-      <Whitelabel isPortalPaid={isPortalPaid} />
+    <StyledComponent isSettingPaid={isSettingPaid}>
+      <Whitelabel isSettingPaid={isSettingPaid} />
       <hr />
       {isLoadedCompanyInfoSettingsData ? (
-        <div className="section-description">
+        <div className="section-description settings_unavailable">
           {t("Settings:BrandingSectionDescription")}
         </div>
       ) : (
         <LoaderBrandingDescription />
       )}
-      <CompanyInfoSettings isPortalPaid={isPortalPaid} />
-      <AdditionalResources isPortalPaid={isPortalPaid} />
+      <CompanyInfoSettings isSettingPaid={isSettingPaid} />
+      <AdditionalResources isSettingPaid={isSettingPaid} />
     </StyledComponent>
   );
 };
 
 export default inject(({ auth, setup, common }) => {
+  const { currentQuotaStore } = auth;
+  const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
   const { isLoadedCompanyInfoSettingsData } = common;
 
   return {
     isLoadedCompanyInfoSettingsData,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(withLoading(withTranslation(["Settings", "Common"])(observer(Branding))));

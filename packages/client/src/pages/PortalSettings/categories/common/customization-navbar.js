@@ -13,6 +13,8 @@ import { Base } from "@docspace/components/themes";
 import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavbar";
 import { StyledArrowRightIcon } from "./Customization/StyledSettings";
 import { withRouter } from "react-router";
+import Badge from "@docspace/components/badge";
+
 const StyledComponent = styled.div`
   padding-top: 13px;
 
@@ -27,6 +29,12 @@ const StyledComponent = styled.div`
       padding-bottom: 8px;
       svg {
         padding-bottom: 5px;
+      }
+      .category-item_paid {
+        display: flex;
+        svg {
+          margin-top: auto;
+        }
       }
     }
 
@@ -59,6 +67,7 @@ const CustomizationNavbar = ({
   tReady,
   setIsLoadedCustomizationNavbar,
   isLoadedPage,
+  isSettingPaid,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
   useEffect(() => {
@@ -126,18 +135,21 @@ const CustomizationNavbar = ({
 
       <div className="category-item-wrapper">
         <div className="category-item-heading">
-          <Link
-            truncate={true}
-            className="inherit-title-link header"
-            onClick={onClickLink}
-            href={combineUrl(
-              AppServerConfig.proxyURL,
-              "/portal-settings/common/customization/dns-settings"
-            )}
-          >
-            {t("DNSSettings")}
-          </Link>
-          <StyledArrowRightIcon size="small" color="#333333" />
+          <div className="category-item_paid">
+            <Link
+              truncate={true}
+              className="inherit-title-link header"
+              onClick={onClickLink}
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/portal-settings/common/customization/dns-settings"
+              )}
+            >
+              {t("DNSSettings")}
+            </Link>
+            {!isSettingPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
+            <StyledArrowRightIcon size="small" color="#333333" />
+          </div>
         </div>
         <Text className="category-item-description">
           {t("DNSSettingsDescription")}

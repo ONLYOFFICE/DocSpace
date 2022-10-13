@@ -1,7 +1,7 @@
 import Base from "@docspace/components/themes/base";
 import styled, { keyframes, css } from "styled-components";
 import { desktop, tablet } from "@docspace/components/utils/device";
-import { isDesktop } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 const StyledFloatingButtonWrapper = styled.div`
   @media ${desktop} {
@@ -10,7 +10,7 @@ const StyledFloatingButtonWrapper = styled.div`
     right: 0;
     bottom: 0;
 
-    ${isDesktop &&
+    ${!isMobile &&
     css`
       width: 100px;
       height: 70px;
