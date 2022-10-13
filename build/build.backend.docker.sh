@@ -44,7 +44,8 @@ if [ "${arch_name}" = "x86_64" ]; then
     docker compose -f db.yml up -d
 elif [ "${arch_name}" = "arm64" ]; then
     echo "CPU Type: arm64 -> run ddb.arm.yml"
-    docker compose -f db.arm.yml up -d
+    MYSQL_IMAGE=arm64v8/mysql:oracle \
+    docker compose -f db.yml up -d
 else
     echo "Error: Unknown CPU Type: ${arch_name}."
     exit 1
@@ -56,7 +57,7 @@ docker compose -f redis.yml -f rabbitmq.yml -f ds.yml up -d
 
 echo "Stop all backend services"
 DOCKERFILE=Dockerfile.dev \
-docker compose -f docspace.dev.yml down -v
+docker compose -f docspace.dev.yml down
 
 echo "Build all backend services"
 DOCKERFILE=Dockerfile.dev \
@@ -79,4 +80,5 @@ GIT_BRANCH=$branch \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
+APP_URL_PORTAL="http://$local_ip:8092" \
 docker compose -f docspace.dev.yml up -d
