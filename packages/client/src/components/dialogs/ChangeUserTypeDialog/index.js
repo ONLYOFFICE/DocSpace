@@ -46,6 +46,13 @@ class ChangeUserTypeDialogComponent extends React.Component {
     });
   };
 
+  onCloseAction = async () => {
+    const { onClose, getUsersList, filter } = this.props;
+    await getUsersList(filter);
+
+    onClose();
+  };
+
   getType = (type) => {
     const { t } = this.props;
 
@@ -88,7 +95,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
       <ModalDialogContainer
         isLoading={!tReady}
         visible={visible}
-        onClose={onClose}
+        onClose={this.onCloseAction}
         autoMaxHeight
       >
         <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>
@@ -111,7 +118,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
             label={t("Common:CancelButton")}
             size="normal"
             scale
-            onClick={onClose}
+            onClick={this.onCloseAction}
             isDisabled={isRequestRunning}
           />
         </ModalDialog.Footer>
@@ -137,6 +144,7 @@ export default withRouter(
     return {
       filter: peopleStore.filterStore.filter,
       updateUserType: peopleStore.usersStore.updateUserType,
+      getUsersList: peopleStore.usersStore.getUsersList,
     };
   })(observer(ChangeUserTypeDialog))
 );
