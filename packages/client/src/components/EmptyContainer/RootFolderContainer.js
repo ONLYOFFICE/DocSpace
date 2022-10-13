@@ -140,14 +140,14 @@ const RootFolderContainer = (props) => {
           headerText: noFilesHeader,
           descriptionText: favoritesDescription,
           imageSrc: "images/empty_screen_favorites.svg",
-          buttons: goToPersonalButtons,
+          buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Recent:
         return {
           headerText: noFilesHeader,
           descriptionText: recentDescription,
           imageSrc: "images/empty_screen_recent.svg",
-          buttons: goToPersonalButtons,
+          buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Privacy:
         return {
