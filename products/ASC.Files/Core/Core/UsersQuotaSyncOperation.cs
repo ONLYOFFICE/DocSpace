@@ -82,10 +82,10 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IDaoFactory _daoFactory;
-    private readonly FilesSpaceUsageStatManager _filesSpaceUsageStatManager;
-    private readonly WebItemManager _webItemManager;
     private readonly WebItemManagerSecurity _webItemManagerSecurity;
-     
+    private readonly SecurityContext _securityContext;
+    private readonly AuthManager _authentication;
+
     protected readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
 
 
@@ -105,16 +105,16 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
 
     public UsersQuotaSyncJob(IServiceScopeFactory serviceScopeFactory, 
         IDaoFactory daoFactory,
-        FilesSpaceUsageStatManager filesSpaceUsageStatManager, 
-        WebItemManager webItemManager,
-        WebItemManagerSecurity webItemManagerSecurity
+        WebItemManagerSecurity webItemManagerSecurity,
+        SecurityContext securityContext,
+        AuthManager authentication
         )
     {
         _serviceScopeFactory = serviceScopeFactory;
         _daoFactory = daoFactory;
-        _filesSpaceUsageStatManager = filesSpaceUsageStatManager;
-        _webItemManager = webItemManager;
         _webItemManagerSecurity = webItemManagerSecurity;
+        _securityContext = securityContext;
+        _authentication = authentication;
     }
     public void InitJob(Tenant tenant)
     {
@@ -131,16 +131,13 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
 
             _tenantManager.SetCurrentTenant(TenantId);
 
-            var fileDao = _daoFactory.GetFileDao<int>();
-
             var users = _userManager.GetUsers();
             var webItems = _webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
 
             foreach (var user in users)
             {
-                _tenantManager.SetCurrentTenant(TenantId);
-                var spaceUsage = _filesSpaceUsageStatManager.GetUserSpaceUsageAsync(user.Id);
-
+                var account = _authentication.GetAccountByID(TenantId, user.Id);
+                _securityContext.AuthenticateMe(account);
 
                 foreach (var item in webItems)
                 {
