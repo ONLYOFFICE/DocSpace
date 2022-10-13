@@ -12,6 +12,7 @@ const CreateRoomEvent = ({
   createTag,
   addTagsToRoom,
   deleteThirdParty,
+  fetchThirdPartyProviders,
   calculateRoomLogoParams,
   uploadRoomLogo,
   addLogoToRoom,
@@ -102,6 +103,7 @@ const CreateRoomEvent = ({
       isLoading={isLoading}
       setIsLoading={setIsLoading}
       deleteThirdParty={deleteThirdParty}
+      fetchThirdPartyProviders={fetchThirdPartyProviders}
     />
   );
 };
@@ -130,7 +132,10 @@ export default inject(
 
     const { connectDialogVisible } = dialogsStore;
 
-    const { deleteThirdParty } = settingsStore.thirdPartyStore;
+    const {
+      deleteThirdParty,
+      fetchThirdPartyProviders,
+    } = settingsStore.thirdPartyStore;
 
     return {
       createRoom,
@@ -139,6 +144,7 @@ export default inject(
       fetchTags,
       addTagsToRoom,
       deleteThirdParty,
+      fetchThirdPartyProviders,
       calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
