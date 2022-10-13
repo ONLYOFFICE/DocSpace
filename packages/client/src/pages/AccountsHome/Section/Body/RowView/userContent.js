@@ -72,7 +72,7 @@ const UserContent = ({
         isTextOverflow={true}
         noHover
       >
-        {statusType === "pending" ? email : displayName}
+        {statusType === "pending" ? email : displayName ? displayName : email}
       </Link>
 
       <Badges statusType={statusType} isPaid={!isVisitor} />
