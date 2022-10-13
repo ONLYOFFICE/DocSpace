@@ -189,12 +189,12 @@ const PeopleTableRow = (props) => {
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
     isVisitor && options.push(userOption);
 
     return options;
-  }, [t, isAdmin, isOwner, isVisitor]);
+  }, [t, isOwner, isVisitor]);
 
   const onTypeChange = React.useCallback(
     ({ action }) => {
@@ -293,11 +293,7 @@ const PeopleTableRow = (props) => {
         }
 
       case "user":
-        if (isOwner || isAdmin) {
-          return combobox;
-        } else {
-          return text;
-        }
+        return combobox;
 
       default:
         return text;

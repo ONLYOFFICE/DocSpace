@@ -77,7 +77,7 @@ const Accounts = ({
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
     isVisitor && options.push(userOption);
 
@@ -141,11 +141,7 @@ const Accounts = ({
         }
 
       case "user":
-        if (isOwner || isAdmin) {
-          return combobox;
-        } else {
-          return text;
-        }
+        return combobox;
 
       default:
         return text;
