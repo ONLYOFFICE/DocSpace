@@ -1030,25 +1030,6 @@ $GreenButton
 
 ^Чтобы изменить тип оповещения, пожалуйста, настройте "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-Благодарим вас за выбор ONLYOFFICE! Повторно активируйте ваш тарифный план Business сегодня и сэкономьте 20% с купоном Reactivate20 ! Используйте его при покупке, чтобы:
-
-# *Добавить до 1 000 пользователей* со 100 Гб на каждого и назначить неограниченное количество администраторов. 
-# *Кастомизировать стиль онлайн-офиса* в соответствии с вашим брендом. 
-# *Редактировать неограниченное количество документов*, электронных таблиц и презентаций одновременно. 
-# *Обеспечить безопасность:* включить двухфакторную аутентификацию, настроить автоматическое резервное копирование, отслеживать действия пользователей.
-# *Интегрировать онлайн-офис с вашей инфраструктурой:* использовать LDAP, SSO и собственное доменное имя для адреса портала.
-# *Подключить приложения для продуктивной работы:* Twilio, DocuSign и другие.
-
-$GreenButton
-
-Если у вас есть вопросы, обратитесь к нам по адресу sales@onlyoffice.com. 
-
-С уважением,
-Команда ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Истек срок действия подписки на ONLYOFFICE. Продлите ее, чтобы продолжить использование ONLYOFFICE.
     
@@ -1396,9 +1377,6 @@ $GreenButton
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Началось восстановление</value>
-  </data>
-  <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Повторно активируйте тарифный план Business и сэкономьте 20% от стоимости</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Уведомление о продлении подписки</value>

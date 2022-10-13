@@ -1027,26 +1027,6 @@ Equipo de Asistencia ONLYOFFICE™
 
 ^Para cambiar el tipo de notificación, por favor administre su "configuración de la suscripción":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-¡Gracias por elegir ONLYOFFICE! Reactive su plan Business hoy y ahorre un 20% con el cupón Reactivate20. Utilícelo durante la compra para poder:
-
-# *Añadir hasta 1.000 usuarios* con 100 Gb por cada uno y nombrar un número ilimitado de administradores. 
-# *Personalizar el estilo de su oficina en línea* para que coincida con su marca. 
-# *Editar un número ilimitado de documentos*, hojas y diapositivas simultáneamente. 
-# *Garantizar la seguridad:* habilitar 2FA, configurar copias de seguridad automáticas, hacer un seguimiento de las acciones de los usuarios.
-# *Integrarlo con su infraestructura:* utilizar LDAP, SSO y su nombre de dominio para la dirección del portal.
-# *Conectar aplicaciones para un trabajo productivo:* Twilio, DocuSign, etc.
-
-$GreenButton
-
-Si usted tiene preguntas, póngase en contacto con nosotros a través de sales@onlyoffice.com. 
-
-Cordialmente,
-Equipo de ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Su suscripción a ONLYOFFICE ha expirado. Renueve su suscripción a ONLYOFFICE para poder seguir utilizándolo.
     
@@ -1393,9 +1373,6 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restauración ha comenzado</value>
-  </data>
-  <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Reactive Business y ahorre un 20% del precio</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Notificación de renovación</value>

@@ -2079,23 +2079,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///Thanks for choosing ONLYOFFICE! Re-activate your Business plan today and save 20% OFF with Reactivate20 coupon! Just use it while purchasing to:
-        ///
-        ///# *Add up to 1,000 users* with 100 Gb per each and appoint unlimited number of admins. 
-        ///# *Customize your online office* style to match your branding. 
-        ///# *Edit unlimited number of docs*, sheets, and slides simultaneously. 
-        ///# *Ensure security*: enable 2FA, configure automatic backups, track user actions.
-        ///# *Integrate with your infrastructur [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_saas_admin_payment_warning_every_2months_v115 {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_payment_warning_every_2months_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You haven&apos;t entered your ONLYOFFICE DocSpace &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; for more than half a year. 
         ///
         ///Since you have decided not to use it anymore, your ONLYOFFICE DocSpace and all the data will be deleted in accordance with our &quot;Privacy Policy&quot;:&quot;https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;. 
@@ -3146,15 +3129,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_admin_modules_v1 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_modules_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Re-activate Business and save 20% of the price.
-        /// </summary>
-        public static string subject_saas_admin_payment_warning_every_2months_v115 {
-            get {
-                return ResourceManager.GetString("subject_saas_admin_payment_warning_every_2months_v115", resourceCulture);
             }
         }
         

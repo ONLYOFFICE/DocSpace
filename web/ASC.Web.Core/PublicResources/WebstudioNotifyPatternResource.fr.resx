@@ -1014,25 +1014,6 @@ Meilleures salutations,
 
 ^Pour changer le type de notification, veuillez gérer vos "paramètres d'abonnement":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Bonjour $UserName,
-Merci d'avoir choisi ONLYOFFICE ! Renouvelez votre forfait Business aujourd'hui et profitez d'un remise de  20% avec le code promo Reactivate20 ! Veuillez saisir ce code lors de l'achat pour :
-
-# *Ajouter jusqu'au 1,000 utilisateurs* avec 100 Go d'espace par utilisateur et un nombre illimité des administrateurs que vous définissez vous-même. 
-# *Personnaliser votre bureau en ligne* conformément au style de votre marque. 
-# *Modifier simultanément un nombre illimité des documents texte*, classeurs et diapositives. 
-# *Assurer la sécurité ultime :* activer l'A2F, configurer les sauvegardes automatiques, journaliser les actions des utilisateurs.
-# *Intégrer avec votre environnement existant :* activer LDAP, SSO et utiliser le nom de votre domaine en tant que l'adresse de votre portail. 
-# *Connecter les applications de productivité pour optimiser votre travail :* Twilio, DocuSign, etc.
-
-$GreenButton
-
-En cas des questions, contactez-nous à sales@onlyoffice.com. 
-
-Bien à vous,
-Equipe ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Votre abonnement à ONLYOFFICE est expiré. Renouvelez votre abonnement à ONLYOFFICE pour continuer à l'utiliser.
     
@@ -1380,9 +1361,6 @@ Le lien est valide pendant 7 jours.</value>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restauration démarrée
 </value>
-  </data>
-  <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Ré-activez le forfait Business et profitez de la remise de 20%</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Avis de renouvellement</value>

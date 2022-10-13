@@ -98,8 +98,6 @@ public class StudioNotifySource : NotifySource
                 Actions.SaasAdminTrialWarningV115,
                 Actions.SaasAdminTrialWarningAfter1V115,
 
-                Actions.SaasAdminPaymentWarningEvery2MonthsV115,
-
                 Actions.SaasAdminModulesV1,
 
                 Actions.PersonalActivate,

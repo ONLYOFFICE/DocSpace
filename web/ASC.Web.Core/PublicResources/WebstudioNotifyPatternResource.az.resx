@@ -1030,25 +1030,6 @@ Hörmətlə,
 ONLYOFFICE™ Dəstək Qrupu
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Salam, $UserName!
-ONLYOFFICE-i seçdiyiniz üçün təşəkkür edirik! Biznes planınızı bu gün yenidən aktivləşdirin və Reactivate20 kuponu ilə 20% ENDİRİM qazanın! Sadəcə satın alarkən ondan istifadə edin:
-
-# *Hər biri üçün 100 Gb olan 1000-ə qədər istifadəçi əlavə edin və limitsiz sayda admin təyin edin.
-# *Onlayn ofisinizi* stilinizi brendinqinizə uyğunlaşdırın.
-# *Limitsiz sayda sənəd*, vərəq və slaydları eyni vaxtda redaktə edin.
-# *Təhlükəsizliyi təmin edin:* 2FA-nı aktivləşdirin, avtomatik ehtiyat nüsxələrini konfiqurasiya edin, istifadəçi hərəkətlərini izləyin.
-# *İnfrastrukturunuzla inteqrasiya edin:* Portal ünvanı üçün LDAP, SSO və domen adınızı istifadə edin.
-# *Məhsuldar iş üçün proqramları birləşdirin:* Twilio, DocuSign və s.
-
-$GreenButton
-
-Suallarınız varsa, sales@onlyoffice.com ünvanında bizimlə əlaqə saxlayın.
-
-Hörmətlə,
-ONLYOFFICE Komandası
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>ONLYOFFICE abunəliyiniz bitdi. İstifadəyə davam etmək üçün ONLYOFFICE abunəliyinizi yeniləyin.
     
@@ -1400,9 +1381,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Bərpa prosesi başladıldı</value>
-  </data>
-  <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Biznesi yenidən aktivləşdirin və qiymətin 20%-nə qənaət edin</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Yeniləmə bildirişi</value>

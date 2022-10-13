@@ -1030,26 +1030,6 @@ ONLYOFFICE™ Support Team
 
 ^Um den Benachrichtigungstyp zu ändern, verwalten Sie Ihre "Abonnement-Einstellungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-Vielen Dank, dass Sie sich für ONLYOFFICE entschieden haben! Aktivieren Sie Ihren Business-Tarifplan heute und sparen Sie 20% mit dem Gutschein Reactivate20. Verwenden Sie diesen einfach beim Einkauf für folgende Möglichkeiten:
-
-# *Hinzufügen von bis zu 1.000 Benutzer* mit 100 GB pro User und Ernennung beliebiger Anzahl von Administratoren.
-# *Anpassung von Ihrem Online-Office*, so dass es den Stil Ihrer Marke entspricht.
-# *Bearbeitung von beliebiger Anzahl der Dokumente*, Tabellenkalkulationen und Präsentationen gleichzeitig.
-# *Erweiterte Sicherheit:* aktivieren Sie 2FA und automatische Backups, verfolgen Sie Benutzeraktivität.
-# *Integration in Ihre Infrastruktur:* Verwenden Sie LDAP, SSO und Ihre Domainnamen als Portaladresse.
-# *Verbindung von Apps für effektive Arbeit:* Twilio, DocuSign usw.
-
-$GreenButton
-
-Bei allen Fragen wenden Sie sich an uns unter sales@onlyoffice.com. 
-
-Beste Grüße,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Ihr Abonnement ist abgelaufen. Verlängern Sie dieses, um ONLYOFFICE weiter nutzen zu können.
     
@@ -1396,9 +1376,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Wiederherstellung startet</value>
-  </data>
-  <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Aktivieren Sie den Business-Tarifplan erneut mit 20% Rabatt</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Benachrichtigung über Verlängerung des Abos</value>

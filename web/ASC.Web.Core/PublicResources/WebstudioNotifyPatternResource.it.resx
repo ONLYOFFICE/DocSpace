@@ -1034,9 +1034,6 @@ il team di ONLYOFFICE</value>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Ripristino avviato</value>
   </data>
-  <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>‎Riattiva business e risparmia il 20% del prezzo‎</value>
-  </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>‎Notifica di rinnovo‎</value>
   </data>

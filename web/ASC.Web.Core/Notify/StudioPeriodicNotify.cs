@@ -196,18 +196,6 @@ public class StudioPeriodicNotify
 
                 if (quota.Free)
                 {
-                    #region Free tariff every 2 months during 1 year
-
-                    if (createdDate.AddMonths(2) == nowDate || createdDate.AddMonths(4) == nowDate || createdDate.AddMonths(6) == nowDate || createdDate.AddMonths(8) == nowDate || createdDate.AddMonths(10) == nowDate || createdDate.AddMonths(12) == nowDate)
-                    {
-                        action = Actions.SaasAdminPaymentWarningEvery2MonthsV115;
-                        toadmins = true;
-
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx");
-                    }
-
-                    #endregion
                 }
                 else if (quota.Trial)
                 {

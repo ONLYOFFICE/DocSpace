@@ -1099,26 +1099,6 @@ ONLYOFFICE™ Support Team
 
 ^To change the notification type, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Thanks for choosing ONLYOFFICE! Re-activate your Business plan today and save 20% OFF with Reactivate20 coupon! Just use it while purchasing to:
-
-# *Add up to 1,000 users* with 100 Gb per each and appoint unlimited number of admins. 
-# *Customize your online office* style to match your branding. 
-# *Edit unlimited number of docs*, sheets, and slides simultaneously. 
-# *Ensure security*: enable 2FA, configure automatic backups, track user actions.
-# *Integrate with your infrastructure*: use LDAP, SSO, and your domain name for portal address.
-# *Connect apps for productive work*: Twilio, DocuSign, etc.
-
-$GreenButton
-
-If you have questions, contact us at sales@onlyoffice.com. 
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Your ONLYOFFICE subscription has expired. Renew your ONLYOFFICE subscription to continue using it.
     
@@ -1487,9 +1467,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restore started</value>
-  </data>
-  <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
-    <value>Re-activate Business and save 20% of the price</value>
   </data>
   <data name="subject_saas_admin_trial_warning_after1_v115" xml:space="preserve">
     <value>Renewal notification</value>
