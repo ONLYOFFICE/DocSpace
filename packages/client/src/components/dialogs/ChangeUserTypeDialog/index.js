@@ -51,10 +51,10 @@ class ChangeUserTypeDialogComponent extends React.Component {
 
     switch (type) {
       case "admin":
-        return t("People:DocSpaceAdmin");
+        return t("Common:DocSpaceAdmin");
 
       case "manager":
-        return t("People:RoomAdmin");
+        return t("Common:RoomAdmin");
 
       case "user":
       default:

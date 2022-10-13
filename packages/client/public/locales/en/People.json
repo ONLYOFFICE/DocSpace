@@ -2,7 +2,6 @@
   "Administrator": "Administrator",
   "ChangeToGuest": "Change to {{guestCaption}}",
   "ChangeToUser": "Change to {{userCaption}}",
-  "DocSpaceAdmin": "DocSpace admin",
   "EmptyGroupDescription": "You can add new team members manually or invite them via link.",
   "EmptyGroupTitle": "No teammates here yet",
   "LblInviteAgain": "Invite again",
@@ -18,7 +17,6 @@
   "NotFoundUsers": "No users found",
   "NotFoundUsersDescription": "No people matching you filter can be displayed. Please select other filter options or clear filter to view all the people in this section",
   "ReassignmentData": "Data reassignment",
-  "RoomAdmin": "Room admin",
   "SuccessfullyRemovedGroup": "Group has been removed successfully",
   "UserStatus": "Status"
 }

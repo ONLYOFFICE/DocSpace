@@ -163,8 +163,8 @@ class PeopleStore {
     const adminOption = {
       id: "group-menu_administrator",
       className: "group-menu_drop-down",
-      label: t("DocSpaceAdmin"),
-      title: t("DocSpaceAdmin"),
+      label: t("Common:DocSpaceAdmin"),
+      title: t("Common:DocSpaceAdmin"),
       onClick: (e) => this.onChangeType(e, t),
       "data-action": "admin",
       key: "administrator",
@@ -172,8 +172,8 @@ class PeopleStore {
     const managerOption = {
       id: "group-menu_manager",
       className: "group-menu_drop-down",
-      label: t("RoomAdmin"),
-      title: t("RoomAdmin"),
+      label: t("Common:RoomAdmin"),
+      title: t("Common:RoomAdmin"),
       onClick: (e) => this.onChangeType(e, t),
       "data-action": "manager",
       key: "manager",
