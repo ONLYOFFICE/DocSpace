@@ -75,7 +75,7 @@ const FilesArticle = React.memo(({ history, withMainButton }) => {
   );
 });
 
-const FilesSection = React.memo(({}) => {
+const FilesSection = React.memo(() => {
   return (
     <Switch>
       {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
