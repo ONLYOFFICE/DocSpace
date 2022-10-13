@@ -1048,25 +1048,6 @@ Bien à vous,
 Equipe ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_modules_v115" xml:space="preserve">
-    <value>Bonjour, $UserName !
-
-ONLYOFFICE vous aidera à accomplir toutes vos tâches au quotidien. Voici un aperçu des fonctionnalités disponibles :
-
-# *Documents.* Gardez et gérez tous vos documents texte, classeurs et présentations. Modifiez-les et collaborez en temps réel. 
-# *Projets.* Organisez vos activités, créez les tâches et assignez-les à vos collègues, définissez les délais. 
-# *CRM.* Maintenez la base cliens à jour, suivez les ventes, générez les factures. 
-# *Agenda.* Créez des événements, partagez les calendriers et programmez les rappels. 
-# *Mail.* Rassemblez tous vos courriels en un seul endroit. Ajoutez votre propre domaine pour créer les boîtes de messagerie profesionnelles.
-# *Communauté.* Créez le réseux social d'entreprise et maintenez la base des connaissances professionnelles. 
-# *Talk.* Echangez les messages instantanés avec les membres de votre équipe. 
-
-$GreenButton
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Bonjour $UserName,
 Merci d'avoir choisi ONLYOFFICE ! Renouvelez votre forfait Business aujourd'hui et profitez d'un remise de  20% avec le code promo Reactivate20 ! Veuillez saisir ce code lors de l'achat pour :
@@ -1436,9 +1417,6 @@ Le lien est valide pendant 7 jours.</value>
   </data>
   <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Astuces pour le travail efficace</value>
-  </data>
-  <data name="subject_saas_admin_modules_v115" xml:space="preserve">
-    <value>Aperçu des modules ONLYOFFICE</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Ré-activez le forfait Business et profitez de la remise de 20%</value>

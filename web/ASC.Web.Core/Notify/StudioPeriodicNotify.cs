@@ -217,7 +217,7 @@ public class StudioPeriodicNotify
 
                     if (createdDate.AddDays(1) == nowDate)
                     {
-                        action = Actions.SaasAdminModulesV115;
+                        action = Actions.SaasAdminModulesV1;
                         paymentMessage = false;
                         toadmins = true;
 

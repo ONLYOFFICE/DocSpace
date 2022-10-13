@@ -167,4 +167,6 @@ public static class Actions
     public static readonly INotifyAction OpensourceUserActivationV1 = new NotifyAction("opensource_user_activation_v1");
 
     public static readonly INotifyAction PersonalAfterRegistration14V1 = new NotifyAction("personal_after_registration14_v1");
+
+    public static readonly INotifyAction SaasAdminModulesV1 = new NotifyAction("saas_admin_modules_v1");
 }

@@ -1059,25 +1059,6 @@ $GreenButton
 Команда ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_modules_v115" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-ONLYOFFICE поможет вам со всеми повседневными задачами. Вот что вы можете сделать:
-
-# *Документы*.* Храните документы, электронные таблицы и презентации и управляйте ими. Редактируйте их совместно с командой. Создавайте и совместно редактируйте формы профессионального уровня в режиме реального времени, предоставляйте другим пользователям возможность заполнения, сохраняйте формы как PDF-файлы.
-# *Проекты.* Планируйте действия, создавайте и назначайте задачи, устанавливайте сроки. 
-# *CRM.* Ведите клиентскую базу, отслеживайте продажи, выставляйте счета. 
-# *Календарь*.* Организуйте встречи с помощью общих календарей и настраивайте напоминания. 
-# *Почта*.* Соберите корреспонденцию из разных аккаунтов в одном месте. Добавьте свой домен для создания корпоративных почтовых ящиков. 
-# *Сообщество.* Создайте собственную социальную сеть и ведите корпоративную wiki. 
-# *Чат.* Обменивайтесь мгновенными сообщениями с командой. 
-
-$GreenButton
-
-С уважением,
-Команда ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Здравствуйте, $UserName!
 Благодарим вас за выбор ONLYOFFICE! Повторно активируйте ваш тарифный план Business сегодня и сэкономьте 20% с купоном Reactivate20 ! Используйте его при покупке, чтобы:
@@ -1447,9 +1428,6 @@ $GreenButton
   </data>
   <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Полезные советы для комфортной работы</value>
-  </data>
-  <data name="subject_saas_admin_modules_v115" xml:space="preserve">
-    <value>Обзор модулей ONLYOFFICE</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Повторно активируйте тарифный план Business и сэкономьте 20% от стоимости</value>

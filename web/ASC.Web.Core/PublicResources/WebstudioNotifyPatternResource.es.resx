@@ -1057,25 +1057,6 @@ Cordialmente,
 Equipo de ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_modules_v115" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-ONLYOFFICE le ayudará con todas sus tareas diarias. Esto es lo que usted puede hacer con sus módulos:
-
-# *Documentos.* Almacene y gestione documentos, hojas y diapositivas. Edítelos y colabore con su equipo. Cree y coedite formularios de aspecto profesional en línea, deje que otros usuarios los rellenen y guarde los formularios como archivos PDF.  
-# *Proyectos.* Planifique actividades, cree y asigne tareas, establezca plazos. 
-# *CRM.* Mantenga una base de datos de clientes, haga un seguimiento de las ventas, cree facturas. 
-# *Calendario.* Organice reuniones utilizando calendarios compartibles y establezca recordatorios. 
-# *Correo.* Recopile el correo de diferentes cuentas en un solo lugar.  Añada su propio dominio para crear buzones corporativos. 
-# *Comunidad.* Cree su propia red social y mantenga una wiki corporativa. 
-# *Chat.* Intercambie mensajes instantáneos con su equipo. 
-
-$GreenButton
-
-Cordialmente,
-Equipo de ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>¡Hola, $UserName!
 
@@ -1445,9 +1426,6 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Consejos para trabajar cómodamente</value>
-  </data>
-  <data name="subject_saas_admin_modules_v115" xml:space="preserve">
-    <value>Información general sobre los módulos de ONLYOFFICE</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Reactive Business y ahorre un 20% del precio</value>

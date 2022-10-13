@@ -1064,25 +1064,6 @@ Hörmətlə,
 ONLYOFFICE Komandası
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_modules_v115" xml:space="preserve">
-    <value>Salam, $UserName!
-
-ONLYOFFICE bütün gündəlik işlərinizdə sizə kömək edəcək. Onun modulları ilə nə edə bilərsiniz:
-
-# *Sənədlər.* Sənədləri, vərəqləri və slaydları saxlayın və idarə edin. Onları redaktə edin və komandanızla əməkdaşlıq edin.
-# *Layihələr.* Fəaliyyətləri planlaşdırın, tapşırıqlar yaradın və təyin edin, son tarixləri təyin edin.
-# *CRM.* Müştərilərin məlumat bazasını saxlayın, satışları izləyin, faktura yaradın.
-# *Təqvim.* Paylaşıla bilən təqvimlərlə görüşlər təşkil edin və xatırlatmalar təyin edin.
-# *Mail.* Müxtəlif hesablardan məktubları bir yerdə toplayın. Korporativ poçt qutuları yaratmaq üçün öz domeninizi əlavə edin.
-# *İcma.* Öz sosial şəbəkənizi yaradın və korporativ vikini qoruyun.
-# *Danışmaq.* Komandanızla ani mesajlar mübadiləsi edin.
-
-$GreenButton
-
-Hörmətlə,
-ONLYOFFICE Komandası
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Salam, $UserName!
 ONLYOFFICE-i seçdiyiniz üçün təşəkkür edirik! Biznes planınızı bu gün yenidən aktivləşdirin və Reactivate20 kuponu ilə 20% ENDİRİM qazanın! Sadəcə satın alarkən ondan istifadə edin:
@@ -1456,9 +1437,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Rahat işləmək üçün məsləhətlər</value>
-  </data>
-  <data name="subject_saas_admin_modules_v115" xml:space="preserve">
-    <value>ONLYOFFICE modullarına ümumi baxış</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Biznesi yenidən aktivləşdirin və qiymətin 20%-nə qənaət edin</value>

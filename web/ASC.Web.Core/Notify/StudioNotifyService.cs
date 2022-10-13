@@ -377,7 +377,7 @@ public class StudioNotifyService
         new[] { EMailSenderName },
         new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
         new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
-            TagValues.GreenButton(greenButtonText, $"{_commonLinkUtility.GetFullAbsolutePath("~")}/products/files/"),
+            TagValues.GreenButton(greenButtonText, $"{_commonLinkUtility.GetFullAbsolutePath("~")}/rooms/personal/"),
         new TagValue(CommonTags.Footer, footer),
             new TagValue(CommonTags.MasterTemplate, _coreBaseSettings.Personal ? "HtmlMasterPersonal" : "HtmlMaster"));
     }

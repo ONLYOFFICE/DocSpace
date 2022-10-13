@@ -1064,25 +1064,6 @@ Beste Grüße,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_modules_v115" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-ONLYOFFICE hilft bei allen täglichen Aufgaben in folgenden Modulen:
-
-# *Dokumente.* Speichern und verwalten Sie Dokumente, Tabellenkalkulationen und Präsentationen. Bearbeiten Sie diese gemeinsam mit dem Team.
-# *Projekte.* Planen Sie Aktivitäten, erstellen Sie Aufgaben, ernennen Sie verantwortliche Personen und bestimmen Sie Fälligkeitsdaten.
-# *CRM.* Verwalten Sie Ihre Kundendatenbank, verfolgen Sie Verkäufe, erstellen Sie Rechnungen.
-# *Kalender.* Organisieren Sie Ereignisse mit Erinnerungen und exportieren Sie Kalender.
-# *E-Mail.* Setzen Sie Ihre E-Mail-Konten zusammen. Fügen Ihre Domain hinzu, um geschäftliche Postfächer zu erstellen.
-# *Community.* Erstellen Sie das eigene soziale Netzwerk und geschäftliche Wiki-Seiten.
-# *Chat.* Senden Sie Nachrichten an Teamkolleg/innen. 
-
-$GreenButton
-
-Beste Grüße,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Hallo, $UserName!
 
@@ -1452,9 +1433,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Tipps für effektivere Arbeit</value>
-  </data>
-  <data name="subject_saas_admin_modules_v115" xml:space="preserve">
-    <value>Überblick über ONLYOFFICE-Module</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Aktivieren Sie den Business-Tarifplan erneut mit 20% Rabatt</value>

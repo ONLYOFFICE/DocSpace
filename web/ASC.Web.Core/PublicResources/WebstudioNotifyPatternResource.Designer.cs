@@ -2069,16 +2069,29 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///ONLYOFFICE will help you with all your daily tasks. Here’s what you can do:
+        ///Adjust security settings of your ONLYOFFICE DocSpace to make it more secure:
         ///
-        ///# *Documents*. Store and manage docs, sheets, and slides. Edit them and collaborate with your team. Create and co-edit professional-looking forms online, let other users fill them in, save forms as PDF files. 
-        ///# *Projects*. Plan activities, create and assign tasks, set deadlines. 
-        ///# *CRM*. Maintain customers database, track sales, create invoices. 
-        ///# *Calendar*. Arrange meetings with shareable calendars and se [rest of string was truncated]&quot;;.
+        ///* Set password strength.  
+        ///
+        ///* Enable two-factor authentication and Single Sign-On.
+        ///
+        ///* Determine trusted mail domains and session lifetime.
+        ///
+        ///* Restrict access from specific IP addresses. 
+        ///
+        ///* Allow or restrict admin messages.  
+        ///
+        ///* Manage administrator access rights.
+        ///
+        ///* Do data backups.   
+        ///
+        ///$GreenButton
+        ///
+        ///Visit our &quot;Help Center&quot;:&quot;https://helpcenter.onlyoffice.com/&quot; to learn more about configuring [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_admin_modules_v115 {
+        public static string pattern_saas_admin_modules_v1 {
             get {
-                return ResourceManager.GetString("pattern_saas_admin_modules_v115", resourceCulture);
+                return ResourceManager.GetString("pattern_saas_admin_modules_v1", resourceCulture);
             }
         }
         
@@ -3154,11 +3167,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ONLYOFFICE modules overview.
+        ///   Looks up a localized string similar to Configure your ONLYOFFICE DocSpace.
         /// </summary>
-        public static string subject_saas_admin_modules_v115 {
+        public static string subject_saas_admin_modules_v1 {
             get {
-                return ResourceManager.GetString("subject_saas_admin_modules_v115", resourceCulture);
+                return ResourceManager.GetString("subject_saas_admin_modules_v1", resourceCulture);
             }
         }
         

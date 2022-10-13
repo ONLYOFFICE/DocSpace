@@ -1062,25 +1062,6 @@ Atenciosamente,
 Equipe ONLYOFFICE
 "www.onlyoffice.com": "http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_modules_v115" xml:space="preserve">
-    <value>Olá, $UserName!
-
-ONLYOFFICE o ajudará em todas as suas tarefas diárias. Aqui está o que você pode fazer com seus módulos:
-
-*Documentos.* Armazenar e gerenciar documentos, folhas e slides. Edite-os e colabore com sua equipe. 
-*Projetos.* Planeje atividades, crie e atribua tarefas, estabeleça prazos. 
-*CRM.* Manter o banco de dados de clientes, rastrear vendas, criar faturas. 
-*Calendário.* Organizar reuniões com calendários compartilháveis e definir lembretes. 
-*Mail.* Reúna correspondência de diferentes contas em um só lugar.  Adicione seu próprio domínio para criar caixas de correio corporativas. 
-*Comunidade.* Crie sua própria rede social e mantenha o wiki corporativo. 
-*Chat.* Troque mensagens instantâneas com sua equipe. 
-
-$GreenButton
-
-Atenciosamente,
-Equipe ONLYOFFICE
-"www.onlyoffice.com": "http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Olá, $UserName!
 Obrigado por escolher ONLYOFFICE! Reative seu plano de negócios hoje e economize 20% de desconto com o cupom Reativar20! Basta usá-lo durante a compra para:
@@ -1457,9 +1438,6 @@ O link só é válido por 7 dias.</value>
   </data>
   <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Dicas para um trabalho confortável</value>
-  </data>
-  <data name="subject_saas_admin_modules_v115" xml:space="preserve">
-    <value>Visão geral dos módulos ONLYOFFICE</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Reative o Business e economize 20% do preço</value>

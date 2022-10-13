@@ -1129,25 +1129,6 @@ Truly yours,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_modules_v115" xml:space="preserve">
-    <value>Hello, $UserName!
-
-ONLYOFFICE will help you with all your daily tasks. Here’s what you can do:
-
-# *Documents*. Store and manage docs, sheets, and slides. Edit them and collaborate with your team. Create and co-edit professional-looking forms online, let other users fill them in, save forms as PDF files. 
-# *Projects*. Plan activities, create and assign tasks, set deadlines. 
-# *CRM*. Maintain customers database, track sales, create invoices. 
-# *Calendar*. Arrange meetings with shareable calendars and set reminders. 
-# *Mail*. Gather mail from different accounts in one place. Add your own domain to create corporate mailboxes. 
-# *Community*. Create your own social network ans maintain corporate wiki. 
-# *Talk*. Exchange instant messages with your team. 
-
-$GreenButton
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -1539,9 +1520,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
     <value>Tips for comfortable work</value>
-  </data>
-  <data name="subject_saas_admin_modules_v115" xml:space="preserve">
-    <value>ONLYOFFICE modules overview</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Re-activate Business and save 20% of the price</value>
@@ -2160,5 +2138,35 @@ Get free ONLYOFFICE apps to work on documents from any of your devices.
 Truly yours, 
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Adjust security settings of your ONLYOFFICE DocSpace to make it more secure:
+
+* Set password strength.  
+
+* Enable two-factor authentication and Single Sign-On.
+
+* Determine trusted mail domains and session lifetime.
+
+* Restrict access from specific IP addresses. 
+
+* Allow or restrict admin messages.  
+
+* Manage administrator access rights.
+
+* Do data backups.   
+
+$GreenButton
+
+Visit our "Help Center":"https://helpcenter.onlyoffice.com/" to learn more about configuring and managing your ONLYOFFICE DocSpace. You are also welcome to consult it when you have questions about the functionality.
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Configure your ONLYOFFICE DocSpace</value>
   </data>
 </root>
