@@ -333,50 +333,6 @@ $GreenButton
 
 *Note*: this link is valid for 7 days only. Please complete the portal address change process within that period.</value>
   </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-You can customize ONLYOFFICE for your needs, for example:
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
-
-Configure Right Now
-$GreenButton
-   
-Done. It's time to invite teammates to your web-office!
-
-More information in our "Help Center":"${__HelpLink}".</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty" xml:space="preserve">
-    <value>Let your team members use Facebook, Twitter, Google or LinkedIn to sign in. Link up your portal with Box, Dropbox, OneDrive and Google to transfer your documents. Connect DocuSign to use e-signature, Twilio - for VoIP, Bitly - to shorten links and Firebase to get notifications when you're offline.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr" xml:space="preserve">
-    <value>Tip #5: Connect 3rd-party services</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_brand" xml:space="preserve">
-    <value>Uploading your company's logos in the Control Panel. To change the default portal title displayed on the Welcome page, go to Settings &gt;&gt; Common &gt;&gt; Customization &gt;&gt; Welcome Page Settings.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_brand_hdr" xml:space="preserve">
-    <value>Tip #1: Brand it</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_customize" xml:space="preserve">
-    <value>Name the portal groups, its members and their activities following Settings &gt;&gt; Common &gt;&gt; Customization &gt;&gt; Team Template. Select the color theme that best suits your company brand.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_customize_hdr" xml:space="preserve">
-    <value>Tip #3: Customize interface</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules" xml:space="preserve">
-    <value>Enable instruments you need for work following Settings &gt;&gt; Common &gt;&gt; Modules &amp; Tools. The disabled ones will be hidden.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules_hdr" xml:space="preserve">
-    <value>Tip #4: Select your tools</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional" xml:space="preserve">
-    <value>Choose the language and set the correct time zone. It's particularly important for the notifications and the correct calendar work. Go to Settings &gt;&gt; Common &gt;&gt; Customization.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional_hdr" xml:space="preserve">
-    <value>Tip #2: Adjust the regional settings</value>
-  </data>
   <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -473,17 +429,6 @@ Your guest profile has been successfully added to "${__VirtualRootPath}":"${__Vi
 
 To access your web-office, follow the link
 $GreenButton</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
-    <value>Hello, $UserName!
-
-You can customize your web-office, for example:
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
-
-$GreenButton
-
-Done. It's time to invite teammates to your web-office!</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
     <value>Hello, $UserName!
@@ -1279,9 +1224,6 @@ The link is only valid for 7 days.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Change of portal address</value>
   </data>
-  <data name="subject_enterprise_admin_customize_portal_v10" xml:space="preserve">
-    <value>Customize ONLYOFFICE</value>
-  </data>
   <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
     <value>Invite your teammates</value>
   </data>
@@ -1308,9 +1250,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Welcome to your web-office</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
-    <value>Customize your web-office</value>
   </data>
   <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
     <value>Your web-office renewal notification</value>

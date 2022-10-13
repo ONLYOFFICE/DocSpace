@@ -684,116 +684,6 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You can customize ONLYOFFICE for your needs, for example:
-        ///
-        ///$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
-        ///
-        ///Configure Right Now
-        ///$GreenButton
-        ///   
-        ///Done. It&apos;s time to invite teammates to your web-office!
-        ///
-        ///More information in our &quot;Help Center&quot;:&quot;${__HelpLink}&quot;..
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10 {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Let your team members use Facebook, Twitter, Google or LinkedIn to sign in. Link up your portal with Box, Dropbox, OneDrive and Google to transfer your documents. Connect DocuSign to use e-signature, Twilio - for VoIP, Bitly - to shorten links and Firebase to get notifications when you&apos;re offline..
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_3rdparty {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_3rdparty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tip #5: Connect 3rd-party services.
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uploading your company&apos;s logos in the Control Panel. To change the default portal title displayed on the Welcome page, go to Settings &gt;&gt; Common &gt;&gt; Customization &gt;&gt; Welcome Page Settings..
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_brand {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_brand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tip #1: Brand it.
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_brand_hdr {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_brand_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Name the portal groups, its members and their activities following Settings &gt;&gt; Common &gt;&gt; Customization &gt;&gt; Team Template. Select the color theme that best suits your company brand..
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_customize {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_customize", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tip #3: Customize interface.
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_customize_hdr {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_customize_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable instruments you need for work following Settings &gt;&gt; Common &gt;&gt; Modules &amp; Tools. The disabled ones will be hidden..
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_modules {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_modules", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tip #4: Select your tools.
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_modules_hdr {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_modules_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Choose the language and set the correct time zone. It&apos;s particularly important for the notifications and the correct calendar work. Go to Settings &gt;&gt; Common &gt;&gt; Customization..
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_regional {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_regional", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tip #2: Adjust the regional settings.
-        /// </summary>
-        public static string pattern_enterprise_admin_customize_portal_v10_item_regional_hdr {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_admin_customize_portal_v10_item_regional_hdr", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
         ///Your cloud office is ready at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. It&apos;s time to invite your teammates!
         ///
         ///The easiest way to add your team is to import the necessary users and groups from an LDAP Server (e.g. OpenLDAP Server or Microsoft Active Directory). The LDAP settings are available in your Control Panel. Instructions are available in our &quot;Help Center&quot;:&quot;&quot;${__HelpLink}/administration/control-panel-ldap.aspx&quot;.
@@ -1033,23 +923,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string pattern_enterprise_whitelabel_admin_activation_v1 {
             get {
                 return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_activation_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///You can customize your web-office, for example:
-        ///
-        ///$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
-        ///
-        ///$GreenButton
-        ///
-        ///Done. It&apos;s time to invite teammates to your web-office!.
-        /// </summary>
-        public static string pattern_enterprise_whitelabel_admin_customize_portal_v10 {
-            get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_admin_customize_portal_v10", resourceCulture);
             }
         }
         
@@ -2478,15 +2351,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Customize ONLYOFFICE.
-        /// </summary>
-        public static string subject_enterprise_admin_customize_portal_v10 {
-            get {
-                return ResourceManager.GetString("subject_enterprise_admin_customize_portal_v10", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Invite your teammates.
         /// </summary>
         public static string subject_enterprise_admin_invite_teammates_v10 {
@@ -2609,15 +2473,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_enterprise_whitelabel_admin_activation_v1 {
             get {
                 return ResourceManager.GetString("subject_enterprise_whitelabel_admin_activation_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Customize your web-office.
-        /// </summary>
-        public static string subject_enterprise_whitelabel_admin_customize_portal_v10 {
-            get {
-                return ResourceManager.GetString("subject_enterprise_whitelabel_admin_customize_portal_v10", resourceCulture);
             }
         }
         

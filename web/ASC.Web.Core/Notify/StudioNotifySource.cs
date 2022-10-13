@@ -78,8 +78,6 @@ public class StudioNotifySource : NotifySource
                 Actions.EnterpriseWhitelabelGuestWelcomeV10,
                 Actions.OpensourceGuestWelcomeV11,
 
-                Actions.EnterpriseAdminCustomizePortalV10,
-                Actions.EnterpriseWhitelabelAdminCustomizePortalV10,
                 Actions.EnterpriseAdminInviteTeammatesV10,
                 Actions.EnterpriseAdminWithoutActivityV10,
                 Actions.EnterpriseAdminUserAppsTipsV10,

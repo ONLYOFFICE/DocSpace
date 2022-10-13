@@ -297,49 +297,6 @@ $GreenButton
 
 * Qeyd *: bu link yalnız 7 gün ərzində etibarlıdır. Bu müddət ərzində portal ünvanının dəyişdirilməsi prosesini tamamlayın.</value>
   </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-ONLYOFFICE-i ehtiyaclarınız üçün fərdiləşdirə bilərsiniz, məsələn:
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
-
-$GreenButton
-   
-Tamamlandı. Komanda yoldaşlarını veb-ofisinizə dəvət etməyin vaxtıdır!
-
-Ətraflı məlumat "Yardım Mərkəzimizdə":"${__HelpLink}".</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty" xml:space="preserve">
-    <value>Komanda üzvlərinizə daxil olmaq üçün Facebook, Twitter, Google və ya LinkedIn istifadə etməyə icazə verin. Sənədlərinizi ötürmək üçün portalınızı Box, Dropbox, OneDrive və Google ilə əlaqələndirin. E-imzadan istifadə etmək üçün DocuSign-a, VoIP üçün Twilio-a, keçidləri qısaltmaq üçün Bitly-ə və oflayn olduğunuz zaman bildirişlər almaq üçün Firebase-ə qoşulun.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr" xml:space="preserve">
-    <value>Məsləhət #5: 3-cü tərəf xidmətlərini birləşdirin</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_brand" xml:space="preserve">
-    <value>İdarəetmə Panelinə şirkətinizin loqolarının yüklənməsi. Salamlama səhifəsində göstərilən standart portal başlığını dəyişmək üçün Parametrlər &gt;&gt; Ümumi &gt;&gt; Fərdiləşdirmə &gt;&gt; Salamlama Səhifəsi Parametrləri bölməsinə keçin.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_brand_hdr" xml:space="preserve">
-    <value>Məsləhət №1: Onu markaya çevirin</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_customize" xml:space="preserve">
-    <value>Parametrlər &gt;&gt; Ümumi &gt;&gt; Fərdiləşdirmə &gt;&gt; Komanda Şablonundan sonra portal qruplarını, üzvlərini və fəaliyyətlərini adlandırın. Şirkətinizin markasına ən uyğun rəng mövzusunu seçin.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_customize_hdr" xml:space="preserve">
-    <value>Məsləhət №3: İnterfeysi fərdiləşdirin</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules" xml:space="preserve">
-    <value>Parametrlər &gt;&gt; Ümumi &gt;&gt; Modullar və Alətlər bölməsini izləməklə işiniz üçün lazım olan alətləri aktiv edin. Deaktiv alətlər gizlədiləcək</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules_hdr" xml:space="preserve">
-    <value>Məsləhət # 4: Alətlərinizi seçin</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional" xml:space="preserve">
-    <value>Dili seçib düzgün vaxt qurşağını təyin edin. Bildirişlər və dəqiq təqvim işi üçün xüsusilə vacibdir. Parametrlər &gt;&gt; Ümumi &gt;&gt; Fərdiləşdirməyə keçin.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional_hdr" xml:space="preserve">
-    <value>Məsləhət #2: Regional parametrləri tənzimləyin</value>
-  </data>
   <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
     <value>Salam, $UserName!
 
@@ -433,17 +390,6 @@ Qonaq profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}" -a əlav�
 # Ani mesaj mübadiləsi üçün "Söhbət":"${__VirtualRootPath}/addons/talk/" istifadə edin.
 
 $GreenButton</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Siz veb-ofisinizi fərdiləşdirə bilərsiniz, məsələn:
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
-
-$GreenButton
-
-Tamamlandı. Komanda yoldaşlarını veb-ofisinizə dəvət etməyin vaxtıdır!</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
     <value>Salam, $UserName!
@@ -1190,9 +1136,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Portal ünvanının dəyişdirilməsi</value>
   </data>
-  <data name="subject_enterprise_admin_customize_portal_v10" xml:space="preserve">
-    <value>ONLYOFFICE-i fərdiləşdirin</value>
-  </data>
   <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
     <value>Komanda yoldaşlarınızı dəvət edin</value>
   </data>
@@ -1219,9 +1162,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Veb ofisinizə xoş gəlmisiniz</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
-    <value>Veb-ofisinizi fərdiləşdirin</value>
   </data>
   <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
     <value>Veb ofisinizin yenilənməsi barədə bildirişiniz</value>

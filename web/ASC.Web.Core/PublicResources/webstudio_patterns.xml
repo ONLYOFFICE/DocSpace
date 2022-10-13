@@ -492,18 +492,6 @@ $activity.Key
     <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_opensource_guest_welcome_v11|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
-  <!-- enterprise admin customize portal v10 -->
-  <pattern id="enterprise_admin_customize_portal_v10">
-    <subject resource="|subject_enterprise_admin_customize_portal_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_admin_customize_portal_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
-  <!-- enterprise whitelabel admin customize portal v10 -->
-  <pattern id="enterprise_whitelabel_admin_customize_portal_v10">
-    <subject resource="|subject_enterprise_whitelabel_admin_customize_portal_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_admin_customize_portal_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-  </pattern>
-
   <!-- enterprise admin invite teammates v10 -->
   <pattern id="enterprise_admin_invite_teammates_v10">
     <subject resource="|subject_enterprise_admin_invite_teammates_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />

@@ -247,12 +247,6 @@ $GreenButton
 
 *Not*: bu link 7 gün boyunca geçerli olacaktır. Lütfen portal adresi değişikliğini bu sürede tamamlayın.</value>
   </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules" xml:space="preserve">
-    <value>Ayarlar &gt;&gt; Ortak &gt;&gt; Modüller ve Araçlar'ı izleyerek çalışmak için ihtiyacınız olan araçları etkinleştirin. Engelliler gizlenecek.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional" xml:space="preserve">
-    <value>Dili seçin ve doğru saat dilimini ayarlayın. Özellikle bildirimler ve doğru takvim çalışması için önemlidir. Ayarlar &gt;&gt; Ortak &gt;&gt; Özelleştirme'ye gidin.</value>
-  </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalı mesajları
 
@@ -503,12 +497,6 @@ ONLYOFFICE Ekibi</value>
   </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Portal adres değişikliği</value>
-  </data>
-  <data name="subject_enterprise_admin_customize_portal_v10" xml:space="preserve">
-    <value>ONLYOFFICE'i özelleştirin</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
-    <value>Web ofisinizi özelleştirin</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Yöneticilere kullanıcı mesajı</value>

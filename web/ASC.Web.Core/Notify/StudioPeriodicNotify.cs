@@ -325,102 +325,14 @@ public class StudioPeriodicNotify
                 string blueButtonText() => WebstudioNotifyPatternResource.ButtonRequestCallButton;
                 var greenButtonUrl = string.Empty;
 
-                Func<string> tableItemText1 = () => string.Empty;
-                Func<string> tableItemText2 = () => string.Empty;
-                Func<string> tableItemText3 = () => string.Empty;
-                Func<string> tableItemText4 = () => string.Empty;
-                Func<string> tableItemText5 = () => string.Empty;
-                Func<string> tableItemText6 = () => string.Empty;
-                Func<string> tableItemText7 = () => string.Empty;
-
-                var tableItemUrl1 = string.Empty;
-                var tableItemUrl2 = string.Empty;
-                var tableItemUrl3 = string.Empty;
-                var tableItemUrl4 = string.Empty;
-                var tableItemUrl5 = string.Empty;
-                var tableItemUrl6 = string.Empty;
-                var tableItemUrl7 = string.Empty;
-
-                var tableItemImg1 = string.Empty;
-                var tableItemImg2 = string.Empty;
-                var tableItemImg3 = string.Empty;
-                var tableItemImg4 = string.Empty;
-                var tableItemImg5 = string.Empty;
-                var tableItemImg6 = string.Empty;
-                var tableItemImg7 = string.Empty;
-
-                Func<string> tableItemComment1 = () => string.Empty;
-                Func<string> tableItemComment2 = () => string.Empty;
-                Func<string> tableItemComment3 = () => string.Empty;
-                Func<string> tableItemComment4 = () => string.Empty;
-                Func<string> tableItemComment5 = () => string.Empty;
-                Func<string> tableItemComment6 = () => string.Empty;
-                Func<string> tableItemComment7 = () => string.Empty;
-
-                Func<string> tableItemLearnMoreText1 = () => string.Empty;
-
-                string tableItemLearnMoreText2() => string.Empty;
-
-                string tableItemLearnMoreText3() => string.Empty;
-
-                string tableItemLearnMoreText4() => string.Empty;
-
-                string tableItemLearnMoreText5() => string.Empty;
-
-                string tableItemLearnMoreText6() => string.Empty;
-
-                string tableItemLearnMoreText7() => string.Empty;
-
-                var tableItemLearnMoreUrl1 = string.Empty;
-                var tableItemLearnMoreUrl2 = string.Empty;
-                var tableItemLearnMoreUrl3 = string.Empty;
-                var tableItemLearnMoreUrl4 = string.Empty;
-                var tableItemLearnMoreUrl5 = string.Empty;
-                var tableItemLearnMoreUrl6 = string.Empty;
-                var tableItemLearnMoreUrl7 = string.Empty;
-
 
                 if (quota.Trial && defaultRebranding)
                 {
                     #region After registration letters
 
-                    #region 1 day after registration to admins ENTERPRISE TRIAL + defaultRebranding
-
-                    if (createdDate.AddDays(1) == nowDate)
-                    {
-                        action = Actions.EnterpriseAdminCustomizePortalV10;
-                        paymentMessage = false;
-                        toadmins = true;
-
-                        tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
-                        tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
-                        tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
-
-                        tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
-                        tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
-                        tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
-
-                        tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
-                        tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
-                        tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
-
-                        tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
-                        tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
-                        tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
-
-                        tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
-                        tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
-                        tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
-
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetAdministration(ManagementType.General));
-                    }
-
-                    #endregion
-
                     #region 4 days after registration to admins ENTERPRISE TRIAL + only 1 user + defaultRebranding
 
-                    else if (createdDate.AddDays(4) == nowDate && _userManager.GetUsers().Length == 1)
+                    if (createdDate.AddDays(4) == nowDate && _userManager.GetUsers().Length == 1)
                     {
                         action = Actions.EnterpriseAdminInviteTeammatesV10;
                         paymentMessage = false;
@@ -511,49 +423,6 @@ public class StudioPeriodicNotify
 
                     #endregion
                 }
-                else if (quota.Trial && !defaultRebranding)
-                {
-                    #region After registration letters
-
-                    #region 1 day after registration to admins ENTERPRISE TRIAL + !defaultRebranding
-
-                    if (createdDate.AddDays(1) == nowDate)
-                    {
-                        action = Actions.EnterpriseWhitelabelAdminCustomizePortalV10;
-                        paymentMessage = false;
-                        toadmins = true;
-
-                        tableItemImg1 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-brand-100.png");
-                        tableItemText1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand_hdr;
-                        tableItemComment1 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_brand;
-
-                        tableItemImg2 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-regional-100.png");
-                        tableItemText2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional_hdr;
-                        tableItemComment2 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_regional;
-
-                        tableItemImg3 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-customize-100.png");
-                        tableItemText3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize_hdr;
-                        tableItemComment3 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_customize;
-
-                        tableItemImg4 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-modules-100.png");
-                        tableItemText4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules_hdr;
-                        tableItemComment4 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_modules;
-
-                        if (!_coreBaseSettings.CustomMode)
-                        {
-                            tableItemImg5 = _studioNotifyHelper.GetNotificationImageUrl("tips-customize-3rdparty-100.png");
-                            tableItemText5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr;
-                            tableItemComment5 = () => WebstudioNotifyPatternResource.pattern_enterprise_admin_customize_portal_v10_item_3rdparty;
-                        }
-
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetAdministration(ManagementType.General));
-                    }
-
-                    #endregion
-
-                    #endregion
-                }
                 else if (tariff.State == TariffState.Paid)
                 {
                     #region Payment warning letters
@@ -617,16 +486,7 @@ public class StudioPeriodicNotify
                         new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
                         new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
                         TagValues.BlueButton(blueButtonText, "http://www.onlyoffice.com/call-back-form.aspx"),
-                        TagValues.GreenButton(greenButtonText, greenButtonUrl),
-                        TagValues.TableTop(),
-                        TagValues.TableItem(1, tableItemText1, tableItemUrl1, tableItemImg1, tableItemComment1, tableItemLearnMoreText1, tableItemLearnMoreUrl1),
-                        TagValues.TableItem(2, tableItemText2, tableItemUrl2, tableItemImg2, tableItemComment2, tableItemLearnMoreText2, tableItemLearnMoreUrl2),
-                        TagValues.TableItem(3, tableItemText3, tableItemUrl3, tableItemImg3, tableItemComment3, tableItemLearnMoreText3, tableItemLearnMoreUrl3),
-                        TagValues.TableItem(4, tableItemText4, tableItemUrl4, tableItemImg4, tableItemComment4, tableItemLearnMoreText4, tableItemLearnMoreUrl4),
-                        TagValues.TableItem(5, tableItemText5, tableItemUrl5, tableItemImg5, tableItemComment5, tableItemLearnMoreText5, tableItemLearnMoreUrl5),
-                        TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
-                        TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
-                        TagValues.TableBottom());
+                        TagValues.GreenButton(greenButtonText, greenButtonUrl));
                 }
             }
             catch (Exception err)

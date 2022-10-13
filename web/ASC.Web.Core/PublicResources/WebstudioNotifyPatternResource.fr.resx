@@ -284,49 +284,6 @@ $GreenButton
 
 *Remarque* : ce lien est valable pour 7 jours seulement. Veuillez compléter le processus de changementle de l'adresse du  portail au courant de cette période.</value>
   </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Vous pouvez ajuster ONLYOFFICE à vos besoins, par exemple :
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
-
-$GreenButton
-   
-C'est fait. Maintenant invitez vos collègues à rejoindre votre bureau digital !
-
-Pour de plus amples informations, visitez le "Centre d'Aide":"${__HelpLink}"</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty" xml:space="preserve">
-    <value>Laissez vos membres de l'équipe utiliser Facebook, Twitter, Google ou LinkedIn pour se connecter. Reliez votre portail avec Box, Dropbox, OneDrive et Google pour transfér vos documents. Connectez DocuSign pour utiliser signature électronique, Twilio - pour VoIP, Bitly - pour raccourcir les liens et Firebase pour recevoir les notifications quand vous n'êtes pas connecté.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr" xml:space="preserve">
-    <value>Conseil #5 : Connectez parties tierces</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_brand" xml:space="preserve">
-    <value>Téléchargez le logo do votre entrprise avec le Panneau de Commande. Pour changer le titre de portail par défaut qui est affiché sur la page d'acceuil, suivez Paramètres&gt;&gt; Commun &gt;&gt; Personalisation&gt;&gt; Paramètres de la page d'accueil.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_brand_hdr" xml:space="preserve">
-    <value>Conseil #1 : Marquez-le</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_customize" xml:space="preserve">
-    <value>Nommez les groupes du portail, ses membres et leurs activités en suivant Paramètres &gt;&gt; Commun &gt;&gt; Personnalisation &gt;&gt; Modèle de l'équipe. Sélectionnez le thème de couleur qui convient le mieux au marque de votre entreprise.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_customize_hdr" xml:space="preserve">
-    <value>Conseil #3: personnalisez l'interface</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules" xml:space="preserve">
-    <value>Activez les instruments dont vous avez besoin pour votre travail en suivant les Paramètres &gt;&gt; Commun &gt;&gt; Modules &amp; Outils. Les instruments désactivés seront cachés</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules_hdr" xml:space="preserve">
-    <value>Conseil #4 : Choisissez vos instruments</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional" xml:space="preserve">
-    <value>Sélectionnez la langue et le fuseau horaire approprié.C'est particulièrement important pour les notifications et le bon fonctionnement du calendrier. Allez dans les Paramètres &gt;&gt; Commun &gt;&gt; Personnalisation</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional_hdr" xml:space="preserve">
-    <value>Conseil #2 : Ajustez des paramètres régionaux</value>
-  </data>
   <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
     <value>Bonjour $UserName,
 
@@ -418,18 +375,7 @@ Votre profil d'invité a été ajouté avec succès au portail "${__VirtualRootP
 # Ajouter et télécharger les fichiers qui sont disponibles dans le module "Documents":"${__VirtualRootPath}/Products/Files/".
 # Organiser votre agenda à l'aide du "Calendrier":"${__VirtualRootPath}/addons/calendar/".
 # Utiliser le "Chat":"${__VirtualRootPath}/addons/talk/" pour échanger à l'aide de la messagerie instantanée.</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Vous pouvez personnaliser votre bureau digital, par exemple :
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
-
-$GreenButton
-
-C'est fait. Maintenant invitez vos collègues à rejoindre votre bureau digital !</value>
-  </data>
+  </data
   <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
     <value>Bonjour $UserName, 
 
@@ -1172,9 +1118,6 @@ Le lien est valide pendant 7 jours.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Changement de l'adresse du portail</value>
   </data>
-  <data name="subject_enterprise_admin_customize_portal_v10" xml:space="preserve">
-    <value>Personnalisez ONLYOFFICE</value>
-  </data>
   <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
     <value>Invitez vos collègues </value>
   </data>
@@ -1201,9 +1144,6 @@ Le lien est valide pendant 7 jours.</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Bienvenue dans votre office en ligne</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
-    <value>Peronnalisez votre office en ligne</value>
   </data>
   <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
     <value>Notification de renouvellement d'abonnement sur votre office en ligne</value>

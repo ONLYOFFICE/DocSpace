@@ -285,50 +285,6 @@ $GreenButton
 
 *Note*: este enlace tiene una validez sólo de 7 días. Por favor, complete el proceso de cambio de dirección del portal dentro de ese período.</value>
   </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Usted puede personalizar ONLYOFFICE para sus necesidades, por ejemplo:
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
-
-Configurar ahora mismo
-$GreenButton
-   
-Hecho. ¡Llegó el momento de invitar a los compañeros de equipo a su oficina web!
-
-Encuentre más información en nuestro "Centro de Ayuda":"${__HelpLink}".</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty" xml:space="preserve">
-    <value>Permita a sus compañeros de equipo usar Facebook, Twitter, Google o LinkedIn para acceder al portal. Conecte su portal con los servicios Box, Dropbox, OneDrive y Google para transferir sus documentos. Conecte DocuSign para usar la firma electrónica, Twilio - para VoIP, Bitly - para acortar enlaces y Firebase para recibir notificaciones cuando Usted no está en línea.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_3rdparty_hdr" xml:space="preserve">
-    <value>Consejo #5: Conecte servicios de terceros</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_brand" xml:space="preserve">
-    <value>Cargue los logos de su empresa en el Panel de Control. Para cambiar el título de portal predeterminado que se muestra en la página de bienvenida vaya a los Ajustes &gt;&gt; Común &gt;&gt; Personalización &gt;&gt; Ajustes de bienvenida.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_brand_hdr" xml:space="preserve">
-    <value>Consejo  #1: Coloque su logotipo </value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_customize" xml:space="preserve">
-    <value>Nombre los grupos de portal, sus miembros y sus actividades siguiendo Ajustes &gt;&gt; Común &gt;&gt; Personalización &gt;&gt; Plantilla del equipo. Seleccione el tema de color que mejor se adapte a la marca de su empresa.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_customize_hdr" xml:space="preserve">
-    <value>Consejo #3: Personalice la interfaz</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules" xml:space="preserve">
-    <value>Active instrumentos que Usted necesita para trabajo siguiendo Ajustes &gt;&gt; Común &gt;&gt; Módulos y herramientas. Los instrumentos desactivados serán ocultados.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_modules_hdr" xml:space="preserve">
-    <value>Consejo #4: Seleccione sus herramientas</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional" xml:space="preserve">
-    <value>Seleccione el idioma y ajuste la zona horaria correcta. Es particularmente importante para las notificaciones y el trabajo de calendario correcto. Vaya a los Ajustes &gt;&gt; Común &gt;&gt; Personalización.</value>
-  </data>
-  <data name="pattern_enterprise_admin_customize_portal_v10_item_regional_hdr" xml:space="preserve">
-    <value>Consejo #2: Ajuste la configuración regional</value>
-  </data>
   <data name="pattern_enterprise_admin_invite_teammates_v10" xml:space="preserve">
     <value>¡Hola, $UserName!
 
@@ -424,17 +380,6 @@ Su perfil de invitado ha sido agregado con éxito al "${__VirtualRootPath}":"${_
 
 Para acceder a su oficina web, siga el enlace
 $GreenButton</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Usted puede personalizar su oficina web, por ejemplo:
-
-$TableItemsTop $TableItem1 $TableItem2 $TableItem3 $TableItem4 $TableItem5 $TableItemsBtm
-
-$GreenButton
-
-Hecho. ¡Llegó el momento de invitar a los compañeros de equipo a su oficina web!</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
     <value>¡Estimado/a $UserName!
@@ -1185,9 +1130,6 @@ El enlace es válido solo durante 7 días.</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Cambio de dirección de portal</value>
   </data>
-  <data name="subject_enterprise_admin_customize_portal_v10" xml:space="preserve">
-    <value>Personalice ONLYOFFICE</value>
-  </data>
   <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
     <value>Invite a sus compañeros de equipo</value>
   </data>
@@ -1214,9 +1156,6 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
     <value>Bienvenido a su oficina web</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_customize_portal_v10" xml:space="preserve">
-    <value>Personalice su oficina web</value>
   </data>
   <data name="subject_enterprise_whitelabel_admin_payment_warning_before7_v10" xml:space="preserve">
     <value>Notificación de renovación de su oficina web</value>
