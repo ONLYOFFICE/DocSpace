@@ -12,7 +12,7 @@ const StyledBody = styled.div`
     width: 100%;
   }
 `;
-
+const MANAGER = "manager";
 let timerId = null,
   intervalId = null,
   isWaitRequest = false;
@@ -58,7 +58,9 @@ const UpdatePlanButtonContainer = ({
         isWaitRequest = true;
         const res = await api.portal.getPortalQuota();
 
-        if (res && res.features[0].value === managersCount) {
+        const managersObject = res.features.find((obj) => obj.id === MANAGER);
+
+        if (managersObject && managersObject.value === managersCount) {
           setPortalQuotaValue(res);
           intervalId &&
             toastr.success(
