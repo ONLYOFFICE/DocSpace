@@ -16,14 +16,7 @@ const CreateRoomEvent = ({
   addLogoToRoom,
   fetchTags,
 
-  connectItems,
   connectDialogVisible,
-  setConnectDialogVisible,
-  setRoomCreation,
-  saveThirdpartyResponse,
-  openConnectWindow,
-  setConnectItem,
-  getOAuthToken,
 
   currrentFolderId,
   updateCurrentFolder,
@@ -103,26 +96,16 @@ const CreateRoomEvent = ({
       onCreate={onCreate}
       fetchedTags={fetchedTags}
       isLoading={isLoading}
-      connectItems={connectItems}
-      connectDialogVisible={connectDialogVisible}
-      setConnectDialogVisible={setConnectDialogVisible}
-      setRoomCreation={setRoomCreation}
-      saveThirdpartyResponse={saveThirdpartyResponse}
-      openConnectWindow={openConnectWindow}
-      setConnectItem={setConnectItem}
-      getOAuthToken={getOAuthToken}
     />
   );
 };
 
 export default inject(
   ({
-    auth,
     filesStore,
     tagsStore,
     filesActionsStore,
     selectedFolderStore,
-    settingsStore,
     dialogsStore,
   }) => {
     const {
@@ -138,63 +121,7 @@ export default inject(
     const { id: currrentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
 
-    const thirdPartyStore = settingsStore.thirdPartyStore;
-
-    const { openConnectWindow } = settingsStore.thirdPartyStore;
-
-    let nextCloudConnectItem = [],
-      ownCloudConnectItem = [];
-
-    if (thirdPartyStore.nextCloudConnectItem) {
-      nextCloudConnectItem.push(
-        ...thirdPartyStore.nextCloudConnectItem,
-        "Nextcloud"
-      );
-    }
-
-    if (thirdPartyStore.ownCloudConnectItem) {
-      ownCloudConnectItem.push(
-        ...thirdPartyStore.ownCloudConnectItem,
-        "ownCloud"
-      );
-    }
-
-    const connectItems = [
-      thirdPartyStore.googleConnectItem,
-      thirdPartyStore.boxConnectItem,
-      thirdPartyStore.dropboxConnectItem,
-      thirdPartyStore.oneDriveConnectItem,
-      nextCloudConnectItem,
-      thirdPartyStore.kDriveConnectItem,
-      thirdPartyStore.yandexConnectItem,
-      ownCloudConnectItem,
-      thirdPartyStore.webDavConnectItem,
-      thirdPartyStore.sharePointConnectItem,
-    ]
-      .map(
-        (item) =>
-          item && {
-            isAvialable: !!item,
-            id: item[0],
-            providerName: item[0],
-            isOauth: item.length > 1 && item[0] !== "WebDav",
-            oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
-            ...(item[0] === "WebDav" && {
-              category: item[item.length - 1],
-            }),
-          }
-      )
-      .filter((item) => !!item);
-
-    const { getOAuthToken } = auth.settingsStore;
-
-    const {
-      setConnectItem,
-      connectDialogVisible,
-      setConnectDialogVisible,
-      setRoomCreation,
-      saveThirdpartyResponse,
-    } = dialogsStore;
+    const { connectDialogVisible } = dialogsStore;
 
     return {
       createRoom,
@@ -206,15 +133,7 @@ export default inject(
       uploadRoomLogo,
       addLogoToRoom,
 
-      setConnectItem,
       connectDialogVisible,
-      setConnectDialogVisible,
-      setRoomCreation,
-      saveThirdpartyResponse,
-      saveThirdpartyResponse,
-      openConnectWindow,
-      connectItems,
-      getOAuthToken,
 
       currrentFolderId,
       updateCurrentFolder,
