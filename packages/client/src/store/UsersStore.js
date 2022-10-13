@@ -96,25 +96,31 @@ class UsersStore {
   updateUserType = async (type, userIds, filter, fromType) => {
     const { changeAdmins } = this.peopleStore.setupStore;
 
-    switch (type) {
-      case "admin":
-        await changeAdmins(userIds, fullAccessId, true);
-        break;
-      case "manager":
-      case EmployeeType.User:
-        const actions = [];
-        if (fromType.includes("admin")) {
-          actions.push(changeAdmins(userIds, fullAccessId, false));
-        }
-        if (fromType.includes("user")) {
-          actions.push(api.people.updateUserType(EmployeeType.User, userIds));
-        }
+    try {
+      switch (type) {
+        case "admin":
+          await changeAdmins(userIds, fullAccessId, true);
+          break;
+        case "manager":
+        case EmployeeType.User:
+          const actions = [];
+          if (fromType.includes("admin")) {
+            actions.push(changeAdmins(userIds, fullAccessId, false));
+          }
+          if (fromType.includes("user")) {
+            actions.push(api.people.updateUserType(EmployeeType.User, userIds));
+          }
 
-        await Promise.all(actions);
-        break;
+          await Promise.all(actions);
+          break;
+      }
+
+      await this.getUsersList(filter);
+    } catch (e) {
+      await this.getUsersList(filter);
+
+      throw new Error(e);
     }
-
-    await this.getUsersList(filter);
   };
 
   updateProfileInUsers = async (updatedProfile) => {
