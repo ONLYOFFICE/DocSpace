@@ -18,14 +18,17 @@ let iconWidth = 80;
 let iconHeight = 60;
 
 const StyledVideoPlayer = styled.div`
-  position: fixed;
-  z-index: 1007;
   ${(props) =>
     props.isFullScreen ? "background: #000" : "background: transparent"};
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
+
+  .video-wrapper {
+    position: fixed;
+    z-index: 1005;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
 
   .bg-play {
     position: fixed;
@@ -48,6 +51,9 @@ const StyledVideoActions = styled.div`
     align-items: center;
     width: 48px;
     height: 48px;
+    &:hover {
+      cursor: pointer;
+    }
   }
 `;
 
@@ -65,6 +71,7 @@ const StyledVideoControls = styled.div`
     background: #4d4d4d;
     border: 1px solid rgba(0, 0, 0, 0.4);
     border-radius: 2px;
+    transition: all 0.26s ease-out;
     height: 8px;
     width: 70%;
   }
@@ -275,12 +282,8 @@ export default function ViewerPlayer(props) {
       </div>
       <StyledVideoControls>
         <StyledVideoActions>
-          <div className="controller">
-            {!isPlaying ? (
-              <IconPlay onClick={togglePlay} />
-            ) : (
-              <IconStop onClick={togglePlay} />
-            )}
+          <div className="controller" onClick={togglePlay}>
+            {!isPlaying ? <IconPlay /> : <IconStop />}
           </div>
           <input
             type="range"
@@ -298,19 +301,11 @@ export default function ViewerPlayer(props) {
           >
             {duration}
           </div>
-          <div className="controller">
-            {!isMuted ? (
-              <IconSound onClick={toggleMute} />
-            ) : (
-              <IconMuted onClick={toggleMute} />
-            )}
+          <div className="controller" onClick={toggleMute}>
+            {!isMuted ? <IconSound /> : <IconMuted />}
           </div>
-          <div className="controller">
-            {!isFullScreen ? (
-              <IconFullScreen onClick={toggleScreen} />
-            ) : (
-              <IconExitFullScreen onClick={toggleScreen} />
-            )}
+          <div className="controller" onClick={toggleScreen}>
+            {!isFullScreen ? <IconFullScreen /> : <IconExitFullScreen />}
           </div>
         </StyledVideoActions>
       </StyledVideoControls>
