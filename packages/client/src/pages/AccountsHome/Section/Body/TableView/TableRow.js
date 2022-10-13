@@ -319,7 +319,7 @@ const PeopleTableRow = (props) => {
       >
         <TableCell className={"table-container_user-name-cell"}>
           <TableCell
-            hasAccess={isAdmin}
+            hasAccess={true}
             className="table-container_row-checkbox-wrapper"
             checked={isChecked}
           >
