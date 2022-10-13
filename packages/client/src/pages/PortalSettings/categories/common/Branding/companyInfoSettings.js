@@ -16,12 +16,12 @@ const StyledComponent = styled.div`
   .link {
     font-weight: 600;
     border-bottom: 1px dashed #333333;
-    border-color: ${(props) => !props.isPortalPaid && "#A3A9AE"};
+    border-color: ${(props) => !props.isSettingPaid && "#A3A9AE"};
   }
 
   .description,
   .link {
-    color: ${(props) => !props.isPortalPaid && "#A3A9AE"};
+    color: ${(props) => !props.isSettingPaid && "#A3A9AE"};
   }
 
   .text-input {
@@ -36,7 +36,7 @@ const StyledComponent = styled.div`
 const CompanyInfoSettings = (props) => {
   const {
     t,
-    isPortalPaid,
+    isSettingPaid,
     getCompanyInfoSettings,
     setCompanyInfoSettings,
     restoreCompanyInfoSettings,
@@ -223,7 +223,7 @@ const CompanyInfoSettings = (props) => {
   };
 
   const onShowExample = () => {
-    if (!isPortalPaid) return;
+    if (!isSettingPaid) return;
 
     setShowModal(true);
   };
@@ -244,12 +244,14 @@ const CompanyInfoSettings = (props) => {
         previewData={previewData}
       />
 
-      <StyledComponent isPortalPaid={isPortalPaid}>
-        <div className="header">{t("Settings:CompanyInfoSettings")}</div>
-        <div className="description">
+      <StyledComponent isSettingPaid={isSettingPaid}>
+        <div className="header settings_unavailable">
+          {t("Settings:CompanyInfoSettings")}
+        </div>
+        <div className="description settings_unavailable">
           <Trans t={t} i18nKey="CompanyInfoSettingsDescription" ns="Settings">
             "This information will be displayed in the
-            {isPortalPaid ? (
+            {isSettingPaid ? (
               <Link className="link" onClick={onShowExample} noHover={true}>
                 {{ link }}
               </Link>
@@ -262,14 +264,14 @@ const CompanyInfoSettings = (props) => {
         <div className="settings-block">
           <FieldContainer
             id="fieldContainerCompanyName"
-            className="field-container-width"
+            className="field-container-width settings_unavailable"
             labelText={t("Common:CompanyName")}
             isVertical={true}
           >
             <TextInput
               id="textInputContainerCompanyName"
               className="text-input"
-              isDisabled={!isPortalPaid}
+              isDisabled={!isSettingPaid}
               scale={true}
               value={companyName}
               hasError={hasErrorCompanyName}
@@ -279,15 +281,15 @@ const CompanyInfoSettings = (props) => {
           </FieldContainer>
           <FieldContainer
             id="fieldContainerEmail"
-            isDisabled={!isPortalPaid}
-            className="field-container-width"
+            isDisabled={!isSettingPaid}
+            className="field-container-width settings_unavailable"
             labelText={t("Common:Email")}
             isVertical={true}
           >
             <TextInput
               id="textInputContainerEmail"
               className="text-input"
-              isDisabled={!isPortalPaid}
+              isDisabled={!isSettingPaid}
               scale={true}
               value={email}
               hasError={hasErrorEmail}
@@ -297,14 +299,14 @@ const CompanyInfoSettings = (props) => {
           </FieldContainer>
           <FieldContainer
             id="fieldContainerPhone"
-            className="field-container-width"
+            className="field-container-width settings_unavailable"
             labelText={t("Common:Phone")}
             isVertical={true}
           >
             <TextInput
               id="textInputContainerPhone"
               className="text-input"
-              isDisabled={!isPortalPaid}
+              isDisabled={!isSettingPaid}
               scale={true}
               value={phone}
               hasError={hasErrorPhone}
@@ -314,14 +316,14 @@ const CompanyInfoSettings = (props) => {
           </FieldContainer>
           <FieldContainer
             id="fieldContainerWebsite"
-            className="field-container-width"
+            className="field-container-width settings_unavailable"
             labelText={t("Common:Website")}
             isVertical={true}
           >
             <TextInput
               id="textInputContainerWebsite"
               className="text-input"
-              isDisabled={!isPortalPaid}
+              isDisabled={!isSettingPaid}
               scale={true}
               value={site}
               hasError={hasErrorSite}
@@ -331,14 +333,14 @@ const CompanyInfoSettings = (props) => {
           </FieldContainer>
           <FieldContainer
             id="fieldContainerAddress"
-            className="field-container-width"
+            className="field-container-width settings_unavailable"
             labelText={t("Common:Address")}
             isVertical={true}
           >
             <TextInput
               id="textInputContainerAddress"
               className="text-input"
-              isDisabled={!isPortalPaid}
+              isDisabled={!isSettingPaid}
               scale={true}
               value={address}
               hasError={hasErrorAddress}
@@ -354,7 +356,7 @@ const CompanyInfoSettings = (props) => {
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
-          showReminder={isPortalPaid && isChangesSettings}
+          showReminder={isSettingPaid && isChangesSettings}
           disableRestoreToDefault={!hasChangesDefaultSettings}
         />
       </StyledComponent>
