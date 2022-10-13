@@ -222,7 +222,7 @@ public class StudioPeriodicNotify
                         toadmins = true;
 
                         greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')}/";
+                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~")}/portal-settings/";
                     }
 
                     #endregion

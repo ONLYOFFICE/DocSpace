@@ -101,7 +101,7 @@ public class StudioNotifySource : NotifySource
 
                 Actions.SaasAdminPaymentWarningEvery2MonthsV115,
 
-                Actions.SaasAdminModulesV115,
+                Actions.SaasAdminModulesV1,
 
                 Actions.PersonalActivate,
                 Actions.PersonalAfterRegistration1,

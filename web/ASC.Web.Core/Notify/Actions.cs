@@ -106,8 +106,6 @@ public static class Actions
 
     public static readonly INotifyAction SaasAdminPaymentWarningEvery2MonthsV115 = new NotifyAction("saas_admin_payment_warning_every_2months_v115");
 
-    public static readonly INotifyAction SaasAdminModulesV115 = new NotifyAction("saas_admin_modules_v115");
-
     public static readonly INotifyAction PersonalActivate = new NotifyAction("personal_activate");
     public static readonly INotifyAction PersonalAfterRegistration1 = new NotifyAction("personal_after_registration1");
     public static readonly INotifyAction PersonalAfterRegistration7 = new NotifyAction("personal_after_registration7");
