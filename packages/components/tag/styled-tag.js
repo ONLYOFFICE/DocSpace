@@ -41,13 +41,8 @@ const StyledTag = styled.div`
   }
 
   .third-party-tag {
-    width: 20px;
-    height: 20px;
-
-    svg {
-      max-width: 100%;
-      max-height: 100%;
-    }
+    width: 16px;
+    height: 16px;
   }
 
   ${(props) =>
