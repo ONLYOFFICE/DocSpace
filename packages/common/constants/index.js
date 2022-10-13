@@ -27,6 +27,10 @@ export const EmployeeStatus = Object.freeze({
 export const EmployeeType = Object.freeze({
   User: 1,
   Guest: 2,
+  UserString: "user",
+  RoomAdmin: "manager",
+  DocSpaceAdmin: "admin",
+  Owner: "Owner",
 });
 /**
  * Enum for filter type.

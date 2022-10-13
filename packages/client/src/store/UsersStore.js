@@ -98,10 +98,10 @@ class UsersStore {
 
     try {
       switch (type) {
-        case "admin":
+        case EmployeeType.DocSpaceAdmin:
           await changeAdmins(userIds, fullAccessId, true);
           break;
-        case "manager":
+        case EmployeeType.RoomAdmin:
         case EmployeeType.User:
           const actions = [];
           if (fromType.includes("admin")) {
