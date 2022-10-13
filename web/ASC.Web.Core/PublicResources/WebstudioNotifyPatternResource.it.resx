@@ -1040,9 +1040,6 @@ il team di ONLYOFFICE</value>
   <data name="subject_saas_admin_trial_warning_before5_v115" xml:space="preserve">
     <value>‎Utilizza questo sconto prima della fine della versione di valutazione‎</value>
   </data>
-  <data name="subject_saas_admin_user_apps_tips_v115" xml:space="preserve">
-    <value>Ottieni apps di ONLYOFFICE gratis</value>
-  </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Unisciti a ${__VirtualRootPath}</value>
   </data>

@@ -1072,19 +1072,6 @@ $GreenButton
 Команда ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_user_apps_tips_v115" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Скачайте бесплатные приложения ONLYOFFICE для работы с документами и проектами с любого устройства.
-
-·	Чтобы работать с документами офлайн в ОС Windows, Linux и Mac, скачайте "Десктопные редакторы ONLYOFFICE":"https://www.onlyoffice.com/ru/download-desktop.aspx". Вы можете подключить приложение к вашему облаку для совместной работы в режиме реального времени.
-·	Чтобы редактировать документы на мобильных устройствах, скачайте приложение ONLYOFFICE Документы для "iOS":"https://apps.apple.com/ru/app/onlyoffice-documents/id944896972" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
-·	Чтобы управлять работой команды, где бы вы ни были, скачайте приложение ONLYOFFICE Проекты для "iOS":"https://apps.apple.com/ru/app/onlyoffice-projects/id1353395928" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.projects".
-
-С уважением,
-Команда ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Здравствуйте!
 
@@ -1386,9 +1373,6 @@ $GreenButton
   </data>
   <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Сегодня истекает пробный период ONLYOFFICE</value>
-  </data>
-  <data name="subject_saas_admin_user_apps_tips_v115" xml:space="preserve">
-    <value>Скачайте бесплатные приложения ONLYOFFICE</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Стать участником ${__VirtualRootPath}</value>

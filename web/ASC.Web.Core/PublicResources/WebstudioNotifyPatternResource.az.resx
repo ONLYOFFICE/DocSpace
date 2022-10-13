@@ -1071,19 +1071,6 @@ Hörmətlə,
 ONLYOFFICE Komandası
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_user_apps_tips_v115" xml:space="preserve">
-    <value>Salam, $UserName!
-
-İstənilən cihazınızda sənədlər və layihələr üzərində işləmək üçün ödənişsiz ONLYOFFICE proqramları əldə edin.
-
-# Windows, Linux və macOS-da sənədlərlə oflayn işləmək üçün "ONLYOFFICE Desktop Editors" proqramını endirin:"https://www.onlyoffice.com/apps.aspx".
-# Mobil cihazlarda sənədləri redaktə etmək üçün "iOS" üçün ONLYOFFICE Sənədlər proqramı:"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" və ya "Android":"https://play.google .com/store/apps/details?id=com.onlyoffice.documents".
-# Komanda performansınıza yolda olarkən də nəzarət etmək üçün "iOS" üçün ONLYOFFICE Layihələri əldə edin:"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".
-
-Hörmətlə,
-ONLYOFFICE Komandası
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Salam!
 
@@ -1390,9 +1377,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>ONLYOFFICE sınaq müddətiniz bu gün başa çatır</value>
-  </data>
-  <data name="subject_saas_admin_user_apps_tips_v115" xml:space="preserve">
-    <value>Ödənişsiz ONLYOFFICE tətbiqlərini əldə edin</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>

@@ -229,19 +229,6 @@ public class StudioPeriodicNotify
                     }
 
                     #endregion
-
-                    #region 14 days after registration to admins and users SAAS TRIAL
-
-                    else if (createdDate.AddDays(14) == nowDate)
-                    {
-                        action = Actions.SaasAdminUserAppsTipsV115;
-                        paymentMessage = false;
-                        toadmins = true;
-                        tousers = true;
-                    }
-
-                    #endregion
-
                     #endregion
 
                     #region Trial warning letters

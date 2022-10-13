@@ -1140,19 +1140,6 @@ Truly yours,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_user_apps_tips_v115" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Get free ONLYOFFICE apps to work on documents and projects from any of your devices.
-
-·	To work on documents offline on Windows, Linux and Mac, download "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx". You can connect the app to your cloud for online collaboration.
-·	To edit documents on mobile devices, get ONLYOFFICE Documents app for "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
-·	To manage your team performance on the go, get ONLYOFFICE Projects for "iOS":"https://apps.apple.com/us/app/onlyoffice-projects/id1353395928" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.projects". 
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Hello!
 
@@ -1476,9 +1463,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Your ONLYOFFICE trial expires today</value>
-  </data>
-  <data name="subject_saas_admin_user_apps_tips_v115" xml:space="preserve">
-    <value>Get free ONLYOFFICE apps</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>

@@ -1055,19 +1055,6 @@ Bien à vous,
 Equipe ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_user_apps_tips_v115" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Procurez-vous les applications gratuites ONLYOFFICE pour travailler sur les documents et les projets depuis tous vos appareils.
-
-# Pour travailler sur les documents en mode déconnecté sur Windows, Linux et macOS, téléchargez les "applications de bureau ONLYOFFICE":"https://www.onlyoffice.com/apps.aspx".
-# Pour éditer les documents sur vos appareils mobiles, téléchargez les applis ONLYOFFICE Documents pour "iOS":"https://itunes.apple.com/us/app/onlyoffice-documents/id944896972" ou "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
-# Pour gérer la performance de votre équipe partout et à tout moment, téléchargez ONLYOFFICE Projects pour "iOS":"https://itunes.apple.com/us/app/onlyoffice-projects/id1353395928".
-
-Bien à vous,
-Equipe ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_guest_activation_v115" xml:space="preserve">
     <value>Bonjour !
 
@@ -1370,9 +1357,6 @@ Le lien est valide pendant 7 jours.</value>
   </data>
   <data name="subject_saas_admin_trial_warning_v115" xml:space="preserve">
     <value>Votre période d'essai pour ONLYOFFICE expire aujourd'hui</value>
-  </data>
-  <data name="subject_saas_admin_user_apps_tips_v115" xml:space="preserve">
-    <value>Obtenez des applications gratuites ONLYOFFICE</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>L'invitation à rejoindre le portail ${__VirtualRootPath}</value>

@@ -98,7 +98,6 @@ public static class Actions
     public static readonly INotifyAction EnterpriseWhitelabelAdminPaymentWarningV10 = new NotifyAction("enterprise_whitelabel_admin_payment_warning_v10");
 
     public static readonly INotifyAction SaasAdminComfortTipsV115 = new NotifyAction("saas_admin_comfort_tips_v115");
-    public static readonly INotifyAction SaasAdminUserAppsTipsV115 = new NotifyAction("saas_admin_user_apps_tips_v115");
 
     public static readonly INotifyAction SaasAdminTrialWarningBefore5V115 = new NotifyAction("saas_admin_trial_warning_before5_v115");
     public static readonly INotifyAction SaasAdminTrialWarningV115 = new NotifyAction("saas_admin_trial_warning_v115");

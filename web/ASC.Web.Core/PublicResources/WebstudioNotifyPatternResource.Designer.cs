@@ -2149,20 +2149,6 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Get free ONLYOFFICE apps to work on documents and projects from any of your devices.
-        ///
-        ///·	To work on documents offline on Windows, Linux and Mac, download &quot;ONLYOFFICE Desktop Editors&quot;:&quot;https://www.onlyoffice.com/download-desktop.aspx&quot;. You can connect the app to your cloud for online collaboration.
-        ///·	To edit documents on mobile devices, get ONLYOFFICE Documents app for &quot;iOS&quot;:&quot;https://apps.apple.com/us/app/onlyoffice-documents/id944896972&quot; or &quot;Android&quot;:&quot;https://play.google.com/store/apps [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_saas_admin_user_apps_tips_v115 {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_user_apps_tips_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
         ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
@@ -3165,15 +3151,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_admin_trial_warning_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_trial_warning_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Get free ONLYOFFICE apps.
-        /// </summary>
-        public static string subject_saas_admin_user_apps_tips_v115 {
-            get {
-                return ResourceManager.GetString("subject_saas_admin_user_apps_tips_v115", resourceCulture);
             }
         }
         
