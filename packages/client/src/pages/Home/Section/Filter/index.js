@@ -16,6 +16,7 @@ import {
   FilterType,
   RoomsType,
   RoomsProviderType,
+  RoomsProviderTypeName,
 } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 import FilterInput from "@docspace/common/components/FilterInput";
@@ -71,7 +72,7 @@ const getType = (filterValues) => {
 const getProviderType = (filterValues) => {
   const filterType = filterValues.find(
     (value) => value.group === FilterGroups.roomFilterProviderType
-  )?.key[0];
+  )?.key;
 
   const type = filterType;
 
@@ -380,9 +381,7 @@ const SectionFilterContent = ({
       if (roomsFilter.provider) {
         const provider = +roomsFilter.provider;
 
-        const label = Object.entries(RoomsProviderType).find(
-          (item) => item[1] === provider
-        )[0];
+        const label = RoomsProviderTypeName[provider];
 
         filterValues.push({
           key: provider,
@@ -531,6 +530,7 @@ const SectionFilterContent = ({
     filter.withSubfolders,
     filter.authorType,
     filter.filterType,
+    filter.provider,
     filter.searchInContent,
     filter.excludeSubject,
     roomsFilter.provider,
@@ -767,13 +767,19 @@ const SectionFilterContent = ({
       }
 
       if (connectedThirdParty) {
-        const thirdPartyOptions = connectedThirdParty.map((thirdParty) => ({
-          key: Object.entries(RoomsProviderType).find(
+        const thirdPartyOptions = connectedThirdParty.map((thirdParty) => {
+          const key = Object.entries(RoomsProviderType).find(
             (item) => item[0] === thirdParty
-          )[1],
-          group: FilterGroups.roomFilterProviderType,
-          label: thirdParty,
-        }));
+          )[1];
+
+          const label = RoomsProviderTypeName[key];
+
+          return {
+            key,
+            group: FilterGroups.roomFilterProviderType,
+            label,
+          };
+        });
 
         filterOptions.push({
           key: FilterGroups.roomFilterProviderType,
