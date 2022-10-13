@@ -134,20 +134,16 @@ class SelectionStore {
       return users.length > 0;
     }
 
-    if (isAdmin && !isOwner) {
-      const users = this.selection.filter(
-        (x) =>
-          x.status !== EmployeeStatus.Disabled &&
-          x.id !== id &&
-          !x.isAdmin &&
-          !x.isOwner &&
-          x.isVisitor
-      );
+    const users = this.selection.filter(
+      (x) =>
+        x.status !== EmployeeStatus.Disabled &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner &&
+        x.isVisitor
+    );
 
-      return users.length > 0;
-    }
-
-    return false;
+    return users.length > 0;
   }
 
   get getUsersToMakeEmployees() {
@@ -161,20 +157,16 @@ class SelectionStore {
       return users.map((u) => u);
     }
 
-    if (isAdmin && !isOwner) {
-      const users = this.selection.filter(
-        (x) =>
-          x.status !== EmployeeStatus.Disabled &&
-          x.id !== id &&
-          !x.isAdmin &&
-          !x.isOwner &&
-          x.isVisitor
-      );
+    const users = this.selection.filter(
+      (x) =>
+        x.status !== EmployeeStatus.Disabled &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner &&
+        x.isVisitor
+    );
 
-      return users.map((u) => u);
-    }
-
-    return false;
+    return users.map((u) => u);
   }
 
   get hasUsersToActivate() {
