@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,18 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Core.WhiteLabel;
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-public class CompanyWhiteLabelSettingsWrapper
+public class CompanyWhiteLabelSettingsDto: IMapFrom<CompanyWhiteLabelSettings>
 {
-    public CompanyWhiteLabelSettings Settings { get; set; }
-}
-
-[Serializable]
-public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
-{
-    private CoreSettings _coreSettings;
-
     public string CompanyName { get; set; }
 
     public string Site { get; set; }
@@ -46,58 +38,12 @@ public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 
     public string Phone { get; set; }
 
-    [JsonPropertyName("IsLicensor")]
     public bool IsLicensor { get; set; }
 
-    public CompanyWhiteLabelSettings(CoreSettings coreSettings)
+    public bool IsDefault { get; set; }
+
+    public void Mapping(Profile profile)
     {
-        _coreSettings = coreSettings;
-    }
-
-    public CompanyWhiteLabelSettings()
-    {
-
-    }
-
-    public bool IsDefault
-    {
-        get
-        {
-            var defaultSettings = GetDefault();
-
-            return CompanyName == defaultSettings.CompanyName &&
-                    Site == defaultSettings.Site &&
-                    Email == defaultSettings.Email &&
-                    Address == defaultSettings.Address &&
-                    Phone == defaultSettings.Phone &&
-                    IsLicensor == defaultSettings.IsLicensor;
-        }
-    }
-
-    #region ISettings Members
-
-    [JsonIgnore]
-    public Guid ID
-    {
-        get { return new Guid("{C3C5A846-01A3-476D-A962-1CFD78C04ADB}"); }
-    }
-
-
-    public CompanyWhiteLabelSettings GetDefault()
-    {
-        var settings = _coreSettings.GetSetting("CompanyWhiteLabelSettings");
-
-        var result = string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings(_coreSettings) : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
-
-        result._coreSettings = _coreSettings;
-
-        return result;
-    }
-
-    #endregion
-
-    public static CompanyWhiteLabelSettings Instance(SettingsManager settingsManager)
-    {
-        return settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
+        profile.CreateMap<CompanyWhiteLabelSettings, CompanyWhiteLabelSettingsDto>();
     }
 }
