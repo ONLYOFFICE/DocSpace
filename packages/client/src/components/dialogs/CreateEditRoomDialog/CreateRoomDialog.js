@@ -33,14 +33,6 @@ const CreateRoomDialog = ({
   onClose,
   onCreate,
 
-  connectItems,
-  setConnectDialogVisible,
-  setRoomCreation,
-  saveThirdpartyResponse,
-  openConnectWindow,
-  setConnectItem,
-  getOAuthToken,
-
   fetchedTags,
   isLoading,
   folderFormValidation,
@@ -49,18 +41,17 @@ const CreateRoomDialog = ({
   const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
 
   const startRoomParams = {
-    title: "",
     type: undefined,
+    title: "",
     tags: [],
     isPrivate: false,
-    isThirdparty: false,
     storageLocation: {
-      isConnected: false,
+      isThirdparty: false,
       provider: null,
-      thirdpartyFolderId: "",
+      thirdpartyAccount: null,
       storageFolderPath: "",
+      rememberThirdpartyStorage: false,
     },
-    rememberThirdpartyStorage: false,
     icon: {
       uploadedFile: null,
       tmpFile: "",
@@ -120,13 +111,6 @@ const CreateRoomDialog = ({
             setRoomParams={setRoomParams}
             setRoomType={setRoomType}
             setIsScrollLocked={setIsScrollLocked}
-            connectItems={connectItems}
-            setConnectDialogVisible={setConnectDialogVisible}
-            setRoomCreation={setRoomCreation}
-            saveThirdpartyResponse={saveThirdpartyResponse}
-            openConnectWindow={openConnectWindow}
-            setConnectItem={setConnectItem}
-            getOAuthToken={getOAuthToken}
           />
         )}
       </ModalDialog.Body>

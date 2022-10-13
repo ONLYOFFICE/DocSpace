@@ -31,13 +31,6 @@ const SetRoomParams = ({
   tagHandler,
   setIsScrollLocked,
   isEdit,
-  connectItems,
-  setConnectDialogVisible,
-  setRoomCreation,
-  saveThirdpartyResponse,
-  openConnectWindow,
-  setConnectItem,
-  getOAuthToken,
 }) => {
   const onChangeName = (e) => {
     // let value = e.target.value;
@@ -66,22 +59,22 @@ const SetRoomParams = ({
   const onChangeIsPrivate = () =>
     setRoomParams({ ...roomParams, isPrivate: !roomParams.isPrivate });
 
-  // const onChangeThidpartyFolderName = (e) =>
-  //   setRoomParams({ ...roomParams, thirdpartyFolderName: e.target.value });
+  const onChangeThidpartyFolderName = (e) =>
+    setRoomParams({ ...roomParams, thirdpartyFolderName: e.target.value });
 
   const onChangeIcon = (icon) => setRoomParams({ ...roomParams, icon: icon });
 
-  const onChangeIsThirdparty = () =>
-    setRoomParams({ ...roomParams, isThirdparty: !roomParams.isThirdparty });
+  // const onChangeIsThirdparty = () =>
+  //   setRoomParams({ ...roomParams, isThirdparty: !roomParams.isThirdparty });
 
-  const setChangeStorageLocation = (storageLocation) =>
+  const onChangeStorageLocation = (storageLocation) =>
     setRoomParams({ ...roomParams, storageLocation });
 
-  const onChangeRememberThirdpartyStorage = () =>
-    setRoomParams({
-      ...roomParams,
-      rememberThirdpartyStorage: !roomParams.rememberThirdpartyStorage,
-    });
+  // const onChangeRememberThirdpartyStorage = () =>
+  //   setRoomParams({
+  //     ...roomParams,
+  //     rememberThirdpartyStorage: !roomParams.rememberThirdpartyStorage,
+  //   });
 
   const [currentRoomTypeData] = roomTypes.filter(
     (room) => room.type === roomParams.type
@@ -125,31 +118,19 @@ const SetRoomParams = ({
         setIsScrollLocked={setIsScrollLocked}
       />
 
-      {/* {!isEdit && (
+      {!isEdit && (
         <IsPrivateParam
           t={t}
           isPrivate={roomParams.isPrivate}
           onChangeIsPrivate={onChangeIsPrivate}
         />
-      )} */}
+      )}
 
       {!isEdit && (
         <ThirdPartyStorage
           t={t}
-          connectItems={connectItems}
-          setConnectDialogVisible={setConnectDialogVisible}
-          setRoomCreation={setRoomCreation}
-          saveThirdpartyResponse={saveThirdpartyResponse}
-          openConnectWindow={openConnectWindow}
-          setConnectItem={setConnectItem}
-          getOAuthToken={getOAuthToken}
-          roomParams={roomParams}
-          isThirdparty={roomParams.isThirdparty}
-          onChangeIsThirdparty={onChangeIsThirdparty}
           storageLocation={roomParams.storageLocation}
-          setChangeStorageLocation={setChangeStorageLocation}
-          rememberThirdpartyStorage={roomParams.rememberThirdpartyStorage}
-          onChangeRememberThirdpartyStorage={onChangeRememberThirdpartyStorage}
+          onChangeStorageLocation={onChangeStorageLocation}
           setIsScrollLocked={setIsScrollLocked}
           setIsOauthWindowOpen={setIsOauthWindowOpen}
         />
