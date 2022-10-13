@@ -1014,40 +1014,6 @@ Meilleures salutations,
 
 ^Pour changer le type de notification, veuillez gérer vos "paramètres d'abonnement":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Nous avons rassemblé qelques astuces pour optimiser votre travail à ONLYOFFICE.
-
-*#1 Obtenir les réponses rapides*
-
-Passez au "Centre d'Aide":"${__HelpLink}" si vous ne savez pas comment accomplir telle ou telle tâche. Contactez notre "équipe d'assistance":"https://helpdesk.onlyoffice.com/hc/en-us" si vous rencontrez des problèmes. 
-
-*#2 N'oubliez pas à propos des extensions tierces*
-
-Les fonctionnalités de ONLYOFFICE peuvent être étendues via les extensions tierces. Par exemple, vous pouvez passer les appels VoIP via Twilio ou signer vos documents électroniquement avec DocuSign. "En savoir plus &gt;&gt;":"${__HelpLink}/server/windows/community/authorization-keys.aspx"  
-
-*#3 Gérez vos abonnements*
-
-Vous allez recevoir les notifications à propos des documents partagés, les avancements dans les projets et les anniversaires de vos collègues. Activez ou désactivez les notifications sur la page de votre Profil. "En savoir plus &gt;&gt;":"${__HelpLink}/tipstricks/managing-subscriptions.aspx"
-
-*#4 Demandez une formation*
-
-Pour vous familiariser rapidement avec les outils ONLYOFFICE, commandez une formation pour toute votre équipe afin d'apprendre vos collègues à utiliser pleinement les modules et leurs fonctionnalités. C'est une option payante. "Contactez-nous &gt;&gt;":"https://support.onlyoffice.com" 
-
-*#5 Passez au forfait cloud VIP*
-Le forfait VIP est conçu pour les entreprises ayant besoin d'une scalabilité et d'un haut niveau de sécurité : 
-#Jusqu'au 5,000 utilisateurs par portail avec 250 Go d'espace par membre d'équipe. 
-#Serveur dédié hébergé par un fournisseur européen. 
-#Architecture multitenante : portails séparés pour les différents départements de l'entreprise.
-#Chiffrement au repos et collaboration en temps réel protégée via les Salles Privées.
-
-$GreenButton
-
-Bien à vous,
-Equipe ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Bonjour $UserName,
 Merci d'avoir choisi ONLYOFFICE ! Renouvelez votre forfait Business aujourd'hui et profitez d'un remise de  20% avec le code promo Reactivate20 ! Veuillez saisir ce code lors de l'achat pour :
@@ -1414,9 +1380,6 @@ Le lien est valide pendant 7 jours.</value>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restauration démarrée
 </value>
-  </data>
-  <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Astuces pour le travail efficace</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Ré-activez le forfait Business et profitez de la remise de 20%</value>

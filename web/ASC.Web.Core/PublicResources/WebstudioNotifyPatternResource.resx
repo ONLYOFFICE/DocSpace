@@ -1099,36 +1099,6 @@ ONLYOFFICE™ Support Team
 
 ^To change the notification type, please manage your "subscription settings":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Hello, $UserName!
-
-We have prepared several tips to make your work with ONLYOFFICE  more comfortable.
-
-*#1 Get quick answers*
-Browse "Help Center":"${__HelpLink}" when you are not sure how to perform your task. Contact "our support team":"https://helpdesk.onlyoffice.com" if you face tech problems.
-
-*#2 Don’t forget about 3rd party extensions*
-ONLYOFFICE functionality can be enhanced with 3rd party extensions. For example, you can make VoIP calls with Twilio or e-sign your documents with DocuSign. "Find out more":"https://helpcenter.onlyoffice.com/tipstricks/authorization-keys-saas.aspx".
-
-*#3 Manage your subscriptions*
-You’ll get notified about shared docs, projects updates, and your colleagues birthdays. Switch notifications on/off on your Profile page. "Learn more &gt;&gt;&gt;":"https://helpcenter.onlyoffice.com/tipstricks/managing-subscriptions.aspx".
-
-*#4 Take training courses*
-To ensure your quick start with ONLYOFFICE, we provide training courses on how to use all the modules and features. "Learn more":"https://www.onlyoffice.com/training-courses.aspx".
-
-*#5 Consider VIP cloud*
-VIP cloud is offered to those who need enterprise-grade security and scalability: 
-·	Dedicated server from a European provider. 
-·	Multitenancy: separate portals for company branches.
-·	Encryption at rest and encrypted collaboration via Private Rooms.
-
-$GreenButton
-
-Truly yours,
-
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Hello, $UserName!
 
@@ -1517,9 +1487,6 @@ The link is only valid for 7 days.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restore started</value>
-  </data>
-  <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Tips for comfortable work</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Re-activate Business and save 20% of the price</value>

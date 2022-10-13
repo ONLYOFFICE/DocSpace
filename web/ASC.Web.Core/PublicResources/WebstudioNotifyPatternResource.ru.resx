@@ -1030,35 +1030,6 @@ $GreenButton
 
 ^Чтобы изменить тип оповещения, пожалуйста, настройте "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Мы подготовили несколько полезных советов, чтобы сделать вашу работу с ONLYOFFICE еще более удобной.
-
-*#1 Получайте быстрые ответы*
-Посетите "Справочный центр":"${__HelpLink}", если вы не уверены, как выполнить задачу. Обратитесь в "нашу службу поддержки":"https://helpdesk.onlyoffice.com", если вы столкнетесь с техническими проблемами. 
-
-*#2 Не забудьте о сторонних расширениях*
-Функциональность ONLYOFFICE можно расширить с помощью сторонних дополнений. Например, вы можете использовать IP-телефонию с помощью Twilio или подписывать документы электронной подписью с помощью DocuSign. "Узнайте больше &gt;&gt;":"${__HelpLink}/ru/tipstricks/authorization-keys-saas.aspx"  
-
-*#3 Управляйте подписками*
-Вы будете получать оповещения о предоставлении доступа к документам, обновлениях проектов и днях рождения коллег. Включите или отключите оповещения на странице своего профиля. "Узнайте больше &gt;&gt;":"${__HelpLink}/ru/tipstricks/managing-subscriptions.aspx"
-
-*#4 Пройдите курсы обучения*
-Чтобы вы могли быстро начать работу с ONLYOFFICE, мы проводим курсы обучения по использованию всех модулей и возможностей. "Узнайте больше &gt;&gt;":"${__HelpLink}/ru/training-courses.aspx"
-
-*#5 Обратите внимание на VIP-облако*
-VIP-облако предлагается тем, кому требуется безопасность и масштабируемость корпоративного уровня: 
-·	Выделенный сервер от европейского провайдера. 
-·	Мультитенантность: отдельные порталы для филиалов компании.
-·	Шифрование хранящихся данных и зашифрованная совместная работа через приватные комнаты.
- 
-$GreenButton
-
-С уважением,
-Команда ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Здравствуйте, $UserName!
 Благодарим вас за выбор ONLYOFFICE! Повторно активируйте ваш тарифный план Business сегодня и сэкономьте 20% с купоном Reactivate20 ! Используйте его при покупке, чтобы:
@@ -1425,9 +1396,6 @@ $GreenButton
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Началось восстановление</value>
-  </data>
-  <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Полезные советы для комфортной работы</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Повторно активируйте тарифный план Business и сэкономьте 20% от стоимости</value>

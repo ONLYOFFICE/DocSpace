@@ -1030,40 +1030,6 @@ ONLYOFFICE™ Support Team
 
 ^Um den Benachrichtigungstyp zu ändern, verwalten Sie Ihre "Abonnement-Einstellungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-Wir haben ein Paar Tipps vorbereitet, die Ihre Arbeit in ONLYOFFICE einfacher machen können.
-
-*#1 Erhalten Sie schnelle Antworten*
-
-Besuchen Sie unser "Hilfe-Center":"${__HelpLink}" bei allen Schwierigkeiten in ONLYOFFICE. Wenden Sie sich an "unser Support-Team": "https://helpdesk.onlyoffice.com/hc/en-us", wenn Sie technische Probleme haben.
-
-*#2 Integrieren Sie Dienste von Drittanbietern*
-
-Die Funktionalität von ONLYOFFICE kann mit Diensten von Drittanbietern erweitert werden. Sie können beispielsweise VoIP-Anrufe mit Twilio machen oder Ihre Dokumente mit DocuSign per E-Mail unterzeichnen. "Weitere Informationen &gt;&gt;":"${__HelpLink}/server/windows/community/authorization-keys.aspx" 
-
-*#3 Verwalten Sie Ihre Abonnements*
-
-Sie werden über freigegebene Dokumente, Projekt-Updates und Geburtstage Ihrer Kolleg/innen informiert. Schalten Sie Benachrichtigungen auf Ihrer Profilseite ein / aus. "Weitere Informationen &gt;&gt;":"${__HelpLink}/tipstricks/managing-subscriptions.aspx"
-
-*#4 Fordern Sie Schulung an*
-
-Für einen schnellen Einstieg in ONLYOFFICE können wir Ihr Team trainieren, wie man alle Module und Features benutzt. Diese Möglichkeit ist kostenpflichtig. "Kontaktieren Sie uns &gt;&gt;":"https://www.onlyoffice.com/de/support-contact-form.aspx" 
-
-*#5 Erwerben Sie VIP Cloud*
-Die VIP-Cloud wird allen angeboten, die Sicherheit und Skalierbarkeit auf Unternehmensebene benötigen:
-#Bis zu 5.000 Benutzer pro Portal mit 250 GB Speicherplatz pro User.
-#Dedizierter Server eines europäischen Anbieters.
-#Mandantenfähigkeit: separate Portale für jeden Unternehmenszweig.
-#Verschlüsselung inaktiver Daten und verschlüsselte Zusammenarbeit über Privaträume.
-
-$GreenButton
-
-Beste Grüße,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Hallo, $UserName!
 
@@ -1430,9 +1396,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Wiederherstellung startet</value>
-  </data>
-  <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Tipps für effektivere Arbeit</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Aktivieren Sie den Business-Tarifplan erneut mit 20% Rabatt</value>

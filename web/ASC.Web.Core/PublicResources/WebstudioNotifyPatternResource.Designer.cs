@@ -2052,23 +2052,6 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///We have prepared several tips to make your work with ONLYOFFICE  more comfortable.
-        ///
-        ///*#1 Get quick answers*
-        ///Browse &quot;Help Center&quot;:&quot;${__HelpLink}&quot; when you are not sure how to perform your task. Contact &quot;our support team&quot;:&quot;https://helpdesk.onlyoffice.com&quot; if you face tech problems.
-        ///
-        ///*#2 Don’t forget about 3rd party extensions*
-        ///ONLYOFFICE functionality can be enhanced with 3rd party extensions. For example, you can make VoIP calls with Twilio or e-sign your documents with DocuSign. &quot;Fi [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_saas_admin_comfort_tips_v115 {
-            get {
-                return ResourceManager.GetString("pattern_saas_admin_comfort_tips_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
         ///Adjust security settings of your ONLYOFFICE DocSpace to make it more secure:
         ///
         ///* Set password strength.  
@@ -3154,15 +3137,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_admin_activation_v1 {
             get {
                 return ResourceManager.GetString("subject_saas_admin_activation_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tips for comfortable work.
-        /// </summary>
-        public static string subject_saas_admin_comfort_tips_v115 {
-            get {
-                return ResourceManager.GetString("subject_saas_admin_comfort_tips_v115", resourceCulture);
             }
         }
         

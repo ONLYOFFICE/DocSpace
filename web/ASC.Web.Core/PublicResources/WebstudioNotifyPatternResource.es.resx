@@ -1027,36 +1027,6 @@ Equipo de Asistencia ONLYOFFICE™
 
 ^Para cambiar el tipo de notificación, por favor administre su "configuración de la suscripción":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Hemos preparado varios consejos para que su trabajo con ONLYOFFICE sea más cómodo.
-
-*#1 Obtenga respuestas rápidas*
-Navegue por el "Centro de Ayuda":"${__HelpLink}" cuando no está seguro de cómo realizar su tarea. Póngase en contacto con "nuestro equipo de soporte":"https://helpdesk.onlyoffice.com/hc/en-us" si tiene problemas técnicos. 
-
-*#2 No se olvide de las extensiones de terceros*
-La funcionalidad de ONLYOFFICE puede ser mejorada con extensiones de terceros. Por ejemplo, usted puede hacer llamadas VoIP con Twilio o firmar electrónicamente sus documentos con DocuSign. "Más información &gt;&gt;":"${__HelpLink}/server/windows/community/authorization-keys.aspx"  
-
-*#3 Gestione sus suscripciones*
-Usted recibirá notificaciones sobre los documentos compartidos, las actualizaciones de los proyectos y los cumpleaños de sus colegas. Active o desactive las notificaciones en su página de perfil. "Más información &gt;&gt;":"${__HelpLink}/tipstricks/managing-subscriptions.aspx"
-
-*#4 Pida un curso de formación especial*
-Para asegurar su rápido comienzo con ONLYOFFICE, ofrecemos cursos de formación sobre cómo utilizar todos los módulos y características. "Más información": "https://www.onlyoffice.com/es/training-courses.aspx".
-
-*#5 Considere la nube VIP*
-La nube VIP es una opción para aquellos que necesitan la seguridad y escalabilidad de nivel empresarial: 
-·	Servidor dedicado de un proveedor europeo. 
-·	Uso de varios inquilinos: portales separados para las sucursales de la empresa.
-·	Cifrado en reposo y colaboración cifrada a través de Salas Privadas.
-
-
-$GreenButton
-
-Cordialmente,
-Equipo de ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>¡Hola, $UserName!
 
@@ -1423,9 +1393,6 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restauración ha comenzado</value>
-  </data>
-  <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Consejos para trabajar cómodamente</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Reactive Business y ahorre un 20% del precio</value>

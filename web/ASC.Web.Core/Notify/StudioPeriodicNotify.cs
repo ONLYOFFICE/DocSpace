@@ -227,20 +227,6 @@ public class StudioPeriodicNotify
 
                     #endregion
 
-                    #region  4 days after registration to admins SAAS TRIAL
-
-                    else if (createdDate.AddDays(4) == nowDate)
-                    {
-                        action = Actions.SaasAdminComfortTipsV115;
-                        paymentMessage = false;
-                        toadmins = true;
-
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonUseDiscount;
-                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/Tariffs.aspx");
-                    }
-
-                    #endregion
-
                     #region 7 days after registration to admins and users SAAS TRIAL
 
                     else if (createdDate.AddDays(7) == nowDate)

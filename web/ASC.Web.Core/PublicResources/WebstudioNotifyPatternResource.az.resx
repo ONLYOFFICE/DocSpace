@@ -1030,40 +1030,6 @@ Hörmətlə,
 ONLYOFFICE™ Dəstək Qrupu
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Salam, $UserName!
-
-ONLYOFFICE ilə işinizi daha rahat etmək üçün bir neçə məsləhət hazırlamışıq.
-
-*#1 Tez cavablar alın*
-
-Tapşırığınızı necə yerinə yetirəcəyinizə əmin olmadığınız zaman "Yardım Mərkəzi"nə baxın:"${__HelpLink}". Texniki problemlərlə üzləşsəniz, "dəstək komandamız"la əlaqə saxlayın:"https://helpdesk.onlyoffice.com/hc/en-us".
-
-*#2 Üçüncü tərəf genişləndirmələrini unutmayın*
-
-ONLYOFFICE funksionallığı 3-cü tərəf genişləndirmələri ilə təkmilləşdirilə bilər. Məsələn, siz Twilio ilə VoIP zəngləri edə və ya sənədlərinizi DocuSign ilə e-imzalaya bilərsiniz. "Ətraflı məlumat &gt;&gt;":"${__HelpLink}/server/windows/community/authorization-keys.aspx"
-
-*#3 Abunəliklərinizi idarə edin*
-
-Paylaşılan sənədlər, layihə yeniləmələri və həmkarlarınızın ad günləri haqqında bildiriş alacaqsınız. Profil səhifənizdə bildirişləri yandırın/söndürün. "Ətraflı məlumat &gt;&gt;":"${__HelpLink}/tipstricks/managing-subscriptions.aspx"
-
-*#4 Xüsusi təlim tələb edin*
-
-ONLYOFFICE ilə real sürətli başlanğıc əldə etmək üçün bizdən bütün komandanıza bütün modullardan və funksiyalardan istifadə etməyi öyrətməyimizi xahiş edin. Bu ödənişli seçimdir. "Bizimlə əlaqə saxlayın &gt;&gt;":"https://support.onlyoffice.com"
-
-*#5 VIP buludunu nəzərdən keçirin*
-VIP bulud korporativ səviyyəli təhlükəsizlik və genişlənmə qabiliyyətinə ehtiyacı olanlara təklif olunur:
-#Bir komanda yoldaşına 250 Gb yaddaş ilə portal üzrə 5000-ə qədər istifadəçi.
-#Avropa provayderindən xüsusi server.
-#Multitenancy: şirkət filialları üçün ayrıca portallar.
-#İstirahət zamanı şifrələmə və Şəxsi Otaqlar vasitəsilə şifrəli əməkdaşlıq.
-
-$GreenButton
-
-Hörmətlə,
-ONLYOFFICE Komandası
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Salam, $UserName!
 ONLYOFFICE-i seçdiyiniz üçün təşəkkür edirik! Biznes planınızı bu gün yenidən aktivləşdirin və Reactivate20 kuponu ilə 20% ENDİRİM qazanın! Sadəcə satın alarkən ondan istifadə edin:
@@ -1434,9 +1400,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Bərpa prosesi başladıldı</value>
-  </data>
-  <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Rahat işləmək üçün məsləhətlər</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Biznesi yenidən aktivləşdirin və qiymətin 20%-nə qənaət edin</value>

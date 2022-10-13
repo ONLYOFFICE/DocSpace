@@ -1028,40 +1028,6 @@ Equipe de suporte do ONLYOFFICE™
 
 ^Para alterar o tipo de notificação, por favor, gerencia as suas "configurações de assinatura":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Olá, $UserName!
-
-Preparamos várias dicas para tornar seu trabalho com ONLYOFFICE mais confortável.
-
-*#1 Obtenha respostas rápidas*
-
-Procure "Centro de Ajuda":"${__HelpLink}" quando não tiver certeza de como realizar sua tarefa. Entre em contato com "nossa equipe de suporte": "https://helpdesk.onlyoffice.com/hc/en-us" se você enfrentar problemas técnicos. 
-
-*#2 Não se esqueça das extensões de terceiros*.
-
-A funcionalidade ONLYOFFICE pode ser melhorada com extensões de terceiros. Por exemplo, você pode fazer chamadas VoIP com Twilio ou assinar seus documentos com DocuSign. "Saiba mais &gt;&gt;":"${__HelpLink}/server/windows/community/authorization-keys.aspx".  
-
-*#3 Gerencie suas assinaturas*
-
-Você será notificado sobre documentos compartilhados, atualizações de projetos e aniversários de seus colegas. Ative/desative as notificações em sua página de perfil. "Saiba mais &gt;&gt;":"${__HelpLink}/tipstricks/managing-subscriptions.aspx".
-
-*#4 Solicitar treinamento especial*
-
-Para começar realmente rápido com ONLYOFFICE, peça-nos que ensinemos toda a sua equipe a usar todos os módulos e recursos. Esta é uma opção paga. "Contate-nos &gt;&gt;": "https://support.onlyoffice.com" 
-
-*#5 Considere a nuvem VIP*
-A nuvem VIP é oferecida para aqueles que precisam de segurança e escalabilidade de nível empresarial: 
-#Up para 5.000 usuários por portal com 250 Gb de armazenamento por companheiro de equipe. 
-#Servidor dedicado de um fornecedor europeu. 
-#Multitenancy: portais separados para as filiais da empresa.
-#Criptografia em repouso e colaboração criptografada via Salas Privadas.
-
-$GreenButton
-
-Atenciosamente,
-Equipe ONLYOFFICE
-"www.onlyoffice.com": "http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Olá, $UserName!
 Obrigado por escolher ONLYOFFICE! Reative seu plano de negócios hoje e economize 20% de desconto com o cupom Reativar20! Basta usá-lo durante a compra para:
@@ -1435,9 +1401,6 @@ O link só é válido por 7 dias.</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Restauração iniciada</value>
-  </data>
-  <data name="subject_saas_admin_comfort_tips_v115" xml:space="preserve">
-    <value>Dicas para um trabalho confortável</value>
   </data>
   <data name="subject_saas_admin_payment_warning_every_2months_v115" xml:space="preserve">
     <value>Reative o Business e economize 20% do preço</value>
