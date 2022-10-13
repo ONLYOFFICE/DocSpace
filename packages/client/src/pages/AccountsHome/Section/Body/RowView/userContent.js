@@ -52,7 +52,9 @@ const UserContent = ({
     role === "owner"
       ? t("Common:Owner")
       : role === "admin"
-      ? t("Administrator")
+      ? t("Common:DocSpaceAdmin")
+      : isVisitor
+      ? t("Common:RoomAdmin")
       : t("Common:User");
 
   return (
