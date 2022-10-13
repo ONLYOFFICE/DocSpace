@@ -449,7 +449,6 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid ? "#A3A9AE" : ""}
                 className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
@@ -505,7 +504,6 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid ? "#A3A9AE" : ""}
                 className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
@@ -561,7 +559,6 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid ? "#A3A9AE" : ""}
                 className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
@@ -617,7 +614,6 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid ? "#A3A9AE" : ""}
                 className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
@@ -674,7 +670,6 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid ? "#A3A9AE" : ""}
                 className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
@@ -779,7 +774,6 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid ? "#A3A9AE" : ""}
                 className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}
@@ -836,7 +830,6 @@ const WhiteLabel = (props) => {
                 fontWeight="600"
                 isHovered
                 type="action"
-                color={!isPortalPaid ? "#A3A9AE" : ""}
                 className="settings_unavailable"
               >
                 {t("ChangeLogoButton")}

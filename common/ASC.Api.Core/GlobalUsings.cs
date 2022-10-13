@@ -144,3 +144,7 @@ global using StackExchange.Redis.Extensions.Core.Configuration;
 global using StackExchange.Redis.Extensions.Newtonsoft;
 
 global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+
+global using ASC.Common.Caching.Settings;
+global using ASC.EventBus.ActiveMQ;
+
