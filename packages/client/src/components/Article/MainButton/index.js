@@ -11,7 +11,7 @@ import { encryptionUploadDialog } from "../../../helpers/desktop";
 import { withRouter } from "react-router";
 
 import MobileView from "./MobileView";
-import { combineUrl, isAdmin } from "@docspace/common/utils";
+import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
 import { Events } from "@docspace/common/constants";
