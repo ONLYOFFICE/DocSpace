@@ -50,7 +50,7 @@ const StyledRowContainer = styled(RowContainer)`
     .files-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -3px;
+      margin-top: -1px;
       ${marginStyles}
     }
   }
@@ -64,7 +64,11 @@ const FilesRowContainer = ({
   viewAs,
   setViewAs,
   infoPanelVisible,
+  filterTotal,
+  fetchMoreFiles,
+  hasMoreFiles,
   isRooms,
+  withPaging,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -84,8 +88,13 @@ const FilesRowContainer = ({
   return (
     <StyledRowContainer
       className="files-row-container"
+      filesLength={filesList.length}
+      itemCount={filterTotal}
+      fetchMoreFiles={fetchMoreFiles}
+      hasMoreFiles={hasMoreFiles}
       draggable
-      useReactWindow={false}
+      useReactWindow={!withPaging}
+      itemHeight={59}
     >
       {filesList.map((item, index) => (
         <SimpleFilesRow
@@ -101,9 +110,18 @@ const FilesRowContainer = ({
 };
 
 export default inject(({ filesStore, auth, treeFoldersStore }) => {
-  const { filesList, viewAs, setViewAs } = filesStore;
+  const {
+    filesList,
+    viewAs,
+    setViewAs,
+    filterTotal,
+    fetchMoreFiles,
+    hasMoreFiles,
+    roomsFilterTotal,
+  } = filesStore;
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+  const { withPaging } = auth.settingsStore;
 
   const isRooms = isRoomsFolder || isArchiveFolder;
 
@@ -112,6 +130,10 @@ export default inject(({ filesStore, auth, treeFoldersStore }) => {
     viewAs,
     setViewAs,
     infoPanelVisible,
+    filterTotal: isRooms ? roomsFilterTotal : filterTotal,
+    fetchMoreFiles,
+    hasMoreFiles,
     isRooms,
+    withPaging,
   };
 })(observer(FilesRowContainer));

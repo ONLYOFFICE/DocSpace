@@ -11,7 +11,7 @@ import ThirdPartyModule from "./sub-components/ThirdPartyModule";
 import RoomsModule from "./sub-components/RoomsModule";
 import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 import { StyledModules, StyledManualBackup } from "./../StyledBackup";
-import { getFromLocalStorage } from "../../../../utils";
+import { getFromLocalStorage, saveToLocalStorage } from "../../../../utils";
 //import { getThirdPartyCommonFolderTree } from "@docspace/common/api/files";
 import DataBackupLoader from "@docspace/common/components/Loaders/DataBackupLoader";
 import {
@@ -97,7 +97,15 @@ class ManualBackup extends React.Component {
   };
 
   componentDidMount() {
-    const { fetchTreeFolders, rootFoldersTitles } = this.props;
+    const { fetchTreeFolders, rootFoldersTitles, isNotPaidPeriod } = this.props;
+
+    if (isNotPaidPeriod) {
+      this.setState({
+        isEmptyContentBeforeLoader: false,
+      });
+
+      return;
+    }
     this.timerId = setTimeout(() => {
       this.setState({ isInitialLoading: true });
     }, 200);
@@ -210,6 +218,7 @@ class ManualBackup extends React.Component {
       renderTooltip,
       //isDocSpace,
       rootFoldersTitles,
+      isNotPaidPeriod,
     } = this.props;
     const {
       isInitialLoading,
@@ -301,13 +310,13 @@ class ManualBackup extends React.Component {
             </div>
           )}
         </StyledModules>
-        <StyledModules>
+        <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
             label={t("RoomsModule")}
             name={"isCheckedDocuments"}
             key={1}
             isChecked={isCheckedDocuments}
-            isDisabled={!isMaxProgress}
+            isDisabled={!isMaxProgress || isNotPaidPeriod}
             {...commonRadioButtonProps}
           />
           <Text className="backup-description module-documents">
@@ -323,13 +332,13 @@ class ManualBackup extends React.Component {
           )}
         </StyledModules>
 
-        <StyledModules>
+        <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
             label={t("ThirdPartyResource")}
             name={"isCheckedThirdParty"}
             key={2}
             isChecked={isCheckedThirdParty}
-            isDisabled={!isMaxProgress}
+            isDisabled={!isMaxProgress || isNotPaidPeriod}
             {...commonRadioButtonProps}
           />
           <Text className="backup-description">
@@ -337,13 +346,13 @@ class ManualBackup extends React.Component {
           </Text>
           {isCheckedThirdParty && <ThirdPartyModule {...commonModulesProps} />}
         </StyledModules>
-        <StyledModules>
+        <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
             label={t("ThirdPartyStorage")}
             name={"isCheckedThirdPartyStorage"}
             key={3}
             isChecked={isCheckedThirdPartyStorage}
-            isDisabled={!isMaxProgress}
+            isDisabled={!isMaxProgress || isNotPaidPeriod}
             {...commonRadioButtonProps}
           />
           <Text className="backup-description">
@@ -384,10 +393,13 @@ export default inject(({ auth, backup, treeFoldersStore }) => {
     setStorageRegions,
     saveToLocalStorage,
   } = backup;
+  const { currentTariffStatusStore } = auth;
   const { organizationName } = auth.settingsStore;
   const { rootFoldersTitles, fetchTreeFolders } = treeFoldersStore;
+  const { isNotPaidPeriod } = currentTariffStatusStore;
 
   return {
+    isNotPaidPeriod,
     organizationName,
     setThirdPartyStorage,
     clearProgressInterval,

@@ -37,11 +37,11 @@ const ToggleButtonContainer = styled.label`
               fill: ${props.isChecked
                 ? props.theme.toggleButton.disableFillColor
                 : props.theme.toggleButton.disableFillColorOff};
-              stroke: ${props.isChecked
-                ? props.theme.toggleButton.disableBorderColor
-                : props.theme.toggleButton.disableBorderColorOff};
               stroke-width: 1px;
               stroke-linecap: round;
+              stroke: ${props.isChecked
+                ? props.theme.toggleButton.borderColor
+                : props.theme.toggleButton.borderColorOff};
             }
             circle {
               fill: ${props.isChecked
@@ -54,10 +54,10 @@ const ToggleButtonContainer = styled.label`
               fill: ${props.isChecked
                 ? props.theme.toggleButton.fillColor
                 : props.theme.toggleButton.fillColorOff};
+              stroke-width: 1px;
               stroke: ${props.isChecked
                 ? props.theme.toggleButton.borderColor
-                : props.theme.toggleButton.borderColorOff};
-              stroke-width: 1px;
+                : props.theme.toggleButton.borderColor};
             }
             circle {
               fill: ${props.isChecked

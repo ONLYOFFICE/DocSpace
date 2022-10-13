@@ -1,70 +1,79 @@
-Template: appserver/environment
+Template: {{product}}/environment
 Type: string
 Default: production
-Description: Select environment for AppServer configuration:
+Description: Select environment for {{product}} configuration:
 
-Template: appserver/host
+Template: {{product}}/host
 Type: string
 Default: localhost
-Description: AppServer host:
+Description: {{product}} host:
 
-Template: appserver/port
+Template: {{product}}/port
 Type: string
 Default: 80
-Description: AppServer port:
+Description: {{product}} port:
 
-Template: appserver/db-host
+Template: {{product}}/db-host
 Type: string
 Default: localhost
 Description: MySQL host:
 
-Template: appserver/db-user
+Template: {{product}}/db-user
 Type: string
 Default: root
 Description: MySQL user:
 
-Template: appserver/db-pwd
+Template: {{product}}/db-pwd
 Type: password
 Description: MySQL password:
 
-Template: appserver/db-name
+Template: {{product}}/db-name
 Type: string
 Default: onlyoffice
 Description: MySQL database name:
 
-Template: appserver/kafka-host
-Type: string
-Default: localhost
-Description: Kafka host:
-
-Template: appserver/kafka-port
-Type: string
-Default: 9092
-Description: Kafka port:
-
-Template: appserver/zookeeper-host
-Type: string
-Default: localhost
-Description: Zookeeper host:
-
-Template: appserver/zookeeper-port
-Type: string
-Default: 2181
-Description: Zookeeper port:
-
-Template: appserver/elasticsearch-sheme
+Template: {{product}}/elasticsearch-sheme
 Type: select
 Choices: http, https
 Default: http
 Description: Elasticsearch sheme:
 
-Template: appserver/elasticsearch-host
+Template: {{product}}/elasticsearch-host
 Type: string
 Default: localhost
 Description: Elasticsearch host:
 
-Template: appserver/elasticsearch-port
+Template: {{product}}/elasticsearch-port
 Type: string
 Default: 9200
 Description: Elasticsearch port:
 
+Template: {{product}}/redis-host
+Type: string
+Default: localhost
+Description: Redis host:
+
+Template: {{product}}/redis-port
+Type: string
+Default: 6379
+Description: Redis port:
+
+Template: {{product}}/rabbitmq-host
+Type: string
+Default: localhost
+Description: RabbitMQ host:
+
+Template: {{product}}/rabbitmq-port
+Type: string
+Default: 5672
+Description: RabbitMQ port:
+
+Template: {{product}}/rabbitmq-user
+Type: string
+Default: guest
+Description: RabbitMQ user:
+
+Template: {{product}}/rabbitmq-password
+Type: string
+Default: guest
+Description: RabbitMQ password:

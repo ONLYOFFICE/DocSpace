@@ -60,6 +60,8 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     public const string ParamName_ProductSysName = "product";
     public const string ParamName_UserUserID = "uid";
+    public const string AbsoluteAccountsPath = "/accounts/";
+    public const string VirtualAccountsPath = "~/accounts/";
 
     private readonly UserManager _userManager;
     private readonly WebItemManagerSecurity _webItemManagerSecurity;
@@ -173,7 +175,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
             queryParams = guid != Guid.Empty ? GetUserParamsPair(guid) : HttpUtility.UrlEncode(user.ToLowerInvariant());
         }
 
-        var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
+        var url = absolute ? ToAbsolute(VirtualAccountsPath) : AbsoluteAccountsPath;
         url += "view/";
         url += queryParams;
 
@@ -184,7 +186,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     {
         var queryParams = user.Id != Guid.Empty ? GetUserParamsPair(user) : HttpUtility.UrlEncode(user.UserName.ToLowerInvariant());
 
-        var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
+        var url = absolute ? ToAbsolute(VirtualAccountsPath) : AbsoluteAccountsPath;
         url += "view/";
         url += queryParams;
 
@@ -194,7 +196,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     {
         var queryParams = GetUserParamsPair(user);
 
-        var url = absolute ? ToAbsolute("~/products/people/") : "/products/people/";
+        var url = absolute ? ToAbsolute(VirtualAccountsPath) : AbsoluteAccountsPath;
         url += "view/";
         url += queryParams;
 
@@ -538,9 +540,14 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     #region confirm links
 
-    public string GetConfirmationUrl(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
+    public string GetConfirmationEmailUrl(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
     {
         return GetFullAbsolutePath(GetConfirmationUrlRelative(email, confirmType, postfix, userId));
+    }
+
+    public string GetConfirmationUrl(string key, ConfirmType confirmType, Guid userId = default)
+    {
+        return GetFullAbsolutePath(GetConfirmationUrlRelative(key, confirmType, userId));
     }
 
     public string GetConfirmationUrlRelative(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
@@ -551,6 +558,11 @@ public class CommonLinkUtility : BaseCommonLinkUtility
     public string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
     {
         return $"confirm/{confirmType}?{GetToken(tenantId, email, confirmType, postfix, userId)}";
+    }
+
+    public string GetConfirmationUrlRelative(string key, ConfirmType confirmType, Guid userId = default)
+    {
+        return $"confirm/{confirmType}?type={confirmType}&key={key}&uid={userId}";
     }
 
     public string GetToken(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)

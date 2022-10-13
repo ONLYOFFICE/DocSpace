@@ -3,15 +3,15 @@ import {
   loadComponent,
   useDynamicScript,
 } from "../components/DynamicComponent";
-import { STUDIO_SCOPE, STUDIO_REMOTE_ENTRY_URL } from "../helpers/constants";
+import { CLIENT_SCOPE, CLIENT_REMOTE_ENTRY_URL } from "../helpers/constants";
 
 function useMfScripts() {
   const [isInitialized, setIsInitialized] = React.useState(false);
   const [isError, setIsError] = React.useState(false);
 
   const { ready: studioReady, failed: studioFailed } = useDynamicScript({
-    id: STUDIO_SCOPE,
-    url: STUDIO_REMOTE_ENTRY_URL,
+    id: CLIENT_SCOPE,
+    url: CLIENT_REMOTE_ENTRY_URL,
   });
 
   React.useEffect(() => {
@@ -27,14 +27,12 @@ function useMfScripts() {
 
   const initMfScripts = async () => {
     const SharingDialog = await loadComponent(
-      STUDIO_SCOPE,
+      CLIENT_SCOPE,
       "./SharingDialog"
     )();
-    const toastr = await loadComponent(STUDIO_SCOPE, "./toastr")();
-    const filesUtils = await loadComponent(STUDIO_SCOPE, "./utils")();
-    const authStore = await loadComponent(STUDIO_SCOPE, "./store")();
+    const filesUtils = await loadComponent(CLIENT_SCOPE, "./utils")();
+    const authStore = await loadComponent(CLIENT_SCOPE, "./store")();
 
-    window.toastr = toastr.default;
     window.filesUtils = filesUtils;
     window.SharingDialog = SharingDialog.default;
     window.authStore = authStore.default;

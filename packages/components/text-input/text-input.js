@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
 import Base from "../themes/base";
-import StyledTextInput from "./styled-text-input";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 class TextInput extends React.Component {
   shouldComponentUpdate(nextProps) {
@@ -12,7 +12,7 @@ class TextInput extends React.Component {
   render() {
     // console.log(`TextInput render id=${this.props.id}`);
 
-    return <StyledTextInput {...this.props} />;
+    return <ColorTheme {...this.props} themeId={ThemeType.TextInput} />;
   }
 }
 
@@ -22,7 +22,7 @@ TextInput.propTypes = {
   /** Used as HTML `name` property */
   name: PropTypes.string,
   /** Supported type of the input fields. */
-  type: PropTypes.oneOf(["text", "password", "email"]),
+  type: PropTypes.oneOf(["text", "password", "email", "tel"]),
   /** Value of the input */
   value: PropTypes.string.isRequired,
   maxLength: PropTypes.number,
@@ -32,7 +32,10 @@ TextInput.propTypes = {
   tabIndex: PropTypes.number,
   /** input text mask */
   mask: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
+  /** When true, adding or deleting characters will not affect the positions of existing characters. */
   keepCharPositions: PropTypes.bool,
+  /** When guide is true, Text Mask always shows both placeholder characters and non-placeholder mask characters. */
+  guide: PropTypes.bool,
   /** Supported size of the input fields. */
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
   /** Indicates the input field has scale */
@@ -79,6 +82,7 @@ TextInput.defaultProps = {
   autoComplete: "off",
   withBorder: true,
   keepCharPositions: false,
+  guide: false,
   isBold: false,
 };
 

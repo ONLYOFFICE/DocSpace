@@ -43,6 +43,7 @@ public class TfaappController : BaseSettingsController
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly MessageTarget _messageTarget;
     private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
+    private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly Signature _signature;
     private readonly SecurityContext _securityContext;
@@ -62,6 +63,7 @@ public class TfaappController : BaseSettingsController
         DisplayUserSettingsHelper displayUserSettingsHelper,
         MessageTarget messageTarget,
         StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
+        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         SmsProviderManager smsProviderManager,
         IMemoryCache memoryCache,
         InstanceCrypto instanceCrypto,
@@ -82,39 +84,49 @@ public class TfaappController : BaseSettingsController
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _messageTarget = messageTarget;
         _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
+        _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _instanceCrypto = instanceCrypto;
         _signature = signature;
         _securityContext = securityContext;
     }
 
     [HttpGet("tfaapp")]
-    public IEnumerable<TfaSettingsRequestsDto> GetTfaSettings()
+    public IEnumerable<TfaSettingsDto> GetTfaSettings()
     {
-        var result = new List<TfaSettingsRequestsDto>();
+        var result = new List<TfaSettingsDto>();
 
-        var SmsVisible = _studioSmsNotificationSettingsHelper.IsVisibleSettings();
+        var SmsVisible = _studioSmsNotificationSettingsHelper.IsVisibleSettings;
         var SmsEnable = SmsVisible && _smsProviderManager.Enabled();
-        var TfaVisible = TfaAppAuthSettings.IsVisibleSettings;
+        var TfaVisible = _tfaAppAuthSettingsHelper.IsVisibleSettings;
+
+        var tfaAppSettings = _settingsManager.Load<TfaAppAuthSettings>();
+        var tfaSmsSettings = _settingsManager.Load<StudioSmsNotificationSettings>();
 
         if (SmsVisible)
         {
-            result.Add(new TfaSettingsRequestsDto
+            result.Add(new TfaSettingsDto
             {
-                Enabled = _studioSmsNotificationSettingsHelper.Enable,
+                Enabled = tfaSmsSettings.EnableSetting && _smsProviderManager.Enabled(),
                 Id = "sms",
                 Title = Resource.ButtonSmsEnable,
-                Avaliable = SmsEnable
+                Avaliable = SmsEnable,
+                MandatoryUsers = tfaSmsSettings.MandatoryUsers,
+                MandatoryGroups = tfaSmsSettings.MandatoryGroups,
+                TrustedIps = tfaSmsSettings.TrustedIps
             });
         }
 
         if (TfaVisible)
         {
-            result.Add(new TfaSettingsRequestsDto
+            result.Add(new TfaSettingsDto
             {
-                Enabled = _settingsManager.Load<TfaAppAuthSettings>().EnableSetting,
+                Enabled = tfaAppSettings.EnableSetting,
                 Id = "app",
                 Title = Resource.ButtonTfaAppEnable,
-                Avaliable = true
+                Avaliable = true,
+                MandatoryUsers = tfaAppSettings.MandatoryUsers,
+                MandatoryGroups = tfaAppSettings.MandatoryGroups,
+                TrustedIps = tfaAppSettings.TrustedIps
             });
         }
 
@@ -135,23 +147,24 @@ public class TfaappController : BaseSettingsController
     public object TfaConfirmUrl()
     {
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        if (_studioSmsNotificationSettingsHelper.IsVisibleSettings() && _studioSmsNotificationSettingsHelper.Enable)// && smsConfirm.ToLower() != "true")
+
+        if (_studioSmsNotificationSettingsHelper.IsVisibleSettings && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))// && smsConfirm.ToLower() != "true")
         {
             var confirmType = string.IsNullOrEmpty(user.MobilePhone) ||
                             user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated
                                 ? ConfirmType.PhoneActivation
                                 : ConfirmType.PhoneAuth;
 
-            return _commonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, confirmType);
         }
 
-        if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
         {
             var confirmType = TfaAppUserSettings.EnableForUser(_settingsManager, _authContext.CurrentAccount.ID)
                 ? ConfirmType.TfaAuth
                 : ConfirmType.TfaActivation;
 
-            return _commonLinkUtility.GetConfirmationUrl(user.Email, confirmType);
+            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, confirmType);
         }
 
         return string.Empty;
@@ -165,7 +178,6 @@ public class TfaappController : BaseSettingsController
         var result = false;
 
         MessageAction action;
-        var settings = _settingsManager.Load<TfaAppAuthSettings>();
 
         switch (inDto.Type)
         {
@@ -180,13 +192,15 @@ public class TfaappController : BaseSettingsController
                     throw new MethodAccessException();
                 }
 
-                _studioSmsNotificationSettingsHelper.Enable = true;
+                var smsSettings = _settingsManager.Load<StudioSmsNotificationSettings>();
+                SetSettingsProperty(smsSettings);
+                _settingsManager.Save(smsSettings);
+
                 action = MessageAction.TwoFactorAuthenticationEnabledBySms;
 
-                if (settings.EnableSetting)
+                if (_tfaAppAuthSettingsHelper.Enable)
                 {
-                    settings.EnableSetting = false;
-                    _settingsManager.Save(settings);
+                    _tfaAppAuthSettingsHelper.Enable = false;
                 }
 
                 result = true;
@@ -194,13 +208,15 @@ public class TfaappController : BaseSettingsController
                 break;
 
             case "app":
-                if (!TfaAppAuthSettings.IsVisibleSettings)
+                if (!_tfaAppAuthSettingsHelper.IsVisibleSettings)
                 {
                     throw new Exception(Resource.TfaAppNotAvailable);
                 }
 
-                settings.EnableSetting = true;
-                _settingsManager.Save(settings);
+                var appSettings = _settingsManager.Load<TfaAppAuthSettings>();
+                SetSettingsProperty(appSettings);
+                _settingsManager.Save(appSettings);
+
 
                 action = MessageAction.TwoFactorAuthenticationEnabledByTfaApp;
 
@@ -214,10 +230,9 @@ public class TfaappController : BaseSettingsController
                 break;
 
             default:
-                if (settings.EnableSetting)
+                if (_tfaAppAuthSettingsHelper.Enable)
                 {
-                    settings.EnableSetting = false;
-                    _settingsManager.Save(settings);
+                    _tfaAppAuthSettingsHelper.Enable = false;
                 }
 
                 if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
@@ -237,6 +252,14 @@ public class TfaappController : BaseSettingsController
 
         _messageService.Send(action);
         return result;
+
+        void SetSettingsProperty<T>(TfaSettingsBase<T> settings) where T : class, ISettings<T>
+        {
+            settings.EnableSetting = true;
+            settings.TrustedIps = inDto.TrustedIps ?? new List<string>();
+            settings.MandatoryUsers = inDto.MandatoryUsers ?? new List<Guid>();
+            settings.MandatoryGroups = inDto.MandatoryGroups ?? new List<Guid>();
+        }
     }
 
     [HttpPut("tfaappwithlink")]
@@ -257,14 +280,14 @@ public class TfaappController : BaseSettingsController
         ApiContext.AuthByClaim();
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
-        if (!TfaAppAuthSettings.IsVisibleSettings ||
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings ||
             !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting ||
             TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (currentUser.IsVisitor(_userManager) || currentUser.IsOutsider(_userManager))
+        if (_userManager.IsVisitor(currentUser) || _userManager.IsOutsider(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -277,12 +300,12 @@ public class TfaappController : BaseSettingsController
     {
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
-        if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (currentUser.IsVisitor(_userManager) || currentUser.IsOutsider(_userManager))
+        if (_userManager.IsVisitor(currentUser) || _userManager.IsOutsider(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -295,12 +318,12 @@ public class TfaappController : BaseSettingsController
     {
         var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
 
-        if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (currentUser.IsVisitor(_userManager) || currentUser.IsOutsider(_userManager))
+        if (_userManager.IsVisitor(currentUser) || _userManager.IsOutsider(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -323,12 +346,12 @@ public class TfaappController : BaseSettingsController
             throw new SecurityAccessDeniedException(Resource.ErrorAccessDenied);
         }
 
-        if (!TfaAppAuthSettings.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (user.IsVisitor(_userManager) || user.IsOutsider(_userManager))
+        if (_userManager.IsVisitor(user) || _userManager.IsOutsider(user))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -339,7 +362,7 @@ public class TfaappController : BaseSettingsController
         if (isMe)
         {
             await _cookiesManager.ResetTenantCookie();
-            return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation);
+            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation);
         }
 
         _studioNotifyService.SendMsgTfaReset(user);

@@ -28,19 +28,21 @@ namespace ASC.Api.Core;
 
 public class BaseWorkerStartup
 {
-    private readonly IConfiguration _configuration;
-    private readonly IHostEnvironment _hostEnvironment;
-
+    protected IConfiguration Configuration { get; }
+    protected IHostEnvironment HostEnvironment { get; }
+    protected DIHelper DIHelper { get; }
     public BaseWorkerStartup(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
-        _configuration = configuration;
-        _hostEnvironment = hostEnvironment;
+        Configuration = configuration;
+        HostEnvironment = hostEnvironment;
+
+        DIHelper = new DIHelper();
     }
 
     public virtual void ConfigureServices(IServiceCollection services)
     {
         services.AddHttpContextAccessor();
-        services.AddCustomHealthCheck(_configuration);
+        services.AddCustomHealthCheck(Configuration);
 
         services.AddScoped<EFLoggerFactory>();
         services.AddBaseDbContextPool<AccountLinkContext>();
@@ -56,14 +58,26 @@ public class BaseWorkerStartup
         services.AddBaseDbContextPool<MessagesContext>();
         services.AddBaseDbContextPool<WebhooksDbContext>();
 
+        services.RegisterFeature();
+
         services.AddAutoMapper(GetAutoMapperProfileAssemblies());
 
-        if (!_hostEnvironment.IsDevelopment())
+        if (!HostEnvironment.IsDevelopment())
         {
             services.AddStartupTask<WarmupServicesStartupTask>()
                     .TryAddSingleton(services);
         }
 
+
+        services.AddMemoryCache();
+
+        services.AddDistributedCache(Configuration);
+        services.AddEventBus(Configuration);
+        services.AddDistributedTaskQueue();
+        services.AddCacheNotify(Configuration);
+        services.AddHttpClient();
+
+        DIHelper.Configure(services);
     }
 
     private IEnumerable<Assembly> GetAutoMapperProfileAssemblies()

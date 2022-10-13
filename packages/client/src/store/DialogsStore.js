@@ -1,7 +1,7 @@
 import { getNewFiles } from "@docspace/common/api/files";
 import { FileAction } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 
 class DialogsStore {
   authStore;
@@ -27,6 +27,9 @@ class DialogsStore {
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   isFolderActions = false;
+  roomCreation = false;
+  restoreAllPanelVisible = false;
+  eventDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -39,6 +42,7 @@ class DialogsStore {
   unsubscribe = null;
   convertItem = null;
   formCreationInfo = null;
+  saveThirdpartyResponse = null;
 
   constructor(
     authStore,
@@ -73,15 +77,27 @@ class DialogsStore {
     this.moveToPanelVisible = moveToPanelVisible;
   };
 
+  setRestoreAllPanelVisible = (restoreAllPanelVisible) => {
+    this.restoreAllPanelVisible = restoreAllPanelVisible;
+  };
+
   setCopyPanelVisible = (copyPanelVisible) => {
     !copyPanelVisible && this.deselectActiveFiles();
     this.copyPanelVisible = copyPanelVisible;
   };
 
+  setRoomCreation = (roomCreation) => {
+    this.roomCreation = roomCreation;
+  };
+
+  setSaveThirdpartyResponse = (saveThirdpartyResponse) => {
+    this.saveThirdpartyResponse = saveThirdpartyResponse;
+  };
+
   setConnectDialogVisible = (connectDialogVisible) => {
     if (!connectDialogVisible) this.setConnectItem(null);
-
     this.connectDialogVisible = connectDialogVisible;
+    if (!this.connectDialogVisible) this.setRoomCreation(false);
   };
 
   setRemoveItem = (removeItem) => {
@@ -99,6 +115,10 @@ class DialogsStore {
   setDeleteDialogVisible = (deleteDialogVisible) => {
     !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;
+  };
+
+  setEventDialogVisible = (eventDialogVisible) => {
+    this.eventDialogVisible = eventDialogVisible;
   };
 
   setDownloadDialogVisible = (downloadDialogVisible) => {
@@ -248,7 +268,8 @@ class DialogsStore {
       this.convertDialogVisible ||
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
-      this.versionHistoryStore.isVisible
+      this.versionHistoryStore.isVisible ||
+      this.eventDialogVisible
     );
   }
 

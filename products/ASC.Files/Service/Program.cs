@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using NLog;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -32,90 +34,61 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
-{
-    config.AddJsonFile($"appsettings.services.json", true)
-          .AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true)
-          .AddJsonFile("elastic.json", true)
-          .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
-},
-(hostContext, services, diHelper) =>
-{
-    services.AddHttpClient();
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddFilesServiceConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
-    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+var logger = NLog.LogManager.Setup()
+                            .SetupExtensions(s =>
+                            {
+                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                            })
+                            .LoadConfiguration(builder.Configuration, builder.Environment)
+                            .GetLogger(typeof(Startup).Namespace);
 
-    if (!bool.TryParse(hostContext.Configuration["disable_elastic"], out var disableElastic))
+try
+{
+    logger.Info("Configuring web host ({applicationContext})...", Program.AppName);
+
+    builder.Host.ConfigureDefault();
+    builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
     {
-        disableElastic = false;
+        builder.Register(context.Configuration, true, false, "search.json", "feed.json");
+    });
+
+    var startup = new Startup(builder.Configuration, builder.Environment);
+
+    startup.ConfigureServices(builder.Services);
+
+    var app = builder.Build();
+
+    startup.Configure(app);
+
+    var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
+
+    eventBus.Subscribe<ThumbnailRequestedIntegrationEvent, ThumbnailRequestedIntegrationEventHandler>();
+
+    logger.Info("Starting web host ({applicationContext})...", Program.AppName);
+    await app.RunWithTasksAsync();
+}
+catch (Exception ex)
+{
+    if (logger != null)
+    {
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
     }
 
-    if (!disableElastic)
-    {
-        services.AddHostedService<ElasticSearchIndexService>();
-        diHelper.TryAdd<FactoryIndexer>();
-        diHelper.TryAdd<ElasticSearchService>();
-        //diHelper.TryAdd<FileConverter>();
-        diHelper.TryAdd<FactoryIndexerFile>();
-        diHelper.TryAdd<FactoryIndexerFolder>();
-    }
-
-    services.AddHostedService<FeedAggregatorService>();
-    diHelper.TryAdd<FeedAggregatorService>();
-
-    services.AddHostedService<FeedCleanerService>();
-    diHelper.TryAdd<FeedCleanerService>();
-
-    diHelper.TryAdd<FileDataQueue>();
-
-    services.AddActivePassiveHostedService<FileConverterService<int>>();
-    diHelper.TryAdd<FileConverterService<int>>();
-
-    services.AddActivePassiveHostedService<FileConverterService<string>>();
-    diHelper.TryAdd<FileConverterService<string>>();
-
-    services.AddHostedService<ThumbnailBuilderService>();
-    diHelper.TryAdd<ThumbnailBuilderService>();
-
-    diHelper.TryAdd<ThumbnailRequestedIntegrationEventHandler>();
-
-    services.AddHostedService<Launcher>();
-    diHelper.TryAdd<Launcher>();
-
-    services.AddHostedService<DeleteExpiredService>();
-    diHelper.TryAdd<DeleteExpiredService>();
-
-    diHelper.TryAdd<AuthManager>();
-    diHelper.TryAdd<BaseCommonLinkUtility>();
-    diHelper.TryAdd<FeedAggregateDataProvider>();
-    diHelper.TryAdd<SecurityContext>();
-    diHelper.TryAdd<TenantManager>();
-    diHelper.TryAdd<UserManager>();
-
-    services.AddBaseDbContextPool<FilesDbContext>();
-});
-
-builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+    throw;
+}
+finally
 {
-    builder.Register(context.Configuration, true, false, "search.json", "feed.json");
-});
-
-var startup = new BaseWorkerStartup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-var app = builder.Build();
-
-startup.Configure(app);
-
-var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
-
-eventBus.Subscribe<ThumbnailRequestedIntegrationEvent, ThumbnailRequestedIntegrationEventHandler>();
-
-await app.RunWithTasksAsync();
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    NLog.LogManager.Shutdown();
+}
 
 public partial class Program
 {
-    public static string AppName = Assembly.GetExecutingAssembly().GetName().Name;
+    public static string Namespace = typeof(Startup).Namespace;
+    public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.', Namespace.LastIndexOf('.') - 1) + 1).Replace(".", "");
 }

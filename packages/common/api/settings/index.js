@@ -116,10 +116,17 @@ export function setLifetimeAuditSettings(data) {
   });
 }
 
-export function getAuditTrailReport() {
+export function getLoginHistoryReport() {
   return request({
     method: "post",
     url: "/security/audit/login/report.json",
+  });
+}
+
+export function getAuditTrailReport() {
+  return request({
+    method: "post",
+    url: "/security/audit/events/report.json",
   });
 }
 
@@ -154,6 +161,21 @@ export function restoreGreetingSettings() {
   return request({
     method: "post",
     url: `/settings/greetingsettings/restore.json`,
+  });
+}
+
+export function getAppearanceTheme() {
+  return request({
+    method: "get",
+    url: "/settings/colortheme.json",
+  });
+}
+
+export function sendAppearanceTheme(data) {
+  return request({
+    method: "put",
+    url: "/settings/colortheme.json",
+    data,
   });
 }
 
@@ -199,6 +221,40 @@ export function getCustomSchemaList() {
   return request({
     method: "get",
     url: `settings/customschemas`,
+  });
+}
+
+export function setAdditionalResources(
+  feedbackAndSupportEnabled,
+  videoGuidesEnabled,
+  helpCenterEnabled
+) {
+  const data = {
+    settings: {
+      helpCenterEnabled,
+      feedbackAndSupportEnabled,
+      videoGuidesEnabled,
+    },
+  };
+
+  return request({
+    method: "post",
+    url: `/settings/rebranding/additional.json`,
+    data,
+  });
+}
+
+export function getAdditionalResources() {
+  return request({
+    method: "get",
+    url: `/settings/rebranding/additional.json`,
+  });
+}
+
+export function restoreAdditionalResources() {
+  return request({
+    method: "delete",
+    url: `/settings/rebranding/additional.json`,
   });
 }
 
@@ -509,6 +565,28 @@ export function resetSsoForm() {
   return request(options);
 }
 
+export function getLifetimeAuditSettings(data) {
+  return request({
+    method: "get",
+    url: "/security/audit/settings/lifetime.json",
+    data,
+  });
+}
+
+export function getLoginHistory() {
+  return request({
+    method: "get",
+    url: "/security/audit/login/last.json",
+  });
+}
+
+export function getAuditTrail() {
+  return request({
+    method: "get",
+    url: "/security/audit/events/last.json",
+  });
+}
+
 export function loadXmlMetadata(data) {
   return axios.post("/sso/loadmetadata", data);
 }
@@ -539,4 +617,11 @@ export function getStorageRegions() {
     url: "/settings/storage/s3/regions",
   };
   return request(options);
+}
+
+export function getPortalQuota() {
+  return request({
+    method: "get",
+    url: `/settings/quota`,
+  });
 }

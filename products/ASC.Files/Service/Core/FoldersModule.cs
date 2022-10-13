@@ -31,12 +31,12 @@ namespace ASC.Files.Service.Core;
 public class FoldersModule : FeedModule
 {
     public override Guid ProductID => WebItemManager.DocumentsProductID;
-    public override string Name => Feed.Constants.FoldersModule;
-    public override string Product => "documents";
-    protected override string DbId => Feed.Constants.FilesDbId;
+    public override string Name => Constants.FoldersModule;
+    public override string Product => Constants.Documents;
+    protected override string DbId => Constants.FilesDbId;
 
-    private const string FolderItem = "folder";
-    private const string SharedFolderItem = "sharedFolder";
+    private const string FolderItem = Constants.FolderItem;
+    private const string SharedFolderItem = Constants.SharedFolderItem;
 
     private readonly FileSecurity _fileSecurity;
     private readonly FilesLinkUtility _filesLinkUtility;
@@ -65,9 +65,9 @@ public class FoldersModule : FeedModule
             return false;
         }
 
-        var tuple = (Tuple<Folder<int>, SmallShareRecord>)data;
-        var folder = tuple.Item1;
-        var shareRecord = tuple.Item2;
+        var folderWithShare = (FolderWithShare)data;
+        var folder = folderWithShare.Folder;
+        var shareRecord = folderWithShare.ShareRecord;
 
         bool targetCond;
         if (feed.Target != null)
@@ -107,14 +107,17 @@ public class FoldersModule : FeedModule
 
         var parentFolderIDs = folders.Select(r => r.Folder.ParentId).ToList();
         var parentFolders = _folderDao.GetFoldersAsync(parentFolderIDs, checkShare: false).ToListAsync().Result;
+        var roomsIds = _folderDao.GetParentRoomsAsync(parentFolderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId).Result;
 
-        return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Folder.ParentId))), f));
+        return folders.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, parentFolders.FirstOrDefault(r => r.Id.Equals(f.Folder.ParentId)), 
+            roomsIds.GetValueOrDefault(f.Folder.ParentId)), f));
     }
 
-    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity, Folder<int> rootFolder)
+    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity, Folder<int> parentFolder, int roomId)
     {
         var folder = folderWithSecurity.Folder;
         var shareRecord = folderWithSecurity.ShareRecord;
+        var contextId = roomId != default ? $"{RoomsModule.RoomItem}_{roomId}" : null;
 
         if (shareRecord != null)
         {
@@ -122,17 +125,15 @@ public class FoldersModule : FeedModule
             {
                 Item = SharedFolderItem,
                 ItemId = string.Format("{0}_{1}", folder.Id, shareRecord.Subject),
-                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
                 Product = Product,
                 Module = Name,
                 Title = folder.Title,
-                ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(folder.ParentId, false) : string.Empty,
+                ExtraLocationTitle = parentFolder.Title,
+                ExtraLocation = folder.ParentId.ToString(),
                 Keywords = folder.Title,
-                HasPreview = false,
-                CanComment = false,
                 Target = shareRecord.Subject,
-                GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, folder.ParentId.ToString())
+                GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, folder.ParentId.ToString()),
+                ContextId = contextId
             };
 
             return feed;
@@ -142,17 +143,14 @@ public class FoldersModule : FeedModule
         {
             Item = FolderItem,
             ItemId = folder.Id.ToString(),
-            ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
             Product = Product,
             Module = Name,
             Title = folder.Title,
-            ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-            ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(folder.ParentId, false) : string.Empty,
+            ExtraLocationTitle = parentFolder.Title,
+            ExtraLocation = folder.ParentId.ToString(),
             Keywords = folder.Title,
-            HasPreview = false,
-            CanComment = false,
-            Target = null,
-            GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.ParentId.ToString())
+            GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.ParentId.ToString()),
+            ContextId = contextId
         };
     }
 }

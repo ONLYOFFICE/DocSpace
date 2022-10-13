@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files;
+
+using NLog;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -32,35 +36,65 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddFilesConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
+
+var logger = NLog.LogManager.Setup()
+                            .SetupExtensions(s =>
+                            {
+                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                            })
+                            .LoadConfiguration(builder.Configuration, builder.Environment)
+                            .GetLogger(typeof(Startup).Namespace);
+
+try
 {
-    config
-          .AddJsonFile("elastic.json", true)
-          .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
-}, (context, services, di) =>
+    logger.Info("Configuring web host ({applicationContext})...", Program.AppName);
+    builder.Host.ConfigureDefault();
+
+    builder.WebHost.ConfigureDefaultKestrel((hostingContext, serverOptions) =>
+    {
+        serverOptions.Limits.MaxRequestBodySize = 100 * 1024 * 1024;
+        serverOptions.Limits.MaxRequestBufferSize = 100 * 1024 * 1024;
+        serverOptions.Limits.MinRequestBodyDataRate = null;
+        serverOptions.Limits.MinResponseDataRate = null;
+    });
+
+    var startup = new ASC.Files.Startup(builder.Configuration, builder.Environment);
+
+    startup.ConfigureServices(builder.Services);
+
+    builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+    {
+        startup.ConfigureContainer(containerBuilder);
+    });
+
+    var app = builder.Build();
+
+    startup.Configure(app, app.Environment);
+
+    logger.Info("Starting web host ({applicationContext})...", Program.AppName);
+    await app.RunWithTasksAsync();
+}
+catch (Exception ex)
 {
-    services.AddBaseDbContextPool<FilesDbContext>();
-});
+    if (logger != null)
+    {
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
+    }
 
-builder.WebHost.ConfigureDefaultKestrel((hostingContext, serverOptions) =>
+    throw;
+}
+finally
 {
-    serverOptions.Limits.MaxRequestBodySize = 100 * 1024 * 1024;
-    serverOptions.Limits.MaxRequestBufferSize = 100 * 1024 * 1024;
-    serverOptions.Limits.MinRequestBodyDataRate = null;
-    serverOptions.Limits.MinResponseDataRate = null;
-});
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    NLog.LogManager.Shutdown();
+}
 
-var startup = new ASC.Files.Startup(builder.Configuration, builder.Environment);
-
-startup.ConfigureServices(builder.Services);
-
-builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+public partial class Program
 {
-    startup.ConfigureContainer(containerBuilder);
-});
-
-var app = builder.Build();
-
-startup.Configure(app, app.Environment);
-
-await app.RunWithTasksAsync();
+    public static string Namespace = typeof(Startup).Namespace;
+    public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.') + 1);
+}

@@ -27,6 +27,8 @@ import commonIconsStyles from "../utils/common-icons-style";
 
 import { isMobileOnly } from "react-device-detect";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
 `;
@@ -114,6 +116,8 @@ const MainButtonMobile = (props) => {
     onClose,
     sectionWidth,
     alert,
+    withMenu,
+    onClick,
   } = props;
 
   const [isOpen, setIsOpen] = useState(opened);
@@ -206,6 +210,11 @@ const MainButtonMobile = (props) => {
   };
 
   const onMainButtonClick = (e) => {
+    if (!withMenu) {
+      onClick && onClick(e);
+      return;
+    }
+
     toggle(!isOpen);
   };
 
@@ -359,6 +368,7 @@ const MainButtonMobile = (props) => {
           onClick={onMainButtonClick}
           percent={percent}
         />
+
         <StyledDropDown
           open={isOpen}
           withBackdrop={false}
@@ -420,6 +430,10 @@ MainButtonMobile.propTypes = {
   opened: PropTypes.bool,
   /** If you need close drop down  */
   onClose: PropTypes.func,
+};
+
+MainButtonMobile.defaultProps = {
+  withMenu: true,
 };
 
 export default MainButtonMobile;

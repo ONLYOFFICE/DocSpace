@@ -1,19 +1,25 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
-import Text from "../text";
 import { countAutoFocus, countAutoOffset } from "./autoOffset";
 import {
   StyledSubmenu,
   StyledSubmenuBottomLine,
   StyledSubmenuContentWrapper,
   StyledSubmenuItem,
-  StyledSubmenuItemLabel,
   StyledSubmenuItems,
   StyledSubmenuItemText,
 } from "./styled-submenu";
-import LoaderSubmenu from "./loader";
 
-const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
+const Submenu = (props) => {
+  const {
+    data,
+    startSelect = 0,
+    forsedActiveItemId,
+    onSelect,
+    ...rest
+  } = props;
   if (!data) return null;
 
   const [currentItem, setCurrentItem] = useState(
@@ -23,11 +29,13 @@ const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
   const submenuItemsRef = useRef();
 
   const selectSubmenuItem = (e) => {
-    const item = data.find((el) => el.id === e.currentTarget.id);
-    if (item) setCurrentItem(item);
-    const offset = countAutoFocus(item.name, data, submenuItemsRef);
-    submenuItemsRef.current.scrollLeft += offset;
-    onSelect && onSelect(item);
+    if (!forsedActiveItemId) {
+      const item = data.find((el) => el.id === e.currentTarget.id);
+      if (item) setCurrentItem(item);
+      const offset = countAutoFocus(item.name, data, submenuItemsRef);
+      submenuItemsRef.current.scrollLeft += offset;
+      onSelect && onSelect(item);
+    }
   };
 
   useEffect(() => {
@@ -74,44 +82,47 @@ const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
 
   return (
     <StyledSubmenu {...rest}>
-      {isLoading ? (
-        <LoaderSubmenu />
-      ) : (
-        <>
-          <div className="sticky">
-            <StyledSubmenuItems ref={submenuItemsRef} role="list">
-              {data.map((d) => {
-                const isActive = d.id === currentItem.id;
+      <div className="sticky">
+        <StyledSubmenuItems ref={submenuItemsRef} role="list">
+          {data.map((d) => {
+            const isActive = d.id === (forsedActiveItemId || currentItem.id);
 
-                return (
-                  <StyledSubmenuItem
-                    key={d.id}
-                    id={d.id}
-                    onClick={(e) => {
-                      d.onClick && d.onClick();
-                      selectSubmenuItem(e);
-                    }}
+            return (
+              <StyledSubmenuItem
+                key={d.id}
+                id={d.id}
+                onClick={(e) => {
+                  d.onClick && d.onClick();
+                  selectSubmenuItem(e);
+                }}
+              >
+                <StyledSubmenuItemText isActive={isActive}>
+                  <ColorTheme
+                    {...props}
+                    themeId={ThemeType.SubmenuText}
+                    className="item-text"
+                    fontSize="13px"
+                    fontWeight="600"
+                    truncate={false}
+                    isActive={isActive}
                   >
-                    <StyledSubmenuItemText isActive={isActive}>
-                      <Text
-                        className="item-text"
-                        fontSize="13px"
-                        fontWeight="600"
-                        truncate={false}
-                      >
-                        {d.name}
-                      </Text>
-                    </StyledSubmenuItemText>
-                    <StyledSubmenuItemLabel isActive={isActive} />
-                  </StyledSubmenuItem>
-                );
-              })}
-            </StyledSubmenuItems>
-            <StyledSubmenuBottomLine />
-          </div>
-          <div className="sticky-indent"></div>
-        </>
-      )}
+                    {d.name}
+                  </ColorTheme>
+                </StyledSubmenuItemText>
+
+                <ColorTheme
+                  {...props}
+                  themeId={ThemeType.SubmenuItemLabel}
+                  isActive={isActive}
+                />
+              </StyledSubmenuItem>
+            );
+          })}
+        </StyledSubmenuItems>
+        <StyledSubmenuBottomLine className="bottom-line" />
+      </div>
+      <div className="sticky-indent"></div>
+
       <StyledSubmenuContentWrapper>
         {currentItem.content}
       </StyledSubmenuContentWrapper>
@@ -122,8 +133,8 @@ const Submenu = ({ data, startSelect = 0, onSelect, isLoading, ...rest }) => {
 Submenu.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
   startSelect: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+  forsedActiveItemId: PropTypes.any,
   onSelect: PropTypes.func,
-  isLoading: PropTypes.bool,
 };
 
 export default Submenu;

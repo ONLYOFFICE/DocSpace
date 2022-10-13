@@ -31,12 +31,12 @@ namespace ASC.Files.Service.Core;
 public class FilesModule : FeedModule
 {
     public override Guid ProductID => WebItemManager.DocumentsProductID;
-    public override string Name => Feed.Constants.FilesModule;
-    public override string Product => "documents";
-    protected override string DbId => "files";
+    public override string Name => Constants.FilesModule;
+    public override string Product => Constants.Documents;
+    protected override string DbId => Constants.FilesDbId;
 
-    private const string FileItem = "file";
-    private const string SharedFileItem = "sharedFile";
+    private const string FileItem = Constants.FileItem;
+    private const string SharedFileItem = Constants.SharedFileItem;
 
     private readonly FileSecurity _fileSecurity;
     private readonly FilesLinkUtility _filesLinkUtility;
@@ -67,9 +67,9 @@ public class FilesModule : FeedModule
             return false;
         }
 
-        var tuple = ((File<int>, SmallShareRecord))data;
-        var file = tuple.Item1;
-        var shareRecord = tuple.Item2;
+        var fileWithShare = (FileWithShare)data;
+        var file = fileWithShare.File;
+        var shareRecord = fileWithShare.ShareRecord;
 
         bool targetCond;
         if (feed.Target != null)
@@ -105,9 +105,9 @@ public class FilesModule : FeedModule
 
         var feed1 = feed.Select(r =>
         {
-            var tuple = ((File<int>, SmallShareRecord))r.Item2;
+            var fileWithShare = (FileWithShare)r.Item2;
 
-            return new Tuple<FeedRow, File<int>, SmallShareRecord>(r.Item1, tuple.Item1, tuple.Item2);
+            return new Tuple<FeedRow, File<int>, SmallShareRecord>(r.Item1, fileWithShare.File, fileWithShare.ShareRecord);
         })
         .ToList();
 
@@ -137,12 +137,15 @@ public class FilesModule : FeedModule
     {
         var files = _fileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To)
             .Where(f => f.File.RootFolderType != FolderType.TRASH && f.File.RootFolderType != FolderType.BUNCH)
+            .Where(f => f.ShareRecord == null)
             .ToListAsync().Result;
 
         var folderIDs = files.Select(r => r.File.ParentId).ToList();
         var folders = _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync().Result;
+        var roomsIds = _folderDao.GetParentRoomsAsync(folderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId).Result;
 
-        return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId))), f));
+        return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId)), 
+            roomsIds.GetValueOrDefault(f.File.ParentId)), f));
     }
 
     public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
@@ -150,10 +153,11 @@ public class FilesModule : FeedModule
         return _fileDao.GetTenantsWithFeedsAsync(fromTime).ToListAsync().Result;
     }
 
-    private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> rootFolder)
+    private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> parentFolder, int roomId)
     {
         var file = tuple.File;
         var shareRecord = tuple.ShareRecord;
+        var contextId = roomId != default ? $"{RoomsModule.RoomItem}_{roomId}" : null;
 
         if (shareRecord != null)
         {
@@ -161,18 +165,17 @@ public class FilesModule : FeedModule
             {
                 Item = SharedFileItem,
                 ItemId = string.Format("{0}_{1}", file.Id, shareRecord.Subject),
-                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.Id, true),
                 Product = Product,
                 Module = Name,
                 Title = file.Title,
-                ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(file.ParentId, false) : string.Empty,
+                ExtraLocationTitle = parentFolder.Title,
+                ExtraLocation = parentFolder.Id.ToString(),
                 AdditionalInfo = file.ContentLengthString,
+                AdditionalInfo2 = file.Encrypted ? "Encrypted" : string.Empty,
                 Keywords = file.Title,
-                HasPreview = false,
-                CanComment = false,
                 Target = shareRecord.Subject,
-                GroupId = GetGroupId(SharedFileItem, shareRecord.Owner, file.ParentId.ToString())
+                GroupId = GetGroupId(SharedFileItem, shareRecord.Owner, file.ParentId.ToString()),
+                ContextId = contextId
             };
 
             return feed;
@@ -184,19 +187,17 @@ public class FilesModule : FeedModule
         {
             Item = FileItem,
             ItemId = string.Format("{0}_{1}", file.Id, file.Version > 1 ? 1 : 0),
-            ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.Id, true),
             Product = Product,
             Module = Name,
             Action = updated ? FeedAction.Updated : FeedAction.Created,
             Title = file.Title,
-            ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-            ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(file.ParentId, false) : string.Empty,
+            ExtraLocationTitle = parentFolder.Title,
+            ExtraLocation = parentFolder.Id.ToString(),
             AdditionalInfo = file.ContentLengthString,
+            AdditionalInfo2 = file.Encrypted ? "Encrypted" : string.Empty,
             Keywords = file.Title,
-            HasPreview = false,
-            CanComment = false,
-            Target = null,
-            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.ParentId.ToString(), updated ? 1 : 0)
+            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.ParentId.ToString(), updated ? 1 : 0),
+            ContextId = contextId
         };
     }
 

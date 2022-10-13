@@ -6,13 +6,14 @@ import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
-import { isDesktop, isMobile } from "react-device-detect";
+import { isMobile } from "react-device-detect";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const StyledAboutBody = styled.div`
   width: 100%;
 
   .avatar {
-    margin-top: ${isDesktop ? "0px" : "32px"};
+    margin-top: ${!isMobile ? "0px" : "32px"};
     margin-bottom: 16px;
   }
 
@@ -50,7 +51,8 @@ const StyledAboutBody = styled.div`
   }
 `;
 
-const AboutContent = ({ personal, buildVersionInfo, theme }) => {
+const AboutContent = (props) => {
+  const { personal, buildVersionInfo, theme } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
   const linkAppServer = "https://github.com/ONLYOFFICE/AppServer";
@@ -85,16 +87,19 @@ const AboutContent = ({ personal, buildVersionInfo, theme }) => {
         <Text className="row-el" fontSize="13px" noSelect>
           {t("DocumentManagement")}:
         </Text>
-        <Link
+        <ColorTheme
+          {...props}
+          tag="a"
+          themeId={ThemeType.Link}
           className="row-el"
-          color={theme.client.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={linkAppServer}
           target="_blank"
         >
           &nbsp;ONLYOFFICE DocSpace&nbsp;
-        </Link>
+        </ColorTheme>
+
         <Text className="row-el select-el" fontSize="13px" fontWeight="600">
           v.{buildVersionInfo.appServer}
         </Text>
@@ -104,16 +109,18 @@ const AboutContent = ({ personal, buildVersionInfo, theme }) => {
         <Text className="row-el" fontSize="13px" noSelect>
           {t("OnlineEditors")}:
         </Text>
-        <Link
+        <ColorTheme
+          {...props}
+          tag="a"
+          themeId={ThemeType.Link}
           className="row-el"
-          color={theme.client.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={linkDocs}
           target="_blank"
         >
           &nbsp;ONLYOFFICE Docs&nbsp;
-        </Link>
+        </ColorTheme>
         <Text className="row-el select-el" fontSize="13px" fontWeight="600">
           v.{buildVersionInfo.documentServer}
         </Text>
@@ -154,15 +161,18 @@ const AboutContent = ({ personal, buildVersionInfo, theme }) => {
         <Text className="row-el" fontSize="13px" noSelect>
           {t("AboutCompanyEmailTitle")}:
         </Text>
-        <Link
+
+        <ColorTheme
+          {...props}
+          tag="a"
+          themeId={ThemeType.Link}
           className="row-el"
-          color={theme.client.about.linkColor}
           fontSize="13px"
           fontWeight="600"
           href={`mailto:${email}`}
         >
           &nbsp;{email}
-        </Link>
+        </ColorTheme>
       </div>
     </StyledAboutBody>
   );

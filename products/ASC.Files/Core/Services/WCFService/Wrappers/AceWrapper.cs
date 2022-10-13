@@ -35,9 +35,12 @@ public class AceCollection<T>
     public AceAdvancedSettingsWrapper AdvancedSettings { get; set; }
 }
 
-public class AceWrapper
+public class AceWrapper : IMapFrom<RoomInvitation>
 {
-    public Guid SubjectId { get; set; }
+    public Guid Id { get; set; }
+    public string Email { get; set; }
+    public SubjectType SubjectType { get; set; }
+    public FileShareOptions FileShareOptions { get; set; }
 
     [JsonPropertyName("title")]
     public string SubjectName { get; set; }
@@ -50,7 +53,7 @@ public class AceWrapper
     public bool Owner { get; set; }
 
     [JsonPropertyName("ace_status")]
-    public FileShare Share { get; set; }
+    public FileShare Access { get; set; }
 
     [JsonPropertyName("locked")]
     public bool LockedRights { get; set; }
@@ -69,7 +72,7 @@ public class AceShortWrapper
     {
         var permission = string.Empty;
 
-        switch (aceWrapper.Share)
+        switch (aceWrapper.Access)
         {
             case FileShare.Read:
                 permission = FilesCommonResource.AceStatusEnum_Read;
@@ -95,7 +98,7 @@ public class AceShortWrapper
         }
 
         User = aceWrapper.SubjectName;
-        if (aceWrapper.SubjectId.Equals(FileConstant.ShareLinkId))
+        if (aceWrapper.Id.Equals(FileConstant.ShareLinkId))
         {
             IsLink = true;
             User = FilesCommonResource.AceShareLink;
@@ -108,6 +111,7 @@ public class AceShortWrapper
 public class AceAdvancedSettingsWrapper
 {
     public bool DenyDownload { get; set; }
-
     public bool DenySharing { get; set; }
+    public bool AllowSharingPrivateRoom { get; set; }
+    public bool InvitationLink { get; set; }
 }

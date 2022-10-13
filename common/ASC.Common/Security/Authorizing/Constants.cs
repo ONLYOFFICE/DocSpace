@@ -33,9 +33,9 @@ public static class Constants
     public static readonly Role Everyone = new Role(new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), "Everyone");
 
 
-    public static readonly Role User = new Role(new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"), "User");
+    public static readonly Role Manager = new Role(new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"), "User");
 
-    public static readonly Role Visitor = new Role(new Guid("aced04fa-dd96-4b35-af3e-346bf1eb972d"), "Visitor");
+    public static readonly Role User = new Role(new Guid("aced04fa-dd96-4b35-af3e-346bf1eb972d"), "Visitor");
 
 
     public static readonly Role Member = new Role(new Guid("ba74ca02-873f-43dc-8470-8620c156bc67"), "Member");

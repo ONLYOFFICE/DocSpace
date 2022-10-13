@@ -35,4 +35,19 @@ public class Startup : BaseStartup
 
     }
 
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        base.ConfigureServices(services);
+
+        services.AddHostedService<LdapNotifyService>();
+        DIHelper.TryAdd<LdapNotifyService>();
+        services.AddBaseDbContextPool<FilesDbContext>();
+        services.AddBaseDbContextPool<BackupsContext>();
+
+        services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
+        services.AddScoped<CountRoomChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
+        services.AddScoped<CountRoomCheckerStatistic>();
+    }
 }

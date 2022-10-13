@@ -21,6 +21,8 @@ import {
   StyledFilterBlockItemSeparator,
 } from "./StyledFilterBlock";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 import XIcon from "../svg/x.react.svg";
 
 const FilterBlockItem = ({
@@ -32,6 +34,8 @@ const FilterBlockItem = ({
   withoutSeparator,
   changeFilterValue,
   showSelector,
+  isFirst,
+  withMultiItems,
 }) => {
   const changeFilterValueAction = (
     key,
@@ -84,7 +88,7 @@ const FilterBlockItem = ({
         </StyledFilterBlockItemSelectorText>
       </StyledFilterBlockItemSelector>
     ) : (
-      <StyledFilterBlockItemTag
+      <ColorTheme
         key={item.key}
         isSelected={item.isSelected}
         onClick={(event) =>
@@ -95,6 +99,7 @@ const FilterBlockItem = ({
             clearSelectorRef.current
           )
         }
+        themeId={ThemeType.FilterBlockItemTag}
       >
         <StyledFilterBlockItemTagText
           noSelect={true}
@@ -107,7 +112,7 @@ const FilterBlockItem = ({
             <XIcon style={{ marginTop: "2px" }} />
           </StyledFilterBlockItemTagIcon>
         )}
-      </StyledFilterBlockItemTag>
+      </ColorTheme>
     );
   };
 
@@ -126,24 +131,29 @@ const FilterBlockItem = ({
   };
 
   const getWithOptionsItem = (item) => {
-    const selectedOption = item.options.find((option) => option.isSelected);
+    const selectedOption =
+      item.options.find((option) => option.isSelected) || item.options[0];
 
     return (
       <ComboBox
+        className={"combo-item"}
         key={item.key}
         onSelect={(data) =>
           changeFilterValueAction(
             data.key,
-            data.key === selectedOption?.key,
+            data.key === item.options[0].key,
             false,
             item.withOptions
           )
         }
         options={item.options}
-        selectedOption={selectedOption ? selectedOption : item.options[0]}
+        selectedOption={selectedOption}
         displaySelectedOption={true}
         scaled={true}
         scaledOptions={true}
+        isDefaultMode={false}
+        directionY={"bottom"}
+        fixedDirection
       />
     );
   };
@@ -164,13 +174,14 @@ const FilterBlockItem = ({
 
   const getTagItem = (item) => {
     return (
-      <StyledFilterBlockItemTag
+      <ColorTheme
         key={item.key}
         isSelected={item.isSelected}
         name={`${item.label}-${item.key}`}
         onClick={() =>
           changeFilterValueAction(item.key, item.isSelected, item.isMultiSelect)
         }
+        themeId={ThemeType.FilterBlockItemTag}
       >
         <StyledFilterBlockItemTagText
           noSelect={true}
@@ -178,19 +189,23 @@ const FilterBlockItem = ({
         >
           {item.label}
         </StyledFilterBlockItemTagText>
-      </StyledFilterBlockItemTag>
+      </ColorTheme>
     );
   };
 
   return (
-    <StyledFilterBlockItem withoutHeader={withoutHeader}>
+    <StyledFilterBlockItem isFirst={isFirst} withoutHeader={withoutHeader}>
       {!withoutHeader && (
         <StyledFilterBlockItemHeader>
           <Heading size="xsmall">{label}</Heading>
         </StyledFilterBlockItemHeader>
       )}
 
-      <StyledFilterBlockItemContent withoutHeader={withoutHeader}>
+      <StyledFilterBlockItemContent
+        withMultiItems={withMultiItems}
+        withoutHeader={withoutHeader}
+        withoutSeparator={withoutSeparator}
+      >
         {groupItem.map((item) => {
           if (item.isSelector === true) return getSelectorItem(item);
           if (item.isToggle === true) return getToggleItem(item);

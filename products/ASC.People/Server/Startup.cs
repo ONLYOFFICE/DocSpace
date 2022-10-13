@@ -34,4 +34,15 @@ public class Startup : BaseStartup
     {
     }
 
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        base.ConfigureServices(services);
+
+        services.AddBaseDbContextPool<FilesDbContext>();
+
+        services.AddScoped<UsersInRoomChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStat<UsersInRoomFeature, int>, UsersInRoomStatistic>();
+        services.AddScoped<UsersInRoomStatistic>();
+    }
 }

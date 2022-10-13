@@ -4,6 +4,7 @@
   "AddOwner": "Add owner",
   "ArchivingData": "Archiving data",
   "ButtonShareAccess": "Sharing Settings",
+  "ChooseFromList": "Choose from list",
   "ConnectingAccount": "Connecting account",
   "Copy": "Copy",
   "CopyHere": "Copy here",
@@ -56,5 +57,6 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive"
+  "TypeTitlekDrive": "kDrive",
+  "Other": "Other"
 }

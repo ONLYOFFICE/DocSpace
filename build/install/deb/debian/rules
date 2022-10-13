@@ -8,16 +8,14 @@ export DH_OPTIONS=-v
 %:
 	dh $@ --with=systemd
 
-PRODUCT=appserver
+PRODUCT={{product}}
 CURRENT_PATH=${CURDIR}
-BUILD_PATH=var/www
 SRC_PATH=$(shell cd ../../../; pwd)
 SCRIPT_PATH=build/install/common
 
 override_dh_auto_clean:
 	@echo "RULES.$@"
 	dh_testdir 
-	rm -rf ${CURRENT_PATH}/src
 	rm -rf ${CURRENT_PATH}/debian/*.service
 	rm -rf ${SRC_PATH}/build/install/${PRODUCT}*
 
@@ -27,16 +25,20 @@ override_dh_auto_configure:
 	dh_auto_configure
 
 override_dh_auto_build:
-	mkdir -p ${CURRENT_PATH}/src/${BUILD_PATH}
 	cd ${SRC_PATH}/${SCRIPT_PATH}/systemd; \
 	bash build.sh -bp "${CURRENT_PATH}/debian/"; \
 	cd ${SRC_PATH}/${SCRIPT_PATH}; \
 	bash build-frontend.sh -sp ${SRC_PATH}; \
 	bash build-backend.sh -sp ${SRC_PATH}; \
-	bash publish-backend.sh -sp ${SRC_PATH} -bp ${CURRENT_PATH}/src/${BUILD_PATH}
+	bash publish-backend.sh -sp ${SRC_PATH}
 
+	rm ${SRC_PATH}/config/nginx/onlyoffice-login.conf
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/*.conf 
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/includes/*.conf
+
+	json -I -f ${SRC_PATH}/config/appsettings.services.json -e "this.logPath=\"/var/log/onlyoffice/${PRODUCT}\"" \
+	-e "this.urlshortener={ 'path': '../ASC.UrlShortener/index.js' }" -e "this.socket={ 'path': '../ASC.Socket.IO/' }" \
+	-e "this.ssoauth={ 'path': '../ASC.SsoAuth/' }" -e "this.core={ 'products': { 'folder': '/var/www/${PRODUCT}/products', 'subfolder': 'server'} }"
 	
 override_dh_fixperms:
 	dh_fixperms

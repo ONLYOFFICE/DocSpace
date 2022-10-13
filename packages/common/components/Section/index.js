@@ -2,8 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import {
-  desktop,
-  size,
   tablet,
   mobile,
   isMobile as isMobileUtils,
@@ -11,14 +9,14 @@ import {
 } from "@docspace/components/utils/device";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { Provider } from "@docspace/components/utils/context";
-import { isMobile, isFirefox, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 import SectionContainer from "./sub-components/section-container";
 import SubSectionHeader from "./sub-components/section-header";
 import SubSectionFilter from "./sub-components/section-filter";
 import SubSectionBody from "./sub-components/section-body";
 import SubSectionBodyContent from "./sub-components/section-body-content";
-import SubSectionBar from "./sub-components/section-bar";
+
 import SubSectionPaging from "./sub-components/section-paging";
 //import SectionToggler from "./sub-components/section-toggler";
 import InfoPanel from "./sub-components/info-panel";
@@ -37,77 +35,10 @@ const StyledSelectoWrapper = styled.div`
   }
 `;
 
-const StyledMainBar = styled.div`
-  box-sizing: border-box;
-
-  ${NoUserSelect}
-
-  margin-left: -20px;
-
-  width: calc(100% + 20px);
-
-  #bar-banner {
-    margin-bottom: -3px;
-  }
-
-  #bar-frame {
-    min-width: 100%;
-    max-width: 100%;
-  }
-
-  @media ${tablet} {
-    width: calc(100% + 16px);
-    margin-left: -16px;
-  }
-
-  ${isMobile &&
-  css`
-    width: calc(100% + 32px) !important;
-    margin-left: -16px;
-  `}
-
-  @media ${mobile} {
-    width: 100vw !important;
-    max-width: 100vw !important;
-  }
-
-  ${isMobileOnly &&
-  css`
-    width: 100vw !important;
-    max-width: 100vw !important;
-
-    #bar-frame {
-      min-width: 100vw;
-    }
-  `}
-
-  ${(props) =>
-    !props.isSectionHeaderAvailable &&
-    css`
-      width: 100vw !important;
-      max-width: 100vw !important;
-
-      ${isMobile &&
-      css`
-        position: fixed;
-        top: 48px;
-        left: 0;
-        margin-left: 0 !important;
-        box-sizing: border-box;
-      `}
-    `}
-`;
-
 function SectionHeader() {
   return null;
 }
 SectionHeader.displayName = "SectionHeader";
-
-function SectionBar() {
-  return null;
-}
-
-SectionBar.displayName = "SectionBar";
 
 function SectionFilter() {
   return null;
@@ -138,7 +69,7 @@ class Section extends React.Component {
   static SectionHeader = SectionHeader;
   static SectionFilter = SectionFilter;
   static SectionBody = SectionBody;
-  static SectionBar = SectionBar;
+
   static SectionPaging = SectionPaging;
   static InfoPanelBody = InfoPanelBody;
   static InfoPanelHeader = InfoPanelHeader;
@@ -150,6 +81,7 @@ class Section extends React.Component {
     this.intervalHandler = null;
 
     this.scroll = null;
+    this.selectoRef = React.createRef(null);
   }
 
   componentDidUpdate(prevProps) {
@@ -205,17 +137,12 @@ class Section extends React.Component {
       showSecondaryButtonAlert,
       uploadFiles,
       viewAs,
-      //withBodyAutoFocus,
       withBodyScroll,
       children,
       isHeaderVisible,
-      //headerBorderBottom,
       onOpenUploadPanel,
       isTabletView,
-      firstLoad,
       dragging,
-      isDesktop,
-      isHomepage,
       maintenanceExist,
       setMaintenanceExist,
       snackbarExist,
@@ -224,10 +151,11 @@ class Section extends React.Component {
       isInfoPanelAvailable,
       settingsStudio,
       clearUploadedFilesHistory,
+      withPaging,
     } = this.props;
 
     let sectionHeaderContent = null;
-    let sectionBarContent = null;
+
     let sectionFilterContent = null;
     let sectionPagingContent = null;
     let sectionBodyContent = null;
@@ -245,9 +173,7 @@ class Section extends React.Component {
         case SectionFilter.displayName:
           sectionFilterContent = child;
           break;
-        case SectionBar.displayName:
-          sectionBarContent = child;
-          break;
+
         case SectionPaging.displayName:
           sectionPagingContent = child;
           break;
@@ -272,7 +198,6 @@ class Section extends React.Component {
         !!sectionBodyContent ||
         isSectionFilterAvailable ||
         isSectionPagingAvailable,
-      isSectionBarAvailable = !!sectionBarContent,
       isSectionAvailable =
         isSectionHeaderAvailable ||
         isSectionFilterAvailable ||
@@ -300,30 +225,10 @@ class Section extends React.Component {
                     showText={showText}
                     viewAs={viewAs}
                     maintenanceExist={maintenanceExist}
-                    isSectionBarAvailable={isSectionBarAvailable}
                     isSectionHeaderAvailable={isSectionHeaderAvailable}
                     infoPanelIsVisible={infoPanelIsVisible}
                     settingsStudio={settingsStudio}
                   >
-                    {!isMobile && (
-                      <StyledMainBar
-                        width={width}
-                        id="main-bar"
-                        className={"main-bar"}
-                        showText={showText}
-                        isSectionHeaderAvailable={isSectionHeaderAvailable}
-                        infoPanelIsVisible={infoPanelIsVisible}
-                      >
-                        <SubSectionBar
-                          setMaintenanceExist={setMaintenanceExist}
-                        >
-                          {sectionBarContent
-                            ? sectionBarContent.props.children
-                            : null}
-                        </SubSectionBar>
-                      </StyledMainBar>
-                    )}
-
                     {isSectionHeaderAvailable && !isMobile && (
                       <SubSectionHeader
                         maintenanceExist={maintenanceExist}
@@ -360,30 +265,9 @@ class Section extends React.Component {
                           withScroll={withBodyScroll}
                           autoFocus={isMobile || isTabletView ? false : true}
                           viewAs={viewAs}
-                          isHomepage={isHomepage}
                           settingsStudio={settingsStudio}
+                          selectoRef={this.selectoRef}
                         >
-                          {isMobile && (
-                            <StyledMainBar
-                              width={width}
-                              id="main-bar"
-                              className={"main-bar"}
-                              showText={showText}
-                              isSectionHeaderAvailable={
-                                isSectionHeaderAvailable
-                              }
-                              infoPanelIsVisible={infoPanelIsVisible}
-                            >
-                              <SubSectionBar
-                                setMaintenanceExist={setMaintenanceExist}
-                              >
-                                {sectionBarContent
-                                  ? sectionBarContent.props.children
-                                  : null}
-                              </SubSectionBar>
-                            </StyledMainBar>
-                          )}
-
                           {isSectionHeaderAvailable && isMobile && (
                             <SubSectionHeader
                               className="section-body_header"
@@ -498,11 +382,12 @@ class Section extends React.Component {
     return (
       <>
         {renderSection()}
-        {!isMobile && uploadFiles && !dragging && (
+        {!isMobile && uploadFiles && !dragging && withPaging && (
           <StyledSelectoWrapper>
             <Selecto
-              boundContainer={".section-wrapper"}
-              dragContainer={".section-body"}
+              ref={this.selectoRef}
+              boundContainer=".section-wrapper-content"
+              dragContainer=".section-wrapper"
               selectableTargets={[".files-item"]}
               hitRate={0}
               selectByClick={false}
@@ -524,7 +409,6 @@ class Section extends React.Component {
 Section.propTypes = {
   children: PropTypes.any,
   withBodyScroll: PropTypes.bool,
-  withBodyAutoFocus: PropTypes.bool,
   showPrimaryProgressBar: PropTypes.bool,
   primaryProgressBarValue: PropTypes.number,
   showPrimaryButtonAlert: PropTypes.bool,
@@ -537,22 +421,20 @@ Section.propTypes = {
   onDrop: PropTypes.func,
   setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
-  hideAside: PropTypes.bool,
   viewAs: PropTypes.string,
   onOpenUploadPanel: PropTypes.func,
   isTabletView: PropTypes.bool,
   isHeaderVisible: PropTypes.bool,
-  firstLoad: PropTypes.bool,
-  isHomepage: PropTypes.bool,
   isInfoPanelAvailable: PropTypes.bool,
   settingsStudio: PropTypes.bool,
+  withPaging: PropTypes.bool,
 };
 
 Section.defaultProps = {
   withBodyScroll: true,
-  withBodyAutoFocus: false,
   isInfoPanelAvailable: true,
   settingsStudio: false,
+  withPaging: true,
 };
 
 Section.InfoPanelHeader = InfoPanelHeader;
@@ -563,11 +445,10 @@ Section.SectionBody = SectionBody;
 Section.SectionPaging = SectionPaging;
 
 export default inject(({ auth }) => {
-  const { infoPanelStore, isLoaded, settingsStore } = auth;
+  const { infoPanelStore, settingsStore } = auth;
   const {
     isHeaderVisible,
     isTabletView,
-    isDesktopClient,
     maintenanceExist,
     snackbarExist,
     setMaintenanceExist,
@@ -577,14 +458,12 @@ export default inject(({ auth }) => {
   const { isVisible: infoPanelIsVisible } = infoPanelStore;
 
   return {
-    isLoaded,
     isTabletView,
     isHeaderVisible,
 
     maintenanceExist,
     snackbarExist,
     setMaintenanceExist,
-    isDesktop: isDesktopClient,
 
     showText,
 

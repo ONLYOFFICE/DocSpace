@@ -21,6 +21,7 @@ import {
   ThirdPartyDialog,
   ConflictResolveDialog,
   ConvertDialog,
+  CreateRoomDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 
@@ -47,6 +48,8 @@ const Panels = (props) => {
     setSelectFileDialogVisible,
     hotkeyPanelVisible,
     convertPasswordDialogVisible,
+    createRoomDialogVisible,
+    restoreAllPanelVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
@@ -64,8 +67,12 @@ const Panels = (props) => {
       />
     ),
     ownerPanelVisible && <ChangeOwnerPanel key="change-owner-panel" />,
-    (moveToPanelVisible || copyPanelVisible) && (
-      <OperationsPanel key="operation-panel" isCopy={copyPanelVisible} />
+    (moveToPanelVisible || copyPanelVisible || restoreAllPanelVisible) && (
+      <OperationsPanel
+        key="operation-panel"
+        isCopy={copyPanelVisible}
+        isRestore={restoreAllPanelVisible}
+      />
     ),
     thirdPartyMoveDialogVisible && (
       <ThirdPartyMoveDialog key="thirdparty-move-dialog" />
@@ -86,6 +93,7 @@ const Panels = (props) => {
       <ConflictResolveDialog key="conflict-resolve-dialog" />
     ),
     convertDialogVisible && <ConvertDialog key="convert-dialog" />,
+    createRoomDialogVisible && <CreateRoomDialog key="create-room-dialog" />,
     selectFileDialogVisible && (
       <SelectFileDialog
         key="select-file-dialog"
@@ -93,7 +101,7 @@ const Panels = (props) => {
         onSelectFile={createMasterForm}
         isPanelVisible={selectFileDialogVisible}
         onClose={onClose}
-        foldersType="exceptPrivacyTrashFolders"
+        filteredType="exceptPrivacyTrashArchiveFolders"
         ByExtension
         searchParam={".docx"}
         dialogName={t("Translations:CreateMasterFormFromFile")}
@@ -126,8 +134,10 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
+      createRoomDialogVisible,
       convertPasswordDialogVisible,
       connectItem, //TODO:
+      restoreAllPanelVisible,
 
       createMasterForm,
       selectFileDialogVisible,
@@ -155,11 +165,13 @@ export default inject(
       newFilesPanelVisible,
       conflictResolveDialogVisible,
       convertDialogVisible,
+      createRoomDialogVisible,
       convertPasswordDialogVisible,
       selectFileDialogVisible,
       createMasterForm,
       setSelectFileDialogVisible,
       hotkeyPanelVisible,
+      restoreAllPanelVisible,
     };
   }
 )(observer(Panels));

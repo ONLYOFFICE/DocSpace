@@ -13,19 +13,24 @@ const iconUrl = "/static/images/catalog.accounts.react.svg";
 const PureAccountsItem = ({
   showText,
   setSelectedFolder,
+  selectedTreeNode,
   setSelectedNode,
+  toggleArticleOpen,
   history,
   t,
 }) => {
   const onClick = React.useCallback(() => {
     setSelectedFolder(null);
 
-    setSelectedNode(["accounts"]);
+    setSelectedNode(["accounts", "filter"]);
 
     history.push(
       combineUrl(AppServerConfig.proxyURL, config.homepage, "/accounts")
     );
+    toggleArticleOpen();
   }, [setSelectedFolder, setSelectedNode, history]);
+
+  const isActive = selectedTreeNode[0] === "accounts";
 
   return (
     <CatalogItem
@@ -35,6 +40,7 @@ const PureAccountsItem = ({
       icon={iconUrl}
       showText={showText}
       onClick={onClick}
+      isActive={isActive}
     />
   );
 };
@@ -45,10 +51,14 @@ const AccountsItem = withTranslation(["FilesSettings", "Common"])(
 
 export default inject(({ auth, treeFoldersStore, selectedFolderStore }) => {
   const { setSelectedFolder } = selectedFolderStore;
-  const { setSelectedNode } = treeFoldersStore;
+  const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
+  const { toggleArticleOpen, showText } = auth.settingsStore;
+
   return {
-    showText: auth.settingsStore.showText,
+    showText,
     setSelectedFolder,
+    selectedTreeNode,
     setSelectedNode,
+    toggleArticleOpen,
   };
 })(observer(AccountsItem));

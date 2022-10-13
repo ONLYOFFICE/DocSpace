@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbCoreSettings", b =>
@@ -244,39 +244,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantPartner", b =>
-                {
-                    b.Property<int>("TenantId")
-                        .HasColumnType("integer")
-                        .HasColumnName("tenant_id");
-
-                    b.Property<string>("AffiliateId")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("affiliate_id")
-                        .HasDefaultValueSql("NULL");
-
-                    b.Property<string>("Campaign")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("campaign")
-                        .HasDefaultValueSql("NULL");
-
-                    b.Property<string>("PartnerId")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(36)
-                        .HasColumnType("character varying(36)")
-                        .HasColumnName("partner_id")
-                        .HasDefaultValueSql("NULL");
-
-                    b.HasKey("TenantId")
-                        .HasName("tenants_partners_pkey");
-
-                    b.ToTable("tenants_partners", "onlyoffice");
-                });
-
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenantVersion", b =>
                 {
                     b.Property<int>("Id")
@@ -315,6 +282,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<bool>("ForAdmin")
+                        .HasColumnType("TINYINT(1)")
+                        .HasColumnName("for_admin");
 
                     b.Property<string>("Ip")
                         .IsRequired()

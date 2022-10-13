@@ -1,16 +1,10 @@
 /* eslint-disable react/display-name */
-import React, { memo } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
-import { FixedSizeList as List, areEqual } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
 import StyledRowContainer from "./styled-row-container";
+import InfiniteLoaderComponent from "../infinite-loader";
 
 class RowContainer extends React.PureComponent {
-  renderRow = memo(({ data, index, style }) => {
-    return <div style={style}>{data[index]}</div>;
-  }, areEqual);
-
   render() {
     const {
       manualHeight,
@@ -21,22 +15,11 @@ class RowContainer extends React.PureComponent {
       className,
       style,
       onScroll,
+      filesLength,
+      itemCount,
+      fetchMoreFiles,
+      hasMoreFiles,
     } = this.props;
-
-    const renderList = ({ height, width }) => (
-      <List
-        onScroll={onScroll}
-        className="List"
-        height={height}
-        width={width}
-        itemSize={itemHeight}
-        itemCount={children.length}
-        itemData={children}
-        outerElementType={CustomScrollbarsVirtualList}
-      >
-        {this.renderRow}
-      </List>
-    );
 
     return (
       <StyledRowContainer
@@ -46,7 +29,22 @@ class RowContainer extends React.PureComponent {
         manualHeight={manualHeight}
         useReactWindow={useReactWindow}
       >
-        {useReactWindow ? <AutoSizer>{renderList}</AutoSizer> : children}
+        {useReactWindow ? (
+          <InfiniteLoaderComponent
+            className="List"
+            viewAs="row"
+            hasMoreFiles={hasMoreFiles}
+            filesLength={filesLength}
+            itemCount={itemCount}
+            loadMoreItems={fetchMoreFiles}
+            itemSize={itemHeight}
+            onScroll={onScroll}
+          >
+            {children}
+          </InfiniteLoaderComponent>
+        ) : (
+          children
+        )}
       </StyledRowContainer>
     );
   }
@@ -69,6 +67,10 @@ RowContainer.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Called when the list scroll positions changes */
   onScroll: PropTypes.func,
+  filesLength: PropTypes.number,
+  itemCount: PropTypes.number,
+  loadMoreItems: PropTypes.func,
+  hasMoreFiles: PropTypes.bool,
 };
 
 RowContainer.defaultProps = {

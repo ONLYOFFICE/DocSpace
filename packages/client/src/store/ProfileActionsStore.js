@@ -2,7 +2,6 @@ import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
-import authStore from "@docspace/common/store/AuthStore";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 
@@ -12,18 +11,36 @@ const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
-const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
+const PAYMENTS_URL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/portal-settings/payments/portal-payments"
+);
 const HELP_URL = "https://onlyoffice.com/";
 const SUPPORT_URL = "https://onlyoffice.com/";
 const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
 
 class ProfileActionsStore {
   authStore = null;
+  filesStore = null;
+  peopleStore = null;
+  treeFoldersStore = null;
+  selectedFolderStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
 
-  constructor() {
+  constructor(
+    authStore,
+    filesStore,
+    peopleStore,
+    treeFoldersStore,
+    selectedFolderStore
+  ) {
     this.authStore = authStore;
+    this.filesStore = filesStore;
+    this.peopleStore = peopleStore;
+    this.treeFoldersStore = treeFoldersStore;
+    this.selectedFolderStore = selectedFolderStore;
+
     makeAutoObservable(this);
   }
 
@@ -46,6 +63,14 @@ class ProfileActionsStore {
   };
 
   onProfileClick = () => {
+    //TODO: add check manager
+    const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    if (isAdmin || isOwner) {
+      this.selectedFolderStore.setSelectedFolder(null);
+      this.treeFoldersStore.setSelectedNode(["accounts"]);
+    }
+
     history.push(PROFILE_SELF_URL);
   };
 
@@ -82,7 +107,11 @@ class ProfileActionsStore {
   };
 
   onLogoutClick = () => {
-    this.authStore.logout && this.authStore.logout();
+    this.authStore.logout().then(() => {
+      this.filesStore.reset();
+      this.peopleStore.reset();
+      window.location.replace(combineUrl(proxyURL, "/login"));
+    });
   };
 
   onDebugClick = () => {
@@ -109,7 +138,6 @@ class ProfileActionsStore {
           icon: "/static/images/catalog.settings.react.svg",
           label: t("Common:Settings"),
           onClick: () => this.onSettingsClick(settingsUrl),
-          url: settingsUrl,
         }
       : null;
 
@@ -136,7 +164,6 @@ class ProfileActionsStore {
         icon: "/static/images/profile.react.svg",
         label: t("Common:Profile"),
         onClick: this.onProfileClick,
-        url: PROFILE_SELF_URL,
       },
       settings,
       {
@@ -144,33 +171,29 @@ class ProfileActionsStore {
         icon: "/static/images/payments.react.svg",
         label: t("Common:PaymentsTitle"),
         onClick: this.onPaymentsClick,
-        url: PAYMENTS_URL,
       },
       {
         key: "HelpCenterBtn",
         icon: "/static/images/help.center.react.svg",
         label: t("Common:HelpCenter"),
         onClick: this.onHelpCenterClick,
-        url: HELP_URL,
       },
       {
         key: "SupportBtn",
         icon: "/static/images/support.react.svg",
         label: t("Common:FeedbackAndSupport"),
         onClick: this.onSupportClick,
-        url: SUPPORT_URL,
       },
       {
         key: "VideoBtn",
         icon: "/static/images/video.guides.react.svg",
         label: t("Common:VideoGuides"),
         onClick: this.onVideoGuidesClick,
-        url: VIDEO_GUIDES_URL,
       },
       hotkeys,
       {
         key: "AboutBtn",
-        icon: "/static/images/info.react.svg",
+        icon: "/static/images/info.outline.react.svg",
         label: t("Common:AboutCompanyTitle"),
         onClick: this.onAboutClick,
       },
@@ -190,7 +213,7 @@ class ProfileActionsStore {
     if (debugInfo) {
       actions.splice(3, 0, {
         key: "DebugBtn",
-        icon: "/static/images/info.react.svg",
+        icon: "/static/images/info.outline.react.svg",
         label: "Debug Info",
         onClick: this.onDebugClick,
       });
@@ -209,7 +232,42 @@ class ProfileActionsStore {
       }
     }
 
-    return actions;
+    return this.checkEnabledActions(actions);
+  };
+
+  checkEnabledActions = (actions) => {
+    const actionsArray = actions;
+
+    const feedbackAndSupportEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.helpCenterEnabled;
+
+    if (!feedbackAndSupportEnabled) {
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "SupportBtn"
+      );
+
+      actionsArray.splice(index, 1);
+    }
+
+    if (!videoGuidesEnabled) {
+      const index = actionsArray.findIndex((item) => item?.key === "VideoBtn");
+
+      actionsArray.splice(index, 1);
+    }
+
+    if (!helpCenterEnabled) {
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "HelpCenterBtn"
+      );
+
+      actionsArray.splice(index, 1);
+    }
+
+    return actionsArray;
   };
 }
 

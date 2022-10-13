@@ -26,31 +26,55 @@
 
 namespace ASC.Feed.Mapping;
 
-public class FeedTypeConverter : ITypeConverter<FeedAggregate, FeedResultItem>, ITypeConverter<FeedResultItem, FeedMin>
+[Scope]
+public class FeedMappingAction : IMappingAction<FeedAggregate, FeedResultItem>
 {
     private readonly TenantUtil _tenantUtil;
-    private readonly UserManager _userManager;
 
-    public FeedTypeConverter(TenantUtil tenantUtil, UserManager userManager)
+    public FeedMappingAction(TenantUtil tenantUtil)
     {
         _tenantUtil = tenantUtil;
-        _userManager = userManager;
     }
 
-    public FeedResultItem Convert(FeedAggregate source, FeedResultItem destination, ResolutionContext context)
+    public void Process(FeedAggregate source, FeedResultItem destination, ResolutionContext context)
     {
-        var result = new FeedResultItem(
-            source.Json,
-            source.Module,
-            source.Author,
-            source.ModifiedBy,
-            source.GroupId,
-            _tenantUtil.DateTimeFromUtc(source.CreatedDate),
-            _tenantUtil.DateTimeFromUtc(source.ModifiedDate),
-            _tenantUtil.DateTimeFromUtc(source.AggregateDate),
-            _tenantUtil);
+        var now = _tenantUtil.DateTimeFromUtc(DateTime.UtcNow);
 
-        return result;
+        destination.CreatedDate = _tenantUtil.DateTimeFromUtc(source.CreatedDate);
+        destination.ModifiedDate = _tenantUtil.DateTimeFromUtc(source.ModifiedDate);
+        destination.AggregatedDate = _tenantUtil.DateTimeFromUtc(source.AggregateDate);
+
+        var feed = System.Text.Json.JsonSerializer.Deserialize<Aggregator.Feed>(source.Json);
+
+        destination.TargetId = feed.Target;
+
+        var compareDate = feed.IsAllDayEvent
+                ? _tenantUtil.DateTimeToUtc(source.CreatedDate).Date
+                : destination.CreatedDate.Date;
+
+        if (now.Date == compareDate.AddDays(-1))
+        {
+            destination.IsTomorrow = true;
+        }
+        else if (now.Date == compareDate)
+        {
+            destination.IsToday = true;
+        }
+        else if (now.Date == compareDate.AddDays(1))
+        {
+            destination.IsYesterday = true;
+        }
+    }
+}
+
+[Scope]
+public class FeedTypeConverter : ITypeConverter<FeedResultItem, FeedMin>
+{
+    private readonly UserManager _userManager;
+
+    public FeedTypeConverter(UserManager userManager)
+    {
+        _userManager = userManager;
     }
 
     public FeedMin Convert(FeedResultItem source, FeedMin destination, ResolutionContext context)

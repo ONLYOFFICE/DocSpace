@@ -55,6 +55,14 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<ThirdPartyAppHandlerService>();
 
         NotifyConfigurationExtension.Register(DIHelper);
+
+        services.AddBaseDbContextPool<FilesDbContext>();
+
+        services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
+        services.AddScoped<CountRoomChecker>();
+
+        services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
+        services.AddScoped<CountRoomCheckerStatistic>();
     }
 
     public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)

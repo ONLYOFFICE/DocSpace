@@ -13,11 +13,21 @@ class SocialButton extends React.Component {
   }
 
   render() {
-    const { label, iconName, ...otherProps } = this.props;
+    const {
+      label,
+      iconName,
+      IconComponent,
+      isConnect,
+      ...otherProps
+    } = this.props;
     return (
-      <StyledSocialButton {...otherProps}>
+      <StyledSocialButton isConnect={isConnect} {...otherProps}>
         <div>
-          <ReactSVG className="iconWrapper" src={iconName} />
+          {IconComponent ? (
+            <IconComponent className="iconWrapper" />
+          ) : (
+            <ReactSVG className="iconWrapper" src={iconName} />
+          )}
         </div>
         <div>
           {label && (
@@ -48,6 +58,8 @@ SocialButton.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   onClick: PropTypes.func,
   $iconOptions: PropTypes.object,
+  size: PropTypes.oneOf(["base", "small"]),
+  isConnect: PropTypes.bool,
 };
 
 SocialButton.defaultProps = {
@@ -56,6 +68,8 @@ SocialButton.defaultProps = {
   tabIndex: -1,
   isDisabled: false,
   $iconOptions: {},
+  size: "base",
+  isConnect: false,
 };
 
 export default SocialButton;

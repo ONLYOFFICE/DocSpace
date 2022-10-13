@@ -4,6 +4,7 @@ import Scrollbar from "@docspace/components/scrollbar";
 import ArrowRightIcon from "@docspace/client/public/images/arrow.right.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { Base } from "@docspace/components/themes";
+import { UnavailableStyles } from "../../../utils/commonSettingsStyles";
 
 const menuHeight = "48px";
 const sectionHeight = "50px";
@@ -32,6 +33,9 @@ const StyledScrollbar = styled(Scrollbar)`
 `;
 
 const StyledSettingsComponent = styled.div`
+  .dns-setting_helpbutton {
+    margin-right: 4px;
+  }
   .combo-button-label {
     max-width: 100%;
     font-weight: 400;
@@ -54,6 +58,10 @@ const StyledSettingsComponent = styled.div`
     padding-bottom: 12px;
   }
 
+  .send-request-button {
+    height: 40px;
+  }
+
   @media (max-width: 599px) {
     ${(props) =>
       props.hasScroll &&
@@ -68,16 +76,36 @@ const StyledSettingsComponent = styled.div`
           padding-left: 16px;
         }
       `}
+
+    .send-request-container {
+      box-sizing: border-box;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      padding: 16px;
+      width: 100%;
+    }
+
+    .send-request-button {
+      width: 100%;
+    }
   }
 
   @media (min-width: 600px) {
     .settings-block {
       max-width: 350px;
       height: auto;
+      margin-top: 0px;
     }
 
     .settings-block-description {
       display: none;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .send-request-button {
+      height: 32px;
     }
   }
 
@@ -89,6 +117,7 @@ const StyledSettingsComponent = styled.div`
       }
     `}
   }
+  ${(props) => !props.isSettingPaid && UnavailableStyles}
 `;
 
 export { StyledSettingsComponent, StyledScrollbar, StyledArrowRightIcon };

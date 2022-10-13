@@ -82,9 +82,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Nepravilen e-naslov</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Nepravilna promocijska koda</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Ni dovoljenj za izvajanje tega dejanja</value>
   </data>

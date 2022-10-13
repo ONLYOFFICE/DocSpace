@@ -2,7 +2,6 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
 import { isMobile, isMobileOnly } from "react-device-detect";
-import { Resizable } from "re-resizable";
 
 import {
   isDesktop as isDesktopUtils,
@@ -15,15 +14,9 @@ import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
 import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
-
+import ArticlePaymentAlert from "./sub-components/article-payment-alert";
 import { StyledArticle } from "./styled-article";
-
-const enable = {
-  top: false,
-  right: false,
-  bottom: false,
-  left: false,
-};
+import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
 
 const Article = ({
   showText,
@@ -32,11 +25,12 @@ const Article = ({
   toggleShowText,
   toggleArticleOpen,
   setIsMobileArticle,
-  isLoadedPage,
   children,
-
+  isGracePeriod,
   isBannerVisible,
   hideProfileBlock,
+  isFreeTariff,
+  isAvailableArticlePaymentAlert,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -118,11 +112,7 @@ const Article = ({
         isBannerVisible={isBannerVisible}
         {...rest}
       >
-        <SubArticleHeader
-          isLoadedPage={isLoadedPage}
-          showText={showText}
-          onClick={toggleShowText}
-        >
+        <SubArticleHeader showText={showText}>
           {articleHeaderContent ? articleHeaderContent.props.children : null}
         </SubArticleHeader>
         {articleMainButtonContent && !isMobileOnly && !isMobileUtils() ? (
@@ -132,9 +122,16 @@ const Article = ({
         ) : null}
         <SubArticleBody showText={showText}>
           {articleBodyContent ? articleBodyContent.props.children : null}
+          <HideArticleMenuButton
+            showText={showText}
+            toggleShowText={toggleShowText}
+          />
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
+          {isAvailableArticlePaymentAlert &&
+            (isFreeTariff || isGracePeriod) &&
+            showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -177,9 +174,19 @@ Article.Body = () => {
 Article.Body.displayName = "Body";
 
 export default inject(({ auth, bannerStore }) => {
-  const { settingsStore } = auth;
-
+  const {
+    settingsStore,
+    currentQuotaStore,
+    currentTariffStatusStore,
+    userStore,
+  } = auth;
+  const { isFreeTariff } = currentQuotaStore;
+  const { isGracePeriod } = currentTariffStatusStore;
   const { isBannerVisible } = bannerStore;
+
+  const { user } = userStore;
+
+  const isAvailableArticlePaymentAlert = user.isOwner || user.isAdmin;
 
   const {
     showText,
@@ -197,7 +204,9 @@ export default inject(({ auth, bannerStore }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
-
+    isFreeTariff,
     isBannerVisible,
+    isGracePeriod,
+    isAvailableArticlePaymentAlert,
   };
 })(observer(Article));

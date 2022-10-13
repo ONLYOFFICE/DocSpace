@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import SelectFolderDialog from "../SelectFolderDialog";
 
 let timerId;
@@ -12,6 +12,7 @@ const OperationsPanelComponent = (props) => {
     tReady,
     filter,
     isCopy,
+    isRestore,
     visible,
     provider,
     selection,
@@ -20,7 +21,6 @@ const OperationsPanelComponent = (props) => {
     setDestFolderId,
     setIsFolderActions,
     currentFolderId,
-    operationsFolders,
     setCopyPanelVisible,
     setExpandedPanelKeys,
     setMoveToPanelVisible,
@@ -32,6 +32,7 @@ const OperationsPanelComponent = (props) => {
     conflictResolveDialogVisible,
     clearActiveOperations,
     thirdPartyMoveDialogVisible,
+    setRestoreAllPanelVisible,
   } = props;
 
   const deleteAfter = false; // TODO: get from settings
@@ -48,6 +49,8 @@ const OperationsPanelComponent = (props) => {
     if (isCopy) {
       setCopyPanelVisible(false);
       setIsFolderActions(false);
+    } else if (isRestore) {
+      setRestoreAllPanelVisible(false);
     } else {
       setMoveToPanelVisible(false);
     }
@@ -150,7 +153,7 @@ const OperationsPanelComponent = (props) => {
     <SelectFolderDialog
       selectionFiles={selection}
       isDisableTree={isLoading}
-      foldersType="exceptSortedByTags"
+      filteredType="exceptSortedByTags"
       isPanelVisible={isVisible}
       onSubmit={onSubmit}
       onClose={onClose}
@@ -161,7 +164,7 @@ const OperationsPanelComponent = (props) => {
           ? t("Common:Restore")
           : isCopy
           ? t("Translations:Copy")
-          : t("Home:MoveTo")
+          : t("Files:MoveTo")
       }
       buttonName={
         isRecycleBin
@@ -190,14 +193,10 @@ export default inject(
       filesActionsStore,
       uploadDataStore,
     },
-    { isCopy }
+    { isCopy, isRestore }
   ) => {
-    const { filter, selection, bufferSelection } = filesStore;
-    const {
-      isRecycleBinFolder,
-      operationsFolders,
-      setExpandedPanelKeys,
-    } = treeFoldersStore;
+    const { filter, selection, filesList, bufferSelection } = filesStore;
+    const { isRecycleBinFolder, setExpandedPanelKeys } = treeFoldersStore;
     const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
     const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
 
@@ -212,28 +211,37 @@ export default inject(
       setIsFolderActions,
       conflictResolveDialogVisible,
       thirdPartyMoveDialogVisible,
+      restoreAllPanelVisible,
+      setRestoreAllPanelVisible,
     } = dialogsStore;
 
-    const selections = selection.length ? selection : [bufferSelection];
-    const selectionsWithoutEditing = isCopy
+    const selections = isRestore
+      ? filesList
+      : selection.length
+      ? selection
+      : [bufferSelection];
+
+    const selectionsWithoutEditing = isRestore
+      ? filesList
+      : isCopy
       ? selections
       : selections.filter((f) => !f.isEditing);
 
-    const provider = selections.find((x) => x.providerKey);
+    const provider = selections?.find((x) => x?.providerKey);
 
     return {
       currentFolderId: selectedFolderStore.id,
       parentFolderId: selectedFolderStore.parentId,
       isRecycleBin: isRecycleBinFolder,
       filter,
-      operationsFolders,
-      visible: copyPanelVisible || moveToPanelVisible,
+      visible: copyPanelVisible || moveToPanelVisible || restoreAllPanelVisible,
       provider,
       selection: selectionsWithoutEditing,
       isFolderActions,
 
       setCopyPanelVisible,
       setMoveToPanelVisible,
+      setRestoreAllPanelVisible,
       setDestFolderId,
       setIsFolderActions,
       setThirdPartyMoveDialogVisible,

@@ -12,6 +12,7 @@ import RowContent from "@docspace/components/row-content";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
 import { Base } from "@docspace/components/themes";
+import { RoomsTypeTranslations } from "@docspace/common/constants";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
@@ -105,7 +106,7 @@ const FilesRowContent = ({
     if (item.tags.length > 0) {
       tags = item?.tags.join(" | ");
     } else {
-      tags = t("NoTag");
+      tags = t(RoomsTypeTranslations[item.roomType]);
     }
   }
 
@@ -158,7 +159,9 @@ const FilesRowContent = ({
           {isRooms
             ? tags
             : !fileExst && !contentLength && !providerKey && !isMobileOnly
-            ? `${foldersCount} ${t("Folders")} | ${filesCount} ${t("Files")}`
+            ? `${foldersCount} ${t("Translations:Folders")} | ${filesCount} ${t(
+                "Translations:Files"
+              )}`
             : fileExst
             ? `${fileExst.toUpperCase().replace(/^\./, "")}`
             : ""}

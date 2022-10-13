@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable } from "mobx";
 import authStore from "@docspace/common/store/AuthStore";
 import api from "@docspace/common/api";
 
@@ -12,14 +12,15 @@ class CommonStore {
   isInit = false;
   isLoaded = false;
   isLoadedArticleBody = false;
-  isLoadedArticleHeader = false;
   isLoadedSectionHeader = false;
   isLoadedSubmenu = false;
   isLoadedLngTZSettings = false;
+  isLoadedDNSSettings = false;
   isLoadedPortalRenaming = false;
   isLoadedCustomization = false;
   isLoadedCustomizationNavbar = false;
   isLoadedWelcomePageSettings = false;
+  isLoadedAdditionalResources = false;
 
   constructor() {
     this.authStore = authStore;
@@ -70,57 +71,43 @@ class CommonStore {
   };
 
   setIsLoadedArticleBody = (isLoadedArticleBody) => {
-    runInAction(() => {
-      this.isLoadedArticleBody = isLoadedArticleBody;
-    });
-  };
-
-  setIsLoadedArticleHeader = (isLoadedArticleHeader) => {
-    runInAction(() => {
-      this.isLoadedArticleHeader = isLoadedArticleHeader;
-    });
+    this.isLoadedArticleBody = isLoadedArticleBody;
   };
 
   setIsLoadedSectionHeader = (isLoadedSectionHeader) => {
-    runInAction(() => {
-      this.isLoadedSectionHeader = isLoadedSectionHeader;
-    });
+    this.isLoadedSectionHeader = isLoadedSectionHeader;
   };
 
   setIsLoadedSubmenu = (isLoadedSubmenu) => {
-    runInAction(() => {
-      this.isLoadedSubmenu = isLoadedSubmenu;
-    });
+    this.isLoadedSubmenu = isLoadedSubmenu;
   };
 
   setIsLoadedLngTZSettings = (isLoadedLngTZSettings) => {
-    runInAction(() => {
-      this.isLoadedLngTZSettings = isLoadedLngTZSettings;
-    });
+    this.isLoadedLngTZSettings = isLoadedLngTZSettings;
   };
 
   setIsLoadedWelcomePageSettings = (isLoadedWelcomePageSettings) => {
-    runInAction(() => {
-      this.isLoadedWelcomePageSettings = isLoadedWelcomePageSettings;
-    });
+    this.isLoadedWelcomePageSettings = isLoadedWelcomePageSettings;
   };
 
   setIsLoadedPortalRenaming = (isLoadedPortalRenaming) => {
-    runInAction(() => {
-      this.isLoadedPortalRenaming = isLoadedPortalRenaming;
-    });
+    this.isLoadedPortalRenaming = isLoadedPortalRenaming;
+  };
+
+  setIsLoadedDNSSettings = (isLoadedDNSSettings) => {
+    this.isLoadedDNSSettings = isLoadedDNSSettings;
   };
 
   setIsLoadedCustomization = (isLoadedCustomization) => {
-    runInAction(() => {
-      this.isLoadedCustomization = isLoadedCustomization;
-    });
+    this.isLoadedCustomization = isLoadedCustomization;
   };
 
   setIsLoadedCustomizationNavbar = (isLoadedCustomizationNavbar) => {
-    runInAction(() => {
-      this.isLoadedCustomizationNavbar = isLoadedCustomizationNavbar;
-    });
+    this.isLoadedCustomizationNavbar = isLoadedCustomizationNavbar;
+  };
+
+  setIsLoadedAdditionalResources = (isLoadedAdditionalResources) => {
+    this.isLoadedAdditionalResources = isLoadedAdditionalResources;
   };
 
   setIsLoaded = (isLoaded) => {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import HelpButton from "@docspace/components/help-button";
@@ -29,6 +29,8 @@ const PortalRenaming = (props) => {
     setIsLoadedPortalRenaming,
     isLoadedPage,
     tenantAlias,
+    initSettings,
+    setIsLoaded,
   } = props;
 
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
@@ -67,12 +69,16 @@ const PortalRenaming = (props) => {
 
   const isLoadedSetting = isLoaded && tReady;
 
+  const [isCustomizationView, setIsCustomizationView] = useState(false);
+
   useEffect(() => {
     setDocumentTitle(t("PortalRenaming"));
+    if (!isLoaded) initSettings().then(() => setIsLoaded(true));
 
     const checkScroll = checkScrollSettingsBlock();
+    checkInnerWidth();
 
-    window.addEventListener("resize", checkInnerWidth, checkScroll);
+    window.addEventListener("resize", checkInnerWidth);
 
     const scrollPortalName = checkScroll();
 
@@ -89,12 +95,7 @@ const PortalRenaming = (props) => {
       settingsMobile.style.display = "none";
     }
 
-    return () =>
-      window.removeEventListener(
-        "resize",
-        checkInnerWidth,
-        checkScrollSettingsBlock
-      );
+    return () => window.removeEventListener("resize", checkInnerWidth);
   }, []);
 
   useEffect(() => {
@@ -206,8 +207,10 @@ const PortalRenaming = (props) => {
     }
   };
 
-  const checkInnerWidth = () => {
+  const checkInnerWidth = useCallback(() => {
     if (!isSmallTablet()) {
+      setIsCustomizationView(true);
+
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -215,9 +218,10 @@ const PortalRenaming = (props) => {
           "/portal-settings/common/customization"
         )
       );
-      return true;
+    } else {
+      setIsCustomizationView(false);
     }
-  };
+  }, [isSmallTablet, setIsCustomizationView]);
 
   const tooltipPortalRenamingTooltip = <PortalRenamingTooltip t={t} />;
   const hasError = errorValue === null ? false : true;
@@ -230,7 +234,7 @@ const PortalRenaming = (props) => {
       <FieldContainer
         id="fieldContainerPortalRenaming"
         className="field-container-width"
-        labelText={`${t("PortalRenamingLabelText")}:`}
+        labelText={`${t("PortalRenamingLabelText")}`}
         isVertical={true}
       >
         <TextInput
@@ -254,7 +258,7 @@ const PortalRenaming = (props) => {
       hasScroll={hasScroll}
       className="category-item-wrapper"
     >
-      {checkInnerWidth() && !isMobileView && (
+      {isCustomizationView && !isMobileView && (
         <div className="category-item-heading">
           <div className="category-item-title">{t("PortalRenaming")}</div>
           <HelpButton
@@ -288,13 +292,20 @@ const PortalRenaming = (props) => {
 export default inject(({ auth, setup, common }) => {
   const { theme, tenantAlias } = auth.settingsStore;
   const { setPortalRename } = setup;
-  const { isLoaded, setIsLoadedPortalRenaming } = common;
+  const {
+    isLoaded,
+    setIsLoadedPortalRenaming,
+    initSettings,
+    setIsLoaded,
+  } = common;
   return {
     theme,
     setPortalRename,
     isLoaded,
     setIsLoadedPortalRenaming,
     tenantAlias,
+    initSettings,
+    setIsLoaded,
   };
 })(
   withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))

@@ -1,5 +1,9 @@
 import authStore from "@docspace/common/store/AuthStore";
-import { AppServerConfig, RoomsType } from "@docspace/common/constants";
+import {
+  AppServerConfig,
+  FileType,
+  RoomsType,
+} from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl, toUrlParams } from "@docspace/common/utils";
 import { addFileToRecentlyViewed } from "@docspace/common/api/files";
@@ -7,22 +11,45 @@ import i18n from "./i18n";
 
 import { request } from "@docspace/common/api/client";
 
+export const getFileTypeName = (fileType, t) => {
+  switch (fileType) {
+    case FileType.Unknown:
+      return t("Common:Unknown");
+    case FileType.Archive:
+      return t("Common:Archive");
+    case FileType.Video:
+      return t("Common:Video");
+    case FileType.Audio:
+      return t("Common:Audio");
+    case FileType.Image:
+      return t("Common:Image");
+    case FileType.Spreadsheet:
+      return t("Home:Spreadsheet");
+    case FileType.Presentation:
+      return t("Home:Presentation");
+    case FileType.Document:
+      return t("Home:Document");
+    default:
+      return t("Home:Folder");
+  }
+};
+
 export const getDefaultRoomName = (room, t) => {
   switch (room) {
     case RoomsType.CustomRoom:
-      return t("CustomRooms");
+      return t("Files:CustomRooms");
 
     case RoomsType.FillingFormsRoom:
-      return t("FillingFormRooms");
+      return t("Files:FillingFormRooms");
 
     case RoomsType.EditingRoom:
-      return t("CollaborationRooms");
+      return t("Files:CollaborationRooms");
 
     case RoomsType.ReviewRoom:
-      return t("ReviewRooms");
+      return t("Files:ReviewRooms");
 
     case RoomsType.ReadOnlyRoom:
-      return t("ViewOnlyRooms");
+      return t("Files:ViewOnlyRooms");
   }
 };
 
@@ -102,7 +129,7 @@ export const getDataSaveAs = async (params) => {
     const data = await request({
       baseURL: combineUrl(AppServerConfig.proxyURL, config.homepage),
       method: "get",
-      url: `/httphandlers/filehandler.ashx?${params}`,
+      url: `/products/files/httphandlers/filehandler.ashx?${params}`,
       responseType: "text",
     });
 
@@ -203,5 +230,31 @@ export const connectedCloudsTypeTitleTranslation = (key, t) => {
 
     default:
       return key;
+  }
+};
+
+export const connectedCloudsTypeIcon = (key) => {
+  switch (key) {
+    case "GoogleDrive":
+      return "/static/images/cloud.services.google.drive.react.svg";
+    case "Box":
+      return "/static/images/cloud.services.box.react.svg";
+    case "DropboxV2":
+      return "/static/images/cloud.services.dropbox.react.svg";
+    case "OneDrive":
+      return "/static/images/cloud.services.onedrive.react.svg";
+    case "SharePoint":
+      return "/static/images/cloud.services.onedrive.react.svg";
+    case "kDrive":
+      return "/static/images/cloud.services.kdrive.react.svg";
+    case "Yandex":
+      return "/static/images/cloud.services.yandex.react.svg";
+    case "NextCloud":
+      return "/static/images/cloud.services.nextcloud.react.svg";
+    case "OwnCloud":
+      return "/static/images/catalog.folder.react.svg";
+    case "WebDav":
+      return "/static/images/cloud.services.webdav.react.svg";
+    default:
   }
 };

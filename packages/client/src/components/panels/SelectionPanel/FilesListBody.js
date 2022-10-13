@@ -26,6 +26,7 @@ const FilesListBody = ({
   page,
   folderSelection,
   getIcon,
+  maxHeight = 384,
 }) => {
   const { t } = useTranslation(["SelectFile", "Common"]);
   const [isLoading, setIsLoading] = useState(false);
@@ -177,7 +178,7 @@ const FilesListBody = ({
             {({ onItemsRendered, ref }) => (
               <List
                 theme={theme}
-                height={384}
+                height={maxHeight}
                 itemCount={itemCount}
                 itemSize={48}
                 onItemsRendered={onItemsRendered}
@@ -196,7 +197,7 @@ const FilesListBody = ({
         <div className="select-file-dialog_empty-container">
           <EmptyContainer
             theme={theme}
-            headerText={t("Home:EmptyFolderHeader")}
+            headerText={t("Files:EmptyFolderHeader")}
             imageSrc="/static/images/empty.screen.react.svg"
           />
         </div>

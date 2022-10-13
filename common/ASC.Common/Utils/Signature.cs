@@ -54,18 +54,17 @@ public class Signature
         return Read<T>(signature, Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()));
     }
 
-    public static T Read<T>(string signature, string secret)
+    public T Read<T>(string signature, Action<string> signatureResolver = null)
+    {
+        return Read<T>(signature, Encoding.UTF8.GetString(_machinePseudoKeys.GetMachineConstant()), signatureResolver);
+    }
+
+    public static T Read<T>(string signature, string secret, Action<string> signatureResolver = null)
     {
         try
         {
-            var lastSignChar = Int32.Parse(signature.Substring(signature.Length - 1));
-            signature = signature.Remove(signature.Length - 1);
+            signatureResolver?.Invoke(signature);
 
-            while(lastSignChar > 0)
-            {
-                signature = signature + "=";
-                lastSignChar--;
-            }
             var payloadParts = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(signature)).Split('?');
 
             if (GetHashBase64(payloadParts[1].Trim() + secret) == payloadParts[0])

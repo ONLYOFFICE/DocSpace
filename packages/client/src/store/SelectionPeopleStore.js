@@ -4,19 +4,21 @@ import {
   EmployeeActivationStatus,
 } from "@docspace/common/constants";
 import { getUserStatus } from "../helpers/people-helpers";
-import store from "client/store";
-const { auth: authStore } = store;
 
 class SelectionStore {
+  peopleStore = null;
   selection = [];
+  bufferSelection = null;
   selected = "none";
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
     makeObservable(this, {
       selection: observable,
+      bufferSelection: observable,
       selected: observable,
       selectUser: action,
+      setBufferSelection: action,
       deselectUser: action,
       selectAll: action,
       setSelection: action,
@@ -41,10 +43,21 @@ class SelectionStore {
 
   setSelection = (selection) => {
     this.selection = selection;
+    if (selection?.length && !this.selection.length) {
+      this.bufferSelection = null;
+    }
+  };
+
+  setBufferSelection = (bufferSelection) => {
+    this.bufferSelection = bufferSelection;
+    this.setSelection([]);
   };
 
   selectUser = (user) => {
-    return this.selection.push(user);
+    if (!this.selection.length) {
+      this.bufferSelection = null;
+    }
+    this.selection.push(user);
   };
 
   deselectUser = (user) => {
@@ -53,6 +66,7 @@ class SelectionStore {
   };
 
   selectAll = () => {
+    this.bufferSelection = null;
     const list = this.peopleStore.usersStore.peopleList;
     this.setSelection(list);
   };
@@ -62,6 +76,7 @@ class SelectionStore {
   };
 
   selectByStatus = (status) => {
+    this.bufferSelection = null;
     const list = this.peopleStore.usersStore.peopleList.filter(
       (u) => u.status === status
     );
@@ -71,15 +86,16 @@ class SelectionStore {
 
   getUserChecked = (user, selected) => {
     const status = getUserStatus(user);
+
     switch (selected) {
       case "all":
         return true;
       case "active":
-        return status === "normal";
+        return status === "active";
+      case "pending":
+        return status === "pending";
       case "disabled":
         return status === "disabled";
-      case "invited":
-        return status === "pending";
       default:
         return false;
     }
@@ -97,6 +113,7 @@ class SelectionStore {
   };
 
   setSelected = (selected) => {
+    this.bufferSelection = null;
     this.selected = selected;
     const list = this.peopleStore.usersStore.peopleList;
     this.setSelection(this.getUsersBySelected(list, selected));
@@ -109,26 +126,29 @@ class SelectionStore {
   }
 
   get hasUsersToMakeEmployees() {
+    const isOwner = this.peopleStore.authStore.userStore.user.isOwner;
     const users = this.selection.filter((x) => {
       return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
+        (!x.isOwner &&
+          !x.isAdmin &&
+          x.status !== EmployeeStatus.Disabled &&
+          x.id !== this.peopleStore.authStore.userStore.user.id) ||
+        (x.isAdmin &&
+          isOwner &&
+          x.status !== EmployeeStatus.Disabled &&
+          x.id !== this.peopleStore.authStore.userStore.user.id)
       );
     });
-    return !!users.length;
+
+    return users.length > 0;
   }
 
   get getUsersToMakeEmployeesIds() {
     const users = this.selection.filter((x) => {
       return (
-        !x.isAdmin &&
         !x.isOwner &&
-        x.isVisitor &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
+        x.id !== this.peopleStore.authStore.userStore.user.id
       );
     });
     return users.map((u) => u.id);
@@ -141,7 +161,7 @@ class SelectionStore {
         !x.isOwner &&
         !x.isVisitor &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
+        x.id !== this.peopleStore.authStore.userStore.user.id
       );
     });
     return !!users.length;
@@ -154,7 +174,7 @@ class SelectionStore {
         !x.isOwner &&
         !x.isVisitor &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
+        x.id !== this.peopleStore.authStore.userStore.user.id
       );
     });
     return users.map((u) => u.id);
@@ -165,7 +185,7 @@ class SelectionStore {
       (x) =>
         !x.isOwner &&
         x.status !== EmployeeStatus.Active &&
-        x.id !== authStore.userStore.user.id
+        x.id !== this.peopleStore.authStore.userStore.user.id
     );
     return !!users.length;
   }
@@ -175,7 +195,7 @@ class SelectionStore {
       (x) =>
         !x.isOwner &&
         x.status !== EmployeeStatus.Active &&
-        x.id !== authStore.userStore.user.id
+        x.id !== this.peopleStore.authStore.userStore.user.id
     );
     return users.map((u) => u.id);
   }
@@ -185,7 +205,7 @@ class SelectionStore {
       (x) =>
         !x.isOwner &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
+        x.id !== this.peopleStore.authStore.userStore.user.id
     );
     return !!users.length;
   }
@@ -195,7 +215,7 @@ class SelectionStore {
       (x) =>
         !x.isOwner &&
         x.status !== EmployeeStatus.Disabled &&
-        x.id !== authStore.userStore.user.id
+        x.id !== this.peopleStore.authStore.userStore.user.id
     );
     return users.map((u) => u.id);
   }

@@ -16,6 +16,7 @@ import Button from "@docspace/components/button";
 import SelectorAddButton from "@docspace/components/selector-add-button";
 import { isMobile } from "react-device-detect";
 import { mobile } from "@docspace/components/utils/device";
+import { getOAuthToken } from "@docspace/common/utils";
 
 const StyledModalDialog = styled(ModalDialog)`
   .modal-dialog-aside-body {
@@ -180,7 +181,6 @@ const ThirdPartyDialog = (props) => {
     visible,
     setThirdPartyDialogVisible,
     openConnectWindow,
-    getOAuthToken,
     setConnectDialogVisible,
     setConnectItem,
     getThirdPartyIcon,
@@ -381,7 +381,7 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     setConnectDialogVisible,
     setConnectItem,
   } = dialogsStore;
-  const { getOAuthToken, theme } = auth.settingsStore;
+  const { theme } = auth.settingsStore;
 
   return {
     theme: theme,
@@ -401,7 +401,6 @@ export default inject(({ auth, settingsStore, dialogsStore }) => {
     setConnectDialogVisible,
     setConnectItem,
     setThirdPartyDialogVisible,
-    getOAuthToken,
     openConnectWindow,
     getThirdPartyIcon,
   };

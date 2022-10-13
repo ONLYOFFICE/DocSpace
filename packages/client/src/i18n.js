@@ -3,11 +3,11 @@ import { initReactI18next } from "react-i18next";
 import Backend from "@docspace/common/utils/i18next-http-backend";
 import config from "PACKAGE_FILE";
 import { LANGUAGE } from "@docspace/common/constants";
-import { loadLanguagePath } from "@docspace/common/utils";
+import { loadLanguagePath, getCookie } from "@docspace/common/utils";
 
 const newInstance = i18n.createInstance();
 
-const lng = localStorage.getItem(LANGUAGE) || "en";
+const lng = getCookie(LANGUAGE) || "en";
 
 newInstance
   .use(Backend)
@@ -27,6 +27,7 @@ newInstance
     },
 
     ns: [
+      "InfoPanel",
       "DownloadDialog",
       "DeleteDialog",
       "EmptyTrashDialog",
@@ -35,6 +36,7 @@ newInstance
       "ConflictResolveDialog",
       "DeleteThirdPartyDialog",
       "ThirdPartyMoveDialog",
+      "PortalUnavailable",
     ],
 
     backend: {

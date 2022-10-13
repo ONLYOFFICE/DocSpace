@@ -5,7 +5,7 @@ import EmptyFilterContainer from "./EmptyFilterContainer";
 import EmptyFolderContainer from "./EmptyFolderContainer";
 import { FileAction } from "@docspace/common/constants";
 import { isMobile } from "react-device-detect";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 
 const linkStyles = {
   isHovered: true,
@@ -15,7 +15,12 @@ const linkStyles = {
   display: "flex",
 };
 
-const EmptyContainer = ({ isFiltered, parentId, theme }) => {
+const EmptyContainer = ({
+  isFiltered,
+  parentId,
+  theme,
+  setCreateRoomDialogVisible,
+}) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
   const onCreate = (e) => {
@@ -32,11 +37,10 @@ const EmptyContainer = ({ isFiltered, parentId, theme }) => {
     window.dispatchEvent(event);
   };
 
-  const onCreateRoom = React.useCallback(() => {
+  const onCreateRoom = (e) => {
     const event = new Event(Events.ROOM_CREATE);
-
     window.dispatchEvent(event);
-  }, []);
+  };
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
@@ -52,22 +56,61 @@ const EmptyContainer = ({ isFiltered, parentId, theme }) => {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
+  ({
+    auth,
+    filesStore,
+    dialogsStore,
+    treeFoldersStore,
+    selectedFolderStore,
+  }) => {
+    const { filter, roomsFilter } = filesStore;
+
     const {
       authorType,
       search,
       withSubfolders,
       filterType,
-    } = filesStore.filter;
-    const { isPrivacyFolder } = treeFoldersStore;
+      searchInContent,
+    } = filter;
+    const {
+      subjectId,
+      filterValue,
+      type,
+      withSubfolders: withRoomsSubfolders,
+      searchInContent: searchInContentRooms,
+      tags,
+      withoutTags,
+    } = roomsFilter;
 
-    const isFiltered =
-      (authorType || search || !withSubfolders || filterType) &&
-      !(isPrivacyFolder && isMobile);
+    const {
+      isPrivacyFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+    } = treeFoldersStore;
+
+    const isRooms = isRoomsFolder || isArchiveFolder;
+
+    const { setCreateRoomDialogVisible } = dialogsStore;
+
+    const isFiltered = isRooms
+      ? filterValue ||
+        type ||
+        withRoomsSubfolders ||
+        searchInContentRooms ||
+        subjectId ||
+        tags ||
+        withoutTags
+      : (authorType ||
+          search ||
+          !withSubfolders ||
+          filterType ||
+          searchInContent) &&
+        !(isPrivacyFolder && isMobile);
 
     return {
       theme: auth.settingsStore.theme,
       isFiltered,
+      setCreateRoomDialogVisible,
 
       parentId: selectedFolderStore.parentId,
     };

@@ -13,7 +13,7 @@ import { StyledVersionRow } from "./StyledVersionHistory";
 import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { inject, observer } from "mobx-react";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import { Encoder } from "@docspace/common/utils/encoder";
 import { Base } from "@docspace/components/themes";
 
@@ -50,7 +50,7 @@ const VersionRow = (props) => {
 
   const title = `${new Date(info.updated).toLocaleString(
     culture
-  )} ${Encoder.htmlDecode(info.updatedBy.displayName)}`;
+  )} ${Encoder.htmlDecode(info.updatedBy?.displayName)}`;
 
   const linkStyles = { isHovered: true, type: "action" };
 

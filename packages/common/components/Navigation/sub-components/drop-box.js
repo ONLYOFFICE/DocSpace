@@ -14,6 +14,7 @@ import StyledContainer from "../StyledNavigation";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import {
   tablet,
+  mobile,
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
@@ -26,14 +27,16 @@ const StyledBox = styled.div`
   left: ${isMobile ? "-16px" : "-20px"};
 
   padding: ${isMobile ? "0 16px " : "0 20px"};
+  padding-top: 18px;
 
-  ${(props) => `width: ${props.dropBoxWidth}px;`};
+  width: unset;
 
   height: ${(props) => (props.height ? `${props.height}px` : "fit-content")};
   max-height: calc(100vh - 48px);
 
   z-index: 401;
-  display: flex;
+  display: table;
+  margin: auto;
   flex-direction: column;
 
   background: ${(props) => props.theme.navigation.background};
@@ -42,14 +45,27 @@ const StyledBox = styled.div`
   border-radius: 0px 0px 6px 6px;
 
   @media ${tablet} {
+    width: ${({ dropBoxWidth }) => dropBoxWidth + "px"};
     left: -16px;
-    padding: 0 16px 0 16px;
+    padding: 0 16px;
+    padding-top: 14px;
+  }
+
+  ${isMobile &&
+  css`
+    width: ${({ dropBoxWidth }) => dropBoxWidth + "px"};
+    padding-top: 14px;
+  `}
+
+  @media ${mobile} {
+    padding-top: 10px !important;
   }
 
   ${isMobileOnly &&
   css`
     margin-left: 16px;
     padding: 0 16px !important;
+    padding-top: 14px !important;
     max-height: ${(props) => props.maxHeight};
   `}
 `;

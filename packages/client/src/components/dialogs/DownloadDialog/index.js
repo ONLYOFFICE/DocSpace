@@ -321,7 +321,7 @@ class DownloadDialogComponent extends React.Component {
               isIndeterminate={indeterminateOtherTitle}
               items={other}
               type="other"
-              title={t("Other")}
+              title={t("Translations:Other")}
             />
           )}
 

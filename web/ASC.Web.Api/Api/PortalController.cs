@@ -31,17 +31,17 @@ namespace ASC.Web.Api.Controllers;
 [ApiController]
 public class PortalController : ControllerBase
 {
-    private Tenant Tenant { get { return _apiContext.Tenant; } }
+    protected Tenant Tenant { get { return _apiContext.Tenant; } }
 
     private readonly ApiContext _apiContext;
-    private readonly UserManager _userManager;
-    private readonly TenantManager _tenantManager;
-    private readonly PaymentManager _paymentManager;
+    protected readonly UserManager _userManager;
+    protected readonly TenantManager _tenantManager;
+    protected readonly ITariffService _tariffService;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly UrlShortener _urlShortener;
     private readonly AuthContext _authContext;
     private readonly WebItemSecurity _webItemSecurity;
-    private readonly SecurityContext _securityContext;
+    protected readonly SecurityContext _securityContext;
     private readonly SettingsManager _settingsManager;
     private readonly IMobileAppInstallRegistrator _mobileAppInstallRegistrator;
     private readonly IConfiguration _configuration;
@@ -56,7 +56,6 @@ public class PortalController : ControllerBase
     private readonly CoreSettings _coreSettings;
     private readonly PermissionContext _permissionContext;
     private readonly StudioNotifyService _studioNotifyService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MessageService _messageService;
     private readonly MessageTarget _messageTarget;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
@@ -66,7 +65,7 @@ public class PortalController : ControllerBase
         ApiContext apiContext,
         UserManager userManager,
         TenantManager tenantManager,
-        PaymentManager paymentManager,
+        ITariffService tariffService,
         CommonLinkUtility commonLinkUtility,
         UrlShortener urlShortener,
         AuthContext authContext,
@@ -85,7 +84,6 @@ public class PortalController : ControllerBase
         CoreSettings coreSettings,
         PermissionContext permissionContext,
         StudioNotifyService studioNotifyService,
-        IHttpContextAccessor httpContextAccessor,
         MessageService messageService,
         MessageTarget messageTarget,
         DisplayUserSettingsHelper displayUserSettingsHelper
@@ -95,7 +93,7 @@ public class PortalController : ControllerBase
         _apiContext = apiContext;
         _userManager = userManager;
         _tenantManager = tenantManager;
-        _paymentManager = paymentManager;
+        _tariffService = tariffService;
         _commonLinkUtility = commonLinkUtility;
         _urlShortener = urlShortener;
         _authContext = authContext;
@@ -114,7 +112,6 @@ public class PortalController : ControllerBase
         _coreSettings = coreSettings;
         _permissionContext = permissionContext;
         _studioNotifyService = studioNotifyService;
-        _httpContextAccessor = httpContextAccessor;
         _messageService = messageService;
         _messageTarget = messageTarget;
         _displayUserSettingsHelper = displayUserSettingsHelper;
@@ -140,7 +137,7 @@ public class PortalController : ControllerBase
             throw new SecurityException("Method not available");
         }
 
-        return _commonLinkUtility.GetConfirmationUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
+        return _commonLinkUtility.GetConfirmationEmailUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
                 + $"&emplType={employeeType:d}";
     }
 
@@ -167,7 +164,7 @@ public class PortalController : ControllerBase
             opensource = _tenantExtra.Opensource,
             enterprise = _tenantExtra.Enterprise,
             tariff = _tenantExtra.GetCurrentTariff(),
-            quota = _tenantExtra.GetTenantQuota(),
+            quota = _tenantManager.GetCurrentTenantQuota(),
             notPaid = _tenantExtra.IsNotPaid(),
             licenseAccept = _settingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting,
             enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
@@ -196,12 +193,14 @@ public class PortalController : ControllerBase
         return _coreBaseSettings.Personal ? 1 : _userManager.GetUserNames(EmployeeStatus.Active).Length;
     }
 
+    [AllowNotPayment]
     [HttpGet("tariff")]
     public Tariff GetTariff()
     {
-        return _paymentManager.GetTariff(Tenant.Id);
+        return _tariffService.GetTariff(Tenant.Id);
     }
 
+    [AllowNotPayment]
     [HttpGet("quota")]
     public TenantQuota GetQuota()
     {
@@ -216,9 +215,8 @@ public class PortalController : ControllerBase
 
         return _tenantManager.GetTenantQuotas().OrderBy(r => r.Price)
                             .FirstOrDefault(quota =>
-                                            quota.ActiveUsers > needUsersCount
-                                            && quota.MaxTotalSize > usedSpace
-                                            && !quota.Year);
+                                            quota.CountUser > needUsersCount
+                                            && quota.MaxTotalSize > usedSpace);
     }
 
 
@@ -364,7 +362,7 @@ public class PortalController : ControllerBase
             return string.Empty;
         }
 
-        return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.Auth);
+        return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.Auth);
     }
 
     [HttpDelete("deleteportalimmediately")]
@@ -405,8 +403,8 @@ public class PortalController : ControllerBase
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         var owner = _userManager.GetUsers(Tenant.OwnerId);
-        var suspendUrl = _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalSuspend);
-        var continueUrl = _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalContinue);
+        var suspendUrl = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalSuspend);
+        var continueUrl = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalContinue);
 
         _studioNotifyService.SendMsgPortalDeactivation(Tenant, suspendUrl, continueUrl);
 
@@ -420,10 +418,10 @@ public class PortalController : ControllerBase
         var owner = _userManager.GetUsers(Tenant.OwnerId);
 
         var showAutoRenewText = !_coreBaseSettings.Standalone &&
-                        _paymentManager.GetTariffPayments(Tenant.Id).Any() &&
-                        !_tenantExtra.GetTenantQuota().Trial;
+                        _tariffService.GetPayments(Tenant.Id).Any() &&
+                        !_tenantManager.GetCurrentTenantQuota().Trial;
 
-        _studioNotifyService.SendMsgPortalDeletion(Tenant, _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
+        _studioNotifyService.SendMsgPortalDeletion(Tenant, _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalRemove), showAutoRenewText);
 
         _messageService.Send(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
@@ -446,7 +444,7 @@ public class PortalController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalRemove")]
     public async Task<object> DeletePortal()
     {
         _tenantManager.RemoveTenant(Tenant.Id);

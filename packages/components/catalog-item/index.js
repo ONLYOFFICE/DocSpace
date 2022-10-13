@@ -16,7 +16,7 @@ import {
   StyledCatalogItemInitialText,
   StyledCatalogItemHeaderContainer,
 } from "./styled-catalog-item";
-
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 const getInitial = (text) => text.substring(0, 1).toUpperCase();
 
 const CatalogItem = (props) => {
@@ -47,6 +47,7 @@ const CatalogItem = (props) => {
   };
 
   const onClickBadgeAction = (e) => {
+    console.log("PRO", onClickBadge);
     e.stopPropagation();
     onClickBadge && onClickBadge(id);
   };
@@ -70,12 +71,14 @@ const CatalogItem = (props) => {
 
   const renderItem = () => {
     return (
-      <StyledCatalogItemContainer
+      <ColorTheme
         className={className}
         id={id}
         style={style}
         showText={showText}
         isEndOfBlock={isEndOfBlock}
+        isActive={isActive}
+        themeId={ThemeType.CatalogItem}
       >
         <StyledCatalogItemSibling
           isActive={isActive}
@@ -83,9 +86,9 @@ const CatalogItem = (props) => {
           isDragActive={isDragActive}
           onClick={onClickAction}
           onMouseUp={onMouseUpAction}
-        ></StyledCatalogItemSibling>
+        />
 
-        <StyledCatalogItemImg>
+        <StyledCatalogItemImg isActive={isActive}>
           <ReactSVG className="icon" src={icon} />
           {!showText && (
             <>
@@ -105,7 +108,9 @@ const CatalogItem = (props) => {
         </StyledCatalogItemImg>
 
         {showText && (
-          <StyledCatalogItemText noSelect={true}>{text}</StyledCatalogItemText>
+          <StyledCatalogItemText isActive={isActive} noSelect={true}>
+            {text}
+          </StyledCatalogItemText>
         )}
 
         {showBadge && showText && (
@@ -116,11 +121,11 @@ const CatalogItem = (props) => {
             {!iconBadge ? (
               <Badge className="catalog-item__badge" label={labelBadge} />
             ) : (
-              <ReactSVG src={iconBadge} />
+              <ReactSVG className="catalog-item__icon" src={iconBadge} />
             )}
           </StyledCatalogItemBadgeWrapper>
         )}
-      </StyledCatalogItemContainer>
+      </ColorTheme>
     );
   };
 

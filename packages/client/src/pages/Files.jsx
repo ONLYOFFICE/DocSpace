@@ -5,7 +5,7 @@ import { Switch, withRouter, Redirect } from "react-router-dom";
 //import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import {
   //combineUrl,
   updateTempContent,
@@ -78,7 +78,11 @@ const FilesSection = React.memo(() => {
     <Switch>
       {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
       {/* <PrivateRoute path={"/private"} component={PrivateRoomsPage} /> */}
-
+      <PrivateRoute
+        exact
+        path={"/settings"}
+        component={() => <Redirect to="/settings/common" />}
+      />
       <PrivateRoute
         exact
         path={["/", "/rooms"]}
@@ -120,17 +124,17 @@ const FilesSection = React.memo(() => {
           "/accounts",
           "/accounts/filter",
           "/accounts/create/:type",
-          "/accounts/edit/:userId",
-          "/accounts/view/:userId",
           "/accounts/view/@self",
         ]}
         component={Accounts}
       />
       <PrivateRoute
         exact
-        path={["/setiings", "/settings/:setting"]}
+        restricted
+        path={"/settings/admin"}
         component={Settings}
       />
+      <PrivateRoute exact path={"/settings/common"} component={Settings} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );

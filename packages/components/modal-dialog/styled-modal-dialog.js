@@ -1,7 +1,8 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import Box from "../box";
-import { smallTablet, tablet } from "../utils/device";
+import { mobile, smallTablet, tablet } from "../utils/device";
+import { isMobile } from "react-device-detect";
 
 const StyledModal = styled.div`
   pointer-events: none;
@@ -83,17 +84,13 @@ const StyledHeader = styled.div`
     `1px solid ${props.theme.modalDialog.headerBorderColor}`};
   margin-bottom: 16px;
   height: 52px;
-
-  display: flex;
-  align-items: center;
   padding: 0 16px 0;
 
   .heading {
     font-family: "Open Sans";
     color: ${(props) => props.theme.modalDialog.textColor};
     font-weight: 700;
-    font-size: ${(props) =>
-      props.currentDisplayType === "modal" ? "18px" : "21px"};
+    font-size: "21px";
   }
 `;
 
@@ -103,11 +100,21 @@ const StyledBody = styled(Box)`
   padding-bottom: ${(props) =>
     props.currentDisplayType === "aside" || props.hasFooter ? "8px" : "16px"};
 
-  margin-right: ${(props) => (props.withBodyScroll ? "-16px" : "0")};
+  #modal-scroll > .scroll-body {
+    ${isMobile && "margin-right: 0 !important"}
+    padding-right: 16px !important;
+    ${(props) =>
+      props.isScrollLocked &&
+      css`
+        margin-right: 0 !important;
+        overflow: hidden !important;
+      `}
+  }
 
   ${(props) =>
     props.currentDisplayType === "aside" &&
     css`
+      margin-right: ${props.withBodyScroll ? "-16px" : "0"};
       padding-bottom: 8px;
       height: 100%;
       min-height: auto;

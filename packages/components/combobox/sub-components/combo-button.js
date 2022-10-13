@@ -14,6 +14,8 @@ import {
 import ExpanderDownIcon from "../../../../public/images/expander-down.react.svg";
 import commonIconsStyles from "../../utils/common-icons-style";
 
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
 const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles}
 `;
@@ -34,13 +36,14 @@ class ComboButton extends React.Component {
       size,
       comboIcon,
       fillIcon,
+      modernView,
     } = this.props;
 
-    const defaultOption = selectedOption.default;
-    const isSelected = selectedOption.key !== 0;
+    const defaultOption = selectedOption?.default;
+    const isSelected = selectedOption?.key !== 0;
 
     return (
-      <StyledComboButton
+      <ColorTheme
         isOpen={isOpen}
         isDisabled={isDisabled}
         noBorder={noBorder}
@@ -50,7 +53,9 @@ class ComboButton extends React.Component {
         scaled={scaled}
         size={size}
         isSelected={isSelected}
+        modernView={modernView}
         className="combo-button"
+        themeId={ThemeType.ComboButton}
       >
         {innerContainer && (
           <StyledOptionalItem
@@ -74,20 +79,23 @@ class ComboButton extends React.Component {
             />
           </StyledIcon>
         )}
+
         <Text
           noBorder={noBorder}
-          title={selectedOption.label}
+          title={selectedOption?.label}
           as="div"
           truncate={true}
           fontWeight={600}
           className="combo-button-label"
         >
-          {selectedOption.label}
+          {selectedOption?.label}
         </Text>
+
         <StyledArrowIcon
           needDisplay={withOptions || withAdvancedOptions}
           noBorder={noBorder}
           isOpen={isOpen}
+          modernView={modernView}
           className="combo-buttons_arrow-icon"
         >
           {(withOptions || withAdvancedOptions) &&
@@ -103,7 +111,7 @@ class ComboButton extends React.Component {
               />
             ))}
         </StyledArrowIcon>
-      </StyledComboButton>
+      </ColorTheme>
     );
   }
 }
@@ -129,6 +137,7 @@ ComboButton.propTypes = {
   onClick: PropTypes.func,
   comboIcon: PropTypes.string,
   fillIcon: PropTypes.bool,
+  modernView: PropTypes.bool,
 };
 
 ComboButton.defaultProps = {
@@ -140,6 +149,7 @@ ComboButton.defaultProps = {
   isOpen: false,
   size: "content",
   scaled: false,
+  modernView: false,
 };
 
 export default ComboButton;

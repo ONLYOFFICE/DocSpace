@@ -1,4 +1,5 @@
-export const LANGUAGE = "language";
+export const LANGUAGE = "asc_language";
+export const COOKIE_EXPIRATION_YEAR = 31536000000;
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
 
 /**
@@ -44,6 +45,8 @@ export const FilterType = Object.freeze({
   ArchiveOnly: 10,
   ByExtension: 11,
   MediaOnly: 12,
+  OFormTemplateOnly: 18,
+  OFormOnly: 19,
 });
 /**
  * Enum for file type.
@@ -58,6 +61,8 @@ export const FileType = Object.freeze({
   Spreadsheet: 5,
   Presentation: 6,
   Document: 7,
+  OFormTemplate: 8,
+  OForm: 9,
 });
 /**
  * Enum for room type.
@@ -70,6 +75,15 @@ export const RoomsType = Object.freeze({
   ReadOnlyRoom: 4,
   CustomRoom: 5,
 });
+
+export const RoomsTypeTranslations = Object.freeze({
+  1: "Files:FillingFormRooms",
+  2: "Files:CollaborationRooms",
+  3: "Files:ReviewRooms",
+  4: "Files:ViewOnlyRooms",
+  5: "Files:CustomRooms",
+});
+
 /**
  * Enum for room search area.
  * @readonly
@@ -233,4 +247,59 @@ export const ThemeKeys = Object.freeze({
   DarkStr: "Dark",
   System: "2",
   SystemStr: "System",
+});
+
+/**
+ * Enum for global events.
+ * @readonly
+ */
+export const Events = Object.freeze({
+  CREATE: "create",
+  RENAME: "rename",
+  ROOM_CREATE: "create_room",
+  ROOM_EDIT: "edit_room",
+  CHANGE_COLUMN: "change_column",
+});
+
+/**
+ * Enum for feed action types.
+ * @readonly
+ */
+export const FeedActionTypes = Object.freeze({
+  Create: 0,
+  Update: 1,
+  Rename: 2,
+  Move: 3,
+  Delete: 4,
+});
+
+/**
+ * Enum for feed item types.
+ * @readonly
+ */
+export const FeedItemTypes = Object.freeze({
+  File: "file",
+  Folder: "folder",
+  Room: "room",
+  User: "sharedRoom",
+});
+
+/**
+ * Enum for theme keys.
+ * @readonly
+ */
+export const TariffState = Object.freeze({
+  Trial: 0,
+  Paid: 1,
+  Delay: 2,
+  NotPaid: 3,
+});
+
+/**
+ * Enum for theme keys.
+ * @readonly
+ */
+export const PortalFeaturesLimitations = Object.freeze({
+  Limitless: -1,
+  Unavailable: 0,
 });

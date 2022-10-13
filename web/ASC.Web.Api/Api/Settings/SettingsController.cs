@@ -24,13 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Constants = ASC.Core.Users.Constants;
-
 namespace ASC.Web.Api.Controllers.Settings;
+
 public class SettingsController : BaseSettingsController
 {
+    private static readonly object locked = new object();
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly MessageService _messageService;
     private readonly ConsumerFactory _consumerFactory;
     private readonly TimeZoneConverter _timeZoneConverter;
@@ -40,7 +41,6 @@ public class SettingsController : BaseSettingsController
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
     private readonly TenantExtra _tenantExtra;
-    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly AuthContext _authContext;
     private readonly PermissionContext _permissionContext;
     private readonly SettingsManager _settingsManager;
@@ -49,28 +49,27 @@ public class SettingsController : BaseSettingsController
     private readonly TenantUtil _tenantUtil;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly ColorThemesSettingsHelper _colorThemesSettingsHelper;
     private readonly IConfiguration _configuration;
     private readonly SetupInfo _setupInfo;
     private readonly StatisticManager _statisticManager;
-    private readonly CoreConfiguration _coreConfiguration;
     private readonly UrlShortener _urlShortener;
     private readonly PasswordHasher _passwordHasher;
     private readonly ILogger _log;
     private readonly TelegramHelper _telegramHelper;
-    private readonly FirebaseHelper _firebaseHelper;
-    private readonly Constants _constants;
     private readonly DnsSettings _dnsSettings;
     private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    private readonly CustomColorThemesSettingsHelper _customColorThemesSettingsHelper;
+    private readonly QuotaUsageManager _quotaUsageManager;
+    private readonly QuotaSyncOperation _quotaSyncOperation;
 
     public SettingsController(
+        IServiceScopeFactory serviceScopeFactory,
         ILoggerProvider option,
         MessageService messageService,
         ApiContext apiContext,
         UserManager userManager,
         TenantManager tenantManager,
         TenantExtra tenantExtra,
-        TenantStatisticsProvider tenantStatisticsProvider,
         AuthContext authContext,
         PermissionContext permissionContext,
         SettingsManager settingsManager,
@@ -80,11 +79,9 @@ public class SettingsController : BaseSettingsController
         TenantUtil tenantUtil,
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
-        ColorThemesSettingsHelper colorThemesSettingsHelper,
         IConfiguration configuration,
         SetupInfo setupInfo,
         StatisticManager statisticManager,
-        CoreConfiguration coreConfiguration,
         ConsumerFactory consumerFactory,
         TimeZoneConverter timeZoneConverter,
         CustomNamingPeople customNamingPeople,
@@ -92,13 +89,14 @@ public class SettingsController : BaseSettingsController
         ProviderManager providerManager,
         FirstTimeTenantSettings firstTimeTenantSettings,
         TelegramHelper telegramHelper,
-        FirebaseHelper firebaseHelper,
         UrlShortener urlShortener,
         PasswordHasher passwordHasher,
-        Constants constants,
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
-        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper
+        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
+        QuotaSyncOperation quotaSyncOperation,
+        QuotaUsageManager quotaUsageManager
         ) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -107,11 +105,11 @@ public class SettingsController : BaseSettingsController
         _customNamingPeople = customNamingPeople;
         _providerManager = providerManager;
         _firstTimeTenantSettings = firstTimeTenantSettings;
+        _serviceScopeFactory = serviceScopeFactory;
         _messageService = messageService;
         _userManager = userManager;
         _tenantManager = tenantManager;
         _tenantExtra = tenantExtra;
-        _tenantStatisticsProvider = tenantStatisticsProvider;
         _authContext = authContext;
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
@@ -120,23 +118,21 @@ public class SettingsController : BaseSettingsController
         _tenantUtil = tenantUtil;
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
-        _colorThemesSettingsHelper = colorThemesSettingsHelper;
         _configuration = configuration;
         _setupInfo = setupInfo;
         _statisticManager = statisticManager;
-        _coreConfiguration = coreConfiguration;
         _passwordHasher = passwordHasher;
         _urlShortener = urlShortener;
         _telegramHelper = telegramHelper;
-        _firebaseHelper = firebaseHelper;
-        _constants = constants;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
+        _quotaSyncOperation = quotaSyncOperation;
+        _customColorThemesSettingsHelper = customColorThemesSettingsHelper;
+        _quotaUsageManager = quotaUsageManager;
     }
 
     [HttpGet("")]
-    [AllowNotPayment]
-    [AllowAnonymous]
+    [AllowNotPayment, AllowSuspended, AllowAnonymous]
     public SettingsDto GetSettings(bool? withpassword)
     {
         var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
@@ -262,9 +258,19 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpGet("quota")]
-    public QuotaDto GetQuotaUsed()
+    public async Task<QuotaUsageDto> GetQuotaUsed()
     {
-        return new QuotaDto(Tenant, _coreBaseSettings, _coreConfiguration, _tenantExtra, _tenantStatisticsProvider, _authContext, _settingsManager, WebItemManager, _constants);
+        return await _quotaUsageManager.Get();
+    }
+
+    [HttpPost("userquotasettings")]
+    public object SaveUserQuotaSettings(UserQuotaSettingsRequestsDto inDto)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        _settingsManager.Save(new TenantUserQuotaSettings { EnableUserQuota = inDto.EnableUserQuota, DefaultUserQuota = inDto.DefaultUserQuota });
+
+        return Resource.SuccessfullySaveSettingsMessage;
     }
 
     [AllowAnonymous]
@@ -316,39 +322,19 @@ public class SettingsController : BaseSettingsController
         return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
     }
 
-    //[HttpGet("recalculatequota")]
-    //public void RecalculateQuota()
-    //{
-    //    SecurityContext.DemandPermissions(Tenant, SecutiryConstants.EditPortalSettings);
+    [HttpGet("recalculatequota")]
+    public void RecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        _quotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
 
-    //    var operations = quotaTasks.GetTasks()
-    //        .Where(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
-
-    //    if (operations.Any(o => o.Status <= DistributedTaskStatus.Running))
-    //    {
-    //        throw new InvalidOperationException(Resource.LdapSettingsTooManyOperations);
-    //    }
-
-    //    var op = new QuotaSync(Tenant.Id, ServiceProvider);
-
-    //    quotaTasks.QueueTask(op.RunJob, op.GetDistributedTask());
-    //}
-
-    //[HttpGet("checkrecalculatequota")]
-    //public bool CheckRecalculateQuota()
-    //{
-    //    PermissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-    //    var task = quotaTasks.GetTasks().FirstOrDefault(t => t.GetProperty<int>(QuotaSync.IdKey) == Tenant.Id);
-
-    //    if (task != null && task.Status == DistributedTaskStatus.Completed)
-    //    {
-    //        quotaTasks.RemoveTask(task.Id);
-    //        return false;
-    //    }
-
-    //    return task != null;
-    //}
+    [HttpGet("checkrecalculatequota")]
+    public bool CheckRecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        return _quotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
 
     [HttpGet("logo")]
     public object GetLogo()
@@ -376,7 +362,7 @@ public class SettingsController : BaseSettingsController
 
         var collaboratorPopupSettings = _settingsManager.LoadForCurrentUser<CollaboratorSettings>();
 
-        if (!(currentUser.IsVisitor(_userManager) && collaboratorPopupSettings.FirstVisit && !currentUser.IsOutsider(_userManager)))
+        if (!(_userManager.IsVisitor(currentUser) && collaboratorPopupSettings.FirstVisit && !_userManager.IsOutsider(currentUser)))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -385,19 +371,90 @@ public class SettingsController : BaseSettingsController
         _settingsManager.SaveForCurrentUser(collaboratorPopupSettings);
     }
 
-    ///<visible>false</visible>
+    [AllowNotPayment]
+    [AllowAnonymous]
+    [HttpGet("colortheme")]
+    public CustomColorThemesSettingsDto GetColorTheme()
+    {
+        return new CustomColorThemesSettingsDto(_settingsManager.Load<CustomColorThemesSettings>(), _customColorThemesSettingsHelper.Limit);
+    }
+
     [HttpPut("colortheme")]
-    public void SaveColorTheme(SettingsRequestsDto inDto)
+    public CustomColorThemesSettingsDto SaveColorTheme(CustomColorThemesSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        _colorThemesSettingsHelper.SaveColorTheme(inDto.Theme);
-        _messageService.Send(MessageAction.ColorThemeChanged);
+        var settings = _settingsManager.Load<CustomColorThemesSettings>();
+
+        if (inDto.Themes != null)
+        {
+            lock (locked)
+            {
+                foreach (var item in inDto.Themes)
+                {
+                    var settingItem = settings.Themes.SingleOrDefault(r => r.Id == item.Id);
+                    if (settingItem != null)
+                    {
+                        settingItem.AccentColor = item.AccentColor;
+                        settingItem.ButtonsMain = item.ButtonsMain;
+                        settingItem.TextColor = item.TextColor;
+                    }
+                    else
+                    {
+                        if (_customColorThemesSettingsHelper.Limit == 0 || settings.Themes.Count() < _customColorThemesSettingsHelper.Limit)
+                        {
+                            if (item.Id == 0)
+                            {
+                                item.Id = settings.Themes.Max(r => r.Id) + 1;
+                            }
+
+                            settings.Themes = settings.Themes.Append(item).ToList();
+                        }
+                    }
+                }
+
+                _settingsManager.Save(settings);
+            }
+        }
+
+        if (inDto.Selected.HasValue && settings.Themes.Any(r => r.Id == inDto.Selected.Value))
+        {
+            settings.Selected = inDto.Selected.Value;
+            _settingsManager.Save(settings);
+            _messageService.Send(MessageAction.ColorThemeChanged);
+        }
+
+        return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
+    }
+
+    [HttpDelete("colortheme")]
+    public CustomColorThemesSettingsDto DeleteColorTheme(int id)
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        var settings = _settingsManager.Load<CustomColorThemesSettings>();
+
+        if (CustomColorThemesSettingsItem.Default.Any(r => r.Id == id))
+        {
+            return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
+        }
+
+        settings.Themes = settings.Themes.Where(r => r.Id != id).ToList();
+
+        if (settings.Selected == id)
+        {
+            settings.Selected = settings.Themes.Min(r => r.Id);
+            _messageService.Send(MessageAction.ColorThemeChanged);
+        }
+
+        _settingsManager.Save(settings);
+
+        return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
     }
 
     [HttpPut("closeadminhelper")]
     public void CloseAdminHelper()
     {
-        if (!_userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
+        if (!_userManager.IsAdmin(_authContext.CurrentAccount.ID) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
         {
             throw new NotSupportedException("Not available.");
         }
@@ -660,8 +717,13 @@ public class SettingsController : BaseSettingsController
     public object PaymentSettings()
     {
         var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
-        var currentQuota = _tenantExtra.GetTenantQuota();
+        var currentQuota = _tenantManager.GetCurrentTenantQuota();
         var currentTariff = _tenantExtra.GetCurrentTariff();
+
+        if (!int.TryParse(_configuration["core:payment:max-quantity"], out var maxQuotaQuantity))
+        {
+            maxQuotaQuantity = 999;
+        }
 
         return
             new
@@ -674,7 +736,8 @@ public class SettingsController : BaseSettingsController
                 {
                     currentQuota.Trial,
                     currentTariff.DueDate.Date
-                }
+                },
+                max = maxQuotaQuantity
             };
     }
 

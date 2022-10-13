@@ -214,7 +214,17 @@ internal abstract class ThirdPartyProviderDao
         return null;
     }
 
+    public IAsyncEnumerable<FolderWithShare> GetFeedsForRoomsAsync(int tenant, DateTime from, DateTime to)
+    {
+        throw new NotImplementedException();
+    }
+
     public IAsyncEnumerable<FolderWithShare> GetFeedsForFoldersAsync(int tenant, DateTime from, DateTime to)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IAsyncEnumerable<ParentRoomPair> GetParentRoomsAsync(IEnumerable<int> foldersIds)
     {
         throw new NotImplementedException();
     }
@@ -446,16 +456,11 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return rooms.Where(f => f.FolderType == filter || filter == FolderType.DEFAULT);
     }
 
-    protected IAsyncEnumerable<Folder<string>> FilterByOwner(IAsyncEnumerable<Folder<string>> rooms, Guid ownerId, bool withoutMe)
+    protected IAsyncEnumerable<Folder<string>> FilterBySubject(IAsyncEnumerable<Folder<string>> rooms, Guid subjectId, bool excludeSubject)
     {
-        if (ownerId != Guid.Empty && !withoutMe)
+        if (subjectId != Guid.Empty)
         {
-            rooms = rooms.Where(f => f.CreateBy == ownerId);
-        }
-
-        if (ownerId == Guid.Empty && withoutMe)
-        {
-            rooms = rooms.Where((f => f.CreateBy != _authContext.CurrentAccount.ID));
+            rooms = excludeSubject ? rooms.Where(f => f.CreateBy != subjectId) : rooms.Where(f => f.CreateBy == subjectId);
         }
 
         return rooms;
@@ -463,8 +468,17 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected bool CheckInvalidFilter(FilterType filterType)
     {
-        return filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly
-            or FilterType.SpreadsheetsOnly or FilterType.ArchiveOnly or FilterType.MediaOnly;
+        return filterType is
+            FilterType.FilesOnly or
+            FilterType.ByExtension or
+            FilterType.DocumentsOnly or
+            FilterType.OFormOnly or
+            FilterType.OFormTemplateOnly or
+            FilterType.ImagesOnly or
+            FilterType.PresentationsOnly or
+            FilterType.SpreadsheetsOnly or
+            FilterType.ArchiveOnly or
+            FilterType.MediaOnly;
     }
 
     protected abstract string MakeId(string path = null);

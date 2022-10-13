@@ -13,6 +13,8 @@ import { Base } from "@docspace/components/themes";
 import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavbar";
 import { StyledArrowRightIcon } from "../common/settingsCustomization/StyledSettings";
 import { withRouter } from "react-router";
+import Badge from "@docspace/components/badge";
+
 const StyledComponent = styled.div`
   padding-top: 13px;
 
@@ -28,18 +30,29 @@ const StyledComponent = styled.div`
       svg {
         padding-bottom: 5px;
       }
+      .category-item_paid {
+        display: flex;
+        svg {
+          margin-top: auto;
+        }
+      }
     }
 
     .category-item-description {
       color: #657077;
       font-size: 13px;
       max-width: 1024px;
+      line-height: 20px;
     }
 
     .inherit-title-link {
       margin-right: 4px;
       font-size: 16px;
       font-weight: 700;
+    }
+    .link-learn-more {
+      line-height: 15px;
+      font-weight: 600;
     }
   }
 `;
@@ -54,6 +67,7 @@ const CustomizationNavbar = ({
   tReady,
   setIsLoadedCustomizationNavbar,
   isLoadedPage,
+  isSettingPaid,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
   useEffect(() => {
@@ -89,6 +103,7 @@ const CustomizationNavbar = ({
         </Text>
         <Box paddingProp="10px 0 3px 0">
           <Link
+            className="link-learn-more"
             color={theme.client.settings.common.linkColorHelp}
             target="_blank"
             isHovered={true}
@@ -117,6 +132,40 @@ const CustomizationNavbar = ({
           {t("CustomTitlesSettingsDescription")}
         </Text>
       </div>
+
+      <div className="category-item-wrapper">
+        <div className="category-item-heading">
+          <div className="category-item_paid">
+            <Link
+              truncate={true}
+              className="inherit-title-link header"
+              onClick={onClickLink}
+              href={combineUrl(
+                AppServerConfig.proxyURL,
+                "/portal-settings/common/customization/dns-settings"
+              )}
+            >
+              {t("DNSSettings")}
+            </Link>
+            {!isSettingPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
+            <StyledArrowRightIcon size="small" color="#333333" />
+          </div>
+        </div>
+        <Text className="category-item-description">
+          {t("DNSSettingsDescription")}
+        </Text>
+        <Box paddingProp="10px 0 3px 0">
+          <Link
+            color={theme.client.settings.common.linkColorHelp}
+            target="_blank"
+            isHovered={true}
+            href={helpUrlCommonSettings}
+          >
+            {t("Common:LearnMore")}
+          </Link>
+        </Box>
+      </div>
+
       <div className="category-item-wrapper">
         <div className="category-item-heading">
           <Link

@@ -130,6 +130,22 @@ const ModalDialogContainer = styled(ModalDialog)`
       width: 90%;
     }
   }
+
+  .email-dialog-body {
+    .text-body {
+      margin-bottom: 16px;
+    }
+  }
+
+  .change-name-dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .field {
+      margin: 0 !important;
+    }
+  }
 `;
 
 ModalDialogContainer.defaultProps = { theme: Base };

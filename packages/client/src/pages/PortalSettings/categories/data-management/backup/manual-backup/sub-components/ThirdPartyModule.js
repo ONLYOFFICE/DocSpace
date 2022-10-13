@@ -26,6 +26,15 @@ class ThirdPartyModule extends React.Component {
       isError: false,
       isLoading: false,
     };
+
+    this._isMount = false;
+  }
+
+  componentDidMount() {
+    this._isMount = true;
+  }
+  componentWillUnmount() {
+    this._isMount = false;
   }
 
   onSetLoadingData = (isLoading) => {
@@ -37,9 +46,10 @@ class ThirdPartyModule extends React.Component {
   };
 
   onSelectFolder = (folderId) => {
-    this.setState({
-      selectedFolder: folderId,
-    });
+    this._isMount &&
+      this.setState({
+        selectedFolder: folderId,
+      });
   };
 
   onClickInput = () => {
@@ -112,42 +122,6 @@ class ThirdPartyModule extends React.Component {
     const isModuleDisabled = !isMaxProgress || isStartCopy || isLoadingData;
 
     return (
-      // !isDocSpace ? (
-      //   <>
-      //     <div className="manual-backup_folder-input">
-      //       <SelectFolderInput
-      //         onSelectFolder={this.onSelectFolder}
-      //         name={"thirdParty"}
-      //         onClose={this.onClose}
-      //         onClickInput={this.onClickInput}
-      //         onSetLoadingData={this.onSetLoadingData}
-      //         isDisabled={isModuleDisabled}
-      //         isPanelVisible={isPanelVisible}
-      //         isError={isError}
-      //         foldersType="third-party"
-      //         foldersList={commonThirdPartyList}
-      //         withoutBasicSelection
-      //       />
-      //     </div>
-      //     <div className="manual-backup_buttons">
-      //       <Button
-      //         label={t("Common:Duplicate")}
-      //         onClick={this.onMakeCopy}
-      //         primary
-      //         isDisabled={isModuleDisabled || selectedFolder?.trim() === ""}
-      //         size={buttonSize}
-      //       />
-      //       {!isMaxProgress && (
-      //         <Button
-      //           label={t("Common:CopyOperation") + "..."}
-      //           isDisabled={true}
-      //           size={buttonSize}
-      //           style={{ marginLeft: "8px" }}
-      //         />
-      //       )}
-      //     </div>
-      //   </>
-      // ) : (
       <div className="manual-backup_third-party-module">
         <DirectThirdPartyConnection
           t={t}
@@ -166,7 +140,7 @@ class ThirdPartyModule extends React.Component {
           label={t("Common:Duplicate")}
           onClick={this.onMakeCopy}
           primary
-          isDisabled={isModuleDisabled || selectedFolder?.trim() === ""}
+          isDisabled={isModuleDisabled || selectedFolder === ""}
           size={buttonSize}
         />
       </div>

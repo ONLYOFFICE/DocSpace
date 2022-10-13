@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 
 import throttle from "lodash/throttle";
@@ -8,6 +8,7 @@ import ModalAside from "./views/modal-aside";
 import { handleTouchMove, handleTouchStart } from "./handlers/swipeHandler";
 import { getCurrentDisplayType } from "./handlers/resizeHandler";
 import { parseChildren } from "./handlers/childrenParseHandler";
+import { isSafari, isTablet } from "react-device-detect";
 
 const Header = () => null;
 Header.displayName = "DialogHeader";
@@ -17,6 +18,9 @@ Body.displayName = "DialogBody";
 
 const Footer = () => null;
 Footer.displayName = "DialogFooter";
+
+const Container = () => null;
+Container.displayName = "DialogContainer";
 
 const ModalDialog = ({
   id,
@@ -35,12 +39,16 @@ const ModalDialog = ({
   withBodyScroll,
   modalLoaderBodyHeight,
   withFooterBorder,
+  isScrollLocked,
+  containerVisible,
 }) => {
   const [currentDisplayType, setCurrentDisplayType] = useState(
     getCurrentDisplayType(displayType, displayTypeDetailed)
   );
   const [modalSwipeOffset, setModalSwipeOffset] = useState(0);
-
+  const returnWindowPositionAfterKeyboard = () => {
+    isSafari && isTablet && window.scrollY !== 0 && window.scrollTo(0, 0);
+  };
   useEffect(() => {
     const onResize = throttle(() => {
       setCurrentDisplayType(
@@ -59,6 +67,8 @@ const ModalDialog = ({
     window.addEventListener("touchmove", onSwipe);
     window.addEventListener("touchend", onSwipeEnd);
     return () => {
+      returnWindowPositionAfterKeyboard();
+
       window.removeEventListener("resize", onResize);
       window.removeEventListener("keyup", onKeyPress);
       window.removeEventListener("touchstart", handleTouchStart);
@@ -67,11 +77,12 @@ const ModalDialog = ({
     };
   }, []);
 
-  const [header, body, footer] = parseChildren(
+  const [header, body, footer, container] = parseChildren(
     children,
     Header.displayName,
     Body.displayName,
-    Footer.displayName
+    Footer.displayName,
+    Container.displayName
   );
 
   return (
@@ -83,6 +94,7 @@ const ModalDialog = ({
           className={className}
           currentDisplayType={currentDisplayType}
           withBodyScroll={withBodyScroll}
+          isScrollLocked={isScrollLocked}
           isLarge={isLarge}
           zIndex={zIndex}
           autoMaxHeight={autoMaxHeight}
@@ -93,8 +105,10 @@ const ModalDialog = ({
           header={header}
           body={body}
           footer={footer}
+          container={container}
           visible={visible}
           modalSwipeOffset={modalSwipeOffset}
+          containerVisible={containerVisible}
         />
       }
     />
@@ -145,10 +159,18 @@ ModalDialog.propTypes = {
 
   Enables Body scroll */
   withBodyScroll: PropTypes.bool,
+
+  /** **`ASIDE-ONLY`**  
+
+  Gets bool to lock or unlock body scroll */
+  isScrollLocked: PropTypes.bool,
+
   /** **`ASIDE-ONLY`**  
 
   Sets modal dialog size equal to window */
   scale: PropTypes.bool,
+
+  containerVisible: PropTypes.bool,
 };
 
 ModalDialog.defaultProps = {
@@ -159,10 +181,12 @@ ModalDialog.defaultProps = {
   withoutCloseButton: false,
   withBodyScroll: false,
   withFooterBorder: false,
+  containerVisible: false,
 };
 
 ModalDialog.Header = Header;
 ModalDialog.Body = Body;
 ModalDialog.Footer = Footer;
+ModalDialog.Container = Container;
 
 export default ModalDialog;

@@ -160,14 +160,14 @@ public class WebItemSecurity
                     webitem.ID == WebItemManager.PeopleProductID ||
                     webitem.ID == WebItemManager.BirthdaysProductID ||
                     webitem.ID == WebItemManager.MailProductID) &&
-                    _userManager.GetUsers(@for).IsVisitor(_userManager))
+                    _userManager.IsVisitor(@for))
                 {
                     // hack: crm, people, birtthday and mail products not visible for collaborators
                     result = false;
                 }
                 else if ((webitem.ID == WebItemManager.CalendarProductID ||
                           webitem.ID == WebItemManager.TalkProductID) &&
-                         _userManager.GetUsers(@for).IsOutsider(_userManager))
+                         _userManager.IsOutsider(@for))
                 {
                     // hack: calendar and talk products not visible for outsider
                     result = false;
@@ -277,7 +277,7 @@ public class WebItemSecurity
         }
         if (administrator)
         {
-            if (_userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupVisitor.ID))
+            if (_userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupUser.ID))
             {
                 throw new SecurityException("Collaborator can not be an administrator");
             }

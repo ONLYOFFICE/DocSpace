@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import toastr from "client/toastr";
+import toastr from "@docspace/components/toast/toastr";
 import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Checkbox from "@docspace/components/checkbox";
@@ -8,7 +8,7 @@ import PasswordInput from "@docspace/components/password-input";
 import FieldContainer from "@docspace/components/field-container";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { runInAction } from "mobx";
+import { getOAuthToken } from "@docspace/common/utils";
 import { saveSettingsThirdParty } from "@docspace/common/api/files";
 
 const PureConnectDialogContainer = (props) => {
@@ -17,22 +17,19 @@ const PureConnectDialogContainer = (props) => {
     t,
     tReady,
     item,
-    treeFolders,
     fetchThirdPartyProviders,
-    myFolderId,
-    commonFolderId,
     providers,
     selectedFolderId,
     selectedFolderFolders,
-    getOAuthToken,
     saveThirdParty,
     openConnectWindow,
     setConnectDialogVisible,
     personal,
-    getSubfolders,
     folderFormValidation,
     updateInfo,
     isConnectionViaBackupModule,
+    roomCreation,
+    setSaveThirdpartyResponse,
   } = props;
   const {
     corporate,
@@ -156,18 +153,14 @@ const PureConnectDialogContainer = (props) => {
       loginValue,
       passwordValue,
       oAuthToken,
-      isCorporate,
+      false,
       customerTitle,
       provider_key || key,
-      provider_id
+      provider_id,
+      roomCreation
     )
-      .then(async () => {
-        const folderId = isCorporate ? commonFolderId : myFolderId;
-        const subfolders = await getSubfolders(folderId);
-        const node = treeFolders.find((x) => x.id === folderId);
-
-        runInAction(() => (node.folders = subfolders));
-
+      .then(async (res) => {
+        setSaveThirdpartyResponse(res);
         await fetchThirdPartyProviders();
       })
       .catch((err) => {
@@ -180,13 +173,10 @@ const PureConnectDialogContainer = (props) => {
         setIsLoading(false);
       });
   }, [
-    commonFolderId,
     customerTitle,
     fetchThirdPartyProviders,
-    isCorporate,
     link,
     loginValue,
-    myFolderId,
     oAuthToken,
     onClose,
     passwordValue,
@@ -194,8 +184,6 @@ const PureConnectDialogContainer = (props) => {
     provider_key,
     selectedFolderFolders,
     selectedFolderId,
-    showUrlField,
-    treeFolders,
     urlValue,
     saveThirdParty,
   ]);
@@ -240,7 +228,12 @@ const PureConnectDialogContainer = (props) => {
       </ModalDialog.Header>
       <ModalDialog.Body>
         {isAccount ? (
-          <FieldContainer labelVisible labelText={t("Account")} isVertical>
+          <FieldContainer
+            style={roomCreation ? { margin: "0" } : {}}
+            labelVisible
+            labelText={t("Account")}
+            isVertical
+          >
             <Button
               label={t("Reconnect")}
               size="normal"
@@ -295,6 +288,7 @@ const PureConnectDialogContainer = (props) => {
               isVertical
               hasError={!isPasswordValid}
               errorMessage={t("Common:RequiredField")}
+              style={roomCreation ? { margin: "0" } : {}}
             >
               <PasswordInput
                 hasError={!isPasswordValid}
@@ -308,7 +302,7 @@ const PureConnectDialogContainer = (props) => {
             </FieldContainer>
           </>
         )}
-        {!isConnectionViaBackupModule && (
+        {!(isConnectionViaBackupModule || roomCreation) && (
           <FieldContainer
             labelText={t("ConnectFolderTitle")}
             isRequired
@@ -327,7 +321,7 @@ const PureConnectDialogContainer = (props) => {
           </FieldContainer>
         )}
 
-        {!personal && !isConnectionViaBackupModule && (
+        {!personal && !(isConnectionViaBackupModule || roomCreation) && (
           <Checkbox
             label={t("ConnectMakeShared")}
             isChecked={isCorporate}
@@ -354,7 +348,6 @@ const PureConnectDialogContainer = (props) => {
           scale={isAccount}
           onClick={onClose}
           isDisabled={isLoading}
-          isLoading={isLoading}
         />
       </ModalDialog.Footer>
     </ModalDialog>
@@ -369,57 +362,38 @@ const ConnectDialog = withTranslation([
 ])(PureConnectDialogContainer);
 
 export default inject(
-  (
-    {
-      auth,
-      filesStore,
-      settingsStore,
-      treeFoldersStore,
-      selectedFolderStore,
-      dialogsStore,
-    },
-    { passedItem, isConnectionViaBackupModule }
-  ) => {
+  ({ auth, settingsStore, selectedFolderStore, dialogsStore, backup }) => {
     const {
       providers,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
-    const {
-      getOAuthToken,
-      personal,
-      folderFormValidation,
-    } = auth.settingsStore;
+    const { personal, folderFormValidation } = auth.settingsStore;
 
-    const {
-      treeFolders,
-      myFolderId,
-      commonFolderId,
-      getSubfolders,
-    } = treeFoldersStore;
     const { id, folders } = selectedFolderStore;
+    const { selectedThirdPartyAccount: backupConnectionItem } = backup;
     const {
       connectDialogVisible: visible,
       setConnectDialogVisible,
       connectItem,
+      roomCreation,
+      setSaveThirdpartyResponse,
     } = dialogsStore;
 
-    const item = isConnectionViaBackupModule ? passedItem : connectItem;
+    const item = backupConnectionItem ?? connectItem;
+    const isConnectionViaBackupModule = backupConnectionItem ? true : false;
 
     return {
       selectedFolderId: id,
       selectedFolderFolders: folders,
-      treeFolders,
-      myFolderId,
-      commonFolderId,
       providers,
       visible,
       item,
+      roomCreation,
+      setSaveThirdpartyResponse,
       folderFormValidation,
-
-      getOAuthToken,
-      getSubfolders,
+      isConnectionViaBackupModule,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,

@@ -18,124 +18,8 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            modelBuilder.Entity("ASC.Core.Common.EF.DbQuota", b =>
-                {
-                    b.Property<int>("Tenant")
-                        .HasColumnType("integer")
-                        .HasColumnName("tenant");
-
-                    b.Property<int>("ActiveUsers")
-                        .HasColumnType("integer")
-                        .HasColumnName("active_users");
-
-                    b.Property<string>("AvangateId")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("avangate_id")
-                        .HasDefaultValueSql("NULL");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("character varying")
-                        .HasColumnName("description");
-
-                    b.Property<string>("Features")
-                        .HasColumnType("text")
-                        .HasColumnName("features");
-
-                    b.Property<long>("MaxFileSize")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("max_file_size")
-                        .HasDefaultValueSql("'0'");
-
-                    b.Property<long>("MaxTotalSize")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("max_total_size")
-                        .HasDefaultValueSql("'0'");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("character varying")
-                        .HasColumnName("name");
-
-                    b.Property<decimal>("Price")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(10,2)")
-                        .HasColumnName("price")
-                        .HasDefaultValueSql("0.00");
-
-                    b.Property<bool>("Visible")
-                        .HasColumnType("boolean")
-                        .HasColumnName("visible");
-
-                    b.HasKey("Tenant")
-                        .HasName("tenants_quota_pkey");
-
-                    b.ToTable("tenants_quota", "onlyoffice");
-
-                    b.HasData(
-                        new
-                        {
-                            Tenant = -1,
-                            ActiveUsers = 10000,
-                            AvangateId = "0",
-                            Features = "domain,audit,controlpanel,healthcheck,ldap,sso,whitelabel,branding,ssbranding,update,support,portals:10000,discencryption,privacyroom,restore",
-                            MaxFileSize = 102400L,
-                            MaxTotalSize = 10995116277760L,
-                            Name = "default",
-                            Price = 0.00m,
-                            Visible = false
-                        });
-                });
-
-            modelBuilder.Entity("ASC.Core.Common.EF.DbTariff", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("Comment")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("comment")
-                        .HasDefaultValueSql("NULL");
-
-                    b.Property<DateTime>("CreateOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("create_on")
-                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer")
-                        .HasColumnName("quantity");
-
-                    b.Property<DateTime>("Stamp")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("stamp");
-
-                    b.Property<int>("Tariff")
-                        .HasColumnType("integer")
-                        .HasColumnName("tariff");
-
-                    b.Property<int>("Tenant")
-                        .HasColumnType("integer")
-                        .HasColumnName("tenant");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Tenant")
-                        .HasDatabaseName("tenant_tenants_tariff");
-
-                    b.ToTable("tenants_tariff", "onlyoffice");
-                });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
                 {
@@ -2261,6 +2145,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("subject")
                         .IsFixedLength();
 
+                    b.Property<string>("FileShareOptions")
+                        .HasColumnType("text")
+                        .HasColumnName("options");
+
                     b.Property<Guid>("Owner")
                         .HasMaxLength(38)
                         .HasColumnType("uuid")
@@ -2270,6 +2158,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<int>("Share")
                         .HasColumnType("integer")
                         .HasColumnName("security");
+
+                    b.Property<int>("SubjectType")
+                        .HasColumnType("integer")
+                        .HasColumnName("subject_type");
 
                     b.Property<DateTime>("TimeStamp")
                         .ValueGeneratedOnAdd()
@@ -2384,7 +2276,8 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("create_on");
 
                     b.Property<string>("FolderId")
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("folder_id");
 
                     b.Property<int>("FolderType")
                         .HasColumnType("integer")
@@ -2395,6 +2288,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("password");
+
+                    b.Property<bool>("Private")
+                        .HasColumnType("boolean")
+                        .HasColumnName("private");
 
                     b.Property<string>("Provider")
                         .IsRequired()
@@ -2546,6 +2443,10 @@ namespace ASC.Migrations.PostgreSql.Migrations
                     b.Property<int>("ParentId")
                         .HasColumnType("integer")
                         .HasColumnName("parent_id");
+
+                    b.Property<bool>("Private")
+                        .HasColumnType("boolean")
+                        .HasColumnName("private");
 
                     b.Property<int>("TenantId")
                         .HasColumnType("integer")

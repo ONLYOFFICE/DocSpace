@@ -2,10 +2,6 @@ import React from "react";
 //import PropTypes from "prop-types";
 import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
-import {
-  isMobile as isMobileUtils,
-  isTablet as isTabletUtils,
-} from "@docspace/components/utils/device";
 import axios from "axios";
 import toastr from "@docspace/components/toast/toastr";
 import Section from "@docspace/common/components/Section";
@@ -25,20 +21,17 @@ import {
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
-  Bar,
 } from "./Section";
-import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
-
-import { createTreeFolders } from "../../helpers/files-helpers";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
 //import config from "PACKAGE_FILE";
 import { Consumer } from "@docspace/components/utils/context";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
+import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -50,8 +43,6 @@ class PureHome extends React.Component {
       //homepage,
       setIsLoading,
       setFirstLoad,
-      expandedKeys,
-      setExpandedKeys,
       setToPreviewFile,
       playlist,
       isMediaOrImage,
@@ -200,25 +191,10 @@ class PureHome extends React.Component {
 
         if (filter) {
           if (isRooms) {
-            return fetchRooms(null, filter).then((data) => {
-              const pathParts = data.selectedFolder.pathParts;
-              const newExpandedKeys = createTreeFolders(
-                pathParts,
-                expandedKeys
-              );
-              setExpandedKeys(newExpandedKeys);
-            });
+            return fetchRooms(null, filter);
           } else {
             const folderId = filter.folder;
-
-            return fetchFiles(folderId, filter).then((data) => {
-              const pathParts = data.selectedFolder.pathParts;
-              const newExpandedKeys = createTreeFolders(
-                pathParts,
-                expandedKeys
-              );
-              setExpandedKeys(newExpandedKeys);
-            });
+            return fetchFiles(folderId, filter);
           }
         }
 
@@ -502,6 +478,8 @@ class PureHome extends React.Component {
       showTitle,
       showFilter,
       frameConfig,
+      withPaging,
+      isEmptyPage,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -513,6 +491,7 @@ class PureHome extends React.Component {
         <MediaViewer />
         <DragTooltip />
         <Section
+          withPaging={withPaging}
           dragging={dragging}
           withBodyScroll
           withBodyAutoFocus={!isMobile}
@@ -545,23 +524,15 @@ class PureHome extends React.Component {
             )}
           </Section.SectionHeader>
 
-          <Section.SectionBar>
-            {checkedMaintenance && !snackbarExist && (
-              <Bar
-                firstLoad={firstLoad}
-                personal={personal}
-                setMaintenanceExist={setMaintenanceExist}
-              />
-            )}
-          </Section.SectionBar>
-
-          <Section.SectionFilter>
-            {isFrame ? (
-              showFilter && <SectionFilterContent />
-            ) : (
-              <SectionFilterContent />
-            )}
-          </Section.SectionFilter>
+          {!isEmptyPage && (
+            <Section.SectionFilter>
+              {isFrame ? (
+                showFilter && <SectionFilterContent />
+              ) : (
+                <SectionFilterContent />
+              )}
+            </Section.SectionFilter>
+          )}
 
           <Section.SectionBody>
             <Consumer>
@@ -581,9 +552,11 @@ class PureHome extends React.Component {
             <InfoPanelBodyContent />
           </Section.InfoPanelBody>
 
-          <Section.SectionPaging>
-            <SectionPagingContent tReady={tReady} />
-          </Section.SectionPaging>
+          {withPaging && (
+            <Section.SectionPaging>
+              <SectionPagingContent tReady={tReady} />
+            </Section.SectionPaging>
+          )}
         </Section>
       </>
     );
@@ -601,6 +574,7 @@ export default inject(
     mediaViewerDataStore,
     settingsStore,
     filesActionsStore,
+    oformsStore,
   }) => {
     const {
       secondaryProgressDataStore,
@@ -622,7 +596,6 @@ export default inject(
       isLoading,
       viewAs,
       getFileInfo,
-      gallerySelected,
       setIsUpdatingRowItem,
 
       folders,
@@ -634,13 +607,18 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
+      isEmptyPage,
     } = filesStore;
+
+    const { gallerySelected } = oformsStore;
 
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
       expandedKeys,
       setExpandedKeys,
+      isRoomsFolder,
+      isArchiveFolder,
     } = treeFoldersStore;
 
     const {
@@ -687,6 +665,7 @@ export default inject(
       setFrameConfig,
       frameConfig,
       isFrame,
+      withPaging,
     } = auth.settingsStore;
 
     if (!firstLoad) {
@@ -710,7 +689,6 @@ export default inject(
       checkedMaintenance,
       setMaintenanceExist,
       snackbarExist,
-      expandedKeys,
 
       primaryProgressDataVisible,
       primaryProgressDataPercent,
@@ -731,6 +709,9 @@ export default inject(
 
       itemsSelectionLength,
       itemsSelectionTitle,
+
+      isRoomsFolder,
+      isArchiveFolder,
 
       setExpandedKeys,
       setFirstLoad,
@@ -770,6 +751,8 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
+      withPaging,
+      isEmptyPage,
     };
   }
 )(withRouter(observer(Home)));
