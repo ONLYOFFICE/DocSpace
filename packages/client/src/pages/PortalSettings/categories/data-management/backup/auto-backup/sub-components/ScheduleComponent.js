@@ -64,6 +64,7 @@ const ScheduleComponent = ({
           scaledOptions={true}
           dropDownMaxHeight={500}
           className="schedule-backup_combobox days_option"
+          showDisabledItems
         />
         {weeklySchedule && (
           <ComboBox
@@ -79,6 +80,7 @@ const ScheduleComponent = ({
             scaledOptions={true}
             dropDownMaxHeight={400}
             className="schedule-backup_combobox weekly_option"
+            showDisabledItems
           />
         )}
         {monthlySchedule && (
@@ -95,6 +97,7 @@ const ScheduleComponent = ({
             scaledOptions={true}
             dropDownMaxHeight={400}
             className="schedule-backup_combobox month_options"
+            showDisabledItems
           />
         )}
         <ComboBox
@@ -110,6 +113,7 @@ const ScheduleComponent = ({
           scaledOptions={true}
           dropDownMaxHeight={isMobileOnly ? 100 : 200}
           className="schedule-backup_combobox time_options"
+          showDisabledItems
         />
       </div>
       <div className="maxCopiesOption">
@@ -128,6 +132,7 @@ const ScheduleComponent = ({
           scaledOptions={true}
           dropDownMaxHeight={isMobileOnly ? 100 : 200}
           className="schedule-backup_combobox max_copies"
+          showDisabledItems
         />
       </div>
     </StyledScheduleComponent>
