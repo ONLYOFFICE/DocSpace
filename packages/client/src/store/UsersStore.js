@@ -227,7 +227,11 @@ class UsersStore {
             options.push("change-password");
             options.push("reset-auth");
 
-            if (isAdmin || isOwner) {
+            if (
+              isOwner ||
+              (isAdmin && userRole === "manager") ||
+              userRole === "user"
+            ) {
               options.push("separator-2");
               options.push("disable");
             }
@@ -266,7 +270,11 @@ class UsersStore {
             options.push("details");
           }
 
-          if (isAdmin || isOwner) {
+          if (
+            isOwner ||
+            (isAdmin && userRole === "manager") ||
+            userRole === "user"
+          ) {
             options.push("separator-1");
 
             if (status === EmployeeStatus.Active) {

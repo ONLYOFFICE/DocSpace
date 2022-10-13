@@ -270,6 +270,17 @@ class SelectionStore {
 
       return users.length > 0;
     }
+
+    const users = this.selection.filter(
+      (x) =>
+        x.status !== EmployeeStatus.Disabled &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner &&
+        x.isVisitor
+    );
+
+    return users.length > 0;
   }
 
   get getUsersToDisableIds() {
@@ -294,6 +305,17 @@ class SelectionStore {
 
       return users.map((u) => u.id);
     }
+
+    const users = this.selection.filter(
+      (x) =>
+        x.status !== EmployeeStatus.Active &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner &&
+        x.isVisitor
+    );
+
+    return users.map((u) => u.id);
   }
 
   get hasUsersToInvite() {
@@ -359,12 +381,25 @@ class SelectionStore {
       return users.length > 0;
     }
 
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status === EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.length > 0;
+    }
+
     const users = this.selection.filter(
       (x) =>
         x.status === EmployeeStatus.Disabled &&
         x.id !== id &&
         !x.isAdmin &&
-        !x.isOwner
+        !x.isOwner &&
+        x.isVisitor
     );
 
     return users.length > 0;
@@ -381,12 +416,25 @@ class SelectionStore {
       return users.map((u) => u.id);
     }
 
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status === EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.map((u) => u.id);
+    }
+
     const users = this.selection.filter(
       (x) =>
         x.status === EmployeeStatus.Disabled &&
         x.id !== id &&
         !x.isAdmin &&
-        !x.isOwner
+        !x.isOwner &&
+        x.isVisitor
     );
 
     return users.map((u) => u.id);
