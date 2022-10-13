@@ -210,6 +210,7 @@ public class TariffService : ITariffService
                     if (SaveBillingInfo(tenantId, asynctariff))
                     {
                         asynctariff = CalculateTariff(tenantId, asynctariff);
+                        tariff = asynctariff;
                     }
 
                     tariffId = asynctariff.Id;
@@ -237,6 +238,7 @@ public class TariffService : ITariffService
                     if (SaveBillingInfo(tenantId, asynctariff))
                     {
                         asynctariff = CalculateTariff(tenantId, asynctariff);
+                        tariff = asynctariff;
                     }
 
                     tariffId = asynctariff.Id;

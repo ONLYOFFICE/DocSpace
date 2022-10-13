@@ -509,16 +509,6 @@ public class FileSecurity : IFileSecurity
                 return false;
             }
 
-            if (isVisitor && e.RootFolderType == FolderType.Recent)
-            {
-                return false;
-            }
-
-            if (isVisitor && e.RootFolderType == FolderType.Favorites)
-            {
-                return false;
-            }
-
             if (isVisitor && e.RootFolderType == FolderType.Templates)
             {
                 return false;
