@@ -403,7 +403,7 @@ const ArticleMainButtonContent = (props) => {
 
   return (
     <>
-      {isVisitor ? null : isMobileArticle ? (
+      {isMobileArticle ? (
         <>
           {!isFavoritesFolder &&
             !isRecentFolder &&
@@ -445,31 +445,27 @@ const ArticleMainButtonContent = (props) => {
         />
       )}
 
-      {isVisitor ? null : (
-        <>
-          <input
-            id="customFileInput"
-            className="custom-file-input"
-            multiple
-            type="file"
-            onChange={onFileChange}
-            onClick={onInputClick}
-            ref={inputFilesElement}
-            style={{ display: "none" }}
-          />
-          <input
-            id="customFolderInput"
-            className="custom-file-input"
-            webkitdirectory=""
-            mozdirectory=""
-            type="file"
-            onChange={onFileChange}
-            onClick={onInputClick}
-            ref={inputFolderElement}
-            style={{ display: "none" }}
-          />
-        </>
-      )}
+      <input
+        id="customFileInput"
+        className="custom-file-input"
+        multiple
+        type="file"
+        onChange={onFileChange}
+        onClick={onInputClick}
+        ref={inputFilesElement}
+        style={{ display: "none" }}
+      />
+      <input
+        id="customFolderInput"
+        className="custom-file-input"
+        webkitdirectory=""
+        mozdirectory=""
+        type="file"
+        onChange={onFileChange}
+        onClick={onInputClick}
+        ref={inputFolderElement}
+        style={{ display: "none" }}
+      />
     </>
   );
 };
