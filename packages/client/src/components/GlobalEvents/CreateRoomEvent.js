@@ -11,6 +11,7 @@ const CreateRoomEvent = ({
   createRoomInThirdpary,
   createTag,
   addTagsToRoom,
+  deleteThirdParty,
   calculateRoomLogoParams,
   uploadRoomLogo,
   addLogoToRoom,
@@ -31,16 +32,13 @@ const CreateRoomEvent = ({
       title: roomParams.title || t("Files:NewRoom"),
     };
 
-    const isThirdparty =
-      roomParams.isThirdparty &&
-      roomParams.storageLocation.isConnected &&
-      roomParams.storageLocation.thirdpartyFolderId;
-
-    const addTagsData = roomParams.tags.map((tag) => tag.name);
-
     const createTagsData = roomParams.tags
       .filter((t) => t.isNew)
       .map((t) => t.name);
+    const addTagsData = roomParams.tags.map((tag) => tag.name);
+
+    const isThirdparty = roomParams.storageLocation.isThirdparty;
+    const thirdpartyAccount = roomParams.storageLocation.thirdpartyAccount;
 
     const uploadLogoData = new FormData();
     uploadLogoData.append(0, roomParams.icon.uploadedFile);
@@ -48,18 +46,24 @@ const CreateRoomEvent = ({
     try {
       setIsLoading(true);
 
-      const room = isThirdparty
-        ? await createRoomInThirdpary(
-            roomParams.storageLocation.thirdpartyFolderId,
-            createRoomData
-          )
-        : await createRoom(createRoomData);
+      // create room
+      const room =
+        isThirdparty && !!thirdpartyAccount
+          ? await createRoomInThirdpary(thirdpartyAccount.id, createRoomData)
+          : await createRoom(createRoomData);
 
+      // delete thirdparty account if not needed
+      if (!isThirdparty && !!thirdpartyAccount)
+        await deleteThirdParty(thirdpartyAccount.providerId);
+
+      // create new tags
       for (let i = 0; i < createTagsData.length; i++)
         await createTag(createTagsData[i]);
 
+      // add new tags to room
       await addTagsToRoom(room.id, addTagsData);
 
+      // calculate and upload logo to room
       if (roomParams.icon.uploadedFile)
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
@@ -92,10 +96,12 @@ const CreateRoomEvent = ({
     <CreateRoomDialog
       t={t}
       visible={visible && !connectDialogVisible}
-      onClose={onClose}
+      closeEvent={onClose}
       onCreate={onCreate}
       fetchedTags={fetchedTags}
       isLoading={isLoading}
+      setIsLoading={setIsLoading}
+      deleteThirdParty={deleteThirdParty}
     />
   );
 };
@@ -107,6 +113,7 @@ export default inject(
     filesActionsStore,
     selectedFolderStore,
     dialogsStore,
+    settingsStore,
   }) => {
     const {
       createRoom,
@@ -123,18 +130,20 @@ export default inject(
 
     const { connectDialogVisible } = dialogsStore;
 
+    const { deleteThirdParty } = settingsStore.thirdPartyStore;
+
     return {
       createRoom,
       createRoomInThirdpary,
       createTag,
       fetchTags,
       addTagsToRoom,
+      deleteThirdParty,
       calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
 
       connectDialogVisible,
-
       currrentFolderId,
       updateCurrentFolder,
     };
