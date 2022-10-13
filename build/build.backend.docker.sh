@@ -51,9 +51,16 @@ else
     exit 1
 fi
 
-echo "Run environments (redis, rabbitmq, document-server)"
+echo "Run environments (redis, rabbitmq)"
 DOCKERFILE=Dockerfile.dev \
-docker compose -f redis.yml -f rabbitmq.yml -f ds.yml up -d
+docker compose -f redis.yml -f rabbitmq.yml up -d
+
+if [ "$1" = "--no_ds" ]; then
+    echo "SKIP Document server"
+else 
+    echo "Run Document server"
+    docker compose -f ds.yml up -d
+fi
 
 echo "Stop all backend services"
 DOCKERFILE=Dockerfile.dev \
