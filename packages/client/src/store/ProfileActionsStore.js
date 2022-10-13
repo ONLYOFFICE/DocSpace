@@ -232,12 +232,16 @@ class ProfileActionsStore {
         });
       }
     }
-    return actions;
-    // return this.checkEnabledActions(actions);
+
+    return this.checkEnabledActions(actions);
   };
 
   checkEnabledActions = (actions) => {
     const actionsArray = actions;
+
+    if (!this.authStore.settingsStore.additionalResourcesData) {
+      return actionsArray;
+    }
 
     const feedbackAndSupportEnabled = this.authStore.settingsStore
       .additionalResourcesData?.feedbackAndSupportEnabled;
