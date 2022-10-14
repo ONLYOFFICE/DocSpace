@@ -143,10 +143,14 @@ class SettingsStore {
   pluginOptions = [];
 
   additionalResourcesData = null;
+  additionalResourcesIsDefault = true;
   companyInfoSettingsData = null;
+  companyInfoSettingsIsDefault = true;
 
   whiteLabelLogoUrls = [];
   docSpaceLogo = "";
+
+  greetingSettingsIsDefault = true;
 
   constructor() {
     makeAutoObservable(this);
@@ -196,6 +200,10 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
+  getGreetingSettingsIsDefault = async () => {
+    this.greetingSettingsIsDefault = await api.settings.getGreetingSettingsIsDefault();
+  };
+
   getSettings = async () => {
     let newSettings = null;
 
@@ -236,14 +244,7 @@ class SettingsStore {
     });
 
     this.setGreetingSettings(newSettings.greetingSettings);
-
-    if (!localStorage.getItem("defaultWelcomePageSettings")) {
-      localStorage.setItem(
-        "defaultWelcomePageSettings",
-        newSettings.greetingSettings
-      );
-    }
-
+    this.getGreetingSettingsIsDefault();
     return newSettings;
   };
 
@@ -321,6 +322,10 @@ class SettingsStore {
     this.additionalResourcesData = data;
   };
 
+  setAdditionalResourcesIsDefault = (additionalResourcesIsDefault) => {
+    this.additionalResourcesIsDefault = additionalResourcesIsDefault;
+  };
+
   setAdditionalResources = async (
     feedbackAndSupportEnabled,
     videoGuidesEnabled,
@@ -337,19 +342,7 @@ class SettingsStore {
     const res = await api.settings.getAdditionalResources();
 
     this.setAdditionalResourcesData(res);
-
-    const defaultAdditionalResources = {
-      feedbackAndSupportEnabled: res.feedbackAndSupportEnabled,
-      videoGuidesEnabled: res.videoGuidesEnabled,
-      helpCenterEnabled: res.helpCenterEnabled,
-    };
-
-    if (!localStorage.getItem("defaultAdditionalResources")) {
-      localStorage.setItem(
-        "defaultAdditionalResources",
-        JSON.stringify(defaultAdditionalResources)
-      );
-    }
+    this.setAdditionalResourcesIsDefault(res.isDefault);
   };
 
   restoreAdditionalResources = async () => {
@@ -383,6 +376,10 @@ class SettingsStore {
     this.companyInfoSettingsData = data;
   };
 
+  setCompanyInfoSettingsIsDefault = (companyInfoSettingsIsDefault) => {
+    this.companyInfoSettingsIsDefault = companyInfoSettingsIsDefault;
+  };
+
   setCompanyInfoSettings = async (address, companyName, email, phone, site) => {
     return api.settings.setCompanyInfoSettings(
       address,
@@ -405,21 +402,7 @@ class SettingsStore {
     const res = await api.settings.getCompanyInfoSettings();
 
     this.setCompanyInfoSettingsData(res);
-
-    const defaultCompanyInfoSettings = {
-      companyName: res.companyName,
-      email: res.email,
-      phone: res.phone,
-      site: res.site,
-      address: res.address,
-    };
-
-    if (!localStorage.getItem("defaultDataCompanyInfoSettings")) {
-      localStorage.setItem(
-        "defaultDataCompanyInfoSettings",
-        JSON.stringify(defaultCompanyInfoSettings)
-      );
-    }
+    this.setCompanyInfoSettingsIsDefault(res.isDefault);
   };
 
   getWhiteLabelLogoUrls = async () => {
