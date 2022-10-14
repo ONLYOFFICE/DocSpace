@@ -56,6 +56,11 @@ const DirectThirdPartyConnection = (props) => {
     };
   }, []);
 
+  useEffect(() => {
+ 
+    updateAccountsInfo();
+  }, [selectedThirdPartyAccount === null]);
+
   const initialState = {
     folderList: [],
     isLoading: false,
@@ -235,8 +240,8 @@ const DirectThirdPartyConnection = (props) => {
         provider_key,
         provider_id
       );
-
-      updateAccountsInfo();
+      console.log("saveSettings");
+      setSelectedThirdPartyAccount(null);
     } catch (e) {
       setState({ isLoading: false, isUpdatingInfo: false });
       toastr.error(e);
