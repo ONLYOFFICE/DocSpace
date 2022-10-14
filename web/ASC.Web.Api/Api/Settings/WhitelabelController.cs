@@ -38,6 +38,8 @@ public class WhitelabelController : BaseSettingsController
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly IMapper _mapper;
+    private readonly CompanyWhiteLabelSettingsHelper _companyWhiteLabelSettingsHelper;
+    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
 
     public WhitelabelController(
         ApiContext apiContext,
@@ -51,7 +53,8 @@ public class WhitelabelController : BaseSettingsController
         CommonLinkUtility commonLinkUtility,
         IMemoryCache memoryCache,
         IHttpContextAccessor httpContextAccessor,
-        IMapper mapper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        IMapper mapper,
+        CompanyWhiteLabelSettingsHelper companyWhiteLabelSettingsHelper, AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
@@ -61,6 +64,8 @@ public class WhitelabelController : BaseSettingsController
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
         _mapper = mapper;
+        _companyWhiteLabelSettingsHelper = companyWhiteLabelSettingsHelper;
+        _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
     }
 
     ///<visible>false</visible>
@@ -198,11 +203,11 @@ public class WhitelabelController : BaseSettingsController
     {
         var result = new List<CompanyWhiteLabelSettings>();
 
-        var instance = CompanyWhiteLabelSettings.Instance(_settingsManager);
+        var instance = _companyWhiteLabelSettingsHelper.Instance();
 
         result.Add(instance);
 
-        if (!instance.IsDefault && !instance.IsLicensor)
+        if (!_companyWhiteLabelSettingsHelper.IsDefault(instance) && !instance.IsLicensor)
         {
             result.Add(_settingsManager.GetDefault<CompanyWhiteLabelSettings>());
         }

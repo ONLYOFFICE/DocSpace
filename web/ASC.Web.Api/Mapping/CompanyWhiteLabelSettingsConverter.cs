@@ -24,27 +24,28 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api.ApiModels.ResponseDto;
+namespace ASC.Web.Api.Mapping;
 
-public class CompanyWhiteLabelSettingsDto: IMapFrom<CompanyWhiteLabelSettings>
+[Scope]
+public class CompanyWhiteLabelSettingsConverter : ITypeConverter<CompanyWhiteLabelSettings, CompanyWhiteLabelSettingsDto>
 {
-    public string CompanyName { get; set; }
-
-    public string Site { get; set; }
-
-    public string Email { get; set; }
-
-    public string Address { get; set; }
-
-    public string Phone { get; set; }
-
-    public bool IsLicensor { get; set; }
-
-    public bool IsDefault { get; set; }
-
-    public void Mapping(Profile profile)
+    private readonly CompanyWhiteLabelSettingsHelper _companyWhiteLabelSettingsHelper;
+    public CompanyWhiteLabelSettingsConverter(CompanyWhiteLabelSettingsHelper companyWhiteLabelSettingsHelper)
     {
-        profile.CreateMap<CompanyWhiteLabelSettings, CompanyWhiteLabelSettingsDto>()
-            .ConvertUsing<CompanyWhiteLabelSettingsConverter>();
+        _companyWhiteLabelSettingsHelper = companyWhiteLabelSettingsHelper;
+    }
+    public CompanyWhiteLabelSettingsDto Convert(CompanyWhiteLabelSettings source, CompanyWhiteLabelSettingsDto destination, ResolutionContext context)
+    {
+        var result = new CompanyWhiteLabelSettingsDto()
+        {
+            Address = source.Address,
+            CompanyName = source.CompanyName,
+            Email = source.Email,
+            IsDefault = _companyWhiteLabelSettingsHelper.IsDefault(source),
+            IsLicensor = source.IsLicensor,
+            Phone = source.Phone,
+            Site = source.Site
+        };
+        return result;
     }
 }

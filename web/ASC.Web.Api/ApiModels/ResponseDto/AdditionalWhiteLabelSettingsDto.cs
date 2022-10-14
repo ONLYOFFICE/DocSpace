@@ -56,6 +56,7 @@ public class AdditionalWhiteLabelSettingsDto: IMapFrom<AdditionalWhiteLabelSetti
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<AdditionalWhiteLabelSettings, AdditionalWhiteLabelSettingsDto>();
+        profile.CreateMap<AdditionalWhiteLabelSettings, AdditionalWhiteLabelSettingsDto>()
+            .ConvertUsing<AdditionalWhiteLabelSettingsConverter>();
     }
 }
