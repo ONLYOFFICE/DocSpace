@@ -60,6 +60,9 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
             case InvalidOperationException:
                 status = HttpStatusCode.Forbidden;
                 break;
+            case TenantQuotaException:
+                status = HttpStatusCode.PaymentRequired;
+                break;
         }
 
         var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message, withStackTrace))

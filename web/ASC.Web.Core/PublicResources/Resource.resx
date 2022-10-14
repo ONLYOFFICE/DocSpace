@@ -609,9 +609,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Incorrect email address</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Incorrect promo code</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>No permissions to perform this action</value>
   </data>
@@ -836,5 +833,73 @@
   </data>
   <data name="QuotaLessUsedMemoryError" xml:space="preserve">
     <value>Failed to set the memory quota - the memory quota you set is less than used memory.</value>
+  </data>  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Number of admins</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Tracking user logins &amp; action</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automatic backup &amp; recovery</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Unlimited number of active rooms</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} storage space</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Unlimited number of users</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Branding &amp; customization</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Storage space used:</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Admins added:</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Storage space</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Max file size</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Rooms:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Users in room:</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Users in room</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>The number of rooms should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>The number of managers should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>The used storage size should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>The number of users should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>The file size should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>The number of users in room should not exceed {0}</value>
   </data>
 </root>

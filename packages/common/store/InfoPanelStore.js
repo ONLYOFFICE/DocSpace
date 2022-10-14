@@ -5,6 +5,7 @@ import { getUserById } from "@docspace/common/api/people";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
+import Filter from "../api/people/filter";
 
 class InfoPanelStore {
   isVisible = false;
@@ -58,27 +59,43 @@ class InfoPanelStore {
       : this.settingsStore.getIcon(size, item.fileExst || ".file");
   };
 
-  openAccounts = (history, openSelfProfile = false) => {
-    const path = [AppServerConfig.proxyURL, config.homepage, "/accounts"];
-    if (openSelfProfile) path.push("/view/@self");
+  openSelfProfile = (history) => {
+    const path = [
+      AppServerConfig.proxyURL,
+      config.homepage,
+      "/accounts",
+      "/view/@self",
+    ];
     this.selectedFolderStore.setSelectedFolder(null);
     this.treeFoldersStore.setSelectedNode(["accounts", "filter"]);
     history.push(combineUrl(...path));
   };
 
-  openUser = async (userId, history) => {
-    if (userId === this.authStore.userStore.user.id) {
-      this.openAccounts(history, true);
-      return;
-    }
+  openAccountsWithSelectedUser = async (user, history) => {
+    const { getUsersList } = this.peopleStore.usersStore;
+    const { selectUser } = this.peopleStore.selectionStore;
 
+    const path = [AppServerConfig.proxyURL, config.homepage, "/accounts"];
+
+    const newFilter = Filter.getDefault();
+    newFilter.page = 0;
+    newFilter.search = user.email;
+    await getUsersList(newFilter);
+    path.push(`filter?${newFilter.toUrlParams()}`);
+
+    this.selectedFolderStore.setSelectedFolder(null);
+    this.treeFoldersStore.setSelectedNode(["accounts"]);
+    history.push(combineUrl(...path));
+
+    selectUser(user);
+  };
+
+  fetchUser = async (userId) => {
     const {
       getStatusType,
       getUserContextOptions,
     } = this.peopleStore.usersStore;
-    const { selectUser } = this.peopleStore.selectionStore;
 
-    this.openAccounts(history, false);
     const fetchedUser = await getUserById(userId);
     fetchedUser.role = getUserRole(fetchedUser);
     fetchedUser.statusType = getStatusType(fetchedUser);
@@ -88,7 +105,18 @@ class InfoPanelStore {
       fetchedUser.statusType,
       fetchedUser.status
     );
-    selectUser(fetchedUser);
+
+    return fetchedUser;
+  };
+
+  openUser = async (userId, history) => {
+    if (userId === this.authStore.userStore.user.id) {
+      this.openSelfProfile(history);
+      return;
+    }
+
+    const fetchedUser = await this.fetchUser(userId);
+    this.openAccountsWithSelectedUser(fetchedUser, history);
   };
 
   getItemNoThumbnail = (item) => {

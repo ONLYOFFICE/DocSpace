@@ -122,7 +122,7 @@ public class ProductEntryPoint : Product
         {
             var id = _authContext.CurrentAccount.ID;
 
-            if (_userManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupVisitor.ID))
+            if (_userManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupUser.ID))
             {
                 return FilesCommonResource.ProductDescriptionShort;
             }

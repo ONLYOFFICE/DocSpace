@@ -563,6 +563,7 @@ public enum MessageAction
     RoomInviteLinkUsed = 7001,
     UserCreatedAndAddedToRoom = 7002,
     GuestCreatedAndAddedToRoom = 7003,
+    ContactSalesMailSent = 7004,
 
     #endregion
 
