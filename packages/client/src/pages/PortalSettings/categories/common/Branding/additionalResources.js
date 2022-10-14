@@ -24,7 +24,7 @@ const StyledComponent = styled.div`
   }
 
   .additional-description {
-    padding-bottom: 1px;
+    padding-bottom: 18px;
   }
 
   .save-cancel-buttons {
@@ -46,6 +46,7 @@ const AdditionalResources = (props) => {
     setAdditionalResources,
     restoreAdditionalResources,
     additionalResourcesData,
+    additionalResourcesIsDefault,
     setIsLoadedAdditionalResources,
     isLoadedAdditionalResources,
   } = props;
@@ -63,14 +64,6 @@ const AdditionalResources = (props) => {
   );
 
   const [hasChange, setHasChange] = useState(false);
-
-  const [hasChangesDefaultSettings, setHasChangesDefaultSettings] = useState(
-    false
-  );
-
-  const defaultAdditionalResources = JSON.parse(
-    localStorage.getItem("defaultAdditionalResources")
-  );
 
   useEffect(() => {
     setShowFeedback(additionalResourcesData?.feedbackAndSupportEnabled);
@@ -94,25 +87,16 @@ const AdditionalResources = (props) => {
 
     const hasСhange = !isEqual(settings, dataAdditionalResources);
 
-    const hasСhangeDefault = !isEqual(settings, defaultAdditionalResources);
-
     if (hasСhange) {
       setHasChange(true);
     } else {
       setHasChange(false);
-    }
-
-    if (hasСhangeDefault) {
-      setHasChangesDefaultSettings(true);
-    } else {
-      setHasChangesDefaultSettings(false);
     }
   }, [
     feedbackAndSupportEnabled,
     videoGuidesEnabled,
     helpCenterEnabled,
     additionalResourcesData,
-    defaultAdditionalResources,
   ]);
 
   useEffect(() => {
@@ -158,9 +142,7 @@ const AdditionalResources = (props) => {
           </div>
         </div>
         <div className="settings_unavailable additional-description">
-          <div className="additional-description">
-            {t("Settings:AdditionalResourcesDescription")}
-          </div>
+          {t("Settings:AdditionalResourcesDescription")}
         </div>
         <div className="branding-checkbox">
           <Checkbox
@@ -194,7 +176,7 @@ const AdditionalResources = (props) => {
             cancelButtonLabel={t("Settings:RestoreDefaultButton")}
             displaySettings={true}
             showReminder={isSettingPaid && hasChange}
-            disableRestoreToDefault={!hasChangesDefaultSettings}
+            disableRestoreToDefault={additionalResourcesIsDefault}
           />
         )}
       </StyledComponent>
@@ -215,6 +197,7 @@ export default inject(({ auth, common }) => {
     setAdditionalResources,
     restoreAdditionalResources,
     additionalResourcesData,
+    additionalResourcesIsDefault,
   } = settingsStore;
 
   return {
@@ -222,6 +205,7 @@ export default inject(({ auth, common }) => {
     setAdditionalResources,
     restoreAdditionalResources,
     additionalResourcesData,
+    additionalResourcesIsDefault,
     setIsLoadedAdditionalResources,
     isLoadedAdditionalResources,
   };
