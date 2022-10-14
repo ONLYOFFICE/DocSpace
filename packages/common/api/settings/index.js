@@ -157,6 +157,13 @@ export function setGreetingSettings(title) {
   });
 }
 
+export function getGreetingSettingsIsDefault() {
+  return request({
+    method: "get",
+    url: `/settings/greetingsettings/isDefault.json`,
+  });
+}
+
 export function restoreGreetingSettings() {
   return request({
     method: "post",
