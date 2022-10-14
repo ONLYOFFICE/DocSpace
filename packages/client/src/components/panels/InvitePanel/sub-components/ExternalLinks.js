@@ -127,31 +127,33 @@ const ExternalLinks = ({
     <StyledBlock noPadding ref={inputsRef}>
       <StyledSubHeader inline>
         {t("SharingPanel:ExternalLink")}
-        <div style={{ position: "relative" }}>
-          <IconButton
-            size={16}
-            iconName="/static/images/media.download.react.svg"
-            hoverColor="#333333"
-            iconColor="#A3A9AE"
-            onClick={toggleActionLinks}
-          />
-          <DropDown
-            open={actionLinksVisible}
-            clickOutsideAction={closeActionLinks}
-            withBackdrop={false}
-            isDefaultMode={false}
-            fixedDirection={true}
-          >
-            <DropDownItem
-              label={`${t("SharingPanel:ShareVia")} e-mail`}
-              onClick={() => shareEmail(links[0])}
+        {linksVisible && (
+          <div style={{ position: "relative" }}>
+            <IconButton
+              size={16}
+              iconName="/static/images/media.download.react.svg"
+              hoverColor="#333333"
+              iconColor="#A3A9AE"
+              onClick={toggleActionLinks}
             />
-            <DropDownItem
-              label={`${t("SharingPanel:ShareVia")} Twitter`}
-              onClick={() => shareTwitter(links[0])}
-            />
-          </DropDown>
-        </div>
+            <DropDown
+              open={actionLinksVisible}
+              clickOutsideAction={closeActionLinks}
+              withBackdrop={false}
+              isDefaultMode={false}
+              fixedDirection={true}
+            >
+              <DropDownItem
+                label={`${t("SharingPanel:ShareVia")} e-mail`}
+                onClick={() => shareEmail(links[0])}
+              />
+              <DropDownItem
+                label={`${t("SharingPanel:ShareVia")} Twitter`}
+                onClick={() => shareTwitter(links[0])}
+              />
+            </DropDown>
+          </div>
+        )}
         <StyledToggleButton isChecked={linksVisible} onChange={toggleLinks} />
       </StyledSubHeader>
       {linksVisible && links}
