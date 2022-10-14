@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import Text from "@docspace/components/text";
 import Avatar from "@docspace/components/avatar";
@@ -60,6 +60,19 @@ const Item = ({
     setEdit(false);
     validateValue(value);
   };
+
+  const onKeyPress = (e) => {
+    if (edit) {
+      if (e.key === "Enter") {
+        saveEdit();
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keyup", onKeyPress);
+    return () => document.removeEventListener("keyup", onKeyPress);
+  });
 
   const validateValue = (value) => {
     const email = parseAddresses(value);
