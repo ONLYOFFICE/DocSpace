@@ -12,7 +12,7 @@ const USERS_IN_ROOM = "usersInRoom";
 class QuotasStore {
   currentPortalQuota = {};
   currentPortalQuotaFeatures = [];
-  portalTariffStatus = {};
+
   isLoaded = false;
 
   constructor() {
@@ -161,6 +161,11 @@ class QuotasStore {
 
     return result.value;
   }
+
+  setPortalQuotaValue = (res) => {
+    this.currentPortalQuota = res;
+    this.currentPortalQuotaFeatures = res.features;
+  };
   setPortalQuota = async () => {
     const res = await api.portal.getPortalQuota();
     if (!res) return;
