@@ -125,8 +125,6 @@ public class WhitelabelController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        DemandWhiteLabelPermission();
-
         return
         new[]
         {
@@ -169,8 +167,6 @@ public class WhitelabelController : BaseSettingsController
     public object GetWhiteLabelLogoText()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        DemandWhiteLabelPermission();
 
         var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
