@@ -106,6 +106,12 @@ const StyledComboBox = styled(ComboBox)`
     margin-right: 8px;
     margin-left: 0px;
   }
+
+  padding: 0px;
+
+  .combo-button {
+    border-radius: 3px;
+  }
 `;
 
 const StyledInviteInputContainer = styled.div`
