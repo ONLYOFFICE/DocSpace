@@ -9,18 +9,27 @@ import IconMuted from "../../../../public/images/videoplayer.mute.react.svg";
 
 import IconFullScreen from "../../../../public/images/videoplayer.full.react.svg";
 import IconExitFullScreen from "../../../../public/images/videoplayer.exit.react.svg";
+import IconSpeed from "../../../../public/images/videoplayer.speed.react.svg";
+import MediaContextMenu from "../../../../public/images/vertical-dots.react.svg";
 
 import BigIconPlay from "../../../../public/images/videoplayer.bgplay.react.svg";
-
-import Slider from "@docspace/components/slider";
 
 let iconWidth = 80;
 let iconHeight = 60;
 
-const StyledVideoPlayer = styled.div`
-  ${(props) =>
-    props.isFullScreen ? "background: #000" : "background: transparent"};
+const ACTION_TYPES = {
+  setActiveIndex: "setActiveIndex",
+  update: "update",
+};
 
+function createAction(type, payload) {
+  return {
+    type,
+    payload: payload || {},
+  };
+}
+
+const StyledVideoPlayer = styled.div`
   .video-wrapper {
     position: fixed;
     z-index: 1005;
@@ -28,6 +37,37 @@ const StyledVideoPlayer = styled.div`
     bottom: 0;
     right: 0;
     left: 0;
+    ${(props) =>
+      props.isFullScreen ? "background: #000" : "background: transparent"};
+  }
+
+  .dropdown-speed {
+    position: relative;
+    display: inline-block;
+  }
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px 3px 0px 0px;
+    height: 30px;
+    width: 40px;
+    &:hover {
+      cursor: pointer;
+      background: #222;
+    }
+  }
+
+  .dropdown-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 52px;
+    color: #fff;
+    background: #000;
+    text-align: center;
+    border-radius: 3px 3px 0px 0px;
   }
 
   .bg-play {
@@ -53,6 +93,7 @@ const StyledVideoActions = styled.div`
     height: 48px;
     &:hover {
       cursor: pointer;
+      background: rgb(77, 77, 77);
     }
   }
 `;
@@ -67,25 +108,25 @@ const StyledVideoControls = styled.div`
   background: rgba(17, 17, 17, 0.867);
 
   input[type="range"] {
-    //-webkit-appearance: none !important;
+    -webkit-appearance: none;
+    margin-right: 15px;
+    width: 80%;
+    height: 7px;
     background: #4d4d4d;
     border: 1px solid rgba(0, 0, 0, 0.4);
-    border-radius: 2px;
-    transition: all 0.26s ease-out;
-    height: 8px;
-    width: 70%;
+    border-radius: 5px;
+    background-image: linear-gradient(#d1d1d1, #d1d1d1);
+    background-repeat: no-repeat;
   }
-
   input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none !important;
-    cursor: pointer;
-    // height: 6px;
-    border: 1px solid rgba(0, 0, 0, 0.4);
+    -webkit-appearance: none;
+    height: 14px;
+    width: 14px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0);
+    //  transition: background 0.3s ease-in-out;
   }
-
-  /* input[type="range"]::-moz-range-progress {
-    background: white;
-  } */
 `;
 
 const getDuration = (time) => {
@@ -110,64 +151,130 @@ const getDuration = (time) => {
 };
 
 export default function ViewerPlayer(props) {
-  const { setOverlay } = props;
+  const { setIsFullScreen, videoRef } = props;
+
+  const initialState = {
+    width: 0,
+    height: 0,
+    left: 0,
+    top: 0,
+    activeIndex: props.activeIndex,
+    isPlaying: false,
+    isMuted: false,
+    isFullScreen: false,
+    speedSelection: false,
+    progress: 0,
+    duration: 0,
+    size: "0%",
+  };
+  function reducer(state, action) {
+    switch (action.type) {
+      case ACTION_TYPES.setActiveIndex:
+        return {
+          ...state,
+          activeIndex: action.payload.index,
+          startLoading: true,
+        };
+      case ACTION_TYPES.update:
+        return {
+          ...state,
+          ...action.payload,
+        };
+      default:
+        break;
+    }
+    return state;
+  }
+
+  const inputRef = React.useRef(null);
+
+  const [state, dispatch] = React.useReducer(reducer, initialState);
 
   const footerHeight = 48;
   const titleHeight = 48;
-  const [style, setStyle] = React.useState(null);
 
-  const [isPlaying, setIsPlaying] = React.useState(false);
-  const [progress, setProgress] = React.useState(0);
+  const togglePlay = () =>
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        isPlaying: !state.isPlaying,
+      })
+    );
+  const toggleMute = () =>
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        isMuted: !state.isMuted,
+      })
+    );
+  const toggleScreen = () => {
+    handleFullScreen(!state.isFullScreen);
+    setIsFullScreen(!state.isFullScreen);
 
-  const [duration, setDuration] = React.useState(0);
-  const [isMuted, setIsMuted] = React.useState(false);
-  const [isFullScreen, setIsFullScreen] = React.useState(false);
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        isFullScreen: !state.isFullScreen,
+      })
+    );
+  };
 
-  const [width, setWidth] = React.useState(0);
-  const [height, setHeight] = React.useState(0);
-  const [left, setLeft] = React.useState(0);
-  const [top, setTop] = React.useState(0);
-
-  const togglePlay = () => setIsPlaying((playing) => !playing);
-  const toggleMute = () => setIsMuted((muted) => !muted);
-  const toggleScreen = () => setIsFullScreen((screen) => !screen);
+  const toggleSpeedSelectionMenu = () =>
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        speedSelection: !state.speedSelection,
+      })
+    );
 
   const elem = document.documentElement;
 
-  function openFullscreen() {
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    }
-  }
-
-  function closeFullscreen() {
-    if (document.exitFullscreen) {
-      document.exitFullscreen();
-    }
-  }
+  const handleFullScreen = (isFull) => {
+    if (elem.requestFullscreen && isFull) return elem.requestFullscreen();
+    return document.exitFullscreen();
+  };
 
   const handleVideoProgress = (e) => {
     const manualChange = Number(e.target.value);
-    props.forwardedRef.current.currentTime =
-      (props.forwardedRef.current.duration / 100) * manualChange;
-    setProgress(manualChange);
+    videoRef.current.currentTime =
+      (videoRef.current.duration / 100) * manualChange;
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        progress: manualChange,
+      })
+    );
   };
 
-  const getCurrentStyle = (video) => {
+  const handleVideoSpeed = (speed) => {
+    const currentSpeeed = Number(speed);
+    videoRef.current.playbackRate = currentSpeeed;
+  };
+
+  const SpeedButtonComponent = () => {
+    const speed = ["0.5", "1", "1.5", "2"];
+    const items = speed.map((speed) => (
+      <div
+        className="dropdown-item"
+        onClick={() => {
+          dispatch(
+            createAction(ACTION_TYPES.update, {
+              speedSelection: false,
+            })
+          );
+          return handleVideoSpeed(speed);
+        }}
+      >
+        {speed}
+      </div>
+    ));
+    return items;
+  };
+
+  const getVideoPosition = (video) => {
     const [width, height] = getVideoWidthHeight(video);
+
     let left = (window.innerWidth - width) / 2;
-    let top = (window.innerHeight - height - (footerHeight - 48)) / 2;
+    let top = !state.isFullScreen
+      ? (window.innerHeight - height - (footerHeight - 48)) / 2
+      : 0;
 
-    let imgStyle = {
-      width: `${width}px`,
-      height: `${height}px`,
-      transition: "all .26s ease-out",
-      transform: `translateX(${
-        left !== null ? left + "px" : "auto"
-      }) translateY(${top}px)`,
-    };
-
-    return imgStyle;
+    return [width, height, left, top];
   };
 
   const getVideoWidthHeight = (video) => {
@@ -175,9 +282,14 @@ export default function ViewerPlayer(props) {
     let height = 0;
 
     let maxWidth = window.innerWidth;
-    let maxHeight = window.innerHeight - (footerHeight + titleHeight);
+    let maxHeight = !state.isFullScreen
+      ? window.innerHeight - (footerHeight + titleHeight)
+      : window.innerHeight - footerHeight;
 
-    width = Math.min(maxWidth, video.videoWidth);
+    width =
+      video.videoWidth > maxWidth
+        ? maxWidth
+        : Math.max(maxWidth, video.videoWidth);
     height = (width / video.videoWidth) * video.videoHeight;
 
     if (height > maxHeight) {
@@ -185,93 +297,111 @@ export default function ViewerPlayer(props) {
       width = (height / video.videoHeight) * video.videoWidth;
     }
 
-    const videoplayer = document.getElementById("video-playerId");
-
-    if (isFullScreen) {
-      height = videoplayer.offsetHeight;
-      width = window.innerWidth;
-    }
-
     return [width, height];
   };
 
   const handleOnTimeUpdate = () => {
     const progress =
-      (props.forwardedRef.current.currentTime /
-        props.forwardedRef.current.duration) *
-      100;
-    setProgress(progress);
+      (videoRef.current.currentTime / videoRef.current.duration) * 100;
 
-    const currentTime = getDuration(props.forwardedRef.current.currentTime);
-    const duration = getDuration(props.forwardedRef.current.duration);
+    const currentTime = getDuration(videoRef.current.currentTime);
+    const duration = getDuration(videoRef.current.duration);
 
     const lasting = `${currentTime} / ${duration}`;
 
-    setDuration(lasting);
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        duration: lasting,
+        progress: progress,
+      })
+    );
   };
-
-  React.useEffect(() => {
-    // let video = props.forwardedRef.current;
-    setOverlay((overlay) => !overlay);
-
-    if (isFullScreen) {
-      openFullscreen();
-    } else {
-      closeFullscreen();
-    }
-  }, [isFullScreen]);
 
   const handleResize = () => {
-    let video = props.forwardedRef.current;
+    let video = videoRef.current;
+    const [width, height, left, top] = getVideoPosition(video);
 
-    const imgStyle = getCurrentStyle(video);
-    setStyle(imgStyle);
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        width: width,
+        height: height,
+        left: left,
+        top: top,
+      })
+    );
   };
 
   React.useEffect(() => {
-    isMuted
-      ? (props.forwardedRef.current.muted = true)
-      : (props.forwardedRef.current.muted = false);
-  }, [isMuted, props.forwardedRef.current]);
+    state.isMuted
+      ? (videoRef.current.muted = true)
+      : (videoRef.current.muted = false);
+  }, [state.isMuted, videoRef.current]);
+
+  React.useEffect(() => {
+    inputRef.current.style.backgroundSize =
+      ((state.progress - inputRef.current.min) * 100) /
+        (inputRef.current.max - inputRef.current.min) +
+      "% 100%";
+  }, [inputRef.current, state.progress]);
 
   React.useEffect(() => {
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
-  }, [props.forwardedRef.current]);
+  }, [videoRef.current, state.isFullScreen]);
 
   React.useEffect(() => {
-    isPlaying
-      ? props.forwardedRef.current.play()
-      : props.forwardedRef.current.pause();
-  }, [isPlaying, props.forwardedRef.current]);
+    state.isPlaying ? videoRef.current.play() : videoRef.current.pause();
+  }, [state.isPlaying, videoRef.current]);
 
   function loadVideo(video) {
-    const currentTime = getDuration(props.forwardedRef.current.currentTime);
-    const duration = getDuration(props.forwardedRef.current.duration);
+    const currentTime = getDuration(video.currentTime);
+    const duration = getDuration(video.duration);
 
     const lasting = `${currentTime} / ${duration}`;
-    setDuration(lasting);
 
-    const imgStyle = getCurrentStyle(video);
-    setStyle(imgStyle);
+    const [width, height, left, top] = getVideoPosition(video);
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        width: width,
+        height: height,
+        left: left,
+        top: top,
+        duration: lasting,
+        progress: 0,
+        isPlaying: false,
+        isMuted: false,
+        isFullScreen: state.isFullScreen,
+        speedSelection: false,
+      })
+    );
   }
 
   React.useEffect(() => {
-    props.forwardedRef.current.addEventListener("loadedmetadata", function (e) {
-      loadVideo(props.forwardedRef.current);
+    videoRef.current.addEventListener("loadedmetadata", function (e) {
+      loadVideo(videoRef.current);
     });
-  }, []);
+  }, [props.activeIndex]);
+
+  let imgStyle = {
+    width: `${state.width}px`,
+    height: `${state.height}px`,
+    transition: "all .26s ease-out",
+    transform: `
+translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
+      state.top
+    }px)`,
+  };
 
   return (
-    <StyledVideoPlayer id="video-playerId" isFullScreen={isFullScreen}>
+    <StyledVideoPlayer id="video-playerId" isFullScreen={state.isFullScreen}>
       <div className="video-wrapper">
         <video
           onClick={togglePlay}
           id="videoPlayer"
-          ref={props.forwardedRef}
+          ref={videoRef}
           src={props.video.src}
-          style={style}
+          style={imgStyle}
           onTimeUpdate={handleOnTimeUpdate}
         ></video>
         {/* {!isPlaying && (
@@ -283,29 +413,44 @@ export default function ViewerPlayer(props) {
       <StyledVideoControls>
         <StyledVideoActions>
           <div className="controller" onClick={togglePlay}>
-            {!isPlaying ? <IconPlay /> : <IconStop />}
+            {!state.isPlaying ? <IconPlay /> : <IconStop />}
           </div>
           <input
+            ref={inputRef}
             type="range"
+            withPouring={true}
             min="0"
             max="100"
-            value={progress}
+            value={state.progress}
             onChange={(e) => handleVideoProgress(e)}
           />
           <div
             style={{
               paddingLeft: "10px",
               paddingRight: "14px",
+              width: "102px",
               color: "#DDDDDD",
             }}
           >
-            {duration}
+            {state.duration}
           </div>
           <div className="controller" onClick={toggleMute}>
-            {!isMuted ? <IconSound /> : <IconMuted />}
+            {!state.isMuted ? <IconSound /> : <IconMuted />}
           </div>
           <div className="controller" onClick={toggleScreen}>
-            {!isFullScreen ? <IconFullScreen /> : <IconExitFullScreen />}
+            {!state.isFullScreen ? <IconFullScreen /> : <IconExitFullScreen />}
+          </div>
+          <div
+            className="controller dropdown-speed"
+            onClick={toggleSpeedSelectionMenu}
+          >
+            <IconSpeed />
+            {state.speedSelection && (
+              <div className="dropdown-content">{SpeedButtonComponent()}</div>
+            )}
+          </div>
+          <div className="controller">
+            <MediaContextMenu />
           </div>
         </StyledVideoActions>
       </StyledVideoControls>
