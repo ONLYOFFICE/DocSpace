@@ -218,8 +218,7 @@ class UsersStore {
         } else {
           if (
             isOwner ||
-            ((isAdmin || !isVisitor) && userRole === "manager") ||
-            userRole === "user"
+            (isAdmin && (userRole === "user" || userRole === "manager"))
           ) {
             options.push("separator-1");
 
@@ -227,13 +226,8 @@ class UsersStore {
             options.push("change-password");
             options.push("reset-auth");
 
-            if (
-              isOwner ||
-              (isAdmin && (userRole === "manager" || userRole === "user"))
-            ) {
-              options.push("separator-2");
-              options.push("disable");
-            }
+            options.push("separator-2");
+            options.push("disable");
           }
         }
 
