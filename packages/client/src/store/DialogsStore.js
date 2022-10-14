@@ -1,6 +1,6 @@
 import { getNewFiles } from "@docspace/common/api/files";
-import { FileAction } from "@docspace/common/constants";
-import { makeAutoObservable } from "mobx";
+import { FileAction, ShareAccessRights } from "@docspace/common/constants";
+import { makeAutoObservable, runInAction } from "mobx";
 import { Events } from "@docspace/common/constants";
 
 class DialogsStore {
@@ -28,6 +28,11 @@ class DialogsStore {
   convertPasswordDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
+  invitePanelOptions = {
+    visible: false,
+    hideSelector: false,
+    defaultAccess: ShareAccessRights.FullAccess,
+  };
   restoreAllPanelVisible = false;
   eventDialogVisible = false;
 
@@ -43,6 +48,7 @@ class DialogsStore {
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
+  inviteItems = [];
 
   constructor(
     authStore,
@@ -250,6 +256,21 @@ class DialogsStore {
     window.dispatchEvent(event);
   };
 
+  setInvitePanelOptions = (invitePanelOptions) => {
+    this.invitePanelOptions = invitePanelOptions;
+  };
+
+  setInviteItems = (inviteItems) => {
+    this.inviteItems = inviteItems;
+  };
+
+  changeInviteItem = async (item) =>
+    runInAction(() => {
+      const index = this.inviteItems.findIndex((iItem) => iItem.id === item.id);
+
+      this.inviteItems[index] = { ...this.inviteItems[index], ...item };
+    });
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -269,7 +290,8 @@ class DialogsStore {
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
       this.versionHistoryStore.isVisible ||
-      this.eventDialogVisible
+      this.eventDialogVisible ||
+      this.invitePanelOptions.visible
     );
   }
 

@@ -10,6 +10,7 @@ import {
   NewFilesPanel,
   SelectFileDialog,
   HotkeyPanel,
+  InvitePanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -47,6 +48,7 @@ const Panels = (props) => {
     selectFileDialogVisible,
     setSelectFileDialogVisible,
     hotkeyPanelVisible,
+    invitePanelVisible,
     convertPasswordDialogVisible,
     createRoomDialogVisible,
     restoreAllPanelVisible,
@@ -111,6 +113,7 @@ const Panels = (props) => {
       />
     ),
     hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
+    invitePanelVisible && <InvitePanel key="invite-panel" />,
     convertPasswordDialogVisible && (
       <ConvertPasswordDialog key="convert-password-dialog" />
     ),
@@ -142,6 +145,7 @@ export default inject(
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
+      invitePanelOptions,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -172,6 +176,7 @@ export default inject(
       setSelectFileDialogVisible,
       hotkeyPanelVisible,
       restoreAllPanelVisible,
+      invitePanelVisible: invitePanelOptions.visible,
     };
   }
 )(observer(Panels));
