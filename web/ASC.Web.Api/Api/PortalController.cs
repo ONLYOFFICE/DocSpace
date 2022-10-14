@@ -444,7 +444,7 @@ public class PortalController : ControllerBase
     }
 
     [HttpDelete("delete")]
-    [Authorize(AuthenticationSchemes = "confirm", Roles = "ProfileRemove")]
+    [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalRemove")]
     public async Task<object> DeletePortal()
     {
         _tenantManager.RemoveTenant(Tenant.Id);
