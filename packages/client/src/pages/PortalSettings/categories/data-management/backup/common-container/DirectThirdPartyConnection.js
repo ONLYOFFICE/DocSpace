@@ -57,7 +57,6 @@ const DirectThirdPartyConnection = (props) => {
   }, []);
 
   useEffect(() => {
- 
     updateAccountsInfo();
   }, [selectedThirdPartyAccount === null]);
 
@@ -240,7 +239,7 @@ const DirectThirdPartyConnection = (props) => {
         provider_key,
         provider_id
       );
-      console.log("saveSettings");
+
       setSelectedThirdPartyAccount(null);
     } catch (e) {
       setState({ isLoading: false, isUpdatingInfo: false });
