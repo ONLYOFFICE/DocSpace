@@ -170,8 +170,6 @@ public class HostedSolution
         // save tenant owner
         tenant.OwnerId = user.Id;
         tenant = TenantService.SaveTenant(CoreSettings, tenant);
-
-        SettingsManager.SaveSettings(new TenantControlPanelSettings { LimitedAccess = registrationInfo.LimitedControlPanel }, tenant.Id);
     }
 
     public Tenant SaveTenant(Tenant tenant)

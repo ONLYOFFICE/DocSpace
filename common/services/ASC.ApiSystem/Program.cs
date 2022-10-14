@@ -43,11 +43,6 @@ var startup = new Startup(builder.Configuration, builder.Environment);
 
 startup.ConfigureServices(builder.Services);
 
-builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
-{
-    builder.Register(context.Configuration);
-});
-
 var app = builder.Build();
 
 startup.Configure(app, app.Environment);

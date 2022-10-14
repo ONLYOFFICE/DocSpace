@@ -61,7 +61,7 @@ public class SettingsController : ControllerBase
     #region API methods
 
     [HttpGet("get")]
-    [Authorize(AuthenticationSchemes = "auth:allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
     public IActionResult GetSettings([FromQuery] SettingsModel model)
     {
         if (!GetTenant(model, out var tenantId, out var error))
@@ -87,7 +87,7 @@ public class SettingsController : ControllerBase
     }
 
     [HttpPost("save")]
-    [Authorize(AuthenticationSchemes = "auth:allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
     public IActionResult SaveSettings([FromBody] SettingsModel model)
     {
         if (!GetTenant(model, out var tenantId, out var error))

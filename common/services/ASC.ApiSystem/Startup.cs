@@ -30,6 +30,7 @@ public class Startup : BaseStartup
 {
     public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
     {
+        LoadProducts = false;
     }
 
     public override void ConfigureServices(IServiceCollection services)
@@ -39,7 +40,7 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<AuthHandler>();
 
         services.AddAuthentication()
-            .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth:allowskip", _ => { })
+            .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth:allowskip:default", _ => { })
             .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth:allowskip:registerportal", _ => { });
     }
 

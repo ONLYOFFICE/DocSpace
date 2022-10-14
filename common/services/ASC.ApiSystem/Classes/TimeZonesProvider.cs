@@ -29,20 +29,20 @@ namespace ASC.ApiSystem.Classes;
 [Singletone]
 public class TimeZonesProvider
 {
-    public ILogger<TimeZonesProvider> Log { get; }
+    private readonly ILogger<TimeZonesProvider> _log;
 
-    private CommonConstants CommonConstants { get; }
+    private readonly CommonConstants _commonConstants;
 
     public TimeZonesProvider(ILogger<TimeZonesProvider> logger, CommonConstants commonConstants)
     {
-        Log = logger;
+        _log = logger;
 
-        CommonConstants = commonConstants;
+        _commonConstants = commonConstants;
     }
 
     #region Private
 
-    private static readonly Dictionary<string, KeyValuePair<string, string>> TimeZones = new Dictionary<string, KeyValuePair<string, string>>
+    private static readonly Dictionary<string, KeyValuePair<string, string>> _timeZones = new Dictionary<string, KeyValuePair<string, string>>
     {
         { "", new KeyValuePair<string, string>("Europe/London", "GMT Standard Time") },
         { "fr", new KeyValuePair<string, string>("Europe/Paris", "Romance Standard Time") },
@@ -67,7 +67,7 @@ public class TimeZonesProvider
         { "vi", new KeyValuePair<string, string>("Asia/Shanghai", "China Standard Time") }
     };
 
-    private static readonly Dictionary<string, CultureInfo> CultureUiMap = new Dictionary<string, CultureInfo>
+    private static readonly Dictionary<string, CultureInfo> _cultureUiMap = new Dictionary<string, CultureInfo>
     {
         { "", CultureInfo.GetCultureInfo("en-US") },
         { "fr", CultureInfo.GetCultureInfo("fr-FR") },
@@ -99,7 +99,7 @@ public class TimeZonesProvider
 
     public TimeZoneInfo GetCurrentTimeZoneInfo(string languageKey)
     {
-        var time = TimeZones.ContainsKey(languageKey) ? TimeZones[languageKey] : TimeZones[""];
+        var time = _timeZones.ContainsKey(languageKey) ? _timeZones[languageKey] : _timeZones[""];
         try
         {
             try
@@ -113,7 +113,7 @@ public class TimeZonesProvider
         }
         catch (Exception e)
         {
-            Log.LogError(e, "GetCurrentTimeZoneInfo");
+            _log.LogError(e, "GetCurrentTimeZoneInfo");
 
             return TimeZoneInfo.Utc;
         }
@@ -123,12 +123,12 @@ public class TimeZonesProvider
     {
         if (string.IsNullOrEmpty(languageKey))
         {
-            return CommonConstants.DefaultCulture;
+            return _commonConstants.DefaultCulture;
         }
 
-        var culture = CultureUiMap.ContainsKey(languageKey) ? CultureUiMap[languageKey] : null;
+        var culture = _cultureUiMap.ContainsKey(languageKey) ? _cultureUiMap[languageKey] : null;
 
-        return culture ?? CommonConstants.DefaultCulture;
+        return culture ?? _commonConstants.DefaultCulture;
     }
 
     #endregion

@@ -62,7 +62,7 @@ public class TariffController : ControllerBase
 
     [HttpPut("set")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth:allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
     public IActionResult SetTariff(TariffModel model)
     {
         if (!CommonMethods.GetTenant(model, out var tenant))
@@ -126,7 +126,7 @@ public class TariffController : ControllerBase
 
     [HttpGet("get")]
     [AllowCrossSiteJson]
-    [Authorize(AuthenticationSchemes = "auth:allowskip")]
+    [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
     public IActionResult GetTariff([FromQuery] TariffModel model)
     {
         if (!CommonMethods.GetTenant(model, out var tenant))

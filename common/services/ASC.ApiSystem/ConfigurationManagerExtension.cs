@@ -28,11 +28,11 @@ namespace ASC.ApiSystem;
 
 public static class ConfigurationManagerExtension
 {
-    public static ConfigurationManager AddApiSystemConfiguration(
-    this ConfigurationManager config,
-    IHostEnvironment env)
+    public static ConfigurationManager AddApiSystemConfiguration(this ConfigurationManager config, IHostEnvironment env)
     {
-        config.AddJsonFile($"appsettings.services.json", true)
+        config
+          .AddJsonFile($"apisystem.json")
+          .AddJsonFile($"apisystem.{env.EnvironmentName}.json", true)
           .AddJsonFile("notify.json")
           .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
 
