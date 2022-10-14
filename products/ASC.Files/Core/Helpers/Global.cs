@@ -522,11 +522,6 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
-        {
-            return 0;
-        }
-
         if (!RecentFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var recentFolderId))
         {
             var folderDao = daoFactory.GetFolderDao<int>();
@@ -547,11 +542,6 @@ public class GlobalFolder
     public async ValueTask<int> GetFolderFavoritesAsync(IDaoFactory daoFactory)
     {
         if (!_authContext.IsAuthenticated)
-        {
-            return 0;
-        }
-
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
         {
             return 0;
         }
