@@ -178,6 +178,9 @@ const InviteInput = ({
   const closeInviteInputPanel = (e) => {
     if (e?.target.tagName.toUpperCase() == "INPUT") return;
 
+    setInputValue("");
+    setUsersList([]);
+
     setSearchPanelVisible(false);
   };
 
@@ -188,6 +191,17 @@ const InviteInput = ({
   const onSelectAccess = (item) => {
     setSelectedAccess(item.access);
   };
+
+  const onKeyPress = (e) => {
+    if (e.key === "Enter" && !!!usersList.length && inputValue.length > 2) {
+      addEmail();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keyup", onKeyPress);
+    return () => document.removeEventListener("keyup", onKeyPress);
+  });
 
   return (
     <>
