@@ -43,4 +43,7 @@
             "providerName": "MySql.Data.MySqlClient"
         }
     },
+	"quota": {
+		"id": -3
+	}
 }
