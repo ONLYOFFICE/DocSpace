@@ -5,6 +5,7 @@ import { withTranslation } from "react-i18next";
 import Backdrop from "@docspace/components/backdrop";
 import Aside from "@docspace/components/aside";
 import Button from "@docspace/components/button";
+import toastr from "@docspace/components/toast/toastr";
 
 import {
   StyledBlock,
@@ -103,8 +104,9 @@ const InvitePanel = ({
     try {
       await setRoomSecurity(roomId, data);
       onClose();
+      toastr.success(`Users invited to ${selectedRoom.title}`);
     } catch (err) {
-      console.error(err);
+      toastr.error(err);
     }
   };
 
@@ -196,7 +198,11 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     getFolderInfo,
   };
 })(
-  withTranslation(["InviteDialog", "SharingPanel", "Translations", "Common"])(
-    observer(InvitePanel)
-  )
+  withTranslation([
+    "InviteDialog",
+    "SharingPanel",
+    "Translations",
+    "Common",
+    "InfoPanel",
+  ])(observer(InvitePanel))
 );

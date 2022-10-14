@@ -10,6 +10,7 @@ import PeopleSelector from "@docspace/client/src/components/PeopleSelector";
 import { withTranslation } from "react-i18next";
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
+import toastr from "@docspace/components/toast/toastr";
 
 const AddUsersPanel = ({
   isEncrypted,
@@ -66,6 +67,9 @@ const AddUsersPanel = ({
         items.push(newItem);
       }
     }
+
+    if (users.length > items.length)
+      toastr.warning("Some users are already in room");
 
     setDataItems(items);
     onClose();

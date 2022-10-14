@@ -5,6 +5,7 @@ import { inject, observer } from "mobx-react";
 import Avatar from "@docspace/components/avatar";
 import TextInput from "@docspace/components/text-input";
 import DropDownItem from "@docspace/components/drop-down-item";
+import toastr from "@docspace/components/toast/toastr";
 
 import { parseAddresses } from "@docspace/components/utils/email";
 
@@ -101,6 +102,18 @@ const InviteInput = ({
     debouncedSearch(clearValue);
   };
 
+  const removeExist = (items) => {
+    const filtered = items.reduce((unique, o) => {
+      !unique.some((obj) => obj.email === o.email) && unique.push(o);
+      return unique;
+    }, []);
+
+    if (items.length > filtered.length)
+      toastr.warning("Some users have already been added");
+
+    return filtered;
+  };
+
   const getItemContent = (item) => {
     const { avatar, displayName, email, id } = item;
 
@@ -109,7 +122,8 @@ const InviteInput = ({
     item.access = selectedAccess;
 
     const addUser = () => {
-      setInviteItems([item, ...inviteItems]);
+      const items = removeExist([item, ...inviteItems]);
+      setInviteItems(items);
       closeInviteInputPanel();
     };
 
@@ -139,10 +153,7 @@ const InviteInput = ({
     const newItems =
       items.length > 1 ? [...items, ...inviteItems] : [items, ...inviteItems];
 
-    const filtered = newItems.reduce((unique, o) => {
-      !unique.some((obj) => obj.email === o.email) && unique.push(o);
-      return unique;
-    }, []);
+    const filtered = removeExist(newItems);
 
     setInviteItems(filtered);
     closeInviteInputPanel();
@@ -151,10 +162,7 @@ const InviteInput = ({
   const addItems = (users) => {
     const items = [...users, ...inviteItems];
 
-    const filtered = items.reduce((unique, o) => {
-      !unique.some((obj) => obj.email === o.email) && unique.push(o);
-      return unique;
-    }, []);
+    const filtered = removeExist(items);
 
     setInviteItems(filtered);
     closeInviteInputPanel();
