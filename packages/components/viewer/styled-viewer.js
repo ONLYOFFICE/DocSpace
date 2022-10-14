@@ -6,16 +6,6 @@ const StyledViewerContainer = styled.div`
   color: ${(props) => props.theme.mediaViewer.color};
   display: ${(props) => (props.visible ? "block" : "none")};
   overflow: hidden;
-  .videoViewerOverlay {
-    position: fixed;
-    z-index: 300;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: black;
-    opacity: 0.5;
-  }
   .mediaViewerToolbox {
     z-index: 1006;
     padding-top: 14px;
