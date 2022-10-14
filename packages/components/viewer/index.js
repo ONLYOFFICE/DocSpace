@@ -36,7 +36,7 @@ export const Viewer = (props) => {
   const viewerToolboxRef = React.useRef(null);
   const videoElement = React.useRef(null);
 
-  const [overlay, setOverlay] = React.useState(true);
+  const [isFullscreen, setIsFullScreen] = React.useState(false);
 
   React.useEffect(() => {
     document.body.appendChild(defaultContainer.current);
@@ -67,34 +67,37 @@ export const Viewer = (props) => {
 
   const videoPortal = ReactDOM.createPortal(
     <ViewerPlayer
-      setOverlay={setOverlay}
-      forwardedRef={videoElement}
+      setIsFullScreen={setIsFullScreen}
+      videoRef={videoElement}
       video={playlist[playlistPos]}
+      activeIndex={playlistPos}
     />,
     container
   );
 
   return (
     <StyledViewerContainer visible={visible}>
-      {overlay && <div className="videoViewerOverlay"></div>}
-      <div>
-        <div className="details" ref={detailsContainerRef}>
-          <Text isBold fontSize="14px" className="title">
-            {title}
-          </Text>
-          <ControlBtn
-            onClick={onMaskClick && onMaskClick}
-            className="mediaPlayerClose"
-          >
-            <IconButton
-              iconName="/static/images/cross.react.svg"
-              size={25}
-              isClickable
-            />
-          </ControlBtn>
+      {!isFullscreen && (
+        <div>
+          <div className="details" ref={detailsContainerRef}>
+            <Text isBold fontSize="14px" className="title">
+              {title}
+            </Text>
+            <ControlBtn
+              onClick={onMaskClick && onMaskClick}
+              className="mediaPlayerClose"
+            >
+              <IconButton
+                iconName="/static/images/cross.react.svg"
+                size={25}
+                isClickable
+              />
+            </ControlBtn>
+          </div>
         </div>
-      </div>
-      {playlist.length > 1 && (
+      )}
+
+      {playlist.length > 1 && !isFullscreen && (
         <>
           <StyledNextToolbar left onClick={onPrevClick}>
             <StyledButtonScroll orientation="left">
