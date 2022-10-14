@@ -2944,6 +2944,10 @@ const Dark = {
       border: "1px solid #858585",
     },
   },
+  activeSessions: {
+    color: "#eeeeee",
+    borderColor: "#858585",
+  },
 };
 
 export default Dark;

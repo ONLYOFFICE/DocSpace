@@ -2937,6 +2937,11 @@ const Base = {
       border: "1px solid #eceef1",
     },
   },
+
+  activeSessions: {
+    color: "#333",
+    borderColor: "#eceef1",
+  },
 };
 
 export default Base;
