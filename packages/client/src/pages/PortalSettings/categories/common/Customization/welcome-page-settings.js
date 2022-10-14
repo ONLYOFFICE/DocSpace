@@ -22,7 +22,6 @@ import withLoading from "SRC_DIR/HOCs/withLoading";
 
 let greetingTitleFromSessionStorage = "";
 let greetingTitleDefaultFromSessionStorage = "";
-let defaultWelcomePageSettings = "";
 const settingNames = ["greetingTitle"];
 
 class WelcomePageSettings extends React.Component {
@@ -35,10 +34,6 @@ class WelcomePageSettings extends React.Component {
 
     greetingTitleDefaultFromSessionStorage = getFromSessionStorage(
       "greetingTitleDefault"
-    );
-
-    defaultWelcomePageSettings = localStorage.getItem(
-      "defaultWelcomePageSettings"
     );
 
     setDocumentTitle(t("CustomTitlesWelcome"));
@@ -64,9 +59,7 @@ class WelcomePageSettings extends React.Component {
       hasChanged: false,
       showReminder: false,
       hasScroll: false,
-      defaultWelcomePageSettings,
       isCustomizationView: false,
-      hasСhangeDefault: false,
     };
   }
 
@@ -92,8 +85,6 @@ class WelcomePageSettings extends React.Component {
     if (greetingTitleDefault || greetingTitle) {
       this.checkChanges();
     }
-
-    this.onChangeDefault();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -143,33 +134,7 @@ class WelcomePageSettings extends React.Component {
     if (this.state.greetingTitleDefault || greetingTitle) {
       this.checkChanges();
     }
-
-    if (greetingTitle !== prevProps.greetingTitle) {
-      this.onChangeDefault();
-    }
   }
-
-  onChangeDefault = () => {
-    const {
-      defaultWelcomePageSettings,
-      greetingTitle,
-      hasСhangeDefault,
-    } = this.state;
-
-    if (defaultWelcomePageSettings !== greetingTitle) {
-      if (hasСhangeDefault) return;
-
-      this.setState({
-        hasСhangeDefault: true,
-      });
-    } else {
-      if (!hasСhangeDefault) return;
-
-      this.setState({
-        hasСhangeDefault: false,
-      });
-    }
-  };
 
   componentWillUnmount() {
     window.removeEventListener("resize", this.checkInnerWidth);
@@ -294,14 +259,18 @@ class WelcomePageSettings extends React.Component {
   };
 
   render() {
-    const { t, isMobileView, isLoadedPage } = this.props;
+    const {
+      t,
+      isMobileView,
+      isLoadedPage,
+      greetingSettingsIsDefault,
+    } = this.props;
     const {
       greetingTitle,
       isLoadingGreetingSave,
       isLoadingGreetingRestore,
       showReminder,
       hasScroll,
-      hasСhangeDefault,
       isCustomizationView,
     } = this.state;
 
@@ -362,7 +331,7 @@ class WelcomePageSettings extends React.Component {
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
           hasScroll={hasScroll}
-          disableRestoreToDefault={!hasСhangeDefault}
+          disableRestoreToDefault={greetingSettingsIsDefault}
         />
       </StyledSettingsComponent>
     );
@@ -375,6 +344,7 @@ export default inject(({ auth, setup, common }) => {
     organizationName,
     theme,
     getSettings,
+    greetingSettingsIsDefault,
   } = auth.settingsStore;
   const { setGreetingTitle, restoreGreetingTitle } = setup;
   const {
@@ -391,6 +361,7 @@ export default inject(({ auth, setup, common }) => {
     restoreGreetingTitle,
     isLoaded,
     setIsLoadedWelcomePageSettings,
+    greetingSettingsIsDefault,
     getSettings,
     initSettings,
     setIsLoaded,
