@@ -127,7 +127,7 @@ const ExternalLinks = ({
     <StyledBlock noPadding ref={inputsRef}>
       <StyledSubHeader inline>
         {t("SharingPanel:ExternalLink")}
-        {linksVisible && (
+        {false && ( //TODO: Change to linksVisible after added link information from backend
           <div style={{ position: "relative" }}>
             <IconButton
               size={16}
