@@ -95,7 +95,7 @@ const RegisterModalDialog: React.FC<IRegisterModalDialogProps> = ({
         >
           <EmailInput
             hasError={isShowError && emailErr}
-            placeholder={t("RegistrationEmail")}
+            placeholder={t("Common:RegistrationEmail")}
             isAutoFocussed={true}
             id="e-mail"
             name="e-mail"

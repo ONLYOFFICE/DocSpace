@@ -282,6 +282,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
     public async Task Logout()
@@ -300,7 +301,7 @@ public class AuthenticationController : ControllerBase
         _securityContext.Logout();
     }
 
-    [AllowNotPayment]
+    [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
     public ValidationResult CheckConfirm(EmailValidationKeyModel inDto)
     {

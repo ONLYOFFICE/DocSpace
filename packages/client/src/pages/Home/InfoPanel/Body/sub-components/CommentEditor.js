@@ -11,7 +11,7 @@ const CommentEditor = ({
   item,
 
   setSelection,
-
+  isRecycleBinFolder,
   fetchFileVersions,
   updateCommentVersion,
 }) => {
@@ -60,15 +60,17 @@ const CommentEditor = ({
               {comment}
             </Text>
           )}
-          <div className="edit_toggle" onClick={onOpenEditor}>
-            <ReactSVG
-              className="edit_toggle-icon"
-              src="images/pencil.react.svg"
-            />
-            <div className="property-content edit_toggle-text">
-              {comment ? t("Common:EditButton") : t("Common:AddButton")}
+          {!isRecycleBinFolder && (
+            <div className="edit_toggle" onClick={onOpenEditor}>
+              <ReactSVG
+                className="edit_toggle-icon"
+                src="images/pencil.react.svg"
+              />
+              <div className="property-content edit_toggle-text">
+                {comment ? t("Common:EditButton") : t("Common:AddButton")}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       ) : (
         <div className="property-comment_editor-editor">
@@ -101,14 +103,14 @@ const CommentEditor = ({
   );
 };
 
-export default inject(({ auth, versionHistoryStore }) => {
+export default inject(({ auth, versionHistoryStore, treeFoldersStore }) => {
   const { setSelection } = auth.infoPanelStore;
 
   const { fetchFileVersions, updateCommentVersion } = versionHistoryStore;
-
+  const { isRecycleBinFolder } = treeFoldersStore;
   return {
     setSelection,
-
+    isRecycleBinFolder,
     fetchFileVersions,
     updateCommentVersion,
   };

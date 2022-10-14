@@ -60,22 +60,25 @@ public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettin
 
     public string LicenseAgreementsUrl { get; set; }
 
-    public bool IsDefault()
+    public bool IsDefault
     {
-        var defaultSettings = GetDefault();
+        get
+        {
+            var defaultSettings = GetDefault();
 
-        return StartDocsEnabled == defaultSettings.StartDocsEnabled &&
-                HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&
-                FeedbackAndSupportEnabled == defaultSettings.FeedbackAndSupportEnabled &&
-                FeedbackAndSupportUrl == defaultSettings.FeedbackAndSupportUrl &&
-                UserForumEnabled == defaultSettings.UserForumEnabled &&
-                UserForumUrl == defaultSettings.UserForumUrl &&
-                VideoGuidesEnabled == defaultSettings.VideoGuidesEnabled &&
-                VideoGuidesUrl == defaultSettings.VideoGuidesUrl &&
-                SalesEmail == defaultSettings.SalesEmail &&
-                BuyUrl == defaultSettings.BuyUrl &&
-                LicenseAgreementsEnabled == defaultSettings.LicenseAgreementsEnabled &&
-                LicenseAgreementsUrl == defaultSettings.LicenseAgreementsUrl;
+            return StartDocsEnabled == defaultSettings.StartDocsEnabled &&
+                    HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&
+                    FeedbackAndSupportEnabled == defaultSettings.FeedbackAndSupportEnabled &&
+                    FeedbackAndSupportUrl == defaultSettings.FeedbackAndSupportUrl &&
+                    UserForumEnabled == defaultSettings.UserForumEnabled &&
+                    UserForumUrl == defaultSettings.UserForumUrl &&
+                    VideoGuidesEnabled == defaultSettings.VideoGuidesEnabled &&
+                    VideoGuidesUrl == defaultSettings.VideoGuidesUrl &&
+                    SalesEmail == defaultSettings.SalesEmail &&
+                    BuyUrl == defaultSettings.BuyUrl &&
+                    LicenseAgreementsEnabled == defaultSettings.LicenseAgreementsEnabled &&
+                    LicenseAgreementsUrl == defaultSettings.LicenseAgreementsUrl;
+        }
     }
 
     [JsonIgnore]
@@ -169,7 +172,7 @@ public class AdditionalWhiteLabelSettingsHelper
     {
         get
         {
-            var email = _configuration["web:payment:email"];
+            var email = _configuration["core:payment:email"];
             return !string.IsNullOrEmpty(email) ? email : "sales@onlyoffice.com";
         }
     }

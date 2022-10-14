@@ -44,11 +44,11 @@ public class StudioSmsNotificationSettings : TfaSettingsBase<StudioSmsNotificati
 [Scope]
 public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase<StudioSmsNotificationSettings>
 {
-    private readonly TenantExtra _tenantExtra;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly SetupInfo _setupInfo;
     private readonly SettingsManager _settingsManager;
     private readonly SmsProviderManager _smsProviderManager;
+    private readonly TenantManager _tenantManager;
 
     public StudioSmsNotificationSettingsHelper(
         IHttpContextAccessor httpContextAccessor,
@@ -57,14 +57,15 @@ public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase<StudioS
         SetupInfo setupInfo,
         SettingsManager settingsManager,
         SmsProviderManager smsProviderManager,
-        UserManager userManager)
+        UserManager userManager,
+        TenantManager tenantManager)
         : base(settingsManager, httpContextAccessor, userManager)
     {
-        _tenantExtra = tenantExtra;
         _coreBaseSettings = coreBaseSettings;
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
         _smsProviderManager = smsProviderManager;
+        _tenantManager = tenantManager;
     }
 
     public bool IsVisibleAndAvailableSettings()
@@ -74,12 +75,11 @@ public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase<StudioS
 
     public bool IsAvailableSettings()
     {
-        var quota = _tenantExtra.GetTenantQuota();
+        var quota = _tenantManager.GetCurrentTenantQuota();
         return _coreBaseSettings.Standalone
                 || ((!quota.Trial || _setupInfo.SmsTrial)
                     && !quota.NonProfit
-                    && !quota.Free
-                    && !quota.Open);
+                    && !quota.Free);
     }
 
     public override bool Enable

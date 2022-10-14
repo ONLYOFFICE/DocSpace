@@ -40,8 +40,9 @@ public class BackupAjaxHandler
     private readonly ConsumerFactory _consumerFactory;
     private readonly BackupService _backupService;
     private readonly TempPath _tempPath;
+    private readonly StorageFactory _storageFactory;
 
-    private const string BackupTempFolder = "backup";
+    private const string BackupTempModule = "backup_temp";
     private const string BackupFileName = "backup.tmp";
 
     #region backup
@@ -57,7 +58,8 @@ public class BackupAjaxHandler
         UserManager userManager,
         TenantExtra tenantExtra,
         ConsumerFactory consumerFactory,
-        TempPath tempPath)
+        TempPath tempPath,
+        StorageFactory storageFactory)
     {
         _tenantManager = tenantManager;
         _messageService = messageService;
@@ -70,6 +72,7 @@ public class BackupAjaxHandler
         _consumerFactory = consumerFactory;
         _backupService = backupService;
         _tempPath = tempPath;
+        _storageFactory = storageFactory;
     }
 
     public void StartBackup(BackupStorageType storageType, Dictionary<string, string> storageParams)
@@ -304,7 +307,7 @@ public class BackupAjaxHandler
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("Restore") ||
-            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Restore))
+            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
@@ -312,7 +315,7 @@ public class BackupAjaxHandler
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings("Restore")
-                || !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Restore))
+                || !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Restore");
         }
@@ -323,7 +326,7 @@ public class BackupAjaxHandler
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("AutoBackup") ||
-            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackup))
+            (!_coreBaseSettings.Standalone && !_tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "AutoBackup");
         }
@@ -360,7 +363,7 @@ public class BackupAjaxHandler
         var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Migration))
         || !currentUser.IsOwner(_tenantManager.GetCurrentTenant())
-        || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantExtra.GetTenantQuota().HasMigration)
+        || !SetupInfo.IsSecretEmail(currentUser.Email) && !_tenantManager.GetCurrentTenantQuota().AutoBackupRestore)
         {
             throw new InvalidOperationException(Resource.ErrorNotAllowedOption);
         }
@@ -385,7 +388,8 @@ public class BackupAjaxHandler
 
     public string GetTmpFilePath()
     {
-        var folder = Path.Combine(_tempPath.GetTempPath(), BackupTempFolder, _tenantManager.GetCurrentTenant().Id.ToString());
+        var discStore = _storageFactory.GetStorage("", _tenantManager.GetCurrentTenant().Id.ToString(), BackupTempModule, null) as DiscDataStore;
+        var folder = discStore.GetPhysicalPath("", "");
 
         if (!Directory.Exists(folder))
         {

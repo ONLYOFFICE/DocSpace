@@ -429,3 +429,37 @@ export const frameCallCommand = (command) => {
     "*"
   );
 };
+
+export const getConvertedSize = (t, size) => {
+  let sizeNames;
+
+  if (size < 0) return `${8 + " " + t("Common:Exabyte")}`;
+
+  if (size < 1024 * 1024) {
+    sizeNames = [
+      t("Common:Megabyte"),
+      t("Common:Gigabyte"),
+      t("Common:Terabyte"),
+    ];
+  } else {
+    sizeNames = [
+      t("Common:Bytes"),
+      t("Common:Kilobyte"),
+      t("Common:Megabyte"),
+      t("Common:Gigabyte"),
+      t("Common:Terabyte"),
+      t("Common:Petabyte"),
+      t("Common:Exabyte"),
+    ];
+  }
+
+  const bytes = size;
+
+  if (bytes == 0) return `${"0" + " " + t("Bytes")}`;
+
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+
+  return (
+    parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + " " + sizeNames[i]
+  );
+};

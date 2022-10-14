@@ -512,9 +512,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Indirizzo email non corretto</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Codice promozionale errato</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Non si dispone di permessi sufficienti per effettuare questa azione</value>
   </data>

@@ -100,9 +100,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Səhv elektron poçt ünvanı</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Yanlış promo kodu</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Bu əyləmi gerçəkləşdirməyə icazə yoxdur</value>
   </data>
