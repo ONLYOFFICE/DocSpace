@@ -19,13 +19,14 @@ const FilesItemTitle = ({
 
   getContextOptions,
   getContextOptionActions,
+  severalItemsLength,
 }) => {
   if (isSeveralItems)
     return (
       <StyledTitle>
         <ReactSVG className="icon" src={getIcon(32, ".file")} />
         <Text className="text">
-          {`${t("InfoPanel:ItemsSelected")}: ${selection.length}`}
+          {`${t("InfoPanel:ItemsSelected")}: ${severalItemsLength}`}
         </Text>
       </StyledTitle>
     );
