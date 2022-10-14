@@ -39,6 +39,7 @@ const CompanyInfoSettings = (props) => {
     isSettingPaid,
     getCompanyInfoSettings,
     setCompanyInfoSettings,
+    companyInfoSettingsIsDefault,
     restoreCompanyInfoSettings,
     companyInfoSettingsData,
     tReady,
@@ -63,15 +64,8 @@ const CompanyInfoSettings = (props) => {
   const [hasErrorAddress, setHasErrorAddress] = useState(false);
 
   const [isChangesSettings, setIsChangesSettings] = useState(false);
-  const [hasChangesDefaultSettings, setHasChangesDefaultSettings] = useState(
-    false
-  );
 
   const [showModal, setShowModal] = useState(false);
-
-  const defaultDataCompanyInfoSettings = JSON.parse(
-    localStorage.getItem("defaultDataCompanyInfoSettings")
-  );
 
   const previewData = { companyName, email, phone, site, address };
 
@@ -117,14 +111,6 @@ const CompanyInfoSettings = (props) => {
 
     const noСhange = isEqual(settings, dataСompanyInfoSettings);
 
-    const hasСhangeDefault = !isEqual(settings, defaultDataCompanyInfoSettings);
-
-    if (hasСhangeDefault) {
-      setHasChangesDefaultSettings(true);
-    } else {
-      setHasChangesDefaultSettings(false);
-    }
-
     if (!(hasError || noСhange)) {
       setIsChangesSettings(true);
     } else {
@@ -142,7 +128,6 @@ const CompanyInfoSettings = (props) => {
     hasErrorPhone,
     hasErrorAddress,
     companyInfoSettingsData,
-    defaultDataCompanyInfoSettings,
   ]);
 
   const validateUrl = (url) => {
@@ -232,9 +217,9 @@ const CompanyInfoSettings = (props) => {
     setShowModal(false);
   };
 
-  return !isLoadedCompanyInfoSettingsData ? (
-    <LoaderCompanyInfoSettings />
-  ) : (
+  if (!isLoadedCompanyInfoSettingsData) return <LoaderCompanyInfoSettings />;
+
+  return (
     <>
       <AboutDialog
         visible={showModal}
@@ -357,7 +342,7 @@ const CompanyInfoSettings = (props) => {
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
           showReminder={isSettingPaid && isChangesSettings}
-          disableRestoreToDefault={!hasChangesDefaultSettings}
+          disableRestoreToDefault={companyInfoSettingsIsDefault}
         />
       </StyledComponent>
     </>
@@ -375,6 +360,7 @@ export default inject(({ auth, common }) => {
   const {
     getCompanyInfoSettings,
     setCompanyInfoSettings,
+    companyInfoSettingsIsDefault,
     restoreCompanyInfoSettings,
     companyInfoSettingsData,
     buildVersionInfo,
@@ -384,6 +370,7 @@ export default inject(({ auth, common }) => {
   return {
     getCompanyInfoSettings,
     setCompanyInfoSettings,
+    companyInfoSettingsIsDefault,
     restoreCompanyInfoSettings,
     companyInfoSettingsData,
     setIsLoadedCompanyInfoSettingsData,
