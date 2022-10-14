@@ -24,11 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-using System.Threading;
-
-using ASC.Common.Security.Authorizing;
-
 namespace ASC.ApiSystem.Classes;
 
 [Scope]
@@ -99,7 +94,7 @@ public class AuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
                 if (splitted.Length < 3)
                 {
                     Log.LogDebug("Auth failed: invalid token {0}.", header);
-                    
+
                     return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
                 }
 

@@ -49,11 +49,6 @@
  *
 */
 
-
-
-
-using ASC.Web.Core.PublicResources;
-
 namespace ASC.ApiSystem.Controllers;
 
 [Scope]

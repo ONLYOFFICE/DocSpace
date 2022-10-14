@@ -24,14 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-
 namespace ASC.ApiSystem;
 
 public class Startup : BaseStartup
-{ 
-    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base (configuration, hostEnvironment)
+{
+    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
     {
     }
 
