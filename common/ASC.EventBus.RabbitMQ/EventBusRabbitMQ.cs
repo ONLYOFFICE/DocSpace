@@ -65,7 +65,6 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         _subsManager.OnEventRemoved += SubsManager_OnEventRemoved;
         _serializer = serializer;
         _rejectedEvents = new ConcurrentQueue<Guid>();
-
     }
 
     private void SubsManager_OnEventRemoved(object sender, string eventName)
@@ -252,20 +251,14 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
         {
             _logger.WarningProcessingMessage(message, ex);
 
-            if (eventArgs.Redelivered)
+            if (_rejectedEvents.TryPeek(out var result) && result.Equals(ex.EventId))
             {
-                if (_rejectedEvents.TryPeek(out var result) && result.Equals(ex.EventId))
-                {
-                    _rejectedEvents.TryDequeue(out var _);
-                    _consumerChannel.BasicReject(eventArgs.DeliveryTag, requeue: false);
-                }
-                else
-                {
-                    _rejectedEvents.Enqueue(ex.EventId);
-                }
+                _rejectedEvents.TryDequeue(out var _);
+                _consumerChannel.BasicReject(eventArgs.DeliveryTag, requeue: false);
             }
             else
             {
+                _rejectedEvents.Enqueue(ex.EventId);
                 _consumerChannel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: true);
             }
         }

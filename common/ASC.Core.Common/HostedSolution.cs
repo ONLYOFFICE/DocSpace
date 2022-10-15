@@ -118,7 +118,6 @@ public class HostedSolution
             Language = registrationInfo.Culture.Name,
             TimeZone = registrationInfo.TimeZoneInfo.Id,
             HostedRegion = registrationInfo.HostedRegion,
-            PartnerId = registrationInfo.PartnerId,
             AffiliateId = registrationInfo.AffiliateId,
             Campaign = registrationInfo.Campaign,
             Industry = registrationInfo.Industry,
@@ -207,7 +206,7 @@ public class HostedSolution
         var quota = QuotaService.GetTenantQuotas().FirstOrDefault(q => paid ? q.NonProfit : q.Trial);
         if (quota != null)
         {
-            TariffService.SetTariff(tenant, new Tariff { QuotaId = quota.Tenant, DueDate = DateTime.MaxValue, });
+            TariffService.SetTariff(tenant, new Tariff { Quotas = new List<Quota> { new Quota(quota.Tenant, 1) }, DueDate = DateTime.MaxValue, });
         }
     }
 
@@ -216,10 +215,6 @@ public class HostedSolution
         TariffService.SetTariff(tenant, tariff);
     }
 
-    public void SaveButton(int tariffId, string partnerId, string buttonUrl)
-    {
-        TariffService.SaveButton(tariffId, partnerId, buttonUrl);
-    }
     public IEnumerable<UserInfo> FindUsers(IEnumerable<Guid> userIds)
     {
         return UserService.GetUsersAllTenants(userIds);

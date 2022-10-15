@@ -66,7 +66,7 @@ const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
 const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
 // const MyProfile = React.lazy(() => import("./pages/My"));
 const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
-
+const PortalUnavailable = React.lazy(() => import("./pages/PortalUnavailable"));
 const FormGallery = React.lazy(() => import("./pages/FormGallery"));
 
 const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
@@ -126,7 +126,13 @@ const PreparationPortalRoute = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
-
+const PortalUnavailableRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <PortalUnavailable {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
 const AboutRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -422,73 +428,73 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         <Main isDesktop={isDesktop}>
           {!isMobileOnly && <MainBar />}
           <div className="main-container">
-            <Switch>
-              <PrivateRoute
-                exact
-                path={[
-                  "/",
+          <Switch>
+            <PrivateRoute
+              exact
+              path={[
+                "/",
 
-                  "/rooms/personal",
-                  "/rooms/personal/filter",
+                "/rooms/personal",
+                "/rooms/personal/filter",
 
-                  "/rooms/shared",
-                  "/rooms/shared/filter",
-                  "/rooms/shared/:room",
-                  "/rooms/shared/:room/filter",
+                "/rooms/shared",
+                "/rooms/shared/filter",
+                "/rooms/shared/:room",
+                "/rooms/shared/:room/filter",
 
-                  "/rooms/archived",
-                  "/rooms/archived/filter",
-                  "/rooms/archived/:room",
-                  "/rooms/archived/:room/filter",
+                "/rooms/archived",
+                "/rooms/archived/filter",
+                "/rooms/archived/:room",
+                "/rooms/archived/:room/filter",
 
-                  "/files/favorite",
-                  "/files/favorite/filter",
+                "/files/favorite",
+                "/files/favorite/filter",
 
-                  "/files/recent",
-                  "/files/recent/filter",
+                "/files/recent",
+                "/files/recent/filter",
 
-                  "/files/trash",
-                  "/files/trash/filter",
+                "/files/trash",
+                "/files/trash/filter",
 
-                  "/accounts",
-                  "/accounts/filter",
+                "/accounts",
+                "/accounts/filter",
 
-                  "/accounts/create/:type",
-                  "/accounts/edit/:userId",
-                  "/accounts/view/:userId",
-                  "/accounts/view/@self",
+                "/accounts/create/:type",
+                "/accounts/edit/:userId",
+                "/accounts/view/:userId",
+                "/accounts/view/@self",
 
-                  "/settings",
-                  "/settings/common",
-                  "/settings/admin",
-                  //"/settings/connected-clouds",
-                ]}
-                component={FilesRoute}
-              />
-              <PrivateRoute
-                path={"/form-gallery/:folderId"}
-                component={FormGalleryRoute}
-              />
-              <PublicRoute exact path={"/wizard"} component={WizardRoute} />
-              <PrivateRoute path={"/about"} component={AboutRoute} />
-              <Route path={"/confirm"} component={ConfirmRoute} />
-              <PrivateRoute path={"/payments"} component={PaymentsRoute} />
-              <PrivateRoute
-                restricted
-                path={"/portal-settings"}
-                component={PortalSettingsRoute}
-              />
-              <PrivateRoute
-                path={"/preparation-portal"}
-                component={PreparationPortalRoute}
-              />
-              <PrivateRoute
-                path={"/portalUnavailable"}
-                component={PortalUnavailableRoute}
-              />
-              <PrivateRoute path={"/error401"} component={Error401Route} />
-              <PrivateRoute component={Error404Route} />
-            </Switch>
+                "/settings",
+                "/settings/common",
+                "/settings/admin",
+                //"/settings/connected-clouds",
+              ]}
+              component={FilesRoute}
+            />
+            <PrivateRoute
+              path={"/form-gallery/:folderId"}
+              component={FormGalleryRoute}
+            />
+            <PublicRoute exact path={"/wizard"} component={WizardRoute} />
+            <PrivateRoute path={"/about"} component={AboutRoute} />
+            <Route path={"/confirm"} component={ConfirmRoute} />
+            <PrivateRoute path={"/payments"} component={PaymentsRoute} />
+            <PrivateRoute
+              restricted
+              path={"/portal-settings"}
+              component={PortalSettingsRoute}
+            />
+            <PrivateRoute
+              path={"/preparation-portal"}
+              component={PreparationPortalRoute}
+            />
+            <PrivateRoute
+              path={"/portal-unavailable"}
+              component={PortalUnavailableRoute}
+            />
+            <PrivateRoute path={"/error401"} component={Error401Route} />
+            <PrivateRoute component={Error404Route} />
+          </Switch>
           </div>
         </Main>
       </Router>

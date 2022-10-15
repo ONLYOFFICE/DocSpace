@@ -1,7 +1,12 @@
 import styled, { css } from "styled-components";
 import { StyledSlider } from "@docspace/components/slider/styled-slider";
 
-const getDefaultStyles = ({ $currentColorScheme, withPouring, theme }) =>
+const getDefaultStyles = ({
+  $currentColorScheme,
+  withPouring,
+  theme,
+  isDisabled,
+}) =>
   $currentColorScheme &&
   css`
     background-image: ${withPouring &&
@@ -22,6 +27,11 @@ const getDefaultStyles = ({ $currentColorScheme, withPouring, theme }) =>
         `linear-gradient( ${$currentColorScheme.accentColor}, ${$currentColorScheme.accentColor})`) ||
         (!theme.isBase && `linear-gradient(#FFFFFF, #FFFFFF)`))};
     }
+
+    ${isDisabled &&
+    css`
+      opacity: 0.32;
+    `}
   `;
 
 export default styled(StyledSlider)(getDefaultStyles);

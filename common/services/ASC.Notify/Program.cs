@@ -38,7 +38,6 @@ builder.Configuration.AddDefaultConfiguration(builder.Environment)
                      .AddNotifyConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
-
 var logger = NLog.LogManager.Setup()
                             .SetupExtensions(s =>
                             {

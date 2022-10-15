@@ -47,6 +47,7 @@ const PortalRenaming = lazy(() =>
 const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 
 const Integration = lazy(() => import("./categories/integration"));
+const Payments = lazy(() => import("./categories/payments"));
 const ThirdParty = lazy(() =>
   import("./categories/integration/ThirdPartyServicesSettings")
 );
@@ -151,6 +152,8 @@ const INTEGRATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/integration/plugins"),
 ];
 
+const PAYMENTS_URL = combineUrl(PROXY_BASE_URL, "/payments/portal-payments");
+
 const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
@@ -216,7 +219,7 @@ const Settings = () => {
           />
 
           <Route exact path={INTEGRATION_URLS} component={Integration} />
-
+          <Route exact path={PAYMENTS_URL} component={Payments} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
 

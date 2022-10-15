@@ -870,28 +870,40 @@ const SectionFilterContent = ({
 
         if (availableSort?.includes("Type")) {
           const idx = availableSort.findIndex((x) => x === "Type");
-          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(roomType);
         }
 
         if (availableSort?.includes("Tags")) {
           const idx = availableSort.findIndex((x) => x === "Tags");
-          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(tags);
         }
 
         if (availableSort?.includes("Owner")) {
           const idx = availableSort.findIndex((x) => x === "Owner");
-          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(owner);
         }
 
         if (availableSort?.includes("Activity")) {
           const idx = availableSort.findIndex((x) => x === "Activity");
-          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(modifiedDate);
         }
@@ -906,31 +918,46 @@ const SectionFilterContent = ({
 
         if (availableSort?.includes("Author") && !isPersonalRoom) {
           const idx = availableSort.findIndex((x) => x === "Author");
-          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(authorOption);
         }
         if (availableSort?.includes("Created")) {
           const idx = availableSort.findIndex((x) => x === "Created");
-          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(creationDate);
         }
         if (availableSort?.includes("Modified")) {
           const idx = availableSort.findIndex((x) => x === "Modified");
-          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(modifiedDate);
         }
         if (availableSort?.includes("Size")) {
           const idx = availableSort.findIndex((x) => x === "Size");
-          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(size);
         }
         if (availableSort?.includes("Type")) {
           const idx = availableSort.findIndex((x) => x === "Type");
-          const hide = infoPanelVisible && infoPanelColumnsSize[idx] === "0px";
+          const hide =
+            infoPanelVisible &&
+            infoPanelColumnsSize &&
+            infoPanelColumnsSize[idx] === "0px";
 
           !hide && commonOptions.push(type);
         }
@@ -1065,7 +1092,7 @@ const SectionFilterContent = ({
       getViewSettingsData={getViewSettingsData}
       onSearch={onSearch}
       getSelectedInputValue={getSelectedInputValue}
-      filterHeader={t("AdvancedFilter")}
+      filterHeader={t("Common:AdvancedFilter")}
       placeholder={t("Common:Search")}
       view={t("Common:View")}
       isFavoritesFolder={isFavoritesFolder}

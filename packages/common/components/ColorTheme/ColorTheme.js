@@ -32,7 +32,7 @@ import {
 import { ThemeType } from "./constants";
 
 const ColorTheme = forwardRef(
-  ({ currentColorScheme, isVersion, themeId, ...props }, ref) => {
+  ({ currentColorScheme, isVersion, themeId, hoverColor, ...props }, ref) => {
     switch (themeId) {
       case ThemeType.Button: {
         return (
@@ -278,10 +278,11 @@ export default inject(({ auth, loginStore }) => {
     const { currentColorScheme } = loginStore;
     return { currentColorScheme };
   } else {
+    if (!auth) return;
     const { settingsStore } = auth;
     const { currentColorScheme } = settingsStore;
     return {
-      currentColorScheme,
+      currentColorScheme: currentColorScheme || false,
     };
   }
 })(observer(ColorTheme));

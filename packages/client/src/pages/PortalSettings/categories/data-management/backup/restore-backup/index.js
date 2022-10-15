@@ -21,7 +21,6 @@ import {
   getBackupStorage,
   getStorageRegions,
 } from "@docspace/common/api/settings";
-import { enableRestore } from "@docspace/common/api/portal";
 import RestoreBackupLoader from "@docspace/common/components/Loaders/RestoreBackupLoader";
 import FloatingButton from "@docspace/common/components/FloatingButton";
 
@@ -49,7 +48,6 @@ class RestoreBackup extends React.Component {
       isFileSelectedError: false,
       isInitialLoading: true,
       checkingRecoveryData: false,
-      isEnableRestore: false,
     };
 
     this.switches = [
@@ -75,12 +73,10 @@ class RestoreBackup extends React.Component {
       const [
         //commonThirdPartyList,
         backupStorage,
-        isEnableRestore,
         storageRegions,
       ] = await Promise.all([
         //   getThirdPartyCommonFolderTree(),
         getBackupStorage(),
-        enableRestore(),
         getStorageRegions(),
       ]);
 
@@ -90,7 +86,6 @@ class RestoreBackup extends React.Component {
 
       this.setState({
         isInitialLoading: false,
-        isEnableRestore,
       });
     } catch (error) {
       toastr.error(error);
@@ -290,6 +285,7 @@ class RestoreBackup extends React.Component {
       organizationName,
       buttonSize,
       theme,
+      isEnableRestore,
     } = this.props;
     const {
       isChecked,
@@ -303,7 +299,6 @@ class RestoreBackup extends React.Component {
       isCheckedLocalFile,
       checkingRecoveryData,
       isFileSelectedError,
-      isEnableRestore,
     } = this.state;
 
     const commonRadioButtonProps = {
@@ -327,7 +322,7 @@ class RestoreBackup extends React.Component {
     ) : (
       <StyledRestoreBackup theme={theme} isEnableRestore={isEnableRestore}>
         <div className="restore-description">
-          <Text className="restore-description">
+          <Text className="restore-description settings_unavailable">
             {t("RestoreBackupDescription")}
           </Text>
         </div>
@@ -404,7 +399,7 @@ class RestoreBackup extends React.Component {
         </div>
 
         <Text
-          className="restore-backup_list"
+          className="restore-backup_list settings_unavailable"
           {...onClickVersionListProp}
           noSelect
         >
@@ -429,14 +424,20 @@ class RestoreBackup extends React.Component {
           isDisabled={!isEnableRestore}
         />
 
-        <Text className="restore-backup_warning" noSelect>
+        <Text className="restore-backup_warning settings_unavailable" noSelect>
           {t("Common:Warning")}
           {"!"}
         </Text>
-        <Text className="restore-backup_warning-description" noSelect>
+        <Text
+          className="restore-backup_warning-description settings_unavailable"
+          noSelect
+        >
           {t("RestoreBackupWarningText")}
         </Text>
-        <Text className="restore-backup_warning-link" noSelect>
+        <Text
+          className="restore-backup_warning-link settings_unavailable"
+          noSelect
+        >
           {t("RestoreBackupResetInfoWarningText")}
         </Text>
 
@@ -479,7 +480,7 @@ class RestoreBackup extends React.Component {
 }
 
 export default inject(({ auth, backup }) => {
-  const { settingsStore } = auth;
+  const { settingsStore, currentQuotaStore } = auth;
   const { socketHelper, theme, isTabletView, organizationName } = settingsStore;
   const {
     downloadingProgress,
@@ -492,8 +493,9 @@ export default inject(({ auth, backup }) => {
   } = backup;
 
   const buttonSize = isTabletView ? "normal" : "small";
-
+  const { isRestoreAndAutoBackupAvailable } = currentQuotaStore;
   return {
+    isEnableRestore: isRestoreAndAutoBackupAvailable,
     setStorageRegions,
     setThirdPartyStorage,
     buttonSize,

@@ -16,6 +16,7 @@ import ConnectDialog from "../../../../../../components/dialogs/ConnectDialog";
 import { ContextMenuButton } from "@docspace/components";
 import DeleteThirdPartyDialog from "../../../../../../components/dialogs/DeleteThirdPartyDialog";
 import { withTranslation } from "react-i18next";
+import { getOAuthToken } from "@docspace/common/utils";
 
 let accounts = [],
   connectedAccount,
@@ -23,7 +24,6 @@ let accounts = [],
 const DirectThirdPartyConnection = (props) => {
   const {
     openConnectWindow,
-    getOAuthToken,
     t,
     onSelectFolder,
     onClose,
@@ -42,14 +42,25 @@ const DirectThirdPartyConnection = (props) => {
     deleteThirdPartyDialogVisible,
     tReady,
     clearLocalStorage,
+    setSelectedThirdPartyAccount,
+    selectedThirdPartyAccount,
   } = props;
 
   useEffect(() => {
     tReady && updateAccountsInfo(true);
   }, [tReady]);
 
+  useEffect(() => {
+    return () => {
+      setSelectedThirdPartyAccount(null);
+    };
+  }, []);
+
+  useEffect(() => {
+    updateAccountsInfo();
+  }, [selectedThirdPartyAccount === null]);
+
   const initialState = {
-    selectedAccount: {},
     folderList: [],
     isLoading: false,
     isInitialLoading: true,
@@ -149,14 +160,17 @@ const DirectThirdPartyConnection = (props) => {
       setAccount("Yandex", t("Translations:TypeTitleYandex"));
       setAccount("WebDav", t("Translations:TypeTitleWebDav"));
 
+      setSelectedThirdPartyAccount(
+        Object.keys(selectedAccount).length !== 0
+          ? selectedAccount
+          : { ...accounts[0] }
+      );
+
       setState({
         isLoading: false,
         isUpdatingInfo: false,
         isInitialLoading: false,
-        selectedAccount:
-          Object.keys(selectedAccount).length !== 0
-            ? selectedAccount
-            : { ...accounts[0] },
+
         folderList: account ? account : [],
       });
     } catch (e) {
@@ -172,7 +186,7 @@ const DirectThirdPartyConnection = (props) => {
 
   const onConnect = () => {
     clearLocalStorage();
-    const { provider_link, provider_key } = state.selectedAccount;
+    const { provider_link, provider_key } = selectedThirdPartyAccount;
 
     const directConnection = provider_link;
 
@@ -184,10 +198,10 @@ const DirectThirdPartyConnection = (props) => {
       );
 
       openConnectWindow(provider_key, authModal)
-        .then(getOAuthToken)
+        .then((modal) => getOAuthToken(modal))
         .then((token) => {
-          saveSettings(token);
           authModal.close();
+          saveSettings(token);
         })
         .catch((e) => {
           if (!e) return;
@@ -209,7 +223,7 @@ const DirectThirdPartyConnection = (props) => {
     loginValue = "",
     passwordValue = ""
   ) => {
-    const { label, provider_key, provider_id } = state.selectedAccount;
+    const { label, provider_key, provider_id } = selectedThirdPartyAccount;
     setState({ isLoading: true, isUpdatingInfo: true });
     connectDialogVisible && setConnectDialogVisible(false);
     onSelectFolder && onSelectFolder("");
@@ -226,7 +240,7 @@ const DirectThirdPartyConnection = (props) => {
         provider_id
       );
 
-      updateAccountsInfo();
+      setSelectedThirdPartyAccount(null);
     } catch (e) {
       setState({ isLoading: false, isUpdatingInfo: false });
       toastr.error(e);
@@ -235,14 +249,13 @@ const DirectThirdPartyConnection = (props) => {
 
   const onSelectAccount = (options) => {
     const key = options.key;
-
-    setState({ selectedAccount: { ...accounts[+key] } });
+    setSelectedThirdPartyAccount({ ...accounts[+key] });
   };
 
   const onReconnect = () => {
     clearLocalStorage();
 
-    const { provider_link } = state.selectedAccount;
+    const { provider_link } = selectedThirdPartyAccount;
 
     const directConnection = provider_link;
 
@@ -252,12 +265,12 @@ const DirectThirdPartyConnection = (props) => {
         "Authorization",
         "height=600, width=1020"
       );
-      openConnectWindow(selectedAccount.provider_key, authModal).then((modal) =>
-        getOAuthToken(modal).then((token) => {
+      openConnectWindow(selectedThirdPartyAccount.provider_key, authModal)
+        .then((modal) => getOAuthToken(modal))
+        .then((token) => {
           authModal.close();
           saveSettings(token);
-        })
-      );
+        });
     } else {
       setConnectDialogVisible(true);
     }
@@ -271,10 +284,10 @@ const DirectThirdPartyConnection = (props) => {
     return [
       {
         key: "connection-settings",
-        label: selectedAccount.connected
+        label: selectedThirdPartyAccount.connected
           ? t("Common:Reconnect")
           : t("Common:Connect"),
-        onClick: selectedAccount.connected ? onReconnect : onConnect,
+        onClick: selectedThirdPartyAccount.connected ? onReconnect : onConnect,
         disabled: false,
         icon: "/static/images/refresh.react.svg",
       },
@@ -282,19 +295,13 @@ const DirectThirdPartyConnection = (props) => {
         key: "Disconnect-settings",
         label: t("Common:Disconnect"),
         onClick: onDisconnect,
-        disabled: selectedAccount.connected ? false : true,
+        disabled: selectedThirdPartyAccount.connected ? false : true,
         icon: "/static/images/access.none.react.svg",
       },
     ];
   };
 
-  const {
-    selectedAccount,
-    isLoading,
-    folderList,
-    isInitialLoading,
-    isUpdatingInfo,
-  } = state;
+  const { isLoading, folderList, isInitialLoading, isUpdatingInfo } = state;
 
   return (
     <StyledBackup>
@@ -304,13 +311,14 @@ const DirectThirdPartyConnection = (props) => {
           options={accounts}
           selectedOption={{
             key: 0,
-            label: selectedAccount?.label,
+            label: selectedThirdPartyAccount?.label,
           }}
           onSelect={onSelectAccount}
           noBorder={false}
           scaledOptions
           dropDownMaxHeight={300}
           tabIndex={1}
+          showDisabledItems
           isDisabled={
             !tReady ||
             isDisabled ||
@@ -374,19 +382,10 @@ const DirectThirdPartyConnection = (props) => {
         />
       )}
 
-      {connectDialogVisible && (
-        <ConnectDialog
-          passedItem={selectedAccount}
-          updateInfo={updateAccountsInfo}
-          isConnectionViaBackupModule
-        />
-      )}
-
       {deleteThirdPartyDialogVisible && (
         <DeleteThirdPartyDialog
           updateInfo={updateAccountsInfo}
           key="thirdparty-delete-dialog"
-          item={selectedAccount}
           isConnectionViaBackupModule
         />
       )}
@@ -395,9 +394,14 @@ const DirectThirdPartyConnection = (props) => {
 };
 
 export default inject(({ auth, backup, dialogsStore, settingsStore }) => {
-  const { commonThirdPartyList, clearLocalStorage } = backup;
+  const {
+    commonThirdPartyList,
+    clearLocalStorage,
+    setSelectedThirdPartyAccount,
+    selectedThirdPartyAccount,
+  } = backup;
   const { openConnectWindow } = settingsStore.thirdPartyStore;
-  const { getOAuthToken } = auth.settingsStore;
+
   const {
     connectDialogVisible,
     setConnectDialogVisible,
@@ -409,11 +413,12 @@ export default inject(({ auth, backup, dialogsStore, settingsStore }) => {
     clearLocalStorage,
     commonThirdPartyList,
     openConnectWindow,
-    getOAuthToken,
     setConnectDialogVisible,
     connectDialogVisible,
     setDeleteThirdPartyDialogVisible,
     deleteThirdPartyDialogVisible,
+    setSelectedThirdPartyAccount,
+    selectedThirdPartyAccount,
   };
 })(
   withTranslation(["Settings", "Common", "Translations"])(
