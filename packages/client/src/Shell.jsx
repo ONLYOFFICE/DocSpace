@@ -126,6 +126,7 @@ const PreparationPortalRoute = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
+
 const PortalUnavailableRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -133,6 +134,7 @@ const PortalUnavailableRoute = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
+
 const AboutRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -161,14 +163,6 @@ const FormGalleryRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
       <FormGallery {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const PortalUnavailableRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <ErrorUnavailable {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );

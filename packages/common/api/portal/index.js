@@ -211,6 +211,7 @@ export function deletePortal(confirmKey = null) {
   if (confirmKey) options.headers = { confirm: confirmKey };
 
   return request(options);
+}
 
 export function getPortalPaymentQuotas() {
   return request({ method: "get", url: "/portal/payment/quotas" });
@@ -265,6 +266,4 @@ export function sendPaymentRequest(email, userName, message) {
       userName,
       message,
     },
-  });
-
-}
+  })};
