@@ -208,7 +208,9 @@ class TreeFolders extends React.Component {
     return false;
   };
 
-  getItems = (data) => {
+  getItems = (props) => {
+    const { data, path } = props;
+
     return data.map((item) => {
       const dragging = this.props.dragging ? this.showDragItems(item) : false;
       const showBadge = false;
@@ -256,10 +258,14 @@ class TreeFolders extends React.Component {
             providerKey={item.providerKey}
             onBadgeClick={this.onBadgeClick}
             showBadge={showBadge}
+            path={path}
           >
             {item.rootFolderType === FolderType.Privacy && !this.props.isDesktop
               ? null
-              : this.getItems(item.folders ? item.folders : [])}
+              : this.getItems({
+                  data: item.folders ? item.folders : [],
+                  path: [...path, { id: item.id, title: item.title }],
+                })}
           </TreeNode>
         );
       }
@@ -438,9 +444,11 @@ class TreeFolders extends React.Component {
 
     if (folder[0] == roomsFolderId) {
       this.onExpand(newExpandedPanelKeys, treeNode, true);
-
       return;
     }
+
+    console.log(onSelect);
+    console.log(folder, treeNode);
 
     onSelect && onSelect(folder, treeNode);
   };
@@ -534,7 +542,9 @@ class TreeFolders extends React.Component {
         childrenCount={expandedPanelKeys?.length}
         onLoad={this.onLoad}
       >
-        {this.getItems(data || treeFolders)}
+        {this.getItems(
+          { data: data, path: [] } || { data: treeFolders, path: [] }
+        )}
       </StyledTreeMenu>
     );
   }
