@@ -21,8 +21,8 @@ const STORAGE_QUOTA = "storage-quota";
 const Bar = (props) => {
   const {
     t,
+    tReady,
     firstLoad,
-    history,
 
     isAdmin,
     setMaintenanceExist,
@@ -181,7 +181,7 @@ const Bar = (props) => {
       : getConvertedSize(t, usedTotalStorageSizeCount),
   };
 
-  return isRoomQuota || isStorageQuota ? (
+  return (isRoomQuota || isStorageQuota) && tReady ? (
     <QuotasBar
       isRoomQuota={isRoomQuota}
       {...quotasValue}
@@ -189,13 +189,13 @@ const Bar = (props) => {
       onClose={onCloseQuota}
       onLoad={onLoad}
     />
-  ) : withActivationBar && barVisible.confirmEmail ? (
+  ) : withActivationBar && barVisible.confirmEmail && tReady ? (
     <ConfirmEmailBar
       onLoad={onLoad}
       onClick={sendActivationLinkAction}
       onClose={onCloseActivationBar}
     />
-  ) : htmlLink && !firstLoad ? (
+  ) : htmlLink && !firstLoad && tReady ? (
     <SnackBar
       onLoad={onLoad}
       clickAction={onClose}
