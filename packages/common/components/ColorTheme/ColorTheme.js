@@ -32,7 +32,7 @@ import {
 import { ThemeType } from "./constants";
 
 const ColorTheme = forwardRef(
-  ({ currentColorScheme, isVersion, themeId, ...props }, ref) => {
+  ({ currentColorScheme, isVersion, themeId, hoverColor, ...props }, ref) => {
     switch (themeId) {
       case ThemeType.Button: {
         return (

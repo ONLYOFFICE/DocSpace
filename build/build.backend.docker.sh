@@ -19,6 +19,8 @@ docker_dir="$( pwd )"
 
 echo "Docker directory:" $docker_dir
 
+docker_file=Dockerfile.dev
+
 build_date=$(date +%Y-%m-%d)
 
 echo "BUILD DATE: $build_date"
@@ -35,15 +37,18 @@ echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
 
-arch_name="$(uname -m)"
- 
+echo "Stop all backend services"
+$dir/build/start/stop.backend.docker.sh
+
 echo "Run MySQL"
+
+arch_name="$(uname -m)"
 
 if [ "${arch_name}" = "x86_64" ]; then
     echo "CPU Type: x86_64 -> run db.yml"
     docker compose -f db.yml up -d
 elif [ "${arch_name}" = "arm64" ]; then
-    echo "CPU Type: arm64 -> run ddb.arm.yml"
+    echo "CPU Type: arm64 -> run db.yml with arm64v8 image"
     MYSQL_IMAGE=arm64v8/mysql:oracle \
     docker compose -f db.yml up -d
 else
@@ -52,7 +57,7 @@ else
 fi
 
 echo "Run environments (redis, rabbitmq)"
-DOCKERFILE=Dockerfile.dev \
+DOCKERFILE=$docker_file \
 docker compose -f redis.yml -f rabbitmq.yml up -d
 
 if [ "$1" = "--no_ds" ]; then
@@ -62,30 +67,18 @@ else
     docker compose -f ds.yml up -d
 fi
 
-echo "Stop all backend services"
-DOCKERFILE=Dockerfile.dev \
-docker compose -f docspace.dev.yml down
-
 echo "Build all backend services"
-DOCKERFILE=Dockerfile.dev \
+DOCKERFILE=$docker_file \
 RELEASE_DATE=$build_date \
 GIT_BRANCH=$branch \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
-docker compose -f build.dev.yml build
+docker compose -f build.dev.yml build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
 
 echo "Run DB migration"
-DOCKERFILE=Dockerfile.dev \
+DOCKERFILE=$docker_file \
 docker compose -f migration-runner.yml up -d
 
 echo "Start all backend services"
-DOCKERFILE=Dockerfile.dev \
-ROOT_DIR=$dir \
-RELEASE_DATE=$build_date \
-GIT_BRANCH=$branch \
-SERVICE_DOCEDITOR=$doceditor \
-SERVICE_LOGIN=$login \
-SERVICE_CLIENT=$client \
-APP_URL_PORTAL="http://$local_ip:8092" \
-docker compose -f docspace.dev.yml up -d
+$dir/build/start/start.backend.docker.sh

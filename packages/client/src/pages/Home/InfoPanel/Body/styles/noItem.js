@@ -16,6 +16,11 @@ const StyledNoItemContainer = styled.div`
     line-height: 16px;
     text-align: center;
   }
+
+  .no-thumbnail-img-wrapper {
+    width: 96px;
+    height: 100px;
+  }
 `;
 
 export { StyledNoItemContainer };

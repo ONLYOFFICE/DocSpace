@@ -106,6 +106,10 @@ const commonStyles = css`
       min-height: 100%;
     }
 
+    .files-tile-container {
+      margin-top: ${isMobile ? "-12px" : "0px"};
+    }
+
     .people-row-container,
     .files-row-container {
       margin-top: -22px;

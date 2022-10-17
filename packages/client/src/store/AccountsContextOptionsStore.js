@@ -152,6 +152,7 @@ class AccountsContextOptionsStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
+      hasFreeUsers,
     } = this.peopleStore.selectionStore;
     const {
       setActiveDialogVisible,
@@ -169,8 +170,8 @@ class AccountsContextOptionsStore {
     const adminOption = {
       id: "context-menu_administrator",
       className: "context-menu_drop-down",
-      label: t("Administrator"),
-      title: t("Administrator"),
+      label: t("Common:DocSpaceAdmin"),
+      title: t("Common:DocSpaceAdmin"),
       onClick: (e) => onChangeType(e, t),
       action: "admin",
       key: "cm-administrator",
@@ -178,8 +179,8 @@ class AccountsContextOptionsStore {
     const managerOption = {
       id: "context-menu_manager",
       className: "context-menu_drop-down",
-      label: t("Manager"),
-      title: t("Manager"),
+      label: t("Common:RoomAdmin"),
+      title: t("Common:RoomAdmin"),
       onClick: (e) => onChangeType(e, t),
       action: "manager",
       key: "cm-manager",
@@ -196,15 +197,15 @@ class AccountsContextOptionsStore {
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
-    options.push(userOption);
+    hasFreeUsers && options.push(userOption);
 
     const headerMenu = [
       {
         key: "cm-change-type",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
-        disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
+        disabled: !hasUsersToMakeEmployees,
         icon: "/static/images/change.to.employee.react.svg",
         items: options,
       },

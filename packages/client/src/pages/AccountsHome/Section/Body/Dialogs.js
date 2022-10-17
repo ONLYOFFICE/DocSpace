@@ -74,7 +74,7 @@ const Dialogs = ({
         <ChangeUserTypeDialog
           visible={employeeDialogVisible}
           onClose={closeDialogs}
-          userType={EmployeeType.User}
+          {...data}
         />
       )}
       {guestDialogVisible && (
