@@ -20,6 +20,7 @@ const ItemTitle = ({
   getContextOptions,
   getContextOptionActions,
   getUserContextOptions,
+  severalItemsLength,
 }) => {
   if (!selection) return null;
 
@@ -29,6 +30,7 @@ const ItemTitle = ({
         selection={selection}
         isSeveralItems={isSeveralItems}
         getUserContextOptions={getUserContextOptions}
+        severalItemsLength={severalItemsLength}
       />
     );
 
@@ -46,6 +48,7 @@ const ItemTitle = ({
 
   return (
     <FilesItemTitle
+      severalItemsLength={severalItemsLength}
       selection={filesItemSelection}
       isSeveralItems={isSeveralItems}
       setBufferSelection={setBufferSelection}

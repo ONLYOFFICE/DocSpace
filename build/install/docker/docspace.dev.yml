@@ -22,11 +22,13 @@ x-service: &x-service-base
     KAFKA_HOST: ${KAFKA_HOST}
     ELK_HOST: ${ELK_HOST}
     PROXY_HOST: ${PROXY_HOST}
+    ENV_EXTENSION: ${ENV_EXTENSION}
   volumes:
     #- /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data
     - app_data:/app/onlyoffice/data
     - files_data:/var/www/products/ASC.Files/server/
     - people_data:/var/www/products/ASC.People/server/
+    - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
 
 services:
   onlyoffice-elasticsearch:
