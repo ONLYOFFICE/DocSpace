@@ -2973,6 +2973,11 @@ const Base = {
       border: "1px solid #eceef1",
     },
   },
+
+  formWrapper: {
+    background: white,
+    boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
+  },
 };
 
 export default Base;

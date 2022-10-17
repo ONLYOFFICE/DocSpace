@@ -2978,6 +2978,11 @@ const Dark = {
       border: "1px solid #858585",
     },
   },
+
+  formWrapper: {
+    background: black,
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.16);",
+  },
 };
 
 export default Dark;
