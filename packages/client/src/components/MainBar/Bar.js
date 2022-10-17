@@ -72,7 +72,6 @@ const Bar = (props) => {
     if (closed) {
       if (!closed.includes(ROOM_QUOTA) && isAdmin) {
         setBarVisible((value) => ({ ...value, roomQuota: true }));
-        console.log("call");
       }
 
       if (!closed.includes(STORAGE_QUOTA) && isAdmin) {
@@ -187,7 +186,7 @@ const Bar = (props) => {
       isRoomQuota={isRoomQuota}
       {...quotasValue}
       onClick={onClickQuota}
-      onClose={onClickQuota}
+      onClose={onCloseQuota}
       onLoad={onLoad}
     />
   ) : withActivationBar && barVisible.confirmEmail ? (
@@ -222,10 +221,8 @@ export default inject(({ auth, profileActionsStore }) => {
     showStorageQuotaBar,
   } = auth.currentQuotaStore;
 
-  const { isAdmin } = user;
-
   return {
-    isAdmin,
+    isAdmin: user?.isAdmin,
     withActivationBar,
     sendActivationLink,
 
