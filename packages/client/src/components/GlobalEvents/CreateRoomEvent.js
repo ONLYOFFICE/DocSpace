@@ -38,6 +38,7 @@ const CreateRoomEvent = ({
     const addTagsData = roomParams.tags.map((tag) => tag.name);
 
     const isThirdparty = roomParams.storageLocation.isThirdparty;
+    const storageFolderId = roomParams.storageLocation.storageFolderId;
     const thirdpartyAccount = roomParams.storageLocation.thirdpartyAccount;
 
     const uploadLogoData = new FormData();
@@ -48,12 +49,12 @@ const CreateRoomEvent = ({
 
       // create room
       const room =
-        isThirdparty && !!thirdpartyAccount
-          ? await createRoomInThirdpary(thirdpartyAccount.id, createRoomData)
+        isThirdparty && storageFolderId
+          ? await createRoomInThirdpary(storageFolderId, createRoomData)
           : await createRoom(createRoomData);
 
       // delete thirdparty account if not needed
-      if (!isThirdparty && !!thirdpartyAccount)
+      if (!isThirdparty && storageFolderId)
         await deleteThirdParty(thirdpartyAccount.providerId);
 
       // create new tags
