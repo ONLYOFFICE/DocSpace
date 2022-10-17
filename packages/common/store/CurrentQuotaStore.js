@@ -162,6 +162,19 @@ class QuotasStore {
     return result.value;
   }
 
+  get showRoomQuotaBar() {
+    return (
+      (this.usedRoomsCount / this.maxCountRoomsByQuota) * 100 >= 90 ||
+      this.maxCountRoomsByQuota - this.usedRoomsCount === 1
+    );
+  }
+
+  get showStorageQuotaBar() {
+    return (
+      (this.usedTotalStorageSizeCount / this.maxTotalSizeByQuota) * 100 >= 90
+    );
+  }
+
   setPortalQuotaValue = (res) => {
     this.currentPortalQuota = res;
     this.currentPortalQuotaFeatures = res.features;
