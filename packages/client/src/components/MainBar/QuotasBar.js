@@ -14,44 +14,29 @@ const StyledLink = styled(Link)`
   color: #316daa;
 `;
 
-const QuotasBar = ({ t, type, onClick, onClose }) => {
-  const quota = { header: "", description: "" };
+const QuotasBar = ({
+  t,
+  isRoomQuota,
+  currentValue,
+  maxValue,
+  onClick,
+  onClose,
+  onLoad,
+}) => {
+  const onClickAction = () => {
+    onClick && onClick(isRoomQuota);
+  };
 
-  switch (type) {
-    case "room":
-      break;
-    case "storage":
-      break;
-    case "confirm-email":
-      quota.header = t("ConfirmEmailHeader");
-      quota.description = (
-        <>
-          {t("ConfirmEmailDescription")}{" "}
-          <StyledLink onClick={onClick}>{t("RequestActivation")}</StyledLink>
-        </>
-      );
-      break;
-    default:
-      break;
-  }
+  const onCloseAction = () => {
+    onClose && onClose(isRoomQuota);
+  };
 
   const roomQuota = {
-    header: t("RoomQuotaHeader", { currentValue: 7, maxValue: 12 }),
+    header: t("RoomQuotaHeader", { currentValue, maxValue }),
     description: (
       <Trans i18nKey="RoomQuotaDescription" t={t}>
         You can archived the unnecessary rooms or
-        <StyledLink>{{ clickHere: t("ClickHere") }}</StyledLink> to find a
-        better pricing plan for your portal.
-      </Trans>
-    ),
-  };
-
-  const storageQuota = {
-    header: t("StorageQuotaQuotaHeader", { currentValue: 7, maxValue: 12 }),
-    description: (
-      <Trans i18nKey="StorageQuotaQuotaDescription" t={t}>
-        You can remove the unnecessary files or
-        <StyledLink onClick={onClick}>
+        <StyledLink onClick={onClickAction}>
           {{ clickHere: t("ClickHere") }}
         </StyledLink>{" "}
         to find a better pricing plan for your portal.
@@ -59,14 +44,36 @@ const QuotasBar = ({ t, type, onClick, onClose }) => {
     ),
   };
 
-  return (
+  const storageQuota = {
+    header: t("StorageQuotaHeader", { currentValue, maxValue }),
+    description: (
+      <Trans i18nKey="StorageQuotaQuotaDescription" t={t}>
+        You can remove the unnecessary files or
+        <StyledLink onClick={onClickAction}>
+          {{ clickHere: t("ClickHere") }}
+        </StyledLink>{" "}
+        to find a better pricing plan for your portal.
+      </Trans>
+    ),
+  };
+
+  return isRoomQuota ? (
     <SnackBar
-      headerText={quota.header}
-      text={quota.description}
+      headerText={roomQuota.header}
+      text={roomQuota.description}
       isCampaigns={false}
       opacity={1}
-      onLoad={() => console.log("load snackbar " + type)}
-      clickAction={onClose}
+      onLoad={onLoad}
+      clickAction={onCloseAction}
+    />
+  ) : (
+    <SnackBar
+      headerText={storageQuota.header}
+      text={storageQuota.description}
+      isCampaigns={false}
+      opacity={1}
+      onLoad={onLoad}
+      clickAction={onCloseAction}
     />
   );
 };
