@@ -241,6 +241,7 @@ export const LoginFormWrapper = styled.div`
 
   @media (max-width: 428px) {
     background-image: none;
+    height: calc(100vh - 48px);
   }
 
 `;
