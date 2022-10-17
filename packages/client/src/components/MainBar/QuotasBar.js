@@ -48,7 +48,7 @@ const QuotasBar = ({
     header: t("StorageQuotaHeader", { currentValue, maxValue }),
     description: (
       <Trans i18nKey="StorageQuotaQuotaDescription" t={t}>
-        You can remove the unnecessary files or
+        You can remove the unnecessary files or{" "}
         <StyledLink onClick={onClickAction}>
           {{ clickHere: t("ClickHere") }}
         </StyledLink>{" "}

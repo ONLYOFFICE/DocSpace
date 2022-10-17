@@ -42,9 +42,9 @@ const Bar = (props) => {
   } = props;
 
   const [barVisible, setBarVisible] = useState({
-    roomQuota: true,
-    storageQuota: true,
-    confirmEmail: true,
+    roomQuota: false,
+    storageQuota: false,
+    confirmEmail: false,
   });
 
   const [htmlLink, setHtmlLink] = useState();
@@ -69,24 +69,25 @@ const Bar = (props) => {
       index++;
     }
 
-    if (!isAdmin) {
-      setBarVisible((value) => ({
-        ...value,
-        roomQuota: false,
-        storageQuota: false,
-      }));
-    }
+    if (closed) {
+      if (!closed.includes(ROOM_QUOTA) && isAdmin) {
+        setBarVisible((value) => ({ ...value, roomQuota: true }));
+        console.log("call");
+      }
 
-    if (closed.includes(ROOM_QUOTA) && barVisible.roomQuota) {
-      setBarVisible((value) => ({ ...value, roomQuota: false }));
-    }
+      if (!closed.includes(STORAGE_QUOTA) && isAdmin) {
+        setBarVisible((value) => ({ ...value, storageQuota: true }));
+      }
 
-    if (closed.includes(STORAGE_QUOTA) && barVisible.storageQuota) {
-      setBarVisible((value) => ({ ...value, storageQuota: false }));
-    }
-
-    if (closed.includes(CONFIRM_EMAIL) && barVisible.confirmEmail) {
-      setBarVisible((value) => ({ ...value, confirmEmail: false }));
+      if (!closed.includes(CONFIRM_EMAIL)) {
+        setBarVisible((value) => ({ ...value, confirmEmail: true }));
+      }
+    } else {
+      setBarVisible({
+        roomQuota: isAdmin,
+        storageQuota: isAdmin,
+        confirmEmail: true,
+      });
     }
 
     try {
