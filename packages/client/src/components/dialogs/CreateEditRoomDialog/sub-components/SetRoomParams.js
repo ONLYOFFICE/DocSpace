@@ -129,6 +129,7 @@ const SetRoomParams = ({
       {!isEdit && (
         <ThirdPartyStorage
           t={t}
+          roomTitle={roomParams.title}
           storageLocation={roomParams.storageLocation}
           onChangeStorageLocation={onChangeStorageLocation}
           setIsScrollLocked={setIsScrollLocked}
