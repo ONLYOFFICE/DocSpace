@@ -9,10 +9,6 @@ const StyledBody = styled.div`
   border: ${(props) => props.theme.client.settings.payment.border};
   max-width: 320px;
 
-  @media ${smallTablet} {
-    max-width: 600px;
-  }
-
   padding: 24px;
   box-sizing: border-box;
   background: ${(props) =>
@@ -43,7 +39,7 @@ const StyledBody = styled.div`
 
 const BenefitsContainer = ({ t, features, theme }) => {
   return (
-    <StyledBody>
+    <StyledBody className="benefits-container">
       <Text
         fontSize={"16px"}
         fontWeight={"600"}
