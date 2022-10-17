@@ -630,12 +630,12 @@ public class SettingsController : BaseSettingsController
         return new { Url = hubUrl };
     }
 
-    ///<visible>false</visible>
+    /*///<visible>false</visible>
     [HttpGet("controlpanel")]
     public TenantControlPanelSettings GetTenantControlPanelSettings()
     {
         return _settingsManager.Load<TenantControlPanelSettings>();
-    }
+    }*/
 
     [HttpGet("authservice")]
     public IEnumerable<AuthServiceRequestsDto> GetAuthServices()
