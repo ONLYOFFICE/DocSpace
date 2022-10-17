@@ -4,13 +4,13 @@ import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "PACKAGE_FILE";
 import toastr from "@docspace/components/toast/toastr";
-import { AppServerConfig } from "@docspace/common/constants";
+import { AppServerConfig, ShareAccessRights } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
 
 class ContextOptionsStore {
@@ -138,6 +138,9 @@ class ContextOptionsStore {
 
   lockFile = (item, t) => {
     const { id, locked } = item;
+    const {
+      setSelection: setInfoPanelSelection,
+    } = this.authStore.infoPanelStore;
 
     this.filesActionsStore
       .lockFileAction(id, !locked)
@@ -146,6 +149,7 @@ class ContextOptionsStore {
           ? toastr.success(t("Translations:FileUnlocked"))
           : toastr.success(t("Translations:FileLocked"))
       )
+      .then(() => setInfoPanelSelection({ ...item, locked: !locked }))
       .catch((err) => toastr.error(err));
   };
 
@@ -338,8 +342,9 @@ class ContextOptionsStore {
     return options;
   };
 
-  onShowInfoPanel = () => {
-    const { setIsVisible } = this.authStore.infoPanelStore;
+  onShowInfoPanel = (item) => {
+    const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+    setSelection({ ...item, isContextMenuSelection: true });
     setIsVisible(true);
   };
 
@@ -349,8 +354,16 @@ class ContextOptionsStore {
     window.dispatchEvent(event);
   };
 
-  onClickInviteUsers = () => {
-    console.log("invite users");
+  onClickInviteUsers = (e) => {
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
+    this.dialogsStore.setInvitePanelOptions({
+      visible: true,
+      roomId: action,
+      hideSelector: false,
+      defaultAccess: ShareAccessRights.ReadOnly,
+    });
   };
 
   onClickPin = (e, id, t) => {
@@ -536,23 +549,24 @@ class ContextOptionsStore {
       },
       {
         key: "edit-room",
-        label: "Edit room",
+        label: t("EditRoom"),
         icon: "images/settings.react.svg",
         onClick: () => this.onClickEditRoom(item),
         disabled: false,
       },
       {
         key: "invite-users-to-room",
-        label: "Invite users",
+        label: t("InviteUsers"),
         icon: "/static/images/person.react.svg",
-        onClick: () => this.onClickInviteUsers(),
+        onClick: (e) => this.onClickInviteUsers(e),
         disabled: false,
+        action: item.id,
       },
       {
         key: "room-info",
         label: "Info",
-        icon: "/static/images/info.react.svg",
-        onClick: this.onShowInfoPanel,
+        icon: "/static/images/info.outline.react.svg",
+        onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
       {
@@ -609,7 +623,7 @@ class ContextOptionsStore {
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
         icon: "/static/images/info.outline.react.svg",
-        onClick: this.onShowInfoPanel,
+        onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
       blockAction,

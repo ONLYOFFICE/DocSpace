@@ -33,8 +33,8 @@ public static class ConfigurationManagerExtension
     IHostEnvironment env)
     {
         config
-              .AddJsonFile("elastic.json", true)
-              .AddJsonFile($"elastic.{env.EnvironmentName}.json", true);
+              .AddJsonFile("elastic.json", optional: false, reloadOnChange: true)
+              .AddJsonFile($"elastic.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
         return config;
     }

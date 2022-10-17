@@ -1,6 +1,6 @@
 import React from "react";
 import DynamicComponent from "./DynamicComponent";
-import { STUDIO_REMOTE_ENTRY_URL, STUDIO_SCOPE } from "../helpers/constants";
+import { CLIENT_REMOTE_ENTRY_URL, CLIENT_SCOPE } from "../helpers/constants";
 import Text from "@docspace/components/text";
 import TextInput from "@docspace/components/text-input";
 import Checkbox from "@docspace/components/checkbox";
@@ -21,33 +21,23 @@ const SelectFolderDialog = ({
 }) => {
   const { t } = useTranslation(["Editor", "Common"]);
 
-  return (
-    (mfReady && isVisible && successAuth && (
-      <DynamicComponent
-        system={{
-          scope: STUDIO_SCOPE,
-          url: STUDIO_REMOTE_ENTRY_URL,
-          module: "./SelectFolderDialog",
-        }}
-        needProxy
-        folderId={folderId}
-        isPanelVisible={isVisible}
-        onClose={onCloseFolderDialog}
-        foldersType="exceptSortedByTags"
-        onSave={onClickSaveSelectFolder}
-        isDisableButton={!titleSelectorFolder.trim()}
-        header={
-          <StyledSelectFolder>
-            <Text className="editor-select-folder_text">{t("FileName")}</Text>
-            <TextInput
-              className="editor-select-folder_text-input"
-              scale
-              onChange={onChangeInput}
-              value={titleSelectorFolder}
-            />
-          </StyledSelectFolder>
-        }
-        {...(extension !== "fb2" && {
+  const headerProps = {
+    header: (
+      <StyledSelectFolder>
+        <Text className="editor-select-folder_text">{t("FileName")}</Text>
+        <TextInput
+          className="editor-select-folder_text-input"
+          scale
+          onChange={onChangeInput}
+          value={titleSelectorFolder}
+        />
+      </StyledSelectFolder>
+    ),
+  };
+
+  const footerProps =
+    extension !== "fb2"
+      ? {
           footer: (
             <StyledSelectFolder>
               <Checkbox
@@ -58,7 +48,26 @@ const SelectFolderDialog = ({
               />
             </StyledSelectFolder>
           ),
-        })}
+        }
+      : {};
+
+  return (
+    (mfReady && isVisible && successAuth && (
+      <DynamicComponent
+        system={{
+          scope: CLIENT_SCOPE,
+          url: CLIENT_REMOTE_ENTRY_URL,
+          module: "./SelectFolderDialog",
+        }}
+        needProxy
+        folderId={folderId}
+        isPanelVisible={isVisible}
+        onClose={onCloseFolderDialog}
+        filteredType="exceptSortedByTags"
+        onSave={onClickSaveSelectFolder}
+        isDisableButton={!titleSelectorFolder.trim()}
+        {...headerProps}
+        {...footerProps}
       />
     )) ||
     null

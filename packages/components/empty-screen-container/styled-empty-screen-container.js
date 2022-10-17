@@ -1,6 +1,57 @@
-import styled from "styled-components";
-import { mobile, tablet } from "../utils/device";
+import styled, { css } from "styled-components";
+import { mobile, tablet, smallTablet, desktop } from "../utils/device";
 import NoUserSelect from "../utils/commonStyles";
+
+const EmptyPageStyles = css`
+  grid-row-gap: 9px;
+
+  .ec-image {
+    height: 100px;
+  }
+
+  .ec-desc {
+    max-width: 348px;
+    line-height: 16px;
+    margin-top: 0;
+  }
+
+  .ec-header {
+    font-size: 16px;
+  }
+
+  .ec-buttons {
+    max-width: 285px;
+  }
+
+  .empty-folder_container-links {
+    align-items: start;
+    margin: 16px 0 !important;
+  }
+
+  @media ${smallTablet} {
+    .ec-image {
+      height: 72px;
+    }
+
+    .ec-header {
+      padding-top: 22px;
+    }
+
+    .ec-desc {
+      max-width: 282px;
+    }
+  }
+
+  @media ${desktop} {
+    .ec-desc {
+      max-width: 618px;
+    }
+
+    .ec-buttons {
+      max-width: none;
+    }
+  }
+`;
 
 const EmptyContentBody = styled.div`
   margin: 0 auto;
@@ -21,11 +72,16 @@ const EmptyContentBody = styled.div`
   grid-column-gap: 16px;
   grid-row-gap: 10px;
   max-width: 800px;
+
   grid-template-rows: max-content;
   .ec-image {
     grid-area: img;
     margin: 16px 0 0 auto;
     ${NoUserSelect}
+  }
+
+  @media ${tablet} {
+    max-width: 480px;
   }
 
   .ec-header {
@@ -38,7 +94,6 @@ const EmptyContentBody = styled.div`
 
   .ec-subheading {
     grid-area: subheadingText;
-    margin-top: -1px;
   }
 
   .ec-desc {
@@ -49,13 +104,11 @@ const EmptyContentBody = styled.div`
 
   .ec-buttons {
     grid-area: button;
-    margin-top: -1px;
   }
 
   @media (orientation: portrait) {
     @media (max-width: 768px) {
       padding-top: 0px;
-      max-width: 700px;
 
       .ec-image {
         max-height: 100px;
@@ -91,6 +144,8 @@ const EmptyContentBody = styled.div`
       }
     }
   }
+
+  ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
 `;
 
 const EmptyContentImage = styled.img.attrs((props) => ({

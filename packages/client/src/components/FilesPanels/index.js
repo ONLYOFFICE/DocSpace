@@ -10,6 +10,7 @@ import {
   NewFilesPanel,
   SelectFileDialog,
   HotkeyPanel,
+  InvitePanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -47,8 +48,10 @@ const Panels = (props) => {
     selectFileDialogVisible,
     setSelectFileDialogVisible,
     hotkeyPanelVisible,
+    invitePanelVisible,
     convertPasswordDialogVisible,
     createRoomDialogVisible,
+    restoreAllPanelVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
@@ -66,8 +69,12 @@ const Panels = (props) => {
       />
     ),
     ownerPanelVisible && <ChangeOwnerPanel key="change-owner-panel" />,
-    (moveToPanelVisible || copyPanelVisible) && (
-      <OperationsPanel key="operation-panel" isCopy={copyPanelVisible} />
+    (moveToPanelVisible || copyPanelVisible || restoreAllPanelVisible) && (
+      <OperationsPanel
+        key="operation-panel"
+        isCopy={copyPanelVisible}
+        isRestore={restoreAllPanelVisible}
+      />
     ),
     thirdPartyMoveDialogVisible && (
       <ThirdPartyMoveDialog key="thirdparty-move-dialog" />
@@ -96,7 +103,7 @@ const Panels = (props) => {
         onSelectFile={createMasterForm}
         isPanelVisible={selectFileDialogVisible}
         onClose={onClose}
-        foldersType="exceptPrivacyTrashFolders"
+        filteredType="exceptPrivacyTrashArchiveFolders"
         ByExtension
         searchParam={".docx"}
         dialogName={t("Translations:CreateMasterFormFromFile")}
@@ -106,6 +113,7 @@ const Panels = (props) => {
       />
     ),
     hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
+    invitePanelVisible && <InvitePanel key="invite-panel" />,
     convertPasswordDialogVisible && (
       <ConvertPasswordDialog key="convert-password-dialog" />
     ),
@@ -132,10 +140,12 @@ export default inject(
       createRoomDialogVisible,
       convertPasswordDialogVisible,
       connectItem, //TODO:
+      restoreAllPanelVisible,
 
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
+      invitePanelOptions,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -165,6 +175,8 @@ export default inject(
       createMasterForm,
       setSelectFileDialogVisible,
       hotkeyPanelVisible,
+      restoreAllPanelVisible,
+      invitePanelVisible: invitePanelOptions.visible,
     };
   }
 )(observer(Panels));

@@ -1,7 +1,44 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import EmptyScreenContainer from "@docspace/components/empty-screen-container";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
+import {
+  tablet,
+  smallTablet,
+  desktop,
+} from "@docspace/components/utils/device";
+import { isMobile } from "react-device-detect";
+
+const EmptyPageStyles = css`
+  padding: 44px 0px 64px 0px;
+
+  grid-column-gap: 40px;
+  grid-template-columns: 100px 1fr;
+
+  .empty-folder_link:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  .empty-folder_link {
+    margin-right: 9px;
+  }
+
+  @media ${desktop} {
+    .empty-folder_link:not(:last-child) {
+      margin-bottom: 2px;
+    }
+  }
+
+  @media ${tablet} {
+    padding: 44px 0px 64px 0px;
+    grid-column-gap: 33px;
+    margin-left: auto;
+  }
+
+  @media ${smallTablet} {
+    padding: 20px 0px 64px 11px;
+  }
+`;
 
 const EmptyFolderWrapper = styled.div`
   .empty-folder_container {
@@ -21,6 +58,11 @@ const EmptyFolderWrapper = styled.div`
       flex-wrap: wrap;
     }
 
+    .empty-folder_container-image {
+      margin-top: 3px;
+      cursor: pointer;
+    }
+
     .empty-folder_container_up-image,
     .empty-folder_container_plus-image {
       margin: 4px 8px 0 0;
@@ -30,6 +72,9 @@ const EmptyFolderWrapper = styled.div`
     .empty-folder_container_plus-image {
       display: flex;
       line-height: unset;
+      ${NoUserSelect}
+    }
+    .empty-folder_container_up-image {
       ${NoUserSelect}
     }
 
@@ -44,6 +89,15 @@ const EmptyFolderWrapper = styled.div`
       position: relative;
       bottom: 16px;
     }
+
+    @media screen and (max-width: 1325px) {
+      ${!isMobile &&
+      css`
+        margin-left: 98px;
+      `};
+    }
+
+    ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
   }
 `;
 
@@ -58,10 +112,11 @@ const EmptyFoldersContainer = (props) => {
     style,
     imageStyle,
     buttonStyle,
+    isEmptyPage,
   } = props;
 
   return (
-    <EmptyFolderWrapper>
+    <EmptyFolderWrapper isEmptyPage={isEmptyPage}>
       <EmptyScreenContainer
         className="empty-folder_container"
         style={style}
@@ -73,6 +128,7 @@ const EmptyFoldersContainer = (props) => {
         subheadingText={subheadingText}
         descriptionText={descriptionText}
         buttons={buttons}
+        isEmptyPage={isEmptyPage}
       />
     </EmptyFolderWrapper>
   );

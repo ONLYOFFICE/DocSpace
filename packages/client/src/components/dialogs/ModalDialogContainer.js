@@ -136,6 +136,16 @@ const ModalDialogContainer = styled(ModalDialog)`
       margin-bottom: 16px;
     }
   }
+
+  .change-name-dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .field {
+      margin: 0 !important;
+    }
+  }
 `;
 
 ModalDialogContainer.defaultProps = { theme: Base };

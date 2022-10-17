@@ -76,7 +76,6 @@ public class BackupController : ControllerBase
     /// <param name="storageParams">Storage parameters</param>
     /// <param name="backupsStored">Max of the backup's stored copies</param>
     /// <param name="cronParams">Cron parameters</param>
-    /// <param name="backupMail">Include mail in the backup</param>
     /// <category>Backup</category>
     [HttpPost("createbackupschedule")]
     public bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
@@ -94,7 +93,7 @@ public class BackupController : ControllerBase
             Hour = backupSchedule.CronParams.Hour == null ? 0 : Int32.Parse(backupSchedule.CronParams.Hour),
             Day = backupSchedule.CronParams.Day == null ? 0 : Int32.Parse(backupSchedule.CronParams.Day),
         };
-        _backupHandler.CreateSchedule(storageType, storageParams, backupStored, cron, backupSchedule.BackupMail);
+        _backupHandler.CreateSchedule(storageType, storageParams, backupStored, cron);
         return true;
     }
 
@@ -120,9 +119,9 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <param name="storageType">Storage Type</param>
     /// <param name="storageParams">Storage Params</param>
-    /// <param name="backupMail">Include mail in the backup</param>
     /// <category>Backup</category>
     /// <returns>Backup Progress</returns>
+    [AllowNotPayment]
     [HttpPost("startbackup")]
     public BackupProgress StartBackup(BackupDto backup)
     {
@@ -137,7 +136,6 @@ public class BackupController : ControllerBase
              tenantId: _tenantId,
              storageParams: storageParams,
              storageType: storageType,
-             backupMail: backup.BackupMail,
              createBy: _currentUserId
         ));
 
@@ -149,6 +147,7 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     /// <returns>Backup Progress</returns>
+    [AllowNotPayment]
     [HttpGet("getbackupprogress")]
     public BackupProgress GetBackupProgress()
     {

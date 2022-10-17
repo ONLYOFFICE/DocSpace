@@ -1,6 +1,6 @@
 import React from "react";
 import DynamicComponent from "./DynamicComponent";
-import { STUDIO_REMOTE_ENTRY_URL, STUDIO_SCOPE } from "../helpers/constants";
+import { CLIENT_REMOTE_ENTRY_URL, CLIENT_SCOPE } from "../helpers/constants";
 
 const SharingDialog = ({
   isVisible,
@@ -15,8 +15,8 @@ const SharingDialog = ({
       <DynamicComponent
         className="dynamic-sharing-dialog"
         system={{
-          scope: STUDIO_SCOPE,
-          url: STUDIO_REMOTE_ENTRY_URL,
+          scope: CLIENT_SCOPE,
+          url: CLIENT_REMOTE_ENTRY_URL,
           module: "./SharingDialog",
           name: "SharingDialog",
         }}

@@ -85,8 +85,8 @@ public sealed class BackupSchedulerService : BackgroundService
     {
         using var serviceScope = _scopeFactory.CreateScope();
 
-        var paymentManager = serviceScope.ServiceProvider.GetRequiredService<PaymentManager>();
-        var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>(); ;
+        var tariffService = serviceScope.ServiceProvider.GetRequiredService<ITariffService>();
+        var backupRepository = serviceScope.ServiceProvider.GetRequiredService<BackupRepository>();
         var backupSchedule = serviceScope.ServiceProvider.GetRequiredService<Schedule>();
         var tenantManager = serviceScope.ServiceProvider.GetRequiredService<TenantManager>();
 
@@ -105,9 +105,9 @@ public sealed class BackupSchedulerService : BackgroundService
 
             try
             {
-                if (_coreBaseSettings.Standalone || tenantManager.GetTenantQuota(schedule.TenantId).AutoBackup)
+                if (_coreBaseSettings.Standalone || tenantManager.GetTenantQuota(schedule.TenantId).AutoBackupRestore)
                 {
-                    var tariff = paymentManager.GetTariff(schedule.TenantId);
+                    var tariff = tariffService.GetTariff(schedule.TenantId);
 
                     if (tariff.State < TariffState.Delay)
                     {
@@ -115,14 +115,13 @@ public sealed class BackupSchedulerService : BackgroundService
 
                         backupRepository.SaveBackupSchedule(schedule);
 
-                        _logger.DebugStartScheduledBackup(schedule.TenantId, schedule.BackupMail, schedule.StorageType, schedule.StorageBasePath);
+                        _logger.DebugStartScheduledBackup(schedule.TenantId, schedule.StorageType, schedule.StorageBasePath);
 
                         _eventBus.Publish(new BackupRequestIntegrationEvent(
                                                  tenantId: schedule.TenantId,
                                                  storageBasePath: schedule.StorageBasePath,
                                                  storageParams: JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams),
                                                  storageType: schedule.StorageType,
-                                                 backupMail: schedule.BackupMail,
                                                  createBy: ASC.Core.Configuration.Constants.CoreSystem.ID,
                                                  isScheduled: true,
                                                  backupsStored: schedule.BackupsStored

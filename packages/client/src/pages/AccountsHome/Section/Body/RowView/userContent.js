@@ -37,11 +37,10 @@ const UserContent = ({
   item,
   sectionWidth,
 
-  onUserNameClick,
   t,
   theme,
 }) => {
-  const { userName, displayName, email, statusType, role } = item;
+  const { displayName, email, statusType, role, isVisitor } = item;
 
   const nameColor =
     statusType === "pending" || statusType === "disabled"
@@ -53,7 +52,9 @@ const UserContent = ({
     role === "owner"
       ? t("Common:Owner")
       : role === "admin"
-      ? t("Administrator")
+      ? t("Common:DocSpaceAdmin")
+      : isVisitor
+      ? t("Common:RoomAdmin")
       : t("Common:User");
 
   return (
@@ -66,18 +67,17 @@ const UserContent = ({
       <Link
         containerWidth="28%"
         type="page"
-        href={`/accounts/view/${userName}`}
         title={displayName}
         fontWeight={600}
-        onClick={onUserNameClick}
         fontSize="15px"
         color={nameColor}
         isTextOverflow={true}
+        noHover
       >
-        {statusType === "pending" ? email : displayName}
+        {statusType === "pending" ? email : displayName ? displayName : email}
       </Link>
 
-      <Badges statusType={statusType} />
+      <Badges statusType={statusType} isPaid={!isVisitor} />
 
       <Link
         containerMinWidth="140px"

@@ -39,6 +39,8 @@ global using System.Security.Cryptography;
 global using System.Security.Principal;
 global using System.ServiceModel;
 global using System.Text;
+global using System.Text.Json;
+global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;
 global using System.Web;
 global using System.Xml.Linq;
@@ -90,7 +92,6 @@ global using Microsoft.Net.Http.Headers;
 global using NetEscapades.EnumGenerators;
 
 global using Newtonsoft.Json;
-global using Newtonsoft.Json.Serialization;
 
 global using NVelocity;
 global using NVelocity.App;

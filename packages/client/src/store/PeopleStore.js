@@ -12,11 +12,14 @@ import InviteLinksStore from "./InviteLinksStore";
 import DialogStore from "./DialogStore";
 import LoadingStore from "./LoadingStore";
 import AccountsContextOptionsStore from "./AccountsContextOptionsStore";
-import { isMobile } from "react-device-detect";
+import {
+  isMobile,
+  isTablet,
+  isDesktop,
+} from "@docspace/components/utils/device";
+import { isMobileRDD } from "react-device-detect";
 
 import toastr from "@docspace/components/toast/toastr";
-
-const fullAccessId = "00000000-0000-0000-0000-000000000000";
 
 class PeopleStore {
   contextOptionsStore = null;
@@ -36,7 +39,7 @@ class PeopleStore {
   infoPanelStore = null;
   setupStore = null;
   isInit = false;
-  viewAs = isMobile ? "row" : "table";
+  viewAs = isMobileRDD ? "row" : "table";
 
   constructor(authStore, infoPanelStore, setupStore) {
     this.authStore = authStore;
@@ -98,40 +101,41 @@ class PeopleStore {
   onChangeType = (e, t) => {
     const action = e?.action ? e.action : e?.target?.dataset?.action;
 
-    const { getUsersToMakeEmployeesIds } = this.selectionStore;
+    const { getUsersToMakeEmployees } = this.selectionStore;
 
-    this.changeType(action, getUsersToMakeEmployeesIds, t);
+    this.changeType(action, getUsersToMakeEmployees);
   };
 
-  changeType = (type, users, t, needClearSelection = true) => {
-    const { changeAdmins } = this.setupStore;
-    const { getUsersList } = this.usersStore;
-    const { filter } = this.filterStore;
-    const { clearSelection } = this.selectionStore;
+  changeType = (type, users) => {
+    const { setEmployeeDialogVisible, setDialogData } = this.dialogStore;
 
-    const userIDs = users.map((user) => {
-      return user?.id ? user.id : user;
-    });
+    let fromType =
+      users.length === 1 ? [users[0].role] : users.map((u) => u.role);
 
-    if (type === "admin") {
-      changeAdmins(userIDs, fullAccessId, true).then((res) => {
-        getUsersList(filter);
-        needClearSelection && clearSelection();
-        toastr.success(t("Settings:AdministratorsAddedSuccessfully"));
+    if (users.length > 1) {
+      fromType = fromType.filter(
+        (item, index) => fromType.indexOf(item) === index && item !== type
+      );
+
+      if (fromType.length === 0) fromType = [fromType[0]];
+    }
+
+    if (fromType.length === 1 && fromType[0] === type) return;
+
+    const userIDs = users
+      .filter((u) => u.role !== type)
+      .map((user) => {
+        return user?.id ? user.id : user;
       });
-    }
 
-    if (type === "manager") {
-      toastr.warning("Work at progress");
-    }
+    setDialogData({ toType: type, fromType, userIDs });
 
-    if (type === "user") {
-      changeAdmins(userIDs, fullAccessId, false).then((res) => {
-        getUsersList(filter);
-        needClearSelection && clearSelection();
-        toastr.success(t("Settings:AdministratorsRemovedSuccessfully"));
-      });
-    }
+    setEmployeeDialogVisible(true);
+  };
+
+  onOpenInfoPanel = () => {
+    const { setIsVisible } = this.infoPanelStore;
+    setIsVisible(true);
   };
 
   getHeaderMenu = (t) => {
@@ -141,8 +145,7 @@ class PeopleStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
-      getUsersToRemoveIds,
-      selection,
+      hasFreeUsers,
     } = this.selectionStore;
     const {
       setActiveDialogVisible,
@@ -151,17 +154,17 @@ class PeopleStore {
       setDeleteDialogVisible,
     } = this.dialogStore;
 
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+    const { isOwner } = this.authStore.userStore.user;
 
-    const { setVisible, isVisible } = this.infoPanelStore;
+    const { isVisible } = this.infoPanelStore;
 
     const options = [];
 
     const adminOption = {
       id: "group-menu_administrator",
       className: "group-menu_drop-down",
-      label: t("Administrator"),
-      title: t("Administrator"),
+      label: t("Common:DocSpaceAdmin"),
+      title: t("Common:DocSpaceAdmin"),
       onClick: (e) => this.onChangeType(e, t),
       "data-action": "admin",
       key: "administrator",
@@ -169,8 +172,8 @@ class PeopleStore {
     const managerOption = {
       id: "group-menu_manager",
       className: "group-menu_drop-down",
-      label: t("Manager"),
-      title: t("Manager"),
+      label: t("Common:RoomAdmin"),
+      title: t("Common:RoomAdmin"),
       onClick: (e) => this.onChangeType(e, t),
       "data-action": "manager",
       key: "manager",
@@ -187,15 +190,15 @@ class PeopleStore {
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
-    options.push(userOption);
+    hasFreeUsers && options.push(userOption);
 
     const headerMenu = [
       {
         key: "change-user",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
-        disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
+        disabled: !hasUsersToMakeEmployees,
         iconUrl: "/static/images/change.to.employee.react.svg",
         withDropDown: true,
         options: options,
@@ -203,8 +206,10 @@ class PeopleStore {
       {
         key: "info",
         label: t("Common:Info"),
-        disabled: isVisible,
-        onClick: setVisible,
+        disabled:
+          isVisible ||
+          !(isTablet() || isMobile() || isMobileRDD || !isDesktop()),
+        onClick: (item) => this.onOpenInfoPanel(item),
         iconUrl: "images/info.react.svg",
       },
       {

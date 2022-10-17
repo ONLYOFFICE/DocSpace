@@ -88,9 +88,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Yanlış eposta adresi</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Yanlış promosyon kodu</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Bu eylemi gerçekleştirmek için izin yok</value>
   </data>

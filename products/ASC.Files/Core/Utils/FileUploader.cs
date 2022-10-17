@@ -35,8 +35,7 @@ public class FileUploader
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
-    private readonly TenantExtra _tenantExtra;
-    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
+    private readonly MaxTotalSizeStatistic _maxTotalSizeStatistic;
     private readonly FileMarker _fileMarker;
     private readonly FileConverter _fileConverter;
     private readonly IDaoFactory _daoFactory;
@@ -56,8 +55,7 @@ public class FileUploader
         TenantManager tenantManager,
         AuthContext authContext,
         SetupInfo setupInfo,
-        TenantExtra tenantExtra,
-        TenantStatisticsProvider tenantStatisticsProvider,
+        MaxTotalSizeStatistic maxTotalSizeStatistic,
         FileMarker fileMarker,
         FileConverter fileConverter,
         IDaoFactory daoFactory,
@@ -76,8 +74,7 @@ public class FileUploader
         _tenantManager = tenantManager;
         _authContext = authContext;
         _setupInfo = setupInfo;
-        _tenantExtra = tenantExtra;
-        _tenantStatisticsProvider = tenantStatisticsProvider;
+        _maxTotalSizeStatistic = maxTotalSizeStatistic;
         _fileMarker = fileMarker;
         _fileConverter = fileConverter;
         _daoFactory = daoFactory;
@@ -179,7 +176,7 @@ public class FileUploader
     {
         return file != null
                && await _fileSecurity.CanEditAsync(file)
-               && !_userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager)
+               && !_userManager.IsVisitor(_authContext.CurrentAccount.ID)
                && !await _entryManager.FileLockedForMeAsync(file.Id)
                && !_fileTracker.IsEditing(file.Id)
                && file.RootFolderType != FolderType.TRASH
@@ -233,7 +230,7 @@ public class FileUploader
 
     #region chunked upload
 
-        public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
+    public async Task<File<T>> VerifyChunkedUploadAsync<T>(T folderId, string fileName, long fileSize, bool updateIfExists, string relativePath = null)
     {
         var maxUploadSize = await GetMaxFileSizeAsync(folderId, true);
 
@@ -288,7 +285,7 @@ public class FileUploader
         file.ParentId = folderId;
         file.Title = fileName;
         file.ContentLength = contentLength;
-            file.CreateOn = createOn;
+        file.CreateOn = createOn;
 
         var dao = _daoFactory.GetFileDao<T>();
         var uploadSession = await dao.CreateUploadSessionAsync(file, contentLength);
@@ -319,7 +316,7 @@ public class FileUploader
 
         if (chunkLength > _setupInfo.ChunkUploadSize)
         {
-            throw FileSizeComment.GetFileSizeException(_setupInfo.MaxUploadSize(_tenantExtra, _tenantStatisticsProvider));
+            throw FileSizeComment.GetFileSizeException(_setupInfo.MaxUploadSize(_tenantManager, _maxTotalSizeStatistic));
         }
 
         var maxUploadSize = await GetMaxFileSizeAsync(uploadSession.FolderId, uploadSession.BytesTotal > 0);

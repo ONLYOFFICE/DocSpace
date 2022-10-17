@@ -92,6 +92,7 @@ class InputBlock extends React.Component {
         style={style}
         color={iconColor}
         themeId={ThemeType.InputBlock}
+        hoverColor={hoverColor}
       >
         <div className="prepend">
           <StyledChildrenBlock className="prepend-children">
@@ -139,6 +140,8 @@ class InputBlock extends React.Component {
                 isFill={isIconFill}
                 //isDisabled={isDisabled}
                 isClickable={typeof onIconClick === "function"}
+                color={iconColor}
+                hoverColor={hoverColor}
               />
             </StyledIconBlock>
           </div>

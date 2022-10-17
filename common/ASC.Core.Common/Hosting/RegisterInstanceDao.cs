@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Notify;
+
 namespace ASC.Core.Common.Hosting;
 
 [Scope]
@@ -48,6 +50,10 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
         if (inst == null)
         {
             await _instanceRegistrationContext.AddAsync(obj);
+        }
+        else
+        {
+            _instanceRegistrationContext.Entry(inst).CurrentValues.SetValues(obj);
         }
 
         bool saveFailed;

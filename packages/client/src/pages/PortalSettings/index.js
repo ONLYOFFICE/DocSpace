@@ -4,7 +4,8 @@ import { withRouter } from "react-router";
 import Layout from "./Layout";
 import { combineUrl } from "@docspace/common/utils";
 import AppServerConfig from "@docspace/common/constants/AppServerConfig";
-import { inject, observer } from "mobx-react";
+import Panels from "../../components/FilesPanels";
+
 const SecuritySettings = lazy(() => import("./categories/security/index.js"));
 
 const TfaPage = lazy(() => import("./categories/security/access-portal/tfa"));
@@ -46,6 +47,7 @@ const PortalRenaming = lazy(() =>
 const TeamTemplate = lazy(() => import("./categories/common/team-template"));
 
 const Integration = lazy(() => import("./categories/integration"));
+const Payments = lazy(() => import("./categories/payments"));
 const ThirdParty = lazy(() =>
   import("./categories/integration/ThirdPartyServicesSettings")
 );
@@ -148,6 +150,8 @@ const INTEGRATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/integration/plugins"),
 ];
 
+const PAYMENTS_URL = combineUrl(PROXY_BASE_URL, "/payments/portal-payments");
+
 const THIRD_PARTY_URL = combineUrl(
   PROXY_BASE_URL,
   "/integration/third-party-services"
@@ -157,15 +161,10 @@ const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
-const Settings = (props) => {
-  const { loadBaseInfo } = props;
-
-  useEffect(() => {
-    loadBaseInfo();
-  }, []);
-
+const Settings = () => {
   return (
     <Layout key="1">
+      <Panels />
       <Suspense fallback={null}>
         <Switch>
           <Route exact path={COMMON_URLS} component={CommonSettings} />
@@ -212,7 +211,7 @@ const Settings = (props) => {
           />
 
           <Route exact path={INTEGRATION_URLS} component={Integration} />
-
+          <Route exact path={PAYMENTS_URL} component={Payments} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
           <Route exact path={BACKUP_URLS} component={Backup} />
@@ -228,10 +227,4 @@ const Settings = (props) => {
   );
 };
 
-export default inject(({ common }) => {
-  return {
-    loadBaseInfo: async () => {
-      await common.initSettings();
-    },
-  };
-})(withRouter(observer(Settings)));
+export default withRouter(Settings);

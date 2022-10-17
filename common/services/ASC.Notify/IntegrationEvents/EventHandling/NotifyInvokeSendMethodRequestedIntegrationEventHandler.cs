@@ -75,10 +75,13 @@ public class NotifyInvokeSendMethodRequestedIntegrationEventHandler : IIntegrati
 
     public async Task Handle(NotifyInvokeSendMethodRequestedIntegrationEvent @event)
     {
-        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
+        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
+        {
+            _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-        InvokeSendMethod(@event.NotifyInvoke);
+            InvokeSendMethod(@event.NotifyInvoke);
 
-        await Task.CompletedTask;
+            await Task.CompletedTask;
+        }
     }
 }

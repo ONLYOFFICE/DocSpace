@@ -24,46 +24,31 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace TMResourceData;
+namespace ASC.Core.Tenants;
 
-[Singletone]
-public class WhiteLabelHelper
+public class TenantRegistrationInfo
 {
-    private readonly ILogger _logger;
-    private readonly ConcurrentDictionary<int, string> _whiteLabelDictionary;
-    public string DefaultLogoText { get; set; }
+    public string Name { get; set; }
+    public string Address { get; set; }
+    public CultureInfo Culture { get; set; }
+    public TimeZoneInfo TimeZoneInfo { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public string MobilePhone { get; set; }
+    public string PasswordHash { get; set; }
+    public EmployeeActivationStatus ActivationStatus { get; set; }
+    public string HostedRegion { get; set; }
+    public string AffiliateId { get; set; }
+    public TenantIndustry Industry { get; set; }
+    public bool Spam { get; set; }
+    public bool Calls { get; set; }
+    public string Campaign { get; set; }
+    public bool LimitedControlPanel { get; set; }
 
-    private readonly IConfiguration _configuration;
-
-    public WhiteLabelHelper(IConfiguration configuration, ILoggerProvider option)
+    public TenantRegistrationInfo()
     {
-        _logger = option.CreateLogger("ASC.Resources");
-        _whiteLabelDictionary = new ConcurrentDictionary<int, string>();
-        DefaultLogoText = string.Empty;
-        _configuration = configuration;
-    }
-
-    public void SetNewText(int tenantId, string newText)
-    {
-        try
-        {
-            _whiteLabelDictionary.AddOrUpdate(tenantId, r => newText, (i, s) => newText);
-        }
-        catch (Exception e)
-        {
-            _logger.ErrorSetNewText(e);
-        }
-    }
-
-    public void RestoreOldText(int tenantId)
-    {
-        try
-        {
-            _whiteLabelDictionary.TryRemove(tenantId, out var text);
-        }
-        catch (Exception e)
-        {
-            _logger.ErrorRestoreOldText(e);
-        }
+        Culture = CultureInfo.CurrentCulture;
+        TimeZoneInfo = TimeZoneInfo.Local;
     }
 }

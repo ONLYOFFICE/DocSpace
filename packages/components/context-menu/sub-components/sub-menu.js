@@ -41,6 +41,7 @@ const SubMenu = (props) => {
       onClick({
         originalEvent: e,
         action: action,
+        item,
       });
     }
 

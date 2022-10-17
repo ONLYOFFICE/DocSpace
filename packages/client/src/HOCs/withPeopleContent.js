@@ -20,7 +20,7 @@ export default function withContent(WrappedContent) {
       checked,
       selectUser,
       deselectUser,
-      isAdmin,
+
       theme,
       getModel,
     } = props;
@@ -29,7 +29,7 @@ export default function withContent(WrappedContent) {
     const onContentRowSelect = (checked, user) =>
       checked ? selectUser(user) : deselectUser(user);
 
-    const checkedProps = isAdmin ? { checked } : {};
+    const checkedProps = { checked };
 
     const element = (
       <Avatar size="min" role={role} userName={displayName} source={avatar} />
@@ -92,7 +92,7 @@ export default function withContent(WrappedContent) {
 
     const groups = getFormattedGroups();
 
-    const redirectToProfile = () => {
+    /*const redirectToProfile = () => {
       history.push(
         combineUrl(
           AppServerConfig.proxyURL,
@@ -100,9 +100,9 @@ export default function withContent(WrappedContent) {
           `/accounts/view/${userName}`
         )
       );
-    };
+    };*/
 
-    const onUserNameClick = useCallback(
+    /*const onUserNameClick = useCallback(
       (e) => {
         const timer = setTimeout(() => redirectToProfile(), 500);
         e.preventDefault();
@@ -119,7 +119,7 @@ export default function withContent(WrappedContent) {
         });
       },
       [history, userName]
-    );
+    );*/
 
     const onPhoneClick = () => window.open(`sms:${mobilePhone}`);
     const onEmailClick = () => window.open(`mailto:${email}`);
@@ -143,11 +143,10 @@ export default function withContent(WrappedContent) {
         onContentRowSelect={onContentRowSelect}
         onPhoneClick={onPhoneClick}
         onEmailClick={onEmailClick}
-        onUserNameClick={onUserNameClick}
+        //onUserNameClick={onUserNameClick}
         groups={groups}
         checkedProps={checkedProps}
         element={element}
-        isAdmin={isAdmin}
         contextOptionsProps={contextOptionsProps}
         {...props}
       />
@@ -155,7 +154,7 @@ export default function withContent(WrappedContent) {
   };
 
   return inject(({ auth, peopleStore }, { item }) => {
-    const { isAdmin, userStore } = auth;
+    const { userStore } = auth;
 
     const { selectGroup } = peopleStore.selectedGroupStore;
     const { getTargetUser } = peopleStore.targetUserStore;
@@ -173,7 +172,7 @@ export default function withContent(WrappedContent) {
 
     return {
       theme: auth.settingsStore.theme,
-      isAdmin,
+
       currentUserId: userStore.user.id,
       selectGroup,
       fetchProfile: getTargetUser,

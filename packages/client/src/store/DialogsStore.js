@@ -1,7 +1,7 @@
 import { getNewFiles } from "@docspace/common/api/files";
-import { FileAction } from "@docspace/common/constants";
-import { makeAutoObservable } from "mobx";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { FileAction, ShareAccessRights } from "@docspace/common/constants";
+import { makeAutoObservable, runInAction } from "mobx";
+import { Events } from "@docspace/common/constants";
 
 class DialogsStore {
   authStore;
@@ -28,6 +28,13 @@ class DialogsStore {
   convertPasswordDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
+  invitePanelOptions = {
+    visible: false,
+    hideSelector: false,
+    defaultAccess: ShareAccessRights.FullAccess,
+  };
+  restoreAllPanelVisible = false;
+  eventDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -41,6 +48,7 @@ class DialogsStore {
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
+  inviteItems = [];
 
   constructor(
     authStore,
@@ -73,6 +81,10 @@ class DialogsStore {
   setMoveToPanelVisible = (moveToPanelVisible) => {
     !moveToPanelVisible && this.deselectActiveFiles();
     this.moveToPanelVisible = moveToPanelVisible;
+  };
+
+  setRestoreAllPanelVisible = (restoreAllPanelVisible) => {
+    this.restoreAllPanelVisible = restoreAllPanelVisible;
   };
 
   setCopyPanelVisible = (copyPanelVisible) => {
@@ -109,6 +121,10 @@ class DialogsStore {
   setDeleteDialogVisible = (deleteDialogVisible) => {
     !deleteDialogVisible && this.deselectActiveFiles();
     this.deleteDialogVisible = deleteDialogVisible;
+  };
+
+  setEventDialogVisible = (eventDialogVisible) => {
+    this.eventDialogVisible = eventDialogVisible;
   };
 
   setDownloadDialogVisible = (downloadDialogVisible) => {
@@ -240,6 +256,21 @@ class DialogsStore {
     window.dispatchEvent(event);
   };
 
+  setInvitePanelOptions = (invitePanelOptions) => {
+    this.invitePanelOptions = invitePanelOptions;
+  };
+
+  setInviteItems = (inviteItems) => {
+    this.inviteItems = inviteItems;
+  };
+
+  changeInviteItem = async (item) =>
+    runInAction(() => {
+      const index = this.inviteItems.findIndex((iItem) => iItem.id === item.id);
+
+      this.inviteItems[index] = { ...this.inviteItems[index], ...item };
+    });
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -258,7 +289,9 @@ class DialogsStore {
       this.convertDialogVisible ||
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
-      this.versionHistoryStore.isVisible
+      this.versionHistoryStore.isVisible ||
+      this.eventDialogVisible ||
+      this.invitePanelOptions.visible
     );
   }
 

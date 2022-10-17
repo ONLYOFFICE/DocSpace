@@ -113,7 +113,7 @@ public class FoldersModule : FeedModule
             roomsIds.GetValueOrDefault(f.Folder.ParentId)), f));
     }
 
-    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity, Folder<int> rootFolder, int roomId)
+    private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity, Folder<int> parentFolder, int roomId)
     {
         var folder = folderWithSecurity.Folder;
         var shareRecord = folderWithSecurity.ShareRecord;
@@ -125,15 +125,12 @@ public class FoldersModule : FeedModule
             {
                 Item = SharedFolderItem,
                 ItemId = string.Format("{0}_{1}", folder.Id, shareRecord.Subject),
-                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
                 Product = Product,
                 Module = Name,
                 Title = folder.Title,
-                ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(folder.ParentId, false) : string.Empty,
+                ExtraLocationTitle = parentFolder.Title,
+                ExtraLocation = folder.ParentId.ToString(),
                 Keywords = folder.Title,
-                HasPreview = false,
-                CanComment = false,
                 Target = shareRecord.Subject,
                 GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, folder.ParentId.ToString()),
                 ContextId = contextId
@@ -146,16 +143,12 @@ public class FoldersModule : FeedModule
         {
             Item = FolderItem,
             ItemId = folder.Id.ToString(),
-            ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
             Product = Product,
             Module = Name,
             Title = folder.Title,
-            ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-            ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(folder.ParentId, false) : string.Empty,
+            ExtraLocationTitle = parentFolder.Title,
+            ExtraLocation = folder.ParentId.ToString(),
             Keywords = folder.Title,
-            HasPreview = false,
-            CanComment = false,
-            Target = null,
             GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.ParentId.ToString()),
             ContextId = contextId
         };

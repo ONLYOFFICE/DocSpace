@@ -137,6 +137,7 @@ public class FilesModule : FeedModule
     {
         var files = _fileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To)
             .Where(f => f.File.RootFolderType != FolderType.TRASH && f.File.RootFolderType != FolderType.BUNCH)
+            .Where(f => f.ShareRecord == null)
             .ToListAsync().Result;
 
         var folderIDs = files.Select(r => r.File.ParentId).ToList();
@@ -152,7 +153,7 @@ public class FilesModule : FeedModule
         return _fileDao.GetTenantsWithFeedsAsync(fromTime).ToListAsync().Result;
     }
 
-    private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> rootFolder, int roomId)
+    private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> parentFolder, int roomId)
     {
         var file = tuple.File;
         var shareRecord = tuple.ShareRecord;
@@ -164,16 +165,14 @@ public class FilesModule : FeedModule
             {
                 Item = SharedFileItem,
                 ItemId = string.Format("{0}_{1}", file.Id, shareRecord.Subject),
-                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.Id, true),
                 Product = Product,
                 Module = Name,
                 Title = file.Title,
-                ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-                ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(file.ParentId, false) : string.Empty,
+                ExtraLocationTitle = parentFolder.Title,
+                ExtraLocation = parentFolder.Id.ToString(),
                 AdditionalInfo = file.ContentLengthString,
+                AdditionalInfo2 = file.Encrypted ? "Encrypted" : string.Empty,
                 Keywords = file.Title,
-                HasPreview = false,
-                CanComment = false,
                 Target = shareRecord.Subject,
                 GroupId = GetGroupId(SharedFileItem, shareRecord.Owner, file.ParentId.ToString()),
                 ContextId = contextId
@@ -188,18 +187,15 @@ public class FilesModule : FeedModule
         {
             Item = FileItem,
             ItemId = string.Format("{0}_{1}", file.Id, file.Version > 1 ? 1 : 0),
-            ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(file.Id, true),
             Product = Product,
             Module = Name,
             Action = updated ? FeedAction.Updated : FeedAction.Created,
             Title = file.Title,
-            ExtraLocation = rootFolder.FolderType == FolderType.DEFAULT ? rootFolder.Title : string.Empty,
-            ExtraLocationUrl = rootFolder.FolderType == FolderType.DEFAULT ? _filesLinkUtility.GetFileRedirectPreviewUrl(file.ParentId, false) : string.Empty,
+            ExtraLocationTitle = parentFolder.Title,
+            ExtraLocation = parentFolder.Id.ToString(),
             AdditionalInfo = file.ContentLengthString,
+            AdditionalInfo2 = file.Encrypted ? "Encrypted" : string.Empty,
             Keywords = file.Title,
-            HasPreview = false,
-            CanComment = false,
-            Target = null,
             GroupId = GetGroupId(FileItem, file.ModifiedBy, file.ParentId.ToString(), updated ? 1 : 0),
             ContextId = contextId
         };

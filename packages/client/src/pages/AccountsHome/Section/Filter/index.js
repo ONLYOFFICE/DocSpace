@@ -320,6 +320,11 @@ const SectionFilterContent = ({
     fetchPeople(newFilter).finally(() => setIsLoading(false));
   };
 
+  const clearAll = () => {
+    setIsLoading(true);
+    fetchPeople().finally(() => setIsLoading(false));
+  };
+
   return isLoaded && tReady ? (
     <FilterInput
       t={t}
@@ -331,13 +336,15 @@ const SectionFilterContent = ({
       getSelectedSortData={getSelectedSortData}
       onSearch={onSearch}
       getSelectedInputValue={getSelectedInputValue}
-      filterHeader={t("Common:Filter")}
+      filterHeader={t("Common:AdvancedFilter")}
       contextMenuHeader={t("Common:AddFilter")}
       placeholder={t("Common:Search")}
       isMobile={isMobileOnly}
       viewAs={viewAs}
       viewSelectorVisible={false}
       removeSelectedItem={removeSelectedItem}
+      isAccounts={true}
+      clearAll={clearAll}
     />
   ) : (
     <Loaders.Filter />

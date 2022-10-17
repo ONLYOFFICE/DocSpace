@@ -14,7 +14,7 @@ import MobileView from "./MobileView";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 import toastr from "@docspace/components/toast/toastr";
@@ -87,7 +87,12 @@ const ArticleMainButtonContent = (props) => {
     enablePlugins,
 
     currentColorScheme,
+
+    isOwner,
+    isAdmin,
+    isVisitor,
   } = props;
+
   const isAccountsPage = selectedTreeNode[0] === "accounts";
 
   const inputFilesElement = React.useRef(null);
@@ -96,6 +101,7 @@ const ArticleMainButtonContent = (props) => {
   const [actions, setActions] = React.useState([]);
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
+  const [isDropdownMainButton, setIsDropdownMainButton] = React.useState(true);
 
   const onCreate = React.useCallback(
     (e) => {
@@ -175,6 +181,31 @@ const ArticleMainButtonContent = (props) => {
   }, []);
 
   React.useEffect(() => {
+    const isSettingFolder =
+      window.location.pathname.endsWith("/settings/common") ||
+      window.location.pathname.endsWith("/settings/admin");
+
+    const isFolderHiddenDropdown =
+      isArchiveFolder ||
+      isFavoritesFolder ||
+      isRecentFolder ||
+      isRecycleBinFolder ||
+      isSettingFolder;
+
+    if (isFolderHiddenDropdown) {
+      setIsDropdownMainButton(false);
+    } else {
+      setIsDropdownMainButton(true);
+    }
+  }, [
+    isArchiveFolder,
+    isFavoritesFolder,
+    isRecentFolder,
+    isRecycleBinFolder,
+    window.location.pathname,
+  ]);
+
+  React.useEffect(() => {
     if (isRoomsFolder) return;
 
     const folderUpload = !isMobile
@@ -228,11 +259,11 @@ const ArticleMainButtonContent = (props) => {
 
     const actions = isAccountsPage
       ? [
-          {
+          isOwner && {
             id: "main-button_administrator",
             className: "main-button_drop-down",
             icon: "/static/images/person.admin.react.svg",
-            label: t("People:Administrator"),
+            label: t("Common:DocSpaceAdmin"),
             onClick: onInvite,
             action: "administrator",
             key: "administrator",
@@ -241,7 +272,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_manager",
             className: "main-button_drop-down",
             icon: "/static/images/person.manager.react.svg",
-            label: t("People:Manager"),
+            label: t("Common:RoomAdmin"),
             onClick: onInvite,
             action: "manager",
             key: "manager",
@@ -351,6 +382,8 @@ const ArticleMainButtonContent = (props) => {
     isAccountsPage,
     enablePlugins,
     isRoomsFolder,
+    isOwner,
+    isAdmin,
     onCreate,
     onCreateRoom,
     onInvite,
@@ -366,6 +399,7 @@ const ArticleMainButtonContent = (props) => {
     : t("Common:Actions");
 
   const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
+  const isProfile = history.location.pathname === "/accounts/view/@self";
 
   return (
     <>
@@ -378,6 +412,7 @@ const ArticleMainButtonContent = (props) => {
             !isRecycleBinFolder &&
             !isArchiveFolder &&
             !isArticleLoading &&
+            !isProfile &&
             (canCreate || canInvite) && (
               <MobileView
                 t={t}
@@ -404,7 +439,7 @@ const ArticleMainButtonContent = (props) => {
         <MainButton
           id="files_main-button"
           isDisabled={isDisabled}
-          isDropdown={true}
+          isDropdown={isDropdownMainButton}
           text={mainButtonText}
           model={model}
         />
@@ -465,6 +500,8 @@ export default inject(
 
     const currentFolderId = selectedFolderStore.id;
 
+    const { isAdmin, isOwner, isVisitor } = auth.userStore.user;
+
     return {
       showText: auth.settingsStore.showText,
       isMobileArticle: auth.settingsStore.isMobileArticle,
@@ -493,12 +530,16 @@ export default inject(
 
       enablePlugins,
       currentColorScheme,
+
+      isAdmin,
+      isOwner,
+      isVisitor,
     };
   }
 )(
   withTranslation(["Article", "UploadPanel", "Common", "Files", "People"])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
-      <Loaders.ArticleButton />
+      <Loaders.ArticleButton height="28px" />
     )
   )
 );

@@ -124,7 +124,7 @@ public class NotifyHelper
         foreach (var user in users)
         {
             var hash = _authManager.GetUserPasswordStamp(user.Id).ToString("s");
-            var confirmationUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PasswordChange, hash);
+            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash);
 
             Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
 

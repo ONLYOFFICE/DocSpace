@@ -88,9 +88,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Nieprawidłowy adres e-mail</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Nieprawidłowy kod promocyjny</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Brak uprawnień do wykonania tej operacji</value>
   </data>
