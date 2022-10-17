@@ -83,9 +83,9 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         return _tagDao.GetTagsAsync(names, tagType);
     }
 
-    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
+    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
-        return _tagDao.SaveTags(tag);
+        return _tagDao.SaveTags(tag, createdBy);
     }
 
     public IEnumerable<Tag> SaveTags(Tag tag)
@@ -93,9 +93,9 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         return _tagDao.SaveTags(tag);
     }
 
-    public void UpdateNewTags(IEnumerable<Tag> tag)
+    public void UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
-        _tagDao.UpdateNewTags(tag);
+        _tagDao.UpdateNewTags(tag, createdBy);
     }
 
     public void UpdateNewTags(Tag tag)

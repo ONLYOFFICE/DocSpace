@@ -201,6 +201,7 @@ const InfoPanelBodyContent = ({
           isRooms={isRooms}
           isAccounts={isAccounts}
           isSeveralItems={isSeveralItems}
+          severalItemsLength={selectedItems.length}
           isGallery={isGallery}
           getIcon={getIcon}
           setBufferSelection={setBufferSelection}

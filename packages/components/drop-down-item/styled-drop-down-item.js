@@ -117,6 +117,7 @@ const StyledDropdownItem = styled.div`
 
     @media ${tablet} {
     line-height: ${(props) => props.theme.dropDownItem.tabletLineHeight};
+    padding: ${(props) => props.theme.dropDownItem.tabletPadding};
   }
 
   ${(props) => props.disabled && disabledAndHeaderStyle}

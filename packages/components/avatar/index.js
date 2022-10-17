@@ -27,8 +27,6 @@ const StyledOwnerIcon = styled(OwnerIcon)`
 `;
 const getRoleIcon = (role) => {
   switch (role) {
-    case "guest":
-      return <StyledGuestIcon size="scale" className="guest_icon" />;
     case "admin":
       return <StyledAdministratorIcon size="scale" className="admin_icon" />;
     case "owner":
@@ -113,7 +111,7 @@ Avatar.propTypes = {
   /** Size of avatar */
   size: PropTypes.oneOf(["max", "big", "medium", "base", "small", "min"]),
   /** Adds a user role table */
-  role: PropTypes.oneOf(["owner", "admin", "guest", "user", ""]),
+  role: PropTypes.oneOf(["owner", "admin", "guest", "user", "manager", ""]),
   /** Provide either a url to display as `Picture` or path to **.svg** file to display as `Icon` */
   source: PropTypes.string,
   /** Provide this and leave `source` empty to display as initials */
