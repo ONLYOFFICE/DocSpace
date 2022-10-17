@@ -100,8 +100,8 @@ const ThirpartyComboBox = ({
   t,
 
   storageLocation,
+  onChangeStorageLocation,
   onChangeProvider,
-  onChangeThirdpartyAccount,
 
   connectItems,
   setConnectDialogVisible,
@@ -177,7 +177,7 @@ const ThirpartyComboBox = ({
               "",
               token,
               false,
-              "ThirdpartyRoom",
+              ProviderKeyTranslation(provider.providerKey, t),
               provider.providerKey,
               null,
               true
@@ -194,9 +194,10 @@ const ThirpartyComboBox = ({
           })
       );
     } else {
+      const providerTitle = ProviderKeyTranslation(provider.providerKey, t);
       setConnectItem({
-        title: ProviderKeyTranslation(provider.providerKey, t),
-        customer_title: "ThirdpartyRoom",
+        title: providerTitle,
+        customer_title: providerTitle,
         provider_key: provider.providerKey,
       });
       setConnectDialogVisible(true);
@@ -205,9 +206,11 @@ const ThirpartyComboBox = ({
 
   useEffect(() => {
     if (!saveThirdpartyResponse?.id) return;
-
-    console.log(saveThirdpartyResponse);
-    onChangeThirdpartyAccount(saveThirdpartyResponse);
+    onChangeStorageLocation({
+      ...storageLocation,
+      thirdpartyAccount: saveThirdpartyResponse,
+      storageFolderId: saveThirdpartyResponse.id,
+    });
     setSaveThirdpartyResponse(null);
   }, [saveThirdpartyResponse]);
 
