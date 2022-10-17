@@ -162,6 +162,7 @@ const GroupMenuItem = ({ item }) => {
               open={open}
               clickOutsideAction={onClickOutside}
               forwardedRef={buttonRef}
+              zIndex={250}
             >
               {options.map((option) => (
                 <DropDownItem {...option} />

@@ -18,10 +18,6 @@ const StyledBody = styled.div`
     margin-top: 20px;
   }
 
-  @media ${smallTablet} {
-    max-width: 520px;
-  }
-
   .slider-track {
     display: flex;
     position: relative;
@@ -210,7 +206,11 @@ const SelectUsersCountContainer = ({
   const color = isDisabled ? { color: theme.text.disableColor } : {};
 
   return (
-    <StyledBody theme={theme} isDisabled={isDisabled || isUpdatingTariff}>
+    <StyledBody
+      className="select-users-count-container"
+      theme={theme}
+      isDisabled={isDisabled || isUpdatingTariff}
+    >
       <Text noSelect fontWeight={600} className="payment-users_text" {...color}>
         {addedManagersCountTitle}
       </Text>
