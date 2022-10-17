@@ -19,10 +19,6 @@ const StyledBody = styled.div`
     props.theme.client.settings.payment.backgroundPriceContainer};
   max-width: 320px;
 
-  @media ${smallTablet} {
-    max-width: 600px;
-  }
-
   padding: 24px;
   box-sizing: border-box;
 
@@ -164,7 +160,7 @@ const PriceCalculation = ({
     </div>
   );
   return (
-    <StyledBody>
+    <StyledBody className="price-calculation-container">
       <Text
         fontSize="16px"
         fontWeight={600}
