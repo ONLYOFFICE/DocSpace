@@ -5,6 +5,6 @@
   "RequestActivation": "Request activation once again",
   "RoomQuotaHeader": "Rooms is about to be exceeded: {{currentValue}} / {{maxValue}}",
   "RoomQuotaDescription": "You can archived the unnecessary rooms or <1>{{clickHere}}</1> to find a better pricing plan for your portal.",
-  "StorageQuotaHeader": "Storage space amount is about to be exceeded: {{currentValue}} GB / {{maxValue}}  GB",
+  "StorageQuotaHeader": "Storage space amount is about to be exceeded: {{currentValue}} / {{maxValue}}",
   "StorageQuotaDescription": "You can remove the unnecessary files or <1>{{clickHere}}</1> to find a better pricing plan for your portal."
 }
