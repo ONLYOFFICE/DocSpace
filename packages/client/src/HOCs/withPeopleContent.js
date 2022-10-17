@@ -20,7 +20,7 @@ export default function withContent(WrappedContent) {
       checked,
       selectUser,
       deselectUser,
-      isAdmin,
+
       theme,
       getModel,
     } = props;
@@ -29,7 +29,7 @@ export default function withContent(WrappedContent) {
     const onContentRowSelect = (checked, user) =>
       checked ? selectUser(user) : deselectUser(user);
 
-    const checkedProps = isAdmin ? { checked } : {};
+    const checkedProps = { checked };
 
     const element = (
       <Avatar size="min" role={role} userName={displayName} source={avatar} />
@@ -147,7 +147,6 @@ export default function withContent(WrappedContent) {
         groups={groups}
         checkedProps={checkedProps}
         element={element}
-        isAdmin={isAdmin}
         contextOptionsProps={contextOptionsProps}
         {...props}
       />
@@ -155,7 +154,7 @@ export default function withContent(WrappedContent) {
   };
 
   return inject(({ auth, peopleStore }, { item }) => {
-    const { isAdmin, userStore } = auth;
+    const { userStore } = auth;
 
     const { selectGroup } = peopleStore.selectedGroupStore;
     const { getTargetUser } = peopleStore.targetUserStore;
@@ -173,7 +172,7 @@ export default function withContent(WrappedContent) {
 
     return {
       theme: auth.settingsStore.theme,
-      isAdmin,
+
       currentUserId: userStore.user.id,
       selectGroup,
       fetchProfile: getTargetUser,

@@ -23,6 +23,8 @@ import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 
 const StyledContainer = styled.div`
   width: 100%;
+  min-height: 33px;
+  height: 60px;
 
   .group-button-menu-container {
     margin: 0 0 0 -20px;
@@ -142,6 +144,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    margin-bottom: 1px;
   }
 `;
 
@@ -158,6 +161,8 @@ const SectionHeaderContent = (props) => {
 
     setInfoPanelIsVisible,
     isInfoPanelVisible,
+    isOwner,
+    isAdmin,
   } = props;
 
   //console.log("SectionHeaderContent render");
@@ -213,11 +218,11 @@ const SectionHeaderContent = (props) => {
 
   const getContextOptions = () => {
     return [
-      {
+      isOwner && {
         id: "main-button_administrator",
         className: "main-button_drop-down",
         icon: "/static/images/person.admin.react.svg",
-        label: t("Administrator"),
+        label: t("Common:DocSpaceAdmin"),
         onClick: onInvite,
         "data-action": "administrator",
         key: "administrator",
@@ -226,7 +231,7 @@ const SectionHeaderContent = (props) => {
         id: "main-button_manager",
         className: "main-button_drop-down",
         icon: "/static/images/person.manager.react.svg",
-        label: t("Manager"),
+        label: t("Common:RoomAdmin"),
         onClick: onInvite,
         "data-action": "manager",
         key: "manager",
@@ -324,6 +329,8 @@ export default withRouter(
       isVisible: isInfoPanelVisible,
     } = auth.infoPanelStore;
 
+    const { isOwner, isAdmin } = auth.userStore.user;
+
     const { selectionStore, headerMenuStore, getHeaderMenu } = peopleStore;
 
     const {
@@ -346,6 +353,8 @@ export default withRouter(
       getCheckboxItemLabel,
       setInfoPanelIsVisible,
       isInfoPanelVisible,
+      isOwner,
+      isAdmin,
     };
   })(
     withTranslation([

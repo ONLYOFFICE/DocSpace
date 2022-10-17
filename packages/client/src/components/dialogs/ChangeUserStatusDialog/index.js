@@ -21,19 +21,9 @@ class ChangeUserStatusDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { userIds, selectedUsers } = props;
+    const { userIds } = props;
 
-    const listUsers = selectedUsers.map((item, index) => {
-      const disabled = userIds.find((x) => x === item.id);
-
-      return {
-        ...selectedUsers[index],
-        checked: disabled ? true : false,
-        disabled: disabled ? false : true,
-      };
-    });
-
-    this.state = { isRequestRunning: false, listUsers, userIds };
+    this.state = { isRequestRunning: false, userIds };
   }
 
   onChangeUserStatus = () => {
@@ -60,58 +50,9 @@ class ChangeUserStatusDialogComponent extends React.Component {
     });
   };
 
-  onChange = (e) => {
-    const { listUsers } = this.state;
-    const userIndex = listUsers.findIndex((x) => x.id === e.target.value);
-    const newUsersList = listUsers;
-    newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
-
-    const newUserIds = [];
-
-    for (let item of newUsersList) {
-      if (item.checked === true) {
-        newUserIds.push(item.id);
-      }
-    }
-
-    this.setState({ listUsers: newUsersList, userIds: newUserIds });
-  };
-
   render() {
     const { t, tReady, onClose, visible, userStatus } = this.props;
-    const { listUsers, isRequestRunning, userIds } = this.state;
-    const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
-    const itemSize = 25;
-
-    const renderItems = memo(({ data, index, style }) => {
-      return (
-        <Checkbox
-          truncate
-          style={style}
-          className="modal-dialog-checkbox"
-          value={data[index].id}
-          onChange={this.onChange}
-          key={`checkbox_${index}`}
-          isChecked={data[index].checked}
-          label={data[index].displayName}
-          isDisabled={data[index].disabled}
-        />
-      );
-    }, areEqual);
-
-    const renderList = ({ height, width }) => (
-      <List
-        className="List"
-        height={height}
-        width={width}
-        itemSize={itemSize}
-        itemCount={listUsers.length}
-        itemData={listUsers}
-        outerElementType={CustomScrollbarsVirtualList}
-      >
-        {renderItems}
-      </List>
-    );
+    const { isRequestRunning, userIds } = this.state;
 
     const statusTranslation =
       userStatus === EmployeeStatus.Active
@@ -149,7 +90,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
             scale
             onClick={this.onChangeUserStatus}
             isLoading={isRequestRunning}
-            isDisabled={!userIds.length}
+            isDisabled={userIds.length === 0}
           />
           <Button
             label={t("Common:CancelButton")}

@@ -333,7 +333,7 @@ class TreeFolders extends React.Component {
       const l = lev - 1;
       data.forEach((item) => {
         if (
-          item.key.length > curKey.length
+          item.key?.length > curKey.length
             ? item.key.indexOf(curKey) !== 0
             : curKey.indexOf(item.key) !== 0
         ) {

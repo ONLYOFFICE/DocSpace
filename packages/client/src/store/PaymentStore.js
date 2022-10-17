@@ -104,8 +104,6 @@ class PaymentStore {
       console.log("updatePayment", res);
       if (res !== true) {
         toastr.error("error");
-      } else {
-        toastr.success("the changes will be applied soon");
       }
     } catch (e) {
       toastr.error(e);

@@ -4,5 +4,13 @@
   "HelpAnswerLinkInviteSettings": "Share the link to invite colleagues to your portal.",
   "InviteLinkValidInterval": "This link is valid for {{ count }} days only.",
   "InviteUsersAsCollaborators": "Add users as {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Link has been copied"
+  "LinkCopySuccess": "Link has been copied",
+  "InviteUsersToRoom": "Invite users to room",
+  "IndividualInvitation": "Individual invitation",
+  "SendInvitation": "Send invitation",
+  "SearchPlaceholder": "Invite people by name or email",
+  "Add": "Add",
+  "Invited": "Invited",
+  "EmailErrorMessage": "Email address not valid. You can edit the email by clicking on it.",
+  "СhooseFromList": "Сhoose from list"
 }

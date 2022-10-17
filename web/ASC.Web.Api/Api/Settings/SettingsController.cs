@@ -132,8 +132,7 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpGet("")]
-    [AllowNotPayment]
-    [AllowAnonymous]
+    [AllowNotPayment, AllowSuspended, AllowAnonymous]
     public SettingsDto GetSettings(bool? withpassword)
     {
         var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();

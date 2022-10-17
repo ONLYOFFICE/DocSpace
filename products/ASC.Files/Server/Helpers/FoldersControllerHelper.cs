@@ -114,7 +114,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             yield return await _globalFolderHelper.FolderShareAsync;
         }
 
-        if (!IsVisitor && !withoutAdditionalFolder)
+        if (!withoutAdditionalFolder)
         {
             if (_filesSettingsHelper.FavoritesSection)
             {
@@ -126,8 +126,10 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
                 yield return await _globalFolderHelper.FolderRecentAsync;
             }
 
-            if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace
-                && PrivacyRoomSettings.IsAvailable())
+            if (!IsVisitor &&
+                !_coreBaseSettings.Personal &&
+                _coreBaseSettings.DisableDocSpace &&
+                PrivacyRoomSettings.IsAvailable())
             {
                 yield return await _globalFolderHelper.FolderPrivacyAsync;
             }
@@ -155,7 +157,11 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         if (!_coreBaseSettings.DisableDocSpace)
         {
             yield return await _globalFolderHelper.FolderVirtualRoomsAsync;
-            yield return await _globalFolderHelper.FolderArchiveAsync;
+
+            if (!IsVisitor)
+            {
+                yield return await _globalFolderHelper.FolderArchiveAsync;
+            }
         }
     }
 
