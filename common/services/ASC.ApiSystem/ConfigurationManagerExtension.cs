@@ -24,23 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Tenants;
+namespace ASC.ApiSystem;
 
-[Serializable]
-[DataContract]
-public class TenantControlPanelSettings : ISettings<TenantControlPanelSettings>
+public static class ConfigurationManagerExtension
 {
-    [DataMember(Name = "LimitedAccess")]
-    public bool LimitedAccess { get; set; }
-
-    [JsonIgnore]
-    public Guid ID => new Guid("{880585C4-52CD-4AE2-8DA4-3B8E2772753B}");
-
-    public TenantControlPanelSettings GetDefault()
+    public static ConfigurationManager AddApiSystemConfiguration(this ConfigurationManager config, IHostEnvironment env)
     {
-        return new TenantControlPanelSettings
-        {
-            LimitedAccess = false
-        };
+        config
+          .AddJsonFile($"apisystem.json")
+          .AddJsonFile($"apisystem.{env.EnvironmentName}.json", true)
+          .AddJsonFile("notify.json")
+          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
+
+        return config;
     }
 }

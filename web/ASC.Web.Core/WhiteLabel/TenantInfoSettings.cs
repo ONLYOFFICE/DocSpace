@@ -81,7 +81,7 @@ public class TenantInfoSettingsHelper
     public void RestoreDefaultTenantName()
     {
         var currentTenant = _tenantManager.GetCurrentTenant();
-        currentTenant.Name = _configuration["web:portal-name"] ?? "Cloud Office Applications";
+        currentTenant.Name = _configuration["web:portal-name"] ?? "";
         _tenantManager.SaveTenant(currentTenant);
     }
 

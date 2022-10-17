@@ -146,14 +146,6 @@ public class TenantExtra
                                      && !q.Trial);
     }
 
-    public void DemandControlPanelPermission()
-    {
-        if (!_coreBaseSettings.Standalone || _settingsManager.Load<TenantControlPanelSettings>().LimitedAccess)
-        {
-            throw new SecurityException(Resource.ErrorAccessDenied);
-        }
-    }
-
     public bool IsNotPaid(bool withRequestToPaymentSystem = true)
     {
         Tariff tariff;
