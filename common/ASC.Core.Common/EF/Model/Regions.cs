@@ -24,21 +24,40 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.EF.Context;
+namespace ASC.Core.Common.EF.Model;
 
-public class CustomDbContext : DbContext
+public class Regions
 {
-    public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
-    public DbSet<DbipLocation> DbipLocation { get; set; }
-    public DbSet<Regions> Regions { get; set; }
+    public string Region { get; set; }
+    public string Provider { get; set; }
+    public string ConnectionString { get; set; }
+}
 
-    public CustomDbContext(DbContextOptions<CustomDbContext> options) : base(options) { }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+public static class RegionsExtension
+{
+    public static ModelBuilderWrapper AddRegions(this ModelBuilderWrapper modelBuilder)
     {
-        ModelBuilderWrapper
-               .From(modelBuilder, Database)
-               .AddMobileAppInstall()
-               .AddDbipLocation();
+        modelBuilder
+            .Add(MySqlAddRegions, Provider.MySql)
+            .Add(PgSqlAddRegions, Provider.PostgreSql);
+
+        return modelBuilder;
+    }
+
+    public static void MySqlAddRegions(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Regions>(entity =>
+        {
+            entity.HasCharSet("utf8");
+            entity.HasKey(e => e.Region);
+        });
+    }
+
+    public static void PgSqlAddRegions(this ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Regions>(entity =>
+        {
+            entity.HasKey(e => e.Region);
+        });
     }
 }

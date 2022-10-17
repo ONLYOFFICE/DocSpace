@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,21 +24,46 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.EF.Context;
+namespace TMResourceData;
 
-public class CustomDbContext : DbContext
+[Singletone]
+public class WhiteLabelHelper
 {
-    public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
-    public DbSet<DbipLocation> DbipLocation { get; set; }
-    public DbSet<Regions> Regions { get; set; }
+    private readonly ILogger _logger;
+    private readonly ConcurrentDictionary<int, string> _whiteLabelDictionary;
+    public string DefaultLogoText { get; set; }
 
-    public CustomDbContext(DbContextOptions<CustomDbContext> options) : base(options) { }
+    private readonly IConfiguration _configuration;
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public WhiteLabelHelper(IConfiguration configuration, ILoggerProvider option)
     {
-        ModelBuilderWrapper
-               .From(modelBuilder, Database)
-               .AddMobileAppInstall()
-               .AddDbipLocation();
+        _logger = option.CreateLogger("ASC.Resources");
+        _whiteLabelDictionary = new ConcurrentDictionary<int, string>();
+        DefaultLogoText = string.Empty;
+        _configuration = configuration;
+    }
+
+    public void SetNewText(int tenantId, string newText)
+    {
+        try
+        {
+            _whiteLabelDictionary.AddOrUpdate(tenantId, r => newText, (i, s) => newText);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorSetNewText(e);
+        }
+    }
+
+    public void RestoreOldText(int tenantId)
+    {
+        try
+        {
+            _whiteLabelDictionary.TryRemove(tenantId, out var text);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorRestoreOldText(e);
+        }
     }
 }
