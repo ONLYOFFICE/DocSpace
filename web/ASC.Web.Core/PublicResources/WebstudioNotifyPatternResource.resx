@@ -1250,7 +1250,7 @@ Don’t want to change your password? Just ignore this message.</value>
   <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
+You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Please confirm your email (the link is valid for 7 days):
 
@@ -1272,7 +1272,7 @@ ONLYOFFICE Team
   <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
+You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Please confirm your email (the link is valid for 7 days):
 
@@ -1294,7 +1294,7 @@ ONLYOFFICE Team
   <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
+You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Please confirm your email (the link is valid for 7 days):
 
@@ -1316,7 +1316,7 @@ ONLYOFFICE Team
   <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is _____onlyoffice.io.
+You have just created ONLYOFFICE DocSpace, a document hub where you can boost collaboration with your team, customers, partners, and more. Its address is "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Please confirm your email (the link is valid for 7 days):
 
@@ -1689,7 +1689,7 @@ ONLYOFFICE Team
   <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
     <value>Hello!
 
-You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
+You are invited to join ONLYOFFICE DocSpace at  "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
 
 $GreenButton
 
@@ -1700,7 +1700,7 @@ ONLYOFFICE Team
   <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
     <value>Hello!
 
-You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
+You are invited to join ONLYOFFICE DocSpace at  "${__VirtualRootPath}":"${__VirtualRootPath}"o. Accept the invitation by clicking the link:
 
 $GreenButton
 
@@ -1711,7 +1711,7 @@ ONLYOFFICE Team
   <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
     <value>Hello!
 
-You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
+You are invited to join ONLYOFFICE DocSpace at  "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
 
 $GreenButton
 
@@ -1722,7 +1722,7 @@ ONLYOFFICE Team
   <data name="pattern_saas_user_activation_v1" xml:space="preserve">
     <value>Hello!
 
-You are invited to join ONLYOFFICE DocSpace at  _____onlyoffice.io. Accept the invitation by clicking the link:
+You are invited to join ONLYOFFICE DocSpace at  "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
 
 $GreenButton
 
