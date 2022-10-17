@@ -405,11 +405,11 @@ public class DbTenantService : ITenantService
                 }
             }
 
-            var existsTenants = tenantDbContext.TenantForbiden.Where(r => r.Address.StartsWith(domain)).Select(r => r.Address)
-                .Union(tenantDbContext.Tenants.Where(r => r.Alias.StartsWith(domain) && r.Id != tenantId).Select(r => r.Alias))
-                .Union(tenantDbContext.Tenants.Where(r => r.MappedDomain.StartsWith(domain) && r.Id != tenantId && r.Status != TenantStatus.RemovePending).Select(r => r.MappedDomain));
+            var existsTenants = tenantDbContext.TenantForbiden.Where(r => r.Address.StartsWith(domain)).Select(r => r.Address).ToList();
+            existsTenants.AddRange(tenantDbContext.Tenants.Where(r => r.Alias.StartsWith(domain) && r.Id != tenantId).Select(r => r.Alias).ToList());
+            existsTenants.AddRange(tenantDbContext.Tenants.Where(r => r.MappedDomain.StartsWith(domain) && r.Id != tenantId && r.Status != TenantStatus.RemovePending).Select(r => r.MappedDomain).ToList());
 
-            throw new TenantAlreadyExistsException("Address busy.", existsTenants);
+            throw new TenantAlreadyExistsException("Address busy.", existsTenants.Distinct());
         }
     }
 
