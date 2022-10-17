@@ -64,6 +64,7 @@ const CompanyInfoSettings = (props) => {
   const [hasErrorAddress, setHasErrorAddress] = useState(false);
 
   const [isChangesSettings, setIsChangesSettings] = useState(false);
+  const [disableButtons, setDisableButtons] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -186,10 +187,12 @@ const CompanyInfoSettings = (props) => {
   };
 
   const onSave = () => {
+    setDisableButtons(true);
+
     setCompanyInfoSettings(address, companyName, email, phone, site)
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getCompanyInfoSettings();
+        getCompanyInfoSettings().finally(() => setDisableButtons(false));
       })
       .catch((error) => {
         toastr.error(error);
@@ -197,10 +200,13 @@ const CompanyInfoSettings = (props) => {
   };
 
   const onRestore = () => {
+    setDisableButtons(true);
+
     restoreCompanyInfoSettings()
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getCompanyInfoSettings();
+
+        getCompanyInfoSettings().finally(() => setDisableButtons(false));
       })
       .catch((error) => {
         toastr.error(error);
@@ -341,8 +347,10 @@ const CompanyInfoSettings = (props) => {
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
-          showReminder={isSettingPaid && isChangesSettings}
-          disableRestoreToDefault={companyInfoSettingsIsDefault}
+          showReminder={(isSettingPaid && isChangesSettings) || disableButtons}
+          disableRestoreToDefault={
+            companyInfoSettingsIsDefault || disableButtons
+          }
         />
       </StyledComponent>
     </>

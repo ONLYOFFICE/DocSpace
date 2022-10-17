@@ -64,6 +64,7 @@ const AdditionalResources = (props) => {
   );
 
   const [hasChange, setHasChange] = useState(false);
+  const [disableButtons, setDisableButtons] = useState(false);
 
   useEffect(() => {
     setShowFeedback(additionalResourcesData?.feedbackAndSupportEnabled);
@@ -106,6 +107,8 @@ const AdditionalResources = (props) => {
   }, [additionalResourcesData, tReady]);
 
   const onSave = () => {
+    setDisableButtons(true);
+
     setAdditionalResources(
       feedbackAndSupportEnabled,
       videoGuidesEnabled,
@@ -113,7 +116,7 @@ const AdditionalResources = (props) => {
     )
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getAdditionalResources();
+        getAdditionalResources().finally(() => setDisableButtons(false));
       })
       .catch((error) => {
         toastr.error(error);
@@ -121,10 +124,12 @@ const AdditionalResources = (props) => {
   };
 
   const onRestore = () => {
+    setDisableButtons(true);
+
     restoreAdditionalResources()
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getAdditionalResources();
+        getAdditionalResources().finally(() => setDisableButtons(false));
       })
       .catch((error) => {
         toastr.error(error);
@@ -175,8 +180,10 @@ const AdditionalResources = (props) => {
             saveButtonLabel={t("Common:SaveButton")}
             cancelButtonLabel={t("Settings:RestoreDefaultButton")}
             displaySettings={true}
-            showReminder={isSettingPaid && hasChange}
-            disableRestoreToDefault={additionalResourcesIsDefault}
+            showReminder={(isSettingPaid && hasChange) || disableButtons}
+            disableRestoreToDefault={
+              additionalResourcesIsDefault || disableButtons
+            }
           />
         )}
       </StyledComponent>
