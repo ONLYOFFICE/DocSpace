@@ -31,8 +31,8 @@ export const getUserRole = (user) => {
     //TODO: Change to People Product Id const
     return "admin";
   //TODO: Need refactoring
-  else if (user.isVisitor) return "guest";
-  else return "user";
+  else if (user.isVisitor) return "user";
+  else return "manager";
 };
 
 export const getUserContactsPattern = () => {

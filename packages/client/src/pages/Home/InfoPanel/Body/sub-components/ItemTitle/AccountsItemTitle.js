@@ -40,7 +40,7 @@ const AccountsItemTitle = ({
     <StyledAccountsItemTitle isPending={isPending}>
       <Avatar
         className="avatar"
-        role={selection.role}
+        role={selection.role ? selection.role : "user"}
         size={"big"}
         source={selection.avatar}
       />

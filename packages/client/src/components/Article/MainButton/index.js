@@ -87,7 +87,12 @@ const ArticleMainButtonContent = (props) => {
     enablePlugins,
 
     currentColorScheme,
+
+    isOwner,
+    isAdmin,
+    isVisitor,
   } = props;
+
   const isAccountsPage = selectedTreeNode[0] === "accounts";
 
   const inputFilesElement = React.useRef(null);
@@ -254,11 +259,11 @@ const ArticleMainButtonContent = (props) => {
 
     const actions = isAccountsPage
       ? [
-          {
+          isOwner && {
             id: "main-button_administrator",
             className: "main-button_drop-down",
             icon: "/static/images/person.admin.react.svg",
-            label: t("People:Administrator"),
+            label: t("Common:DocSpaceAdmin"),
             onClick: onInvite,
             action: "administrator",
             key: "administrator",
@@ -267,7 +272,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_manager",
             className: "main-button_drop-down",
             icon: "/static/images/person.manager.react.svg",
-            label: t("People:Manager"),
+            label: t("Common:RoomAdmin"),
             onClick: onInvite,
             action: "manager",
             key: "manager",
@@ -377,6 +382,8 @@ const ArticleMainButtonContent = (props) => {
     isAccountsPage,
     enablePlugins,
     isRoomsFolder,
+    isOwner,
+    isAdmin,
     onCreate,
     onCreateRoom,
     onInvite,
@@ -493,6 +500,8 @@ export default inject(
 
     const currentFolderId = selectedFolderStore.id;
 
+    const { isAdmin, isOwner, isVisitor } = auth.userStore.user;
+
     return {
       showText: auth.settingsStore.showText,
       isMobileArticle: auth.settingsStore.isMobileArticle,
@@ -521,6 +530,10 @@ export default inject(
 
       enablePlugins,
       currentColorScheme,
+
+      isAdmin,
+      isOwner,
+      isVisitor,
     };
   }
 )(

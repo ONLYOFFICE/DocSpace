@@ -133,7 +133,7 @@ const Items = ({
   setDragging,
   startUpload,
   uploadEmptyFolders,
-
+  isVisitor,
   isAdmin,
   myId,
   commonId,
@@ -342,7 +342,12 @@ const Items = ({
         />
       );
 
-      isAdmin && items.splice(3, 0, filesHeader);
+      if (isVisitor) {
+        items.length > 1 && items.splice(1, 0, filesHeader);
+      } else {
+        items.splice(3, 0, filesHeader);
+      }
+
       items.unshift(roomsHeader);
       items.push(otherHeader);
 
@@ -413,6 +418,7 @@ export default inject(
 
     return {
       isAdmin: auth.isAdmin,
+      isVisitor: auth.userStore.user.isVisitor,
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,

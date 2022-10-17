@@ -2,9 +2,12 @@ import { makeAutoObservable, runInAction } from "mobx";
 import api from "@docspace/common/api";
 import {
   EmployeeStatus,
+  EmployeeType,
   EmployeeActivationStatus,
 } from "@docspace/common/constants";
 const { Filter } = api;
+
+const fullAccessId = "00000000-0000-0000-0000-000000000000";
 
 class UsersStore {
   peopleStore = null;
@@ -92,9 +95,34 @@ class UsersStore {
     }
   };
 
-  updateUserType = async (type, userIds, filter) => {
-    await api.people.updateUserType(type, userIds);
-    await this.getUsersList(filter);
+  updateUserType = async (type, userIds, filter, fromType) => {
+    const { changeAdmins } = this.peopleStore.setupStore;
+
+    try {
+      switch (type) {
+        case EmployeeType.DocSpaceAdmin:
+          await changeAdmins(userIds, fullAccessId, true);
+          break;
+        case EmployeeType.RoomAdmin:
+        case EmployeeType.User:
+          const actions = [];
+          if (fromType.includes("admin")) {
+            actions.push(changeAdmins(userIds, fullAccessId, false));
+          }
+          if (fromType.includes("user")) {
+            actions.push(api.people.updateUserType(EmployeeType.User, userIds));
+          }
+
+          await Promise.all(actions);
+          break;
+      }
+
+      await this.getUsersList(filter);
+    } catch (e) {
+      await this.getUsersList(filter);
+
+      throw new Error(e);
+    }
   };
 
   updateProfileInUsers = async (updatedProfile) => {
@@ -149,17 +177,24 @@ class UsersStore {
     if (user.isOwner) return "owner";
     else if (user.isAdmin) return "admin";
     //TODO: Need refactoring
-    else if (user.isVisitor) return "guest";
-    else return "user";
+    else if (user.isVisitor) return "user";
+    else return "manager";
   };
 
   getUserContextOptions = (
     isMySelf,
-    isOwner,
+    isUserOwner,
+    isUserAdmin,
     statusType,
-    status,
-    hasMobileNumber
+    userRole,
+    status
   ) => {
+    const {
+      isOwner,
+      isAdmin,
+      isVisitor,
+    } = this.peopleStore.authStore.userStore.user;
+
     const options = [];
 
     switch (statusType) {
@@ -171,52 +206,84 @@ class UsersStore {
           options.push("details");
         }
 
-        options.push("separator-1");
-
         if (isMySelf) {
+          options.push("separator-1");
+
           options.push("change-name");
-        }
+          options.push("change-email");
+          options.push("change-password");
 
-        options.push("change-email");
-        options.push("change-password");
-
-        if (!isMySelf) {
-          options.push("reset-auth");
-        }
-
-        options.push("separator-2");
-
-        if (isMySelf && isOwner) {
-          options.push("change-owner");
+          if (isOwner) {
+            options.push("separator-2");
+            options.push("change-owner");
+          }
         } else {
-          options.push("disable");
+          if (
+            isOwner ||
+            (isAdmin && (userRole === "user" || userRole === "manager"))
+          ) {
+            options.push("separator-1");
+
+            options.push("change-email");
+            options.push("change-password");
+            options.push("reset-auth");
+
+            options.push("separator-2");
+            options.push("disable");
+          }
         }
 
         break;
       case "disabled":
-        options.push("enable");
-        options.push("details");
-        options.push("separator-1");
-        // options.push("reassign-data");
-        // options.push("delete-personal-data");
-        // options.push("separator-2");
-        options.push("delete-user");
-        break;
-      case "pending":
-        // options.push("edit");
-        options.push("invite-again");
-        options.push("details");
-
-        options.push("separator-1");
-
-        if (status === EmployeeStatus.Active) {
-          options.push("disable");
-        } else {
+        if (
+          isOwner ||
+          (isAdmin && (userRole === "manager" || userRole === "user"))
+        ) {
           options.push("enable");
+
+          options.push("details");
+
+          options.push("separator-1");
+          options.push("delete-user");
+        } else {
+          options.push("details");
         }
 
         break;
-      default:
+
+      case "pending":
+        if (
+          isOwner ||
+          ((isAdmin || !isVisitor) && userRole === "manager") ||
+          userRole === "user"
+        ) {
+          if (isMySelf) {
+            options.push("profile");
+          } else {
+            options.push("invite-again");
+            options.push("details");
+          }
+
+          if (
+            isOwner ||
+            (isAdmin && (userRole === "manager" || userRole === "user"))
+          ) {
+            options.push("separator-1");
+
+            if (status === EmployeeStatus.Active) {
+              options.push("disable");
+            } else {
+              options.push("enable");
+            }
+          }
+        } else {
+          if (isMySelf) {
+            options.push("profile");
+          } else {
+            options.push("details");
+          }
+        }
+
         break;
     }
 
@@ -295,9 +362,10 @@ class UsersStore {
       const options = this.getUserContextOptions(
         isMySelf,
         isOwner,
+        isAdministrator,
         statusType,
-        status,
-        !!mobilePhone
+        role,
+        status
       );
 
       return {
