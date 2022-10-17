@@ -45,7 +45,7 @@ class QuotasStore {
       (obj) => obj.id === MANAGER
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get addedManagersCount() {
@@ -53,7 +53,7 @@ class QuotasStore {
       (obj) => obj.id === MANAGER
     );
 
-    return result.used.value;
+    return result?.used?.value;
   }
 
   get maxTotalSizeByQuota() {
@@ -61,16 +61,16 @@ class QuotasStore {
       (obj) => obj.id === TOTAL_SIZE
     );
 
-    if (!result.value) return PortalFeaturesLimitations.Limitless;
+    if (!result?.value) return PortalFeaturesLimitations.Limitless;
 
-    return result.value;
+    return result?.value;
   }
 
   get usedTotalStorageSizeCount() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === TOTAL_SIZE
     );
-    return result.used.value;
+    return result?.used?.value;
   }
 
   get maxFileSizeByQuota() {
@@ -78,30 +78,31 @@ class QuotasStore {
       (obj) => obj.id === FILE_SIZE
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get maxCountUsersByQuota() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === USERS
     );
-    if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
-    return result.value;
+    if (!result || !result?.value) return PortalFeaturesLimitations.Limitless;
+    return result?.value;
   }
 
   get maxCountRoomsByQuota() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === ROOM
     );
-    if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
-    return result.value;
+    if (!result || !result?.value) return PortalFeaturesLimitations.Limitless;
+    return result?.value;
   }
 
   get usedRoomsCount() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === ROOM
     );
-    return result.used.value;
+
+    return result?.used?.value;
   }
 
   get isBrandingAndCustomizationAvailable() {
@@ -109,7 +110,7 @@ class QuotasStore {
       (obj) => obj.id === "whitelabel"
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get isSSOAvailable() {
@@ -117,7 +118,7 @@ class QuotasStore {
       (obj) => obj.id === "sso"
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get isRestoreAndAutoBackupAvailable() {
@@ -125,7 +126,7 @@ class QuotasStore {
       (obj) => obj.id === "restore"
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get isAuditAvailable() {
@@ -133,7 +134,7 @@ class QuotasStore {
       (obj) => obj.id === "audit"
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get currentTariffPlanTitle() {
@@ -144,9 +145,9 @@ class QuotasStore {
     const result = [];
 
     this.currentPortalQuotaFeatures.forEach((elem) => {
-      elem.id === ROOM && result.splice(0, 0, elem);
-      elem.id === MANAGER && result.splice(1, 0, elem);
-      elem.id === TOTAL_SIZE && result.splice(2, 0, elem);
+      elem.id === ROOM && result?.splice(0, 0, elem);
+      elem.id === MANAGER && result?.splice(1, 0, elem);
+      elem.id === TOTAL_SIZE && result?.splice(2, 0, elem);
     });
 
     return result;
@@ -157,9 +158,22 @@ class QuotasStore {
       (obj) => obj.id === USERS_IN_ROOM
     );
 
-    if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
+    if (!result || !result?.value) return PortalFeaturesLimitations.Limitless;
 
-    return result.value;
+    return result?.value;
+  }
+
+  get showRoomQuotaBar() {
+    return (
+      (this.usedRoomsCount / this.maxCountRoomsByQuota) * 100 >= 90 ||
+      this.maxCountRoomsByQuota - this.usedRoomsCount === 1
+    );
+  }
+
+  get showStorageQuotaBar() {
+    return (
+      (this.usedTotalStorageSizeCount / this.maxTotalSizeByQuota) * 100 >= 90
+    );
   }
 
   setPortalQuotaValue = (res) => {

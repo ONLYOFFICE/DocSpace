@@ -41,6 +41,7 @@ class UploadDataStore {
   converted = true;
   uploadPanelVisible = false;
   selectedUploadFile = [];
+  errors = 0;
 
   isUploading = false;
   isUploadingAndConversion = false;
@@ -105,6 +106,7 @@ class UploadDataStore {
     this.conversionPercent = 0;
     this.uploaded = true;
     this.converted = true;
+    this.errors = 0;
 
     this.isUploadingAndConversion = false;
     this.isUploading = false;
@@ -913,10 +915,16 @@ class UploadDataStore {
     const { fetchFiles, filter } = this.filesStore;
     const { withPaging } = this.authStore.settingsStore;
 
-    const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
+    const totalErrorsCount = sumBy(this.files, (f) => {
+      f.error && toastr.error(f.error);
+      return f.error ? 1 : 0;
+    });
 
     if (totalErrorsCount > 0) {
       this.primaryProgressDataStore.setPrimaryProgressBarShowError(true); // for empty file
+      this.primaryProgressDataStore.setPrimaryProgressBarErrors(
+        totalErrorsCount
+      );
       console.log("Errors: ", totalErrorsCount);
     }
 
