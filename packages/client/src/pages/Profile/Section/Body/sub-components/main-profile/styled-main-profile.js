@@ -106,8 +106,8 @@ export const StyledInfo = styled.div`
         display: block;
         padding-left: 5px;
 
-        width: fit-content;
-        height: fit-content;
+        max-width: 12px;
+        max-height: 12px;
       }
     }
 
