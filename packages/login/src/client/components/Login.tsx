@@ -34,6 +34,7 @@ const Login: React.FC<ILoginProps> = ({
   isDesktopEditor,
   match,
   isAuth,
+  currentColorScheme,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
@@ -162,11 +163,35 @@ const Login: React.FC<ILoginProps> = ({
     setRecoverDialogVisible(!recoverDialogVisible);
   };
 
+  const getBgPattern = () => {
+    switch (currentColorScheme.id) {
+      case 1:
+        return "url('/static/images/background.pattern.react.svg')";
+      case 2:
+        return "url('/static/images/background.pattern.orange.react.svg')";
+      case 3:
+        return "url('/static/images/background.pattern.green.react.svg')";
+      case 4:
+        return "url('/static/images/background.pattern.red.react.svg')";
+      case 5:
+        return "url('/static/images/background.pattern.purple.react.svg')";
+      case 6:
+        return "url('/static/images/background.pattern.lightBlue.react.svg')";
+      case 7:
+        return "url('/static/images/background.pattern.black.react.svg')";
+      default:
+        return "url('/static/images/background.pattern.react.svg')";
+    }
+  };
+
+  const bgPattern = getBgPattern();
+
   return (
     <LoginFormWrapper
       enabledJoin={enabledJoin}
       isDesktop={isDesktopEditor}
-      className="with-background-pattern"
+      //className="with-background-pattern"
+      bgPattern={bgPattern}
     >
       <ColorTheme themeId={ThemeType.LinkForgotPassword}>
         <Logo className="logo-wrapper" />

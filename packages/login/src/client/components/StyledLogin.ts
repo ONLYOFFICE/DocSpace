@@ -216,6 +216,7 @@ export const LoginContainer = styled.div`
 interface ILoginFormWrapperProps {
   enabledJoin?: boolean;
   isDesktop?: boolean;
+  bgPattern?: string;
 }
 
 export const LoginFormWrapper = styled.div`
@@ -228,4 +229,18 @@ export const LoginFormWrapper = styled.div`
       : css`1fr`};
   width: 100%;
   height: 100vh;
+
+  background-image: ${props => props.bgPattern};
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+
+  @media (max-width: 1024px) {
+    background-size: cover;
+  }
+
+  @media (max-width: 428px) {
+    background-image: none;
+  }
+
 `;
