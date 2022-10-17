@@ -266,7 +266,7 @@ class TileContainer extends React.PureComponent {
     return (
       <StyledTileContainer
         id={id}
-        className={className}
+        className={`${className} files-tile-container`}
         style={style}
         useReactWindow={useReactWindow}
         isDesc={selectedFilterData.sortDirection === "desc"}
