@@ -45,7 +45,7 @@ class QuotasStore {
       (obj) => obj.id === MANAGER
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get addedManagersCount() {
@@ -53,7 +53,7 @@ class QuotasStore {
       (obj) => obj.id === MANAGER
     );
 
-    return result.used.value;
+    return result?.used?.value;
   }
 
   get maxTotalSizeByQuota() {
@@ -63,14 +63,14 @@ class QuotasStore {
 
     if (!result.value) return PortalFeaturesLimitations.Limitless;
 
-    return result.value;
+    return result?.value;
   }
 
   get usedTotalStorageSizeCount() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === TOTAL_SIZE
     );
-    return result.used.value;
+    return result?.used?.value;
   }
 
   get maxFileSizeByQuota() {
@@ -78,7 +78,7 @@ class QuotasStore {
       (obj) => obj.id === FILE_SIZE
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get maxCountUsersByQuota() {
@@ -86,7 +86,7 @@ class QuotasStore {
       (obj) => obj.id === USERS
     );
     if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
-    return result.value;
+    return result?.value;
   }
 
   get maxCountRoomsByQuota() {
@@ -94,14 +94,15 @@ class QuotasStore {
       (obj) => obj.id === ROOM
     );
     if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
-    return result.value;
+    return result?.value;
   }
 
   get usedRoomsCount() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === ROOM
     );
-    return result.used.value;
+
+    return result?.used?.value;
   }
 
   get isBrandingAndCustomizationAvailable() {
@@ -109,7 +110,7 @@ class QuotasStore {
       (obj) => obj.id === "whitelabel"
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get isSSOAvailable() {
@@ -117,7 +118,7 @@ class QuotasStore {
       (obj) => obj.id === "sso"
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get isRestoreAndAutoBackupAvailable() {
@@ -125,7 +126,7 @@ class QuotasStore {
       (obj) => obj.id === "restore"
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get isAuditAvailable() {
@@ -133,7 +134,7 @@ class QuotasStore {
       (obj) => obj.id === "audit"
     );
 
-    return result.value;
+    return result?.value;
   }
 
   get currentTariffPlanTitle() {
