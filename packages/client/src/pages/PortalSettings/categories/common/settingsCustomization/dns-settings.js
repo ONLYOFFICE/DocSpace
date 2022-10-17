@@ -17,6 +17,7 @@ import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+import Badge from "@docspace/components/badge";
 const DNSSettings = (props) => {
   const {
     t,
@@ -29,6 +30,7 @@ const DNSSettings = (props) => {
     theme,
     initSettings,
     setIsLoaded,
+    isSettingPaid,
   } = props;
   const [hasScroll, setHasScroll] = useState(false);
   const isLoadedSetting = isLoaded && tReady;
@@ -91,10 +93,12 @@ const DNSSettings = (props) => {
 
   const settingsBlock = (
     <div className="settings-block">
-      <div className="settings-block-description">{t("DNSSettingsMobile")}</div>
+      <div className="settings-block-description settings_unavailable">
+        {t("DNSSettingsMobile")}
+      </div>
       <FieldContainer
         id="fieldContainerDNSSettings"
-        className="field-container-width"
+        className="field-container-width settings_unavailable"
         labelText={`${t("YourCurrentDomain")}`}
         isVertical={true}
       >
@@ -102,7 +106,7 @@ const DNSSettings = (props) => {
           id="textInputContainerDNSSettings"
           scale={true}
           value={location.hostname}
-          isDisabled={true}
+          isDisabled={!isSettingPaid}
         />
       </FieldContainer>
     </div>
@@ -114,15 +118,20 @@ const DNSSettings = (props) => {
     <StyledSettingsComponent
       hasScroll={hasScroll}
       className="category-item-wrapper"
+      isSettingPaid={isSettingPaid}
     >
       {isCustomizationView && !isMobileView && (
         <div className="category-item-heading">
-          <div className="category-item-title">{t("DNSSettings")}</div>
+          <div className="category-item-title settings_unavailable">
+            {t("DNSSettings")}
+          </div>
           <HelpButton
             iconName="static/images/combined.shape.svg"
             size={12}
             tooltipContent={tooltipDNSSettingsTooltip}
+            className="dns-setting_helpbutton "
           />
+          {!isSettingPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
         </div>
       )}
       {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (
@@ -137,6 +146,7 @@ const DNSSettings = (props) => {
           onClick={onSendRequest}
           primary
           size="small"
+          isDisabled={!isSettingPaid}
         />
       </div>
     </StyledSettingsComponent>
@@ -151,6 +161,8 @@ export default inject(({ auth, common }) => {
     initSettings,
     setIsLoaded,
   } = common;
+  const { currentQuotaStore } = auth;
+  const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
   return {
     theme,
     isLoaded,
@@ -158,5 +170,6 @@ export default inject(({ auth, common }) => {
     helpLink,
     initSettings,
     setIsLoaded,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
   };
 })(withLoading(withTranslation(["Settings", "Common"])(observer(DNSSettings))));

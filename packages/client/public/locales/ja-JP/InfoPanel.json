@@ -1,5 +1,5 @@
 {
-  "EmptyScreenText": "ファイルやフォルダの詳細はこちら",
+  "FilesEmptyScreenText": "ファイルやフォルダの詳細はこちら",
   "FileExtension": "ファイル拡張子",
   "ItemsSelected": "選択されているアイテム",
   "LastModifiedBy": "最終更新者",

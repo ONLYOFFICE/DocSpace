@@ -49,8 +49,7 @@ public class AbstractDao
     protected readonly TenantManager _tenantManager;
     protected readonly TenantUtil _tenantUtil;
     protected readonly SetupInfo _setupInfo;
-    protected readonly TenantExtra _tenantExtra;
-    protected readonly TenantStatisticsProvider _tenantStatisticProvider;
+    protected readonly MaxTotalSizeStatistic _maxTotalSizeStatistic;
     protected readonly CoreBaseSettings _coreBaseSettings;
     protected readonly CoreConfiguration _coreConfiguration;
     protected readonly SettingsManager _settingsManager;
@@ -63,8 +62,7 @@ public class AbstractDao
         TenantManager tenantManager,
         TenantUtil tenantUtil,
         SetupInfo setupInfo,
-        TenantExtra tenantExtra,
-        TenantStatisticsProvider tenantStatisticProvider,
+        MaxTotalSizeStatistic maxTotalSizeStatistic,
         CoreBaseSettings coreBaseSettings,
         CoreConfiguration coreConfiguration,
         SettingsManager settingsManager,
@@ -78,8 +76,7 @@ public class AbstractDao
         _tenantManager = tenantManager;
         _tenantUtil = tenantUtil;
         _setupInfo = setupInfo;
-        _tenantExtra = tenantExtra;
-        _tenantStatisticProvider = tenantStatisticProvider;
+        _maxTotalSizeStatistic = maxTotalSizeStatistic;
         _coreBaseSettings = coreBaseSettings;
         _coreConfiguration = coreConfiguration;
         _settingsManager = settingsManager;

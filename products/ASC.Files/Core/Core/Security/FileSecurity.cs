@@ -234,24 +234,29 @@ public class FileSecurity : IFileSecurity
         var shares = await GetSharesAsync(entry);
         var copyShares = shares.ToList();
 
-        FileShareRecord defaultShareRecord;
+        FileShareRecord[] defaultRecords;
 
         switch (entry.RootFolderType)
         {
             case FolderType.COMMON:
-                defaultShareRecord = new FileShareRecord
+                defaultRecords = new[]
                 {
-                    Level = int.MaxValue,
-                    EntryId = entry.Id,
-                    EntryType = entry.FileEntryType,
-                    Share = DefaultCommonShare,
-                    Subject = Constants.GroupEveryone.ID,
-                    TenantId = _tenantManager.GetCurrentTenant().Id,
-                    Owner = _authContext.CurrentAccount.ID
+                    new FileShareRecord
+                    {
+                        Level = int.MaxValue,
+                        EntryId = entry.Id,
+                        EntryType = entry.FileEntryType,
+                        Share = DefaultCommonShare,
+                        Subject = Constants.GroupEveryone.ID,
+                        TenantId = _tenantManager.GetCurrentTenant().Id,
+                        Owner = _authContext.CurrentAccount.ID
+                    }
                 };
 
                 if (!shares.Any())
                 {
+                    var defaultShareRecord = defaultRecords.FirstOrDefault();
+
                     if ((defaultShareRecord.Share == FileShare.Read && action == FilesSecurityActions.Read) ||
                         (defaultShareRecord.Share == FileShare.ReadWrite))
                     {
@@ -265,47 +270,51 @@ public class FileSecurity : IFileSecurity
                 break;
 
             case FolderType.USER:
-                defaultShareRecord = new FileShareRecord
+                defaultRecords = new[]
                 {
-                    Level = int.MaxValue,
-                    EntryId = entry.Id,
-                    EntryType = entry.FileEntryType,
-                    Share = DefaultMyShare,
-                    Subject = entry.RootCreateBy,
-                    TenantId = _tenantManager.GetCurrentTenant().Id,
-                    Owner = entry.RootCreateBy
+                    new FileShareRecord
+                    {
+                        Level = int.MaxValue,
+                        EntryId = entry.Id,
+                        EntryType = entry.FileEntryType,
+                        Share = DefaultMyShare,
+                        Subject = entry.RootCreateBy,
+                        TenantId = _tenantManager.GetCurrentTenant().Id,
+                        Owner = entry.RootCreateBy
+                    }
                 };
 
                 if (!shares.Any())
                 {
                     return new List<Guid>
-                        {
-                            entry.RootCreateBy
-                        };
+                    {
+                        entry.RootCreateBy
+                    };
                 }
-
                 break;
 
             case FolderType.Privacy:
-                defaultShareRecord = new FileShareRecord
+                defaultRecords = new[]
                 {
-                    Level = int.MaxValue,
-                    EntryId = entry.Id,
-                    EntryType = entry.FileEntryType,
-                    Share = DefaultPrivacyShare,
-                    Subject = entry.RootCreateBy,
-                    TenantId = _tenantManager.GetCurrentTenant().Id,
-                    Owner = entry.RootCreateBy
+                    new FileShareRecord
+                    {
+                        Level = int.MaxValue,
+                        EntryId = entry.Id,
+                        EntryType = entry.FileEntryType,
+                        Share = DefaultPrivacyShare,
+                        Subject = entry.RootCreateBy,
+                        TenantId = _tenantManager.GetCurrentTenant().Id,
+                        Owner = entry.RootCreateBy
+                    }
                 };
 
                 if (!shares.Any())
                 {
                     return new List<Guid>
-                        {
-                            entry.RootCreateBy
-                        };
+                    {
+                        entry.RootCreateBy
+                    };
                 }
-
                 break;
 
             case FolderType.BUNCH:
@@ -327,43 +336,56 @@ public class FileSecurity : IFileSecurity
                 }
 
                 // TODO: For Projects and other
-                defaultShareRecord = null;
+                defaultRecords = null;
                 break;
 
             case FolderType.VirtualRooms:
-                defaultShareRecord = new FileShareRecord
+                defaultRecords = new[]
                 {
-                    Level = int.MaxValue,
-                    EntryId = entry.Id,
-                    EntryType = entry.FileEntryType,
-                    Share = FileShare.Read,
-                    Subject = WebItemManager.DocumentsProductID,
-                    TenantId = _tenantManager.GetCurrentTenant().Id,
-                    Owner = entry.RootCreateBy
+                    new FileShareRecord
+                    {
+                        Level = int.MaxValue,
+                        EntryId = entry.Id,
+                        EntryType = entry.FileEntryType,
+                        Share = FileShare.Read,
+                        Subject = WebItemManager.DocumentsProductID,
+                        TenantId = _tenantManager.GetCurrentTenant().Id,
+                        Owner = entry.RootCreateBy
+                    },
+                    new FileShareRecord
+                    {
+                        Level = int.MaxValue,
+                        EntryId = entry.Id,
+                        EntryType = entry.FileEntryType,
+                        Share = FileShare.Read,
+                        Subject = Constants.GroupAdmin.ID,
+                        TenantId = _tenantManager.GetCurrentTenant().Id,
+                        Owner = entry.RootCreateBy
+                    }
                 };
 
                 if (!shares.Any())
                 {
-                    if ((defaultShareRecord.Share == FileShare.Read && action == FilesSecurityActions.Read) ||
-                        (defaultShareRecord.Share == FileShare.ReadWrite))
+                    var users = new List<Guid>();
+
+                    foreach (var defaultRecord in defaultRecords)
                     {
-                        return _userManager.GetUsersByGroup(defaultShareRecord.Subject)
-                                          .Where(x => x.Status == EmployeeStatus.Active).Select(y => y.Id).Distinct();
+                        users.AddRange(_userManager.GetUsersByGroup(defaultRecord.Subject).Where(x => x.Status == EmployeeStatus.Active).Select(y => y.Id));
                     }
 
-                    return Enumerable.Empty<Guid>();
+                    return users.Distinct();
                 }
 
                 break;
 
             default:
-                defaultShareRecord = null;
+                defaultRecords = null;
                 break;
         }
 
-        if (defaultShareRecord != null)
+        if (defaultRecords != null)
         {
-            shares = shares.Concat(new[] { defaultShareRecord });
+            shares = shares.Concat(defaultRecords);
         }
 
         var manyShares = shares.SelectMany(x =>
@@ -378,8 +400,7 @@ public class FileSecurity : IFileSecurity
             }
 
             return new[] { x.Subject };
-        })
-            .Distinct();
+        }).Distinct();
 
         var result = new List<Guid>();
 
@@ -505,16 +526,6 @@ public class FileSecurity : IFileSecurity
             if (isOutsider && (e.RootFolderType == FolderType.USER
                                || e.RootFolderType == FolderType.SHARE
                                || e.RootFolderType == FolderType.Privacy))
-            {
-                return false;
-            }
-
-            if (isVisitor && e.RootFolderType == FolderType.Recent)
-            {
-                return false;
-            }
-
-            if (isVisitor && e.RootFolderType == FolderType.Favorites)
             {
                 return false;
             }

@@ -6,7 +6,14 @@ import TableHeader from "./TableHeader";
 import TableBody from "@docspace/components/table-container/TableBody";
 import { isMobile } from "react-device-detect";
 
-const Table = ({ auditTrailUsers, sectionWidth, viewAs, setViewAs, theme }) => {
+const Table = ({
+  auditTrailUsers,
+  sectionWidth,
+  viewAs,
+  setViewAs,
+  theme,
+  isSettingNotPaid,
+}) => {
   const ref = useRef(null);
   useEffect(() => {
     if (!sectionWidth) return;
@@ -22,7 +29,12 @@ const Table = ({ auditTrailUsers, sectionWidth, viewAs, setViewAs, theme }) => {
       <TableHeader sectionWidth={sectionWidth} containerRef={ref} />
       <TableBody>
         {auditTrailUsers.map((item) => (
-          <TableRow theme={theme} key={item.id} item={item} />
+          <TableRow
+            theme={theme}
+            key={item.id}
+            item={item}
+            isSettingNotPaid={isSettingNotPaid}
+          />
         ))}
       </TableBody>
     </TableContainer>

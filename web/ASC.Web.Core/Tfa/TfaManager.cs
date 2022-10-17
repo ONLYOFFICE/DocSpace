@@ -67,6 +67,7 @@ public class TfaManager
     private readonly Signature _signature;
     private readonly InstanceCrypto _instanceCrypto;
     private readonly MachinePseudoKeys _machinePseudoKeys;
+    private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
 
     public TfaManager(
         SettingsManager settingsManager,
@@ -76,9 +77,11 @@ public class TfaManager
         Signature signature,
         InstanceCrypto instanceCrypto,
         MachinePseudoKeys machinePseudoKeys,
-        ICache cache)
+        ICache cache,
+        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper)
     {
         Cache = cache;
+        _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _settingsManager = settingsManager;
         _securityContext = securityContext;
         _cookiesManager = cookiesManager;
@@ -95,7 +98,7 @@ public class TfaManager
 
     public bool ValidateAuthCode(UserInfo user, string code, bool checkBackup = true, bool isEntryPoint = false)
     {
-        if (!TfaAppAuthSettings.IsVisibleSettings
+        if (!_tfaAppAuthSettingsHelper.IsVisibleSettings
             || !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
         {
             return false;

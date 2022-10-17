@@ -301,7 +301,7 @@ public class FileSharingAceHelper<T>
                 continue;
             }
 
-            if (await _fileSecurity.CanEditRoomAsync(entry, ace.Id))
+            if (await _fileSecurity.CanEditRoomAsync(entry, ace.Id) && !isAdmin)
             {
                 continue;
             }

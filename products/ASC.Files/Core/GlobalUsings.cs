@@ -57,8 +57,6 @@ global using ASC.Api.Core;
 global using ASC.Api.Core.Security;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
-global using ASC.AuditTrail.Models;
-global using ASC.AuditTrail.Models.Mappings;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Log;
@@ -75,6 +73,8 @@ global using ASC.Core.Common.Configuration;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.EF.Model;
+global using ASC.Core.Common.Quota;
+global using ASC.Core.Common.Quota.Features;
 global using ASC.Core.Common.Settings;
 global using ASC.Core.Notify.Signalr;
 global using ASC.Core.Tenants;
@@ -127,6 +127,7 @@ global using ASC.Web.Core;
 global using ASC.Web.Core.Files;
 global using ASC.Web.Core.ModuleManagement.Common;
 global using ASC.Web.Core.PublicResources;
+global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Subscriptions;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Core.Utility;
@@ -150,7 +151,6 @@ global using ASC.Web.Files.ThirdPartyApp;
 global using ASC.Web.Files.Utils;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;
-global using ASC.Web.Studio.UserControls.Statistics;
 global using ASC.Web.Studio.Utility;
 
 global using AutoMapper;
@@ -160,17 +160,12 @@ global using Box.V2.Auth;
 global using Box.V2.Config;
 global using Box.V2.Models;
 
-global using CsvHelper;
-global using CsvHelper.Configuration;
-
 global using DocuSign.eSign.Api;
 global using DocuSign.eSign.Client;
 global using DocuSign.eSign.Model;
 
 global using Dropbox.Api;
 global using Dropbox.Api.Files;
-
-global using Flurl;
 
 global using Google;
 global using Google.Apis.Auth.OAuth2;
@@ -202,7 +197,6 @@ global using Microsoft.EntityFrameworkCore.Storage;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Options;
 global using Microsoft.Extensions.Primitives;

@@ -21,13 +21,18 @@ class Profile extends React.Component {
       setIsLoading,
       setIsEditTargetUser,
       setLoadedProfile,
+      isVisitor,
+      selectedTreeNode,
       setSelectedNode,
     } = this.props;
     const userId = "@self";
 
     setFirstLoad(false);
     setIsEditTargetUser(false);
-    setSelectedNode(["accounts"]);
+
+    isVisitor
+      ? !selectedTreeNode.length && setSelectedNode(["@rooms"])
+      : setSelectedNode(["accounts"]);
 
     setDocumentTitle(t("Common:Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");
@@ -77,7 +82,7 @@ class Profile extends React.Component {
   render() {
     //console.log("Profile render");
 
-    const { profile, showCatalog, isAdmin } = this.props;
+    const { profile, showCatalog } = this.props;
 
     return (
       <Section withBodyAutoFocus viewAs="profile">
@@ -98,13 +103,12 @@ Profile.propTypes = {
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  isAdmin: PropTypes.bool,
   language: PropTypes.string,
 };
 
 export default withRouter(
   inject(({ auth, peopleStore, treeFoldersStore }) => {
-    const { setDocumentTitle, isAdmin, language } = auth;
+    const { setDocumentTitle, language } = auth;
     const { targetUserStore, loadingStore } = peopleStore;
     const {
       getTargetUser: fetchProfile,
@@ -113,10 +117,9 @@ export default withRouter(
       setIsEditTargetUser,
     } = targetUserStore;
     const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
-    const { setSelectedNode } = treeFoldersStore;
+    const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
     return {
       setDocumentTitle,
-      isAdmin,
       language,
       fetchProfile,
       profile,
@@ -126,7 +129,9 @@ export default withRouter(
       setIsEditTargetUser,
       setLoadedProfile,
       showCatalog: auth.settingsStore.showCatalog,
+      selectedTreeNode,
       setSelectedNode,
+      isVisitor: auth.userStore.user.isVisitor,
     };
   })(
     observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile)))

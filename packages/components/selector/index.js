@@ -79,6 +79,7 @@ const Selector = ({
     onSelect &&
       onSelect({
         id: item.id,
+        email: item.email,
         avatar: item.avatar,
         icon: item.icon,
         label: item.label,
@@ -109,6 +110,7 @@ const Selector = ({
         setNewSelectedItems((value) => {
           value.push({
             id: item.id,
+            email: item.email,
             avatar: item.avatar,
             icon: item.icon,
             label: item.label,
@@ -134,6 +136,7 @@ const Selector = ({
 
       const newItem = {
         id: item.id,
+        email: item.email,
         avatar: item.avatar,
         icon: item.icon,
         label: item.label,

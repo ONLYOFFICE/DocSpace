@@ -33,8 +33,7 @@ const tabletProps = css`
   }
   .section-body_filter {
     display: block;
-    margin: ${(props) =>
-      props.viewAs === "tile" ? "4px 0 18px" : "4px 0 30px"};
+    margin: 4px 0 30px;
   }
 `;
 
@@ -97,22 +96,6 @@ const StyledSectionContainer = styled.section`
 StyledSectionContainer.defaultProps = { theme: Base };
 
 class SectionContainer extends React.Component {
-  /*shouldComponentUpdate() {
-    return false;
-  }*/
-  componentDidUpdate() {
-    const { pinned } = this.props;
-
-    if (
-      isIOS &&
-      isTablet &&
-      (isSafari || isChrome) &&
-      window.innerWidth <= size.smallTablet &&
-      pinned
-    ) {
-      this.props.unpinArticle();
-    }
-  }
   render() {
     //console.log("PageLayout Section render");
 

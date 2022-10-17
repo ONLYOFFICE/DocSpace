@@ -152,6 +152,7 @@ class AccountsContextOptionsStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
+      hasFreeUsers,
     } = this.peopleStore.selectionStore;
     const {
       setActiveDialogVisible,
@@ -162,15 +163,15 @@ class AccountsContextOptionsStore {
 
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
-    const { setVisible, isVisible } = this.peopleStore.infoPanelStore;
+    const { setIsVisible, isVisible } = this.peopleStore.infoPanelStore;
 
     const options = [];
 
     const adminOption = {
       id: "context-menu_administrator",
       className: "context-menu_drop-down",
-      label: t("Administrator"),
-      title: t("Administrator"),
+      label: t("Common:DocSpaceAdmin"),
+      title: t("Common:DocSpaceAdmin"),
       onClick: (e) => onChangeType(e, t),
       action: "admin",
       key: "cm-administrator",
@@ -178,8 +179,8 @@ class AccountsContextOptionsStore {
     const managerOption = {
       id: "context-menu_manager",
       className: "context-menu_drop-down",
-      label: t("Manager"),
-      title: t("Manager"),
+      label: t("Common:RoomAdmin"),
+      title: t("Common:RoomAdmin"),
       onClick: (e) => onChangeType(e, t),
       action: "manager",
       key: "cm-manager",
@@ -196,15 +197,15 @@ class AccountsContextOptionsStore {
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
-    options.push(userOption);
+    hasFreeUsers && options.push(userOption);
 
     const headerMenu = [
       {
         key: "cm-change-type",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
-        disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
+        disabled: !hasUsersToMakeEmployees,
         icon: "/static/images/change.to.employee.react.svg",
         items: options,
       },
@@ -212,7 +213,7 @@ class AccountsContextOptionsStore {
         key: "cm-info",
         label: t("Common:Info"),
         disabled: isVisible,
-        onClick: setVisible,
+        onClick: () => setIsVisible(true),
         icon: "images/info.react.svg",
       },
       {
@@ -309,9 +310,26 @@ class AccountsContextOptionsStore {
 
   onEnableClick = (t, item) => {
     const { id } = item;
-    const { updateUserStatus } = this.peopleStore.usersStore;
+    const {
+      updateUserStatus,
+      getUserContextOptions,
+      getStatusType,
+    } = this.peopleStore.usersStore;
+    const { setSelection } = this.authStore.infoPanelStore;
 
     updateUserStatus(EmployeeStatus.Active, [id])
+      .then(() => {
+        const updatedUser = { ...item };
+        updatedUser.status = EmployeeStatus.Active;
+        updatedUser.statusType = getStatusType(updatedUser);
+        updatedUser.options = getUserContextOptions(
+          false,
+          false,
+          updatedUser.statusType,
+          EmployeeStatus.Active
+        );
+        setSelection(updatedUser);
+      })
       .then(() =>
         toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
       )
@@ -320,9 +338,26 @@ class AccountsContextOptionsStore {
 
   onDisableClick = (t, item) => {
     const { id } = item;
-    const { updateUserStatus } = this.peopleStore.usersStore;
+    const {
+      updateUserStatus,
+      getUserContextOptions,
+      getStatusType,
+    } = this.peopleStore.usersStore;
+    const { setSelection } = this.authStore.infoPanelStore;
 
     updateUserStatus(EmployeeStatus.Disabled, [id])
+      .then(() => {
+        const updatedUser = { ...item };
+        updatedUser.status = EmployeeStatus.Disabled;
+        updatedUser.statusType = getStatusType(updatedUser);
+        updatedUser.options = getUserContextOptions(
+          false,
+          false,
+          updatedUser.statusType,
+          EmployeeStatus.Disabled
+        );
+        setSelection(updatedUser);
+      })
       .then(() =>
         toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
       )
@@ -367,9 +402,8 @@ class AccountsContextOptionsStore {
   };
 
   onDetailsClick = () => {
-    const { setVisible } = this.peopleStore.infoPanelStore;
-
-    setVisible();
+    const { setIsVisible } = this.peopleStore.infoPanelStore;
+    setIsVisible(true);
   };
 
   onInviteAgainClick = (t, item) => {

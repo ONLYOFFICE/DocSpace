@@ -63,6 +63,7 @@ class BackupStore {
   defaultEnableSchedule = false;
 
   storageRegions = [];
+  selectedThirdPartyAccount = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -141,6 +142,14 @@ class BackupStore {
     if (this.selectedEnableSchedule !== this.defaultEnableSchedule) return true;
 
     return false;
+  }
+
+  setSelectedThirdPartyAccount = (elem) => {
+    this.selectedThirdPartyAccount = elem;
+  };
+
+  get selectedThirdPartyAccount() {
+    return this.selectedThirdPartyAccount;
   }
 
   toDefault = () => {

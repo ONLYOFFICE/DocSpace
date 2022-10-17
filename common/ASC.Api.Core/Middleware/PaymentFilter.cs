@@ -53,7 +53,7 @@ public class PaymentFilter : IResourceFilter
         var header = context.HttpContext.Request.Headers["Payment-Info"];
         if (string.IsNullOrEmpty(header) || (bool.TryParse(header, out var flag) && flag))
         {
-            if (_tenantExtra.IsNotPaid())
+            if (_tenantExtra.IsNotPaid(false))
             {
                 context.Result = new StatusCodeResult((int)HttpStatusCode.PaymentRequired);
                 _logger.WarningPaymentRequired(context.HttpContext.Request.Url());

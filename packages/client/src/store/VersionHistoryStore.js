@@ -74,21 +74,18 @@ class VersionHistoryStore {
       null,
       versions.map((ver) => ver.versionGroup)
     );
-    const isVerHistoryPanel = this.isVisible;
 
-    if (
-      isVerHistoryPanel &&
-      (versions.length !== file.version ||
-        currentVersionGroup !== file.versionGroup)
-    ) {
-      const newFile = {
-        ...file,
-        version: versions.length,
-        versionGroup: currentVersionGroup,
-      };
+    const currentComment =
+      versions[versions.length - currentVersionGroup].comment;
 
-      this.filesStore.setFile(newFile);
-    }
+    const newFile = {
+      ...file,
+      comment: currentComment,
+      version: versions.length,
+      versionGroup: currentVersionGroup,
+    };
+
+    this.filesStore.setFile(newFile);
 
     this.versions = versions;
   };

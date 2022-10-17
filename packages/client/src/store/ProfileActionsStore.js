@@ -11,7 +11,10 @@ const PROXY_HOMEPAGE_URL = combineUrl(proxyURL, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
 const PROFILE_MY_URL = combineUrl(PROXY_HOMEPAGE_URL, "/my");
 const ABOUT_URL = combineUrl(PROXY_HOMEPAGE_URL, "/about");
-const PAYMENTS_URL = combineUrl(PROXY_HOMEPAGE_URL, "/payments");
+const PAYMENTS_URL = combineUrl(
+  PROXY_HOMEPAGE_URL,
+  "/portal-settings/payments/portal-payments"
+);
 const HELP_URL = "https://onlyoffice.com/";
 const SUPPORT_URL = "https://onlyoffice.com/";
 const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
@@ -55,8 +58,8 @@ class ProfileActionsStore {
 
     if (user.isOwner) return "owner";
     if (user.isAdmin || isModuleAdmin) return "admin";
-    if (user.isVisitor) return "guest";
-    return "user";
+    if (user.isVisitor) return "user";
+    return "manager";
   };
 
   onProfileClick = () => {
@@ -118,6 +121,7 @@ class ProfileActionsStore {
   getActions = (t) => {
     const { enablePlugins } = this.authStore.settingsStore;
     const isAdmin = this.authStore.isAdmin;
+
     // const settingsModule = modules.find((module) => module.id === "settings");
     // const peopleAvailable = modules.some((m) => m.appName === "people");
     const settingsUrl = "/portal-settings";
@@ -163,7 +167,7 @@ class ProfileActionsStore {
         onClick: this.onProfileClick,
       },
       settings,
-      {
+      isAdmin && {
         key: "PaymentsBtn",
         icon: "/static/images/payments.react.svg",
         label: t("Common:PaymentsTitle"),
@@ -234,6 +238,10 @@ class ProfileActionsStore {
 
   checkEnabledActions = (actions) => {
     const actionsArray = actions;
+
+    if (!this.authStore.settingsStore.additionalResourcesData) {
+      return actionsArray;
+    }
 
     const feedbackAndSupportEnabled = this.authStore.settingsStore
       .additionalResourcesData?.feedbackAndSupportEnabled;

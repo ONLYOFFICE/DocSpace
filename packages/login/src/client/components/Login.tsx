@@ -15,7 +15,7 @@ import Link from "@docspace/components/link";
 import Toast from "@docspace/components/toast";
 import LoginForm from "./sub-components/LoginForm";
 import MoreLoginModal from "./sub-components/more-login";
-import RecoverAccessModalDialog from "./sub-components/recover-access-modal-dialog";
+import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/RecoverAccessModalDialog";
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
@@ -223,6 +223,8 @@ const Login: React.FC<ILoginProps> = ({
         <RecoverAccessModalDialog
           visible={recoverDialogVisible}
           onClose={onRecoverDialogVisible}
+          textBody={t("RecoverTextBody")}
+          emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
         />
       </ColorTheme>
       {!checkIsSSR() && enabledJoin && <Register enabledJoin={enabledJoin} />}

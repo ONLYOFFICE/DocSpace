@@ -66,6 +66,7 @@ public class AuthenticationController : ControllerBase
     private readonly CookieStorage _cookieStorage;
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly UserManagerWrapper _userManagerWrapper;
+    private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
     private readonly BruteForceLoginManager _bruteForceLoginManager;
 
     public AuthenticationController(
@@ -77,6 +78,7 @@ public class AuthenticationController : ControllerBase
         PasswordHasher passwordHasher,
         EmailValidationKeyModelHelper emailValidationKeyModelHelper,
         ICache cache,
+        SetupInfo setupInfo,
         MessageService messageService,
         ProviderManager providerManager,
         AccountLinker accountLinker,
@@ -100,7 +102,8 @@ public class AuthenticationController : ControllerBase
         AuthContext authContext,
         CookieStorage cookieStorage,
         DbLoginEventsManager dbLoginEventsManager,
-        BruteForceLoginManager bruteForceLoginManager)
+        BruteForceLoginManager bruteForceLoginManager,
+        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -134,6 +137,7 @@ public class AuthenticationController : ControllerBase
         _dbLoginEventsManager = dbLoginEventsManager;
         _userManagerWrapper = userManagerWrapper;
         _bruteForceLoginManager = bruteForceLoginManager;
+        _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
     }
 
 
@@ -149,16 +153,16 @@ public class AuthenticationController : ControllerBase
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
         var user = GetUser(inDto, out _);
-
         var sms = false;
+
         try
         {
-            if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+            if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 sms = true;
                 _smsManager.ValidateSmsCode(user, inDto.Code, true);
             }
-            else if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            else if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 if (_tfaManager.ValidateAuthCode(user, inDto.Code, true, true))
                 {
@@ -212,7 +216,7 @@ public class AuthenticationController : ControllerBase
         bool viaEmail;
         var user = GetUser(inDto, out viaEmail);
 
-        if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+        if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
         {
             if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
             {
@@ -234,7 +238,7 @@ public class AuthenticationController : ControllerBase
             };
         }
 
-        if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
         {
             if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
             {
@@ -278,6 +282,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
     public async Task Logout()
@@ -296,7 +301,7 @@ public class AuthenticationController : ControllerBase
         _securityContext.Logout();
     }
 
-    [AllowNotPayment]
+    [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
     public ValidationResult CheckConfirm(EmailValidationKeyModel inDto)
     {

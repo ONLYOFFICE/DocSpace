@@ -19,6 +19,7 @@ const AuditTrail = (props) => {
     getLifetimeAuditSettings,
     getAuditTrailReport,
     securityLifetime,
+    isAuditAvailable,
   } = props;
 
   useEffect(() => {
@@ -40,11 +41,15 @@ const AuditTrail = (props) => {
                   theme={theme}
                   auditTrailUsers={auditTrailUsers}
                   sectionWidth={context.sectionWidth}
+                  isSettingNotPaid={!isAuditAvailable}
                 />
               </>
             ) : (
               <>
-                <AuditRowContainer sectionWidth={context.sectionWidth} />
+                <AuditRowContainer
+                  sectionWidth={context.sectionWidth}
+                  isSettingNotPaid={!isAuditAvailable}
+                />
               </>
             )
           }
@@ -69,6 +74,7 @@ const AuditTrail = (props) => {
           content={getContent()}
           downloadReport={t("DownloadReportBtn")}
           getReport={getAuditTrailReport}
+          isSettingNotPaid={!isAuditAvailable}
         />
       )}
     </>
@@ -85,8 +91,9 @@ export default inject(({ setup, auth }) => {
     getAuditTrailReport,
     securityLifetime,
   } = setup;
-  const { theme } = auth.settingsStore;
-
+  const { settingsStore, currentQuotaStore } = auth;
+  const { theme } = settingsStore;
+  const { isAuditAvailable } = currentQuotaStore;
   return {
     getAuditTrail,
     auditTrailUsers: security.auditTrail.users,
@@ -96,5 +103,6 @@ export default inject(({ setup, auth }) => {
     setLifetimeAuditSettings,
     getAuditTrailReport,
     securityLifetime,
+    isAuditAvailable,
   };
 })(withTranslation("Settings")(withRouter(AuditTrail)));

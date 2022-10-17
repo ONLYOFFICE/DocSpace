@@ -142,6 +142,8 @@ public class StorageFactory
     private readonly UserManager _userManager;
     private readonly AuthContext _authContext;
     private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly TenantQuotaFeatureChecker<MaxFileSizeFeature, long> _maxFileSizeChecker;
+    private readonly TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> _maxTotalSizeChecker;
     private readonly IServiceProvider _serviceProvider;
 
     public StorageFactory(
@@ -152,7 +154,9 @@ public class StorageFactory
         TenantManager tenantManager,
         UserManager userManager,
         AuthContext authContext,
-        CoreBaseSettings coreBaseSettings)
+        CoreBaseSettings coreBaseSettings,
+        TenantQuotaFeatureChecker<MaxFileSizeFeature, long> maxFileSizeChecker,
+        TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> maxTotalSizeChecker)
     {
         _serviceProvider = serviceProvider;
         _storageFactoryConfig = storageFactoryConfig;
@@ -162,6 +166,8 @@ public class StorageFactory
         _userManager = userManager;
         _authContext = authContext;
         _coreBaseSettings = coreBaseSettings;
+        _maxFileSizeChecker = maxFileSizeChecker;
+        _maxTotalSizeChecker = maxTotalSizeChecker;
     }
 
     public IDataStore GetStorage(string tenant, string module)
@@ -173,7 +179,7 @@ public class StorageFactory
     {
         int.TryParse(tenant, out var tenantId);
 
-        return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, _tenantManager, _authContext));
+        return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, _tenantManager, _authContext, _maxFileSizeChecker, _maxTotalSizeChecker));
     }
 
     public IDataStore GetStorage(string configpath, string tenant, string module, IQuotaController controller)
@@ -220,7 +226,7 @@ public class StorageFactory
 
         int.TryParse(tenant, out var tenantId);
 
-        return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager, _authContext));
+        return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager, _authContext, _maxFileSizeChecker, _maxTotalSizeChecker));
     }
 
     private IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)

@@ -24,19 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.IdentityModel.Tokens.Jwt;
-
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Net.Http.Headers;
-
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core;
 
 public abstract class BaseStartup
 {
+    private const string BasicAuthScheme = "Basic";
+    private const string MultiAuthSchemes = "MultiAuthSchemes";
+
     private readonly IConfiguration _configuration;
     private readonly IHostEnvironment _hostEnvironment;
+
     protected virtual JsonConverter[] Converters { get; }
     protected virtual bool AddControllersAsServices { get; }
     protected virtual bool ConfirmAddScheme { get; }
@@ -123,6 +122,8 @@ public abstract class BaseStartup
         services.AddDistributedTaskQueue();
         services.AddCacheNotify(_configuration);
 
+        services.RegisterFeature();
+
         DIHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
 
         if (LoadProducts)
@@ -155,10 +156,10 @@ public abstract class BaseStartup
 
         var authBuilder = services.AddAuthentication(options =>
         {
-            options.DefaultScheme = "MultiAuthSchemes";
-            options.DefaultChallengeScheme = "MultiAuthSchemes";
+            options.DefaultScheme = MultiAuthSchemes;
+            options.DefaultChallengeScheme = MultiAuthSchemes;
         }).AddScheme<AuthenticationSchemeOptions, CookieAuthHandler>(CookieAuthenticationDefaults.AuthenticationScheme, a => { })
-          .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>("Basic", a => { })
+          .AddScheme<AuthenticationSchemeOptions, BasicAuthHandler>(BasicAuthScheme, a => { })
           .AddScheme<AuthenticationSchemeOptions, ConfirmAuthHandler>("confirm", a => { })
           .AddJwtBearer("Bearer", options =>
             {
@@ -180,7 +181,7 @@ public abstract class BaseStartup
 
                         var claimUserId = ctx.Principal.FindFirstValue("userId");
 
-                        if (String.IsNullOrEmpty(claimUserId))
+                        if (string.IsNullOrEmpty(claimUserId))
                         {
                             throw new Exception("Claim 'UserId' is not present in claim list");
                         }
@@ -193,24 +194,35 @@ public abstract class BaseStartup
                     }
                 };
             })
-          .AddPolicyScheme("MultiAuthSchemes", JwtBearerDefaults.AuthenticationScheme, options =>
+          .AddPolicyScheme(MultiAuthSchemes, JwtBearerDefaults.AuthenticationScheme, options =>
             {
-
                 options.ForwardDefaultSelector = context =>
                 {
                     var authorizationHeader = context.Request.Headers[HeaderNames.Authorization].FirstOrDefault();
 
-                    if (String.IsNullOrEmpty(authorizationHeader)) return CookieAuthenticationDefaults.AuthenticationScheme;
+                    if (string.IsNullOrEmpty(authorizationHeader))
+                    {
+                        return CookieAuthenticationDefaults.AuthenticationScheme;
+                    }
 
-                    if (authorizationHeader.StartsWith("Basic ")) return "Basic";
+                    if (authorizationHeader.StartsWith("Basic "))
+                    {
+                        return BasicAuthScheme;
+                    }
 
                     if (authorizationHeader.StartsWith("Bearer "))
                     {
                         var token = authorizationHeader.Substring("Bearer ".Length).Trim();
                         var jwtHandler = new JwtSecurityTokenHandler();
 
-                        return (jwtHandler.CanReadToken(token) && jwtHandler.ReadJwtToken(token).Issuer.Equals(_configuration["core:oidc:authority"]))
-                            ? JwtBearerDefaults.AuthenticationScheme : CookieAuthenticationDefaults.AuthenticationScheme;
+                        if (jwtHandler.CanReadToken(token))
+                        {
+                            var issuer = jwtHandler.ReadJwtToken(token).Issuer;
+                            if (!string.IsNullOrEmpty(issuer) && issuer.Equals(_configuration["core:oidc:authority"]))
+                            {
+                                return JwtBearerDefaults.AuthenticationScheme;
+                            }
+                        }
                     }
 
                     return CookieAuthenticationDefaults.AuthenticationScheme;
