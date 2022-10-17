@@ -38,13 +38,14 @@ const InfoPanelBodyContent = ({
   const isAccounts = getIsAccounts();
   const isGallery = getIsGallery();
 
+  const isSeveralItems = props.selectedItems.length > 1;
+
   const isNoItem =
     (isGallery && !gallerySelected) ||
+    (!selection?.title && !isSeveralItems) ||
     ((isRootFolder || isAccounts) &&
       selection?.isSelectedFolder &&
       !selection?.wasContextMenuSelection);
-
-  const isSeveralItems = props.selectedItems.length > 1;
 
   const viewHelper = new ViewHelper({
     defaultProps: {
