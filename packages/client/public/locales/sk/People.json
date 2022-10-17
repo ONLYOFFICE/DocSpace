@@ -11,7 +11,7 @@
   "LblSetActive": "Nastaviť ako aktívného",
   "LblSetDisabled": "Nastaviť ako neaktívného",
   "MakeInvitationLink": "Vytvoriť odkaz na pozvanie",
-  "MessageEmailActivationInstructionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na <1>{{email}}</1> e-mail",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na <1>{{email}}</1> e-mail",
   "NotFoundDescription": "Skúste iný filter alebo ho vymažte, aby sa zobrazili všetci ľudia v sekcii.",
   "NotFoundTitle": "Nenašli sa žiadni členovia tímu",
   "ReassignmentData": "Zmena priradenia údajov",

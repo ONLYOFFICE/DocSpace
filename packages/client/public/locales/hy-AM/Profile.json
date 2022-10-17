@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Կրկին հրավիրել",
   "LightTheme": "Բաց ոճ",
   "LoginSettings": "Մուտքի կարգավորումներ",
-  "MessageEmailActivationInstructionsSentOnEmail": "Էլփոստի ակտիվացման հրահանգներն ուղարկվել են <strong>{{ email }}</strong> էլեկտրոնային հասցե․",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Էլփոստի ակտիվացման հրահանգներն ուղարկվել են <strong>{{ email }}</strong> էլեկտրոնային հասցե․",
   "PhoneLbl": "Հեռախոս",
   "ProviderSuccessfullyConnected": "Մատակարարը հաջողությամբ միացավ",
   "ProviderSuccessfullyDisconnected": "Մատակարարը հաջողությամբ անջատվեց",

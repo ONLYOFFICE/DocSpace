@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Πρόσκληση ξανά",
   "LightTheme": "Ανοιχτό θέμα",
   "LoginSettings": "Ρυθμίσεις σύνδεσης",
-  "MessageEmailActivationInstructionsSentOnEmail": "Οι οδηγίες ενεργοποίησης email έχουν σταλεί στη διεύθυνση email <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Οι οδηγίες ενεργοποίησης email έχουν σταλεί στη διεύθυνση email <strong>{{ email }}</strong>",
   "PhoneLbl": "Τηλέφωνο",
   "ProviderSuccessfullyConnected": "Ο πάροχος συνδέθηκε επιτυχώς",
   "ProviderSuccessfullyDisconnected": "Ο πάροχος αποσυνδέθηκε επιτυχώς",

@@ -11,7 +11,7 @@
   "InviteAgainLbl": "ເຊີນອີກຄັ້ງ",
   "LightTheme": "ແສງສະຫວ່າງ ຫົວ​ຂໍ້",
   "LoginSettings": "ຕັ້ງຄ່າການເຂົ້າລະບົບ",
-  "MessageEmailActivationInstructionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ <strong>{{ email }}</strong> ທີ່ຢູ່ອີເມວ",
+  "MessageEmailActivationInstuctionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ <strong>{{ email }}</strong> ທີ່ຢູ່ອີເມວ",
   "PhoneLbl": "ໂທລະສັບ",
   "ProviderSuccessfullyConnected": "ເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການສຳເລັດແລ້ວ",
   "ProviderSuccessfullyDisconnected": "ຕັດການເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການສຳເລັດແລ້ວ",

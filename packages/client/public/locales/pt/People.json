@@ -11,7 +11,7 @@
   "LblSetActive": "Ativar",
   "LblSetDisabled": "Desativar",
   "MakeInvitationLink": "Criar ligação para convite",
-  "MessageEmailActivationInstructionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <1>{{{{email}}</1>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <1>{{{{email}}</1>",
   "NotFoundDescription": "Tente um filtro diferente ou limpe-o para ver todas as pessoas da secção..",
   "NotFoundTitle": "Não foram encontrados colegas de equipa",
   "ReassignmentData": "Retribuição de dados",

@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Erneut einladen",
   "LightTheme": "Heller Modus",
   "LoginSettings": "Login-Einstellungen",
-  "MessageEmailActivationInstructionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an <strong>{{ email }}</strong> versandt.",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an <strong>{{ email }}</strong> versandt.",
   "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Anbieter erfolgreich verbunden",
   "ProviderSuccessfullyDisconnected": "Anbieter erfolgreich getrennt",

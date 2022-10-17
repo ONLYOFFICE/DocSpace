@@ -11,7 +11,7 @@
   "LblSetActive": "Aseta käyttöön",
   "LblSetDisabled": "Aseta pois käytöstä",
   "MakeInvitationLink": "Luo kutsulinkki",
-  "MessageEmailActivationInstructionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <1>{{email}}</1>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <1>{{email}}</1>",
   "NotFoundDescription": "Kokeile toista suodatinta tai tyhjennä se nähdäksesi kaikki osion ihmiset.",
   "NotFoundTitle": "Ryhmänjäseniä ei löytynyt",
   "ReassignmentData": "Tietojen uudelleenmääritys",

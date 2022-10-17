@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Kutsu uudelleen",
   "LightTheme": "Kevyt teema",
   "LoginSettings": "Kirjautumisasetukset",
-  "MessageEmailActivationInstructionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <strong>{{email}}</strong>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <strong>{{email}}</strong>",
   "PhoneLbl": "Puhelin",
   "ProviderSuccessfullyConnected": "Palveluntarjoajan yhdistäminen onnistui",
   "ProviderSuccessfullyDisconnected": "Yhteys palveluntarjoajaan katkaistu",

@@ -11,7 +11,7 @@
   "LblSetActive": "Définir comme actif",
   "LblSetDisabled": "Définir comme désactivé",
   "MakeInvitationLink": "Créer un lien d'invitation",
-  "MessageEmailActivationInstructionsSentOnEmail": "Les instructions d'activation ont été envoyées à l'adresse <1>{{email}}</1>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Les instructions d'activation ont été envoyées à l'adresse <1>{{email}}</1>",
   "NotFoundDescription": "Essayez un autre filtre ou désactivez-le pour afficher toutes les personnes de la section.",
   "NotFoundTitle": "Aucun collaborateur trouvé ",
   "ReassignmentData": "Réattribution de données",

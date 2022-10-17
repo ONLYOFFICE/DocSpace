@@ -11,7 +11,7 @@
   "LblSetActive": "ຕັ້ງຄ່າໃຊ້ງານ",
   "LblSetDisabled": "ປິດໃຊ້ງານ",
   "MakeInvitationLink": "ສ້າງລິ້ງການເຊີນ",
-  "MessageEmailActivationInstructionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ອີເມວ <1> {{email}} </1> ທີ່ຢູ່ເມວ",
+  "MessageEmailActivationInstuctionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ອີເມວ <1> {{email}} </1> ທີ່ຢູ່ເມວ",
   "NotFoundDescription": "ລອງໃຊ້ຕົວຄົ້ນຫາ ຫຼື ລ້າງເພື່ອເບິ່ງທຸກຄົນໃນສ່ວນນີ້",
   "NotFoundTitle": "ບໍ່ພົບເພື່ອນຮ່ວມທີມ",
   "ReassignmentData": "ການຈັດສັນຂໍ້ມູນຄືນ",

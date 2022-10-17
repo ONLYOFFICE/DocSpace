@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Uzaicināt vēlreiz",
   "LightTheme": "Gaišs dizains",
   "LoginSettings": "Pieteikšanās iestatījumi",
-  "MessageEmailActivationInstructionsSentOnEmail": "Norādījumi par e-pasta aktivizēšanu ir nosūtīti uz <strong>{{ email }}</strong> e-pasta adresi",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Norādījumi par e-pasta aktivizēšanu ir nosūtīti uz <strong>{{ email }}</strong> e-pasta adresi",
   "PhoneLbl": "Tālrunis",
   "ProviderSuccessfullyConnected": "Piegādātājs ir veiksmīgi savienots",
   "ProviderSuccessfullyDisconnected": "Piegādātājs ir veiksmīgi atvienots",

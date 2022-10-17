@@ -11,7 +11,7 @@
   "LblSetActive": "Nastavi aktivno",
   "LblSetDisabled": "Nastavi onemogočeno",
   "MakeInvitationLink": "Ustvari povezavo do povabila",
-  "MessageEmailActivationInstructionsSentOnEmail": "Navodila za aktivacijo e-mail naslova so bila poslana na <1>{{email}}</1> email naslov",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Navodila za aktivacijo e-mail naslova so bila poslana na <1>{{email}}</1> email naslov",
   "NotFoundDescription": "Poskusite z drugim filtrom ali filter počistite, če si želite ogledati vse osebe v razdelku.",
   "NotFoundTitle": "Ni najdenih predlog",
   "ReassignmentData": "Prerazporeditev podatkov",

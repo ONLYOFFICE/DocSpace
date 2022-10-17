@@ -13,7 +13,7 @@
   "InviteAgainLbl": "Invite again",
   "LightTheme": "Light theme",
   "LoginSettings": "Login settings",
-  "MessageEmailActivationInstructionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
+  "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
   "MyProfile": "My profile",
   "PhoneLbl": "Phone",
   "ProviderSuccessfullyConnected": "Provider successfully connected",

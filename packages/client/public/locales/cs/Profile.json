@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Pozvat znovu",
   "LightTheme": "Světlý motiv",
   "LoginSettings": "Nastavení přihlášení",
-  "MessageEmailActivationInstructionsSentOnEmail": "Pokyny k aktivaci e-mailu byly odeslány na e-mailovou adresu <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny k aktivaci e-mailu byly odeslány na e-mailovou adresu <strong>{{ email }}</strong>",
   "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Poskytovatel úspěšně připojen",
   "ProviderSuccessfullyDisconnected": "Poskytovatel úspěšně odpojen",

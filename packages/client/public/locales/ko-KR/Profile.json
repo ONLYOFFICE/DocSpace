@@ -11,7 +11,7 @@
   "InviteAgainLbl": "다시 초대",
   "LightTheme": "라이트 테마",
   "LoginSettings": "로그인 설정",
-  "MessageEmailActivationInstructionsSentOnEmail": "이메일 활성화 방법이 <strong>{{ email }}</strong> 이메일 주소로 전송되었습니다",
+  "MessageEmailActivationInstuctionsSentOnEmail": "이메일 활성화 방법이 <strong>{{ email }}</strong> 이메일 주소로 전송되었습니다",
   "PhoneLbl": "휴대 전화",
   "ProviderSuccessfullyConnected": "공급자 연결에 성공했습니다",
   "ProviderSuccessfullyDisconnected": "공급자 연결 해제에 성공했습니다",

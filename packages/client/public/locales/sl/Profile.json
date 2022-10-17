@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Povabi znova",
   "LightTheme": "Svetla tema",
   "LoginSettings": "Nastavitve za prijavo",
-  "MessageEmailActivationInstructionsSentOnEmail": "Navodila za aktivacijo e-mail naslova so bila poslana na <strong>{{ email }}</strong> email naslov",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Navodila za aktivacijo e-mail naslova so bila poslana na <strong>{{ email }}</strong> email naslov",
   "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Ponudnik je uspešno povezan",
   "ProviderSuccessfullyDisconnected": "Ponudnik je bil uspešno odklopljen",

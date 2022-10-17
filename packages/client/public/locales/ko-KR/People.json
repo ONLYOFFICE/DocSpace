@@ -11,7 +11,7 @@
   "LblSetActive": "활성화 설정",
   "LblSetDisabled": "비활성화 설정",
   "MakeInvitationLink": "초대 링크 생성",
-  "MessageEmailActivationInstructionsSentOnEmail": "이메일 활성화 방법이 <1>{{email}}</1> 이메일 주소로 전송되었습니다",
+  "MessageEmailActivationInstuctionsSentOnEmail": "이메일 활성화 방법이 <1>{{email}}</1> 이메일 주소로 전송되었습니다",
   "NotFoundDescription": "다른 필터를 사용하시거나, 해당 섹션의 모든 사람을 보시려면 필터를 삭제하세요.",
   "NotFoundTitle": "팀원을 찾을 수 없습니다",
   "ReassignmentData": "데이터 재할당",

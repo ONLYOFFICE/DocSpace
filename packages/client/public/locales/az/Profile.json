@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Bir daha dəvət et",
   "LightTheme": "İşıqlı tema",
   "LoginSettings": "Daxil olma ayarları",
-  "MessageEmailActivationInstructionsSentOnEmail": " <strong>{{ email }}</strong> elektron poçta emailin aktivlşdirilməsi haqqında təlimat göndərilmişdir",
+  "MessageEmailActivationInstuctionsSentOnEmail": " <strong>{{ email }}</strong> elektron poçta emailin aktivlşdirilməsi haqqında təlimat göndərilmişdir",
   "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Provayder müvəffəqiyyətlə qoşuldu",
   "ProviderSuccessfullyDisconnected": "Provayderin əlaqəsi müvəffəqiyyətlə kəsildi",

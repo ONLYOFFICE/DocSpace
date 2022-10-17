@@ -11,7 +11,7 @@
   "LblSetActive": "アクティブの設定",
   "LblSetDisabled": "設定無効",
   "MakeInvitationLink": "招待用リンクの作成",
-  "MessageEmailActivationInstructionsSentOnEmail": "電子メールによるアクティベーションの指示は、<1>{{email}}</1>のメールアドレスに送信されています。",
+  "MessageEmailActivationInstuctionsSentOnEmail": "電子メールによるアクティベーションの指示は、<1>{{email}}</1>のメールアドレスに送信されています。",
   "NotFoundDescription": "別のフィルタを試すか、フィルタを解除すると、セクション内のすべての人が表示されます",
   "NotFoundTitle": "チームメンバは見つかりませんでした",
   "ReassignmentData": "データの再配置",

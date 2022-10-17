@@ -11,7 +11,7 @@
   "InviteAgainLbl": "Opnieuw uitnodigen",
   "LightTheme": "Licht thema",
   "LoginSettings": "Inloginstellingen",
-  "MessageEmailActivationInstructionsSentOnEmail": "De e-mail met activatie instructies zijn verzonden naar het <strong>{{ email }}</strong> e-mailadres",
+  "MessageEmailActivationInstuctionsSentOnEmail": "De e-mail met activatie instructies zijn verzonden naar het <strong>{{ email }}</strong> e-mailadres",
   "PhoneLbl": "Telefoon",
   "ProviderSuccessfullyConnected": "Provider met succes verbonden",
   "ProviderSuccessfullyDisconnected": "Provider met succes losgekoppeld",

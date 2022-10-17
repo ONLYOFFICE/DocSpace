@@ -11,7 +11,7 @@
   "LblSetActive": "设为活动",
   "LblSetDisabled": "设为禁用",
   "MakeInvitationLink": "创建邀请链接",
-  "MessageEmailActivationInstructionsSentOnEmail": "邮件激活指示已发送至<1>{{email}}</1>邮件地址",
+  "MessageEmailActivationInstuctionsSentOnEmail": "邮件激活指示已发送至<1>{{email}}</1>邮件地址",
   "NotFoundDescription": "尝试不同的过滤条件或将其清除以在该部分中查看所有人员。",
   "NotFoundTitle": "未找到团队成员",
   "ReassignmentData": "数据重新分配",
