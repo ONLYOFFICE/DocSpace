@@ -604,21 +604,6 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (folder.FolderType == FolderType.VirtualRooms)
-                {
-                    // DocSpace admins and room admins can create rooms
-                    if (action == FilesSecurityActions.Create && !isVisitor)
-                    {
-                        return true;
-                    }
-
-                    // all can read VirtualRooms folder
-                    if (action == FilesSecurityActions.Read)
-                    {
-                        return true;
-                    }
-                }
-
                 if (DefaultCommonShare == FileShare.Read && action == FilesSecurityActions.Read && folder.FolderType == FolderType.COMMON)
                 {
                     // all can read Common folder
@@ -649,9 +634,19 @@ public class FileSecurity : IFileSecurity
                     return true;
                 }
 
-                if (action == FilesSecurityActions.Read && folder.FolderType == FolderType.VirtualRooms)
+                if (folder.FolderType == FolderType.VirtualRooms)
                 {
-                    return true;
+                    // DocSpace admins and room admins can create rooms
+                    if (action == FilesSecurityActions.Create && !isVisitor)
+                    {
+                        return true;
+                    }
+
+                    // all can read VirtualRooms folder
+                    if (action == FilesSecurityActions.Read)
+                    {
+                        return true;
+                    }
                 }
 
                 if (action == FilesSecurityActions.Read && folder.FolderType == FolderType.Archive)
@@ -750,35 +745,35 @@ public class FileSecurity : IFileSecurity
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.Comment && (e.Access == FileShare.Comment || e.Access == FileShare.Review || e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager || e.Access == FileShare.Editing))
+            else if (action == FilesSecurityActions.Comment && (e.Access == FileShare.Comment || e.Access == FileShare.Review || e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing))
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.FillForms && (e.Access == FileShare.FillForms || e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager || e.Access == FileShare.Editing))
+            else if (action == FilesSecurityActions.FillForms && (e.Access == FileShare.FillForms || e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing))
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.Review && (e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager || e.Access == FileShare.Editing))
+            else if (action == FilesSecurityActions.Review && (e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing))
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.CustomFilter && (e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager || e.Access == FileShare.Editing))
+            else if (action == FilesSecurityActions.CustomFilter && (e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing))
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.Edit && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager || e.Access == FileShare.Editing))
+            else if (action == FilesSecurityActions.Edit && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing))
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.Rename && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
+            else if (action == FilesSecurityActions.Rename && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin))
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.RoomEdit && e.Access == FileShare.RoomManager)
+            else if (action == FilesSecurityActions.RoomEdit && e.Access == FileShare.RoomAdmin)
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.Create && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomManager))
+            else if (action == FilesSecurityActions.Create && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin))
             {
                 return true;
             }
@@ -786,13 +781,13 @@ public class FileSecurity : IFileSecurity
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.Delete && (e.Access == FileShare.RoomManager || e.Access == FileShare.ReadWrite))
+            else if (action == FilesSecurityActions.Delete && e.Access == FileShare.RoomAdmin)
             {
-                if (file != null && (file.RootFolderType == FolderType.VirtualRooms || file.RootFolderType == FolderType.Archive))
+                if (file != null && (file.RootFolderType == FolderType.VirtualRooms))
                 {
                     return true;
                 }
-                else if (folder != null && (folder.RootFolderType == FolderType.VirtualRooms || folder.RootFolderType == FolderType.Archive) &&
+                else if (folder != null && folder.RootFolderType == FolderType.VirtualRooms &&
                     folder.FolderType == FolderType.DEFAULT)
                 {
                     return true;
