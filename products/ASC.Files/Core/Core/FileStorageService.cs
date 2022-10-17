@@ -2498,7 +2498,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             try
             {
-                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings, !_coreBaseSettings.DisableDocSpace);
+                var changed = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings);
                 if (changed)
                 {
                     foreach (var ace in aceCollection.Aces)

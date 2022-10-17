@@ -82,7 +82,7 @@ public class FileSharingAceHelper<T>
         _logger = loggerProvider.CreateLogger("ASC.Files");
     }
 
-    public async Task<bool> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings, bool handleForRooms = false, bool invite = false)
+    public async Task<bool> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings)
     {
         if (entry == null)
         {
@@ -105,10 +105,13 @@ public class FileSharingAceHelper<T>
         var usersWithoutRight = new List<Guid>();
         var changed = false;
 
-        aceWrappers = advancedSettings is not { InvitationLink: true } ? await FilterForRoomsAsync(entry, aceWrappers) : aceWrappers;
-
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
+            if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) && !DocSpaceHelper.ValidateShare(folder.FolderType, w.Access, _userManager.IsVisitor(w.Id)))
+            {
+                continue;
+            }
+
             if (!ProcessEmailAce(w))
             {
                 continue;
@@ -256,63 +259,6 @@ public class FileSharingAceHelper<T>
         }
 
         await _fileMarker.RemoveMarkAsNewAsync(entry);
-    }
-
-    private async Task<List<AceWrapper>> FilterForRoomsAsync(FileEntry<T> entry, List<AceWrapper> aceWrappers)
-    {
-        if (entry.FileEntryType == FileEntryType.File || entry.RootFolderType == FolderType.Archive || entry is Folder<T> { Private: true })
-        {
-            return aceWrappers;
-        }
-
-        var folderType = ((IFolder)entry).FolderType;
-
-        if (!DocSpaceHelper.IsRoom(folderType))
-        {
-            return aceWrappers;
-        }
-
-        var result = new List<AceWrapper>(aceWrappers.Count);
-
-        var isAdmin = _fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID);
-        var isRoomManager = isAdmin || await _fileSecurity.CanEditRoomAsync(entry);
-
-        foreach (var ace in aceWrappers)
-        {
-            if (ace.SubjectGroup)
-            {
-                continue;
-            }
-
-            if (!DocSpaceHelper.ValidateShare(folderType, ace.Access))
-            {
-                continue;
-            }
-
-            if (ace.Access == FileShare.RoomManager && isAdmin)
-            {
-                result.Add(ace);
-                continue;
-            }
-
-            if ((ace.Access == FileShare.None || ace.Access == FileShare.Restrict) && isAdmin)
-            {
-                result.Add(ace);
-                continue;
-            }
-
-            if (await _fileSecurity.CanEditRoomAsync(entry, ace.Id) && !isAdmin)
-            {
-                continue;
-            }
-
-            if (ace.Access != FileShare.RoomManager && isRoomManager)
-            {
-                result.Add(ace);
-            }
-        }
-
-        return result;
     }
 
     private bool ProcessEmailAce(AceWrapper ace)
