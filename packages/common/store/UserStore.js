@@ -104,7 +104,7 @@ class UserStore {
   get withActivationBar() {
     return (
       this.user &&
-      this.user.activationStatus !== EmployeeActivationStatus.Activated &&
+      this.user.activationStatus === EmployeeActivationStatus.Pending &&
       this.withSendAgain
     );
   }
