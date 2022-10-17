@@ -61,7 +61,7 @@ class QuotasStore {
       (obj) => obj.id === TOTAL_SIZE
     );
 
-    if (!result.value) return PortalFeaturesLimitations.Limitless;
+    if (!result?.value) return PortalFeaturesLimitations.Limitless;
 
     return result?.value;
   }
@@ -85,7 +85,7 @@ class QuotasStore {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === USERS
     );
-    if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
+    if (!result || !result?.value) return PortalFeaturesLimitations.Limitless;
     return result?.value;
   }
 
@@ -93,7 +93,7 @@ class QuotasStore {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === ROOM
     );
-    if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
+    if (!result || !result?.value) return PortalFeaturesLimitations.Limitless;
     return result?.value;
   }
 
@@ -145,9 +145,9 @@ class QuotasStore {
     const result = [];
 
     this.currentPortalQuotaFeatures.forEach((elem) => {
-      elem.id === ROOM && result.splice(0, 0, elem);
-      elem.id === MANAGER && result.splice(1, 0, elem);
-      elem.id === TOTAL_SIZE && result.splice(2, 0, elem);
+      elem.id === ROOM && result?.splice(0, 0, elem);
+      elem.id === MANAGER && result?.splice(1, 0, elem);
+      elem.id === TOTAL_SIZE && result?.splice(2, 0, elem);
     });
 
     return result;
@@ -158,9 +158,9 @@ class QuotasStore {
       (obj) => obj.id === USERS_IN_ROOM
     );
 
-    if (!result || !result.value) return PortalFeaturesLimitations.Limitless;
+    if (!result || !result?.value) return PortalFeaturesLimitations.Limitless;
 
-    return result.value;
+    return result?.value;
   }
 
   get showRoomQuotaBar() {
