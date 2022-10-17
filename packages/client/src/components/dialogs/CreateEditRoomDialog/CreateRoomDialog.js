@@ -51,7 +51,7 @@ const CreateRoomDialog = ({
       isThirdparty: false,
       provider: null,
       thirdpartyAccount: null,
-      storageFolderPath: "",
+      storageFolderId: "",
       rememberThirdpartyStorage: false,
     },
     icon: {
