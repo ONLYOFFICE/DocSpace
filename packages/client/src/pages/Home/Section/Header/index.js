@@ -23,7 +23,6 @@ import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 const StyledContainer = styled.div`
   width: 100%;
   min-height: 33px;
-  height: 33px;
 
   .table-container_group-menu {
     margin: 0 0 0 -20px;
@@ -61,6 +60,7 @@ const StyledContainer = styled.div`
 
   .header-container {
     min-height: 33px;
+    height: 60px;
   }
 `;
 
@@ -304,7 +304,7 @@ class SectionHeaderContent extends React.Component {
   };
 
   getContextOptionsFolder = () => {
-    const { t, toggleInfoPanel, personal } = this.props;
+    const { t, isRecycleBinFolder } = this.props;
 
     return [
       {
@@ -494,9 +494,9 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderIndeterminate,
       showText,
-      toggleInfoPanel,
       isRoomsFolder,
       isEmptyPage,
+      isVisitor,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -525,7 +525,7 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate}
+                    canCreate={canCreate && !isVisitor}
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -635,6 +635,7 @@ export default inject(
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
+      isVisitor: auth.userStore.user.isVisitor,
       isRootFolder: pathParts?.length === 1,
       title,
       isRoom,
