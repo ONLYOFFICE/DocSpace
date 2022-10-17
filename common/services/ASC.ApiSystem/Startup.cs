@@ -26,26 +26,107 @@
 
 namespace ASC.ApiSystem;
 
-public class Startup : BaseStartup
+public class Startup
 {
-    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment) : base(configuration, hostEnvironment)
+
+    private readonly IConfiguration _configuration;
+    private readonly IHostEnvironment _hostEnvironment;
+    private readonly DIHelper _diHelper;
+
+    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
     {
-        LoadProducts = false;
+        _configuration = configuration;
+        _hostEnvironment = hostEnvironment;
+        _diHelper = new DIHelper();
     }
 
-    public override void ConfigureServices(IServiceCollection services)
+    public void ConfigureServices(IServiceCollection services)
     {
-        base.ConfigureServices(services);
+        services.AddCustomHealthCheck(_configuration);
+        services.AddHttpContextAccessor();
+        services.AddMemoryCache();
+        services.AddHttpClient();
 
-        DIHelper.TryAdd<AuthHandler>();
+        services.AddScoped<EFLoggerFactory>();
+        services.AddBaseDbContextPool<AccountLinkContext>();
+        services.AddBaseDbContextPool<CoreDbContext>();
+        services.AddBaseDbContextPool<TenantDbContext>();
+        services.AddBaseDbContextPool<UserDbContext>();
+        services.AddBaseDbContextPool<TelegramDbContext>();
+        services.AddBaseDbContextPool<FirebaseDbContext>();
+        services.AddBaseDbContextPool<CustomDbContext>();
+        services.AddBaseDbContextPool<WebstudioDbContext>();
+        services.AddBaseDbContextPool<InstanceRegistrationContext>();
+        services.AddBaseDbContextPool<IntegrationEventLogContext>();
+        services.AddBaseDbContextPool<FeedDbContext>();
+        services.AddBaseDbContextPool<MessagesContext>();
+        services.AddBaseDbContextPool<WebhooksDbContext>();
+
+        services.AddSession();
+
+        _diHelper.Configure(services);
+
+        Action<JsonOptions> jsonOptions = options =>
+        {
+            options.JsonSerializerOptions.WriteIndented = false;
+            options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            options.JsonSerializerOptions.Converters.Add(new ApiDateTimeConverter());
+        };
+
+        services.AddControllers()
+            .AddXmlSerializerFormatters()
+            .AddJsonOptions(jsonOptions);
+
+        services.AddSingleton(jsonOptions);
+
+        _diHelper.AddControllers();
+        _diHelper.TryAdd<CultureMiddleware>();
+        _diHelper.TryAdd<IpSecurityFilter>();
+        _diHelper.TryAdd<PaymentFilter>();
+        _diHelper.TryAdd<ProductSecurityFilter>();
+        _diHelper.TryAdd<TenantStatusFilter>();
+        _diHelper.TryAdd<ConfirmAuthHandler>();
+        _diHelper.TryAdd<BasicAuthHandler>();
+        _diHelper.TryAdd<CookieAuthHandler>();
+        _diHelper.TryAdd<WebhooksGlobalFilterAttribute>();
+
+        services.AddDistributedCache(_configuration);
+        services.AddEventBus(_configuration);
+        services.AddDistributedTaskQueue();
+        services.AddCacheNotify(_configuration);
+
+        services.RegisterFeature();
+
+        _diHelper.TryAdd(typeof(IWebhookPublisher), typeof(WebhookPublisher));
+
+        _diHelper.RegisterProducts(_configuration, _hostEnvironment.ContentRootPath);
+
+        services.AddAutoMapper(BaseStartup.GetAutoMapperProfileAssemblies());
+
+        if (!_hostEnvironment.IsDevelopment())
+        {
+            services.AddStartupTask<WarmupServicesStartupTask>()
+                    .TryAddSingleton(services);
+        }
 
         services.AddAuthentication()
             .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth:allowskip:default", _ => { })
             .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth:allowskip:registerportal", _ => { });
     }
 
-    public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        base.Configure(app, env);
+        app.UseRouting();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
+
+        app.UseCultureMiddleware();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapCustom();
+        });
     }
 }
