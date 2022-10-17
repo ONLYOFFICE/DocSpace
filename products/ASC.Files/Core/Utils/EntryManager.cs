@@ -1482,8 +1482,7 @@ public class EntryManager
                 && !await _fileSecurity.CanCustomFilterEditAsync(file, userId)
                 && !await _fileSecurity.CanReviewAsync(file, userId)
                 && !await _fileSecurity.CanFillFormsAsync(file, userId)
-                && !await _fileSecurity.CanCommentAsync(file, userId)
-                || _userManager.IsVisitor(userId)))
+                && !await _fileSecurity.CanCommentAsync(file, userId)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }

@@ -98,6 +98,16 @@ public class FileSecurity : IFileSecurity
         return CanAsync(entry, userId, FilesSecurityActions.Read);
     }
 
+    public Task<bool> CanReadHistoryAsync<T>(FileEntry<T> entry)
+    {
+        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.ReadHistory);
+    }
+
+    public Task<bool> CanReadHistoryAsync<T>(FileEntry<T> entry, Guid userId)
+    {
+        return CanAsync(entry, userId, FilesSecurityActions.ReadHistory);
+    }
+
     public Task<bool> CanCommentAsync<T>(FileEntry<T> entry, Guid userId)
     {
         return CanAsync(entry, userId, FilesSecurityActions.Comment);
@@ -766,11 +776,11 @@ public class FileSecurity : IFileSecurity
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.Comment && (e.Access == FileShare.Comment || e.Access == FileShare.Review || e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing))
+            else if (action == FilesSecurityActions.Comment && (e.Access == FileShare.Comment || e.Access == FileShare.Review || e.Access == FileShare.CustomFilter || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing || e.Access == FileShare.FillForms))
             {
                 return true;
             }
-            else if (action == FilesSecurityActions.FillForms && (e.Access == FileShare.FillForms || e.Access == FileShare.Review || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing))
+            else if (action == FilesSecurityActions.FillForms && (e.Access == FileShare.FillForms || e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing))
             {
                 return true;
             }
@@ -795,6 +805,10 @@ public class FileSecurity : IFileSecurity
                 return true;
             }
             else if (action == FilesSecurityActions.Create && (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin))
+            {
+                return true;
+            }
+            else if (action == FilesSecurityActions.ReadHistory && (e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing))
             {
                 return true;
             }
@@ -1519,6 +1533,7 @@ public class FileSecurity : IFileSecurity
         Delete,
         CustomFilter,
         RoomEdit,
-        Rename
+        Rename,
+        ReadHistory
     }
 }

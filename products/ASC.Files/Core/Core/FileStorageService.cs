@@ -1166,7 +1166,7 @@ public class FileStorageService<T> //: IFileStorageService
     {
         var fileDao = GetFileDao();
         var file = await fileDao.GetFileAsync(fileId);
-        ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
+        ErrorIf(!await _fileSecurity.CanReadHistoryAsync(file), FilesCommonResource.ErrorMassage_SecurityException_ReadFile);
 
         await foreach (var r in fileDao.GetFileHistoryAsync(fileId))
         {

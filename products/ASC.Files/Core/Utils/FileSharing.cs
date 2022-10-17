@@ -481,10 +481,6 @@ public class FileSharing
                     continue;
                 }
             }
-            else if (_userManager.IsVisitor(u) && new FileShareRecord.ShareComparer().Compare(FileShare.Read, share) > 0)
-            {
-                share = FileShare.Read;
-            }
 
             var w = new AceWrapper
             {
