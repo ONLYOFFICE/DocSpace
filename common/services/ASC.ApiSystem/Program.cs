@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -32,19 +33,52 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault();
-
 builder.Configuration.AddDefaultConfiguration(builder.Environment)
                      .AddApiSystemConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 
-var startup = new Startup(builder.Configuration, builder.Environment);
+var logger = LogManager.Setup()
+                            .SetupExtensions(s =>
+                            {
+                                s.RegisterLayoutRenderer("application-context", (logevent) => AppName);
+                            })
+                            .LoadConfiguration(builder.Configuration, builder.Environment)
+                            .GetLogger(typeof(Startup).Namespace);
 
-startup.ConfigureServices(builder.Services);
+try
+{
+    logger.Info("Configuring web host ({applicationContext})...", AppName);
+    builder.Host.ConfigureDefault();
 
-var app = builder.Build();
+    var startup = new Startup(builder.Configuration, builder.Environment);
 
-startup.Configure(app, app.Environment);
+    startup.ConfigureServices(builder.Services);
 
-await app.RunAsync();
+    var app = builder.Build();
+
+    startup.Configure(app, app.Environment);
+
+    logger.Info("Starting web host ({applicationContext})...", AppName);
+    await app.RunWithTasksAsync();
+}
+catch (Exception ex)
+{
+    if (logger != null)
+    {
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", AppName);
+    }
+
+    throw;
+}
+finally
+{
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    LogManager.Shutdown();
+}
+
+public partial class Program
+{
+    public static string Namespace = typeof(Startup).Namespace;
+    public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.') + 1);
+}

@@ -56,7 +56,7 @@ public class TenantModel : IModel
     public string Module { get; set; }
 
     //todo: delete after www update
-    [StringLength(Web.Core.Utility.PasswordSettings.MaxLength)]
+    [StringLength(PasswordSettings.MaxLength)]
     public string Password { get; set; }
 
     public string PasswordHash { get; set; }
