@@ -331,7 +331,7 @@ public class FileSharingHelper
             return true;
         }
 
-        if (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsAdministrator || await _fileSecurity.CanShare(entry)))
+        if (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsAdministrator || await _fileSecurity.CanShareAsync(entry)))
         {
             return true;
         }
@@ -348,7 +348,7 @@ public class FileSharingHelper
 
         if (_coreBaseSettings.DisableDocSpace)
         {
-            if (entry.RootFolderType == FolderType.USER && Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanShare(entry))
+            if (entry.RootFolderType == FolderType.USER && Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanShareAsync(entry))
             {
                 return true;
             }
@@ -364,7 +364,7 @@ public class FileSharingHelper
 
         return entry.RootFolderType == FolderType.Privacy
                 && entry is File<T>
-                && (Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync) || await _fileSecurity.CanShare(entry));
+                && (Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync) || await _fileSecurity.CanShareAsync(entry));
     }
 }
 
