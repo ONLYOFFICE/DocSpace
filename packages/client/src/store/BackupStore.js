@@ -146,8 +146,11 @@ class BackupStore {
 
   setSelectedThirdPartyAccount = (elem) => {
     this.selectedThirdPartyAccount = elem;
-   
   };
+
+  get selectedThirdPartyAccount() {
+    return this.selectedThirdPartyAccount;
+  }
 
   toDefault = () => {
     this.selectedMonthlySchedule = this.defaultMonthlySchedule;

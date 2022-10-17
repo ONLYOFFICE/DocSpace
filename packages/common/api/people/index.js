@@ -324,3 +324,10 @@ export function changeTheme(key) {
     data,
   });
 }
+
+export function getUsersByQuery(query) {
+  return request({
+    method: "get",
+    url: `/people/search?query=${query}`,
+  });
+}

@@ -79,7 +79,7 @@ const PaymentsPage = ({
   currentTariffPlanTitle,
   tariffPlanTitle,
 }) => {
-  const { t, ready } = useTranslation(["Payments", "Settings"]);
+  const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
@@ -155,10 +155,10 @@ const PaymentsPage = ({
             <>
               <Text isBold>{t("ManagerTypesDescription")}</Text>
               <br />
-              <Text isBold>{t("Administrator")}</Text>
+              <Text isBold>{t("Common:DocSpaceAdmin")}</Text>
               <Text>{t("AdministratorDescription")}</Text>
               <br />
-              <Text isBold>{t("RoomManager")}</Text>
+              <Text isBold>{t("Common:RoomAdmin")}</Text>
               <Text>{t("RoomManagerDescription")}</Text>
             </>
           }

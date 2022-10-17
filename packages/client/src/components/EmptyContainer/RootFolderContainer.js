@@ -47,6 +47,7 @@ const RootFolderContainer = (props) => {
     categoryType,
     isEmptyPage,
     setIsEmptyPage,
+    isVisitor,
   } = props;
   const personalDescription = t("PersonalEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
@@ -57,7 +58,9 @@ const RootFolderContainer = (props) => {
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
-  const roomsDescription = t("RoomEmptyContainerDescription");
+  const roomsDescription = isVisitor
+    ? t("RoomEmptyContainerDescription")
+    : t("RoomEmptyContainerDescriptionUser");
   const archiveRoomsDescription = t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
@@ -139,14 +142,14 @@ const RootFolderContainer = (props) => {
           headerText: noFilesHeader,
           descriptionText: favoritesDescription,
           imageSrc: "images/empty_screen_favorites.svg",
-          buttons: goToPersonalButtons,
+          buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Recent:
         return {
           headerText: noFilesHeader,
           descriptionText: recentDescription,
           imageSrc: "images/empty_screen_recent.svg",
-          buttons: goToPersonalButtons,
+          buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Privacy:
         return {
@@ -169,7 +172,7 @@ const RootFolderContainer = (props) => {
           headerText: roomHeader,
           descriptionText: roomsDescription,
           imageSrc: "images/empty_screen_corporate.png",
-          buttons: roomsButtons,
+          buttons: isVisitor ? null : roomsButtons,
         };
       case FolderType.Archive:
         return {
@@ -375,6 +378,7 @@ export default inject(
       theme,
       isPrivacyFolder,
       isDesktop: isDesktopClient,
+      isVisitor: auth.userStore.user.isVisitor,
       isEncryptionSupport,
       organizationName,
       privacyInstructions,

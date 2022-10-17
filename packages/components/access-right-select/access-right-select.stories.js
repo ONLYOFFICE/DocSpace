@@ -20,7 +20,12 @@ const Template = (args) => (
 );
 
 export const Default = Template.bind({});
+
 Default.args = {
-  options: data,
+  accessOptions: data,
   selectedOption: data[0],
+  scaledOptions: false,
+  scaled: false,
+  size: "content",
+  manualWidth: "fit-content",
 };
