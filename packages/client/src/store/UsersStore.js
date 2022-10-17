@@ -41,12 +41,14 @@ class UsersStore {
     const res = await api.people.getUserList(filterData);
     filterData.total = res.total;
 
-    this.peopleStore.filterStore.setFilterParams(filterData);
+    /*     this.peopleStore.filterStore.setFilterParams(filterData);
     this.peopleStore.selectedGroupStore.setSelectedGroup(
       filterData.group || "root"
-    );
+    ); */
 
     this.setUsers(res.items);
+
+    return Promise.resolve(res.items);
   };
 
   setUsers = (users) => {
@@ -319,6 +321,17 @@ class UsersStore {
   get hasMoreAccounts() {
     return this.peopleList.length < this.peopleStore.filterStore.filterTotal;
   }
+
+  getUsersByQuery = async (query) => {
+    const filter = Filter.getDefault();
+
+    filter.search = query;
+    filter.pageCount = 100;
+
+    const res = await api.people.getUserList(filter);
+
+    return res.items;
+  };
 
   get peopleList() {
     const list = this.users.map((user) => {

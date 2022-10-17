@@ -14,6 +14,7 @@ const AccountsItemTitle = ({
   isSeveralItems,
   selection,
   getUserContextOptions,
+  severalItemsLength,
 }) => {
   const isPending = selection.statusType === "pending";
 
@@ -29,7 +30,7 @@ const AccountsItemTitle = ({
       <StyledTitle>
         <Avatar size={"min"} role={"user"} />
         <Text className="text" fontWeight={600} fontSize="16px">
-          {`${t("InfoPanel:SelectedUsers")}: ${selection.length}`}
+          {`${t("InfoPanel:SelectedUsers")}: ${severalItemsLength}`}
         </Text>
       </StyledTitle>
     );

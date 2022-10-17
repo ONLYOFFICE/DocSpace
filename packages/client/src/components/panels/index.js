@@ -9,6 +9,7 @@ import ChangeOwnerPanel from "./ChangeOwnerPanel";
 import UploadPanel from "./UploadPanel";
 import SelectFileDialog from "./SelectFileDialog";
 import HotkeyPanel from "./HotkeysPanel";
+import InvitePanel from "./InvitePanel";
 
 export {
   SharingPanel,
@@ -22,4 +23,5 @@ export {
   UploadPanel,
   SelectFileDialog,
   HotkeyPanel,
+  InvitePanel,
 };
