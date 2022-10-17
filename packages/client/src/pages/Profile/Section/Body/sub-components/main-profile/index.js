@@ -7,8 +7,6 @@ import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 
-import { isSmallTablet } from "@docspace/components/utils/device";
-
 import { getUserRole } from "SRC_DIR/helpers/people-helpers";
 
 import LanguagesCombo from "./languagesCombo";
@@ -22,6 +20,7 @@ import {
 } from "SRC_DIR/components/dialogs";
 
 import { StyledWrapper, StyledInfo } from "./styled-main-profile";
+import { HelpButton } from "@docspace/components";
 
 const MainProfile = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
@@ -85,10 +84,11 @@ const MainProfile = (props) => {
               >
                 {profile.email}
                 {withActivationBar && (
-                  <ReactSVG
+                  <HelpButton
                     className="send-again-icon"
-                    title={t("EmailNotVerified")}
-                    src={"images/send.clock.react.svg"}
+                    color={"#316daa"}
+                    tooltipContent={t("EmailNotVerified")}
+                    iconName={"images/send.clock.react.svg"}
                   />
                 )}
               </Text>
@@ -96,7 +96,6 @@ const MainProfile = (props) => {
               {withActivationBar && (
                 <Text
                   className="send-again-text"
-                  title={t("EmailNotVerified")}
                   fontWeight={600}
                   noSelect
                   truncate
@@ -113,20 +112,19 @@ const MainProfile = (props) => {
               onClick={() => setChangeEmailVisible(true)}
             />
             {withActivationBar && (
-              <div
-                onClick={sendActivationLinkAction}
-                className="send-again-container"
-                title={t("EmailNotVerified")}
-              >
-                <ReactSVG
+              <div className="send-again-container">
+                <HelpButton
                   className="send-again-icon"
-                  src={"images/send.clock.react.svg"}
+                  color={"#316daa"}
+                  tooltipContent={t("EmailNotVerified")}
+                  iconName={"images/send.clock.react.svg"}
                 />
                 <Text
                   className="send-again-text"
                   fontWeight={600}
                   noSelect
                   truncate
+                  onClick={sendActivationLinkAction}
                 >
                   {t("SendAgain")}
                 </Text>

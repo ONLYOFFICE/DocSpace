@@ -104,6 +104,10 @@ export const StyledInfo = styled.div`
 
       @media ${smallTablet} {
         display: block;
+        padding-left: 5px;
+
+        width: fit-content;
+        height: fit-content;
       }
     }
 
@@ -187,6 +191,10 @@ export const StyledInfo = styled.div`
       .edit-button {
         margin-left: auto;
         min-width: 12px;
+      }
+
+      .email-text-container {
+        padding-left: 0px;
       }
     }
   }

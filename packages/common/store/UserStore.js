@@ -11,6 +11,8 @@ class UserStore {
   isLoaded = false;
   userIsUpdate = false;
 
+  withSendAgain = true;
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -73,31 +75,37 @@ class UserStore {
     this.userIsUpdate = isUpdate;
   };
 
-  setHideActivationBar = (hideActivationBar) => {
-    this.hideActivationBar = hideActivationBar;
+  setWithSendAgain = (withSendAgain) => {
+    this.withSendAgain = withSendAgain;
   };
 
   sendActivationLink = (t) => {
     const { email, id } = this.user;
 
-    return api.people.resendUserInvites([id]).then(() => {
-      toastr.success(
-        <Trans
-          i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-          ns="People"
-          t={t}
-        >
-          The email activation instructions have been sent to the
-          <strong>{{ email: email }}</strong> email address
-        </Trans>
-      );
-    });
+    return api.people
+      .resendUserInvites([id])
+      .then(() => {
+        toastr.success(
+          <Trans
+            i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
+            ns="People"
+            t={t}
+          >
+            The email activation instructions have been sent to the
+            <strong>{{ email: email }}</strong> email address
+          </Trans>
+        );
+      })
+      .finally(() => {
+        this.setWithSendAgain(false);
+      });
   };
 
   get withActivationBar() {
     return (
       this.user &&
-      this.user.activationStatus !== EmployeeActivationStatus.Activated
+      this.user.activationStatus !== EmployeeActivationStatus.Activated &&
+      this.withSendAgain
     );
   }
 
