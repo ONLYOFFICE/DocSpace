@@ -447,9 +447,6 @@ class TreeFolders extends React.Component {
       return;
     }
 
-    console.log(onSelect);
-    console.log(folder, treeNode);
-
     onSelect && onSelect(folder, treeNode);
   };
 
