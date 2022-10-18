@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Api.Core.Core;
-internal static class QuotaExtension
+public static class QuotaExtension
 {
     public static void RegisterFeature(this IServiceCollection services)
     {

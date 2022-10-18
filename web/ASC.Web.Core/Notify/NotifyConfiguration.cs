@@ -356,7 +356,7 @@ public class NotifyTransferRequest : INotifyEngineAction
         request.Arguments.Add(new TagValue(CommonTags.HelpLink, _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, false)));
         request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
         request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(_settingsManager)));
-        request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
+        request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name == "" ? Resource.PortalName : tenant.Name));
         request.Arguments.Add(new TagValue(CommonTags.ImagePath, _studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
 
         AddLetterLogo(request);
