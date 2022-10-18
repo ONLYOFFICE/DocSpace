@@ -59,7 +59,7 @@ public class UserController : PeopleControllerBase
     private readonly RoomLinkService _roomLinkService;
     private readonly FileSecurity _fileSecurity;
     private readonly IQuotaService _quotaService;
-    private readonly CountRoomAdminChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
     private readonly CountUserChecker _countUserChecker;
     private readonly UsersInRoomChecker _usersInRoomChecker;
     private readonly UsersInRoomStatistic _usersInRoomStatistic;
@@ -99,7 +99,7 @@ public class UserController : PeopleControllerBase
         SettingsManager settingsManager,
         RoomLinkService roomLinkService,
         FileSecurity fileSecurity,
-        CountRoomAdminChecker countManagerChecker,
+        CountRoomAdminChecker countRoomAdminChecker,
         CountUserChecker activeUsersChecker,
         UsersInRoomChecker usersInRoomChecker,
         UsersInRoomStatistic usersInRoomStatistic,
@@ -134,7 +134,7 @@ public class UserController : PeopleControllerBase
         _settingsManager = settingsManager;
         _roomLinkService = roomLinkService;
         _fileSecurity = fileSecurity;
-        _countManagerChecker = countManagerChecker;
+        _countRoomAdminChecker = countRoomAdminChecker;
         _countUserChecker = activeUsersChecker;
         _usersInRoomChecker = usersInRoomChecker;
         _usersInRoomStatistic = usersInRoomStatistic;
@@ -956,7 +956,7 @@ public class UserController : PeopleControllerBase
 
         if (!self && !inDto.IsUser && _userManager.IsUser(user))
         {
-            await _countManagerChecker.CheckUsed();
+            await _countRoomAdminChecker.CheckUsed();
             _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
@@ -996,7 +996,7 @@ public class UserController : PeopleControllerBase
                     {
                         if (!_userManager.IsUser(user))
                         {
-                            await _countManagerChecker.CheckUsed();
+                            await _countRoomAdminChecker.CheckUsed();
                         }
                         else
                         {
@@ -1044,7 +1044,7 @@ public class UserController : PeopleControllerBase
             switch (type)
             {
                 case EmployeeType.RoomAdmin:
-                    await _countManagerChecker.CheckUsed();
+                    await _countRoomAdminChecker.CheckUsed();
                     _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;

@@ -59,7 +59,7 @@ public class SsoHandlerService
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly TenantUtil _tenantUtil;
     private readonly Action<string> _signatureResolver;
-    private readonly CountRoomAdminChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
     private const string MOB_PHONE = "mobphone";
     private const string EXT_MOB_PHONE = "extmobphone";
 
@@ -81,7 +81,7 @@ public class SsoHandlerService
         MessageService messageService,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         TenantUtil tenantUtil,
-        CountRoomAdminChecker countManagerChecker)
+        CountRoomAdminChecker countRoomAdminChecker)
     {
         _log = log;
         _coreBaseSettings = coreBaseSettings;
@@ -97,7 +97,7 @@ public class SsoHandlerService
         _messageService = messageService;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _tenantUtil = tenantUtil;
-        _countManagerChecker = countManagerChecker;
+        _countRoomAdminChecker = countRoomAdminChecker;
         _signatureResolver = signature =>
         {
             int.TryParse(signature.Substring(signature.Length - 1), out var lastSignChar);
@@ -272,7 +272,7 @@ public class SsoHandlerService
 
                 try
                 {
-                    await _countManagerChecker.CheckUsed();
+                    await _countRoomAdminChecker.CheckUsed();
                 }
                 catch (Exception)
                 {

@@ -44,7 +44,7 @@ public class LdapUserManager
     private readonly UserFormatter _userFormatter;
     private readonly IServiceProvider _serviceProvider;
     private readonly NovellLdapUserImporter _novellLdapUserImporter;
-    private readonly CountRoomAdminChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
     private LdapLocalization _resource;
 
     public LdapUserManager(
@@ -59,7 +59,7 @@ public class LdapUserManager
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserFormatter userFormatter,
         NovellLdapUserImporter novellLdapUserImporter,
-        CountRoomAdminChecker countManagerChecker)
+        CountRoomAdminChecker countRoomAdminChecker)
     {
         _logger = logger;
         _userManager = userManager;
@@ -72,7 +72,7 @@ public class LdapUserManager
         _userFormatter = userFormatter;
         _serviceProvider = serviceProvider;
         _novellLdapUserImporter = novellLdapUserImporter;
-        _countManagerChecker = countManagerChecker;
+        _countRoomAdminChecker = countRoomAdminChecker;
     }
 
     public void Init(LdapLocalization resource = null)
@@ -137,7 +137,7 @@ public class LdapUserManager
 
             try
             {
-                _countManagerChecker.CheckUsed().Wait();
+                _countRoomAdminChecker.CheckUsed().Wait();
             }
             catch (Exception)
             {
