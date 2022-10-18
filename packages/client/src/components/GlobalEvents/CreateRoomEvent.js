@@ -97,7 +97,7 @@ const CreateRoomEvent = ({
     <CreateRoomDialog
       t={t}
       visible={visible && !connectDialogVisible}
-      closeEvent={onClose}
+      onClose={onClose}
       onCreate={onCreate}
       fetchedTags={fetchedTags}
       isLoading={isLoading}

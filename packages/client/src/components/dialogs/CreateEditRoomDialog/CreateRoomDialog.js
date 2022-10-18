@@ -30,7 +30,7 @@ const StyledModalDialog = styled(ModalDialog)`
 const CreateRoomDialog = ({
   t,
   visible,
-  closeEvent,
+  onClose,
   onCreate,
 
   fetchedTags,
@@ -86,14 +86,14 @@ const CreateRoomDialog = ({
     setRoomParams({ ...startRoomParams });
   };
 
-  const onClose = async () => {
+  const onCloseAndDisconnectThirdparty = async () => {
     if (!!roomParams.storageLocation.thirdpartyAccount) {
       setIsLoading(true);
       await deleteThirdParty(
         roomParams.storageLocation.thirdpartyAccount.providerId
       ).finally(() => setIsLoading(false));
     }
-    closeEvent();
+    onClose();
   };
 
   return (
@@ -101,7 +101,7 @@ const CreateRoomDialog = ({
       displayType="aside"
       withBodyScroll
       visible={visible}
-      onClose={onClose}
+      onClose={onCloseAndDisconnectThirdparty}
       isScrollLocked={isScrollLocked}
       withFooterBorder
       isOauthWindowOpen={isOauthWindowOpen}
@@ -145,7 +145,7 @@ const CreateRoomDialog = ({
             label={t("Common:CancelButton")}
             size="normal"
             scale
-            onClick={onClose}
+            onClick={onCloseAndDisconnectThirdparty}
           />
         </ModalDialog.Footer>
       )}
