@@ -60,6 +60,12 @@ public class GreetingSettingsController : BaseSettingsController
         return new ContentResult { Content = Tenant.Name == "" ? Resource.PortalName : Tenant.Name };
     }
 
+    [HttpGet("greetingsettings/isdefault")]
+    public bool IsDefault()
+    {
+        return Tenant.Name == "";
+    }
+
     [HttpPost("greetingsettings")]
     public ContentResult SaveGreetingSettings(GreetingSettingsRequestsDto inDto)
     {
