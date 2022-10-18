@@ -21,7 +21,7 @@ import Scrollbar from "@docspace/components/scrollbar";
 import { isIOS, isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
 
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import ButtonAlertIcon from "../../../public/images/button.alert.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
@@ -118,6 +118,8 @@ const MainButtonMobile = (props) => {
     alert,
     withMenu,
     onClick,
+    onAlertClick,
+    withAlertClick,
   } = props;
 
   const [isOpen, setIsOpen] = useState(opened);
@@ -165,6 +167,10 @@ const MainButtonMobile = (props) => {
       }
     }
     prevPosition = currentPosition;
+  };
+
+  const onAlertClickAction = () => {
+    withAlertClick && onAlertClick && onAlertClick();
   };
 
   const setDialogBackground = (scrollHeight) => {
@@ -395,7 +401,11 @@ const MainButtonMobile = (props) => {
           )}
         </StyledDropDown>
         <StyledAlertIcon>
-          {alert && !isOpen ? <StyledButtonAlertIcon size="medium" /> : <></>}
+          {alert && !isOpen ? (
+            <StyledButtonAlertIcon onClick={onAlertClickAction} size="medium" />
+          ) : (
+            <></>
+          )}
         </StyledAlertIcon>
       </div>
     </>
@@ -430,6 +440,10 @@ MainButtonMobile.propTypes = {
   opened: PropTypes.bool,
   /** If you need close drop down  */
   onClose: PropTypes.func,
+  /** If you need open upload panel when clicking on alert button  */
+  onAlertClick: PropTypes.func,
+  /** Enable alert click  */
+  withAlertClick: PropTypes.bool,
 };
 
 MainButtonMobile.defaultProps = {
