@@ -191,6 +191,7 @@ class ProfileMenu extends React.Component {
               role={avatarRole}
               source={avatarSource}
               userName={displayName}
+              hideRoleIcon
             />
             <div>
               <MainLabelContainer>{displayName}</MainLabelContainer>
