@@ -62,7 +62,6 @@ public class UserController : PeopleControllerBase
     private readonly CountManagerChecker _countManagerChecker;
     private readonly CountUserChecker _countUserChecker;
     private readonly UsersInRoomChecker _usersInRoomChecker;
-    private readonly UsersInRoomStatistic _usersInRoomStatistic;
 
     public UserController(
         ICache cache,
@@ -102,7 +101,6 @@ public class UserController : PeopleControllerBase
         CountManagerChecker countManagerChecker,
         CountUserChecker activeUsersChecker,
         UsersInRoomChecker usersInRoomChecker,
-        UsersInRoomStatistic usersInRoomStatistic,
         IQuotaService quotaService)
         : base(userManager, permissionContext, apiContext, userPhotoManager, httpClientFactory, httpContextAccessor)
     {
@@ -137,7 +135,6 @@ public class UserController : PeopleControllerBase
         _countManagerChecker = countManagerChecker;
         _countUserChecker = activeUsersChecker;
         _usersInRoomChecker = usersInRoomChecker;
-        _usersInRoomStatistic = usersInRoomStatistic;
         _quotaService = quotaService;
     }
 
@@ -176,7 +173,7 @@ public class UserController : PeopleControllerBase
         user.Notes = inDto.Comment;
         user.Sex = "male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
                        ? true
-                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
+                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? false : null);
 
         user.BirthDate = inDto.Birthday != null ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
@@ -255,7 +252,7 @@ public class UserController : PeopleControllerBase
         user.Notes = inDto.Comment;
         user.Sex = "male".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase)
                        ? true
-                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? (bool?)false : null);
+                       : ("female".Equals(inDto.Sex, StringComparison.OrdinalIgnoreCase) ? false : null);
 
         user.BirthDate = inDto.Birthday != null && inDto.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
@@ -277,12 +274,12 @@ public class UserController : PeopleControllerBase
 
             if (success)
             {
-                _usersInRoomChecker.CheckAdd(await _usersInRoomStatistic.GetValue(id) + 1);
+                await _usersInRoomChecker.CheckAppend();
                 await _fileSecurity.ShareAsync(id, Files.Core.FileEntryType.Folder, user.Id, options.Share);
             }
             else
             {
-                _usersInRoomChecker.CheckAdd(await _usersInRoomStatistic.GetValue(options.RoomId) + 1);
+                await _usersInRoomChecker.CheckAppend();
                 await _fileSecurity.ShareAsync(options.RoomId, Files.Core.FileEntryType.Folder, user.Id, options.Share);
             }
         }
@@ -949,14 +946,14 @@ public class UserController : PeopleControllerBase
 
         if (inDto.IsVisitor && !_userManager.IsVisitor(user) && canBeGuestFlag)
         {
-            await _countUserChecker.CheckUsed();
+            await _countUserChecker.CheckAppend();
             _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
         if (!self && !inDto.IsVisitor && _userManager.IsVisitor(user))
         {
-            await _countManagerChecker.CheckUsed();
+            await _countManagerChecker.CheckAppend();
             _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
@@ -996,11 +993,11 @@ public class UserController : PeopleControllerBase
                     {
                         if (!_userManager.IsVisitor(user))
                         {
-                            await _countManagerChecker.CheckUsed();
+                            await _countManagerChecker.CheckAppend();
                         }
                         else
                         {
-                            await _countUserChecker.CheckUsed();
+                            await _countUserChecker.CheckAppend();
                         }
 
                         user.Status = EmployeeStatus.Active;
@@ -1044,12 +1041,12 @@ public class UserController : PeopleControllerBase
             switch (type)
             {
                 case EmployeeType.User:
-                    await _countManagerChecker.CheckUsed();
+                    await _countManagerChecker.CheckAppend();
                     _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
                 case EmployeeType.Visitor:
-                    await _countUserChecker.CheckUsed();
+                    await _countUserChecker.CheckAppend();
                     _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;

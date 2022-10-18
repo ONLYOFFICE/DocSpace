@@ -82,7 +82,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         new
                         {
                             Tenant = -3,
-                            Features = "free,total_size:2147483648,manager:1,rooms:12,usersInRoom:3",
+                            Features = "free,total_size:2147483648,manager:1,room:12,usersInRoom:3",
                             Name = "startup",
                             Price = 0.00m,
                             Visible = false

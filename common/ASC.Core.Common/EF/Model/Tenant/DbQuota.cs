@@ -79,7 +79,7 @@ public static class DbQuotaExtension
                     Tenant = -3,
                     Name = "startup",
                     Description = null,
-                    Features = "free,total_size:2147483648,manager:1,rooms:12,usersInRoom:3",
+                    Features = "free,total_size:2147483648,manager:1,room:12,usersInRoom:3",
                     Price = 0,
                     ProductId = null,
                     Visible = false

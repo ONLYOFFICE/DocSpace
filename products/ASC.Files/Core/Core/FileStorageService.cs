@@ -471,7 +471,7 @@ public class FileStorageService<T> //: IFileStorageService
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
-        _countRoomChecker.CheckAdd((await _countRoomCheckerStatistic.GetValue()) + 1);
+        await _countRoomChecker.CheckAppend();
 
         if (@private && (share == null || !share.Any()))
         {

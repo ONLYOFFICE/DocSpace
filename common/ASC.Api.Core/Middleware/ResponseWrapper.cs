@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Billing;
+
 namespace ASC.Api.Core.Middleware;
 public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
 {
@@ -39,7 +41,7 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
 
         var withStackTrace = true;
 
-        var exception = context.Exception.InnerException ?? context.Exception;
+        var exception = context.Exception.GetBaseException();
 
         switch (exception)
         {
@@ -63,11 +65,12 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
                 status = HttpStatusCode.Forbidden;
                 break;
             case TenantQuotaException:
+            case BillingNotFoundException:
                 status = HttpStatusCode.PaymentRequired;
                 break;
         }
 
-        var result = new ObjectResult(new ErrorApiResponse(status, context.Exception, message, withStackTrace))
+        var result = new ObjectResult(new ErrorApiResponse(status, exception, message, withStackTrace))
         {
             StatusCode = (int)status
         };
