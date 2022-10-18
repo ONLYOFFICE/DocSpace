@@ -20,8 +20,9 @@ docker_dir="$( pwd )"
 echo "Docker directory:" $docker_dir
 
 docker_file=Dockerfile.dev
-
+core_base_domain=""
 build_date=$(date +%Y-%m-%d)
+env_extension="dev"
 
 echo "BUILD DATE: $build_date"
 
@@ -74,6 +75,8 @@ GIT_BRANCH=$branch \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
+APP_CORE_BASE_DOMAIN=$core_base_domain \
+ENV_EXTENSION=$env_extension \
 docker compose -f build.dev.yml build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
 
 echo "Run DB migration"

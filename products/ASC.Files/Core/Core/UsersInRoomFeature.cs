@@ -33,6 +33,11 @@ public class UsersInRoomChecker : TenantQuotaFeatureChecker<UsersInRoomFeature, 
     public UsersInRoomChecker(ITenantQuotaFeatureStat<UsersInRoomFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
     }
+
+    public override Task CheckUsed(TenantQuota quota)
+    {
+        return base.CheckUsed(quota); //TODO
+    }
 }
 
 public class UsersInRoomStatistic : ITenantQuotaFeatureStat<UsersInRoomFeature, int>
