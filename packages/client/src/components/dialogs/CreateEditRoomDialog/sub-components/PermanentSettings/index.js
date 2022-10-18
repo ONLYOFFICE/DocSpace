@@ -24,7 +24,6 @@ const PermanentSettings = ({
   isPrivate,
 }) => {
   const createThirdpartyPath = () => {
-    console.log(storageLocation);
     const path = storageLocation.parentId.split("|");
     path.shift();
     path.unshift(thirdpartyTitle);
