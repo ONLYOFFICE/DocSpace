@@ -24,6 +24,7 @@ const PermanentSettings = ({
   isPrivate,
 }) => {
   const createThirdpartyPath = () => {
+    console.log(storageLocation);
     const path = storageLocation.parentId.split("|");
     path.shift();
     path.unshift(thirdpartyTitle);
@@ -51,7 +52,7 @@ const PermanentSettings = ({
             >
               Files are stored in a third-party {{ thirdpartyTitle }} storage in
               the \"{{ thirdpartyFolderName }}\" folder.{" "}
-              <strong>{{ thirdpartyPath }}</strong>"
+              {/* <strong>{{ thirdpartyPath }}</strong>" */}
             </Trans>
           }
         />
