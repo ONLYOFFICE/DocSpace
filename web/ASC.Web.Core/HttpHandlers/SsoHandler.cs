@@ -59,7 +59,7 @@ public class SsoHandlerService
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly TenantUtil _tenantUtil;
     private readonly Action<string> _signatureResolver;
-    private readonly CountManagerChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countManagerChecker;
     private const string MOB_PHONE = "mobphone";
     private const string EXT_MOB_PHONE = "extmobphone";
 
@@ -81,7 +81,7 @@ public class SsoHandlerService
         MessageService messageService,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         TenantUtil tenantUtil,
-        CountManagerChecker countManagerChecker)
+        CountRoomAdminChecker countManagerChecker)
     {
         _log = log;
         _coreBaseSettings = coreBaseSettings;
@@ -280,7 +280,7 @@ public class SsoHandlerService
                 }
 
                 newUserInfo = _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
-                    false, isVisitor: limitExceeded);
+                    false, isUser: limitExceeded);
             }
             else
             {

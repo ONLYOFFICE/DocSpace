@@ -24,13 +24,32 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.Quota.Features;
 
-public class CountManagerFeature : TenantQuotaFeatureCount
+
+namespace ASC.Web.Core.Quota;
+
+public class CountRoomAdminChecker : TenantQuotaFeatureChecker<CountRoomAdminFeature, int>
 {
-    public override bool Paid { get => true; }
-    public override string Name { get => "manager"; }
-    public CountManagerFeature(TenantQuota tenantQuota) : base(tenantQuota)
+    public override string Exception => Resource.TariffsFeature_manager_exception;
+
+    public CountRoomAdminChecker(ITenantQuotaFeatureStat<CountRoomAdminFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
+    }
+
+}
+
+public class CountRoomAdminStatistic : ITenantQuotaFeatureStat<CountRoomAdminFeature, int>
+{
+    private readonly IServiceProvider _serviceProvider;
+
+    public CountRoomAdminStatistic(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+    }
+
+    public Task<int> GetValue()
+    {
+        var _userManager = _serviceProvider.GetService<UserManager>();
+        return Task.FromResult(_userManager.GetUsersByGroup(ASC.Core.Users.Constants.GroupManager.ID).Length);
     }
 }

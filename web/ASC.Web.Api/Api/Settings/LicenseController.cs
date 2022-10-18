@@ -130,7 +130,7 @@ public class LicenseController : BaseSettingsController
             throw new NotSupportedException();
         }
 
-        if (!_userManager.IsAdmin(_authContext.CurrentAccount.ID))
+        if (!_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException();
         }

@@ -61,7 +61,7 @@ public class UserManager
     private readonly CardDavAddressbook _cardDavAddressbook;
     private readonly ILogger<UserManager> _log;
     private readonly ICache _cache;
-    private readonly TenantQuotaFeatureChecker<CountManagerFeature, int> _tenantQuotaFeatureChecker;
+    private readonly TenantQuotaFeatureChecker<CountRoomAdminFeature, int> _tenantQuotaFeatureChecker;
     private readonly TenantQuotaFeatureChecker<CountUserFeature, int> _activeUsersFeatureChecker;
     private readonly Constants _constants;
 
@@ -85,7 +85,7 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureChecker<CountManagerFeature, int> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureChecker<CountRoomAdminFeature, int> tenantQuotaFeatureChecker,
         TenantQuotaFeatureChecker<CountUserFeature, int> activeUsersFeatureChecker
         )
     {
@@ -117,7 +117,7 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureChecker<CountManagerFeature, int> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureChecker<CountRoomAdminFeature, int> tenantQuotaFeatureChecker,
         TenantQuotaFeatureChecker<CountUserFeature, int> activeUsersFeatureChecker,
         IHttpContextAccessor httpContextAccessor)
         : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker)
@@ -152,11 +152,11 @@ public class UserManager
         var users = GetUsersInternal().Where(u => (u.Status & status) == u.Status);
         switch (type)
         {
-            case EmployeeType.User:
-                users = users.Where(u => !this.IsVisitor(u));
+            case EmployeeType.RoomAdmin:
+                users = users.Where(u => !this.IsUser(u));
                 break;
-            case EmployeeType.Visitor:
-                users = users.Where(u => this.IsVisitor(u));
+            case EmployeeType.User:
+                users = users.Where(u => this.IsUser(u));
                 break;
         }
 
@@ -164,7 +164,7 @@ public class UserManager
     }
 
     public IQueryable<UserInfo> GetUsers(
-        bool isAdmin,
+        bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
@@ -177,7 +177,7 @@ public class UserManager
         out int total,
         out int count)
     {
-        return _userService.GetUsers(Tenant.Id, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
+        return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
     }
 
     public string[] GetUserNames(EmployeeStatus status)
@@ -312,7 +312,7 @@ public class UserManager
         return findUsers.ToArray();
     }
 
-    public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false)
+    public UserInfo SaveUserInfo(UserInfo u, bool isUser = false, bool syncCardDav = false)
     {
         if (IsSystemUser(u.Id))
         {
@@ -337,7 +337,7 @@ public class UserManager
 
             if (u.Status == EmployeeStatus.Active)
             {
-                if (isVisitor)
+                if (isUser)
                 {
                     _activeUsersFeatureChecker.CheckUsed().Wait();
                 }
@@ -838,14 +838,14 @@ public class UserManager
         UserGroupRef r;
         if (groupId == Constants.GroupManager.ID || groupId == Constants.GroupUser.ID)
         {
-            var visitor = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupUser.ID, UserGroupRefType.Contains), out r) && !r.Removed;
+            var user = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupUser.ID, UserGroupRefType.Contains), out r) && !r.Removed;
             if (groupId == Constants.GroupUser.ID)
             {
-                return visitor;
+                return user;
             }
             if (groupId == Constants.GroupManager.ID)
             {
-                return !visitor;
+                return !user;
             }
         }
 

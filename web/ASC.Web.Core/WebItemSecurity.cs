@@ -160,7 +160,7 @@ public class WebItemSecurity
                     webitem.ID == WebItemManager.PeopleProductID ||
                     webitem.ID == WebItemManager.BirthdaysProductID ||
                     webitem.ID == WebItemManager.MailProductID) &&
-                    _userManager.IsVisitor(@for))
+                    _userManager.IsUser(@for))
                 {
                     // hack: crm, people, birtthday and mail products not visible for collaborators
                     result = false;

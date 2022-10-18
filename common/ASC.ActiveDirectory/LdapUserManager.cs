@@ -44,7 +44,7 @@ public class LdapUserManager
     private readonly UserFormatter _userFormatter;
     private readonly IServiceProvider _serviceProvider;
     private readonly NovellLdapUserImporter _novellLdapUserImporter;
-    private readonly CountManagerChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countManagerChecker;
     private LdapLocalization _resource;
 
     public LdapUserManager(
@@ -59,7 +59,7 @@ public class LdapUserManager
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserFormatter userFormatter,
         NovellLdapUserImporter novellLdapUserImporter,
-        CountManagerChecker countManagerChecker)
+        CountRoomAdminChecker countManagerChecker)
     {
         _logger = logger;
         _userManager = userManager;

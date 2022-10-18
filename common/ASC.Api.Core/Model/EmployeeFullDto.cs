@@ -46,11 +46,11 @@ public class EmployeeFullDto : EmployeeDto
     public string AvatarMax { get; set; }
     public string AvatarMedium { get; set; }
     public string Avatar { get; set; }
-    public bool IsAdmin { get; set; }
+    public bool IsDocSpaceAdmin { get; set; }
     public bool IsLDAP { get; set; }
     public List<string> ListAdminModules { get; set; }
     public bool IsOwner { get; set; }
-    public bool IsVisitor { get; set; }
+    public bool IsUser { get; set; }
     public string CultureName { get; set; }
     public string MobilePhone { get; set; }
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
@@ -70,7 +70,7 @@ public class EmployeeFullDto : EmployeeDto
             Email = "my@gmail.com",
             FirstName = "Mike",
             Id = Guid.Empty,
-            IsAdmin = false,
+            IsDocSpaceAdmin = false,
             ListAdminModules = new List<string> { "projects", "crm" },
             UserName = "Mike.Zanyatski",
             LastName = "Zanyatski",
@@ -190,8 +190,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             Terminated = _apiDateTimeHelper.Get(userInfo.TerminatedDate),
             WorkFrom = _apiDateTimeHelper.Get(userInfo.WorkFromDate),
             Email = userInfo.Email,
-            IsVisitor = _userManager.IsVisitor(userInfo),
-            IsAdmin = _userManager.IsAdmin(userInfo),
+            IsUser = _userManager.IsUser(userInfo),
+            IsDocSpaceAdmin = _userManager.IsDocSpaceAdmin(userInfo),
             IsOwner = userInfo.IsOwner(_context.Tenant),
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()

@@ -64,7 +64,7 @@ public class DocSpaceLinkHelper
 
     public string MakeKey(string email)
     {
-        return email + ConfirmType.LinkInvite.ToStringFast() + EmployeeType.User.ToStringFast();
+        return email + ConfirmType.LinkInvite.ToStringFast() + EmployeeType.RoomAdmin.ToStringFast();
     }
 
     public Guid Parse(string key)

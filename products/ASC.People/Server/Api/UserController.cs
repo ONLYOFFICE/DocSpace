@@ -59,7 +59,7 @@ public class UserController : PeopleControllerBase
     private readonly RoomLinkService _roomLinkService;
     private readonly FileSecurity _fileSecurity;
     private readonly IQuotaService _quotaService;
-    private readonly CountManagerChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countManagerChecker;
     private readonly CountUserChecker _countUserChecker;
     private readonly UsersInRoomChecker _usersInRoomChecker;
     private readonly UsersInRoomStatistic _usersInRoomStatistic;
@@ -99,7 +99,7 @@ public class UserController : PeopleControllerBase
         SettingsManager settingsManager,
         RoomLinkService roomLinkService,
         FileSecurity fileSecurity,
-        CountManagerChecker countManagerChecker,
+        CountRoomAdminChecker countManagerChecker,
         CountUserChecker activeUsersChecker,
         UsersInRoomChecker usersInRoomChecker,
         UsersInRoomStatistic usersInRoomStatistic,
@@ -184,7 +184,7 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsVisitor, false, true, true);
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, false, false, inDto.IsUser, false, true, true);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -262,7 +262,7 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user);
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true, byEmail);
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsUser, inDto.FromInviteLink, true, true, byEmail);
 
         UpdateDepartments(inDto.Department, user);
 
@@ -287,7 +287,7 @@ public class UserController : PeopleControllerBase
             }
         }
 
-        var messageAction = inDto.IsVisitor ? MessageAction.GuestCreated : MessageAction.UserCreated;
+        var messageAction = inDto.IsUser ? MessageAction.GuestCreated : MessageAction.UserCreated;
         _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await _employeeFullDtoHelper.GetFull(user);
@@ -659,7 +659,7 @@ public class UserController : PeopleControllerBase
                 throw new Exception(Resource.ErrorAccessDenied);
             }
 
-            if (_userManager.IsAdmin(viewer) || viewer.Id == user.Id)
+            if (_userManager.IsDocSpaceAdmin(viewer) || viewer.Id == user.Id)
             {
                 if (user.ActivationStatus == EmployeeActivationStatus.Activated)
                 {
@@ -675,7 +675,7 @@ public class UserController : PeopleControllerBase
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                if (_userManager.IsVisitor(user))
+                if (_userManager.IsUser(user))
                 {
                     _studioNotifyService.GuestInfoActivation(user);
                 }
@@ -773,7 +773,7 @@ public class UserController : PeopleControllerBase
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
-        if (!_userManager.IsAdmin(viewer))
+        if (!_userManager.IsDocSpaceAdmin(viewer))
         {
             _studioNotifyService.SendEmailChangeInstructions(user, email);
         }
@@ -886,7 +886,7 @@ public class UserController : PeopleControllerBase
 
         var isLdap = user.IsLDAP();
         var isSso = user.IsSSO();
-        var isAdmin = _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
+        var isDocSpaceAdmin = _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
 
         if (!isLdap && !isSso)
         {
@@ -896,7 +896,7 @@ public class UserController : PeopleControllerBase
             user.LastName = inDto.Lastname ?? user.LastName;
             user.Location = inDto.Location ?? user.Location;
 
-            if (isAdmin)
+            if (isDocSpaceAdmin)
             {
                 user.Title = inDto.Title ?? user.Title;
             }
@@ -939,29 +939,29 @@ public class UserController : PeopleControllerBase
             user.Status = inDto.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
             user.TerminatedDate = inDto.Disable.Value ? DateTime.UtcNow : null;
         }
-        if (self && !isAdmin)
+        if (self && !isDocSpaceAdmin)
         {
             _studioNotifyService.SendMsgToAdminAboutProfileUpdated();
         }
 
         // change user type
-        var canBeGuestFlag = !user.IsOwner(Tenant) && !_userManager.IsAdmin(user) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
+        var canBeGuestFlag = !user.IsOwner(Tenant) && !_userManager.IsDocSpaceAdmin(user) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
 
-        if (inDto.IsVisitor && !_userManager.IsVisitor(user) && canBeGuestFlag)
+        if (inDto.IsUser && !_userManager.IsUser(user) && canBeGuestFlag)
         {
             await _countUserChecker.CheckUsed();
             _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
-        if (!self && !inDto.IsVisitor && _userManager.IsVisitor(user))
+        if (!self && !inDto.IsUser && _userManager.IsUser(user))
         {
             await _countManagerChecker.CheckUsed();
             _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
-        _userManager.SaveUserInfo(user, inDto.IsVisitor, true);
+        _userManager.SaveUserInfo(user, inDto.IsUser, true);
         _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         if (inDto.Disable.HasValue && inDto.Disable.Value)
@@ -994,7 +994,7 @@ public class UserController : PeopleControllerBase
                 case EmployeeStatus.Active:
                     if (user.Status == EmployeeStatus.Terminated)
                     {
-                        if (!_userManager.IsVisitor(user))
+                        if (!_userManager.IsUser(user))
                         {
                             await _countManagerChecker.CheckUsed();
                         }
@@ -1035,7 +1035,7 @@ public class UserController : PeopleControllerBase
 
         foreach (var user in users)
         {
-            if (user.IsOwner(Tenant) || _userManager.IsAdmin(user)
+            if (user.IsOwner(Tenant) || _userManager.IsDocSpaceAdmin(user)
                 || user.IsMe(_authContext) || user.GetListAdminModules(_webItemSecurity, _webItemManager).Count > 0)
             {
                 continue;
@@ -1043,12 +1043,12 @@ public class UserController : PeopleControllerBase
 
             switch (type)
             {
-                case EmployeeType.User:
+                case EmployeeType.RoomAdmin:
                     await _countManagerChecker.CheckUsed();
                     _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
-                case EmployeeType.Visitor:
+                case EmployeeType.User:
                     await _countUserChecker.CheckUsed();
                     _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
@@ -1240,14 +1240,14 @@ public class UserController : PeopleControllerBase
         return string.Empty;
     }
 
-    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator)
     {
         if (_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method not available");
         }
 
-        var isAdmin = _userManager.IsAdmin(_securityContext.CurrentAccount.ID) ||
+        var isDocSpaceAdmin = _userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID) ||
                       _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
 
         var includeGroups = new List<List<Guid>>();
@@ -1262,16 +1262,16 @@ public class UserController : PeopleControllerBase
         {
             switch (employeeType)
             {
-                case EmployeeType.User:
+                case EmployeeType.RoomAdmin:
                     excludeGroups.Add(Constants.GroupUser.ID);
                     break;
-                case EmployeeType.Visitor:
+                case EmployeeType.User:
                     includeGroups.Add(new List<Guid> { Constants.GroupUser.ID });
                     break;
             }
         }
 
-        if (isAdministrator.HasValue && isAdministrator.Value)
+        if (isDocSpaceAdministrator.HasValue && isDocSpaceAdministrator.Value)
         {
             var adminGroups = new List<Guid>
             {
@@ -1283,7 +1283,7 @@ public class UserController : PeopleControllerBase
             includeGroups.Add(adminGroups);
         }
 
-        var users = _userManager.GetUsers(isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
+        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
 
         _apiContext.SetTotalCount(total).SetCount(count);
 

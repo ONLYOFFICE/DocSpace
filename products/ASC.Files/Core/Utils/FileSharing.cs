@@ -107,7 +107,7 @@ public class FileSharingAceHelper<T>
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
-            if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) && !DocSpaceHelper.ValidateShare(folder.FolderType, w.Access, _userManager.IsVisitor(w.Id)))
+            if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) && !DocSpaceHelper.ValidateShare(folder.FolderType, w.Access, _userManager.IsUser(w.Id)))
             {
                 continue;
             }
@@ -129,7 +129,7 @@ public class FileSharingAceHelper<T>
 
             if (w.Id == FileConstant.ShareLinkId)
             {
-                if (w.Access == FileShare.ReadWrite && _userManager.IsVisitor(_authContext.CurrentAccount.ID))
+                if (w.Access == FileShare.ReadWrite && _userManager.IsUser(_authContext.CurrentAccount.ID))
                 {
                     throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
                 }
@@ -326,12 +326,12 @@ public class FileSharingHelper
             return false;
         }
 
-        if (entry.RootFolderType == FolderType.COMMON && _global.IsAdministrator)
+        if (entry.RootFolderType == FolderType.COMMON && _global.IsDocSpaceAdministrator)
         {
             return true;
         }
 
-        if (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsAdministrator || await _fileSecurity.CanShareAsync(entry)))
+        if (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsDocSpaceAdministrator || await _fileSecurity.CanShareAsync(entry)))
         {
             return true;
         }
@@ -341,7 +341,7 @@ public class FileSharingHelper
             return true;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return false;
         }

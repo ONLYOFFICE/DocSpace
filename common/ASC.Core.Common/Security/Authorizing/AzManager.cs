@@ -57,7 +57,7 @@ public class AzManager
 
     internal AzManagerAcl GetAzManagerAcl(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
     {
-        if (action.AdministratorAlwaysAllow && (Constants.Admin.ID == subject.ID || _roleProvider.IsSubjectInRole(subject, Constants.Admin)))
+        if (action.AdministratorAlwaysAllow && (Constants.DocSpaceAdmin.ID == subject.ID || _roleProvider.IsSubjectInRole(subject, Constants.DocSpaceAdmin)))
         {
             return AzManagerAcl.Allow;
         }

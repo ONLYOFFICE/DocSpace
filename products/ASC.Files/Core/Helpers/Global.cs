@@ -158,7 +158,7 @@ public class Global
         }
     }
 
-    public bool IsAdministrator => _fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID);
+    public bool IsDocSpaceAdministrator => _fileSecurityCommon.IsDocSpaceAdministrator(_authContext.CurrentAccount.ID);
 
     public string GetDocDbKey()
     {
@@ -379,7 +379,7 @@ public class GlobalFolder
             return default;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return default;
         }
@@ -416,7 +416,7 @@ public class GlobalFolder
             return default;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return default;
         }
@@ -570,7 +570,7 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return 0;
         }
@@ -604,7 +604,7 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return 0;
         }

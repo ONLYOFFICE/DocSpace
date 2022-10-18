@@ -38,7 +38,7 @@ public class MessageSettingsController : BaseSettingsController
     private readonly IPSecurity.IPSecurity _ipSecurity;
     private readonly TenantManager _tenantManager;
     private readonly CookiesManager _cookiesManager;
-    private readonly CountManagerChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countManagerChecker;
     private readonly UserManager _userManager;
     private readonly TenantExtra _tenantExtra;
     private readonly PermissionContext _permissionContext;
@@ -61,7 +61,7 @@ public class MessageSettingsController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor,
         TenantManager tenantManager,
         CookiesManager cookiesManager,
-        CountManagerChecker countManagerChecker) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        CountRoomAdminChecker countManagerChecker) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _customNamingPeople = customNamingPeople;
         _ipSecurity = ipSecurity;
@@ -178,7 +178,7 @@ public class MessageSettingsController : BaseSettingsController
             }
 
             var trustedDomainSettings = _settingsManager.Load<StudioTrustedDomainSettings>();
-            var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
+            var emplType = trustedDomainSettings.InviteAsUsers ? EmployeeType.User : EmployeeType.RoomAdmin;
             if (!_coreBaseSettings.Personal)
             {
                 var enableInviteUsers = true;
@@ -193,7 +193,7 @@ public class MessageSettingsController : BaseSettingsController
 
                 if (!enableInviteUsers)
                 {
-                    emplType = EmployeeType.Visitor;
+                    emplType = EmployeeType.User;
                 }
             }
 

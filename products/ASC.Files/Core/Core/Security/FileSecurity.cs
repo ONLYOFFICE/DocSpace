@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using DotNetOpenAuth.Messaging;
-
 namespace ASC.Files.Core.Security;
 
 [Scope]
@@ -40,7 +38,7 @@ public class FileSecurityCommon
         _webItemSecurity = webItemSecurity;
     }
 
-    public bool IsAdministrator(Guid userId)
+    public bool IsDocSpaceAdministrator(Guid userId)
     {
         return _userManager.IsUserInGroup(userId, Constants.GroupAdmin.ID) ||
                _webItemSecurity.IsProductAdministrator(ProductEntryPoint.ID, userId);
@@ -453,11 +451,11 @@ public class FileSecurity : IFileSecurity
             return false;
         }
 
-        var isVisitor = _userManager.IsVisitor(user);
+        var isUser = _userManager.IsUser(user);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
-        var isAdmin = _fileSecurityCommon.IsAdministrator(userId);
+        var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
 
-        return await FilterEntry(entry, action, userId, shares, isOutsider, isVisitor, isAuthenticated, isAdmin);
+        return await FilterEntry(entry, action, userId, shares, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin);
     }
 
     public IAsyncEnumerable<FileEntry<T>> FilterDownloadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
@@ -489,13 +487,13 @@ public class FileSecurity : IFileSecurity
             yield break;
         }
 
-        var isVisitor = _userManager.IsVisitor(user);
+        var isUser = _userManager.IsUser(user);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
-        var isAdmin = _fileSecurityCommon.IsAdministrator(userId);
+        var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
 
         await foreach (var r in entry)
         {
-            yield return new Tuple<FileEntry<T>, bool>(r, await FilterEntry(r, action, userId, null, isOutsider, isVisitor, isAuthenticated, isAdmin));
+            yield return new Tuple<FileEntry<T>, bool>(r, await FilterEntry(r, action, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin));
         }
     }
 
@@ -514,20 +512,20 @@ public class FileSecurity : IFileSecurity
 
     private async IAsyncEnumerable<FileEntry<T>> InternalFilterAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, UserInfo user, bool isOutsider)
     {
-        var isVisitor = _userManager.IsVisitor(user);
+        var isUser = _userManager.IsUser(user);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
-        var isAdmin = _fileSecurityCommon.IsAdministrator(userId);
+        var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
 
         await foreach (var e in entries.Where(f => f != null))
         {
-            if (await FilterEntry(e, action, userId, null, isOutsider, isVisitor, isAuthenticated, isAdmin))
+            if (await FilterEntry(e, action, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin))
             {
                 yield return e;
             }
         }
     }
 
-    private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isVisitor, bool isAuthenticated, bool isAdmin)
+    private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin)
     {
         if (e.RootFolderType == FolderType.COMMON ||
             e.RootFolderType == FolderType.USER ||
@@ -553,17 +551,17 @@ public class FileSecurity : IFileSecurity
                 return false;
             }
 
-            if (isVisitor && e.RootFolderType == FolderType.Templates)
+            if (isUser && e.RootFolderType == FolderType.Templates)
             {
                 return false;
             }
 
-            if (isVisitor && e.RootFolderType == FolderType.Privacy)
+            if (isUser && e.RootFolderType == FolderType.Privacy)
             {
                 return false;
             }
 
-            if (isVisitor && e.RootFolderType == FolderType.USER)
+            if (isUser && e.RootFolderType == FolderType.USER)
             {
                 return false;
             }
@@ -627,13 +625,13 @@ public class FileSecurity : IFileSecurity
             //    }
             //}
 
-            if (e.RootFolderType == FolderType.USER && e.RootCreateBy == userId && !isVisitor)
+            if (e.RootFolderType == FolderType.USER && e.RootCreateBy == userId && !isUser)
             {
                 // user has all right in his folder
                 return true;
             }
 
-            if (e.RootFolderType == FolderType.Privacy && e.RootCreateBy == userId && !isVisitor)
+            if (e.RootFolderType == FolderType.Privacy && e.RootCreateBy == userId && !isUser)
             {
                 // user has all right in his privacy folder
                 return true;
@@ -679,7 +677,7 @@ public class FileSecurity : IFileSecurity
                 if (folder.FolderType == FolderType.VirtualRooms)
                 {
                     // DocSpace admins and room admins can create rooms
-                    if (action == FilesSecurityActions.Create && !isVisitor)
+                    if (action == FilesSecurityActions.Create && !isUser)
                     {
                         return true;
                     }
@@ -697,15 +695,15 @@ public class FileSecurity : IFileSecurity
                 }
             }
 
-            if (e.RootFolderType == FolderType.COMMON && isAdmin)
+            if (e.RootFolderType == FolderType.COMMON && isDocSpaceAdmin)
             {
                 // administrator in Common has all right
                 return true;
             }
 
-            if ((e.RootFolderType == FolderType.VirtualRooms || e.RootFolderType == FolderType.Archive) && !isVisitor)
+            if ((e.RootFolderType == FolderType.VirtualRooms || e.RootFolderType == FolderType.Archive) && !isUser)
             {
-                if (isAdmin || e.CreateBy == userId)
+                if (isDocSpaceAdmin || e.CreateBy == userId)
                 {
                     return true;
                 }
@@ -719,17 +717,17 @@ public class FileSecurity : IFileSecurity
                 }
             }
 
-            if (e.RootFolderType == FolderType.ThirdpartyBackup && isAdmin)
+            if (e.RootFolderType == FolderType.ThirdpartyBackup && isDocSpaceAdmin)
             {
                 return true;
             }
 
-            if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && isAdmin)
+            if (action == FilesSecurityActions.Delete && e.RootFolderType == FolderType.Archive && isDocSpaceAdmin)
             {
                 return true;
             }
 
-            if (action == FilesSecurityActions.RoomEdit && e.RootFolderType == FolderType.Archive && isAdmin)
+            if (action == FilesSecurityActions.RoomEdit && e.RootFolderType == FolderType.Archive && isDocSpaceAdmin)
             {
                 return true;
             }
@@ -939,7 +937,7 @@ public class FileSecurity : IFileSecurity
             }
         }
 
-        if (isAdmin && e.RootFolderType == FolderType.DEFAULT)
+        if (isDocSpaceAdmin && e.RootFolderType == FolderType.DEFAULT)
         {
             // administrator can work with crashed entries (crash in files_folder_tree)
             return true;
@@ -992,9 +990,9 @@ public class FileSecurity : IFileSecurity
     public async Task<List<FileEntry>> GetVirtualRoomsAsync(FilterType filterType, Guid subjectId, string searchText, bool searchInContent, bool withSubfolders,
         SearchArea searchArea, bool withoutTags, IEnumerable<string> tagNames, bool excludeSubject)
     {
-        if (_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
+        if (_fileSecurityCommon.IsDocSpaceAdministrator(_authContext.CurrentAccount.ID))
         {
-            return await GetVirtualRoomsForAdminAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject);
+            return await GetVirtualRoomsForDocSpaceAdminAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject);
         }
 
         var securityDao = _daoFactory.GetSecurityDao<int>();
@@ -1018,7 +1016,7 @@ public class FileSecurity : IFileSecurity
     {
         var result = new List<string>();
         
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return Array.Empty<string>();
         }
@@ -1041,7 +1039,7 @@ public class FileSecurity : IFileSecurity
         return result;
     }
 
-    private async Task<List<FileEntry>> GetVirtualRoomsForAdminAsync(FilterType filterType, Guid subjectId, string search, bool searchInContent, bool withSubfolders,
+    private async Task<List<FileEntry>> GetVirtualRoomsForDocSpaceAdminAsync(FilterType filterType, Guid subjectId, string search, bool searchInContent, bool withSubfolders,
         SearchArea searchArea, bool withoutTags, IEnumerable<string> tagNames, bool excludeSubject)
     {
         var folderDao = _daoFactory.GetFolderDao<int>();
@@ -1338,7 +1336,7 @@ public class FileSecurity : IFileSecurity
                                 && f.RootCreateBy != _authContext.CurrentAccount.ID // don't show my files
             );
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             data = data.Where(r => !r.ProviderEntry);
         }
@@ -1498,7 +1496,7 @@ public class FileSecurity : IFileSecurity
         }
 
         result.AddRange(_userManager.GetUserGroups(userId).Select(g => g.ID));
-        if (_fileSecurityCommon.IsAdministrator(userId))
+        if (_fileSecurityCommon.IsDocSpaceAdministrator(userId))
         {
             result.Add(Constants.GroupAdmin.ID);
         }

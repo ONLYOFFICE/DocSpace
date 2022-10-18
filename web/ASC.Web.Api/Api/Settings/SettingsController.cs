@@ -248,7 +248,7 @@ public class SettingsController : BaseSettingsController
 
         Tenant.TrustedDomainsType = inDto.Type;
 
-        _settingsManager.Save(new StudioTrustedDomainSettings { InviteUsersAsVisitors = inDto.InviteUsersAsVisitors });
+        _settingsManager.Save(new StudioTrustedDomainSettings { InviteAsUsers = inDto.InviteAsUsers });
 
         _tenantManager.SaveTenant(Tenant);
 
@@ -362,7 +362,7 @@ public class SettingsController : BaseSettingsController
 
         var collaboratorPopupSettings = _settingsManager.LoadForCurrentUser<CollaboratorSettings>();
 
-        if (!(_userManager.IsVisitor(currentUser) && collaboratorPopupSettings.FirstVisit && !_userManager.IsOutsider(currentUser)))
+        if (!(_userManager.IsUser(currentUser) && collaboratorPopupSettings.FirstVisit && !_userManager.IsOutsider(currentUser)))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -454,7 +454,7 @@ public class SettingsController : BaseSettingsController
     [HttpPut("closeadminhelper")]
     public void CloseAdminHelper()
     {
-        if (!_userManager.IsAdmin(_authContext.CurrentAccount.ID) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
+        if (!_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
         {
             throw new NotSupportedException("Not available.");
         }

@@ -58,7 +58,7 @@ public class TenantExtraConfig
 public class TenantExtra
 {
     private readonly TenantExtraConfig _tenantExtraConfig;
-    private readonly CountManagerStatistic _countManagerStatistic;
+    private readonly CountRoomAdminStatistic _countManagerStatistic;
     private readonly MaxTotalSizeStatistic _maxTotalSizeStatistic;
     private readonly TenantManager _tenantManager;
     private readonly ITariffService _tariffService;
@@ -75,7 +75,7 @@ public class TenantExtra
         SetupInfo setupInfo,
         SettingsManager settingsManager,
         TenantExtraConfig tenantExtraConfig,
-        CountManagerStatistic countManagerStatistic,
+        CountRoomAdminStatistic countManagerStatistic,
         MaxTotalSizeStatistic maxTotalSizeStatistic)
     {
         _tenantManager = tenantManager;

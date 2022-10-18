@@ -55,7 +55,7 @@ public class CustomTagsService<T>
 
     public async Task<object> CreateTagAsync(string name)
     {
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException("You do not have permission to create tags");
         }
@@ -85,7 +85,7 @@ public class CustomTagsService<T>
 
     public async Task DeleteTagsAsync(IEnumerable<string> names)
     {
-        if (!_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
+        if (!_fileSecurityCommon.IsDocSpaceAdministrator(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException("You do not have permission to remove tags");
         }

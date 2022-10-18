@@ -94,7 +94,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
     public async IAsyncEnumerable<int> GetRootFoldersIdsAsync(bool withoutTrash, bool withoutAdditionalFolder)
     {
         var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        var IsVisitor = _userManager.IsVisitor(user);
+        var IsUser = _userManager.IsUser(user);
         var IsOutsider = _userManager.IsOutsider(user);
 
         if (IsOutsider)
@@ -103,7 +103,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             withoutAdditionalFolder = true;
         }
 
-        if (!IsVisitor)
+        if (!IsUser)
         {
             yield return _globalFolderHelper.FolderMy;
         }
@@ -126,7 +126,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
                 yield return await _globalFolderHelper.FolderRecentAsync;
             }
 
-            if (!IsVisitor &&
+            if (!IsUser &&
                 !_coreBaseSettings.Personal &&
                 _coreBaseSettings.DisableDocSpace &&
                 PrivacyRoomSettings.IsAvailable())
@@ -140,7 +140,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             yield return await _globalFolderHelper.FolderCommonAsync;
         }
 
-        if (!IsVisitor
+        if (!IsUser
            && _coreBaseSettings.DisableDocSpace
            && !withoutAdditionalFolder
            && _fileUtility.ExtsWebTemplate.Count > 0
@@ -149,7 +149,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             yield return await _globalFolderHelper.FolderTemplatesAsync;
         }
 
-        if (!withoutTrash && !IsVisitor)
+        if (!withoutTrash && !IsUser)
         {
             yield return (int)_globalFolderHelper.FolderTrash;
         }
@@ -158,7 +158,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         {
             yield return await _globalFolderHelper.FolderVirtualRoomsAsync;
 
-            if (!IsVisitor)
+            if (!IsUser)
             {
                 yield return await _globalFolderHelper.FolderArchiveAsync;
             }
