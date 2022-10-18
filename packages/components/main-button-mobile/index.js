@@ -21,7 +21,7 @@ import Scrollbar from "@docspace/components/scrollbar";
 import { isIOS, isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
 
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import ButtonAlertIcon from "../../../public/images/button.alert.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
