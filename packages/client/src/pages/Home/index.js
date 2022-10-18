@@ -613,6 +613,8 @@ export default inject(
       refreshFiles,
       setViewAs,
       isEmptyPage,
+
+      disableDrag,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -620,8 +622,6 @@ export default inject(
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
-      isFavoritesFolder,
-      isRecentFolder,
 
       expandedKeys,
       setExpandedKeys,
@@ -662,13 +662,6 @@ export default inject(
       : null;
 
     const { setToPreviewFile, playlist } = mediaViewerDataStore;
-
-    const disableDrag =
-      isRecycleBinFolder ||
-      isRoomsFolder ||
-      isArchiveFolder ||
-      isFavoritesFolder ||
-      isRecentFolder;
 
     const {
       checkedMaintenance,
