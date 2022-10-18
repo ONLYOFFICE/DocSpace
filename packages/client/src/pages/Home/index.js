@@ -255,8 +255,13 @@ class PureHome extends React.Component {
       setDragging,
       dragging,
       uploadEmptyFolders,
+      isRoomsFolder,
+      isArchiveFolder,
     } = this.props;
     dragging && setDragging(false);
+
+    if (isRoomsFolder || isArchiveFolder) return;
+
     const emptyFolders = files.filter((f) => f.isEmptyDirectory);
 
     if (emptyFolders.length > 0) {
