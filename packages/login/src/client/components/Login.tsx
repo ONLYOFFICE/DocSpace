@@ -21,10 +21,9 @@ import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import SSOIcon from "../../../../../public/images/sso.react.svg";
 
-const greetingTitle = "Web Office Applications"; // from PortalSettingsStore
-
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
+  isAuth: boolean;
 }
 const Login: React.FC<ILoginProps> = ({
   portalSettings,
@@ -40,7 +39,7 @@ const Login: React.FC<ILoginProps> = ({
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
-  const { enabledJoin } = portalSettings;
+  const { enabledJoin, greetingSettings } = portalSettings;
   const { ssoLabel, ssoUrl } = capabilities;
 
   const { t } = useTranslation(["Login", "Common"]);
@@ -201,7 +200,7 @@ const Login: React.FC<ILoginProps> = ({
           textAlign="center"
           className="greeting-title"
         >
-          {greetingTitle}
+          {greetingSettings}
         </Text>
         <FormWrapper>
           {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
