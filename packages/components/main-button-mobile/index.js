@@ -22,7 +22,7 @@ import { isIOS, isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
 
 import styled from "styled-components";
-import ButtonAlertIcon from "../../../public/images/main-button.alert.react.svg";
+import ButtonAlertIcon from "../../../public/images/button.alert.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
 import { isMobileOnly } from "react-device-detect";
@@ -395,7 +395,7 @@ const MainButtonMobile = (props) => {
           )}
         </StyledDropDown>
         <StyledAlertIcon>
-          {alert && !isOpen ? <StyledButtonAlertIcon size="small" /> : <></>}
+          {alert && !isOpen ? <StyledButtonAlertIcon size="medium" /> : <></>}
         </StyledAlertIcon>
       </div>
     </>

@@ -61,6 +61,7 @@ const Avatar = (props) => {
     editing,
     editAction,
     isDefaultSource = false,
+    hideRoleIcon,
   } = props;
   let isDefault = false,
     isIcon = false;
@@ -101,7 +102,9 @@ const Avatar = (props) => {
           />
         </EditContainer>
       ) : (
-        <RoleWrapper size={size}>{roleIcon}</RoleWrapper>
+        <>
+          {!hideRoleIcon && <RoleWrapper size={size}>{roleIcon}</RoleWrapper>}
+        </>
       )}
     </StyledAvatar>
   );
@@ -121,6 +124,8 @@ Avatar.propTypes = {
   isDefaultSource: PropTypes.bool,
   /** Function called when the avatar change button is pressed */
   editAction: PropTypes.func,
+  /** Hide user role */
+  hideRoleIcon: PropTypes.bool,
   /** Accepts class */
   className: PropTypes.string,
   /** Accepts id */
@@ -135,6 +140,7 @@ Avatar.defaultProps = {
   source: "",
   userName: "",
   editing: false,
+  hideRoleIcon: false,
 };
 
 export default memo(Avatar);
