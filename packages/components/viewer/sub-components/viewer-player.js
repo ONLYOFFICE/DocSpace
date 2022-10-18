@@ -72,8 +72,6 @@ const StyledVideoPlayer = styled.div`
 
   .bg-play {
     position: fixed;
-    left: ${(window.innerWidth - iconWidth) / 2 + "px"};
-    top: ${(window.innerHeight - iconHeight - (48 - 48)) / 2 + "px"};
     &:hover {
       cursor: pointer;
     }
@@ -127,6 +125,19 @@ const StyledVideoControls = styled.div`
     border: 1px solid rgba(0, 0, 0);
     //  transition: background 0.3s ease-in-out;
   }
+
+  .volume-container {
+    position: relative;
+    }
+  }
+
+  .volume-toolbar {
+    position: absolute;
+    bottom: 70px;
+    left: -4px;
+    width: 50px !important;
+    transform: rotate(270deg);
+  }
 `;
 
 const getDuration = (time) => {
@@ -165,6 +176,8 @@ export default function ViewerPlayer(props) {
     speedSelection: false,
     progress: 0,
     duration: 0,
+    volumeSelection: false,
+    volume: 100,
     size: "0%",
   };
   function reducer(state, action) {
@@ -199,12 +212,26 @@ export default function ViewerPlayer(props) {
         isPlaying: !state.isPlaying,
       })
     );
-  const toggleMute = () =>
+  const handleVolumeUpdate = (e) => {
+    const volume = e.target.value / 100;
+
+    videoRef.current.volume = volume;
+
     dispatch(
       createAction(ACTION_TYPES.update, {
-        isMuted: !state.isMuted,
+        isMuted: volume ? false : true,
+        volume: e.target.value,
       })
     );
+  };
+
+  const toggleVolumeSelection = () =>
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        volumeSelection: !state.volumeSelection,
+      })
+    );
+
   const toggleScreen = () => {
     handleFullScreen(!state.isFullScreen);
     setIsFullScreen(!state.isFullScreen);
@@ -373,6 +400,7 @@ export default function ViewerPlayer(props) {
         isMuted: false,
         isFullScreen: state.isFullScreen,
         speedSelection: false,
+        volume: state.volume,
       })
     );
   }
@@ -382,6 +410,9 @@ export default function ViewerPlayer(props) {
       loadVideo(videoRef.current);
     });
   }, [props.activeIndex]);
+
+  let iconLeft = (window.innerWidth - iconWidth) / 2 + "px";
+  let iconTop = (window.innerHeight - iconHeight - (48 - 48)) / 2 + "px";
 
   let imgStyle = {
     width: `${state.width}px`,
@@ -404,21 +435,23 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
           style={imgStyle}
           onTimeUpdate={handleOnTimeUpdate}
         ></video>
-        {/* {!isPlaying && (
-          <div className="bg-play">
+        {!state.isPlaying && (
+          <div
+            className="bg-play"
+            style={{ left: `${iconLeft}`, top: `${iconTop}` }}
+          >
             <BigIconPlay onClick={togglePlay} />
           </div>
-        )} */}
+        )}
       </div>
       <StyledVideoControls>
         <StyledVideoActions>
-          <div className="controller" onClick={togglePlay}>
+          <div className="controller volume-container" onClick={togglePlay}>
             {!state.isPlaying ? <IconPlay /> : <IconStop />}
           </div>
           <input
             ref={inputRef}
             type="range"
-            withPouring={true}
             min="0"
             max="100"
             value={state.progress}
@@ -434,8 +467,21 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
           >
             {state.duration}
           </div>
-          <div className="controller" onClick={toggleMute}>
+          <div
+            className="controller volume-container"
+            onClick={toggleVolumeSelection}
+          >
             {!state.isMuted ? <IconSound /> : <IconMuted />}
+            {state.volumeSelection && (
+              <input
+                className="volume-toolbar"
+                type="range"
+                min="0"
+                max="100"
+                value={state.volume}
+                onChange={handleVolumeUpdate}
+              />
+            )}
           </div>
           <div className="controller" onClick={toggleScreen}>
             {!state.isFullScreen ? <IconFullScreen /> : <IconExitFullScreen />}
