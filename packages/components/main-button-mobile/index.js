@@ -30,7 +30,8 @@ import { isMobileOnly } from "react-device-detect";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
-  ${commonIconsStyles}
+  cursor: pointer;
+  ${commonIconsStyles};
 `;
 
 const ProgressBarMobile = ({
