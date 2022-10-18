@@ -134,7 +134,7 @@ const FolderInput = ({
   return (
     <>
       <StyledFolderInput noRoomTitle={!roomTitle} onClick={onOpen}>
-        <span className="root_label">ROOT/</span>
+        <span className="root_label">{t("RootLabel")}/</span>
         <span className="path">{path}</span>
         <span className="room_title">
           {(path ? "/" : "") + (roomTitle || t("Files:NewRoom"))}
