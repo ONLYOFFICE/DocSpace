@@ -255,8 +255,12 @@ class PureHome extends React.Component {
       setDragging,
       dragging,
       uploadEmptyFolders,
+      disableDrag,
     } = this.props;
     dragging && setDragging(false);
+
+    if (disableDrag) return;
+
     const emptyFolders = files.filter((f) => f.isEmptyDirectory);
 
     if (emptyFolders.length > 0) {
@@ -609,6 +613,8 @@ export default inject(
       refreshFiles,
       setViewAs,
       isEmptyPage,
+
+      disableDrag,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
@@ -616,6 +622,7 @@ export default inject(
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
+
       expandedKeys,
       setExpandedKeys,
       isRoomsFolder,
@@ -713,6 +720,8 @@ export default inject(
 
       isRoomsFolder,
       isArchiveFolder,
+
+      disableDrag,
 
       setExpandedKeys,
       setFirstLoad,
