@@ -8,6 +8,7 @@ import { sendRegisterRequest } from "@docspace/common/api/settings";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { Base } from "@docspace/components/themes";
+import IColorScheme from "../../../types/IColorScheme";
 
 interface IRegisterProps {
   language?: string;
@@ -16,6 +17,7 @@ interface IRegisterProps {
   trustedDomainsType?: number;
   trustedDomains?: string[];
   theme?: any;
+  currentColorScheme: IColorScheme;
 }
 
 const StyledRegister = styled(Box)`
