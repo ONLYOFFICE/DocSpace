@@ -39,7 +39,9 @@ public class CustomExceptionFilterAttribute : ExceptionFilterAttribute
 
         var withStackTrace = true;
 
-        switch (context.Exception)
+        var exception = context.Exception.InnerException ?? context.Exception;
+
+        switch (exception)
         {
             case ItemNotFoundException:
                 status = HttpStatusCode.NotFound;
