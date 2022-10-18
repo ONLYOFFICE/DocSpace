@@ -399,13 +399,19 @@ class UploadDataStore {
         }
 
         if (progress === 100) {
+          if (!error) error = data[0].error;
+
           runInAction(() => {
             const file = this.files.find((file) => file.fileId === fileId);
 
             if (file) {
+              file.error = error;
               file.convertProgress = progress;
               file.inConversion = false;
-              file.action = "converted";
+
+              if (error.indexOf("password") !== -1) {
+                file.needPassword = true;
+              } else file.action = "converted";
             }
 
             const historyFile = this.uploadedFilesHistory.find(
@@ -413,9 +419,13 @@ class UploadDataStore {
             );
 
             if (historyFile) {
+              historyFile.error = error;
               historyFile.convertProgress = progress;
               historyFile.inConversion = false;
-              historyFile.action = "converted";
+
+              if (error.indexOf("password") !== -1) {
+                historyFile.needPassword = true;
+              } else historyFile.action = "converted";
             }
           });
 
