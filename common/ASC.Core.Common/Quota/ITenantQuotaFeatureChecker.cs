@@ -52,7 +52,7 @@ public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChec
         Check(quota, used);
     }
 
-    public async Task CheckUsed(TenantQuota quota)
+    public virtual async Task CheckUsed(TenantQuota quota)
     {
         var used = await _tenantQuotaFeatureStatistic.GetValue();
         Check(quota, used);
