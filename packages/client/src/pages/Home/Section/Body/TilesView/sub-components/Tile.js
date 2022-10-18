@@ -123,8 +123,7 @@ const StyledTile = styled.div`
       props.isFolder &&
       props.dragging &&
       css`
-        background: ${(props) =>
-          props.theme.filesSection.rowView.draggingBackground};
+        background: ${(props) => props.theme.dragAndDrop.background};
       `};
     ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   }
@@ -140,8 +139,7 @@ const StyledTile = styled.div`
       props.isFolder &&
       props.dragging &&
       css`
-        background: ${(props) =>
-          props.theme.filesSection.rowView.draggingHoverBackground};
+        background: ${(props) => props.theme.dragAndDrop.acceptBackground};
       `};
   }
 
