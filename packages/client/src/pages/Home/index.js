@@ -255,12 +255,11 @@ class PureHome extends React.Component {
       setDragging,
       dragging,
       uploadEmptyFolders,
-      isRoomsFolder,
-      isArchiveFolder,
+      disableDrag,
     } = this.props;
     dragging && setDragging(false);
 
-    if (isRoomsFolder || isArchiveFolder) return;
+    if (disableDrag) return;
 
     const emptyFolders = files.filter((f) => f.isEmptyDirectory);
 
@@ -621,6 +620,9 @@ export default inject(
     const {
       isRecycleBinFolder,
       isPrivacyFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+
       expandedKeys,
       setExpandedKeys,
       isRoomsFolder,
@@ -660,6 +662,13 @@ export default inject(
       : null;
 
     const { setToPreviewFile, playlist } = mediaViewerDataStore;
+
+    const disableDrag =
+      isRecycleBinFolder ||
+      isRoomsFolder ||
+      isArchiveFolder ||
+      isFavoritesFolder ||
+      isRecentFolder;
 
     const {
       checkedMaintenance,
@@ -718,6 +727,8 @@ export default inject(
 
       isRoomsFolder,
       isArchiveFolder,
+
+      disableDrag,
 
       setExpandedKeys,
       setFirstLoad,
