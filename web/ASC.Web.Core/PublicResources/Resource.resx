@@ -902,4 +902,7 @@
   <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
     <value>The number of users in room should not exceed {0}</value>
   </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Cloud space for your office docs</value>
+  </data>
 </root>

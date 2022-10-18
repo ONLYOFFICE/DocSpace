@@ -723,6 +723,8 @@ public class TariffService : ITariffService
                         CreateOn = DateTime.UtcNow
                     };
 
+                    efTariff.CustomerId = efTariff.CustomerId == null ? "" : efTariff.CustomerId;
+
                     efTariff = dbContext.AddOrUpdate(r => r.Tariffs, efTariff);
                     dbContext.SaveChanges();
 

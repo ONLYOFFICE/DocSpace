@@ -40,6 +40,7 @@ const MobileView = ({
   primaryProgressDataPercent,
   primaryProgressDataLoadingFile,
   primaryProgressDataAlert,
+  primaryProgressDataErrors,
   clearPrimaryProgressData,
   secondaryProgressDataStoreVisible,
   secondaryProgressDataStorePercent,
@@ -98,7 +99,7 @@ const MobileView = ({
         icon: "/static/images/cross.sidebar.react.svg",
         percent: primaryProgressDataPercent,
         status:
-          primaryProgressDataPercent === 100
+          primaryProgressDataPercent === 100 && !primaryProgressDataErrors
             ? t("FilesUploaded")
             : `${currentPrimaryNumEl}/${files.length}`,
         onClick: showUploadPanel,
@@ -142,6 +143,7 @@ const MobileView = ({
     primaryProgressDataVisible,
     primaryProgressDataPercent,
     primaryProgressDataLoadingFile,
+    primaryProgressDataErrors,
     secondaryProgressDataStoreVisible,
     secondaryProgressDataStorePercent,
     secondaryProgressDataStoreCurrentFile,
@@ -180,6 +182,7 @@ export default inject(({ uploadDataStore }) => {
     percent: primaryProgressDataPercent,
     loadingFile: primaryProgressDataLoadingFile,
     alert: primaryProgressDataAlert,
+    errors: primaryProgressDataErrors,
     clearPrimaryProgressData,
   } = primaryProgressDataStore;
 
@@ -199,6 +202,7 @@ export default inject(({ uploadDataStore }) => {
     primaryProgressDataPercent,
     primaryProgressDataLoadingFile,
     primaryProgressDataAlert,
+    primaryProgressDataErrors,
     clearPrimaryProgressData,
     secondaryProgressDataStoreVisible,
     secondaryProgressDataStorePercent,

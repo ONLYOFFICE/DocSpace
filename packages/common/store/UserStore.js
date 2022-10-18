@@ -1,11 +1,17 @@
+import React from "react";
+import { toastr } from "@docspace/components";
 import { makeAutoObservable } from "mobx";
+import { Trans } from "react-i18next";
 import api from "../api";
+import { EmployeeActivationStatus } from "../constants";
 
 class UserStore {
   user = null;
   isLoading = false;
   isLoaded = false;
   userIsUpdate = false;
+
+  withSendAgain = true;
 
   constructor() {
     makeAutoObservable(this);
@@ -68,6 +74,40 @@ class UserStore {
     //console.log("setUserIsUpdate");
     this.userIsUpdate = isUpdate;
   };
+
+  setWithSendAgain = (withSendAgain) => {
+    this.withSendAgain = withSendAgain;
+  };
+
+  sendActivationLink = (t) => {
+    const { email, id } = this.user;
+
+    return api.people
+      .resendUserInvites([id])
+      .then(() => {
+        toastr.success(
+          <Trans
+            i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
+            ns="People"
+            t={t}
+          >
+            The email activation instructions have been sent to the
+            <strong>{{ email: email }}</strong> email address
+          </Trans>
+        );
+      })
+      .finally(() => {
+        this.setWithSendAgain(false);
+      });
+  };
+
+  get withActivationBar() {
+    return (
+      this.user &&
+      this.user.activationStatus === EmployeeActivationStatus.Pending &&
+      this.withSendAgain
+    );
+  }
 
   get isAuthenticated() {
     return !!this.user;
