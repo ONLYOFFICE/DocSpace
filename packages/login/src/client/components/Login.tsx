@@ -257,7 +257,12 @@ const Login: React.FC<ILoginProps> = ({
           emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
         />
       </ColorTheme>
-      {!checkIsSSR() && enabledJoin && <Register enabledJoin={enabledJoin} />}
+      {!checkIsSSR() && enabledJoin && (
+        <Register
+          enabledJoin={enabledJoin}
+          currentColorScheme={currentColorScheme}
+        />
+      )}
     </LoginFormWrapper>
   );
 };

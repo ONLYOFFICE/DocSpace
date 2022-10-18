@@ -353,7 +353,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             color="#316DAA"
             type="action"
             isHovered={true}
-            className="recover-link"
+            className="login-link recover-link"
             onClick={onRecoverDialogVisible}
           >
             {t("RecoverAccess")}
