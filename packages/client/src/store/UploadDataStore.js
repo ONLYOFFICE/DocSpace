@@ -253,11 +253,13 @@ class UploadDataStore {
 
       if (!this.filesToConversion.length) {
         this.filesToConversion.push(file);
-        this.uploadedFilesHistory.push(file);
+        if (!secondConvertingWithPassword && !conversionPositionIndex)
+          this.uploadedFilesHistory.push(file);
         this.startConversion(t);
       } else {
         this.filesToConversion.push(file);
-        this.uploadedFilesHistory.push(file);
+        if (!secondConvertingWithPassword && !conversionPositionIndex)
+          this.uploadedFilesHistory.push(file);
       }
     }
   };
