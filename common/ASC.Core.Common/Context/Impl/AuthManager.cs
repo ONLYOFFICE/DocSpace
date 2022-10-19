@@ -60,12 +60,6 @@ public class AuthManager
 
     public IAccount GetAccountByID(int tenantId, Guid id)
     {
-        var tenant = _tenantManager.GetCurrentTenant(false);
-        if (tenant == null)
-        {
-            _tenantManager.SetCurrentTenant(tenantId);
-        }
-
         var s = Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
         if (s != null)
         {
