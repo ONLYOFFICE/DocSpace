@@ -1585,7 +1585,6 @@ class FilesStore {
   }
 
   createRoomInThirdpary(thirpartyFolderId, roomParams) {
-    console.log(thirpartyFolderId, roomParams);
     return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
   }
 
