@@ -16,7 +16,8 @@ const AccountsItemTitle = ({
   getUserContextOptions,
   severalItemsLength,
 }) => {
-  const isPending = selection.statusType === "pending";
+  const isPending =
+    selection.statusType === "pending" || selection.statusType === "disabled";
 
   const getData = () => {
     const newOptions = selection.options.filter(
@@ -36,6 +37,8 @@ const AccountsItemTitle = ({
     );
   }
 
+  console.log(selection);
+
   return (
     <StyledAccountsItemTitle isPending={isPending}>
       <Avatar
@@ -51,7 +54,11 @@ const AccountsItemTitle = ({
           title={selection.displayName}
           truncate
         >
-          {isPending ? selection.email : selection.displayName}
+          {isPending
+            ? selection.email
+            : selection.displayName.trim()
+            ? selection.displayName
+            : selection.email}
         </Text>
         {!isPending && (
           <Text className={"info-text__email"} noSelect title={selection.email}>
