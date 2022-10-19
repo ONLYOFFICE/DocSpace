@@ -100,9 +100,6 @@
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>Profiliniz donduruldu</value>
   </data>
-  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
-    <value>{!User} bu e-posta adresi ile zaten kayıtlı</value>
-  </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>Bu alandan gelen e-postalar kaydedilemez</value>
   </data>
@@ -117,9 +114,6 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Yüklenen dosya bulunamadı</value>
-  </data>
-  <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>Resim dosyası boyutu çok büyük</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Fiyat planınız bu seçeneği desteklemiyor</value>
@@ -138,9 +132,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Şifre şunları içermek zorundadır</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>İçermelidir</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>basamak</value>
@@ -201,9 +192,6 @@
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORD Bölgesi</value>
-  </data>
-  <data name="Owner" xml:space="preserve">
-    <value>Sahip</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portal Erişimi</value>

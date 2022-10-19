@@ -104,9 +104,6 @@
     <value>Ваш профіль заблоковано
 </value>
   </data>
-  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
-    <value>{!User} з такою адресою email вже зареєстрований</value>
-  </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>Листи з цього домену не дозволено реєструвати</value>
   </data>
@@ -121,10 +118,6 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Завантажуваний файл не знайдений</value>
-  </data>
-  <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>Завеликий файл зображення
-</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Ваш тарифний план не підтримує цей параметр
@@ -144,10 +137,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Пароль повинен містити</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Повинен містити
-</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>цифри</value>
@@ -209,9 +198,6 @@
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>Регіон ORG</value>
-  </data>
-  <data name="Owner" xml:space="preserve">
-    <value>Власник</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Доступ до порталу</value>

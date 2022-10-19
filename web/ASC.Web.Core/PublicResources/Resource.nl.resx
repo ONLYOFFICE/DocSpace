@@ -100,9 +100,6 @@
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>Uw profiel is geschorst</value>
   </data>
-  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
-    <value>{!User} met dit e-mailadres is al geregistreerd</value>
-  </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>E-mails van dit domein zijn niet toegestaan voor registratie</value>
   </data>
@@ -117,9 +114,6 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Het geüploade bestand kon niet worden gevonden</value>
-  </data>
-  <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>De bestandsgrootte van de afbeelding is te groot</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Uw abonnement ondersteunt deze optie niet</value>
@@ -138,9 +132,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Wachtwoord moet bevatten</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Het moet bevatten</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>cijfers</value>
@@ -201,9 +192,6 @@
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORG Regio</value>
-  </data>
-  <data name="Owner" xml:space="preserve">
-    <value>Eigenaar</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portaaltoegang</value>

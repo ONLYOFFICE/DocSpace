@@ -85,9 +85,6 @@
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>이 작업을 수행 할 수있는 권한 없음</value>
   </data>
-  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
-    <value>{!User}의 이메일이 이미 등록 되어 있습니다.</value>
-  </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>이메일 필드는 비어 있습니다</value>
   </data>
@@ -99,9 +96,6 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>업로드 된 파일을 찾을 수 없습니다</value>
-  </data>
-  <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>이미지 파일 크기가 너무 큽니다</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>귀하의 가격 계획은이 옵션을 지원하지 않습니다</value>
@@ -117,9 +111,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>새 암호가 올바르지 않습니다. 이 포함되어야합니다</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>이 포함되어야합니다</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>숫자</value>

@@ -85,9 +85,6 @@
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Não tem permissão para executar esta ação</value>
   </data>
-  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
-    <value>{!User} com este e-mail já está registado</value>
-  </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Campo de e-mail está vazio</value>
   </data>
@@ -111,9 +108,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>A nova palavra-passe está incorrecta. Deve conter</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Deve conter</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>dígitos</value>

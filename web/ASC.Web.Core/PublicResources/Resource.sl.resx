@@ -91,9 +91,6 @@
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>Vaš profil je onemogočen</value>
   </data>
-  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
-    <value>{!User} s to e-pošto je že registriran</value>
-  </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Okno e-pošte je prazno</value>
   </data>
@@ -105,9 +102,6 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Naložene datoteke ni bilo mogoče najti</value>
-  </data>
-  <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>Velikost datoteke slike je prevelika</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Vaš cenovni načrt ne podpira te možnosti</value>
@@ -123,9 +117,6 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Novo geslo je nepravilno. Vsebovati mora</value>
-  </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Mora vsebovati</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>številke</value>
@@ -165,9 +156,6 @@
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>Za spremembo številke morate izbrisati svojo trenutno telefonsko številko</value>
-  </data>
-  <data name="Owner" xml:space="preserve">
-    <value>Lastnik</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Dostop portala</value>
