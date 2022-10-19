@@ -32,49 +32,16 @@ const SetRoomParams = ({
   setIsScrollLocked,
   isEdit,
 }) => {
-  const onChangeName = (e) => {
-    // let value = e.target.value;
-    // value = value.replace("/", "");
-    // value = value.replace("\\", "");
-
-    // const storageFolderPath = roomParams.storageLocation.storageFolderPath;
-    // const pathArr = storageFolderPath.split("/");
-    // const folderName = pathArr.pop();
-
-    // if (roomParams.title === folderName)
-    //   setRoomParams({
-    //     ...roomParams,
-    //     title: value,
-    //     storageLocation: {
-    //       ...roomParams.storageLocation,
-    //       storageFolderPath:
-    //         pathArr.join("/") + (!!pathArr.length ? "/" : "") + value,
-    //     },
-    //   });
-    // else
-
+  const onChangeName = (e) =>
     setRoomParams({ ...roomParams, title: e.target.value });
-  };
 
   const onChangeIsPrivate = () =>
     setRoomParams({ ...roomParams, isPrivate: !roomParams.isPrivate });
 
-  const onChangeThidpartyFolderName = (e) =>
-    setRoomParams({ ...roomParams, thirdpartyFolderName: e.target.value });
-
-  const onChangeIcon = (icon) => setRoomParams({ ...roomParams, icon: icon });
-
-  // const onChangeIsThirdparty = () =>
-  //   setRoomParams({ ...roomParams, isThirdparty: !roomParams.isThirdparty });
-
   const onChangeStorageLocation = (storageLocation) =>
     setRoomParams({ ...roomParams, storageLocation });
 
-  // const onChangeRememberThirdpartyStorage = () =>
-  //   setRoomParams({
-  //     ...roomParams,
-  //     rememberThirdpartyStorage: !roomParams.rememberThirdpartyStorage,
-  //   });
+  const onChangeIcon = (icon) => setRoomParams({ ...roomParams, icon: icon });
 
   const [currentRoomTypeData] = roomTypes.filter(
     (room) => room.type === roomParams.type

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 import toastr from "@docspace/components/toast/toastr";
@@ -8,9 +8,8 @@ import ToggleParam from "../Params/ToggleParam";
 import ThirdPartyComboBox from "./ThirdPartyComboBox";
 
 import Checkbox from "@docspace/components/checkbox";
-import Toast from "@docspace/components/toast";
 import FolderInput from "./FolderInput";
-import { combineUrl, getOAuthToken } from "@docspace/common/utils";
+import { getOAuthToken } from "@docspace/common/utils";
 
 const StyledThirdPartyStorage = styled(StyledParam)`
   flex-direction: column;
@@ -87,17 +86,6 @@ const ThirdPartyStorage = ({
 
   return (
     <StyledThirdPartyStorage>
-      {/* <div className="set_room_params-info">
-        <div className="set_room_params-info-title">
-          <Text className="set_room_params-info-title-text">
-            {t("ThirdPartyStorageTitle")}
-          </Text>
-        </div>
-        <div className="set_room_params-info-description">
-          {t("ThirdPartyStorageDescription")}
-        </div>
-      </div> */}
-
       <ToggleParam
         title={t("ThirdPartyStorageTitle")}
         description={t("ThirdPartyStorageDescription")}

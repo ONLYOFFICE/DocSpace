@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-import { IconButton, TextInput } from "@docspace/components";
+import { IconButton } from "@docspace/components";
 import { Base } from "@docspace/components/themes";
-import SelectFolderInput from "@docspace/client/src/components/panels/SelectFolderInput";
-import { getFolder, getFolderInfo } from "@docspace/common/api/files";
-import { getFolderOptions } from "@docspace/common/utils";
 import SelectFolderDialog from "@docspace/client/src/components/panels/SelectFolderDialog";
 import FilesFilter from "@docspace/common/api/files/filter";
 
