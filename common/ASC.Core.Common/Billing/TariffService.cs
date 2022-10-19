@@ -838,7 +838,7 @@ public class TariffService : ITariffService
         }
 
         if (tariff.DueDate == DateTime.MinValue ||
-            tariff.DueDate != DateTime.MaxValue && tariff.DueDate.Date.AddDays(delay) < DateTime.UtcNow.Date)
+            tariff.DueDate != DateTime.MaxValue && tariff.DueDate.Date < DateTime.UtcNow.Date.AddDays(-delay))
         {
             tariff.State = TariffState.NotPaid;
         }
