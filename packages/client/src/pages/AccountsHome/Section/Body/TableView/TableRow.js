@@ -302,8 +302,6 @@ const PeopleTableRow = (props) => {
 
   const typeCell = renderTypeCell();
 
-  console.log(displayName, email);
-
   return (
     <StyledWrapper
       className={`user-item ${
