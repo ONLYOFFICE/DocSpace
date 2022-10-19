@@ -59,7 +59,6 @@ public class UserController : PeopleControllerBase
     private readonly RoomLinkService _roomLinkService;
     private readonly FileSecurity _fileSecurity;
     private readonly IQuotaService _quotaService;
-    private readonly FilesSpaceUsageStatManager _filesSpaceUsageStatManager;
     private readonly UsersQuotaSyncOperation _usersQuotaSyncOperation;
     private readonly CountManagerChecker _countManagerChecker;
     private readonly CountUserChecker _countUserChecker;
@@ -101,9 +100,7 @@ public class UserController : PeopleControllerBase
         SettingsManager settingsManager,
         RoomLinkService roomLinkService,
         FileSecurity fileSecurity,
-
-        FilesSpaceUsageStatManager filesSpaceUsageStatManager,
-        UsersQuotaSyncOperation usersQuotaSyncOperation)
+        UsersQuotaSyncOperation usersQuotaSyncOperation,
         CountManagerChecker countManagerChecker,
         CountUserChecker activeUsersChecker,
         UsersInRoomChecker usersInRoomChecker,
@@ -144,7 +141,6 @@ public class UserController : PeopleControllerBase
         _usersInRoomChecker = usersInRoomChecker;
         _usersInRoomStatistic = usersInRoomStatistic;
         _quotaService = quotaService;
-        _filesSpaceUsageStatManager = filesSpaceUsageStatManager;
         _usersQuotaSyncOperation = usersQuotaSyncOperation;
     }
 
