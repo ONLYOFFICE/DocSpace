@@ -440,6 +440,8 @@ const Dark = {
 
     hoverBorderColor: "#646464",
     hoverIndeterminateColor: grayMaxLight,
+
+    focusColor: "#858585",
   },
 
   // slider: {
