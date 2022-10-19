@@ -47,10 +47,13 @@ class ChangeUserTypeDialogComponent extends React.Component {
   };
 
   onCloseAction = async () => {
+    const { isRequestRunning } = this.state;
     const { onClose, getUsersList, filter } = this.props;
-    await getUsersList(filter);
+    if (!isRequestRunning) {
+      await getUsersList(filter);
 
-    onClose();
+      onClose();
+    }
   };
 
   getType = (type) => {
@@ -70,7 +73,7 @@ class ChangeUserTypeDialogComponent extends React.Component {
   };
 
   render() {
-    const { visible, onClose, t, tReady, toType, fromType } = this.props;
+    const { visible, t, tReady, toType, fromType } = this.props;
     const { isRequestRunning, userIDs } = this.state;
 
     const firstType = fromType.length === 1 ? this.getType(fromType[0]) : null;
