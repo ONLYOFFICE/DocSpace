@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,32 +24,22 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.EventBus.Log;
+namespace ASC.Data.Storage.Encryption;
 
-namespace ASC.Notify.IntegrationEvents.EventHandling;
-
-[Scope]
-public class EncryptionDataStorageRequestedIntegrationEventHandler : IIntegrationEventHandler<EncryptionDataStorageRequestedIntegration>
+public class Startup : BaseStartup
 {
-    private readonly ILogger _logger;
-    private readonly EncryptionWorker _encryptionWorker;
-    
-    public EncryptionDataStorageRequestedIntegrationEventHandler(EncryptionWorker encryptionWorker,
-                                                                 ILogger<EncryptionDataStorageRequestedIntegrationEventHandler> logger)
+    public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
+        : base(configuration, hostEnvironment)
     {
-        _encryptionWorker = encryptionWorker;
-        _logger = logger;
     }
 
-    public async Task Handle(EncryptionDataStorageRequestedIntegration @event)
+    public override void ConfigureServices(IServiceCollection services)
     {
-//        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
-  //      {
-    //        _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
+        base.ConfigureServices(services);
 
-            _encryptionWorker.Start(@event.EncryptionSettings, @event.ServerRootPath);
-
-            await Task.CompletedTask;
-      //  }
+        DIHelper.TryAdd<EncryptionDataStorageRequestedIntegrationEventHandler>();
+        DIHelper.TryAdd<EncryptionOperation>();
+        DIHelper.TryAdd<ICrypt, Crypt>();
     }
 }
+
