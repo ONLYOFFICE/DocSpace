@@ -296,7 +296,7 @@ class FilesActionStore {
               return toastr.success(translations.FolderRemoved);
             };
 
-            if (withPaging) {
+            if (withPaging || this.dialogsStore.isFolderActions) {
               this.updateCurrentFolder(fileIds, folderIds, false);
               showToast();
             } else {

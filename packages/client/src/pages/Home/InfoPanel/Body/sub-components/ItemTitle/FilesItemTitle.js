@@ -19,13 +19,16 @@ const FilesItemTitle = ({
 
   getContextOptions,
   getContextOptionActions,
+  severalItemsLength,
 }) => {
   if (isSeveralItems)
     return (
       <StyledTitle>
-        <ReactSVG className="icon" src={getIcon(32, ".file")} />
+        <div className="item-icon">
+          <ReactSVG className="icon" src={getIcon(32, ".file")} />
+        </div>
         <Text className="text">
-          {`${t("InfoPanel:ItemsSelected")}: ${selection.length}`}
+          {`${t("InfoPanel:ItemsSelected")}: ${severalItemsLength}`}
         </Text>
       </StyledTitle>
     );
@@ -34,11 +37,13 @@ const FilesItemTitle = ({
 
   return (
     <StyledTitle ref={itemTitleRef}>
-      <img
-        className={`icon ${selection.isRoom && "is-room"}`}
-        src={selection.icon}
-        alt="thumbnail-icon"
-      />
+      <div className="item-icon">
+        <img
+          className={`icon ${selection.isRoom && "is-room"}`}
+          src={selection.icon}
+          alt="thumbnail-icon"
+        />
+      </div>
       <Text className="text">{selection.title}</Text>
       {selection && (
         <ItemContextOptions

@@ -4,7 +4,7 @@ import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "PACKAGE_FILE";
 import toastr from "@docspace/components/toast/toastr";
-import { AppServerConfig } from "@docspace/common/constants";
+import { AppServerConfig, ShareAccessRights } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
   isMobile as isMobileUtils,
@@ -411,8 +411,16 @@ class ContextOptionsStore {
     window.dispatchEvent(event);
   };
 
-  onClickInviteUsers = () => {
-    console.log("invite users");
+  onClickInviteUsers = (e) => {
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
+    this.dialogsStore.setInvitePanelOptions({
+      visible: true,
+      roomId: action,
+      hideSelector: false,
+      defaultAccess: ShareAccessRights.ReadOnly,
+    });
   };
 
   onClickPin = (e, id, t) => {
@@ -614,8 +622,9 @@ class ContextOptionsStore {
         key: "invite-users-to-room",
         label: t("InviteUsers"),
         icon: "/static/images/person.react.svg",
-        onClick: () => this.onClickInviteUsers(),
+        onClick: (e) => this.onClickInviteUsers(e),
         disabled: false,
+        action: item.id,
       },
       {
         key: "room-info",

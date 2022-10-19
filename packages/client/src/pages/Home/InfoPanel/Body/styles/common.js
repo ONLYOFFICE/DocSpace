@@ -50,6 +50,10 @@ const StyledTitle = styled.div`
       }
     `}
 
+  .item-icon {
+    height: 32px;
+    width: 32px;
+  }
   img {
     &.icon {
       display: flex;

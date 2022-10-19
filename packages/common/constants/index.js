@@ -27,6 +27,10 @@ export const EmployeeStatus = Object.freeze({
 export const EmployeeType = Object.freeze({
   User: 1,
   Guest: 2,
+  UserString: "user",
+  RoomAdmin: "manager",
+  DocSpaceAdmin: "admin",
+  Owner: "Owner",
 });
 /**
  * Enum for filter type.
@@ -155,6 +159,8 @@ export const ShareAccessRights = Object.freeze({
   Comment: 6,
   FormFilling: 7,
   CustomFilter: 8,
+  RoomManager: 9,
+  Editing: 10,
 });
 export const ConflictResolveType = Object.freeze({
   Skip: 0,

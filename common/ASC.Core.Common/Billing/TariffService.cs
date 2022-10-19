@@ -709,19 +709,22 @@ public class TariffService : ITariffService
                     using var dbContext = _dbContextFactory.CreateDbContext();
                     using var tx = dbContext.Database.BeginTransaction();
 
-                    if (tariffInfo.DueDate.Equals(DateTime.MaxValue))
+                    var stamp = tariffInfo.DueDate;
+                    if (stamp.Equals(DateTime.MaxValue))
                     {
-                        tariffInfo.DueDate = new DateTime(tariffInfo.DueDate.Year, tariffInfo.DueDate.Month, tariffInfo.DueDate.Day, tariffInfo.DueDate.Hour, tariffInfo.DueDate.Minute, tariffInfo.DueDate.Second);
+                        stamp = stamp.Date.Add(new TimeSpan(tariffInfo.DueDate.Hour, tariffInfo.DueDate.Minute, tariffInfo.DueDate.Second));
                     }
 
                     var efTariff = new DbTariff
                     {
                         Id = tariffInfo.Id,
                         Tenant = tenant,
-                        Stamp = tariffInfo.DueDate,
+                        Stamp = stamp,
                         CustomerId = tariffInfo.CustomerId,
                         CreateOn = DateTime.UtcNow
                     };
+
+                    efTariff.CustomerId = efTariff.CustomerId == null ? "" : efTariff.CustomerId;
 
                     efTariff = dbContext.AddOrUpdate(r => r.Tariffs, efTariff);
                     dbContext.SaveChanges();
@@ -792,7 +795,7 @@ public class TariffService : ITariffService
         }
 
         var delay = 0;
-        bool setDelay = true;
+        var setDelay = true;
 
         if (_trialEnabled)
         {
@@ -831,12 +834,11 @@ public class TariffService : ITariffService
         if (tariff.DueDate != DateTime.MinValue && tariff.DueDate.Date < DateTime.UtcNow.Date && delay > 0)
         {
             tariff.State = TariffState.Delay;
-
             tariff.DelayDueDate = tariff.DueDate.Date.AddDays(delay);
         }
 
         if (tariff.DueDate == DateTime.MinValue ||
-            tariff.DueDate != DateTime.MaxValue && tariff.DueDate.Date.AddDays(delay) < DateTime.UtcNow.Date)
+            tariff.DueDate != DateTime.MaxValue && tariff.DueDate.Date < DateTime.UtcNow.Date.AddDays(-delay))
         {
             tariff.State = TariffState.NotPaid;
         }

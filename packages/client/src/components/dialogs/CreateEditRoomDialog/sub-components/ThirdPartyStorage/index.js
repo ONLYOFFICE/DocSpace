@@ -1,17 +1,15 @@
-import Checkbox from "@docspace/components/checkbox";
 import React from "react";
 import { inject, observer } from "mobx-react";
-
 import styled from "styled-components";
-import { StyledParam } from "../Params/StyledParam";
-
-import ToggleParam from "../Params/ToggleParam";
-import ThirpartyComboBox from "./ThirpartyComboBox";
-
-import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
+
+import { StyledParam } from "../Params/StyledParam";
+import ToggleParam from "../Params/ToggleParam";
+import ThirdPartyComboBox from "./ThirdPartyComboBox";
+
+import Checkbox from "@docspace/components/checkbox";
 import FolderInput from "./FolderInput";
-import { combineUrl, getOAuthToken } from "@docspace/common/utils";
+import { getOAuthToken } from "@docspace/common/utils";
 
 const StyledThirdPartyStorage = styled(StyledParam)`
   flex-direction: column;
@@ -21,6 +19,7 @@ const StyledThirdPartyStorage = styled(StyledParam)`
 const ThirdPartyStorage = ({
   t,
 
+  roomTitle,
   storageLocation,
   onChangeStorageLocation,
 
@@ -58,15 +57,6 @@ const ThirdPartyStorage = ({
     }
   };
 
-  console.log(storageLocation);
-
-  const onChangeThirdpartyAccount = (thirdpartyAccount) => {
-    onChangeStorageLocation({
-      ...storageLocation,
-      thirdpartyAccount,
-    });
-  };
-
   const onChangeProvider = async (provider) => {
     if (!!storageLocation.thirdpartyAccount) {
       onChangeStorageLocation({
@@ -81,13 +71,13 @@ const ThirdPartyStorage = ({
     onChangeStorageLocation({ ...storageLocation, provider });
   };
 
-  const onChangeFolderPath = (e) =>
+  const onChangeStorageFolderId = (storageFolderId) =>
     onChangeStorageLocation({
       ...storageLocation,
-      storageFolderPath: e.target.value,
+      storageFolderId,
     });
 
-  const onChangeRememberThirdpartyStorage = () => {
+  const onChangeIsSaveThirdpartyAccount = () => {
     onChangeStorageLocation({
       ...storageLocation,
       rememberThirdpartyStorage: !storageLocation.rememberThirdpartyStorage,
@@ -96,17 +86,6 @@ const ThirdPartyStorage = ({
 
   return (
     <StyledThirdPartyStorage>
-      {/* <div className="set_room_params-info">
-        <div className="set_room_params-info-title">
-          <Text className="set_room_params-info-title-text">
-            {t("ThirdPartyStorageTitle")}
-          </Text>
-        </div>
-        <div className="set_room_params-info-description">
-          {t("ThirdPartyStorageDescription")}
-        </div>
-      </div> */}
-
       <ToggleParam
         title={t("ThirdPartyStorageTitle")}
         description={t("ThirdPartyStorageDescription")}
@@ -115,11 +94,12 @@ const ThirdPartyStorage = ({
       />
 
       {storageLocation.isThirdparty && (
-        <ThirpartyComboBox
+        <ThirdPartyComboBox
           t={t}
-          connectItems={connectItems}
+          storageLocation={storageLocation}
+          onChangeStorageLocation={onChangeStorageLocation}
           onChangeProvider={onChangeProvider}
-          onChangeThirdpartyAccount={onChangeThirdpartyAccount}
+          connectItems={connectItems}
           setConnectDialogVisible={setConnectDialogVisible}
           setRoomCreation={setRoomCreation}
           saveThirdParty={saveThirdParty}
@@ -128,7 +108,6 @@ const ThirdPartyStorage = ({
           openConnectWindow={openConnectWindow}
           setConnectItem={setConnectItem}
           getOAuthToken={getOAuthToken}
-          storageLocation={storageLocation}
           setIsScrollLocked={setIsScrollLocked}
           setIsOauthWindowOpen={setIsOauthWindowOpen}
         />
@@ -136,19 +115,21 @@ const ThirdPartyStorage = ({
 
       {storageLocation.isThirdparty && storageLocation.thirdpartyAccount && (
         <FolderInput
-          value={storageLocation.storageFolderPath}
-          onChangeFolderPath={onChangeFolderPath}
+          t={t}
+          roomTitle={roomTitle}
+          thirdpartyAccount={storageLocation.thirdpartyAccount}
+          onChangeStorageFolderId={onChangeStorageFolderId}
         />
       )}
 
-      {storageLocation.isThirdparty && storageLocation.thirdpartyAccount && (
+      {/* {storageLocation.isThirdparty && storageLocation.thirdpartyAccount && (
         <Checkbox
           className="thirdparty-checkbox"
           label={t("ThirdPartyStorageRememberChoice")}
-          isChecked={storageLocation.rememberThirdpartyStorage}
-          onChange={onChangeRememberThirdpartyStorage}
+          isChecked={storageLocation.isSaveThirdpartyAccount}
+          onChange={onChangeIsSaveThirdpartyAccount}
         />
-      )}
+      )} */}
     </StyledThirdPartyStorage>
   );
 };

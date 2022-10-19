@@ -319,7 +319,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// Room security info
     /// </returns>
     [HttpPut("rooms/{id}/share")]
-    public async IAsyncEnumerable<FileShareDto> SetRoomSecurityAsync(T id, RoomInvitationRequestDto inDto)
+    public async Task<IEnumerable<FileShareDto>> SetRoomSecurityAsync(T id, RoomInvitationRequestDto inDto)
     {
         ErrorIfNotDocSpace();
 
@@ -338,10 +338,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
             await _fileStorageService.SetAceObjectAsync(aceCollection, inDto.Notify);
         }
 
-        await foreach (var s in GetRoomSecurityInfoAsync(id))
-        {
-            yield return s;
-        }
+        return await GetRoomSecurityInfoAsync(id).ToListAsync();
     }
 
     /// <summary>

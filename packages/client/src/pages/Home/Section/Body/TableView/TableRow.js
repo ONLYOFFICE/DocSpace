@@ -367,6 +367,10 @@ const FilesTableRow = (props) => {
   let modifiedAvailableDrag = true;
   let sizeAvailableDrag = true;
   let typeAvailableDrag = true;
+  let ownerAvailableDrag = true;
+  let tagsAvailableDrag = true;
+  let activityAvailableDrag = true;
+
   let buttonsAvailableDrag = true;
 
   if (dragging && isDragging) {
@@ -378,6 +382,9 @@ const FilesTableRow = (props) => {
     sizeAvailableDrag = availableColumns.includes("Size");
     typeAvailableDrag = availableColumns.includes("Type");
     buttonsAvailableDrag = availableColumns.includes("QuickButtons");
+    ownerAvailableDrag = availableColumns.includes("Owner");
+    tagsAvailableDrag = availableColumns.includes("Tags");
+    activityAvailableDrag = availableColumns.includes("Activity");
   }
 
   return (
@@ -439,6 +446,7 @@ const FilesTableRow = (props) => {
           />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
+
         {(item.isRoom || isRooms) && (
           <TableCell
             style={
@@ -469,7 +477,7 @@ const FilesTableRow = (props) => {
         {item.isRoom && (
           <TableCell
             style={
-              !typeAvailableDrag
+              !tagsAvailableDrag
                 ? { background: "none !important" }
                 : dragStyles.style
             }
@@ -481,10 +489,13 @@ const FilesTableRow = (props) => {
             />
           </TableCell>
         )}
+
         {!personal && (
           <TableCell
             style={
-              !authorAvailableDrag ? { background: "none" } : dragStyles.style
+              !authorAvailableDrag && !ownerAvailableDrag
+                ? { background: "none" }
+                : dragStyles.style
             }
             {...selectionProp}
           >
@@ -514,7 +525,9 @@ const FilesTableRow = (props) => {
 
         <TableCell
           style={
-            !modifiedAvailableDrag ? { background: "none" } : dragStyles.style
+            !modifiedAvailableDrag && !activityAvailableDrag
+              ? { background: "none" }
+              : dragStyles.style
           }
           {...selectionProp}
         >

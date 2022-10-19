@@ -30,7 +30,7 @@ const StyledModalDialog = styled(ModalDialog)`
 const CreateRoomDialog = ({
   t,
   visible,
-  closeEvent,
+  onClose,
   onCreate,
 
   fetchedTags,
@@ -52,8 +52,8 @@ const CreateRoomDialog = ({
       isThirdparty: false,
       provider: null,
       thirdpartyAccount: null,
-      storageFolderPath: "",
-      rememberThirdpartyStorage: false,
+      storageFolderId: "",
+      isSaveThirdpartyAccount: false,
     },
     icon: {
       uploadedFile: null,
@@ -87,7 +87,7 @@ const CreateRoomDialog = ({
     setRoomParams({ ...startRoomParams });
   };
 
-  const onClose = async () => {
+  const onCloseAndDisconnectThirdparty = async () => {
     if (!!roomParams.storageLocation.thirdpartyAccount) {
       setIsLoading(true);
       await deleteThirdParty(
@@ -100,7 +100,7 @@ const CreateRoomDialog = ({
           setIsLoading(false);
         });
     }
-    closeEvent();
+    onClose();
   };
 
   return (
@@ -108,7 +108,7 @@ const CreateRoomDialog = ({
       displayType="aside"
       withBodyScroll
       visible={visible}
-      onClose={onClose}
+      onClose={onCloseAndDisconnectThirdparty}
       isScrollLocked={isScrollLocked}
       withFooterBorder
       isOauthWindowOpen={isOauthWindowOpen}
@@ -152,7 +152,7 @@ const CreateRoomDialog = ({
             label={t("Common:CancelButton")}
             size="normal"
             scale
-            onClick={onClose}
+            onClick={onCloseAndDisconnectThirdparty}
           />
         </ModalDialog.Footer>
       )}

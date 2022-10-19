@@ -16,7 +16,6 @@ const EditRoomDialog = ({
   fetchedRoomParams,
   fetchedTags,
   fetchedImage,
-  folderFormValidation,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
 

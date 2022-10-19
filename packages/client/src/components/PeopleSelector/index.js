@@ -7,8 +7,6 @@ import i18n from "./i18n";
 import Selector from "@docspace/components/selector";
 import Filter from "@docspace/common/api/people/filter";
 
-import UserTooltip from "./sub-components/UserTooltip";
-
 import { getUserList } from "@docspace/common/api/people";
 import Loaders from "@docspace/common/components/Loaders";
 import { getUserRole } from "SRC_DIR/helpers/people-helpers";
@@ -60,15 +58,16 @@ const PeopleSelector = ({
   }, []);
 
   const toListItem = (item) => {
-    const { id, avatar, icon, displayName } = item;
+    const { id, email, avatar, icon, displayName } = item;
 
     const role = getUserRole(item);
 
     return {
       id,
+      email,
       avatar,
       icon,
-      label: displayName,
+      label: displayName || email,
       role,
     };
   };

@@ -120,30 +120,12 @@ const StyledTile = styled.div`
 
   &:before,
   &:after {
-    ${(props) =>
-      props.isFolder &&
-      props.dragging &&
-      css`
-        background: ${(props) =>
-          props.theme.filesSection.rowView.draggingBackground};
-      `};
     ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   }
 
   &:before,
   &:after {
     ${(props) => (props.checked || props.isActive) && checkedStyle};
-  }
-
-  &:hover:before,
-  &:hover:after {
-    ${(props) =>
-      props.isFolder &&
-      props.dragging &&
-      css`
-        background: ${(props) =>
-          props.theme.filesSection.rowView.draggingHoverBackground};
-      `};
   }
 
   .checkbox {

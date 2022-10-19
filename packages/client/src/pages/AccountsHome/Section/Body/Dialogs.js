@@ -25,9 +25,9 @@ const Dialogs = ({
   deleteProfileEver,
   data,
   closeDialogs,
-  employeeDialogVisible,
+  changeUserTypeDialogVisible,
   guestDialogVisible,
-  activeDialogVisible,
+  changeUserStatusDialogVisible,
   disableDialogVisible,
   sendInviteDialogVisible,
   deleteDialogVisible,
@@ -70,34 +70,22 @@ const Dialogs = ({
           user={data}
         />
       )}
-      {employeeDialogVisible && (
+      {changeUserTypeDialogVisible && (
         <ChangeUserTypeDialog
-          visible={employeeDialogVisible}
+          visible={changeUserTypeDialogVisible}
           onClose={closeDialogs}
-          userType={EmployeeType.User}
+          {...data}
         />
       )}
-      {guestDialogVisible && (
-        <ChangeUserTypeDialog
-          visible={guestDialogVisible}
-          onClose={closeDialogs}
-          userType={EmployeeType.Guest}
-        />
-      )}
-      {activeDialogVisible && (
+
+      {changeUserStatusDialogVisible && (
         <ChangeUserStatusDialog
-          visible={activeDialogVisible}
+          visible={changeUserStatusDialogVisible}
           onClose={closeDialogs}
-          userStatus={EmployeeStatus.Active}
+          {...data}
         />
       )}
-      {disableDialogVisible && (
-        <ChangeUserStatusDialog
-          visible={disableDialogVisible}
-          onClose={closeDialogs}
-          userStatus={EmployeeStatus.Disabled}
-        />
-      )}
+
       {sendInviteDialogVisible && (
         <SendInviteDialog
           visible={sendInviteDialogVisible}
@@ -140,9 +128,9 @@ export default inject(({ auth, peopleStore }) => {
     data,
     closeDialogs,
 
-    employeeDialogVisible,
+    changeUserTypeDialogVisible,
     guestDialogVisible,
-    activeDialogVisible,
+    changeUserStatusDialogVisible,
     disableDialogVisible,
     sendInviteDialogVisible,
     deleteDialogVisible,
@@ -165,9 +153,9 @@ export default inject(({ auth, peopleStore }) => {
     data,
     closeDialogs,
 
-    employeeDialogVisible,
+    changeUserTypeDialogVisible,
     guestDialogVisible,
-    activeDialogVisible,
+    changeUserStatusDialogVisible,
     disableDialogVisible,
     sendInviteDialogVisible,
     deleteDialogVisible,

@@ -1987,6 +1987,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cloud space for your office docs.
+        /// </summary>
+        public static string PortalName {
+            get {
+                return ResourceManager.GetString("PortalName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Portal Access.
         /// </summary>
         public static string PortalSecurity {

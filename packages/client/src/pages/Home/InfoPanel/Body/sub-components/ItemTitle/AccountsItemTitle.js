@@ -14,8 +14,10 @@ const AccountsItemTitle = ({
   isSeveralItems,
   selection,
   getUserContextOptions,
+  severalItemsLength,
 }) => {
-  const isPending = selection.statusType === "pending";
+  const isPending =
+    selection.statusType === "pending" || selection.statusType === "disabled";
 
   const getData = () => {
     const newOptions = selection.options.filter(
@@ -29,7 +31,7 @@ const AccountsItemTitle = ({
       <StyledTitle>
         <Avatar size={"min"} role={"user"} />
         <Text className="text" fontWeight={600} fontSize="16px">
-          {`${t("InfoPanel:SelectedUsers")}: ${selection.length}`}
+          {`${t("InfoPanel:SelectedUsers")}: ${severalItemsLength}`}
         </Text>
       </StyledTitle>
     );
@@ -39,7 +41,7 @@ const AccountsItemTitle = ({
     <StyledAccountsItemTitle isPending={isPending}>
       <Avatar
         className="avatar"
-        role={selection.role}
+        role={selection.role ? selection.role : "user"}
         size={"big"}
         source={selection.avatar}
       />
@@ -50,7 +52,11 @@ const AccountsItemTitle = ({
           title={selection.displayName}
           truncate
         >
-          {isPending ? selection.email : selection.displayName}
+          {isPending
+            ? selection.email
+            : selection.displayName?.trim()
+            ? selection.displayName
+            : selection.email}
         </Text>
         {!isPending && (
           <Text className={"info-text__email"} noSelect title={selection.email}>

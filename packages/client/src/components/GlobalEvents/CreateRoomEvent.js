@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { CreateRoomDialog } from "../dialogs";
+import { toastr } from "@docspace/components";
 
 const CreateRoomEvent = ({
   visible,
@@ -39,6 +40,7 @@ const CreateRoomEvent = ({
     const addTagsData = roomParams.tags.map((tag) => tag.name);
 
     const isThirdparty = roomParams.storageLocation.isThirdparty;
+    const storageFolderId = roomParams.storageLocation.storageFolderId;
     const thirdpartyAccount = roomParams.storageLocation.thirdpartyAccount;
 
     const uploadLogoData = new FormData();
@@ -49,12 +51,12 @@ const CreateRoomEvent = ({
 
       // create room
       const room =
-        isThirdparty && !!thirdpartyAccount
-          ? await createRoomInThirdpary(thirdpartyAccount.id, createRoomData)
+        isThirdparty && storageFolderId
+          ? await createRoomInThirdpary(storageFolderId, createRoomData)
           : await createRoom(createRoomData);
 
       // delete thirdparty account if not needed
-      if (!isThirdparty && !!thirdpartyAccount)
+      if (!isThirdparty && storageFolderId)
         await deleteThirdParty(thirdpartyAccount.providerId);
 
       // create new tags
@@ -80,6 +82,7 @@ const CreateRoomEvent = ({
           img.src = url;
         });
     } catch (err) {
+      toastr.error(err);
       console.log(err);
     } finally {
       await updateCurrentFolder(null, currrentFolderId);
@@ -97,7 +100,7 @@ const CreateRoomEvent = ({
     <CreateRoomDialog
       t={t}
       visible={visible && !connectDialogVisible}
-      closeEvent={onClose}
+      onClose={onClose}
       onCreate={onCreate}
       fetchedTags={fetchedTags}
       isLoading={isLoading}

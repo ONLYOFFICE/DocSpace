@@ -61,11 +61,6 @@ public class BackupController : ControllerBase
     [HttpGet("getbackupschedule")]
     public BackupAjaxHandler.Schedule GetBackupSchedule()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         return _backupHandler.GetSchedule();
     }
 
@@ -80,10 +75,6 @@ public class BackupController : ControllerBase
     [HttpPost("createbackupschedule")]
     public bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
         var storageType = backupSchedule.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backupSchedule.StorageType);
         var storageParams = backupSchedule.StorageParams == null ? new Dictionary<string, string>() : backupSchedule.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
         var backupStored = backupSchedule.BackupsStored == null ? 0 : Int32.Parse(backupSchedule.BackupsStored);
@@ -104,11 +95,6 @@ public class BackupController : ControllerBase
     [HttpDelete("deletebackupschedule")]
     public bool DeleteBackupSchedule()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         _backupHandler.DeleteSchedule();
 
         return true;
@@ -125,10 +111,6 @@ public class BackupController : ControllerBase
     [HttpPost("startbackup")]
     public BackupProgress StartBackup(BackupDto backup)
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
         var storageType = backup.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backup.StorageType);
         var storageParams = backup.StorageParams == null ? new Dictionary<string, string>() : backup.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
@@ -151,11 +133,6 @@ public class BackupController : ControllerBase
     [HttpGet("getbackupprogress")]
     public BackupProgress GetBackupProgress()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         return _backupHandler.GetBackupProgress();
     }
 
@@ -167,11 +144,6 @@ public class BackupController : ControllerBase
     [HttpGet("getbackuphistory")]
     public List<BackupHistoryRecord> GetBackupHistory()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         return _backupHandler.GetBackupHistory();
     }
 
@@ -182,11 +154,6 @@ public class BackupController : ControllerBase
     [HttpDelete("deletebackup/{id}")]
     public bool DeleteBackup(Guid id)
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         _backupHandler.DeleteBackup(id);
         return true;
     }
@@ -199,11 +166,6 @@ public class BackupController : ControllerBase
     [HttpDelete("deletebackuphistory")]
     public bool DeleteBackupHistory()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         _backupHandler.DeleteAllBackups();
         return true;
     }
@@ -220,10 +182,6 @@ public class BackupController : ControllerBase
     [HttpPost("startrestore")]
     public BackupProgress StartBackupRestore(BackupRestoreDto backupRestore)
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
         var storageParams = backupRestore.StorageParams == null ? new Dictionary<string, string>() : backupRestore.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
         _eventBus.Publish(new BackupRestoreRequestIntegrationEvent(
@@ -248,11 +206,6 @@ public class BackupController : ControllerBase
     [AllowNotPayment]
     public BackupProgress GetRestoreProgress()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         return _backupHandler.GetRestoreProgress();
     }
 
@@ -260,11 +213,6 @@ public class BackupController : ControllerBase
     [HttpGet("backuptmp")]
     public object GetTempPath()
     {
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
-
         return _backupHandler.GetTmpFolder();
     }
 
@@ -274,10 +222,6 @@ public class BackupController : ControllerBase
     {
         try
         {
-            if (_coreBaseSettings.Standalone)
-            {
-                _tenantExtra.DemandControlPanelPermission();
-            }
             _backupHandler.DemandPermissionsRestore();
             return true;
         }
@@ -293,10 +237,6 @@ public class BackupController : ControllerBase
     {
         try
         {
-            if (_coreBaseSettings.Standalone)
-            {
-                _tenantExtra.DemandControlPanelPermission();
-            }
             _backupHandler.DemandPermissionsAutoBackup();
             return true;
         }

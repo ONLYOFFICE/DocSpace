@@ -14,6 +14,7 @@
   "Properties": "Cвойства",
   "Data": "Данные",
 
+  "StorageType": "Тип хранилища",
   "FileExtension": "Расширение файла",
   "DateModified": "Дата изменения",
   "LastModifiedBy": "Автор последнего корректива",

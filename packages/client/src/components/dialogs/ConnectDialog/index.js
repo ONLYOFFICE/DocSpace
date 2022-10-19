@@ -26,7 +26,6 @@ const PureConnectDialogContainer = (props) => {
     setConnectDialogVisible,
     personal,
     folderFormValidation,
-    updateInfo,
     isConnectionViaBackupModule,
     roomCreation,
     setSaveThirdpartyResponse,
@@ -34,6 +33,7 @@ const PureConnectDialogContainer = (props) => {
     setIsConnectDialogReconnect,
     saveAfterReconnectOAuth,
     setSaveAfterReconnectOAuth,
+    setSelectedThirdPartyAccount,
   } = props;
   const {
     corporate,
@@ -151,14 +151,15 @@ const PureConnectDialogContainer = (props) => {
         provider_key,
         provider_id
       )
-        .catch((err) => {
-          setIsLoading(false);
+        .then(() => {
           onClose();
+          setSelectedThirdPartyAccount(null);
+        })
+        .catch((err) => {
           toastr.error(err);
         })
         .finally(() => {
           setIsLoading(false);
-          updateInfo && updateInfo();
           onClose();
         });
 
@@ -395,7 +396,10 @@ export default inject(
     const { personal, folderFormValidation } = auth.settingsStore;
 
     const { id, folders } = selectedFolderStore;
-    const { selectedThirdPartyAccount: backupConnectionItem } = backup;
+    const {
+      selectedThirdPartyAccount: backupConnectionItem,
+      setSelectedThirdPartyAccount,
+    } = backup;
     const {
       connectDialogVisible: visible,
       setConnectDialogVisible,
@@ -425,7 +429,7 @@ export default inject(
       openConnectWindow,
       fetchThirdPartyProviders,
       setConnectDialogVisible,
-
+      setSelectedThirdPartyAccount,
       personal,
       isConnectDialogReconnect,
       saveAfterReconnectOAuth,
