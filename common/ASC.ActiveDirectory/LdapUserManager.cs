@@ -137,7 +137,7 @@ public class LdapUserManager
 
             try
             {
-                _countRoomAdminChecker.CheckUsed().Wait();
+                _countRoomAdminChecker.CheckAppend().Wait();
             }
             catch (Exception)
             {

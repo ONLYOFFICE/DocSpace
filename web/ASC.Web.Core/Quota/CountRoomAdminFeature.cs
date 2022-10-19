@@ -28,7 +28,7 @@
 
 namespace ASC.Web.Core.Quota;
 
-public class CountRoomAdminChecker : TenantQuotaFeatureChecker<CountRoomAdminFeature, int>
+public class CountRoomAdminChecker : TenantQuotaFeatureCheckerCount<CountRoomAdminFeature>
 {
     public override string Exception => Resource.TariffsFeature_manager_exception;
 

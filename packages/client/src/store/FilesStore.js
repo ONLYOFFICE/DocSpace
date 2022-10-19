@@ -1585,7 +1585,6 @@ class FilesStore {
   }
 
   createRoomInThirdpary(thirpartyFolderId, roomParams) {
-    console.log(thirpartyFolderId, roomParams);
     return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
   }
 
@@ -2683,6 +2682,24 @@ class FilesStore {
   setRoomSecurity = async (id, data) => {
     return await api.rooms.setRoomSecurity(id, data);
   };
+
+  get disableDrag() {
+    const {
+      isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = this.treeFoldersStore;
+
+    return (
+      isRecycleBinFolder ||
+      isRoomsFolder ||
+      isArchiveFolder ||
+      isFavoritesFolder ||
+      isRecentFolder
+    );
+  }
 }
 
 export default FilesStore;

@@ -389,7 +389,7 @@ const Base = {
     height: " 32px",
     width: "32px",
     padding: "10px",
-    color: black,
+    color: grayMain,
     hoverColor: black,
   },
 

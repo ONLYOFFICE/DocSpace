@@ -61,8 +61,8 @@ public class UserManager
     private readonly CardDavAddressbook _cardDavAddressbook;
     private readonly ILogger<UserManager> _log;
     private readonly ICache _cache;
-    private readonly TenantQuotaFeatureChecker<CountRoomAdminFeature, int> _tenantQuotaFeatureChecker;
-    private readonly TenantQuotaFeatureChecker<CountUserFeature, int> _activeUsersFeatureChecker;
+    private readonly TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> _tenantQuotaFeatureChecker;
+    private readonly TenantQuotaFeatureCheckerCount<CountUserFeature> _activeUsersFeatureChecker;
     private readonly Constants _constants;
 
     private Tenant _tenant;
@@ -85,8 +85,8 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureChecker<CountRoomAdminFeature, int> tenantQuotaFeatureChecker,
-        TenantQuotaFeatureChecker<CountUserFeature, int> activeUsersFeatureChecker
+        TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker
         )
     {
         _userService = service;
@@ -117,8 +117,8 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureChecker<CountRoomAdminFeature, int> tenantQuotaFeatureChecker,
-        TenantQuotaFeatureChecker<CountUserFeature, int> activeUsersFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
         IHttpContextAccessor httpContextAccessor)
         : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker)
     {
@@ -334,18 +334,6 @@ public class UserManager
             {
                 throw new TenantQuotaException("Maximum number of users exceeded");
             }
-
-            if (u.Status == EmployeeStatus.Active)
-            {
-                if (isUser)
-                {
-                    _activeUsersFeatureChecker.CheckUsed().Wait();
-                }
-                else
-                {
-                    _tenantQuotaFeatureChecker.CheckUsed().Wait();
-                }
-            }
         }
 
         if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
@@ -354,6 +342,19 @@ public class UserManager
         }
 
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+
+        if (Equals(oldUserData, Constants.LostUser))
+        {
+            if (isUser)
+            {
+                _activeUsersFeatureChecker.CheckAppend().Wait();
+            }
+            else
+            {
+                _tenantQuotaFeatureChecker.CheckAppend().Wait();
+            }
+        }
+
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
 
         if (syncCardDav)

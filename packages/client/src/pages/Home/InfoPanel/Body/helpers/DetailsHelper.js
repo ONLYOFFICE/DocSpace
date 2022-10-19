@@ -124,9 +124,7 @@ class DetailsHelper {
       case "Type":
         return this.t("Common:Type");
       case "Storage Type":
-        return this.t("InfoPanel:Storage type");
-      case "Storage account":
-        return this.t("InfoPanel:Storage account");
+        return this.t("InfoPanel:StorageType");
 
       case "File extension":
         return this.t("FileExtension");

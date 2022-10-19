@@ -12,6 +12,7 @@ import { FilterType, FolderType } from "@docspace/common/constants";
 const { desktop } = utils.device;
 
 let treeFolders = [];
+let selectedTreeNode = null;
 class SelectFolderDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -122,9 +123,14 @@ class SelectFolderDialog extends React.Component {
   };
 
   onSelect = async (folder, treeNode) => {
-    const { setResultingFolderId, resultingFolderId } = this.props;
+    const {
+      setResultingFolderId,
+      resultingFolderId,
+      onSelectTreeNode,
+    } = this.props;
 
     if (+resultingFolderId === +folder[0]) return;
+    if (!!onSelectTreeNode) selectedTreeNode = treeNode.node;
 
     setResultingFolderId(folder[0]);
   };
@@ -158,6 +164,7 @@ class SelectFolderDialog extends React.Component {
       onSave,
       onSetNewFolderPath,
       onSelectFolder,
+      onSelectTreeNode,
       withoutImmediatelyClose,
       onSubmit,
 
@@ -173,6 +180,7 @@ class SelectFolderDialog extends React.Component {
     onSave && onSave(e, resultingFolderId);
     onSetNewFolderPath && onSetNewFolderPath(resultingFolderId);
     onSelectFolder && onSelectFolder(resultingFolderId);
+    onSelectTreeNode && onSelectTreeNode(selectedTreeNode);
     //setResultingFolderId(resultingFolderId);
     !withoutImmediatelyClose && this.onClose();
   };

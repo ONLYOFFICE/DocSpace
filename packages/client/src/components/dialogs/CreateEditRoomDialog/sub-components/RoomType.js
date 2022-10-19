@@ -154,11 +154,6 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen }) => {
           <Text noSelect className="choose_room-title-text">
             {t(room.title)}
           </Text>
-          {room.withSecondaryInfo && (
-            <div onClick={onSecondaryInfoClick}>
-              {/* <SecondaryInfoButton content={t(room.secondaryInfo)} /> */}
-            </div>
-          )}
         </div>
         <Text noSelect className="choose_room-description">
           {t(room.description)}
