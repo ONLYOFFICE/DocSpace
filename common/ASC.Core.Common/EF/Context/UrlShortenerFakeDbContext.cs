@@ -26,20 +26,17 @@
 
 namespace ASC.Core.Common.EF.Context;
 
-public class CustomDbContext : DbContext
+public class UrlShortenerFakeDbContext : DbContext
 {
-    public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
-    public DbSet<DbipLocation> DbipLocation { get; set; }
-    public DbSet<Regions> Regions { get; set; }
+    public UrlShortenerFakeDbContext(DbContextOptions<UrlShortenerFakeDbContext> dbContextOptions) : base(dbContextOptions)
+    {
 
-    public CustomDbContext(DbContextOptions<CustomDbContext> options) : base(options) { }
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-               .From(modelBuilder, Database)
-               .AddMobileAppInstall()
-               .AddDbipLocation()
-               .AddRegions();
+            .From(modelBuilder, Database)
+            .AddShortLinks();
     }
 }
