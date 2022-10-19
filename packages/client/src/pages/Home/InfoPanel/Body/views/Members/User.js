@@ -77,14 +77,13 @@ const User = ({
         role="user"
         className="avatar"
         size="min"
-        source={
-          user.avatar ||
-          (user.displayName ? "" : user.email && "/static/images/@.react.svg")
-        }
-        userName={user.displayName}
+        source={isExpect ? "/static/images/@.react.svg" : user.avatar || ""}
+        userName={isExpect ? "" : user.displayName}
       />
 
-      <div className="name">{user.displayName || user.email}</div>
+      <div className="name">
+        {isExpect ? user.email : user.displayName || user.email}
+      </div>
       {selfId === user.id && (
         <div className="me-label">&nbsp;{`(${t("Common:MeLabel")})`}</div>
       )}

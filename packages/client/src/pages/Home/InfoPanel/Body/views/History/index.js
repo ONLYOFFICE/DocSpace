@@ -32,6 +32,21 @@ const History = ({
   const [history, setHistory] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
 
+  const fetchHistory = async (itemId) => {
+    let module = "files";
+    if (selection.isRoom) module = "rooms";
+    else if (selection.isFolder) module = "folders";
+
+    let timerId = setTimeout(() => setShowLoader(true), 1500);
+    let fetchedHistory = await getHistory(module, itemId);
+    fetchedHistory = parseHistoryJSON(fetchedHistory);
+    clearTimeout(timerId);
+
+    setHistory(fetchedHistory);
+    setSelection({ ...selection, history: fetchedHistory });
+    setShowLoader(false);
+  };
+
   const parseHistoryJSON = (fetchedHistory) => {
     let feeds = fetchedHistory.feeds;
     let newFeeds = [];
@@ -57,21 +72,6 @@ const History = ({
     }
 
     return { ...fetchedHistory, feeds: newFeeds };
-  };
-
-  const fetchHistory = async (itemId) => {
-    let module = "files";
-    if (selection.isRoom) module = "rooms";
-    else if (selection.isFolder) module = "folders";
-
-    let timerId = setTimeout(() => setShowLoader(true), 1500);
-    let fetchedHistory = await getHistory(module, itemId);
-    fetchedHistory = parseHistoryJSON(fetchedHistory);
-    clearTimeout(timerId);
-
-    setHistory(fetchedHistory);
-    setSelection({ ...selection, history: fetchedHistory });
-    setShowLoader(false);
   };
 
   useEffect(async () => {

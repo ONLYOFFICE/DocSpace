@@ -24,20 +24,33 @@ const Members = ({
   getRoomMembers,
   changeUserType,
 }) => {
+  const startMembersValue = {
+    inRoom: [],
+    expected: [],
+  };
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
 
   const fetchMembers = async (roomId) => {
     let timerId;
-    if (members) timerId = setTimeout(() => setShowLoader(true), 1500);
-    let fetchedMembers = await getRoomMembers(roomId);
-    fetchedMembers = fetchedMembers.filter(
-      (m) => m.sharedTo.email || m.sharedTo.displayName
-    );
+    if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
+    let data = await getRoomMembers(roomId);
+    data = data.filter((m) => m.sharedTo.email || m.sharedTo.displayName);
     clearTimeout(timerId);
-    setMembers(fetchedMembers);
+
+    let inRoomMembers = [];
+    let expectedMembers = [];
+    data.map((fetchedMember) => {
+      const member = fetchedMember.sharedTo;
+      if (member.activationStatus !== 2) inRoomMembers.push(member);
+      else expectedMembers.push(member);
+    });
+
     setShowLoader(false);
-    return fetchedMembers;
+    return {
+      inRoom: inRoomMembers,
+      expected: expectedMembers,
+    };
   };
 
   useEffect(async () => {
@@ -46,7 +59,8 @@ const Members = ({
       setMembers(selectionParentRoom.members);
       return;
     }
-    const fetchedMembers = await fetchMembers(selection.id);
+
+    const fetchedMembers = await fetchMembers(selectionParentRoom.id);
     setSelectionParentRoom({
       ...selectionParentRoom,
       members: fetchedMembers,
@@ -56,7 +70,7 @@ const Members = ({
   useEffect(async () => {
     if (!selection.isRoom) return;
     if (selectionParentRoom && selectionParentRoom.id === selection.id) return;
-    setMembers(null);
+
     const fetchedMembers = await fetchMembers(selection.id);
     setSelectionParentRoom({
       ...selection,
@@ -68,6 +82,10 @@ const Members = ({
     toastr.warning("Work in progress");
   };
 
+  const onRepeatInvitation = () => {
+    toastr.warning("Work in progress");
+  };
+
   if (showLoader) return <Loaders.InfoPanelViewLoader view="members" />;
   if (!members) return null;
 
@@ -75,7 +93,7 @@ const Members = ({
     <>
       <StyledUserTypeHeader>
         <Text className="title">
-          {t("UsersInRoom")} : {members.length}
+          {t("UsersInRoom")} : {members.inRoom.length}
         </Text>
         <IconButton
           className={"icon"}
@@ -88,11 +106,11 @@ const Members = ({
       </StyledUserTypeHeader>
 
       <StyledUserList>
-        {Object.values(members).map((user) => (
+        {Object.values(members.inRoom).map((user) => (
           <User
-            key={user.sharedTo.id}
+            key={user.id}
             t={t}
-            user={user.sharedTo}
+            user={user}
             isOwner={isOwner}
             isAdmin={isAdmin}
             selfId={selfId}
@@ -101,19 +119,34 @@ const Members = ({
         ))}
       </StyledUserList>
 
-      {/* <StyledUserTypeHeader>
-        <Text className="title">{`${t("Expect people")}:`}</Text>
-        <IconButton
-          className={"icon"}
-          title={t("Repeat invitation")}
-          iconName="/static/images/e-mail+.react.svg"
-          isFill={true}
-          onClick={() => {}}
-          size={16}
-        />
-      </StyledUserTypeHeader>
+      {!!members.expected.length && (
+        <StyledUserTypeHeader isExpect>
+          <Text className="title">{t("ExpectPeople")}</Text>
+          <IconButton
+            className={"icon"}
+            title={t("Repeat invitation")}
+            iconName="/static/images/e-mail+.react.svg"
+            isFill={true}
+            onClick={onRepeatInvitation}
+            size={16}
+          />
+        </StyledUserTypeHeader>
+      )}
 
-      <UserList t={t} users={data.members.expect} isExpect /> */}
+      <StyledUserList>
+        {Object.values(members.expected).map((user) => (
+          <User
+            isExpect
+            key={user.id}
+            t={t}
+            user={user}
+            isOwner={isOwner}
+            isAdmin={isAdmin}
+            selfId={selfId}
+            changeUserType={changeUserType}
+          />
+        ))}
+      </StyledUserList>
     </>
   );
 };
