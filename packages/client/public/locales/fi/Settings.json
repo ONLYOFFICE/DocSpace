@@ -69,7 +69,7 @@
   "Guests": "Vieraat",
   "Job/Title": "Työ/Titteli",
   "LanguageAndTimeZoneSettingsDescription": "Vaihda kaikkien portaalin käyttäjien kieli ja määritä aikavyöhyke siten, että kaikki portaalitapahtumat näytetään oikealla päivämäärällä ja kellonajalla.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> voidaan vaihtaa koko sivuston kieli kaikille käyttäjille ja määrittää aikavyöhyke siten, että kaikki ONLYOFFICE tapahtumat näytetään oikealla päivämäärällä ja ajalla.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> voidaan vaihtaa koko sivuston kieli kaikille käyttäjille ja määrittää aikavyöhyke siten, että kaikki {{ organizationName }} tapahtumat näytetään oikealla päivämäärällä ja ajalla.",
   "LanguageTimeSettingsTooltipDescription": "Avaa alasvetovalikko määrittääksesi tarpeelliset parametrit. Ota tekemäsi asetukset käyttöön klikkaamalla <1>{{save}}</1> painiketta.<3>{{learnMore}}</3>",
   "LocalFile": "Paikallinen tiedosto",
   "LoginHistoryTitle": "Kirjautumishistoria",

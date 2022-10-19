@@ -69,7 +69,7 @@
   "Guests": "Hosté",
   "Job/Title": "Pozice/Titul",
   "LanguageAndTimeZoneSettingsDescription": "Změnit jazyk pro všechny uživatele portálu a nastavit časové pásmo tak, aby se všechny události portálu zobrazovaly se správným datem a časem.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> je možnost pro změnu jazyka na celém portálu pro všechny jeho uživatele a nastavení časového pásma tak, aby všechny události ONLYOFFICE portálu byly zobrazeny ve správném datu a času.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> je možnost pro změnu jazyka na celém portálu pro všechny jeho uživatele a nastavení časového pásma tak, aby všechny události {{ organizationName }} portálu byly zobrazeny ve správném datu a času.",
   "LanguageTimeSettingsTooltipDescription": "Chcete-li změněné parametry aktivovat, klikněte na tlačítko <1>{{save}}</1> v dolní části.<3>{{learnMore}}</3>",
   "LocalFile": "Místní soubor",
   "LoginHistoryTitle": "Historie přihlášení",

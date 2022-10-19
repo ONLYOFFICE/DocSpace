@@ -69,7 +69,7 @@
   "Guests": "Goście",
   "Job/Title": "Stanowisko/Tytuł",
   "LanguageAndTimeZoneSettingsDescription": "Zmień język dla wszystkich użytkowników portalu i skonfiguruj strefę czasową, aby wydarzenia w portalu były wyświetlane z prawidłową datą i godziną.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> to sposób, żeby zmienić język całego portalu dla wszystkich użytkowników i skonfigurować strefę czasową, żeby wszystkie wydarzenia na portalu ONLYOFFICE były wyświetlane z prawidłową datą i godziną.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> to sposób, żeby zmienić język całego portalu dla wszystkich użytkowników i skonfigurować strefę czasową, żeby wszystkie wydarzenia na portalu {{ organizationName }} były wyświetlane z prawidłową datą i godziną.",
   "LanguageTimeSettingsTooltipDescription": "By zapisać wybrane ustawienia, kliknij na przycisku <1>{{save}}</1> znajdującym się na dole sekcji.<3>{{learnMore}}</3>",
   "LocalFile": "Plik lokalny",
   "LoginHistoryTitle": "Historia logowania",
