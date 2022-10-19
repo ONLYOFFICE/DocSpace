@@ -439,6 +439,7 @@ class LanguageAndTimeZone extends React.Component {
           isVertical={true}
         >
           <ComboBox
+            tabIndex={1}
             id="comboBoxLanguage"
             options={cultureNames}
             selectedOption={language}
@@ -457,6 +458,7 @@ class LanguageAndTimeZone extends React.Component {
           isVertical={true}
         >
           <ComboBox
+            tabIndex={2}
             id="comboBoxTimezone"
             options={timezones}
             selectedOption={timezone}
@@ -497,6 +499,7 @@ class LanguageAndTimeZone extends React.Component {
           <> {settingsBlock}</>
         )}
         <SaveCancelButtons
+          tabIndex={3}
           className="save-cancel-buttons"
           onSaveClick={this.onSaveLngTZSettings}
           onCancelClick={this.onCancelClick}

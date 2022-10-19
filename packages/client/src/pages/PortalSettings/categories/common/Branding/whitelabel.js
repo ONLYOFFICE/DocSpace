@@ -840,6 +840,7 @@ const WhiteLabel = (props) => {
 
         {isSettingPaid && (
           <SaveCancelButtons
+            tabIndex={3}
             className="save-cancel-buttons"
             onSaveClick={onSave}
             onCancelClick={onRestoreLogo}

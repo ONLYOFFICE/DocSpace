@@ -151,6 +151,7 @@ const AdditionalResources = (props) => {
         </div>
         <div className="branding-checkbox">
           <Checkbox
+            tabIndex={12}
             className="checkbox"
             isDisabled={!isSettingPaid}
             label={t("ShowFeedbackAndSupport")}
@@ -159,6 +160,7 @@ const AdditionalResources = (props) => {
           />
 
           <Checkbox
+            tabIndex={13}
             className="checkbox"
             isDisabled={!isSettingPaid}
             label={t("ShowVideoGuides")}
@@ -166,6 +168,7 @@ const AdditionalResources = (props) => {
             onChange={() => setShowVideoGuides(!videoGuidesEnabled)}
           />
           <Checkbox
+            tabIndex={14}
             className="checkbox"
             isDisabled={!isSettingPaid}
             label={t("ShowHelpCenter")}
@@ -175,6 +178,7 @@ const AdditionalResources = (props) => {
         </div>
         {isSettingPaid && (
           <SaveCancelButtons
+            tabIndex={15}
             onSaveClick={onSave}
             onCancelClick={onRestore}
             saveButtonLabel={t("Common:SaveButton")}

@@ -267,7 +267,7 @@ const CompanyInfoSettings = (props) => {
               value={companyName}
               hasError={hasErrorCompanyName}
               onChange={(e) => onChangeСompanyName(e.target.value)}
-              tabIndex={3}
+              tabIndex={5}
             />
           </FieldContainer>
           <FieldContainer
@@ -285,7 +285,7 @@ const CompanyInfoSettings = (props) => {
               value={email}
               hasError={hasErrorEmail}
               onChange={(e) => onChangeEmail(e.target.value)}
-              tabIndex={4}
+              tabIndex={6}
             />
           </FieldContainer>
           <FieldContainer
@@ -302,7 +302,7 @@ const CompanyInfoSettings = (props) => {
               value={phone}
               hasError={hasErrorPhone}
               onChange={(e) => onChangePhone(e.target.value)}
-              tabIndex={5}
+              tabIndex={7}
             />
           </FieldContainer>
           <FieldContainer
@@ -319,7 +319,7 @@ const CompanyInfoSettings = (props) => {
               value={site}
               hasError={hasErrorSite}
               onChange={(e) => onChangeSite(e.target.value)}
-              tabIndex={6}
+              tabIndex={8}
             />
           </FieldContainer>
           <FieldContainer
@@ -336,11 +336,12 @@ const CompanyInfoSettings = (props) => {
               value={address}
               hasError={hasErrorAddress}
               onChange={(e) => onChangeAddress(e.target.value)}
-              tabIndex={7}
+              tabIndex={9}
             />
           </FieldContainer>
         </div>
         <SaveCancelButtons
+          tabIndex={10}
           className="save-cancel-buttons"
           onSaveClick={onSave}
           onCancelClick={onRestore}
