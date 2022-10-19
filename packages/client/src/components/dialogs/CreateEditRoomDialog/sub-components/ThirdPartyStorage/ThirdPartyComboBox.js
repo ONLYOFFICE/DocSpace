@@ -96,7 +96,7 @@ const StyledStorageLocation = styled.div`
 
 StyledStorageLocation.defaultProps = { theme: Base };
 
-const ThirpartyComboBox = ({
+const ThirdPartyComboBox = ({
   t,
 
   storageLocation,
@@ -271,4 +271,4 @@ const ThirpartyComboBox = ({
   );
 };
 
-export default ThirpartyComboBox;
+export default ThirdPartyComboBox;
