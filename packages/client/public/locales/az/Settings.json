@@ -70,7 +70,7 @@
   "Guests": "Qonaqlar",
   "Job/Title": "İş/Ad",
   "LanguageAndTimeZoneSettingsDescription": "Bütün portal istifadəçiləri üçün dili dəyişin və vaxtı quraşdırın ki, portal tədbirlərinin hamısı düzgün tarix və vaxtda görünsün.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> bütün istifadəçilər üçün bütün portalın dilini dəyişməyə və saat qurşağını ayarlamağa imkan verir ki, ONLYOFFICE portalındakı olaylar düzgün tarix və vaxtla əks olunsunlar.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> bütün istifadəçilər üçün bütün portalın dilini dəyişməyə və saat qurşağını ayarlamağa imkan verir ki, {{ organizationName }} portalındakı olaylar düzgün tarix və vaxtla əks olunsunlar.",
   "LanguageTimeSettingsTooltipDescription": "Təyin etdiyiniz parametrlərin qüvvəyə minməsi üçün Bölmənin altındakı <1>{{save}}</1> düyməsinin üzərinə klikləyin.<3>{{learnMore}}</3>",
   "LocalFile": "Yerli fayl",
   "LoginDownloadText": "Ətraflı statistikaya baxmaq üçün seçilmiş saxlama müddəti ərzində mövcud olan məlumat üçün hesabatı yükləyə bilərsiniz.",

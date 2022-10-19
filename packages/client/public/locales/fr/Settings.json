@@ -70,7 +70,7 @@
   "Guests": "Invités",
   "Job/Title": "Emploi/Titre",
   "LanguageAndTimeZoneSettingsDescription": "Les paramètres de langue et fuseau horaire est un moyen de changer la langue du portail pour tous les utilisateurs et de configurer le fuseau horaire afin que tous les événements du portail seront affichés avec la date et l'heure correctes.",
-  "LanguageTimeSettingsTooltip": "Les <0>{{text}}</0> est un moyen de changer la langue du portail pour tous les utilisateurs et de configurer le fuseau horaire afin que tous les événements du portail ONLYOFFICE seront affichés avec la date et l'heure correctes.",
+  "LanguageTimeSettingsTooltip": "Les <0>{{text}}</0> est un moyen de changer la langue du portail pour tous les utilisateurs et de configurer le fuseau horaire afin que tous les événements du portail {{ organizationName }} seront affichés avec la date et l'heure correctes.",
   "LanguageTimeSettingsTooltipDescription": "Pour valider les changements effectués, utilisez le bouton <1>{{save}}</1> en bas de la section.<3>{{learnMore}}</3>",
   "LocalFile": "Fichier local",
   "LoginDownloadText": "Vous pouvez télécharger un rapport des  données accessibles pour la période de stockage sélectionnée pour voir les statistiques détaillées. ",

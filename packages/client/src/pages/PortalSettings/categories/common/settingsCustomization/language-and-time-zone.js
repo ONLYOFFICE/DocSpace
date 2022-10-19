@@ -413,6 +413,7 @@ class LanguageAndTimeZone extends React.Component {
       i18n,
       isLoadedPage,
       helpLink,
+      organizationName,
     } = this.props;
 
     const {
@@ -428,7 +429,12 @@ class LanguageAndTimeZone extends React.Component {
     const cultureNames = mapCulturesToArray(cultures, i18n);
 
     const tooltipLanguageTimeSettings = (
-      <LanguageTimeSettingsTooltip theme={theme} t={t} helpLink={helpLink} />
+      <LanguageTimeSettingsTooltip
+        theme={theme}
+        t={t}
+        helpLink={helpLink}
+        organizationName={organizationName}
+      />
     );
 
     const settingsBlock = !(language && timezone) ? null : (

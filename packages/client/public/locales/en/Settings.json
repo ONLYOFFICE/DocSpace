@@ -104,7 +104,7 @@
   "IPSecurityWarningHelper": "First you need to specify your current IP or the IP range your current IP address belongs to, otherwise your portal access will be blocked right after you save the settings. The portal owner will have the portal access from any IP address.",
   "Job/Title": "Job/Title",
   "LanguageAndTimeZoneSettingsDescription": "Language and Time Zone Settings is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the portal will be shown with the correct date and time.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the ONLYOFFICE portal will be shown with the correct date and time.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the {{ organizationName }} portal will be shown with the correct date and time.",
   "LanguageTimeSettingsTooltipDescription": "To make the parameters you set take effect click the <1>{{save}}</1> button at the bottom of the section.<3>{{learnMore}}</3>",
   "Lifetime": "Lifetime (min)",
   "LocalFile": "Local file",
