@@ -302,6 +302,8 @@ const PeopleTableRow = (props) => {
 
   const typeCell = renderTypeCell();
 
+  console.log(displayName, email);
+
   return (
     <StyledWrapper
       className={`user-item ${
@@ -343,7 +345,7 @@ const PeopleTableRow = (props) => {
           >
             {statusType === "pending"
               ? email
-              : displayName
+              : displayName.trim()
               ? displayName
               : email}
           </Link>
