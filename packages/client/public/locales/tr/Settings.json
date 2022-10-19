@@ -69,7 +69,7 @@
   "Guests": "Misafirler",
   "Job/Title": "İş/Başlık",
   "LanguageAndTimeZoneSettingsDescription": "Tüm portal kullanıcıları için dili değiştirin ve tüm portal etkinliklerinin doğru tarih ve saatle gösterilmesi için saat dilimini yapılandırın.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> tüm kullanıcılar için tüm portalın dilini değiştirmeye ve saat kuşağının ayarlanarak ONLYOFFICE portalının etkinliklerinin doğru tarih ve zamanda gösterilmesini sağlar.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> tüm kullanıcılar için tüm portalın dilini değiştirmeye ve saat kuşağının ayarlanarak {{ organizationName }} portalının etkinliklerinin doğru tarih ve zamanda gösterilmesini sağlar.",
   "LanguageTimeSettingsTooltipDescription": "Girdiğiniz parametrelerin çalışmaya başlaması için bölümün sonundaki <1>{{save}}</1> tuşuna tıklayın.<3>{{learnMore}}</3>",
   "LocalFile": "Yerel dosya",
   "LoginHistoryTitle": "Giriş Geçmişi",
