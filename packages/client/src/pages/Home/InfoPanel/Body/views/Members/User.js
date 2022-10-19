@@ -18,14 +18,14 @@ const User = ({
   const roles = {
     admin: {
       key: "admin",
-      title: t("People:Administrator"),
-      label: t("People:Administrator"),
+      title: t("Common:DocSpaceAdmin"),
+      label: t("Common:DocSpaceAdmin"),
       action: "admin",
     },
     manager: {
       key: "manager",
-      title: t("People:Manager"),
-      label: t("People:Manager"),
+      title: t("Common:RoomAdmin"),
+      label: t("Common:RoomAdmin"),
       action: "manager",
     },
     user: {
