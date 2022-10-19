@@ -34,6 +34,7 @@ public class GreetingSettingsController : BaseSettingsController
     private readonly TenantManager _tenantManager;
     private readonly PermissionContext _permissionContext;
     private readonly TenantInfoSettingsHelper _tenantInfoSettingsHelper;
+    private readonly IConfiguration _configuration;
 
     public GreetingSettingsController(
         TenantInfoSettingsHelper tenantInfoSettingsHelper,
@@ -43,18 +44,26 @@ public class GreetingSettingsController : BaseSettingsController
         PermissionContext permissionContext,
         WebItemManager webItemManager,
         IMemoryCache memoryCache,
-        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IConfiguration configuration) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _tenantInfoSettingsHelper = tenantInfoSettingsHelper;
         _messageService = messageService;
         _tenantManager = tenantManager;
         _permissionContext = permissionContext;
+        _configuration = configuration;
     }
 
     [HttpGet("greetingsettings")]
     public ContentResult GetGreetingSettings()
     {
         return new ContentResult { Content = Tenant.Name == "" ? Resource.PortalName : Tenant.Name };
+    }
+
+    [HttpGet("greetingsettings/isdefault")]
+    public bool IsDefault()
+    {
+        return Tenant.Name == "";
     }
 
     [HttpPost("greetingsettings")]
