@@ -61,8 +61,8 @@ public class UserManager
     private readonly CardDavAddressbook _cardDavAddressbook;
     private readonly ILogger<UserManager> _log;
     private readonly ICache _cache;
-    private readonly TenantQuotaFeatureChecker<CountManagerFeature, int> _tenantQuotaFeatureChecker;
-    private readonly TenantQuotaFeatureChecker<CountUserFeature, int> _activeUsersFeatureChecker;
+    private readonly TenantQuotaFeatureCheckerCount<CountManagerFeature> _tenantQuotaFeatureChecker;
+    private readonly TenantQuotaFeatureCheckerCount<CountUserFeature> _activeUsersFeatureChecker;
     private readonly Constants _constants;
 
     private Tenant _tenant;
@@ -85,8 +85,8 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureChecker<CountManagerFeature, int> tenantQuotaFeatureChecker,
-        TenantQuotaFeatureChecker<CountUserFeature, int> activeUsersFeatureChecker
+        TenantQuotaFeatureCheckerCount<CountManagerFeature> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker
         )
     {
         _userService = service;
@@ -117,8 +117,8 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureChecker<CountManagerFeature, int> tenantQuotaFeatureChecker,
-        TenantQuotaFeatureChecker<CountUserFeature, int> activeUsersFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountManagerFeature> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
         IHttpContextAccessor httpContextAccessor)
         : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker)
     {
@@ -339,11 +339,11 @@ public class UserManager
             {
                 if (isVisitor)
                 {
-                    _activeUsersFeatureChecker.CheckUsed().Wait();
+                    _activeUsersFeatureChecker.CheckAppend().Wait();
                 }
                 else
                 {
-                    _tenantQuotaFeatureChecker.CheckUsed().Wait();
+                    _tenantQuotaFeatureChecker.CheckAppend().Wait();
                 }
             }
         }

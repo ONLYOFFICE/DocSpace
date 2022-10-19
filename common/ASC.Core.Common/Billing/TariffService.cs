@@ -794,7 +794,7 @@ public class TariffService : ITariffService
         }
 
         var delay = 0;
-        bool setDelay = true;
+        var setDelay = true;
 
         if (_trialEnabled)
         {
