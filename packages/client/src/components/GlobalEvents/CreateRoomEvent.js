@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { CreateRoomDialog } from "../dialogs";
+import { toastr } from "@docspace/components";
 
 const CreateRoomEvent = ({
   visible,
@@ -80,6 +81,7 @@ const CreateRoomEvent = ({
           img.src = url;
         });
     } catch (err) {
+      toastr.error(err);
       console.log(err);
     } finally {
       await updateCurrentFolder(null, currrentFolderId);

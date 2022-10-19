@@ -27,8 +27,6 @@ const StyledOwnerIcon = styled(OwnerIcon)`
 `;
 const getRoleIcon = (role) => {
   switch (role) {
-    case "guest":
-      return <StyledGuestIcon size="scale" className="guest_icon" />;
     case "admin":
       return <StyledAdministratorIcon size="scale" className="admin_icon" />;
     case "owner":
@@ -63,6 +61,7 @@ const Avatar = (props) => {
     editing,
     editAction,
     isDefaultSource = false,
+    hideRoleIcon,
   } = props;
   let isDefault = false,
     isIcon = false;
@@ -103,7 +102,9 @@ const Avatar = (props) => {
           />
         </EditContainer>
       ) : (
-        <RoleWrapper size={size}>{roleIcon}</RoleWrapper>
+        <>
+          {!hideRoleIcon && <RoleWrapper size={size}>{roleIcon}</RoleWrapper>}
+        </>
       )}
     </StyledAvatar>
   );
@@ -113,7 +114,7 @@ Avatar.propTypes = {
   /** Size of avatar */
   size: PropTypes.oneOf(["max", "big", "medium", "base", "small", "min"]),
   /** Adds a user role table */
-  role: PropTypes.oneOf(["owner", "admin", "guest", "user", ""]),
+  role: PropTypes.oneOf(["owner", "admin", "guest", "user", "manager", ""]),
   /** Provide either a url to display as `Picture` or path to **.svg** file to display as `Icon` */
   source: PropTypes.string,
   /** Provide this and leave `source` empty to display as initials */
@@ -123,6 +124,8 @@ Avatar.propTypes = {
   isDefaultSource: PropTypes.bool,
   /** Function called when the avatar change button is pressed */
   editAction: PropTypes.func,
+  /** Hide user role */
+  hideRoleIcon: PropTypes.bool,
   /** Accepts class */
   className: PropTypes.string,
   /** Accepts id */
@@ -137,6 +140,7 @@ Avatar.defaultProps = {
   source: "",
   userName: "",
   editing: false,
+  hideRoleIcon: false,
 };
 
 export default memo(Avatar);

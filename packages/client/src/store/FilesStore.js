@@ -2666,6 +2666,40 @@ class FilesStore {
 
     return Math.floor(sectionWidth / minTileWidth);
   };
+
+  setInvitationLinks = async (id, linkId, title, access) => {
+    return await api.rooms.setInvitationLinks(id, linkId, title, access);
+  };
+
+  resendEmailInvitations = async (id, usersIds) => {
+    return await api.rooms.resendEmailInvitations(id, usersIds);
+  };
+
+  getRoomSecurityInfo = async (id) => {
+    return await api.rooms.getRoomSecurityInfo(id);
+  };
+
+  setRoomSecurity = async (id, data) => {
+    return await api.rooms.setRoomSecurity(id, data);
+  };
+
+  get disableDrag() {
+    const {
+      isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = this.treeFoldersStore;
+
+    return (
+      isRecycleBinFolder ||
+      isRoomsFolder ||
+      isArchiveFolder ||
+      isFavoritesFolder ||
+      isRecentFolder
+    );
+  }
 }
 
 export default FilesStore;

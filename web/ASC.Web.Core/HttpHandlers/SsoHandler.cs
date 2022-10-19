@@ -107,7 +107,7 @@ public class SsoHandlerService
             {
                 signature = signature + "=";
                 lastSignChar--;
-    }
+            }
         };
     }
 
@@ -272,7 +272,7 @@ public class SsoHandlerService
 
                 try
                 {
-                    await _countManagerChecker.CheckUsed();
+                    await _countManagerChecker.CheckAppend();
                 }
                 catch (Exception)
                 {

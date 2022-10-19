@@ -471,7 +471,7 @@ public class FileStorageService<T> //: IFileStorageService
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
-        _countRoomChecker.CheckAdd((await _countRoomCheckerStatistic.GetValue()) + 1);
+        await _countRoomChecker.CheckAppend();
 
         if (@private && (share == null || !share.Any()))
         {
@@ -1592,7 +1592,7 @@ public class FileStorageService<T> //: IFileStorageService
             var folderDao = GetFolderDao();
             folder = await folderDao.GetFolderAsync(folderId);
 
-            var result = await _fileMarker.MarkedItemsAsync(folder).ToListAsync();
+            var result = await _fileMarker.MarkedItemsAsync(folder).Where(e => e.FileEntryType == FileEntryType.File).ToListAsync();
 
             result = new List<FileEntry>(_entryManager.SortEntries<T>(result, new OrderBy(SortedByType.DateAndTime, false)));
 

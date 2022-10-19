@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../themes/base";
 
 const StyledButton = styled.div`
@@ -13,21 +13,25 @@ const StyledButton = styled.div`
 
   cursor: ${(props) => (!props.isDisabled ? "pointer" : "default")};
 
-  path {
-    ${(props) =>
-      !props.isDisabled &&
-      `
-    fill: ${props.theme.selectorAddButton.color} !important;
-    `}
-  }
-
-  &:hover {
+  svg {
     path {
       ${(props) =>
         !props.isDisabled &&
-        `
-    fill: ${props.theme.selectorAddButton.hoverColor} !important;
-    `}
+        css`
+          fill: ${props.theme.selectorAddButton.color};
+        `}
+    }
+  }
+
+  &:hover {
+    svg {
+      path {
+        ${(props) =>
+          !props.isDisabled &&
+          css`
+            fill: ${props.theme.selectorAddButton.hoverColor};
+          `}
+      }
     }
   }
 

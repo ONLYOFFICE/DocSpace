@@ -28,7 +28,7 @@ using ASC.Core.Billing;
 
 namespace ASC.Files.Core.Core;
 
-public class CountRoomChecker : TenantQuotaFeatureChecker<CountRoomFeature, int>
+public class CountRoomChecker : TenantQuotaFeatureCheckerCount<CountRoomFeature>
 {
     private readonly ITariffService _tariffService;
     public override string Exception => Resource.TariffsFeature_room_exception;

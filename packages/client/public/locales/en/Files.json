@@ -85,6 +85,7 @@
   "Rename": "Rename",
   "ReviewRooms": "Review",
   "RoomEmptyContainerDescription": "Please create the first room.",
+  "RoomEmptyContainerDescriptionUser": "Rooms shared with you will appear here",
   "RoomRemoved": "Room removed",
   "RoomsRemoved": "Rooms removed",
   "RestoreAll": "Restore all",

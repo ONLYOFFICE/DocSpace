@@ -244,3 +244,65 @@ export function removeLogoFromRoom(id) {
     return res;
   });
 }
+
+export const setInvitationLinks = async (id, linkId, title, access) => {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/links`,
+    data: {
+      linkId,
+      title,
+      access,
+    },
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const resendEmailInvitations = async (id, usersIds) => {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/resend`,
+    data: {
+      usersIds,
+    },
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const getRoomSecurityInfo = async (id) => {
+  const options = {
+    method: "get",
+    url: `/files/rooms/${id}/share`,
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const setRoomSecurity = async (id, data) => {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/share`,
+    data,
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const acceptInvitationByLink = async () => {
+  const options = {
+    method: "post",
+    url: `/files/rooms/accept`,
+  };
+
+  return await request(options);
+};
