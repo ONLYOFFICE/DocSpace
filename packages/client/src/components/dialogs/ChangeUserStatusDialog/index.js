@@ -56,8 +56,15 @@ class ChangeUserStatusDialogComponent extends React.Component {
     });
   };
 
+  onCloseAction = () => {
+    const { onClose } = this.props;
+    const { isRequestRunning } = this.state;
+
+    !isRequestRunning && onClose;
+  };
+
   render() {
-    const { t, tReady, onClose, visible, status, userIDs } = this.props;
+    const { t, tReady, visible, status, userIDs } = this.props;
     const { isRequestRunning } = this.state;
 
     const statusTranslation =
@@ -74,7 +81,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
       <ModalDialogContainer
         isLoading={!tReady}
         visible={visible}
-        onClose={onClose}
+        onClose={this.onCloseAction}
         autoMaxHeight
       >
         <ModalDialog.Header>
@@ -103,7 +110,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
             label={t("Common:CancelButton")}
             size="normal"
             scale
-            onClick={onClose}
+            onClick={this.onCloseAction}
             isDisabled={isRequestRunning}
           />
         </ModalDialog.Footer>
