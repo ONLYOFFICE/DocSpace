@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
@@ -64,7 +64,7 @@ const AdditionalResources = (props) => {
   );
 
   const [hasChange, setHasChange] = useState(false);
-  const [disableButtons, setDisableButtons] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setShowFeedback(additionalResourcesData?.feedbackAndSupportEnabled);
@@ -106,35 +106,55 @@ const AdditionalResources = (props) => {
     setIsLoadedAdditionalResources(true);
   }, [additionalResourcesData, tReady]);
 
-  const onSave = () => {
-    setDisableButtons(true);
+  const onSave = useCallback(async () => {
+    setIsLoading(true);
 
-    setAdditionalResources(
+    await setAdditionalResources(
       feedbackAndSupportEnabled,
       videoGuidesEnabled,
       helpCenterEnabled
     )
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getAdditionalResources().finally(() => setDisableButtons(false));
       })
       .catch((error) => {
         toastr.error(error);
       });
-  };
 
-  const onRestore = () => {
-    setDisableButtons(true);
+    await getAdditionalResources();
 
-    restoreAdditionalResources()
+    setIsLoading(false);
+  }, [
+    setIsLoading,
+    setAdditionalResources,
+    getAdditionalResources,
+    feedbackAndSupportEnabled,
+    videoGuidesEnabled,
+    helpCenterEnabled,
+  ]);
+
+  const onRestore = useCallback(async () => {
+    setIsLoading(true);
+
+    await restoreAdditionalResources()
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getAdditionalResources().finally(() => setDisableButtons(false));
       })
       .catch((error) => {
         toastr.error(error);
       });
-  };
+
+    await getAdditionalResources();
+
+    setIsLoading(false);
+  }, [
+    setIsLoading,
+    restoreAdditionalResources,
+    getAdditionalResources,
+    feedbackAndSupportEnabled,
+    videoGuidesEnabled,
+    helpCenterEnabled,
+  ]);
 
   if (!isLoadedAdditionalResources) return <LoaderAdditionalResources />;
 
@@ -184,10 +204,8 @@ const AdditionalResources = (props) => {
             saveButtonLabel={t("Common:SaveButton")}
             cancelButtonLabel={t("Settings:RestoreDefaultButton")}
             displaySettings={true}
-            showReminder={(isSettingPaid && hasChange) || disableButtons}
-            disableRestoreToDefault={
-              additionalResourcesIsDefault || disableButtons
-            }
+            showReminder={(isSettingPaid && hasChange) || isLoading}
+            disableRestoreToDefault={additionalResourcesIsDefault || isLoading}
           />
         )}
       </StyledComponent>

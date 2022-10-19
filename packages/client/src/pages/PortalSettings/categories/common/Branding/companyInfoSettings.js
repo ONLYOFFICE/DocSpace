@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Trans, withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import FieldContainer from "@docspace/components/field-container";
@@ -64,7 +64,7 @@ const CompanyInfoSettings = (props) => {
   const [hasErrorAddress, setHasErrorAddress] = useState(false);
 
   const [isChangesSettings, setIsChangesSettings] = useState(false);
-  const [disableButtons, setDisableButtons] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [showModal, setShowModal] = useState(false);
 
@@ -186,32 +186,46 @@ const CompanyInfoSettings = (props) => {
     setAddress(address);
   };
 
-  const onSave = () => {
-    setDisableButtons(true);
+  const onSave = useCallback(async () => {
+    setIsLoading(true);
 
-    setCompanyInfoSettings(address, companyName, email, phone, site)
+    await setCompanyInfoSettings(address, companyName, email, phone, site)
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getCompanyInfoSettings().finally(() => setDisableButtons(false));
       })
       .catch((error) => {
         toastr.error(error);
       });
-  };
 
-  const onRestore = () => {
-    setDisableButtons(true);
+    await getCompanyInfoSettings();
 
-    restoreCompanyInfoSettings()
+    setIsLoading(false);
+  }, [
+    setIsLoading,
+    setCompanyInfoSettings,
+    getCompanyInfoSettings,
+    address,
+    companyName,
+    email,
+    phone,
+    site,
+  ]);
+
+  const onRestore = useCallback(async () => {
+    setIsLoading(true);
+
+    await restoreCompanyInfoSettings()
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-
-        getCompanyInfoSettings().finally(() => setDisableButtons(false));
       })
       .catch((error) => {
         toastr.error(error);
       });
-  };
+
+    await getCompanyInfoSettings();
+
+    setIsLoading(false);
+  }, [setIsLoading, restoreCompanyInfoSettings, getCompanyInfoSettings]);
 
   const onShowExample = () => {
     if (!isSettingPaid) return;
@@ -348,10 +362,8 @@ const CompanyInfoSettings = (props) => {
           saveButtonLabel={t("Common:SaveButton")}
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
-          showReminder={(isSettingPaid && isChangesSettings) || disableButtons}
-          disableRestoreToDefault={
-            companyInfoSettingsIsDefault || disableButtons
-          }
+          showReminder={(isSettingPaid && isChangesSettings) || isLoading}
+          disableRestoreToDefault={companyInfoSettingsIsDefault || isLoading}
         />
       </StyledComponent>
     </>
