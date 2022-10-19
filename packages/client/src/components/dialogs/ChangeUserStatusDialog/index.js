@@ -27,17 +27,29 @@ class ChangeUserStatusDialogComponent extends React.Component {
       setSelected,
       onClose,
       userIDs,
+      getPeopleListItem,
+      setSelection,
+      infoPanelVisible,
     } = this.props;
+
+    let usersCount = 0;
 
     this.setState({ isRequestRunning: true }, () => {
       updateUserStatus(status, userIDs)
-        .then(() =>
-          toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
-        )
+        .then((users) => {
+          if (users.length === 1 && infoPanelVisible) {
+            const user = getPeopleListItem(users[0]);
+
+            setSelection(user);
+          }
+
+          usersCount = users.length;
+        })
         .catch((error) => toastr.error(error))
-        .finally(() => {
+        .finally((users) => {
           this.setState({ isRequestRunning: false }, () => {
-            setSelected("close");
+            toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"));
+            (!infoPanelVisible || usersCount !== 1) && setSelected("close");
             onClose();
           });
         });
@@ -114,15 +126,22 @@ ChangeUserStatusDialog.propTypes = {
 };
 
 export default withRouter(
-  inject(({ peopleStore }) => {
-    const updateUserStatus = peopleStore.usersStore.updateUserStatus;
-
+  inject(({ peopleStore, auth }) => {
     const setSelected = peopleStore.selectionStore.setSelected;
+
+    const { getPeopleListItem, updateUserStatus } = peopleStore.usersStore;
+
+    const { setSelection, isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     return {
       updateUserStatus,
 
       setSelected,
+
+      getPeopleListItem,
+
+      setSelection,
+      infoPanelVisible,
     };
   })(observer(ChangeUserStatusDialog))
 );
