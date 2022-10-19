@@ -50,7 +50,7 @@ class DialogStore {
   };
 
   setChangeUserTypeDialogVisible = (visible) => {
-    this.employeeDialogVisible = visible;
+    this.changeUserTypeDialogVisible = visible;
   };
 
   setChangeUserStatusDialogVisible = (visible) => {
