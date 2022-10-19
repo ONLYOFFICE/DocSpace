@@ -1,25 +1,34 @@
 import React from "react";
 import styled from "styled-components";
+import { inject, observer } from "mobx-react";
 import { hugeMobile } from "@docspace/components/utils/device";
+import { ReactSVG } from "react-svg";
 
 const StyledNav = styled.div`
   display: none;
   height: 48px;
   align-items: center;
   justify-content: center;
-  background-color: #f8f9f9;
+  background-color: ${(props) => props.theme.login.navBackground};
 
+  svg {
+    path:last-child {
+      fill: ${(props) => props.theme.client.home.logoColor};
+    }
+  }
   @media ${hugeMobile} {
     display: flex;
   }
 `;
 
-const SimpleNav = () => {
+const SimpleNav = ({ theme }) => {
   return (
-    <StyledNav>
-      <img src="/static/images/logo.docspace.react.svg" />
+    <StyledNav theme={theme}>
+      <ReactSVG src="/static/images/logo.docspace.react.svg" />
     </StyledNav>
   );
 };
 
-export default SimpleNav;
+export default inject(({ loginStore }) => {
+  return { theme: loginStore.theme };
+})(observer(SimpleNav));
