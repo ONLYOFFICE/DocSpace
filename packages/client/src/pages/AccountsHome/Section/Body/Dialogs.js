@@ -88,7 +88,7 @@ const Dialogs = ({
         <ChangeUserStatusDialog
           visible={activeDialogVisible}
           onClose={closeDialogs}
-          userStatus={EmployeeStatus.Active}
+          {...data}
         />
       )}
       {disableDialogVisible && (

@@ -5,12 +5,7 @@ import PropTypes from "prop-types";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
-import ToggleContent from "@docspace/components/toggle-content";
-import Checkbox from "@docspace/components/checkbox";
-import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-scrollbars-virtual-list";
 
-import { FixedSizeList as List, areEqual } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import { EmployeeStatus } from "@docspace/common/constants";
@@ -21,22 +16,21 @@ class ChangeUserStatusDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { userIds } = props;
-
-    this.state = { isRequestRunning: false, userIds };
+    this.state = { isRequestRunning: false };
   }
 
   onChangeUserStatus = () => {
     const {
       updateUserStatus,
-      userStatus,
+      status,
       t,
       setSelected,
       onClose,
+      userIDs,
     } = this.props;
-    const { userIds } = this.state;
+
     this.setState({ isRequestRunning: true }, () => {
-      updateUserStatus(userStatus, userIds)
+      updateUserStatus(status, userIDs)
         .then(() =>
           toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
         )
@@ -51,15 +45,16 @@ class ChangeUserStatusDialogComponent extends React.Component {
   };
 
   render() {
-    const { t, tReady, onClose, visible, userStatus } = this.props;
-    const { isRequestRunning, userIds } = this.state;
+    const { t, tReady, onClose, visible, status, userIDs } = this.props;
+    const { isRequestRunning } = this.state;
 
     const statusTranslation =
-      userStatus === EmployeeStatus.Active
+      status === EmployeeStatus.Active
         ? t("ChangeUsersActiveStatus")
         : t("ChangeUsersDisableStatus");
+
     const userStatusTranslation =
-      userStatus === EmployeeStatus.Active
+      status === EmployeeStatus.Active
         ? t("PeopleTranslations:DisabledEmployeeStatus")
         : t("Common:Active");
 
@@ -90,7 +85,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
             scale
             onClick={this.onChangeUserStatus}
             isLoading={isRequestRunning}
-            isDisabled={userIds.length === 0}
+            isDisabled={userIDs.length === 0}
           />
           <Button
             label={t("Common:CancelButton")}
@@ -115,26 +110,19 @@ ChangeUserStatusDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   setSelected: PropTypes.func.isRequired,
-  userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  userIDs: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default withRouter(
-  inject(({ peopleStore }, ownProps) => {
+  inject(({ peopleStore }) => {
     const updateUserStatus = peopleStore.usersStore.updateUserStatus;
 
-    const selectedUsers = peopleStore.selectionStore.selection;
     const setSelected = peopleStore.selectionStore.setSelected;
-    const userIds =
-      ownProps.userStatus === EmployeeStatus.Active
-        ? peopleStore.selectionStore.getUsersToActivateIds
-        : peopleStore.selectionStore.getUsersToDisableIds;
 
     return {
       updateUserStatus,
-      selectedUsers,
+
       setSelected,
-      userIds,
     };
   })(observer(ChangeUserStatusDialog))
 );
