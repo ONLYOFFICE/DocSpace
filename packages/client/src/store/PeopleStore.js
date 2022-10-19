@@ -255,7 +255,6 @@ class PeopleStore {
         disabled: !hasUsersToActivate,
         onClick: () => this.onChangeStatus(EmployeeStatus.Active),
         iconUrl: "images/enable.react.svg",
-        "data-status": EmployeeStatus.Active,
       },
       {
         key: "disable",
@@ -263,7 +262,6 @@ class PeopleStore {
         disabled: !hasUsersToDisable,
         onClick: () => this.onChangeStatus(EmployeeStatus.Disabled),
         iconUrl: "images/disable.react.svg",
-        "data-status": EmployeeStatus.Disabled,
       },
       {
         key: "delete",

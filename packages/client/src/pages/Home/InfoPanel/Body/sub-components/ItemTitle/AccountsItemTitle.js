@@ -37,8 +37,6 @@ const AccountsItemTitle = ({
     );
   }
 
-  console.log(selection);
-
   return (
     <StyledAccountsItemTitle isPending={isPending}>
       <Avatar

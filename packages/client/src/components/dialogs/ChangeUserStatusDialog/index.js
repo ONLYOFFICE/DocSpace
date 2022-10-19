@@ -46,7 +46,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
           usersCount = users.length;
         })
         .catch((error) => toastr.error(error))
-        .finally((users) => {
+        .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
             toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"));
             (!infoPanelVisible || usersCount !== 1) && setSelected("close");
