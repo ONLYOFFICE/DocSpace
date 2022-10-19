@@ -6,7 +6,8 @@ const StyledUserTypeHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0 12px;
+  padding-top: ${(props) => (props.isExpect ? "20px" : "8px")};
+  padding-bottom: 12px;
 
   .title {
     font-weight: 600;
@@ -19,6 +20,13 @@ const StyledUserTypeHeader = styled.div`
     path,
     rect {
       fill: ${(props) => props.theme.infoPanel.members.iconColor};
+    }
+
+    &:hover {
+      path,
+      rect {
+        fill: ${(props) => props.theme.infoPanel.members.iconHoverColor};
+      }
     }
   }
 `;
@@ -35,15 +43,17 @@ const StyledUser = styled.div`
   padding: 8px 0;
 
   .avatar {
-    opacity: ${(props) => (props.isExpect ? 0.5 : 1)};
     min-width: 32px;
     min-height: 32px;
   }
 
   .name {
-    opacity: ${(props) => (props.isExpect ? 0.5 : 1)};
+    ${(props) =>
+      props.isExpect && `color: ${props.theme.infoPanel.members.isExpectName}`};
+
     font-weight: 600;
     font-size: 14px;
+    line-height: 16px;
 
     white-space: nowrap;
     overflow: hidden;
@@ -53,6 +63,7 @@ const StyledUser = styled.div`
   .me-label {
     font-weight: 600;
     font-size: 14px;
+    line-height: 16px;
     color: ${(props) => props.theme.infoPanel.members.meLabelColor};
     margin-left: -8px;
   }
