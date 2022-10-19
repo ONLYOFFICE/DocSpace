@@ -60,7 +60,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
     const { onClose } = this.props;
     const { isRequestRunning } = this.state;
 
-    !isRequestRunning && onClose;
+    !isRequestRunning && onClose();
   };
 
   render() {
