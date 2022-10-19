@@ -75,7 +75,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             Tenant = -2,
                             Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:1024,manager:1",
                             Name = "admin",
-                            Price = 30.00m,
+                            Price = 30m,
                             ProductId = "1002",
                             Visible = true
                         },
@@ -84,7 +84,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                             Tenant = -3,
                             Features = "free,total_size:2147483648,manager:1,room:12,usersInRoom:3",
                             Name = "startup",
-                            Price = 0.00m,
+                            Price = 0m,
                             Visible = false
                         });
                 });
@@ -156,7 +156,8 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("create_on")
                         .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                    b.Property<Guid>("CustomerId")
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
@@ -181,21 +182,26 @@ namespace ASC.Migrations.PostgreSql.Migrations
 
             modelBuilder.Entity("ASC.Core.Common.EF.DbTariffRow", b =>
                 {
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Quota")
-                        .HasColumnType("integer");
+                    b.Property<int>("Tenant")
+                        .HasColumnType("int")
+                        .HasColumnName("tenant");
 
                     b.Property<int>("TariffId")
-                        .HasColumnType("integer");
+                        .HasColumnType("int")
+                        .HasColumnName("tariff_id");
 
-                    b.Property<int>("Tenant")
-                        .HasColumnType("integer");
+                    b.Property<int>("Quota")
+                        .HasColumnType("int")
+                        .HasColumnName("quota");
 
-                    b.HasKey("Tenant", "TariffId", "Quota");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int")
+                        .HasColumnName("quantity");
 
-                    b.ToTable("TariffRows");
+                    b.HasKey("Tenant", "TariffId", "Quota")
+                        .HasName("PRIMARY");
+
+                    b.ToTable("tenants_tariffrow", "onlyoffice");
                 });
 #pragma warning restore 612, 618
         }
