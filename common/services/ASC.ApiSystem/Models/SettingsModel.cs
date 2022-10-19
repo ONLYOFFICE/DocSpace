@@ -1,4 +1,4 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,23 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Tenants;
+namespace ASC.ApiSystem.Models;
 
-[Serializable]
-[DataContract]
-public class TenantControlPanelSettings : ISettings<TenantControlPanelSettings>
+public class SettingsModel : IModel
 {
-    [DataMember(Name = "LimitedAccess")]
-    public bool LimitedAccess { get; set; }
+    [StringLength(255)]
+    public string PortalName { get; set; }
 
-    [JsonIgnore]
-    public Guid ID => new Guid("{880585C4-52CD-4AE2-8DA4-3B8E2772753B}");
+    public int? TenantId { get; set; }
 
-    public TenantControlPanelSettings GetDefault()
-    {
-        return new TenantControlPanelSettings
-        {
-            LimitedAccess = false
-        };
-    }
+
+    [StringLength(255)]
+    public string Key { get; set; }
+
+    public string Value { get; set; }
 }

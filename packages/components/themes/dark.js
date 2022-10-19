@@ -386,9 +386,9 @@ const Dark = {
     borderRadius: "3px",
     height: " 32px",
     width: "32px",
-    padding: "9px",
+    padding: "10px",
     color: "#858585",
-    hoverColor: "#858585",
+    hoverColor: grayMaxLight,
   },
 
   saveCancelButtons: {

@@ -44,7 +44,6 @@ public class TenantRegistrationInfo
     public bool Spam { get; set; }
     public bool Calls { get; set; }
     public string Campaign { get; set; }
-    public bool LimitedControlPanel { get; set; }
 
     public TenantRegistrationInfo()
     {
