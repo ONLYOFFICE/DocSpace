@@ -76,7 +76,7 @@ const UserContent = ({
       >
         {statusType === "pending"
           ? email
-          : displayName.trim()
+          : displayName?.trim()
           ? displayName
           : email}
       </Link>

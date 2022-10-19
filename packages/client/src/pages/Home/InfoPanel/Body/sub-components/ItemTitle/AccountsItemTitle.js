@@ -54,7 +54,7 @@ const AccountsItemTitle = ({
         >
           {isPending
             ? selection.email
-            : selection.displayName.trim()
+            : selection.displayName?.trim()
             ? selection.displayName
             : selection.email}
         </Text>
