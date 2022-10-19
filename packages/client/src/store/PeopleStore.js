@@ -108,7 +108,7 @@ class PeopleStore {
   };
 
   changeType = (type, users) => {
-    const { setEmployeeDialogVisible, setDialogData } = this.dialogStore;
+    const { setChangeUserTypeDialogVisible, setDialogData } = this.dialogStore;
 
     let fromType =
       users.length === 1 ? [users[0].role] : users.map((u) => u.role);
@@ -131,7 +131,7 @@ class PeopleStore {
 
     setDialogData({ toType: type, fromType, userIDs });
 
-    setEmployeeDialogVisible(true);
+    setChangeUserTypeDialogVisible(true);
   };
 
   onChangeStatus = (status) => {
@@ -151,7 +151,10 @@ class PeopleStore {
   };
 
   changeStatus = (status, users) => {
-    const { setActiveDialogVisible, setDialogData } = this.dialogStore;
+    const {
+      setChangeUserStatusDialogVisible,
+      setDialogData,
+    } = this.dialogStore;
 
     const userIDs = users.map((user) => {
       return user?.id ? user.id : user;
@@ -159,7 +162,7 @@ class PeopleStore {
 
     setDialogData({ status, userIDs });
 
-    setActiveDialogVisible(true);
+    setChangeUserStatusDialogVisible(true);
   };
 
   onOpenInfoPanel = () => {
@@ -177,8 +180,6 @@ class PeopleStore {
       hasFreeUsers,
     } = this.selectionStore;
     const {
-      setActiveDialogVisible,
-      setDisableDialogVisible,
       setSendInviteDialogVisible,
       setDeleteDialogVisible,
     } = this.dialogStore;

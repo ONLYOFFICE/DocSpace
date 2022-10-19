@@ -9,9 +9,9 @@ class DialogStore {
   deleteProfileEver = false;
   data = {};
 
-  employeeDialogVisible = false;
-  guestDialogVisible = false;
-  activeDialogVisible = false;
+  changeUserTypeDialogVisible = false;
+
+  changeUserStatusDialogVisible = false;
   disableDialogVisible = false;
   sendInviteDialogVisible = false;
   invitationDialogVisible = false;
@@ -49,20 +49,12 @@ class DialogStore {
     this.data = data;
   };
 
-  setEmployeeDialogVisible = (visible) => {
+  setChangeUserTypeDialogVisible = (visible) => {
     this.employeeDialogVisible = visible;
   };
 
-  setGuestDialogVisible = (visible) => {
-    this.guestDialogVisible = visible;
-  };
-
-  setActiveDialogVisible = (visible) => {
-    this.activeDialogVisible = visible;
-  };
-
-  setDisableDialogVisible = (visible) => {
-    this.disableDialogVisible = visible;
+  setChangeUserStatusDialogVisible = (visible) => {
+    this.changeUserStatusDialogVisible = visible;
   };
 
   setSendInviteDialogVisible = (visible) => {
@@ -85,10 +77,9 @@ class DialogStore {
     this.setDeleteProfileDialogVisible(false);
     this.setDialogData({});
 
-    this.setEmployeeDialogVisible(false);
-    this.setGuestDialogVisible(false);
-    this.setActiveDialogVisible(false);
-    this.setDisableDialogVisible(false);
+    this.setChangeUserTypeDialogVisible(false);
+    this.setChangeUserStatusDialogVisible(false);
+
     this.setSendInviteDialogVisible(false);
     this.setDeleteDialogVisible(false);
     this.setInvitationDialogVisible(false);
