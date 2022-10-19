@@ -2730,6 +2730,7 @@ const Base = {
   login: {
     linkColor: link,
     textColor: gray,
+    navBackground: "#F8F9F9",
 
     register: {
       backgroundColor: grayLight,
