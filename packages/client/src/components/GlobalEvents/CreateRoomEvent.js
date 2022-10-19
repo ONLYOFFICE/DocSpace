@@ -12,19 +12,13 @@ const CreateRoomEvent = ({
   createRoomInThirdpary,
   createTag,
   addTagsToRoom,
+  deleteThirdParty,
   calculateRoomLogoParams,
   uploadRoomLogo,
   addLogoToRoom,
   fetchTags,
 
-  connectItems,
   connectDialogVisible,
-  setConnectDialogVisible,
-  setRoomCreation,
-  saveThirdpartyResponse,
-  openConnectWindow,
-  setConnectItem,
-  getOAuthToken,
 
   currrentFolderId,
   updateCurrentFolder,
@@ -39,16 +33,14 @@ const CreateRoomEvent = ({
       title: roomParams.title || t("Files:NewRoom"),
     };
 
-    const isThirdparty =
-      roomParams.isThirdparty &&
-      roomParams.storageLocation.isConnected &&
-      roomParams.storageLocation.thirdpartyFolderId;
-
-    const addTagsData = roomParams.tags.map((tag) => tag.name);
-
     const createTagsData = roomParams.tags
       .filter((t) => t.isNew)
       .map((t) => t.name);
+    const addTagsData = roomParams.tags.map((tag) => tag.name);
+
+    const isThirdparty = roomParams.storageLocation.isThirdparty;
+    const storageFolderId = roomParams.storageLocation.storageFolderId;
+    const thirdpartyAccount = roomParams.storageLocation.thirdpartyAccount;
 
     const uploadLogoData = new FormData();
     uploadLogoData.append(0, roomParams.icon.uploadedFile);
@@ -56,18 +48,24 @@ const CreateRoomEvent = ({
     try {
       setIsLoading(true);
 
-      const room = isThirdparty
-        ? await createRoomInThirdpary(
-            roomParams.storageLocation.thirdpartyFolderId,
-            createRoomData
-          )
-        : await createRoom(createRoomData);
+      // create room
+      const room =
+        isThirdparty && storageFolderId
+          ? await createRoomInThirdpary(storageFolderId, createRoomData)
+          : await createRoom(createRoomData);
 
+      // delete thirdparty account if not needed
+      if (!isThirdparty && storageFolderId)
+        await deleteThirdParty(thirdpartyAccount.providerId);
+
+      // create new tags
       for (let i = 0; i < createTagsData.length; i++)
         await createTag(createTagsData[i]);
 
+      // add new tags to room
       await addTagsToRoom(room.id, addTagsData);
 
+      // calculate and upload logo to room
       if (roomParams.icon.uploadedFile)
         await uploadRoomLogo(uploadLogoData).then((response) => {
           const url = URL.createObjectURL(roomParams.icon.uploadedFile);
@@ -105,27 +103,20 @@ const CreateRoomEvent = ({
       onCreate={onCreate}
       fetchedTags={fetchedTags}
       isLoading={isLoading}
-      connectItems={connectItems}
-      connectDialogVisible={connectDialogVisible}
-      setConnectDialogVisible={setConnectDialogVisible}
-      setRoomCreation={setRoomCreation}
-      saveThirdpartyResponse={saveThirdpartyResponse}
-      openConnectWindow={openConnectWindow}
-      setConnectItem={setConnectItem}
-      getOAuthToken={getOAuthToken}
+      setIsLoading={setIsLoading}
+      deleteThirdParty={deleteThirdParty}
     />
   );
 };
 
 export default inject(
   ({
-    auth,
     filesStore,
     tagsStore,
     filesActionsStore,
     selectedFolderStore,
-    settingsStore,
     dialogsStore,
+    settingsStore,
   }) => {
     const {
       createRoom,
@@ -140,63 +131,9 @@ export default inject(
     const { id: currrentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
 
-    const thirdPartyStore = settingsStore.thirdPartyStore;
+    const { connectDialogVisible } = dialogsStore;
 
-    const { openConnectWindow } = settingsStore.thirdPartyStore;
-
-    let nextCloudConnectItem = [],
-      ownCloudConnectItem = [];
-
-    if (thirdPartyStore.nextCloudConnectItem) {
-      nextCloudConnectItem.push(
-        ...thirdPartyStore.nextCloudConnectItem,
-        "Nextcloud"
-      );
-    }
-
-    if (thirdPartyStore.ownCloudConnectItem) {
-      ownCloudConnectItem.push(
-        ...thirdPartyStore.ownCloudConnectItem,
-        "ownCloud"
-      );
-    }
-
-    const connectItems = [
-      thirdPartyStore.googleConnectItem,
-      thirdPartyStore.boxConnectItem,
-      thirdPartyStore.dropboxConnectItem,
-      thirdPartyStore.oneDriveConnectItem,
-      nextCloudConnectItem,
-      thirdPartyStore.kDriveConnectItem,
-      thirdPartyStore.yandexConnectItem,
-      ownCloudConnectItem,
-      thirdPartyStore.webDavConnectItem,
-      thirdPartyStore.sharePointConnectItem,
-    ]
-      .map(
-        (item) =>
-          item && {
-            isAvialable: !!item,
-            id: item[0],
-            providerName: item[0],
-            isOauth: item.length > 1 && item[0] !== "WebDav",
-            oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
-            ...(item[0] === "WebDav" && {
-              category: item[item.length - 1],
-            }),
-          }
-      )
-      .filter((item) => !!item);
-
-    const { getOAuthToken } = auth.settingsStore;
-
-    const {
-      setConnectItem,
-      connectDialogVisible,
-      setConnectDialogVisible,
-      setRoomCreation,
-      saveThirdpartyResponse,
-    } = dialogsStore;
+    const { deleteThirdParty } = settingsStore.thirdPartyStore;
 
     return {
       createRoom,
@@ -204,20 +141,12 @@ export default inject(
       createTag,
       fetchTags,
       addTagsToRoom,
+      deleteThirdParty,
       calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
 
-      setConnectItem,
       connectDialogVisible,
-      setConnectDialogVisible,
-      setRoomCreation,
-      saveThirdpartyResponse,
-      saveThirdpartyResponse,
-      openConnectWindow,
-      connectItems,
-      getOAuthToken,
-
       currrentFolderId,
       updateCurrentFolder,
     };
