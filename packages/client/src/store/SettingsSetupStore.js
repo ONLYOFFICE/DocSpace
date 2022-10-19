@@ -344,6 +344,18 @@ class SettingsSetupStore {
 
     this.setCommonThirdPartyList(res);
   };
+
+  getAllSessions = () => {
+    return api.settings.getAllActiveSessions();
+  };
+
+  removeAllSessions = (userId) => {
+    return api.settings.removeAllActiveSessions(userId);
+  };
+
+  removeSession = (id) => {
+    return api.settings.removeActiveSession(id);
+  };
 }
 
 export default SettingsSetupStore;

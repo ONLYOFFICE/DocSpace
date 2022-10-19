@@ -57,30 +57,30 @@ export const TableDataCell = styled.td`
   padding: 14px 0;
   color: #a3a9ae;
 
-  span {
-    color: #a3a9ae;
-    margin-left: 5px;
-  }
-
   :first-child {
     font-size: 13px;
     color: ${(props) => props.theme.activeSessions.color};
+    span {
+      color: #a3a9ae;
+      margin-left: 5px;
+    }
   }
 
   :last-child {
     text-align: center;
   }
-
-  svg {
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    path {
-      fill: #a3a9ae;
-    }
-    @media (max-width: 575px) {
-      width: 16px;
-      height: 16px;
+  .remove-icon {
+    svg {
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+      path {
+        fill: #a3a9ae;
+      }
+      @media (max-width: 575px) {
+        width: 16px;
+        height: 16px;
+      }
     }
   }
 `;

@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
+import { ReactSVG } from "react-svg";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import HelpButton from "@docspace/components/help-button";
-import { ReactSVG } from "react-svg";
+
 import {
   StyledFooter,
   Table,
@@ -14,42 +17,55 @@ import {
   TableDataCell,
 } from "./styled-active-sessions";
 
-const sessionRemove = <ReactSVG wrapper="span" src="images/remove.react.svg" />;
+const removeIcon = (
+  <ReactSVG className="remove-icon" src="images/remove.react.svg" />
+);
+const tickIcon = (
+  <ReactSVG className="tick-icon" wrapper="span" src="images/tick.svg" />
+);
 
-const sessions = [
-  {
-    name: "Windows 10",
-    desc: "(Chrome 100)",
-    date: "5/4/2022, 1:24 PM",
-    ip: "108.101.45.223, 171.18.0.9",
-  },
-  {
-    name: "iOS 15 Apple iPhone",
-    desc: "(Mobile Safari 15)",
-    date: "5/4/2022, 1:24 PM",
-    ip: "75.100.45.223, 171.18.0.9",
-  },
-  {
-    name: "Windows 8",
-    desc: "(Safari)",
-    date: "5/4/2022, 1:24 PM",
-    ip: "83.15.45.223, 171.18.0.9",
-  },
-];
+const ActiveSessions = ({
+  userId,
+  getAllSessions,
+  removeAllSessions,
+  removeSession,
+}) => {
+  const [sessions, setSessions] = useState([]);
+  const [currentSession, setCurrentSession] = useState(0);
+  const { t } = useTranslation(["Profile", "Common"]);
 
-const onClickLogoutSession = () => {
-  console.log("logout");
-};
+  useEffect(() => {
+    getAllSessions().then((res) => {
+      setSessions(res.items);
+      setCurrentSession(res.loginEvent);
+    });
+  }, []);
 
-const onClickRemoveSession = () => {
-  console.log("remove session");
-};
+  const onClickRemoveAllSessions = () => {
+    if (sessions.length > 1) {
+      removeAllSessions(userId).then(() =>
+        getAllSessions().then((res) => setSessions(res.items))
+      );
+    }
+  };
 
-const ActiveSessions = () => {
+  const onClickRemoveSession = (id) => {
+    const foundSession = sessions.find((s) => s.id === id);
+    if (foundSession.id !== currentSession) {
+      removeSession(foundSession.id).then(() =>
+        getAllSessions().then((res) => setSessions(res.items))
+      );
+    }
+  };
+
+  const convertTime = (date) => {
+    return new Date(date).toLocaleString("en-US");
+  };
+
   return (
     <StyledFooter>
       <Text fontSize="16px" fontWeight={700}>
-        Active Sessions
+        {t("Profile:ActiveSessions")}
       </Text>
       <Box
         displayProp="flex"
@@ -61,14 +77,16 @@ const ActiveSessions = () => {
           className="session-logout"
           type="action"
           isHovered
-          onClick={onClickLogoutSession}
+          onClick={onClickRemoveAllSessions}
         >
-          Log out from all active sessions
+          {t("Profile:LogoutAllActiveSessions")}
         </Link>
         <HelpButton
           iconName="/static/images/info.react.svg"
           tooltipContent={
-            <Text fontSize="13px">Paste you tooltip content here</Text>
+            <Text fontSize="13px">
+              {t("Profile:LogoutAllActiveSessionsDescription")}
+            </Text>
           }
         />
       </Box>
@@ -76,21 +94,24 @@ const ActiveSessions = () => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableHeaderCell>Sessions</TableHeaderCell>
-            <TableHeaderCell>Date</TableHeaderCell>
-            <TableHeaderCell>IP-address</TableHeaderCell>
+            <TableHeaderCell>{t("Common:Sessions")}</TableHeaderCell>
+            <TableHeaderCell>{t("Common:Date")}</TableHeaderCell>
+            <TableHeaderCell>{t("Common:IpAddress")}</TableHeaderCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {sessions.map((session) => (
-            <TableRow key={session.ip}>
+            <TableRow key={session.id}>
               <TableDataCell>
-                {session.name}
-                <span>{session.desc}</span>
+                {session.platform}
+                <span>({session.browser})</span>
+                {currentSession === session.id ? tickIcon : null}
               </TableDataCell>
-              <TableDataCell>{session.date}</TableDataCell>
+              <TableDataCell>{convertTime(session.date)}</TableDataCell>
               <TableDataCell>{session.ip}</TableDataCell>
-              <TableDataCell onClick={onClickRemoveSession}>{sessionRemove}</TableDataCell>
+              <TableDataCell onClick={() => onClickRemoveSession(session.id)}>
+                {currentSession !== session.id ? removeIcon : null}
+              </TableDataCell>
             </TableRow>
           ))}
         </TableBody>
@@ -99,4 +120,13 @@ const ActiveSessions = () => {
   );
 };
 
-export default ActiveSessions;
+export default inject(({ auth, setup }) => {
+  const { getAllSessions, removeAllSessions, removeSession } = setup;
+  return {
+    userId: auth.userStore.user.id,
+    logout: auth.logout,
+    getAllSessions,
+    removeAllSessions,
+    removeSession,
+  };
+})(observer(ActiveSessions));

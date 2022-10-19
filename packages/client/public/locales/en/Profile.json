@@ -1,4 +1,5 @@
 {
+  "ActiveSessions": "Active Sessions",
   "ChangeEmailSuccess": "Email has been changed successfully",
   "ChangesApplied": "Changes are applied",
   "ConnectSocialNetworks": "Сonnect your social networks",
@@ -12,6 +13,8 @@
   "InviteAgainLbl": "Invite again",
   "LightTheme": "Light theme",
   "LoginSettings": "Login settings",
+  "LogoutAllActiveSessions": "Log out from all active sessions",
+  "LogoutAllActiveSessionsDescription": "All active connections except this connection will be logged out, as it is currently in use.",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
   "MyProfile": "My profile",
   "PhoneLbl": "Phone",

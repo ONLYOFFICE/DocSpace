@@ -625,3 +625,26 @@ export function getPortalQuota() {
     url: `/settings/quota`,
   });
 }
+
+export function getAllActiveSessions() {
+  return request({
+    method: "get",
+    url: "/security/activeconnections",
+  });
+}
+
+export function removeAllActiveSessions(userId) {
+  return request({
+    method: "put",
+    url: `/security/activeconnections/logoutall/${userId}`,
+    data: { userId },
+  });
+}
+
+export function removeActiveSession(eventId) {
+  return request({
+    method: "put",
+    url: `/security/activeconnections/logout/${eventId}`,
+    data: { eventId },
+  });
+}
