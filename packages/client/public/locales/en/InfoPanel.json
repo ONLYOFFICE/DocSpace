@@ -14,6 +14,7 @@
   "Properties": "Properties",
   "Data": "Data",
 
+  "StorageType": "Storage type",
   "FileExtension": "File extension",
   "DateModified": "Date modified",
   "LastModifiedBy": "Last modified by",
