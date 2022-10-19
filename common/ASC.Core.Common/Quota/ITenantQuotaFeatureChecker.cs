@@ -45,14 +45,7 @@ public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChec
         _tenantManager = tenantManager;
     }
 
-    public async Task CheckUsed()
-    {
-        var quota = _tenantManager.GetCurrentTenantQuota();
-        var used = await _tenantQuotaFeatureStatistic.GetValue();
-        Check(quota, used);
-    }
-
-    public async Task CheckUsed(TenantQuota quota)
+    public virtual async Task CheckUsed(TenantQuota quota)
     {
         var used = await _tenantQuotaFeatureStatistic.GetValue();
         Check(quota, used);
@@ -77,5 +70,17 @@ public abstract class TenantQuotaFeatureChecker<T, T1> : ITenantQuotaFeatureChec
         {
             throw new TenantQuotaException(string.Format(Exception, val));
         }
+    }
+}
+
+public abstract class TenantQuotaFeatureCheckerCount<T> : TenantQuotaFeatureChecker<T, int> where T : TenantQuotaFeature<int>
+{
+    protected TenantQuotaFeatureCheckerCount(ITenantQuotaFeatureStat<T, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
+    {
+    }
+
+    public async Task CheckAppend()
+    {
+        CheckAdd((await _tenantQuotaFeatureStatistic.GetValue()) + 1);
     }
 }

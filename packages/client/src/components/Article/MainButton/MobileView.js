@@ -48,6 +48,7 @@ const MobileView = ({
   secondaryProgressDataStoreCurrentFilesCount,
   clearSecondaryProgressData,
   onMainButtonClick,
+  isRoomsFolder,
 }) => {
   const [isOpenButton, setIsOpenButton] = React.useState(false);
   const [percentProgress, setPercentProgress] = React.useState(0);
@@ -164,11 +165,14 @@ const MobileView = ({
       alert={primaryProgressDataAlert}
       withMenu={!isRooms}
       onClick={onMainButtonClick}
+      onAlertClick={showUploadPanel}
+      withAlertClick={isRoomsFolder}
     />
   );
 };
 
-export default inject(({ uploadDataStore }) => {
+export default inject(({ uploadDataStore, treeFoldersStore }) => {
+  const { isRoomsFolder } = treeFoldersStore;
   const {
     files,
     setUploadPanelVisible,
@@ -209,5 +213,6 @@ export default inject(({ uploadDataStore }) => {
     secondaryProgressDataStoreCurrentFile,
     secondaryProgressDataStoreCurrentFilesCount,
     clearSecondaryProgressData,
+    isRoomsFolder,
   };
 })(observer(MobileView));

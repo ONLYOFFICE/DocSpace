@@ -42,7 +42,7 @@ const InfoPanelBodyContent = ({
 
   const isNoItem =
     (isGallery && !gallerySelected) ||
-    (!selection?.title && !isSeveralItems) ||
+    (!selection?.title && !isSeveralItems && !isAccounts) ||
     ((isRootFolder || isAccounts) &&
       selection?.isSelectedFolder &&
       !selection?.wasContextMenuSelection);

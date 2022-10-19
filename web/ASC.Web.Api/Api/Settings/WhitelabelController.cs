@@ -125,6 +125,7 @@ public class WhitelabelController : BaseSettingsController
     }
 
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("whitelabel/sizes")]
     public object GetWhiteLabelSizes()
     {
@@ -146,6 +147,7 @@ public class WhitelabelController : BaseSettingsController
 
 
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("whitelabel/logos")]
     public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
@@ -168,6 +170,7 @@ public class WhitelabelController : BaseSettingsController
     }
 
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("whitelabel/logotext")]
     public object GetWhiteLabelLogoText()
     {
