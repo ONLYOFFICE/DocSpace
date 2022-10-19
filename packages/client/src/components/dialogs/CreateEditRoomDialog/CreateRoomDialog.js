@@ -52,7 +52,7 @@ const CreateRoomDialog = ({
       provider: null,
       thirdpartyAccount: null,
       storageFolderId: "",
-      rememberThirdpartyStorage: false,
+      isSaveThirdpartyAccount: false,
     },
     icon: {
       uploadedFile: null,

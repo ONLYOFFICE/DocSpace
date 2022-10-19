@@ -5,7 +5,7 @@ import toastr from "@docspace/components/toast/toastr";
 
 import { StyledParam } from "../Params/StyledParam";
 import ToggleParam from "../Params/ToggleParam";
-import ThirpartyComboBox from "./ThirpartyComboBox";
+import ThirdPartyComboBox from "./ThirdPartyComboBox";
 
 import Checkbox from "@docspace/components/checkbox";
 import Toast from "@docspace/components/toast";
@@ -78,7 +78,7 @@ const ThirdPartyStorage = ({
       storageFolderId,
     });
 
-  const onChangeRememberThirdpartyStorage = () => {
+  const onChangeIsSaveThirdpartyAccount = () => {
     onChangeStorageLocation({
       ...storageLocation,
       rememberThirdpartyStorage: !storageLocation.rememberThirdpartyStorage,
@@ -106,7 +106,7 @@ const ThirdPartyStorage = ({
       />
 
       {storageLocation.isThirdparty && (
-        <ThirpartyComboBox
+        <ThirdPartyComboBox
           t={t}
           storageLocation={storageLocation}
           onChangeStorageLocation={onChangeStorageLocation}
@@ -134,14 +134,14 @@ const ThirdPartyStorage = ({
         />
       )}
 
-      {storageLocation.isThirdparty && storageLocation.thirdpartyAccount && (
+      {/* {storageLocation.isThirdparty && storageLocation.thirdpartyAccount && (
         <Checkbox
           className="thirdparty-checkbox"
           label={t("ThirdPartyStorageRememberChoice")}
-          isChecked={storageLocation.rememberThirdpartyStorage}
-          onChange={onChangeRememberThirdpartyStorage}
+          isChecked={storageLocation.isSaveThirdpartyAccount}
+          onChange={onChangeIsSaveThirdpartyAccount}
         />
-      )}
+      )} */}
     </StyledThirdPartyStorage>
   );
 };
