@@ -278,6 +278,7 @@ class SectionHeaderContent extends React.Component {
 
   onEmptyTrashAction = () => {
     const { activeFiles, activeFolders } = this.props;
+
     const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
 
     if (isExistActiveItems) return;
@@ -305,7 +306,26 @@ class SectionHeaderContent extends React.Component {
   };
 
   getContextOptionsFolder = () => {
-    const { t, isRecycleBinFolder } = this.props;
+    const { t, isRecycleBinFolder, isArchiveFolder } = this.props;
+
+    if (isArchiveFolder) {
+      return [
+        {
+          key: "empty-archive",
+          label: t("ArchiveAction"),
+          onClick: this.onEmptyTrashAction,
+          disabled: !isArchiveFolder,
+          icon: "images/clear.trash.react.svg",
+        },
+        {
+          key: "restore-all",
+          label: t("RestoreAll"),
+          onClick: this.onRestoreAllAction,
+          disabled: !isArchiveFolder,
+          icon: "images/subtract.react.svg",
+        },
+      ];
+    }
 
     return [
       {
@@ -490,6 +510,7 @@ class SectionHeaderContent extends React.Component {
       navigationPath,
       getHeaderMenu,
       isRecycleBinFolder,
+      isArchiveFolder,
       isEmptyFilesList,
       isHeaderVisible,
       isHeaderChecked,
@@ -538,7 +559,7 @@ class SectionHeaderContent extends React.Component {
                     getContextOptionsFolder={this.getContextOptionsFolder}
                     onClose={this.onClose}
                     onClickFolder={this.onClickFolder}
-                    isRecycleBinFolder={isRecycleBinFolder}
+                    isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
                     isEmptyFilesList={isEmptyFilesList}
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
@@ -611,7 +632,9 @@ export default inject(
       isRecycleBinFolder,
       isPrivacyFolder,
       isRoomsFolder,
+      isArchiveFolder,
     } = treeFoldersStore;
+
     const {
       deleteAction,
       downloadAction,
@@ -676,6 +699,7 @@ export default inject(
       setEmptyTrashDialogVisible,
       isEmptyFilesList,
       isPrivacyFolder,
+      isArchiveFolder,
 
       setIsLoading,
       fetchFiles,

@@ -379,6 +379,56 @@ class FilesActionStore {
     }
   };
 
+  emptyArchive = async (translations) => {
+    const {
+      secondaryProgressDataStore,
+      loopFilesOperations,
+      clearActiveOperations,
+    } = this.uploadDataStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+    const { isArchiveFolder } = this.treeFoldersStore;
+    const { addActiveItems, folders, getIsEmptyTrash } = this.filesStore;
+
+    const folderIds = folders.map((f) => f.id);
+    if (isArchiveFolder) addActiveItems(null, folderIds);
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations.deleteOperation,
+      alert: false,
+    });
+
+    try {
+      await removeFiles(folderIds, null, true, true).then(async (res) => {
+        if (res[0]?.error) return Promise.reject(res[0].error);
+        const data = res[0] ? res[0] : null;
+        const pbData = {
+          icon: "trash",
+          label: translations.deleteOperation,
+        };
+        await loopFilesOperations(data, pbData);
+        toastr.success(translations.successOperation);
+        this.updateCurrentFolder(null, folderIds);
+        // getIsEmptyTrash();
+        clearActiveOperations(null, folderIds);
+      });
+    } catch (err) {
+      clearActiveOperations(null, folderIds);
+      setSecondaryProgressBarData({
+        visible: true,
+        alert: true,
+      });
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+
+      return toastr.error(err.message ? err.message : err);
+    }
+  };
+
   downloadFiles = async (fileConvertIds, folderIds, translations) => {
     const {
       clearActiveOperations,
