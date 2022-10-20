@@ -112,6 +112,7 @@ const PaymentsPage = ({
   currentTariffPlanTitle,
   tariffPlanTitle,
   expandArticle,
+  setPortalQuota,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
 
@@ -152,9 +153,7 @@ const PaymentsPage = ({
     (async () => {
       moment.locale(language);
 
-      const requests = [];
-
-      requests.push(getSettingsPayment());
+      const requests = [getSettingsPayment(), setPortalQuota()];
 
       if (!currencySymbol && !startValue)
         requests.push(setPortalPaymentQuotas());
@@ -410,7 +409,11 @@ export default inject(({ auth, payments }) => {
   } = auth;
   const { showText: expandArticle } = settingsStore;
 
-  const { isFreeTariff, currentTariffPlanTitle } = currentQuotaStore;
+  const {
+    isFreeTariff,
+    currentTariffPlanTitle,
+    setPortalQuota,
+  } = currentQuotaStore;
   const {
     isNotPaidPeriod,
     isPaidPeriod,
@@ -464,5 +467,6 @@ export default inject(({ auth, payments }) => {
     replaceFeaturesValues,
     portalPaymentQuotasFeatures,
     currentTariffPlanTitle,
+    setPortalQuota,
   };
 })(withRouter(observer(PaymentsPage)));
