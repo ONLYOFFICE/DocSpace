@@ -90,6 +90,7 @@
   "RoomRemoved": "Room removed",
   "RoomsRemoved": "Rooms removed",
   "RestoreAll": "Restore all",
+  "RestoreAllArchive": "Are you sure you want to restore all rooms?",
   "SearchByContent": "Search by file contents",
   "SendByEmail": "Send by email",
   "Share": "Share",
