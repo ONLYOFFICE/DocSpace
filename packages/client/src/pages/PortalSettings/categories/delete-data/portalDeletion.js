@@ -7,7 +7,7 @@ import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
 import { MainContainer } from "./StyledDeleteData";
 import { setDocumentTitle } from "../../../../helpers/utils";
-import api from "@docspace/common/api";
+import { sendDeletePortalEmail } from "@docspace/common/api/portal";
 
 const PortalDeletion = (props) => {
   const { t, getPortalOwner, owner } = props;
@@ -19,7 +19,7 @@ const PortalDeletion = (props) => {
 
   const onDeleteClick = async () => {
     try {
-      await api.portal.sendDeletePortalEmail();
+      await sendDeletePortalEmail();
       toastr.success(
         t("PortalDeletionEmailSended", { ownerEmail: owner.email })
       );
