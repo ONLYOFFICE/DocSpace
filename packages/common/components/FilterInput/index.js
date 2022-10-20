@@ -49,6 +49,8 @@ const FilterInput = React.memo(
     const [selectedFilterValue, setSelectedFilterValue] = React.useState(null);
     const [selectedItems, setSelectedItems] = React.useState(null);
 
+    const mountRef = React.useRef(true);
+
     React.useEffect(() => {
       const value = getViewSettingsData && getViewSettingsData();
 
@@ -68,6 +70,7 @@ const FilterInput = React.memo(
     const getSelectedFilterDataAction = React.useCallback(async () => {
       const value = await getSelectedFilterData();
 
+      if (!mountRef.current) return;
       setSelectedFilterValue(value);
 
       const newSelectedItems = [];
@@ -105,6 +108,12 @@ const FilterInput = React.memo(
       },
       [selectedItems, removeSelectedItem]
     );
+
+    React.useEffect(() => {
+      return () => {
+        mountRef.current = false;
+      };
+    }, []);
 
     return (
       <StyledFilterInput>
