@@ -373,12 +373,12 @@ class ContextOptionsStore {
     this.filesActionsStore.setPinAction(action, id);
   };
 
-  onClickArchive = (e, id, t) => {
+  onClickArchive = (e, item, t) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
 
     this.filesActionsStore
-      .setArchiveAction(action, id)
+      .setArchiveAction(action, item, t)
       .catch((err) => toastr.error(err));
   };
 
@@ -712,18 +712,18 @@ class ContextOptionsStore {
       },
       {
         key: "archive-room",
-        label: t("ToArchive"),
+        label: t("Archived"),
         icon: "/static/images/room.archive.svg",
-        onClick: (e) => this.onClickArchive(e, item.id, t),
+        onClick: (e) => this.onClickArchive(e, item, t),
         disabled: false,
         "data-action": "archive",
         action: "archive",
       },
       {
         key: "unarchive-room",
-        label: t("FromArchive"),
-        icon: "/static/images/room.archive.svg",
-        onClick: (e) => this.onClickArchive(e, item.id, t),
+        label: t("Common:Restore"),
+        icon: "images/subtract.react.svg",
+        onClick: (e) => this.onClickArchive(e, item, t),
         disabled: false,
         "data-action": "unarchive",
         action: "unarchive",

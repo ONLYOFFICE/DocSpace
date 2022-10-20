@@ -44,9 +44,7 @@ const RestoreAllArchiveDialogComponent = (props) => {
   const onRestore = () => {
     setRequestRunning(true);
 
-    const roomIds = folders.map((x) => x.id);
-
-    setArchiveAction("unarchive", roomIds).then(() => {
+    setArchiveAction("unarchive", folders, t).then(() => {
       setRequestRunning(false);
       onClose();
     });

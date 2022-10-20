@@ -862,7 +862,7 @@ class FilesActionStore {
     }
   };
 
-  setArchiveAction = async (action, itemId) => {
+  setArchiveAction = async (action, folders, t) => {
     const {
       addActiveItems,
       moveRoomToArchive,
@@ -879,7 +879,9 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
-    const items = Array.isArray(itemId) ? itemId : [itemId];
+    const items = Array.isArray(folders)
+      ? folders.map((x) => (x?.id ? x.id : x))
+      : [folders.id];
 
     setSecondaryProgressBarData({
       icon: "move",
@@ -888,11 +890,6 @@ class FilesActionStore {
       label: "Archive room",
       alert: false,
     });
-
-    const pbData = {
-      icon: "move",
-      label: "Archive room operation",
-    };
 
     addActiveItems(null, items);
 
@@ -907,11 +904,25 @@ class FilesActionStore {
         return Promise.all(actions)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
+
+            const pbData = {
+              icon: "move",
+              label: "Archive room operation",
+            };
             const data = res ? res : null;
             await this.uploadDataStore.loopFilesOperations(data, pbData);
             this.updateCurrentFolder(null, items);
           })
-          .then(() => toastr.success("Room moved to archive"))
+          .then(() => {
+            const successTranslation =
+              folders.length !== 1 && Array.isArray(folders)
+                ? t("ArchivedRoomsAction")
+                : Array.isArray(folders)
+                ? t("ArchivedRoomAction", { name: folders[0].title })
+                : t("ArchivedRoomAction", { name: folders.title });
+
+            toastr.success(successTranslation);
+          })
           .then(() => setSelected("close"))
           .catch((err) => {
             clearActiveOperations(null, items);
@@ -930,11 +941,25 @@ class FilesActionStore {
         return Promise.all(actions)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
+
+            const pbData = {
+              icon: "move",
+              label: "Archive room operation",
+            };
             const data = res ? res : null;
             await this.uploadDataStore.loopFilesOperations(data, pbData);
             this.updateCurrentFolder(null, [items]);
           })
-          .then(() => toastr.success("Room removed from archive"))
+          .then(() => {
+            const successTranslation =
+              folders.length !== 1 && Array.isArray(folders)
+                ? t("UnarchivedRoomsAction")
+                : Array.isArray(folders)
+                ? t("UnarchivedRoomAction", { name: folders[0].title })
+                : t("UnarchivedRoomAction", { name: folders.title });
+
+            toastr.success(successTranslation);
+          })
           .then(() => setSelected("close"))
           .catch((err) => {
             clearActiveOperations(null, items);
@@ -1278,28 +1303,28 @@ class FilesActionStore {
     this.setPinAction("unpin", items);
   };
 
-  moveRoomsToArchive = () => {
+  moveRoomsToArchive = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
 
     selection.forEach((item) => {
-      items.push(item.id);
+      items.push(item);
     });
 
-    this.setArchiveAction("archive", items);
+    this.setArchiveAction("archive", items, t);
   };
 
-  moveRoomsFromArchive = () => {
+  moveRoomsFromArchive = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
 
     selection.forEach((item) => {
-      items.push(item.id);
+      items.push(item);
     });
 
-    this.setArchiveAction("unarchive", items);
+    this.setArchiveAction("unarchive", items, t);
   };
 
   deleteRooms = (t) => {
@@ -1389,17 +1414,17 @@ class FilesActionStore {
       case "archive":
         return {
           key: "archive",
-          label: t("ToArchive"),
+          label: t("Archived"),
           iconUrl: "/static/images/room.archive.svg",
-          onClick: this.moveRoomsToArchive,
+          onClick: () => this.moveRoomsToArchive(t),
           disabled: false,
         };
       case "unarchive":
         return {
           key: "unarchive",
-          label: t("FromArchive"),
-          iconUrl: "/static/images/room.archive.svg",
-          onClick: this.moveRoomsFromArchive,
+          label: t("Common:Restore"),
+          iconUrl: "images/subtract.react.svg",
+          onClick: () => this.moveRoomsFromArchive(t),
           disabled: false,
         };
       case "delete-room":
