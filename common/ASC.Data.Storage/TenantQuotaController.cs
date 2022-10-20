@@ -26,6 +26,7 @@
 
 namespace ASC.Data.Storage;
 
+[Transient]
 public class TenantQuotaController : IQuotaController
 {
     private long CurrentSize
@@ -42,24 +43,28 @@ public class TenantQuotaController : IQuotaController
         set => _currentSize = value;
     }
 
-    private readonly int _tenant;
+    private int _tenant;
     private readonly TenantManager _tenantManager;
     private readonly AuthContext _authContext;
     private readonly TenantQuotaFeatureChecker<MaxFileSizeFeature, long> _maxFileSizeChecker;
     private readonly TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> _maxTotalSizeChecker;
-    private readonly Lazy<long> _lazyCurrentSize;
+    private Lazy<long> _lazyCurrentSize;
     private long _currentSize;
 
-    public TenantQuotaController(int tenant, TenantManager tenantManager, AuthContext authContext, TenantQuotaFeatureChecker<MaxFileSizeFeature, long> maxFileSizeChecker, TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> maxTotalSizeChecker)
+    public TenantQuotaController(TenantManager tenantManager, AuthContext authContext, TenantQuotaFeatureChecker<MaxFileSizeFeature, long> maxFileSizeChecker, TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> maxTotalSizeChecker)
     {
-        _tenant = tenant;
         _tenantManager = tenantManager;
         _maxFileSizeChecker = maxFileSizeChecker;
         _maxTotalSizeChecker = maxTotalSizeChecker;
+        _authContext = authContext;
+    }
+    
+    public void Init(int tenant)
+    {
+        _tenant = tenant;
         _lazyCurrentSize = new Lazy<long>(() => _tenantManager.FindTenantQuotaRows(tenant)
             .Where(r => UsedInQuota(r.Tag))
             .Sum(r => r.Counter));
-        _authContext = authContext;
     }
 
     public void QuotaUsedAdd(string module, string domain, string dataTag, long size, bool quotaCheckFileSize = true)

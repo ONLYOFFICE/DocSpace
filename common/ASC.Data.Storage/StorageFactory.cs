@@ -179,7 +179,11 @@ public class StorageFactory
     {
         int.TryParse(tenant, out var tenantId);
 
-        return GetStorage(configpath, tenant, module, new TenantQuotaController(tenantId, _tenantManager, _authContext, _maxFileSizeChecker, _maxTotalSizeChecker));
+
+        var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
+        tenantQuotaController.Init(tenantId);
+
+        return GetStorage(configpath, tenant, module, tenantQuotaController);
     }
 
     public IDataStore GetStorage(string configpath, string tenant, string module, IQuotaController controller)
@@ -226,7 +230,10 @@ public class StorageFactory
 
         int.TryParse(tenant, out var tenantId);
 
-        return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager, _authContext, _maxFileSizeChecker, _maxTotalSizeChecker));
+        var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
+        tenantQuotaController.Init(tenantId);
+
+        return GetDataStore(tenant, module, consumer, tenantQuotaController);
     }
 
     private IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
@@ -271,5 +278,6 @@ public static class StorageFactoryExtension
         services.TryAdd<GoogleCloudStorage>();
         services.TryAdd<RackspaceCloudStorage>();
         services.TryAdd<S3Storage>();
+        services.TryAdd<TenantQuotaController>();
     }
 }
