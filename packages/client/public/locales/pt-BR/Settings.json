@@ -70,7 +70,7 @@
   "Guests": "Convidados",
   "Job/Title": "Trabalho/Título",
   "LanguageAndTimeZoneSettingsDescription": "Configurações de Idioma e Fuso Horário é uma maneira de mudar o idioma do portal inteiro para todos os usuários do portal e para configurar o fuso horário de modo que todos os eventos do portal sejam mostrados com a data e hora correta.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> é uma maneira de mudar o idioma do portal inteiro para todos os usuários do portal e para configurar o fuso horário de modo que todos os eventos do portal ONLYOFFICE sejam mostrados com a data e hora correta.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> é uma maneira de mudar o idioma do portal inteiro para todos os usuários do portal e para configurar o fuso horário de modo que todos os eventos do portal {{ organizationName }} sejam mostrados com a data e hora correta.",
   "LanguageTimeSettingsTooltipDescription": "Para fazer com que os parâmetros definidos tenham efeito, clique no botão <1>{{save}}</1> na parte inferior da seção.<3>{{learnMore}}</3>",
   "LocalFile": "Arquivo local",
   "LoginDownloadText": "Você pode baixar o relatório dos dados disponíveis durante o período de armazenamento selecionado para visualizar as estatísticas detalhadas.",

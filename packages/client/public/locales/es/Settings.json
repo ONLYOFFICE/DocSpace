@@ -70,7 +70,7 @@
   "Guests": "Invitados",
   "Job/Title": "Posición/Título",
   "LanguageAndTimeZoneSettingsDescription": "Cambie el idioma para todos los usuarios del portal y configure la zona horaria para que todos los eventos del portal se muestren con la fecha y hora correctas.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> es un modo para cambiar el idioma del portal para todos los usuarios del portal y para configurar la zona horaria para que todos los eventos del portal ONLYOFFICE se muestren con la fecha y hora correctas.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> es un modo para cambiar el idioma del portal para todos los usuarios del portal y para configurar la zona horaria para que todos los eventos del portal {{ organizationName }} se muestren con la fecha y hora correctas.",
   "LanguageTimeSettingsTooltipDescription": "Para activar los parámetros ingresados pulse <1>{{save}}</1> en la parte inferior de la sección.<3>{{learnMore}}</3>",
   "LocalFile": "Archivo local",
   "LoginDownloadText": "Usted puede descargar el informe para los datos disponibles durante el período de almacenamiento seleccionado para ver estadísticas detalladas.",

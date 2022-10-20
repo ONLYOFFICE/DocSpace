@@ -413,6 +413,7 @@ class LanguageAndTimeZone extends React.Component {
       i18n,
       isLoadedPage,
       helpLink,
+      organizationName,
     } = this.props;
 
     const {
@@ -428,7 +429,12 @@ class LanguageAndTimeZone extends React.Component {
     const cultureNames = mapCulturesToArray(cultures, i18n);
 
     const tooltipLanguageTimeSettings = (
-      <LanguageTimeSettingsTooltip theme={theme} t={t} helpLink={helpLink} />
+      <LanguageTimeSettingsTooltip
+        theme={theme}
+        t={t}
+        helpLink={helpLink}
+        organizationName={organizationName}
+      />
     );
 
     const settingsBlock = !(language && timezone) ? null : (
@@ -439,6 +445,7 @@ class LanguageAndTimeZone extends React.Component {
           isVertical={true}
         >
           <ComboBox
+            tabIndex={1}
             id="comboBoxLanguage"
             options={cultureNames}
             selectedOption={language}
@@ -448,7 +455,7 @@ class LanguageAndTimeZone extends React.Component {
             scaled={true}
             scaledOptions={true}
             dropDownMaxHeight={300}
-            className="dropdown-item-width"
+            className="dropdown-item-width combo-box-settings"
           />
         </FieldContainer>
         <FieldContainer
@@ -457,6 +464,7 @@ class LanguageAndTimeZone extends React.Component {
           isVertical={true}
         >
           <ComboBox
+            tabIndex={2}
             id="comboBoxTimezone"
             options={timezones}
             selectedOption={timezone}
@@ -466,7 +474,7 @@ class LanguageAndTimeZone extends React.Component {
             scaled={true}
             scaledOptions={true}
             dropDownMaxHeight={300}
-            className="dropdown-item-width"
+            className="dropdown-item-width combo-box-settings"
           />
         </FieldContainer>
       </div>
@@ -497,6 +505,7 @@ class LanguageAndTimeZone extends React.Component {
           <> {settingsBlock}</>
         )}
         <SaveCancelButtons
+          tabIndex={3}
           className="save-cancel-buttons"
           onSaveClick={this.onSaveLngTZSettings}
           onCancelClick={this.onCancelClick}

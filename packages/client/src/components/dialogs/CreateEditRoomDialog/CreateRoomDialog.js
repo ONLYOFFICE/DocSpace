@@ -33,34 +33,27 @@ const CreateRoomDialog = ({
   onClose,
   onCreate,
 
-  connectItems,
-  setConnectDialogVisible,
-  setRoomCreation,
-  saveThirdpartyResponse,
-  openConnectWindow,
-  setConnectItem,
-  getOAuthToken,
-
   fetchedTags,
   isLoading,
-  folderFormValidation,
+  setIsLoading,
+
+  deleteThirdParty,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
   const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
 
   const startRoomParams = {
-    title: "",
     type: undefined,
+    title: "",
     tags: [],
     isPrivate: false,
-    isThirdparty: false,
     storageLocation: {
-      isConnected: false,
+      isThirdparty: false,
       provider: null,
-      thirdpartyFolderId: "",
-      storageFolderPath: "",
+      thirdpartyAccount: null,
+      storageFolderId: "",
+      isSaveThirdpartyAccount: false,
     },
-    rememberThirdpartyStorage: false,
     icon: {
       uploadedFile: null,
       tmpFile: "",
@@ -84,11 +77,23 @@ const CreateRoomDialog = ({
     }));
   };
 
-  const onCreateRoom = () => onCreate(roomParams);
+  const onCreateRoom = async () => {
+    await onCreate({ ...roomParams });
+    setRoomParams(startRoomParams);
+  };
 
-  const isChooseRoomType = roomParams.type === undefined;
   const goBack = () => {
     setRoomParams({ ...startRoomParams });
+  };
+
+  const onCloseAndDisconnectThirdparty = async () => {
+    if (!!roomParams.storageLocation.thirdpartyAccount) {
+      setIsLoading(true);
+      await deleteThirdParty(
+        roomParams.storageLocation.thirdpartyAccount.providerId
+      ).finally(() => setIsLoading(false));
+    }
+    onClose();
   };
 
   return (
@@ -96,20 +101,20 @@ const CreateRoomDialog = ({
       displayType="aside"
       withBodyScroll
       visible={visible}
-      onClose={onClose}
+      onClose={onCloseAndDisconnectThirdparty}
       isScrollLocked={isScrollLocked}
       withFooterBorder
       isOauthWindowOpen={isOauthWindowOpen}
     >
       <ModalDialog.Header>
         <DialogHeader
-          isChooseRoomType={isChooseRoomType}
+          isChooseRoomType={!roomParams.type}
           onArrowClick={goBack}
         />
       </ModalDialog.Header>
 
       <ModalDialog.Body>
-        {isChooseRoomType ? (
+        {!roomParams.type ? (
           <RoomTypeList t={t} setRoomType={setRoomType} />
         ) : (
           <SetRoomParams
@@ -120,18 +125,11 @@ const CreateRoomDialog = ({
             setRoomParams={setRoomParams}
             setRoomType={setRoomType}
             setIsScrollLocked={setIsScrollLocked}
-            connectItems={connectItems}
-            setConnectDialogVisible={setConnectDialogVisible}
-            setRoomCreation={setRoomCreation}
-            saveThirdpartyResponse={saveThirdpartyResponse}
-            openConnectWindow={openConnectWindow}
-            setConnectItem={setConnectItem}
-            getOAuthToken={getOAuthToken}
           />
         )}
       </ModalDialog.Body>
 
-      {!isChooseRoomType && (
+      {!!roomParams.type && (
         <ModalDialog.Footer>
           <Button
             tabIndex={5}
@@ -147,7 +145,7 @@ const CreateRoomDialog = ({
             label={t("Common:CancelButton")}
             size="normal"
             scale
-            onClick={onClose}
+            onClick={onCloseAndDisconnectThirdparty}
           />
         </ModalDialog.Footer>
       )}

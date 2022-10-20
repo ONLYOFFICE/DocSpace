@@ -20,6 +20,7 @@ import {
 import { isMobileRDD } from "react-device-detect";
 
 import toastr from "@docspace/components/toast/toastr";
+import { EmployeeStatus } from "@docspace/common/constants";
 
 class PeopleStore {
   contextOptionsStore = null;
@@ -98,7 +99,7 @@ class PeopleStore {
     return getUsersList(newFilter);
   };
 
-  onChangeType = (e, t) => {
+  onChangeType = (e) => {
     const action = e?.action ? e.action : e?.target?.dataset?.action;
 
     const { getUsersToMakeEmployees } = this.selectionStore;
@@ -107,7 +108,7 @@ class PeopleStore {
   };
 
   changeType = (type, users) => {
-    const { setEmployeeDialogVisible, setDialogData } = this.dialogStore;
+    const { setChangeUserTypeDialogVisible, setDialogData } = this.dialogStore;
 
     let fromType =
       users.length === 1 ? [users[0].role] : users.map((u) => u.role);
@@ -130,7 +131,38 @@ class PeopleStore {
 
     setDialogData({ toType: type, fromType, userIDs });
 
-    setEmployeeDialogVisible(true);
+    setChangeUserTypeDialogVisible(true);
+  };
+
+  onChangeStatus = (status) => {
+    const users = [];
+
+    if (status === EmployeeStatus.Active) {
+      const { getUsersToActivate } = this.selectionStore;
+
+      users.push(...getUsersToActivate);
+    } else {
+      const { getUsersToDisable } = this.selectionStore;
+
+      users.push(...getUsersToDisable);
+    }
+
+    this.changeStatus(status, users);
+  };
+
+  changeStatus = (status, users) => {
+    const {
+      setChangeUserStatusDialogVisible,
+      setDialogData,
+    } = this.dialogStore;
+
+    const userIDs = users.map((user) => {
+      return user?.id ? user.id : user;
+    });
+
+    setDialogData({ status, userIDs });
+
+    setChangeUserStatusDialogVisible(true);
   };
 
   onOpenInfoPanel = () => {
@@ -148,8 +180,6 @@ class PeopleStore {
       hasFreeUsers,
     } = this.selectionStore;
     const {
-      setActiveDialogVisible,
-      setDisableDialogVisible,
       setSendInviteDialogVisible,
       setDeleteDialogVisible,
     } = this.dialogStore;
@@ -165,7 +195,7 @@ class PeopleStore {
       className: "group-menu_drop-down",
       label: t("Common:DocSpaceAdmin"),
       title: t("Common:DocSpaceAdmin"),
-      onClick: (e) => this.onChangeType(e, t),
+      onClick: (e) => this.onChangeType(e),
       "data-action": "admin",
       key: "administrator",
     };
@@ -174,7 +204,7 @@ class PeopleStore {
       className: "group-menu_drop-down",
       label: t("Common:RoomAdmin"),
       title: t("Common:RoomAdmin"),
-      onClick: (e) => this.onChangeType(e, t),
+      onClick: (e) => this.onChangeType(e),
       "data-action": "manager",
       key: "manager",
     };
@@ -183,7 +213,7 @@ class PeopleStore {
       className: "group-menu_drop-down",
       label: t("Common:User"),
       title: t("Common:User"),
-      onClick: (e) => this.onChangeType(e, t),
+      onClick: (e) => this.onChangeType(e),
       "data-action": "user",
       key: "user",
     };
@@ -223,14 +253,14 @@ class PeopleStore {
         key: "enable",
         label: t("Common:Enable"),
         disabled: !hasUsersToActivate,
-        onClick: () => setActiveDialogVisible(true),
+        onClick: () => this.onChangeStatus(EmployeeStatus.Active),
         iconUrl: "images/enable.react.svg",
       },
       {
         key: "disable",
         label: t("PeopleTranslations:DisableUserButton"),
         disabled: !hasUsersToDisable,
-        onClick: () => setDisableDialogVisible(true),
+        onClick: () => this.onChangeStatus(EmployeeStatus.Disabled),
         iconUrl: "images/disable.react.svg",
       },
       {

@@ -20,7 +20,7 @@ docker_dir="$( pwd )"
 echo "Docker directory:" $docker_dir
 
 docker_file=Dockerfile.dev
-core_base_domain=""
+core_base_domain="localhost"
 build_date=$(date +%Y-%m-%d)
 env_extension="dev"
 

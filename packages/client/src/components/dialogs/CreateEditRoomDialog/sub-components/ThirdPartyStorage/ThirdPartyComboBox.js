@@ -10,8 +10,9 @@ import DomHelpers from "@docspace/components/utils/domHelpers";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import DropDownItem from "@docspace/components/drop-down-item";
-import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
+import { connectedCloudsTypeTitleTranslation as ProviderKeyTranslation } from "@docspace/client/src/helpers/filesUtils";
 import { Base } from "@docspace/components/themes";
+import { toastr } from "@docspace/components";
 
 const StyledStorageLocation = styled.div`
   display: flex;
@@ -95,16 +96,20 @@ const StyledStorageLocation = styled.div`
 
 StyledStorageLocation.defaultProps = { theme: Base };
 
-const ThirpartyComboBox = ({
+const ThirdPartyComboBox = ({
   t,
-  storageLocation,
 
-  setChangeStorageLocation,
+  storageLocation,
+  onChangeStorageLocation,
+  onChangeProvider,
 
   connectItems,
   setConnectDialogVisible,
   setRoomCreation,
+  saveThirdParty,
+
   saveThirdpartyResponse,
+  setSaveThirdpartyResponse,
   openConnectWindow,
   setConnectItem,
   getOAuthToken,
@@ -118,7 +123,7 @@ const ThirpartyComboBox = ({
     ...item,
     title: item.category
       ? item.category
-      : connectedCloudsTypeTitleTranslation(item.providerName, t),
+      : ProviderKeyTranslation(item.providerKey, t),
   }));
 
   const [isOpen, setIsOpen] = useState(false);
@@ -134,10 +139,7 @@ const ThirpartyComboBox = ({
   };
 
   const setStorageLocaiton = (thirparty) => {
-    setChangeStorageLocation({
-      ...storageLocation,
-      provider: thirparty,
-    });
+    onChangeProvider(thirparty);
     setIsOpen(false);
     setIsScrollLocked(false);
   };
@@ -157,62 +159,59 @@ const ThirpartyComboBox = ({
 
   const onShowService = async () => {
     setRoomCreation(true);
-
-    const item = {
-      title: connectedCloudsTypeTitleTranslation(
-        storageLocation.provider.providerName,
-        t
-      ),
-      customer_title: "NOTITLE",
-      provider_key: storageLocation.provider.providerName,
-      link: storageLocation.provider.oauthHref,
-    };
+    const provider = storageLocation.provider;
 
     if (storageLocation.provider.isOauth) {
       setIsOauthWindowOpen(true);
-      let authModal = window.open(
+      const authModal = window.open(
         "",
         "Authorization",
         "height=600, width=1020"
       );
-      await openConnectWindow(storageLocation.provider.providerName, authModal)
-        .then(getOAuthToken)
-        .then((token) => {
-          authModal.close();
-          setConnectItem({
-            ...item,
-            token,
-          });
-          setConnectDialogVisible(true);
-        })
-        .catch((e) => {
-          if (!e) return;
-          console.error(e);
-        })
-        .finally(() => {
-          setIsOauthWindowOpen(false);
-        });
+      openConnectWindow(provider.providerKey, authModal).then((modal) =>
+        getOAuthToken(modal)
+          .then((token) =>
+            saveThirdParty(
+              provider.oauthHref,
+              "",
+              "",
+              token,
+              false,
+              ProviderKeyTranslation(provider.providerKey, t),
+              provider.providerKey,
+              null,
+              true
+            ).then((res) => setSaveThirdpartyResponse(res))
+          )
+          .catch((e) => {
+            if (!e) return;
+            toastr.error(e);
+            console.error(e);
+          })
+          .finally(() => {
+            authModal.close();
+            setIsOauthWindowOpen(false);
+          })
+      );
     } else {
-      setConnectItem(item);
+      const providerTitle = ProviderKeyTranslation(provider.providerKey, t);
+      setConnectItem({
+        title: providerTitle,
+        customer_title: providerTitle,
+        provider_key: provider.providerKey,
+      });
       setConnectDialogVisible(true);
     }
   };
 
   useEffect(() => {
-    if (!saveThirdpartyResponse) return;
-
-    if (saveThirdpartyResponse.id) {
-      setChangeStorageLocation({
-        ...storageLocation,
-        isConnected: true,
-        thirdpartyFolderId: saveThirdpartyResponse.id,
-      });
-    } else {
-      setChangeStorageLocation({
-        ...storageLocation,
-        isConnected: false,
-      });
-    }
+    if (!saveThirdpartyResponse?.id) return;
+    onChangeStorageLocation({
+      ...storageLocation,
+      thirdpartyAccount: saveThirdpartyResponse,
+      storageFolderId: saveThirdpartyResponse.id,
+    });
+    setSaveThirdpartyResponse(null);
   }, [saveThirdpartyResponse]);
 
   return (
@@ -233,7 +232,9 @@ const ThirpartyComboBox = ({
         </div>
 
         <Button
-          isDisabled={!storageLocation?.provider}
+          isDisabled={
+            !storageLocation?.provider || !!storageLocation?.thirdpartyAccount
+          }
           className="set_room_params-thirdparty-connect"
           size="small"
           label={t("Common:Connect")}
@@ -270,4 +271,4 @@ const ThirpartyComboBox = ({
   );
 };
 
-export default ThirpartyComboBox;
+export default ThirdPartyComboBox;

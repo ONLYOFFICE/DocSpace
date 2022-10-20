@@ -334,18 +334,6 @@ public class UserManager
             {
                 throw new TenantQuotaException("Maximum number of users exceeded");
             }
-
-            if (u.Status == EmployeeStatus.Active)
-            {
-                if (isVisitor)
-                {
-                    _activeUsersFeatureChecker.CheckAppend().Wait();
-                }
-                else
-                {
-                    _tenantQuotaFeatureChecker.CheckAppend().Wait();
-                }
-            }
         }
 
         if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
@@ -354,6 +342,19 @@ public class UserManager
         }
 
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+
+        if (Equals(oldUserData, Constants.LostUser))
+        {
+            if (isVisitor)
+            {
+                _activeUsersFeatureChecker.CheckAppend().Wait();
+            }
+            else
+            {
+                _tenantQuotaFeatureChecker.CheckAppend().Wait();
+            }
+        }
+
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
 
         if (syncCardDav)

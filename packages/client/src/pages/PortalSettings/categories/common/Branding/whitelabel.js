@@ -840,6 +840,7 @@ const WhiteLabel = (props) => {
 
         {isSettingPaid && (
           <SaveCancelButtons
+            tabIndex={3}
             className="save-cancel-buttons"
             onSaveClick={onSave}
             onCancelClick={onRestoreLogo}
@@ -857,20 +858,20 @@ const WhiteLabel = (props) => {
 export default inject(({ setup, auth, common }) => {
   const { setWhiteLabelSettings, restoreWhiteLabelSettings } = setup;
 
+  const { whiteLabelLogoSizes, whiteLabelLogoText } = common;
+
   const {
-    whiteLabel,
+    whiteLabelLogoUrls,
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,
-  } = common;
-
-  const { logoText, logoSizes, logoUrls } = whiteLabel;
+  } = auth.settingsStore;
 
   return {
     theme: auth.settingsStore.theme,
-    logoText,
-    logoSizes,
-    logoUrls,
+    logoText: whiteLabelLogoText,
+    logoSizes: whiteLabelLogoSizes,
+    logoUrls: whiteLabelLogoUrls,
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,

@@ -37,7 +37,7 @@ echo "SERVICE_CLIENT: $client"
 
 docker_file=Dockerfile.dev
 env_extension="dev"
-core_base_domain=""
+core_base_domain="localhost"
 
 echo "Start all backend services"
 DOCKERFILE=$docker_file \
