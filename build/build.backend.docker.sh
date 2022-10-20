@@ -41,6 +41,9 @@ echo "SERVICE_CLIENT: $client"
 echo "Stop all backend services"
 $dir/build/start/stop.backend.docker.sh
 
+echo "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'"
+docker image rm -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
+
 echo "Run MySQL"
 
 arch_name="$(uname -m)"
