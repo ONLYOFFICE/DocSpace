@@ -26,10 +26,10 @@ const PureConnectDialogContainer = (props) => {
     setConnectDialogVisible,
     personal,
     folderFormValidation,
-    updateInfo,
     isConnectionViaBackupModule,
     roomCreation,
     setSaveThirdpartyResponse,
+    setSelectedThirdPartyAccount,
   } = props;
   const {
     corporate,
@@ -134,14 +134,15 @@ const PureConnectDialogContainer = (props) => {
         provider_key,
         provider_id
       )
-        .catch((err) => {
-          setIsLoading(false);
+        .then(() => {
           onClose();
+          setSelectedThirdPartyAccount(null);
+        })
+        .catch((err) => {
           toastr.error(err);
         })
         .finally(() => {
           setIsLoading(false);
-          updateInfo && updateInfo();
           onClose();
         });
 
@@ -362,10 +363,7 @@ const ConnectDialog = withTranslation([
 ])(PureConnectDialogContainer);
 
 export default inject(
-  (
-    { auth, settingsStore, selectedFolderStore, dialogsStore },
-    { passedItem, isConnectionViaBackupModule }
-  ) => {
+  ({ auth, settingsStore, selectedFolderStore, dialogsStore, backup }) => {
     const {
       providers,
       saveThirdParty,
@@ -376,6 +374,10 @@ export default inject(
 
     const { id, folders } = selectedFolderStore;
     const {
+      selectedThirdPartyAccount: backupConnectionItem,
+      setSelectedThirdPartyAccount,
+    } = backup;
+    const {
       connectDialogVisible: visible,
       setConnectDialogVisible,
       connectItem,
@@ -383,7 +385,8 @@ export default inject(
       setSaveThirdpartyResponse,
     } = dialogsStore;
 
-    const item = isConnectionViaBackupModule ? passedItem : connectItem;
+    const item = backupConnectionItem ?? connectItem;
+    const isConnectionViaBackupModule = backupConnectionItem ? true : false;
 
     return {
       selectedFolderId: id,
@@ -394,12 +397,12 @@ export default inject(
       roomCreation,
       setSaveThirdpartyResponse,
       folderFormValidation,
-
+      isConnectionViaBackupModule,
       saveThirdParty,
       openConnectWindow,
       fetchThirdPartyProviders,
       setConnectDialogVisible,
-
+      setSelectedThirdPartyAccount,
       personal,
     };
   }

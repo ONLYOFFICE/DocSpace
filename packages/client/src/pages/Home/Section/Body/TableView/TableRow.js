@@ -66,7 +66,7 @@ const StyledTableRow = styled(TableRow)`
           background: ${(props) =>
             `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
 
-          margin-top: -1px;
+          margin-top: ${(props) => (props.showHotkeyBorder ? "-2px" : "-1px")};
           ${(props) =>
             !props.showHotkeyBorder &&
             css`
@@ -168,13 +168,23 @@ const StyledTableRow = styled(TableRow)`
     props.showHotkeyBorder &&
     css`
       .table-container_cell {
-        margin-top: -1px;
-        border-top: 1px solid #2da7db;
+        margin-top: -2px;
+
+        border-top: 1px solid #2da7db !important;
         border-right: 0;
         border-left: 0;
       }
       .table-container_file-name-cell > .table-container_cell {
-        margin-top: 0;
+        margin-top: 2px;
+        border-top: 0px !important;
+      }
+
+      .item-file-name,
+      .row_update-text,
+      .expandButton,
+      .badges,
+      .table-container_cell > p {
+        margin-top: 2px;
       }
     `}
 `;
@@ -303,7 +313,7 @@ const FilesTableRow = (props) => {
   const element = (
     <ItemIcon
       id={item.id}
-      icon={item.isRoom && item.logo.big ? item.logo.big : item.icon}
+      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
     />
@@ -358,6 +368,10 @@ const FilesTableRow = (props) => {
   let modifiedAvailableDrag = true;
   let sizeAvailableDrag = true;
   let typeAvailableDrag = true;
+  let ownerAvailableDrag = true;
+  let tagsAvailableDrag = true;
+  let activityAvailableDrag = true;
+
   let buttonsAvailableDrag = true;
 
   if (dragging && isDragging) {
@@ -369,6 +383,9 @@ const FilesTableRow = (props) => {
     sizeAvailableDrag = availableColumns.includes("Size");
     typeAvailableDrag = availableColumns.includes("Type");
     buttonsAvailableDrag = availableColumns.includes("QuickButtons");
+    ownerAvailableDrag = availableColumns.includes("Owner");
+    tagsAvailableDrag = availableColumns.includes("Tags");
+    activityAvailableDrag = availableColumns.includes("Activity");
   }
 
   return (
@@ -430,6 +447,7 @@ const FilesTableRow = (props) => {
           />
           <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
         </TableCell>
+
         {(item.isRoom || isRooms) && (
           <TableCell
             style={
@@ -460,7 +478,7 @@ const FilesTableRow = (props) => {
         {item.isRoom && (
           <TableCell
             style={
-              !typeAvailableDrag
+              !tagsAvailableDrag
                 ? { background: "none !important" }
                 : dragStyles.style
             }
@@ -472,10 +490,13 @@ const FilesTableRow = (props) => {
             />
           </TableCell>
         )}
+
         {!personal && (
           <TableCell
             style={
-              !authorAvailableDrag ? { background: "none" } : dragStyles.style
+              !authorAvailableDrag && !ownerAvailableDrag
+                ? { background: "none" }
+                : dragStyles.style
             }
             {...selectionProp}
           >
@@ -505,7 +526,9 @@ const FilesTableRow = (props) => {
 
         <TableCell
           style={
-            !modifiedAvailableDrag ? { background: "none" } : dragStyles.style
+            !modifiedAvailableDrag && !activityAvailableDrag
+              ? { background: "none" }
+              : dragStyles.style
           }
           {...selectionProp}
         >

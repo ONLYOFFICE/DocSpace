@@ -1221,6 +1221,18 @@ Don’t want to change your password? Just ignore this message.</value>
   <data name="subject_personal_already_exist" xml:space="preserve">
     <value>Log in to your ONLYOFFICE Personal account</value>
   </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1.Message from the "${__VirtualRootPath}":"${__VirtualRootPath}" portal
+
+Name: $UserName
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Sales department request</value>
+  </data>
   <data name="ButtonConfirmEmail" xml:space="preserve">
     <value>CONFIRM</value>
   </data>

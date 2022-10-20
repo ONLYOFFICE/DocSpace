@@ -57,7 +57,10 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onDrop = (items) => {
+      const { isTrashFolder, dragging, setDragging } = this.props;
       const { fileExst, id } = this.props.item;
+
+      if (isTrashFolder) return dragging && setDragging(false);
 
       if (!fileExst) {
         this.onDropZoneUpload(items, id);
@@ -73,6 +76,7 @@ export default function withFileActions(WrappedFileItem) {
         setStartDrag,
         isPrivacy,
         isTrashFolder,
+        isRoomsFolder,
         isArchiveFolder,
         item,
         setBufferSelection,
@@ -88,6 +92,7 @@ export default function withFileActions(WrappedFileItem) {
       if (
         isPrivacy ||
         isTrashFolder ||
+        isRoomsFolder ||
         isArchiveFolder ||
         (!draggable && !isFileName && !isActive) ||
         window.innerWidth < 1025 ||

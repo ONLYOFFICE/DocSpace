@@ -113,21 +113,20 @@ public class RoomsModule : FeedModule
 
         if (shareRecord != null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp, true)
+            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
             {
                 Item = SharedRoomItem,
-                ItemId = string.Format("{0}_{1}", folder.Id, shareRecord.Subject),
-                ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
+                ItemId = string.Format("{0}_{1}_{2}", folder.Id, shareRecord.Subject, shareRecord.TimeStamp.Ticks),
                 Product = Product,
                 Module = Name,
                 Title = folder.Title,
-                ExtraLocation = FilesUCResource.VirtualRooms,
-                ExtraLocationUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.RootId, false),
+                ExtraLocationTitle = FilesUCResource.VirtualRooms,
+                ExtraLocation = folder.ParentId.ToString(),
                 Keywords = folder.Title,
-                AdditionalInfo = Enum.GetName(folder.FolderType),
-                AdditionalInfo2 = folder.Private ? "private" : null,
-                HasPreview = false,
-                CanComment = false,
+                AdditionalInfo = ((int)folder.FolderType).ToString(),
+                AdditionalInfo2 = ((int)shareRecord.Share).ToString(),
+                AdditionalInfo3 = ((int)shareRecord.SubjectType).ToString(),
+                AdditionalInfo4 = folder.Private ? "private" : null,
                 Target = shareRecord.Subject,
                 GroupId = GetGroupId(SharedRoomItem, shareRecord.Owner, folder.ParentId.ToString())
             };
@@ -139,18 +138,14 @@ public class RoomsModule : FeedModule
         {
             Item = RoomItem,
             ItemId = folder.Id.ToString(),
-            ItemUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.Id, false),
             Product = Product,
             Module = Name,
             Title = folder.Title,
-            ExtraLocation = FilesUCResource.VirtualRooms,
-            ExtraLocationUrl = _filesLinkUtility.GetFileRedirectPreviewUrl(folder.RootId, false),
+            ExtraLocationTitle = FilesUCResource.VirtualRooms,
+            ExtraLocation = folder.ParentId.ToString(),
             Keywords = folder.Title,
-            AdditionalInfo = Enum.GetName(folder.FolderType),
-            AdditionalInfo2 = folder.Private ? "private" : null,
-            HasPreview = false,
-            CanComment = false,
-            Target = null,
+            AdditionalInfo = ((int)folder.FolderType).ToString(),
+            AdditionalInfo4 = folder.Private ? "private" : null,
             GroupId = GetGroupId(RoomItem, folder.CreateBy, folder.ParentId.ToString())
         };
     }

@@ -69,7 +69,7 @@
   "Guests": "Gosti",
   "Job/Title": "Poklic/Naziv",
   "LanguageAndTimeZoneSettingsDescription": "Spremenite jezik za vse uporabnike portala in nastavite časovni pas tako, da bodo vsi dogodki na portalu prikazani s pravilnim datumom in uro.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> je način, kako jezik celotnega portala spremeniti za vse uporabnike in za spreminjanje časovnega pasu tako, da so vsi dogodki na ONLYOFFICE portalu prikazani s pravilnim datumom in časom.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> je način, kako jezik celotnega portala spremeniti za vse uporabnike in za spreminjanje časovnega pasu tako, da so vsi dogodki na {{ organizationName }} portalu prikazani s pravilnim datumom in časom.",
   "LanguageTimeSettingsTooltipDescription": "Za pričetek delovanja izbranih parametrov pritisnite gumb <1>{{save}}</1> na dnu oddelka.<3>{{learnMore}}</3>",
   "LocalFile": "Lokalna datoteka",
   "LoginHistoryTitle": "Zgodovina vpisa",

@@ -34,6 +34,7 @@ public static class Actions
     public static readonly INotifyAction SelfProfileUpdated = new NotifyAction("self_profile_updated", "self profile updated");
     public static readonly INotifyAction UserHasJoin = new NotifyAction("user_has_join", "user has join");
     public static readonly INotifyAction UserMessageToAdmin = new NotifyAction("for_admin_notify", "for_admin_notify");
+    public static readonly INotifyAction UserMessageToSales = new NotifyAction("for_sales_notify", "for_sales_notify");
     public static readonly INotifyAction RequestTariff = new NotifyAction("request_tariff", "request_tariff");
     public static readonly INotifyAction RequestLicense = new NotifyAction("request_license", "request_license");
 

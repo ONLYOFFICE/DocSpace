@@ -64,9 +64,6 @@
   <data name="TariffPerMonth" xml:space="preserve">
     <value>mesec</value>
   </data>
-  <data name="TariffPerYear" xml:space="preserve">
-    <value>leto</value>
-  </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Ime</value>
   </data>

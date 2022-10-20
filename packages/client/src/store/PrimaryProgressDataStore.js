@@ -7,6 +7,7 @@ class PrimaryProgressDataStore {
   icon = "upload";
   alert = false;
   loadingFile = null;
+  errors = 0;
 
   constructor() {
     makeObservable(this, {
@@ -16,9 +17,11 @@ class PrimaryProgressDataStore {
       icon: observable,
       alert: observable,
       loadingFile: observable,
+      errors: observable,
 
       setPrimaryProgressBarData: action,
       clearPrimaryProgressData: action,
+      setPrimaryProgressBarErrors: action,
     });
   }
 
@@ -36,11 +39,16 @@ class PrimaryProgressDataStore {
       label: "",
       icon: "",
       alert: false,
+      errors: 0,
     });
   };
 
   setPrimaryProgressBarShowError = (error) => {
     this.alert = error;
+  };
+
+  setPrimaryProgressBarErrors = (errors) => {
+    this.errors = errors;
   };
 }
 

@@ -16,6 +16,12 @@ const commonStyles = css`
       margin: auto;
     }
   }
+
+  .select-file-dialog_empty-container {
+    .empty-folder_container {
+      margin: 0 auto;
+    }
+  }
 `;
 
 const StyledModalDialog = styled(ModalDialog)`
@@ -61,6 +67,7 @@ const StyledBody = styled.div`
     /* .selection-panel_files-list-body {
       height: 384px;
     } */
+
     .selection-panel_tree-body {
       grid-area: tree;
       height: 100%;

@@ -272,7 +272,7 @@ public class NotifyTransferRequest : INotifyEngineAction
     private readonly TenantExtra _tenantExtra;
     private readonly WebItemManager _webItemManager;
     private readonly TenantLogoManager _tenantLogoManager;
-    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    private readonly AdditionalWhiteLabelSettingsHelperInit _additionalWhiteLabelSettingsHelper;
     private readonly TenantUtil _tenantUtil;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
@@ -289,7 +289,7 @@ public class NotifyTransferRequest : INotifyEngineAction
         TenantExtra tenantExtra,
         WebItemManager webItemManager,
         TenantLogoManager tenantLogoManager,
-        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelper,
         TenantUtil tenantUtil,
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
@@ -356,7 +356,7 @@ public class NotifyTransferRequest : INotifyEngineAction
         request.Arguments.Add(new TagValue(CommonTags.HelpLink, _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, false)));
         request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
         request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(_settingsManager)));
-        request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name));
+        request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name == "" ? Resource.PortalName : tenant.Name));
         request.Arguments.Add(new TagValue(CommonTags.ImagePath, _studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
 
         AddLetterLogo(request);

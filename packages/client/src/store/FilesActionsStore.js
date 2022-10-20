@@ -24,6 +24,8 @@ import { checkProtocol } from "../helpers/files-helpers";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
+import FilesFilter from "@docspace/common/api/files/filter";
+import api from "@docspace/common/api";
 
 class FilesActionStore {
   authStore;
@@ -294,7 +296,7 @@ class FilesActionStore {
               return toastr.success(translations.FolderRemoved);
             };
 
-            if (withPaging) {
+            if (withPaging || this.dialogsStore.isFolderActions) {
               this.updateCurrentFolder(fileIds, folderIds, false);
               showToast();
             } else {
@@ -664,7 +666,7 @@ class FilesActionStore {
           toastr.success(translations.successRemoveFolder);
         } else {
           this.updateFilesAfterDelete([itemId]);
-          this.filesStore.removeFiles([itemId], null, () =>
+          this.filesStore.removeFiles(null, [itemId], () =>
             toastr.success(translations.successRemoveFolder)
           );
         }
@@ -961,9 +963,19 @@ class FilesActionStore {
     }
   };
 
-  openLocationAction = (locationId) => {
+  openLocationAction = async (locationId) => {
     this.filesStore.setBufferSelection(null);
-    return this.filesStore.fetchFiles(locationId, null);
+    const files = await this.filesStore.fetchFiles(locationId, null);
+    console.log(files);
+    return files;
+  };
+
+  checkAndOpenLocationAction = async (locationId) => {
+    const filterData = FilesFilter.getDefault();
+    api.files
+      .getFolder(locationId, filterData)
+      .then(() => this.openLocationAction(locationId))
+      .catch((err) => toastr.error(err));
   };
 
   setThirdpartyInfo = (providerKey) => {

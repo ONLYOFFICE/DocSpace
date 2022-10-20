@@ -6,16 +6,12 @@ import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
+import { logout as logoutDesktop, desktopConstants } from "../desktop";
+import { combineUrl, isAdmin, setCookie, getCookie } from "../utils";
+import CurrentQuotasStore from "./CurrentQuotaStore";
+import CurrentTariffStatusStore from "./CurrentTariffStatusStore";
+import PaymentQuotasStore from "./PaymentQuotasStore";
 import {
-  logout as logoutDesktop,
-  desktopConstants,
-} from "../desktop";
-import {
-  combineUrl,
-  isAdmin,
-  setCookie,
-  getCookie,
-} from "../utils";import {
   AppServerConfig,
   LANGUAGE,
   COOKIE_EXPIRATION_YEAR,
@@ -35,13 +31,22 @@ class AuthStore {
   providers = [];
   isInit = false;
 
+  quota = {};
+  portalPaymentQuotas = {};
+  portalQuota = {};
+  portalTariff = {};
+  pricePerManager = null;
+  currencies = [];
+
   constructor() {
     this.userStore = new UserStore();
 
     this.settingsStore = new SettingsStore();
     this.tfaStore = new TfaStore();
     this.infoPanelStore = new InfoPanelStore();
-
+    this.currentQuotaStore = new CurrentQuotasStore();
+    this.currentTariffStatusStore = new CurrentTariffStatusStore();
+    this.paymentQuotasStore = new PaymentQuotasStore();
     makeAutoObservable(this);
   }
 
@@ -59,10 +64,17 @@ class AuthStore {
     requests.push(this.settingsStore.init());
 
     if (this.isAuthenticated) {
+      requests.push(
+        this.currentQuotaStore.init(),
+        this.currentTariffStatusStore.init()
+      );
+
       !this.settingsStore.passwordSettings &&
         requests.push(
           this.settingsStore.getPortalPasswordSettings(),
-          this.settingsStore.getAdditionalResources()
+          this.settingsStore.getAdditionalResources(),
+          this.settingsStore.getCompanyInfoSettings(),
+          this.settingsStore.getWhiteLabelLogoUrls()
         );
     }
 
@@ -315,6 +327,11 @@ class AuthStore {
     });
 
     return promise;
+  };
+
+  setQuota = async () => {
+    const res = await api.settings.getPortalQuota();
+    if (res) this.quota = res;
   };
 }
 

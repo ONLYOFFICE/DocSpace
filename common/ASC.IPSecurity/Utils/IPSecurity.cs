@@ -128,7 +128,7 @@ public class IPSecurity
         return false;
     }
 
-    private static bool MatchIPs(string requestIp, string restrictionIp)
+    public static bool MatchIPs(string requestIp, string restrictionIp)
     {
         var dividerIdx = restrictionIp.IndexOf('-');
         if (dividerIdx > -1)

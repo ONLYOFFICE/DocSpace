@@ -72,6 +72,7 @@ global using ASC.Data.Backup.Tasks.Modules;
 global using ASC.Data.Backup.Utils;
 global using ASC.Data.Storage;
 global using ASC.Data.Storage.Configuration;
+global using ASC.Data.Storage.DiscStorage;
 global using ASC.EventBus.Events;
 global using ASC.Files.Core;
 global using ASC.MessagingSystem.Core;
@@ -103,6 +104,5 @@ global using Microsoft.Extensions.Logging;
 global using MySql.Data.MySqlClient;
 
 global using Newtonsoft.Json;
-global using Newtonsoft.Json.Linq;
 
 global using ProtoBuf;

@@ -8,7 +8,7 @@ import CheckboxCheckedIcon from "./svg/checkbox.checked.react.svg";
 import CheckboxIcon from "./svg/checkbox.react.svg";
 
 // eslint-disable-next-line react/prop-types
-const RenderCheckboxIcon = ({ isChecked, isIndeterminate }) => {
+const RenderCheckboxIcon = ({ isChecked, isIndeterminate, tabIndex }) => {
   // let newProps = {
   //   size: "medium",
   //   className: "checkbox",
@@ -19,11 +19,17 @@ const RenderCheckboxIcon = ({ isChecked, isIndeterminate }) => {
   return (
     <>
       {isIndeterminate ? (
-        <CheckboxIndeterminateIcon className="checkbox not-selectable" />
+        <CheckboxIndeterminateIcon
+          tabIndex={tabIndex}
+          className="checkbox not-selectable"
+        />
       ) : isChecked ? (
-        <CheckboxCheckedIcon className="checkbox not-selectable" />
+        <CheckboxCheckedIcon
+          tabIndex={tabIndex}
+          className="checkbox not-selectable"
+        />
       ) : (
-        <CheckboxIcon className="checkbox not-selectable" />
+        <CheckboxIcon tabIndex={tabIndex} className="checkbox not-selectable" />
       )}
     </>
   );
@@ -83,6 +89,7 @@ class Checkbox extends React.Component {
       helpButton,
       onChange,
       isChecked,
+      tabIndex,
       ...rest
     } = this.props;
 
@@ -104,9 +111,10 @@ class Checkbox extends React.Component {
             ref={this.ref}
             value={value}
             onChange={this.onInputChange}
+            tabIndex={-1}
             {...rest}
           />
-          <RenderCheckboxIcon {...this.props} />
+          <RenderCheckboxIcon tabIndex={tabIndex} {...this.props} />
           <div className="wrapper">
             {this.props.label && (
               <Text
@@ -158,11 +166,13 @@ Checkbox.propTypes = {
   truncate: PropTypes.bool,
   /** Help button render */
   helpButton: PropTypes.any,
+  tabIndex: PropTypes.number,
 };
 
 Checkbox.defaultProps = {
   isChecked: false,
   truncate: false,
+  tabIndex: -1,
 };
 
 export default React.memo(Checkbox);

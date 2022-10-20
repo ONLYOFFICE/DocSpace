@@ -5,12 +5,16 @@ import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 
 import withLoading from "SRC_DIR/HOCs/withLoading";
-import Whitelabel from "./settingsBranding/whitelabel";
-import CompanyInfoSettings from "./settingsBranding/companyInfoSettings";
+import Whitelabel from "./Branding/whitelabel";
+import CompanyInfoSettings from "./Branding/companyInfoSettings";
 import styled from "styled-components";
-import AdditionalResources from "./settingsBranding/additionalResources";
+import AdditionalResources from "./Branding/additionalResources";
 
-import ForbiddenPage from "../ForbiddenPage";
+import LoaderBrandingDescription from "./sub-components/loaderBrandingDescription";
+
+import BreakpointWarning from "../../../../components/BreakpointWarning/index";
+
+import { UnavailableStyles } from "../../utils/commonSettingsStyles";
 
 const StyledComponent = styled.div`
   max-width: 700px;
@@ -22,7 +26,7 @@ const StyledComponent = styled.div`
     font-weight: 700;
     font-size: 16px;
     line-height: 22px;
-    padding-bottom: 16px;
+    padding-bottom: 9px;
   }
 
   .description {
@@ -44,27 +48,55 @@ const StyledComponent = styled.div`
     border: none;
     border-top: 1px solid #eceef1;
   }
+
+  ${(props) => !props.isSettingPaid && UnavailableStyles}
 `;
 
-const Branding = (props) => {
-  const [isPortalPaid, setIsPortalPaid] = useState(true);
+const Branding = ({ t, isLoadedCompanyInfoSettingsData, isSettingPaid }) => {
+  const [viewDesktop, setViewDesktop] = useState(false);
 
-  if (isMobile) return <ForbiddenPage />;
+  useEffect(() => {
+    onCheckView();
+    window.addEventListener("resize", onCheckView);
+
+    return () => window.removeEventListener("resize", onCheckView);
+  }, []);
+
+  const onCheckView = () => {
+    if (!isMobile && window.innerWidth > 1024) {
+      setViewDesktop(true);
+    } else {
+      setViewDesktop(false);
+    }
+  };
+
+  if (!viewDesktop)
+    return <BreakpointWarning sectionName={t("Settings:Branding")} />;
 
   return (
-    <StyledComponent>
-      <Whitelabel isPortalPaid={isPortalPaid} />
+    <StyledComponent isSettingPaid={isSettingPaid}>
+      <Whitelabel isSettingPaid={isSettingPaid} />
       <hr />
-      <div className="section-description">
-        Specify your company information, add links to external resources, and
-        email addresses displayed within the online office interface.
-      </div>
-      <CompanyInfoSettings isPortalPaid={isPortalPaid} />
-      <AdditionalResources isPortalPaid={isPortalPaid} />
+      {isLoadedCompanyInfoSettingsData ? (
+        <div className="section-description settings_unavailable">
+          {t("Settings:BrandingSectionDescription")}
+        </div>
+      ) : (
+        <LoaderBrandingDescription />
+      )}
+      <CompanyInfoSettings isSettingPaid={isSettingPaid} />
+      <AdditionalResources isSettingPaid={isSettingPaid} />
     </StyledComponent>
   );
 };
 
-export default inject(({ auth, setup, common }) => {})(
-  withLoading(withTranslation(["Settings", "Common"])(observer(Branding)))
-);
+export default inject(({ auth, setup, common }) => {
+  const { currentQuotaStore } = auth;
+  const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
+  const { isLoadedCompanyInfoSettingsData } = common;
+
+  return {
+    isLoadedCompanyInfoSettingsData,
+    isSettingPaid: isBrandingAndCustomizationAvailable,
+  };
+})(withLoading(withTranslation(["Settings", "Common"])(observer(Branding))));

@@ -27,6 +27,10 @@ export const EmployeeStatus = Object.freeze({
 export const EmployeeType = Object.freeze({
   User: 1,
   Guest: 2,
+  UserString: "user",
+  RoomAdmin: "manager",
+  DocSpaceAdmin: "admin",
+  Owner: "Owner",
 });
 /**
  * Enum for filter type.
@@ -130,6 +134,8 @@ export const ShareAccessRights = Object.freeze({
   Comment: 6,
   FormFilling: 7,
   CustomFilter: 8,
+  RoomManager: 9,
+  Editing: 10,
 });
 export const ConflictResolveType = Object.freeze({
   Skip: 0,
@@ -259,4 +265,47 @@ export const Events = Object.freeze({
   ROOM_CREATE: "create_room",
   ROOM_EDIT: "edit_room",
   CHANGE_COLUMN: "change_column",
+});
+
+/**
+ * Enum for feed action types.
+ * @readonly
+ */
+export const FeedActionTypes = Object.freeze({
+  Create: 0,
+  Update: 1,
+  Rename: 2,
+  Move: 3,
+  Delete: 4,
+});
+
+/**
+ * Enum for feed item types.
+ * @readonly
+ */
+export const FeedItemTypes = Object.freeze({
+  File: "file",
+  Folder: "folder",
+  Room: "room",
+  User: "sharedRoom",
+});
+
+/**
+ * Enum for theme keys.
+ * @readonly
+ */
+export const TariffState = Object.freeze({
+  Trial: 0,
+  Paid: 1,
+  Delay: 2,
+  NotPaid: 3,
+});
+
+/**
+ * Enum for theme keys.
+ * @readonly
+ */
+export const PortalFeaturesLimitations = Object.freeze({
+  Limitless: -1,
+  Unavailable: 0,
 });

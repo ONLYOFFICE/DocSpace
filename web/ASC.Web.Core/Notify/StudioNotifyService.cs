@@ -98,6 +98,19 @@ public class StudioNotifyService
         _client.SendNoticeAsync(Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
     }
 
+    public void SendMsgToSales(string email, string userName, string message)
+    {
+        var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+
+        _client.SendNoticeToAsync(
+            Actions.UserMessageToSales,
+            _studioNotifyHelper.RecipientFromEmail(settings.SalesEmail, false),
+            new[] { EMailSenderName },
+            new TagValue(Tags.Body, message),
+            new TagValue(Tags.UserEmail, email),
+            new TagValue(Tags.UserName, userName));
+    }
+
     public void SendRequestTariff(bool license, string fname, string lname, string title, string email, string phone, string ctitle, string csize, string site, string message)
     {
         fname = (fname ?? "").Trim();

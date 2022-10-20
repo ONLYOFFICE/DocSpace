@@ -36,7 +36,6 @@ public class FirstTimeTenantSettings
     private readonly UserManager _userManager;
     private readonly SetupInfo _setupInfo;
     private readonly SecurityContext _securityContext;
-    private readonly PaymentManager _paymentManager;
     private readonly MessageService _messageService;
     private readonly LicenseReader _licenseReader;
     private readonly StudioNotifyService _studioNotifyService;
@@ -52,7 +51,6 @@ public class FirstTimeTenantSettings
         UserManager userManager,
         SetupInfo setupInfo,
         SecurityContext securityContext,
-        PaymentManager paymentManager,
         MessageService messageService,
         LicenseReader licenseReader,
         StudioNotifyService studioNotifyService,
@@ -67,7 +65,6 @@ public class FirstTimeTenantSettings
         _userManager = userManager;
         _setupInfo = setupInfo;
         _securityContext = securityContext;
-        _paymentManager = paymentManager;
         _messageService = messageService;
         _licenseReader = licenseReader;
         _studioNotifyService = studioNotifyService;
@@ -80,7 +77,7 @@ public class FirstTimeTenantSettings
     {
         try
         {
-            var (email, passwordHash, lng, timeZone, promocode, amiid, subscribeFromSite) = inDto;
+            var (email, passwordHash, lng, timeZone, amiid, subscribeFromSite) = inDto;
 
             var tenant = _tenantManager.GetCurrentTenant();
             var settings = _settingsManager.Load<WizardSettings>();
@@ -124,20 +121,8 @@ public class FirstTimeTenantSettings
                 currentUser.Email = email;
                 currentUser.ActivationStatus = EmployeeActivationStatus.NotActivated;
             }
-            _userManager.SaveUserInfo(currentUser);
 
-            if (!string.IsNullOrWhiteSpace(promocode))
-            {
-                try
-                {
-                    _paymentManager.ActivateKey(promocode);
-                }
-                catch (Exception err)
-                {
-                    _log.ErrorIncorrectPromo(promocode, err);
-                    throw new Exception(Resource.EmailAndPasswordIncorrectPromocode);
-                }
-            }
+            _userManager.SaveUserInfo(currentUser);
 
             if (RequestLicense)
             {

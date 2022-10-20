@@ -20,11 +20,11 @@ const checkedStyle = css`
 `;
 
 const draggingStyle = css`
-  background: ${(props) => props.theme.filesSection.rowView.draggingBackground};
-  &:hover {
-    background: ${(props) =>
-      props.theme.filesSection.rowView.draggingHoverBackground};
-  }
+  background: ${(props) =>
+    props.isDragOver
+      ? props.theme.dragAndDrop.acceptBackground
+      : props.theme.dragAndDrop.background};
+
   ${marginStyles}
 `;
 
@@ -39,7 +39,7 @@ const StyledWrapper = styled.div`
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
   ${(props) => props.dragging && draggingStyle}
-  height: 57px;
+  height: 56px;
 
   ${(props) =>
     !isMobile &&
@@ -49,7 +49,7 @@ const StyledSimpleFilesRow = styled(Row)`
         cursor: pointer;
         ${checkedStyle}
 
-        margin-top: -3px;
+        margin-top: -1px;
         border-top: ${(props) =>
           `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       }
@@ -67,13 +67,13 @@ const StyledSimpleFilesRow = styled(Row)`
       /* cursor: wait; */
     `}
 
-  margin-top: -2px;
+  margin-top: 0px;
 
   ${(props) =>
     props.showHotkeyBorder &&
     css`
       border-top: 1px solid #2da7db !important;
-      margin-top: -3px;
+      margin-top: -1px;
       margin-left: -24px;
       margin-right: -24px;
       padding-left: 24px;
@@ -208,17 +208,29 @@ const SimpleFilesRow = (props) => {
     isRooms,
   } = props;
 
+  const [isDragOver, setIsDragOver] = React.useState(false);
+
   const withAccess = isAdmin || item.access === 0;
   const isSmallContainer = sectionWidth <= 500;
 
   const element = (
     <ItemIcon
       id={item.id}
-      icon={item.isRoom && item.logo.big ? item.logo.big : item.icon}
+      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
     />
   );
+
+  const onDragOver = (dragOver) => {
+    if (dragOver !== isDragOver) {
+      setIsDragOver(dragOver);
+    }
+  };
+
+  const onDragLeave = () => {
+    setIsDragOver(false);
+  };
 
   return (
     <StyledWrapper
@@ -238,6 +250,8 @@ const SimpleFilesRow = (props) => {
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
       >
         <StyledSimpleFilesRow
           key={item.id}
@@ -267,6 +281,7 @@ const SimpleFilesRow = (props) => {
           getContextModel={getContextModel}
           showHotkeyBorder={showHotkeyBorder}
           isRoom={item.isRoom}
+          isDragOver={isDragOver}
         >
           <FilesRowContent
             item={item}

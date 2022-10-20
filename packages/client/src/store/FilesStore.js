@@ -660,6 +660,9 @@ class FilesStore {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
+    if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
+      return this.fetchRooms();
+
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
       localStorage.getItem(`UserFilter=${this.authStore.userStore.user.id}`);
@@ -877,12 +880,6 @@ class FilesStore {
             );
           });
 
-          // console.log("fetchRooms", {
-          //   categoryType: this.categoryType,
-          //   rootFolderType: data.current.rootFolderType,
-          //   parentId: data.current.parentId,
-          // });
-
           this.setRoomsFilter(filterData);
 
           runInAction(() => {
@@ -991,7 +988,8 @@ class FilesStore {
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
       (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    const isFileOwner = item.createdBy.id === this.authStore.userStore.user.id;
+    const isFileOwner =
+      item.createdBy?.id === this.authStore.userStore.user?.id;
 
     const {
       isRecycleBinFolder,
@@ -1345,7 +1343,7 @@ class FilesStore {
       let roomOptions = [
         "edit-room",
         "invite-users-to-room",
-        "room-info",
+        "show-info",
         "pin-room",
         "unpin-room",
         "separator0",
@@ -1587,7 +1585,6 @@ class FilesStore {
   }
 
   createRoomInThirdpary(thirpartyFolderId, roomParams) {
-    console.log(thirpartyFolderId, roomParams);
     return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
   }
 
@@ -1636,6 +1633,22 @@ class FilesStore {
 
   removeLogoFromRoom(id) {
     return api.rooms.removeLogoFromRoom(id);
+  }
+
+  getRoomMembers(id) {
+    return api.rooms.getRoomMembers(id);
+  }
+
+  getHistory(module, id) {
+    return api.rooms.getHistory(module, id);
+  }
+
+  getRoomHistory(id) {
+    return api.rooms.getRoomHistory(id);
+  }
+
+  getFileHistory(id) {
+    return api.rooms.getFileHistory(id);
   }
 
   setFile = (file) => {
@@ -1699,7 +1712,8 @@ class FilesStore {
 
   removeFiles = (fileIds, folderIds, showToast) => {
     const newFilter = this.filter.clone();
-    const deleteCount = fileIds.length + folderIds.length;
+    const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
+
     newFilter.startIndex =
       (newFilter.page + 1) * newFilter.pageCount - deleteCount;
     newFilter.pageCount = deleteCount;
@@ -1709,10 +1723,10 @@ class FilesStore {
       .then((res) => {
         const files = fileIds
           ? this.files.filter((x) => !fileIds.includes(x.id))
-          : [];
+          : this.files;
         const folders = folderIds
           ? this.folders.filter((x) => !folderIds.includes(x.id))
-          : [];
+          : this.folders;
 
         const newFiles = [...files, ...res.files];
         const newFolders = [...folders, ...res.folders];
@@ -2652,6 +2666,40 @@ class FilesStore {
 
     return Math.floor(sectionWidth / minTileWidth);
   };
+
+  setInvitationLinks = async (id, linkId, title, access) => {
+    return await api.rooms.setInvitationLinks(id, linkId, title, access);
+  };
+
+  resendEmailInvitations = async (id, usersIds) => {
+    return await api.rooms.resendEmailInvitations(id, usersIds);
+  };
+
+  getRoomSecurityInfo = async (id) => {
+    return await api.rooms.getRoomSecurityInfo(id);
+  };
+
+  setRoomSecurity = async (id, data) => {
+    return await api.rooms.setRoomSecurity(id, data);
+  };
+
+  get disableDrag() {
+    const {
+      isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = this.treeFoldersStore;
+
+    return (
+      isRecycleBinFolder ||
+      isRoomsFolder ||
+      isArchiveFolder ||
+      isFavoritesFolder ||
+      isRecentFolder
+    );
+  }
 }
 
 export default FilesStore;

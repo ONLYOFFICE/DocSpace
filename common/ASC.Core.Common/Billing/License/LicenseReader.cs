@@ -39,9 +39,8 @@ public class LicenseReaderConfig
 [Scope]
 public class LicenseReader
 {
-    private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
-    private readonly PaymentManager _paymentManager;
+    private readonly ITariffService _tariffService;
     private readonly CoreSettings _coreSettings;
     private readonly ILogger<LicenseReader> _logger;
     private readonly Users.Constants _constants;
@@ -51,17 +50,15 @@ public class LicenseReader
     public const string CustomerIdKey = "CustomerId";
 
     public LicenseReader(
-        UserManager userManager,
         TenantManager tenantManager,
-        PaymentManager paymentManager,
+        ITariffService tariffService,
         CoreSettings coreSettings,
         LicenseReaderConfig licenseReaderConfig,
         ILogger<LicenseReader> logger,
         Users.Constants constants)
     {
-        _userManager = userManager;
         _tenantManager = tenantManager;
-        _paymentManager = paymentManager;
+        _tariffService = tariffService;
         _coreSettings = coreSettings;
         LicensePath = licenseReaderConfig.LicensePath;
         _licensePathTemp = LicensePath + ".tmp";
@@ -98,7 +95,7 @@ public class LicenseReader
             File.Delete(LicensePath);
         }
 
-        _paymentManager.DeleteDefaultTariff();
+        _tariffService.DeleteDefaultBillingInfo();
     }
 
     public void RefreshLicense()
@@ -201,7 +198,7 @@ public class LicenseReader
 
         var quota = new TenantQuota(-1000)
         {
-            ActiveUsers = _constants.MaxEveryoneCount,
+            CountUser = _constants.MaxEveryoneCount,
             MaxFileSize = defaultQuota.MaxFileSize,
             MaxTotalSize = defaultQuota.MaxTotalSize,
             Name = "license",
@@ -215,11 +212,11 @@ public class LicenseReader
 
         var tariff = new Tariff
         {
-            QuotaId = quota.Tenant,
+            Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
             DueDate = license.DueDate,
         };
 
-        _paymentManager.SetTariff(-1, tariff);
+        _tariffService.SetTariff(-1, tariff);
     }
 
     private void LogError(Exception error)

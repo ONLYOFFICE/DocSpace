@@ -22,6 +22,7 @@ import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const StyledContainer = styled.div`
   width: 100%;
+  min-height: 33px;
 
   .table-container_group-menu {
     margin: 0 0 0 -20px;
@@ -58,7 +59,8 @@ const StyledContainer = styled.div`
   }
 
   .header-container {
-    height: 100%;
+    min-height: 33px;
+    height: 60px;
   }
 `;
 
@@ -265,6 +267,7 @@ class SectionHeaderContent extends React.Component {
         deleteOperation: t("Translations:DeleteOperation"),
         deleteFromTrash: t("Translations:DeleteFromTrash"),
         deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+        FolderRemoved: t("Files:FolderRemoved"),
       };
 
       deleteAction(translations, [currentFolderId], true).catch((err) =>
@@ -291,8 +294,18 @@ class SectionHeaderContent extends React.Component {
     this.props.setRestoreAllPanelVisible(true);
   };
 
+  onShowInfo = () => {
+    const { setIsInfoPanelVisible } = this.props;
+    setIsInfoPanelVisible(true);
+  };
+
+  onToggleInfoPanel = () => {
+    const { isInfoPanelVisible, setIsInfoPanelVisible } = this.props;
+    setIsInfoPanelVisible(!isInfoPanelVisible);
+  };
+
   getContextOptionsFolder = () => {
-    const { t, toggleInfoPanel, isRecycleBinFolder } = this.props;
+    const { t, isRecycleBinFolder } = this.props;
 
     return [
       {
@@ -326,9 +339,9 @@ class SectionHeaderContent extends React.Component {
       {
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
-        onClick: toggleInfoPanel,
+        onClick: this.onShowInfo,
         disabled: isRecycleBinFolder,
-        icon: "/static/images/info.react.svg",
+        icon: "/static/images/info.outline.react.svg",
       },
       { key: "separator-2", isSeparator: true, disabled: isRecycleBinFolder },
       {
@@ -482,9 +495,9 @@ class SectionHeaderContent extends React.Component {
       isHeaderChecked,
       isHeaderIndeterminate,
       showText,
-      toggleInfoPanel,
       isRoomsFolder,
       isEmptyPage,
+      isVisitor,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -502,7 +515,7 @@ class SectionHeaderContent extends React.Component {
                 isIndeterminate={isHeaderIndeterminate}
                 headerMenu={headerMenu}
                 isInfoPanelVisible={isInfoPanelVisible}
-                toggleInfoPanel={toggleInfoPanel}
+                toggleInfoPanel={this.onToggleInfoPanel}
               />
             ) : (
               <div className="header-container">
@@ -513,7 +526,7 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate}
+                    canCreate={canCreate && !isVisitor}
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -529,7 +542,7 @@ class SectionHeaderContent extends React.Component {
                     isEmptyFilesList={isEmptyFilesList}
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
-                    toggleInfoPanel={toggleInfoPanel}
+                    toggleInfoPanel={this.onToggleInfoPanel}
                     isInfoPanelVisible={isInfoPanelVisible}
                     titles={{
                       trash: t("EmptyRecycleBin"),
@@ -606,7 +619,7 @@ export default inject(
       backToParentFolder,
     } = filesActionsStore;
 
-    const { toggleIsVisible, isVisible } = auth.infoPanelStore;
+    const { setIsVisible, isVisible } = auth.infoPanelStore;
 
     const {
       title,
@@ -623,6 +636,7 @@ export default inject(
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
+      isVisitor: auth.userStore.user.isVisitor,
       isRootFolder: pathParts?.length === 1,
       title,
       isRoom,
@@ -630,7 +644,7 @@ export default inject(
       pathParts: pathParts,
       navigationPath: navigationPath,
       canCreate,
-      toggleInfoPanel: toggleIsVisible,
+      setIsInfoPanelVisible: setIsVisible,
       isInfoPanelVisible: isVisible,
       isHeaderVisible,
       isHeaderIndeterminate,

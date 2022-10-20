@@ -8,7 +8,7 @@ import ModalAside from "./views/modal-aside";
 import { handleTouchMove, handleTouchStart } from "./handlers/swipeHandler";
 import { getCurrentDisplayType } from "./handlers/resizeHandler";
 import { parseChildren } from "./handlers/childrenParseHandler";
-import { isMobile } from "react-device-detect";
+import { isSafari, isTablet } from "react-device-detect";
 
 const Header = () => null;
 Header.displayName = "DialogHeader";
@@ -46,7 +46,9 @@ const ModalDialog = ({
     getCurrentDisplayType(displayType, displayTypeDetailed)
   );
   const [modalSwipeOffset, setModalSwipeOffset] = useState(0);
-
+  const returnWindowPositionAfterKeyboard = () => {
+    isSafari && isTablet && window.scrollY !== 0 && window.scrollTo(0, 0);
+  };
   useEffect(() => {
     const onResize = throttle(() => {
       setCurrentDisplayType(
@@ -65,6 +67,8 @@ const ModalDialog = ({
     window.addEventListener("touchmove", onSwipe);
     window.addEventListener("touchend", onSwipeEnd);
     return () => {
+      returnWindowPositionAfterKeyboard();
+
       window.removeEventListener("resize", onResize);
       window.removeEventListener("keyup", onKeyPress);
       window.removeEventListener("touchstart", handleTouchStart);

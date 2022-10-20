@@ -1,4 +1,5 @@
 import React from "react";
+import { ReactSVG } from "react-svg";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -19,13 +20,13 @@ import {
 } from "SRC_DIR/components/dialogs";
 
 import { StyledWrapper, StyledInfo } from "./styled-main-profile";
+import { HelpButton } from "@docspace/components";
 
 const MainProfile = (props) => {
-  const { t, ready } = useTranslation(["Profile", "Common"]);
+  const { t } = useTranslation(["Profile", "Common"]);
 
   const {
     profile,
-    updateProfile,
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,
@@ -34,13 +35,20 @@ const MainProfile = (props) => {
     setChangeNameVisible,
     changeAvatarVisible,
     setChangeAvatarVisible,
+    withActivationBar,
+    sendActivationLink,
   } = props;
 
   const role = getUserRole(profile);
 
+  const sendActivationLinkAction = () => {
+    sendActivationLink && sendActivationLink(t);
+  };
+
   return (
     <StyledWrapper>
       <Avatar
+        className={"avatar"}
         size="max"
         role={role}
         source={profile.avatarMax}
@@ -69,7 +77,33 @@ const MainProfile = (props) => {
               <Text as="div" color="#A3A9AE" className="label">
                 {t("Common:Email")}
               </Text>
-              <Text fontWeight={600}>{profile.email}</Text>
+              <Text
+                as="div"
+                className={"email-text-container"}
+                fontWeight={600}
+              >
+                {profile.email}
+                {withActivationBar && (
+                  <HelpButton
+                    className="send-again-icon"
+                    color={"#316daa"}
+                    tooltipContent={t("EmailNotVerified")}
+                    iconName={"images/send.clock.react.svg"}
+                  />
+                )}
+              </Text>
+
+              {withActivationBar && (
+                <Text
+                  className="send-again-text"
+                  fontWeight={600}
+                  noSelect
+                  truncate
+                  onClick={sendActivationLinkAction}
+                >
+                  {t("SendAgain")}
+                </Text>
+              )}
             </div>
             <IconButton
               className="edit-button"
@@ -77,6 +111,25 @@ const MainProfile = (props) => {
               size="12"
               onClick={() => setChangeEmailVisible(true)}
             />
+            {withActivationBar && (
+              <div className="send-again-container">
+                <HelpButton
+                  className="send-again-icon"
+                  color={"#316daa"}
+                  tooltipContent={t("EmailNotVerified")}
+                  iconName={"images/send.clock.react.svg"}
+                />
+                <Text
+                  className="send-again-text"
+                  fontWeight={600}
+                  noSelect
+                  truncate
+                  onClick={sendActivationLinkAction}
+                >
+                  {t("SendAgain")}
+                </Text>
+              </div>
+            )}
           </div>
           <div className="row">
             <div className="field">
@@ -115,12 +168,9 @@ const MainProfile = (props) => {
 
       {changeNameVisible && (
         <ChangeNameDialog
-          t={t}
-          tReady={ready}
           visible={changeNameVisible}
           onClose={() => setChangeNameVisible(false)}
           profile={profile}
-          onSave={updateProfile}
         />
       )}
 
@@ -135,12 +185,13 @@ const MainProfile = (props) => {
   );
 };
 
-export default inject(({ peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   const { targetUserStore } = peopleStore;
+
+  const { withActivationBar, sendActivationLink } = auth.userStore;
 
   const {
     targetUser: profile,
-    updateProfile,
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,
@@ -153,7 +204,6 @@ export default inject(({ peopleStore }) => {
 
   return {
     profile,
-    updateProfile,
     changeEmailVisible,
     setChangeEmailVisible,
     changePasswordVisible,
@@ -162,5 +212,7 @@ export default inject(({ peopleStore }) => {
     setChangeNameVisible,
     changeAvatarVisible,
     setChangeAvatarVisible,
+    withActivationBar,
+    sendActivationLink,
   };
 })(observer(MainProfile));
