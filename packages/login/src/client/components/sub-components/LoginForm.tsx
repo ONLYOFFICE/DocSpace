@@ -253,6 +253,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             errorMessage={!password.trim() ? t("Common:RequiredField") : ""} //TODO: Add wrong password server error
           >
             <PasswordInput
+              className="password-input"
               simpleView={true}
               passwordSettings={settings}
               id="password"

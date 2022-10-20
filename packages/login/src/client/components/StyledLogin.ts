@@ -57,6 +57,7 @@ export const LoginContainer = styled.div`
     width: 100%;
     padding-bottom: 32px;
     min-height: 32px;
+    color: ${(props) => props.theme.login.headerColor};
 
     @media ${hugeMobile} {
       padding-top: 32px;
@@ -145,6 +146,14 @@ export const LoginContainer = styled.div`
       width: 100%;
     }
 
+    .field-body{
+      input, .password-input > div {
+        background: ${(props) => props.theme.input.backgroundColor};
+        color: ${(props) => props.theme.input.color};
+        border-color: ${(props) => props.theme.input.borderColor};
+      }
+    }
+
     .login-forgot-wrapper {
       margin-bottom: 14px;
       .login-checkbox-wrapper {
@@ -154,6 +163,21 @@ export const LoginContainer = styled.div`
         .login-checkbox {
           display: flex;
           align-items: flex-start;
+
+          svg{
+            rect{
+              fill: ${(props) => props.theme.checkbox.fillColor};
+              stroke: ${(props) => props.theme.checkbox.borderColor};
+            }
+
+            path{
+              fill: ${(props) => props.theme.checkbox.arrowColor};
+            }
+          }
+
+          .checkbox-text{
+            color: ${(props) => props.theme.checkbox.arrowColor};
+          }
 
           label {
             justify-content: center;
@@ -207,6 +231,10 @@ export const LoginContainer = styled.div`
     height: 46px;
     padding-bottom: 64px;
 
+    path:last-child {
+      fill: ${(props) => props.theme.client.home.logoColor};
+    }
+  
     @media ${hugeMobile} {
       display: none;
     }

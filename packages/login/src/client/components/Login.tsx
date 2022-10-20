@@ -20,6 +20,7 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import SSOIcon from "../../../../../public/images/sso.react.svg";
+import { Dark, Base } from "@docspace/components/themes";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -192,7 +193,7 @@ const Login: React.FC<ILoginProps> = ({
       //className="with-background-pattern"
       bgPattern={bgPattern}
     >
-      <ColorTheme themeId={ThemeType.LinkForgotPassword}>
+      <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={Dark}>
         <Logo className="logo-wrapper" />
         <Text
           fontSize="23px"
@@ -202,7 +203,7 @@ const Login: React.FC<ILoginProps> = ({
         >
           {greetingSettings}
         </Text>
-        <FormWrapper>
+        <FormWrapper theme={Dark}>
           {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
           {oauthDataExists() && (
             <>
