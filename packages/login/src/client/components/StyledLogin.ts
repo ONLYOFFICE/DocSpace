@@ -165,6 +165,7 @@ export const LoginContainer = styled.div`
           align-items: flex-start;
 
           svg{
+            margin-right: 8px !important;
             rect{
               fill: ${(props) => props.theme.checkbox.fillColor};
               stroke: ${(props) => props.theme.checkbox.borderColor};
