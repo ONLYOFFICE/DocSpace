@@ -24,7 +24,6 @@ import SSOIcon from "../../../../../public/images/sso.react.svg";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
-  isAuth: boolean;
 }
 const Login: React.FC<ILoginProps> = ({
   portalSettings,
@@ -33,7 +32,6 @@ const Login: React.FC<ILoginProps> = ({
   capabilities,
   isDesktopEditor,
   match,
-  isAuth,
   currentColorScheme,
   theme,
 }) => {
@@ -45,10 +43,6 @@ const Login: React.FC<ILoginProps> = ({
   const { ssoLabel, ssoUrl } = capabilities;
 
   const { t } = useTranslation(["Login", "Common"]);
-
-  useEffect(() => {
-    if (isAuth) window.location.href = "/";
-  }, []);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
