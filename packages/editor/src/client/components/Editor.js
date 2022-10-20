@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import { isMobile, isIOS, deviceType } from "react-device-detect";
 import combineUrl from "@docspace/common/utils/combineUrl";
-import { AppServerConfig, FolderType } from "@docspace/common/constants";
+import {
+  AppServerConfig,
+  FolderType,
+  EDITOR_ID,
+} from "@docspace/common/constants";
 import throttle from "lodash/throttle";
 import Toast from "@docspace/components/toast";
 import { toast } from "react-toastify";
@@ -56,8 +60,8 @@ let docSaved = null;
 let docTitle = null;
 let docEditor;
 let newConfig;
-let documentserverUrl = "http://192.168.31.38:8085"; //TODO: change to backend url
-let editorId = "docspace_editor";
+let documentserverUrl =
+  typeof window !== "undefined" && window?.location?.origin;
 
 function Editor({
   config,
@@ -101,6 +105,8 @@ function Editor({
   }, [mfReady, error]);
 
   useEffect(() => {
+    debugger;
+
     if (!config) return;
 
     setDocumentTitle(config?.document?.title);
@@ -347,7 +353,7 @@ function Editor({
   };
 
   const onDocumentReady = () => {
-    docEditor = window.DocEditor.instances[editorId];
+    console.log("onDocumentReady", arguments);
     documentIsReady = true;
 
     if (isSharingAccess) {
@@ -419,7 +425,9 @@ function Editor({
   };
 
   const onSDKAppReady = () => {
-    console.log("ONLYOFFICE Document Editor is ready");
+    docEditor = window.DocEditor.instances[EDITOR_ID];
+
+    console.log("ONLYOFFICE Document Editor is ready", docEditor);
     const url = window.location.href;
 
     const index = url.indexOf("#message/");
@@ -565,8 +573,8 @@ function Editor({
     <EditorWrapper isVisibleSharingDialog={isVisible}>
       {newConfig && (
         <DocumentEditor
-          id={editorId}
-          documentserverUrl={documentserverUrl}
+          id={EDITOR_ID}
+          documentServerUrl={documentserverUrl}
           config={newConfig}
           height="100%"
           width="100%"
