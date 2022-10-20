@@ -102,7 +102,7 @@ class DbQuotaService : IQuotaService
             using var tx = coreDbContext.Database.BeginTransaction();
 
 
-            AddQuota(coreDbContext, row.UserId != Guid.Empty ? row.UserId : Guid.Empty);
+            AddQuota(coreDbContext, row.UserId);
 
             tx.Commit();
         });
