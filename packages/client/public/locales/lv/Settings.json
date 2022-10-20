@@ -69,7 +69,7 @@
   "Guests": "Viesi",
   "Job/Title": "Darbs/amata nosaukums",
   "LanguageAndTimeZoneSettingsDescription": "Mainiet valodu visiem portāla lietotājiem un konfigurējiet laika joslu tā, lai visi portāla notikumi tiktu parādīti ar pareizu datumu un laiku.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> ir veids, kā mainīt portāla valodu visiem portāla lietotājiem un konfigurētu laika joslu, lai ONLYOFFICE portāla notikumi tiks rādīti ar pareizu datumu un laiku.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> ir veids, kā mainīt portāla valodu visiem portāla lietotājiem un konfigurētu laika joslu, lai {{ organizationName }} portāla notikumi tiks rādīti ar pareizu datumu un laiku.",
   "LanguageTimeSettingsTooltipDescription": "Atveriet atbilstošo nolaižamos sarakstu, lai iestatītu nepieciešamos parametrus. Lai lietotu tos izmaiņas izmantojiet pogu <1>{{save}}</1> sadaļas apakšējā daļā.<3>{{learnMore}}</3>",
   "LocalFile": "Vietējais fails",
   "LoginHistoryTitle": "Pieteikšanās vēsture",

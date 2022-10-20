@@ -67,7 +67,7 @@
   "Guests": "Invitați",
   "Job/Title": "Postul/Funcția",
   "LanguageAndTimeZoneSettingsDescription": "Schimbați limba pentru toți utilizatorii portalului și configurați fusul orar ca să asigurați că toate evenimentele din portal sînt configurate pe ora locală.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> este modul de a schimba limba portalului pentru toți utilizatorii portalului și de a configura fusul orar pentru că ora și data evenimentelor de pe portal ONLYOFFICE este afișată corect.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> este modul de a schimba limba portalului pentru toți utilizatorii portalului și de a configura fusul orar pentru că ora și data evenimentelor de pe portal {{ organizationName }} este afișată corect.",
   "LanguageTimeSettingsTooltipDescription": "Pentru că setările actualizate să intre în vigoare, faceți clic pe butonul <1>{{save}}</1> în partea de jos a secțiunii.<3>{{learnMore}}</3>",
   "LocalFile": "Fișierul local",
   "LogoDocsEditor": "Logo-ul pentru antetul aplicațiilor de editare",

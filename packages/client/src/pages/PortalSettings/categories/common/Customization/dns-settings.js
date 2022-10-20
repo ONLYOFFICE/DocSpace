@@ -103,6 +103,7 @@ const DNSSettings = (props) => {
         isVertical={true}
       >
         <TextInput
+          tabIndex={8}
           id="textInputContainerDNSSettings"
           scale={true}
           value={location.hostname}
@@ -141,6 +142,7 @@ const DNSSettings = (props) => {
       )}
       <div className="send-request-container">
         <Button
+          tabIndex={9}
           label={t("Common:SendRequest")}
           className="save-cancel-buttons send-request-button"
           onClick={onSendRequest}
