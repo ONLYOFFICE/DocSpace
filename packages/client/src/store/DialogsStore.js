@@ -34,6 +34,7 @@ class DialogsStore {
     defaultAccess: ShareAccessRights.FullAccess,
   };
   restoreAllPanelVisible = false;
+  restoreAllArchiveDialogVisible = false;
   eventDialogVisible = false;
 
   removeItem = null;
@@ -65,6 +66,10 @@ class DialogsStore {
     this.authStore = authStore;
     this.versionHistoryStore = versionHistoryStore;
   }
+
+  setRestoreAllArchiveDialogVisible = (restoreAllArchiveDialogVisible) => {
+    this.restoreAllArchiveDialogVisible = restoreAllArchiveDialogVisible;
+  };
 
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
@@ -291,7 +296,9 @@ class DialogsStore {
       this.authStore.settingsStore.hotkeyPanelVisible ||
       this.versionHistoryStore.isVisible ||
       this.eventDialogVisible ||
-      this.invitePanelOptions.visible
+      this.invitePanelOptions.visible ||
+      this.restoreAllArchiveDialogVisible ||
+      this.restoreAllPanelVisible
     );
   }
 

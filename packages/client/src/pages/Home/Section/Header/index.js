@@ -295,6 +295,15 @@ class SectionHeaderContent extends React.Component {
     this.props.setRestoreAllPanelVisible(true);
   };
 
+  onRestoreAllArchiveAction = () => {
+    const { activeFiles, activeFolders } = this.props;
+    const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
+
+    if (isExistActiveItems) return;
+
+    this.props.setRestoreAllArchiveDialogVisible(true);
+  };
+
   onShowInfo = () => {
     const { setIsInfoPanelVisible } = this.props;
     setIsInfoPanelVisible(true);
@@ -320,7 +329,7 @@ class SectionHeaderContent extends React.Component {
         {
           key: "restore-all",
           label: t("RestoreAll"),
-          onClick: this.onRestoreAllAction,
+          onClick: this.onRestoreAllArchiveAction,
           disabled: !isArchiveFolder,
           icon: "images/subtract.react.svg",
         },
@@ -626,6 +635,7 @@ export default inject(
       setSelectFileDialogVisible,
       setIsFolderActions,
       setRestoreAllPanelVisible,
+      setRestoreAllArchiveDialogVisible,
     } = dialogsStore;
 
     const {
@@ -718,6 +728,7 @@ export default inject(
 
       setRestoreAllPanelVisible,
       isEmptyPage,
+      setRestoreAllArchiveDialogVisible,
     };
   }
 )(

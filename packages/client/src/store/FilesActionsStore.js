@@ -882,7 +882,7 @@ class FilesActionStore {
     const items = Array.isArray(itemId) ? itemId : [itemId];
 
     setSecondaryProgressBarData({
-      icon: "trash",
+      icon: "move",
       visible: true,
       percent: 0,
       label: "Archive room",
@@ -890,7 +890,7 @@ class FilesActionStore {
     });
 
     const pbData = {
-      icon: "trash",
+      icon: "move",
       label: "Archive room operation",
     };
 
