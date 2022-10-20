@@ -273,7 +273,8 @@ public class FileStorageService<T> //: IFileStorageService
         SearchArea searchArea = SearchArea.Active,
         bool withoutTags = false,
         IEnumerable<string> tagNames = null,
-        bool excludeSubject = false)
+        bool excludeSubject = false,
+        ProviderFilter provider = ProviderFilter.None)
     {
         var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
@@ -323,7 +324,7 @@ public class FileStorageService<T> //: IFileStorageService
         try
         {
             (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea,
-                withoutTags, tagNames, excludeSubject);
+                withoutTags, tagNames, excludeSubject, provider);
         }
         catch (Exception e)
         {
