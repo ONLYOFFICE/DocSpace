@@ -21,14 +21,24 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
 
 const DeactivatePortal = (props) => {
-  const { t, greetingTitle, linkData, history } = props;
+  const {
+    t,
+    greetingTitle,
+    linkData,
+    history,
+    companyInfoSettingsData,
+  } = props;
   const [isDeactivate, setIsDeactivate] = useState(false);
+
+  const url = companyInfoSettingsData?.site
+    ? companyInfoSettingsData.site
+    : "https://onlyoffice.com";
 
   const onDeactivateClick = async () => {
     try {
       await suspendPortal(linkData.confirmHeader);
       setIsDeactivate(true);
-      setTimeout(() => (location.href = "https://onlyoffice.com"), 10000);
+      setTimeout(() => (location.href = url), 10000);
     } catch (e) {
       toastr.error(e);
     }
@@ -53,7 +63,7 @@ const DeactivatePortal = (props) => {
             <Trans t={t} i18nKey="SuccessDeactivate" ns="Confirm">
               Your account has been successfully deactivated. In 10 seconds you
               will be redirected to the
-              <Link isHovered href="//onlyoffice.com">
+              <Link isHovered href={url}>
                 site
               </Link>
             </Trans>
@@ -98,6 +108,7 @@ const DeactivatePortalWrapper = (props) => {
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   theme: auth.settingsStore.theme,
+  companyInfoSettingsData: auth.settingsStore.companyInfoSettingsData,
 }))(
   withRouter(
     withTranslation(["Confirm", "Settings", "Common"])(
