@@ -2731,6 +2731,7 @@ const Base = {
     linkColor: link,
     textColor: gray,
     navBackground: "#F8F9F9",
+    headerColor: black,
 
     register: {
       backgroundColor: grayLight,
