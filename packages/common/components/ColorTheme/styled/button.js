@@ -55,7 +55,8 @@ const getDefaultStyles = ({
       ? hoverCss
       : !disableHover &&
         css`
-          &:hover {
+          &:hover,
+          &:focus {
             ${hoverCss}
           }
         `)}

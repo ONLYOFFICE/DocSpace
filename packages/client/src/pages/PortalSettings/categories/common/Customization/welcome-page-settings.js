@@ -22,7 +22,6 @@ import withLoading from "SRC_DIR/HOCs/withLoading";
 
 let greetingTitleFromSessionStorage = "";
 let greetingTitleDefaultFromSessionStorage = "";
-let isFirstWelcomePageSettings = "";
 const settingNames = ["greetingTitle"];
 
 class WelcomePageSettings extends React.Component {
@@ -35,10 +34,6 @@ class WelcomePageSettings extends React.Component {
 
     greetingTitleDefaultFromSessionStorage = getFromSessionStorage(
       "greetingTitleDefault"
-    );
-
-    isFirstWelcomePageSettings = localStorage.getItem(
-      "isFirstWelcomePageSettings"
     );
 
     setDocumentTitle(t("CustomTitlesWelcome"));
@@ -64,7 +59,6 @@ class WelcomePageSettings extends React.Component {
       hasChanged: false,
       showReminder: false,
       hasScroll: false,
-      isFirstWelcomePageSettings: isFirstWelcomePageSettings,
       isCustomizationView: false,
     };
   }
@@ -94,9 +88,14 @@ class WelcomePageSettings extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { isLoaded, setIsLoadedWelcomePageSettings, tReady } = this.props;
+    const {
+      isLoaded,
+      setIsLoadedWelcomePageSettings,
+      tReady,
+      greetingSettings,
+    } = this.props;
 
-    const { hasScroll } = this.state;
+    const { hasScroll, greetingTitle } = this.state;
 
     if (isLoaded !== prevProps.isLoaded || tReady !== prevProps.tReady) {
       const isLoadedSetting = isLoaded && tReady;
@@ -126,7 +125,13 @@ class WelcomePageSettings extends React.Component {
       settingsMobile.style.display = "none";
     }
 
-    if (this.state.greetingTitleDefault || this.state.greetingTitle) {
+    if (greetingSettings !== prevProps.greetingSettings) {
+      this.setState({
+        greetingTitle: greetingSettings,
+      });
+    }
+
+    if (this.state.greetingTitleDefault || greetingTitle) {
       this.checkChanges();
     }
   }
@@ -152,49 +157,48 @@ class WelcomePageSettings extends React.Component {
   };
 
   onSaveGreetingSettings = () => {
-    const { setGreetingTitle, t } = this.props;
+    const { setGreetingTitle, t, getSettings } = this.props;
     const { greetingTitle } = this.state;
     this.setState({ isLoadingGreetingSave: true }, function () {
       setGreetingTitle(greetingTitle)
-        .then(() =>
-          toastr.success(t("SuccessfullySaveGreetingSettingsMessage"))
-        )
+        .then(() => {
+          toastr.success(t("SuccessfullySaveGreetingSettingsMessage"));
+
+          getSettings();
+        })
         .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoadingGreetingSave: false }));
     });
 
     this.setState({
       showReminder: false,
-      greetingTitle: greetingTitle,
-      greetingTitleDefault: greetingTitle,
     });
 
     saveToSessionStorage("greetingTitle", greetingTitle);
     saveToSessionStorage("greetingTitleDefault", greetingTitle);
-
-    if (!localStorage.getItem("isFirstWelcomePageSettings")) {
-      localStorage.setItem("isFirstWelcomePageSettings", true);
-      this.setState({
-        isFirstWelcomePageSettings: "true",
-      });
-    }
   };
 
   onRestoreGreetingSettings = () => {
-    const { restoreGreetingTitle, t } = this.props;
+    const {
+      restoreGreetingTitle,
+      t,
+      getSettings,
+      greetingSettings,
+    } = this.props;
     this.setState({ isLoadingGreetingRestore: true }, function () {
       restoreGreetingTitle()
         .then(() => {
+          getSettings();
+
           this.setState({
-            greetingTitle: this.props.greetingSettings,
-            greetingTitleDefault: this.props.greetingSettings,
+            greetingTitle: greetingSettings,
+            greetingTitleDefault: greetingSettings,
             showReminder: false,
           });
-          saveToSessionStorage("greetingTitle", this.props.greetingSettings);
-          saveToSessionStorage(
-            "greetingTitleDefault",
-            this.props.greetingSettings
-          );
+
+          saveToSessionStorage("greetingTitle", "none");
+          saveToSessionStorage("greetingTitleDefault", "none");
+
           toastr.success(t("SuccessfullySaveGreetingSettingsMessage"));
         })
         .catch((error) => toastr.error(error))
@@ -255,14 +259,18 @@ class WelcomePageSettings extends React.Component {
   };
 
   render() {
-    const { t, isMobileView, isLoadedPage } = this.props;
+    const {
+      t,
+      isMobileView,
+      isLoadedPage,
+      greetingSettingsIsDefault,
+    } = this.props;
     const {
       greetingTitle,
       isLoadingGreetingSave,
       isLoadingGreetingRestore,
       showReminder,
       hasScroll,
-      isFirstWelcomePageSettings,
       isCustomizationView,
     } = this.state;
 
@@ -277,6 +285,7 @@ class WelcomePageSettings extends React.Component {
           isVertical={true}
         >
           <TextInput
+            tabIndex={5}
             id="textInputContainerWelcomePage"
             scale={true}
             value={greetingTitle}
@@ -313,6 +322,7 @@ class WelcomePageSettings extends React.Component {
           <> {settingsBlock}</>
         )}
         <SaveCancelButtons
+          tabIndex={6}
           id="buttonsWelcomePage"
           className="save-cancel-buttons"
           onSaveClick={this.onSaveGreetingSettings}
@@ -323,7 +333,7 @@ class WelcomePageSettings extends React.Component {
           cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
           hasScroll={hasScroll}
-          isFirstWelcomePageSettings={isFirstWelcomePageSettings}
+          disableRestoreToDefault={greetingSettingsIsDefault}
         />
       </StyledSettingsComponent>
     );
@@ -331,7 +341,13 @@ class WelcomePageSettings extends React.Component {
 }
 
 export default inject(({ auth, setup, common }) => {
-  const { greetingSettings, organizationName, theme } = auth.settingsStore;
+  const {
+    greetingSettings,
+    organizationName,
+    theme,
+    getSettings,
+    greetingSettingsIsDefault,
+  } = auth.settingsStore;
   const { setGreetingTitle, restoreGreetingTitle } = setup;
   const {
     isLoaded,
@@ -347,6 +363,8 @@ export default inject(({ auth, setup, common }) => {
     restoreGreetingTitle,
     isLoaded,
     setIsLoadedWelcomePageSettings,
+    greetingSettingsIsDefault,
+    getSettings,
     initSettings,
     setIsLoaded,
   };

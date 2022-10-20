@@ -6,19 +6,12 @@ import SettingsStore from "./SettingsStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
+import { logout as logoutDesktop, desktopConstants } from "../desktop";
+import { combineUrl, isAdmin, setCookie, getCookie } from "../utils";
 import CurrentQuotasStore from "./CurrentQuotaStore";
 import CurrentTariffStatusStore from "./CurrentTariffStatusStore";
 import PaymentQuotasStore from "./PaymentQuotasStore";
 import {
-  logout as logoutDesktop,
-  desktopConstants,
-} from "../desktop";
-import {
-  combineUrl,
-  isAdmin,
-  setCookie,
-  getCookie,
-} from "../utils";import {
   AppServerConfig,
   LANGUAGE,
   COOKIE_EXPIRATION_YEAR,
@@ -79,7 +72,9 @@ class AuthStore {
       !this.settingsStore.passwordSettings &&
         requests.push(
           this.settingsStore.getPortalPasswordSettings(),
-          this.settingsStore.getAdditionalResources()
+          this.settingsStore.getAdditionalResources(),
+          this.settingsStore.getCompanyInfoSettings(),
+          this.settingsStore.getWhiteLabelLogoUrls()
         );
     }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
@@ -24,7 +24,7 @@ const StyledComponent = styled.div`
   }
 
   .additional-description {
-    padding-bottom: 1px;
+    padding-bottom: 18px;
   }
 
   .save-cancel-buttons {
@@ -46,6 +46,7 @@ const AdditionalResources = (props) => {
     setAdditionalResources,
     restoreAdditionalResources,
     additionalResourcesData,
+    additionalResourcesIsDefault,
     setIsLoadedAdditionalResources,
     isLoadedAdditionalResources,
   } = props;
@@ -63,14 +64,7 @@ const AdditionalResources = (props) => {
   );
 
   const [hasChange, setHasChange] = useState(false);
-
-  const [hasChangesDefaultSettings, setHasChangesDefaultSettings] = useState(
-    false
-  );
-
-  const defaultAdditionalResources = JSON.parse(
-    localStorage.getItem("defaultAdditionalResources")
-  );
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setShowFeedback(additionalResourcesData?.feedbackAndSupportEnabled);
@@ -85,27 +79,25 @@ const AdditionalResources = (props) => {
       helpCenterEnabled,
     };
 
-    const hasСhange = !_.isEqual(settings, additionalResourcesData);
+    const dataAdditionalResources = {
+      feedbackAndSupportEnabled:
+        additionalResourcesData.feedbackAndSupportEnabled,
+      videoGuidesEnabled: additionalResourcesData.videoGuidesEnabled,
+      helpCenterEnabled: additionalResourcesData.helpCenterEnabled,
+    };
 
-    const hasСhangeDefaul = !_.isEqual(settings, defaultAdditionalResources);
+    const hasСhange = !isEqual(settings, dataAdditionalResources);
 
     if (hasСhange) {
       setHasChange(true);
     } else {
       setHasChange(false);
     }
-
-    if (hasСhangeDefaul) {
-      setHasChangesDefaultSettings(true);
-    } else {
-      setHasChangesDefaultSettings(false);
-    }
   }, [
     feedbackAndSupportEnabled,
     videoGuidesEnabled,
     helpCenterEnabled,
     additionalResourcesData,
-    defaultAdditionalResources,
   ]);
 
   useEffect(() => {
@@ -114,36 +106,55 @@ const AdditionalResources = (props) => {
     setIsLoadedAdditionalResources(true);
   }, [additionalResourcesData, tReady]);
 
-  const onSave = () => {
-    setAdditionalResources(
+  const onSave = useCallback(async () => {
+    setIsLoading(true);
+
+    await setAdditionalResources(
       feedbackAndSupportEnabled,
       videoGuidesEnabled,
       helpCenterEnabled
     )
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getAdditionalResources();
-
-        if (!localStorage.getItem("isFirstAdditionalResources")) {
-          localStorage.setItem("isFirstAdditionalResources", true);
-          setIsFirstAdditionalResources("true");
-        }
       })
       .catch((error) => {
         toastr.error(error);
       });
-  };
 
-  const onRestore = () => {
-    restoreAdditionalResources()
+    await getAdditionalResources();
+
+    setIsLoading(false);
+  }, [
+    setIsLoading,
+    setAdditionalResources,
+    getAdditionalResources,
+    feedbackAndSupportEnabled,
+    videoGuidesEnabled,
+    helpCenterEnabled,
+  ]);
+
+  const onRestore = useCallback(async () => {
+    setIsLoading(true);
+
+    await restoreAdditionalResources()
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getAdditionalResources();
       })
       .catch((error) => {
         toastr.error(error);
       });
-  };
+
+    await getAdditionalResources();
+
+    setIsLoading(false);
+  }, [
+    setIsLoading,
+    restoreAdditionalResources,
+    getAdditionalResources,
+    feedbackAndSupportEnabled,
+    videoGuidesEnabled,
+    helpCenterEnabled,
+  ]);
 
   if (!isLoadedAdditionalResources) return <LoaderAdditionalResources />;
 
@@ -156,12 +167,11 @@ const AdditionalResources = (props) => {
           </div>
         </div>
         <div className="settings_unavailable additional-description">
-          <div className="additional-description">
-            {t("Settings:AdditionalResourcesDescription")}
-          </div>
+          {t("Settings:AdditionalResourcesDescription")}
         </div>
         <div className="branding-checkbox">
           <Checkbox
+            tabIndex={12}
             className="checkbox"
             isDisabled={!isSettingPaid}
             label={t("ShowFeedbackAndSupport")}
@@ -170,6 +180,7 @@ const AdditionalResources = (props) => {
           />
 
           <Checkbox
+            tabIndex={13}
             className="checkbox"
             isDisabled={!isSettingPaid}
             label={t("ShowVideoGuides")}
@@ -177,6 +188,7 @@ const AdditionalResources = (props) => {
             onChange={() => setShowVideoGuides(!videoGuidesEnabled)}
           />
           <Checkbox
+            tabIndex={14}
             className="checkbox"
             isDisabled={!isSettingPaid}
             label={t("ShowHelpCenter")}
@@ -186,13 +198,14 @@ const AdditionalResources = (props) => {
         </div>
         {isSettingPaid && (
           <SaveCancelButtons
+            tabIndex={15}
             onSaveClick={onSave}
             onCancelClick={onRestore}
             saveButtonLabel={t("Common:SaveButton")}
             cancelButtonLabel={t("Settings:RestoreDefaultButton")}
             displaySettings={true}
-            showReminder={isSettingPaid && hasChange}
-            disableRestoreToDefault={!hasChangesDefaultSettings}
+            showReminder={(isSettingPaid && hasChange) || isLoading}
+            disableRestoreToDefault={additionalResourcesIsDefault || isLoading}
           />
         )}
       </StyledComponent>
@@ -213,6 +226,7 @@ export default inject(({ auth, common }) => {
     setAdditionalResources,
     restoreAdditionalResources,
     additionalResourcesData,
+    additionalResourcesIsDefault,
   } = settingsStore;
 
   return {
@@ -220,6 +234,7 @@ export default inject(({ auth, common }) => {
     setAdditionalResources,
     restoreAdditionalResources,
     additionalResourcesData,
+    additionalResourcesIsDefault,
     setIsLoadedAdditionalResources,
     isLoadedAdditionalResources,
   };
