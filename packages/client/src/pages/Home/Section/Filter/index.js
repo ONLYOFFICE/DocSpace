@@ -12,7 +12,12 @@ import {
 } from "@docspace/client/src/helpers/filesConstants";
 
 import { getUser } from "@docspace/common/api/people";
-import { FilterType, RoomsType } from "@docspace/common/constants";
+import {
+  FilterType,
+  RoomsType,
+  RoomsProviderType,
+  RoomsProviderTypeName,
+} from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 import FilterInput from "@docspace/common/components/FilterInput";
 import { withLayoutSize } from "@docspace/common/utils";
@@ -57,6 +62,16 @@ const getSearchParams = (filterValues) => {
 const getType = (filterValues) => {
   const filterType = filterValues.find(
     (value) => value.group === FilterGroups.roomFilterType
+  )?.key;
+
+  const type = filterType;
+
+  return type;
+};
+
+const getProviderType = (filterValues) => {
+  const filterType = filterValues.find(
+    (value) => value.group === FilterGroups.roomFilterProviderType
   )?.key;
 
   const type = filterType;
@@ -138,6 +153,7 @@ const SectionFilterContent = ({
   userId,
   isPersonalRoom,
   setCurrentRoomsFilter,
+  providers,
 }) => {
   const onFilter = React.useCallback(
     (data) => {
@@ -153,6 +169,7 @@ const SectionFilterContent = ({
 
         const withoutMe = owner === FilterKeys.other;
 
+        const providerType = getProviderType(data) || null;
         const tags = getTags(data) || null;
 
         // const withSubfolders =
@@ -165,6 +182,7 @@ const SectionFilterContent = ({
         const newFilter = roomsFilter.clone();
 
         newFilter.page = 0;
+        newFilter.provider = providerType ? providerType : null;
         newFilter.type = type ? type : null;
         newFilter.subjectId = subjectId ? subjectId : null;
         if (tags) {
@@ -360,6 +378,18 @@ const SectionFilterContent = ({
       //   });
       // }
 
+      if (roomsFilter.provider) {
+        const provider = +roomsFilter.provider;
+
+        const label = RoomsProviderTypeName[provider];
+
+        filterValues.push({
+          key: provider,
+          label: label,
+          group: FilterGroups.roomFilterProviderType,
+        });
+      }
+
       if (roomsFilter.type) {
         const key = +roomsFilter.type;
 
@@ -502,6 +532,7 @@ const SectionFilterContent = ({
     filter.filterType,
     filter.searchInContent,
     filter.excludeSubject,
+    roomsFilter.provider,
     roomsFilter.type,
     roomsFilter.subjectId,
     roomsFilter.tags,
@@ -515,6 +546,16 @@ const SectionFilterContent = ({
   ]);
 
   const getFilterData = React.useCallback(async () => {
+    const tags = await fetchTags();
+    const connectedThirdParty = [];
+
+    providers.forEach((item) => {
+      if (connectedThirdParty.includes(item.provider_key)) return;
+      connectedThirdParty.push(item.provider_key);
+    });
+
+    const isLastTypeOptionsRooms = !connectedThirdParty.length && !tags.length;
+
     const folders =
       !isFavoritesFolder && !isRecentFolder
         ? [
@@ -563,6 +604,7 @@ const SectionFilterContent = ({
             group: FilterGroups.roomFilterType,
             label: t("Common:Type"),
             isHeader: true,
+            isLast: isLastTypeOptionsRooms,
           },
           {
             key: RoomsType.CustomRoom,
@@ -701,9 +743,7 @@ const SectionFilterContent = ({
 
       filterOptions.push(...typeOptions);
 
-      const tags = await fetchTags();
-
-      if (tags) {
+      if (tags.length > 0) {
         const tagsOptions = tags.map((tag) => ({
           key: tag,
           group: FilterGroups.roomFilterTags,
@@ -718,15 +758,43 @@ const SectionFilterContent = ({
         //   isMultiSelect: true,
         // });
 
+        const isLast = connectedThirdParty.length === 0;
+
         filterOptions.push({
           key: FilterGroups.roomFilterTags,
           group: FilterGroups.roomFilterTags,
           label: t("Tags"),
           isHeader: true,
-          isLast: true,
+          isLast,
         });
 
         filterOptions.push(...tagsOptions);
+      }
+
+      if (connectedThirdParty.length > 0) {
+        const thirdPartyOptions = connectedThirdParty.map((thirdParty) => {
+          const key = Object.entries(RoomsProviderType).find(
+            (item) => item[0] === thirdParty
+          )[1];
+
+          const label = RoomsProviderTypeName[key];
+
+          return {
+            key,
+            group: FilterGroups.roomFilterProviderType,
+            label,
+          };
+        });
+
+        filterOptions.push({
+          key: FilterGroups.roomFilterProviderType,
+          group: FilterGroups.roomFilterProviderType,
+          label: t("Settings:ThirdPartyResource"),
+          isHeader: true,
+          isLast: true,
+        });
+
+        filterOptions.push(...thirdPartyOptions);
       }
     } else {
       if (!isRecentFolder && !isFavoritesFolder) {
@@ -805,7 +873,15 @@ const SectionFilterContent = ({
     }
 
     return filterOptions;
-  }, [isFavoritesFolder, isRecentFolder, isRooms, t, personal, isPersonalRoom]);
+  }, [
+    isFavoritesFolder,
+    isRecentFolder,
+    isRooms,
+    t,
+    personal,
+    isPersonalRoom,
+    providers,
+  ]);
 
   const getViewSettingsData = React.useCallback(() => {
     const viewSettings = [
@@ -987,6 +1063,10 @@ const SectionFilterContent = ({
 
         const newFilter = roomsFilter.clone();
 
+        if (group === FilterGroups.roomFilterProviderType) {
+          newFilter.provider = null;
+        }
+
         if (group === FilterGroups.roomFilterType) {
           newFilter.type = null;
         }
@@ -1117,7 +1197,10 @@ export default inject(
       viewAs,
       createThumbnails,
       setCurrentRoomsFilter,
+      thirdPartyStore,
     } = filesStore;
+
+    const { providers } = thirdPartyStore;
 
     const { fetchTags } = tagsStore;
 
@@ -1160,12 +1243,13 @@ export default inject(
       isPersonalRoom,
       infoPanelVisible,
       setCurrentRoomsFilter,
+      providers,
     };
   }
 )(
   withRouter(
     withLayoutSize(
-      withTranslation(["Files", "Common", "Translations"])(
+      withTranslation(["Files", "Settings", "Common", "Translations"])(
         withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
       )
     )

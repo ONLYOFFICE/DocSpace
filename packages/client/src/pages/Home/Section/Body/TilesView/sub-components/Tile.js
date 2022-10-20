@@ -53,6 +53,7 @@ const roomsStyles = css`
   }
 
   .room-tile_bottom-content {
+    display: ${(props) => props.isThirdParty && "flex"};
     width: 100%;
     height: 56px;
 
@@ -447,7 +448,7 @@ class Tile extends React.PureComponent {
       t,
       columnCount,
       selectTag,
-      selectType,
+      selectOption,
     } = this.props;
     const { isFolder, isRoom, id, fileExst } = item;
 
@@ -507,6 +508,7 @@ class Tile extends React.PureComponent {
         inProgress={inProgress}
         showHotkeyBorder={showHotkeyBorder}
         onClick={this.onFileClick}
+        isThirdParty={item.providerType}
       >
         {isFolder || (!fileExst && id === -1) ? (
           isRoom ? (
@@ -570,6 +572,19 @@ class Tile extends React.PureComponent {
                 </StyledOptionButton>
               </div>
               <div className="room-tile_bottom-content">
+                {item.providerType && (
+                  <Tag
+                    icon={item.thirdPartyIcon}
+                    label={item.providerKey}
+                    onClick={() =>
+                      selectOption({
+                        option: "typeProvider",
+                        value: item.providerType,
+                      })
+                    }
+                  />
+                )}
+
                 {item.tags.length > 0 ? (
                   <Tags
                     columnCount={columnCount}
@@ -580,7 +595,12 @@ class Tile extends React.PureComponent {
                   <Tag
                     isDefault
                     label={t(RoomsTypeTranslations[item.roomType])}
-                    onClick={() => selectType(item.roomType)}
+                    onClick={() =>
+                      selectOption({
+                        option: "defaultTypeRoom",
+                        value: item.roomType,
+                      })
+                    }
                   />
                 )}
               </div>

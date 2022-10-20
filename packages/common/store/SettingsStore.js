@@ -153,8 +153,6 @@ class SettingsStore {
   whiteLabelLogoUrls = [];
   docSpaceLogo = "";
 
-  greetingSettingsIsDefault = true;
-
   constructor() {
     makeAutoObservable(this);
   }
@@ -203,10 +201,6 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
-  getGreetingSettingsIsDefault = async () => {
-    this.greetingSettingsIsDefault = await api.settings.getGreetingSettingsIsDefault();
-  };
-
   getSettings = async () => {
     let newSettings = null;
 
@@ -247,7 +241,7 @@ class SettingsStore {
     });
 
     this.setGreetingSettings(newSettings.greetingSettings);
-    this.getGreetingSettingsIsDefault();
+
     return newSettings;
   };
 

@@ -61,8 +61,7 @@ const filesStore = new FilesStore(
   selectedFolderStore,
   treeFoldersStore,
   settingsStore,
-  selectFolderDialogStore,
-  selectFileDialogStore
+  thirdPartyStore
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(
