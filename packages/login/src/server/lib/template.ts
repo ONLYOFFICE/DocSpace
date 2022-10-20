@@ -97,7 +97,7 @@ const template: Template = (
 
           #login, #password > div, #password > div > input {
             background: #fff;
-            border: 1px solid #D0D5DA;
+            border-color: #D0D5DA;
           }
 
           #login-checkbox > svg > rect {
