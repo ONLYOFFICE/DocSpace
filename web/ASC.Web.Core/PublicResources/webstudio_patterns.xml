@@ -407,14 +407,14 @@ $activity.Key
     <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_user_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
-  <!-- enterprise whitelabel user welcome custom mode -->
-  <pattern id="enterprise_whitelabel_user_welcome_custom_mode" sender="email.sender">
+  <!-- enterprise whitelabel user welcome custom mode v1 for DocSpace-->
+  <pattern id="enterprise_whitelabel_user_welcome_custom_mode_v1" sender="email.sender">
     <subject resource="|subject_enterprise_whitelabel_user_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_user_welcome_custom_mode|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_user_welcome_custom_mode_v1|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
   </pattern>
-  <pattern id="enterprise_whitelabel_user_welcome_custom_mode" sender="messanger.sender">
+  <pattern id="enterprise_whitelabel_user_welcome_custom_mode_v1" sender="messanger.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_user_welcome_custom_mode|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_user_welcome_custom_mode_v1|ASC.Web.Core.PublicResources.CustomModeResource,ASC.Web.Core" />
   </pattern>
 
   <!-- opensource user welcome v1 for DocSpace -->

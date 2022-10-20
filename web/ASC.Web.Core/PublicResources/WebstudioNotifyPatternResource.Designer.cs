@@ -295,6 +295,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collaborate in DocSpace.
+        /// </summary>
+        public static string ButtonCollaborateDocSpace {
+            get {
+                return ResourceManager.GetString("ButtonCollaborateDocSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configure Right Now.
         /// </summary>
         public static string ButtonConfigureRightNow {
@@ -453,24 +462,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string ButtonUseDiscount {
             get {
                 return ResourceManager.GetString("ButtonUseDiscount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Collaborate in DocSpace.
-        /// </summary>
-        public static string CollaborateDocSpace {
-            get {
-                return ResourceManager.GetString("CollaborateDocSpace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to LEAVE FEEDBACK.
-        /// </summary>
-        public static string LeaveFeedbackDocSpace {
-            get {
-                return ResourceManager.GetString("LeaveFeedbackDocSpace", resourceCulture);
             }
         }
         
@@ -1919,21 +1910,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello, $UserName!
-        ///
-        ///Welcome to ONLYOFFICE! Your user profile has been successfully added to the portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
-        ///
-        ///1. Create and edit &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;,  share them with teammates, collaborate in real time, and work with forms.
-        ///2. Add your email accounts and manage all correspondence in one place with &quot;Mail&quot;:&quot;${__VirtualRootPath}/addons/mail/&quot;.
-        ///3. Manage your workflow with &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projec [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_saas_user_welcome_v115 {
-            get {
-                return ResourceManager.GetString("pattern_saas_user_welcome_v115", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to h1.&quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal profile change notification
         ///
         ///&quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; has changed his/her profile details at the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
@@ -2727,15 +2703,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_user_welcome_v1 {
             get {
                 return ResourceManager.GetString("subject_saas_user_welcome_v1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Welcome to your ONLYOFFICE.
-        /// </summary>
-        public static string subject_saas_user_welcome_v115 {
-            get {
-                return ResourceManager.GetString("subject_saas_user_welcome_v115", resourceCulture);
             }
         }
         

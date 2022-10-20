@@ -914,26 +914,6 @@ Truly yours,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_user_welcome_v115" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Welcome to ONLYOFFICE! Your user profile has been successfully added to the portal at "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
-
-1. Create and edit "Documents":"${__VirtualRootPath}/Products/Files/",  share them with teammates, collaborate in real time, and work with forms.
-2. Add your email accounts and manage all correspondence in one place with "Mail":"${__VirtualRootPath}/addons/mail/".
-3. Manage your workflow with "Projects":"${__VirtualRootPath}/Products/Projects/" and your customer relationships using "CRM":"${__VirtualRootPath}/Products/CRM/".
-4. Use "Community":"${__VirtualRootPath}/Products/Community/" to start your blogs, forums, add events, share bookmarks.
-5. Organize your work schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
-6. Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
-
-$GreenButton
-
-If you need help, browse our "Help Center":"${__HelpLink}" or ask our "support team":"https://helpdesk.onlyoffice.com".
-
-Truly yours,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portal profile change notification
 
@@ -1159,9 +1139,6 @@ The link is only valid for 7 days.</value>
     <value>Join ${__VirtualRootPath}</value>
   </data>
   <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Welcome to your ONLYOFFICE</value>
-  </data>
-  <data name="subject_saas_user_welcome_v115" xml:space="preserve">
     <value>Welcome to your ONLYOFFICE</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
@@ -1443,7 +1420,7 @@ ONLYOFFICE Team
   <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
     <value>Discover business subscription of ONLYOFFICE DocSpace</value>
   </data>
-  <data name="CollaborateDocSpace" xml:space="preserve">
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
     <value>Collaborate in DocSpace</value>
   </data>
   <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
@@ -1541,9 +1518,6 @@ ONLYOFFICE Team
   </data>
   <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
     <value>5 tips for effective work on your docs</value>
-  </data>
-  <data name="LeaveFeedbackDocSpace" xml:space="preserve">
-    <value>LEAVE FEEDBACK</value>
   </data>
   <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!

@@ -112,9 +112,6 @@
   <data name="LinkLearnMore" xml:space="preserve">
     <value>Μάθετε Περισσότερα &gt;&gt;</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_3rdparty" xml:space="preserve">
-    <value>Συνδέστε το Dropbox, Google Drive ή άλλες υπηρεσίες για να διαχειρίζεστε τα αρχεία σας από ένα μέρος.</value>
-  </data>
   <data name="subject_activate_email" xml:space="preserve">
     <value>${LetterLogoText}. Παρακαλώ ενεργοποιείστε την διεύθυνση email</value>
   </data>

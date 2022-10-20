@@ -355,7 +355,7 @@ public class StudioNotifyService
             notifyAction = defaultRebranding
                                ? Actions.EnterpriseUserWelcomeV1
                                    : _coreBaseSettings.CustomMode
-                                     ? Actions.EnterpriseWhitelabelUserWelcomeCustomMode
+                                     ? Actions.EnterpriseWhitelabelUserWelcomeCustomModeV1
                                      : Actions.EnterpriseWhitelabelUserWelcomeV1;
             footer = null;
         }
@@ -369,7 +369,7 @@ public class StudioNotifyService
             notifyAction = Actions.SaasUserWelcomeV1;
         }
 
-        string greenButtonText() => WebstudioNotifyPatternResource.CollaborateDocSpace;
+        string greenButtonText() => WebstudioNotifyPatternResource.ButtonCollaborateDocSpace;
 
         _client.SendNoticeToAsync(
         notifyAction,
@@ -377,7 +377,7 @@ public class StudioNotifyService
         new[] { EMailSenderName },
         new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()),
         new TagValue(Tags.MyStaffLink, GetMyStaffLink()),
-            TagValues.GreenButton(greenButtonText, $"{_commonLinkUtility.GetFullAbsolutePath("~")}/rooms/personal/"),
+            TagValues.GreenButton(greenButtonText, _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')),
         new TagValue(CommonTags.Footer, footer),
             new TagValue(CommonTags.MasterTemplate, _coreBaseSettings.Personal ? "HtmlMasterPersonal" : "HtmlMaster"));
     }
@@ -684,7 +684,7 @@ public class StudioNotifyService
 
     public void SendMsgPortalDeletionSuccess(UserInfo owner, string url)
     {
-        static string greenButtonText() => WebstudioNotifyPatternResource.LeaveFeedbackDocSpace;
+        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
         _client.SendNoticeToAsync(
                 Actions.PortalDeleteSuccessV1,

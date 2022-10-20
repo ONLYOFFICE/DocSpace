@@ -152,8 +152,8 @@ public class StudioPeriodicNotify
                         paymentMessage = false;
                         toadmins = true;
 
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~")}/portal-settings/";
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonConfigureRightNow;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/portal-settings/");
                     }
 
                     #endregion
@@ -167,8 +167,8 @@ public class StudioPeriodicNotify
                         toadmins = true;
                         tousers = true;
 
-                        greenButtonText = () => WebstudioNotifyPatternResource.CollaborateDocSpace;
-                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~")}/rooms/personal/";
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonCollaborateDocSpace;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
                     }
 
                     #endregion
@@ -194,7 +194,7 @@ public class StudioPeriodicNotify
                         action = Actions.SaasAdminTrialWarningAfterHalfYearV1;
                         toowner = true;
 
-                        greenButtonText = () => WebstudioNotifyPatternResource.LeaveFeedbackDocSpace;
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
                         var owner = _userManager.GetUsers(tenant.OwnerId);
                         greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
@@ -229,7 +229,7 @@ public class StudioPeriodicNotify
                         action = Actions.SaasAdminTrialWarningAfterHalfYearV1;
                         toowner = true;
 
-                        greenButtonText = () => WebstudioNotifyPatternResource.LeaveFeedbackDocSpace;
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
                         var owner = _userManager.GetUsers(tenant.OwnerId);
                         greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
@@ -349,8 +349,8 @@ public class StudioPeriodicNotify
                         paymentMessage = false;
                         toadmins = true;
                         tousers = true;
-                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
-                        greenButtonUrl = $"{_commonLinkUtility.GetFullAbsolutePath("~")}/rooms/personal/";
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonCollaborateDocSpace;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
                     }
 
                     #endregion
@@ -439,7 +439,8 @@ public class StudioPeriodicNotify
                 if (createdDate.AddDays(7) == nowDate)
                 {
                     var users = _studioNotifyHelper.GetRecipients(true, true, false);
-
+                    var greenButtonText = () => WebstudioNotifyPatternResource.ButtonCollaborateDocSpace;
+                    var greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
 
                     foreach (var u in users.Where(u => _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
                     {
@@ -452,7 +453,8 @@ public class StudioPeriodicNotify
                                 new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                             new[] { senderName },
                                 new TagValue(Tags.UserName, u.DisplayUserName(_displayUserSettingsHelper)),
-                            new TagValue(CommonTags.Footer, "opensource"));
+                            new TagValue(CommonTags.Footer, "opensource"),
+                            TagValues.GreenButton(greenButtonText, greenButtonUrl));
                     }
                 }
                 #endregion

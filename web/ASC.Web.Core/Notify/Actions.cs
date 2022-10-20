@@ -71,8 +71,6 @@ public static class Actions
     public static readonly INotifyAction MailboxWithoutSettingsCreated = new NotifyAction("mailbox_without_settings_created");
     public static readonly INotifyAction MailboxPasswordChanged = new NotifyAction("mailbox_password_changed");
 
-    public static readonly INotifyAction EnterpriseWhitelabelUserWelcomeCustomMode = new NotifyAction("enterprise_whitelabel_user_welcome_custom_mode");
-
     public static readonly INotifyAction SaasGuestActivationV115 = new NotifyAction("saas_guest_activation_v115");
     public static readonly INotifyAction EnterpriseGuestActivationV10 = new NotifyAction("enterprise_guest_activation_v10");
     public static readonly INotifyAction EnterpriseWhitelabelGuestActivationV10 = new NotifyAction("enterprise_whitelabel_guest_activation_v10");
@@ -82,11 +80,6 @@ public static class Actions
     public static readonly INotifyAction EnterpriseGuestWelcomeV10 = new NotifyAction("enterprise_guest_welcome_v10");
     public static readonly INotifyAction EnterpriseWhitelabelGuestWelcomeV10 = new NotifyAction("enterprise_whitelabel_guest_welcome_v10");
     public static readonly INotifyAction OpensourceGuestWelcomeV11 = new NotifyAction("opensource_guest_welcome_v11");
-
-    public static readonly INotifyAction EnterpriseWhitelabelAdminPaymentWarningBefore7V10 = new NotifyAction("enterprise_whitelabel_admin_payment_warning_before7_v10");
-    public static readonly INotifyAction EnterpriseWhitelabelAdminPaymentWarningV10 = new NotifyAction("enterprise_whitelabel_admin_payment_warning_v10");
-
-    public static readonly INotifyAction SaasAdminComfortTipsV115 = new NotifyAction("saas_admin_comfort_tips_v115");
 
     public static readonly INotifyAction PersonalActivate = new NotifyAction("personal_activate");
     public static readonly INotifyAction PersonalAfterRegistration1 = new NotifyAction("personal_after_registration1");
@@ -136,6 +129,7 @@ public static class Actions
     public static readonly INotifyAction SaasUserWelcomeV1 = new NotifyAction("saas_user_welcome_v1");
     public static readonly INotifyAction EnterpriseUserWelcomeV1 = new NotifyAction("enterprise_user_welcome_v1");
     public static readonly INotifyAction EnterpriseWhitelabelUserWelcomeV1 = new NotifyAction("enterprise_whitelabel_user_welcome_v1");
+    public static readonly INotifyAction EnterpriseWhitelabelUserWelcomeCustomModeV1 = new NotifyAction("enterprise_whitelabel_user_welcome_custom_mode_v1");
     public static readonly INotifyAction OpensourceUserWelcomeV1 = new NotifyAction("opensource_user_welcome_v1");
 
     public static readonly INotifyAction SaasUserActivationV1 = new NotifyAction("saas_user_activation_v1");

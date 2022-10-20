@@ -136,7 +136,7 @@ public class StudioNotifySource : NotifySource
                 Actions.SaasUserWelcomeV1,
                 Actions.EnterpriseUserWelcomeV1,
                 Actions.EnterpriseWhitelabelUserWelcomeV1,
-                Actions.EnterpriseWhitelabelUserWelcomeCustomMode,
+                Actions.EnterpriseWhitelabelUserWelcomeCustomModeV1,
                 Actions.OpensourceUserWelcomeV1,
 
                 Actions.SaasUserActivationV1,
