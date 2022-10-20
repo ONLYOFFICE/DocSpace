@@ -9,6 +9,13 @@ const getDefaultStyles = ({ $currentColorScheme, isOpen, theme }) =>
     (theme.isBase
       ? $currentColorScheme.accentColor
       : theme.comboBox.button.openBorderColor)};
+
+    :focus {
+      border-color: ${isOpen &&
+      (theme.isBase
+        ? $currentColorScheme.accentColor
+        : theme.comboBox.button.hoverBorderColor)};
+    }
   `;
 
 StyledComboButton.defaultProps = { theme: Base };

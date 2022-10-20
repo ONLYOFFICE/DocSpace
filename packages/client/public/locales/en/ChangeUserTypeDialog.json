@@ -2,6 +2,7 @@
   "ChangeUserTypeButton": "Change type",
   "ChangeUserTypeHeader": "Change user type",
   "ChangeUserTypeMessage": "Users with the '{{ firstType }}' type will be moved to '{{ secondType }}' type.",
+  "ChangeUserTypeMessageMulti": "The selected users will be moved to '{{ secondType }}' type.",
   "ChangeUserTypeMessageWarning": "You can't change the type for the portal administrators and for yourself",
   "SuccessChangeUserType": "The user type was successfully changed"
 }

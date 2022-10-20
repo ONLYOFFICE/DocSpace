@@ -37,6 +37,7 @@ class ComboButton extends React.Component {
       comboIcon,
       fillIcon,
       modernView,
+      tabIndex,
     } = this.props;
 
     const defaultOption = selectedOption?.default;
@@ -56,6 +57,7 @@ class ComboButton extends React.Component {
         modernView={modernView}
         className="combo-button"
         themeId={ThemeType.ComboButton}
+        tabIndex={tabIndex}
       >
         {innerContainer && (
           <StyledOptionalItem
@@ -138,6 +140,7 @@ ComboButton.propTypes = {
   comboIcon: PropTypes.string,
   fillIcon: PropTypes.bool,
   modernView: PropTypes.bool,
+  tabIndex: PropTypes.number,
 };
 
 ComboButton.defaultProps = {
@@ -150,6 +153,7 @@ ComboButton.defaultProps = {
   size: "content",
   scaled: false,
   modernView: false,
+  tabIndex: -1,
 };
 
 export default ComboButton;

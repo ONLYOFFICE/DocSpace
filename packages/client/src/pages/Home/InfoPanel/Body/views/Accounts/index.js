@@ -20,7 +20,7 @@ const Accounts = ({
 }) => {
   const [statusLabel, setStatusLabel] = React.useState("");
 
-  const { role, statusType, options } = selection;
+  const { role, id, isVisitor } = selection;
 
   React.useEffect(() => {
     getStatusLabel();
@@ -35,17 +35,19 @@ const Accounts = ({
         return setStatusLabel(t("PeopleTranslations:PendingTitle"));
       case "disabled":
         return setStatusLabel(t("Settings:Disabled"));
+      default:
+        return setStatusLabel(t("Common:Active"));
     }
   }, [selection]);
 
-  const getRoomTypeLabel = React.useCallback((role) => {
+  const getUserTypeLabel = React.useCallback((role) => {
     switch (role) {
       case "owner":
         return t("Common:Owner");
       case "admin":
-        return t("PeopleTranslations:Administrator");
+        return t("Common:DocSpaceAdmin");
       case "manager":
-        return t("PeopleTranslations:Manager");
+        return t("Common:RoomAdmin");
       case "user":
         return t("Common:User");
     }
@@ -56,14 +58,14 @@ const Accounts = ({
 
     const adminOption = {
       key: "admin",
-      title: t("PeopleTranslations:Administrator"),
-      label: t("PeopleTranslations:Administrator"),
+      title: t("Common:DocSpaceAdmin"),
+      label: t("Common:DocSpaceAdmin"),
       action: "admin",
     };
     const managerOption = {
       key: "manager",
-      title: t("PeopleTranslations:Manager"),
-      label: t("PeopleTranslations:Manager"),
+      title: t("Common:RoomAdmin"),
+      label: t("Common:RoomAdmin"),
       action: "manager",
     };
     const userOption = {
@@ -75,12 +77,12 @@ const Accounts = ({
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
-    options.push(userOption);
+    isVisitor && options.push(userOption);
 
     return options;
-  }, [t, isAdmin, isOwner]);
+  }, [t, isAdmin, isOwner, isVisitor]);
 
   const onTypeChange = React.useCallback(
     ({ action }) => {
@@ -89,7 +91,66 @@ const Accounts = ({
     [selection, changeUserType, t]
   );
 
-  const typeLabel = getRoomTypeLabel(role);
+  const typeLabel = getUserTypeLabel(role);
+
+  const renderTypeData = () => {
+    const typesOptions = getTypesOptions();
+
+    const combobox = (
+      <ComboBox
+        className="type-combobox"
+        selectedOption={
+          typesOptions.find((option) => option.key === role) || {}
+        }
+        options={typesOptions}
+        onSelect={onTypeChange}
+        scaled={false}
+        size="content"
+        displaySelectedOption
+        modernView
+      />
+    );
+
+    const text = (
+      <Text
+        type="page"
+        title={typeLabel}
+        fontSize="13px"
+        fontWeight={600}
+        truncate
+        noSelect
+      >
+        {typeLabel}
+      </Text>
+    );
+
+    const status = getUserStatus(selection);
+
+    if (selfId === id || status === "disabled") return text;
+
+    switch (role) {
+      case "owner":
+        return text;
+
+      case "admin":
+      case "manager":
+        if (isOwner) {
+          return combobox;
+        } else {
+          return text;
+        }
+
+      case "user":
+        return combobox;
+
+      default:
+        return text;
+    }
+  };
+
+  const typeData = renderTypeData();
+
+  const statusText = isVisitor ? t("SmartBanner:Price") : t("Common:Paid");
 
   return (
     <>
@@ -112,43 +173,12 @@ const Accounts = ({
           >
             {statusLabel}
           </Text>
-          {role !== "guest" && ( //TODO: delete this condition after remove guest type
-            <>
-              <Text className={"info_field"} noSelect title={t("Common:Type")}>
-                {t("Common:Type")}
-              </Text>
-              <>
-                {((isOwner && role !== "owner") ||
-                  (isAdmin && !isOwner && role !== "admin")) &&
-                statusType !== "disabled" &&
-                selfId !== selection.id ? (
-                  <ComboBox
-                    className="type-combobox"
-                    selectedOption={getTypesOptions().find(
-                      (option) => option.key === role
-                    )}
-                    options={getTypesOptions()}
-                    onSelect={onTypeChange}
-                    scaled={false}
-                    size="content"
-                    displaySelectedOption
-                    modernView
-                  />
-                ) : (
-                  <Text
-                    type="page"
-                    title={typeLabel}
-                    fontSize="13px"
-                    fontWeight={600}
-                    truncate
-                    noSelect
-                  >
-                    {typeLabel}
-                  </Text>
-                )}
-              </>
-            </>
-          )}
+
+          <Text className={"info_field"} noSelect title={t("Common:Type")}>
+            {t("Common:Type")}
+          </Text>
+          {typeData}
+
           <Text className={"info_field"} noSelect title={t("UserStatus")}>
             {t("UserStatus")}
           </Text>
@@ -159,7 +189,7 @@ const Accounts = ({
             noSelect
             title={statusLabel}
           >
-            {t("SmartBanner:Price")}
+            {statusText}
           </Text>
           {/* <Text className={"info_field"} noSelect title={t("Common:Room")}>
             {t("Common:Room")}
@@ -177,6 +207,7 @@ export default withTranslation([
   "ConnectDialog",
   "Common",
   "PeopleTranslations",
+  "People",
   "Settings",
   "SmartBanner",
   "DeleteProfileEverDialog",

@@ -5,15 +5,11 @@ import PropTypes from "prop-types";
 import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
-import ToggleContent from "@docspace/components/toggle-content";
-import Checkbox from "@docspace/components/checkbox";
-import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-scrollbars-virtual-list";
 
-import { withTranslation } from "react-i18next";
-import { FixedSizeList as List, areEqual } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
+import { withTranslation, Trans } from "react-i18next";
+
 import toastr from "@docspace/components/toast/toastr";
-import { EmployeeType } from "@docspace/common/constants";
+
 import ModalDialogContainer from "../ModalDialogContainer";
 
 import { inject, observer } from "mobx-react";
@@ -22,122 +18,94 @@ class ChangeUserTypeDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { selectedUsers, userIds } = props;
+    const { userIDs } = props;
 
-    const listUsers = selectedUsers.map((item, index) => {
-      const disabled = userIds.find((x) => x === item.id);
-      return (selectedUsers[index] = {
-        ...selectedUsers[index],
-        checked: disabled ? true : false,
-        disabled: disabled ? false : true,
-      });
-    });
-
-    this.state = { isRequestRunning: false, userIds, listUsers };
+    this.state = { isRequestRunning: false, userIDs };
   }
-
-  onChange = (e) => {
-    const { listUsers } = this.state;
-    const userIndex = listUsers.findIndex((x) => x.id === e.target.value);
-    const newUsersList = listUsers;
-    newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
-
-    const newUserIds = [];
-    for (let item of newUsersList) {
-      if (item.checked === true) {
-        newUserIds.push(item.id);
-      }
-    }
-
-    this.setState({ listUsers: newUsersList, userIds: newUserIds });
-  };
 
   onChangeUserType = () => {
     const {
       onClose,
-      setSelected,
+
       t,
-      userType,
+      toType,
+      fromType,
       updateUserType,
       filter,
     } = this.props;
-    const { userIds } = this.state;
+    const { userIDs } = this.state;
     this.setState({ isRequestRunning: true }, () => {
-      updateUserType(userType, userIds, filter)
+      updateUserType(toType, userIDs, filter, fromType)
         .then(() => toastr.success(t("SuccessChangeUserType")))
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            setSelected("close");
             onClose();
           });
         });
     });
   };
 
+  onCloseAction = async () => {
+    const { isRequestRunning } = this.state;
+    const { onClose, getUsersList, filter } = this.props;
+    if (!isRequestRunning) {
+      await getUsersList(filter);
+
+      onClose();
+    }
+  };
+
+  getType = (type) => {
+    const { t } = this.props;
+
+    switch (type) {
+      case "admin":
+        return t("Common:DocSpaceAdmin");
+
+      case "manager":
+        return t("Common:RoomAdmin");
+
+      case "user":
+      default:
+        return t("Common:User");
+    }
+  };
+
   render() {
-    const { visible, onClose, t, tReady, userType } = this.props;
-    const { isRequestRunning, listUsers, userIds } = this.state;
-    const itemSize = 25;
-    const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
+    const { visible, t, tReady, toType, fromType } = this.props;
+    const { isRequestRunning, userIDs } = this.state;
 
-    const renderItems = memo(({ data, index, style }) => {
-      return (
-        <Checkbox
-          truncate
-          style={style}
-          className="modal-dialog-checkbox"
-          value={data[index].id}
-          onChange={this.onChange}
-          key={`checkbox_${index}`}
-          isChecked={data[index].checked}
-          label={data[index].displayName}
-          isDisabled={data[index].disabled}
-        />
-      );
-    }, areEqual);
+    const firstType = fromType.length === 1 ? this.getType(fromType[0]) : null;
+    const secondType = this.getType(toType);
 
-    const renderList = ({ height, width }) => (
-      <List
-        className="List"
-        height={height}
-        width={width}
-        itemSize={itemSize}
-        itemCount={listUsers.length}
-        itemData={listUsers}
-        outerElementType={CustomScrollbarsVirtualList}
+    const changeUserTypeMessage = firstType ? (
+      <Trans i18nKey="ChangeUserTypeDialog" ns="ChangeUserTypeMessage" t={t}>
+        Users with the <b>'{{ firstType }}'</b> type will be moved to{" "}
+        <b>'{{ secondType }}'</b> type.
+      </Trans>
+    ) : (
+      <Trans
+        i18nKey="ChangeUserTypeDialog"
+        ns="ChangeUserTypeMessageMulti"
+        t={t}
       >
-        {renderItems}
-      </List>
+        The selected users will be moved to <b>'{{ secondType }}'</b> type.
+      </Trans>
     );
 
-    const firstType = userType === 1 ? t("Common:Guest") : t("Common:User");
-    const secondType = userType === 1 ? t("Common:User") : t("Common:Guest");
     return (
       <ModalDialogContainer
         isLoading={!tReady}
         visible={visible}
-        onClose={onClose}
+        onClose={this.onCloseAction}
         autoMaxHeight
       >
         <ModalDialog.Header>{t("ChangeUserTypeHeader")}</ModalDialog.Header>
         <ModalDialog.Body>
-          <Text>
-            {t("ChangeUserTypeMessage", {
-              firstType: firstType,
-              secondType: secondType,
-            })}
+          <Text fontWeight={600}>
+            {changeUserTypeMessage} {t("ChangeUserTypeMessageWarning")}
           </Text>
-          <Text>{t("ChangeUserTypeMessageWarning")}</Text>
-
-          <ToggleContent
-            className="toggle-content-dialog"
-            label={t("Common:ShowUsersList")}
-          >
-            <div style={containerStyles} className="modal-dialog-content">
-              <AutoSizer>{renderList}</AutoSizer>
-            </div>
-          </ToggleContent>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
@@ -147,13 +115,13 @@ class ChangeUserTypeDialogComponent extends React.Component {
             primary
             onClick={this.onChangeUserType}
             isLoading={isRequestRunning}
-            isDisabled={!userIds.length}
+            isDisabled={!userIDs.length}
           />
           <Button
             label={t("Common:CancelButton")}
             size="normal"
             scale
-            onClick={onClose}
+            onClick={this.onCloseAction}
             isDisabled={isRequestRunning}
           />
         </ModalDialog.Footer>
@@ -164,26 +132,22 @@ class ChangeUserTypeDialogComponent extends React.Component {
 
 const ChangeUserTypeDialog = withTranslation([
   "ChangeUserTypeDialog",
+  "People",
   "Common",
 ])(ChangeUserTypeDialogComponent);
 
 ChangeUserTypeDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  setSelected: PropTypes.func.isRequired,
-  userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  userIDs: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default withRouter(
-  inject(({ peopleStore }, ownProps) => ({
-    filter: peopleStore.filterStore.filter,
-    updateUserType: peopleStore.usersStore.updateUserType,
-    selectedUsers: peopleStore.selectionStore.selection,
-    setSelected: peopleStore.selectionStore.setSelected,
-    userIds:
-      ownProps.userType === EmployeeType.User
-        ? peopleStore.selectionStore.getUsersToMakeEmployeesIds
-        : peopleStore.selectionStore.getUsersToMakeGuestsIds,
-  }))(observer(ChangeUserTypeDialog))
+  inject(({ peopleStore }) => {
+    return {
+      filter: peopleStore.filterStore.filter,
+      updateUserType: peopleStore.usersStore.updateUserType,
+      getUsersList: peopleStore.usersStore.getUsersList,
+    };
+  })(observer(ChangeUserTypeDialog))
 );

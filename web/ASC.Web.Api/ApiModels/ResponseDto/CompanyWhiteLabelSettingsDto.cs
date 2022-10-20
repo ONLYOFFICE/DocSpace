@@ -24,23 +24,27 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Tenants;
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-[Serializable]
-[DataContract]
-public class TenantControlPanelSettings : ISettings<TenantControlPanelSettings>
+public class CompanyWhiteLabelSettingsDto: IMapFrom<CompanyWhiteLabelSettings>
 {
-    [DataMember(Name = "LimitedAccess")]
-    public bool LimitedAccess { get; set; }
+    public string CompanyName { get; set; }
 
-    [JsonIgnore]
-    public Guid ID => new Guid("{880585C4-52CD-4AE2-8DA4-3B8E2772753B}");
+    public string Site { get; set; }
 
-    public TenantControlPanelSettings GetDefault()
+    public string Email { get; set; }
+
+    public string Address { get; set; }
+
+    public string Phone { get; set; }
+
+    public bool IsLicensor { get; set; }
+
+    public bool IsDefault { get; set; }
+
+    public void Mapping(Profile profile)
     {
-        return new TenantControlPanelSettings
-        {
-            LimitedAccess = false
-        };
+        profile.CreateMap<CompanyWhiteLabelSettings, CompanyWhiteLabelSettingsDto>()
+            .ConvertUsing<CompanyWhiteLabelSettingsConverter>();
     }
 }

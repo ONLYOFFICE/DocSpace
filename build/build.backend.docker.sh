@@ -20,8 +20,9 @@ docker_dir="$( pwd )"
 echo "Docker directory:" $docker_dir
 
 docker_file=Dockerfile.dev
-
+core_base_domain="localhost"
 build_date=$(date +%Y-%m-%d)
+env_extension="dev"
 
 echo "BUILD DATE: $build_date"
 
@@ -39,6 +40,9 @@ echo "SERVICE_CLIENT: $client"
 
 echo "Stop all backend services"
 $dir/build/start/stop.backend.docker.sh
+
+echo "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'"
+docker image rm -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
 
 echo "Run MySQL"
 
@@ -74,6 +78,8 @@ GIT_BRANCH=$branch \
 SERVICE_DOCEDITOR=$doceditor \
 SERVICE_LOGIN=$login \
 SERVICE_CLIENT=$client \
+APP_CORE_BASE_DOMAIN=$core_base_domain \
+ENV_EXTENSION=$env_extension \
 docker compose -f build.dev.yml build --build-arg GIT_BRANCH=$branch --build-arg RELEASE_DATE=$build_date
 
 echo "Run DB migration"

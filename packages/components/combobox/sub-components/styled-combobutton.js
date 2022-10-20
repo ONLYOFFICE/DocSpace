@@ -117,6 +117,14 @@ const StyledComboButton = styled.div`
       line-height: ${props.theme.comboBox.label.lineHeightWithoutBorder};
     `}
   }
+
+  :focus {
+    outline: none;
+    border-color: ${(props) =>
+      props.isOpen
+        ? props.theme.comboBox.button.hoverBorderColorOpen
+        : props.theme.comboBox.button.hoverBorderColor};
+  }
 `;
 StyledComboButton.defaultProps = { theme: Base };
 

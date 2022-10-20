@@ -267,6 +267,7 @@ class SectionHeaderContent extends React.Component {
         deleteOperation: t("Translations:DeleteOperation"),
         deleteFromTrash: t("Translations:DeleteFromTrash"),
         deleteSelectedElem: t("Translations:DeleteSelectedElem"),
+        FolderRemoved: t("Files:FolderRemoved"),
       };
 
       deleteAction(translations, [currentFolderId], true).catch((err) =>
@@ -496,6 +497,7 @@ class SectionHeaderContent extends React.Component {
       showText,
       isRoomsFolder,
       isEmptyPage,
+      isVisitor,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -524,7 +526,7 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate}
+                    canCreate={canCreate && !isVisitor}
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -634,6 +636,7 @@ export default inject(
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
+      isVisitor: auth.userStore.user.isVisitor,
       isRootFolder: pathParts?.length === 1,
       title,
       isRoom,

@@ -26,7 +26,11 @@ const Article = ({
   toggleArticleOpen,
   setIsMobileArticle,
   children,
+
+  withMainButton,
+
   isGracePeriod,
+
   isBannerVisible,
   hideProfileBlock,
   isFreeTariff,
@@ -115,7 +119,10 @@ const Article = ({
         <SubArticleHeader showText={showText}>
           {articleHeaderContent ? articleHeaderContent.props.children : null}
         </SubArticleHeader>
-        {articleMainButtonContent && !isMobileOnly && !isMobileUtils() ? (
+        {articleMainButtonContent &&
+        withMainButton &&
+        !isMobileOnly &&
+        !isMobileUtils() ? (
           <SubArticleMainButton showText={showText}>
             {articleMainButtonContent.props.children}
           </SubArticleMainButton>

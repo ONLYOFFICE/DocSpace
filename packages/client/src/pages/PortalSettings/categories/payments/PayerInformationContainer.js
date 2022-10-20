@@ -15,7 +15,8 @@ const StyledContainer = styled.div`
   box-sizing: border-box;
   margin-top: 16px;
 
-  .change-payer {
+  .change-payer,
+  .payer-info {
     margin-left: 3px;
   }
 
@@ -33,11 +34,13 @@ const StyledContainer = styled.div`
     grid-gap: 4px;
 
     .payer-info_description {
-      display: flex;
+
+
       p {
         margin-right: 3px;
       }
       div {
+        display: inline-block;
         margin: auto 0;
       }
     }
@@ -128,7 +131,7 @@ const PayerInformationContainer = ({
   );
 
   const payerName = (
-    <Text fontWeight={600} noSelect fontSize={"14px"}>
+    <Text as="span" fontWeight={600} noSelect fontSize={"14px"}>
       {payerInfo ? (
         payerInfo.displayName
       ) : (

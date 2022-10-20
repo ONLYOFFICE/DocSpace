@@ -453,14 +453,14 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             _ => FolderType.DEFAULT,
         };
 
-        return rooms.Where(f => f.FolderType == filter || filter == FolderType.DEFAULT);
+        return rooms.Where(f => f != null && (f.FolderType == filter || filter == FolderType.DEFAULT));
     }
 
     protected IAsyncEnumerable<Folder<string>> FilterBySubject(IAsyncEnumerable<Folder<string>> rooms, Guid subjectId, bool excludeSubject)
     {
         if (subjectId != Guid.Empty)
         {
-            rooms = excludeSubject ? rooms.Where(f => f.CreateBy != subjectId) : rooms.Where(f => f.CreateBy == subjectId);
+            rooms = excludeSubject ? rooms.Where(f => f != null && f.CreateBy != subjectId) : rooms.Where(f => f != null && f.CreateBy == subjectId);
         }
 
         return rooms;

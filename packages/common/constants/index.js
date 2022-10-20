@@ -27,6 +27,10 @@ export const EmployeeStatus = Object.freeze({
 export const EmployeeType = Object.freeze({
   User: 1,
   Guest: 2,
+  UserString: "user",
+  RoomAdmin: "manager",
+  DocSpaceAdmin: "admin",
+  Owner: "Owner",
 });
 /**
  * Enum for filter type.
@@ -82,6 +86,31 @@ export const RoomsTypeTranslations = Object.freeze({
   3: "Files:ReviewRooms",
   4: "Files:ViewOnlyRooms",
   5: "Files:CustomRooms",
+});
+/**
+ * Enum for room provider type.
+ * @readonly
+ */
+export const RoomsProviderType = Object.freeze({
+  Box: 1,
+  DropBox: 2,
+  GoogleDrive: 3,
+  kDrive: 4,
+  OneDrive: 5,
+  SharePoint: 6,
+  WebDav: 7,
+  Yandex: 8,
+});
+
+export const RoomsProviderTypeName = Object.freeze({
+  1: "Box",
+  2: "DropBox",
+  3: "Google Drive",
+  4: "kDrive",
+  5: "OneDrive",
+  6: "SharePoint",
+  7: "WebDav",
+  8: "Yandex",
 });
 
 /**
