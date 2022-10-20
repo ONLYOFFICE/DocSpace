@@ -83,6 +83,7 @@ public class TenantQuotaController : IQuotaController
             CurrentSize += size;
         }
 
+        SetTenantQuotaRow(module, domain, size, dataTag, true, Guid.Empty);
         SetTenantQuotaRow(module, domain, size, dataTag, true, _authContext.CurrentAccount.ID);
     }
 
