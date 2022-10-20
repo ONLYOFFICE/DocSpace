@@ -69,7 +69,7 @@ export const LoginContainer = styled.div`
   }
 
   .or-label {
-    margin: 0 8px;
+    margin: 0 32px;
   }
 
   .line {
@@ -134,7 +134,6 @@ export const LoginContainer = styled.div`
   }
 
   .auth-form-container {
-    margin: 32px 213px 0 213px;
     width: 320px;
 
     @media ${tablet} {
