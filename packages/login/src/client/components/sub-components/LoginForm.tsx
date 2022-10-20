@@ -276,6 +276,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             <div className="login-checkbox-wrapper">
               <div className="remember-wrapper">
                 <Checkbox
+                  id="login-checkbox"
                   className="login-checkbox"
                   isChecked={isChecked}
                   onChange={onChangeCheckbox}
