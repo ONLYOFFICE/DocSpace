@@ -83,6 +83,31 @@ const template: Template = (
         <!-- <meta name="apple-mobile-web-app-capable" content="yes" /> -->
         <link rel="apple-touch-icon" href="/appIcon-180.png" />
         ${styleTags}   
+
+        <style>
+        @media (prefers-color-scheme: light) {
+          body {
+            background-color: #fff;
+          }
+
+          #login-form{
+            background-color: #fff;
+            box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.07);
+          }
+        }
+
+        @media (prefers-color-scheme: dark) {
+          body {
+            background-color: #333;
+          }
+
+          #login-form{
+            background-color: #333;
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.16);
+          }
+        }        
+        </style>
+
       </head>
       <body>
         <noscript> You need to enable JavaScript to run this app. </noscript>

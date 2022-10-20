@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { getAppearanceTheme } from "@docspace/common/api/settings";
-import { Dark, Base } from "@docspace/components/themes";
+import { Base } from "@docspace/components/themes";
 
 class LoginStore {
   currentColorScheme: ITheme | null = null;
@@ -11,6 +11,10 @@ class LoginStore {
   constructor(currentColorScheme: ITheme) {
     makeAutoObservable(this);
     this.currentColorScheme = currentColorScheme;
+  }
+
+  setTheme = (theme) => {
+    this.theme = theme;
   }
 
   setCurrentColorScheme = (currentColorScheme: ITheme) => {

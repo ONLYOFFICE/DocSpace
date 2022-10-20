@@ -21,6 +21,7 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import SSOIcon from "../../../../../public/images/sso.react.svg";
+import { Dark, Base } from "@docspace/components/themes";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -34,6 +35,7 @@ const Login: React.FC<ILoginProps> = ({
   match,
   currentColorScheme,
   theme,
+  setTheme,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
@@ -43,6 +45,15 @@ const Login: React.FC<ILoginProps> = ({
   const { ssoLabel, ssoUrl } = capabilities;
 
   const { t } = useTranslation(["Login", "Common"]);
+
+  useEffect(() => {
+    const theme =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? Dark
+        : Base;
+    setTheme(theme);
+  }, []);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
@@ -198,7 +209,7 @@ const Login: React.FC<ILoginProps> = ({
         >
           {greetingSettings}
         </Text>
-        <FormWrapper theme={theme}>
+        <FormWrapper id="login-form" theme={theme}>
           {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
           {oauthDataExists() && (
             <>
@@ -263,5 +274,8 @@ const Login: React.FC<ILoginProps> = ({
 };
 
 export default inject(({ loginStore }) => {
-  return { theme: loginStore.theme };
+  return {
+    theme: loginStore.theme,
+    setTheme: loginStore.setTheme,
+  };
 })(observer(Login));
