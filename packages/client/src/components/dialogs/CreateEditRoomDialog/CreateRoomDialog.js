@@ -92,13 +92,9 @@ const CreateRoomDialog = ({
       setIsLoading(true);
       await deleteThirdParty(
         roomParams.storageLocation.thirdpartyAccount.providerId
-      )
-        .then(async () => {
-          await fetchThirdPartyProviders();
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
+      ).finally(() => setIsLoading(false));
+
+      await fetchThirdPartyProviders();
     }
     onClose();
   };
