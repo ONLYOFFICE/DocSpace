@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
 import Logo from "../../../../../public/images/docspace.big.react.svg";
 import Text from "@docspace/components/text";
@@ -20,7 +21,6 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import SSOIcon from "../../../../../public/images/sso.react.svg";
-import { Dark, Base } from "@docspace/components/themes";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -35,6 +35,7 @@ const Login: React.FC<ILoginProps> = ({
   match,
   isAuth,
   currentColorScheme,
+  theme,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
@@ -193,7 +194,7 @@ const Login: React.FC<ILoginProps> = ({
       //className="with-background-pattern"
       bgPattern={bgPattern}
     >
-      <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={Dark}>
+      <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
         <Logo className="logo-wrapper" />
         <Text
           fontSize="23px"
@@ -203,7 +204,7 @@ const Login: React.FC<ILoginProps> = ({
         >
           {greetingSettings}
         </Text>
-        <FormWrapper theme={Dark}>
+        <FormWrapper theme={theme}>
           {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
           {oauthDataExists() && (
             <>
@@ -267,4 +268,6 @@ const Login: React.FC<ILoginProps> = ({
   );
 };
 
-export default Login;
+export default inject(({ loginStore }) => {
+  return { theme: loginStore.theme };
+})(observer(Login));
