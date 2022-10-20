@@ -1,0 +1,14 @@
+<service>
+	<id>ASC.Login</id>
+	<name>ASC.Login</name>
+	<description>This service runs ASC.Login</description>
+	<priority>RealTime</priority>
+	<startmode>Automatic</startmode>
+	<onfailure action="restart" delay="10 sec"/>
+	<executable>node</executable>
+	<arguments>&quot;{APPDIR}products\ASC.Login\login\server.js&quot;</arguments>
+	<log mode="roll-by-size">
+  		<sizeThreshold>10240</sizeThreshold>
+  		<keepFiles>8</keepFiles>
+	</log>
+</service>

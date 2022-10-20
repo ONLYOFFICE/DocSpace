@@ -4,7 +4,7 @@ import saveAs from "file-saver";
 import { isMobile } from "react-device-detect";
 import config from "PACKAGE_FILE";
 import toastr from "@docspace/components/toast/toastr";
-import { AppServerConfig } from "@docspace/common/constants";
+import { AppServerConfig, ShareAccessRights } from "@docspace/common/constants";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import {
   isMobile as isMobileUtils,
@@ -12,6 +12,8 @@ import {
 } from "@docspace/components/utils/device";
 import { Events } from "@docspace/common/constants";
 import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
+import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
+import { getOAuthToken } from "@docspace/common/utils";
 
 class ContextOptionsStore {
   authStore;
@@ -56,6 +58,61 @@ class ContextOptionsStore {
 
   onClickLinkFillForm = (item) => {
     return this.gotoDocEditor(false, item);
+  };
+
+  onClickReconnectStorage = async (item, t) => {
+    const { thirdPartyStore } = this.settingsStore;
+
+    const { openConnectWindow, connectItems } = thirdPartyStore;
+
+    const {
+      setRoomCreation,
+      setConnectItem,
+      setConnectDialogVisible,
+      setIsConnectDialogReconnect,
+      setSaveAfterReconnectOAuth,
+    } = this.dialogsStore;
+
+    setIsConnectDialogReconnect(true);
+
+    setRoomCreation(true);
+
+    const provider = connectItems.find(
+      (connectItem) => connectItem.providerName === item.providerKey
+    );
+
+    const itemThirdParty = {
+      title: connectedCloudsTypeTitleTranslation(provider.providerName, t),
+      customer_title: "NOTITLE",
+      provider_key: provider.providerName,
+      link: provider.oauthHref,
+    };
+
+    if (provider.isOauth) {
+      let authModal = window.open(
+        "",
+        "Authorization",
+        "height=600, width=1020"
+      );
+      await openConnectWindow(provider.providerName, authModal)
+        .then(getOAuthToken)
+        .then((token) => {
+          authModal.close();
+          setConnectItem({
+            ...itemThirdParty,
+            token,
+          });
+
+          setSaveAfterReconnectOAuth(true);
+        })
+        .catch((err) => {
+          if (!err) return;
+          toastr.error(err);
+        });
+    } else {
+      setConnectItem(itemThirdParty);
+      setConnectDialogVisible(true);
+    }
   };
 
   onClickMakeForm = (item, t) => {
@@ -138,6 +195,9 @@ class ContextOptionsStore {
 
   lockFile = (item, t) => {
     const { id, locked } = item;
+    const {
+      setSelection: setInfoPanelSelection,
+    } = this.authStore.infoPanelStore;
 
     this.filesActionsStore
       .lockFileAction(id, !locked)
@@ -146,6 +206,7 @@ class ContextOptionsStore {
           ? toastr.success(t("Translations:FileUnlocked"))
           : toastr.success(t("Translations:FileLocked"))
       )
+      .then(() => setInfoPanelSelection({ ...item, locked: !locked }))
       .catch((err) => toastr.error(err));
   };
 
@@ -338,8 +399,9 @@ class ContextOptionsStore {
     return options;
   };
 
-  onShowInfoPanel = () => {
-    const { setIsVisible } = this.authStore.infoPanelStore;
+  onShowInfoPanel = (item) => {
+    const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+    setSelection({ ...item, isContextMenuSelection: true });
     setIsVisible(true);
   };
 
@@ -349,8 +411,16 @@ class ContextOptionsStore {
     window.dispatchEvent(event);
   };
 
-  onClickInviteUsers = () => {
-    console.log("invite users");
+  onClickInviteUsers = (e) => {
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
+    this.dialogsStore.setInvitePanelOptions({
+      visible: true,
+      roomId: action,
+      hideSelector: false,
+      defaultAccess: ShareAccessRights.ReadOnly,
+    });
   };
 
   onClickPin = (e, id, t) => {
@@ -535,24 +605,32 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
+        key: "reconnect-storage",
+        label: t("Common:ReconnectStorage"),
+        icon: "images/reconnect.svg",
+        onClick: () => this.onClickReconnectStorage(item, t),
+        disabled: false,
+      },
+      {
         key: "edit-room",
-        label: "Edit room",
+        label: t("EditRoom"),
         icon: "images/settings.react.svg",
         onClick: () => this.onClickEditRoom(item),
         disabled: false,
       },
       {
         key: "invite-users-to-room",
-        label: "Invite users",
+        label: t("InviteUsers"),
         icon: "/static/images/person.react.svg",
-        onClick: () => this.onClickInviteUsers(),
+        onClick: (e) => this.onClickInviteUsers(e),
         disabled: false,
+        action: item.id,
       },
       {
         key: "room-info",
         label: "Info",
-        icon: "/static/images/info.react.svg",
-        onClick: this.onShowInfoPanel,
+        icon: "/static/images/info.outline.react.svg",
+        onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
       {
@@ -609,7 +687,7 @@ class ContextOptionsStore {
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
         icon: "/static/images/info.outline.react.svg",
-        onClick: this.onShowInfoPanel,
+        onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
       blockAction,

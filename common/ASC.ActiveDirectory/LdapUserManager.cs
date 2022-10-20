@@ -44,6 +44,7 @@ public class LdapUserManager
     private readonly UserFormatter _userFormatter;
     private readonly IServiceProvider _serviceProvider;
     private readonly NovellLdapUserImporter _novellLdapUserImporter;
+    private readonly CountManagerChecker _countManagerChecker;
     private LdapLocalization _resource;
 
     public LdapUserManager(
@@ -58,7 +59,7 @@ public class LdapUserManager
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserFormatter userFormatter,
         NovellLdapUserImporter novellLdapUserImporter,
-        WorkContext workContext)
+        CountManagerChecker countManagerChecker)
     {
         _logger = logger;
         _userManager = userManager;
@@ -71,6 +72,7 @@ public class LdapUserManager
         _userFormatter = userFormatter;
         _serviceProvider = serviceProvider;
         _novellLdapUserImporter = novellLdapUserImporter;
+        _countManagerChecker = countManagerChecker;
     }
 
     public void Init(LdapLocalization resource = null)
@@ -133,11 +135,14 @@ public class LdapUserManager
                 return false;
             }
 
-            var q = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id);
-            if (q.ActiveUsers <= _userManager.GetUsersByGroup(Constants.GroupUser.ID).Length)
+            try
+            {
+                _countManagerChecker.CheckAppend().Wait();
+            }
+            catch (Exception)
             {
                 _logger.DebugExceedQuota(ldapUserInfo.Sid, ldapUserInfo.UserName);
-                throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
+                throw;
             }
 
             if (!ldapUserInfo.WorkFromDate.HasValue)
@@ -154,6 +159,13 @@ public class LdapUserManager
             _logger.DebugSaveUserInfo(ldapUserInfo.GetUserInfoString());
 
             portalUserInfo = _userManager.SaveUserInfo(ldapUserInfo);
+
+            var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+            if (quotaSettings.EnableUserQuota)
+            {
+                _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = ldapUserInfo.LdapQouta }, ldapUserInfo.Id);
+            }
+
 
             var passwordHash = LdapUtils.GeneratePassword();
 

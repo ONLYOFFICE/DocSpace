@@ -37,7 +37,6 @@ public class LdapController : BaseSettingsController
     private readonly AuthContext _authContext;
     private readonly PermissionContext _permissionContext;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly TenantExtra _tenantExtra;
     private readonly IMapper _mapper;
 
     public LdapController(
@@ -51,7 +50,6 @@ public class LdapController : BaseSettingsController
         AuthContext authContext,
         PermissionContext permissionContext,
         CoreBaseSettings coreBaseSettings,
-        TenantExtra tenantExtra,
         IHttpContextAccessor httpContextAccessor,
         IMapper mapper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
@@ -62,7 +60,6 @@ public class LdapController : BaseSettingsController
         _authContext = authContext;
         _permissionContext = permissionContext;
         _coreBaseSettings = coreBaseSettings;
-        _tenantExtra = tenantExtra;
         _mapper = mapper;
     }
 
@@ -313,7 +310,7 @@ public class LdapController : BaseSettingsController
 
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings(ManagementType.LdapSettings.ToString())
-                || !_tenantExtra.GetTenantQuota().Ldap))
+                || !_tenantManager.GetCurrentTenantQuota().Ldap))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Ldap");
         }

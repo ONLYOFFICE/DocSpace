@@ -8,6 +8,7 @@ import {
   FileStatus,
   RoomSearchArea,
   RoomsType,
+  RoomsProviderType,
 } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
@@ -35,6 +36,7 @@ class FilesStore {
   selectedFolderStore;
   treeFoldersStore;
   filesSettingsStore;
+  thirdPartyStore;
 
   isLoaded = false;
   isLoading = false;
@@ -88,11 +90,14 @@ class FilesStore {
   trashIsEmpty = false;
   filesIsLoading = false;
 
+  isEmptyPage = false;
+
   constructor(
     authStore,
     selectedFolderStore,
     treeFoldersStore,
-    filesSettingsStore
+    filesSettingsStore,
+    thirdPartyStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
@@ -103,6 +108,7 @@ class FilesStore {
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
     this.filesSettingsStore = filesSettingsStore;
+    this.thirdPartyStore = thirdPartyStore;
 
     const { socketHelper, withPaging } = authStore.settingsStore;
 
@@ -313,6 +319,10 @@ class FilesStore {
       (x) => !x.providerKey || x.id !== x.rootFolderId
     ); // removed root thirdparty folders
     this.startDrag = startDrag;
+  };
+
+  setIsEmptyPage = (isEmptyPage) => {
+    this.isEmptyPage = isEmptyPage;
   };
 
   get tooltipOptions() {
@@ -654,6 +664,9 @@ class FilesStore {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
+    if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
+      return this.fetchRooms();
+
     const filterStorageItem =
       this.authStore.userStore.user?.id &&
       localStorage.getItem(`UserFilter=${this.authStore.userStore.user.id}`);
@@ -871,12 +884,6 @@ class FilesStore {
             );
           });
 
-          // console.log("fetchRooms", {
-          //   categoryType: this.categoryType,
-          //   rootFolderType: data.current.rootFolderType,
-          //   parentId: data.current.parentId,
-          // });
-
           this.setRoomsFilter(filterData);
 
           runInAction(() => {
@@ -985,7 +992,8 @@ class FilesStore {
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
       (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    const isFileOwner = item.createdBy.id === this.authStore.userStore.user.id;
+    const isFileOwner =
+      item.createdBy?.id === this.authStore.userStore.user?.id;
 
     const {
       isRecycleBinFolder,
@@ -1337,9 +1345,10 @@ class FilesStore {
       return fileOptions;
     } else if (isRoom) {
       let roomOptions = [
+        "reconnect-storage",
         "edit-room",
         "invite-users-to-room",
-        "room-info",
+        "show-info",
         "pin-room",
         "unpin-room",
         "separator0",
@@ -1347,6 +1356,10 @@ class FilesStore {
         "unarchive-room",
         "delete",
       ];
+
+      if (!item.providerKey) {
+        roomOptions = this.removeOptions(roomOptions, ["reconnect-storage"]);
+      }
 
       if (item.pinned) {
         roomOptions = this.removeOptions(roomOptions, ["pin-room"]);
@@ -1581,7 +1594,6 @@ class FilesStore {
   }
 
   createRoomInThirdpary(thirpartyFolderId, roomParams) {
-    console.log(thirpartyFolderId, roomParams);
     return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
   }
 
@@ -1630,6 +1642,22 @@ class FilesStore {
 
   removeLogoFromRoom(id) {
     return api.rooms.removeLogoFromRoom(id);
+  }
+
+  getRoomMembers(id) {
+    return api.rooms.getRoomMembers(id);
+  }
+
+  getHistory(module, id) {
+    return api.rooms.getHistory(module, id);
+  }
+
+  getRoomHistory(id) {
+    return api.rooms.getRoomHistory(id);
+  }
+
+  getFileHistory(id) {
+    return api.rooms.getFileHistory(id);
   }
 
   setFile = (file) => {
@@ -1693,7 +1721,8 @@ class FilesStore {
 
   removeFiles = (fileIds, folderIds, showToast) => {
     const newFilter = this.filter.clone();
-    const deleteCount = fileIds.length + folderIds.length;
+    const deleteCount = (fileIds?.length ?? 0) + (folderIds?.length ?? 0);
+
     newFilter.startIndex =
       (newFilter.page + 1) * newFilter.pageCount - deleteCount;
     newFilter.pageCount = deleteCount;
@@ -1703,10 +1732,10 @@ class FilesStore {
       .then((res) => {
         const files = fileIds
           ? this.files.filter((x) => !fileIds.includes(x.id))
-          : [];
+          : this.files;
         const folders = folderIds
           ? this.folders.filter((x) => !folderIds.includes(x.id))
-          : [];
+          : this.folders;
 
         const newFiles = [...files, ...res.files];
         const newFolders = [...folders, ...res.folders];
@@ -1957,6 +1986,16 @@ class FilesStore {
         pinned,
       } = item;
 
+      const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
+        item.providerKey,
+        "small"
+      );
+
+      const providerType =
+        RoomsProviderType[
+          Object.keys(RoomsProviderType).find((key) => key === item.providerKey)
+        ];
+
       const { canConvert, isMediaOrImage } = this.filesSettingsStore;
 
       const canOpenPlayer = isMediaOrImage(item.fileExst);
@@ -2069,6 +2108,8 @@ class FilesStore {
         isArchive,
         tags,
         pinned,
+        thirdPartyIcon,
+        providerType,
       };
     });
 
@@ -2592,13 +2633,13 @@ class FilesStore {
     // const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
     const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
 
-    console.log("hasMoreFiles isRooms", isRooms);
-    console.log("hasMoreFiles filesList", this.filesList.length);
-    console.log("hasMoreFiles this.filterTotal", this.filterTotal);
-    console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
-    console.log("hasMoreFiles filterTotal", filterTotal);
-    console.log("hasMoreFiles", this.filesList.length < filterTotal);
-    console.log("----------------------------");
+    // console.log("hasMoreFiles isRooms", isRooms);
+    // console.log("hasMoreFiles filesList", this.filesList.length);
+    // console.log("hasMoreFiles this.filterTotal", this.filterTotal);
+    // console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
+    // console.log("hasMoreFiles filterTotal", filterTotal);
+    // console.log("hasMoreFiles", this.filesList.length < filterTotal);
+    // console.log("----------------------------");
 
     if (this.isLoading) return false;
     return this.filesList.length < filterTotal;
@@ -2646,6 +2687,40 @@ class FilesStore {
 
     return Math.floor(sectionWidth / minTileWidth);
   };
+
+  setInvitationLinks = async (id, linkId, title, access) => {
+    return await api.rooms.setInvitationLinks(id, linkId, title, access);
+  };
+
+  resendEmailInvitations = async (id, usersIds) => {
+    return await api.rooms.resendEmailInvitations(id, usersIds);
+  };
+
+  getRoomSecurityInfo = async (id) => {
+    return await api.rooms.getRoomSecurityInfo(id);
+  };
+
+  setRoomSecurity = async (id, data) => {
+    return await api.rooms.setRoomSecurity(id, data);
+  };
+
+  get disableDrag() {
+    const {
+      isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = this.treeFoldersStore;
+
+    return (
+      isRecycleBinFolder ||
+      isRoomsFolder ||
+      isArchiveFolder ||
+      isFavoritesFolder ||
+      isRecentFolder
+    );
+  }
 }
 
 export default FilesStore;

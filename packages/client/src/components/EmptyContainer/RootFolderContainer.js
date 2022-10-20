@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
 import { withTranslation, Trans } from "react-i18next";
@@ -13,6 +14,13 @@ import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
+import PlusIcon from "@docspace/client/public/images/plus.react.svg";
+
+const StyledPlusIcon = styled(PlusIcon)`
+  path {
+    fill: #657077;
+  }
+`;
 
 const RootFolderContainer = (props) => {
   const {
@@ -37,17 +45,22 @@ const RootFolderContainer = (props) => {
     fetchRooms,
     setAlreadyFetchingRooms,
     categoryType,
+    isEmptyPage,
+    setIsEmptyPage,
+    isVisitor,
   } = props;
-  const myDescription = t("MyEmptyContainerDescription");
+  const personalDescription = t("PersonalEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
   const commonDescription = t("CommonEmptyContainerDescription");
-  const trashHeader = t("EmptyScreenFolder");
+  const emptyScreenHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
   const noFilesHeader = t("NoFilesHereYet");
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
-  const roomsDescription = t("RoomEmptyContainerDescription");
+  const roomsDescription = isVisitor
+    ? t("RoomEmptyContainerDescription")
+    : t("RoomEmptyContainerDescriptionUser");
   const archiveRoomsDescription = t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
@@ -59,18 +72,20 @@ const RootFolderContainer = (props) => {
     t("PrivateRoomDescriptionUnbreakable"),
   ];
 
+  const roomHeader = "Welcome to DocSpace";
+
   const [showLoader, setShowLoader] = React.useState(false);
-  const [isEmptyPage, setIsEmptyPage] = React.useState(false);
 
   React.useEffect(() => {
-    if (
-      rootFolderType !== FolderType.USER &&
-      rootFolderType !== FolderType.COMMON
-    ) {
+    if (rootFolderType !== FolderType.COMMON) {
       setIsEmptyPage(true);
     } else {
       setIsEmptyPage(false);
     }
+
+    return () => {
+      setIsEmptyPage(false);
+    };
   }, [isEmptyPage, setIsEmptyPage, rootFolderType]);
 
   const onGoToPersonal = () => {
@@ -106,8 +121,9 @@ const RootFolderContainer = (props) => {
     switch (rootFolderType) {
       case FolderType.USER:
         return {
-          descriptionText: myDescription,
-          imageSrc: "/static/images/empty_screen.png",
+          headerText: emptyScreenHeader,
+          descriptionText: personalDescription,
+          imageSrc: "images/empty_screen_personal.svg",
           buttons: commonButtons,
         };
       case FolderType.SHARE:
@@ -126,14 +142,14 @@ const RootFolderContainer = (props) => {
           headerText: noFilesHeader,
           descriptionText: favoritesDescription,
           imageSrc: "images/empty_screen_favorites.svg",
-          buttons: goToPersonalButtons,
+          buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Recent:
         return {
           headerText: noFilesHeader,
           descriptionText: recentDescription,
           imageSrc: "images/empty_screen_recent.svg",
-          buttons: goToPersonalButtons,
+          buttons: isVisitor ? null : goToPersonalButtons,
         };
       case FolderType.Privacy:
         return {
@@ -143,7 +159,7 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.TRASH:
         return {
-          headerText: trashHeader,
+          headerText: emptyScreenHeader,
           descriptionText: trashDescription,
           style: { gridColumnGap: "39px", gridTemplateColumns: "150px" },
           imageSrc: theme.isBase
@@ -153,10 +169,10 @@ const RootFolderContainer = (props) => {
         };
       case FolderType.Rooms:
         return {
-          headerText: "Welcome to DocSpace!",
+          headerText: roomHeader,
           descriptionText: roomsDescription,
           imageSrc: "images/empty_screen_corporate.png",
-          buttons: roomsButtons,
+          buttons: isVisitor ? null : roomsButtons,
         };
       case FolderType.Archive:
         return {
@@ -207,13 +223,13 @@ const RootFolderContainer = (props) => {
   const commonButtons = (
     <span>
       <div className="empty-folder_container-links">
-        <img
-          className="empty-folder_container_plus-image"
-          src="images/plus.svg"
+        <StyledPlusIcon
+          className="empty-folder_container-image"
           data-format="docx"
           onClick={onCreate}
           alt="plus_icon"
         />
+
         <Box className="flex-wrapper_container">
           <Link data-format="docx" onClick={onCreate} {...linkStyles}>
             {t("Document")},
@@ -222,7 +238,7 @@ const RootFolderContainer = (props) => {
             {t("Spreadsheet")},
           </Link>
           <Link data-format="pptx" onClick={onCreate} {...linkStyles}>
-            {t("Presentation")}
+            {t("Presentation")},
           </Link>
           <Link data-format="docxf" onClick={onCreate} {...linkStyles}>
             {t("Translations:NewForm")}
@@ -231,9 +247,8 @@ const RootFolderContainer = (props) => {
       </div>
 
       <div className="empty-folder_container-links">
-        <img
-          className="empty-folder_container_plus-image"
-          src="images/plus.svg"
+        <StyledPlusIcon
+          className="empty-folder_container-image"
           onClick={onCreate}
           alt="plus_icon"
         />
@@ -267,7 +282,7 @@ const RootFolderContainer = (props) => {
         alt="plus_icon"
       />
       <Link onClick={onCreateRoom} {...linkStyles}>
-        Create room
+        {t("CreateEditRoomDialog:CreateRoom")}
       </Link>
     </div>
   );
@@ -353,6 +368,8 @@ export default inject(
       fetchRooms,
       categoryType,
       setAlreadyFetchingRooms,
+      isEmptyPage,
+      setIsEmptyPage,
     } = filesStore;
     const { title, rootFolderType } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId } = treeFoldersStore;
@@ -361,6 +378,7 @@ export default inject(
       theme,
       isPrivacyFolder,
       isDesktop: isDesktopClient,
+      isVisitor: auth.userStore.user.isVisitor,
       isEncryptionSupport,
       organizationName,
       privacyInstructions,
@@ -375,6 +393,12 @@ export default inject(
       fetchRooms,
       categoryType,
       setAlreadyFetchingRooms,
+      isEmptyPage,
+      setIsEmptyPage,
     };
   }
-)(withTranslation("Files")(observer(RootFolderContainer)));
+)(
+  withTranslation(["Files", "CreateEditRoomDialog"])(
+    observer(RootFolderContainer)
+  )
+);

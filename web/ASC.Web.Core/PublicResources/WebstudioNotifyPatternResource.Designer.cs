@@ -1130,6 +1130,21 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to h1.Message from the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal
+        ///
+        ///Name: $UserName
+        ///
+        ///Email: $UserEmail
+        ///
+        ///$Body.
+        /// </summary>
+        public static string pattern_for_sales_notify {
+            get {
+                return ResourceManager.GetString("pattern_for_sales_notify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to h1.Invitation to join &quot;${__VirtualRootPath}&quot;:&quot;$InviteLink&quot; portal
         ///
         ///Hello,
@@ -2867,6 +2882,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_for_admin_notify {
             get {
                 return ResourceManager.GetString("subject_for_admin_notify", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sales department request.
+        /// </summary>
+        public static string subject_for_sales_notify {
+            get {
+                return ResourceManager.GetString("subject_for_sales_notify", resourceCulture);
             }
         }
         

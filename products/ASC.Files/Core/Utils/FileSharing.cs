@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core;
+
 namespace ASC.Web.Files.Utils;
 
 [Scope]
@@ -44,6 +46,7 @@ public class FileSharingAceHelper<T>
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly RoomLinkService _roomLinkService;
     private readonly StudioNotifyService _studioNotifyService;
+    private readonly UsersInRoomChecker _usersInRoomChecker;
     private readonly ILogger _logger;
 
     public FileSharingAceHelper(
@@ -62,7 +65,8 @@ public class FileSharingAceHelper<T>
         FilesSettingsHelper filesSettingsHelper,
         RoomLinkService roomLinkService,
         StudioNotifyService studioNotifyService,
-        ILoggerProvider loggerProvider)
+        ILoggerProvider loggerProvider,
+        UsersInRoomChecker usersInRoomChecker)
     {
         _fileSecurity = fileSecurity;
         _coreBaseSettings = coreBaseSettings;
@@ -79,6 +83,7 @@ public class FileSharingAceHelper<T>
         _fileSecurityCommon = fileSecurityCommon;
         _roomLinkService = roomLinkService;
         _studioNotifyService = studioNotifyService;
+        _usersInRoomChecker = usersInRoomChecker;
         _logger = loggerProvider.CreateLogger("ASC.Files");
     }
 
@@ -106,6 +111,9 @@ public class FileSharingAceHelper<T>
         var changed = false;
 
         aceWrappers = advancedSettings is not { InvitationLink: true } ? await FilterForRoomsAsync(entry, aceWrappers) : aceWrappers;
+
+        var shares = (await _fileSecurity.GetSharesAsync(entry)).ToList();
+        var i = 1;
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
@@ -139,6 +147,11 @@ public class FileSharingAceHelper<T>
                 share = w.Access == FileShare.Restrict || !_filesSettingsHelper.ExternalShare
                     ? FileShare.None
                     : w.Access;
+            }
+
+            if (entry.RootFolderType == FolderType.VirtualRooms && !shares.Any(r => r.Subject == w.Id))
+            {
+                _usersInRoomChecker.CheckAdd(shares.Count + (i++));
             }
 
             await _fileSecurity.ShareAsync(entry.Id, entryType, w.Id, share, w.SubjectType, w.FileShareOptions);
@@ -301,7 +314,7 @@ public class FileSharingAceHelper<T>
                 continue;
             }
 
-            if (await _fileSecurity.CanEditRoomAsync(entry, ace.Id))
+            if (await _fileSecurity.CanEditRoomAsync(entry, ace.Id) && !isAdmin)
             {
                 continue;
             }

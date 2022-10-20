@@ -56,6 +56,20 @@ const StyledDropdownItem = styled.div`
             ? props.theme.dropDownItem.icon.disableColor
             : props.theme.dropDownItem.icon.color};
       }
+
+      circle[fill] {
+        fill: ${(props) =>
+          props.disabled
+            ? props.theme.dropDownItem.icon.disableColor
+            : props.theme.dropDownItem.icon.color};
+      }
+
+      rect[fill] {
+        fill: ${(props) =>
+          props.disabled
+            ? props.theme.dropDownItem.icon.disableColor
+            : props.theme.dropDownItem.icon.color};
+      }
     }
   }
 
@@ -103,6 +117,7 @@ const StyledDropdownItem = styled.div`
 
     @media ${tablet} {
     line-height: ${(props) => props.theme.dropDownItem.tabletLineHeight};
+    padding: ${(props) => props.theme.dropDownItem.tabletPadding};
   }
 
   ${(props) => props.disabled && disabledAndHeaderStyle}

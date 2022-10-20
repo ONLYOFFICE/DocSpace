@@ -61,8 +61,7 @@ const filesStore = new FilesStore(
   selectedFolderStore,
   treeFoldersStore,
   settingsStore,
-  selectFolderDialogStore,
-  selectFileDialogStore
+  thirdPartyStore
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(
@@ -129,6 +128,12 @@ const profileActionsStore = new ProfileActionsStore(
   treeFoldersStore,
   selectedFolderStore
 );
+
+authStore.infoPanelStore.authStore = authStore;
+authStore.infoPanelStore.settingsStore = settingsStore;
+authStore.infoPanelStore.peopleStore = peopleStore;
+authStore.infoPanelStore.selectedFolderStore = selectedFolderStore;
+authStore.infoPanelStore.treeFoldersStore = treeFoldersStore;
 
 const store = {
   auth: authStore,

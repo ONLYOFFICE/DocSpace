@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core;
+
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -81,10 +83,11 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly ILogger _logger;
     private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
+    private readonly CountRoomChecker _countRoomChecker;
+    private readonly CountRoomCheckerStatistic _countRoomCheckerStatistic;
     private readonly RoomLinkService _roomLinkService;
     private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
     private readonly StudioNotifyService _studioNotifyService;
-
     public FileStorageService(
         Global global,
         GlobalStore globalStore,
@@ -136,6 +139,8 @@ public class FileStorageService<T> //: IFileStorageService
         ThumbnailSettings thumbnailSettings,
         FileShareParamsHelper fileShareParamsHelper,
         EncryptionLoginProvider encryptionLoginProvider,
+        CountRoomChecker countRoomChecker,
+        CountRoomCheckerStatistic countRoomCheckerStatistic,
         RoomLinkService roomLinkService,
         DocSpaceLinkHelper docSpaceLinkHelper,
         StudioNotifyService studioNotifyService)
@@ -190,6 +195,8 @@ public class FileStorageService<T> //: IFileStorageService
         _thumbnailSettings = thumbnailSettings;
         _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
+        _countRoomChecker = countRoomChecker;
+        _countRoomCheckerStatistic = countRoomCheckerStatistic;
         _roomLinkService = roomLinkService;
         _docSpaceLinkHelper = docSpaceLinkHelper;
         _studioNotifyService = studioNotifyService;
@@ -266,7 +273,8 @@ public class FileStorageService<T> //: IFileStorageService
         SearchArea searchArea = SearchArea.Active,
         bool withoutTags = false,
         IEnumerable<string> tagNames = null,
-        bool excludeSubject = false)
+        bool excludeSubject = false,
+        ProviderFilter provider = ProviderFilter.None)
     {
         var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
@@ -316,7 +324,7 @@ public class FileStorageService<T> //: IFileStorageService
         try
         {
             (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea,
-                withoutTags, tagNames, excludeSubject);
+                withoutTags, tagNames, excludeSubject, provider);
         }
         catch (Exception e)
         {
@@ -463,6 +471,8 @@ public class FileStorageService<T> //: IFileStorageService
     public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
+
+        await _countRoomChecker.CheckAppend();
 
         if (@private && (share == null || !share.Any()))
         {
@@ -1583,7 +1593,7 @@ public class FileStorageService<T> //: IFileStorageService
             var folderDao = GetFolderDao();
             folder = await folderDao.GetFolderAsync(folderId);
 
-            var result = await _fileMarker.MarkedItemsAsync(folder).ToListAsync();
+            var result = await _fileMarker.MarkedItemsAsync(folder).Where(e => e.FileEntryType == FileEntryType.File).ToListAsync();
 
             result = new List<FileEntry>(_entryManager.SortEntries<T>(result, new OrderBy(SortedByType.DateAndTime, false)));
 

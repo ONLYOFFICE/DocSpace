@@ -61,6 +61,8 @@ public class UserManager
     private readonly CardDavAddressbook _cardDavAddressbook;
     private readonly ILogger<UserManager> _log;
     private readonly ICache _cache;
+    private readonly TenantQuotaFeatureCheckerCount<CountManagerFeature> _tenantQuotaFeatureChecker;
+    private readonly TenantQuotaFeatureCheckerCount<CountUserFeature> _activeUsersFeatureChecker;
     private readonly Constants _constants;
 
     private Tenant _tenant;
@@ -82,7 +84,10 @@ public class UserManager
         RadicaleClient radicaleClient,
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
-        ICache cache)
+        ICache cache,
+        TenantQuotaFeatureCheckerCount<CountManagerFeature> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker
+        )
     {
         _userService = service;
         _tenantManager = tenantManager;
@@ -95,6 +100,8 @@ public class UserManager
         _cardDavAddressbook = cardDavAddressbook;
         _log = log;
         _cache = cache;
+        _tenantQuotaFeatureChecker = tenantQuotaFeatureChecker;
+        _activeUsersFeatureChecker = activeUsersFeatureChecker;
         _constants = _userManagerConstants.Constants;
     }
 
@@ -110,8 +117,10 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
+        TenantQuotaFeatureCheckerCount<CountManagerFeature> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
         IHttpContextAccessor httpContextAccessor)
-        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache)
+        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker)
     {
         _accessor = httpContextAccessor;
     }
@@ -325,27 +334,6 @@ public class UserManager
             {
                 throw new TenantQuotaException("Maximum number of users exceeded");
             }
-
-            if (u.Status == EmployeeStatus.Active)
-            {
-                if (isVisitor)
-                {
-                    var maxUsers = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).ActiveUsers;
-                    var visitors = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id).Free ? 0 : _constants.CoefficientOfVisitors;
-                    if (!_coreBaseSettings.Standalone && GetUsersByGroup(Constants.GroupVisitor.ID).Length > visitors * maxUsers)
-                    {
-                        throw new TenantQuotaException("Maximum number of visitors exceeded");
-                    }
-                }
-                else
-                {
-                    var q = _tenantManager.GetTenantQuota(_tenantManager.GetCurrentTenant().Id);
-                    if (q.ActiveUsers < GetUsersByGroup(Constants.GroupUser.ID).Length)
-                    {
-                        throw new TenantQuotaException(string.Format("Exceeds the maximum active users ({0})", q.ActiveUsers));
-                    }
-                }
-            }
         }
 
         if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
@@ -354,6 +342,19 @@ public class UserManager
         }
 
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+
+        if (Equals(oldUserData, Constants.LostUser))
+        {
+            if (isVisitor)
+            {
+                _activeUsersFeatureChecker.CheckAppend().Wait();
+            }
+            else
+            {
+                _tenantQuotaFeatureChecker.CheckAppend().Wait();
+            }
+        }
+
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
 
         if (syncCardDav)
@@ -534,7 +535,7 @@ public class UserManager
     {
         if (_coreBaseSettings.Personal)
         {
-            return new List<GroupInfo> { Constants.GroupUser, Constants.GroupEveryone };
+            return new List<GroupInfo> { Constants.GroupManager, Constants.GroupEveryone };
         }
 
         var httpRequestDictionary = new HttpRequestDictionary<List<GroupInfo>>(_accessor?.HttpContext, "GroupInfo");
@@ -611,7 +612,7 @@ public class UserManager
 
         ResetGroupCache(userId);
         var user = GetUsers(userId);
-        if (groupId == Constants.GroupVisitor.ID)
+        if (groupId == Constants.GroupUser.ID)
         {
             var tenant = _tenantManager.GetCurrentTenant();
             var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
@@ -830,20 +831,20 @@ public class UserManager
         {
             return true;
         }
-        if (groupId == Constants.GroupVisitor.ID && userId == Constants.OutsideUser.Id)
+        if (groupId == Constants.GroupUser.ID && userId == Constants.OutsideUser.Id)
         {
             return true;
         }
 
         UserGroupRef r;
-        if (groupId == Constants.GroupUser.ID || groupId == Constants.GroupVisitor.ID)
+        if (groupId == Constants.GroupManager.ID || groupId == Constants.GroupUser.ID)
         {
-            var visitor = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupVisitor.ID, UserGroupRefType.Contains), out r) && !r.Removed;
-            if (groupId == Constants.GroupVisitor.ID)
+            var visitor = refs.TryGetValue(UserGroupRef.CreateKey(Tenant.Id, userId, Constants.GroupUser.ID, UserGroupRefType.Contains), out r) && !r.Removed;
+            if (groupId == Constants.GroupUser.ID)
             {
                 return visitor;
             }
-            if (groupId == Constants.GroupUser.ID)
+            if (groupId == Constants.GroupManager.ID)
             {
                 return !visitor;
             }

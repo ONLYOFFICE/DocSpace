@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { isDesktop } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
@@ -18,10 +18,10 @@ import ToggleSSO from "./sub-components/ToggleSSO";
 import ForbiddenPage from "../../ForbiddenPage";
 
 const SingleSignOn = (props) => {
-  const { load, serviceProviderSettings, spMetadata } = props;
+  const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
   const { t } = useTranslation("SingleSignOn");
 
-  if (!isDesktop) return <ForbiddenPage />;
+  if (isMobile) return <ForbiddenPage />;
 
   useEffect(() => {
     load();
@@ -31,13 +31,15 @@ const SingleSignOn = (props) => {
     <StyledSsoPage
       hideSettings={serviceProviderSettings}
       hideMetadata={spMetadata}
+      isSettingPaid={isSSOAvailable}
     >
-      <ToggleSSO />
+      <ToggleSSO isSSOAvailable={isSSOAvailable} />
 
       <HideButton
         text={t("ServiceProviderSettings")}
         label="serviceProviderSettings"
         value={serviceProviderSettings}
+        isDisabled={!isSSOAvailable}
       />
 
       <Box className="service-provider-settings">
@@ -58,6 +60,7 @@ const SingleSignOn = (props) => {
         text={t("SpMetadata")}
         label="spMetadata"
         value={spMetadata}
+        isDisabled={!isSSOAvailable}
       />
 
       <Box className="sp-metadata">
@@ -67,8 +70,16 @@ const SingleSignOn = (props) => {
   );
 };
 
-export default inject(({ ssoStore }) => {
+export default inject(({ auth, ssoStore }) => {
+  const { currentQuotaStore } = auth;
+  const { isSSOAvailable } = currentQuotaStore;
+
   const { load, serviceProviderSettings, spMetadata } = ssoStore;
 
-  return { load, serviceProviderSettings, spMetadata };
+  return {
+    load,
+    serviceProviderSettings,
+    spMetadata,
+    isSSOAvailable,
+  };
 })(observer(SingleSignOn));

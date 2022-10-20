@@ -23,11 +23,7 @@ const ArticleHeader = ({
   const history = useHistory();
 
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
-
-  const onLogoClick = () => {
-    if (showText && isTabletView) onClick();
-    else history.push("/");
-  };
+  const onLogoClick = () => history.push("/");
 
   if (isMobileOnly) return <></>;
   return (
@@ -36,7 +32,7 @@ const ArticleHeader = ({
         <Loaders.ArticleHeader height="28px" width="28px" />
       ) : (
         <StyledIconBox name="article-burger" showText={showText}>
-          <img src="/static/images/logo.icon.react.svg" onClick={onClick} />
+          <img src="/static/images/logo.icon.react.svg" onClick={onLogoClick} />
         </StyledIconBox>
       )}
 

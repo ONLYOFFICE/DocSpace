@@ -108,7 +108,13 @@ class ComboBox extends React.Component {
       isPersonal,
       offsetLeft,
       modernView,
+      withBackdrop,
+
+      advancedOptionsCount,
     } = this.props;
+
+    const { tabIndex, ...props } = this.props;
+
     const { isOpen, selectedOption } = this.state;
 
     const dropDownMaxHeightProp = dropDownMaxHeight
@@ -130,6 +136,14 @@ class ComboBox extends React.Component {
 
     const withAdvancedOptions = !!advancedOptions?.props.children;
 
+    let optionsCount = optionsLength;
+
+    if (withAdvancedOptions) {
+      optionsCount = advancedOptionsCount ? advancedOptionsCount : 6;
+    }
+
+    const disableMobileView = optionsCount < 5;
+
     return (
       <StyledComboBox
         ref={this.ref}
@@ -140,7 +154,8 @@ class ComboBox extends React.Component {
         onClick={this.comboBoxClick}
         toggleAction={toggleAction}
         isOpen={isOpen}
-        {...this.props}
+        disableMobileView={disableMobileView}
+        {...props}
       >
         <ComboButton
           noBorder={noBorder}
@@ -157,6 +172,7 @@ class ComboBox extends React.Component {
           comboIcon={comboIcon}
           modernView={modernView}
           fillIcon={fillIcon}
+          tabIndex={tabIndex}
         />
         {displayType !== "toggle" && (
           <DropDown
@@ -179,6 +195,7 @@ class ComboBox extends React.Component {
             isExternalLink={isExternalLink}
             isPersonal={isPersonal}
             offsetLeft={offsetLeft}
+            withBackdrop={withBackdrop}
           >
             {advancedOptions
               ? advancedOptions
@@ -228,6 +245,8 @@ ComboBox.propTypes = {
   id: PropTypes.string,
   /** Accepts id for dropdown container */
   dropDownId: PropTypes.string,
+  /** Indicates that component will have backdrop */
+  withBackdrop: PropTypes.bool,
   /** Indicates that component is disabled */
   isDisabled: PropTypes.bool,
   /** Indicates that component is displayed without borders */
@@ -276,6 +295,10 @@ ComboBox.propTypes = {
 
   /**Tell when combo-box should displaying at modern view */
   modernView: PropTypes.bool,
+
+  /**Count of advanced options  */
+  advancedOptionsCount: PropTypes.number,
+  tabIndex: PropTypes.number,
 };
 
 ComboBox.defaultProps = {
@@ -295,6 +318,7 @@ ComboBox.defaultProps = {
   disableItemClick: false,
   isExternalLink: false,
   modernView: false,
+  tabIndex: -1,
 };
 
 export default ComboBox;

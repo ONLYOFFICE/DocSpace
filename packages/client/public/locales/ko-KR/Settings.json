@@ -67,7 +67,7 @@
   "Guests": "게스트",
   "Job/Title": "직책",
   "LanguageAndTimeZoneSettingsDescription": "모든 포털 사용자에 대해 언어를 변경하고 시간대를 설정하여 모든 포털 이벤트의 정확한 날짜와 시간이 표시되도록 하세요.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0>은 모든 포털 사용자에 대해 전체 포털의 언어를 변경하고 ONLYOFFICE 포털의 모든 이벤트가 올바른 날짜 및 시각으로 표시되도록 시간대를 구성하는 방법입니다.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0>은 모든 포털 사용자에 대해 전체 포털의 언어를 변경하고 {{ organizationName }} 포털의 모든 이벤트가 올바른 날짜 및 시각으로 표시되도록 시간대를 구성하는 방법입니다.",
   "LanguageTimeSettingsTooltipDescription": "설정한 매개변수를 적용하려면, 섹션 하단의 <1>{{save}}</1> 버큰을 클릭하세요.<3>{{learnMore}}</3>",
   "LocalFile": "로컬 파일",
   "LogoDocsEditor": "편집기 헤더 로고",

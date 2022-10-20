@@ -39,13 +39,11 @@ public class TenantRegistrationInfo
     public string PasswordHash { get; set; }
     public EmployeeActivationStatus ActivationStatus { get; set; }
     public string HostedRegion { get; set; }
-    public string PartnerId { get; set; }
     public string AffiliateId { get; set; }
     public TenantIndustry Industry { get; set; }
     public bool Spam { get; set; }
     public bool Calls { get; set; }
     public string Campaign { get; set; }
-    public bool LimitedControlPanel { get; set; }
 
     public TenantRegistrationInfo()
     {

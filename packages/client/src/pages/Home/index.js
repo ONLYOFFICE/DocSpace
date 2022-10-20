@@ -22,7 +22,6 @@ import {
   SectionHeaderContent,
   SectionPagingContent,
 } from "./Section";
-import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 import MediaViewer from "./MediaViewer";
 import DragTooltip from "../../components/DragTooltip";
 import { observer, inject } from "mobx-react";
@@ -32,6 +31,7 @@ import { Events } from "@docspace/common/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
+import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -82,6 +82,7 @@ class PureHome extends React.Component {
 
     if (
       categoryType == CategoryType.Shared ||
+      categoryType == CategoryType.SharedRoom ||
       categoryType == CategoryType.Archive
     ) {
       filterObj = RoomsFilter.getFilter(window.location);
@@ -254,8 +255,12 @@ class PureHome extends React.Component {
       setDragging,
       dragging,
       uploadEmptyFolders,
+      disableDrag,
     } = this.props;
     dragging && setDragging(false);
+
+    if (disableDrag) return;
+
     const emptyFolders = files.filter((f) => f.isEmptyDirectory);
 
     if (emptyFolders.length > 0) {
@@ -479,7 +484,7 @@ class PureHome extends React.Component {
       showFilter,
       frameConfig,
       withPaging,
-      isEmptyFilesList,
+      isEmptyPage,
     } = this.props;
 
     if (window.parent && !frameConfig) {
@@ -524,7 +529,7 @@ class PureHome extends React.Component {
             )}
           </Section.SectionHeader>
 
-          {!isEmptyFilesList && (
+          {!isEmptyPage && (
             <Section.SectionFilter>
               {isFrame ? (
                 showFilter && <SectionFilterContent />
@@ -607,12 +612,22 @@ export default inject(
       createRoom,
       refreshFiles,
       setViewAs,
-      isEmptyFilesList,
+      isEmptyPage,
+
+      disableDrag,
     } = filesStore;
 
     const { gallerySelected } = oformsStore;
 
-    const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+    const {
+      isRecycleBinFolder,
+      isPrivacyFolder,
+
+      expandedKeys,
+      setExpandedKeys,
+      isRoomsFolder,
+      isArchiveFolder,
+    } = treeFoldersStore;
 
     const {
       visible: primaryProgressDataVisible,
@@ -703,6 +718,12 @@ export default inject(
       itemsSelectionLength,
       itemsSelectionTitle,
 
+      isRoomsFolder,
+      isArchiveFolder,
+
+      disableDrag,
+
+      setExpandedKeys,
       setFirstLoad,
       setDragging,
       setIsLoading,
@@ -741,7 +762,7 @@ export default inject(
       refreshFiles,
       setViewAs,
       withPaging,
-      isEmptyFilesList,
+      isEmptyPage,
     };
   }
 )(withRouter(observer(Home)));

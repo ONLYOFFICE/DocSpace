@@ -5,12 +5,7 @@ import PropTypes from "prop-types";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
-import ToggleContent from "@docspace/components/toggle-content";
-import Checkbox from "@docspace/components/checkbox";
-import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-scrollbars-virtual-list";
 
-import { FixedSizeList as List, areEqual } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import { EmployeeStatus } from "@docspace/common/constants";
@@ -21,104 +16,64 @@ class ChangeUserStatusDialogComponent extends React.Component {
   constructor(props) {
     super(props);
 
-    const { userIds, selectedUsers } = props;
-
-    const listUsers = selectedUsers.map((item, index) => {
-      const disabled = userIds.find((x) => x === item.id);
-
-      return {
-        ...selectedUsers[index],
-        checked: disabled ? true : false,
-        disabled: disabled ? false : true,
-      };
-    });
-
-    this.state = { isRequestRunning: false, listUsers, userIds };
+    this.state = { isRequestRunning: false };
   }
 
   onChangeUserStatus = () => {
     const {
       updateUserStatus,
-      userStatus,
+      status,
       t,
       setSelected,
       onClose,
+      userIDs,
+      getPeopleListItem,
+      setSelection,
+      infoPanelVisible,
     } = this.props;
-    const { userIds } = this.state;
+
+    let usersCount = 0;
+
     this.setState({ isRequestRunning: true }, () => {
-      updateUserStatus(userStatus, userIds)
-        .then(() =>
-          toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
-        )
+      updateUserStatus(status, userIDs)
+        .then((users) => {
+          if (users.length === 1 && infoPanelVisible) {
+            const user = getPeopleListItem(users[0]);
+
+            setSelection(user);
+          }
+
+          usersCount = users.length;
+        })
         .catch((error) => toastr.error(error))
         .finally(() => {
           this.setState({ isRequestRunning: false }, () => {
-            setSelected("close");
+            toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"));
+            (!infoPanelVisible || usersCount !== 1) && setSelected("close");
             onClose();
           });
         });
     });
   };
 
-  onChange = (e) => {
-    const { listUsers } = this.state;
-    const userIndex = listUsers.findIndex((x) => x.id === e.target.value);
-    const newUsersList = listUsers;
-    newUsersList[userIndex].checked = !newUsersList[userIndex].checked;
+  onCloseAction = () => {
+    const { onClose } = this.props;
+    const { isRequestRunning } = this.state;
 
-    const newUserIds = [];
-
-    for (let item of newUsersList) {
-      if (item.checked === true) {
-        newUserIds.push(item.id);
-      }
-    }
-
-    this.setState({ listUsers: newUsersList, userIds: newUserIds });
+    !isRequestRunning && onClose();
   };
 
   render() {
-    const { t, tReady, onClose, visible, userStatus } = this.props;
-    const { listUsers, isRequestRunning, userIds } = this.state;
-    const containerStyles = { height: listUsers.length * 25, maxHeight: 220 };
-    const itemSize = 25;
-
-    const renderItems = memo(({ data, index, style }) => {
-      return (
-        <Checkbox
-          truncate
-          style={style}
-          className="modal-dialog-checkbox"
-          value={data[index].id}
-          onChange={this.onChange}
-          key={`checkbox_${index}`}
-          isChecked={data[index].checked}
-          label={data[index].displayName}
-          isDisabled={data[index].disabled}
-        />
-      );
-    }, areEqual);
-
-    const renderList = ({ height, width }) => (
-      <List
-        className="List"
-        height={height}
-        width={width}
-        itemSize={itemSize}
-        itemCount={listUsers.length}
-        itemData={listUsers}
-        outerElementType={CustomScrollbarsVirtualList}
-      >
-        {renderItems}
-      </List>
-    );
+    const { t, tReady, visible, status, userIDs } = this.props;
+    const { isRequestRunning } = this.state;
 
     const statusTranslation =
-      userStatus === EmployeeStatus.Active
+      status === EmployeeStatus.Active
         ? t("ChangeUsersActiveStatus")
         : t("ChangeUsersDisableStatus");
+
     const userStatusTranslation =
-      userStatus === EmployeeStatus.Active
+      status === EmployeeStatus.Active
         ? t("PeopleTranslations:DisabledEmployeeStatus")
         : t("Common:Active");
 
@@ -126,7 +81,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
       <ModalDialogContainer
         isLoading={!tReady}
         visible={visible}
-        onClose={onClose}
+        onClose={this.onCloseAction}
         autoMaxHeight
       >
         <ModalDialog.Header>
@@ -149,13 +104,13 @@ class ChangeUserStatusDialogComponent extends React.Component {
             scale
             onClick={this.onChangeUserStatus}
             isLoading={isRequestRunning}
-            isDisabled={!userIds.length}
+            isDisabled={userIDs.length === 0}
           />
           <Button
             label={t("Common:CancelButton")}
             size="normal"
             scale
-            onClick={onClose}
+            onClick={this.onCloseAction}
             isDisabled={isRequestRunning}
           />
         </ModalDialog.Footer>
@@ -174,26 +129,26 @@ ChangeUserStatusDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   setSelected: PropTypes.func.isRequired,
-  userIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-  selectedUsers: PropTypes.arrayOf(PropTypes.object).isRequired,
+  userIDs: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default withRouter(
-  inject(({ peopleStore }, ownProps) => {
-    const updateUserStatus = peopleStore.usersStore.updateUserStatus;
-
-    const selectedUsers = peopleStore.selectionStore.selection;
+  inject(({ peopleStore, auth }) => {
     const setSelected = peopleStore.selectionStore.setSelected;
-    const userIds =
-      ownProps.userStatus === EmployeeStatus.Active
-        ? peopleStore.selectionStore.getUsersToActivateIds
-        : peopleStore.selectionStore.getUsersToDisableIds;
+
+    const { getPeopleListItem, updateUserStatus } = peopleStore.usersStore;
+
+    const { setSelection, isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     return {
       updateUserStatus,
-      selectedUsers,
+
       setSelected,
-      userIds,
+
+      getPeopleListItem,
+
+      setSelection,
+      infoPanelVisible,
     };
   })(observer(ChangeUserStatusDialog))
 );

@@ -34,7 +34,7 @@ const StyledCatalogItemHeaderContainer = styled.div`
 
   height: 24px;
 
-  padding: 8px 12px 4px;
+  padding: 7px 12px 4px;
 
   box-sizing: border-box;
 
@@ -44,7 +44,7 @@ const StyledCatalogItemHeaderContainer = styled.div`
     font-style: normal;
     font-weight: 600;
     font-size: 11px;
-    line-height: 12px;
+    line-height: 14px;
     color: #a3a9ae;
   }
 

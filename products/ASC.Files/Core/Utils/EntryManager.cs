@@ -374,7 +374,7 @@ public class EntryManager
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId,
         string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null,
-        bool excludeSubject = false)
+        bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None)
     {
         var total = 0;
 
@@ -457,7 +457,7 @@ public class EntryManager
         }
         else if ((parent.FolderType == FolderType.VirtualRooms || parent.FolderType == FolderType.Archive) && !parent.ProviderEntry)
         {
-            entries = await _fileSecurity.GetVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject);
+            entries = await _fileSecurity.GetVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject, provider);
 
             CalculateTotal();
         }
@@ -722,10 +722,10 @@ public class EntryManager
         var tagDao = _daoFactory.GetTagDao<int>();
         var tags = tagDao.GetTagsAsync(_authContext.CurrentAccount.ID, TagType.Favorite);
 
-        var fileIdsInt = Enumerable.Empty<int>();
-        var fileIdsString = Enumerable.Empty<string>();
-        var folderIdsInt = Enumerable.Empty<int>();
-        var folderIdsString = Enumerable.Empty<string>();
+        var fileIdsInt = new List<int>();
+        var fileIdsString = new List<string>();
+        var folderIdsInt = new List<int>();
+        var folderIdsString = new List<string>();
 
         await foreach (var tag in tags)
         {
@@ -733,22 +733,22 @@ public class EntryManager
             {
                 if (tag.EntryId is int)
                 {
-                    fileIdsInt.Append((int)tag.EntryId);
+                    fileIdsInt.Add((int)tag.EntryId);
                 }
                 else if (tag.EntryId is string)
                 {
-                    fileIdsString.Append((string)tag.EntryId);
+                    fileIdsString.Add((string)tag.EntryId);
                 }
             }
             else
             {
                 if (tag.EntryId is int)
                 {
-                    folderIdsInt.Append((int)tag.EntryId);
+                    folderIdsInt.Add((int)tag.EntryId);
                 }
                 else if (tag.EntryId is string)
                 {
-                    folderIdsString.Append((string)tag.EntryId);
+                    folderIdsString.Add((string)tag.EntryId);
                 }
             }
         }

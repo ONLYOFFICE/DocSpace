@@ -157,6 +157,13 @@ export function setGreetingSettings(title) {
   });
 }
 
+export function getGreetingSettingsIsDefault() {
+  return request({
+    method: "get",
+    url: `/settings/greetingsettings/isDefault.json`,
+  });
+}
+
 export function restoreGreetingSettings() {
   return request({
     method: "post",
@@ -214,6 +221,38 @@ export function restoreWhiteLabelSettings(isDefault) {
     method: "put",
     url: "/settings/whitelabel/restore.json",
     data: { isDefault },
+  });
+}
+
+export function setCompanyInfoSettings(
+  address,
+  companyName,
+  email,
+  phone,
+  site
+) {
+  const data = {
+    settings: { address, companyName, email, phone, site },
+  };
+
+  return request({
+    method: "post",
+    url: `/settings/rebranding/company.json`,
+    data,
+  });
+}
+
+export function getCompanyInfoSettings() {
+  return request({
+    method: "get",
+    url: `/settings/rebranding/company.json`,
+  });
+}
+
+export function restoreCompanyInfoSettings() {
+  return request({
+    method: "delete",
+    url: `/settings/rebranding/company.json`,
   });
 }
 
@@ -617,4 +656,11 @@ export function getStorageRegions() {
     url: "/settings/storage/s3/regions",
   };
   return request(options);
+}
+
+export function getPortalQuota() {
+  return request({
+    method: "get",
+    url: `/settings/quota`,
+  });
 }

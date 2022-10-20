@@ -453,14 +453,14 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             _ => FolderType.DEFAULT,
         };
 
-        return rooms.Where(f => f.FolderType == filter || filter == FolderType.DEFAULT);
+        return rooms.Where(f => f != null && (f.FolderType == filter || filter == FolderType.DEFAULT));
     }
 
     protected IAsyncEnumerable<Folder<string>> FilterBySubject(IAsyncEnumerable<Folder<string>> rooms, Guid subjectId, bool excludeSubject)
     {
         if (subjectId != Guid.Empty)
         {
-            rooms = excludeSubject ? rooms.Where(f => f.CreateBy != subjectId) : rooms.Where(f => f.CreateBy == subjectId);
+            rooms = excludeSubject ? rooms.Where(f => f != null && f.CreateBy != subjectId) : rooms.Where(f => f != null && f.CreateBy == subjectId);
         }
 
         return rooms;
@@ -594,7 +594,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.FromResult(tagInfo);
     }
 
-    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
+    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
         return new List<Tag>();
     }
@@ -604,7 +604,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return new List<Tag>();
     }
 
-    public void UpdateNewTags(IEnumerable<Tag> tag)
+    public void UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
     }
 
@@ -645,7 +645,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var entryIDs = await filesDbContext.ThirdpartyIdMapping
-                   .Where(r => r.Id.StartsWith(parentFolder.Id))
+                   .Where(r => r.Id.StartsWith(PathPrefix))
                    .Select(r => r.HashId)
                    .ToListAsync();
 

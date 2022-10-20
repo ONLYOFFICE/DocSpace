@@ -14,6 +14,7 @@ import {
   SendInviteDialog,
   DeleteUsersDialog,
   InviteDialog,
+  ChangeNameDialog,
 } from "SRC_DIR/components/dialogs";
 
 const Dialogs = ({
@@ -24,13 +25,17 @@ const Dialogs = ({
   deleteProfileEver,
   data,
   closeDialogs,
-  employeeDialogVisible,
+  changeUserTypeDialogVisible,
   guestDialogVisible,
-  activeDialogVisible,
+  changeUserStatusDialogVisible,
   disableDialogVisible,
   sendInviteDialogVisible,
   deleteDialogVisible,
   invitationDialogVisible,
+
+  changeNameVisible,
+  setChangeNameVisible,
+  profile,
 }) => {
   return (
     <>
@@ -65,34 +70,22 @@ const Dialogs = ({
           user={data}
         />
       )}
-      {employeeDialogVisible && (
+      {changeUserTypeDialogVisible && (
         <ChangeUserTypeDialog
-          visible={employeeDialogVisible}
+          visible={changeUserTypeDialogVisible}
           onClose={closeDialogs}
-          userType={EmployeeType.User}
+          {...data}
         />
       )}
-      {guestDialogVisible && (
-        <ChangeUserTypeDialog
-          visible={guestDialogVisible}
-          onClose={closeDialogs}
-          userType={EmployeeType.Guest}
-        />
-      )}
-      {activeDialogVisible && (
+
+      {changeUserStatusDialogVisible && (
         <ChangeUserStatusDialog
-          visible={activeDialogVisible}
+          visible={changeUserStatusDialogVisible}
           onClose={closeDialogs}
-          userStatus={EmployeeStatus.Active}
+          {...data}
         />
       )}
-      {disableDialogVisible && (
-        <ChangeUserStatusDialog
-          visible={disableDialogVisible}
-          onClose={closeDialogs}
-          userStatus={EmployeeStatus.Disabled}
-        />
-      )}
+
       {sendInviteDialogVisible && (
         <SendInviteDialog
           visible={sendInviteDialogVisible}
@@ -113,11 +106,19 @@ const Dialogs = ({
           onCloseButton={closeDialogs}
         />
       )}
+      {changeNameVisible && (
+        <ChangeNameDialog
+          visible={changeNameVisible}
+          onClose={() => setChangeNameVisible(false)}
+          profile={profile}
+          fromList
+        />
+      )}
     </>
   );
 };
 
-export default inject(({ peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   const {
     changeEmail,
     changePassword,
@@ -127,14 +128,21 @@ export default inject(({ peopleStore }) => {
     data,
     closeDialogs,
 
-    employeeDialogVisible,
+    changeUserTypeDialogVisible,
     guestDialogVisible,
-    activeDialogVisible,
+    changeUserStatusDialogVisible,
     disableDialogVisible,
     sendInviteDialogVisible,
     deleteDialogVisible,
     invitationDialogVisible,
   } = peopleStore.dialogStore;
+
+  const { user: profile } = auth.userStore;
+
+  const {
+    changeNameVisible,
+    setChangeNameVisible,
+  } = peopleStore.targetUserStore;
 
   return {
     changeEmail,
@@ -145,12 +153,16 @@ export default inject(({ peopleStore }) => {
     data,
     closeDialogs,
 
-    employeeDialogVisible,
+    changeUserTypeDialogVisible,
     guestDialogVisible,
-    activeDialogVisible,
+    changeUserStatusDialogVisible,
     disableDialogVisible,
     sendInviteDialogVisible,
     deleteDialogVisible,
     invitationDialogVisible,
+
+    changeNameVisible,
+    setChangeNameVisible,
+    profile,
   };
 })(observer(Dialogs));

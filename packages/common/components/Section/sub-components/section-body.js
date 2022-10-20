@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 //import equal from "fast-deep-equal/react";
 //import { LayoutContextConsumer } from "client/Layout/context";
-import { isMobile, isMobileOnly, isDesktop } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 import Scrollbar from "@docspace/components/scrollbar";
@@ -48,7 +48,7 @@ const paddingStyles = css`
 
   ${isMobile &&
   css`
-    padding: 0 0 16px 24px !important;
+    padding: 0 0 16px 23px !important;
   `};
 
   ${isMobileOnly &&
@@ -106,11 +106,15 @@ const commonStyles = css`
       min-height: 100%;
     }
 
+    .files-tile-container {
+      margin-top: ${isMobile ? "-12px" : "0px"};
+    }
+
     .people-row-container,
     .files-row-container {
       margin-top: -22px;
 
-      ${isDesktop &&
+      ${!isMobile &&
       css`
         margin-top: -17px;
       `}
@@ -147,12 +151,11 @@ const StyledSectionBody = styled.div`
   `}
 
     .additional-scroll-height {
-    ${(props) =>
-      !props.withScroll &&
-      !props.pinned &&
-      `  height: 64px;
-  
-`}
+    ${({ withScroll }) =>
+      !withScroll &&
+      css`
+        height: 64px;
+      `}
   }
 `;
 
@@ -183,12 +186,11 @@ const StyledDropZoneBody = styled(DragAndDrop)`
 `;
 
 const StyledSpacer = styled.div`
-  display: none;
+  display: ${isMobile ? "block" : "none"};
   min-height: 64px;
 
   @media ${tablet} {
-    display: ${(props) =>
-      props.isHomepage || props.pinned ? "none" : "block"};
+    display: block;
   }
 `;
 
@@ -225,13 +227,11 @@ class SectionBody extends React.Component {
       autoFocus,
       children,
       onDrop,
-      pinned,
       uploadFiles,
       viewAs,
       withScroll,
       isLoaded,
       isDesktop,
-      isHomepage,
       settingsStudio,
     } = this.props;
 
@@ -248,7 +248,6 @@ class SectionBody extends React.Component {
         onDrop={onDrop}
         withScroll={withScroll}
         viewAs={viewAs}
-        pinned={pinned}
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
@@ -265,7 +264,7 @@ class SectionBody extends React.Component {
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
-                  <StyledSpacer pinned={pinned} />
+                  <StyledSpacer />
                 </div>
               </div>
             </Scrollbar>
@@ -273,14 +272,14 @@ class SectionBody extends React.Component {
             <div className="section-wrapper">
               <div className="section-wrapper-content" {...focusProps}>
                 {children}
-                <StyledSpacer pinned={pinned} />
+                <StyledSpacer />
               </div>
             </div>
           )
         ) : (
           <div className="section-wrapper">
             {children}
-            <StyledSpacer pinned={pinned} />
+            <StyledSpacer />
           </div>
         )}
       </StyledDropZoneBody>
@@ -288,7 +287,6 @@ class SectionBody extends React.Component {
       <StyledSectionBody
         viewAs={viewAs}
         withScroll={withScroll}
-        pinned={pinned}
         isLoaded={isLoaded}
         isDesktop={isDesktop}
         settingsStudio={settingsStudio}
@@ -299,7 +297,7 @@ class SectionBody extends React.Component {
               <div className="section-wrapper">
                 <div className="section-wrapper-content" {...focusProps}>
                   {children}
-                  <StyledSpacer pinned={pinned} className="settings-mobile" />
+                  <StyledSpacer className="settings-mobile" />
                 </div>
               </div>
             </Scrollbar>
@@ -307,11 +305,7 @@ class SectionBody extends React.Component {
             <div className="section-wrapper">
               <div className="section-wrapper-content" {...focusProps}>
                 {children}
-                <StyledSpacer
-                  pinned={pinned}
-                  isHomepage={isHomepage}
-                  className="settings-mobile"
-                />
+                <StyledSpacer className="settings-mobile" />
               </div>
             </div>
           )
@@ -328,7 +322,6 @@ SectionBody.displayName = "SectionBody";
 SectionBody.propTypes = {
   withScroll: PropTypes.bool,
   autoFocus: PropTypes.bool,
-  pinned: PropTypes.bool,
   onDrop: PropTypes.func,
   uploadFiles: PropTypes.bool,
   children: PropTypes.oneOfType([
@@ -338,16 +331,13 @@ SectionBody.propTypes = {
   ]),
   viewAs: PropTypes.string,
   isLoaded: PropTypes.bool,
-  isHomepage: PropTypes.bool,
   settingsStudio: PropTypes.bool,
 };
 
 SectionBody.defaultProps = {
   autoFocus: false,
-  pinned: false,
   uploadFiles: false,
   withScroll: true,
-  isHomepage: false,
   settingsStudio: false,
 };
 

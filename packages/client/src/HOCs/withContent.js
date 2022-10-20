@@ -82,7 +82,7 @@ export default function withContent(WrappedContent) {
           ? { noHover: true }
           : { onClick: onFilesClick };
 
-      if (!isDesktop && !isTrashFolder) {
+      if (!isDesktop && !isTrashFolder && !isArchiveFolder) {
         linkStyles.href = href;
       }
 

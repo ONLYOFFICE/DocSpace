@@ -24,8 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Formatting = Newtonsoft.Json.Formatting;
 using IJsonSerializer = JWT.IJsonSerializer;
+using JsonException = System.Text.Json.JsonException;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Web.Core.Files;
 
@@ -54,55 +55,117 @@ public static class JsonWebToken
     private static (IJsonSerializer, IJwtAlgorithm, IBase64UrlEncoder) GetSettings(bool baseSerializer = false)
     {
 #pragma warning disable CS0618 // Type or member is obsolete
-        return (baseSerializer ? (IJsonSerializer)new JsonNetSerializer() : new JwtSerializer(), new HMACSHA256Algorithm(), new JwtBase64UrlEncoder());
+        return (baseSerializer ? new JsonNetSerializer() : new JwtSerializer(), new HMACSHA256Algorithm(), new JwtBase64UrlEncoder());
 #pragma warning restore CS0618 // Type or member is obsolete
     }
 }
 
+public class DictionaryStringObjectJsonConverter : JsonConverter<Dictionary<string, object>>
+{
+    public override Dictionary<string, object> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType != JsonTokenType.StartObject)
+        {
+            throw new JsonException($"JsonTokenType was of type {reader.TokenType}, only objects are supported");
+        }
+
+        var dictionary = new Dictionary<string, object>();
+        while (reader.Read())
+        {
+            if (reader.TokenType == JsonTokenType.EndObject)
+            {
+                return dictionary;
+            }
+
+            if (reader.TokenType != JsonTokenType.PropertyName)
+            {
+                throw new JsonException("JsonTokenType was not PropertyName");
+            }
+
+            var propertyName = reader.GetString();
+
+            if (string.IsNullOrWhiteSpace(propertyName))
+            {
+                throw new JsonException("Failed to get property name");
+            }
+
+            reader.Read();
+
+            dictionary.Add(propertyName, ExtractValue(ref reader, options));
+        }
+
+        return dictionary;
+    }
+
+    public override void Write(Utf8JsonWriter writer, Dictionary<string, object> value, JsonSerializerOptions options)
+    {
+        JsonSerializer.Serialize(writer, value, new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        });
+    }
+
+    private object ExtractValue(ref Utf8JsonReader reader, JsonSerializerOptions options)
+    {
+        switch (reader.TokenType)
+        {
+            case JsonTokenType.String:
+                if (reader.TryGetDateTime(out var date))
+                {
+                    return date;
+                }
+                return reader.GetString();
+            case JsonTokenType.False:
+                return false;
+            case JsonTokenType.True:
+                return true;
+            case JsonTokenType.Null:
+                return null;
+            case JsonTokenType.Number:
+                if (reader.TryGetInt64(out var result))
+                {
+                    return result;
+                }
+                return reader.GetDecimal();
+            case JsonTokenType.StartObject:
+                return Read(ref reader, null, options);
+            case JsonTokenType.StartArray:
+                var list = new List<object>();
+                while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
+                {
+                    list.Add(ExtractValue(ref reader, options));
+                }
+                return list;
+            default:
+                throw new JsonException($"'{reader.TokenType}' is not supported");
+        }
+    }
+}
+
+
 public class JwtSerializer : IJsonSerializer
 {
-    private class CamelCaseExceptDictionaryKeysResolver : CamelCasePropertyNamesContractResolver
+    private readonly JsonSerializerOptions _options;
+
+    public JwtSerializer()
     {
-        protected override JsonDictionaryContract CreateDictionaryContract(Type objectType)
+        _options = new JsonSerializerOptions
         {
-            var contract = base.CreateDictionaryContract(objectType);
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
 
-            contract.DictionaryKeyResolver = propertyName => propertyName;
-
-            return contract;
-        }
+        _options.Converters.Add(new DictionaryStringObjectJsonConverter());
     }
 
     public string Serialize(object obj)
     {
-        var settings = new JsonSerializerSettings
-        {
-            ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
-            NullValueHandling = NullValueHandling.Ignore,
-        };
-
-        return JsonConvert.SerializeObject(obj, Formatting.Indented, settings);
-    }
-
-    public T Deserialize<T>(string json)
-    {
-        var settings = new JsonSerializerSettings
-        {
-            ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
-            NullValueHandling = NullValueHandling.Ignore,
-        };
-
-        return JsonConvert.DeserializeObject<T>(json, settings);
+        return JsonSerializer.Serialize(obj, _options);
     }
 
     public object Deserialize(Type type, string json)
     {
-        var settings = new JsonSerializerSettings
-        {
-            ContractResolver = new CamelCaseExceptDictionaryKeysResolver(),
-            NullValueHandling = NullValueHandling.Ignore,
-        };
-
-        return JsonConvert.DeserializeObject(json, type, settings);
+        return JsonSerializer.Deserialize(json, type, _options);
     }
 }

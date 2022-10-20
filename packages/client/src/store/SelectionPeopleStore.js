@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from "mobx";
+import { makeAutoObservable } from "mobx";
 import {
   EmployeeStatus,
   EmployeeActivationStatus,
@@ -13,32 +13,8 @@ class SelectionStore {
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
-    makeObservable(this, {
-      selection: observable,
-      bufferSelection: observable,
-      selected: observable,
-      selectUser: action,
-      setBufferSelection: action,
-      deselectUser: action,
-      selectAll: action,
-      setSelection: action,
-      clearSelection: action,
-      selectByStatus: action,
-      setSelected: action,
-      hasAnybodySelected: computed,
-      hasUsersToMakeEmployees: computed,
-      getUsersToMakeEmployeesIds: computed,
-      hasUsersToMakeGuests: computed,
-      getUsersToMakeGuestsIds: computed,
-      hasUsersToActivate: computed,
-      getUsersToActivateIds: computed,
-      hasUsersToDisable: computed,
-      getUsersToDisableIds: computed,
-      hasUsersToInvite: computed,
-      getUsersToInviteIds: computed,
-      hasUsersToRemove: computed,
-      getUsersToRemoveIds: computed,
-    });
+
+    makeAutoObservable(this);
   }
 
   setSelection = (selection) => {
@@ -126,130 +102,265 @@ class SelectionStore {
   }
 
   get hasUsersToMakeEmployees() {
-    const isOwner = this.peopleStore.authStore.userStore.user.isOwner;
-    const users = this.selection.filter((x) => {
-      return (
-        (!x.isOwner &&
-          !x.isAdmin &&
-          x.status !== EmployeeStatus.Disabled &&
-          x.id !== this.peopleStore.authStore.userStore.user.id) ||
-        (x.isAdmin &&
-          isOwner &&
-          x.status !== EmployeeStatus.Disabled &&
-          x.id !== this.peopleStore.authStore.userStore.user.id)
+    const { id, isOwner } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
       );
-    });
+
+      return users.length > 0;
+    }
+
+    const users = this.selection.filter(
+      (x) =>
+        x.status !== EmployeeStatus.Disabled &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner &&
+        x.isVisitor
+    );
 
     return users.length > 0;
   }
 
-  get getUsersToMakeEmployeesIds() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-      );
-    });
-    return users.map((u) => u.id);
-  }
+  get getUsersToMakeEmployees() {
+    const { id, isOwner } = this.peopleStore.authStore.userStore.user;
 
-  get hasUsersToMakeGuests() {
-    const users = this.selection.filter((x) => {
-      return (
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
+      );
+
+      return users.map((u) => u);
+    }
+
+    const users = this.selection.filter(
+      (x) =>
+        x.status !== EmployeeStatus.Disabled &&
+        x.id !== id &&
         !x.isAdmin &&
         !x.isOwner &&
-        !x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-      );
-    });
-    return !!users.length;
+        x.isVisitor
+    );
+
+    return users.map((u) => u);
   }
 
-  get getUsersToMakeGuestsIds() {
-    const users = this.selection.filter((x) => {
-      return (
-        !x.isAdmin &&
-        !x.isOwner &&
-        !x.isVisitor &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-      );
-    });
-    return users.map((u) => u.id);
+  get hasFreeUsers() {
+    const users = this.selection.filter(
+      (x) => x.status !== EmployeeStatus.Disabled && x.isVisitor
+    );
+
+    return users.length > 0;
   }
 
   get hasUsersToActivate() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Active &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-    );
-    return !!users.length;
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Active && x.id !== id
+      );
+
+      return users.length > 0;
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status !== EmployeeStatus.Active &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.length > 0;
+    }
+
+    return false;
   }
 
-  get getUsersToActivateIds() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Active &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-    );
-    return users.map((u) => u.id);
+  get getUsersToActivate() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Active && x.id !== id
+      );
+
+      return users.map((u) => u);
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status !== EmployeeStatus.Active &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.map((u) => u);
+    }
+
+    return [];
   }
 
   get hasUsersToDisable() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-    );
-    return !!users.length;
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
+      );
+
+      return users.length > 0;
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status !== EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.length > 0;
+    }
+
+    return false;
   }
 
-  get getUsersToDisableIds() {
-    const users = this.selection.filter(
-      (x) =>
-        !x.isOwner &&
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== this.peopleStore.authStore.userStore.user.id
-    );
-    return users.map((u) => u.id);
+  get getUsersToDisable() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
+      );
+
+      return users.map((u) => u);
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status !== EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.map((u) => u);
+    }
+
+    return [];
   }
 
   get hasUsersToInvite() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.activationStatus === EmployeeActivationStatus.Pending &&
+          x.status === EmployeeStatus.Active &&
+          x.id !== id
+      );
+
+      return users.length > 0;
+    }
+
     const users = this.selection.filter(
       (x) =>
         x.activationStatus === EmployeeActivationStatus.Pending &&
-        x.status === EmployeeStatus.Active
+        x.status === EmployeeStatus.Active &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner
     );
-    return !!users.length;
+
+    return users.length > 0;
   }
 
   get getUsersToInviteIds() {
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.activationStatus === EmployeeActivationStatus.Pending &&
+          x.status === EmployeeStatus.Active &&
+          x.id !== id
+      );
+
+      return users.map((u) => u.id);
+    }
+
     const users = this.selection.filter(
       (x) =>
         x.activationStatus === EmployeeActivationStatus.Pending &&
-        x.status === EmployeeStatus.Active
+        x.status === EmployeeStatus.Active &&
+        x.id !== id &&
+        !x.isAdmin &&
+        !x.isOwner
     );
+
     return users.map((u) => u.id);
   }
 
   get hasUsersToRemove() {
-    const users = this.selection.filter(
-      (x) => x.status === EmployeeStatus.Disabled
-    );
-    return !!users.length;
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status === EmployeeStatus.Disabled && x.id !== id
+      );
+
+      return users.length > 0;
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status === EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.length > 0;
+    }
+
+    return false;
   }
 
   get getUsersToRemoveIds() {
-    const users = this.selection.filter(
-      (x) => x.status === EmployeeStatus.Disabled
-    );
-    return users.map((u) => u.id);
+    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+
+    if (isOwner) {
+      const users = this.selection.filter(
+        (x) => x.status === EmployeeStatus.Disabled && x.id !== id
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    if (isAdmin && !isOwner) {
+      const users = this.selection.filter(
+        (x) =>
+          x.status === EmployeeStatus.Disabled &&
+          x.id !== id &&
+          !x.isAdmin &&
+          !x.isOwner
+      );
+
+      return users.map((u) => u.id);
+    }
+
+    return false;
   }
 }
 

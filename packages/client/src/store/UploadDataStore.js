@@ -41,6 +41,7 @@ class UploadDataStore {
   converted = true;
   uploadPanelVisible = false;
   selectedUploadFile = [];
+  errors = 0;
 
   isUploading = false;
   isUploadingAndConversion = false;
@@ -105,6 +106,7 @@ class UploadDataStore {
     this.conversionPercent = 0;
     this.uploaded = true;
     this.converted = true;
+    this.errors = 0;
 
     this.isUploadingAndConversion = false;
     this.isUploading = false;
@@ -251,11 +253,13 @@ class UploadDataStore {
 
       if (!this.filesToConversion.length) {
         this.filesToConversion.push(file);
-        this.uploadedFilesHistory.push(file);
+        if (!secondConvertingWithPassword && !conversionPositionIndex)
+          this.uploadedFilesHistory.push(file);
         this.startConversion(t);
       } else {
         this.filesToConversion.push(file);
-        this.uploadedFilesHistory.push(file);
+        if (!secondConvertingWithPassword && !conversionPositionIndex)
+          this.uploadedFilesHistory.push(file);
       }
     }
   };
@@ -397,13 +401,19 @@ class UploadDataStore {
         }
 
         if (progress === 100) {
+          if (!error) error = data[0].error;
+
           runInAction(() => {
             const file = this.files.find((file) => file.fileId === fileId);
 
             if (file) {
+              file.error = error;
               file.convertProgress = progress;
               file.inConversion = false;
-              file.action = "converted";
+
+              if (error.indexOf("password") !== -1) {
+                file.needPassword = true;
+              } else file.action = "converted";
             }
 
             const historyFile = this.uploadedFilesHistory.find(
@@ -411,9 +421,13 @@ class UploadDataStore {
             );
 
             if (historyFile) {
+              historyFile.error = error;
               historyFile.convertProgress = progress;
               historyFile.inConversion = false;
-              historyFile.action = "converted";
+
+              if (error.indexOf("password") !== -1) {
+                historyFile.needPassword = true;
+              } else historyFile.action = "converted";
             }
           });
 
@@ -913,10 +927,16 @@ class UploadDataStore {
     const { fetchFiles, filter } = this.filesStore;
     const { withPaging } = this.authStore.settingsStore;
 
-    const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
+    const totalErrorsCount = sumBy(this.files, (f) => {
+      f.error && toastr.error(f.error);
+      return f.error ? 1 : 0;
+    });
 
     if (totalErrorsCount > 0) {
       this.primaryProgressDataStore.setPrimaryProgressBarShowError(true); // for empty file
+      this.primaryProgressDataStore.setPrimaryProgressBarErrors(
+        totalErrorsCount
+      );
       console.log("Errors: ", totalErrorsCount);
     }
 
@@ -935,7 +955,7 @@ class UploadDataStore {
       withPaging && fetchFiles(toFolderId, filter);
 
       if (toFolderId) {
-        const { socketHelper } = this.filesStore.settingsStore;
+        const { socketHelper } = this.authStore.settingsStore;
 
         socketHelper.emit({
           command: "refresh-folder",

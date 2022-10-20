@@ -40,7 +40,7 @@ const UserContent = ({
   t,
   theme,
 }) => {
-  const { userName, displayName, email, statusType, role } = item;
+  const { displayName, email, statusType, role, isVisitor } = item;
 
   const nameColor =
     statusType === "pending" || statusType === "disabled"
@@ -52,7 +52,9 @@ const UserContent = ({
     role === "owner"
       ? t("Common:Owner")
       : role === "admin"
-      ? t("Administrator")
+      ? t("Common:DocSpaceAdmin")
+      : isVisitor
+      ? t("Common:RoomAdmin")
       : t("Common:User");
 
   return (
@@ -72,10 +74,14 @@ const UserContent = ({
         isTextOverflow={true}
         noHover
       >
-        {statusType === "pending" ? email : displayName}
+        {statusType === "pending"
+          ? email
+          : displayName?.trim()
+          ? displayName
+          : email}
       </Link>
 
-      <Badges statusType={statusType} />
+      <Badges statusType={statusType} isPaid={!isVisitor} />
 
       <Link
         containerMinWidth="140px"

@@ -7,10 +7,12 @@ import SelectFolderDialogAsideView from "./AsideView";
 import utils from "@docspace/components/utils";
 import toastr from "@docspace/components/toast/toastr";
 import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
-import { FilterType } from "@docspace/common/constants";
+import { FilterType, FolderType } from "@docspace/common/constants";
 
 const { desktop } = utils.device;
 
+let treeFolders = [];
+let selectedTreeNode = null;
 class SelectFolderDialog extends React.Component {
   constructor(props) {
     super(props);
@@ -28,39 +30,47 @@ class SelectFolderDialog extends React.Component {
 
   async componentDidMount() {
     const {
-      treeFolders,
-      foldersType,
+      filteredType,
       onSetBaseFolderPath,
       onSelectFolder,
-      foldersList,
+      passedFoldersTree,
       displayType,
-      isNeedArrowIcon = false,
+      withFileSelectDialog = false,
       folderTree,
-      setFolderId,
-      withInput,
+      setResultingFolderId,
+      selectFolderInputExist,
       id,
       storeFolderId,
-      withoutBasicSelection = false,
+      withoutBasicSelection,
+      setResultingFoldersTree,
     } = this.props;
 
     !displayType && window.addEventListener("resize", this.throttledResize);
 
-    const initialFolderId = withInput ? id : storeFolderId;
+    const initialFolderId = selectFolderInputExist ? id : storeFolderId;
 
     let resultingFolderTree, resultingId;
 
-    if (!withInput && !isNeedArrowIcon) {
+    if (!withFileSelectDialog) {
+      treeFolders = await this.props.fetchTreeFolders();
+
+      const roomsFolder = treeFolders.find(
+        (f) => f.rootFolderType == FolderType.Rooms
+      );
+
+      const hasSharedFolder =
+        roomsFolder && roomsFolder.foldersCount ? true : false;
+
       try {
         [
           resultingFolderTree,
           resultingId,
         ] = await SelectionPanel.getBasicFolderInfo(
           treeFolders,
-          foldersType,
+          filteredType,
           initialFolderId,
-          onSetBaseFolderPath,
-          onSelectFolder,
-          foldersList
+          passedFoldersTree,
+          hasSharedFolder
         );
       } catch (e) {
         toastr.error(e);
@@ -69,46 +79,35 @@ class SelectFolderDialog extends React.Component {
       }
     }
 
-    const tree =
-      isNeedArrowIcon || withInput ? folderTree : resultingFolderTree;
+    const tree = withFileSelectDialog ? folderTree : resultingFolderTree;
 
     if (tree.length === 0) {
       this.setState({ isAvailable: false });
-      onSelectFolder(null);
+      onSelectFolder && onSelectFolder(null);
       return;
     }
-    const resId = isNeedArrowIcon || withInput ? id : resultingId;
 
-    !withoutBasicSelection && onSelectFolder && onSelectFolder(resId);
-    //isNeedArrowIcon && onSetBaseFolderPath(resId);
+    setResultingFoldersTree(tree);
 
-    setFolderId(resId);
+    const resId = withFileSelectDialog ? id : resultingId;
 
-    this.setState({
-      resultingFolderTree: tree,
-    });
-  }
-
-  componentDidUpdate(prevProps) {
-    const { isReset } = this.props;
-
-    if (isReset && isReset !== prevProps.isReset) {
-      this.onResetInfo();
+    if (!withoutBasicSelection) {
+      onSelectFolder && onSelectFolder(resId);
+      onSetBaseFolderPath && onSetBaseFolderPath(resId);
     }
+
+    setResultingFolderId(resId);
   }
 
   componentWillUnmount() {
-    const { setFolderTitle, setProviderKey, setFolderId } = this.props;
-    //console.log("componentWillUnmount");
+    const { toDefault } = this.props;
 
     if (this.throttledResize) {
       this.throttledResize && this.throttledResize.cancel();
       window.removeEventListener("resize", this.throttledResize);
     }
 
-    setFolderTitle("");
-    setProviderKey(null);
-    setFolderId(null);
+    toDefault();
   }
   getDisplayType = () => {
     const displayType =
@@ -124,23 +123,32 @@ class SelectFolderDialog extends React.Component {
   };
 
   onSelect = async (folder, treeNode) => {
-    const { setFolderId, folderId } = this.props;
+    const {
+      setResultingFolderId,
+      resultingFolderId,
+      onSelectTreeNode,
+    } = this.props;
 
-    if (+folderId === +folder[0]) return;
+    if (+resultingFolderId === +folder[0]) return;
+    if (!!onSelectTreeNode) selectedTreeNode = treeNode.node;
 
-    setFolderId(folder[0]);
+    setResultingFolderId(folder[0]);
   };
 
   onClose = () => {
     const {
       setExpandedPanelKeys,
       onClose,
-      treeFolders,
-      withInput,
-      isNeedArrowIcon,
+
+      selectFolderInputExist,
+      withFileSelectDialog,
     } = this.props;
 
-    if (!treeFolders.length && !withInput && !isNeedArrowIcon) {
+    if (
+      !treeFolders.length &&
+      !selectFolderInputExist &&
+      !withFileSelectDialog
+    ) {
       setExpandedPanelKeys(null);
     }
     onClose && onClose();
@@ -156,28 +164,25 @@ class SelectFolderDialog extends React.Component {
       onSave,
       onSetNewFolderPath,
       onSelectFolder,
+      onSelectTreeNode,
       withoutImmediatelyClose,
       onSubmit,
 
       providerKey,
       folderTitle,
-      folderId,
+      resultingFolderId,
       setSelectedItems,
     } = this.props;
 
     setSelectedItems();
 
-    onSubmit && onSubmit(folderId, folderTitle, providerKey);
-    onSave && onSave(e, folderId);
-    onSetNewFolderPath && onSetNewFolderPath(folderId);
-    onSelectFolder && onSelectFolder(folderId);
-
+    onSubmit && onSubmit(resultingFolderId, folderTitle, providerKey);
+    onSave && onSave(e, resultingFolderId);
+    onSetNewFolderPath && onSetNewFolderPath(resultingFolderId);
+    onSelectFolder && onSelectFolder(resultingFolderId);
+    onSelectTreeNode && onSelectTreeNode(selectedTreeNode);
+    //setResultingFolderId(resultingFolderId);
     !withoutImmediatelyClose && this.onClose();
-  };
-
-  onResetInfo = async () => {
-    const { id, setFolderId } = this.props;
-    setFolderId(id);
   };
 
   render() {
@@ -187,13 +192,13 @@ class SelectFolderDialog extends React.Component {
       isPanelVisible,
       zIndex,
       withoutProvider,
-      isNeedArrowIcon, //for aside view when selected file
+      withFileSelectDialog,
       header,
       dialogName,
       footer,
       buttonName,
       isDisableTree,
-      folderId,
+      resultingFolderId,
       folderTitle,
       expandedKeys,
       isDisableButton,
@@ -201,13 +206,10 @@ class SelectFolderDialog extends React.Component {
       currentFolderId,
       selectionFiles,
       sharedRoomId,
-    } = this.props;
-    const {
-      displayType,
-      isLoadingData,
-      isAvailable,
       resultingFolderTree,
-    } = this.state;
+      id,
+    } = this.props;
+    const { displayType, isLoadingData, isAvailable } = this.state;
 
     const primaryButtonName = buttonName
       ? buttonName
@@ -217,7 +219,14 @@ class SelectFolderDialog extends React.Component {
     // console.log("Render Folder Component?", this.state);
 
     const folderSelectionDisabled =
-      folderId === sharedRoomId || folderId === sharedRoomId?.toString();
+      resultingFolderId === sharedRoomId ||
+      resultingFolderId === sharedRoomId?.toString();
+
+    const buttonIsDisabled =
+      isDisableButton ||
+      (isRecycleBin && currentFolderId === resultingFolderId);
+
+    const isCurrentFolder = +currentFolderId === +resultingFolderId;
 
     return displayType === "aside" ? (
       <SelectFolderDialogAsideView
@@ -229,24 +238,24 @@ class SelectFolderDialog extends React.Component {
         zIndex={zIndex}
         onClose={this.onCloseAside}
         withoutProvider={withoutProvider}
-        isNeedArrowIcon={isNeedArrowIcon}
+        withFileSelectDialog={withFileSelectDialog}
         certainFolders={true}
-        folderId={folderId}
+        folderId={resultingFolderId}
         resultingFolderTree={resultingFolderTree}
         onSelectFolder={this.onSelect}
         onButtonClick={this.onButtonClick}
         header={header}
-        dialogName={isNeedArrowIcon ? t("Translations:FolderSelection") : name}
+        dialogName={
+          withFileSelectDialog ? t("Translations:FolderSelection") : name
+        }
         footer={footer}
         isLoadingData={isLoadingData}
         primaryButtonName={
-          isNeedArrowIcon ? t("Common:SelectAction") : primaryButtonName
+          withFileSelectDialog ? t("Common:SelectAction") : primaryButtonName
         }
         isAvailable={isAvailable}
         isDisableTree={isDisableTree}
-        isDisableButton={
-          isDisableButton || (isRecycleBin && currentFolderId === folderId)
-        }
+        isDisableButton={buttonIsDisabled}
       />
     ) : (
       <SelectionPanel
@@ -257,7 +266,7 @@ class SelectFolderDialog extends React.Component {
         isPanelVisible={isPanelVisible}
         onClose={this.onClose}
         withoutProvider={withoutProvider}
-        folderId={folderId}
+        folderId={resultingFolderId}
         resultingFolderTree={resultingFolderTree}
         onButtonClick={this.onButtonClick}
         header={header}
@@ -272,9 +281,8 @@ class SelectFolderDialog extends React.Component {
         isDisableTree={isDisableTree}
         folderSelection
         newFilter={this.newFilter}
-        isDisableButton={
-          isDisableButton || (isRecycleBin && currentFolderId === folderId)
-        }
+        isDisableButton={buttonIsDisabled}
+        isCurrentFolder={isCurrentFolder}
       />
     );
   }
@@ -284,12 +292,9 @@ SelectFolderDialog.propTypes = {
   onSelectFolder: PropTypes.func,
   onClose: PropTypes.func,
   isPanelVisible: PropTypes.bool.isRequired,
-  foldersType: PropTypes.oneOf([
-    "common",
-    "third-party",
+  filteredType: PropTypes.oneOf([
     "exceptSortedByTags",
-    "exceptPrivacyTrashFolders",
-    "rooms",
+    "exceptPrivacyTrashArchiveFolders",
     "",
   ]),
   displayType: PropTypes.oneOf(["aside", "modal"]),
@@ -303,6 +308,7 @@ SelectFolderDialog.defaultProps = {
   withoutProvider: false,
   withoutImmediatelyClose: false,
   isDisableTree: false,
+  filteredType: "",
 };
 
 export default inject(
@@ -318,9 +324,9 @@ export default inject(
     { selectedId }
   ) => {
     const {
-      treeFolders,
       setExpandedPanelKeys,
       sharedRoomId,
+      fetchTreeFolders,
     } = treeFoldersStore;
 
     const { filter } = filesStore;
@@ -328,12 +334,16 @@ export default inject(
 
     const { id } = selectedFolderStore;
     const {
-      setFolderId,
+      setResultingFolderId,
       setFolderTitle,
       setProviderKey,
       providerKey,
       folderTitle,
-      folderId,
+      resultingFolderId,
+      setIsLoading,
+      resultingFolderTree,
+      setResultingFoldersTree,
+      toDefault,
     } = selectFolderDialogStore;
 
     const { settingsStore } = auth;
@@ -345,15 +355,19 @@ export default inject(
       storeFolderId: selectedFolderId,
       providerKey,
       folderTitle,
-      folderId,
+      resultingFolderId,
       setExpandedPanelKeys,
-      setFolderId,
+      setResultingFolderId,
       setFolderTitle,
       setProviderKey,
-      treeFolders,
       filter,
       setSelectedItems,
       sharedRoomId,
+      fetchTreeFolders,
+      setIsLoading,
+      resultingFolderTree,
+      toDefault,
+      setResultingFoldersTree,
     };
   }
 )(

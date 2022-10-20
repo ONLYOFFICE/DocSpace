@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@docspace/components/drag-and-drop";
@@ -11,6 +12,10 @@ import withFileActions from "../../../../../HOCs/withFileActions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import ItemIcon from "../../../../../components/ItemIcon";
 import withBadges from "../../../../../HOCs/withBadges";
+
+const StyledDragAndDrop = styled(DragAndDrop)`
+  border-radius: 6px;
+`;
 
 const FileTile = (props) => {
   const {
@@ -43,7 +48,7 @@ const FileTile = (props) => {
     setSelection,
     id,
     onSelectTag,
-    onSelectType,
+    onSelectOption,
     columnCount,
   } = props;
 
@@ -62,7 +67,7 @@ const FileTile = (props) => {
   const element = (
     <ItemIcon
       id={item.id}
-      icon={item.isRoom && item.logo.big ? item.logo.big : item.icon}
+      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
     />
@@ -70,7 +75,7 @@ const FileTile = (props) => {
 
   return (
     <div ref={props.selectableRef} id={id}>
-      <DragAndDrop
+      <StyledDragAndDrop
         data-title={item.title}
         value={value}
         className={`files-item ${className} ${item.id}_${item.fileExst}`}
@@ -111,7 +116,7 @@ const FileTile = (props) => {
           showHotkeyBorder={showHotkeyBorder}
           setSelection={setSelection}
           selectTag={onSelectTag}
-          selectType={onSelectType}
+          selectOption={onSelectOption}
           columnCount={columnCount}
         >
           <FilesTileContent
@@ -121,7 +126,7 @@ const FileTile = (props) => {
           />
           {badgesComponent}
         </Tile>
-      </DragAndDrop>
+      </StyledDragAndDrop>
     </div>
   );
 };

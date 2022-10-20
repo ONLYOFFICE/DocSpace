@@ -49,15 +49,20 @@ public class TenantStatusFilter : IResourceFilter
         {
             context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
             _logger.WarningTenantNotFound();
-
             return;
         }
 
         if (tenant.Status == TenantStatus.RemovePending || tenant.Status == TenantStatus.Suspended)
         {
+            if (tenant.Status == TenantStatus.Suspended &&
+                context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor &&
+                controllerActionDescriptor.EndpointMetadata.OfType<AllowSuspendedAttribute>().Any())
+            {
+                return;
+            }
+
             context.Result = new StatusCodeResult((int)HttpStatusCode.NotFound);
             _logger.WarningTenantIsNotRemoved(tenant.Id);
-
             return;
         }
 
@@ -67,6 +72,7 @@ public class TenantStatusFilter : IResourceFilter
             {
                 return;
             }
+
             context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
             _logger.WarningTenantStatus(tenant.Id, tenant.Status);
             return;
