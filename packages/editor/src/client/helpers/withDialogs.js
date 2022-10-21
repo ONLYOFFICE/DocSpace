@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getPresignedUri } from "@docspace/common/api/files";
+import { EDITOR_ID } from "@docspace/common/constants";
 import { useTranslation } from "react-i18next";
 import SharingDialog from "../components/SharingDialog";
 import SelectFileDialog from "../components/SelectFileDialog";
@@ -42,7 +43,11 @@ const withDialogs = (WrappedComponent) => {
       });
       socketHelper.on("restore-backup", () => {
         const message = t("Common:PreparationPortalTitle");
-        window.docEditor.showMessage(message);
+        const docEditor =
+          typeof window !== "undefined" &&
+          window.DocEditor?.instances[EDITOR_ID];
+
+        docEditor?.showMessage(message);
       });
     };
 
@@ -54,10 +59,10 @@ const withDialogs = (WrappedComponent) => {
       setIsVisible(false);
     };
 
-    const loadUsersRightsList = () => {
+    const loadUsersRightsList = (docEditor) => {
       window.SharingDialog.convertSharingUsers(sharingSettings).then(
         (sharingSettings) => {
-          window.docEditor.setSharingSettings({
+          docEditor.setSharingSettings({
             sharingSettings,
           });
         }
@@ -87,7 +92,10 @@ const withDialogs = (WrappedComponent) => {
     const insertImage = (link) => {
       const token = link.token;
 
-      window.docEditor.insertImage({
+      const docEditor =
+        typeof window !== "undefined" && window.DocEditor?.instances[EDITOR_ID];
+
+      docEditor?.insertImage({
         ...typeInsertImageAction,
         fileType: link.filetype,
         ...(token && { token }),
@@ -98,7 +106,10 @@ const withDialogs = (WrappedComponent) => {
     const mailMerge = (link) => {
       const token = link.token;
 
-      window.docEditor.setMailMergeRecipients({
+      const docEditor =
+        typeof window !== "undefined" && window.DocEditor?.instances[EDITOR_ID];
+
+      docEditor?.setMailMergeRecipients({
         fileType: link.filetype,
         ...(token && { token }),
         url: link.url,
@@ -108,7 +119,10 @@ const withDialogs = (WrappedComponent) => {
     const compareFiles = (link) => {
       const token = link.token;
 
-      window.docEditor.setRevisedFile({
+      const docEditor =
+        typeof window !== "undefined" && window.DocEditor?.instances[EDITOR_ID];
+
+      docEditor?.setRevisedFile({
         fileType: link.filetype,
         ...(token && { token }),
         url: link.url,
@@ -191,8 +205,13 @@ const withDialogs = (WrappedComponent) => {
       );
 
       if (savingInfo) {
+        const docEditor =
+          typeof window !== "undefined" &&
+          window.DocEditor?.instances[EDITOR_ID];
+
         const convertedInfo = savingInfo.split(": ").pop();
-        window.docEditor.showMessage(convertedInfo);
+
+        docEditor?.showMessage(convertedInfo);
       }
     };
 
