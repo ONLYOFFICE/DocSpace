@@ -6,6 +6,12 @@ import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import HelpButton from "@docspace/components/help-button";
+import toastr from "@docspace/components/toast/toastr";
+
+import {
+  LogoutConnectionDialog,
+  LogoutAllConnectionDialog,
+} from "SRC_DIR/components/dialogs";
 
 import {
   StyledFooter,
@@ -29,9 +35,15 @@ const ActiveSessions = ({
   getAllSessions,
   removeAllSessions,
   removeSession,
+  logoutVisible,
+  setLogoutVisible,
+  logoutAllVisible,
+  setLogoutAllVisible,
 }) => {
   const [sessions, setSessions] = useState([]);
   const [currentSession, setCurrentSession] = useState(0);
+  const [modalData, setModalData] = useState({});
+  const [loading, setLoading] = useState(false);
   const { t } = useTranslation(["Profile", "Common"]);
 
   useEffect(() => {
@@ -41,20 +53,39 @@ const ActiveSessions = ({
     });
   }, []);
 
-  const onClickRemoveAllSessions = () => {
-    if (sessions.length > 1) {
-      removeAllSessions(userId).then(() =>
+  const onClickRemoveAllSessions = async () => {
+    try {
+      setLoading(true);
+      await removeAllSessions(userId).then(() =>
         getAllSessions().then((res) => setSessions(res.items))
       );
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+      setLogoutAllVisible(false);
     }
   };
 
-  const onClickRemoveSession = (id) => {
+  const onClickRemoveSession = async (id) => {
     const foundSession = sessions.find((s) => s.id === id);
-    if (foundSession.id !== currentSession) {
-      removeSession(foundSession.id).then(() =>
+    try {
+      setLoading(true);
+      await removeSession(foundSession.id).then(() =>
         getAllSessions().then((res) => setSessions(res.items))
       );
+      toastr.success(
+        t("Profile:SuccessLogout", {
+          platform: foundSession.platform,
+          browser: foundSession.browser,
+        })
+      );
+    } catch (error) {
+      toastr.error(error);
+      console.log(error);
+    } finally {
+      setLoading(false);
+      setLogoutVisible(false);
     }
   };
 
@@ -77,7 +108,7 @@ const ActiveSessions = ({
           className="session-logout"
           type="action"
           isHovered
-          onClick={onClickRemoveAllSessions}
+          onClick={() => setLogoutAllVisible(true)}
         >
           {t("Profile:LogoutAllActiveSessions")}
         </Link>
@@ -90,7 +121,6 @@ const ActiveSessions = ({
           }
         />
       </Box>
-
       <Table>
         <TableHead>
           <TableRow>
@@ -109,24 +139,63 @@ const ActiveSessions = ({
               </TableDataCell>
               <TableDataCell>{convertTime(session.date)}</TableDataCell>
               <TableDataCell>{session.ip}</TableDataCell>
-              <TableDataCell onClick={() => onClickRemoveSession(session.id)}>
+              <TableDataCell
+                onClick={() => {
+                  setLogoutVisible(true);
+                  setModalData({
+                    id: session.id,
+                    platform: session.platform,
+                    browser: session.browser,
+                  });
+                }}
+              >
                 {currentSession !== session.id ? removeIcon : null}
               </TableDataCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {logoutVisible && (
+        <LogoutConnectionDialog
+          visible={logoutVisible}
+          data={modalData}
+          loading={loading}
+          onClose={() => setLogoutVisible(false)}
+          onRemoveSession={onClickRemoveSession}
+        />
+      )}
+
+      {logoutAllVisible && (
+        <LogoutAllConnectionDialog
+          visible={logoutAllVisible}
+          loading={loading}
+          onClose={() => setLogoutAllVisible(false)}
+          onRemoveAllSessions={onClickRemoveAllSessions}
+        />
+      )}
     </StyledFooter>
   );
 };
 
 export default inject(({ auth, setup }) => {
-  const { getAllSessions, removeAllSessions, removeSession } = setup;
-  return {
-    userId: auth.userStore.user.id,
-    logout: auth.logout,
+  const {
     getAllSessions,
     removeAllSessions,
     removeSession,
+    logoutVisible,
+    setLogoutVisible,
+    logoutAllVisible,
+    setLogoutAllVisible,
+  } = setup;
+  return {
+    userId: auth.userStore.user.id,
+    getAllSessions,
+    removeAllSessions,
+    removeSession,
+    logoutVisible,
+    setLogoutVisible,
+    logoutAllVisible,
+    setLogoutAllVisible,
   };
 })(observer(ActiveSessions));
