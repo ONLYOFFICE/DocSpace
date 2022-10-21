@@ -1,32 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject } from "mobx-react";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
-import toastr from "@docspace/components/toast/toastr";
 import { MainContainer } from "./StyledDeleteData";
 import { setDocumentTitle } from "../../../../helpers/utils";
-import { sendDeletePortalEmail } from "@docspace/common/api/portal";
+import { DeletePortalDialog } from "SRC_DIR/components/dialogs";
 
 const PortalDeletion = (props) => {
   const { t, getPortalOwner, owner } = props;
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
 
   useEffect(() => {
     setDocumentTitle(t("PortalDeletion"));
     getPortalOwner();
   }, []);
-
-  const onDeleteClick = async () => {
-    try {
-      await sendDeletePortalEmail();
-      toastr.success(
-        t("PortalDeletionEmailSended", { ownerEmail: owner.email })
-      );
-    } catch (error) {
-      toastr.error(error);
-    }
-  };
 
   return (
     <MainContainer>
@@ -42,7 +31,13 @@ const PortalDeletion = (props) => {
         label={t("Common:Delete")}
         primary
         size="normal"
-        onClick={onDeleteClick}
+        onClick={() => setIsDialogVisible(true)}
+      />
+
+      <DeletePortalDialog
+        visible={isDialogVisible}
+        onClose={() => setIsDialogVisible(false)}
+        owner={owner}
       />
     </MainContainer>
   );
