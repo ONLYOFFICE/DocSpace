@@ -9,9 +9,9 @@ import { StyledInfoPanelBody } from "./styles/common";
 import { getRoomInfo } from "@docspace/common/api/rooms";
 
 const InfoPanelBodyContent = ({
-  t,
   selection,
   setSelection,
+  calculateSelection,
   updateSelection,
   setUpdateSelection,
   normalizeSelection,
@@ -24,10 +24,7 @@ const InfoPanelBodyContent = ({
   getIsAccounts,
   getIsGallery,
   gallerySelected,
-  setBufferSelection,
   isRootFolder,
-  getIcon,
-  getFolderIcon,
   ...props
 }) => {
   const [selectedItems, setSelectedItems] = useState(props.selectedItems);
@@ -47,57 +44,24 @@ const InfoPanelBodyContent = ({
       selection?.isSelectedFolder &&
       !selection?.wasContextMenuSelection);
 
-  const viewHelper = new ViewHelper({
-    defaultProps: {
-      selection,
-      isFiles,
-      isRooms,
-      isAccounts,
-      isGallery,
-      isRootFolder,
-      personal: props.personal,
-      culture: props.culture,
-    },
-    detailsProps: {},
-    membersProps: {
-      selectionParentRoom,
-      setSelectionParentRoom,
-      selfId: props.selfId,
-      isOwner: props.isOwner,
-      isAdmin: props.isAdmin,
-      getRoomMembers: props.getRoomMembers,
-      changeUserType: props.changeUserType,
-    },
-    historyProps: {
-      selectedFolder: selectedFolder,
-    },
-    accountsProps: {
-      selfId: props.selfId,
-      isOwner: props.isOwner,
-      isAdmin: props.isAdmin,
-      changeUserType: props.changeUserType,
-    },
-    galleryProps: {
-      getIcon,
-      gallerySelected,
-    },
-  });
-
-  const getSelection = () => {
-    return selectedItems.length === 0
-      ? normalizeSelection({
-          ...selectedFolder,
-          isSelectedFolder: true,
-          isSelectedItem: false,
-        })
-      : selectedItems.length === 1
-      ? normalizeSelection({
-          ...selectedItems[0],
-          isSelectedFolder: false,
-          isSelectedItem: true,
-        })
-      : [...Array(props.selectedItems.length).keys()];
+  const defaultProps = {
+    selection,
+    isFiles,
+    isRooms,
+    isAccounts,
+    isGallery,
+    isRootFolder,
+    isSeveralItems,
   };
+
+  const viewHelper = new ViewHelper({
+    defaultProps: defaultProps,
+    detailsProps: {},
+    membersProps: { selectionParentRoom, setSelectionParentRoom },
+    historyProps: { selectedFolder: selectedFolder },
+    accountsProps: {},
+    galleryProps: {},
+  });
 
   const getView = () => {
     if (isNoItem) return viewHelper.NoItemView();
@@ -132,7 +96,11 @@ const InfoPanelBodyContent = ({
   useEffect(() => {
     if (selection?.isContextMenuSelection) return;
 
-    const newSelection = getSelection();
+    const newSelection = calculateSelection({
+      selectedItems: selectedItems,
+      selectedFolder: selectedFolder,
+    });
+
     if (
       selection?.id === newSelection.id &&
       selection?.isFolder === newSelection.isFolder &&
@@ -140,7 +108,7 @@ const InfoPanelBodyContent = ({
     )
       return;
 
-    setSelection(normalizeSelection(newSelection));
+    setSelection(newSelection);
   }, [selectedItems, selectedFolder]);
 
   //////////////////////////////////////////////////////////
@@ -183,10 +151,10 @@ const InfoPanelBodyContent = ({
 
   //////////////////////////////////////////////////////////
 
-  // useEffect(() => {
-  //   console.log("\nfor-dev  Selected items: ", selectedItems);
-  //   console.log("\nfor-dev  Selected folder: ", selectedFolder);
-  // }, [selectedItems, selectedFolder]);
+  useEffect(() => {
+    console.log("\nfor-dev  Selected items: ", selectedItems);
+    console.log("\nfor-dev  Selected folder: ", selectedFolder);
+  }, [selectedItems, selectedFolder]);
 
   //////////////////////////////////////////////////////////
 
@@ -195,21 +163,7 @@ const InfoPanelBodyContent = ({
   return (
     <StyledInfoPanelBody>
       {!isNoItem && (
-        <ItemTitle
-          selection={selection}
-          selectionParentRoom={selectionParentRoom}
-          roomsView={roomsView}
-          isRooms={isRooms}
-          isAccounts={isAccounts}
-          isSeveralItems={isSeveralItems}
-          severalItemsLength={selectedItems.length}
-          isGallery={isGallery}
-          getIcon={getIcon}
-          setBufferSelection={setBufferSelection}
-          getContextOptions={props.getContextOptions}
-          getContextOptionActions={props.getContextOptionActions}
-          getUserContextOptions={props.getUserContextOptions}
-        />
+        <ItemTitle {...defaultProps} selectionLength={selectedItems.length} />
       )}
       {getView()}
     </StyledInfoPanelBody>
@@ -217,31 +171,13 @@ const InfoPanelBodyContent = ({
 };
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    settingsStore,
-    filesActionsStore,
-    dialogsStore,
-    selectedFolderStore,
-    oformsStore,
-    contextOptionsStore,
-    peopleStore,
-  }) => {
-    const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
-    const { personal, culture } = auth.settingsStore;
-    const { getIcon, getFolderIcon } = settingsStore;
-    const { onSelectItem, openLocationAction } = filesActionsStore;
-    const { changeType: changeUserType } = peopleStore;
-    const { setSharingPanelVisible } = dialogsStore;
+  ({ auth, filesStore, selectedFolderStore, oformsStore, peopleStore }) => {
     const { isRootFolder } = selectedFolderStore;
     const { gallerySelected } = oformsStore;
-    const {
-      getFilesContextOptions: getContextOptionActions,
-    } = contextOptionsStore;
 
     const {
       selection,
+      calculateSelection,
       setSelection,
       updateSelection,
       setUpdateSelection,
@@ -250,41 +186,29 @@ export default inject(
       normalizeSelection,
       roomsView,
       fileView,
-      getItemIcon,
       getIsFiles,
       getIsRooms,
       getIsAccounts,
       getIsGallery,
     } = auth.infoPanelStore;
 
-    const {
-      selection: filesStoreSelection,
-      getFilesContextOptions: getContextOptions,
-      setBufferSelection,
-      getFolderInfo,
-      getShareUsers,
-      getRoomMembers,
-      getHistory,
-      getRoomHistory,
-      getFileHistory,
-      createThumbnail,
-    } = filesStore;
+    const { selection: filesStoreSelection } = filesStore;
 
     const {
       selection: peopleStoreSelection,
       bufferSelection: peopleStoreBufferSelection,
     } = peopleStore.selectionStore;
-    const { getUserContextOptions } = peopleStore.contextOptionsStore;
 
-    const selectedFiles =
-      filesStoreSelection?.length > 0 ? [...filesStoreSelection] : [];
-    const selectedUsers = peopleStoreSelection.length
-      ? [...peopleStoreSelection]
-      : peopleStoreBufferSelection
-      ? [peopleStoreBufferSelection]
+    const selectedItems = getIsAccounts()
+      ? peopleStoreSelection.length
+        ? [...peopleStoreSelection]
+        : peopleStoreBufferSelection
+        ? [peopleStoreBufferSelection]
+        : []
+      : filesStoreSelection?.length > 0
+      ? [...filesStoreSelection]
       : [];
 
-    const selectedItems = getIsAccounts() ? selectedUsers : selectedFiles;
     const selectedFolder = {
       ...selectedFolderStore,
       isFolder: true,
@@ -292,14 +216,10 @@ export default inject(
     };
 
     return {
-      selfId,
-      isOwner,
-      isAdmin,
-      personal,
-      culture,
-
       selection,
       setSelection,
+      calculateSelection,
+
       updateSelection,
       setUpdateSelection,
       selectionParentRoom,
@@ -307,7 +227,7 @@ export default inject(
       normalizeSelection,
       roomsView,
       fileView,
-      getItemIcon,
+
       getIsFiles,
       getIsRooms,
       getIsAccounts,
@@ -315,29 +235,8 @@ export default inject(
 
       selectedItems,
       selectedFolder,
-      setBufferSelection,
-
-      getContextOptions,
-      getContextOptionActions,
-      getUserContextOptions,
-
-      getFolderInfo,
-      onSelectItem,
-      getShareUsers,
-      getRoomMembers,
-      changeUserType,
-      getHistory,
-      getRoomHistory,
-      getFileHistory,
-      setSharingPanelVisible,
-
-      getIcon,
-      getFolderIcon,
-      createThumbnail,
-      openLocationAction,
 
       gallerySelected,
-
       isRootFolder,
     };
   }
