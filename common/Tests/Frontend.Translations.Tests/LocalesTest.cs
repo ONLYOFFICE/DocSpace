@@ -63,7 +63,7 @@ public class Tests
 
     //public List<JsonEncodingError> WrongEncodingJsonErrors { get; set; }
 
-    private static readonly string _md5ExcludesPath = Utils.ConvertPathToOS("../../../md5-excludes.json");
+    private static readonly string _md5ExcludesPath = Path.GetFullPath(Utils.ConvertPathToOS("../../../md5-excludes.json"));
 
     //private static string _encodingExcludesPath = "../../../encoding-excludes.json";
 
@@ -303,6 +303,9 @@ public class Tests
             }).ToList();
 
         TestContext.Progress.WriteLine($"Found CommonTranslations = {CommonTranslations.Count()}. First path is '{CommonTranslations.FirstOrDefault()?.Path}'");
+
+        TestContext.Progress.WriteLine($"Found _md5Excludes = {_md5Excludes.Count()} Path to file '{_md5ExcludesPath}'");
+        
     }
 
     [Test]
