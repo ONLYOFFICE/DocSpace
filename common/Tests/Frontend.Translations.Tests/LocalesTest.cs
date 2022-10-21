@@ -100,6 +100,9 @@ public class Tests
                                where filePath.Contains("public/locales/")
                                select Path.GetFullPath(filePath).Replace("\\", "/");
 
+        TestContext.Progress.WriteLine($"Base path = {BasePath}");
+        TestContext.Progress.WriteLine($"Found translationFiles by *.json filter = {translationFiles.Count()}. First path is '{translationFiles.FirstOrDefault()}'");
+
         TranslationFiles = new List<TranslationFile>();
 
         foreach (var path in translationFiles)
@@ -153,22 +156,26 @@ public class Tests
             catch (Exception ex)
             {
                 ParseJsonErrors.Add(new ParseJsonError(path, ex));
-                Debug.WriteLine($"File path = {path} failed to parse with error: {ex.Message}");
+                TestContext.Progress.WriteLine($"File path = {path} failed to parse with error: {ex.Message}");
             }
         }
 
+        TestContext.Progress.WriteLine($"Found TranslationFiles = {TranslationFiles.Count()}. First path is '{TranslationFiles.FirstOrDefault()?.FilePath}'");
+
         var javascriptFiles = (from wsPath in Workspaces
                                let clientDir = Path.Combine(BasePath, wsPath)
-                               from file in Directory.EnumerateFiles(clientDir, "*.js", SearchOption.AllDirectories)
-                               where !file.Contains("dist/") && !file.Contains(".test.js") && !file.Contains(".stories.js")
-                               select file)
+                               from filePath in Directory.EnumerateFiles(clientDir, "*.js", SearchOption.AllDirectories)
+                               where !filePath.Contains("dist/") && !filePath.Contains(".test.js") && !filePath.Contains(".stories.js")
+                               select filePath.Replace("\\", "/"))
                               .ToList();
 
         javascriptFiles.AddRange(from wsPath in Workspaces
                                  let clientDir = Path.Combine(BasePath, wsPath)
-                                 from file in Directory.EnumerateFiles(clientDir, "*.jsx", SearchOption.AllDirectories)
-                                 where !file.Contains("dist/") && !file.Contains(".test.jsx") && !file.Contains(".stories.jsx")
-                                 select file);
+                                 from filePath in Directory.EnumerateFiles(clientDir, "*.jsx", SearchOption.AllDirectories)
+                                 where !filePath.Contains("dist/") && !filePath.Contains(".test.jsx") && !filePath.Contains(".stories.jsx")
+                                 select filePath.Replace("\\", "/"));
+
+        TestContext.Progress.WriteLine($"Found javascriptFiles by *.js(x) filter = {javascriptFiles.Count()}. First path is '{javascriptFiles.FirstOrDefault()}'");
 
         JavaScriptFiles = new List<JavaScriptFile>();
 
@@ -221,6 +228,8 @@ public class Tests
             JavaScriptFiles.Add(jsFile);
         }
 
+        TestContext.Progress.WriteLine($"Found JavaScriptFiles = {JavaScriptFiles.Count()}. First path is '{JavaScriptFiles.FirstOrDefault()?.Path}'");
+
         ModuleFolders = new List<ModuleFolder>();
 
         var list = TranslationFiles
@@ -245,6 +254,8 @@ public class Tests
             })
             .ToList();
 
+        TestContext.Progress.WriteLine($"Found moduleTranslations = {moduleTranslations.Count()}. First path is '{moduleTranslations.FirstOrDefault()?.ModulePath}'");
+
         var moduleJsTranslatedFiles = JavaScriptFiles
             .Select(t => new
             {
@@ -259,6 +270,8 @@ public class Tests
                 TranslationKeys = g.ToList().SelectMany(t => t.TranslationKeys).ToList()
             })
             .ToList();
+
+        TestContext.Progress.WriteLine($"Found moduleJsTranslatedFiles = {moduleJsTranslatedFiles.Count()}. First path is '{moduleJsTranslatedFiles.FirstOrDefault()?.ModulePath}'");
 
         foreach (var wsPath in moduleWorkspaces)
         {
@@ -276,6 +289,8 @@ public class Tests
             });
         }
 
+        TestContext.Progress.WriteLine($"Found ModuleFolders = {ModuleFolders.Count()}. First path is '{ModuleFolders.FirstOrDefault()?.Path}'");
+
         CommonTranslations = TranslationFiles
             .Where(file => file.FilePath.StartsWith($"{BasePath}public/locales"))
             .Select(t => new LanguageItem
@@ -284,6 +299,8 @@ public class Tests
                 Language = t.Language,
                 Translations = t.Translations
             }).ToList();
+
+        TestContext.Progress.WriteLine($"Found CommonTranslations = {CommonTranslations.Count()}. First path is '{CommonTranslations.FirstOrDefault()?.Path}'");
     }
 
     [Test]
