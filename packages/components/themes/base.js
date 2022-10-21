@@ -442,6 +442,8 @@ const Base = {
 
     hoverBorderColor: gray,
     hoverIndeterminateColor: black,
+
+    focusColor: "#A3A9AE",
   },
 
   // slider: {

@@ -343,7 +343,7 @@ const PeopleTableRow = (props) => {
           >
             {statusType === "pending"
               ? email
-              : displayName
+              : displayName?.trim()
               ? displayName
               : email}
           </Link>

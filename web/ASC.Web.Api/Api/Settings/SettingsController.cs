@@ -57,7 +57,7 @@ public class SettingsController : BaseSettingsController
     private readonly ILogger _log;
     private readonly TelegramHelper _telegramHelper;
     private readonly DnsSettings _dnsSettings;
-    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    private readonly AdditionalWhiteLabelSettingsHelperInit _additionalWhiteLabelSettingsHelper;
     private readonly CustomColorThemesSettingsHelper _customColorThemesSettingsHelper;
     private readonly QuotaUsageManager _quotaUsageManager;
     private readonly QuotaSyncOperation _quotaSyncOperation;
@@ -93,7 +93,7 @@ public class SettingsController : BaseSettingsController
         PasswordHasher passwordHasher,
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
-        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelper,
         CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
         QuotaSyncOperation quotaSyncOperation,
         QuotaUsageManager quotaUsageManager

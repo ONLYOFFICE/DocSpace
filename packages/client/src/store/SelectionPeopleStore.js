@@ -181,7 +181,7 @@ class SelectionStore {
     return false;
   }
 
-  get getUsersToActivateIds() {
+  get getUsersToActivate() {
     const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
 
     if (isOwner) {
@@ -189,7 +189,7 @@ class SelectionStore {
         (x) => x.status !== EmployeeStatus.Active && x.id !== id
       );
 
-      return users.map((u) => u.id);
+      return users.map((u) => u);
     }
 
     if (isAdmin && !isOwner) {
@@ -201,7 +201,7 @@ class SelectionStore {
           !x.isOwner
       );
 
-      return users.map((u) => u.id);
+      return users.map((u) => u);
     }
 
     return [];
@@ -233,7 +233,7 @@ class SelectionStore {
     return false;
   }
 
-  get getUsersToDisableIds() {
+  get getUsersToDisable() {
     const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
 
     if (isOwner) {
@@ -241,7 +241,7 @@ class SelectionStore {
         (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
       );
 
-      return users.map((u) => u.id);
+      return users.map((u) => u);
     }
 
     if (isAdmin && !isOwner) {
@@ -253,7 +253,7 @@ class SelectionStore {
           !x.isOwner
       );
 
-      return users.map((u) => u.id);
+      return users.map((u) => u);
     }
 
     return [];

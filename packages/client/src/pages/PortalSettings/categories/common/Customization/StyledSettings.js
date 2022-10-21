@@ -62,6 +62,12 @@ const StyledSettingsComponent = styled.div`
     height: 40px;
   }
 
+  .combo-box-settings {
+    .combo-button {
+      justify-content: space-between !important;
+    }
+  }
+
   @media (max-width: 599px) {
     ${(props) =>
       props.hasScroll &&

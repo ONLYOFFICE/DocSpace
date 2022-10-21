@@ -51,7 +51,7 @@ public class StudioNotifyHelper
         StudioNotifySource studioNotifySource,
         UserManager userManager,
         SettingsManager settingsManager,
-        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelper,
         CommonLinkUtility commonLinkUtility,
         TenantManager tenantManager,
         TenantExtra tenantExtra,

@@ -93,6 +93,7 @@ public class WebItemSecurity
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly WebItemSecurityCache _webItemSecurityCache;
     private readonly SettingsManager _settingsManager;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
 
     public WebItemSecurity(
         UserManager userManager,
@@ -104,7 +105,8 @@ public class WebItemSecurity
         AuthorizationManager authorizationManager,
         CoreBaseSettings coreBaseSettings,
         WebItemSecurityCache webItemSecurityCache,
-        SettingsManager settingsManager)
+        SettingsManager settingsManager,
+        CountRoomAdminChecker countRoomAdminChecker)
     {
         _userManager = userManager;
         _authContext = authContext;
@@ -116,6 +118,7 @@ public class WebItemSecurity
         _coreBaseSettings = coreBaseSettings;
         _webItemSecurityCache = webItemSecurityCache;
         _settingsManager = settingsManager;
+        _countRoomAdminChecker = countRoomAdminChecker;
     }
 
     //
@@ -275,11 +278,13 @@ public class WebItemSecurity
         {
             productid = ASC.Core.Users.Constants.GroupAdmin.ID;
         }
+
         if (administrator)
         {
             if (_userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupUser.ID))
             {
-                throw new SecurityException("Collaborator can not be an administrator");
+                _countRoomAdminChecker.CheckAppend().Wait();
+                _userManager.RemoveUserFromGroup(userid, ASC.Core.Users.Constants.GroupUser.ID);
             }
 
             if (productid == WebItemManager.PeopleProductID)
