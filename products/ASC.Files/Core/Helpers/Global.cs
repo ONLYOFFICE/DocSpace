@@ -379,11 +379,6 @@ public class GlobalFolder
             return default;
         }
 
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
-        {
-            return default;
-        }
-
         var key = $"archive/{_tenantManager.GetCurrentTenant().Id}";
 
         if (!DocSpaceFolderCache.TryGetValue(key, out var result))
