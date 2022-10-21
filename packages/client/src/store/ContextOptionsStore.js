@@ -382,6 +382,12 @@ class ContextOptionsStore {
       .catch((err) => toastr.error(err));
   };
 
+  onSelectRoom = (item) => {
+    const { onSelectItem } = this.filesActionsStore;
+
+    onSelectItem({ id: item.id, isFolder: true }, true, false);
+  };
+
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
 
@@ -513,6 +519,13 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
+        key: "select",
+        label: "Select",
+        icon: "images/check-box.react.svg",
+        onClick: () => this.onSelectRoom(item),
+        disabled: false,
+      },
+      {
         key: "fill-form",
         label: t("Common:FillFormButton"),
         icon: "/static/images/form.fill.rect.svg",
@@ -546,6 +559,10 @@ class ContextOptionsStore {
         icon: "/static/images/form.plus.react.svg",
         onClick: () => this.onClickMakeForm(item, t),
         disabled: false,
+      },
+      {
+        key: "separator0",
+        isSeparator: true,
       },
       {
         key: "edit-room",
@@ -586,10 +603,6 @@ class ContextOptionsStore {
         disabled: false,
         "data-action": "unpin",
         action: "unpin",
-      },
-      {
-        key: "separator0",
-        isSeparator: true,
       },
       {
         key: "sharing-settings",
@@ -808,16 +821,16 @@ class ContextOptionsStore {
       const archiveOptions = !isArchiveFolder
         ? {
             key: "archive-room",
-            label: t("ToArchive"),
+            label: t("Archived"),
             icon: "/static/images/room.archive.svg",
-            onClick: moveRoomsToArchive,
+            onClick: () => moveRoomsToArchive(t),
             disabled: false,
           }
         : {
             key: "unarchive-room",
-            label: t("FromArchive"),
-            icon: "/static/images/room.archive.svg",
-            onClick: moveRoomsFromArchive,
+            label: t("Common:Restore"),
+            icon: "images/subtract.react.svg",
+            onClick: () => moveRoomsFromArchive(t),
             disabled: false,
           };
 

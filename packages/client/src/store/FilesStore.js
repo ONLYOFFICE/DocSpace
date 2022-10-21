@@ -1341,12 +1341,14 @@ class FilesStore {
       return fileOptions;
     } else if (isRoom) {
       let roomOptions = [
+        "select",
+        "separator0",
         "edit-room",
         "invite-users-to-room",
-        "show-info",
+        "room-info",
         "pin-room",
         "unpin-room",
-        "separator0",
+        "separator1",
         "archive-room",
         "unarchive-room",
         "delete",
@@ -1365,6 +1367,8 @@ class FilesStore {
           "pin-room",
           "unpin-room",
           "archive-room",
+          "separator1",
+          "room-info",
         ]);
       } else {
         roomOptions = this.removeOptions(roomOptions, [
