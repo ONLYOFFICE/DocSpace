@@ -1031,6 +1031,7 @@ class FilesStore {
 
       let fileOptions = [
         //"open",
+        "select",
         "fill-form",
         "edit",
         "preview",
@@ -1391,6 +1392,7 @@ class FilesStore {
       return roomOptions;
     } else {
       let folderOptions = [
+        "select",
         "open",
         "separator0",
         "sharing-settings",

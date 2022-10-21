@@ -383,10 +383,10 @@ class ContextOptionsStore {
       .catch((err) => toastr.error(err));
   };
 
-  onSelectRoom = (item) => {
+  onSelect = (item) => {
     const { onSelectItem } = this.filesActionsStore;
 
-    onSelectItem({ id: item.id, isFolder: true }, true, false);
+    onSelectItem({ id: item.id, isFolder: item.isFolder }, true, false);
   };
 
   getFilesContextOptions = (item, t) => {
@@ -513,17 +513,17 @@ class ContextOptionsStore {
 
     const optionsModel = [
       {
+        key: "select",
+        label: "Select",
+        icon: "images/check-box.react.svg",
+        onClick: () => this.onSelect(item),
+        disabled: false,
+      },
+      {
         key: "open",
         label: t("Open"),
         icon: "images/folder.react.svg",
         onClick: () => this.onOpenFolder(item),
-        disabled: false,
-      },
-      {
-        key: "select",
-        label: "Select",
-        icon: "images/check-box.react.svg",
-        onClick: () => this.onSelectRoom(item),
         disabled: false,
       },
       {
