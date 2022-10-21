@@ -5,7 +5,7 @@
       "launchBrowser": false,
       "launchUrl": "http://localhost:5010/portal/test",
       "environmentVariables": {
-        "$STORAGE_ROOT": "../../../Data",
+        "STORAGE_ROOT": "../../../Data",
         "log__name": "apisystem",
         "log__dir": "../../../Logs",
         "ASPNETCORE_ENVIRONMENT": "Development",
@@ -17,7 +17,7 @@
       "launchBrowser": false,
       "launchUrl": "http://localhost:5010/portal/test",
       "environmentVariables": {
-        "$STORAGE_ROOT": "../../../Data",
+        "STORAGE_ROOT": "../../../Data",
         "log__name": "apisystem",
         "log__dir": "../../../Logs",
         "ASPNETCORE_ENVIRONMENT": "Development",

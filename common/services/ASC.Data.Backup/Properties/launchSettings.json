@@ -5,7 +5,7 @@
       "launchBrowser": false,
       "launchUrl": "http://localhost:5012/api/2.0/backup/backuptmp",
       "environmentVariables": {
-        "$STORAGE_ROOT": "../../../Data",
+        "STORAGE_ROOT": "../../../Data",
         "log__name": "backup",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
@@ -18,7 +18,7 @@
       "launchBrowser": false,
       "launchUrl": "http://localhost:5012/api/2.0/backup/backuptmp",
       "environmentVariables": {
-        "$STORAGE_ROOT": "../../../Data",
+        "STORAGE_ROOT": "../../../Data",
         "log__name": "backup",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",

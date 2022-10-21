@@ -4,7 +4,7 @@
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {
-        "$STORAGE_ROOT": "../../../Data",
+        "STORAGE_ROOT": "../../../Data",
         "log__name": "studio.notify",
         "log__dir": "../../../Logs",
         "ASPNETCORE_URLS": "http://localhost:5006",
@@ -15,7 +15,7 @@
       "commandName": "WSL2",
       "launchBrowser": false,
       "environmentVariables": {
-        "$STORAGE_ROOT": "../../../Data",
+        "STORAGE_ROOT": "../../../Data",
         "log__name": "studio.notify",
         "log__dir": "../../../Logs",
         "ASPNETCORE_URLS": "http://localhost:5006",

@@ -71,7 +71,7 @@ class RunServices:
             self.RunService(RUN_FILE, ENV_EXTENSION)
         elif  ENV_EXTENSION == "none":
             os.system("dotnet " + RUN_FILE + " --urls=" + URLS + self.SERVICE_PORT +\
-                " --\'$STORAGE_ROOT\'=" + APP_STORAGE_ROOT +\
+                " --\'STORAGE_ROOT\'=" + APP_STORAGE_ROOT +\
                     " --pathToConf=" + self.PATH_TO_CONF +\
                         " --log:dir=" + LOG_DIR +\
                             " --log:name=" + LOG_FILE +\
@@ -79,7 +79,7 @@ class RunServices:
                                     " core:products:subfolder=server")
         else:
             os.system("dotnet " + RUN_FILE + " --urls=" + URLS + self.SERVICE_PORT +\
-                 " --\'$STORAGE_ROOT\'=" + APP_STORAGE_ROOT +\
+                 " --\'STORAGE_ROOT\'=" + APP_STORAGE_ROOT +\
                     " --pathToConf=" + self.PATH_TO_CONF +\
                         " --log:dir=" + LOG_DIR +\
                             " --log:name=" + LOG_FILE +\

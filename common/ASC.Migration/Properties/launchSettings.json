@@ -4,7 +4,7 @@
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {
-        "$STORAGE_ROOT": "../../Data",
+        "STORAGE_ROOT": "../../Data",
         "log__name": "migration",
         "log__dir": "../../Logs",
         "ASPNETCORE_URLS": "http://localhost:5034",
@@ -16,7 +16,7 @@
       "launchBrowser": false,
       "launchUrl": "http://localhost:5034",
       "environmentVariables": {
-        "$STORAGE_ROOT": "../../Data",
+        "STORAGE_ROOT": "../../Data",
         "log__name": "migration",
         "log__dir": "../../Logs",
         "ASPNETCORE_URLS": "http://localhost:5034",
