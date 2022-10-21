@@ -1143,14 +1143,14 @@ public class Tests
     /// <summary>
     /// Converts a file from one encoding to another.
     /// </summary>
-    /// <param name=�sourcePath�>the file to convert</param>
-    /// <param name=�destPath�>the destination for the converted file</param>
-    /// <param name=�sourceEncoding�>the original file encoding</param>
-    /// <param name=�destEncoding�>the encoding to which the contents should be converted</param>
+    /// <param name="sourcePath">the file to convert</param>
+    /// <param name="destPath">the destination for the converted file</param>
+    /// <param name="sourceEncoding">the original file encoding</param>
+    /// <param name="destEncoding">the encoding to which the contents should be converted</param>
     //public static void ConvertFileEncoding(string sourcePath, string destPath,
     //                                       Encoding sourceEncoding, Encoding destEncoding)
     //{
-    //    // If the destination�s parent doesn�t exist, create it.
+    //    // If the destination's parent doesn't exist, create it.
     //    var parent = Path.GetDirectoryName(Path.GetFullPath(destPath));
     //    if (!Directory.Exists(parent))
     //    {
