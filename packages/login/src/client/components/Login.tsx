@@ -194,6 +194,7 @@ const Login: React.FC<ILoginProps> = ({
 
   return (
     <LoginFormWrapper
+      id="login-page"
       enabledJoin={enabledJoin}
       isDesktop={isDesktopEditor}
       //className="with-background-pattern"

@@ -90,6 +90,14 @@ const template: Template = (
             background-color: #fff;
           }
 
+          #login-page > div > svg > path:last-child {
+            fill: #333;
+          }
+
+          #login-page > div > p {
+            color: #333;
+          }
+
           #login-form {
             background-color: #fff;
             box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.07);
@@ -104,11 +112,23 @@ const template: Template = (
             fill: #fff;
             stroke: #D0D5DA;
           }
+
+          #login-checkbox > div > span {
+            color: #333;
+          }
         }
 
         @media (prefers-color-scheme: dark) {
           body {
             background-color: #333;
+          }
+
+          #login-page > div > svg > path:last-child {
+            fill: #fff;
+          }
+
+          #login-page > div > p {
+            color: #fff;
           }
 
           #login-form {
@@ -124,6 +144,10 @@ const template: Template = (
           #login-checkbox > svg > rect {
             fill: #282828;
             stroke: #474747;
+          }
+
+          #login-checkbox > div > span {
+            color: #fff;
           }
         }        
         </style>
