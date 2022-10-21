@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 
@@ -19,8 +20,10 @@ const FilesItemTitle = ({
 
   getContextOptions,
   getContextOptionActions,
-  severalItemsLength,
+  selectionLength,
 }) => {
+  const itemTitleRef = useRef();
+
   if (isSeveralItems)
     return (
       <StyledTitle>
@@ -28,12 +31,10 @@ const FilesItemTitle = ({
           <ReactSVG className="icon" src={getIcon(32, ".file")} />
         </div>
         <Text className="text">
-          {`${t("InfoPanel:ItemsSelected")}: ${severalItemsLength}`}
+          {`${t("InfoPanel:ItemsSelected")}: ${selectionLength}`}
         </Text>
       </StyledTitle>
     );
-
-  const itemTitleRef = useRef();
 
   return (
     <StyledTitle ref={itemTitleRef}>
@@ -65,4 +66,4 @@ export default withTranslation([
   "Translations",
   "InfoPanel",
   "SharingPanel",
-])(FilesItemTitle);
+])(observer(FilesItemTitle));

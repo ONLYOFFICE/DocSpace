@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 
 import AccountsItemTitle from "./AccountsItemTitle";
 import FilesItemTitle from "./FilesItemTitle";
@@ -6,13 +7,14 @@ import GalleryItemTitle from "./GalleryItemTitle";
 
 const ItemTitle = ({
   selection,
-  selectionParentRoom,
-  roomsView,
-
   isRooms,
   isAccounts,
   isGallery,
   isSeveralItems,
+  selectionLength,
+
+  selectionParentRoom,
+  roomsView,
 
   setBufferSelection,
   getIcon,
@@ -20,7 +22,6 @@ const ItemTitle = ({
   getContextOptions,
   getContextOptionActions,
   getUserContextOptions,
-  severalItemsLength,
 }) => {
   if (!selection) return null;
 
@@ -30,7 +31,7 @@ const ItemTitle = ({
         selection={selection}
         isSeveralItems={isSeveralItems}
         getUserContextOptions={getUserContextOptions}
-        severalItemsLength={severalItemsLength}
+        selectionLength={selectionLength}
       />
     );
 
@@ -48,7 +49,7 @@ const ItemTitle = ({
 
   return (
     <FilesItemTitle
-      severalItemsLength={severalItemsLength}
+      selectionLength={selectionLength}
       selection={filesItemSelection}
       isSeveralItems={isSeveralItems}
       setBufferSelection={setBufferSelection}
@@ -59,4 +60,31 @@ const ItemTitle = ({
   );
 };
 
-export default ItemTitle;
+export default inject(
+  ({ auth, settingsStore, filesStore, peopleStore, contextOptionsStore }) => {
+    const { selectionParentRoom, roomsView } = auth.infoPanelStore;
+    const { getIcon } = settingsStore;
+    const { getUserContextOptions } = peopleStore.contextOptionsStore;
+
+    const {
+      setBufferSelection,
+      getFilesContextOptions: getContextOptions,
+    } = filesStore;
+
+    const {
+      getFilesContextOptions: getContextOptionActions,
+    } = contextOptionsStore;
+
+    return {
+      selectionParentRoom,
+      roomsView,
+
+      setBufferSelection,
+      getIcon,
+
+      getContextOptions,
+      getContextOptionActions,
+      getUserContextOptions,
+    };
+  }
+)(observer(ItemTitle));
