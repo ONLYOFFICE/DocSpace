@@ -21,6 +21,7 @@ const RenameEvent = ({
 
   editCompleteAction,
   clearActiveOperations,
+  reloadSelection,
 
   setEventDialogVisible,
   eventDialogVisible,
@@ -99,8 +100,8 @@ const RenameEvent = ({
             clearTimeout(timerId);
             timerId = null;
             clearActiveOperations(null, [item.id]);
-
             setIsLoading(false);
+            reloadSelection();
             onClose();
           });
   }, []);
@@ -126,7 +127,9 @@ const RenameEvent = ({
 };
 
 export default inject(
-  ({ filesStore, filesActionsStore, uploadDataStore, dialogsStore }) => {
+  ({ auth, filesStore, filesActionsStore, uploadDataStore, dialogsStore }) => {
+    const { reloadSelection } = auth.infoPanelStore;
+
     const {
       setIsLoading,
       addActiveItems,
@@ -146,6 +149,7 @@ export default inject(
       renameFolder,
 
       editCompleteAction,
+      reloadSelection,
 
       clearActiveOperations,
       setEventDialogVisible,
