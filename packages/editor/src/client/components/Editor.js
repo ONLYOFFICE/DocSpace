@@ -105,8 +105,6 @@ function Editor({
   }, [mfReady, error]);
 
   useEffect(() => {
-    debugger;
-
     if (!config) return;
 
     setDocumentTitle(config?.document?.title);
