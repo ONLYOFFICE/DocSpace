@@ -356,11 +356,12 @@ class ContextOptionsStore {
 
   onClickInviteUsers = (e) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
+
     const { action } = data;
 
     this.dialogsStore.setInvitePanelOptions({
       visible: true,
-      roomId: action,
+      roomId: action ? action : e,
       hideSelector: false,
       defaultAccess: ShareAccessRights.ReadOnly,
     });
@@ -581,7 +582,7 @@ class ContextOptionsStore {
       },
       {
         key: "room-info",
-        label: "Info",
+        label: t("Common:Info"),
         icon: "/static/images/info.outline.react.svg",
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,

@@ -315,7 +315,18 @@ class SectionHeaderContent extends React.Component {
   };
 
   getContextOptionsFolder = () => {
-    const { t, isRecycleBinFolder, isArchiveFolder } = this.props;
+    const {
+      t,
+      isRoom,
+      isRecycleBinFolder,
+      isArchiveFolder,
+      selectedFolder,
+
+      onClickEditRoom,
+      onClickInviteUsers,
+      onShowInfoPanel,
+      onClickArchive,
+    } = this.props;
 
     if (isArchiveFolder) {
       return [
@@ -369,43 +380,73 @@ class SectionHeaderContent extends React.Component {
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
         onClick: this.onShowInfo,
-        disabled: isRecycleBinFolder,
+        disabled: isRecycleBinFolder || isRoom,
         icon: "/static/images/info.outline.react.svg",
       },
+      {
+        key: "edit-room",
+        label: t("EditRoom"),
+        icon: "images/settings.react.svg",
+        onClick: () => onClickEditRoom(selectedFolder),
+        disabled: !isRoom,
+      },
+      {
+        key: "invite-users-to-room",
+        label: t("InviteUsers"),
+        icon: "/static/images/person.react.svg",
+        onClick: () => onClickInviteUsers(selectedFolder.id),
+        disabled: !isRoom,
+      },
+      {
+        key: "room-info",
+        label: t("Common:Info"),
+        icon: "/static/images/info.outline.react.svg",
+        onClick: this.onToggleInfoPanel,
+        disabled: !isRoom,
+      },
       { key: "separator-2", isSeparator: true, disabled: isRecycleBinFolder },
+      {
+        key: "archive-room",
+        label: t("Archived"),
+        icon: "/static/images/room.archive.svg",
+        onClick: (e) => onClickArchive(e, selectedFolder, t),
+        disabled: !isRoom,
+        "data-action": "archive",
+        action: "archive",
+      },
       {
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
-        disabled: isRecycleBinFolder,
+        disabled: isRecycleBinFolder || isRoom,
         icon: "images/move.react.svg",
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
-        disabled: isRecycleBinFolder,
+        disabled: isRecycleBinFolder || isRoom,
         icon: "/static/images/copy.react.svg",
       },
       {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
-        disabled: isRecycleBinFolder,
+        disabled: isRecycleBinFolder || isRoom,
         icon: "images/download.react.svg",
       },
       {
         key: "rename",
         label: t("Rename"),
         onClick: this.renameAction,
-        disabled: true,
+        disabled: isRecycleBinFolder || isRoom,
         icon: "images/rename.react.svg",
       },
       {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
-        disabled: isRecycleBinFolder,
+        disabled: isRecycleBinFolder || isRoom,
         icon: "/static/images/catalog.trash.react.svg",
       },
     ];
@@ -601,6 +642,8 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
+
+    contextOptionsStore,
   }) => {
     const {
       setSelected,
@@ -621,6 +664,8 @@ export default inject(
       activeFolders,
 
       setAlreadyFetchingRooms,
+
+      filesList,
 
       categoryType,
       isEmptyPage,
@@ -662,9 +707,18 @@ export default inject(
       navigationPath,
     } = selectedFolderStore;
 
+    const selectedFolder = { ...selectedFolderStore };
+
     const { enablePlugins } = auth.settingsStore;
 
     const isRoom = !!roomType;
+
+    const {
+      onClickEditRoom,
+      onClickInviteUsers,
+      onShowInfoPanel,
+      onClickArchive,
+    } = contextOptionsStore;
 
     return {
       showText: auth.settingsStore.showText,
@@ -729,6 +783,13 @@ export default inject(
       setRestoreAllPanelVisible,
       isEmptyPage,
       setRestoreAllArchiveDialogVisible,
+
+      selectedFolder,
+
+      onClickEditRoom,
+      onClickInviteUsers,
+      onShowInfoPanel,
+      onClickArchive,
     };
   }
 )(
