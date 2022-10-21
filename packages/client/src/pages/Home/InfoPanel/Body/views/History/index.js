@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import {
@@ -24,7 +24,7 @@ const History = ({
   selectedFolder,
   selectionParentRoom,
   setSelection,
-  getItemIcon,
+  getInfoPanelItemIcon,
   getHistory,
   checkAndOpenLocationAction,
   openUser,
@@ -138,7 +138,7 @@ const History = ({
                 <HistoryBlockItemList
                   t={t}
                   items={[feed.json, ...feed.groupedFeeds]}
-                  getItemIcon={getItemIcon}
+                  getInfoPanelItemIcon={getInfoPanelItemIcon}
                   checkAndOpenLocationAction={checkAndOpenLocationAction}
                 />
               )}
@@ -166,7 +166,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     selection,
     selectionParentRoom,
     setSelection,
-    getItemIcon,
+    getInfoPanelItemIcon,
     openUser,
   } = auth.infoPanelStore;
   const { personal, culture } = auth.settingsStore;
@@ -180,9 +180,9 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     selection,
     selectionParentRoom,
     setSelection,
-    getItemIcon,
+    getInfoPanelItemIcon,
     getHistory,
     checkAndOpenLocationAction,
     openUser,
   };
-})(withTranslation(["InfoPanel", "Common", "Translations"])(History));
+})(withTranslation(["InfoPanel", "Common", "Translations"])(observer(History)));

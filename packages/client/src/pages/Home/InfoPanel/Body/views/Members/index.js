@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 
@@ -24,10 +25,6 @@ const Members = ({
   getRoomMembers,
   changeUserType,
 }) => {
-  const startMembersValue = {
-    inRoom: [],
-    expected: [],
-  };
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
 
@@ -151,11 +148,30 @@ const Members = ({
   );
 };
 
-export default withTranslation([
-  "InfoPanel",
-  "Common",
-  "Translations",
-  "People",
-  "PeopleTranslations",
-  "Settings",
-])(Members);
+export default inject(({ auth, filesStore, peopleStore }) => {
+  const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
+  const { getRoomMembers } = filesStore;
+  const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
+  const { changeType: changeUserType } = peopleStore;
+
+  return {
+    selectionParentRoom,
+    setSelectionParentRoom,
+    getRoomMembers,
+
+    isOwner,
+    isAdmin,
+    selfId,
+
+    changeUserType,
+  };
+})(
+  withTranslation([
+    "InfoPanel",
+    "Common",
+    "Translations",
+    "People",
+    "PeopleTranslations",
+    "Settings",
+  ])(observer(Members))
+);

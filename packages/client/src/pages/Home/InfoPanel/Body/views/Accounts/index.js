@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
@@ -201,15 +202,31 @@ const Accounts = ({
   );
 };
 
-export default withTranslation([
-  "People",
-  "InfoPanel",
-  "ConnectDialog",
-  "Common",
-  "PeopleTranslations",
-  "People",
-  "Settings",
-  "SmartBanner",
-  "DeleteProfileEverDialog",
-  "Translations",
-])(withLoader(Accounts)(<Loaders.InfoPanelViewLoader view="accounts" />));
+export default inject(({ auth, peopleStore }) => {
+  const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
+  const { changeType: changeUserType } = peopleStore;
+
+  return {
+    isOwner,
+    isAdmin,
+    changeUserType,
+    selfId,
+  };
+})(
+  withTranslation([
+    "People",
+    "InfoPanel",
+    "ConnectDialog",
+    "Common",
+    "PeopleTranslations",
+    "People",
+    "Settings",
+    "SmartBanner",
+    "DeleteProfileEverDialog",
+    "Translations",
+  ])(
+    withLoader(observer(Accounts))(
+      <Loaders.InfoPanelViewLoader view="accounts" />
+    )
+  )
+);
