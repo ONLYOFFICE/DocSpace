@@ -22,6 +22,8 @@ const RenameEvent = ({
   editCompleteAction,
   clearActiveOperations,
 
+  updateCurrentFolder,
+
   setEventDialogVisible,
   eventDialogVisible,
 }) => {
@@ -100,6 +102,8 @@ const RenameEvent = ({
             timerId = null;
             clearActiveOperations(null, [item.id]);
 
+            updateCurrentFolder(null, [item.id]);
+
             setIsLoading(false);
             onClose();
           });
@@ -134,7 +138,7 @@ export default inject(
       renameFolder,
     } = filesStore;
 
-    const { editCompleteAction } = filesActionsStore;
+    const { editCompleteAction, updateCurrentFolder } = filesActionsStore;
 
     const { clearActiveOperations } = uploadDataStore;
     const { setEventDialogVisible, eventDialogVisible } = dialogsStore;
@@ -146,6 +150,7 @@ export default inject(
       renameFolder,
 
       editCompleteAction,
+      updateCurrentFolder,
 
       clearActiveOperations,
       setEventDialogVisible,

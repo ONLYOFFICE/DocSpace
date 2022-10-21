@@ -236,7 +236,16 @@ class SectionHeaderContent extends React.Component {
       .catch((err) => toastr.error(err));
   };
 
-  renameAction = () => console.log("renameAction click");
+  renameAction = () => {
+    const { selectedFolder } = this.props;
+
+    const event = new Event(Events.RENAME);
+
+    event.item = selectedFolder;
+
+    window.dispatchEvent(event);
+  };
+
   onOpenSharingPanel = () => {
     this.props.setBufferSelection(this.props.currentFolderId);
     this.props.setIsFolderActions(true);
@@ -441,6 +450,11 @@ class SectionHeaderContent extends React.Component {
         onClick: this.renameAction,
         disabled: isRecycleBinFolder || isRoom,
         icon: "images/rename.react.svg",
+      },
+      {
+        key: "separator-3",
+        isSeparator: true,
+        disabled: isRecycleBinFolder || isRoom,
       },
       {
         key: "delete",
