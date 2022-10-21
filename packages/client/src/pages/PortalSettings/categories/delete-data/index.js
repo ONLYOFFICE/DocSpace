@@ -20,7 +20,7 @@ const DeleteData = (props) => {
   const data = [
     {
       id: "deletion",
-      name: t("PortalDeletion"),
+      name: t("DeleteDocSpace"),
       content: <PortalDeletionSection />,
     },
     {

@@ -31,7 +31,7 @@ const PortalDeletion = (props) => {
   return (
     <MainContainer>
       <Text fontSize="16px" fontWeight="700" className="header">
-        {t("PortalDeletion")}
+        {t("DeleteDocSpace")}
       </Text>
       <Text fontSize="12px" className="description">
         {t("PortalDeletionDescription")}
