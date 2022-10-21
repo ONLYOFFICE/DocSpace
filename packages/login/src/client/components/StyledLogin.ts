@@ -137,7 +137,6 @@ export const LoginContainer = styled.div`
     width: 320px;
 
     @media ${tablet} {
-      margin: 32px 0 0 0;
       width: 100%;
     }
     @media ${hugeMobile} {
