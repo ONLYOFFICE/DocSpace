@@ -829,6 +829,8 @@ class FilesActionStore {
   setPinAction = (action, id) => {
     const { pinRoom, unpinRoom, updateRoomPin, setSelected } = this.filesStore;
 
+    const { selection, setSelection } = this.authStore.infoPanelStore;
+
     const items = Array.isArray(id) ? id : [id];
 
     const actions = [];
@@ -843,6 +845,9 @@ class FilesActionStore {
         return Promise.all(actions)
           .then(() => {
             this.updateCurrentFolder(null, items);
+            if (selection) {
+              setSelection({ ...selection, pinned: true });
+            }
           })
           .then(() => setSelected("close"))
           .finally(() => toastr.success("Room pinned"));
@@ -854,6 +859,9 @@ class FilesActionStore {
         return Promise.all(actions)
           .then(() => {
             this.updateCurrentFolder(null, items);
+            if (selection) {
+              setSelection({ ...selection, pinned: false });
+            }
           })
           .then(() => setSelected("close"))
           .finally(() => toastr.success("Room unpinned"));
