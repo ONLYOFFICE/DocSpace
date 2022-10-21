@@ -918,7 +918,6 @@ class FilesActionStore {
             if (res[0]?.error) return Promise.reject(res[0].error);
 
             const pbData = {
-              icon: "move",
               label: "Archive room operation",
             };
             const data = res ? res : null;
@@ -955,7 +954,6 @@ class FilesActionStore {
             if (res[0]?.error) return Promise.reject(res[0].error);
 
             const pbData = {
-              icon: "move",
               label: "Archive room operation",
             };
             const data = res ? res : null;
