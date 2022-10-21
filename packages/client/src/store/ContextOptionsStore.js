@@ -635,7 +635,7 @@ class ContextOptionsStore {
       ...versionActions,
       {
         key: "show-info",
-        label: t("InfoPanel:ViewDetails"),
+        label: t("Common:Info"),
         icon: "/static/images/info.outline.react.svg",
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
