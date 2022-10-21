@@ -32,7 +32,7 @@ public class JavaScriptFile
 {
     public JavaScriptFile(string path)
     {
-        Path = path.Replace("\\", "/");
+        Path = Utils.ConvertPathToOS(path);
     }
 
     public string Path { get; }

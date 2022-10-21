@@ -33,7 +33,7 @@ public class TranslationFile
 {
     public TranslationFile(string path, List<TranslationItem> translations, string md5hash = null)
     {
-        FilePath = path.Replace("\\", "/");
+        FilePath = Utils.ConvertPathToOS(path);
 
         FileName = Path.GetFileName(FilePath);
 
