@@ -1,4 +1,5 @@
 const excludeRoomOptions = ["select", "separator0", "room-info"];
+const excludeOptionsIntoRoom = ["pin-room", "unpin-room"];
 
 class ContextHelper {
   constructor(props) {
@@ -6,6 +7,8 @@ class ContextHelper {
     this.selection = { ...props.selection };
     this.getContextOptions = props.getContextOptions;
     this.getContextOptionActions = props.getContextOptionActions;
+
+    this.selectedFolderId = props.selectedFolderId;
 
     if (this.selection) this.fixItemContextOptions();
   }
@@ -17,8 +20,16 @@ class ContextHelper {
       excludeRoomOptions.forEach((excludeOption) => {
         const idx = options.findIndex((o) => o === excludeOption);
 
-        options.splice(idx, 1);
+        if (idx !== -1) options.splice(idx, 1);
       });
+
+      if (this.selection.id === this.selectedFolderId) {
+        excludeOptionsIntoRoom.forEach((excludeOption) => {
+          const idx = options.findIndex((o) => o === excludeOption);
+
+          if (idx !== -1) options.splice(idx, 1);
+        });
+      }
     }
 
     // const showInfoIndex = options.findIndex((i) => i === "show-info");
