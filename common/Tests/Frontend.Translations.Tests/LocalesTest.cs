@@ -48,7 +48,7 @@ public class Tests
     {
         get
         {
-            return Path.GetFullPath("..\\..\\..\\..\\..\\..\\");
+            return Path.GetFullPath("../../../../../../").Replace("\\", "/");
         }
     }
 
@@ -81,25 +81,24 @@ public class Tests
 
         var moduleWorkspaces = new List<string>
         {
-            "packages\\client",
-            "packages\\common",
-            "packages\\components",
-            "packages\\editor",
-            "packages\\login"
+            "packages/client",
+            "packages/common",
+            "packages/components",
+            "packages/editor",
+            "packages/login"
         };
 
         Workspaces = new List<string>();
 
         Workspaces.AddRange(moduleWorkspaces);
 
-        Workspaces.Add("public\\locales");
-
+        Workspaces.Add("public/locales");
 
         var translationFiles = from wsPath in Workspaces
                                let clientDir = Path.Combine(BasePath, wsPath)
                                from filePath in Directory.EnumerateFiles(clientDir, "*.json", SearchOption.AllDirectories)
-                               where filePath.Contains("public\\locales\\")
-                               select Path.GetFullPath(filePath);
+                               where filePath.Contains("public/locales/")
+                               select Path.GetFullPath(filePath).Replace("\\", "/");
 
         TranslationFiles = new List<TranslationFile>();
 
@@ -161,14 +160,14 @@ public class Tests
         var javascriptFiles = (from wsPath in Workspaces
                                let clientDir = Path.Combine(BasePath, wsPath)
                                from file in Directory.EnumerateFiles(clientDir, "*.js", SearchOption.AllDirectories)
-                               where !file.Contains("dist\\")
+                               where !file.Contains("dist/") && !file.Contains(".test.js") && !file.Contains(".stories.js")
                                select file)
                               .ToList();
 
         javascriptFiles.AddRange(from wsPath in Workspaces
                                  let clientDir = Path.Combine(BasePath, wsPath)
                                  from file in Directory.EnumerateFiles(clientDir, "*.jsx", SearchOption.AllDirectories)
-                                 where !file.Contains("dist\\")
+                                 where !file.Contains("dist/") && !file.Contains(".test.jsx") && !file.Contains(".stories.jsx")
                                  select file);
 
         JavaScriptFiles = new List<JavaScriptFile>();
@@ -278,7 +277,7 @@ public class Tests
         }
 
         CommonTranslations = TranslationFiles
-            .Where(file => file.FilePath.StartsWith($"{BasePath}public\\locales"))
+            .Where(file => file.FilePath.StartsWith($"{BasePath}public/locales"))
             .Select(t => new LanguageItem
             {
                 Path = t.FilePath,
@@ -296,8 +295,8 @@ public class Tests
 
     public static Tuple<string, string> getPaths(string language)
     {
-        const string dictionariesPath = @"..\..\..\dictionaries";
-        const string additionalPath = @"..\..\..\additional";
+        const string dictionariesPath = @"../../../dictionaries";
+        const string additionalPath = @"../../../additional";
 
         var path = dictionariesPath;
 
@@ -505,7 +504,7 @@ public class Tests
 
         string currentDirectory = Path.GetDirectoryName(notExistJsonPath);
 
-        string fullPathOnly = Path.GetFullPath(currentDirectory);
+        string fullPathOnly = Path.GetFullPath(currentDirectory).Replace("\\", "/");
 
         if (!Directory.Exists(fullPathOnly))
             Directory.CreateDirectory(fullPathOnly);
@@ -553,7 +552,7 @@ public class Tests
                 var lngFilePaths = lng.Files.Select(f => f.FilePath).ToList();
 
                 var notFoundFilePaths = enFilePaths
-                    .Select(p => p.Replace("\\en\\", $"\\{lng.Lng}\\"))
+                    .Select(p => p.Replace("/en/", $"/{lng.Lng}/"))
                     .Where(p => !lngFilePaths.Contains(p));
 
                 message += string.Join("\r\n", notFoundFilePaths);
@@ -613,7 +612,7 @@ public class Tests
             {
                 var lngKeys = lng.Translations.Select(f => f.Key).ToList();
 
-                var enKeys = enLanguages.Where(l => l.Path == lng.Path.Replace($"\\{lng.Language}\\", "\\en\\"))
+                var enKeys = enLanguages.Where(l => l.Path == lng.Path.Replace($"/{lng.Language}/", "/en/"))
                     .SelectMany(l => l.Translations.Select(f => f.Key))
                     .ToList();
 
@@ -698,7 +697,7 @@ public class Tests
 
             if (module.AppliedJsTranslationKeys == null && module.AvailableLanguages != null)
             {
-                message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' NOT USES";
+                message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' NOT USED\r\n";
 
                 var list = module.AvailableLanguages
                     .SelectMany(l => l.Translations.Select(t => t.Key).ToList())
@@ -1144,14 +1143,14 @@ public class Tests
     /// <summary>
     /// Converts a file from one encoding to another.
     /// </summary>
-    /// <param name=”sourcePath”>the file to convert</param>
-    /// <param name=”destPath”>the destination for the converted file</param>
-    /// <param name=”sourceEncoding”>the original file encoding</param>
-    /// <param name=”destEncoding”>the encoding to which the contents should be converted</param>
+    /// <param name=ï¿½sourcePathï¿½>the file to convert</param>
+    /// <param name=ï¿½destPathï¿½>the destination for the converted file</param>
+    /// <param name=ï¿½sourceEncodingï¿½>the original file encoding</param>
+    /// <param name=ï¿½destEncodingï¿½>the encoding to which the contents should be converted</param>
     //public static void ConvertFileEncoding(string sourcePath, string destPath,
     //                                       Encoding sourceEncoding, Encoding destEncoding)
     //{
-    //    // If the destination’s parent doesn’t exist, create it.
+    //    // If the destinationï¿½s parent doesnï¿½t exist, create it.
     //    var parent = Path.GetDirectoryName(Path.GetFullPath(destPath));
     //    if (!Directory.Exists(parent))
     //    {
