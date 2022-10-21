@@ -348,7 +348,7 @@ public class FileSharingHelper
             return true;
         }
 
-        if (folder != null && DocSpaceHelper.IsRoom(folder.FolderType) && await _fileSecurity.CanEditRoomAsync(entry))
+        if (folder != null && DocSpaceHelper.IsRoom(folder.FolderType) && folder.RootFolderType != FolderType.Archive && await _fileSecurity.CanEditRoomAsync(entry))
         {
             return true;
         }

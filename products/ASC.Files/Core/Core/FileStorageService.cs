@@ -633,9 +633,8 @@ public class FileStorageService<T> //: IFileStorageService
         var folder = await folderDao.GetFolderAsync(folderId);
         ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
 
-        var canEdit = (folder.FolderType == FolderType.FillingFormsRoom || folder.FolderType == FolderType.EditingRoom
-            || folder.FolderType == FolderType.ReviewRoom || folder.FolderType == FolderType.ReadOnlyRoom || folder.FolderType == FolderType.CustomRoom)
-            ? await _fileSecurity.CanEditRoomAsync(folder) : await _fileSecurity.CanRenameAsync(folder);
+        var canEdit = DocSpaceHelper.IsRoom(folder.FolderType) ? folder.RootFolderType != FolderType.Archive && await _fileSecurity.CanEditRoomAsync(folder) 
+            : await _fileSecurity.CanRenameAsync(folder);
 
         ErrorIf(!canEdit, FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
         if (!canEdit && _userManager.IsUser(_authContext.CurrentAccount.ID))

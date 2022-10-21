@@ -85,7 +85,7 @@ public class CustomTagsService<T>
 
     public async Task DeleteTagsAsync(IEnumerable<string> names)
     {
-        if (!_fileSecurityCommon.IsDocSpaceAdministrator(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException("You do not have permission to remove tags");
         }
@@ -108,7 +108,7 @@ public class CustomTagsService<T>
     {
         var folder = await FolderDao.GetFolderAsync(folderId);
 
-        if (!await _fileSecurity.CanEditRoomAsync(folder))
+        if (folder.RootFolderType == FolderType.Archive || !await _fileSecurity.CanEditRoomAsync(folder))
         {
             throw new SecurityException("You do not have permission to edit the room");
         }
@@ -135,7 +135,7 @@ public class CustomTagsService<T>
     {
         var folder = await FolderDao.GetFolderAsync(folderId);
 
-        if (!await _fileSecurity.CanEditRoomAsync(folder))
+        if (folder.RootFolderType == FolderType.Archive || !await _fileSecurity.CanEditRoomAsync(folder))
         {
             throw new SecurityException("You do not have permission to edit the room");
         }
