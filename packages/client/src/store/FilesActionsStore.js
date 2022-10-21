@@ -887,6 +887,10 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
+    const {
+      setSelection: setInfoPanelSelection,
+    } = this.authStore.infoPanelStore;
+
     const items = Array.isArray(folders)
       ? folders.map((x) => (x?.id ? x.id : x))
       : [folders.id];
@@ -928,7 +932,7 @@ class FilesActionStore {
                 : Array.isArray(folders)
                 ? t("ArchivedRoomAction", { name: folders[0].title })
                 : t("ArchivedRoomAction", { name: folders.title });
-
+            setInfoPanelSelection(null);
             toastr.success(successTranslation);
           })
           .then(() => setSelected("close"))
@@ -966,6 +970,7 @@ class FilesActionStore {
                 ? t("UnarchivedRoomAction", { name: folders[0].title })
                 : t("UnarchivedRoomAction", { name: folders.title });
 
+            setInfoPanelSelection(null);
             toastr.success(successTranslation);
           })
           .then(() => setSelected("close"))
