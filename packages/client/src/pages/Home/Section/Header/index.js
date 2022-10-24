@@ -337,6 +337,8 @@ class SectionHeaderContent extends React.Component {
       onClickArchive,
     } = this.props;
 
+    const isDisabled = isRecycleBinFolder || isRoom;
+
     if (isArchiveFolder) {
       return [
         {
@@ -389,7 +391,7 @@ class SectionHeaderContent extends React.Component {
         key: "show-info",
         label: t("InfoPanel:ViewDetails"),
         onClick: this.onShowInfo,
-        disabled: isRecycleBinFolder || isRoom,
+        disabled: isDisabled,
         icon: "/static/images/info.outline.react.svg",
       },
       {
@@ -427,40 +429,40 @@ class SectionHeaderContent extends React.Component {
         key: "download",
         label: t("Common:Download"),
         onClick: this.downloadAction,
-        disabled: isRecycleBinFolder || isRoom,
+        disabled: isDisabled,
         icon: "images/download.react.svg",
       },
       {
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
-        disabled: isRecycleBinFolder || isRoom,
+        disabled: isDisabled,
         icon: "images/move.react.svg",
       },
       {
         key: "copy",
         label: t("Translations:Copy"),
         onClick: this.onCopyAction,
-        disabled: isRecycleBinFolder || isRoom,
+        disabled: isDisabled,
         icon: "/static/images/copy.react.svg",
       },
       {
         key: "rename",
         label: t("Rename"),
         onClick: this.renameAction,
-        disabled: isRecycleBinFolder || isRoom,
+        disabled: isDisabled,
         icon: "images/rename.react.svg",
       },
       {
         key: "separator-3",
         isSeparator: true,
-        disabled: isRecycleBinFolder || isRoom,
+        disabled: isDisabled,
       },
       {
         key: "delete",
         label: t("Common:Delete"),
         onClick: this.onDeleteAction,
-        disabled: isRecycleBinFolder || isRoom,
+        disabled: isDisabled,
         icon: "/static/images/catalog.trash.react.svg",
       },
     ];
