@@ -218,7 +218,7 @@ class SectionHeaderContent extends React.Component {
 
   onMoveAction = () => {
     this.props.setIsFolderActions(true);
-    this.props.setBufferSelection(this.props.currentFolderId);
+    this.props.setBufferSelection(this.props.selectedFolder);
     return this.props.setMoveToPanelVisible(true);
   };
   onCopyAction = () => {
