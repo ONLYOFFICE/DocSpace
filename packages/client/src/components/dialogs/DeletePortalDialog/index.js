@@ -2,12 +2,12 @@ import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
-import Link from "@docspace/components/link";
 import toastr from "@docspace/components/toast/toastr";
 
 import { sendDeletePortalEmail } from "@docspace/common/api/portal";
 
 import ModalDialogContainer from "../ModalDialogContainer";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const DeletePortalDialog = (props) => {
   const { t, ready } = useTranslation("Settings", "Common");
@@ -37,9 +37,16 @@ const DeletePortalDialog = (props) => {
         <Trans t={t} i18nKey="DeleteDocSpaceInfo" ns="Settings">
           Before you delete the portal, please make sure that automatic billing
           is turned off. You may check the status of automatic billing in
-          <Link isHovered href={stripeUrl} target="_blank">
+          <ColorTheme
+            tag="a"
+            themeId={ThemeType.Link}
+            fontSize="13px"
+            fontWeight="600"
+            href={stripeUrl}
+            target="_blank"
+          >
             on your Stripe customer portal.
-          </Link>
+          </ColorTheme>
         </Trans>
       </ModalDialog.Body>
       <ModalDialog.Footer>
