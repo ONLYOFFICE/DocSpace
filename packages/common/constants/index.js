@@ -334,3 +334,5 @@ export const PortalFeaturesLimitations = Object.freeze({
   Limitless: -1,
   Unavailable: 0,
 });
+
+export const EDITOR_ID = "docspace_editor";

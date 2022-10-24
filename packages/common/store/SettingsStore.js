@@ -38,6 +38,9 @@ class SettingsStore {
     ? window.RendererProcessVariable?.theme?.type === "dark"
       ? Dark
       : Base
+    : window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? Dark
     : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
