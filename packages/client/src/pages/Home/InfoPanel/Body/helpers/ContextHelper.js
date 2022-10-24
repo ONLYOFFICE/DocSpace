@@ -17,13 +17,13 @@ class ContextHelper {
 
   fixItemContextOptions = () => {
     const options = this.getContextOptions(this.selection, false);
-    console.log(options);
+
     excludeGeneralOptions.forEach((excludeOption) => {
       const idx = options.findIndex((o) => o === excludeOption);
-      console.log(idx);
+
       if (idx !== -1) options.splice(idx, 1);
     });
-    console.log(options);
+
     if (this.selection?.isRoom) {
       excludeRoomOptions.forEach((excludeOption) => {
         const idx = options.findIndex((o) => o === excludeOption);
@@ -38,8 +38,6 @@ class ContextHelper {
           if (idx !== -1) options.splice(idx, 1);
         });
       }
-
-      console.log(options);
     } else if (this.selection?.isFolder) {
       if (this.selection.id === this.selectedFolderId) {
         excludeOptionsIntoFolder.forEach((excludeOption) => {
@@ -51,8 +49,6 @@ class ContextHelper {
     }
 
     const length = options.length;
-
-    console.log(options);
 
     options.forEach((item, index) => {
       if (
@@ -75,8 +71,6 @@ class ContextHelper {
     // else if (isLastIndex && options[lastIndex - 1].includes("separator"))
     //   options = options.slice(0, -2);
     // else options = options.filter((i) => i !== "show-info");
-
-    console.log(options);
 
     this.selection.contextOptions = options;
   };
