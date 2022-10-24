@@ -335,6 +335,7 @@ class SectionHeaderContent extends React.Component {
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
+      onClickReconnectStorage,
     } = this.props;
 
     const isDisabled = isRecycleBinFolder || isRoom;
@@ -393,6 +394,13 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onShowInfo,
         disabled: isDisabled,
         icon: "/static/images/info.outline.react.svg",
+      },
+      {
+        key: "reconnect-storage",
+        label: t("Common:ReconnectStorage"),
+        icon: "images/reconnect.svg",
+        onClick: () => onClickReconnectStorage(selectedFolder, t),
+        disabled: !selectedFolder.providerKey || !isRoom,
       },
       {
         key: "edit-room",
@@ -734,6 +742,7 @@ export default inject(
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
+      onClickReconnectStorage,
     } = contextOptionsStore;
 
     return {
