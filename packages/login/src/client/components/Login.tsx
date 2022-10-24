@@ -23,6 +23,7 @@ import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import SSOIcon from "../../../../../public/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
+import { getBgPattern } from "@docspace/common/utils";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -171,28 +172,7 @@ const Login: React.FC<ILoginProps> = ({
     setRecoverDialogVisible(!recoverDialogVisible);
   };
 
-  const getBgPattern = () => {
-    switch (currentColorScheme.id) {
-      case 1:
-        return "url('/static/images/background.pattern.react.svg')";
-      case 2:
-        return "url('/static/images/background.pattern.orange.react.svg')";
-      case 3:
-        return "url('/static/images/background.pattern.green.react.svg')";
-      case 4:
-        return "url('/static/images/background.pattern.red.react.svg')";
-      case 5:
-        return "url('/static/images/background.pattern.purple.react.svg')";
-      case 6:
-        return "url('/static/images/background.pattern.lightBlue.react.svg')";
-      case 7:
-        return "url('/static/images/background.pattern.black.react.svg')";
-      default:
-        return "url('/static/images/background.pattern.react.svg')";
-    }
-  };
-
-  const bgPattern = getBgPattern();
+  const bgPattern = getBgPattern(currentColorScheme.id);
 
   if (!mounted) return <></>;
 
