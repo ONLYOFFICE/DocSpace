@@ -193,7 +193,7 @@ public class FileUploader
             throw new DirectoryNotFoundException(FilesCommonResource.ErrorMassage_FolderNotFound);
         }
 
-        if (!await _fileSecurity.CanCreateAsync(folder))
+        if (folder.FolderType == FolderType.VirtualRooms || folder.FolderType == FolderType.Archive || !await _fileSecurity.CanCreateAsync(folder))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_Create);
         }
