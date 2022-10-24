@@ -878,6 +878,10 @@ class FilesActionStore {
       setSelected,
     } = this.filesStore;
 
+    const { setSelectedFolder } = this.selectedFolderStore;
+
+    const { roomsFolder, isRoomsFolder } = this.treeFoldersStore;
+
     const {
       secondaryProgressDataStore,
       clearActiveOperations,
@@ -918,7 +922,12 @@ class FilesActionStore {
             };
             const data = res ? res : null;
             await this.uploadDataStore.loopFilesOperations(data, pbData);
-            this.updateCurrentFolder(null, items);
+
+            if (!isRoomsFolder) {
+              setSelectedFolder(roomsFolder);
+            }
+
+            this.updateCurrentFolder();
           })
           .then(() => {
             const successTranslation =
