@@ -472,19 +472,6 @@ public class FileStorageService<T> //: IFileStorageService
 
         await _countRoomChecker.CheckAppend();
 
-        if (@private && (share == null || !share.Any()))
-        {
-            throw new ArgumentNullException(nameof(share));
-        }
-
-        List<AceWrapper> aces = null;
-
-        if (@private)
-        {
-            aces = GetFullAceWrappers(share);
-            CheckEncryptionKeys(aces);
-        }
-
         var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
 
         var room = roomType switch
@@ -497,11 +484,6 @@ public class FileStorageService<T> //: IFileStorageService
             _ => await CreateCustomRoomAsync(title, parentId, @private),
         };
 
-        if (@private)
-        {
-            await SetAcesForPrivateRoomAsync(room, aces, notify, sharingMessage);
-        }
-
         return room;
     }
 
@@ -509,11 +491,6 @@ public class FileStorageService<T> //: IFileStorageService
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
         ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
-
-        if (@private && (share == null || !share.Any()))
-        {
-            throw new ArgumentNullException(nameof(share));
-        }
 
         var folderDao = GetFolderDao();
         var providerDao = GetProviderDao();
@@ -531,14 +508,6 @@ public class FileStorageService<T> //: IFileStorageService
             throw new InvalidOperationException("This provider already corresponds to the virtual room");
         }
 
-        List<AceWrapper> aces = null;
-
-        if (@private)
-        {
-            aces = GetFullAceWrappers(share);
-            CheckEncryptionKeys(aces);
-        }
-
         var result = roomType switch
         {
             RoomType.CustomRoom => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
@@ -548,11 +517,6 @@ public class FileStorageService<T> //: IFileStorageService
             RoomType.ReadOnlyRoom => (await CreateReadOnlyRoom(title, parentId, @private), FolderType.ReadOnlyRoom),
             _ => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
         };
-
-        if (@private)
-        {
-            await SetAcesForPrivateRoomAsync(result.Item1, aces, notify, sharingMessage);
-        }
 
         await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, @private);
 
@@ -3227,61 +3191,6 @@ public class FileStorageService<T> //: IFileStorageService
             default:
                 return string.Empty;
         }
-    }
-
-    private List<AceWrapper> GetFullAceWrappers(IEnumerable<FileShareParams> share)
-    {
-        var dict = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject)).ToDictionary(k => k.Id, v => v);
-
-        var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
-        var onlyFilesAdmins = _userManager.GetUsersByGroup(WebItemManager.DocumentsProductID);
-
-        var userInfos = admins.Union(onlyFilesAdmins).ToList();
-
-        foreach (var userInfo in userInfos)
-        {
-            dict[userInfo.Id] = new AceWrapper
-            {
-                Access = FileShare.ReadWrite,
-                Id = userInfo.Id
-            };
-        }
-
-        return dict.Values.ToList();
-    }
-
-    private void CheckEncryptionKeys(IEnumerable<AceWrapper> aceWrappers)
-    {
-        var users = aceWrappers.Select(s => s.Id).ToList();
-        var keys = _encryptionLoginProvider.GetKeys(users);
-
-        foreach (var user in users)
-        {
-            if (!keys.ContainsKey(user))
-            {
-                var userInfo = _userManager.GetUsers(user);
-                throw new InvalidOperationException($"The user {userInfo.DisplayUserName(_displayUserSettingsHelper)} does not have an encryption key");
-            }
-        }
-    }
-
-    private async Task SetAcesForPrivateRoomAsync(Folder<T> room, List<AceWrapper> aces, bool notify, string sharingMessage)
-    {
-        var advancedSettings = new AceAdvancedSettingsWrapper
-        {
-            AllowSharingPrivateRoom = true
-        };
-
-        var aceCollection = new AceCollection<T>
-        {
-            Folders = new[] { room.Id },
-            Files = Array.Empty<T>(),
-            Aces = aces,
-            Message = sharingMessage,
-            AdvancedSettings = advancedSettings
-        };
-
-        await SetAceObjectAsync(aceCollection, notify);
     }
 }
 
