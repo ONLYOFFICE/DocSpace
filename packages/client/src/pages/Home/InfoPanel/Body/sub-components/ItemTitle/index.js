@@ -14,6 +14,8 @@ const ItemTitle = ({
   isGallery,
   isSeveralItems,
 
+  selectedFolderId,
+
   setBufferSelection,
   getIcon,
 
@@ -55,6 +57,7 @@ const ItemTitle = ({
       getIcon={getIcon}
       getContextOptions={getContextOptions}
       getContextOptionActions={getContextOptionActions}
+      selectedFolderId={selectedFolderId}
     />
   );
 };

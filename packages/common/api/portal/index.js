@@ -166,6 +166,53 @@ export function setPortalRename(alias) {
   });
 }
 
+export function sendSuspendPortalEmail() {
+  return request({
+    method: "post",
+    url: "/portal/suspend.json",
+  });
+}
+
+export function sendDeletePortalEmail() {
+  return request({
+    method: "post",
+    url: "/portal/delete.json",
+  });
+}
+
+export function suspendPortal(confirmKey = null) {
+  const options = {
+    method: "put",
+    url: "/portal/suspend.json",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
+export function continuePortal(confirmKey = null) {
+  const options = {
+    method: "put",
+    url: "/portal/continue.json",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
+export function deletePortal(confirmKey = null) {
+  const options = {
+    method: "delete",
+    url: "/portal/delete.json",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
 export function getPortalPaymentQuotas() {
   return request({ method: "get", url: "/portal/payment/quotas" });
 }
@@ -219,5 +266,4 @@ export function sendPaymentRequest(email, userName, message) {
       userName,
       message,
     },
-  });
-}
+  })};
