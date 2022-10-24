@@ -35,7 +35,6 @@ const StyledWrapper = styled.div`
 
 const ConfirmWrapper = (props) => {
   const { children, currentColorScheme } = props;
-  console.log(currentColorScheme);
   const bgPattern = getBgPattern(currentColorScheme?.id);
 
   return <StyledWrapper bgPattern={bgPattern}>{children}</StyledWrapper>;
