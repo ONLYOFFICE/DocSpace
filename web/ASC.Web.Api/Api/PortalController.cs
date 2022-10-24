@@ -426,6 +426,7 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.OwnerSentPortalDeleteInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
+    [AllowSuspended]
     [HttpPut("continue")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalContinue")]
     public void ContinuePortal()
