@@ -428,6 +428,7 @@ public class Tests
     public void DublicatesFilesByMD5HashTest()
     {
         var duplicatesByMD5 = TranslationFiles
+            .Where(t => t.Language != "pt-BR")
             .Where(t => !_md5Excludes.Contains(t.Md5Hash))
             .GroupBy(t => t.Md5Hash)
             .Where(grp => grp.Count() > 1)
