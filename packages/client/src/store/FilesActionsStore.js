@@ -71,7 +71,12 @@ class FilesActionStore {
     }
   };
 
-  updateCurrentFolder = (fileIds, folderIds, clearSelection) => {
+  updateCurrentFolder = (
+    fileIds,
+    folderIds,
+    clearSelection,
+    isRename = false
+  ) => {
     const {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
@@ -121,7 +126,8 @@ class FilesActionStore {
         newFilter ? newFilter : filter,
         true,
         true,
-        clearSelection
+        clearSelection,
+        isRename
       ).finally(() => {
         this.dialogsStore.setIsFolderActions(false);
         return setTimeout(() => clearSecondaryProgressData(), TIMEOUT);

@@ -102,7 +102,7 @@ const RenameEvent = ({
             timerId = null;
             clearActiveOperations(null, [item.id]);
 
-            updateCurrentFolder(null, [item.id]);
+            updateCurrentFolder(null, [item.id], null, true);
 
             setIsLoading(false);
             onClose();
