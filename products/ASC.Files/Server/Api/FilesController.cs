@@ -328,6 +328,18 @@ public abstract class FilesController<T> : ApiControllerBase
     {
         return _fileStorageService.SetFileProperties(fileId, _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(fileProperties));
     }
+
+    [HttpGet("file/{fileId}/access")]
+    public async Task<FileEncryptionInfo> GetEncryptionInfoAsync(T fileId)
+    {
+        return await _fileStorageService.GetEncryptionInfoAsync(fileId);
+    }
+
+    [HttpPut("file/{fileId}/access")]
+    public async Task<FileEncryptionInfo> SetEncryptionInfoAsync(T fileId)
+    {
+        return await _fileStorageService.SetEncryptionInfoAsync(fileId);
+    }
 }
 
 public class FilesControllerCommon : ApiControllerBase

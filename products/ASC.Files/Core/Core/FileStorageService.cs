@@ -79,10 +79,8 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly IEventBus _eventBus;
     private readonly EntryStatusManager _entryStatusManager;
     private readonly ILogger _logger;
-    private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
     private readonly CountRoomChecker _countRoomChecker;
-    private readonly CountRoomCheckerStatistic _countRoomCheckerStatistic;
     private readonly RoomLinkService _roomLinkService;
     private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
     private readonly StudioNotifyService _studioNotifyService;
@@ -135,10 +133,8 @@ public class FileStorageService<T> //: IFileStorageService
         IServiceScopeFactory serviceScopeFactory,
         ThirdPartySelector thirdPartySelector,
         ThumbnailSettings thumbnailSettings,
-        FileShareParamsHelper fileShareParamsHelper,
         EncryptionLoginProvider encryptionLoginProvider,
         CountRoomChecker countRoomChecker,
-        CountRoomCheckerStatistic countRoomCheckerStatistic,
         RoomLinkService roomLinkService,
         DocSpaceLinkHelper docSpaceLinkHelper,
         StudioNotifyService studioNotifyService)
@@ -191,10 +187,8 @@ public class FileStorageService<T> //: IFileStorageService
         _serviceScopeFactory = serviceScopeFactory;
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;
-        _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
         _countRoomChecker = countRoomChecker;
-        _countRoomCheckerStatistic = countRoomCheckerStatistic;
         _roomLinkService = roomLinkService;
         _docSpaceLinkHelper = docSpaceLinkHelper;
         _studioNotifyService = studioNotifyService;
@@ -466,7 +460,7 @@ public class FileStorageService<T> //: IFileStorageService
         return InternalCreateNewFolderAsync(parentId, title);
     }
 
-    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool @private)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
@@ -487,7 +481,7 @@ public class FileStorageService<T> //: IFileStorageService
         return room;
     }
 
-    public async Task<Folder<T>> CreateThirdPartyRoomAsync(string title, RoomType roomType, T parentId, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public async Task<Folder<T>> CreateThirdPartyRoomAsync(string title, RoomType roomType, T parentId, bool @private)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
         ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
@@ -3106,6 +3100,46 @@ public class FileStorageService<T> //: IFileStorageService
             var link = _roomLinkService.GetInvitationLink(user.Email, _authContext.CurrentAccount.ID);
             _studioNotifyService.SendEmailRoomInvite(user.Email, link);
         }
+    }
+
+    public async Task<FileEncryptionInfo> GetEncryptionInfoAsync(T fileId)
+    {
+        var fileDao = _daoFactory.GetFileDao<T>();
+        var file = await fileDao.GetFileAsync(fileId);
+
+        ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
+        ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
+
+        var share = (await _fileSecurity.GetSharesAsync(file)).Where(s => s.EntryType == FileEntryType.File && s.Subject == _authContext.CurrentAccount.ID).FirstOrDefault();
+        var keys = _encryptionLoginProvider.GetKeys();
+
+        return new FileEncryptionInfo
+        {
+            Keys = keys,
+            HaveAccess = share != null
+        };
+    }
+
+    public async Task<FileEncryptionInfo> SetEncryptionInfoAsync(T fileId)
+    {
+        var fileDao = _daoFactory.GetFileDao<T>();
+        var file = await fileDao.GetFileAsync(fileId);
+
+        ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
+        ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
+
+        var share = (await _fileSharing.GetSharedInfoAsync(file)).Where(s => s.Id == _authContext.CurrentAccount.ID).FirstOrDefault();
+
+        await _fileSecurity.ShareAsync(file.Id, FileEntryType.File, _authContext.CurrentAccount.ID, share.Access);
+
+        var fileShare = (await _fileSecurity.GetSharesAsync(file)).Where(s => s.EntryType == FileEntryType.File && s.Subject == _authContext.CurrentAccount.ID).FirstOrDefault();
+        var keys = _encryptionLoginProvider.GetKeys();
+
+        return new FileEncryptionInfo
+        {
+            Keys = keys,
+            HaveAccess = fileShare != null
+        };
     }
 
     public string GetHelpCenter()
