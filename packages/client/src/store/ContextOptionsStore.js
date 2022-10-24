@@ -621,7 +621,8 @@ class ContextOptionsStore {
       {
         key: "separator0",
         isSeparator: true,
-
+      },
+      {
         key: "reconnect-storage",
         label: t("Common:ReconnectStorage"),
         icon: "images/reconnect.svg",
