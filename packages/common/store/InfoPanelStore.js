@@ -7,6 +7,15 @@ import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Filter from "../api/people/filter";
 
+const observedKeys = [
+  "id",
+  "title",
+  "thumbnailStatus",
+  "thumbnailUrl",
+  "version",
+  "comment",
+];
+
 class InfoPanelStore {
   isVisible = false;
 
@@ -42,7 +51,10 @@ class InfoPanelStore {
   // Selection helpers //
 
   getSelectedItems = () => {
-    const { selection: filesStoreSelection } = this.filesStore;
+    const {
+      selection: filesStoreSelection,
+      bufferSelection: filesStoreBufferSelection,
+    } = this.filesStore;
     const {
       selection: peopleStoreSelection,
       bufferSelection: peopleStoreBufferSelection,
@@ -56,13 +68,15 @@ class InfoPanelStore {
         : []
       : filesStoreSelection?.length > 0
       ? [...filesStoreSelection]
+      : filesStoreBufferSelection
+      ? [filesStoreBufferSelection]
       : [];
   };
 
   getSelectedFolder = () => {
     const selectedFolderStore = { ...this.selectedFolderStore };
     return {
-      selectedFolderStore,
+      ...selectedFolderStore,
       isFolder: true,
       isRoom: !!this.selectedFolderStore.roomType,
     };
@@ -106,7 +120,16 @@ class InfoPanelStore {
   };
 
   reloadSelection = () => {
+    console.log("RELOAD SELECTION");
     this.setSelection(this.calculateSelection());
+  };
+
+  isItemChanged = (oldItem, newItem) => {
+    for (let i = 0; i < observedKeys.length; i++) {
+      const value = observedKeys[i];
+      if (oldItem[value] !== newItem[value]) return true;
+    }
+    return false;
   };
 
   // Icon helpers //
