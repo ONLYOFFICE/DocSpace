@@ -22,6 +22,7 @@ import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import SSOIcon from "../../../../../public/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
+import { useMounted } from "../helpers/useMounted";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -45,6 +46,7 @@ const Login: React.FC<ILoginProps> = ({
   const { ssoLabel, ssoUrl } = capabilities;
 
   const { t } = useTranslation(["Login", "Common"]);
+  const mounted = useMounted();
 
   useEffect(() => {
     const theme =
@@ -191,6 +193,8 @@ const Login: React.FC<ILoginProps> = ({
   };
 
   const bgPattern = getBgPattern();
+
+  if (!mounted) return <></>;
 
   return (
     <LoginFormWrapper
