@@ -442,6 +442,8 @@ const Base = {
 
     hoverBorderColor: gray,
     hoverIndeterminateColor: black,
+
+    focusColor: "#A3A9AE",
   },
 
   // slider: {
@@ -2732,6 +2734,8 @@ const Base = {
   login: {
     linkColor: link,
     textColor: gray,
+    navBackground: "#F8F9F9",
+    headerColor: black,
 
     register: {
       backgroundColor: grayLight,
@@ -2974,6 +2978,11 @@ const Base = {
     themePreview: {
       border: "1px solid #eceef1",
     },
+  },
+
+  formWrapper: {
+    background: white,
+    boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
 };
 

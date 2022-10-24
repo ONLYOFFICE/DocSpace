@@ -12,6 +12,8 @@ import {
 } from "@docspace/components/utils/device";
 import { Events } from "@docspace/common/constants";
 import { getContextMenuItems } from "SRC_DIR/helpers/plugins";
+import { connectedCloudsTypeTitleTranslation } from "@docspace/client/src/helpers/filesUtils";
+import { getOAuthToken } from "@docspace/common/utils";
 
 class ContextOptionsStore {
   authStore;
@@ -56,6 +58,61 @@ class ContextOptionsStore {
 
   onClickLinkFillForm = (item) => {
     return this.gotoDocEditor(false, item);
+  };
+
+  onClickReconnectStorage = async (item, t) => {
+    const { thirdPartyStore } = this.settingsStore;
+
+    const { openConnectWindow, connectItems } = thirdPartyStore;
+
+    const {
+      setRoomCreation,
+      setConnectItem,
+      setConnectDialogVisible,
+      setIsConnectDialogReconnect,
+      setSaveAfterReconnectOAuth,
+    } = this.dialogsStore;
+
+    setIsConnectDialogReconnect(true);
+
+    setRoomCreation(true);
+
+    const provider = connectItems.find(
+      (connectItem) => connectItem.providerName === item.providerKey
+    );
+
+    const itemThirdParty = {
+      title: connectedCloudsTypeTitleTranslation(provider.providerName, t),
+      customer_title: "NOTITLE",
+      provider_key: provider.providerName,
+      link: provider.oauthHref,
+    };
+
+    if (provider.isOauth) {
+      let authModal = window.open(
+        "",
+        "Authorization",
+        "height=600, width=1020"
+      );
+      await openConnectWindow(provider.providerName, authModal)
+        .then(getOAuthToken)
+        .then((token) => {
+          authModal.close();
+          setConnectItem({
+            ...itemThirdParty,
+            token,
+          });
+
+          setSaveAfterReconnectOAuth(true);
+        })
+        .catch((err) => {
+          if (!err) return;
+          toastr.error(err);
+        });
+    } else {
+      setConnectItem(itemThirdParty);
+      setConnectDialogVisible(true);
+    }
   };
 
   onClickMakeForm = (item, t) => {
@@ -356,11 +413,12 @@ class ContextOptionsStore {
 
   onClickInviteUsers = (e) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
+
     const { action } = data;
 
     this.dialogsStore.setInvitePanelOptions({
       visible: true,
-      roomId: action,
+      roomId: action ? action : e,
       hideSelector: false,
       defaultAccess: ShareAccessRights.ReadOnly,
     });
@@ -373,13 +431,19 @@ class ContextOptionsStore {
     this.filesActionsStore.setPinAction(action, id);
   };
 
-  onClickArchive = (e, id, t) => {
+  onClickArchive = (e, item, t) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
 
     this.filesActionsStore
-      .setArchiveAction(action, id)
+      .setArchiveAction(action, item, t)
       .catch((err) => toastr.error(err));
+  };
+
+  onSelect = (item) => {
+    const { onSelectItem } = this.filesActionsStore;
+
+    onSelectItem({ id: item.id, isFolder: item.isFolder }, true, false);
   };
 
   getFilesContextOptions = (item, t) => {
@@ -506,6 +570,13 @@ class ContextOptionsStore {
 
     const optionsModel = [
       {
+        key: "select",
+        label: "Select",
+        icon: "images/check-box.react.svg",
+        onClick: () => this.onSelect(item),
+        disabled: false,
+      },
+      {
         key: "open",
         label: t("Open"),
         icon: "images/folder.react.svg",
@@ -548,6 +619,17 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
+        key: "separator0",
+        isSeparator: true,
+      },
+      {
+        key: "reconnect-storage",
+        label: t("Common:ReconnectStorage"),
+        icon: "images/reconnect.svg",
+        onClick: () => this.onClickReconnectStorage(item, t),
+        disabled: false,
+      },
+      {
         key: "edit-room",
         label: t("EditRoom"),
         icon: "images/settings.react.svg",
@@ -564,7 +646,7 @@ class ContextOptionsStore {
       },
       {
         key: "room-info",
-        label: "Info",
+        label: t("Common:Info"),
         icon: "/static/images/info.outline.react.svg",
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
@@ -586,10 +668,6 @@ class ContextOptionsStore {
         disabled: false,
         "data-action": "unpin",
         action: "unpin",
-      },
-      {
-        key: "separator0",
-        isSeparator: true,
       },
       {
         key: "sharing-settings",
@@ -621,7 +699,7 @@ class ContextOptionsStore {
       ...versionActions,
       {
         key: "show-info",
-        label: t("InfoPanel:ViewDetails"),
+        label: t("Common:Info"),
         icon: "/static/images/info.outline.react.svg",
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
@@ -712,18 +790,18 @@ class ContextOptionsStore {
       },
       {
         key: "archive-room",
-        label: t("ToArchive"),
+        label: t("Archived"),
         icon: "/static/images/room.archive.svg",
-        onClick: (e) => this.onClickArchive(e, item.id, t),
+        onClick: (e) => this.onClickArchive(e, item, t),
         disabled: false,
         "data-action": "archive",
         action: "archive",
       },
       {
         key: "unarchive-room",
-        label: t("FromArchive"),
-        icon: "/static/images/room.archive.svg",
-        onClick: (e) => this.onClickArchive(e, item.id, t),
+        label: t("Common:Restore"),
+        icon: "images/subtract.react.svg",
+        onClick: (e) => this.onClickArchive(e, item, t),
         disabled: false,
         "data-action": "unarchive",
         action: "unarchive",
@@ -808,16 +886,16 @@ class ContextOptionsStore {
       const archiveOptions = !isArchiveFolder
         ? {
             key: "archive-room",
-            label: t("ToArchive"),
+            label: t("Archived"),
             icon: "/static/images/room.archive.svg",
-            onClick: moveRoomsToArchive,
+            onClick: () => moveRoomsToArchive(t),
             disabled: false,
           }
         : {
             key: "unarchive-room",
-            label: t("FromArchive"),
-            icon: "/static/images/room.archive.svg",
-            onClick: moveRoomsFromArchive,
+            label: t("Common:Restore"),
+            icon: "images/subtract.react.svg",
+            onClick: () => moveRoomsFromArchive(t),
             disabled: false,
           };
 

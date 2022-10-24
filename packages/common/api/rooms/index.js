@@ -133,7 +133,7 @@ export function deleteRoom(id, deleteAfter = true) {
   });
 }
 
-export function archiveRoom(id, deleteAfter = true) {
+export function archiveRoom(id, deleteAfter = false) {
   const data = { deleteAfter };
 
   const options = {

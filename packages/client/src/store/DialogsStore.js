@@ -34,6 +34,7 @@ class DialogsStore {
     defaultAccess: ShareAccessRights.FullAccess,
   };
   restoreAllPanelVisible = false;
+  restoreAllArchiveDialogVisible = false;
   eventDialogVisible = false;
 
   removeItem = null;
@@ -50,6 +51,9 @@ class DialogsStore {
   saveThirdpartyResponse = null;
   inviteItems = [];
 
+  isConnectDialogReconnect = false;
+  saveAfterReconnectOAuth = false;
+
   constructor(
     authStore,
     treeFoldersStore,
@@ -65,6 +69,10 @@ class DialogsStore {
     this.authStore = authStore;
     this.versionHistoryStore = versionHistoryStore;
   }
+
+  setRestoreAllArchiveDialogVisible = (restoreAllArchiveDialogVisible) => {
+    this.restoreAllArchiveDialogVisible = restoreAllArchiveDialogVisible;
+  };
 
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
@@ -138,6 +146,14 @@ class DialogsStore {
 
   setConnectItem = (connectItem) => {
     this.connectItem = connectItem;
+  };
+
+  setIsConnectDialogReconnect = (isConnectDialogReconnect) => {
+    this.isConnectDialogReconnect = isConnectDialogReconnect;
+  };
+
+  setSaveAfterReconnectOAuth = (saveAfterReconnectOAuth) => {
+    this.saveAfterReconnectOAuth = saveAfterReconnectOAuth;
   };
 
   setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {
@@ -291,7 +307,9 @@ class DialogsStore {
       this.authStore.settingsStore.hotkeyPanelVisible ||
       this.versionHistoryStore.isVisible ||
       this.eventDialogVisible ||
-      this.invitePanelOptions.visible
+      this.invitePanelOptions.visible ||
+      this.restoreAllArchiveDialogVisible ||
+      this.restoreAllPanelVisible
     );
   }
 

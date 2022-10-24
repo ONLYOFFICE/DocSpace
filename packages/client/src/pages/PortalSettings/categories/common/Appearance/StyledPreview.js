@@ -123,6 +123,12 @@ const StyledComponent = styled.div`
     cursor: auto;
     background-color: ${(props) => props.colorPreview};
     border-radius: 3px;
+
+    &:active {
+      background-color: ${(props) => props.colorPreview} !important;
+      opacity: none !important;
+      filter: none !important;
+    }
   }
 
   .color-badge rect {

@@ -112,6 +112,9 @@ class ComboBox extends React.Component {
 
       advancedOptionsCount,
     } = this.props;
+
+    const { tabIndex, ...props } = this.props;
+
     const { isOpen, selectedOption } = this.state;
 
     const dropDownMaxHeightProp = dropDownMaxHeight
@@ -152,7 +155,7 @@ class ComboBox extends React.Component {
         toggleAction={toggleAction}
         isOpen={isOpen}
         disableMobileView={disableMobileView}
-        {...this.props}
+        {...props}
       >
         <ComboButton
           noBorder={noBorder}
@@ -169,6 +172,7 @@ class ComboBox extends React.Component {
           comboIcon={comboIcon}
           modernView={modernView}
           fillIcon={fillIcon}
+          tabIndex={tabIndex}
         />
         {displayType !== "toggle" && (
           <DropDown
@@ -294,6 +298,7 @@ ComboBox.propTypes = {
 
   /**Count of advanced options  */
   advancedOptionsCount: PropTypes.number,
+  tabIndex: PropTypes.number,
 };
 
 ComboBox.defaultProps = {
@@ -313,6 +318,7 @@ ComboBox.defaultProps = {
   disableItemClick: false,
   isExternalLink: false,
   modernView: false,
+  tabIndex: -1,
 };
 
 export default ComboBox;

@@ -1,9 +1,10 @@
 {
-  "AboutCompanyAddressTitle": "address",
-  "AboutCompanyEmailTitle": "email",
+  "AboutCompanyAddressTitle": "Address",
+  "AboutCompanyEmailTitle": "E-mail",
   "AboutCompanyTelTitle": "tel.",
   "AboutHeader": "About this program",
   "DocumentManagement": "Document management",
   "OnlineEditors": "Online editors",
+  "Site": "Site",
   "SoftwareLicense": "Software license"
 }

@@ -20,7 +20,9 @@ class SaveCancelButtons extends React.Component {
   }
 
   onKeydown = (e) => {
-    const { onSaveClick, onCancelClick } = this.props;
+    const { onSaveClick, onCancelClick, displaySettings } = this.props;
+
+    if (displaySettings) return;
 
     switch (e.keyCode) {
       case ButtonKeys.enter:
@@ -49,6 +51,7 @@ class SaveCancelButtons extends React.Component {
       id,
       isSaving,
       cancelEnable,
+      tabIndex,
     } = this.props;
 
     const cancelButtonDisabled = cancelEnable
@@ -56,6 +59,9 @@ class SaveCancelButtons extends React.Component {
       : typeof disableRestoreToDefault === "boolean"
       ? disableRestoreToDefault
       : !showReminder;
+
+    const tabIndexSaveButton = tabIndex ? tabIndex : -1;
+    const tabIndexCancelButton = tabIndex ? tabIndex + 1 : -1;
 
     return (
       <StyledSaveCancelButtons
@@ -67,6 +73,7 @@ class SaveCancelButtons extends React.Component {
       >
         <div className="buttons-flex">
           <Button
+            tabIndex={tabIndexSaveButton}
             className="save-button"
             size="normal"
             isDisabled={!showReminder}
@@ -77,6 +84,7 @@ class SaveCancelButtons extends React.Component {
             isLoading={isSaving}
           />
           <Button
+            tabIndex={tabIndexCancelButton}
             className="cancel-button"
             size="normal"
             isDisabled={cancelButtonDisabled || isSaving}
@@ -117,6 +125,7 @@ SaveCancelButtons.propTypes = {
   disableRestoreToDefault: PropTypes.bool,
   isSaving: PropTypes.bool,
   cancelEnable: PropTypes.bool,
+  tabIndex: PropTypes.number,
 };
 
 SaveCancelButtons.defaultProps = {

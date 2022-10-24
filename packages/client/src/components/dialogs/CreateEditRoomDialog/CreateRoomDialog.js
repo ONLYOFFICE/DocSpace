@@ -38,6 +38,7 @@ const CreateRoomDialog = ({
   setIsLoading,
 
   deleteThirdParty,
+  fetchThirdPartyProviders,
 }) => {
   const [isScrollLocked, setIsScrollLocked] = useState(false);
   const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
@@ -92,6 +93,8 @@ const CreateRoomDialog = ({
       await deleteThirdParty(
         roomParams.storageLocation.thirdpartyAccount.providerId
       ).finally(() => setIsLoading(false));
+
+      await fetchThirdPartyProviders();
     }
     onClose();
   };
