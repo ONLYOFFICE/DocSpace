@@ -55,7 +55,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { t, ready } = useTranslation(["Login", "Common"]);
+  const { t } = useTranslation(["Login", "Common"]);
 
   const { message, confirmedEmail } = match;
 
@@ -214,8 +214,6 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     setIsDisabled(false);
     setIsLoading(false);
   };
-
-  if (!ready) return <></>;
 
   return (
     <form className="auth-form-container">
