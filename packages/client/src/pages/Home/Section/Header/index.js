@@ -424,6 +424,13 @@ class SectionHeaderContent extends React.Component {
         action: "archive",
       },
       {
+        key: "download",
+        label: t("Common:Download"),
+        onClick: this.downloadAction,
+        disabled: isRecycleBinFolder || isRoom,
+        icon: "images/download.react.svg",
+      },
+      {
         key: "move-to",
         label: t("MoveTo"),
         onClick: this.onMoveAction,
@@ -436,13 +443,6 @@ class SectionHeaderContent extends React.Component {
         onClick: this.onCopyAction,
         disabled: isRecycleBinFolder || isRoom,
         icon: "/static/images/copy.react.svg",
-      },
-      {
-        key: "download",
-        label: t("Common:Download"),
-        onClick: this.downloadAction,
-        disabled: isRecycleBinFolder || isRoom,
-        icon: "images/download.react.svg",
       },
       {
         key: "rename",
