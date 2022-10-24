@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { tablet } from "@docspace/components/utils/device";
 
 export const StyledFooter = styled.div`
   .session-logout {
@@ -57,10 +56,6 @@ export const TableDataCell = styled.td`
   font-weight: 600;
   padding: 14px 0;
   color: #a3a9ae;
-
-  @media ${tablet} {
-    border-top: 0;
-  }
 
   :first-child {
     font-size: 13px;

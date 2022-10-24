@@ -138,7 +138,7 @@ const ActiveSessions = ({
           <TableBody>
             {sessions.map((session) => (
               <TableRow key={session.id}>
-                <TableDataCell>
+                <TableDataCell style={{ borderTop: "0" }}>
                   {session.platform}
                   <span>({session.browser})</span>
                   {currentSession === session.id ? tickIcon : null}
@@ -150,6 +150,7 @@ const ActiveSessions = ({
                   </Box>
                 </TableDataCell>
                 <TableDataCell
+                  style={{ borderTop: "0" }}
                   onClick={() => {
                     setLogoutVisible(true);
                     setModalData({
