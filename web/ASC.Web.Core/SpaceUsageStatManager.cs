@@ -44,5 +44,5 @@ public interface IUserSpaceUsage
 {
     Task<long> GetUserSpaceUsageAsync(Guid userId);
 
-    void RecalculateUserQuota(int tenantId, Guid userId);
+    Task RecalculateUserQuota(int tenantId, Guid userId);
 }

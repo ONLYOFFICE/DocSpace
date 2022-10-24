@@ -49,14 +49,14 @@ public class UsersQuotaSyncOperation
         {
             item = _serviceProvider.GetRequiredService<UsersQuotaSyncJob>();
             item.InitJob(tenant);
-            _progressQueue.EnqueueTask(item);
+            _progressQueue.EnqueueTask(item.RunJobAsync, item);
         }
 
-        item.PublishChanges();
+
     }
 
 
-    public UsersQuotaSyncOperation(IServiceProvider serviceProvider, IDistributedTaskQueueFactory queueFactory)
+    public UsersQuotaSyncOperation(IServiceProvider serviceProvider, IDistributedTaskQueueFactory queueFactory, IServiceScopeFactory serviceScopeFactory)
     {
         ;
         _serviceProvider = serviceProvider;
@@ -78,7 +78,6 @@ public class UsersQuotaSyncOperation
 public class UsersQuotaSyncJob : DistributedTaskProgress
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly IDaoFactory _daoFactory;
 
     protected readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
 
@@ -97,16 +96,15 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
         }
     }
 
-    public UsersQuotaSyncJob(IServiceScopeFactory serviceScopeFactory, IDaoFactory daoFactory)
+    public UsersQuotaSyncJob(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
-        _daoFactory = daoFactory;
     }
     public void InitJob(Tenant tenant)
     {
         TenantId = tenant.Id;
     }
-    protected override void DoJob()
+    public async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
     {
         try
         {
@@ -117,6 +115,8 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
             var _authentication = scope.ServiceProvider.GetRequiredService<AuthManager>();
             var _securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
             var _webItemManagerSecurity = scope.ServiceProvider.GetRequiredService<WebItemManagerSecurity>();
+
+            _tenantManager.SetCurrentTenant(TenantId);
             
             var users = _userManager.GetUsers();
             var webItems = _webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
@@ -137,7 +137,7 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
                         {
                             continue;
                         }
-                        manager.RecalculateUserQuota(TenantId, user.Id);
+                        await manager.RecalculateUserQuota(TenantId, user.Id);
                     }
                 }
 

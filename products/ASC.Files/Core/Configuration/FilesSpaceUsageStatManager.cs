@@ -130,9 +130,10 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
             .SumAsync(r => r.ContentLength);
     }
 
-    public void RecalculateUserQuota(int TenantId, Guid userId)
+    public async Task RecalculateUserQuota(int TenantId, Guid userId)
     {
-        var size = GetUserSpaceUsageAsync(userId).Result;
+        _tenantManager.SetCurrentTenant(TenantId);
+        var size = await GetUserSpaceUsageAsync(userId);
 
         _tenantManager.SetTenantQuotaRow(
            new TenantQuotaRow { Tenant = TenantId, Path = $"/{FileConstant.ModuleId}/", Counter = size, Tag = WebItemManager.DocumentsProductID.ToString(), UserId = userId, LastModified = DateTime.UtcNow },
