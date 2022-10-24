@@ -5,4 +5,4 @@ dir=$(builtin cd $rd/../; pwd)
 
 echo "Root directory:" $dir
 
-dotnet test $dir/common/Tests/Frontend.Translations.Tests/Frontend.Translations.Tests.csproj --filter "TestCategory=FastRunning" -l:html -r TestsResults
+dotnet test $dir/common/Tests/Frontend.Translations.Tests/Frontend.Translations.Tests.csproj --filter "TestCategory=FastRunning" -l:html -r $dir/TestsResults
