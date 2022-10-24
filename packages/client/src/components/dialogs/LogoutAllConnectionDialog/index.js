@@ -21,8 +21,6 @@ const LogoutAllConnectionDialog = ({
     setIsChecked((prev) => !prev);
   };
 
-  console.log(isChecked);
-
   return (
     <ModalDialogContainer
       visible={visible}

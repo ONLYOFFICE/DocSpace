@@ -1,9 +1,5 @@
 import styled from "styled-components";
-import {
-  hugeMobile,
-  smallTablet,
-  tablet,
-} from "@docspace/components/utils/device";
+import { tablet } from "@docspace/components/utils/device";
 
 export const StyledFooter = styled.div`
   .session-logout {
@@ -62,12 +58,31 @@ export const TableDataCell = styled.td`
   padding: 14px 0;
   color: #a3a9ae;
 
+  @media ${tablet} {
+    border-top: 0;
+  }
+
   :first-child {
     font-size: 13px;
     color: ${(props) => props.theme.activeSessions.color};
     span {
       color: #a3a9ae;
       margin-left: 5px;
+    }
+  }
+
+  .session-date {
+    position: relative;
+    margin-left: 0 !important;
+    margin-right: 8px;
+    :after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      right: -8px;
+      width: 1px;
+      height: 12px;
+      background: #d0d5da;
     }
   }
 
@@ -81,10 +96,6 @@ export const TableDataCell = styled.td`
       height: 20px;
       path {
         fill: #a3a9ae;
-      }
-      @media (max-width: 575px) {
-        width: 16px;
-        height: 16px;
       }
     }
   }

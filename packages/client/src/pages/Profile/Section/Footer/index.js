@@ -142,9 +142,13 @@ const ActiveSessions = ({
                   {session.platform}
                   <span>({session.browser})</span>
                   {currentSession === session.id ? tickIcon : null}
+                  <Box flexDirection="column" alignItems="center">
+                    <span className="session-date">
+                      {convertTime(session.date)}
+                    </span>
+                    <span className="session-ip">{session.ip}</span>
+                  </Box>
                 </TableDataCell>
-                <TableDataCell>{convertTime(session.date)}</TableDataCell>
-                <TableDataCell>{session.ip}</TableDataCell>
                 <TableDataCell
                   onClick={() => {
                     setLogoutVisible(true);
@@ -221,7 +225,7 @@ const ActiveSessions = ({
   );
 };
 
-export default inject(({ auth, setup }) => {
+export default inject(({ setup }) => {
   const {
     getAllSessions,
     removeAllSessions,
@@ -233,7 +237,6 @@ export default inject(({ auth, setup }) => {
     removeAllExecptThis,
   } = setup;
   return {
-    userId: auth.userStore.user.id,
     getAllSessions,
     removeAllSessions,
     removeSession,
