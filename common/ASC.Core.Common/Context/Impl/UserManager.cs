@@ -312,6 +312,36 @@ public class UserManager
         return findUsers.ToArray();
     }
 
+    public UserInfo UpdateUserInfo(UserInfo u, bool syncCardDav = false)
+    {
+        if (IsSystemUser(u.Id))
+        {
+            return SystemUsers[u.Id];
+        }
+
+        _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
+
+        if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
+        {
+            throw new InvalidOperationException("Can not disable tenant owner.");
+        }
+
+        var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+
+        if (oldUserData == null || Equals(oldUserData, Constants.LostUser))
+        {
+            throw new InvalidOperationException("User not found.");
+        }
+
+        var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
+
+        if (syncCardDav)
+        {
+            SyncCardDav(u, oldUserData, newUser);
+        }
+        return newUser;
+    }
+
     public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false)
     {
         if (IsSystemUser(u.Id))
@@ -319,14 +349,7 @@ public class UserManager
             return SystemUsers[u.Id];
         }
 
-        if (u.Id == Guid.Empty)
-        {
-            _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-        }
-        else
-        {
-            _permissionContext.DemandPermissions(new UserSecurityProvider(u.Id), Constants.Action_EditUser);
-        }
+        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
         if (!_coreBaseSettings.Personal)
         {
@@ -336,91 +359,92 @@ public class UserManager
             }
         }
 
-        if (u.Status == EmployeeStatus.Terminated && u.Id == _tenantManager.GetCurrentTenant().OwnerId)
-        {
-            throw new InvalidOperationException("Can not disable tenant owner.");
-        }
-
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
 
-        if (Equals(oldUserData, Constants.LostUser))
+        if (oldUserData != null && !Equals(oldUserData, Constants.LostUser))
         {
-            if (isVisitor)
-            {
-                _activeUsersFeatureChecker.CheckAppend().Wait();
-            }
-            else
-            {
-                _tenantQuotaFeatureChecker.CheckAppend().Wait();
-            }
+            throw new InvalidOperationException("User already exist.");
+        }
+
+        if (isVisitor)
+        {
+            _activeUsersFeatureChecker.CheckAppend().Wait();
+        }
+        else
+        {
+            _tenantQuotaFeatureChecker.CheckAppend().Wait();
         }
 
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
 
         if (syncCardDav)
         {
-            var tenant = _tenantManager.GetCurrentTenant();
-            var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
-                        (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
-                        new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
+            SyncCardDav(u, oldUserData, newUser);
+        }
 
-            var rootAuthorization = _cardDavAddressbook.GetSystemAuthorization();
-            var allUserEmails = GetDavUserEmails().ToList();
+        return newUser;
+    }
 
-            if (oldUserData != null && oldUserData.Status != newUser.Status && newUser.Status == EmployeeStatus.Terminated)
+    private void SyncCardDav(UserInfo u, UserInfo oldUserData, UserInfo newUser)
+    {
+        var tenant = _tenantManager.GetCurrentTenant();
+        var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
+                    (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
+                    new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
+
+        var rootAuthorization = _cardDavAddressbook.GetSystemAuthorization();
+        var allUserEmails = GetDavUserEmails().ToList();
+
+        if (oldUserData != null && oldUserData.Status != newUser.Status && newUser.Status == EmployeeStatus.Terminated)
+        {
+            var userAuthorization = oldUserData.Email.ToLower() + ":" + _instanceCrypto.Encrypt(oldUserData.Email);
+            var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, newUser.Email.ToLower(), true, true);
+            var collection = _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString()).Result;
+            if (collection.Completed && collection.StatusCode != 404)
             {
-                var userAuthorization = oldUserData.Email.ToLower() + ":" + _instanceCrypto.Encrypt(oldUserData.Email);
-                var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, newUser.Email.ToLower(), true, true);
-                var collection = _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString()).Result;
-                if (collection.Completed && collection.StatusCode != 404)
-                {
-                    _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id).Wait();//TODO
-                }
-                foreach (var email in allUserEmails)
-                {
-                    var requestUrlItem = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), email.ToLower(), true, true, itemID: newUser.Id.ToString());
-                    try
-                    {
-                        var davItemRequest = new DavRequest()
-                        {
-                            Url = requestUrlItem,
-                            Authorization = rootAuthorization,
-                            Header = myUri
-                        };
-                        _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.ErrorWithException(ex);
-                    }
-                }
+                _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id).Wait();//TODO
             }
-            else
+            foreach (var email in allUserEmails)
             {
-
+                var requestUrlItem = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), email.ToLower(), true, true, itemID: newUser.Id.ToString());
                 try
                 {
-                    var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
-
-                    try
+                    var davItemRequest = new DavRequest()
                     {
-                        _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null).Wait(); // todo
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.ErrorWithException(ex);
-                    }
-
+                        Url = requestUrlItem,
+                        Authorization = rootAuthorization,
+                        Header = myUri
+                    };
+                    _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     _log.ErrorWithException(ex);
                 }
             }
-
         }
-        return newUser;
+        else
+        {
+            try
+            {
+                var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
+                try
+                {
+                    _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null).Wait(); // todo
+                }
+                catch (Exception ex)
+                {
+                    _log.ErrorWithException(ex);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.ErrorWithException(ex);
+            }
+        }
+
     }
+
     public IEnumerable<string> GetDavUserEmails()
     {
         return _userService.GetDavUserEmails(_tenantManager.GetCurrentTenant().Id);

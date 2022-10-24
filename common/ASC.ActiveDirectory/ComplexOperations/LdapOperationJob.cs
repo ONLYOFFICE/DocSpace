@@ -380,7 +380,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
                     _logger.DebugSaveUserInfo(existingLDAPUser.GetUserInfoString());
 
-                    _userManager.SaveUserInfo(existingLDAPUser);
+                    _userManager.UpdateUserInfo(existingLDAPUser);
                     break;
                 case LdapOperationType.SaveTest:
                 case LdapOperationType.SyncTest:
@@ -1065,7 +1065,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
                     _logger.DebugSaveUserInfo(removedUser.GetUserInfoString());
 
-                    _userManager.SaveUserInfo(removedUser);
+                    _userManager.UpdateUserInfo(removedUser);
                     break;
                 case LdapOperationType.SaveTest:
                 case LdapOperationType.SyncTest:

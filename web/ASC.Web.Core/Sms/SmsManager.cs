@@ -85,14 +85,14 @@ public class SmsManager
         user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
         if (_securityContext.IsAuthenticated)
         {
-            _userManager.SaveUserInfo(user, syncCardDav: true);
+            _userManager.UpdateUserInfo(user, true);
         }
         else
         {
             try
             {
                 _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                _userManager.SaveUserInfo(user, syncCardDav: true);
+                _userManager.UpdateUserInfo(user, true);
             }
             finally
             {
@@ -182,7 +182,7 @@ public class SmsManager
         if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
         {
             user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.Activated;
-            _userManager.SaveUserInfo(user);
+            _userManager.UpdateUserInfo(user);
         }
     }
 }

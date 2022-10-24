@@ -223,7 +223,7 @@ public class LdapUserManager
 
             _logger.DebugSaveUserInfo(otherUser.GetUserInfoString());
 
-            _userManager.SaveUserInfo(otherUser);
+            _userManager.UpdateUserInfo(otherUser);
 
             return true;
         }
@@ -601,7 +601,7 @@ public class LdapUserManager
             {
                 _logger.DebugSaveUserInfo(userToUpdate.GetUserInfoString());
 
-                portlaUserInfo = _userManager.SaveUserInfo(userToUpdate);
+                portlaUserInfo = _userManager.UpdateUserInfo(userToUpdate);
             }
 
             return true;
@@ -690,7 +690,7 @@ public class LdapUserManager
                             log.DebugTryGetAndSyncLdapUserInfoDisablingUser(login, uInfo);
                             uInfo.Status = EmployeeStatus.Terminated;
                             uInfo.Sid = null;
-                            userManager.SaveUserInfo(uInfo);
+                            userManager.UpdateUserInfo(uInfo);
                             await cookiesManager.ResetUserCookie(uInfo.Id);
                         }
                     }
@@ -742,7 +742,7 @@ public class LdapUserManager
             {
                 userInfo.Sid = null;
                 userInfo.Status = EmployeeStatus.Terminated;
-                _userManager.SaveUserInfo(userInfo);
+                _userManager.UpdateUserInfo(userInfo);
                 throw new Exception("The user did not pass the configuration check by ldap group settings");
             }
 
