@@ -164,8 +164,8 @@ export function getCookie(name) {
   let matches = document.cookie.match(
     new RegExp(
       "(?:^|; )" +
-        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-        "=([^;]*)"
+      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+      "=([^;]*)"
     )
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
@@ -358,7 +358,7 @@ export function isElementInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
+    (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -462,4 +462,25 @@ export const getConvertedSize = (t, size) => {
   return (
     parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + " " + sizeNames[i]
   );
+};
+
+export const getBgPattern = (colorSchemeId: number) => {
+  switch (colorSchemeId) {
+    case 1:
+      return "url('/static/images/background.pattern.react.svg')";
+    case 2:
+      return "url('/static/images/background.pattern.orange.react.svg')";
+    case 3:
+      return "url('/static/images/background.pattern.green.react.svg')";
+    case 4:
+      return "url('/static/images/background.pattern.red.react.svg')";
+    case 5:
+      return "url('/static/images/background.pattern.purple.react.svg')";
+    case 6:
+      return "url('/static/images/background.pattern.lightBlue.react.svg')";
+    case 7:
+      return "url('/static/images/background.pattern.black.react.svg')";
+    default:
+      return "url('/static/images/background.pattern.react.svg')";
+  }
 };
