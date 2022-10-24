@@ -655,8 +655,7 @@ class FilesStore {
     filter,
     clearFilter = true,
     withSubfolders = false,
-    clearSelection = true,
-    isRename
+    clearSelection = true
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
 
@@ -733,55 +732,49 @@ class FilesStore {
             }
           }
 
-          let navigationPath = [];
+          const navigationPath = await Promise.all(
+            data.pathParts.map(async (folder) => {
+              const { Rooms, Archive } = FolderType;
 
-          if (!isRename) {
-            navigationPath = await Promise.all(
-              data.pathParts.map(async (folder) => {
-                const { Rooms, Archive } = FolderType;
+              let folderId = folder;
 
-                let folderId = folder;
+              if (
+                data.current.providerKey &&
+                data.current.rootFolderType === Rooms &&
+                this.treeFoldersStore.sharedRoomId
+              ) {
+                folderId = this.treeFoldersStore.sharedRoomId;
+              }
 
-                if (
-                  data.current.providerKey &&
-                  data.current.rootFolderType === Rooms &&
-                  this.treeFoldersStore.sharedRoomId
-                ) {
-                  folderId = this.treeFoldersStore.sharedRoomId;
-                }
+              const folderInfo =
+                data.current.id === folderId
+                  ? data.current
+                  : await api.files.getFolderInfo(folderId);
 
-                const folderInfo =
-                  data.current.id === folderId
-                    ? data.current
-                    : await api.files.getFolderInfo(folderId);
+              const {
+                id,
+                title,
+                roomType,
+                rootFolderId,
+                rootFolderType,
+              } = folderInfo;
 
-                const {
-                  id,
-                  title,
-                  roomType,
-                  rootFolderId,
-                  rootFolderType,
-                } = folderInfo;
+              const isRootRoom =
+                rootFolderId === id &&
+                (rootFolderType === Rooms || rootFolderType === Archive);
 
-                const isRootRoom =
-                  rootFolderId === id &&
-                  (rootFolderType === Rooms || rootFolderType === Archive);
-
-                return {
-                  id: folderId,
-                  title,
-                  isRoom: !!roomType,
-                  isRootRoom,
-                };
-              })
-            ).then((res) => {
-              return res
-                .filter((item, index) => index !== res.length - 1)
-                .reverse();
-            });
-          } else {
-            navigationPath = this.selectedFolderStore.navigationPath;
-          }
+              return {
+                id: folderId,
+                title,
+                isRoom: !!roomType,
+                isRootRoom,
+              };
+            })
+          ).then((res) => {
+            return res
+              .filter((item, index) => index !== res.length - 1)
+              .reverse();
+          });
 
           this.selectedFolderStore.setSelectedFolder({
             folders: data.folders,
