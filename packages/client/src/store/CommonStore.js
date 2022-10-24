@@ -18,8 +18,9 @@ class CommonStore {
   isLoadedCustomizationNavbar = false;
   isLoadedWelcomePageSettings = false;
   isLoadedAdditionalResources = false;
-
   isLoadedCompanyInfoSettingsData = false;
+
+  greetingSettingsIsDefault = true;
 
   constructor() {
     this.authStore = authStore;
@@ -35,7 +36,8 @@ class CommonStore {
       authStore.settingsStore.getPortalTimezones(),
       authStore.settingsStore.getPortalCultures(),
       this.getWhiteLabelLogoText(),
-      this.getWhiteLabelLogoSizes()
+      this.getWhiteLabelLogoSizes(),
+      this.getGreetingSettingsIsDefault()
     );
 
     return Promise.all(requests).finally(() => this.setIsLoaded(true));
@@ -47,6 +49,10 @@ class CommonStore {
 
   setLogoSizes = (sizes) => {
     this.whiteLabelLogoSizes = sizes;
+  };
+
+  getGreetingSettingsIsDefault = async () => {
+    this.greetingSettingsIsDefault = await api.settings.getGreetingSettingsIsDefault();
   };
 
   getWhiteLabelLogoText = async () => {

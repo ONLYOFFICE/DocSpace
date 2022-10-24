@@ -25,6 +25,7 @@ const Tag = ({
   id,
   className,
   style,
+  icon,
 }) => {
   const [openDropdown, setOpenDropdown] = React.useState(false);
 
@@ -113,22 +114,28 @@ const Tag = ({
           className={`tag${className ? ` ${className}` : ""}`}
           style={style}
         >
-          <Text
-            className={"tag-text"}
-            title={label}
-            font-size={"13px"}
-            noSelect
-            truncate
-          >
-            {label}
-          </Text>
-          {isNewTag && (
-            <IconButton
-              className={"tag-icon"}
-              iconName={"/static/images/cross.react.svg"}
-              size={"10px"}
-              onClick={onDeleteAction}
-            />
+          {icon ? (
+            <ReactSVG className="third-party-tag" src={icon} />
+          ) : (
+            <>
+              <Text
+                className={"tag-text"}
+                title={label}
+                font-size={"13px"}
+                noSelect
+                truncate
+              >
+                {label}
+              </Text>
+              {isNewTag && (
+                <IconButton
+                  className={"tag-icon"}
+                  iconName={"/static/images/cross.react.svg"}
+                  size={"10px"}
+                  onClick={onDeleteAction}
+                />
+              )}
+            </>
           )}
         </StyledTag>
       )}

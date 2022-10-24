@@ -51,6 +51,9 @@ class DialogsStore {
   saveThirdpartyResponse = null;
   inviteItems = [];
 
+  isConnectDialogReconnect = false;
+  saveAfterReconnectOAuth = false;
+
   constructor(
     authStore,
     treeFoldersStore,
@@ -143,6 +146,14 @@ class DialogsStore {
 
   setConnectItem = (connectItem) => {
     this.connectItem = connectItem;
+  };
+
+  setIsConnectDialogReconnect = (isConnectDialogReconnect) => {
+    this.isConnectDialogReconnect = isConnectDialogReconnect;
+  };
+
+  setSaveAfterReconnectOAuth = (saveAfterReconnectOAuth) => {
+    this.saveAfterReconnectOAuth = saveAfterReconnectOAuth;
   };
 
   setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {

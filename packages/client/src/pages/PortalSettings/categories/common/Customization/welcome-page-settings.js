@@ -93,9 +93,16 @@ class WelcomePageSettings extends React.Component {
       setIsLoadedWelcomePageSettings,
       tReady,
       greetingSettings,
+      getSettings,
+      getGreetingSettingsIsDefault,
     } = this.props;
 
-    const { hasScroll, greetingTitle } = this.state;
+    const {
+      hasScroll,
+      greetingTitle,
+      isLoadingGreetingSave,
+      isLoadingGreetingRestore,
+    } = this.state;
 
     if (isLoaded !== prevProps.isLoaded || tReady !== prevProps.tReady) {
       const isLoadedSetting = isLoaded && tReady;
@@ -134,6 +141,16 @@ class WelcomePageSettings extends React.Component {
     if (this.state.greetingTitleDefault || greetingTitle) {
       this.checkChanges();
     }
+
+    if (
+      (isLoadingGreetingSave !== prevState.isLoadingGreetingSave &&
+        isLoadingGreetingSave === false) ||
+      (isLoadingGreetingRestore !== prevState.isLoadingGreetingRestore &&
+        isLoadingGreetingRestore === false)
+    ) {
+      getSettings();
+      getGreetingSettingsIsDefault();
+    }
   }
 
   componentWillUnmount() {
@@ -157,14 +174,12 @@ class WelcomePageSettings extends React.Component {
   };
 
   onSaveGreetingSettings = () => {
-    const { setGreetingTitle, t, getSettings } = this.props;
+    const { setGreetingTitle, t } = this.props;
     const { greetingTitle } = this.state;
     this.setState({ isLoadingGreetingSave: true }, function () {
       setGreetingTitle(greetingTitle)
         .then(() => {
           toastr.success(t("SuccessfullySaveGreetingSettingsMessage"));
-
-          getSettings();
         })
         .catch((error) => toastr.error(error))
         .finally(() => this.setState({ isLoadingGreetingSave: false }));
@@ -179,17 +194,10 @@ class WelcomePageSettings extends React.Component {
   };
 
   onRestoreGreetingSettings = () => {
-    const {
-      restoreGreetingTitle,
-      t,
-      getSettings,
-      greetingSettings,
-    } = this.props;
+    const { restoreGreetingTitle, t, greetingSettings } = this.props;
     this.setState({ isLoadingGreetingRestore: true }, function () {
       restoreGreetingTitle()
         .then(() => {
-          getSettings();
-
           this.setState({
             greetingTitle: greetingSettings,
             greetingTitleDefault: greetingSettings,
@@ -346,7 +354,6 @@ export default inject(({ auth, setup, common }) => {
     organizationName,
     theme,
     getSettings,
-    greetingSettingsIsDefault,
   } = auth.settingsStore;
   const { setGreetingTitle, restoreGreetingTitle } = setup;
   const {
@@ -354,6 +361,8 @@ export default inject(({ auth, setup, common }) => {
     setIsLoadedWelcomePageSettings,
     initSettings,
     setIsLoaded,
+    greetingSettingsIsDefault,
+    getGreetingSettingsIsDefault,
   } = common;
   return {
     theme,
@@ -364,6 +373,7 @@ export default inject(({ auth, setup, common }) => {
     isLoaded,
     setIsLoadedWelcomePageSettings,
     greetingSettingsIsDefault,
+    getGreetingSettingsIsDefault,
     getSettings,
     initSettings,
     setIsLoaded,
