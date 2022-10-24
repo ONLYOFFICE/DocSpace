@@ -11,7 +11,7 @@ import ModalDialogContainer from "../ModalDialogContainer";
 
 const DeletePortalDialog = (props) => {
   const { t, ready } = useTranslation("Settings", "Common");
-  const { visible, onClose, owner } = props;
+  const { visible, onClose, owner, stripeUrl } = props;
 
   const onDeleteClick = async () => {
     try {
@@ -37,7 +37,9 @@ const DeletePortalDialog = (props) => {
         <Trans t={t} i18nKey="DeleteDocSpaceInfo" ns="Settings">
           Before you delete the portal, please make sure that automatic billing
           is turned off. You may check the status of automatic billing in
-          <Link isHovered>on your Stripe customer portal.</Link>
+          <Link isHovered href={stripeUrl} target="_blank">
+            on your Stripe customer portal.
+          </Link>
         </Trans>
       </ModalDialog.Body>
       <ModalDialog.Footer>
