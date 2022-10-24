@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
+import { isMobile } from "react-device-detect";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
@@ -31,7 +32,6 @@ const tickIcon = (
 );
 
 const ActiveSessions = ({
-  userId,
   getAllSessions,
   removeAllSessions,
   removeSession,
@@ -39,6 +39,7 @@ const ActiveSessions = ({
   setLogoutVisible,
   logoutAllVisible,
   setLogoutAllVisible,
+  removeAllExecptThis,
 }) => {
   const [sessions, setSessions] = useState([]);
   const [currentSession, setCurrentSession] = useState(0);
@@ -56,7 +57,7 @@ const ActiveSessions = ({
   const onClickRemoveAllSessions = async () => {
     try {
       setLoading(true);
-      await removeAllSessions(userId).then(() =>
+      await removeAllSessions().then(() =>
         getAllSessions().then((res) => setSessions(res.items))
       );
     } catch (error) {
@@ -64,6 +65,17 @@ const ActiveSessions = ({
     } finally {
       setLoading(false);
       setLogoutAllVisible(false);
+    }
+  };
+
+  const onClickRemoveAllExceptThis = async () => {
+    try {
+      setLoading(true);
+      await removeAllExecptThis();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -121,40 +133,70 @@ const ActiveSessions = ({
           }
         />
       </Box>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableHeaderCell>{t("Common:Sessions")}</TableHeaderCell>
-            <TableHeaderCell>{t("Common:Date")}</TableHeaderCell>
-            <TableHeaderCell>{t("Common:IpAddress")}</TableHeaderCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sessions.map((session) => (
-            <TableRow key={session.id}>
-              <TableDataCell>
-                {session.platform}
-                <span>({session.browser})</span>
-                {currentSession === session.id ? tickIcon : null}
-              </TableDataCell>
-              <TableDataCell>{convertTime(session.date)}</TableDataCell>
-              <TableDataCell>{session.ip}</TableDataCell>
-              <TableDataCell
-                onClick={() => {
-                  setLogoutVisible(true);
-                  setModalData({
-                    id: session.id,
-                    platform: session.platform,
-                    browser: session.browser,
-                  });
-                }}
-              >
-                {currentSession !== session.id ? removeIcon : null}
-              </TableDataCell>
+      {isMobile ? (
+        <Table>
+          <TableBody>
+            {sessions.map((session) => (
+              <TableRow key={session.id}>
+                <TableDataCell>
+                  {session.platform}
+                  <span>({session.browser})</span>
+                  {currentSession === session.id ? tickIcon : null}
+                </TableDataCell>
+                <TableDataCell>{convertTime(session.date)}</TableDataCell>
+                <TableDataCell>{session.ip}</TableDataCell>
+                <TableDataCell
+                  onClick={() => {
+                    setLogoutVisible(true);
+                    setModalData({
+                      id: session.id,
+                      platform: session.platform,
+                      browser: session.browser,
+                    });
+                  }}
+                >
+                  {currentSession !== session.id ? removeIcon : null}
+                </TableDataCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableHeaderCell>{t("Common:Sessions")}</TableHeaderCell>
+              <TableHeaderCell>{t("Common:Date")}</TableHeaderCell>
+              <TableHeaderCell>{t("Common:IpAddress")}</TableHeaderCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {sessions.map((session) => (
+              <TableRow key={session.id}>
+                <TableDataCell>
+                  {session.platform}
+                  <span>({session.browser})</span>
+                  {currentSession === session.id ? tickIcon : null}
+                </TableDataCell>
+                <TableDataCell>{convertTime(session.date)}</TableDataCell>
+                <TableDataCell>{session.ip}</TableDataCell>
+                <TableDataCell
+                  onClick={() => {
+                    setLogoutVisible(true);
+                    setModalData({
+                      id: session.id,
+                      platform: session.platform,
+                      browser: session.browser,
+                    });
+                  }}
+                >
+                  {currentSession !== session.id ? removeIcon : null}
+                </TableDataCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
 
       {logoutVisible && (
         <LogoutConnectionDialog
@@ -172,6 +214,7 @@ const ActiveSessions = ({
           loading={loading}
           onClose={() => setLogoutAllVisible(false)}
           onRemoveAllSessions={onClickRemoveAllSessions}
+          onRemoveAllExceptThis={onClickRemoveAllExceptThis}
         />
       )}
     </StyledFooter>
@@ -187,6 +230,7 @@ export default inject(({ auth, setup }) => {
     setLogoutVisible,
     logoutAllVisible,
     setLogoutAllVisible,
+    removeAllExecptThis,
   } = setup;
   return {
     userId: auth.userStore.user.id,
@@ -197,5 +241,6 @@ export default inject(({ auth, setup }) => {
     setLogoutVisible,
     logoutAllVisible,
     setLogoutAllVisible,
+    removeAllExecptThis,
   };
 })(observer(ActiveSessions));

@@ -633,11 +633,17 @@ export function getAllActiveSessions() {
   });
 }
 
-export function removeAllActiveSessions(userId) {
+export function removeAllActiveSessions() {
   return request({
     method: "put",
-    url: `/security/activeconnections/logoutall/${userId}`,
-    data: { userId },
+    url: "/security/activeconnections/logoutallchangepassword",
+  });
+}
+
+export function removeAllExceptThisSession() {
+  return request({
+    method: "put",
+    url: "/security/activeconnections/logoutallexceptthis",
   });
 }
 

@@ -12,6 +12,7 @@ const LogoutAllConnectionDialog = ({
   onClose,
   onRemoveAllSessions,
   loading,
+  onRemoveAllExceptThis,
 }) => {
   const { t } = useTranslation(["Profile", "Common"]);
   const [isChecked, setIsChecked] = useState(false);
@@ -19,6 +20,8 @@ const LogoutAllConnectionDialog = ({
   const onChangeCheckbox = () => {
     setIsChecked((prev) => !prev);
   };
+
+  console.log(isChecked);
 
   return (
     <ModalDialogContainer
@@ -46,7 +49,9 @@ const LogoutAllConnectionDialog = ({
           size="normal"
           scale
           primary={true}
-          onClick={() => onRemoveAllSessions()}
+          onClick={() =>
+            isChecked ? onRemoveAllSessions() : onRemoveAllExceptThis()
+          }
           isLoading={loading}
         />
         <Button

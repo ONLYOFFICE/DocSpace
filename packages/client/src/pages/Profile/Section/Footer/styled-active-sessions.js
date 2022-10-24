@@ -1,4 +1,9 @@
 import styled from "styled-components";
+import {
+  hugeMobile,
+  smallTablet,
+  tablet,
+} from "@docspace/components/utils/device";
 
 export const StyledFooter = styled.div`
   .session-logout {
