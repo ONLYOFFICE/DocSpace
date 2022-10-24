@@ -12,15 +12,9 @@ const ItemTitle = ({
   isGallery,
   isSeveralItems,
   selectionLength,
-
   selectionParentRoom,
   roomsView,
-
-  setBufferSelection,
   getIcon,
-
-  getContextOptions,
-  getContextOptionActions,
   getUserContextOptions,
 }) => {
   if (!selection) return null;
@@ -52,39 +46,18 @@ const ItemTitle = ({
       selectionLength={selectionLength}
       selection={filesItemSelection}
       isSeveralItems={isSeveralItems}
-      setBufferSelection={setBufferSelection}
       getIcon={getIcon}
-      getContextOptions={getContextOptions}
-      getContextOptionActions={getContextOptionActions}
     />
   );
 };
 
-export default inject(
-  ({ auth, settingsStore, filesStore, peopleStore, contextOptionsStore }) => {
-    const { selectionParentRoom, roomsView } = auth.infoPanelStore;
-    const { getIcon } = settingsStore;
-    const { getUserContextOptions } = peopleStore.contextOptionsStore;
+export default inject(({ auth, settingsStore }) => {
+  const { selectionParentRoom, roomsView } = auth.infoPanelStore;
+  const { getIcon } = settingsStore;
 
-    const {
-      setBufferSelection,
-      getFilesContextOptions: getContextOptions,
-    } = filesStore;
-
-    const {
-      getFilesContextOptions: getContextOptionActions,
-    } = contextOptionsStore;
-
-    return {
-      selectionParentRoom,
-      roomsView,
-
-      setBufferSelection,
-      getIcon,
-
-      getContextOptions,
-      getContextOptionActions,
-      getUserContextOptions,
-    };
-  }
-)(observer(ItemTitle));
+  return {
+    selectionParentRoom,
+    roomsView,
+    getIcon,
+  };
+})(observer(ItemTitle));

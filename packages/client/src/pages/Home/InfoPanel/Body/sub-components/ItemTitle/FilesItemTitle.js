@@ -11,15 +11,9 @@ import { StyledTitle } from "../../styles/common";
 
 const FilesItemTitle = ({
   t,
-
   selection,
   isSeveralItems,
-
-  setBufferSelection,
   getIcon,
-
-  getContextOptions,
-  getContextOptionActions,
   selectionLength,
 }) => {
   const itemTitleRef = useRef();
@@ -51,9 +45,6 @@ const FilesItemTitle = ({
           t={t}
           itemTitleRef={itemTitleRef}
           selection={selection}
-          setBufferSelection={setBufferSelection}
-          getContextOptions={getContextOptions}
-          getContextOptionActions={getContextOptionActions}
         />
       )}
     </StyledTitle>

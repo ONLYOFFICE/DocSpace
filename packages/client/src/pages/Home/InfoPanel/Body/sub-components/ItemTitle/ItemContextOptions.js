@@ -1,11 +1,8 @@
 import React, { useRef, useEffect } from "react";
+import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 
-import {
-  ContextMenu,
-  ContextMenuButton,
-  IconButton,
-} from "@docspace/components";
+import { ContextMenu, ContextMenuButton } from "@docspace/components";
 
 import ContextHelper from "../../helpers/ContextHelper";
 
@@ -14,18 +11,29 @@ const StyledItemContextOptions = styled.div`
 `;
 
 const ItemContextOptions = ({
+  t,
   selection,
+  setSelection,
+  reloadSelection,
+  getContextOptions,
+  getContextOptionActions,
+  getUserContextOptions,
+
   setBufferSelection,
   itemTitleRef,
-  ...props
 }) => {
   if (!selection) return null;
 
   const contextMenuRef = useRef();
 
   const contextHelper = new ContextHelper({
+    t,
     selection,
-    ...props,
+    setSelection,
+    reloadSelection,
+    getContextOptions,
+    getContextOptionActions,
+    getUserContextOptions,
   });
 
   const setItemAsBufferSelection = () => setBufferSelection(selection);
@@ -59,4 +67,25 @@ const ItemContextOptions = ({
   );
 };
 
-export default ItemContextOptions;
+export default inject(
+  ({ auth, filesStore, peopleStore, contextOptionsStore }) => {
+    const { setSelection, reloadSelection } = auth.infoPanelStore;
+    const { getUserContextOptions } = peopleStore.contextOptionsStore;
+    const {
+      setBufferSelection,
+      getFilesContextOptions: getContextOptions,
+    } = filesStore;
+    const {
+      getFilesContextOptions: getContextOptionActions,
+    } = contextOptionsStore;
+
+    return {
+      setSelection,
+      reloadSelection,
+      setBufferSelection,
+      getContextOptions,
+      getContextOptionActions,
+      getUserContextOptions,
+    };
+  }
+)(observer(ItemContextOptions));

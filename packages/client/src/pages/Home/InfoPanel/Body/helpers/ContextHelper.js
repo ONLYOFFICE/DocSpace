@@ -2,6 +2,8 @@ class ContextHelper {
   constructor(props) {
     this.t = props.t;
     this.selection = props.selection;
+    this.setSelection = props.setSelection;
+    this.reloadSelection = props.reloadSelection;
     this.getContextOptions = props.getContextOptions;
     this.getContextOptionActions = props.getContextOptionActions;
 
@@ -25,8 +27,25 @@ class ContextHelper {
     this.selection.contextOptions = options;
   };
 
+  fixItemContextOptionActions = () => {
+    const contextOptionActions = this.getContextOptionActions(
+      this.selection,
+      this.t
+    );
+
+    const newContextOptionActions = contextOptionActions.map((coa) => ({
+      ...coa,
+      onClick: async (props) => {
+        coa.onClick && (await coa.onClick(props));
+        this.reloadSelection();
+      },
+    }));
+
+    return newContextOptionActions;
+  };
+
   getItemContextOptions = () => {
-    return this.getContextOptionActions(this.selection, this.t);
+    return this.fixItemContextOptionActions();
   };
 }
 
