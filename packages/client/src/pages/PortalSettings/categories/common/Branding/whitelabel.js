@@ -302,15 +302,17 @@ const WhiteLabel = (props) => {
   };
 
   const onSave = () => {
-    let fd = new FormData();
-    fd.append("logoText", logoTextWhiteLabel);
+    let logoArr = [];
 
     for (let i = 0; i < 7; i++) {
-      fd.append(`logo[${i}][key]`, i + 1);
-      fd.append(`logo[${i}][value]`, logoUrlsWhiteLabel[i]);
+      logoArr.push({ key: String(i + 1), value: logoUrlsWhiteLabel[i] });
     }
 
-    const data = new URLSearchParams(fd);
+    const data = {
+      logoText: logoTextWhiteLabel,
+      logo: logoArr,
+    };
+
     console.log(data);
 
     setWhiteLabelSettings(data).finally(() => {
