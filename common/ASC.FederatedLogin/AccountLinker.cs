@@ -98,11 +98,6 @@ public class AccountLinker
         return GetLinkedProfiles(obj).Where(profile => profile.Provider.Equals(provider));
     }
 
-    public IDictionary<string, LoginProfile> GetLinkedProfiles(IEnumerable<string> objects, string provider)
-    {
-        return GetLinkedProfiles(objects).Where(o => o.Value.Provider.Equals(provider)).ToDictionary(k => k.Key, v => v.Value);
-    }
-
     public IEnumerable<LoginProfile> GetLinkedProfiles(string obj)
     {
         return _accountLinkerStorage.GetFromCache(obj, GetLinkedProfilesFromDB);
@@ -186,14 +181,5 @@ public class AccountLinker
                 .Select(r => r.Profile)
                 .ToList()
                 .ConvertAll(x => LoginProfile.CreateFromSerializedString(_signature, _instanceCrypto, x));
-    }
-
-    private IDictionary<string, LoginProfile> GetLinkedProfiles(IEnumerable<string> objects)
-    {
-        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
-
-        return accountLinkContext.AccountLinks.Where(r => objects.Contains(r.Id))
-            .Select(r => new { r.Id, r.Profile })
-            .ToDictionary(k => k.Id, v => LoginProfile.CreateFromSerializedString(_signature, _instanceCrypto, v.Profile));
     }
 }
