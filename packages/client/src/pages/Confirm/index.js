@@ -25,7 +25,7 @@ const Confirm = ({ match }) => {
   //console.log("Confirm render");
   const path = match.path;
   return (
-    <ConfirmWrapper className="with-background-pattern">
+    <ConfirmWrapper>
       <Switch>
         <ConfirmRoute
           forUnauthorized
