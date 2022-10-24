@@ -20,6 +20,8 @@ const FilesItemTitle = ({
   getContextOptions,
   getContextOptionActions,
   severalItemsLength,
+
+  selectedFolderId,
 }) => {
   if (isSeveralItems)
     return (
@@ -53,6 +55,7 @@ const FilesItemTitle = ({
           setBufferSelection={setBufferSelection}
           getContextOptions={getContextOptions}
           getContextOptionActions={getContextOptionActions}
+          selectedFolderId={selectedFolderId}
         />
       )}
     </StyledTitle>
