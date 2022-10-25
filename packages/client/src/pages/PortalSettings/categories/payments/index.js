@@ -338,9 +338,8 @@ const PaymentsPage = ({
                 i18nKey="GracePeriodActivatedDescription"
                 ns="Payments"
               >
-                Grace period activated from <strong>{{ fromDate }}</strong> -
-                <strong>{{ byDate }}</strong> ({{ delayDaysCount }}
-                ).
+                Grace period activated from <strong>{{ fromDate }}</strong>
+                <strong>{{ byDate }}</strong> ({{ delayDaysCount }})
               </Trans>
             </Text>
           )}

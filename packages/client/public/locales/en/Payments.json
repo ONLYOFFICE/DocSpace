@@ -16,7 +16,7 @@
   "DowngradeNow": "Downgrade now",
   "FreeStartupPlan": "Free {{planName}} plan",
   "GracePeriodActivated": "Grace period activated",
-  "GracePeriodActivatedDescription": "Grace period is effective from <1>{{fromDate}}</1> to <1>{{byDate}}</1> ({{delayDaysCount}}). During the grace period, admins cannot create new rooms and add new users. After the due date of the grace period, DocSpace will become unavailable until the payment is made.",
+  "GracePeriodActivatedDescription": "Grace period is effective from <1>{{fromDate}}</1> to <2>{{byDate}}</2> ({{delayDaysCount}}). <6>During the grace period, admins cannot create new rooms and add new users. After the due date of the grace period, DocSpace will become unavailable until the payment is made.</6>",
   "InvalidEmail": "Invalid email",
   "LatePayment": "Late payment",
   "ManagerTypesDescription": "Admin account types and their privileges",
@@ -38,5 +38,7 @@
   "TotalPricePerMonth": "<1>{{currencySymbol}}</1><2>{{price}}</2><3>/month</3>",
   "UpgradeNow": "Upgrade now",
   "UserNotFound": "User <1>«{{email}}»</1> is not found",
-  "YourPrice": "Your price"
+  "YourPrice": "Your price",
+  "PaymentOverdue": "Cannot add new users. Business plan payment overdue",
+  "UpgradePlan": "Upgrade plan"
 }
