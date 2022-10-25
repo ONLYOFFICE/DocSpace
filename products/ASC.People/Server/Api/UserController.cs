@@ -275,12 +275,12 @@ public class UserController : PeopleControllerBase
             if (success)
             {
                 await _usersInRoomChecker.CheckAppend();
-                await _fileSecurity.ShareAsync(id, Files.Core.FileEntryType.Folder, user.Id, options.Share);
+                await _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, options.Share);
             }
             else
             {
                 await _usersInRoomChecker.CheckAppend();
-                await _fileSecurity.ShareAsync(options.RoomId, Files.Core.FileEntryType.Folder, user.Id, options.Share);
+                await _fileSecurity.ShareAsync(options.RoomId, FileEntryType.Folder, user.Id, options.Share);
             }
         }
 
@@ -288,6 +288,22 @@ public class UserController : PeopleControllerBase
         _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [HttpPost("invite")]
+    public async IAsyncEnumerable<EmployeeDto> InviteUsersAsync(InviteUsersRequestDto inDto)
+    {
+        foreach (var invite in inDto.Invitations)
+        {
+            _userManagerWrapper.AddInvitedUser(invite.Email, invite.Type);
+        }
+
+        var users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+
+        foreach (var user in users)
+        {
+            yield return await _employeeDtoHelper.Get(user);
+        }
     }
 
     [HttpPut("{userid}/password")]
