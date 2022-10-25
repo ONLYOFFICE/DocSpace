@@ -450,7 +450,7 @@ export default inject(({ auth, payments }) => {
     language,
     organizationName,
     tariffsInfo,
-    isGracePeriod: true,
+    isGracePeriod,
     theme,
     setPaymentAccount,
     currencySymbol: planCost.currencySymbol,
