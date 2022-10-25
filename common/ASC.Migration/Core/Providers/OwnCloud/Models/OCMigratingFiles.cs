@@ -116,19 +116,19 @@ public class OCMigratingFiles : MigratingFiles
         }
     }
 
-    public override void Migrate()
+    public override Task Migrate()
     {
 
         if (!ShouldImport)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         var drivePath = Directory.Exists(Path.Combine(_rootFolder, "data", _user.Key, "files")) ?
             Path.Combine(_rootFolder, "data", _user.Key) : null;
         if (drivePath == null)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         _matchingFileId = new Dictionary<object, int>();
@@ -262,6 +262,7 @@ public class OCMigratingFiles : MigratingFiles
                 Log($"Couldn't change file permissions for {item.Key}", ex);
             }
         }
+        return Task.CompletedTask;
     }
 
     public void SetUsersDict(IEnumerable<OCMigratingUser> users)

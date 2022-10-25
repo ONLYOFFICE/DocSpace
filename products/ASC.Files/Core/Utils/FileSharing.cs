@@ -115,7 +115,7 @@ public class FileSharingAceHelper<T>
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
-            if (!ProcessEmailAce(w))
+            if (!(await ProcessEmailAce(w)))
             {
                 continue;
             }
@@ -326,7 +326,7 @@ public class FileSharingAceHelper<T>
         return result;
     }
 
-    private bool ProcessEmailAce(AceWrapper ace)
+    private async Task<bool> ProcessEmailAce(AceWrapper ace)
     {
         if (string.IsNullOrEmpty(ace.Email))
         {
@@ -348,7 +348,7 @@ public class FileSharingAceHelper<T>
             Status = EmployeeStatus.Active
         };
 
-        var user = _userManager.SaveUserInfo(userInfo);
+        var user = await _userManager.SaveUserInfo(userInfo);
 
         ace.Id = user.Id;
 

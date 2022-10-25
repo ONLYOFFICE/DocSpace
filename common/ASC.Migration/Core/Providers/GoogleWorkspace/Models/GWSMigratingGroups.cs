@@ -86,7 +86,7 @@ public class GWSMigratingGroups : MigratingGroup
         }
     }
 
-    public override void Migrate()
+    public override Task Migrate()
     {
         var existingGroups = _userManager.GetGroups().ToList();
         var oldGroup = existingGroups.Find(g => g.Name == _groupinfo.Name);
@@ -119,5 +119,6 @@ public class GWSMigratingGroups : MigratingGroup
                 Log($"Couldn't to add user {userEmail} to group {_groupName} {Path.Combine(_rootFolder, "Groups")} ", ex);
             }
         }
+        return Task.CompletedTask;
     }
 }

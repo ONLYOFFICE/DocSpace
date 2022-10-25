@@ -161,7 +161,7 @@ public class ThirdpartyController : ApiControllerBase
 
     [AllowAnonymous]
     [HttpPost("thirdparty/signup")]
-    public void SignupAccount(SignupAccountRequestDto inDto)
+    public async Task SignupAccount(SignupAccountRequestDto inDto)
     {
         var employeeType = inDto.EmplType ?? EmployeeType.User;
         var passwordHash = inDto.PasswordHash;
@@ -193,7 +193,7 @@ public class ThirdpartyController : ApiControllerBase
         try
         {
             _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
-            var newUser = CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, false);
+            var newUser = await CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, false);
             var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
             _messageService.Send(MessageInitiator.System, messageAction, _messageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
             userID = newUser.Id;
@@ -235,7 +235,7 @@ public class ThirdpartyController : ApiControllerBase
         _messageService.Send(MessageAction.UserUnlinkedSocialAccount, GetMeaningfulProviderName(provider));
     }
 
-    private UserInfo CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)
+    private async Task<UserInfo> CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)
     {
         var isVisitor = employeeType == EmployeeType.Visitor;
 
@@ -257,7 +257,7 @@ public class ThirdpartyController : ApiControllerBase
             userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
         }
 
-        return _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, isVisitor, fromInviteLink);
+        return await _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, isVisitor, fromInviteLink);
     }
 
     private void SaveContactImage(Guid userID, string url)

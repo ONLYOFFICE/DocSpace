@@ -56,7 +56,7 @@ public class NCMigratingGroups : MigratingGroup
         Module = new MigrationModules(ModuleName, MigrationResource.OnlyofficeModuleNamePeople);
     }
 
-    public override void Migrate()
+    public override Task Migrate()
     {
         var existingGroups = _userManager.GetGroups().ToList();
         var oldGroup = existingGroups.Find(g => g.Name == _groupinfo.Name);
@@ -89,5 +89,6 @@ public class NCMigratingGroups : MigratingGroup
                 Log($"Couldn't to add user {userGuid.Key} to group {_groupName} ", ex);
             }
         }
+        return Task.CompletedTask;
     }
 }

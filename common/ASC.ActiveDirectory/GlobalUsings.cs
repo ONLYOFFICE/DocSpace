@@ -51,6 +51,7 @@ global using ASC.ActiveDirectory.Novell;
 global using ASC.ActiveDirectory.Novell.Data;
 global using ASC.ActiveDirectory.Novell.Exceptions;
 global using ASC.ActiveDirectory.Novell.Extensions;
+global using ASC.ActiveDirectory.Wrapper;
 global using ASC.Common;
 global using ASC.Common.Security.Authorizing;
 global using ASC.Common.Threading;
@@ -69,7 +70,6 @@ global using ASC.Web.Core;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Users;
-global using ASC.Web.Core.Utility;
 global using ASC.Web.Studio.Utility;
 
 global using Microsoft.EntityFrameworkCore;

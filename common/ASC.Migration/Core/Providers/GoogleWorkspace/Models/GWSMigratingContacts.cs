@@ -89,7 +89,7 @@ public class GwsMigratingContacts : MigratingContacts
         }*/
     }
 
-    public override void Migrate()
+    public override Task Migrate()
     {/*
         if (!ShouldImport)
         {
@@ -108,6 +108,7 @@ public class GwsMigratingContacts : MigratingContacts
                 Log($"Couldn't save contactCard {card.ContactInfo.ContactName}", ex);
             }
         }*/
+        return Task.CompletedTask;
     }
 
     public GwsMigratingContacts(string rootFolder, GwsMigratingUser user, Action<string, Exception> log) : base(log)

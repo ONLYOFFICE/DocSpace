@@ -119,11 +119,11 @@ public class GwsMigratingFiles : MigratingFiles
         _user = user;
     }
 
-    public override void Migrate()
+    public override Task Migrate()
     {
         if (!ShouldImport)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         var tmpFolder = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(_user.Key));
@@ -326,6 +326,7 @@ public class GwsMigratingFiles : MigratingFiles
                 Directory.Delete(tmpFolder, true);
             }
         }
+        return Task.CompletedTask;
     }
 
     private static readonly Regex _versionRegex = new Regex(@"(\([\d]+\))");

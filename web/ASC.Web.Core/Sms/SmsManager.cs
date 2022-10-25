@@ -85,14 +85,14 @@ public class SmsManager
         user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
         if (_securityContext.IsAuthenticated)
         {
-            _userManager.UpdateUserInfo(user, true);
+            await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         }
         else
         {
             try
             {
                 _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                _userManager.UpdateUserInfo(user, true);
+                await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
             }
             finally
             {

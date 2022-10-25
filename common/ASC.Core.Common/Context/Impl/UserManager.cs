@@ -312,7 +312,7 @@ public class UserManager
         return findUsers.ToArray();
     }
 
-    public UserInfo UpdateUserInfo(UserInfo u, bool syncCardDav = false)
+    public UserInfo UpdateUserInfo(UserInfo u)
     {
         if (IsSystemUser(u.Id))
         {
@@ -333,16 +333,20 @@ public class UserManager
             throw new InvalidOperationException("User not found.");
         }
 
-        var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
+        return _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
+    }
 
-        if (syncCardDav)
-        {
-            SyncCardDav(u, oldUserData, newUser);
-        }
+    public async Task<UserInfo> UpdateUserInfoWithSyncCardDavAsync(UserInfo u)
+    {
+        var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
+
+        var newUser = UpdateUserInfo(u);
+        await SyncCardDavAsync(u, oldUserData, newUser);
+
         return newUser;
     }
 
-    public UserInfo SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false)
+    public async Task<UserInfo> SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false)
     {
         if (IsSystemUser(u.Id))
         {
@@ -368,24 +372,23 @@ public class UserManager
 
         if (isVisitor)
         {
-            _activeUsersFeatureChecker.CheckAppend().Wait();
+            await _activeUsersFeatureChecker.CheckAppend();
         }
         else
         {
-            _tenantQuotaFeatureChecker.CheckAppend().Wait();
+            await _tenantQuotaFeatureChecker.CheckAppend();
         }
 
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
-
         if (syncCardDav)
         {
-            SyncCardDav(u, oldUserData, newUser);
+            await SyncCardDavAsync(u, oldUserData, newUser);
         }
 
         return newUser;
     }
 
-    private void SyncCardDav(UserInfo u, UserInfo oldUserData, UserInfo newUser)
+    private async Task SyncCardDavAsync(UserInfo u, UserInfo oldUserData, UserInfo newUser)
     {
         var tenant = _tenantManager.GetCurrentTenant();
         var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
@@ -402,7 +405,7 @@ public class UserManager
             var collection = _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString()).Result;
             if (collection.Completed && collection.StatusCode != 404)
             {
-                _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id).Wait();//TODO
+                await _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id);//TODO
             }
             foreach (var email in allUserEmails)
             {
@@ -415,7 +418,7 @@ public class UserManager
                         Authorization = rootAuthorization,
                         Header = myUri
                     };
-                    _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
+                    await _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -430,7 +433,7 @@ public class UserManager
                 var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
                 try
                 {
-                    _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null).Wait(); // todo
+                    await _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null); // todo
                 }
                 catch (Exception ex)
                 {

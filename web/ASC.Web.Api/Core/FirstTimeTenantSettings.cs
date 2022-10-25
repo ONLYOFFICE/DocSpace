@@ -73,7 +73,7 @@ public class FirstTimeTenantSettings
         _clientFactory = clientFactory;
     }
 
-    public WizardSettings SaveData(WizardRequestsDto inDto)
+    public async Task<WizardSettings> SaveData(WizardRequestsDto inDto)
     {
         try
         {
@@ -122,7 +122,7 @@ public class FirstTimeTenantSettings
                 currentUser.ActivationStatus = EmployeeActivationStatus.NotActivated;
             }
 
-            _userManager.SaveUserInfo(currentUser);
+            await _userManager.SaveUserInfo(currentUser);
 
             if (RequestLicense)
             {

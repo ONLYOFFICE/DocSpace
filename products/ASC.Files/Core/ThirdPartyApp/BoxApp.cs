@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core.Thirdparty;
+
 namespace ASC.Web.Files.ThirdPartyApp;
 
     [Scope]
@@ -140,7 +142,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         if (!string.IsNullOrEmpty(context.Request.Query["code"]))
         {
-            RequestCode(context);
+            await RequestCode(context);
 
             return true;
         }
@@ -339,7 +341,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
     }
 
 
-    private void RequestCode(HttpContext context)
+    private async Task RequestCode(HttpContext context)
     {
         var token = GetToken(context.Request.Query["code"]);
         if (token == null)
@@ -363,7 +365,9 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         if (!_authContext.IsAuthenticated)
         {
-            var userInfo = GetUserInfo(token, out var isNew);
+            var wrapper = await GetUserInfo(token);
+            var userInfo = wrapper.UserInfo;
+            var isNew = wrapper.IsNew;
 
             if (userInfo == null)
             {
@@ -477,9 +481,9 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         _accountLinker.AddLink(_authContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
     }
 
-    private UserInfo GetUserInfo(Token token, out bool isNew)
+    private async Task<UserInfoWrapper> GetUserInfo(Token token)
     {
-        isNew = false;
+        var wrapper = new UserInfoWrapper();
         if (token == null)
         {
             _logger.ErrorBoxAppTokenIsNull();
@@ -546,19 +550,20 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             try
             {
                 _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                userInfo = _userManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
+                userInfo = await _userManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
             }
             finally
             {
                 _authContext.Logout();
             }
 
-            isNew = true;
+            wrapper.IsNew = true;
 
             _logger.DebugBoxAppNewUser(userInfo.Id);
         }
 
-        return userInfo;
+        wrapper.UserInfo = userInfo;
+        return wrapper;
     }
 
     private string GetBoxFile(string boxFileId, Token token)
