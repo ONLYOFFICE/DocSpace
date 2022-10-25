@@ -64,9 +64,8 @@ const SetRoomParams = ({
         <PermanentSettings
           t={t}
           title={roomParams.title}
-          isThirdparty={roomParams.isThirdparty}
-          storageLocation={roomParams.storageLocation}
           isPrivate={roomParams.isPrivate}
+          storageLocation={roomParams.storageLocation}
         />
       )}
 
@@ -108,7 +107,8 @@ const SetRoomParams = ({
         t={t}
         title={roomParams.title}
         tags={roomParams.tags}
-        currentRoomTypeData={currentRoomTypeData}
+        defaultTag={currentRoomTypeData.defaultTag}
+        isPrivate={roomParams.isPrivate}
         icon={roomParams.icon}
         onChangeIcon={onChangeIcon}
       />
