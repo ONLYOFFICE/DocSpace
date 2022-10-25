@@ -29,26 +29,26 @@ const RoomLogo = ({
     }
 
     switch (type) {
-      case RoomsType.ReadOnlyRoom:
-        return isPrivacy
-          ? "/static/images/room.privacy.view.svg"
-          : "/static/images/room.view.svg";
-      case RoomsType.ReviewRoom:
-        return isPrivacy
-          ? "/static/images/room.privacy.review.svg"
-          : "/static/images/room.review.svg";
       case RoomsType.FillingFormsRoom:
         return isPrivacy
           ? "/static/images/room.privacy.fill.svg"
-          : "/static/images/room.fill.svg";
+          : "/static/images/room.with-border.fill.svg";
       case RoomsType.EditingRoom:
         return isPrivacy
           ? "/static/images/room.privacy.editing.svg"
-          : "/static/images/room.editing.svg";
+          : "/static/images/room.with-border.editing.svg";
+      case RoomsType.ReviewRoom:
+        return isPrivacy
+          ? "/static/images/room.privacy.review.svg"
+          : "/static/images/room.with-border.review.svg";
+      case RoomsType.ReadOnlyRoom:
+        return isPrivacy
+          ? "/static/images/room.privacy.view.svg"
+          : "/static/images/room.with-border.view.svg";
       case RoomsType.CustomRoom:
         return isPrivacy
           ? "/static/images/room.privacy.custom.svg"
-          : "/static/images/room.custom.svg";
+          : "/static/images/room.with-border.custom.svg";
       default:
         return isPrivacy
           ? "/static/images/room.privacy.custom.svg"

@@ -62,6 +62,21 @@ const customCss = css`
   }
 `;
 
+const getRoomTypeCss = (roomType) => {
+  switch (roomType) {
+    case RoomsType.FillingFormsRoom:
+      return formCss;
+    case RoomsType.EditingRoom:
+      return editingCss;
+    case RoomsType.ReviewRoom:
+      return reviewCss;
+    case RoomsType.ReadOnlyRoom:
+      return viewCss;
+    case RoomsType.CustomRoom:
+      return customCss;
+  }
+};
+
 const privacyCss = css`
   border: none;
 
@@ -99,39 +114,20 @@ const StyledLogoContainer = styled.div`
 
   box-sizing: border-box;
 
-  border: 2px solid black;
-  border-radius: 6px;
+  /* border: 2.5px solid black; */
+  /* border-radius: 6px; */
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   .room-logo_icon {
-    width: 16px;
-    height: 16px;
+    width: 32px;
+    height: 32px;
   }
 
-  border-color: #f2557c;
-
-  svg {
-    path {
-      fill: #f2557c;
-    }
-  }
-
-  ${(props) =>
-    !props.isPrivacy && props.type === RoomsType.ReadOnlyRoom && viewCss}
-  ${(props) =>
-    !props.isPrivacy && props.type === RoomsType.FillingFormsRoom && formCss}
-  ${(props) =>
-    !props.isPrivacy && props.type === RoomsType.EditingRoom && editingCss}
-  ${(props) =>
-    !props.isPrivacy && props.type === RoomsType.ReviewRoom && reviewCss}
-  ${(props) =>
-    !props.isPrivacy && props.type === RoomsType.CustomRoom && customCss}
+  ${(props) => (!props.isPrivacy ? getRoomTypeCss(props.type) : privacyCss)}
   ${(props) => !props.isPrivacy && props.isArchive && archiveCss}
-
-  ${(props) => props.isPrivacy && privacyCss}
 `;
 
 export { StyledContainer, StyledLogoContainer };
