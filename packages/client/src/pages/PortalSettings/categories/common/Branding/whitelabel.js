@@ -11,6 +11,7 @@ import TextInput from "@docspace/components/text-input";
 import HelpButton from "@docspace/components/help-button";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import Badge from "@docspace/components/badge";
+import toastr from "@docspace/components/toast/toastr";
 
 import { Base } from "@docspace/components/themes";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
@@ -317,12 +318,17 @@ const WhiteLabel = (props) => {
 
     console.log(data);
 
-    setWhiteLabelSettings(data).finally(() => {
-      setLogoUrlsChange([]);
-      getWhiteLabelLogoText();
-      getWhiteLabelLogoSizes();
-      getWhiteLabelLogoUrls();
-    });
+    try {
+      setWhiteLabelSettings(data).finally(() => {
+        setLogoUrlsChange([]);
+        getWhiteLabelLogoText();
+        getWhiteLabelLogoSizes();
+        getWhiteLabelLogoUrls();
+      });
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
   };
 
   const onChangeLogo = (e) => {
