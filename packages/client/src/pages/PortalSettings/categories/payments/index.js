@@ -340,7 +340,9 @@ const PaymentsPage = ({
                 </strong>
                 ({{ delayDaysCount }})
               </Trans>{" "}
-              <>{t("GracePeriodActivatedDescription")}</>
+              <Text as="span" fontSize="14px" lineHeight="16px">
+                {t("GracePeriodActivatedDescription")}
+              </Text>
             </Text>
           )}
 
@@ -448,7 +450,7 @@ export default inject(({ auth, payments }) => {
     language,
     organizationName,
     tariffsInfo,
-    isGracePeriod,
+    isGracePeriod: true,
     theme,
     setPaymentAccount,
     currencySymbol: planCost.currencySymbol,
