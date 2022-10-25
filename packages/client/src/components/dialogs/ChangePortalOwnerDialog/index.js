@@ -71,6 +71,7 @@ const ChangePortalOwnerDialog = ({
   };
 
   const onCloseAction = () => {
+    if (isLoading) return;
     onClose && onClose();
   };
 
