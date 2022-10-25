@@ -85,13 +85,13 @@ const SetRoomParams = ({
         setIsScrollLocked={setIsScrollLocked}
       />
 
-      {/* {!isEdit && (
+      {!isEdit && (
         <IsPrivateParam
           t={t}
           isPrivate={roomParams.isPrivate}
           onChangeIsPrivate={onChangeIsPrivate}
         />
-      )} */}
+      )}
 
       {!isEdit && (
         <ThirdPartyStorage
