@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using NVelocity.Runtime.Parser.Node;
+
 namespace ASC.EventBus.RabbitMQ;
 
 public class EventBusRabbitMQ : IEventBus, IDisposable
@@ -119,13 +121,19 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                 var properties = channel.CreateBasicProperties();
                 properties.DeliveryMode = 2; // persistent
 
+                var headers = new Dictionary<String, object>();
+
+                headers.Add("eventName", eventName);
+
+                properties.Headers = headers;
+
                 _logger.TracePublishingEvent(@event.Id);
 
                 channel.BasicPublish(
                     exchange: EXCHANGE_NAME,
-                    routingKey: eventName,
+                    routingKey: "",
                     mandatory: true,
-                    basicProperties: properties,
+                    basicProperties: properties,                      
                     body: body);
             });
         }
@@ -166,11 +174,11 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
             _consumerChannel.QueueBind(queue: _deadLetterQueueName,
                                 exchange: DEAD_LETTER_EXCHANGE_NAME,
-                                routingKey: eventName);
+                                routingKey: "");
 
             _consumerChannel.QueueBind(queue: _queueName,
                                 exchange: EXCHANGE_NAME,
-                                routingKey: eventName);
+                                routingKey: "");
         }
     }
 
@@ -231,7 +239,16 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
 
     private async Task Consumer_Received(object sender, BasicDeliverEventArgs eventArgs)
     {
-        var eventName = eventArgs.RoutingKey;
+        var eventName = System.Text.UTF8Encoding.UTF8.GetString((byte[])eventArgs.BasicProperties.Headers["eventName"]);
+
+        if (!_subsManager.HasSubscriptionsForEvent(eventName))
+        {
+            _logger.TraceProcessedEventAsNack(eventName);
+
+            _consumerChannel.BasicNack(eventArgs.DeliveryTag, multiple: false, requeue: true);
+
+            return;
+        }
 
         var @event = GetEvent(eventName, eventArgs.Body.Span.ToArray());
         var message = @event.ToString();
