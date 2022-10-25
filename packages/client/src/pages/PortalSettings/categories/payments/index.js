@@ -333,14 +333,12 @@ const PaymentsPage = ({
 
           {isGracePeriod && (
             <Text noSelect fontSize={"14px"} lineHeight={"16px"}>
-              <Trans
-                t={t}
-                i18nKey="GracePeriodActivatedDescription"
-                ns="Payments"
-              >
+              <Trans t={t} i18nKey="GracePeriodActivatedInfo" ns="Payments">
                 Grace period activated from <strong>{{ fromDate }}</strong>
-                <strong>{{ byDate }}</strong> ({{ delayDaysCount }})
-              </Trans>
+                <strong>to</strong>
+                <strong>{{ byDate }}</strong>({{ delayDaysCount }})
+              </Trans>{" "}
+              <>{t("GracePeriodActivatedDescription")}</>
             </Text>
           )}
 

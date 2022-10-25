@@ -74,20 +74,14 @@ const InviteUsersWarningDialog = (props) => {
             </Text>
             <br />
             <Text noSelect as="div">
-              <Trans
-                t={t}
-                i18nKey="GracePeriodActivatedDescription"
-                ns="Payments"
-              >
+              <Trans t={t} i18nKey="GracePeriodActivatedInfo" ns="Payments">
                 Grace period activated from <strong>{{ fromDate }}</strong>
+                <strong>to</strong>
                 <strong>{{ byDate }}</strong>({{ delayDaysCount }})
-                <p style={{ margin: "1rem 0" }}>
-                  During the grace period, admins cannot create new rooms and
-                  add new users. After the due date of the grace period,
-                  DocSpace will become unavailable until the payment is made.
-                </p>
               </Trans>
             </Text>
+            <br />
+            <Text>{t("GracePeriodActivatedDescription")}</Text>
           </>
         ) : (
           <>
