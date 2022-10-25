@@ -416,12 +416,19 @@ class ContextOptionsStore {
 
     const { action } = data;
 
-    this.dialogsStore.setInvitePanelOptions({
-      visible: true,
-      roomId: action ? action : e,
-      hideSelector: false,
-      defaultAccess: ShareAccessRights.ReadOnly,
-    });
+    const { isGracePeriod } = this.authStore.currentTariffStatusStore;
+    const { isFreeTariff } = this.authStore.currentQuotaStore;
+
+    if (isGracePeriod || isFreeTariff) {
+      this.dialogsStore.setInviteUsersWarningDialogVisible(true);
+    } else {
+      this.dialogsStore.setInvitePanelOptions({
+        visible: true,
+        roomId: action ? action : e,
+        hideSelector: false,
+        defaultAccess: ShareAccessRights.ReadOnly,
+      });
+    }
   };
 
   onClickPin = (e, id, t) => {
