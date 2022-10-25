@@ -1,53 +1,42 @@
 {
-  "ViewDetails": "Просмотреть подробную информацию",
-
   "AccountsEmptyScreenText": "Здесь будут представлены подробности о пользователях",
-  "RoomsEmptyScreenTent": "Здесь будут представлены подробности о комнатах",
-  "FilesEmptyScreenText": "Здесь будут представлены свойства файлов и папок",
-
-  "SubmenuMembers": "Участники",
-  "SubmenuHistory": "История",
-  "SubmenuDetails": "Детали",
-
-  "RecentActivities": "Недавние действия",
-  "UsersInRoom": "Пользователей в комнате",
-  "Properties": "Cвойства",
-  "Data": "Данные",
-
-  "StorageType": "Тип хранилища",
-  "FileExtension": "Расширение файла",
-  "DateModified": "Дата изменения",
-  "LastModifiedBy": "Автор последнего корректива",
+  "AndMoreLabel": "и <strong>еще {{count}}</strong>",
   "CreationDate": "Дата создания",
-  "Versions": "Версии",
-
-  "ItemsSelected": "Выбрано элементов",
-  "SelectedUsers": "Выбрано пользователей",
-
-  "FeedCreateFileSingle": "Создан файл.",
+  "Data": "Данные",
+  "DateModified": "Дата изменения",
   "FeedCreateFileSeveral": "Добавлены файлы.",
-  "FeedCreateFolderSingle": "Создана папка.",
+  "FeedCreateFileSingle": "Создан файл.",
   "FeedCreateFolderSeveral": "Добавлены папки.",
+  "FeedCreateFolderSingle": "Создана папка.",
   "FeedCreateRoom": "Создана комната <strong>«{{roomTitle}}»</strong>",
   "FeedCreateRoomTag": "Добавлены теги.",
   "FeedCreateUser": "Добавлены пользователи. ",
-
-  "FeedRenameFile": "Переименован файл.",
-  "FeedRenameFolder": "Переименована папка.",
-  "FeedRenameRoom": "Комната <strong>«{{oldRoomTitle}}»</strong> переименована в <strong>«{{roomTitle}}»</strong>.",
-
-  "FeedUpdateFile": "Обновлен файл.",
-  "FeedUpdateRoom": "Изменена иконка",
-  "FeedUpdateUser": "назначена роль {{role}}",
-
-  "FeedMoveFile": "Перемещены файлы.",
-  "FeedMoveFolder": "Перемещены папки.",
-
   "FeedDeleteFile": "Удалены файлы.",
   "FeedDeleteFolder": "Удалены папки.",
   "FeedDeleteRoomTag": "Удалены теги.",
   "FeedDeleteUser": "Удален пользователь",
-
   "FeedLocationLabel": "Папка «{{folderTitle}}»",
-  "AndMoreLabel": "и <strong>еще {{count}}</strong>"
+  "FeedMoveFile": "Перемещены файлы.",
+  "FeedMoveFolder": "Перемещены папки.",
+  "FeedRenameFile": "Переименован файл.",
+  "FeedRenameFolder": "Переименована папка.",
+  "FeedRenameRoom": "Комната <strong>«{{oldRoomTitle}}»</strong> переименована в <strong>«{{roomTitle}}»</strong>.",
+  "FeedUpdateFile": "Обновлен файл.",
+  "FeedUpdateRoom": "Изменена иконка",
+  "FeedUpdateUser": "назначена роль {{role}}",
+  "FileExtension": "Расширение файла",
+  "FilesEmptyScreenText": "Здесь будут представлены свойства файлов и папок",
+  "ItemsSelected": "Выбрано элементов",
+  "LastModifiedBy": "Автор последнего корректива",
+  "Properties": "Cвойства",
+  "RecentActivities": "Недавние действия",
+  "RoomsEmptyScreenTent": "Здесь будут представлены подробности о комнатах",
+  "SelectedUsers": "Выбрано пользователей",
+  "StorageType": "Тип хранилища",
+  "SubmenuDetails": "Детали",
+  "SubmenuHistory": "История",
+  "SubmenuMembers": "Участники",
+  "UsersInRoom": "Пользователей в комнате",
+  "Versions": "Версии",
+  "ViewDetails": "Просмотреть подробную информацию"
 }

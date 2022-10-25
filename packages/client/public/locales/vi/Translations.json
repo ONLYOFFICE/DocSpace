@@ -39,6 +39,7 @@
   "MoveToOperation": "Đang di chuyển",
   "NewForm": "Mẫu biểu mẫu",
   "NewFormFile": "Mẫu biểu mẫu từ tệp",
+  "Other": "Khác",
   "OwnerChange": "Thay đổi chủ sở hữu",
   "Presentations": "Bản trình bày",
   "Spreadsheets": "Bảng tính",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Khác"
+  "TypeTitlekDrive": "kDrive"
 }

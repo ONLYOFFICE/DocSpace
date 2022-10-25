@@ -39,6 +39,7 @@
   "MoveToOperation": "Verplaatsen",
   "NewForm": "Formulier sjabloon",
   "NewFormFile": "Formulier van tekstbestand",
+  "Other": "Overige",
   "OwnerChange": "Wijzig eigenaar",
   "Presentations": "Presentaties",
   "Spreadsheets": "Spreadsheets",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Overige"
+  "TypeTitlekDrive": "kDrive"
 }

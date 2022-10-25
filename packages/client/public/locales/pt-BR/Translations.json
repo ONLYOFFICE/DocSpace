@@ -39,6 +39,7 @@
   "MoveToOperation": "Movendo",
   "NewForm": "Modelo de formulário",
   "NewFormFile": "Formulário do arquivo",
+  "Other": "Outro",
   "OwnerChange": "Alterar proprietário",
   "Presentations": "Apresentações ",
   "Spreadsheets": "Planilhas",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Outro"
+  "TypeTitlekDrive": "kDrive"
 }

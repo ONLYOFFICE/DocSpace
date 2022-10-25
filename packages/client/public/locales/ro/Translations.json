@@ -39,6 +39,7 @@
   "MoveToOperation": "Mutare",
   "NewForm": "Șablon formă,",
   "NewFormFile": "Forma din fișier text",
+  "Other": "Altă",
   "OwnerChange": "Schimbare proprietar",
   "Presentations": "Prezentări",
   "Spreadsheets": "Foi de calcul",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Altă"
+  "TypeTitlekDrive": "kDrive"
 }

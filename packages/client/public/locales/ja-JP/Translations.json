@@ -39,6 +39,7 @@
   "MoveToOperation": "移動中",
   "NewForm": "フォーム テンプレート",
   "NewFormFile": "テキストファイルからのフォーム",
+  "Other": "その他",
   "OwnerChange": "オーナー変更",
   "Presentations": "プレゼンテーション",
   "Spreadsheets": "スプレッドシート",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "その他"
+  "TypeTitlekDrive": "kDrive"
 }

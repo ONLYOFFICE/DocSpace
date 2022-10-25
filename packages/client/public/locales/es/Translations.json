@@ -39,6 +39,7 @@
   "MoveToOperation": "Moviendo",
   "NewForm": "Plantilla de formulario",
   "NewFormFile": "Formulario desde archivo de texto",
+  "Other": "Otro",
   "OwnerChange": "Cambiar propietario",
   "Presentations": "Presentaciones",
   "Spreadsheets": "Hojas de cálculo",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Otro"
+  "TypeTitlekDrive": "kDrive"
 }

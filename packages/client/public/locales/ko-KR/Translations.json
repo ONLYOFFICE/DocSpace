@@ -39,6 +39,7 @@
   "MoveToOperation": "이동 중",
   "NewForm": "양식 템플릿",
   "NewFormFile": "파일에서 양식 템플릿",
+  "Other": "기타",
   "OwnerChange": "소유자 변경",
   "Presentations": "프레젠테이션",
   "Spreadsheets": "스프레드시트",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "기타"
+  "TypeTitlekDrive": "kDrive"
 }

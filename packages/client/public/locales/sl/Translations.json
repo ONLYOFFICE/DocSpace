@@ -39,6 +39,7 @@
   "MoveToOperation": "Premikanje",
   "NewForm": "Predloga obrazca",
   "NewFormFile": "Datoteka s predlogo obrazca",
+  "Other": "Drugo",
   "OwnerChange": "Spremeni lastnika",
   "Presentations": "Predstavitve",
   "Spreadsheets": "Tabele",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Drugo"
+  "TypeTitlekDrive": "kDrive"
 }

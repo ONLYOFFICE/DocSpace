@@ -39,6 +39,7 @@
   "MoveToOperation": "Μετακίνηση",
   "NewForm": "Πρότυπο φόρμας",
   "NewFormFile": "Φόρμας από αρχείο",
+  "Other": "Άλλο",
   "OwnerChange": "Αλλαγή κατόχου",
   "Presentations": "Παρουσιάσεις",
   "Spreadsheets": "Υπολογιστικά φύλλα",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Άλλο"
+  "TypeTitlekDrive": "kDrive"
 }

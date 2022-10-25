@@ -39,6 +39,7 @@
   "MoveToOperation": "Taşınıyor",
   "NewForm": "Form şablonu",
   "NewFormFile": "Dosyadan form",
+  "Other": "Diğer",
   "OwnerChange": "Sahibi değiştir",
   "Presentations": "Sunumlar",
   "Spreadsheets": "Elektronik tablolar",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Diğer"
+  "TypeTitlekDrive": "kDrive"
 }

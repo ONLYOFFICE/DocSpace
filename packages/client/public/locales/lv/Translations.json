@@ -39,6 +39,7 @@
   "MoveToOperation": "Pārvieto",
   "NewForm": "Veidlapas veidne",
   "NewFormFile": "Veidlapas no faila",
+  "Other": "Cits",
   "OwnerChange": "Mainīt īpašnieku",
   "Presentations": "Prezentācijas",
   "Spreadsheets": "Izklājlapas",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Cits"
+  "TypeTitlekDrive": "kDrive"
 }

@@ -31,6 +31,7 @@
   "MoveToOperation": "ກຳລັງເຄື່ອນຍ້າຍ",
   "NewForm": "ແບບຟອມ",
   "NewFormFile": "ໄຟລ໌ແບບຟອມ",
+  "Other": "ອື່ນໆ",
   "OwnerChange": "ປ່ຽນເຈົ້າຂອງ",
   "Presentations": "ບົດສະເຫນີ",
   "SubNewForm": "ຟອມເປົ່າ",
@@ -45,6 +46,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "ອື່ນໆ"
+  "TypeTitlekDrive": "kDrive"
 }

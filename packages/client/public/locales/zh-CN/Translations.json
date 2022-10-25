@@ -39,6 +39,7 @@
   "MoveToOperation": "移动中",
   "NewForm": "表单模板",
   "NewFormFile": "来自文本文件的表格",
+  "Other": "其他",
   "OwnerChange": "变更所有者",
   "Presentations": "演示文稿",
   "Spreadsheets": "电子表格",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "其他"
+  "TypeTitlekDrive": "kDrive"
 }

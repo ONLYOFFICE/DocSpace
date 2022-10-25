@@ -39,6 +39,7 @@
   "MoveToOperation": "Преместване",
   "NewForm": "Шаблон на формуляр",
   "NewFormFile": "Шаблон от файл",
+  "Other": "Друг",
   "OwnerChange": "Смени собственик",
   "Presentations": "Презентации",
   "Spreadsheets": "Таблици",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Друг"
+  "TypeTitlekDrive": "kDrive"
 }

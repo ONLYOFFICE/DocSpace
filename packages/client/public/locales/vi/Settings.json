@@ -69,7 +69,7 @@
   "Guests": "Khách",
   "Job/Title": "Công việc/Chức danh",
   "LanguageAndTimeZoneSettingsDescription": "Thay đổi ngôn ngữ cho tất cả người dùng cổng thông tin và định cấu hình múi giờ để tất cả các sự kiện cổng thông tin được hiển thị với ngày và giờ chính xác.",
-  "LanguageTimeSettingsTooltip": "0>{{text}}</0> cho phép thay đổi ngôn ngữ của toàn bộ cổng thông tin cho tất cả người dùng cổng và cấu hình múi giờ để tất cả các sự kiện trong cổng thông tin sẽ được hiển thị dưới dạng ngày và giờ chính xác.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> cho phép thay đổi ngôn ngữ của toàn bộ cổng thông tin cho tất cả người dùng cổng và cấu hình múi giờ để tất cả các sự kiện trong cổng {{organizationName}} thông tin sẽ được hiển thị dưới dạng ngày và giờ chính xác.",
   "LanguageTimeSettingsTooltipDescription": "Để các thông số bạn thiết lập có hiệu lực, bấm vào nút <1>{{save}}</1> ở dưới cuối phần này.<3>{{learnMore}}</3>",
   "LocalFile": "Tập tin cục bộ",
   "LoginHistoryTitle": "Lịch sử đăng nhập",

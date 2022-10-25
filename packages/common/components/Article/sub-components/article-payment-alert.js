@@ -63,7 +63,9 @@ const ArticlePaymentAlert = ({
           )}
         </Text>
         <Text fontWeight={600}>
-          {isFreeTariff ? t("ActivateBusinessPlan") : t("GracePeriodActivated")}
+          {isFreeTariff
+            ? t("ActivateBusinessPlan", { planName: currentTariffPlanTitle })
+            : t("GracePeriodActivated")}
         </Text>
         <Text noSelect fontSize={"12px"}>
           {isFreeTariff ? (

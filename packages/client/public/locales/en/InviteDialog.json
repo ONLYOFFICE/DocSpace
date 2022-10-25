@@ -1,16 +1,16 @@
 {
+  "Add": "Add",
   "CopyToClipboard": "Copy the link",
+  "EmailErrorMessage": "Email address not valid. You can edit the email by clicking on it.",
   "GetShortenLink": "Get shortened link",
   "HelpAnswerLinkInviteSettings": "Share the link to invite colleagues to your portal.",
+  "IndividualInvitation": "Individual invitation",
   "InviteLinkValidInterval": "This link is valid for {{ count }} days only.",
   "InviteUsersAsCollaborators": "Add users as {{guestsCaption, lowercase}}",
-  "LinkCopySuccess": "Link has been copied",
   "InviteUsersToRoom": "Invite users to room",
-  "IndividualInvitation": "Individual invitation",
-  "SendInvitation": "Send invitation",
-  "SearchPlaceholder": "Invite people by name or email",
-  "Add": "Add",
   "Invited": "Invited",
-  "EmailErrorMessage": "Email address not valid. You can edit the email by clicking on it.",
+  "LinkCopySuccess": "Link has been copied",
+  "SearchPlaceholder": "Invite people by name or email",
+  "SendInvitation": "Send invitation",
   "СhooseFromList": "Сhoose from list"
 }

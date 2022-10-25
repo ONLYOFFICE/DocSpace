@@ -39,6 +39,7 @@
   "MoveToOperation": "Přesouvám",
   "NewForm": "Šablona formuláře",
   "NewFormFile": "Formuláře ze souboru",
+  "Other": "Jiný",
   "OwnerChange": "Změnit vlastníka",
   "Presentations": "Prezentace",
   "Spreadsheets": "Tabulky",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Jiný"
+  "TypeTitlekDrive": "kDrive"
 }

@@ -39,6 +39,7 @@
   "MoveToOperation": "Տեղափոխություն",
   "NewForm": "Ձևանմուշ",
   "NewFormFile": "Ձև գրվածքային ֆայլից",
+  "Other": "Այլ",
   "OwnerChange": "Փոխել տնօրինողին",
   "Presentations": "Ներկայացումներ",
   "Spreadsheets": "Աշխատաթերթեր",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Այլ"
+  "TypeTitlekDrive": "kDrive"
 }

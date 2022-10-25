@@ -39,6 +39,7 @@
   "MoveToOperation": "Siirretään",
   "NewForm": "Lomakemalli",
   "NewFormFile": "Lomake tekstitiedostosta",
+  "Other": "Muu",
   "OwnerChange": "Vaihda omistaja",
   "Presentations": "Esitykset",
   "Spreadsheets": "Laskentataulukot",
@@ -55,6 +56,5 @@
   "TypeTitleSkyDrive": "OneDrive",
   "TypeTitleWebDav": "WebDAV",
   "TypeTitleYandex": "Yandex.Disk",
-  "TypeTitlekDrive": "kDrive",
-  "Other": "Muu"
+  "TypeTitlekDrive": "kDrive"
 }

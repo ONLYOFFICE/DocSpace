@@ -1,6 +1,6 @@
 {
-  "YourName": "Your name",
   "RequestDetails": "Please describe your request details here",
+  "SalesDepartmentRequest": "Sales department request",
   "YouWillBeContacted": "The sales team will contact you after creating the request",
-  "SalesDepartmentRequest": "Sales department request"
+  "YourName": "Your name"
 }
