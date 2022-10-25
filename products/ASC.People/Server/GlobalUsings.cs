@@ -31,6 +31,7 @@ global using System.ServiceModel.Security;
 global using System.Web;
 
 global using ASC.Api.Core;
+global using ASC.Api.Core.Model;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Extensions;
 global using ASC.Api.Utils;

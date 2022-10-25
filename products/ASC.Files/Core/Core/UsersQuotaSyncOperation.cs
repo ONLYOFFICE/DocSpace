@@ -51,8 +51,27 @@ public class UsersQuotaSyncOperation
             item.InitJob(tenant);
             _progressQueue.EnqueueTask(item.RunJobAsync, item);
         }
+    }
+    public TaskProgressDto CheckRecalculateQuota(Tenant tenant)
+    {
+        var item = _progressQueue.GetAllTasks<UsersQuotaSyncJob>().FirstOrDefault(t => t.TenantId == tenant.Id);
+        var progress = new TaskProgressDto();
 
+        if (item == null)
+        {
+            progress.IsCompleted = true;
+            return progress;
+        }
 
+        progress.IsCompleted = item.IsCompleted;
+        progress.Progress = (int)item.Percentage;
+
+        if (item.IsCompleted)
+        {
+            _progressQueue.DequeueTask(item.Id);
+        }
+
+        return progress;
     }
 
 
@@ -121,9 +140,14 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
             var users = _userManager.GetUsers();
             var webItems = _webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
 
+            var _user = users.FirstOrDefault();
+
             foreach (var user in users)
             {
-                var account = _authentication.GetAccountByID(TenantId, user.Id);
+                Percentage += 1.0 * 100 / users.Length;
+                PublishChanges();
+
+                var account = _authentication.GetAccountByID(TenantId, _user.Id);
                 _securityContext.AuthenticateMe(account);
 
                 foreach (var item in webItems)
@@ -137,7 +161,7 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
                         {
                             continue;
                         }
-                        await manager.RecalculateUserQuota(TenantId, user.Id);
+                        await manager.RecalculateUserQuota(TenantId, _user.Id);
                     }
                 }
 

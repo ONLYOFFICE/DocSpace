@@ -1073,6 +1073,13 @@ public class UserController : PeopleControllerBase
         _usersQuotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
     }
 
+    [HttpGet("checkrecalculatequota")]
+    public TaskProgressDto CheckRecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        return _usersQuotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
+
     [HttpPut("quota")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuota(UpdateMembersQuotaRequestDto inDto)
     {
