@@ -224,7 +224,7 @@ class SelectFolderDialog extends React.Component {
     const buttonIsDisabled =
       isDisableButton ||
       (isRecycleBin && currentFolderId === resultingFolderId) ||
-      selectionFiles[0]?.parentId === +resultingFolderId;
+      (selectionFiles && selectionFiles[0]?.parentId) === +resultingFolderId;
 
     const isCurrentFolder = +currentFolderId === +resultingFolderId;
 
