@@ -16,13 +16,9 @@ const StyledPermanentSettings = styled.div`
   margin-top: -12px;
 `;
 
-const PermanentSettings = ({
-  t,
-  title,
-  isThirdparty,
-  storageLocation,
-  isPrivate,
-}) => {
+const PermanentSettings = ({ t, title, storageLocation, isPrivate }) => {
+  const isThirdparty = storageLocation.isThirdparty;
+
   const createThirdpartyPath = () => {
     const path = storageLocation.parentId.split("|");
     path.shift();
@@ -59,7 +55,7 @@ const PermanentSettings = ({
       {isPrivate && (
         <PermanentSetting
           type="privacy"
-          isFull={!storageLocation}
+          isFull={!storageLocation.isThirdparty}
           icon={"images/security.svg"}
           title={"Private room"}
           content={`All files in this room will be encrypted`}
