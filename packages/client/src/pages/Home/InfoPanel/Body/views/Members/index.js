@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import { ShareAccessRights } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 
 import Loaders from "@docspace/common/components/Loaders";
@@ -23,6 +24,7 @@ const Members = ({
   setSelectionParentRoom,
 
   getRoomMembers,
+  setInvitePanelOptions,
   changeUserType,
 }) => {
   const [members, setMembers] = useState(null);
@@ -75,8 +77,15 @@ const Members = ({
     });
   }, [selection]);
 
-  const onAddUsers = () => {
-    toastr.warning("Work in progress");
+  const onClickInviteUsers = () => {
+    const parentRoomId = selectionParentRoom.id;
+
+    setInvitePanelOptions({
+      visible: true,
+      roomId: parentRoomId,
+      hideSelector: false,
+      defaultAccess: ShareAccessRights.ReadOnly,
+    });
   };
 
   const onRepeatInvitation = () => {
@@ -97,7 +106,7 @@ const Members = ({
           title={t("Common:AddUsers")}
           iconName="/static/images/person+.react.svg"
           isFill={true}
-          onClick={onAddUsers}
+          onClick={onClickInviteUsers}
           size={16}
         />
       </StyledUserTypeHeader>
@@ -148,10 +157,11 @@ const Members = ({
   );
 };
 
-export default inject(({ auth, filesStore, peopleStore }) => {
+export default inject(({ auth, filesStore, peopleStore, dialogsStore }) => {
   const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
   const { getRoomMembers } = filesStore;
   const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
+  const { setInvitePanelOptions } = dialogsStore;
   const { changeType: changeUserType } = peopleStore;
 
   return {
@@ -163,6 +173,7 @@ export default inject(({ auth, filesStore, peopleStore }) => {
     isAdmin,
     selfId,
 
+    setInvitePanelOptions,
     changeUserType,
   };
 })(
