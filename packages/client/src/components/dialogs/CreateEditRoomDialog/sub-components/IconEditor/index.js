@@ -18,10 +18,10 @@ import PreviewTile from "./PreviewTile";
 
 const IconEditor = ({
   t,
-  isEdit,
   title,
   tags,
-  currentRoomTypeData,
+  defaultTag,
+  isPrivate,
   icon,
   onChangeIcon,
 }) => {
@@ -46,9 +46,10 @@ const IconEditor = ({
           <PreviewTile
             t={t}
             title={title || t("Files:NewRoom")}
+            isPrivate={isPrivate}
             previewIcon={previewIcon}
             tags={tags.map((tag) => tag.name)}
-            defaultTagLabel={t(currentRoomTypeData.defaultTag)}
+            defaultTagLabel={t(defaultTag)}
           />
         </div>
       )}
