@@ -850,6 +850,7 @@ const WhiteLabel = (props) => {
             cancelButtonLabel={t("RestoreDefaultButton")}
             displaySettings={true}
             showReminder={true}
+            saveButtonDisabled={logoUrlsChange.length === 0}
           />
         )}
       </div>
