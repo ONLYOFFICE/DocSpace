@@ -16,7 +16,7 @@
   "DowngradeNow": "Downgrade now",
   "FreeStartupPlan": "Free {{planName}} plan",
   "GracePeriodActivated": "Grace period activated",
-  "GracePeriodActivatedInfo": "Grace period is effective from <1>{{fromDate}} to {{byDate}}</1> ({{delayDaysCount}}).",
+  "GracePeriodActivatedInfo": "Grace period is effective <1>from {{fromDate}} to {{byDate}}</1> ({{delayDaysCount}}).",
   "GracePeriodActivatedDescription": "During the grace period, admins cannot create new rooms and add new users. After the due date of the grace period, DocSpace will become unavailable until the payment is made.",
   "InvalidEmail": "Invalid email",
   "LatePayment": "Late payment",

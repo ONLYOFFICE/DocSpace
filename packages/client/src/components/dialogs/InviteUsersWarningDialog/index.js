@@ -75,9 +75,9 @@ const InviteUsersWarningDialog = (props) => {
             <br />
             <Text noSelect as="div">
               <Trans t={t} i18nKey="GracePeriodActivatedInfo" ns="Payments">
-                Grace period activated from
+                Grace period activated
                 <strong>
-                  {{ fromDate }} to {{ byDate }}
+                  from {{ fromDate }} to {{ byDate }}
                 </strong>
                 ({{ delayDaysCount }})
               </Trans>

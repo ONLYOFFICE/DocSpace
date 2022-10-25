@@ -15,7 +15,7 @@
   "DowngradeNow": "Понизить прямо сейчас",
   "FreeStartupPlan": "Бесплатный  {{planName}} план",
   "GracePeriodActivated": "Активирован льготный период",
-  "GracePeriodActivatedInfo": "Льготный период действует с <1>{{fromDate}} по {{byDate}}</1> ({{delayDaysCount}}).",
+  "GracePeriodActivatedInfo": "Льготный период действует <1>с {{fromDate}} по {{byDate}}</1> ({{delayDaysCount}}).",
   "GracePeriodActivatedDescription": "В течение льготного периода администраторы не могут создавать новые комнаты и добавлять новых пользователей. По истечении срока действия льготного периода DocSpace станет недоступным до тех пор, пока не будет произведен платеж.",
   "InvalidEmail": "Неверный email",
   "LatePayment": "Просрочка платежа",
