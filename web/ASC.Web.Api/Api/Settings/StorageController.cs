@@ -234,7 +234,7 @@ public class StorageController : BaseSettingsController
 
         _encryptionSettingsHelper.Save(settings);
 
-        _eventBus.Publish(new EncryptionDataStorageRequestedIntegration
+        _eventBus.Publish(new EncryptionDataStorageRequestedIntegrationEvent
         (
               encryptionSettings: new EncryptionSettings
               {

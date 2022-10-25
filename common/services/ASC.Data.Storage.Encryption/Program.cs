@@ -48,7 +48,7 @@ var app = builder.Build();
 
 var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
 
-eventBus.Subscribe<EncryptionDataStorageRequestedIntegration, EncryptionDataStorageRequestedIntegrationEventHandler>();
+eventBus.Subscribe<EncryptionDataStorageRequestedIntegrationEvent, EncryptionDataStorageRequestedIntegrationEventHandler>();
 
 await app.RunWithTasksAsync();
 

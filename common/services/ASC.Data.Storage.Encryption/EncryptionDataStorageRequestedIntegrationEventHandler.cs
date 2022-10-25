@@ -27,7 +27,7 @@
 namespace ASC.Notify.IntegrationEvents.EventHandling;
 
 [Scope]
-public class EncryptionDataStorageRequestedIntegrationEventHandler : IIntegrationEventHandler<EncryptionDataStorageRequestedIntegration>
+public class EncryptionDataStorageRequestedIntegrationEventHandler : IIntegrationEventHandler<EncryptionDataStorageRequestedIntegrationEvent>
 {
     private readonly ILogger _logger;
     private readonly EncryptionWorker _encryptionWorker;
@@ -39,7 +39,7 @@ public class EncryptionDataStorageRequestedIntegrationEventHandler : IIntegratio
         _logger = logger;
     }
 
-    public async Task Handle(EncryptionDataStorageRequestedIntegration @event)
+    public async Task Handle(EncryptionDataStorageRequestedIntegrationEvent @event)
     {
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
