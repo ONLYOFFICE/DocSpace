@@ -724,20 +724,30 @@ public class TariffService : ITariffService
                         CreateOn = DateTime.UtcNow
                     };
 
-                    efTariff.CustomerId = efTariff.CustomerId == null ? "" : efTariff.CustomerId;
+                    if (efTariff.Id == default)
+                    {
+                        efTariff.Id = (-tenant);
+                    }
+
+                    if (efTariff.CustomerId == default)
+                    {
+                        efTariff.CustomerId = "";
+                    }
 
                     efTariff = dbContext.AddOrUpdate(r => r.Tariffs, efTariff);
                     dbContext.SaveChanges();
 
-                    var tariffRows = tariffInfo.Quotas.Select(q => new DbTariffRow
+                    foreach (var q in tariffInfo.Quotas)
                     {
-                        TariffId = efTariff.Id,
-                        Quota = q.Id,
-                        Quantity = q.Quantity,
-                        Tenant = tenant
-                    });
+                        dbContext.AddOrUpdate(r => r.TariffRows, new DbTariffRow
+                        {
+                            TariffId = efTariff.Id,
+                            Quota = q.Id,
+                            Quantity = q.Quantity,
+                            Tenant = tenant
+                        });
+                    }
 
-                    dbContext.TariffRows.AddRange(tariffRows);
                     dbContext.SaveChanges();
 
                     inserted = true;

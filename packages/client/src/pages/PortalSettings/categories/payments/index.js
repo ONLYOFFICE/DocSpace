@@ -112,6 +112,7 @@ const PaymentsPage = ({
   currentTariffPlanTitle,
   tariffPlanTitle,
   expandArticle,
+  setPortalQuota,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
 
@@ -152,9 +153,7 @@ const PaymentsPage = ({
     (async () => {
       moment.locale(language);
 
-      const requests = [];
-
-      requests.push(getSettingsPayment());
+      const requests = [getSettingsPayment(), setPortalQuota()];
 
       if (!currencySymbol && !startValue)
         requests.push(setPortalPaymentQuotas());
@@ -334,15 +333,16 @@ const PaymentsPage = ({
 
           {isGracePeriod && (
             <Text noSelect fontSize={"14px"} lineHeight={"16px"}>
-              <Trans
-                t={t}
-                i18nKey="GracePeriodActivatedDescription"
-                ns="Payments"
-              >
-                Grace period activated from <strong>{{ fromDate }}</strong> -
-                <strong>{{ byDate }}</strong> ({{ delayDaysCount }}
-                ).
-              </Trans>
+              <Trans t={t} i18nKey="GracePeriodActivatedInfo" ns="Payments">
+                Grace period activated
+                <strong>
+                  from {{ fromDate }} to {{ byDate }}
+                </strong>
+                ({{ delayDaysCount }})
+              </Trans>{" "}
+              <Text as="span" fontSize="14px" lineHeight="16px">
+                {t("GracePeriodActivatedDescription")}
+              </Text>
             </Text>
           )}
 
@@ -410,7 +410,11 @@ export default inject(({ auth, payments }) => {
   } = auth;
   const { showText: expandArticle } = settingsStore;
 
-  const { isFreeTariff, currentTariffPlanTitle } = currentQuotaStore;
+  const {
+    isFreeTariff,
+    currentTariffPlanTitle,
+    setPortalQuota,
+  } = currentQuotaStore;
   const {
     isNotPaidPeriod,
     isPaidPeriod,
@@ -464,5 +468,6 @@ export default inject(({ auth, payments }) => {
     replaceFeaturesValues,
     portalPaymentQuotasFeatures,
     currentTariffPlanTitle,
+    setPortalQuota,
   };
 })(withRouter(observer(PaymentsPage)));

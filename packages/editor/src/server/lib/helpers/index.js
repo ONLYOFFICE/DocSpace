@@ -95,7 +95,7 @@ export const initDocEditor = async (req) => {
 
     const sharingSettings = await getShareFiles([+fileId], []);
 
-    const isSharingAccess = config?.file && config?.file?.canShare;
+    const isSharingAccess = false; //TODO: temporary disable sharing (many errors). Restore => config?.file && config?.file?.canShare;
 
     if (view) {
       config.editorConfig.mode = "view";

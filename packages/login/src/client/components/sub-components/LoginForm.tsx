@@ -253,6 +253,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             errorMessage={!password.trim() ? t("Common:RequiredField") : ""} //TODO: Add wrong password server error
           >
             <PasswordInput
+              className="password-input"
               simpleView={true}
               passwordSettings={settings}
               id="password"
@@ -275,6 +276,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             <div className="login-checkbox-wrapper">
               <div className="remember-wrapper">
                 <Checkbox
+                  id="login-checkbox"
                   className="login-checkbox"
                   isChecked={isChecked}
                   onChange={onChangeCheckbox}
@@ -282,6 +284,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                   helpButton={
                     !checkIsSSR() && (
                       <HelpButton
+                        color="#A3A9AE"
                         helpButtonHeaderContent={t("CookieSettingsTitle")}
                         tooltipContent={
                           <Text fontSize="12px">{t("RememberHelper")}</Text>
@@ -319,7 +322,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         id="submit"
         className="login-button"
         primary
-        size="normal"
+        size="medium"
         scale={true}
         label={
           isLoading ? t("Common:LoadingProcessing") : t("Common:LoginButton")
@@ -352,7 +355,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             color="#316DAA"
             type="action"
             isHovered={true}
-            className="recover-link"
+            className="login-link recover-link"
             onClick={onRecoverDialogVisible}
           >
             {t("RecoverAccess")}

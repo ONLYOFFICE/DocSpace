@@ -167,7 +167,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
                 }
                 else
                 {
-                    var immediately = _immediately || FolderDao.UseTrashForRemoveAsync(folder);
+                    var immediately = _immediately || !FolderDao.UseTrashForRemoveAsync(folder);
                     if (immediately && FolderDao.UseRecursiveOperation(folder.Id, default(T)))
                     {
                         var files = await FileDao.GetFilesAsync(folder.Id).ToListAsync();
