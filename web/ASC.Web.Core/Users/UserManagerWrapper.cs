@@ -108,6 +108,42 @@ public sealed class UserManagerWrapper
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
+    public UserInfo AddInvitedUser(string email, EmployeeType type)
+    {
+        var mail = new MailAddress(email);
+
+        if (_userManager.GetUserByEmail(mail.Address).Id != Constants.LostUser.Id)
+        {
+            throw new InvalidOperationException($"User with email {mail.Address} already exists or is invited");
+        }
+
+        var user = new UserInfo
+        {
+            Email = mail.Address,
+            UserName = mail.User,
+            LastName = string.Empty,
+            FirstName = string.Empty,
+            ActivationStatus = EmployeeActivationStatus.Pending,
+            Status = EmployeeStatus.Active,
+        };
+
+        var newUser = _userManager.SaveUserInfo(user);
+
+        var groupId = type switch
+        {
+            EmployeeType.Visitor => Constants.GroupUser.ID,
+            EmployeeType.DocSpaceAdmin => Constants.GroupAdmin.ID,
+            _ => Guid.Empty,
+        };
+
+        if (groupId != Guid.Empty)
+        {
+            _userManager.AddUserIntoGroup(newUser.Id, groupId);
+        }
+
+        return newUser;
+    }
+
     public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false, 
         bool updateExising = false)
     {
