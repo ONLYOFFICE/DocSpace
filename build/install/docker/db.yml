@@ -12,6 +12,8 @@ services:
     user: mysql
     expose:
       - "3306"
+    ports:
+      - 33060:3306
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}

@@ -18,7 +18,12 @@ const StyledTooltip = styled.div`
   }
 `;
 
-export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
+export const LanguageTimeSettingsTooltip = ({
+  t,
+  theme,
+  helpLink,
+  organizationName,
+}) => {
   const learnMore = t("Common:LearnMore");
   const text = t("Settings:StudioTimeLanguageSettings");
   const save = t("Common:SaveButton");
@@ -27,7 +32,8 @@ export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
     <StyledTooltip>
       <div className="font-size">
         <Trans ns="Settings" i18nKey="LanguageTimeSettingsTooltip" text={text}>
-          <div className="bold display-inline font-size">{{ text }}</div>{" "}
+          <div className="bold display-inline font-size">{{ text }}</div>
+          {{ organizationName }}
         </Trans>
       </div>
       <div className="font-size">
@@ -37,8 +43,7 @@ export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
           learnMore={learnMore}
           save={save}
         >
-          {" "}
-          <div className="bold display-inline font-size"> {{ save }}</div>{" "}
+          <div className="bold display-inline font-size"> {{ save }}</div>
           <Link
             color={theme.client.settings.common.linkColorHelp}
             className="display-block font-size"
@@ -69,12 +74,9 @@ export const CustomTitlesTooltip = ({ t }) => {
           text={text}
           from={from}
         >
-          <div className="bold display-inline font-size">
-            {" "}
-            {{ welcomeText }}
-          </div>{" "}
-          <div className="bold display-inline font-size"> {{ text }}</div>{" "}
-          <div className="bold display-inline font-size"> {{ from }}</div>{" "}
+          <div className="bold display-inline font-size">{{ welcomeText }}</div>
+          <div className="bold display-inline font-size"> {{ text }}</div>
+          <div className="bold display-inline font-size"> {{ from }}</div>
         </Trans>
       </div>
       <div className="font-size">
@@ -83,11 +85,7 @@ export const CustomTitlesTooltip = ({ t }) => {
           i18nKey="CustomTitlesSettingsTooltipDescription"
           header={header}
         >
-          {" "}
-          <div className="bold display-inline font-size">
-            {" "}
-            {{ header }}
-          </div>{" "}
+          <div className="bold display-inline font-size">{{ header }}</div>
         </Trans>
       </div>
     </StyledTooltip>
@@ -107,7 +105,7 @@ export const DNSSettingsTooltip = ({ t, theme, helpLink }) => {
           text={text}
           learnMore={learnMore}
         >
-          <div className="display-inline font-size"> {{ text }}</div>{" "}
+          <div className="display-inline font-size"> {{ text }}</div>
           <Link
             color={theme.client.settings.common.linkColorHelp}
             className="display-block font-size"
@@ -136,7 +134,7 @@ export const PortalRenamingTooltip = ({ t }) => {
           i18nKey="PortalRenamingSettingsTooltip"
           text={text}
         >
-          <div className="display-inline font-size"> {{ text }}</div>{" "}
+          <div className="display-inline font-size"> {{ text }}</div>
         </Trans>
       </div>
       <div className="font-size">
@@ -146,8 +144,8 @@ export const PortalRenamingTooltip = ({ t }) => {
           pleaseNote={pleaseNote}
           save={save}
         >
-          <div className="bold display-inline font-size"> {{ pleaseNote }}</div>{" "}
-          <div className="bold display-inline font-size"> {{ save }}</div>{" "}
+          <div className="bold display-inline font-size"> {{ pleaseNote }}</div>
+          <div className="bold display-inline font-size"> {{ save }}</div>
         </Trans>
       </div>
     </StyledTooltip>

@@ -38,13 +38,14 @@ const InfoPanelBodyContent = ({
   const isAccounts = getIsAccounts();
   const isGallery = getIsGallery();
 
+  const isSeveralItems = props.selectedItems.length > 1;
+
   const isNoItem =
     (isGallery && !gallerySelected) ||
+    (!selection?.title && !isSeveralItems && !isAccounts) ||
     ((isRootFolder || isAccounts) &&
       selection?.isSelectedFolder &&
       !selection?.wasContextMenuSelection);
-
-  const isSeveralItems = props.selectedItems.length > 1;
 
   const viewHelper = new ViewHelper({
     defaultProps: {
@@ -201,12 +202,14 @@ const InfoPanelBodyContent = ({
           isRooms={isRooms}
           isAccounts={isAccounts}
           isSeveralItems={isSeveralItems}
+          severalItemsLength={selectedItems.length}
           isGallery={isGallery}
           getIcon={getIcon}
           setBufferSelection={setBufferSelection}
           getContextOptions={props.getContextOptions}
           getContextOptionActions={props.getContextOptionActions}
           getUserContextOptions={props.getUserContextOptions}
+          selectedFolderId={selectedFolder.id}
         />
       )}
       {getView()}

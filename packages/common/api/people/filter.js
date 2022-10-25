@@ -133,10 +133,10 @@ class Filter {
       case "admin":
         dtoFilter.isadministrator = true;
         break;
-      case "user":
+      case "manager":
         dtoFilter.employeeType = 1;
         break;
-      case "guest":
+      case "user":
         dtoFilter.employeeType = 2;
         break;
       default:

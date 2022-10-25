@@ -10,6 +10,7 @@ import {
   NewFilesPanel,
   SelectFileDialog,
   HotkeyPanel,
+  InvitePanel,
 } from "../panels";
 import {
   ThirdPartyMoveDialog,
@@ -24,6 +25,7 @@ import {
   CreateRoomDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
+import RestoreAllArchiveDialog from "../dialogs/RestoreAllArchiveDialog";
 
 const Panels = (props) => {
   const {
@@ -47,9 +49,11 @@ const Panels = (props) => {
     selectFileDialogVisible,
     setSelectFileDialogVisible,
     hotkeyPanelVisible,
+    invitePanelVisible,
     convertPasswordDialogVisible,
     createRoomDialogVisible,
     restoreAllPanelVisible,
+    restoreAllArchiveDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
@@ -111,8 +115,12 @@ const Panels = (props) => {
       />
     ),
     hotkeyPanelVisible && <HotkeyPanel key="hotkey-panel" />,
+    invitePanelVisible && <InvitePanel key="invite-panel" />,
     convertPasswordDialogVisible && (
       <ConvertPasswordDialog key="convert-password-dialog" />
+    ),
+    restoreAllArchiveDialogVisible && (
+      <RestoreAllArchiveDialog key="restore-all-archive-dialog" />
     ),
   ];
 };
@@ -138,10 +146,12 @@ export default inject(
       convertPasswordDialogVisible,
       connectItem, //TODO:
       restoreAllPanelVisible,
+      restoreAllArchiveDialogVisible,
 
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
+      invitePanelOptions,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -172,6 +182,8 @@ export default inject(
       setSelectFileDialogVisible,
       hotkeyPanelVisible,
       restoreAllPanelVisible,
+      invitePanelVisible: invitePanelOptions.visible,
+      restoreAllArchiveDialogVisible,
     };
   }
 )(observer(Panels));

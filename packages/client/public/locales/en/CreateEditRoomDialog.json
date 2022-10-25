@@ -20,6 +20,7 @@
   "ReviewRoomDescription": "Request a review or comments on the documents",
   "ReviewRoomTitle": "Review room",
   "RoomEditing": "Room editing",
+  "RootLabel": "Root",
   "TagsPlaceholder": "Add a tag",
   "ThirdPartyStorageComboBoxPlaceholder": "Select storage",
   "ThirdPartyStorageDescription": "Use third-party services as data storage for this room. A new folder for storing this room’s data will be created in the connected storage",

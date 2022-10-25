@@ -139,6 +139,7 @@ class ProfileActions extends React.PureComponent {
           source={avatar}
           userName={user.displayName}
           className="icon-profile-menu"
+          hideRoleIcon
         />
         <ProfileMenu
           className="profile-menu"

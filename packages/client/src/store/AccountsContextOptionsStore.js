@@ -144,7 +144,7 @@ class AccountsContextOptionsStore {
   };
 
   getUserGroupContextOptions = (t) => {
-    const { onChangeType } = this.peopleStore;
+    const { onChangeType, onChangeStatus } = this.peopleStore;
 
     const {
       hasUsersToMakeEmployees,
@@ -152,15 +152,14 @@ class AccountsContextOptionsStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
+      hasFreeUsers,
     } = this.peopleStore.selectionStore;
     const {
-      setActiveDialogVisible,
-      setDisableDialogVisible,
       setSendInviteDialogVisible,
       setDeleteDialogVisible,
     } = this.peopleStore.dialogStore;
 
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+    const { isOwner } = this.authStore.userStore.user;
 
     const { setIsVisible, isVisible } = this.peopleStore.infoPanelStore;
 
@@ -169,8 +168,8 @@ class AccountsContextOptionsStore {
     const adminOption = {
       id: "context-menu_administrator",
       className: "context-menu_drop-down",
-      label: t("Administrator"),
-      title: t("Administrator"),
+      label: t("Common:DocSpaceAdmin"),
+      title: t("Common:DocSpaceAdmin"),
       onClick: (e) => onChangeType(e, t),
       action: "admin",
       key: "cm-administrator",
@@ -178,8 +177,8 @@ class AccountsContextOptionsStore {
     const managerOption = {
       id: "context-menu_manager",
       className: "context-menu_drop-down",
-      label: t("Manager"),
-      title: t("Manager"),
+      label: t("Common:RoomAdmin"),
+      title: t("Common:RoomAdmin"),
       onClick: (e) => onChangeType(e, t),
       action: "manager",
       key: "cm-manager",
@@ -196,15 +195,15 @@ class AccountsContextOptionsStore {
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
-    options.push(userOption);
+    hasFreeUsers && options.push(userOption);
 
     const headerMenu = [
       {
         key: "cm-change-type",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
-        disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
+        disabled: !hasUsersToMakeEmployees,
         icon: "/static/images/change.to.employee.react.svg",
         items: options,
       },
@@ -226,14 +225,14 @@ class AccountsContextOptionsStore {
         key: "cm-enable",
         label: t("Common:Enable"),
         disabled: !hasUsersToActivate,
-        onClick: () => setActiveDialogVisible(true),
+        onClick: () => onChangeStatus(EmployeeStatus.Active),
         icon: "images/enable.react.svg",
       },
       {
         key: "cm-disable",
         label: t("PeopleTranslations:DisableUserButton"),
         disabled: !hasUsersToDisable,
-        onClick: () => setDisableDialogVisible(true),
+        onClick: () => onChangeStatus(EmployeeStatus.Disabled),
         icon: "images/disable.react.svg",
       },
       {
@@ -309,58 +308,18 @@ class AccountsContextOptionsStore {
 
   onEnableClick = (t, item) => {
     const { id } = item;
-    const {
-      updateUserStatus,
-      getUserContextOptions,
-      getStatusType,
-    } = this.peopleStore.usersStore;
-    const { setSelection } = this.authStore.infoPanelStore;
 
-    updateUserStatus(EmployeeStatus.Active, [id])
-      .then(() => {
-        const updatedUser = { ...item };
-        updatedUser.status = EmployeeStatus.Active;
-        updatedUser.statusType = getStatusType(updatedUser);
-        updatedUser.options = getUserContextOptions(
-          false,
-          false,
-          updatedUser.statusType,
-          EmployeeStatus.Active
-        );
-        setSelection(updatedUser);
-      })
-      .then(() =>
-        toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
-      )
-      .catch((error) => toastr.error(error));
+    const { changeStatus } = this.peopleStore;
+
+    changeStatus(EmployeeStatus.Active, [id]);
   };
 
   onDisableClick = (t, item) => {
     const { id } = item;
-    const {
-      updateUserStatus,
-      getUserContextOptions,
-      getStatusType,
-    } = this.peopleStore.usersStore;
-    const { setSelection } = this.authStore.infoPanelStore;
 
-    updateUserStatus(EmployeeStatus.Disabled, [id])
-      .then(() => {
-        const updatedUser = { ...item };
-        updatedUser.status = EmployeeStatus.Disabled;
-        updatedUser.statusType = getStatusType(updatedUser);
-        updatedUser.options = getUserContextOptions(
-          false,
-          false,
-          updatedUser.statusType,
-          EmployeeStatus.Disabled
-        );
-        setSelection(updatedUser);
-      })
-      .then(() =>
-        toastr.success(t("PeopleTranslations:SuccessChangeUserStatus"))
-      )
-      .catch((error) => toastr.error(error));
+    const { changeStatus } = this.peopleStore;
+
+    changeStatus(EmployeeStatus.Disabled, [id]);
   };
 
   onReassignDataClick = (item) => {

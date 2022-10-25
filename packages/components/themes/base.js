@@ -389,7 +389,7 @@ const Base = {
     height: " 32px",
     width: "32px",
     padding: "10px",
-    color: black,
+    color: grayMain,
     hoverColor: black,
   },
 
@@ -442,6 +442,8 @@ const Base = {
 
     hoverBorderColor: gray,
     hoverIndeterminateColor: black,
+
+    focusColor: "#A3A9AE",
   },
 
   // slider: {
@@ -1369,7 +1371,8 @@ const Base = {
     maxWidth: "500px",
     border: "0px",
     margin: "0px",
-    padding: "0px 16px",
+    padding: "0px 12px",
+    tabletPadding: "0px 16px",
     lineHeight: "32px",
     tabletLineHeight: "36px",
 
@@ -2729,6 +2732,8 @@ const Base = {
   login: {
     linkColor: link,
     textColor: gray,
+    navBackground: "#F8F9F9",
+    headerColor: black,
 
     register: {
       backgroundColor: grayLight,
@@ -2973,9 +2978,14 @@ const Base = {
     },
   },
 
+
+  formWrapper: {
   activeSessions: {
+    background: white,
     color: "#333",
+    boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
     borderColor: "#eceef1",
+  },
   },
 };
 

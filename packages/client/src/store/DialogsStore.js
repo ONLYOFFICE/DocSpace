@@ -1,6 +1,6 @@
 import { getNewFiles } from "@docspace/common/api/files";
-import { FileAction } from "@docspace/common/constants";
-import { makeAutoObservable } from "mobx";
+import { FileAction, ShareAccessRights } from "@docspace/common/constants";
+import { makeAutoObservable, runInAction } from "mobx";
 import { Events } from "@docspace/common/constants";
 
 class DialogsStore {
@@ -28,7 +28,13 @@ class DialogsStore {
   convertPasswordDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
+  invitePanelOptions = {
+    visible: false,
+    hideSelector: false,
+    defaultAccess: ShareAccessRights.FullAccess,
+  };
   restoreAllPanelVisible = false;
+  restoreAllArchiveDialogVisible = false;
   eventDialogVisible = false;
 
   removeItem = null;
@@ -43,6 +49,10 @@ class DialogsStore {
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
+  inviteItems = [];
+
+  isConnectDialogReconnect = false;
+  saveAfterReconnectOAuth = false;
 
   constructor(
     authStore,
@@ -59,6 +69,10 @@ class DialogsStore {
     this.authStore = authStore;
     this.versionHistoryStore = versionHistoryStore;
   }
+
+  setRestoreAllArchiveDialogVisible = (restoreAllArchiveDialogVisible) => {
+    this.restoreAllArchiveDialogVisible = restoreAllArchiveDialogVisible;
+  };
 
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
@@ -132,6 +146,14 @@ class DialogsStore {
 
   setConnectItem = (connectItem) => {
     this.connectItem = connectItem;
+  };
+
+  setIsConnectDialogReconnect = (isConnectDialogReconnect) => {
+    this.isConnectDialogReconnect = isConnectDialogReconnect;
+  };
+
+  setSaveAfterReconnectOAuth = (saveAfterReconnectOAuth) => {
+    this.saveAfterReconnectOAuth = saveAfterReconnectOAuth;
   };
 
   setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {
@@ -250,6 +272,21 @@ class DialogsStore {
     window.dispatchEvent(event);
   };
 
+  setInvitePanelOptions = (invitePanelOptions) => {
+    this.invitePanelOptions = invitePanelOptions;
+  };
+
+  setInviteItems = (inviteItems) => {
+    this.inviteItems = inviteItems;
+  };
+
+  changeInviteItem = async (item) =>
+    runInAction(() => {
+      const index = this.inviteItems.findIndex((iItem) => iItem.id === item.id);
+
+      this.inviteItems[index] = { ...this.inviteItems[index], ...item };
+    });
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -269,7 +306,10 @@ class DialogsStore {
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
       this.versionHistoryStore.isVisible ||
-      this.eventDialogVisible
+      this.eventDialogVisible ||
+      this.invitePanelOptions.visible ||
+      this.restoreAllArchiveDialogVisible ||
+      this.restoreAllPanelVisible
     );
   }
 

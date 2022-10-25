@@ -20,8 +20,7 @@ import {
 import { isMobileRDD } from "react-device-detect";
 
 import toastr from "@docspace/components/toast/toastr";
-
-const fullAccessId = "00000000-0000-0000-0000-000000000000";
+import { EmployeeStatus } from "@docspace/common/constants";
 
 class PeopleStore {
   contextOptionsStore = null;
@@ -100,49 +99,70 @@ class PeopleStore {
     return getUsersList(newFilter);
   };
 
-  onChangeType = (e, t) => {
+  onChangeType = (e) => {
     const action = e?.action ? e.action : e?.target?.dataset?.action;
 
-    const { getUsersToMakeEmployeesIds } = this.selectionStore;
+    const { getUsersToMakeEmployees } = this.selectionStore;
 
-    this.changeType(action, getUsersToMakeEmployeesIds, t);
+    this.changeType(action, getUsersToMakeEmployees);
   };
 
-  changeType = (
-    type,
-    users,
-    t,
-    needClearSelection = true,
-    needFetchUsers = true
-  ) => {
-    const { changeAdmins } = this.setupStore;
-    const { getUsersList } = this.usersStore;
-    const { filter } = this.filterStore;
-    const { clearSelection } = this.selectionStore;
+  changeType = (type, users) => {
+    const { setChangeUserTypeDialogVisible, setDialogData } = this.dialogStore;
+
+    let fromType =
+      users.length === 1 ? [users[0].role] : users.map((u) => u.role);
+
+    if (users.length > 1) {
+      fromType = fromType.filter(
+        (item, index) => fromType.indexOf(item) === index && item !== type
+      );
+
+      if (fromType.length === 0) fromType = [fromType[0]];
+    }
+
+    if (fromType.length === 1 && fromType[0] === type) return;
+
+    const userIDs = users
+      .filter((u) => u.role !== type)
+      .map((user) => {
+        return user?.id ? user.id : user;
+      });
+
+    setDialogData({ toType: type, fromType, userIDs });
+
+    setChangeUserTypeDialogVisible(true);
+  };
+
+  onChangeStatus = (status) => {
+    const users = [];
+
+    if (status === EmployeeStatus.Active) {
+      const { getUsersToActivate } = this.selectionStore;
+
+      users.push(...getUsersToActivate);
+    } else {
+      const { getUsersToDisable } = this.selectionStore;
+
+      users.push(...getUsersToDisable);
+    }
+
+    this.changeStatus(status, users);
+  };
+
+  changeStatus = (status, users) => {
+    const {
+      setChangeUserStatusDialogVisible,
+      setDialogData,
+    } = this.dialogStore;
 
     const userIDs = users.map((user) => {
       return user?.id ? user.id : user;
     });
 
-    if (type === "admin") {
-      changeAdmins(userIDs, fullAccessId, true).then((res) => {
-        needFetchUsers && getUsersList(filter);
-        needClearSelection && clearSelection();
-        toastr.success(t("Settings:AdministratorsAddedSuccessfully"));
-      });
-    }
+    setDialogData({ status, userIDs });
 
-    if (type === "manager") {
-      toastr.warning("Work at progress");
-    }
-
-    if (type === "user") {
-      changeAdmins(userIDs, fullAccessId, false).then((res) => {
-        needFetchUsers && getUsersList(filter);
-        needClearSelection && clearSelection();
-        toastr.success(t("Settings:AdministratorsRemovedSuccessfully"));
-      });
-    }
+    setChangeUserStatusDialogVisible(true);
   };
 
   onOpenInfoPanel = () => {
@@ -157,17 +177,14 @@ class PeopleStore {
       hasUsersToDisable,
       hasUsersToInvite,
       hasUsersToRemove,
-      getUsersToRemoveIds,
-      selection,
+      hasFreeUsers,
     } = this.selectionStore;
     const {
-      setActiveDialogVisible,
-      setDisableDialogVisible,
       setSendInviteDialogVisible,
       setDeleteDialogVisible,
     } = this.dialogStore;
 
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+    const { isOwner } = this.authStore.userStore.user;
 
     const { isVisible } = this.infoPanelStore;
 
@@ -176,18 +193,18 @@ class PeopleStore {
     const adminOption = {
       id: "group-menu_administrator",
       className: "group-menu_drop-down",
-      label: t("Administrator"),
-      title: t("Administrator"),
-      onClick: (e) => this.onChangeType(e, t),
+      label: t("Common:DocSpaceAdmin"),
+      title: t("Common:DocSpaceAdmin"),
+      onClick: (e) => this.onChangeType(e),
       "data-action": "admin",
       key: "administrator",
     };
     const managerOption = {
       id: "group-menu_manager",
       className: "group-menu_drop-down",
-      label: t("Manager"),
-      title: t("Manager"),
-      onClick: (e) => this.onChangeType(e, t),
+      label: t("Common:RoomAdmin"),
+      title: t("Common:RoomAdmin"),
+      onClick: (e) => this.onChangeType(e),
       "data-action": "manager",
       key: "manager",
     };
@@ -196,22 +213,22 @@ class PeopleStore {
       className: "group-menu_drop-down",
       label: t("Common:User"),
       title: t("Common:User"),
-      onClick: (e) => this.onChangeType(e, t),
+      onClick: (e) => this.onChangeType(e),
       "data-action": "user",
       key: "user",
     };
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
-    options.push(userOption);
+    hasFreeUsers && options.push(userOption);
 
     const headerMenu = [
       {
         key: "change-user",
         label: t("ChangeUserTypeDialog:ChangeUserTypeButton"),
-        disabled: (isAdmin || isOwner) && !hasUsersToMakeEmployees,
+        disabled: !hasUsersToMakeEmployees,
         iconUrl: "/static/images/change.to.employee.react.svg",
         withDropDown: true,
         options: options,
@@ -236,14 +253,14 @@ class PeopleStore {
         key: "enable",
         label: t("Common:Enable"),
         disabled: !hasUsersToActivate,
-        onClick: () => setActiveDialogVisible(true),
+        onClick: () => this.onChangeStatus(EmployeeStatus.Active),
         iconUrl: "images/enable.react.svg",
       },
       {
         key: "disable",
         label: t("PeopleTranslations:DisableUserButton"),
         disabled: !hasUsersToDisable,
-        onClick: () => setDisableDialogVisible(true),
+        onClick: () => this.onChangeStatus(EmployeeStatus.Disabled),
         iconUrl: "images/disable.react.svg",
       },
       {

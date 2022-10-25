@@ -21,6 +21,7 @@ const Header = (props) => {
     t,
     history,
     isAdmin,
+    isVisitor,
     filter,
 
     setFilter,
@@ -82,9 +83,9 @@ const Header = (props) => {
   return (
     <StyledHeader
       showContextButton={(isAdmin && !profile?.isOwner) || isMe}
-      isVisitor={!isAdmin}
+      isVisitor={isVisitor}
     >
-      {isAdmin && (
+      {!isVisitor && (
         <IconButton
           iconName="/static/images/arrow.path.react.svg"
           size="17"
@@ -125,6 +126,8 @@ export default withRouter(
   inject(({ auth, peopleStore }) => {
     const { isAdmin } = auth;
 
+    const { isVisitor } = auth.userStore.user;
+
     const { targetUserStore, filterStore } = peopleStore;
 
     const { filter, setFilterParams } = filterStore;
@@ -139,6 +142,7 @@ export default withRouter(
 
     return {
       isAdmin,
+      isVisitor,
       filter,
 
       setFilter: setFilterParams,

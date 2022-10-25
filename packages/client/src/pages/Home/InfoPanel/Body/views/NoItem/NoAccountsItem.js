@@ -6,7 +6,9 @@ import { StyledNoItemContainer } from "../../styles/noItem";
 const NoAccountsItem = ({ t }) => {
   return (
     <StyledNoItemContainer>
-      <img src="/static/images/empty_screen-accounts-info-panel.png" />
+      <div className="no-thumbnail-img-wrapper">
+        <img src="/static/images/empty_screen-accounts-info-panel.png" />
+      </div>
       <Text className="no-item-text" textAlign="center">
         {t("InfoPanel:AccountsEmptyScreenText")}
       </Text>

@@ -386,9 +386,9 @@ const Dark = {
     borderRadius: "3px",
     height: " 32px",
     width: "32px",
-    padding: "9px",
+    padding: "10px",
     color: "#858585",
-    hoverColor: "#858585",
+    hoverColor: grayMaxLight,
   },
 
   saveCancelButtons: {
@@ -440,6 +440,8 @@ const Dark = {
 
     hoverBorderColor: "#646464",
     hoverIndeterminateColor: grayMaxLight,
+
+    focusColor: "#858585",
   },
 
   // slider: {
@@ -2736,6 +2738,8 @@ const Dark = {
   login: {
     linkColor: "#E06A1B",
     textColor: "#858585",
+    navBackground: "#282828",
+    headerColor: white,
 
     register: {
       backgroundColor: "#292929",
@@ -2978,9 +2982,14 @@ const Dark = {
       border: "1px solid #858585",
     },
   },
+
   activeSessions: {
+  formWrapper: {
     color: "#eeeeee",
+    background: black,
     borderColor: "#858585",
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.16);",
+  },
   },
 };
 

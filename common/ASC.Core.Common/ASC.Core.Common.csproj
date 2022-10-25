@@ -5,6 +5,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <FileUpgradeFlags />
     <UpgradeBackupLocation />
+    <AssemblyVersion>1.0.1</AssemblyVersion>
+    <InformationalVersion>1.0.1</InformationalVersion>
     <AssemblyTitle>ASC.Core.Common</AssemblyTitle>
     <Company>Ascensio System SIA</Company>
     <Product>ASC.Core.Common</Product>

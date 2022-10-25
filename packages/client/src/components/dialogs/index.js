@@ -25,6 +25,7 @@ import EditRoomDialog from "./CreateEditRoomDialog/EditRoomDialog";
 import ChangePortalOwnerDialog from "./ChangePortalOwnerDialog";
 import ChangeNameDialog from "./ChangeNameDialog";
 import AvatarEditorDialog from "./AvatarEditorDialog";
+import DeletePortalDialog from "./DeletePortalDialog";
 import LogoutConnectionDialog from "./LogoutConnectionDialog";
 import LogoutAllConnectionDialog from "./LogoutAllConnectionDialog";
 
@@ -56,6 +57,7 @@ export {
   ChangePortalOwnerDialog,
   ChangeNameDialog,
   AvatarEditorDialog,
+  DeletePortalDialog,
   LogoutConnectionDialog,
   LogoutAllConnectionDialog,
 };

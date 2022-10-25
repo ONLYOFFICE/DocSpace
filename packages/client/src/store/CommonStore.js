@@ -3,11 +3,8 @@ import authStore from "@docspace/common/store/AuthStore";
 import api from "@docspace/common/api";
 
 class CommonStore {
-  whiteLabel = {
-    logoSizes: [],
-    logoText: null,
-    logoUrls: [],
-  };
+  whiteLabelLogoSizes = [];
+  whiteLabelLogoText = null;
 
   isInit = false;
   isLoaded = false;
@@ -21,6 +18,9 @@ class CommonStore {
   isLoadedCustomizationNavbar = false;
   isLoadedWelcomePageSettings = false;
   isLoadedAdditionalResources = false;
+  isLoadedCompanyInfoSettingsData = false;
+
+  greetingSettingsIsDefault = true;
 
   constructor() {
     this.authStore = authStore;
@@ -37,22 +37,22 @@ class CommonStore {
       authStore.settingsStore.getPortalCultures(),
       this.getWhiteLabelLogoText(),
       this.getWhiteLabelLogoSizes(),
-      this.getWhiteLabelLogoUrls()
+      this.getGreetingSettingsIsDefault()
     );
 
     return Promise.all(requests).finally(() => this.setIsLoaded(true));
   };
 
   setLogoText = (text) => {
-    this.whiteLabel.logoText = text;
+    this.whiteLabelLogoText = text;
   };
 
   setLogoSizes = (sizes) => {
-    this.whiteLabel.logoSizes = sizes;
+    this.whiteLabelLogoSizes = sizes;
   };
 
-  setLogoUrls = (urls) => {
-    this.whiteLabel.logoUrls = urls;
+  getGreetingSettingsIsDefault = async () => {
+    this.greetingSettingsIsDefault = await api.settings.getGreetingSettingsIsDefault();
   };
 
   getWhiteLabelLogoText = async () => {
@@ -63,11 +63,6 @@ class CommonStore {
   getWhiteLabelLogoSizes = async () => {
     const res = await api.settings.getLogoSizes();
     this.setLogoSizes(res);
-  };
-
-  getWhiteLabelLogoUrls = async () => {
-    const res = await api.settings.getLogoUrls();
-    this.setLogoUrls(Object.values(res));
   };
 
   setIsLoadedArticleBody = (isLoadedArticleBody) => {
@@ -108,6 +103,10 @@ class CommonStore {
 
   setIsLoadedAdditionalResources = (isLoadedAdditionalResources) => {
     this.isLoadedAdditionalResources = isLoadedAdditionalResources;
+  };
+
+  setIsLoadedCompanyInfoSettingsData = (isLoadedCompanyInfoSettingsData) => {
+    this.isLoadedCompanyInfoSettingsData = isLoadedCompanyInfoSettingsData;
   };
 
   setIsLoaded = (isLoaded) => {
