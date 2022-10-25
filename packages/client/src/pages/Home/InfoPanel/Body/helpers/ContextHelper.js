@@ -95,7 +95,8 @@ class ContextHelper {
   };
 
   getItemContextOptions = () => {
-    return this.fixItemContextOptionActions();
+    // return this.fixItemContextOptionActions();
+    return this.getContextOptionActions(this.selection, this.t);
   };
 }
 
