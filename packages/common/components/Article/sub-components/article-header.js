@@ -18,6 +18,7 @@ const ArticleHeader = ({
   children,
   onClick,
   isBurgerLoading,
+  whiteLabelLogoUrls,
   ...rest
 }) => {
   const history = useHistory();
@@ -32,7 +33,7 @@ const ArticleHeader = ({
         <Loaders.ArticleHeader height="28px" width="28px" />
       ) : (
         <StyledIconBox name="article-burger" showText={showText}>
-          <img src="/static/images/logo.icon.react.svg" onClick={onLogoClick} />
+          <img src={whiteLabelLogoUrls[5]} onClick={onLogoClick} />
         </StyledIconBox>
       )}
 
@@ -43,15 +44,12 @@ const ArticleHeader = ({
           {isTabletView ? (
             <ReactSVG
               className="logo-icon_svg"
-              src="/static/images/logo.docspace.react.svg"
+              src={whiteLabelLogoUrls[0]}
               onClick={onLogoClick}
             />
           ) : (
             <Link to="/">
-              <ReactSVG
-                className="logo-icon_svg"
-                src="/static/images/logo.docspace.react.svg"
-              />
+              <ReactSVG className="logo-icon_svg" src={whiteLabelLogoUrls[0]} />
             </Link>
           )}
         </StyledHeading>
@@ -70,8 +68,9 @@ ArticleHeader.displayName = "Header";
 
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
-  const { isBurgerLoading } = settingsStore;
+  const { isBurgerLoading, whiteLabelLogoUrls } = settingsStore;
   return {
     isBurgerLoading,
+    whiteLabelLogoUrls,
   };
 })(observer(ArticleHeader));
