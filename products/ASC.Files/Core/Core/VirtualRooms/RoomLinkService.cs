@@ -63,6 +63,8 @@ public class RoomLinkService
         {
             options.Type = LinkType.DefaultInvintation;
             options.IsCorrect = true;
+
+            return options;
         }
 
         var payload = _docSpaceLinksHelper.Parse(key);
