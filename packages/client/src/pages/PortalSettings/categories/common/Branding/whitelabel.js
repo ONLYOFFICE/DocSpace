@@ -299,6 +299,8 @@ const WhiteLabel = (props) => {
   const onRestoreLogo = () => {
     restoreWhiteLabelSettings(true);
     setIsCanvasProcessing(false);
+    setLogoUrlsChange([]);
+    getWhiteLabelLogoUrls();
   };
 
   const onSave = () => {
@@ -316,6 +318,7 @@ const WhiteLabel = (props) => {
     console.log(data);
 
     setWhiteLabelSettings(data).finally(() => {
+      setLogoUrlsChange([]);
       getWhiteLabelLogoText();
       getWhiteLabelLogoSizes();
       getWhiteLabelLogoUrls();
