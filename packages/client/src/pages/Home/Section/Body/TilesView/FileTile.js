@@ -64,12 +64,17 @@ const FileTile = (props) => {
 
   const { thumbnailUrl } = item;
 
+  console.log(item.isPrivate);
+
   const element = (
     <ItemIcon
       id={item.id}
       icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
+      isCustomLogo={!(item.isRoom && item.logo.medium)}
+      roomType={item.roomType}
+      isPrivacy={item.isPrivate}
     />
   );
 

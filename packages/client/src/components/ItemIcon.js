@@ -1,17 +1,17 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";
+import RoomLogo from "@docspace/components/room-logo";
 
 const StyledIcon = styled.img`
   /* width: 24px;
   height: 24px;
   margin-top: 4px; */
+`;
 
-  ${(props) =>
-    props.isRoom &&
-    css`
-      border-radius: 6px;
-    `}
+const PrivateRoomIcon = styled.div`
+  width: 32px;
+  height: 32px;
 `;
 
 const EncryptedFileIcon = styled.div`
@@ -27,9 +27,10 @@ const ItemIcon = ({
   id,
   icon,
   fileExst,
-  isPrivacy,
   viewAs,
   isRoom,
+  roomType,
+  isPrivacy,
   // actionType,
   // actionExtension,
   // actionId,
@@ -50,9 +51,17 @@ const ItemIcon = ({
   //   </>
   // );
 
+  if (isRoom) {
+    return (
+      <PrivateRoomIcon>
+        <RoomLogo type={roomType} isPrivacy={isPrivacy} />
+      </PrivateRoomIcon>
+    );
+  }
+
   return (
     <>
-      <StyledIcon className={`react-svg-icon`} isRoom={isRoom} src={icon} />
+      <StyledIcon className={`react-svg-icon`} src={icon} />
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}
     </>
   );
@@ -63,7 +72,7 @@ export default inject(({ filesStore, treeFoldersStore }) => {
 
   return {
     viewAs: filesStore.viewAs,
-    isPrivacy: treeFoldersStore.isPrivacyFolder,
+    // isPrivacy: treeFoldersStore.isPrivacyFolder,
     // actionType: type,
     // actionExtension: extension,
     // actionId: id,

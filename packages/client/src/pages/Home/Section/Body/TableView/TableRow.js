@@ -315,6 +315,8 @@ const FilesTableRow = (props) => {
       icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
+      roomType={item.roomType}
+      isPrivacy={item.isPrivate}
     />
   );
 
