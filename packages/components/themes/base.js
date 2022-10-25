@@ -2978,14 +2978,14 @@ const Base = {
     },
   },
 
-
-  formWrapper: {
   activeSessions: {
-    background: white,
     color: "#333",
-    boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
     borderColor: "#eceef1",
   },
+
+  formWrapper: {
+    background: white,
+    boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
 };
 

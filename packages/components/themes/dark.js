@@ -2984,12 +2984,13 @@ const Dark = {
   },
 
   activeSessions: {
-  formWrapper: {
-    color: "#eeeeee",
-    background: black,
     borderColor: "#858585",
-    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.16);",
+    color: "#eeeeee",
   },
+
+  formWrapper: {
+    background: black,
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.16);",
   },
 };
 
