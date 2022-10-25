@@ -209,6 +209,7 @@ const InfoPanelBodyContent = ({
           getContextOptions={props.getContextOptions}
           getContextOptionActions={props.getContextOptionActions}
           getUserContextOptions={props.getUserContextOptions}
+          selectedFolderId={selectedFolder.id}
         />
       )}
       {getView()}

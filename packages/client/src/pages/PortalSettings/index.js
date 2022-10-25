@@ -60,6 +60,8 @@ const Backup = lazy(() => import("./categories/data-management/backup"));
 const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup/index")
 );
+const DeleteDataPage = lazy(() => import("./categories/delete-data"));
+
 const WhiteLabel = lazy(() =>
   import("./categories/common/Branding/whitelabel")
 );
@@ -158,6 +160,12 @@ const THIRD_PARTY_URL = combineUrl(
 );
 
 const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
+const BACKUP_URL = combineUrl(PROXY_BASE_URL, "/datamanagement/backup");
+
+const DELETE_DATA_URLS = [
+  combineUrl(PROXY_BASE_URL, "/delete-data/deletion"),
+  combineUrl(PROXY_BASE_URL, "/delete-data/deactivation"),
+];
 
 const ERROR_404_URL = combineUrl(AppServerConfig.proxyURL, "/error/404");
 
@@ -214,8 +222,12 @@ const Settings = () => {
           <Route exact path={PAYMENTS_URL} component={Payments} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
+
           <Route exact path={BACKUP_URLS} component={Backup} />
           <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
+
+          <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
+
           <Redirect
             to={{
               pathname: ERROR_404_URL,

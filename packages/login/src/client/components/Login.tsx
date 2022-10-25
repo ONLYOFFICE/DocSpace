@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
 import Logo from "../../../../../public/images/docspace.big.react.svg";
 import Text from "@docspace/components/text";
@@ -20,6 +21,9 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import SSOIcon from "../../../../../public/images/sso.react.svg";
+import { Dark, Base } from "@docspace/components/themes";
+import { useMounted } from "../helpers/useMounted";
+import { getBgPattern } from "@docspace/common/utils";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -31,6 +35,9 @@ const Login: React.FC<ILoginProps> = ({
   capabilities,
   isDesktopEditor,
   match,
+  currentColorScheme,
+  theme,
+  setTheme,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
@@ -40,6 +47,16 @@ const Login: React.FC<ILoginProps> = ({
   const { ssoLabel, ssoUrl } = capabilities;
 
   const { t } = useTranslation(["Login", "Common"]);
+  const mounted = useMounted();
+
+  useEffect(() => {
+    const theme =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? Dark
+        : Base;
+    setTheme(theme);
+  }, []);
 
   const ssoExists = () => {
     if (ssoUrl) return true;
@@ -155,13 +172,19 @@ const Login: React.FC<ILoginProps> = ({
     setRecoverDialogVisible(!recoverDialogVisible);
   };
 
+  const bgPattern = getBgPattern(currentColorScheme.id);
+
+  if (!mounted) return <></>;
+
   return (
     <LoginFormWrapper
+      id="login-page"
       enabledJoin={enabledJoin}
       isDesktop={isDesktopEditor}
-      className="with-background-pattern"
+      //className="with-background-pattern"
+      bgPattern={bgPattern}
     >
-      <ColorTheme themeId={ThemeType.LinkForgotPassword}>
+      <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
         <Logo className="logo-wrapper" />
         <Text
           fontSize="23px"
@@ -171,7 +194,7 @@ const Login: React.FC<ILoginProps> = ({
         >
           {greetingSettings}
         </Text>
-        <FormWrapper>
+        <FormWrapper id="login-form" theme={theme}>
           {ssoExists() && <ButtonsWrapper>{ssoButton()}</ButtonsWrapper>}
           {oauthDataExists() && (
             <>
@@ -225,9 +248,19 @@ const Login: React.FC<ILoginProps> = ({
           emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
         />
       </ColorTheme>
-      {!checkIsSSR() && enabledJoin && <Register enabledJoin={enabledJoin} />}
+      {!checkIsSSR() && enabledJoin && (
+        <Register
+          enabledJoin={enabledJoin}
+          currentColorScheme={currentColorScheme}
+        />
+      )}
     </LoginFormWrapper>
   );
 };
 
-export default Login;
+export default inject(({ loginStore }) => {
+  return {
+    theme: loginStore.theme,
+    setTheme: loginStore.setTheme,
+  };
+})(observer(Login));
