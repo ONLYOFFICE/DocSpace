@@ -1,9 +1,18 @@
 import styled, { css } from "styled-components";
-import { mobile, tablet, smallTablet, desktop } from "../utils/device";
+import {
+  mobile,
+  tablet,
+  smallTablet,
+  desktop,
+  size,
+  hugeDesktop,
+} from "../utils/device";
 import NoUserSelect from "../utils/commonStyles";
+import { isMobileOnly } from "react-device-detect";
 
 const EmptyPageStyles = css`
   grid-row-gap: 9px;
+  margin: 0 auto !important;
 
   .ec-image {
     height: 100px;
@@ -13,10 +22,6 @@ const EmptyPageStyles = css`
     max-width: 348px;
     line-height: 16px;
     margin-top: 0;
-  }
-
-  .ec-header {
-    font-size: 16px;
   }
 
   .ec-buttons {
@@ -30,15 +35,14 @@ const EmptyPageStyles = css`
 
   @media ${smallTablet} {
     .ec-image {
-      height: 72px;
+      ${isMobileOnly &&
+      css`
+        height: 72px;
+      `}
     }
 
     .ec-header {
       padding-top: 22px;
-    }
-
-    .ec-desc {
-      max-width: 282px;
     }
   }
 
@@ -53,14 +57,45 @@ const EmptyPageStyles = css`
   }
 `;
 
+const MobileView = css`
+  grid-template-areas:
+    "img img img"
+    "headerText headerText headerText"
+    ${(props) =>
+      props.subheadingText && `"subheadingText subheadingText subheadingText"`}
+    ${(props) =>
+      props.descriptionText &&
+      `"descriptionText descriptionText descriptionText"`}
+    "button button button";
+
+  .ec-header {
+    ${isMobileOnly &&
+    css`
+      padding: 0px;
+    `}
+  }
+  .ec-header,
+  .ec-subheading,
+  .ec-desc,
+  .ec-image,
+  .ec-buttons {
+    padding-left: 16px;
+  }
+
+  .ec-image {
+    ${isMobileOnly &&
+    css`
+      height: 72px;
+    `}
+
+    margin-left: 0;
+  }
+`;
+
 const EmptyContentBody = styled.div`
   margin: 0 auto;
-  padding: 64px 0;
+  padding: 37px 0;
   grid-template-columns: 150px 1fr;
-
-  @media ${tablet} {
-    grid-template-columns: none;
-  }
 
   display: grid;
   grid-template-areas:
@@ -80,12 +115,9 @@ const EmptyContentBody = styled.div`
     ${NoUserSelect}
   }
 
-  @media ${tablet} {
-    max-width: 480px;
-  }
-
   .ec-header {
     grid-area: headerText;
+    font-size: 16px;
     padding-top: 16px;
     @media (max-width: 375px) {
       margin-top: 5px;
@@ -106,9 +138,21 @@ const EmptyContentBody = styled.div`
     grid-area: button;
   }
 
+  @media ${hugeDesktop} {
+    margin-left: 113px;
+    margin-right: 113px;
+  }
+
+  @media ${tablet} {
+    grid-template-columns: none;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
   @media (orientation: portrait) {
     @media (max-width: 768px) {
-      padding-top: 0px;
+      margin-left: 113px;
+      margin-right: 113px;
 
       .ec-image {
         max-height: 100px;
@@ -116,36 +160,30 @@ const EmptyContentBody = styled.div`
     }
 
     @media (max-width: 428px) {
-      grid-template-areas:
-        "img img img"
-        "headerText headerText headerText"
-        ${(props) =>
-          props.subheadingText &&
-          `"subheadingText subheadingText subheadingText"`}
-        ${(props) =>
-          props.descriptionText &&
-          `"descriptionText descriptionText descriptionText"`}
-        "button button button";
-
-      .ec-header {
-        padding-top: 0px;
-      }
-      .ec-header,
-      .ec-subheading,
-      .ec-desc,
-      .ec-image,
-      .ec-buttons {
-        padding-left: 16px;
-      }
-
-      .ec-image {
-        height: 75px;
-        margin-left: 0;
-      }
+      ${MobileView}
     }
   }
 
-  ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
+  ${(props) =>
+    (props.isEmptyPage || props.isEmptyFolderContainer) && `${EmptyPageStyles}`}
+
+  ${(props) =>
+    props.sectionWidth <= size.smallTablet &&
+    !isMobileOnly &&
+    css`
+      ${MobileView}
+
+      .ec-desc {
+        max-width: none;
+      }
+
+      .ec-header {
+        padding-top: 22px;
+      }
+
+      max-width: none !important;
+      margin: 0 auto !important;
+    `}
 `;
 
 const EmptyContentImage = styled.img.attrs((props) => ({
