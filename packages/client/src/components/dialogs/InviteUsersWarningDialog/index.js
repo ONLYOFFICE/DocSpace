@@ -20,7 +20,8 @@ const InviteUsersWarningDialog = (props) => {
     dueDate,
     delayDueDate,
     visible,
-    setInviteUsersWarningDialogVisible,
+    setIsVisible,
+    isGracePeriod,
   } = props;
 
   const [datesData, setDatesData] = useState({});
@@ -44,7 +45,7 @@ const InviteUsersWarningDialog = (props) => {
     });
   };
 
-  const onClose = () => setInviteUsersWarningDialogVisible(false);
+  const onClose = () => setIsVisible(false);
 
   const onUpgradePlan = () => {
     onClose();
@@ -58,7 +59,7 @@ const InviteUsersWarningDialog = (props) => {
 
   return (
     <ModalDialog
-      isLarge
+      isLarge={isGracePeriod}
       isLoading={!tReady}
       visible={visible}
       onClose={onClose}
@@ -66,21 +67,39 @@ const InviteUsersWarningDialog = (props) => {
     >
       <ModalDialog.Header>{t("Common:Warning")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text fontWeight={700} noSelect>
-          {t("PaymentOverdue")}
-        </Text>
-        <br />
-        <Text noSelect as="div">
-          <Trans t={t} i18nKey="GracePeriodActivatedDescription" ns="Payments">
-            Grace period activated from <strong>{{ fromDate }}</strong>
-            <strong>{{ byDate }}</strong>({{ delayDaysCount }})
-            <p style={{ margin: "1rem 0" }}>
-              During the grace period, admins cannot create new rooms and add
-              new users. After the due date of the grace period, DocSpace will
-              become unavailable until the payment is made.
-            </p>
-          </Trans>
-        </Text>
+        {isGracePeriod ? (
+          <>
+            <Text fontWeight={700} noSelect>
+              {t("BusinessPlanPaymentOverdue")}
+            </Text>
+            <br />
+            <Text noSelect as="div">
+              <Trans
+                t={t}
+                i18nKey="GracePeriodActivatedDescription"
+                ns="Payments"
+              >
+                Grace period activated from <strong>{{ fromDate }}</strong>
+                <strong>{{ byDate }}</strong>({{ delayDaysCount }})
+                <p style={{ margin: "1rem 0" }}>
+                  During the grace period, admins cannot create new rooms and
+                  add new users. After the due date of the grace period,
+                  DocSpace will become unavailable until the payment is made.
+                </p>
+              </Trans>
+            </Text>
+          </>
+        ) : (
+          <>
+            <Text fontWeight={700} noSelect>
+              {t("PaymentOverdue")}
+            </Text>
+            <br />
+            <Text>{t("UpgradePlanInfo")}</Text>
+            <br />
+            <Text>{t("ChooseNewPlan")}</Text>
+          </>
+        )}
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
@@ -104,7 +123,12 @@ const InviteUsersWarningDialog = (props) => {
 };
 
 export default inject(({ auth, dialogsStore }) => {
-  const { dueDate, delayDueDate } = auth.currentTariffStatusStore;
+  const {
+    dueDate,
+    delayDueDate,
+    isGracePeriod,
+  } = auth.currentTariffStatusStore;
+
   const {
     inviteUsersWarningDialogVisible,
     setInviteUsersWarningDialogVisible,
@@ -113,9 +137,10 @@ export default inject(({ auth, dialogsStore }) => {
   return {
     language: auth.language,
     visible: inviteUsersWarningDialogVisible,
-    setInviteUsersWarningDialogVisible,
+    setIsVisible: setInviteUsersWarningDialogVisible,
     dueDate,
     delayDueDate,
+    isGracePeriod,
   };
 })(
   observer(

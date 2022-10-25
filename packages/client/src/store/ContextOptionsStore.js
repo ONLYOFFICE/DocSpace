@@ -417,8 +417,9 @@ class ContextOptionsStore {
     const { action } = data;
 
     const { isGracePeriod } = this.authStore.currentTariffStatusStore;
+    const { isFreeTariff } = this.authStore.currentQuotaStore;
 
-    if (isGracePeriod) {
+    if (isGracePeriod || isFreeTariff) {
       this.dialogsStore.setInviteUsersWarningDialogVisible(true);
     } else {
       this.dialogsStore.setInvitePanelOptions({

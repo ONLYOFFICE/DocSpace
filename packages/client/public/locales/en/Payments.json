@@ -39,6 +39,9 @@
   "UpgradeNow": "Upgrade now",
   "UserNotFound": "User <1>«{{email}}»</1> is not found",
   "YourPrice": "Your price",
-  "PaymentOverdue": "Cannot add new users. Business plan payment overdue",
-  "UpgradePlan": "Upgrade plan"
+  "PaymentOverdue": "Cannot add new users.",
+  "BusinessPlanPaymentOverdue": "Cannot add new users. Business plan payment overdue",
+  "UpgradePlan": "Upgrade plan",
+  "UpgradePlanInfo": "Adding new users will exceed the maximum number of room members allowed by your current pricing plan.",
+  "ChooseNewPlan": "Would you like to choose a new pricing plan?"
 }
