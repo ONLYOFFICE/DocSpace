@@ -37,6 +37,9 @@ public class WhitelabelController : BaseSettingsController
     private readonly TenantLogoManager _tenantLogoManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly CommonLinkUtility _commonLinkUtility;
+    private readonly IMapper _mapper;
+    private readonly CompanyWhiteLabelSettingsHelper _companyWhiteLabelSettingsHelper;
+    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
 
     public WhitelabelController(
         ApiContext apiContext,
@@ -49,7 +52,9 @@ public class WhitelabelController : BaseSettingsController
         CoreBaseSettings coreBaseSettings,
         CommonLinkUtility commonLinkUtility,
         IMemoryCache memoryCache,
-        IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IMapper mapper,
+        CompanyWhiteLabelSettingsHelper companyWhiteLabelSettingsHelper, AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _permissionContext = permissionContext;
         _settingsManager = settingsManager;
@@ -58,6 +63,9 @@ public class WhitelabelController : BaseSettingsController
         _tenantLogoManager = tenantLogoManager;
         _coreBaseSettings = coreBaseSettings;
         _commonLinkUtility = commonLinkUtility;
+        _mapper = mapper;
+        _companyWhiteLabelSettingsHelper = companyWhiteLabelSettingsHelper;
+        _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
     }
 
     ///<visible>false</visible>
@@ -117,12 +125,11 @@ public class WhitelabelController : BaseSettingsController
     }
 
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("whitelabel/sizes")]
     public object GetWhiteLabelSizes()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        DemandWhiteLabelPermission();
 
         return
         new[]
@@ -140,13 +147,10 @@ public class WhitelabelController : BaseSettingsController
 
 
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("whitelabel/logos")]
     public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        DemandWhiteLabelPermission();
-
         Dictionary<string, string> result;
 
         var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
@@ -166,12 +170,11 @@ public class WhitelabelController : BaseSettingsController
     }
 
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("whitelabel/logotext")]
     public object GetWhiteLabelLogoText()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        DemandWhiteLabelPermission();
 
         var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
@@ -201,15 +204,13 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("companywhitelabel")]
     public List<CompanyWhiteLabelSettings> GetLicensorData()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
         var result = new List<CompanyWhiteLabelSettings>();
 
-        var instance = CompanyWhiteLabelSettings.Instance(_settingsManager);
+        var instance = _companyWhiteLabelSettingsHelper.Instance();
 
         result.Add(instance);
 
-        if (!instance.IsDefault && !instance.IsLicensor)
+        if (!_companyWhiteLabelSettingsHelper.IsDefault(instance) && !instance.IsLicensor)
         {
             result.Add(_settingsManager.GetDefault<CompanyWhiteLabelSettings>());
         }
@@ -238,11 +239,9 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpGet("rebranding/company")]
-    public CompanyWhiteLabelSettings GetCompanyWhiteLabelSettings()
+    public CompanyWhiteLabelSettingsDto GetCompanyWhiteLabelSettings()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        return _settingsManager.Load<CompanyWhiteLabelSettings>();
+        return _mapper.Map<CompanyWhiteLabelSettings, CompanyWhiteLabelSettingsDto>(_settingsManager.Load<CompanyWhiteLabelSettings>());
     }
 
     ///<visible>false</visible>
@@ -278,9 +277,9 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpGet("rebranding/additional")]
-    public AdditionalWhiteLabelSettings GetAdditionalWhiteLabelSettings()
+    public AdditionalWhiteLabelSettingsDto GetAdditionalWhiteLabelSettings()
     {
-        return _settingsManager.Load<AdditionalWhiteLabelSettings>();
+        return _mapper.Map<AdditionalWhiteLabelSettings, AdditionalWhiteLabelSettingsDto>(_settingsManager.Load<AdditionalWhiteLabelSettings>());
     }
 
     ///<visible>false</visible>
@@ -330,8 +329,6 @@ public class WhitelabelController : BaseSettingsController
     [HttpGet("rebranding/mail")]
     public MailWhiteLabelSettings GetMailWhiteLabelSettings()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
         return _settingsManager.Load<MailWhiteLabelSettings>();
     }
 

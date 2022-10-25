@@ -8,6 +8,7 @@ import {
   FileStatus,
   RoomSearchArea,
   RoomsType,
+  RoomsProviderType,
 } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
@@ -35,6 +36,7 @@ class FilesStore {
   selectedFolderStore;
   treeFoldersStore;
   filesSettingsStore;
+  thirdPartyStore;
 
   isLoaded = false;
   isLoading = false;
@@ -94,7 +96,8 @@ class FilesStore {
     authStore,
     selectedFolderStore,
     treeFoldersStore,
-    filesSettingsStore
+    filesSettingsStore,
+    thirdPartyStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
@@ -105,6 +108,7 @@ class FilesStore {
     this.selectedFolderStore = selectedFolderStore;
     this.treeFoldersStore = treeFoldersStore;
     this.filesSettingsStore = filesSettingsStore;
+    this.thirdPartyStore = thirdPartyStore;
 
     const { socketHelper, withPaging } = authStore.settingsStore;
 
@@ -1031,16 +1035,17 @@ class FilesStore {
 
       let fileOptions = [
         //"open",
+        "select",
         "fill-form",
         "edit",
         "preview",
         "view",
         "make-form",
         "separator0",
-        "sharing-settings",
-        "external-link",
+        // "sharing-settings",
+        // "external-link",
         "owner-change",
-        "link-for-portal-users",
+        // "link-for-portal-users",
         "send-by-email",
         "docu-sign",
         "version", //category
@@ -1341,16 +1346,23 @@ class FilesStore {
       return fileOptions;
     } else if (isRoom) {
       let roomOptions = [
+        "select",
+        "separator0",
+        "reconnect-storage",
         "edit-room",
         "invite-users-to-room",
-        "show-info",
+        "room-info",
         "pin-room",
         "unpin-room",
-        "separator0",
+        "separator1",
         "archive-room",
         "unarchive-room",
         "delete",
       ];
+
+      if (!item.providerKey) {
+        roomOptions = this.removeOptions(roomOptions, ["reconnect-storage"]);
+      }
 
       if (item.pinned) {
         roomOptions = this.removeOptions(roomOptions, ["pin-room"]);
@@ -1365,6 +1377,8 @@ class FilesStore {
           "pin-room",
           "unpin-room",
           "archive-room",
+          "separator1",
+          "room-info",
         ]);
       } else {
         roomOptions = this.removeOptions(roomOptions, [
@@ -1387,12 +1401,13 @@ class FilesStore {
       return roomOptions;
     } else {
       let folderOptions = [
+        "select",
         "open",
         "separator0",
-        "sharing-settings",
+        // "sharing-settings",
         "owner-change",
         "show-info",
-        "link-for-portal-users",
+        // "link-for-portal-users",
         "separator1",
         "open-location",
         "download",
@@ -1585,7 +1600,6 @@ class FilesStore {
   }
 
   createRoomInThirdpary(thirpartyFolderId, roomParams) {
-    console.log(thirpartyFolderId, roomParams);
     return api.rooms.createRoomInThirdpary(thirpartyFolderId, roomParams);
   }
 
@@ -1978,6 +1992,16 @@ class FilesStore {
         pinned,
       } = item;
 
+      const thirdPartyIcon = this.thirdPartyStore.getThirdPartyIcon(
+        item.providerKey,
+        "small"
+      );
+
+      const providerType =
+        RoomsProviderType[
+          Object.keys(RoomsProviderType).find((key) => key === item.providerKey)
+        ];
+
       const { canConvert, isMediaOrImage } = this.filesSettingsStore;
 
       const canOpenPlayer = isMediaOrImage(item.fileExst);
@@ -2090,6 +2114,8 @@ class FilesStore {
         isArchive,
         tags,
         pinned,
+        thirdPartyIcon,
+        providerType,
       };
     });
 
@@ -2683,6 +2709,24 @@ class FilesStore {
   setRoomSecurity = async (id, data) => {
     return await api.rooms.setRoomSecurity(id, data);
   };
+
+  get disableDrag() {
+    const {
+      isRecycleBinFolder,
+      isRoomsFolder,
+      isArchiveFolder,
+      isFavoritesFolder,
+      isRecentFolder,
+    } = this.treeFoldersStore;
+
+    return (
+      isRecycleBinFolder ||
+      isRoomsFolder ||
+      isArchiveFolder ||
+      isFavoritesFolder ||
+      isRecentFolder
+    );
+  }
 }
 
 export default FilesStore;

@@ -5,8 +5,6 @@ import { isMobileOnly } from "react-device-detect";
 
 import Bar from "./Bar";
 
-import SnackBar from "@docspace/components/snackbar";
-
 const StyledContainer = styled.div`
   width: 100%;
   max-width: 100%;
@@ -30,18 +28,13 @@ const StyledContainer = styled.div`
   }
 `;
 
-//TODO: remove commented code after update bar logic
-
 const MainBar = ({
   firstLoad,
   checkedMaintenance,
   snackbarExist,
   setMaintenanceExist,
 }) => {
-  // const [isVisible, setIsVisible] = React.useState(false);
-
   React.useEffect(() => {
-    // setTimeout(() => setIsVisible(true), 9000);
     return () => setMaintenanceExist && setMaintenanceExist(false);
   }, []);
 
@@ -50,17 +43,6 @@ const MainBar = ({
       {checkedMaintenance && !snackbarExist && (
         <Bar firstLoad={firstLoad} setMaintenanceExist={setMaintenanceExist} />
       )}
-      {/* {isVisible && (
-        <SnackBar
-          headerText={"Rooms is about to be exceeded: 10 / 12"}
-          text={
-            "You can archived the unnecessary rooms or click here to find a better pricing plan for your portal."
-          }
-          isCampaigns={false}
-          opacity={1}
-          onLoad={() => console.log("load snackbar")}
-        />
-      )} */}
     </StyledContainer>
   );
 };

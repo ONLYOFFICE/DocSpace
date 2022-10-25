@@ -70,7 +70,7 @@
   "Guests": "Ospiti",
   "Job/Title": "Occupazione/Titolo",
   "LanguageAndTimeZoneSettingsDescription": "Impostazioni di lingua e fuso orario ti permettono di cambiare la lingua di tutto il portale per tutti gli utenti e configurare il fuso orario perché tutti gli eventi del portale siano visualizzati con la data e l'ora corretta.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> ti permettono di cambiare la lingua di tutto il portale per tutti gli utenti e configurare il fuso orario perché tutti gli eventi del portale ONLYOFFICE siano visualizzati con la data e l'ora corretta.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> ti permettono di cambiare la lingua di tutto il portale per tutti gli utenti e configurare il fuso orario perché tutti gli eventi del portale {{ organizationName }} siano visualizzati con la data e l'ora corretta.",
   "LanguageTimeSettingsTooltipDescription": "Per applicare i parametri impostati clicca su <1>{{save}}</1> nella parte inferiore della sezione.<3>{{learnMore}}</3>",
   "LocalFile": "File locale",
   "LoginDownloadText": "È possibile scaricare il report per i dati disponibili durante il periodo di archiviazione selezionato per visualizzare le statistiche dettagliate.",

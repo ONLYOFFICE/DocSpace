@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Core.Core;
-
 using UrlShortener = ASC.Web.Core.Utility.UrlShortener;
 
 namespace ASC.Web.Files.Services.WCFService;
@@ -273,7 +271,8 @@ public class FileStorageService<T> //: IFileStorageService
         SearchArea searchArea = SearchArea.Active,
         bool withoutTags = false,
         IEnumerable<string> tagNames = null,
-        bool excludeSubject = false)
+        bool excludeSubject = false,
+        ProviderFilter provider = ProviderFilter.None)
     {
         var subjectId = string.IsNullOrEmpty(subject) ? Guid.Empty : new Guid(subject);
 
@@ -323,7 +322,7 @@ public class FileStorageService<T> //: IFileStorageService
         try
         {
             (entries, total) = await _entryManager.GetEntriesAsync(parent, from, count, filterType, subjectGroup, subjectId, searchText, searchInContent, withSubfolders, orderBy, searchArea,
-                withoutTags, tagNames, excludeSubject);
+                withoutTags, tagNames, excludeSubject, provider);
         }
         catch (Exception e)
         {
@@ -471,7 +470,7 @@ public class FileStorageService<T> //: IFileStorageService
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
-        _countRoomChecker.CheckAdd((await _countRoomCheckerStatistic.GetValue()) + 1);
+        await _countRoomChecker.CheckAppend();
 
         if (@private && (share == null || !share.Any()))
         {

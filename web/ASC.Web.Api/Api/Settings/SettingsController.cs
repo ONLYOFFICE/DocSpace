@@ -57,7 +57,7 @@ public class SettingsController : BaseSettingsController
     private readonly ILogger _log;
     private readonly TelegramHelper _telegramHelper;
     private readonly DnsSettings _dnsSettings;
-    private readonly AdditionalWhiteLabelSettingsHelper _additionalWhiteLabelSettingsHelper;
+    private readonly AdditionalWhiteLabelSettingsHelperInit _additionalWhiteLabelSettingsHelper;
     private readonly CustomColorThemesSettingsHelper _customColorThemesSettingsHelper;
     private readonly QuotaUsageManager _quotaUsageManager;
     private readonly QuotaSyncOperation _quotaSyncOperation;
@@ -93,7 +93,7 @@ public class SettingsController : BaseSettingsController
         PasswordHasher passwordHasher,
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
-        AdditionalWhiteLabelSettingsHelper additionalWhiteLabelSettingsHelper,
+        AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelper,
         CustomColorThemesSettingsHelper customColorThemesSettingsHelper,
         QuotaSyncOperation quotaSyncOperation,
         QuotaUsageManager quotaUsageManager
@@ -140,7 +140,7 @@ public class SettingsController : BaseSettingsController
         var settings = new SettingsDto
         {
             Culture = Tenant.GetCulture().ToString(),
-            GreetingSettings = Tenant.Name,
+            GreetingSettings = Tenant.Name == "" ? Resource.PortalName : Tenant.Name,
             Personal = _coreBaseSettings.Personal,
             DocSpace = !_coreBaseSettings.DisableDocSpace,
             Version = _configuration["version:number"] ?? "",
@@ -630,12 +630,12 @@ public class SettingsController : BaseSettingsController
         return new { Url = hubUrl };
     }
 
-    ///<visible>false</visible>
+    /*///<visible>false</visible>
     [HttpGet("controlpanel")]
     public TenantControlPanelSettings GetTenantControlPanelSettings()
     {
         return _settingsManager.Load<TenantControlPanelSettings>();
-    }
+    }*/
 
     [HttpGet("authservice")]
     public IEnumerable<AuthServiceRequestsDto> GetAuthServices()

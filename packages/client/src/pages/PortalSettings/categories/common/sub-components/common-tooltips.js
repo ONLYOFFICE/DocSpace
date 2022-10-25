@@ -18,7 +18,12 @@ const StyledTooltip = styled.div`
   }
 `;
 
-export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
+export const LanguageTimeSettingsTooltip = ({
+  t,
+  theme,
+  helpLink,
+  organizationName,
+}) => {
   const learnMore = t("Common:LearnMore");
   const text = t("Settings:StudioTimeLanguageSettings");
   const save = t("Common:SaveButton");
@@ -27,7 +32,8 @@ export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
     <StyledTooltip>
       <div className="font-size">
         <Trans ns="Settings" i18nKey="LanguageTimeSettingsTooltip" text={text}>
-          <div className="bold display-inline font-size">{{ text }}</div>{" "}
+          <div className="bold display-inline font-size">{{ text }}</div>
+          {{ organizationName }}
         </Trans>
       </div>
       <div className="font-size">
@@ -37,8 +43,9 @@ export const LanguageTimeSettingsTooltip = ({ t, theme, helpLink }) => {
           learnMore={learnMore}
           save={save}
         >
-          {" "}
-          <div className="bold display-inline font-size"> {{ save }}</div>{" "}
+          To make the parameters you set take effect click the
+          <div className="bold display-inline font-size"> {{ save }}</div>
+          button at the bottom of the section.
           <Link
             color={theme.client.settings.common.linkColorHelp}
             className="display-block font-size"
@@ -69,12 +76,12 @@ export const CustomTitlesTooltip = ({ t }) => {
           text={text}
           from={from}
         >
-          <div className="bold display-inline font-size">
-            {" "}
-            {{ welcomeText }}
-          </div>{" "}
-          <div className="bold display-inline font-size"> {{ text }}</div>{" "}
-          <div className="bold display-inline font-size"> {{ from }}</div>{" "}
+          <div className="bold display-inline font-size">{{ welcomeText }}</div>
+          is a way to change the default portal title to be displayed on the
+          <div className="bold display-inline font-size"> {{ text }}</div>
+          of your portal. The same name is also used for the
+          <div className="bold display-inline font-size"> {{ from }}</div>
+          field of your portal email notifications.
         </Trans>
       </div>
       <div className="font-size">
@@ -83,18 +90,21 @@ export const CustomTitlesTooltip = ({ t }) => {
           i18nKey="CustomTitlesSettingsTooltipDescription"
           header={header}
         >
-          {" "}
-          <div className="bold display-inline font-size">
-            {" "}
-            {{ header }}
-          </div>{" "}
+          Enter the name you like in the
+          <div className="bold display-inline font-size">{{ header }}</div>
+          field.
         </Trans>
       </div>
     </StyledTooltip>
   );
 };
 
-export const DNSSettingsTooltip = ({ t, theme, helpLink }) => {
+export const DNSSettingsTooltip = ({
+  t,
+  theme,
+  helpLink,
+  organizationName,
+}) => {
   const text = t("Settings:DNSSettingsTooltip");
   const learnMore = t("Common:LearnMore");
 
@@ -107,7 +117,10 @@ export const DNSSettingsTooltip = ({ t, theme, helpLink }) => {
           text={text}
           learnMore={learnMore}
         >
-          <div className="display-inline font-size"> {{ text }}</div>{" "}
+          DNS Settings allow you to set an alternative URL address for your
+          {{ organizationName }} portal. Send your request to our support team,
+          and our specialists will help you with the settings.
+          <div className="display-inline font-size"> {{ text }}</div>
           <Link
             color={theme.client.settings.common.linkColorHelp}
             className="display-block font-size"
@@ -136,7 +149,9 @@ export const PortalRenamingTooltip = ({ t }) => {
           i18nKey="PortalRenamingSettingsTooltip"
           text={text}
         >
-          <div className="display-inline font-size"> {{ text }}</div>{" "}
+          <div className="display-inline font-size"> {{ text }}</div>
+          Enter the part that will appear next to the
+          onlyoffice.com/onlyoffice.eu portal address.
         </Trans>
       </div>
       <div className="font-size">
@@ -146,8 +161,11 @@ export const PortalRenamingTooltip = ({ t }) => {
           pleaseNote={pleaseNote}
           save={save}
         >
-          <div className="bold display-inline font-size"> {{ pleaseNote }}</div>{" "}
-          <div className="bold display-inline font-size"> {{ save }}</div>{" "}
+          <div className="bold display-inline font-size"> {{ pleaseNote }}</div>
+          : your old portal address will become available to new users once you
+          click the
+          <div className="bold display-inline font-size"> {{ save }}</div>
+          button.
         </Trans>
       </div>
     </StyledTooltip>

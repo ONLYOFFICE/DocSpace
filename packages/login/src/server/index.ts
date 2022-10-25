@@ -31,7 +31,7 @@ app.use("/login", express.static(path.resolve(path.join(__dirname, "client"))));
 
 app.use(logger("dev", { stream: stream }));
 
-app.get("*", async (req: ILoginRequest, res: Response) => {
+app.get("*", async (req: ILoginRequest, res: Response, next) => {
   const { i18n, cookies, headers, query, t, url } = req;
   let initialState: IInitialState;
   let assets: assetsType;
@@ -40,6 +40,11 @@ app.get("*", async (req: ILoginRequest, res: Response) => {
 
   try {
     initialState = await getInitialState(query);
+
+    if (initialState.isAuth) {
+      res.redirect('/');
+      next();
+    }
 
     let currentLanguage = initialState.portalSettings.culture;
 

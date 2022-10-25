@@ -15,12 +15,17 @@ const ProfileRemoveForm = lazy(() => import("./sub-components/profileRemove"));
 const ChangeOwnerForm = lazy(() => import("./sub-components/changeOwner"));
 const TfaAuthForm = lazy(() => import("./sub-components/tfaAuth"));
 const TfaActivationForm = lazy(() => import("./sub-components/tfaActivation"));
+const RemovePortal = lazy(() => import("./sub-components/removePortal"));
+const DeactivatePortal = lazy(() =>
+  import("./sub-components/deactivatePortal")
+);
+const ContinuePortal = lazy(() => import("./sub-components/continuePortal"));
 
 const Confirm = ({ match }) => {
   //console.log("Confirm render");
   const path = match.path;
   return (
-    <ConfirmWrapper className="with-background-pattern">
+    <ConfirmWrapper>
       <Switch>
         <ConfirmRoute
           forUnauthorized
@@ -67,6 +72,21 @@ const Confirm = ({ match }) => {
           exact
           path={`${path}/TfaActivation`}
           component={TfaActivationForm}
+        />
+        <ConfirmRoute
+          exact
+          path={`${path}/PortalRemove`}
+          component={RemovePortal}
+        />
+        <ConfirmRoute
+          exact
+          path={`${path}/PortalSuspend`}
+          component={DeactivatePortal}
+        />
+        <ConfirmRoute
+          exact
+          path={`${path}/PortalContinue`}
+          component={ContinuePortal}
         />
 
         {/* <Route component={Error404} /> */}

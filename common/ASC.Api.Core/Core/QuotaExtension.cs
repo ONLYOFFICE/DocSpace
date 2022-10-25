@@ -25,18 +25,18 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Api.Core.Core;
-internal static class QuotaExtension
+public static class QuotaExtension
 {
     public static void RegisterFeature(this IServiceCollection services)
     {
         services.AddScoped<ITenantQuotaFeatureChecker, CountManagerChecker>();
-        services.AddScoped<TenantQuotaFeatureChecker<CountManagerFeature, int>, CountManagerChecker>();
+        services.AddScoped<TenantQuotaFeatureCheckerCount<CountManagerFeature>, CountManagerChecker>();
         services.AddScoped<CountManagerChecker>();
         services.AddScoped<ITenantQuotaFeatureStat<CountManagerFeature, int>, CountManagerStatistic>();
         services.AddScoped<CountManagerStatistic>();
 
         services.AddScoped<ITenantQuotaFeatureChecker, CountUserChecker>();
-        services.AddScoped<TenantQuotaFeatureChecker<CountUserFeature, int>, CountUserChecker>();
+        services.AddScoped<TenantQuotaFeatureCheckerCount<CountUserFeature>, CountUserChecker>();
         services.AddScoped<CountUserChecker>();
         services.AddScoped<ITenantQuotaFeatureStat<CountUserFeature, int>, CountUserStatistic>();
         services.AddScoped<CountUserStatistic>();

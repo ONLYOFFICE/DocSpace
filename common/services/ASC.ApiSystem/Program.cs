@@ -24,31 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
-
 
 var options = new WebApplicationOptions
 {
@@ -58,44 +33,52 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args, (hostContext, config, env, path) =>
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddApiSystemConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
+
+var logger = LogManager.Setup()
+                            .SetupExtensions(s =>
+                            {
+                                s.RegisterLayoutRenderer("application-context", (logevent) => AppName);
+                            })
+                            .LoadConfiguration(builder.Configuration, builder.Environment)
+                            .GetLogger(typeof(Startup).Namespace);
+
+try
 {
-    config.AddJsonFile($"appsettings.services.json", true)
-          .AddJsonFile("notify.json")
-          .AddJsonFile($"notify.{env.EnvironmentName}.json", true);
-},
-(hostContext, services, diHelper) =>
+    logger.Info("Configuring web host ({applicationContext})...", AppName);
+    builder.Host.ConfigureDefault();
+
+    var startup = new Startup(builder.Configuration, builder.Environment);
+
+    startup.ConfigureServices(builder.Services);
+
+    var app = builder.Build();
+
+    startup.Configure(app, app.Environment);
+
+    logger.Info("Starting web host ({applicationContext})...", AppName);
+    await app.RunWithTasksAsync();
+}
+catch (Exception ex)
 {
-    diHelper.RegisterProducts(hostContext.Configuration, hostContext.HostingEnvironment.ContentRootPath);
+    if (logger != null)
+    {
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", AppName);
+    }
 
-    diHelper.TryAdd<AuthHandler>();
-    diHelper.AddControllers();
-
-    services.AddControllers()
-            .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.WriteIndented = false;
-                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            });
-
-    services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
-
-    services.AddAuthentication()
-        .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip", _ => { })
-        .AddScheme<AuthenticationSchemeOptions, AuthHandler>("auth.allowskip.registerportal", _ => { });
-});
-
-var startup = new BaseWorkerStartup(builder.Configuration);
-
-startup.ConfigureServices(builder.Services);
-
-builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
+    throw;
+}
+finally
 {
-    builder.Register(context.Configuration);
-});
+    // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
+    LogManager.Shutdown();
+}
 
-var app = builder.Build();
-
-startup.Configure(app);
-
-await app.RunAsync();
+public partial class Program
+{
+    public static string Namespace = typeof(Startup).Namespace;
+    public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.') + 1);
+}

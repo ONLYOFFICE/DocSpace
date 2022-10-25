@@ -9,6 +9,11 @@ const StyledWrapper = styled.div`
     width: 100%;
     height: 46px;
 
+    svg {
+      path:last-child {
+        fill: ${(props) => props.theme.client.home.logoColor};
+      }
+    }
     @media ${hugeMobile} {
       display: none;
     }

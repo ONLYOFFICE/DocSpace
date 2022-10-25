@@ -95,10 +95,12 @@ const DeleteDialogComponent = (props) => {
   };
 
   const moveToTrashNoteText = () => {
+    const isFolder = selection[0]?.isFolder || !!selection[0]?.parentId;
+
     if (selection.length > 1) {
       return t("MoveToTrashItems");
     } else {
-      return !selection[0]?.isFolder
+      return !isFolder
         ? t("MoveToTrashFile")
         : personal
         ? ""

@@ -69,7 +69,7 @@
   "Guests": "Gasten",
   "Job/Title": "Functie/Titel",
   "LanguageAndTimeZoneSettingsDescription": "Wijzig de taal voor alle portaalgebruikers en configureer de tijdzone, zodat alle portaalgebeurtenissen met de juiste datum en tijd worden weergegeven.",
-  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> is een manier om de taal van het hele portaal voor alle portaalgebruikers te wijzigen en de tijdzone te configureren zodat alle gebeurtenissen van het ONLYOFFICE portaal met de juiste datum en tijd worden weergegeven.",
+  "LanguageTimeSettingsTooltip": "<0>{{text}}</0> is een manier om de taal van het hele portaal voor alle portaalgebruikers te wijzigen en de tijdzone te configureren zodat alle gebeurtenissen van het {{ organizationName }} portaal met de juiste datum en tijd worden weergegeven.",
   "LanguageTimeSettingsTooltipDescription": "Als u de parameters die u instelt in werking wilt laten treden, klikt u op de knop <1>{{save}}</1> onderaan.<3>{{learnMore}}</3>",
   "LocalFile": "Lokaal bestand",
   "LoginHistoryTitle": "Inloggeschiedenis",

@@ -87,12 +87,16 @@ class UsersStore {
   };
 
   updateUserStatus = async (status, userIds) => {
-    const user = await api.people.updateUserStatus(status, userIds);
+    return api.people.updateUserStatus(status, userIds).then((users) => {
+      if (users) {
+        users.forEach((user) => {
+          const userIndex = this.users.findIndex((x) => x.id === user.id);
+          if (userIndex !== -1) this.users[userIndex] = user;
+        });
+      }
 
-    if (user) {
-      const userIndex = this.users.findIndex((x) => x.id === user[0].id);
-      if (userIndex !== -1) this.users[userIndex] = user[0];
-    }
+      return users;
+    });
   };
 
   updateUserType = async (type, userIds, filter, fromType) => {
@@ -333,62 +337,64 @@ class UsersStore {
     return res.items;
   };
 
+  getPeopleListItem = (user) => {
+    const {
+      id,
+      displayName,
+      avatar,
+      email,
+      isOwner,
+      isAdmin: isAdministrator,
+      isVisitor,
+      mobilePhone,
+      userName,
+      activationStatus,
+      status,
+      groups,
+      title,
+      firstName,
+      lastName,
+    } = user;
+    const statusType = this.getStatusType(user);
+    const role = this.getUserRole(user);
+    const isMySelf =
+      this.peopleStore.authStore.userStore.user &&
+      user.userName === this.peopleStore.authStore.userStore.user.userName;
+    //const isViewerAdmin = this.peopleStore.authStore.isAdmin;
+
+    const options = this.getUserContextOptions(
+      isMySelf,
+      isOwner,
+      isAdministrator,
+      statusType,
+      role,
+      status
+    );
+
+    return {
+      id,
+      status,
+      activationStatus,
+      statusType,
+      role,
+      isOwner,
+      isAdmin: isAdministrator,
+      isVisitor,
+      displayName,
+      avatar,
+      email,
+      userName,
+      mobilePhone,
+      options,
+      groups,
+      position: title,
+      firstName,
+      lastName,
+    };
+  };
+
   get peopleList() {
-    const list = this.users.map((user) => {
-      const {
-        id,
-        displayName,
-        avatar,
-        email,
-        isOwner,
-        isAdmin: isAdministrator,
-        isVisitor,
-        mobilePhone,
-        userName,
-        activationStatus,
-        status,
-        groups,
-        title,
-        firstName,
-        lastName,
-      } = user;
-      const statusType = this.getStatusType(user);
-      const role = this.getUserRole(user);
-      const isMySelf =
-        this.peopleStore.authStore.userStore.user &&
-        user.userName === this.peopleStore.authStore.userStore.user.userName;
-      //const isViewerAdmin = this.peopleStore.authStore.isAdmin;
-
-      const options = this.getUserContextOptions(
-        isMySelf,
-        isOwner,
-        isAdministrator,
-        statusType,
-        role,
-        status
-      );
-
-      return {
-        id,
-        status,
-        activationStatus,
-        statusType,
-        role,
-        isOwner,
-        isAdmin: isAdministrator,
-        isVisitor,
-        displayName,
-        avatar,
-        email,
-        userName,
-        mobilePhone,
-        options,
-        groups,
-        position: title,
-        firstName,
-        lastName,
-      };
-    });
+    const list = this.users.map((user) => this.getPeopleListItem(user));
 
     return list;
   }

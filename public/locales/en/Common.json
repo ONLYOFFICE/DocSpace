@@ -151,6 +151,7 @@
   "PunycodeDomain": "Punycode domains are not supported",
   "PunycodeLocalPart": "Punycode local part is not supported",
   "Plugin": "Plugin",
+  "ReconnectStorage": "Reconnect storage",
   "RequiredField": "Required field",
   "RecoverTitle": "Access recovery",
   "RecoverDescribeYourProblemPlaceholder": "Describe your problem",

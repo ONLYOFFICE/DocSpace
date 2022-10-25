@@ -1,0 +1,10 @@
+{
+  "ClickHere": "click here",
+  "ConfirmEmailHeader": "Please activate your email to get access to all the portal features.",
+  "ConfirmEmailDescription": "Use the link provided in the activation email. Haven't received an email with the activation link?",
+  "RequestActivation": "Request activation once again",
+  "RoomQuotaHeader": "Rooms is about to be exceeded: {{currentValue}} / {{maxValue}}",
+  "RoomQuotaDescription": "You can archived the unnecessary rooms or <1>{{clickHere}}</1> to find a better pricing plan for your portal.",
+  "StorageQuotaHeader": "Storage space amount is about to be exceeded: {{currentValue}} / {{maxValue}}",
+  "StorageQuotaDescription": "You can remove the unnecessary files or <1>{{clickHere}}</1> to find a better pricing plan for your portal."
+}

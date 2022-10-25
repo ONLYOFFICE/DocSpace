@@ -24,7 +24,7 @@ import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 const StyledContainer = styled.div`
   width: 100%;
   min-height: 33px;
-  height: 60px;
+  height: 69px;
 
   .group-button-menu-container {
     margin: 0 0 0 -20px;

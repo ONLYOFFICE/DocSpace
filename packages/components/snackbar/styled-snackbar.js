@@ -40,7 +40,7 @@ const StyledSnackBar = styled(Box)`
 
     .header-body {
       width: 100%;
-      height: 16px;
+      height: fit-content;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -52,7 +52,7 @@ const StyledSnackBar = styled(Box)`
         line-height: 16px;
         font-weight: 600;
 
-        text-align: center;
+        text-align: justify;
 
         margin: 0;
       }
@@ -69,6 +69,8 @@ const StyledSnackBar = styled(Box)`
         font-size: 12px;
         line-height: 16px;
         font-weight: 400;
+
+        text-align: justify;
       }
     }
   }
@@ -79,11 +81,12 @@ const StyledSnackBar = styled(Box)`
     border: none;
     font-size: inherit;
     color: "#333";
-    margin: -2px 4px 4px 24px;
+    margin: 0px 4px 4px 24px;
     padding: 0;
+
     min-width: min-content;
     cursor: pointer;
-    margin-left: auto;
+    margin-left: 12px;
 
     text-decoration: underline;
   }
@@ -95,6 +98,7 @@ const StyledSnackBar = styled(Box)`
     color: "#000";
     cursor: pointer;
     line-height: 14px;
+
     text-decoration: underline;
   }
 `;
