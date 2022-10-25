@@ -195,6 +195,10 @@ const StyledIconBox = styled.div`
   align-items: center;
   height: 20px;
 
+  img {
+    height: 24px;
+  }
+
   @media ${tablet} {
     display: ${(props) => (props.showText ? "none" : "flex")};
   }
