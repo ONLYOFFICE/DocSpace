@@ -71,11 +71,14 @@ const ActiveSessions = ({
   const onClickRemoveAllExceptThis = async () => {
     try {
       setLoading(true);
-      await removeAllExecptThis();
+      await removeAllExecptThis().then(() =>
+        getAllSessions().then((res) => setSessions(res.items))
+      );
     } catch (error) {
-      console.log(error);
+      toastr.error(error);
     } finally {
       setLoading(false);
+      setLogoutAllVisible(false);
     }
   };
 
@@ -94,7 +97,6 @@ const ActiveSessions = ({
       );
     } catch (error) {
       toastr.error(error);
-      console.log(error);
     } finally {
       setLoading(false);
       setLogoutVisible(false);
