@@ -125,7 +125,7 @@ const Panels = (props) => {
       <RestoreAllArchiveDialog key="restore-all-archive-dialog" />
     ),
     inviteUsersWarningDialogVisible && (
-      <InviteUsersWarningDialog key="cannot-add-user-dialog" />
+      <InviteUsersWarningDialog key="invite-users-warning-dialog" />
     ),
   ];
 };
