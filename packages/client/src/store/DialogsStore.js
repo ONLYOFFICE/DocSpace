@@ -26,6 +26,7 @@ class DialogsStore {
   convertDialogVisible = false;
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
+  inviteUsersWarningDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
   invitePanelOptions = {
@@ -287,6 +288,10 @@ class DialogsStore {
       this.inviteItems[index] = { ...this.inviteItems[index], ...item };
     });
 
+  setInviteUsersWarningDialogVisible = (inviteUsersWarningDialogVisible) => {
+    this.inviteUsersWarningDialogVisible = inviteUsersWarningDialogVisible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -309,7 +314,8 @@ class DialogsStore {
       this.eventDialogVisible ||
       this.invitePanelOptions.visible ||
       this.restoreAllArchiveDialogVisible ||
-      this.restoreAllPanelVisible
+      this.restoreAllPanelVisible ||
+      this.inviteUsersWarningDialogVisible
     );
   }
 
