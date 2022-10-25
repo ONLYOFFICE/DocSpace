@@ -90,28 +90,4 @@ public class EncryptionLoginProvider
             return null;
         }
     }
-
-    public IDictionary<Guid, string> GetKeys(IEnumerable<Guid> usrsIds)
-    {
-        var profiles = _accountLinker.GetLinkedProfiles(usrsIds.Select(id => id.ToString()), ProviderConstants.Encryption);
-        var keys = new Dictionary<Guid, string>(profiles.Count);
-
-        foreach (var profilePair in profiles)
-        {
-            var userId = new Guid(profilePair.Key);
-
-            try
-            {
-                var key = _instanceCrypto.Decrypt(profilePair.Value.Name);
-                keys.Add(new Guid(profilePair.Key), key);
-            }
-            catch (Exception ex)
-            {
-                var message = string.Format("Can not decrypt {0} keys for {1}", ProviderConstants.Encryption, userId);
-                _logger.ErrorWithException(message, ex);
-            }
-        }
-
-        return keys;
-    }
 }

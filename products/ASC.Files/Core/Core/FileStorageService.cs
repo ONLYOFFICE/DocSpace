@@ -79,13 +79,13 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly IEventBus _eventBus;
     private readonly EntryStatusManager _entryStatusManager;
     private readonly ILogger _logger;
-    private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
     private readonly CountRoomChecker _countRoomChecker;
-    private readonly CountRoomCheckerStatistic _countRoomCheckerStatistic;
     private readonly RoomLinkService _roomLinkService;
     private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
     private readonly StudioNotifyService _studioNotifyService;
+    private readonly FileSecurityCommon _fileSecurityCommon;
+
     public FileStorageService(
         Global global,
         GlobalStore globalStore,
@@ -135,13 +135,12 @@ public class FileStorageService<T> //: IFileStorageService
         IServiceScopeFactory serviceScopeFactory,
         ThirdPartySelector thirdPartySelector,
         ThumbnailSettings thumbnailSettings,
-        FileShareParamsHelper fileShareParamsHelper,
         EncryptionLoginProvider encryptionLoginProvider,
         CountRoomChecker countRoomChecker,
-        CountRoomCheckerStatistic countRoomCheckerStatistic,
         RoomLinkService roomLinkService,
         DocSpaceLinkHelper docSpaceLinkHelper,
-        StudioNotifyService studioNotifyService)
+        StudioNotifyService studioNotifyService,
+        FileSecurityCommon fileSecurityCommon)
     {
         _global = global;
         _globalStore = globalStore;
@@ -191,13 +190,12 @@ public class FileStorageService<T> //: IFileStorageService
         _serviceScopeFactory = serviceScopeFactory;
         _thirdPartySelector = thirdPartySelector;
         _thumbnailSettings = thumbnailSettings;
-        _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
         _countRoomChecker = countRoomChecker;
-        _countRoomCheckerStatistic = countRoomCheckerStatistic;
         _roomLinkService = roomLinkService;
         _docSpaceLinkHelper = docSpaceLinkHelper;
         _studioNotifyService = studioNotifyService;
+        _fileSecurityCommon = fileSecurityCommon;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -466,24 +464,11 @@ public class FileStorageService<T> //: IFileStorageService
         return InternalCreateNewFolderAsync(parentId, title);
     }
 
-    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool @private)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
 
         await _countRoomChecker.CheckAppend();
-
-        if (@private && (share == null || !share.Any()))
-        {
-            throw new ArgumentNullException(nameof(share));
-        }
-
-        List<AceWrapper> aces = null;
-
-        if (@private)
-        {
-            aces = GetFullAceWrappers(share);
-            CheckEncryptionKeys(aces);
-        }
 
         var parentId = await _globalFolderHelper.GetFolderVirtualRooms<T>();
 
@@ -497,23 +482,13 @@ public class FileStorageService<T> //: IFileStorageService
             _ => await CreateCustomRoomAsync(title, parentId, @private),
         };
 
-        if (@private)
-        {
-            await SetAcesForPrivateRoomAsync(room, aces, notify, sharingMessage);
-        }
-
         return room;
     }
 
-    public async Task<Folder<T>> CreateThirdPartyRoomAsync(string title, RoomType roomType, T parentId, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
+    public async Task<Folder<T>> CreateThirdPartyRoomAsync(string title, RoomType roomType, T parentId, bool @private)
     {
         ArgumentNullException.ThrowIfNull(title, nameof(title));
         ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
-
-        if (@private && (share == null || !share.Any()))
-        {
-            throw new ArgumentNullException(nameof(share));
-        }
 
         var folderDao = GetFolderDao();
         var providerDao = GetProviderDao();
@@ -531,14 +506,6 @@ public class FileStorageService<T> //: IFileStorageService
             throw new InvalidOperationException("This provider already corresponds to the virtual room");
         }
 
-        List<AceWrapper> aces = null;
-
-        if (@private)
-        {
-            aces = GetFullAceWrappers(share);
-            CheckEncryptionKeys(aces);
-        }
-
         var result = roomType switch
         {
             RoomType.CustomRoom => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
@@ -548,11 +515,6 @@ public class FileStorageService<T> //: IFileStorageService
             RoomType.ReadOnlyRoom => (await CreateReadOnlyRoom(title, parentId, @private), FolderType.ReadOnlyRoom),
             _ => (await CreateCustomRoomAsync(title, parentId, @private), FolderType.CustomRoom),
         };
-
-        if (@private)
-        {
-            await SetAcesForPrivateRoomAsync(result.Item1, aces, notify, sharingMessage);
-        }
 
         await providerDao.UpdateProviderInfoAsync(providerInfo.ID, result.Item1.Id.ToString(), result.Item2, @private);
 
@@ -3144,6 +3106,54 @@ public class FileStorageService<T> //: IFileStorageService
         }
     }
 
+    public async Task<FileEncryptionInfoDto> GetEncryptionInfoAsync(T fileId)
+    {
+        var fileDao = _daoFactory.GetFileDao<T>();
+        var file = await fileDao.GetFileAsync(fileId);
+
+        ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
+        ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
+
+        var share = (await _fileSecurity.GetSharesAsync(file)).Where(s => s.EntryType == FileEntryType.File && s.Subject == _authContext.CurrentAccount.ID).FirstOrDefault();
+        var keys = _encryptionLoginProvider.GetKeys();
+
+        return new FileEncryptionInfoDto
+        {
+            Keys = keys,
+            HaveAccess = share != null
+        };
+    }
+
+    public async Task<FileEncryptionInfoDto> SetEncryptionInfoAsync(T fileId)
+    {
+        var fileDao = _daoFactory.GetFileDao<T>();
+        var file = await fileDao.GetFileAsync(fileId);
+
+        ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
+        ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
+        var access = FileShare.None;
+
+        if (_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
+        {
+            access = FileShare.ReadWrite;
+        }
+        else
+        {
+            access = (await _fileSharing.GetSharedInfoAsync(file)).Where(s => s.Id == _authContext.CurrentAccount.ID).FirstOrDefault().Access;
+        }
+
+        await _fileSecurity.ShareAsync(file.Id, FileEntryType.File, _authContext.CurrentAccount.ID, access);
+
+        var fileShare = (await _fileSecurity.GetSharesAsync(file)).Where(s => s.EntryType == FileEntryType.File && s.Subject == _authContext.CurrentAccount.ID).FirstOrDefault();
+        var keys = _encryptionLoginProvider.GetKeys();
+
+        return new FileEncryptionInfoDto
+        {
+            Keys = keys,
+            HaveAccess = fileShare != null
+        };
+    }
+
     public string GetHelpCenter()
     {
         return string.Empty; //TODO: Studio.UserControls.Common.HelpCenter.HelpCenter.RenderControlToString();
@@ -3227,61 +3237,6 @@ public class FileStorageService<T> //: IFileStorageService
             default:
                 return string.Empty;
         }
-    }
-
-    private List<AceWrapper> GetFullAceWrappers(IEnumerable<FileShareParams> share)
-    {
-        var dict = new List<AceWrapper>(share.Select(_fileShareParamsHelper.ToAceObject)).ToDictionary(k => k.Id, v => v);
-
-        var admins = _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
-        var onlyFilesAdmins = _userManager.GetUsersByGroup(WebItemManager.DocumentsProductID);
-
-        var userInfos = admins.Union(onlyFilesAdmins).ToList();
-
-        foreach (var userInfo in userInfos)
-        {
-            dict[userInfo.Id] = new AceWrapper
-            {
-                Access = FileShare.ReadWrite,
-                Id = userInfo.Id
-            };
-        }
-
-        return dict.Values.ToList();
-    }
-
-    private void CheckEncryptionKeys(IEnumerable<AceWrapper> aceWrappers)
-    {
-        var users = aceWrappers.Select(s => s.Id).ToList();
-        var keys = _encryptionLoginProvider.GetKeys(users);
-
-        foreach (var user in users)
-        {
-            if (!keys.ContainsKey(user))
-            {
-                var userInfo = _userManager.GetUsers(user);
-                throw new InvalidOperationException($"The user {userInfo.DisplayUserName(_displayUserSettingsHelper)} does not have an encryption key");
-            }
-        }
-    }
-
-    private async Task SetAcesForPrivateRoomAsync(Folder<T> room, List<AceWrapper> aces, bool notify, string sharingMessage)
-    {
-        var advancedSettings = new AceAdvancedSettingsWrapper
-        {
-            AllowSharingPrivateRoom = true
-        };
-
-        var aceCollection = new AceCollection<T>
-        {
-            Folders = new[] { room.Id },
-            Files = Array.Empty<T>(),
-            Aces = aces,
-            Message = sharingMessage,
-            AdvancedSettings = advancedSettings
-        };
-
-        await SetAceObjectAsync(aceCollection, notify);
     }
 }
 

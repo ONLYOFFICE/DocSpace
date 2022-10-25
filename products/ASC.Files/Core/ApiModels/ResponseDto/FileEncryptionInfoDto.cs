@@ -24,30 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.ApiModels.RequestDto;
+namespace ASC.Files.Core.ApiModels.ResponseDto;
 
-public enum RoomType
+public class FileEncryptionInfoDto
 {
-    FillingFormsRoom = 1,
-    EditingRoom = 2,
-    ReviewRoom = 3,
-    ReadOnlyRoom = 4,
-    CustomRoom = 5
-}
-
-public enum RoomFilterType
-{
-    FillingFormsRoomOnly = 1,
-    EditingRoomOnly = 2,
-    ReviewRoomOnly = 3,
-    ReadOnlyRoomOnly = 4,
-    CustomRoomOnly = 5,
-    FoldersOnly = 6,
-}
-
-public class CreateRoomRequestDto
-{
-    public string Title { get; set; }
-    public RoomType RoomType { get; set; }
-    public bool Private { get; set; }
+    public string Keys { get; set; }
+    public bool HaveAccess { get; set; }
 }

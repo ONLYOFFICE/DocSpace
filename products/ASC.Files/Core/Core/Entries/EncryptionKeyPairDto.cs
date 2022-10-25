@@ -113,7 +113,7 @@ public class EncryptionKeyPairDtoHelper
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (!await _fileSecurity.CanEditAsync(file))
+        if (!await _fileSecurity.CanReadAsync(file))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -129,8 +129,7 @@ public class EncryptionKeyPairDtoHelper
         var tmpFiles = await FileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
         var fileShares = tmpFiles.ToList();
         fileShares = fileShares.Where(share => !share.SubjectGroup
-                                        && !share.Id.Equals(FileConstant.ShareLinkId)
-                                        && share.Access == FileShare.ReadWrite).ToList();
+                                        && !share.Id.Equals(FileConstant.ShareLinkId)).ToList();
 
         var fileKeysPair = fileShares.Select(share =>
         {

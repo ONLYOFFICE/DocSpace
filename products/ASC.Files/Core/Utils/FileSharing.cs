@@ -97,11 +97,6 @@ public class FileSharingAceHelper<T>
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
 
-        if (entry is Folder<T> { Private: true } && advancedSettings is not { AllowSharingPrivateRoom: true })
-        {
-            throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
-        }
-
         var ownerId = entry.RootFolderType == FolderType.USER ? entry.RootCreateBy : entry.CreateBy;
         var entryType = entry.FileEntryType;
         var recipients = new Dictionary<Guid, FileShare>();
