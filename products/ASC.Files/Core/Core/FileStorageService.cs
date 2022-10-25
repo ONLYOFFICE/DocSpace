@@ -84,6 +84,8 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly RoomLinkService _roomLinkService;
     private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
     private readonly StudioNotifyService _studioNotifyService;
+    private readonly FileSecurityCommon _fileSecurityCommon;
+
     public FileStorageService(
         Global global,
         GlobalStore globalStore,
@@ -137,7 +139,8 @@ public class FileStorageService<T> //: IFileStorageService
         CountRoomChecker countRoomChecker,
         RoomLinkService roomLinkService,
         DocSpaceLinkHelper docSpaceLinkHelper,
-        StudioNotifyService studioNotifyService)
+        StudioNotifyService studioNotifyService,
+        FileSecurityCommon fileSecurityCommon)
     {
         _global = global;
         _globalStore = globalStore;
@@ -192,6 +195,7 @@ public class FileStorageService<T> //: IFileStorageService
         _roomLinkService = roomLinkService;
         _docSpaceLinkHelper = docSpaceLinkHelper;
         _studioNotifyService = studioNotifyService;
+        _fileSecurityCommon = fileSecurityCommon;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -3127,10 +3131,18 @@ public class FileStorageService<T> //: IFileStorageService
 
         ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
         ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
+        var access = FileShare.None;
 
-        var share = (await _fileSharing.GetSharedInfoAsync(file)).Where(s => s.Id == _authContext.CurrentAccount.ID).FirstOrDefault();
+        if (_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
+        {
+            access = FileShare.ReadWrite;
+        }
+        else
+        {
+            access = (await _fileSharing.GetSharedInfoAsync(file)).Where(s => s.Id == _authContext.CurrentAccount.ID).FirstOrDefault().Access;
+        }
 
-        await _fileSecurity.ShareAsync(file.Id, FileEntryType.File, _authContext.CurrentAccount.ID, share.Access);
+        await _fileSecurity.ShareAsync(file.Id, FileEntryType.File, _authContext.CurrentAccount.ID, access);
 
         var fileShare = (await _fileSecurity.GetSharesAsync(file)).Where(s => s.EntryType == FileEntryType.File && s.Subject == _authContext.CurrentAccount.ID).FirstOrDefault();
         var keys = _encryptionLoginProvider.GetKeys();
