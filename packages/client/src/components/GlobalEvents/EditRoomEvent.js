@@ -36,18 +36,20 @@ const EditRoomEvent = ({
   const startTags = Object.values(item.tags);
   const startObjTags = startTags.map((tag, i) => ({ id: i, name: tag }));
 
+  console.log(item);
+
   const fetchedRoomParams = {
     title: item.title,
     type: item.roomType,
     tags: startObjTags,
-    isThirdparty: !!item.providerKey,
+    isPrivate: item.isPrivate,
     storageLocation: {
+      isThirdparty: !!item.providerKey,
       title: item.title,
       parentId: item.parentId,
       providerKey: item.providerKey,
       iconSrc: getThirdPartyIcon(item.providerKey),
     },
-    isPrivate: false,
     icon: {
       uploadedFile: item.logo.original,
       tmpFile: "",
