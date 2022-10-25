@@ -33,19 +33,10 @@ const EmptyPageStyles = css`
   @media ${tablet} {
     padding: 44px 0px 64px 0px;
     grid-column-gap: 33px;
-    margin-left: auto;
   }
 
   @media ${smallTablet} {
-    ${isMobileOnly &&
-    css`
-      padding-right: 44px;
-    `}
-
-    ${!isMobileOnly &&
-    css`
-      padding: 20px 0px 64px 11px;
-    `}
+    padding-right: 44px;
   }
 `;
 
@@ -102,6 +93,14 @@ const EmptyFolderWrapper = styled.div`
     ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
 
     ${(props) =>
+      props.isEmptyPage &&
+      isMobileOnly &&
+      css`
+        padding: 20px 44px 64px 11px !important;
+      `}
+
+    ${(props) =>
+      (props.isEmptyPage || props.isEmptyFolderContainer) &&
       props.sectionWidth <= size.smallTablet &&
       !isMobileOnly &&
       css`
@@ -127,7 +126,11 @@ const EmptyFoldersContainer = (props) => {
   } = props;
 
   return (
-    <EmptyFolderWrapper sectionWidth={sectionWidth} isEmptyPage={isEmptyPage}>
+    <EmptyFolderWrapper
+      sectionWidth={sectionWidth}
+      isEmptyPage={isEmptyPage}
+      isEmptyFolderContainer={isEmptyFolderContainer}
+    >
       <EmptyScreenContainer
         sectionWidth={sectionWidth}
         className="empty-folder_container"
