@@ -26,7 +26,7 @@
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
-public class FileEncryptionInfo
+public class FileEncryptionInfoDto
 {
     public string Keys { get; set; }
     public bool HaveAccess { get; set; }

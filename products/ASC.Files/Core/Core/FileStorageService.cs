@@ -3106,7 +3106,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
     }
 
-    public async Task<FileEncryptionInfo> GetEncryptionInfoAsync(T fileId)
+    public async Task<FileEncryptionInfoDto> GetEncryptionInfoAsync(T fileId)
     {
         var fileDao = _daoFactory.GetFileDao<T>();
         var file = await fileDao.GetFileAsync(fileId);
@@ -3117,14 +3117,14 @@ public class FileStorageService<T> //: IFileStorageService
         var share = (await _fileSecurity.GetSharesAsync(file)).Where(s => s.EntryType == FileEntryType.File && s.Subject == _authContext.CurrentAccount.ID).FirstOrDefault();
         var keys = _encryptionLoginProvider.GetKeys();
 
-        return new FileEncryptionInfo
+        return new FileEncryptionInfoDto
         {
             Keys = keys,
             HaveAccess = share != null
         };
     }
 
-    public async Task<FileEncryptionInfo> SetEncryptionInfoAsync(T fileId)
+    public async Task<FileEncryptionInfoDto> SetEncryptionInfoAsync(T fileId)
     {
         var fileDao = _daoFactory.GetFileDao<T>();
         var file = await fileDao.GetFileAsync(fileId);
@@ -3147,7 +3147,7 @@ public class FileStorageService<T> //: IFileStorageService
         var fileShare = (await _fileSecurity.GetSharesAsync(file)).Where(s => s.EntryType == FileEntryType.File && s.Subject == _authContext.CurrentAccount.ID).FirstOrDefault();
         var keys = _encryptionLoginProvider.GetKeys();
 
-        return new FileEncryptionInfo
+        return new FileEncryptionInfoDto
         {
             Keys = keys,
             HaveAccess = fileShare != null

@@ -330,13 +330,13 @@ public abstract class FilesController<T> : ApiControllerBase
     }
 
     [HttpGet("file/{fileId}/access")]
-    public async Task<FileEncryptionInfo> GetEncryptionInfoAsync(T fileId)
+    public async Task<FileEncryptionInfoDto> GetEncryptionInfoAsync(T fileId)
     {
         return await _fileStorageService.GetEncryptionInfoAsync(fileId);
     }
 
     [HttpPut("file/{fileId}/access")]
-    public async Task<FileEncryptionInfo> SetEncryptionInfoAsync(T fileId)
+    public async Task<FileEncryptionInfoDto> SetEncryptionInfoAsync(T fileId)
     {
         return await _fileStorageService.SetEncryptionInfoAsync(fileId);
     }
