@@ -98,7 +98,7 @@ public class RoomLogoManager
 
         if (EnableAudit)
         {
-            _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated);
+            _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated, room.Title);
         }
 
         return room;
@@ -122,7 +122,7 @@ public class RoomLogoManager
 
             if (EnableAudit)
             {
-                _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted);
+                _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
             }
         }
         catch (DirectoryNotFoundException e)

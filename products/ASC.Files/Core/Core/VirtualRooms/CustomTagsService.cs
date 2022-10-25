@@ -35,10 +35,9 @@ public class CustomTagsService<T>
     private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly FilesMessageService _filesMessageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly IMapper _mapper;
 
     public CustomTagsService(IDaoFactory daoFactory, FileSecurity fileSecurity, AuthContext authContext, FileSecurityCommon fileSecurityCommon,
-        FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        FilesMessageService filesMessageService, IHttpContextAccessor httpContextAccessor)
     {
         _daoFactory = daoFactory;
         _fileSecurity = fileSecurity;
@@ -46,7 +45,6 @@ public class CustomTagsService<T>
         _fileSecurityCommon = fileSecurityCommon;
         _filesMessageService = filesMessageService;
         _httpContextAccessor = httpContextAccessor;
-        _mapper = mapper;
     }
 
     private ITagDao<T> TagDao => _daoFactory.GetTagDao<T>();
@@ -101,7 +99,10 @@ public class CustomTagsService<T>
 
         await tagDao.RemoveTagsAsync(tags.Select(t => t.Id));
 
-        _filesMessageService.Send(Headers, MessageAction.TagsDeleted, tags.Select(t => t.Name).ToArray());
+        foreach (var name in names)
+        {
+            _filesMessageService.Send(Headers, MessageAction.TagDeleted, name);
+        }
     }
 
     public async Task<Folder<T>> AddRoomTagsAsync(T folderId, IEnumerable<string> names)
@@ -124,9 +125,12 @@ public class CustomTagsService<T>
 
         var tags = tagsInfos.Select(tagInfo => Tag.Custom(_authContext.CurrentAccount.ID, folder, tagInfo.Name));
 
-        tagDao.SaveTags(tags);
+        var result = tagDao.SaveTags(tags);
 
-        _filesMessageService.Send(folder, Headers, MessageAction.AddedRoomTags, tagsInfos.Select(t => t.Name).ToArray());
+        foreach (var tag in result)
+        {
+            _filesMessageService.Send(folder, Headers, MessageAction.AddedRoomTag, folder.Title, tag.Name);
+        }
 
         return folder;
     }
@@ -151,7 +155,10 @@ public class CustomTagsService<T>
 
         await tagDao.RemoveTagsAsync(folder, tagsInfos.Select(t => t.Id));
 
-        _filesMessageService.Send(folder, Headers, MessageAction.DeletedRoomTags, tagsInfos.Select(t => t.Name).ToArray());
+        foreach (var tag in tagsInfos)
+        {
+            _filesMessageService.Send(folder, Headers, MessageAction.DeletedRoomTag, folder.Title, tag.Name);
+        }
 
         return folder;
     }

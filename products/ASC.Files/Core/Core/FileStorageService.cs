@@ -2595,7 +2595,7 @@ public class FileStorageService<T> //: IFileStorageService
             var changed = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
             if (changed)
             {
-                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomInvintationUpdateAccess, room.Title, GetAccessString(share));
+                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomUpdateAccess, room.Title, GetAccessString(share));
             }
         }
         catch (Exception e)
@@ -3221,6 +3221,8 @@ public class FileStorageService<T> //: IFileStorageService
             case FileShare.Review:
             case FileShare.FillForms:
             case FileShare.Comment:
+            case FileShare.RoomManager:
+            case FileShare.Editing:
             case FileShare.Restrict:
             case FileShare.None:
                 return FilesCommonResource.ResourceManager.GetString("AceStatusEnum_" + fileShare.ToString());

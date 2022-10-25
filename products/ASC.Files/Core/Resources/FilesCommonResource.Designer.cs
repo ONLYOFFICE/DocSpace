@@ -88,6 +88,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Editor.
+        /// </summary>
+        public static string AceStatusEnum_Editing {
+            get {
+                return ResourceManager.GetString("AceStatusEnum_Editing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Form Filling.
         /// </summary>
         public static string AceStatusEnum_FillForms {
@@ -129,6 +138,15 @@ namespace ASC.Files.Core.Resources {
         public static string AceStatusEnum_Review {
             get {
                 return ResourceManager.GetString("AceStatusEnum_Review", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room Admin.
+        /// </summary>
+        public static string AceStatusEnum_RoomManager {
+            get {
+                return ResourceManager.GetString("AceStatusEnum_RoomManager", resourceCulture);
             }
         }
         

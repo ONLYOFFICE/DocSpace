@@ -39,6 +39,7 @@ internal class DocumentsActionMapper : IProductActionMapper
         {
             new FilesActionMapper(),
             new FoldersActionMapper(),
+            new RoomsActionMapper(),
             new SettingsActionMapper()
         };
     }
@@ -122,6 +123,40 @@ internal class FoldersActionMapper : IModuleActionMapper
                     { ActionType.Move, new[] { MessageAction.FolderMoved, MessageAction.FolderMovedFrom, MessageAction.FolderMovedWithOverwriting } },
                 }
             },
+        };
+    }
+}
+
+internal class RoomsActionMapper : IModuleActionMapper
+{
+    public ModuleType Module { get; }
+    public IDictionary<MessageAction, MessageMaps> Actions { get; }
+
+    public RoomsActionMapper()
+    {
+        Module = ModuleType.Rooms;
+        Actions = new MessageMapsDictionary(ProductType.Documents, Module)
+        {
+            {
+                EntryType.Room, new Dictionary<ActionType, MessageAction[]>
+                {
+                    { ActionType.Update, new[] { MessageAction.RoomRenamed, MessageAction.RoomLogoCreated, MessageAction.RoomLogoDeleted, MessageAction.AddedRoomTag,
+                        MessageAction.DeletedRoomTag, MessageAction.RoomArchived, MessageAction.RoomUnarchived } },
+                    { ActionType.UpdateAccess, new[] { MessageAction.RoomUpdateAccess, MessageAction.RoomInviteLinkUsed } }
+                },
+                new Dictionary<ActionType, MessageAction>
+                {
+                    { ActionType.Create, MessageAction.RoomCreated },
+                    { ActionType.Delete, MessageAction.RoomDeleted }
+                }
+            },
+            {
+                EntryType.Tag, new Dictionary<ActionType, MessageAction>
+                {
+                    { ActionType.Create, MessageAction.TagCreated },
+                    { ActionType.Delete, MessageAction.TagDeleted },
+                }
+            }
         };
     }
 }

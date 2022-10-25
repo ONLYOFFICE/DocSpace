@@ -469,13 +469,11 @@ public enum MessageAction
     RoomUnarchived = 5073,
     RoomDeleted = 5074,
     RoomUpdateAccess = 5075,
-    RoomInvintationUpdateAccess = 5082,
 
     TagCreated = 5076,
-    TagsDeleted = 5077,
-    AddedRoomTags = 5078,
-    DeletedRoomTags = 5079,
-
+    TagDeleted = 5077,
+    AddedRoomTag = 5078,
+    DeletedRoomTag = 5079,
     RoomLogoCreated = 5080,
     RoomLogoDeleted = 5081,
 
@@ -561,8 +559,6 @@ public enum MessageAction
 
     ContactAdminMailSent = 7000,
     RoomInviteLinkUsed = 7001,
-    UserCreatedAndAddedToRoom = 7002,
-    GuestCreatedAndAddedToRoom = 7003,
     ContactSalesMailSent = 7004,
 
     #endregion

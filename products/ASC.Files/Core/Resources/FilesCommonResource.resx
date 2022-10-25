@@ -126,6 +126,9 @@
   <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
     <value>Custom Filter</value>
   </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
   <data name="AceStatusEnum_FillForms" xml:space="preserve">
     <value>Form Filling</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="AceStatusEnum_Review" xml:space="preserve">
     <value>Review</value>
+  </data>
+  <data name="AceStatusEnum_RoomManager" xml:space="preserve">
+    <value>Room Admin</value>
   </data>
   <data name="Admin" xml:space="preserve">
     <value>Admin</value>
