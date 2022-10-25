@@ -304,9 +304,9 @@ const WhiteLabel = (props) => {
   const onSave = () => {
     let logoArr = [];
 
-    for (let i = 0; i < 7; i++) {
-      logoArr.push({ key: String(i + 1), value: logoUrlsWhiteLabel[i] });
-    }
+    logoUrlsChange.map((item) => {
+      logoArr.push({ key: item.id, value: item.src });
+    });
 
     const data = {
       logoText: logoTextWhiteLabel,
