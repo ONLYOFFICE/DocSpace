@@ -6,8 +6,9 @@ import {
   tablet,
   smallTablet,
   desktop,
+  size,
 } from "@docspace/components/utils/device";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 const EmptyPageStyles = css`
   padding: 44px 0px 64px 0px;
@@ -36,7 +37,15 @@ const EmptyPageStyles = css`
   }
 
   @media ${smallTablet} {
-    padding: 20px 0px 64px 11px;
+    ${isMobileOnly &&
+    css`
+      padding-right: 44px;
+    `}
+
+    ${!isMobileOnly &&
+    css`
+      padding: 20px 0px 64px 11px;
+    `}
   }
 `;
 
@@ -90,14 +99,14 @@ const EmptyFolderWrapper = styled.div`
       bottom: 16px;
     }
 
-    @media screen and (max-width: 1325px) {
-      ${!isMobile &&
-      css`
-        margin-left: 98px;
-      `};
-    }
-
     ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
+
+    ${(props) =>
+      props.sectionWidth <= size.smallTablet &&
+      !isMobileOnly &&
+      css`
+        padding-left: 12px !important;
+      `}
   }
 `;
 
@@ -113,11 +122,14 @@ const EmptyFoldersContainer = (props) => {
     imageStyle,
     buttonStyle,
     isEmptyPage,
+    sectionWidth,
+    isEmptyFolderContainer,
   } = props;
 
   return (
-    <EmptyFolderWrapper isEmptyPage={isEmptyPage}>
+    <EmptyFolderWrapper sectionWidth={sectionWidth} isEmptyPage={isEmptyPage}>
       <EmptyScreenContainer
+        sectionWidth={sectionWidth}
         className="empty-folder_container"
         style={style}
         imageStyle={imageStyle}
@@ -129,6 +141,7 @@ const EmptyFoldersContainer = (props) => {
         descriptionText={descriptionText}
         buttons={buttons}
         isEmptyPage={isEmptyPage}
+        isEmptyFolderContainer={isEmptyFolderContainer}
       />
     </EmptyFolderWrapper>
   );
