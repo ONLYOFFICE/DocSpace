@@ -66,9 +66,6 @@ internal static partial class EventBusRabbitMQLogger
     [LoggerMessage(Level = LogLevel.Warning, Message = "Recreating RabbitMQ consumer channel")]
     public static partial void WarningRecreatingConsumerChannel(this ILogger<EventBusRabbitMQ> logger, Exception exception);
 
-    [LoggerMessage(Level = LogLevel.Trace, Message = "Processed RabbitMQ event as nack: {eventName}")]
-    public static partial void TraceProcessedEventAsNack(this ILogger<EventBusRabbitMQ> logger, string eventName);
-
     [LoggerMessage(Level = LogLevel.Trace, Message = "Processing RabbitMQ event: {eventName}")]
     public static partial void TraceProcessingEvent(this ILogger<EventBusRabbitMQ> logger, string eventName);
 
