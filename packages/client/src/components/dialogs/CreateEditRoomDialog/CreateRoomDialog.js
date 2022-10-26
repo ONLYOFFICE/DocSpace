@@ -140,6 +140,7 @@ const CreateRoomDialog = ({
             setRoomParams={setRoomParams}
             setRoomType={setRoomType}
             setIsScrollLocked={setIsScrollLocked}
+            isDisabled={isLoading}
           />
         )}
       </ModalDialog.Body>

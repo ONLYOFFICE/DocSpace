@@ -72,6 +72,7 @@ const EditRoomDialog = ({
           setRoomType={setRoomType}
           setIsScrollLocked={setIsScrollLocked}
           isEdit
+          isDisabled={isLoading}
         />
       </ModalDialog.Body>
 
@@ -91,6 +92,7 @@ const EditRoomDialog = ({
           size="normal"
           scale
           onClick={onClose}
+          isDisabled={isLoading}
         />
       </ModalDialog.Footer>
     </ModalDialog>
