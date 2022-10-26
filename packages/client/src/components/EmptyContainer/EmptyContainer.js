@@ -96,7 +96,7 @@ const EmptyFolderWrapper = styled.div`
       props.isEmptyPage &&
       isMobileOnly &&
       css`
-        padding: 20px 44px 64px 11px !important;
+        padding: 20px 42px 64px 11px !important;
       `}
 
     ${(props) =>
@@ -105,6 +105,10 @@ const EmptyFolderWrapper = styled.div`
       !isMobileOnly &&
       css`
         padding-left: 12px !important;
+
+        .empty-folder_link {
+          margin-bottom: 0 !important;
+        }
       `}
   }
 `;
