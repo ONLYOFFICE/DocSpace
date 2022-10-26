@@ -16,6 +16,7 @@ import { DNSSettingsTooltip } from "../sub-components/common-tooltips";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
+import Textarea from "@docspace/components/textarea";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import Badge from "@docspace/components/badge";
 const DNSSettings = (props) => {
@@ -93,21 +94,19 @@ const DNSSettings = (props) => {
 
   const settingsBlock = (
     <div className="settings-block">
-      <div className="settings-block-description settings_unavailable">
-        {t("DNSSettingsMobile")}
-      </div>
+      <div className="settings-block-description">{t("DNSSettingsMobile")}</div>
       <FieldContainer
         id="fieldContainerDNSSettings"
         className="field-container-width settings_unavailable"
         labelText={`${t("YourCurrentDomain")}`}
         isVertical={true}
       >
-        <TextInput
-          tabIndex={8}
+        <Textarea
           id="textInputContainerDNSSettings"
-          scale={true}
+          heightTextArea={30}
+          tabIndex={8}
+          isDisabled={true}
           value={location.hostname}
-          isDisabled={!isSettingPaid}
         />
       </FieldContainer>
     </div>
@@ -123,9 +122,7 @@ const DNSSettings = (props) => {
     >
       {isCustomizationView && !isMobileView && (
         <div className="category-item-heading">
-          <div className="category-item-title settings_unavailable">
-            {t("DNSSettings")}
-          </div>
+          <div className="category-item-title">{t("DNSSettings")}</div>
           <HelpButton
             iconName="static/images/combined.shape.svg"
             size={12}
