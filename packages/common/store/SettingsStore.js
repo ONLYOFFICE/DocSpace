@@ -388,7 +388,7 @@ class SettingsStore {
   };
 
   setDocSpaceLogo = (urls) => {
-    this.docSpaceLogo = urls[1];
+    this.docSpaceLogo = urls[6];
   };
 
   setLogoUrls = (urls) => {
