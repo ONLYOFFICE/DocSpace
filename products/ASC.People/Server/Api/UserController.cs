@@ -203,16 +203,18 @@ public class UserController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
-        var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email) : null;
+        var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.Type) : null;
 
         if (options != null && !options.IsCorrect)
         {
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
 
+        inDto.Type = options != null ? options.EmployeeType : inDto.Type;
+
         var user = new UserInfo();
 
-        var byEmail = options != null && options.Type == LinkType.InvintationByEmail;
+        var byEmail = options?.LinkType == LinkType.InvintationByEmail;
 
         if (byEmail)
         {
@@ -259,7 +261,7 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user);
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true, byEmail);
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.Visitor, inDto.FromInviteLink, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
 
         UpdateDepartments(inDto.Department, user);
 
@@ -268,7 +270,7 @@ public class UserController : PeopleControllerBase
             await UpdatePhotoUrl(inDto.Files, user);
         }
 
-        if (options != null && options.Type == LinkType.InvintationToRoom)
+        if (options != null && options.LinkType == LinkType.InvintationToRoom)
         {
             var success = int.TryParse(options.RoomId, out var id);
 
@@ -295,7 +297,10 @@ public class UserController : PeopleControllerBase
     {
         foreach (var invite in inDto.Invitations)
         {
-            _userManagerWrapper.AddInvitedUser(invite.Email, invite.Type);
+            var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
+            var link = _roomLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
+
+            _studioNotifyService.SendDocSpaceInvite(user.Email, link);
         }
 
         var users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
