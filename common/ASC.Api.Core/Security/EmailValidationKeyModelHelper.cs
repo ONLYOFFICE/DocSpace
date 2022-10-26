@@ -110,11 +110,12 @@ public class EmailValidationKeyModelHelper
                 break;
 
             case ConfirmType.LinkInvite:
-                checkKeyResult = _docSpaceLinkHelper.Validate(key, email);
+                checkKeyResult = string.IsNullOrEmpty(email) ? _docSpaceLinkHelper.ValidateRoomExternalLink(key)
+                        : _docSpaceLinkHelper.ValidateEmailLink(email, key, emplType ?? default);
 
                 if (checkKeyResult == ValidationResult.Invalid)
                 {
-                    checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)emplType, key, _provider.ValidEmailKeyInterval);
+                    checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)(emplType ?? default), key, _provider.ValidEmailKeyInterval);
                 }
                 break;
 

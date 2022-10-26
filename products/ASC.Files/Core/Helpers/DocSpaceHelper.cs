@@ -28,6 +28,8 @@ namespace ASC.Files.Core.Helpers;
 
 public static class DocSpaceHelper
 {
+    public static HashSet<FileShare> PaidRights { get; } = new HashSet<FileShare> { FileShare.RoomManager };
+
     private static readonly HashSet<FileShare> _fillingFormRoomConstraints
         = new HashSet<FileShare> { FileShare.RoomManager, FileShare.ReadWrite, FileShare.FillForms, FileShare.Read };
     private static readonly HashSet<FileShare> _editingRoomConstraints

@@ -47,25 +47,32 @@ public class RoomLinkService
         return _commonLinkUtility.GetConfirmationUrl(key, ConfirmType.LinkInvite, createdBy);
     }
 
-    public string GetInvitationLink(string email, Guid createdBy)
+    public string GetInvitationLink(string email, FileShare share, Guid createdBy)
     {
-        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, EmployeeType.User, createdBy)
-            + $"&emplType={EmployeeType.User:d}";
+        var type = DocSpaceHelper.PaidRights.Contains(share) ? EmployeeType.User : EmployeeType.Visitor;
+
+        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, type, createdBy)
+            + $"&emplType={type:d}";
+
+        return link;
+    }
+
+    public string GetInvitationLink(string email, EmployeeType employeeType, Guid createdBy)
+    {
+        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, employeeType, createdBy)
+            + $"&emplType={employeeType:d}";
 
         return link;
     }
 
     public async Task<LinkOptions> GetOptionsAsync(string key, string email)
     {
+        return await GetOptionsAsync(key, email, EmployeeType.All);
+    }
+
+    public async Task<LinkOptions> GetOptionsAsync(string key, string email, EmployeeType employeeType)
+    {
         var options = new LinkOptions();
-
-        if (string.IsNullOrEmpty(key))
-        {
-            options.Type = LinkType.DefaultInvintation;
-            options.IsCorrect = true;
-
-            return options;
-        }
 
         var payload = _docSpaceLinksHelper.Parse(key);
 
@@ -76,16 +83,24 @@ public class RoomLinkService
             if (record != null)
             {
                 options.IsCorrect = true;
-                options.Type = LinkType.InvintationToRoom;
+                options.LinkType = LinkType.InvintationToRoom;
                 options.RoomId = record.EntryId.ToString();
                 options.Share = record.Share;
                 options.Id = record.Subject;
+                options.EmployeeType = DocSpaceHelper.PaidRights.Contains(record.Share) ? EmployeeType.User : EmployeeType.Visitor;
             }
         }
-        else if (_docSpaceLinksHelper.Validate(key, email) == EmailValidationKeyProvider.ValidationResult.Ok)
+        else if (_docSpaceLinksHelper.ValidateEmailLink(email, key, employeeType) == EmailValidationKeyProvider.ValidationResult.Ok)
         {
             options.IsCorrect = true;
-            options.Type = LinkType.InvintationByEmail;
+            options.LinkType = LinkType.InvintationByEmail;
+            options.EmployeeType = employeeType;
+        }
+        else if (_docSpaceLinksHelper.ValidateExtarnalLink(key, employeeType) == EmailValidationKeyProvider.ValidationResult.Ok)
+        {
+            options.LinkType = LinkType.DefaultInvintation;
+            options.IsCorrect = true;
+            options.EmployeeType = employeeType;
         }
 
         return options;
@@ -107,7 +122,8 @@ public class LinkOptions
     public Guid Id { get; set; }
     public string RoomId { get; set; }
     public FileShare Share { get; set; }
-    public LinkType Type { get; set; }
+    public LinkType LinkType { get; set; }
+    public EmployeeType EmployeeType { get; set; }
     public bool IsCorrect { get; set; }
 }
 
