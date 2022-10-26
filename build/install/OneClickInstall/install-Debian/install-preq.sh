@@ -85,11 +85,9 @@ fi
 
 # add redis repo
 if [ "$DIST" = "ubuntu" ]; then	
-	# add redis repo
 	curl -fsSL https://packages.redis.io/gpg | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/redis.gpg --import
 	echo "deb [signed-by=/usr/share/keyrings/redis.gpg] https://packages.redis.io/deb $DISTRIB_CODENAME main" | tee /etc/apt/sources.list.d/redis.list
 	chmod 644 /usr/share/keyrings/redis.gpg
-	if [ "$DISTRIB_CODENAME" = "jammy" ]; then sed -i 's/jammy/focal/g' /etc/apt/sources.list.d/redis.list; fi; #Fix missing repository for jammy
 fi
 
 #add nginx repo
