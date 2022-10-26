@@ -693,14 +693,10 @@ public class UserController : PeopleControllerBase
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                if (_userManager.IsVisitor(user))
-                {
-                    _studioNotifyService.GuestInfoActivation(user);
-                }
-                else
-                {
-                    _studioNotifyService.UserInfoActivation(user);
-                }
+                var type = _userManager.IsAdmin(user) ? EmployeeType.DocSpaceAdmin :
+                    _userManager.IsVisitor(user) ? EmployeeType.Visitor : EmployeeType.User;
+
+                _studioNotifyService.SendDocSpaceInvite(user.Email, _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID));
             }
             else
             {
