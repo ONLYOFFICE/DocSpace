@@ -94,6 +94,7 @@ const CreateRoomDialog = ({
   };
 
   const goBack = () => {
+    if (isLoading) return;
     setRoomParams({ ...startRoomParams });
   };
 
