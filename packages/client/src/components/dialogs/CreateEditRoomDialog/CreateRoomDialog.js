@@ -88,6 +88,8 @@ const CreateRoomDialog = ({
   };
 
   const onCloseAndDisconnectThirdparty = async () => {
+    if (isLoading) return;
+
     if (!!roomParams.storageLocation.thirdpartyAccount) {
       setIsLoading(true);
       await deleteThirdParty(
@@ -148,6 +150,7 @@ const CreateRoomDialog = ({
             label={t("Common:CancelButton")}
             size="normal"
             scale
+            isDisabled={isLoading}
             onClick={onCloseAndDisconnectThirdparty}
           />
         </ModalDialog.Footer>
