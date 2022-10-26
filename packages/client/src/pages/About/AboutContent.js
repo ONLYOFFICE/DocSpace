@@ -107,7 +107,7 @@ const AboutContent = (props) => {
               className="logo-theme no-select"
             />
           ) : (
-            <ReactSVG
+            <img
               src={docSpaceLogo}
               alt="Logo"
               className="logo-docspace-theme no-select"
