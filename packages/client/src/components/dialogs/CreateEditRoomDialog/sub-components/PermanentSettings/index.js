@@ -22,6 +22,7 @@ const PermanentSettings = ({
   isThirdparty,
   storageLocation,
   isPrivate,
+  isDisabled,
 }) => {
   const createThirdpartyPath = () => {
     const path = storageLocation.parentId.split("|");

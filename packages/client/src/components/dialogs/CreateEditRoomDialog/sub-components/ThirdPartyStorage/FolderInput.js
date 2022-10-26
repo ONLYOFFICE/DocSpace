@@ -98,11 +98,15 @@ const FolderInput = ({
   roomTitle,
   thirdpartyAccount,
   onChangeStorageFolderId,
+  isDisabled,
 }) => {
   const [treeNode, setTreeNode] = useState(null);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const onOpen = () => setIsDialogOpen(true);
+  const onOpen = () => {
+    if (isDisabled) return;
+    setIsDialogOpen(true);
+  };
   const onClose = () => setIsDialogOpen(false);
 
   const [path, setPath] = useState("");

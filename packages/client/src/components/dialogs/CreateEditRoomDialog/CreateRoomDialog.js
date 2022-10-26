@@ -43,6 +43,14 @@ const CreateRoomDialog = ({
   const [isScrollLocked, setIsScrollLocked] = useState(false);
   const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
 
+  const isMountRef = React.useRef(true);
+
+  React.useEffect(() => {
+    return () => {
+      isMountRef.current = false;
+    };
+  });
+
   const startRoomParams = {
     type: undefined,
     title: "",
@@ -80,14 +88,19 @@ const CreateRoomDialog = ({
 
   const onCreateRoom = async () => {
     await onCreate({ ...roomParams });
-    setRoomParams(startRoomParams);
+    if (isMountRef.current) {
+      setRoomParams(startRoomParams);
+    }
   };
 
   const goBack = () => {
+    if (isLoading) return;
     setRoomParams({ ...startRoomParams });
   };
 
   const onCloseAndDisconnectThirdparty = async () => {
+    if (isLoading) return;
+
     if (!!roomParams.storageLocation.thirdpartyAccount) {
       setIsLoading(true);
       await deleteThirdParty(
@@ -128,6 +141,7 @@ const CreateRoomDialog = ({
             setRoomParams={setRoomParams}
             setRoomType={setRoomType}
             setIsScrollLocked={setIsScrollLocked}
+            isDisabled={isLoading}
           />
         )}
       </ModalDialog.Body>
@@ -148,6 +162,7 @@ const CreateRoomDialog = ({
             label={t("Common:CancelButton")}
             size="normal"
             scale
+            isDisabled={isLoading}
             onClick={onCloseAndDisconnectThirdparty}
           />
         </ModalDialog.Footer>
