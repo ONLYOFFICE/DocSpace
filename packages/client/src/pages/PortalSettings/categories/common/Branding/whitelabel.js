@@ -177,6 +177,10 @@ const WhiteLabel = (props) => {
   }, [logoUrls]);
 
   useEffect(() => {
+    setLogoSizes(mapSizesToArray(logoSizes));
+  }, [logoSizes]);
+
+  useEffect(() => {
     if (
       logoTextWhiteLabel &&
       logoSizes.length &&
