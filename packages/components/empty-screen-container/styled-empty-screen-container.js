@@ -12,7 +12,6 @@ import { isMobileOnly } from "react-device-detect";
 
 const EmptyPageStyles = css`
   grid-row-gap: 9px;
-  /* margin: 0 auto !important; */
 
   .ec-image {
     height: 100px;
@@ -24,30 +23,32 @@ const EmptyPageStyles = css`
     margin-top: 0;
   }
 
-  .ec-buttons {
-    max-width: 285px;
-  }
-
   .empty-folder_container-links {
     align-items: start;
     margin: 16px 0 !important;
   }
 
-  margin-left: 177px;
-  margin-right: 177px;
   max-width: 800px;
 
   @media ${hugeDesktop} {
-    margin: 0 auto !important;
+    margin: 0 13%;
+    width: 74%;
+    min-width: 480px;
   }
 
   @media ${tablet} {
+    max-width: 480px;
     margin: 0 auto;
   }
 
   @media (max-width: 768px) {
-    margin-left: 97px;
-    margin-right: 97px;
+    ${(props) =>
+      props.sectionWidth > size.smallTablet &&
+      css`
+        margin: 0 13% !important;
+        width: 74%;
+        min-width: auto;
+      `}
   }
 
   @media ${smallTablet} {
@@ -182,27 +183,27 @@ const EmptyContentBody = styled.div`
       .ec-image {
         height: 100px !important;
       }
+    `}
 
+    ${(props) =>
+    (props.isEmptyPage || props.isEmptyFolderContainer) &&
+    isMobileOnly &&
+    css`
+      .ec-image {
+        margin-top: ${(props) => props.isEmptyFolderContainer && "0px"};
+        height: ${(props) => props.isEmptyPage && "72px !important"};
+      }
+    `}
+
+
+    ${(props) =>
+    (props.isEmptyPage || props.isEmptyFolderContainer) &&
+    props.sectionWidth <= size.smallTablet &&
+    css`
       max-width: none !important;
-      margin: 0 auto !important;
-    `}
-
-    ${(props) =>
-    props.isEmptyFolderContainer &&
-    isMobileOnly &&
-    css`
-      .ec-image {
-        margin-top: 0px;
-      }
-    `}
-
-    ${(props) =>
-    props.isEmptyPage &&
-    isMobileOnly &&
-    css`
-      .ec-image {
-        height: 72px !important;
-      }
+      width: auto !important;
+      min-width: auto !important;
+      margin: 0 !important;
     `}
 `;
 
