@@ -645,6 +645,7 @@ class FilesActionStore {
 
       try {
         await this.deleteItemOperation(isFile, itemId, translations, isRoom);
+        clearActiveOperations(isFile && [itemId], !isFile && [itemId]);
       } catch (err) {
         clearActiveOperations(isFile && [itemId], !isFile && [itemId]);
         setSecondaryProgressBarData({
