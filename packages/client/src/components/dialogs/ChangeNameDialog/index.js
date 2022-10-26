@@ -75,6 +75,7 @@ const ChangeNameDialog = (props) => {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             placeholder={t("ProfileAction:FirstName")}
+            isDisabled={isSaving}
           />
         </FieldContainer>
 
@@ -88,6 +89,7 @@ const ChangeNameDialog = (props) => {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             placeholder={t("Common:LastName")}
+            isDisabled={isSaving}
           />
         </FieldContainer>
       </ModalDialog.Body>
