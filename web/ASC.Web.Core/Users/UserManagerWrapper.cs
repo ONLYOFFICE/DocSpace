@@ -48,6 +48,7 @@ public sealed class UserManagerWrapper
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly SettingsManager _settingsManager;
     private readonly UserFormatter _userFormatter;
+    private readonly CountManagerChecker _countManagerChecker;
 
     public UserManagerWrapper(
         StudioNotifyService studioNotifyService,
@@ -60,7 +61,8 @@ public sealed class UserManagerWrapper
         IPSecurity.IPSecurity iPSecurity,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         SettingsManager settingsManager,
-        UserFormatter userFormatter)
+        UserFormatter userFormatter,
+        CountManagerChecker countManagerChecker)
     {
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -73,6 +75,7 @@ public sealed class UserManagerWrapper
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _settingsManager = settingsManager;
         _userFormatter = userFormatter;
+        _countManagerChecker = countManagerChecker;
     }
 
     private bool TestUniqueUserName(string uniqueName)
@@ -108,13 +111,18 @@ public sealed class UserManagerWrapper
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
-    public UserInfo AddInvitedUser(string email, EmployeeType type)
+    public async Task<UserInfo> AddInvitedUserAsync(string email, EmployeeType type)
     {
         var mail = new MailAddress(email);
 
         if (_userManager.GetUserByEmail(mail.Address).Id != Constants.LostUser.Id)
         {
             throw new InvalidOperationException($"User with email {mail.Address} already exists or is invited");
+        }
+
+        if (type is EmployeeType.User or EmployeeType.DocSpaceAdmin)
+        {
+            await _countManagerChecker.CheckAppend();
         }
 
         var user = new UserInfo
@@ -145,7 +153,7 @@ public sealed class UserManagerWrapper
     }
 
     public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false, 
-        bool updateExising = false)
+        bool updateExising = false, bool isAdmin = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
 
@@ -219,6 +227,10 @@ public sealed class UserManagerWrapper
         if (isVisitor)
         {
             _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
+        }
+        else if (isAdmin)
+        {
+            _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID);
         }
 
         return newUserInfo;
