@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Common.Log;
+
 namespace ASC.People.Api;
 
 public class UserController : PeopleControllerBase
@@ -301,6 +303,7 @@ public class UserController : PeopleControllerBase
             var link = _roomLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
 
             _studioNotifyService.SendDocSpaceInvite(user.Email, link);
+            _logger.Debug(link);
         }
 
         var users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
