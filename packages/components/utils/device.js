@@ -6,7 +6,7 @@ export const size = {
   smallTablet: 600,
   tablet: 1024,
   desktop: 1025,
-  hugeDesktop: 1440,
+  hugeDesktop: 1439,
 };
 
 export const mobile = `(max-width: ${size.mobile}px)`;
