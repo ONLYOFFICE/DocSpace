@@ -43,6 +43,14 @@ const CreateRoomDialog = ({
   const [isScrollLocked, setIsScrollLocked] = useState(false);
   const [isOauthWindowOpen, setIsOauthWindowOpen] = useState(false);
 
+  const isMountRef = React.useRef(true);
+
+  React.useEffect(() => {
+    return () => {
+      isMountRef.current = false;
+    };
+  });
+
   const startRoomParams = {
     type: undefined,
     title: "",
@@ -80,7 +88,9 @@ const CreateRoomDialog = ({
 
   const onCreateRoom = async () => {
     await onCreate({ ...roomParams });
-    setRoomParams(startRoomParams);
+    if (isMountRef.current) {
+      setRoomParams(startRoomParams);
+    }
   };
 
   const goBack = () => {
