@@ -49,6 +49,7 @@ const ChangePortalOwnerDialog = ({
   };
 
   const onTogglePeopleSelector = () => {
+    if (isLoading) return;
     setSelectedUser(null);
     setSelectorVisible((val) => !val);
   };
@@ -76,6 +77,7 @@ const ChangePortalOwnerDialog = ({
   };
 
   const onClearSelectedItem = () => {
+    if (isLoading) return;
     setSelectedUser(null);
   };
 
@@ -210,6 +212,7 @@ const ChangePortalOwnerDialog = ({
               size="normal"
               scale
               onClick={onCloseAction}
+              isDisabled={isLoading}
             />
           </div>
         </StyledFooterWrapper>
