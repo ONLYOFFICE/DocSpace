@@ -40,6 +40,11 @@ const StyledTag = styled.div`
     cursor: pointer;
   }
 
+  .third-party-tag {
+    width: 16px;
+    height: 16px;
+  }
+
   ${(props) =>
     !props.isDisabled &&
     css`

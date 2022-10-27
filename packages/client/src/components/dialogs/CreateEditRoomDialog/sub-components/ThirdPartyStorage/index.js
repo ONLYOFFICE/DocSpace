@@ -1,14 +1,15 @@
-import Checkbox from "@docspace/components/checkbox";
 import React from "react";
+import { inject, observer } from "mobx-react";
 import styled from "styled-components";
-import { StyledParam } from "../Params/StyledParam";
-
-import ToggleParam from "../Params/ToggleParam";
-import ThirpartyComboBox from "./ThirpartyComboBox";
-
-import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
+
+import { StyledParam } from "../Params/StyledParam";
+import ToggleParam from "../Params/ToggleParam";
+import ThirdPartyComboBox from "./ThirdPartyComboBox";
+
+import Checkbox from "@docspace/components/checkbox";
 import FolderInput from "./FolderInput";
+import { getOAuthToken } from "@docspace/common/utils";
 
 const StyledThirdPartyStorage = styled(StyledParam)`
   flex-direction: column;
@@ -17,25 +18,35 @@ const StyledThirdPartyStorage = styled(StyledParam)`
 
 const ThirdPartyStorage = ({
   t,
+
+  roomTitle,
+  storageLocation,
+  onChangeStorageLocation,
+
+  setIsScrollLocked,
+  setIsOauthWindowOpen,
+
   connectItems,
   setConnectDialogVisible,
   setRoomCreation,
   saveThirdpartyResponse,
+  setSaveThirdpartyResponse,
+  saveThirdParty,
+  deleteThirdParty,
   openConnectWindow,
   setConnectItem,
   getOAuthToken,
-  isThirdparty,
-  onChangeIsThirdparty,
-  storageLocation,
-  setChangeStorageLocation,
-  rememberThirdpartyStorage,
-  onChangeRememberThirdpartyStorage,
-  setIsScrollLocked,
-  setIsOauthWindowOpen,
+
+  isDisabled,
 }) => {
-  const checkForProviders = () => {
-    if (connectItems.length) onChangeIsThirdparty();
-    else
+  const onChangeIsThirdparty = () => {
+    if (isDisabled) return;
+    if (connectItems.length) {
+      onChangeStorageLocation({
+        ...storageLocation,
+        isThirdparty: !storageLocation.isThirdparty,
+      });
+    } else {
       toastr.warning(
         <div>
           <div>{t("ThirdPartyStorageNoStorageAlert")}</div>
@@ -46,72 +57,162 @@ const ThirdPartyStorage = ({
         true,
         false
       );
+    }
   };
 
-  const onChangeProvider = (provider) =>
-    setChangeStorageLocation({ ...storageLocation, provider });
+  const onChangeProvider = async (provider) => {
+    if (!!storageLocation.thirdpartyAccount) {
+      onChangeStorageLocation({
+        ...storageLocation,
+        provider,
+        thirdpartyAccount: null,
+      });
+      await deleteThirdParty(storageLocation.thirdpartyAccount.providerId);
+      return;
+    }
 
-  const onChangeFolderPath = (e) =>
-    setChangeStorageLocation({
+    onChangeStorageLocation({ ...storageLocation, provider });
+  };
+
+  const onChangeStorageFolderId = (storageFolderId) =>
+    onChangeStorageLocation({
       ...storageLocation,
-      storageFolderPath: e.target.value,
+      storageFolderId,
     });
+
+  const onChangeIsSaveThirdpartyAccount = () => {
+    onChangeStorageLocation({
+      ...storageLocation,
+      rememberThirdpartyStorage: !storageLocation.rememberThirdpartyStorage,
+    });
+  };
 
   return (
     <StyledThirdPartyStorage>
-      {/* <div className="set_room_params-info">
-        <div className="set_room_params-info-title">
-          <Text className="set_room_params-info-title-text">
-            {t("ThirdPartyStorageTitle")}
-          </Text>
-        </div>
-        <div className="set_room_params-info-description">
-          {t("ThirdPartyStorageDescription")}
-        </div>
-      </div> */}
-
       <ToggleParam
         title={t("ThirdPartyStorageTitle")}
         description={t("ThirdPartyStorageDescription")}
-        isChecked={isThirdparty}
-        onCheckedChange={checkForProviders}
+        isChecked={storageLocation.isThirdparty}
+        onCheckedChange={onChangeIsThirdparty}
       />
 
-      {isThirdparty && (
-        <ThirpartyComboBox
+      {storageLocation.isThirdparty && (
+        <ThirdPartyComboBox
           t={t}
+          storageLocation={storageLocation}
+          onChangeStorageLocation={onChangeStorageLocation}
+          onChangeProvider={onChangeProvider}
           connectItems={connectItems}
           setConnectDialogVisible={setConnectDialogVisible}
           setRoomCreation={setRoomCreation}
+          saveThirdParty={saveThirdParty}
           saveThirdpartyResponse={saveThirdpartyResponse}
+          setSaveThirdpartyResponse={setSaveThirdpartyResponse}
           openConnectWindow={openConnectWindow}
           setConnectItem={setConnectItem}
           getOAuthToken={getOAuthToken}
-          storageLocation={storageLocation}
-          onChangeProvider={onChangeProvider}
-          setChangeStorageLocation={setChangeStorageLocation}
           setIsScrollLocked={setIsScrollLocked}
           setIsOauthWindowOpen={setIsOauthWindowOpen}
+          isDisabled={isDisabled}
         />
       )}
 
-      {/* {isThirdparty && storageLocation.isConnected && (
+      {storageLocation.isThirdparty && storageLocation.thirdpartyAccount && (
         <FolderInput
-          value={storageLocation.storageFolderPath}
-          onChangeFolderPath={onChangeFolderPath}
+          t={t}
+          roomTitle={roomTitle}
+          thirdpartyAccount={storageLocation.thirdpartyAccount}
+          onChangeStorageFolderId={onChangeStorageFolderId}
+          isDisabled={isDisabled}
         />
-      )} */}
+      )}
 
-      {/* {isThirdparty && storageLocation.isConnected && (
+      {/* {storageLocation.isThirdparty && storageLocation.thirdpartyAccount && (
         <Checkbox
           className="thirdparty-checkbox"
           label={t("ThirdPartyStorageRememberChoice")}
-          isChecked={rememberThirdpartyStorage}
-          onChange={onChangeRememberThirdpartyStorage}
+          isChecked={storageLocation.isSaveThirdpartyAccount}
+          onChange={onChangeIsSaveThirdpartyAccount}
         />
       )} */}
     </StyledThirdPartyStorage>
   );
 };
 
-export default ThirdPartyStorage;
+export default inject(
+  ({
+    auth,
+    filesStore,
+    tagsStore,
+    filesActionsStore,
+    selectedFolderStore,
+    settingsStore,
+    dialogsStore,
+  }) => {
+    // const { getOAuthToken } = auth.settingsStore;
+    const {
+      openConnectWindow,
+      saveThirdParty,
+      deleteThirdParty,
+    } = settingsStore.thirdPartyStore;
+
+    const {
+      setConnectItem,
+      setConnectDialogVisible,
+      setRoomCreation,
+      saveThirdpartyResponse,
+      setSaveThirdpartyResponse,
+    } = dialogsStore;
+
+    const thirdPartyStore = settingsStore.thirdPartyStore;
+
+    const connectItems = [
+      thirdPartyStore.googleConnectItem,
+      thirdPartyStore.boxConnectItem,
+      thirdPartyStore.dropboxConnectItem,
+      thirdPartyStore.oneDriveConnectItem,
+      thirdPartyStore.nextCloudConnectItem && [
+        ...thirdPartyStore.nextCloudConnectItem,
+        "Nextcloud",
+      ],
+      thirdPartyStore.kDriveConnectItem,
+      thirdPartyStore.yandexConnectItem,
+      thirdPartyStore.ownCloudConnectItem && [
+        ...thirdPartyStore.ownCloudConnectItem,
+        "ownCloud",
+      ],
+      thirdPartyStore.webDavConnectItem,
+      thirdPartyStore.sharePointConnectItem,
+    ]
+      .map(
+        (item) =>
+          item && {
+            id: item[0],
+            providerKey: item[0],
+            isOauth: item.length > 1 && item[0] !== "WebDav",
+            oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
+            ...(item[0] === "WebDav" && {
+              category: item[item.length - 1],
+            }),
+          }
+      )
+      .filter((item) => !!item);
+
+    return {
+      connectItems,
+
+      setConnectDialogVisible,
+      setRoomCreation,
+
+      saveThirdParty,
+      deleteThirdParty,
+
+      saveThirdpartyResponse,
+      setSaveThirdpartyResponse,
+
+      openConnectWindow,
+      setConnectItem,
+      getOAuthToken,
+    };
+  }
+)(observer(ThirdPartyStorage));

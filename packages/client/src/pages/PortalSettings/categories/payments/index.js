@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import React, { useEffect, useState, useRef } from "react";
+import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import { useTranslation, Trans } from "react-i18next";
 import PropTypes from "prop-types";
@@ -10,7 +10,7 @@ import Text from "@docspace/components/text";
 import CurrentTariffContainer from "./CurrentTariffContainer";
 import PriceCalculation from "./PriceCalculation";
 import BenefitsContainer from "./BenefitsContainer";
-import { smallTablet } from "@docspace/components/utils/device";
+import { size, desktop } from "@docspace/components/utils/device";
 import ContactContainer from "./ContactContainer";
 import toastr from "@docspace/components/toast/toastr";
 import moment from "moment";
@@ -18,6 +18,7 @@ import { HelpButton } from "@docspace/components";
 import PayerInformationContainer from "./PayerInformationContainer";
 import { TariffState } from "@docspace/common/constants";
 import { getUserByEmail } from "@docspace/common/api/people";
+import { Consumer } from "@docspace/components/utils/context";
 
 const StyledBody = styled.div`
   max-width: 660px;
@@ -32,10 +33,42 @@ const StyledBody = styled.div`
     grid-template-columns: repeat(2, minmax(100px, 320px));
     grid-gap: 20px;
     margin-bottom: 20px;
-    @media ${smallTablet} {
+
+    @media (max-width: ${size.smallTablet + 40}px) {
       grid-template-columns: 1fr;
       grid-template-rows: 1fr 1fr;
+
+      .price-calculation-container,
+      .benefits-container {
+        max-width: 600px;
+      }
+      .select-users-count-container {
+        max-width: 520px;
+      }
     }
+
+    ${(props) =>
+      props.isChangeView &&
+      css`
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+
+        .price-calculation-container,
+        .benefits-container {
+          -webkit-transition: all 0.8s ease;
+          transition: all 0.4s ease;
+          max-width: 600px;
+        }
+        .select-users-count-container {
+          -webkit-transition: all 0.8s ease;
+          transition: all 0.4s ease;
+          max-width: 520px;
+        }
+
+        @media ${desktop} {
+          grid-template-columns: repeat(2, minmax(100px, 320px));
+        }
+      `}
   }
   .payment-info_wrapper {
     display: flex;
@@ -78,6 +111,8 @@ const PaymentsPage = ({
   portalPaymentQuotasFeatures,
   currentTariffPlanTitle,
   tariffPlanTitle,
+  expandArticle,
+  setPortalQuota,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
 
@@ -118,9 +153,7 @@ const PaymentsPage = ({
     (async () => {
       moment.locale(language);
 
-      const requests = [];
-
-      requests.push(getSettingsPayment());
+      const requests = [getSettingsPayment(), setPortalQuota()];
 
       if (!currencySymbol && !startValue)
         requests.push(setPortalPaymentQuotas());
@@ -274,77 +307,91 @@ const PaymentsPage = ({
   return isInitialLoading || !ready ? (
     <Loaders.PaymentsLoader />
   ) : (
-    <StyledBody theme={theme}>
-      {isNotPaidPeriod && isValidDelayDueDate
-        ? expiredTitleSubscriptionWarning()
-        : currentPlanTitle()}
-
-      {isAlreadyPaid && (
-        <PayerInformationContainer
-          payerInfo={payerInfo}
-          isPayer={isPayer}
-          payerEmail={payerEmail}
-        />
-      )}
-
-      <CurrentTariffContainer />
-
-      {planSuggestion()}
-
-      {isGracePeriod && (
-        <Text noSelect fontSize={"14px"} lineHeight={"16px"}>
-          <Trans t={t} i18nKey="GracePeriodActivatedDescription" ns="Payments">
-            Grace period activated from <strong>{{ fromDate }}</strong> -
-            <strong>{{ byDate }}</strong> ({{ delayDaysCount }}
-            ).
-          </Trans>
-        </Text>
-      )}
-
-      {isPaidPeriod && !isFreeTariff && (
-        <Text
-          noSelect
-          fontSize={"14px"}
-          lineHeight={"16px"}
-          className="payment-info_managers-price"
+    <Consumer>
+      {(context) => (
+        <StyledBody
+          theme={theme}
+          isChangeView={
+            context.sectionWidth < size.smallTablet && expandArticle
+          }
         >
-          <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
-            {{ finalDate: paymentTerm }}
-          </Trans>
-        </Text>
+          {isNotPaidPeriod && isValidDelayDueDate
+            ? expiredTitleSubscriptionWarning()
+            : currentPlanTitle()}
+
+          {isAlreadyPaid && (
+            <PayerInformationContainer
+              payerInfo={payerInfo}
+              isPayer={isPayer}
+              payerEmail={payerEmail}
+            />
+          )}
+
+          <CurrentTariffContainer />
+
+          {planSuggestion()}
+
+          {isGracePeriod && (
+            <Text noSelect fontSize={"14px"} lineHeight={"16px"}>
+              <Trans t={t} i18nKey="GracePeriodActivatedInfo" ns="Payments">
+                Grace period activated
+                <strong>
+                  from {{ fromDate }} to {{ byDate }}
+                </strong>
+                ({{ delayDaysCount }})
+              </Trans>{" "}
+              <Text as="span" fontSize="14px" lineHeight="16px">
+                {t("GracePeriodActivatedDescription")}
+              </Text>
+            </Text>
+          )}
+
+          {isPaidPeriod && !isFreeTariff && (
+            <Text
+              noSelect
+              fontSize={"14px"}
+              lineHeight={"16px"}
+              className="payment-info_managers-price"
+            >
+              <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
+                {{ finalDate: paymentTerm }}
+              </Trans>
+            </Text>
+          )}
+
+          <div className="payment-info_wrapper">
+            <Text
+              noSelect
+              fontWeight={600}
+              fontSize={"14px"}
+              className="payment-info_managers-price"
+            >
+              <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+                From {{ currencySymbol }}
+                {{ price: startValue }} per admin/month
+              </Trans>
+            </Text>
+
+            {renderTooltip()}
+          </div>
+          <div className="payment-info">
+            <PriceCalculation
+              t={t}
+              isPayer={isPayer}
+              isAlreadyPaid={isAlreadyPaid}
+              isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
+            />
+
+            {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod ? (
+              <></>
+            ) : (
+              <BenefitsContainer t={t} />
+            )}
+          </div>
+          <ContactContainer t={t} />
+        </StyledBody>
       )}
-
-      <div className="payment-info_wrapper">
-        <Text
-          noSelect
-          fontWeight={600}
-          fontSize={"14px"}
-          className="payment-info_managers-price"
-        >
-          <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
-            From {{ currencySymbol }}
-            {{ price: startValue }} per admin/month
-          </Trans>
-        </Text>
-
-        {renderTooltip()}
-      </div>
-      <div className="payment-info">
-        <PriceCalculation
-          t={t}
-          isPayer={isPayer}
-          isAlreadyPaid={isAlreadyPaid}
-          isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
-        />
-
-        {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod ? (
-          <></>
-        ) : (
-          <BenefitsContainer t={t} />
-        )}
-      </div>
-      <ContactContainer t={t} />
-    </StyledBody>
+    </Consumer>
   );
 };
 
@@ -359,9 +406,15 @@ export default inject(({ auth, payments }) => {
     paymentQuotasStore,
     currentTariffStatusStore,
     userStore,
+    settingsStore,
   } = auth;
+  const { showText: expandArticle } = settingsStore;
 
-  const { isFreeTariff, currentTariffPlanTitle } = currentQuotaStore;
+  const {
+    isFreeTariff,
+    currentTariffPlanTitle,
+    setPortalQuota,
+  } = currentQuotaStore;
   const {
     isNotPaidPeriod,
     isPaidPeriod,
@@ -391,6 +444,7 @@ export default inject(({ auth, payments }) => {
   const { user } = userStore;
 
   return {
+    expandArticle,
     isFreeTariff,
     tariffPlanTitle,
     language,
@@ -414,5 +468,6 @@ export default inject(({ auth, payments }) => {
     replaceFeaturesValues,
     portalPaymentQuotasFeatures,
     currentTariffPlanTitle,
+    setPortalQuota,
   };
 })(withRouter(observer(PaymentsPage)));

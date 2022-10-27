@@ -35,7 +35,7 @@ RUN apt-get -y update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN echo ${GIT_BRANCH}  && \
-    git clone --depth 1 --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/DocSpace.git ${SRC_PATH}
+    git clone --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/DocSpace.git ${SRC_PATH}
 
 RUN cd ${SRC_PATH} && \
     # mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
@@ -188,6 +188,15 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/service/  .
 
 CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
+
+# ASC.ApiSystem ##
+FROM dotnetrun AS api_system
+WORKDIR ${BUILD_PATH}/services/ASC.ApiSystem/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/  .
+
+CMD [" ASC.ApiSystem.dll", " ASC.ApiSystem"]
 
 ## ASC.ClearEvents ##
 FROM dotnetrun AS clear-events

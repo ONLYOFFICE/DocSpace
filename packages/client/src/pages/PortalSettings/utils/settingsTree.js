@@ -263,6 +263,29 @@ export const settingsTree = [
       },
     ],
   },
+  {
+    key: "7",
+    icon: "/images/trash.react.svg",
+    link: "delete-data",
+    tKey: "PortalDeletion",
+    isHeader: true,
+    children: [
+      {
+        key: "7-0",
+        icon: "",
+        link: "deletion",
+        tKey: "PortalDeletion",
+        isCategory: true,
+      },
+      {
+        key: "7-1",
+        icon: "",
+        link: "deactivation",
+        tKey: "PortalDeactivation",
+        isCategory: true,
+      },
+    ],
+  },
 ];
 
 /**

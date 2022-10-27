@@ -26,12 +26,17 @@
 
 namespace ASC.Files.Core.Core;
 
-public class UsersInRoomChecker : TenantQuotaFeatureChecker<UsersInRoomFeature, int>
+public class UsersInRoomChecker : TenantQuotaFeatureCheckerCount<UsersInRoomFeature>
 {
     public override string Exception => Resource.TariffsFeature_usersInRoom_exception;
 
     public UsersInRoomChecker(ITenantQuotaFeatureStat<UsersInRoomFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
+    }
+
+    public override Task CheckUsed(TenantQuota quota)
+    {
+        return base.CheckUsed(quota); //TODO
     }
 }
 

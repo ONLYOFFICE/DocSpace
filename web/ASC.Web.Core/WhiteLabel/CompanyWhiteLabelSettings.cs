@@ -34,7 +34,7 @@ public class CompanyWhiteLabelSettingsWrapper
 [Serializable]
 public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 {
-    private CoreSettings _coreSettings;
+    public CoreSettings CoreSettings;
 
     public string CompanyName { get; set; }
 
@@ -51,27 +51,12 @@ public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 
     public CompanyWhiteLabelSettings(CoreSettings coreSettings)
     {
-        _coreSettings = coreSettings;
+        CoreSettings = coreSettings;
     }
 
     public CompanyWhiteLabelSettings()
     {
 
-    }
-
-    public bool IsDefault
-    {
-        get
-        {
-            var defaultSettings = GetDefault();
-
-            return CompanyName == defaultSettings.CompanyName &&
-                    Site == defaultSettings.Site &&
-                    Email == defaultSettings.Email &&
-                    Address == defaultSettings.Address &&
-                    Phone == defaultSettings.Phone &&
-                    IsLicensor == defaultSettings.IsLicensor;
-        }
     }
 
     #region ISettings Members
@@ -85,19 +70,45 @@ public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 
     public CompanyWhiteLabelSettings GetDefault()
     {
-        var settings = _coreSettings.GetSetting("CompanyWhiteLabelSettings");
+        var settings = CoreSettings.GetSetting("CompanyWhiteLabelSettings");
 
-        var result = string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings(_coreSettings) : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
+        var result = string.IsNullOrEmpty(settings) ? new CompanyWhiteLabelSettings(CoreSettings) : JsonConvert.DeserializeObject<CompanyWhiteLabelSettings>(settings);
 
-        result._coreSettings = _coreSettings;
+        result.CoreSettings = CoreSettings;
 
         return result;
     }
 
     #endregion
+}
 
-    public static CompanyWhiteLabelSettings Instance(SettingsManager settingsManager)
+[Scope]
+public class CompanyWhiteLabelSettingsHelper
+{
+    private readonly CoreSettings _coreSettings;
+    private readonly SettingsManager _settingsManager;
+
+    public CompanyWhiteLabelSettingsHelper(CoreSettings coreSettings, SettingsManager settingsManager)
     {
-        return settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
+        _coreSettings = coreSettings;
+        _settingsManager = settingsManager;
+    }
+
+    public CompanyWhiteLabelSettings Instance()
+    {
+        return _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>();
+    }
+
+    public bool IsDefault(CompanyWhiteLabelSettings settings)
+    {
+        settings.CoreSettings = _coreSettings;
+        var defaultSettings = settings.GetDefault();
+
+        return settings.CompanyName == defaultSettings.CompanyName &&
+                settings.Site == defaultSettings.Site &&
+                settings.Email == defaultSettings.Email &&
+                settings.Address == defaultSettings.Address &&
+                settings.Phone == defaultSettings.Phone &&
+                settings.IsLicensor == defaultSettings.IsLicensor;
     }
 }

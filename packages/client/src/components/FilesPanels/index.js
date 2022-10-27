@@ -23,8 +23,10 @@ import {
   ConflictResolveDialog,
   ConvertDialog,
   CreateRoomDialog,
+  InviteUsersWarningDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
+import RestoreAllArchiveDialog from "../dialogs/RestoreAllArchiveDialog";
 
 const Panels = (props) => {
   const {
@@ -52,6 +54,8 @@ const Panels = (props) => {
     convertPasswordDialogVisible,
     createRoomDialogVisible,
     restoreAllPanelVisible,
+    restoreAllArchiveDialogVisible,
+    inviteUsersWarningDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
@@ -117,6 +121,12 @@ const Panels = (props) => {
     convertPasswordDialogVisible && (
       <ConvertPasswordDialog key="convert-password-dialog" />
     ),
+    restoreAllArchiveDialogVisible && (
+      <RestoreAllArchiveDialog key="restore-all-archive-dialog" />
+    ),
+    inviteUsersWarningDialogVisible && (
+      <InviteUsersWarningDialog key="invite-users-warning-dialog" />
+    ),
   ];
 };
 
@@ -141,11 +151,13 @@ export default inject(
       convertPasswordDialogVisible,
       connectItem, //TODO:
       restoreAllPanelVisible,
+      restoreAllArchiveDialogVisible,
 
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
       invitePanelOptions,
+      inviteUsersWarningDialogVisible,
     } = dialogsStore;
 
     const { uploadPanelVisible } = uploadDataStore;
@@ -177,6 +189,8 @@ export default inject(
       hotkeyPanelVisible,
       restoreAllPanelVisible,
       invitePanelVisible: invitePanelOptions.visible,
+      restoreAllArchiveDialogVisible,
+      inviteUsersWarningDialogVisible,
     };
   }
 )(observer(Panels));

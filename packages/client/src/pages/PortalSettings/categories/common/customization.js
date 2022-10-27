@@ -3,10 +3,10 @@ import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
-import LanguageAndTimeZone from "./settingsCustomization/language-and-time-zone";
-import WelcomePageSettings from "./settingsCustomization/welcome-page-settings";
-import PortalRenaming from "./settingsCustomization/portal-renaming";
-import DNSSettings from "./settingsCustomization/dns-settings";
+import LanguageAndTimeZone from "./Customization/language-and-time-zone";
+import WelcomePageSettings from "./Customization/welcome-page-settings";
+import PortalRenaming from "./Customization/portal-renaming";
+import DNSSettings from "./Customization/dns-settings";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import CustomizationNavbar from "./customization-navbar";
 import { Base } from "@docspace/components/themes";
@@ -30,7 +30,6 @@ const StyledComponent = styled.div`
     margin-bottom: 20px;
     max-width: 700px;
   }
-
 
   .category-item-description {
     color: ${(props) => props.theme.client.settings.common.descriptionColor};

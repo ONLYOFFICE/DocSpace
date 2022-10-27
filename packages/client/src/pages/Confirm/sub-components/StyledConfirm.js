@@ -24,6 +24,10 @@ export const StyledPage = styled.div`
     width: 100%;
     margin-bottom: 8px;
   }
+
+  .subtitle {
+    margin-bottom: 32px;
+  }
 `;
 
 export const StyledHeader = styled.div`

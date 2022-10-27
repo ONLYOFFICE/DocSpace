@@ -164,7 +164,12 @@ const Items = ({
         if (pathParts && pathParts.includes(item.id) && !isMainFolder)
           return true;
 
-        if (selectedTreeNode[0] === "@my" && item.key === "0-0") return true;
+        if (
+          (selectedTreeNode[0] === "@my" || selectedTreeNode[0] === "@rooms") &&
+          item.key === "0-0"
+        ) {
+          return true;
+        }
         return `${item.id}` === selectedTreeNode[0];
       }
     },

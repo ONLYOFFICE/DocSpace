@@ -17,7 +17,7 @@ const StyledOuter = styled.div`
     }
     path {
       fill: ${(props) =>
-        props.color ? props.color : props.theme.iconButton.color};
+        props.color ? props.color : props.theme.iconButton.color} !important;
     }
   }
   &:hover {

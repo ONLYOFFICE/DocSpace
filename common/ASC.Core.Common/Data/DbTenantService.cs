@@ -218,7 +218,7 @@ public class DbTenantService : ITenantService
                 tenant.LastModified = DateTime.UtcNow;
 
                 var dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
-
+                dbTenant.Id = 0;
                 dbTenant = tenantDbContext.Tenants.Add(dbTenant).Entity;
                 tenantDbContext.SaveChanges();
                 tenant.Id = dbTenant.Id;
@@ -235,7 +235,7 @@ public class DbTenantService : ITenantService
                     dbTenant.MappedDomain = !string.IsNullOrEmpty(tenant.MappedDomain) ? tenant.MappedDomain.ToLowerInvariant() : null;
                     dbTenant.Version = tenant.Version;
                     dbTenant.VersionChanged = tenant.VersionChanged;
-                    dbTenant.Name = tenant.Name ?? tenant.Alias;
+                    dbTenant.Name = tenant.Name ?? "";
                     dbTenant.Language = tenant.Language;
                     dbTenant.TimeZone = tenant.TimeZone;
                     dbTenant.TrustedDomainsRaw = tenant.GetTrustedDomains();
@@ -405,11 +405,11 @@ public class DbTenantService : ITenantService
                 }
             }
 
-            var existsTenants = tenantDbContext.TenantForbiden.Where(r => r.Address.StartsWith(domain)).Select(r => r.Address)
-                .Union(tenantDbContext.Tenants.Where(r => r.Alias.StartsWith(domain) && r.Id != tenantId).Select(r => r.Alias))
-                .Union(tenantDbContext.Tenants.Where(r => r.MappedDomain.StartsWith(domain) && r.Id != tenantId && r.Status != TenantStatus.RemovePending).Select(r => r.MappedDomain));
+            var existsTenants = tenantDbContext.TenantForbiden.Where(r => r.Address.StartsWith(domain)).Select(r => r.Address).ToList();
+            existsTenants.AddRange(tenantDbContext.Tenants.Where(r => r.Alias.StartsWith(domain) && r.Id != tenantId).Select(r => r.Alias).ToList());
+            existsTenants.AddRange(tenantDbContext.Tenants.Where(r => r.MappedDomain.StartsWith(domain) && r.Id != tenantId && r.Status != TenantStatus.RemovePending).Select(r => r.MappedDomain).ToList());
 
-            throw new TenantAlreadyExistsException("Address busy.", existsTenants);
+            throw new TenantAlreadyExistsException("Address busy.", existsTenants.Distinct());
         }
     }
 

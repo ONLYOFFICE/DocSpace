@@ -20,11 +20,15 @@ const FilesItemTitle = ({
   getContextOptions,
   getContextOptionActions,
   severalItemsLength,
+
+  selectedFolderId,
 }) => {
   if (isSeveralItems)
     return (
       <StyledTitle>
-        <ReactSVG className="icon" src={getIcon(32, ".file")} />
+        <div className="item-icon">
+          <ReactSVG className="icon" src={getIcon(32, ".file")} />
+        </div>
         <Text className="text">
           {`${t("InfoPanel:ItemsSelected")}: ${severalItemsLength}`}
         </Text>
@@ -35,11 +39,13 @@ const FilesItemTitle = ({
 
   return (
     <StyledTitle ref={itemTitleRef}>
-      <img
-        className={`icon ${selection.isRoom && "is-room"}`}
-        src={selection.icon}
-        alt="thumbnail-icon"
-      />
+      <div className="item-icon">
+        <img
+          className={`icon ${selection.isRoom && "is-room"}`}
+          src={selection.icon}
+          alt="thumbnail-icon"
+        />
+      </div>
       <Text className="text">{selection.title}</Text>
       {selection && (
         <ItemContextOptions
@@ -49,6 +55,7 @@ const FilesItemTitle = ({
           setBufferSelection={setBufferSelection}
           getContextOptions={getContextOptions}
           getContextOptionActions={getContextOptionActions}
+          selectedFolderId={selectedFolderId}
         />
       )}
     </StyledTitle>

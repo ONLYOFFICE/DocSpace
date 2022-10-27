@@ -28,7 +28,7 @@ using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core.Quota;
 
-public class CountUserChecker : TenantQuotaFeatureChecker<CountUserFeature, int>
+public class CountUserChecker : TenantQuotaFeatureCheckerCount<CountUserFeature>
 {
     private readonly ITariffService _tariffService;
     public override string Exception => Resource.TariffsFeature_users_exception;

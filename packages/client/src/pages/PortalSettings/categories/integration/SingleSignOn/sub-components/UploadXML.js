@@ -16,7 +16,7 @@ import { Base } from "@docspace/components/themes";
 const StyledUploadIcon = styled(UploadIcon)`
   path {
     stroke: ${(props) =>
-      props.isDisabled
+      props.disabled
         ? props.theme.client.settings.integration.sso.iconButtonDisabled
         : props.theme.client.settings.integration.sso.iconButton} !important;
   }
@@ -33,6 +33,10 @@ const UploadXML = (props) => {
     uploadByUrl,
     uploadXml,
   } = props;
+
+  const isDisabledProp = {
+    disabled: !enableSso || uploadXmlUrl.trim().length === 0 || isLoadingXml,
+  };
 
   return (
     <FieldContainer
@@ -52,13 +56,7 @@ const UploadXML = (props) => {
 
         <Button
           className="upload-button"
-          icon={
-            <StyledUploadIcon
-              isDisabled={
-                !enableSso || uploadXmlUrl.trim().length === 0 || isLoadingXml
-              }
-            />
-          }
+          icon={<StyledUploadIcon {...isDisabledProp} />}
           isDisabled={
             !enableSso || uploadXmlUrl.trim().length === 0 || isLoadingXml
           }

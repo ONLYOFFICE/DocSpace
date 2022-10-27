@@ -24,50 +24,25 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2018
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
-
 namespace ASC.ApiSystem.Classes;
 
 [Singletone]
 public class TimeZonesProvider
 {
-    public ILogger<TimeZonesProvider> Log { get; }
+    private readonly ILogger<TimeZonesProvider> _log;
 
-    private CommonConstants CommonConstants { get; }
+    private readonly CommonConstants _commonConstants;
 
     public TimeZonesProvider(ILogger<TimeZonesProvider> logger, CommonConstants commonConstants)
     {
-        Log = logger;
+        _log = logger;
 
-        CommonConstants = commonConstants;
+        _commonConstants = commonConstants;
     }
 
     #region Private
 
-    private static readonly Dictionary<string, KeyValuePair<string, string>> TimeZones = new Dictionary<string, KeyValuePair<string, string>>
+    private static readonly Dictionary<string, KeyValuePair<string, string>> _timeZones = new Dictionary<string, KeyValuePair<string, string>>
     {
         { "", new KeyValuePair<string, string>("Europe/London", "GMT Standard Time") },
         { "fr", new KeyValuePair<string, string>("Europe/Paris", "Romance Standard Time") },
@@ -92,7 +67,7 @@ public class TimeZonesProvider
         { "vi", new KeyValuePair<string, string>("Asia/Shanghai", "China Standard Time") }
     };
 
-    private static readonly Dictionary<string, CultureInfo> CultureUiMap = new Dictionary<string, CultureInfo>
+    private static readonly Dictionary<string, CultureInfo> _cultureUiMap = new Dictionary<string, CultureInfo>
     {
         { "", CultureInfo.GetCultureInfo("en-US") },
         { "fr", CultureInfo.GetCultureInfo("fr-FR") },
@@ -124,7 +99,7 @@ public class TimeZonesProvider
 
     public TimeZoneInfo GetCurrentTimeZoneInfo(string languageKey)
     {
-        var time = TimeZones.ContainsKey(languageKey) ? TimeZones[languageKey] : TimeZones[""];
+        var time = _timeZones.ContainsKey(languageKey) ? _timeZones[languageKey] : _timeZones[""];
         try
         {
             try
@@ -138,7 +113,7 @@ public class TimeZonesProvider
         }
         catch (Exception e)
         {
-            Log.LogError(e, "GetCurrentTimeZoneInfo");
+            _log.LogError(e, "GetCurrentTimeZoneInfo");
 
             return TimeZoneInfo.Utc;
         }
@@ -148,12 +123,12 @@ public class TimeZonesProvider
     {
         if (string.IsNullOrEmpty(languageKey))
         {
-            return CommonConstants.DefaultCulture;
+            return _commonConstants.DefaultCulture;
         }
 
-        var culture = CultureUiMap.ContainsKey(languageKey) ? CultureUiMap[languageKey] : null;
+        var culture = _cultureUiMap.ContainsKey(languageKey) ? _cultureUiMap[languageKey] : null;
 
-        return culture ?? CommonConstants.DefaultCulture;
+        return culture ?? _commonConstants.DefaultCulture;
     }
 
     #endregion

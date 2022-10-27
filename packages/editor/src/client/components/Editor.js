@@ -1,7 +1,11 @@
 import React, { useEffect } from "react";
 import { isMobile, isIOS, deviceType } from "react-device-detect";
 import combineUrl from "@docspace/common/utils/combineUrl";
-import { AppServerConfig, FolderType } from "@docspace/common/constants";
+import {
+  AppServerConfig,
+  FolderType,
+  EDITOR_ID,
+} from "@docspace/common/constants";
 import throttle from "lodash/throttle";
 import Toast from "@docspace/components/toast";
 import { toast } from "react-toastify";
@@ -21,6 +25,7 @@ import withDialogs from "../helpers/withDialogs";
 import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
+import { DocumentEditor } from "@onlyoffice/document-editor-react";
 
 toast.configure();
 
@@ -54,6 +59,9 @@ let documentIsReady = false;
 let docSaved = null;
 let docTitle = null;
 let docEditor;
+let newConfig;
+let documentserverUrl =
+  typeof window !== "undefined" && window?.location?.origin;
 
 function Editor({
   config,
@@ -97,33 +105,34 @@ function Editor({
   }, [mfReady, error]);
 
   useEffect(() => {
-    if (config) {
-      document.getElementById("scripDocServiceAddress").onload = onLoad();
-      setDocumentTitle(config?.document?.title);
+    if (!config) return;
 
-      if (isIOS && deviceType === "tablet") {
-        const vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty("--vh", `${vh}px`);
-      }
+    setDocumentTitle(config?.document?.title);
 
-      if (
-        !view &&
-        fileInfo &&
-        fileInfo.canWebRestrictedEditing &&
-        fileInfo.canFillForms &&
-        !fileInfo.canEdit
-      ) {
-        try {
-          initForm();
-        } catch (err) {
-          console.error(err);
-        }
-      }
+    if (isIOS && deviceType === "tablet") {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    }
 
-      if (view) {
-        config.editorConfig.mode = "view";
+    if (
+      !view &&
+      fileInfo &&
+      fileInfo.canWebRestrictedEditing &&
+      fileInfo.canFillForms &&
+      !fileInfo.canEdit
+    ) {
+      try {
+        initForm();
+      } catch (err) {
+        console.error(err);
       }
     }
+
+    if (view) {
+      config.editorConfig.mode = "view";
+    }
+
+    init();
   }, []);
 
   useEffect(() => {
@@ -342,11 +351,14 @@ function Editor({
   };
 
   const onDocumentReady = () => {
+    console.log("onDocumentReady", arguments);
     documentIsReady = true;
 
     if (isSharingAccess) {
       loadUsersRightsList(docEditor);
     }
+
+    assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
   };
 
   const updateFavorite = (favorite) => {
@@ -411,7 +423,9 @@ function Editor({
   };
 
   const onSDKAppReady = () => {
-    console.log("ONLYOFFICE Document Editor is ready");
+    docEditor = window.DocEditor.instances[EDITOR_ID];
+
+    console.log("ONLYOFFICE Document Editor is ready", docEditor);
     const url = window.location.href;
 
     const index = url.indexOf("#message/");
@@ -428,10 +442,8 @@ function Editor({
     }
   };
 
-  const onLoad = () => {
+  const init = () => {
     try {
-      if (!window.DocsAPI) throw new Error("DocsAPI is not defined");
-
       if (isMobile) {
         config.type = "mobile";
       }
@@ -549,14 +561,7 @@ function Editor({
         },
       };
 
-      const newConfig = Object.assign(config, events);
-
-      docEditor = window.docEditor = window.DocsAPI.DocEditor(
-        "editor",
-        newConfig
-      );
-
-      assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
+      newConfig = Object.assign(config, events);
     } catch (error) {
       toastr.error(error.message, null, 0, true);
     }
@@ -564,7 +569,17 @@ function Editor({
 
   return (
     <EditorWrapper isVisibleSharingDialog={isVisible}>
-      <div id="editor"></div>
+      {newConfig && (
+        <DocumentEditor
+          id={EDITOR_ID}
+          documentServerUrl={documentserverUrl}
+          config={newConfig}
+          height="100%"
+          width="100%"
+          events_onDocumentReady={onDocumentReady}
+        ></DocumentEditor>
+      )}
+
       {sharingDialog}
       {selectFileDialog}
       {selectFolderDialog}

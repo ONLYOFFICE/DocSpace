@@ -137,7 +137,7 @@ public class LdapUserManager
 
             try
             {
-                _countManagerChecker.CheckUsed().Wait();
+                _countManagerChecker.CheckAppend().Wait();
             }
             catch (Exception)
             {

@@ -184,7 +184,7 @@ public class MessageSettingsController : BaseSettingsController
                 var enableInviteUsers = true;
                 try
                 {
-                    await _countManagerChecker.CheckUsed();
+                    await _countManagerChecker.CheckAppend();
                 }
                 catch (Exception)
                 {
