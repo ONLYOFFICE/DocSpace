@@ -4,7 +4,8 @@ import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
-
+import Tooltip from "@docspace/components/tooltip";
+import Text from "@docspace/components/text";
 import TabContainer from "@docspace/components/tabs-container";
 import Preview from "./Appearance/preview";
 
@@ -77,7 +78,12 @@ const Appearance = (props) => {
     currentColorScheme.accentColor
   );
   const [selectThemeId, setSelectThemeId] = useState(selectedThemeId);
+  const [selectNewThemeId, setSelectNewThemeId] = useState(null);
+
   const [changeColorTheme, setChangeColorTheme] = useState(false);
+
+  const [newCustomThemes, setNewCustomThemes] = useState([]);
+  const [abilityAddTheme, setAbilityAddTheme] = useState(true);
 
   const checkImg = (
     <img className="check-img" src="/static/images/check.white.svg" />
@@ -112,6 +118,14 @@ const Appearance = (props) => {
     ],
     [selectAccentColor, previewTheme, selectThemeId, tReady]
   );
+
+  useEffect(() => {
+    if (newCustomThemes.length === 3) {
+      setAbilityAddTheme(false);
+    } else {
+      setAbilityAddTheme(true);
+    }
+  }, [newCustomThemes.length, setAbilityAddTheme]);
 
   useEffect(() => {
     onCheckView();
@@ -160,17 +174,31 @@ const Appearance = (props) => {
 
   const onColorSelection = (item) => {
     setSelectAccentColor(item.accentColor);
+
     setSelectThemeId(item.id);
+    setSelectNewThemeId(null);
+  };
+
+  const onColorSelectionNewThemes = (item, index) => {
+    setSelectAccentColor(item.accentColor);
+    setSelectNewThemeId(index);
+    setSelectThemeId(null);
   };
 
   const onShowCheck = (colorNumber) => {
     return selectThemeId && selectThemeId === colorNumber && checkImg;
   };
 
+  const onShowCheckNewThemes = (colorNumber) => {
+    console.log("selectNewThemeId colorNumber", selectNewThemeId, colorNumber);
+    return selectNewThemeId && selectNewThemeId === colorNumber && checkImg;
+  };
+
   const onChangePreviewTheme = (e) => {
     setPreviewTheme(e.title);
   };
 
+  //TODO: rewrite
   const onSaveSelectedColor = () => {
     sendAppearanceTheme({ selected: selectThemeId })
       .then(() => {
@@ -216,13 +244,14 @@ const Appearance = (props) => {
   };
 
   const onAddTheme = () => {
+    if (!abilityAddTheme) return;
     setIsAddThemeDialog(true);
-    setCurrentColorAccent(
-      "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA"
-    );
-    setCurrentColorButtons(
-      "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA"
-    );
+    // setCurrentColorAccent(
+    //   "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA"
+    // );
+    // setCurrentColorButtons(
+    //   "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA"
+    // );
 
     setHeaderColorSchemeDialog("New color scheme");
 
@@ -265,12 +294,17 @@ const Appearance = (props) => {
   }, [appliedColorButtons]);
 
   const onSaveColorSchemeDialog = () => {
+    onCloseColorSchemeDialog();
+
     const theme = {
-      id: selectTheme.id,
       accentColor: currentColorAccent,
       buttonsMain: currentColorButtons,
       textColor: "#FFFFFF",
     };
+
+    setNewCustomThemes([...newCustomThemes, theme]);
+    setCurrentColorAccent(null);
+    setCurrentColorButtons(null);
   };
 
   const nodeHexColorPickerButtons = viewMobile ? (
@@ -336,23 +370,31 @@ const Appearance = (props) => {
     </DropDownContainer>
   );
 
-  const nodeAccentColor = (
-    <div
-      id="accent"
-      style={{ background: currentColorAccent }}
-      className="color-button"
-      onClick={onClickColor}
-    ></div>
+  // const nodeAccentColor = (
+  //   <div
+  //     id="accent"
+  //     style={{ background: currentColorAccent }}
+  //     className="color-button"
+  //     onClick={onClickColor}
+  //   ></div>
+  // );
+
+  // const nodeButtonsColor = (
+  //   <div
+  //     id="buttons"
+  //     style={{ background: currentColorButtons }}
+  //     className="color-button"
+  //     onClick={onClickColor}
+  //   ></div>
+  // );
+
+  console.log(
+    "currentColorAccent,currentColorButtons",
+    currentColorAccent,
+    currentColorButtons
   );
 
-  const nodeButtonsColor = (
-    <div
-      id="buttons"
-      style={{ background: currentColorButtons }}
-      className="color-button"
-      onClick={onClickColor}
-    ></div>
-  );
+  console.log("newCustomThemes", newCustomThemes);
 
   return viewMobile ? (
     <BreakpointWarning sectionName={t("Settings:Appearance")} />
@@ -375,16 +417,62 @@ const Appearance = (props) => {
                 className="box"
                 onClick={() => onColorSelection(item)}
               >
-                {onShowCheck(item.id)}
+                {!selectNewThemeId && onShowCheck(item.id)}
               </div>
             );
           })}
         </div>
       </div>
 
+      <div className="theme-custom">
+        <div className="theme-name">Custom</div>
+
+        <div className="theme-container">
+          {newCustomThemes?.map((item, index) => {
+            return (
+              <div
+                key={index}
+                //  id={item.id}
+                style={{ background: item.accentColor }}
+                className="box"
+                onClick={() => onColorSelectionNewThemes(item, index + 1)}
+              >
+                {!selectThemeId && onShowCheckNewThemes(index + 1)}
+              </div>
+            );
+          })}
+
+          <div
+            data-for="theme-add"
+            data-tip={
+              abilityAddTheme
+                ? "You can only create 3 custom themes. To create a new one, you must delete one of the previous themes."
+                : null
+            }
+            className="box theme-add"
+            onClick={() => onAddTheme()}
+          />
+          <Tooltip
+            id="theme-add"
+            offsetBottom={0}
+            effect="solid"
+            place="bottom"
+            getContent={(dataTip) => (
+              <Text fontSize="12px" noSelect>
+                {dataTip}
+              </Text>
+            )}
+          ></Tooltip>
+        </div>
+      </div>
+
       <ColorSchemeDialog
-        nodeButtonsColor={nodeButtonsColor}
-        nodeAccentColor={nodeAccentColor}
+        // nodeButtonsColor={nodeButtonsColor}
+        // nodeAccentColor={nodeAccentColor}
+
+        onClickColor={onClickColor}
+        currentColorAccent={currentColorAccent}
+        currentColorButtons={currentColorButtons}
         nodeHexColorPickerAccent={nodeHexColorPickerAccent}
         nodeHexColorPickerButtons={nodeHexColorPickerButtons}
         visible={showColorSchemeDialog}

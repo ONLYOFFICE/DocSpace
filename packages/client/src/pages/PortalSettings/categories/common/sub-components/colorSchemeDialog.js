@@ -27,13 +27,43 @@ const StyledComponent = styled(ModalDialog)`
     line-height: 24px;
   }
 
-  .color-button {
+  /* .color-button {
     width: 46px;
     height: 46px;
-  }
+  } */
 
   .relative {
     position: relative;
+  }
+
+  .box {
+    width: 46px;
+    height: 46px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .accent-box {
+    background: ${(props) =>
+      props.currentColorAccent
+        ? props.currentColorAccent
+        : `#eceef1 url("/static/images/plus.theme.svg") no-repeat center`};
+  }
+
+  .buttons-box {
+    background: ${(props) =>
+      props.currentColorButtons
+        ? props.currentColorButtons
+        : `#eceef1 url("/static/images/plus.theme.svg") no-repeat center`};
+  }
+
+  .modal-add-theme {
+    // background: #eceef1 url("/static/images/plus.theme.svg") no-repeat center;
+
+    width: 46px;
+    height: 46px;
+    border-radius: 8px;
+    cursor: pointer;
   }
 `;
 
@@ -59,23 +89,44 @@ const ColorSchemeDialog = (props) => {
     showSaveButtonDialog,
     onSaveColorSchemeDialog,
     t,
+
+    onClickColor,
+    currentColorAccent,
+    currentColorButtons,
   } = props;
 
   return (
-    <StyledComponent visible={visible} onClose={onClose} displayType="aside">
+    <StyledComponent
+      visible={visible}
+      onClose={onClose}
+      displayType="aside"
+      currentColorAccent={currentColorAccent}
+      currentColorButtons={currentColorButtons}
+    >
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         <div>
           <div className="flex relative">
             <div className="text">Accent</div>
-            {nodeAccentColor}
+            <div
+              id="accent"
+              className="modal-add-theme accent-box"
+              onClick={onClickColor}
+            />
+            {/* {nodeAccentColor} */}
 
             {!viewMobile && nodeHexColorPickerAccent}
           </div>
 
           <div className="flex relative">
             <div className="text">Buttons</div>
-            {nodeButtonsColor}
+            <div
+              id="buttons"
+              className="modal-add-theme buttons-box"
+              onClick={onClickColor}
+            />
+
+            {/* {nodeButtonsColor} */}
 
             {!viewMobile && nodeHexColorPickerButtons}
           </div>

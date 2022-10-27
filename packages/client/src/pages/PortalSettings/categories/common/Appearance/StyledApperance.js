@@ -37,6 +37,10 @@ const StyledComponent = styled.div`
     cursor: pointer;
   }
 
+  .theme-add {
+    background: #eceef1 url("/static/images/plus.theme.svg") no-repeat center;
+  }
+
   .check-img {
     padding: 18px 0 0 15px;
   }
