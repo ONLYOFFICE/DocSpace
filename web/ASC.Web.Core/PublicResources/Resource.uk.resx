@@ -145,10 +145,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Пароль повинен містити</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Повинен містити
-</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>цифри</value>
   </data>

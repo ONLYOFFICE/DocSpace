@@ -2230,7 +2230,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of managers.
+        ///   Looks up a localized string similar to Number of admins.
         /// </summary>
         public static string TariffsFeature_manager_price_count {
             get {
@@ -2302,7 +2302,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Managers added:.
+        ///   Looks up a localized string similar to Admins added:.
         /// </summary>
         public static string TariffsFeature_used_manager {
             get {
@@ -2311,7 +2311,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room:.
+        ///   Looks up a localized string similar to Rooms:.
         /// </summary>
         public static string TariffsFeature_used_room {
             get {

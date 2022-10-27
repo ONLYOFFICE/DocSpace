@@ -157,9 +157,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Senha deve conter</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>A senha deve conter</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>dígitos</value>
   </data>
