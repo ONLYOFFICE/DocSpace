@@ -215,14 +215,16 @@ const InviteInput = ({
     <>
       <StyledSubHeader>
         {t("IndividualInvitation")}
-        <StyledLink
-          fontWeight="600"
-          type="action"
-          isHovered
-          onClick={openUsersPanel}
-        >
-          {t("СhooseFromList")}
-        </StyledLink>
+        {!hideSelector && (
+          <StyledLink
+            fontWeight="600"
+            type="action"
+            isHovered
+            onClick={openUsersPanel}
+          >
+            {t("СhooseFromList")}
+          </StyledLink>
+        )}
       </StyledSubHeader>
 
       <StyledInviteInputContainer ref={inputsRef}>
@@ -258,17 +260,15 @@ const InviteInput = ({
               )}
         </StyledDropDown>
 
-        {!hideSelector && (
-          <AccessSelector
-            t={t}
-            roomType={roomType}
-            defaultAccess={defaultAccess}
-            onSelectAccess={onSelectAccess}
-            containerRef={inputsRef}
-          />
-        )}
+        <AccessSelector
+          t={t}
+          roomType={roomType}
+          defaultAccess={defaultAccess}
+          onSelectAccess={onSelectAccess}
+          containerRef={inputsRef}
+        />
 
-        {addUsersPanelVisible && (
+        {!hideSelector && addUsersPanelVisible && (
           <AddUsersPanel
             onParentPanelClose={onClose}
             onClose={closeUsersPanel}
