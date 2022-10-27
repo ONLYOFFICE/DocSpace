@@ -103,6 +103,7 @@ const DNSSettings = (props) => {
       >
         <Textarea
           id="textInputContainerDNSSettings"
+          className="dns-textarea"
           heightTextArea={30}
           tabIndex={8}
           isDisabled={true}
