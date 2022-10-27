@@ -61,6 +61,7 @@ class MediaViewerDataStore {
         title: this.currentItem.fileInfo.title,
         fileExst: this.currentItem.fileInfo.fileExst,
         fileStatus: this.currentItem.fileInfo.fileStatus,
+        canShare: this.currentItem.fileInfo.canShare,
       });
 
       return playlist;
@@ -77,6 +78,7 @@ class MediaViewerDataStore {
             title: file.title,
             fileExst: file.fileExst,
             fileStatus: file.fileStatus,
+            canShare: file.canShare,
           });
           id++;
         }
@@ -89,6 +91,7 @@ class MediaViewerDataStore {
         title: this.previewFile.title,
         fileExst: this.previewFile.fileExst,
         fileStatus: this.previewFile.fileStatus,
+        canShare: this.previewFile.canShare,
       });
     }
 
