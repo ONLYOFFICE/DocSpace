@@ -40,7 +40,6 @@ const Login: React.FC<ILoginProps> = ({
   setTheme,
   logoUrls,
 }) => {
-  console.log(logoUrls);
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
