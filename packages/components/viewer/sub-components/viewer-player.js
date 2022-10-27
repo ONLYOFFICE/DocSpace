@@ -1,5 +1,9 @@
 import * as React from "react";
 import styled from "styled-components";
+import ContextMenu from "@docspace/components/context-menu";
+import { isMobile } from "react-device-detect";
+
+import { tablet } from "@docspace/components/utils/device";
 
 import IconPlay from "../../../../public/images/videoplayer.play.react.svg";
 import IconStop from "../../../../public/images/videoplayer.stop.react.svg";
@@ -29,10 +33,20 @@ function createAction(type, payload) {
   };
 }
 
+const StyledContextMenu = styled(ContextMenu)`
+  z-index: 306 !important;
+  right: 12px;
+  bottom: 64px;
+`;
+
 const StyledVideoPlayer = styled.div`
+  &:focus-visible,
+  #videoPlayer:focus-visible {
+    outline: none;
+  }
   .video-wrapper {
     position: fixed;
-    z-index: 1005;
+    z-index: 305;
     top: 0;
     bottom: 0;
     right: 0;
@@ -87,7 +101,7 @@ const StyledVideoActions = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 48px;
+    min-width: 48px;
     height: 48px;
     &:hover {
       cursor: pointer;
@@ -101,7 +115,7 @@ const StyledVideoControls = styled.div`
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 1500;
+  z-index: 307;
   height: 48px;
   background: rgba(17, 17, 17, 0.867);
 
@@ -109,12 +123,16 @@ const StyledVideoControls = styled.div`
     -webkit-appearance: none;
     margin-right: 15px;
     width: 80%;
-    height: 7px;
+    height: 8px;
     background: #4d4d4d;
     border: 1px solid rgba(0, 0, 0, 0.4);
     border-radius: 5px;
     background-image: linear-gradient(#d1d1d1, #d1d1d1);
     background-repeat: no-repeat;
+
+    @media ${tablet} {
+      width: 63%;
+    }
   }
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -128,15 +146,19 @@ const StyledVideoControls = styled.div`
 
   .volume-container {
     position: relative;
-    }
+  }
+
+  .volume-wrapper {
+    background: #000;
+    position: absolute;
+    bottom: 78px;
+    padding: 9px;
+    transform: rotate(270deg);
+    //  left: -4px;
   }
 
   .volume-toolbar {
-    position: absolute;
-    bottom: 70px;
-    left: -4px;
     width: 50px !important;
-    transform: rotate(270deg);
   }
 `;
 
@@ -162,7 +184,7 @@ const getDuration = (time) => {
 };
 
 export default function ViewerPlayer(props) {
-  const { setIsFullScreen, videoRef } = props;
+  const { setIsFullScreen, videoRef, contextModel } = props;
 
   const initialState = {
     width: 0,
@@ -200,6 +222,8 @@ export default function ViewerPlayer(props) {
   }
 
   const inputRef = React.useRef(null);
+  const volumeRef = React.useRef(null);
+  const cm = React.useRef(null);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
 
@@ -316,7 +340,10 @@ export default function ViewerPlayer(props) {
     width =
       video.videoWidth > maxWidth
         ? maxWidth
-        : Math.max(maxWidth, video.videoWidth);
+        : state.isFullScreen
+        ? Math.max(maxWidth, video.videoWidth)
+        : Math.min(maxWidth, video.videoWidth);
+
     height = (width / video.videoWidth) * video.videoHeight;
 
     if (height > maxHeight) {
@@ -381,6 +408,10 @@ export default function ViewerPlayer(props) {
     state.isPlaying ? videoRef.current.play() : videoRef.current.pause();
   }, [state.isPlaying, videoRef.current]);
 
+  const onContextMenu = (e) => {
+    cm.current.show(e);
+  };
+
   function loadVideo(video) {
     const currentTime = getDuration(video.currentTime);
     const duration = getDuration(video.duration);
@@ -423,7 +454,6 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       state.top
     }px)`,
   };
-
   return (
     <StyledVideoPlayer id="video-playerId" isFullScreen={state.isFullScreen}>
       <div className="video-wrapper">
@@ -457,6 +487,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
             value={state.progress}
             onChange={(e) => handleVideoProgress(e)}
           />
+
           <div
             style={{
               paddingLeft: "10px",
@@ -473,14 +504,17 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
           >
             {!state.isMuted ? <IconSound /> : <IconMuted />}
             {state.volumeSelection && (
-              <input
-                className="volume-toolbar"
-                type="range"
-                min="0"
-                max="100"
-                value={state.volume}
-                onChange={handleVolumeUpdate}
-              />
+              <div className="volume-wrapper">
+                <input
+                  ref={volumeRef}
+                  className="volume-toolbar"
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={state.volume}
+                  onChange={(e) => handleVolumeUpdate(e)}
+                />
+              </div>
             )}
           </div>
           <div className="controller" onClick={toggleScreen}>
@@ -495,8 +529,9 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
               <div className="dropdown-content">{SpeedButtonComponent()}</div>
             )}
           </div>
-          <div className="controller">
+          <div className="controller" onClick={onContextMenu}>
             <MediaContextMenu />
+            <StyledContextMenu getContextModel={contextModel} ref={cm} />
           </div>
         </StyledVideoActions>
       </StyledVideoControls>
