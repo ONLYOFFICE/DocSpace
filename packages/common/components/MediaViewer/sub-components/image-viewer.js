@@ -314,6 +314,7 @@ class ImageViewer extends React.Component {
       playlist,
       playlistPos,
       isImage,
+      contextModel,
     } = this.props;
 
     customToolbar.forEach((button) => {
@@ -346,6 +347,7 @@ class ImageViewer extends React.Component {
           visible={visible}
           zoomSpeed={0.25}
           title={title}
+          contextModel={contextModel}
           isImage={isImage}
           onMaskClick={onClose}
           onNextClick={onNextClick}
