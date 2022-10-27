@@ -48,7 +48,7 @@ public class EncryptionWorker
 
         lock (_locker)
         {
-            var item = _queue.GetAllTasks<EncryptionOperation>().FirstOrDefault(t => t.IsCompleted == true);
+            var item = _queue.GetAllTasks<EncryptionOperation>().SingleOrDefault();
 
             if (item != null && item.IsCompleted)
             {
