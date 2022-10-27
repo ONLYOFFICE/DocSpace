@@ -34,25 +34,28 @@ const ItemIcon = ({ item, roomLogoSize = "medium" }: ItemIconProps) => {
 
     return (
       <Styled.RoomLogoWrapper
-        className="room-logo_room_wrapper"
+        className="item-icon_room_wrapper"
         size={roomLogoSize}
       >
         {isCustomLogo ? (
           <Styled.CustomRoomLogo
-            className="room-logo_room_custom-icon"
+            className="item-icon_room_custom-logo"
             size={roomLogoSize}
+            isPrivate={isPrivate}
           >
-            <img src={roomLogo} />
-            {isPrivate && (
-              <ReactSVG
-                className="room-logo_room_custom-icon_privacy"
-                src={"images/privacy.with-background.svg"}
-              />
-            )}
+            <img className="" src={roomLogo} />
+            <div className="item-icon_room_custom-logo_privacy-wrapper">
+              {isPrivate && (
+                <ReactSVG
+                  className="item-icon_room_custom-logo_privacy"
+                  src={"images/privacy.with-background.svg"}
+                />
+              )}
+            </div>
           </Styled.CustomRoomLogo>
         ) : (
           <Styled.DefaultRoomLogo
-            className="room-logo_room_default-icon"
+            className="item-icon_room_default-lofo"
             size={roomLogoSize}
             isPrivate={isPrivate}
           >

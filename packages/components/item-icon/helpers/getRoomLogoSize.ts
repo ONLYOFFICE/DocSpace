@@ -22,14 +22,17 @@ export const getBorderRadiusInPx = (size: "small" | "medium" | "large") => {
   }
 };
 
-export const getSizeInPxPrivate = (size: "small" | "medium" | "large") => {
+export const getSizeInPxPrivate = (
+  size: "small" | "medium" | "large",
+  isCustom: undefined | boolean = false
+) => {
   switch (size) {
     case "small":
-      return "17px";
+      return isCustom ? "17.5px" : "17px";
     case "medium":
-      return "34px";
+      return isCustom ? "35px" : "34px";
     case "large":
-      return "102px";
+      return isCustom ? "105px" : "102px";
   }
 };
 
@@ -46,15 +49,16 @@ export const getPrivateIconCss = (size: "small" | "medium" | "large") => {
       return css`
         height: 15px;
         width: 13px;
-        top: -15px;
-        left: 22px;
+        bottom: 0;
+        right: 0;
       `;
     case "large":
       return css`
         height: 45px;
-        width: 39px;
-        top: -39px;
-        left: 66px;
+        width: 41px;
+        bottom: 0;
+        right: 0;
+        margin-right: -1px;
       `;
   }
 };
