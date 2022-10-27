@@ -3,6 +3,7 @@ import ViewerImage from "./viewer-image";
 import classnames from "classnames";
 import ViewerToolbar, { defaultToolbars } from "./viewer-toolbar";
 import Icon, { ActionType } from "./icon";
+import { act } from "@testing-library/react";
 
 const ACTION_TYPES = {
   setVisible: "setVisible",
@@ -23,7 +24,7 @@ const ViewerBase = (props) => {
     visible = false,
     images = [],
     activeIndex = 0,
-    zIndex = 1000,
+    zIndex = 300,
     drag = true,
     attribute = true,
     zoomable = true,
@@ -44,6 +45,7 @@ const ViewerBase = (props) => {
     showTotal = true,
     totalName = "of",
     minScale = 0.1,
+    generateContextMenu,
   } = props;
 
   const initialState = {
@@ -660,6 +662,7 @@ const ViewerBase = (props) => {
               attribute={attribute}
               zoomable={zoomable}
               rotatable={rotatable}
+              generateContextMenu={generateContextMenu}
               scalable={scalable}
               changeable={changeable}
               downloadable={downloadable}

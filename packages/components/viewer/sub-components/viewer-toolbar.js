@@ -2,6 +2,8 @@ import * as React from "react";
 import styled from "styled-components";
 import Icon, { ActionType } from "./icon";
 
+import MediaContextMenu from "../../../../public/images/vertical-dots.react.svg";
+
 const ToolbarItem = styled.li`
   height: 48px;
   width: 48px;
@@ -79,6 +81,9 @@ export default function ViewerToolbar(props) {
     props.onAction(config);
   }
 
+  const [isOpen, setIsOpen] = React.useState(false);
+  const iconRef = React.useRef(null);
+
   function renderAction(config) {
     let content = null;
     if (typeof ActionType[config.actionType] !== "undefined") {
@@ -86,6 +91,26 @@ export default function ViewerToolbar(props) {
     }
     if (config.render) {
       content = config.render;
+    }
+
+    if (config.key === "context-menu") {
+      const contextMenu = props.generateContextMenu(isOpen);
+      return (
+        <ToolbarItem
+          ref={iconRef}
+          style={{ position: "relative" }}
+          noHover={config.noHover}
+          key={config.key}
+          className={`${props.prefixCls}-btn`}
+          onClick={() => setIsOpen((open) => !open)}
+          data-key={config.key}
+        >
+          <div className="context" style={{ height: "16px" }}>
+            <MediaContextMenu size="scale" />
+          </div>
+          {contextMenu}
+        </ToolbarItem>
+      );
     }
 
     return (

@@ -33,12 +33,6 @@ function createAction(type, payload) {
   };
 }
 
-const StyledContextMenu = styled(ContextMenu)`
-  z-index: 306 !important;
-  right: 12px;
-  bottom: 64px;
-`;
-
 const StyledVideoPlayer = styled.div`
   &:focus-visible,
   #videoPlayer:focus-visible {
@@ -184,7 +178,7 @@ const getDuration = (time) => {
 };
 
 export default function ViewerPlayer(props) {
-  const { setIsFullScreen, videoRef, contextModel } = props;
+  const { setIsFullScreen, videoRef, generateContextMenu } = props;
 
   const initialState = {
     width: 0,
@@ -223,9 +217,11 @@ export default function ViewerPlayer(props) {
 
   const inputRef = React.useRef(null);
   const volumeRef = React.useRef(null);
+  const contextRef = React.useRef(null);
   const cm = React.useRef(null);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
+  const [isOpen, setIsOpen] = React.useState(false);
 
   const footerHeight = 48;
   const titleHeight = 48;
@@ -442,6 +438,8 @@ export default function ViewerPlayer(props) {
     });
   }, [props.activeIndex]);
 
+  const contextMenu = generateContextMenu(isOpen);
+
   let iconLeft = (window.innerWidth - iconWidth) / 2 + "px";
   let iconTop = (window.innerHeight - iconHeight - (48 - 48)) / 2 + "px";
 
@@ -529,9 +527,13 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
               <div className="dropdown-content">{SpeedButtonComponent()}</div>
             )}
           </div>
-          <div className="controller" onClick={onContextMenu}>
+          <div
+            className="controller"
+            onClick={() => setIsOpen((open) => !open)}
+            style={{ position: "relative" }}
+          >
             <MediaContextMenu />
-            <StyledContextMenu getContextModel={contextModel} ref={cm} />
+            {contextMenu}
           </div>
         </StyledVideoActions>
       </StyledVideoControls>

@@ -25,6 +25,7 @@ export const Viewer = (props) => {
     playlist,
     isImage,
     contextModel,
+    generateContextMenu,
   } = props;
 
   const defaultContainer = React.useRef(
@@ -62,13 +63,13 @@ export const Viewer = (props) => {
   }
 
   const viewerPortal = ReactDOM.createPortal(
-    <StyledViewer {...props} />,
+    <StyledViewer {...props} generateContextMenu={generateContextMenu} />,
     container
   );
 
   const videoPortal = ReactDOM.createPortal(
     <ViewerPlayer
-      contextModel={contextModel}
+      generateContextMenu={generateContextMenu}
       setIsFullScreen={setIsFullScreen}
       videoRef={videoElement}
       video={playlist[playlistPos]}
