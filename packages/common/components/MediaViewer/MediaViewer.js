@@ -10,6 +10,8 @@ import Hammer from "hammerjs";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { isDesktop } from "react-device-detect";
 
+import { FileStatus } from "@docspace/common/constants";
+
 const StyledVideoViewer = styled(VideoViewer)`
   z-index: 301;
 `;
@@ -454,12 +456,19 @@ class MediaViewer extends React.Component {
   render() {
     const { playlistPos, playlist, visible, fileUrl } = this.state;
     const {
+      t,
       onClose,
       userAccess,
       canDelete,
       canDownload,
       errorLabel,
       isPreviewFile,
+      onClickFavorite,
+      onShowInfoPanel,
+      onClickDownload,
+      onClickDownloadAs,
+      onClickRename,
+      onClickDelete,
     } = this.props;
 
     const currentFileId =
@@ -474,7 +483,60 @@ class MediaViewer extends React.Component {
     let isVideo = false;
     let canOpen = true;
 
+    const isFavorite =
+      (playlist[playlistPos].fileStatus & FileStatus.IsFavorite) ===
+      FileStatus.IsFavorite;
+
     const ext = this.getFileExtension(title);
+
+    const getContextModel = () => {
+      return [
+        {
+          key: isFavorite ? "remove-from-favorites" : "mark-as-favorite",
+          label: isFavorite ? t("RemoveFromFavorites") : t("MarkAsFavorite"),
+          icon: "images/favorites.react.svg",
+          onClick: (e) => onClickFavorite(e, currentFileId, t),
+          disabled: false,
+          "data-action": isFavorite ? "remove" : "mark",
+          action: isFavorite ? "remove" : "mark",
+        },
+        {
+          key: "show-info",
+          label: t("InfoPanel:ViewDetails"),
+          icon: "/static/images/info.outline.react.svg",
+          onClick: () => onShowInfoPanel(currentFile),
+          disabled: false,
+        },
+        {
+          key: "download",
+          label: t("Common:Download"),
+          icon: "images/download.react.svg",
+          onClick: () => onClickDownload(currentFile, t),
+          disabled: false,
+        },
+        {
+          key: "download-as",
+          label: t("Translations:DownloadAs"),
+          icon: "images/download-as.react.svg",
+          onClick: onClickDownloadAs,
+          disabled: false,
+        },
+        {
+          key: "rename",
+          label: t("Rename"),
+          icon: "images/rename.react.svg",
+          onClick: () => onClickRename(currentFile),
+          disabled: false,
+        },
+        {
+          key: "delete",
+          label: t("Common:Delete"),
+          icon: "images/trash.react.svg",
+          onClick: () => onClickDelete(currentFile, t),
+          disabled: false,
+        },
+      ];
+    };
 
     if (!this.canPlay(ext) && !this.canImageView(ext)) {
       canOpen = false;
@@ -509,6 +571,7 @@ class MediaViewer extends React.Component {
             playlist={playlist}
             playlistPos={playlistPos}
             onNextClick={this.nextMedia}
+            contextModel={getContextModel}
             onPrevClick={this.prevMedia}
             onDeleteClick={this.onDelete}
             isImage={isImage}
