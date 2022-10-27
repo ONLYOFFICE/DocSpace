@@ -9,6 +9,7 @@ import Text from "@docspace/components/text";
 import DetailsHelper from "../../helpers/DetailsHelper.js";
 import { StyledNoThumbnail, StyledThumbnail } from "../../styles/details.js";
 import { StyledProperties, StyledSubtitle } from "../../styles/common.js";
+import { ItemIcon } from "@docspace/components";
 
 const Details = ({
   t,
@@ -64,13 +65,7 @@ const Details = ({
         </StyledThumbnail>
       ) : (
         <StyledNoThumbnail>
-          <img
-            className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
-              selection.isRoom && selection.logo?.large && "custom-logo"
-            }`}
-            src={getItemIcon(selection, 96)}
-            alt="thumbnail-icon-big"
-          />
+          <ItemIcon item={!!selection && selection} roomLogoSize="large" />
         </StyledNoThumbnail>
       )}
 

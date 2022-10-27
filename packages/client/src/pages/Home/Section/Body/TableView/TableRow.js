@@ -4,7 +4,6 @@ import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
 import withFileActions from "../../../../../HOCs/withFileActions";
-import ItemIcon from "../../../../../components/ItemIcon";
 import { withTranslation } from "react-i18next";
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
@@ -17,6 +16,7 @@ import TypeCell from "./sub-components/TypeCell";
 import TagsCell from "./sub-components/TagsCell";
 import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
+import { ItemIcon } from "@docspace/components";
 
 const hotkeyBorderStyle = css`
   border-bottom: 1px solid;
@@ -309,16 +309,7 @@ const FilesTableRow = (props) => {
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
-  const element = (
-    <ItemIcon
-      id={item.id}
-      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
-      fileExst={item.fileExst}
-      isRoom={item.isRoom}
-      roomType={item.roomType}
-      isPrivacy={item.isPrivate}
-    />
-  );
+  const element = <ItemIcon item={item} />;
 
   const selectionProp = {
     className: `files-item ${className} ${value}`,

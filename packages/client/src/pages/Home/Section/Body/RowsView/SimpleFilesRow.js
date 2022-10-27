@@ -9,8 +9,8 @@ import { isTablet, isMobile } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
-import ItemIcon from "../../../../../components/ItemIcon";
 import marginStyles from "./CommonStyles";
+import { ItemIcon } from "@docspace/components";
 import { Base } from "@docspace/components/themes";
 import { tablet } from "@docspace/components/utils/device";
 
@@ -213,16 +213,7 @@ const SimpleFilesRow = (props) => {
   const withAccess = isAdmin || item.access === 0;
   const isSmallContainer = sectionWidth <= 500;
 
-  const element = (
-    <ItemIcon
-      id={item.id}
-      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
-      fileExst={item.fileExst}
-      isRoom={item.isRoom}
-      roomType={item.roomType}
-      isPrivacy={item.isPrivate}
-    />
-  );
+  const element = <ItemIcon item={item} />;
 
   const onDragOver = (dragOver) => {
     if (dragOver !== isDragOver) {

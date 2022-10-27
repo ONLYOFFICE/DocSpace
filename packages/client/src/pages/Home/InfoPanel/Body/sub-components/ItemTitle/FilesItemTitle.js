@@ -3,6 +3,7 @@ import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 
 import { Text } from "@docspace/components";
+import { ItemIcon } from "@docspace/components";
 
 import ItemContextOptions from "./ItemContextOptions";
 
@@ -40,11 +41,7 @@ const FilesItemTitle = ({
   return (
     <StyledTitle ref={itemTitleRef}>
       <div className="item-icon">
-        <img
-          className={`icon ${selection.isRoom && "is-room"}`}
-          src={selection.icon}
-          alt="thumbnail-icon"
-        />
+        <ItemIcon item={selection} />
       </div>
       <Text className="text">{selection.title}</Text>
       {selection && (

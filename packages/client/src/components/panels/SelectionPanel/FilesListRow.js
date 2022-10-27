@@ -2,7 +2,7 @@ import React from "react";
 import { StyledRow } from "./StyledSelectionPanel";
 import Text from "@docspace/components/text";
 import RadioButton from "@docspace/components/radio-button";
-import ItemIcon from "../../ItemIcon";
+import { ItemIcon } from "@docspace/components";
 const FilesListRow = ({
   displayType,
   index,
@@ -13,8 +13,8 @@ const FilesListRow = ({
   icon,
   item,
 }) => {
-  const { id, fileExst, title } = item;
-  const element = <ItemIcon id={id} icon={icon} fileExst={fileExst} />;
+  const { title } = item;
+  const element = <ItemIcon item={item} />;
 
   const onFileClick = () => {
     onSelectFile && onSelectFile(item, index);
