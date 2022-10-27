@@ -578,7 +578,7 @@ class ContextOptionsStore {
     const optionsModel = [
       {
         key: "select",
-        label: "Select",
+        label: t("Common:SelectAction"),
         icon: "images/check-box.react.svg",
         onClick: () => this.onSelect(item),
         disabled: false,

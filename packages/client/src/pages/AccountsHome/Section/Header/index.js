@@ -284,7 +284,7 @@ const SectionHeaderContent = (props) => {
               type="content"
               truncate={true}
             >
-              {t("Accounts")}
+              {t("Common:Accounts")}
             </Headline>
             <ContextMenuButton
               className="action-button"

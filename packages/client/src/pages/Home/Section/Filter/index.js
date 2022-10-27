@@ -186,7 +186,7 @@ const SectionFilterContent = ({
         newFilter.type = type ? type : null;
         newFilter.subjectId = subjectId ? subjectId : null;
         if (tags) {
-          if (tags.includes(t("NoTag"))) {
+          if (!tags?.length) {
             newFilter.tags = null;
             newFilter.withoutTags = true;
           } else {
@@ -422,14 +422,6 @@ const SectionFilterContent = ({
           label: label,
         });
       }
-
-      // if (roomsFilter.withoutTags) {
-      //   filterValues.push({
-      //     key: [t("NoTag")],
-      //     group: FilterGroups.roomFilterTags,
-      //     isMultiSelect: true,
-      //   });
-      // }
 
       if (roomsFilter?.tags?.length > 0) {
         filterValues.push({
@@ -750,13 +742,6 @@ const SectionFilterContent = ({
           label: tag,
           isMultiSelect: true,
         }));
-
-        // tagsOptions.push({
-        //   key: t("NoTag"),
-        //   group: FilterGroups.roomFilterTags,
-        //   label: t("NoTag"),
-        //   isMultiSelect: true,
-        // });
 
         const isLast = connectedThirdParty.length === 0;
 

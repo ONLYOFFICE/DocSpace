@@ -98,6 +98,8 @@ const HexColorPickerComponent = (props) => {
     viewMobile,
   } = props;
 
+  const { t } = useTranslation("Common");
+
   return (
     <StyledComponent viewMobile={viewMobile}>
       <div className="hex-color-picker">
@@ -116,7 +118,7 @@ const HexColorPickerComponent = (props) => {
 
         <div className="hex-button">
           <Button
-            label="Apply"
+            label={t("Common:ApplyButton")}
             size="small"
             className="apply-button"
             primary={true}
@@ -124,7 +126,7 @@ const HexColorPickerComponent = (props) => {
             onClick={onAppliedColor}
           />
           <Button
-            label="Cancel"
+            label={t("Common:CancelButton")}
             className="button"
             size="small"
             scale={true}
