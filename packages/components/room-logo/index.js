@@ -52,7 +52,7 @@ const RoomLogo = ({
       default:
         return isPrivacy
           ? "/static/images/room.privacy.custom.svg"
-          : "/static/images/room.custom.svg";
+          : "/static/images/room.with-border.custom.svg";
     }
   };
 

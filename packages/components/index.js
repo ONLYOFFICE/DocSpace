@@ -25,6 +25,7 @@ export { default as Heading } from "./heading";
 export { default as HelpButton } from "./help-button";
 export { default as IconButton } from "./icon-button";
 export { default as InputBlock } from "./input-block";
+export { default as ItemIcon } from "./item-icon";
 export { default as Label } from "./label";
 export { default as Link } from "./link";
 export { default as LinkWithDropdown } from "./link-with-dropdown";
