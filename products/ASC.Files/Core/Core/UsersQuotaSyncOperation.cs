@@ -140,14 +140,12 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
             var users = _userManager.GetUsers();
             var webItems = _webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
 
-            var _user = users.FirstOrDefault();
-
             foreach (var user in users)
             {
                 Percentage += 1.0 * 100 / users.Length;
                 PublishChanges();
 
-                var account = _authentication.GetAccountByID(TenantId, _user.Id);
+                var account = _authentication.GetAccountByID(TenantId, user.Id);
                 _securityContext.AuthenticateMe(account);
 
                 foreach (var item in webItems)
