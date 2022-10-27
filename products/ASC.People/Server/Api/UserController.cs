@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Common.Log;
+
 namespace ASC.People.Api;
 
 public class UserController : PeopleControllerBase
@@ -203,16 +205,18 @@ public class UserController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
 
-        var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email) : null;
+        var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.Type) : null;
 
         if (options != null && !options.IsCorrect)
         {
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
 
+        inDto.Type = options != null ? options.EmployeeType : inDto.Type;
+
         var user = new UserInfo();
 
-        var byEmail = options != null && options.Type == LinkType.InvintationByEmail;
+        var byEmail = options?.LinkType == LinkType.InvintationByEmail;
 
         if (byEmail)
         {
@@ -259,7 +263,7 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user);
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true, byEmail);
+        user = _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.Visitor, inDto.FromInviteLink, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
 
         UpdateDepartments(inDto.Department, user);
 
@@ -268,19 +272,19 @@ public class UserController : PeopleControllerBase
             await UpdatePhotoUrl(inDto.Files, user);
         }
 
-        if (options != null && options.Type == LinkType.InvintationToRoom)
+        if (options != null && options.LinkType == LinkType.InvintationToRoom)
         {
             var success = int.TryParse(options.RoomId, out var id);
 
             if (success)
             {
                 await _usersInRoomChecker.CheckAppend();
-                await _fileSecurity.ShareAsync(id, Files.Core.FileEntryType.Folder, user.Id, options.Share);
+                await _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, options.Share);
             }
             else
             {
                 await _usersInRoomChecker.CheckAppend();
-                await _fileSecurity.ShareAsync(options.RoomId, Files.Core.FileEntryType.Folder, user.Id, options.Share);
+                await _fileSecurity.ShareAsync(options.RoomId, FileEntryType.Folder, user.Id, options.Share);
             }
         }
 
@@ -288,6 +292,26 @@ public class UserController : PeopleControllerBase
         _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await _employeeFullDtoHelper.GetFull(user);
+    }
+
+    [HttpPost("invite")]
+    public async IAsyncEnumerable<EmployeeDto> InviteUsersAsync(InviteUsersRequestDto inDto)
+    {
+        foreach (var invite in inDto.Invitations)
+        {
+            var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
+            var link = _roomLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
+
+            _studioNotifyService.SendDocSpaceInvite(user.Email, link);
+            _logger.Debug(link);
+        }
+
+        var users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+
+        foreach (var user in users)
+        {
+            yield return await _employeeDtoHelper.Get(user);
+        }
     }
 
     [HttpPut("{userid}/password")]
@@ -672,14 +696,10 @@ public class UserController : PeopleControllerBase
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                if (_userManager.IsVisitor(user))
-                {
-                    _studioNotifyService.GuestInfoActivation(user);
-                }
-                else
-                {
-                    _studioNotifyService.UserInfoActivation(user);
-                }
+                var type = _userManager.IsAdmin(user) ? EmployeeType.DocSpaceAdmin :
+                    _userManager.IsVisitor(user) ? EmployeeType.Visitor : EmployeeType.User;
+
+                _studioNotifyService.SendDocSpaceInvite(user.Email, _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID));
             }
             else
             {

@@ -28,6 +28,7 @@ namespace ASC.People.ApiModels.RequestDto;
 
 public class MemberRequestDto
 {
+    public EmployeeType Type { get; set; }
     public bool IsVisitor { get; set; }
     public string Email { get; set; }
     public string Firstname { get; set; }

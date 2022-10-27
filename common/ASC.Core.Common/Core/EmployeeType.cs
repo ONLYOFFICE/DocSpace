@@ -36,5 +36,6 @@ public enum EmployeeType
 {
     All = 0,
     User = 1,
-    Visitor = 2
+    Visitor = 2,
+    DocSpaceAdmin = 3,
 }
