@@ -23,7 +23,7 @@ class UsersStore {
     makeAutoObservable(this);
   }
 
-  getUsersList = async (filter) => {
+  getUsersList = async (filter, updateFilter = false) => {
     const filterData = filter ? filter.clone() : Filter.getDefault();
 
     if (!this.authStore.settingsStore.withPaging) {
@@ -40,6 +40,10 @@ class UsersStore {
 
     const res = await api.people.getUserList(filterData);
     filterData.total = res.total;
+
+    if (updateFilter) {
+      this.peopleStore.filterStore.setFilterParams(filterData);
+    }
 
     /*     this.peopleStore.filterStore.setFilterParams(filterData);
     this.peopleStore.selectedGroupStore.setSelectedGroup(
