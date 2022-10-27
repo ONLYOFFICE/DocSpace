@@ -10,8 +10,8 @@ import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
-import ItemIcon from "../../../../../components/ItemIcon";
 import withBadges from "../../../../../HOCs/withBadges";
+import { ItemIcon } from "@docspace/components";
 
 const StyledDragAndDrop = styled(DragAndDrop)`
   border-radius: 6px;
@@ -64,19 +64,7 @@ const FileTile = (props) => {
 
   const { thumbnailUrl } = item;
 
-  console.log(item.isPrivate);
-
-  const element = (
-    <ItemIcon
-      id={item.id}
-      icon={item.isRoom && item.logo.medium ? item.logo.medium : item.icon}
-      fileExst={item.fileExst}
-      isRoom={item.isRoom}
-      isCustomLogo={!(item.isRoom && item.logo.medium)}
-      roomType={item.roomType}
-      isPrivacy={item.isPrivate}
-    />
-  );
+  const element = <ItemIcon item={item} />;
 
   return (
     <div ref={props.selectableRef} id={id}>
