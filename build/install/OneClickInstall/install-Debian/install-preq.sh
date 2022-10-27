@@ -38,8 +38,9 @@ locale-gen en_US.UTF-8
 # add elasticsearch repo
 ELASTIC_VERSION="7.13.1"
 ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
-curl https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
-echo "deb https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-${ELASTIC_DIST}.x.list
+curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg --import
+echo "deb [signed-by=/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg] https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-${ELASTIC_DIST}.x.list
+chmod 644 /usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg
 
 # add nodejs repo
 curl -sL https://deb.nodesource.com/setup_16.x | bash - 
@@ -84,15 +85,15 @@ fi
 
 # add redis repo
 if [ "$DIST" = "ubuntu" ]; then	
-	add-apt-repository -y ppa:chris-lea/redis-server
-	if [ "$DISTRIB_CODENAME" = "jammy" ]; then sed -i 's/jammy/focal/g' /etc/apt/sources.list.d/*redis-server*.list; fi; #Fix missing repository for jammy
+	curl -fsSL https://packages.redis.io/gpg | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/redis.gpg --import
+	echo "deb [signed-by=/usr/share/keyrings/redis.gpg] https://packages.redis.io/deb $DISTRIB_CODENAME main" | tee /etc/apt/sources.list.d/redis.list
+	chmod 644 /usr/share/keyrings/redis.gpg
 fi
 
 #add nginx repo
-curl http://nginx.org/keys/nginx_signing.key -O
-apt-key add nginx_signing.key
-echo "deb [arch=$ARCH] http://nginx.org/packages/$DIST $DISTRIB_CODENAME nginx" | tee /etc/apt/sources.list.d/nginx.list
-rm nginx_signing.key
+curl -s http://nginx.org/keys/nginx_signing.key | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/nginx.gpg --import
+echo "deb [signed-by=/usr/share/keyrings/nginx.gpg] http://nginx.org/packages/$DIST/ $DISTRIB_CODENAME nginx" | tee /etc/apt/sources.list.d/nginx.list
+chmod 644 /usr/share/keyrings/nginx.gpg
 
 # setup msttcorefonts
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections

@@ -26,6 +26,7 @@ class DialogsStore {
   convertDialogVisible = false;
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
+  inviteUsersWarningDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
   invitePanelOptions = {
@@ -34,6 +35,7 @@ class DialogsStore {
     defaultAccess: ShareAccessRights.FullAccess,
   };
   restoreAllPanelVisible = false;
+  restoreAllArchiveDialogVisible = false;
   eventDialogVisible = false;
 
   removeItem = null;
@@ -68,6 +70,10 @@ class DialogsStore {
     this.authStore = authStore;
     this.versionHistoryStore = versionHistoryStore;
   }
+
+  setRestoreAllArchiveDialogVisible = (restoreAllArchiveDialogVisible) => {
+    this.restoreAllArchiveDialogVisible = restoreAllArchiveDialogVisible;
+  };
 
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
@@ -282,6 +288,10 @@ class DialogsStore {
       this.inviteItems[index] = { ...this.inviteItems[index], ...item };
     });
 
+  setInviteUsersWarningDialogVisible = (inviteUsersWarningDialogVisible) => {
+    this.inviteUsersWarningDialogVisible = inviteUsersWarningDialogVisible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -302,7 +312,10 @@ class DialogsStore {
       this.authStore.settingsStore.hotkeyPanelVisible ||
       this.versionHistoryStore.isVisible ||
       this.eventDialogVisible ||
-      this.invitePanelOptions.visible
+      this.invitePanelOptions.visible ||
+      this.restoreAllArchiveDialogVisible ||
+      this.restoreAllPanelVisible ||
+      this.inviteUsersWarningDialogVisible
     );
   }
 

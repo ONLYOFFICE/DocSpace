@@ -31,6 +31,7 @@ const SetRoomParams = ({
   tagHandler,
   setIsScrollLocked,
   isEdit,
+  isDisabled,
 }) => {
   const onChangeName = (e) =>
     setRoomParams({ ...roomParams, title: e.target.value });
@@ -57,6 +58,7 @@ const SetRoomParams = ({
           currentRoom={currentRoomTypeData}
           setRoomType={setRoomType}
           setIsScrollLocked={setIsScrollLocked}
+          isDisabled={isDisabled}
         />
       )}
 
@@ -67,6 +69,7 @@ const SetRoomParams = ({
           isThirdparty={roomParams.isThirdparty}
           storageLocation={roomParams.storageLocation}
           isPrivate={roomParams.isPrivate}
+          isDisabled={isDisabled}
         />
       )}
 
@@ -76,6 +79,7 @@ const SetRoomParams = ({
         placeholder={t("NamePlaceholder")}
         value={roomParams.title}
         onChange={onChangeName}
+        isDisabled={isDisabled}
       />
 
       <TagInput
@@ -83,6 +87,7 @@ const SetRoomParams = ({
         tagHandler={tagHandler}
         currentRoomTypeData={currentRoomTypeData}
         setIsScrollLocked={setIsScrollLocked}
+        isDisabled={isDisabled}
       />
 
       {/* {!isEdit && (
@@ -101,6 +106,7 @@ const SetRoomParams = ({
           onChangeStorageLocation={onChangeStorageLocation}
           setIsScrollLocked={setIsScrollLocked}
           setIsOauthWindowOpen={setIsOauthWindowOpen}
+          isDisabled={isDisabled}
         />
       )}
 
@@ -111,6 +117,7 @@ const SetRoomParams = ({
         currentRoomTypeData={currentRoomTypeData}
         icon={roomParams.icon}
         onChangeIcon={onChangeIcon}
+        isDisabled={isDisabled}
       />
     </StyledSetRoomParams>
   );

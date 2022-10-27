@@ -17,6 +17,7 @@ const ItemContextOptions = ({
   selection,
   setBufferSelection,
   itemTitleRef,
+  selectedFolderId,
   ...props
 }) => {
   if (!selection) return null;
@@ -25,6 +26,7 @@ const ItemContextOptions = ({
 
   const contextHelper = new ContextHelper({
     selection,
+    selectedFolderId,
     ...props,
   });
 

@@ -29,6 +29,7 @@ const TagInput = ({
   tagHandler,
   currentRoomTypeData,
   setIsScrollLocked,
+  isDisabled,
 }) => {
   const [tagInput, setTagInput] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -36,6 +37,7 @@ const TagInput = ({
   const onTagInputChange = (e) => setTagInput(e.target.value);
 
   const openDropdown = () => {
+    if (isDisabled) return;
     setIsScrollLocked(true);
     setIsDropdownOpen(true);
   };
@@ -55,6 +57,7 @@ const TagInput = ({
         onChange={onTagInputChange}
         onFocus={openDropdown}
         onBlur={closeDropdown}
+        isDisabled={isDisabled}
       />
 
       <TagDropdown
@@ -68,6 +71,7 @@ const TagInput = ({
       <TagList
         tagHandler={tagHandler}
         defaultTagLabel={t(currentRoomTypeData.defaultTag)}
+        isDisabled={isDisabled}
       />
     </StyledTagInput>
   );
