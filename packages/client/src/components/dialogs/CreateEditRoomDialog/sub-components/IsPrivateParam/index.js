@@ -19,7 +19,7 @@ const IsPrivateParam = ({ t, isPrivate, onChangeIsPrivate }) => {
         isChecked={isPrivate}
         onCheckedChange={onChangeIsPrivate}
       />
-      {isPrivate && <PrivacyLimitationsWarning t={t} />}
+      {/* {isPrivate && <PrivacyLimitationsWarning t={t} />} */}
     </StyledIsPrivateParam>
   );
 };

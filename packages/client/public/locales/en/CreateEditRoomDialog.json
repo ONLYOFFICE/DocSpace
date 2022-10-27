@@ -14,7 +14,7 @@
   "FolderNameDescription": "A new folder for storing this room’s data will be created in the connected storage",
   "FolderNameTitle": "Folder Name",
   "MakeRoomPrivateDescription": "All files in this room will be encrypted",
-  "MakeRoomPrivateLimitationsWarningDescription": "With this feature, you can invite only existing users on the portal. After creating a room, you will not be able to change the list of users.",
+  "": "With this feature, you can invite only existing users on the portal. After creating a room, you will not be able to change the list of users.",
   "MakeRoomPrivateTitle": "Make the Room Private",
   "NamePlaceholder": "Enter name",
   "ReviewRoomDescription": "Request a review or comments on the documents",
