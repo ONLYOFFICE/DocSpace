@@ -38,7 +38,7 @@ public enum FileShare
     Comment,
     FillForms,
     CustomFilter,
-    RoomManager,
+    RoomAdmin,
     Editing
 }
 

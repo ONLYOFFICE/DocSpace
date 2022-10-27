@@ -93,7 +93,7 @@ public class WebItemSecurity
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly WebItemSecurityCache _webItemSecurityCache;
     private readonly SettingsManager _settingsManager;
-    private readonly CountManagerChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
 
     public WebItemSecurity(
         UserManager userManager,
@@ -106,7 +106,7 @@ public class WebItemSecurity
         CoreBaseSettings coreBaseSettings,
         WebItemSecurityCache webItemSecurityCache,
         SettingsManager settingsManager,
-        CountManagerChecker countManagerChecker)
+        CountRoomAdminChecker countRoomAdminChecker)
     {
         _userManager = userManager;
         _authContext = authContext;
@@ -118,7 +118,7 @@ public class WebItemSecurity
         _coreBaseSettings = coreBaseSettings;
         _webItemSecurityCache = webItemSecurityCache;
         _settingsManager = settingsManager;
-        _countManagerChecker = countManagerChecker;
+        _countRoomAdminChecker = countRoomAdminChecker;
     }
 
     //
@@ -163,7 +163,7 @@ public class WebItemSecurity
                     webitem.ID == WebItemManager.PeopleProductID ||
                     webitem.ID == WebItemManager.BirthdaysProductID ||
                     webitem.ID == WebItemManager.MailProductID) &&
-                    _userManager.IsVisitor(@for))
+                    _userManager.IsUser(@for))
                 {
                     // hack: crm, people, birtthday and mail products not visible for collaborators
                     result = false;
@@ -283,7 +283,7 @@ public class WebItemSecurity
         {
             if (_userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupUser.ID))
             {
-                _countManagerChecker.CheckAppend().Wait();
+                _countRoomAdminChecker.CheckAppend().Wait();
                 _userManager.RemoveUserFromGroup(userid, ASC.Core.Users.Constants.GroupUser.ID);
             }
 
