@@ -12,11 +12,12 @@ const AccessSelector = ({
   defaultAccess,
 }) => {
   const width = containerRef?.current?.offsetWidth - 32;
+
   const accessOptions = getAccessOptions(t, roomType, false, true);
 
-  const selectedOption =
-    accessOptions.filter((access) => access.access === +defaultAccess)[0] ||
-    accessOptions[0];
+  const selectedOption = accessOptions.filter(
+    (access) => access.access === +defaultAccess
+  )[0];
 
   return (
     <StyledAccessSelector>
