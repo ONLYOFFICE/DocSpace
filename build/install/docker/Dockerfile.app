@@ -189,6 +189,15 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.B
 
 CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
 
+# ASC.ApiSystem ##
+FROM dotnetrun AS api_system
+WORKDIR ${BUILD_PATH}/services/ASC.ApiSystem/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/  .
+
+CMD [" ASC.ApiSystem.dll", " ASC.ApiSystem"]
+
 ## ASC.ClearEvents ##
 FROM dotnetrun AS clear-events
 WORKDIR ${BUILD_PATH}/services/ASC.ClearEvents/
