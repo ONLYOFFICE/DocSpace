@@ -136,7 +136,7 @@ public class LdapOperationJob : DistributedTaskProgress
         InitDisturbedTask();
     }
 
-    protected override async void DoJob()
+    protected override async Task DoJob()
     {
         try
         {

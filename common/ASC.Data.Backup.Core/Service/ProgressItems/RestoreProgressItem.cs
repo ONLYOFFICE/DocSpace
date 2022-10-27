@@ -104,7 +104,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         _configPaths = configPaths;
     }
 
-    protected override async void DoJob()
+    protected override async Task DoJob()
     {
         Tenant tenant = null;
 

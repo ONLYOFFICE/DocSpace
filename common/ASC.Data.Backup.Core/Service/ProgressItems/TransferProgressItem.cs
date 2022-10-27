@@ -99,7 +99,7 @@ public class TransferProgressItem : BaseBackupProgressItem
 
     }
 
-    protected override async void DoJob()
+    protected override async Task DoJob()
     {
         var tempFile = PathHelper.GetTempFileName(TempFolder);
         var tenant = _tenantManager.GetTenant(TenantId);

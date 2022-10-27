@@ -45,15 +45,15 @@ public class DistributedTaskProgress : DistributedTask
     [ProtoMember(3)]
     protected int StepCount { get; set; }
 
-    public void RunJob()
+    public async void RunJob()
     {
         Percentage = 0;
         Status = DistributedTaskStatus.Running;
 
-        DoJob();
+        await DoJob();
     }
 
-    protected virtual void DoJob() { }
+    protected virtual Task DoJob() { return Task.CompletedTask; }
 
     protected void StepDone()
     {

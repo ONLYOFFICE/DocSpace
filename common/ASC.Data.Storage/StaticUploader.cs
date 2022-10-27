@@ -253,7 +253,7 @@ public class UploadOperationProgress : DistributedTaskProgress
         StepCount = _directoryFiles.Count();
     }
 
-    protected override async void DoJob()
+    protected override async Task DoJob()
     {
         using var scope = _serviceProvider.CreateScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();

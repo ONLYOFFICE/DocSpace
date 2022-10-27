@@ -65,7 +65,7 @@ public class RemoveProgressItem : DistributedTaskProgress
         IsCompleted = false;
     }
 
-    protected override async void DoJob()
+    protected override async Task DoJob()
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();

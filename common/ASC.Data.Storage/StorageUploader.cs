@@ -141,7 +141,7 @@ public class MigrateOperation : DistributedTaskProgress
         return MemberwiseClone();
     }
 
-    protected override async void DoJob()
+    protected override async Task DoJob()
     {
         try
         {

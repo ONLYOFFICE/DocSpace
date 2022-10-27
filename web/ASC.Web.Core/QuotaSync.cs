@@ -110,7 +110,7 @@ public class QuotaSyncJob : DistributedTaskProgress
     {
         TenantId = tenant.Id;
     }
-    protected override async void DoJob()
+    protected override async Task DoJob()
     {
         try
         {

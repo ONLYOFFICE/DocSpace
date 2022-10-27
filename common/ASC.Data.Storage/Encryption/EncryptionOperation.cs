@@ -56,7 +56,7 @@ public class EncryptionOperation : DistributedTaskProgress
         _serverRootPath = serverRootPath;
     }
 
-    protected override async void DoJob()
+    protected override async Task DoJob()
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();

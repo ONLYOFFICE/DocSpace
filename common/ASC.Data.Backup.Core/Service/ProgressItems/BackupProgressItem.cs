@@ -115,7 +115,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         _configPaths = configPaths;
     }
 
-    protected override async void DoJob()
+    protected override async Task DoJob()
     {
         if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
         {
