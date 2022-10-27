@@ -2239,8 +2239,9 @@ const Dark = {
         checkedColor: "#3D3D3D",
         border: "1px solid #474747",
         backgroundColor: black,
-
         backgroundColorTop: "#292929",
+        roomLogoBorderColor: "#eceef1",
+        roomLogoPrivacyBgColor: "#333333",
       },
 
       sideColor: grayMaxLight,

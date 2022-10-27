@@ -2235,8 +2235,9 @@ const Base = {
         checkedColor: "#f3f4f4",
         border: `1px solid ${grayMid}`,
         backgroundColor: white,
-
         backgroundColorTop: white,
+        roomLogoBorderColor: "#eceef1",
+        roomLogoPrivacyBgColor: "#ffffff",
       },
 
       sideColor: black,
