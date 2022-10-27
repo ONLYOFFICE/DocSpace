@@ -2740,6 +2740,7 @@ const Dark = {
     textColor: "#858585",
     navBackground: "#282828",
     headerColor: white,
+    helpButton: "#D8D8D8",
 
     register: {
       backgroundColor: "#292929",
