@@ -18,6 +18,7 @@ import PreviewTile from "./PreviewTile";
 
 const IconEditor = ({
   t,
+  roomType,
   title,
   tags,
   defaultTag,
@@ -45,6 +46,7 @@ const IconEditor = ({
 
           <PreviewTile
             t={t}
+            roomType={roomType}
             title={title || t("Files:NewRoom")}
             isPrivate={isPrivate}
             previewIcon={previewIcon}

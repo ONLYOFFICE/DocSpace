@@ -105,6 +105,7 @@ const SetRoomParams = ({
 
       <IconEditor
         t={t}
+        roomType={roomParams.type}
         title={roomParams.title}
         tags={roomParams.tags}
         defaultTag={currentRoomTypeData.defaultTag}

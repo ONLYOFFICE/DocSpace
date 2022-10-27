@@ -27,7 +27,7 @@ const ItemIcon = ({ item, roomLogoSize = "medium" }: ItemIconProps) => {
   const { icon, logo, isRoom, roomType, isArchive, isPrivate } = item;
 
   if (isRoom) {
-    const isCustomLogo = !isArchive && !!logo?.original;
+    const isCustomLogo = !isArchive && !!(logo && logo[roomLogoSize]);
     const roomLogo = isCustomLogo
       ? getCustomRoomLogo({ logo }, roomLogoSize)
       : getDefaultRoomLogo({ roomType, isArchive, isPrivate });

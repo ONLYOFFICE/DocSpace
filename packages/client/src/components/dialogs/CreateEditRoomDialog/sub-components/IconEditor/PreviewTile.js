@@ -6,6 +6,7 @@ import { smallTablet } from "@docspace/components/utils/device";
 import Tags from "@docspace/common/components/Tags";
 import Tag from "@docspace/components/tag";
 import { Base } from "@docspace/components/themes";
+import { ItemIcon } from "@docspace/components";
 
 const StyledPreviewTile = styled.div`
   background: ${(props) =>
@@ -73,11 +74,28 @@ const StyledPreviewTile = styled.div`
 `;
 StyledPreviewTile.defaultProps = { theme: Base };
 
-const PreviewTile = ({ t, title, previewIcon, tags, defaultTagLabel }) => {
+const PreviewTile = ({
+  roomType,
+  title,
+  tags,
+  defaultTagLabel,
+  isPrivate,
+  previewIcon,
+}) => {
   return (
     <StyledPreviewTile>
       <div className="tile-header">
-        <img className="tile-header-icon" src={previewIcon} alt={title} />
+        <ItemIcon
+          item={{
+            isRoom: true,
+            roomType: roomType,
+            isPrivate: isPrivate,
+            isArchive: false,
+            logo: {
+              medium: previewIcon,
+            },
+          }}
+        />
         <div className="tile-header-title">{title}</div>
       </div>
       <div className="tile-tags">
