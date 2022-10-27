@@ -286,7 +286,7 @@ const Confirm = (props) => {
 
   const onSubmit = () => {
     const { defaultPage, linkData, hashSettings } = props;
-    const isVisitor = parseInt(linkData.emplType) === 2;
+    const type = parseInt(linkData.emplType);
 
     setIsLoading(true);
 
@@ -336,10 +336,11 @@ const Confirm = (props) => {
     };
 
     const registerData = Object.assign(personalData, {
-      isVisitor: isVisitor,
+      type: type,
+      key: linkData.key,
     });
 
-    const key = props.linkData.confirmHeader;
+    const key = linkData.confirmHeader;
 
     createConfirmUser(registerData, loginData, key)
       .then(() => window.location.replace(defaultPage))
