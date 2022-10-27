@@ -112,7 +112,7 @@ const StyledViewer = styled(ViewerBase)`
     right: 0;
     bottom: 0;
     left: 0;
-    overflow: hidden;
+    // overflow: hidden;
     text-align: center;
     z-index: @zIndex + 6;
   }
