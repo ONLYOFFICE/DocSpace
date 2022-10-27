@@ -38,7 +38,9 @@ const Login: React.FC<ILoginProps> = ({
   currentColorScheme,
   theme,
   setTheme,
+  logoUrls,
 }) => {
+  console.log(logoUrls);
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
@@ -185,7 +187,7 @@ const Login: React.FC<ILoginProps> = ({
       bgPattern={bgPattern}
     >
       <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
-        <Logo className="logo-wrapper" />
+        <img src={logoUrls[1]} className="logo-wrapper" />
         <Text
           fontSize="23px"
           fontWeight={700}
