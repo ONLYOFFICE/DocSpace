@@ -263,7 +263,7 @@ const InviteInput = ({
         <AccessSelector
           t={t}
           roomType={roomType}
-          defaultAccess={defaultAccess}
+          defaultAccess={selectedAccess}
           onSelectAccess={onSelectAccess}
           containerRef={inputsRef}
         />
