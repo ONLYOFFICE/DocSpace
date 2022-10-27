@@ -7,7 +7,7 @@ const StyledViewerContainer = styled.div`
   display: ${(props) => (props.visible ? "block" : "none")};
   overflow: hidden;
   .mediaViewerToolbox {
-    z-index: 1006;
+    z-index: 306;
     padding-top: 14px;
     padding-bottom: 14px;
     height: 20px;
@@ -39,7 +39,7 @@ const StyledViewerContainer = styled.div`
     }
   }
   .details {
-    z-index: 1007;
+    z-index: 307;
     padding-top: 14px;
     padding-bottom: 14px;
     height: 20px;
@@ -133,7 +133,7 @@ const StyledViewer = styled(ViewerBase)`
     align-items: center;
     padding: 0;
     margin: 0;
-    z-index: 2001;
+    z-index: 308;
   }
 
   .react-viewer-canvas {
@@ -184,7 +184,7 @@ const StyledViewer = styled(ViewerBase)`
 
 const StyledNextToolbar = styled.div`
   height: 100%;
-  z-index: 1006;
+  z-index: 306;
   position: fixed;
   display: block;
   width: 73px;
@@ -203,7 +203,7 @@ const StyledNextToolbar = styled.div`
 `;
 
 const StyledButtonScroll = styled.div`
-  z-index: 1007;
+  z-index: 307;
   position: fixed;
   top: calc(50% - 20px);
 

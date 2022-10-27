@@ -24,6 +24,7 @@ export const Viewer = (props) => {
     playlistPos,
     playlist,
     isImage,
+    contextModel,
   } = props;
 
   const defaultContainer = React.useRef(
@@ -67,6 +68,7 @@ export const Viewer = (props) => {
 
   const videoPortal = ReactDOM.createPortal(
     <ViewerPlayer
+      contextModel={contextModel}
       setIsFullScreen={setIsFullScreen}
       videoRef={videoElement}
       video={playlist[playlistPos]}
