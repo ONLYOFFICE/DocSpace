@@ -42,14 +42,14 @@ const ArticleHeader = ({
       ) : (
         <StyledHeading showText={showText} size="large">
           {isTabletView ? (
-            <ReactSVG
+            <img
               className="logo-icon_svg"
               src={whiteLabelLogoUrls[0]}
               onClick={onLogoClick}
             />
           ) : (
             <Link to="/">
-              <ReactSVG className="logo-icon_svg" src={whiteLabelLogoUrls[0]} />
+              <img className="logo-icon_svg" src={whiteLabelLogoUrls[0]} />
             </Link>
           )}
         </StyledHeading>
