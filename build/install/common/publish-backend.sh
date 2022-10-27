@@ -82,6 +82,7 @@ services_name_backend+=(ASC.Data.Backup.BackgroundTasks)
 services_name_backend+=(ASC.ClearEvents)
 services_name_backend+=(ASC.Migration)
 services_name_backend+=(ASC.Webhooks.Service)
+services_name_backend+=(ASC.ApiSystem)
 
 # Publish backend services
 for i in ${!services_name_backend[@]}; do
