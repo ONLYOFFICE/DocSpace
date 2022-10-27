@@ -174,6 +174,14 @@ export const LoginContainer = styled.div`
             }
           }
 
+          .help-button{
+            svg {
+              path {
+                fill: ${(props) => props.theme.login.helpButton};
+              }
+            }
+          }
+
           .checkbox-text{
             color: ${(props) => props.theme.checkbox.arrowColor};
           }
