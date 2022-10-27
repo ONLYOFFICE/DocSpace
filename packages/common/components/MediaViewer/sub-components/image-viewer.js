@@ -235,14 +235,10 @@ class ImageViewer extends React.Component {
         key: "percent",
         noHover: true,
         actionType: 999,
-        render: (
-          <div className="iconContainer zoomPercent" style={{ width: "auto" }}>
-            100%
-          </div>
-        ),
       },
       {
         key: "zoomOut",
+        percent: true,
         actionType: 2,
         render: (
           <div className="iconContainer zoomOut">
@@ -269,11 +265,11 @@ class ImageViewer extends React.Component {
         ),
       },
       {
-        key: "separator",
+        key: "share-separator",
         actionType: -1,
         noHover: true,
         render: (
-          <div className="separatortest" style={{ height: "16px" }}>
+          <div className="separator" style={{ height: "16px" }}>
             <ViewerSeparator size="scale" />
           </div>
         ),
@@ -301,7 +297,7 @@ class ImageViewer extends React.Component {
         actionType: -1,
         noHover: true,
         render: (
-          <div className="separatortest" style={{ height: "16px" }}>
+          <div className="separator" style={{ height: "16px" }}>
             <ViewerSeparator size="scale" />
           </div>
         ),
@@ -332,9 +328,13 @@ class ImageViewer extends React.Component {
       }
     });
 
-    const toolbars = userAccess
-      ? customToolbar
-      : customToolbar.filter((x) => x.key !== "delete");
+    const canShare = playlist[playlistPos].canShare;
+    const toolbars =
+      !canShare && userAccess
+        ? customToolbar.filter(
+            (x) => x.key !== "share" && x.key !== "share-separator"
+          )
+        : customToolbar.filter((x) => x.key !== "delete");
 
     return (
       <div className={className}>
