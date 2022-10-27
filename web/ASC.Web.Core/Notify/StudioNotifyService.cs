@@ -820,8 +820,8 @@ public class StudioNotifyService
 
         var culture = _setupInfo.GetPersonalCulture(lang);
 
-        var confirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmpInvite, (int)EmployeeType.User)
-                     + "&emplType=" + (int)EmployeeType.User
+        var confirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmpInvite, (int)EmployeeType.RoomAdmin)
+                     + "&emplType=" + (int)EmployeeType.RoomAdmin
                      + "&lang=" + culture.Key
                      + additionalMember;
 

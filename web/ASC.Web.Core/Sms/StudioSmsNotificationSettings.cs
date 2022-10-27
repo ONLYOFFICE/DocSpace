@@ -46,13 +46,11 @@ public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase<StudioS
 {
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly SetupInfo _setupInfo;
-    private readonly SettingsManager _settingsManager;
     private readonly SmsProviderManager _smsProviderManager;
     private readonly TenantManager _tenantManager;
 
     public StudioSmsNotificationSettingsHelper(
         IHttpContextAccessor httpContextAccessor,
-        TenantExtra tenantExtra,
         CoreBaseSettings coreBaseSettings,
         SetupInfo setupInfo,
         SettingsManager settingsManager,
@@ -63,7 +61,6 @@ public class StudioSmsNotificationSettingsHelper : TfaSettingsHelperBase<StudioS
     {
         _coreBaseSettings = coreBaseSettings;
         _setupInfo = setupInfo;
-        _settingsManager = settingsManager;
         _smsProviderManager = smsProviderManager;
         _tenantManager = tenantManager;
     }

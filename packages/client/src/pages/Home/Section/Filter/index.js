@@ -155,6 +155,8 @@ const SectionFilterContent = ({
   setCurrentRoomsFilter,
   providers,
 }) => {
+  const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
+
   const onFilter = React.useCallback(
     (data) => {
       if (isRooms) {
@@ -378,30 +380,6 @@ const SectionFilterContent = ({
       //   });
       // }
 
-      if (roomsFilter.provider) {
-        const provider = +roomsFilter.provider;
-
-        const label = RoomsProviderTypeName[provider];
-
-        filterValues.push({
-          key: provider,
-          label: label,
-          group: FilterGroups.roomFilterProviderType,
-        });
-      }
-
-      if (roomsFilter.type) {
-        const key = +roomsFilter.type;
-
-        const label = getDefaultRoomName(key, t);
-
-        filterValues.push({
-          key: key,
-          label: label,
-          group: FilterGroups.roomFilterType,
-        });
-      }
-
       if (roomsFilter.subjectId) {
         const isMe = userId === roomsFilter.subjectId;
         let label = isMe
@@ -431,11 +409,35 @@ const SectionFilterContent = ({
       //   });
       // }
 
+      if (roomsFilter.type) {
+        const key = +roomsFilter.type;
+
+        const label = getDefaultRoomName(key, t);
+
+        filterValues.push({
+          key: key,
+          label: label,
+          group: FilterGroups.roomFilterType,
+        });
+      }
+
       if (roomsFilter?.tags?.length > 0) {
         filterValues.push({
           key: roomsFilter.tags,
           group: FilterGroups.roomFilterTags,
           isMultiSelect: true,
+        });
+      }
+
+      if (roomsFilter.provider) {
+        const provider = +roomsFilter.provider;
+
+        const label = RoomsProviderTypeName[provider];
+
+        filterValues.push({
+          key: provider,
+          label: label,
+          group: FilterGroups.roomFilterProviderType,
         });
       }
     } else {
@@ -525,7 +527,51 @@ const SectionFilterContent = ({
       }
     }
 
-    return filterValues;
+    const currentFilterValues = [];
+
+    setSelectedFilterValues((value) => {
+      if (!value) {
+        currentFilterValues.push(...filterValues);
+        return filterValues.map((f) => ({ ...f }));
+      }
+
+      const items = value.map((v) => {
+        const item = filterValues.find((f) => f.group === v.group);
+
+        if (item) {
+          if (item.isMultiSelect) {
+            let isEqual = true;
+
+            item.key.forEach((k) => {
+              if (!v.key.includes(k)) {
+                isEqual = false;
+              }
+            });
+
+            if (isEqual) return item;
+
+            return false;
+          } else {
+            if (item.key === v.key) return item;
+            return false;
+          }
+        } else {
+          return false;
+        }
+      });
+
+      const newItems = filterValues.filter(
+        (v) => !items.find((i) => i.group === v.group)
+      );
+
+      items.push(...newItems);
+
+      currentFilterValues.push(...items.filter((i) => i));
+
+      return items.filter((i) => i);
+    });
+
+    return currentFilterValues;
   }, [
     filter.withSubfolders,
     filter.authorType,

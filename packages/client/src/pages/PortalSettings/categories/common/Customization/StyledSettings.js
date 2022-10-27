@@ -36,6 +36,13 @@ const StyledSettingsComponent = styled.div`
   .dns-setting_helpbutton {
     margin-right: 4px;
   }
+
+  .dns-textarea {
+    textarea {
+      color: ${(props) => props.theme.text.disableColor};
+    }
+  }
+
   .combo-button-label {
     max-width: 100%;
     font-weight: 400;

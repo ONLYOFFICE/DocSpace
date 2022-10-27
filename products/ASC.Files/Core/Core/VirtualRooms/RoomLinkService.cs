@@ -49,7 +49,7 @@ public class RoomLinkService
 
     public string GetInvitationLink(string email, FileShare share, Guid createdBy)
     {
-        var type = DocSpaceHelper.PaidRights.Contains(share) ? EmployeeType.User : EmployeeType.Visitor;
+        var type = DocSpaceHelper.PaidRights.Contains(share) ? EmployeeType.RoomAdmin : EmployeeType.User;
 
         var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, type, createdBy)
             + $"&emplType={type:d}";
@@ -87,7 +87,7 @@ public class RoomLinkService
                 options.RoomId = record.EntryId.ToString();
                 options.Share = record.Share;
                 options.Id = record.Subject;
-                options.EmployeeType = DocSpaceHelper.PaidRights.Contains(record.Share) ? EmployeeType.User : EmployeeType.Visitor;
+                options.EmployeeType = DocSpaceHelper.PaidRights.Contains(record.Share) ? EmployeeType.RoomAdmin : EmployeeType.User;
             }
         }
         else if (_docSpaceLinksHelper.ValidateEmailLink(email, key, employeeType) == EmailValidationKeyProvider.ValidationResult.Ok)

@@ -77,14 +77,14 @@ public sealed class Constants
 
     public static readonly GroupInfo GroupManager = new GroupInfo(SysGroupCategoryId)
     {
-        ID = AuthConst.Manager.ID,
-        Name = AuthConst.Manager.Name,
+        ID = AuthConst.RoomAdmin.ID,
+        Name = AuthConst.RoomAdmin.Name,
     };
 
     public static readonly GroupInfo GroupAdmin = new GroupInfo(SysGroupCategoryId)
     {
-        ID = AuthConst.Admin.ID,
-        Name = AuthConst.Admin.Name,
+        ID = AuthConst.DocSpaceAdmin.ID,
+        Name = AuthConst.DocSpaceAdmin.Name,
     };
 
     public static readonly GroupInfo[] BuildinGroups = new[]
