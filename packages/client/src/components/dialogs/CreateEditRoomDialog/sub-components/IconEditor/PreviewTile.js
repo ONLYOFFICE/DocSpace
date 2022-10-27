@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 
 import { smallTablet } from "@docspace/components/utils/device";
@@ -80,8 +81,18 @@ const PreviewTile = ({
   tags,
   defaultTagLabel,
   isPrivate,
+  storageLocation,
   previewIcon,
+
+  getThirdPartyIcon,
 }) => {
+  const thirdpartyProviderKey =
+    storageLocation.providerKey ||
+    (storageLocation.thirdpartyAccount &&
+      storageLocation.provider?.providerKey);
+
+  const thirdpartyIcon = getThirdPartyIcon(thirdpartyProviderKey, "small");
+
   return (
     <StyledPreviewTile>
       <div className="tile-header">
@@ -99,6 +110,9 @@ const PreviewTile = ({
         <div className="tile-header-title">{title}</div>
       </div>
       <div className="tile-tags">
+        {storageLocation.isThirdparty && thirdpartyIcon && (
+          <Tag icon={thirdpartyIcon} label={thirdpartyProviderKey} />
+        )}
         {tags.length ? (
           <Tags columnCount={2} tags={tags} />
         ) : (
@@ -114,4 +128,9 @@ const PreviewTile = ({
   );
 };
 
-export default PreviewTile;
+export default inject(({ settingsStore }) => {
+  const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
+  return {
+    getThirdPartyIcon,
+  };
+})(observer(PreviewTile));

@@ -110,6 +110,7 @@ const SetRoomParams = ({
         tags={roomParams.tags}
         defaultTag={currentRoomTypeData.defaultTag}
         isPrivate={roomParams.isPrivate}
+        storageLocation={roomParams.storageLocation}
         icon={roomParams.icon}
         onChangeIcon={onChangeIcon}
       />
