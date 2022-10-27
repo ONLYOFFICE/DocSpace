@@ -91,8 +91,9 @@ export const Viewer = (props) => {
               className="mediaPlayerClose"
             >
               <IconButton
+                color={"#fff"}
                 iconName="/static/images/cross.react.svg"
-                size={25}
+                size={17}
                 isClickable
               />
             </ControlBtn>

@@ -61,10 +61,10 @@ const StyledViewerContainer = styled.div`
   }
   .mediaPlayerClose {
     position: fixed;
-    top: 4px;
+    top: 10px;
     right: 10px;
-    height: 25px;
-    width: 25px;
+    height: 17px;
+    width: 17px;
     svg {
       path {
         fill: ${(props) => props.theme.mediaViewer.iconColor};
