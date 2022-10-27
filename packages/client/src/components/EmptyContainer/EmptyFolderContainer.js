@@ -14,6 +14,7 @@ const EmptyFolderContainer = ({
   parentId,
   linkStyles,
   isRooms,
+  sectionWidth,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -83,6 +84,8 @@ const EmptyFolderContainer = ({
       descriptionText={t("EmptyFolderDecription")}
       imageSrc="/static/images/empty_screen_alt.svg"
       buttons={buttons}
+      sectionWidth={sectionWidth}
+      isEmptyFolderContainer={true}
     />
   );
 };
