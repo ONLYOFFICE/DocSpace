@@ -20,7 +20,7 @@ const ToolbarItem = styled.li`
   svg {
     path,
     rect {
-      fill: #fff;
+      ${(props) => (props.percent !== 25 ? "fill: #fff;" : "fill: #BEBEBE;")}
     }
   }
 `;
@@ -78,6 +78,7 @@ function deleteToolbarFromKey(toolbars, keys) {
 
 export default function ViewerToolbar(props) {
   function handleAction(config) {
+    if (config.key === "percent") return props.onPercentClick();
     props.onAction(config);
   }
 
@@ -91,6 +92,17 @@ export default function ViewerToolbar(props) {
     }
     if (config.render) {
       content = config.render;
+    }
+
+    if (config.key === "percent") {
+      content = (
+        <div
+          className="iconContainer zoomPercent"
+          style={{ width: "auto", color: "#fff", userSelect: "none" }}
+        >
+          {`${props.percent}%`}
+        </div>
+      );
     }
 
     if (config.key === "context-menu") {
@@ -115,6 +127,7 @@ export default function ViewerToolbar(props) {
 
     return (
       <ToolbarItem
+        percent={config.percent ? props.percent : 100}
         noHover={config.noHover}
         key={config.key}
         className={`${props.prefixCls}-btn`}

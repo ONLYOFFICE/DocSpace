@@ -65,6 +65,7 @@ const ViewerBase = (props) => {
     loading: false,
     loadFailed: false,
     startLoading: false,
+    percent: 100,
   };
   function setContainerWidthHeight() {
     let width = window.innerWidth;
@@ -275,6 +276,20 @@ const ViewerBase = (props) => {
       height = imgHeight;
     }
     return [width, height];
+  }
+
+  function onPercentClick() {
+    if (state.percent === 100) return;
+    let imgCenterXY = getImageCenterXY();
+
+    const zoomCondition = state.percent < 100;
+
+    const direct = zoomCondition ? 1 : -1;
+    const zoom = zoomCondition
+      ? (100 - state.percent) / 100
+      : (state.percent - 100) / 100;
+
+    handleZoom(imgCenterXY.x, imgCenterXY.y, direct, zoom);
   }
 
   function handleChangeImg(newIndex) {
@@ -527,6 +542,12 @@ const ViewerBase = (props) => {
     let height = 0;
     let scaleX = 0;
     let scaleY = 0;
+    let zoomPercent =
+      direct === 1 ? state.percent + scale * 100 : state.percent - scale * 100;
+    if (zoomPercent === 0) return;
+    if (scale === 1) {
+      zoomPercent = 100;
+    }
     if (state.width === 0) {
       const [imgWidth, imgHeight] = getImgWidthHeight(
         state.imageWidth,
@@ -570,6 +591,7 @@ const ViewerBase = (props) => {
         top: top,
         left: left,
         loading: false,
+        percent: zoomPercent,
       })
     );
   }
@@ -659,9 +681,11 @@ const ViewerBase = (props) => {
               alt={activeImg.alt}
               width={state.imageWidth}
               height={state.imageHeight}
+              percent={state.percent}
               attribute={attribute}
               zoomable={zoomable}
               rotatable={rotatable}
+              onPercentClick={onPercentClick}
               generateContextMenu={generateContextMenu}
               scalable={scalable}
               changeable={changeable}
