@@ -172,6 +172,9 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Asiakirja on lukittuna toiselle käyttäjälle</value>
   </data>
+  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
+    <value>Eipäs löydy tiliä, jonka kautta lähettää tiedosto. Tee jotain tai hyydy siihen.</value>
+  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Vähintään {0} sähköpostiviestiä ei voitu lähettää. Ole hyvä ja siirry Sähköposti moduuliin tarkistamaan mikä voisi olla epäonnistumisen syy.</value>
   </data>
@@ -267,6 +270,27 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Luo ja muokkaa omia ja yhteisiä asiakirjoja sopivilla käyttöoikeuksilla|Myönnä muille käyttäjille asiakirjojen ja kansioiden luku- ja muokkausoikeuksia|Yhdistä Dropbox, Box ja muita pilvipalveluita/tilejä 'Omat Asiakirjat'  -osiossa.</value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!User} poistettu</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Etsi</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Ilmoita, kun kansio jaetaan sinulle</value>
+  </data>
+  <data name="SubscriptDocuSignComplete" xml:space="preserve">
+    <value>Lähetä tiedonanto kun asiakirja on allekirjoitettu DocuSign toiminnon kautta</value>
+  </data>
+  <data name="SubscriptDocuSignStatus" xml:space="preserve">
+    <value>Lähetä tiedonanto kun DocuSign asiakirja vaihtaa tilaa</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Ilmoita, kun asiakirja jaetaan sinulle</value>
+  </data>
+  <data name="SubscriptForMailMerge" xml:space="preserve">
+    <value>Lähetä tiedonanto kun postitus on valmis</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Etunimi</value>

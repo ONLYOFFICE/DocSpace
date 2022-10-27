@@ -109,6 +109,9 @@
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>Потребителският ви профил е спрян</value>
   </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} с този имейл вече е регистриран</value>
+  </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>Имейлите от този домейн не са разрешени за регистрация</value>
   </data>
@@ -126,6 +129,9 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Каченият файл не можа да бъде намерен</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Размерът на файла с изображение е твърде голям</value>
   </data>
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>Неправилно първо име или фамилия</value>
@@ -146,6 +152,9 @@
     <value>от {0} до {1} символа</value>
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>Паролата трябва да съдържа</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
     <value>Паролата трябва да съдържа</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
@@ -213,6 +222,9 @@
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORG Region</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Собственик</value>
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Превишена е квотата за дисково пространство</value>

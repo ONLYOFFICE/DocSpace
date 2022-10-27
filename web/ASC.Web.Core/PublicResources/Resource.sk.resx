@@ -103,6 +103,9 @@
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>Váš profil je pozastavený</value>
   </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} s týmto e-mailom je už zaregistrovaný</value>
+  </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>E-maily z tejto domény nie sú povolené na registráciu</value>
   </data>
@@ -117,6 +120,9 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Nahraný súbor sa nenašiel</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Veľkosť súboru obrázka je príliš veľká</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Váš cenový plán túto možnosť nepodporuje</value>
@@ -135,6 +141,9 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Heslo musí obsahovať</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Musí obsahovať</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>číslice</value>
@@ -195,6 +204,9 @@
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORG Región</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Majiteľ</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Prístup k portálu</value>

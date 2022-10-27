@@ -154,6 +154,9 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Annulé</value>
   </data>
+  <data name="EditorMentions" xml:space="preserve">
+    <value>Notifier quand mentionné dans un document</value>
+  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Mauvaise requête.</value>
   </data>
@@ -162,6 +165,9 @@
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
     <value>Conversion prend trop de temps.</value>
+  </data>
+  <data name="ErrorMassage_CreateNewFolderInTrash" xml:space="preserve">
+    <value>Vous n'êtes pas autorisé à créer des dossiers dans la corbeille</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
     <value>Une erreur s'est produite dans le service de documents </value>
@@ -190,6 +196,9 @@
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
     <value>Fichier de plus de {0} ne sera pas déplacé</value>
   </data>
+  <data name="ErrorMassage_FileSizeZip" xml:space="preserve">
+    <value>Le fichier plus grand que {0} ne sera pas compressé</value>
+  </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
     <value>Vous ne pouvez pas copier le dossier dans son sous-dossier</value>
   </data>
@@ -202,6 +211,9 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Le fichier est bloqué par un autre utilisateur</value>
   </data>
+  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
+    <value>Il n'y a pas de comptes disponibles pour envoyer le message. Accédez au Mail et connecter une boîte aux lettres.</value>
+  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Impossible d'envoyer au moins {0} messages électroniques. Passez au module Mail pour savoir la raison probable de l'échec.</value>
   </data>
@@ -210,6 +222,9 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Désolé, ce format de fichier n'est pas pris en charge</value>
+  </data>
+  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
+    <value>Opération est annulée</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>L'auteur de la sauvegarde est inconnu</value>
@@ -324,6 +339,30 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Créer et modifier les documents personnels aussi que les documents partagés ayant les droits d'accès appropriés|Donner l'accès de lecture/modification des documents et des dossier à d'autres utilisateurs|Lier Dropbox, Box et d'autres comptes dans la section 'Mes documents'</value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!User} supprimé</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Rechercher</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Notifier lorsqu'un dossier est partagé</value>
+  </data>
+  <data name="SubscriptDocuSignComplete" xml:space="preserve">
+    <value>Notifier lorsque le document est signé via DocuSign</value>
+  </data>
+  <data name="SubscriptDocuSignStatus" xml:space="preserve">
+    <value>Notifier du changement de statut du document dans DocuSign</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Être notifiée quand le document est partagé</value>
+  </data>
+  <data name="SubscriptForMailMerge" xml:space="preserve">
+    <value>Avertir lorsque le publipostage est terminé</value>
+  </data>
+  <data name="TitleDeletedUserFolder" xml:space="preserve">
+    <value>Documents de {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Prénom</value>

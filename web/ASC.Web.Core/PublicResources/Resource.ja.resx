@@ -94,6 +94,9 @@
   <data name="DnsChangeMsg" xml:space="preserve">
     <value>操作を確認するためのリンクが{0}（ポータル所有者の電子メールアドレス）に送信されました。</value>
   </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>インスタンスIDが間違っているようです</value>
+  </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>正しくないメールアドレス</value>
   </data>
@@ -105,6 +108,9 @@
   </data>
   <data name="ErrorBadKeys" xml:space="preserve">
     <value>不正なライセンスキー</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} このメールアドレスは既に登録されていると</value>
   </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>このドメインからのメールは登録できません。</value>
@@ -123,6 +129,9 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>アップロードされたファイルが見つかりませんでした</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>イメージファイルのサイズが大きすぎます</value>
   </data>
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>不適切な名または姓</value>
@@ -143,6 +152,9 @@
     <value>{0}～{1}文字</value>
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
+    <value>パスワードが含まれている必要な記号</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
     <value>パスワードが含まれている必要な記号</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
@@ -202,6 +214,9 @@
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORG地域 </value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>所有者</value>
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>ディスク容量制限を超えました</value>

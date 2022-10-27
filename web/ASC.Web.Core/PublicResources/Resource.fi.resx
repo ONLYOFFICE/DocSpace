@@ -94,6 +94,9 @@
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>Käyttäjätunnuksesi on poistettu käytöstä.</value>
   </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>Antamasi sähköpostiosoite on jo toisen käyttäjän käytössä. Pelottavaa!</value>
+  </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>Sähköposteja tästä verkkotunnuksesta ei ole sallittu rekisteröintiin</value>
   </data>
@@ -108,6 +111,9 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Lisättyä tiedostoa ei löytynyt. Ei sitten millään.</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Kuvatiedoston koko on liian suuri. Ei pysty.</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Sinun hintavaihtoehtosi ei tue tätä mahdollisuutta</value>
@@ -126,6 +132,9 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Uusi salasana on virheellinen. Sen on sisällettävä</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Sen on sisällettävä</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>numerot</value>
@@ -168,6 +177,9 @@
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>Numeron vaihtamiseksi, sinun tulee poistaa nykyinen puhelinnumerosi</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Omistaja</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portaalin käyttöoikeus</value>

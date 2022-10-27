@@ -94,6 +94,9 @@
   <data name="DnsChangeMsg" xml:space="preserve">
     <value>Um link para confirmar a operação foi enviado para {0} (O endereço de e-mail do proprietário do portal).</value>
   </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Identificação de instância incorreta.</value>
+  </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Endereço de email incorreto</value>
   </data>
@@ -108,6 +111,9 @@
   </data>
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>O seu perfil está suspenso</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} com este e-mail já existe</value>
   </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>E-mails deste domínio não são permitidos para registro</value>
@@ -126,6 +132,9 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Não foi possível encontrar o arquivo enviado</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>O tamanho do arquivo de imagem é muito grande</value>
   </data>
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>Nome ou sobrenome incorreto</value>
@@ -147,6 +156,9 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Senha deve conter</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>A senha deve conter</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>dígitos</value>
@@ -225,6 +237,9 @@
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>Região ORG</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Proprietário</value>
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Cota de espaço em disco excedida</value>

@@ -160,4 +160,13 @@
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Criar e editar documentos, bem como os documentos partilhados com direitos de acesso adequados|Dar acesso de leitura/edição a outros utilizadores para os documentos e pastas|Link Dropbox, Box e outras contas na secção 'Os Meus Documentos'</value>
   </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!User} removido</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Notificar quando uma pasta for partilhada</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Notificar quando partilhado</value>
+  </data>
 </root>

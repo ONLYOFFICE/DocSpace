@@ -175,6 +175,9 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>File bị khóa bởi người dùng khác</value>
   </data>
+  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
+    <value>Không có tài khoản để gửi tin nhắn. Vào Thư và kết nối với một hộp thư.</value>
+  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Ít nhất {0} tin nhắn thư không thể gửi được. Vui lòng truy cập mô-đun Thư để xem lý do không gửi được.</value>
   </data>
@@ -277,6 +280,30 @@
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Tạo và chỉnh sửa tài liệu riêng cũng như tài liệu được chia sẻ với quyền truy cập thích hợp|Trao cho người dùng khác quyền đọc/chỉnh sửa tài liệu và thư mục|Liên kết Dropbox, Box và tài khoản tài khác trong mục 'Tài liệu của tôi'
 </value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!User} đã bị xóa</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Thông báo khi có thư mục được chia sẻ</value>
+  </data>
+  <data name="SubscriptDocuSignComplete" xml:space="preserve">
+    <value>Thông báo khi tài liệu được ký bằng DocuSign</value>
+  </data>
+  <data name="SubscriptDocuSignStatus" xml:space="preserve">
+    <value>Thông báo khi tài liệu trong DocuSign thay đổi trạng thái</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Thông báo khi có tài liệu được chia sẻ</value>
+  </data>
+  <data name="SubscriptForMailMerge" xml:space="preserve">
+    <value>Thông báo khi gửi thư thành công</value>
+  </data>
+  <data name="TitleDeletedUserFolder" xml:space="preserve">
+    <value>Tài liệu của {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Tên</value>

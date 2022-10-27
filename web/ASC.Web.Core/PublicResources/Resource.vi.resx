@@ -100,6 +100,9 @@
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>Hồ sơ của bạn bị treo</value>
   </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>{!User} với email này đã được đăng ký</value>
+  </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>Email từ miền này không được phép đăng ký</value>
   </data>
@@ -114,6 +117,9 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Không tìm thấy file được tải lên</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Kích thước file hình ảnh quá lớn</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Gói của bạn không hỗ trợ tùy chọn này</value>
@@ -132,6 +138,9 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Mật khẩu phải chứa</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Phải chứa</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>chữ số</value>
@@ -193,6 +202,9 @@
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>Vùng tổ chức</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Người sở hữu</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Truy cập Cổng</value>

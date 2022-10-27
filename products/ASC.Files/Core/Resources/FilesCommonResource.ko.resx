@@ -190,4 +190,13 @@
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>자신의 문서뿐만 아니라 적절한 액세스 권한이있는 공유 문서를 작성 및 편집 | 읽기 / 문서 및 폴더에 다른 사용자에게 편집 권한을 부여 | '내 문서'섹션에 링크 Dropbox 및 기타 계정</value>
   </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!사용자}가 제거되었습니다</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>폴더</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>공유 때 알림</value>
+  </data>
 </root>

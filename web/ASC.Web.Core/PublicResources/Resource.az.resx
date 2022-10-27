@@ -94,6 +94,9 @@
   <data name="DnsChangeMsg" xml:space="preserve">
     <value>Əməliyyatı təsdiq etmək üçün keçid {0} ünvanına göndərildi. (portal sahibinin e-poçt ünvanı)</value>
   </data>
+  <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
+    <value>Yanlış Nümunə id.</value>
+  </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Səhv elektron poçt ünvanı</value>
   </data>
@@ -108,6 +111,9 @@
   </data>
   <data name="ErrorDisabledProfile" xml:space="preserve">
     <value>Profiliniz dayandırılıb</value>
+  </data>
+  <data name="ErrorEmailAlreadyExists" xml:space="preserve">
+    <value>bu e-poçt ünvanı ilə {!User} artıq qeydiyyata alınıb</value>
   </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
     <value>Bu domendən olan e-poçtların qeydiyyata alınmasına icazə verilmir</value>
@@ -126,6 +132,9 @@
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>Yüklənən fayl tapılmadı</value>
+  </data>
+  <data name="ErrorImageWeightLimit" xml:space="preserve">
+    <value>Təsvir faylının ölçüsü çox böyükdür</value>
   </data>
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>Yanlış ad və ya soyad</value>
@@ -147,6 +156,9 @@
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Yalnış yeni parol. O, bunları içərməlidir</value>
+  </data>
+  <data name="ErrorPasswordMessageStart" xml:space="preserve">
+    <value>Bunda olmalıdır</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>rəqəmlər</value>
@@ -225,6 +237,9 @@
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORG Regionu</value>
+  </data>
+  <data name="Owner" xml:space="preserve">
+    <value>Sahib</value>
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Disk sahəsi kvotası keçildi</value>

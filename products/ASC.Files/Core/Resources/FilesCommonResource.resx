@@ -213,6 +213,9 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Voided</value>
   </data>
+  <data name="EditorMentions" xml:space="preserve">
+    <value>Notify when mentioned in document</value>
+  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Bad request.</value>
   </data>
@@ -221,6 +224,9 @@
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
     <value>Conversion takes too much time.</value>
+  </data>
+  <data name="ErrorMassage_CreateNewFolderInTrash" xml:space="preserve">
+    <value>You are not allowed to create folders in the Recycle Bin</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
     <value>Error occurred in the Documents Service</value>
@@ -249,6 +255,9 @@
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
     <value>File larger than {0} will not be moved</value>
   </data>
+  <data name="ErrorMassage_FileSizeZip" xml:space="preserve">
+    <value>File larger than {0} will not be archived</value>
+  </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
     <value>You cannot copy the folder to its subfolder</value>
   </data>
@@ -261,6 +270,9 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>The file is currently locked by another user</value>
   </data>
+  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
+    <value>There are no available accounts to send the message. Go to Mail and connect a mailbox.</value>
+  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>At least {0} mail messages could not be sent. Please visit the Mail module to see what the reason for the failure could be.</value>
   </data>
@@ -269,6 +281,9 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Sorry, this file format isn't supported</value>
+  </data>
+  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
+    <value>The operation was canceled</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Author of the save is unknown</value>
@@ -345,6 +360,9 @@
   <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
     <value>You are not allowed to preview the elements in the Trash</value>
   </data>
+  <data name="ErrorMessage_ArchiveRoom" xml:space="preserve">
+    <value>You don't have enough permission to archive the room</value>
+  </data>
   <data name="ErrorMessage_InvintationLink" xml:space="preserve">
     <value>The invitation link is invalid or it's validity has expired</value>
   </data>
@@ -393,6 +411,30 @@ Highest compatibility with docx, xlsx, pptx. </value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Create and edit own documents as well as the shared documents with the proper access rights|Give reading/editing access to other users to the documents and folders|Link Dropbox, Box and other accounts in the 'My documents' section</value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!User} removed</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Notify when a folder is shared</value>
+  </data>
+  <data name="SubscriptDocuSignComplete" xml:space="preserve">
+    <value>Notify when document signed via DocuSign</value>
+  </data>
+  <data name="SubscriptDocuSignStatus" xml:space="preserve">
+    <value>Notify when document in DocuSign changed status</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Notify when a document is shared</value>
+  </data>
+  <data name="SubscriptForMailMerge" xml:space="preserve">
+    <value>Notify when mailing is complete</value>
+  </data>
+  <data name="TitleDeletedUserFolder" xml:space="preserve">
+    <value>Documents of {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>First Name</value>

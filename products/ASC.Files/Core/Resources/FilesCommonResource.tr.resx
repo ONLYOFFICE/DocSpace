@@ -151,6 +151,9 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Bosaltilan</value>
   </data>
+  <data name="EditorMentions" xml:space="preserve">
+    <value>Belgede bahsedildiğinde bildir</value>
+  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Hatalı istek.</value>
   </data>
@@ -199,6 +202,9 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Dosya başka bir kullanıcı tarafından kilitlenmiş</value>
   </data>
+  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
+    <value>Mesaj gonderecek gecerli hesap bulunmuyor, mail kismindaki mail kutusunu kontrol edin.</value>
+  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Mail Mesaji Gonderilemedi. Hata nedeni icin, lutfen Mail Modulune Gidip, kontrol ediniz</value>
   </data>
@@ -207,6 +213,9 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Üzgünüm, bu dosya biçimi desteklenmiyor</value>
+  </data>
+  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
+    <value>İşleyiş iptal edildi</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Kaydetmenin yayıncısı bilinmiyor</value>
@@ -321,6 +330,30 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Uygun erişim haklarıyla ortak dökümanları yaratıp düzenlediğiniz gibi kendi dosyalarınızı yaratın ve düzenleyin|Dökümanlara ve klasörlere diğer kullanıcılara okuma/düzenleme hakkı verin|Dropbox, Box ve diğer hesapların bağlantılarını "Belgelerim" bölümünden yapın</value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!User} kaldırıldı</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Ara</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Klasör paylaşıldığında bildir</value>
+  </data>
+  <data name="SubscriptDocuSignComplete" xml:space="preserve">
+    <value>Patron Imzaladiginda Beni Uyar</value>
+  </data>
+  <data name="SubscriptDocuSignStatus" xml:space="preserve">
+    <value>Dokuman Devtek Klasorunde Degistiginde Beni Uyar</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Paylaşıldığında bilgilendir</value>
+  </data>
+  <data name="SubscriptForMailMerge" xml:space="preserve">
+    <value>Mail gonderme tamamlandiginda beni uyar</value>
+  </data>
+  <data name="TitleDeletedUserFolder" xml:space="preserve">
+    <value>{!user} {0} Belgeleri</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Ad</value>

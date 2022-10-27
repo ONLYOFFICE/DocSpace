@@ -175,6 +175,9 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value> На даний момент файл заблоковано іншим користувачем</value>
   </data>
+  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
+    <value>Немає доступних облікових записів для надсилання повідомлення. Перейдіть до Пошти та підключіть поштову скриньку.</value>
+  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Не можна надіслати щонайменше {0} поштових повідомлень. Будь ласка, відвідайте модуль пошти, щоб побачити причину невдачі.</value>
   </data>
@@ -273,6 +276,27 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Створення та редагування власних і спільних документів з належними правами доступу|Надання прав на читання та/або редагування документів і папок іншим користувачам|Долучити облікові записи Dropbox, Box та інші в розділі 'Мої документи'</value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>Користувача {!User} видалено</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Пошук</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Повідомити, якщо до папки є спільний доступ</value>
+  </data>
+  <data name="SubscriptDocuSignComplete" xml:space="preserve">
+    <value>Сповістити, коли документ підписано через DocuSign</value>
+  </data>
+  <data name="SubscriptDocuSignStatus" xml:space="preserve">
+    <value>Сповістити, коли документ змінив статус DocuSign</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Сповіщати при наданні доступу</value>
+  </data>
+  <data name="SubscriptForMailMerge" xml:space="preserve">
+    <value>Сповістити про завершення розсилки</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Ім'я</value>

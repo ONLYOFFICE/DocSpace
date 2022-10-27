@@ -175,6 +175,9 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Plik jest obecnie zablokowany przez innego użytkownika</value>
   </data>
+  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
+    <value>Nie znaleziono żadnego konta, aby wysłać wiadomość. Idź do poczty i dodaj konto pocztowe.</value>
+  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Co najmniej {0} wiadomości mail nie mogło zostać wysłane. Proszę odwiedzić moduł mail aby zobaczyć, co jest przyczyną problemu.</value>
   </data>
@@ -183,6 +186,9 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Niestety, ten format pliku nie jest obsługiwany</value>
+  </data>
+  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
+    <value>Działanie zostało odwołane</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Autor zapisu jest nieznany</value>
@@ -282,6 +288,30 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Twórz i edytuj własne dokumenty, jak również dokumenty udostępnione innym, posiadające właściwe prawa dostępu|Nadawaj innym prawa do przeglądania i edycji dokumentów i folderów|Powiąż konta Dropbox, Box i inne do działu 'Moje dokumenty'</value>
+  </data>
+  <data name="ProfileRemoved" xml:space="preserve">
+    <value>{!User} usunięty</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Szukaj</value>
+  </data>
+  <data name="ShareFolder" xml:space="preserve">
+    <value>Powiadom kiedy folder zostanie udostępniony</value>
+  </data>
+  <data name="SubscriptDocuSignComplete" xml:space="preserve">
+    <value>Powiadom kiedy dokument zostanie podpisany przez DocuSign</value>
+  </data>
+  <data name="SubscriptDocuSignStatus" xml:space="preserve">
+    <value>Powiadom kiedy dokument w DocuSign zmienił status</value>
+  </data>
+  <data name="SubscriptForAccess" xml:space="preserve">
+    <value>Powiadom o udostępnieniu</value>
+  </data>
+  <data name="SubscriptForMailMerge" xml:space="preserve">
+    <value>Powiadamić o zakończeniu wysyłania</value>
+  </data>
+  <data name="TitleDeletedUserFolder" xml:space="preserve">
+    <value>Dokumenty użytkownika {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Imię</value>
