@@ -31,6 +31,12 @@ const FilesMediaViewer = (props) => {
     setBufferSelection,
     mediaViewerAudioFormats,
     isFavoritesFolder,
+    onClickFavorite,
+    onShowInfoPanel,
+    onClickDownload,
+    onClickDownloadAs,
+    onClickRename,
+    onClickDelete,
   } = props;
 
   useEffect(() => {
@@ -146,6 +152,7 @@ const FilesMediaViewer = (props) => {
   return (
     visible && (
       <MediaViewer
+        t={t}
         userAccess={userAccess}
         currentFileId={currentMediaFileId}
         allowConvert={true} //TODO:
@@ -155,6 +162,12 @@ const FilesMediaViewer = (props) => {
         playlist={playlist}
         onDelete={onDeleteMediaFile}
         onDownload={onDownloadMediaFile}
+        onClickFavorite={onClickFavorite}
+        onClickDownload={onClickDownload}
+        onShowInfoPanel={onShowInfoPanel}
+        onClickDownloadAs={onClickDownloadAs}
+        onClickDelete={onClickDelete}
+        onClickRename={onClickRename}
         onClose={onMediaViewerClose}
         onEmptyPlaylistError={onMediaViewerClose}
         deleteDialogVisible={deleteDialogVisible}
@@ -177,6 +190,7 @@ export default inject(
     settingsStore,
     dialogsStore,
     treeFoldersStore,
+    contextOptionsStore,
   }) => {
     const {
       files,
@@ -200,6 +214,15 @@ export default inject(
     const { extsVideo, extsImage, extsAudio } = settingsStore;
     const { isFavoritesFolder } = treeFoldersStore;
 
+    const {
+      onClickFavorite,
+      onShowInfoPanel,
+      onClickDownloadAs,
+      onClickDownload,
+      onClickRename,
+      onClickDelete,
+    } = contextOptionsStore;
+
     return {
       files,
       playlist,
@@ -222,6 +245,12 @@ export default inject(
       setCurrentId,
       setBufferSelection,
       isFavoritesFolder,
+      onClickFavorite,
+      onClickDownloadAs,
+      onClickDelete,
+      onClickDownload,
+      onShowInfoPanel,
+      onClickRename,
     };
   }
 )(
