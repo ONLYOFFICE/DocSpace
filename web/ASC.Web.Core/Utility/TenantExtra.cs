@@ -58,7 +58,7 @@ public class TenantExtraConfig
 public class TenantExtra
 {
     private readonly TenantExtraConfig _tenantExtraConfig;
-    private readonly CountManagerStatistic _countManagerStatistic;
+    private readonly CountRoomAdminStatistic _countRoomAdminStatistic;
     private readonly MaxTotalSizeStatistic _maxTotalSizeStatistic;
     private readonly TenantManager _tenantManager;
     private readonly ITariffService _tariffService;
@@ -75,7 +75,7 @@ public class TenantExtra
         SetupInfo setupInfo,
         SettingsManager settingsManager,
         TenantExtraConfig tenantExtraConfig,
-        CountManagerStatistic countManagerStatistic,
+        CountRoomAdminStatistic countManagerStatistic,
         MaxTotalSizeStatistic maxTotalSizeStatistic)
     {
         _tenantManager = tenantManager;
@@ -85,7 +85,7 @@ public class TenantExtra
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
         _tenantExtraConfig = tenantExtraConfig;
-        _countManagerStatistic = countManagerStatistic;
+        _countRoomAdminStatistic = countManagerStatistic;
         _maxTotalSizeStatistic = maxTotalSizeStatistic;
     }
 
@@ -135,7 +135,7 @@ public class TenantExtra
     public async Task<TenantQuota> GetRightQuota()
     {
         var usedSpace = await _maxTotalSizeStatistic.GetValue();
-        var needUsersCount = await _countManagerStatistic.GetValue();
+        var needUsersCount = await _countRoomAdminStatistic.GetValue();
         var quotas = GetTenantQuotas();
 
         return quotas.OrderBy(q => q.CountUser)

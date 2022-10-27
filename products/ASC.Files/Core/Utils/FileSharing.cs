@@ -85,7 +85,7 @@ public class FileSharingAceHelper<T>
         _logger = loggerProvider.CreateLogger("ASC.Files");
     }
 
-    public async Task<bool> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings, bool handleForRooms = false, bool invite = false)
+    public async Task<bool> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings)
     {
         if (entry == null)
         {
@@ -107,14 +107,16 @@ public class FileSharingAceHelper<T>
         var recipients = new Dictionary<Guid, FileShare>();
         var usersWithoutRight = new List<Guid>();
         var changed = false;
-
-        aceWrappers = advancedSettings is not { InvitationLink: true } ? await FilterForRoomsAsync(entry, aceWrappers) : aceWrappers;
-
         var shares = (await _fileSecurity.GetSharesAsync(entry)).ToList();
         var i = 1;
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
+            if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType) && !DocSpaceHelper.ValidateShare(folder.FolderType, w.Access, _userManager.IsUser(w.Id)))
+            {
+                continue;
+            }
+
             if (!ProcessEmailAce(w))
             {
                 continue;
@@ -132,7 +134,7 @@ public class FileSharingAceHelper<T>
 
             if (w.Id == FileConstant.ShareLinkId)
             {
-                if (w.Access == FileShare.ReadWrite && _userManager.IsVisitor(_authContext.CurrentAccount.ID))
+                if (w.Access == FileShare.ReadWrite && _userManager.IsUser(_authContext.CurrentAccount.ID))
                 {
                     throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
                 }
@@ -269,63 +271,6 @@ public class FileSharingAceHelper<T>
         await _fileMarker.RemoveMarkAsNewAsync(entry);
     }
 
-    private async Task<List<AceWrapper>> FilterForRoomsAsync(FileEntry<T> entry, List<AceWrapper> aceWrappers)
-    {
-        if (entry.FileEntryType == FileEntryType.File || entry.RootFolderType == FolderType.Archive || entry is Folder<T> { Private: true })
-        {
-            return aceWrappers;
-        }
-
-        var folderType = ((IFolder)entry).FolderType;
-
-        if (!DocSpaceHelper.IsRoom(folderType))
-        {
-            return aceWrappers;
-        }
-
-        var result = new List<AceWrapper>(aceWrappers.Count);
-
-        var isAdmin = _fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID);
-        var isRoomManager = isAdmin || await _fileSecurity.CanEditRoomAsync(entry);
-
-        foreach (var ace in aceWrappers)
-        {
-            if (ace.SubjectGroup)
-            {
-                continue;
-            }
-
-            if (!DocSpaceHelper.ValidateShare(folderType, ace.Access))
-            {
-                continue;
-            }
-
-            if (ace.Access == FileShare.RoomManager && isAdmin)
-            {
-                result.Add(ace);
-                continue;
-            }
-
-            if ((ace.Access == FileShare.None || ace.Access == FileShare.Restrict) && isAdmin)
-            {
-                result.Add(ace);
-                continue;
-            }
-
-            if (await _fileSecurity.CanEditRoomAsync(entry, ace.Id) && !isAdmin)
-            {
-                continue;
-            }
-
-            if (ace.Access != FileShare.RoomManager && isRoomManager)
-            {
-                result.Add(ace);
-            }
-        }
-
-        return result;
-    }
-
     private bool ProcessEmailAce(AceWrapper ace)
     {
         if (string.IsNullOrEmpty(ace.Email))
@@ -391,29 +336,29 @@ public class FileSharingHelper
             return false;
         }
 
-        if (entry.RootFolderType == FolderType.COMMON && _global.IsAdministrator)
+        if (entry.RootFolderType == FolderType.COMMON && _global.IsDocSpaceAdministrator)
         {
             return true;
         }
 
-        if (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsAdministrator || await _fileSecurity.CanShare(entry)))
+        if (entry.RootFolderType == FolderType.VirtualRooms && (_global.IsDocSpaceAdministrator || await _fileSecurity.CanShareAsync(entry)))
         {
             return true;
         }
 
-        if (folder != null && DocSpaceHelper.IsRoom(folder.FolderType) && await _fileSecurity.CanEditRoomAsync(entry))
+        if (folder != null && DocSpaceHelper.IsRoom(folder.FolderType) && folder.RootFolderType != FolderType.Archive && await _fileSecurity.CanEditRoomAsync(entry))
         {
             return true;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return false;
         }
 
         if (_coreBaseSettings.DisableDocSpace)
         {
-            if (entry.RootFolderType == FolderType.USER && Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanShare(entry))
+            if (entry.RootFolderType == FolderType.USER && Equals(entry.RootId, _globalFolderHelper.FolderMy) || await _fileSecurity.CanShareAsync(entry))
             {
                 return true;
             }
@@ -429,7 +374,7 @@ public class FileSharingHelper
 
         return entry.RootFolderType == FolderType.Privacy
                 && entry is File<T>
-                && (Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync) || await _fileSecurity.CanShare(entry));
+                && (Equals(entry.RootId, await _globalFolderHelper.FolderPrivacyAsync) || await _fileSecurity.CanShareAsync(entry));
     }
 }
 
@@ -486,7 +431,7 @@ public class FileSharing
             throw new ArgumentNullException(FilesCommonResource.ErrorMassage_BadRequest);
         }
 
-        if (!await CanSetAccessAsync(entry))
+        if (!await _fileSecurity.CanReadAsync(entry))
         {
             _logger.ErrorUserCanTGetSharedInfo(_authContext.CurrentAccount.ID, entry.FileEntryType, entry.Id.ToString());
 
@@ -545,10 +490,6 @@ public class FileSharing
 
                     continue;
                 }
-            }
-            else if (_userManager.IsVisitor(u) && new FileShareRecord.ShareComparer().Compare(FileShare.Read, share) > 0)
-            {
-                share = FileShare.Read;
             }
 
             var w = new AceWrapper
