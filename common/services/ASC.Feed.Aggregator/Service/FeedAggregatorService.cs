@@ -51,7 +51,7 @@ public class FeedAggregatorService : FeedBaseService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            AggregateFeeds(cfg.AggregateInterval);
+            await AggregateFeeds(cfg.AggregateInterval);
 
             await Task.Delay(cfg.AggregatePeriod, stoppingToken);
         }
@@ -91,7 +91,7 @@ public class FeedAggregatorService : FeedBaseService
         }
     }
 
-    private async void AggregateFeeds(object interval)
+    private async Task AggregateFeeds(object interval)
     {
         try
         {
