@@ -33,7 +33,7 @@ export const getAccessOptions = (
     user: {
       key: "user",
       label: t("Common:User"),
-      description: t("Translations:RoleRoomAdminDescription"),
+      description: t("Translations:RoleUserDescription"),
       access: EmployeeType.Guest,
     },
     editor: {
