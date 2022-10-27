@@ -32,7 +32,9 @@ const InvitePanel = ({
   getPortalInviteLinks,
   userLink,
   guestLink,
+  adminLink,
   defaultAccess,
+  inviteUsers,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
@@ -76,7 +78,7 @@ const InvitePanel = ({
 
   useEffect(() => {
     if (roomId === -1) {
-      if (!userLink || !guestLink) getPortalInviteLinks();
+      if (!userLink || !guestLink || !adminLink) getPortalInviteLinks();
 
       setShareLinks([
         {
@@ -94,7 +96,7 @@ const InvitePanel = ({
         {
           id: "admin",
           title: "Admin",
-          shareLink: guestLink,
+          shareLink: adminLink,
           access: 3,
         },
       ]);
@@ -104,7 +106,7 @@ const InvitePanel = ({
 
     selectRoom();
     getInfo();
-  }, [roomId, userLink, guestLink]);
+  }, [roomId, userLink, guestLink, adminLink]);
 
   useEffect(() => {
     const hasErrors = inviteItems.some((item) => !!item.errors?.length);
@@ -113,7 +115,11 @@ const InvitePanel = ({
   }, [inviteItems]);
 
   const onClose = () => {
-    setInvitePanelOptions({ visible: false });
+    setInvitePanelOptions({
+      visible: false,
+      hideSelector: false,
+      defaultAccess: 1,
+    });
     setInviteItems([]);
   };
 
@@ -127,7 +133,11 @@ const InvitePanel = ({
 
   const onClickSend = async (e) => {
     const invitations = inviteItems.map((item) => {
-      let newItem = { access: item.access };
+      let newItem = {};
+
+      roomId === -1
+        ? (newItem.type = item.access)
+        : (newItem.access = item.access);
 
       item.avatar ? (newItem.id = item.id) : (newItem.email = item.email);
 
@@ -141,9 +151,11 @@ const InvitePanel = ({
     };
 
     try {
-      await setRoomSecurity(roomId, data);
+      roomId === -1
+        ? await inviteUsers(data)
+        : await setRoomSecurity(roomId, data);
       onClose();
-      toastr.success(`Users invited to ${selectedRoom.title}`);
+      toastr.success(`Users invited`);
     } catch (err) {
       toastr.error(err);
     }
@@ -209,12 +221,13 @@ const InvitePanel = ({
 export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
 
-  const { getUsersByQuery } = peopleStore.usersStore;
+  const { getUsersByQuery, inviteUsers } = peopleStore.usersStore;
 
   const {
     getPortalInviteLinks,
     userLink,
     guestLink,
+    adminLink,
   } = peopleStore.inviteLinksStore;
 
   const {
@@ -247,6 +260,8 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     getPortalInviteLinks,
     userLink,
     guestLink,
+    adminLink,
+    inviteUsers,
   };
 })(
   withTranslation([
