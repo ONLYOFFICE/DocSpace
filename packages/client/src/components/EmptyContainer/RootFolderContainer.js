@@ -48,6 +48,7 @@ const RootFolderContainer = (props) => {
     isEmptyPage,
     setIsEmptyPage,
     isVisitor,
+    sectionWidth,
   } = props;
   const personalDescription = t("PersonalEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
@@ -342,6 +343,7 @@ const RootFolderContainer = (props) => {
         <EmptyContainer
           headerText={headerText}
           isEmptyPage={isEmptyPage}
+          sectionWidth={sectionWidth}
           {...emptyFolderProps}
         />
       )}
