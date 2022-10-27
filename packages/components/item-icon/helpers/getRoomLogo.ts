@@ -51,6 +51,7 @@ export const getCustomRoomLogo = (
   },
   size: "small" | "medium" | "large"
 ) => {
+  console.log(item.logo);
   const { small, medium, large } = item.logo;
 
   switch (size) {
