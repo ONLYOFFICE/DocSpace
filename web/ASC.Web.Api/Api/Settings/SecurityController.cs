@@ -268,7 +268,7 @@ public class SecurityController : BaseSettingsController
     }
 
     [HttpPut("security/administrator")]
-    public object SetProductAdministrator(SecurityRequestsDto inDto)
+    public async Task<object> SetProductAdministrator(SecurityRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -278,7 +278,7 @@ public class SecurityController : BaseSettingsController
             throw new BillingException(Resource.ErrorNotAllowedOption, "Administrator");
         }
 
-        _webItemSecurity.SetProductAdministrator(inDto.ProductId, inDto.UserId, inDto.Administrator);
+        await _webItemSecurity.SetProductAdministrator(inDto.ProductId, inDto.UserId, inDto.Administrator);
 
         var admin = _userManager.GetUsers(inDto.UserId);
 

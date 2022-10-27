@@ -98,9 +98,9 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         _tagDao.UpdateNewTags(tag, createdBy);
     }
 
-    public void UpdateNewTags(Tag tag)
+    public async Task UpdateNewTags(Tag tag)
     {
-        _tagDao.UpdateNewTags(tag);
+        await _tagDao.UpdateNewTags(tag);
     }
 
     public async Task RemoveTagsAsync(FileEntry<string> entry, IEnumerable<int> tagsIds)

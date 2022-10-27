@@ -185,7 +185,7 @@ public class UserController : PeopleControllerBase
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
-        UpdateDepartments(inDto.Department, user);
+        await UpdateDepartments(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
@@ -261,7 +261,7 @@ public class UserController : PeopleControllerBase
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
         user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.IsVisitor, inDto.FromInviteLink, true, true, byEmail);
 
-        UpdateDepartments(inDto.Department, user);
+        await UpdateDepartments(inDto.Department, user);
 
         if (inDto.Files != _userPhotoManager.GetDefaultPhotoAbsoluteWebPath())
         {
@@ -364,7 +364,7 @@ public class UserController : PeopleControllerBase
         CheckReassignProccess(new[] { user.Id });
 
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
-        _userPhotoManager.RemovePhoto(user.Id);
+        await _userPhotoManager.RemovePhoto(user.Id);
         _userManager.DeleteUser(user.Id);
         _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
 
@@ -408,7 +408,7 @@ public class UserController : PeopleControllerBase
 
         if (_coreBaseSettings.Personal)
         {
-            _userPhotoManager.RemovePhoto(user.Id);
+            await _userPhotoManager.RemovePhoto(user.Id);
             _userManager.DeleteUser(user.Id);
             _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
         }
@@ -506,7 +506,7 @@ public class UserController : PeopleControllerBase
 
         if (isInvite)
         {
-            return _employeeFullDtoHelper.GetSimple(user);
+            return await _employeeFullDtoHelper.GetSimple(user);
         }
 
         return await _employeeFullDtoHelper.GetFull(user);
@@ -621,7 +621,7 @@ public class UserController : PeopleControllerBase
                 continue;
             }
 
-            _userPhotoManager.RemovePhoto(user.Id);
+            await _userPhotoManager.RemovePhoto(user.Id);
             _userManager.DeleteUser(user.Id);
             _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
         }
@@ -925,7 +925,7 @@ public class UserController : PeopleControllerBase
 
         //Update contacts
         UpdateContacts(inDto.Contacts, user);
-        UpdateDepartments(inDto.Department, user);
+        await UpdateDepartments(inDto.Department, user);
 
         if (inDto.Files != await _userPhotoManager.GetPhotoAbsoluteWebPath(user.Id))
         {
@@ -947,7 +947,7 @@ public class UserController : PeopleControllerBase
         if (inDto.IsVisitor && !_userManager.IsVisitor(user) && canBeGuestFlag)
         {
             await _countUserChecker.CheckAppend();
-            _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
@@ -1047,7 +1047,7 @@ public class UserController : PeopleControllerBase
                     break;
                 case EmployeeType.Visitor:
                     await _countUserChecker.CheckAppend();
-                    _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
+                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
             }
@@ -1097,7 +1097,7 @@ public class UserController : PeopleControllerBase
     }
 
 
-    private void UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
+    private async Task UpdateDepartments(IEnumerable<Guid> department, UserInfo user)
     {
         if (!_permissionContext.CheckPermissions(Constants.Action_EditGroups))
         {
@@ -1126,7 +1126,7 @@ public class UserController : PeopleControllerBase
             var userDepartment = _userManager.GetGroupInfo(guid);
             if (userDepartment != Constants.LostGroupInfo)
             {
-                _userManager.AddUserIntoGroup(user.Id, guid);
+                await _userManager.AddUserIntoGroup(user.Id, guid);
                 if (managerGroups.Contains(guid))
                 {
                     _userManager.SetDepartmentManager(guid, user.Id);

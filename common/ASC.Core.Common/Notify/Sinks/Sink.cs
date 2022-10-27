@@ -35,10 +35,10 @@ public abstract class Sink : ISink
 {
     public ISink NextSink { get; set; }
 
-    public abstract SendResponse ProcessMessage(INoticeMessage message);
+    public abstract Task<SendResponse> ProcessMessage(INoticeMessage message);
 
-    public virtual void ProcessMessageAsync(INoticeMessage message)
+    public virtual async Task ProcessMessageAsync(INoticeMessage message)
     {
-        NextSink.ProcessMessageAsync(message);
+        await NextSink.ProcessMessageAsync(message);
     }
 }

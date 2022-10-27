@@ -56,7 +56,7 @@ public class EncryptionOperation : DistributedTaskProgress
         _serverRootPath = serverRootPath;
     }
 
-    protected override void DoJob()
+    protected override async void DoJob()
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
@@ -95,9 +95,9 @@ public class EncryptionOperation : DistributedTaskProgress
                     dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module));
                 }
 
-                Parallel.ForEach(dictionary, (elem) =>
+                Parallel.ForEach(dictionary, async (elem) =>
                 {
-                    EncryptStoreAsync(tenant, elem.Key, elem.Value, storageFactoryConfig, log).Wait();
+                    await EncryptStoreAsync(tenant, elem.Key, elem.Value, storageFactoryConfig, log);
                 });
             }
 
@@ -106,7 +106,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
             if (!_hasErrors)
             {
-                DeleteProgressFilesAsync(storageFactory).Wait();
+                await DeleteProgressFilesAsync(storageFactory);
                 SaveNewSettings(encryptionSettingsHelper, log);
             }
 

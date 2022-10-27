@@ -141,7 +141,7 @@ public class MigrateOperation : DistributedTaskProgress
         return MemberwiseClone();
     }
 
-    protected override void DoJob()
+    protected override async void DoJob()
     {
         try
         {
@@ -170,23 +170,23 @@ public class MigrateOperation : DistributedTaskProgress
                 {
                     //Status = module + domain;
                     _logger.DebugDomain(domain);
-                    files = oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result;
+                    files = await oldStore.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync();
 
                     foreach (var file in files)
                     {
                         _logger.DebugFile(file);
-                        crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file).Wait();
+                        await crossModuleTransferUtility.CopyFileAsync(domain, file, domain, file);
                     }
                 }
 
-                files = oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
+                files = (await oldStore.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync())
                 .Where(path => domains.All(domain => !path.Contains(domain + "/")))
                 .ToArray();
 
                 foreach (var file in files)
                 {
                     _logger.DebugFile(file);
-                    crossModuleTransferUtility.CopyFileAsync("", file, "", file).Wait();
+                    await crossModuleTransferUtility.CopyFileAsync("", file, "", file);
                 }
 
                 StepDone();

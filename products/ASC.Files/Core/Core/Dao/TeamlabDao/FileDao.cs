@@ -31,7 +31,7 @@ namespace ASC.Files.Core.Data;
 [Scope]
 internal class FileDao : AbstractDao, IFileDao<int>
 {
-    private static readonly object _syncRoot = new object();
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     private readonly ILogger<FileDao> _logger;
     private readonly FactoryIndexerFile _factoryIndexer;
     private readonly GlobalStore _globalStore;
@@ -440,108 +440,107 @@ internal class FileDao : AbstractDao, IFileDao<int>
         List<int> parentFoldersIds;
         DbFile toInsert = null;
 
-        lock (_syncRoot)
+        await _semaphore.WaitAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var strategy = filesDbContext.Database.CreateExecutionStrategy();
+            using var tx = filesDbContext.Database.BeginTransaction();
 
-            strategy.Execute(() =>
+            if (file.Id == default)
             {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = filesDbContext.Database.BeginTransaction();
+                file.Id = filesDbContext.Files.Any() ? filesDbContext.Files.Max(r => r.Id) + 1 : 1;
+                file.Version = 1;
+                file.VersionGroup = 1;
+                isNew = true;
+            }
 
-                if (file.Id == default)
-                {
-                    file.Id = filesDbContext.Files.Any() ? filesDbContext.Files.Max(r => r.Id) + 1 : 1;
-                    file.Version = 1;
-                    file.VersionGroup = 1;
-                    isNew = true;
-                }
+            file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
+            //make lowerCase
+            file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
 
-                file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
-                //make lowerCase
-                file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
-
-                file.ModifiedBy = _authContext.CurrentAccount.ID;
-                file.ModifiedOn = _tenantUtil.DateTimeNow();
-                if (file.CreateBy == default)
-                {
-                    file.CreateBy = _authContext.CurrentAccount.ID;
-                }
-
-                if (file.CreateOn == default)
-                {
-                    file.CreateOn = _tenantUtil.DateTimeNow();
-                }
-
-                var toUpdate = filesDbContext.Files
-                    .FirstOrDefault(r => r.Id == file.Id && r.CurrentVersion && r.TenantId == TenantID);
-
-                if (toUpdate != null)
-                {
-                    toUpdate.CurrentVersion = false;
-                    filesDbContext.SaveChanges();
-                }
-
-                toInsert = new DbFile
-                {
-                    Id = file.Id,
-                    Version = file.Version,
-                    VersionGroup = file.VersionGroup,
-                    CurrentVersion = true,
-                    ParentId = file.ParentId,
-                    Title = file.Title,
-                    ContentLength = file.ContentLength,
-                    Category = (int)file.FilterType,
-                    CreateBy = file.CreateBy,
-                    CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn),
-                    ModifiedBy = file.ModifiedBy,
-                    ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn),
-                    ConvertedType = file.ConvertedType,
-                    Comment = file.Comment,
-                    Encrypted = file.Encrypted,
-                    Forcesave = file.Forcesave,
-                    ThumbnailStatus = file.ThumbnailStatus,
-                    TenantId = TenantID
-                };
-
-                filesDbContext.AddOrUpdate(r => r.Files, toInsert);
-                filesDbContext.SaveChanges();
-
-                tx.Commit();
-            });
-
-            file.PureTitle = file.Title;
-
-            var parentFolders =
-                filesDbContext.Tree
-                .Where(r => r.FolderId == file.ParentId)
-                .OrderByDescending(r => r.Level)
-                .ToList();
-
-            parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
-
-            if (parentFoldersIds.Count > 0)
+            file.ModifiedBy = _authContext.CurrentAccount.ID;
+            file.ModifiedOn = _tenantUtil.DateTimeNow();
+            if (file.CreateBy == default)
             {
-                var folderToUpdate = filesDbContext.Folders
-                    .Where(r => parentFoldersIds.Contains(r.Id));
+                file.CreateBy = _authContext.CurrentAccount.ID;
+            }
 
-                foreach (var f in folderToUpdate)
-                {
-                    f.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
-                    f.ModifiedBy = file.ModifiedBy;
-                }
+            if (file.CreateOn == default)
+            {
+                file.CreateOn = _tenantUtil.DateTimeNow();
+            }
 
+            var toUpdate = filesDbContext.Files
+                .FirstOrDefault(r => r.Id == file.Id && r.CurrentVersion && r.TenantId == TenantID);
+
+            if (toUpdate != null)
+            {
+                toUpdate.CurrentVersion = false;
                 filesDbContext.SaveChanges();
             }
 
-            toInsert.Folders = parentFolders;
-
-            if (isNew)
+            toInsert = new DbFile
             {
-                RecalculateFilesCountAsync(file.ParentId).Wait();
+                Id = file.Id,
+                Version = file.Version,
+                VersionGroup = file.VersionGroup,
+                CurrentVersion = true,
+                ParentId = file.ParentId,
+                Title = file.Title,
+                ContentLength = file.ContentLength,
+                Category = (int)file.FilterType,
+                CreateBy = file.CreateBy,
+                CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn),
+                ModifiedBy = file.ModifiedBy,
+                ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn),
+                ConvertedType = file.ConvertedType,
+                Comment = file.Comment,
+                Encrypted = file.Encrypted,
+                Forcesave = file.Forcesave,
+                ThumbnailStatus = file.ThumbnailStatus,
+                TenantId = TenantID
+            };
+
+            filesDbContext.AddOrUpdate(r => r.Files, toInsert);
+            filesDbContext.SaveChanges();
+
+            tx.Commit();
+        });
+
+        file.PureTitle = file.Title;
+
+        var parentFolders =
+            filesDbContext.Tree
+            .Where(r => r.FolderId == file.ParentId)
+            .OrderByDescending(r => r.Level)
+            .ToList();
+
+        parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
+
+        if (parentFoldersIds.Count > 0)
+        {
+            var folderToUpdate = filesDbContext.Folders
+                .Where(r => parentFoldersIds.Contains(r.Id));
+
+            foreach (var f in folderToUpdate)
+            {
+                f.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
+                f.ModifiedBy = file.ModifiedBy;
             }
+
+            filesDbContext.SaveChanges();
         }
+
+        toInsert.Folders = parentFolders;
+
+        if (isNew)
+        {
+            await RecalculateFilesCountAsync(file.ParentId);
+        }
+        _semaphore.Release();
 
         if (fileStream != null)
         {
@@ -609,81 +608,80 @@ internal class FileDao : AbstractDao, IFileDao<int>
         DbFile toUpdate = null;
 
         List<int> parentFoldersIds;
-        lock (_syncRoot)
+        await _semaphore.WaitAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(() =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var strategy = filesDbContext.Database.CreateExecutionStrategy();
+            using var tx = filesDbContext.Database.BeginTransaction();
 
-            strategy.Execute(() =>
+            file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
+            //make lowerCase
+            file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
+
+            file.ModifiedBy = _authContext.CurrentAccount.ID;
+            file.ModifiedOn = _tenantUtil.DateTimeNow();
+            if (file.CreateBy == default)
             {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = filesDbContext.Database.BeginTransaction();
-
-                file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
-                //make lowerCase
-                file.Title = FileUtility.ReplaceFileExtension(file.Title, FileUtility.GetFileExtension(file.Title));
-
-                file.ModifiedBy = _authContext.CurrentAccount.ID;
-                file.ModifiedOn = _tenantUtil.DateTimeNow();
-                if (file.CreateBy == default)
-                {
-                    file.CreateBy = _authContext.CurrentAccount.ID;
-                }
-
-                if (file.CreateOn == default)
-                {
-                    file.CreateOn = _tenantUtil.DateTimeNow();
-                }
-
-                toUpdate = filesDbContext.Files
-                    .FirstOrDefault(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
-
-                toUpdate.Version = file.Version;
-                toUpdate.VersionGroup = file.VersionGroup;
-                toUpdate.ParentId = file.ParentId;
-                toUpdate.Title = file.Title;
-                toUpdate.ContentLength = file.ContentLength;
-                toUpdate.Category = (int)file.FilterType;
-                toUpdate.CreateBy = file.CreateBy;
-                toUpdate.CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn);
-                toUpdate.ModifiedBy = file.ModifiedBy;
-                toUpdate.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
-                toUpdate.ConvertedType = file.ConvertedType;
-                toUpdate.Comment = file.Comment;
-                toUpdate.Encrypted = file.Encrypted;
-                toUpdate.Forcesave = file.Forcesave;
-                toUpdate.ThumbnailStatus = file.ThumbnailStatus;
-
-                filesDbContext.SaveChanges();
-
-                tx.Commit();
-            });
-
-            file.PureTitle = file.Title;
-
-            var parentFolders = filesDbContext.Tree
-                .Where(r => r.FolderId == file.ParentId)
-                .OrderByDescending(r => r.Level)
-                .ToList();
-
-            parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
-
-            if (parentFoldersIds.Count > 0)
-            {
-                var folderToUpdate = filesDbContext.Folders
-                    .Where(r => parentFoldersIds.Contains(r.Id));
-
-                foreach (var f in folderToUpdate)
-                {
-                    f.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
-                    f.ModifiedBy = file.ModifiedBy;
-                }
-
-                filesDbContext.SaveChanges();
+                file.CreateBy = _authContext.CurrentAccount.ID;
             }
 
-            toUpdate.Folders = parentFolders;
+            if (file.CreateOn == default)
+            {
+                file.CreateOn = _tenantUtil.DateTimeNow();
+            }
+
+            toUpdate = filesDbContext.Files
+                .FirstOrDefault(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
+
+            toUpdate.Version = file.Version;
+            toUpdate.VersionGroup = file.VersionGroup;
+            toUpdate.ParentId = file.ParentId;
+            toUpdate.Title = file.Title;
+            toUpdate.ContentLength = file.ContentLength;
+            toUpdate.Category = (int)file.FilterType;
+            toUpdate.CreateBy = file.CreateBy;
+            toUpdate.CreateOn = _tenantUtil.DateTimeToUtc(file.CreateOn);
+            toUpdate.ModifiedBy = file.ModifiedBy;
+            toUpdate.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
+            toUpdate.ConvertedType = file.ConvertedType;
+            toUpdate.Comment = file.Comment;
+            toUpdate.Encrypted = file.Encrypted;
+            toUpdate.Forcesave = file.Forcesave;
+            toUpdate.ThumbnailStatus = file.ThumbnailStatus;
+
+            filesDbContext.SaveChanges();
+
+            tx.Commit();
+        });
+
+        file.PureTitle = file.Title;
+
+        var parentFolders = filesDbContext.Tree
+            .Where(r => r.FolderId == file.ParentId)
+            .OrderByDescending(r => r.Level)
+            .ToList();
+
+        parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
+
+        if (parentFoldersIds.Count > 0)
+        {
+            var folderToUpdate = filesDbContext.Folders
+                .Where(r => parentFoldersIds.Contains(r.Id));
+
+            foreach (var f in folderToUpdate)
+            {
+                f.ModifiedOn = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
+                f.ModifiedBy = file.ModifiedBy;
+            }
+
+            filesDbContext.SaveChanges();
         }
+
+        toUpdate.Folders = parentFolders;
+        _semaphore.Release();
 
         if (fileStream != null)
         {

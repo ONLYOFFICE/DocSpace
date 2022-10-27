@@ -116,18 +116,18 @@ public class NCMigratingFiles : MigratingFiles
         }
     }
 
-    public override Task Migrate()
+    public override async Task Migrate()
     {
         if (!ShouldImport)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         var drivePath = Directory.Exists(Path.Combine(_rootFolder, "data", _user.Key, "files")) ?
             Path.Combine(_rootFolder, "data", _user.Key) : null;
         if (drivePath == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         _matchingFileId = new Dictionary<object, int>();
@@ -148,7 +148,7 @@ public class NCMigratingFiles : MigratingFiles
                     var parentId = i == 0 ? _globalFolderHelper.FolderMy : foldersDict[string.Join(Path.DirectorySeparatorChar.ToString(), split.Take(i))].Id;
                     try
                     {
-                        var newFolder = _fileStorageService.CreateNewFolderAsync(parentId, split[i]).Result;
+                        var newFolder = await _fileStorageService.CreateNewFolderAsync(parentId, split[i]);
                         foldersDict.Add(path, newFolder);
                         _matchingFileId.Add(newFolder.Id, folder.FileId);
                     }
@@ -178,7 +178,7 @@ public class NCMigratingFiles : MigratingFiles
                     var fileDao = _daoFactory.GetFileDao<int>();
                     var folderDao = _daoFactory.GetFolderDao<int>();
                     {
-                        var parentFolder = string.IsNullOrWhiteSpace(parentPath) ? folderDao.GetFolderAsync(_globalFolderHelper.FolderMy).Result : foldersDict[parentPath];
+                        var parentFolder = string.IsNullOrWhiteSpace(parentPath) ? await folderDao.GetFolderAsync(_globalFolderHelper.FolderMy) : foldersDict[parentPath];
 
                         var newFile = new File<int>
                         {
@@ -187,7 +187,7 @@ public class NCMigratingFiles : MigratingFiles
                             Title = Path.GetFileName(file.Path),
                             ContentLength = fs.Length
                         };
-                        newFile = fileDao.SaveFileAsync(newFile, fs).Result;
+                        newFile = await fileDao.SaveFileAsync(newFile, fs);
                         _matchingFileId.Add(newFile.Id, file.FileId);
                     }
                 }
@@ -254,14 +254,13 @@ public class NCMigratingFiles : MigratingFiles
 
             try
             {
-                _fileStorageService.SetAceObjectAsync(aceCollection, false).Wait();
+                await _fileStorageService.SetAceObjectAsync(aceCollection, false);
             }
             catch (Exception ex)
             {
                 Log($"Couldn't change file permissions for {item.Key}", ex);
             }
         }
-        return Task.CompletedTask;
     }
 
     public void SetUsersDict(IEnumerable<NCMigratingUser> users)

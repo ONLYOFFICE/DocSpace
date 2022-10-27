@@ -44,7 +44,7 @@ class PushSenderSink : Sink
 
     private readonly IServiceProvider _serviceProvider;
 
-    public override SendResponse ProcessMessage(INoticeMessage message)
+    public override async Task<SendResponse> ProcessMessage(INoticeMessage message)
     {
         try
         {
@@ -59,7 +59,7 @@ class PushSenderSink : Sink
             }
             else
             {
-                _sender.Send(m);
+                await _sender.Send(m);
             }
 
             return new SendResponse(message, Constants.NotifyPushSenderSysName, result);

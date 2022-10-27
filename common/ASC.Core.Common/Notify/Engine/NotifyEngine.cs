@@ -110,7 +110,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private void NotifyScheduler(object state)
+    private async void NotifyScheduler(object state)
     {
         try
         {
@@ -138,7 +138,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                     {
                         try
                         {
-                            w.InvokeSendMethod(now);
+                            await w.InvokeSendMethod(now);
                         }
                         catch (Exception error)
                         {
@@ -177,7 +177,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
     }
 
 
-    private void NotifySender(object state)
+    private async void NotifySender(object state)
     {
         try
         {
@@ -201,7 +201,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
                     try
                     {
-                        SendNotify(request, scope);
+                        await SendNotify(request, scope);
                     }
                     catch (Exception e)
                     {
@@ -225,7 +225,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
     }
 
 
-    private NotifyResult SendNotify(NotifyRequest request, IServiceScope serviceScope)
+    private async Task<NotifyResult> SendNotify(NotifyRequest request, IServiceScope serviceScope)
     {
         var sendResponces = new List<SendResponse>();
 
@@ -236,7 +236,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
         else
         {
-            sendResponces.AddRange(SendGroupNotify(request, serviceScope));
+            sendResponces.AddRange(await SendGroupNotify(request, serviceScope));
         }
 
         NotifyResult result;
@@ -258,15 +258,15 @@ public class NotifyEngine : INotifyEngine, IDisposable
         return request.Intercept(place, serviceScope) ? new SendResponse(request.NotifyAction, sender, request.Recipient, SendResult.Prevented) : null;
     }
 
-    private List<SendResponse> SendGroupNotify(NotifyRequest request, IServiceScope serviceScope)
+    private async Task<List<SendResponse>> SendGroupNotify(NotifyRequest request, IServiceScope serviceScope)
     {
         var responces = new List<SendResponse>();
-        SendGroupNotify(request, responces, serviceScope);
+        await SendGroupNotify(request, responces, serviceScope);
 
         return responces;
     }
 
-    private void SendGroupNotify(NotifyRequest request, List<SendResponse> responces, IServiceScope serviceScope)
+    private async Task SendGroupNotify(NotifyRequest request, List<SendResponse> responces, IServiceScope serviceScope)
     {
         if (request.Recipient is IDirectRecipient)
         {
@@ -276,7 +276,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                 var directresponses = new List<SendResponse>(1);
                 try
                 {
-                    directresponses = SendDirectNotify(request, serviceScope);
+                    directresponses = await SendDirectNotify(request, serviceScope);
                 }
                 catch (Exception exc)
                 {
@@ -308,7 +308,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                             try
                             {
                                 var newRequest = request.Split(recipient);
-                                SendGroupNotify(newRequest, responces, serviceScope);
+                                await SendGroupNotify(newRequest, responces, serviceScope);
                             }
                             catch (Exception exc)
                             {
@@ -334,7 +334,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private List<SendResponse> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
+    private async Task<List<SendResponse>> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
     {
         if (request.Recipient is not IDirectRecipient)
         {
@@ -371,7 +371,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                 {
                     try
                     {
-                        response = SendDirectNotify(request, channel, serviceScope);
+                        response = await SendDirectNotify(request, channel, serviceScope);
                     }
                     catch (Exception exc)
                     {
@@ -396,7 +396,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         return responses;
     }
 
-    private SendResponse SendDirectNotify(NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
+    private async Task<SendResponse> SendDirectNotify(NotifyRequest request, ISenderChannel channel, IServiceScope serviceScope)
     {
         if (request.Recipient is not IDirectRecipient)
         {
@@ -418,7 +418,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
             return preventresponse;
         }
 
-        channel.SendAsync(noticeMessage);
+        await channel.SendAsync(noticeMessage);
 
         return new SendResponse(noticeMessage, channel.SenderName, SendResult.Inprogress);
     }
@@ -587,7 +587,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
     private sealed class SendMethodWrapper
     {
-        private readonly object _locker = new object();
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
         private readonly CronExpression _cronExpression;
         private readonly Action<DateTime> _method;
 
@@ -621,22 +621,21 @@ public class NotifyEngine : INotifyEngine, IDisposable
             }
         }
 
-        public void InvokeSendMethod(DateTime d)
+        public async Task InvokeSendMethod(DateTime d)
         {
-            lock (_locker)
+            await _semaphore.WaitAsync();
+            await Task.Run(() =>
             {
-                Task.Run(() =>
+                try
                 {
-                    try
-                    {
-                        _method(d);
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.ErrorInvokeSendMethod(e);
-                    }
-                }).Wait();
-            }
+                    _method(d);
+                }
+                catch (Exception e)
+                {
+                    Logger.ErrorInvokeSendMethod(e);
+                }
+            });
+            _semaphore.Release();
         }
 
         public override bool Equals(object obj)

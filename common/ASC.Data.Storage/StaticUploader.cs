@@ -253,7 +253,7 @@ public class UploadOperationProgress : DistributedTaskProgress
         StepCount = _directoryFiles.Count();
     }
 
-    protected override void DoJob()
+    protected override async void DoJob()
     {
         using var scope = _serviceProvider.CreateScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -268,7 +268,7 @@ public class UploadOperationProgress : DistributedTaskProgress
         foreach (var file in _directoryFiles)
         {
             var filePath = file.Substring(_mappedPath.TrimEnd('/').Length);
-            staticUploader.UploadFileAsync(CrossPlatform.PathCombine(_relativePath, filePath), file, (res) => StepDone()).Wait();
+            await staticUploader.UploadFileAsync(CrossPlatform.PathCombine(_relativePath, filePath), file, (res) => StepDone());
         }
 
         tenant.SetStatus(TenantStatus.Active);

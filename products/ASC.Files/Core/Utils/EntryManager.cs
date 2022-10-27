@@ -39,7 +39,7 @@ public class LockerManager
         _thirdPartySelector = thirdPartySelector;
     }
 
-    public bool FileLockedForMe<T>(T fileId, Guid userId = default)
+    public async Task<bool> FileLockedForMe<T>(T fileId, Guid userId = default)
     {
         var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app != null)
@@ -49,7 +49,7 @@ public class LockerManager
 
         userId = userId == default ? _authContext.CurrentAccount.ID : userId;
         var tagDao = _daoFactory.GetTagDao<T>();
-        var lockedBy = FileLockedBy(fileId, tagDao);
+        var lockedBy = await FileLockedBy(fileId, tagDao);
 
         return lockedBy != Guid.Empty && lockedBy != userId;
     }
@@ -69,9 +69,9 @@ public class LockerManager
         return lockedBy != Guid.Empty && lockedBy != userId;
     }
 
-    public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
+    public async Task<Guid> FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
     {
-        var tagLock = tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).ToListAsync().Result.FirstOrDefault();
+        var tagLock = (await tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).ToListAsync()).FirstOrDefault();
 
         return tagLock != null ? tagLock.Owner : Guid.Empty;
     }

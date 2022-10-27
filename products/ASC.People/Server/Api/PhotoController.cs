@@ -81,9 +81,9 @@ public class PhotoController : PeopleControllerBase
             var settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
 
             _settingsManager.SaveForUser(settings, user.Id);
-            _userPhotoManager.RemovePhoto(user.Id);
+            await _userPhotoManager.RemovePhoto(user.Id);
             await _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
-            _userPhotoManager.RemoveTempPhoto(fileName);
+            await _userPhotoManager.RemoveTempPhoto(fileName);
         }
         else
         {
@@ -107,7 +107,7 @@ public class PhotoController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
-        _userPhotoManager.RemovePhoto(user.Id);
+        await _userPhotoManager.RemovePhoto(user.Id);
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 

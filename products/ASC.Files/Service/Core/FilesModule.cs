@@ -96,7 +96,7 @@ public class FilesModule : FeedModule
         return targetCond && _fileSecurity.CanReadAsync(file, userId).Result;
     }
 
-    public override void VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
+    public override async Task VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
     {
         if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
         {
@@ -122,7 +122,7 @@ public class FilesModule : FeedModule
             }
         }
 
-        var canRead = _fileSecurity.CanReadAsync(files.ToAsyncEnumerable(), userId).ToListAsync().Result.Where(r => r.Item2).ToList();
+        var canRead = (await _fileSecurity.CanReadAsync(files.ToAsyncEnumerable(), userId).ToListAsync()).Where(r => r.Item2).ToList();
 
         foreach (var f in feed1)
         {
@@ -133,24 +133,24 @@ public class FilesModule : FeedModule
         }
     }
 
-    public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
+    public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
     {
-        var files = _fileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To)
+        var files = await _fileDao.GetFeedsAsync(filter.Tenant, filter.Time.From, filter.Time.To)
             .Where(f => f.File.RootFolderType != FolderType.TRASH && f.File.RootFolderType != FolderType.BUNCH)
             .Where(f => f.ShareRecord == null)
-            .ToListAsync().Result;
+            .ToListAsync();
 
         var folderIDs = files.Select(r => r.File.ParentId).ToList();
-        var folders = _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync().Result;
-        var roomsIds = _folderDao.GetParentRoomsAsync(folderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId).Result;
+        var folders = await _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync();
+        var roomsIds = await _folderDao.GetParentRoomsAsync(folderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId);
 
         return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId)), 
             roomsIds.GetValueOrDefault(f.File.ParentId)), f));
     }
 
-    public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
+    public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return _fileDao.GetTenantsWithFeedsAsync(fromTime).ToListAsync().Result;
+        return await _fileDao.GetTenantsWithFeedsAsync(fromTime).ToListAsync();
     }
 
     private Feed.Aggregator.Feed ToFeed(FileWithShare tuple, Folder<int> parentFolder, int roomId)

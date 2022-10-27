@@ -199,7 +199,7 @@ public class ThirdpartyController : ApiControllerBase
             userID = newUser.Id;
             if (!string.IsNullOrEmpty(thirdPartyProfile.Avatar))
             {
-                SaveContactImage(userID, thirdPartyProfile.Avatar);
+                await SaveContactImage(userID, thirdPartyProfile.Avatar);
             }
 
             _accountLinker.AddLink(userID.ToString(), thirdPartyProfile);
@@ -260,7 +260,7 @@ public class ThirdpartyController : ApiControllerBase
         return await _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, isVisitor, fromInviteLink);
     }
 
-    private void SaveContactImage(Guid userID, string url)
+    private async Task SaveContactImage(Guid userID, string url)
     {
         using (var memstream = new MemoryStream())
         {
@@ -282,7 +282,7 @@ public class ThirdpartyController : ApiControllerBase
 
                 var bytes = memstream.ToArray();
 
-                _userPhotoManager.SaveOrUpdatePhoto(userID, bytes);
+                await _userPhotoManager.SaveOrUpdatePhoto(userID, bytes);
             }
         }
     }

@@ -417,12 +417,12 @@ public class LdapOperationJob : DistributedTaskProgress
             await SyncLDAPUsersInGroups();
         }
 
-        SyncLdapAvatar();
+        await SyncLdapAvatar();
 
-        SyncLdapAccessRights();
+        await SyncLdapAccessRights();
     }
 
-    private void SyncLdapAvatar()
+    private async Task SyncLdapAvatar()
     {
         SetProgress(90, Resource.LdapSettingsStatusUpdatingUserPhotos);
 
@@ -438,7 +438,7 @@ public class LdapOperationJob : DistributedTaskProgress
             foreach (var guid in ph.CurrentPhotos.Keys)
             {
                 _logger.InfoSyncLdapAvatarsRemovingPhoto(guid);
-                _userPhotoManager.RemovePhoto(guid);
+                await _userPhotoManager.RemovePhoto(guid);
                 _userPhotoManager.ResetThumbnailSettings(guid);
             }
 
@@ -511,16 +511,16 @@ public class LdapOperationJob : DistributedTaskProgress
         _settingsManager.Save(photoSettings);
     }
 
-    private void SyncLdapAccessRights()
+    private async Task SyncLdapAccessRights()
     {
         SetProgress(95, Resource.LdapSettingsStatusUpdatingAccessRights);
 
         var currentUserRights = new List<LdapSettings.AccessRight>();
-        TakeUsersRights(_currentUser != null ? currentUserRights : null);
+        await TakeUsersRights(_currentUser != null ? currentUserRights : null);
 
         if (LDAPSettings.GroupMembership && LDAPSettings.AccessRights != null && LDAPSettings.AccessRights.Count > 0)
         {
-            GiveUsersRights(LDAPSettings.AccessRights, _currentUser != null ? currentUserRights : null);
+            await GiveUsersRights(LDAPSettings.AccessRights, _currentUser != null ? currentUserRights : null);
         }
 
         if (currentUserRights.Count > 0)
@@ -531,7 +531,7 @@ public class LdapOperationJob : DistributedTaskProgress
         _settingsManager.Save(LDAPSettings);
     }
 
-    private void TakeUsersRights(List<LdapSettings.AccessRight> currentUserRights)
+    private async Task TakeUsersRights(List<LdapSettings.AccessRight> currentUserRights)
     {
         var current = _settingsManager.Load<LdapCurrentAcccessSettings>();
 
@@ -558,7 +558,7 @@ public class LdapOperationJob : DistributedTaskProgress
                 else
                 {
                     _logger.DebugTakingAdminRights(right.Key, user);
-                    _webItemSecurity.SetProductAdministrator(LdapSettings.AccessRightsGuids[right.Key], userId, false);
+                    await _webItemSecurity.SetProductAdministrator(LdapSettings.AccessRightsGuids[right.Key], userId, false);
                 }
             }
         }
@@ -567,7 +567,7 @@ public class LdapOperationJob : DistributedTaskProgress
         _settingsManager.Save(current);
     }
 
-    private void GiveUsersRights(Dictionary<LdapSettings.AccessRight, string> accessRightsSettings, List<LdapSettings.AccessRight> currentUserRights)
+    private async Task GiveUsersRights(Dictionary<LdapSettings.AccessRight, string> accessRightsSettings, List<LdapSettings.AccessRight> currentUserRights)
     {
         var current = _settingsManager.Load<LdapCurrentAcccessSettings>();
         var currentAccessRights = new Dictionary<LdapSettings.AccessRight, List<string>>();
@@ -618,7 +618,7 @@ public class LdapOperationJob : DistributedTaskProgress
                                 if (_webItemSecurity.IsProductAdministrator(prodId, user.Id))
                                 {
                                     cleared = true;
-                                    _webItemSecurity.SetProductAdministrator(prodId, user.Id, false);
+                                    await _webItemSecurity.SetProductAdministrator(prodId, user.Id, false);
                                 }
                             }
 
@@ -636,7 +636,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
                         SetProgress((int)currentPercent,
                             string.Format(Resource.LdapSettingsStatusGivingRights, _userFormatter.GetUserName(user, DisplayUserNameFormat.Default), access.Key));
-                        _webItemSecurity.SetProductAdministrator(LdapSettings.AccessRightsGuids[access.Key], user.Id, true);
+                        await _webItemSecurity.SetProductAdministrator(LdapSettings.AccessRightsGuids[access.Key], user.Id, true);
 
                         if (currentUserRights != null && currentUserRights.Contains(access.Key))
                         {
@@ -721,7 +721,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
         SetProgress(60, Resource.LdapSettingsStatusSavingGroups, "");
 
-        SyncDbGroups(ldapGroupsUsers);
+        await SyncDbGroups(ldapGroupsUsers);
 
         SetProgress(80, Resource.LdapSettingsStatusRemovingOldGroups, "");
 
@@ -732,7 +732,7 @@ public class LdapOperationJob : DistributedTaskProgress
         RemoveOldDbUsers(newUniqueLdapGroupUsers);
     }
 
-    private void SyncDbGroups(Dictionary<GroupInfo, List<UserInfo>> ldapGroupsWithUsers)
+    private async Task SyncDbGroups(Dictionary<GroupInfo, List<UserInfo>> ldapGroupsWithUsers)
     {
         const double percents = 20;
 
@@ -765,18 +765,18 @@ public class LdapOperationJob : DistributedTaskProgress
 
             if (Equals(dbLdapGroup, Constants.LostGroupInfo))
             {
-                AddNewGroup(ldapGroup, ldapGroupUsers, gIndex, gCount);
+                await AddNewGroup(ldapGroup, ldapGroupUsers, gIndex, gCount);
             }
             else
             {
-                UpdateDbGroup(dbLdapGroup, ldapGroup, ldapGroupUsers, gIndex, gCount);
+                await UpdateDbGroup(dbLdapGroup, ldapGroup, ldapGroupUsers, gIndex, gCount);
             }
 
             percentage += step;
         }
     }
 
-    private void AddNewGroup(GroupInfo ldapGroup, List<UserInfo> ldapGroupUsers, int gIndex, int gCount)
+    private async Task AddNewGroup(GroupInfo ldapGroup, List<UserInfo> ldapGroupUsers, int gIndex, int gCount)
     {
         if (!ldapGroupUsers.Any()) // Skip empty groups
         {
@@ -815,7 +815,7 @@ public class LdapOperationJob : DistributedTaskProgress
                                     ++index, count,
                                     _userFormatter.GetUserName(userBySid, DisplayUserNameFormat.Default)));
 
-                        _userManager.AddUserIntoGroup(userBySid.Id, ldapGroup.ID);
+                        await _userManager.AddUserIntoGroup(userBySid.Id, ldapGroup.ID);
                     }
                     break;
                 case LdapOperationType.SaveTest:
@@ -846,7 +846,7 @@ public class LdapOperationJob : DistributedTaskProgress
         return needUpdate;
     }
 
-    private void UpdateDbGroup(GroupInfo dbLdapGroup, GroupInfo ldapGroup, List<UserInfo> ldapGroupUsers, int gIndex,
+    private async Task UpdateDbGroup(GroupInfo dbLdapGroup, GroupInfo ldapGroup, List<UserInfo> ldapGroupUsers, int gIndex,
         int gCount)
     {
         SetProgress(currentSource:
@@ -911,7 +911,7 @@ public class LdapOperationJob : DistributedTaskProgress
                                 ++index, count,
                                 _userFormatter.GetUserName(userInfo, DisplayUserNameFormat.Default)));
 
-                    _userManager.AddUserIntoGroup(userInfo.Id, dbLdapGroup.ID);
+                    await _userManager.AddUserIntoGroup(userInfo.Id, dbLdapGroup.ID);
                 }
 
                 if (dbGroupMembers.All(dbUser => groupMembersToRemove.Exists(u => u.Id.Equals(dbUser.Id)))

@@ -115,7 +115,7 @@ public class BackupProgressItem : BaseBackupProgressItem
         _configPaths = configPaths;
     }
 
-    protected override void DoJob()
+    protected override async void DoJob()
     {
         if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
         {
@@ -147,13 +147,13 @@ public class BackupProgressItem : BaseBackupProgressItem
                 PublishChanges();
             };
 
-            backupTask.RunJob();
+            await backupTask.RunJob();
 
             var backupStorage = _backupStorageFactory.GetBackupStorage(_storageType, TenantId, StorageParams);
             if (backupStorage != null)
             {
-                storagePath = backupStorage.Upload(_storageBasePath, tempFile, _userId);
-                Link = backupStorage.GetPublicLink(storagePath);
+                storagePath = await backupStorage.Upload(_storageBasePath, tempFile, _userId);
+                Link = await backupStorage.GetPublicLink(storagePath);
             }
 
             var repo = _backupRepository;

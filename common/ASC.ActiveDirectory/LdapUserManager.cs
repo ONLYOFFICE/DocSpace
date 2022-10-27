@@ -137,7 +137,7 @@ public class LdapUserManager
 
             try
             {
-                _countManagerChecker.CheckAppend().Wait();
+               await _countManagerChecker.CheckAppend();
             }
             catch (Exception)
             {
@@ -685,7 +685,7 @@ public class LdapUserManager
 
                     if (novellLdapUserImporter.Settings.GroupMembership)
                     {
-                        if (!novellLdapUserImporter.TrySyncUserGroupMembership(newLdapUserInfo))
+                        if (!(await novellLdapUserImporter.TrySyncUserGroupMembership(newLdapUserInfo)))
                         {
                             log.DebugTryGetAndSyncLdapUserInfoDisablingUser(login, uInfo);
                             uInfo.Status = EmployeeStatus.Terminated;
@@ -738,7 +738,7 @@ public class LdapUserManager
                 return userInfo;
             }
 
-            if (!importer.TrySyncUserGroupMembership(newLdapUserInfo))
+            if (!(await importer.TrySyncUserGroupMembership(newLdapUserInfo)))
             {
                 userInfo.Sid = null;
                 userInfo.Status = EmployeeStatus.Terminated;

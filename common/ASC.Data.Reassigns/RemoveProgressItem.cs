@@ -65,7 +65,7 @@ public class RemoveProgressItem : DistributedTaskProgress
         IsCompleted = false;
     }
 
-    protected override void DoJob()
+    protected override async void DoJob()
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var scopeClass = scope.ServiceProvider.GetService<RemoveProgressItemScope>();
@@ -82,7 +82,7 @@ public class RemoveProgressItem : DistributedTaskProgress
             securityContext.AuthenticateMeWithoutCookie(_currentUserId);
 
             long crmSpace;
-            GetUsageSpace(webItemManagerSecurity, out var docsSpace, out var mailSpace, out var talkSpace);
+            var wrapper = await GetUsageSpace(webItemManagerSecurity);
 
             logger.LogInformation("deleting user data for {fromUser} ", FromUser);
 
@@ -119,11 +119,11 @@ public class RemoveProgressItem : DistributedTaskProgress
             PublishChanges();
 
             logger.LogInformation("deleting of data from talk");
-            DeleteTalkStorage(storageFactory);
+            await DeleteTalkStorage(storageFactory);
             Percentage = 99;
             PublishChanges();
 
-            SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, docsSpace, crmSpace, mailSpace, talkSpace);
+            SendSuccessNotify(studioNotifyService, messageService, messageTarget, userName, wrapper.DocsSpace, crmSpace, wrapper.MailSpace, wrapper.TalkSpace);
 
             Percentage = 100;
             Status = DistributedTaskStatus.Completed;
@@ -148,9 +148,9 @@ public class RemoveProgressItem : DistributedTaskProgress
         return MemberwiseClone();
     }
 
-    private void GetUsageSpace(WebItemManagerSecurity webItemManagerSecurity, out long docsSpace, out long mailSpace, out long talkSpace)
+    private async Task<UsageSpaceWrapper> GetUsageSpace(WebItemManagerSecurity webItemManagerSecurity)
     {
-        docsSpace = mailSpace = talkSpace = 0;
+        var usageSpaceWrapper = new UsageSpaceWrapper();
 
         var webItems = webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
 
@@ -166,7 +166,7 @@ public class RemoveProgressItem : DistributedTaskProgress
                     continue;
                 }
 
-                docsSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
+                usageSpaceWrapper.DocsSpace = await manager.GetUserSpaceUsageAsync(FromUser);
             }
 
             if (item.ID == WebItemManager.MailProductID)
@@ -177,7 +177,7 @@ public class RemoveProgressItem : DistributedTaskProgress
                     continue;
                 }
 
-                mailSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
+                usageSpaceWrapper.MailSpace = await manager.GetUserSpaceUsageAsync(FromUser);
             }
 
             if (item.ID == WebItemManager.TalkProductID)
@@ -188,12 +188,13 @@ public class RemoveProgressItem : DistributedTaskProgress
                     continue;
                 }
 
-                talkSpace = manager.GetUserSpaceUsageAsync(FromUser).Result;
+                usageSpaceWrapper.TalkSpace = await manager.GetUserSpaceUsageAsync(FromUser);
             }
         }
+        return usageSpaceWrapper;
     }
 
-    private void DeleteTalkStorage(StorageFactory storageFactory)
+    private async Task DeleteTalkStorage(StorageFactory storageFactory)
     {
         using var md5 = MD5.Create();
         var data = md5.ComputeHash(Encoding.Default.GetBytes(FromUser.ToString()));
@@ -209,9 +210,9 @@ public class RemoveProgressItem : DistributedTaskProgress
 
         var storage = storageFactory.GetStorage(_tenantId.ToString(CultureInfo.InvariantCulture), "talk");
 
-        if (storage != null && storage.IsDirectoryAsync(md5Hash).Result)
+        if (storage != null && await storage.IsDirectoryAsync(md5Hash))
         {
-            storage.DeleteDirectoryAsync(md5Hash).Wait();
+            await storage.DeleteDirectoryAsync(md5Hash);
         }
     }
 
@@ -308,6 +309,13 @@ public class RemoveProgressItemScope
         userFormatter = _userFormatter;
         optionsMonitor = _options;
     }
+}
+
+class UsageSpaceWrapper
+{
+    public long DocsSpace { get; set; }
+    public long MailSpace { get; set; }
+    public long TalkSpace { get; set; }
 }
 
 public static class RemoveProgressItemExtension

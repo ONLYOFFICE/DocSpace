@@ -29,7 +29,7 @@ namespace ASC.Files.Core.Data;
 [Scope]
 internal class TagDao<T> : AbstractDao, ITagDao<T>
 {
-    private static readonly object _syncRoot = new object();
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     private readonly IMapper _mapper;
 
     public TagDao(
@@ -318,8 +318,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         }
 
 
-        lock (_syncRoot)
-        {
+        _semaphore.Wait();
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
@@ -336,7 +335,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
                 tx.Commit();
             });
-        }
+        _semaphore.Release();
 
         return result;
     }
@@ -355,8 +354,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             return result;
         }
 
-        lock (_syncRoot)
-        {
+        _semaphore.Wait();
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
@@ -373,7 +371,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
                 tx.Commit();
             });
-        }
+        _semaphore.Release();
 
         return result;
     }
@@ -470,40 +468,40 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             return;
         }
 
-        lock (_syncRoot)
+        _semaphore.Wait();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(async () =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var strategy = filesDbContext.Database.CreateExecutionStrategy();
+            using var tx = filesDbContext.Database.BeginTransaction();
+            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
 
-            strategy.Execute(() =>
+            foreach (var tag in tags)
             {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = filesDbContext.Database.BeginTransaction();
-                var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+                await UpdateNewTagsInDbAsync(tag, createOn, createdBy);
+            }
 
-                foreach (var tag in tags)
-                {
-                    UpdateNewTagsInDbAsync(tag, createOn, createdBy).Wait();
-                }
-
-                tx.Commit();
-            });
-        }
+            tx.Commit();
+        });
+        _semaphore.Release();
     }
 
-    public void UpdateNewTags(Tag tag)
+    public async Task UpdateNewTags(Tag tag)
     {
         if (tag == null)
         {
             return;
         }
 
-        lock (_syncRoot)
-        {
-            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+        await _semaphore.WaitAsync();
 
-            UpdateNewTagsInDbAsync(tag, createOn).Wait();
-        }
+        var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+
+        await UpdateNewTagsInDbAsync(tag, createOn);
+
+        _semaphore.Release();
     }
 
     private Task UpdateNewTagsInDbAsync(Tag tag, DateTime createOn, Guid createdBy = default)
@@ -542,24 +540,23 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             return;
         }
 
-        lock (_syncRoot)
+        _semaphore.Wait();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(async () =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var strategy = filesDbContext.Database.CreateExecutionStrategy();
+            using var tx = filesDbContext.Database.BeginTransaction();
 
-            strategy.Execute(() =>
+            foreach (var t in tags)
             {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = filesDbContext.Database.BeginTransaction();
+                await RemoveTagInDbAsync(t);
+            }
 
-                foreach (var t in tags)
-                {
-                    RemoveTagInDbAsync(t).Wait();
-                }
-
-                tx.Commit();
-            });
-        }
+            tx.Commit();
+        });
+        _semaphore.Release();
     }
 
     public void RemoveTags(Tag tag)
@@ -569,21 +566,20 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             return;
         }
 
-        lock (_syncRoot)
+        _semaphore.Wait();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+
+        strategy.Execute(async () =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var strategy = filesDbContext.Database.CreateExecutionStrategy();
+            using var tx = filesDbContext.Database.BeginTransaction();
+            await RemoveTagInDbAsync(tag);
 
-            strategy.Execute(() =>
-            {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = filesDbContext.Database.BeginTransaction();
-                RemoveTagInDbAsync(tag).Wait();
+            tx.Commit();
 
-                tx.Commit();
-
-            });
-        }
+        });
+        _semaphore.Release();
     }
 
     public async Task RemoveTagsAsync(FileEntry<T> entry, IEnumerable<int> tagsIds)

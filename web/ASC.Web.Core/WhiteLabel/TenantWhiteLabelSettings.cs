@@ -282,7 +282,7 @@ public class TenantWhiteLabelSettingsHelper
                 tenantWhiteLabelSettings.LogoText == defaultSettings.LogoText;
     }
 
-    public void RestoreDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantLogoManager tenantLogoManager, int tenantId, IDataStore storage = null)
+    public async Task RestoreDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings, TenantLogoManager tenantLogoManager, int tenantId, IDataStore storage = null)
     {
         tenantWhiteLabelSettings.LogoLightSmallExt = null;
         tenantWhiteLabelSettings.LogoDarkExt = null;
@@ -306,7 +306,7 @@ public class TenantWhiteLabelSettingsHelper
 
         try
         {
-            store.DeleteFilesAsync("", "*", false).Wait();
+           await store.DeleteFilesAsync("", "*", false);
         }
         catch (Exception e)
         {
@@ -316,7 +316,7 @@ public class TenantWhiteLabelSettingsHelper
         Save(tenantWhiteLabelSettings, tenantId, tenantLogoManager, true);
     }
 
-    public void RestoreDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type)
+    public async Task RestoreDefault(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type)
     {
         if (!tenantWhiteLabelSettings.GetIsDefault(type))
         {
@@ -324,7 +324,7 @@ public class TenantWhiteLabelSettingsHelper
             {
                 tenantWhiteLabelSettings.SetIsDefault(type, true);
                 var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), ModuleName);
-                DeleteLogoFromStore(tenantWhiteLabelSettings, store, type);
+                await DeleteLogoFromStore(tenantWhiteLabelSettings, store, type);
             }
             catch (Exception e)
             {
@@ -337,7 +337,7 @@ public class TenantWhiteLabelSettingsHelper
 
     #region Set logo
 
-    public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data, IDataStore storage = null)
+    public async Task SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data, IDataStore storage = null)
     {
         var store = storage ?? _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), ModuleName);
 
@@ -349,7 +349,7 @@ public class TenantWhiteLabelSettingsHelper
         {
             try
             {
-                DeleteLogoFromStore(tenantWhiteLabelSettings, store, type);
+                await DeleteLogoFromStore(tenantWhiteLabelSettings, store, type);
             }
             catch (Exception e)
             {
@@ -364,7 +364,7 @@ public class TenantWhiteLabelSettingsHelper
             var logoFileName = BuildLogoFileName(type, logoFileExt, false);
 
             memory.Seek(0, SeekOrigin.Begin);
-            store.SaveAsync(logoFileName, memory).Wait();
+            await store.SaveAsync(logoFileName, memory);
         }
 
         tenantWhiteLabelSettings.SetExt(type, logoFileExt);
@@ -372,10 +372,10 @@ public class TenantWhiteLabelSettingsHelper
 
         var generalSize = GetSize(type, true);
         var generalFileName = BuildLogoFileName(type, logoFileExt, true);
-        ResizeLogo(generalFileName, data, -1, generalSize, store);
+        await ResizeLogo(generalFileName, data, -1, generalSize, store);
     }
 
-    public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, Dictionary<int, string> logo, IDataStore storage = null)
+    public async Task SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, Dictionary<int, string> logo, IDataStore storage = null)
     {
         var xStart = @"data:image/png;base64,";
 
@@ -395,7 +395,7 @@ public class TenantWhiteLabelSettingsHelper
                     data = _userPhotoManager.GetTempPhotoData(fileName);
                     try
                     {
-                        _userPhotoManager.RemoveTempPhoto(fileName);
+                        await _userPhotoManager.RemoveTempPhoto(fileName);
                     }
                     catch (Exception ex)
                     {
@@ -410,13 +410,13 @@ public class TenantWhiteLabelSettingsHelper
 
                 if (data != null)
                 {
-                    SetLogo(tenantWhiteLabelSettings, currentLogoType, fileExt, data, storage);
+                    await SetLogo(tenantWhiteLabelSettings, currentLogoType, fileExt, data, storage);
                 }
             }
         }
     }
 
-    public void SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream, IDataStore storage = null)
+    public async Task SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream, IDataStore storage = null)
     {
         byte[] data;
         using (var memoryStream = new MemoryStream())
@@ -427,7 +427,7 @@ public class TenantWhiteLabelSettingsHelper
 
         if (data != null)
         {
-            SetLogo(tenantWhiteLabelSettings, type, fileExt, data, storage);
+            await SetLogo(tenantWhiteLabelSettings, type, fileExt, data, storage);
         }
     }
 
@@ -587,7 +587,7 @@ public class TenantWhiteLabelSettingsHelper
         };
     }
 
-    private static void ResizeLogo(string fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
+    private static async Task ResizeLogo(string fileName, byte[] data, long maxFileSize, Size size, IDataStore store)
     {
         //Resize synchronously
         if (data == null || data.Length <= 0)
@@ -618,7 +618,7 @@ public class TenantWhiteLabelSettingsHelper
             //fileExt = CommonPhotoManager.GetImgFormatName(imgFormat);
 
             using var stream2 = new MemoryStream(data);
-            store.SaveAsync(fileName, stream2).Wait();
+            await store.SaveAsync(fileName, stream2);
         }
         catch (ArgumentException error)
         {
@@ -679,19 +679,19 @@ public class TenantWhiteLabelSettingsHelper
 
     #region Delete from Store
 
-    private void DeleteLogoFromStore(TenantWhiteLabelSettings tenantWhiteLabelSettings, IDataStore store, WhiteLabelLogoTypeEnum type)
+    private async Task DeleteLogoFromStore(TenantWhiteLabelSettings tenantWhiteLabelSettings, IDataStore store, WhiteLabelLogoTypeEnum type)
     {
-        DeleteLogoFromStoreByGeneral(tenantWhiteLabelSettings, store, type, false);
-        DeleteLogoFromStoreByGeneral(tenantWhiteLabelSettings, store, type, true);
+        await DeleteLogoFromStoreByGeneral(tenantWhiteLabelSettings, store, type, false);
+        await DeleteLogoFromStoreByGeneral(tenantWhiteLabelSettings, store, type, true);
     }
 
-    private void DeleteLogoFromStoreByGeneral(TenantWhiteLabelSettings tenantWhiteLabelSettings, IDataStore store, WhiteLabelLogoTypeEnum type, bool general)
+    private async Task DeleteLogoFromStoreByGeneral(TenantWhiteLabelSettings tenantWhiteLabelSettings, IDataStore store, WhiteLabelLogoTypeEnum type, bool general)
     {
         var fileExt = tenantWhiteLabelSettings.GetExt(type);
         var logo = BuildLogoFileName(type, fileExt, general);
-        if (store.IsFileAsync(logo).Result)
+        if (await store.IsFileAsync(logo))
         {
-            store.DeleteAsync(logo).Wait();
+            await store.DeleteAsync(logo);
         }
     }
 

@@ -402,7 +402,7 @@ public class UserManager
         {
             var userAuthorization = oldUserData.Email.ToLower() + ":" + _instanceCrypto.Encrypt(oldUserData.Email);
             var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, newUser.Email.ToLower(), true, true);
-            var collection = _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString()).Result;
+            var collection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
             if (collection.Completed && collection.StatusCode != 404)
             {
                 await _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id);//TODO
@@ -453,7 +453,7 @@ public class UserManager
         return _userService.GetDavUserEmails(_tenantManager.GetCurrentTenant().Id);
     }
 
-    public void DeleteUser(Guid id)
+    public async void DeleteUser(Guid id)
     {
         if (IsSystemUser(id))
         {
@@ -481,7 +481,7 @@ public class UserManager
                 new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
             var davUsersEmails = GetDavUserEmails();
             var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri, delUser.Email.ToLower(), true, true);
-            var addBookCollection = _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString()).Result;
+            var addBookCollection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
 
 
             if (addBookCollection.Completed && addBookCollection.StatusCode != 404)
@@ -492,7 +492,7 @@ public class UserManager
                     Authorization = rootAuthorization,
                     Header = myUri
                 };
-                _radicaleClient.RemoveAsync(davbookRequest).ConfigureAwait(false);
+                await _radicaleClient.RemoveAsync(davbookRequest).ConfigureAwait(false);
             }
 
             foreach (var email in davUsersEmails)
@@ -506,7 +506,7 @@ public class UserManager
                         Authorization = rootAuthorization,
                         Header = myUri
                     };
-                    _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
+                    await _radicaleClient.RemoveAsync(davItemRequest).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -627,7 +627,7 @@ public class UserManager
         return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
     }
 
-    public void AddUserIntoGroup(Guid userId, Guid groupId)
+    public async Task AddUserIntoGroup(Guid userId, Guid groupId)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
@@ -645,7 +645,7 @@ public class UserManager
             var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
                        (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                        new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
-            _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id).Wait(); //todo
+            await _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id); //todo
         }
     }
 

@@ -50,12 +50,12 @@ public class FileBackupProvider : IBackupProvider
 
     public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
-    public IEnumerable<XElement> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
+    public async Task<IEnumerable<XElement>> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
     {
         InvokeProgressChanged("Saving files...", 0);
 
         var config = GetWebConfig(configs);
-        var files = ComposeFiles(tenant, config);
+        var files = await ComposeFiles(tenant, config);
 
         var elements = new List<XElement>();
         var backupKeys = new List<string>();
@@ -74,7 +74,7 @@ public class FileBackupProvider : IBackupProvider
                 {
                     try
                     {
-                        using var stream = storage.GetReadStreamAsync(file.Domain, file.Path).Result;
+                        using var stream = await storage.GetReadStreamAsync(file.Domain, file.Path);
                         writer.WriteEntry(backupPath, stream);
                         break;
                     }
@@ -97,7 +97,7 @@ public class FileBackupProvider : IBackupProvider
         return elements;
     }
 
-    public void LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator dataOperator)
+    public async Task LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator dataOperator)
     {
         InvokeProgressChanged("Restoring files...", 0);
 
@@ -114,7 +114,7 @@ public class FileBackupProvider : IBackupProvider
                     var storage = _storageFactory.GetStorage(config, tenant.ToString(), backupInfo.Module, null);
                     try
                     {
-                        storage.SaveAsync(backupInfo.Domain, backupInfo.Path, entry).Wait();
+                        await storage.SaveAsync(backupInfo.Domain, backupInfo.Path, entry);
                     }
                     catch (Exception error)
                     {
@@ -126,7 +126,7 @@ public class FileBackupProvider : IBackupProvider
         }
     }
 
-    private IEnumerable<FileBackupInfo> ComposeFiles(int tenant, string config)
+    private async Task<IEnumerable<FileBackupInfo>> ComposeFiles(int tenant, string config)
     {
         var files = new List<FileBackupInfo>();
         foreach (var module in _storageFactoryConfig.GetModuleList(config))
@@ -138,13 +138,13 @@ public class FileBackupProvider : IBackupProvider
 
                 foreach (var domain in domainList)
                 {
-                    files.AddRange(store
-                            .ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result
+                    files.AddRange((await store
+                            .ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync())
                         .Select(x => new FileBackupInfo(domain, module, x)));
                 }
 
-                files.AddRange(store
-                        .ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
+                files.AddRange((await store
+                        .ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync())
                         .Where(x => domainList.All(domain => x.IndexOf($"{domain}/") == -1))
                     .Select(x => new FileBackupInfo(string.Empty, module, x)));
             }

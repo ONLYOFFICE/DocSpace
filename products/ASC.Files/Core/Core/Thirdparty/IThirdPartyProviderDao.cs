@@ -608,8 +608,9 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     {
     }
 
-    public void UpdateNewTags(Tag tag)
+    public Task UpdateNewTags(Tag tag)
     {
+        return Task.CompletedTask;
     }
 
     public Task RemoveTagsAsync(FileEntry<string> entry, IEnumerable<int> tagsIds)

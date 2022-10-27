@@ -45,7 +45,7 @@ public interface ITagDao<T>
     IEnumerable<Tag> SaveTags(Tag tag);
     Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo);
     void UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default);
-    void UpdateNewTags(Tag tag);
+    Task UpdateNewTags(Tag tag);
     Task RemoveTagsAsync(IEnumerable<int> tagsIds);
     Task RemoveTagsAsync(FileEntry<T> entry, IEnumerable<int> tagsIds);
     void RemoveTags(IEnumerable<Tag> tag);

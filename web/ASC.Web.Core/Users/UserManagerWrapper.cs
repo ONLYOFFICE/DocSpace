@@ -182,7 +182,7 @@ public sealed class UserManagerWrapper
 
         if (isVisitor)
         {
-            _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
         }
 
         return newUserInfo;

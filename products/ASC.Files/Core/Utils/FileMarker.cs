@@ -832,7 +832,7 @@ public class FileMarker
                 }
                 else
                 {
-                    tagDao.UpdateNewTags(parentFolderTag);
+                    await tagDao.UpdateNewTags(parentFolderTag);
                 }
 
                 var cacheFolderId = parent.Id;
@@ -872,7 +872,7 @@ public class FileMarker
                         else
                         {
                             parentTreeTag.Count -= diff;
-                            tagDao.UpdateNewTags(parentTreeTag);
+                            await tagDao.UpdateNewTags(parentTreeTag);
                         }
                     }
                 }

@@ -91,7 +91,7 @@ public class FeedAggregatorService : FeedBaseService
         }
     }
 
-    private void AggregateFeeds(object interval)
+    private async void AggregateFeeds(object interval)
     {
         try
         {
@@ -124,7 +124,7 @@ public class FeedAggregatorService : FeedBaseService
 
                 var toTime = DateTime.UtcNow;
 
-                var tenants = Attempt(10, () => module.GetTenantsWithFeeds(fromTime)).ToList();
+                var tenants = (await Attempt(10, async () => await module.GetTenantsWithFeeds(fromTime))).ToList();
                 _logger.DebugFindCountTenants(tenants.Count, module.GetType().Name);
 
                 foreach (var tenant in tenants)
@@ -145,7 +145,7 @@ public class FeedAggregatorService : FeedBaseService
                         tenantManager.SetCurrentTenant(tenant);
                         var users = userManager.GetUsers();
 
-                        var feeds = Attempt(10, () => module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant }).Where(r => r.Item1 != null).ToList());
+                        var feeds = await Attempt(10, async () => (await module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant })).Where(r => r.Item1 != null).ToList());
                         _logger.DebugCountFeeds(feeds.Count, tenant);
 
                         var tenant1 = tenant;
@@ -165,7 +165,7 @@ public class FeedAggregatorService : FeedBaseService
                                 continue;
                             }
 
-                            module.VisibleFor(feedsRow, u.Id);
+                            await module.VisibleFor(feedsRow, u.Id);
                         }
 
                         result.AddRange(feedsRow.Select(r => r.Item1));
