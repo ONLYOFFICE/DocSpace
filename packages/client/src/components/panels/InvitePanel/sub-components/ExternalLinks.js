@@ -56,7 +56,7 @@ const ExternalLinks = ({ t, roomId, roomType, defaultAccess, shareLinks }) => {
     setActionLinksVisible(false);
   };
 
-  /*   const shareEmail = useCallback(
+  const shareEmail = useCallback(
     (link) => {
       const { title, shareLink } = link;
       const subject = t("SharingPanel:ShareEmailSubject", { title });
@@ -73,10 +73,10 @@ const ExternalLinks = ({ t, roomId, roomType, defaultAccess, shareLinks }) => {
 
       closeActionLinks();
     },
-    [closeActionLinks, links, t]
-  ); */
+    [closeActionLinks, t]
+  );
 
-  /*   const shareTwitter = useCallback(
+  const shareTwitter = useCallback(
     (link) => {
       const { shareLink } = link;
 
@@ -90,8 +90,8 @@ const ExternalLinks = ({ t, roomId, roomType, defaultAccess, shareLinks }) => {
 
       closeActionLinks();
     },
-    [closeActionLinks, links]
-  ); */
+    [closeActionLinks]
+  );
 
   return (
     <StyledBlock noPadding ref={inputsRef}>
@@ -139,13 +139,15 @@ const ExternalLinks = ({ t, roomId, roomType, defaultAccess, shareLinks }) => {
               iconColor="#A3A9AE"
             />
           </StyledInviteInput>
-          <AccessSelector
-            t={t}
-            roomType={roomType}
-            defaultAccess={activeLink.access}
-            onSelectAccess={onSelectAccess}
-            containerRef={inputsRef}
-          />
+          {roomId === -1 && (
+            <AccessSelector
+              t={t}
+              roomType={roomType}
+              defaultAccess={activeLink.access}
+              onSelectAccess={onSelectAccess}
+              containerRef={inputsRef}
+            />
+          )}
         </StyledInviteInputContainer>
       )}
     </StyledBlock>
