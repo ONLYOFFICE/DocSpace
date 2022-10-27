@@ -20,27 +20,27 @@ import {
   StyledToggleButton,
 } from "../StyledInvitePanel";
 
-const ExternalLinks = ({
-  t,
-  hideSelector,
-  roomId,
-  roomType,
-  defaultAccess,
-  shareLinks,
-}) => {
+const ExternalLinks = ({ t, roomId, roomType, defaultAccess, shareLinks }) => {
   const [linksVisible, setLinksVisible] = useState(false);
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
+  const [activeLink, setActiveLink] = useState([]);
 
   const inputsRef = useRef();
 
   const toggleLinks = (e) => {
+    const link = shareLinks.find((l) => l.access === +defaultAccess);
+
+    setActiveLink(link);
     setLinksVisible(!linksVisible);
 
-    if (!linksVisible) copyLink(shareLinks[0].shareLink);
+    if (!linksVisible) copyLink(link.shareLink);
   };
 
   const onSelectAccess = (access) => {
-    console.log(access);
+    const link = shareLinks.find((l) => l.access === access.access);
+
+    setActiveLink(link);
+    copyLink(link.shareLink);
   };
 
   const copyLink = (link) => {
@@ -56,7 +56,7 @@ const ExternalLinks = ({
     setActionLinksVisible(false);
   };
 
-  const shareEmail = useCallback(
+  /*   const shareEmail = useCallback(
     (link) => {
       const { title, shareLink } = link;
       const subject = t("SharingPanel:ShareEmailSubject", { title });
@@ -74,9 +74,9 @@ const ExternalLinks = ({
       closeActionLinks();
     },
     [closeActionLinks, links, t]
-  );
+  ); */
 
-  const shareTwitter = useCallback(
+  /*   const shareTwitter = useCallback(
     (link) => {
       const { shareLink } = link;
 
@@ -91,37 +91,7 @@ const ExternalLinks = ({
       closeActionLinks();
     },
     [closeActionLinks, links]
-  );
-
-  const links =
-    !!shareLinks.length &&
-    shareLinks?.map((link) => {
-      return (
-        <StyledInviteInputContainer key={link.id}>
-          <StyledInviteInput>
-            <InputBlock
-              scale
-              value={link.shareLink}
-              isReadOnly
-              iconName="/static/images/copy.react.svg"
-              onIconClick={() => copyLink(link.shareLink)}
-              hoverColor="#333333"
-              iconColor="#A3A9AE"
-            />
-          </StyledInviteInput>
-
-          {!hideSelector && (
-            <AccessSelector
-              t={t}
-              roomType={roomType}
-              defaultAccess={defaultAccess}
-              onSelectAccess={onSelectAccess}
-              containerRef={inputsRef}
-            />
-          )}
-        </StyledInviteInputContainer>
-      );
-    });
+  ); */
 
   return (
     <StyledBlock noPadding ref={inputsRef}>
@@ -156,7 +126,28 @@ const ExternalLinks = ({
         )}
         <StyledToggleButton isChecked={linksVisible} onChange={toggleLinks} />
       </StyledSubHeader>
-      {linksVisible && links}
+      {linksVisible && (
+        <StyledInviteInputContainer key={activeLink.id}>
+          <StyledInviteInput>
+            <InputBlock
+              scale
+              value={activeLink.shareLink}
+              isReadOnly
+              iconName="/static/images/copy.react.svg"
+              onIconClick={() => copyLink(activeLink.shareLink)}
+              hoverColor="#333333"
+              iconColor="#A3A9AE"
+            />
+          </StyledInviteInput>
+          <AccessSelector
+            t={t}
+            roomType={roomType}
+            defaultAccess={activeLink.access}
+            onSelectAccess={onSelectAccess}
+            containerRef={inputsRef}
+          />
+        </StyledInviteInputContainer>
+      )}
     </StyledBlock>
   );
 };
