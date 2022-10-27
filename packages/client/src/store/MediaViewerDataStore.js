@@ -59,6 +59,8 @@ class MediaViewerDataStore {
         fileId: this.currentItem.fileId,
         src: this.currentItem.fileInfo.viewUrl,
         title: this.currentItem.fileInfo.title,
+        fileExst: this.currentItem.fileInfo.fileExst,
+        fileStatus: this.currentItem.fileInfo.fileStatus,
       });
 
       return playlist;
@@ -73,6 +75,8 @@ class MediaViewerDataStore {
             fileId: file.id,
             src: file.viewUrl,
             title: file.title,
+            fileExst: file.fileExst,
+            fileStatus: file.fileStatus,
           });
           id++;
         }
@@ -83,6 +87,8 @@ class MediaViewerDataStore {
         fileId: this.previewFile.id,
         src: this.previewFile.viewUrl,
         title: this.previewFile.title,
+        fileExst: this.previewFile.fileExst,
+        fileStatus: this.previewFile.fileStatus,
       });
     }
 
