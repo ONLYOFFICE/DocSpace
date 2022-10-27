@@ -159,138 +159,6 @@ const StyledViewer = styled(Viewer)`
 
 StyledViewer.defaultProps = { theme: Base };
 
-const dropDownElement = (
-  <DropDown
-    open={true}
-    withBackdrop={false}
-    //manualWidth={manualWidth || "400px"}
-    directionY="top"
-    directionX="right"
-    // isMobile={isMobile}
-    fixedDirection={true}
-    //  heightProp={height}
-    // sectionWidth={sectionWidth}
-    isDefaultMode={false}
-  >
-    <DropDownItem
-      key="download-as"
-      label={"DownloadAs"}
-      data-key={"download as"}
-      //   onClick={onSelect}
-    />
-    <DropDownItem
-      key="rename"
-      label={"Rename"} // add translation
-      data-key={"rename"}
-      // onClick={onSelect}
-    />
-    <DropDownItem
-      key="delete"
-      label={"Delete"}
-      data-key={"delete"}
-      //  onClick={onSelect}
-    />
-  </DropDown>
-);
-
-var customToolbar = [
-  {
-    key: "zoomIn",
-    actionType: 1,
-    render: (
-      <div className="iconContainer zoomIn">
-        <StyledMediaZoomInIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "percent",
-    noHover: true,
-    actionType: 999,
-    render: (
-      <div className="iconContainer zoomPercent" style={{ width: "auto" }}>
-        100%
-      </div>
-    ),
-  },
-  {
-    key: "zoomOut",
-    actionType: 2,
-    render: (
-      <div className="iconContainer zoomOut">
-        <StyledMediaZoomOutIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "rotateLeft",
-    actionType: 5,
-    render: (
-      <div className="iconContainer rotateLeft">
-        <StyledMediaRotateLeftIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "rotateRight",
-    actionType: 6,
-    render: (
-      <div className="iconContainer rotateRight">
-        <StyledMediaRotateRightIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "separator",
-    actionType: -1,
-    noHover: true,
-    render: (
-      <div className="separatortest" style={{ height: "16px" }}>
-        <ViewerSeparator size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "share",
-    actionType: 101,
-    render: (
-      <div className="iconContainer share" style={{ height: "16px" }}>
-        <MediaShare size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "download",
-    actionType: 102,
-    render: (
-      <div className="iconContainer download" style={{ height: "16px" }}>
-        <MediaDownloadIcon size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "separator",
-    actionType: -1,
-    noHover: true,
-    render: (
-      <div className="separatortest" style={{ height: "16px" }}>
-        <ViewerSeparator size="scale" />
-      </div>
-    ),
-  },
-  {
-    key: "context-menu",
-    actionType: -1,
-    render: (
-      <div className="context" style={{ height: "16px" }}>
-        <MediaContextMenu size="scale" />
-        {/* <DropDow */}
-        {dropDownElement}
-      </div>
-    ),
-  },
-];
-
 class ImageViewer extends React.Component {
   // componentDidUpdate() {
   //   document.getElementsByClassName("iconContainer reset").length > 0 &&
@@ -316,6 +184,134 @@ class ImageViewer extends React.Component {
       isImage,
       contextModel,
     } = this.props;
+
+    const generateContextMenu = (isOpen) => {
+      const model = contextModel();
+
+      const onItemClick = (e, item) => {
+        const { action, onClick } = item;
+
+        return onClick({ originalEvent: e, action: action, item });
+      };
+
+      return (
+        <DropDown
+          open={isOpen}
+          isDefaultMode={false}
+          directionY="top"
+          directionX="right"
+          fixedDirection={true}
+          withBackdrop={false}
+          manualY="55px"
+          manualX="30px"
+        >
+          {model.map((item) => {
+            const onClick = (e) => onItemClick(e, item);
+            return (
+              <DropDownItem
+                key={item.key}
+                label={item.label}
+                icon={item.icon ? item.icon : ""}
+                action={item.action}
+                onClick={onClick}
+              />
+            );
+          })}
+        </DropDown>
+      );
+    };
+
+    var customToolbar = [
+      {
+        key: "zoomIn",
+        actionType: 1,
+        render: (
+          <div className="iconContainer zoomIn">
+            <StyledMediaZoomInIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "percent",
+        noHover: true,
+        actionType: 999,
+        render: (
+          <div className="iconContainer zoomPercent" style={{ width: "auto" }}>
+            100%
+          </div>
+        ),
+      },
+      {
+        key: "zoomOut",
+        actionType: 2,
+        render: (
+          <div className="iconContainer zoomOut">
+            <StyledMediaZoomOutIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "rotateLeft",
+        actionType: 5,
+        render: (
+          <div className="iconContainer rotateLeft">
+            <StyledMediaRotateLeftIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "rotateRight",
+        actionType: 6,
+        render: (
+          <div className="iconContainer rotateRight">
+            <StyledMediaRotateRightIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "separator",
+        actionType: -1,
+        noHover: true,
+        render: (
+          <div className="separatortest" style={{ height: "16px" }}>
+            <ViewerSeparator size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "share",
+        actionType: 101,
+        render: (
+          <div className="iconContainer share" style={{ height: "16px" }}>
+            <MediaShare size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "download",
+        actionType: 102,
+        render: (
+          <div className="iconContainer download" style={{ height: "16px" }}>
+            <MediaDownloadIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "separator",
+        actionType: -1,
+        noHover: true,
+        render: (
+          <div className="separatortest" style={{ height: "16px" }}>
+            <ViewerSeparator size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "context-menu",
+        actionType: -1,
+        onClick: this.onMenuHandlerClick,
+      },
+    ];
 
     customToolbar.forEach((button) => {
       switch (button.key) {
@@ -348,6 +344,7 @@ class ImageViewer extends React.Component {
           zoomSpeed={0.25}
           title={title}
           contextModel={contextModel}
+          generateContextMenu={generateContextMenu}
           isImage={isImage}
           onMaskClick={onClose}
           onNextClick={onNextClick}
