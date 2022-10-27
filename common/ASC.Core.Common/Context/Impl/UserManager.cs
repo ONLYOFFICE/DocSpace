@@ -453,7 +453,7 @@ public class UserManager
         return _userService.GetDavUserEmails(_tenantManager.GetCurrentTenant().Id);
     }
 
-    public async void DeleteUser(Guid id)
+    public async Task DeleteUser(Guid id)
     {
         if (IsSystemUser(id))
         {

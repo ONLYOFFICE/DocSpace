@@ -365,7 +365,7 @@ public class UserController : PeopleControllerBase
 
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         await _userPhotoManager.RemovePhoto(user.Id);
-        _userManager.DeleteUser(user.Id);
+        await _userManager.DeleteUser(user.Id);
         _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
 
         _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
@@ -409,7 +409,7 @@ public class UserController : PeopleControllerBase
         if (_coreBaseSettings.Personal)
         {
             await _userPhotoManager.RemovePhoto(user.Id);
-            _userManager.DeleteUser(user.Id);
+            await _userManager.DeleteUser(user.Id);
             _messageService.Send(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
         }
         else
@@ -622,7 +622,7 @@ public class UserController : PeopleControllerBase
             }
 
             await _userPhotoManager.RemovePhoto(user.Id);
-            _userManager.DeleteUser(user.Id);
+            await _userManager.DeleteUser(user.Id);
             _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, false);
         }
 
@@ -1199,7 +1199,7 @@ public class UserController : PeopleControllerBase
                 try
                 {
                     _securityContext.AuthenticateMe(Core.Configuration.Constants.CoreSystem);
-                    _userManager.DeleteUser(newUserInfo.Id);
+                    await _userManager.DeleteUser(newUserInfo.Id);
                 }
                 finally
                 {

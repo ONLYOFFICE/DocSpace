@@ -447,7 +447,7 @@ public class AuthenticationController : ControllerBase
                     try
                     {
                         _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                        _userManager.DeleteUser(userInfo.Id);
+                        await _userManager.DeleteUser(userInfo.Id);
                         userInfo = Constants.LostUser;
                     }
                     finally

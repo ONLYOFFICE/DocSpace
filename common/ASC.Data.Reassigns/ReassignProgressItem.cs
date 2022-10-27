@@ -180,7 +180,7 @@ public class ReassignProgressItem : DistributedTaskProgress
         var userName = user.DisplayUserName(false, displayUserSettingsHelper);
 
         await userPhotoManager.RemovePhoto(user.Id);
-        userManager.DeleteUser(user.Id);
+        await userManager.DeleteUser(user.Id);
         queueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
         if (_httpHeaders != null)
