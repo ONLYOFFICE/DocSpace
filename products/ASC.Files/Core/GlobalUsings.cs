@@ -76,7 +76,7 @@ global using ASC.Core.Common.EF.Model;
 global using ASC.Core.Common.Quota;
 global using ASC.Core.Common.Quota.Features;
 global using ASC.Core.Common.Settings;
-global using ASC.Core.Notify.Signalr;
+global using ASC.Core.Notify.Socket;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
 global using ASC.Data.Storage;

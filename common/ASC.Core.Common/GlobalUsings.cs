@@ -99,7 +99,7 @@ global using ASC.Core.Data;
 global using ASC.Core.Notify;
 global using ASC.Core.Notify.Jabber;
 global using ASC.Core.Notify.Senders;
-global using ASC.Core.Notify.Signalr;
+global using ASC.Core.Notify.Socket;
 global using ASC.Core.Security.Authentication;
 global using ASC.Core.Security.Authorizing;
 global using ASC.Core.Tenants;
