@@ -233,7 +233,6 @@ class ImageViewer extends React.Component {
       },
       {
         key: "percent",
-        noHover: true,
         actionType: 999,
       },
       {
