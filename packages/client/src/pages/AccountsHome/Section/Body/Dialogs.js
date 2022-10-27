@@ -17,8 +17,6 @@ import {
   ChangeNameDialog,
 } from "SRC_DIR/components/dialogs";
 
-import { InvitePanel } from "SRC_DIR/components/panels";
-
 const Dialogs = ({
   changeEmail,
   changePassword,
@@ -34,7 +32,6 @@ const Dialogs = ({
   sendInviteDialogVisible,
   deleteDialogVisible,
   invitationDialogVisible,
-  invitePanelVisible,
 
   changeNameVisible,
   setChangeNameVisible,
@@ -114,12 +111,11 @@ const Dialogs = ({
           fromList
         />
       )}
-      {invitePanelVisible && <InvitePanel />}
     </>
   );
 };
 
-export default inject(({ auth, peopleStore, dialogsStore }) => {
+export default inject(({ auth, peopleStore }) => {
   const {
     changeEmail,
     changePassword,
@@ -137,8 +133,6 @@ export default inject(({ auth, peopleStore, dialogsStore }) => {
     deleteDialogVisible,
     invitationDialogVisible,
   } = peopleStore.dialogStore;
-
-  const { invitePanelOptions } = dialogsStore;
 
   const { user: profile } = auth.userStore;
 
@@ -163,7 +157,6 @@ export default inject(({ auth, peopleStore, dialogsStore }) => {
     sendInviteDialogVisible,
     deleteDialogVisible,
     invitationDialogVisible,
-    invitePanelVisible: invitePanelOptions.visible,
 
     changeNameVisible,
     setChangeNameVisible,
