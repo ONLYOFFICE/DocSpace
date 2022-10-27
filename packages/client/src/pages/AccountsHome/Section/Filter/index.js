@@ -60,8 +60,6 @@ const SectionFilterContent = ({
 
   //TODO: add new options from filter after update backend and fix manager from role
   const onFilter = (data) => {
-    console.log(data);
-
     const status = getStatus(data);
 
     const role = getRole(data);
@@ -77,14 +75,10 @@ const SectionFilterContent = ({
       newFilter.activationStatus = status;
     }
 
-    console.log(status);
-
     newFilter.page = 0;
 
     newFilter.role = role;
     newFilter.group = group;
-
-    console.log(newFilter);
 
     setIsLoading(true);
     fetchPeople(newFilter, true).finally(() => setIsLoading(false));
@@ -346,8 +340,6 @@ const SectionFilterContent = ({
 
       return items.filter((i) => i);
     });
-
-    console.log(currentFilterValues, filterValues);
 
     return currentFilterValues;
   }, [
