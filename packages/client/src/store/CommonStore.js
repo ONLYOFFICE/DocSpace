@@ -57,6 +57,11 @@ class CommonStore {
     this.whiteLabelLogoSizes = sizes;
   };
 
+  restoreWhiteLabelSettings = async (isDefault) => {
+    const res = await api.settings.restoreWhiteLabelSettings(isDefault);
+    this.getWhiteLabelLogoUrls();
+  };
+
   getGreetingSettingsIsDefault = async () => {
     this.greetingSettingsIsDefault = await api.settings.getGreetingSettingsIsDefault();
   };

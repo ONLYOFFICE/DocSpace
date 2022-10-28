@@ -897,7 +897,7 @@ const WhiteLabel = (props) => {
 };
 
 export default inject(({ setup, auth, common }) => {
-  const { setWhiteLabelSettings, restoreWhiteLabelSettings } = setup;
+  const { setWhiteLabelSettings } = setup;
 
   const {
     whiteLabelLogoSizes,
@@ -905,6 +905,7 @@ export default inject(({ setup, auth, common }) => {
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     whiteLabelLogoUrls,
+    restoreWhiteLabelSettings,
   } = common;
 
   const { getWhiteLabelLogoUrls } = auth.settingsStore;
