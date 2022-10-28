@@ -56,6 +56,8 @@ const SectionFilterContent = ({
   groups,
   customNames,
 }) => {
+  const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
+
   //TODO: add new options from filter after update backend and fix manager from role
   const onFilter = (data) => {
     const status = getStatus(data);
@@ -79,7 +81,7 @@ const SectionFilterContent = ({
     newFilter.group = group;
 
     setIsLoading(true);
-    fetchPeople(newFilter).finally(() => setIsLoading(false));
+    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
   const onSort = (sortId, sortDirection) => {
@@ -93,7 +95,7 @@ const SectionFilterContent = ({
 
     setIsLoading(true);
 
-    fetchPeople(newFilter).finally(() => setIsLoading(false));
+    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
   const onSearch = (data = "") => {
@@ -103,7 +105,7 @@ const SectionFilterContent = ({
 
     setIsLoading(true);
 
-    fetchPeople(newFilter).finally(() => setIsLoading(false));
+    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
   // TODO: change translation keys
@@ -232,7 +234,7 @@ const SectionFilterContent = ({
   }, [filter.sortOrder, filter.sortBy]);
 
   //TODO: add new options from filter after update backend
-  const getSelectedFilterData = async () => {
+  const getSelectedFilterData = React.useCallback(async () => {
     const { guestCaption, userCaption, groupCaption } = customNames;
     const filterValues = [];
 
@@ -295,8 +297,59 @@ const SectionFilterContent = ({
       }
     }
 
-    return filterValues;
-  };
+    const currentFilterValues = [];
+
+    setSelectedFilterValues((value) => {
+      if (!value) {
+        currentFilterValues.push(...filterValues);
+        return filterValues.map((f) => ({ ...f }));
+      }
+
+      const items = value.map((v) => {
+        const item = filterValues.find((f) => f.group === v.group);
+
+        if (item) {
+          if (item.isMultiSelect) {
+            let isEqual = true;
+
+            item.key.forEach((k) => {
+              if (!v.key.includes(k)) {
+                isEqual = false;
+              }
+            });
+
+            if (isEqual) return item;
+
+            return false;
+          } else {
+            if (item.key === v.key) return item;
+            return false;
+          }
+        } else {
+          return false;
+        }
+      });
+
+      const newItems = filterValues.filter(
+        (v) => !items.find((i) => i.group === v.group)
+      );
+
+      items.push(...newItems);
+
+      currentFilterValues.push(...items.filter((i) => i));
+
+      return items.filter((i) => i);
+    });
+
+    return currentFilterValues;
+  }, [
+    filter.employeeStatus,
+    filter.activationStatus,
+    filter.role,
+    filter.group,
+    t,
+    customNames,
+  ]);
 
   //TODO: add new options from filter after update backend
   const removeSelectedItem = ({ key, group }) => {
@@ -317,12 +370,12 @@ const SectionFilterContent = ({
     }
 
     setIsLoading(true);
-    fetchPeople(newFilter).finally(() => setIsLoading(false));
+    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
   const clearAll = () => {
     setIsLoading(true);
-    fetchPeople().finally(() => setIsLoading(false));
+    fetchPeople(null, true).finally(() => setIsLoading(false));
   };
 
   return isLoaded && tReady ? (

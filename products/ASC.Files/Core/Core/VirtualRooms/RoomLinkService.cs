@@ -49,8 +49,8 @@ public class RoomLinkService
 
     public string GetInvitationLink(string email, Guid createdBy)
     {
-        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, EmployeeType.User, createdBy)
-            + $"&emplType={EmployeeType.User:d}";
+        var link = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.LinkInvite, EmployeeType.RoomAdmin, createdBy)
+            + $"&emplType={EmployeeType.RoomAdmin:d}";
 
         return link;
     }
