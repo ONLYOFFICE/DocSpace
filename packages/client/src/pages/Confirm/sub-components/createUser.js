@@ -218,13 +218,15 @@ const RegisterContainer = styled.div`
 `;
 
 const Confirm = (props) => {
-  const { settings, t, greetingTitle, providers, isDesktop } = props;
+  const { settings, t, greetingTitle, providers, isDesktop, linkData } = props;
   const inputRef = React.useRef(null);
+
+  const emailFromLink = linkData.email ? linkData.email : "";
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [ssoLabel, setSsoLabel] = useState("");
   const [ssoUrl, setSsoUrl] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailFromLink);
   const [emailValid, setEmailValid] = useState(true);
   const [emailErrorText, setEmailErrorText] = useState("");
 
@@ -335,14 +337,17 @@ const Confirm = (props) => {
       email: email,
     };
 
-    const registerData = Object.assign(personalData, {
-      type: type,
-      key: linkData.key,
-    });
+    if (!!type) {
+      personalData.type = type;
+    }
 
-    const key = linkData.confirmHeader;
+    if (!!linkData.key) {
+      personalData.key = linkData.key;
+    }
 
-    createConfirmUser(registerData, loginData, key)
+    const headerKey = linkData.confirmHeader;
+
+    createConfirmUser(personalData, loginData, headerKey)
       .then(() => window.location.replace(defaultPage))
       .catch((error) => {
         console.error("confirm error", error);
@@ -638,7 +643,7 @@ const Confirm = (props) => {
                   scale={true}
                   isAutoFocussed={true}
                   tabIndex={1}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || !!emailFromLink}
                   autoComplete="username"
                   onChange={onChangeEmail}
                   onBlur={onBlurEmail}
