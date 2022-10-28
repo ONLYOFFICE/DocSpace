@@ -75,14 +75,12 @@ public class TransferProgressItem : BaseBackupProgressItem
     }
 
     public string TargetRegion { get; set; }
-    public bool TransferMail { get; set; }
     public bool Notify { get; set; }
     public string TempFolder { get; set; }
     public int Limit { get; set; }
 
     public void Init(
         string targetRegion,
-        bool transferMail,
         int tenantId,
         string tempFolder,
         int limit,
@@ -90,7 +88,6 @@ public class TransferProgressItem : BaseBackupProgressItem
     {
         TenantId = tenantId;
         TargetRegion = targetRegion;
-        TransferMail = transferMail;
         Notify = notify;
         TempFolder = tempFolder;
         Limit = limit;
@@ -118,10 +115,7 @@ public class TransferProgressItem : BaseBackupProgressItem
                 Percentage = args.Progress;
                 PublishChanges();
             };
-            if (!TransferMail)
-            {
-                transferProgressItem.IgnoreModule(ModuleName.Mail);
-            }
+
             transferProgressItem.RunJob();
 
             Link = GetLink(alias, false);

@@ -1,128 +1,98 @@
-import React from "react";
-import Error403 from "client/Error403";
+import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import styled, { css } from "styled-components";
+import { withRouter } from "react-router";
 import Error520 from "client/Error520";
-import ConnectClouds from "./ConnectedClouds";
+//import ConnectClouds from "./ConnectedClouds";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
-import TabsContainer from "@docspace/components/tabs-container";
+import Submenu from "@docspace/components/submenu";
 import CommonSettings from "./CommonSettings";
 import AdminSettings from "./AdminSettings";
+import { tablet } from "@docspace/components/utils/device";
+import { isMobile } from "react-device-detect";
 
-const SectionBodyContent = ({
-  setting,
-  isAdmin,
-  enableThirdParty,
-  settingsIsLoaded,
-  isErrorSettings,
-  history,
-  setExpandSettingsTree,
-  setSelectedNode,
-  isPersonal,
-  t,
-}) => {
+const StyledContainer = styled.div`
+  margin-top: -22px;
+
+  @media ${tablet} {
+    margin-top: 0px;
+  }
+
+  ${isMobile &&
+  css`
+    margin-top: 0px;
+  `}
+`;
+
+const SectionBodyContent = ({ isVisitor, isErrorSettings, history }) => {
+  const { t } = useTranslation(["FilesSettings", "Common"]);
+
+  const setting = window.location.pathname.endsWith("/settings/common")
+    ? "common"
+    : "admin";
+
   const commonSettings = {
+    id: "common",
+    name: t("CommonSettings"),
     content: <CommonSettings t={t} />,
-    key: "common",
-    title: t("CommonSettings"),
   };
 
   const adminSettings = {
+    id: "admin",
+    name: t("Common:AdminSettings"),
     content: <AdminSettings t={t} />,
-    key: "admin",
-    title: t("Common:AdminSettings"),
   };
 
-  const connectedCloud = {
-    content: <ConnectClouds />,
-    key: "connected-clouds",
-    title: t("ThirdPartySettings"),
-  };
+  // const connectedCloud = {
+  //   id: "connected-clouds",
+  //   name: t("ThirdPartySettings"),
+  //   content: <ConnectClouds />,
+  // };
 
-  const elements = [];
+  const data = [adminSettings, commonSettings];
 
-  if (isAdmin && !isPersonal) {
-    elements.push(adminSettings);
-  }
+  // if (enableThirdParty) {
+  //   data.push(connectedCloud);
+  // }
 
-  if (!isPersonal) {
-    elements.push(commonSettings);
-  }
+  const onSelect = useCallback(
+    (e) => {
+      const { id } = e;
 
-  if (enableThirdParty) {
-    elements.push(connectedCloud);
-  }
-
-  const onSelect = React.useCallback(
-    (data) => {
-      const { key } = data;
-
-      if (key === setting) return;
-
-      setSelectedNode([key]);
-      setExpandSettingsTree([key]);
+      if (id === setting) return;
 
       history.push(
-        combineUrl(
-          AppServerConfig.proxyURL,
-          config.homepage,
-          `/settings/${key}`
-        )
+        combineUrl(AppServerConfig.proxyURL, config.homepage, `/settings/${id}`)
       );
     },
-    [setting, history, setExpandSettingsTree, setSelectedNode]
+    [setting, history]
   );
 
-  const selectedTab = React.useCallback(() => {
-    switch (setting) {
-      case "common":
-        return isAdmin ? 1 : 0;
-      case "admin":
-        return 0;
-      case "connected-clouds":
-        return isPersonal ? 0 : isAdmin ? 2 : 1;
-      default:
-        return isAdmin ? 1 : 0;
-    }
-  }, [setting, isAdmin, isPersonal]);
-
-  return !settingsIsLoaded ? null : (!enableThirdParty &&
-      setting === "connected-clouds") ||
-    (!isAdmin && setting === "admin") ||
-    (isPersonal && setting !== "connected-clouds") ? (
-    <Error403 />
-  ) : isErrorSettings ? (
+  return isErrorSettings ? (
     <Error520 />
-  ) : !isPersonal ? (
-    <div>
-      <TabsContainer
-        elements={elements}
-        onSelect={onSelect}
-        selectedItem={selectedTab()}
-      />
-    </div>
   ) : (
-    <div>{elements[0].content}</div>
+    <StyledContainer>
+      {isVisitor ? (
+        <CommonSettings t={t} showTitle={true} />
+      ) : (
+        <Submenu
+          data={data}
+          startSelect={setting === "common" ? commonSettings : adminSettings}
+          onSelect={onSelect}
+        />
+      )}
+    </StyledContainer>
   );
 };
 
-export default inject(({ auth, treeFoldersStore, settingsStore }) => {
-  const {
-    enableThirdParty,
-    settingsIsLoaded,
+export default inject(({ auth, settingsStore }) => {
+  const { settingsIsLoaded } = settingsStore;
 
-    setExpandSettingsTree,
-  } = settingsStore;
-
-  const { setSelectedNode } = treeFoldersStore;
   return {
-    isAdmin: auth.isAdmin,
-    isPersonal: auth.settingsStore.personal,
-    enableThirdParty,
+    isVisitor: auth.userStore.user.isVisitor,
     settingsIsLoaded,
-
-    setExpandSettingsTree,
-    setSelectedNode,
   };
-})(observer(SectionBodyContent));
+})(withRouter(observer(SectionBodyContent)));

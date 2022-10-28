@@ -259,14 +259,6 @@ const Base = {
       fill: white,
     },
 
-    secondaryButton: {
-      height: "32px",
-      padding: "0",
-      borderRadius: "3px",
-      cornerRoundsTopLeft: "0",
-      cornerRoundsBottomLeft: "0",
-    },
-
     dropDown: {
       top: "100%",
     },
@@ -285,11 +277,12 @@ const Base = {
   },
 
   socialButton: {
-    fontWeight: "600",
+    fontWeight: "500",
     textDecoration: "none",
     padding: "0",
     borderRadius: "2px",
     height: "40px",
+    heightSmall: "32px",
     textAlign: "left",
     stroke: " none",
     outline: "none",
@@ -297,7 +290,9 @@ const Base = {
 
     background: white,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
+    connectBackground: "#3B72A7",
     hoverBackground: white,
+    hoverConnectBackground: "#265A8F",
     activeBackground: "grayMaxLight",
     hoverBorder: "#1877f2",
 
@@ -319,8 +314,9 @@ const Base = {
       overflow: "hidden",
       textOverflow: "ellipsis",
       whiteSpace: "nowrap",
-      color: "#757575",
-      hoverColor: "#1877f2",
+      color: "#A3A9AE",
+      hoverColor: black,
+      connectColor: white,
     },
 
     svg: {
@@ -329,6 +325,7 @@ const Base = {
       height: "18px",
       minWidth: "18px",
       minHeight: "18px",
+      fill: white,
     },
   },
 
@@ -392,7 +389,7 @@ const Base = {
     height: " 32px",
     width: "32px",
     padding: "10px",
-    color: black,
+    color: grayMain,
     hoverColor: black,
   },
 
@@ -445,6 +442,8 @@ const Base = {
 
     hoverBorderColor: gray,
     hoverIndeterminateColor: black,
+
+    focusColor: "#A3A9AE",
   },
 
   // slider: {
@@ -764,6 +763,19 @@ const Base = {
     hoverIconColor: grayMid,
   },
 
+  inputPhone: {
+    activeBorderColor: "#2da7db",
+    inactiveBorderColor: "#d0d5da",
+    errorBorderColor: "#f21c0e",
+    backgroundColor: "#fff",
+    color: "#33333",
+    scrollBackground: "#a3a9ae",
+    placeholderColor: "#a3a9ae",
+    dialCodeColor: "#a3a9ae",
+    width: "320px",
+    height: "44px",
+  },
+
   textInput: {
     fontWeight: "normal",
     placeholderColor: gray,
@@ -1077,7 +1089,7 @@ const Base = {
 
     image: {
       width: "100%",
-      height: "auto",
+      height: "100%",
       borderRadius: "50%",
     },
 
@@ -1138,7 +1150,10 @@ const Base = {
         width: "24px",
         height: "24px",
         background: blueMain,
-        border: `6px solid ${white}`,
+        disabledBackground: "#A6DCF2",
+        borderWidth: "6px",
+        borderStyle: "solid",
+        borderColor: `${white}`,
         borderRadius: "30px",
         boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
       },
@@ -1177,6 +1192,10 @@ const Base = {
         color: "transparent",
         width: "100%",
         height: "8px",
+      },
+
+      trackNumber: {
+        color: "#A3A9AE",
       },
 
       fillLower: {
@@ -1352,7 +1371,8 @@ const Base = {
     maxWidth: "500px",
     border: "0px",
     margin: "0px",
-    padding: "0px 16px",
+    padding: "0px 12px",
+    tabletPadding: "0px 16px",
     lineHeight: "32px",
     tabletLineHeight: "36px",
 
@@ -1531,6 +1551,7 @@ const Base = {
 
   comboBox: {
     padding: "6px 0px",
+    background: lightGrayishStrongBlue,
 
     width: {
       base: "173px",
@@ -1841,6 +1862,13 @@ const Base = {
       borderTop: "1px solid #eceef1",
       background: "#f3f4f4",
     },
+
+    paymentAlert: {
+      color: "#ed7309",
+      warningColor: "#F21C0E",
+      border: "1px solid #ed7309",
+      warningBorder: "1px solid #F21C0E",
+    },
   },
 
   catalogItem: {
@@ -1886,7 +1914,7 @@ const Base = {
       fontWeight: 600,
       tablet: {
         marginLeft: "12px",
-        lineHeight: "16px",
+        lineHeight: "20px",
         fontSize: "15px",
         fontWeight: "600",
       },
@@ -1960,6 +1988,9 @@ const Base = {
   article: {
     background: grayLight,
     pinBorderColor: grayLightMid,
+    catalogItemHeader: "#A3A9AE",
+    catalogItemText: "#555F65",
+    catalogItemActiveBackground: "#DFE2E3",
   },
 
   section: {
@@ -1992,11 +2023,32 @@ const Base = {
     closeButtonSize: "17px",
     closeButtonBg: "transparent",
 
-    accessGroupBg: grayLightMid,
-    accessGroupText: black,
+    members: {
+      iconColor: "#A3A9AE",
+      subtitleColor: "#a3a9ae",
+      meLabelColor: "#a3a9ae",
+      roleSelectorColor: "#a3a9ae",
+      disabledRoleSelectorColor: "#a3a9ae",
+      roleSelectorArrowColor: "#a3a9ae",
+    },
 
-    showAccessUsersTextColor: gray,
-    showAccessPanelTextColor: "#3b72a7",
+    history: {
+      subtitleColor: "#a3a9ae",
+      fileBlockBg: "#f8f9f9",
+      dateColor: "#A3A9AE",
+      fileExstColor: "#A3A9AE",
+      locationIconColor: "#A3A9AE",
+      folderLabelColor: "#A3A9AE",
+    },
+
+    details: {
+      customLogoBorderColor: "#eceef1",
+      commentEditorIconColor: "#333",
+    },
+
+    gallery: {
+      borderColor: "#d0d5da",
+    },
   },
 
   filesArticleBody: {
@@ -2567,7 +2619,7 @@ const Base = {
     background: "none",
     svgFill: black,
     header: {
-      height: "50px",
+      height: "49px",
       borderBottom: `1px solid ${grayLightMid}`,
       marginBottom: "6px",
     },
@@ -2577,7 +2629,7 @@ const Base = {
     padding: "0 12px",
     mobile: {
       height: "36px",
-      padding: "0 16px",
+      padding: "0 16px 6px",
     },
   },
   newContextMenu: {
@@ -2680,6 +2732,9 @@ const Base = {
   login: {
     linkColor: link,
     textColor: gray,
+    navBackground: "#F8F9F9",
+    headerColor: black,
+    helpButton: "#A3A9AE",
 
     register: {
       backgroundColor: grayLight,
@@ -2753,7 +2808,13 @@ const Base = {
     },
 
     home: {
+      logoColor: black,
       textColorError: red,
+    },
+
+    payments: {
+      linkColor: link,
+      delayColor: "#F21C0E",
     },
 
     paymentsEnterprise: {
@@ -2772,6 +2833,8 @@ const Base = {
         fillIcon: "dimgray",
         expanderColor: "dimgray",
       },
+
+      separatorBorder: `1px solid ${grayLightMid}`,
 
       security: {
         arrowFill: black,
@@ -2823,7 +2886,7 @@ const Base = {
       },
 
       integration: {
-        separatorBorder: `1px solid ${grayLightMid}`,
+        separatorBorder: `1px solid ${grayMid}`,
         linkColor: link,
 
         sso: {
@@ -2836,7 +2899,23 @@ const Base = {
       backup: {
         rectangleBackgroundColor: "#f8f9f9",
         separatorBorder: "1px solid #eceef1",
-        contextBorder: "1px solid #D0D5DA",
+      },
+
+      payment: {
+        priceColor: "#555F65",
+        disabledPriceColor: "#A3A9AE",
+        storageSizeTitle: "#A3A9AE",
+
+        backgroundColor: "#f8f9f9",
+        linkColor: "#316DAA",
+        tariffText: "#555F65",
+        border: "1px solid #f8f9f9",
+        backgroundBenefitsColor: "#f8f9f9",
+        rectangleColor: "#f3f4f4",
+
+        backgroundPrice: "#f3f4f4",
+        backgroundPriceContainer: "transparent",
+        warningColor: "#F21C0E",
       },
     },
 
@@ -2888,6 +2967,21 @@ const Base = {
     disabledBackground: "#f8f9f9",
     defaultTagColor: "#A3A9AE",
     newTagBackground: "#eceef1",
+  },
+
+  profile: {
+    main: {
+      background: "#F8F9F9",
+      textColor: black,
+    },
+    themePreview: {
+      border: "1px solid #eceef1",
+    },
+  },
+
+  formWrapper: {
+    background: white,
+    boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
 };
 

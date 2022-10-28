@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
-import { loopTreeFolders } from "../helpers/files-helpers";
 import uniqueid from "lodash/uniqueId";
 import sumBy from "lodash/sumBy";
 import { ConflictResolveType } from "@docspace/common/constants";
@@ -42,6 +41,7 @@ class UploadDataStore {
   converted = true;
   uploadPanelVisible = false;
   selectedUploadFile = [];
+  errors = 0;
 
   isUploading = false;
   isUploadingAndConversion = false;
@@ -106,6 +106,7 @@ class UploadDataStore {
     this.conversionPercent = 0;
     this.uploaded = true;
     this.converted = true;
+    this.errors = 0;
 
     this.isUploadingAndConversion = false;
     this.isUploading = false;
@@ -252,11 +253,13 @@ class UploadDataStore {
 
       if (!this.filesToConversion.length) {
         this.filesToConversion.push(file);
-        this.uploadedFilesHistory.push(file);
+        if (!secondConvertingWithPassword && !conversionPositionIndex)
+          this.uploadedFilesHistory.push(file);
         this.startConversion(t);
       } else {
         this.filesToConversion.push(file);
-        this.uploadedFilesHistory.push(file);
+        if (!secondConvertingWithPassword && !conversionPositionIndex)
+          this.uploadedFilesHistory.push(file);
       }
     }
   };
@@ -398,13 +401,19 @@ class UploadDataStore {
         }
 
         if (progress === 100) {
+          if (!error) error = data[0].error;
+
           runInAction(() => {
             const file = this.files.find((file) => file.fileId === fileId);
 
             if (file) {
+              file.error = error;
               file.convertProgress = progress;
               file.inConversion = false;
-              file.action = "converted";
+
+              if (error.indexOf("password") !== -1) {
+                file.needPassword = true;
+              } else file.action = "converted";
             }
 
             const historyFile = this.uploadedFilesHistory.find(
@@ -412,9 +421,13 @@ class UploadDataStore {
             );
 
             if (historyFile) {
+              historyFile.error = error;
               historyFile.convertProgress = progress;
               historyFile.inConversion = false;
-              historyFile.action = "converted";
+
+              if (error.indexOf("password") !== -1) {
+                historyFile.needPassword = true;
+              } else historyFile.action = "converted";
             }
           });
 
@@ -670,27 +683,6 @@ class UploadDataStore {
       } else {
         addNewFile();
       }
-
-      if (!!folderInfo) {
-        const {
-          expandedKeys,
-          setExpandedKeys,
-          treeFolders,
-        } = this.treeFoldersStore;
-
-        const newExpandedKeys = expandedKeys.filter(
-          (x) => x !== newPath[newPath.length - 1] + ""
-        );
-
-        setExpandedKeys(newExpandedKeys);
-
-        loopTreeFolders(
-          newPath,
-          treeFolders,
-          this.filesStore.folders.length === 1 ? this.filesStore.folders : [],
-          this.filesStore.folders.length
-        );
-      }
     }
   };
 
@@ -935,10 +927,16 @@ class UploadDataStore {
     const { fetchFiles, filter } = this.filesStore;
     const { withPaging } = this.authStore.settingsStore;
 
-    const totalErrorsCount = sumBy(this.files, (f) => (f.error ? 1 : 0));
+    const totalErrorsCount = sumBy(this.files, (f) => {
+      f.error && toastr.error(f.error);
+      return f.error ? 1 : 0;
+    });
 
     if (totalErrorsCount > 0) {
       this.primaryProgressDataStore.setPrimaryProgressBarShowError(true); // for empty file
+      this.primaryProgressDataStore.setPrimaryProgressBarErrors(
+        totalErrorsCount
+      );
       console.log("Errors: ", totalErrorsCount);
     }
 
@@ -957,7 +955,7 @@ class UploadDataStore {
       withPaging && fetchFiles(toFolderId, filter);
 
       if (toFolderId) {
-        const { socketHelper } = this.filesStore.settingsStore;
+        const { socketHelper } = this.authStore.settingsStore;
 
         socketHelper.emit({
           command: "refresh-folder",
@@ -1159,7 +1157,6 @@ class UploadDataStore {
   };
 
   moveToCopyTo = (destFolderId, pbData, isCopy, fileIds, folderIds) => {
-    const { treeFolders, setTreeFolders } = this.treeFoldersStore;
     const {
       fetchFiles,
       filter,
@@ -1181,45 +1178,36 @@ class UploadDataStore {
       updatedFolder = destFolderId;
     }
 
-    getFolder(receivedFolder).then((data) => {
-      let newTreeFolders = treeFolders;
-      let path = data.pathParts.slice(0);
-      let folders = data.folders;
-      let foldersCount = data.current.foldersCount;
-      loopTreeFolders(path, newTreeFolders, folders, foldersCount);
+    if (!isCopy || destFolderId === this.selectedFolderStore.id) {
+      let newFilter;
 
-      if (!isCopy || destFolderId === this.selectedFolderStore.id) {
-        let newFilter;
-
-        if (isEmptyLastPageAfterOperation()) {
-          newFilter = resetFilterPage();
-        }
-
-        fetchFiles(
-          updatedFolder,
-          newFilter ? newFilter : filter,
-          true,
-          true,
-          false
-        ).finally(() => {
-          this.clearActiveOperations(fileIds, folderIds);
-          setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-          this.dialogsStore.setIsFolderActions(false);
-        });
-      } else {
-        this.clearActiveOperations(fileIds, folderIds);
-        setSecondaryProgressBarData({
-          icon: pbData.icon,
-          label: pbData.label || label,
-          percent: 100,
-          visible: true,
-          alert: false,
-        });
-
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-        setTreeFolders(newTreeFolders);
+      if (isEmptyLastPageAfterOperation()) {
+        newFilter = resetFilterPage();
       }
-    });
+
+      fetchFiles(
+        updatedFolder,
+        newFilter ? newFilter : filter,
+        true,
+        true,
+        false
+      ).finally(() => {
+        this.clearActiveOperations(fileIds, folderIds);
+        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        this.dialogsStore.setIsFolderActions(false);
+      });
+    } else {
+      this.clearActiveOperations(fileIds, folderIds);
+      setSecondaryProgressBarData({
+        icon: pbData.icon,
+        label: pbData.label || label,
+        percent: 100,
+        visible: true,
+        alert: false,
+      });
+
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+    }
   };
 
   getOperationProgress = async (id) => {

@@ -62,7 +62,7 @@ public class EncryptionKeyPairDtoHelper
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(privateKeyEnc);
 
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        if (!_authContext.IsAuthenticated || user.IsVisitor(_userManager))
+        if (!_authContext.IsAuthenticated || _userManager.IsUser(user))
         {
             throw new SecurityException();
         }
@@ -118,7 +118,7 @@ public class EncryptionKeyPairDtoHelper
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
 
-        var locatedInPrivateRoom = file.RootFolderType == FolderType.VirtualRooms 
+        var locatedInPrivateRoom = file.RootFolderType == FolderType.VirtualRooms
             && await DocSpaceHelper.LocatedInPrivateRoomAsync(file, folderDao);
 
         if (file.RootFolderType != FolderType.Privacy && !locatedInPrivateRoom)
@@ -129,12 +129,12 @@ public class EncryptionKeyPairDtoHelper
         var tmpFiles = await FileStorageService.GetSharedInfoAsync(new List<T> { fileId }, new List<T> { });
         var fileShares = tmpFiles.ToList();
         fileShares = fileShares.Where(share => !share.SubjectGroup
-                                        && !share.SubjectId.Equals(FileConstant.ShareLinkId)
-                                        && share.Share == FileShare.ReadWrite).ToList();
+                                        && !share.Id.Equals(FileConstant.ShareLinkId)
+                                        && share.Access == FileShare.ReadWrite).ToList();
 
         var fileKeysPair = fileShares.Select(share =>
         {
-            var fileKeyPairString = _encryptionLoginProvider.GetKeys(share.SubjectId);
+            var fileKeyPairString = _encryptionLoginProvider.GetKeys(share.Id);
             if (string.IsNullOrEmpty(fileKeyPairString))
             {
                 return null;
@@ -146,7 +146,7 @@ public class EncryptionKeyPairDtoHelper
                 PropertyNameCaseInsensitive = true
             };
             var fileKeyPair = JsonSerializer.Deserialize<EncryptionKeyPairDto>(fileKeyPairString, options);
-            if (fileKeyPair.UserId != share.SubjectId)
+            if (fileKeyPair.UserId != share.Id)
             {
                 return null;
             }

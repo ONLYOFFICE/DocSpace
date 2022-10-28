@@ -1,15 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {
-  ToggleButtonContainer,
-  HiddenInput,
-  Container,
-} from "./styled-toggle-button";
+import { ToggleButtonContainer, HiddenInput } from "./styled-toggle-button";
 import Text from "../text";
-import globalColors from "../utils/globalColors";
 import { motion } from "framer-motion";
-import Base from "../themes/base";
-
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const ToggleIcon = ({ isChecked, isLoading }) => {
@@ -72,16 +65,12 @@ class ToggleButton extends Component {
       className,
       style,
       isLoading,
-      theme,
     } = this.props;
-    const { gray } = globalColors;
-    const colorProps = isDisabled ? { color: gray } : {};
 
     //console.log("ToggleButton render");
 
     return (
       <ColorTheme
-        {...this.props}
         themeId={ThemeType.ToggleButton}
         id={id}
         className={className}
@@ -102,7 +91,7 @@ class ToggleButton extends Component {
           />
           <ToggleIcon isChecked={this.state.checked} isLoading={isLoading} />
           {label && (
-            <Text className="toggle-button-text" as="span" {...colorProps}>
+            <Text className="toggle-button-text" as="span">
               {label}
             </Text>
           )}

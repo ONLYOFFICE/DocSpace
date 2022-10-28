@@ -33,4 +33,6 @@ public class TenantQuotaRow : IMapFrom<DbQuotaRow>
     public string Path { get; set; }
     public long Counter { get; set; }
     public string Tag { get; set; }
+    public Guid UserId { get; set; }
+    public DateTime LastModified { get; set; }
 }

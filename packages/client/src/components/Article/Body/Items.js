@@ -133,7 +133,7 @@ const Items = ({
   setDragging,
   startUpload,
   uploadEmptyFolders,
-
+  isVisitor,
   isAdmin,
   myId,
   commonId,
@@ -164,7 +164,12 @@ const Items = ({
         if (pathParts && pathParts.includes(item.id) && !isMainFolder)
           return true;
 
-        if (selectedTreeNode[0] === "@my" && item.key === "0-0") return true;
+        if (
+          (selectedTreeNode[0] === "@my" || selectedTreeNode[0] === "@rooms") &&
+          item.key === "0-0"
+        ) {
+          return true;
+        }
         return `${item.id}` === selectedTreeNode[0];
       }
     },
@@ -318,7 +323,7 @@ const Items = ({
           isHeader={true}
           isFirstHeader={true}
           showText={showText}
-          text={"Rooms"}
+          text={t("Common:Rooms")}
         />
       );
 
@@ -328,7 +333,7 @@ const Items = ({
           isHeader={true}
           isFirstHeader={false}
           showText={showText}
-          text={"Files"}
+          text={t("Translations:Files")}
         />
       );
 
@@ -338,11 +343,16 @@ const Items = ({
           isHeader={true}
           isFirstHeader={false}
           showText={showText}
-          text={"Other"}
+          text={t("Translations:Other")}
         />
       );
 
-      items.splice(3, 0, filesHeader);
+      if (isVisitor) {
+        items.length > 1 && items.splice(1, 0, filesHeader);
+      } else {
+        items.splice(3, 0, filesHeader);
+      }
+
       items.unshift(roomsHeader);
       items.push(otherHeader);
 
@@ -363,6 +373,7 @@ const Items = ({
       startUpload,
       uploadEmptyFolders,
       trashIsEmpty,
+      isAdmin,
     ]
   );
 
@@ -412,6 +423,7 @@ export default inject(
 
     return {
       isAdmin: auth.isAdmin,
+      isVisitor: auth.userStore.user.isVisitor,
       myId: myFolderId,
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,

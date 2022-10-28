@@ -40,7 +40,7 @@ public class LicenseController : BaseSettingsController
     private readonly SettingsManager _settingsManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly ILogger _log;
-    private readonly PaymentManager _paymentManager;
+    private readonly ITariffService _tariffService;
 
     public LicenseController(
         ILoggerProvider option,
@@ -56,7 +56,7 @@ public class LicenseController : BaseSettingsController
         CoreBaseSettings coreBaseSettings,
         IMemoryCache memoryCache,
         FirstTimeTenantSettings firstTimeTenantSettings,
-        PaymentManager paymentManager,
+        ITariffService tariffService,
         IHttpContextAccessor httpContextAccessor) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _log = option.CreateLogger("ASC.Api");
@@ -69,7 +69,7 @@ public class LicenseController : BaseSettingsController
         _licenseReader = licenseReader;
         _settingsManager = settingsManager;
         _coreBaseSettings = coreBaseSettings;
-        _paymentManager = paymentManager;
+        _tariffService = tariffService;
     }
 
     [HttpGet("license/refresh")]
@@ -130,12 +130,12 @@ public class LicenseController : BaseSettingsController
             throw new NotSupportedException();
         }
 
-        if (!_userManager.GetUsers(_authContext.CurrentAccount.ID).IsAdmin(_userManager))
+        if (!_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException();
         }
 
-        var curQuota = _tenantExtra.GetTenantQuota();
+        var curQuota = _tenantManager.GetCurrentTenantQuota();
         if (curQuota.Tenant != Tenant.DefaultTenant)
         {
             return false;
@@ -155,7 +155,7 @@ public class LicenseController : BaseSettingsController
         var quota = new TenantQuota(-1000)
         {
             Name = "apirequest",
-            ActiveUsers = curQuota.ActiveUsers,
+            CountUser = curQuota.CountUser,
             MaxFileSize = curQuota.MaxFileSize,
             MaxTotalSize = curQuota.MaxTotalSize,
             Features = curQuota.Features
@@ -168,11 +168,11 @@ public class LicenseController : BaseSettingsController
 
         var tariff = new Tariff
         {
-            QuotaId = quota.Tenant,
+            Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
             DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
         };
 
-        _paymentManager.SetTariff(-1, tariff);
+        _tariffService.SetTariff(-1, tariff);
 
         _messageService.Send(MessageAction.LicenseKeyUploaded);
 
@@ -212,7 +212,7 @@ public class LicenseController : BaseSettingsController
             return dueDate >= DateTime.UtcNow.Date
                                     ? Resource.LicenseUploaded
                                     : string.Format(
-                                        _tenantExtra.GetTenantQuota().Update
+                                        _tenantManager.GetCurrentTenantQuota().Update
                                             ? Resource.LicenseUploadedOverdueSupport
                                             : Resource.LicenseUploadedOverdue,
                                                     "",

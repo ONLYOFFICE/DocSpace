@@ -7,6 +7,7 @@ import {
 } from "@docspace/components/utils/device";
 
 import ViewSelector from "@docspace/components/view-selector";
+import Link from "@docspace/components/link";
 
 import FilterButton from "./sub-components/FilterButton";
 import SortButton from "./sub-components/SortButton";
@@ -34,14 +35,21 @@ const FilterInput = React.memo(
 
     filterHeader,
     selectorLabel,
+    clearAll,
 
     isRecentFolder,
     removeSelectedItem,
+
+    isPersonalRoom,
+    isRooms,
+    isAccounts,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
     const [selectedFilterValue, setSelectedFilterValue] = React.useState(null);
     const [selectedItems, setSelectedItems] = React.useState(null);
+
+    const mountRef = React.useRef(true);
 
     React.useEffect(() => {
       const value = getViewSettingsData && getViewSettingsData();
@@ -52,7 +60,7 @@ const FilterInput = React.memo(
     React.useEffect(() => {
       const value = getSelectedInputValue && getSelectedInputValue();
 
-      if (value) setInputValue(value);
+      setInputValue(value);
     }, [getSelectedInputValue]);
 
     React.useEffect(() => {
@@ -62,6 +70,7 @@ const FilterInput = React.memo(
     const getSelectedFilterDataAction = React.useCallback(async () => {
       const value = await getSelectedFilterData();
 
+      if (!mountRef.current) return;
       setSelectedFilterValue(value);
 
       const newSelectedItems = [];
@@ -100,6 +109,12 @@ const FilterInput = React.memo(
       [selectedItems, removeSelectedItem]
     );
 
+    React.useEffect(() => {
+      return () => {
+        mountRef.current = false;
+      };
+    }, []);
+
     return (
       <StyledFilterInput>
         <div className="filter-input_filter-row">
@@ -116,6 +131,9 @@ const FilterInput = React.memo(
             selectedFilterValue={selectedFilterValue}
             filterHeader={filterHeader}
             selectorLabel={selectorLabel}
+            isPersonalRoom={isPersonalRoom}
+            isRooms={isRooms}
+            isAccounts={isAccounts}
           />
           {!isRecentFolder && (
             <SortButton
@@ -155,10 +173,23 @@ const FilterInput = React.memo(
               <SelectedItem
                 key={`${item.key}_${item.group}`}
                 propKey={item.key}
-                {...item}
+                label={item.label}
+                group={item.group}
                 removeSelectedItem={removeSelectedItemAction}
               />
             ))}
+            {selectedItems.length > 1 && (
+              <Link
+                className={"clear-all-link"}
+                isHovered
+                fontWeight={600}
+                isSemitransparent
+                type="action"
+                onClick={clearAll}
+              >
+                {t("Common:ClearAll")}
+              </Link>
+            )}
           </div>
         )}
       </StyledFilterInput>

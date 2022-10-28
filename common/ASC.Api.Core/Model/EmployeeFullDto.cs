@@ -46,16 +46,18 @@ public class EmployeeFullDto : EmployeeDto
     public string AvatarMax { get; set; }
     public string AvatarMedium { get; set; }
     public string Avatar { get; set; }
-    public bool IsAdmin { get; set; }
+    public bool IsDocSpaceAdmin { get; set; }
     public bool IsLDAP { get; set; }
     public List<string> ListAdminModules { get; set; }
     public bool IsOwner { get; set; }
-    public bool IsVisitor { get; set; }
+    public bool IsUser { get; set; }
     public string CultureName { get; set; }
     public string MobilePhone { get; set; }
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
     public bool IsSSO { get; set; }
     public DarkThemeSettingsEnum? Theme { get; set; }
+    public long QuotaLimit { get; set; }
+    public double UsedSpace { get; set; }
 
     public static new EmployeeFullDto GetSample()
     {
@@ -68,7 +70,7 @@ public class EmployeeFullDto : EmployeeDto
             Email = "my@gmail.com",
             FirstName = "Mike",
             Id = Guid.Empty,
-            IsAdmin = false,
+            IsDocSpaceAdmin = false,
             ListAdminModules = new List<string> { "projects", "crm" },
             UserName = "Mike.Zanyatski",
             LastName = "Zanyatski",
@@ -97,6 +99,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
     private readonly WebItemSecurity _webItemSecurity;
     private readonly ApiDateTimeHelper _apiDateTimeHelper;
     private readonly WebItemManager _webItemManager;
+    private readonly SettingsManager _settingsManager;
+    private readonly IQuotaService _quotaService;
 
     public EmployeeFullDtoHelper(
         ApiContext context,
@@ -106,13 +110,17 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         CommonLinkUtility commonLinkUtility,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         ApiDateTimeHelper apiDateTimeHelper,
-        WebItemManager webItemManager)
+        WebItemManager webItemManager,
+        SettingsManager settingsManager,
+        IQuotaService quotaService)
     : base(context, displayUserSettingsHelper, userPhotoManager, commonLinkUtility, userManager)
     {
         _context = context;
         _webItemSecurity = webItemSecurity;
         _apiDateTimeHelper = apiDateTimeHelper;
         _webItemManager = webItemManager;
+        _settingsManager = settingsManager;
+        _quotaService = quotaService;
     }
 
     public static Expression<Func<User, UserInfo>> GetExpression(ApiContext apiContext)
@@ -182,14 +190,24 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             Terminated = _apiDateTimeHelper.Get(userInfo.TerminatedDate),
             WorkFrom = _apiDateTimeHelper.Get(userInfo.WorkFromDate),
             Email = userInfo.Email,
-            IsVisitor = userInfo.IsVisitor(_userManager),
-            IsAdmin = userInfo.IsAdmin(_userManager),
+            IsUser = _userManager.IsUser(userInfo),
+            IsDocSpaceAdmin = _userManager.IsDocSpaceAdmin(userInfo),
             IsOwner = userInfo.IsOwner(_context.Tenant),
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()
+
         };
 
         await Init(result, userInfo);
+
+        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+
+        if (quotaSettings.EnableUserQuota)
+        {
+            result.UsedSpace = Math.Max(0, _quotaService.FindUserQuotaRows(_context.Tenant.Id, userInfo.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
+            var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(userInfo);
+            result.QuotaLimit = userQuotaSettings != null ? userQuotaSettings.UserQuota : quotaSettings.DefaultUserQuota;
+        }
 
         if (userInfo.Sex.HasValue)
         {

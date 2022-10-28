@@ -15,7 +15,7 @@ import Text from "./TextLoader";
 import Filter from "./FilterLoader";
 import FilterBlock from "./FilterBlockLoader";
 import ProfileView from "./ProfileViewLoader";
-import SettingsFiles from "./SettingsFilesLoader";
+
 import Group from "./GroupLoader";
 import HistoryRows from "./HistoryRowsLoader";
 import Tile from "./TileLoader";
@@ -26,16 +26,23 @@ import DialogAsideLoader from "./DialogAsideLoader";
 import ListLoader from "./ListLoader";
 import SharingPanelLoader from "./SharingPanelLoader";
 import SharingPanelLoaderModal from "./SharingPanelLoader/modal";
-import InfoPanelBodyLoader from "./InfoPanelBodyLoader";
-import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
+
 import RoomTypeListLoader from "./CreateEditRoomLoader/RoomTypeListLoader";
 import SetRoomParamsLoader from "./CreateEditRoomLoader/SetRoomParamsLoader";
 import CreateEditRoomDilogHeaderLoader from "./CreateEditRoomLoader/CreateEditRoomDilogHeaderLoader";
 import DataBackupLoader from "./DataBackupLoader";
 import AutoBackupLoader from "./AutoBackupLoader";
 import RestoreBackupLoader from "./RestoreBackupLoader";
+import PaymentsLoader from "./PaymentsLoader";
 import SelectorSearchLoader from "./SelectorSearchLoader";
 import SelectorRowLoader from "./SelectorRowLoader";
+
+import InfoPanelViewLoader from "./InfoPanelBodyLoader/InfoPanelViewLoader";
+import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
+
+import SettingsHeader from "./SettingsLoader/SettingsHeaderLoader";
+import SettingsAdmin from "./SettingsLoader/SettingsAdminLoader";
+import SettingsCommon from "./SettingsLoader/SettingsCommonLoader";
 
 export default {
   Rectangle,
@@ -51,7 +58,7 @@ export default {
   Filter,
   FilterBlock,
   ProfileView,
-  SettingsFiles,
+
   Group,
   HistoryRows,
   Tile,
@@ -66,14 +73,21 @@ export default {
   NewTreeFolders,
   SharingPanelLoader,
   SharingPanelLoaderModal,
-  InfoPanelBodyLoader,
-  InfoPanelHeaderLoader,
+
   RoomTypeListLoader,
   SetRoomParamsLoader,
   CreateEditRoomDilogHeaderLoader,
   DataBackupLoader,
   AutoBackupLoader,
   RestoreBackupLoader,
+  PaymentsLoader,
   SelectorSearchLoader,
   SelectorRowLoader,
+
+  InfoPanelHeaderLoader,
+  InfoPanelViewLoader,
+
+  SettingsHeader,
+  SettingsAdmin,
+  SettingsCommon,
 };

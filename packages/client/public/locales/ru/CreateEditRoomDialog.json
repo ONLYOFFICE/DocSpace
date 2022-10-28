@@ -1,41 +1,34 @@
 {
-  "CreateRoom": "Создание комнаты",
   "ChooseRoomType": "Выберите тип комнаты",
-  "RoomEditing": "Редактирование комнаты",
-
-  "FillingFormsRoomTitle": "Комната для заполнения форм",
-  "CollaborationRoomTitle": "Комната для совместного редактирования",
-  "ReviewRoomTitle": "Комната для рецензирования",
-  "ViewOnlyRoomTitle": "Комната для просмотра",
-  "CustomRoomTitle": "Пользовательская комната",
-
-  "FillingFormsRoomDescription": "Данная комната подойдет для сбора форм/анкет/тестов и тд.",
   "CollaborationRoomDescription": "Совместная работа над одним или несколькими документами с вашей командой",
-  "ReviewRoomDescription": "Запроситe рецензию или комментарии к документам",
-  "ViewOnlyRoomDescription": "Предоставляйте доступ к любым готовым документам, отчетам, документации и другим файлам для просмотра",
-  "CustomRoomDescription": "Примените собственные настройки, чтобы использовать эту комнату для любых пользовательских целей",
-
-  "NamePlaceholder": "Введите имя",
-
-  "TagsPlaceholder": "Добавьте тэг",
+  "CollaborationRoomTitle": "Комната для совместного редактирования",
+  "CreateRoom": "Создание комнаты",
   "CreateTagOption": "Создать тэг",
-
-  "MakeRoomPrivateTitle": "Сделайте комнату приватной",
-  "MakeRoomPrivateDescription": "Все файлы в этой комнате будут зашифрованы",
-  "MakeRoomPrivateLimitationsWarningDescription": "С данной функцией Вы можете пригласить только уже существующих пользователей на портале. После создания комнаты изменить список пользобателей будет нельзя.",
-
-  "ThirdPartyStorageTitle": "Место хранения",
-  "ThirdPartyStorageDescription": "Используйте сторонние сервисы в качестве хранилища данных для этой комнаты. В подключенном хранилище будет создана новая папка для хранения данных этой комнаты",
-  "ThirdPartyStorageComboBoxPlaceholder": "Выберите хранилище",
-  "ThirdPartyStorageNoStorageAlert": "В Настройках портала не подключено ни одного хранилища. Перейдите в раздел Интеграций, чтобы включить возможность хранения данных на стороннем сервисе ",
-  "ThirdPartyStorageNoStorageAlertLink": "Сторонние сервисы",
-  "ThirdPartyStorageRememberChoice": "Запомнить этот выбор для новых комнат",
-  "ThirdPartyStoragePermanentSettingDescription": "Файлы хранятся в стороннем хранилище {{thirdpartyTitle}} в папке \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
-
-  "FolderNameTitle": "Имя папки",
-  "FolderNameDescription": "В подключенном хранилище будет создана новая папка для хранения данных этой комнаты",
-
+  "CustomRoomDescription": "Примените собственные настройки, чтобы использовать эту комнату для любых пользовательских целей",
+  "CustomRoomTitle": "Пользовательская комната",
+  "DropzoneTitleExsts": "(JPG или PNG, не более 1 МБ)",
   "DropzoneTitleLink": "Выберите новое изображение",
   "DropzoneTitleSecondary": "или перетащите сюда файл",
-  "DropzoneTitleExsts": "(JPG или PNG, не более 1 МБ)"
+  "FillingFormsRoomDescription": "Данная комната подойдет для сбора форм/анкет/тестов и тд.",
+  "FillingFormsRoomTitle": "Комната для заполнения форм",
+  "FolderNameDescription": "В подключенном хранилище будет создана новая папка для хранения данных этой комнаты",
+  "FolderNameTitle": "Имя папки",
+  "MakeRoomPrivateDescription": "Все файлы в этой комнате будут зашифрованы",
+  "MakeRoomPrivateLimitationsWarningDescription": "С данной функцией Вы можете пригласить только уже существующих пользователей на портале. После создания комнаты изменить список пользователей будет нельзя.",
+  "MakeRoomPrivateTitle": "Сделайте комнату приватной",
+  "NamePlaceholder": "Введите имя",
+  "ReviewRoomDescription": "Запроситe рецензию или комментарии к документам",
+  "ReviewRoomTitle": "Комната для рецензирования",
+  "RoomEditing": "Редактирование комнаты",
+  "RootLabel": "Корень",
+  "TagsPlaceholder": "Добавьте тэг",
+  "ThirdPartyStorageComboBoxPlaceholder": "Выберите хранилище",
+  "ThirdPartyStorageDescription": "Используйте сторонние сервисы в качестве хранилища данных для этой комнаты. В подключенном хранилище будет создана новая папка для хранения данных этой комнаты",
+  "ThirdPartyStorageNoStorageAlert": "В Настройках портала не подключено ни одного хранилища. Перейдите в раздел Интеграций, чтобы включить возможность хранения данных на стороннем сервисе ",
+  "ThirdPartyStorageNoStorageAlertLink": "Сторонние сервисы",
+  "ThirdPartyStoragePermanentSettingDescription": "Файлы хранятся в стороннем хранилище {{thirdpartyTitle}} в папке \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
+  "ThirdPartyStorageRememberChoice": "Запомнить этот выбор для новых комнат",
+  "ThirdPartyStorageTitle": "Место хранения",
+  "ViewOnlyRoomDescription": "Предоставляйте доступ к любым готовым документам, отчетам, документации и другим файлам для просмотра",
+  "ViewOnlyRoomTitle": "Комната для просмотра"
 }

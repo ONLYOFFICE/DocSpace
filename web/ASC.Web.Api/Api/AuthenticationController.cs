@@ -43,7 +43,6 @@ public class AuthenticationController : ControllerBase
     private readonly PasswordHasher _passwordHasher;
     private readonly EmailValidationKeyModelHelper _emailValidationKeyModelHelper;
     private readonly ICache _cache;
-    private readonly SetupInfo _setupInfo;
     private readonly MessageService _messageService;
     private readonly ProviderManager _providerManager;
     private readonly AccountLinker _accountLinker;
@@ -67,6 +66,8 @@ public class AuthenticationController : ControllerBase
     private readonly CookieStorage _cookieStorage;
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly UserManagerWrapper _userManagerWrapper;
+    private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
+    private readonly BruteForceLoginManager _bruteForceLoginManager;
 
     public AuthenticationController(
         UserManager userManager,
@@ -100,7 +101,9 @@ public class AuthenticationController : ControllerBase
         ApiContext apiContext,
         AuthContext authContext,
         CookieStorage cookieStorage,
-        DbLoginEventsManager dbLoginEventsManager)
+        DbLoginEventsManager dbLoginEventsManager,
+        BruteForceLoginManager bruteForceLoginManager,
+        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -110,7 +113,6 @@ public class AuthenticationController : ControllerBase
         _passwordHasher = passwordHasher;
         _emailValidationKeyModelHelper = emailValidationKeyModelHelper;
         _cache = cache;
-        _setupInfo = setupInfo;
         _messageService = messageService;
         _providerManager = providerManager;
         _accountLinker = accountLinker;
@@ -134,6 +136,8 @@ public class AuthenticationController : ControllerBase
         _cookieStorage = cookieStorage;
         _dbLoginEventsManager = dbLoginEventsManager;
         _userManagerWrapper = userManagerWrapper;
+        _bruteForceLoginManager = bruteForceLoginManager;
+        _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
     }
 
 
@@ -149,16 +153,16 @@ public class AuthenticationController : ControllerBase
     {
         var tenant = _tenantManager.GetCurrentTenant().Id;
         var user = GetUser(inDto, out _);
-
         var sms = false;
+
         try
         {
-            if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+            if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 sms = true;
                 _smsManager.ValidateSmsCode(user, inDto.Code, true);
             }
-            else if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+            else if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 if (_tfaManager.ValidateAuthCode(user, inDto.Code, true, true))
                 {
@@ -212,14 +216,14 @@ public class AuthenticationController : ControllerBase
         bool viaEmail;
         var user = GetUser(inDto, out viaEmail);
 
-        if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.Enable)
+        if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
         {
             if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
             {
                 return new AuthenticationTokenDto
                 {
                     Sms = true,
-                    ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation)
+                    ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneActivation)
                 };
             }
 
@@ -230,11 +234,11 @@ public class AuthenticationController : ControllerBase
                 Sms = true,
                 PhoneNoise = SmsSender.BuildPhoneNoise(user.MobilePhone),
                 Expires = new ApiDateTime(_tenantManager, _timeZoneConverter, DateTime.UtcNow.Add(_smsKeyStorage.StoreInterval)),
-                ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneAuth)
+                ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneAuth)
             };
         }
 
-        if (TfaAppAuthSettings.IsVisibleSettings && _settingsManager.Load<TfaAppAuthSettings>().EnableSetting)
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
         {
             if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
             {
@@ -242,14 +246,14 @@ public class AuthenticationController : ControllerBase
                 {
                     Tfa = true,
                     TfaKey = _tfaManager.GenerateSetupCode(user).ManualEntryKey,
-                    ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaActivation)
+                    ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaActivation)
                 };
             }
 
             return new AuthenticationTokenDto
             {
                 Tfa = true,
-                ConfirmUrl = _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.TfaAuth)
+                ConfirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.TfaAuth)
             };
         }
 
@@ -278,6 +282,7 @@ public class AuthenticationController : ControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
     public async Task Logout()
@@ -296,7 +301,7 @@ public class AuthenticationController : ControllerBase
         _securityContext.Logout();
     }
 
-    [AllowNotPayment]
+    [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
     public ValidationResult CheckConfirm(EmailValidationKeyModel inDto)
     {
@@ -354,14 +359,6 @@ public class AuthenticationController : ControllerBase
                 {
                     inDto.PasswordHash.ThrowIfNull(new ArgumentException(@"PasswordHash empty", "PasswordHash"));
                 }
-                int counter;
-                int.TryParse(_cache.Get<string>("loginsec/" + inDto.UserName), out counter);
-                if (++counter > _setupInfo.LoginThreshold && !SetupInfo.IsSecretEmail(inDto.UserName))
-                {
-                    throw new BruteForceCredentialException();
-                }
-                _cache.Insert("loginsec/" + inDto.UserName, counter.ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
-
 
                 inDto.PasswordHash = (inDto.PasswordHash ?? "").Trim();
 
@@ -375,17 +372,9 @@ public class AuthenticationController : ControllerBase
                     }
                 }
 
-                user = _userManager.GetUsersByPasswordHash(
-                    _tenantManager.GetCurrentTenant().Id,
-                    inDto.UserName,
-                    inDto.PasswordHash);
+                var requestIp = MessageSettings.GetIP(Request);
 
-                if (user == null || !_userManager.UserExists(user))
-                {
-                    throw new Exception("user not found");
-                }
-
-                _cache.Insert("loginsec/" + inDto.UserName, (--counter).ToString(CultureInfo.InvariantCulture), DateTime.UtcNow.Add(TimeSpan.FromMinutes(1)));
+                user = _bruteForceLoginManager.Attempt(inDto.UserName, inDto.PasswordHash, requestIp, out _);
             }
             else
             {

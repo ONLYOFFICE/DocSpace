@@ -37,10 +37,11 @@ class ComboButton extends React.Component {
       comboIcon,
       fillIcon,
       modernView,
+      tabIndex,
     } = this.props;
 
-    const defaultOption = selectedOption.default;
-    const isSelected = selectedOption.key !== 0;
+    const defaultOption = selectedOption?.default;
+    const isSelected = selectedOption?.key !== 0;
 
     return (
       <ColorTheme
@@ -56,6 +57,7 @@ class ComboButton extends React.Component {
         modernView={modernView}
         className="combo-button"
         themeId={ThemeType.ComboButton}
+        tabIndex={tabIndex}
       >
         {innerContainer && (
           <StyledOptionalItem
@@ -79,16 +81,18 @@ class ComboButton extends React.Component {
             />
           </StyledIcon>
         )}
+
         <Text
           noBorder={noBorder}
-          title={selectedOption.label}
+          title={selectedOption?.label}
           as="div"
           truncate={true}
           fontWeight={600}
           className="combo-button-label"
         >
-          {selectedOption.label}
+          {selectedOption?.label}
         </Text>
+
         <StyledArrowIcon
           needDisplay={withOptions || withAdvancedOptions}
           noBorder={noBorder}
@@ -136,6 +140,7 @@ ComboButton.propTypes = {
   comboIcon: PropTypes.string,
   fillIcon: PropTypes.bool,
   modernView: PropTypes.bool,
+  tabIndex: PropTypes.number,
 };
 
 ComboButton.defaultProps = {
@@ -148,6 +153,7 @@ ComboButton.defaultProps = {
   size: "content",
   scaled: false,
   modernView: false,
+  tabIndex: -1,
 };
 
 export default ComboButton;

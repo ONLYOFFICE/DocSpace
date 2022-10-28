@@ -1,41 +1,34 @@
 {
-  "CreateRoom": "Create room",
   "ChooseRoomType": "Choose room type",
-  "RoomEditing": "Room editing",
-
-  "FillingFormsRoomTitle": "Filling forms room",
-  "CollaborationRoomTitle": "Collaboration room",
-  "ReviewRoomTitle": "Review room",
-  "ViewOnlyRoomTitle": "View-only room",
-  "CustomRoomTitle": "Custom room",
-
-  "FillingFormsRoomDescription": "Build, share and fill document templates or work with the ready presets to quickly create documents of any type",
   "CollaborationRoomDescription": "Collaborate on one or multiple documents with your team",
-  "ReviewRoomDescription": "Request a review or comments on the documents",
-  "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing",
-  "CustomRoomDescription": "Apply your own settings to use this room for any custom purpose",
-
-  "NamePlaceholder": "Enter name",
-
-  "TagsPlaceholder": "Add a tag",
+  "CollaborationRoomTitle": "Collaboration room",
+  "CreateRoom": "Create room",
   "CreateTagOption": "Create tag",
-
-  "MakeRoomPrivateTitle": "Make the Room Private",
-  "MakeRoomPrivateDescription": "All files in this room will be encrypted",
-  "MakeRoomPrivateLimitationsWarningDescription": "With this feature, you can invite only existing users on the portal. After creating a room, you will not be able to change the list of users.",
-
-  "ThirdPartyStorageTitle": "Third party storage",
-  "ThirdPartyStorageDescription": "Use third-party services as data storage for this room. A new folder for storing this room’s data will be created in the connected storage",
-  "ThirdPartyStorageComboBoxPlaceholder": "Select storage",
-  "ThirdPartyStorageNoStorageAlert": "No storage is connected in the portal Settings. Go to the Integrations section to enable data storage on a third-party",
-  "ThirdPartyStorageNoStorageAlertLink": "Third-party services",
-  "ThirdPartyStorageRememberChoice": "Remember this choice for new rooms",
-  "ThirdPartyStoragePermanentSettingDescription": "Files are stored in a third-party {{thirdpartyTitle}} storage in the \"{{thirdpartyFolderName}}\" folder.\n<strong>{{thirdpartyPath}}</strong>",
-
-  "FolderNameTitle": "Folder Name",
-  "FolderNameDescription": "A new folder for storing this room’s data will be created in the connected storage",
-
+  "CustomRoomDescription": "Apply your own settings to use this room for any custom purpose",
+  "CustomRoomTitle": "Custom room",
+  "DropzoneTitleExsts": "(JPG or PNG, max 1 MB)",
   "DropzoneTitleLink": "Select new image",
   "DropzoneTitleSecondary": "or drop file here",
-  "DropzoneTitleExsts": "(JPG or PNG, max 1 MB)"
+  "FillingFormsRoomDescription": "Build, share and fill document templates or work with the ready presets to quickly create documents of any type",
+  "FillingFormsRoomTitle": "Filling forms room",
+  "FolderNameDescription": "A new folder for storing this room’s data will be created in the connected storage",
+  "FolderNameTitle": "Folder Name",
+  "MakeRoomPrivateDescription": "All files in this room will be encrypted",
+  "MakeRoomPrivateLimitationsWarningDescription": "With this feature, you can invite only existing users on the portal. After creating a room, you will not be able to change the list of users.",
+  "MakeRoomPrivateTitle": "Make the Room Private",
+  "NamePlaceholder": "Enter name",
+  "ReviewRoomDescription": "Request a review or comments on the documents",
+  "ReviewRoomTitle": "Review room",
+  "RoomEditing": "Room editing",
+  "RootLabel": "Root",
+  "TagsPlaceholder": "Add a tag",
+  "ThirdPartyStorageComboBoxPlaceholder": "Select storage",
+  "ThirdPartyStorageDescription": "Use third-party services as data storage for this room. A new folder for storing this room’s data will be created in the connected storage",
+  "ThirdPartyStorageNoStorageAlert": "No storage is connected in the portal Settings. Go to the Integrations section to enable data storage on a third-party",
+  "ThirdPartyStorageNoStorageAlertLink": "Third-party services",
+  "ThirdPartyStoragePermanentSettingDescription": "Files are stored in a third-party {{thirdpartyTitle}} storage in the \"{{thirdpartyFolderName}}\" folder.\n<strong>{{thirdpartyPath}}</strong>",
+  "ThirdPartyStorageRememberChoice": "Remember this choice for new rooms",
+  "ThirdPartyStorageTitle": "Third party storage",
+  "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing",
+  "ViewOnlyRoomTitle": "View-only room"
 }

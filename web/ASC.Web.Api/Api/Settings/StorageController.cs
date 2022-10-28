@@ -104,7 +104,10 @@ public class StorageController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        _tenantExtra.DemandControlPanelPermission();
+        if (!_coreBaseSettings.Standalone)
+        {
+            throw new SecurityException(Resource.ErrorAccessDenied);
+        }
 
         var current = _settingsManager.Load<StorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>();
@@ -156,12 +159,10 @@ public class StorageController : BaseSettingsController
 
         if (!_coreBaseSettings.Standalone)
         {
-            throw new NotSupportedException();
+            throw new SecurityException(Resource.ErrorAccessDenied);
         }
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        _tenantExtra.DemandControlPanelPermission();
 
         var storages = GetAllStorages();
 
@@ -270,12 +271,10 @@ public class StorageController : BaseSettingsController
 
             if (!_coreBaseSettings.Standalone)
             {
-                throw new NotSupportedException();
+                throw new SecurityException(Resource.ErrorAccessDenied);
             }
 
             _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-            _tenantExtra.DemandControlPanelPermission();
 
             var settings = _encryptionSettingsHelper.Load();
 
@@ -317,12 +316,11 @@ public class StorageController : BaseSettingsController
         try
         {
             _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
             if (!_coreBaseSettings.Standalone)
             {
-                return null;
+                throw new SecurityException(Resource.ErrorAccessDenied);
             }
-
-            _tenantExtra.DemandControlPanelPermission();
 
             var consumer = _consumerFactory.GetByKey(inDto.Module);
             if (!consumer.IsSet)
@@ -355,12 +353,11 @@ public class StorageController : BaseSettingsController
         try
         {
             _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
             if (!_coreBaseSettings.Standalone)
             {
-                return;
+                throw new SecurityException(Resource.ErrorAccessDenied);
             }
-
-            _tenantExtra.DemandControlPanelPermission();
 
             var settings = _settingsManager.Load<StorageSettings>();
 
@@ -381,12 +378,11 @@ public class StorageController : BaseSettingsController
     public List<StorageDto> GetAllCdnStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
         if (!_coreBaseSettings.Standalone)
         {
-            return null;
+            throw new SecurityException(Resource.ErrorAccessDenied);
         }
-
-        _tenantExtra.DemandControlPanelPermission();
 
         var current = _settingsManager.Load<CdnStorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null);
@@ -397,12 +393,11 @@ public class StorageController : BaseSettingsController
     public CdnStorageSettings UpdateCdn(StorageRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
         if (!_coreBaseSettings.Standalone)
         {
-            return null;
+            throw new SecurityException(Resource.ErrorAccessDenied);
         }
-
-        _tenantExtra.DemandControlPanelPermission();
 
         var consumer = _consumerFactory.GetByKey(inDto.Module);
         if (!consumer.IsSet)
@@ -436,12 +431,11 @@ public class StorageController : BaseSettingsController
     public void ResetCdnToDefault()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
         if (!_coreBaseSettings.Standalone)
         {
-            return;
+            throw new SecurityException(Resource.ErrorAccessDenied);
         }
-
-        _tenantExtra.DemandControlPanelPermission();
 
         _storageSettingsHelper.Clear(_settingsManager.Load<CdnStorageSettings>());
     }
@@ -450,10 +444,7 @@ public class StorageController : BaseSettingsController
     public List<StorageDto> GetAllBackupStorages()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        if (_coreBaseSettings.Standalone)
-        {
-            _tenantExtra.DemandControlPanelPermission();
-        }
+
         var schedule = _backupAjaxHandler.GetSchedule();
         var current = new StorageSettings();
 

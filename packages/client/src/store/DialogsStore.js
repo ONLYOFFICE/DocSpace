@@ -1,7 +1,7 @@
 import { getNewFiles } from "@docspace/common/api/files";
-import { FileAction } from "@docspace/common/constants";
-import { makeAutoObservable } from "mobx";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { FileAction, ShareAccessRights } from "@docspace/common/constants";
+import { makeAutoObservable, runInAction } from "mobx";
+import { Events } from "@docspace/common/constants";
 
 class DialogsStore {
   authStore;
@@ -26,8 +26,17 @@ class DialogsStore {
   convertDialogVisible = false;
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
+  inviteUsersWarningDialogVisible = false;
   isFolderActions = false;
   roomCreation = false;
+  invitePanelOptions = {
+    visible: false,
+    hideSelector: false,
+    defaultAccess: ShareAccessRights.FullAccess,
+  };
+  restoreAllPanelVisible = false;
+  restoreAllArchiveDialogVisible = false;
+  eventDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -41,6 +50,10 @@ class DialogsStore {
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
+  inviteItems = [];
+
+  isConnectDialogReconnect = false;
+  saveAfterReconnectOAuth = false;
 
   constructor(
     authStore,
@@ -58,6 +71,10 @@ class DialogsStore {
     this.versionHistoryStore = versionHistoryStore;
   }
 
+  setRestoreAllArchiveDialogVisible = (restoreAllArchiveDialogVisible) => {
+    this.restoreAllArchiveDialogVisible = restoreAllArchiveDialogVisible;
+  };
+
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
   };
@@ -73,6 +90,10 @@ class DialogsStore {
   setMoveToPanelVisible = (moveToPanelVisible) => {
     !moveToPanelVisible && this.deselectActiveFiles();
     this.moveToPanelVisible = moveToPanelVisible;
+  };
+
+  setRestoreAllPanelVisible = (restoreAllPanelVisible) => {
+    this.restoreAllPanelVisible = restoreAllPanelVisible;
   };
 
   setCopyPanelVisible = (copyPanelVisible) => {
@@ -111,6 +132,10 @@ class DialogsStore {
     this.deleteDialogVisible = deleteDialogVisible;
   };
 
+  setEventDialogVisible = (eventDialogVisible) => {
+    this.eventDialogVisible = eventDialogVisible;
+  };
+
   setDownloadDialogVisible = (downloadDialogVisible) => {
     !downloadDialogVisible && this.deselectActiveFiles();
     this.downloadDialogVisible = downloadDialogVisible;
@@ -122,6 +147,14 @@ class DialogsStore {
 
   setConnectItem = (connectItem) => {
     this.connectItem = connectItem;
+  };
+
+  setIsConnectDialogReconnect = (isConnectDialogReconnect) => {
+    this.isConnectDialogReconnect = isConnectDialogReconnect;
+  };
+
+  setSaveAfterReconnectOAuth = (saveAfterReconnectOAuth) => {
+    this.saveAfterReconnectOAuth = saveAfterReconnectOAuth;
   };
 
   setThirdPartyDialogVisible = (thirdPartyDialogVisible) => {
@@ -240,6 +273,25 @@ class DialogsStore {
     window.dispatchEvent(event);
   };
 
+  setInvitePanelOptions = (invitePanelOptions) => {
+    this.invitePanelOptions = invitePanelOptions;
+  };
+
+  setInviteItems = (inviteItems) => {
+    this.inviteItems = inviteItems;
+  };
+
+  changeInviteItem = async (item) =>
+    runInAction(() => {
+      const index = this.inviteItems.findIndex((iItem) => iItem.id === item.id);
+
+      this.inviteItems[index] = { ...this.inviteItems[index], ...item };
+    });
+
+  setInviteUsersWarningDialogVisible = (inviteUsersWarningDialogVisible) => {
+    this.inviteUsersWarningDialogVisible = inviteUsersWarningDialogVisible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -258,7 +310,12 @@ class DialogsStore {
       this.convertDialogVisible ||
       this.selectFileDialogVisible ||
       this.authStore.settingsStore.hotkeyPanelVisible ||
-      this.versionHistoryStore.isVisible
+      this.versionHistoryStore.isVisible ||
+      this.eventDialogVisible ||
+      this.invitePanelOptions.visible ||
+      this.restoreAllArchiveDialogVisible ||
+      this.restoreAllPanelVisible ||
+      this.inviteUsersWarningDialogVisible
     );
   }
 

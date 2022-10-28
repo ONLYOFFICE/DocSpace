@@ -75,7 +75,7 @@ public class OwnerController : BaseSettingsController
         var owner = _userManager.GetUsers(curTenant.OwnerId);
         var newOwner = _userManager.GetUsers(inDto.OwnerId);
 
-        if (newOwner.IsVisitor(_userManager))
+        if (_userManager.IsUser(newOwner))
         {
             throw new SecurityException("Collaborator can not be an owner");
         }
@@ -85,7 +85,7 @@ public class OwnerController : BaseSettingsController
             return new { Status = 0, Message = Resource.ErrorAccessDenied };
         }
 
-        var confirmLink = _commonLinkUtility.GetConfirmationUrl(owner.Email, ConfirmType.PortalOwnerChange, newOwner.Id, newOwner.Id);
+        var confirmLink = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalOwnerChange, newOwner.Id, newOwner.Id);
         _studioNotifyService.SendMsgConfirmChangeOwner(owner, newOwner, confirmLink);
 
         _messageService.Send(MessageAction.OwnerSentChangeOwnerInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
@@ -111,7 +111,7 @@ public class OwnerController : BaseSettingsController
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (_userManager.IsUserInGroup(newOwner.Id, Constants.GroupVisitor.ID))
+        if (_userManager.IsUserInGroup(newOwner.Id, Constants.GroupUser.ID))
         {
             throw new Exception(Resource.ErrorUserNotFound);
         }

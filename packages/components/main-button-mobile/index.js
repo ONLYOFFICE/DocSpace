@@ -22,7 +22,7 @@ import { isIOS, isMobile } from "react-device-detect";
 import Backdrop from "../backdrop";
 
 import styled from "styled-components";
-import ButtonAlertIcon from "../../../public/images/main-button.alert.react.svg";
+import ButtonAlertIcon from "../../../public/images/button.alert.react.svg";
 import commonIconsStyles from "../utils/common-icons-style";
 
 import { isMobileOnly } from "react-device-detect";
@@ -30,7 +30,8 @@ import { isMobileOnly } from "react-device-detect";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
-  ${commonIconsStyles}
+  cursor: pointer;
+  ${commonIconsStyles};
 `;
 
 const ProgressBarMobile = ({
@@ -116,6 +117,10 @@ const MainButtonMobile = (props) => {
     onClose,
     sectionWidth,
     alert,
+    withMenu,
+    onClick,
+    onAlertClick,
+    withAlertClick,
   } = props;
 
   const [isOpen, setIsOpen] = useState(opened);
@@ -165,6 +170,10 @@ const MainButtonMobile = (props) => {
     prevPosition = currentPosition;
   };
 
+  const onAlertClickAction = () => {
+    withAlertClick && onAlertClick && onAlertClick();
+  };
+
   const setDialogBackground = (scrollHeight) => {
     if (!buttonBackground) {
       document
@@ -208,6 +217,11 @@ const MainButtonMobile = (props) => {
   };
 
   const onMainButtonClick = (e) => {
+    if (!withMenu) {
+      onClick && onClick(e);
+      return;
+    }
+
     toggle(!isOpen);
   };
 
@@ -388,7 +402,11 @@ const MainButtonMobile = (props) => {
           )}
         </StyledDropDown>
         <StyledAlertIcon>
-          {alert && !isOpen ? <StyledButtonAlertIcon size="small" /> : <></>}
+          {alert && !isOpen ? (
+            <StyledButtonAlertIcon onClick={onAlertClickAction} size="medium" />
+          ) : (
+            <></>
+          )}
         </StyledAlertIcon>
       </div>
     </>
@@ -423,6 +441,14 @@ MainButtonMobile.propTypes = {
   opened: PropTypes.bool,
   /** If you need close drop down  */
   onClose: PropTypes.func,
+  /** If you need open upload panel when clicking on alert button  */
+  onAlertClick: PropTypes.func,
+  /** Enable alert click  */
+  withAlertClick: PropTypes.bool,
+};
+
+MainButtonMobile.defaultProps = {
+  withMenu: true,
 };
 
 export default MainButtonMobile;

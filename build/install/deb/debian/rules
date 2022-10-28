@@ -32,6 +32,7 @@ override_dh_auto_build:
 	bash build-backend.sh -sp ${SRC_PATH}; \
 	bash publish-backend.sh -sp ${SRC_PATH}
 
+	rm ${SRC_PATH}/config/nginx/onlyoffice-login.conf
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/*.conf 
 	sed -i "s@var/www@var/www/${PRODUCT}@g" ${SRC_PATH}/config/nginx/includes/*.conf
 

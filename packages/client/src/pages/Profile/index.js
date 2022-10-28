@@ -12,7 +12,6 @@ import { withTranslation } from "react-i18next";
 class Profile extends React.Component {
   componentDidMount() {
     const {
-      match,
       fetchProfile,
       profile,
       location,
@@ -22,13 +21,18 @@ class Profile extends React.Component {
       setIsLoading,
       setIsEditTargetUser,
       setLoadedProfile,
+      isVisitor,
+      selectedTreeNode,
+      setSelectedNode,
     } = this.props;
-    let { userId } = match.params;
+    const userId = "@self";
 
     setFirstLoad(false);
     setIsEditTargetUser(false);
 
-    if (!userId) userId = "@self";
+    isVisitor
+      ? !selectedTreeNode.length && setSelectedNode(["@rooms"])
+      : setSelectedNode(["accounts"]);
 
     setDocumentTitle(t("Common:Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");
@@ -75,20 +79,13 @@ class Profile extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    const { isEditTargetUser } = this.props;
-    if (!isEditTargetUser) {
-      this.props.resetProfile();
-    }
-  }
-
   render() {
     //console.log("Profile render");
 
-    const { profile, showCatalog, isAdmin } = this.props;
+    const { profile, showCatalog } = this.props;
 
     return (
-      <Section withBodyAutoFocus>
+      <Section withBodyAutoFocus viewAs="profile">
         <Section.SectionHeader>
           <SectionHeaderContent profile={profile} />
         </Section.SectionHeader>
@@ -106,27 +103,24 @@ Profile.propTypes = {
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
-  isAdmin: PropTypes.bool,
   language: PropTypes.string,
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => {
-    const { setDocumentTitle, isAdmin, language } = auth;
+  inject(({ auth, peopleStore, treeFoldersStore }) => {
+    const { setDocumentTitle, language } = auth;
     const { targetUserStore, loadingStore } = peopleStore;
     const {
-      resetTargetUser: resetProfile,
       getTargetUser: fetchProfile,
       targetUser: profile,
       isEditTargetUser,
       setIsEditTargetUser,
     } = targetUserStore;
     const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
+    const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
     return {
       setDocumentTitle,
-      isAdmin,
       language,
-      resetProfile,
       fetchProfile,
       profile,
       setFirstLoad,
@@ -135,6 +129,9 @@ export default withRouter(
       setIsEditTargetUser,
       setLoadedProfile,
       showCatalog: auth.settingsStore.showCatalog,
+      selectedTreeNode,
+      setSelectedNode,
+      isVisitor: auth.userStore.user.isVisitor,
     };
   })(
     observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile)))

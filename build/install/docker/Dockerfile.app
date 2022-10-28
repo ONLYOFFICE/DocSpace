@@ -23,20 +23,19 @@ ENV LANG=en_US.UTF-8 \
     LC_ALL=en_US.UTF-8
 
 RUN apt-get -y update && \
-    apt-get -y upgrade && \
-    apt-get -y dist-upgrade && \
-    apt-get install -yq sudo locales && \
-    addgroup --system --gid 107 onlyoffice && \
-    adduser -uid 104 --quiet --home /var/www/onlyoffice --system --gid 107 onlyoffice && \
+    apt-get install -yq \
+        sudo \
+        locales \
+        git \
+        npm  && \
     locale-gen en_US.UTF-8 && \
-    apt-get -y update && \
-    apt-get install -yq git apt-utils npm && \
     npm install --global yarn && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && \
-    apt-get install -y nodejs
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN echo ${GIT_BRANCH}  && \
-    git clone --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/AppServer.git ${SRC_PATH}
+    git clone --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/DocSpace.git ${SRC_PATH}
 
 RUN cd ${SRC_PATH} && \
     # mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
@@ -62,9 +61,7 @@ RUN cd ${SRC_PATH} && \
   
 COPY config/mysql/conf.d/mysql.cnf /etc/mysql/conf.d/mysql.cnf
 
-RUN rm -rf /var/lib/apt/lists/*
-
-FROM $DOTNET_RUN as builder
+FROM $DOTNET_RUN as dotnetrun
 ARG BUILD_PATH
 ARG SRC_PATH
 ENV BUILD_PATH=${BUILD_PATH}
@@ -79,10 +76,15 @@ RUN mkdir -p /var/log/onlyoffice && \
     chown onlyoffice:onlyoffice /var/log -R && \
     chown onlyoffice:onlyoffice /var/www -R && \
     apt-get -y update && \
-    apt-get -y upgrade && \
-    apt-get install -yq sudo nano curl vim python3-pip && \
-    apt-get install -yq libgdiplus && \
-    pip3 install --upgrade jsonpath-ng multipledispatch
+    apt-get install -yq \
+        sudo \
+        nano \
+        curl \
+        vim \
+        python3-pip \
+        libgdiplus && \
+    pip3 install --upgrade jsonpath-ng multipledispatch && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onlyoffice/config/
         
@@ -90,7 +92,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onl
 EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
-FROM node:16.16-slim as nodeBuild
+FROM node:16.16-slim as noderun
 ARG BUILD_PATH
 ARG SRC_PATH 
 ENV BUILD_PATH=${BUILD_PATH}
@@ -104,9 +106,14 @@ RUN mkdir -p /var/log/onlyoffice && \
     chown onlyoffice:onlyoffice /var/log -R  && \
     chown onlyoffice:onlyoffice /var/www -R && \
     apt-get -y update && \
-    apt-get -y upgrade && \
-    apt-get install -yq sudo nano curl vim python3-pip && \
-    pip3 install --upgrade jsonpath-ng multipledispatch
+    apt-get install -yq \ 
+        sudo \
+        nano \
+        curl \
+        vim \
+        python3-pip && \
+    pip3 install --upgrade jsonpath-ng multipledispatch && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onlyoffice/config/
 
@@ -114,7 +121,7 @@ EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
 ## Nginx image ##
-FROM nginx AS web
+FROM nginx AS proxy
 ARG SRC_PATH
 ARG BUILD_PATH
 ARG COUNT_WORKER_CONNECTIONS=1024
@@ -123,16 +130,14 @@ ENV DNS_NAMESERVER=127.0.0.11 \
     MAP_HASH_BUCKET_SIZE=""
 
 RUN apt-get -y update && \
-    apt-get -y upgrade && \
     apt-get install -yq vim && \
-    # Remove default nginx website
+    rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/share/nginx/html/* 
 
 # copy static services files and config values 
 COPY --from=base /etc/nginx/conf.d /etc/nginx/conf.d
 COPY --from=base /etc/nginx/includes /etc/nginx/includes
 COPY --from=base ${SRC_PATH}/build/deploy/client ${BUILD_PATH}/client
-COPY --from=base ${SRC_PATH}/build/deploy/login ${BUILD_PATH}/login
 COPY --from=base ${SRC_PATH}/build/deploy/public ${BUILD_PATH}/public
 COPY /config/nginx/templates/upstream.conf.template /etc/nginx/templates/upstream.conf.template
 COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
@@ -142,33 +147,41 @@ COPY prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
 RUN chown nginx:nginx /etc/nginx/* -R && \
     chown nginx:nginx /docker-entrypoint.d/* && \
     # changes for upstream configure
-    sed -i 's/localhost:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5021/$service_crm/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5020/$service_projects_server/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5023/$service_calendar/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:9899/$service_socket/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:9834/$service_sso/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5034/$service_migration/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/localhost:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5021/$service_crm/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5020/$service_projects_server/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5023/$service_calendar/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:9899/$service_socket/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:9834/$service_sso/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5034/$service_migration/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/127.0.0.1:5011/$service_login/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
 
 ## Doceditor ##
-FROM nodeBuild as doceditor
+FROM noderun as doceditor
 WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
 
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/editor/ .
-EXPOSE 5013
+ENTRYPOINT ["node", "server.js"]
+
+## Login ##
+FROM noderun as login
+WORKDIR ${BUILD_PATH}/products/ASC.Login/login
+
+COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/login/ .
 ENTRYPOINT ["node", "server.js"]
 
 ## ASC.Data.Backup.BackgroundTasks ##
-FROM builder AS backup_background
+FROM dotnetrun AS backup_background
 WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup.BackgroundTasks/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -176,8 +189,17 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.B
 
 CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
 
+# ASC.ApiSystem ##
+FROM dotnetrun AS api_system
+WORKDIR ${BUILD_PATH}/services/ASC.ApiSystem/
+
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/  .
+
+CMD [" ASC.ApiSystem.dll", " ASC.ApiSystem"]
+
 ## ASC.ClearEvents ##
-FROM builder AS clear-events
+FROM dotnetrun AS clear-events
 WORKDIR ${BUILD_PATH}/services/ASC.ClearEvents/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -186,7 +208,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ClearE
 CMD ["ASC.ClearEvents.dll", "ASC.ClearEvents"]
 
 ## ASC.Migration ##
-FROM builder AS migration
+FROM dotnetrun AS migration
 WORKDIR ${BUILD_PATH}/services/ASC.Migration/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -195,7 +217,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Migrat
 CMD ["ASC.Migration.dll", "ASC.Migration"]
 
 ## ASC.Data.Backup ##
-FROM builder AS backup
+FROM dotnetrun AS backup
 WORKDIR ${BUILD_PATH}/services/ASC.Data.Backup/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -204,7 +226,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.B
 CMD ["ASC.Data.Backup.dll", "ASC.Data.Backup"]
 
 ## ASC.Files ##
-FROM builder AS files
+FROM dotnetrun AS files
 WORKDIR ${BUILD_PATH}/products/ASC.Files/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -213,7 +235,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.Files/
 CMD ["ASC.Files.dll", "ASC.Files"]
 
 ## ASC.Files.Service ##
-FROM builder AS files_services
+FROM dotnetrun AS files_services
 WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -222,7 +244,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.
 CMD ["ASC.Files.Service.dll", "ASC.Files.Service"]
 
 ## ASC.Notify ##
-FROM builder AS notify
+FROM dotnetrun AS notify
 WORKDIR ${BUILD_PATH}/services/ASC.Notify/service
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -231,7 +253,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Notify
 CMD ["ASC.Notify.dll", "ASC.Notify"]
 
 ## ASC.People ##
-FROM builder AS people_server
+FROM dotnetrun AS people_server
 WORKDIR ${BUILD_PATH}/products/ASC.People/server/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -240,7 +262,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/products/ASC.People
 CMD ["ASC.People.dll", "ASC.People"]
 
 ## ASC.Socket.IO ##
-FROM nodeBuild AS socket
+FROM noderun AS socket
 WORKDIR ${BUILD_PATH}/services/ASC.Socket.IO/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -249,7 +271,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket
 CMD  ["server.js", "ASC.Socket.IO"]
 
 ## ASC.SsoAuth ##
-FROM nodeBuild AS ssoauth
+FROM noderun AS ssoauth
 WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -258,7 +280,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAu
 CMD ["app.js", "ASC.SsoAuth"]
 
 ## ASC.Studio.Notify ##
-FROM builder AS studio_notify
+FROM dotnetrun AS studio_notify
 WORKDIR ${BUILD_PATH}/services/ASC.Studio.Notify/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -267,7 +289,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Studio
 CMD ["ASC.Studio.Notify.dll", "ASC.Studio.Notify"]
 
 ## ASC.TelegramService ##
-FROM builder AS telegram_service
+FROM dotnetrun AS telegram_service
 WORKDIR ${BUILD_PATH}/services/ASC.TelegramService/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -276,7 +298,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Telegr
 CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
 
 ## ASC.UrlShortener ##
-FROM nodeBuild AS urlshortener
+FROM noderun AS urlshortener
 WORKDIR  ${BUILD_PATH}/services/ASC.UrlShortener/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -285,7 +307,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlSh
 CMD ["index.js", "ASC.UrlShortener"]
 
 ## ASC.Web.Api ##
-FROM builder AS api
+FROM dotnetrun AS api
 WORKDIR ${BUILD_PATH}/studio/ASC.Web.Api/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -294,7 +316,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Ap
 CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
 
 ## ASC.Webhooks.Service ##
-FROM builder AS webhooks-service
+FROM dotnetrun AS webhooks-service
 WORKDIR ${BUILD_PATH}/services/ASC.Webhooks.Service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -303,7 +325,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Webhoo
 CMD ["ASC.Webhooks.Service.dll", "ASC.Webhooks.Service"]
 
 ## ASC.Web.Studio ##
-FROM builder AS studio
+FROM dotnetrun AS studio
 WORKDIR ${BUILD_PATH}/studio/ASC.Web.Studio/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py

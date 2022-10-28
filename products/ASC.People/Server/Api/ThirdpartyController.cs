@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.People.Api;
 
 public class ThirdpartyController : ApiControllerBase
@@ -40,7 +38,6 @@ public class ThirdpartyController : ApiControllerBase
     private readonly PersonalSettingsHelper _personalSettingsHelper;
     private readonly ProviderManager _providerManager;
     private readonly Signature _signature;
-    private readonly TenantExtra _tenantExtra;
     private readonly UserHelpTourHelper _userHelpTourHelper;
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly UserPhotoManager _userPhotoManager;
@@ -50,6 +47,7 @@ public class ThirdpartyController : ApiControllerBase
     private readonly UserManager _userManager;
     private readonly MessageTarget _messageTarget;
     private readonly StudioNotifyService _studioNotifyService;
+    private readonly TenantManager _tenantManager;
 
     public ThirdpartyController(
         AccountLinker accountLinker,
@@ -62,7 +60,6 @@ public class ThirdpartyController : ApiControllerBase
         PersonalSettingsHelper personalSettingsHelper,
         ProviderManager providerManager,
         Signature signature,
-        TenantExtra tenantExtra,
         UserHelpTourHelper userHelpTourHelper,
         UserManagerWrapper userManagerWrapper,
         UserPhotoManager userPhotoManager,
@@ -71,7 +68,8 @@ public class ThirdpartyController : ApiControllerBase
         MessageService messageService,
         UserManager userManager,
         MessageTarget messageTarget,
-        StudioNotifyService studioNotifyService)
+        StudioNotifyService studioNotifyService,
+        TenantManager tenantManager)
     {
         _accountLinker = accountLinker;
         _cookiesManager = cookiesManager;
@@ -83,7 +81,6 @@ public class ThirdpartyController : ApiControllerBase
         _personalSettingsHelper = personalSettingsHelper;
         _providerManager = providerManager;
         _signature = signature;
-        _tenantExtra = tenantExtra;
         _userHelpTourHelper = userHelpTourHelper;
         _userManagerWrapper = userManagerWrapper;
         _userPhotoManager = userPhotoManager;
@@ -93,6 +90,7 @@ public class ThirdpartyController : ApiControllerBase
         _userManager = userManager;
         _messageTarget = messageTarget;
         _studioNotifyService = studioNotifyService;
+        _tenantManager = tenantManager;
     }
 
     [AllowAnonymous]
@@ -141,7 +139,7 @@ public class ThirdpartyController : ApiControllerBase
     {
         var profile = new LoginProfile(_signature, _instanceCrypto, inDto.SerializedProfile);
 
-        if (!(_coreBaseSettings.Standalone || _tenantExtra.GetTenantQuota().Oauth))
+        if (!(_coreBaseSettings.Standalone || _tenantManager.GetCurrentTenantQuota().Oauth))
         {
             throw new Exception("ErrorNotAllowedOption");
         }
@@ -165,7 +163,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpPost("thirdparty/signup")]
     public void SignupAccount(SignupAccountRequestDto inDto)
     {
-        var employeeType = inDto.EmplType ?? EmployeeType.User;
+        var employeeType = inDto.EmplType ?? EmployeeType.RoomAdmin;
         var passwordHash = inDto.PasswordHash;
         var mustChangePassword = false;
         if (string.IsNullOrEmpty(passwordHash))
@@ -196,7 +194,7 @@ public class ThirdpartyController : ApiControllerBase
         {
             _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
             var newUser = CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, false);
-            var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
+            var messageAction = employeeType == EmployeeType.RoomAdmin ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
             _messageService.Send(MessageInitiator.System, messageAction, _messageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
             userID = newUser.Id;
             if (!string.IsNullOrEmpty(thirdPartyProfile.Avatar))
@@ -239,7 +237,7 @@ public class ThirdpartyController : ApiControllerBase
 
     private UserInfo CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)
     {
-        var isVisitor = employeeType == EmployeeType.Visitor;
+        var isUser = employeeType == EmployeeType.User;
 
         if (SetupInfo.IsSecretEmail(email))
         {
@@ -259,7 +257,7 @@ public class ThirdpartyController : ApiControllerBase
             userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
         }
 
-        return _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, isVisitor, fromInviteLink);
+        return _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, isUser, fromInviteLink);
     }
 
     private void SaveContactImage(Guid userID, string url)

@@ -126,7 +126,7 @@ public class BackupService : IBackupService
 
     public void StartTransfer(StartTransferRequest request)
     {
-        var progress = _backupWorker.StartTransfer(request.TenantId, request.TargetRegion, request.BackupMail, request.NotifyUsers);
+        var progress = _backupWorker.StartTransfer(request.TenantId, request.TargetRegion, request.NotifyUsers);
         if (!string.IsNullOrEmpty(progress.Error))
         {
             throw new FaultException();
@@ -190,7 +190,6 @@ public class BackupService : IBackupService
             {
                 TenantId = request.TenantId,
                 Cron = request.Cron,
-                BackupMail = request.BackupMail,
                 BackupsStored = request.NumberOfBackupsStored,
                 StorageType = request.StorageType,
                 StorageBasePath = request.StorageBasePath,
@@ -212,7 +211,6 @@ public class BackupService : IBackupService
             {
                 StorageType = schedule.StorageType,
                 StorageBasePath = schedule.StorageBasePath,
-                BackupMail = schedule.BackupMail,
                 NumberOfBackupsStored = schedule.BackupsStored,
                 Cron = schedule.Cron,
                 LastBackupTime = schedule.LastBackupTime,

@@ -32,48 +32,43 @@ namespace ASC.Core.Billing;
 public class BillingClient
 {
     public readonly bool Configured;
-    private readonly string _billingDomain;
-    private readonly string _billingKey;
-    private readonly string _billingSecret;
-    private readonly bool _test;
+    private readonly PaymentConfiguration _configuration;
     private readonly IHttpClientFactory _httpClientFactory;
-    private const int AvangatePaymentSystemId = 1;
+    private const int StripePaymentSystemId = 9;
 
 
     public BillingClient(IConfiguration configuration, IHttpClientFactory httpClientFactory)
-        : this(false, configuration, httpClientFactory)
     {
-    }
-
-    public BillingClient(bool test, IConfiguration configuration, IHttpClientFactory httpClientFactory)
-    {
-        _test = test;
+        _configuration = configuration.GetSection("core:payment").Get<PaymentConfiguration>();
         _httpClientFactory = httpClientFactory;
-        var billingDomain = configuration["core:payment-url"];
 
-        _billingDomain = (billingDomain ?? "").Trim().TrimEnd('/');
-        if (!string.IsNullOrEmpty(_billingDomain))
+        _configuration.Url = (_configuration.Url ?? "").Trim().TrimEnd('/');
+        if (!string.IsNullOrEmpty(_configuration.Url))
         {
-            _billingDomain += "/billing/";
-
-            _billingKey = configuration["core:payment-key"];
-            _billingSecret = configuration["core:payment-secret"];
+            _configuration.Url += "/billing/";
 
             Configured = true;
         }
     }
 
-    public PaymentLast GetLastPayment(string portalId)
+    public string GetAccountLink(string portalId, string backUrl)
     {
-        var result = Request("GetActiveResource", portalId);
-        var paymentLast = JsonSerializer.Deserialize<PaymentLast>(result);
+        var result = Request("GetAccountLink", portalId, Tuple.Create("BackRef", backUrl));
+        var link = JsonConvert.DeserializeObject<string>(result);
+        return link;
+    }
 
-        if (!_test && paymentLast.PaymentStatus == 4)
+    public PaymentLast[] GetCurrentPayments(string portalId)
+    {
+        var result = Request("GetActiveResources", portalId);
+        var payments = JsonSerializer.Deserialize<PaymentLast[]>(result);
+
+        if (!_configuration.Test)
         {
-            throw new BillingException("Can not accept test payment.", new { PortalId = portalId });
+            payments = payments.Where(payment => payment.PaymentStatus != 4).ToArray();
         }
 
-        return paymentLast;
+        return payments;
     }
 
     public IEnumerable<PaymentInfo> GetPayments(string portalId)
@@ -88,7 +83,7 @@ public class BillingClient
     {
         var urls = new Dictionary<string, Uri>();
 
-        var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()) };
+        var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", StripePaymentSystemId.ToString()) };
         if (!string.IsNullOrEmpty(affiliateId))
         {
             additionalParameters.Add(Tuple.Create("AffiliateId", affiliateId));
@@ -138,9 +133,9 @@ public class BillingClient
         return urls;
     }
 
-    public string GetPaymentUrl(string portalId, string[] products, string affiliateId = null, string campaign = null, string currency = null, string language = null, string customerId = null, string quantity = null)
+    public string GetPaymentUrl(string portalId, string[] products, string affiliateId = null, string campaign = null, string currency = null, string language = null, string customerEmail = null, string quantity = null, string backUrl = null)
     {
-        var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()) };
+        var additionalParameters = new List<Tuple<string, string>>() { Tuple.Create("PaymentSystemId", StripePaymentSystemId.ToString()) };
         if (!string.IsNullOrEmpty(affiliateId))
         {
             additionalParameters.Add(Tuple.Create("AffiliateId", affiliateId));
@@ -157,13 +152,18 @@ public class BillingClient
         {
             additionalParameters.Add(Tuple.Create("Language", language));
         }
-        if (!string.IsNullOrEmpty(customerId))
+        if (!string.IsNullOrEmpty(customerEmail))
         {
-            additionalParameters.Add(Tuple.Create("CustomerID", customerId));
+            additionalParameters.Add(Tuple.Create("CustomerEmail", customerEmail));
         }
         if (!string.IsNullOrEmpty(quantity))
         {
             additionalParameters.Add(Tuple.Create("Quantity", quantity));
+        }
+        if (!string.IsNullOrEmpty(backUrl))
+        {
+            additionalParameters.Add(Tuple.Create("BackRef", backUrl));
+            additionalParameters.Add(Tuple.Create("ShopUrl", backUrl));
         }
 
         var parameters = products
@@ -178,17 +178,29 @@ public class BillingClient
         return paymentUrl;
     }
 
+    public bool ChangePayment(string portalId, string[] products, int[] quantity)
+    {
+        var parameters = products.Select(p => Tuple.Create("ProductId", p))
+            .Concat(quantity.Select(q => Tuple.Create("ProductQty", q.ToString())))
+            .ToArray();
+
+        var result = Request("ChangeSubscription", portalId, parameters);
+        var changed = JsonConvert.DeserializeObject<bool>(result);
+
+        return changed;
+    }
+
     public IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds)
     {
         ArgumentNullException.ThrowIfNull(productIds);
 
         var parameters = productIds.Select(pid => Tuple.Create("ProductId", pid)).ToList();
-        parameters.Add(Tuple.Create("PaymentSystemId", AvangatePaymentSystemId.ToString()));
+        parameters.Add(Tuple.Create("PaymentSystemId", StripePaymentSystemId.ToString()));
 
         var result = Request("GetProductsPrices", null, parameters.ToArray());
         var prices = JsonSerializer.Deserialize<Dictionary<int, Dictionary<string, Dictionary<string, decimal>>>>(result);
 
-        if (prices.TryGetValue(AvangatePaymentSystemId, out var pricesPaymentSystem))
+        if (prices.TryGetValue(StripePaymentSystemId, out var pricesPaymentSystem))
         {
             return productIds.Select(productId =>
             {
@@ -218,16 +230,16 @@ public class BillingClient
 
     private string Request(string method, string portalId, params Tuple<string, string>[] parameters)
     {
-        var url = _billingDomain + method;
+        var url = _configuration.Url + method;
 
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(url),
             Method = HttpMethod.Post
         };
-        if (!string.IsNullOrEmpty(_billingKey))
+        if (!string.IsNullOrEmpty(_configuration.Key))
         {
-            request.Headers.Add("Authorization", CreateAuthToken(_billingKey, _billingSecret));
+            request.Headers.Add("Authorization", CreateAuthToken(_configuration.Key, _configuration.Secret));
         }
 
         var httpClient = _httpClientFactory.CreateClient();
@@ -271,7 +283,7 @@ public class BillingClient
         {
             throw new BillingNotConfiguredException("Billing response is null");
         }
-        if (!result.StartsWith("{\"Message\":\"error"))
+        if (!result.StartsWith("{\"Message\":\"error", true, null))
         {
             return result;
         }
@@ -294,7 +306,7 @@ public class BillingClient
             return string.Empty;
         }
 
-        if (_test && !s.Contains("&DOTEST = 1"))
+        if (_configuration.Test && !s.Contains("&DOTEST = 1"))
         {
             s += "&DOTEST=1";
         }

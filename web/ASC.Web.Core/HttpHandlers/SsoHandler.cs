@@ -53,14 +53,13 @@ public class SsoHandlerService
     private readonly CookiesManager _cookiesManager;
     private readonly Signature _signature;
     private readonly SecurityContext _securityContext;
-    private readonly TenantExtra _tenantExtra;
-    private readonly TenantStatisticsProvider _tenantStatisticsProvider;
     private readonly UserFormatter _userFormatter;
     private readonly UserManagerWrapper _userManagerWrapper;
     private readonly MessageService _messageService;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly TenantUtil _tenantUtil;
-
+    private readonly Action<string> _signatureResolver;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
     private const string MOB_PHONE = "mobphone";
     private const string EXT_MOB_PHONE = "extmobphone";
 
@@ -77,13 +76,12 @@ public class SsoHandlerService
         CookiesManager cookiesManager,
         Signature signature,
         SecurityContext securityContext,
-        TenantExtra tenantExtra,
-        TenantStatisticsProvider tenantStatisticsProvider,
         UserFormatter userFormatter,
         UserManagerWrapper userManagerWrapper,
         MessageService messageService,
         DisplayUserSettingsHelper displayUserSettingsHelper,
-        TenantUtil tenantUtil)
+        TenantUtil tenantUtil,
+        CountRoomAdminChecker countRoomAdminChecker)
     {
         _log = log;
         _coreBaseSettings = coreBaseSettings;
@@ -94,14 +92,23 @@ public class SsoHandlerService
         _cookiesManager = cookiesManager;
         _signature = signature;
         _securityContext = securityContext;
-        _tenantExtra = tenantExtra;
-        _tenantStatisticsProvider = tenantStatisticsProvider;
         _userFormatter = userFormatter;
         _userManagerWrapper = userManagerWrapper;
         _messageService = messageService;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _tenantUtil = tenantUtil;
+        _countRoomAdminChecker = countRoomAdminChecker;
+        _signatureResolver = signature =>
+        {
+            int.TryParse(signature.Substring(signature.Length - 1), out var lastSignChar);
+            signature = signature.Remove(signature.Length - 1);
 
+            while (lastSignChar > 0)
+            {
+                signature = signature + "=";
+                lastSignChar--;
+            }
+        };
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -143,7 +150,7 @@ public class SsoHandlerService
 
             if (context.Request.Query["auth"] == "true")
             {
-                var userData = _signature.Read<SsoUserData>(data);
+                var userData = _signature.Read<SsoUserData>(data, _signatureResolver);
 
                 if (userData == null)
                 {
@@ -180,16 +187,16 @@ public class SsoHandlerService
                     }
                 }
 
-                userInfo = AddUser(userInfo);
+                userInfo = await AddUser(userInfo);
 
                 var authKey = _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSSO);
-                
+
                 context.Response.Redirect(_commonLinkUtility.GetDefault() + "?token=" + HttpUtility.UrlEncode(authKey), false);
 
             }
             else if (context.Request.Query["logout"] == "true")
             {
-                var logoutSsoUserData = _signature.Read<LogoutSsoUserData>(data);
+                var logoutSsoUserData = _signature.Read<LogoutSsoUserData>(data, _signatureResolver);
 
                 if (logoutSsoUserData == null)
                 {
@@ -242,7 +249,7 @@ public class SsoHandlerService
         await context.Response.WriteAsync(((int)messageKey).ToString());
     }
 
-    private UserInfo AddUser(UserInfo userInfo)
+    private async Task<UserInfo> AddUser(UserInfo userInfo)
     {
         UserInfo newUserInfo;
 
@@ -261,10 +268,19 @@ public class SsoHandlerService
 
             if (string.IsNullOrEmpty(newUserInfo.UserName))
             {
-                var limitExceeded = _tenantStatisticsProvider.GetUsersCount() >= _tenantExtra.GetTenantQuota().ActiveUsers;
+                var limitExceeded = false;
+
+                try
+                {
+                    await _countRoomAdminChecker.CheckAppend();
+                }
+                catch (Exception)
+                {
+                    limitExceeded = true;
+                }
 
                 newUserInfo = _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
-                    false, isVisitor: limitExceeded);
+                    false, isUser: limitExceeded);
             }
             else
             {

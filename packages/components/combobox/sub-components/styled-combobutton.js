@@ -115,23 +115,15 @@ const StyledComboButton = styled.div`
       props.noBorder &&
       `
       line-height: ${props.theme.comboBox.label.lineHeightWithoutBorder};
-      text-decoration: ${props.theme.comboBox.label.lineHeightTextDecoration};
     `}
-
-    ${(props) =>
-      props.isOpen &&
-      props.noBorder &&
-      `
-      text-decoration: underline dashed;
-    `};
   }
-  .combo-button-label:hover {
-    ${(props) =>
-      props.noBorder &&
-      !props.isDisabled &&
-      `
-      text-decoration: underline dashed;
-    `}
+
+  :focus {
+    outline: none;
+    border-color: ${(props) =>
+      props.isOpen
+        ? props.theme.comboBox.button.hoverBorderColorOpen
+        : props.theme.comboBox.button.hoverBorderColor};
   }
 `;
 StyledComboButton.defaultProps = { theme: Base };

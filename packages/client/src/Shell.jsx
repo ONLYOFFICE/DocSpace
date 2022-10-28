@@ -29,6 +29,7 @@ import { useThemeDetector } from "SRC_DIR/helpers/utils";
 import { isMobileOnly } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
+import MainBar from "./components/MainBar";
 
 // const { proxyURL } = AppServerConfig;
 // const homepage = config.homepage;
@@ -65,8 +66,10 @@ const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
 const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
 // const MyProfile = React.lazy(() => import("./pages/My"));
 const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
-
+const PortalUnavailable = React.lazy(() => import("./pages/PortalUnavailable"));
 const FormGallery = React.lazy(() => import("./pages/FormGallery"));
+
+const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
 
 const PortalSettingsRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -120,6 +123,14 @@ const PreparationPortalRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
       <PreparationPortal {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
+const PortalUnavailableRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <PortalUnavailable {...props} />
     </ErrorBoundary>
   </React.Suspense>
 );
@@ -404,10 +415,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         <Toast />
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || !isMobileOnly ? <></> : <NavMenu />}
+        {isMobileOnly && <MainBar />}
         <IndicatorLoader />
         <ScrollToTop />
         <DialogsWrapper t={t} />
         <Main isDesktop={isDesktop}>
+          {!isMobileOnly && <MainBar />}
+          <div className="main-container">
           <Switch>
             <PrivateRoute
               exact
@@ -447,7 +461,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 "/settings",
                 "/settings/common",
                 "/settings/admin",
-                "/settings/connected-clouds",
+                //"/settings/connected-clouds",
               ]}
               component={FilesRoute}
             />
@@ -468,9 +482,14 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               path={"/preparation-portal"}
               component={PreparationPortalRoute}
             />
+            <PrivateRoute
+              path={"/portal-unavailable"}
+              component={PortalUnavailableRoute}
+            />
             <PrivateRoute path={"/error401"} component={Error401Route} />
             <PrivateRoute component={Error404Route} />
           </Switch>
+          </div>
         </Main>
       </Router>
     </Layout>

@@ -453,19 +453,14 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             _ => FolderType.DEFAULT,
         };
 
-        return rooms.Where(f => f.FolderType == filter || filter == FolderType.DEFAULT);
+        return rooms.Where(f => f != null && (f.FolderType == filter || filter == FolderType.DEFAULT));
     }
 
-    protected IAsyncEnumerable<Folder<string>> FilterByOwner(IAsyncEnumerable<Folder<string>> rooms, Guid ownerId, bool withoutMe)
+    protected IAsyncEnumerable<Folder<string>> FilterBySubject(IAsyncEnumerable<Folder<string>> rooms, Guid subjectId, bool excludeSubject)
     {
-        if (ownerId != Guid.Empty && !withoutMe)
+        if (subjectId != Guid.Empty)
         {
-            rooms = rooms.Where(f => f.CreateBy == ownerId);
-        }
-
-        if (ownerId == Guid.Empty && withoutMe)
-        {
-            rooms = rooms.Where((f => f.CreateBy != _authContext.CurrentAccount.ID));
+            rooms = excludeSubject ? rooms.Where(f => f != null && f.CreateBy != subjectId) : rooms.Where(f => f != null && f.CreateBy == subjectId);
         }
 
         return rooms;
@@ -473,8 +468,17 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     protected bool CheckInvalidFilter(FilterType filterType)
     {
-        return filterType is FilterType.FilesOnly or FilterType.ByExtension or FilterType.DocumentsOnly or FilterType.ImagesOnly or FilterType.PresentationsOnly
-            or FilterType.SpreadsheetsOnly or FilterType.ArchiveOnly or FilterType.MediaOnly;
+        return filterType is
+            FilterType.FilesOnly or
+            FilterType.ByExtension or
+            FilterType.DocumentsOnly or
+            FilterType.OFormOnly or
+            FilterType.OFormTemplateOnly or
+            FilterType.ImagesOnly or
+            FilterType.PresentationsOnly or
+            FilterType.SpreadsheetsOnly or
+            FilterType.ArchiveOnly or
+            FilterType.MediaOnly;
     }
 
     protected abstract string MakeId(string path = null);
@@ -590,7 +594,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.FromResult(tagInfo);
     }
 
-    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag)
+    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
         return new List<Tag>();
     }
@@ -600,7 +604,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return new List<Tag>();
     }
 
-    public void UpdateNewTags(IEnumerable<Tag> tag)
+    public void UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
     }
 
@@ -641,7 +645,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var entryIDs = await filesDbContext.ThirdpartyIdMapping
-                   .Where(r => r.Id.StartsWith(parentFolder.Id))
+                   .Where(r => r.Id.StartsWith(PathPrefix))
                    .Select(r => r.HashId)
                    .ToListAsync();
 

@@ -54,7 +54,6 @@ namespace ASC.Data.Backup.Services;
 [Transient]
 public class BackupProgressItem : BaseBackupProgressItem
 {
-    public bool BackupMail { get; set; }
     public Dictionary<string, string> StorageParams { get; set; }
     public string TempFolder { get; set; }
 
@@ -92,7 +91,6 @@ public class BackupProgressItem : BaseBackupProgressItem
         TenantId = schedule.TenantId;
         _storageType = schedule.StorageType;
         _storageBasePath = schedule.StorageBasePath;
-        BackupMail = schedule.BackupMail;
         StorageParams = JsonConvert.DeserializeObject<Dictionary<string, string>>(schedule.StorageParams);
         _isScheduled = isScheduled;
         TempFolder = tempFolder;
@@ -105,7 +103,6 @@ public class BackupProgressItem : BaseBackupProgressItem
         TenantId = request.TenantId;
         _storageType = request.StorageType;
         _storageBasePath = request.StorageBasePath;
-        BackupMail = request.BackupMail;
         StorageParams = request.StorageParams.ToDictionary(r => r.Key, r => r.Value);
         _isScheduled = isScheduled;
         TempFolder = tempFolder;
@@ -137,10 +134,6 @@ public class BackupProgressItem : BaseBackupProgressItem
             var backupTask = _backupPortalTask;
 
             backupTask.Init(TenantId, tempFile, _limit);
-            if (!BackupMail)
-            {
-                backupTask.IgnoreModule(ModuleName.Mail);
-            }
 
             backupTask.ProgressChanged += (sender, args) =>
             {

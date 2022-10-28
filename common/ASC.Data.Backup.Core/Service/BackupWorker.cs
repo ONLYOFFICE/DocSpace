@@ -194,7 +194,7 @@ public class BackupWorker
         }
     }
 
-    public BackupProgress StartTransfer(int tenantId, string targetRegion, bool transferMail, bool notify)
+    public BackupProgress StartTransfer(int tenantId, string targetRegion, bool notify)
     {
         lock (_synchRoot)
         {
@@ -208,7 +208,7 @@ public class BackupWorker
             if (item == null)
             {
                 item = _serviceProvider.GetService<TransferProgressItem>();
-                item.Init(targetRegion, transferMail, tenantId, TempFolder, _limit, notify);
+                item.Init(targetRegion, tenantId, TempFolder, _limit, notify);
 
                 _progressQueue.EnqueueTask(item);
             }

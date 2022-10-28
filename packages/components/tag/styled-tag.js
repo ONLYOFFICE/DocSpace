@@ -7,7 +7,7 @@ import Base from "../themes/base";
 const StyledTag = styled.div`
   width: fit-content;
 
-  max-width: ${(props) => props.tagMaxWidth};
+  max-width: ${(props) => (props.tagMaxWidth ? props.tagMaxWidth : "100%")};
 
   display: flex;
   align-items: center;
@@ -38,6 +38,11 @@ const StyledTag = styled.div`
   .tag-icon {
     margin-left: 12px;
     cursor: pointer;
+  }
+
+  .third-party-tag {
+    width: 16px;
+    height: 16px;
   }
 
   ${(props) =>

@@ -6,8 +6,7 @@ import { ReactSVG } from "react-svg";
 import styled, { css } from "styled-components";
 import ContextMenu from "@docspace/components/context-menu";
 import { tablet } from "@docspace/components/utils/device";
-import { isDesktop, isMobile } from "react-device-detect";
-
+import { isMobile } from "react-device-detect";
 import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
 import { Base } from "@docspace/components/themes";
@@ -54,6 +53,7 @@ const roomsStyles = css`
   }
 
   .room-tile_bottom-content {
+    display: ${(props) => props.isThirdParty && "flex"};
     width: 100%;
     height: 56px;
 
@@ -120,30 +120,12 @@ const StyledTile = styled.div`
 
   &:before,
   &:after {
-    ${(props) =>
-      props.isFolder &&
-      props.dragging &&
-      css`
-        background: ${(props) =>
-          props.theme.filesSection.rowView.draggingBackground};
-      `};
     ${(props) => props.showHotkeyBorder && "border-color: #2DA7DB"};
   }
 
   &:before,
   &:after {
     ${(props) => (props.checked || props.isActive) && checkedStyle};
-  }
-
-  &:hover:before,
-  &:hover:after {
-    ${(props) =>
-      props.isFolder &&
-      props.dragging &&
-      css`
-        background: ${(props) =>
-          props.theme.filesSection.rowView.draggingHoverBackground};
-      `};
   }
 
   .checkbox {
@@ -191,7 +173,6 @@ const StyledTile = styled.div`
   :hover {
     ${(props) =>
       !props.dragging &&
-      props.isDesktop &&
       !props.inProgress &&
       !isMobile &&
       css`
@@ -414,7 +395,7 @@ class Tile extends React.PureComponent {
   };
 
   onFileIconClick = () => {
-    if (isDesktop) return;
+    if (!isMobile) return;
 
     const { onSelect, item } = this.props;
     onSelect && onSelect(true, item);
@@ -467,7 +448,7 @@ class Tile extends React.PureComponent {
       t,
       columnCount,
       selectTag,
-      selectType,
+      selectOption,
     } = this.props;
     const { isFolder, isRoom, id, fileExst } = item;
 
@@ -525,9 +506,9 @@ class Tile extends React.PureComponent {
         isActive={isActive}
         isRoom={isRoom}
         inProgress={inProgress}
-        isDesktop={isDesktop}
         showHotkeyBorder={showHotkeyBorder}
         onClick={this.onFileClick}
+        isThirdParty={item.providerType}
       >
         {isFolder || (!fileExst && id === -1) ? (
           isRoom ? (
@@ -591,6 +572,19 @@ class Tile extends React.PureComponent {
                 </StyledOptionButton>
               </div>
               <div className="room-tile_bottom-content">
+                {item.providerType && (
+                  <Tag
+                    icon={item.thirdPartyIcon}
+                    label={item.providerKey}
+                    onClick={() =>
+                      selectOption({
+                        option: "typeProvider",
+                        value: item.providerType,
+                      })
+                    }
+                  />
+                )}
+
                 {item.tags.length > 0 ? (
                   <Tags
                     columnCount={columnCount}
@@ -601,7 +595,12 @@ class Tile extends React.PureComponent {
                   <Tag
                     isDefault
                     label={t(RoomsTypeTranslations[item.roomType])}
-                    onClick={() => selectType(item.roomType)}
+                    onClick={() =>
+                      selectOption({
+                        option: "defaultTypeRoom",
+                        value: item.roomType,
+                      })
+                    }
                   />
                 )}
               </div>

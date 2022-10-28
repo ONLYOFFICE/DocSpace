@@ -20,7 +20,9 @@ class SaveCancelButtons extends React.Component {
   }
 
   onKeydown = (e) => {
-    const { onSaveClick, onCancelClick } = this.props;
+    const { onSaveClick, onCancelClick, displaySettings } = this.props;
+
+    if (displaySettings) return;
 
     switch (e.keyCode) {
       case ButtonKeys.enter:
@@ -44,18 +46,22 @@ class SaveCancelButtons extends React.Component {
       saveButtonLabel,
       cancelButtonLabel,
       hasScroll,
-      isFirstWelcomePageSettings,
+      disableRestoreToDefault,
       className,
       id,
       isSaving,
       cancelEnable,
+      tabIndex,
     } = this.props;
 
     const cancelButtonDisabled = cancelEnable
       ? false
-      : isFirstWelcomePageSettings === "true"
-      ? false
+      : typeof disableRestoreToDefault === "boolean"
+      ? disableRestoreToDefault
       : !showReminder;
+
+    const tabIndexSaveButton = tabIndex ? tabIndex : -1;
+    const tabIndexCancelButton = tabIndex ? tabIndex + 1 : -1;
 
     return (
       <StyledSaveCancelButtons
@@ -67,6 +73,7 @@ class SaveCancelButtons extends React.Component {
       >
         <div className="buttons-flex">
           <Button
+            tabIndex={tabIndexSaveButton}
             className="save-button"
             size="normal"
             isDisabled={!showReminder}
@@ -77,6 +84,7 @@ class SaveCancelButtons extends React.Component {
             isLoading={isSaving}
           />
           <Button
+            tabIndex={tabIndexCancelButton}
             className="cancel-button"
             size="normal"
             isDisabled={cancelButtonDisabled || isSaving}
@@ -114,9 +122,10 @@ SaveCancelButtons.propTypes = {
   displaySettings: PropTypes.bool,
   hasScroll: PropTypes.bool,
   minwidth: PropTypes.string,
-  isFirstWelcomePageSettings: PropTypes.string,
+  disableRestoreToDefault: PropTypes.bool,
   isSaving: PropTypes.bool,
   cancelEnable: PropTypes.bool,
+  tabIndex: PropTypes.number,
 };
 
 SaveCancelButtons.defaultProps = {

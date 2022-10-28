@@ -147,7 +147,11 @@ public class StorageFactory
     private readonly SettingsManager _settingsManager;
     private readonly StorageSettingsHelper _storageSettingsHelper;
     private readonly TenantManager _tenantManager;
+    private readonly UserManager _userManager;
+    private readonly AuthContext _authContext;
     private readonly CoreBaseSettings _coreBaseSettings;
+    private readonly TenantQuotaFeatureChecker<MaxFileSizeFeature, long> _maxFileSizeChecker;
+    private readonly TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> _maxTotalSizeChecker;
     private readonly IServiceProvider _serviceProvider;
 
     public StorageFactory(
@@ -156,21 +160,29 @@ public class StorageFactory
         SettingsManager settingsManager,
         StorageSettingsHelper storageSettingsHelper,
         TenantManager tenantManager,
-        CoreBaseSettings coreBaseSettings)
+        UserManager userManager,
+        AuthContext authContext,
+        CoreBaseSettings coreBaseSettings,
+        TenantQuotaFeatureChecker<MaxFileSizeFeature, long> maxFileSizeChecker,
+        TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> maxTotalSizeChecker)
     {
         _serviceProvider = serviceProvider;
         _storageFactoryConfig = storageFactoryConfig;
         _settingsManager = settingsManager;
         _storageSettingsHelper = storageSettingsHelper;
         _tenantManager = tenantManager;
+        _userManager = userManager;
+        _authContext = authContext;
         _coreBaseSettings = coreBaseSettings;
+        _maxFileSizeChecker = maxFileSizeChecker;
+        _maxTotalSizeChecker = maxTotalSizeChecker;
     }
 
     public IDataStore GetStorage(string tenant, string module, string region = "current")
     {
         int.TryParse(tenant, out var tenantId);
 
-        return GetStorage(tenant, module, new TenantQuotaController(tenantId, _tenantManager), region);
+        return GetStorage(tenant, module, new TenantQuotaController(tenantId, _tenantManager, _authContext, _maxFileSizeChecker, _maxTotalSizeChecker), region);
     }
 
     public IDataStore GetStorage(string tenant, string module, IQuotaController controller, string region = "current")
@@ -217,7 +229,7 @@ public class StorageFactory
 
         int.TryParse(tenant, out var tenantId);
 
-        return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager));
+        return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager, _authContext, _maxFileSizeChecker, _maxTotalSizeChecker));
     }
 
     private IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller, string region = "current")

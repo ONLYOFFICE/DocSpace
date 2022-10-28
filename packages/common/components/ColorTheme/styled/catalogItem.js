@@ -26,6 +26,11 @@ const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
           theme.isBase &&
           $currentColorScheme.accentColor} !important;
         }
+        circle {
+          fill: ${isActive &&
+          theme.isBase &&
+          $currentColorScheme.accentColor} !important;
+        }
       }
 
       &:hover {

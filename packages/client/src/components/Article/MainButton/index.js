@@ -14,23 +14,62 @@ import MobileView from "./MobileView";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
-import { Events } from "@docspace/client/src/helpers/filesConstants";
+import { Events } from "@docspace/common/constants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 import toastr from "@docspace/components/toast/toastr";
+import styled from "styled-components";
+import Button from "@docspace/components/button";
+
+const StyledButton = styled(Button)`
+  font-weight: 700;
+  font-size: 16px;
+  padding: 0;
+  opacity: 1;
+
+  background-color: ${({ currentColorScheme }) =>
+    currentColorScheme.accentColor};
+
+  :hover {
+    background-color: ${({ currentColorScheme }) =>
+      currentColorScheme.accentColor};
+    opacity: 0.85;
+  }
+
+  :active {
+    background-color: ${({ currentColorScheme }) =>
+      currentColorScheme.accentColor};
+
+    opacity: 1;
+    filter: brightness(90%);
+    cursor: pointer;
+  }
+
+  .button-content {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    vertical-align: middle;
+    box-sizing: border-box;
+    padding: 5px 14px 5px 12px;
+    line-height: 22px;
+    border-radius: 3px;
+
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+`;
 
 const ArticleMainButtonContent = (props) => {
   const {
     t,
     isMobileArticle,
-    isDisabled,
     canCreate,
     isPrivacy,
     encryptedFile,
     encrypted,
     startUpload,
     setAction,
-    setCreateRoomDialogVisible,
     setSelectFileDialogVisible,
     isArticleLoading,
     isFavoritesFolder,
@@ -46,7 +85,14 @@ const ArticleMainButtonContent = (props) => {
     selectedTreeNode,
 
     enablePlugins,
+
+    currentColorScheme,
+
+    isOwner,
+    isAdmin,
+    isVisitor,
   } = props;
+
   const isAccountsPage = selectedTreeNode[0] === "accounts";
 
   const inputFilesElement = React.useRef(null);
@@ -55,6 +101,7 @@ const ArticleMainButtonContent = (props) => {
   const [actions, setActions] = React.useState([]);
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
+  const [isDropdownMainButton, setIsDropdownMainButton] = React.useState(true);
 
   const onCreate = React.useCallback(
     (e) => {
@@ -134,6 +181,33 @@ const ArticleMainButtonContent = (props) => {
   }, []);
 
   React.useEffect(() => {
+    const isSettingFolder =
+      window.location.pathname.endsWith("/settings/common") ||
+      window.location.pathname.endsWith("/settings/admin");
+
+    const isFolderHiddenDropdown =
+      isArchiveFolder ||
+      isFavoritesFolder ||
+      isRecentFolder ||
+      isRecycleBinFolder ||
+      isSettingFolder;
+
+    if (isFolderHiddenDropdown) {
+      setIsDropdownMainButton(false);
+    } else {
+      setIsDropdownMainButton(true);
+    }
+  }, [
+    isArchiveFolder,
+    isFavoritesFolder,
+    isRecentFolder,
+    isRecycleBinFolder,
+    window.location.pathname,
+  ]);
+
+  React.useEffect(() => {
+    if (isRoomsFolder) return;
+
     const folderUpload = !isMobile
       ? [
           {
@@ -185,11 +259,11 @@ const ArticleMainButtonContent = (props) => {
 
     const actions = isAccountsPage
       ? [
-          {
+          isOwner && {
             id: "main-button_administrator",
             className: "main-button_drop-down",
             icon: "/static/images/person.admin.react.svg",
-            label: t("People:Administrator"),
+            label: t("Common:DocSpaceAdmin"),
             onClick: onInvite,
             action: "administrator",
             key: "administrator",
@@ -198,7 +272,7 @@ const ArticleMainButtonContent = (props) => {
             id: "main-button_manager",
             className: "main-button_drop-down",
             icon: "/static/images/person.manager.react.svg",
-            label: t("People:Manager"),
+            label: t("Common:RoomAdmin"),
             onClick: onInvite,
             action: "manager",
             key: "manager",
@@ -211,18 +285,6 @@ const ArticleMainButtonContent = (props) => {
             onClick: onInvite,
             action: "user",
             key: "user",
-          },
-        ]
-      : isRoomsFolder
-      ? [
-          {
-            id: "main-button_new-room",
-            className: "main-button_drop-down",
-            icon: "images/folder.locked.react.svg",
-            label: t("Files:NewRoom"),
-            onClick: onCreateRoom,
-            action: "room",
-            key: "room",
           },
         ]
       : [
@@ -290,15 +352,14 @@ const ArticleMainButtonContent = (props) => {
 
     const menuModel = [...actions];
 
-    if (!isRoomsFolder) {
-      menuModel.push({
-        isSeparator: true,
-        key: "separator",
-      });
+    menuModel.push({
+      isSeparator: true,
+      key: "separator",
+    });
 
-      menuModel.push(...uploadActions);
-      setUploadActions(uploadActions);
-    }
+    menuModel.push(...uploadActions);
+    setUploadActions(uploadActions);
+
     if (enablePlugins) {
       const pluginOptions = getMainButtonItems();
 
@@ -318,12 +379,11 @@ const ArticleMainButtonContent = (props) => {
     t,
     isPrivacy,
     currentFolderId,
-    isRoomsFolder,
-
     isAccountsPage,
-
     enablePlugins,
-
+    isRoomsFolder,
+    isOwner,
+    isAdmin,
     onCreate,
     onCreateRoom,
     onInvite,
@@ -338,6 +398,9 @@ const ArticleMainButtonContent = (props) => {
     ? t("Common:Invite")
     : t("Common:Actions");
 
+  const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
+  const isProfile = history.location.pathname === "/accounts/view/@self";
+
   return (
     <>
       {isMobileArticle ? (
@@ -349,6 +412,7 @@ const ArticleMainButtonContent = (props) => {
             !isRecycleBinFolder &&
             !isArchiveFolder &&
             !isArticleLoading &&
+            !isProfile &&
             (canCreate || canInvite) && (
               <MobileView
                 t={t}
@@ -356,14 +420,26 @@ const ArticleMainButtonContent = (props) => {
                 actionOptions={actions}
                 buttonOptions={uploadActions}
                 isRooms={isRoomsFolder}
+                onMainButtonClick={onCreateRoom}
               />
             )}
         </>
+      ) : isRoomsFolder ? (
+        <StyledButton
+          className="create-room-button"
+          label={t("Files:NewRoom")}
+          onClick={onCreateRoom}
+          currentColorScheme={currentColorScheme}
+          isDisabled={isDisabled}
+          size="small"
+          primary
+          scale
+        />
       ) : (
         <MainButton
           id="files_main-button"
-          isDisabled={isDisabled ? isDisabled : !canCreate && !canInvite}
-          isDropdown={true}
+          isDisabled={isDisabled}
+          isDropdown={isDropdownMainButton}
           text={mainButtonText}
           model={model}
         />
@@ -416,16 +492,15 @@ export default inject(
       selectedTreeNode,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
-    const {
-      setCreateRoomDialogVisible,
-      setSelectFileDialogVisible,
-    } = dialogsStore;
+    const { setSelectFileDialogVisible } = dialogsStore;
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
-    const { enablePlugins } = auth.settingsStore;
+    const { enablePlugins, currentColorScheme } = auth.settingsStore;
 
     const currentFolderId = selectedFolderStore.id;
+
+    const { isAdmin, isOwner, isVisitor } = auth.userStore.user;
 
     return {
       showText: auth.settingsStore.showText,
@@ -446,7 +521,6 @@ export default inject(
 
       startUpload,
 
-      setCreateRoomDialogVisible,
       setSelectFileDialogVisible,
 
       isLoading,
@@ -455,12 +529,17 @@ export default inject(
       currentFolderId,
 
       enablePlugins,
+      currentColorScheme,
+
+      isAdmin,
+      isOwner,
+      isVisitor,
     };
   }
 )(
   withTranslation(["Article", "UploadPanel", "Common", "Files", "People"])(
     withLoader(observer(withRouter(ArticleMainButtonContent)))(
-      <Loaders.ArticleButton />
+      <Loaders.ArticleButton height="28px" />
     )
   )
 );

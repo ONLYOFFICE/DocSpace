@@ -165,3 +165,105 @@ export function setPortalRename(alias) {
     data: { alias },
   });
 }
+
+export function sendSuspendPortalEmail() {
+  return request({
+    method: "post",
+    url: "/portal/suspend.json",
+  });
+}
+
+export function sendDeletePortalEmail() {
+  return request({
+    method: "post",
+    url: "/portal/delete.json",
+  });
+}
+
+export function suspendPortal(confirmKey = null) {
+  const options = {
+    method: "put",
+    url: "/portal/suspend.json",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
+export function continuePortal(confirmKey = null) {
+  const options = {
+    method: "put",
+    url: "/portal/continue.json",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
+export function deletePortal(confirmKey = null) {
+  const options = {
+    method: "delete",
+    url: "/portal/delete.json",
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
+export function getPortalPaymentQuotas() {
+  return request({ method: "get", url: "/portal/payment/quotas" });
+}
+
+export function getPortalQuota() {
+  return request({ method: "get", url: "/portal/payment/quota" });
+}
+
+export function getPortalTariff() {
+  return request({ method: "get", url: "/portal/tariff" });
+}
+
+export function getPaymentAccount() {
+  return request({ method: "get", url: "/portal/payment/account" });
+}
+
+export function getPaymentLink(adminCount, currency) {
+  return request({
+    method: "put",
+    url: `/portal/payment/url`,
+    data: {
+      quantity: { admin: adminCount },
+    },
+  });
+}
+
+export function updatePayment(adminCount) {
+  return request({
+    method: "put",
+    url: `/portal/payment/update`,
+    data: {
+      quantity: { admin: adminCount },
+    },
+  });
+}
+
+export function getCurrencies() {
+  return request({ method: "get", url: "/portal/payment/currencies" });
+}
+
+export function getPaymentTariff() {
+  return request({ method: "get", url: "/portal/payment/tariff" });
+}
+
+export function sendPaymentRequest(email, userName, message) {
+  return request({
+    method: "post",
+    url: `/portal/payment/request `,
+    data: {
+      email,
+      userName,
+      message,
+    },
+  })};

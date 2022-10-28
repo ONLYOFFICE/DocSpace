@@ -238,7 +238,7 @@ const Dark = {
   },
 
   mainButton: {
-    backgroundColor: "#F59931",
+    backgroundColor: "#ED7309",
     disableBackgroundColor: "#4C3B2D",
     hoverBackgroundColor: "#FFAD3D",
     clickBackgroundColor: "#E6842E",
@@ -248,7 +248,7 @@ const Dark = {
     lineHeight: "22px",
     fontSize: "16px",
     fontWeight: 700,
-    textColor: "#FFFFFF",
+    textColor: black,
     textColorDisabled: black,
 
     cornerRoundsTopRight: "0",
@@ -258,14 +258,6 @@ const Dark = {
       margin: "auto",
       height: "100%",
       fill: black,
-    },
-
-    secondaryButton: {
-      height: "32px",
-      padding: "0",
-      borderRadius: "3px",
-      cornerRoundsTopLeft: "0",
-      cornerRoundsBottomLeft: "0",
     },
 
     dropDown: {
@@ -286,11 +278,12 @@ const Dark = {
   },
 
   socialButton: {
-    fontWeight: "600",
+    fontWeight: "500",
     textDecoration: "none",
     padding: "0",
     borderRadius: "2px",
     height: "40px",
+    heightSmall: "32px",
     textAlign: "left",
     stroke: " none",
     outline: "none",
@@ -298,7 +291,9 @@ const Dark = {
 
     background: black,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
+    connectBackground: "#3B72A7",
     hoverBackground: "#292929",
+    hoverConnectBackground: "#265A8F",
     activeBackground: "#292929",
     hoverBorder: "#292929",
 
@@ -322,6 +317,7 @@ const Dark = {
       whiteSpace: "nowrap",
       color: grayMaxLight,
       hoverColor: grayMaxLight,
+      connectColor: white,
     },
 
     svg: {
@@ -330,6 +326,7 @@ const Dark = {
       height: "18px",
       minWidth: "18px",
       minHeight: "18px",
+      fill: white,
     },
   },
 
@@ -389,9 +386,9 @@ const Dark = {
     borderRadius: "3px",
     height: " 32px",
     width: "32px",
-    padding: "9px",
+    padding: "10px",
     color: "#858585",
-    hoverColor: "#858585",
+    hoverColor: grayMaxLight,
   },
 
   saveCancelButtons: {
@@ -443,6 +440,8 @@ const Dark = {
 
     hoverBorderColor: "#646464",
     hoverIndeterminateColor: grayMaxLight,
+
+    focusColor: "#858585",
   },
 
   // slider: {
@@ -761,6 +760,18 @@ const Dark = {
     hoverIconColor: "#858585",
   },
 
+  inputPhone: {
+    activeBorderColor: "#2da7db",
+    inactiveBorderColor: "#474747",
+    errorBorderColor: "#f21c0e",
+    backgroundColor: "#33333",
+    color: "#fff",
+    scrollBackground: "#858585",
+    placeholderColor: "#858585",
+    dialCodeColor: "#858585",
+    width: "320px",
+    height: "44px",
+  },
   textInput: {
     fontWeight: "normal",
     placeholderColor: "#474747",
@@ -1074,7 +1085,7 @@ const Dark = {
 
     image: {
       width: "100%",
-      height: "auto",
+      height: "100%",
       borderRadius: "50%",
     },
 
@@ -1088,8 +1099,8 @@ const Dark = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
 
     height: {
@@ -1097,8 +1108,8 @@ const Dark = {
       small: "36px",
       base: "40px",
       medium: "48px",
-      big: "82px",
-      max: "160px",
+      big: "80px",
+      max: "124px",
     },
   },
 
@@ -1135,7 +1146,10 @@ const Dark = {
         width: "24px",
         height: "24px",
         background: grayMaxLight,
-        border: `6px solid ${black}`,
+        disabledBackground: "#A6DCF2",
+        borderWidth: "6px",
+        borderStyle: "solid",
+        borderColor: `${black}`,
         borderRadius: "30px",
         boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.13)",
       },
@@ -1174,6 +1188,10 @@ const Dark = {
         color: "transparent",
         width: "100%",
         height: "8px",
+      },
+
+      trackNumber: {
+        color: "#A3A9AE",
       },
 
       fillLower: {
@@ -1528,6 +1546,7 @@ const Dark = {
 
   comboBox: {
     padding: "6px 0px",
+    background: black,
 
     width: {
       base: "173px",
@@ -1617,10 +1636,11 @@ const Dark = {
   },
 
   toggleButton: {
-    fillColor: grayMaxLight,
+    fillColor: "#F0F0F0",
     fillColorOff: "#292929",
 
     disableFillColor: black,
+    disableFillColorOff: "#545454",
 
     borderColor: "#474747",
     borderColorOff: "#474747",
@@ -1628,11 +1648,11 @@ const Dark = {
     disableBorderColor: "#474747",
     disableBorderColorOff: "#646464",
 
-    fillCircleColor: "#FFFFFF",
+    fillCircleColor: "#292929",
     fillCircleColorOff: grayMaxLight,
 
-    disableFillCircleColor: "#333333",
-    disableFillCircleColorOff: "#797979",
+    disableFillCircleColor: "#545454",
+    disableFillCircleColorOff: black,
   },
 
   contextMenuButton: {
@@ -1838,6 +1858,13 @@ const Dark = {
       borderTop: "1px solid #474747",
       background: "#3D3D3D",
     },
+
+    paymentAlert: {
+      color: "#ed7309",
+      warningColor: "#E06451",
+      border: "1px solid #ed7309",
+      warningBorder: "1px solid #E06451",
+    },
   },
 
   catalogItem: {
@@ -1883,7 +1910,7 @@ const Dark = {
       fontWeight: 600,
       tablet: {
         marginLeft: "12px",
-        lineHeight: "16px",
+        lineHeight: "20px",
         fontSize: "14px",
         fontWeight: "600",
       },
@@ -1957,6 +1984,9 @@ const Dark = {
   article: {
     background: "#292929",
     pinBorderColor: "#474747",
+    catalogItemHeader: "#858585",
+    catalogItemText: "rgba(255, 255, 255, 0.6)",
+    catalogItemActiveBackground: "#333333",
   },
 
   section: {
@@ -1989,11 +2019,32 @@ const Dark = {
     closeButtonSize: "12px",
     closeButtonBg: "#a2a2a2",
 
-    accessGroupBg: "#242424",
-    accessGroupText: white,
+    members: {
+      iconColor: "#A3A9AE",
+      subtitleColor: "#a3a9ae",
+      meLabelColor: "#a3a9ae",
+      roleSelectorColor: "#a3a9ae",
+      disabledRoleSelectorColor: "#a3a9ae",
+      roleSelectorArrowColor: "#a3a9ae",
+    },
 
-    showAccessUsersTextColor: gray,
-    showAccessPanelTextColor: "#E06A1B",
+    history: {
+      subtitleColor: "#A3A9AE",
+      fileBlockBg: "#292929",
+      dateColor: "#A3A9AE",
+      fileExstColor: "#A3A9AE",
+      locationIconColor: "#A3A9AE",
+      folderLabelColor: "#A3A9AE",
+    },
+
+    details: {
+      customLogoBorderColor: "#eceef1",
+      commentEditorIconColor: "#eee",
+    },
+
+    gallery: {
+      borderColor: "#292929",
+    },
   },
 
   filesArticleBody: {
@@ -2573,7 +2624,7 @@ const Dark = {
     background: "none",
     svgFill: "#eeeeee",
     header: {
-      height: "50px",
+      height: "49px",
       borderBottom: `1px solid #474747`,
       marginBottom: "6px",
     },
@@ -2583,7 +2634,7 @@ const Dark = {
     padding: "0 12px",
     mobile: {
       height: "36px",
-      padding: "0 16px",
+      padding: "0 16px 6px",
     },
   },
   newContextMenu: {
@@ -2687,6 +2738,9 @@ const Dark = {
   login: {
     linkColor: "#E06A1B",
     textColor: "#858585",
+    navBackground: "#282828",
+    headerColor: white,
+    helpButton: "#D8D8D8",
 
     register: {
       backgroundColor: "#292929",
@@ -2760,7 +2814,13 @@ const Dark = {
     },
 
     home: {
+      logoColor: "rgba(255, 255, 255, 0.92)",
       textColorError: red,
+    },
+
+    payments: {
+      linkColor: "#E06A1B",
+      delayColor: "#F21C0E",
     },
 
     paymentsEnterprise: {
@@ -2779,6 +2839,8 @@ const Dark = {
         fillIcon: "#c4c4c4",
         expanderColor: "#c4c4c4",
       },
+
+      separatorBorder: "1px solid #474747",
 
       security: {
         arrowFill: white,
@@ -2843,7 +2905,22 @@ const Dark = {
       backup: {
         rectangleBackgroundColor: "#292929",
         separatorBorder: "1px solid #474747",
-        contextBorder: "1px solid #D0D5DA",
+      },
+
+      payment: {
+        priceColor: "#858585",
+        disabledPriceColor: "#A3A9AE",
+        storageSizeTitle: "#A3A9AE",
+
+        backgroundColor: "#282828",
+        linkColor: "#316DAA",
+        tariffText: "#858585",
+        border: "1px solid #474747",
+        backgroundBenefitsColor: "#3333",
+        rectangleColor: "#3D3D3D",
+        backgroundPrice: "#282828",
+        backgroundPriceContainer: "#282828",
+        warningColor: "#E06451",
       },
     },
 
@@ -2895,6 +2972,21 @@ const Dark = {
     disabledBackground: "#858585",
     defaultTagColor: "#858585",
     newTagBackground: "#333333",
+  },
+
+  profile: {
+    main: {
+      background: "#1f1f1f",
+      textColor: white,
+    },
+    themePreview: {
+      border: "1px solid #858585",
+    },
+  },
+
+  formWrapper: {
+    background: black,
+    boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.16);",
   },
 };
 

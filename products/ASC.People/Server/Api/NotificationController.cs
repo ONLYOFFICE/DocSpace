@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.People.Api;
 
 public class NotificationController : ApiControllerBase
@@ -72,7 +70,7 @@ public class NotificationController : ApiControllerBase
 
         if (user.IsMe(_authContext))
         {
-            return _commonLinkUtility.GetConfirmationUrl(user.Email, ConfirmType.PhoneActivation);
+            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneActivation);
         }
 
         _studioNotifyService.SendMsgMobilePhoneChange(user);

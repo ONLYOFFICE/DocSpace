@@ -148,11 +148,6 @@ public class MultiRegionHostedSolution
         GetRegionService(region).SetTariff(tenant, tariff);
     }
 
-    public void SaveButton(string region, int tariffId, string partnerId, string buttonUrl)
-    {
-        GetRegionService(region).SaveButton(tariffId, partnerId, buttonUrl);
-    }
-
     public TenantQuota GetTenantQuota(string region, int tenant)
     {
         return GetRegionService(region).GetTenantQuota(tenant);

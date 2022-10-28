@@ -2,7 +2,9 @@ import React from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 
-import { CheckToastIcon, DangerToastIcon, InfoToastIcon } from "./svg";
+import CheckToastIcon from "../../../public/images/check.toast.react.svg";
+import DangerToastIcon from "../../../public/images/danger.toast.react.svg";
+import InfoToastIcon from "../../../public/images/info.toast.react.svg";
 
 import Text from "../text";
 import {

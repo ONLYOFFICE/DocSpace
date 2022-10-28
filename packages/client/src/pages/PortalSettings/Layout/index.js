@@ -6,11 +6,11 @@ import { inject, observer } from "mobx-react";
 import Section from "@docspace/common/components/Section";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 //import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-const ArticleSettings = React.memo(({ isLoadedPage }) => {
+const ArticleSettings = React.memo(() => {
   return (
-    <Article isLoadedPage={isLoadedPage}>
+    <Article>
       <Article.Header>
-        <ArticleHeaderContent isLoadedPage={isLoadedPage} />
+        <ArticleHeaderContent />
       </Article.Header>
 
       <Article.Body>
@@ -26,7 +26,6 @@ const Layout = ({
   language,
   children,
   addUsers,
-  isLoadedPage,
 }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
@@ -34,7 +33,7 @@ const Layout = ({
 
   return (
     <>
-      <ArticleSettings isLoadedPage={isLoadedPage} />
+      <ArticleSettings />
       <Section withBodyScroll={true} settingsStudio={true}>
         <Section.SectionHeader>
           <SectionHeaderContent />

@@ -63,6 +63,7 @@ class ProfileActions extends React.PureComponent {
   componentDidUpdate(prevProps, prevState) {
     if (this.props.user !== prevProps.user) {
       this.setState({ user: this.props.user });
+      this.getAvatar();
     }
 
     if (this.props.opened !== prevProps.opened) {
@@ -138,6 +139,7 @@ class ProfileActions extends React.PureComponent {
           source={avatar}
           userName={user.displayName}
           className="icon-profile-menu"
+          hideRoleIcon
         />
         <ProfileMenu
           className="profile-menu"

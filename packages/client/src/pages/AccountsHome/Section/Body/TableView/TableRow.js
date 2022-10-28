@@ -52,7 +52,6 @@ const StyledPeopleRow = styled(TableRow)`
 
   .table-container_row-checkbox-wrapper {
     padding-right: 0px;
-    padding-left: 4px;
     min-width: 48px;
 
     .table-container_row-checkbox {
@@ -130,7 +129,6 @@ const PeopleTableRow = (props) => {
     checkedProps,
     onContentRowSelect,
     onEmailClick,
-    onUserNameClick,
     isAdmin,
     isOwner,
     theme,
@@ -145,10 +143,15 @@ const PeopleTableRow = (props) => {
     displayName,
     email,
     statusType,
-    userName,
+
     position,
-    role,
     rooms,
+
+    id,
+
+    role,
+
+    isVisitor,
   } = item;
 
   const isPending = statusType === "pending" || statusType === "disabled";
@@ -167,14 +170,14 @@ const PeopleTableRow = (props) => {
 
     const adminOption = {
       key: "admin",
-      title: t("Administrator"),
-      label: t("Administrator"),
+      title: t("Common:DocSpaceAdmin"),
+      label: t("Common:DocSpaceAdmin"),
       action: "admin",
     };
     const managerOption = {
       key: "manager",
-      title: t("Manager"),
-      label: t("Manager"),
+      title: t("Common:RoomAdmin"),
+      label: t("Common:RoomAdmin"),
       action: "manager",
     };
     const userOption = {
@@ -186,14 +189,13 @@ const PeopleTableRow = (props) => {
 
     isOwner && options.push(adminOption);
 
-    isAdmin && options.push(managerOption);
+    options.push(managerOption);
 
-    options.push(userOption);
+    isVisitor && options.push(userOption);
 
     return options;
-  }, [t, isAdmin, isOwner]);
+  }, [t, isOwner, isVisitor]);
 
-  // TODO: update after backend update
   const onTypeChange = React.useCallback(
     ({ action }) => {
       changeUserType(action, [item], t, true);
@@ -218,20 +220,20 @@ const PeopleTableRow = (props) => {
     return <>{options.map((option) => option)}</>;
   }, []);
 
-  const getRoomTypeLabel = React.useCallback((role) => {
+  const getUserTypeLabel = React.useCallback((role) => {
     switch (role) {
       case "owner":
         return t("Common:Owner");
       case "admin":
-        return t("Administrator");
+        return t("Common:DocSpaceAdmin");
       case "manager":
-        return t("Manager");
+        return t("Common:RoomAdmin");
       case "user":
         return t("Common:User");
     }
   }, []);
 
-  const typeLabel = getRoomTypeLabel(role);
+  const typeLabel = getUserTypeLabel(role);
 
   const isChecked = checkedProps.checked;
 
@@ -242,6 +244,63 @@ const PeopleTableRow = (props) => {
 
     setBufferSelection(item);
   }, [isSeveralSelection, isChecked, item, setBufferSelection]);
+
+  const renderTypeCell = () => {
+    const typesOptions = getTypesOptions();
+
+    const combobox = (
+      <ComboBox
+        className="type-combobox"
+        selectedOption={
+          typesOptions.find((option) => option.key === role) || {}
+        }
+        options={typesOptions}
+        onSelect={onTypeChange}
+        scaled={false}
+        size="content"
+        displaySelectedOption
+        modernView
+      />
+    );
+
+    const text = (
+      <Text
+        type="page"
+        title={position}
+        fontSize="13px"
+        fontWeight={400}
+        color={sideInfoColor}
+        truncate
+        noSelect
+        style={{ paddingLeft: "8px" }}
+      >
+        {typeLabel}
+      </Text>
+    );
+
+    if (userId === id || statusType === "disabled") return text;
+
+    switch (role) {
+      case "owner":
+        return text;
+
+      case "admin":
+      case "manager":
+        if (isOwner) {
+          return combobox;
+        } else {
+          return text;
+        }
+
+      case "user":
+        return combobox;
+
+      default:
+        return text;
+    }
+  };
+
+  const typeCell = renderTypeCell();
 
   return (
     <StyledWrapper
@@ -260,7 +319,7 @@ const PeopleTableRow = (props) => {
       >
         <TableCell className={"table-container_user-name-cell"}>
           <TableCell
-            hasAccess={isAdmin}
+            hasAccess={true}
             className="table-container_row-checkbox-wrapper"
             checked={isChecked}
           >
@@ -279,46 +338,20 @@ const PeopleTableRow = (props) => {
             fontSize="13px"
             color={nameColor}
             isTextOverflow
-            href={`/accounts/view/${userName}`}
-            onClick={onUserNameClick}
             className="table-cell_username"
+            noHover
           >
-            {statusType === "pending" ? email : displayName}
+            {statusType === "pending"
+              ? email
+              : displayName?.trim()
+              ? displayName
+              : email}
           </Link>
-          <Badges statusType={statusType} />
+          <Badges statusType={statusType} isPaid={!isVisitor} />
         </TableCell>
-        <TableCell className={"table-cell_type"}>
-          {((isOwner && role !== "owner") ||
-            (isAdmin && !isOwner && role !== "admin")) &&
-          statusType !== "disabled" &&
-          userId !== item.id ? (
-            <ComboBox
-              className="type-combobox"
-              selectedOption={getTypesOptions().find(
-                (option) => option.key === role
-              )}
-              options={getTypesOptions()}
-              onSelect={onTypeChange}
-              scaled={false}
-              size="content"
-              displaySelectedOption
-              modernView
-            />
-          ) : (
-            <Text
-              type="page"
-              title={position}
-              fontSize="13px"
-              fontWeight={400}
-              color={sideInfoColor}
-              truncate
-              noSelect
-              style={{ paddingLeft: "8px" }}
-            >
-              {typeLabel}
-            </Text>
-          )}
-        </TableCell>
+
+        <TableCell className={"table-cell_type"}>{typeCell}</TableCell>
+
         <TableCell className="table-cell_room">
           {!rooms?.length ? (
             <Text

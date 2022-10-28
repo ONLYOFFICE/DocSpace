@@ -550,9 +550,6 @@
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Некорректный адрес электронной почты</value>
   </data>
-  <data name="EmailAndPasswordIncorrectPromocode" xml:space="preserve">
-    <value>Неверный промо-код</value>
-  </data>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Недостаточно прав для выполнения данной операции</value>
   </data>

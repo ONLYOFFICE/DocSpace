@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using SecurityContext = ASC.Core.SecurityContext;
-
 namespace ASC.People.Api;
 
 public class ReassignController : ApiControllerBase
@@ -87,7 +85,7 @@ public class ReassignController : ApiControllerBase
             throw new ArgumentException("User with id = " + inDto.ToUserId + " not found");
         }
 
-        if (toUser.IsVisitor(_userManager) || toUser.Status == EmployeeStatus.Terminated)
+        if (_userManager.IsUser(toUser) || toUser.Status == EmployeeStatus.Terminated)
         {
             throw new ArgumentException("Can not reassign data to user with id = " + inDto.ToUserId);
         }

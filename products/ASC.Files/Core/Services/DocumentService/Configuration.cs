@@ -262,7 +262,7 @@ public class EditorConfiguration<T>
                 return null;
             }
 
-            if (!_authContext.IsAuthenticated || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+            if (!_authContext.IsAuthenticated || _userManager.IsUser(_authContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -295,7 +295,7 @@ public class EditorConfiguration<T>
     {
         get
         {
-            if (!_authContext.IsAuthenticated || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+            if (!_authContext.IsAuthenticated || _userManager.IsUser(_authContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -310,6 +310,14 @@ public class EditorConfiguration<T>
             {
                 case FileType.Document:
                     filter = FilterType.DocumentsOnly;
+                    break;
+
+                case FileType.OForm:
+                    filter = FilterType.OFormOnly;
+                    break;
+
+                case FileType.OFormTemplate:
+                    filter = FilterType.OFormTemplateOnly;
                     break;
 
                 case FileType.Spreadsheet:
@@ -347,7 +355,7 @@ public class EditorConfiguration<T>
         set { }
         get
         {
-            if (!_authContext.IsAuthenticated || _userManager.GetUsers(_authContext.CurrentAccount.ID).IsVisitor(_userManager))
+            if (!_authContext.IsAuthenticated || _userManager.IsUser(_authContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -363,6 +371,14 @@ public class EditorConfiguration<T>
             {
                 case FileType.Document:
                     filter = FilterType.DocumentsOnly;
+                    break;
+
+                case FileType.OForm:
+                    filter = FilterType.OFormOnly;
+                    break;
+
+                case FileType.OFormTemplate:
+                    filter = FilterType.OFormTemplateOnly;
                     break;
 
                 case FileType.Spreadsheet:
@@ -442,6 +458,8 @@ public class EditorConfiguration<T>
         switch (fileType)
         {
             case FileType.Document:
+            case FileType.OForm:
+            case FileType.OFormTemplate:
                 title = FilesJSResource.TitleNewFileText;
                 break;
 
@@ -487,7 +505,7 @@ public class InfoConfig<T>
                 return _favorite;
             }
 
-            if (!_securityContext.IsAuthenticated || _userManager.GetUsers(_securityContext.CurrentAccount.ID).IsVisitor(_userManager))
+            if (!_securityContext.IsAuthenticated || _userManager.IsUser(_securityContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -967,8 +985,7 @@ public class PluginsConfig
     private readonly ConsumerFactory _consumerFactory;
 
     private readonly CoreBaseSettings _coreBaseSettings;
-
-    private readonly TenantExtra _tenantExtra;
+    private readonly TenantManager _tenantManager;
 
     public string[] PluginsData
     {
@@ -976,7 +993,7 @@ public class PluginsConfig
         {
             var plugins = new List<string>();
 
-            if (_coreBaseSettings.Standalone || !_tenantExtra.GetTenantQuota().Free)
+            if (_coreBaseSettings.Standalone || !_tenantManager.GetCurrentTenantQuota().Free)
             {
                 var easyBibHelper = _consumerFactory.Get<EasyBibHelper>();
                 if (!string.IsNullOrEmpty(easyBibHelper.AppKey))
@@ -1001,12 +1018,12 @@ public class PluginsConfig
         ConsumerFactory consumerFactory,
         BaseCommonLinkUtility baseCommonLinkUtility,
         CoreBaseSettings coreBaseSettings,
-        TenantExtra tenantExtra)
+        TenantManager tenantManager)
     {
         _consumerFactory = consumerFactory;
         _baseCommonLinkUtility = baseCommonLinkUtility;
         _coreBaseSettings = coreBaseSettings;
-        _tenantExtra = tenantExtra;
+        _tenantManager = tenantManager;
     }
 }
 

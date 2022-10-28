@@ -27,8 +27,50 @@ export function getRoomInfo(id) {
   };
 
   return request(options).then((res) => {
-    res.files = decodeDisplayName(res.files);
-    res.folders = decodeDisplayName(res.folders);
+    return res;
+  });
+}
+
+export function getRoomMembers(id) {
+  const options = {
+    method: "get",
+    url: `/files/rooms/${id}/share`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function getHistory(module, id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=${module}&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function getRoomHistory(id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=rooms&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
+export function getFileHistory(id) {
+  const options = {
+    method: "get",
+    url: `/feed/filter?module=files&withRelated=true&id=${id}`,
+  };
+
+  return request(options).then((res) => {
     return res;
   });
 }
@@ -91,7 +133,7 @@ export function deleteRoom(id, deleteAfter = true) {
   });
 }
 
-export function archiveRoom(id, deleteAfter = true) {
+export function archiveRoom(id, deleteAfter = false) {
   const data = { deleteAfter };
 
   const options = {
@@ -202,3 +244,65 @@ export function removeLogoFromRoom(id) {
     return res;
   });
 }
+
+export const setInvitationLinks = async (id, linkId, title, access) => {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/links`,
+    data: {
+      linkId,
+      title,
+      access,
+    },
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const resendEmailInvitations = async (id, usersIds) => {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/resend`,
+    data: {
+      usersIds,
+    },
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const getRoomSecurityInfo = async (id) => {
+  const options = {
+    method: "get",
+    url: `/files/rooms/${id}/share`,
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const setRoomSecurity = async (id, data) => {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/share`,
+    data,
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
+export const acceptInvitationByLink = async () => {
+  const options = {
+    method: "post",
+    url: `/files/rooms/accept`,
+  };
+
+  return await request(options);
+};
