@@ -388,7 +388,7 @@ public class BackupAjaxHandler
 
     public string GetTmpFilePath()
     {
-        var discStore = _storageFactory.GetStorage("", _tenantManager.GetCurrentTenant().Id.ToString(), BackupTempModule, null) as DiscDataStore;
+        var discStore = _storageFactory.GetStorage("", _tenantManager.GetCurrentTenant().Id.ToString(), BackupTempModule) as DiscDataStore;
         var folder = discStore.GetPhysicalPath("", "");
 
         if (!Directory.Exists(folder))

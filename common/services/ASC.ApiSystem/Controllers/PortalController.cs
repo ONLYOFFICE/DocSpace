@@ -509,7 +509,7 @@ public class PortalController : ControllerBase
         // size
         _tenantDomainValidator.ValidateDomainLength(domain);
         // characters
-        TenantDomainValidator.ValidateDomainCharacters(domain);
+        _tenantDomainValidator.ValidateDomainCharacters(domain);
 
         var sameAliasTenants = await _apiSystemHelper.FindTenantsInCacheAsync(domain, _securityContext.CurrentAccount.ID);
 
