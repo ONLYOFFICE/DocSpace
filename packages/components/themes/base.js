@@ -1858,6 +1858,8 @@ const Base = {
 
     headerBurgerColor: "#657077",
 
+    verticalLine: "1px solid #eceef1",
+
     profile: {
       borderTop: "1px solid #eceef1",
       background: "#f3f4f4",
