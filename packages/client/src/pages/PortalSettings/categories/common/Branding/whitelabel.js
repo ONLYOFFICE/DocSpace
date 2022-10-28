@@ -880,8 +880,9 @@ export default inject(({ setup, auth, common }) => {
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
     whiteLabelLogoUrls,
-    getWhiteLabelLogoUrls,
   } = common;
+
+  const { getWhiteLabelLogoUrls } = auth.settingsStore;
 
   return {
     theme: auth.settingsStore.theme,
