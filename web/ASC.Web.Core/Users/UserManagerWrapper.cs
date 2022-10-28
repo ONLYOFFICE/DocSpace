@@ -120,7 +120,7 @@ public sealed class UserManagerWrapper
             throw new InvalidOperationException($"User with email {mail.Address} already exists or is invited");
         }
 
-        if (type is EmployeeType.User or EmployeeType.DocSpaceAdmin)
+        if (type is EmployeeType.RoomAdmin or EmployeeType.DocSpaceAdmin)
         {
             await _countManagerChecker.CheckAppend();
         }
