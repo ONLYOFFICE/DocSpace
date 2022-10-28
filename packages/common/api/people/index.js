@@ -195,6 +195,18 @@ export function getUserById(userId) {
   });
 }
 
+export const inviteUsers = async (data) => {
+  const options = {
+    method: "post",
+    url: "/people/invite",
+    data,
+  };
+
+  const res = await request(options);
+
+  return res;
+};
+
 export function resendUserInvites(userIds) {
   return request({
     method: "put",

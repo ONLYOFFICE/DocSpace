@@ -60,7 +60,7 @@ public class UserServiceCache
         CacheGroupCacheItem = cacheGroupCacheItem;
         CacheUserGroupRefItem = cacheUserGroupRefItem;
 
-        cacheUserInfoItem.Subscribe(InvalidateCache, CacheNotifyAction.Any);
+        cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), CacheNotifyAction.Any);
         cacheUserPhotoItem.Subscribe((p) => Cache.Remove(p.Key), CacheNotifyAction.Remove);
         cacheGroupCacheItem.Subscribe((g) => InvalidateCache(g), CacheNotifyAction.Any);
 
@@ -72,7 +72,7 @@ public class UserServiceCache
     {
         if (userInfo != null)
         {
-            var key = GetUserCacheKey(userInfo.Tenant, new Guid(userInfo.Id));
+            var key = GetUserCacheKey(userInfo.Tenant);
             Cache.Remove(key);
         }
     }
