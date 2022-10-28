@@ -2382,6 +2382,11 @@ const Dark = {
       descriptionColor: "#a3a9ae",
     },
 
+    secondaryInfoButtton: {
+      background: "#a3a9ae",
+      icon: "#ffffff",
+    },
+
     dropdown: {
       background: "#333333",
       borderColor: "#474747",

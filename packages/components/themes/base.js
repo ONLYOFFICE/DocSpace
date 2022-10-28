@@ -2378,6 +2378,11 @@ const Base = {
       descriptionColor: "#555f65",
     },
 
+    secondaryInfoButtton: {
+      background: "#a3a9ae",
+      icon: "#ffffff",
+    },
+
     dropdown: {
       background: "#ffffff",
       borderColor: "#d0d5da",
