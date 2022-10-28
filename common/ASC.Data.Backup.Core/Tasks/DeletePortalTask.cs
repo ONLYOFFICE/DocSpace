@@ -91,7 +91,7 @@ public class DeletePortalTask : PortalTaskBase
         var modulesProcessed = 0;
         foreach (var module in storageModules)
         {
-            var storage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), module);
+            var storage = StorageFactory.GetStorage(ConfigPath, TenantId, module);
             var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module);
             foreach (var domain in domains)
             {

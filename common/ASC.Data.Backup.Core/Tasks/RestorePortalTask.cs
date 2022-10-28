@@ -353,7 +353,7 @@ public class RestorePortalTask : PortalTaskBase
         {
             foreach (var file in group)
             {
-                var storage = StorageFactory.GetStorage(ConfigPath, Dump ? file.Tenant.ToString() : _columnMapper.GetTenantMapping().ToString(), group.Key);
+                var storage = StorageFactory.GetStorage(ConfigPath, Dump ? file.Tenant : _columnMapper.GetTenantMapping(), group.Key);
                 var quotaController = storage.QuotaController;
                 storage.SetQuotaController(null);
 
@@ -407,7 +407,7 @@ public class RestorePortalTask : PortalTaskBase
         {
             foreach (var module in storageModules)
             {
-                var storage = StorageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
+                var storage = StorageFactory.GetStorage(ConfigPath, tenant.Id, module);
                 var domains = StorageFactoryConfig.GetDomainList(ConfigPath, module).ToList();
 
                 domains.Add(string.Empty); //instead storage.DeleteFiles("\\", "*.*", true);

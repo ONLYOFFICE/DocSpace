@@ -170,36 +170,24 @@ public class StorageFactory
         _maxTotalSizeChecker = maxTotalSizeChecker;
     }
 
-    public IDataStore GetStorage(string tenant, string module)
+    public IDataStore GetStorage(int? tenant, string module)
     {
         return GetStorage(string.Empty, tenant, module);
     }
 
-    public IDataStore GetStorage(string configpath, string tenant, string module)
+    public IDataStore GetStorage(string configpath, int? tenant, string module)
     {
-        int.TryParse(tenant, out var tenantId);
-
-
         var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
-        tenantQuotaController.Init(tenantId);
+        tenantQuotaController.Init(tenant.GetValueOrDefault());
 
         return GetStorage(configpath, tenant, module, tenantQuotaController);
     }
 
-    public IDataStore GetStorage(string configpath, string tenant, string module, IQuotaController controller)
+    public IDataStore GetStorage(string configpath, int? tenant, string module, IQuotaController controller)
     {
-        var tenantId = -2;
-        if (string.IsNullOrEmpty(tenant))
-        {
-            tenant = DefaultTenantName;
-        }
-        else
-        {
-            tenantId = Convert.ToInt32(tenant);
-        }
+        var tenantPath = tenant != null ? TenantPath.CreatePath(tenant.Value) : TenantPath.CreatePath(DefaultTenantName);
 
-        //Make tennant path
-        tenant = TenantPath.CreatePath(tenant);
+        tenant = tenant ?? -2;
 
         var section = _storageFactoryConfig.Section;
         if (section == null)
@@ -207,36 +195,28 @@ public class StorageFactory
             throw new InvalidOperationException("config section not found");
         }
 
-        var settings = _settingsManager.LoadForTenant<StorageSettings>(tenantId);
+        var settings = _settingsManager.LoadForTenant<StorageSettings>(tenant.Value);
         //TODO:GetStoreAndCache
-        return GetDataStore(tenant, module, _storageSettingsHelper.DataStoreConsumer(settings), controller);
+        return GetDataStore(tenantPath, module, _storageSettingsHelper.DataStoreConsumer(settings), controller);
     }
 
-    public IDataStore GetStorageFromConsumer(string configpath, string tenant, string module, DataStoreConsumer consumer)
+    public IDataStore GetStorageFromConsumer(string configpath, int? tenant, string module, DataStoreConsumer consumer)
     {
-        if (tenant == null)
-        {
-            tenant = DefaultTenantName;
-        }
-
-        //Make tennant path
-        tenant = TenantPath.CreatePath(tenant);
+        var tenantPath = tenant != null ? TenantPath.CreatePath(tenant.Value) : TenantPath.CreatePath(DefaultTenantName);
 
         var section = _storageFactoryConfig.Section;
         if (section == null)
         {
             throw new InvalidOperationException("config section not found");
         }
-
-        int.TryParse(tenant, out var tenantId);
 
         var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
-        tenantQuotaController.Init(tenantId);
+        tenantQuotaController.Init(tenant.GetValueOrDefault());
 
-        return GetDataStore(tenant, module, consumer, tenantQuotaController);
+        return GetDataStore(tenantPath, module, consumer, tenantQuotaController);
     }
 
-    private IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller)
+    private IDataStore GetDataStore(string tenantPath, string module, DataStoreConsumer consumer, IQuotaController controller)
     {
         var storage = _storageFactoryConfig.Section;
         var moduleElement = storage.GetModuleElement(module);
@@ -264,7 +244,7 @@ public class StorageFactory
 
 
         return ((IDataStore)ActivatorUtilities.CreateInstance(_serviceProvider, instanceType))
-            .Configure(tenant, handler, moduleElement, props)
+            .Configure(tenantPath, handler, moduleElement, props)
             .SetQuotaController(moduleElement.Count ? controller : null
             /*don't count quota if specified on module*/);
     }
