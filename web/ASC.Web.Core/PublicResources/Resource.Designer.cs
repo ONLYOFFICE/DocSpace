@@ -1654,6 +1654,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The access to the portal is restricted.
+        /// </summary>
+        public static string ErrorIpSecurity {
+            get {
+                return ResourceManager.GetString("ErrorIpSecurity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Your pricing plan does not support this option.
         /// </summary>
         public static string ErrorNotAllowedOption {
