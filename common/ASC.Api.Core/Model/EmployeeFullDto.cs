@@ -50,7 +50,7 @@ public class EmployeeFullDto : EmployeeDto
     public bool IsLDAP { get; set; }
     public List<string> ListAdminModules { get; set; }
     public bool IsOwner { get; set; }
-    public bool IsUser { get; set; }
+    public bool IsVisitor { get; set; }
     public string CultureName { get; set; }
     public string MobilePhone { get; set; }
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
@@ -190,7 +190,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             Terminated = _apiDateTimeHelper.Get(userInfo.TerminatedDate),
             WorkFrom = _apiDateTimeHelper.Get(userInfo.WorkFromDate),
             Email = userInfo.Email,
-            IsUser = _userManager.IsUser(userInfo),
+            IsVisitor = _userManager.IsUser(userInfo),
             IsDocSpaceAdmin = _userManager.IsDocSpaceAdmin(userInfo),
             IsOwner = userInfo.IsOwner(_context.Tenant),
             IsLDAP = userInfo.IsLDAP(),
