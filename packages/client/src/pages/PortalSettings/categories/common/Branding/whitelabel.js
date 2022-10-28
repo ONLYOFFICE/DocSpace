@@ -302,10 +302,15 @@ const WhiteLabel = (props) => {
   };
 
   const onRestoreLogo = () => {
-    restoreWhiteLabelSettings(true);
-    setIsCanvasProcessing(false);
-    setLogoUrlsChange([]);
-    getWhiteLabelLogoUrls();
+    try {
+      restoreWhiteLabelSettings(true);
+      setIsCanvasProcessing(false);
+      setLogoUrlsChange([]);
+      getWhiteLabelLogoUrls();
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
   };
 
   const onSave = () => {
