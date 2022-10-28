@@ -44,12 +44,18 @@ const EditRoomDialog = ({
       });
   }, [fetchedImage]);
 
+  const onCloseAction = () => {
+    if (isLoading) return;
+
+    onClose && onClose();
+  };
+
   return (
     <ModalDialog
       displayType="aside"
       withBodyScroll
       visible={visible}
-      onClose={onClose}
+      onClose={onCloseAction}
       isScrollLocked={isScrollLocked}
       withFooterBorder
     >
@@ -66,6 +72,7 @@ const EditRoomDialog = ({
           setRoomType={setRoomType}
           setIsScrollLocked={setIsScrollLocked}
           isEdit
+          isDisabled={isLoading}
         />
       </ModalDialog.Body>
 
@@ -85,6 +92,7 @@ const EditRoomDialog = ({
           size="normal"
           scale
           onClick={onClose}
+          isDisabled={isLoading}
         />
       </ModalDialog.Footer>
     </ModalDialog>

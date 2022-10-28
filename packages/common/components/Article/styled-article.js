@@ -23,6 +23,8 @@ const StyledArticle = styled.article`
 
   //padding: 0 20px;
 
+  border-right: ${(props) => props.theme.catalog.verticalLine};
+
   @media ${tablet} {
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
@@ -63,6 +65,8 @@ const StyledArticle = styled.article`
     padding: 0;
     top: ${(props) => (props.isBannerVisible ? "-16px" : "64px")} !important;
     height: calc(100% - 64px) !important;
+
+    border-right: none;
   `}
 
   z-index: ${(props) =>
@@ -77,7 +81,7 @@ const StyledArticle = styled.article`
     .scroll-body {
       overflow-x: hidden !important;
       height: calc(100% - 200px);
-      padding: 0 20px;
+      padding: 0 20px !important;
 
       @media ${tablet} {
         height: calc(100% - 150px);
@@ -278,16 +282,19 @@ const StyledArticleProfile = styled.div`
   justify-content: center;
 
   border-top: ${(props) => props.theme.catalog.profile.borderTop};
+  border-right: ${(props) => props.theme.catalog.verticalLine}
   background-color: ${(props) => props.theme.catalog.profile.background};
 
   @media ${tablet} {
     padding: 16px 14px;
   }
 
-  ${isTablet &&
-  css`
-    padding: 16px 14px;
-  `}
+  ${
+    isTablet &&
+    css`
+      padding: 16px 14px;
+    `
+  }
 
   .profile-avatar {
     cursor: pointer;

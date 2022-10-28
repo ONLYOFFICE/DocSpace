@@ -14,7 +14,11 @@ const paddingCss = css`
 
 const StyledCard = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+  ${({ isSingle }) =>
+    !isSingle &&
+    css`
+      grid-template-columns: repeat(auto-fill, minmax(216px, 1fr));
+    `};
   height: ${({ cardHeight }) => `${cardHeight}px`};
 `;
 

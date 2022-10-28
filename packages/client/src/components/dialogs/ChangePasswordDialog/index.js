@@ -46,6 +46,15 @@ class ChangePasswordDialogComponent extends React.Component {
     removeEventListener("keydown", this.keyPress, false);
   }
 
+  onClose = () => {
+    const { onClose } = this.props;
+    const { isRequestRunning } = this.state;
+
+    if (!isRequestRunning) {
+      onClose();
+    }
+  };
+
   render() {
     // console.log("ChangePasswordDialog render");
     const { t, tReady, visible, email, onClose, theme } = this.props;
@@ -55,7 +64,7 @@ class ChangePasswordDialogComponent extends React.Component {
       <ModalDialog
         isLoading={!tReady}
         visible={visible}
-        onClose={onClose}
+        onClose={this.onClose}
         displayType="modal"
       >
         <ModalDialog.Header>{t("PasswordChangeTitle")}</ModalDialog.Header>
@@ -96,7 +105,7 @@ class ChangePasswordDialogComponent extends React.Component {
             size="normal"
             scale
             onClick={onClose}
-            isLoading={isRequestRunning}
+            isDisabled={isRequestRunning}
           />
         </ModalDialog.Footer>
       </ModalDialog>

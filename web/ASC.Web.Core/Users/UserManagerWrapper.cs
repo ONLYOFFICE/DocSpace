@@ -108,7 +108,7 @@ public sealed class UserManagerWrapper
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
-    public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false, 
+    public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isUser = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false, 
         bool updateExising = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
@@ -137,7 +137,7 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = _userManager.SaveUserInfo(userInfo, isVisitor, isCardDav);
+        var newUserInfo = _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -151,7 +151,7 @@ public sealed class UserManagerWrapper
             //NOTE: Notify user only if it's active
             if (afterInvite)
             {
-                if (isVisitor)
+                if (isUser)
                 {
                     _studioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
                 }
@@ -168,7 +168,7 @@ public sealed class UserManagerWrapper
             else
             {
                 //Send user invite
-                if (isVisitor)
+                if (isUser)
                 {
                     _studioNotifyService.GuestInfoActivation(newUserInfo);
                 }
@@ -180,7 +180,7 @@ public sealed class UserManagerWrapper
             }
         }
 
-        if (isVisitor)
+        if (isUser)
         {
             _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
         }

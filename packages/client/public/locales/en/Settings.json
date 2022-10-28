@@ -82,7 +82,7 @@
   "DNSSettings": "DNS Settings",
   "DNSSettingsDescription": "DNS Settings is a way to set an alternative URL for your portal.",
   "DNSSettingsMobile": "Send your request to our support team, and our specialists will help you with the settings.",
-  "DNSSettingsTooltip": "DNS Settings allow you to set an alternative URL address for your ONLYOFFICE portal. Send your request to our support team, and our specialists will help you with the settings.<2>{{learnMore}}</2>",
+  "DNSSettingsTooltip": "DNS Settings allow you to set an alternative URL address for your {{ organizationName }} portal. Send your request to our support team, and our specialists will help you with the settings.<2>{{learnMore}}</2>",
   "DocSpaceMenu": "DocSpace menu",
   "DocumentsAdministratorsCan": "Documents administrators can link Dropbox, Box, and other accounts to Common Documents and set up access rights in this section",
   "DownloadCopy": "Download the copy",

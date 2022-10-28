@@ -38,7 +38,7 @@ public class MessageSettingsController : BaseSettingsController
     private readonly IPSecurity.IPSecurity _ipSecurity;
     private readonly TenantManager _tenantManager;
     private readonly CookiesManager _cookiesManager;
-    private readonly CountManagerChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
     private readonly UserManager _userManager;
     private readonly TenantExtra _tenantExtra;
     private readonly PermissionContext _permissionContext;
@@ -61,13 +61,13 @@ public class MessageSettingsController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor,
         TenantManager tenantManager,
         CookiesManager cookiesManager,
-        CountManagerChecker countManagerChecker) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        CountRoomAdminChecker countRoomAdminChecker) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _customNamingPeople = customNamingPeople;
         _ipSecurity = ipSecurity;
         _tenantManager = tenantManager;
         _cookiesManager = cookiesManager;
-        _countManagerChecker = countManagerChecker;
+        _countRoomAdminChecker = countRoomAdminChecker;
         _messageService = messageService;
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -178,13 +178,13 @@ public class MessageSettingsController : BaseSettingsController
             }
 
             var trustedDomainSettings = _settingsManager.Load<StudioTrustedDomainSettings>();
-            var emplType = trustedDomainSettings.InviteUsersAsVisitors ? EmployeeType.Visitor : EmployeeType.User;
+            var emplType = trustedDomainSettings.InviteAsUsers ? EmployeeType.User : EmployeeType.RoomAdmin;
             if (!_coreBaseSettings.Personal)
             {
                 var enableInviteUsers = true;
                 try
                 {
-                    await _countManagerChecker.CheckAppend();
+                    await _countRoomAdminChecker.CheckAppend();
                 }
                 catch (Exception)
                 {
@@ -193,7 +193,7 @@ public class MessageSettingsController : BaseSettingsController
 
                 if (!enableInviteUsers)
                 {
-                    emplType = EmployeeType.Visitor;
+                    emplType = EmployeeType.User;
                 }
             }
 

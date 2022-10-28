@@ -26,6 +26,7 @@ const IconEditor = ({
   storageLocation,
   icon,
   onChangeIcon,
+  isDisabled,
 }) => {
   const [previewIcon, setPreviewIcon] = useState(null);
 
@@ -43,6 +44,7 @@ const IconEditor = ({
             uploadedFile={icon.uploadedFile}
             setUploadedFile={setUploadedFile}
             setPreviewIcon={setPreviewIcon}
+            isDisabled={isDisabled}
           />
 
           <PreviewTile
@@ -57,7 +59,11 @@ const IconEditor = ({
           />
         </div>
       )}
-      <Dropzone t={t} setUploadedFile={setUploadedFile} />
+      <Dropzone
+        t={t}
+        setUploadedFile={setUploadedFile}
+        isDisabled={isDisabled}
+      />
     </StyledIconEditor>
   );
 };
