@@ -146,9 +146,12 @@ const InvitePanel = ({
 
     const data = {
       invitations,
-      notify: true,
-      message: "Invitation message",
     };
+
+    if (roomId !== -1) {
+      data.notify = true;
+      data.message = "Invitation message";
+    }
 
     try {
       roomId === -1

@@ -82,6 +82,8 @@ const InviteInput = ({
       setUsersList(users);
     } else {
       closeInviteInputPanel();
+      setInputValue("");
+      setUsersList([]);
     }
   };
 
@@ -125,6 +127,8 @@ const InviteInput = ({
       const items = removeExist([item, ...inviteItems]);
       setInviteItems(items);
       closeInviteInputPanel();
+      setInputValue("");
+      setUsersList([]);
     };
 
     return (
@@ -157,6 +161,8 @@ const InviteInput = ({
 
     setInviteItems(filtered);
     closeInviteInputPanel();
+    setInputValue("");
+    setUsersList([]);
   };
 
   const addItems = (users) => {
@@ -166,6 +172,8 @@ const InviteInput = ({
 
     setInviteItems(filtered);
     closeInviteInputPanel();
+    setInputValue("");
+    setUsersList([]);
   };
 
   const dropDownMaxHeight = usersList.length > 5 ? { maxHeight: 240 } : {};
@@ -185,9 +193,6 @@ const InviteInput = ({
 
   const closeInviteInputPanel = (e) => {
     if (e?.target.tagName.toUpperCase() == "INPUT") return;
-
-    setInputValue("");
-    setUsersList([]);
 
     setSearchPanelVisible(false);
   };
