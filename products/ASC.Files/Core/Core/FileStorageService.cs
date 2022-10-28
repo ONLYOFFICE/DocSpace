@@ -341,7 +341,7 @@ public class FileStorageService<T> //: IFileStorageService
         var breadCrumbs = await breadCrumbsTask;
 
         var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count - 2);
-        if (prevVisible != null)
+        if (prevVisible != null && !DocSpaceHelper.IsRoom(parent.FolderType))
         {
             if (prevVisible is Folder<string> f1)
             {
