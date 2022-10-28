@@ -874,14 +874,14 @@ const WhiteLabel = (props) => {
 export default inject(({ setup, auth, common }) => {
   const { setWhiteLabelSettings, restoreWhiteLabelSettings } = setup;
 
-  const { whiteLabelLogoSizes, whiteLabelLogoText } = common;
-
   const {
-    whiteLabelLogoUrls,
+    whiteLabelLogoSizes,
+    whiteLabelLogoText,
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
-    getWhiteLabelLogoUrls,
-  } = auth.settingsStore;
+  } = common;
+
+  const { whiteLabelLogoUrls, getWhiteLabelLogoUrls } = auth.settingsStore;
 
   return {
     theme: auth.settingsStore.theme,
