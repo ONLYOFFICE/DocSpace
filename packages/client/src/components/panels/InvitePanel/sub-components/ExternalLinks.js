@@ -20,27 +20,47 @@ import {
   StyledToggleButton,
 } from "../StyledInvitePanel";
 
-const ExternalLinks = ({ t, roomId, roomType, defaultAccess, shareLinks }) => {
+const ExternalLinks = ({
+  t,
+  roomId,
+  roomType,
+  defaultAccess,
+  shareLinks,
+  setInvitationLinks,
+}) => {
   const [linksVisible, setLinksVisible] = useState(false);
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
-  const [activeLink, setActiveLink] = useState([]);
+  const [activeLink, setActiveLink] = useState({});
 
   const inputsRef = useRef();
 
   const toggleLinks = (e) => {
-    const link = shareLinks.find((l) => l.access === +defaultAccess);
+    if (roomId === -1) {
+      const link = shareLinks.find((l) => l.access === +defaultAccess);
 
-    setActiveLink(link);
+      setActiveLink(link);
+    } else {
+      setInvitationLinks(roomId, shareLinks[0].id, "Invite", +defaultAccess);
+
+      setActiveLink(shareLinks[0]);
+    }
+
     setLinksVisible(!linksVisible);
 
-    if (!linksVisible) copyLink(link.shareLink);
+    if (!linksVisible) copyLink(activeLink.shareLink);
   };
 
   const onSelectAccess = (access) => {
-    const link = shareLinks.find((l) => l.access === access.access);
+    if (roomId === -1) {
+      const link = shareLinks.find((l) => l.access === access.access);
 
-    setActiveLink(link);
-    copyLink(link.shareLink);
+      setActiveLink(link);
+    } else {
+      setInvitationLinks(roomId, shareLinks[0].id, "Invite", +access.access);
+
+      setActiveLink(shareLinks[0]);
+    }
+    copyLink(activeLink.shareLink);
   };
 
   const copyLink = (link) => {
@@ -139,15 +159,13 @@ const ExternalLinks = ({ t, roomId, roomType, defaultAccess, shareLinks }) => {
               iconColor="#A3A9AE"
             />
           </StyledInviteInput>
-          {roomId === -1 && (
-            <AccessSelector
-              t={t}
-              roomType={roomType}
-              defaultAccess={activeLink.access}
-              onSelectAccess={onSelectAccess}
-              containerRef={inputsRef}
-            />
-          )}
+          <AccessSelector
+            t={t}
+            roomType={roomType}
+            defaultAccess={activeLink.access}
+            onSelectAccess={onSelectAccess}
+            containerRef={inputsRef}
+          />
         </StyledInviteInputContainer>
       )}
     </StyledBlock>
@@ -156,10 +174,13 @@ const ExternalLinks = ({ t, roomId, roomType, defaultAccess, shareLinks }) => {
 
 export default inject(({ dialogsStore, filesStore }) => {
   const { invitePanelOptions } = dialogsStore;
+  const { setInvitationLinks } = filesStore;
+  const { roomId, hideSelector, defaultAccess } = invitePanelOptions;
 
   return {
-    roomId: invitePanelOptions.roomId,
-    hideSelector: invitePanelOptions.hideSelector,
-    defaultAccess: invitePanelOptions.defaultAccess,
+    setInvitationLinks,
+    roomId,
+    hideSelector,
+    defaultAccess,
   };
 })(observer(ExternalLinks));
