@@ -23,7 +23,7 @@ const StyledArticle = styled.article`
 
   //padding: 0 20px;
 
-  border-right: 1px solid #eceef1;
+  border-right: ${(props) => props.theme.catalog.verticalLine};
 
   @media ${tablet} {
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
@@ -282,7 +282,7 @@ const StyledArticleProfile = styled.div`
   justify-content: center;
 
   border-top: ${(props) => props.theme.catalog.profile.borderTop};
-  border-right: ${(props) => props.theme.catalog.profile.borderTop}
+  border-right: ${(props) => props.theme.catalog.verticalLine}
   background-color: ${(props) => props.theme.catalog.profile.background};
 
   @media ${tablet} {
