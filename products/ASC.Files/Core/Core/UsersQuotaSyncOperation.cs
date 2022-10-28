@@ -159,7 +159,7 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
                         {
                             continue;
                         }
-                        await manager.RecalculateUserQuota(TenantId, _user.Id);
+                        await manager.RecalculateUserQuota(TenantId, user.Id);
                     }
                 }
 
