@@ -208,16 +208,16 @@ public class EFUserService : IUserService
             .ToList();
     }
 
-    public IQueryable<UserInfo> GetUsers(int tenant, bool isAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
+    public IQueryable<UserInfo> GetUsers(int tenant, bool isDocSpaceAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
     {
         var userDbContext = _dbContextFactory.CreateDbContext();
         var totalQuery = GetUserQuery(userDbContext, tenant);
-        totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
+        totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
         total = totalQuery.Count();
 
         var q = GetUserQuery(userDbContext, tenant);
 
-        q = GetUserQueryForFilter(userDbContext, q, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
+        q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
 
         if (!string.IsNullOrEmpty(sortBy))
         {
@@ -582,7 +582,7 @@ public class EFUserService : IUserService
     private IQueryable<User> GetUserQueryForFilter(
         UserDbContext userDbContext,
         IQueryable<User> q,
-        bool isAdmin,
+        bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
@@ -607,7 +607,7 @@ public class EFUserService : IUserService
             }
         }
 
-        if (!isAdmin && employeeStatus == null)
+        if (!isDocSpaceAdmin && employeeStatus == null)
         {
             q = q.Where(r => r.Status != EmployeeStatus.Terminated);
         }
@@ -618,7 +618,7 @@ public class EFUserService : IUserService
             {
                 case EmployeeStatus.LeaveOfAbsence:
                 case EmployeeStatus.Terminated:
-                    if (isAdmin)
+                    if (isDocSpaceAdmin)
                     {
                         q = q.Where(u => u.Status == EmployeeStatus.Terminated);
                     }
@@ -628,7 +628,7 @@ public class EFUserService : IUserService
                     }
                     break;
                 case EmployeeStatus.All:
-                    if (!isAdmin)
+                    if (!isDocSpaceAdmin)
                     {
                         q = q.Where(r => r.Status != EmployeeStatus.Terminated);
                     }

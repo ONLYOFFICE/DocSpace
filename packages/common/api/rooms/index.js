@@ -133,7 +133,7 @@ export function deleteRoom(id, deleteAfter = true) {
   });
 }
 
-export function archiveRoom(id, deleteAfter = true) {
+export function archiveRoom(id, deleteAfter = false) {
   const data = { deleteAfter };
 
   const options = {
@@ -245,10 +245,10 @@ export function removeLogoFromRoom(id) {
   });
 }
 
-export const setInvitationLinks = async (id, linkId, title, access) => {
+export const setInvitationLinks = async (roomId, linkId, title, access) => {
   const options = {
     method: "put",
-    url: `/files/rooms/${id}/links`,
+    url: `/files/rooms/${roomId}/links`,
     data: {
       linkId,
       title,

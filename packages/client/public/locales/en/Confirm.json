@@ -19,9 +19,15 @@
   "LoginRegistryButton": "Join",
   "PassworResetTitle": "Now you can create a new password.",
   "PhoneSubtitle": "The two-factor authentication is enabled to provide additional portal security. Enter your mobile phone number to continue work on the portal. Mobile phone number must be entered using an international format with country code.",
+  "PortalContinueTitle": "Please confirm that you want to reactivate your portal",
+  "PortalRemoveTitle": "Please confirm that you want to delete your portal",
+  "PortalDeactivateTitle": "Please confirm that you want to deactivate your portal",
+  "Reactivate": "Reactivate",
   "SetAppButton": "Connect app",
   "SetAppDescription": "Two-factor authentication is enabled. Configure your authenticator app to continue work on the portal. You can use Google Authenticator for <1>Android</1> and <4>iOS</4> or Authenticator for <8>Windows Phone</8>.",
   "SetAppInstallDescription": "To connect the app, scan the QR code or manually enter your secret key <1>{{ secretKey }}</1>, and then enter a 6-digit code from your app in the field below.",
   "SetAppTitle": "Configure your authenticator application",
+  "SuccessDeactivate": "Your account has been successfully deactivated. In 10 seconds you will be redirected to the <1>site</1>",
+  "SuccessReactivate": "Your account has been successfully reactivated. In 10 seconds you will be redirected to the <1>portal</1>",
   "WelcomeUser": "Welcome to join our portal! To get started register, or log in via social networking."
 }

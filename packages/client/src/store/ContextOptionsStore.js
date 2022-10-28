@@ -413,14 +413,22 @@ class ContextOptionsStore {
 
   onClickInviteUsers = (e) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
+
     const { action } = data;
 
-    this.dialogsStore.setInvitePanelOptions({
-      visible: true,
-      roomId: action,
-      hideSelector: false,
-      defaultAccess: ShareAccessRights.ReadOnly,
-    });
+    const { isGracePeriod } = this.authStore.currentTariffStatusStore;
+    const { isFreeTariff } = this.authStore.currentQuotaStore;
+
+    if (isGracePeriod) {
+      this.dialogsStore.setInviteUsersWarningDialogVisible(true);
+    } else {
+      this.dialogsStore.setInvitePanelOptions({
+        visible: true,
+        roomId: action ? action : e,
+        hideSelector: false,
+        defaultAccess: ShareAccessRights.ReadOnly,
+      });
+    }
   };
 
   onClickPin = (e, id, t) => {
@@ -430,13 +438,19 @@ class ContextOptionsStore {
     this.filesActionsStore.setPinAction(action, id);
   };
 
-  onClickArchive = (e, id, t) => {
+  onClickArchive = (e, item, t) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
 
     this.filesActionsStore
-      .setArchiveAction(action, id)
+      .setArchiveAction(action, item, t)
       .catch((err) => toastr.error(err));
+  };
+
+  onSelect = (item) => {
+    const { onSelectItem } = this.filesActionsStore;
+
+    onSelectItem({ id: item.id, isFolder: item.isFolder }, true, false);
   };
 
   getFilesContextOptions = (item, t) => {
@@ -563,6 +577,13 @@ class ContextOptionsStore {
 
     const optionsModel = [
       {
+        key: "select",
+        label: "Select",
+        icon: "images/check-box.react.svg",
+        onClick: () => this.onSelect(item),
+        disabled: false,
+      },
+      {
         key: "open",
         label: t("Open"),
         icon: "images/folder.react.svg",
@@ -605,6 +626,10 @@ class ContextOptionsStore {
         disabled: false,
       },
       {
+        key: "separator0",
+        isSeparator: true,
+      },
+      {
         key: "reconnect-storage",
         label: t("Common:ReconnectStorage"),
         icon: "images/reconnect.svg",
@@ -628,7 +653,7 @@ class ContextOptionsStore {
       },
       {
         key: "room-info",
-        label: "Info",
+        label: t("Common:Info"),
         icon: "/static/images/info.outline.react.svg",
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
@@ -650,10 +675,6 @@ class ContextOptionsStore {
         disabled: false,
         "data-action": "unpin",
         action: "unpin",
-      },
-      {
-        key: "separator0",
-        isSeparator: true,
       },
       {
         key: "sharing-settings",
@@ -685,7 +706,7 @@ class ContextOptionsStore {
       ...versionActions,
       {
         key: "show-info",
-        label: t("InfoPanel:ViewDetails"),
+        label: t("Common:Info"),
         icon: "/static/images/info.outline.react.svg",
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
@@ -776,18 +797,18 @@ class ContextOptionsStore {
       },
       {
         key: "archive-room",
-        label: t("ToArchive"),
+        label: t("Archived"),
         icon: "/static/images/room.archive.svg",
-        onClick: (e) => this.onClickArchive(e, item.id, t),
+        onClick: (e) => this.onClickArchive(e, item, t),
         disabled: false,
         "data-action": "archive",
         action: "archive",
       },
       {
         key: "unarchive-room",
-        label: t("FromArchive"),
-        icon: "/static/images/room.archive.svg",
-        onClick: (e) => this.onClickArchive(e, item.id, t),
+        label: t("Common:Restore"),
+        icon: "images/subtract.react.svg",
+        onClick: (e) => this.onClickArchive(e, item, t),
         disabled: false,
         "data-action": "unarchive",
         action: "unarchive",
@@ -872,16 +893,16 @@ class ContextOptionsStore {
       const archiveOptions = !isArchiveFolder
         ? {
             key: "archive-room",
-            label: t("ToArchive"),
+            label: t("Archived"),
             icon: "/static/images/room.archive.svg",
-            onClick: moveRoomsToArchive,
+            onClick: () => moveRoomsToArchive(t),
             disabled: false,
           }
         : {
             key: "unarchive-room",
-            label: t("FromArchive"),
-            icon: "/static/images/room.archive.svg",
-            onClick: moveRoomsFromArchive,
+            label: t("Common:Restore"),
+            icon: "images/subtract.react.svg",
+            onClick: () => moveRoomsFromArchive(t),
             disabled: false,
           };
 

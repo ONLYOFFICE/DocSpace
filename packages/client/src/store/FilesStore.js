@@ -1035,16 +1035,17 @@ class FilesStore {
 
       let fileOptions = [
         //"open",
+        "select",
         "fill-form",
         "edit",
         "preview",
         "view",
         "make-form",
         "separator0",
-        "sharing-settings",
-        "external-link",
+        // "sharing-settings",
+        // "external-link",
         "owner-change",
-        "link-for-portal-users",
+        // "link-for-portal-users",
         "send-by-email",
         "docu-sign",
         "version", //category
@@ -1345,13 +1346,15 @@ class FilesStore {
       return fileOptions;
     } else if (isRoom) {
       let roomOptions = [
+        "select",
+        "separator0",
         "reconnect-storage",
         "edit-room",
         "invite-users-to-room",
-        "show-info",
+        "room-info",
         "pin-room",
         "unpin-room",
-        "separator0",
+        "separator1",
         "archive-room",
         "unarchive-room",
         "delete",
@@ -1374,6 +1377,8 @@ class FilesStore {
           "pin-room",
           "unpin-room",
           "archive-room",
+          "separator1",
+          "room-info",
         ]);
       } else {
         roomOptions = this.removeOptions(roomOptions, [
@@ -1396,12 +1401,13 @@ class FilesStore {
       return roomOptions;
     } else {
       let folderOptions = [
+        "select",
         "open",
         "separator0",
-        "sharing-settings",
+        // "sharing-settings",
         "owner-change",
         "show-info",
-        "link-for-portal-users",
+        // "link-for-portal-users",
         "separator1",
         "open-location",
         "download",
@@ -2688,8 +2694,8 @@ class FilesStore {
     return Math.floor(sectionWidth / minTileWidth);
   };
 
-  setInvitationLinks = async (id, linkId, title, access) => {
-    return await api.rooms.setInvitationLinks(id, linkId, title, access);
+  setInvitationLinks = async (roomId, linkId, title, access) => {
+    return await api.rooms.setInvitationLinks(roomId, linkId, title, access);
   };
 
   resendEmailInvitations = async (id, usersIds) => {

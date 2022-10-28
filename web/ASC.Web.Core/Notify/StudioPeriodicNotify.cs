@@ -446,7 +446,7 @@ public class StudioPeriodicNotify
                         TagValues.TableItem(6, tableItemText6, tableItemUrl6, tableItemImg6, tableItemComment6, tableItemLearnMoreText6, tableItemLearnMoreUrl6),
                         TagValues.TableItem(7, tableItemText7, tableItemUrl7, tableItemImg7, tableItemComment7, tableItemLearnMoreText7, tableItemLearnMoreUrl7),
                         TagValues.TableBottom(),
-                        new TagValue(CommonTags.Footer, _userManager.IsAdmin(u) ? "common" : "social"));
+                        new TagValue(CommonTags.Footer, _userManager.IsDocSpaceAdmin(u) ? "common" : "social"));
                 }
             }
             catch (Exception err)
@@ -890,7 +890,7 @@ public class StudioPeriodicNotify
                         Thread.CurrentThread.CurrentUICulture = culture;
 
                         client.SendNoticeToAsync(
-                                _userManager.IsAdmin(u) ? Actions.OpensourceAdminDocsTipsV11 : Actions.OpensourceUserDocsTipsV11,
+                                _userManager.IsDocSpaceAdmin(u) ? Actions.OpensourceAdminDocsTipsV11 : Actions.OpensourceUserDocsTipsV11,
                                 new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                             new[] { senderName },
                                 new TagValue(Tags.UserName, u.DisplayUserName(_displayUserSettingsHelper)),

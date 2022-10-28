@@ -60,7 +60,7 @@ public class UserServiceCache
         CacheGroupCacheItem = cacheGroupCacheItem;
         CacheUserGroupRefItem = cacheUserGroupRefItem;
 
-        cacheUserInfoItem.Subscribe(InvalidateCache, CacheNotifyAction.Any);
+        cacheUserInfoItem.Subscribe((u) => InvalidateCache(u), CacheNotifyAction.Any);
         cacheUserPhotoItem.Subscribe((p) => Cache.Remove(p.Key), CacheNotifyAction.Remove);
         cacheGroupCacheItem.Subscribe((g) => InvalidateCache(g), CacheNotifyAction.Any);
 
@@ -72,7 +72,7 @@ public class UserServiceCache
     {
         if (userInfo != null)
         {
-            var key = GetUserCacheKey(userInfo.Tenant, new Guid(userInfo.Id));
+            var key = GetUserCacheKey(userInfo.Tenant);
             Cache.Remove(key);
         }
     }
@@ -177,7 +177,7 @@ public class CachedUserService : IUserService, ICachedService
 
     public IQueryable<UserInfo> GetUsers(
         int tenant,
-        bool isAdmin,
+        bool isDocSpaceAdmin,
         EmployeeStatus? employeeStatus,
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
@@ -190,7 +190,7 @@ public class CachedUserService : IUserService, ICachedService
         out int total,
         out int count)
     {
-        return Service.GetUsers(tenant, isAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
+        return Service.GetUsers(tenant, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
     }
 
     public UserInfo GetUser(int tenant, Guid id)

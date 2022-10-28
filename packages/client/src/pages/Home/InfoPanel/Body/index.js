@@ -67,6 +67,7 @@ const InfoPanelBodyContent = ({
       isAdmin: props.isAdmin,
       getRoomMembers: props.getRoomMembers,
       changeUserType: props.changeUserType,
+      setInvitePanelOptions: props.setInvitePanelOptions,
     },
     historyProps: {
       selectedFolder: selectedFolder,
@@ -209,6 +210,7 @@ const InfoPanelBodyContent = ({
           getContextOptions={props.getContextOptions}
           getContextOptionActions={props.getContextOptionActions}
           getUserContextOptions={props.getUserContextOptions}
+          selectedFolderId={selectedFolder.id}
         />
       )}
       {getView()}
@@ -233,7 +235,7 @@ export default inject(
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem, openLocationAction } = filesActionsStore;
     const { changeType: changeUserType } = peopleStore;
-    const { setSharingPanelVisible } = dialogsStore;
+    const { setSharingPanelVisible, setInvitePanelOptions } = dialogsStore;
     const { isRootFolder } = selectedFolderStore;
     const { gallerySelected } = oformsStore;
     const {
@@ -330,6 +332,7 @@ export default inject(
       getRoomHistory,
       getFileHistory,
       setSharingPanelVisible,
+      setInvitePanelOptions,
 
       getIcon,
       getFolderIcon,
