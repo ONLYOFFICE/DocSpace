@@ -290,6 +290,26 @@ const WhiteLabel = (props) => {
     setIsUseTextAsLogo(false);
   }, [isCanvasProcessing, isUseTextAsLogo]);
 
+  useEffect(() => {
+    if (isCanvasProcessing) {
+      let logosArr = [];
+      for (let i = 0; i < 7; i++) {
+        const id = String(i + 1);
+        const canvas =
+          id === "4"
+            ? document.getElementById(`canvas_logo_${id}_1`)
+            : document.getElementById(`canvas_logo_${id}`);
+
+        const changeImg = {
+          id,
+          src: canvas.toDataURL(),
+        };
+        logosArr.push(changeImg);
+      }
+      setLogoUrlsChange(logosArr);
+    }
+  }, [isCanvasProcessing]);
+
   const onUseTextAsLogo = () => {
     setIsCanvasProcessing(true);
     setIsUseTextAsLogo(true);
