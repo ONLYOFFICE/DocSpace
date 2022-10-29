@@ -878,19 +878,17 @@ const WhiteLabel = (props) => {
           </div>
         </div>
 
-        {isSettingPaid && (
-          <SaveCancelButtons
-            tabIndex={3}
-            className="save-cancel-buttons"
-            onSaveClick={onSave}
-            onCancelClick={onRestoreLogo}
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("RestoreDefaultButton")}
-            displaySettings={true}
-            showReminder={true}
-            saveButtonDisabled={logoUrlsChange.length === 0}
-          />
-        )}
+        <SaveCancelButtons
+          tabIndex={3}
+          className="save-cancel-buttons"
+          onSaveClick={onSave}
+          onCancelClick={onRestoreLogo}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("RestoreDefaultButton")}
+          displaySettings={true}
+          showReminder={isSettingPaid}
+          saveButtonDisabled={logoUrlsChange.length === 0}
+        />
       </div>
     </StyledComponent>
   );
