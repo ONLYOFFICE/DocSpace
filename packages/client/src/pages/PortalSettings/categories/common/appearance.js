@@ -30,6 +30,7 @@ const Appearance = (props) => {
     sendAppearanceTheme,
     getAppearanceTheme,
     currentColorScheme,
+    onSaveSelectedNewThemes,
     tReady,
     t,
   } = props;
@@ -135,8 +136,10 @@ const Appearance = (props) => {
   }, []);
 
   useEffect(() => {
-    // Set the Save button to disabled
-    if (selectAccentColor !== currentColorScheme.accentColor) {
+    if (
+      selectAccentColor !== currentColorScheme.accentColor ||
+      newCustomThemes.length > 0
+    ) {
       setChangeColorTheme(true);
     } else {
       setChangeColorTheme(false);
@@ -162,6 +165,7 @@ const Appearance = (props) => {
     isAddThemeDialog,
     isEditDialog,
     selectAccentColor,
+    newCustomThemes.length,
   ]);
 
   const onCheckView = () => {
@@ -190,7 +194,6 @@ const Appearance = (props) => {
   };
 
   const onShowCheckNewThemes = (colorNumber) => {
-    console.log("selectNewThemeId colorNumber", selectNewThemeId, colorNumber);
     return selectNewThemeId && selectNewThemeId === colorNumber && checkImg;
   };
 
@@ -198,18 +201,58 @@ const Appearance = (props) => {
     setPreviewTheme(e.title);
   };
 
-  //TODO: rewrite
-  const onSaveSelectedColor = () => {
-    sendAppearanceTheme({ selected: selectThemeId })
+  const onSaveNewThemes = useCallback(async () => {
+    await sendAppearanceTheme({ themes: newCustomThemes });
+
+    getAppearanceTheme()
       .then(() => {
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getAppearanceTheme();
+      })
+      .catch((error) => {
+        toastr.error(error);
+      });
+  }, [newCustomThemes.length, sendAppearanceTheme, getAppearanceTheme]);
+
+  const onSaveSelectedThemes = useCallback(async () => {
+    await sendAppearanceTheme({ selected: selectThemeId });
+
+    getAppearanceTheme()
+      .then(() => {
+        toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
         setChangeColorTheme(false);
       })
       .catch((error) => {
         toastr.error(error);
       });
-  };
+  }, [
+    selectThemeId,
+    setChangeColorTheme,
+    sendAppearanceTheme,
+    getAppearanceTheme,
+  ]);
+
+  const onSave = useCallback(() => {
+    if (newCustomThemes.length > 0 && selectNewThemeId) {
+      onSaveSelectedNewThemes(
+        newCustomThemes,
+        selectNewThemeId,
+        appearanceTheme.length
+      );
+    } else if (newCustomThemes.length > 0) {
+      onSaveNewThemes();
+    } else if (selectThemeId) {
+      onSaveSelectedThemes();
+    }
+  }, [
+    newCustomThemes.length,
+    appearanceTheme.length,
+    selectNewThemeId,
+    selectThemeId,
+    onSaveSelectedNewThemes,
+    onSaveNewThemes,
+    onSaveSelectedThemes,
+    getAppearanceTheme,
+  ]);
 
   const onClickEdit = () => {
     appearanceTheme.map((item) => {
@@ -388,14 +431,6 @@ const Appearance = (props) => {
   //   ></div>
   // );
 
-  console.log(
-    "currentColorAccent,currentColorButtons",
-    currentColorAccent,
-    currentColorButtons
-  );
-
-  console.log("newCustomThemes", newCustomThemes);
-
   return viewMobile ? (
     <BreakpointWarning sectionName={t("Settings:Appearance")} />
   ) : !tReady ? (
@@ -409,6 +444,7 @@ const Appearance = (props) => {
 
         <div className="theme-container">
           {appearanceTheme.map((item, index) => {
+            if (index > 6) return;
             return (
               <div
                 key={index}
@@ -428,6 +464,21 @@ const Appearance = (props) => {
         <div className="theme-name">Custom</div>
 
         <div className="theme-container">
+          {appearanceTheme.map((item, index) => {
+            if (index < 7) return;
+            return (
+              <div
+                key={index}
+                id={item.id}
+                style={{ background: item.accentColor }}
+                className="box"
+                onClick={() => onColorSelection(item)}
+              >
+                {!selectNewThemeId && onShowCheck(item.id)}
+              </div>
+            );
+          })}
+
           {newCustomThemes?.map((item, index) => {
             return (
               <div
@@ -445,7 +496,7 @@ const Appearance = (props) => {
           <div
             data-for="theme-add"
             data-tip={
-              abilityAddTheme
+              !abilityAddTheme
                 ? "You can only create 3 custom themes. To create a new one, you must delete one of the previous themes."
                 : null
             }
@@ -491,7 +542,7 @@ const Appearance = (props) => {
       <div className="buttons-container">
         <Button
           label="Save"
-          onClick={onSaveSelectedColor}
+          onClick={onSave}
           primary
           size="small"
           isDisabled={!changeColorTheme}
@@ -509,6 +560,7 @@ export default inject(({ auth }) => {
     sendAppearanceTheme,
     getAppearanceTheme,
     currentColorScheme,
+    onSaveSelectedNewThemes,
   } = settingsStore;
 
   return {
@@ -517,6 +569,7 @@ export default inject(({ auth }) => {
     sendAppearanceTheme,
     getAppearanceTheme,
     currentColorScheme,
+    onSaveSelectedNewThemes,
   };
 })(
   withTranslation(["Profile", "Common", "Settings"])(
