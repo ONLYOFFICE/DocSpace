@@ -2889,7 +2889,7 @@ const Dark = {
           orangeBackgroundColor: "#e86e2e",
 
           dataFontColor: white,
-          dataFontColorBlack: black,
+          dataFontColorBlack: white,
         },
       },
 
