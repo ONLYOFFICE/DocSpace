@@ -164,6 +164,8 @@ const WhiteLabel = (props) => {
   const [editorsHeaderLabel, setEditorsHeaderLabel] = useState();
   const [logoEditorsEmbeddedLabel, setLogoEditorsEmbeddedLabel] = useState();
 
+  const [isSaving, setIsSaving] = useState(false);
+
   useEffect(() => {
     if (logoText) {
       setLogoTextWhiteLabel(logoText);
@@ -333,7 +335,7 @@ const WhiteLabel = (props) => {
     }
   };
 
-  const onSave = () => {
+  const onSave = async () => {
     let logoArr = [];
 
     logoUrlsChange.map((item) => {
@@ -345,18 +347,19 @@ const WhiteLabel = (props) => {
       logo: logoArr,
     };
 
-    console.log(data);
+    setIsSaving(true);
 
     try {
-      setWhiteLabelSettings(data).finally(() => {
-        setLogoUrlsChange([]);
-        getWhiteLabelLogoText();
-        getWhiteLabelLogoSizes();
-        getWhiteLabelLogoUrls();
-      });
+      await setWhiteLabelSettings(data);
+      setLogoUrlsChange([]);
+      getWhiteLabelLogoText();
+      getWhiteLabelLogoSizes();
+      getWhiteLabelLogoUrls();
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -888,6 +891,7 @@ const WhiteLabel = (props) => {
           displaySettings={true}
           showReminder={isSettingPaid}
           saveButtonDisabled={logoUrlsChange.length === 0}
+          isSaving={isSaving}
         />
       </div>
     </StyledComponent>
