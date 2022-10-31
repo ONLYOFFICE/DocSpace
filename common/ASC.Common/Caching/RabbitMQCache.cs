@@ -55,35 +55,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
 
         var rabbitMQConfiguration = configuration.GetSection("rabbitmq").Get<RabbitMQSettings>();
 
-        _factory = new ConnectionFactory();
-
-        if (!string.IsNullOrEmpty(rabbitMQConfiguration.Uri))
-        {
-            _factory.Uri = new Uri(rabbitMQConfiguration.Uri);
-        }
-        else
-        {
-            _factory.HostName = rabbitMQConfiguration.HostName;
-            _factory.UserName = rabbitMQConfiguration.UserName;
-            _factory.Password = rabbitMQConfiguration.Password;
-            _factory.Port = rabbitMQConfiguration.Port;
-            _factory.VirtualHost = rabbitMQConfiguration.VirtualHost;
-        }
-
-        if (rabbitMQConfiguration.EnableSsl)
-        {
-            _factory.Ssl = new SslOption
-            {
-                Enabled = rabbitMQConfiguration.EnableSsl,
-                Version = SslProtocols.Tls12
-            };
-
-            if (!string.IsNullOrEmpty(rabbitMQConfiguration.SslCertPath))
-            {
-                _factory.Ssl.CertPath = rabbitMQConfiguration.SslCertPath;
-                _factory.Ssl.ServerName = rabbitMQConfiguration.SslServerName;
-            }
-        }
+        _factory = rabbitMQConfiguration.GetConnectionFactory();
 
         _connection = _factory.CreateConnection();
         _consumerChannel = CreateConsumerChannel();
@@ -139,8 +111,7 @@ public class RabbitMQCache<T> : IDisposable, ICacheNotify<T> where T : IMessage<
             _logger.ErrorStartBasicConsumeCanNotCall();
         }
     }
-
-
+    
     private void TryConnect()
     {
         lock (_lock)
