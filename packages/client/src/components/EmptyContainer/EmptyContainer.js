@@ -6,8 +6,9 @@ import {
   tablet,
   smallTablet,
   desktop,
+  size,
 } from "@docspace/components/utils/device";
-import { isMobile } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 
 const EmptyPageStyles = css`
   padding: 44px 0px 64px 0px;
@@ -32,11 +33,10 @@ const EmptyPageStyles = css`
   @media ${tablet} {
     padding: 44px 0px 64px 0px;
     grid-column-gap: 33px;
-    margin-left: auto;
   }
 
   @media ${smallTablet} {
-    padding: 20px 0px 64px 11px;
+    padding-right: 44px;
   }
 `;
 
@@ -90,14 +90,26 @@ const EmptyFolderWrapper = styled.div`
       bottom: 16px;
     }
 
-    @media screen and (max-width: 1325px) {
-      ${!isMobile &&
-      css`
-        margin-left: 98px;
-      `};
-    }
-
     ${(props) => props.isEmptyPage && `${EmptyPageStyles}`}
+
+    ${(props) =>
+      props.isEmptyPage &&
+      isMobileOnly &&
+      css`
+        padding: 20px 42px 64px 11px !important;
+      `}
+
+    ${(props) =>
+      (props.isEmptyPage || props.isEmptyFolderContainer) &&
+      props.sectionWidth <= size.smallTablet &&
+      !isMobileOnly &&
+      css`
+        padding-left: 12px !important;
+
+        .empty-folder_link {
+          margin-bottom: 0 !important;
+        }
+      `}
   }
 `;
 
@@ -113,11 +125,18 @@ const EmptyFoldersContainer = (props) => {
     imageStyle,
     buttonStyle,
     isEmptyPage,
+    sectionWidth,
+    isEmptyFolderContainer,
   } = props;
 
   return (
-    <EmptyFolderWrapper isEmptyPage={isEmptyPage}>
+    <EmptyFolderWrapper
+      sectionWidth={sectionWidth}
+      isEmptyPage={isEmptyPage}
+      isEmptyFolderContainer={isEmptyFolderContainer}
+    >
       <EmptyScreenContainer
+        sectionWidth={sectionWidth}
         className="empty-folder_container"
         style={style}
         imageStyle={imageStyle}
@@ -129,6 +148,7 @@ const EmptyFoldersContainer = (props) => {
         descriptionText={descriptionText}
         buttons={buttons}
         isEmptyPage={isEmptyPage}
+        isEmptyFolderContainer={isEmptyFolderContainer}
       />
     </EmptyFolderWrapper>
   );

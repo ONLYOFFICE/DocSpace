@@ -24,9 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Geolocation;
-using ASC.MessagingSystem;
-
 namespace ASC.Web.Api;
 
 [Scope]
@@ -128,7 +125,7 @@ public class ConnectionsController : ControllerBase
     }
 
     [HttpPut("activeconnections/logoutallchangepassword")]
-    public async Task<string> LogOutAllActiveConnectionsChangePassword()
+    public async Task<object> LogOutAllActiveConnectionsChangePassword()
     {
         try
         {
@@ -156,7 +153,7 @@ public class ConnectionsController : ControllerBase
     [HttpPut("activeconnections/logoutall/{userId}")]
     public async Task LogOutAllActiveConnectionsForUser(Guid userId)
     {
-        if (!_userManager.IsAdmin(_securityContext.CurrentAccount.ID)
+        if (!_userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID)
             && !_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID))
         {
             throw new SecurityException("Method not available");
@@ -166,7 +163,7 @@ public class ConnectionsController : ControllerBase
     }
 
     [HttpPut("activeconnections/logoutallexceptthis")]
-    public async Task<string> LogOutAllExceptThisConnection()
+    public async Task<object> LogOutAllExceptThisConnection()
     {
         try
         {

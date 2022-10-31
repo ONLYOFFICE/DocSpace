@@ -645,6 +645,10 @@ class FilesActionStore {
 
       try {
         await this.deleteItemOperation(isFile, itemId, translations, isRoom);
+
+        const id = Array.isArray(itemId) ? itemId : [itemId];
+
+        clearActiveOperations(isFile && id, !isFile && id);
       } catch (err) {
         clearActiveOperations(isFile && [itemId], !isFile && [itemId]);
         setSecondaryProgressBarData({
