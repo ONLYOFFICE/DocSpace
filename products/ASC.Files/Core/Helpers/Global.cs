@@ -238,12 +238,12 @@ public class GlobalStore
 
     public IDataStore GetStore(bool currentTenant = true)
     {
-        return _storageFactory.GetStorage(currentTenant ? _tenantManager.GetCurrentTenant().Id.ToString() : string.Empty, FileConstant.StorageModule);
+        return _storageFactory.GetStorage(currentTenant ? _tenantManager.GetCurrentTenant().Id : null, FileConstant.StorageModule);
     }
 
     public IDataStore GetStoreTemplate()
     {
-        return _storageFactory.GetStorage(string.Empty, FileConstant.StorageTemplate);
+        return _storageFactory.GetStorage(null, FileConstant.StorageTemplate);
     }
 }
 
