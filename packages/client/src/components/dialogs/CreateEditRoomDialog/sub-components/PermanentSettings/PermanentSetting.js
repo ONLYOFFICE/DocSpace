@@ -2,8 +2,8 @@ import React from "react";
 import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 
-import SecondaryInfoButton from "../SecondaryInfoButton";
 import { Base } from "@docspace/components/themes";
+import { HelpButton } from "@docspace/components";
 
 const StyledPermanentSetting = styled.div`
   box-sizing: border-box;
@@ -94,7 +94,14 @@ const PermanentSetting = ({ isFull, type, icon, title, content }) => {
         <div className="permanent_setting-secondary-info">{content}</div>
       ) : (
         <div className="permanent_setting-help_button">
-          <SecondaryInfoButton content={content} />
+          <HelpButton
+            displayType="auto"
+            iconName={"/static/images/help.react.svg"}
+            tooltipProps={{ globalEventOff: "click" }}
+            tooltipContent={content}
+            offsetRight={0}
+            size={12}
+          />
         </div>
       )}
     </StyledPermanentSetting>
