@@ -10,6 +10,8 @@ import ControlBtn from "./sub-components/control-btn";
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 
+import { isMobileOnly } from "react-device-detect";
+
 import MediaNextIcon from "../../../public/images/media.view.react.svg";
 import MediaPrevIcon from "../../../public/images/media.viewer.prev.react.svg";
 import ViewerPlayer from "./sub-components/viewer-player";
@@ -69,6 +71,9 @@ export const Viewer = (props) => {
 
   const videoPortal = ReactDOM.createPortal(
     <ViewerPlayer
+      contextModel={contextModel}
+      title={title}
+      onMaskClick={onMaskClick}
       generateContextMenu={generateContextMenu}
       setIsFullScreen={setIsFullScreen}
       videoRef={videoElement}
@@ -80,7 +85,7 @@ export const Viewer = (props) => {
 
   return (
     <StyledViewerContainer visible={visible}>
-      {!isFullscreen && (
+      {!isFullscreen && !isMobileOnly && (
         <div>
           <div className="details" ref={detailsContainerRef}>
             <Text isBold fontSize="14px" className="title">
