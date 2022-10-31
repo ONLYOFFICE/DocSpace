@@ -42,6 +42,18 @@ export function getRoomMembers(id) {
   });
 }
 
+export function updateRoomMemberRole(id, data) {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/share`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
 export function getHistory(module, id) {
   const options = {
     method: "get",
