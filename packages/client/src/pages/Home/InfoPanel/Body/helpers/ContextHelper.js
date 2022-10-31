@@ -71,25 +71,7 @@ class ContextHelper {
     this.selection.contextOptions = options;
   };
 
-  fixItemContextOptionActions = () => {
-    const contextOptionActions = this.getContextOptionActions(
-      this.selection,
-      this.t
-    );
-
-    const newContextOptionActions = contextOptionActions.map((coa) => ({
-      ...coa,
-      onClick: async (props) => {
-        coa.onClick && (await coa.onClick(props));
-        this.reloadSelection();
-      },
-    }));
-
-    return newContextOptionActions;
-  };
-
   getItemContextOptions = () => {
-    // return this.fixItemContextOptionActions();
     return this.getContextOptionActions(this.selection, this.t);
   };
 }
