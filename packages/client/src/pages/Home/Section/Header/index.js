@@ -60,7 +60,10 @@ const StyledContainer = styled.div`
 
   .header-container {
     min-height: 33px;
-    height: 60px;
+
+    @media ${tablet} {
+      height: 60px;
+    }
   }
 `;
 

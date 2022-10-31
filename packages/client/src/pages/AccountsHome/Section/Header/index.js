@@ -20,6 +20,7 @@ import { Base } from "@docspace/components/themes";
 import IconButton from "@docspace/components/icon-button";
 import toastr from "@docspace/components/toast/toastr";
 import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
+import { EmployeeType } from "@docspace/common/constants";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -163,6 +164,7 @@ const SectionHeaderContent = (props) => {
     isInfoPanelVisible,
     isOwner,
     isAdmin,
+    setInvitePanelOptions,
   } = props;
 
   //console.log("SectionHeaderContent render");
@@ -202,9 +204,14 @@ const SectionHeaderContent = (props) => {
   const headerMenu = getHeaderMenu(t);
 
   const onInvite = React.useCallback((e) => {
-    const type = e.target.dataset.action;
-    toastr.warning("Work in progress " + type);
-    console.log("invite ", type);
+    const type = e.target.dataset.type;
+
+    setInvitePanelOptions({
+      visible: true,
+      roomId: -1,
+      hideSelector: true,
+      defaultAccess: type,
+    });
   }, []);
 
   const onInviteAgain = React.useCallback(() => {
@@ -224,7 +231,7 @@ const SectionHeaderContent = (props) => {
         icon: "/static/images/person.admin.react.svg",
         label: t("Common:DocSpaceAdmin"),
         onClick: onInvite,
-        "data-action": "administrator",
+        "data-type": EmployeeType.Admin,
         key: "administrator",
       },
       {
@@ -233,7 +240,7 @@ const SectionHeaderContent = (props) => {
         icon: "/static/images/person.manager.react.svg",
         label: t("Common:RoomAdmin"),
         onClick: onInvite,
-        "data-action": "manager",
+        "data-type": EmployeeType.User,
         key: "manager",
       },
       {
@@ -242,7 +249,7 @@ const SectionHeaderContent = (props) => {
         icon: "/static/images/person.user.react.svg",
         label: t("Common:User"),
         onClick: onInvite,
-        "data-action": "user",
+        "data-type": EmployeeType.Guest,
         key: "user",
       },
       {
@@ -323,11 +330,13 @@ const SectionHeaderContent = (props) => {
 };
 
 export default withRouter(
-  inject(({ auth, peopleStore }) => {
+  inject(({ auth, peopleStore, dialogsStore }) => {
     const {
       setIsVisible: setInfoPanelIsVisible,
       isVisible: isInfoPanelVisible,
     } = auth.infoPanelStore;
+
+    const { setInvitePanelOptions } = dialogsStore;
 
     const { isOwner, isAdmin } = auth.userStore.user;
 
@@ -355,6 +364,7 @@ export default withRouter(
       isInfoPanelVisible,
       isOwner,
       isAdmin,
+      setInvitePanelOptions,
     };
   })(
     withTranslation([

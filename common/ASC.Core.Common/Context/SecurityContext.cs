@@ -253,10 +253,10 @@ public class SecurityContext
 
             if (_userManager.IsUserInGroup(u.Id, Users.Constants.GroupAdmin.ID))
             {
-                roles.Add(Role.Administrators);
+                roles.Add(Role.DocSpaceAdministrators);
             }
 
-            roles.Add(Role.Users);
+            roles.Add(Role.RoomAdministrators);
 
             account = new UserAccount(u, _tenantManager.GetCurrentTenant().Id, _userFormatter);
         }

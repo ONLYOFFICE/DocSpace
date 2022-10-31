@@ -12,5 +12,6 @@
   "Add": "Add",
   "Invited": "Invited",
   "EmailErrorMessage": "Email address not valid. You can edit the email by clicking on it.",
-  "СhooseFromList": "Сhoose from list"
+  "СhooseFromList": "Сhoose from list",
+  "InviteUsers": "Invite users"
 }

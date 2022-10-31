@@ -75,7 +75,7 @@ public class OwnerController : BaseSettingsController
         var owner = _userManager.GetUsers(curTenant.OwnerId);
         var newOwner = _userManager.GetUsers(inDto.OwnerId);
 
-        if (_userManager.IsVisitor(newOwner))
+        if (_userManager.IsUser(newOwner))
         {
             throw new SecurityException("Collaborator can not be an owner");
         }
