@@ -55,6 +55,10 @@ const StyledComponent = styled.div`
   .buttons-container {
     padding-top: 24px;
   }
+
+  .button:not(:last-child) {
+    margin-right: 8px;
+  }
 `;
 
 export { StyledComponent };
