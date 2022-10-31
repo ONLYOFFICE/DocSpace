@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import { useTranslation } from "react-i18next";
+import { withTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
 import Text from "@docspace/components/text";
@@ -25,13 +25,15 @@ import {
 } from "./styled-active-sessions";
 
 const removeIcon = (
-  <ReactSVG className="remove-icon" src="images/remove.react.svg" />
+  <ReactSVG className="remove-icon" src="images/remove.session.svg" />
 );
 const tickIcon = (
   <ReactSVG className="tick-icon" wrapper="span" src="images/tick.svg" />
 );
 
 const ActiveSessions = ({
+  t,
+  culture,
   getAllSessions,
   removeAllSessions,
   removeSession,
@@ -45,7 +47,6 @@ const ActiveSessions = ({
   const [currentSession, setCurrentSession] = useState(0);
   const [modalData, setModalData] = useState({});
   const [loading, setLoading] = useState(false);
-  const { t } = useTranslation(["Profile", "Common"]);
 
   useEffect(() => {
     getAllSessions().then((res) => {
@@ -104,7 +105,7 @@ const ActiveSessions = ({
   };
 
   const convertTime = (date) => {
-    return new Date(date).toLocaleString("en-US");
+    return new Date(date).toLocaleString(culture);
   };
 
   return (
@@ -142,8 +143,11 @@ const ActiveSessions = ({
               <TableRow key={session.id}>
                 <TableDataCell style={{ borderTop: "0" }}>
                   {session.platform}
-                  <span>({session.browser})</span>
+                  <span className="session-browser">
+                    <span>{session.browser}</span>
+                  </span>
                   {currentSession === session.id ? tickIcon : null}
+
                   <Box flexDirection="column" alignItems="center">
                     <span className="session-date">
                       {convertTime(session.date)}
@@ -151,6 +155,7 @@ const ActiveSessions = ({
                     <span className="session-ip">{session.ip}</span>
                   </Box>
                 </TableDataCell>
+
                 <TableDataCell
                   style={{ borderTop: "0" }}
                   onClick={() => {
@@ -182,7 +187,9 @@ const ActiveSessions = ({
               <TableRow key={session.id}>
                 <TableDataCell>
                   {session.platform}
-                  <span>({session.browser})</span>
+                  <span className="session-browser">
+                    <span>{session.browser}</span>
+                  </span>
                   {currentSession === session.id ? tickIcon : null}
                 </TableDataCell>
                 <TableDataCell>{convertTime(session.date)}</TableDataCell>
@@ -228,7 +235,8 @@ const ActiveSessions = ({
   );
 };
 
-export default inject(({ setup }) => {
+export default inject(({ auth, setup }) => {
+  const { culture } = auth.settingsStore;
   const {
     getAllSessions,
     removeAllSessions,
@@ -240,6 +248,7 @@ export default inject(({ setup }) => {
     removeAllExecptThis,
   } = setup;
   return {
+    culture,
     getAllSessions,
     removeAllSessions,
     removeSession,
@@ -249,4 +258,4 @@ export default inject(({ setup }) => {
     setLogoutAllVisible,
     removeAllExecptThis,
   };
-})(observer(ActiveSessions));
+})(observer(withTranslation(["Profile", "Common"])(ActiveSessions)));

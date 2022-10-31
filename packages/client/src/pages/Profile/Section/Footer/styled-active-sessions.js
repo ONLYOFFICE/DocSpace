@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { hugeMobile } from "@docspace/components/utils/device";
 
 export const StyledFooter = styled.div`
   .session-logout {
@@ -56,6 +57,23 @@ export const TableDataCell = styled.td`
   font-weight: 600;
   padding: 14px 0;
   color: #a3a9ae;
+  position: relative;
+
+  @media ${hugeMobile} {
+    .session-browser {
+      position: relative;
+      top: 3px;
+      max-width: 150px;
+      display: inline-block;
+      margin-left: 0 !important;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      span {
+        width: 100%;
+      }
+    }
+  }
 
   :first-child {
     font-size: 13px;
