@@ -13,8 +13,11 @@
   "InviteAgainLbl": "Invite again",
   "LightTheme": "Light theme",
   "LoginSettings": "Login settings",
+  "ManageNotifications": "Manage",
   "MessageEmailActivationInstuctionsSentOnEmail": "The email activation instructions have been sent to the <strong>{{ email }}</strong> email address",
   "MyProfile": "My profile",
+  "Notifications": "Notifications",
+  "RoomsActions": "DocSpace Actions in rooms",
   "PhoneLbl": "Phone",
   "ProviderSuccessfullyConnected": "Provider successfully connected",
   "ProviderSuccessfullyDisconnected": "Provider successfully disconnected",
@@ -26,5 +29,6 @@
   "SystemTheme": "Use system theme",
   "SystemThemeDescription": "Automatically switch between light and dark themes when your system does.",
   "TfaLoginSettings": "Login settings",
-  "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin."
+  "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin.",
+  "UsefulTips": "Useful DocSpace tips"
 }

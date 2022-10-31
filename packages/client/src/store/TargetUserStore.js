@@ -8,6 +8,7 @@ class TargetUserStore {
   targetUser = null;
   isEditTargetUser = false;
   tipsSubscription = null;
+  tempTipsSubscription = null;
   changeEmailVisible = false;
   changePasswordVisible = false;
   changeNameVisible = false;
@@ -42,10 +43,10 @@ class TargetUserStore {
       return this.setTargetUser(this.peopleStore.authStore.userStore.user);
     } else {*/
     const user = await api.people.getUser(userName);
-    if (user?.userName === this.peopleStore.authStore.userStore.user.userName) {
-      const tipsSubscription = await api.settings.getTipsSubscription();
-      this.tipsSubscription = tipsSubscription;
-    }
+    // if (user?.userName === this.peopleStore.authStore.userStore.user.userName) {
+    //   const tipsSubscription = await api.settings.getTipsSubscription();
+    //   this.tipsSubscription = tipsSubscription;
+    // }
     this.setTargetUser(user);
     return user;
     //}
@@ -111,6 +112,16 @@ class TargetUserStore {
   setChangeNameVisible = (visible) => (this.changeNameVisible = visible);
 
   setChangeAvatarVisible = (visible) => (this.changeAvatarVisible = visible);
+
+  setTempTipsSubscription = (enabled) => {
+    this.tempTipsSubscription = enabled;
+  };
+
+  getTipsSubscription = async () => {
+    const tipsSubscription = await api.settings.getTipsSubscription();
+    this.tipsSubscription = tipsSubscription;
+    this.tempTipsSubscription = this.tipsSubscription;
+  };
 }
 
 export default TargetUserStore;

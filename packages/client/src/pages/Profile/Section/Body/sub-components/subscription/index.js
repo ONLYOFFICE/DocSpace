@@ -1,44 +1,58 @@
-import React from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-
 import Text from "@docspace/components/text";
-import ToggleButton from "@docspace/components/toggle-button";
-
+import Button from "@docspace/components/button";
+import ManageNotificationsPanel from "../../../../../../components/panels/ManageNotificationsPanel";
 import { StyledWrapper } from "./styled-subscriptions";
 
 const Subscription = (props) => {
-  const { t } = useTranslation("Profile");
+  const { t } = useTranslation(["Profile", "Common"]);
 
-  const { changeEmailSubscription, tipsSubscription } = props;
+  const { theme } = props;
 
-  const onChangeEmailSubscription = (e) => {
-    const checked = e.currentTarget.checked;
-    changeEmailSubscription(checked);
+  const [
+    isManageNotificationsPanelVisible,
+    setIsManageNotificationsPanelVisible,
+  ] = useState(false);
+
+  const onButtonClick = () => {
+    setIsManageNotificationsPanelVisible(true);
+  };
+
+  const onClosePanel = () => {
+    setIsManageNotificationsPanelVisible(false);
   };
 
   return (
     <StyledWrapper>
       <Text fontSize="16px" fontWeight={700}>
-        {t("Subscriptions")}
+        {t("Notifications")}
       </Text>
-      <ToggleButton
-        className="toggle-btn"
-        label={t("SubscriptionEmailTipsToggleLbl")}
-        onChange={onChangeEmailSubscription}
-        isChecked={tipsSubscription}
+
+      <Button
+        theme={theme}
+        scale
+        size="normalDesktop"
+        label={t("ManageNotifications")}
+        onClick={onButtonClick}
       />
+
+      {isManageNotificationsPanelVisible && (
+        <ManageNotificationsPanel
+          t={t}
+          isPanelVisible={isManageNotificationsPanelVisible}
+          onClosePanel={onClosePanel}
+        />
+      )}
     </StyledWrapper>
   );
 };
 
-export default inject(({ peopleStore }) => {
-  const { targetUserStore } = peopleStore;
-
-  const { changeEmailSubscription, tipsSubscription } = targetUserStore;
+export default inject(({ auth }) => {
+  const { theme } = auth.settingsStore;
 
   return {
-    changeEmailSubscription,
-    tipsSubscription,
+    theme,
   };
 })(observer(Subscription));

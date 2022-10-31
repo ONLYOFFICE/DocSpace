@@ -11,4 +11,7 @@ export const StyledWrapper = styled.div`
     height: 20px;
     grid-gap: 12px !important;
   }
+  button {
+    max-width: fit-content;
+  }
 `;
