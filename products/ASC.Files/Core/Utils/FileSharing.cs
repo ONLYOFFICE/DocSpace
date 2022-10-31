@@ -40,11 +40,11 @@ public class FileSharingAceHelper<T>
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly FileSharingHelper _fileSharingHelper;
     private readonly FileTrackerHelper _fileTracker;
-    private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly RoomLinkService _roomLinkService;
     private readonly StudioNotifyService _studioNotifyService;
     private readonly UsersInRoomChecker _usersInRoomChecker;
+    private readonly UserManagerWrapper _userManagerWrapper;
     private readonly ILogger _logger;
 
     public FileSharingAceHelper(
@@ -59,12 +59,12 @@ public class FileSharingAceHelper<T>
         GlobalFolderHelper globalFolderHelper,
         FileSharingHelper fileSharingHelper,
         FileTrackerHelper fileTracker,
-        FileSecurityCommon fileSecurityCommon,
         FilesSettingsHelper filesSettingsHelper,
         RoomLinkService roomLinkService,
         StudioNotifyService studioNotifyService,
         ILoggerProvider loggerProvider,
-        UsersInRoomChecker usersInRoomChecker)
+        UsersInRoomChecker usersInRoomChecker,
+        UserManagerWrapper userManagerWrapper)
     {
         _fileSecurity = fileSecurity;
         _coreBaseSettings = coreBaseSettings;
@@ -78,11 +78,11 @@ public class FileSharingAceHelper<T>
         _fileSharingHelper = fileSharingHelper;
         _fileTracker = fileTracker;
         _filesSettingsHelper = filesSettingsHelper;
-        _fileSecurityCommon = fileSecurityCommon;
         _roomLinkService = roomLinkService;
         _studioNotifyService = studioNotifyService;
         _usersInRoomChecker = usersInRoomChecker;
         _logger = loggerProvider.CreateLogger("ASC.Files");
+        _userManagerWrapper = userManagerWrapper;
     }
 
     public async Task<bool> SetAceObjectAsync(List<AceWrapper> aceWrappers, FileEntry<T> entry, bool notify, string message, AceAdvancedSettingsWrapper advancedSettings)
@@ -117,7 +117,7 @@ public class FileSharingAceHelper<T>
                 continue;
             }
 
-            if (!ProcessEmailAce(w))
+            if (!await ProcessEmailAceAsync(w))
             {
                 continue;
             }
@@ -159,7 +159,7 @@ public class FileSharingAceHelper<T>
 
             if (!string.IsNullOrEmpty(w.Email))
             {
-                var link = _roomLinkService.GetInvitationLink(w.Email, _authContext.CurrentAccount.ID);
+                var link = _roomLinkService.GetInvitationLink(w.Email, share, _authContext.CurrentAccount.ID);
                 _studioNotifyService.SendEmailRoomInvite(w.Email, link);
                 _logger.Debug(link);
             }
@@ -271,29 +271,24 @@ public class FileSharingAceHelper<T>
         await _fileMarker.RemoveMarkAsNewAsync(entry);
     }
 
-    private bool ProcessEmailAce(AceWrapper ace)
+    private async Task<bool> ProcessEmailAceAsync(AceWrapper ace)
     {
         if (string.IsNullOrEmpty(ace.Email))
         {
             return true;
         }
 
-        if (!MailAddress.TryCreate(ace.Email, out var email) || _userManager.GetUserByEmail(ace.Email) != Constants.LostUser)
+        var type = DocSpaceHelper.PaidRights.Contains(ace.Access) ? EmployeeType.RoomAdmin : EmployeeType.User;
+        UserInfo user = null;
+
+        try
+        {
+            user = await _userManagerWrapper.AddInvitedUserAsync(ace.Email, type);
+        }
+        catch
         {
             return false;
         }
-
-        var userInfo = new UserInfo
-        {
-            Email = email.Address,
-            UserName = email.User,
-            LastName = string.Empty,
-            FirstName = string.Empty,
-            ActivationStatus = EmployeeActivationStatus.Pending,
-            Status = EmployeeStatus.Active
-        };
-
-        var user = _userManager.SaveUserInfo(userInfo);
 
         ace.Id = user.Id;
 

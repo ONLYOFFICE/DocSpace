@@ -402,6 +402,12 @@ class UsersStore {
 
     return list;
   }
+
+  inviteUsers = async (data) => {
+    const result = await api.people.inviteUsers(data);
+
+    return Promise.resolve(result);
+  };
 }
 
 export default UsersStore;

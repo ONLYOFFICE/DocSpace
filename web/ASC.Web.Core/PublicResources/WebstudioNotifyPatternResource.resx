@@ -2121,4 +2121,7 @@ $Body</value>
   <data name="subject_for_sales_notify" xml:space="preserve">
     <value>Sales department request</value>
   </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Confirm DocSpace Invite</value>
+  </data>
 </root>
