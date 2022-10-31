@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { ShareAccessRights } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 
 import Loaders from "@docspace/common/components/Loaders";
@@ -28,7 +27,6 @@ const Members = ({
   getRoomMembers,
   setInvitePanelOptions,
   changeUserType,
-  setInvitePanelOptions,
 }) => {
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
