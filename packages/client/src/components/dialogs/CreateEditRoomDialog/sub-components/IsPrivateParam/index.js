@@ -2,7 +2,6 @@ import React from "react";
 import styled from "styled-components";
 
 import ToggleParam from "../Params/ToggleParam";
-import PrivacyLimitationsWarning from "./PrivacyLimitationsWarning";
 
 const StyledIsPrivateParam = styled.div`
   display: flex;
@@ -19,7 +18,6 @@ const IsPrivateParam = ({ t, isPrivate, onChangeIsPrivate }) => {
         isChecked={isPrivate}
         onCheckedChange={onChangeIsPrivate}
       />
-      {/* {isPrivate && <PrivacyLimitationsWarning t={t} />} */}
     </StyledIsPrivateParam>
   );
 };
