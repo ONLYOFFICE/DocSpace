@@ -23,6 +23,8 @@ import InfoPanel from "./sub-components/info-panel";
 import SubInfoPanelBody from "./sub-components/info-panel-body";
 import SubInfoPanelHeader from "./sub-components/info-panel-header";
 
+import SubSectionFooter from "./sub-components/section-footer";
+
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
@@ -50,6 +52,11 @@ function SectionBody() {
 }
 SectionBody.displayName = "SectionBody";
 
+function SectionFooter() {
+  return null;
+}
+SectionFooter.displayName = "SectionFooter";
+
 function SectionPaging() {
   return null;
 }
@@ -69,6 +76,7 @@ class Section extends React.Component {
   static SectionHeader = SectionHeader;
   static SectionFilter = SectionFilter;
   static SectionBody = SectionBody;
+  static SectionFooter = SectionFooter;
 
   static SectionPaging = SectionPaging;
   static InfoPanelBody = InfoPanelBody;
@@ -159,6 +167,7 @@ class Section extends React.Component {
     let sectionFilterContent = null;
     let sectionPagingContent = null;
     let sectionBodyContent = null;
+    let sectionFooterContent = null;
     let infoPanelBodyContent = null;
     let infoPanelHeaderContent = null;
 
@@ -173,12 +182,14 @@ class Section extends React.Component {
         case SectionFilter.displayName:
           sectionFilterContent = child;
           break;
-
         case SectionPaging.displayName:
           sectionPagingContent = child;
           break;
         case SectionBody.displayName:
           sectionBodyContent = child;
+          break;
+        case SectionFooter.displayName:
+          sectionFooterContent = child;
           break;
         case InfoPanelBody.displayName:
           infoPanelBodyContent = child;
@@ -297,6 +308,12 @@ class Section extends React.Component {
                               : null}
                           </SubSectionBodyContent>
 
+                          <SubSectionFooter>
+                            {sectionFooterContent
+                              ? sectionFooterContent.props.children
+                              : null}
+                          </SubSectionFooter>
+
                           {isSectionPagingAvailable && (
                             <SubSectionPaging>
                               {sectionPagingContent
@@ -353,6 +370,7 @@ class Section extends React.Component {
                       <></>
                     )}
                   </SectionContainer>
+
                   {isInfoPanelAvailable && (
                     <InfoPanel viewAs={viewAs}>
                       <SubInfoPanelHeader>
@@ -443,6 +461,7 @@ Section.SectionHeader = SectionHeader;
 Section.SectionFilter = SectionFilter;
 Section.SectionBody = SectionBody;
 Section.SectionPaging = SectionPaging;
+Section.SectionFooter = SectionFooter;
 
 export default inject(({ auth }) => {
   const { infoPanelStore, settingsStore } = auth;
