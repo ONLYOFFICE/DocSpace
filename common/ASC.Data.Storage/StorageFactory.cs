@@ -146,12 +146,7 @@ public class StorageFactory
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly SettingsManager _settingsManager;
     private readonly StorageSettingsHelper _storageSettingsHelper;
-    private readonly TenantManager _tenantManager;
-    private readonly UserManager _userManager;
-    private readonly AuthContext _authContext;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly TenantQuotaFeatureChecker<MaxFileSizeFeature, long> _maxFileSizeChecker;
-    private readonly TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> _maxTotalSizeChecker;
     private readonly IServiceProvider _serviceProvider;
 
     public StorageFactory(
@@ -159,46 +154,28 @@ public class StorageFactory
         StorageFactoryConfig storageFactoryConfig,
         SettingsManager settingsManager,
         StorageSettingsHelper storageSettingsHelper,
-        TenantManager tenantManager,
-        UserManager userManager,
-        AuthContext authContext,
-        CoreBaseSettings coreBaseSettings,
-        TenantQuotaFeatureChecker<MaxFileSizeFeature, long> maxFileSizeChecker,
-        TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> maxTotalSizeChecker)
+        CoreBaseSettings coreBaseSettings)
     {
         _serviceProvider = serviceProvider;
         _storageFactoryConfig = storageFactoryConfig;
         _settingsManager = settingsManager;
         _storageSettingsHelper = storageSettingsHelper;
-        _tenantManager = tenantManager;
-        _userManager = userManager;
-        _authContext = authContext;
         _coreBaseSettings = coreBaseSettings;
-        _maxFileSizeChecker = maxFileSizeChecker;
-        _maxTotalSizeChecker = maxTotalSizeChecker;
     }
 
-    public IDataStore GetStorage(string tenant, string module, string region = "current")
+    public IDataStore GetStorage(int? tenant, string module, string region = "current")
     {
-        int.TryParse(tenant, out var tenantId);
+        var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
+        tenantQuotaController.Init(tenant.GetValueOrDefault());
 
-        return GetStorage(tenant, module, new TenantQuotaController(tenantId, _tenantManager, _authContext, _maxFileSizeChecker, _maxTotalSizeChecker), region);
+        return GetStorage(tenant, module, tenantQuotaController, region);
     }
 
-    public IDataStore GetStorage(string tenant, string module, IQuotaController controller, string region = "current")
+    public IDataStore GetStorage(int? tenant, string module, IQuotaController controller, string region = "current")
     {
-        var tenantId = -2;
-        if (string.IsNullOrEmpty(tenant))
-        {
-            tenant = DefaultTenantName;
-        }
-        else
-        {
-            tenantId = Convert.ToInt32(tenant);
-        }
+        var tenantPath = tenant != null ? TenantPath.CreatePath(tenant.Value) : TenantPath.CreatePath(DefaultTenantName);
 
-        //Make tennant path
-        tenant = TenantPath.CreatePath(tenant);
+        tenant = tenant ?? -2;
 
         var section = _storageFactoryConfig.GetStorage(region);
         if (section == null)
@@ -206,20 +183,14 @@ public class StorageFactory
             throw new InvalidOperationException("config section not found");
         }
 
-        var settings = _settingsManager.LoadForTenant<StorageSettings>(tenantId);
+        var settings = _settingsManager.LoadForTenant<StorageSettings>(tenant.Value);
         //TODO:GetStoreAndCache
-        return GetDataStore(tenant, module, _storageSettingsHelper.DataStoreConsumer(settings), controller, region);
+        return GetDataStore(tenantPath, module, _storageSettingsHelper.DataStoreConsumer(settings), controller, region);
     }
 
-    public IDataStore GetStorageFromConsumer(string tenant, string module, DataStoreConsumer consumer, string region = "current")
+    public IDataStore GetStorageFromConsumer(int? tenant, string module, DataStoreConsumer consumer, string region = "current")
     {
-        if (tenant == null)
-        {
-            tenant = DefaultTenantName;
-        }
-
-        //Make tennant path
-        tenant = TenantPath.CreatePath(tenant);
+        var tenantPath = tenant != null ? TenantPath.CreatePath(tenant.Value) : TenantPath.CreatePath(DefaultTenantName);
 
         var section = _storageFactoryConfig.GetStorage(region);
         if (section == null)
@@ -227,12 +198,13 @@ public class StorageFactory
             throw new InvalidOperationException("config section not found");
         }
 
-        int.TryParse(tenant, out var tenantId);
+        var tenantQuotaController = _serviceProvider.GetService<TenantQuotaController>();
+        tenantQuotaController.Init(tenant.GetValueOrDefault());
 
-        return GetDataStore(tenant, module, consumer, new TenantQuotaController(tenantId, _tenantManager, _authContext, _maxFileSizeChecker, _maxTotalSizeChecker));
+        return GetDataStore(tenantPath, module, consumer, tenantQuotaController);
     }
 
-    private IDataStore GetDataStore(string tenant, string module, DataStoreConsumer consumer, IQuotaController controller, string region = "current")
+    private IDataStore GetDataStore(string tenantPath, string module, DataStoreConsumer consumer, IQuotaController controller, string region = "current")
     {
         var storage = _storageFactoryConfig.GetStorage(region);
         var moduleElement = storage.GetModuleElement(module);
@@ -260,7 +232,7 @@ public class StorageFactory
 
 
         return ((IDataStore)ActivatorUtilities.CreateInstance(_serviceProvider, instanceType))
-            .Configure(tenant, handler, moduleElement, props)
+            .Configure(tenantPath, handler, moduleElement, props)
             .SetQuotaController(moduleElement.Count ? controller : null
             /*don't count quota if specified on module*/);
     }
@@ -274,5 +246,6 @@ public static class StorageFactoryExtension
         services.TryAdd<GoogleCloudStorage>();
         services.TryAdd<RackspaceCloudStorage>();
         services.TryAdd<S3Storage>();
+        services.TryAdd<TenantQuotaController>();
     }
 }

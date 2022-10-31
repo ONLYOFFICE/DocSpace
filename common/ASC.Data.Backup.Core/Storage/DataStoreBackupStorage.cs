@@ -79,6 +79,6 @@ public class DataStoreBackupStorage : IBackupStorage
 
     protected virtual IDataStore GetDataStore()
     {
-        return _storageFactory.GetStorage(_tenant.ToString(), "backup", null);
+        return _storageFactory.GetStorage(_tenant, "backup", null);
     }
 }

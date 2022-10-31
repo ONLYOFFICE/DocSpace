@@ -95,7 +95,7 @@ public abstract class PortalTaskBase
         var files = new List<BackupFileInfo>();
         foreach (var module in StorageFactoryConfig.GetModuleList().Where(IsStorageModuleAllowed))
         {
-            var store = StorageFactory.GetStorage(tenantId.ToString(), module);
+            var store = StorageFactory.GetStorage(tenantId, module);
             var domains = StorageFactoryConfig.GetDomainList(module).ToArray();
 
             foreach (var domain in domains)

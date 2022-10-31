@@ -206,7 +206,7 @@ public class DocumentsBackupStorage : IBackupStorage
     {
         // hack: create storage using webConfigPath and put it into DataStoreCache
         // FileDao will use this storage and will not try to create the new one from service config
-        _storageFactory.GetStorage(_tenantId.ToString(), "files");
+        _storageFactory.GetStorage(_tenantId, "files");
         return _daoFactory.GetFileDao<T>();
     }
 }

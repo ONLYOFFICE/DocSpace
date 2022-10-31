@@ -155,7 +155,7 @@ public class StorageHelper
 
         try
         {
-            var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), StorageName);
+            var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, StorageName);
 
             var fileName = Path.GetFileName(logoPath);
 
@@ -172,7 +172,7 @@ public class StorageHelper
 
     private string SaveLogo(string fileName, byte[] data)
     {
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), StorageName);
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, StorageName);
 
         using var stream = new MemoryStream(data);
         stream.Seek(0, SeekOrigin.Begin);
