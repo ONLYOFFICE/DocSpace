@@ -57,12 +57,11 @@ export const TableDataCell = styled.td`
   font-weight: 600;
   padding: 14px 0;
   color: #a3a9ae;
-  position: relative;
 
   @media ${hugeMobile} {
     .session-browser {
       position: relative;
-      top: 3px;
+      top: 4px;
       max-width: 150px;
       display: inline-block;
       margin-left: 0 !important;
