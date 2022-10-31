@@ -163,6 +163,8 @@ const FilesMediaViewer = (props) => {
         onDelete={onDeleteMediaFile}
         onDownload={onDownloadMediaFile}
         onClickFavorite={onClickFavorite}
+        setBufferSelection={setBufferSelection}
+        files={files}
         onClickDownload={onClickDownload}
         onShowInfoPanel={onShowInfoPanel}
         onClickDownloadAs={onClickDownloadAs}
