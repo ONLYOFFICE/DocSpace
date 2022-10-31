@@ -457,7 +457,7 @@ const WhiteLabel = (props) => {
               !logoUrlsChange.some((obj) => obj.id === "1") ? (
                 <canvas
                   id="canvas_logo_1"
-                  className="border-img logo-header"
+                  className="logo-header"
                   width="251"
                   height="48"
                   data-fontsize="36"
@@ -469,7 +469,7 @@ const WhiteLabel = (props) => {
                 </canvas>
               ) : (
                 <img
-                  className="border-img logo-header"
+                  className="logo-header"
                   src={
                     logoUrlsChange &&
                     logoUrlsChange.some((obj) => obj.id === "1")
