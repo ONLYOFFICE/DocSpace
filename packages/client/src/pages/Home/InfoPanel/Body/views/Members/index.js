@@ -27,13 +27,14 @@ const Members = ({
   setSelectionParentRoom,
 
   getRoomMembers,
+  updateRoomMemberRole,
+
   setInvitePanelOptions,
   changeUserType,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
   const [members, setMembers] = useState(null);
-  const [roomType, setRoomType] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
 
   const fetchMembers = async (roomId) => {
@@ -64,8 +65,6 @@ const Members = ({
   useEffect(async () => {
     if (!selectionParentRoom) return;
 
-    setRoomType(selectionParentRoom.roomType);
-
     if (selectionParentRoom.members) {
       setMembers(selectionParentRoom.members);
       return;
@@ -80,7 +79,6 @@ const Members = ({
 
   useEffect(async () => {
     if (!selection.isRoom) return;
-    setRoomType(selection.roomType);
     if (selectionParentRoom && selectionParentRoom.id === selection.id) return;
 
     const fetchedMembers = await fetchMembers(selection.id);
@@ -106,7 +104,7 @@ const Members = ({
   };
 
   if (showLoader) return <Loaders.InfoPanelViewLoader view="members" />;
-  if (!members) return null;
+  if (!selectionParentRoom || !members) return null;
 
   console.log(members);
   const [currentMember] = members.inRoom.filter(
@@ -136,8 +134,10 @@ const Members = ({
             t={t}
             user={user}
             membersHelper={membersHelper}
-            roomType={roomType}
             currentMember={currentMember}
+            updateRoomMemberRole={updateRoomMemberRole}
+            roomId={selectionParentRoom.id}
+            roomType={selectionParentRoom.roomType}
           />
         ))}
       </StyledUserList>
@@ -145,14 +145,14 @@ const Members = ({
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
           <Text className="title">{t("ExpectPeople")}</Text>
-          <IconButton
+          {/* <IconButton
             className={"icon"}
             title={t("Repeat invitation")}
             iconName="/static/images/e-mail+.react.svg"
             isFill={true}
             onClick={onRepeatInvitation}
             size={16}
-          />
+          /> */}
         </StyledUserTypeHeader>
       )}
 
@@ -164,8 +164,10 @@ const Members = ({
             t={t}
             user={user}
             membersHelper={membersHelper}
-            roomType={roomType}
             currentMember={currentMember}
+            updateRoomMemberRole={updateRoomMemberRole}
+            roomId={selectionParentRoom.id}
+            roomType={selectionParentRoom.roomType}
           />
         ))}
       </StyledUserList>
@@ -175,7 +177,7 @@ const Members = ({
 
 export default inject(({ auth, filesStore, peopleStore, dialogsStore }) => {
   const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
-  const { getRoomMembers } = filesStore;
+  const { getRoomMembers, updateRoomMemberRole } = filesStore;
   const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
   const { setInvitePanelOptions } = dialogsStore;
   const { changeType: changeUserType } = peopleStore;
@@ -183,7 +185,9 @@ export default inject(({ auth, filesStore, peopleStore, dialogsStore }) => {
   return {
     selectionParentRoom,
     setSelectionParentRoom,
+
     getRoomMembers,
+    updateRoomMemberRole,
 
     isOwner,
     isAdmin,

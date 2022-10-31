@@ -11,8 +11,10 @@ const User = ({
   user,
   isExpect,
   membersHelper,
+  roomId,
   roomType,
   currentMember,
+  updateRoomMemberRole,
 }) => {
   if (!user.displayName && !user.email) return null;
 
@@ -30,6 +32,17 @@ const User = ({
     setUserRoleOptions(
       fullRoomRoleOptions.filter((role) => role.key !== option.key)
     );
+
+    updateRoomMemberRole(roomId, {
+      invitations: [
+        {
+          id: user.id,
+          access: option.access,
+        },
+      ],
+      notify: false,
+      sharingMessage: "",
+    });
   };
 
   return (

@@ -13,51 +13,38 @@ class MembersHelper {
     return {
       docSpaceAdmin: {
         key: "docSpaceAdmin",
-        title: this.t("Common:DocSpaceAdmin"),
         label: this.t("Common:DocSpaceAdmin"),
         access: ShareAccessRights.FullAccess,
       },
       roomAdmin: {
         key: "roomAdmin",
-        title: this.t("Common:RoomAdmin"),
         label: this.t("Common:RoomAdmin"),
         access: ShareAccessRights.RoomManager,
       },
-      user: {
-        key: "user",
-        title: this.t("Common:User"),
-        label: this.t("Common:User"),
-        access: EmployeeType.Guest,
+      viewer: {
+        key: "viewer",
+        label: this.t("Translations:RoleViewer"),
+        access: ShareAccessRights.ReadOnly,
       },
       editor: {
         key: "editor",
-        title: this.t("Translations:RoleEditor"),
         label: this.t("Translations:RoleEditor"),
         access: ShareAccessRights.Editing,
       },
       formFiller: {
         key: "formFiller",
-        title: this.t("Translations:RoleFormFiller"),
         label: this.t("Translations:RoleFormFiller"),
         access: ShareAccessRights.FormFilling,
       },
       reviewer: {
         key: "reviewer",
-        title: this.t("Translations:RoleReviewer"),
         label: this.t("Translations:RoleReviewer"),
         access: ShareAccessRights.Review,
       },
       commentator: {
         key: "commentator",
-        title: this.t("Translations:RoleCommentator"),
         label: this.t("Translations:RoleCommentator"),
         access: ShareAccessRights.Comment,
-      },
-      viewer: {
-        key: "viewer",
-        title: this.t("Translations:RoleViewer"),
-        label: this.t("Translations:RoleViewer"),
-        access: ShareAccessRights.ReadOnly,
       },
     };
   };
