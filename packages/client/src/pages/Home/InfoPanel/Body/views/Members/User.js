@@ -1,71 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
+import MembersHelper from "../../helpers/MembersHelper";
+import { ShareAccessRights } from "@docspace/common/constants";
 
 const User = ({
   t,
   user,
-  isOwner,
-  isAdmin,
-  selfId,
   isExpect,
-  changeUserType,
+  membersHelper,
+  roomType,
+  currentMember,
 }) => {
   if (!user.displayName && !user.email) return null;
 
-  const roles = {
-    admin: {
-      key: "admin",
-      title: t("Common:DocSpaceAdmin"),
-      label: t("Common:DocSpaceAdmin"),
-      action: "admin",
-    },
-    manager: {
-      key: "manager",
-      title: t("Common:RoomAdmin"),
-      label: t("Common:RoomAdmin"),
-      action: "manager",
-    },
-    user: {
-      key: "user",
-      title: t("Common:User"),
-      label: t("Common:User"),
-      action: "user",
-    },
-  };
+  const fullRoomRoleOptions = membersHelper.getOptionsByRoomType(roomType);
 
-  const getUserRole = () => {
-    if (user.isOwner) return roles.admin;
-    if (user.isAdmin) return roles.manager;
-    return roles.user;
-  };
-
-  const getUserOptions = () => {
-    let options = [];
-    if (isOwner) options.push(roles.admin);
-    if (isAdmin) options.push(roles.manager);
-    options.push(roles.user);
-    return options;
-  };
-
-  const getNotAuthorizedToEdit = () => {
-    if (selfId === user.id) return true;
-    if (isOwner) return false;
-    if (!isAdmin) return true;
-  };
-
-  const userRole = getUserRole();
-  const userOptions = getUserOptions();
-  const userNotAuthorizedToEdit = getNotAuthorizedToEdit();
-
-  const onTypeChange = React.useCallback(
-    ({ action }) => {
-      changeUserType(action, [user], t, false, false);
-    },
-    [user, changeUserType, t]
+  const [userRole, setUserRole] = useState(
+    membersHelper.getOptionByUserAccess(user.access)
   );
+  const [userRoleOptions, setUserRoleOptions] = useState(
+    fullRoomRoleOptions.filter((role) => role.key !== userRole.key)
+  );
+
+  const onRoomRoleChange = (option) => {
+    setUserRole(option);
+    setUserRoleOptions(
+      fullRoomRoleOptions.filter((role) => role.key !== option.key)
+    );
+  };
 
   return (
     <StyledUser
@@ -84,27 +49,29 @@ const User = ({
       <div className="name">
         {isExpect ? user.email : user.displayName || user.email}
       </div>
-      {selfId === user.id && (
+      {currentMember.id === user.id && (
         <div className="me-label">&nbsp;{`(${t("Common:MeLabel")})`}</div>
       )}
 
-      <div className="role-wrapper">
-        {userNotAuthorizedToEdit ? (
-          <div className="disabled-role-combobox">{userRole.label}</div>
-        ) : (
-          <ComboBox
-            className="role-combobox"
-            selectedOption={userRole}
-            options={userOptions}
-            onSelect={onTypeChange}
-            scaled={false}
-            withBackdrop={false}
-            size="content"
-            displaySelectedOption
-            modernView
-          />
-        )}
-      </div>
+      {userRole && userRoleOptions && (
+        <div className="role-wrapper">
+          {currentMember?.access === ShareAccessRights.FullAccess ||
+          currentMember?.access === ShareAccessRights.RoomManager ? (
+            <ComboBox
+              className="role-combobox"
+              selectedOption={userRole}
+              options={userRoleOptions}
+              onSelect={onRoomRoleChange}
+              scaled={false}
+              withBackdrop={false}
+              size="content"
+              modernView
+            />
+          ) : (
+            <div className="disabled-role-combobox">{userRole.label}</div>
+          )}
+        </div>
+      )}
     </StyledUser>
   );
 };

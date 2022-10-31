@@ -12,6 +12,8 @@ import { ShareAccessRights } from "@docspace/common/constants";
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import User from "./User";
+import { getAccessOptions } from "@docspace/client/src/components/panels/InvitePanel/utils";
+import MembersHelper from "../../helpers/MembersHelper";
 
 const Members = ({
   t,
@@ -28,7 +30,10 @@ const Members = ({
   setInvitePanelOptions,
   changeUserType,
 }) => {
+  const membersHelper = new MembersHelper({ t });
+
   const [members, setMembers] = useState(null);
+  const [roomType, setRoomType] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
 
   const fetchMembers = async (roomId) => {
@@ -41,7 +46,10 @@ const Members = ({
     let inRoomMembers = [];
     let expectedMembers = [];
     data.map((fetchedMember) => {
-      const member = fetchedMember.sharedTo;
+      const member = {
+        access: fetchedMember.access,
+        ...fetchedMember.sharedTo,
+      };
       if (member.activationStatus !== 2) inRoomMembers.push(member);
       else expectedMembers.push(member);
     });
@@ -55,6 +63,9 @@ const Members = ({
 
   useEffect(async () => {
     if (!selectionParentRoom) return;
+
+    setRoomType(selectionParentRoom.roomType);
+
     if (selectionParentRoom.members) {
       setMembers(selectionParentRoom.members);
       return;
@@ -69,6 +80,7 @@ const Members = ({
 
   useEffect(async () => {
     if (!selection.isRoom) return;
+    setRoomType(selection.roomType);
     if (selectionParentRoom && selectionParentRoom.id === selection.id) return;
 
     const fetchedMembers = await fetchMembers(selection.id);
@@ -96,6 +108,11 @@ const Members = ({
   if (showLoader) return <Loaders.InfoPanelViewLoader view="members" />;
   if (!members) return null;
 
+  console.log(members);
+  const [currentMember] = members.inRoom.filter(
+    (member) => member.id === selfId
+  );
+
   return (
     <>
       <StyledUserTypeHeader>
@@ -118,10 +135,9 @@ const Members = ({
             key={user.id}
             t={t}
             user={user}
-            isOwner={isOwner}
-            isAdmin={isAdmin}
-            selfId={selfId}
-            changeUserType={changeUserType}
+            membersHelper={membersHelper}
+            roomType={roomType}
+            currentMember={currentMember}
           />
         ))}
       </StyledUserList>
@@ -147,10 +163,9 @@ const Members = ({
             key={user.id}
             t={t}
             user={user}
-            isOwner={isOwner}
-            isAdmin={isAdmin}
-            selfId={selfId}
-            changeUserType={changeUserType}
+            membersHelper={membersHelper}
+            roomType={roomType}
+            currentMember={currentMember}
           />
         ))}
       </StyledUserList>
