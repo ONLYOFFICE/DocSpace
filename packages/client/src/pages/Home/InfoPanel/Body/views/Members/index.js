@@ -8,6 +8,8 @@ import Loaders from "@docspace/common/components/Loaders";
 
 import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
 
+import { ShareAccessRights } from "@docspace/common/constants";
+
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import User from "./User";
@@ -26,6 +28,7 @@ const Members = ({
   getRoomMembers,
   setInvitePanelOptions,
   changeUserType,
+  setInvitePanelOptions,
 }) => {
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);

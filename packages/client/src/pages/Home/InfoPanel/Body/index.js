@@ -56,10 +56,28 @@ const InfoPanelBodyContent = ({
   const viewHelper = new ViewHelper({
     defaultProps: defaultProps,
     detailsProps: {},
-    membersProps: { selectionParentRoom, setSelectionParentRoom },
-    historyProps: { selectedFolder: selectedFolder },
-    accountsProps: {},
-    galleryProps: {},
+    membersProps: {
+      selectionParentRoom,
+      setSelectionParentRoom,
+      selfId: props.selfId,
+      isOwner: props.isOwner,
+      isAdmin: props.isAdmin,
+      getRoomMembers: props.getRoomMembers,
+      changeUserType: props.changeUserType,
+    },
+    historyProps: {
+      selectedFolder: selectedFolder,
+    },
+    accountsProps: {
+      selfId: props.selfId,
+      isOwner: props.isOwner,
+      isAdmin: props.isAdmin,
+      changeUserType: props.changeUserType,
+    },
+    galleryProps: {
+      getIcon,
+      gallerySelected,
+    },
   });
 
   const getView = () => {
@@ -154,54 +172,99 @@ const InfoPanelBodyContent = ({
   );
 };
 
-export default inject(({ auth, selectedFolderStore, oformsStore }) => {
-  const { isRootFolder } = selectedFolderStore;
-  const { gallerySelected } = oformsStore;
+export default inject(
+  ({
+    auth,
+    filesStore,
+    settingsStore,
+    filesActionsStore,
+    dialogsStore,
+    selectedFolderStore,
+    oformsStore,
+    contextOptionsStore,
+    peopleStore,
+  }) => {
+    const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
+    const { personal, culture } = auth.settingsStore;
+    const { getIcon, getFolderIcon } = settingsStore;
+    const { onSelectItem, openLocationAction } = filesActionsStore;
+    const { changeType: changeUserType } = peopleStore;
+    const { setSharingPanelVisible } = dialogsStore;
+    const { isRootFolder } = selectedFolderStore;
+    const { gallerySelected } = oformsStore;
+    const {
+      getFilesContextOptions: getContextOptionActions,
+    } = contextOptionsStore;
 
-  const {
-    selection,
-    setSelection,
-    calculateSelection,
-    normalizeSelection,
-    isItemChanged,
+    const {
+      selection,
+      setSelection,
+      calculateSelection,
+      normalizeSelection,
+      isItemChanged,
 
-    selectionParentRoom,
-    setSelectionParentRoom,
+      selectionParentRoom,
+      setSelectionParentRoom,
 
-    roomsView,
-    fileView,
+      roomsView,
+      fileView,
 
-    getIsFiles,
-    getIsRooms,
-    getIsAccounts,
-    getIsGallery,
-  } = auth.infoPanelStore;
+      getIsFiles,
+      getIsRooms,
+      getIsAccounts,
+      getIsGallery,
+    } = auth.infoPanelStore;
 
-  const selectedItems = auth.infoPanelStore.getSelectedItems();
-  const selectedFolder = auth.infoPanelStore.getSelectedFolder();
+    const selectedItems = auth.infoPanelStore.getSelectedItems();
+    const selectedFolder = auth.infoPanelStore.getSelectedFolder();
 
-  return {
-    selection,
-    setSelection,
-    calculateSelection,
-    normalizeSelection,
-    isItemChanged,
+    return {
+      selection,
+      setSelection,
+      calculateSelection,
+      normalizeSelection,
+      isItemChanged,
 
-    selectedItems,
-    selectedFolder,
+      selectedItems,
+      selectedFolder,
 
-    selectionParentRoom,
-    setSelectionParentRoom,
+      selectionParentRoom,
+      setSelectionParentRoom,
 
-    roomsView,
-    fileView,
+      roomsView,
+      fileView,
 
-    getIsFiles,
-    getIsRooms,
-    getIsAccounts,
-    getIsGallery,
+      getIsFiles,
+      getIsRooms,
+      getIsAccounts,
+      getIsGallery,
 
-    gallerySelected,
-    isRootFolder,
-  };
-})(withRouter(observer(InfoPanelBodyContent)));
+      selectedItems,
+      selectedFolder,
+      setBufferSelection,
+
+      getContextOptions,
+      getContextOptionActions,
+      getUserContextOptions,
+
+      getFolderInfo,
+      onSelectItem,
+      getShareUsers,
+      getRoomMembers,
+      changeUserType,
+      getHistory,
+      getRoomHistory,
+      getFileHistory,
+      setSharingPanelVisible,
+
+      getIcon,
+      getFolderIcon,
+      createThumbnail,
+      openLocationAction,
+
+      gallerySelected,
+
+      isRootFolder,
+    };
+  }
+)(withRouter(observer(InfoPanelBodyContent)));

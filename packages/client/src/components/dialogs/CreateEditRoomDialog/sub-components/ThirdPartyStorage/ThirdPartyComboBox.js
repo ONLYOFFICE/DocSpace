@@ -116,6 +116,8 @@ const ThirdPartyComboBox = ({
 
   setIsScrollLocked,
   setIsOauthWindowOpen,
+
+  isDisabled,
 }) => {
   const dropdownRef = useRef(null);
 
@@ -130,6 +132,7 @@ const ThirdPartyComboBox = ({
   const [dropdownDirection, setDropdownDirection] = useState("bottom");
 
   const toggleIsOpen = () => {
+    if (isDisabled) return;
     if (isOpen) setIsScrollLocked(false);
     else {
       setIsScrollLocked(true);
@@ -233,7 +236,9 @@ const ThirdPartyComboBox = ({
 
         <Button
           isDisabled={
-            !storageLocation?.provider || !!storageLocation?.thirdpartyAccount
+            !storageLocation?.provider ||
+            !!storageLocation?.thirdpartyAccount ||
+            isDisabled
           }
           className="set_room_params-thirdparty-connect"
           size="small"

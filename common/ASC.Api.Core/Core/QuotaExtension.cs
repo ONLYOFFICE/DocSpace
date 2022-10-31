@@ -29,11 +29,11 @@ public static class QuotaExtension
 {
     public static void RegisterFeature(this IServiceCollection services)
     {
-        services.AddScoped<ITenantQuotaFeatureChecker, CountManagerChecker>();
-        services.AddScoped<TenantQuotaFeatureCheckerCount<CountManagerFeature>, CountManagerChecker>();
-        services.AddScoped<CountManagerChecker>();
-        services.AddScoped<ITenantQuotaFeatureStat<CountManagerFeature, int>, CountManagerStatistic>();
-        services.AddScoped<CountManagerStatistic>();
+        services.AddScoped<ITenantQuotaFeatureChecker, CountRoomAdminChecker>();
+        services.AddScoped<TenantQuotaFeatureCheckerCount<CountRoomAdminFeature>, CountRoomAdminChecker>();
+        services.AddScoped<CountRoomAdminChecker>();    
+        services.AddScoped<ITenantQuotaFeatureStat<CountRoomAdminFeature, int>, CountRoomAdminStatistic>();
+        services.AddScoped<CountRoomAdminStatistic>();
 
         services.AddScoped<ITenantQuotaFeatureChecker, CountUserChecker>();
         services.AddScoped<TenantQuotaFeatureCheckerCount<CountUserFeature>, CountUserChecker>();
