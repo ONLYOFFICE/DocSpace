@@ -138,12 +138,7 @@ public class StorageFactory
     private readonly StorageFactoryConfig _storageFactoryConfig;
     private readonly SettingsManager _settingsManager;
     private readonly StorageSettingsHelper _storageSettingsHelper;
-    private readonly TenantManager _tenantManager;
-    private readonly UserManager _userManager;
-    private readonly AuthContext _authContext;
     private readonly CoreBaseSettings _coreBaseSettings;
-    private readonly TenantQuotaFeatureChecker<MaxFileSizeFeature, long> _maxFileSizeChecker;
-    private readonly TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> _maxTotalSizeChecker;
     private readonly IServiceProvider _serviceProvider;
 
     public StorageFactory(
@@ -151,23 +146,13 @@ public class StorageFactory
         StorageFactoryConfig storageFactoryConfig,
         SettingsManager settingsManager,
         StorageSettingsHelper storageSettingsHelper,
-        TenantManager tenantManager,
-        UserManager userManager,
-        AuthContext authContext,
-        CoreBaseSettings coreBaseSettings,
-        TenantQuotaFeatureChecker<MaxFileSizeFeature, long> maxFileSizeChecker,
-        TenantQuotaFeatureChecker<MaxTotalSizeFeature, long> maxTotalSizeChecker)
+        CoreBaseSettings coreBaseSettings)
     {
         _serviceProvider = serviceProvider;
         _storageFactoryConfig = storageFactoryConfig;
         _settingsManager = settingsManager;
         _storageSettingsHelper = storageSettingsHelper;
-        _tenantManager = tenantManager;
-        _userManager = userManager;
-        _authContext = authContext;
         _coreBaseSettings = coreBaseSettings;
-        _maxFileSizeChecker = maxFileSizeChecker;
-        _maxTotalSizeChecker = maxTotalSizeChecker;
     }
 
     public IDataStore GetStorage(int? tenant, string module)
