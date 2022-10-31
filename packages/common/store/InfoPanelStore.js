@@ -55,6 +55,7 @@ class InfoPanelStore {
       selection: filesStoreSelection,
       bufferSelection: filesStoreBufferSelection,
     } = this.filesStore;
+
     const {
       selection: peopleStoreSelection,
       bufferSelection: peopleStoreBufferSelection,
