@@ -121,7 +121,7 @@ const Appearance = (props) => {
   );
 
   useEffect(() => {
-    if (newCustomThemes.length === 3) {
+    if (newCustomThemes.length === 3 || appearanceTheme.length === 10) {
       setAbilityAddTheme(false);
     } else {
       setAbilityAddTheme(true);
@@ -134,6 +134,10 @@ const Appearance = (props) => {
 
     return () => window.removeEventListener("resize", onCheckView);
   }, []);
+
+  useEffect(() => {
+    setSelectThemeId(selectedThemeId);
+  }, [selectedThemeId]);
 
   useEffect(() => {
     if (
@@ -178,7 +182,6 @@ const Appearance = (props) => {
 
   const onColorSelection = (item) => {
     setSelectAccentColor(item.accentColor);
-
     setSelectThemeId(item.id);
     setSelectNewThemeId(null);
   };
@@ -189,41 +192,47 @@ const Appearance = (props) => {
     setSelectThemeId(null);
   };
 
-  const onShowCheck = (colorNumber) => {
-    return selectThemeId && selectThemeId === colorNumber && checkImg;
-  };
+  const onShowCheck = useCallback(
+    (colorNumber) => {
+      return selectThemeId && selectThemeId === colorNumber && checkImg;
+    },
+    [selectThemeId, checkImg]
+  );
 
-  const onShowCheckNewThemes = (colorNumber) => {
-    return selectNewThemeId && selectNewThemeId === colorNumber && checkImg;
-  };
+  const onShowCheckNewThemes = useCallback(
+    (colorNumber) => {
+      return selectNewThemeId && selectNewThemeId === colorNumber && checkImg;
+    },
+    [selectNewThemeId, checkImg]
+  );
 
   const onChangePreviewTheme = (e) => {
     setPreviewTheme(e.title);
   };
 
   const onSaveNewThemes = useCallback(async () => {
-    await sendAppearanceTheme({ themes: newCustomThemes });
+    try {
+      await sendAppearanceTheme({ themes: newCustomThemes });
+      await getAppearanceTheme();
+      setNewCustomThemes([]);
 
-    getAppearanceTheme()
-      .then(() => {
-        toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-      })
-      .catch((error) => {
-        toastr.error(error);
-      });
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
   }, [newCustomThemes.length, sendAppearanceTheme, getAppearanceTheme]);
 
   const onSaveSelectedThemes = useCallback(async () => {
-    await sendAppearanceTheme({ selected: selectThemeId });
+    try {
+      await sendAppearanceTheme({ selected: selectThemeId });
+      await getAppearanceTheme();
 
-    getAppearanceTheme()
-      .then(() => {
-        toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        setChangeColorTheme(false);
-      })
-      .catch((error) => {
-        toastr.error(error);
-      });
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+
+      setChangeColorTheme(false);
+    } catch (error) {
+      toastr.error(error);
+    }
   }, [
     selectThemeId,
     setChangeColorTheme,
@@ -231,17 +240,37 @@ const Appearance = (props) => {
     getAppearanceTheme,
   ]);
 
-  const onSave = useCallback(() => {
+  const onSave = useCallback(async () => {
+    if (newCustomThemes.length === 0 && !selectNewThemeId && !selectThemeId) {
+      return;
+    }
+
     if (newCustomThemes.length > 0 && selectNewThemeId) {
-      onSaveSelectedNewThemes(
-        newCustomThemes,
-        selectNewThemeId,
-        appearanceTheme.length
-      );
-    } else if (newCustomThemes.length > 0) {
+      try {
+        await onSaveSelectedNewThemes(
+          newCustomThemes,
+          selectNewThemeId,
+          appearanceTheme.length
+        );
+
+        setNewCustomThemes([]);
+        setSelectNewThemeId(null);
+      } catch (error) {
+        toastr.error(error);
+      }
+
+      return;
+    }
+
+    if (newCustomThemes.length > 0) {
       onSaveNewThemes();
-    } else if (selectThemeId) {
+
+      return;
+    }
+
+    if (selectThemeId) {
       onSaveSelectedThemes();
+      return;
     }
   }, [
     newCustomThemes.length,
