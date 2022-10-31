@@ -469,6 +469,8 @@ class MediaViewer extends React.Component {
       onClickDownloadAs,
       onClickRename,
       onClickDelete,
+      setBufferSelection,
+      files,
     } = this.props;
 
     const currentFileId =
@@ -477,6 +479,9 @@ class MediaViewer extends React.Component {
         : 0;
 
     const currentFile = playlist[playlistPos];
+
+    const targetFile = files.find((item) => item.id === currentFileId);
+    if (targetFile) setBufferSelection(targetFile);
     const { title } = currentFile;
 
     let isImage = false;
@@ -514,13 +519,13 @@ class MediaViewer extends React.Component {
           onClick: () => onClickDownload(currentFile, t),
           disabled: false,
         },
-        {
-          key: "download-as",
-          label: t("Translations:DownloadAs"),
-          icon: "images/download-as.react.svg",
-          onClick: onClickDownloadAs,
-          disabled: false,
-        },
+        // {
+        //   key: "download-as",
+        //   label: t("Translations:DownloadAs"),
+        //   icon: "images/download-as.react.svg", // TODO: uncomment when we can download media by changing the format
+        //   onClick: onClickDownloadAs,
+        //   disabled: false,
+        // },
         {
           key: "rename",
           label: t("Rename"),
