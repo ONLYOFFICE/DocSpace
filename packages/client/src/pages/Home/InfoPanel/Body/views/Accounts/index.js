@@ -16,6 +16,7 @@ const Accounts = ({
   isOwner,
   isAdmin,
   changeUserType,
+  canChangeUserType,
   selfId,
 }) => {
   const [statusLabel, setStatusLabel] = React.useState("");
@@ -126,26 +127,9 @@ const Accounts = ({
 
     const status = getUserStatus(selection);
 
-    if (selfId === id || status === "disabled") return text;
+    const canChange = canChangeUserType({ ...selection, statusType: status });
 
-    switch (role) {
-      case "owner":
-        return text;
-
-      case "admin":
-      case "manager":
-        if (isOwner) {
-          return combobox;
-        } else {
-          return text;
-        }
-
-      case "user":
-        return combobox;
-
-      default:
-        return text;
-    }
+    return canChange ? combobox : text;
   };
 
   const typeData = renderTypeData();

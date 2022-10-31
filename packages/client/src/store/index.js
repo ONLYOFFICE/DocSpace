@@ -30,8 +30,11 @@ import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
 import OformsStore from "./OformsStore";
+import AccessRights from "./AccessRights";
 
 const oformsStore = new OformsStore(authStore);
+
+const accessRights = new AccessRights(authStore);
 
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();
@@ -46,7 +49,8 @@ const ssoStore = new SsoFormStore();
 const peopleStore = new PeopleStore(
   authStore,
   authStore.infoPanelStore,
-  setupStore
+  setupStore,
+  accessRights
 );
 
 const tagsStore = new TagsStore();
@@ -166,6 +170,8 @@ const store = {
   tagsStore,
 
   peopleStore,
+
+  accessRights,
 };
 
 export default store;

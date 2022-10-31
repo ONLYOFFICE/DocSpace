@@ -77,6 +77,7 @@ const InfoPanelBodyContent = ({
       isOwner: props.isOwner,
       isAdmin: props.isAdmin,
       changeUserType: props.changeUserType,
+      canChangeUserType: props.canChangeUserType,
     },
     galleryProps: {
       getIcon,
@@ -229,6 +230,7 @@ export default inject(
     oformsStore,
     contextOptionsStore,
     peopleStore,
+    accessRights,
   }) => {
     const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { personal, culture } = auth.settingsStore;
@@ -241,6 +243,7 @@ export default inject(
     const {
       getFilesContextOptions: getContextOptionActions,
     } = contextOptionsStore;
+    const { canChangeUserType } = accessRights;
 
     const {
       selection,
@@ -342,6 +345,7 @@ export default inject(
       gallerySelected,
 
       isRootFolder,
+      canChangeUserType,
     };
   }
 )(withRouter(observer(InfoPanelBodyContent)));
