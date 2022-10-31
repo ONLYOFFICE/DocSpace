@@ -26,6 +26,8 @@ const ArticleHeader = ({
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
   const onLogoClick = () => history.push("/");
 
+  const isSvgLogo = whiteLabelLogoUrls[0].includes(".svg");
+
   if (isMobileOnly) return <></>;
   return (
     <StyledArticleHeader showText={showText} {...rest}>
@@ -42,14 +44,30 @@ const ArticleHeader = ({
       ) : (
         <StyledHeading showText={showText} size="large">
           {isTabletView ? (
-            <img
-              className="logo-icon_svg"
-              src={whiteLabelLogoUrls[0]}
-              onClick={onLogoClick}
-            />
+            isSvgLogo ? (
+              <ReactSVG
+                className="logo-icon_svg"
+                src={whiteLabelLogoUrls[0]}
+                onClick={onLogoClick}
+              />
+            ) : (
+              <img
+                className="logo-icon_svg"
+                src={whiteLabelLogoUrls[0]}
+                onClick={onLogoClick}
+              />
+            )
           ) : (
             <Link to="/">
-              <img className="logo-icon_svg" src={whiteLabelLogoUrls[0]} />
+              {isSvgLogo ? (
+                <ReactSVG
+                  className="logo-icon_svg"
+                  src={whiteLabelLogoUrls[0]}
+                  onClick={onLogoClick}
+                />
+              ) : (
+                <img className="logo-icon_svg" src={whiteLabelLogoUrls[0]} />
+              )}
             </Link>
           )}
         </StyledHeading>
