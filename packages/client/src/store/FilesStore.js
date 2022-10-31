@@ -2696,8 +2696,8 @@ class FilesStore {
     return Math.floor(sectionWidth / minTileWidth);
   };
 
-  setInvitationLinks = async (id, linkId, title, access) => {
-    return await api.rooms.setInvitationLinks(id, linkId, title, access);
+  setInvitationLinks = async (roomId, linkId, title, access) => {
+    return await api.rooms.setInvitationLinks(roomId, linkId, title, access);
   };
 
   resendEmailInvitations = async (id, usersIds) => {

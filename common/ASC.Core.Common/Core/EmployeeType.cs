@@ -36,5 +36,6 @@ public enum EmployeeType
 {
     All = 0,
     RoomAdmin = 1,
-    User = 2
+    User = 2,
+    DocSpaceAdmin = 3,
 }

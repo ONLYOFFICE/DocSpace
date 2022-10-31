@@ -19,3 +19,5 @@ echo "Stop all backend containers"
 docker stop $(docker ps -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $1}')
 echo "Remove all backend containers"
 docker rm -f $(docker ps -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $1}')
+echo "Remove all backend images"
+docker rmi -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
