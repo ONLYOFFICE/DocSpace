@@ -13,6 +13,7 @@ import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
 import { Base } from "@docspace/components/themes";
 import { RoomsTypeTranslations } from "@docspace/common/constants";
+import { desktop } from "@docspace/components/utils/device";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
@@ -20,6 +21,10 @@ const SimpleFilesRowContent = styled(RowContent)`
     max-width: min-content;
     min-width: inherit;
     margin-right: 0px;
+
+    @media ${desktop} {
+      margin-top: 0px;
+    }
   }
 
   .row_update-text {

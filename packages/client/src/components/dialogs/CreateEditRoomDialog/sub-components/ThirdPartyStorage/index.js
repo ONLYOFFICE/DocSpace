@@ -36,8 +36,11 @@ const ThirdPartyStorage = ({
   openConnectWindow,
   setConnectItem,
   getOAuthToken,
+
+  isDisabled,
 }) => {
   const onChangeIsThirdparty = () => {
+    if (isDisabled) return;
     if (connectItems.length) {
       onChangeStorageLocation({
         ...storageLocation,
@@ -110,6 +113,7 @@ const ThirdPartyStorage = ({
           getOAuthToken={getOAuthToken}
           setIsScrollLocked={setIsScrollLocked}
           setIsOauthWindowOpen={setIsOauthWindowOpen}
+          isDisabled={isDisabled}
         />
       )}
 
@@ -119,6 +123,7 @@ const ThirdPartyStorage = ({
           roomTitle={roomTitle}
           thirdpartyAccount={storageLocation.thirdpartyAccount}
           onChangeStorageFolderId={onChangeStorageFolderId}
+          isDisabled={isDisabled}
         />
       )}
 

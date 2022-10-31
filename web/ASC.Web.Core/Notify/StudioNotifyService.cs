@@ -237,6 +237,18 @@ public class StudioNotifyService
                 TagValues.GreenButton(greenButtonText, confirmationUrl));
     }
 
+    public void SendDocSpaceInvite(string email, string confirmationUrl)
+    {
+        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmDocSpaceInvite;
+
+        _client.SendNoticeToAsync(
+            Actions.DocSpaceInvite,
+                _studioNotifyHelper.RecipientFromEmail(email, false),
+                new[] { EMailSenderName },
+                new TagValue(Tags.InviteLink, confirmationUrl),
+                TagValues.GreenButton(greenButtonText, confirmationUrl));
+    }
+
     #endregion
 
     #region MailServer
@@ -808,8 +820,8 @@ public class StudioNotifyService
 
         var culture = _setupInfo.GetPersonalCulture(lang);
 
-        var confirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmpInvite, (int)EmployeeType.User)
-                     + "&emplType=" + (int)EmployeeType.User
+        var confirmUrl = _commonLinkUtility.GetConfirmationEmailUrl(email, ConfirmType.EmpInvite, (int)EmployeeType.RoomAdmin)
+                     + "&emplType=" + (int)EmployeeType.RoomAdmin
                      + "&lang=" + culture.Key
                      + additionalMember;
 

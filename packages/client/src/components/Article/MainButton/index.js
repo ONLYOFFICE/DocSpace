@@ -14,7 +14,7 @@ import MobileView from "./MobileView";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
-import { Events } from "@docspace/common/constants";
+import { Events, EmployeeType } from "@docspace/common/constants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 import toastr from "@docspace/components/toast/toastr";
@@ -91,6 +91,8 @@ const ArticleMainButtonContent = (props) => {
     isOwner,
     isAdmin,
     isVisitor,
+
+    setInvitePanelOptions,
   } = props;
 
   const isAccountsPage = selectedTreeNode[0] === "accounts";
@@ -171,8 +173,13 @@ const ArticleMainButtonContent = (props) => {
 
   const onInvite = React.useCallback((e) => {
     const type = e.action;
-    toastr.warning("Work in progress " + type);
-    console.log("invite ", type);
+
+    setInvitePanelOptions({
+      visible: true,
+      roomId: -1,
+      hideSelector: true,
+      defaultAccess: type,
+    });
   }, []);
 
   const onInviteAgain = React.useCallback(() => {
@@ -265,7 +272,7 @@ const ArticleMainButtonContent = (props) => {
             icon: "/static/images/person.admin.react.svg",
             label: t("Common:DocSpaceAdmin"),
             onClick: onInvite,
-            action: "administrator",
+            action: EmployeeType.Admin,
             key: "administrator",
           },
           {
@@ -274,7 +281,7 @@ const ArticleMainButtonContent = (props) => {
             icon: "/static/images/person.manager.react.svg",
             label: t("Common:RoomAdmin"),
             onClick: onInvite,
-            action: "manager",
+            action: EmployeeType.User,
             key: "manager",
           },
           {
@@ -283,7 +290,7 @@ const ArticleMainButtonContent = (props) => {
             icon: "/static/images/person.user.react.svg",
             label: t("Common:User"),
             onClick: onInvite,
-            action: "user",
+            action: EmployeeType.Guest,
             key: "user",
           },
         ]
@@ -492,7 +499,7 @@ export default inject(
       selectedTreeNode,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
-    const { setSelectFileDialogVisible } = dialogsStore;
+    const { setSelectFileDialogVisible, setInvitePanelOptions } = dialogsStore;
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
@@ -522,6 +529,7 @@ export default inject(
       startUpload,
 
       setSelectFileDialogVisible,
+      setInvitePanelOptions,
 
       isLoading,
       isLoaded,

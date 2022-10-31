@@ -70,9 +70,14 @@ const Dialog = ({
     onCancel && onCancel(e);
   }, []);
 
-  const onCloseAction = useCallback((e) => {
-    onClose && onClose(e);
-  }, []);
+  const onCloseAction = useCallback(
+    (e) => {
+      if (!isDisabled) {
+        onClose && onClose(e);
+      }
+    },
+    [isDisabled]
+  );
 
   return (
     <ModalDialog
@@ -110,6 +115,7 @@ const Dialog = ({
           size="normal"
           scale
           primary
+          isLoading={isDisabled}
           isDisabled={isDisabled}
           onClick={onSaveAction}
         />

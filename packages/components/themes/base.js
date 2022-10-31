@@ -1858,6 +1858,8 @@ const Base = {
 
     headerBurgerColor: "#657077",
 
+    verticalLine: "1px solid #eceef1",
+
     profile: {
       borderTop: "1px solid #eceef1",
       background: "#f3f4f4",
@@ -2734,6 +2736,7 @@ const Base = {
     textColor: gray,
     navBackground: "#F8F9F9",
     headerColor: black,
+    helpButton: "#A3A9AE",
 
     register: {
       backgroundColor: grayLight,

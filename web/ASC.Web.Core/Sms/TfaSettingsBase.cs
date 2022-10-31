@@ -71,27 +71,35 @@ public abstract class TfaSettingsHelperBase<T> where T : TfaSettingsBase<T>, new
             return false;
         }
 
-        foreach (var mandatory in settings.MandatoryGroups)
+        if (settings.MandatoryGroups != null)
         {
-            if (_userManager.IsUserInGroup(userGuid, mandatory))
+            foreach (var mandatory in settings.MandatoryGroups)
             {
-                return true;
+                if (_userManager.IsUserInGroup(userGuid, mandatory))
+                {
+                    return true;
+                }
             }
         }
 
-        foreach (var mandatory in settings.MandatoryUsers)
+        if (settings.MandatoryUsers != null)
         {
-            if (mandatory == userGuid)
+            foreach (var mandatory in settings.MandatoryUsers)
             {
-                return true;
+                if (mandatory == userGuid)
+                {
+                    return true;
+                }
             }
         }
 
-        var requestIP = MessageSettings.GetIP(_httpContextAccessor.HttpContext.Request);
-
-        if (!string.IsNullOrWhiteSpace(requestIP) && settings.TrustedIps.Any(trustedIp => IPSecurity.IPSecurity.MatchIPs(requestIP, trustedIp)))
+        if (settings.TrustedIps != null && settings.TrustedIps.Any())
         {
-            return false;
+            var requestIP = MessageSettings.GetIP(_httpContextAccessor.HttpContext.Request);
+            if (!string.IsNullOrWhiteSpace(requestIP) && settings.TrustedIps.Any(trustedIp => IPSecurity.IPSecurity.MatchIPs(requestIP, trustedIp)))
+            {
+                return false;
+            }
         }
 
         return true;

@@ -147,7 +147,7 @@ public class WhitelabelController : BaseSettingsController
 
 
     ///<visible>false</visible>
-    [AllowNotPayment]
+    [AllowNotPayment, AllowAnonymous]
     [HttpGet("whitelabel/logos")]
     public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
