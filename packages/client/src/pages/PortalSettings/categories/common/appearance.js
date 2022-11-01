@@ -31,6 +31,7 @@ const Appearance = (props) => {
     getAppearanceTheme,
     currentColorScheme,
     onSaveSelectedNewThemes,
+    deleteAppearanceTheme,
     tReady,
     t,
   } = props;
@@ -81,7 +82,7 @@ const Appearance = (props) => {
   const [selectThemeId, setSelectThemeId] = useState(selectedThemeId);
   const [selectNewThemeId, setSelectNewThemeId] = useState(null);
 
-  const [changeColorTheme, setChangeColorTheme] = useState(false);
+  const [isDisabledSaveButton, setIsDisabledSaveButton] = useState(true);
 
   const [newCustomThemes, setNewCustomThemes] = useState([]);
   const [changeThemes, setChangeThemes] = useState([]);
@@ -90,6 +91,7 @@ const Appearance = (props) => {
   const [abilityAddTheme, setAbilityAddTheme] = useState(true);
 
   const [isDisabledEditButton, setIsDisabledEditButton] = useState(true);
+  const [isDisabledDeleteButton, setIsDisabledDeleteButton] = useState(true);
 
   const checkImg = (
     <img className="check-img" src="/static/images/check.white.svg" />
@@ -126,12 +128,13 @@ const Appearance = (props) => {
   );
 
   useEffect(() => {
-    if (newCustomThemes.length === 3 || appearanceTheme.length === 10) {
+    const numberThemes = newCustomThemes.length + appearanceTheme.length;
+    if (numberThemes === 10) {
       setAbilityAddTheme(false);
     } else {
       setAbilityAddTheme(true);
     }
-  }, [newCustomThemes.length, setAbilityAddTheme]);
+  }, [newCustomThemes.length, appearanceTheme.length, setAbilityAddTheme]);
 
   useEffect(() => {
     onCheckView();
@@ -147,10 +150,12 @@ const Appearance = (props) => {
   useEffect(() => {
     if (selectThemeId < 8) {
       setIsDisabledEditButton(false);
+      setIsDisabledDeleteButton(true);
       return;
     }
 
     setIsDisabledEditButton(true);
+    setIsDisabledDeleteButton(false);
   }, [selectThemeId]);
 
   useEffect(() => {
@@ -158,9 +163,9 @@ const Appearance = (props) => {
       previewAccentColor !== currentColorScheme.accentColor ||
       newCustomThemes.length > 0
     ) {
-      setChangeColorTheme(true);
+      setIsDisabledSaveButton(false);
     } else {
-      setChangeColorTheme(false);
+      setIsDisabledSaveButton(true);
     }
 
     if (
@@ -242,17 +247,10 @@ const Appearance = (props) => {
       await getAppearanceTheme();
 
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-
-      setChangeColorTheme(false);
     } catch (error) {
       toastr.error(error);
     }
-  }, [
-    selectThemeId,
-    setChangeColorTheme,
-    sendAppearanceTheme,
-    getAppearanceTheme,
-  ]);
+  }, [selectThemeId, sendAppearanceTheme, getAppearanceTheme]);
 
   const onSaveChangedThemes = useCallback(async () => {
     try {
@@ -261,20 +259,39 @@ const Appearance = (props) => {
 
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
 
-      setChangeColorTheme(false);
       setChangeThemes([]);
     } catch (error) {
       toastr.error(error);
     }
   }, [
     changeThemes.length,
-    setChangeColorTheme,
+    setChangeThemes,
+    sendAppearanceTheme,
+    getAppearanceTheme,
+  ]);
+
+  const onSaveSelectedChangedThemes = useCallback(async () => {
+    try {
+      await sendAppearanceTheme({ themes: changeThemes });
+      await sendAppearanceTheme({ selected: selectThemeId });
+      await getAppearanceTheme();
+
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+
+      setChangeThemes([]);
+    } catch (error) {
+      toastr.error(error);
+    }
+  }, [
+    changeThemes.length,
     setChangeThemes,
     sendAppearanceTheme,
     getAppearanceTheme,
   ]);
 
   const onSave = useCallback(async () => {
+    setIsDisabledSaveButton(true);
+
     if (
       newCustomThemes.length === 0 &&
       !selectNewThemeId &&
@@ -284,7 +301,15 @@ const Appearance = (props) => {
       return;
     }
 
-    if (changeThemes.length > 0) {
+    // Saving the modified and selected theme
+    if (changeThemes.length > 0 && selectThemeId) {
+      onSaveSelectedChangedThemes();
+
+      return;
+    }
+
+    // Saving a modified theme
+    if (changeThemes.length > 0 && !selectThemeId) {
       onSaveChangedThemes();
 
       return;
@@ -346,6 +371,17 @@ const Appearance = (props) => {
     setShowColorSchemeDialog(true);
   };
 
+  const onClickDelete = useCallback(async () => {
+    try {
+      await deleteAppearanceTheme(selectThemeId);
+      await getAppearanceTheme();
+
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
+  }, [selectThemeId, deleteAppearanceTheme, getAppearanceTheme]);
+
   const onCloseColorSchemeDialog = () => {
     setShowColorSchemeDialog(false);
 
@@ -356,7 +392,6 @@ const Appearance = (props) => {
     setChangeCurrentColorButtons(false);
 
     setIsEditDialog(false);
-    setIsAddThemeDialog(false);
 
     setShowSaveButtonDialog(false);
   };
@@ -415,49 +450,50 @@ const Appearance = (props) => {
   }, [appliedColorButtons]);
 
   const onSaveColorSchemeDialog = () => {
-    // Editing standard themes
-    if (changeCurrentColorAccent || changeCurrentColorButtons) {
-      const editTheme = {
-        id: selectThemeId,
+    if (isAddThemeDialog) {
+      // Saving a new custom theme
+      const theme = {
         accentColor: currentColorAccent,
         buttonsMain: currentColorButtons,
         textColor: "#FFFFFF",
       };
 
-      const editAppearanceTheme = appearanceTheme.map((theme) => {
-        if (theme.id === selectThemeId) {
-          return {
-            id: selectThemeId,
-            accentColor: currentColorAccent,
-            buttonsMain: currentColorButtons,
-            textColor: "#FFFFFF",
-          };
-        }
-        return theme;
-      });
-
-      setChangeThemes([...changeThemes, editTheme]);
-      setEditAppearanceTheme(editAppearanceTheme);
-
-      setPreviewAccentColor(currentColorAccent);
+      setNewCustomThemes([...newCustomThemes, theme]);
+      setCurrentColorAccent(null);
+      setCurrentColorButtons(null);
 
       onCloseColorSchemeDialog();
+      setIsAddThemeDialog(false);
 
       return;
     }
 
-    // Saving a new custom theme
-    onCloseColorSchemeDialog();
-
-    const theme = {
+    // Editing all themes
+    const editTheme = {
+      id: selectThemeId,
       accentColor: currentColorAccent,
       buttonsMain: currentColorButtons,
       textColor: "#FFFFFF",
     };
 
-    setNewCustomThemes([...newCustomThemes, theme]);
-    setCurrentColorAccent(null);
-    setCurrentColorButtons(null);
+    const editAppearanceTheme = appearanceTheme.map((theme) => {
+      if (theme.id === selectThemeId) {
+        return {
+          id: selectThemeId,
+          accentColor: currentColorAccent,
+          buttonsMain: currentColorButtons,
+          textColor: "#FFFFFF",
+        };
+      }
+      return theme;
+    });
+
+    setChangeThemes([...changeThemes, editTheme]);
+    setEditAppearanceTheme(editAppearanceTheme);
+
+    setPreviewAccentColor(currentColorAccent);
+
+    onCloseColorSchemeDialog();
   };
 
   const nodeHexColorPickerButtons = (
@@ -559,7 +595,10 @@ const Appearance = (props) => {
         <div className="theme-name">Custom</div>
 
         <div className="theme-container">
-          {appearanceTheme.map((item, index) => {
+          {(editAppearanceTheme.length === 0
+            ? appearanceTheme
+            : editAppearanceTheme
+          ).map((item, index) => {
             if (index < 7) return;
             return (
               <div
@@ -641,7 +680,7 @@ const Appearance = (props) => {
           onClick={onSave}
           primary
           size="small"
-          isDisabled={!changeColorTheme}
+          isDisabled={isDisabledSaveButton}
         />
 
         <Button
@@ -649,7 +688,14 @@ const Appearance = (props) => {
           label="Edit current theme"
           onClick={onClickEdit}
           size="small"
-          isDisabled={isDisabledEditButton}
+          // isDisabled={isDisabledEditButton}
+        />
+        <Button
+          className="button"
+          label="Delete theme"
+          onClick={onClickDelete}
+          size="small"
+          isDisabled={isDisabledDeleteButton}
         />
       </div>
     </StyledComponent>
@@ -665,6 +711,7 @@ export default inject(({ auth }) => {
     getAppearanceTheme,
     currentColorScheme,
     onSaveSelectedNewThemes,
+    deleteAppearanceTheme,
   } = settingsStore;
 
   return {
@@ -674,6 +721,7 @@ export default inject(({ auth }) => {
     getAppearanceTheme,
     currentColorScheme,
     onSaveSelectedNewThemes,
+    deleteAppearanceTheme,
   };
 })(
   withTranslation(["Profile", "Common", "Settings"])(
