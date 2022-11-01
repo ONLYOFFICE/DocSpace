@@ -14,12 +14,12 @@ const ItemContextOptions = ({
   t,
   selection,
   setSelection,
-  reloadSelection,
   getContextOptions,
   getContextOptionActions,
   getUserContextOptions,
-
   setBufferSelection,
+
+  isUser = false,
   itemTitleRef,
 }) => {
   if (!selection) return null;
@@ -28,13 +28,15 @@ const ItemContextOptions = ({
 
   const contextHelper = new ContextHelper({
     t,
+    isUser,
     selection,
     setSelection,
-    reloadSelection,
     getContextOptions,
     getContextOptionActions,
     getUserContextOptions,
   });
+
+  if (!selection) return null;
 
   const setItemAsBufferSelection = () => setBufferSelection(selection);
 
@@ -47,6 +49,8 @@ const ItemContextOptions = ({
   useEffect(() => {
     contextMenuRef.current.hide();
   }, [selection]);
+
+  console.log(selection);
 
   return (
     <StyledItemContextOptions onClick={setItemAsBufferSelection}>
@@ -69,7 +73,7 @@ const ItemContextOptions = ({
 
 export default inject(
   ({ auth, filesStore, peopleStore, contextOptionsStore }) => {
-    const { setSelection, reloadSelection } = auth.infoPanelStore;
+    const { setSelection } = auth.infoPanelStore;
     const { getUserContextOptions } = peopleStore.contextOptionsStore;
     const {
       setBufferSelection,
@@ -81,7 +85,6 @@ export default inject(
 
     return {
       setSelection,
-      reloadSelection,
       setBufferSelection,
       getContextOptions,
       getContextOptionActions,

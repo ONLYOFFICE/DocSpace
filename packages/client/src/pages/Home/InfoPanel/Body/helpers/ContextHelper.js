@@ -6,16 +6,25 @@ const excludeOptionsIntoFolder = ["open", "separator0", "separator1"];
 class ContextHelper {
   constructor(props) {
     this.t = props.t;
+    this.isUser = props.isUser;
     this.selection = props.selection;
     this.setSelection = props.setSelection;
-    this.reloadSelection = props.reloadSelection;
     this.getContextOptions = props.getContextOptions;
+    this.getUserContextOptions = props.getUserContextOptions;
     this.getContextOptionActions = props.getContextOptionActions;
 
     if (this.selection) this.fixItemContextOptions();
   }
 
   fixItemContextOptions = () => {
+    if (this.isUser) {
+      const newOptions = this.selection.options.filter(
+        (option) => option !== "details"
+      );
+      this.selection.options = newOptions;
+      return;
+    }
+
     const options = this.getContextOptions(this.selection, false);
 
     excludeGeneralOptions.forEach((excludeOption) => {
@@ -72,7 +81,17 @@ class ContextHelper {
   };
 
   getItemContextOptions = () => {
-    return this.getContextOptionActions(this.selection, this.t);
+    return this.isUser
+      ? this.getUserContextOptions(
+          this.t,
+          this.selection.options,
+          this.selection
+        )
+      : this.getContextOptionActions(this.selection, this.t);
+  };
+
+  getUserContextOptions = () => {
+    console.log(this.selection);
   };
 }
 
