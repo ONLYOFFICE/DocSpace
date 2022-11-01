@@ -2556,7 +2556,7 @@ public class FileStorageService<T> //: IFileStorageService
             var changed = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
             if (changed)
             {
-                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomInvintationUpdateAccess, room.Title, GetAccessString(share));
+                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomUpdateAccess, room.Title, GetAccessString(share));
             }
         }
         catch (Exception e)
@@ -3132,7 +3132,7 @@ public class FileStorageService<T> //: IFileStorageService
         ErrorIf(!await _fileSecurity.CanReadAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
         var access = FileShare.None;
 
-        if (_fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID))
+        if (_fileSecurityCommon.IsDocSpaceAdministrator(_authContext.CurrentAccount.ID))
         {
             access = FileShare.ReadWrite;
         }
