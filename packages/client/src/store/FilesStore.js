@@ -1169,20 +1169,6 @@ class FilesStore {
       if (!shouldFillForm)
         fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
 
-      if (personal) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "owner-change",
-          "link-for-portal-users",
-          "docu-sign",
-          "mark-read",
-          "unsubscribe",
-        ]);
-
-        if (!shouldEdit && !shouldView) {
-          fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
-        }
-      }
-
       if (!canConvert) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
       }
@@ -1316,29 +1302,6 @@ class FilesStore {
         }
       }
 
-      if (!isFullAccess) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "finalize-version",
-          "rename",
-          "block-unblock-version",
-          "copy",
-          "sharing-settings",
-        ]);
-      }
-
-      if (isVisitor) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "block-unblock-version",
-          "finalize-version",
-          "mark-as-favorite",
-          "remove-from-favorites",
-        ]);
-
-        if (!isFullAccess) {
-          fileOptions = this.removeOptions(fileOptions, ["rename"]);
-        }
-      }
-
       if (!this.canShareOwnerChange(item)) {
         fileOptions = this.removeOptions(fileOptions, ["owner-change"]);
       }
@@ -1348,28 +1311,6 @@ class FilesStore {
           "owner-change",
           "finalize-version",
           "copy",
-        ]);
-      }
-
-      if (isCommonFolder) {
-        if (!this.userAccess) {
-          fileOptions = this.removeOptions(fileOptions, [
-            "owner-change",
-            "move-to",
-            "delete",
-            "copy",
-            "separator2",
-          ]);
-          if (!isFavorite) {
-            fileOptions = this.removeOptions(fileOptions, ["separator2"]);
-          }
-        }
-      }
-
-      if (withoutShare) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "sharing-settings",
-          "external-link",
         ]);
       }
 
@@ -1385,22 +1326,6 @@ class FilesStore {
         )
       ) {
         fileOptions = this.removeOptions(fileOptions, ["open-location"]);
-      }
-
-      if (isShareItem) {
-        if (!isFullAccess) {
-          fileOptions = this.removeOptions(fileOptions, ["edit"]);
-        }
-
-        if (isShareFolder) {
-          fileOptions = this.removeOptions(fileOptions, [
-            "copy",
-            "move-to",
-            "delete",
-          ]);
-        }
-      } else if (!isEncrypted) {
-        fileOptions = this.removeOptions(fileOptions, ["unsubscribe"]);
       }
 
       if (isPrivacyFolder) {
@@ -1420,18 +1345,6 @@ class FilesStore {
           fileOptions,
           isFileOwner ? ["unsubscribe"] : ["move-to", "delete"]
         );
-      }
-
-      if (!shouldEdit && !shouldView && !fileOptions.includes("view")) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "edit",
-          "preview",
-          "separator0",
-        ]);
-      }
-
-      if (!shouldEdit && shouldView) {
-        fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
 
       fileOptions = this.removeSeparator(fileOptions);
@@ -1566,18 +1479,6 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
       }
 
-      if (personal) {
-        folderOptions = this.removeOptions(folderOptions, [
-          "sharing-settings",
-          "owner-change",
-          "link-for-portal-users",
-          "separator1",
-          "docu-sign",
-          "mark-read",
-          "unsubscribe",
-        ]);
-      }
-
       if (isPrivacyFolder) {
         folderOptions = this.removeOptions(folderOptions, [
           "sharing-settings",
@@ -1588,17 +1489,6 @@ class FilesStore {
         if (!isDesktopClient) {
           folderOptions = this.removeOptions(folderOptions, ["rename"]);
         }
-      }
-
-      if (isShareItem) {
-        if (isShareFolder) {
-          folderOptions = this.removeOptions(folderOptions, [
-            "move-to",
-            "delete",
-          ]);
-        }
-      } else {
-        folderOptions = this.removeOptions(folderOptions, ["unsubscribe"]);
       }
 
       if (isRecycleBinFolder) {
@@ -1629,37 +1519,8 @@ class FilesStore {
         }
       }
 
-      if (!isFullAccess) {
-        //TODO: if added Projects, add project folder check
-        folderOptions = this.removeOptions(folderOptions, [
-          "rename",
-          "change-thirdparty-info",
-        ]);
-      }
-
       if (!this.canShareOwnerChange(item)) {
         folderOptions = this.removeOptions(folderOptions, ["owner-change"]);
-      }
-
-      if (!isFullAccess) {
-        folderOptions = this.removeOptions(folderOptions, [
-          "owner-change",
-          "move-to",
-          "delete",
-          "change-thirdparty-info",
-        ]);
-
-        if (!isShareItem) {
-          folderOptions = this.removeOptions(folderOptions, ["separator2"]);
-        }
-
-        if (isVisitor) {
-          folderOptions = this.removeOptions(folderOptions, ["rename"]);
-        }
-      }
-
-      if (withoutShare) {
-        folderOptions = this.removeOptions(folderOptions, ["sharing-settings"]);
       }
 
       if (!hasNew) {
