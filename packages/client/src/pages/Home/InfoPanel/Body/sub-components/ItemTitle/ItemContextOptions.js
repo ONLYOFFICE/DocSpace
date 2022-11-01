@@ -50,8 +50,6 @@ const ItemContextOptions = ({
     contextMenuRef.current.hide();
   }, [selection]);
 
-  console.log(selection);
-
   return (
     <StyledItemContextOptions onClick={setItemAsBufferSelection}>
       <ContextMenu

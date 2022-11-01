@@ -18,6 +18,7 @@ class ContextHelper {
 
   fixItemContextOptions = () => {
     if (this.isUser) {
+      if (!this.selection?.options) return;
       const newOptions = this.selection.options.filter(
         (option) => option !== "details"
       );
