@@ -1026,8 +1026,6 @@ class FilesStore {
       isRecycleBinFolder,
       isPrivacyFolder,
       isRecentFolder,
-      isCommon,
-      isShare,
       isFavoritesFolder,
       isShareFolder,
       isMy,
@@ -1047,8 +1045,7 @@ class FilesStore {
       canRemoveRoom,
       canEditFile,
       canFillForm,
-      canPeerReview,
-      canCommentFile,
+
       canBlockFile,
       canShowVersionHistory,
       canManageVersionHistory,
@@ -1072,11 +1069,9 @@ class FilesStore {
 
     const isThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
-    const isShareItem = isShare(item.rootFolderType);
-    const isCommonFolder = isCommon(item.rootFolderType);
+
     const isMyFolder = isMy(item.rootFolderType);
 
-    const { personal } = this.authStore.settingsStore;
     const { isDesktopClient } = this.authStore.settingsStore;
 
     const pluginAllKeys =
@@ -1158,6 +1153,9 @@ class FilesStore {
       }
       if (!showVersionHistory && !manageVersionHistory) {
         fileOptions = this.removeOptions(fileOptions, ["version"]);
+        if (item.rootFolderType === FolderType.Archive) {
+          fileOptions = this.removeOptions(fileOptions, ["separator0"]);
+        }
       }
       if (!moveFile && !copyFile) {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
@@ -1450,7 +1448,7 @@ class FilesStore {
       let folderOptions = [
         "select",
         "open",
-        "separator0",
+        // "separator0",
         // "sharing-settings",
         "owner-change",
         "show-info",
