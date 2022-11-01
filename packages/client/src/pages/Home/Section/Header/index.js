@@ -4,7 +4,11 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
-import { AppServerConfig } from "@docspace/common/constants";
+import {
+  AppServerConfig,
+  FolderType,
+  RoomSearchArea,
+} from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -546,16 +550,22 @@ class SectionHeaderContent extends React.Component {
       setAlreadyFetchingRooms,
 
       categoryType,
+
+      rootFolderType,
     } = this.props;
 
     setIsLoading(true);
 
     setAlreadyFetchingRooms(true);
 
-    fetchRooms(null, null)
-      .then(() => {
-        const filter = RoomsFilter.getDefault();
+    const filter = RoomsFilter.getDefault();
 
+    if (rootFolderType === FolderType.Archive) {
+      filter.searchArea = RoomSearchArea.Archive;
+    }
+
+    fetchRooms(null, filter)
+      .then(() => {
         const filterParamsStr = filter.toUrlParams();
 
         const url = getCategoryUrl(categoryType, filter.folder);
@@ -732,6 +742,7 @@ export default inject(
       roomType,
       pathParts,
       navigationPath,
+      rootFolderType,
     } = selectedFolderStore;
 
     const selectedFolder = { ...selectedFolderStore };
@@ -821,6 +832,8 @@ export default inject(
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
+
+      rootFolderType,
     };
   }
 )(
