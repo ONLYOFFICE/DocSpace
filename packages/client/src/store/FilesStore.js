@@ -1123,7 +1123,7 @@ class FilesStore {
         "restore",
         "rename",
         "separator2",
-        "unsubscribe",
+        // "unsubscribe",
         "delete",
       ];
 
@@ -1458,7 +1458,7 @@ class FilesStore {
         "rename",
         "change-thirdparty-info",
         "separator2",
-        "unsubscribe",
+        // "unsubscribe",
         "delete",
       ];
 
