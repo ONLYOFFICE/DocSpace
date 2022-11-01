@@ -183,6 +183,8 @@ const StyledTableRow = styled(TableRow)`
       .row_update-text,
       .expandButton,
       .badges,
+      .tag,
+      .author-cell,
       .table-container_cell > p {
         margin-top: 2px;
       }
