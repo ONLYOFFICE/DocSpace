@@ -167,7 +167,7 @@ const Table = ({
   );
 };
 
-export default inject(({ peopleStore, auth, accessRights }) => {
+export default inject(({ peopleStore, auth, accessRightsStore }) => {
   const {
     usersStore,
     filterStore,
@@ -182,7 +182,7 @@ export default inject(({ peopleStore, auth, accessRights }) => {
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { isAdmin, isOwner, id: userId } = auth.userStore.user;
 
-  const { canChangeUserType } = accessRights;
+  const { canChangeUserType } = accessRightsStore;
 
   return {
     peopleList,

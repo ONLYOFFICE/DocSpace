@@ -26,10 +26,12 @@ const Members = ({
   getRoomMembers,
   changeUserType,
   setInvitePanelOptions,
+  canInviteUserInRoom,
 }) => {
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
 
+  const isDisabledInvite = !canInviteUserInRoom({ access: selection.access });
   const fetchMembers = async (roomId) => {
     let timerId;
     if (members) timerId = setTimeout(() => setShowLoader(true), 1500);
@@ -68,6 +70,7 @@ const Members = ({
   }, [selection]);
 
   const onAddUsers = () => {
+    if (isDisabledInvite) return;
     setInvitePanelOptions({
       visible: true,
       roomId: selection.id,
@@ -92,6 +95,7 @@ const Members = ({
           isFill={true}
           onClick={onAddUsers}
           size={16}
+          isDisabled={isDisabledInvite}
         />
       </StyledUserTypeHeader>
 

@@ -38,6 +38,8 @@ class FilesStore {
   filesSettingsStore;
   thirdPartyStore;
 
+  accessRightsStore;
+
   isLoaded = false;
   isLoading = false;
 
@@ -97,7 +99,8 @@ class FilesStore {
     selectedFolderStore,
     treeFoldersStore,
     filesSettingsStore,
-    thirdPartyStore
+    thirdPartyStore,
+    accessRightsStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
@@ -109,6 +112,7 @@ class FilesStore {
     this.treeFoldersStore = treeFoldersStore;
     this.filesSettingsStore = filesSettingsStore;
     this.thirdPartyStore = thirdPartyStore;
+    this.accessRightsStore = accessRightsStore;
 
     const { socketHelper, withPaging } = authStore.settingsStore;
 
@@ -973,6 +977,29 @@ class FilesStore {
   removeOptions = (options, toRemoveArray) =>
     options.filter((o) => !toRemoveArray.includes(o));
 
+  removeSeparator = (options) => {
+    const newOptions = options.map((o, index) => {
+      if (index === 0 && o.includes("separator")) {
+        return false;
+      }
+
+      if (index === options.length - 1 && o.includes("separator")) {
+        return false;
+      }
+
+      if (
+        o?.includes("separator") &&
+        options[index + 1].includes("separator")
+      ) {
+        return false;
+      }
+
+      return o;
+    });
+
+    return newOptions.filter((o) => o);
+  };
+
   getFilesContextOptions = (item, canOpenPlayer) => {
     const isVisitor =
       (this.authStore.userStore.user &&
@@ -1012,6 +1039,34 @@ class FilesStore {
       canViewedDocs,
       canFormFillingDocs,
     } = this.filesSettingsStore;
+
+    const {
+      canEditRoom,
+      canInviteUserInRoom,
+      canArchiveRoom,
+      canRemoveRoom,
+      canEditFile,
+      canFillForm,
+      canPeerReview,
+      canCommentFile,
+      canBlockFile,
+      canShowVersionHistory,
+      canManageVersionHistory,
+      canDeleteFile,
+      canMoveFile,
+      canRenameFile,
+      canCopyFile,
+    } = this.accessRightsStore;
+
+    const editFile = canEditFile(item);
+    const fillForm = canFillForm(item);
+    const blockFile = canBlockFile(item);
+    const showVersionHistory = canShowVersionHistory(item);
+    const manageVersionHistory = canManageVersionHistory(item);
+    const deleteFile = canDeleteFile(item);
+    const moveFile = canMoveFile(item);
+    const renameFile = canRenameFile(item);
+    const copyFile = canCopyFile(item);
 
     const { enablePlugins } = this.authStore.settingsStore;
 
@@ -1071,6 +1126,42 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (!editFile) {
+        fileOptions = this.removeOptions(fileOptions, ["edit"]);
+      }
+      if (!fillForm) {
+        fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
+      }
+      if (!blockFile) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "block-unblock-version",
+        ]);
+      }
+      if (!showVersionHistory) {
+        fileOptions = this.removeOptions(fileOptions, ["show-version-history"]);
+      }
+      if (!manageVersionHistory) {
+        fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
+      }
+      if (!deleteFile) {
+        fileOptions = this.removeOptions(fileOptions, ["delete"]);
+      }
+      if (!moveFile) {
+        fileOptions = this.removeOptions(fileOptions, ["move-to"]);
+      }
+      if (!renameFile) {
+        fileOptions = this.removeOptions(fileOptions, ["rename"]);
+      }
+      if (!copyFile) {
+        fileOptions = this.removeOptions(fileOptions, ["copy-to", "copy"]);
+      }
+      if (!showVersionHistory && !manageVersionHistory) {
+        fileOptions = this.removeOptions(fileOptions, ["version"]);
+      }
+      if (!moveFile && !copyFile) {
+        fileOptions = this.removeOptions(fileOptions, ["move"]);
+      }
 
       if (!isMasterForm)
         fileOptions = this.removeOptions(fileOptions, ["make-form"]);
@@ -1343,8 +1434,15 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
 
+      fileOptions = this.removeSeparator(fileOptions);
+
       return fileOptions;
     } else if (isRoom) {
+      const canEdit = canEditRoom(item);
+      const canInviteUser = canInviteUserInRoom(item);
+      const canArchive = canArchiveRoom(item);
+      const canRemove = canRemoveRoom(item);
+
       let roomOptions = [
         "select",
         "separator0",
@@ -1359,6 +1457,32 @@ class FilesStore {
         "unarchive-room",
         "delete",
       ];
+
+      if (!canEdit) {
+        roomOptions = this.removeOptions(roomOptions, [
+          "edit-room",
+          "reconnect-storage",
+        ]);
+      }
+
+      if (!canInviteUser) {
+        roomOptions = this.removeOptions(roomOptions, ["invite-users-to-room"]);
+      }
+
+      if (!canArchive) {
+        roomOptions = this.removeOptions(roomOptions, [
+          "archive-room",
+          "unarchive-room",
+        ]);
+      }
+
+      if (!canRemove) {
+        roomOptions = this.removeOptions(roomOptions, ["delete"]);
+      }
+
+      if (!canRemove && !canArchive) {
+        roomOptions = this.removeOptions(roomOptions, ["separator1"]);
+      }
 
       if (!item.providerKey) {
         roomOptions = this.removeOptions(roomOptions, ["reconnect-storage"]);
@@ -1398,6 +1522,8 @@ class FilesStore {
         }
       }
 
+      roomOptions = this.removeSeparator(roomOptions);
+
       return roomOptions;
     } else {
       let folderOptions = [
@@ -1422,6 +1548,23 @@ class FilesStore {
         "unsubscribe",
         "delete",
       ];
+
+      if (!deleteFile) {
+        folderOptions = this.removeOptions(folderOptions, ["delete"]);
+      }
+      if (!moveFile) {
+        folderOptions = this.removeOptions(folderOptions, ["move-to"]);
+      }
+      if (!renameFile) {
+        folderOptions = this.removeOptions(folderOptions, ["rename"]);
+      }
+      if (!copyFile) {
+        folderOptions = this.removeOptions(folderOptions, ["copy-to", "copy"]);
+      }
+
+      if (!moveFile && !copyFile) {
+        folderOptions = this.removeOptions(folderOptions, ["move"]);
+      }
 
       if (personal) {
         folderOptions = this.removeOptions(folderOptions, [
@@ -1573,6 +1716,8 @@ class FilesStore {
       if (!(isMyFolder && (this.filterType || this.filterSearch))) {
         folderOptions = this.removeOptions(folderOptions, ["open-location"]);
       }
+
+      folderOptions = this.removeSeparator(folderOptions);
 
       return folderOptions;
     }

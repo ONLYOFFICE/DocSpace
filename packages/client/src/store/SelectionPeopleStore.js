@@ -99,7 +99,7 @@ class SelectionStore {
   }
 
   get hasUsersToMakeEmployees() {
-    const { canMakeEmployeeUser } = this.peopleStore.accessRights;
+    const { canMakeEmployeeUser } = this.peopleStore.accessRightsStore;
 
     const users = this.selection.filter((x) => canMakeEmployeeUser(x));
 
@@ -107,7 +107,7 @@ class SelectionStore {
   }
 
   get getUsersToMakeEmployees() {
-    const { canMakeEmployeeUser } = this.peopleStore.accessRights;
+    const { canMakeEmployeeUser } = this.peopleStore.accessRightsStore;
 
     const users = this.selection.filter((x) => canMakeEmployeeUser(x));
 
@@ -123,7 +123,7 @@ class SelectionStore {
   }
 
   get hasUsersToActivate() {
-    const { canActivateUser } = this.peopleStore.accessRights;
+    const { canActivateUser } = this.peopleStore.accessRightsStore;
 
     const users = this.selection.filter((x) => canActivateUser(x));
 
@@ -131,7 +131,7 @@ class SelectionStore {
   }
 
   get getUsersToActivate() {
-    const { canActivateUser } = this.peopleStore.accessRights;
+    const { canActivateUser } = this.peopleStore.accessRightsStore;
 
     const users = this.selection.filter((x) => canActivateUser(x));
 
@@ -139,7 +139,7 @@ class SelectionStore {
   }
 
   get hasUsersToDisable() {
-    const { canDisableUser } = this.peopleStore.accessRights;
+    const { canDisableUser } = this.peopleStore.accessRightsStore;
 
     const users = this.selection.filter((x) => canDisableUser(x));
 
@@ -147,7 +147,7 @@ class SelectionStore {
   }
 
   get getUsersToDisable() {
-    const { canDisableUser } = this.peopleStore.accessRights;
+    const { canDisableUser } = this.peopleStore.accessRightsStore;
 
     const users = this.selection.filter((x) => canDisableUser(x));
 
@@ -155,7 +155,7 @@ class SelectionStore {
   }
 
   get hasUsersToInvite() {
-    const { canInviteUser } = this.peopleStore.accessRights;
+    const { canInviteUser } = this.peopleStore.accessRightsStore;
 
     const users = this.selection.filter((x) => canInviteUser(x));
 
@@ -163,7 +163,7 @@ class SelectionStore {
   }
 
   get getUsersToInviteIds() {
-    const { canRemoveUser } = this.peopleStore.accessRights;
+    const { canRemoveUser } = this.peopleStore.accessRightsStore;
 
     const users = this.selection.filter((x) => canRemoveUser(x));
 
@@ -171,7 +171,7 @@ class SelectionStore {
   }
 
   get hasUsersToRemove() {
-    const { canRemoveUser } = this.peopleStore.accessRights;
+    const { canRemoveUser } = this.peopleStore.accessRightsStore;
 
     const users = this.selection.filter((x) => canRemoveUser(x));
 
@@ -179,7 +179,7 @@ class SelectionStore {
   }
 
   get getUsersToRemoveIds() {
-    const { canRemoveUser } = this.peopleStore.accessRights;
+    const { canRemoveUser } = this.peopleStore.accessRightsStore;
 
     const users = this.selection.filter((x) => canRemoveUser(x));
 

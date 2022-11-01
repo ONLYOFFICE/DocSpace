@@ -68,6 +68,7 @@ const InfoPanelBodyContent = ({
       getRoomMembers: props.getRoomMembers,
       changeUserType: props.changeUserType,
       setInvitePanelOptions: props.setInvitePanelOptions,
+      canInviteUserInRoom: props.canInviteUserInRoom,
     },
     historyProps: {
       selectedFolder: selectedFolder,
@@ -230,7 +231,7 @@ export default inject(
     oformsStore,
     contextOptionsStore,
     peopleStore,
-    accessRights,
+    accessRightsStore,
   }) => {
     const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { personal, culture } = auth.settingsStore;
@@ -243,7 +244,7 @@ export default inject(
     const {
       getFilesContextOptions: getContextOptionActions,
     } = contextOptionsStore;
-    const { canChangeUserType } = accessRights;
+    const { canChangeUserType, canInviteUserInRoom } = accessRightsStore;
 
     const {
       selection,
@@ -346,6 +347,7 @@ export default inject(
 
       isRootFolder,
       canChangeUserType,
+      canInviteUserInRoom,
     };
   }
 )(withRouter(observer(InfoPanelBodyContent)));

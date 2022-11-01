@@ -595,7 +595,7 @@ class SectionHeaderContent extends React.Component {
       showText,
       isRoomsFolder,
       isEmptyPage,
-      isVisitor,
+      canCreateFiles,
     } = this.props;
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
@@ -624,7 +624,7 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate && !isVisitor}
+                    canCreate={canCreate && canCreateFiles}
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -669,7 +669,7 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
-
+    accessRightsStore,
     contextOptionsStore,
   }) => {
     const {
@@ -748,6 +748,8 @@ export default inject(
       onClickReconnectStorage,
     } = contextOptionsStore;
 
+    const { canCreateFiles } = accessRightsStore;
+
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
@@ -759,6 +761,7 @@ export default inject(
       pathParts: pathParts,
       navigationPath: navigationPath,
       canCreate,
+      canCreateFiles,
       setIsInfoPanelVisible: setIsVisible,
       isInfoPanelVisible: isVisible,
       isHeaderVisible,

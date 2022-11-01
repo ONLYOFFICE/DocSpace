@@ -15,6 +15,7 @@ const EmptyFolderContainer = ({
   linkStyles,
   isRooms,
   sectionWidth,
+  canCreateFiles,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -24,7 +25,7 @@ const EmptyFolderContainer = ({
       : fetchFiles(parentId).finally(() => setIsLoading(false));
   };
 
-  const buttons = (
+  const buttons = canCreateFiles ? (
     <>
       <div className="empty-folder_container-links">
         <img
@@ -75,13 +76,19 @@ const EmptyFolderContainer = ({
         </Link>
       </div>
     </>
+  ) : (
+    <></>
   );
 
   return (
     <EmptyContainer
       headerText={t("EmptyScreenFolder")}
       style={{ gridColumnGap: "39px" }}
-      descriptionText={t("EmptyFolderDecription")}
+      descriptionText={
+        canCreateFiles
+          ? t("EmptyFolderDecription")
+          : t("EmptyFolderDescriptionUser")
+      }
       imageSrc="/static/images/empty_screen_alt.svg"
       buttons={buttons}
       sectionWidth={sectionWidth}
@@ -90,24 +97,29 @@ const EmptyFolderContainer = ({
   );
 };
 
-export default inject(({ filesStore, selectedFolderStore }) => {
-  const { fetchFiles, fetchRooms } = filesStore;
-  const { navigationPath, parentId } = selectedFolderStore;
+export default inject(
+  ({ accessRightsStore, filesStore, selectedFolderStore }) => {
+    const { fetchFiles, fetchRooms } = filesStore;
+    const { navigationPath, parentId } = selectedFolderStore;
 
-  let isRootRoom, isRoom, id;
-  if (navigationPath && navigationPath.length) {
-    const elem = navigationPath[0];
+    let isRootRoom, isRoom, id;
+    if (navigationPath && navigationPath.length) {
+      const elem = navigationPath[0];
 
-    isRootRoom = elem.isRootRoom;
-    isRoom = elem.isRoom;
-    id = elem.id;
+      isRootRoom = elem.isRootRoom;
+      isRoom = elem.isRoom;
+      id = elem.id;
+    }
+
+    const { canCreateFiles } = accessRightsStore;
+
+    return {
+      fetchFiles,
+      fetchRooms,
+      setIsLoading: filesStore.setIsLoading,
+      parentId: id ?? parentId,
+      isRooms: isRoom || isRootRoom,
+      canCreateFiles,
+    };
   }
-
-  return {
-    fetchFiles,
-    fetchRooms,
-    setIsLoading: filesStore.setIsLoading,
-    parentId: id ?? parentId,
-    isRooms: isRoom || isRootRoom,
-  };
-})(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));
+)(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));

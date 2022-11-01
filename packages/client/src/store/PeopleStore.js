@@ -39,11 +39,11 @@ class PeopleStore {
   loadingStore = null;
   infoPanelStore = null;
   setupStore = null;
-  accessRights = null;
+  accessRightsStore = null;
   isInit = false;
   viewAs = isMobileRDD ? "row" : "table";
 
-  constructor(authStore, infoPanelStore, setupStore, accessRights) {
+  constructor(authStore, infoPanelStore, setupStore, accessRightsStore) {
     this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this, authStore);
@@ -59,7 +59,7 @@ class PeopleStore {
     this.loadingStore = new LoadingStore();
     this.infoPanelStore = infoPanelStore;
     this.setupStore = setupStore;
-    this.accessRights = accessRights;
+    this.accessRightsStore = accessRightsStore;
 
     this.contextOptionsStore = new AccountsContextOptionsStore(this);
 

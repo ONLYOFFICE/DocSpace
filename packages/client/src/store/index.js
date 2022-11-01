@@ -30,11 +30,13 @@ import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
 import OformsStore from "./OformsStore";
-import AccessRights from "./AccessRights";
+import AccessRightsStore from "./AccessRightsStore";
 
 const oformsStore = new OformsStore(authStore);
 
-const accessRights = new AccessRights(authStore);
+const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
+
+const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
 
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();
@@ -50,12 +52,10 @@ const peopleStore = new PeopleStore(
   authStore,
   authStore.infoPanelStore,
   setupStore,
-  accessRights
+  accessRightsStore
 );
 
 const tagsStore = new TagsStore();
-
-const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
 
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
@@ -65,7 +65,8 @@ const filesStore = new FilesStore(
   selectedFolderStore,
   treeFoldersStore,
   settingsStore,
-  thirdPartyStore
+  thirdPartyStore,
+  accessRightsStore
 );
 
 const mediaViewerDataStore = new MediaViewerDataStore(
@@ -101,7 +102,8 @@ const filesActionsStore = new FilesActionsStore(
   selectedFolderStore,
   settingsStore,
   dialogsStore,
-  mediaViewerDataStore
+  mediaViewerDataStore,
+  accessRightsStore
 );
 
 const contextOptionsStore = new ContextOptionsStore(
@@ -171,7 +173,7 @@ const store = {
 
   peopleStore,
 
-  accessRights,
+  accessRightsStore,
 };
 
 export default store;
