@@ -2987,6 +2987,11 @@ const Base = {
     },
   },
 
+  activeSessions: {
+    color: "#333",
+    borderColor: "#eceef1",
+  },
+
   formWrapper: {
     background: white,
     boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
