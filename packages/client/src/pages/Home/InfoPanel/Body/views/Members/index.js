@@ -106,7 +106,6 @@ const Members = ({
   if (showLoader) return <Loaders.InfoPanelViewLoader view="members" />;
   if (!selectionParentRoom || !members) return null;
 
-  console.log(members);
   const [currentMember] = members.inRoom.filter(
     (member) => member.id === selfId
   );

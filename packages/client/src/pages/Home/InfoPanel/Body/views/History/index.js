@@ -15,6 +15,7 @@ import HistoryBlockMessage from "./HistoryBlockMessage";
 import HistoryBlockItemList from "./HistoryBlockItemList";
 import Loaders from "@docspace/common/components/Loaders";
 import HistoryBlockUser from "./HistoryBlockUser";
+import { FeedItemTypes } from "@docspace/common/constants";
 
 const History = ({
   t,
@@ -93,7 +94,7 @@ const History = ({
         {history.feeds.map((feed) => (
           <StyledHistoryBlock
             key={feed.json.Id}
-            isUserAction={feed.json.Item === "sharedRoom" && feed.target}
+            isUserAction={feed.json.Item === FeedItemTypes.User && feed.target}
           >
             <Avatar
               role="user"
@@ -134,7 +135,8 @@ const History = ({
                 selectionParentRoom={selectionParentRoom}
               />
 
-              {(feed.json.Item === "file" || feed.json.Item === "folder") && (
+              {(feed.json.Item === FeedItemTypes.File ||
+                feed.json.Item === FeedItemTypes.Folder) && (
                 <HistoryBlockItemList
                   t={t}
                   items={[feed.json, ...feed.groupedFeeds]}
@@ -143,7 +145,7 @@ const History = ({
                 />
               )}
 
-              {feed.json.Item === "sharedRoom" &&
+              {feed.json.Item === FeedItemTypes.User &&
                 feed.target &&
                 [feed.target, ...feed.groupedFeeds].map((user, i) => (
                   <HistoryBlockUser

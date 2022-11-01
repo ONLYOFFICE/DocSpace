@@ -104,7 +104,6 @@ const InfoPanelBodyContent = ({
       selectedFolder,
       props.selectedFolder
     );
-
     if (selectedFolderChanged) setSelectedFolder(props.selectedFolder);
   }, [props.selectedFolder]);
 

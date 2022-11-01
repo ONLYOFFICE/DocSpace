@@ -40,7 +40,11 @@ class InfoPanelStore {
 
   setIsVisible = (bool) => (this.isVisible = bool);
 
-  setSelection = (selection) => (this.selection = selection);
+  setSelection = (selection) => {
+    if (this.getIsAccounts() && (!selection.email || !selection.displayName))
+      return;
+    this.selection = selection;
+  };
   setSelectionParentRoom = (obj) => (this.selectionParentRoom = obj);
 
   setView = (view) => {
@@ -149,13 +153,13 @@ class InfoPanelStore {
 
   // User link actions //
 
-  openUser = async (userId, history) => {
-    if (userId === this.authStore.userStore.user.id) {
+  openUser = async (user, history) => {
+    if (user.id === this.authStore.userStore.user.id) {
       this.openSelfProfile(history);
       return;
     }
 
-    const fetchedUser = await this.fetchUser(userId);
+    const fetchedUser = await this.fetchUser(user.id);
     this.openAccountsWithSelectedUser(fetchedUser, history);
   };
 
@@ -173,21 +177,25 @@ class InfoPanelStore {
 
   openAccountsWithSelectedUser = async (user, history) => {
     const { getUsersList } = this.peopleStore.usersStore;
-    const { selectUser } = this.peopleStore.selectionStore;
+    const { setSelection } = this.peopleStore.selectionStore;
 
     const path = [AppServerConfig.proxyURL, config.homepage, "/accounts"];
 
     const newFilter = Filter.getDefault();
     newFilter.page = 0;
     newFilter.search = user.email;
-    await getUsersList(newFilter);
     path.push(`filter?${newFilter.toUrlParams()}`);
+    const userList = await getUsersList(newFilter);
+
+    // this.setSelection(null);
 
     this.selectedFolderStore.setSelectedFolder(null);
     this.treeFoldersStore.setSelectedNode(["accounts"]);
     history.push(combineUrl(...path));
 
-    selectUser(user);
+    // this.setSelection({});
+    setSelection([user]);
+    // this.setSelection(this.calculateSelection({ selectedItems: [user] }));
   };
 
   fetchUser = async (userId) => {
