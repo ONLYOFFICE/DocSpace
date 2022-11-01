@@ -52,9 +52,9 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
 
     private readonly TempStream _tempStream;
 
-    public override async Task RunJobAsync(DistributedTask distributedTask, CancellationToken cancellationToken)
+    public override async Task RunJob(DistributedTask distributedTask, CancellationToken cancellationToken)
     {
-        await base.RunJobAsync(distributedTask, cancellationToken);
+        await base.RunJob(distributedTask, cancellationToken);
 
         using var scope = ThirdPartyOperation.CreateScope();
         var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
@@ -114,42 +114,39 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
                 MimeMapping.GetMimeMapping(path),
                 "attachment; filename=\"" + Uri.EscapeDataString(fileName) + "\"");
 
-            Result = $"{filesLinkUtility.FileHandlerPath}?{FilesLinkUtility.Action}=bulk&filename={Uri.EscapeDataString(instanceCrypto.Encrypt(fileName))}";
+            this[Res] = $"{filesLinkUtility.FileHandlerPath}?{FilesLinkUtility.Action}=bulk&filename={Uri.EscapeDataString(instanceCrypto.Encrypt(fileName))}";
         }
 
-        _taskInfo[Finish] = true;
-        FillDistributedTask();
-        _taskInfo.PublishChanges();
+        this[Finish] = true;
+        PublishChanges();
 
     }
 
     public override void PublishChanges(DistributedTask task)
     {
-        var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
-        var daoTask = DaoOperation.GetDistributedTask();
+        var thirdpartyTask = ThirdPartyOperation;
+        var daoTask = DaoOperation;
 
         var error1 = thirdpartyTask[Err];
         var error2 = daoTask[Err];
 
         if (!string.IsNullOrEmpty(error1))
         {
-            Error = error1;
+            this[Err] = error1;
         }
         else if (!string.IsNullOrEmpty(error2))
         {
-            Error = error2;
+            this[Err] = error2;
         }
 
-        _successProcessed = thirdpartyTask[Process] + daoTask[Process];
+        this[Process] = thirdpartyTask[Process] + daoTask[Process];
 
         var progressSteps = ThirdPartyOperation.Total + DaoOperation.Total + 1;
 
-        var progress = (int)(_successProcessed / (double)progressSteps * 100);
+        var progress = (int)(this[Process] / (double)progressSteps * 100);
 
-        base.FillDistributedTask();
-
-        _taskInfo[Progress] = progress;
-        _taskInfo.PublishChanges();
+        this[Progress] = progress;
+        PublishChanges();
     }
 }
 
@@ -167,7 +164,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
         _headers = fileDownloadOperationData.Headers;
     }
 
-    protected override async Task DoAsync(IServiceScope scope)
+    protected override async Task DoJob(IServiceScope scope)
     {
         if (Files.Count == 0 && Folders.Count == 0)
         {
@@ -192,7 +189,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 
         Total = _entriesPathId.Count;
 
-        _taskInfo.PublishChanges();
+        PublishChanges();
 
         var filesMessageService = _serviceProvider.GetRequiredService<FilesMessageService>();
         foreach (var file in filesForSend)
@@ -361,7 +358,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
 
                         if (file == null)
                         {
-                            Error = FilesCommonResource.ErrorMassage_FileNotFound;
+                            this[Err] = FilesCommonResource.ErrorMassage_FileNotFound;
                             continue;
                         }
 
@@ -412,7 +409,7 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
                         }
                         catch (Exception ex)
                         {
-                            Error = ex.Message;
+                            this[Err] = ex.Message;
 
                             Logger.ErrorWithException(ex);
                         }

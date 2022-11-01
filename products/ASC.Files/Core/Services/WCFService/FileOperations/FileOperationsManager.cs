@@ -167,16 +167,9 @@ public class FileOperationsManager
     }
 
 
-    private List<FileOperationResult> QueueTask(Guid userId, FileOperation op)
+    private List<FileOperationResult> QueueTask(Guid userId, DistributedTaskProgress op)
     {
-        _tasks.EnqueueTask(op.RunJobAsync, op.GetDistributedTask());
-
-        return GetOperationResults(userId);
-    }
-
-    private List<FileOperationResult> QueueTask<T, TId>(Guid userId, FileOperation<T, TId> op) where T : FileOperationData<TId>
-    {
-        _tasks.EnqueueTask(op.RunJobAsync, op.GetDistributedTask());
+        _tasks.EnqueueTask(op);
 
         return GetOperationResults(userId);
     }

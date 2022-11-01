@@ -121,7 +121,7 @@ public class DistributedTaskQueue
 
     public void EnqueueTask(DistributedTaskProgress taskProgress)
     {
-        EnqueueTask((a, b) => taskProgress.RunJob(), taskProgress);
+        EnqueueTask(taskProgress.RunJob, taskProgress);
     }
 
     public void EnqueueTask(Action<DistributedTask, CancellationToken> action, DistributedTask distributedTask = null)

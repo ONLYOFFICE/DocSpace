@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Files.Services.WCFService.FileOperations;
 
-public abstract class FileOperation : DistributedTask
+public abstract class FileOperation : DistributedTaskProgress
 {
     public const string SplitChar = ":";
     public const string Owner = "Owner";
@@ -41,61 +41,36 @@ public abstract class FileOperation : DistributedTask
 
     protected readonly IPrincipal _principal;
     protected readonly string _culture;
-    public int Total { get; set; }
-    public string Source { get; set; }
 
     protected int _processed;
-    protected int _successProcessed;
+    public int Total { get; set; }
 
     public virtual FileOperationType OperationType { get; }
-    public bool HoldResult { get; set; }
-    public string Result { get; set; }
-    public string Error { get; set; }
-
-    protected DistributedTask _taskInfo;
 
     protected FileOperation(IServiceProvider serviceProvider)
     {
         _principal = serviceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
         _culture = Thread.CurrentThread.CurrentCulture.Name;
 
-        _taskInfo = new DistributedTask();
-
-        _taskInfo[Owner] = (new Guid()).ToString();
-        _taskInfo[OpType] = 0;
-        _taskInfo[Src] = "";
-        _taskInfo[Progress] = 0;
-        _taskInfo[Res] = "";
-        _taskInfo[Err] = "";
-        _taskInfo[Process] = 0;
-        _taskInfo[Finish] = false;
-        _taskInfo[Hold] = false; ;
+        this[Owner] = ((IAccount)(_principal ?? Thread.CurrentPrincipal).Identity).ID.ToString();
+        this[OpType] = (int)OperationType;
+        this[Src] = "";
+        this[Progress] = 0;
+        this[Res] = "";
+        this[Err] = "";
+        this[Process] = 0;
+        this[Finish] = false;
+        this[Hold] = false;
     }
 
-    public virtual DistributedTask GetDistributedTask()
+    protected void IncrementProgress()
     {
-        FillDistributedTask();
-
-        return _taskInfo;
-    }
-
-
-    protected internal virtual void FillDistributedTask()
-    {
+        _processed++;
         var progress = Total != 0 ? 100 * _processed / Total : 0;
-
-        _taskInfo[OpType] = (int)OperationType;
-        _taskInfo[Owner] = ((IAccount)(_principal ?? Thread.CurrentPrincipal).Identity).ID.ToString();
-        _taskInfo[Progress] = progress < 100 ? progress : 100;
-        _taskInfo[Res] = Result;
-        _taskInfo[Err] = Error;
-        _taskInfo[Process] = _successProcessed;
-        _taskInfo[Hold] = HoldResult;
+        this[Progress] = progress < 100 ? progress : 100;
     }
 
-    public abstract Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken);
-
-    protected abstract Task DoAsync(IServiceScope serviceScope);
+    protected abstract Task DoJob(IServiceScope serviceScope);
 }
 
 internal class ComposeFileOperation<T1, T2> : FileOperation
@@ -115,41 +90,30 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
         DaoOperation = daoOperation;
     }
 
-    public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
+    public override async Task RunJob(DistributedTask _, CancellationToken cancellationToken)
     {
-        ThirdPartyOperation.GetDistributedTask().Publication = PublishChanges;
-        await ThirdPartyOperation.RunJobAsync(_, cancellationToken);
+        ThirdPartyOperation.Publication = PublishChanges;
+        await ThirdPartyOperation.RunJob(_, cancellationToken);
 
-        DaoOperation.GetDistributedTask().Publication = PublishChanges;
-        await DaoOperation.RunJobAsync(_, cancellationToken);
-    }
-
-    protected internal override void FillDistributedTask()
-    {
-        ThirdPartyOperation.FillDistributedTask();
-        DaoOperation.FillDistributedTask();
-
-        HoldResult = ThirdPartyOperation.HoldResult || DaoOperation.HoldResult;
-        Total = ThirdPartyOperation.Total + DaoOperation.Total;
-        Source = string.Join(SplitChar, ThirdPartyOperation.Source, DaoOperation.Source);
-        base.FillDistributedTask();
+        DaoOperation.Publication = PublishChanges;
+        await DaoOperation.RunJob(_, cancellationToken);
     }
 
     public virtual void PublishChanges(DistributedTask task)
     {
-        var thirdpartyTask = ThirdPartyOperation.GetDistributedTask();
-        var daoTask = DaoOperation.GetDistributedTask();
+        var thirdpartyTask = ThirdPartyOperation;
+        var daoTask = DaoOperation;
 
         var error1 = thirdpartyTask[Err];
         var error2 = daoTask[Err];
 
         if (!string.IsNullOrEmpty(error1))
         {
-            Error = error1;
+            this[Err] = error1;
         }
         else if (!string.IsNullOrEmpty(error2))
         {
-            Error = error2;
+            this[Err] = error2;
         }
 
         var status1 = thirdpartyTask[Res];
@@ -157,11 +121,11 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
 
         if (!string.IsNullOrEmpty(status1))
         {
-            Result = status1;
+            this[Res] = status1;
         }
         else if (!string.IsNullOrEmpty(status2))
         {
-            Result = status2;
+            this[Res] = status2;
         }
 
         bool finished1 = thirdpartyTask[Finish];
@@ -169,13 +133,10 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
 
         if (finished1 && finished2)
         {
-            _taskInfo[Finish] = true;
+            this[Finish] = true;
         }
 
-        _successProcessed = thirdpartyTask[Process] + daoTask[Process];
-
-
-        base.FillDistributedTask();
+        this[Process] = thirdpartyTask[Process] + daoTask[Process];
 
         var progress = 0;
 
@@ -194,11 +155,11 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
             progress /= 2;
         }
 
-        _taskInfo[Progress] = progress < 100 ? progress : 100;
-        _taskInfo.PublishChanges();
+        this[Progress] = progress < 100 ? progress : 100;
+        PublishChanges();
     }
 
-    protected override Task DoAsync(IServiceScope serviceScope)
+    protected override Task DoJob(IServiceScope serviceScope)
     {
         throw new NotImplementedException();
     }
@@ -241,7 +202,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
         _serviceProvider = serviceProvider;
         Files = fileOperationData.Files;
         Folders = fileOperationData.Folders;
-        HoldResult = fileOperationData.HoldResult;
+        this[Hold] = fileOperationData.HoldResult;
         CurrentTenant = fileOperationData.Tenant;
 
         using var scope = _serviceProvider.CreateScope();
@@ -252,10 +213,10 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
         FolderDao = daoFactory.GetFolderDao<TId>();
 
         Total = InitTotalProgressSteps();
-        Source = string.Join(SplitChar, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
+        this[Src] = string.Join(SplitChar, Folders.Select(f => "folder_" + f).Concat(Files.Select(f => "file_" + f)).ToArray());
     }
 
-    public override async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
+    public override async Task RunJob(DistributedTask _, CancellationToken cancellationToken)
     {
         try
         {
@@ -281,12 +242,12 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
 
             Logger = logger;
 
-            await DoAsync(scope);
+            await DoJob(scope);
         }
         catch (AuthorizingException authError)
         {
-            Error = FilesCommonResource.ErrorMassage_SecurityException;
-            Logger.ErrorWithException(new SecurityException(Error, authError));
+            this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
+            Logger.ErrorWithException(new SecurityException(this[Err], authError));
         }
         catch (AggregateException ae)
         {
@@ -300,7 +261,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
         {
             try
             {
-                _taskInfo[Finish] = true;
+                this[Finish] = true;
                 PublishTaskInfo();
             }
             catch { /* ignore */ }
@@ -314,13 +275,6 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
         tenantManager.SetCurrentTenant(CurrentTenant);
 
         return scope;
-    }
-
-    protected internal override void FillDistributedTask()
-    {
-        base.FillDistributedTask();
-
-        _taskInfo[Src] = Source;
     }
 
     protected virtual int InitTotalProgressSteps()
@@ -337,17 +291,17 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
             || !Equals(folderId, default(TId)) && Folders.Contains(folderId)
             || !Equals(fileId, default(TId)) && Files.Contains(fileId))
         {
-            _processed++;
+            IncrementProgress();
             PublishTaskInfo();
         }
     }
 
     protected bool ProcessedFolder(TId folderId)
     {
-        _successProcessed++;
+        this[Process]++;
         if (Folders.Contains(folderId))
         {
-            Result += $"folder_{folderId}{SplitChar}";
+            this[Res] += $"folder_{folderId}{SplitChar}";
 
             return true;
         }
@@ -357,10 +311,10 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
 
     protected bool ProcessedFile(TId fileId)
     {
-        _successProcessed++;
+        this[Process]++;
         if (Files.Contains(fileId))
         {
-            Result += $"file_{fileId}{SplitChar}";
+            this[Res] += $"file_{fileId}{SplitChar}";
 
             return true;
         }
@@ -370,8 +324,7 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
 
     protected void PublishTaskInfo()
     {
-        FillDistributedTask();
-        _taskInfo.PublishChanges();
+        PublishChanges();
     }
 }
 
