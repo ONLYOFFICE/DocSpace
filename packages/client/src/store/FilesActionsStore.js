@@ -1272,11 +1272,12 @@ class FilesActionStore {
       canArchiveRoom,
       canRemoveRoom,
     } = this.accessRightsStore;
-    const { access } = this.selectedFolderStore;
+    const { access, rootFolderType } = this.selectedFolderStore;
 
     switch (option) {
       case "copy":
-        const canCopy = canCopyFile({ access });
+        const canCopy = canCopyFile({ access, rootFolderType });
+
         return hasSelection && canCopy;
       case "showInfo":
       case "download":
@@ -1284,7 +1285,7 @@ class FilesActionStore {
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
-        const canMove = canMoveFile({ access });
+        const canMove = canMoveFile({ access, rootFolderType });
         return (
           !isThirdPartyRootSelection &&
           hasSelection &&
@@ -1310,7 +1311,7 @@ class FilesActionStore {
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = canDeleteFile({ access });
+        const canDelete = canDeleteFile({ access, rootFolderType });
         const deleteCondition =
           !isThirdPartyRootSelection &&
           hasSelection &&

@@ -1163,6 +1163,14 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
       }
 
+      if (item.rootFolderType === FolderType.Archive) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "mark-read",
+          "mark-as-favorite",
+          "remove-from-favorites",
+        ]);
+      }
+
       if (!isMasterForm)
         fileOptions = this.removeOptions(fileOptions, ["make-form"]);
 

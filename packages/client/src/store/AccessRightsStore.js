@@ -3,6 +3,7 @@ import { makeAutoObservable } from "mobx";
 import {
   EmployeeActivationStatus,
   EmployeeStatus,
+  FolderType,
   ShareAccessRights,
 } from "@docspace/common/constants";
 
@@ -20,6 +21,10 @@ class AccessRightsStore {
   canEditRoom = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
+    const { rootFolderType } = this.selectedFolderStore;
+
+    if (rootFolderType === FolderType.Archive) return false;
+
     if (
       isAdmin ||
       isOwner ||
@@ -34,6 +39,10 @@ class AccessRightsStore {
 
   canInviteUserInRoom = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    const { rootFolderType } = this.selectedFolderStore;
+
+    if (rootFolderType === FolderType.Archive) return false;
 
     if (
       isAdmin ||
@@ -97,7 +106,9 @@ class AccessRightsStore {
   get canCreateFiles() {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
-    const { access } = this.selectedFolderStore;
+    const { access, rootFolderType } = this.selectedFolderStore;
+
+    if (rootFolderType === FolderType.Archive) return false;
 
     if (
       access === ShareAccessRights.None ||
@@ -129,6 +140,10 @@ class AccessRightsStore {
   canEditFile = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
+    const { rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
+
     if (
       isAdmin ||
       isOwner ||
@@ -144,6 +159,10 @@ class AccessRightsStore {
 
   canFillForm = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    const { rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
 
     if (
       isAdmin ||
@@ -161,6 +180,10 @@ class AccessRightsStore {
 
   canPeerReview = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    const { rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
 
     if (
       isAdmin ||
@@ -180,6 +203,10 @@ class AccessRightsStore {
   canCommentFile = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
+    const { rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
+
     if (isAdmin || isOwner || ShareAccessRights.ReadOnly !== room.access)
       return true;
 
@@ -188,6 +215,10 @@ class AccessRightsStore {
 
   canBlockFile = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    const { rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
 
     if (
       isAdmin ||
@@ -220,6 +251,10 @@ class AccessRightsStore {
   canManageVersionHistory = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
+    const { rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
+
     if (
       isAdmin ||
       isOwner ||
@@ -234,6 +269,10 @@ class AccessRightsStore {
 
   canMoveFile = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    const { rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
 
     if (
       isAdmin ||
@@ -250,6 +289,10 @@ class AccessRightsStore {
   canDeleteFile = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
+    const { rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
+
     if (
       isAdmin ||
       isOwner ||
@@ -265,6 +308,10 @@ class AccessRightsStore {
   canRenameFile = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
 
+    const { rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
+
     if (
       isAdmin ||
       isOwner ||
@@ -279,6 +326,10 @@ class AccessRightsStore {
 
   canCopyFile = (room) => {
     const { isAdmin, isOwner } = this.authStore.userStore.user;
+
+    const { rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
 
     if (
       isAdmin ||
