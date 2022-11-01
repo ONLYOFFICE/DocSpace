@@ -24,9 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Common.Utils;
-
-using Autofac.Extensions.DependencyInjection;
 
 var options = new WebApplicationOptions
 {
@@ -107,11 +104,11 @@ var tenant = Int32.Parse(args[0]);
 var userName = args[1];
 var region = args[2];
 
-var migrationCreator = new MigrationCreator(app.Services, tenant, userName, region);
-migrationCreator.Create();
+var migrationCreator = app.Services.GetService<MigrationCreator>();
+await migrationCreator.Create(tenant, userName, region);
 
-var migrationRunner = new MigrationRunner(app.Services.CreateScope().ServiceProvider, userName + ".tar.gz", region);
-migrationRunner.Run();
+var migrationRunner = app.Services.GetService<MigrationRunner>();
+await migrationRunner.Run(userName + ".tar.gz", region);
 
 Directory.GetFiles(AppContext.BaseDirectory).Where(f => f.Contains(".tar")).ToList().ForEach(File.Delete);
 

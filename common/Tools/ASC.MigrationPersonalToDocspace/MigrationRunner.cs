@@ -34,9 +34,9 @@ public class MigrationRunner
     private readonly ModuleProvider _moduleProvider;
     private readonly ILogger<RestoreDbModuleTask> _logger;
 
-    private readonly string _backupFile;
-    private readonly string _region;
-    private readonly List<IModuleSpecifics> _modules;
+    private string _backupFile;
+    private string _region;
+    private List<IModuleSpecifics> _modules;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
     {
         ModuleName.Core,
@@ -46,21 +46,25 @@ public class MigrationRunner
         ModuleName.WebStudio
     };
 
-    public MigrationRunner(IServiceProvider serviceProvider, string backupFile, string region)
+    public MigrationRunner(
+        DbFactory dbFactory,
+        StorageFactory storageFactory,
+        StorageFactoryConfig storageFactoryConfig,
+        ModuleProvider moduleProvider,
+        ILogger<RestoreDbModuleTask> logger)
     {
-        _moduleProvider = serviceProvider.GetService<ModuleProvider>();
-        _dbFactory = serviceProvider.GetService<DbFactory>();
-        _storageFactory = serviceProvider.GetService<StorageFactory>();
-        _storageFactoryConfig = serviceProvider.GetService<StorageFactoryConfig>();
-        _logger = serviceProvider.GetService<ILogger<RestoreDbModuleTask>>();
+        _dbFactory = dbFactory;
+        _storageFactory = storageFactory;
+        _storageFactoryConfig = storageFactoryConfig;
+        _moduleProvider = moduleProvider;
+        _logger = logger;
+    }
 
+    public async Task Run(string backupFile, string region)
+    {
         _region = region;
         _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
         _backupFile = backupFile;
-    }
-
-    public void Run()
-    {
         var columnMapper = new ColumnMapper();
         using (var dataReader = new ZipReadOperator(_backupFile))
         {
@@ -71,13 +75,13 @@ public class MigrationRunner
                 restoreTask.RunJob();
             }
 
-            DoRestoreStorage(dataReader, columnMapper);
+            await DoRestoreStorage(dataReader, columnMapper);
 
             SetTenantActive(columnMapper.GetTenantMapping());
         }
     }
 
-    private void DoRestoreStorage(IDataReadOperator dataReader, ColumnMapper columnMapper)
+    private async Task DoRestoreStorage(IDataReadOperator dataReader, ColumnMapper columnMapper)
     {
         var fileGroups = GetFilesToProcess(dataReader).GroupBy(file => file.Module).ToList();
 
@@ -85,7 +89,7 @@ public class MigrationRunner
         {
             foreach (var file in group)
             {
-                var storage = _storageFactory.GetStorage(columnMapper.GetTenantMapping().ToString(), group.Key, _region);
+                var storage = _storageFactory.GetStorage(columnMapper.GetTenantMapping(), group.Key, _region);
                 var quotaController = storage.QuotaController;
                 storage.SetQuotaController(null);
 
@@ -98,7 +102,7 @@ public class MigrationRunner
                         var key = file.GetZipKey();
                         using var stream = dataReader.GetEntry(key);
 
-                        storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, columnMapper) : stream).Wait();
+                        await storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, columnMapper) : stream);
                     }
                 }
                 finally

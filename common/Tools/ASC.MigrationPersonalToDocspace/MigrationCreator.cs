@@ -38,11 +38,13 @@ public class MigrationCreator
     private readonly DbFactory _dbFactory;
     private readonly StorageFactory _storageFactory;
     private readonly StorageFactoryConfig _storageFactoryConfig;
-    private readonly List<IModuleSpecifics> _modules;
-    private readonly string _pathToSave;
-    private readonly string _userName;
-    private readonly string _toRegion;
-    private readonly int _tenant;
+    private readonly ModuleProvider _moduleProvider;
+
+    private List<IModuleSpecifics> _modules;
+    private string _pathToSave;
+    private string _userName;
+    private string _toRegion;
+    private int _tenant;
     private readonly int _limit = 1000;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
     {
@@ -53,22 +55,51 @@ public class MigrationCreator
         ModuleName.WebStudio
     };
 
-    public MigrationCreator(IServiceProvider serviceProvider, int tenant, string userName, string toRegion)
+    public MigrationCreator(
+        IDbContextFactory<UserDbContext> userDbContext,
+        IDbContextFactory<BackupsContext> backupsContext,
+        IDbContextFactory<FilesDbContext> filesDbContext,
+        IHostEnvironment hostEnvironment,
+        IConfiguration configuration,
+        TenantDomainValidator tenantDomainValidator,
+        TempStream tempStream,
+        DbFactory dbFactory,
+        StorageFactory storageFactory,
+        StorageFactoryConfig storageFactoryConfig,
+        ModuleProvider moduleProvider)
     {
-        _userDbContext = serviceProvider.GetService<IDbContextFactory<UserDbContext>>();
-        _backupsContext = serviceProvider.GetService<IDbContextFactory<BackupsContext>>();
-        _filesDbContext = serviceProvider.GetService<IDbContextFactory<FilesDbContext>>();
-        _tempStream = serviceProvider.GetService<TempStream>();
-        _dbFactory = serviceProvider.GetService<DbFactory>();
-        _storageFactory = serviceProvider.GetService<StorageFactory>();
-        _storageFactoryConfig = serviceProvider.GetService<StorageFactoryConfig>();
-        _hostEnvironment = serviceProvider.GetService<IHostEnvironment>();
-        _configuration = serviceProvider.GetService<IConfiguration>();
-        _tenantDomainValidator = serviceProvider.GetService<TenantDomainValidator>();
-        
+        _userDbContext = userDbContext;
+        _backupsContext = backupsContext;
+        _filesDbContext = filesDbContext;
+        _hostEnvironment = hostEnvironment;
+        _configuration = configuration;
+        _tenantDomainValidator = tenantDomainValidator;
+        _tempStream = tempStream;
+        _dbFactory = dbFactory;
+        _storageFactory = storageFactory;
+        _storageFactoryConfig = storageFactoryConfig;
+        _moduleProvider = moduleProvider;
+    }
 
-        var moduleProvider = serviceProvider.GetService<ModuleProvider>();
-        _modules = moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
+
+
+    public async Task Create(int tenant, string userName, string toRegion)
+    {
+        Init(tenant, userName, toRegion);
+
+        var id = GetId();
+
+        var path = Path.Combine(_pathToSave, _userName + ".tar.gz");
+        using (var writer = new ZipWriteOperator(_tempStream, path))
+        {
+            DoMigrationDb(id, writer);
+            await DoMigrationStorage(id, writer);
+        }
+    }
+
+    private void Init(int tenant, string userName, string toRegion)
+    {
+        _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
 
         _pathToSave = "";
         _toRegion = toRegion;
@@ -80,7 +111,7 @@ public class MigrationCreator
 
     private void CheckExistDataStorage()
     {
-        var store = _storageFactory.GetStorage(_tenant.ToString(), "files");
+        var store = _storageFactory.GetStorage(_tenant, "files");
         if (store is DiscDataStore)
         {
             var path = Path.Combine(_hostEnvironment.ContentRootPath, _configuration[Data.Storage.Constants.StorageRootParam]);
@@ -91,25 +122,14 @@ public class MigrationCreator
         }
     }
 
-    public void Create()
-    {
-        var id = GetId();
-
-        var path = Path.Combine(_pathToSave, _userName + ".tar.gz");
-        using (var writer = new ZipWriteOperator(_tempStream, path))
-        {
-            DoMigrationDb(id, writer);
-            DoMigrationStorage(id, writer);
-        }
-    }
-
     private Guid GetId()
     {
         try
         {
-            return _userDbContext.CreateDbContext().Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName).Id;
+            using var dbContext = _userDbContext.CreateDbContext();
+            return dbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName).Id;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             throw new Exception("username was not found");
         }
@@ -154,7 +174,7 @@ public class MigrationCreator
 
                         module.PrepareData(data);
 
-                        if(data.TableName == "tenants_tenants")
+                        if (data.TableName == "tenants_tenants")
                         {
                             ChangeAlias(data);
                         }
@@ -170,7 +190,7 @@ public class MigrationCreator
                 }
             }
         }
-        
+
     }
 
     private void ChangeAlias(DataTable data)
@@ -221,14 +241,14 @@ public class MigrationCreator
         }
     }
 
-    private void DoMigrationStorage(Guid id, IDataWriteOperator writer)
+    private async Task DoMigrationStorage(Guid id, IDataWriteOperator writer)
     {
-        var fileGroups = GetFilesGroup(id);
+        var fileGroups = await GetFilesGroup(id);
         foreach (var group in fileGroups)
         {
             foreach (var file in group)
             {
-                var storage = _storageFactory.GetStorage(_tenant.ToString(), group.Key);
+                var storage = _storageFactory.GetStorage(_tenant, group.Key);
                 var file1 = file;
                 ActionInvoker.Try(state =>
                 {
@@ -253,36 +273,38 @@ public class MigrationCreator
         }
     }
 
-    private List<IGrouping<string, BackupFileInfo>> GetFilesGroup(Guid id)
+    private async Task<List<IGrouping<string, BackupFileInfo>>> GetFilesGroup(Guid id)
     {
-        var files = GetFilesToProcess(id).ToList();
+        var files = (await GetFilesToProcess(id)).ToList();
 
-        var exclude = _backupsContext.CreateDbContext().Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
+        using var dbManager = _backupsContext.CreateDbContext();
+        var exclude = dbManager.Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
         return files.GroupBy(file => file.Module).ToList();
     }
 
-    protected IEnumerable<BackupFileInfo> GetFilesToProcess(Guid id)
+    protected async Task<IEnumerable<BackupFileInfo>> GetFilesToProcess(Guid id)
     {
         var files = new List<BackupFileInfo>();
+
         foreach (var module in _storageFactoryConfig.GetModuleList().Where(m => m == "files"))
         {
-            var store = _storageFactory.GetStorage(_tenant.ToString(), module);
+            var store = _storageFactory.GetStorage(_tenant, module);
             var domains = _storageFactoryConfig.GetDomainList(module).ToArray();
 
             foreach (var domain in domains)
             {
-                files.AddRange(
-                        store.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result
-                    .Select(path => new BackupFileInfo(domain, module, path, _tenant)));
+                files.AddRange(await store.ListFilesRelativeAsync(domain, "\\", "*.*", true).Select(path => new BackupFileInfo(domain, module, path, _tenant)).ToListAsync());
             }
 
-            files.AddRange(
-                    store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
-                     .Where(path => domains.All(domain => !path.Contains(domain + "/")))
-                     .Select(path => new BackupFileInfo(string.Empty, module, path, _tenant)));
+            files.AddRange(await
+                store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true)
+                .Where(path => domains.All(domain => !path.Contains(domain + "/")))
+                .Select(path => new BackupFileInfo(string.Empty, module, path, _tenant))
+                .ToListAsync());
         }
+
         using var filesRecordContext = _filesDbContext.CreateDbContext();
         files = files.Where(f => UserIsFileOwner(id, f, filesRecordContext)).ToList();
         return files.Distinct();
