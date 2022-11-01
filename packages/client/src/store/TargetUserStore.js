@@ -9,8 +9,17 @@ class TargetUserStore {
   isEditTargetUser = false;
 
   tipsSubscription = null;
-  isDailyFeedEmailSubscription = null;
-  isRoomsActionsEmailSubscription = null;
+
+  roomsActionsSubscription = {
+    isEmailEnable: false,
+    isTelegramEnable: false,
+    isBadgeEnable: false,
+  };
+
+  dailyFeedSubscription = {
+    isEmailEnable: false,
+    isTelegramEnable: false,
+  };
 
   changeEmailVisible = false;
   changePasswordVisible = false;
@@ -122,20 +131,6 @@ class TargetUserStore {
     this.tipsSubscription = tipsSubscription;
 
     return this.tipsSubscription;
-  };
-
-  getDailyFeedEmailSubscription = async () => {
-    this.isDailyFeedEmailSubscription = false; //TODO: need to add a request
-
-    return this.isDailyFeedEmailSubscription;
-  };
-
-  getRoomsActionsEmailSubscription = async () => {
-    this.isRoomsActionsEmailSubscription = false; //TODO: need to add a request
-  };
-
-  getTelegramConnection = async () => {
-    this.isTelegramConnected = false; //TODO:  need to add a request
   };
 }
 

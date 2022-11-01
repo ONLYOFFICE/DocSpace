@@ -35,23 +35,14 @@ const ManageNotificationsPanel = ({
   isPanelVisible,
   onClosePanel,
   getTipsSubscription,
-  getTelegramConnection,
-  getDailyFeedEmailSubscription,
 }) => {
   useEffect(async () => {
-    const requests = [
-      getTelegramConnection(),
-      getTipsSubscription(),
-      getDailyFeedEmailSubscription(),
-    ];
-
     try {
-      const [, tipsEmail, dailyFeedEmail] = await Promise.all(requests);
+      const tipsEmail = await getTipsSubscription();
 
       setSubscription((prevState) => ({
         ...prevState,
         tipsEmail,
-        dailyFeedEmail,
       }));
     } catch (e) {
       toastr.error(e);
@@ -63,6 +54,8 @@ const ManageNotificationsPanel = ({
     dailyFeedEmail: false,
     dailyFeedTelegram: false,
     roomsActionsBadge: false,
+    roomsActionsEmail: false,
+    roomsActionsTelegram: false,
   });
 
   const {
@@ -70,6 +63,8 @@ const ManageNotificationsPanel = ({
     tipsEmail,
     dailyFeedTelegram,
     roomsActionsBadge,
+    roomsActionsEmail,
+    roomsActionsTelegram,
   } = subscriptions;
 
   const onChangeTipsEmailState = useCallback(
@@ -109,9 +104,28 @@ const ManageNotificationsPanel = ({
         roomsActionsBadge: enable,
       }));
     },
-    [dailyFeedTelegram]
+    [roomsActionsBadge]
   );
-  
+
+  const onChangeRoomsActionsEmailSubscription = useCallback(
+    (enable) => {
+      setSubscription((prevState) => ({
+        ...prevState,
+        roomsActionsEmail: enable,
+      }));
+    },
+    [roomsActionsEmail]
+  );
+
+  const onChangeRoomsActionsTelegramSubscription = useCallback(
+    (enable) => {
+      setSubscription((prevState) => ({
+        ...prevState,
+        roomsActionsTelegram: enable,
+      }));
+    },
+    [roomsActionsTelegram]
+  );
 
   return (
     <ModalDialogContainer
@@ -123,11 +137,15 @@ const ManageNotificationsPanel = ({
     >
       <ModalDialog.Header>{t("ManageNotifications")}</ModalDialog.Header>
       <ModalDialog.Body>
-        {/* <TelegramConnectionContainer t={t} /> */}
+        <TelegramConnectionContainer t={t} />
         <RoomsActionsContainer
           t={t}
+          isEnableEmail={roomsActionsEmail}
           isEnableBadge={roomsActionsBadge}
-          onChangeBadgeSubscription={onChangeRoomsActionsBadgeSubscription}
+          isEnableTelegram={roomsActionsTelegram}
+          onChangeBadgeState={onChangeRoomsActionsBadgeSubscription}
+          onChangeEmailState={onChangeRoomsActionsEmailSubscription}
+          onChangeTelegramState={onChangeRoomsActionsTelegramSubscription}
         />
         <DailyFeedContainer
           t={t}
@@ -157,14 +175,8 @@ const ManageNotificationsPanel = ({
 
 export default inject(({ peopleStore }) => {
   const { targetUserStore } = peopleStore;
-  const {
-    getTipsSubscription,
-    getTelegramConnection,
-    getDailyFeedEmailSubscription,
-  } = targetUserStore;
+  const { getTipsSubscription } = targetUserStore;
   return {
     getTipsSubscription,
-    getTelegramConnection,
-    getDailyFeedEmailSubscription,
   };
 })(observer(ManageNotificationsPanel));
