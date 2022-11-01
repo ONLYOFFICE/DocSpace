@@ -1,9 +1,11 @@
 {
+  "Badges": "Бейджи",
   "ChangeEmailSuccess": "Email успешно изменен",
   "ChangesApplied": "Изменения успешно применены",
   "ContactInformation": "Контактные данные",
   "CountCodesRemaining": "оставшиеся коды",
   "DarkTheme": "Тёмная тема",
+  "DailyFeed": "Ежедневная лента",
   "EditPhoto": "Изменить фотографию",
   "EditSubscriptionsBtn": "Изменить подписки",
   "EditUser": "Редактировать",
@@ -25,5 +27,7 @@
   "SystemTheme": "Использовать тему системы",
   "TfaLoginSettings": "Настройки входа",
   "TwoFactorDescription": "Двухфакторная аутентификация с помощью приложения для генерации кодов включена администратором для всех пользователей.",
+  "TelegramConnection": "Telegram подключение",
+  "Telegram": "Telegram",
   "UsefulTips": "Полезные советы DocSpace"
 }

@@ -7,19 +7,25 @@ import { toastr } from "@docspace/components";
 const ButtonsContainer = (props) => {
   const {
     changeEmailSubscription,
-    tipsSubscription,
-    tempTipsSubscription,
     t,
     onClosePanel,
+    dailyFeedEmail,
+    isDailyFeedEmailSubscription,
+    tipsSubscription,
+    tipsEmail,
+    roomsActionsBadge,
   } = props;
 
   const onSavingChanges = async () => {
     const requests = [];
 
-    const isUsefulTipsChanged = () => tempTipsSubscription !== tipsSubscription;
+    const isUsefulTipsChanged = () => tipsEmail !== tipsSubscription;
+
+    const isDailyFeedChanged = () =>
+      dailyFeedEmail !== isDailyFeedEmailSubscription;
 
     if (isUsefulTipsChanged())
-      requests.push(changeEmailSubscription(tempTipsSubscription));
+      requests.push(changeEmailSubscription(tipsEmail));
 
     onClosePanel();
 
@@ -58,13 +64,13 @@ export default inject(({ peopleStore }) => {
   const { targetUserStore } = peopleStore;
   const {
     tipsSubscription,
-    tempTipsSubscription,
+    isDailyFeedEmailSubscription,
     changeEmailSubscription,
   } = targetUserStore;
 
   return {
     tipsSubscription,
-    tempTipsSubscription,
+    isDailyFeedEmailSubscription,
     changeEmailSubscription,
   };
 })(observer(ButtonsContainer));

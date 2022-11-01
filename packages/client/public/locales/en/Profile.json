@@ -1,10 +1,12 @@
 {
+  "Badges": "Badges",
   "ChangeEmailSuccess": "Email has been changed successfully",
   "ChangesApplied": "Changes are applied",
   "ConnectSocialNetworks": "Сonnect your social networks",
   "ContactInformation": "Contact Information",
   "CountCodesRemaining": "codes remaining",
   "DarkTheme": "Dark theme",
+  "DailyFeed": "Daily feed",
   "EditPhoto": "Edit photo",
   "EditSubscriptionsBtn": "Edit subscriptions",
   "EditUser": "Edit profile",
@@ -30,5 +32,7 @@
   "SystemThemeDescription": "Automatically switch between light and dark themes when your system does.",
   "TfaLoginSettings": "Login settings",
   "TwoFactorDescription": "Two-factor authentication via a code-generating app was enabled for all users by the admin.",
+  "TelegramConnection": "Telegram connection",
+  "Telegram": "Telegram",
   "UsefulTips": "Useful DocSpace tips"
 }
