@@ -156,6 +156,20 @@ export default function ViewerToolbar(props) {
     </p>
   ) : null;
   let toolbars = props.toolbars;
+
+  if (!props.isMobileOnly) {
+    toolbars = deleteToolbarFromKey(toolbars, ["delete", "favorite"]);
+  }
+
+  if (props.isMobileOnly) {
+    toolbars = deleteToolbarFromKey(toolbars, [
+      "zoomIn",
+      "zoomOut",
+      "percent",
+      "separator",
+      "context-menu",
+    ]);
+  }
   if (!props.zoomable) {
     toolbars = deleteToolbarFromKey(toolbars, ["zoomIn", "zoomOut"]);
   }

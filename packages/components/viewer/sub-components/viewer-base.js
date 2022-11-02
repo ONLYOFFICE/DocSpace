@@ -2,6 +2,7 @@ import * as React from "react";
 import ViewerImage from "./viewer-image";
 import classnames from "classnames";
 import ViewerToolbar, { defaultToolbars } from "./viewer-toolbar";
+import { isMobileOnly } from "react-device-detect";
 import Icon, { ActionType } from "./icon";
 import { act } from "@testing-library/react";
 
@@ -46,6 +47,7 @@ const ViewerBase = (props) => {
     totalName = "of",
     minScale = 0.1,
     generateContextMenu,
+    mobileDetails,
   } = props;
 
   const initialState = {
@@ -627,6 +629,7 @@ const ViewerBase = (props) => {
     <div
       className={className}
       style={viewerStyle}
+      id="image-viewer"
       onTransitionEnd={() => {
         if (!visible) {
           dispatch(
@@ -638,6 +641,7 @@ const ViewerBase = (props) => {
       }}
       ref={viewerCore}
     >
+      {isMobileOnly && mobileDetails}
       <div className={`${prefixCls}-mask`} style={{ zIndex: zIndex }} />
       {props.noClose || (
         <div
@@ -676,6 +680,7 @@ const ViewerBase = (props) => {
         <div className={`${prefixCls}-footer`} style={{ zIndex: zIndex + 6 }}>
           {noToolbar || (
             <ViewerToolbar
+              isMobileOnly={isMobileOnly}
               prefixCls={prefixCls}
               onAction={handleAction}
               alt={activeImg.alt}

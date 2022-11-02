@@ -16,6 +16,10 @@ import MediaNextIcon from "../../../public/images/media.view.react.svg";
 import MediaPrevIcon from "../../../public/images/media.viewer.prev.react.svg";
 import ViewerPlayer from "./sub-components/viewer-player";
 
+import MediaContextMenu from "../../../public/images/vertical-dots.react.svg";
+import ContextMenu from "@docspace/components/context-menu";
+import BackArrow from "../../../public/images/arrow.path.react.svg";
+
 export const Viewer = (props) => {
   const {
     visible,
@@ -39,6 +43,7 @@ export const Viewer = (props) => {
   const detailsContainerRef = React.useRef(null);
   const viewerToolboxRef = React.useRef(null);
   const videoElement = React.useRef(null);
+  const cm = React.useRef(null);
 
   const [isFullscreen, setIsFullScreen] = React.useState(false);
 
@@ -63,15 +68,53 @@ export const Viewer = (props) => {
   if (!init) {
     return null;
   }
+  const onContextMenu = (e) => {
+    cm.current.show(e);
+  };
+
+  let detailsStyle = {
+    "z-index": "307",
+    position: "fixed",
+    top: "0",
+    left: "0",
+    right: "0",
+    height: "53px",
+    background: "#333",
+    display: "flex",
+    "justify-content": "space-around",
+    "align-items": "center",
+  };
+
+  const mobileDetails = (
+    <div className="mobile-details" style={detailsStyle}>
+      <BackArrow onClick={onMaskClick} />
+      <Text isBold fontSize="14px" color={"#D1D1D1"} className="title">
+        {title}
+      </Text>
+      <div className="details-context">
+        <MediaContextMenu onClick={onContextMenu} />
+        <ContextMenu
+          getContextModel={contextModel}
+          ref={cm}
+          withBackdrop={true}
+        />
+      </div>
+    </div>
+  );
 
   const viewerPortal = ReactDOM.createPortal(
-    <StyledViewer {...props} generateContextMenu={generateContextMenu} />,
+    <StyledViewer
+      {...props}
+      mobileDetails={mobileDetails}
+      generateContextMenu={generateContextMenu}
+    />,
     container
   );
 
   const videoPortal = ReactDOM.createPortal(
     <ViewerPlayer
       contextModel={contextModel}
+      mobileDetails={mobileDetails}
       title={title}
       onMaskClick={onMaskClick}
       generateContextMenu={generateContextMenu}

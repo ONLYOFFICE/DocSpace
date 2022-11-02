@@ -56,6 +56,12 @@ const StyledVideoPlayer = styled.div`
       props.isFullScreen ? "background: #000" : "background: transparent"};
   }
 
+  svg {
+    path {
+      fill: #fff;
+    }
+  }
+
   .dropdown-speed {
     position: relative;
     display: inline-block;
@@ -70,25 +76,6 @@ const StyledVideoPlayer = styled.div`
     &:hover {
       cursor: pointer;
       background: #222;
-    }
-  }
-
-  .mobile-details {
-    z-index: 307;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 53px;
-    background: #333;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-
-    svg {
-      path {
-        fill: #fff;
-      }
     }
   }
 
@@ -211,6 +198,7 @@ export default function ViewerPlayer(props) {
     title,
     onMaskClick,
     contextModel,
+    mobileDetails,
   } = props;
 
   const initialState = {
@@ -286,7 +274,6 @@ export default function ViewerPlayer(props) {
     );
 
   const toggleScreen = (isFull) => {
-    console.log(state.isFullScreen);
     handleFullScreen(!state.isFullScreen);
     setIsFullScreen(!state.isFullScreen);
 
@@ -455,10 +442,6 @@ export default function ViewerPlayer(props) {
     return () => window.removeEventListener("orientationchange", handleResize);
   }, [state.isFullScreen]);
 
-  const onContextMenu = (e) => {
-    cm.current.show(e);
-  };
-
   function loadVideo(video) {
     const currentTime = getDuration(video.currentTime);
     const duration = getDuration(video.duration);
@@ -505,23 +488,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
   };
   return (
     <StyledVideoPlayer id="video-playerId" isFullScreen={state.isFullScreen}>
-      {!state.isFullScreen && (
-        <div className="mobile-details">
-          <BackArrow onClick={onMaskClick} />
-          <Text isBold fontSize="14px" color={"#D1D1D1"} className="title">
-            {title}
-          </Text>
-          <div className="details-context">
-            <MediaContextMenu onClick={onContextMenu} />
-            <ContextMenu
-              getContextModel={contextModel}
-              ref={cm}
-              withBackdrop={true}
-            />
-          </div>
-        </div>
-      )}
-
+      {!state.isFullScreen && isMobileOnly && mobileDetails}
       <div className="video-wrapper">
         <video
           onClick={togglePlay}
