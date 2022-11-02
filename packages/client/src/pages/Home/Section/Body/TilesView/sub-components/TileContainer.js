@@ -180,6 +180,7 @@ class TileContainer extends React.PureComponent {
       headingFolders,
       headingFiles,
       headingRooms,
+      containerRef,
     } = this.props;
 
     const { selectedFilterData } = this.state;
@@ -266,6 +267,7 @@ class TileContainer extends React.PureComponent {
     return (
       <StyledTileContainer
         id={id}
+        ref={containerRef}
         className={`${className} files-tile-container`}
         style={style}
         useReactWindow={useReactWindow}

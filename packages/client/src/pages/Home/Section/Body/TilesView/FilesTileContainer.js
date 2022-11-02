@@ -36,8 +36,10 @@ const elementResizeDetector = elementResizeDetectorMaker({
 const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
   const tileRef = useRef(null);
   const timerRef = useRef(null);
+  const containerRef = useRef(null);
   const [thumbSize, setThumbSize] = useState("");
   const [columnCount, setColumnCount] = useState(null);
+  const [tileWidth, setTileWidth] = useState(null);
 
   useEffect(() => {
     return () => {
@@ -51,13 +53,25 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
     (node) => {
       if (!node) return;
 
+      const containerWidth = containerRef?.current?.offsetWidth;
+
+      const tileRowCount = containerWidth / 216;
+
+      const maxWidth = containerWidth / tileRowCount;
+
       const { width } = node.getBoundingClientRect();
 
-      const size = getThumbSize(width);
+      const currentWidth = width > maxWidth ? maxWidth : width;
 
-      const widthWithoutPadding = width - 32;
+      const size = getThumbSize(currentWidth);
+
+      const widthWithoutPadding = currentWidth - 32;
 
       const columns = Math.floor(widthWithoutPadding / 80);
+
+      console.log(width, currentWidth, maxWidth);
+
+      if (tileWidth != widthWithoutPadding) setTileWidth(widthWithoutPadding);
 
       if (columns != columnCount) setColumnCount(columns);
 
@@ -69,7 +83,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
       setThumbSize(size);
     },
-    [columnCount, thumbSize]
+    [columnCount, tileWidth, thumbSize]
   );
 
   const onSetTileRef = React.useCallback((node) => {
@@ -95,6 +109,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
       headingFolders={t("Translations:Folders")}
       headingFiles={t("Translations:Files")}
       headingRooms={t("Common:Rooms")}
+      containerRef={containerRef}
     >
       {filesList.map((item, index) => {
         return index % 11 == 0 ? (
@@ -107,6 +122,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             thumbSize={thumbSize}
             columnCount={columnCount}
             withRef={true}
+            tileWidth={tileWidth}
           />
         ) : (
           <FileTile
@@ -116,6 +132,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             sectionWidth={sectionWidth}
             thumbSize={thumbSize}
             columnCount={columnCount}
+            tileWidth={tileWidth}
           />
         );
       })}

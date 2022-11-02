@@ -50,6 +50,7 @@ const FileTile = (props) => {
     onSelectTag,
     onSelectOption,
     columnCount,
+    tileWidth,
   } = props;
 
   const temporaryExtension =
@@ -118,6 +119,7 @@ const FileTile = (props) => {
           selectTag={onSelectTag}
           selectOption={onSelectOption}
           columnCount={columnCount}
+          tileWidth={tileWidth}
         >
           <FilesTileContent
             item={item}

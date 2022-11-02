@@ -4,37 +4,71 @@ import Tag from "@docspace/components/tag";
 
 import StyledTags from "./StyledTags";
 
-const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
+const Tags = ({
+  id,
+  className,
+  style,
+  tags,
+  columnCount,
+  tileWidth,
+  onSelectTag,
+}) => {
   const [renderedTags, setRenderedTags] = React.useState(null);
 
   const tagsRef = React.useRef(null);
 
   const updateRenderedTags = React.useCallback(() => {
     if (tags && tagsRef) {
+      if (!columnCount) return;
+
       const newTags = [];
 
       const containerWidth = tagsRef.current.offsetWidth;
 
       if (tags.length === 1) {
-        const tag = { name: tags[0], maxWidth: `100%` };
+        if (tags[0].isDefault) {
+          const tag = { ...tags[0], maxWidth: `100%` };
 
-        newTags.push(tag);
+          newTags.push(tag);
+        } else {
+          const tag = { label: tags[0], maxWidth: `100%` };
+
+          newTags.push(tag);
+        }
 
         return setRenderedTags(newTags);
       }
 
-      if (columnCount >= tags.length) {
+      if (
+        columnCount >= tags.length ||
+        (tags.length === 2 && tags[0].isThirdParty && tags[1].isDefault)
+      ) {
+        const thirdPartyTagCount = tags[0].isThirdParty ? 1 : 0;
+
         const currentTagMaxWidth =
-          (containerWidth - tags.length * 4) / tags.length;
+          (containerWidth -
+            thirdPartyTagCount * 40 -
+            (tags.length - thirdPartyTagCount) * 4) /
+          (tags.length - thirdPartyTagCount);
 
         const maxWidthPercent = Math.ceil(
           (currentTagMaxWidth / containerWidth) * 100
         );
 
         for (let i = 0; i < tags.length; i++) {
-          const tag = { name: tags[i], maxWidth: `${maxWidthPercent}%` };
+          if (tags[i].isThirdParty) {
+            const tag = { ...tags[i], maxWidth: `36px` };
 
-          newTags.push(tag);
+            newTags.push(tag);
+          } else if (tags[i].isDefault) {
+            const tag = { ...tags[i], maxWidth: `${maxWidthPercent}%` };
+
+            newTags.push(tag);
+          } else {
+            const tag = { label: tags[i], maxWidth: `${maxWidthPercent}%` };
+
+            newTags.push(tag);
+          }
         }
       } else {
         const tagWithDropdown = {
@@ -51,9 +85,19 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
 
         if (columnCount !== 0) {
           for (let i = 0; i < columnCount; i++) {
-            const tag = { name: tags[i], maxWidth: `${maxWidthPercent}%` };
+            if (tags[i].isThirdParty) {
+              const tag = { ...tags[i], maxWidth: `36px` };
 
-            newTags.push(tag);
+              newTags.push(tag);
+            } else if (tags[i].isDefault) {
+              const tag = { ...tags[i], maxWidth: `${maxWidthPercent}%` };
+
+              newTags.push(tag);
+            } else {
+              const tag = { label: tags[i], maxWidth: `${maxWidthPercent}%` };
+
+              newTags.push(tag);
+            }
           }
         }
 
@@ -63,23 +107,30 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
 
       setRenderedTags(newTags);
     }
-  }, [tags, tagsRef, columnCount]);
+  }, [tags, tagsRef, tileWidth, columnCount]);
 
   React.useEffect(() => {
     updateRenderedTags();
-  }, [tags, tagsRef, columnCount]);
+  }, [tags, tagsRef, tileWidth, columnCount]);
 
   return (
-    <StyledTags id={id} className={className} style={style} ref={tagsRef}>
+    <StyledTags
+      id={id}
+      className={className}
+      style={style}
+      tileWidth={tileWidth}
+      ref={tagsRef}
+    >
       {renderedTags?.length > 0 &&
         renderedTags.map((tag, index) => (
           <Tag
-            key={`${tag.name}_${index}`}
-            label={tag.name}
+            key={`${tag.label}_${index}`}
+            label={tag.label}
             advancedOptions={tag.advancedOptions}
             tagMaxWidth={tag.maxWidth}
             isNewTag={false}
             onClick={onSelectTag}
+            {...tag}
           />
         ))}
     </StyledTags>

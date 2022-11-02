@@ -449,6 +449,7 @@ class Tile extends React.PureComponent {
       columnCount,
       selectTag,
       selectOption,
+      tileWidth,
     } = this.props;
     const { isFolder, isRoom, id, fileExst } = item;
 
@@ -491,6 +492,35 @@ class Tile extends React.PureComponent {
     const title = item.isFolder
       ? t("Translations:TitleShowFolderActions")
       : t("Translations:TitleShowActions");
+
+    const tags = [];
+
+    if (item.providerType) {
+      tags.push({
+        isThirdParty: true,
+        icon: item.thirdPartyIcon,
+        label: item.providerKey,
+        onClick: () =>
+          selectOption({
+            option: "typeProvider",
+            value: item.providerType,
+          }),
+      });
+    }
+
+    if (item?.tags?.length > 0) {
+      tags.push(...item.tags);
+    } else {
+      tags.push({
+        isDefault: true,
+        label: t(RoomsTypeTranslations[item.roomType]),
+        onClick: () =>
+          selectOption({
+            option: "defaultTypeRoom",
+            value: item.roomType,
+          }),
+      });
+    }
 
     return (
       <StyledTile
@@ -572,7 +602,7 @@ class Tile extends React.PureComponent {
                 </StyledOptionButton>
               </div>
               <div className="room-tile_bottom-content">
-                {item.providerType && (
+                {/* {item.providerType && (
                   <Tag
                     icon={item.thirdPartyIcon}
                     label={item.providerKey}
@@ -583,15 +613,19 @@ class Tile extends React.PureComponent {
                       })
                     }
                   />
-                )}
+                )} */}
 
-                {item.tags.length > 0 ? (
+                {/* {item.tags.length > 0 ? ( */}
+                {tileWidth && (
                   <Tags
                     columnCount={columnCount}
+                    tileWidth={tileWidth}
                     onSelectTag={selectTag}
-                    tags={item.tags}
+                    tags={tags}
                   />
-                ) : (
+                )}
+
+                {/* ) : (
                   <Tag
                     isDefault
                     label={t(RoomsTypeTranslations[item.roomType])}
@@ -602,7 +636,7 @@ class Tile extends React.PureComponent {
                       })
                     }
                   />
-                )}
+                )} */}
               </div>
             </>
           ) : (
