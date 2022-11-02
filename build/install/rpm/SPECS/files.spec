@@ -13,6 +13,12 @@
 %dir %{buildpath}/products/ASC.Files/
 %dir %{buildpath}/products/ASC.Files/server/
 
+%files api-system
+%defattr(-, onlyoffice, onlyoffice, -)
+%{buildpath}/services/ASC.ApiSystem/
+/lib/systemd/system/%{product}-api-system.service
+%dir %{buildpath}/services/
+
 %files backup
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.Data.Backup/
