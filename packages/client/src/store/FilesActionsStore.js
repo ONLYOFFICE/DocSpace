@@ -38,6 +38,7 @@ class FilesActionStore {
   settingsStore;
   dialogsStore;
   mediaViewerDataStore;
+  accessRightsStore;
 
   isBulkDownload = false;
 
@@ -49,7 +50,8 @@ class FilesActionStore {
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore
+    mediaViewerDataStore,
+    accessRightsStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -60,6 +62,7 @@ class FilesActionStore {
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
+    this.accessRightsStore = accessRightsStore;
   }
 
   setIsBulkDownload = (isBulkDownload) => {
@@ -406,7 +409,7 @@ class FilesActionStore {
     });
 
     try {
-      await removeFiles(folderIds, null, true, true).then(async (res) => {
+      await removeFiles(folderIds, [], true, true).then(async (res) => {
         if (res[0]?.error) return Promise.reject(res[0].error);
         const data = res[0] ? res[0] : null;
         const pbData = {
@@ -1254,46 +1257,70 @@ class FilesActionStore {
   };
 
   isAvailableOption = (option) => {
-    const {
-      isFavoritesFolder,
-      isRecentFolder,
-      isCommonFolder,
-    } = this.treeFoldersStore;
+    const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
     const {
       isAccessedSelected,
       canConvertSelected,
       isThirdPartyRootSelection,
       hasSelection,
       allFilesIsEditing,
+      selection,
     } = this.filesStore;
-    const { personal } = this.authStore.settingsStore;
-    const { userAccess } = this.filesStore;
+
+    const {
+      canCopyFile,
+      canDeleteFile,
+      canMoveFile,
+      canArchiveRoom,
+      canRemoveRoom,
+    } = this.accessRightsStore;
+    const { access, rootFolderType } = this.selectedFolderStore;
 
     switch (option) {
-      case "showInfo":
       case "copy":
+        const canCopy = canCopyFile({ access, rootFolderType });
+
+        return hasSelection && canCopy;
+      case "showInfo":
       case "download":
         return hasSelection;
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
+        const canMove = canMoveFile({ access, rootFolderType });
         return (
           !isThirdPartyRootSelection &&
           hasSelection &&
           isAccessedSelected &&
           !isRecentFolder &&
           !isFavoritesFolder &&
-          !allFilesIsEditing
+          !allFilesIsEditing &&
+          canMove
         );
 
+      case "archive":
+      case "unarchive":
+        const canArchive = selection
+          .map((s) => canArchiveRoom(s))
+          .filter((s) => s);
+
+        return canArchive.length > 0;
+      case "delete-room":
+        const canRemove = selection
+          .map((s) => canRemoveRoom(s))
+          .filter((r) => r);
+
+        return canRemove.length > 0;
+
       case "delete":
+        const canDelete = canDeleteFile({ access, rootFolderType });
         const deleteCondition =
           !isThirdPartyRootSelection &&
           hasSelection &&
           isAccessedSelected &&
           !allFilesIsEditing;
 
-        return isCommonFolder ? userAccess && deleteCondition : deleteCondition;
+        return canDelete && deleteCondition;
     }
   };
 
@@ -1457,23 +1484,27 @@ class FilesActionStore {
           disabled: false,
         };
       case "archive":
-        return {
-          key: "archive",
-          label: t("Archived"),
-          iconUrl: "/static/images/room.archive.svg",
-          onClick: () => this.moveRoomsToArchive(t),
-          disabled: false,
-        };
+        if (!this.isAvailableOption("archive")) return null;
+        else
+          return {
+            key: "archive",
+            label: t("Archived"),
+            iconUrl: "/static/images/room.archive.svg",
+            onClick: () => this.moveRoomsToArchive(t),
+            disabled: false,
+          };
       case "unarchive":
-        return {
-          key: "unarchive",
-          label: t("Common:Restore"),
-          iconUrl: "images/subtract.react.svg",
-          onClick: () => this.moveRoomsFromArchive(t),
-          disabled: false,
-        };
+        if (!this.isAvailableOption("unarchive")) return null;
+        else
+          return {
+            key: "unarchive",
+            label: t("Common:Restore"),
+            iconUrl: "images/subtract.react.svg",
+            onClick: () => this.moveRoomsFromArchive(t),
+            disabled: false,
+          };
       case "delete-room":
-        if (!this.isAvailableOption("delete")) return null;
+        if (!this.isAvailableOption("delete-room")) return null;
         else
           return {
             label: t("Common:Delete"),
