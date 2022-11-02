@@ -155,6 +155,20 @@ public class BreadCrumbsManager
                 case FolderType.BUNCH:
                     rootId = await _globalFolderHelper.FolderProjectsAsync;
                     break;
+                case FolderType.VirtualRooms:
+                    if (firstVisible.ProviderEntry)
+                    {
+                        rootId = await _globalFolderHelper.FolderVirtualRoomsAsync;
+                        breadCrumbs = breadCrumbs.SkipWhile(f => f is Folder<T> folder && !DocSpaceHelper.IsRoom(folder.FolderType)).ToList();
+                    }
+                    break;
+                case FolderType.Archive:
+                    if (firstVisible.ProviderEntry)
+                    {
+                        rootId = await _globalFolderHelper.FolderArchiveAsync;
+                        breadCrumbs = breadCrumbs.SkipWhile(f => f is Folder<T> folder && !DocSpaceHelper.IsRoom(folder.FolderType)).ToList();
+                    }
+                    break;
             }
         }
 

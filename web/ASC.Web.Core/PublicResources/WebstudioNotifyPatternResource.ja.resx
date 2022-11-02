@@ -58,27 +58,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_saas_admin_welcome_v115" xml:space="preserve">
-    <value>$UserName 様
-
-平素より弊社サービスをご利用いただき、誠にありがとうございます。
-
-ONLYOFFICEクラウドオフィスの30日間無料お試しはいかがでしょうか。
-
-# ドキュメント、スプレッドシート、プレゼンテーション、フォームを同時に無制限に編集できます。
-# 貴社のブランディングに合わせて、オンラインオフィスのスタイルのカスタマイズができます。
-# セキュリティの確保：2段階認証（2FA）の有効化、自動バックアップの設定、ユーザーアクションの追跡ができます。
-# インフラとの統合：LDAP、SSO、ドメイン名をポータルアドレスに使用できます。
-# Twilio, DocuSignなどのアプリを接続して生産性の高い作業を実現も可能です。
- 
-ONLYOFFICEの設定や使い方の説明が必要な場合は、"ヘルプ・センター":"${__HelpLink}"をご覧ください。
-
-"「価格」のページ":"$PricingPage"でサブスクリプションが購入できます。
-トライアル期間の延長が必要な場合は、お問い合わせください。
-
-今後とも弊社サービスをご愛顧くださいますよう、よろしくお願い申し上げます。
-
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
 </root>

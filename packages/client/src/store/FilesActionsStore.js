@@ -18,6 +18,7 @@ import {
   FileStatus,
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
+import { isMobile } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 import { checkProtocol } from "../helpers/files-helpers";
@@ -26,6 +27,7 @@ import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
 import api from "@docspace/common/api";
+import { isTablet } from "@docspace/components/utils/device";
 
 class FilesActionStore {
   authStore;
@@ -1400,6 +1402,14 @@ class FilesActionStore {
     this.deleteItemAction(items, translations, null, null, true);
   };
 
+  onShowInfoPanel = () => {
+    const { selection } = this.filesStore;
+    const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+
+    setSelection([selection]);
+    setIsVisible(true);
+  };
+
   getOption = (option, t) => {
     const {
       setSharingPanelVisible,
@@ -1410,6 +1420,15 @@ class FilesActionStore {
     } = this.dialogsStore;
 
     switch (option) {
+      case "show-info":
+        if (!isTablet() && !isMobile) return null;
+        else
+          return {
+            key: "show-info",
+            label: t("Common:Info"),
+            iconUrl: "/static/images/info.outline.react.svg",
+            onClick: this.onShowInfoPanel,
+          };
       case "copy":
         if (!this.isAvailableOption("copy")) return null;
         else
@@ -1538,8 +1557,13 @@ class FilesActionStore {
   getArchiveRoomsFolderOptions = (itemsCollection, t) => {
     const archive = this.getOption("unarchive", t);
     const deleteOption = this.getOption("delete-room", t);
+    const showOption = this.getOption("show-info", t);
 
-    itemsCollection.set("unarchive", archive).set("delete", deleteOption);
+    itemsCollection
+      .set("unarchive", archive)
+      .set("show-info", showOption)
+      .set("delete", deleteOption);
+
     return this.convertToArray(itemsCollection);
   };
 

@@ -31,7 +31,7 @@ public class ProductEntryPoint : Product
 {
     internal const string ProductPath = "/products/files/";
 
-    //public FilesSpaceUsageStatManager FilesSpaceUsageStatManager { get; }
+    private readonly FilesSpaceUsageStatManager _filesSpaceUsageStatManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
@@ -42,7 +42,7 @@ public class ProductEntryPoint : Product
     public ProductEntryPoint() { }
 
     public ProductEntryPoint(
-        //            FilesSpaceUsageStatManager filesSpaceUsageStatManager,
+        FilesSpaceUsageStatManager filesSpaceUsageStatManager,
         CoreBaseSettings coreBaseSettings,
         AuthContext authContext,
         UserManager userManager,
@@ -50,7 +50,7 @@ public class ProductEntryPoint : Product
         //            SubscriptionManager subscriptionManager
         )
     {
-        //            FilesSpaceUsageStatManager = filesSpaceUsageStatManager;
+        _filesSpaceUsageStatManager = filesSpaceUsageStatManager;
         _coreBaseSettings = coreBaseSettings;
         _authContext = authContext;
         _userManager = userManager;
@@ -83,7 +83,7 @@ public class ProductEntryPoint : Product
                 LargeIconFileName = "images/files.svg",
                 DefaultSortOrder = 10,
                 //SubscriptionManager = SubscriptionManager,
-                //SpaceUsageStatManager = FilesSpaceUsageStatManager,
+                SpaceUsageStatManager = _filesSpaceUsageStatManager,
                 AdminOpportunities = adminOpportunities,
                 UserOpportunities = userOpportunities,
                 CanNotBeDisabled = true,
