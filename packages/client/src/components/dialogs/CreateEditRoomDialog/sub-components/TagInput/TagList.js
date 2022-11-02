@@ -21,8 +21,13 @@ const StyledTagList = styled.div`
   }
 `;
 
-const TagList = ({ defaultTagLabel, tagHandler }) => {
+const TagList = ({ defaultTagLabel, tagHandler, isDisabled }) => {
   const { tags } = tagHandler;
+
+  const onDeleteAction = (id) => {
+    if (isDisabled) return;
+    tagHandler.deleteTag(id);
+  };
 
   return (
     <StyledTagList className="set_room_params-tag_input-tag_list">
@@ -35,7 +40,7 @@ const TagList = ({ defaultTagLabel, tagHandler }) => {
             label={tag.name}
             isNewTag
             onDelete={() => {
-              tagHandler.deleteTag(tag.id);
+              onDeleteAction(tag.id);
             }}
           />
         ))

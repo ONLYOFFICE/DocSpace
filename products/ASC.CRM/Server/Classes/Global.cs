@@ -96,12 +96,12 @@ namespace ASC.Web.CRM.Classes
 
         public IDataStore GetStore()
         {
-            return _storageFactory.GetStorage(_tenantID.ToString(), "crm");
+            return _storageFactory.GetStorage(_tenantID, "crm");
         }
 
         public IDataStore GetStoreTemplate()
         {
-            return _storageFactory.GetStorage(String.Empty, "crm_template");
+            return _storageFactory.GetStorage(null, "crm_template");
         }
 
         public bool CanCreateProjects()

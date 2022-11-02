@@ -114,6 +114,11 @@ services:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api:${DOCKER_TAG}"
     container_name: ${API_HOST}
 
+  onlyoffice-api-system:
+    <<: *x-service-base
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
+    container_name: ${API_SYSTEM_HOST}
+
   onlyoffice-studio:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio:${DOCKER_TAG}"
@@ -170,6 +175,7 @@ services:
       - onlyoffice-telegram-service
       - onlyoffice-urlshortener
       - onlyoffice-api
+      - onlyoffice-api-system
       - onlyoffice-studio
       - onlyoffice-ssoauth
       - onlyoffice-doceditor
@@ -188,6 +194,7 @@ services:
       - SERVICE_TELEGRAM_SERVICE=${SERVICE_TELEGRAM_SERVICE}
       - SERVICE_URLSHORTENER=${SERVICE_URLSHORTENER}
       - SERVICE_API=${SERVICE_API}
+      - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
       - SERVICE_STUDIO=${SERVICE_STUDIO}
       - SERVICE_SSOAUTH=${SERVICE_SSOAUTH}
       - SERVICE_DOCEDITOR=${SERVICE_DOCEDITOR}
