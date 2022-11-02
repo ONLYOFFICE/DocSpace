@@ -13,6 +13,8 @@ class SettingsSetupStore {
   selectionStore = null;
   authStore = null;
   isInit = false;
+  logoutVisible = false;
+  logoutAllVisible = false;
   viewAs = isMobile ? "row" : "table";
 
   security = {
@@ -339,6 +341,26 @@ class SettingsSetupStore {
 
     this.setCommonThirdPartyList(res);
   };
+
+  getAllSessions = () => {
+    return api.settings.getAllActiveSessions();
+  };
+
+  removeAllSessions = () => {
+    return api.settings.removeAllActiveSessions();
+  };
+
+  removeAllExecptThis = () => {
+    return api.settings.removeAllExceptThisSession();
+  };
+
+  removeSession = (id) => {
+    return api.settings.removeActiveSession(id);
+  };
+
+  setLogoutVisible = (visible) => (this.logoutVisible = visible);
+
+  setLogoutAllVisible = (visible) => (this.logoutAllVisible = visible);
 }
 
 export default SettingsSetupStore;
