@@ -67,6 +67,8 @@ const InfoPanelBodyContent = ({
       isAdmin: props.isAdmin,
       getRoomMembers: props.getRoomMembers,
       changeUserType: props.changeUserType,
+      setInvitePanelOptions: props.setInvitePanelOptions,
+      canInviteUserInRoom: props.canInviteUserInRoom,
     },
     historyProps: {
       selectedFolder: selectedFolder,
@@ -76,6 +78,7 @@ const InfoPanelBodyContent = ({
       isOwner: props.isOwner,
       isAdmin: props.isAdmin,
       changeUserType: props.changeUserType,
+      canChangeUserType: props.canChangeUserType,
     },
     galleryProps: {
       getIcon,
@@ -228,18 +231,20 @@ export default inject(
     oformsStore,
     contextOptionsStore,
     peopleStore,
+    accessRightsStore,
   }) => {
     const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { personal, culture } = auth.settingsStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { onSelectItem, openLocationAction } = filesActionsStore;
     const { changeType: changeUserType } = peopleStore;
-    const { setSharingPanelVisible } = dialogsStore;
+    const { setSharingPanelVisible, setInvitePanelOptions } = dialogsStore;
     const { isRootFolder } = selectedFolderStore;
     const { gallerySelected } = oformsStore;
     const {
       getFilesContextOptions: getContextOptionActions,
     } = contextOptionsStore;
+    const { canChangeUserType, canInviteUserInRoom } = accessRightsStore;
 
     const {
       selection,
@@ -331,6 +336,7 @@ export default inject(
       getRoomHistory,
       getFileHistory,
       setSharingPanelVisible,
+      setInvitePanelOptions,
 
       getIcon,
       getFolderIcon,
@@ -340,6 +346,8 @@ export default inject(
       gallerySelected,
 
       isRootFolder,
+      canChangeUserType,
+      canInviteUserInRoom,
     };
   }
 )(withRouter(observer(InfoPanelBodyContent)));

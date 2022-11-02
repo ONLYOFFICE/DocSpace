@@ -64,7 +64,7 @@ public class RoomLogoManager
     }
 
     public bool EnableAudit { get; set; } = true;
-    private IDataStore DataStore => _dataStore ??= _storageFactory.GetStorage(TenantId.ToString(), ModuleName);
+    private IDataStore DataStore => _dataStore ??= _storageFactory.GetStorage(TenantId, ModuleName);
     private int TenantId => _tenantManager.GetCurrentTenant().Id;
     private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
 

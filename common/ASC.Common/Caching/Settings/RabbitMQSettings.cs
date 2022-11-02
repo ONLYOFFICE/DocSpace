@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Security.Authentication;
+
 namespace ASC.Common.Caching;
 public class RabbitMQSettings
 {
@@ -36,4 +38,42 @@ public class RabbitMQSettings
     public bool EnableSsl { get; set; }
     public string SslServerName { get; set; }
     public string SslCertPath { get; set; }
+
+    public ConnectionFactory GetConnectionFactory()
+    {
+        var factory = new ConnectionFactory()
+        {
+            DispatchConsumersAsync = true
+        };
+
+        if (!string.IsNullOrEmpty(Uri))
+        {
+            factory.Uri = new Uri(Uri);
+        }
+        else
+        {
+            factory.HostName = HostName;
+            factory.UserName = UserName;
+            factory.Password = Password;
+            factory.Port = Port;
+            factory.VirtualHost = VirtualHost;
+        }
+
+        if (EnableSsl)
+        {
+            factory.Ssl = new SslOption
+            {
+                Enabled = EnableSsl,
+                Version = SslProtocols.Tls12
+            };
+
+            if (!string.IsNullOrEmpty(SslCertPath))
+            {
+                factory.Ssl.CertPath = SslCertPath;
+                factory.Ssl.ServerName = SslServerName;
+            }
+        }
+
+        return factory;
+    }
 }

@@ -48,6 +48,7 @@ const RootFolderContainer = (props) => {
     isEmptyPage,
     setIsEmptyPage,
     isVisitor,
+    sectionWidth,
   } = props;
   const personalDescription = t("PersonalEmptyContainerDescription");
   const shareDescription = t("SharedEmptyContainerDescription");
@@ -58,9 +59,10 @@ const RootFolderContainer = (props) => {
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
+
   const roomsDescription = isVisitor
-    ? t("RoomEmptyContainerDescription")
-    : t("RoomEmptyContainerDescriptionUser");
+    ? t("RoomEmptyContainerDescriptionUser")
+    : t("RoomEmptyContainerDescription");
   const archiveRoomsDescription = t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
@@ -342,6 +344,7 @@ const RootFolderContainer = (props) => {
         <EmptyContainer
           headerText={headerText}
           isEmptyPage={isEmptyPage}
+          sectionWidth={sectionWidth}
           {...emptyFolderProps}
         />
       )}

@@ -3,5 +3,12 @@
 	  "port": 9899,
 	  "appsettings": "../../../config",
 	  "environment": "Development"
+	},
+	"aws":{
+		"accessKeyId": "",
+        "secretAccessKey": "",
+		"region": "",
+		"logGroupName": "/docspace/ASC.SocketIO/instance/${instance-id}/general",
+		"logStreamName": "${guid} - ${date}"
 	}
 }
