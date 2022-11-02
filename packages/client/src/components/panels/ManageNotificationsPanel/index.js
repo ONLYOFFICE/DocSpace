@@ -1,6 +1,5 @@
 import { inject, observer } from "mobx-react";
 import React, { useEffect, useState, useCallback } from "react";
-import { useTranslation } from "react-i18next";
 import ModalDialog from "@docspace/components/modal-dialog";
 import styled from "styled-components";
 import TelegramConnectionContainer from "./sub-components/TelegramConnectionContainer";
@@ -39,6 +38,7 @@ const ManageNotificationsPanel = ({
   isPanelVisible,
   onClosePanel,
   getTipsSubscription,
+  isTelegramConnectionAvailable,
 }) => {
   useEffect(async () => {
     try {
@@ -141,7 +141,7 @@ const ManageNotificationsPanel = ({
     >
       <ModalDialog.Header>{t("ManageNotifications")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <TelegramConnectionContainer t={t} />
+        {isTelegramConnectionAvailable && <TelegramConnectionContainer t={t} />}
         <RoomsActionsContainer
           t={t}
           isEnableEmail={roomsActionsEmail}
@@ -150,6 +150,7 @@ const ManageNotificationsPanel = ({
           onChangeBadgeState={onChangeRoomsActionsBadgeSubscription}
           onChangeEmailState={onChangeRoomsActionsEmailSubscription}
           onChangeTelegramState={onChangeRoomsActionsTelegramSubscription}
+          isTelegramConnectionAvailable={isTelegramConnectionAvailable}
         />
         <DailyFeedContainer
           t={t}
@@ -157,6 +158,7 @@ const ManageNotificationsPanel = ({
           onChangeTelegramState={onChangeDailyFeedTelegramSubscription}
           isEnableEmail={dailyFeedEmail}
           isEnableTelegram={dailyFeedTelegram}
+          isTelegramConnectionAvailable={isTelegramConnectionAvailable}
         />
         <UsefulTipsContainer
           t={t}
@@ -180,7 +182,11 @@ const ManageNotificationsPanel = ({
 export default inject(({ peopleStore }) => {
   const { targetUserStore } = peopleStore;
   const { getTipsSubscription } = targetUserStore;
+
+  const isTelegramConnectionAvailable = true;
+
   return {
     getTipsSubscription,
+    isTelegramConnectionAvailable,
   };
 })(observer(ManageNotificationsPanel));

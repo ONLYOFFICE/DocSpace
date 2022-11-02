@@ -10,6 +10,7 @@ const DailyFeedContainer = ({
   isEnableEmail,
   isTelegramConnected,
   isEnableTelegram,
+  isTelegramConnectionAvailable,
 }) => {
   const onChangeEmailSubscription = (e) => {
     const checked = e.currentTarget.checked;
@@ -37,15 +38,17 @@ const DailyFeedContainer = ({
         onChange={onChangeEmailSubscription}
         isChecked={isEnableEmail}
       />
-      <div className="toggle-btn_next">
-        <ToggleButton
-          className="toggle-btn"
-          label={t("Telegram")}
-          onChange={onChangeTelegramSubscription}
-          isChecked={isEnableTelegram}
-          isDisabled={!isTelegramConnected}
-        />
-      </div>
+      {isTelegramConnectionAvailable && (
+        <div className="toggle-btn_next">
+          <ToggleButton
+            className="toggle-btn"
+            label={t("Telegram")}
+            onChange={onChangeTelegramSubscription}
+            isChecked={isEnableTelegram}
+            isDisabled={!isTelegramConnected}
+          />
+        </div>
+      )}
     </div>
   );
 };
