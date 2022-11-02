@@ -687,26 +687,6 @@ class SettingsStore {
     this.setCurrentColorScheme(currentColorScheme);
   };
 
-  onSaveSelectedNewThemes = async (
-    newCustomThemes,
-    selectNewThemeId,
-    arrLengthBeforeChange
-  ) => {
-    let newAppearanceTheme = [];
-
-    await this.sendAppearanceTheme({ themes: newCustomThemes });
-
-    await api.settings.getAppearanceTheme().then((res) => {
-      newAppearanceTheme = res.themes;
-    });
-
-    const customThemes = newAppearanceTheme.slice(arrLengthBeforeChange);
-    const selectTheme = customThemes[selectNewThemeId - 1];
-
-    await this.sendAppearanceTheme({ selected: selectTheme.id });
-    await this.getAppearanceTheme();
-  };
-
   sendAppearanceTheme = async (data) => {
     return api.settings.sendAppearanceTheme(data);
   };
