@@ -73,7 +73,7 @@ if [ "$1" = "--no_ds" ]; then
     echo "SKIP Document server"
 else 
     echo "Run Document server"
-    DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-ee:latest \
+    DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
     ROOT_DIR=$dir \
     docker compose -f ds.dev.yml up -d
 fi
