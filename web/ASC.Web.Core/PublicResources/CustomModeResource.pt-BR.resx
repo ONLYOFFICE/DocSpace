@@ -58,32 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
-    <value>Prezado $UserName,
-
-Seu perfil de usuário foi adicionado com sucesso ao portal em "${__VirtualRootPath}":"${__VirtualRootPath}". Comece hoje mesmo!
-
-h3.Comece a trabalhar com Documentos:
-
-# Criar e editar documentos de texto, planilhas e apresentações.
-# Conecte os armazéns em nuvem que você usa para criar um único espaço de trabalho para todos os seus documentos.
-# Compartilhe documentos com os membros de sua equipe.
-# Explore diferentes formas de trabalhar juntos em documentos: dois modos de co-edição em tempo real, revisão, comentários, bate-papo.
-
-h3.Experimente ferramentas adicionais ${LetterLogoText}:
-
-# Adicione sua conta de e-mail a "${LetterLogoText} Mail": "${__VirtualRootPath}/addons/mail/".
-# Crie "Projetos":"${__VirtualRootPath}/produtos/projetos/" e gerencie seu fluxo de trabalho adicionando marcos e tarefas.
-# Gerencie seu relacionamento com seus clientes usando "CRM":"${__VirtualRootPath}/productsts/crm/".
-# Use "Community":"${__VirtualRootPath}/products/community/" para iniciar seus blogs, fóruns, adicionar eventos, compartilhar bookmarks.
-# Organize sua agenda de trabalho com o "Calendário" incorporado:"${__VirtualRootPath}/addons/calendar/".
-# Iniciar "Talk":"${__VirtualRootPath}/addons/talk/" para conversar com seus colegas de equipe on-line.
-
-$GreenButton
-
-Sinceramente,
-Equipe ${LetterLogoText}</value>
-  </data>
   <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>h1.Bem-vindo à ONLYOFFICE Personal
 
@@ -106,32 +80,6 @@ h3.Para um começo rápido, eis o que você pode fazer em ONLYOFFICE:
 - Acesse facilmente sua nuvem pessoal via "Chrome extension": "https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US". 
 
 Você também pode editar documentos offline com nossos "editores desktop" gratuitos: "https://www.onlyoffice.com/download-desktop.aspx" ou obter uma "suite de edição móvel": "https://www.onlyoffice.com/mobile.aspx" para seu dispositivo iOS ou Android.
-
-Atenciosamente,
-Equipe ONLYOFFICE</value>
-  </data>
-  <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
-    <value>$PersonalHeaderStart Conecte seu armazenamento em nuvem favorito ao ONLYOFFICE $PersonalHeaderEnd
-
-Já faz uma semana desde que você criou seu escritório na nuvem, então acreditamos que é hora de revelar algumas características benéficas que você possa ter perdido.
-
-Conecte *Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud*, *kDrive* ou *Yandex.Disk* à ONLYOFFICE e crie um único espaço de gerenciamento de documentos para todos os seus documentos. Você será capaz de editar arquivos externos em ONLYOFFICE e salvá-los no armazenamento onde você guarda os documentos. Leia detalhes sobre como conectar o armazenamento de arquivos ao ONLYOFFICE "aqui":"${__HelpLink}/tipstricks/add-resource.aspx".
-
-Você também pode integrar editores ONLYOFFICE ao Google Drive usando nosso "aplicativo de conexão": "https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
-
-Precisa de mais gerenciamento de documentos?
-
-h3.Experimente ONLYOFFICE para negócios "na nuvem": "https://www.onlyoffice.com/cloud-office.aspx" ou "em seu servidor": "https://www.onlyoffice.com/server-solutions.aspx" gratuitamente por 30 dias e verifique as oportunidades de gerenciamento de documentos estendido junto com um conjunto de ferramentas de negócios:
-
-- Gerencie documentos da equipe em projetos;
-
-- Integrar documentos com CRM e e-mail;
-
-- Compartilhar arquivos para grupos de usuários;
-
-- Otimize seu fluxo de trabalho com ferramentas de comunicação da equipe.
-
-Interessado? Saiba mais sobre "ONLYOFFICE para empresas": "http://www.onlyoffice.com/document-management.aspx".
 
 Atenciosamente,
 Equipe ONLYOFFICE</value>
@@ -216,9 +164,6 @@ A exclusão de dados pessoais permitida para liberar:
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Bem vindo ao ONLYOFFICE Pessoal</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Conecte seu armazenamento em nuvem favorito ao ONLYOFFICE</value>
   </data>
   <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
     <value>Assistência de senha pessoal ONLYOFFICE</value>

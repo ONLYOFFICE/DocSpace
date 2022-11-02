@@ -58,33 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
-    <value>$UserNameさん、
-
-プロファイルは正常に"${__VirtualRootPath}":"${__VirtualRootPath}"に追加されました。すぐに使用が開始します！
-
-ｈ３．文書処理を始める：
-
-＃文書、スプレッドシート及びプレゼンテーションを作成し、編集します。
-＃クラウドストレージを接続し、文書管理の統合職場を作成します。
-＃チームメイトと文書を共有します。
-＃文書協力の異なる方法を検討できます：二つの実時間協力モード、見直し、コメント、チャットなどです。
-
-
-ｈ３．追加の ${LetterLogoText}ツールを試行します：
-
-＃"${LetterLogoText} メール":"${__VirtualRootPath}/addons/mail/"にメールアカウントを追加します。
-＃マイルストーンとタスクを追加してワークフローを管理できるように、”プロジェクト”:"${__VirtualRootPath}/products/projects/"を作成します。
-＃接客業務を管理するのために”ＣＲＭ”:"${__VirtualRootPath}/products/crm/" を使います。
-＃ブログ、掲示板を初め、エベントを追加し、ブックマークを共有するように、”コミュニティ”:"${__VirtualRootPath}/products/community/"を使用します。
-＃作業スケジュールを整理するように組み込みの”カレンダー” :"${__VirtualRootPath}/addons/calendar/"を使用します。
-＃チームメイトと話したい時に、”チャット”:"${__VirtualRootPath}/addons/talk/"を使用します。
-
-$GreenButton  
-
-敬具、
-${LetterLogoText}チーム</value>
-  </data>
   <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>ｈ１．個人ONLYOFFICEへようこそ！
 
@@ -107,32 +80,6 @@ ONLYOFFICEはMicrosoft Office™文書形式と互換性で、作成されたオ
 「Chromeの拡張機能」を介して、個人ONLYOFFICEクラウドに容易にアクセスできます："https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US"。
 
 「デスクトップ編集者」:"https://www.onlyoffice.com/download-desktop.aspx"を使用して、無料で、オフラインに文書を編集し、またはiOSかAndroid デバイスに「モバイル編集スイート」:"https://www.onlyoffice.com/mobile.aspx"をダウンロードします。
-
-敬具、
-ONLYOFFICEチーム</value>
-  </data>
-  <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
-    <value>$PersonalHeaderStart お好みのクラウドストレージをONLYOFFICEに接続します$PersonalHeaderEnd 
-
-お客様がクラウドオフィスを作成した時から一週間が経ったので、見逃したかもしれない有益な機能を明らかにしてあげる時が来たと信じています。
-
-ONLYOFFICEに*Dropbox*、*Google Drive*、*Box*、*OneDrive*、*Nextcloud*、*ownCloud*、*kDrive*、または*Yandex.Disc*を接続し、すべてのドキュメントに対して単一文書管理スペースを作成します。ONLYOFFICE で外部ファイルを編集し、保存しておくストレージに保存で切るようになります。ONLYOFFICEにファイルストレージを接続する方法は  "こちらです":"${__HelpLink}/tipstricks/add-resource.aspx". 
-
-ONLYOFFICE エディターを特定　”接続アプリ”":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn". を使用してGoogle Driveに統合する可能もあります。
-
-もっと多くの文書管理機能の必要がありますか？
-
-h3. "クラウド":"https://www.onlyoffice.com/cloud-office.aspx" または "サーバー":"https://www.onlyoffice.com/server-solutions.aspx" の業務用ONLYOFFICEを３０日の試用期間に登録して、以下のビジネスツールセットと共に拡大な文書管理機能を使用してみてください：
-
-－プロジェクト内のチーム文書を管理すること； 
-
-－ＣＲＭとメールと文書を統合すること；
-
-－ユーザのグループと文書を共有すること;
-
-－チームコミュニケーションツールを使用してワークフローを最適化 すること；
-
-興味がありますか？詳しい情報は、”業務用ONLYOFFICE”："http://www.onlyoffice.com/document-management.aspx"をクリックしてください。
 
 敬具、
 ONLYOFFICEチーム</value>
@@ -192,9 +139,6 @@ ONLYOFFICEチーム</value>
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>個人的なONLYOFFICEへようこそ</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>常用されるクラウドストレージをONLYOFFICEに接続します。</value>
   </data>
   <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
     <value>個人的なONLYOFFICE。パスワード アシスタンス</value>
