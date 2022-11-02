@@ -39,7 +39,6 @@ const ReactSmartBanner = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log(location);
     if (window.location.pathname.toLowerCase().includes("rooms")) {
       setIsDocuments(true);
     } else {
