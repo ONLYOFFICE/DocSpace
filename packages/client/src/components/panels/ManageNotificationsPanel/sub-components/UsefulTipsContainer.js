@@ -10,7 +10,12 @@ const UsefulTipsContainer = React.memo(
 
     return (
       <div className="subscription-container">
-        <Text fontSize="15px" fontWeight="600" className="subscription-title">
+        <Text
+          fontSize="15px"
+          fontWeight="600"
+          className="subscription-title"
+          noSelect
+        >
           {t("UsefulTips")}
         </Text>
         <ToggleButton

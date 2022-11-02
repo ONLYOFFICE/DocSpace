@@ -29,7 +29,12 @@ const RoomsActionsContainer = ({
 
   return (
     <div className="subscription-container">
-      <Text fontSize="15px" fontWeight="600" className="subscription-title">
+      <Text
+        fontSize="15px"
+        fontWeight="600"
+        className="subscription-title"
+        noSelect
+      >
         {t("RoomsActions")}
       </Text>
       <ToggleButton

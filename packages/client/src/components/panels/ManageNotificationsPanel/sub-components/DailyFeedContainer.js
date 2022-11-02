@@ -23,7 +23,12 @@ const DailyFeedContainer = ({
 
   return (
     <div className="subscription-container">
-      <Text fontSize="15px" fontWeight="600" className="subscription-title">
+      <Text
+        fontSize="15px"
+        fontWeight="600"
+        className="subscription-title"
+        noSelect
+      >
         {t("DailyFeed")}
       </Text>
       <ToggleButton
