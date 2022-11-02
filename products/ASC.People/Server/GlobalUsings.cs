@@ -31,6 +31,7 @@ global using System.ServiceModel.Security;
 global using System.Web;
 
 global using ASC.Api.Core;
+global using ASC.Api.Core.Model;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Extensions;
 global using ASC.Api.Utils;
@@ -73,6 +74,7 @@ global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Quota;
 global using ASC.Web.Core.Users;
 global using ASC.Web.Core.Utility;
+global using ASC.Web.Files;
 global using ASC.Web.Files.Classes;
 global using ASC.Web.Studio.Core;
 global using ASC.Web.Studio.Core.Notify;

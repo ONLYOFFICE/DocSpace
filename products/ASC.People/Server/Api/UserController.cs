@@ -62,6 +62,7 @@ public class UserController : PeopleControllerBase
     private readonly FileSecurity _fileSecurity;
     private readonly IQuotaService _quotaService;
     private readonly CountRoomAdminChecker _countRoomAdminChecker;
+    private readonly UsersQuotaSyncOperation _usersQuotaSyncOperation;
     private readonly CountUserChecker _countUserChecker;
     private readonly UsersInRoomChecker _usersInRoomChecker;
 
@@ -100,6 +101,7 @@ public class UserController : PeopleControllerBase
         SettingsManager settingsManager,
         RoomLinkService roomLinkService,
         FileSecurity fileSecurity,
+        UsersQuotaSyncOperation usersQuotaSyncOperation,
         CountRoomAdminChecker countRoomAdminChecker,
         CountUserChecker activeUsersChecker,
         UsersInRoomChecker usersInRoomChecker,
@@ -138,6 +140,7 @@ public class UserController : PeopleControllerBase
         _countUserChecker = activeUsersChecker;
         _usersInRoomChecker = usersInRoomChecker;
         _quotaService = quotaService;
+        _usersQuotaSyncOperation = usersQuotaSyncOperation;
     }
 
     [HttpPost("active")]
@@ -1079,6 +1082,19 @@ public class UserController : PeopleControllerBase
         {
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
+    }
+    [HttpGet("recalculatequota")]
+    public void RecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        _usersQuotaSyncOperation.RecalculateQuota(_tenantManager.GetCurrentTenant());
+    }
+
+    [HttpGet("checkrecalculatequota")]
+    public TaskProgressDto CheckRecalculateQuota()
+    {
+        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        return _usersQuotaSyncOperation.CheckRecalculateQuota(_tenantManager.GetCurrentTenant());
     }
 
     [HttpPut("quota")]
