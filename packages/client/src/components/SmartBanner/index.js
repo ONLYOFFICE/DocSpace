@@ -43,7 +43,7 @@ const ReactSmartBanner = (props) => {
   }, []);
 
   useEffect(() => {
-    if (window.location.pathname.toLowerCase().includes("files")) {
+    if (window.location.pathname.toLowerCase().includes("rooms")) {
       setIsDocuments(true);
     } else {
       setIsDocuments(false);
