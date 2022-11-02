@@ -30,4 +30,17 @@ const Body = styled.div`
 `;
 Body.defaultProps = { theme: Base };
 
-export { Content, HeaderContent, Body };
+const StyledHelpContent = styled.div`
+  cursor: pointer;
+  line-height: 0;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  height: 15px;
+  width: fit-content;
+  p {
+    max-width: fit-content;
+    text-decoration: underline dashed;
+  }
+`;
+StyledHelpContent.defaultProps = { theme: Base };
+
+export { Content, HeaderContent, Body, StyledHelpContent };

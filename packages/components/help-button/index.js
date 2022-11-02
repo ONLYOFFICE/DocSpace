@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import Text from "@docspace/components/text";
 import IconButton from "../icon-button";
 import Tooltip from "../tooltip";
 import { handleAnyClick } from "../utils/event";
 import uniqueId from "lodash/uniqueId";
-
+import { StyledHelpContent } from "./styled-help-button";
 class HelpButton extends React.Component {
   constructor(props) {
     super(props);
@@ -64,22 +64,36 @@ class HelpButton extends React.Component {
       tooltipMaxWidth,
       style,
       size,
+      label = null,
     } = this.props;
 
     return (
       <div ref={this.ref} style={style}>
-        <IconButton
-          theme={this.props.theme}
-          id={this.id}
-          className={`${className} help-icon`}
-          isClickable={true}
-          iconName={iconName}
-          size={size}
-          color={color}
-          data-for={this.id}
-          dataTip={dataTip}
-          onClick={this.onClick}
-        />
+        {label ? (
+          <StyledHelpContent
+            className={className}
+            onClick={this.onClick}
+            data-tip={dataTip ?? ""}
+            data-event="click focus"
+            data-for={this.id}
+          >
+            <Text>{label}</Text>
+          </StyledHelpContent>
+        ) : (
+          <IconButton
+            theme={this.props.theme}
+            id={this.id}
+            className={`${className} help-icon`}
+            isClickable={true}
+            iconName={iconName}
+            size={size}
+            color={color}
+            data-for={this.id}
+            dataTip={dataTip}
+            onClick={this.onClick}
+          />
+        )}
+
         {getContent ? (
           <Tooltip
             tooltipProps={tooltipProps}
@@ -144,6 +158,7 @@ HelpButton.propTypes = {
   id: PropTypes.string,
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   size: PropTypes.number,
+  label: PropTypes.string,
 };
 
 HelpButton.defaultProps = {
