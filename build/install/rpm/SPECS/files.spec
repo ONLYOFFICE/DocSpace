@@ -16,7 +16,7 @@
 %files api-system
 %defattr(-, onlyoffice, onlyoffice, -)
 %{buildpath}/services/ASC.ApiSystem/
-/lib/systemd/system/%{product}-api-system.service
+/usr/lib/systemd/system/%{product}-api-system.service
 %dir %{buildpath}/services/
 
 %files backup
