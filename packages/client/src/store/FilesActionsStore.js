@@ -1530,8 +1530,8 @@ class FilesActionStore {
 
     itemsCollection
       .set("unarchive", archive)
-      .set("delete", deleteOption)
-      .set("show-info", showOption);
+      .set("show-info", showOption)
+      .set("delete", deleteOption);
 
     return this.convertToArray(itemsCollection);
   };
