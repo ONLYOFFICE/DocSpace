@@ -25,7 +25,7 @@ const ButtonsContainer = (props) => {
       if (requests.length === 0) return;
 
       await Promise.all(requests);
-      toastr.success("success");
+      toastr.success(t("ChangesApplied"));
     } catch (e) {
       toastr.success(e);
     }
