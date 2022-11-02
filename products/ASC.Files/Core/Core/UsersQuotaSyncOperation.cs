@@ -75,11 +75,9 @@ public class UsersQuotaSyncOperation
     }
 
 
-    public UsersQuotaSyncOperation(IServiceProvider serviceProvider, IDistributedTaskQueueFactory queueFactory, IServiceScopeFactory serviceScopeFactory)
+    public UsersQuotaSyncOperation(IServiceProvider serviceProvider, IDistributedTaskQueueFactory queueFactory)
     {
-        ;
         _serviceProvider = serviceProvider;
-
         _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
@@ -119,10 +117,12 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
     {
         _serviceScopeFactory = serviceScopeFactory;
     }
+
     public void InitJob(Tenant tenant)
     {
         TenantId = tenant.Id;
     }
+
     public async Task RunJobAsync(DistributedTask _, CancellationToken cancellationToken)
     {
         try
@@ -136,12 +136,19 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
             var _webItemManagerSecurity = scope.ServiceProvider.GetRequiredService<WebItemManagerSecurity>();
 
             _tenantManager.SetCurrentTenant(TenantId);
-            
+
             var users = _userManager.GetUsers();
             var webItems = _webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
 
             foreach (var user in users)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    IsCompleted = true;
+                    Status = DistributedTaskStatus.Canceled;
+                    return;
+                }
+
                 Percentage += 1.0 * 100 / users.Length;
                 PublishChanges();
 
@@ -150,6 +157,13 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
 
                 foreach (var item in webItems)
                 {
+                    if (cancellationToken.IsCancellationRequested)
+                    {
+                        IsCompleted = true;
+                        Status = DistributedTaskStatus.Canceled;
+                        return;
+                    }
+
                     IUserSpaceUsage manager;
 
                     if (item.ID == WebItemManager.DocumentsProductID)
