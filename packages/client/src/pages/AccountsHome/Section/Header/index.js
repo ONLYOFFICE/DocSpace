@@ -163,7 +163,7 @@ const SectionHeaderContent = (props) => {
     setInfoPanelIsVisible,
     isInfoPanelVisible,
     isOwner,
-    isAdmin,
+
     setInvitePanelOptions,
   } = props;
 

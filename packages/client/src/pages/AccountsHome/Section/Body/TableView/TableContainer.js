@@ -107,6 +107,7 @@ const Table = ({
   hasMoreAccounts,
   filterTotal,
   withPaging,
+  canChangeUserType,
 }) => {
   const ref = useRef(null);
 
@@ -156,6 +157,7 @@ const Table = ({
             isOwner={isOwner}
             changeUserType={changeType}
             userId={userId}
+            canChangeUserType={canChangeUserType}
           />
         ))}
       </TableBody>
@@ -165,7 +167,7 @@ const Table = ({
   );
 };
 
-export default inject(({ peopleStore, auth }) => {
+export default inject(({ peopleStore, auth, accessRightsStore }) => {
   const {
     usersStore,
     filterStore,
@@ -179,6 +181,8 @@ export default inject(({ peopleStore, auth }) => {
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { isAdmin, isOwner, id: userId } = auth.userStore.user;
+
+  const { canChangeUserType } = accessRightsStore;
 
   return {
     peopleList,
@@ -195,5 +199,6 @@ export default inject(({ peopleStore, auth }) => {
     fetchMoreAccounts,
     hasMoreAccounts,
     filterTotal,
+    canChangeUserType,
   };
 })(observer(Table));

@@ -1158,7 +1158,7 @@ public class FileSecurity : IFileSecurity
         {
             foreach (var id in proivdersIds)
             {
-                roomsIds.Add(id, FileShare.Read);
+                roomsIds.Add(id, FileShare.None);
             }
         }
 
@@ -1176,14 +1176,17 @@ public class FileSecurity : IFileSecurity
 
             if (searchArea == SearchArea.Archive && f.RootFolderType == FolderType.Archive)
             {
+                f.Access = roomsIds.TryGetValue(id, out var share) ? share : FileShare.None;
                 return true;
             }
             if (searchArea == SearchArea.Active && f.RootFolderType == FolderType.VirtualRooms)
             {
+                f.Access = roomsIds.TryGetValue(id, out var share) ? share : FileShare.None;
                 return true;
             }
             if (searchArea == SearchArea.Any && (f.RootFolderType == FolderType.VirtualRooms || f.RootFolderType == FolderType.Archive))
             {
+                f.Access = roomsIds.TryGetValue(id, out var share) ? share : FileShare.None;
                 return true;
             }
 
