@@ -494,23 +494,18 @@ class MediaViewer extends React.Component {
 
     const ext = this.getFileExtension(title);
 
+    const onFavorite = (e) => onClickFavorite(e, currentFileId, t);
+
     const getContextModel = () => {
       return [
         {
           key: isFavorite ? "remove-from-favorites" : "mark-as-favorite",
           label: isFavorite ? t("RemoveFromFavorites") : t("MarkAsFavorite"),
           icon: "images/favorites.react.svg",
-          onClick: (e) => onClickFavorite(e, currentFileId, t),
+          onClick: (e) => onFavorite(e),
           disabled: false,
           "data-action": isFavorite ? "remove" : "mark",
           action: isFavorite ? "remove" : "mark",
-        },
-        {
-          key: "show-info",
-          label: t("InfoPanel:ViewDetails"),
-          icon: "/static/images/info.outline.react.svg",
-          onClick: () => onShowInfoPanel(currentFile),
-          disabled: false,
         },
         {
           key: "download",
@@ -530,7 +525,7 @@ class MediaViewer extends React.Component {
           key: "rename",
           label: t("Rename"),
           icon: "images/rename.react.svg",
-          onClick: () => onClickRename(currentFile),
+          onClick: () => onClickRename(targetFile),
           disabled: false,
         },
         {
@@ -579,6 +574,7 @@ class MediaViewer extends React.Component {
             contextModel={getContextModel}
             onPrevClick={this.prevMedia}
             onDeleteClick={this.onDelete}
+            onFavorite={onFavorite}
             isImage={isImage}
             onDownloadClick={this.onDownload}
             //    isFavoritesFolder={isFavoritesFolder}

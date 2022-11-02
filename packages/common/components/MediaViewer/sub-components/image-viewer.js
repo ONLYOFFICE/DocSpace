@@ -10,6 +10,8 @@ import MediaResetIcon from "../../../../../public/images/media.reset.react.svg";
 import MediaDeleteIcon from "../../../../../public/images/media.delete.react.svg";
 import MediaDownloadIcon from "../../../../../public/images/download.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
+import MediaFavoriteIcon from "../../../../../public/images/favorite.react.svg";
+
 import ViewerSeparator from "../../../../../public/images/viewer.separator.react.svg";
 import MediaShare from "../../../../../public/images/share.react.svg";
 import MediaContextMenu from "../../../../../public/images/vertical-dots.react.svg";
@@ -32,12 +34,12 @@ const StyledMediaRotateLeftIcon = styled(MediaRotateLeftIcon)`
 const StyledMediaRotateRightIcon = styled(MediaRotateRightIcon)`
   ${commonIconsStyles}
 `;
-// const StyledMediaResetIcon = styled(MediaResetIcon)`
-//   ${commonIconsStyles}
-// `;
-// const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
-//   ${commonIconsStyles}
-// `;
+const StyledMediaFavoriteIcon = styled(MediaFavoriteIcon)`
+  ${commonIconsStyles}
+`;
+const StyledMediaDeleteIcon = styled(MediaDeleteIcon)`
+  ${commonIconsStyles}
+`;
 // const StyledMediaDownloadIcon = styled(MediaDownloadIcon)`
 //   ${commonIconsStyles}
 // `;
@@ -183,6 +185,7 @@ class ImageViewer extends React.Component {
       playlistPos,
       isImage,
       contextModel,
+      onFavorite,
     } = this.props;
 
     const generateContextMenu = (isOpen) => {
@@ -304,7 +307,24 @@ class ImageViewer extends React.Component {
       {
         key: "context-menu",
         actionType: -1,
-        onClick: this.onMenuHandlerClick,
+      },
+      {
+        key: "delete",
+        actionType: 103,
+        render: (
+          <div className="iconContainer rotateLeft">
+            <StyledMediaDeleteIcon size="scale" />
+          </div>
+        ),
+      },
+      {
+        key: "favorite",
+        actionType: 104,
+        render: (
+          <div className="iconContainer rotateLeft">
+            <StyledMediaFavoriteIcon size="scale" />
+          </div>
+        ),
       },
     ];
 
@@ -322,6 +342,8 @@ class ImageViewer extends React.Component {
         case "customDownload":
           button.onClick = this.props.onDownloadClick;
           break;
+        case "favorite":
+          button.onClick = onFavorite;
         default:
           break;
       }
