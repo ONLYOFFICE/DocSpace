@@ -17,10 +17,12 @@ const RoomTypeDropdown = ({
   currentRoom,
   setRoomType,
   setIsScrollLocked,
+  isDisabled,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
+    if (isDisabled) return;
     if (isOpen) {
       setIsScrollLocked(false);
       setIsOpen(false);
@@ -31,6 +33,7 @@ const RoomTypeDropdown = ({
   };
 
   const chooseRoomType = (roomType) => {
+    if (isDisabled) return;
     setRoomType(roomType);
     toggleDropdown();
   };

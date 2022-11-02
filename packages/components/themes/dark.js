@@ -1854,6 +1854,8 @@ const Dark = {
 
     headerBurgerColor: "#606060",
 
+    verticalLine: "1px solid #474747",
+
     profile: {
       borderTop: "1px solid #474747",
       background: "#3D3D3D",
@@ -2740,6 +2742,7 @@ const Dark = {
     textColor: "#858585",
     navBackground: "#282828",
     headerColor: white,
+    helpButton: "#D8D8D8",
 
     register: {
       backgroundColor: "#292929",
@@ -2981,6 +2984,11 @@ const Dark = {
     themePreview: {
       border: "1px solid #858585",
     },
+  },
+
+  activeSessions: {
+    borderColor: "#858585",
+    color: "#eeeeee",
   },
 
   formWrapper: {

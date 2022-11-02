@@ -20,6 +20,7 @@ const EmptyContainer = ({
   parentId,
   theme,
   setCreateRoomDialogVisible,
+  sectionWidth,
 }) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
@@ -49,9 +50,14 @@ const EmptyContainer = ({
       onCreate={onCreate}
       linkStyles={linkStyles}
       onCreateRoom={onCreateRoom}
+      sectionWidth={sectionWidth}
     />
   ) : (
-    <EmptyFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
+    <EmptyFolderContainer
+      sectionWidth={sectionWidth}
+      onCreate={onCreate}
+      linkStyles={linkStyles}
+    />
   );
 };
 

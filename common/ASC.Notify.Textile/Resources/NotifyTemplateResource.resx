@@ -192,10 +192,10 @@
           &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
-  <data name="TextForFooterWithUnsubscribeLink" xml:space="preserve">
-    <value>This email is generated automatically and you do not need to answer it.
-&lt;br /&gt;You receive this email because you are a registered user of &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;{0}&lt;/a&gt;
-&lt;br /&gt;Click here to unsubscribe from informational emails: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Unsubscribe&lt;/a&gt;
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>For any purchase questions, email us at &lt;a href="mailto:sales@onlyoffice.com" style="color: #7b7b7b;" target="_blank"&gt;sales@onlyoffice.com&lt;/a&gt;.
+&lt;br /&gt;In case of technical problems contact our &lt;a href="https://www.onlyoffice.com/support-contact-form.aspx" style="color: #7b7b7b;" target="_blank"&gt;support team&lt;/a&gt;.
+&lt;br /&gt; &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;Click here to unsubscribe&lt;/a&gt;
 &lt;br /&gt;</value>
   </data>
 </root>

@@ -36,7 +36,7 @@ const Item = ({
 
   const accesses = getAccessOptions(t, roomType, true);
 
-  const defaultAccess = accesses.find((option) => option.access === access);
+  const defaultAccess = accesses.find((option) => option.access === +access);
 
   const errorsInList = () => {
     const hasErrors = inviteItems.some((item) => !!item.errors?.length);

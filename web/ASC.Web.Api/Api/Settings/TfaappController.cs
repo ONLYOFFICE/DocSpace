@@ -287,7 +287,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsVisitor(currentUser) || _userManager.IsOutsider(currentUser))
+        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -305,7 +305,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsVisitor(currentUser) || _userManager.IsOutsider(currentUser))
+        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -323,7 +323,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsVisitor(currentUser) || _userManager.IsOutsider(currentUser))
+        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -351,7 +351,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsVisitor(user) || _userManager.IsOutsider(user))
+        if (_userManager.IsUser(user) || _userManager.IsOutsider(user))
         {
             throw new NotSupportedException("Not available.");
         }

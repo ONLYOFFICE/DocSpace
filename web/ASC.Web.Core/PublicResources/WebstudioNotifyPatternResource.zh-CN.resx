@@ -399,25 +399,6 @@ ONLYOFFICE™客服团队
 
 ^若想修改通知类型，请管理 "订阅设置”:"$RecipientSubscriptionConfigURL"。^</value>
   </data>
-  <data name="pattern_saas_admin_welcome_v115" xml:space="preserve">
-    <value>您好, $UserName!
-
-免费测试ONLYOFFICE商业云30天：
-
-# *同时编辑无限数量的文档*, 电子表格、幻灯片和表单。
-# *定制您的在线办公* 风格，以配合品牌建设。 
-# *确保安全：* 启用2FA，配置自动备份，跟踪用户行为。
-# *与您的基础设施整合：* 使用LDAP、SSO和您的域名作为门户地址。
-# *连接应用程序以实现高效工作：* Twilio、DocuSign等。
- 
-如果您需要关于配置/使用ONLYOFFICE的说明，请访问我们的 "帮助中心":"${__HelpLink}" 。
-
-您可以在 "支付页面":"$PricingPage"上购买订阅。如果您需要更多时间进行测试，可以要求我们延长您的试用期。
-
-此致敬礼,
-ONLYOFFICE团队
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 门户档案修改通知
 
@@ -481,9 +462,6 @@ ONLYOFFICE团队</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}。门户地址更改</value>
   </data>
-  <data name="subject_enterprise_admin_trial_warning_v10" xml:space="preserve">
-    <value>您的企业版试用版今天到期</value>
-  </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>向管理员发送的用户消息</value>
   </data>
@@ -498,9 +476,6 @@ ONLYOFFICE团队</value>
   </data>
   <data name="subject_migration_success" xml:space="preserve">
     <value>${LetterLogoText} 。另一个地区门户迁移成功完成</value>
-  </data>
-  <data name="subject_personal_after_registration14" xml:space="preserve">
-    <value>自由职业者工作的一些贴士</value>
   </data>
   <data name="subject_portal_deactivate" xml:space="preserve">
     <value>禁用${__ VirtualRootPath}门户</value>

@@ -12,6 +12,7 @@ const TagDropdown = ({
   tagInputValue,
   setTagInputValue,
   createTagLabel,
+  isDisabled,
 }) => {
   const dropdownRef = useRef(null);
 
