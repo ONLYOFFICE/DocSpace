@@ -1376,7 +1376,7 @@ class FilesActionStore {
   };
 
   onShowInfoPanel = () => {
-    const selection = this.filesStore;
+    const { selection } = this.filesStore;
     const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
 
     setSelection([selection]);
