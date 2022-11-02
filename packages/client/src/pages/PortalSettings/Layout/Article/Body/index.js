@@ -135,6 +135,12 @@ class ArticleBodyContent extends React.Component {
 
     if (tReady) setIsLoadedArticleBody(true);
 
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      if (this.props.location.pathname.includes("payments")) {
+        this.setState({ selectedKeys: ["4-0"] });
+      }
+    }
+
     if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
       const { selectedKeys } = this.state;
 
