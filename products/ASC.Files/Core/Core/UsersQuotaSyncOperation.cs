@@ -144,9 +144,8 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
             {
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    IsCompleted = true;
                     Status = DistributedTaskStatus.Canceled;
-                    return;
+                    break;
                 }
 
                 Percentage += 1.0 * 100 / users.Length;
@@ -157,13 +156,6 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
 
                 foreach (var item in webItems)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        IsCompleted = true;
-                        Status = DistributedTaskStatus.Canceled;
-                        return;
-                    }
-
                     IUserSpaceUsage manager;
 
                     if (item.ID == WebItemManager.DocumentsProductID)
