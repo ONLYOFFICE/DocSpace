@@ -91,6 +91,13 @@ const StyledViewer = styled(ViewerBase)`
     min-height: 400px;
   }
 
+  .mobile-details {
+    svg {
+      path {
+        fill: #fff;
+      }
+    }
+  }
   .react-viewer-inline > .react-viewer-mask,
   .react-viewer-inline > .react-viewer-close,
   .react-viewer-inline > .react-viewer-canvas,
