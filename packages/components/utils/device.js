@@ -6,6 +6,7 @@ export const size = {
   smallTablet: 600,
   tablet: 1024,
   desktop: 1025,
+  hugeDesktop: 1439,
 };
 
 export const mobile = `(max-width: ${size.mobile}px)`;
@@ -17,6 +18,8 @@ export const smallTablet = `(max-width: ${size.smallTablet}px)`;
 export const tablet = `(max-width: ${size.tablet}px)`;
 
 export const desktop = `(min-width: ${size.desktop}px)`;
+
+export const hugeDesktop = `(max-width: ${size.hugeDesktop}px)`;
 
 export const isMobile = () => {
   return window.innerWidth <= size.mobile;

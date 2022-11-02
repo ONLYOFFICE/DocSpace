@@ -89,7 +89,7 @@ public class TenantInfoSettingsHelper
     {
         tenantInfoSettings.IsDefault = true;
 
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), "logo");
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
         try
         {
             store.DeleteFilesAsync("", "*", false).Wait();
@@ -104,7 +104,7 @@ public class TenantInfoSettingsHelper
 
     public void SetCompanyLogo(string companyLogoFileName, byte[] data, TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), "logo");
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
 
         if (!tenantInfoSettings.IsDefault)
         {
@@ -136,7 +136,7 @@ public class TenantInfoSettingsHelper
             return _webImageSupplier.GetAbsoluteWebPath("logo/dark_general.png");
         }
 
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), "logo");
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
         return store.GetUriAsync(tenantInfoSettings.CompanyLogoFileName ?? "").Result.ToString();
     }
 
@@ -150,7 +150,7 @@ public class TenantInfoSettingsHelper
             return null;
         }
 
-        var storage = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), "logo");
+        var storage = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
 
         if (storage == null)
         {

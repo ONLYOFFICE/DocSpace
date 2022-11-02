@@ -183,6 +183,8 @@ const StyledTableRow = styled(TableRow)`
       .row_update-text,
       .expandButton,
       .badges,
+      .tag,
+      .author-cell,
       .table-container_cell > p {
         margin-top: 2px;
       }
@@ -306,7 +308,6 @@ const FilesTableRow = (props) => {
     id,
 
     isRooms,
-    onSelectType,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 

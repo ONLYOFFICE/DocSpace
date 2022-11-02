@@ -163,7 +163,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpPost("thirdparty/signup")]
     public void SignupAccount(SignupAccountRequestDto inDto)
     {
-        var employeeType = inDto.EmplType ?? EmployeeType.User;
+        var employeeType = inDto.EmplType ?? EmployeeType.RoomAdmin;
         var passwordHash = inDto.PasswordHash;
         var mustChangePassword = false;
         if (string.IsNullOrEmpty(passwordHash))
@@ -194,7 +194,7 @@ public class ThirdpartyController : ApiControllerBase
         {
             _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
             var newUser = CreateNewUser(GetFirstName(inDto, thirdPartyProfile), GetLastName(inDto, thirdPartyProfile), GetEmailAddress(inDto, thirdPartyProfile), passwordHash, employeeType, false);
-            var messageAction = employeeType == EmployeeType.User ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
+            var messageAction = employeeType == EmployeeType.RoomAdmin ? MessageAction.UserCreatedViaInvite : MessageAction.GuestCreatedViaInvite;
             _messageService.Send(MessageInitiator.System, messageAction, _messageTarget.Create(newUser.Id), newUser.DisplayUserName(false, _displayUserSettingsHelper));
             userID = newUser.Id;
             if (!string.IsNullOrEmpty(thirdPartyProfile.Avatar))
@@ -237,7 +237,7 @@ public class ThirdpartyController : ApiControllerBase
 
     private UserInfo CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)
     {
-        var isVisitor = employeeType == EmployeeType.Visitor;
+        var isUser = employeeType == EmployeeType.User;
 
         if (SetupInfo.IsSecretEmail(email))
         {
@@ -257,7 +257,7 @@ public class ThirdpartyController : ApiControllerBase
             userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
         }
 
-        return _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, isVisitor, fromInviteLink);
+        return _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, isUser, fromInviteLink);
     }
 
     private void SaveContactImage(Guid userID, string url)

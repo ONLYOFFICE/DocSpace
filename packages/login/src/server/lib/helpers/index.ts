@@ -7,6 +7,7 @@ import {
   getCapabilities,
   getAppearanceTheme,
 } from "@docspace/common/api/settings";
+import { checkIsAuthenticated } from "@docspace/common/api/user";
 
 export const getAssets = (): assetsType => {
   const manifest = fs.readFileSync(
@@ -55,7 +56,8 @@ export const getInitialState = async (
     buildInfo: IBuildInfo,
     providers: ProvidersType,
     capabilities: ICapabilities,
-    availableThemes: IThemes;
+    availableThemes: IThemes,
+    isAuth: any;
 
   [
     portalSettings,
@@ -63,12 +65,14 @@ export const getInitialState = async (
     providers,
     capabilities,
     availableThemes,
+    isAuth,
   ] = await Promise.all([
     getSettings(),
     getBuildVersion(),
     getAuthProviders(),
     getCapabilities(),
     getAppearanceTheme(),
+    checkIsAuthenticated()
   ]);
 
   const currentColorScheme = availableThemes.themes.find((theme) => {
@@ -82,6 +86,7 @@ export const getInitialState = async (
     capabilities,
     match: query,
     currentColorScheme,
+    isAuth
   };
 
   return initialState;

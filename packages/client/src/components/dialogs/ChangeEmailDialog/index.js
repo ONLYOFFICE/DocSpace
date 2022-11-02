@@ -121,6 +121,15 @@ class ChangeEmailDialogComponent extends React.Component {
     }
   };
 
+  onClose = () => {
+    const { onClose } = this.props;
+    const { isRequestRunning } = this.state;
+
+    if (!isRequestRunning) {
+      onClose();
+    }
+  };
+
   render() {
     console.log("ChangeEmailDialog render");
     const { t, tReady, visible, onClose, isTabletView } = this.props;
@@ -130,7 +139,7 @@ class ChangeEmailDialogComponent extends React.Component {
       <ModalDialogContainer
         isLoading={!tReady}
         visible={visible}
-        onClose={onClose}
+        onClose={this.onClose}
         displayType="modal"
       >
         <ModalDialog.Header>{t("EmailChangeTitle")}</ModalDialog.Header>
@@ -175,7 +184,7 @@ class ChangeEmailDialogComponent extends React.Component {
             size="normal"
             scale
             onClick={onClose}
-            isLoading={isRequestRunning}
+            isDisabled={isRequestRunning}
           />
         </ModalDialog.Footer>
       </ModalDialogContainer>

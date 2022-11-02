@@ -6,9 +6,6 @@ import CatalogItem from "@docspace/components/catalog-item";
 import { FolderType, ShareAccessRights } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@docspace/components/drag-and-drop";
-import withLoader from "../../../HOCs/withLoader";
-import Loaders from "@docspace/common/components/Loaders";
-import Loader from "@docspace/components/loader";
 import { isMobile } from "react-device-detect";
 
 const StyledDragAndDrop = styled(DragAndDrop)`
@@ -34,7 +31,7 @@ const Item = ({
   labelBadge,
   iconBadge,
 }) => {
-  const [isDragActive, setIsDragActive] = React.useState(false);
+  const [isDragActive, setIsDragActive] = useState(false);
 
   const isDragging = dragging ? showDragItems(item) : false;
 
@@ -125,6 +122,7 @@ const Items = ({
   data,
   showText,
   pathParts,
+  rootFolderType,
   selectedTreeNode,
   onClick,
   onBadgeClick,
@@ -161,6 +159,13 @@ const Items = ({
       if (selectedTreeNode.length > 0) {
         const isMainFolder = dataMainTree.indexOf(selectedTreeNode[0]) !== -1;
 
+        if (
+          rootFolderType === FolderType.Rooms &&
+          item.rootFolderType === FolderType.Rooms
+        ) {
+          return true;
+        }
+
         if (pathParts && pathParts.includes(item.id) && !isMainFolder)
           return true;
 
@@ -173,7 +178,7 @@ const Items = ({
         return `${item.id}` === selectedTreeNode[0];
       }
     },
-    [selectedTreeNode, pathParts, docSpace]
+    [selectedTreeNode, pathParts, docSpace, rootFolderType]
   );
   const getEndOfBlock = React.useCallback(
     (item) => {
@@ -348,7 +353,7 @@ const Items = ({
       );
 
       if (isVisitor) {
-        items.length > 1 && items.splice(1, 0, filesHeader);
+        items.length > 1 && items.splice(2, 0, filesHeader);
       } else {
         items.splice(3, 0, filesHeader);
       }
@@ -417,7 +422,7 @@ export default inject(
       isPrivacyFolder,
     } = treeFoldersStore;
 
-    const { id } = selectedFolderStore;
+    const { id, pathParts, rootFolderType } = selectedFolderStore;
     const { moveDragItems, uploadEmptyFolders } = filesActionsStore;
     const { setEmptyTrashDialogVisible } = dialogsStore;
 
@@ -430,7 +435,7 @@ export default inject(
       currentId: id,
       showText: auth.settingsStore.showText,
       docSpace: auth.settingsStore.docSpace,
-      pathParts: selectedFolderStore.pathParts,
+      pathParts,
       data: treeFolders,
       selectedTreeNode,
       draggableItems: dragging ? selection : null,
@@ -442,6 +447,7 @@ export default inject(
       uploadEmptyFolders,
       setEmptyTrashDialogVisible,
       trashIsEmpty,
+      rootFolderType,
     };
   }
 )(withTranslation(["Files", "Common", "Translations"])(observer(Items)));

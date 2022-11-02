@@ -106,7 +106,8 @@ public static class Actions
     public static readonly INotifyAction StorageDecryptionSuccess = new NotifyAction("storage_decryption_success");
     public static readonly INotifyAction StorageDecryptionError = new NotifyAction("storage_decryption_error");
 
-    public static readonly INotifyAction RoomInvite = new NotifyAction("room_invite");
+    public static readonly INotifyAction RoomInvite = new NotifyAction("room_invite", "room_invite");
+    public static readonly INotifyAction DocSpaceInvite = new NotifyAction("docspace_invite", "docspace_invite");
 
     public static readonly INotifyAction SaasAdminActivationV1 = new NotifyAction("saas_admin_activation_v1");
     public static readonly INotifyAction EnterpriseAdminActivationV1 = new NotifyAction("enterprise_admin_activation_v1");

@@ -8,6 +8,7 @@ class InviteLinksStore {
   peopleStore = null;
   userLink = null;
   guestLink = null;
+  adminLink = null;
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
@@ -17,8 +18,13 @@ class InviteLinksStore {
   setUserLink = (link) => {
     this.userLink = link;
   };
+
   setGuestLink = (link) => {
     this.guestLink = link;
+  };
+
+  setAdminLink = (link) => {
+    this.adminLink = link;
   };
 
   getPortalInviteLinks = async () => {
@@ -27,8 +33,10 @@ class InviteLinksStore {
     if (!isViewerAdmin) return Promise.resolve();
 
     const links = await getInvitationLinks();
+
     this.setUserLink(links.userLink);
     this.setGuestLink(links.guestLink);
+    this.setAdminLink(links.adminLink);
   };
 
   getShortenedLink = async (link, forUser = false) => {

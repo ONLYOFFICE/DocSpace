@@ -368,7 +368,6 @@ class PasswordInput extends React.Component {
       <>
         <InputBlock
           className="input-relative"
-          id={id}
           name={inputName}
           hasError={hasError}
           isDisabled={isDisabled}
@@ -412,10 +411,12 @@ class PasswordInput extends React.Component {
       style,
       simpleView,
       isDisabled,
+      id,
     } = this.props;
 
     return (
       <StyledInput
+        id={id}
         onValidateInput={onValidateInput}
         className={className}
         style={style}

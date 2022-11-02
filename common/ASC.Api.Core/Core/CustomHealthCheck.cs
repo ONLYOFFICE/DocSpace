@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using CsvHelper;
+
 namespace ASC.Api.Core.Core;
 
 public static class CustomHealthCheck
@@ -64,6 +66,7 @@ public static class CustomHealthCheck
         }
 
         var elasticSettings = configuration.GetSection("elastic");
+        
         if (elasticSettings != null && elasticSettings.GetChildren().Any())
         {
             var host = elasticSettings.GetSection("Host").Value ?? "localhost";
@@ -77,6 +80,24 @@ public static class CustomHealthCheck
                                           name: "elasticsearch",
                                           tags: new string[] { "elasticsearch" });
             }
+        }
+
+        var redisConfiguration = configuration.GetSection("Redis").Get<RedisConfiguration>();
+
+        if (redisConfiguration != null)
+        {
+            hcBuilder.AddRedis(redisConfiguration.ConfigurationOptions.ToString(),
+                               name: "redis",
+                               tags: new string[] { "redis" });
+        }
+
+        var rabbitMQConfiguration = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
+
+        if (rabbitMQConfiguration != null)
+        {
+            hcBuilder.AddRabbitMQ(x => rabbitMQConfiguration.GetConnectionFactory(),
+                              name: "rabbitMQ",
+                              tags: new string[] { "rabbitMQ" });
         }
 
         return services;

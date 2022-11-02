@@ -80,9 +80,9 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return Task.FromResult(ProviderInfo.ToFolder(ProviderInfo.RootFolder));
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider)
     {
-        if (CheckInvalidFilter(filterType))
+        if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.SharePoint))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
@@ -102,9 +102,9 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return rooms;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider)
     {
-        if (CheckInvalidFilter(filterType))
+        if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.SharePoint))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }

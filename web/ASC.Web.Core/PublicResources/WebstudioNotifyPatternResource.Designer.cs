@@ -329,7 +329,17 @@ namespace ASC.Web.Core.PublicResources {
                 return ResourceManager.GetString("ButtonConfirmEmail", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+
+        ///   Looks up a localized string similar to Confirm DocSpace Invite.
+        /// </summary>
+        public static string ButtonConfirmDocSpaceInvite {
+            get {
+                return ResourceManager.GetString("ButtonConfirmDocSpaceInvite", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Confirm Portal Address Change.
         /// </summary>

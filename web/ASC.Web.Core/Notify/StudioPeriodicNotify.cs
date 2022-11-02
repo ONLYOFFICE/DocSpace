@@ -279,7 +279,7 @@ public class StudioPeriodicNotify
                         new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
                         new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
                         TagValues.GreenButton(greenButtonText, greenButtonUrl),
-                        new TagValue(CommonTags.Footer, _userManager.IsAdmin(u) ? "common" : "social"));
+                        new TagValue(CommonTags.Footer, _userManager.IsDocSpaceAdmin(u) ? "common" : "social"));
                 }
             }
             catch (Exception err)
@@ -446,7 +446,7 @@ public class StudioPeriodicNotify
                         Thread.CurrentThread.CurrentUICulture = culture;
 
                         client.SendNoticeToAsync(
-                                _userManager.IsAdmin(u) ? Actions.OpensourceAdminDocsTipsV1 : Actions.OpensourceUserDocsTipsV1,
+                                _userManager.IsDocSpaceAdmin(u) ? Actions.OpensourceAdminDocsTipsV1 : Actions.OpensourceUserDocsTipsV1,
                                 new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                             new[] { senderName },
                                 new TagValue(Tags.UserName, u.DisplayUserName(_displayUserSettingsHelper)),

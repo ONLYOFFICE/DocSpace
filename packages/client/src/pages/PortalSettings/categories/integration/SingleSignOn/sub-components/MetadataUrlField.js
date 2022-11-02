@@ -17,7 +17,7 @@ const MetadataUrlField = ({ labelText, name, placeholder, tooltipContent }) => {
 
   return (
     <div className="metadata-field">
-      <Text className="label" fontSize="13px" fontWeight={600}>
+      <Text className="label" fontSize="13px" as="div" fontWeight={600}>
         {labelText}
         <HelpButton tooltipContent={tooltipContent} />
       </Text>

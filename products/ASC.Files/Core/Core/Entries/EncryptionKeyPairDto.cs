@@ -62,7 +62,7 @@ public class EncryptionKeyPairDtoHelper
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(privateKeyEnc);
 
         var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        if (!_authContext.IsAuthenticated || _userManager.IsVisitor(user))
+        if (!_authContext.IsAuthenticated || _userManager.IsUser(user))
         {
             throw new SecurityException();
         }

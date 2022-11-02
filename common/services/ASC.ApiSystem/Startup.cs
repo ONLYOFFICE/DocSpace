@@ -80,7 +80,6 @@ public class Startup
         services.AddSingleton(jsonOptions);
 
         _diHelper.AddControllers();
-        _diHelper.TryAdd<CultureMiddleware>();
         _diHelper.TryAdd<IpSecurityFilter>();
         _diHelper.TryAdd<PaymentFilter>();
         _diHelper.TryAdd<ProductSecurityFilter>();
@@ -122,11 +121,19 @@ public class Startup
 
         app.UseAuthorization();
 
-        app.UseCultureMiddleware();
-
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapCustom();
+
+            endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+            endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
+            {
+                Predicate = r => r.Name.Contains("self")
+            });
         });
     }
 }

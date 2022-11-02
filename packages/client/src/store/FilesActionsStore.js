@@ -18,6 +18,7 @@ import {
   FileStatus,
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
+import { isMobile } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 import { checkProtocol } from "../helpers/files-helpers";
@@ -26,6 +27,7 @@ import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
 import api from "@docspace/common/api";
+import { isTablet } from "@docspace/components/utils/device";
 
 class FilesActionStore {
   authStore;
@@ -379,6 +381,56 @@ class FilesActionStore {
     }
   };
 
+  emptyArchive = async (translations) => {
+    const {
+      secondaryProgressDataStore,
+      loopFilesOperations,
+      clearActiveOperations,
+    } = this.uploadDataStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+    const { isArchiveFolder } = this.treeFoldersStore;
+    const { addActiveItems, folders, getIsEmptyTrash } = this.filesStore;
+
+    const folderIds = folders.map((f) => f.id);
+    if (isArchiveFolder) addActiveItems(null, folderIds);
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations.deleteOperation,
+      alert: false,
+    });
+
+    try {
+      await removeFiles(folderIds, null, true, true).then(async (res) => {
+        if (res[0]?.error) return Promise.reject(res[0].error);
+        const data = res[0] ? res[0] : null;
+        const pbData = {
+          icon: "trash",
+          label: translations.deleteOperation,
+        };
+        await loopFilesOperations(data, pbData);
+        toastr.success(translations.successOperation);
+        this.updateCurrentFolder(null, folderIds);
+        // getIsEmptyTrash();
+        clearActiveOperations(null, folderIds);
+      });
+    } catch (err) {
+      clearActiveOperations(null, folderIds);
+      setSecondaryProgressBarData({
+        visible: true,
+        alert: true,
+      });
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+
+      return toastr.error(err.message ? err.message : err);
+    }
+  };
+
   downloadFiles = async (fileConvertIds, folderIds, translations) => {
     const {
       clearActiveOperations,
@@ -595,6 +647,10 @@ class FilesActionStore {
 
       try {
         await this.deleteItemOperation(isFile, itemId, translations, isRoom);
+
+        const id = Array.isArray(itemId) ? itemId : [itemId];
+
+        clearActiveOperations(isFile && id, !isFile && id);
       } catch (err) {
         clearActiveOperations(isFile && [itemId], !isFile && [itemId]);
         setSecondaryProgressBarData({
@@ -779,6 +835,8 @@ class FilesActionStore {
   setPinAction = (action, id) => {
     const { pinRoom, unpinRoom, updateRoomPin, setSelected } = this.filesStore;
 
+    const { selection, setSelection } = this.authStore.infoPanelStore;
+
     const items = Array.isArray(id) ? id : [id];
 
     const actions = [];
@@ -793,6 +851,9 @@ class FilesActionStore {
         return Promise.all(actions)
           .then(() => {
             this.updateCurrentFolder(null, items);
+            if (selection) {
+              setSelection({ ...selection, pinned: true });
+            }
           })
           .then(() => setSelected("close"))
           .finally(() => toastr.success("Room pinned"));
@@ -804,6 +865,9 @@ class FilesActionStore {
         return Promise.all(actions)
           .then(() => {
             this.updateCurrentFolder(null, items);
+            if (selection) {
+              setSelection({ ...selection, pinned: false });
+            }
           })
           .then(() => setSelected("close"))
           .finally(() => toastr.success("Room unpinned"));
@@ -812,13 +876,17 @@ class FilesActionStore {
     }
   };
 
-  setArchiveAction = async (action, itemId) => {
+  setArchiveAction = async (action, folders, t) => {
     const {
       addActiveItems,
       moveRoomToArchive,
       removeRoomFromArchive,
       setSelected,
     } = this.filesStore;
+
+    const { setSelectedFolder } = this.selectedFolderStore;
+
+    const { roomsFolder, isRoomsFolder } = this.treeFoldersStore;
 
     const {
       secondaryProgressDataStore,
@@ -829,20 +897,17 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
-    const items = Array.isArray(itemId) ? itemId : [itemId];
+    const items = Array.isArray(folders)
+      ? folders.map((x) => (x?.id ? x.id : x))
+      : [folders.id];
 
     setSecondaryProgressBarData({
-      icon: "trash",
+      icon: "move",
       visible: true,
       percent: 0,
       label: "Archive room",
       alert: false,
     });
-
-    const pbData = {
-      icon: "trash",
-      label: "Archive room operation",
-    };
 
     addActiveItems(null, items);
 
@@ -857,11 +922,29 @@ class FilesActionStore {
         return Promise.all(actions)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
+
+            const pbData = {
+              label: "Archive room operation",
+            };
             const data = res ? res : null;
             await this.uploadDataStore.loopFilesOperations(data, pbData);
-            this.updateCurrentFolder(null, items);
+
+            if (!isRoomsFolder) {
+              setSelectedFolder(roomsFolder);
+            }
+
+            this.updateCurrentFolder();
           })
-          .then(() => toastr.success("Room moved to archive"))
+          .then(() => {
+            const successTranslation =
+              folders.length !== 1 && Array.isArray(folders)
+                ? t("ArchivedRoomsAction")
+                : Array.isArray(folders)
+                ? t("ArchivedRoomAction", { name: folders[0].title })
+                : t("ArchivedRoomAction", { name: folders.title });
+
+            toastr.success(successTranslation);
+          })
           .then(() => setSelected("close"))
           .catch((err) => {
             clearActiveOperations(null, items);
@@ -880,11 +963,24 @@ class FilesActionStore {
         return Promise.all(actions)
           .then(async (res) => {
             if (res[0]?.error) return Promise.reject(res[0].error);
+
+            const pbData = {
+              label: "Archive room operation",
+            };
             const data = res ? res : null;
             await this.uploadDataStore.loopFilesOperations(data, pbData);
             this.updateCurrentFolder(null, [items]);
           })
-          .then(() => toastr.success("Room removed from archive"))
+          .then(() => {
+            const successTranslation =
+              folders.length !== 1 && Array.isArray(folders)
+                ? t("UnarchivedRoomsAction")
+                : Array.isArray(folders)
+                ? t("UnarchivedRoomAction", { name: folders[0].title })
+                : t("UnarchivedRoomAction", { name: folders.title });
+
+            toastr.success(successTranslation);
+          })
           .then(() => setSelected("close"))
           .catch((err) => {
             clearActiveOperations(null, items);
@@ -932,14 +1028,21 @@ class FilesActionStore {
     fetchRooms(id, newFilter).finally(() => setIsLoading(false));
   };
 
-  selectType = (type) => {
+  selectOption = ({ option, value }) => {
     const { roomsFilter, fetchRooms, setIsLoading } = this.filesStore;
     const { id } = this.selectedFolderStore;
 
     const newFilter = roomsFilter.clone();
     const tags = newFilter.tags ? [...newFilter.tags] : [];
     newFilter.tags = [...tags];
-    newFilter.type = type;
+
+    if (option === "defaultTypeRoom") {
+      newFilter.type = value;
+    }
+
+    if (option === "typeProvider") {
+      newFilter.provider = value;
+    }
 
     setIsLoading(true);
     fetchRooms(id, newFilter).finally(() => setIsLoading(false));
@@ -1228,28 +1331,28 @@ class FilesActionStore {
     this.setPinAction("unpin", items);
   };
 
-  moveRoomsToArchive = () => {
+  moveRoomsToArchive = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
 
     selection.forEach((item) => {
-      items.push(item.id);
+      items.push(item);
     });
 
-    this.setArchiveAction("archive", items);
+    this.setArchiveAction("archive", items, t);
   };
 
-  moveRoomsFromArchive = () => {
+  moveRoomsFromArchive = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
 
     selection.forEach((item) => {
-      items.push(item.id);
+      items.push(item);
     });
 
-    this.setArchiveAction("unarchive", items);
+    this.setArchiveAction("unarchive", items, t);
   };
 
   deleteRooms = (t) => {
@@ -1272,6 +1375,14 @@ class FilesActionStore {
     this.deleteItemAction(items, translations, null, null, true);
   };
 
+  onShowInfoPanel = () => {
+    const { selection } = this.filesStore;
+    const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+
+    setSelection([selection]);
+    setIsVisible(true);
+  };
+
   getOption = (option, t) => {
     const {
       setSharingPanelVisible,
@@ -1282,6 +1393,15 @@ class FilesActionStore {
     } = this.dialogsStore;
 
     switch (option) {
+      case "show-info":
+        if (!isTablet() && !isMobile) return null;
+        else
+          return {
+            key: "show-info",
+            label: t("Common:Info"),
+            iconUrl: "/static/images/info.outline.react.svg",
+            onClick: this.onShowInfoPanel,
+          };
       case "copy":
         if (!this.isAvailableOption("copy")) return null;
         else
@@ -1339,17 +1459,17 @@ class FilesActionStore {
       case "archive":
         return {
           key: "archive",
-          label: t("ToArchive"),
+          label: t("Archived"),
           iconUrl: "/static/images/room.archive.svg",
-          onClick: this.moveRoomsToArchive,
+          onClick: () => this.moveRoomsToArchive(t),
           disabled: false,
         };
       case "unarchive":
         return {
           key: "unarchive",
-          label: t("FromArchive"),
-          iconUrl: "/static/images/room.archive.svg",
-          onClick: this.moveRoomsFromArchive,
+          label: t("Common:Restore"),
+          iconUrl: "images/subtract.react.svg",
+          onClick: () => this.moveRoomsFromArchive(t),
           disabled: false,
         };
       case "delete-room":
@@ -1406,8 +1526,13 @@ class FilesActionStore {
   getArchiveRoomsFolderOptions = (itemsCollection, t) => {
     const archive = this.getOption("unarchive", t);
     const deleteOption = this.getOption("delete-room", t);
+    const showOption = this.getOption("show-info", t);
 
-    itemsCollection.set("unarchive", archive).set("delete", deleteOption);
+    itemsCollection
+      .set("unarchive", archive)
+      .set("show-info", showOption)
+      .set("delete", deleteOption);
+
     return this.convertToArray(itemsCollection);
   };
 
