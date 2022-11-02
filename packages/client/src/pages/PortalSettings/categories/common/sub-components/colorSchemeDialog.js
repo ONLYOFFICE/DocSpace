@@ -145,14 +145,6 @@ const ColorSchemeDialog = (props) => {
               onClick={onSaveColorSchemeDialog}
             />
           )}
-          {showRestoreToDefaultButtonDialog && (
-            <Button
-              label="Restore to default"
-              className="button"
-              size="normal"
-              scale={true}
-            />
-          )}
         </>
       </ModalDialog.Footer>
     </StyledComponent>
