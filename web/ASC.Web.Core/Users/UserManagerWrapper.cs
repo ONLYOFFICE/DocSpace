@@ -48,6 +48,7 @@ public sealed class UserManagerWrapper
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly SettingsManager _settingsManager;
     private readonly UserFormatter _userFormatter;
+    private readonly CountRoomAdminChecker _countManagerChecker;
 
     public UserManagerWrapper(
         StudioNotifyService studioNotifyService,
@@ -60,7 +61,8 @@ public sealed class UserManagerWrapper
         IPSecurity.IPSecurity iPSecurity,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         SettingsManager settingsManager,
-        UserFormatter userFormatter)
+        UserFormatter userFormatter,
+        CountRoomAdminChecker countManagerChecker)
     {
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -73,6 +75,7 @@ public sealed class UserManagerWrapper
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _settingsManager = settingsManager;
         _userFormatter = userFormatter;
+        _countManagerChecker = countManagerChecker;
     }
 
     private bool TestUniqueUserName(string uniqueName)
@@ -108,8 +111,49 @@ public sealed class UserManagerWrapper
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
-    public async Task<UserInfo> AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isVisitor = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false, 
-        bool updateExising = false)
+    public async Task<UserInfo> AddInvitedUserAsync(string email, EmployeeType type)
+    {
+        var mail = new MailAddress(email);
+
+        if (_userManager.GetUserByEmail(mail.Address).Id != Constants.LostUser.Id)
+        {
+            throw new InvalidOperationException($"User with email {mail.Address} already exists or is invited");
+        }
+
+        if (type is EmployeeType.RoomAdmin or EmployeeType.DocSpaceAdmin)
+        {
+            await _countManagerChecker.CheckAppend();
+        }
+
+        var user = new UserInfo
+        {
+            Email = mail.Address,
+            UserName = mail.User,
+            LastName = string.Empty,
+            FirstName = string.Empty,
+            ActivationStatus = EmployeeActivationStatus.Pending,
+            Status = EmployeeStatus.Active,
+        };
+
+        var newUser = await _userManager.SaveUserInfo(user);
+
+        var groupId = type switch
+        {
+            EmployeeType.User => Constants.GroupUser.ID,
+            EmployeeType.DocSpaceAdmin => Constants.GroupAdmin.ID,
+            _ => Guid.Empty,
+        };
+
+        if (groupId != Guid.Empty)
+        {
+            await _userManager.AddUserIntoGroup(newUser.Id, groupId);
+        }
+
+        return newUser;
+    }
+
+    public async Task<UserInfo> AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isUser = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
+        bool updateExising = false, bool isAdmin = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
 
@@ -137,7 +181,7 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isVisitor, isCardDav);
+        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -151,7 +195,7 @@ public sealed class UserManagerWrapper
             //NOTE: Notify user only if it's active
             if (afterInvite)
             {
-                if (isVisitor)
+                if (isUser)
                 {
                     _studioNotifyService.GuestInfoAddedAfterInvite(newUserInfo);
                 }
@@ -168,7 +212,7 @@ public sealed class UserManagerWrapper
             else
             {
                 //Send user invite
-                if (isVisitor)
+                if (isUser)
                 {
                     _studioNotifyService.GuestInfoActivation(newUserInfo);
                 }
@@ -180,9 +224,13 @@ public sealed class UserManagerWrapper
             }
         }
 
-        if (isVisitor)
+        if (isUser)
         {
             await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
+        }
+        else if (isAdmin)
+        {
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID);
         }
 
         return newUserInfo;

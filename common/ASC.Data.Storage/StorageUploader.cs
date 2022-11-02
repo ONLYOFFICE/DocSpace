@@ -159,8 +159,8 @@ public class MigrateOperation : DistributedTaskProgress
 
             foreach (var module in _modules)
             {
-                var oldStore = storageFactory.GetStorage(_configPath, _tenantId.ToString(), module);
-                var store = storageFactory.GetStorageFromConsumer(_configPath, _tenantId.ToString(), module, storageSettingsHelper.DataStoreConsumer(_settings));
+                var oldStore = storageFactory.GetStorage(_configPath, _tenantId, module);
+                var store = storageFactory.GetStorageFromConsumer(_configPath, _tenantId, module, storageSettingsHelper.DataStoreConsumer(_settings));
                 var domains = _storageFactoryConfig.GetDomainList(_configPath, module).ToList();
 
                 var crossModuleTransferUtility = new CrossModuleTransferUtility(options, _tempStream, tempPath, oldStore, store);

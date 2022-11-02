@@ -165,7 +165,7 @@ public class FileMarker
             }
             if (obj.FileEntry.ProviderEntry)
             {
-                userIDs = userIDs.Where(u => !_userManager.IsVisitor(u)).ToList();
+                userIDs = userIDs.Where(u => !_userManager.IsUser(u)).ToList();
 
                 if (obj.FileEntry.RootFolderType == FolderType.VirtualRooms)
                 {

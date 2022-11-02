@@ -574,7 +574,7 @@ public class BackupPortalTask : PortalTaskBase
 
     private async Task DoDumpFile(BackupFileInfo file, string dir)
     {
-        var storage = StorageFactory.GetStorage(ConfigPath, file.Tenant.ToString(), file.Module);
+        var storage = StorageFactory.GetStorage(ConfigPath, file.Tenant, file.Module);
         var filePath = CrossPlatform.PathCombine(dir, file.GetZipKey());
         var dirName = Path.GetDirectoryName(filePath);
 
@@ -708,7 +708,7 @@ public class BackupPortalTask : PortalTaskBase
 
             foreach (var file in group)
             {
-                var storage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
+                var storage = StorageFactory.GetStorage(ConfigPath, TenantId, group.Key);
                 var file1 = file;
                 ActionInvoker.Try(async state =>
                 {

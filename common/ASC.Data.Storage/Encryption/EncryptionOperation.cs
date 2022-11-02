@@ -92,7 +92,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 foreach (var module in _modules)
                 {
-                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module));
+                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id, module));
                 }
 
                 Parallel.ForEach(dictionary, async (elem) =>
@@ -256,7 +256,7 @@ public class EncryptionOperation : DistributedTaskProgress
         {
             foreach (var module in _modules)
             {
-                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
+                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id, module);
 
                 if (await store.IsFileAsync(string.Empty, ProgressFileName))
                 {

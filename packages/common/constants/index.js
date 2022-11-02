@@ -27,6 +27,7 @@ export const EmployeeStatus = Object.freeze({
 export const EmployeeType = Object.freeze({
   User: 1,
   Guest: 2,
+  Admin: 3,
   UserString: "user",
   RoomAdmin: "manager",
   DocSpaceAdmin: "admin",

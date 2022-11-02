@@ -603,7 +603,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
                 foreach (var user in users)
                 {
-                    if (!user.Equals(Constants.LostUser) && !_userManager.IsVisitor(user))
+                    if (!user.Equals(Constants.LostUser) && !_userManager.IsUser(user))
                     {
                         if (!usersWithRightsFlat.Contains(user.Id.ToString()))
                         {
@@ -1050,7 +1050,7 @@ public class LdapOperationJob : DistributedTaskProgress
                 case LdapOperationType.Save:
                 case LdapOperationType.Sync:
                     removedUser.Sid = null;
-                    if (!removedUser.IsOwner(_tenantManager.GetCurrentTenant()) && !(_currentUser != null && _currentUser.Id == removedUser.Id && _userManager.IsAdmin(removedUser)))
+                    if (!removedUser.IsOwner(_tenantManager.GetCurrentTenant()) && !(_currentUser != null && _currentUser.Id == removedUser.Id && _userManager.IsDocSpaceAdmin(removedUser)))
                     {
                         removedUser.Status = EmployeeStatus.Terminated; // Disable user on portal
                     }

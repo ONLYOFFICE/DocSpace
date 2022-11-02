@@ -125,7 +125,7 @@ public class QuotaSyncJob : DistributedTaskProgress
 
             foreach (var module in storageModules)
             {
-                var storage = _storageFactory.GetStorage(TenantId.ToString(), module);
+                var storage = _storageFactory.GetStorage(TenantId, module);
                 await storage.ResetQuotaAsync("");
 
                 var domains = _storageFactoryConfig.GetDomainList(string.Empty, module);

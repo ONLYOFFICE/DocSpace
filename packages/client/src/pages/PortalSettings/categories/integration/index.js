@@ -52,10 +52,11 @@ const IntegrationWrapper = (props) => {
   }
 
   const load = async () => {
-    await loadBaseInfo();
     const path = location.pathname;
     const currentTab = data.findIndex((item) => path.includes(item.id));
     if (currentTab !== -1) setCurrentTab(currentTab);
+
+    await loadBaseInfo();
     setIsLoading(true);
   };
 

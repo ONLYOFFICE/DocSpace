@@ -163,7 +163,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpPost("thirdparty/signup")]
     public async Task SignupAccount(SignupAccountRequestDto inDto)
     {
-        var employeeType = inDto.EmplType ?? EmployeeType.User;
+        var employeeType = inDto.EmplType ?? EmployeeType.RoomAdmin;
         var passwordHash = inDto.PasswordHash;
         var mustChangePassword = false;
         if (string.IsNullOrEmpty(passwordHash))
@@ -237,7 +237,7 @@ public class ThirdpartyController : ApiControllerBase
 
     private async Task<UserInfo> CreateNewUser(string firstName, string lastName, string email, string passwordHash, EmployeeType employeeType, bool fromInviteLink)
     {
-        var isVisitor = employeeType == EmployeeType.Visitor;
+        var isUser = employeeType == EmployeeType.User;
 
         if (SetupInfo.IsSecretEmail(email))
         {
@@ -257,7 +257,7 @@ public class ThirdpartyController : ApiControllerBase
             userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
         }
 
-        return await _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, isVisitor, fromInviteLink);
+        return await _userManagerWrapper.AddUser(userInfo, passwordHash, true, true, isUser, fromInviteLink);
     }
 
     private async Task SaveContactImage(Guid userID, string url)

@@ -1,4 +1,5 @@
-﻿// (c) Copyright Ascensio System SIA 2010-2022
+﻿
+ // (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -44,7 +45,7 @@ public class LdapUserManager
     private readonly UserFormatter _userFormatter;
     private readonly IServiceProvider _serviceProvider;
     private readonly NovellLdapUserImporter _novellLdapUserImporter;
-    private readonly CountManagerChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
     private LdapLocalization _resource;
 
     public LdapUserManager(
@@ -59,7 +60,7 @@ public class LdapUserManager
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserFormatter userFormatter,
         NovellLdapUserImporter novellLdapUserImporter,
-        CountManagerChecker countManagerChecker)
+        CountRoomAdminChecker countRoomAdminChecker)
     {
         _logger = logger;
         _userManager = userManager;
@@ -72,7 +73,7 @@ public class LdapUserManager
         _userFormatter = userFormatter;
         _serviceProvider = serviceProvider;
         _novellLdapUserImporter = novellLdapUserImporter;
-        _countManagerChecker = countManagerChecker;
+        _countRoomAdminChecker = countRoomAdminChecker;
     }
 
     public void Init(LdapLocalization resource = null)
@@ -137,7 +138,7 @@ public class LdapUserManager
 
             try
             {
-               await _countManagerChecker.CheckAppend();
+               await _countRoomAdminChecker.CheckAppend();
             }
             catch (Exception)
             {

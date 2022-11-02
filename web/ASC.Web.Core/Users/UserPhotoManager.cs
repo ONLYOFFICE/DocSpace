@@ -130,7 +130,7 @@ public class UserPhotoManagerCache
                     scope.ServiceProvider.GetRequiredService<TenantManager>().SetCurrentTenant(data.TenantId);
                     var storageFactory = scope.ServiceProvider.GetRequiredService<StorageFactory>();
 
-                    var storage = storageFactory.GetStorage(data.TenantId.ToString(), "userPhotos");
+                    var storage = storageFactory.GetStorage(data.TenantId, "userPhotos");
 
                     try
                     {
@@ -904,7 +904,7 @@ public class UserPhotoManager
     private IDataStore _dataStore;
     private IDataStore GetDataStore()
     {
-        return _dataStore ??= _storageFactory.GetStorage(Tenant.Id.ToString(), "userPhotos");
+        return _dataStore ??= _storageFactory.GetStorage(Tenant.Id, "userPhotos");
     }
 
     public static CacheSize ToCache(Size size)

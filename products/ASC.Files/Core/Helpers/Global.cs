@@ -158,7 +158,7 @@ public class Global
         }
     }
 
-    public bool IsAdministrator => _fileSecurityCommon.IsAdministrator(_authContext.CurrentAccount.ID);
+    public bool IsDocSpaceAdministrator => _fileSecurityCommon.IsDocSpaceAdministrator(_authContext.CurrentAccount.ID);
 
     public string GetDocDbKey()
     {
@@ -238,12 +238,12 @@ public class GlobalStore
 
     public IDataStore GetStore(bool currentTenant = true)
     {
-        return _storageFactory.GetStorage(currentTenant ? _tenantManager.GetCurrentTenant().Id.ToString() : string.Empty, FileConstant.StorageModule);
+        return _storageFactory.GetStorage(currentTenant ? _tenantManager.GetCurrentTenant().Id : null, FileConstant.StorageModule);
     }
 
     public IDataStore GetStoreTemplate()
     {
-        return _storageFactory.GetStorage(string.Empty, FileConstant.StorageTemplate);
+        return _storageFactory.GetStorage(null, FileConstant.StorageTemplate);
     }
 }
 
@@ -379,11 +379,6 @@ public class GlobalFolder
             return default;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
-        {
-            return default;
-        }
-
         var key = $"archive/{_tenantManager.GetCurrentTenant().Id}";
 
         if (!DocSpaceFolderCache.TryGetValue(key, out var result))
@@ -396,7 +391,7 @@ public class GlobalFolder
         return result;
     }
 
-    public async ValueTask<T> GetFolderArchive<T>(IDaoFactory daoFactory)
+    public async ValueTask<T> GetFolderArchiveAsync<T>(IDaoFactory daoFactory)
     {
         return (T)Convert.ChangeType(await GetFolderArchiveAsync(daoFactory), typeof(T));
     }
@@ -416,7 +411,7 @@ public class GlobalFolder
             return default;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return default;
         }
@@ -570,7 +565,7 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return 0;
         }
@@ -604,7 +599,7 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return 0;
         }

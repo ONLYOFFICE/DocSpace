@@ -6,6 +6,8 @@ import Loaders from "@docspace/common/components/Loaders";
 
 import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
 
+import { ShareAccessRights } from "@docspace/common/constants";
+
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import User from "./User";
@@ -23,6 +25,7 @@ const Members = ({
 
   getRoomMembers,
   changeUserType,
+  setInvitePanelOptions,
 }) => {
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
@@ -65,7 +68,12 @@ const Members = ({
   }, [selection]);
 
   const onAddUsers = () => {
-    toastr.warning("Work in progress");
+    setInvitePanelOptions({
+      visible: true,
+      roomId: selection.id,
+      hideSelector: false,
+      defaultAccess: ShareAccessRights.ReadOnly,
+    });
   };
 
   if (showLoader) return <Loaders.InfoPanelViewLoader view="members" />;

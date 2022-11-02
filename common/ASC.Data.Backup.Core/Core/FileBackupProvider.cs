@@ -68,7 +68,7 @@ public class FileBackupProvider : IBackupProvider
             var backupPath = GetBackupPath(file);
             if (!backupKeys.Contains(backupPath))
             {
-                var storage = _storageFactory.GetStorage(config, tenant.ToString(), file.Module);
+                var storage = _storageFactory.GetStorage(config, tenant, file.Module);
                 var errors = 0;
                 while (true)
                 {
@@ -111,7 +111,7 @@ public class FileBackupProvider : IBackupProvider
             {
                 using (var entry = dataOperator.GetEntry(GetBackupPath(backupInfo)))
                 {
-                    var storage = _storageFactory.GetStorage(config, tenant.ToString(), backupInfo.Module, null);
+                    var storage = _storageFactory.GetStorage(config, tenant, backupInfo.Module, null);
                     try
                     {
                         await storage.SaveAsync(backupInfo.Domain, backupInfo.Path, entry);
@@ -133,7 +133,7 @@ public class FileBackupProvider : IBackupProvider
         {
             if (_allowedModules.Contains(module))
             {
-                var store = _storageFactory.GetStorage(config, tenant.ToString(), module);
+                var store = _storageFactory.GetStorage(config, tenant, module);
                 var domainList = _storageFactoryConfig.GetDomainList(config, module);
 
                 foreach (var domain in domainList)

@@ -160,8 +160,8 @@ public class TransferPortalTask : PortalTaskBase
         var groupsProcessed = 0;
         foreach (var group in fileGroups)
         {
-            var baseStorage = StorageFactory.GetStorage(ConfigPath, TenantId.ToString(), group.Key);
-            var destStorage = StorageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping().ToString(), group.Key);
+            var baseStorage = StorageFactory.GetStorage(ConfigPath, TenantId, group.Key);
+            var destStorage = StorageFactory.GetStorage(ToConfigPath, columnMapper.GetTenantMapping(), group.Key);
             var utility = new CrossModuleTransferUtility(_logger, _tempStream, _tempPath, baseStorage, destStorage);
 
             foreach (var file in group)

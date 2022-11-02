@@ -220,8 +220,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
             var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
 
-            var canEditRoom = await FilesSecurity.CanEditRoomAsync(folder);
-
             if (folder == null)
             {
                 this[Err] = FilesCommonResource.ErrorMassage_FolderNotFound;
@@ -229,10 +227,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             else if (!await FilesSecurity.CanReadAsync(folder))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
-            }
-            else if (isRoom && !canEditRoom)
-            {
-                this[Err] = FilesCommonResource.ErrorMassage_SecurityException;
             }
             else if (!isRoom && (toFolder.FolderType == FolderType.VirtualRooms || toFolder.RootFolderType == FolderType.Archive))
             {
@@ -367,11 +361,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                     }
                     else
                     {
-                        if (!isRoom && !await FilesSecurity.CanDeleteAsync(folder))
-                        {
-                            this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
-                        }
-                        else if (isRoom && !await FilesSecurity.CanEditRoomAsync(folder))
+                        if (!await FilesSecurity.CanDeleteAsync(folder))
                         {
                             this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                         }

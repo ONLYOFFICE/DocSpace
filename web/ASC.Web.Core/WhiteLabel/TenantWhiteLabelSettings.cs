@@ -302,7 +302,7 @@ public class TenantWhiteLabelSettingsHelper
 
         tenantWhiteLabelSettings.SetLogoText(null);
 
-        var store = storage ?? _storageFactory.GetStorage(tenantId.ToString(), ModuleName);
+        var store = storage ?? _storageFactory.GetStorage(tenantId, ModuleName);
 
         try
         {
@@ -323,7 +323,7 @@ public class TenantWhiteLabelSettingsHelper
             try
             {
                 tenantWhiteLabelSettings.SetIsDefault(type, true);
-                var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), ModuleName);
+                var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, ModuleName);
                 await DeleteLogoFromStore(tenantWhiteLabelSettings, store, type);
             }
             catch (Exception e)
@@ -339,7 +339,7 @@ public class TenantWhiteLabelSettingsHelper
 
     public async Task SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data, IDataStore storage = null)
     {
-        var store = storage ?? _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), ModuleName);
+        var store = storage ?? _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, ModuleName);
 
         #region delete from storage if already exists
 
@@ -447,7 +447,7 @@ public class TenantWhiteLabelSettingsHelper
 
     private string GetAbsoluteStorageLogoPath(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool general)
     {
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), ModuleName);
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, ModuleName);
         var fileName = BuildLogoFileName(type, tenantWhiteLabelSettings.GetExt(type), general);
 
         if (store.IsFileAsync(fileName).Result)
@@ -487,7 +487,7 @@ public class TenantWhiteLabelSettingsHelper
             return null;
         }
 
-        var partnerStorage = _storageFactory.GetStorage(string.Empty, "static_partnerdata");
+        var partnerStorage = _storageFactory.GetStorage(null, "static_partnerdata");
 
         if (partnerStorage == null)
         {
@@ -518,7 +518,7 @@ public class TenantWhiteLabelSettingsHelper
 
     private Stream GetStorageLogoData(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool general)
     {
-        var storage = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), ModuleName);
+        var storage = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, ModuleName);
 
         if (storage == null)
         {
@@ -539,7 +539,7 @@ public class TenantWhiteLabelSettingsHelper
             return null;
         }
 
-        var partnerStorage = _storageFactory.GetStorage(string.Empty, "static_partnerdata");
+        var partnerStorage = _storageFactory.GetStorage(null, "static_partnerdata");
 
         if (partnerStorage == null)
         {
