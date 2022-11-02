@@ -5,12 +5,6 @@ export const StyledWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
 
-  .toggle-btn {
-    position: relative;
-    align-items: center;
-    height: 20px;
-    grid-gap: 12px !important;
-  }
   button {
     max-width: fit-content;
   }
