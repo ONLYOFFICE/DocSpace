@@ -46,7 +46,7 @@ cp -rf %{_builddir}/%{sourcename}/config/nginx/onlyoffice*.conf "%{buildroot}%{_
 cp -rf %{_builddir}/%{sourcename}/products/ASC.Files/Server/DocStore/* "%{buildroot}%{buildpath}/products/ASC.Files/server/DocStore/"
 cp -rf %{_builddir}/%{sourcename}/publish/products/ASC.Files/server/* "%{buildroot}%{buildpath}/products/ASC.Files/server/"
 cp -rf %{_builddir}/%{sourcename}/publish/products/ASC.People/server/* "%{buildroot}%{buildpath}/products/ASC.People/server/"
-cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.ApiSystem/service/* "%{buildroot}%{buildpath}/services/ASC.Web.Api/"
+cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.ApiSystem/service/* "%{buildroot}%{buildpath}/services/ASC.ApiSystem/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.ClearEvents/service/* "%{buildroot}%{buildpath}/services/ASC.ClearEvents/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Data.Backup.BackgroundTasks/service/* "%{buildroot}%{buildpath}/services/ASC.Data.Backup.BackgroundTasks/"
 cp -rf %{_builddir}/%{sourcename}/publish/services/ASC.Data.Backup/service/* "%{buildroot}%{buildpath}/services/ASC.Data.Backup/"
