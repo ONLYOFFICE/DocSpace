@@ -1,38 +1,14 @@
 import { inject, observer } from "mobx-react";
 import React, { useEffect, useState, useCallback } from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
-import styled from "styled-components";
 import TelegramConnectionContainer from "./sub-components/TelegramConnectionContainer";
 import RoomsActionsContainer from "./sub-components/RoomsActionsContainer";
 import DailyFeedContainer from "./sub-components/DailyFeedContainer";
 import UsefulTipsContainer from "./sub-components/UsefulTipsContainer";
 import ButtonsContainer from "./sub-components/ButtonsContainer";
 import { toastr } from "@docspace/components";
+import ModalDialogContainer from "./StyledComponent";
 
-const ModalDialogContainer = styled(ModalDialog)`
-  .toggle-btn {
-    position: relative;
-    align-items: center;
-    height: 20px;
-    grid-gap: 12px !important;
-  }
-  .toggle-btn_next {
-    margin-top: 12px;
-  }
-  button {
-    max-width: fit-content;
-  }
-  .subscription-container {
-    margin-bottom: 24px;
-    .subscription-title {
-      margin-bottom: 14px;
-    }
-    .subscription_click-text {
-      text-decoration: underline dashed;
-      cursor: pointer;
-    }
-  }
-`;
 const ManageNotificationsPanel = ({
   t,
   isPanelVisible,
