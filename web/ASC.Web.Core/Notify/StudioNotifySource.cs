@@ -47,7 +47,7 @@ public class StudioNotifySource : NotifySource
                 Actions.RestoreCompletedV115,
                 Actions.PortalDeactivate,
                 Actions.PortalDelete,
-                Actions.PortalDeleteSuccessV115,
+                Actions.PortalDeleteSuccessV1,
                 Actions.DnsChange,
                 Actions.ConfirmOwnerChange,
                 Actions.EmailChangeV115,
@@ -68,27 +68,6 @@ public class StudioNotifySource : NotifySource
 
                 Actions.UserMessageToAdmin,
 
-                Actions.SaasAdminActivationV115,
-                Actions.EnterpriseAdminActivationV10,
-                Actions.EnterpriseWhitelabelAdminActivationV10,
-                Actions.OpensourceAdminActivationV11,
-
-                Actions.SaasAdminWelcomeV115,
-                Actions.EnterpriseAdminWelcomeV10,
-                Actions.EnterpriseWhitelabelAdminWelcomeV10,
-                Actions.OpensourceAdminWelcomeV11,
-
-                Actions.SaasUserActivationV115,
-                Actions.EnterpriseUserActivationV10,
-                Actions.EnterpriseWhitelabelUserActivationV10,
-                Actions.OpensourceUserActivationV11,
-
-                Actions.SaasUserWelcomeV115,
-                Actions.EnterpriseUserWelcomeV10,
-                Actions.EnterpriseWhitelabelUserWelcomeV10,
-                Actions.EnterpriseWhitelabelUserWelcomeCustomMode,
-                Actions.OpensourceUserWelcomeV11,
-
                 Actions.SaasGuestActivationV115,
                 Actions.EnterpriseGuestActivationV10,
                 Actions.EnterpriseWhitelabelGuestActivationV10,
@@ -99,43 +78,15 @@ public class StudioNotifySource : NotifySource
                 Actions.EnterpriseWhitelabelGuestWelcomeV10,
                 Actions.OpensourceGuestWelcomeV11,
 
-                Actions.EnterpriseAdminCustomizePortalV10,
-                Actions.EnterpriseWhitelabelAdminCustomizePortalV10,
-                Actions.EnterpriseAdminInviteTeammatesV10,
-                Actions.EnterpriseAdminWithoutActivityV10,
-                Actions.EnterpriseAdminUserDocsTipsV10,
-                Actions.EnterpriseAdminUserAppsTipsV10,
+                Actions.EnterpriseAdminUserAppsTipsV1,
 
-                Actions.EnterpriseAdminTrialWarningBefore7V10,
-                Actions.EnterpriseAdminTrialWarningV10,
+                Actions.SaasAdminUserAppsTipsV1,
 
-                Actions.EnterpriseAdminPaymentWarningBefore7V10,
-                Actions.EnterpriseWhitelabelAdminPaymentWarningBefore7V10,
-                Actions.EnterpriseAdminPaymentWarningV10,
-                Actions.EnterpriseWhitelabelAdminPaymentWarningV10,
-
-                Actions.SaasAdminUserDocsTipsV115,
-                Actions.SaasAdminComfortTipsV115,
-                Actions.SaasAdminUserAppsTipsV115,
-
-                Actions.SaasAdminTrialWarningBefore5V115,
-                Actions.SaasAdminTrialWarningV115,
-                Actions.SaasAdminTrialWarningAfter1V115,
-                Actions.SaasAdminTrialWarningAfterHalfYearV115,
-
-                Actions.SaasAdminPaymentWarningEvery2MonthsV115,
-
-                Actions.SaasAdminModulesV115,
-
-                Actions.OpensourceAdminDocsTipsV11,
-                Actions.OpensourceUserDocsTipsV11,
+                Actions.SaasAdminModulesV1,
 
                 Actions.PersonalActivate,
                 Actions.PersonalAfterRegistration1,
-                Actions.PersonalAfterRegistration7,
-                Actions.PersonalAfterRegistration14,
-                Actions.PersonalAfterRegistration21,
-                Actions.PersonalAfterRegistration28,
+                Actions.PersonalAfterRegistration14V1,
                 Actions.PersonalConfirmation,
                 Actions.PersonalPasswordChangeV115,
                 Actions.PersonalEmailChangeV115,
@@ -162,7 +113,36 @@ public class StudioNotifySource : NotifySource
                 Actions.StorageEncryptionError,
                 Actions.StorageDecryptionStart,
                 Actions.StorageDecryptionSuccess,
-                Actions.StorageDecryptionError
+                Actions.StorageDecryptionError,
+
+                Actions.SaasAdminActivationV1,
+                Actions.EnterpriseAdminActivationV1,
+                Actions.EnterpriseWhitelabelAdminActivationV1,
+                Actions.OpensourceAdminActivationV1,
+
+
+                Actions.SaasAdminWelcomeV1,
+                Actions.EnterpriseAdminWelcomeV1,
+                Actions.EnterpriseWhitelabelAdminWelcomeV1,
+                Actions.OpensourceAdminWelcomeV1,
+
+                Actions.SaasAdminUserDocsTipsV1,
+                Actions.OpensourceAdminDocsTipsV1,
+                Actions.OpensourceUserDocsTipsV1,
+                Actions.EnterpriseAdminUserDocsTipsV1,
+
+                Actions.SaasAdminTrialWarningAfterHalfYearV1,
+
+                Actions.SaasUserWelcomeV1,
+                Actions.EnterpriseUserWelcomeV1,
+                Actions.EnterpriseWhitelabelUserWelcomeV1,
+                Actions.EnterpriseWhitelabelUserWelcomeCustomModeV1,
+                Actions.OpensourceUserWelcomeV1,
+
+                Actions.SaasUserActivationV1,
+                Actions.EnterpriseUserActivationV1,
+                Actions.EnterpriseWhitelabelUserActivationV1,
+                Actions.OpensourceUserActivationV1
             );
     }
 
