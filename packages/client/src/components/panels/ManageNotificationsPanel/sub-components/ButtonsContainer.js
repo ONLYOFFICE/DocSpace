@@ -1,7 +1,5 @@
 import { inject, observer } from "mobx-react";
 import React from "react";
-import styled from "styled-components";
-import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import { toastr } from "@docspace/components";
 const ButtonsContainer = (props) => {
@@ -9,20 +7,14 @@ const ButtonsContainer = (props) => {
     changeEmailSubscription,
     t,
     onClosePanel,
-    dailyFeedEmail,
-    isDailyFeedEmailSubscription,
     tipsSubscription,
     tipsEmail,
-    roomsActionsBadge,
   } = props;
 
   const onSavingChanges = async () => {
     const requests = [];
 
     const isUsefulTipsChanged = () => tipsEmail !== tipsSubscription;
-
-    const isDailyFeedChanged = () =>
-      dailyFeedEmail !== isDailyFeedEmailSubscription;
 
     if (isUsefulTipsChanged())
       requests.push(changeEmailSubscription(tipsEmail));
