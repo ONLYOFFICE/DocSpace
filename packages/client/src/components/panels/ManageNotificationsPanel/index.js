@@ -26,7 +26,11 @@ const ModalDialogContainer = styled(ModalDialog)`
   .subscription-container {
     margin-bottom: 24px;
     .subscription-title {
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .subscription_click-text {
+      text-decoration: underline dashed;
+      cursor: pointer;
     }
   }
 `;
