@@ -22,6 +22,7 @@ import Loader from "./sub-components/loaderAppearance";
 import { StyledComponent } from "./Appearance/StyledApperance.js";
 
 import BreakpointWarning from "../../../../components/BreakpointWarning/index";
+import ModalDialogDelete from "./sub-components/modalDialogDelete";
 
 const Appearance = (props) => {
   const {
@@ -83,6 +84,9 @@ const Appearance = (props) => {
 
   const [isDisabledEditButton, setIsDisabledEditButton] = useState(true);
   const [isDisabledDeleteButton, setIsDisabledDeleteButton] = useState(true);
+  const [isShowDeleteButton, setIsShowDeleteButton] = useState(false);
+
+  const [visibleDialog, setVisibleDialog] = useState(false);
 
   const checkImg = (
     <img className="check-img" src="/static/images/check.white.svg" />
@@ -124,7 +128,13 @@ const Appearance = (props) => {
     } else {
       setAbilityAddTheme(true);
     }
-  }, [appearanceTheme.length, setAbilityAddTheme]);
+
+    if (appearanceTheme.length === 7) {
+      setIsShowDeleteButton(false);
+    } else {
+      setIsShowDeleteButton(true);
+    }
+  }, [appearanceTheme.length, setAbilityAddTheme, setIsShowDeleteButton]);
 
   useEffect(() => {
     onCheckView();
@@ -238,16 +248,22 @@ const Appearance = (props) => {
     setShowColorSchemeDialog(true);
   };
 
-  const onClickDelete = useCallback(async () => {
+  const onClickDeleteModal = useCallback(async () => {
     try {
       await deleteAppearanceTheme(selectThemeId);
       await getAppearanceTheme();
 
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+      setVisibleDialog(false);
     } catch (error) {
       toastr.error(error);
     }
-  }, [selectThemeId, deleteAppearanceTheme, getAppearanceTheme]);
+  }, [
+    selectThemeId,
+    setVisibleDialog,
+    deleteAppearanceTheme,
+    getAppearanceTheme,
+  ]);
 
   const onCloseColorSchemeDialog = () => {
     setShowColorSchemeDialog(false);
@@ -327,7 +343,7 @@ const Appearance = (props) => {
   const onSaveChangedThemes = useCallback(
     async (editTheme) => {
       try {
-        await sendAppearanceTheme({ themes: editTheme });
+        await sendAppearanceTheme({ themes: [editTheme] });
         await getAppearanceTheme();
 
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
@@ -439,120 +455,130 @@ const Appearance = (props) => {
   ) : !tReady ? (
     <Loader />
   ) : (
-    <StyledComponent>
-      <div className="header">{t("Common:Color")}</div>
-
-      <div className="theme-standard">
-        <div className="theme-name">{t("Common:Standard")}</div>
-
-        <div className="theme-container">
-          {appearanceTheme.map((item, index) => {
-            if (index > 6) return;
-            return (
-              <div
-                key={index}
-                id={item.id}
-                style={{ background: item.accentColor }}
-                className="box"
-                onClick={() => onColorSelection(item)}
-              >
-                {onShowCheck(item.id)}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="theme-custom">
-        <div className="theme-name">Custom</div>
-
-        <div className="theme-container">
-          {appearanceTheme.map((item, index) => {
-            if (index < 7) return;
-            return (
-              <div
-                key={index}
-                id={item.id}
-                style={{ background: item.accentColor }}
-                className="box"
-                onClick={() => onColorSelection(item)}
-              >
-                {onShowCheck(item.id)}
-              </div>
-            );
-          })}
-
-          <div
-            data-for="theme-add"
-            data-tip={
-              !abilityAddTheme
-                ? "You can only create 3 custom themes. To create a new one, you must delete one of the previous themes."
-                : null
-            }
-            className="box theme-add"
-            onClick={() => onAddTheme()}
-          />
-          <Tooltip
-            id="theme-add"
-            offsetBottom={0}
-            effect="solid"
-            place="bottom"
-            getContent={(dataTip) => (
-              <Text fontSize="12px" noSelect>
-                {dataTip}
-              </Text>
-            )}
-          ></Tooltip>
-        </div>
-      </div>
-
-      <ColorSchemeDialog
-        // nodeButtonsColor={nodeButtonsColor}
-        // nodeAccentColor={nodeAccentColor}
-
-        onClickColor={onClickColor}
-        currentColorAccent={currentColorAccent}
-        currentColorButtons={currentColorButtons}
-        nodeHexColorPickerAccent={nodeHexColorPickerAccent}
-        nodeHexColorPickerButtons={nodeHexColorPickerButtons}
-        visible={showColorSchemeDialog}
-        onClose={onCloseColorSchemeDialog}
-        header={headerColorSchemeDialog}
-        viewMobile={viewMobile}
-        openHexColorPickerButtons={openHexColorPickerButtons}
-        openHexColorPickerAccent={openHexColorPickerAccent}
-        showSaveButtonDialog={showSaveButtonDialog}
-        onSaveColorSchemeDialog={onSaveColorSchemeDialog}
+    <>
+      <ModalDialogDelete
+        visible={visibleDialog}
+        onClose={() => setVisibleDialog(false)}
+        onClickDelete={onClickDeleteModal}
       />
-      <div className="header preview-header">{t("Common:Preview")}</div>
-      <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />
 
-      <div className="buttons-container">
-        <Button
-          className="button"
-          label="Save"
-          onClick={onSave}
-          primary
-          size="small"
-          isDisabled={isDisabledSaveButton}
-        />
+      <StyledComponent>
+        <div className="header">{t("Common:Color")}</div>
 
-        <Button
-          className="button"
-          label="Edit current theme"
-          onClick={onClickEdit}
-          size="small"
-          isDisabled={isDisabledEditButton}
+        <div className="theme-standard">
+          <div className="theme-name">{t("Common:Standard")}</div>
+
+          <div className="theme-container">
+            {appearanceTheme.map((item, index) => {
+              if (index > 6) return;
+              return (
+                <div
+                  key={index}
+                  id={item.id}
+                  style={{ background: item.accentColor }}
+                  className="box"
+                  onClick={() => onColorSelection(item)}
+                >
+                  {onShowCheck(item.id)}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="theme-custom">
+          <div className="theme-name">Custom</div>
+
+          <div className="theme-container">
+            {appearanceTheme.map((item, index) => {
+              if (index < 7) return;
+              return (
+                <div
+                  key={index}
+                  id={item.id}
+                  style={{ background: item.accentColor }}
+                  className="box"
+                  onClick={() => onColorSelection(item)}
+                >
+                  {onShowCheck(item.id)}
+                </div>
+              );
+            })}
+
+            <div
+              data-for="theme-add"
+              data-tip={
+                !abilityAddTheme
+                  ? "You can only create 3 custom themes. To create a new one, you must delete one of the previous themes."
+                  : null
+              }
+              className="box theme-add"
+              onClick={() => onAddTheme()}
+            />
+            <Tooltip
+              id="theme-add"
+              offsetBottom={0}
+              effect="solid"
+              place="bottom"
+              getContent={(dataTip) => (
+                <Text fontSize="12px" noSelect>
+                  {dataTip}
+                </Text>
+              )}
+            ></Tooltip>
+          </div>
+        </div>
+
+        <ColorSchemeDialog
+          // nodeButtonsColor={nodeButtonsColor}
+          // nodeAccentColor={nodeAccentColor}
+
+          onClickColor={onClickColor}
+          currentColorAccent={currentColorAccent}
+          currentColorButtons={currentColorButtons}
+          nodeHexColorPickerAccent={nodeHexColorPickerAccent}
+          nodeHexColorPickerButtons={nodeHexColorPickerButtons}
+          visible={showColorSchemeDialog}
+          onClose={onCloseColorSchemeDialog}
+          header={headerColorSchemeDialog}
+          viewMobile={viewMobile}
+          openHexColorPickerButtons={openHexColorPickerButtons}
+          openHexColorPickerAccent={openHexColorPickerAccent}
+          showSaveButtonDialog={showSaveButtonDialog}
+          onSaveColorSchemeDialog={onSaveColorSchemeDialog}
         />
-        <Button
-          className="button"
-          label="Delete theme"
-          onClick={onClickDelete}
-          size="small"
-          isDisabled={isDisabledDeleteButton}
-        />
-      </div>
-    </StyledComponent>
+        <div className="header preview-header">{t("Common:Preview")}</div>
+        <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />
+
+        <div className="buttons-container">
+          <Button
+            className="button"
+            label="Save"
+            onClick={onSave}
+            primary
+            size="small"
+            isDisabled={isDisabledSaveButton}
+          />
+
+          <Button
+            className="button"
+            label="Edit current theme"
+            onClick={onClickEdit}
+            size="small"
+            isDisabled={isDisabledEditButton}
+          />
+          {isShowDeleteButton && (
+            <Button
+              className="button"
+              label="Delete theme"
+              onClick={() => setVisibleDialog(true)}
+              size="small"
+              isDisabled={isDisabledDeleteButton}
+            />
+          )}
+        </div>
+      </StyledComponent>
+    </>
   );
 };
 
