@@ -31,7 +31,6 @@ const Article = ({
 
   isGracePeriod,
 
-  isBannerVisible,
   hideProfileBlock,
   isFreeTariff,
   isAvailableArticlePaymentAlert,
@@ -113,7 +112,6 @@ const Article = ({
         id={"article-container"}
         showText={showText}
         articleOpen={articleOpen}
-        isBannerVisible={isBannerVisible}
         {...rest}
       >
         <SubArticleHeader showText={showText}>
@@ -180,7 +178,7 @@ Article.Body = () => {
 };
 Article.Body.displayName = "Body";
 
-export default inject(({ auth, bannerStore }) => {
+export default inject(({ auth }) => {
   const {
     settingsStore,
     currentQuotaStore,
@@ -189,7 +187,6 @@ export default inject(({ auth, bannerStore }) => {
   } = auth;
   const { isFreeTariff } = currentQuotaStore;
   const { isGracePeriod } = currentTariffStatusStore;
-  const { isBannerVisible } = bannerStore;
 
   const { user } = userStore;
 
@@ -212,7 +209,6 @@ export default inject(({ auth, bannerStore }) => {
     toggleShowText,
     toggleArticleOpen,
     isFreeTariff,
-    isBannerVisible,
     isGracePeriod,
     isAvailableArticlePaymentAlert,
   };
