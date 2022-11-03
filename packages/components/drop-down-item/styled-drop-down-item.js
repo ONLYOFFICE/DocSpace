@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
 import Base from "../themes/base";
 import { tablet } from "../utils/device";
 
@@ -26,7 +27,8 @@ const disabledAndHeaderStyle = css`
 const StyledDropdownItem = styled.div`
   display: ${(props) => (props.textOverflow ? "block" : "flex")};
   width: ${(props) => props.theme.dropDownItem.width};
-  max-width: ${(props) => props.theme.dropDownItem.maxWidth};
+  max-width: ${(props) =>
+    isMobileOnly ? "70vw" : props.theme.dropDownItem.maxWidth};
   border: ${(props) => props.theme.dropDownItem.border};
   cursor: pointer;
   margin: ${(props) => props.theme.dropDownItem.margin};
