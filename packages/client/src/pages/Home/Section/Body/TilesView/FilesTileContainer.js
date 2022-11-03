@@ -58,10 +58,15 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
       const size = getThumbSize(width);
 
       const widthWithoutPadding = width - 34;
+      console.log("call", widthWithoutPadding, sectionWidth);
 
       const columns = Math.floor(widthWithoutPadding / 80);
 
-      if (tileWidth != widthWithoutPadding) setTileWidth(widthWithoutPadding);
+      if (
+        tileWidth != widthWithoutPadding &&
+        widthWithoutPadding <= sectionWidth - 31
+      )
+        setTileWidth(widthWithoutPadding);
 
       if (columns != columnCount) setColumnCount(columns);
 
@@ -73,7 +78,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
       setThumbSize(size);
     },
-    [columnCount, tileWidth, thumbSize]
+    [columnCount, tileWidth, thumbSize, sectionWidth]
   );
 
   const onSetTileRef = React.useCallback((node) => {
