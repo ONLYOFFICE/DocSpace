@@ -441,23 +441,14 @@ const Appearance = (props) => {
     </DropDownContainer>
   );
 
-  // const nodeAccentColor = (
-  //   <div
-  //     id="accent"
-  //     style={{ background: currentColorAccent }}
-  //     className="color-button"
-  //     onClick={onClickColor}
-  //   ></div>
-  // );
-
-  // const nodeButtonsColor = (
-  //   <div
-  //     id="buttons"
-  //     style={{ background: currentColorButtons }}
-  //     className="color-button"
-  //     onClick={onClickColor}
-  //   ></div>
-  // );
+  const textTooltip = () => {
+    return (
+      <Text fontSize="12px" noSelect>
+        You can only create 3 custom themes. To create a new one, you must
+        delete one of the previous themes.
+      </Text>
+    );
+  };
 
   return viewMobile ? (
     <BreakpointWarning sectionName={t("Settings:Appearance")} />
@@ -516,32 +507,25 @@ const Appearance = (props) => {
 
             <div
               data-for="theme-add"
-              data-tip={
-                !abilityAddTheme
-                  ? "You can only create 3 custom themes. To create a new one, you must delete one of the previous themes."
-                  : null
-              }
+              data-tip="tooltip"
               className="box theme-add"
               onClick={() => onAddTheme()}
             />
-            <Tooltip
-              id="theme-add"
-              offsetBottom={0}
-              effect="solid"
-              place="bottom"
-              getContent={(dataTip) => (
-                <Text fontSize="12px" noSelect>
-                  {dataTip}
-                </Text>
-              )}
-            ></Tooltip>
+            {!abilityAddTheme && (
+              <Tooltip
+                id="theme-add"
+                offsetBottom={0}
+                offsetRight={130}
+                effect="solid"
+                place="bottom"
+                getContent={textTooltip}
+                maxWidth="300px"
+              />
+            )}
           </div>
         </div>
 
         <ColorSchemeDialog
-          // nodeButtonsColor={nodeButtonsColor}
-          // nodeAccentColor={nodeAccentColor}
-
           onClickColor={onClickColor}
           currentColorAccent={currentColorAccent}
           currentColorButtons={currentColorButtons}
