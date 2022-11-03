@@ -165,8 +165,8 @@ const StyledHeading = styled.div`
   cursor: pointer;
 
   img.logo-icon_svg {
-    max-height: 24px;
-    max-width: 211px;
+    height: 24px;
+    width: 211px;
   }
 
   .logo-icon_svg {
