@@ -462,7 +462,7 @@ const WhiteLabel = (props) => {
                   height="48"
                   data-fontsize="36"
                   data-fontcolor={
-                    theme.client.settings.common.whiteLabel.dataFontColor
+                    theme.client.settings.common.whiteLabel.dataFontColorBlack
                   }
                 >
                   {t("BrowserNoCanvasSupport")}
