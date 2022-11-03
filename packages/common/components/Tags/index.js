@@ -23,7 +23,9 @@ const Tags = ({
 
       const newTags = [];
 
-      const containerWidth = tagsRef.current.offsetWidth;
+      const containerWidth = tileWidth
+        ? tileWidth
+        : tagsRef.current.offsetWidth;
 
       if (tags.length === 1) {
         if (tags[0]?.isDefault) {

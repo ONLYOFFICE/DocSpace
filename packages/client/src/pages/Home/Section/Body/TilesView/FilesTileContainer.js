@@ -53,15 +53,23 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
     (node) => {
       if (!node) return;
 
+      const containerWidth = containerRef?.current.offsetWidth;
+
+      const tilesCount = Math.floor(containerWidth / 216);
+
+      const maxWidth = (containerWidth - (tilesCount - 1) * 16) / tilesCount;
+
       const { width } = node.getBoundingClientRect();
 
-      const size = getThumbSize(width);
+      const currentWidth = width > maxWidth ? maxWidth : width;
 
-      const widthWithoutPadding = width - 36;
+      const size = getThumbSize(currentWidth);
+
+      const widthWithoutPadding = Math.floor(currentWidth) - 36;
 
       const columns = Math.floor(widthWithoutPadding / 80);
 
-      if (Math.floor(tileWidth) !== Math.floor(widthWithoutPadding)) {
+      if (tileWidth !== widthWithoutPadding) {
         setTileWidth(widthWithoutPadding);
       }
 
@@ -78,24 +86,20 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
     [columnCount, tileWidth, thumbSize]
   );
 
-  const onSetTileRef = React.useCallback(
-    (node) => {
-      if (node && node?.dataset.id !== tileRef?.current?.dataset.id) {
-        clearTimeout(timerRef.current);
-        timerRef.current = setTimeout(() => {
-          onResize(node);
+  const onSetTileRef = React.useCallback((node) => {
+    if (node) {
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        onResize(node);
 
-          if (tileRef?.current)
-            elementResizeDetector.uninstall(tileRef.current);
+        if (tileRef?.current) elementResizeDetector.uninstall(tileRef.current);
 
-          tileRef.current = node;
+        tileRef.current = node;
 
-          elementResizeDetector.listenTo(node, onResize);
-        }, 100);
-      }
-    },
-    [onResize]
-  );
+        elementResizeDetector.listenTo(node, onResize);
+      }, 100);
+    }
+  }, []);
 
   return (
     <TileContainer
