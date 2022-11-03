@@ -83,6 +83,7 @@ const ColorSchemeDialog = (props) => {
       displayType="aside"
       currentColorAccent={currentColorAccent}
       currentColorButtons={currentColorButtons}
+      withFooterBorder={showSaveButtonDialog}
     >
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
