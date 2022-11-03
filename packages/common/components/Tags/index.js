@@ -26,7 +26,7 @@ const Tags = ({
       const containerWidth = tagsRef.current.offsetWidth;
 
       if (tags.length === 1) {
-        if (tags[0].isDefault) {
+        if (tags[0]?.isDefault) {
           const tag = { ...tags[0], maxWidth: `100%` };
 
           newTags.push(tag);
@@ -41,9 +41,9 @@ const Tags = ({
 
       if (
         columnCount >= tags.length ||
-        (tags.length === 2 && tags[0].isThirdParty && tags[1].isDefault)
+        (tags.length === 2 && tags[0]?.isThirdParty && tags[1]?.isDefault)
       ) {
-        const thirdPartyTagCount = tags[0].isThirdParty ? 1 : 0;
+        const thirdPartyTagCount = tags[0]?.isThirdParty ? 1 : 0;
 
         const currentTagMaxWidth =
           (containerWidth -
@@ -56,7 +56,7 @@ const Tags = ({
         );
 
         for (let i = 0; i < tags.length; i++) {
-          if (tags[i].isThirdParty) {
+          if (tags[i]?.isThirdParty) {
             const tag = { ...tags[i], maxWidth: `36px` };
 
             newTags.push(tag);
@@ -85,11 +85,11 @@ const Tags = ({
 
         if (columnCount !== 0) {
           for (let i = 0; i < columnCount; i++) {
-            if (tags[i].isThirdParty) {
+            if (tags[i]?.isThirdParty) {
               const tag = { ...tags[i], maxWidth: `36px` };
 
               newTags.push(tag);
-            } else if (tags[i].isDefault) {
+            } else if (tags[i]?.isDefault) {
               const tag = { ...tags[i], maxWidth: `${maxWidthPercent}%` };
 
               newTags.push(tag);
@@ -130,6 +130,7 @@ const Tags = ({
             tagMaxWidth={tag.maxWidth}
             isNewTag={false}
             onClick={onSelectTag}
+            isLast={index === renderedTags.length - 1}
             {...tag}
           />
         ))}
