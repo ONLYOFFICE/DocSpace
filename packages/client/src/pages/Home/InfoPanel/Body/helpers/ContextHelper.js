@@ -89,10 +89,6 @@ class ContextHelper {
         )
       : this.getContextOptionActions(this.selection, this.t);
   };
-
-  getUserContextOptions = () => {
-    console.log(this.selection);
-  };
 }
 
 export default ContextHelper;

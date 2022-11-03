@@ -125,7 +125,6 @@ class InfoPanelStore {
   };
 
   reloadSelection = () => {
-    console.log("RELOAD SELECTION");
     this.setSelection(this.calculateSelection());
   };
 
