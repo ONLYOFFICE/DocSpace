@@ -275,7 +275,7 @@ export const setInvitationLinks = async (roomId, linkId, title, access) => {
 
 export const resendEmailInvitations = async (id, usersIds) => {
   const options = {
-    method: "put",
+    method: "post",
     url: `/files/rooms/${id}/resend`,
     data: {
       usersIds,

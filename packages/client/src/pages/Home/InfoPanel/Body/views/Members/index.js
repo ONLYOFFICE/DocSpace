@@ -28,7 +28,9 @@ const Members = ({
   getRoomMembers,
   updateRoomMemberRole,
 
+  resendEmailInvitations,
   setInvitePanelOptions,
+
   changeUserType,
   canInviteUserInRoom,
 }) => {
@@ -100,8 +102,13 @@ const Members = ({
     });
   };
 
-  const onRepeatInvitation = () => {
-    toastr.warning("Work in progress");
+  const onRepeatInvitation = async () => {
+    const userIds = members.expected.map((user) => user.id);
+    resendEmailInvitations(selectionParentRoom.id, userIds)
+      .then(() =>
+        toastr.success(t("PeopleTranslations:SuccessSentMultipleInvitatios"))
+      )
+      .catch((err) => toastr.error(err));
   };
 
   if (showLoader) return <Loaders.InfoPanelViewLoader view="members" />;
@@ -148,14 +155,14 @@ const Members = ({
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
           <Text className="title">{t("ExpectPeople")}</Text>
-          {/* <IconButton
+          <IconButton
             className={"icon"}
             title={t("Repeat invitation")}
             iconName="/static/images/e-mail+.react.svg"
             isFill={true}
             onClick={onRepeatInvitation}
             size={16}
-          /> */}
+          />
         </StyledUserTypeHeader>
       )}
 
@@ -183,7 +190,11 @@ const Members = ({
 export default inject(
   ({ auth, filesStore, peopleStore, dialogsStore, accessRightsStore }) => {
     const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
-    const { getRoomMembers, updateRoomMemberRole } = filesStore;
+    const {
+      getRoomMembers,
+      updateRoomMemberRole,
+      resendEmailInvitations,
+    } = filesStore;
     const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { setInvitePanelOptions } = dialogsStore;
     const { changeType: changeUserType } = peopleStore;
@@ -201,6 +212,8 @@ export default inject(
       selfId,
 
       setInvitePanelOptions,
+      resendEmailInvitations,
+
       changeUserType,
       canInviteUserInRoom,
     };
