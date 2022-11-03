@@ -16,7 +16,7 @@ const Details = ({
   personal,
   culture,
   createThumbnail,
-  getItemIcon,
+  getInfoPanelItemIcon,
   openUser,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
@@ -68,7 +68,7 @@ const Details = ({
             className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
               selection.isRoom && selection.logo?.large && "custom-logo"
             }`}
-            src={getItemIcon(selection, 96)}
+            src={getInfoPanelItemIcon(selection, 96)}
             alt="thumbnail-icon-big"
           />
         </StyledNoThumbnail>
@@ -95,7 +95,7 @@ const Details = ({
 };
 
 export default inject(({ auth, filesStore }) => {
-  const { selection, getItemIcon, openUser } = auth.infoPanelStore;
+  const { selection, getInfoPanelItemIcon, openUser } = auth.infoPanelStore;
   const { createThumbnail } = filesStore;
   const { personal, culture } = auth.settingsStore;
 
@@ -104,7 +104,7 @@ export default inject(({ auth, filesStore }) => {
     culture,
     selection,
     createThumbnail,
-    getItemIcon,
+    getInfoPanelItemIcon,
     openUser,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations"])(Details));

@@ -2023,6 +2023,8 @@ const Dark = {
 
     members: {
       iconColor: "#A3A9AE",
+      iconHoverColor: "#ffffff",
+      isExpectName: "#A3A9AE",
       subtitleColor: "#a3a9ae",
       meLabelColor: "#a3a9ae",
       roleSelectorColor: "#a3a9ae",
