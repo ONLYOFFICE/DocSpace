@@ -18,6 +18,7 @@ const Tag = ({
   isNewTag,
   isDisabled,
   isDefault,
+  isLast,
   onDelete,
   onClick,
   advancedOptions,
@@ -68,6 +69,7 @@ const Tag = ({
           onClick={toggleDropdown}
           isDisabled={isDisabled}
           isDefault={isDefault}
+          isLast={isLast}
         >
           <Text className={"tag-text"} font-size={"13px"} noSelect>
             ...
@@ -113,6 +115,7 @@ const Tag = ({
           id={id}
           className={`tag${className ? ` ${className}` : ""}`}
           style={style}
+          isLast={isLast}
         >
           {icon ? (
             <ReactSVG className="third-party-tag" src={icon} />
