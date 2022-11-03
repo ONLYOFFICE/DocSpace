@@ -263,14 +263,6 @@ public class TextileStyler : IPatternStyler
             return string.Empty;
         }
 
-        var rootPathArgument = message.GetArgument("__VirtualRootPath");
-        var rootPath = rootPathArgument == null ? string.Empty : (string)rootPathArgument.Value;
-
-        if (string.IsNullOrEmpty(rootPath))
-        {
-            return string.Empty;
-        }
-
         var unsubscribeLink = _coreBaseSettings.CustomMode && _coreBaseSettings.Personal
                                   ? GetSiteUnsubscribeLink(message, settings)
                                   : GetPortalUnsubscribeLink(message, settings);
@@ -280,7 +272,7 @@ public class TextileStyler : IPatternStyler
             return string.Empty;
         }
 
-        return string.Format(NotifyTemplateResource.TextForFooterWithUnsubscribeLink, rootPath, unsubscribeLink);
+        return string.Format(NotifyTemplateResource.TextForFooterUnsubsribeDocSpace, unsubscribeLink);
     }
 
     private string GetPortalUnsubscribeLink(NoticeMessage message, MailWhiteLabelSettings settings)

@@ -158,8 +158,7 @@ export default function withFileActions(WrappedFileItem) {
         !!e.target.closest(".lock-file") ||
         !!e.target.closest(".additional-badges") ||
         e.target.closest(".tag") ||
-        isTrashFolder ||
-        isArchiveFolder
+        isTrashFolder
       )
         return;
 

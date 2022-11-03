@@ -80,7 +80,6 @@ public class Startup
         services.AddSingleton(jsonOptions);
 
         _diHelper.AddControllers();
-        _diHelper.TryAdd<CultureMiddleware>();
         _diHelper.TryAdd<IpSecurityFilter>();
         _diHelper.TryAdd<PaymentFilter>();
         _diHelper.TryAdd<ProductSecurityFilter>();
@@ -121,8 +120,6 @@ public class Startup
         app.UseAuthentication();
 
         app.UseAuthorization();
-
-        app.UseCultureMiddleware();
 
         app.UseEndpoints(endpoints =>
         {
