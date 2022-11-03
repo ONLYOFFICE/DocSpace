@@ -181,13 +181,6 @@ class DropDown extends React.PureComponent {
       bottom -= parent.current.clientHeight + dropDownHeight;
     }
 
-    console.log(
-      left,
-      rects.right,
-      rects.right - this.dropDownRef.current.clientWidth,
-      rects.right - this.dropDownRef.current.clientWidth
-    );
-
     if (this.props.right) {
       this.dropDownRef.current.style.right = this.props.right;
     } else if (this.props.directionX === "right") {
