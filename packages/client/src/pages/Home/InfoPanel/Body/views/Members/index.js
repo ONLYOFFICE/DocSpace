@@ -65,34 +65,28 @@ const Members = ({
     };
   };
 
-  // useEffect(() => {
-  //   if (selectionParentRoom.members) setMembers(selectionParentRoom.members);
-  // }, [selectionParentRoom?.members]);
+  useEffect(async () => {
+    if (!selectionParentRoom) return;
 
-  // useEffect(async () => {
-  //   if (!selectionParentRoom) return;
+    if (selectionParentRoom.members) {
+      setMembers(selectionParentRoom.members);
+      return;
+    }
 
-  //   // if (selectionParentRoom.members) {
-  //   //   setMembers(selectionParentRoom.members);
-  //   //   return;
-  //   // }
-
-  //   const fetchedMembers = await fetchMembers(selectionParentRoom.id);
-  //   setSelectionParentRoom({
-  //     ...selectionParentRoom,
-  //     members: fetchedMembers,
-  //   });
-  // }, [selectionParentRoom]);
+    const fetchedMembers = await fetchMembers(selectionParentRoom.id);
+    setSelectionParentRoom({
+      ...selectionParentRoom,
+      members: fetchedMembers,
+    });
+  }, [selectionParentRoom]);
 
   useEffect(async () => {
     if (!selection.isRoom) return;
-    // if (selectionParentRoom && selectionParentRoom.id === selection.id) return;
 
     const fetchedMembers = await fetchMembers(selection.id);
-    console.log(fetchedMembers);
-    setMembers(fetchedMembers);
     setSelectionParentRoom({
       ...selection,
+      members: fetchedMembers,
     });
   }, [selection]);
 
@@ -117,7 +111,6 @@ const Members = ({
   };
 
   if (showLoader) return <Loaders.InfoPanelViewLoader view="members" />;
-  console.log(selectionParentRoom, members);
   if (!selectionParentRoom || !members) return null;
 
   const [currentMember] = members.inRoom.filter(

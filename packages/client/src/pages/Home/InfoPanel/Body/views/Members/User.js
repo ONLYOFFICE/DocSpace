@@ -45,15 +45,27 @@ const User = ({
       sharingMessage: "",
     });
 
+    const inRoomMembers = selectionParentRoom.members.inRoom;
+    const expectedMembers = selectionParentRoom.members.expected;
     if (option.key === "remove") {
       setUserIsRemoved(true);
-      const inRoomMembers = selectionParentRoom.members.inRoom;
-      const expectedMembers = selectionParentRoom.members.expected;
       setSelectionParentRoom({
         ...selectionParentRoom,
         members: {
           inRoom: inRoomMembers?.filter((m) => m.id !== user.id),
           expected: expectedMembers?.filter((m) => m.id !== user.id),
+        },
+      });
+    } else {
+      setSelectionParentRoom({
+        ...selectionParentRoom,
+        members: {
+          inRoom: inRoomMembers?.map((m) =>
+            m.id === user.id ? { ...m, access: option.access } : m
+          ),
+          expected: expectedMembers?.map((m) =>
+            m.id === user.id ? { ...m, access: option.access } : m
+          ),
         },
       });
     }
