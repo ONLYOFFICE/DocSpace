@@ -43,6 +43,7 @@ const FilterInput = React.memo(
     isPersonalRoom,
     isRooms,
     isAccounts,
+    sectionWidth,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
@@ -176,6 +177,7 @@ const FilterInput = React.memo(
                 label={item.label}
                 group={item.group}
                 removeSelectedItem={removeSelectedItemAction}
+                sectionWidth={sectionWidth}
               />
             ))}
             {selectedItems.length > 1 && (

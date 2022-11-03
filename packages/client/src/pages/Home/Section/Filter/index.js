@@ -1231,6 +1231,7 @@ const SectionFilterContent = ({
       isRooms={isRooms}
       removeSelectedItem={removeSelectedItem}
       clearAll={clearAll}
+      sectionWidth={sectionWidth}
     />
   );
 };

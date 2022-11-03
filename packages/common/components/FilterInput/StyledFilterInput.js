@@ -31,6 +31,8 @@ const StyledFilterInput = styled.div`
     align-items: center;
     flex-wrap: wrap;
 
+    gap: 4px;
+
     margin-bottom: 8px;
 
     .clear-all-link {
