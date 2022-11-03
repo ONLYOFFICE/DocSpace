@@ -96,6 +96,7 @@ const Tag = ({
                   className="tag__dropdown-item-text"
                   fontWeight={600}
                   fontSize={"12px"}
+                  truncate
                 >
                   {tag}
                 </StyledDropdownText>

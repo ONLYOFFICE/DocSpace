@@ -82,6 +82,8 @@ const StyledDropdownText = styled(Text)`
 
   margin-left: 8px !important;
 
+  display: block;
+
   pointer-events: none;
 `;
 
