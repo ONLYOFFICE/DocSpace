@@ -78,6 +78,7 @@ const SectionFilterContent = ({
     newFilter.page = 0;
 
     newFilter.role = role;
+
     newFilter.group = group;
 
     setIsLoading(true);
@@ -144,11 +145,11 @@ const SectionFilterContent = ({
         isHeader: true,
         isLast: true,
       },
-      { key: "admin", group: "filter-type", label: t("Administrator") },
+      { key: "admin", group: "filter-type", label: t("Common:DocSpaceAdmin") },
       {
         key: "manager",
         group: "filter-type",
-        label: "Manager",
+        label: t("Common:RoomAdmin"),
       },
       {
         key: "user",
@@ -266,13 +267,13 @@ const SectionFilterContent = ({
 
       switch (filter.role) {
         case "admin":
-          label = t("Administrator");
+          label = t("Common:DocSpaceAdmin");
           break;
         case "user":
-          label = userCaption;
+          label = t("Common:RoomAdmin");
           break;
         case "guest":
-          label = guestCaption;
+          label = userCaption;
           break;
         default:
           label = "";
