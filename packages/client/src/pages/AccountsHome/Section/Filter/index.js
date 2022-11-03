@@ -79,7 +79,6 @@ const SectionFilterContent = ({
 
     newFilter.role = role;
 
-    console.log(role);
     newFilter.group = group;
 
     setIsLoading(true);
@@ -262,8 +261,6 @@ const SectionFilterContent = ({
         group: "filter-status",
       });
     }
-
-    console.log(filter);
 
     if (filter.role) {
       let label = null;
