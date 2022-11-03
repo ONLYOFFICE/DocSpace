@@ -27,11 +27,6 @@ const StyledComponent = styled(ModalDialog)`
     line-height: 24px;
   }
 
-  /* .color-button {
-    width: 46px;
-    height: 46px;
-  } */
-
   .relative {
     position: relative;
   }
@@ -58,8 +53,6 @@ const StyledComponent = styled(ModalDialog)`
   }
 
   .modal-add-theme {
-    // background: #eceef1 url("/static/images/plus.theme.svg") no-repeat center;
-
     width: 46px;
     height: 46px;
     border-radius: 8px;
@@ -72,24 +65,12 @@ const ColorSchemeDialog = (props) => {
     visible,
     onClose,
     header,
-
-    nodeButtonsColor,
-    nodeAccentColor,
-
     nodeHexColorPickerAccent,
     nodeHexColorPickerButtons,
-
     viewMobile,
-
-    openHexColorPickerButtons,
-    openHexColorPickerAccent,
-
-    showRestoreToDefaultButtonDialog,
-
     showSaveButtonDialog,
     onSaveColorSchemeDialog,
     t,
-
     onClickColor,
     currentColorAccent,
     currentColorButtons,
@@ -113,7 +94,6 @@ const ColorSchemeDialog = (props) => {
               className="modal-add-theme accent-box"
               onClick={onClickColor}
             />
-            {/* {nodeAccentColor} */}
 
             {!viewMobile && nodeHexColorPickerAccent}
           </div>
@@ -126,26 +106,24 @@ const ColorSchemeDialog = (props) => {
               onClick={onClickColor}
             />
 
-            {/* {nodeButtonsColor} */}
-
             {!viewMobile && nodeHexColorPickerButtons}
           </div>
         </div>
       </ModalDialog.Body>
 
       <ModalDialog.Footer>
-        <>
-          {showSaveButtonDialog && (
+        {showSaveButtonDialog && (
+          <>
             <Button
               label="Save"
               size="normal"
-              className="save-button"
-              primary={true}
-              scale={true}
+              primary
+              scale
               onClick={onSaveColorSchemeDialog}
             />
-          )}
-        </>
+            <Button label="Cancel" size="normal" scale onClick={onClose} />
+          </>
+        )}
       </ModalDialog.Footer>
     </StyledComponent>
   );
