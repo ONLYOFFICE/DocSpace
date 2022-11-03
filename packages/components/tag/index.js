@@ -32,13 +32,15 @@ const Tag = ({
 
   const tagRef = React.useRef(null);
 
-  const onClickOutside = React.useCallback(() => {
-    toggleDropdown();
-  }, [toggleDropdown]);
+  const onClickOutside = () => {
+    setOpenDropdown(false);
+  };
 
-  const toggleDropdown = React.useCallback(() => {
-    setOpenDropdown((val) => !val);
-  }, []);
+  const openDropdownAction = (e) => {
+    if (e?.target?.className?.includes("backdrop-active")) return;
+
+    setOpenDropdown(true);
+  };
 
   const onClickAction = React.useCallback(
     (e) => {
@@ -66,7 +68,7 @@ const Tag = ({
           className={`tag advanced-tag ${className ? ` ${className}` : ""}`}
           style={style}
           ref={tagRef}
-          onClick={toggleDropdown}
+          onClick={openDropdownAction}
           isDisabled={isDisabled}
           isDefault={isDefault}
           isLast={isLast}
