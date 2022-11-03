@@ -27,8 +27,7 @@ const disabledAndHeaderStyle = css`
 const StyledDropdownItem = styled.div`
   display: ${(props) => (props.textOverflow ? "block" : "flex")};
   width: ${(props) => props.theme.dropDownItem.width};
-  max-width: ${(props) =>
-    isMobileOnly ? "70vw" : props.theme.dropDownItem.maxWidth};
+  max-width: ${(props) => props.theme.dropDownItem.maxWidth};
   border: ${(props) => props.theme.dropDownItem.border};
   cursor: pointer;
   margin: ${(props) => props.theme.dropDownItem.margin};
@@ -139,6 +138,10 @@ const StyledDropdownItem = styled.div`
       background-color: ${(props) =>
         props.theme.dropDownItem.hoverBackgroundColor} !important;
     `}
+
+  @media (max-width: 500px) {
+    max-width: 100vw;
+  }
 `;
 StyledDropdownItem.defaultProps = { theme: Base };
 
