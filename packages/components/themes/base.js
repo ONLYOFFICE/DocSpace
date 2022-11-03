@@ -99,7 +99,7 @@ const Base = {
     height: {
       extraSmall: "24px",
       small: "32px",
-      normalDesktop: "36px",
+      normalDesktop: "40px",
       normalTouchscreen: "40px",
       medium: "44px",
     },
