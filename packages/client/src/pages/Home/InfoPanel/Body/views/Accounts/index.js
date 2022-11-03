@@ -18,7 +18,6 @@ const Accounts = ({
   isAdmin,
   changeUserType,
   canChangeUserType,
-  selfId,
 }) => {
   const [statusLabel, setStatusLabel] = React.useState("");
 
@@ -186,15 +185,17 @@ const Accounts = ({
   );
 };
 
-export default inject(({ auth, peopleStore }) => {
+export default inject(({ auth, peopleStore, accessRightsStore }) => {
   const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
   const { changeType: changeUserType } = peopleStore;
+  const { canChangeUserType } = accessRightsStore;
 
   return {
     isOwner,
     isAdmin,
     changeUserType,
     selfId,
+    canChangeUserType,
   };
 })(
   withTranslation([
