@@ -41,6 +41,8 @@ class UsersStore {
     const res = await api.people.getUserList(filterData);
     filterData.total = res.total;
 
+    console.log(filterData, updateFilter);
+
     if (updateFilter) {
       this.peopleStore.filterStore.setFilterParams(filterData);
     }
