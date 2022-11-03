@@ -164,6 +164,11 @@ const StyledHeading = styled.div`
   padding: 0;
   cursor: pointer;
 
+  img.logo-icon_svg {
+    height: 24px;
+    width: 211px;
+  }
+
   .logo-icon_svg {
     svg {
       path:last-child {
@@ -198,6 +203,10 @@ const StyledIconBox = styled.div`
   display: none;
   align-items: center;
   height: 20px;
+
+  img {
+    height: 24px;
+  }
 
   @media ${tablet} {
     display: ${(props) => (props.showText ? "none" : "flex")};
