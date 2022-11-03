@@ -37,13 +37,13 @@ export default function withBadges(WrappedComponent) {
     };
 
     onUnpinClick = (e) => {
-      const { setPinAction } = this.props;
+      const { t, setPinAction } = this.props;
 
       const { action, id } = e.target.closest(".is-pinned").dataset;
 
       if (!action && !id) return;
 
-      setPinAction(action, id);
+      setPinAction(action, id, t);
     };
 
     setConvertDialogVisible = () => {

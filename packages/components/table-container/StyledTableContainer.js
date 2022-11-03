@@ -159,6 +159,7 @@ const StyledTableGroupMenu = styled.div`
     height: 24px;
     width: 16px;
     margin: 3px 0px 0px 3px;
+    background: transparent;
 
     .combo-button {
       .combo-buttons_arrow-icon {

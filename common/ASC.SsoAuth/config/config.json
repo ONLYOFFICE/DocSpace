@@ -63,5 +63,12 @@
     "image-path": "images",
     "rebranding": "rebranding",
     "https":"certs"
-  }
+  },
+	"aws":{
+		"accessKeyId": "",
+		"secretAccessKey": "",
+		"region": "",
+		"logGroupName": "/docspace/ASC.SsoAuth/instances/${instance-id}/general",
+		"logStreamName": "${guid} - ${date}"
+	}
 }

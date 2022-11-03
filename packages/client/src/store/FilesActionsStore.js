@@ -835,7 +835,7 @@ class FilesActionStore {
     }
   };
 
-  setPinAction = (action, id) => {
+  setPinAction = (action, id, t) => {
     const { pinRoom, unpinRoom, updateRoomPin, setSelected } = this.filesStore;
 
     const { selection, setSelection } = this.authStore.infoPanelStore;
@@ -859,7 +859,7 @@ class FilesActionStore {
             }
           })
           .then(() => setSelected("close"))
-          .finally(() => toastr.success("Room pinned"));
+          .finally(() => toastr.success(t("RoomPinned")));
       case "unpin":
         items.forEach((item) => {
           updateRoomPin(item);
@@ -873,7 +873,7 @@ class FilesActionStore {
             }
           })
           .then(() => setSelected("close"))
-          .finally(() => toastr.success("Room unpinned"));
+          .finally(() => toastr.success(t("RoomUnpinned")));
       default:
         return;
     }
