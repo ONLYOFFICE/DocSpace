@@ -111,6 +111,7 @@ const InfoPanelBodyContent = ({
   // if it is located in another room
   useEffect(async () => {
     if (!isRooms) return;
+    if (selection?.isRoom && roomsView === "members") return;
 
     const currentFolderRoomId =
       selectedFolder?.pathParts && selectedFolder.pathParts[1];

@@ -13,7 +13,6 @@ const StyledItemContextOptions = styled.div`
 const ItemContextOptions = ({
   t,
   selection,
-  setSelection,
   getContextOptions,
   getContextOptionActions,
   getUserContextOptions,
@@ -30,7 +29,6 @@ const ItemContextOptions = ({
     t,
     isUser,
     selection,
-    setSelection,
     getContextOptions,
     getContextOptionActions,
     getUserContextOptions,
@@ -73,24 +71,20 @@ const ItemContextOptions = ({
   );
 };
 
-export default inject(
-  ({ auth, filesStore, peopleStore, contextOptionsStore }) => {
-    const { setSelection } = auth.infoPanelStore;
-    const { getUserContextOptions } = peopleStore.contextOptionsStore;
-    const {
-      setBufferSelection,
-      getFilesContextOptions: getContextOptions,
-    } = filesStore;
-    const {
-      getFilesContextOptions: getContextOptionActions,
-    } = contextOptionsStore;
+export default inject(({ filesStore, peopleStore, contextOptionsStore }) => {
+  const { getUserContextOptions } = peopleStore.contextOptionsStore;
+  const {
+    setBufferSelection,
+    getFilesContextOptions: getContextOptions,
+  } = filesStore;
+  const {
+    getFilesContextOptions: getContextOptionActions,
+  } = contextOptionsStore;
 
-    return {
-      setSelection,
-      setBufferSelection,
-      getContextOptions,
-      getContextOptionActions,
-      getUserContextOptions,
-    };
-  }
-)(observer(ItemContextOptions));
+  return {
+    setBufferSelection,
+    getContextOptions,
+    getContextOptionActions,
+    getUserContextOptions,
+  };
+})(observer(ItemContextOptions));
