@@ -57,7 +57,8 @@ const StyledAboutBody = styled.div`
   }
 
   .logo-docspace-theme {
-    height: 24px;
+    max-height: 24px;
+    max-width: 211px;
 
     svg {
       path:nth-child(4) {
