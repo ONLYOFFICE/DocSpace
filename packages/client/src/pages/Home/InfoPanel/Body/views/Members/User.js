@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
-import MembersHelper from "../../helpers/MembersHelper";
 import { ShareAccessRights } from "@docspace/common/constants";
 
 const User = ({
@@ -11,46 +10,57 @@ const User = ({
   user,
   isExpect,
   membersHelper,
-  roomId,
-  roomType,
   currentMember,
   updateRoomMemberRole,
+
+  selectionParentRoom,
+  setSelectionParentRoom,
 }) => {
+  if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
 
-  const fullRoomRoleOptions = membersHelper.getOptionsByRoomType(roomType);
+  const [userIsRemoved, setUserIsRemoved] = useState(false);
+  if (userIsRemoved) return null;
 
-  const [userRole, setUserRole] = useState(
-    membersHelper.getOptionByUserAccess(user.access)
+  const currCanEditUsers =
+    currentMember.isOwner ||
+    currentMember.isAdmin ||
+    currentMember?.access === ShareAccessRights.FullAccess ||
+    currentMember?.access === ShareAccessRights.RoomManager;
+
+  const fullRoomRoleOptions = membersHelper.getOptionsByRoomType(
+    selectionParentRoom.roomType,
+    currCanEditUsers
   );
-  const [userRoleOptions, setUserRoleOptions] = useState(
-    fullRoomRoleOptions.filter((role) => role.key !== userRole.key)
+
+  const userRole = membersHelper.getOptionByUserAccess(user.access);
+  const userRoleOptions = fullRoomRoleOptions?.filter(
+    (role) => role.key !== userRole.key
   );
 
-  const onRoomRoleChange = (option) => {
-    setUserRole(option);
-    setUserRoleOptions(
-      fullRoomRoleOptions.filter((role) => role.key !== option.key)
-    );
-
-    updateRoomMemberRole(roomId, {
-      invitations: [
-        {
-          id: user.id,
-          access: option.access,
-        },
-      ],
+  const onOptionClick = (option) => {
+    updateRoomMemberRole(selectionParentRoom.id, {
+      invitations: [{ id: user.id, access: option.access }],
       notify: false,
       sharingMessage: "",
     });
+
+    if (option.key === "remove") {
+      setUserIsRemoved(true);
+      const inRoomMembers = selectionParentRoom.members.inRoom;
+      const expectedMembers = selectionParentRoom.members.expected;
+      setSelectionParentRoom({
+        ...selectionParentRoom,
+        members: {
+          inRoom: inRoomMembers?.filter((m) => m.id !== user.id),
+          expected: expectedMembers?.filter((m) => m.id !== user.id),
+        },
+      });
+    }
   };
 
   return (
-    <StyledUser
-      isExpect={isExpect}
-      key={user.id}
-      canEditRole={user.role !== "Owner"}
-    >
+    <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
         role="user"
         className="avatar"
@@ -68,14 +78,12 @@ const User = ({
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {(currentMember?.access === ShareAccessRights.FullAccess ||
-            currentMember?.access === ShareAccessRights.RoomManager) &&
-          currentMember.id !== user.id ? (
+          {currCanEditUsers && currentMember.id !== user.id ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}
               options={userRoleOptions}
-              onSelect={onRoomRoleChange}
+              onSelect={onOptionClick}
               scaled={false}
               withBackdrop={false}
               size="content"

@@ -12,7 +12,6 @@ import { ShareAccessRights } from "@docspace/common/constants";
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
 import User from "./User";
-import { getAccessOptions } from "@docspace/client/src/components/panels/InvitePanel/utils";
 import MembersHelper from "../../helpers/MembersHelper";
 
 const Members = ({
@@ -140,6 +139,8 @@ const Members = ({
             updateRoomMemberRole={updateRoomMemberRole}
             roomId={selectionParentRoom.id}
             roomType={selectionParentRoom.roomType}
+            selectionParentRoom={selectionParentRoom}
+            setSelectionParentRoom={setSelectionParentRoom}
           />
         ))}
       </StyledUserList>
@@ -170,6 +171,8 @@ const Members = ({
             updateRoomMemberRole={updateRoomMemberRole}
             roomId={selectionParentRoom.id}
             roomType={selectionParentRoom.roomType}
+            selectionParentRoom={selectionParentRoom}
+            setSelectionParentRoom={setSelectionParentRoom}
           />
         ))}
       </StyledUserList>

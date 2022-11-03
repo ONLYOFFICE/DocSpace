@@ -49,25 +49,47 @@ class MembersHelper {
     };
   };
 
-  getOptionsByRoomType = (roomType) => {
+  getOptionsByRoomType = (roomType, withDeleteOption = false) => {
     if (!roomType) return;
 
     const options = this.getOptions();
 
+    const deleteOption = withDeleteOption
+      ? [
+          { key: "s2", isSeparator: true },
+          {
+            key: "remove",
+            label: this.t("Translations:Remove"),
+            access: ShareAccessRights.None,
+          },
+        ]
+      : [];
+
     switch (roomType) {
       case RoomsType.FillingFormsRoom:
-        return [options.roomAdmin, options.formFiller, options.viewer];
+        return [
+          options.roomAdmin,
+          options.formFiller,
+          options.viewer,
+          ...deleteOption,
+        ];
       case RoomsType.EditingRoom:
-        return [options.roomAdmin, options.editor, options.viewer];
+        return [
+          options.roomAdmin,
+          options.editor,
+          options.viewer,
+          ...deleteOption,
+        ];
       case RoomsType.ReviewRoom:
         return [
           options.roomAdmin,
           options.reviewer,
           options.commentator,
           options.viewer,
+          ...deleteOption,
         ];
       case RoomsType.ReadOnlyRoom:
-        return [options.roomAdmin, options.viewer];
+        return [options.roomAdmin, options.viewer, ...deleteOption];
       case RoomsType.CustomRoom:
         return [
           options.roomAdmin,
@@ -76,6 +98,7 @@ class MembersHelper {
           options.reviewer,
           options.commentator,
           options.viewer,
+          ...deleteOption,
         ];
     }
   };
