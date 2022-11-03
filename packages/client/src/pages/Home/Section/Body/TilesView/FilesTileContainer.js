@@ -55,16 +55,13 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
       const { width } = node.getBoundingClientRect();
 
-      const currentWidth = width;
+      const size = getThumbSize(width);
 
-      const size = getThumbSize(currentWidth);
-
-      const widthWithoutPadding = currentWidth - 32;
+      const widthWithoutPadding = width - 34;
 
       const columns = Math.floor(widthWithoutPadding / 80);
 
-      if (tileWidth != widthWithoutPadding)
-        setTileWidth(widthWithoutPadding - 2);
+      if (tileWidth != widthWithoutPadding) setTileWidth(widthWithoutPadding);
 
       if (columns != columnCount) setColumnCount(columns);
 
