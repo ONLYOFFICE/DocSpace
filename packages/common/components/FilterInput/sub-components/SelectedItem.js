@@ -56,7 +56,6 @@ const SelectedItem = ({
   removeSelectedItem,
   sectionWidth,
 }) => {
-  console.log(sectionWidth);
   const onRemove = () => {
     removeSelectedItem(propKey, label, group);
   };
