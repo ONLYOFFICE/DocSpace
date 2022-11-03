@@ -57,6 +57,8 @@ const StyledAboutBody = styled.div`
   }
 
   .logo-docspace-theme {
+    height: 24px;
+
     svg {
       path:nth-child(4) {
         fill: ${(props) => props.theme.client.about.logoColor};
