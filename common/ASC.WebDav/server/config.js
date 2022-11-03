@@ -53,6 +53,14 @@ module.exports = {
   // Path to read the file
   fileHandlerPath: "/Products/Files/HttpHandlers/filehandler.ashx?action=stream&fileid={0}",
 
+  aws: {
+		"accessKeyId": "",
+		"secretAccessKey": "",
+		"region": "",
+		"logGroupName": "/docspace/ASC.WebDav/instances/${instance-id}/general",
+		"logStreamName": "${guid} - ${date}"
+	},
+
   method: {
     // Get root directory in "Root"
     pathRootDirectory: "@root",

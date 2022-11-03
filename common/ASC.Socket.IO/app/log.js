@@ -80,7 +80,7 @@ var options = {
 
 //const fileTransport = new winston.transports.DailyRotateFile(options.file);
 
-var transports = [
+let transports = [
   new winston.transports.Console(options.console),
   new winston.transports.DailyRotateFile(options.file)  
 ];
