@@ -51,6 +51,7 @@ const FileTile = (props) => {
     onSelectOption,
     columnCount,
     tileWidth,
+    idx,
   } = props;
 
   const temporaryExtension =
@@ -75,7 +76,7 @@ const FileTile = (props) => {
   );
 
   return (
-    <div ref={props.selectableRef} id={id}>
+    <div ref={props.selectableRef} id={id} data-id={idx}>
       <StyledDragAndDrop
         data-title={item.title}
         value={value}

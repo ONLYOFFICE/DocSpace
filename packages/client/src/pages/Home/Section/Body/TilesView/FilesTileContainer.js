@@ -61,11 +61,9 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
       const columns = Math.floor(widthWithoutPadding / 80);
 
-      if (
-        tileWidth != widthWithoutPadding &&
-        widthWithoutPadding <= sectionWidth - 31
-      )
+      if (Math.floor(tileWidth) !== Math.floor(widthWithoutPadding)) {
         setTileWidth(widthWithoutPadding);
+      }
 
       if (columns != columnCount) setColumnCount(columns);
 
@@ -77,23 +75,27 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
       setThumbSize(size);
     },
-    [columnCount, tileWidth, thumbSize, sectionWidth]
+    [columnCount, tileWidth, thumbSize]
   );
 
-  const onSetTileRef = React.useCallback((node) => {
-    if (node) {
-      clearTimeout(timerRef.current);
-      timerRef.current = setTimeout(() => {
-        onResize(node);
+  const onSetTileRef = React.useCallback(
+    (node) => {
+      if (node && node?.dataset.id !== tileRef?.current?.dataset.id) {
+        clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => {
+          onResize(node);
 
-        if (tileRef?.current) elementResizeDetector.uninstall(tileRef.current);
+          if (tileRef?.current)
+            elementResizeDetector.uninstall(tileRef.current);
 
-        tileRef.current = node;
+          tileRef.current = node;
 
-        elementResizeDetector.listenTo(node, onResize);
-      }, 100);
-    }
-  }, []);
+          elementResizeDetector.listenTo(node, onResize);
+        }, 100);
+      }
+    },
+    [onResize]
+  );
 
   return (
     <TileContainer
@@ -117,6 +119,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
             columnCount={columnCount}
             withRef={true}
             tileWidth={tileWidth}
+            idx={index}
           />
         ) : (
           <FileTile
