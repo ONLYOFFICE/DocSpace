@@ -79,6 +79,7 @@ const SectionFilterContent = ({
 
     newFilter.role = role;
 
+    console.log(role);
     newFilter.group = group;
 
     setIsLoading(true);
@@ -262,6 +263,8 @@ const SectionFilterContent = ({
       });
     }
 
+    console.log(filter);
+
     if (filter.role) {
       let label = null;
 
@@ -269,10 +272,10 @@ const SectionFilterContent = ({
         case "admin":
           label = t("Common:DocSpaceAdmin");
           break;
-        case "user":
+        case "manager":
           label = t("Common:RoomAdmin");
           break;
-        case "guest":
+        case "user":
           label = userCaption;
           break;
         default:
