@@ -13,12 +13,12 @@ const StyledComponent = styled.div`
 
   .hex-color-picker .react-colorful {
     width: auto;
-    height: 239px;
-    padding-bottom: 16px;
+    height: 250px;
+    padding-bottom: 26px;
   }
 
   .react-colorful__saturation {
-    margin: 16px 0;
+    margin: 16px 0 26px 0;
     border-radius: 3px;
   }
 
@@ -38,10 +38,10 @@ const StyledComponent = styled.div`
   }
 
   .hex-color-picker .react-colorful__hue-pointer {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.25);
-    border: 6px solid #fff;
+    border: 8px solid #fff;
   }
 
   .hex-value {
