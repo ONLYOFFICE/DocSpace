@@ -31,14 +31,13 @@ public static class DocSpaceHelper
     public static HashSet<FileShare> PaidRights { get; } = new HashSet<FileShare> { FileShare.RoomAdmin };
 
     private static readonly HashSet<FileShare> _fillingFormRoomConstraints
-        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.FillForms, FileShare.Read };
+        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.FillForms, FileShare.Read, FileShare.None };
     private static readonly HashSet<FileShare> _collaborationRoomConstraints
-        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Editing, FileShare.Read };
+        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Editing, FileShare.Read, FileShare.None };
     private static readonly HashSet<FileShare> _reviewRoomConstraints
-        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Review, FileShare.Comment, FileShare.Read };
+        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Review, FileShare.Comment, FileShare.Read, FileShare.None };
     private static readonly HashSet<FileShare> _viewOnlyRoomConstraints
-        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Read };
-    private static readonly HashSet<FileShare> _paidShares = new HashSet<FileShare> { FileShare.RoomAdmin };
+        = new HashSet<FileShare> { FileShare.RoomAdmin, FileShare.Read, FileShare.None };
 
     public static bool IsRoom(FolderType folderType)
     {
@@ -57,7 +56,7 @@ public static class DocSpaceHelper
 
     public static bool ValidateShare(FolderType folderType, FileShare fileShare, bool isUser)
     {
-        if (isUser && _paidShares.Contains(fileShare))
+        if (isUser && PaidRights.Contains(fileShare))
         {
             return false;
         }
