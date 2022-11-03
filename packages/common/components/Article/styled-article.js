@@ -164,6 +164,10 @@ const StyledHeading = styled.div`
   padding: 0;
   cursor: pointer;
 
+  img.logo-icon_svg {
+    height: 24px;
+  }
+
   .logo-icon_svg {
     svg {
       path:last-child {
