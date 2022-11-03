@@ -63,7 +63,7 @@ const StyledArticle = styled.article`
     position: fixed;
     margin: 0;
     padding: 0;
-    top: ${(props) => (props.isBannerVisible ? "-16px" : "64px")} !important;
+    top: 64px;
     height: calc(100% - 64px) !important;
 
     border-right: none;
