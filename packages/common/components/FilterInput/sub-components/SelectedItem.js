@@ -1,5 +1,6 @@
 import React from "react";
 import styled, { css } from "styled-components";
+import { isMobileOnly } from "react-device-detect";
 
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
@@ -9,7 +10,7 @@ const StyledSelectedItem = styled.div`
   width: auto;
   height: 32px;
 
-  max-width: 100%;
+  max-width: ${!isMobileOnly ? "500px" : "100%"};
 
   display: flex;
   align-items: center;
