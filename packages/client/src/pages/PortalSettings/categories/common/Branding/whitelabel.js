@@ -68,9 +68,9 @@ const StyledComponent = styled.div`
   }
 
   .logo-header {
-    width: 142px;
-    height: 23px;
-    padding: 10px;
+    width: 211px;
+    height: 24px;
+    padding: 12px 20px;
     background-color: ${(props) =>
       props.theme.client.settings.common.whiteLabel.backgroundColor};
   }
