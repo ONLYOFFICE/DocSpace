@@ -116,5 +116,7 @@
   "ViewList": "List",
   "ViewOnlyRooms": "View-only",
   "ViewTiles": "Tiles",
-  "WithSubfolders": "With subfolders"
+  "WithSubfolders": "With subfolders",
+  "RoomPinned": "Room pinned",
+  "RoomUnpinned": "Room unpinned"
 }

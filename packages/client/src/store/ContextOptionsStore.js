@@ -435,7 +435,7 @@ class ContextOptionsStore {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
 
-    this.filesActionsStore.setPinAction(action, id);
+    this.filesActionsStore.setPinAction(action, id, t);
   };
 
   onClickArchive = (e, item, t) => {
