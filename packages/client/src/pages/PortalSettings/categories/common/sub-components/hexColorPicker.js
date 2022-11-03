@@ -22,6 +22,10 @@ const StyledComponent = styled.div`
     border-radius: 3px;
   }
 
+  .hex-color-picker .react-colorful__interactive {
+    width: 183px;
+  }
+
   .hex-color-picker .react-colorful__saturation-pointer {
     width: 14px;
     height: 14px;
@@ -63,46 +67,35 @@ const StyledComponent = styled.div`
     }
   }
 
-  @media (min-width: 428px) {
-    ${!isMobileOnly &&
-    css`
-      .hex-color-picker {
-        display: flex;
-        flex-direction: column;
-        padding-bottom: 16px;
-        width: 195px;
-      }
+  .hex-color-picker {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 16px;
+    width: 195px;
+  }
 
-      .hex-value-container {
-        order: 2;
-        padding-bottom: 16px;
-      }
+  .hex-value-container {
+    order: 2;
+    padding-bottom: 16px;
+  }
 
-      .hex-color-picker .react-colorful {
-        order: 1;
-      }
+  .hex-color-picker .react-colorful {
+    order: 1;
+  }
 
-      .hex-button {
-        order: 3;
-      }
-    `}
+  .hex-button {
+    order: 3;
   }
 `;
 
 const HexColorPickerComponent = (props) => {
-  const {
-    onCloseHexColorPicker,
-    onAppliedColor,
-    setColor,
-    color,
-    viewMobile,
-  } = props;
+  const { onCloseHexColorPicker, onAppliedColor, setColor, color } = props;
 
   return (
-    <StyledComponent viewMobile={viewMobile}>
+    <StyledComponent>
       <div className="hex-color-picker">
         <div className="hex-value-container">
-          {!viewMobile && <div className="hex-value-label">Hex code:</div>}
+          <div className="hex-value-label">Hex code:</div>
 
           <HexColorInput
             className="hex-value"
