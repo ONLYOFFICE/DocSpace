@@ -6,6 +6,7 @@ import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Filter from "../api/people/filter";
+import { getRoomInfo } from "../api/rooms";
 
 const observedKeys = [
   "id",
@@ -130,6 +131,22 @@ class InfoPanelStore {
 
   reloadSelection = () => {
     this.setSelection(this.calculateSelection());
+  };
+
+  reloadSelectionParentRoom = async () => {
+    if (!this.getIsRooms) return;
+
+    const currentFolderRoomId = this.selectedFolderStore.pathParts[1];
+    const prevRoomId = selectionParentRoom?.id;
+
+    if (!currentFolderRoomId || currentFolderRoomId === prevRoomId) return;
+
+    const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
+    if (prevRoomId === newSelectionParentRoom.id) return;
+
+    this.setSelectionParentRoom(
+      this.normalizeSelection(newSelectionParentRoom)
+    );
   };
 
   isItemChanged = (oldItem, newItem) => {
