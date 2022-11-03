@@ -78,7 +78,7 @@ const Tag = ({
             open={openDropdown}
             forwardedRef={tagRef}
             clickOutsideAction={onClickOutside}
-            directionX={"right"}
+            // directionX={"right"}
             manualY={"4px"}
           >
             {advancedOptions.map((tag, index) => (
