@@ -31,12 +31,14 @@ const Members = ({
 
   setInvitePanelOptions,
   changeUserType,
+  canInviteUserInRoom,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
 
+  const isDisabledInvite = !canInviteUserInRoom({ access: selection.access });
   const fetchMembers = async (roomId) => {
     let timerId;
     if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
@@ -123,6 +125,7 @@ const Members = ({
           isFill={true}
           onClick={onClickInviteUsers}
           size={16}
+          isDisabled={isDisabledInvite}
         />
       </StyledUserTypeHeader>
 
@@ -174,28 +177,32 @@ const Members = ({
   );
 };
 
-export default inject(({ auth, filesStore, peopleStore, dialogsStore }) => {
-  const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
-  const { getRoomMembers, updateRoomMemberRole } = filesStore;
-  const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
-  const { setInvitePanelOptions } = dialogsStore;
-  const { changeType: changeUserType } = peopleStore;
+export default inject(
+  ({ auth, filesStore, peopleStore, dialogsStore, accessRightsStore }) => {
+    const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
+    const { getRoomMembers, updateRoomMemberRole } = filesStore;
+    const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
+    const { setInvitePanelOptions } = dialogsStore;
+    const { changeType: changeUserType } = peopleStore;
+    const { canInviteUserInRoom } = accessRightsStore;
 
-  return {
-    selectionParentRoom,
-    setSelectionParentRoom,
+    return {
+      selectionParentRoom,
+      setSelectionParentRoom,
 
-    getRoomMembers,
-    updateRoomMemberRole,
+      getRoomMembers,
+      updateRoomMemberRole,
 
-    isOwner,
-    isAdmin,
-    selfId,
+      isOwner,
+      isAdmin,
+      selfId,
 
-    setInvitePanelOptions,
-    changeUserType,
-  };
-})(
+      setInvitePanelOptions,
+      changeUserType,
+      canInviteUserInRoom,
+    };
+  }
+)(
   withTranslation([
     "InfoPanel",
     "Common",

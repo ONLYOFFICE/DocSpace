@@ -63,6 +63,15 @@ const StyledDropdownIcon = styled(ReactSVG)`
   align-items: center;
 
   pointer-events: none;
+
+  svg {
+    path:first-child {
+      stroke: ${(props) => props.theme.tag.color};
+    }
+    path:last-child {
+      fill: ${(props) => props.theme.tag.color};
+    }
+  }
 `;
 
 const StyledDropdownText = styled(Text)`

@@ -42,7 +42,6 @@ const RenameEvent = ({
   const onUpdate = React.useCallback((e, value) => {
     const originalTitle = getTitleWithoutExst(item);
 
-    setIsLoading(true);
     let timerId;
 
     const isSameTitle =
@@ -52,7 +51,7 @@ const RenameEvent = ({
 
     if (isSameTitle) {
       setStartValue(originalTitle);
-      setIsLoading(false);
+
       onClose();
 
       return editCompleteAction(item, type);
@@ -82,7 +81,6 @@ const RenameEvent = ({
             timerId = null;
             clearActiveOperations([item.id]);
 
-            setIsLoading(false);
             onClose();
           })
       : renameFolder(item.id, value)
@@ -106,7 +104,6 @@ const RenameEvent = ({
             clearTimeout(timerId);
             timerId = null;
             clearActiveOperations(null, [item.id]);
-            setIsLoading(false);
             onClose();
           });
   }, []);

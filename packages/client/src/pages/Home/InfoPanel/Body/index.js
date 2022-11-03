@@ -179,7 +179,6 @@ export default inject(({ auth, selectedFolderStore }) => {
     calculateSelection,
     normalizeSelection,
     isItemChanged,
-    selectionParentRoom,
     setSelectionParentRoom,
     roomsView,
     fileView,

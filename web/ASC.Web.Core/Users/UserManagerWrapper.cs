@@ -146,7 +146,7 @@ public sealed class UserManagerWrapper
 
         if (groupId != Guid.Empty)
         {
-            _userManager.AddUserIntoGroup(newUser.Id, groupId);
+            _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
         }
 
         return newUser;

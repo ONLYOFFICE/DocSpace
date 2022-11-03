@@ -50,6 +50,8 @@ const ItemContextOptions = ({
     contextMenuRef.current.hide();
   }, [selection]);
 
+  const options = contextHelper.getItemContextOptions();
+
   return (
     <StyledItemContextOptions onClick={setItemAsBufferSelection}>
       <ContextMenu
@@ -57,14 +59,16 @@ const ItemContextOptions = ({
         getContextModel={contextHelper.getItemContextOptions}
         withBackdrop={false}
       />
-      <ContextMenuButton
-        className="expandButton"
-        title={"Show item actions"}
-        onClick={onContextMenu}
-        getData={contextHelper.getItemContextOptions}
-        directionX="right"
-        isNew={true}
-      />
+      {options.length > 0 && (
+        <ContextMenuButton
+          className="expandButton"
+          title={"Show item actions"}
+          onClick={onContextMenu}
+          getData={contextHelper.getItemContextOptions}
+          directionX="right"
+          isNew={true}
+        />
+      )}
     </StyledItemContextOptions>
   );
 };

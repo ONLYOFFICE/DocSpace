@@ -58,30 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
-    <value>Hörmətli $UserName,
-
-İstifadəçi profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" ünvanında uğurla portala əlavə edildi. Bu gün onunla başlayın!
-
-h3.Sənədlərlə işləməyə başlayın:
-# Mətn sənədləri, cədvəl və təqdimatlar yaradın və redaktə edin.
-# Bütün sənədləriniz üçün vahid iş sahəsi yaratmaq üçün istifadə etdiyiniz bulud yaddaşlarını birləşdirin.
-# Sənədləri komanda üzvlərinizlə paylaşın.
-# Sənədlər üzərində birlikdə işləməyin müxtəlif yollarını araşdırın: iki real vaxtda birgə redaktə rejimi, nəzərdən keçirmə, şərhlər, söhbət.
-h3.Əlavə ${LetterLogoText} alətlərini sınayın:
-
-# E-poçt hesabınızı "${LetterLogoText} Mail":"${__VirtualRootPath}/addons/mail/" -ə əlavə edin.
-# "Layihələr":"${__VirtualRootPath}/products/projects/" yaradın və mərhələlər və tapşırıqlar əlavə etməklə iş axınınızı idarə edin.
-# "CRM":"${__VirtualRootPath}/products/crm/" -dan istifadə edərək müştəri münasibətlərinizi idarə edin.
-# Bloqlarınızı, forumlarınızı başlatmaq, tədbirlər əlavə etmək, əlfəcinləri paylaşmaq üçün "Community":"${__VirtualRootPath}/products/community/" -dən istifadə edin.
-# Daxili "Təqvim":"${__VirtualRootPath}/addons/calendar/" ilə iş qrafikinizi təşkil edin.
-# Komanda yoldaşlarınızla onlayn söhbət etmək üçün "Danışıq":"${__VirtualRootPath}/addons/talk/" -a başlayın.
-$GreenButton
-
-Hörmətlə,
-
-${LetterLogoText} Team</value>
-  </data>
   <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>h1.ONLYOFFICE Personal-a xoş gəlmisiniz
 
@@ -103,32 +79,6 @@ h3. Sürətli başlanğıc üçün ONLYOFFICE-də edə biləcəkləriniz bunlard
 - "Chrome genişləndirilməsi" vasitəsilə şəxsi buludunuza asanlıqla daxil olmaq:"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
 
 Siz həmçinin ödənişsiz "masa üstü redaktorlarımız" vasitəsilə sənədləri oflayn rejimdə redaktə edə bilərsiniz:"https://www.onlyoffice.com/download-desktop.aspx" və ya "mobil redaktə dəsti" əldə edə bilərsiniz:"https://www.onlyoffice.com iOS və ya Android cihazınız üçün /mobile.aspx".
-
-Hörmətlə,
-ONLYOFFICE komandası</value>
-  </data>
-  <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
-    <value>$PersonalHeaderStart Sevimli bulud yaddaşınızı ONLYOFFICE-ə qoşun $PersonalHeaderEnd
-
-Bulud ofisi yaratmağınızdan bir həftə keçib, ona görə də qaçırdığınız bəzi faydalı funksiyaları açıqlamağın vaxtıdır.
-
-*Dropbox*, *Google Drive*, *Box*, *OneDrive*, *Nextcloud*, *ownCloud*, *kDrive* və ya *Yandex.Disk*-i ONLYOFFICE ilə əlaqələndirib bütün sənədləriniz üçün vahid idarəetməsahəsi yaradın. Xarici faylları da ONLYOFFICE daxilində redaktə edə və onları faylları saxladığınız yaddaşa əlavə edə biləcəksiniz. Fayl yaddaşlarını ONLYOFFICE ilə əlaqələndirməklə bağlı ətraflı məlumatı "buradan":"${__HelpLink}/tipstricks/add-resource.aspx" əldə edə bilərsiniz.
-
-Siz, həmçinin, "əlaqələndirici tətbiqimizdən":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn" istifadə edərək ONLYOFFICE redaktorlarını Google Diskə inteqrasiya edə bilərsiniz.
-
-Sənəd İdarəetməsi haqqında daha çox bilmək istəyirsiniz?
-
-h3."Buludda":"https://www.onlyoffice.com/cloud-office.aspx" və ya "serverinizdə":"https://www.onlyoffice.com/server-solutions.aspx" Biznes üçün ONLYOFFICE-i 30 gün ərzində pulsuz sınayın və biznes alət dəsti ilə genişləndirilmiş sənəd idarəetmə imkanlarını yoxlayın:
-
-- Layihələr üzrə komanda sənədlərini idarə etmək;
-
-- Sənədləri CRM və Email ilə inteqrasiya etmək;
-
-- Faylları istifadəçi qrupları ilə paylaşmaq;
-
-- Komandanın ünsiyyət vasitələri ilə iş prosesinizi optimallaşdırmaq.
-
-Maraqlıdır? "Biznes üçün ONLYOFFICE":"http://www.onlyoffice.com/document-management.aspx" haqqında ətraflı məlumat əldə edin.
 
 Hörmətlə,
 ONLYOFFICE komandası</value>
@@ -212,9 +162,6 @@ ONLYOFFICE komandası</value>
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>ONLYOFFICE Personala xoş gəlmisiniz</value>
-  </data>
-  <data name="subject_personal_custom_mode_after_registration7" xml:space="preserve">
-    <value>Sevimli bulud yaddaşınızı ONLYOFFICE ilə birləşdirin</value>
   </data>
   <data name="subject_personal_custom_mode_change_password" xml:space="preserve">
     <value>ONLYOFFICE Şəxsi parol yardımı</value>
