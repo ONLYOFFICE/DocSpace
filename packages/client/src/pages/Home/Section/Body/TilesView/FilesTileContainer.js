@@ -53,15 +53,9 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
     (node) => {
       if (!node) return;
 
-      const containerWidth = containerRef?.current?.offsetWidth;
-
-      const tileRowCount = containerWidth / 216;
-
-      const maxWidth = containerWidth / tileRowCount;
-
       const { width } = node.getBoundingClientRect();
 
-      const currentWidth = width > maxWidth ? maxWidth : width;
+      const currentWidth = width;
 
       const size = getThumbSize(currentWidth);
 
@@ -69,9 +63,8 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
       const columns = Math.floor(widthWithoutPadding / 80);
 
-      console.log(width, currentWidth, maxWidth);
-
-      if (tileWidth != widthWithoutPadding) setTileWidth(widthWithoutPadding);
+      if (tileWidth != widthWithoutPadding)
+        setTileWidth(widthWithoutPadding - 2);
 
       if (columns != columnCount) setColumnCount(columns);
 
