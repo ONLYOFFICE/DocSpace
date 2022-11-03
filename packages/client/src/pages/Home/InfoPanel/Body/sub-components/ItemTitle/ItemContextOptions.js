@@ -36,8 +36,6 @@ const ItemContextOptions = ({
 
   if (!selection) return null;
 
-  const setItemAsBufferSelection = () => setBufferSelection(selection);
-
   const onContextMenu = (e) => {
     e.button === 2;
     if (!contextMenuRef.current.menuRef.current) itemTitleRef.current.click(e);
@@ -49,12 +47,13 @@ const ItemContextOptions = ({
   }, [selection]);
 
   const options = contextHelper.getItemContextOptions();
+  const getData = () => options;
 
   return (
-    <StyledItemContextOptions onClick={setItemAsBufferSelection}>
+    <StyledItemContextOptions onClick={() => setBufferSelection(selection)}>
       <ContextMenu
         ref={contextMenuRef}
-        getContextModel={contextHelper.getItemContextOptions}
+        getContextModel={getData}
         withBackdrop={false}
       />
       {options.length > 0 && (
@@ -62,7 +61,7 @@ const ItemContextOptions = ({
           className="expandButton"
           title={"Show item actions"}
           onClick={onContextMenu}
-          getData={contextHelper.getItemContextOptions}
+          getData={getData}
           directionX="right"
           isNew={true}
         />

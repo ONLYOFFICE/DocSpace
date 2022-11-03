@@ -41,8 +41,12 @@ class InfoPanelStore {
   setIsVisible = (bool) => (this.isVisible = bool);
 
   setSelection = (selection) => {
-    if (this.getIsAccounts() && (!selection.email || !selection.displayName))
+    if (this.getIsAccounts() && (!selection.email || !selection.displayName)) {
+      this.selection = selection.length
+        ? selection
+        : { isSelectedFolder: true };
       return;
+    }
     this.selection = selection;
   };
   setSelectionParentRoom = (obj) => (this.selectionParentRoom = obj);
@@ -186,15 +190,10 @@ class InfoPanelStore {
     path.push(`filter?${newFilter.toUrlParams()}`);
     const userList = await getUsersList(newFilter);
 
-    // this.setSelection(null);
-
+    history.push(combineUrl(...path));
     this.selectedFolderStore.setSelectedFolder(null);
     this.treeFoldersStore.setSelectedNode(["accounts"]);
-    history.push(combineUrl(...path));
-
-    // this.setSelection({});
     setSelection([user]);
-    // this.setSelection(this.calculateSelection({ selectedItems: [user] }));
   };
 
   fetchUser = async (userId) => {

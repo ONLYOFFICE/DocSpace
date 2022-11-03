@@ -51,11 +51,13 @@ const ItemTitle = ({
   );
 };
 
-export default inject(({ auth, settingsStore }) => {
+export default inject(({ auth, settingsStore, peopleStore }) => {
   const { selectionParentRoom, roomsView } = auth.infoPanelStore;
   const { getIcon } = settingsStore;
+  const { getUserContextOptions } = peopleStore.contextOptionsStore;
 
   return {
+    getUserContextOptions,
     selectionParentRoom,
     roomsView,
     getIcon,

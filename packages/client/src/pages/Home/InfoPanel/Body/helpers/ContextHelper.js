@@ -84,7 +84,7 @@ class ContextHelper {
     return this.isUser
       ? this.getUserContextOptions(
           this.t,
-          this.selection.options,
+          this.selection.options || [],
           this.selection
         )
       : this.getContextOptionActions(this.selection, this.t);

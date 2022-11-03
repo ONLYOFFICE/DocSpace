@@ -3,7 +3,7 @@ import { withTranslation } from "react-i18next";
 
 import Text from "@docspace/components/text";
 
-import { Avatar } from "@docspace/components";
+import { Avatar, ContextMenuButton } from "@docspace/components";
 import Badges from "@docspace/client/src/pages/AccountsHome/Section/Body/Badges";
 import { StyledAccountsItemTitle } from "../../styles/accounts";
 import { StyledTitle } from "../../styles/common";
@@ -16,11 +16,6 @@ const AccountsItemTitle = ({
   getUserContextOptions,
   selectionLength,
 }) => {
-  const itemTitleRef = useRef();
-
-  const isPending =
-    selection.statusType === "pending" || selection.statusType === "disabled";
-
   if (isSeveralItems) {
     return (
       <StyledTitle>
@@ -31,6 +26,19 @@ const AccountsItemTitle = ({
       </StyledTitle>
     );
   }
+
+  const itemTitleRef = useRef();
+
+  const isPending =
+    selection.statusType === "pending" || selection.statusType === "disabled";
+
+  const getData = () => {
+    const newOptions = selection.options?.filter(
+      (option) => option !== "details"
+    );
+    return getUserContextOptions(t, newOptions || [], selection);
+  };
+  const contextOptions = getData();
 
   return (
     <StyledAccountsItemTitle isPending={isPending} ref={itemTitleRef}>
@@ -62,12 +70,9 @@ const AccountsItemTitle = ({
           <Badges withoutPaid={true} statusType={selection.statusType} />
         )}
       </div>
-      <ItemContextOptions
-        t={t}
-        isUser
-        itemTitleRef={itemTitleRef}
-        selection={selection}
-      />
+      {!!contextOptions.length && (
+        <ContextMenuButton className="context-button" getData={getData} />
+      )}
     </StyledAccountsItemTitle>
   );
 };
