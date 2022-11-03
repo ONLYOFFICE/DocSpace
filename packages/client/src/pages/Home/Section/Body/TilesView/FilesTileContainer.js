@@ -58,7 +58,6 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
       const size = getThumbSize(width);
 
       const widthWithoutPadding = width - 34;
-      console.log("call", widthWithoutPadding, sectionWidth);
 
       const columns = Math.floor(widthWithoutPadding / 80);
 
