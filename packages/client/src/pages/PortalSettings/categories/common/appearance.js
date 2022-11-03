@@ -144,8 +144,10 @@ const Appearance = (props) => {
   }, []);
 
   useEffect(() => {
-    setSelectThemeId(selectedThemeId);
-  }, [selectedThemeId, appearanceTheme.length]);
+    const localStorageId = +localStorage.getItem("selectThemeId");
+
+    setSelectThemeId(localStorageId ? localStorageId : selectedThemeId);
+  }, [selectedThemeId, appearanceTheme.length, setSelectThemeId]);
 
   useEffect(() => {
     if (selectThemeId < 8) {
@@ -200,6 +202,7 @@ const Appearance = (props) => {
   const onColorSelection = (item) => {
     setPreviewAccentColor(item.accentColor);
     setSelectThemeId(item.id);
+    localStorage.setItem("selectThemeId", item.id);
   };
 
   const onShowCheck = useCallback(
@@ -218,6 +221,7 @@ const Appearance = (props) => {
 
     if (!selectThemeId) return;
 
+    localStorage.removeItem("selectThemeId");
     try {
       await sendAppearanceTheme({ selected: selectThemeId });
       await getAppearanceTheme();
@@ -250,11 +254,15 @@ const Appearance = (props) => {
 
   const onClickDeleteModal = useCallback(async () => {
     try {
+      localStorage.removeItem("selectThemeId");
+
       await deleteAppearanceTheme(selectThemeId);
       await getAppearanceTheme();
 
-      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+      setPreviewAccentColor(currentColorScheme.accentColor);
       setVisibleDialog(false);
+
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
     }
@@ -345,6 +353,7 @@ const Appearance = (props) => {
       try {
         await sendAppearanceTheme({ themes: [editTheme] });
         await getAppearanceTheme();
+        setPreviewAccentColor(editTheme.accentColor);
 
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
       } catch (error) {
