@@ -244,6 +244,36 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     align-items: center;
     gap: 8px;
   }
+  
+  .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: ${(props) =>
+      props.primary
+        ? props.theme.button.backgroundColor.primaryLoading
+        : props.theme.button.backgroundColor.baseLoading};
+
+    .loader_track {
+      color: ${(props) =>
+        props.primary
+          ? props.theme.button.loader.primary
+          : props.theme.button.loader.base};
+      width: ${(props) => (props.size === "extraSmall" ? "16px" : "20px")};
+      height: ${(props) => (props.size === "extraSmall" ? "16px" : "20px")};
+    }
+  }
 
   .icon {
     width: auto;

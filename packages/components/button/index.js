@@ -1,17 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Loader from "./loader";
-import StyledButton from "./styled-button";
+
 import Base from "../themes/base";
+import Loader from "../loader";
+import StyledButton from "./styled-button";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 const Button = React.forwardRef((props, ref) => {
-  const { primary, isLoading, size, icon, label } = props;
+  const { isLoading, icon, label } = props;
   return (
     <ColorTheme {...props} innerRef={ref} themeId={ThemeType.Button}>
       <div className="button-content">
-        {isLoading && <Loader primary={primary} size={size} />}
+        {isLoading && <Loader className="loader" type="track" {...props} />}
         {icon && <div className="icon">{icon}</div>}
         {label}
       </div>
