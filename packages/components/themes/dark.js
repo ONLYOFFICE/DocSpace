@@ -147,9 +147,9 @@ const Dark = {
       baseLoading: "#282828",
 
       primary: "#5299E0",
-      primaryHover: "rgba(82, 153, 224, 0.85)",
+      primaryHover: "#4D8AC7",
       primaryActive: "#427CB7",
-      primaryDisabled: "rgba(82, 153, 224, 0.6)",
+      primaryDisabled: "#45709B",
       primaryLoading: "#45709B",
     },
 
@@ -161,7 +161,7 @@ const Dark = {
       baseLoading: `1px solid #474747`,
 
       primary: `1px solid #5299E0`,
-      primaryHover: `1px solid rgba(82, 153, 224, 0.85)`,
+      primaryHover: `1px solid #4D8AC7`,
       primaryActive: `1px solid #427CB7`,
       primaryDisabled: `1px solid #45709B`,
       primaryLoading: `1px solid #45709B`,
