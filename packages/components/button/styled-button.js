@@ -73,6 +73,29 @@ const hoverCss = css`
   }
 `;
 
+const loadingCss = css`
+  background-color: ${(props) =>
+    props.primary
+      ? props.theme.button.backgroundColor.primaryLoading
+      : props.theme.button.backgroundColor.grayLight};
+
+  color: ${(props) =>
+    props.primary
+      ? props.theme.button.color.primary
+      : props.theme.button.color.base};
+
+  ${(props) =>
+    props.primary
+      ? css`
+          border: ${(props) => props.theme.button.border.primaryLoading};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `
+      : css`
+          border: ${(props) => props.theme.button.border.baseLoading};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `}
+`;
+
 const disableCss = css`
   background-color: ${(props) =>
     props.primary
@@ -137,6 +160,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
         : "normalTouchscreen"
       : props.size,
 }))`
+  position: relative;
   height: ${(props) => heightStyle(props)};
   font-size: ${(props) => fontSizeStyle(props)};
 
@@ -206,7 +230,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
         `)}
 
   ${(props) => props.isDisabled && disableCss}
-
+  ${(props) => props.isLoading && loadingCss}
 
     &:focus {
     outline: ${(props) => props.theme.button.outline};
@@ -225,24 +249,6 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     width: auto;
     display: flex;
     align-items: center;
-  }
-
-  .loader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    svg {
-      stroke: ${(props) =>
-        props.primary
-          ? props.theme.button.loader.primary
-          : props.theme.button.loader.base};
-    }
-    vertical-align: ${(props) =>
-      props.size === "normalTouchscreen" || props.size === "extraSmall"
-        ? props.theme.button.middleVerticalAlign
-        : props.size === "small"
-        ? props.theme.button.bottomVerticalAlign
-        : props.theme.button.topVerticalAlign};
   }
 `;
 
