@@ -25,11 +25,10 @@ const globalColors = {
   blueLightMid: "#265A8F",
   strongBlue: "#316AC5",
 
-  buttonLightPrimaryDefault: "#5299E0",
-  buttonLightPrimaryHover: "rgba(82, 153, 224, 0.85)",
-  buttonLightPrimaryPressed:"#4A8ACA",
-  buttonLightPrimaryDisabled:"#96C1EC",
-  buttonLightPrimaryLoader:"#96C1EC",
+  blueDenim : "#5299E0",
+  blueDenimTransparent: "rgba(82, 153, 224, 0.85)",
+  blueMaya: "#4A8ACA",
+  blueSky: "#96C1EC",
 
   lightGrayishBlue: "#DEE2E6",
   lightGrayishStrongBlue: "#DFE2E3",
