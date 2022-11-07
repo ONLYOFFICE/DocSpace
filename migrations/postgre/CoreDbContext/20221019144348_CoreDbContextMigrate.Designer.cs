@@ -67,7 +67,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         new
                         {
                             Tenant = -1,
-                            Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:100,manager:1",
+                            Features = "trial,audit,ldap,sso,whitelabel,restore,total_size:107374182400,file_size:100,manager:1",
                             Name = "trial",
                             Price = 0m,
                             Visible = false
@@ -75,7 +75,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         new
                         {
                             Tenant = -2,
-                            Features = "audit,ldap,sso,whitelabel,restore,total_size:10995116277760,file_size:1024,manager:1",
+                            Features = "audit,ldap,sso,whitelabel,restore,total_size:107374182400,file_size:1024,manager:1",
                             Name = "admin",
                             Price = 30m,
                             ProductId = "1002",
