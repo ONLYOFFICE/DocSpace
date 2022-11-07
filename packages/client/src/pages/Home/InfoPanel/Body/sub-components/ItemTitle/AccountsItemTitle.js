@@ -1,44 +1,47 @@
-import React from "react";
+import React, { useRef } from "react";
 import { withTranslation } from "react-i18next";
 
 import Text from "@docspace/components/text";
-import ContextMenuButton from "@docspace/components/context-menu-button";
 
-import { Avatar } from "@docspace/components";
+import { Avatar, ContextMenuButton } from "@docspace/components";
 import Badges from "@docspace/client/src/pages/AccountsHome/Section/Body/Badges";
 import { StyledAccountsItemTitle } from "../../styles/accounts";
 import { StyledTitle } from "../../styles/common";
+import ItemContextOptions from "./ItemContextOptions";
 
 const AccountsItemTitle = ({
   t,
   isSeveralItems,
   selection,
   getUserContextOptions,
-  severalItemsLength,
+  selectionLength,
 }) => {
-  const isPending =
-    selection.statusType === "pending" || selection.statusType === "disabled";
-
-  const getData = () => {
-    const newOptions = selection.options.filter(
-      (option) => option !== "details"
-    );
-    return getUserContextOptions(t, newOptions, selection);
-  };
-
   if (isSeveralItems) {
     return (
       <StyledTitle>
         <Avatar size={"min"} role={"user"} />
         <Text className="text" fontWeight={600} fontSize="16px">
-          {`${t("InfoPanel:SelectedUsers")}: ${severalItemsLength}`}
+          {`${t("InfoPanel:SelectedUsers")}: ${selectionLength}`}
         </Text>
       </StyledTitle>
     );
   }
 
+  const itemTitleRef = useRef();
+
+  const isPending =
+    selection.statusType === "pending" || selection.statusType === "disabled";
+
+  const getData = () => {
+    const newOptions = selection.options?.filter(
+      (option) => option !== "details"
+    );
+    return getUserContextOptions(t, newOptions || [], selection);
+  };
+  const contextOptions = getData();
+
   return (
-    <StyledAccountsItemTitle isPending={isPending}>
+    <StyledAccountsItemTitle isPending={isPending} ref={itemTitleRef}>
       <Avatar
         className="avatar"
         role={selection.role ? selection.role : "user"}
@@ -67,7 +70,9 @@ const AccountsItemTitle = ({
           <Badges withoutPaid={true} statusType={selection.statusType} />
         )}
       </div>
-      <ContextMenuButton className="context-button" getData={getData} />
+      {!!contextOptions.length && (
+        <ContextMenuButton className="context-button" getData={getData} />
+      )}
     </StyledAccountsItemTitle>
   );
 };

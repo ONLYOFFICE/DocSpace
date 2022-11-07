@@ -9,10 +9,12 @@
   },
   "dependencies": {
     "@authenio/samlify-node-xmllint": "^2.0.0",
+    "@aws-sdk/client-cloudwatch-logs": "^3.199.0",
     "body-parser": "1.19.0",
     "co": "^4.6.0",
     "cookie-parser": "1.4.5",
     "cors": "^2.8.5",
+    "date-and-time": "^2.4.1",
     "express": "4.17.1",
     "express-handlebars": "^4.0.6",
     "express-session": "1.17.1",
@@ -28,8 +30,9 @@
     "samlify": "^2.7.6",
     "serve-favicon": "^2.5.0",
     "url": "^0.11.0",
-    "winston": "^3.3.3",
-    "winston-daily-rotate-file": "^4.5.0"
+    "winston": "^3.8.2",
+    "winston-cloudwatch": "^6.1.1",
+    "winston-daily-rotate-file": "^4.5.5"
   },
   "engines": {
     "node": ">= 12.0.0"

@@ -11,7 +11,9 @@
     "postinstall": "patch-package"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudwatch-logs": "^3.199.0",
     "axios": "^0.21.0",
+    "date-and-time": "^2.4.1",
     "express": "^4.17.1",
     "form-data": "^3.0.0",
     "get-byte": "0.0.0",
@@ -21,7 +23,8 @@
     "request": "^2.88.0",
     "to-byte-array": "^1.0.2",
     "webdav-server": "2.6.2",
-    "winston": "^3.2.1",
+    "winston": "^3.8.2",
+    "winston-cloudwatch": "^6.1.1",
     "winston-daily-rotate-file": "^4.5.5"
   }
 }
