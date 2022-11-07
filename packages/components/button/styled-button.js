@@ -188,6 +188,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   text-decoration: ${(props) => props.theme.button.textDecoration};
   vertical-align: ${(props) => props.theme.button.verticalAlign};
   border-radius: ${(props) => props.theme.button.borderRadius};
+  letter-spacing: 0.8px;
   -moz-border-radius: ${(props) => props.theme.button.borderRadius};
   -webkit-border-radius: ${(props) => props.theme.button.borderRadius};
 
@@ -269,12 +270,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf([
-    "extraSmall",
-    "small",
-    "normal",
-    "medium",
-  ]),
+  size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 

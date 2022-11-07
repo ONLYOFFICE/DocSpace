@@ -81,7 +81,7 @@ const Base = {
   },
 
   button: {
-    fontWeight: "600",
+    fontWeight: "500",
     margin: "0",
     display: "inline-block",
     textAlign: "center",
@@ -123,7 +123,7 @@ const Base = {
     },
 
     padding: {
-      extraSmall: "0 12px",
+      extraSmall: "0 11.5px",
       small: "0 28px",
       normal: "0 28px",
       medium: "0 32px",
