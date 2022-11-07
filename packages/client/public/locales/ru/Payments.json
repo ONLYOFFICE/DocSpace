@@ -37,6 +37,6 @@
   "SendRequest": "Отправить запрос",
   "TotalPricePerMonth": "<1>{{currencySymbol}}</1><2>{{price}}</2><3>/месяц</3>",
   "UpgradeNow": "Обновить прямо сейчас",
-  "UserNotFound": "Пользователь <1>«{{email}}»</1> не найден",
+  "UserNotFound": "Пользователь <1>{{email}}</1> не найден",
   "YourPrice": "Ваша стоимость"
 }
