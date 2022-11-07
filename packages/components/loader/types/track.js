@@ -78,7 +78,7 @@ const Track = ({ size, color, label, primary }) => (
         <stop offset="100%" stopColor="currentColor" stopOpacity="1" />
       </linearGradient>
     </defs>
-    <g fill="none" strokeWidth="60" transform="translate(100,100) scale(0.85)">
+    <g fill="none" strokeWidth="45" transform="translate(100,100) scale(0.85)">
       <path
         d="M 0,-100 A 100,100 0 0,1 86.6,-50"
         stroke="url(#spinner-color-1)"
