@@ -38,7 +38,7 @@ const StyledBody = styled.div`
       grid-template-columns: 1fr;
 
       grid-template-rows: ${(props) =>
-        props.isHideBenefitsInfo ? "1fr" : "1fr 1fr"};
+        props.isHideBenefitsInfo ? "1fr" : "1fr max-content"};
 
       .price-calculation-container,
       .benefits-container {
@@ -54,7 +54,7 @@ const StyledBody = styled.div`
       css`
         grid-template-columns: 1fr;
         grid-template-rows: ${(props) =>
-          props.isHideBenefitsInfo ? "1fr" : "1fr 1fr"};
+          props.isHideBenefitsInfo ? "1fr" : "1fr max-content"};
 
         .price-calculation-container,
         .benefits-container {
