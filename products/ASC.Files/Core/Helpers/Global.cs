@@ -238,24 +238,24 @@ public class GlobalStore
 
     public IDataStore GetStore(bool currentTenant = true)
     {
-        return _storageFactory.GetStorage(currentTenant ? _tenantManager.GetCurrentTenant().Id.ToString() : string.Empty, FileConstant.StorageModule);
+        return _storageFactory.GetStorage(currentTenant ? _tenantManager.GetCurrentTenant().Id : null, FileConstant.StorageModule);
     }
 
     public IDataStore GetStoreTemplate()
     {
-        return _storageFactory.GetStorage(string.Empty, FileConstant.StorageTemplate);
+        return _storageFactory.GetStorage(null, FileConstant.StorageTemplate);
     }
 }
 
 [Scope]
 public class GlobalSpace
 {
-    private readonly FilesUserSpaceUsage _filesUserSpaceUsage;
+    private readonly FilesSpaceUsageStatManager _filesSpaceUsageStatManager;
     private readonly AuthContext _authContext;
 
-    public GlobalSpace(FilesUserSpaceUsage filesUserSpaceUsage, AuthContext authContext)
+    public GlobalSpace(FilesSpaceUsageStatManager filesSpaceUsageStatManager, AuthContext authContext)
     {
-        _filesUserSpaceUsage = filesUserSpaceUsage;
+        _filesSpaceUsageStatManager = filesSpaceUsageStatManager;
         _authContext = authContext;
     }
 
@@ -266,7 +266,7 @@ public class GlobalSpace
 
     public Task<long> GetUserUsedSpaceAsync(Guid userId)
     {
-        return _filesUserSpaceUsage.GetUserSpaceUsageAsync(userId);
+        return _filesSpaceUsageStatManager.GetUserSpaceUsageAsync(userId);
     }
 }
 

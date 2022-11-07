@@ -35,6 +35,7 @@ const InvitePanel = ({
   adminLink,
   defaultAccess,
   inviteUsers,
+  reloadSelectionParentRoom,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
@@ -159,6 +160,7 @@ const InvitePanel = ({
         : await setRoomSecurity(roomId, data);
       onClose();
       toastr.success(`Users invited`);
+      reloadSelectionParentRoom();
     } catch (err) {
       toastr.error(err);
     }
@@ -225,6 +227,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
 
   const { getUsersByQuery, inviteUsers } = peopleStore.usersStore;
+  const { reloadSelectionParentRoom } = auth.infoPanelStore;
 
   const {
     getPortalInviteLinks,
@@ -265,6 +268,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     guestLink,
     adminLink,
     inviteUsers,
+    reloadSelectionParentRoom,
   };
 })(
   withTranslation([

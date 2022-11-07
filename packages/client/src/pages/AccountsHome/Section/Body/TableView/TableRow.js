@@ -129,14 +129,15 @@ const PeopleTableRow = (props) => {
     checkedProps,
     onContentRowSelect,
     onEmailClick,
-    isAdmin,
+
     isOwner,
     theme,
     changeUserType,
-    userId,
+
     setBufferSelection,
     isActive,
     isSeveralSelection,
+    canChangeUserType,
   } = props;
 
   const {
@@ -147,10 +148,7 @@ const PeopleTableRow = (props) => {
     position,
     rooms,
 
-    id,
-
     role,
-
     isVisitor,
   } = item;
 
@@ -278,26 +276,9 @@ const PeopleTableRow = (props) => {
       </Text>
     );
 
-    if (userId === id || statusType === "disabled") return text;
+    const canChange = canChangeUserType(item);
 
-    switch (role) {
-      case "owner":
-        return text;
-
-      case "admin":
-      case "manager":
-        if (isOwner) {
-          return combobox;
-        } else {
-          return text;
-        }
-
-      case "user":
-        return combobox;
-
-      default:
-        return text;
-    }
+    return canChange ? combobox : text;
   };
 
   const typeCell = renderTypeCell();

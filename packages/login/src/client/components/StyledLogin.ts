@@ -238,10 +238,12 @@ export const LoginContainer = styled.div`
     height: 46px;
     padding-bottom: 64px;
 
-    path:last-child {
-      fill: ${(props) => props.theme.client.home.logoColor};
+    svg {
+      path:last-child {
+        fill: ${(props) => props.theme.client.home.logoColor};
+      }
     }
-  
+    
     @media ${hugeMobile} {
       display: none;
     }

@@ -97,6 +97,7 @@ declare global {
     match: MatchType;
     currentColorScheme: ITheme;
     isAuth: boolean;
+    logoUrls: any;
   }
 
   interface DevRequest {

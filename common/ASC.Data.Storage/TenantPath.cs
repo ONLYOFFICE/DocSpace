@@ -42,6 +42,13 @@ public static class TenantPath
         return tenant;
     }
 
+    public static string CreatePath(int tenant)
+    {
+        var culture = CultureInfo.InvariantCulture;
+
+        return tenant == 0 ? tenant.ToString(culture) : tenant.ToString("00/00/00", culture);
+    }
+
     public static bool TryGetTenant(string tenantPath, out int tenant)
     {
         tenantPath = tenantPath.Replace("/", "");

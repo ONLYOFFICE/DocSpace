@@ -54,6 +54,7 @@ global using AppLimit.CloudComputing.SharpBox.StorageProvider.DropBox;
 
 global using ASC.Api.Collections;
 global using ASC.Api.Core;
+global using ASC.Api.Core.Model;
 global using ASC.Api.Core.Security;
 global using ASC.Api.Utils;
 global using ASC.AuditTrail;
@@ -150,6 +151,7 @@ global using ASC.Web.Files.Services.WCFService.FileOperations;
 global using ASC.Web.Files.ThirdPartyApp;
 global using ASC.Web.Files.Utils;
 global using ASC.Web.Studio.Core;
+global using ASC.Web.Studio.Core.Quota;
 global using ASC.Web.Studio.Core.Notify;
 global using ASC.Web.Studio.Utility;
 
