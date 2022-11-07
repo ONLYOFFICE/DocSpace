@@ -84,8 +84,8 @@ const Track = ({ size, color, label, primary }) => {
       </defs>
       <g
         fill="none"
-        strokeWidth="45"
-        transform="translate(100,100) scale(0.85)"
+        strokeWidth="40"
+        transform="translate(100,100) scale(0.75)"
       >
         <path
           d="M 0,-100 A 100,100 0 0,1 86.6,-50"

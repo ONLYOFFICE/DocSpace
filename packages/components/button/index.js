@@ -8,14 +8,14 @@ import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 const Button = React.forwardRef((props, ref) => {
-  const { isLoading, icon, label, size, primary } = props;
+  const { isLoading, icon, label, primary } = props;
   return (
     <ColorTheme {...props} innerRef={ref} themeId={ThemeType.Button}>
       <div className="button-content">
         {isLoading && (
           <Loader
             className="loader"
-            size={size === "extraSmall" ? "16px" : "20px"}
+            size="20px"
             type="track"
             label={label}
             primary={primary}
