@@ -67,6 +67,7 @@ class DetailsHelper {
     this.openUser = props.openUser;
     this.personal = props.personal;
     this.culture = props.culture;
+    this.isVisitor = props.isVisitor;
   }
 
   getPropertyList = () => {
@@ -191,10 +192,9 @@ class DetailsHelper {
   /// Property  //
 
   getItemOwner = () => {
-    const onOpenUser = () =>
-      this.openUser(this.item.createdBy.id, this.history);
+    const onOpenUser = () => this.openUser(this.item.createdBy, this.history);
 
-    return this.personal
+    return this.personal || this.isVisitor
       ? text(decodeString(this.item.createdBy?.displayName))
       : link(decodeString(this.item.createdBy?.displayName), onOpenUser);
   };
@@ -244,10 +244,9 @@ class DetailsHelper {
   };
 
   getItemLastModifiedBy = () => {
-    const onOpenUser = () =>
-      this.openUser(this.item.updatedBy.id, this.history);
+    const onOpenUser = () => this.openUser(this.item.updatedBy, this.history);
 
-    return this.personal
+    return this.personal || this.isVisitor
       ? text(decodeString(this.item.updatedBy?.displayName))
       : link(decodeString(this.item.updatedBy?.displayName), onOpenUser);
   };
