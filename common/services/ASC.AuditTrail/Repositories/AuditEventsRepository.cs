@@ -245,7 +245,7 @@ internal static class PredicateBuilder
     }
 }
 
-internal class SubstExpressionVisitor : System.Linq.Expressions.ExpressionVisitor
+internal class SubstExpressionVisitor : ExpressionVisitor
 {
     internal Dictionary<Expression, Expression> Subst = new Dictionary<Expression, Expression>();
 

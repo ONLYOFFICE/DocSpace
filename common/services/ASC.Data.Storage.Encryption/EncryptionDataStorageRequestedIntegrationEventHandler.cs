@@ -35,7 +35,7 @@ public class EncryptionDataStorageRequestedIntegrationEventHandler : IIntegratio
     public EncryptionDataStorageRequestedIntegrationEventHandler(EncryptionWorker encryptionWorker,
                                                                  ILogger<EncryptionDataStorageRequestedIntegrationEventHandler> logger)
     {
-        _encryptionWorker = encryptionWorker ?? throw new System.ArgumentNullException(nameof(encryptionWorker));
+        _encryptionWorker = encryptionWorker ?? throw new ArgumentNullException(nameof(encryptionWorker));
         _logger = logger;
     }
 

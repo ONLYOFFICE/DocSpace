@@ -61,12 +61,12 @@ public class EFLogger : ILogger
         return _logger.BeginScope(state);
     }
 
-    public bool IsEnabled(Microsoft.Extensions.Logging.LogLevel logLevel)
+    public bool IsEnabled(LogLevel logLevel)
     {
         return _logger.IsEnabled(logLevel);
     }
 
-    public void Log<TState>(Microsoft.Extensions.Logging.LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+    public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {
         switch (eventId.Id)
         {
@@ -82,7 +82,7 @@ public class EFLogger : ILogger
                     ev.WithProperty(kv.Key, kv.Value);
                 }
 
-                _logger.Log(Microsoft.Extensions.Logging.LogLevel.Debug,
+                _logger.Log(LogLevel.Debug,
                         default(EventId),
                         ev,
                         exception,
