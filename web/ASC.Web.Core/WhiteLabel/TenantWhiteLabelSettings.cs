@@ -35,40 +35,40 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
 
     #region Logos information: extension, isDefault, text for img auto generating
 
-    internal string LogoLightSmallExt { get; set; }
+    public string LogoLightSmallExt { get; set; }
 
     [JsonPropertyName("DefaultLogoLightSmall")]
-    internal bool IsDefaultLogoLightSmall { get; set; }
+    public bool IsDefaultLogoLightSmall { get; set; }
 
-    internal string LogoDarkExt { get; set; }
+    public string LogoDarkExt { get; set; }
 
     [JsonPropertyName("DefaultLogoDark")]
-    internal bool IsDefaultLogoDark { get; set; }
+    public bool IsDefaultLogoDark { get; set; }
 
-    internal string LogoFaviconExt { get; set; }
+    public string LogoFaviconExt { get; set; }
 
     [JsonPropertyName("DefaultLogoFavicon")]
-    internal bool IsDefaultLogoFavicon { get; set; }
+    public bool IsDefaultLogoFavicon { get; set; }
 
-    internal string LogoDocsEditorExt { get; set; }
+    public string LogoDocsEditorExt { get; set; }
 
     [JsonPropertyName("DefaultLogoDocsEditor")]
-    internal bool IsDefaultLogoDocsEditor { get; set; }
+    public bool IsDefaultLogoDocsEditor { get; set; }
 
-    internal string LogoDocsEditorEmbedExt { get; set; }
+    public string LogoDocsEditorEmbedExt { get; set; }
 
     [JsonPropertyName("DefaultLogoDocsEditorEmbed")]
-    internal bool IsDefaultLogoDocsEditorEmbed { get; set; }
+    public bool IsDefaultLogoDocsEditorEmbed { get; set; }
 
-    internal string LogoLeftMenuExt { get; set; }
+    public string LogoLeftMenuExt { get; set; }
 
     [JsonPropertyName("DefaultLogoLeftMenu")]
-    internal bool IsDefaultLogoLeftMenu { get; set; }
+    public bool IsDefaultLogoLeftMenu { get; set; }
 
-    internal string LogoAboutPageExt { get; set; }
+    public string LogoAboutPageExt { get; set; }
 
     [JsonPropertyName("DefaultLogoAboutPage")]
-    internal bool IsDefaultLogoAboutPage { get; set; }
+    public bool IsDefaultLogoAboutPage { get; set; }
 
     public string LogoText { get; set; }
 
