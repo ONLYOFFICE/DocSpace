@@ -27,18 +27,18 @@
 #nullable enable
 
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ASC.EventBus.Serializers;
 
 public class ProtobufSerializer : IIntegrationEventSerializer
 {
     private readonly SynchronizedCollection<string> _processedProtoTypes;
-    private int _baseFieldNumber;
 
     public ProtobufSerializer()
     {
         _processedProtoTypes = new SynchronizedCollection<string>();
-        _baseFieldNumber = 100;
 
         Array.ForEach(AppDomain.CurrentDomain.GetAssemblies(), a => BuildTypeModelFromAssembly(a));
     }
@@ -110,9 +110,14 @@ public class ProtobufSerializer : IIntegrationEventSerializer
 
         if (!baseType.GetSubtypes().Any(s => s.DerivedType == itemType))
         {
-            baseType.AddSubType(_baseFieldNumber, protoType);
+            var md5Hasher = MD5.Create();
+            var hashed = md5Hasher.ComputeHash(Encoding.UTF8.GetBytes(protoType.FullName));
+            var hashedAsInt32 = BitConverter.ToInt32(hashed, 0);
 
-            _baseFieldNumber++;
+            // restriction: https://developers.google.com/protocol-buffers/docs/proto3
+            var fieldNumber = (int)Math.Abs((hashedAsInt32 % (Math.Pow(2,29) - 1)));
+                    
+            baseType.AddSubType(fieldNumber, protoType);
 
             _processedProtoTypes.Add(protoType.FullName);
         }

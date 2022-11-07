@@ -154,9 +154,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>パスワードが含まれている必要な記号</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>パスワードが含まれている必要な記号</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>桁</value>
   </data>

@@ -24,18 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-using System.Reflection;
-
-using ASC.Api.Core.Extensions;
-using ASC.Data.Storage.Encryption.IntegrationEvents.Events;
-using ASC.EventBus.Abstractions;
-using ASC.Notify.IntegrationEvents.EventHandling;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting.WindowsServices;
-
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -44,18 +32,25 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
-builder.Host.ConfigureDefault(args);
+builder.Host.ConfigureDefault();
+
+builder.Configuration.AddDefaultConfiguration(builder.Environment)
+                     .AddEnvironmentVariables()
+                     .AddCommandLine(args);
 
 builder.WebHost.ConfigureDefaultKestrel();
 
+var startup = new Startup(builder.Configuration, builder.Environment);
+
+startup.ConfigureServices(builder.Services);
 
 var app = builder.Build();
 
 var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
 
-eventBus.Subscribe<EncryptionDataStorageRequestedIntegration, EncryptionDataStorageRequestedIntegrationEventHandler>();
+eventBus.Subscribe<EncryptionDataStorageRequestedIntegrationEvent, EncryptionDataStorageRequestedIntegrationEventHandler>();
 
-app.Run();
+await app.RunWithTasksAsync();
 
 
 public partial class Program

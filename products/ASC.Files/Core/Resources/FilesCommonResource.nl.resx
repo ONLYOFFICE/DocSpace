@@ -145,9 +145,6 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Niet geldig</value>
   </data>
-  <data name="EditorMentions" xml:space="preserve">
-    <value>Verwittig wanneer vermeld in document</value>
-  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Onjuiste aanvraag</value>
   </data>
@@ -196,9 +193,6 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Het bestand is momenteel vergrendeld door een andere gebruiker</value>
   </data>
-  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>Er zijn geen accounts beschikbaar om het bericht te versturen. Ga naar Mail en stel een mailbox in.</value>
-  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Ten minste {0} mail berichten</value>
   </data>
@@ -207,9 +201,6 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Sorry, deze bestandsindeling wordt niet ondersteund</value>
-  </data>
-  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>De bewerking is geannuleerd.</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Auteur van het bestand is onbekend</value>
@@ -315,30 +306,6 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Maak en wijzig eigen documenten evenals gedeelde documenten met de juiste machtigingen|Geef lees/schrijf machtiging voor documenten en folders aan andere gebruikers|Koppel Dropbox, Box en andere accounts in de 'Mijn documenten'-sectie</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} verwijderd</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Zoek</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Geef aan wanneer een map gedeeld is</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Informeer mij als het document</value>
-  </data>
-  <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Informeer mij als het document in</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Waarschuwen bij deling</value>
-  </data>
-  <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Informeer mij als mailing is</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Documenten van {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Voornaam</value>
