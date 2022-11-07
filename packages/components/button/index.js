@@ -41,8 +41,6 @@ Button.propTypes = {
     "small",
     "normal",
     "medium",
-    "normalDesktop",
-    "normalTouchscreen",
   ]),
   /** Scale width of button to 100% */
   scale: PropTypes.bool,
