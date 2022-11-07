@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "ASC.Migration.PersonalToDocspace.Creator": {
+    "ASC.Migration.PersonalToDocspace": {
       "commandName": "Project",
       "launchBrowser": false
     }

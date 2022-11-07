@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -63,6 +62,8 @@ var config = builder.Configuration;
 
 builder.WebHost.ConfigureServices((hostContext, services) =>
 {
+    services.RegisterFeature();
+
     services.AddScoped<EFLoggerFactory>();
     services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     services.AddHttpClient();
@@ -88,29 +89,24 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
     var diHelper = new DIHelper();
     diHelper.Configure(services);
 
-    diHelper.TryAdd<TempStream>();
-    diHelper.TryAdd<DbFactory>();
-    diHelper.TryAdd<ModuleProvider>();
-    diHelper.TryAdd<DbTenantService>();
-    diHelper.TryAdd<StorageFactoryConfig>();
-    diHelper.TryAdd<StorageFactory>();
-    diHelper.TryAdd<DiscDataStore>();
-    diHelper.TryAdd<S3Storage>();
+    diHelper.TryAdd<MigrationCreator>();
+    diHelper.TryAdd<MigrationRunner>();
+
 });
 
 var app = builder.Build();
 
-var tenant = Int32.Parse(args[0]);
-var userName = args[1];
-var region = args[2];
+var tenant = Int32.Parse(config["tenant"]);
+var userName = config["userName"];
+var region = config["region"];
 
 var migrationCreator = app.Services.GetService<MigrationCreator>();
-await migrationCreator.Create(tenant, userName, region);
+var fileName = await migrationCreator.Create(tenant, userName, region);
 
 var migrationRunner = app.Services.GetService<MigrationRunner>();
-await migrationRunner.Run(userName + ".tar.gz", region);
+await migrationRunner.Run(fileName, region);
 
-Directory.GetFiles(AppContext.BaseDirectory).Where(f => f.Contains(".tar")).ToList().ForEach(File.Delete);
+Directory.GetFiles(AppContext.BaseDirectory).Where(f => f.Equals(fileName)).ToList().ForEach(File.Delete);
 
 if (Directory.Exists(AppContext.BaseDirectory + "\\temp"))
 {

@@ -26,6 +26,7 @@
 
 namespace ASC.Migration.PersonalToDocspace.Runner;
 
+[Scope]
 public class MigrationRunner
 {
     private readonly DbFactory _dbFactory;

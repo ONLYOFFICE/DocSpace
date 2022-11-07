@@ -26,6 +26,7 @@
 
 namespace ASC.Migration.PersonalToDocspace.Creator;
 
+[Scope]
 public class MigrationCreator
 {
     private readonly IDbContextFactory<UserDbContext> _userDbContext;
@@ -83,18 +84,19 @@ public class MigrationCreator
 
 
 
-    public async Task Create(int tenant, string userName, string toRegion)
+    public async Task<string> Create(int tenant, string userName, string toRegion)
     {
         Init(tenant, userName, toRegion);
 
         var id = GetId();
-
-        var path = Path.Combine(_pathToSave, _userName + ".tar.gz");
+        var fileName = _userName + ".tar.gz";
+        var path = Path.Combine(_pathToSave, fileName);
         using (var writer = new ZipWriteOperator(_tempStream, path))
         {
             DoMigrationDb(id, writer);
             await DoMigrationStorage(id, writer);
         }
+        return fileName;
     }
 
     private void Init(int tenant, string userName, string toRegion)
@@ -177,6 +179,7 @@ public class MigrationCreator
                         if (data.TableName == "tenants_tenants")
                         {
                             ChangeAlias(data);
+                            ChangeName(data);
                         }
 
                         using (var file = _tempStream.Create())
@@ -216,6 +219,11 @@ public class MigrationCreator
             }
         }
         data.Rows[0]["alias"] = newAlias;
+    }
+
+    private void ChangeName(DataTable data)
+    {
+        data.Rows[0]["name"] = "";
     }
 
     private List<string> GetAliases()
