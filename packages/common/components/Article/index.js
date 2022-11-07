@@ -34,6 +34,7 @@ const Article = ({
   hideProfileBlock,
   isFreeTariff,
   isAvailableArticlePaymentAlert,
+  currentColorScheme,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -130,6 +131,7 @@ const Article = ({
           <HideArticleMenuButton
             showText={showText}
             toggleShowText={toggleShowText}
+            currentColorScheme={currentColorScheme}
           />
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
@@ -199,6 +201,7 @@ export default inject(({ auth }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
+    currentColorScheme,
   } = settingsStore;
 
   return {
@@ -211,5 +214,6 @@ export default inject(({ auth }) => {
     isFreeTariff,
     isGracePeriod,
     isAvailableArticlePaymentAlert,
+    currentColorScheme,
   };
 })(observer(Article));
