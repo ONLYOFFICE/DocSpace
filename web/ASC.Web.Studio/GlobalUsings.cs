@@ -33,7 +33,6 @@ global using ASC.Web.Core.HttpHandlers;
 global using ASC.Web.Studio;
 
 global using Autofac;
-global using Autofac.Extensions.DependencyInjection;
 
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Hosting;

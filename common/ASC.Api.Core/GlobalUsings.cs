@@ -39,6 +39,7 @@ global using System.Text;
 global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
+global using System.Text.RegularExpressions;
 global using System.Web;
 global using System.Xml.Linq;
 
@@ -63,6 +64,7 @@ global using ASC.Common.Threading;
 global using ASC.Common.Utils;
 global using ASC.Common.Web;
 global using ASC.Core;
+global using ASC.Core.Billing;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.Hosting;
@@ -138,7 +140,9 @@ global using Newtonsoft.Json;
 global using Newtonsoft.Json.Serialization;
 
 global using NLog;
+global using NLog.AWS.Logger;
 global using NLog.Config;
+global using NLog.Web;
 
 global using RabbitMQ.Client;
 
@@ -146,4 +150,3 @@ global using StackExchange.Redis.Extensions.Core.Configuration;
 global using StackExchange.Redis.Extensions.Newtonsoft;
 
 global using LogLevel = Microsoft.Extensions.Logging.LogLevel;
-

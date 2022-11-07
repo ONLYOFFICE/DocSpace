@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using NVelocity.Runtime.Parser.Node;
-
 namespace ASC.EventBus.RabbitMQ;
 
 public class EventBusRabbitMQ : IEventBus, IDisposable
@@ -120,7 +118,7 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
             {
                 var properties = channel.CreateBasicProperties();
                 properties.DeliveryMode = 2; // persistent
-                                        
+
                 _logger.TracePublishingEvent(@event.Id);
 
                 channel.BasicPublish(
@@ -308,9 +306,10 @@ public class EventBusRabbitMQ : IEventBus, IDisposable
                         arguments: null);
 
 
-        var arguments = new Dictionary<string, object>();
-
-        arguments.Add("x-dead-letter-exchange", DEAD_LETTER_EXCHANGE_NAME);
+        var arguments = new Dictionary<string, object>
+        {
+            { "x-dead-letter-exchange", DEAD_LETTER_EXCHANGE_NAME }
+        };
 
         channel.QueueDeclare(queue: _queueName,
                                 durable: true,
