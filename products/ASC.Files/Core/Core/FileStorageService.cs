@@ -2503,9 +2503,14 @@ public class FileStorageService<T> //: IFileStorageService
                     {
                         var name = ace.SubjectGroup ? _userManager.GetGroupInfo(ace.Id).Name : _userManager.GetUsers(ace.Id).DisplayUserName(false, _displayUserSettingsHelper);
 
-                        if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
+                        if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType))
                         {
-                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccess, entry.Title, name, GetAccessString(ace.Access));
+                            if (ace.Access == FileShare.None)
+                            {
+                                _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.UserDeletedFromRoom, name);
+                            }
+
+                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.UserAppointedAccess, name, GetAccessString(ace.Access));
                         }
                         else
                         {
@@ -2594,7 +2599,7 @@ public class FileStorageService<T> //: IFileStorageService
             var changed = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
             if (changed)
             {
-                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.RoomUpdateAccess, room.Title, GetAccessString(share));
+                _filesMessageService.Send(room, GetHttpHeaders(), MessageAction.UserAppointedAccess, room.Title, GetAccessString(share));
             }
         }
         catch (Exception e)
