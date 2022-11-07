@@ -179,8 +179,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
         var needToMark = new List<FileEntry<TTo>>();
 
-            var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy, parentFolders);
-            var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy, parentFolders);
+        var moveOrCopyFoldersTask = await MoveOrCopyFoldersAsync(scope, Folders, toFolder, _copy, parentFolders);
+        var moveOrCopyFilesTask = await MoveOrCopyFilesAsync(scope, Files, toFolder, _copy, parentFolders);
 
         needToMark.AddRange(moveOrCopyFoldersTask);
         needToMark.AddRange(moveOrCopyFilesTask);
@@ -204,6 +204,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var scopeClass = scope.ServiceProvider.GetService<FileMoveCopyOperationScope>();
         var (filesMessageService, fileMarker, _, _, _) = scopeClass;
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
+        var countRoomChecker = scope.ServiceProvider.GetRequiredService<CountRoomChecker>();
 
         var toFolderId = toFolder.Id;
         var isToFolder = Equals(toFolderId, _daoFolderId);
@@ -219,8 +220,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
             var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
 
-            var canEditRoom = await FilesSecurity.CanEditRoomAsync(folder);
-
             if (folder == null)
             {
                 Error = FilesCommonResource.ErrorMassage_FolderNotFound;
@@ -228,10 +227,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             else if (!await FilesSecurity.CanReadAsync(folder))
             {
                 Error = FilesCommonResource.ErrorMassage_SecurityException_ReadFolder;
-            }
-            else if (isRoom && !canEditRoom)
-            {
-                Error = FilesCommonResource.ErrorMassage_SecurityException;
             }
             else if (!isRoom && (toFolder.FolderType == FolderType.VirtualRooms || toFolder.RootFolderType == FolderType.Archive))
             {
@@ -366,11 +361,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                     }
                     else
                     {
-                        if (!isRoom && !await FilesSecurity.CanDeleteAsync(folder))
-                        {
-                            Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
-                        }
-                        else if (isRoom && !await FilesSecurity.CanEditRoomAsync(folder))
+                        if (!await FilesSecurity.CanDeleteAsync(folder))
                         {
                             Error = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
                         }
@@ -392,6 +383,11 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             }
                             else
                             {
+                                if (isRoom && toFolder.FolderType == FolderType.VirtualRooms)
+                                {
+                                    await countRoomChecker.CheckAppend();
+                                }
+
                                 newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
                             }
 

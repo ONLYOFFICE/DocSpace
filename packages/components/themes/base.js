@@ -1858,6 +1858,8 @@ const Base = {
 
     headerBurgerColor: "#657077",
 
+    verticalLine: "1px solid #eceef1",
+
     profile: {
       borderTop: "1px solid #eceef1",
       background: "#f3f4f4",
@@ -2025,6 +2027,8 @@ const Base = {
 
     members: {
       iconColor: "#A3A9AE",
+      iconHoverColor: "#657077",
+      isExpectName: "#A3A9AE",
       subtitleColor: "#a3a9ae",
       meLabelColor: "#a3a9ae",
       roleSelectorColor: "#a3a9ae",
@@ -2732,6 +2736,9 @@ const Base = {
   login: {
     linkColor: link,
     textColor: gray,
+    navBackground: "#F8F9F9",
+    headerColor: black,
+    helpButton: "#A3A9AE",
 
     register: {
       backgroundColor: grayLight,
@@ -2872,7 +2879,7 @@ const Base = {
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
 
-          backgroundColor: "#0f4071",
+          backgroundColor: "#ECEEF1",
           greenBackgroundColor: "#7e983f",
           blueBackgroundColor: "#5170b5",
           orangeBackgroundColor: "#e86e2e",
@@ -2974,6 +2981,16 @@ const Base = {
     themePreview: {
       border: "1px solid #eceef1",
     },
+  },
+
+  activeSessions: {
+    color: "#333",
+    borderColor: "#eceef1",
+  },
+
+  formWrapper: {
+    background: white,
+    boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
 };
 

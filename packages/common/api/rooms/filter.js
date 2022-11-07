@@ -10,6 +10,9 @@ const DEFAULT_TOTAL = 0;
 const FILTER_VALUE = "filterValue";
 const DEFAULT_FILTER_VALUE = null;
 
+const PROVIDER = "provider";
+const DEFAULT_PROVIDER = null;
+
 const TYPE = "type";
 const DEFAULT_TYPE = null;
 
@@ -65,6 +68,9 @@ class RoomsFilter {
       (urlFilter[FILTER_VALUE] && urlFilter[FILTER_VALUE]) ||
       defaultFilter.filterValue;
 
+    const provider =
+      (urlFilter[PROVIDER] && urlFilter[PROVIDER]) || defaultFilter.filterType;
+
     const type = (urlFilter[TYPE] && urlFilter[TYPE]) || defaultFilter.type;
 
     const subjectId =
@@ -104,6 +110,7 @@ class RoomsFilter {
       pageCount,
       defaultFilter.total,
       filterValue,
+      provider,
       type,
       subjectId,
       searchInContent,
@@ -124,6 +131,7 @@ class RoomsFilter {
     pageCount = DEFAULT_PAGE_COUNT,
     total = DEFAULT_TOTAL,
     filterValue = DEFAULT_FILTER_VALUE,
+    provider = DEFAULT_PROVIDER,
     type = DEFAULT_TYPE,
     subjectId = DEFAULT_SUBJECT_ID,
     searchInContent = DEFAULT_SEARCH_IN_CONTENT,
@@ -139,6 +147,7 @@ class RoomsFilter {
     this.pageCount = pageCount;
     this.total = total;
     this.filterValue = filterValue;
+    this.provider = provider;
     this.type = type;
     this.subjectId = subjectId;
     this.searchInContent = searchInContent;
@@ -168,6 +177,7 @@ class RoomsFilter {
       page,
       pageCount,
       filterValue,
+      provider,
       type,
       subjectId,
       searchInContent,
@@ -185,6 +195,7 @@ class RoomsFilter {
       page: page,
       startIndex: this.getStartIndex(),
       filterValue: (filterValue ?? "").trim(),
+      provider: provider,
       type: type,
       subjectId: subjectId,
       searchInContent: searchInContent,
@@ -206,6 +217,7 @@ class RoomsFilter {
       page,
       pageCount,
       filterValue,
+      provider,
       type,
       subjectId,
       searchInContent,
@@ -222,6 +234,10 @@ class RoomsFilter {
 
     if (filterValue) {
       dtoFilter[FILTER_VALUE] = filterValue;
+    }
+
+    if (provider) {
+      dtoFilter[PROVIDER] = provider;
     }
 
     if (type) {
@@ -275,6 +291,7 @@ class RoomsFilter {
       this.pageCount,
       this.total,
       this.filterValue,
+      this.provider,
       this.type,
       this.subjectId,
       this.searchInContent,
@@ -300,6 +317,7 @@ class RoomsFilter {
     const equals =
       this.page === filter.page &&
       this.pageCount === filter.pageCount &&
+      this.provider === filter.provider &&
       this.filterValue === filter.filterValue &&
       typeEqual &&
       this.subjectId === filter.subjectId &&

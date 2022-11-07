@@ -3,6 +3,7 @@ import authStore from "@docspace/common/store/AuthStore";
 import api from "@docspace/common/api";
 
 class CommonStore {
+  whiteLabelLogoUrls = [];
   whiteLabelLogoSizes = [];
   whiteLabelLogoText = null;
 
@@ -18,8 +19,9 @@ class CommonStore {
   isLoadedCustomizationNavbar = false;
   isLoadedWelcomePageSettings = false;
   isLoadedAdditionalResources = false;
-
   isLoadedCompanyInfoSettingsData = false;
+
+  greetingSettingsIsDefault = true;
 
   constructor() {
     this.authStore = authStore;
@@ -34,11 +36,17 @@ class CommonStore {
     requests.push(
       authStore.settingsStore.getPortalTimezones(),
       authStore.settingsStore.getPortalCultures(),
+      this.getWhiteLabelLogoUrls(),
       this.getWhiteLabelLogoText(),
-      this.getWhiteLabelLogoSizes()
+      this.getWhiteLabelLogoSizes(),
+      this.getGreetingSettingsIsDefault()
     );
 
     return Promise.all(requests).finally(() => this.setIsLoaded(true));
+  };
+
+  setLogoUrls = (urls) => {
+    this.whiteLabelLogoUrls = urls;
   };
 
   setLogoText = (text) => {
@@ -47,6 +55,20 @@ class CommonStore {
 
   setLogoSizes = (sizes) => {
     this.whiteLabelLogoSizes = sizes;
+  };
+
+  restoreWhiteLabelSettings = async (isDefault) => {
+    const res = await api.settings.restoreWhiteLabelSettings(isDefault);
+    this.getWhiteLabelLogoUrls();
+  };
+
+  getGreetingSettingsIsDefault = async () => {
+    this.greetingSettingsIsDefault = await api.settings.getGreetingSettingsIsDefault();
+  };
+
+  getWhiteLabelLogoUrls = async () => {
+    const res = await api.settings.getLogoUrls();
+    this.setLogoUrls(Object.values(res));
   };
 
   getWhiteLabelLogoText = async () => {

@@ -22,25 +22,45 @@ import {
 
 const ExternalLinks = ({
   t,
-  hideSelector,
   roomId,
   roomType,
   defaultAccess,
   shareLinks,
+  setInvitationLinks,
 }) => {
   const [linksVisible, setLinksVisible] = useState(false);
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
+  const [activeLink, setActiveLink] = useState({});
 
   const inputsRef = useRef();
 
   const toggleLinks = (e) => {
+    if (roomId === -1) {
+      const link = shareLinks.find((l) => l.access === +defaultAccess);
+
+      setActiveLink(link);
+    } else {
+      setInvitationLinks(roomId, shareLinks[0].id, "Invite", +defaultAccess);
+
+      setActiveLink(shareLinks[0]);
+    }
+
     setLinksVisible(!linksVisible);
 
-    if (!linksVisible) copyLink(shareLinks[0].shareLink);
+    if (!linksVisible) copyLink(activeLink.shareLink);
   };
 
   const onSelectAccess = (access) => {
-    console.log(access);
+    if (roomId === -1) {
+      const link = shareLinks.find((l) => l.access === access.access);
+
+      setActiveLink(link);
+    } else {
+      setInvitationLinks(roomId, shareLinks[0].id, "Invite", +access.access);
+
+      setActiveLink(shareLinks[0]);
+    }
+    copyLink(activeLink.shareLink);
   };
 
   const copyLink = (link) => {
@@ -73,7 +93,7 @@ const ExternalLinks = ({
 
       closeActionLinks();
     },
-    [closeActionLinks, links, t]
+    [closeActionLinks, t]
   );
 
   const shareTwitter = useCallback(
@@ -90,38 +110,8 @@ const ExternalLinks = ({
 
       closeActionLinks();
     },
-    [closeActionLinks, links]
+    [closeActionLinks]
   );
-
-  const links =
-    !!shareLinks.length &&
-    shareLinks?.map((link) => {
-      return (
-        <StyledInviteInputContainer key={link.id}>
-          <StyledInviteInput>
-            <InputBlock
-              scale
-              value={link.shareLink}
-              isReadOnly
-              iconName="/static/images/copy.react.svg"
-              onIconClick={() => copyLink(link.shareLink)}
-              hoverColor="#333333"
-              iconColor="#A3A9AE"
-            />
-          </StyledInviteInput>
-
-          {!hideSelector && (
-            <AccessSelector
-              t={t}
-              roomType={roomType}
-              defaultAccess={defaultAccess}
-              onSelectAccess={onSelectAccess}
-              containerRef={inputsRef}
-            />
-          )}
-        </StyledInviteInputContainer>
-      );
-    });
 
   return (
     <StyledBlock noPadding ref={inputsRef}>
@@ -156,17 +146,41 @@ const ExternalLinks = ({
         )}
         <StyledToggleButton isChecked={linksVisible} onChange={toggleLinks} />
       </StyledSubHeader>
-      {linksVisible && links}
+      {linksVisible && (
+        <StyledInviteInputContainer key={activeLink.id}>
+          <StyledInviteInput>
+            <InputBlock
+              scale
+              value={activeLink.shareLink}
+              isReadOnly
+              iconName="/static/images/copy.react.svg"
+              onIconClick={() => copyLink(activeLink.shareLink)}
+              hoverColor="#333333"
+              iconColor="#A3A9AE"
+            />
+          </StyledInviteInput>
+          <AccessSelector
+            t={t}
+            roomType={roomType}
+            defaultAccess={activeLink.access}
+            onSelectAccess={onSelectAccess}
+            containerRef={inputsRef}
+          />
+        </StyledInviteInputContainer>
+      )}
     </StyledBlock>
   );
 };
 
 export default inject(({ dialogsStore, filesStore }) => {
   const { invitePanelOptions } = dialogsStore;
+  const { setInvitationLinks } = filesStore;
+  const { roomId, hideSelector, defaultAccess } = invitePanelOptions;
 
   return {
-    roomId: invitePanelOptions.roomId,
-    hideSelector: invitePanelOptions.hideSelector,
-    defaultAccess: invitePanelOptions.defaultAccess,
+    setInvitationLinks,
+    roomId,
+    hideSelector,
+    defaultAccess,
   };
 })(observer(ExternalLinks));

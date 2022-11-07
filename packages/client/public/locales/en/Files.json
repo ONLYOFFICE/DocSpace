@@ -1,5 +1,9 @@
 {
   "All": "All",
+  "Archived": "Archived",
+  "ArchiveAction": "Empty archive",
+  "ArchivedRoomAction": "The room '{{name}}' is archived",
+  "ArchivedRoomsAction": "The rooms are archived",
   "AllFiles": "All files",
   "Archives": "Archives",
   "ArchiveEmptyScreen": "You can archive rooms you don’t use and restore them in your DocSpace at any moment or delete them permanently. These rooms will appear here.",
@@ -24,6 +28,7 @@
   "EmptyFilterDescriptionTextRooms": "No rooms match this filter. Try a different one or clear filter to view all rooms.",
   "EmptyFilterSubheadingText": "No files to be displayed for this filter here",
   "EmptyFolderDecription": "Drop files here or create new ones.",
+  "EmptyFolderDescriptionUser": "Files and folders uploaded by admins will appeared here.",
   "EmptyFolderHeader": "No files in this folder",
   "EmptyRecycleBin": "Empty Trash",
   "EmptyScreenFolder": "No docs here yet",
@@ -89,6 +94,7 @@
   "RoomRemoved": "Room removed",
   "RoomsRemoved": "Rooms removed",
   "RestoreAll": "Restore all",
+  "RestoreAllArchive": "Are you sure you want to restore all rooms?",
   "SearchByContent": "Search by file contents",
   "SendByEmail": "Send by email",
   "Share": "Share",
@@ -96,11 +102,12 @@
   "ShowVersionHistory": "Show version history",
   "Spreadsheet": "Spreadsheet",
   "Tags": "Tags",
-  "ToArchive": "Move to archive",
   "TooltipElementCopyMessage": "Copy {{element}}",
   "TooltipElementsCopyMessage": "Copy {{element}} elements",
   "TooltipElementsMoveMessage": "Move {{element}} elements",
   "TrashEmptyDescription": "All deleted files are moved to 'Trash'. Restore files deleted by mistake or delete them permanently. Please note, that the files deleted from the 'Trash' cannot be restored any longer.",
+  "UnarchivedRoomAction": "The room '{{name}}' is unarchived",
+  "UnarchivedRoomsAction": "The rooms are unarchived",
   "UnblockVersion": "Unblock/Check-in",
   "Unpin": "Unpin",
   "UploadToFolder": "Upload to folder",
@@ -109,5 +116,7 @@
   "ViewList": "List",
   "ViewOnlyRooms": "View-only",
   "ViewTiles": "Tiles",
-  "WithSubfolders": "With subfolders"
+  "WithSubfolders": "With subfolders",
+  "RoomPinned": "Room pinned",
+  "RoomUnpinned": "Room unpinned"
 }

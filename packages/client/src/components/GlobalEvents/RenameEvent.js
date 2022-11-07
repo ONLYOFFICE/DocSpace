@@ -24,6 +24,10 @@ const RenameEvent = ({
 
   setEventDialogVisible,
   eventDialogVisible,
+
+  selectedFolderId,
+
+  setSelectedFolder,
 }) => {
   const [startValue, setStartValue] = React.useState("");
 
@@ -38,7 +42,6 @@ const RenameEvent = ({
   const onUpdate = React.useCallback((e, value) => {
     const originalTitle = getTitleWithoutExst(item);
 
-    setIsLoading(true);
     let timerId;
 
     const isSameTitle =
@@ -48,7 +51,7 @@ const RenameEvent = ({
 
     if (isSameTitle) {
       setStartValue(originalTitle);
-      setIsLoading(false);
+
       onClose();
 
       return editCompleteAction(item, type);
@@ -78,19 +81,21 @@ const RenameEvent = ({
             timerId = null;
             clearActiveOperations([item.id]);
 
-            setIsLoading(false);
             onClose();
           })
       : renameFolder(item.id, value)
           .then(() => editCompleteAction(item, type))
-          .then(() =>
+          .then(() => {
+            if (selectedFolderId === item.id) {
+              setSelectedFolder({ title: value });
+            }
             toastr.success(
               t("FolderRenamed", {
                 folderTitle: item.title,
                 newFoldedTitle: value,
               })
-            )
-          )
+            );
+          })
           .catch((err) => {
             toastr.error(err);
             editCompleteAction(item, type);
@@ -99,8 +104,6 @@ const RenameEvent = ({
             clearTimeout(timerId);
             timerId = null;
             clearActiveOperations(null, [item.id]);
-
-            setIsLoading(false);
             onClose();
           });
   }, []);
@@ -126,13 +129,21 @@ const RenameEvent = ({
 };
 
 export default inject(
-  ({ filesStore, filesActionsStore, uploadDataStore, dialogsStore }) => {
+  ({
+    filesStore,
+    filesActionsStore,
+    selectedFolderStore,
+    uploadDataStore,
+    dialogsStore,
+  }) => {
     const {
       setIsLoading,
       addActiveItems,
       updateFile,
       renameFolder,
     } = filesStore;
+
+    const { id, setSelectedFolder } = selectedFolderStore;
 
     const { editCompleteAction } = filesActionsStore;
 
@@ -150,6 +161,10 @@ export default inject(
       clearActiveOperations,
       setEventDialogVisible,
       eventDialogVisible,
+
+      selectedFolderId: id,
+
+      setSelectedFolder,
     };
   }
 )(observer(RenameEvent));

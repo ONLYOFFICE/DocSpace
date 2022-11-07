@@ -58,10 +58,10 @@ public interface IFolderDao<T>
     Task<Folder<T>> GetRootFolderByFileAsync(T fileId);
 
     IAsyncEnumerable<Folder<T>> GetRoomsAsync(T parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
-        bool withoutTags, bool excludeSubject);
+        bool withoutTags, bool excludeSubject, ProviderFilter provider);
 
-    IAsyncEnumerable<Folder<T>> GetRoomsAsync(IEnumerable<T> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
-        bool withoutTags, bool excludeSubject);
+    IAsyncEnumerable<Folder<T>> GetRoomsAsync(IEnumerable<T> parentsIds, IEnumerable<T> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
+        bool withoutTags, bool excludeSubject, ProviderFilter provider);
 
     /// <summary>
     ///     Get a list of folders in current folder.

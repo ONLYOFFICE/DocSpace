@@ -42,6 +42,18 @@ export function getRoomMembers(id) {
   });
 }
 
+export function updateRoomMemberRole(id, data) {
+  const options = {
+    method: "put",
+    url: `/files/rooms/${id}/share`,
+    data,
+  };
+
+  return request(options).then((res) => {
+    return res;
+  });
+}
+
 export function getHistory(module, id) {
   const options = {
     method: "get",
@@ -133,7 +145,7 @@ export function deleteRoom(id, deleteAfter = true) {
   });
 }
 
-export function archiveRoom(id, deleteAfter = true) {
+export function archiveRoom(id, deleteAfter = false) {
   const data = { deleteAfter };
 
   const options = {
@@ -245,10 +257,10 @@ export function removeLogoFromRoom(id) {
   });
 }
 
-export const setInvitationLinks = async (id, linkId, title, access) => {
+export const setInvitationLinks = async (roomId, linkId, title, access) => {
   const options = {
     method: "put",
-    url: `/files/rooms/${id}/links`,
+    url: `/files/rooms/${roomId}/links`,
     data: {
       linkId,
       title,
@@ -263,7 +275,7 @@ export const setInvitationLinks = async (id, linkId, title, access) => {
 
 export const resendEmailInvitations = async (id, usersIds) => {
   const options = {
-    method: "put",
+    method: "post",
     url: `/files/rooms/${id}/resend`,
     data: {
       usersIds,

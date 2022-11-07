@@ -2,13 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import { tablet, hugeMobile } from "@docspace/components/utils/device";
 
+import Base from "../themes/base";
+
 const StyledWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 32px;
-  background: #ffffff;
-  box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.07);
+  background: ${(props) => props.theme.formWrapper.background};
+  box-shadow: ${(props) => props.theme.formWrapper.boxShadow};
   border-radius: 12px;
   max-width: 320px;
   min-width: 320px;
@@ -21,16 +23,20 @@ const StyledWrapper = styled.div`
   @media ${hugeMobile} {
     padding: 0;
     border-radius: 0;
-    box-shadow: none;
+    box-shadow: none !important;
     max-width: 343px;
     min-width: 343px;
-    background: #ffffff;
+    background: transparent !important;
   }
 `;
 
+StyledWrapper.defaultProps = { theme: Base };
+
 const FormWrapper = (props) => {
   const { children } = props;
-  return <StyledWrapper>{children}</StyledWrapper>;
+  return <StyledWrapper {...props}>{children}</StyledWrapper>;
 };
+
+FormWrapper.defaultProps = { theme: Base };
 
 export default FormWrapper;

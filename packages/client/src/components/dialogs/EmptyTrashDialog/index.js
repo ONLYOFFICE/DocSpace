@@ -25,6 +25,9 @@ const EmptyTrashDialogComponent = (props) => {
     isLoading,
     setEmptyTrashDialogVisible,
     emptyTrash,
+    emptyArchive,
+
+    isArchiveFolder,
   } = props;
 
   useEffect(() => {
@@ -39,9 +42,16 @@ const EmptyTrashDialogComponent = (props) => {
     onClose();
     const translations = {
       deleteOperation: t("Translations:DeleteOperation"),
-      successOperation: t("SuccessEmptyTrash"),
+      successOperation: isArchiveFolder
+        ? t("SuccessEmptyArchived")
+        : t("SuccessEmptyTrash"),
     };
-    emptyTrash(translations);
+
+    if (isArchiveFolder) {
+      emptyArchive(translations);
+    } else {
+      emptyTrash(translations);
+    }
   };
 
   const onKeyPress = (e) => {
@@ -59,7 +69,11 @@ const EmptyTrashDialogComponent = (props) => {
     >
       <ModalDialog.Header>{t("DeleteForeverTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text>{t("DeleteForeverNote")}</Text>
+        <Text>
+          {isArchiveFolder
+            ? t("DeleteForeverNoteArchive")
+            : t("DeleteForeverNote")}
+        </Text>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
@@ -90,22 +104,28 @@ const EmptyTrashDialog = withTranslation([
   "Translations",
 ])(EmptyTrashDialogComponent);
 
-export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
-  const { fetchFiles, filter, isLoading } = filesStore;
-  const { emptyTrash } = filesActionsStore;
+export default inject(
+  ({ filesStore, filesActionsStore, treeFoldersStore, dialogsStore }) => {
+    const { isLoading } = filesStore;
+    const { emptyTrash, emptyArchive } = filesActionsStore;
 
-  const {
-    emptyTrashDialogVisible: visible,
-    setEmptyTrashDialogVisible,
-  } = dialogsStore;
+    const { isArchiveFolder } = treeFoldersStore;
 
-  return {
-    isLoading,
-    filter,
-    visible,
+    const {
+      emptyTrashDialogVisible: visible,
+      setEmptyTrashDialogVisible,
+    } = dialogsStore;
 
-    fetchFiles,
-    setEmptyTrashDialogVisible,
-    emptyTrash,
-  };
-})(withRouter(observer(EmptyTrashDialog)));
+    return {
+      isLoading,
+
+      visible,
+
+      setEmptyTrashDialogVisible,
+      emptyTrash,
+      emptyArchive,
+
+      isArchiveFolder,
+    };
+  }
+)(withRouter(observer(EmptyTrashDialog)));

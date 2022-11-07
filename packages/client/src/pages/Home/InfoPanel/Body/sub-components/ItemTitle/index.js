@@ -1,4 +1,5 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 
 import AccountsItemTitle from "./AccountsItemTitle";
 import FilesItemTitle from "./FilesItemTitle";
@@ -6,21 +7,15 @@ import GalleryItemTitle from "./GalleryItemTitle";
 
 const ItemTitle = ({
   selection,
-  selectionParentRoom,
-  roomsView,
-
   isRooms,
   isAccounts,
   isGallery,
   isSeveralItems,
-
-  setBufferSelection,
+  selectionLength,
+  selectionParentRoom,
+  roomsView,
   getIcon,
-
-  getContextOptions,
-  getContextOptionActions,
   getUserContextOptions,
-  severalItemsLength,
 }) => {
   if (!selection) return null;
 
@@ -30,7 +25,7 @@ const ItemTitle = ({
         selection={selection}
         isSeveralItems={isSeveralItems}
         getUserContextOptions={getUserContextOptions}
-        severalItemsLength={severalItemsLength}
+        selectionLength={selectionLength}
       />
     );
 
@@ -48,15 +43,23 @@ const ItemTitle = ({
 
   return (
     <FilesItemTitle
-      severalItemsLength={severalItemsLength}
+      selectionLength={selectionLength}
       selection={filesItemSelection}
       isSeveralItems={isSeveralItems}
-      setBufferSelection={setBufferSelection}
       getIcon={getIcon}
-      getContextOptions={getContextOptions}
-      getContextOptionActions={getContextOptionActions}
     />
   );
 };
 
-export default ItemTitle;
+export default inject(({ auth, settingsStore, peopleStore }) => {
+  const { selectionParentRoom, roomsView } = auth.infoPanelStore;
+  const { getIcon } = settingsStore;
+  const { getUserContextOptions } = peopleStore.contextOptionsStore;
+
+  return {
+    getUserContextOptions,
+    selectionParentRoom,
+    roomsView,
+    getIcon,
+  };
+})(observer(ItemTitle));

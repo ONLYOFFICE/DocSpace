@@ -186,6 +186,7 @@ const FilterBlockItem = ({
         <StyledFilterBlockItemTagText
           noSelect={true}
           isSelected={item.isSelected}
+          truncate
         >
           {item.label}
         </StyledFilterBlockItemTagText>

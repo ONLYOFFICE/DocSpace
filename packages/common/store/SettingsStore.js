@@ -38,6 +38,9 @@ class SettingsStore {
     ? window.RendererProcessVariable?.theme?.type === "dark"
       ? Dark
       : Base
+    : window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? Dark
     : Base;
   trustedDomains = [];
   trustedDomainsType = 0;
@@ -67,7 +70,7 @@ class SettingsStore {
   urlSupport = "https://helpdesk.onlyoffice.com/";
   urlOforms = "https://cmsoforms.onlyoffice.com/api/oforms";
 
-  logoUrl = combineUrl(proxyURL, "/static/images/logo.docspace.react.svg");
+  logoUrl = "";
   customNames = {
     id: "Common",
     userCaption: "User",
@@ -150,8 +153,6 @@ class SettingsStore {
   whiteLabelLogoUrls = [];
   docSpaceLogo = "";
 
-  greetingSettingsIsDefault = true;
-
   constructor() {
     makeAutoObservable(this);
   }
@@ -200,10 +201,6 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
-  getGreetingSettingsIsDefault = async () => {
-    this.greetingSettingsIsDefault = await api.settings.getGreetingSettingsIsDefault();
-  };
-
   getSettings = async () => {
     let newSettings = null;
 
@@ -244,7 +241,7 @@ class SettingsStore {
     });
 
     this.setGreetingSettings(newSettings.greetingSettings);
-    this.getGreetingSettingsIsDefault();
+
     return newSettings;
   };
 
@@ -391,7 +388,11 @@ class SettingsStore {
   };
 
   setDocSpaceLogo = (urls) => {
-    this.docSpaceLogo = urls[1];
+    this.docSpaceLogo = urls[6];
+  };
+
+  setLogoUrl = (url) => {
+    this.logoUrl = url[0];
   };
 
   setLogoUrls = (urls) => {
@@ -410,6 +411,7 @@ class SettingsStore {
 
     this.setLogoUrls(Object.values(res));
     this.setDocSpaceLogo(Object.values(res));
+    this.setLogoUrl(Object.values(res));
   };
 
   restoreCompanyInfoSettings = async () => {

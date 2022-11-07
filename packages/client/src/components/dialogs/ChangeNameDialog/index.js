@@ -28,6 +28,12 @@ const ChangeNameDialog = (props) => {
   const [lastName, setLastName] = useState(profile.lastName);
   const [isSaving, setIsSaving] = useState(false);
 
+  const onCloseAction = () => {
+    if (!isSaving) {
+      onClose();
+    }
+  };
+
   const onSaveClick = async () => {
     const newProfile = profile;
     newProfile.firstName = firstName;
@@ -51,7 +57,7 @@ const ChangeNameDialog = (props) => {
     <ModalDialogContainer
       isLoading={!ready}
       visible={visible}
-      onClose={onClose}
+      onClose={onCloseAction}
       displayType="modal"
     >
       <ModalDialog.Header>
@@ -69,6 +75,7 @@ const ChangeNameDialog = (props) => {
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
             placeholder={t("ProfileAction:FirstName")}
+            isDisabled={isSaving}
           />
         </FieldContainer>
 
@@ -82,6 +89,7 @@ const ChangeNameDialog = (props) => {
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
             placeholder={t("Common:LastName")}
+            isDisabled={isSaving}
           />
         </FieldContainer>
       </ModalDialog.Body>

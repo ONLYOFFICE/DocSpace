@@ -51,6 +51,8 @@ const getTreeItems = (data, path, t) => {
         return t("Migration");
       case "Backup":
         return t("Backup");
+      case "PortalDeletion":
+        return t("PortalDeletion");
       case "Payments":
         return t("Payments");
       case "SingleSignOn":
@@ -133,6 +135,16 @@ class ArticleBodyContent extends React.Component {
 
     if (tReady) setIsLoadedArticleBody(true);
 
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      if (this.props.location.pathname.includes("payments")) {
+        this.setState({ selectedKeys: ["4-0"] });
+      }
+
+      if (this.props.location.pathname.includes("common")) {
+        this.setState({ selectedKeys: ["0-0"] });
+      }
+    }
+
     if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
       const { selectedKeys } = this.state;
 
@@ -194,6 +206,8 @@ class ArticleBodyContent extends React.Component {
         return t("ManagementCategoryDataManagement");
       case "RestoreBackup":
         return t("RestoreBackup");
+      case "PortalDeletion":
+        return t("PortalDeletion");
       default:
         throw new Error("Unexpected translation key");
     }

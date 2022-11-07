@@ -13,6 +13,8 @@ class SettingsSetupStore {
   selectionStore = null;
   authStore = null;
   isInit = false;
+  logoutVisible = false;
+  logoutAllVisible = false;
   viewAs = isMobile ? "row" : "table";
 
   security = {
@@ -216,10 +218,6 @@ class SettingsSetupStore {
     return Promise.resolve(response);
   };
 
-  restoreWhiteLabelSettings = async (isDefault) => {
-    const res = await api.settings.restoreWhiteLabelSettings(isDefault);
-  };
-
   setLanguageAndTime = async (lng, timeZoneID) => {
     return api.settings.setLanguageAndTime(lng, timeZoneID);
   };
@@ -339,6 +337,26 @@ class SettingsSetupStore {
 
     this.setCommonThirdPartyList(res);
   };
+
+  getAllSessions = () => {
+    return api.settings.getAllActiveSessions();
+  };
+
+  removeAllSessions = () => {
+    return api.settings.removeAllActiveSessions();
+  };
+
+  removeAllExecptThis = () => {
+    return api.settings.removeAllExceptThisSession();
+  };
+
+  removeSession = (id) => {
+    return api.settings.removeActiveSession(id);
+  };
+
+  setLogoutVisible = (visible) => (this.logoutVisible = visible);
+
+  setLogoutAllVisible = (visible) => (this.logoutAllVisible = visible);
 }
 
 export default SettingsSetupStore;

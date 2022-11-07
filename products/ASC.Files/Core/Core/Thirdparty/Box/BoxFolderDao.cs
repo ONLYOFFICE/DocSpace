@@ -75,9 +75,9 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
-        bool withoutTags, bool excludeSubject)
+        bool withoutTags, bool excludeSubject, ProviderFilter provider)
     {
-        if (CheckInvalidFilter(filterType))
+        if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.Box))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }
@@ -97,10 +97,10 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
         return rooms;
     }
 
-    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
-        bool withSubfolders, bool withoutTags, bool excludeSubject)
+    public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
+        bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider)
     {
-        if (CheckInvalidFilter(filterType))
+        if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.Box))
         {
             return AsyncEnumerable.Empty<Folder<string>>();
         }

@@ -128,10 +128,4 @@
 &lt;/div&gt;
 &lt;/body&gt;</value>
   </data>
-  <data name="TextForFooterWithUnsubscribeLink" xml:space="preserve">
-    <value>Bu e-posta otomatik olarak oluşturulmuştur, lütfen yanıtlamayın.
-&lt;br /&gt;Bu e-postayı almanızın sebebi &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;{0}&lt;/a&gt; kayıtlı kullanıcısı olmanızdır.
-&lt;br /&gt;Bu e-postaları almak istemiyorsanız lütfen linke tıklayın: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Abonelikten Ayrıl&lt;/a&gt;
-&lt;br /&gt;</value>
-  </data>
 </root>

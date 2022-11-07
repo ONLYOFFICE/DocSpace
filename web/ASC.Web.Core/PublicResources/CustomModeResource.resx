@@ -117,31 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
-    <value>Dear $UserName,
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>Hello, $UserName!
 
-Your user profile has been successfully added to the portal at "${__VirtualRootPath}":"${__VirtualRootPath}". Get started with it today!
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
 
-h3.Start working with Documents:
+*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
 
-# Create and edit text documents, spreadsheet and presentations.
-# Connect cloud storages you use to create a single workspace for all of your docs.
-# Share documents with your team members.
-# Explore different ways of working on docs together: two real-time co-editing modes, review, comments, chat.
+*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
-h3.Try additional ${LetterLogoText} tools:
+*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
 
-# Add your email account to "${LetterLogoText} Mail":"${__VirtualRootPath}/addons/mail/".
-# Create "Projects":"${__VirtualRootPath}/products/projects/" and manage your workflow by adding milestones and tasks.
-# Manage your customer relations using "CRM":"${__VirtualRootPath}/products/crm/".
-# Use "Community":"${__VirtualRootPath}/products/community/" to start your blogs, forums, add events, share bookmarks.
-# Organize your work schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
-# Start "Talk":"${__VirtualRootPath}/addons/talk/" to chat with your teammates online.
+*# Work with sensitive or confidential documents* when you are invited to the private rooms where every symbol you type is encrypted end-to-end. 
+
+*# Connect any cloud storage* and work without switching between apps. 
 
 $GreenButton
 
-Truly yours,
-${LetterLogoText} Team</value>
+If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>h1.Welcome to ONLYOFFICE Personal
@@ -165,37 +162,6 @@ h3.For a quick start, here's what you can do in ONLYOFFICE:
 - Easily access your Personal cloud via "Chrome extension":"https://chrome.google.com/webstore/detail/onlyoffice-personal/ohdlcmpahmacjddiaokoogleflddlahc?hl=en-US".
 
 You can also edit documents offline with our free "desktop editors":"https://www.onlyoffice.com/download-desktop.aspx" or get a mobile editing suite for your "iOS":"https://apps.apple.com/app/onlyoffice-documents/id944896972" or "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents" device.
-
-Sincerely,
-ONLYOFFICE team</value>
-  </data>
-  <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
-    <value>$PersonalHeaderStart Connect your favorite cloud storage to ONLYOFFICE $PersonalHeaderEnd
-
-It has been a week since you created your cloud office, so we believe it's time to unveil some tips and recommendations on how to make your work even more effective.
-
-*Bring all your docs together*
-
-Connect Dropbox, Google Drive, Box, OneDrive, Nextcloud, ownCloud, kDrive, or Yandex.Disk to ONLYOFFICE and create a single document management space for all your documents.
-"Learn more":"https://helpcenter.onlyoffice.com/tipstricks/add-resource.aspx"
-
-*Edit docs in your Google Drive*
-
-You can also integrate ONLYOFFICE editors into Google Drive using our "connector app":"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
-
-*Use productivity tools*
-
-h3.Try ONLYOFFICE for business "in the cloud":"https://www.onlyoffice.com/cloud-office.aspx" or "on your server":"https://www.onlyoffice.com/workspace-enterprise.aspx" for free for 30 days and check out extended document management opportunities together with a business toolset:
-
-·	Manage team documents in projects;
-
-·	Integrate documents with CRM and Email;
-
-·	Share files to groups of users;
-
-·	Optimize your workflow with team communication tools.
-
-You can choose an absolutely free tariff for teams with up to 5 users. "Register":"https://www.onlyoffice.com/registration.aspx"
 
 Sincerely,
 ONLYOFFICE team</value>

@@ -155,6 +155,20 @@ public class BreadCrumbsManager
                 case FolderType.BUNCH:
                     rootId = await _globalFolderHelper.FolderProjectsAsync;
                     break;
+                case FolderType.VirtualRooms:
+                    if (firstVisible.ProviderEntry)
+                    {
+                        rootId = await _globalFolderHelper.FolderVirtualRoomsAsync;
+                        breadCrumbs = breadCrumbs.SkipWhile(f => f is Folder<T> folder && !DocSpaceHelper.IsRoom(folder.FolderType)).ToList();
+                    }
+                    break;
+                case FolderType.Archive:
+                    if (firstVisible.ProviderEntry)
+                    {
+                        rootId = await _globalFolderHelper.FolderArchiveAsync;
+                        breadCrumbs = breadCrumbs.SkipWhile(f => f is Folder<T> folder && !DocSpaceHelper.IsRoom(folder.FolderType)).ToList();
+                    }
+                    break;
             }
         }
 
@@ -374,7 +388,7 @@ public class EntryManager
 
     public async Task<(IEnumerable<FileEntry> Entries, int Total)> GetEntriesAsync<T>(Folder<T> parent, int from, int count, FilterType filterType, bool subjectGroup, Guid subjectId,
         string searchText, bool searchInContent, bool withSubfolders, OrderBy orderBy, SearchArea searchArea = SearchArea.Active, bool withoutTags = false, IEnumerable<string> tagNames = null,
-        bool excludeSubject = false)
+        bool excludeSubject = false, ProviderFilter provider = ProviderFilter.None)
     {
         var total = 0;
 
@@ -457,7 +471,7 @@ public class EntryManager
         }
         else if ((parent.FolderType == FolderType.VirtualRooms || parent.FolderType == FolderType.Archive) && !parent.ProviderEntry)
         {
-            entries = await _fileSecurity.GetVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject);
+            entries = await _fileSecurity.GetVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject, provider);
 
             CalculateTotal();
         }
@@ -1300,7 +1314,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(file) || _userManager.IsVisitor(_authContext.CurrentAccount.ID)))
+        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(file) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1482,8 +1496,7 @@ public class EntryManager
                 && !await _fileSecurity.CanCustomFilterEditAsync(file, userId)
                 && !await _fileSecurity.CanReviewAsync(file, userId)
                 && !await _fileSecurity.CanFillFormsAsync(file, userId)
-                && !await _fileSecurity.CanCommentAsync(file, userId)
-                || _userManager.IsVisitor(userId)))
+                && !await _fileSecurity.CanCommentAsync(file, userId)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1534,7 +1547,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(fromFile) || _userManager.IsVisitor(_authContext.CurrentAccount.ID)))
+        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(fromFile) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1656,7 +1669,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && (!await _fileSecurity.CanEditAsync(fileVersion) || _userManager.IsVisitor(_authContext.CurrentAccount.ID)))
+        if (checkRight && (!await _fileSecurity.CanEditAsync(fileVersion) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1719,7 +1732,7 @@ public class EntryManager
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }
 
-        if (!await _fileSecurity.CanDeleteAsync(file) && _userManager.IsVisitor(_authContext.CurrentAccount.ID))
+        if (!await _fileSecurity.CanDeleteAsync(file) && _userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }

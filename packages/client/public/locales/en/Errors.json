@@ -3,5 +3,8 @@
   "Error403Text": "Sorry, access denied.",
   "Error404Text": "Sorry, the resource cannot be found.",
   "ErrorEmptyResponse": "Empty response",
-  "ErrorOfflineText": "No internet connection found."
+  "ErrorInvalidHeader": "Incorrect email or expired link",
+  "ErrorInvalidText": "In 10 seconds you will be redirected to the <1>login page</1>",
+  "ErrorOfflineText": "No internet connection found.",
+  "ErrorUnavailableText": "Portal unavailable"
 }
