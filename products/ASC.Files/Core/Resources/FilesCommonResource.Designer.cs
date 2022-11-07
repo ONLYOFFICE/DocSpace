@@ -144,9 +144,9 @@ namespace ASC.Files.Core.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Room Admin.
         /// </summary>
-        public static string AceStatusEnum_RoomManager {
+        public static string AceStatusEnum_RoomAdmin {
             get {
-                return ResourceManager.GetString("AceStatusEnum_RoomManager", resourceCulture);
+                return ResourceManager.GetString("AceStatusEnum_RoomAdmin", resourceCulture);
             }
         }
         

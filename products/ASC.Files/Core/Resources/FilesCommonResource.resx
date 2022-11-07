@@ -144,7 +144,7 @@
   <data name="AceStatusEnum_Review" xml:space="preserve">
     <value>Review</value>
   </data>
-  <data name="AceStatusEnum_RoomManager" xml:space="preserve">
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Room Admin</value>
   </data>
   <data name="Admin" xml:space="preserve">
