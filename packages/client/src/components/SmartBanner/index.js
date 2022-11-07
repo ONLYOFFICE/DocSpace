@@ -41,8 +41,12 @@ const ReactSmartBanner = (props) => {
   useEffect(() => {
     const path = window.location.pathname.toLowerCase();
     if (path.includes("rooms") || path.includes("files")) {
+      let vh = (window.innerHeight - 80) * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
       setIsDocuments(true);
     } else {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
       setIsDocuments(false);
     }
   }, [location]);
