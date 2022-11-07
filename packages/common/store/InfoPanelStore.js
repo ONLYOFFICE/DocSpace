@@ -6,6 +6,16 @@ import { combineUrl } from "@docspace/common/utils";
 import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import Filter from "../api/people/filter";
+import { getRoomInfo } from "../api/rooms";
+
+const observedKeys = [
+  "id",
+  "title",
+  "thumbnailStatus",
+  "thumbnailUrl",
+  "version",
+  "comment",
+];
 
 class InfoPanelStore {
   isVisible = false;
@@ -19,6 +29,7 @@ class InfoPanelStore {
   authStore = null;
   settingsStore = null;
   peopleStore = null;
+  filesStore = null;
   selectedFolderStore = null;
   treeFoldersStore = null;
 
@@ -26,9 +37,19 @@ class InfoPanelStore {
     makeAutoObservable(this);
   }
 
+  // Setters
+
   setIsVisible = (bool) => (this.isVisible = bool);
 
-  setSelection = (selection) => (this.selection = selection);
+  setSelection = (selection) => {
+    if (this.getIsAccounts() && (!selection.email || !selection.displayName)) {
+      this.selection = selection.length
+        ? selection
+        : { isSelectedFolder: true };
+      return;
+    }
+    this.selection = selection;
+  };
   setSelectionParentRoom = (obj) => (this.selectionParentRoom = obj);
 
   setView = (view) => {
@@ -36,18 +57,109 @@ class InfoPanelStore {
     this.fileView = view === "members" ? "history" : view;
   };
 
+  // Selection helpers //
+
+  getSelectedItems = () => {
+    const {
+      selection: filesStoreSelection,
+      bufferSelection: filesStoreBufferSelection,
+    } = this.filesStore;
+
+    const {
+      selection: peopleStoreSelection,
+      bufferSelection: peopleStoreBufferSelection,
+    } = this.peopleStore.selectionStore;
+
+    return this.getIsAccounts()
+      ? peopleStoreSelection.length
+        ? [...peopleStoreSelection]
+        : peopleStoreBufferSelection
+        ? [peopleStoreBufferSelection]
+        : []
+      : filesStoreSelection?.length > 0
+      ? [...filesStoreSelection]
+      : filesStoreBufferSelection
+      ? [filesStoreBufferSelection]
+      : [];
+  };
+
+  getSelectedFolder = () => {
+    const selectedFolderStore = { ...this.selectedFolderStore };
+    return {
+      ...selectedFolderStore,
+      isFolder: true,
+      isRoom: !!this.selectedFolderStore.roomType,
+    };
+  };
+
+  calculateSelection = (
+    props = { selectedItems: [], selectedFolder: null }
+  ) => {
+    const selectedItems = props.selectedItems.length
+      ? props.selectedItems
+      : this.getSelectedItems();
+
+    const selectedFolder = props.selectedFolder
+      ? props.selectedFolder
+      : this.getSelectedFolder();
+
+    return selectedItems.length === 0
+      ? this.normalizeSelection({
+          ...selectedFolder,
+          isSelectedFolder: true,
+          isSelectedItem: false,
+        })
+      : selectedItems.length === 1
+      ? this.normalizeSelection({
+          ...selectedItems[0],
+          isSelectedFolder: false,
+          isSelectedItem: true,
+        })
+      : [...Array(selectedItems.length).keys()];
+  };
+
   normalizeSelection = (selection) => {
     const isContextMenuSelection = selection.isContextMenuSelection;
     return {
       ...selection,
       isRoom: selection.isRoom || !!selection.roomType,
-      icon: this.getItemIcon(selection, 32),
+      icon: this.getInfoPanelItemIcon(selection, 32),
       isContextMenuSelection: false,
       wasContextMenuSelection: !!isContextMenuSelection,
     };
   };
 
-  getItemIcon = (item, size) => {
+  reloadSelection = () => {
+    this.setSelection(this.calculateSelection());
+  };
+
+  reloadSelectionParentRoom = async () => {
+    if (!this.getIsRooms) return;
+
+    const currentFolderRoomId = this.selectedFolderStore.pathParts[1];
+    const prevRoomId = selectionParentRoom?.id;
+
+    if (!currentFolderRoomId || currentFolderRoomId === prevRoomId) return;
+
+    const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
+    if (prevRoomId === newSelectionParentRoom.id) return;
+
+    this.setSelectionParentRoom(
+      this.normalizeSelection(newSelectionParentRoom)
+    );
+  };
+
+  isItemChanged = (oldItem, newItem) => {
+    for (let i = 0; i < observedKeys.length; i++) {
+      const value = observedKeys[i];
+      if (oldItem[value] !== newItem[value]) return true;
+    }
+    return false;
+  };
+
+  // Icon helpers //
+
+  getInfoPanelItemIcon = (item, size) => {
     return item.isRoom || !!item.roomType
       ? item.logo && item.logo.medium
         ? item.logo.medium
@@ -57,6 +169,18 @@ class InfoPanelStore {
       : item.isFolder
       ? this.settingsStore.getFolderIcon(item.providerKey, size)
       : this.settingsStore.getIcon(size, item.fileExst || ".file");
+  };
+
+  // User link actions //
+
+  openUser = async (user, history) => {
+    if (user.id === this.authStore.userStore.user.id) {
+      this.openSelfProfile(history);
+      return;
+    }
+
+    const fetchedUser = await this.fetchUser(user.id);
+    this.openAccountsWithSelectedUser(fetchedUser, history);
   };
 
   openSelfProfile = (history) => {
@@ -73,21 +197,20 @@ class InfoPanelStore {
 
   openAccountsWithSelectedUser = async (user, history) => {
     const { getUsersList } = this.peopleStore.usersStore;
-    const { selectUser } = this.peopleStore.selectionStore;
+    const { setSelection } = this.peopleStore.selectionStore;
 
     const path = [AppServerConfig.proxyURL, config.homepage, "/accounts"];
 
     const newFilter = Filter.getDefault();
     newFilter.page = 0;
     newFilter.search = user.email;
-    await getUsersList(newFilter);
     path.push(`filter?${newFilter.toUrlParams()}`);
+    const userList = await getUsersList(newFilter);
 
+    history.push(combineUrl(...path));
     this.selectedFolderStore.setSelectedFolder(null);
     this.treeFoldersStore.setSelectedNode(["accounts"]);
-    history.push(combineUrl(...path));
-
-    selectUser(user);
+    setSelection([user]);
   };
 
   fetchUser = async (userId) => {
@@ -109,18 +232,15 @@ class InfoPanelStore {
     return fetchedUser;
   };
 
-  openUser = async (userId, history) => {
-    if (userId === this.authStore.userStore.user.id) {
-      this.openSelfProfile(history);
-      return;
-    }
+  // Routing helpers //
 
-    const fetchedUser = await this.fetchUser(userId);
-    this.openAccountsWithSelectedUser(fetchedUser, history);
-  };
-
-  getItemNoThumbnail = (item) => {
-    this.getItemIcon(item, 96);
+  getCanDisplay = () => {
+    const pathname = window.location.pathname.toLowerCase();
+    const isFiles = this.getIsFiles(pathname);
+    const isRooms = this.getIsRooms(pathname);
+    const isAccounts = this.getIsAccounts(pathname);
+    const isGallery = this.getIsGallery(pathname);
+    return isRooms || isFiles || isGallery || isAccounts;
   };
 
   getIsFiles = (givenPathName) => {
@@ -147,15 +267,6 @@ class InfoPanelStore {
   getIsGallery = (givenPathName) => {
     const pathname = givenPathName || window.location.pathname.toLowerCase();
     return pathname.indexOf("form-gallery") !== -1;
-  };
-
-  getCanDisplay = () => {
-    const pathname = window.location.pathname.toLowerCase();
-    const isFiles = this.getIsFiles(pathname);
-    const isRooms = this.getIsRooms(pathname);
-    const isAccounts = this.getIsAccounts(pathname);
-    const isGallery = this.getIsGallery(pathname);
-    return isRooms || isFiles || isGallery || isAccounts;
   };
 }
 

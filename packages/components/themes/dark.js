@@ -2030,6 +2030,8 @@ const Dark = {
 
     members: {
       iconColor: "#A3A9AE",
+      iconHoverColor: "#ffffff",
+      isExpectName: "#A3A9AE",
       subtitleColor: "#a3a9ae",
       meLabelColor: "#a3a9ae",
       roleSelectorColor: "#a3a9ae",
@@ -2890,13 +2892,13 @@ const Dark = {
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
 
-          backgroundColor: "#0f4071",
+          backgroundColor: "#282828",
           greenBackgroundColor: "#7e983f",
           blueBackgroundColor: "#5170b5",
           orangeBackgroundColor: "#e86e2e",
 
           dataFontColor: white,
-          dataFontColorBlack: black,
+          dataFontColorBlack: white,
         },
       },
 

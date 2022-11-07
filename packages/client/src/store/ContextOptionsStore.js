@@ -401,7 +401,7 @@ class ContextOptionsStore {
 
   onShowInfoPanel = (item) => {
     const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
-    setSelection({ ...item, isContextMenuSelection: true });
+    setSelection(item);
     setIsVisible(true);
   };
 
@@ -435,7 +435,7 @@ class ContextOptionsStore {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
 
-    this.filesActionsStore.setPinAction(action, id);
+    this.filesActionsStore.setPinAction(action, id, t);
   };
 
   onClickArchive = (e, item, t) => {

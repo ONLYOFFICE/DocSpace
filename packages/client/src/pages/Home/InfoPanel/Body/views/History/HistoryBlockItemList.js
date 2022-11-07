@@ -13,7 +13,7 @@ import { RoomsType } from "@docspace/common/constants";
 export const HistoryBlockItemList = ({
   t,
   items,
-  getItemIcon,
+  getInfoPanelItemIcon,
   checkAndOpenLocationAction,
 }) => {
   const [isShowMore, setIsShowMore] = useState(items.length <= 3);
@@ -39,7 +39,7 @@ export const HistoryBlockItemList = ({
         if (!isShowMore && i > 2) return null;
         return (
           <StyledHistoryBlockFile isRoom={item.isRoom} key={i}>
-            <ReactSVG className="icon" src={getItemIcon(item, 24)} />
+            <ReactSVG className="icon" src={getInfoPanelItemIcon(item, 24)} />
             <div className="item-title">
               <span className="name">{item.title}</span>
               {item.fileExst && <span className="exst">{item.fileExst}</span>}

@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ButtonsWrapper, LoginFormWrapper } from "./StyledLogin";
-import Logo from "../../../../../public/images/docspace.big.react.svg";
 import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";
 import {
@@ -24,6 +23,7 @@ import SSOIcon from "../../../../../public/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
 import { getBgPattern } from "@docspace/common/utils";
+import { ReactSVG } from "react-svg";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
@@ -38,6 +38,7 @@ const Login: React.FC<ILoginProps> = ({
   currentColorScheme,
   theme,
   setTheme,
+  logoUrls,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
@@ -174,6 +175,9 @@ const Login: React.FC<ILoginProps> = ({
 
   const bgPattern = getBgPattern(currentColorScheme.id);
 
+  const loginLogo = Object.values(logoUrls)[1];
+  const isSvgLogo = loginLogo.includes(".svg");
+
   if (!mounted) return <></>;
 
   return (
@@ -185,7 +189,11 @@ const Login: React.FC<ILoginProps> = ({
       bgPattern={bgPattern}
     >
       <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
-        <Logo className="logo-wrapper" />
+        {isSvgLogo ? (
+          <ReactSVG src={loginLogo} className="logo-wrapper" />
+        ) : (
+          <img src={loginLogo} className="logo-wrapper" />
+        )}
         <Text
           fontSize="23px"
           fontWeight={700}
