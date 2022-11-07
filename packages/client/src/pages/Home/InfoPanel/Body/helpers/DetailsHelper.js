@@ -191,8 +191,7 @@ class DetailsHelper {
   /// Property  //
 
   getItemOwner = () => {
-    const onOpenUser = () =>
-      this.openUser(this.item.createdBy.id, this.history);
+    const onOpenUser = () => this.openUser(this.item.createdBy, this.history);
 
     return this.personal
       ? text(decodeString(this.item.createdBy?.displayName))
@@ -244,8 +243,7 @@ class DetailsHelper {
   };
 
   getItemLastModifiedBy = () => {
-    const onOpenUser = () =>
-      this.openUser(this.item.updatedBy.id, this.history);
+    const onOpenUser = () => this.openUser(this.item.updatedBy, this.history);
 
     return this.personal
       ? text(decodeString(this.item.updatedBy?.displayName))
