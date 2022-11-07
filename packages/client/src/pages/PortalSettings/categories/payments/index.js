@@ -36,7 +36,9 @@ const StyledBody = styled.div`
 
     @media (max-width: ${size.smallTablet + 40}px) {
       grid-template-columns: 1fr;
-      grid-template-rows: 1fr 1fr;
+
+      grid-template-rows: ${(props) =>
+        props.isHideBenefitsInfo ? "1fr" : "1fr max-content"};
 
       .price-calculation-container,
       .benefits-container {
@@ -51,7 +53,8 @@ const StyledBody = styled.div`
       props.isChangeView &&
       css`
         grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr;
+        grid-template-rows: ${(props) =>
+          props.isHideBenefitsInfo ? "1fr" : "1fr max-content"};
 
         .price-calculation-container,
         .benefits-container {
@@ -304,6 +307,9 @@ const PaymentsPage = ({
 
   const isFreeAfterPaidPeriod = isFreeTariff && payerEmail.length !== 0;
 
+  const isHideBenefitsInfo =
+    isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod;
+
   return isInitialLoading || !ready ? (
     <Loaders.PaymentsLoader />
   ) : (
@@ -314,6 +320,7 @@ const PaymentsPage = ({
           isChangeView={
             context.sectionWidth < size.smallTablet && expandArticle
           }
+          isHideBenefitsInfo={isHideBenefitsInfo}
         >
           {isNotPaidPeriod && isValidDelayDueDate
             ? expiredTitleSubscriptionWarning()
@@ -382,11 +389,7 @@ const PaymentsPage = ({
               isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
             />
 
-            {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod ? (
-              <></>
-            ) : (
-              <BenefitsContainer t={t} />
-            )}
+            {isHideBenefitsInfo ? <></> : <BenefitsContainer t={t} />}
           </div>
           <ContactContainer t={t} />
         </StyledBody>
