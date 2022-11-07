@@ -18,6 +18,7 @@ const Details = ({
   createThumbnail,
   getInfoPanelItemIcon,
   openUser,
+  isVisitor,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
@@ -27,6 +28,7 @@ const Details = ({
   const history = useHistory();
 
   const detailsHelper = new DetailsHelper({
+    isVisitor,
     t,
     item: selection,
     openUser,
@@ -95,9 +97,13 @@ const Details = ({
 };
 
 export default inject(({ auth, filesStore }) => {
+  const { userStore } = auth;
   const { selection, getInfoPanelItemIcon, openUser } = auth.infoPanelStore;
   const { createThumbnail } = filesStore;
   const { personal, culture } = auth.settingsStore;
+  const { user } = userStore;
+
+  const isVisitor = user.isVisitor;
 
   return {
     personal,
@@ -106,5 +112,6 @@ export default inject(({ auth, filesStore }) => {
     createThumbnail,
     getInfoPanelItemIcon,
     openUser,
+    isVisitor,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations", "Files"])(Details));
