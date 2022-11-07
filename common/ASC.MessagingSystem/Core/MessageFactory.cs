@@ -40,7 +40,7 @@ public class MessageFactory
         _logger = logger;
     }
 
-    public EventMessage Create(HttpRequest request, string initiator, DateTime? dateTime, MessageAction action, MessageTarget target, params string[] description)
+    public EventMessage Create(HttpRequest request, string initiator, DateTime? dateTime, MessageAction action, string context, MessageTarget target, params string[] description)
     {
         try
         {
@@ -55,7 +55,8 @@ public class MessageFactory
                 Action = action,
                 Description = description,
                 Target = target,
-                UAHeader = MessageSettings.GetUAHeader(request)
+                UAHeader = MessageSettings.GetUAHeader(request),
+                Context = context,
             };
         }
         catch (Exception ex)
@@ -66,7 +67,7 @@ public class MessageFactory
         }
     }
 
-    public EventMessage Create(MessageUserData userData, IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
+    public EventMessage Create(MessageUserData userData, IDictionary<string, StringValues> headers, MessageAction action, string context, MessageTarget target, params string[] description)
     {
         try
         {
@@ -77,7 +78,8 @@ public class MessageFactory
                 UserId = userData == null ? _authContext.CurrentAccount.ID : userData.UserId,
                 Action = action,
                 Description = description,
-                Target = target
+                Target = target,
+                Context = context
             };
 
             if (headers != null)

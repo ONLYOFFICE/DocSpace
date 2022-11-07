@@ -43,4 +43,5 @@ public class EventMessage
     public MessageTarget Target { get; set; }
     public string UAHeader { get; set; }
     public bool Active { get; set; }
+    public string Context { get; set; }
 }

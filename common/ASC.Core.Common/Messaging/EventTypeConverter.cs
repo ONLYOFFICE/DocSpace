@@ -57,6 +57,7 @@ public class EventTypeConverter : ITypeConverter<EventMessage, LoginEvent>, ITyp
 
         auditEvent.Initiator = source.Initiator;
         auditEvent.Target = source.Target?.ToString();
+        auditEvent.Context = source.Context;
 
         if (source.Description != null && source.Description.Count > 0)
         {

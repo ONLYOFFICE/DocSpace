@@ -442,6 +442,13 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnName("browser")
                         .HasDefaultValueSql("NULL");
 
+                    b.Property<string>("Context")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)")
+                        .HasColumnName("context")
+                        .HasDefaultValueSql("NULL");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("date");

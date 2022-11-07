@@ -30,6 +30,7 @@ public class AuditEvent : MessageEvent, IMapFrom<EventMessage>
 {
     public string Initiator { get; set; }
     public string Target { get; set; }
+    public string Context { get; set; }
 
     public void Mapping(Profile profile)
     {
@@ -123,6 +124,12 @@ public static class AuditEventExtension
                 .HasColumnType("char(38)")
                 .HasCharSet("utf8")
                 .UseCollation("utf8_general_ci");
+
+            entity.Property(e => e.Context)
+                .HasColumnName("context")
+                .HasColumnType("varchar(400)")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
         });
     }
     public static void PgSqlAddAuditEvent(this ModelBuilder modelBuilder)
@@ -178,6 +185,11 @@ public static class AuditEventExtension
                 .HasColumnName("user_id")
                 .HasMaxLength(38)
                 .IsFixedLength()
+                .HasDefaultValueSql("NULL");
+
+            entity.Property(e => e.Context)
+                .HasColumnName("context")
+                .HasMaxLength(400)
                 .HasDefaultValueSql("NULL");
         });
     }

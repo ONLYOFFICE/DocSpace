@@ -94,6 +94,7 @@ internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDt
         var result = context.Mapper.Map<AuditEventDto>(source.Event);
 
         result.Target = _messageTarget.Parse(target);
+        result.Context = source.Event.Context;
 
         if (source.Event.DescriptionRaw != null)
         {

@@ -29,36 +29,23 @@ namespace ASC.Web.Api.ApiModel.ResponseDto;
 public class AuditEventDto
 {
     public int Id { get; set; }
-
     public ApiDateTime Date { get; set; }
-
     public string User { get; set; }
-
     public Guid UserId { get; set; }
-
     public string Action { get; set; }
-
     public MessageAction ActionId { get; set; }
-
     public string IP { get; set; }
-
     public string Browser { get; set; }
-
     public string Platform { get; set; }
-
     public string Page { get; set; }
-
     public ActionType ActionType { get; set; }
-
     public ProductType Product { get; set; }
-
     public ModuleType Module { get; set; }
-
     public IEnumerable<string> Target { get; set; }
-
     public IEnumerable<EntryType> Entries { get; set; }
+    public string Context { get; set; }
 
-    public AuditEventDto(ASC.AuditTrail.Models.AuditEventDto auditEvent, AuditActionMapper auditActionMapper)
+    public AuditEventDto(AuditTrail.Models.AuditEventDto auditEvent, AuditActionMapper auditActionMapper)
     {
         Id = auditEvent.Id;
         Date = new ApiDateTime(auditEvent.Date, TimeSpan.Zero);
@@ -70,6 +57,7 @@ public class AuditEventDto
         Browser = auditEvent.Browser;
         Platform = auditEvent.Platform;
         Page = auditEvent.Page;
+        Context = auditEvent.Context;
 
         var maps = auditActionMapper.GetMessageMaps(auditEvent.Action);
 
