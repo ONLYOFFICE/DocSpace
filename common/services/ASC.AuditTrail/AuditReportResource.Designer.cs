@@ -3337,7 +3337,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room Archived: {0}.
+        ///   Looks up a localized string similar to Room archived.
         /// </summary>
         public static string RoomArchived {
             get {
@@ -3346,7 +3346,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room Created: {0}.
+        ///   Looks up a localized string similar to Room created.
         /// </summary>
         public static string RoomCreated {
             get {
@@ -3355,7 +3355,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room Deleted: {0}.
+        ///   Looks up a localized string similar to Room deleted.
         /// </summary>
         public static string RoomDeleted {
             get {
@@ -3373,7 +3373,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room {0}. Logo Created.
+        ///   Looks up a localized string similar to Logo created.
         /// </summary>
         public static string RoomLogoCreated {
             get {
@@ -3382,7 +3382,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room {0}. Logo Deleted.
+        ///   Looks up a localized string similar to Logo deleted.
         /// </summary>
         public static string RoomLogoDeleted {
             get {
@@ -3391,7 +3391,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room Renamed: {0}.
+        ///   Looks up a localized string similar to Room renamed.
         /// </summary>
         public static string RoomRenamed {
             get {
@@ -3400,7 +3400,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room Unarchived: {0}.
+        ///   Looks up a localized string similar to Room unarchived.
         /// </summary>
         public static string RoomUnarchived {
             get {
@@ -3409,7 +3409,7 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room {0}. Updated Access {2} for {1}.
+        ///   Looks up a localized string similar to {0} appointed {1}.
         /// </summary>
         public static string RoomUpdateAccess {
             get {
@@ -3999,6 +3999,15 @@ namespace ASC.AuditTrail {
         public static string UserDeletedAvatar {
             get {
                 return ResourceManager.GetString("UserDeletedAvatar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleted user {0}.
+        /// </summary>
+        public static string UserDeletedFromRoom {
+            get {
+                return ResourceManager.GetString("UserDeletedFromRoom", resourceCulture);
             }
         }
         

@@ -468,7 +468,7 @@ public enum MessageAction
     RoomArchived = 5072,
     RoomUnarchived = 5073,
     RoomDeleted = 5074,
-    RoomUpdateAccess = 5075,
+    UserAppointedAccess = 5075,
 
     TagCreated = 5076,
     TagDeleted = 5077,
@@ -476,6 +476,7 @@ public enum MessageAction
     DeletedRoomTag = 5079,
     RoomLogoCreated = 5080,
     RoomLogoDeleted = 5081,
+    UserDeletedFromRoom = 5082,
 
     #endregion
 

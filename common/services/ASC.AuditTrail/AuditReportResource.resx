@@ -1210,31 +1210,31 @@
     <value>Project Report Template Updated: {0}</value>
   </data>
   <data name="RoomArchived" xml:space="preserve">
-    <value>Room Archived: {0}</value>
+    <value>Room archived</value>
   </data>
   <data name="RoomCreated" xml:space="preserve">
-    <value>Room Created: {0}</value>
+    <value>Room created</value>
   </data>
   <data name="RoomDeleted" xml:space="preserve">
-    <value>Room Deleted: {0}</value>
+    <value>Room deleted</value>
   </data>
   <data name="RoomInviteLinkUsed" xml:space="preserve">
     <value>Invitation link for {0} has been visited</value>
   </data>
   <data name="RoomLogoCreated" xml:space="preserve">
-    <value>Room {0}. Logo Created</value>
+    <value>Logo created</value>
   </data>
   <data name="RoomLogoDeleted" xml:space="preserve">
-    <value>Room {0}. Logo Deleted</value>
+    <value>Logo deleted</value>
   </data>
   <data name="RoomRenamed" xml:space="preserve">
-    <value>Room Renamed: {0}</value>
+    <value>Room renamed</value>
   </data>
   <data name="RoomUnarchived" xml:space="preserve">
-    <value>Room Unarchived: {0}</value>
+    <value>Room unarchived</value>
   </data>
   <data name="RoomUpdateAccess" xml:space="preserve">
-    <value>Room {0}. Updated Access {2} for {1}</value>
+    <value>{0} appointed {1}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Send</value>
@@ -1430,6 +1430,9 @@
   </data>
   <data name="UserDeletedAvatar" xml:space="preserve">
     <value>Users [{0}]. Avatar Deleted</value>
+  </data>
+  <data name="UserDeletedFromRoom" xml:space="preserve">
+    <value>Deleted user {0}</value>
   </data>
   <data name="UserFileUpdated" xml:space="preserve">
     <value>Users [{0}]. File Updated: {1}</value>
