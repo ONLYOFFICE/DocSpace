@@ -107,4 +107,4 @@ export default inject(({ auth, filesStore }) => {
     getInfoPanelItemIcon,
     openUser,
   };
-})(withTranslation(["InfoPanel", "Common", "Translations"])(Details));
+})(withTranslation(["InfoPanel", "Common", "Translations", "Files"])(Details));
