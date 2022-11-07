@@ -3,7 +3,6 @@ import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import NoUserSelect from "../utils/commonStyles";
 import Base from "../themes/base";
-import { isDesktop } from "../utils/device";
 
 const activeCss = css`
   background-color: ${(props) =>
@@ -153,12 +152,6 @@ const ButtonWrapper = ({
 const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? "disabled" : "",
   tabIndex: props.tabIndex,
-  size:
-    props.size === "normal"
-      ? isDesktop()
-        ? "normalDesktop"
-        : "normalTouchscreen"
-      : props.size,
 }))`
   position: relative;
   height: ${(props) => heightStyle(props)};
@@ -281,8 +274,6 @@ ButtonWrapper.propTypes = {
     "small",
     "normal",
     "medium",
-    "normalDesktop",
-    "normalTouchscreen",
   ]),
   scale: PropTypes.bool,
   icon: PropTypes.node,

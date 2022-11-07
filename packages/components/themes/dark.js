@@ -98,32 +98,28 @@ const Dark = {
     height: {
       extraSmall: "24px",
       small: "32px",
-      normalDesktop: "40px",
-      normalTouchscreen: "40px",
+      normal: "40px",
       medium: "44px",
     },
 
     lineHeight: {
       extraSmall: "15px",
       small: "20px",
-      normalDesktop: "16px",
-      normalTouchscreen: "16px",
+      normal: "16px",
       medium: "22px",
     },
 
     fontSize: {
       extraSmall: "12px",
       small: "13px",
-      normalDesktop: "14px",
-      normalTouchscreen: "14px",
+      normal: "14px",
       medium: "16px",
     },
 
     padding: {
       extraSmall: "0 12px",
       small: "0 28px",
-      normalDesktop: "0 28px",
-      normalTouchscreen: "0 28px",
+      normal: "0 28px",
       medium: "0 32px",
     },
 
