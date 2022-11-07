@@ -30,7 +30,7 @@ const Loader = (props) => {
       case "rombs":
         return <Rombs {...props} />;
       case "track":
-        return <Track />;
+        return <Track {...props} />;
       default:
         return (
           <span style={{ ...style }}>
