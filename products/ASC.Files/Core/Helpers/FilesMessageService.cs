@@ -33,53 +33,57 @@ public class FilesMessageService
     private readonly MessageTarget _messageTarget;
     private readonly MessageService _messageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IDaoFactory _daoFactory;
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
-        MessageService messageService)
+        MessageService messageService,
+        IDaoFactory daoFactory)
     {
         _logger = options.CreateLogger("ASC.Messaging");
         _messageTarget = messageTarget;
         _messageService = messageService;
+        _daoFactory = daoFactory;
     }
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
         MessageService messageService,
-        IHttpContextAccessor httpContextAccessor)
-        : this(options, messageTarget, messageService)
+        IHttpContextAccessor httpContextAccessor,
+        IDaoFactory daoFactory)
+        : this(options, messageTarget, messageService, daoFactory)
     {
         _httpContextAccessor = httpContextAccessor;
     }
 
     public void Send(IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
-        SendHeadersMessage(headers, action, null, description);
+        SendHeadersMessage(headers, action, null, null, description);
     }
 
-    public void Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async void Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
         if (entry == null)
         {
             return;
         }
 
-        SendHeadersMessage(headers, action, _messageTarget.Create(entry.Id), description);
+        SendHeadersMessage(headers, action, await GetParentRoomTitleAsync(entry), _messageTarget.Create(entry.Id), description);
     }
 
-    public void Send<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
+    public async void Send<T1, T2>(FileEntry<T1> entry1, FileEntry<T2> entry2, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
         if (entry1 == null || entry2 == null)
         {
             return;
         }
 
-        SendHeadersMessage(headers, action, _messageTarget.Create(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
+        SendHeadersMessage(headers, action, await GetParentRoomTitleAsync(entry1), _messageTarget.Create(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
     }
 
-    private void SendHeadersMessage(IDictionary<string, StringValues> headers, MessageAction action, MessageTarget target, params string[] description)
+    private void SendHeadersMessage(IDictionary<string, StringValues> headers, MessageAction action, string context ,MessageTarget target, params string[] description)
     {
         if (headers == null)//todo check need if
         {
@@ -88,10 +92,10 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(headers, action, target, description);
+        _messageService.Send(headers, action, context, target, description);
     }
 
-    public void Send<T>(FileEntry<T> entry, MessageAction action, string description)
+    public async void Send<T>(FileEntry<T> entry, MessageAction action, string description)
     {
         if (entry == null)
         {
@@ -105,10 +109,10 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(action, _messageTarget.Create(entry.Id), description);
+        _messageService.Send(action, await GetParentRoomTitleAsync(entry), _messageTarget.Create(entry.Id), description);
     }
 
-    public void Send<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
+    public async void Send<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
     {
         if (entry == null)
         {
@@ -121,16 +125,35 @@ public class FilesMessageService
             return;
         }
 
-        _messageService.Send(action, _messageTarget.Create(entry.Id), d1, d2);
+        _messageService.Send(action, await GetParentRoomTitleAsync(entry), _messageTarget.Create(entry.Id), d1, d2);
     }
 
-    public void Send<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
+    public async void Send<T>(FileEntry<T> entry, MessageInitiator initiator, MessageAction action, params string[] description)
     {
         if (entry == null)
         {
             return;
         }
 
-        _messageService.Send(initiator, action, _messageTarget.Create(entry.Id), description);
+        _messageService.Send(initiator, action, await GetParentRoomTitleAsync(entry), _messageTarget.Create(entry.Id), description);
+    }
+
+    private async Task<string> GetParentRoomTitleAsync<T>(FileEntry<T> entry)
+    {
+        if (entry is Folder<T> folder && DocSpaceHelper.IsRoom(folder.FolderType))
+        {
+            return folder.Title;
+        }
+
+        if (entry.RootFolderType is FolderType.USER)
+        {
+            return FilesUCResource.MyFiles;
+        }
+
+        var folderDao = _daoFactory.GetFolderDao<T>();
+
+        var parentRoom = await folderDao.GetParentFoldersAsync(entry.ParentId).FirstOrDefaultAsync(f => DocSpaceHelper.IsRoom(f.FolderType));
+
+        return parentRoom?.Title;
     }
 }
