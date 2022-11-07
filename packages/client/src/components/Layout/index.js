@@ -31,7 +31,7 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const { children, isTabletView, setIsTabletView, isBannerVisible } = props;
+  const { children, isTabletView, setIsTabletView } = props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
@@ -73,10 +73,6 @@ const Layout = (props) => {
       }
     };
   }, [isTabletView]);
-
-  useEffect(() => {
-    changeRootHeight();
-  }, [isBannerVisible]);
 
   useEffect(() => {
     const htmlEl = document.getElementsByTagName("html")[0];
@@ -185,6 +181,5 @@ export default inject(({ auth, bannerStore }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
     setIsTabletView: auth.settingsStore.setIsTabletView,
-    isBannerVisible: bannerStore.isBannerVisible,
   };
 })(observer(Layout));
