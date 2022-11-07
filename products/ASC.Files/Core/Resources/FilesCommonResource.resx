@@ -121,7 +121,7 @@
     <value>Outside portal</value>
   </data>
   <data name="AceStatusEnum_Comment" xml:space="preserve">
-    <value>Comment</value>
+    <value>Commentator</value>
   </data>
   <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
     <value>Custom Filter</value>
@@ -130,10 +130,10 @@
     <value>Editor</value>
   </data>
   <data name="AceStatusEnum_FillForms" xml:space="preserve">
-    <value>Form Filling</value>
+    <value>Form Filler</value>
   </data>
   <data name="AceStatusEnum_Read" xml:space="preserve">
-    <value>Read Only</value>
+    <value>Viewer</value>
   </data>
   <data name="AceStatusEnum_ReadWrite" xml:space="preserve">
     <value>Full Access</value>
@@ -142,7 +142,7 @@
     <value>Deny Access</value>
   </data>
   <data name="AceStatusEnum_Review" xml:space="preserve">
-    <value>Review</value>
+    <value>Reviewer</value>
   </data>
   <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
     <value>Room Admin</value>

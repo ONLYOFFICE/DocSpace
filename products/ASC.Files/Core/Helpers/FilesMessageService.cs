@@ -147,7 +147,7 @@ public class FilesMessageService
 
         if (entry.RootFolderType is FolderType.USER)
         {
-            return FilesUCResource.MyFiles;
+            return FilesUCResource.Personal;
         }
 
         var folderDao = _daoFactory.GetFolderDao<T>();

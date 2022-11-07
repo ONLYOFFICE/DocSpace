@@ -2509,8 +2509,10 @@ public class FileStorageService<T> //: IFileStorageService
                             {
                                 _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.UserDeletedFromRoom, name);
                             }
-
-                            _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.UserAppointedAccess, name, GetAccessString(ace.Access));
+                            else
+                            {
+                                _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.UserAppointedAccess, name, GetAccessString(ace.Access));
+                            }
                         }
                         else
                         {

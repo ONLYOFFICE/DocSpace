@@ -70,7 +70,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Comment.
+        ///   Looks up a localized string similar to Commentator.
         /// </summary>
         public static string AceStatusEnum_Comment {
             get {
@@ -97,7 +97,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Form Filling.
+        ///   Looks up a localized string similar to Form Filler.
         /// </summary>
         public static string AceStatusEnum_FillForms {
             get {
@@ -106,7 +106,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Read Only.
+        ///   Looks up a localized string similar to Viewer.
         /// </summary>
         public static string AceStatusEnum_Read {
             get {
@@ -133,7 +133,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Review.
+        ///   Looks up a localized string similar to Reviewer.
         /// </summary>
         public static string AceStatusEnum_Review {
             get {
