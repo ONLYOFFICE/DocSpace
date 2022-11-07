@@ -5,11 +5,11 @@ import Link from "@docspace/components/link";
 import { StyledUserNameLink } from "../../styles/history";
 
 const HistoryBlockUser = ({ user, withComma, openUser }) => {
-  const username = user.displayName || user.email;
+  const username = user.displayName;
   const history = useHistory();
 
   const onUserClick = () => {
-    openUser(user.id, history);
+    openUser(user, history);
   };
 
   return (

@@ -44,14 +44,16 @@ public static class CustomHealthCheck
         {
             hcBuilder.AddMySql(connectionString.ConnectionString,
                                name: "mysqldb",
-                               tags: new string[] { "mysqldb" });
+                               tags: new string[] { "mysqldb" },
+                               timeout: new TimeSpan(0, 0, 15));
         }
 
         if (string.Equals(connectionString.ProviderName, "Npgsql"))
         {
             hcBuilder.AddNpgSql(connectionString.ConnectionString,
                                name: "postgredb",
-                               tags: new string[] { "postgredb" });
+                               tags: new string[] { "postgredb" },
+                               timeout: new TimeSpan(0, 0, 15));
         }
 
         var kafkaSettings = configurationExtension.GetSetting<KafkaSettings>("kafka");
@@ -61,7 +63,9 @@ public static class CustomHealthCheck
 
             hcBuilder.AddKafka(new ProducerConfig(clientConfig),
                            name: "kafka",
-                           tags: new string[] { "kafka" });
+                           tags: new string[] { "kafka" },
+                           timeout: new TimeSpan(0,0,15)
+                           );
 
         }
 
@@ -88,7 +92,8 @@ public static class CustomHealthCheck
         {
             hcBuilder.AddRedis(redisConfiguration.ConfigurationOptions.ToString(),
                                name: "redis",
-                               tags: new string[] { "redis" });
+                               tags: new string[] { "redis" },
+                               timeout: new TimeSpan(0, 0, 15));
         }
 
         var rabbitMQConfiguration = configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
@@ -97,7 +102,8 @@ public static class CustomHealthCheck
         {
             hcBuilder.AddRabbitMQ(x => rabbitMQConfiguration.GetConnectionFactory(),
                               name: "rabbitMQ",
-                              tags: new string[] { "rabbitMQ" });
+                              tags: new string[] { "rabbitMQ" },
+                              timeout: new TimeSpan(0, 0, 15));
         }
 
         return services;

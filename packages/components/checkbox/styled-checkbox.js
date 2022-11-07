@@ -16,6 +16,7 @@ const StyledLabel = styled.label`
   .checkbox {
     margin-right: 12px;
     overflow: visible;
+    outline: none;
   }
 
   /* ${(props) =>

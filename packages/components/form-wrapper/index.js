@@ -23,10 +23,10 @@ const StyledWrapper = styled.div`
   @media ${hugeMobile} {
     padding: 0;
     border-radius: 0;
-    box-shadow: none;
+    box-shadow: none !important;
     max-width: 343px;
     min-width: 343px;
-    background: transparent;
+    background: transparent !important;
   }
 `;
 
