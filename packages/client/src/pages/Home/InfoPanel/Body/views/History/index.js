@@ -29,6 +29,7 @@ const History = ({
   getHistory,
   checkAndOpenLocationAction,
   openUser,
+  isVisitor,
 }) => {
   const [history, setHistory] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
@@ -149,6 +150,7 @@ const History = ({
                 feed.target &&
                 [feed.target, ...feed.groupedFeeds].map((user, i) => (
                   <HistoryBlockUser
+                    isVisitor={isVisitor}
                     key={user.id}
                     user={user}
                     withComma={i !== feed.groupedFeeds.length}
@@ -164,6 +166,7 @@ const History = ({
 };
 
 export default inject(({ auth, filesStore, filesActionsStore }) => {
+  const { userStore } = auth;
   const {
     selection,
     selectionParentRoom,
@@ -176,6 +179,9 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
   const { getHistory } = filesStore;
   const { checkAndOpenLocationAction } = filesActionsStore;
 
+  const { user } = userStore;
+  const isVisitor = user.isVisitor;
+
   return {
     personal,
     culture,
@@ -186,5 +192,6 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     getHistory,
     checkAndOpenLocationAction,
     openUser,
+    isVisitor,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations"])(observer(History)));
