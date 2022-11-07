@@ -3409,15 +3409,6 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} appointed {1}.
-        /// </summary>
-        public static string RoomUpdateAccess {
-            get {
-                return ResourceManager.GetString("RoomUpdateAccess", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Send.
         /// </summary>
         public static string SendActionType {
@@ -3936,6 +3927,15 @@ namespace ASC.AuditTrail {
         public static string UserAddedAvatar {
             get {
                 return ResourceManager.GetString("UserAddedAvatar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} appointed {1}.
+        /// </summary>
+        public static string UserAppointedAccess {
+            get {
+                return ResourceManager.GetString("UserAppointedAccess", resourceCulture);
             }
         }
         

@@ -1233,9 +1233,6 @@
   <data name="RoomUnarchived" xml:space="preserve">
     <value>Room unarchived</value>
   </data>
-  <data name="RoomUpdateAccess" xml:space="preserve">
-    <value>{0} appointed {1}</value>
-  </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Send</value>
   </data>
@@ -1409,6 +1406,9 @@
   </data>
   <data name="UserAddedAvatar" xml:space="preserve">
     <value>Users [{0}]. Avatar Added</value>
+  </data>
+  <data name="UserAppointedAccess" xml:space="preserve">
+    <value>{0} appointed {1}</value>
   </data>
   <data name="UserCol" xml:space="preserve">
     <value>User</value>
