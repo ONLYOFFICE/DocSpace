@@ -39,9 +39,7 @@ const sideInfoTabletStyle = css`
   margin: ${(props) => props.theme.rowContent.sideInfo.margin};
   ${commonCss};
   color: ${(props) => props.color && props.color};
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  ${truncateCss};
 `;
 
 const StyledRowContent = styled.div`
@@ -161,9 +159,6 @@ const TabletSideInfo = styled.div`
       : `
     @media ${tablet} {
       ${sideInfoTabletStyle}
-      .row-content_tablet-side-info {
-        background: red;
-      }
     }
   `}
 `;
