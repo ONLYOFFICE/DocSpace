@@ -105,8 +105,6 @@ const FilesRowContent = ({
     isRoom,
   } = item;
 
-  let tags = t(RoomsTypeTranslations[item.roomType]);
-
   return (
     <>
       <SimpleFilesRowContent
@@ -154,7 +152,7 @@ const FilesRowContent = ({
           truncate={true}
         >
           {isRooms
-            ? tags
+            ? t(RoomsTypeTranslations[item.roomType])
             : !fileExst && !contentLength && !providerKey && !isMobileOnly
             ? `${foldersCount} ${t("Translations:Folders")} | ${filesCount} ${t(
                 "Translations:Files"
