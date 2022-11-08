@@ -31,10 +31,37 @@ const Tag = ({
   const [openDropdown, setOpenDropdown] = React.useState(false);
 
   const tagRef = React.useRef(null);
+  const isMountedRef = React.useRef(true);
 
-  const onClickOutside = () => {
-    setOpenDropdown(false);
-  };
+  React.useEffect(() => {
+    if (openDropdown) {
+      return document.addEventListener("click", onClickOutside);
+    }
+
+    document.removeEventListener("click", onClickOutside);
+    return () => {
+      document.removeEventListener("click", onClickOutside);
+    };
+  }, [openDropdown, onClickOutside]);
+
+  React.useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  const onClickOutside = React.useCallback(
+    (e) => {
+      if (
+        e?.target?.className?.includes("advanced-tag") ||
+        !isMountedRef.current
+      )
+        return;
+
+      if (openDropdown) setOpenDropdown(false);
+    },
+    [openDropdown]
+  );
 
   const openDropdownAction = (e) => {
     if (e?.target?.className?.includes("backdrop-active")) return;
@@ -63,19 +90,21 @@ const Tag = ({
   return (
     <>
       {!!advancedOptions ? (
-        <StyledTag
-          id={id}
-          className={`tag advanced-tag ${className ? ` ${className}` : ""}`}
-          style={style}
-          ref={tagRef}
-          onClick={openDropdownAction}
-          isDisabled={isDisabled}
-          isDefault={isDefault}
-          isLast={isLast}
-        >
-          <Text className={"tag-text"} font-size={"13px"} noSelect>
-            ...
-          </Text>
+        <>
+          <StyledTag
+            id={id}
+            className={`tag advanced-tag ${className ? ` ${className}` : ""}`}
+            style={style}
+            ref={tagRef}
+            onClick={openDropdownAction}
+            isDisabled={isDisabled}
+            isDefault={isDefault}
+            isLast={isLast}
+          >
+            <Text className={"tag-text"} font-size={"13px"} noSelect>
+              ...
+            </Text>
+          </StyledTag>
           <DropDown
             open={openDropdown}
             forwardedRef={tagRef}
@@ -105,7 +134,7 @@ const Tag = ({
               </DropDownItem>
             ))}
           </DropDown>
-        </StyledTag>
+        </>
       ) : (
         <StyledTag
           title={label}
