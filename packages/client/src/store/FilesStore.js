@@ -1414,15 +1414,24 @@ class FilesStore {
       }
 
       if (isArchiveFolder) {
-        roomOptions = this.removeOptions(roomOptions, [
-          "edit-room",
-          "invite-users-to-room",
-          "pin-room",
-          "unpin-room",
-          "archive-room",
-          "separator1",
-          "room-info",
-        ]);
+        if (!canArchive) {
+          roomOptions = this.removeOptions(roomOptions, [
+            "edit-room",
+            "invite-users-to-room",
+            "archive-room",
+            "separator1",
+          ]);
+        } else {
+          roomOptions = this.removeOptions(roomOptions, [
+            "edit-room",
+            "invite-users-to-room",
+            "pin-room",
+            "unpin-room",
+            "archive-room",
+            "separator1",
+            "room-info",
+          ]);
+        }
       } else {
         roomOptions = this.removeOptions(roomOptions, [
           "delete",
@@ -1664,6 +1673,10 @@ class FilesStore {
 
   getRoomMembers(id) {
     return api.rooms.getRoomMembers(id);
+  }
+
+  updateRoomMemberRole(id, data) {
+    return api.rooms.updateRoomMemberRole(id, data);
   }
 
   getHistory(module, id) {

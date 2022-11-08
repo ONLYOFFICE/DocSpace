@@ -8,26 +8,26 @@ import Text from "@docspace/components/text";
 
 const StyledContactContainer = styled.div`
   display: flex;
-  width: max-content;
-  p {
-    margin-right: 4px;
+  width: 100%;
+  a {
+    margin-left: 4px;
   }
 `;
 
 const ContactContainer = ({ t, salesEmail, theme }) => {
   return (
     <StyledContactContainer>
-      <Text noSelect fontWeight={600}>
+      <Text as="span" noSelect fontWeight={600}>
         {t("ContactUs")}
+        <ColorTheme
+          tag="a"
+          themeId={ThemeType.Link}
+          fontWeight="600"
+          href={`mailto:${salesEmail}`}
+        >
+          {salesEmail}
+        </ColorTheme>
       </Text>
-      <ColorTheme
-        tag="a"
-        themeId={ThemeType.Link}
-        fontWeight="600"
-        href={`mailto:${salesEmail}`}
-      >
-        {salesEmail}
-      </ColorTheme>
     </StyledContactContainer>
   );
 };

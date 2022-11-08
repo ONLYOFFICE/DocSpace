@@ -3,7 +3,6 @@ import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import NoUserSelect from "../utils/commonStyles";
 import Base from "../themes/base";
-import { isDesktop } from "../utils/device";
 
 const activeCss = css`
   background-color: ${(props) =>
@@ -73,6 +72,29 @@ const hoverCss = css`
   }
 `;
 
+const loadingCss = css`
+  background-color: ${(props) =>
+    props.primary
+      ? props.theme.button.backgroundColor.primaryLoading
+      : props.theme.button.backgroundColor.grayLight};
+
+  color: ${(props) =>
+    props.primary
+      ? props.theme.button.color.primary
+      : props.theme.button.color.base};
+
+  ${(props) =>
+    props.primary
+      ? css`
+          border: ${(props) => props.theme.button.border.primaryLoading};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `
+      : css`
+          border: ${(props) => props.theme.button.border.baseLoading};
+          box-sizing: ${(props) => props.theme.button.boxSizing};
+        `}
+`;
+
 const disableCss = css`
   background-color: ${(props) =>
     props.primary
@@ -130,13 +152,8 @@ const ButtonWrapper = ({
 const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? "disabled" : "",
   tabIndex: props.tabIndex,
-  size:
-    props.size === "normal"
-      ? isDesktop()
-        ? "normalDesktop"
-        : "normalTouchscreen"
-      : props.size,
 }))`
+  position: relative;
   height: ${(props) => heightStyle(props)};
   font-size: ${(props) => fontSizeStyle(props)};
 
@@ -206,7 +223,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
         `)}
 
   ${(props) => props.isDisabled && disableCss}
-
+  ${(props) => props.isLoading && loadingCss}
 
     &:focus {
     outline: ${(props) => props.theme.button.outline};
@@ -221,42 +238,38 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     gap: 8px;
   }
 
-  .icon {
-    width: auto;
-    display: flex;
-    align-items: center;
-  }
-
   .loader {
     display: flex;
     justify-content: center;
     align-items: center;
-    svg {
-      stroke: ${(props) =>
-        props.primary
-          ? props.theme.button.loader.primary
-          : props.theme.button.loader.base};
-    }
-    vertical-align: ${(props) =>
-      props.size === "normalTouchscreen" || props.size === "extraSmall"
-        ? props.theme.button.middleVerticalAlign
-        : props.size === "small"
-        ? props.theme.button.bottomVerticalAlign
-        : props.theme.button.topVerticalAlign};
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: ${(props) =>
+      props.primary
+        ? props.theme.button.backgroundColor.primaryLoading
+        : props.theme.button.backgroundColor.baseLoading};
+  }
+
+  .icon {
+    width: auto;
+    display: flex;
+    align-items: center;
   }
 `;
 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf([
-    "extraSmall",
-    "small",
-    "normal",
-    "medium",
-    "normalDesktop",
-    "normalTouchscreen",
-  ]),
+  size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 

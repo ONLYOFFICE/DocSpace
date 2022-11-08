@@ -1,35 +1,14 @@
-/*
- *
- * (c) Copyright Ascensio System Limited 2010-2020
- *
- * This program is freeware. You can redistribute it and/or modify it under the terms of the GNU 
- * General Public License (GPL) version 3 as published by the Free Software Foundation (https://www.gnu.org/copyleft/gpl.html). 
- * In accordance with Section 7(a) of the GNU GPL its Section 15 shall be amended to the effect that 
- * Ascensio System SIA expressly excludes the warranty of non-infringement of any third-party rights.
- *
- * THIS PROGRAM IS DISTRIBUTED WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF MERCHANTABILITY OR
- * FITNESS FOR A PARTICULAR PURPOSE. For more details, see GNU GPL at https://www.gnu.org/copyleft/gpl.html
- *
- * You can contact Ascensio System SIA by email at sales@onlyoffice.com
- *
- * The interactive user interfaces in modified source and object code versions of ONLYOFFICE must display 
- * Appropriate Legal Notices, as required under Section 5 of the GNU GPL version 3.
- *
- * Pursuant to Section 7 § 3(b) of the GNU GPL you must retain the original ONLYOFFICE logo which contains 
- * relevant author attributions when distributing the software. If the display of the logo in its graphic 
- * form is not reasonably feasible for technical reasons, you must include the words "Powered by ONLYOFFICE" 
- * in every copy of the program you distribute. 
- * Pursuant to Section 7 § 3(e) we decline to grant you any rights under trademark law for use of our trademarks.
- *
-*/
+const winston = require("winston"),
+      WinstonCloudWatch = require('winston-cloudwatch');
 
+require("winston-daily-rotate-file");
 
-const winston = require('winston');
-require('winston-daily-rotate-file');
-
-const path = require('path');
-const config = require('../config');
-const fs = require('fs');
+const path = require("path");
+const config = require("../config");
+const fs = require("fs");
+const os = require("os");
+const { randomUUID } = require('crypto');
+const date = require('date-and-time');
 
 let logpath = config.get("logPath");
 if(logpath != null)
@@ -39,28 +18,97 @@ if(logpath != null)
         logpath = path.join(__dirname, "..", logpath);
     }
 }
-const fileName = logpath ?  path.join(logpath, "web.shorturl.%DATE%.log") : path.join(__dirname, "..", "Logs", "web.shorturl.%DATE%.log");
+
+const fileName = logpath ? path.join(logpath, "web.shorturl.%DATE%.log") : path.join(__dirname, "..", "..", "..", "Logs", "web.shorturl.%DATE%.log");
 const dirName = path.dirname(fileName);
 
+const aws = config.get("aws");
+
+const accessKeyId = aws.accessKeyId; 
+const secretAccessKey = aws.secretAccessKey; 
+const awsRegion = aws.region; 
+const logGroupName = aws.logGroupName;
+const logStreamName = aws.logStreamName;
+
 if (!fs.existsSync(dirName)) {
-    fs.mkdirSync(dirName);
+  fs.mkdirSync(dirName);
 }
 
-const fileTransport = new (winston.transports.DailyRotateFile)({
+var options = {
+  file: {
     filename: fileName,
     datePattern: "MM-DD",
     handleExceptions: true,
     humanReadableUnhandledException: true,
     zippedArchive: true,
-    maxSize: '50m',
-    maxFiles: '30d'
-});
+    maxSize: "50m",
+    maxFiles: "30d",
+    json: true,
+  },
+  console: {
+    level: "debug",
+    handleExceptions: true,
+    json: false,
+    colorize: true,
+  },
+  cloudWatch: {
+    name: 'aws',
+    level: "debug",
+    logStreamName: () => {
+      const hostname = os.hostname();
+      const now = new Date();
+      const guid = randomUUID();
+      const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
+      
+      return logStreamName.replace("${hostname}", hostname)
+                          .replace("${applicationContext}", "UrlShortener")                  
+                          .replace("${guid}", guid)
+                          .replace("${date}", dateAsString);      
+    },
+    awsRegion: awsRegion,
+    jsonMessage: true,
+    awsOptions: {
+      credentials: {
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey
+      }
+    }
+  }
+};
 
-const transports = [
-    new (winston.transports.Console)(),
-    fileTransport
+//const fileTransport = new winston.transports.DailyRotateFile(options.file);
+
+let transports = [
+  new winston.transports.Console(options.console),
+  new winston.transports.DailyRotateFile(options.file)  
 ];
 
-winston.exceptions.handle(fileTransport);
+if (aws != null && aws.accessKeyId !== '')
+{
+  transports.push(new WinstonCloudWatch(options.cloudWatch));
+}
 
-module.exports = winston.createLogger({ transports: transports, exitOnError: false });
+//winston.exceptions.handle(fileTransport);
+
+const customFormat = winston.format(info => {
+  const now = new Date();
+
+  info.date = date.format(now, 'YYYY-MM-DD HH:mm:ss');
+  info.applicationContext = "UrlShortener";
+  info.level = info.level.toUpperCase();
+
+  const hostname = os.hostname();
+
+  info["instance-id"] = hostname;
+
+  return info;
+})();
+
+module.exports = new winston.createLogger({
+  format: winston.format.combine(
+    customFormat,
+    winston.format.json()    
+  ),
+  transports: transports,
+  exitOnError: false,
+});

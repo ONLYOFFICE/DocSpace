@@ -835,7 +835,7 @@ class FilesActionStore {
     }
   };
 
-  setPinAction = (action, id) => {
+  setPinAction = (action, id, t) => {
     const { pinRoom, unpinRoom, updateRoomPin, setSelected } = this.filesStore;
 
     const { selection, setSelection } = this.authStore.infoPanelStore;
@@ -859,7 +859,7 @@ class FilesActionStore {
             }
           })
           .then(() => setSelected("close"))
-          .finally(() => toastr.success("Room pinned"));
+          .finally(() => toastr.success(t("RoomPinned")));
       case "unpin":
         items.forEach((item) => {
           updateRoomPin(item);
@@ -873,7 +873,7 @@ class FilesActionStore {
             }
           })
           .then(() => setSelected("close"))
-          .finally(() => toastr.success("Room unpinned"));
+          .finally(() => toastr.success(t("RoomUnpinned")));
       default:
         return;
     }
@@ -1558,6 +1558,22 @@ class FilesActionStore {
     const archive = this.getOption("unarchive", t);
     const deleteOption = this.getOption("delete-room", t);
     const showOption = this.getOption("show-info", t);
+
+    const { selection } = this.filesStore;
+    const { canArchiveRoom } = this.accessRightsStore;
+
+    const canArchive = selection.map((s) => canArchiveRoom(s)).filter((s) => s);
+
+    if (canArchive.length <= 0) {
+      let pinName = "unpin";
+
+      selection.forEach((item) => {
+        if (!item.pinned) pinName = "pin";
+      });
+
+      const pin = this.getOption(pinName, t);
+      itemsCollection.set(pinName, pin);
+    }
 
     itemsCollection
       .set("unarchive", archive)

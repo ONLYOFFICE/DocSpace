@@ -63,5 +63,12 @@
     "image-path": "images",
     "rebranding": "rebranding",
     "https":"certs"
-  }
+  },
+	"aws":{
+		"accessKeyId": "",
+		"secretAccessKey": "",
+		"region": "",
+		"logGroupName": "/asc/docspace/cluster/cluster_name/general",
+		"logStreamName": "${hostname} - ${applicationContext} - ${date} - ${guid}"
+	}
 }

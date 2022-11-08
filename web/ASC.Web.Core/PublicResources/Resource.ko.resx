@@ -118,9 +118,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>새 암호가 올바르지 않습니다. 이 포함되어야합니다</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>이 포함되어야합니다</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>숫자</value>
   </data>

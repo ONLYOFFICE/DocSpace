@@ -160,7 +160,7 @@ public class Builder<T>
                 return;
             }
 
-            if (file.ThumbnailStatus != ASC.Files.Core.Thumbnail.Waiting)
+            if (file.ThumbnailStatus != Core.Thumbnail.Waiting)
             {
                 _logger.InformationGenerateThumbnail(fileData.FileId.ToString());
 
@@ -171,7 +171,7 @@ public class Builder<T>
 
             if (!CanCreateThumbnail(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
             {
-                file.ThumbnailStatus = ASC.Files.Core.Thumbnail.NotRequired;
+                file.ThumbnailStatus = Core.Thumbnail.NotRequired;
                 foreach (var size in _thumbnailSettings.Sizes)
                 {
                     await fileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
@@ -206,7 +206,7 @@ public class Builder<T>
             _logger.ErrorGenerateThumbnail(fileData.FileId.ToString(), exception);
             if (file != null)
             {
-                file.ThumbnailStatus = ASC.Files.Core.Thumbnail.Error;
+                file.ThumbnailStatus = Core.Thumbnail.Error;
                 foreach (var size in _thumbnailSettings.Sizes)
                 {
                     await fileDao.SaveThumbnailAsync(file, null, size.Width, size.Height);
@@ -263,14 +263,14 @@ public class Builder<T>
                 {
                     if (exception.InnerException != null)
                     {
-                        var documentServiceException = exception.InnerException as DocumentService.DocumentServiceException;
+                        var documentServiceException = exception.InnerException as DocumentServiceException;
                         if (documentServiceException != null)
                         {
-                            if (documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.ConvertPassword)
+                            if (documentServiceException.Code == DocumentServiceException.ErrorCode.ConvertPassword)
                             {
                                 throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Encrypted file.", file.Id));
                             }
-                            if (documentServiceException.Code == DocumentService.DocumentServiceException.ErrorCode.Convert)
+                            if (documentServiceException.Code == DocumentServiceException.ErrorCode.Convert)
                             {
                                 throw new Exception(string.Format("MakeThumbnail: FileId: {0}. Could not convert.", file.Id));
                             }
@@ -303,14 +303,14 @@ public class Builder<T>
 
         var fileExtension = file.ConvertedExtension;
         var docKey = _documentServiceHelper.GetDocKey(file);
-        var thumbnail = new DocumentService.ThumbnailData
+        var thumbnail = new ThumbnailData
         {
             Aspect = 2,
             First = true,
             //Height = height,
             //Width = width
         };
-        var spreadsheetLayout = new DocumentService.SpreadsheetLayout
+        var spreadsheetLayout = new SpreadsheetLayout
         {
             IgnorePrintArea = true,
             //Orientation = "landscape", // "297mm" x "210mm"
@@ -318,14 +318,14 @@ public class Builder<T>
             FitToWidth = width,
             Headings = false,
             GridLines = false,
-            Margins = new DocumentService.SpreadsheetLayout.LayoutMargins
+            Margins = new SpreadsheetLayout.LayoutMargins
             {
                 Top = "0mm",
                 Right = "0mm",
                 Bottom = "0mm",
                 Left = "0mm"
             },
-            PageSize = new DocumentService.SpreadsheetLayout.LayoutPageSize
+            PageSize = new SpreadsheetLayout.LayoutPageSize
             {
             }
         };
