@@ -105,15 +105,7 @@ const FilesRowContent = ({
     isRoom,
   } = item;
 
-  let tags = null;
-
-  if (isRoom) {
-    if (item.tags.length > 0) {
-      tags = item?.tags.join(" | ");
-    } else {
-      tags = t(RoomsTypeTranslations[item.roomType]);
-    }
-  }
+  let tags = t(RoomsTypeTranslations[item.roomType]);
 
   return (
     <>
@@ -139,18 +131,18 @@ const FilesRowContent = ({
           {badgesComponent}
           {!isRoom && !isRooms && quickButtons}
         </div>
-        {!isRoom && (
-          <Text
-            containerMinWidth="200px"
-            containerWidth="15%"
-            fontSize="12px"
-            fontWeight={400}
-            // color={sideColor}
-            className="row_update-text"
-          >
-            {updatedDate && updatedDate}
-          </Text>
-        )}
+
+        <Text
+          containerMinWidth="200px"
+          containerWidth="15%"
+          fontSize="12px"
+          fontWeight={400}
+          // color={sideColor}
+          className="row_update-text"
+        >
+          {updatedDate && updatedDate}
+        </Text>
+
         <Text
           containerMinWidth="90px"
           containerWidth="10%"
