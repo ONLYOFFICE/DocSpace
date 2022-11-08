@@ -57,8 +57,8 @@ module.exports = {
 		"accessKeyId": "",
 		"secretAccessKey": "",
 		"region": "",
-		"logGroupName": "/docspace/ASC.WebDav/instances/${instance-id}/general",
-		"logStreamName": "${guid} - ${date}"
+		"logGroupName": "/asc/docspace/cluster/cluster_name/general",
+		"logStreamName": "${hostname} - ${applicationContext} - ${date} - ${guid}"
 	},
 
   method: {
