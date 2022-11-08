@@ -97,7 +97,7 @@ const withHotkeys = (Component) => {
     };
 
     const onCreateRoom = () => {
-      if (!isVisitor) {
+      if (!isVisitor && isRoomsFolder) {
         const event = new Event(Events.ROOM_CREATE);
         window.dispatchEvent(event);
       }
