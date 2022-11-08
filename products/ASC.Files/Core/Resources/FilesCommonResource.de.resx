@@ -155,9 +155,6 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Aufgehoben</value>
   </data>
-  <data name="EditorMentions" xml:space="preserve">
-    <value>Bei der Erwähnung im Dokument benachrichtigen</value>
-  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Ungültige Anfrage</value>
   </data>
@@ -166,9 +163,6 @@
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
     <value>Umwandlung dauert zu viel Zeit.</value>
-  </data>
-  <data name="ErrorMassage_CreateNewFolderInTrash" xml:space="preserve">
-    <value>Unmöglich Ordner im Papierkorb zu erstellen</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
     <value>Fehler in Dokumnetendienstleistungen aufgetreten</value>
@@ -198,9 +192,6 @@
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
     <value>Datei größer als {0} wird nicht verschoben </value>
   </data>
-  <data name="ErrorMassage_FileSizeZip" xml:space="preserve">
-    <value>Die Datei mit der Größe höher als {0} wird nicht archiviert</value>
-  </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
     <value>Unmöglich das Verzeichnis in sein Unterverzeichnis zu kopieren</value>
   </data>
@@ -213,9 +204,6 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Die Datei ist vom anderen Benutzer gesperrt</value>
   </data>
-  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>Es gibt keinen verfügbaren Account, um eine Nachricht zu senden. Greifen Sie auf das Mail zu und wählen Sie die Mailbox ein.</value>
-  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Mindestens {0} E-Mail-Mitteilungen konnten nicht gesendet werden. Gehen Sie in das Modul "E-Mail", um zu erfahren, was der Grund für den Fehler sein könnte.</value>
   </data>
@@ -224,9 +212,6 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Das Dateiformat wird nicht unterstützt</value>
-  </data>
-  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>Die Aktion wurde abgebrochen</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Der Autor der Speicherung ist unbekannt</value>
@@ -341,31 +326,6 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>eigene sowie freigegebene Dokumente mit den entsprechenden Zugriffsrechten erstellen und bearbeiten|Zugriff zum Durchsehen/Bearbeiten den anderen Portalbenutzern für Dokumente und Ordner gewähren|Dropbox-, Box- und sonstige Konten mit der Sektion 'Meine Dokumente' verknüpfen</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} entfernt</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Suche</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Bei der Freigabe der Ordner benachrichtigen</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Sobald das Dokument via DocuSign signiert ist, bitte benachrichtigen</value>
-  </data>
-  <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Sobald das Dokument in DocuSign seinen Status geändert hat, bitte benachrichtigen
-</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Bei der Freigabe der Dokumente benachrichtigen</value>
-  </data>
-  <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Sobald der E-Mail Versand vollständig ist, bitte benachrichtigen</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Dokumente von {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Vorname</value>

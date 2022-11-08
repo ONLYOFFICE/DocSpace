@@ -1559,6 +1559,22 @@ class FilesActionStore {
     const deleteOption = this.getOption("delete-room", t);
     const showOption = this.getOption("show-info", t);
 
+    const { selection } = this.filesStore;
+    const { canArchiveRoom } = this.accessRightsStore;
+
+    const canArchive = selection.map((s) => canArchiveRoom(s)).filter((s) => s);
+
+    if (canArchive.length <= 0) {
+      let pinName = "unpin";
+
+      selection.forEach((item) => {
+        if (!item.pinned) pinName = "pin";
+      });
+
+      const pin = this.getOption(pinName, t);
+      itemsCollection.set(pinName, pin);
+    }
+
     itemsCollection
       .set("unarchive", archive)
       .set("show-info", showOption)

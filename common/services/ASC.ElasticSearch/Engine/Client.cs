@@ -67,7 +67,7 @@ public class Client
                     .MaximumRetries(10)
                     .ThrowExceptions();
 
-                if (_logger.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Trace))
+                if (_logger.IsEnabled(LogLevel.Trace))
                 {
                     settings.DisableDirectStreaming().PrettyJson().EnableDebugMode(r =>
                     {

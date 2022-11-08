@@ -19,7 +19,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
             modelBuilder
                 .HasAnnotation("Npgsql:Enum:onlyoffice.enum_dbip_location", "ipv4,ipv6")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbipLocation", b =>

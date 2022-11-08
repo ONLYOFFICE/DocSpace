@@ -308,7 +308,7 @@ public class LdapUserManager
                         NotifyConstants.ActionLdapActivation,
                         null,
                         new[] { new DirectRecipient(ldapUserInfo.Email, null, new[] { ldapUserInfo.Email }, false) },
-                        new[] { ASC.Core.Configuration.Constants.NotifyEMailSenderSysName },
+                        new[] { Core.Configuration.Constants.NotifyEMailSenderSysName },
                         null,
                         new TagValue(NotifyConstants.TagUserName, ldapUserInfo.DisplayUserName(_displayUserSettingsHelper)),
                         new TagValue(NotifyConstants.TagUserEmail, ldapUserInfo.Email),

@@ -38,7 +38,7 @@ const ExamplesTemplate = (args) => {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "1fr 1fr 1fr 1fr",
+        gridTemplateColumns: "1fr 1fr 1fr 1fr 1fr",
         height: "100px",
       }}
     >
@@ -61,6 +61,7 @@ const ExamplesTemplate = (args) => {
         label={"Loading content, please wait."}
       />
       <Loader type={"rombs"} size={"40px"} />
+      <Loader type="track" style={{ width: "30px" }} />
     </div>
   );
 };

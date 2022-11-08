@@ -119,7 +119,7 @@ const RenameEvent = ({
     <Dialog
       t={t}
       visible={eventDialogVisible}
-      title={t("Home: Rename")}
+      title={t("Files:Rename")}
       startValue={startValue}
       onSave={onUpdate}
       onCancel={onCancel}

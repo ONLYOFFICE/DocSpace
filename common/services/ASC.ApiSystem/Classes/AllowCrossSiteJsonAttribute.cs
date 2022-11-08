@@ -26,7 +26,7 @@
 
 namespace ASC.ApiSystem.Classes;
 
-public class AllowCrossSiteJsonAttribute : System.Web.Http.Filters.ActionFilterAttribute
+public class AllowCrossSiteJsonAttribute : ActionFilterAttribute
 {
     public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
     {

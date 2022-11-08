@@ -58,9 +58,7 @@ const ActiveSessions = ({
   const onClickRemoveAllSessions = async () => {
     try {
       setLoading(true);
-      await removeAllSessions().then(() =>
-        getAllSessions().then((res) => setSessions(res.items))
-      );
+      await removeAllSessions().then((res) => console.log(res));
     } catch (error) {
       console.log(error);
     } finally {

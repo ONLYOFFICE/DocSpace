@@ -41,6 +41,13 @@ const CreationBlock = ({ t, textStyles, keyTextStyles, AltKey }) => {
           <Text {...keyTextStyles}>Shift + f</Text>
         </>
       </Row>
+
+      <Row className="hotkeys_row">
+        <>
+          <Text {...textStyles}>{t("Files:CreateRoom")}</Text>
+          <Text {...keyTextStyles}>Shift + r</Text>
+        </>
+      </Row>
     </>
   );
 };

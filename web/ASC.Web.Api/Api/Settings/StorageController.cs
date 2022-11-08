@@ -51,13 +51,13 @@ public class StorageController : BaseSettingsController
     private readonly EncryptionWorker _encryptionWorker;
     private readonly ILogger _log;
     private readonly IEventBus _eventBus;
-    private readonly ASC.Core.SecurityContext _securityContext;
+    private readonly SecurityContext _securityContext;
 
     public StorageController(
         ILoggerProvider option,
         ServiceClient serviceClient,
         MessageService messageService,
-        ASC.Core.SecurityContext securityContext,
+        SecurityContext securityContext,
         StudioNotifyService studioNotifyService,
         ApiContext apiContext,
         TenantManager tenantManager,
@@ -234,7 +234,7 @@ public class StorageController : BaseSettingsController
 
         _encryptionSettingsHelper.Save(settings);
 
-        _eventBus.Publish(new EncryptionDataStorageRequestedIntegration
+        _eventBus.Publish(new EncryptionDataStorageRequestedIntegrationEvent
         (
               encryptionSettings: new EncryptionSettings
               {
