@@ -302,6 +302,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                 type="page"
                 isHovered={false}
                 onClick={onClick}
+                id="link-forgot-password"
               >
                 {t("ForgotPassword")}
               </Link>
