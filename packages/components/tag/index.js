@@ -23,7 +23,6 @@ const Tag = ({
   onClick,
   advancedOptions,
   tagMaxWidth,
-  tagMinWidth,
   id,
   className,
   style,
@@ -96,7 +95,6 @@ const Tag = ({
             isDefault={isDefault}
             isLast={isLast}
             tagMaxWidth={tagMaxWidth}
-            tagMinWidth={tagMinWidth}
           >
             <Text className={"tag-text"} font-size={"13px"} noSelect>
               ...

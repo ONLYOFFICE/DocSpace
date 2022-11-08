@@ -106,7 +106,6 @@ const Tags = ({
         newTags.push(tagWithDropdown);
 
         newTags[newTags.length - 1].maxWidth = `35px`;
-        newTags[newTags.length - 1].minWidth = `35px`;
       }
 
       setRenderedTags(newTags);
