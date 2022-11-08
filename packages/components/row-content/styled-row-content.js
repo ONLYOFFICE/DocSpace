@@ -40,8 +40,8 @@ const sideInfoTabletStyle = css`
   ${commonCss};
   color: ${(props) => props.color && props.color};
   white-space: nowrap;
-  overflow: ${(props) => props.theme.rowContent.sideInfo.overflow};
-  text-overflow: ${(props) => props.theme.rowContent.sideInfo.textOverflow};
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const StyledRowContent = styled.div`
@@ -88,6 +88,7 @@ const MainContainerWrapper = styled.div`
     ${mainWrapperTabletStyle}
   }
 `;
+
 MainContainerWrapper.defaultProps = { theme: Base };
 
 const MainContainer = styled.div`
@@ -160,6 +161,9 @@ const TabletSideInfo = styled.div`
       : `
     @media ${tablet} {
       ${sideInfoTabletStyle}
+      .row-content_tablet-side-info {
+        background: red;
+      }
     }
   `}
 `;
