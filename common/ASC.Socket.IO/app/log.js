@@ -54,17 +54,15 @@ var options = {
   cloudWatch: {
     name: 'aws',
     level: "debug",
-    logGroupName: () => {
-      const hostname = os.hostname();
-
-      return logGroupName.replace("${instance-id}", hostname);      
-    },       
     logStreamName: () => {
+      const hostname = os.hostname();
       const now = new Date();
       const guid = randomUUID();
       const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
       
-      return logStreamName.replace("${guid}", guid)
+      return logStreamName.replace("${hostname}", hostname)
+                          .replace("${applicationContext}", "SocketIO")                  
+                          .replace("${guid}", guid)
                           .replace("${date}", dateAsString);      
     },
     awsRegion: awsRegion,

@@ -59,7 +59,7 @@ public class FileConverterQueue<T>
 
             var queueResult = new FileConverterOperationResult
             {
-                Source = System.Text.Json.JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
+                Source = JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
                 OperationType = FileOperationType.Convert,
                 Error = string.Empty,
                 Progress = 0,
@@ -470,7 +470,7 @@ public class FileConverter
 
         var operationResult = new FileConverterOperationResult
         {
-            Source = System.Text.Json.JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
+            Source = JsonSerializer.Serialize(new { id = file.Id, version = file.Version }),
             OperationType = FileOperationType.Convert,
             Error = string.Empty,
             Progress = 0,

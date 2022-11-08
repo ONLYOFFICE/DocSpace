@@ -31,16 +31,16 @@ public class FeedAggregatorService : FeedBaseService
 {
     protected override string LoggerName { get; set; } = "ASC.Feed.Aggregator";
 
-    private readonly SignalrServiceClient _signalrServiceClient;
+    private readonly SocketServiceClient _socketServiceClient;
 
     public FeedAggregatorService(
         FeedSettings feedSettings,
         IServiceScopeFactory serviceScopeFactory,
         ILoggerProvider optionsMonitor,
-        SignalrServiceClient signalrServiceClient)
+        SocketServiceClient socketServiceClient)
         : base(feedSettings, serviceScopeFactory, optionsMonitor)
     {
-        _signalrServiceClient = signalrServiceClient;
+        _socketServiceClient = socketServiceClient;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -200,7 +200,7 @@ public class FeedAggregatorService : FeedBaseService
                 }
             }
 
-            _signalrServiceClient.SendUnreadUsers(unreadUsers);
+            _socketServiceClient.SendUnreadUsers(unreadUsers);
 
             _logger.DebugTimeCollectingNews(DateTime.UtcNow - start);
         }

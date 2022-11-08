@@ -123,7 +123,6 @@ const StyledSimpleFilesRow = styled(Row)`
   .badges {
     display: flex;
     align-items: center;
-    margin-top: 2px;
     margin-bottom: 26px;
   }
 

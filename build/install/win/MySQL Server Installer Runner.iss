@@ -13,4 +13,4 @@ OutputBaseFilename="MySQL Installer Runner"
 OutputDir=/
 
 [Run]
-Filename: "{pf}\MySQL\MySQL Installer for Windows\MySQLInstallerConsole.exe"; Parameters: "community install server;{param:MYSQL_VERSION|5.7.25};X64:*:servertype=Server;passwd={param:PASSWORD_PROP} -silent"; Flags: runhidden
+Filename: "{pf}\MySQL\MySQL Installer for Windows\MySQLInstallerConsole.exe"; Parameters: "community install server;{param:MYSQL_VERSION|5.7.25};X64:*:servertype=Server;passwd={param:DB_PWD} -silent"; Flags: runhidden

@@ -16,7 +16,14 @@ import UploadBlock from "./UploadBlock";
 import { isMacOs } from "react-device-detect";
 import Base from "@docspace/components/themes/base";
 
-const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, theme, tReady }) => {
+const HotkeyPanel = ({
+  visible,
+  setHotkeyPanelVisible,
+  t,
+  theme,
+  tReady,
+  isVisitor,
+}) => {
   const scrollRef = useRef(null);
 
   const onClose = () => setHotkeyPanelVisible(false);
@@ -67,23 +74,27 @@ const HotkeyPanel = ({ visible, setHotkeyPanelVisible, t, theme, tReady }) => {
             keyTextStyles={keyTextStyles}
             AltKey={AltKey}
           />
-          <Heading className="hotkeys_sub-header">
-            {t("HotkeysCreatingObjects")}
-          </Heading>
-          <CreationBlock
-            t={t}
-            textStyles={textStyles}
-            keyTextStyles={keyTextStyles}
-            AltKey={AltKey}
-          />
-          <Heading className="hotkeys_sub-header">
-            {t("HotkeysUploadingObjects")}
-          </Heading>
-          <UploadBlock
-            t={t}
-            textStyles={textStyles}
-            keyTextStyles={keyTextStyles}
-          />
+          {!isVisitor && (
+            <>
+              <Heading className="hotkeys_sub-header">
+                {t("HotkeysCreatingObjects")}
+              </Heading>
+              <CreationBlock
+                t={t}
+                textStyles={textStyles}
+                keyTextStyles={keyTextStyles}
+                AltKey={AltKey}
+              />
+              <Heading className="hotkeys_sub-header">
+                {t("HotkeysUploadingObjects")}
+              </Heading>
+              <UploadBlock
+                t={t}
+                textStyles={textStyles}
+                keyTextStyles={keyTextStyles}
+              />
+            </>
+          )}
           <Heading className="hotkeys_sub-header">
             {t("HotkeysSelection")}
           </Heading>
@@ -141,11 +152,16 @@ export default inject(({ auth }) => {
     theme,
   } = auth.settingsStore;
 
+  const { isVisitor } = auth.userStore.user;
+
   return {
     visible: hotkeyPanelVisible,
     setHotkeyPanelVisible,
     theme,
+    isVisitor,
   };
 })(
-  withTranslation(["HotkeysPanel", "Article", "Common"])(observer(HotkeyPanel))
+  withTranslation(["HotkeysPanel", "Article", "Common", "Files"])(
+    observer(HotkeyPanel)
+  )
 );

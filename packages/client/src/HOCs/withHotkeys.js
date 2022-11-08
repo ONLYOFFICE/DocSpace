@@ -52,6 +52,10 @@ const withHotkeys = (Component) => {
       selection,
       setFavoriteAction,
       filesIsLoading,
+
+      isVisitor,
+      deleteRooms,
+      moveRoomsToArchive,
     } = props;
 
     const hotkeysFilter = {
@@ -75,7 +79,8 @@ const withHotkeys = (Component) => {
       isRecentFolder ||
       isTrashFolder ||
       isArchiveFolder ||
-      isRoomsFolder;
+      isRoomsFolder ||
+      isVisitor;
 
     const onCreate = (extension) => {
       if (folderWithNoAction) return;
@@ -89,6 +94,13 @@ const withHotkeys = (Component) => {
       event.payload = payload;
 
       window.dispatchEvent(event);
+    };
+
+    const onCreateRoom = () => {
+      if (!isVisitor && isRoomsFolder) {
+        const event = new Event(Events.ROOM_CREATE);
+        window.dispatchEvent(event);
+      }
     };
 
     useEffect(() => {
@@ -232,10 +244,26 @@ const withHotkeys = (Component) => {
       ...{ keyup: true },
     });
 
+    //Crete room
+    useHotkeys("Shift+r", () => onCreateRoom(), {
+      ...hotkeysFilter,
+      ...{ keyup: true },
+    });
+
     //Delete selection
     useHotkeys(
       "delete, shift+3, command+delete, command+Backspace",
       () => {
+        if (isArchiveFolder) {
+          isAvailableOption("unarchive") && deleteRooms(t);
+          return;
+        }
+
+        if (isRoomsFolder) {
+          isAvailableOption("archive") && moveRoomsToArchive(t);
+          return;
+        }
+
         if (isAvailableOption("delete")) {
           if (isRecentFolder) return;
 
@@ -365,10 +393,13 @@ const withHotkeys = (Component) => {
         deleteAction,
         backToParentFolder,
         setFavoriteAction,
+        deleteRooms,
+        moveRoomsToArchive,
       } = filesActionsStore;
 
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
       const { setHotkeyPanelVisible } = auth.settingsStore;
+      const { isVisitor } = auth.userStore.user;
 
       const {
         isFavoritesFolder,
@@ -422,6 +453,10 @@ const withHotkeys = (Component) => {
         selection,
         setFavoriteAction,
         filesIsLoading,
+
+        isVisitor,
+        deleteRooms,
+        moveRoomsToArchive,
       };
     }
   )(observer(WithHotkeys));
