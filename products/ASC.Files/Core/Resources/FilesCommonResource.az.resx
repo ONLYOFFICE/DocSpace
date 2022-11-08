@@ -151,9 +151,6 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Ləğv edildi</value>
   </data>
-  <data name="EditorMentions" xml:space="preserve">
-    <value>Sənəddə qeyd edildikdə bildir</value>
-  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Pis sorğu.</value>
   </data>
@@ -202,9 +199,6 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Hazırda fayl başqa istifadəçi tərəfindən kilidlənib.</value>
   </data>
-  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>Mesajı göndərmək üçün heç bir hesab yoxdur. Mail-ə daxil olub poçt qutunuzu əlaqələndirin.</value>
-  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Ən azı {0} poçt mesajı göndərmək alınmadı. Bunun səbəbini öyrənmək üçün Poçt moduluna daxil olun.</value>
   </data>
@@ -213,9 +207,6 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Üzr istəyirik, amma bu format dəstəklənmir</value>
-  </data>
-  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>Əməliyyat ləğv edildi</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Yadda saxlamanı icra edən şəxs bilinmir</value>
@@ -330,30 +321,6 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Öz sənədlərini və giriş icazəsi verilmiş sənədləri yaratmat və redaktə etmək|Sənədlərə digər istifadəçilərə oxumaq və redaktə etmək hüquqları vermək|Hesabları Dropbox'a, Box'a və 'Sənədlərim' bölməsində digər hesablara birləşdirmək</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} silindi</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Axtarış</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Qovluq paylaşılan zaman bildir</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Sənəd DocuSign ilə imzalandıqda bildir</value>
-  </data>
-  <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>DocuSign-dakı sənədin statusu dəyişdikdə bildir</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Paylaşılan zaman bildir</value>
-  </data>
-  <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Göndərmənin başa çatması barədə məlumat ver</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>{!user} {0} adlı şəxsin sənədləri</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Ad</value>

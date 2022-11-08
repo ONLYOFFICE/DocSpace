@@ -52,7 +52,6 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         UserManager userManager,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         FileConverter fileConverter,
-        FileOperationDtoHelper fileOperationDtoHelper,
         PathProvider pathProvider)
         : base(
             filesSettingsHelper,

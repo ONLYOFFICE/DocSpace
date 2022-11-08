@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import Link from "@docspace/components/link";
 import { StyledUserNameLink } from "../../styles/history";
-
+import Text from "@docspace/components/text";
 const HistoryBlockUser = ({ user, withComma, openUser, isVisitor }) => {
   const username = user.displayName;
   const history = useHistory();
@@ -12,13 +12,17 @@ const HistoryBlockUser = ({ user, withComma, openUser, isVisitor }) => {
     openUser(user, history);
   };
 
-  const onClickProp = isVisitor ? {} : { onClick: onUserClick };
-
   return (
-    <StyledUserNameLink key={user.id} className="user" isVisitor={isVisitor}>
-      <Link className="username link" {...onClickProp}>
-        {username}
-      </Link>
+    <StyledUserNameLink key={user.id} className="user">
+      {isVisitor ? (
+        <Text as="span" fontWeight={600}>
+          {username}
+        </Text>
+      ) : (
+        <Link className="username link" onClick={onUserClick}>
+          {username}
+        </Link>
+      )}
       {withComma ? "," : ""}
       {withComma && <div className="space"></div>}
     </StyledUserNameLink>

@@ -457,7 +457,7 @@ public class PortalController : ControllerBase
 
         var owner = _userManager.GetUsers(Tenant.OwnerId);
         var redirectLink = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#";
-        var parameters = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
+        var parameters = Convert.ToBase64String(Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                 "\",\"lastname\":\"" + owner.LastName +
                                                                                 "\",\"alias\":\"" + Tenant.Alias +
                                                                                 "\",\"email\":\"" + owner.Email + "\"}"));

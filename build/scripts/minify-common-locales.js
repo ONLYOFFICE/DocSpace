@@ -10,8 +10,11 @@ const localesDir = join(
   "locales"
 );
 
+//console.log("localesDir", localesDir);
+
 const getFileList = (dirName) => {
   let files = [];
+
   const items = readdirSync(dirName, { withFileTypes: true });
 
   for (const item of items) {
@@ -29,6 +32,8 @@ const files = getFileList(localesDir);
 
 files.forEach((filePath) => {
   try {
+    if (filePath.endsWith(".DS_Store")) return;
+
     let content = readFileSync(filePath);
     writeFileSync(filePath, minifyJson(content, filePath));
     //console.log(`File '${filePath}' minified`);
