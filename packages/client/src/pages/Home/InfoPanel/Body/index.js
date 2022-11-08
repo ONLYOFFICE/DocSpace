@@ -9,12 +9,11 @@ import { StyledInfoPanelBody } from "./styles/common";
 import { getRoomInfo } from "@docspace/common/api/rooms";
 
 const InfoPanelBodyContent = ({
-  t,
   selection,
   setSelection,
-  updateSelection,
-  setUpdateSelection,
+  calculateSelection,
   normalizeSelection,
+  isItemChanged,
   selectionParentRoom,
   setSelectionParentRoom,
   roomsView,
@@ -24,10 +23,7 @@ const InfoPanelBodyContent = ({
   getIsAccounts,
   getIsGallery,
   gallerySelected,
-  setBufferSelection,
   isRootFolder,
-  getIcon,
-  getFolderIcon,
   ...props
 }) => {
   const [selectedItems, setSelectedItems] = useState(props.selectedItems);
@@ -37,9 +33,7 @@ const InfoPanelBodyContent = ({
   const isRooms = getIsRooms();
   const isAccounts = getIsAccounts();
   const isGallery = getIsGallery();
-
   const isSeveralItems = props.selectedItems.length > 1;
-
   const isNoItem =
     (isGallery && !gallerySelected) ||
     (!selection?.title && !isSeveralItems && !isAccounts) ||
@@ -47,60 +41,24 @@ const InfoPanelBodyContent = ({
       selection?.isSelectedFolder &&
       !selection?.wasContextMenuSelection);
 
-  const viewHelper = new ViewHelper({
-    defaultProps: {
-      selection,
-      isFiles,
-      isRooms,
-      isAccounts,
-      isGallery,
-      isRootFolder,
-      personal: props.personal,
-      culture: props.culture,
-    },
-    detailsProps: {},
-    membersProps: {
-      selectionParentRoom,
-      setSelectionParentRoom,
-      selfId: props.selfId,
-      isOwner: props.isOwner,
-      isAdmin: props.isAdmin,
-      getRoomMembers: props.getRoomMembers,
-      changeUserType: props.changeUserType,
-      setInvitePanelOptions: props.setInvitePanelOptions,
-      canInviteUserInRoom: props.canInviteUserInRoom,
-    },
-    historyProps: {
-      selectedFolder: selectedFolder,
-    },
-    accountsProps: {
-      selfId: props.selfId,
-      isOwner: props.isOwner,
-      isAdmin: props.isAdmin,
-      changeUserType: props.changeUserType,
-      canChangeUserType: props.canChangeUserType,
-    },
-    galleryProps: {
-      getIcon,
-      gallerySelected,
-    },
-  });
-
-  const getSelection = () => {
-    return selectedItems.length === 0
-      ? normalizeSelection({
-          ...selectedFolder,
-          isSelectedFolder: true,
-          isSelectedItem: false,
-        })
-      : selectedItems.length === 1
-      ? normalizeSelection({
-          ...selectedItems[0],
-          isSelectedFolder: false,
-          isSelectedItem: true,
-        })
-      : [...Array(props.selectedItems.length).keys()];
+  const defaultProps = {
+    selection,
+    isFiles,
+    isRooms,
+    isAccounts,
+    isGallery,
+    isRootFolder,
+    isSeveralItems,
   };
+
+  const viewHelper = new ViewHelper({
+    defaultProps: defaultProps,
+    detailsProps: {},
+    membersProps: {},
+    historyProps: { selectedFolder },
+    accountsProps: {},
+    galleryProps: {},
+  });
 
   const getView = () => {
     if (isNoItem) return viewHelper.NoItemView();
@@ -123,39 +81,18 @@ const InfoPanelBodyContent = ({
 
   //////////////////////////////////////////////////////////
 
-  // Removing mark set with choosing item from context menu
-  // for it to updated after selctedItems or selectedFolder change
-  // (only for non-oforms items)
-  useEffect(() => {
-    if (selection && selection.isContextMenuSelection)
-      setSelection({ ...selection, isContextMenuSelection: false });
-  }, [selection]);
-
-  // Setting selection after selectedItems or selectedFolder update
-  useEffect(() => {
-    if (selection?.isContextMenuSelection) return;
-
-    const newSelection = getSelection();
-    if (
-      selection?.id === newSelection.id &&
-      selection?.isFolder === newSelection.isFolder &&
-      !newSelection.length
-    )
-      return;
-
-    setSelection(normalizeSelection(newSelection));
-  }, [selectedItems, selectedFolder]);
-
-  //////////////////////////////////////////////////////////
-
   // Updating SelectedItems only if
   // a) Length of an array changed
   // b) Single chosen item changed
   useEffect(() => {
     const selectedItemsLengthChanged =
       selectedItems.length !== props.selectedItems.length;
+
     const singleSelectedItemChanged =
-      selectedItems[0]?.id !== props.selectedItems[0]?.id;
+      selectedItems[0] &&
+      props.selectedItems[0] &&
+      isItemChanged(selectedItems[0], props.selectedItems[0]);
+
     if (selectedItemsLengthChanged || singleSelectedItemChanged)
       setSelectedItems(props.selectedItems);
   }, [props.selectedItems]);
@@ -163,26 +100,36 @@ const InfoPanelBodyContent = ({
   // Updating SelectedFolder only if
   //   a) Selected folder changed
   useEffect(() => {
-    if (selectedFolder.id !== props.selectedFolder.id)
-      setSelectedFolder(props.selectedFolder);
+    const selectedFolderChanged = isItemChanged(
+      selectedFolder,
+      props.selectedFolder
+    );
+    if (selectedFolderChanged) setSelectedFolder(props.selectedFolder);
   }, [props.selectedFolder]);
 
   // Updating selectionParentRoom after selectFolder change
   // if it is located in another room
   useEffect(async () => {
     if (!isRooms) return;
+    if (selection?.isRoom && roomsView === "members") return;
 
     const currentFolderRoomId =
       selectedFolder?.pathParts && selectedFolder.pathParts[1];
     const storeRoomId = selectionParentRoom?.id;
-
-    if (!currentFolderRoomId) return;
-    if (currentFolderRoomId === storeRoomId) return;
+    if (!currentFolderRoomId || currentFolderRoomId === storeRoomId) return;
 
     const newSelectionParentRoom = await getRoomInfo(currentFolderRoomId);
-    if (storeRoomId !== newSelectionParentRoom.id)
-      setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
+    if (storeRoomId === newSelectionParentRoom.id) return;
+
+    setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
   }, [selectedFolder]);
+
+  //////////////////////////////////////////////////////////
+
+  // Setting selection after selectedItems or selectedFolder update
+  useEffect(() => {
+    setSelection(calculateSelection());
+  }, [selectedItems, selectedFolder]);
 
   //////////////////////////////////////////////////////////
 
@@ -198,156 +145,52 @@ const InfoPanelBodyContent = ({
   return (
     <StyledInfoPanelBody>
       {!isNoItem && (
-        <ItemTitle
-          selection={selection}
-          selectionParentRoom={selectionParentRoom}
-          roomsView={roomsView}
-          isRooms={isRooms}
-          isAccounts={isAccounts}
-          isSeveralItems={isSeveralItems}
-          severalItemsLength={selectedItems.length}
-          isGallery={isGallery}
-          getIcon={getIcon}
-          setBufferSelection={setBufferSelection}
-          getContextOptions={props.getContextOptions}
-          getContextOptionActions={props.getContextOptionActions}
-          getUserContextOptions={props.getUserContextOptions}
-          selectedFolderId={selectedFolder.id}
-        />
+        <ItemTitle {...defaultProps} selectionLength={selectedItems.length} />
       )}
       {getView()}
     </StyledInfoPanelBody>
   );
 };
 
-export default inject(
-  ({
-    auth,
-    filesStore,
-    settingsStore,
-    filesActionsStore,
-    dialogsStore,
-    selectedFolderStore,
-    oformsStore,
-    contextOptionsStore,
-    peopleStore,
-    accessRightsStore,
-  }) => {
-    const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
-    const { personal, culture } = auth.settingsStore;
-    const { getIcon, getFolderIcon } = settingsStore;
-    const { onSelectItem, openLocationAction } = filesActionsStore;
-    const { changeType: changeUserType } = peopleStore;
-    const { setSharingPanelVisible, setInvitePanelOptions } = dialogsStore;
-    const { isRootFolder } = selectedFolderStore;
-    const { gallerySelected } = oformsStore;
-    const {
-      getFilesContextOptions: getContextOptionActions,
-    } = contextOptionsStore;
-    const { canChangeUserType, canInviteUserInRoom } = accessRightsStore;
+export default inject(({ auth, selectedFolderStore }) => {
+  const {
+    selection,
+    setSelection,
+    calculateSelection,
+    normalizeSelection,
+    isItemChanged,
+    selectionParentRoom,
+    setSelectionParentRoom,
+    roomsView,
+    fileView,
+    getIsFiles,
+    getIsRooms,
+    getIsAccounts,
+    getIsGallery,
+  } = auth.infoPanelStore;
 
-    const {
-      selection,
-      setSelection,
-      updateSelection,
-      setUpdateSelection,
-      selectionParentRoom,
-      setSelectionParentRoom,
-      normalizeSelection,
-      roomsView,
-      fileView,
-      getItemIcon,
-      getIsFiles,
-      getIsRooms,
-      getIsAccounts,
-      getIsGallery,
-    } = auth.infoPanelStore;
+  const { isRootFolder } = selectedFolderStore;
 
-    const {
-      selection: filesStoreSelection,
-      getFilesContextOptions: getContextOptions,
-      setBufferSelection,
-      getFolderInfo,
-      getShareUsers,
-      getRoomMembers,
-      getHistory,
-      getRoomHistory,
-      getFileHistory,
-      createThumbnail,
-    } = filesStore;
+  const selectedItems = auth.infoPanelStore.getSelectedItems();
+  const selectedFolder = auth.infoPanelStore.getSelectedFolder();
 
-    const {
-      selection: peopleStoreSelection,
-      bufferSelection: peopleStoreBufferSelection,
-    } = peopleStore.selectionStore;
-    const { getUserContextOptions } = peopleStore.contextOptionsStore;
+  return {
+    selection,
+    setSelection,
+    calculateSelection,
+    normalizeSelection,
+    isItemChanged,
+    setSelectionParentRoom,
+    roomsView,
+    fileView,
+    getIsFiles,
+    getIsRooms,
+    getIsAccounts,
+    getIsGallery,
 
-    const selectedFiles =
-      filesStoreSelection?.length > 0 ? [...filesStoreSelection] : [];
-    const selectedUsers = peopleStoreSelection.length
-      ? [...peopleStoreSelection]
-      : peopleStoreBufferSelection
-      ? [peopleStoreBufferSelection]
-      : [];
+    selectedItems,
+    selectedFolder,
 
-    const selectedItems = getIsAccounts() ? selectedUsers : selectedFiles;
-    const selectedFolder = {
-      ...selectedFolderStore,
-      isFolder: true,
-      isRoom: !!selectedFolderStore.roomType,
-    };
-
-    return {
-      selfId,
-      isOwner,
-      isAdmin,
-      personal,
-      culture,
-
-      selection,
-      setSelection,
-      updateSelection,
-      setUpdateSelection,
-      selectionParentRoom,
-      setSelectionParentRoom,
-      normalizeSelection,
-      roomsView,
-      fileView,
-      getItemIcon,
-      getIsFiles,
-      getIsRooms,
-      getIsAccounts,
-      getIsGallery,
-
-      selectedItems,
-      selectedFolder,
-      setBufferSelection,
-
-      getContextOptions,
-      getContextOptionActions,
-      getUserContextOptions,
-
-      getFolderInfo,
-      onSelectItem,
-      getShareUsers,
-      getRoomMembers,
-      changeUserType,
-      getHistory,
-      getRoomHistory,
-      getFileHistory,
-      setSharingPanelVisible,
-      setInvitePanelOptions,
-
-      getIcon,
-      getFolderIcon,
-      createThumbnail,
-      openLocationAction,
-
-      gallerySelected,
-
-      isRootFolder,
-      canChangeUserType,
-      canInviteUserInRoom,
-    };
-  }
-)(withRouter(observer(InfoPanelBodyContent)));
+    isRootFolder,
+  };
+})(withRouter(observer(InfoPanelBodyContent)));

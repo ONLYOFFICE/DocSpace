@@ -18,7 +18,7 @@ namespace ASC.Migrations.PostgreSql.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
@@ -269,13 +269,6 @@ namespace ASC.Migrations.PostgreSql.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("tenant_id")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<bool>("BackupMail")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(10)
-                        .HasColumnType("boolean")
-                        .HasColumnName("backup_mail")
-                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("BackupsStored")
                         .HasMaxLength(10)

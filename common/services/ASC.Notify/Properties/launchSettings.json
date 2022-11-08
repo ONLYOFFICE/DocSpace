@@ -8,6 +8,7 @@
         "log__name": "notify",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
+        "core__eventBus__subscriptionClientName": "asc_event_bus_notify_queue",
         "ASPNETCORE_URLS": "http://localhost:5005",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

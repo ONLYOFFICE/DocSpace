@@ -133,9 +133,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Uusi salasana on virheellinen. Sen on sisällettävä</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Sen on sisällettävä</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>numerot</value>
   </data>

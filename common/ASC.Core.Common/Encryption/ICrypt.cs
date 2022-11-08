@@ -26,6 +26,7 @@
 
 namespace ASC.Core.Encryption;
 
+[Transient]
 public interface ICrypt
 {
     byte Version { get; }

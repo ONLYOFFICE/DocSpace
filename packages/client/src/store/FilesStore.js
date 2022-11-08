@@ -1666,6 +1666,10 @@ class FilesStore {
     return api.rooms.getRoomMembers(id);
   }
 
+  updateRoomMemberRole(id, data) {
+    return api.rooms.updateRoomMemberRole(id, data);
+  }
+
   getHistory(module, id) {
     return api.rooms.getHistory(module, id);
   }

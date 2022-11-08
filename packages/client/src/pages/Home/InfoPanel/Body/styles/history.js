@@ -26,6 +26,7 @@ const StyledUserNameLink = styled.span`
     font-size: 13px;
     font-weight: 600;
     display: inline-block;
+    ${(props) => props.isVisitor && "cursor: default"};
   }
 
   .link {

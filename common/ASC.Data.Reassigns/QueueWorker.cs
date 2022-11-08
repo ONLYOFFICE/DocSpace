@@ -26,14 +26,6 @@
 
 namespace ASC.Data.Reassigns;
 
-public static class QueueWorker
-{
-    public static IDictionary<string, StringValues> GetHttpHeaders(HttpRequest httpRequest)
-    {
-        return httpRequest?.Headers;
-    }
-}
-
 public class QueueWorker<T> where T : DistributedTaskProgress
 {
     protected IServiceScopeFactory _serviceProvider;
