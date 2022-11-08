@@ -117,26 +117,35 @@ const Members = ({
     (member) => member.id === selfId
   );
 
+  const currCanEditUsers =
+    currentMember.isOwner ||
+    currentMember.isAdmin ||
+    currentMember?.access === ShareAccessRights.FullAccess ||
+    currentMember?.access === ShareAccessRights.RoomManager;
+
   return (
     <>
       <StyledUserTypeHeader>
         <Text className="title">
           {t("UsersInRoom")} : {members.inRoom.length}
         </Text>
-        <IconButton
-          className={"icon"}
-          title={t("Common:AddUsers")}
-          iconName="/static/images/person+.react.svg"
-          isFill={true}
-          onClick={onClickInviteUsers}
-          size={16}
-          isDisabled={isDisabledInvite}
-        />
+        {currCanEditUsers && (
+          <IconButton
+            className={"icon"}
+            title={t("Common:AddUsers")}
+            iconName="/static/images/person+.react.svg"
+            isFill={true}
+            onClick={onClickInviteUsers}
+            size={16}
+            isDisabled={isDisabledInvite}
+          />
+        )}
       </StyledUserTypeHeader>
 
       <StyledUserList>
         {Object.values(members.inRoom).map((user) => (
           <User
+            currCanEditUsers={currCanEditUsers}
             key={user.id}
             t={t}
             user={user}
@@ -154,14 +163,16 @@ const Members = ({
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
           <Text className="title">{t("ExpectPeople")}</Text>
-          <IconButton
-            className={"icon"}
-            title={t("Repeat invitation")}
-            iconName="/static/images/e-mail+.react.svg"
-            isFill={true}
-            onClick={onRepeatInvitation}
-            size={16}
-          />
+          {currCanEditUsers && (
+            <IconButton
+              className={"icon"}
+              title={t("Repeat invitation")}
+              iconName="/static/images/e-mail+.react.svg"
+              isFill={true}
+              onClick={onRepeatInvitation}
+              size={16}
+            />
+          )}
         </StyledUserTypeHeader>
       )}
 

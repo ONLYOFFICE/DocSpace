@@ -12,7 +12,7 @@ const User = ({
   membersHelper,
   currentMember,
   updateRoomMemberRole,
-
+  currCanEditUsers,
   selectionParentRoom,
   setSelectionParentRoom,
 }) => {
@@ -21,12 +21,6 @@ const User = ({
 
   const [userIsRemoved, setUserIsRemoved] = useState(false);
   if (userIsRemoved) return null;
-
-  const currCanEditUsers =
-    currentMember.isOwner ||
-    currentMember.isAdmin ||
-    currentMember?.access === ShareAccessRights.FullAccess ||
-    currentMember?.access === ShareAccessRights.RoomManager;
 
   const fullRoomRoleOptions = membersHelper.getOptionsByRoomType(
     selectionParentRoom.roomType,
