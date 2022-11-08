@@ -1,10 +1,7 @@
-import React, { useState, useCallback, useEffect } from "react";
-
-import styled, { css } from "styled-components";
-import { inject, observer } from "mobx-react";
+import React from "react";
+import styled from "styled-components";
 import Button from "@docspace/components/button";
 import { HexColorPicker, HexColorInput } from "react-colorful";
-import { isMobileOnly } from "react-device-detect";
 
 const StyledComponent = styled.div`
   .save-button {
@@ -105,7 +102,7 @@ const HexColorPickerComponent = (props) => {
           />
         </div>
 
-        <HexColorPicker color={color} onChange={setColor} />
+        <HexColorPicker color={color.toUpperCase()} onChange={setColor} />
 
         <div className="hex-button">
           <Button
