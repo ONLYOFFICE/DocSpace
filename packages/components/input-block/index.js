@@ -130,6 +130,7 @@ class InputBlock extends React.Component {
           <div className="append">
             <StyledIconBlock
               className="input-block-icon"
+              id={`icon-${id}`}
               //isDisabled={isDisabled}
               onClick={this.onIconClick}
               isClickable={typeof onIconClick === "function"}
