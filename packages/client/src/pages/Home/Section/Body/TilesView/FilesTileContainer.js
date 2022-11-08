@@ -55,19 +55,21 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
       const containerWidth = containerRef?.current.offsetWidth;
 
-      const tilesCount = Math.floor(containerWidth / 216);
+      // 16 its gap between tiles
+      // 232 its min value for tile + gap between next tile
+      const tilesCount = Math.floor((containerWidth + 16) / 232);
 
       const maxWidth = (containerWidth - (tilesCount - 1) * 16) / tilesCount;
 
       const { width } = node.getBoundingClientRect();
 
-      const currentWidth = width > maxWidth ? maxWidth : width;
+      const currentWidth = width > maxWidth || width === 0 ? maxWidth : width;
 
       const size = getThumbSize(currentWidth);
 
       const widthWithoutPadding = Math.floor(currentWidth) - 36;
 
-      const columns = Math.floor(widthWithoutPadding / 80);
+      const columns = Math.floor(widthWithoutPadding / 100);
 
       if (tileWidth !== widthWithoutPadding) {
         setTileWidth(widthWithoutPadding);
@@ -97,7 +99,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
         tileRef.current = node;
 
         elementResizeDetector.listenTo(node, onResize);
-      }, 100);
+      }, 0);
     }
   }, []);
 
