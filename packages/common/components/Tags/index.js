@@ -53,7 +53,7 @@ const Tags = ({
             (tags.length - thirdPartyTagCount) * 4) /
           (tags.length - thirdPartyTagCount);
 
-        const maxWidthPercent = Math.ceil(
+        const maxWidthPercent = Math.floor(
           (currentTagMaxWidth / containerWidth) * 100
         );
 
@@ -81,7 +81,7 @@ const Tags = ({
         const currentTagMaxWidth =
           (containerWidth - columnCount * 4 - 35) / columnCount;
 
-        const maxWidthPercent = Math.ceil(
+        const maxWidthPercent = Math.floor(
           (currentTagMaxWidth / containerWidth) * 100
         );
 
@@ -103,8 +103,8 @@ const Tags = ({
           }
         }
 
-        newTags.push(tagWithDropdown);
         newTags[newTags.length - 1].maxWidth = `35px`;
+        newTags[newTags.length - 1].minWidth = `35px`;
       }
 
       setRenderedTags(newTags);
@@ -130,6 +130,7 @@ const Tags = ({
             label={tag.label}
             advancedOptions={tag.advancedOptions}
             tagMaxWidth={tag.maxWidth}
+            tagMinWidth={tag.minWidth}
             isNewTag={false}
             onClick={onSelectTag}
             isLast={index === renderedTags.length - 1}
