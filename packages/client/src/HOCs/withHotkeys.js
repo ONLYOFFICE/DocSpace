@@ -79,7 +79,8 @@ const withHotkeys = (Component) => {
       isRecentFolder ||
       isTrashFolder ||
       isArchiveFolder ||
-      isRoomsFolder;
+      isRoomsFolder ||
+      isVisitor;
 
     const onCreate = (extension) => {
       if (folderWithNoAction) return;
