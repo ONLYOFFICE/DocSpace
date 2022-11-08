@@ -50,18 +50,12 @@ const Tag = ({
     };
   }, []);
 
-  const onClickOutside = React.useCallback(
-    (e) => {
-      if (
-        e?.target?.className?.includes("advanced-tag") ||
-        !isMountedRef.current
-      )
-        return;
+  const onClickOutside = React.useCallback((e) => {
+    if (e?.target?.className?.includes("advanced-tag") || !isMountedRef.current)
+      return;
 
-      if (openDropdown) setOpenDropdown(false);
-    },
-    [openDropdown]
-  );
+    setOpenDropdown(false);
+  }, []);
 
   const openDropdownAction = (e) => {
     if (e?.target?.className?.includes("backdrop-active")) return;
