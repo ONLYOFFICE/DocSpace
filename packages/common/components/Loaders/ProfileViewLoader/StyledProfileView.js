@@ -1,66 +1,43 @@
 import styled from "styled-components";
 import { desktop, tablet } from "@docspace/components/utils/device";
 
-const StyledBox1 = styled.div`
-  display: grid;
-  grid-template-columns: 160px 1fr;
-  grid-template-rows: 1fr;
-  grid-column-gap: 32px;
+const StyledWrapper = styled.div`
+  width: 660px;
 
-  @media (max-width: 428px) {
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
-  }
-  padding-bottom: 12px;
-`;
-
-const StyledBox2 = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 160px 36px;
-  grid-row-gap: 12px;
-
-  padding-bottom: 40px;
-
-  @media (max-width: 428px) {
-    padding-bottom: 32px;
-  }
-`;
-
-const StyledBox3 = styled.div`
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: repeat(9, 1fr);
-  grid-row-gap: 8px;
-  padding-bottom: 40px;
-`;
-
-const StyledBox4 = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 200px);
-  grid-template-rows: 1fr;
-  grid-column-gap: 16px;
-  padding-top: 40px;
-  padding-bottom: 40px;
-
-  @media ${desktop} {
-    grid-template-columns: repeat(3, 200px);
-  }
   @media ${tablet} {
-    .row-content__tablet {
-      display: none;
-    }
+    width: 100%;
   }
-  @media (max-width: 428px) {
-    grid-template-columns: 200px;
-    .row-content__mobile {
-      display: none;
+`;
+
+const MainBlock = styled.div`
+  display: flex;
+  gap: 40px;
+  padding: 24px;
+  border-radius: 12px;
+  background: linear-gradient(
+      270deg,
+      rgba(0, 0, 0, 0) 23.13%,
+      rgba(0, 0, 0, 0.07) 50.52%,
+      rgba(0, 0, 0, 0) 78.12%
+    ),
+    rgba(0, 0, 0, 0.05);
+
+  .avatar {
+    width: 124px;
+    height: 124px;
+  }
+
+  .combos {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+
+    .row {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 75px 1fr;
     }
   }
 `;
 
-const StyledSpacer = styled.div`
-  padding-bottom: 40px;
-`;
-
-export { StyledBox1, StyledBox2, StyledBox3, StyledBox4, StyledSpacer };
+export { StyledWrapper, MainBlock };
