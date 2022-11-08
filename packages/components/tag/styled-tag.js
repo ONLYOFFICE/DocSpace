@@ -9,6 +9,12 @@ const StyledTag = styled.div`
 
   max-width: ${(props) => (props.tagMaxWidth ? props.tagMaxWidth : "100%")};
 
+  ${(props) =>
+    props.tagMinWidth &&
+    css`
+      min-width: ${props.tagMinWidth};
+    `}
+
   display: flex;
   align-items: center;
 
