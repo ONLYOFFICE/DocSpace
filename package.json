@@ -36,5 +36,8 @@
     "shx": "^0.3.3",
     "terser": "^5.8.0"
   },
-  "packageManager": "yarn@3.2.2"
+  "packageManager": "yarn@3.2.2",
+  "dependencies": {
+    "hex-to-rgba": "^2.0.1"
+  }
 }
