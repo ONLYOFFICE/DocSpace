@@ -147,5 +147,7 @@ export default inject(({ auth }) => {
     theme,
   };
 })(
-  withTranslation(["HotkeysPanel", "Article", "Common"])(observer(HotkeyPanel))
+  withTranslation(["HotkeysPanel", "Article", "Common", "Files"])(
+    observer(HotkeyPanel)
+  )
 );

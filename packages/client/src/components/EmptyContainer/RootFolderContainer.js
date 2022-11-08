@@ -284,7 +284,7 @@ const RootFolderContainer = (props) => {
         alt="plus_icon"
       />
       <Link onClick={onCreateRoom} {...linkStyles}>
-        {t("CreateEditRoomDialog:CreateRoom")}
+        {t("CreateRoom")}
       </Link>
     </div>
   );
@@ -400,8 +400,4 @@ export default inject(
       setIsEmptyPage,
     };
   }
-)(
-  withTranslation(["Files", "CreateEditRoomDialog"])(
-    observer(RootFolderContainer)
-  )
-);
+)(withTranslation(["Files"])(observer(RootFolderContainer)));

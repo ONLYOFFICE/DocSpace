@@ -27,6 +27,6 @@ const DialogHeader = ({ t, isEdit, isChooseRoomType, onArrowClick }) => {
   );
 };
 
-export default withTranslation(["CreateEditRoomDialog"])(
+export default withTranslation(["Files"])(
   withLoader(DialogHeader)(<Loaders.CreateEditRoomDilogHeaderLoader />)
 );
