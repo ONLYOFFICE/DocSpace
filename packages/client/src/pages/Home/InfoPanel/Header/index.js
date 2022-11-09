@@ -31,7 +31,6 @@ const InfoPanelHeaderContent = (props) => {
     getIsGallery,
     getIsAccounts,
     isRootFolder,
-    canRemoveUserFromRoom,
     rootFolderType,
   } = props;
 
@@ -51,7 +50,6 @@ const InfoPanelHeaderContent = (props) => {
   const setDetails = () => setView("details");
 
   const isArchiveRoot = rootFolderType === FolderType.Archive;
-  const canRemove = canRemoveUserFromRoom({ access: selection?.access });
 
   const submenuData = [
     {
@@ -75,9 +73,7 @@ const InfoPanelHeaderContent = (props) => {
   ];
 
   const roomsSubmenu = isArchiveRoot
-    ? !canRemove
-      ? [{ ...submenuData[2] }]
-      : [{ ...submenuData[0] }, { ...submenuData[2] }]
+    ? [{ ...submenuData[0] }, { ...submenuData[2] }]
     : [...submenuData];
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
@@ -132,7 +128,7 @@ const InfoPanelHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
+export default inject(({ auth, selectedFolderStore }) => {
   const {
     selection,
     setIsVisible,
@@ -145,7 +141,6 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
     getIsAccounts,
   } = auth.infoPanelStore;
   const { isRootFolder, rootFolderType } = selectedFolderStore;
-  const { canRemoveUserFromRoom } = accessRightsStore;
 
   return {
     selection,
@@ -160,7 +155,6 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
 
     isRootFolder,
     rootFolderType,
-    canRemoveUserFromRoom,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(

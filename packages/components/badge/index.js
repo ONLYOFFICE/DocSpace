@@ -23,7 +23,7 @@ const Badge = (props) => {
     borderRadius,
     padding,
     maxWidth,
-    lineHeight,
+    height,
     isHovered,
     label,
   } = props;
@@ -40,7 +40,7 @@ const Badge = (props) => {
         borderRadius={borderRadius}
         padding={padding}
         maxWidth={maxWidth}
-        lineHeight={lineHeight}
+        height={height}
       >
         <StyledText
           textAlign="center"
@@ -95,7 +95,7 @@ Badge.defaultProps = {
   borderRadius: "11px",
   padding: "0 5px",
   maxWidth: "50px",
-  lineHeight: "1.78",
+  height: "16px",
   isHovered: false,
   noHover: false,
 };

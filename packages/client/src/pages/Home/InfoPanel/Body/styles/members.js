@@ -17,6 +17,8 @@ const StyledUserTypeHeader = styled.div`
   }
 
   .icon {
+    cursor: pointer;
+
     path,
     rect {
       fill: ${(props) => props.theme.infoPanel.members.iconColor};
