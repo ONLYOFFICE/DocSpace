@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import {
   StyledCircleWrap,
   StyledFloatingButton,
+  IconBox,
 } from "@docspace/common/components/FloatingButton/StyledFloatingButton";
 import Base from "@docspace/components/themes/base";
 
@@ -24,6 +25,14 @@ const getDefaultStyles = ({ $currentColorScheme, color, icon, theme }) =>
         : icon === "upload"
         ? theme.floatingButton.backgroundColor
         : $currentColorScheme.accentColor} !important;
+    }
+
+    ${IconBox} {
+      svg {
+        path {
+          fill: ${$currentColorScheme.textColor};
+        }
+      }
     }
   `;
 
