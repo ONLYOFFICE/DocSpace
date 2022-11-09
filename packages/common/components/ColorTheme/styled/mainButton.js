@@ -35,6 +35,14 @@ const getDefaultStyles = ({ $currentColorScheme, isDisabled, theme }) =>
       cursor: pointer;
     }
 
+    .main-button_text {
+      color: ${$currentColorScheme.id > 7 && $currentColorScheme.textColor};
+    }
+
+    .main-button_img svg path {
+      fill: ${$currentColorScheme.id > 7 && $currentColorScheme.textColor};
+    }
+
     ${isDisabled &&
     `
     ${disableStyles}
