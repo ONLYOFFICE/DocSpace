@@ -11,12 +11,7 @@ const Card = ({ children, countTilesInRow, ...rest }) => {
   const cardHeight = fileHeight;
 
   return (
-    <StyledCard
-      className="Card"
-      cardHeight={cardHeight}
-      isSingle={countTilesInRow}
-      {...rest}
-    >
+    <StyledCard className="Card" cardHeight={cardHeight} {...rest}>
       {children}
     </StyledCard>
   );
