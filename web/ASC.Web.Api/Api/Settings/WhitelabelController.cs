@@ -80,11 +80,11 @@ public class WhitelabelController : BaseSettingsController
 
         if (inDto.Logo != null)
         {
-            var logoDict = new Dictionary<int, string>();
+            var logoDict = new Dictionary<int, KeyValuePair<string, string>>();
 
             foreach (var l in inDto.Logo)
             {
-                logoDict.Add(Int32.Parse(l.Key), l.Value);
+                logoDict.Add(Int32.Parse(l.Key), new KeyValuePair<string, string>(l.Value.Light, l.Value.Dark));
             }
 
             _tenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, null);
@@ -113,15 +113,41 @@ public class WhitelabelController : BaseSettingsController
 
         foreach (var f in HttpContext.Request.Form.Files)
         {
-            var parts = f.FileName.Split('.');
-            var logoType = (WhiteLabelLogoTypeEnum)Convert.ToInt32(parts[0]);
-            var fileExt = parts[1];
-            _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), null);
+            if (f.FileName.Contains("dark"))
+            {
+                GetParts(f.FileName, out var logoType, out var fileExt);
+                if (HttpContext.Request.Form.Files.Any(f => f.FileName == $"{logoType}.{fileExt}"))
+                {
+                    continue;
+                }
+                _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, null, f.OpenReadStream(), null);
+            }
+            else
+            {
+                GetParts(f.FileName, out var logoType, out var fileExt);
+                IFormFile darkFile;
+                if (HttpContext.Request.Form.Files.Any(f => f.FileName == $"{logoType}.dark.{fileExt}"))
+                {
+                    darkFile = HttpContext.Request.Form.Files.Single(f => f.FileName == $"{logoType}.dark.{fileExt}");
+                }
+                else
+                {
+                    darkFile = null;
+                }
+                _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), darkFile?.OpenReadStream(), null);
+            }
         }
 
         _settingsManager.SaveForTenant(settings, Tenant.Id);
 
         return true;
+    }
+
+    private void GetParts(string fileName, out WhiteLabelLogoTypeEnum logoType, out string fileExt)
+    {
+        var parts = fileName.Split('.');
+        logoType = (WhiteLabelLogoTypeEnum)Convert.ToInt32(parts[0]);
+        fileExt = parts.Last();
     }
 
     ///<visible>false</visible>
@@ -157,13 +183,13 @@ public class WhitelabelController : BaseSettingsController
 
         result = new Dictionary<string, string>
             {
-                { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.Dark).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.DocsEditorEmbed).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.DocsEditorEmbed, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.LeftMenu).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.LeftMenu, !inDto.IsRetina)) },
-                { ((int)WhiteLabelLogoTypeEnum.AboutPage).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.AboutPage, !inDto.IsRetina)) }
+                { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !inDto.IsRetina, inDto.IsDark)) },
+                { ((int)WhiteLabelLogoTypeEnum.Dark).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !inDto.IsRetina, inDto.IsDark)) },
+                { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !inDto.IsRetina, inDto.IsDark)) },
+                { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !inDto.IsRetina, inDto.IsDark)) },
+                { ((int)WhiteLabelLogoTypeEnum.DocsEditorEmbed).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.DocsEditorEmbed, !inDto.IsRetina, inDto.IsDark)) },
+                { ((int)WhiteLabelLogoTypeEnum.LeftMenu).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.LeftMenu, !inDto.IsRetina, inDto.IsDark)) },
+                { ((int)WhiteLabelLogoTypeEnum.AboutPage).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.AboutPage, !inDto.IsRetina, inDto.IsDark)) }
             };
 
         return result;

@@ -195,7 +195,7 @@ public class NotifyHelper
         {
             args.Add(new TagValue(CommonTags.VirtualRootPath, url));
             args.Add(new TagValue(CommonTags.ProfileUrl, url + _commonLinkUtility.GetMyStaff()));
-            args.Add(new TagValue(CommonTags.LetterLogo, _tenantLogoManager.GetLogoDark(true)));
+            args.Add(new TagValue(CommonTags.LetterLogo, _tenantLogoManager.GetLogoDark(true, false)));
         }
 
         return args;
