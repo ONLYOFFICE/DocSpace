@@ -54,7 +54,7 @@ const ActiveSessions = ({
       setCurrentSession(res.loginEvent);
     });
   }, []);
-
+  
   const onClickRemoveAllSessions = async () => {
     try {
       setLoading(true);

@@ -59,7 +59,7 @@ const ChangePasswordForm = (props) => {
 
     const hash = createPasswordHash(password, hashSettings);
     const { uid, confirmHeader } = linkData;
-
+    console.log(uid);
     changePassword(uid, hash, confirmHeader)
       .then(() => logout())
       .then(() => {
