@@ -1,8 +1,6 @@
 import React from "react";
-import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
-import Box from "@docspace/components/box";
-import VersionSvg from "@docspace/client/public/images/versionrevision_active.react.svg";
+import { StyledVersionSvg } from "@docspace/client/src/pages/VersionHistory/Section/Body/StyledVersionHistory";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const VersionBadge = ({
@@ -14,13 +12,17 @@ const VersionBadge = ({
   theme,
   ...rest
 }) => (
-  <Box className={className} marginProp="0 8px" displayProp="flex" {...rest}>
-    <ColorTheme
-      themeId={ThemeType.VersionBadge}
-      isVersion={isVersion}
-      theme={theme}
-      index={index}
-    />
+  <ColorTheme
+    themeId={ThemeType.VersionBadge}
+    className={className}
+    marginProp="0 8px"
+    displayProp="flex"
+    isVersion={isVersion}
+    theme={theme}
+    index={index}
+    {...rest}
+  >
+    <StyledVersionSvg isVersion={isVersion} theme={theme} index={index} />
 
     <Text
       className="version_badge-text"
@@ -30,7 +32,7 @@ const VersionBadge = ({
     >
       {isVersion && t("Version", { version: versionGroup })}
     </Text>
-  </Box>
+  </ColorTheme>
 );
 
 export default VersionBadge;
