@@ -23,6 +23,7 @@ import { StyledComponent } from "./Appearance/StyledApperance.js";
 
 import BreakpointWarning from "../../../../components/BreakpointWarning/index";
 import ModalDialogDelete from "./sub-components/modalDialogDelete";
+import hexToRgba from "hex-to-rgba";
 
 const Appearance = (props) => {
   const {
@@ -337,6 +338,25 @@ const Appearance = (props) => {
     setAppliedColorButtons,
   ]);
 
+  const getTextColor = (color) => {
+    const black = "#000000";
+    const white = "#FFFFFF";
+
+    const rgba = hexToRgba(color)
+      .replace("rgba(", "")
+      .replace(")", "")
+      .split(", ");
+
+    const r = rgba[0];
+    const g = rgba[1];
+    const b = rgba[2];
+
+    const textColor =
+      (r * 299 + g * 587 + b * 114) / 1000 > 128 ? black : white;
+
+    return textColor;
+  };
+
   const onAppliedColorAccent = useCallback(() => {
     if (appliedColorAccent.toUpperCase() !== currentColorAccent) {
       setChangeCurrentColorAccent(true);
@@ -397,12 +417,14 @@ const Appearance = (props) => {
   );
 
   const onSaveColorSchemeDialog = () => {
+    const textColor = getTextColor(currentColorButtons);
+
     if (isAddThemeDialog) {
       // Saving a new custom theme
       const theme = {
         accentColor: currentColorAccent,
         buttonsMain: currentColorButtons,
-        textColor: "#FFFFFF",
+        textColor: textColor,
       };
 
       onSaveNewThemes(theme);
@@ -420,7 +442,7 @@ const Appearance = (props) => {
       id: selectThemeId,
       accentColor: currentColorAccent,
       buttonsMain: currentColorButtons,
-      textColor: "#FFFFFF",
+      textColor: textColor,
     };
 
     onSaveChangedThemes(editTheme);
