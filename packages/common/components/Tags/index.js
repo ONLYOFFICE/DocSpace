@@ -117,13 +117,7 @@ const Tags = ({
   }, [tags, tagsRef, tagsWidth, columnCount]);
 
   return (
-    <StyledTags
-      id={id}
-      className={className}
-      style={style}
-      tagsWidth={tagsWidth}
-      ref={tagsRef}
-    >
+    <StyledTags id={id} className={className} style={style} ref={tagsRef}>
       {renderedTags?.length > 0 &&
         renderedTags.map((tag, index) => (
           <Tag
