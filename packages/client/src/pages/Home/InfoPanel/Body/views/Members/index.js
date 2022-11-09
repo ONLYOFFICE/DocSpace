@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
-
+import { FolderType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 
 import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
@@ -19,7 +19,7 @@ const Members = ({
   selfId,
   isOwner,
   isAdmin,
-
+  isArchiveRoot,
   selection,
 
   selectionParentRoom,
@@ -129,7 +129,7 @@ const Members = ({
         <Text className="title">
           {t("UsersInRoom")} : {members.inRoom.length}
         </Text>
-        {currCanEditUsers && (
+        {currCanEditUsers && !isArchiveRoot && (
           <IconButton
             className={"icon"}
             title={t("Common:AddUsers")}
@@ -163,7 +163,7 @@ const Members = ({
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
           <Text className="title">{t("ExpectPeople")}</Text>
-          {currCanEditUsers && (
+          {currCanEditUsers && !isArchiveRoot && (
             <IconButton
               className={"icon"}
               title={t("Repeat invitation")}
@@ -198,7 +198,14 @@ const Members = ({
 };
 
 export default inject(
-  ({ auth, filesStore, peopleStore, dialogsStore, accessRightsStore }) => {
+  ({
+    auth,
+    filesStore,
+    peopleStore,
+    dialogsStore,
+    accessRightsStore,
+    selectedFolderStore,
+  }) => {
     const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
     const {
       getRoomMembers,
@@ -209,6 +216,9 @@ export default inject(
     const { setInvitePanelOptions } = dialogsStore;
     const { changeType: changeUserType } = peopleStore;
     const { canInviteUserInRoom } = accessRightsStore;
+    const { rootFolderType } = selectedFolderStore;
+
+    const isArchiveRoot = rootFolderType === FolderType.Archive;
 
     return {
       selectionParentRoom,
@@ -226,6 +236,7 @@ export default inject(
 
       changeUserType,
       canInviteUserInRoom,
+      isArchiveRoot,
     };
   }
 )(
