@@ -154,7 +154,9 @@ const HistoryMainContent = (props) => {
 
   return (
     <MainContainer isSettingNotPaid={isSettingNotPaid}>
-      {isSettingNotPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
+      {isSettingNotPaid && (
+        <Badge backgroundColor="#EDC409" label="Paid" isPaidBadge={true} />
+      )}
       <div className="main-wrapper">
         <Text fontSize="13px" color="#657077" className="settings_unavailable">
           {subHeader}

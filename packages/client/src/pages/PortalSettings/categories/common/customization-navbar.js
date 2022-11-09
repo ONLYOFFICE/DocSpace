@@ -147,7 +147,13 @@ const CustomizationNavbar = ({
             >
               {t("DNSSettings")}
             </Link>
-            {!isSettingPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
+            {!isSettingPaid && (
+              <Badge
+                backgroundColor="#EDC409"
+                label="Paid"
+                isPaidBadge={true}
+              />
+            )}
             <StyledArrowRightIcon size="small" color="#333333" />
           </div>
         </div>

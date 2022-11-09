@@ -68,6 +68,7 @@ const ToggleSSO = (props) => {
                 label="Paid"
                 maxWidth="31px"
                 className="toggle-caption_title_badge"
+                isPaidBadge={true}
               />
             )}
           </div>

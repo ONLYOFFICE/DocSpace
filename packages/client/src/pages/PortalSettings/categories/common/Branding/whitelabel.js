@@ -398,7 +398,9 @@ const WhiteLabel = (props) => {
         <Text fontSize="16px" fontWeight="700">
           {t("WhiteLabel")}
         </Text>
-        {!isSettingPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
+        {!isSettingPaid && (
+          <Badge backgroundColor="#EDC409" label="Paid" isPaidBadge={true} />
+        )}
       </div>
 
       <Text className="wl-subtitle settings_unavailable" fontSize="12px">
