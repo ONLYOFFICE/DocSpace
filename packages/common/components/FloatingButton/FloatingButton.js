@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
@@ -49,6 +49,10 @@ const FloatingButton = (props) => {
     clearUploadedFilesHistory && clearUploadedFilesHistory();
   };
 
+  const displayProgress = useMemo(() => {
+    return !(percent === 100 && animationCompleted) && icon != "minus";
+  }, [percent, animationCompleted, icon]);
+
   let timerId = null;
 
   useEffect(() => {
@@ -73,13 +77,9 @@ const FloatingButton = (props) => {
         style={style}
         icon={icon}
         onClick={onClick}
+        displayProgress={displayProgress}
       >
-        <StyledCircle
-          displayProgress={
-            !(percent === 100 && animationCompleted) && icon != "minus"
-          }
-          percent={percent}
-        >
+        <StyledCircle displayProgress={displayProgress} percent={percent}>
           <div className="circle__mask circle__full">
             <div className="circle__fill"></div>
           </div>
