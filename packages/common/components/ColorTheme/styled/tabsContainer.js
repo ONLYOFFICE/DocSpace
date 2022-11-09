@@ -8,6 +8,12 @@ const getDefaultStyles = ({ $currentColorScheme, selected, theme }) =>
     background-color: ${selected &&
     theme.isBase &&
     $currentColorScheme.accentColor} !important;
+
+    .title_style {
+      color: ${$currentColorScheme.id > 7 &&
+      selected &&
+      $currentColorScheme.textColor};
+    }
   `;
 
 Label.defaultProps = { theme: Base };
