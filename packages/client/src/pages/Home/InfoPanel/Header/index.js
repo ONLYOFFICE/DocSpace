@@ -51,7 +51,6 @@ const InfoPanelHeaderContent = (props) => {
   const setDetails = () => setView("details");
 
   const isArchiveRoot = rootFolderType === FolderType.Archive;
-  const canRemove = canRemoveUserFromRoom({ access: selection?.access });
 
   const submenuData = [
     {
@@ -75,9 +74,7 @@ const InfoPanelHeaderContent = (props) => {
   ];
 
   const roomsSubmenu = isArchiveRoot
-    ? !canRemove
-      ? [{ ...submenuData[2] }]
-      : [{ ...submenuData[0] }, { ...submenuData[2] }]
+    ? [{ ...submenuData[0] }, { ...submenuData[2] }]
     : [...submenuData];
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
