@@ -3,10 +3,17 @@ import {
   StyledCircleWrap,
   StyledFloatingButton,
   IconBox,
+  StyledCircle,
 } from "@docspace/common/components/FloatingButton/StyledFloatingButton";
 import Base from "@docspace/components/themes/base";
 
-const getDefaultStyles = ({ $currentColorScheme, color, icon, theme }) =>
+const getDefaultStyles = ({
+  $currentColorScheme,
+  color,
+  icon,
+  theme,
+  displayProgress,
+}) =>
   $currentColorScheme &&
   css`
     background: ${color
@@ -30,8 +37,16 @@ const getDefaultStyles = ({ $currentColorScheme, color, icon, theme }) =>
     ${IconBox} {
       svg {
         path {
-          fill: ${$currentColorScheme.textColor};
+          fill: ${$currentColorScheme.id > 7 && $currentColorScheme.textColor};
         }
+      }
+    }
+
+    ${StyledCircle} {
+      .circle__mask .circle__fill {
+        background-color: ${!displayProgress
+          ? "transparent !important"
+          : $currentColorScheme.id > 7 && $currentColorScheme.textColor};
       }
     }
   `;
