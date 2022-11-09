@@ -222,7 +222,11 @@ class ArticleBodyContent extends React.Component {
 
     if (isNotPaidPeriod) {
       resultTree = [...settingsTree].filter((e) => {
-        return e.tKey === "Backup" || e.tKey === "Payments";
+        return (
+          e.tKey === "Backup" ||
+          e.tKey === "Payments" ||
+          e.tKey === "PortalDeletion"
+        );
       });
     }
     resultTree.map((item) => {

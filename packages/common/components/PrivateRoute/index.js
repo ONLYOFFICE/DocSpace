@@ -37,6 +37,16 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
   const renderComponent = (props) => {
     const isPortalUrl = props.location.pathname === "/preparation-portal";
+    const isPaymentsUrl =
+      props.location.pathname === "/portal-settings/payments/portal-payments";
+    const isBackupUrl =
+      props.location.pathname === "/portal-settings/backup/data-backup";
+    const isPortalUnavailableUrl =
+      props.location.pathname === "/portal-unavailable";
+
+    const isPortalDeletionUrl =
+      props.location.pathname === "/portal-settings/delete-data/deletion" ||
+      props.location.pathname === "/portal-settings/delete-data/deactivation";
 
     if (isLoaded && !isAuthenticated) {
       if (personal) {
@@ -102,8 +112,9 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       isNotPaidPeriod &&
       isLoaded &&
       (user.isOwner || user.isAdmin) &&
-      props.location.pathname !== "/portal-settings/payments/portal-payments" &&
-      props.location.pathname !== "/portal-settings/backup/data-backup"
+      !isPaymentsUrl &&
+      !isBackupUrl &&
+      !isPortalDeletionUrl
     ) {
       return (
         <Redirect
@@ -127,7 +138,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       isLoaded &&
       !user.isOwner &&
       !user.isAdmin &&
-      props.location.pathname !== "/portal-unavailable"
+      isPortalUnavailableUrl
     ) {
       return (
         <Redirect
