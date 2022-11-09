@@ -21,7 +21,7 @@ const getDefaultStyles = ({
         ? color
         : $currentColorScheme.id === 7 && !theme.isBase
         ? "#444444"
-        : theme.badge.color} !important;
+        : $currentColorScheme.textColor} !important;
     }
 
     ${StyledInner} {
