@@ -448,7 +448,7 @@ const ArticleMainButtonContent = (props) => {
         />
       ) : (
         <MainButton
-          id="files_main-button"
+          id={isAccountsPage ? "invite-main-button" : "actions-main-button"}
           isDisabled={isDisabled}
           isDropdown={isDropdownMainButton}
           text={mainButtonText}
