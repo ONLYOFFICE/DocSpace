@@ -4,20 +4,17 @@ import Base from "@docspace/components/themes/base";
 
 const getDefaultStyles = ({ $currentColorScheme, isSelected, theme }) =>
   $currentColorScheme &&
+  isSelected &&
   css`
-    background: ${isSelected &&
-    theme.isBase &&
-    $currentColorScheme.accentColor};
-    border-color: ${isSelected &&
-    theme.isBase &&
-    $currentColorScheme.accentColor};
+    background: ${theme.isBase && $currentColorScheme.accentColor};
+    border-color: ${theme.isBase && $currentColorScheme.accentColor};
+
+    p {
+      color: ${$currentColorScheme.id > 7 && $currentColorScheme.textColor};
+    }
     &:hover {
-      background: ${isSelected &&
-      theme.isBase &&
-      $currentColorScheme.accentColor};
-      border-color: ${isSelected &&
-      theme.isBase &&
-      $currentColorScheme.accentColor};
+      background: ${theme.isBase && $currentColorScheme.accentColor};
+      border-color: ${theme.isBase && $currentColorScheme.accentColor};
     }
   `;
 
