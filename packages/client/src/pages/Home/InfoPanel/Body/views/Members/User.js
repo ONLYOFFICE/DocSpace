@@ -78,13 +78,13 @@ const User = ({
       <div className="name">
         {isExpect ? user.email : user.displayName || user.email}
       </div>
-      {currentMember.id === user.id && (
+      {currentMember?.id === user.id && (
         <div className="me-label">&nbsp;{`(${t("Common:MeLabel")})`}</div>
       )}
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {currCanEditUsers && currentMember.id !== user.id ? (
+          {currCanEditUsers && currentMember?.id !== user.id ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}
