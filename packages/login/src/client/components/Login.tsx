@@ -254,6 +254,7 @@ const Login: React.FC<ILoginProps> = ({
           onClose={onRecoverDialogVisible}
           textBody={t("RecoverTextBody")}
           emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
+          id="recover-access-modal-dialog"
         />
       </ColorTheme>
       {!checkIsSSR() && enabledJoin && (
