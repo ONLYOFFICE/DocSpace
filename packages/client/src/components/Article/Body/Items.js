@@ -353,7 +353,7 @@ const Items = ({
       );
 
       if (isVisitor) {
-        items.length > 1 && items.splice(2, 0, filesHeader);
+        items.length > 2 && items.splice(2, 0, filesHeader);
       } else {
         items.splice(3, 0, filesHeader);
       }

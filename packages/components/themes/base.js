@@ -18,6 +18,11 @@ const {
   blueDisabled,
   blueCharcoal,
 
+  blueDenim,
+  blueDenimTransparent,
+  blueMaya,
+  blueSky,
+
   orangeMain,
   orangeHover,
   orangePressed,
@@ -99,32 +104,28 @@ const Base = {
     height: {
       extraSmall: "24px",
       small: "32px",
-      normalDesktop: "36px",
-      normalTouchscreen: "40px",
+      normal: "40px",
       medium: "44px",
     },
 
     lineHeight: {
       extraSmall: "15px",
       small: "20px",
-      normalDesktop: "16px",
-      normalTouchscreen: "16px",
+      normal: "16px",
       medium: "22px",
     },
 
     fontSize: {
       extraSmall: "12px",
       small: "13px",
-      normalDesktop: "14px",
-      normalTouchscreen: "14px",
+      normal: "14px",
       medium: "16px",
     },
 
     padding: {
-      extraSmall: "0 12px",
+      extraSmall: "0 11.5px",
       small: "0 28px",
-      normalDesktop: "0 28px",
-      normalTouchscreen: "0 28px",
+      normal: "0 28px",
       medium: "0 32px",
     },
 
@@ -132,7 +133,7 @@ const Base = {
       base: black,
       baseHover: black,
       baseActive: black,
-      baseDisabled: grayLightMid,
+      baseDisabled: grayMid,
       primary: white,
       primaryHover: white,
       primaryActive: white,
@@ -144,25 +145,30 @@ const Base = {
       baseHover: white,
       baseActive: grayLightMid,
       baseDisabled: grayLight,
-      primary: blueMain,
-      primaryHover: blueHover,
-      primaryActive: blueActive,
-      primaryDisabled: blueDisabled,
+      baseLoading: grayLight,
+      primary: blueDenim,
+      primaryHover: blueDenimTransparent,
+      primaryActive: blueMaya,
+      primaryDisabled: blueSky,
+      primaryLoading: blueSky,
     },
 
     border: {
       base: `1px solid ${globalColors.grayMid}`,
-      baseHover: `1px solid ${globalColors.blueMain}`,
-      baseActive: `1px solid ${globalColors.blueMain}`,
+      baseHover: `1px solid ${blueDenim}`,
+      baseActive: `1px solid ${globalColors.grayMid}`,
       baseDisabled: `1px solid ${globalColors.grayLightMid}`,
-      primary: `1px solid ${globalColors.blueMain}`,
-      primaryHover: `1px solid ${globalColors.blueHover}`,
-      primaryActive: `1px solid ${globalColors.blueActive}`,
-      primaryDisabled: `1px solid ${globalColors.blueDisabled}`,
+      baseLoading: `1px solid ${globalColors.grayLightMid}`,
+
+      primary: `1px solid ${blueDenim}`,
+      primaryHover: `1px solid ${blueDenimTransparent}`,
+      primaryActive: `1px solid ${blueMaya}`,
+      primaryDisabled: `1px solid ${blueSky}`,
+      primaryLoading: `1px solid ${blueSky}`,
     },
 
     loader: {
-      base: black,
+      base: blueDenim,
       primary: white,
     },
   },
@@ -2027,6 +2033,8 @@ const Base = {
 
     members: {
       iconColor: "#A3A9AE",
+      iconHoverColor: "#657077",
+      isExpectName: "#A3A9AE",
       subtitleColor: "#a3a9ae",
       meLabelColor: "#a3a9ae",
       roleSelectorColor: "#a3a9ae",
@@ -2877,7 +2885,7 @@ const Base = {
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
 
-          backgroundColor: "#0f4071",
+          backgroundColor: "#ECEEF1",
           greenBackgroundColor: "#7e983f",
           blueBackgroundColor: "#5170b5",
           orangeBackgroundColor: "#e86e2e",

@@ -34,13 +34,13 @@ public class NCMigratingMail : MigratingMail
     public override string ModuleName => MigrationResource.ModuleNameMail;
     public override Task Migrate()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public override void Parse()
     {
         messagesCount++;
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public NCMigratingMail(Action<string, Exception> log) : base(log) { }

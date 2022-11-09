@@ -42,6 +42,7 @@ const StyledHideArticleMenuButton = styled.div`
 
     .article-hide-menu-text {
       margin-left: 8px;
+      color: ${({ currentColorScheme }) => currentColorScheme.accentColor};
     }
 
     @media ${tablet} {
@@ -71,14 +72,28 @@ const StyledHideArticleMenuButton = styled.div`
   .article-hide-menu-icon_svg,
   .article-show-menu-icon_svg {
     height: 28px;
+
+    svg {
+      path {
+        fill: ${({ currentColorScheme }) => currentColorScheme.accentColor};
+      }
+    }
   }
 `;
 
-const HideArticleMenuButton = ({ showText, toggleShowText }) => {
+const HideArticleMenuButton = ({
+  showText,
+  toggleShowText,
+  currentColorScheme,
+}) => {
   const { t } = useTranslation("Common");
 
   return (
-    <StyledHideArticleMenuButton showText={showText} onClick={toggleShowText}>
+    <StyledHideArticleMenuButton
+      showText={showText}
+      onClick={toggleShowText}
+      currentColorScheme={currentColorScheme}
+    >
       {showText ? (
         <div className="article-hide-menu-container">
           <ReactSVG
@@ -91,7 +106,6 @@ const HideArticleMenuButton = ({ showText, toggleShowText }) => {
             fontSize="12px"
             noSelect
             truncate
-            color="#3B72A7"
           >
             {t("HideArticleMenu")}
           </Text>

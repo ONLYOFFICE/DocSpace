@@ -112,16 +112,19 @@ public class EncryptionOperation : DistributedTaskProgress
 
             Percentage = 90;
             PublishChanges();
-
             ActivateTenants(tenantManager, log, notifyHelper);
 
             Percentage = 100;
+
+            IsCompleted = true;
             PublishChanges();
         }
         catch (Exception e)
         {
             Exception = e;
             log.ErrorEncryptionOperation(e);
+            IsCompleted = true;
+            PublishChanges();
         }
     }
 

@@ -24,13 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Reflection;
-
 global using ASC.Api.Core;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.DependencyInjection;
-global using ASC.Common.Mapping;
 global using ASC.Core.Notify;
 global using ASC.Notify;
 global using ASC.Web.Studio.Core.Notify;

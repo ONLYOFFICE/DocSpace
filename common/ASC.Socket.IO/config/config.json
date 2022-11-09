@@ -6,9 +6,9 @@
 	},
 	"aws":{
 		"accessKeyId": "",
-        "secretAccessKey": "",
+		"secretAccessKey": "",
 		"region": "",
-		"logGroupName": "/docspace/ASC.SocketIO/instance/${instance-id}/general",
-		"logStreamName": "${guid} - ${date}"
+		"logGroupName": "/asc/docspace/cluster/cluster_name/general",
+		"logStreamName": "${hostname} - ${applicationContext} - ${date} - ${guid}"
 	}
 }

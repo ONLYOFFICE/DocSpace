@@ -18,6 +18,7 @@ import {
   FileStatus,
 } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
+import { isMobile } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 import { checkProtocol } from "../helpers/files-helpers";
@@ -26,6 +27,7 @@ import { AppServerConfig } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
 import api from "@docspace/common/api";
+import { isTablet } from "@docspace/components/utils/device";
 
 class FilesActionStore {
   authStore;
@@ -36,6 +38,7 @@ class FilesActionStore {
   settingsStore;
   dialogsStore;
   mediaViewerDataStore;
+  accessRightsStore;
 
   isBulkDownload = false;
 
@@ -47,7 +50,8 @@ class FilesActionStore {
     selectedFolderStore,
     settingsStore,
     dialogsStore,
-    mediaViewerDataStore
+    mediaViewerDataStore,
+    accessRightsStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -58,6 +62,7 @@ class FilesActionStore {
     this.settingsStore = settingsStore;
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
+    this.accessRightsStore = accessRightsStore;
   }
 
   setIsBulkDownload = (isBulkDownload) => {
@@ -404,7 +409,7 @@ class FilesActionStore {
     });
 
     try {
-      await removeFiles(folderIds, null, true, true).then(async (res) => {
+      await removeFiles(folderIds, [], true, true).then(async (res) => {
         if (res[0]?.error) return Promise.reject(res[0].error);
         const data = res[0] ? res[0] : null;
         const pbData = {
@@ -830,7 +835,7 @@ class FilesActionStore {
     }
   };
 
-  setPinAction = (action, id) => {
+  setPinAction = (action, id, t) => {
     const { pinRoom, unpinRoom, updateRoomPin, setSelected } = this.filesStore;
 
     const { selection, setSelection } = this.authStore.infoPanelStore;
@@ -854,7 +859,7 @@ class FilesActionStore {
             }
           })
           .then(() => setSelected("close"))
-          .finally(() => toastr.success("Room pinned"));
+          .finally(() => toastr.success(t("RoomPinned")));
       case "unpin":
         items.forEach((item) => {
           updateRoomPin(item);
@@ -868,7 +873,7 @@ class FilesActionStore {
             }
           })
           .then(() => setSelected("close"))
-          .finally(() => toastr.success("Room unpinned"));
+          .finally(() => toastr.success(t("RoomUnpinned")));
       default:
         return;
     }
@@ -1252,46 +1257,70 @@ class FilesActionStore {
   };
 
   isAvailableOption = (option) => {
-    const {
-      isFavoritesFolder,
-      isRecentFolder,
-      isCommonFolder,
-    } = this.treeFoldersStore;
+    const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
     const {
       isAccessedSelected,
       canConvertSelected,
       isThirdPartyRootSelection,
       hasSelection,
       allFilesIsEditing,
+      selection,
     } = this.filesStore;
-    const { personal } = this.authStore.settingsStore;
-    const { userAccess } = this.filesStore;
+
+    const {
+      canCopyFile,
+      canDeleteFile,
+      canMoveFile,
+      canArchiveRoom,
+      canRemoveRoom,
+    } = this.accessRightsStore;
+    const { access, rootFolderType } = this.selectedFolderStore;
 
     switch (option) {
-      case "showInfo":
       case "copy":
+        const canCopy = canCopyFile({ access, rootFolderType });
+
+        return hasSelection && canCopy;
+      case "showInfo":
       case "download":
         return hasSelection;
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
+        const canMove = canMoveFile({ access, rootFolderType });
         return (
           !isThirdPartyRootSelection &&
           hasSelection &&
           isAccessedSelected &&
           !isRecentFolder &&
           !isFavoritesFolder &&
-          !allFilesIsEditing
+          !allFilesIsEditing &&
+          canMove
         );
 
+      case "archive":
+      case "unarchive":
+        const canArchive = selection
+          .map((s) => canArchiveRoom(s))
+          .filter((s) => s);
+
+        return canArchive.length > 0;
+      case "delete-room":
+        const canRemove = selection
+          .map((s) => canRemoveRoom(s))
+          .filter((r) => r);
+
+        return canRemove.length > 0;
+
       case "delete":
+        const canDelete = canDeleteFile({ access, rootFolderType });
         const deleteCondition =
           !isThirdPartyRootSelection &&
           hasSelection &&
           isAccessedSelected &&
           !allFilesIsEditing;
 
-        return isCommonFolder ? userAccess && deleteCondition : deleteCondition;
+        return canDelete && deleteCondition;
     }
   };
 
@@ -1373,6 +1402,14 @@ class FilesActionStore {
     this.deleteItemAction(items, translations, null, null, true);
   };
 
+  onShowInfoPanel = () => {
+    const { selection } = this.filesStore;
+    const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
+
+    setSelection([selection]);
+    setIsVisible(true);
+  };
+
   getOption = (option, t) => {
     const {
       setSharingPanelVisible,
@@ -1383,6 +1420,15 @@ class FilesActionStore {
     } = this.dialogsStore;
 
     switch (option) {
+      case "show-info":
+        if (!isTablet() && !isMobile) return null;
+        else
+          return {
+            key: "show-info",
+            label: t("Common:Info"),
+            iconUrl: "/static/images/info.outline.react.svg",
+            onClick: this.onShowInfoPanel,
+          };
       case "copy":
         if (!this.isAvailableOption("copy")) return null;
         else
@@ -1438,23 +1484,27 @@ class FilesActionStore {
           disabled: false,
         };
       case "archive":
-        return {
-          key: "archive",
-          label: t("Archived"),
-          iconUrl: "/static/images/room.archive.svg",
-          onClick: () => this.moveRoomsToArchive(t),
-          disabled: false,
-        };
+        if (!this.isAvailableOption("archive")) return null;
+        else
+          return {
+            key: "archive",
+            label: t("Archived"),
+            iconUrl: "/static/images/room.archive.svg",
+            onClick: () => this.moveRoomsToArchive(t),
+            disabled: false,
+          };
       case "unarchive":
-        return {
-          key: "unarchive",
-          label: t("Common:Restore"),
-          iconUrl: "images/subtract.react.svg",
-          onClick: () => this.moveRoomsFromArchive(t),
-          disabled: false,
-        };
+        if (!this.isAvailableOption("unarchive")) return null;
+        else
+          return {
+            key: "unarchive",
+            label: t("Common:Restore"),
+            iconUrl: "images/subtract.react.svg",
+            onClick: () => this.moveRoomsFromArchive(t),
+            disabled: false,
+          };
       case "delete-room":
-        if (!this.isAvailableOption("delete")) return null;
+        if (!this.isAvailableOption("delete-room")) return null;
         else
           return {
             label: t("Common:Delete"),
@@ -1507,8 +1557,29 @@ class FilesActionStore {
   getArchiveRoomsFolderOptions = (itemsCollection, t) => {
     const archive = this.getOption("unarchive", t);
     const deleteOption = this.getOption("delete-room", t);
+    const showOption = this.getOption("show-info", t);
 
-    itemsCollection.set("unarchive", archive).set("delete", deleteOption);
+    const { selection } = this.filesStore;
+    const { canArchiveRoom } = this.accessRightsStore;
+
+    const canArchive = selection.map((s) => canArchiveRoom(s)).filter((s) => s);
+
+    if (canArchive.length <= 0) {
+      let pinName = "unpin";
+
+      selection.forEach((item) => {
+        if (!item.pinned) pinName = "pin";
+      });
+
+      const pin = this.getOption(pinName, t);
+      itemsCollection.set(pinName, pin);
+    }
+
+    itemsCollection
+      .set("unarchive", archive)
+      .set("show-info", showOption)
+      .set("delete", deleteOption);
+
     return this.convertToArray(itemsCollection);
   };
 

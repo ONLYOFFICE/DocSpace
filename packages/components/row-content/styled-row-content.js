@@ -39,9 +39,7 @@ const sideInfoTabletStyle = css`
   margin: ${(props) => props.theme.rowContent.sideInfo.margin};
   ${commonCss};
   color: ${(props) => props.color && props.color};
-  white-space: nowrap;
-  overflow: ${(props) => props.theme.rowContent.sideInfo.overflow};
-  text-overflow: ${(props) => props.theme.rowContent.sideInfo.textOverflow};
+  ${truncateCss};
 `;
 
 const StyledRowContent = styled.div`
@@ -88,6 +86,7 @@ const MainContainerWrapper = styled.div`
     ${mainWrapperTabletStyle}
   }
 `;
+
 MainContainerWrapper.defaultProps = { theme: Base };
 
 const MainContainer = styled.div`

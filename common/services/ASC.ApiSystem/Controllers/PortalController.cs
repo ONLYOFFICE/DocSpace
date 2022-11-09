@@ -32,7 +32,7 @@ namespace ASC.ApiSystem.Controllers;
 public class PortalController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly Core.SecurityContext _securityContext;
+    private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
     private readonly ApiSystemHelper _apiSystemHelper;
@@ -50,7 +50,7 @@ public class PortalController : ControllerBase
 
     public PortalController(
         IConfiguration configuration,
-        Core.SecurityContext securityContext,
+        SecurityContext securityContext,
         TenantManager tenantManager,
         SettingsManager settingsManager,
         ApiSystemHelper apiSystemHelper,

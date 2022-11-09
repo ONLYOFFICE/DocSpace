@@ -148,9 +148,6 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>無効となりました</value>
   </data>
-  <data name="EditorMentions" xml:space="preserve">
-    <value>文書で記載されたこと通知する</value>
-  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>不正なリクエスト。</value>
   </data>
@@ -199,9 +196,6 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>このファイルが別のユーザーによってロックされています</value>
   </data>
-  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>メッセージを送信するのために、利用可能なアカウントが見つかりません。メールモジュールに移動し、メールボックスを接続してください。</value>
-  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>少なくとも｛０｝通のメールメッセージが送信できませんでした。失敗のあり得る原因を確認するためには、「メール」モジュールのページを訪問してください。</value>
   </data>
@@ -210,9 +204,6 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>申し訳ありませんが、このファイル形式はサポートされていません</value>
-  </data>
-  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>操作はャンセルされました</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>保存した人は不明です。</value>
@@ -318,30 +309,6 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>独自の文書だけでなく、適切なアクセス権を持つ共有ドキュメントを作成および編集|読書/文書やフォルダに他のユーザーへのアクセス権を編集を進呈|"マイドキュメント"セクションのリンクDropboxは、Boxと他のアカウント</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User}削除</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>検索</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>フォルダが共有されたときに通知する</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>DocuSignを使用して文書が署名された時に通知する</value>
-  </data>
-  <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>DocuSign内の文書の状況が変更された時に通知する</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>共有されたときに通知</value>
-  </data>
-  <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>メーリングの完了を通知する</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>{!user}の文書{0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>名</value>

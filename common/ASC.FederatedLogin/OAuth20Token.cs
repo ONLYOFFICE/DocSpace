@@ -25,7 +25,6 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.FederatedLogin;
 
@@ -91,15 +90,15 @@ public class OAuth20Token
 
         try
         {
-                var result = JsonSerializer.Deserialize<OAuth20Token>(json);
+            var result = JsonSerializer.Deserialize<OAuth20Token>(json);
 
-                if (result.Timestamp == default)
-                {
-                    result.Timestamp = DateTime.UtcNow;
-                }
-
-                return result;
+            if (result.Timestamp == default)
+            {
+                result.Timestamp = DateTime.UtcNow;
             }
+
+            return result;
+        }
         catch (Exception)
         {
             return null;

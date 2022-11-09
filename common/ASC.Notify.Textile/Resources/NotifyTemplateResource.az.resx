@@ -192,10 +192,4 @@
           &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
-  <data name="TextForFooterWithUnsubscribeLink" xml:space="preserve">
-    <value>Bu e-poçt avtomatik olaraq yaradılır və ona cavab vermək lazım deyil.
-&lt;br /&gt;Siz &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;{0}&lt;/a&gt;-nin qeydiyyatdan keçmiş istifadəçisi olduğunuz üçün bu e-poçtu alırsınız. 
-&lt;br /&gt;Bu e-poçtların artıq sizə göndərilməsini istəmirsinizsə, aşağıdakı linkə klikləyin: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Abunəlikdən çıxın&lt;/a&gt;
-&lt;br /&gt;</value>
-  </data>
 </root>

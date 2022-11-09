@@ -227,7 +227,7 @@ public class LoginProfile
 
     public string ToJson()
     {
-        return System.Text.Json.JsonSerializer.Serialize(this);
+        return JsonSerializer.Serialize(this);
     }
 
     internal string GetField(string name)

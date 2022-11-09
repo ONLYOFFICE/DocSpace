@@ -627,7 +627,7 @@ public class UserManager
         return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
     }
 
-    public async Task AddUserIntoGroup(Guid userId, Guid groupId)
+    public async Task AddUserIntoGroup(Guid userId, Guid groupId, bool dontClearAddressBook = false)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
@@ -645,7 +645,11 @@ public class UserManager
             var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
                        (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                        new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
-            await _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id); //todo
+            
+            if (!dontClearAddressBook)
+            {
+                await _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id);
+            }
         }
     }
 
