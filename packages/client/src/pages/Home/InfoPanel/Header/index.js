@@ -31,7 +31,6 @@ const InfoPanelHeaderContent = (props) => {
     getIsGallery,
     getIsAccounts,
     isRootFolder,
-    canRemoveUserFromRoom,
     rootFolderType,
   } = props;
 
@@ -129,7 +128,7 @@ const InfoPanelHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
+export default inject(({ auth, selectedFolderStore }) => {
   const {
     selection,
     setIsVisible,
@@ -142,7 +141,6 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
     getIsAccounts,
   } = auth.infoPanelStore;
   const { isRootFolder, rootFolderType } = selectedFolderStore;
-  const { canRemoveUserFromRoom } = accessRightsStore;
 
   return {
     selection,
@@ -157,7 +155,6 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
 
     isRootFolder,
     rootFolderType,
-    canRemoveUserFromRoom,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(
