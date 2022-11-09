@@ -50,7 +50,7 @@ const FileTile = (props) => {
     onSelectTag,
     onSelectOption,
     columnCount,
-    tileWidth,
+    tagsWidth,
     idx,
   } = props;
 
@@ -120,7 +120,7 @@ const FileTile = (props) => {
           selectTag={onSelectTag}
           selectOption={onSelectOption}
           columnCount={columnCount}
-          tileWidth={tileWidth}
+          tagsWidth={tagsWidth}
         >
           <FilesTileContent
             item={item}

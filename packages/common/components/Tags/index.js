@@ -10,7 +10,7 @@ const Tags = ({
   style,
   tags,
   columnCount,
-  tileWidth,
+  tagsWidth,
   onSelectTag,
 }) => {
   const [renderedTags, setRenderedTags] = React.useState(null);
@@ -23,8 +23,8 @@ const Tags = ({
 
       const newTags = [];
 
-      const containerWidth = tileWidth
-        ? tileWidth
+      const containerWidth = tagsWidth
+        ? tagsWidth
         : tagsRef.current.offsetWidth;
 
       if (tags.length === 1) {
@@ -110,18 +110,18 @@ const Tags = ({
 
       setRenderedTags(newTags);
     }
-  }, [tags, tagsRef, tileWidth, columnCount]);
+  }, [tags, tagsRef, tagsWidth, columnCount]);
 
   React.useEffect(() => {
     updateRenderedTags();
-  }, [tags, tagsRef, tileWidth, columnCount]);
+  }, [tags, tagsRef, tagsWidth, columnCount]);
 
   return (
     <StyledTags
       id={id}
       className={className}
       style={style}
-      tileWidth={tileWidth}
+      tagsWidth={tagsWidth}
       ref={tagsRef}
     >
       {renderedTags?.length > 0 &&

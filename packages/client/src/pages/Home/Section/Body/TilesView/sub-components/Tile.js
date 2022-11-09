@@ -449,7 +449,7 @@ class Tile extends React.PureComponent {
       columnCount,
       selectTag,
       selectOption,
-      tileWidth,
+      tagsWidth,
     } = this.props;
     const { isFolder, isRoom, id, fileExst } = item;
 
@@ -616,10 +616,10 @@ class Tile extends React.PureComponent {
                 )} */}
 
                 {/* {item.tags.length > 0 ? ( */}
-                {tileWidth && (
+                {tagsWidth && (
                   <Tags
                     columnCount={columnCount}
-                    tileWidth={tileWidth}
+                    tagsWidth={tagsWidth}
                     onSelectTag={selectTag}
                     tags={tags}
                   />
