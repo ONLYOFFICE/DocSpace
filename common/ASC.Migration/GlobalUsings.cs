@@ -68,3 +68,4 @@ global using Microsoft.Extensions.Hosting.WindowsServices;
 global using MimeKit;
 
 global using Newtonsoft.Json;
+global using ASC.Migration;
