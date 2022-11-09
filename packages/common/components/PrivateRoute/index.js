@@ -72,8 +72,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
     if (
       isLoaded &&
-      !isNotPaidPeriod &&
-      props.location.pathname === "/portal-unavailable"
+      ((!isNotPaidPeriod && isPortalUnavailableUrl) ||
+        (!user.isOwner && isPortalDeletionUrl))
     ) {
       return window.location.replace("/");
     }

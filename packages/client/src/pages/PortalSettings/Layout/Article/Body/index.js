@@ -215,7 +215,7 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText, isNotPaidPeriod, t } = this.props;
+    const { showText, isNotPaidPeriod, t, isOwner } = this.props;
 
     const items = [];
     let resultTree = [...settingsTree];
@@ -225,10 +225,18 @@ class ArticleBodyContent extends React.Component {
         return (
           e.tKey === "Backup" ||
           e.tKey === "Payments" ||
-          e.tKey === "PortalDeletion"
+          (isOwner && e.tKey === "PortalDeletion")
         );
       });
     }
+
+    if (!isOwner) {
+      const index = resultTree.findIndex((n) => n.tKey === "PortalDeletion");
+      if (index !== -1) {
+        resultTree.splice(index, 1);
+      }
+    }
+
     resultTree.map((item) => {
       items.push(
         <CatalogItem
@@ -269,14 +277,18 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(({ auth, common }) => {
   const { isLoadedArticleBody, setIsLoadedArticleBody } = common;
-  const { currentTariffStatusStore } = auth;
+  const { currentTariffStatusStore, userStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
+  const { user } = userStore;
+  const { isOwner } = user;
+
   return {
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
     isLoadedArticleBody,
     setIsLoadedArticleBody,
     isNotPaidPeriod,
+    isOwner,
   };
 })(
   withLoading(
