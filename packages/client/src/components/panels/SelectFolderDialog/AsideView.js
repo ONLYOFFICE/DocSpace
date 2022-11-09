@@ -102,7 +102,7 @@ const SelectFolderDialogAsideView = ({
           className="select-folder-dialog-buttons-save"
           primary
           scale
-          size="normalTouchscreen"
+          size="normal"
           label={primaryButtonName}
           onClick={onButtonClick}
           isDisabled={
@@ -114,7 +114,7 @@ const SelectFolderDialogAsideView = ({
           }
         />
         <Button
-          size="normalTouchscreen"
+          size="normal"
           scale
           label={t("Common:CancelButton")}
           onClick={onClose}

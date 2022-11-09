@@ -83,14 +83,14 @@ const AddSpCertificateModal = (props) => {
           label={t("Common:OKButton")}
           onClick={() => addSpCertificate(t)}
           primary
-          size="normalTouchscreen"
+          size="normal"
           isLoading={isCertificateLoading}
           isDisabled={isGeneratedCertificate || !spCertificate || !spPrivateKey}
         />
         <Button
           label={t("Common:CancelButton")}
           onClick={closeSpModal}
-          size="normalTouchscreen"
+          size="normal"
           isDisabled={isGeneratedCertificate || isCertificateLoading}
         />
       </ModalDialog.Footer>
