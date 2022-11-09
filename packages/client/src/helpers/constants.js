@@ -58,7 +58,7 @@ export const CategoryType = Object.freeze({
 export const TableVersions = Object.freeze({
   Files: "2",
   Rooms: "1",
-  Accounts: "2",
+  Accounts: "3",
 });
 
 export const BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
