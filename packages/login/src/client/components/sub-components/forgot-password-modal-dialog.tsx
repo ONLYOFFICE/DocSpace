@@ -75,6 +75,7 @@ const ForgotPasswordModalDialog: React.FC<IForgotPasswordDialogProps> = ({
       modalBodyPadding="12px 0 0 0"
       asideBodyPadding="16px 0 0 0"
       onClose={onDialogClose}
+      id="forgot-password-modal"
     >
       <ModalDialog.Header>
         <Text isBold={true} fontSize="21px">
@@ -122,6 +123,7 @@ const ForgotPasswordModalDialog: React.FC<IForgotPasswordDialogProps> = ({
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          id="forgot-password-modal-btn-send"
           className="modal-dialog-button"
           key="ForgotSendBtn"
           label={
@@ -136,6 +138,7 @@ const ForgotPasswordModalDialog: React.FC<IForgotPasswordDialogProps> = ({
           tabIndex={2}
         />
         <Button
+          id="forgot-password-modal-btn-close"
           className="modal-dialog-button"
           key="CancelBtn"
           label={t("Common:CancelButton")}
