@@ -18,7 +18,10 @@ const activeCss = css`
   filter: ${(props) =>
     props.primary &&
     (props.theme.isBase ? "brightness(90%)" : "brightness(82%)")};
-  color: ${(props) => props.primary && props.$currentColorScheme.textColor};
+  color: ${(props) =>
+    props.$currentColorScheme.id > 7 &&
+    props.primary &&
+    props.$currentColorScheme.textColor};
 `;
 
 const hoverCss = css`
@@ -33,7 +36,10 @@ const hoverCss = css`
     props.primary && props.$currentColorScheme.buttonsMain};
 
   opacity: ${(props) => props.primary && !props.isDisabled && "0.85"};
-  color: ${(props) => props.primary && props.$currentColorScheme.textColor};
+  color: ${(props) =>
+    props.$currentColorScheme.id > 7 &&
+    props.primary &&
+    props.$currentColorScheme.textColor};
 `;
 
 const getDefaultStyles = ({
@@ -50,11 +56,15 @@ const getDefaultStyles = ({
     background: ${primary && $currentColorScheme.buttonsMain};
     opacity: ${primary && isDisabled && "0.6"};
     border-color: ${primary && $currentColorScheme.buttonsMain};
-    color: ${primary && $currentColorScheme.textColor};
+    color: ${$currentColorScheme.id > 7 &&
+    primary &&
+    $currentColorScheme.textColor};
 
     .loader {
       svg {
-        color: ${primary && $currentColorScheme.textColor};
+        color: ${$currentColorScheme.id > 7 &&
+        primary &&
+        $currentColorScheme.textColor};
       }
     }
 

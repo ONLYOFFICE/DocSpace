@@ -22,7 +22,7 @@ const getDefaultStyles = ({
         ? color
         : $currentColorScheme.id === 7 && !theme.isBase
         ? "#444444"
-        : isPaidBadge
+        : isPaidBadge || $currentColorScheme.id < 7
         ? theme.badge.color
         : $currentColorScheme.textColor} !important;
     }

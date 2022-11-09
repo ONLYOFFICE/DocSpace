@@ -21,7 +21,10 @@ const getDefaultStyles = ({ $currentColorScheme, $isVersion, theme, index }) =>
     }
 
     .version_badge-text {
-      color: ${$isVersion && index !== 0 && $currentColorScheme.textColor};
+      color: ${$currentColorScheme.id > 7 &&
+      $isVersion &&
+      index !== 0 &&
+      $currentColorScheme.textColor};
     }
   `;
 
