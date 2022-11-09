@@ -48,9 +48,9 @@ const MainButton = (props) => {
         <Text className="main-button_text">{text}</Text>
         {isDropdown && (
           <>
-            <img
+            <ReactSVG
               className="main-button_img"
-              src="/static/images/triangle-main-button.svg"
+              src={"/static/images/triangle-main-button.svg"}
             />
 
             <ContextMenu
