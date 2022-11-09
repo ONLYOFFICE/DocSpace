@@ -12,6 +12,7 @@ const getDefaultStyles = ({
   backgroundColor,
   color,
   theme,
+  isPaidBadge,
 }) =>
   $currentColorScheme &&
   !isVersionBadge &&
@@ -21,6 +22,8 @@ const getDefaultStyles = ({
         ? color
         : $currentColorScheme.id === 7 && !theme.isBase
         ? "#444444"
+        : isPaidBadge
+        ? theme.badge.color
         : $currentColorScheme.textColor} !important;
     }
 
