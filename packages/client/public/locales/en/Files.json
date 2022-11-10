@@ -1,6 +1,6 @@
 {
   "All": "All",
-  "Archived": "Archived",
+  "Archived": "Move to archive",
   "ArchiveAction": "Empty archive",
   "ArchivedRoomAction": "The room '{{name}}' is archived",
   "ArchivedRoomsAction": "The rooms are archived",
