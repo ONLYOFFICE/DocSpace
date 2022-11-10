@@ -28,6 +28,7 @@
   "EmptyFilterDescriptionTextRooms": "No rooms match this filter. Try a different one or clear filter to view all rooms.",
   "EmptyFilterSubheadingText": "No files to be displayed for this filter here",
   "EmptyFolderDecription": "Drop files here or create new ones.",
+  "EmptyFolderDescriptionUser": "Files and folders uploaded by admins will appeared here.",
   "EmptyFolderHeader": "No files in this folder",
   "EmptyRecycleBin": "Empty Trash",
   "EmptyScreenFolder": "No docs here yet",
@@ -115,5 +116,8 @@
   "ViewList": "List",
   "ViewOnlyRooms": "View-only",
   "ViewTiles": "Tiles",
-  "WithSubfolders": "With subfolders"
+  "WithSubfolders": "With subfolders",
+  "RoomPinned": "Room pinned",
+  "RoomUnpinned": "Room unpinned",
+  "CreateRoom": "Create room"
 }

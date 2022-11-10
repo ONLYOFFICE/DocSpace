@@ -58,6 +58,7 @@ const ActiveSessions = ({
   const onClickRemoveAllSessions = async () => {
     try {
       setLoading(true);
+      await removeAllSessions().then((res) => console.log(res));
       await removeAllSessions().then((res) => window.location.replace(res));
     } catch (error) {
       toastr.error(error);

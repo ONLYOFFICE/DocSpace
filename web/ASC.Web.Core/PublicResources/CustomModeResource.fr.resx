@@ -58,32 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode" xml:space="preserve">
-    <value>Cher (chère) $UserName,
-
-Votre profile d'utilisateur a été créé avec succès sur le portail à "${__VirtualRootPath}":"${__VirtualRootPath}". Commencez maintenant !
-
-h3.Travaillez sur les documents :
-
-# Créez et éditez les documents texte, les feuilles de calcul et les présentations.
-# Connectez les services de stockage cloud pour rassembler tous vos document en un seul endroit.
-# Partagez les documents avec vos collègues. 
-# Découvrez les différents outils du travail collaboratif sur les documents : deux modes de coédition, révision, commentaires, messagerie instantannée.  
-
-h3.Essayez les fonctionnalités ${LetterLogoText} complémentaires :
-
-# Ajoutez votre compte mail à "${LetterLogoText} Mail":"${__VirtualRootPath}/addons/mail/".
-# Créez les "Projets":"${__VirtualRootPath}/products/projects/" et gérez le flux de travail en ajoutant les tâches et les jalons. 
-# Gérez la relation client en utilisant le "CRM":"${__VirtualRootPath}/products/crm/".
-# Utilisez la "Communauté":"${__VirtualRootPath}/products/community/" pour échanger à l'aide des blogs et des forums,  ajoutez les événements, partagez les signets.
-# Organisez votre agenda à l'aide du "Calendrier":"${__VirtualRootPath}/addons/calendar/".
-# Démarrez le "Chat":"${__VirtualRootPath}/addons/talk/" pour échanger avec vos collègues en ligne.
-
-$GreenButton
-
-Bien cordialement,
-L'équipe ${LetterLogoText}</value>
-  </data>
   <data name="pattern_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>h1.Bienvenue sur ONLYOFFICE Personal
 
@@ -109,37 +83,6 @@ Vous pouvez également modifier les documents hors connexion avec nos "éditeurs
 
 Cordialement,
 équipe ONLYOFFICE</value>
-  </data>
-  <data name="pattern_personal_custom_mode_after_registration8" xml:space="preserve">
-    <value>$PersonalHeaderStart Connectez votre stockage en cloud préféré à ONLYOFFICE $PersonalHeaderEnd
-
-Il y a une semaine que vous avez créé votre bureau en cloud, nous pensons donc qu'il est temps de vous dévoiler quelques conseils et recommandations pour rendre votre travail encore plus efficace.
-
-*Regroupez tous vos documents*
-
-Connectez Dropbox, Google Drive, Box, OneDrive, Nextcloud, ownCloud, kDrive ou Yandex.Disk à ONLYOFFICE et créez un espace de gestion unique pour tous vos documents.
-"En savoir plus" :"https://helpcenter.onlyoffice.com/500.htm?aspxerrorpath=/tipstricks/add-resource.aspxhttp:/helpcenter.onlyoffice.com/tipstricks/add-resource.aspx"
-
-*Modifiez les documents dans votre Google Drive*
-
-Vous pouvez intégrer les éditeurs de ONLYOFFICE dans Google Drive en utilisant notre "connecteur" :"https://chrome.google.com/webstore/detail/onlyoffice-personal/iohfebkcjhlelaoibebeohcgkohkcgpn".
-
-*Utilisez des outils de productivité*
-
-h3.Essayez ONLYOFFICE pour les entreprises "dans le cloud" :"https://www.onlyoffice.com/cloud-office.aspx" ou "sur votre serveur" :"https://www.onlyoffice.com/workspace-enterprise.aspx" gratuitement pendant 30 jours et découvrez les possibilités étendues de gestion des documents ainsi qu'un ensemble d'outils professionnels :
-
-- Gérez les documents de l'équipe dans les projets ;
-
-- Intégrez les documents à CRM et au mail ;
-
-- Partagez les fichiers avec des groupes d'utilisateurs ;
-
-- Optimisez votre flux de travail grâce à des outils de communication d'équipe.
-
-Vous pouvez choisir un plan tarifaire absolument gratuit pour les équipes comptant jusqu'à 5 utilisateurs. "S'inscrire" :"https://www.onlyoffice.com/registration.aspx"
-
-Bien à vous,
-Équipe ONLYOFFICE</value>
   </data>
   <data name="pattern_personal_custom_mode_change_email_v115" xml:space="preserve">
     <value>Souhaitez-vous changer l'adresse mail de votre compte du bureau cloud ?

@@ -186,7 +186,7 @@ public static class UserPhotoThumbnailManager
         }
         catch (ArgumentException error)
         {
-            throw new Users.UnknownImageFormatException(error);
+            throw new UnknownImageFormatException(error);
         }
     }
 }

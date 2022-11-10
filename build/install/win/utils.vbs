@@ -1,3 +1,123 @@
+Function RedisSetup
+    On Error Resume Next
+ 
+    Dim Shell
+
+    Set Shell = CreateObject("WScript.Shell")
+        
+    Shell.Run "redis-cli config set save """"", 0, True
+    Shell.Run "redis-cli config rewrite", 0, True
+    
+    Set Shell = Nothing
+End Function
+
+Function TestPostgreSqlConnection
+    On Error Resume Next
+
+    Dim ErrorText
+    Dim Pos, postgreSqlDriver
+
+    postgreSqlDriver = "PostgreSQL Unicode(x64)"
+
+    Session.Property("PostgreSqlConnectionError") = ""
+
+    Set ConnectionObject = CreateObject("ADODB.Connection")
+    ConnectionObject.Open "Driver={" & postgreSqlDriver & "};" & _
+                          "Server=" & Session.Property("PS_DB_HOST") & ";" & _
+                          "Port=" & Session.Property("PS_DB_PORT")  & ";" & _
+                          "Database=" & Session.Property("PS_DB_NAME") & ";" & _
+                          "Uid=" & Session.Property("PS_DB_USER") & ";" & _
+                          "Pwd=" & Session.Property("PS_DB_PWD")
+    
+    If Err.Number <> 0 Then
+        ErrorText = Err.Description
+        Pos = InStrRev( ErrorText, "]" )
+        If 0 < Pos Then
+            ErrorText = Right( ErrorText, Len( ErrorText ) - Pos )
+        End If
+        Session.Property("PostgreSqlConnectionError") = ErrorText
+    End If
+
+    ConnectionObject.Close
+    
+    Set ConnectionObject = Nothing
+   
+End Function
+
+Function PostgreSqlConfigure
+    On Error Resume Next
+    
+   If (StrComp(Session.Property("POSTGRE_SQL_PATH"),"FALSE") = 0) Then
+            Wscript.Quit
+    End If
+
+    Dim ErrorText
+    Dim Pos, postgreSqlDriver
+    Dim databaseUserName
+    Dim databaseUserPwd
+    Dim databaseName
+    Dim databasePort
+    Dim databaseHost
+
+    databaseUserName = Session.Property("PS_DB_USER")
+    databaseUserPwd = Session.Property("PS_DB_PWD")
+    databaseName = Session.Property("PS_DB_NAME")
+    databasePort = Session.Property("PS_DB_PORT")
+    databaseHost = Session.Property("PS_DB_HOST")
+
+    Call WriteToLog("PostgreSqlConfig: databaseUserName is " & databaseUserName)
+    Call WriteToLog("PostgreSqlConfig: databaseUserPwd is " & databaseUserPwd)
+    Call WriteToLog("PostgreSqlConfig: databaseName is " & databaseName)
+    Call WriteToLog("PostgreSqlConfig: databasePort is " & databasePort)
+    Call WriteToLog("PostgreSqlConfig: databaseHost is " & databaseHost)
+
+    postgreSqlDriver = "PostgreSQL Unicode(x64)"
+
+    Set ConnectionObject = CreateObject("ADODB.Connection")
+    ConnectionObject.Open "Driver={" & postgreSqlDriver & "};Server=" & databaseHost & ";Port=" & databasePort & ";Database=" & "postgres" & ";Uid=" & "postgres" & ";Pwd=" & "postgres"
+            
+    ConnectionObject.Execute "CREATE DATABASE " & databaseName
+    ConnectionObject.Execute "create user " & databaseUserName & " with encrypted password '" & databaseUserPwd & "'" 
+    ConnectionObject.Execute "grant all privileges on database " & databaseName & " to " & databaseUserName
+    
+    If Err.Number <> 0 Then
+        ErrorText = Err.Description
+        Pos = InStrRev( ErrorText, "]" )
+        If 0 < Pos Then
+            Call WriteToLog("PostgreSqlConfig: error is " & ErrorText)
+            ErrorText = Right( ErrorText, Len( ErrorText ) - Pos )
+            Session.Property("PostgreSqlConnectionError") = ErrorText
+
+        End If
+    End If
+    
+    ConnectionObject.Close
+    
+    Set ConnectionObject = Nothing
+
+End Function
+
+Function RandomString( ByVal strLen )
+    Dim str, min, max
+
+    Const LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLOMNOPQRSTUVWXYZ0123456789"
+    min = 1
+    max = Len(LETTERS)
+
+    Randomize
+    For i = 1 to strLen
+        str = str & Mid( LETTERS, Int((max-min+1)*Rnd+min), 1 )
+    Next
+    RandomString = str  
+End Function
+
+Function SetDocumentServerJWTSecretProp
+    On Error Resume Next
+
+    Session.Property("JWT_SECRET") = RandomString( 30 )
+
+End Function
+
 Function MySQLConfigure
     On Error Resume Next
     
@@ -28,8 +148,8 @@ Function MySQLConfigure
     Session.Property("MYSQLODBCDRIVER") = mysqlDriver
 
     Set shell = CreateObject("WScript.Shell")
-    dbname = Session.Property("DATABASE_PROP")
-    dbpass = Session.Property("PASSWORD_PROP")
+    dbname = Session.Property("DB_NAME")
+    dbpass = Session.Property("DB_PWD")
 	
     Err.Clear
     installDir = shell.RegRead("HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\MySQL AB\MySQL Server 8.0\Location")
@@ -260,7 +380,7 @@ Function TestSqlConnection
     Session.Property("MYSQLODBCDRIVER") = mysqlDriver
 
     Set ConnectionObject = CreateObject("ADODB.Connection")
-    ConnectionObject.Open "Driver={" & mysqlDriver & "};Server=" & Session.Property("SERVER_PROP") & ";Port=" & Session.Property("PORT_PROP") & ";Uid=" & Session.Property("USERNAME_PROP") & ";Pwd=" & Session.Property("PASSWORD_PROP")
+    ConnectionObject.Open "Driver={" & mysqlDriver & "};Server=" & Session.Property("DB_HOST") & ";Port=" & Session.Property("DB_PORT") & ";Uid=" & Session.Property("DB_USER") & ";Pwd=" & Session.Property("DB_PWD")
     
     If Err.Number <> 0 Then
         ErrorText = Err.Description

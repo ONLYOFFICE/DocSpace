@@ -154,9 +154,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Паролата трябва да съдържа</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Паролата трябва да съдържа</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>цифри</value>
   </data>

@@ -4,10 +4,22 @@ import PropTypes from "prop-types";
 import { Oval } from "./types/oval";
 import { DualRing } from "./types/dual-ring";
 import { Rombs } from "./types/rombs";
+import { Track } from "./types/track";
+
 import Text from "../text";
 
 const Loader = (props) => {
-  const { type, color, size, label, className, style, id, theme } = props;
+  const {
+    type,
+    color,
+    size,
+    label,
+    className,
+    style,
+    id,
+    primary,
+    theme,
+  } = props;
 
   const svgRenderer = (type) => {
     switch (type) {
@@ -17,6 +29,8 @@ const Loader = (props) => {
         return <DualRing {...props} />;
       case "rombs":
         return <Rombs {...props} />;
+      case "track":
+        return <Track {...props} />;
       default:
         return (
           <span style={{ ...style }}>
@@ -39,7 +53,7 @@ Loader.propTypes = {
   /** Font color */
   color: PropTypes.string,
   /** Type loader */
-  type: PropTypes.oneOf(["base", "oval", "dual-ring", "rombs"]),
+  type: PropTypes.oneOf(["base", "oval", "dual-ring", "rombs", "track"]),
   /** Font size  */
   size: PropTypes.string,
   /** Text label */

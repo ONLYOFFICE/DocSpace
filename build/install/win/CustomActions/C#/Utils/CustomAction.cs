@@ -41,23 +41,23 @@ namespace Utils
         {
             try
             {
-                using (var redis = new Redis(session["REDIS_HOST_PROP"], Convert.ToInt32(session["REDIS_PORT_PROP"])))
+                using (var redis = new Redis(session["REDIS_HOST"], Convert.ToInt32(session["REDIS_PORT"])))
                 {
 
-                    if (!String.IsNullOrEmpty(session["REDIS_PASSWORD_PROP"].Trim()))
-                        redis.Password = session["REDIS_PASSWORD_PROP"];
+                    if (!String.IsNullOrEmpty(session["REDIS_PWD"].Trim()))
+                        redis.Password = session["REDIS_PWD"];
 
                     var pong = redis.Ping("ONLYOFFICE");
 
                     session.Log("Redis Status: IsConnected is {0}", !String.IsNullOrEmpty(pong));
-                    session["RedisServerConnectionError"] = !String.IsNullOrEmpty(pong) ? "" : String.Format("Connection Refused HOST:{0},PORT:{1},PASS:{2}", session["REDIS_HOST_PROP"], session["REDIS_PORT_PROP"], session["REDIS_PASSWORD_PROP"]);
+                    session["RedisServerConnectionError"] = !String.IsNullOrEmpty(pong) ? "" : String.Format("Connection Refused HOST:{0},PORT:{1},PASS:{2}", session["REDIS_HOST"], session["REDIS_PORT"], session["REDIS_PWD"]);
                                                        
                 }
             }
             catch (Exception ex)
             {
                 session.Log("RedisConnectionException '{0}'", ex.Message);
-                session["RedisServerConnectionError"] = String.Format("Connection Refused HOST:{0},PORT:{1},PASS:{2}", session["REDIS_HOST_PROP"], session["REDIS_PORT_PROP"], session["REDIS_PASSWORD_PROP"]);
+                session["RedisServerConnectionError"] = String.Format("Connection Refused HOST:{0},PORT:{1},PASS:{2}", session["REDIS_HOST"], session["REDIS_PORT"], session["REDIS_PWD"]);
             }
 
             return ActionResult.Success; 
@@ -69,11 +69,11 @@ namespace Utils
         {
             ConnectionFactory factory = new ConnectionFactory();
 
-            factory.HostName = session["RABBITMQ_HOSTNAME_PROP"];
-            factory.Port = Convert.ToInt32(session["RABBITMQ_PORT_PROP"]);
-            factory.VirtualHost = session["RABBITMQ_VIRTUALHOST_PROP"];
-            factory.UserName = session["RABBITMQ_USERNAME_PROP"];
-            factory.Password = session["RABBITMQ_PASSWORD_PROP"];
+            factory.HostName = session["AMQP_HOST"];
+            factory.Port = Convert.ToInt32(session["AMQP_PORT"]);
+            factory.VirtualHost = session["AMQP_VHOST"];
+            factory.UserName = session["AMQP_USER"];
+            factory.Password = session["AMQP_PWD"];
 
             try
             {
@@ -82,11 +82,11 @@ namespace Utils
                     session.Log("RabbitMQ Status: IsConnected is {0}", conn.IsOpen);
 
                     session["RabbitMQServerConnectionError"] = conn.IsOpen ? "" : String.Format("Connection Refused HOST:{0}, PORT:{1}, VirtualHost:{2}, UserName:{3}, PASS:{4}",
-                        session["RABBITMQ_HOSTNAME_PROP"],
-                        session["RABBITMQ_PORT_PROP"],
-                        session["RABBITMQ_VIRTUALHOST_PROP"],
-                        session["RABBITMQ_USERNAME_PROP"],
-                        session["RABBITMQ_PASSWORD_PROP"]
+                        session["AMQP_HOST"],
+                        session["AMQP_PORT"],
+                        session["AMQP_VHOST"],
+                        session["AMQP_USER"],
+                        session["AMQP_PWD"]
                         );
                 }
             }
@@ -95,11 +95,11 @@ namespace Utils
 
                 session.Log("RabbitMQ.Client.Exceptions.BrokerUnreachableException {0}", ex.Message);
                 session["RabbitMQServerConnectionError"] = String.Format("Connection Refused HOST:{0}, PORT:{1}, VirtualHost:{2}, UserName:{3}, PASS:{4}",
-                        session["RABBITMQ_HOSTNAME_PROP"],
-                        session["RABBITMQ_PORT_PROP"],
-                        session["RABBITMQ_VIRTUALHOST_PROP"],
-                        session["RABBITMQ_USERNAME_PROP"],
-                        session["RABBITMQ_PASSWORD_PROP"]
+                        session["AMQP_HOST"],
+                        session["AMQP_PORT"],
+                        session["AMQP_VHOST"],
+                        session["AMQP_USER"],
+                        session["AMQP_PWD"]
                         );
 
             }

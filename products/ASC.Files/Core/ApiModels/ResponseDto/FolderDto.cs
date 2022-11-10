@@ -120,6 +120,9 @@ public class FolderDtoHelper : FileEntryDtoHelper
                 FolderType.CustomRoom => RoomType.CustomRoom,
                 _ => null,
             };
+
+            result.ParentId = folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() :
+                folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() : folder.ParentId;
         }
 
         if (folder.RootFolderType == FolderType.USER

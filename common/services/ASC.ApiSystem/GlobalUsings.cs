@@ -103,3 +103,5 @@ global using Microsoft.Extensions.Options;
 global using Newtonsoft.Json.Linq;
 
 global using NLog;
+global using HealthChecks.UI.Client;
+global using Microsoft.AspNetCore.Diagnostics.HealthChecks;

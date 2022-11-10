@@ -27,7 +27,6 @@
 using ASC.Core.Common.Notify.Push.Dao;
 
 using Constants = ASC.Core.Configuration.Constants;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace ASC.Core.Common.Notify;
 

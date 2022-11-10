@@ -92,7 +92,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 foreach (var module in _modules)
                 {
-                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module));
+                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id, module));
                 }
 
                 Parallel.ForEach(dictionary, (elem) =>
@@ -112,16 +112,19 @@ public class EncryptionOperation : DistributedTaskProgress
 
             Percentage = 90;
             PublishChanges();
-
             ActivateTenants(tenantManager, log, notifyHelper);
 
             Percentage = 100;
+
+            IsCompleted = true;
             PublishChanges();
         }
         catch (Exception e)
         {
             Exception = e;
             log.ErrorEncryptionOperation(e);
+            IsCompleted = true;
+            PublishChanges();
         }
     }
 
@@ -256,7 +259,7 @@ public class EncryptionOperation : DistributedTaskProgress
         {
             foreach (var module in _modules)
             {
-                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id.ToString(), module);
+                var store = (DiscDataStore)storageFactory.GetStorage(ConfigPath, tenant.Id, module);
 
                 if (await store.IsFileAsync(string.Empty, ProgressFileName))
                 {

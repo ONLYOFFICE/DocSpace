@@ -135,6 +135,16 @@ class ArticleBodyContent extends React.Component {
 
     if (tReady) setIsLoadedArticleBody(true);
 
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      if (this.props.location.pathname.includes("payments")) {
+        this.setState({ selectedKeys: ["4-0"] });
+      }
+
+      if (this.props.location.pathname.includes("common")) {
+        this.setState({ selectedKeys: ["0-0"] });
+      }
+    }
+
     if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
       const { selectedKeys } = this.state;
 
@@ -205,16 +215,28 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText, isNotPaidPeriod, t } = this.props;
+    const { showText, isNotPaidPeriod, t, isOwner } = this.props;
 
     const items = [];
     let resultTree = [...settingsTree];
 
     if (isNotPaidPeriod) {
       resultTree = [...settingsTree].filter((e) => {
-        return e.tKey === "Backup" || e.tKey === "Payments";
+        return (
+          e.tKey === "Backup" ||
+          e.tKey === "Payments" ||
+          (isOwner && e.tKey === "PortalDeletion")
+        );
       });
     }
+
+    if (!isOwner) {
+      const index = resultTree.findIndex((n) => n.tKey === "PortalDeletion");
+      if (index !== -1) {
+        resultTree.splice(index, 1);
+      }
+    }
+
     resultTree.map((item) => {
       items.push(
         <CatalogItem
@@ -255,14 +277,18 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(({ auth, common }) => {
   const { isLoadedArticleBody, setIsLoadedArticleBody } = common;
-  const { currentTariffStatusStore } = auth;
+  const { currentTariffStatusStore, userStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
+  const { user } = userStore;
+  const { isOwner } = user;
+
   return {
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
     isLoadedArticleBody,
     setIsLoadedArticleBody,
     isNotPaidPeriod,
+    isOwner,
   };
 })(
   withLoading(

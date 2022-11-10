@@ -39,10 +39,10 @@ builder.Configuration.AddDefaultConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 
-var logger = NLog.LogManager.Setup()
+var logger = LogManager.Setup()
                             .SetupExtensions(s =>
                             {
-                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                                s.RegisterLayoutRenderer("application-context", (logevent) => AppName);
                             })
                             .LoadConfiguration(builder.Configuration, builder.Environment)
                             .GetLogger(typeof(Startup).Namespace);
@@ -67,7 +67,7 @@ try
 
     var eventBus = ((IApplicationBuilder)app).ApplicationServices.GetRequiredService<IEventBus>();
 
-    eventBus.Subscribe<ASC.Core.Common.Notify.IntegrationEvents.Events.NotifySendTelegramMessageRequestedIntegrationEvent, TelegramSendMessageRequestedIntegrationEventHandler>();
+    eventBus.Subscribe<NotifySendTelegramMessageRequestedIntegrationEvent, TelegramSendMessageRequestedIntegrationEventHandler>();
 
     await app.RunWithTasksAsync();
 }
@@ -75,7 +75,7 @@ catch (Exception ex)
 {
     if (logger != null)
     {
-        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", AppName);
     }
 
     throw;
@@ -83,7 +83,7 @@ catch (Exception ex)
 finally
 {
     // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-    NLog.LogManager.Shutdown();
+    LogManager.Shutdown();
 }
 
 public partial class Program

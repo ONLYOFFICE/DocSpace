@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { inject } from "mobx-react";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import {
@@ -15,6 +15,7 @@ import HistoryBlockMessage from "./HistoryBlockMessage";
 import HistoryBlockItemList from "./HistoryBlockItemList";
 import Loaders from "@docspace/common/components/Loaders";
 import HistoryBlockUser from "./HistoryBlockUser";
+import { FeedItemTypes } from "@docspace/common/constants";
 
 const History = ({
   t,
@@ -24,13 +25,29 @@ const History = ({
   selectedFolder,
   selectionParentRoom,
   setSelection,
-  getItemIcon,
+  getInfoPanelItemIcon,
   getHistory,
   checkAndOpenLocationAction,
   openUser,
+  isVisitor,
 }) => {
   const [history, setHistory] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
+
+  const fetchHistory = async (itemId) => {
+    let module = "files";
+    if (selection.isRoom) module = "rooms";
+    else if (selection.isFolder) module = "folders";
+
+    let timerId = setTimeout(() => setShowLoader(true), 1500);
+    let fetchedHistory = await getHistory(module, itemId);
+    fetchedHistory = parseHistoryJSON(fetchedHistory);
+    clearTimeout(timerId);
+
+    setHistory(fetchedHistory);
+    setSelection({ ...selection, history: fetchedHistory });
+    setShowLoader(false);
+  };
 
   const parseHistoryJSON = (fetchedHistory) => {
     let feeds = fetchedHistory.feeds;
@@ -59,21 +76,6 @@ const History = ({
     return { ...fetchedHistory, feeds: newFeeds };
   };
 
-  const fetchHistory = async (itemId) => {
-    let module = "files";
-    if (selection.isRoom) module = "rooms";
-    else if (selection.isFolder) module = "folders";
-
-    let timerId = setTimeout(() => setShowLoader(true), 1500);
-    let fetchedHistory = await getHistory(module, itemId);
-    fetchedHistory = parseHistoryJSON(fetchedHistory);
-    clearTimeout(timerId);
-
-    setHistory(fetchedHistory);
-    setSelection({ ...selection, history: fetchedHistory });
-    setShowLoader(false);
-  };
-
   useEffect(async () => {
     if (selection.history) {
       setHistory(selection.history);
@@ -93,7 +95,7 @@ const History = ({
         {history.feeds.map((feed) => (
           <StyledHistoryBlock
             key={feed.json.Id}
-            isUserAction={feed.json.Item === "sharedRoom" && feed.target}
+            isUserAction={feed.json.Item === FeedItemTypes.User && feed.target}
           >
             <Avatar
               role="user"
@@ -134,19 +136,21 @@ const History = ({
                 selectionParentRoom={selectionParentRoom}
               />
 
-              {(feed.json.Item === "file" || feed.json.Item === "folder") && (
+              {(feed.json.Item === FeedItemTypes.File ||
+                feed.json.Item === FeedItemTypes.Folder) && (
                 <HistoryBlockItemList
                   t={t}
                   items={[feed.json, ...feed.groupedFeeds]}
-                  getItemIcon={getItemIcon}
+                  getInfoPanelItemIcon={getInfoPanelItemIcon}
                   checkAndOpenLocationAction={checkAndOpenLocationAction}
                 />
               )}
 
-              {feed.json.Item === "sharedRoom" &&
+              {feed.json.Item === FeedItemTypes.User &&
                 feed.target &&
                 [feed.target, ...feed.groupedFeeds].map((user, i) => (
                   <HistoryBlockUser
+                    isVisitor={isVisitor}
                     key={user.id}
                     user={user}
                     withComma={i !== feed.groupedFeeds.length}
@@ -162,11 +166,12 @@ const History = ({
 };
 
 export default inject(({ auth, filesStore, filesActionsStore }) => {
+  const { userStore } = auth;
   const {
     selection,
     selectionParentRoom,
     setSelection,
-    getItemIcon,
+    getInfoPanelItemIcon,
     openUser,
   } = auth.infoPanelStore;
   const { personal, culture } = auth.settingsStore;
@@ -174,15 +179,19 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
   const { getHistory } = filesStore;
   const { checkAndOpenLocationAction } = filesActionsStore;
 
+  const { user } = userStore;
+  const isVisitor = user.isVisitor;
+
   return {
     personal,
     culture,
     selection,
     selectionParentRoom,
     setSelection,
-    getItemIcon,
+    getInfoPanelItemIcon,
     getHistory,
     checkAndOpenLocationAction,
     openUser,
+    isVisitor,
   };
-})(withTranslation(["InfoPanel", "Common", "Translations"])(History));
+})(withTranslation(["InfoPanel", "Common", "Translations"])(observer(History)));

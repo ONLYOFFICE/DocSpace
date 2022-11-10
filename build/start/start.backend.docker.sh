@@ -39,7 +39,7 @@ docker_file=Dockerfile.dev
 env_extension="dev"
 core_base_domain="localhost"
 
-echo "Start all backend services"
+echo "Start all backend services (containers)"
 DOCKERFILE=$docker_file \
 ROOT_DIR=$dir \
 RELEASE_DATE=$build_date \
