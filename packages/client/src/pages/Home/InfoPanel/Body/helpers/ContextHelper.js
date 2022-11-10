@@ -46,7 +46,7 @@ class ContextHelper {
       }
     }
 
-    if (this.selection?.isSelectedFolder) {
+    if (this.selection?.isSelectedFolder && !this.selection?.isRoom) {
       excludeOptionsIntoFolder.forEach((excludeOption) => {
         const idx = options.findIndex((o) => o === excludeOption);
         if (idx !== -1) options.splice(idx, 1);
