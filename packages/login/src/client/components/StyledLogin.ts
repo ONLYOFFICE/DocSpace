@@ -77,7 +77,7 @@ export const LoginContainer = styled.div`
     width: 320px;
     align-items: center;
     color: #eceef1;
-    padding-top: 35px;
+    padding: 32px 0;
 
     @media ${tablet} {
       width: 480px;
