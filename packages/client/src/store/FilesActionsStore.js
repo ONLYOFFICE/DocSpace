@@ -633,11 +633,11 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
     if (
-      (this.settingsStore.confirmDelete ||
-        this.treeFoldersStore.isPrivacyFolder ||
-        isThirdParty) &&
-      !isRoom
+      this.settingsStore.confirmDelete ||
+      this.treeFoldersStore.isPrivacyFolder ||
+      isThirdParty
     ) {
+      this.dialogsStore.setIsRoomDelete(isRoom);
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {
       setSecondaryProgressBarData({
@@ -1358,28 +1358,11 @@ class FilesActionStore {
     this.setPinAction("unpin", items);
   };
 
-  moveRoomsToArchive = (t) => {
-    const { selection } = this.filesStore;
+  archiveRooms = (action) => {
+    const { setArchiveAction, setArchiveDialogVisible } = this.dialogsStore;
 
-    const items = [];
-
-    selection.forEach((item) => {
-      items.push(item);
-    });
-
-    this.setArchiveAction("archive", items, t);
-  };
-
-  moveRoomsFromArchive = (t) => {
-    const { selection } = this.filesStore;
-
-    const items = [];
-
-    selection.forEach((item) => {
-      items.push(item);
-    });
-
-    this.setArchiveAction("unarchive", items, t);
+    setArchiveAction(action);
+    setArchiveDialogVisible(true);
   };
 
   deleteRooms = (t) => {
@@ -1400,6 +1383,44 @@ class FilesActionStore {
     };
 
     this.deleteItemAction(items, translations, null, null, true);
+  };
+
+  deleteRoomsAction = async (itemId, translations) => {
+    const {
+      secondaryProgressDataStore,
+      clearActiveOperations,
+    } = this.uploadDataStore;
+
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations?.deleteOperation,
+      alert: false,
+    });
+
+    try {
+      await this.deleteItemOperation(false, itemId, translations, true);
+
+      const id = Array.isArray(itemId) ? itemId : [itemId];
+
+      clearActiveOperations(null, id);
+    } catch (err) {
+      console.log(err);
+      clearActiveOperations(null, [itemId]);
+      setSecondaryProgressBarData({
+        visible: true,
+        alert: true,
+      });
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      onClose();
+      return toastr.error(err.message ? err.message : err);
+    }
   };
 
   onShowInfoPanel = () => {
@@ -1490,7 +1511,7 @@ class FilesActionStore {
             key: "archive",
             label: t("Archived"),
             iconUrl: "/static/images/room.archive.svg",
-            onClick: () => this.moveRoomsToArchive(t),
+            onClick: () => this.archiveRooms("archive"),
             disabled: false,
           };
       case "unarchive":
@@ -1500,7 +1521,7 @@ class FilesActionStore {
             key: "unarchive",
             label: t("Common:Restore"),
             iconUrl: "images/subtract.react.svg",
-            onClick: () => this.moveRoomsFromArchive(t),
+            onClick: () => this.archiveRooms("unarchive"),
             disabled: false,
           };
       case "delete-room":
