@@ -3,6 +3,9 @@ import { desktop, tablet } from "@docspace/components/utils/device";
 
 const StyledWrapper = styled.div`
   width: 660px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 
   @media ${tablet} {
     width: 100%;
@@ -40,4 +43,94 @@ const MainBlock = styled.div`
   }
 `;
 
-export { StyledWrapper, MainBlock };
+const LoginBlock = styled.div`
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+
+  .title {
+    margin-bottom: 4px;
+  }
+
+  .actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+`;
+
+const SocialBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .row {
+    display: flex;
+    gap: 20px;
+
+    .button {
+      width: 320px;
+
+      @media ${tablet} {
+        width: 100%;
+      }
+    }
+  }
+`;
+
+const SubBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .toggle {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+`;
+
+const ThemeBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .checkbox {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 4px;
+
+    .row {
+      display: flex;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .description {
+      padding-left: 23px;
+    }
+  }
+
+  .themes-wrapper {
+    display: flex;
+    gap: 20px;
+
+    .theme {
+      width: 320px;
+
+      @media ${tablet} {
+        width: 100%;
+      }
+    }
+  }
+`;
+
+export {
+  StyledWrapper,
+  MainBlock,
+  LoginBlock,
+  SocialBlock,
+  SubBlock,
+  ThemeBlock,
+};
