@@ -27,10 +27,8 @@ const DeleteDialogComponent = (props) => {
     isRootFolder,
     isRoomDelete,
     setIsRoomDelete,
-    clearActiveOperations,
-    setSecondaryProgressBarData,
-    clearSecondaryProgressData,
-    deleteItemOperation,
+
+    deleteRoomsAction,
   } = props;
 
   const selection = [];
@@ -101,33 +99,9 @@ const DeleteDialogComponent = (props) => {
 
     const itemId = selection.map((s) => s.id);
 
-    setSecondaryProgressBarData({
-      icon: "trash",
-      visible: true,
-      percent: 0,
-      label: translations?.deleteOperation,
-      alert: false,
-    });
+    await deleteRoomsAction(itemId, translations);
 
-    try {
-      await deleteItemOperation(false, itemId, translations, true);
-
-      const id = Array.isArray(itemId) ? itemId : [itemId];
-
-      clearActiveOperations(null, id);
-
-      onClose();
-    } catch (err) {
-      console.log(err);
-      clearActiveOperations(null, [itemId]);
-      setSecondaryProgressBarData({
-        visible: true,
-        alert: true,
-      });
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
-      onClose();
-      return toastr.error(err.message ? err.message : err);
-    }
+    onClose();
   };
 
   const onClose = () => {
@@ -236,7 +210,7 @@ export default inject(
     const {
       deleteAction,
       unsubscribeAction,
-      deleteItemOperation,
+      deleteRoomsAction,
     } = filesActionsStore;
     const { isPrivacyFolder, isRecycleBinFolder } = treeFoldersStore;
 
@@ -251,16 +225,6 @@ export default inject(
     } = dialogsStore;
 
     const { personal } = auth.settingsStore;
-
-    const {
-      secondaryProgressDataStore,
-      clearActiveOperations,
-    } = uploadDataStore;
-
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
 
     return {
       selection: removeMediaItem
@@ -286,10 +250,7 @@ export default inject(
 
       isRoomDelete,
       setIsRoomDelete,
-      clearActiveOperations,
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-      deleteItemOperation,
+      deleteRoomsAction,
     };
   }
 )(withRouter(observer(DeleteDialog)));

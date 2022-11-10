@@ -1385,6 +1385,44 @@ class FilesActionStore {
     this.deleteItemAction(items, translations, null, null, true);
   };
 
+  deleteRoomsAction = async (itemId, translations) => {
+    const {
+      secondaryProgressDataStore,
+      clearActiveOperations,
+    } = this.uploadDataStore;
+
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations?.deleteOperation,
+      alert: false,
+    });
+
+    try {
+      await this.deleteItemOperation(false, itemId, translations, true);
+
+      const id = Array.isArray(itemId) ? itemId : [itemId];
+
+      clearActiveOperations(null, id);
+    } catch (err) {
+      console.log(err);
+      clearActiveOperations(null, [itemId]);
+      setSecondaryProgressBarData({
+        visible: true,
+        alert: true,
+      });
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      onClose();
+      return toastr.error(err.message ? err.message : err);
+    }
+  };
+
   onShowInfoPanel = () => {
     const { selection } = this.filesStore;
     const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
