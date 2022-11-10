@@ -66,6 +66,7 @@ const getDefaultStyles = ({
         primary &&
         $currentColorScheme.textColor};
       }
+      background-color: ${primary && $currentColorScheme.buttonsMain};
     }
 
     ${!isDisabled &&

@@ -16,22 +16,10 @@ const getDefaultStyles = ({
 }) =>
   $currentColorScheme &&
   css`
-    background: ${color
-      ? color
-      : theme.isBase
-      ? $currentColorScheme.accentColor
-      : icon === "upload"
-      ? theme.floatingButton.backgroundColor
-      : $currentColorScheme.accentColor} !important;
+    background: ${color ? color : $currentColorScheme.accentColor} !important;
 
     ${StyledFloatingButton} {
-      background: ${color
-        ? color
-        : theme.isBase
-        ? $currentColorScheme.accentColor
-        : icon === "upload"
-        ? theme.floatingButton.backgroundColor
-        : $currentColorScheme.accentColor} !important;
+      background: ${color ? color : $currentColorScheme.accentColor} !important;
     }
 
     ${IconBox} {

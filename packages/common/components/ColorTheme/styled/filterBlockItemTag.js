@@ -6,15 +6,15 @@ const getDefaultStyles = ({ $currentColorScheme, isSelected, theme }) =>
   $currentColorScheme &&
   isSelected &&
   css`
-    background: ${theme.isBase && $currentColorScheme.accentColor};
-    border-color: ${theme.isBase && $currentColorScheme.accentColor};
+    background: ${$currentColorScheme.accentColor};
+    border-color: ${$currentColorScheme.accentColor};
 
     p {
       color: ${$currentColorScheme.id > 7 && $currentColorScheme.textColor};
     }
     &:hover {
-      background: ${theme.isBase && $currentColorScheme.accentColor};
-      border-color: ${theme.isBase && $currentColorScheme.accentColor};
+      background: ${$currentColorScheme.accentColor};
+      border-color: ${$currentColorScheme.accentColor};
     }
   `;
 
