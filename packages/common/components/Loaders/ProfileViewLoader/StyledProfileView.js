@@ -131,6 +131,8 @@ const MobileView = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 8px;
+  padding: 0 16px;
+  margin: 0 0 0 -20px;
 
   .avatar {
     height: 124px;
