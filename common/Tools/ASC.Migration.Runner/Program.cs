@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Api.Core.Extensions;
+
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -31,34 +33,29 @@ var options = new WebApplicationOptions
 };
 
 var builder = WebApplication.CreateBuilder(options);
-builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
- {
-     config.AddJsonFile($"appsettings.json", true)
-                .AddCommandLine(args);
- });
 
-builder.WebHost.ConfigureServices((hostContext, services) =>
-{
-    services.AddScoped<EFLoggerFactory>();
-    services.AddBaseDbContext<AccountLinkContext>();
-    services.AddBaseDbContext<CoreDbContext>();
-    services.AddBaseDbContext<TenantDbContext>();
-    services.AddBaseDbContext<UserDbContext>();
-    services.AddBaseDbContext<TelegramDbContext>();
-    services.AddBaseDbContext<FirebaseDbContext>();
-    services.AddBaseDbContext<CustomDbContext>();
-    services.AddBaseDbContext<WebstudioDbContext>();
-    services.AddBaseDbContext<InstanceRegistrationContext>();
-    services.AddBaseDbContext<IntegrationEventLogContext>();
-    services.AddBaseDbContext<FeedDbContext>();
-    services.AddBaseDbContext<MessagesContext>();
-    services.AddBaseDbContext<WebhooksDbContext>();
-    services.AddBaseDbContext<MessagesContext>();
-    services.AddBaseDbContext<BackupsContext>();
-    services.AddBaseDbContext<FilesDbContext>();
-    services.AddBaseDbContext<NotifyDbContext>();
-    services.AddBaseDbContext<UrlShortenerFakeDbContext>();
-});
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                     .AddCommandLine(args);
+
+builder.Services.AddScoped<EFLoggerFactory>();
+builder.Services.AddBaseDbContext<AccountLinkContext>();
+builder.Services.AddBaseDbContext<CoreDbContext>();
+builder.Services.AddBaseDbContext<TenantDbContext>();
+builder.Services.AddBaseDbContext<UserDbContext>();
+builder.Services.AddBaseDbContext<TelegramDbContext>();
+builder.Services.AddBaseDbContext<FirebaseDbContext>();
+builder.Services.AddBaseDbContext<CustomDbContext>();
+builder.Services.AddBaseDbContext<WebstudioDbContext>();
+builder.Services.AddBaseDbContext<InstanceRegistrationContext>();
+builder.Services.AddBaseDbContext<IntegrationEventLogContext>();
+builder.Services.AddBaseDbContext<FeedDbContext>();
+builder.Services.AddBaseDbContext<MessagesContext>();
+builder.Services.AddBaseDbContext<WebhooksDbContext>();
+builder.Services.AddBaseDbContext<MessagesContext>();
+builder.Services.AddBaseDbContext<BackupsContext>();
+builder.Services.AddBaseDbContext<FilesDbContext>();
+builder.Services.AddBaseDbContext<NotifyDbContext>();
+builder.Services.AddBaseDbContext<UrlShortenerFakeDbContext>();
 
 var app = builder.Build();
 

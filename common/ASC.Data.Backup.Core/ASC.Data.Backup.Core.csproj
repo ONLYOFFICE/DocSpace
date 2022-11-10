@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <OutputType>Library</OutputType>
     <NoWarn>NU1701</NoWarn>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -12,15 +12,15 @@
     <None Remove="protos\delete_schedule.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Grpc" Version="2.46.3">
+    <PackageReference Include="Grpc" Version="2.46.5">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
-    <PackageReference Include="Grpc.Tools" Version="2.47.0">
+    <PackageReference Include="Grpc.Tools" Version="2.50.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="MySql.Data" Version="8.0.30" />
-    <PackageReference Include="protobuf-net" Version="3.1.17" />
+    <PackageReference Include="MySql.Data" Version="8.0.31" />
+    <PackageReference Include="protobuf-net" Version="3.1.25" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\products\ASC.Files\Core\ASC.Files.Core.csproj" />
