@@ -47,10 +47,11 @@ const ItemContextOptions = ({
   }, [selection]);
 
   const options = contextHelper.getItemContextOptions();
+
   const getData = () => options;
 
   return (
-    <StyledItemContextOptions onClick={() => setBufferSelection(selection)}>
+    <StyledItemContextOptions>
       <ContextMenu
         ref={contextMenuRef}
         getContextModel={getData}
