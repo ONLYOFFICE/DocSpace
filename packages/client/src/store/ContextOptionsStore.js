@@ -446,10 +446,6 @@ class ContextOptionsStore {
 
     setArchiveAction(action);
     setArchiveDialogVisible(true);
-
-    // this.filesActionsStore
-    //   .setArchiveAction(action, item, t)
-    //   .catch((err) => toastr.error(err));
   };
 
   onSelect = (item) => {
