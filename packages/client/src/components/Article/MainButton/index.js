@@ -233,12 +233,14 @@ const ArticleMainButtonContent = (props) => {
 
     const formActions = [
       {
+        id: "main-button_template",
         className: "main-button_drop-down",
         icon: "images/form.react.svg",
         label: t("Translations:NewForm"),
         key: "new-form",
         items: [
           {
+            id: "main-button_template-empty",
             className: "main-button_drop-down_sub",
             icon: "images/form.blank.react.svg",
             label: t("Translations:SubNewForm"),
@@ -247,6 +249,7 @@ const ArticleMainButtonContent = (props) => {
             key: "docxf",
           },
           {
+            id: "main-button_template-form-file",
             className: "main-button_drop-down_sub",
             icon: "images/form.file.react.svg",
             label: t("Translations:SubNewFormFile"),
@@ -255,6 +258,7 @@ const ArticleMainButtonContent = (props) => {
             key: "form-file",
           },
           {
+            id: "main-button_template-form-gallery",
             className: "main-button_drop-down_sub",
             icon: "images/form.gallery.react.svg",
             label: t("Common:OFORMsGallery"),
