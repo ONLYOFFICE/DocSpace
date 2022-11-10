@@ -75,7 +75,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetRoomsAsync(string parentId, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders,
-        bool withoutTags, bool excludeSubject, ProviderFilter provider)
+        bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
     {
         if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.Box))
         {
@@ -85,7 +85,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
         var rooms = GetFoldersAsync(parentId);
 
         rooms = FilterByRoomType(rooms, filterType);
-        rooms = FilterBySubject(rooms, subjectId, excludeSubject);
+        rooms = FilterBySubject(rooms, subjectId, excludeSubject, SubjectFilter.Owner);
 
         if (!string.IsNullOrEmpty(searchText))
         {
@@ -98,7 +98,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
     }
 
     public IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText,
-        bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider)
+        bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
     {
         if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.Box))
         {
@@ -108,7 +108,7 @@ internal class BoxFolderDao : BoxDaoBase, IFolderDao<string>
         var folders = roomsIds.ToAsyncEnumerable().SelectAwait(async e => await GetFolderAsync(e).ConfigureAwait(false));
 
         folders = FilterByRoomType(folders, filterType);
-        folders = FilterBySubject(folders, subjectId, excludeSubject);
+        folders = FilterBySubject(folders, subjectId, excludeSubject, subjectFilter, subjectEntriesIds);
 
         if (!string.IsNullOrEmpty(searchText))
         {
