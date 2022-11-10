@@ -203,6 +203,7 @@
   "Video": "Video",
   "View": "View",
   "ViewWeb": "View web version",
+  "WantToContinue": "Are you sure you want to continue?",
   "Warning": "Warning",
   "Website": "Website",
   "Hotkeys": "Hotkeys",
@@ -214,6 +215,5 @@
   "FeedbackAndSupport": "Feedback & Support",
   "VideoGuides": "Video Guides",
   "SelectFile": "Select file",
-  "SureWant": "Are you sure you want to continue?",
   "HideArticleMenu": "Hide menu"
 }
