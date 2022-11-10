@@ -2748,6 +2748,8 @@ const Dark = {
     navBackground: "#282828",
     headerColor: white,
     helpButton: "#D8D8D8",
+    orLineColor: "#474747",
+    orTextColor: "#858585",
 
     register: {
       backgroundColor: "#292929",

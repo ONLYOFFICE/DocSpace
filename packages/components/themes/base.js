@@ -2745,6 +2745,8 @@ const Base = {
     navBackground: "#F8F9F9",
     headerColor: black,
     helpButton: "#A3A9AE",
+    orLineColor: "#ECEEF1",
+    orTextColor: "#A3A9AE",
 
     register: {
       backgroundColor: grayLight,
