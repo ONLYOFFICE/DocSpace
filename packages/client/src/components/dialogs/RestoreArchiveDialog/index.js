@@ -17,13 +17,13 @@ const StyledModal = styled(ModalDialogContainer)`
   }
 `;
 
-const RestoreAllArchiveDialogComponent = (props) => {
+const RestoreArchiveDialogComponent = (props) => {
   const {
     visible,
     t,
     tReady,
 
-    setRestoreAllArchiveDialogVisible,
+    setRestoreArchiveDialogVisible,
 
     setArchiveAction,
     folders,
@@ -38,7 +38,7 @@ const RestoreAllArchiveDialogComponent = (props) => {
   }, []);
 
   const onClose = () => {
-    !requestRunning && setRestoreAllArchiveDialogVisible(false);
+    !requestRunning && setRestoreArchiveDialogVisible(false);
   };
 
   const onRestore = () => {
@@ -90,27 +90,27 @@ const RestoreAllArchiveDialogComponent = (props) => {
   );
 };
 
-const RestoreAllArchiveDialog = withTranslation([
+const RestoreArchiveDialog = withTranslation([
   "Files",
   "Common",
   "Translations",
-])(RestoreAllArchiveDialogComponent);
+])(RestoreArchiveDialogComponent);
 
 export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
   const { folders } = filesStore;
   const { setArchiveAction } = filesActionsStore;
 
   const {
-    restoreAllArchiveDialogVisible: visible,
-    setRestoreAllArchiveDialogVisible,
+    restoreArchiveDialogVisible: visible,
+    setRestoreArchiveDialogVisible,
   } = dialogsStore;
 
   return {
     visible,
 
-    setRestoreAllArchiveDialogVisible,
+    setRestoreArchiveDialogVisible,
 
     setArchiveAction,
     folders,
   };
-})(withRouter(observer(RestoreAllArchiveDialog)));
+})(withRouter(observer(RestoreArchiveDialog)));

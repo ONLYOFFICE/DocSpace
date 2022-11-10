@@ -35,7 +35,7 @@ class DialogsStore {
     defaultAccess: ShareAccessRights.FullAccess,
   };
   restoreAllPanelVisible = false;
-  restoreAllArchiveDialogVisible = false;
+  restoreArchiveDialogVisible = false;
   eventDialogVisible = false;
 
   removeItem = null;
@@ -52,7 +52,7 @@ class DialogsStore {
   formCreationInfo = null;
   saveThirdpartyResponse = null;
   inviteItems = [];
-
+  restoreAll = false;
   isConnectDialogReconnect = false;
   saveAfterReconnectOAuth = false;
 
@@ -72,8 +72,8 @@ class DialogsStore {
     this.versionHistoryStore = versionHistoryStore;
   }
 
-  setRestoreAllArchiveDialogVisible = (restoreAllArchiveDialogVisible) => {
-    this.restoreAllArchiveDialogVisible = restoreAllArchiveDialogVisible;
+  setRestoreArchiveDialogVisible = (restoreArchiveDialogVisible) => {
+    this.restoreArchiveDialogVisible = restoreArchiveDialogVisible;
   };
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -318,7 +318,7 @@ class DialogsStore {
       this.versionHistoryStore.isVisible ||
       this.eventDialogVisible ||
       this.invitePanelOptions.visible ||
-      this.restoreAllArchiveDialogVisible ||
+      this.restoreArchiveDialogVisible ||
       this.restoreAllPanelVisible ||
       this.inviteUsersWarningDialogVisible
     );

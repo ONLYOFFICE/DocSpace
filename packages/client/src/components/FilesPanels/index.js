@@ -26,7 +26,7 @@ import {
   InviteUsersWarningDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
-import RestoreAllArchiveDialog from "../dialogs/RestoreAllArchiveDialog";
+import RestoreArchiveDialog from "../dialogs/RestoreArchiveDialog";
 
 const Panels = (props) => {
   const {
@@ -54,9 +54,11 @@ const Panels = (props) => {
     convertPasswordDialogVisible,
     createRoomDialogVisible,
     restoreAllPanelVisible,
-    restoreAllArchiveDialogVisible,
+    restoreArchiveDialogVisible,
     inviteUsersWarningDialogVisible,
   } = props;
+
+  console.log(restoreArchiveDialogVisible);
 
   const { t } = useTranslation(["Translations", "SelectFile"]);
 
@@ -121,8 +123,8 @@ const Panels = (props) => {
     convertPasswordDialogVisible && (
       <ConvertPasswordDialog key="convert-password-dialog" />
     ),
-    restoreAllArchiveDialogVisible && (
-      <RestoreAllArchiveDialog key="restore-all-archive-dialog" />
+    restoreArchiveDialogVisible && (
+      <RestoreArchiveDialog key="restore-all-archive-dialog" />
     ),
     inviteUsersWarningDialogVisible && (
       <InviteUsersWarningDialog key="invite-users-warning-dialog" />
@@ -151,7 +153,7 @@ export default inject(
       convertPasswordDialogVisible,
       connectItem, //TODO:
       restoreAllPanelVisible,
-      restoreAllArchiveDialogVisible,
+      restoreArchiveDialogVisible,
 
       createMasterForm,
       selectFileDialogVisible,
@@ -189,7 +191,7 @@ export default inject(
       hotkeyPanelVisible,
       restoreAllPanelVisible,
       invitePanelVisible: invitePanelOptions.visible,
-      restoreAllArchiveDialogVisible,
+      restoreArchiveDialogVisible,
       inviteUsersWarningDialogVisible,
     };
   }
