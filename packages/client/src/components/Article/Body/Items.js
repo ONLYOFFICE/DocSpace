@@ -30,7 +30,7 @@ const Item = ({
   showBadge,
   labelBadge,
   iconBadge,
-  folderNames,
+  folderName,
 }) => {
   const [isDragActive, setIsDragActive] = useState(false);
 
@@ -97,7 +97,7 @@ const Item = ({
       <CatalogItem
         key={item.id}
         id={item.id}
-        forderName={folderNames[item.rootFolderType]}
+        forderName={folderName}
         className={`tree-drag ${item.folderClassName}`}
         icon={getFolderIcon(item)}
         showText={showText}
@@ -293,7 +293,9 @@ const Items = ({
   const folderNames = useMemo(
     () =>
       Object.keys(FolderType).reduce((ret, key) => {
-        ret[FolderType[key]] = key;
+        ret[FolderType[key]] = `catalog-${
+          key === "Rooms" ? "shared" : key.toLowerCase()
+        }`;
         return ret;
       }, {}),
     [FolderType]
@@ -329,7 +331,7 @@ const Items = ({
             showBadge={showBadge}
             labelBadge={labelBadge}
             iconBadge={iconBadge}
-            folderNames={folderNames}
+            folderName={folderNames[item.rootFolderType]}
           />
         );
       });
