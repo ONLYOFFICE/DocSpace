@@ -438,13 +438,18 @@ class ContextOptionsStore {
     this.filesActionsStore.setPinAction(action, id, t);
   };
 
-  onClickArchive = (e, item, t) => {
+  onClickArchive = (e) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
 
-    this.filesActionsStore
-      .setArchiveAction(action, item, t)
-      .catch((err) => toastr.error(err));
+    const { setArchiveDialogVisible, setArchiveAction } = this.dialogsStore;
+
+    setArchiveAction(action);
+    setArchiveDialogVisible(true);
+
+    // this.filesActionsStore
+    //   .setArchiveAction(action, item, t)
+    //   .catch((err) => toastr.error(err));
   };
 
   onSelect = (item) => {
@@ -799,7 +804,7 @@ class ContextOptionsStore {
         key: "archive-room",
         label: t("Archived"),
         icon: "/static/images/room.archive.svg",
-        onClick: (e) => this.onClickArchive(e, item, t),
+        onClick: (e) => this.onClickArchive(e),
         disabled: false,
         "data-action": "archive",
         action: "archive",
@@ -808,7 +813,7 @@ class ContextOptionsStore {
         key: "unarchive-room",
         label: t("Common:Restore"),
         icon: "images/subtract.react.svg",
-        onClick: (e) => this.onClickArchive(e, item, t),
+        onClick: (e) => this.onClickArchive(e),
         disabled: false,
         "data-action": "unarchive",
         action: "unarchive",
@@ -895,15 +900,19 @@ class ContextOptionsStore {
             key: "archive-room",
             label: t("Archived"),
             icon: "/static/images/room.archive.svg",
-            onClick: () => moveRoomsToArchive(t),
+            onClick: (e) => this.onClickArchive(e),
             disabled: false,
+            "data-action": "archive",
+            action: "archive",
           }
         : {
             key: "unarchive-room",
             label: t("Common:Restore"),
             icon: "images/subtract.react.svg",
-            onClick: () => moveRoomsFromArchive(t),
+            onClick: (e) => this.onClickArchive(e),
             disabled: false,
+            "data-action": "unarchive",
+            action: "unarchive",
           };
 
       const options = [];

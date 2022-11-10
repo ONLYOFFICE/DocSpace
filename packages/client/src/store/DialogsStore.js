@@ -35,7 +35,7 @@ class DialogsStore {
     defaultAccess: ShareAccessRights.FullAccess,
   };
   restoreAllPanelVisible = false;
-  restoreArchiveDialogVisible = false;
+  archiveDialogVisible = false;
   eventDialogVisible = false;
 
   removeItem = null;
@@ -47,7 +47,7 @@ class DialogsStore {
   conflictResolveDialogItems = null;
   removeMediaItem = null;
   unsubscribe = null;
-  archived = null;
+  archiveAction = null;
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
@@ -72,12 +72,16 @@ class DialogsStore {
     this.versionHistoryStore = versionHistoryStore;
   }
 
+  setArchiveAction = (archiveAction) => {
+    this.archiveAction = archiveAction;
+  };
+
   setRestoreAllArchive = (restoreAllArchive) => {
     this.restoreAllArchive = restoreAllArchive;
   };
 
-  setRestoreArchiveDialogVisible = (restoreArchiveDialogVisible) => {
-    this.restoreArchiveDialogVisible = restoreArchiveDialogVisible;
+  setArchiveDialogVisible = (archiveDialogVisible) => {
+    this.archiveDialogVisible = archiveDialogVisible;
   };
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -240,10 +244,6 @@ class DialogsStore {
     this.unsubscribe = unsubscribe;
   };
 
-  setArchived = (archived) => {
-    this.archived = archived;
-  };
-
   setConvertDialogVisible = (visible) => {
     this.convertDialogVisible = visible;
   };
@@ -322,7 +322,7 @@ class DialogsStore {
       this.versionHistoryStore.isVisible ||
       this.eventDialogVisible ||
       this.invitePanelOptions.visible ||
-      this.restoreArchiveDialogVisible ||
+      this.archiveDialogVisible ||
       this.restoreAllPanelVisible ||
       this.inviteUsersWarningDialogVisible
     );

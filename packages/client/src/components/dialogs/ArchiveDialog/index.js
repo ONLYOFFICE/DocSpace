@@ -17,16 +17,18 @@ const StyledModal = styled(ModalDialogContainer)`
   }
 `;
 
-const RestoreArchiveDialogComponent = (props) => {
+const ArchiveDialogComponent = (props) => {
   const {
     t,
     tReady,
 
     visible,
     restoreAll,
+    action,
 
-    setRestoreArchiveDialogVisible,
+    setArchiveDialogVisible,
     setRestoreAllArchive,
+    setArchiveActionType,
 
     setArchiveAction,
     items,
@@ -43,14 +45,15 @@ const RestoreArchiveDialogComponent = (props) => {
   const onClose = () => {
     if (!requestRunning) {
       setRestoreAllArchive(false);
-      setRestoreArchiveDialogVisible(false);
+      setArchiveActionType(null);
+      setArchiveDialogVisible(false);
     }
   };
 
-  const onRestore = () => {
+  const onAction = () => {
     setRequestRunning(true);
 
-    setArchiveAction("unarchive", items, t).then(() => {
+    setArchiveAction(action, items, t).then(() => {
       setRequestRunning(false);
       onClose();
     });
@@ -58,13 +61,33 @@ const RestoreArchiveDialogComponent = (props) => {
 
   const onKeyPress = (e) => {
     if (e.keyCode === 13) {
-      onRestore();
+      onAction();
     }
   };
 
-  const description = restoreAll
-    ? t("RestoreArchiveDialog:RestoreAllArchives")
-    : "work at progress";
+  const getDescription = () => {
+    if (restoreAll) return t("ArchiveDialog:RestoreAllRooms");
+
+    if (action === "archive") {
+      return items.length > 1
+        ? t("ArchiveDialog:ArchiveRooms")
+        : t("ArchiveDialog:ArchiveRoom");
+    }
+
+    if (action === "unarchive") {
+      return items.length > 1
+        ? t("ArchiveDialog:RestoreRooms")
+        : t("ArchiveDialog:RestoreRoom");
+    }
+  };
+
+  const header =
+    action === "archive"
+      ? t("ArchiveDialog:ArchiveHeader")
+      : t("Common:Restore");
+  const description = getDescription();
+  const acceptButton =
+    action === "archive" ? t("Common:OKButton") : t("Common:Restore");
 
   return (
     <StyledModal
@@ -73,17 +96,17 @@ const RestoreArchiveDialogComponent = (props) => {
       onClose={onClose}
       displayType="modal"
     >
-      <ModalDialog.Header>{t("Common:Restore")}</ModalDialog.Header>
+      <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text>{description}</Text>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
           key="OkButton"
-          label={t("Common:Restore")}
+          label={acceptButton}
           size="normal"
           primary
-          onClick={onRestore}
+          onClick={onAction}
           isLoading={requestRunning}
           scale
         />
@@ -100,34 +123,40 @@ const RestoreArchiveDialogComponent = (props) => {
   );
 };
 
-const RestoreArchiveDialog = withTranslation([
-  "Files",
-  "RestoreArchiveDialog",
-  "Common",
-])(RestoreArchiveDialogComponent);
+const ArchiveDialog = withTranslation(["Files", "ArchiveDialog", "Common"])(
+  ArchiveDialogComponent
+);
 
 export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
-  const { folders } = filesStore;
+  const { folders, selection, bufferSelection } = filesStore;
   const { setArchiveAction } = filesActionsStore;
 
   const {
-    restoreArchiveDialogVisible: visible,
+    archiveDialogVisible: visible,
     restoreAllArchive: restoreAll,
+    archiveAction: action,
 
-    setRestoreArchiveDialogVisible,
+    setArchiveDialogVisible,
     setRestoreAllArchive,
+    setArchiveAction: setArchiveActionType,
   } = dialogsStore;
 
-  const items = restoreAll ? folders : [];
+  const items = restoreAll
+    ? folders
+    : selection.length > 0
+    ? selection
+    : [bufferSelection];
 
   return {
     visible,
     restoreAll,
+    action,
 
-    setRestoreArchiveDialogVisible,
+    setArchiveDialogVisible,
     setRestoreAllArchive,
+    setArchiveActionType,
 
     setArchiveAction,
     items,
   };
-})(withRouter(observer(RestoreArchiveDialog)));
+})(withRouter(observer(ArchiveDialog)));

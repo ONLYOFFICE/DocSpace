@@ -317,8 +317,9 @@ class SectionHeaderContent extends React.Component {
 
     if (isExistActiveItems) return;
 
+    this.props.setArchiveAction("unarchive");
     this.props.setRestoreAllArchive(true);
-    this.props.setRestoreArchiveDialogVisible(true);
+    this.props.setArchiveDialogVisible(true);
   };
 
   onShowInfo = () => {
@@ -718,8 +719,9 @@ export default inject(
       setSelectFileDialogVisible,
       setIsFolderActions,
       setRestoreAllPanelVisible,
-      setRestoreArchiveDialogVisible,
+      setArchiveDialogVisible,
       setRestoreAllArchive,
+      setArchiveAction,
     } = dialogsStore;
 
     const {
@@ -826,8 +828,9 @@ export default inject(
 
       setRestoreAllPanelVisible,
       isEmptyPage,
-      setRestoreArchiveDialogVisible,
+      setArchiveDialogVisible,
       setRestoreAllArchive,
+      setArchiveAction,
 
       selectedFolder,
 
