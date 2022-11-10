@@ -1645,23 +1645,10 @@ const Base = {
   },
 
   toggleButton: {
-    fillColor: blueMain,
-    fillColorOff: gray,
-
-    disableFillColor: grayLightMid,
-    disableFillColorOff: grayLightMid,
-
-    borderColor: "unset",
-    borderColorOff: "unset",
-
-    disableBorderColor: grayLightMid,
-    disableBorderColorOff: grayLightMid,
-
+    fillColorOff: "#D0D5DA",
+    hoverFillColorOff: "#A3A9AE",
     fillCircleColor: white,
     fillCircleColorOff: white,
-
-    disableFillCircleColor: white,
-    disableFillCircleColorOff: white,
   },
 
   contextMenuButton: {
