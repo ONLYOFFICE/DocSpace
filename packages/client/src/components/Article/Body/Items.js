@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
@@ -30,6 +30,7 @@ const Item = ({
   showBadge,
   labelBadge,
   iconBadge,
+  folderNames,
 }) => {
   const [isDragActive, setIsDragActive] = useState(false);
 
@@ -96,6 +97,7 @@ const Item = ({
       <CatalogItem
         key={item.id}
         id={item.id}
+        forderName={folderNames[item.rootFolderType]}
         className={`tree-drag ${item.folderClassName}`}
         icon={getFolderIcon(item)}
         showText={showText}
@@ -288,6 +290,15 @@ const Items = ({
     setEmptyTrashDialogVisible(true);
   };
 
+  const folderNames = useMemo(
+    () =>
+      Object.keys(FolderType).reduce((ret, key) => {
+        ret[FolderType[key]] = key;
+        return ret;
+      }, {}),
+    [FolderType]
+  );
+
   const getItems = React.useCallback(
     (data) => {
       const items = data.map((item, index) => {
@@ -318,6 +329,7 @@ const Items = ({
             showBadge={showBadge}
             labelBadge={labelBadge}
             iconBadge={iconBadge}
+            folderNames={folderNames}
           />
         );
       });
@@ -379,6 +391,7 @@ const Items = ({
       uploadEmptyFolders,
       trashIsEmpty,
       isAdmin,
+      folderNames,
     ]
   );
 
