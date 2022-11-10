@@ -64,6 +64,7 @@ const PureSettingsItem = ({
       showText={showText}
       onClick={onClick}
       isActive={isActive}
+      forderName="folder-settings"
     />
   );
 };
