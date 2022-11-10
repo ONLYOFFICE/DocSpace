@@ -339,7 +339,7 @@ const Appearance = (props) => {
   ]);
 
   const getTextColor = (color) => {
-    const black = "#000000";
+    const black = "#333333";
     const white = "#FFFFFF";
 
     const rgba = hexToRgba(color)
