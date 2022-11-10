@@ -804,7 +804,7 @@ const Base = {
     },
 
     fontSize: {
-      base: "14px",
+      base: "13px",
       middle: "14px",
       big: "16px",
       huge: "18px",
