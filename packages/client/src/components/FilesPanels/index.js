@@ -58,8 +58,6 @@ const Panels = (props) => {
     inviteUsersWarningDialogVisible,
   } = props;
 
-  console.log(restoreArchiveDialogVisible);
-
   const { t } = useTranslation(["Translations", "SelectFile"]);
 
   const onClose = () => {

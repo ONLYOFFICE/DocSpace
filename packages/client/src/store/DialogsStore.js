@@ -52,7 +52,7 @@ class DialogsStore {
   formCreationInfo = null;
   saveThirdpartyResponse = null;
   inviteItems = [];
-  restoreAll = false;
+  restoreAllArchive = false;
   isConnectDialogReconnect = false;
   saveAfterReconnectOAuth = false;
 
@@ -71,6 +71,10 @@ class DialogsStore {
     this.authStore = authStore;
     this.versionHistoryStore = versionHistoryStore;
   }
+
+  setRestoreAllArchive = (restoreAllArchive) => {
+    this.restoreAllArchive = restoreAllArchive;
+  };
 
   setRestoreArchiveDialogVisible = (restoreArchiveDialogVisible) => {
     this.restoreArchiveDialogVisible = restoreArchiveDialogVisible;

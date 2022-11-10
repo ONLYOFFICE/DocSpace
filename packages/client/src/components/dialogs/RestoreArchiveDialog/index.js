@@ -19,14 +19,17 @@ const StyledModal = styled(ModalDialogContainer)`
 
 const RestoreArchiveDialogComponent = (props) => {
   const {
-    visible,
     t,
     tReady,
 
+    visible,
+    restoreAll,
+
     setRestoreArchiveDialogVisible,
+    setRestoreAllArchive,
 
     setArchiveAction,
-    folders,
+    items,
   } = props;
 
   const [requestRunning, setRequestRunning] = React.useState(false);
@@ -38,13 +41,16 @@ const RestoreArchiveDialogComponent = (props) => {
   }, []);
 
   const onClose = () => {
-    !requestRunning && setRestoreArchiveDialogVisible(false);
+    if (!requestRunning) {
+      setRestoreAllArchive(false);
+      setRestoreArchiveDialogVisible(false);
+    }
   };
 
   const onRestore = () => {
     setRequestRunning(true);
 
-    setArchiveAction("unarchive", folders, t).then(() => {
+    setArchiveAction("unarchive", items, t).then(() => {
       setRequestRunning(false);
       onClose();
     });
@@ -56,6 +62,10 @@ const RestoreArchiveDialogComponent = (props) => {
     }
   };
 
+  const description = restoreAll
+    ? t("RestoreArchiveDialog:RestoreAllArchives")
+    : "work at progress";
+
   return (
     <StyledModal
       isLoading={!tReady}
@@ -65,7 +75,7 @@ const RestoreArchiveDialogComponent = (props) => {
     >
       <ModalDialog.Header>{t("Common:Restore")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text>{t("RestoreAllArchive")}</Text>
+        <Text>{description}</Text>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
@@ -92,8 +102,8 @@ const RestoreArchiveDialogComponent = (props) => {
 
 const RestoreArchiveDialog = withTranslation([
   "Files",
+  "RestoreArchiveDialog",
   "Common",
-  "Translations",
 ])(RestoreArchiveDialogComponent);
 
 export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
@@ -102,15 +112,22 @@ export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
 
   const {
     restoreArchiveDialogVisible: visible,
+    restoreAllArchive: restoreAll,
+
     setRestoreArchiveDialogVisible,
+    setRestoreAllArchive,
   } = dialogsStore;
+
+  const items = restoreAll ? folders : [];
 
   return {
     visible,
+    restoreAll,
 
     setRestoreArchiveDialogVisible,
+    setRestoreAllArchive,
 
     setArchiveAction,
-    folders,
+    items,
   };
 })(withRouter(observer(RestoreArchiveDialog)));
