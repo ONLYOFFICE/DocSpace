@@ -69,6 +69,7 @@ export const LoginContainer = styled.div`
   }
 
   .or-label {
+    color: ${(props) => props.theme.login.orTextColor};
     margin: 0 32px;
   }
 
@@ -76,7 +77,7 @@ export const LoginContainer = styled.div`
     display: flex;
     width: 320px;
     align-items: center;
-    color: #eceef1;
+    color: ${(props) => props.theme.login.orLineColor};
     padding: 32px 0;
 
     @media ${tablet} {
@@ -92,7 +93,7 @@ export const LoginContainer = styled.div`
   .line:after {
     content: "";
     flex-grow: 1;
-    background: #eceef1;
+    background: ${(props) => props.theme.login.orLineColor};
     height: 1px;
     font-size: 0px;
     line-height: 0px;

@@ -224,9 +224,7 @@ const Login: React.FC<ILoginProps> = ({
           )}
           {(oauthDataExists() || ssoExists()) && (
             <div className="line">
-              <Text color="#A3A9AE" className="or-label">
-                {t("Or")}
-              </Text>
+              <Text className="or-label">{t("Or")}</Text>
             </div>
           )}
           <LoginForm
