@@ -146,10 +146,10 @@ const DeleteDialogComponent = (props) => {
     const isFolder = selection[0]?.isFolder || !!selection[0]?.parentId;
 
     if (selection.length > 1) {
-      if (isRoomDelete) return t("DeleteRooms");
+      if (isRoomDelete) return `${t("DeleteRooms")} ${t("Common:SureWant")}`;
       return t("MoveToTrashItems");
     } else {
-      if (isRoomDelete) return t("DeleteRoom");
+      if (isRoomDelete) return `${t("DeleteRoom")} ${t("Common:SureWant")}`;
 
       return !isFolder
         ? t("MoveToTrashFile")

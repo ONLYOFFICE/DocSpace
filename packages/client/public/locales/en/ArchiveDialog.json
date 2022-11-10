@@ -1,7 +1,7 @@
 {
   "ArchiveHeader": "Move to Archived?",
-  "ArchiveRoom": "You are about to archive a room. Are you sure you want to continue?",
-  "ArchiveRooms": "You are about to archive rooms. Are you sure you want to continue?",
+  "ArchiveRoom": "You are about to archive a room.",
+  "ArchiveRooms": "You are about to archive rooms.",
   "RestoreRoom": "Are you sure you want to restore room?",
   "RestoreRooms": "Are you sure you want to restore rooms?",
   "RestoreAllRooms": "Are you sure you want to restore all rooms?"

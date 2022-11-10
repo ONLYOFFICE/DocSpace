@@ -70,8 +70,8 @@ const ArchiveDialogComponent = (props) => {
 
     if (action === "archive") {
       return items.length > 1
-        ? t("ArchiveDialog:ArchiveRooms")
-        : t("ArchiveDialog:ArchiveRoom");
+        ? `${t("ArchiveDialog:ArchiveRooms")} ${t("Common:SureWant")}`
+        : `${t("ArchiveDialog:ArchiveRoom")} ${t("Common:SureWant")}`;
     }
 
     if (action === "unarchive") {
