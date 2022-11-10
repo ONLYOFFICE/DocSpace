@@ -633,11 +633,11 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
     if (
-      (this.settingsStore.confirmDelete ||
-        this.treeFoldersStore.isPrivacyFolder ||
-        isThirdParty) &&
-      !isRoom
+      this.settingsStore.confirmDelete ||
+      this.treeFoldersStore.isPrivacyFolder ||
+      isThirdParty
     ) {
+      this.dialogsStore.setIsRoomDelete(isRoom);
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {
       setSecondaryProgressBarData({

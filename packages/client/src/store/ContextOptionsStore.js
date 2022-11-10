@@ -871,8 +871,7 @@ class ContextOptionsStore {
     const {
       pinRooms,
       unpinRooms,
-      moveRoomsToArchive,
-      moveRoomsFromArchive,
+
       deleteRooms,
     } = this.filesActionsStore;
 

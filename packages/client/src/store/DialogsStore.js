@@ -47,6 +47,7 @@ class DialogsStore {
   conflictResolveDialogItems = null;
   removeMediaItem = null;
   unsubscribe = null;
+  isRoomDelete = false;
   archiveAction = null;
   convertItem = null;
   formCreationInfo = null;
@@ -71,6 +72,10 @@ class DialogsStore {
     this.authStore = authStore;
     this.versionHistoryStore = versionHistoryStore;
   }
+
+  setIsRoomDelete = (isRoomDelete) => {
+    this.isRoomDelete = isRoomDelete;
+  };
 
   setArchiveAction = (archiveAction) => {
     this.archiveAction = archiveAction;
