@@ -1,6 +1,6 @@
 {
   "All": "All",
-  "Archived": "Archived",
+  "Archived": "Move to archive",
   "ArchiveAction": "Empty archive",
   "ArchivedRoomAction": "The room '{{name}}' is archived",
   "ArchivedRoomsAction": "The rooms are archived",
@@ -94,7 +94,6 @@
   "RoomRemoved": "Room removed",
   "RoomsRemoved": "Rooms removed",
   "RestoreAll": "Restore all",
-  "RestoreAllArchive": "Are you sure you want to restore all rooms?",
   "SearchByContent": "Search by file contents",
   "SendByEmail": "Send by email",
   "Share": "Share",
