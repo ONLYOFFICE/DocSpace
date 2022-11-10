@@ -35,35 +35,42 @@ const ExternalLinks = ({
   const inputsRef = useRef();
 
   const toggleLinks = (e) => {
+    let link = null;
     if (roomId === -1) {
-      const link = shareLinks.find((l) => l.access === +defaultAccess);
+      link = shareLinks.find((l) => l.access === +defaultAccess);
 
       setActiveLink(link);
     } else {
       setInvitationLinks(roomId, shareLinks[0].id, "Invite", +defaultAccess);
+
+      link = shareLinks[0];
 
       setActiveLink(shareLinks[0]);
     }
 
     setLinksVisible(!linksVisible);
 
-    if (!linksVisible) copyLink(activeLink.shareLink);
+    if (!linksVisible) copyLink(link?.shareLink);
   };
 
   const onSelectAccess = (access) => {
+    let link = null;
     if (roomId === -1) {
-      const link = shareLinks.find((l) => l.access === access.access);
+      link = shareLinks.find((l) => l.access === access.access);
 
       setActiveLink(link);
     } else {
       setInvitationLinks(roomId, shareLinks[0].id, "Invite", +access.access);
 
+      link = shareLinks[0];
       setActiveLink(shareLinks[0]);
     }
-    copyLink(activeLink.shareLink);
+
+    copyLink(link.shareLink);
   };
 
   const copyLink = (link) => {
+    console.log(link);
     toastr.success(t("Translations:LinkCopySuccess"));
     copy(link);
   };
