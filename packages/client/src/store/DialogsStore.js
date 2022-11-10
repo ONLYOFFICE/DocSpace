@@ -47,6 +47,7 @@ class DialogsStore {
   conflictResolveDialogItems = null;
   removeMediaItem = null;
   unsubscribe = null;
+  archived = null;
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
@@ -233,6 +234,10 @@ class DialogsStore {
 
   setUnsubscribe = (unsubscribe) => {
     this.unsubscribe = unsubscribe;
+  };
+
+  setArchived = (archived) => {
+    this.archived = archived;
   };
 
   setConvertDialogVisible = (visible) => {
