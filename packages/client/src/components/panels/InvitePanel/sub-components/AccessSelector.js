@@ -10,10 +10,11 @@ const AccessSelector = ({
   onSelectAccess,
   containerRef,
   defaultAccess,
+  isOwner,
 }) => {
   const width = containerRef?.current?.offsetWidth - 32;
 
-  const accessOptions = getAccessOptions(t, roomType, false, true);
+  const accessOptions = getAccessOptions(t, roomType, false, true, isOwner);
 
   const selectedOption = accessOptions.filter(
     (access) => access.access === +defaultAccess

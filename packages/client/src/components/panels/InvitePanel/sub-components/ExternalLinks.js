@@ -27,6 +27,7 @@ const ExternalLinks = ({
   defaultAccess,
   shareLinks,
   setInvitationLinks,
+  isOwner,
 }) => {
   const [linksVisible, setLinksVisible] = useState(false);
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
@@ -172,6 +173,7 @@ const ExternalLinks = ({
             defaultAccess={activeLink.access}
             onSelectAccess={onSelectAccess}
             containerRef={inputsRef}
+            isOwner={isOwner}
           />
         </StyledInviteInputContainer>
       )}
@@ -179,7 +181,8 @@ const ExternalLinks = ({
   );
 };
 
-export default inject(({ dialogsStore, filesStore }) => {
+export default inject(({ auth, dialogsStore, filesStore }) => {
+  const { isOwner } = auth.userStore.user;
   const { invitePanelOptions } = dialogsStore;
   const { setInvitationLinks } = filesStore;
   const { roomId, hideSelector, defaultAccess } = invitePanelOptions;
@@ -189,5 +192,6 @@ export default inject(({ dialogsStore, filesStore }) => {
     roomId,
     hideSelector,
     defaultAccess,
+    isOwner,
   };
 })(observer(ExternalLinks));
