@@ -1,4 +1,6 @@
 {
+  "MoveToArchiveTitle": "Move to Archived",
+  "MoveToArchiveDescription": "You are about to archive a room. Are you sure you want to continue?",
   "MoveToTrashButton": "Move to Trash",
   "MoveToTrashFile": "You are about to delete this file? Please note, that if you have shared it with someone, it will become unavailable. Are you sure you want to continue?",
   "MoveToTrashFolder": "You are about to delete this folder? Please note, that if you have shared it with someone, it will become unavailable. Are you sure you want to continue?",
