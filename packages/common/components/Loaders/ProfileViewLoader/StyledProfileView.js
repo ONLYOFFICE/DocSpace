@@ -126,6 +126,34 @@ const ThemeBlock = styled.div`
   }
 `;
 
+const MobileView = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+
+  .avatar {
+    height: 124px;
+    width: 124px;
+    margin-bottom: 24px;
+    align-self: center;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+`;
+
 export {
   StyledWrapper,
   MainBlock,
@@ -133,4 +161,5 @@ export {
   SocialBlock,
   SubBlock,
   ThemeBlock,
+  MobileView,
 };

@@ -10,8 +10,10 @@ import {
 } from "./StyledProfileView";
 import RectangleLoader from "../RectangleLoader";
 import CircleLoader from "../CircleLoader";
+import { isMobileOnly } from "react-device-detect";
+import MobileViewLoader from "./MobileView";
 
-const ProfileViewLoader = ({ id, className, style, isEdit, ...rest }) => {
+const ProfileViewLoader = ({ id, className, style, ...rest }) => {
   const {
     title,
     borderRadius,
@@ -23,6 +25,12 @@ const ProfileViewLoader = ({ id, className, style, isEdit, ...rest }) => {
     animate,
   } = rest;
 
+  if (isMobileOnly)
+    return (
+      <div id={id} className={className} style={style}>
+        <MobileViewLoader {...rest} />
+      </div>
+    );
   return (
     <div id={id} className={className} style={style}>
       <StyledWrapper>
@@ -425,14 +433,12 @@ ProfileViewLoader.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string,
   style: PropTypes.object,
-  isEdit: PropTypes.bool,
 };
 
 ProfileViewLoader.defaultProps = {
   id: undefined,
   className: undefined,
   style: undefined,
-  isEdit: true,
 };
 
 export default ProfileViewLoader;
