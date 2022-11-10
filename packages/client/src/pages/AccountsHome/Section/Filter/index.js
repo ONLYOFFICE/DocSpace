@@ -206,7 +206,7 @@ const SectionFilterContent = ({
     filterOptions.push(...statusItems);
     filterOptions.push(...typeItems);
     // filterOptions.push(...roleItems);
-    // filterOptions.push(...accountItems);
+    filterOptions.push(...accountItems);
     // filterOptions.push(...roomItems);
 
     return filterOptions;
