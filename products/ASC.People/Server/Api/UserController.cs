@@ -25,6 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 using ASC.Common.Log;
+using ASC.Core.Common.Core;
 
 namespace ASC.People.Api;
 
@@ -554,13 +555,13 @@ public class UserController : PeopleControllerBase
             _apiContext.SetDataFiltered();
         }
 
-        return GetFullByFilter(status, groupId, null, null, null);
+        return GetFullByFilter(status, groupId, null, null, null, null);
     }
 
     [HttpGet("filter")]
-    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
+        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
 
         foreach (var user in users)
         {
@@ -606,9 +607,9 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("simple/filter")]
-    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator)
+    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator);
+        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
 
         foreach (var user in users)
         {
@@ -1273,7 +1274,7 @@ public class UserController : PeopleControllerBase
         return string.Empty;
     }
 
-    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator)
+    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -1295,10 +1296,27 @@ public class UserController : PeopleControllerBase
         {
             switch (employeeType)
             {
+                case EmployeeType.DocSpaceAdmin:
+                    includeGroups.Add(new List<Guid> { Constants.GroupAdmin.ID });
+                    break;
                 case EmployeeType.RoomAdmin:
-                    excludeGroups.Add(Constants.GroupUser.ID);
+                    excludeGroups.Add(Constants.GroupUser.ID); 
+                    excludeGroups.Add(Constants.GroupAdmin.ID);
                     break;
                 case EmployeeType.User:
+                    includeGroups.Add(new List<Guid> { Constants.GroupUser.ID });
+                    break;
+            }
+        }
+
+        if (payments != null)
+        {
+            switch (payments)
+            {
+                case Payments.Paid:
+                    excludeGroups.Add(Constants.GroupUser.ID);
+                    break;
+                case Payments.Free:
                     includeGroups.Add(new List<Guid> { Constants.GroupUser.ID });
                     break;
             }
