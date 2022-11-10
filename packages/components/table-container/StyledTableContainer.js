@@ -65,6 +65,11 @@ const StyledTableContainer = styled.div`
     border-bottom: ${(props) =>
       props.theme.tableContainer.header.hotkeyBorderBottom};
     border-image-source: none;
+
+    .table-container_header-settings {
+      border-bottom: ${(props) =>
+        props.theme.tableContainer.header.hotkeyBorderBottom};
+    }
   }
 
   .content-container {
@@ -89,6 +94,14 @@ const StyledTableContainer = styled.div`
   .table-container_header-settings {
     border-bottom: ${(props) => props.theme.tableContainer.tableCell.border};
     margin-bottom: -1px;
+
+    padding-right: 0;
+  }
+
+  .lengthen-header {
+    .table-container_header-settings {
+      padding-right: 44px;
+    }
   }
 
   ${({ useReactWindow }) => useReactWindow && reactWindowContainerStyles}
