@@ -4,15 +4,16 @@
   "private": true,
   "homepage": "",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production",
+    "clean": "shx rm -rf dist",
+    "deploy": "shx --silent mkdir -p ../../build/deploy/client && shx cp -r dist/* ../../build/deploy/client",
+    "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
+    "start-prod": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production && serve dist -p 5001"
+  },
+  "old-scripts": {
     "build:test": "webpack --env minimize=false --mode production",
     "build:test.translation": "webpack --env minimize=false hideText=true --mode production",
     "build:test.translation:personal": "webpack --env minimize=false hideText=true personal=true --mode production",
-    "clean": "shx rm -rf dist",
-    "deploy": "shx --silent mkdir -p ../../build/deploy/client && shx cp -r dist/* ../../build/deploy/client",
-    "serve": "serve dist -p 5001",
-    "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
-    "start-prod": "webpack --mode production && serve dist -p 5001",
     "test:codeceptjs": "npx codeceptjs run --reporter mocha-multi",
     "test:mobile": "cross-env DEVICE_TYPE=mobile yarn test:codeceptjs",
     "test:smallTablet": "cross-env DEVICE_TYPE=smallTablet yarn test:codeceptjs",

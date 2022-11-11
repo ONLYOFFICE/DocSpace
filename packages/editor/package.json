@@ -14,6 +14,7 @@
     "start:client": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.client.js --watch --no-cache",
     "start:server": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.server.js --watch --no-cache",
     "start:common": "yarn build:dev-client && yarn build:dev-server && NODE_OPTIONS=--openssl-legacy-provider nodemon --watch dist/server.js dist/server.js",
+    "start-prod": "NODE_OPTIONS=--openssl-legacy-provider node dist/server.js",
     "deploy": "shx --silent mkdir -p ../../build/deploy/editor && shx cp -r dist/* ../../build/deploy/editor"
   },
   "devDependencies": {

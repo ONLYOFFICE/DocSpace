@@ -23,7 +23,7 @@
     "start-rooms:client": "NODE_OPTIONS=--openssl-legacy-provider webpack --env rooms=true --config webpack/webpack.client.js --watch --no-cache",
     "start-rooms:server": "NODE_OPTIONS=--openssl-legacy-provider webpack --env rooms=true --config webpack/webpack.server.js --watch --no-cache",
     "start-rooms:common": "yarn build-rooms:dev-client && yarn build-rooms:dev-server && nodemon --watch dist/server.js dist/server.js",
-    "start-prod": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production && serve dist -p 5011",
+    "start-prod": "NODE_OPTIONS=--openssl-legacy-provider node dist/server.js",
     "deploy": "shx --silent mkdir -p ../../build/deploy/login && shx cp -r dist/* ../../build/deploy/login"
   },
   "old-scripts": {
