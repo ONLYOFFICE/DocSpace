@@ -84,7 +84,9 @@ const User = ({
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {currCanEditUsers && currentMember?.id !== user.id ? (
+          {currCanEditUsers &&
+          currentMember?.id !== user.id &&
+          userRole.access !== ShareAccessRights.FullAccess ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}
