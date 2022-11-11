@@ -50,6 +50,7 @@ const StyledComponent = styled.div`
     width: 100%;
     box-sizing: border-box;
     background: ${(props) => !props.theme.isBase && "#282828"};
+    color: ${(props) => !props.theme.isBase && "#5C5C5C"};
   }
 
   .hex-value-label {
