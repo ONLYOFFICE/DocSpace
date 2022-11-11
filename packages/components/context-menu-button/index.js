@@ -222,6 +222,7 @@ class ContextMenuButton extends React.Component {
                 (item.label || item.icon || item.key) && (
                   <DropDownItem
                     {...item}
+                    id={item.key && `menu-${item.key.toLowerCase()}`}
                     key={item.key || index}
                     onClick={this.onDropDownItemClick.bind(this, item)}
                   />
