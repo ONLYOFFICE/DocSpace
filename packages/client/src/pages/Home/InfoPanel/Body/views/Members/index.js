@@ -120,8 +120,6 @@ const Members = ({
   const currCanEditUsers =
     isOwner ||
     isAdmin ||
-    currentMember?.isOwner ||
-    currentMember?.isAdmin ||
     currentMember?.access === ShareAccessRights.FullAccess ||
     currentMember?.access === ShareAccessRights.RoomManager;
 
