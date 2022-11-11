@@ -420,6 +420,7 @@ public class SettingsController : BaseSettingsController
                                 item.Id = settings.Themes.Max(r => r.Id) + 1;
                             }
 
+                            item.Name = "";
                             settings.Themes = settings.Themes.Append(item).ToList();
                         }
                     }
