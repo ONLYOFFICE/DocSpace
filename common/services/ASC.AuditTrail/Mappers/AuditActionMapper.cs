@@ -38,12 +38,10 @@ public class AuditActionMapper
 
         Mappers = new List<IProductActionMapper>()
             {
-                new CrmActionMapper(),
                 new DocumentsActionMapper(),
                 new LoginActionsMapper(),
                 new OthersActionsMapper(),
                 new PeopleActionMapper(),
-                new ProjectsActionsMapper(),
                 new SettingsActionsMapper()
             };
     }

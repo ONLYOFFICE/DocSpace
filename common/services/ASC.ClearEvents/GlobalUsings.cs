@@ -27,6 +27,7 @@
 global using System.Linq.Expressions;
 
 global using ASC.Api.Core.Extensions;
+global using ASC.ClearEvents.Extensions;
 global using ASC.ClearEvents.Log;
 global using ASC.ClearEvents.Services;
 global using ASC.Common;
@@ -43,4 +44,3 @@ global using Microsoft.AspNetCore.Builder;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;
-global using ASC.ClearEvents.Extensions;

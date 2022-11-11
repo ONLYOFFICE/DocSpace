@@ -1,111 +1,107 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
+import { ShareAccessRights } from "@docspace/common/constants";
 
 const User = ({
   t,
   user,
-  isOwner,
-  isAdmin,
-  selfId,
   isExpect,
-  changeUserType,
+  membersHelper,
+  currentMember,
+  updateRoomMemberRole,
+  currCanEditUsers,
+  selectionParentRoom,
+  setSelectionParentRoom,
 }) => {
+  if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
 
-  const roles = {
-    admin: {
-      key: "admin",
-      title: t("People:Administrator"),
-      label: t("People:Administrator"),
-      action: "admin",
-    },
-    manager: {
-      key: "manager",
-      title: t("People:Manager"),
-      label: t("People:Manager"),
-      action: "manager",
-    },
-    user: {
-      key: "user",
-      title: t("Common:User"),
-      label: t("Common:User"),
-      action: "user",
-    },
-  };
+  const [userIsRemoved, setUserIsRemoved] = useState(false);
+  if (userIsRemoved) return null;
 
-  const getUserRole = () => {
-    if (user.isOwner) return roles.admin;
-    if (user.isAdmin) return roles.manager;
-    return roles.user;
-  };
-
-  const getUserOptions = () => {
-    let options = [];
-    if (isOwner) options.push(roles.admin);
-    if (isAdmin) options.push(roles.manager);
-    options.push(roles.user);
-    return options;
-  };
-
-  const getNotAuthorizedToEdit = () => {
-    if (selfId === user.id) return true;
-    if (isOwner) return false;
-    if (!isAdmin) return true;
-  };
-
-  const userRole = getUserRole();
-  const userOptions = getUserOptions();
-  const userNotAuthorizedToEdit = getNotAuthorizedToEdit();
-
-  const onTypeChange = React.useCallback(
-    ({ action }) => {
-      changeUserType(action, [user], t, false, false);
-    },
-    [user, changeUserType, t]
+  const fullRoomRoleOptions = membersHelper.getOptionsByRoomType(
+    selectionParentRoom.roomType,
+    currCanEditUsers
   );
 
+  const userRole = membersHelper.getOptionByUserAccess(user.access);
+  const userRoleOptions = fullRoomRoleOptions?.filter(
+    (role) => role.key !== userRole.key
+  );
+
+  const onOptionClick = (option) => {
+    updateRoomMemberRole(selectionParentRoom.id, {
+      invitations: [{ id: user.id, access: option.access }],
+      notify: false,
+      sharingMessage: "",
+    });
+
+    const inRoomMembers = selectionParentRoom.members.inRoom;
+    const expectedMembers = selectionParentRoom.members.expected;
+    if (option.key === "remove") {
+      setUserIsRemoved(true);
+      setSelectionParentRoom({
+        ...selectionParentRoom,
+        members: {
+          inRoom: inRoomMembers?.filter((m) => m.id !== user.id),
+          expected: expectedMembers?.filter((m) => m.id !== user.id),
+        },
+      });
+    } else {
+      setSelectionParentRoom({
+        ...selectionParentRoom,
+        members: {
+          inRoom: inRoomMembers?.map((m) =>
+            m.id === user.id ? { ...m, access: option.access } : m
+          ),
+          expected: expectedMembers?.map((m) =>
+            m.id === user.id ? { ...m, access: option.access } : m
+          ),
+        },
+      });
+    }
+  };
+
   return (
-    <StyledUser
-      isExpect={isExpect}
-      key={user.id}
-      canEditRole={user.role !== "Owner"}
-    >
+    <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
         role="user"
         className="avatar"
         size="min"
-        source={
-          user.avatar ||
-          (user.displayName ? "" : user.email && "/static/images/@.react.svg")
-        }
-        userName={user.displayName}
+        source={isExpect ? "/static/images/@.react.svg" : user.avatar || ""}
+        userName={isExpect ? "" : user.displayName}
       />
 
-      <div className="name">{user.displayName || user.email}</div>
-      {selfId === user.id && (
+      <div className="name">
+        {isExpect ? user.email : user.displayName || user.email}
+      </div>
+      {currentMember?.id === user.id && (
         <div className="me-label">&nbsp;{`(${t("Common:MeLabel")})`}</div>
       )}
 
-      <div className="role-wrapper">
-        {userNotAuthorizedToEdit ? (
-          <div className="disabled-role-combobox">{userRole.label}</div>
-        ) : (
-          <ComboBox
-            className="role-combobox"
-            selectedOption={userRole}
-            options={userOptions}
-            onSelect={onTypeChange}
-            scaled={false}
-            withBackdrop={false}
-            size="content"
-            displaySelectedOption
-            modernView
-          />
-        )}
-      </div>
+      {userRole && userRoleOptions && (
+        <div className="role-wrapper">
+          {currCanEditUsers &&
+          currentMember?.id !== user.id &&
+          userRole.access !== ShareAccessRights.FullAccess ? (
+            <ComboBox
+              className="role-combobox"
+              selectedOption={userRole}
+              options={userRoleOptions}
+              onSelect={onOptionClick}
+              scaled={false}
+              withBackdrop={false}
+              size="content"
+              modernView
+            />
+          ) : (
+            <div className="disabled-role-combobox">{userRole.label}</div>
+          )}
+        </div>
+      )}
     </StyledUser>
   );
 };

@@ -90,7 +90,8 @@ const ArticleMainButtonContent = (props) => {
 
     isOwner,
     isAdmin,
-    isVisitor,
+
+    canCreateFiles,
 
     setInvitePanelOptions,
   } = props;
@@ -123,6 +124,7 @@ const ArticleMainButtonContent = (props) => {
   );
 
   const onCreateRoom = React.useCallback(() => {
+    console.log("click");
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   }, []);
@@ -405,7 +407,9 @@ const ArticleMainButtonContent = (props) => {
     ? t("Common:Invite")
     : t("Common:Actions");
 
-  const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
+  const isDisabled =
+    ((!canCreate || (!canCreateFiles && !isRoomsFolder)) && !canInvite) ||
+    isArchiveFolder;
   const isProfile = history.location.pathname === "/accounts/view/@self";
 
   return (
@@ -420,7 +424,7 @@ const ArticleMainButtonContent = (props) => {
             !isArchiveFolder &&
             !isArticleLoading &&
             !isProfile &&
-            (canCreate || canInvite) && (
+            ((canCreate && (canCreateFiles || isRoomsFolder)) || canInvite) && (
               <MobileView
                 t={t}
                 titleProp={t("Upload")}
@@ -485,6 +489,7 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     selectedFolderStore,
+    accessRightsStore,
   }) => {
     const { isLoaded, firstLoad, isLoading, canCreate } = filesStore;
     const {
@@ -509,6 +514,8 @@ export default inject(
 
     const { isAdmin, isOwner, isVisitor } = auth.userStore.user;
 
+    const { canCreateFiles } = accessRightsStore;
+
     return {
       showText: auth.settingsStore.showText,
       isMobileArticle: auth.settingsStore.isMobileArticle,
@@ -525,6 +532,7 @@ export default inject(
       selectedTreeNode,
 
       canCreate,
+      canCreateFiles,
 
       startUpload,
 

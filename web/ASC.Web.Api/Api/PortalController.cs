@@ -59,6 +59,9 @@ public class PortalController : ControllerBase
     private readonly MessageService _messageService;
     private readonly MessageTarget _messageTarget;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
+    private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
+    private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
 
     public PortalController(
         ILogger<PortalController> logger,
@@ -86,8 +89,9 @@ public class PortalController : ControllerBase
         StudioNotifyService studioNotifyService,
         MessageService messageService,
         MessageTarget messageTarget,
-        DisplayUserSettingsHelper displayUserSettingsHelper
-        )
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        EmailValidationKeyProvider emailValidationKeyProvider,
+        StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper, TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper)
     {
         _log = logger;
         _apiContext = apiContext;
@@ -115,6 +119,9 @@ public class PortalController : ControllerBase
         _messageService = messageService;
         _messageTarget = messageTarget;
         _displayUserSettingsHelper = displayUserSettingsHelper;
+        _emailValidationKeyProvider = emailValidationKeyProvider;
+        _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
+        _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
     }
 
     [HttpGet("")]
@@ -457,7 +464,7 @@ public class PortalController : ControllerBase
 
         var owner = _userManager.GetUsers(Tenant.OwnerId);
         var redirectLink = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#";
-        var parameters = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
+        var parameters = Convert.ToBase64String(Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                 "\",\"lastname\":\"" + owner.LastName +
                                                                                 "\",\"alias\":\"" + Tenant.Alias +
                                                                                 "\",\"email\":\"" + owner.Email + "\"}"));
@@ -484,5 +491,37 @@ public class PortalController : ControllerBase
         _studioNotifyService.SendMsgPortalDeletionSuccess(owner, redirectLink);
 
         return redirectLink;
+    }
+
+    [AllowAnonymous]
+    [HttpPost("sendcongratulations")]
+    public void SendCongratulations([FromQuery] SendCongratulationsDto inDto)
+    {
+        var authInterval = TimeSpan.FromHours(1);
+        var checkKeyResult = _emailValidationKeyProvider.ValidateEmailKey(inDto.Userid.ToString() + ConfirmType.Auth, inDto.Key, authInterval);
+
+        switch (checkKeyResult)
+        {
+            case ValidationResult.Ok:
+                var currentUser = _userManager.GetUsers(inDto.Userid);
+
+                _studioNotifyService.SendCongratulations(currentUser);
+                _studioNotifyService.SendRegData(currentUser);
+
+                if (!SetupInfo.IsSecretEmail(currentUser.Email))
+                {
+                    if (_setupInfo.TfaRegistration == "sms")
+                    {
+                        _studioSmsNotificationSettingsHelper.Enable = true;
+                    }
+                    else if (_setupInfo.TfaRegistration == "code")
+                    {
+                        _tfaAppAuthSettingsHelper.Enable = true;
+                    }
+                }
+                break;
+            default:
+                throw new SecurityException("Access Denied.");
+        }
     }
 }

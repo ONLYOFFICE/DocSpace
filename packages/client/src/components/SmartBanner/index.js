@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { isMobile, isIOS } from "react-device-detect";
 import { inject, observer } from "mobx-react";
+import { useLocation } from "react-router-dom";
 import SmartBanner from "react-smartbanner";
 import "./main.css";
 
@@ -10,14 +11,9 @@ const Wrapper = styled.div`
 `;
 
 const ReactSmartBanner = (props) => {
-  const {
-    t,
-    ready,
-    isBannerVisible,
-    setIsBannerVisible,
-    currentProductId,
-  } = props;
+  const { t, ready, isBannerVisible, setIsBannerVisible } = props;
   const force = isIOS ? "ios" : "android";
+  const location = useLocation();
 
   const [isDocuments, setIsDocuments] = useState(false);
 
@@ -43,12 +39,13 @@ const ReactSmartBanner = (props) => {
   }, []);
 
   useEffect(() => {
-    if (window.location.pathname.toLowerCase().includes("files")) {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes("rooms") || path.includes("files")) {
       setIsDocuments(true);
     } else {
       setIsDocuments(false);
     }
-  }, [currentProductId]);
+  }, [location]);
 
   const storeText = {
     ios: t("SmartBanner:AppStore"),
@@ -99,10 +96,9 @@ const ReactSmartBanner = (props) => {
   );
 };
 
-export default inject(({ auth, bannerStore }) => {
+export default inject(({ bannerStore }) => {
   return {
     isBannerVisible: bannerStore.isBannerVisible,
     setIsBannerVisible: bannerStore.setIsBannerVisible,
-    currentProductId: auth.settingsStore.currentProductId,
   };
 })(observer(ReactSmartBanner));

@@ -124,7 +124,7 @@ public class DocumentServiceConnector
                 _fileUtility.SignatureSecret,
                 _clientFactory);
 
-            if (commandResponse.Error == CommandResponse.ErrorTypes.NoError)
+            if (commandResponse.Error == ErrorTypes.NoError)
             {
                 return true;
             }
@@ -199,7 +199,7 @@ public class DocumentServiceConnector
                 version = "0";
             }
 
-            if (commandResponse.Error == CommandResponse.ErrorTypes.NoError)
+            if (commandResponse.Error == ErrorTypes.NoError)
             {
                 return version;
             }

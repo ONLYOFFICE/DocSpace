@@ -395,7 +395,11 @@ const SectionFilterContent = ({
         }
 
         filterValues.push({
-          key: isMe ? FilterKeys.me : roomsFilter.subjectId,
+          key: isMe
+            ? roomsFilter.excludeSubject
+              ? FilterKeys.other
+              : FilterKeys.me
+            : roomsFilter.subjectId,
           group: FilterGroups.roomFilterOwner,
           label: label,
         });
