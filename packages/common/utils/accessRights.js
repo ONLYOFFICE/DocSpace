@@ -13,32 +13,33 @@ export const getRoomRights = (access) => {
     delete: false,
   };
 
-  switch (access) {
-    case access === ShareAccessRights.None:
-    case access === ShareAccessRights.FullAccess:
-      for (key in rights) {
-        rights[key] = true;
-      }
+  if (
+    access === ShareAccessRights.None ||
+    access === ShareAccessRights.FullAccess
+  ) {
+    for (let key in rights) {
+      rights[key] = true;
+    }
 
-      return rights;
-
-    case access === ShareAccessRights.RoomManager:
-      for (key in rights) {
-        rights[key] = true;
-      }
-
-      rights.archive = false;
-      rights.delete = false;
-
-      return rights;
-
-    default:
-      rights.viewHistory = true;
-      rights.viewInfo = true;
-      rights.viewUsers = true;
-
-      return rights;
+    return rights;
   }
+
+  if (access === ShareAccessRights.RoomManager) {
+    for (key in rights) {
+      rights[key] = true;
+    }
+
+    rights.archive = false;
+    rights.delete = false;
+
+    return rights;
+  }
+
+  rights.viewHistory = true;
+  rights.viewInfo = true;
+  rights.viewUsers = true;
+
+  return rights;
 };
 
 export const getFilesRights = (access) => {
@@ -104,7 +105,7 @@ export const getFilesRights = (access) => {
   return rights;
 };
 
-getAccountsAccessRights = (isAdmin, isOwner) => {
+export const getAccountsAccessRights = (isAdmin, isOwner) => {
   const rights = {
     inviteDocspaceAdmin: false,
     inviteRoomAdmin: false,
