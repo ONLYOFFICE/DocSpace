@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import CodeInput from "@docspace/components/code-input";
@@ -25,7 +26,7 @@ const Bar: React.FC<IBarProp> = (props) => {
   );
 };
 
-const Form: React.FC = () => {
+const Form: React.FC = ({ theme }) => {
   const { t } = useTranslation("Login");
   const [invalidCode, setInvalidCode] = useState(false);
   const [expiredCode, setExpiredCode] = useState(false);
@@ -49,7 +50,7 @@ const Form: React.FC = () => {
   };
 
   return (
-    <LoginContainer>
+    <LoginContainer theme={theme}>
       <DocspaceLogo className="logo-wrapper" />
 
       <Text
@@ -109,4 +110,8 @@ const CodeLogin: React.FC<ICodeProps> = (props) => {
   );
 };
 
-export default CodeLogin;
+export default inject(({ loginStore }) => {
+  return {
+    theme: loginStore.theme,
+  };
+})(observer(CodeLogin));
