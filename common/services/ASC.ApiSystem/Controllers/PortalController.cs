@@ -309,26 +309,17 @@ public class PortalController : ControllerBase
             }
         }
 
-        try
+        var reference = _commonMethods.CreateReference(t.Id, Request.Scheme, t.GetTenantDomain(_coreSettings), info.Email, isFirst);
+        _log.LogDebug("PortalName = {0}; Elapsed ms. CreateReferenceByCookie...: {1}", model.PortalName, sw.ElapsedMilliseconds);
+
+        sw.Stop();
+
+        return Ok(new
         {
-            _log.LogDebug("try CreateReference");
-            var reference = _commonMethods.CreateReference(Request.Scheme, t.GetTenantDomain(_coreSettings), info.Email, isFirst);
-            _log.LogDebug("PortalName = {0}; Elapsed ms. CreateReferenceByCookie...: {1}", model.PortalName, sw.ElapsedMilliseconds);
-
-            sw.Stop();
-
-            return Ok(new
-            {
-                reference,
-                tenant = _commonMethods.ToTenantWrapper(t),
-                referenceWelcome = sendCongratulationsAddress
-            });
-        }catch (Exception e)
-        {
-            _log.LogError(e, "CreateReference error");
-
-            return BadRequest(error);
-        }
+            reference,
+            tenant = _commonMethods.ToTenantWrapper(t),
+            referenceWelcome = sendCongratulationsAddress
+        });
     }
 
     [HttpDelete("remove")]
