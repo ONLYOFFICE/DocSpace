@@ -65,8 +65,6 @@ const User = ({
     }
   };
 
-  console.log(userRole);
-
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
