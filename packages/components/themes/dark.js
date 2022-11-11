@@ -140,13 +140,11 @@ const Dark = {
       baseHover: "#333333",
       baseActive: "#282828",
       baseDisabled: "#282828",
-      baseLoading: "#282828",
 
       primary: "#5299E0",
       primaryHover: "#4D8AC7",
       primaryActive: "#427CB7",
       primaryDisabled: "#45709B",
-      primaryLoading: "#45709B",
     },
 
     border: {
@@ -154,13 +152,11 @@ const Dark = {
       baseHover: `1px solid #858585`,
       baseActive: `1px solid #CCCCCC`,
       baseDisabled: `1px solid #474747`,
-      baseLoading: `1px solid #474747`,
 
       primary: `1px solid #5299E0`,
       primaryHover: `1px solid #4D8AC7`,
       primaryActive: `1px solid #427CB7`,
       primaryDisabled: `1px solid #45709B`,
-      primaryLoading: `1px solid #45709B`,
     },
 
     loader: {
