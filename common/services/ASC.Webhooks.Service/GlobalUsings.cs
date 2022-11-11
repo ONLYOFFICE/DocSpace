@@ -47,5 +47,5 @@ global using Microsoft.Extensions.Logging;
 
 global using Polly;
 global using Polly.Extensions.Http;
-
+global using ASC.Webhooks;
 global using ASC.Webhooks.Extension;
