@@ -78,6 +78,7 @@ const ArticleProfile = (props) => {
               </Text>
             </StyledUserName>
             <ContextMenuButton
+              id="profile-option-button"
               className="option-button"
               iconClassName="option-button-icon"
               zIndex={402}
