@@ -74,12 +74,12 @@ public class CustomColorThemesSettingsItem
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#4781D1",
-                ButtonsMain = "#5299E0"
+                Buttons = "#5299E0"
             },
             Text = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#FFFFFF",
-                ButtonsMain = "#FFFFFF"
+                Buttons = "#FFFFFF"
             }
         },
         new CustomColorThemesSettingsItem
@@ -88,12 +88,12 @@ public class CustomColorThemesSettingsItem
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#F97A0B",
-                ButtonsMain = "#FF9933"
+                Buttons = "#FF9933"
             },
             Text = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#FFFFFF",
-                ButtonsMain = "#FFFFFF"
+                Buttons = "#FFFFFF"
             }
         },
         new CustomColorThemesSettingsItem
@@ -102,12 +102,12 @@ public class CustomColorThemesSettingsItem
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#2DB482",
-                ButtonsMain = "#22C386"
+                Buttons = "#22C386"
             },
             Text = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#FFFFFF",
-                ButtonsMain = "#FFFFFF"
+                Buttons = "#FFFFFF"
             }
         },
         new CustomColorThemesSettingsItem
@@ -116,12 +116,12 @@ public class CustomColorThemesSettingsItem
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#F2675A",
-                ButtonsMain = "#F27564"
+                Buttons = "#F27564"
             },
             Text = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#FFFFFF",
-                ButtonsMain = "#FFFFFF"
+                Buttons = "#FFFFFF"
             }
         },
         new CustomColorThemesSettingsItem
@@ -130,12 +130,12 @@ public class CustomColorThemesSettingsItem
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#6D4EC2",
-                ButtonsMain = "#8570BD"
+                Buttons = "#8570BD"
             },
             Text = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#FFFFFF",
-                ButtonsMain = "#FFFFFF"
+                Buttons = "#FFFFFF"
             }
         },
         new CustomColorThemesSettingsItem
@@ -144,12 +144,12 @@ public class CustomColorThemesSettingsItem
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#11A4D4",
-                ButtonsMain = "#13B7EC"
+                Buttons = "#13B7EC"
             },
             Text = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#FFFFFF",
-                ButtonsMain = "#FFFFFF"
+                Buttons = "#FFFFFF"
             }
         },
         new CustomColorThemesSettingsItem
@@ -158,12 +158,12 @@ public class CustomColorThemesSettingsItem
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#444444",
-                ButtonsMain = "#6E6E6E"
+                Buttons = "#6E6E6E"
             },
             Text = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#FFFFFF",
-                ButtonsMain = "#FFFFFF"
+                Buttons = "#FFFFFF"
             }
         }
     };
@@ -172,5 +172,5 @@ public class CustomColorThemesSettingsItem
 public class CustomColorThemesSettingsColorItem
 {
     public string Accent { get; set; }
-    public string ButtonsMain { get; set; }
+    public string Buttons { get; set; }
 }

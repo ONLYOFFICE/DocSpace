@@ -399,7 +399,7 @@ public class SettingsController : BaseSettingsController
                             settingItem.Main = new CustomColorThemesSettingsColorItem
                             {
                                 Accent = item.Main.Accent,
-                                ButtonsMain = item.Main.ButtonsMain
+                                Buttons = item.Main.Buttons
                             };
                         }
                         if (item.Text != null)
@@ -407,7 +407,7 @@ public class SettingsController : BaseSettingsController
                             settingItem.Text = new CustomColorThemesSettingsColorItem
                             {
                                 Accent = item.Text.Accent,
-                                ButtonsMain = item.Text.ButtonsMain
+                                Buttons = item.Text.Buttons
                             };
                         }
                     }
