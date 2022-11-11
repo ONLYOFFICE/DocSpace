@@ -181,7 +181,7 @@ public class CustomColorThemesSettingsItem
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent ="#F1F2F4",
-                Buttons = "#DADCDE
+                Buttons = "#DADCDE"
             },
             Text = new CustomColorThemesSettingsColorItem
             {
