@@ -394,9 +394,22 @@ public class SettingsController : BaseSettingsController
                     var settingItem = settings.Themes.SingleOrDefault(r => r.Id == item.Id);
                     if (settingItem != null)
                     {
-                        settingItem.AccentColor = item.AccentColor;
-                        settingItem.ButtonsMain = item.ButtonsMain;
-                        settingItem.TextColor = item.TextColor;
+                        if (item.Main != null)
+                        {
+                            settingItem.Main = new CustomColorThemesSettingsColorItem
+                            {
+                                Accent = item.Main.Accent,
+                                Buttons = item.Main.Buttons
+                            };
+                        }
+                        if (item.Text != null)
+                        {
+                            settingItem.Text = new CustomColorThemesSettingsColorItem
+                            {
+                                Accent = item.Text.Accent,
+                                Buttons = item.Text.Buttons
+                            };
+                        }
                     }
                     else
                     {
