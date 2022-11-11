@@ -63,6 +63,7 @@ public class CustomColorThemesSettings : ISettings<CustomColorThemesSettings>
 public class CustomColorThemesSettingsItem
 {
     public int Id { get; set; }
+    public string Name { get; set; }
     public CustomColorThemesSettingsColorItem Main { get; set; }
     public CustomColorThemesSettingsColorItem Text { get; set; }
 
@@ -71,6 +72,7 @@ public class CustomColorThemesSettingsItem
         new CustomColorThemesSettingsItem
         {
             Id = 1,
+            Name = "blue",
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#4781D1",
@@ -85,6 +87,7 @@ public class CustomColorThemesSettingsItem
         new CustomColorThemesSettingsItem
         {
             Id = 2,
+            Name = "orange",
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#F97A0B",
@@ -99,6 +102,7 @@ public class CustomColorThemesSettingsItem
         new CustomColorThemesSettingsItem
         {
             Id = 3,
+            Name = "green",
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#2DB482",
@@ -113,6 +117,7 @@ public class CustomColorThemesSettingsItem
         new CustomColorThemesSettingsItem
         {
             Id = 4,
+            Name = "red",
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#F2675A",
@@ -127,6 +132,7 @@ public class CustomColorThemesSettingsItem
         new CustomColorThemesSettingsItem
         {
             Id = 5,
+            Name = "purple",
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#6D4EC2",
@@ -141,6 +147,7 @@ public class CustomColorThemesSettingsItem
         new CustomColorThemesSettingsItem
         {
             Id = 6,
+            Name = "light-blue",
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#11A4D4",
@@ -155,6 +162,7 @@ public class CustomColorThemesSettingsItem
         new CustomColorThemesSettingsItem
         {
             Id = 7,
+            Name = "black",
             Main = new CustomColorThemesSettingsColorItem
             {
                 Accent = "#444444",
@@ -164,6 +172,21 @@ public class CustomColorThemesSettingsItem
             {
                 Accent = "#FFFFFF",
                 Buttons = "#FFFFFF"
+            }
+        },
+        new CustomColorThemesSettingsItem
+        {
+            Id = 8,
+            Name = "grey",
+            Main = new CustomColorThemesSettingsColorItem
+            {
+                Accent ="#F1F2F4",
+                Buttons = "#DADCDE
+            },
+            Text = new CustomColorThemesSettingsColorItem
+            {
+                Accent = "#333333",
+                Buttons = "#333333"
             }
         }
     };
