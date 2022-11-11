@@ -146,6 +146,7 @@ export const LoginContainer = styled.div`
     }
 
     .field-body{
+      height: 48px;
       input, .password-input > div {
         background: ${(props) => props.theme.input.backgroundColor};
         color: ${(props) => props.theme.input.color};
