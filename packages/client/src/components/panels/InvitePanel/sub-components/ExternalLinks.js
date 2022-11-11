@@ -71,9 +71,10 @@ const ExternalLinks = ({
   };
 
   const copyLink = (link) => {
-    console.log(link);
-    toastr.success(t("Translations:LinkCopySuccess"));
-    copy(link);
+    if (link) {
+      toastr.success(t("Translations:LinkCopySuccess"));
+      copy(link);
+    }
   };
 
   const toggleActionLinks = () => {
