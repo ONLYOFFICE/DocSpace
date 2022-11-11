@@ -103,3 +103,48 @@ export const getFilesRights = (access) => {
 
   return rights;
 };
+
+getAccountsAccessRights = (isAdmin, isOwner) => {
+  const rights = {
+    inviteDocspaceAdmin: false,
+    inviteRoomAdmin: false,
+    inviteUser: false,
+    raiseToDocspaceAdmin: false,
+    raiseToRoomAdmin: false,
+    downgradeToRoomAdmin: false,
+    downgradeToUser: false,
+    blockDocspaceAdmin: false,
+    blockRoomAdmin: false,
+    blockUser: false,
+    changeDocspaceAdminData: false,
+    changeRoomAdminData: false,
+    changeUserData: false,
+    deleteDocspaceAdmin: false,
+    deleteRoomAdmin: false,
+    deleteUser: false,
+  };
+
+  rights.inviteRoomAdmin = true;
+  rights.inviteUser = true;
+  rights.raiseToRoomAdmin = true;
+
+  if (!isAdmin && !isOwner) return rights;
+
+  rights.blockRoomAdmin = true;
+  rights.blockUser = true;
+  rights.changeRoomAdminData = true;
+  rights.changeUserData = true;
+  rights.deleteRoomAdmin = true;
+  rights.deleteUser = true;
+
+  if (isAdmin && !isOwner) return rights;
+
+  rights.inviteDocspaceAdmin = true;
+  rights.raiseToDocspaceAdmin = true;
+  rights.downgradeToRoomAdmin = true;
+  rights.changeDocspaceAdminData = true;
+  rights.blockDocspaceAdmin = true;
+  rights.deleteDocspaceAdmin = true;
+
+  return rights;
+};
