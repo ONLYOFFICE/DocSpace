@@ -184,10 +184,6 @@ const RegisterContainer = styled.div`
     margin-top: 32px;
     width: 100%;
 
-    .form-field {
-      height: 48px;
-    }
-
     @media (max-width: 768px) {
       margin: 32px 0 0 0;
       width: 100%;
