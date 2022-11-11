@@ -28,6 +28,8 @@ const AccessSelector = ({
         accessOptions={accessOptions}
         noBorder={false}
         directionX="right"
+        directionY="bottom"
+        fixedDirection={true}
         manualWidth={width + "px"}
         isDefaultMode={false}
       />
