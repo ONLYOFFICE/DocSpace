@@ -45,11 +45,11 @@ const StyledComponent = styled.div`
     height: 32px;
     outline: none;
     padding: 6px 8px;
-    border: 1px solid #d0d5da;
+    border: 1px solid ${(props) => (props.theme.isBase ? "#d0d5da" : "#474747")};
     border-radius: 3px;
-
     width: 100%;
     box-sizing: border-box;
+    background: ${(props) => !props.theme.isBase && "#282828"};
   }
 
   .hex-value-label {

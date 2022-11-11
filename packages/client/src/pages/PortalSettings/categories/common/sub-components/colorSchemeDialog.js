@@ -40,16 +40,22 @@ const StyledComponent = styled(ModalDialog)`
 
   .accent-box {
     background: ${(props) =>
-      props.currentColorAccent
-        ? props.currentColorAccent
-        : `#eceef1 url("/static/images/plus.theme.svg") no-repeat center`};
+        props.currentColorAccent
+          ? props.currentColorAccent
+          : props.theme.isBase
+          ? "#eceef1"
+          : "#474747"}
+      url("/static/images/plus.theme.svg") no-repeat center;
   }
 
   .buttons-box {
     background: ${(props) =>
-      props.currentColorButtons
-        ? props.currentColorButtons
-        : `#eceef1 url("/static/images/plus.theme.svg") no-repeat center`};
+        props.currentColorButtons
+          ? props.currentColorButtons
+          : props.theme.isBase
+          ? "#eceef1"
+          : "#474747"}
+      url("/static/images/plus.theme.svg") no-repeat center;
   }
 
   .modal-add-theme {

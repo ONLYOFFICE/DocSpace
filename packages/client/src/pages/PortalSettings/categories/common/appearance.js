@@ -326,11 +326,13 @@ const Appearance = (props) => {
 
   const onCloseHexColorPickerAccent = useCallback(() => {
     setOpenHexColorPickerAccent(false);
+    if (!currentColorAccent) return;
     setAppliedColorAccent(currentColorAccent);
   }, [currentColorAccent, setOpenHexColorPickerAccent, setAppliedColorAccent]);
 
   const onCloseHexColorPickerButtons = useCallback(() => {
     setOpenHexColorPickerButtons(false);
+    if (!currentColorButtons) return;
     setAppliedColorButtons(currentColorButtons);
   }, [
     currentColorButtons,

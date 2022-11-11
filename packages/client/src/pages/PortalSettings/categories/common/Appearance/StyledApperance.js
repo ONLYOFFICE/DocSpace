@@ -38,7 +38,8 @@ const StyledComponent = styled.div`
   }
 
   .theme-add {
-    background: #eceef1 url("/static/images/plus.theme.svg") no-repeat center;
+    background: ${(props) => (props.theme.isBase ? "#eceef1" : "#474747")}
+      url("/static/images/plus.theme.svg") no-repeat center;
   }
 
   .check-img {
