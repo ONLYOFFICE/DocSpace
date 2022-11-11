@@ -248,7 +248,7 @@ class ArticleBodyContent extends React.Component {
           value={item.link}
           isActive={item.key === selectedKeys[0][0]}
           onClick={() => this.onSelect(item.key)}
-          forderName={item.tKey}
+          forderName={`catalog-${item.link}`}
         />
       );
     });
