@@ -5,15 +5,16 @@
   "homepage": "/doceditor",
   "scripts": {
     "build": "yarn clean && yarn build:client && yarn build:server",
-    "build:server": "webpack --mode production --config webpack/webpack.server.js",
-    "build:client": "webpack --mode production --config webpack/webpack.client.js",
-    "build:dev-server": "webpack --config webpack/webpack.server.js",
-    "build:dev-client": "webpack --config webpack/webpack.client.js",
+    "build:server": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production --config webpack/webpack.server.js",
+    "build:client": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production --config webpack/webpack.client.js",
+    "build:dev-server": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.server.js",
+    "build:dev-client": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.client.js",
     "clean": "shx rm -rf dist",
     "start": "yarn clean && npm-run-all --parallel start:client start:server start:common",
-    "start:client": "webpack --config webpack/webpack.client.js --watch --no-cache",
-    "start:server": "webpack --config webpack/webpack.server.js --watch --no-cache",
-    "start:common": "yarn build:dev-client && yarn build:dev-server && nodemon --watch dist/server.js dist/server.js",
+    "start:client": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.client.js --watch --no-cache",
+    "start:server": "NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack/webpack.server.js --watch --no-cache",
+    "start:common": "yarn build:dev-client && yarn build:dev-server && NODE_OPTIONS=--openssl-legacy-provider nodemon --watch dist/server.js dist/server.js",
+    "start-prod": "NODE_OPTIONS=--openssl-legacy-provider node dist/server.js",
     "deploy": "shx --silent mkdir -p ../../build/deploy/editor && shx cp -r dist/* ../../build/deploy/editor"
   },
   "devDependencies": {
