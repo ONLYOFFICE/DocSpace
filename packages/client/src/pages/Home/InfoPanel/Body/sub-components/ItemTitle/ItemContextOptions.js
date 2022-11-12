@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 
@@ -16,25 +16,15 @@ const ItemContextOptions = ({
   getContextOptions,
   getContextOptionActions,
   getUserContextOptions,
-  setBufferSelection,
 
   isUser = false,
   itemTitleRef,
 }) => {
   if (!selection) return null;
 
+  const [contextHelper, setContextHelper] = useState(null);
+
   const contextMenuRef = useRef();
-
-  const contextHelper = new ContextHelper({
-    t,
-    isUser,
-    selection,
-    getContextOptions,
-    getContextOptionActions,
-    getUserContextOptions,
-  });
-
-  if (!selection) return null;
 
   const onContextMenu = (e) => {
     e.button === 2;
@@ -46,9 +36,31 @@ const ItemContextOptions = ({
     contextMenuRef.current.hide();
   }, [selection]);
 
-  const options = contextHelper.getItemContextOptions();
+  useEffect(() => {
+    const contextHelper = new ContextHelper({
+      t,
+      isUser,
+      selection,
+      getContextOptions,
+      getContextOptionActions,
+      getUserContextOptions,
+    });
 
-  const getData = () => options;
+    setContextHelper(contextHelper);
+  }, [
+    t,
+    isUser,
+    selection,
+    getContextOptions,
+    getContextOptionActions,
+    getUserContextOptions,
+  ]);
+
+  const options = contextHelper?.getItemContextOptions();
+
+  const getData = () => {
+    return options;
+  };
 
   return (
     <StyledItemContextOptions>
@@ -57,7 +69,7 @@ const ItemContextOptions = ({
         getContextModel={getData}
         withBackdrop={false}
       />
-      {options.length > 0 && (
+      {options?.length > 0 && (
         <ContextMenuButton
           className="expandButton"
           title={"Show item actions"}

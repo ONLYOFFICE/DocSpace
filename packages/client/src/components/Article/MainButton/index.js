@@ -402,7 +402,10 @@ const ArticleMainButtonContent = (props) => {
     onUploadFolderClick,
   ]);
 
-  const canInvite = isAccountsPage && selectedTreeNode[1] === "filter";
+  const canInvite =
+    isAccountsPage &&
+    selectedTreeNode.length > 1 &&
+    selectedTreeNode[1] === "filter";
   const mainButtonText = isAccountsPage
     ? t("Common:Invite")
     : t("Common:Actions");
