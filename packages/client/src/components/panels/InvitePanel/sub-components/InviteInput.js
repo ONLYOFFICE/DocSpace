@@ -34,6 +34,7 @@ const InviteInput = ({
   setInviteItems,
   roomUsers,
   t,
+  isOwner,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
@@ -271,6 +272,7 @@ const InviteInput = ({
           defaultAccess={selectedAccess}
           onSelectAccess={onSelectAccess}
           containerRef={inputsRef}
+          isOwner={isOwner}
         />
 
         {!hideSelector && addUsersPanelVisible && (
@@ -294,6 +296,7 @@ const InviteInput = ({
 
 export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
+  const { isOwner } = auth.userStore.user;
   const { getUsersByQuery } = peopleStore.usersStore;
   const { invitePanelOptions, setInviteItems, inviteItems } = dialogsStore;
 
@@ -304,5 +307,6 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     roomId: invitePanelOptions.roomId,
     hideSelector: invitePanelOptions.hideSelector,
     defaultAccess: invitePanelOptions.defaultAccess,
+    isOwner,
   };
 })(observer(InviteInput));

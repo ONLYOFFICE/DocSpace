@@ -28,7 +28,7 @@ class InviteLinksStore {
   };
 
   getPortalInviteLinks = async () => {
-    const isViewerAdmin = this.peopleStore.authStore.isAdmin;
+    const isViewerAdmin = !this.peopleStore.authStore.isVisitor;
 
     if (!isViewerAdmin) return Promise.resolve();
 
