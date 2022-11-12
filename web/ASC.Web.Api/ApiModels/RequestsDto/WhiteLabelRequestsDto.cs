@@ -40,7 +40,6 @@ public class LogoDto
 
 public class WhiteLabelQueryRequestsDto
 {
-    public bool IsDefault { get; set; }
     public bool IsRetina { get; set; }
     public bool IsDark { get; set; }
 }
