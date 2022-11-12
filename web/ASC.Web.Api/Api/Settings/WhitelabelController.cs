@@ -180,18 +180,31 @@ public class WhitelabelController : BaseSettingsController
 
         var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
-        result = new Dictionary<string, string>
-            {
-                { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !inDto.IsRetina, inDto.IsDark)) },
-                { ((int)WhiteLabelLogoTypeEnum.Dark).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !inDto.IsRetina, inDto.IsDark)) },
-                { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !inDto.IsRetina, inDto.IsDark)) },
-                { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !inDto.IsRetina, inDto.IsDark)) },
-                { ((int)WhiteLabelLogoTypeEnum.DocsEditorEmbed).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.DocsEditorEmbed, !inDto.IsRetina, inDto.IsDark)) },
-                { ((int)WhiteLabelLogoTypeEnum.LeftMenu).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.LeftMenu, !inDto.IsRetina, inDto.IsDark)) },
-                { ((int)WhiteLabelLogoTypeEnum.AboutPage).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.AboutPage, !inDto.IsRetina, inDto.IsDark)) }
-            };
-
+        if (inDto.IsDark.HasValue)
+        {
+            result = GetLogos(inDto.IsRetina, inDto.IsDark.Value);
+        }
+        else
+        {
+            result = GetLogos(inDto.IsRetina, false, ".light");
+            result = result.Concat(GetLogos(inDto.IsRetina, true, ".dark")).ToDictionary(d=> d.Key, d=> d.Value);
+        }
         return result;
+    }
+
+    private Dictionary<string, string> GetLogos(bool isRetina, bool isDark, string extName = "")
+    {
+        var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
+        return new Dictionary<string, string>
+        {
+            { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString() + $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !isRetina, isDark)) },
+            { ((int)WhiteLabelLogoTypeEnum.Dark).ToString() + $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !isRetina, isDark)) },
+            { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString()+ $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !isRetina, isDark)) },
+            { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString()+ $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !isRetina, isDark)) },
+            { ((int)WhiteLabelLogoTypeEnum.DocsEditorEmbed).ToString()+ $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.DocsEditorEmbed, !isRetina, isDark)) },
+            { ((int)WhiteLabelLogoTypeEnum.LeftMenu).ToString()+ $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.LeftMenu, !isRetina, isDark)) },
+            { ((int)WhiteLabelLogoTypeEnum.AboutPage).ToString()+ $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.AboutPage, !isRetina, isDark)) }
+        };
     }
 
     ///<visible>false</visible>
