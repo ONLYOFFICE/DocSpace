@@ -132,20 +132,13 @@ public class MigrationRunner
 
     private void SetTenantActive(int tenantId)
     {
-        using var connection = _dbFactory.OpenConnection(region: _region);
-        var commandText = string.Format(
-            "update tenants_tenants " +
-            "set " +
-            "  status={0}, " +
-            "  last_modified='{1}', " +
-            "  statuschanged='{1}' " +
-            "where id = '{2}'",
-            (int)TenantStatus.Active,
-            DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss"),
-            tenantId);
+        using var dbContext = _dbFactory.CreateDbContext<TenantDbContext>(_region);
 
-        var command = connection.CreateCommand();
-        command.CommandText = commandText;
-        command.ExecuteNonQuery();
+        var tenant = dbContext.Tenants.Single(t=> t.Id == tenantId);
+        tenant.Status = TenantStatus.Active;
+        tenant.LastModified = DateTime.UtcNow;
+        tenant.StatusChanged = DateTime.UtcNow;
+        dbContext.Tenants.Update(tenant);
+        dbContext.SaveChanges();
     }
 }

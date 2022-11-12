@@ -65,19 +65,24 @@ public class DbFactory
     private DbProviderFactory _dbProviderFactory;
     private readonly IConfiguration _configuration;
     private readonly ConfigurationExtension _configurationExtension;
-    private string _connectionString;
-    private string _path;
+    private readonly IServiceProvider _serviceProvider;
 
-    public DbFactory(IConfiguration configuration, ConfigurationExtension configurationExtension)
+    public DbFactory(IConfiguration configuration, ConfigurationExtension configurationExtension, IServiceProvider serviceProvider)
     {
         _configuration = configuration;
         _configurationExtension = configurationExtension;
+        _serviceProvider = serviceProvider;
+    }
+
+    public T CreateDbContext<T>(string region = "current") where T : DbContext
+    {
+        var contextOptions = new DbContextOptionsBuilder<T>();
+        BaseDbContextExtension.OptionsAction(_serviceProvider, contextOptions, region);
+        return (T)Activator.CreateInstance(typeof(T), contextOptions.Options);
     }
 
     public DbConnection OpenConnection(string path = "default", string connectionString = null, string region = "current")
     {
-        _connectionString = connectionString;
-        _path = path;
         var connection = DbProviderFactory.CreateConnection();
         if (connection != null)
         {

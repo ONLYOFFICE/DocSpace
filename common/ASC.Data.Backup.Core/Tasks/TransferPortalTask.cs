@@ -77,8 +77,8 @@ public class TransferPortalTask : PortalTaskBase
     public override void RunJob()
     {
         _logger.DebugBeginTransfer(TenantId);
-        var fromDbFactory = new DbFactory(null, null);
-        var toDbFactory = new DbFactory(null, null);
+        var fromDbFactory = new DbFactory(null, null, null);
+        var toDbFactory = new DbFactory(null, null, null);
         var tenantAlias = GetTenantAlias(fromDbFactory);
         var backupFilePath = GetBackupFilePath(tenantAlias);
         var columnMapper = new ColumnMapper();

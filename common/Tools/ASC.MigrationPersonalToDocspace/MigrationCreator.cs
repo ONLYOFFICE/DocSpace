@@ -221,32 +221,17 @@ public class MigrationCreator
         data.Rows[0]["alias"] = newAlias;
     }
 
+    private List<string> GetAliases()
+    {
+        using var dbContext = _dbFactory.CreateDbContext<TenantDbContext>(_toRegion);
+        var tenants = dbContext.Tenants.Select(t => t.Alias).ToList();
+        var forbidens = dbContext.TenantForbiden.Select(tf => tf.Address).ToList();
+        return tenants.Union(forbidens).ToList();
+    }
+
     private void ChangeName(DataTable data)
     {
         data.Rows[0]["name"] = "";
-    }
-
-    private List<string> GetAliases()
-    {
-        using (var connection = _dbFactory.OpenConnection(region: _toRegion))
-        {
-            var list = new List<string>();
-            var dataAdapter = _dbFactory.CreateDataAdapter();
-
-            var command = connection.CreateCommand();
-            command.CommandText = "select alias from tenants_tenants left outer join tenants_forbiden on alias = address";
-            using (var reader = command.ExecuteReader())
-            {
-                if (reader.HasRows)
-                {
-                    while (reader.Read())
-                    {
-                        list.Add(reader.GetValue(0).ToString());
-                    }
-                }
-                return list;
-            }
-        }
     }
 
     private async Task DoMigrationStorage(Guid id, IDataWriteOperator writer)
