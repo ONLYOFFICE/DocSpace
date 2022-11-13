@@ -2746,6 +2746,7 @@ const Dark = {
     helpButton: "#D8D8D8",
     orLineColor: "#474747",
     orTextColor: "#858585",
+    titleColor: white,
 
     register: {
       backgroundColor: "#292929",
@@ -2997,6 +2998,16 @@ const Dark = {
   formWrapper: {
     background: black,
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.16);",
+  },
+
+  codeInput: {
+    background: "#282828",
+    border: "1px solid #474747",
+    color: white,
+    lineColor: "#858585",
+    disabledBackground: "#474747",
+    disabledBorder: "1px solid #474747",
+    disabledColor: "#858585",
   },
 };
 
