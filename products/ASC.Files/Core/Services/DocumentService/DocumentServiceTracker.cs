@@ -220,7 +220,7 @@ public class DocumentServiceTrackerHelper
             case TrackerStatus.NotFound:
             case TrackerStatus.Closed:
                 _fileTracker.Remove(fileId);
-                _socketManager.StopEdit(fileId);
+                await _socketManager.StopEdit(fileId);
 
                 break;
 
@@ -284,7 +284,6 @@ public class DocumentServiceTrackerHelper
                         _logger.InformationDocServiceUserIdIsNotGuid(user);
                         continue;
                     }
-
                 }
                 users.Remove(userId);
 
@@ -314,7 +313,7 @@ public class DocumentServiceTrackerHelper
             _fileTracker.Remove(fileId, userId: removeUserId);
         }
 
-        _socketManager.StartEdit(fileId);
+        await _socketManager.StartEdit(fileId);
     }
 
     private async Task<TrackResponse> ProcessSaveAsync<T>(T fileId, TrackerData fileData)
@@ -438,7 +437,7 @@ public class DocumentServiceTrackerHelper
         if (!forcesave)
         {
             _fileTracker.Remove(fileId);
-            _socketManager.StopEdit(fileId);
+            await _socketManager.StopEdit(fileId);
         }
 
         if (file != null)

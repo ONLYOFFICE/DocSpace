@@ -42,7 +42,7 @@ public enum TagType
 }
 
 [Serializable]
-[DebuggerDisplay("{TagName} ({Id}) entry {EntryType} ({EntryId})")]
+[DebuggerDisplay("{Name} ({Id}) entry {EntryType} ({EntryId})")]
 public sealed class Tag : IMapFrom<DbFilesTag>
 {
     public string Name { get; set; }

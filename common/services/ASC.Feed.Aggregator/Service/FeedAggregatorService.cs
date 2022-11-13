@@ -51,7 +51,7 @@ public class FeedAggregatorService : FeedBaseService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            AggregateFeeds(cfg.AggregateInterval);
+            await AggregateFeeds(cfg.AggregateInterval);
 
             await Task.Delay(cfg.AggregatePeriod, stoppingToken);
         }
@@ -91,7 +91,7 @@ public class FeedAggregatorService : FeedBaseService
         }
     }
 
-    private void AggregateFeeds(object interval)
+    private async Task AggregateFeeds(object interval)
     {
         try
         {
@@ -200,7 +200,7 @@ public class FeedAggregatorService : FeedBaseService
                 }
             }
 
-            _socketServiceClient.SendUnreadUsers(unreadUsers);
+            await _socketServiceClient.MakeRequest("sendUnreadUsers", unreadUsers);
 
             _logger.DebugTimeCollectingNews(DateTime.UtcNow - start);
         }

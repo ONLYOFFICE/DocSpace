@@ -632,7 +632,7 @@ public class FileStorageService<T> //: IFileStorageService
         var folder = await folderDao.GetFolderAsync(folderId);
         ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
 
-        var canEdit = DocSpaceHelper.IsRoom(folder.FolderType) ? folder.RootFolderType != FolderType.Archive && await _fileSecurity.CanEditRoomAsync(folder) 
+        var canEdit = DocSpaceHelper.IsRoom(folder.FolderType) ? folder.RootFolderType != FolderType.Archive && await _fileSecurity.CanEditRoomAsync(folder)
             : await _fileSecurity.CanRenameAsync(folder);
 
         ErrorIf(!canEdit, FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
@@ -967,7 +967,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (isFinish)
             {
                 _fileTracker.Remove(id, tabId);
-                _socketManager.StopEdit(id);
+                await _socketManager.StopEdit(id);
             }
             else
             {
@@ -1017,7 +1017,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (!forcesave && _fileTracker.IsEditingAlone(fileId))
             {
                 _fileTracker.Remove(fileId);
-                _socketManager.StopEdit(fileId);
+                await _socketManager.StopEdit(fileId);
             }
 
             var file = await _entryManager.SaveEditingAsync(fileId, fileExtension, fileuri, stream, doc, forcesave: forcesave ? ForcesaveType.User : ForcesaveType.None, keepLink: true);
@@ -1042,7 +1042,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (!forcesave && _fileTracker.IsEditing(fileId))
             {
                 _fileTracker.Remove(fileId);
-                _socketManager.StopEdit(fileId);
+                await _socketManager.StopEdit(fileId);
             }
 
             var file = await _entryManager.SaveEditingAsync(fileId,

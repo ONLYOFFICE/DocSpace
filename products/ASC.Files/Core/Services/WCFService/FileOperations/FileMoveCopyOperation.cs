@@ -566,7 +566,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     needToMark.Add(newFile);
                                 }
 
-                                socketManager.DeleteFile(file);
+                                await socketManager.DeleteFile(file);
 
                                 await socketManager.CreateFileAsync(newFile);
 
@@ -661,7 +661,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                                             filesMessageService.Send(file, toFolder, _headers, MessageAction.FileMovedWithOverwriting, file.Title, parentFolder.Title, toFolder.Title);
 
-                                            socketManager.DeleteFile(file);
+                                            await socketManager.DeleteFile(file);
 
                                             if (ProcessedFile(fileId))
                                             {
