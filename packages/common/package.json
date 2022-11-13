@@ -48,7 +48,8 @@
     "@welldone-software/why-did-you-render": "^6.2.1"
   },
   "api": {
-    "url": "/api/2.0",
+    "origin": "",
+    "prefix": "/api/2.0",
     "timeout": "30000"
   },
   "proxy": {

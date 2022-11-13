@@ -72,7 +72,7 @@ class FilesListWrapper extends React.Component {
         const options = getFolderOptions(folderId, this.newFilter);
 
         const response = await axios
-          .get(combineUrl(AppServerConfig.apiPrefixURL, options.url), {
+          .get(combineUrl(AppServerConfig.apiPrefix, options.url), {
             cancelToken: this.source.token,
           })
           .catch((thrown) => {

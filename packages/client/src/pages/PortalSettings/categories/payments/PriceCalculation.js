@@ -95,7 +95,7 @@ const PriceCalculation = ({
 
       await axios
         .put(
-          combineUrl(AppServerConfig.apiPrefixURL, "/portal/payment/url"),
+          combineUrl(AppServerConfig.apiPrefix, "/portal/payment/url"),
           { quantity: { admin: value } },
           {
             cancelToken: source.token,
