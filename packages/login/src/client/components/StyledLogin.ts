@@ -250,6 +250,11 @@ export const LoginContainer = styled.div`
       display: none;
     }
   }
+
+  .workspace-title{
+    color: ${(props) => props.theme.login.titleColor};
+    margin-bottom: 16px;
+  }
 `;
 
 interface ILoginFormWrapperProps {

@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import CodeInput from "@docspace/components/code-input";
 import { Trans } from "react-i18next";
+import { ReactSVG } from "react-svg";
 import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
 import BarLogo from "../../../../../public/images/danger.alert.react.svg";
-import DocspaceLogo from "../../../../../public/images/docspace.big.react.svg";
+import { Dark, Base } from "@docspace/components/themes";
+
 interface IBarProp {
   t: TFuncType;
   expired: boolean;
@@ -26,7 +28,7 @@ const Bar: React.FC<IBarProp> = (props) => {
   );
 };
 
-const Form: React.FC = ({ theme }) => {
+const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
   const { t } = useTranslation("Login");
   const [invalidCode, setInvalidCode] = useState(false);
   const [expiredCode, setExpiredCode] = useState(false);
@@ -34,6 +36,15 @@ const Form: React.FC = ({ theme }) => {
 
   const email = "test@onlyoffice.com"; //TODO: get email from form
   const validCode = "123456"; //TODO: get from api
+
+  useEffect(() => {
+    const theme =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? Dark
+        : Base;
+    setTheme(theme);
+  }, []);
 
   const onSubmit = (code: number | string) => {
     if (code !== validCode) {
@@ -49,9 +60,17 @@ const Form: React.FC = ({ theme }) => {
     setInvalidCode(false);
   };
 
+  const loginLogo = Object.values(logoUrls)[1];
+  const isSvgLogo = loginLogo.includes(".svg");
+
+  console.log(theme);
   return (
     <LoginContainer theme={theme}>
-      <DocspaceLogo className="logo-wrapper" />
+      {isSvgLogo ? (
+        <ReactSVG src={loginLogo} className="logo-wrapper" />
+      ) : (
+        <img src={loginLogo} className="logo-wrapper" />
+      )}
 
       <Text
         fontSize="23px"
@@ -71,6 +90,7 @@ const Form: React.FC = ({ theme }) => {
 
       <div className="code-input-container">
         <CodeInput
+          theme={theme}
           onSubmit={onSubmit}
           handleChange={handleChange}
           isDisabled={isLoading}
@@ -113,5 +133,6 @@ const CodeLogin: React.FC<ICodeProps> = (props) => {
 export default inject(({ loginStore }) => {
   return {
     theme: loginStore.theme,
+    setTheme: loginStore.setTheme,
   };
 })(observer(CodeLogin));
