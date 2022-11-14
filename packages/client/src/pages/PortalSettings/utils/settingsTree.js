@@ -4,6 +4,7 @@
 
 export const settingsTree = [
   {
+    id: "portal-settings_catalog-common",
     key: "0",
     icon: "/static/images/common-settings.svg",
     link: "common",
@@ -11,6 +12,7 @@ export const settingsTree = [
     isHeader: true,
     children: [
       {
+        id: "portal-settings_catalog-customization",
         key: "0-0",
         icon: "",
         link: "customization",
@@ -18,24 +20,28 @@ export const settingsTree = [
         isCategory: true,
         children: [
           {
+            id: "portal-settings_catalog-language-and-time-zone",
             key: "0-0-0",
             icon: "",
             link: "language-and-time-zone",
             tKey: "StudioTimeLanguageSettings",
           },
           {
+            id: "portal-settings_catalog-welcome-page-settings",
             key: "0-0-1",
             icon: "",
             link: "welcome-page-settings",
             tKey: "CustomTitlesWelcome",
           },
           {
+            id: "portal-settings_catalog-dns-settings",
             key: "0-0-2",
             icon: "",
             link: "dns-settings",
             tKey: "DNSSettings",
           },
           {
+            id: "portal-settings_catalog-portal-renaming",
             key: "0-0-3",
             icon: "",
             link: "portal-renaming",
@@ -44,6 +50,7 @@ export const settingsTree = [
         ],
       },
       {
+        id: "portal-settings_catalog-branding",
         key: "0-1",
         icon: "",
         link: "branding",
@@ -51,18 +58,21 @@ export const settingsTree = [
         isCategory: true,
         children: [
           {
+            id: "portal-settings_catalog-white-label",
             key: "0-1-0",
             icon: "",
             link: "white-label",
             tKey: "WhiteLabel",
           },
           {
+            id: "portal-settings_catalog-company-info-settings",
             key: "0-1-1",
             icon: "",
             link: "company-info-settings",
             tKey: "CompanyInfoSettings",
           },
           {
+            id: "portal-settings_catalog-additional-resources",
             key: "0-1-2",
             icon: "",
             link: "additional-resources",
@@ -71,6 +81,7 @@ export const settingsTree = [
         ],
       },
       {
+        id: "portal-settings_catalog-appearance",
         key: "0-2",
         icon: "",
         link: "appearance",
@@ -78,6 +89,7 @@ export const settingsTree = [
         isCategory: true,
         children: [
           {
+            id: "portal-settings_catalog-appearance_subLink",
             key: "0-2-0",
             icon: "",
             link: "appearance",
@@ -88,6 +100,7 @@ export const settingsTree = [
     ],
   },
   {
+    id: "portal-settings_catalog-security",
     key: "1",
     icon: "/images/security-settings.svg",
     link: "security",
@@ -95,6 +108,7 @@ export const settingsTree = [
     isHeader: true,
     children: [
       {
+        id: "portal-settings_catalog-access-portal",
         key: "1-0",
         icon: "",
         link: "access-portal",
@@ -102,36 +116,42 @@ export const settingsTree = [
         isCategory: true,
         children: [
           {
+            id: "portal-settings_catalog-password",
             key: "1-0-0",
             icon: "",
             link: "password",
             tKey: "SettingPasswordStrength",
           },
           {
+            id: "portal-settings_catalog-two-factor-auth",
             key: "1-0-1",
             icon: "",
             link: "tfa",
             tKey: "TwoFactorAuth",
           },
           {
+            id: "portal-settings_catalog-trusted-mail",
             key: "1-0-2",
             icon: "",
             link: "trusted-mail",
             tKey: "TrustedMail",
           },
           {
+            id: "portal-settings_catalog-ip-security",
             key: "1-0-3",
             icon: "",
             link: "ip",
             tKey: "IPSecurity",
           },
           {
+            id: "portal-settings_catalog-admin-message",
             key: "1-0-4",
             icon: "",
             link: "admin-message",
             tKey: "AdminsMessage",
           },
           {
+            id: "portal-settings_catalog-session-life-time",
             key: "1-0-5",
             icon: "",
             link: "lifetime",
@@ -140,6 +160,7 @@ export const settingsTree = [
         ],
       },
       {
+        id: "portal-settings_catalog-access-rights",
         key: "1-1",
         icon: "",
         link: "access-rights",
@@ -155,6 +176,7 @@ export const settingsTree = [
         ],
       },
       {
+        id: "portal-settings_catalog-login-history",
         key: "1-2",
         icon: "",
         link: "login-history",
@@ -162,6 +184,7 @@ export const settingsTree = [
         isCategory: true,
       },
       {
+        id: "portal-settings_catalog-audit-trail",
         key: "1-3",
         icon: "",
         link: "audit-trail",
@@ -171,6 +194,7 @@ export const settingsTree = [
     ],
   },
   {
+    id: "portal-settings_catalog-integration",
     key: "3",
     icon: "/images/integration-settings.svg",
     link: "integration",
@@ -178,6 +202,7 @@ export const settingsTree = [
     isHeader: true,
     children: [
       {
+        id: "portal-settings_catalog-single-sign-on",
         key: "3-0",
         icon: "",
         link: "single-sign-on",
@@ -185,6 +210,7 @@ export const settingsTree = [
         isCategory: true,
       },
       {
+        id: "portal-settings_catalog-third-party-services",
         key: "3-1",
         icon: "",
         link: "third-party-services",
@@ -192,6 +218,7 @@ export const settingsTree = [
         isCategory: true,
       },
       {
+        id: "portal-settings_catalog-portal-integration",
         key: "3-2",
         icon: "",
         link: "portal-integration",
@@ -199,6 +226,7 @@ export const settingsTree = [
         isCategory: true,
       },
       {
+        id: "portal-settings_catalog-plugins",
         key: "3-3",
         icon: "",
         link: "plugins",
@@ -208,6 +236,7 @@ export const settingsTree = [
     ],
   },
   {
+    id: "portal-settings_catalog-payments",
     key: "4",
     icon: "/images/payment.react.svg",
     link: "payments",
@@ -215,6 +244,7 @@ export const settingsTree = [
     isHeader: true,
     children: [
       {
+        id: "portal-settings_catalog-portal-payments",
         key: "4-0",
         icon: "",
         link: "portal-payments",
@@ -224,6 +254,7 @@ export const settingsTree = [
     ],
   },
   {
+    id: "portal-settings_catalog-backup",
     key: "5",
     icon: "/images/data-management.react.svg",
     link: "backup",
@@ -231,6 +262,7 @@ export const settingsTree = [
     isHeader: true,
     children: [
       {
+        id: "portal-settings_catalog-data-backup",
         key: "5-0",
         icon: "",
         link: "data-backup",
@@ -238,6 +270,7 @@ export const settingsTree = [
         isCategory: true,
       },
       {
+        id: "portal-settings_catalog-auto-backup",
         key: "5-1",
         icon: "",
         link: "auto-backup",
@@ -248,6 +281,7 @@ export const settingsTree = [
   },
 
   {
+    id: "portal-settings_catalog-restore",
     key: "6",
     icon: "/images/restore.react.svg",
     link: "restore",
@@ -264,6 +298,7 @@ export const settingsTree = [
     ],
   },
   {
+    id: "portal-settings_catalog-delete",
     key: "7",
     icon: "/images/trash.react.svg",
     link: "delete-data",
