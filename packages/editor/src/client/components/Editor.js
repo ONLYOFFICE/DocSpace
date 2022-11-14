@@ -26,6 +26,7 @@ import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
+import { getFileRoleActions } from "@docspace/common/utils/actions";
 
 toast.configure();
 
@@ -62,6 +63,7 @@ let docEditor;
 let newConfig;
 let documentserverUrl =
   typeof window !== "undefined" && window?.location?.origin;
+let userAccessRights = {};
 
 function Editor({
   config,
@@ -93,6 +95,9 @@ function Editor({
   const fileInfo = config?.file;
   const { t } = useTranslation(["Editor", "Common"]);
 
+  if (fileInfo) {
+    userAccessRights = getFileRoleActions(fileInfo);
+  }
   useEffect(() => {
     if (error && mfReady) {
       if (error?.unAuthorized && error?.redirectPath) {
@@ -523,7 +528,7 @@ function Editor({
         onRequestSharingSettings = onSDKRequestSharingSettings;
       }
 
-      if (fileInfo && fileInfo.canEdit) {
+      if (userAccessRights.rename) {
         onRequestRename = onSDKRequestRename;
       }
 
@@ -537,9 +542,10 @@ function Editor({
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
-      if (!!config.document.permissions.changeHistory) {
+      if (userAccessRights.changeVersionHistory) {
         onRequestRestore = onSDKRequestRestore;
       }
+
       const events = {
         events: {
           onAppReady: onSDKAppReady,
