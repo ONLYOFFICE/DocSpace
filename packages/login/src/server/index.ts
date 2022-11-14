@@ -13,8 +13,11 @@ import i18next from "./i18n";
 import cookieParser from "cookie-parser";
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { initSSR } from "@docspace/common/api/client";
+import dns from "dns";
 
 let port = PORT;
+
+dns.setDefaultResultOrder("ipv4first");
 
 const config = fs.readFileSync(path.join(__dirname, "config.json"), "utf-8");
 const parsedConfig: IParsedConfig = JSON.parse(config);
@@ -42,7 +45,7 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
     initialState = await getInitialState(query);
 
     if (initialState.isAuth) {
-      res.redirect('/');
+      res.redirect("/");
       next();
     }
 
