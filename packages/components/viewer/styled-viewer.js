@@ -42,7 +42,7 @@ const StyledViewerContainer = styled.div`
     z-index: 307;
     padding-top: 14px;
     padding-bottom: 14px;
-    height: 20px;
+    height: 25px;
     width: 100%;
     background: ${(props) => props.theme.mediaViewer.background};
     position: fixed;
@@ -117,11 +117,11 @@ const StyledViewer = styled(ViewerBase)`
   .react-viewer-footer {
     position: fixed;
     right: 0;
+    height: 48px;
     bottom: 0;
     left: 0;
     // overflow: hidden;
     text-align: center;
-    z-index: @zIndex + 6;
   }
   .react-viewer-mask {
     position: fixed;
