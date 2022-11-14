@@ -1334,7 +1334,7 @@ class FilesActionStore {
     return result;
   };
 
-  pinRooms = () => {
+  pinRooms = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
@@ -1343,10 +1343,10 @@ class FilesActionStore {
       if (!item.pinned) items.push(item.id);
     });
 
-    this.setPinAction("pin", items);
+    this.setPinAction("pin", items, t);
   };
 
-  unpinRooms = () => {
+  unpinRooms = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
@@ -1355,7 +1355,7 @@ class FilesActionStore {
       if (item.pinned) items.push(item.id);
     });
 
-    this.setPinAction("unpin", items);
+    this.setPinAction("unpin", items, t);
   };
 
   archiveRooms = (action) => {
@@ -1493,7 +1493,7 @@ class FilesActionStore {
           key: "pin",
           label: t("Pin"),
           iconUrl: "/static/images/pin.react.svg",
-          onClick: this.pinRooms,
+          onClick: () => this.pinRooms(t),
           disabled: false,
         };
       case "unpin":
@@ -1501,7 +1501,7 @@ class FilesActionStore {
           key: "unpin",
           label: t("Unpin"),
           iconUrl: "/static/images/unpin.react.svg",
-          onClick: this.unpinRooms,
+          onClick: () => this.unpinRooms(t),
           disabled: false,
         };
       case "archive":
