@@ -63,9 +63,8 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
   const loginLogo = Object.values(logoUrls)[1];
   const isSvgLogo = loginLogo.includes(".svg");
 
-  console.log(theme);
   return (
-    <LoginContainer theme={theme}>
+    <LoginContainer id="code-page" theme={theme}>
       {isSvgLogo ? (
         <ReactSVG src={loginLogo} className="logo-wrapper" />
       ) : (
@@ -73,6 +72,7 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
       )}
 
       <Text
+        id="workspace-title"
         fontSize="23px"
         fontWeight={700}
         textAlign="center"

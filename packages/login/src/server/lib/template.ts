@@ -116,6 +116,19 @@ const template: Template = (
           #login-checkbox > div > span {
             color: #333;
           }
+
+          #code-page > div > svg > path:last-child {
+            fill: #333;
+          }
+
+          #workspace-title {
+            color: #333;
+          }
+
+          #code-page > div > div > input {
+            background: #fff;
+            border-color: #d0d5da
+          }
         }
 
         @media (prefers-color-scheme: dark) {
@@ -148,6 +161,19 @@ const template: Template = (
 
           #login-checkbox > div > span {
             color: #fff;
+          }
+
+          #code-page > div > svg > path:last-child {
+            fill: #fff;
+          }
+
+          #workspace-title {
+            color: #fff;
+          }
+
+          #code-page > div > div > input {
+            background: #282828;
+            border-color: #474747
           }
         }        
         </style>
