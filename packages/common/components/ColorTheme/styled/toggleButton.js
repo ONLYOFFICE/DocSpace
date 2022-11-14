@@ -20,9 +20,7 @@ const getDefaultStyles = ({
 
         circle {
           fill: ${(isChecked && isDisabled && theme.isBase && "#FFFFFF") ||
-          (isChecked &&
-            $currentColorScheme.id > 7 &&
-            $currentColorScheme.textColor)};
+          (isChecked && $currentColorScheme.text.accent)};
         }
       }
     }
