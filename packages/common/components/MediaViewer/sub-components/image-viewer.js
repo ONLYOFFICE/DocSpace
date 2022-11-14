@@ -6,7 +6,6 @@ import MediaZoomInIcon from "../../../../../public/images/media.zoomin.react.svg
 import MediaZoomOutIcon from "../../../../../public/images/media.zoomout.react.svg";
 import MediaRotateLeftIcon from "../../../../../public/images/media.rotateleft.react.svg";
 import MediaRotateRightIcon from "../../../../../public/images/media.rotateright.react.svg";
-import MediaResetIcon from "../../../../../public/images/media.reset.react.svg";
 import MediaDeleteIcon from "../../../../../public/images/media.delete.react.svg";
 import MediaDownloadIcon from "../../../../../public/images/download.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
@@ -14,7 +13,6 @@ import MediaFavoriteIcon from "../../../../../public/images/favorite.react.svg";
 
 import ViewerSeparator from "../../../../../public/images/viewer.separator.react.svg";
 import MediaShare from "../../../../../public/images/share.react.svg";
-import MediaContextMenu from "../../../../../public/images/vertical-dots.react.svg";
 
 import DropDownItem from "@docspace/components/drop-down-item";
 import DropDown from "@docspace/components/drop-down";
