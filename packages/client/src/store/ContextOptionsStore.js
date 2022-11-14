@@ -477,31 +477,47 @@ class ContextOptionsStore {
         }
       : false;
 
+    const onlyViewVersionHistory =
+      !contextOptions.includes("finalize-version") &&
+      contextOptions.includes("show-version-history");
+
+    console.log(onlyViewVersionHistory);
+
     const versionActions = !isMedia
       ? !isMobile && !isMobileUtils() && !isTabletUtils()
-        ? [
-            {
-              key: "version",
-              label: t("VersionHistory"),
-              icon: "images/history-finalized.react.svg",
-              items: [
-                {
-                  key: "finalize-version",
-                  label: t("FinalizeVersion"),
-                  icon: "images/history-finalized.react.svg",
-                  onClick: () => this.finalizeVersion(item.id),
-                  disabled: false,
-                },
-                {
-                  key: "show-version-history",
-                  label: t("ShowVersionHistory"),
-                  icon: "images/history.react.svg",
-                  onClick: () => this.showVersionHistory(item.id),
-                  disabled: false,
-                },
-              ],
-            },
-          ]
+        ? onlyViewVersionHistory
+          ? [
+              {
+                key: "show-version-history",
+                label: t("ShowVersionHistory"),
+                icon: "images/history.react.svg",
+                onClick: () => this.showVersionHistory(item.id),
+                disabled: false,
+              },
+            ]
+          : [
+              {
+                key: "version",
+                label: t("VersionHistory"),
+                icon: "images/history-finalized.react.svg",
+                items: [
+                  {
+                    key: "finalize-version",
+                    label: t("FinalizeVersion"),
+                    icon: "images/history-finalized.react.svg",
+                    onClick: () => this.finalizeVersion(item.id),
+                    disabled: false,
+                  },
+                  {
+                    key: "show-version-history",
+                    label: t("ShowVersionHistory"),
+                    icon: "images/history.react.svg",
+                    onClick: () => this.showVersionHistory(item.id),
+                    disabled: false,
+                  },
+                ],
+              },
+            ]
         : [
             {
               key: "finalize-version",
