@@ -9,6 +9,7 @@ import { ReactSVG } from "react-svg";
 import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
 import BarLogo from "../../../../../public/images/danger.alert.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
+import { getBgPattern } from "@docspace/common/utils";
 
 interface IBarProp {
   t: TFuncType;
@@ -123,8 +124,9 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
 };
 
 const CodeLogin: React.FC<ICodeProps> = (props) => {
+  const bgPattern = getBgPattern(props.currentColorScheme.id);
   return (
-    <LoginFormWrapper>
+    <LoginFormWrapper bgPattern={bgPattern}>
       <Form {...props} />
     </LoginFormWrapper>
   );
