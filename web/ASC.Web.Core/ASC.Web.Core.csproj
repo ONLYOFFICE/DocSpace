@@ -419,12 +419,12 @@
     <Protobuf Include="protos\user_photo_manager_cache_item.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="GoogleAuthenticator" Version="2.5.0" />
+    <PackageReference Include="GoogleAuthenticator" Version="3.0.0" />
     <PackageReference Include="Grpc.Tools" Version="2.50.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta15" />
-    <PackageReference Include="Twilio" Version="5.6.0" />
+    <PackageReference Include="Twilio" Version="5.81.2" />
   </ItemGroup>
 </Project>

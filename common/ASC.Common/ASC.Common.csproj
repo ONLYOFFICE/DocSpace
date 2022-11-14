@@ -30,14 +30,14 @@
     <PackageReference Include="Autofac.Configuration" Version="6.0.0" />
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="AWS.Logger.NLog" Version="3.1.0" />
-    <PackageReference Include="Confluent.Kafka" Version="1.9.0" />
+    <PackageReference Include="Confluent.Kafka" Version="1.9.3" />
     <PackageReference Include="Google.Protobuf" Version="3.21.9" />
     <PackageReference Include="Grpc.Tools" Version="2.50.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="JWT" Version="9.0.0" />
-    <PackageReference Include="log4net" Version="2.0.14" />
+    <PackageReference Include="JWT" Version="9.0.3" />
+    <PackageReference Include="log4net" Version="2.0.15" />
     <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="7.0.0" />
