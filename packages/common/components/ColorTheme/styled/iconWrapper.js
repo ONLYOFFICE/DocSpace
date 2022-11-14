@@ -6,7 +6,7 @@ const getDefaultStyles = ({ $currentColorScheme }) =>
   css`
   svg {
     path:nth-child(2) {
-        fill: ${$currentColorScheme.accentColor};
+        fill: ${$currentColorScheme.main.accent};
     }
 `;
 

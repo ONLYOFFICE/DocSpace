@@ -8,7 +8,7 @@ const getDefaultStyles = ({ $currentColorScheme, theme }) =>
     .info-panel-toggle-bg {
       path {
         fill: ${theme.isBase
-          ? $currentColorScheme.accentColor
+          ? $currentColorScheme.main.accent
           : theme.infoPanel.sectionHeaderToggleIconActive};
       }
     }

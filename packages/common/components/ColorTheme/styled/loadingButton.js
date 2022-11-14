@@ -12,14 +12,14 @@ const getDefaultStyles = ({ $currentColorScheme, theme }) =>
     ${StyledCircle} {
       .circle__mask .circle__fill {
         background-color: ${theme.isBase
-          ? $currentColorScheme.accentColor
+          ? $currentColorScheme.main.accent
           : theme.filesPanels.upload.loadingButton.color};
       }
     }
 
     ${StyledLoadingButton} {
       color: ${theme.isBase
-        ? $currentColorScheme.accentColor
+        ? $currentColorScheme.main.accent
         : theme.filesPanels.upload.loadingButton.color};
     }
   `;

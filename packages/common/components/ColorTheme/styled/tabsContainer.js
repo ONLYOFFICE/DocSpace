@@ -7,7 +7,7 @@ const getDefaultStyles = ({ $currentColorScheme, selected, theme }) =>
   css`
     background-color: ${selected &&
     theme.isBase &&
-    $currentColorScheme.accentColor} !important;
+    $currentColorScheme.main.accent} !important;
 
     .title_style {
       color: ${$currentColorScheme.id > 7 &&

@@ -5,10 +5,10 @@ import { StyledSubmenuItemLabel } from "@docspace/components/submenu/styled-subm
 const getDefaultStyles = ({ $currentColorScheme, isActive }) =>
   $currentColorScheme &&
   css`
-    background-color: ${isActive ? $currentColorScheme.accentColor : "none"};
+    background-color: ${isActive ? $currentColorScheme.main.accent : "none"};
 
     &:hover {
-      background-color: ${isActive && $currentColorScheme.accentColor};
+      background-color: ${isActive && $currentColorScheme.main.accent};
     }
   `;
 

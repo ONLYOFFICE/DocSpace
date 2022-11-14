@@ -10,13 +10,13 @@ const getDefaultStyles = ({ $currentColorScheme, $isVersion, theme, index }) =>
           ? theme.filesVersionHistory.badge.defaultFill
           : index === 0
           ? theme.filesVersionHistory.badge.fill
-          : $currentColorScheme.accentColor};
+          : $currentColorScheme.main.accent};
 
         stroke: ${!$isVersion
           ? theme.filesVersionHistory.badge.stroke
           : index === 0
           ? theme.filesVersionHistory.badge.fill
-          : $currentColorScheme.accentColor};
+          : $currentColorScheme.main.accent};
       }
     }
 

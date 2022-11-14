@@ -7,12 +7,12 @@ const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
   css`
     color: ${isActive &&
     theme.isBase &&
-    $currentColorScheme.accentColor} !important;
+    $currentColorScheme.main.accent} !important;
 
     &:hover {
       color: ${isActive &&
       theme.isBase &&
-      $currentColorScheme.accentColor} !important;
+      $currentColorScheme.main.accent} !important;
     }
   `;
 

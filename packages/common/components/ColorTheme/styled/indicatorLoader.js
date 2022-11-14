@@ -5,10 +5,10 @@ const getDefaultStyles = ({ $currentColorScheme }) =>
   $currentColorScheme &&
   css`
     #ipl-progress-indicator {
-      background-color: ${$currentColorScheme.accentColor};
+      background-color: ${$currentColorScheme.main.accent};
 
       &:hover {
-        background-color: ${$currentColorScheme.accentColor};
+        background-color: ${$currentColorScheme.main.accent};
       }
     }
   `;

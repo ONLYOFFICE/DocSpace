@@ -15,7 +15,7 @@ const getDefaultStyles = ({
     ${ToggleButtonContainer} {
       svg {
         rect {
-          fill: ${isChecked && $currentColorScheme.accentColor};
+          fill: ${isChecked && $currentColorScheme.main.accent};
         }
 
         circle {

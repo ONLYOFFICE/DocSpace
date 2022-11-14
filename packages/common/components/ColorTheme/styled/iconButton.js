@@ -18,14 +18,14 @@ const getDefaultStyles = ({
       path {
         fill: ${(shared || locked || isFavorite || isEditing) &&
         theme.isBase &&
-        $currentColorScheme.accentColor};
+        $currentColorScheme.main.accent};
       }
     }
 
     &:hover {
       svg {
         path {
-          fill: ${theme.isBase && $currentColorScheme.accentColor};
+          fill: ${theme.isBase && $currentColorScheme.main.accent};
         }
       }
     }

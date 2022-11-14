@@ -7,13 +7,13 @@ const getDefaultStyles = ({ $currentColorScheme, isOpen, theme }) =>
   css`
     border-color: ${isOpen &&
     (theme.isBase
-      ? $currentColorScheme.accentColor
+      ? $currentColorScheme.main.accent
       : theme.comboBox.button.openBorderColor)};
 
     :focus {
       border-color: ${isOpen &&
       (theme.isBase
-        ? $currentColorScheme.accentColor
+        ? $currentColorScheme.main.accent
         : theme.comboBox.button.hoverBorderColor)};
     }
   `;

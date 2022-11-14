@@ -9,7 +9,7 @@ const getDefaultStyles = ({ $currentColorScheme, hasError, theme }) =>
       border-color: ${hasError
         ? theme.textArea.focusErrorBorderColor
         : theme.isBase
-        ? $currentColorScheme.accentColor
+        ? $currentColorScheme.main.accent
         : theme.textArea.focusBorderColor};
     }
   `;

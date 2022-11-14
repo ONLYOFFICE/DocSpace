@@ -16,10 +16,10 @@ const getDefaultStyles = ({
 }) =>
   $currentColorScheme &&
   css`
-    background: ${color ? color : $currentColorScheme.accentColor} !important;
+    background: ${color ? color : $currentColorScheme.main.accent} !important;
 
     ${StyledFloatingButton} {
-      background: ${color ? color : $currentColorScheme.accentColor} !important;
+      background: ${color ? color : $currentColorScheme.main.accent} !important;
     }
 
     ${IconBox} {

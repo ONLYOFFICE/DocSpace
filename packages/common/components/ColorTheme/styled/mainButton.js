@@ -20,16 +20,16 @@ const disableStyles = css`
 const getDefaultStyles = ({ $currentColorScheme, isDisabled, theme }) =>
   $currentColorScheme &&
   css`
-    background-color: ${$currentColorScheme.accentColor};
+    background-color: ${$currentColorScheme.main.accent};
 
     &:hover {
-      background-color: ${$currentColorScheme.accentColor};
+      background-color: ${$currentColorScheme.main.accent};
       opacity: 0.85;
       cursor: pointer;
     }
 
     &:active {
-      background-color: ${$currentColorScheme.accentColor};
+      background-color: ${$currentColorScheme.main.accent};
       opacity: 1;
       filter: ${theme.isBase ? "brightness(90%)" : "brightness(82%)"};
       cursor: pointer;

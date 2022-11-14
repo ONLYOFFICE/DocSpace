@@ -12,10 +12,10 @@ const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
   $currentColorScheme &&
   css`
     ${StyledCatalogItemText} {
-      color: ${isActive && theme.isBase && $currentColorScheme.accentColor};
+      color: ${isActive && theme.isBase && $currentColorScheme.main.accent};
 
       &:hover {
-        color: ${isActive && theme.isBase && $currentColorScheme.accentColor};
+        color: ${isActive && theme.isBase && $currentColorScheme.main.accent};
       }
     }
 
@@ -24,12 +24,12 @@ const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
         path {
           fill: ${isActive &&
           theme.isBase &&
-          $currentColorScheme.accentColor} !important;
+          $currentColorScheme.main.accent} !important;
         }
         circle {
           fill: ${isActive &&
           theme.isBase &&
-          $currentColorScheme.accentColor} !important;
+          $currentColorScheme.main.accent} !important;
         }
       }
 
@@ -38,7 +38,7 @@ const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
           path {
             fill: ${isActive &&
             theme.isBase &&
-            $currentColorScheme.accentColor} !important;
+            $currentColorScheme.main.accent} !important;
           }
         }
       }

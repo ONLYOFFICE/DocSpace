@@ -4,10 +4,10 @@ import StyledIndicator from "@docspace/common/components/FilterInput/sub-compone
 const getDefaultStyles = ({ $currentColorScheme }) =>
   $currentColorScheme &&
   css`
-    background: ${$currentColorScheme.accentColor};
+    background: ${$currentColorScheme.main.accent};
 
     &:hover {
-      background: ${$currentColorScheme.accentColor};
+      background: ${$currentColorScheme.main.accent};
     }
   `;
 

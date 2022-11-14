@@ -9,14 +9,14 @@ const getDefaultStyles = ({ $currentColorScheme, theme }) =>
     ${commonIconsStyles}
     svg {
       path {
-        fill: ${theme.isBase && $currentColorScheme.accentColor};
+        fill: ${theme.isBase && $currentColorScheme.main.accent};
       }
     }
 
     &:hover {
       svg {
         path {
-          fill: ${theme.isBase && $currentColorScheme.accentColor};
+          fill: ${theme.isBase && $currentColorScheme.main.accent};
         }
       }
     }

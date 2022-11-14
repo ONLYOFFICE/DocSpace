@@ -4,10 +4,10 @@ import StyledText from "@docspace/components/link/styled-link";
 const getDefaultStyles = ({ $currentColorScheme, noHover }) =>
   $currentColorScheme &&
   css`
-    color: ${$currentColorScheme.accentColor};
+    color: ${$currentColorScheme.main.accent};
 
     &:hover {
-      color: ${!noHover && $currentColorScheme.accentColor};
+      color: ${!noHover && $currentColorScheme.main.accent};
       text-decoration: underline;
     }
   `;
