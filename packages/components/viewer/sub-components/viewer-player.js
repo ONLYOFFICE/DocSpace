@@ -1,9 +1,6 @@
 import * as React from "react";
 import styled, { css } from "styled-components";
-import ContextMenu from "@docspace/components/context-menu";
-// import { isMobile } from "react-device-detect";
 import { isMobileOnly } from "react-device-detect";
-
 import { tablet } from "@docspace/components/utils/device";
 
 import IconPlay from "../../../../public/images/videoplayer.play.react.svg";
@@ -16,10 +13,9 @@ import IconFullScreen from "../../../../public/images/videoplayer.full.react.svg
 import IconExitFullScreen from "../../../../public/images/videoplayer.exit.react.svg";
 import IconSpeed from "../../../../public/images/videoplayer.speed.react.svg";
 import MediaContextMenu from "../../../../public/images/vertical-dots.react.svg";
-import BackArrow from "../../../../public/images/arrow.path.react.svg";
-import Text from "@docspace/components/text";
 
 import BigIconPlay from "../../../../public/images/videoplayer.bgplay.react.svg";
+import { useSwipeable } from "react-swipeable";
 
 let iconWidth = 80;
 let iconHeight = 60;
@@ -97,34 +93,6 @@ const StyledVideoPlayer = styled.div`
       cursor: pointer;
     }
   }
-`;
-
-const StyledVideoActions = styled.div`
-  display: flex;
-  justify-content: start;
-  align-items: center;
-
-  .controller {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 48px;
-    height: 48px;
-    &:hover {
-      cursor: pointer;
-      background: rgb(77, 77, 77);
-    }
-  }
-`;
-
-const StyledVideoControls = styled.div`
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 307;
-  height: 48px;
-  background: rgba(17, 17, 17, 0.867);
 
   input[type="range"] {
     -webkit-appearance: none;
@@ -148,9 +116,65 @@ const StyledVideoControls = styled.div`
     border-radius: 50%;
     background: #fff;
     border: 1px solid rgba(0, 0, 0);
-    //  transition: background 0.3s ease-in-out;
   }
 
+  .mobile-video-progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    right: 0;
+    bottom: 48px;
+    left: 0;
+    z-index: 307;
+    padding: 0 20px;
+    height: 30px;
+    background: rgba(17, 17, 17, 0.867);
+
+    input[type="range"] {
+      width: 100%;
+      margin-right: 0px;
+    }
+  }
+`;
+
+const StyledVideoActions = styled.div`
+  .actions-container {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+    ${isMobileOnly &&
+    css`
+      justify-content: center;
+
+      .fullscreen-button {
+        order: -1;
+      }
+    `}
+  }
+
+  .controller {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 48px;
+    height: 48px;
+    &:hover {
+      cursor: pointer;
+      background: rgb(77, 77, 77);
+    }
+  }
+`;
+
+const StyledVideoControls = styled.div`
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 307;
+  height: 48px;
+  background: rgba(17, 17, 17, 0.867);
   .volume-container {
     position: relative;
   }
@@ -195,10 +219,9 @@ export default function ViewerPlayer(props) {
     setIsFullScreen,
     videoRef,
     generateContextMenu,
-    title,
-    onMaskClick,
-    contextModel,
     mobileDetails,
+    onPrevClick,
+    onNextClick,
   } = props;
 
   const initialState = {
@@ -238,14 +261,22 @@ export default function ViewerPlayer(props) {
 
   const inputRef = React.useRef(null);
   const volumeRef = React.useRef(null);
-  const contextRef = React.useRef(null);
-  const cm = React.useRef(null);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
   const [isOpen, setIsOpen] = React.useState(false);
+  const handlers = useSwipeable({
+    onSwipedLeft: (e) => {
+      if (e.event.path[0] === inputRef.current) return;
+      onNextClick();
+    },
+    onSwipedRight: (e) => {
+      if (e.event.path[0] === inputRef.current) return;
+      onPrevClick();
+    },
+  });
 
   const footerHeight = 48;
-  const titleHeight = 48;
+  const titleHeight = 53;
 
   const togglePlay = () =>
     dispatch(
@@ -273,7 +304,7 @@ export default function ViewerPlayer(props) {
       })
     );
 
-  const toggleScreen = (isFull) => {
+  const toggleScreen = () => {
     handleFullScreen(!state.isFullScreen);
     setIsFullScreen(!state.isFullScreen);
 
@@ -339,7 +370,7 @@ export default function ViewerPlayer(props) {
 
     let left = (window.innerWidth - width) / 2;
     let top = !state.isFullScreen
-      ? (window.innerHeight - height - (footerHeight - 48)) / 2
+      ? (window.innerHeight - height - (footerHeight - 53)) / 2
       : 0;
 
     return [width, height, left, top];
@@ -413,6 +444,8 @@ export default function ViewerPlayer(props) {
   }, [state.isMuted, videoRef.current]);
 
   React.useEffect(() => {
+    if (!inputRef.current) return;
+
     inputRef.current.style.backgroundSize =
       ((state.progress - inputRef.current.min) * 100) /
         (inputRef.current.max - inputRef.current.min) +
@@ -428,19 +461,6 @@ export default function ViewerPlayer(props) {
   React.useEffect(() => {
     state.isPlaying ? videoRef.current.play() : videoRef.current.pause();
   }, [state.isPlaying, videoRef.current]);
-
-  React.useEffect(() => {
-    window.addEventListener("orientationchange", () => {
-      if (window.orientation === 90 || window.orientation === -90) {
-        toggleScreen();
-      }
-      if (window.orientation === 0 && state.isFullScreen) {
-        toggleScreen(false);
-      }
-    });
-
-    return () => window.removeEventListener("orientationchange", handleResize);
-  }, [state.isFullScreen]);
 
   function loadVideo(video) {
     const currentTime = getDuration(video.currentTime);
@@ -475,7 +495,7 @@ export default function ViewerPlayer(props) {
   const contextMenu = generateContextMenu(isOpen);
 
   let iconLeft = (window.innerWidth - iconWidth) / 2 + "px";
-  let iconTop = (window.innerHeight - iconHeight - (48 - 48)) / 2 + "px";
+  let iconTop = (window.innerHeight - iconHeight - (48 - 53)) / 2 + "px";
 
   let imgStyle = {
     width: `${state.width}px`,
@@ -487,7 +507,11 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
     }px)`,
   };
   return (
-    <StyledVideoPlayer id="video-playerId" isFullScreen={state.isFullScreen}>
+    <StyledVideoPlayer
+      id="video-playerId"
+      isFullScreen={state.isFullScreen}
+      {...handlers}
+    >
       {!state.isFullScreen && isMobileOnly && mobileDetails}
       <div className="video-wrapper">
         <video
@@ -507,11 +531,8 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
           </div>
         )}
       </div>
-      <StyledVideoControls>
-        <StyledVideoActions>
-          <div className="controller volume-container" onClick={togglePlay}>
-            {!state.isPlaying ? <IconPlay /> : <IconStop />}
-          </div>
+      {isMobileOnly && state.isPlaying && (
+        <div className="mobile-video-progress">
           <input
             ref={inputRef}
             type="range"
@@ -520,67 +541,93 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
             value={state.progress}
             onChange={(e) => handleVideoProgress(e)}
           />
-          {!isMobileOnly && (
+        </div>
+      )}
+      <StyledVideoControls>
+        <StyledVideoActions>
+          <div className="actions-container">
             <div
-              style={{
-                paddingLeft: "10px",
-                paddingRight: "14px",
-                width: "102px",
-                color: "#DDDDDD",
-              }}
+              className="controller volume-container video-play"
+              onClick={togglePlay}
             >
-              {state.duration}
+              {!state.isPlaying ? <IconPlay /> : <IconStop />}
             </div>
-          )}
+            {!isMobileOnly && (
+              <input
+                ref={inputRef}
+                type="range"
+                min="0"
+                max="100"
+                value={state.progress}
+                onChange={(e) => handleVideoProgress(e)}
+              />
+            )}
 
-          <div
-            className="controller volume-container"
-            onClick={toggleVolumeSelection}
-          >
-            {!state.isMuted ? <IconSound /> : <IconMuted />}
-            {state.volumeSelection && (
-              <div className="volume-wrapper">
-                <input
-                  ref={volumeRef}
-                  className="volume-toolbar"
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={state.volume}
-                  onChange={(e) => handleVolumeUpdate(e)}
-                />
+            {!isMobileOnly && (
+              <div
+                style={{
+                  paddingLeft: "10px",
+                  paddingRight: "14px",
+                  width: "102px",
+                  color: "#DDDDDD",
+                }}
+              >
+                {state.duration}
               </div>
             )}
-          </div>
-          {!isMobileOnly && (
-            <div className="controller" onClick={toggleScreen}>
+            {!isMobileOnly && (
+              <div
+                className="controller volume-container"
+                onClick={toggleVolumeSelection}
+              >
+                {!state.isMuted ? <IconSound /> : <IconMuted />}
+                {state.volumeSelection && (
+                  <div className="volume-wrapper">
+                    <input
+                      ref={volumeRef}
+                      className="volume-toolbar"
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={state.volume}
+                      onChange={(e) => handleVolumeUpdate(e)}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div
+              className="controller fullscreen-button"
+              onClick={toggleScreen}
+            >
               {!state.isFullScreen ? (
                 <IconFullScreen />
               ) : (
                 <IconExitFullScreen />
               )}
             </div>
-          )}
 
-          <div
-            className="controller dropdown-speed"
-            onClick={toggleSpeedSelectionMenu}
-          >
-            <IconSpeed />
-            {state.speedSelection && (
-              <div className="dropdown-content">{SpeedButtonComponent()}</div>
+            <div
+              className="controller dropdown-speed"
+              onClick={toggleSpeedSelectionMenu}
+            >
+              <IconSpeed />
+              {state.speedSelection && (
+                <div className="dropdown-content">{SpeedButtonComponent()}</div>
+              )}
+            </div>
+            {!isMobileOnly && (
+              <div
+                className="controller"
+                onClick={() => setIsOpen((open) => !open)}
+                style={{ position: "relative" }}
+              >
+                <MediaContextMenu />
+                {contextMenu}
+              </div>
             )}
           </div>
-          {!isMobileOnly && (
-            <div
-              className="controller"
-              onClick={() => setIsOpen((open) => !open)}
-              style={{ position: "relative" }}
-            >
-              <MediaContextMenu />
-              {contextMenu}
-            </div>
-          )}
         </StyledVideoActions>
       </StyledVideoControls>
     </StyledVideoPlayer>
