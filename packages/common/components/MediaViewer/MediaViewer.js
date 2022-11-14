@@ -74,11 +74,6 @@ class MediaViewer extends React.Component {
     const _this = this;
 
     if (this.hammer) {
-      this.hammer.off("swipeleft", this.nextMedia);
-      this.hammer.off("swiperight", this.prevMedia);
-      this.hammer.off("pinchout", this.prevMedia);
-      this.hammer.off("pinchin", this.prevMedia);
-      this.hammer.off("pinchend", this.prevMedia);
       this.hammer.off("doubletap", this.prevMedia);
     }
     this.hammer = null;
@@ -90,22 +85,8 @@ class MediaViewer extends React.Component {
             document.getElementsByClassName("react-viewer-canvas")[0]
           );
           _this.hammer.add([pinch]);
-          _this.hammer.on("pinchout", _this.handleZoomOut);
-          _this.hammer.on("pinchin", _this.handleZoomIn);
-          _this.hammer.on("pinchend", _this.handleZoomEnd);
+
           _this.hammer.on("doubletap", _this.doubleTap);
-        } else if (
-          _this.mapSupplied[ext] &&
-          (_this.mapSupplied[ext].type == mediaTypes.video ||
-            _this.mapSupplied[ext].type == mediaTypes.audio)
-        ) {
-          _this.hammer = Hammer(
-            document.getElementsByClassName("videoViewerOverlay")[0]
-          );
-        }
-        if (_this.hammer && !isDesktop) {
-          _this.hammer.on("swipeleft", _this.nextMedia);
-          _this.hammer.on("swiperight", _this.prevMedia);
         }
       } catch (ex) {
         //console.error("MediaViewer updateHammer", ex);
@@ -208,11 +189,6 @@ class MediaViewer extends React.Component {
 
   componentWillUnmount() {
     if (this.hammer) {
-      this.hammer.off("swipeleft", this.nextMedia);
-      this.hammer.off("swiperight", this.prevMedia);
-      this.hammer.off("pinchout", this.prevMedia);
-      this.hammer.off("pinchin", this.prevMedia);
-      this.hammer.off("pinchend", this.prevMedia);
       this.hammer.off("doubletap", this.prevMedia);
     }
     document.removeEventListener("keydown", this.onKeydown, false);
@@ -494,7 +470,10 @@ class MediaViewer extends React.Component {
 
     const ext = this.getFileExtension(title);
 
-    const onFavorite = (e) => onClickFavorite(e, currentFileId, t);
+    const onFavorite = () => {
+      const item = getContextModel()[0];
+      return onClickFavorite(item, currentFileId, t);
+    };
 
     const getContextModel = () => {
       return [
@@ -574,6 +553,7 @@ class MediaViewer extends React.Component {
             contextModel={getContextModel}
             onPrevClick={this.prevMedia}
             onDeleteClick={this.onDelete}
+            isFavorite={isFavorite}
             onFavorite={onFavorite}
             isImage={isImage}
             onDownloadClick={this.onDownload}
