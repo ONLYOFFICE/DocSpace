@@ -105,7 +105,7 @@ export const getFilesRights = (access) => {
   return rights;
 };
 
-export const getAccountsAccessRights = (isAdmin, isOwner) => {
+export const getAccountsRights = (isAdmin, isOwner) => {
   const rights = {
     inviteDocspaceAdmin: false,
     inviteRoomAdmin: false,
