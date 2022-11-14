@@ -354,21 +354,19 @@ public class FileMarker
             await GetNewTagsAsync(userID, entries.OfType<FileEntry<string>>().ToList());
         }
 
-        var tasks = new List<Task>();
+
 
         if (updateTags.Count > 0)
         {
             tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
-            tasks.AddRange(ExecMarkAsNewRequest(updateTags));
         }
 
         if (newTags.Count > 0)
         {
             tagDao.SaveTags(newTags, obj.CurrentAccountId);
-            tasks.AddRange(ExecMarkAsNewRequest(newTags));
         }
 
-        await Task.WhenAll(tasks);
+        await Task.WhenAll(ExecMarkAsNewRequest(updateTags.Concat(newTags), socketManager));
 
         async Task GetNewTagsAsync<T1>(Guid userID, List<FileEntry<T1>> entries)
         {
@@ -385,21 +383,6 @@ public class FileMarker
                     newTags.Add(Tag.New(userID, entry));
                 }
             });
-        }
-
-        IEnumerable<Task> ExecMarkAsNewRequest(List<Tag> tags)
-        {
-            foreach (var t in tags)
-            {
-                if (t.EntryType == FileEntryType.File)
-                {
-                    yield return socketManager.ExecMarkAsNewFile(t.EntryId, t.Count, t.Owner);
-                }
-                else if (t.EntryType == FileEntryType.Folder)
-                {
-                    yield return socketManager.ExecMarkAsNewFolder(t.EntryId, t.Count, t.Owner);
-                }
-            }
         }
     }
 
@@ -589,6 +572,10 @@ public class FileMarker
         {
             tagDao.RemoveTags(removeTags);
         }
+
+        var socketManager = _serviceProvider.GetRequiredService<SocketManager>();
+
+        await Task.WhenAll(ExecMarkAsNewRequest(updateTags.Concat(removeTags.Select(r => new Tag(r.Name, r.Type, r.Owner, 0) { EntryId = r.EntryId })), socketManager));
 
         async Task UpdateRemoveTags<TFolder>(Folder<TFolder> folder)
         {
@@ -960,6 +947,21 @@ public class FileMarker
     {
         var key = string.Format(CacheKeyFormat, userId, folderId);
         _cache.Remove(key);
+    }
+
+    private IEnumerable<Task> ExecMarkAsNewRequest(IEnumerable<Tag> tags, SocketManager socketManager)
+    {
+        foreach (var t in tags)
+        {
+            if (t.EntryType == FileEntryType.File)
+            {
+                yield return socketManager.ExecMarkAsNewFile(t.EntryId, t.Count, t.Owner);
+            }
+            else if (t.EntryType == FileEntryType.Folder)
+            {
+                yield return socketManager.ExecMarkAsNewFolder(t.EntryId, t.Count, t.Owner);
+            }
+        }
     }
 }
 
