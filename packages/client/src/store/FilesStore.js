@@ -1145,6 +1145,17 @@ class FilesStore {
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
+          "edit",
+          "move",
+          "move-to",
+          "copy-to",
+          "copy",
+          "rename",
+          "separator2",
+          "delete",
+          "version",
+          "finalize-version",
+          "show-version-history",
         ]);
       }
 
@@ -1462,6 +1473,18 @@ class FilesStore {
         !filesRights.copyFromPersonal
       ) {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
+      }
+
+      if (item.rootFolderType === FolderType.Archive) {
+        folderOptions = this.removeOptions(folderOptions, [
+          "move",
+          "move-to",
+          "copy-to",
+          "rename",
+          "change-thirdparty-info",
+          "separator2",
+          "delete",
+        ]);
       }
 
       if (isPrivacyFolder) {
