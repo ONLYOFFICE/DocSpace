@@ -63,6 +63,12 @@ class InputBlock extends React.Component {
       forwardedRef,
     } = this.props;
 
+    const hasIcon = !!iconName;
+    const isTypePassword = type === "password";
+    const identifierPasswrodIcon = hasIcon
+      ? `${id}_eye--${isTypePassword ? "open" : "close "}`
+      : undefined;
+
     if (typeof iconSize == "number" && iconSize > 0) {
       iconButtonSize = iconSize;
     } else {
@@ -130,7 +136,7 @@ class InputBlock extends React.Component {
           <div className="append">
             <StyledIconBlock
               className="input-block-icon"
-              id={`icon-${id}`}
+              id={identifierPasswrodIcon}
               //isDisabled={isDisabled}
               onClick={this.onIconClick}
               isClickable={typeof onIconClick === "function"}
