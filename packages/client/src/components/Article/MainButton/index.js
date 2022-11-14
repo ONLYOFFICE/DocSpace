@@ -28,17 +28,17 @@ const StyledButton = styled(Button)`
   opacity: 1;
 
   background-color: ${({ currentColorScheme }) =>
-    currentColorScheme.accentColor};
+    currentColorScheme.main.accent};
 
   :hover {
     background-color: ${({ currentColorScheme }) =>
-      currentColorScheme.accentColor};
+      currentColorScheme.main.accent};
     opacity: 0.85;
   }
 
   :active {
     background-color: ${({ currentColorScheme }) =>
-      currentColorScheme.accentColor};
+      currentColorScheme.main.accent};
 
     opacity: 1;
     filter: brightness(90%);
