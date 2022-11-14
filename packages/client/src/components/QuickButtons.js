@@ -18,29 +18,19 @@ const QuickButtons = (props) => {
     sectionWidth,
     isTrashFolder,
     accessToEdit,
-    showShare,
     onClickLock,
     isDisabled,
     onClickFavorite,
-    onClickShare,
     viewAs,
     isCanWebEdit,
   } = props;
 
-  const { id, locked, fileStatus, title, fileExst, shared } = item;
+  const { id, locked, fileStatus, title, fileExst } = item;
 
   const isFavorite =
     (fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
 
   const isTile = viewAs === "tile";
-
-  const iconShare = shared
-    ? "/static/images/shared.share.react.svg"
-    : "/static/images/share.react.svg";
-
-  const colorShare = shared
-    ? theme.filesQuickButtons.sharedColor
-    : theme.filesQuickButtons.color;
 
   const iconLock = locked
     ? "/static/images/file.actions.locked.react.svg"
@@ -69,18 +59,6 @@ const QuickButtons = (props) => {
 
   return (
     <div className="badges additional-badges">
-      {item.canShare && showShare && displayBadges && (
-        <ColorTheme
-          themeId={ThemeType.IconButton}
-          shared={shared}
-          iconName={iconShare}
-          className="badge share-button-icon"
-          size={sizeQuickButton}
-          color={colorShare}
-          onClick={onClickShare}
-          hoverColor={theme.filesQuickButtons.sharedColor}
-        />
-      )}
       {fileExst &&
         accessToEdit &&
         !isTrashFolder &&

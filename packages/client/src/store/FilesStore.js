@@ -396,7 +396,11 @@ class FilesStore {
     requests.push(getFilesSettings());
     requests.push(this.getIsEmptyTrash());
 
-    return Promise.all(requests).then(() => (this.isInit = true));
+    return Promise.all(requests).then(() => this.setIsInit(true));
+  };
+
+  setIsInit = (isInit) => {
+    this.isInit = isInit;
   };
 
   reset = () => {
