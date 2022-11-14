@@ -51,7 +51,7 @@ const ArticlePaymentAlert = ({
       onClick={onClick}
       isFreeTariff={isFreeTariff}
       theme={theme}
-      id="catalog-payment-alert"
+      id="document_catalog-payment-alert"
     >
       <div>
         <Text className="article-payment_border">
