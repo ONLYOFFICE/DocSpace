@@ -12,10 +12,10 @@ const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
   $currentColorScheme &&
   css`
     ${StyledCatalogItemText} {
-      color: ${isActive && theme.isBase && $currentColorScheme.main.accent};
+      color: ${isActive && $currentColorScheme.main.accent};
 
       &:hover {
-        color: ${isActive && theme.isBase && $currentColorScheme.main.accent};
+        color: ${isActive && $currentColorScheme.main.accent};
       }
     }
 
