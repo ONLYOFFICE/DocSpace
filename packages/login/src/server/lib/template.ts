@@ -90,6 +90,10 @@ const template: Template = (
             background-color: #fff;
           }
 
+          #login-header{
+            background-color: #f8f9f9;
+          }
+
           #login-page > div > svg > path:last-child {
             fill: #333;
           }
@@ -134,6 +138,10 @@ const template: Template = (
         @media (prefers-color-scheme: dark) {
           body {
             background-color: #333;
+          }
+
+          #login-header{
+            background-color: #282828;
           }
 
           #login-page > div > svg > path:last-child {

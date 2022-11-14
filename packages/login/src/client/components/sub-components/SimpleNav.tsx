@@ -23,7 +23,7 @@ const StyledNav = styled.div`
 
 const SimpleNav = ({ theme }) => {
   return (
-    <StyledNav theme={theme}>
+    <StyledNav id="login-header" theme={theme}>
       <ReactSVG src="/static/images/logo.docspace.react.svg" />
     </StyledNav>
   );
