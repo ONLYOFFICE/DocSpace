@@ -95,7 +95,10 @@ const HideArticleMenuButton = ({
       currentColorScheme={currentColorScheme}
     >
       {showText ? (
-        <div className="article-hide-menu-container" id="catalog-hide-menu">
+        <div
+          className="article-hide-menu-container"
+          id="document_catalog-hide-menu"
+        >
           <ReactSVG
             className="article-hide-menu-icon_svg"
             src="/static/images/article-hide-menu.react.svg"
@@ -111,7 +114,10 @@ const HideArticleMenuButton = ({
           </Text>
         </div>
       ) : (
-        <div className="article-show-menu-container" id="catalog-show-menu">
+        <div
+          className="article-show-menu-container"
+          id="document_catalog-show-menu"
+        >
           <ReactSVG
             className="article-show-menu-icon_svg"
             src="/static/images/article-show-menu.react.svg"
