@@ -127,7 +127,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
         >
           <TextInput
             hasError={emailErr}
-            id="recover-access-email"
+            id="recover-access-modal_email"
             name="e-mail"
             type="text"
             size="base"
@@ -149,7 +149,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
           errorMessage={t("Common:RequiredField")}
         >
           <Textarea
-            id="recover-access-description"
+            id="recover-access-modal_description"
             heightScale={false}
             hasError={descErr}
             placeholder={t("Common:RecoverDescribeYourProblemPlaceholder")}
@@ -162,7 +162,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
-          id="recover-access-send"
+          id="recover-access-modal_send"
           className="recover-button-dialog"
           key="RecoverySendBtn"
           label={loading ? t("Common:Sending") : t("Common:SendButton")}
@@ -174,7 +174,7 @@ const RecoverAccessModalDialog: React.FC<IRecoverAccessModalDialogProps> = ({
           tabIndex={3}
         />
         <Button
-          id="recover-access-cancel"
+          id="recover-access-modal_cancel"
           className="recover-button-dialog"
           key="SendBtn-recover-close"
           label={t("Common:CancelButton")}
