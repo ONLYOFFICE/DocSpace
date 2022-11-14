@@ -527,8 +527,11 @@ function Editor({
         onRequestRename = onSDKRequestRename;
       }
 
-      if (successAuth) {
+      if (successAuth && !user.isVisitor) {
         onRequestSaveAs = onSDKRequestSaveAs;
+      }
+
+      if (successAuth) {
         onRequestInsertImage = onSDKRequestInsertImage;
         onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients;
         onRequestCompareFile = onSDKRequestCompareFile;
