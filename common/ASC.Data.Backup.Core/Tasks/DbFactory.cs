@@ -66,18 +66,25 @@ public class DbFactory
     private readonly IConfiguration _configuration;
     private readonly ConfigurationExtension _configurationExtension;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ICache _cache;
 
-    public DbFactory(IConfiguration configuration, ConfigurationExtension configurationExtension, IServiceProvider serviceProvider)
+    public DbFactory(IConfiguration configuration, ConfigurationExtension configurationExtension, IServiceProvider serviceProvider, ICache cache)
     {
         _configuration = configuration;
         _configurationExtension = configurationExtension;
         _serviceProvider = serviceProvider;
+        _cache = cache;
     }
 
     public T CreateDbContext<T>(string region = "current") where T : DbContext
     {
-        var contextOptions = new DbContextOptionsBuilder<T>();
-        BaseDbContextExtension.OptionsAction(_serviceProvider, contextOptions, region);
+        var contextOptions = _cache.Get<DbContextOptionsBuilder>($"context {region}");
+        if (contextOptions == null)
+        {
+            contextOptions = new DbContextOptionsBuilder<T>();
+            BaseDbContextExtension.OptionsAction(_serviceProvider, contextOptions, region);
+            _cache.Insert($"context {region}", contextOptions, TimeSpan.FromMinutes(15));
+        }
         return (T)Activator.CreateInstance(typeof(T), contextOptions.Options);
     }
 
