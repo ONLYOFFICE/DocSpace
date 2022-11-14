@@ -2166,6 +2166,7 @@ __metadata:
     react-lifecycles-compat: ^3.0.4
     react-onclickoutside: ^6.11.2
     react-svg: ^12.1.0
+    react-swipeable: ^7.0.0
     react-text-mask: ^5.4.3
     react-toastify: ^7.0.0
     react-tooltip: ^4.2.21
@@ -20866,6 +20867,15 @@ __metadata:
     react: ^15.5.4 || ^16.0.0 || ^17.0.0
     react-dom: ^15.5.4 || ^16.0.0 || ^17.0.0
   checksum: 2f2ae1f33c7cb8f37fd1fcc06162b334fbb2c3e91f4342a999a56a20fa138555783b2634bd27c140d9a94a48ed8efd475aeaf27a86ae889137cd107fcf82b63f
+  languageName: node
+  linkType: hard
+
+"react-swipeable@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "react-swipeable@npm:7.0.0"
+  peerDependencies:
+    react: ^16.8.3 || ^17 || ^18
+  checksum: 54d15933483f7aea8f69e6a9930e220fb3bd98f314cae89a8b797e8a3bb959b68e777fe199cd7729edfe65edfcb5d933c7312ea08626f1613a6fd5d30e646598
   languageName: node
   linkType: hard
 
