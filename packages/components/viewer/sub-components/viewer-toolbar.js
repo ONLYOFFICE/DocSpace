@@ -140,21 +140,6 @@ export default function ViewerToolbar(props) {
       </ToolbarItem>
     );
   }
-  let attributeNode = props.attribute ? (
-    <p className={`${props.prefixCls}-attribute`}>
-      {props.alt && `${props.alt}`}
-      {props.noImgDetails || (
-        <span className={`${props.prefixCls}-img-details`}>
-          {`(${props.width} x ${props.height})`}
-        </span>
-      )}
-      {props.showTotal && (
-        <span className={`${props.prefixCls}-showTotal`}>
-          {`${props.activeIndex + 1} ${props.totalName} ${props.count}`}
-        </span>
-      )}
-    </p>
-  ) : null;
   let toolbars = props.toolbars;
 
   if (!props.isMobileOnly) {
@@ -188,7 +173,6 @@ export default function ViewerToolbar(props) {
 
   return (
     <div>
-      {/* {attributeNode} */}
       <ul className={`${props.prefixCls}-toolbar`}>
         {toolbars.map((item) => {
           return renderAction(item);
