@@ -1,6 +1,7 @@
 import * as React from "react";
 import classnames from "classnames";
 import ViewerLoading from "./viewer-loading";
+import { useSwipeable } from "react-swipeable";
 
 export default function ViewerImage(props) {
   const isMouseDown = React.useRef(false);
@@ -11,6 +12,15 @@ export default function ViewerImage(props) {
   const [position, setPosition] = React.useState({
     x: 0,
     y: 0,
+  });
+
+  const handlers = useSwipeable({
+    onSwipedLeft: (e) => {
+      props.onNextClick();
+    },
+    onSwipedRight: (e) => {
+      props.onPrevClick();
+    },
   });
 
   React.useEffect(() => {
@@ -167,6 +177,7 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
       className={`${props.prefixCls}-canvas`}
       onMouseDown={handleCanvasMouseDown}
       style={style}
+      {...handlers}
     >
       {imgNode}
     </div>

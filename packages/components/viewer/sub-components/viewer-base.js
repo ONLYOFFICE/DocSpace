@@ -4,7 +4,6 @@ import classnames from "classnames";
 import ViewerToolbar, { defaultToolbars } from "./viewer-toolbar";
 import { isMobileOnly } from "react-device-detect";
 import Icon, { ActionType } from "./icon";
-import { act } from "@testing-library/react";
 
 const ACTION_TYPES = {
   setVisible: "setVisible",
@@ -48,6 +47,8 @@ const ViewerBase = (props) => {
     minScale = 0.1,
     generateContextMenu,
     mobileDetails,
+    onNextClick,
+    onPrevClick,
   } = props;
 
   const initialState = {
@@ -223,7 +224,7 @@ const ViewerBase = (props) => {
       let [width, height] = getImgWidthHeight(realImgWidth, realImgHeight);
       let left = (containerSize.current.width - width) / 2;
       let top =
-        (containerSize.current.height - height - (footerHeight - 48)) / 2;
+        (containerSize.current.height - height - (footerHeight - 53)) / 2;
 
       let scaleX = defaultScale;
       let scaleY = defaultScale;
@@ -258,7 +259,7 @@ const ViewerBase = (props) => {
   }, [state.startLoading, state.activeIndex]);
 
   function getImgWidthHeight(imgWidth, imgHeight) {
-    const titleHeight = 48; // need 53px
+    const titleHeight = 53;
 
     let width = 0;
     let height = 0;
@@ -420,7 +421,7 @@ const ViewerBase = (props) => {
 
       let left = (containerSize.current.width - imgWidth) / 2;
       let top =
-        (containerSize.current.height - imgHeight - (footerHeight - 48)) / 2;
+        (containerSize.current.height - imgHeight - (footerHeight - 53)) / 2;
 
       dispatch(
         createAction(ACTION_TYPES.update, {
@@ -664,6 +665,8 @@ const ViewerBase = (props) => {
         visible={visible}
         width={state.width}
         height={state.height}
+        onNextClick={onNextClick}
+        onPrevClick={onPrevClick}
         top={state.top}
         left={state.left}
         rotate={state.rotate}
@@ -677,7 +680,7 @@ const ViewerBase = (props) => {
         container={props.container}
       />
       {props.noFooter || (
-        <div className={`${prefixCls}-footer`} style={{ zIndex: zIndex + 6 }}>
+        <div className={`${prefixCls}-footer`} style={{ zIndex: zIndex + 7 }}>
           {noToolbar || (
             <ViewerToolbar
               isMobileOnly={isMobileOnly}

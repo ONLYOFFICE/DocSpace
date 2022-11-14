@@ -113,6 +113,8 @@ export const Viewer = (props) => {
 
   const videoPortal = ReactDOM.createPortal(
     <ViewerPlayer
+      onNextClick={onNextClick}
+      onPrevClick={onPrevClick}
       contextModel={contextModel}
       mobileDetails={mobileDetails}
       title={title}
