@@ -30,10 +30,11 @@ RUN apt-get -y update && \
         npm  && \
     locale-gen en_US.UTF-8 && \
     npm install --global yarn && \
-    curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
 
+ADD https://api.github.com/repos/ONLYOFFICE/DocSpace/git/refs/heads/${GIT_BRANCH} version.json
 RUN echo ${GIT_BRANCH}  && \
     git clone --recurse-submodules -b ${GIT_BRANCH} https://github.com/ONLYOFFICE/DocSpace.git ${SRC_PATH}
 
@@ -92,7 +93,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onl
 EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
-FROM node:16.16-slim as noderun
+FROM node:18.12.1-slim as noderun
 ARG BUILD_PATH
 ARG SRC_PATH 
 ENV BUILD_PATH=${BUILD_PATH}
@@ -196,7 +197,7 @@ WORKDIR ${BUILD_PATH}/services/ASC.ApiSystem/
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/  .
 
-CMD [" ASC.ApiSystem.dll", " ASC.ApiSystem"]
+CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
 
 ## ASC.ClearEvents ##
 FROM dotnetrun AS clear-events

@@ -28,7 +28,7 @@ import {
 } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 import withLoader from "../withLoader";
-import MoreLoginModal from "login/moreLogin";
+//import MoreLoginModal from "login/moreLogin";
 import AppLoader from "@docspace/common/components/AppLoader";
 import EmailInput from "@docspace/components/email-input";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
@@ -218,13 +218,15 @@ const RegisterContainer = styled.div`
 `;
 
 const Confirm = (props) => {
-  const { settings, t, greetingTitle, providers, isDesktop } = props;
+  const { settings, t, greetingTitle, providers, isDesktop, linkData } = props;
   const inputRef = React.useRef(null);
+
+  const emailFromLink = linkData.email ? linkData.email : "";
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [ssoLabel, setSsoLabel] = useState("");
   const [ssoUrl, setSsoUrl] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailFromLink);
   const [emailValid, setEmailValid] = useState(true);
   const [emailErrorText, setEmailErrorText] = useState("");
 
@@ -286,7 +288,7 @@ const Confirm = (props) => {
 
   const onSubmit = () => {
     const { defaultPage, linkData, hashSettings } = props;
-    const isVisitor = parseInt(linkData.emplType) === 2;
+    const type = parseInt(linkData.emplType);
 
     setIsLoading(true);
 
@@ -335,13 +337,17 @@ const Confirm = (props) => {
       email: email,
     };
 
-    const registerData = Object.assign(personalData, {
-      isVisitor: isVisitor,
-    });
+    if (!!type) {
+      personalData.type = type;
+    }
 
-    const key = props.linkData.confirmHeader;
+    if (!!linkData.key) {
+      personalData.key = linkData.key;
+    }
 
-    createConfirmUser(registerData, loginData, key)
+    const headerKey = linkData.confirmHeader;
+
+    createConfirmUser(personalData, loginData, headerKey)
       .then(() => window.location.replace(defaultPage))
       .catch((error) => {
         console.error("confirm error", error);
@@ -637,7 +643,7 @@ const Confirm = (props) => {
                   scale={true}
                   isAutoFocussed={true}
                   tabIndex={1}
-                  isDisabled={isLoading}
+                  isDisabled={isLoading || !!emailFromLink}
                   autoComplete="username"
                   onChange={onChangeEmail}
                   onBlur={onBlurEmail}
@@ -772,7 +778,7 @@ const Confirm = (props) => {
             />
           </form>
 
-          <MoreLoginModal
+          {/* <MoreLoginModal
             t={t}
             visible={moreAuthVisible}
             onClose={moreAuthClose}
@@ -780,7 +786,7 @@ const Confirm = (props) => {
             onSocialLoginClick={onSocialButtonClick}
             ssoLabel={ssoLabel}
             ssoUrl={ssoUrl}
-          />
+          /> */}
         </RegisterContainer>
       </FormWrapper>
     </ConfirmContainer>

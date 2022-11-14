@@ -13,7 +13,7 @@ const USER_INVITE_LINK = "userInvitationLink";
 const INVITE_LINK_TTL = "localStorageLinkTtl";
 const LINKS_TTL = 6 * 3600 * 1000;
 
-export function getInvitationLink(isGuest) {
+export function getInvitationLink(type) {
   const curLinksTtl = localStorage.getItem(INVITE_LINK_TTL);
   const now = +new Date();
 
@@ -26,30 +26,40 @@ export function getInvitationLink(isGuest) {
   }
 
   const link = localStorage.getItem(
-    isGuest ? GUEST_INVITE_LINK : USER_INVITE_LINK
+    type === 2 ? GUEST_INVITE_LINK : USER_INVITE_LINK
   );
 
-  return link
+  return link && type !== 3
     ? Promise.resolve(link)
     : request({
         method: "get",
-        url: `/portal/users/invite/${isGuest ? 2 : 1}.json`,
+        url: `/portal/users/invite/${type}.json`,
       }).then((link) => {
-        localStorage.setItem(
-          isGuest ? GUEST_INVITE_LINK : USER_INVITE_LINK,
-          link
-        );
+        if (type !== 3) {
+          localStorage.setItem(
+            type === 2 ? GUEST_INVITE_LINK : USER_INVITE_LINK,
+            link
+          );
+        }
         return Promise.resolve(link);
       });
 }
 
 export function getInvitationLinks() {
-  const isGuest = true;
-  return Promise.all([getInvitationLink(), getInvitationLink(isGuest)]).then(
-    ([userInvitationLinkResp, guestInvitationLinkResp]) => {
+  return Promise.all([
+    getInvitationLink(1),
+    getInvitationLink(2),
+    getInvitationLink(3),
+  ]).then(
+    ([
+      userInvitationLinkResp,
+      guestInvitationLinkResp,
+      adminInvitationLinkResp,
+    ]) => {
       return Promise.resolve({
         userLink: userInvitationLinkResp,
         guestLink: guestInvitationLinkResp,
+        adminLink: adminInvitationLinkResp,
       });
     }
   );
@@ -266,4 +276,5 @@ export function sendPaymentRequest(email, userName, message) {
       userName,
       message,
     },
-  })};
+  });
+}

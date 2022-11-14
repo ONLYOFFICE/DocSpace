@@ -43,4 +43,6 @@ public abstract class SpaceUsageStatManager
 public interface IUserSpaceUsage
 {
     Task<long> GetUserSpaceUsageAsync(Guid userId);
+
+    Task RecalculateUserQuota(int tenantId, Guid userId);
 }

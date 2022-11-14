@@ -34,6 +34,7 @@ const InviteInput = ({
   setInviteItems,
   roomUsers,
   t,
+  isOwner,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
@@ -82,6 +83,8 @@ const InviteInput = ({
       setUsersList(users);
     } else {
       closeInviteInputPanel();
+      setInputValue("");
+      setUsersList([]);
     }
   };
 
@@ -125,6 +128,8 @@ const InviteInput = ({
       const items = removeExist([item, ...inviteItems]);
       setInviteItems(items);
       closeInviteInputPanel();
+      setInputValue("");
+      setUsersList([]);
     };
 
     return (
@@ -157,6 +162,8 @@ const InviteInput = ({
 
     setInviteItems(filtered);
     closeInviteInputPanel();
+    setInputValue("");
+    setUsersList([]);
   };
 
   const addItems = (users) => {
@@ -166,6 +173,8 @@ const InviteInput = ({
 
     setInviteItems(filtered);
     closeInviteInputPanel();
+    setInputValue("");
+    setUsersList([]);
   };
 
   const dropDownMaxHeight = usersList.length > 5 ? { maxHeight: 240 } : {};
@@ -185,9 +194,6 @@ const InviteInput = ({
 
   const closeInviteInputPanel = (e) => {
     if (e?.target.tagName.toUpperCase() == "INPUT") return;
-
-    setInputValue("");
-    setUsersList([]);
 
     setSearchPanelVisible(false);
   };
@@ -215,14 +221,16 @@ const InviteInput = ({
     <>
       <StyledSubHeader>
         {t("IndividualInvitation")}
-        <StyledLink
-          fontWeight="600"
-          type="action"
-          isHovered
-          onClick={openUsersPanel}
-        >
-          {t("СhooseFromList")}
-        </StyledLink>
+        {!hideSelector && (
+          <StyledLink
+            fontWeight="600"
+            type="action"
+            isHovered
+            onClick={openUsersPanel}
+          >
+            {t("СhooseFromList")}
+          </StyledLink>
+        )}
       </StyledSubHeader>
 
       <StyledInviteInputContainer ref={inputsRef}>
@@ -258,17 +266,16 @@ const InviteInput = ({
               )}
         </StyledDropDown>
 
-        {!hideSelector && (
-          <AccessSelector
-            t={t}
-            roomType={roomType}
-            defaultAccess={defaultAccess}
-            onSelectAccess={onSelectAccess}
-            containerRef={inputsRef}
-          />
-        )}
+        <AccessSelector
+          t={t}
+          roomType={roomType}
+          defaultAccess={selectedAccess}
+          onSelectAccess={onSelectAccess}
+          containerRef={inputsRef}
+          isOwner={isOwner}
+        />
 
-        {addUsersPanelVisible && (
+        {!hideSelector && addUsersPanelVisible && (
           <AddUsersPanel
             onParentPanelClose={onClose}
             onClose={closeUsersPanel}
@@ -289,6 +296,7 @@ const InviteInput = ({
 
 export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
+  const { isOwner } = auth.userStore.user;
   const { getUsersByQuery } = peopleStore.usersStore;
   const { invitePanelOptions, setInviteItems, inviteItems } = dialogsStore;
 
@@ -299,5 +307,6 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     roomId: invitePanelOptions.roomId,
     hideSelector: invitePanelOptions.hideSelector,
     defaultAccess: invitePanelOptions.defaultAccess,
+    isOwner,
   };
 })(observer(InviteInput));

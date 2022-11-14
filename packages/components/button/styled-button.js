@@ -3,7 +3,6 @@ import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import NoUserSelect from "../utils/commonStyles";
 import Base from "../themes/base";
-import { isDesktop } from "../utils/device";
 
 const activeCss = css`
   background-color: ${(props) =>
@@ -130,13 +129,8 @@ const ButtonWrapper = ({
 const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   disabled: props.isDisabled || props.isLoading ? "disabled" : "",
   tabIndex: props.tabIndex,
-  size:
-    props.size === "normal"
-      ? isDesktop()
-        ? "normalDesktop"
-        : "normalTouchscreen"
-      : props.size,
 }))`
+  position: relative;
   height: ${(props) => heightStyle(props)};
   font-size: ${(props) => fontSizeStyle(props)};
 
@@ -205,11 +199,28 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
           }
         `)}
 
-  ${(props) => props.isDisabled && disableCss}
+  ${(props) => (props.isDisabled || props.isLoading) && disableCss}
 
-
-    &:focus {
+  &:focus {
     outline: ${(props) => props.theme.button.outline};
+  }
+
+  .loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: transparent;
   }
 
   .button-content {
@@ -219,6 +230,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     justify-content: center;
     align-items: center;
     gap: 8px;
+    visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
   }
 
   .icon {
@@ -226,37 +238,12 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     display: flex;
     align-items: center;
   }
-
-  .loader {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    svg {
-      stroke: ${(props) =>
-        props.primary
-          ? props.theme.button.loader.primary
-          : props.theme.button.loader.base};
-    }
-    vertical-align: ${(props) =>
-      props.size === "normalTouchscreen" || props.size === "extraSmall"
-        ? props.theme.button.middleVerticalAlign
-        : props.size === "small"
-        ? props.theme.button.bottomVerticalAlign
-        : props.theme.button.topVerticalAlign};
-  }
 `;
 
 ButtonWrapper.propTypes = {
   label: PropTypes.string,
   primary: PropTypes.bool,
-  size: PropTypes.oneOf([
-    "extraSmall",
-    "small",
-    "normal",
-    "medium",
-    "normalDesktop",
-    "normalTouchscreen",
-  ]),
+  size: PropTypes.oneOf(["extraSmall", "small", "normal", "medium"]),
   scale: PropTypes.bool,
   icon: PropTypes.node,
 

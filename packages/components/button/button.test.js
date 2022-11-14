@@ -99,12 +99,6 @@ describe("<Button />", () => {
     wrapper.setProps({ size: "medium" });
     expect(wrapper.prop("size")).toEqual("medium");
 
-    wrapper.setProps({ size: "normalDesktop" });
-    expect(wrapper.prop("size")).toEqual("normalDesktop");
-
-    wrapper.setProps({ size: "normalTouchscreen" });
-    expect(wrapper.prop("size")).toEqual("normalTouchscreen");
-
     wrapper.setProps({ size: "extraSmall", primary: true });
     expect(wrapper.prop("size")).toEqual("extraSmall");
     expect(wrapper.prop("primary")).toEqual(true);
@@ -115,14 +109,6 @@ describe("<Button />", () => {
 
     wrapper.setProps({ size: "medium", primary: true });
     expect(wrapper.prop("size")).toEqual("medium");
-    expect(wrapper.prop("primary")).toEqual(true);
-
-    wrapper.setProps({ size: "normalDesktop", primary: true });
-    expect(wrapper.prop("size")).toEqual("normalDesktop");
-    expect(wrapper.prop("primary")).toEqual(true);
-
-    wrapper.setProps({ size: "normalTouchscreen", primary: true });
-    expect(wrapper.prop("size")).toEqual("normalTouchscreen");
     expect(wrapper.prop("primary")).toEqual(true);
 
     wrapper.setProps({ scale: true });
@@ -145,14 +131,6 @@ describe("<Button />", () => {
 
     wrapper.setProps({ size: "medium", primary: true });
     expect(wrapper.prop("size")).toEqual("medium");
-    expect(wrapper.prop("primary")).toEqual(true);
-
-    wrapper.setProps({ size: "normalDesktop", primary: true });
-    expect(wrapper.prop("size")).toEqual("normalDesktop");
-    expect(wrapper.prop("primary")).toEqual(true);
-
-    wrapper.setProps({ size: "normalTouchscreen", primary: true });
-    expect(wrapper.prop("size")).toEqual("normalTouchscreen");
     expect(wrapper.prop("primary")).toEqual(true);
   });
 

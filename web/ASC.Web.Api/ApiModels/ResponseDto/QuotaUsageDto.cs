@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Constants = ASC.Core.Users.Constants;
-
 namespace ASC.Web.Api.ApiModel.ResponseDto;
 
 [Scope]
@@ -37,8 +35,7 @@ public class QuotaUsageManager
     private readonly AuthContext _authContext;
     private readonly SettingsManager _settingsManager;
     private readonly WebItemManager _webItemManager;
-    private readonly Constants _constants;
-    private readonly CountManagerStatistic _countManagerStatistic;
+    private readonly CountRoomAdminStatistic _countRoomAdminStatistic;
     private readonly CountUserStatistic _activeUsersStatistic;
 
     public QuotaUsageManager(
@@ -48,8 +45,7 @@ public class QuotaUsageManager
         AuthContext authContext,
         SettingsManager settingsManager,
         WebItemManager webItemManager,
-        Constants constants,
-        CountManagerStatistic countManagerStatistic,
+        CountRoomAdminStatistic countManagerStatistic,
         CountUserStatistic activeUsersStatistic)
     {
         _tenantManager = tenantManager;
@@ -58,8 +54,7 @@ public class QuotaUsageManager
         _authContext = authContext;
         _settingsManager = settingsManager;
         _webItemManager = webItemManager;
-        _constants = constants;
-        _countManagerStatistic = countManagerStatistic;
+        _countRoomAdminStatistic = countManagerStatistic;
         _activeUsersStatistic = activeUsersStatistic;
     }
 
@@ -75,10 +70,10 @@ public class QuotaUsageManager
         {
             StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize),
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter)),
-            MaxUsersCount = quota.CountManager,
-            UsersCount = _coreBaseSettings.Personal ? 1 : await _countManagerStatistic.GetValue(),
-            MaxVisitors = _coreBaseSettings.Standalone ? -1 : quota.CountUser,
-            VisitorsCount = _coreBaseSettings.Personal ? 0 : await _activeUsersStatistic.GetValue(),
+            MaxRoomAdminsCount = quota.CountRoomAdmin,
+            RoomAdminCount = _coreBaseSettings.Personal ? 1 : await _countRoomAdminStatistic.GetValue(),
+            MaxUsers = _coreBaseSettings.Standalone ? -1 : quota.CountUser,
+            UsersCount = _coreBaseSettings.Personal ? 0 : await _activeUsersStatistic.GetValue(),
 
             StorageUsage = quotaRows
                 .Select(x => new QuotaUsage { Path = x.Path.TrimStart('/').TrimEnd('/'), Size = x.Counter, })
@@ -107,8 +102,8 @@ public class QuotaUsageDto
     public ulong StorageSize { get; set; }
     public ulong MaxFileSize { get; set; }
     public ulong UsedSize { get; set; }
-    public int MaxUsersCount { get; set; }
-    public int UsersCount { get; set; }
+    public int MaxRoomAdminsCount { get; set; }
+    public int RoomAdminCount { get; set; }
 
     public ulong AvailableSize
     {
@@ -118,7 +113,7 @@ public class QuotaUsageDto
 
     public int AvailableUsersCount
     {
-        get { return Math.Max(0, MaxUsersCount - UsersCount); }
+        get { return Math.Max(0, MaxRoomAdminsCount - RoomAdminCount); }
         set { throw new NotImplementedException(); }
     }
 
@@ -132,8 +127,8 @@ public class QuotaUsageDto
         set { throw new NotImplementedException(); }
     }
 
-    public long MaxVisitors { get; set; }
-    public long VisitorsCount { get; set; }
+    public long MaxUsers { get; set; }
+    public long UsersCount { get; set; }
 }
 
 public class QuotaUsage

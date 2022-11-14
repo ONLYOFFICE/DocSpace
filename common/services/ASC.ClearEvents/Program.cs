@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using HealthChecks.UI.Client;
+
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+
 using NLog;
 
 var options = new WebApplicationOptions
@@ -38,19 +42,19 @@ builder.Configuration.AddDefaultConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 
-var logger = NLog.LogManager.Setup()
+var logger = LogManager.Setup()
                             .SetupExtensions(s =>
                             {
-                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                                s.RegisterLayoutRenderer("application-context", (logevent) => AppName);
                             })
                             .LoadConfiguration(builder.Configuration, builder.Environment)
                             .GetLogger("ASC.ClearEvents");
 
 try
 {
-    logger.Info("Configuring web host ({applicationContext})...", Program.AppName);
+    logger.Info("Configuring web host ({applicationContext})...", AppName);
     builder.Host.ConfigureDefault();
-    builder.Services.AddClearEventsServices();
+    builder.Services.AddClearEventsServices(builder.Configuration);
 
     builder.Host.ConfigureContainer<ContainerBuilder>((context, builder) =>
     {
@@ -59,14 +63,30 @@ try
 
     var app = builder.Build();
 
-    logger.Info("Starting web host ({applicationContext})...", Program.AppName);
+    app.UseRouting();
+
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapHealthChecks("/health", new HealthCheckOptions()
+        {
+            Predicate = _ => true,
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+        });
+        endpoints.MapHealthChecks("/liveness", new HealthCheckOptions
+        {
+            Predicate = r => r.Name.Contains("self")
+        });
+    });
+
+
+    logger.Info("Starting web host ({applicationContext})...", AppName);
     await app.RunWithTasksAsync();
 }
 catch (Exception ex)
 {
     if (logger != null)
     {
-        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", AppName);
     }
 
     throw;
@@ -74,7 +94,7 @@ catch (Exception ex)
 finally
 {
     // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-    NLog.LogManager.Shutdown();
+    LogManager.Shutdown();
 }
 
 public partial class Program
@@ -82,4 +102,3 @@ public partial class Program
     public static string Namespace = "ASC.ClearEvents";
     public static string AppName = Namespace.Substring(Namespace.LastIndexOf('.') + 1);
 }
-

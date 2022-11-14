@@ -13,7 +13,7 @@ pipeline {
 						}
 						stage('Backend') {
 							steps {
-								sh 'dotnet build -c Release ASC.Web.slnf'
+								sh 'dotnet build -c Release ASC.Web.sln'
 							}
 						}
 					}
@@ -28,7 +28,7 @@ pipeline {
 						}
 						stage('Backend') {
 							steps {
-								bat 'dotnet build -c Release ASC.Web.slnf'
+								bat 'dotnet build -c Release ASC.Web.sln'
 							}
 						}
 					}
@@ -62,7 +62,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								sh "git submodule update --progress --init -- products/ASC.Files/Server/DocStore && dotnet build ASC.Web.slnf && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
+								sh "git submodule update --progress --init -- products/ASC.Files/Server/DocStore && dotnet build ASC.Web.sln && cd ${env.WORKSPACE}/products/ASC.Files/Tests/ && dotnet test ASC.Files.Tests.csproj -r linux-x64 -l \"console;verbosity=detailed\""
 							}
 						}
 					}
@@ -90,7 +90,7 @@ pipeline {
 						}
 						stage('Files') {
 							steps {
-								bat "git submodule update --progress --init -- products\\ASC.Files\\Server\\DocStore && dotnet build ASC.Web.slnf && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
+								bat "git submodule update --progress --init -- products\\ASC.Files\\Server\\DocStore && dotnet build ASC.Web.sln && cd ${env.WORKSPACE}\\products\\ASC.Files\\Tests\\ && dotnet test ASC.Files.Tests.csproj"
 							}
 						}
 					}

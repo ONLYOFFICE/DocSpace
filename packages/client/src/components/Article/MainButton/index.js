@@ -14,7 +14,7 @@ import MobileView from "./MobileView";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
-import { Events } from "@docspace/common/constants";
+import { Events, EmployeeType } from "@docspace/common/constants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 import toastr from "@docspace/components/toast/toastr";
@@ -90,7 +90,10 @@ const ArticleMainButtonContent = (props) => {
 
     isOwner,
     isAdmin,
-    isVisitor,
+
+    canCreateFiles,
+
+    setInvitePanelOptions,
   } = props;
 
   const isAccountsPage = selectedTreeNode[0] === "accounts";
@@ -121,6 +124,7 @@ const ArticleMainButtonContent = (props) => {
   );
 
   const onCreateRoom = React.useCallback(() => {
+    console.log("click");
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   }, []);
@@ -171,8 +175,13 @@ const ArticleMainButtonContent = (props) => {
 
   const onInvite = React.useCallback((e) => {
     const type = e.action;
-    toastr.warning("Work in progress " + type);
-    console.log("invite ", type);
+
+    setInvitePanelOptions({
+      visible: true,
+      roomId: -1,
+      hideSelector: true,
+      defaultAccess: type,
+    });
   }, []);
 
   const onInviteAgain = React.useCallback(() => {
@@ -265,7 +274,7 @@ const ArticleMainButtonContent = (props) => {
             icon: "/static/images/person.admin.react.svg",
             label: t("Common:DocSpaceAdmin"),
             onClick: onInvite,
-            action: "administrator",
+            action: EmployeeType.Admin,
             key: "administrator",
           },
           {
@@ -274,7 +283,7 @@ const ArticleMainButtonContent = (props) => {
             icon: "/static/images/person.manager.react.svg",
             label: t("Common:RoomAdmin"),
             onClick: onInvite,
-            action: "manager",
+            action: EmployeeType.User,
             key: "manager",
           },
           {
@@ -283,7 +292,7 @@ const ArticleMainButtonContent = (props) => {
             icon: "/static/images/person.user.react.svg",
             label: t("Common:User"),
             onClick: onInvite,
-            action: "user",
+            action: EmployeeType.Guest,
             key: "user",
           },
         ]
@@ -393,12 +402,17 @@ const ArticleMainButtonContent = (props) => {
     onUploadFolderClick,
   ]);
 
-  const canInvite = isAccountsPage && selectedTreeNode[1] === "filter";
+  const canInvite =
+    isAccountsPage &&
+    selectedTreeNode.length > 1 &&
+    selectedTreeNode[1] === "filter";
   const mainButtonText = isAccountsPage
     ? t("Common:Invite")
     : t("Common:Actions");
 
-  const isDisabled = (!canCreate && !canInvite) || isArchiveFolder;
+  const isDisabled =
+    ((!canCreate || (!canCreateFiles && !isRoomsFolder)) && !canInvite) ||
+    isArchiveFolder;
   const isProfile = history.location.pathname === "/accounts/view/@self";
 
   return (
@@ -413,7 +427,7 @@ const ArticleMainButtonContent = (props) => {
             !isArchiveFolder &&
             !isArticleLoading &&
             !isProfile &&
-            (canCreate || canInvite) && (
+            ((canCreate && (canCreateFiles || isRoomsFolder)) || canInvite) && (
               <MobileView
                 t={t}
                 titleProp={t("Upload")}
@@ -478,6 +492,7 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     selectedFolderStore,
+    accessRightsStore,
   }) => {
     const { isLoaded, firstLoad, isLoading, canCreate } = filesStore;
     const {
@@ -492,7 +507,7 @@ export default inject(
       selectedTreeNode,
     } = treeFoldersStore;
     const { startUpload } = uploadDataStore;
-    const { setSelectFileDialogVisible } = dialogsStore;
+    const { setSelectFileDialogVisible, setInvitePanelOptions } = dialogsStore;
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
@@ -501,6 +516,8 @@ export default inject(
     const currentFolderId = selectedFolderStore.id;
 
     const { isAdmin, isOwner, isVisitor } = auth.userStore.user;
+
+    const { canCreateFiles } = accessRightsStore;
 
     return {
       showText: auth.settingsStore.showText,
@@ -518,10 +535,12 @@ export default inject(
       selectedTreeNode,
 
       canCreate,
+      canCreateFiles,
 
       startUpload,
 
       setSelectFileDialogVisible,
+      setInvitePanelOptions,
 
       isLoading,
       isLoaded,

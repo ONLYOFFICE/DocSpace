@@ -106,6 +106,9 @@ const StyledFilterBlockItem = styled.div`
     props.withoutHeader ? "0" : props.isFirst ? "12px 0 0 0" : "16px 0 0 0"};
   padding: 0 15px 0 16px;
 
+  max-width: 480px;
+  box-sizing: border-box;
+
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -164,6 +167,8 @@ const selectedItemTag = css`
 const StyledFilterBlockItemTag = styled.div`
   height: 28px;
   max-height: 28px;
+
+  max-width: 100%;
 
   display: flex;
   flex-direction: row;

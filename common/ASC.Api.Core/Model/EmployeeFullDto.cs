@@ -190,8 +190,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             Terminated = _apiDateTimeHelper.Get(userInfo.TerminatedDate),
             WorkFrom = _apiDateTimeHelper.Get(userInfo.WorkFromDate),
             Email = userInfo.Email,
-            IsVisitor = _userManager.IsVisitor(userInfo),
-            IsAdmin = _userManager.IsAdmin(userInfo),
+            IsVisitor = _userManager.IsUser(userInfo),
+            IsAdmin = _userManager.IsDocSpaceAdmin(userInfo),
             IsOwner = userInfo.IsOwner(_context.Tenant),
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()

@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
@@ -258,12 +258,6 @@ namespace ASC.Migrations.MySql.Migrations
                     b.Property<int>("TenantId")
                         .HasColumnType("int(10)")
                         .HasColumnName("tenant_id");
-
-                    b.Property<bool>("BackupMail")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("backup_mail")
-                        .HasDefaultValueSql("'0'");
 
                     b.Property<int>("BackupsStored")
                         .HasColumnType("int(10)")

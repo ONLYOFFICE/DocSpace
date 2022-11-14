@@ -23,6 +23,8 @@ const StyledArticle = styled.article`
 
   //padding: 0 20px;
 
+  border-right: ${(props) => props.theme.catalog.verticalLine};
+
   @media ${tablet} {
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
@@ -61,8 +63,10 @@ const StyledArticle = styled.article`
     position: fixed;
     margin: 0;
     padding: 0;
-    top: ${(props) => (props.isBannerVisible ? "-16px" : "64px")} !important;
+    top: 64px;
     height: calc(100% - 64px) !important;
+
+    border-right: none;
   `}
 
   z-index: ${(props) =>
@@ -77,7 +81,7 @@ const StyledArticle = styled.article`
     .scroll-body {
       overflow-x: hidden !important;
       height: calc(100% - 200px);
-      padding: 0 20px;
+      padding: 0 20px !important;
 
       @media ${tablet} {
         height: calc(100% - 150px);
@@ -160,6 +164,11 @@ const StyledHeading = styled.div`
   padding: 0;
   cursor: pointer;
 
+  img.logo-icon_svg {
+    height: 24px;
+    width: 211px;
+  }
+
   .logo-icon_svg {
     svg {
       path:last-child {
@@ -194,6 +203,10 @@ const StyledIconBox = styled.div`
   display: none;
   align-items: center;
   height: 20px;
+
+  img {
+    height: 24px;
+  }
 
   @media ${tablet} {
     display: ${(props) => (props.showText ? "none" : "flex")};
@@ -278,16 +291,19 @@ const StyledArticleProfile = styled.div`
   justify-content: center;
 
   border-top: ${(props) => props.theme.catalog.profile.borderTop};
+  border-right: ${(props) => props.theme.catalog.verticalLine}
   background-color: ${(props) => props.theme.catalog.profile.background};
 
   @media ${tablet} {
     padding: 16px 14px;
   }
 
-  ${isTablet &&
-  css`
-    padding: 16px 14px;
-  `}
+  ${
+    isTablet &&
+    css`
+      padding: 16px 14px;
+    `
+  }
 
   .profile-avatar {
     cursor: pointer;

@@ -309,7 +309,7 @@ public static class DocumentService
             body.Token = token;
         }
 
-        var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
+        var bodyString = JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
@@ -340,7 +340,7 @@ public static class DocumentService
         {
             return new CommandResponse
             {
-                Error = CommandResponse.ErrorTypes.ParseError,
+                Error = ErrorTypes.ParseError,
                 ErrorString = ex.Message
             };
         }
@@ -405,7 +405,7 @@ public static class DocumentService
             body.Token = token;
         }
 
-        var bodyString = System.Text.Json.JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
+        var bodyString = JsonSerializer.Serialize(body, new System.Text.Json.JsonSerializerOptions()
         {
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping

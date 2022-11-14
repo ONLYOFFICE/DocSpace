@@ -8,7 +8,7 @@ call runasadmin.bat "%~dpnx0"
 
 if %errorlevel% == 0 (
 call start\stop.bat nopause
-dotnet build ..\asc.web.slnf  /fl1 /flp1:logfile=asc.web.log;verbosity=normal
+dotnet build ..\asc.web.sln  /fl1 /flp1:logfile=asc.web.log;verbosity=normal
 echo.
 )
 

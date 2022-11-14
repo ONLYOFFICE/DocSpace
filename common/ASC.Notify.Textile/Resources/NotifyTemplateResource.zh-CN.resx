@@ -128,10 +128,4 @@
 &lt;/div&gt;
 &lt;/body&gt;</value>
   </data>
-  <data name="TextForFooterWithUnsubscribeLink" xml:space="preserve">
-    <value>此电子邮件是自动生成的，您无需回复。
-&lt;br/&gt;您收到此邮件，因为您是&lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;{0}&lt;/a&gt;的用户
-&lt;br/&gt;点击这里，取消邮件订阅。&lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;取消订阅&lt;/a&gt;
-&lt;br /&gt;</value>
-  </data>
 </root>

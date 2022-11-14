@@ -17,6 +17,7 @@ import {
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import { StyledInfoPanelHeader } from "./styles/common";
+import { FolderType } from "@docspace/common/constants";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -30,6 +31,7 @@ const InfoPanelHeaderContent = (props) => {
     getIsGallery,
     getIsAccounts,
     isRootFolder,
+    rootFolderType,
   } = props;
 
   const isRooms = getIsRooms();
@@ -46,6 +48,8 @@ const InfoPanelHeaderContent = (props) => {
   const setMembers = () => setView("members");
   const setHistory = () => setView("history");
   const setDetails = () => setView("details");
+
+  const isArchiveRoot = rootFolderType === FolderType.Archive;
 
   const submenuData = [
     {
@@ -68,7 +72,9 @@ const InfoPanelHeaderContent = (props) => {
     },
   ];
 
-  const roomsSubmenu = [...submenuData];
+  const roomsSubmenu = isArchiveRoot
+    ? [{ ...submenuData[0] }, { ...submenuData[2] }]
+    : [...submenuData];
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
   const isTablet =
@@ -134,7 +140,7 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsGallery,
     getIsAccounts,
   } = auth.infoPanelStore;
-  const { isRootFolder } = selectedFolderStore;
+  const { isRootFolder, rootFolderType } = selectedFolderStore;
 
   return {
     selection,
@@ -148,6 +154,7 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsAccounts,
 
     isRootFolder,
+    rootFolderType,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(

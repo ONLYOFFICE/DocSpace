@@ -59,6 +59,18 @@ const StyledDualRing = styled.svg`
 `;
 StyledDualRing.defaultProps = { theme: Base };
 
+const StyledTrack = styled.svg`
+  width: ${(props) => (props.size ? props.size : "20px")};
+  height: ${(props) => (props.size ? props.size : "20px")};
+  color: ${({ color, primary, theme }) =>
+    color
+      ? color
+      : primary
+      ? theme.button.loader.primary
+      : theme.button.loader.base};
+`;
+StyledTrack.defaultProps = { theme: Base };
+
 export {
   LoadingLabel,
   LoadingWrapper,
@@ -66,4 +78,5 @@ export {
   Dot,
   StyledOval,
   StyledDualRing,
+  StyledTrack,
 };

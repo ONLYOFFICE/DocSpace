@@ -15,7 +15,12 @@
  */
 
 
-const winston = require("winston");
+const winston = require("winston"),
+      WinstonCloudWatch = require('winston-cloudwatch'),
+      { randomUUID } = require('crypto'),
+      date = require('date-and-time'),
+      os = require("os");
+
 const { format } = require("winston");
 require("winston-daily-rotate-file");
 
@@ -40,10 +45,60 @@ const fileTransport = new (winston.transports.DailyRotateFile)({
     maxFiles: "30d"
 });
 
-const transports = [
+const aws = config["aws"];
+
+const accessKeyId = aws.accessKeyId; 
+const secretAccessKey = aws.secretAccessKey; 
+const awsRegion = aws.region; 
+const logGroupName = aws.logGroupName;
+const logStreamName = aws.logStreamName;
+
+let transports = [
     new (winston.transports.Console)(),
     fileTransport
 ];
+
+
+if (aws != null && aws.accessKeyId !== '')
+{
+  transports.push(new WinstonCloudWatch({
+    name: 'aws',
+    level: "debug",
+    logStreamName: () => {
+      const hostname = os.hostname();
+      const now = new Date();
+      const guid = randomUUID();
+      const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
+      
+      return logStreamName.replace("${hostname}", hostname)
+                          .replace("${applicationContext}", "WebDav")                  
+                          .replace("${guid}", guid)
+                          .replace("${date}", dateAsString);      
+    },
+    awsRegion: awsRegion,
+    jsonMessage: true,
+    awsOptions: {
+      credentials: {
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey
+      }
+    }
+  }));
+}
+
+const customFormat = winston.format(info => {
+    const now = new Date();
+  
+    info.date = date.format(now, 'YYYY-MM-DD HH:mm:ss');
+    info.applicationContext = "WebDav";
+    info.level = info.level.toUpperCase();
+  
+    const hostname = os.hostname();
+  
+    info["instance-id"] = hostname;
+  
+    return info;
+  })();
 
 winston.exceptions.handle(fileTransport);
 
@@ -52,8 +107,6 @@ module.exports = winston.createLogger({
     transports: transports,
     exitOnError: false,
     format: format.combine(
-        format.timestamp({
-          format: "YYYY-MM-DD HH:mm:ss"
-        }),
-        format.printf(info => `${info.timestamp} - ${info.level}: ${info.message}`)
-    )});
+        customFormat,
+        winston.format.json()    
+)});

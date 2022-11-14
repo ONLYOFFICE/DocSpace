@@ -26,74 +26,6 @@
 
 namespace ASC.Web.Studio.UserControls.CustomNavigation;
 
-//internal class LogoUploader : IFileUploadHandler
-//{
-//    public FileUploadResult ProcessUpload(HttpContext context)
-//    {
-//        var result = new FileUploadResult();
-//        try
-//        {
-//            SecurityContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-//            var width = Convert.ToInt32(context.Request["size"]);
-//            var size = new Size(width, width);
-
-//            if (context.Request.Files.Count != 0)
-//            {
-//                const string imgContentType = @"image";
-
-//                var logo = context.Request.Files[0];
-//                if (!logo.ContentType.StartsWith(imgContentType))
-//                {
-//                    throw new Exception(WhiteLabelResource.ErrorFileNotImage);
-//                }
-
-//                var data = new byte[logo.InputStream.Length];
-
-//                var reader = new BinaryReader(logo.InputStream);
-//                reader.Read(data, 0, (int) logo.InputStream.Length);
-//                reader.Close();
-
-//                using (var stream = new MemoryStream(data))
-//                using (var image = Image.FromStream(stream))
-//                {
-//                    var actualSize = image.Size;
-//                    if (actualSize.Height != size.Height || actualSize.Width != size.Width)
-//                    {
-//                        throw new ImageSizeLimitException();
-//                    }
-//                }
-
-//                result.Success = true;
-//                result.Message = UserPhotoManager.SaveTempPhoto(data, SetupInfo.MaxImageUploadSize, size.Width,
-//                    size.Height);
-//            }
-//            else
-//            {
-//                result.Success = false;
-//                result.Message = Resource.ErrorEmptyUploadFileSelected;
-//            }
-//        }
-//        catch (ImageWeightLimitException)
-//        {
-//            result.Success = false;
-//            result.Message = Resource.ErrorImageWeightLimit;
-//        }
-//        catch (ImageSizeLimitException)
-//        {
-//            result.Success = false;
-//            result.Message = WhiteLabelResource.ErrorImageSize;
-//        }
-//        catch (Exception ex)
-//        {
-//            result.Success = false;
-//            result.Message = ex.Message.HtmlEncode();
-//        }
-
-//        return result;
-//    }
-//}
-
 [Scope]
 public class StorageHelper
 {
@@ -155,7 +87,7 @@ public class StorageHelper
 
         try
         {
-            var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), StorageName);
+            var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, StorageName);
 
             var fileName = Path.GetFileName(logoPath);
 
@@ -172,7 +104,7 @@ public class StorageHelper
 
     private string SaveLogo(string fileName, byte[] data)
     {
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), StorageName);
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, StorageName);
 
         using var stream = new MemoryStream(data);
         stream.Seek(0, SeekOrigin.Begin);

@@ -1,6 +1,6 @@
 {
   "All": "All",
-  "Archived": "Archived",
+  "Archived": "Move to archive",
   "ArchiveAction": "Empty archive",
   "ArchivedRoomAction": "The room '{{name}}' is archived",
   "ArchivedRoomsAction": "The rooms are archived",
@@ -28,6 +28,7 @@
   "EmptyFilterDescriptionTextRooms": "No rooms match this filter. Try a different one or clear filter to view all rooms.",
   "EmptyFilterSubheadingText": "No files to be displayed for this filter here",
   "EmptyFolderDecription": "Drop files here or create new ones.",
+  "EmptyFolderDescriptionUser": "Files and folders uploaded by admins will appeared here.",
   "EmptyFolderHeader": "No files in this folder",
   "EmptyRecycleBin": "Empty Trash",
   "EmptyScreenFolder": "No docs here yet",
@@ -93,7 +94,6 @@
   "RoomRemoved": "Room removed",
   "RoomsRemoved": "Rooms removed",
   "RestoreAll": "Restore all",
-  "RestoreAllArchive": "Are you sure you want to restore all rooms?",
   "SearchByContent": "Search by file contents",
   "SendByEmail": "Send by email",
   "Share": "Share",
@@ -115,5 +115,8 @@
   "ViewList": "List",
   "ViewOnlyRooms": "View-only",
   "ViewTiles": "Tiles",
-  "WithSubfolders": "With subfolders"
+  "WithSubfolders": "With subfolders",
+  "RoomPinned": "Room pinned",
+  "RoomUnpinned": "Room unpinned",
+  "CreateRoom": "Create room"
 }

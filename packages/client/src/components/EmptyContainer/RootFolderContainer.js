@@ -59,9 +59,10 @@ const RootFolderContainer = (props) => {
   const trashDescription = t("TrashEmptyDescription");
   const favoritesDescription = t("FavoritesEmptyContainerDescription");
   const recentDescription = t("RecentEmptyContainerDescription");
+
   const roomsDescription = isVisitor
-    ? t("RoomEmptyContainerDescription")
-    : t("RoomEmptyContainerDescriptionUser");
+    ? t("RoomEmptyContainerDescriptionUser")
+    : t("RoomEmptyContainerDescription");
   const archiveRoomsDescription = t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
@@ -283,7 +284,7 @@ const RootFolderContainer = (props) => {
         alt="plus_icon"
       />
       <Link onClick={onCreateRoom} {...linkStyles}>
-        {t("CreateEditRoomDialog:CreateRoom")}
+        {t("CreateRoom")}
       </Link>
     </div>
   );
@@ -399,8 +400,4 @@ export default inject(
       setIsEmptyPage,
     };
   }
-)(
-  withTranslation(["Files", "CreateEditRoomDialog"])(
-    observer(RootFolderContainer)
-  )
-);
+)(withTranslation(["Files"])(observer(RootFolderContainer)));

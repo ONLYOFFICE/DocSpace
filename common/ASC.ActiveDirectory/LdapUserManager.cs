@@ -44,7 +44,7 @@ public class LdapUserManager
     private readonly UserFormatter _userFormatter;
     private readonly IServiceProvider _serviceProvider;
     private readonly NovellLdapUserImporter _novellLdapUserImporter;
-    private readonly CountManagerChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
     private LdapLocalization _resource;
 
     public LdapUserManager(
@@ -59,7 +59,7 @@ public class LdapUserManager
         DisplayUserSettingsHelper displayUserSettingsHelper,
         UserFormatter userFormatter,
         NovellLdapUserImporter novellLdapUserImporter,
-        CountManagerChecker countManagerChecker)
+        CountRoomAdminChecker countRoomAdminChecker)
     {
         _logger = logger;
         _userManager = userManager;
@@ -72,7 +72,7 @@ public class LdapUserManager
         _userFormatter = userFormatter;
         _serviceProvider = serviceProvider;
         _novellLdapUserImporter = novellLdapUserImporter;
-        _countManagerChecker = countManagerChecker;
+        _countRoomAdminChecker = countRoomAdminChecker;
     }
 
     public void Init(LdapLocalization resource = null)
@@ -137,7 +137,7 @@ public class LdapUserManager
 
             try
             {
-                _countManagerChecker.CheckAppend().Wait();
+                _countRoomAdminChecker.CheckAppend().Wait();
             }
             catch (Exception)
             {
@@ -308,7 +308,7 @@ public class LdapUserManager
                         NotifyConstants.ActionLdapActivation,
                         null,
                         new[] { new DirectRecipient(ldapUserInfo.Email, null, new[] { ldapUserInfo.Email }, false) },
-                        new[] { ASC.Core.Configuration.Constants.NotifyEMailSenderSysName },
+                        new[] { Core.Configuration.Constants.NotifyEMailSenderSysName },
                         null,
                         new TagValue(NotifyConstants.TagUserName, ldapUserInfo.DisplayUserName(_displayUserSettingsHelper)),
                         new TagValue(NotifyConstants.TagUserEmail, ldapUserInfo.Email),
