@@ -124,7 +124,7 @@ public class NotifyHelper
         foreach (var user in users)
         {
             var hash = _authManager.GetUserPasswordStamp(user.Id).ToString("s");
-            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash);
+            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
             Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
 
@@ -158,7 +158,7 @@ public class NotifyHelper
 
                     var newTenantId = toTenantId.HasValue ? toTenantId.Value : tenant.Id;
                     var hash = _authManager.GetUserPasswordStamp(user.Id).ToString("s");
-                    var confirmationUrl = url + "/" + _commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash);
+                    var confirmationUrl = url + "/" + _commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
                     Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
                     currentArgs.Add(TagValues.GreenButton(greenButtonText, confirmationUrl));

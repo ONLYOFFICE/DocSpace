@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,48 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.IO.Compression;
-global using System.Reflection;
-global using System.Runtime.Caching;
-global using System.Runtime.Serialization;
-global using System.Text;
-global using System.Text.Json.Serialization;
-global using System.Text.RegularExpressions;
+namespace ASC.Web.Api.ApiModels.RequestsDto;
 
-global using ASC.Api.Core;
-global using ASC.Api.Core.Extensions;
-global using ASC.Common;
-global using ASC.Common.Caching;
-global using ASC.Common.Log;
-global using ASC.Common.Web;
-global using ASC.Core;
-global using ASC.Core.Users;
-global using ASC.Files.Core;
-global using ASC.Files.Core.Resources;
-global using ASC.Files.Core.Security;
-global using ASC.Migration.ApiModels.ResponseDto;
-global using ASC.Migration.Core;
-global using ASC.Migration.Core.Models;
-global using ASC.Migration.Core.Models.Api;
-global using ASC.Migration.GoogleWorkspace.Models;
-global using ASC.Migration.GoogleWorkspace.Models.Parse;
-global using ASC.Migration.Resources;
-global using ASC.Web.Api.Routing;
-global using ASC.Web.Core.Files;
-global using ASC.Web.Files.Classes;
-global using ASC.Web.Files.Services.WCFService;
-global using ASC.Web.Studio.Core.Notify;
-
-global using Autofac;
-
-global using HtmlAgilityPack;
-
-global using Ical.Net;
-
-global using Microsoft.AspNetCore.Mvc;
-global using Microsoft.Extensions.Hosting.WindowsServices;
-
-global using MimeKit;
-
-global using Newtonsoft.Json;
-global using ASC.Migration;
+public class SendCongratulationsDto
+{
+    public Guid Userid { get; set; }
+    public string Key { get; set; }
+}

@@ -309,8 +309,7 @@ public class PortalController : ControllerBase
             }
         }
 
-        var reference = _commonMethods.CreateReference(Request.Scheme, t.GetTenantDomain(_coreSettings), info.Email, isFirst);
-
+        var reference = _commonMethods.CreateReference(t.Id, Request.Scheme, t.GetTenantDomain(_coreSettings), info.Email, isFirst);
         _log.LogDebug("PortalName = {0}; Elapsed ms. CreateReferenceByCookie...: {1}", model.PortalName, sw.ElapsedMilliseconds);
 
         sw.Stop();

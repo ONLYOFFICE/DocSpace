@@ -33,7 +33,9 @@ const InfoPanelBodyContent = ({
   const isRooms = getIsRooms();
   const isAccounts = getIsAccounts();
   const isGallery = getIsGallery();
-  const isSeveralItems = props.selectedItems.length > 1;
+
+  const isSeveralItems = props.selectedItems?.length > 1;
+
   const isNoItem =
     (isGallery && !gallerySelected) ||
     (!selection?.title && !isSeveralItems && !isAccounts) ||
@@ -114,7 +116,10 @@ const InfoPanelBodyContent = ({
     if (selection?.isRoom && roomsView === "members") return;
 
     const currentFolderRoomId =
-      selectedFolder?.pathParts && selectedFolder.pathParts[1];
+      selectedFolder?.pathParts &&
+      selectedFolder?.pathParts?.length === 2 &&
+      selectedFolder.pathParts[1];
+
     const storeRoomId = selectionParentRoom?.id;
     if (!currentFolderRoomId || currentFolderRoomId === storeRoomId) return;
 
@@ -172,6 +177,7 @@ export default inject(({ auth, selectedFolderStore }) => {
   const { isRootFolder } = selectedFolderStore;
 
   const selectedItems = auth.infoPanelStore.getSelectedItems();
+
   const selectedFolder = auth.infoPanelStore.getSelectedFolder();
 
   return {

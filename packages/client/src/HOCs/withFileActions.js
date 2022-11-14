@@ -201,10 +201,7 @@ export default function withFileActions(WrappedFileItem) {
         checked,
         dragging,
         isFolder,
-        isDesktop,
-        personal,
         canWebEdit,
-        canViewedDocs,
       } = this.props;
       const { fileExst, access, id } = item;
 
@@ -226,13 +223,6 @@ export default function withFileActions(WrappedFileItem) {
         ? "38px"
         : "96px";
 
-      const showShare =
-        !isShareable ||
-        (isPrivacy && (!isDesktop || !fileExst)) ||
-        (personal && !canWebEdit && !canViewedDocs)
-          ? false
-          : true;
-
       const checkedProps = id <= 0 ? false : checked;
 
       return (
@@ -252,7 +242,6 @@ export default function withFileActions(WrappedFileItem) {
           value={value}
           displayShareButton={displayShareButton}
           isPrivacy={isPrivacy}
-          showShare={showShare}
           checkedProps={checkedProps}
           dragging={dragging}
           getContextModel={this.getContextModel}
@@ -265,14 +254,12 @@ export default function withFileActions(WrappedFileItem) {
   return inject(
     (
       {
-        auth,
         filesActionsStore,
         dialogsStore,
         treeFoldersStore,
         selectedFolderStore,
         filesStore,
         uploadDataStore,
-        settingsStore,
         contextOptionsStore,
       },
       { item, t }
@@ -320,8 +307,7 @@ export default function withFileActions(WrappedFileItem) {
       const draggable = !isRecycleBinFolder && selectedItem;
 
       const isFolder = selectedItem ? false : !item.isFolder ? false : true;
-      const canWebEdit = settingsStore.canWebEdit(item.fileExst);
-      const canViewedDocs = settingsStore.canViewedDocs(item.fileExst);
+
       const inProgress =
         activeFiles.findIndex((x) => x === item.id) !== -1 ||
         activeFolders.findIndex(
@@ -367,13 +353,9 @@ export default function withFileActions(WrappedFileItem) {
         checked: !!selectedItem,
         //parentFolder: selectedFolderStore.parentId,
         setParentId: selectedFolderStore.setParentId,
-        canWebEdit,
-        canViewedDocs,
         isTrashFolder: isRecycleBinFolder,
         getFolderInfo,
         viewAs,
-        isDesktop: auth.settingsStore.isDesktopClient,
-        personal: auth.settingsStore.personal,
         setNewBadgeCount,
         isActive,
         inProgress,

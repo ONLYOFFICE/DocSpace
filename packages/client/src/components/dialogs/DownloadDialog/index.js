@@ -334,7 +334,7 @@ class DownloadDialogComponent extends React.Component {
           <Button
             key="DownloadButton"
             label={t("Common:Download")}
-            size="normalTouchscreen"
+            size="normal"
             primary
             onClick={this.onDownload}
             isDisabled={isCheckedLength === 0}
@@ -343,7 +343,7 @@ class DownloadDialogComponent extends React.Component {
           <Button
             key="CancelButton"
             label={t("Common:CancelButton")}
-            size="normalTouchscreen"
+            size="normal"
             onClick={this.onClose}
             scale
           />
