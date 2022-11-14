@@ -51,6 +51,7 @@ const ArticleProfile = (props) => {
         <div ref={ref}>
           <Avatar
             className={"profile-avatar"}
+            id="user-avatar"
             size={avatarSize}
             role={"user"}
             source={user.avatar}
@@ -78,7 +79,7 @@ const ArticleProfile = (props) => {
               </Text>
             </StyledUserName>
             <ContextMenuButton
-              id="profile-option-button"
+              id="user-option-button"
               className="option-button"
               iconClassName="option-button-icon"
               zIndex={402}
