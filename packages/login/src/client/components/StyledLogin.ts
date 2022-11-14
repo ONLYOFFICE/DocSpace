@@ -254,6 +254,10 @@ export const LoginContainer = styled.div`
   .workspace-title{
     color: ${(props) => props.theme.login.titleColor};
     margin-bottom: 16px;
+
+    @media ${hugeMobile} {
+      margin-top: 32px;
+    }
   }
 `;
 
