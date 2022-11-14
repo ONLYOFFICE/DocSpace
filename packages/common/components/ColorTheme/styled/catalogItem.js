@@ -22,23 +22,17 @@ const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
     ${StyledCatalogItemImg} {
       svg {
         path {
-          fill: ${isActive &&
-          theme.isBase &&
-          $currentColorScheme.main.accent} !important;
+          fill: ${isActive && $currentColorScheme.main.accent} !important;
         }
         circle {
-          fill: ${isActive &&
-          theme.isBase &&
-          $currentColorScheme.main.accent} !important;
+          fill: ${isActive && $currentColorScheme.main.accent} !important;
         }
       }
 
       &:hover {
         svg {
           path {
-            fill: ${isActive &&
-            theme.isBase &&
-            $currentColorScheme.main.accent} !important;
+            fill: ${isActive && $currentColorScheme.main.accent} !important;
           }
         }
       }

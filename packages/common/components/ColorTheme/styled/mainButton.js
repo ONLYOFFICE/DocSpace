@@ -36,11 +36,11 @@ const getDefaultStyles = ({ $currentColorScheme, isDisabled, theme }) =>
     }
 
     .main-button_text {
-      color: ${$currentColorScheme.id > 7 && $currentColorScheme.textColor};
+      color: ${$currentColorScheme.text.accent};
     }
 
     .main-button_img svg path {
-      fill: ${$currentColorScheme.id > 7 && $currentColorScheme.textColor};
+      fill: ${$currentColorScheme.text.accent};
     }
 
     ${isDisabled &&

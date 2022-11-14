@@ -25,7 +25,7 @@ const getDefaultStyles = ({
     ${IconBox} {
       svg {
         path {
-          fill: ${$currentColorScheme.id > 7 && $currentColorScheme.textColor};
+          fill: ${$currentColorScheme.text.accent};
         }
       }
     }
@@ -34,7 +34,7 @@ const getDefaultStyles = ({
       .circle__mask .circle__fill {
         background-color: ${!displayProgress
           ? "transparent !important"
-          : $currentColorScheme.id > 7 && $currentColorScheme.textColor};
+          : $currentColorScheme.text.accent};
       }
     }
   `;

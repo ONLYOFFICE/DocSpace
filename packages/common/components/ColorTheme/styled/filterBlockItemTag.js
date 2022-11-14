@@ -10,7 +10,7 @@ const getDefaultStyles = ({ $currentColorScheme, isSelected, theme }) =>
     border-color: ${$currentColorScheme.main.accent};
 
     p {
-      color: ${$currentColorScheme.id > 7 && $currentColorScheme.textColor};
+      color: ${$currentColorScheme.textColor};
     }
     &:hover {
       background: ${$currentColorScheme.main.accent};

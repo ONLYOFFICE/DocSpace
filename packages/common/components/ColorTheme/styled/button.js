@@ -4,9 +4,7 @@ import Base from "@docspace/components/themes/base";
 
 const activeCss = css`
   border-color: ${(props) =>
-    props.theme.isBase
-      ? props.$currentColorScheme.main.buttons
-      : props.primary
+    props.primary
       ? props.$currentColorScheme.main.buttons
       : props.theme.button.border.baseActive};
 
@@ -18,17 +16,12 @@ const activeCss = css`
   filter: ${(props) =>
     props.primary &&
     (props.theme.isBase ? "brightness(90%)" : "brightness(82%)")};
-  color: ${(props) =>
-    props.$currentColorScheme.id > 7 &&
-    props.primary &&
-    props.$currentColorScheme.textColor};
+  color: ${(props) => props.$currentColorScheme.text.buttons};
 `;
 
 const hoverCss = css`
   border-color: ${(props) =>
-    props.theme.isBase
-      ? props.$currentColorScheme.main.buttons
-      : props.primary
+    props.primary
       ? props.$currentColorScheme.main.buttons
       : props.theme.button.border.baseHover};
 
@@ -36,10 +29,7 @@ const hoverCss = css`
     props.primary && props.$currentColorScheme.main.buttons};
 
   opacity: ${(props) => props.primary && !props.isDisabled && "0.85"};
-  color: ${(props) =>
-    props.$currentColorScheme.id > 7 &&
-    props.primary &&
-    props.$currentColorScheme.textColor};
+  color: ${(props) => props.primary && props.$currentColorScheme.text.buttons};
 `;
 
 const getDefaultStyles = ({
@@ -56,15 +46,11 @@ const getDefaultStyles = ({
     background: ${primary && $currentColorScheme.main.buttons};
     opacity: ${primary && isDisabled && "0.6"};
     border-color: ${primary && $currentColorScheme.main.buttons};
-    color: ${$currentColorScheme.id > 7 &&
-    primary &&
-    $currentColorScheme.textColor};
+    color: ${primary && $currentColorScheme.text.buttons};
 
     .loader {
       svg {
-        color: ${$currentColorScheme.id > 7 &&
-        primary &&
-        $currentColorScheme.textColor};
+        color: ${primary && $currentColorScheme.text.buttons};
       }
       background-color: ${primary && $currentColorScheme.main.buttons};
     }

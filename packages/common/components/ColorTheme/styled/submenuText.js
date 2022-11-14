@@ -5,14 +5,10 @@ import Base from "@docspace/components/themes/base";
 const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
   $currentColorScheme &&
   css`
-    color: ${isActive &&
-    theme.isBase &&
-    $currentColorScheme.main.accent} !important;
+    color: ${isActive && $currentColorScheme.main.accent} !important;
 
     &:hover {
-      color: ${isActive &&
-      theme.isBase &&
-      $currentColorScheme.main.accent} !important;
+      color: ${isActive && $currentColorScheme.main.accent} !important;
     }
   `;
 

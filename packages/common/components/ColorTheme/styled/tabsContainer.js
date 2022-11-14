@@ -5,14 +5,10 @@ import Base from "@docspace/components/themes/base";
 const getDefaultStyles = ({ $currentColorScheme, selected, theme }) =>
   $currentColorScheme &&
   css`
-    background-color: ${selected &&
-    theme.isBase &&
-    $currentColorScheme.main.accent} !important;
+    background-color: ${selected && $currentColorScheme.main.accent} !important;
 
     .title_style {
-      color: ${$currentColorScheme.id > 7 &&
-      selected &&
-      $currentColorScheme.textColor};
+      color: ${selected && $currentColorScheme.text.accent};
     }
   `;
 

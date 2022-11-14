@@ -17,7 +17,6 @@ const getDefaultStyles = ({
     svg {
       path {
         fill: ${(shared || locked || isFavorite || isEditing) &&
-        theme.isBase &&
         $currentColorScheme.main.accent};
       }
     }
@@ -25,7 +24,7 @@ const getDefaultStyles = ({
     &:hover {
       svg {
         path {
-          fill: ${theme.isBase && $currentColorScheme.main.accent};
+          fill: ${$currentColorScheme.main.accent};
         }
       }
     }

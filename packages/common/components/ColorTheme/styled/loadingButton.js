@@ -11,16 +11,12 @@ const getDefaultStyles = ({ $currentColorScheme, theme }) =>
   css`
     ${StyledCircle} {
       .circle__mask .circle__fill {
-        background-color: ${theme.isBase
-          ? $currentColorScheme.main.accent
-          : theme.filesPanels.upload.loadingButton.color};
+        background-color: ${$currentColorScheme.main.accent};
       }
     }
 
     ${StyledLoadingButton} {
-      color: ${theme.isBase
-        ? $currentColorScheme.main.accent
-        : theme.filesPanels.upload.loadingButton.color};
+      color: ${$currentColorScheme.main.accent};
     }
   `;
 

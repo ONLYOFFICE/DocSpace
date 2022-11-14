@@ -15,9 +15,7 @@ const getDefaultStyles = ({
       border-color: ${(hasError && theme.input.focusErrorBorderColor) ||
       (hasWarning && theme.input.focusWarningBorderColor) ||
       (isDisabled && theme.input.focusDisabledBorderColor) ||
-      (theme.isBase
-        ? $currentColorScheme.main.accent
-        : theme.input.focusBorderColor)};
+      $currentColorScheme.main.accent};
     }
   `;
 

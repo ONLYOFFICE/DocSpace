@@ -20,9 +20,7 @@ const getDefaultStyles = ({
     ${StyledText} {
       color: ${color
         ? color
-        : $currentColorScheme.id === 7 && !theme.isBase
-        ? "#444444"
-        : isPaidBadge || $currentColorScheme.id < 7
+        : isPaidBadge
         ? theme.badge.color
         : $currentColorScheme.text.accent} !important;
     }
@@ -30,15 +28,11 @@ const getDefaultStyles = ({
     ${StyledInner} {
       background-color: ${backgroundColor
         ? backgroundColor
-        : $currentColorScheme.id === 7 && !theme.isBase
-        ? "#ECEEF1"
         : $currentColorScheme.main.accent};
 
       &:hover {
         background-color: ${backgroundColor
           ? backgroundColor
-          : $currentColorScheme.id === 7 && !theme.isBase
-          ? "#ECEEF1"
           : $currentColorScheme.main.accent};
       }
     }
@@ -46,8 +40,6 @@ const getDefaultStyles = ({
     &:hover {
       border-color: ${backgroundColor
         ? backgroundColor
-        : $currentColorScheme.id === 7 && !theme.isBase
-        ? "#ECEEF1"
         : $currentColorScheme.main.accent};
     }
   `;
