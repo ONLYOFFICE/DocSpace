@@ -129,7 +129,7 @@ const StyledVideoPlayer = styled.div`
     z-index: 307;
     padding: 0 20px;
     height: 30px;
-    background: rgba(17, 17, 17, 0.867);
+    background: RGB(110, 110, 110);
 
     input[type="range"] {
       width: 100%;
@@ -174,7 +174,7 @@ const StyledVideoControls = styled.div`
   left: 0;
   z-index: 307;
   height: 48px;
-  background: rgba(17, 17, 17, 0.867);
+  background: RGB(110, 110, 110);
   .volume-container {
     position: relative;
   }

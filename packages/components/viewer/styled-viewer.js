@@ -6,18 +6,6 @@ const StyledViewerContainer = styled.div`
   color: ${(props) => props.theme.mediaViewer.color};
   display: ${(props) => (props.visible ? "block" : "none")};
   overflow: hidden;
-  .mediaViewerToolbox {
-    z-index: 306;
-    padding-top: 14px;
-    padding-bottom: 14px;
-    height: 20px;
-    width: 100%;
-    background-color: ${(props) => props.theme.mediaViewer.backgroundColor};
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    text-align: center;
-  }
   span {
     position: fixed;
     right: 0;
@@ -44,7 +32,7 @@ const StyledViewerContainer = styled.div`
     padding-bottom: 14px;
     height: 25px;
     width: 100%;
-    background: ${(props) => props.theme.mediaViewer.background};
+    background: #333333;
     position: fixed;
     top: 0;
     left: 0;
@@ -117,10 +105,11 @@ const StyledViewer = styled(ViewerBase)`
   .react-viewer-footer {
     position: fixed;
     right: 0;
-    height: 48px;
     bottom: 0;
     left: 0;
-    // overflow: hidden;
+    z-index: 307;
+    height: 48px;
+    background: rgba(0, 0, 0, 0.5);
     text-align: center;
   }
   .react-viewer-mask {
