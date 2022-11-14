@@ -1,10 +1,27 @@
 import * as React from "react";
+import styled from "styled-components";
 
-export default function ViewerLoading(props) {
-  let cls = "circle-loading";
-  return (
-    <div className="loading-wrap" style={props.style}>
-      <div className={cls}></div>
-    </div>
-  );
+const StyledLoader = styled.div`
+  width: 48px;
+  height: 48px;
+  border: 4px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+
+  @keyframes rotation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+`;
+
+export default function ViewerLoading() {
+  console.log("viewer loading");
+  return <StyledLoader />;
 }
