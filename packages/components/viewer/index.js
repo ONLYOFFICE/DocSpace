@@ -106,6 +106,7 @@ export const Viewer = (props) => {
     <StyledViewer
       {...props}
       mobileDetails={mobileDetails}
+      container={container}
       generateContextMenu={generateContextMenu}
     />,
     container
@@ -170,14 +171,7 @@ export const Viewer = (props) => {
         </>
       )}
 
-      {isImage ? (
-        <>
-          <div className="mediaViewerToolbox" ref={viewerToolboxRef}></div>
-          {viewerPortal}
-        </>
-      ) : (
-        <>{videoPortal}</>
-      )}
+      {isImage ? <>{viewerPortal}</> : <>{videoPortal}</>}
     </StyledViewerContainer>
   );
 };

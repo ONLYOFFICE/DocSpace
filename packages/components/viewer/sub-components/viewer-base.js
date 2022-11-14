@@ -69,14 +69,11 @@ const ViewerBase = (props) => {
     loadFailed: false,
     startLoading: false,
     percent: 100,
+    withTransition: false,
   };
   function setContainerWidthHeight() {
     let width = window.innerWidth;
     let height = window.innerHeight;
-    if (props.container) {
-      width = props.container.offsetWidth;
-      height = props.container.offsetHeight;
-    }
     return {
       width,
       height,
@@ -353,6 +350,7 @@ const ViewerBase = (props) => {
   function handleRotate(isRight = false) {
     dispatch(
       createAction(ACTION_TYPES.update, {
+        withTransition: true,
         rotate: state.rotate + 90 * (isRight ? 1 : -1),
       })
     );
@@ -407,6 +405,7 @@ const ViewerBase = (props) => {
         height: height,
         top: top,
         left: left,
+        withTransition: false,
       })
     );
   }
@@ -595,6 +594,7 @@ const ViewerBase = (props) => {
         left: left,
         loading: false,
         percent: zoomPercent,
+        withTransition: true,
       })
     );
   }
@@ -667,6 +667,7 @@ const ViewerBase = (props) => {
         height={state.height}
         onNextClick={onNextClick}
         onPrevClick={onPrevClick}
+        withTransition={state.withTransition}
         top={state.top}
         left={state.left}
         rotate={state.rotate}

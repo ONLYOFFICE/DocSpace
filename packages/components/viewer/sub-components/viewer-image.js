@@ -128,7 +128,7 @@ export default function ViewerImage(props) {
   let imgStyle = {
     width: `${props.width}px`,
     height: `${props.height}px`,
-    transition: "all .26s ease-out",
+    transition: `${props.withTransition ? "all .26s ease-out" : "none"}`,
     transform: `
 translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
       props.top
