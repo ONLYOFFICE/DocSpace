@@ -22,6 +22,5 @@ const StyledLoader = styled.div`
 `;
 
 export default function ViewerLoading() {
-  console.log("viewer loading");
   return <StyledLoader />;
 }
