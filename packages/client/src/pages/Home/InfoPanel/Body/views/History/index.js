@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -34,6 +34,12 @@ const History = ({
   const [history, setHistory] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
 
+  const isMount = useRef(true);
+
+  useEffect(() => {
+    return () => (isMount.current = false);
+  }, []);
+
   const fetchHistory = async (itemId) => {
     let module = "files";
     if (selection.isRoom) module = "rooms";
@@ -44,9 +50,11 @@ const History = ({
     fetchedHistory = parseHistoryJSON(fetchedHistory);
     clearTimeout(timerId);
 
-    setHistory(fetchedHistory);
-    setSelection({ ...selection, history: fetchedHistory });
-    setShowLoader(false);
+    if (isMount.current) {
+      setHistory(fetchedHistory);
+      setSelection({ ...selection, history: fetchedHistory });
+      setShowLoader(false);
+    }
   };
 
   const parseHistoryJSON = (fetchedHistory) => {
@@ -77,10 +85,13 @@ const History = ({
   };
 
   useEffect(async () => {
+    if (!isMount.current) return;
+
     if (selection.history) {
       setHistory(selection.history);
       return;
     }
+
     fetchHistory(selection.id);
   }, [selection]);
 

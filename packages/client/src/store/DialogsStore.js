@@ -35,7 +35,7 @@ class DialogsStore {
     defaultAccess: ShareAccessRights.FullAccess,
   };
   restoreAllPanelVisible = false;
-  restoreAllArchiveDialogVisible = false;
+  archiveDialogVisible = false;
   eventDialogVisible = false;
 
   removeItem = null;
@@ -47,11 +47,13 @@ class DialogsStore {
   conflictResolveDialogItems = null;
   removeMediaItem = null;
   unsubscribe = null;
+  isRoomDelete = false;
+  archiveAction = null;
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
   inviteItems = [];
-
+  restoreAllArchive = false;
   isConnectDialogReconnect = false;
   saveAfterReconnectOAuth = false;
 
@@ -71,8 +73,20 @@ class DialogsStore {
     this.versionHistoryStore = versionHistoryStore;
   }
 
-  setRestoreAllArchiveDialogVisible = (restoreAllArchiveDialogVisible) => {
-    this.restoreAllArchiveDialogVisible = restoreAllArchiveDialogVisible;
+  setIsRoomDelete = (isRoomDelete) => {
+    this.isRoomDelete = isRoomDelete;
+  };
+
+  setArchiveAction = (archiveAction) => {
+    this.archiveAction = archiveAction;
+  };
+
+  setRestoreAllArchive = (restoreAllArchive) => {
+    this.restoreAllArchive = restoreAllArchive;
+  };
+
+  setArchiveDialogVisible = (archiveDialogVisible) => {
+    this.archiveDialogVisible = archiveDialogVisible;
   };
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -313,7 +327,7 @@ class DialogsStore {
       this.versionHistoryStore.isVisible ||
       this.eventDialogVisible ||
       this.invitePanelOptions.visible ||
-      this.restoreAllArchiveDialogVisible ||
+      this.archiveDialogVisible ||
       this.restoreAllPanelVisible ||
       this.inviteUsersWarningDialogVisible
     );

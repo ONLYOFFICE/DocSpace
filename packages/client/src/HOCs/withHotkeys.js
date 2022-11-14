@@ -55,7 +55,7 @@ const withHotkeys = (Component) => {
 
       isVisitor,
       deleteRooms,
-      moveRoomsToArchive,
+      archiveRooms,
     } = props;
 
     const hotkeysFilter = {
@@ -260,7 +260,7 @@ const withHotkeys = (Component) => {
         }
 
         if (isRoomsFolder) {
-          isAvailableOption("archive") && moveRoomsToArchive(t);
+          isAvailableOption("archive") && archiveRooms("archive");
           return;
         }
 
@@ -394,7 +394,7 @@ const withHotkeys = (Component) => {
         backToParentFolder,
         setFavoriteAction,
         deleteRooms,
-        moveRoomsToArchive,
+        archiveRooms,
       } = filesActionsStore;
 
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
@@ -456,7 +456,7 @@ const withHotkeys = (Component) => {
 
         isVisitor,
         deleteRooms,
-        moveRoomsToArchive,
+        archiveRooms,
       };
     }
   )(observer(WithHotkeys));

@@ -133,7 +133,7 @@ const SelectionPanelBody = ({
           theme={theme}
           className="select-file-modal-dialog-buttons-save"
           primary
-          size="normalTouchscreen"
+          size="normal"
           label={primaryButtonName}
           onClick={onButtonClick}
           isDisabled={
@@ -151,7 +151,7 @@ const SelectionPanelBody = ({
         <Button
           theme={theme}
           className="modal-dialog-button"
-          size="normalTouchscreen"
+          size="normal"
           label={t("Common:CancelButton")}
           onClick={onClose}
           isDisabled={isLoadingData}

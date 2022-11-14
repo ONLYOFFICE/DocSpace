@@ -6,6 +6,7 @@ import {
   getSettings,
   getBuildVersion,
   getCurrentCustomSchema,
+  getAppearanceTheme,
 } from "@docspace/common/api/settings";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import { AppServerConfig } from "@docspace/common/constants";
@@ -69,12 +70,14 @@ export const initDocEditor = async (req) => {
       filesSettings,
       versionInfo,
       customNames,
+      appearanceTheme,
     ] = await Promise.all([
       getUser(),
       getSettings(),
       getSettingsFiles(),
       getBuildVersion(),
       getCurrentCustomSchema("Common"),
+      getAppearanceTheme(),
     ]);
 
     const successAuth = !!user;
@@ -124,6 +127,7 @@ export const initDocEditor = async (req) => {
       portalSettings: settings,
       versionInfo,
       customNames,
+      appearanceTheme,
     };
   } catch (err) {
     error = { errorMessage: typeof err === "string" ? err : err.message };

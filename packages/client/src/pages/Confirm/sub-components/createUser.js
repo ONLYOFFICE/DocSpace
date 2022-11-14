@@ -28,7 +28,7 @@ import {
 } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 import withLoader from "../withLoader";
-import MoreLoginModal from "login/moreLogin";
+//import MoreLoginModal from "login/moreLogin";
 import AppLoader from "@docspace/common/components/AppLoader";
 import EmailInput from "@docspace/components/email-input";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
@@ -778,7 +778,7 @@ const Confirm = (props) => {
             />
           </form>
 
-          <MoreLoginModal
+          {/* <MoreLoginModal
             t={t}
             visible={moreAuthVisible}
             onClose={moreAuthClose}
@@ -786,7 +786,7 @@ const Confirm = (props) => {
             onSocialLoginClick={onSocialButtonClick}
             ssoLabel={ssoLabel}
             ssoUrl={ssoUrl}
-          />
+          /> */}
         </RegisterContainer>
       </FormWrapper>
     </ConfirmContainer>

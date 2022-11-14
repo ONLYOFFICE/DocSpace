@@ -49,14 +49,6 @@ export default function withQuickButtons(WrappedComponent) {
         .catch((err) => toastr.error(err));
     };
 
-    onClickShare = () => {
-      const { item, onSelectItem, setSharingPanelVisible } = this.props;
-      const { id, isFolder } = item;
-
-      onSelectItem({ id, isFolder });
-      setSharingPanelVisible(true);
-    };
-
     render() {
       const { isLoading, isCanWebEdit } = this.state;
 
@@ -66,7 +58,6 @@ export default function withQuickButtons(WrappedComponent) {
         item,
         isTrashFolder,
         isAdmin,
-        showShare,
         sectionWidth,
         viewAs,
       } = this.props;
@@ -84,7 +75,6 @@ export default function withQuickButtons(WrappedComponent) {
           item={item}
           sectionWidth={sectionWidth}
           isAdmin={isAdmin}
-          showShare={showShare}
           isTrashFolder={isTrashFolder}
           accessToEdit={accessToEdit}
           viewAs={viewAs}
@@ -92,7 +82,6 @@ export default function withQuickButtons(WrappedComponent) {
           isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
-          onClickShare={this.onClickShare}
         />
       );
 
