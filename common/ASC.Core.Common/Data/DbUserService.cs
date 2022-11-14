@@ -221,7 +221,18 @@ public class EFUserService : IUserService
 
         if (!string.IsNullOrEmpty(sortBy))
         {
-            q = q.OrderBy(sortBy, sortOrderAsc);
+            if (sortBy == "type")
+            {
+                var q1 = from user in q join userGroup in userDbContext.UserGroups.Where(g => !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID)) 
+                         on user.Id equals userGroup.Userid into joinedGroup from @group in joinedGroup.DefaultIfEmpty() select new { user, @group };
+
+                q = sortOrderAsc ? q1.OrderBy(r => r.group != null && r.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : r.group == null ? 2 : 3).Select(r => r.user)
+                    : q1.OrderByDescending(u => u.group != null && u.group.UserGroupId == Users.Constants.GroupAdmin.ID ? 1 : u.group == null ? 2 : 3).Select(r => r.user);
+            }
+            else
+            {
+                q = q.OrderBy(sortBy, sortOrderAsc);
+            }
         }
 
         if (offset != 0)
