@@ -55,9 +55,9 @@ const withDialogs = (WrappedComponent) => {
       setIsVisible(true);
     };
 
-    const onCancel = () => {
-      setIsVisible(false);
-    };
+    // const onCancel = () => {
+    //   setIsVisible(false);
+    // };
 
     const loadUsersRightsList = (docEditor) => {
       window.SharingDialog.convertSharingUsers(sharingSettings).then(
@@ -243,16 +243,16 @@ const withDialogs = (WrappedComponent) => {
       setTitleSelectorFolder(e.target.value);
     };
 
-    const sharingDialog = (
-      <SharingDialog
-        mfReady={mfReady}
-        isVisible={isVisible}
-        fileInfo={fileInfo}
-        onCancel={onCancel}
-        loadUsersRightsList={loadUsersRightsList}
-        filesSettings={props.filesSettings}
-      />
-    );
+    // const sharingDialog = (
+    //   <SharingDialog
+    //     mfReady={mfReady}
+    //     isVisible={isVisible}
+    //     fileInfo={fileInfo}
+    //     onCancel={onCancel}
+    //     loadUsersRightsList={loadUsersRightsList}
+    //     filesSettings={props.filesSettings}
+    //   />
+    // );
 
     const selectFileDialog = (
       <SelectFileDialog
@@ -285,9 +285,9 @@ const withDialogs = (WrappedComponent) => {
     return (
       <WrappedComponent
         {...props}
-        sharingDialog={sharingDialog}
-        onSDKRequestSharingSettings={onSDKRequestSharingSettings}
-        loadUsersRightsList={loadUsersRightsList}
+        //sharingDialog={sharingDialog}
+        // onSDKRequestSharingSettings={onSDKRequestSharingSettings}
+        //  loadUsersRightsList={loadUsersRightsList}
         isVisible={isVisible}
         selectFileDialog={selectFileDialog}
         onSDKRequestInsertImage={onSDKRequestInsertImage}
