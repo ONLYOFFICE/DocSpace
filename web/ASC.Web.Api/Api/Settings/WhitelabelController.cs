@@ -110,31 +110,31 @@ public class WhitelabelController : BaseSettingsController
         }
 
         var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
-        
+
         foreach (var f in HttpContext.Request.Form.Files)
         {
             if (f.FileName.Contains("dark"))
             {
-                var logoType = GetLogoType(f.FileName);
-                if (HttpContext.Request.Form.Files.Any(f => f.FileName == $"{logoType}.{TenantWhiteLabelSettings.Extention}"))
+                GetParts(f.FileName, out var logoType, out var fileExt);
+                if (HttpContext.Request.Form.Files.Any(f => f.FileName == $"{logoType}.{fileExt}"))
                 {
                     continue;
                 }
-                _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, null, f.OpenReadStream(), null);
+                _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, null, f.OpenReadStream(), null);
             }
             else
             {
-                var logoType = GetLogoType(f.FileName);
+                GetParts(f.FileName, out var logoType, out var fileExt);
                 IFormFile darkFile;
-                if (HttpContext.Request.Form.Files.Any(f => f.FileName == $"{logoType}.dark.{TenantWhiteLabelSettings.Extention}"))
+                if (HttpContext.Request.Form.Files.Any(f => f.FileName == $"{logoType}.dark.{fileExt}"))
                 {
-                    darkFile = HttpContext.Request.Form.Files.Single(f => f.FileName == $"{logoType}.dark.{TenantWhiteLabelSettings.Extention}");
+                    darkFile = HttpContext.Request.Form.Files.Single(f => f.FileName == $"{logoType}.dark.{fileExt}");
                 }
                 else
                 {
                     darkFile = null;
                 }
-                _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, f.OpenReadStream(), darkFile?.OpenReadStream(), null);
+                _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), darkFile?.OpenReadStream(), null);
             }
         }
 
@@ -143,10 +143,11 @@ public class WhitelabelController : BaseSettingsController
         return true;
     }
 
-    private WhiteLabelLogoTypeEnum GetLogoType(string fileName)
+    private void GetParts(string fileName, out WhiteLabelLogoTypeEnum logoType, out string fileExt)
     {
         var parts = fileName.Split('.');
-        return (WhiteLabelLogoTypeEnum)Convert.ToInt32(parts[0]);
+        logoType = (WhiteLabelLogoTypeEnum)Convert.ToInt32(parts[0]);
+        fileExt = parts.Last();
     }
 
     ///<visible>false</visible>
