@@ -27,9 +27,9 @@ import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
 import {
-  getFilesRights,
-  getRoomRights,
-} from "@docspace/common/utils/accessRights";
+  getFileRoleActions,
+  getRoomRoleActions,
+} from "@docspace/common/utils/actions";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -1037,7 +1037,7 @@ class FilesStore {
 
     const { canFormFillingDocs } = this.filesSettingsStore;
 
-    const filesRights = getFilesRights(item.access);
+    const filesRights = getFileRoleActions(item.access);
 
     const { enablePlugins } = this.authStore.settingsStore;
 
@@ -1336,7 +1336,7 @@ class FilesStore {
 
       return fileOptions;
     } else if (isRoom) {
-      const roomAccessRights = getRoomRights(item.access);
+      const roomAccessRights = getRoomRoleActions(item.access);
 
       let roomOptions = [
         "select",

@@ -7,9 +7,9 @@ import {
   ShareAccessRights,
 } from "@docspace/common/constants";
 import {
-  getFilesRights,
-  getRoomRights,
-} from "@docspace/common/utils/accessRights";
+  getFileRoleActions,
+  getRoomRoleActions,
+} from "@docspace/common/utils/actions";
 
 class AccessRightsStore {
   authStore = null;
@@ -27,19 +27,19 @@ class AccessRightsStore {
 
     if (rootFolderType === FolderType.Archive) return false;
 
-    const { inviteUsers } = getRoomRights(room.access);
+    const { inviteUsers } = getRoomRoleActions(room.access);
 
     return inviteUsers;
   };
 
   canArchiveRoom = (room) => {
-    const { archive } = getRoomRights(room.access);
+    const { archive } = getRoomRoleActions(room.access);
 
     return archive;
   };
 
   canRemoveRoom = (room) => {
-    const { delete: remove } = getRoomRights(room.access);
+    const { delete: remove } = getRoomRoleActions(room.access);
 
     return remove;
   };
@@ -49,7 +49,7 @@ class AccessRightsStore {
 
     if (rootFolderType === FolderType.Archive) return false;
 
-    const { create } = getFilesRights(access);
+    const { create } = getFileRoleActions(access);
 
     return create;
   }
@@ -59,7 +59,7 @@ class AccessRightsStore {
 
     if (rootFolderType === FolderType.Archive) return false;
 
-    const { moveSelf, moveAlien } = getFilesRights(room.access);
+    const { moveSelf, moveAlien } = getFileRoleActions(room.access);
 
     return moveSelf || moveAlien;
   };
@@ -69,7 +69,7 @@ class AccessRightsStore {
 
     if (rootFolderType === FolderType.Archive) return false;
 
-    const { deleteSelf, deleteAlien } = getFilesRights(room.access);
+    const { deleteSelf, deleteAlien } = getFileRoleActions(room.access);
 
     return deleteSelf || deleteAlien;
   };
@@ -79,7 +79,7 @@ class AccessRightsStore {
 
     if (rootFolderType === FolderType.Archive) return false;
 
-    const { copyFromPersonal } = getFilesRights(room.access);
+    const { copyFromPersonal } = getFileRoleActions(room.access);
 
     return copyFromPersonal;
   };
