@@ -32,7 +32,7 @@ const Appearance = (props) => {
     sendAppearanceTheme,
     getAppearanceTheme,
     currentColorScheme,
-
+    theme,
     deleteAppearanceTheme,
     tReady,
     t,
@@ -73,8 +73,8 @@ const Appearance = (props) => {
   const [isEditDialog, setIsEditDialog] = useState(false);
   const [isAddThemeDialog, setIsAddThemeDialog] = useState(false);
 
-  const [previewAccentColor, setPreviewAccentColor] = useState(
-    currentColorScheme.accentColor
+  const [previewAccent, setPreviewAccent] = useState(
+    currentColorScheme.main.accent
   );
   const [selectThemeId, setSelectThemeId] = useState(selectedThemeId);
 
@@ -100,7 +100,7 @@ const Appearance = (props) => {
         content: (
           <Preview
             previewTheme={previewTheme}
-            previewAccentColor={previewAccentColor}
+            previewAccent={previewAccent}
             selectThemeId={selectThemeId}
             themePreview="Light"
           />
@@ -112,24 +112,24 @@ const Appearance = (props) => {
         content: (
           <Preview
             previewTheme={previewTheme}
-            previewAccentColor={previewAccentColor}
+            previewAccent={previewAccent}
             selectThemeId={selectThemeId}
             themePreview="Dark"
           />
         ),
       },
     ],
-    [previewAccentColor, previewTheme, selectThemeId, tReady]
+    [previewAccent, previewTheme, selectThemeId, tReady]
   );
 
   useEffect(() => {
-    if (appearanceTheme.length === 10) {
+    if (appearanceTheme.length === 11) {
       setAbilityAddTheme(false);
     } else {
       setAbilityAddTheme(true);
     }
 
-    if (appearanceTheme.length === 7) {
+    if (appearanceTheme.length === 8) {
       setIsShowDeleteButton(false);
     } else {
       setIsShowDeleteButton(true);
@@ -144,7 +144,7 @@ const Appearance = (props) => {
   }, []);
 
   useEffect(() => {
-    if (selectThemeId < 8) {
+    if (appearanceTheme.find((theme) => theme.id == selectThemeId).name) {
       setIsDisabledEditButton(true);
       setIsDisabledDeleteButton(true);
       return;
@@ -190,7 +190,7 @@ const Appearance = (props) => {
     changeCurrentColorButtons,
     isAddThemeDialog,
     isEditDialog,
-    previewAccentColor,
+    previewAccent,
   ]);
 
   const onCheckView = () => {
@@ -202,7 +202,7 @@ const Appearance = (props) => {
   };
 
   const onColorSelection = (item) => {
-    setPreviewAccentColor(item.accentColor);
+    setPreviewAccent(item.main.accent);
     setSelectThemeId(item.id);
   };
 
@@ -248,6 +248,18 @@ const Appearance = (props) => {
     }
   };
 
+  const onCheckStandardThemeRender = (item) => {
+    if (
+      !item.name ||
+      (theme.isBase && item.name === "grey") ||
+      (!theme.isBase && item.name === "black")
+    ) {
+      return false;
+    }
+
+    return true;
+  };
+
   const onClickDeleteModal = useCallback(async () => {
     try {
       await deleteAppearanceTheme(selectThemeId);
@@ -255,12 +267,12 @@ const Appearance = (props) => {
 
       if (selectedThemeId !== selectThemeId) {
         setSelectThemeId(selectedThemeId);
-        setPreviewAccentColor(currentColorScheme.accentColor);
+        setPreviewAccent(currentColorScheme.main.accent);
       }
 
       if (selectedThemeId === selectThemeId) {
         setSelectThemeId(appearanceTheme[0].id);
-        setPreviewAccentColor(appearanceTheme[0].accentColor);
+        setPreviewAccent(appearanceTheme[0].main.accent);
       }
 
       setVisibleDialog(false);
@@ -309,11 +321,11 @@ const Appearance = (props) => {
   const onClickEdit = () => {
     appearanceTheme.map((item) => {
       if (item.id === selectThemeId) {
-        setCurrentColorAccent(item.accentColor.toUpperCase());
-        setCurrentColorButtons(item.buttonsMain.toUpperCase());
+        setCurrentColorAccent(item.main.accent.toUpperCase());
+        setCurrentColorButtons(item.main.buttons.toUpperCase());
 
-        setAppliedColorAccent(item.accentColor.toUpperCase());
-        setAppliedColorButtons(item.buttonsMain.toUpperCase());
+        setAppliedColorAccent(item.main.accent.toUpperCase());
+        setAppliedColorButtons(item.main.buttons.toUpperCase());
       }
     });
 
@@ -408,7 +420,7 @@ const Appearance = (props) => {
       try {
         await sendAppearanceTheme({ themes: [editTheme] });
         await getAppearanceTheme();
-        setPreviewAccentColor(editTheme.accentColor);
+        setPreviewAccent(editTheme.main.accent);
 
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
       } catch (error) {
@@ -419,14 +431,20 @@ const Appearance = (props) => {
   );
 
   const onSaveColorSchemeDialog = () => {
-    const textColor = getTextColor(currentColorButtons);
+    const textColorAccent = getTextColor(currentColorAccent);
+    const textColorButtons = getTextColor(currentColorButtons);
 
     if (isAddThemeDialog) {
       // Saving a new custom theme
       const theme = {
-        accentColor: currentColorAccent,
-        buttonsMain: currentColorButtons,
-        textColor: textColor,
+        main: {
+          accent: currentColorAccent,
+          buttons: currentColorButtons,
+        },
+        text: {
+          accent: textColorAccent,
+          buttons: textColorButtons,
+        },
       };
 
       onSaveNewThemes(theme);
@@ -442,9 +460,14 @@ const Appearance = (props) => {
     // Editing themes
     const editTheme = {
       id: selectThemeId,
-      accentColor: currentColorAccent,
-      buttonsMain: currentColorButtons,
-      textColor: textColor,
+      main: {
+        accent: currentColorAccent,
+        buttons: currentColorButtons,
+      },
+      text: {
+        accent: textColorAccent,
+        buttons: textColorButtons,
+      },
     };
 
     onSaveChangedThemes(editTheme);
@@ -529,18 +552,21 @@ const Appearance = (props) => {
 
           <div className="theme-container">
             {appearanceTheme.map((item, index) => {
-              if (index > 6) return;
-              return (
-                <div
-                  key={index}
-                  id={item.id}
-                  style={{ background: item.accentColor }}
-                  className="box"
-                  onClick={() => onColorSelection(item)}
-                >
-                  {onShowCheck(item.id)}
-                </div>
-              );
+              {
+                return (
+                  onCheckStandardThemeRender(item) && (
+                    <div
+                      key={index}
+                      id={item.id}
+                      style={{ background: item.main.accent }}
+                      className="box"
+                      onClick={() => onColorSelection(item)}
+                    >
+                      {onShowCheck(item.id)}
+                    </div>
+                  )
+                );
+              }
             })}
           </div>
         </div>
@@ -550,12 +576,12 @@ const Appearance = (props) => {
 
           <div className="theme-container">
             {appearanceTheme.map((item, index) => {
-              if (index < 7) return;
+              if (item.name) return;
               return (
                 <div
                   key={index}
                   id={item.id}
-                  style={{ background: item.accentColor }}
+                  style={{ background: item.main.accent }}
                   className="box"
                   onClick={() => onColorSelection(item)}
                 >
@@ -643,6 +669,7 @@ export default inject(({ auth }) => {
     getAppearanceTheme,
     currentColorScheme,
     deleteAppearanceTheme,
+    theme,
   } = settingsStore;
 
   return {
@@ -652,6 +679,7 @@ export default inject(({ auth }) => {
     getAppearanceTheme,
     currentColorScheme,
     deleteAppearanceTheme,
+    theme,
   };
 })(
   withTranslation(["Profile", "Common", "Settings"])(

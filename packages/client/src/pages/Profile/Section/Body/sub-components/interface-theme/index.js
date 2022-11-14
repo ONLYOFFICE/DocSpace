@@ -107,7 +107,7 @@ const InterfaceTheme = (props) => {
           label={t("LightTheme")}
           isDisabled={isSystemTheme}
           theme="Light"
-          accentColor={currentColorScheme.accentColor}
+          accentColor={currentColorScheme.main.accent}
           themeId={selectedThemeId}
           value={ThemeKeys.BaseStr}
           isChecked={currentTheme === ThemeKeys.BaseStr}
@@ -117,7 +117,7 @@ const InterfaceTheme = (props) => {
           label={t("DarkTheme")}
           isDisabled={isSystemTheme}
           theme="Dark"
-          accentColor={currentColorScheme.accentColor}
+          accentColor={currentColorScheme.main.accent}
           themeId={selectedThemeId}
           value={ThemeKeys.DarkStr}
           isChecked={currentTheme === ThemeKeys.DarkStr}

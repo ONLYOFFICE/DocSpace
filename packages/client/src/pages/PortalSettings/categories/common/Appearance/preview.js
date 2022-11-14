@@ -12,7 +12,7 @@ import ButtonPlusIcon from "../../../../../../../../public/images/actions.button
 
 const Preview = (props) => {
   const {
-    previewAccentColor,
+    previewAccent,
     themePreview,
     selectThemeId,
     withBorder,
@@ -20,7 +20,7 @@ const Preview = (props) => {
     floatingButtonClass,
   } = props;
 
-  const [colorPreview, setColorPreview] = useState(previewAccentColor);
+  const [colorPreview, setColorPreview] = useState(previewAccent);
   const [isViewTablet, setIsViewTablet] = useState(false);
 
   const onCheckView = () => {
@@ -30,8 +30,8 @@ const Preview = (props) => {
   };
 
   useEffect(() => {
-    setColorPreview(previewAccentColor);
-  }, [previewAccentColor]);
+    setColorPreview(previewAccent);
+  }, [previewAccent]);
 
   useEffect(() => {
     onCheckView();
