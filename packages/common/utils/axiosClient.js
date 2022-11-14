@@ -12,10 +12,14 @@ class AxiosClient {
   initCSR = () => {
     this.isSSR = false;
     const origin = apiOrigin || window.location.origin;
-    const headers = [];
+    let headers = null;
 
     if (apiOrigin !== "") {
-      headers["x-rewriter-url"] = window.location.origin;
+      headers = {
+        "X-REWRITTER-URL": window.location.origin,
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "*",
+      };
     }
 
     const apiBaseURL = combineUrl(origin, proxyURL, apiPrefix);
@@ -41,7 +45,7 @@ class AxiosClient {
       timeout: apiTimeout, // default is `0` (no timeout)
     };
 
-    if (headers.length > 0) {
+    if (headers) {
       config.headers = headers;
     }
 
