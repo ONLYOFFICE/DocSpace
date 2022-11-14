@@ -477,15 +477,13 @@ class ContextOptionsStore {
         }
       : false;
 
-    const onlyViewVersionHistory =
+    const onlyShowVersionHistory =
       !contextOptions.includes("finalize-version") &&
       contextOptions.includes("show-version-history");
 
-    console.log(onlyViewVersionHistory);
-
     const versionActions = !isMedia
       ? !isMobile && !isMobileUtils() && !isTabletUtils()
-        ? onlyViewVersionHistory
+        ? onlyShowVersionHistory
           ? [
               {
                 key: "show-version-history",
