@@ -220,7 +220,7 @@ const ArticleMainButtonContent = (props) => {
     const folderUpload = !isMobile
       ? [
           {
-            id: "main-button_upload-folders",
+            id: "actions_upload-folders",
             className: "main-button_drop-down",
             icon: "images/actions.upload.react.svg",
             label: t("UploadFolder"),
@@ -233,14 +233,14 @@ const ArticleMainButtonContent = (props) => {
 
     const formActions = [
       {
-        id: "main-button_template",
+        id: "actions_template",
         className: "main-button_drop-down",
         icon: "images/form.react.svg",
         label: t("Translations:NewForm"),
         key: "new-form",
         items: [
           {
-            id: "main-button_template-empty",
+            id: "actions_template_blank",
             className: "main-button_drop-down_sub",
             icon: "images/form.blank.react.svg",
             label: t("Translations:SubNewForm"),
@@ -249,7 +249,7 @@ const ArticleMainButtonContent = (props) => {
             key: "docxf",
           },
           {
-            id: "main-button_template-form-file",
+            id: "actions_template_from-file",
             className: "main-button_drop-down_sub",
             icon: "images/form.file.react.svg",
             label: t("Translations:SubNewFormFile"),
@@ -258,7 +258,7 @@ const ArticleMainButtonContent = (props) => {
             key: "form-file",
           },
           {
-            id: "main-button_template-form-gallery",
+            id: "actions_template_oforms-gallery",
             className: "main-button_drop-down_sub",
             icon: "images/form.gallery.react.svg",
             label: t("Common:OFORMsGallery"),
@@ -273,7 +273,7 @@ const ArticleMainButtonContent = (props) => {
     const actions = isAccountsPage
       ? [
           isOwner && {
-            id: "main-button_administrator",
+            id: "invite_doc-space-administrator",
             className: "main-button_drop-down",
             icon: "/static/images/person.admin.react.svg",
             label: t("Common:DocSpaceAdmin"),
@@ -282,7 +282,7 @@ const ArticleMainButtonContent = (props) => {
             key: "administrator",
           },
           {
-            id: "main-button_manager",
+            id: "invite_room-admin",
             className: "main-button_drop-down",
             icon: "/static/images/person.manager.react.svg",
             label: t("Common:RoomAdmin"),
@@ -291,7 +291,7 @@ const ArticleMainButtonContent = (props) => {
             key: "manager",
           },
           {
-            id: "main-button_user",
+            id: "invite_user",
             className: "main-button_drop-down",
             icon: "/static/images/person.user.react.svg",
             label: t("Common:User"),
@@ -302,7 +302,7 @@ const ArticleMainButtonContent = (props) => {
         ]
       : [
           {
-            id: "main-button_new-document",
+            id: "actions_new-document",
             className: "main-button_drop-down",
             icon: "images/actions.documents.react.svg",
             label: t("NewDocument"),
@@ -311,7 +311,7 @@ const ArticleMainButtonContent = (props) => {
             key: "docx",
           },
           {
-            id: "main-button_new-spreadsheet",
+            id: "actions_new-spreadsheet",
             className: "main-button_drop-down",
             icon: "images/spreadsheet.react.svg",
             label: t("NewSpreadsheet"),
@@ -320,7 +320,7 @@ const ArticleMainButtonContent = (props) => {
             key: "xlsx",
           },
           {
-            id: "main-button_new-presentation",
+            id: "actions_new-presentation",
             className: "main-button_drop-down",
             icon: "images/actions.presentation.react.svg",
             label: t("NewPresentation"),
@@ -330,7 +330,7 @@ const ArticleMainButtonContent = (props) => {
           },
           ...formActions,
           {
-            id: "main-button_new-folder",
+            id: "actions_new-folder",
             className: "main-button_drop-down",
             icon: "images/catalog.folder.react.svg",
             label: t("NewFolder"),
@@ -342,7 +342,7 @@ const ArticleMainButtonContent = (props) => {
     const uploadActions = isAccountsPage
       ? [
           {
-            id: "main-button_invite-again",
+            id: "invite_again",
             className: "main-button_drop-down",
             icon: "/static/images/invite.again.react.svg",
             label: t("People:LblInviteAgain"),
@@ -353,7 +353,7 @@ const ArticleMainButtonContent = (props) => {
         ]
       : [
           {
-            id: "main-button_upload-files",
+            id: "actions_upload-files",
             className: "main-button_drop-down",
             icon: "images/actions.upload.react.svg",
             label: t("UploadFiles"),
@@ -445,6 +445,7 @@ const ArticleMainButtonContent = (props) => {
       ) : isRoomsFolder ? (
         <StyledButton
           className="create-room-button"
+          id="rooms-shared_create-room-button"
           label={t("Files:NewRoom")}
           onClick={onCreateRoom}
           currentColorScheme={currentColorScheme}
@@ -455,7 +456,11 @@ const ArticleMainButtonContent = (props) => {
         />
       ) : (
         <MainButton
-          id={isAccountsPage ? "invite-main-button" : "actions-main-button"}
+          id={
+            isAccountsPage
+              ? "accounts_invite-main-button"
+              : "actions-main-button"
+          }
           isDisabled={isDisabled}
           isDropdown={isDropdownMainButton}
           text={mainButtonText}
