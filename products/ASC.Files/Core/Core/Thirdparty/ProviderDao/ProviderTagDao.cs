@@ -83,19 +83,19 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         return _tagDao.GetTagsAsync(names, tagType);
     }
 
-    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag, Guid createdBy = default)
+    public async Task<IEnumerable<Tag>> SaveTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
-        return _tagDao.SaveTags(tag, createdBy);
+        return await _tagDao.SaveTags(tag, createdBy);
     }
 
-    public IEnumerable<Tag> SaveTags(Tag tag)
+    public async Task<IEnumerable<Tag>> SaveTags(Tag tag)
     {
-        return _tagDao.SaveTags(tag);
+        return await _tagDao.SaveTags(tag);
     }
 
-    public void UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default)
+    public async Task UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
-        _tagDao.UpdateNewTags(tag, createdBy);
+        await _tagDao.UpdateNewTags(tag, createdBy);
     }
 
     public async Task UpdateNewTags(Tag tag)
@@ -108,14 +108,14 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         await _tagDao.RemoveTagsAsync(entry, tagsIds);
     }
 
-    public void RemoveTags(IEnumerable<Tag> tag)
+    public async Task RemoveTags(IEnumerable<Tag> tag)
     {
-        _tagDao.RemoveTags(tag);
+        await _tagDao.RemoveTags(tag);
     }
 
-    public void RemoveTags(Tag tag)
+    public async Task RemoveTags(Tag tag)
     {
-        _tagDao.RemoveTags(tag);
+        await _tagDao.RemoveTags(tag);
     }
 
     public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)

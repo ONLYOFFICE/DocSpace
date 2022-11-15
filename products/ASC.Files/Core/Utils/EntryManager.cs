@@ -1639,7 +1639,8 @@ public class EntryManager
             {
                 var tagTemplate = Tag.Template(_authContext.CurrentAccount.ID, newFile);
                 var tagDao = _daoFactory.GetTagDao<T>();
-                tagDao.RemoveTags(tagTemplate);
+
+                await tagDao.RemoveTags(tagTemplate);
 
                 newFile.IsTemplate = false;
             }
@@ -1784,7 +1785,7 @@ public class EntryManager
         };
     }
 
-    public void MarkAsRecent<T>(File<T> file)
+    public async Task MarkAsRecent<T>(File<T> file)
     {
         if (file.Encrypted || file.ProviderEntry)
         {
@@ -1795,7 +1796,8 @@ public class EntryManager
         var userID = _authContext.CurrentAccount.ID;
 
         var tag = Tag.Recent(userID, file);
-        tagDao.SaveTags(tag);
+
+        await tagDao.SaveTags(tag);
     }
 
 

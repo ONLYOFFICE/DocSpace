@@ -185,7 +185,10 @@ public class FileConverterQueue<T>
 
     private bool Contains(FileConverterOperationResult val)
     {
-        if (val == null) return false;
+        if (val == null)
+        {
+            return false;
+        }
 
         var queueTasks = LoadFromCache();
 
@@ -645,12 +648,12 @@ public class FileConverter
         if (tags.Count > 0)
         {
             tags.ForEach(r => r.EntryId = newFile.Id);
-            tagDao.SaveTags(tags);
+            await tagDao.SaveTags(tags);
         }
 
         if (markAsTemplate)
         {
-            tagDao.SaveTags(Tag.Template(_authContext.CurrentAccount.ID, newFile));
+            await tagDao.SaveTags(Tag.Template(_authContext.CurrentAccount.ID, newFile));
         }
 
         return newFile;

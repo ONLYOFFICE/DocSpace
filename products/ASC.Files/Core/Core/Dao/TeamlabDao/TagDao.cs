@@ -301,7 +301,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         return _mapper.Map<DbFilesTag, TagInfo>(tag.Entity);
     }
 
-    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tags, Guid createdBy = default)
+    public async Task<IEnumerable<Tag>> SaveTags(IEnumerable<Tag> tags, Guid createdBy = default)
     {
         var result = new List<Tag>();
 
@@ -318,29 +318,34 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         }
 
 
-        _semaphore.Wait();
+        await _semaphore.WaitAsync();
+
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
+        {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var strategy = filesDbContext.Database.CreateExecutionStrategy();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
+            await DeleteTagsBeforeSave();
 
-            strategy.Execute(() =>
+            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+            var cacheTagId = new Dictionary<string, int>();
+
+            foreach (var t in tags)
             {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = filesDbContext.Database.BeginTransaction();
-                DeleteTagsBeforeSave();
+                result.Add(await SaveTagAsync(t, cacheTagId, createOn, createdBy));
+            }
 
-                var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
-                var cacheTagId = new Dictionary<string, int>();
+            await tx.CommitAsync();
+        });
 
-                result.AddRange(tags.Select(t => SaveTagAsync(t, cacheTagId, createOn, createdBy).Result));
-
-                tx.Commit();
-            });
         _semaphore.Release();
 
         return result;
     }
 
-    public IEnumerable<Tag> SaveTags(Tag tag)
+    public async Task<IEnumerable<Tag>> SaveTags(Tag tag)
     {
         var result = new List<Tag>();
 
@@ -354,58 +359,62 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             return result;
         }
 
-        _semaphore.Wait();
+        await _semaphore.WaitAsync();
+
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
+        {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var strategy = filesDbContext.Database.CreateExecutionStrategy();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            strategy.Execute(() =>
-            {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = filesDbContext.Database.BeginTransaction();
-                DeleteTagsBeforeSave();
+            await DeleteTagsBeforeSave();
 
-                var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
-                var cacheTagId = new Dictionary<string, int>();
+            var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
+            var cacheTagId = new Dictionary<string, int>();
 
-                result.Add(SaveTagAsync(tag, cacheTagId, createOn).Result);
+            result.Add(await SaveTagAsync(tag, cacheTagId, createOn));
 
-                tx.Commit();
-            });
+            await tx.CommitAsync();
+        });
+
         _semaphore.Release();
 
         return result;
     }
 
-    private void DeleteTagsBeforeSave()
+    private async Task DeleteTagsBeforeSave()
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var mustBeDeleted =
+        var mustBeDeleted = await
             Query(filesDbContext.Tag)
             .Join(filesDbContext.TagLink, r => r.Id, l => l.TagId, (tag, link) => new TagLinkData { Tag = tag, Link = link })
             .Where(r => r.Link.TenantId == r.Tag.TenantId)
             .Where(r => (r.Tag.Type == TagType.New || r.Tag.Type == TagType.Recent) && r.Link.CreateOn <= _tenantUtil.DateTimeNow().AddMonths(-1))
-            .ToList();
+            .ToListAsync();
 
         foreach (var row in mustBeDeleted)
         {
-            var linksToRemove = Query(filesDbContext.TagLink)
+            var linksToRemove = await Query(filesDbContext.TagLink)
                 .Where(r => r.TagId == row.Link.TagId)
                 .Where(r => r.EntryId == row.Link.EntryId)
                 .Where(r => r.EntryType == row.Link.EntryType)
-                .ToList();
+                .ToListAsync();
+
             filesDbContext.TagLink.RemoveRange(linksToRemove);
         }
 
-        filesDbContext.SaveChanges();
+        await filesDbContext.SaveChangesAsync();
 
         var tagsToRemove = from ft in filesDbContext.Tag
                            join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
                            where ftl == null
                            select ft;
 
-        filesDbContext.Tag.RemoveRange(tagsToRemove.ToList());
-        filesDbContext.SaveChanges();
+        filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
+        await filesDbContext.SaveChangesAsync();
     }
 
     private async Task<Tag> SaveTagAsync(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn, Guid createdBy = default)
@@ -461,21 +470,23 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         return t;
     }
 
-    public void UpdateNewTags(IEnumerable<Tag> tags, Guid createdBy = default)
+    public async Task UpdateNewTags(IEnumerable<Tag> tags, Guid createdBy = default)
     {
         if (tags == null || !tags.Any())
         {
             return;
         }
 
-        _semaphore.Wait();
+        await _semaphore.WaitAsync();
+
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        await strategy.ExecuteAsync(async () =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = filesDbContext.Database.BeginTransaction();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
+
             var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
 
             foreach (var tag in tags)
@@ -483,8 +494,9 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                 await UpdateNewTagsInDbAsync(tag, createOn, createdBy);
             }
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
+
         _semaphore.Release();
     }
 
@@ -533,52 +545,55 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         await filesDbContext.SaveChangesAsync();
     }
 
-    public void RemoveTags(IEnumerable<Tag> tags)
+    public async Task RemoveTags(IEnumerable<Tag> tags)
     {
         if (tags == null || !tags.Any())
         {
             return;
         }
 
-        _semaphore.Wait();
+        await _semaphore.WaitAsync();
+
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        await strategy.ExecuteAsync(async () =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = filesDbContext.Database.BeginTransaction();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
             foreach (var t in tags)
             {
                 await RemoveTagInDbAsync(t);
             }
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
+
         _semaphore.Release();
     }
 
-    public void RemoveTags(Tag tag)
+    public async Task RemoveTags(Tag tag)
     {
         if (tag == null)
         {
             return;
         }
 
-        _semaphore.Wait();
+        await _semaphore.WaitAsync();
+
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        await strategy.ExecuteAsync(async () =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = filesDbContext.Database.BeginTransaction();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
             await RemoveTagInDbAsync(tag);
 
-            tx.Commit();
-
+            await tx.CommitAsync();
         });
+
         _semaphore.Release();
     }
 
