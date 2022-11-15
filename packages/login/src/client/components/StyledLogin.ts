@@ -49,6 +49,10 @@ export const LoginContainer = styled.div`
     min-height: 18px;
   }
 
+  .login-or-access-text{
+    text-transform: lowercase;
+  }
+
   .recover-link {
     min-height: 19px;
   }
