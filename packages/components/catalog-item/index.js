@@ -74,7 +74,6 @@ const CatalogItem = (props) => {
     return (
       <ColorTheme
         className={className}
-        id={id}
         style={style}
         showText={showText}
         isEndOfBlock={isEndOfBlock}
