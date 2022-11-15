@@ -34,13 +34,13 @@ const PureAccountsItem = ({
 
   return (
     <CatalogItem
-      id="accounts"
       key="accounts"
       text={t("Accounts")}
       icon={iconUrl}
       showText={showText}
       onClick={onClick}
       isActive={isActive}
+      folderId="document_catalog-accounts"
     />
   );
 };

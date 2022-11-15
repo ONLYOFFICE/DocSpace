@@ -150,6 +150,24 @@ export const FolderType = Object.freeze({
   Rooms: 14,
   Archive: 20,
 });
+
+// extends FolderType keys
+export const FolderNames = Object.freeze({
+  0: "default",
+  1: "common",
+  2: "bunch",
+  3: "trash",
+  5: "personal",
+  6: "share",
+  8: "projects",
+  10: "favorites",
+  11: "recent",
+  12: "templates",
+  13: "privacy",
+  14: "shared",
+  20: "archive",
+});
+
 export const ShareAccessRights = Object.freeze({
   None: 0,
   FullAccess: 1,

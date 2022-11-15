@@ -198,6 +198,15 @@ const StyledDragAndDrop = styled(DragAndDrop)`
 const StyledBadgesContainer = styled.div`
   margin-left: 8px;
 
+  display: flex;
+  align-items: center;
+
+  ${(props) =>
+    props.showHotkeyBorder &&
+    css`
+      margin-top: 1px;
+    `}
+
   .badges {
     display: flex;
     align-items: center;
@@ -216,7 +225,7 @@ const StyledBadgesContainer = styled.div`
   .new-items {
     min-width: 12px;
     width: max-content;
-    margin: 1px -2px -2px -2px;
+    margin: 0 -2px -2px -2px;
   }
 
   .badge-version {
@@ -446,7 +455,9 @@ const FilesTableRow = (props) => {
             inProgress={inProgress}
             {...props}
           />
-          <StyledBadgesContainer>{badgesComponent}</StyledBadgesContainer>
+          <StyledBadgesContainer showHotkeyBorder={showHotkeyBorder}>
+            {badgesComponent}
+          </StyledBadgesContainer>
         </TableCell>
 
         {(item.isRoom || isRooms) && (
