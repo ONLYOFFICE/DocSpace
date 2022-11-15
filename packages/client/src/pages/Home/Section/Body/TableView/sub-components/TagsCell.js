@@ -2,7 +2,6 @@ import React from "react";
 
 import Tags from "@docspace/common/components/Tags";
 
-import Tag from "@docspace/components/tag";
 import { RoomsTypeTranslations } from "@docspace/common/constants";
 
 const TagsCell = ({ t, item, tagCount, onSelectTag, onSelectOption }) => {
@@ -12,9 +11,39 @@ const TagsCell = ({ t, item, tagCount, onSelectTag, onSelectOption }) => {
     display: item.thirdPartyIcon ? "flex" : "",
   };
 
+  const tags = [];
+
+  if (item.providerType) {
+    tags.push({
+      isThirdParty: true,
+      icon: item.thirdPartyIcon,
+      label: item.providerKey,
+      onClick: () =>
+        onSelectOption({
+          option: "typeProvider",
+          value: item.providerType,
+        }),
+    });
+  }
+
+  if (item?.tags?.length > 0) {
+    tags.push(...item.tags);
+  } else {
+    tags.push({
+      isDefault: true,
+      label: t(RoomsTypeTranslations[item.roomType]),
+      onClick: () =>
+        onSelectOption({
+          option: "defaultTypeRoom",
+          value: item.roomType,
+        }),
+    });
+  }
+
   return (
     <div style={styleTagsCell}>
-      {item.providerType && (
+      <Tags tags={tags} columnCount={tagCount} onSelectTag={onSelectTag} />
+      {/* {item.providerType && (
         <Tag
           icon={item.thirdPartyIcon}
           label={item.providerKey}
@@ -44,7 +73,7 @@ const TagsCell = ({ t, item, tagCount, onSelectTag, onSelectOption }) => {
             })
           }
         />
-      )}
+      )} */}
     </div>
   );
 };

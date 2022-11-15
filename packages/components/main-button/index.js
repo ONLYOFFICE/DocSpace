@@ -8,6 +8,7 @@ import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const MainButton = (props) => {
   const { text, model, isDropdown, isDisabled, clickAction } = props;
+  const { id, ...rest } = props;
 
   const ref = useRef();
   const menuRef = useRef(null);
@@ -39,9 +40,10 @@ const MainButton = (props) => {
   };
 
   return (
-    <GroupMainButton {...props} ref={ref}>
+    <GroupMainButton {...rest} ref={ref}>
       <ColorTheme
-        {...props}
+        {...rest}
+        id={id}
         onClick={onMainButtonClick}
         themeId={ThemeType.MainButton}
       >

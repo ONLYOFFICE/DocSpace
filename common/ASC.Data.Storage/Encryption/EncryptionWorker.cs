@@ -48,15 +48,22 @@ public class EncryptionWorker
 
         lock (_locker)
         {
-            if (_queue.GetAllTasks().Any(x => x.Id == GetCacheId()))
+            var item = _queue.GetAllTasks<EncryptionOperation>().SingleOrDefault();
+
+            if (item != null && item.IsCompleted)
             {
-                return;
+                _queue.DequeueTask(item.Id);
+                item = null;
             }
 
-            encryptionOperation = _serviceProvider.GetService<EncryptionOperation>();
-            encryptionOperation.Init(encryptionSettings, GetCacheId(), serverRootPath);
+            if (item == null)
+            {
 
-            _queue.EnqueueTask(encryptionOperation);
+                encryptionOperation = _serviceProvider.GetService<EncryptionOperation>();
+                encryptionOperation.Init(encryptionSettings, GetCacheId(), serverRootPath);
+
+                _queue.EnqueueTask(encryptionOperation);
+            }
         }
     }
 

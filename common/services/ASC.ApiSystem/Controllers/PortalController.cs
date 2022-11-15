@@ -32,7 +32,7 @@ namespace ASC.ApiSystem.Controllers;
 public class PortalController : ControllerBase
 {
     private readonly IConfiguration _configuration;
-    private readonly Core.SecurityContext _securityContext;
+    private readonly SecurityContext _securityContext;
     private readonly TenantManager _tenantManager;
     private readonly SettingsManager _settingsManager;
     private readonly ApiSystemHelper _apiSystemHelper;
@@ -50,7 +50,7 @@ public class PortalController : ControllerBase
 
     public PortalController(
         IConfiguration configuration,
-        Core.SecurityContext securityContext,
+        SecurityContext securityContext,
         TenantManager tenantManager,
         SettingsManager settingsManager,
         ApiSystemHelper apiSystemHelper,
@@ -309,8 +309,7 @@ public class PortalController : ControllerBase
             }
         }
 
-        var reference = _commonMethods.CreateReference(Request.Scheme, t.GetTenantDomain(_coreSettings), info.Email, isFirst);
-
+        var reference = _commonMethods.CreateReference(t.Id, Request.Scheme, t.GetTenantDomain(_coreSettings), info.Email, isFirst);
         _log.LogDebug("PortalName = {0}; Elapsed ms. CreateReferenceByCookie...: {1}", model.PortalName, sw.ElapsedMilliseconds);
 
         sw.Stop();

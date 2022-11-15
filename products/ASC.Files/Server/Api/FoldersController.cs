@@ -259,7 +259,7 @@ public class FoldersControllerCommon : ApiControllerBase
     {
         if (PrivacyRoomSettings.IsAvailable())
         {
-            throw new System.Security.SecurityException();
+            throw new SecurityException();
         }
 
         return await _foldersControllerHelperInt.GetFolderAsync(await _globalFolderHelper.FolderPrivacyAsync, userIdOrGroupId, filterType, searchInContent, withsubfolders);

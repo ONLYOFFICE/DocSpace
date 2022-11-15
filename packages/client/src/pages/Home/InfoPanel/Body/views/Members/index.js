@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
-
+import { FolderType } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 
 import { StyledUserList, StyledUserTypeHeader } from "../../styles/members";
@@ -19,7 +19,7 @@ const Members = ({
   selfId,
   isOwner,
   isAdmin,
-
+  isArchiveRoot,
   selection,
 
   selectionParentRoom,
@@ -117,26 +117,35 @@ const Members = ({
     (member) => member.id === selfId
   );
 
+  const currCanEditUsers =
+    isOwner ||
+    isAdmin ||
+    currentMember?.access === ShareAccessRights.FullAccess ||
+    currentMember?.access === ShareAccessRights.RoomManager;
+
   return (
     <>
       <StyledUserTypeHeader>
         <Text className="title">
           {t("UsersInRoom")} : {members.inRoom.length}
         </Text>
-        <IconButton
-          className={"icon"}
-          title={t("Common:AddUsers")}
-          iconName="/static/images/person+.react.svg"
-          isFill={true}
-          onClick={onClickInviteUsers}
-          size={16}
-          isDisabled={isDisabledInvite}
-        />
+        {currCanEditUsers && !isArchiveRoot && (
+          <IconButton
+            className={"icon"}
+            title={t("Common:AddUsers")}
+            iconName="/static/images/person+.react.svg"
+            isFill={true}
+            onClick={onClickInviteUsers}
+            size={16}
+            isDisabled={isDisabledInvite}
+          />
+        )}
       </StyledUserTypeHeader>
 
       <StyledUserList>
         {Object.values(members.inRoom).map((user) => (
           <User
+            currCanEditUsers={currCanEditUsers}
             key={user.id}
             t={t}
             user={user}
@@ -154,14 +163,16 @@ const Members = ({
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
           <Text className="title">{t("ExpectPeople")}</Text>
-          <IconButton
-            className={"icon"}
-            title={t("Repeat invitation")}
-            iconName="/static/images/e-mail+.react.svg"
-            isFill={true}
-            onClick={onRepeatInvitation}
-            size={16}
-          />
+          {currCanEditUsers && !isArchiveRoot && (
+            <IconButton
+              className={"icon"}
+              title={t("Repeat invitation")}
+              iconName="/static/images/e-mail+.react.svg"
+              isFill={true}
+              onClick={onRepeatInvitation}
+              size={16}
+            />
+          )}
         </StyledUserTypeHeader>
       )}
 
@@ -187,7 +198,14 @@ const Members = ({
 };
 
 export default inject(
-  ({ auth, filesStore, peopleStore, dialogsStore, accessRightsStore }) => {
+  ({
+    auth,
+    filesStore,
+    peopleStore,
+    dialogsStore,
+    accessRightsStore,
+    selectedFolderStore,
+  }) => {
     const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
     const {
       getRoomMembers,
@@ -198,6 +216,9 @@ export default inject(
     const { setInvitePanelOptions } = dialogsStore;
     const { changeType: changeUserType } = peopleStore;
     const { canInviteUserInRoom } = accessRightsStore;
+    const { rootFolderType } = selectedFolderStore;
+
+    const isArchiveRoot = rootFolderType === FolderType.Archive;
 
     return {
       selectionParentRoom,
@@ -215,6 +236,7 @@ export default inject(
 
       changeUserType,
       canInviteUserInRoom,
+      isArchiveRoot,
     };
   }
 )(

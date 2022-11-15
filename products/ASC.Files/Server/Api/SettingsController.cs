@@ -220,7 +220,7 @@ public class SettingsController : ApiControllerBase
     }
 
     [HttpPut("settings/dafaultaccessrights")]
-    public List<Core.Security.FileShare> ChangeDafaultAccessRights(List<Core.Security.FileShare> value)
+    public List<FileShare> ChangeDafaultAccessRights(List<FileShare> value)
     {
         return _fileStorageServiceString.ChangeDafaultAccessRights(value);
     }

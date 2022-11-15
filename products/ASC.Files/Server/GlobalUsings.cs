@@ -62,7 +62,6 @@ global using ASC.Files.Core.VirtualRooms;
 global using ASC.Files.Helpers;
 global using ASC.Files.Log;
 global using ASC.MessagingSystem.Core;
-global using ASC.Security.Cryptography;
 global using ASC.Web.Api.Routing;
 global using ASC.Web.Core.PublicResources;
 global using ASC.Web.Core.Users;

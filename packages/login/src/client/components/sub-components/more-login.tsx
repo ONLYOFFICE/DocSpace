@@ -69,6 +69,8 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
     ssoUrl,
   } = props;
 
+  console.log("more login render", props);
+
   return (
     <Modal
       displayType="aside"

@@ -15,7 +15,7 @@ const StyledTag = styled.div`
   box-sizing: border-box;
 
   padding: 2px 10px;
-  margin-right: 4px;
+  margin-right: ${(props) => (props.isLast ? "0" : "4px")};
 
   background: ${(props) =>
     props.isDisabled
@@ -81,6 +81,8 @@ const StyledDropdownText = styled(Text)`
   line-height: 30px;
 
   margin-left: 8px !important;
+
+  display: block;
 
   pointer-events: none;
 `;

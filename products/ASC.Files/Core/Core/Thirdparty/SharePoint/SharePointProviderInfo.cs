@@ -562,7 +562,7 @@ public class SharePointProviderInfo : IProviderInfo
             result.ParentId = null;
             result.CreateBy = Owner;
             result.CreateOn = DateTime.UtcNow;
-            result.FolderType = Core.FolderType.DEFAULT;
+            result.FolderType = FolderType.DEFAULT;
             result.ModifiedBy = Owner;
             result.ModifiedOn = DateTime.UtcNow;
             result.ProviderId = ID;
@@ -586,7 +586,7 @@ public class SharePointProviderInfo : IProviderInfo
         result.ParentId = isRoot ? null : MakeId(GetParentFolderId(folder.ServerRelativeUrl));
         result.CreateBy = Owner;
         result.CreateOn = CreateOn;
-        result.FolderType = Core.FolderType.DEFAULT;
+        result.FolderType = FolderType.DEFAULT;
         result.ModifiedBy = Owner;
         result.ModifiedOn = CreateOn;
         result.ProviderId = ID;

@@ -68,6 +68,10 @@ const CreateEvent = ({
 
     setHeaderTitle(defaultName);
     setEventDialogVisible(true);
+
+    return () => {
+      setEventDialogVisible(false);
+    };
   }, [extension, title, fromTemplate]);
 
   const onSave = (e, value, open = true) => {

@@ -63,7 +63,6 @@ const ArticleHeader = ({
                 <ReactSVG
                   className="logo-icon_svg"
                   src={whiteLabelLogoUrls[0]}
-                  onClick={onLogoClick}
                 />
               ) : (
                 <img className="logo-icon_svg" src={whiteLabelLogoUrls[0]} />

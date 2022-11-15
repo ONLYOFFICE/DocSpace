@@ -633,11 +633,11 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
     if (
-      (this.settingsStore.confirmDelete ||
-        this.treeFoldersStore.isPrivacyFolder ||
-        isThirdParty) &&
-      !isRoom
+      this.settingsStore.confirmDelete ||
+      this.treeFoldersStore.isPrivacyFolder ||
+      isThirdParty
     ) {
+      this.dialogsStore.setIsRoomDelete(isRoom);
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {
       setSecondaryProgressBarData({
@@ -1334,7 +1334,7 @@ class FilesActionStore {
     return result;
   };
 
-  pinRooms = () => {
+  pinRooms = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
@@ -1343,10 +1343,10 @@ class FilesActionStore {
       if (!item.pinned) items.push(item.id);
     });
 
-    this.setPinAction("pin", items);
+    this.setPinAction("pin", items, t);
   };
 
-  unpinRooms = () => {
+  unpinRooms = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
@@ -1355,31 +1355,14 @@ class FilesActionStore {
       if (item.pinned) items.push(item.id);
     });
 
-    this.setPinAction("unpin", items);
+    this.setPinAction("unpin", items, t);
   };
 
-  moveRoomsToArchive = (t) => {
-    const { selection } = this.filesStore;
+  archiveRooms = (action) => {
+    const { setArchiveAction, setArchiveDialogVisible } = this.dialogsStore;
 
-    const items = [];
-
-    selection.forEach((item) => {
-      items.push(item);
-    });
-
-    this.setArchiveAction("archive", items, t);
-  };
-
-  moveRoomsFromArchive = (t) => {
-    const { selection } = this.filesStore;
-
-    const items = [];
-
-    selection.forEach((item) => {
-      items.push(item);
-    });
-
-    this.setArchiveAction("unarchive", items, t);
+    setArchiveAction(action);
+    setArchiveDialogVisible(true);
   };
 
   deleteRooms = (t) => {
@@ -1400,6 +1383,44 @@ class FilesActionStore {
     };
 
     this.deleteItemAction(items, translations, null, null, true);
+  };
+
+  deleteRoomsAction = async (itemId, translations) => {
+    const {
+      secondaryProgressDataStore,
+      clearActiveOperations,
+    } = this.uploadDataStore;
+
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations?.deleteOperation,
+      alert: false,
+    });
+
+    try {
+      await this.deleteItemOperation(false, itemId, translations, true);
+
+      const id = Array.isArray(itemId) ? itemId : [itemId];
+
+      clearActiveOperations(null, id);
+    } catch (err) {
+      console.log(err);
+      clearActiveOperations(null, [itemId]);
+      setSecondaryProgressBarData({
+        visible: true,
+        alert: true,
+      });
+      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      onClose();
+      return toastr.error(err.message ? err.message : err);
+    }
   };
 
   onShowInfoPanel = () => {
@@ -1472,7 +1493,7 @@ class FilesActionStore {
           key: "pin",
           label: t("Pin"),
           iconUrl: "/static/images/pin.react.svg",
-          onClick: this.pinRooms,
+          onClick: () => this.pinRooms(t),
           disabled: false,
         };
       case "unpin":
@@ -1480,7 +1501,7 @@ class FilesActionStore {
           key: "unpin",
           label: t("Unpin"),
           iconUrl: "/static/images/unpin.react.svg",
-          onClick: this.unpinRooms,
+          onClick: () => this.unpinRooms(t),
           disabled: false,
         };
       case "archive":
@@ -1490,7 +1511,7 @@ class FilesActionStore {
             key: "archive",
             label: t("Archived"),
             iconUrl: "/static/images/room.archive.svg",
-            onClick: () => this.moveRoomsToArchive(t),
+            onClick: () => this.archiveRooms("archive"),
             disabled: false,
           };
       case "unarchive":
@@ -1500,7 +1521,7 @@ class FilesActionStore {
             key: "unarchive",
             label: t("Common:Restore"),
             iconUrl: "images/subtract.react.svg",
-            onClick: () => this.moveRoomsFromArchive(t),
+            onClick: () => this.archiveRooms("unarchive"),
             disabled: false,
           };
       case "delete-room":
@@ -1558,6 +1579,22 @@ class FilesActionStore {
     const archive = this.getOption("unarchive", t);
     const deleteOption = this.getOption("delete-room", t);
     const showOption = this.getOption("show-info", t);
+
+    const { selection } = this.filesStore;
+    const { canArchiveRoom } = this.accessRightsStore;
+
+    const canArchive = selection.map((s) => canArchiveRoom(s)).filter((s) => s);
+
+    if (canArchive.length <= 0) {
+      let pinName = "unpin";
+
+      selection.forEach((item) => {
+        if (!item.pinned) pinName = "pin";
+      });
+
+      const pin = this.getOption(pinName, t);
+      itemsCollection.set(pinName, pin);
+    }
 
     itemsCollection
       .set("unarchive", archive)

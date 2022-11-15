@@ -21,6 +21,7 @@ dotnet publish "%PathToRepository%\products\ASC.Files\server\ASC.Files.csproj" -
 dotnet publish "%PathToRepository%\products\ASC.People\server\ASC.People.csproj" -c Release --self-contained false -o "%PathToAppFolder%\products\ASC.People\server"
 
 rem backend services (dotnet) in directory 'services'
+dotnet publish "%PathToRepository%\common\services\ASC.ApiSystem\ASC.ApiSystem.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.ApiSystem\service"
 dotnet publish "%PathToRepository%\common\services\ASC.Data.Backup\ASC.Data.Backup.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Data.Backup\service"
 dotnet publish "%PathToRepository%\products\ASC.Files\service\ASC.Files.Service.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Files.Service\service"
 dotnet publish "%PathToRepository%\common\services\ASC.Notify\ASC.Notify.csproj" -c Release --self-contained false -o "%PathToAppFolder%\services\ASC.Notify\service"
