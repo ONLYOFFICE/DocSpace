@@ -120,6 +120,7 @@ export const LoginContainer = styled.div`
     font-weight: 600;
     font-size: 11px;
     line-height: 12px;
+    color: #333;
     svg {
       margin: 8px;
     }
