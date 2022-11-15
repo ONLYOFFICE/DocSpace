@@ -1142,6 +1142,7 @@ class FilesStore {
 
       if (item.rootFolderType === FolderType.Archive) {
         fileOptions = this.removeOptions(fileOptions, [
+          "make-form",
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
@@ -1153,9 +1154,7 @@ class FilesStore {
           "rename",
           "separator2",
           "delete",
-          "version",
           "finalize-version",
-          "show-version-history",
         ]);
       }
 
