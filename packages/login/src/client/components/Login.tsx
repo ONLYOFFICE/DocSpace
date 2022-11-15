@@ -44,7 +44,7 @@ const Login: React.FC<ILoginProps> = ({
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [recoverDialogVisible, setRecoverDialogVisible] = useState(false);
 
-  const { enabledJoin, greetingSettings } = portalSettings;
+  const { enabledJoin, greetingSettings, enableAdmMess } = portalSettings;
   const { ssoLabel, ssoUrl } = capabilities;
 
   const { t } = useTranslation(["Login", "Common"]);
@@ -234,6 +234,7 @@ const Login: React.FC<ILoginProps> = ({
             setIsLoading={setIsLoading}
             onRecoverDialogVisible={onRecoverDialogVisible}
             match={match}
+            enableAdmMess={enableAdmMess}
           />
         </FormWrapper>
         <Toast />

@@ -23,6 +23,7 @@ interface ILoginFormProps {
   isDesktop: boolean;
   match: MatchType;
   onRecoverDialogVisible: () => void;
+  enableAdmMess: boolean;
 }
 
 const settings = {
@@ -39,6 +40,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   match,
   setIsLoading,
   onRecoverDialogVisible,
+  enableAdmMess,
 }) => {
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
   const [errorText, setErrorText] = useState("");
@@ -345,21 +347,24 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                 >
                   {t("SignInWithCode")}
                 </Link>*/}
-
-          <Text color="#A3A9AE" className="login-or-access-text">
-            {t("Or")}
-          </Text>
-          <Link
-            fontWeight="600"
-            fontSize="13px"
-            color="#316DAA"
-            type="action"
-            isHovered={true}
-            className="login-link recover-link"
-            onClick={onRecoverDialogVisible}
-          >
-            {t("RecoverAccess")}
-          </Link>
+          {enableAdmMess && (
+            <>
+              <Text color="#A3A9AE" className="login-or-access-text">
+                {t("Or")}
+              </Text>
+              <Link
+                fontWeight="600"
+                fontSize="13px"
+                color="#316DAA"
+                type="action"
+                isHovered={true}
+                className="login-link recover-link"
+                onClick={onRecoverDialogVisible}
+              >
+                {t("RecoverAccess")}
+              </Link>
+            </>
+          )}
         </div>
       )}
 
