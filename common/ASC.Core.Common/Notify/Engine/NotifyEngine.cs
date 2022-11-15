@@ -124,8 +124,9 @@ public class NotifyEngine : INotifyEngine, IDisposable
                     copy = _sendMethods.ToList();
                 }
 
-                foreach (var w in copy)
+                for (var i = 0; i < copy.Count; i++)
                 {
+                    using var w = copy[i];
                     if (!w.ScheduleDate.HasValue)
                     {
                         lock (_sendMethods)
@@ -585,19 +586,21 @@ public class NotifyEngine : INotifyEngine, IDisposable
     }
 
 
-    private sealed class SendMethodWrapper
+    private sealed class SendMethodWrapper : IDisposable
     {
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+        private readonly SemaphoreSlim _semaphore;
         private readonly CronExpression _cronExpression;
         private readonly Action<DateTime> _method;
+        private readonly ILogger _logger;
 
         public DateTime? ScheduleDate { get; private set; }
-        public ILogger Logger { get; }
 
         public SendMethodWrapper(Action<DateTime> method, string cron, ILogger log)
         {
+            _semaphore = new SemaphoreSlim(1);
             _method = method;
-            Logger = log;
+            _logger = log;
+
             if (!string.IsNullOrEmpty(cron))
             {
                 _cronExpression = new CronExpression(cron);
@@ -617,7 +620,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
             }
             catch (Exception e)
             {
-                Logger.ErrorUpdateScheduleDate(e);
+                _logger.ErrorUpdateScheduleDate(e);
             }
         }
 
@@ -632,7 +635,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                 }
                 catch (Exception e)
                 {
-                    Logger.ErrorInvokeSendMethod(e);
+                    _logger.ErrorInvokeSendMethod(e);
                 }
             });
             _semaphore.Release();
@@ -646,6 +649,11 @@ public class NotifyEngine : INotifyEngine, IDisposable
         public override int GetHashCode()
         {
             return _method.GetHashCode();
+        }
+
+        public void Dispose()
+        {
+            _semaphore.Dispose();
         }
     }
 

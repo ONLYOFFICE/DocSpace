@@ -444,14 +444,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = filesDbContext.Database.BeginTransaction();
+            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
             if (file.Id == default)
             {
-                file.Id = filesDbContext.Files.Any() ? filesDbContext.Files.Max(r => r.Id) + 1 : 1;
+                file.Id = await filesDbContext.Files.AnyAsync() ? await filesDbContext.Files.MaxAsync(r => r.Id) + 1 : 1;
                 file.Version = 1;
                 file.VersionGroup = 1;
                 isNew = true;
@@ -473,13 +473,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 file.CreateOn = _tenantUtil.DateTimeNow();
             }
 
-            var toUpdate = filesDbContext.Files
-                .FirstOrDefault(r => r.Id == file.Id && r.CurrentVersion && r.TenantId == TenantID);
+            var toUpdate = await filesDbContext.Files
+                .FirstOrDefaultAsync(r => r.Id == file.Id && r.CurrentVersion && r.TenantId == TenantID);
 
             if (toUpdate != null)
             {
                 toUpdate.CurrentVersion = false;
-                filesDbContext.SaveChanges();
+                await filesDbContext.SaveChangesAsync();
             }
 
             toInsert = new DbFile
@@ -504,19 +504,19 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 TenantId = TenantID
             };
 
-            filesDbContext.AddOrUpdate(r => r.Files, toInsert);
-            filesDbContext.SaveChanges();
+            await filesDbContext.AddOrUpdateAsync(r => r.Files, toInsert);
+            await filesDbContext.SaveChangesAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
 
         file.PureTitle = file.Title;
 
-        var parentFolders =
+        var parentFolders = await
             filesDbContext.Tree
             .Where(r => r.FolderId == file.ParentId)
             .OrderByDescending(r => r.Level)
-            .ToList();
+            .ToListAsync();
 
         parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
 
@@ -531,7 +531,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 f.ModifiedBy = file.ModifiedBy;
             }
 
-            filesDbContext.SaveChanges();
+            await filesDbContext.SaveChangesAsync();
         }
 
         toInsert.Folders = parentFolders;
@@ -540,6 +540,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             await RecalculateFilesCountAsync(file.ParentId);
         }
+
         _semaphore.Release();
 
         if (fileStream != null)
@@ -570,7 +571,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
         }
 
-        _factoryIndexer.IndexAsync(await InitDocumentAsync(toInsert));
+        _ = _factoryIndexer.IndexAsync(await InitDocumentAsync(toInsert));
 
         return await GetFileAsync(file.Id);
     }
@@ -612,10 +613,10 @@ internal class FileDao : AbstractDao, IFileDao<int>
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        await strategy.ExecuteAsync(async () =>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = filesDbContext.Database.BeginTransaction();
+            using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
             file.Title = Global.ReplaceInvalidCharsAndTruncate(file.Title);
             //make lowerCase
@@ -633,8 +634,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 file.CreateOn = _tenantUtil.DateTimeNow();
             }
 
-            toUpdate = filesDbContext.Files
-                .FirstOrDefault(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
+            toUpdate = await filesDbContext.Files
+                .FirstOrDefaultAsync(r => r.Id == file.Id && r.Version == file.Version && r.TenantId == TenantID);
 
             toUpdate.Version = file.Version;
             toUpdate.VersionGroup = file.VersionGroup;
@@ -652,17 +653,17 @@ internal class FileDao : AbstractDao, IFileDao<int>
             toUpdate.Forcesave = file.Forcesave;
             toUpdate.ThumbnailStatus = file.ThumbnailStatus;
 
-            filesDbContext.SaveChanges();
+            await filesDbContext.SaveChangesAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
 
         file.PureTitle = file.Title;
 
-        var parentFolders = filesDbContext.Tree
+        var parentFolders = await filesDbContext.Tree
             .Where(r => r.FolderId == file.ParentId)
             .OrderByDescending(r => r.Level)
-            .ToList();
+            .ToListAsync();
 
         parentFoldersIds = parentFolders.Select(r => r.ParentId).ToList();
 
@@ -677,7 +678,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 f.ModifiedBy = file.ModifiedBy;
             }
 
-            filesDbContext.SaveChanges();
+            await filesDbContext.SaveChangesAsync();
         }
 
         toUpdate.Folders = parentFolders;
@@ -701,7 +702,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
         }
 
-        _factoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate));
+        _ = _factoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate));
 
         return await GetFileAsync(file.Id);
     }

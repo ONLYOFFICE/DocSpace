@@ -450,7 +450,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
             {
-                _factoryIndexer.IndexAsync(toUpdate);
+                _ = _factoryIndexer.IndexAsync(toUpdate);
             }
         }
         else
@@ -476,7 +476,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             if (folder.FolderType == FolderType.DEFAULT || folder.FolderType == FolderType.BUNCH)
             {
-                _factoryIndexer.IndexAsync(newFolder);
+                _ = _factoryIndexer.IndexAsync(newFolder);
             }
 
             folder.Id = newFolder.Id;
@@ -871,7 +871,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         await filesDbContext.SaveChangesAsync();
 
-        _factoryIndexer.IndexAsync(toUpdate);
+        _ = _factoryIndexer.IndexAsync(toUpdate);
 
         return folder.Id;
     }
