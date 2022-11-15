@@ -16,6 +16,7 @@ import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
 import { Encoder } from "@docspace/common/utils/encoder";
 import { Base } from "@docspace/components/themes";
+import { getFileRoleActions } from "@docspace/common/utils/actions";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   ${commonIconsStyles}
@@ -46,7 +47,9 @@ const VersionRow = (props) => {
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
 
-  const canEdit = (info.access === 1 || info.access === 0) && !isEditing;
+  const { changeVersionHistory } = getFileRoleActions(info.access);
+
+  const canEdit = changeVersionHistory && !isEditing;
 
   const title = `${new Date(info.updated).toLocaleString(
     culture

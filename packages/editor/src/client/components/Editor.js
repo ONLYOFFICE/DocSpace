@@ -26,6 +26,7 @@ import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
+import { getFileRoleActions } from "@docspace/common/utils/actions";
 
 toast.configure();
 
@@ -62,20 +63,21 @@ let docEditor;
 let newConfig;
 let documentserverUrl =
   typeof window !== "undefined" && window?.location?.origin;
+let userAccessRights = {};
 
 function Editor({
   config,
-  personal,
+  //personal,
   successAuth,
-  isSharingAccess,
+  // isSharingAccess,
   user,
   doc,
   actionLink,
   error,
-  sharingDialog,
-  onSDKRequestSharingSettings,
-  loadUsersRightsList,
-  isVisible,
+  // sharingDialog,
+  // onSDKRequestSharingSettings,
+  // loadUsersRightsList,
+  // isVisible,
   selectFileDialog,
   onSDKRequestInsertImage,
   onSDKRequestMailMergeRecipients,
@@ -93,6 +95,9 @@ function Editor({
   const fileInfo = config?.file;
   const { t } = useTranslation(["Editor", "Common"]);
 
+  if (fileInfo) {
+    userAccessRights = getFileRoleActions(fileInfo.access);
+  }
   useEffect(() => {
     if (error && mfReady) {
       if (error?.unAuthorized && error?.redirectPath) {
@@ -354,9 +359,9 @@ function Editor({
     console.log("onDocumentReady", arguments);
     documentIsReady = true;
 
-    if (isSharingAccess) {
-      loadUsersRightsList(docEditor);
-    }
+    // if (isSharingAccess) {
+    //   loadUsersRightsList(docEditor);
+    // }
 
     assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
   };
@@ -454,11 +459,11 @@ function Editor({
       if (fileInfo) {
         let backUrl = "";
 
-        if (fileInfo.rootFolderType === FolderType.Rooms) {
-          backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
-        } else {
-          backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
-        }
+        // if (fileInfo.rootFolderType === FolderType.Rooms) {
+        backUrl = `/rooms/shared/${fileInfo.folderId}/filter?folder=${fileInfo.folderId}`;
+        // } else {
+        //  backUrl = `/rooms/personal/filter?folder=${fileInfo.folderId}`;
+        //}
 
         const origin = url.substring(0, url.indexOf("/doceditor"));
 
@@ -475,10 +480,10 @@ function Editor({
         goback: goBack,
       };
 
-      if (personal && !fileInfo) {
-        //TODO: add conditions for SaaS
-        config.document.info.favorite = null;
-      }
+      // if (personal && !fileInfo) {
+      //   //TODO: add conditions for SaaS
+      //   config.document.info.favorite = null;
+      // }
 
       if (url.indexOf("anchor") !== -1) {
         const splitUrl = url.split("anchor=");
@@ -519,24 +524,28 @@ function Editor({
         onRequestCompareFile,
         onRequestRestore;
 
-      if (isSharingAccess) {
-        onRequestSharingSettings = onSDKRequestSharingSettings;
-      }
+      // if (isSharingAccess) {
+      //   onRequestSharingSettings = onSDKRequestSharingSettings;
+      // }
 
-      if (fileInfo && fileInfo.canEdit) {
+      if (userAccessRights.rename) {
         onRequestRename = onSDKRequestRename;
       }
 
-      if (successAuth) {
+      if (successAuth && !user.isVisitor) {
         onRequestSaveAs = onSDKRequestSaveAs;
+      }
+
+      if (successAuth) {
         onRequestInsertImage = onSDKRequestInsertImage;
         onRequestMailMergeRecipients = onSDKRequestMailMergeRecipients;
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
-      if (!!config.document.permissions.changeHistory) {
+      if (userAccessRights.changeVersionHistory) {
         onRequestRestore = onSDKRequestRestore;
       }
+
       const events = {
         events: {
           onAppReady: onSDKAppReady,
@@ -546,7 +555,7 @@ function Editor({
           onInfo: onSDKInfo,
           onWarning: onSDKWarning,
           onError: onSDKError,
-          onRequestSharingSettings,
+          // onRequestSharingSettings,
           onRequestRename,
           onMakeActionLink: onMakeActionLink,
           onRequestInsertImage,
@@ -568,7 +577,9 @@ function Editor({
   };
 
   return (
-    <EditorWrapper isVisibleSharingDialog={isVisible}>
+    <EditorWrapper
+    // isVisibleSharingDialog={isVisible}
+    >
       {newConfig && (
         <DocumentEditor
           id={EDITOR_ID}
@@ -580,7 +591,7 @@ function Editor({
         ></DocumentEditor>
       )}
 
-      {sharingDialog}
+      {/* {sharingDialog} */}
       {selectFileDialog}
       {selectFolderDialog}
       <Toast />
