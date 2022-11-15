@@ -228,7 +228,10 @@ export const LoginContainer = styled.div`
       flex-direction: column;
       align-items: center;
       gap: 6px;
-      margin-top: 24px;
+      
+      & > :first-child {
+        margin-top: 24px;
+      }
     }
   }
 
