@@ -76,7 +76,7 @@ const SimpleFilesRowContent = styled(RowContent)`
 
     .new-items {
       min-width: 16px;
-      margin: 7px 24px 0 0;
+      margin: 5px 24px 0 0;
     }
   `}
 `;
