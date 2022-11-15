@@ -124,40 +124,6 @@ public class DistributedTaskQueue
         EnqueueTask(taskProgress.RunJob, taskProgress);
     }
 
-    public void EnqueueTask(Action<DistributedTask, CancellationToken> action, DistributedTask distributedTask = null)
-    {
-        if (distributedTask == null)
-        {
-            distributedTask = new DistributedTask();
-        }
-
-        distributedTask.InstanceId = INSTANCE_ID;
-
-        var cancelation = new CancellationTokenSource();
-        var token = cancelation.Token;
-        _cancelations[distributedTask.Id] = cancelation;
-
-        var task = new Task(() => { action(distributedTask, token); }, token, TaskCreationOptions.LongRunning);
-
-        task.ConfigureAwait(false)
-            .GetAwaiter()
-            .OnCompleted(() => OnCompleted(task, distributedTask.Id));
-
-        distributedTask.Status = DistributedTaskStatus.Running;
-
-        if (distributedTask.Publication == null)
-        {
-            distributedTask.Publication = GetPublication();
-        }
-
-        distributedTask.PublishChanges();
-
-        task.Start(Scheduler);
-
-        _logger.TraceEnqueueTask(distributedTask.Id, INSTANCE_ID);
-
-    }
-
     public void EnqueueTask(Func<DistributedTask, CancellationToken, Task> action, DistributedTask distributedTask = null)
     {
         if (distributedTask == null)
@@ -393,5 +359,4 @@ public class DistributedTaskQueue
 
         return destination;
     }
-
 }

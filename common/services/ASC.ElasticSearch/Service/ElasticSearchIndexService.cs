@@ -61,7 +61,7 @@ public class ElasticSearchIndexService : BackgroundService
                 {
                     await Task.Delay(10000);
                 }
-                IndexAll(true);
+                await IndexAll(true);
             }, CacheNotifyAction.Any);
         }
         catch (Exception e)
@@ -87,7 +87,7 @@ public class ElasticSearchIndexService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            IndexAll();
+            await IndexAll();
 
             await Task.Delay(_period, stoppingToken);
         }
@@ -130,7 +130,7 @@ public class ElasticSearchIndexService : BackgroundService
         }
     }
 
-    private void IndexAll(bool reindex = false)
+    private async Task IndexAll(bool reindex = false)
     {
         try
         {
@@ -143,7 +143,7 @@ public class ElasticSearchIndexService : BackgroundService
                 wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().Select(r => r.GetType()).ToList();
             }
 
-            Parallel.ForEach(wrappers, async wrapper =>
+            await Parallel.ForEachAsync(wrappers, async (wrapper, token) =>
             {
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {

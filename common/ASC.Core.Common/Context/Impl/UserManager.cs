@@ -61,7 +61,7 @@ public class UserManager
     private readonly CardDavAddressbook _cardDavAddressbook;
     private readonly ILogger<UserManager> _log;
     private readonly ICache _cache;
-    private readonly TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> _tenantQuotaFeatureChecker;
+    private readonly TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> _countRoomAdminChecker;
     private readonly TenantQuotaFeatureCheckerCount<CountUserFeature> _activeUsersFeatureChecker;
     private readonly Constants _constants;
 
@@ -85,7 +85,7 @@ public class UserManager
         CardDavAddressbook cardDavAddressbook,
         ILogger<UserManager> log,
         ICache cache,
-        TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> tenantQuotaFeatureChecker,
+        TenantQuotaFeatureCheckerCount<CountRoomAdminFeature> countRoomAdrminChecker,
         TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker
         )
     {
@@ -100,7 +100,7 @@ public class UserManager
         _cardDavAddressbook = cardDavAddressbook;
         _log = log;
         _cache = cache;
-        _tenantQuotaFeatureChecker = tenantQuotaFeatureChecker;
+        _countRoomAdminChecker = countRoomAdrminChecker;
         _activeUsersFeatureChecker = activeUsersFeatureChecker;
         _constants = _userManagerConstants.Constants;
     }
@@ -376,7 +376,7 @@ public class UserManager
         }
         else
         {
-            await _tenantQuotaFeatureChecker.CheckAppend();
+            await _countRoomAdminChecker.CheckAppend();
         }
 
         var newUser = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
@@ -405,7 +405,7 @@ public class UserManager
             var collection = await _cardDavAddressbook.GetCollection(requestUrlBook, userAuthorization, myUri.ToString());
             if (collection.Completed && collection.StatusCode != 404)
             {
-                await _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id);//TODO
+                await _cardDavAddressbook.Delete(myUri, newUser.Id, newUser.Email, tenant.Id);
             }
             foreach (var email in allUserEmails)
             {
@@ -433,7 +433,7 @@ public class UserManager
                 var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
                 try
                 {
-                    await _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null); // todo
+                    await _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, _tenantManager.GetCurrentTenant().Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null);
                 }
                 catch (Exception ex)
                 {
@@ -445,7 +445,6 @@ public class UserManager
                 _log.ErrorWithException(ex);
             }
         }
-
     }
 
     public IEnumerable<string> GetDavUserEmails()
@@ -513,7 +512,6 @@ public class UserManager
                     _log.ErrorWithException(ex);
                 }
             }
-
         }
         catch (Exception ex)
         {
@@ -645,7 +643,7 @@ public class UserManager
             var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
                        (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                        new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
-            
+
             if (!dontClearAddressBook)
             {
                 await _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id);

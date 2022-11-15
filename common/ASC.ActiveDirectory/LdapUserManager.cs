@@ -1,5 +1,5 @@
 ﻿
- // (c) Copyright Ascensio System SIA 2010-2022
+// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -134,16 +134,6 @@ public class LdapUserManager
                 _logger.DebugUserAlredyExistsForUserName(ldapUserInfo.Sid, ldapUserInfo.UserName);
 
                 return portalUserInfo;
-            }
-
-            try
-            {
-               await _countRoomAdminChecker.CheckAppend();
-            }
-            catch (Exception)
-            {
-                _logger.DebugExceedQuota(ldapUserInfo.Sid, ldapUserInfo.UserName);
-                throw;
             }
 
             if (!ldapUserInfo.WorkFromDate.HasValue)
