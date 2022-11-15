@@ -131,7 +131,12 @@ const template: Template = (
 
           #code-page > div > div > input {
             background: #fff;
-            border-color: #d0d5da
+            border-color: #d0d5da;
+          }
+
+          #code-page > div > div > input:disabled {
+            background: #F8F9F9;
+            border-color: #ECEEF1;
           }
         }
 
@@ -181,7 +186,12 @@ const template: Template = (
 
           #code-page > div > div > input {
             background: #282828;
-            border-color: #474747
+            border-color: #474747;
+          }
+
+          #code-page > div > div > input:disabled {
+            background: #474747;
+            border-color: #474747;
           }
         }        
         </style>
