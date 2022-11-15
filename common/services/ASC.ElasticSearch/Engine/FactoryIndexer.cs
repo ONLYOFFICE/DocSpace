@@ -471,13 +471,13 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
     }
 
-    public Task<bool> IndexAsync(T data, bool immediately = true)
+    public Task IndexAsync(T data, bool immediately = true)
     {
         var t = _serviceProvider.GetService<T>();
 
         return !Support(t)
             ? Task.FromResult(false)
-            : Queue(async () => await _indexer.Index(data, immediately));
+            : Queue(() => _indexer.Index(data, immediately));
     }
 
     public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
@@ -592,6 +592,31 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
                 actionData();
 
                 return true;
+            }
+            catch (AggregateException agg)
+            {
+                foreach (var e in agg.InnerExceptions)
+                {
+                    Logger.ErrorQueue(e);
+                }
+
+                throw;
+            }
+        }, TaskCreationOptions.LongRunning);
+
+        task.ConfigureAwait(false);
+        task.Start(_scheduler);
+
+        return task;
+    }
+
+    private Task Queue(Func<Task> actionData)
+    {
+        var task = new Task(async () =>
+        {
+            try
+            {
+                await actionData();
             }
             catch (AggregateException agg)
             {

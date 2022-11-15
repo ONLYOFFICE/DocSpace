@@ -570,7 +570,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
         }
 
-        _ = _factoryIndexer.IndexAsync(await InitDocumentAsync(toInsert));
+        _factoryIndexer.IndexAsync(await InitDocumentAsync(toInsert));
 
         return await GetFileAsync(file.Id);
     }
@@ -701,7 +701,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             }
         }
 
-        _ = _factoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate));
+        _factoryIndexer.IndexAsync(await InitDocumentAsync(toUpdate));
 
         return await GetFileAsync(file.Id);
     }
