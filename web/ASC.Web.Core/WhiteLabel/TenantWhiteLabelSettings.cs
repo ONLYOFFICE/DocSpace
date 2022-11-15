@@ -93,12 +93,27 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
     #region Logo available sizes
 
     public static readonly Size LogoLightSmallSize = new Size(422, 48);
-    public static readonly Size LogoDarkSize = new Size(810, 92);
+    public static readonly Size LogoLoginPageSize = new Size(810, 92);
     public static readonly Size LogoFaviconSize = new Size(32, 32);
     public static readonly Size LogoDocsEditorSize = new Size(172, 40);
     public static readonly Size LogoDocsEditorEmbedSize = new Size(172, 40);
     public static readonly Size LogoLeftMenuSize = new Size(56, 56);
     public static readonly Size LogoAboutPageSize = new Size(810, 92);
+
+    public static Size GetSize(WhiteLabelLogoTypeEnum type)
+    {
+        return type switch
+        {
+            WhiteLabelLogoTypeEnum.LightSmall => LogoLightSmallSize,
+            WhiteLabelLogoTypeEnum.LoginPage => LogoLoginPageSize,
+            WhiteLabelLogoTypeEnum.Favicon => LogoFaviconSize,
+            WhiteLabelLogoTypeEnum.DocsEditor => LogoDocsEditorSize,
+            WhiteLabelLogoTypeEnum.DocsEditorEmbed => LogoDocsEditorEmbedSize,
+            WhiteLabelLogoTypeEnum.LeftMenu => LogoLeftMenuSize,
+            WhiteLabelLogoTypeEnum.AboutPage => LogoAboutPageSize,
+            _ => new Size(),
+        };
+    }
 
     #endregion
 
@@ -679,8 +694,8 @@ public class TenantWhiteLabelSettingsHelper
                    general ? TenantWhiteLabelSettings.LogoLightSmallSize.Width / 2 : TenantWhiteLabelSettings.LogoLightSmallSize.Width,
                    general ? TenantWhiteLabelSettings.LogoLightSmallSize.Height / 2 : TenantWhiteLabelSettings.LogoLightSmallSize.Height),
             WhiteLabelLogoTypeEnum.LoginPage => new Size(
-                    general ? TenantWhiteLabelSettings.LogoDarkSize.Width / 2 : TenantWhiteLabelSettings.LogoDarkSize.Width,
-                    general ? TenantWhiteLabelSettings.LogoDarkSize.Height / 2 : TenantWhiteLabelSettings.LogoDarkSize.Height),
+                    general ? TenantWhiteLabelSettings.LogoLoginPageSize.Width / 2 : TenantWhiteLabelSettings.LogoLoginPageSize.Width,
+                    general ? TenantWhiteLabelSettings.LogoLoginPageSize.Height / 2 : TenantWhiteLabelSettings.LogoLoginPageSize.Height),
             WhiteLabelLogoTypeEnum.Favicon => new Size(
                     general ? TenantWhiteLabelSettings.LogoFaviconSize.Width / 2 : TenantWhiteLabelSettings.LogoFaviconSize.Width,
                     general ? TenantWhiteLabelSettings.LogoFaviconSize.Height / 2 : TenantWhiteLabelSettings.LogoFaviconSize.Height),

@@ -29,10 +29,10 @@ namespace ASC.Web.Api.ApiModel.RequestsDto;
 public class WhiteLabelRequestsDto
 {
     public string LogoText { get; set; }
-    public IEnumerable<ItemKeyValuePair<string, LogoDto>> Logo { get; set; }
+    public IEnumerable<ItemKeyValuePair<string, LogoRequestsDto>> Logo { get; set; }
 }
 
-public class LogoDto
+public class LogoRequestsDto
 {
     public string Light { get; set; }
     public string Dark { get; set; }

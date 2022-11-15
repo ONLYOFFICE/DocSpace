@@ -155,28 +155,6 @@ public class WhitelabelController : BaseSettingsController
     }
 
     ///<visible>false</visible>
-    [AllowNotPayment]
-    [HttpGet("whitelabel/sizes")]
-    public object GetWhiteLabelSizes()
-    {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-
-        return
-        new[]
-        {
-            new {type = (int)WhiteLabelLogoTypeEnum.LightSmall, name = nameof(WhiteLabelLogoTypeEnum.LightSmall), height = TenantWhiteLabelSettings.LogoLightSmallSize.Height, width = TenantWhiteLabelSettings.LogoLightSmallSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.LoginPage, name = nameof(WhiteLabelLogoTypeEnum.LoginPage), height = TenantWhiteLabelSettings.LogoDarkSize.Height, width = TenantWhiteLabelSettings.LogoDarkSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.Favicon, name = nameof(WhiteLabelLogoTypeEnum.Favicon), height = TenantWhiteLabelSettings.LogoFaviconSize.Height, width = TenantWhiteLabelSettings.LogoFaviconSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.DocsEditor, name = nameof(WhiteLabelLogoTypeEnum.DocsEditor), height = TenantWhiteLabelSettings.LogoDocsEditorSize.Height, width = TenantWhiteLabelSettings.LogoDocsEditorSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.DocsEditorEmbed, name = nameof(WhiteLabelLogoTypeEnum.DocsEditorEmbed), height = TenantWhiteLabelSettings.LogoDocsEditorEmbedSize.Height, width = TenantWhiteLabelSettings.LogoDocsEditorEmbedSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.LeftMenu, name =  nameof(WhiteLabelLogoTypeEnum.LeftMenu), height = TenantWhiteLabelSettings.LogoLeftMenuSize.Height, width = TenantWhiteLabelSettings.LogoLeftMenuSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.AboutPage, name =  nameof(WhiteLabelLogoTypeEnum.AboutPage), height = TenantWhiteLabelSettings.LogoAboutPageSize.Height, width = TenantWhiteLabelSettings.LogoAboutPageSize.Width}
-        };
-    }
-
-
-
-    ///<visible>false</visible>
     [AllowNotPayment, AllowAnonymous]
     [HttpGet("whitelabel/logos")]
     public Dictionary<string, object> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
@@ -188,14 +166,24 @@ public class WhitelabelController : BaseSettingsController
         {
             if (inDto.IsDark.HasValue) 
             {
-                result.Add(((int)logoType).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, inDto.IsDark.Value)));
+                var dto = new
+                {
+                    Name = nameof(logoType),
+                    Path = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, inDto.IsDark.Value)),
+                    height = TenantWhiteLabelSettings.GetSize(logoType).Height,
+                    width = TenantWhiteLabelSettings.GetSize(logoType).Width
+                };
+                result.Add(((int)logoType).ToString(), dto);
             }
             else
             {
-                var dto = new LogoDto()
+                var dto = new
                 {
-                    Light = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, false)),
-                    Dark = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, true))
+                    Name = nameof(logoType),
+                    LightPath = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, false)),
+                    DarkPath = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, true)),
+                    height = TenantWhiteLabelSettings.GetSize(logoType).Height,
+                    width = TenantWhiteLabelSettings.GetSize(logoType).Width
                 };
                 result.Add(((int)logoType).ToString(), dto);
             }
