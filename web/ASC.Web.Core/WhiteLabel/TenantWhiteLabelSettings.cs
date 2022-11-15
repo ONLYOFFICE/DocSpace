@@ -387,17 +387,17 @@ public class TenantWhiteLabelSettingsHelper
             string extLight;
             string extDark;
 
+            lightData = GetLogoData(currentLogo.Value.Key, out extLight);
             if (currentLogo.Value.Key == currentLogo.Value.Value)
             {
-                lightData = GetLogoData(currentLogo.Value.Key, out extLight);
                 darkData = lightData;
                 extDark = extLight;
             }
             else
             {
-                lightData = GetLogoData(currentLogo.Value.Key, out extLight);
                 darkData = GetLogoData(currentLogo.Value.Value, out extDark);
             }
+
             if(lightData == null && darkData == null)
             {
                 return;
@@ -480,23 +480,8 @@ public class TenantWhiteLabelSettingsHelper
 
     public void SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream, Stream fileDarkStream, IDataStore storage = null)
     {
-        byte[] lightData = null;
-        if (fileStream != null) {
-            using (var memoryStream = new MemoryStream())
-            {
-                fileStream.CopyTo(memoryStream);
-                lightData = memoryStream.ToArray();
-            }
-        }
-
-        byte[] darkData = null;
-        if (fileDarkStream != null) {
-            using (var memoryStream = new MemoryStream())
-            {
-                fileStream.CopyTo(fileDarkStream);
-                darkData = memoryStream.ToArray();
-            }
-        }
+        var lightData = GetData(fileStream);
+        var darkData = GetData(fileDarkStream);
 
         if (tenantWhiteLabelSettings.GetIsDefault(type))
         {
@@ -526,6 +511,19 @@ public class TenantWhiteLabelSettingsHelper
         {
             SetLogo(tenantWhiteLabelSettings, type, fileExt, darkData, true, storage);
         }
+    }
+
+    private byte[] GetData(Stream stream)
+    {
+        if (stream != null)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                stream.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+        return null;
     }
 
     #endregion
