@@ -80,11 +80,13 @@ class NewFilesPanel extends React.Component {
   onNewFileClick = (e) => {
     const { id, extension: fileExst } = e.target.dataset;
 
-    const { /* updateFolderBadge, */ markAsRead } = this.props;
+    const { /* updateFolderBadge, */ markAsRead, newFiles } = this.props;
     const readingFiles = this.state.readingFiles;
 
     const fileIds = fileExst ? [id] : [];
     const folderIds = fileExst ? [] : [id];
+
+    const item = newFiles.find((file) => file.id.toString() === id);
 
     if (readingFiles.includes(id)) return this.onFileClick(item);
     markAsRead(folderIds, fileIds, item)
@@ -198,6 +200,7 @@ class NewFilesPanel extends React.Component {
                 <StyledSharingBody stype="mediumBlack" style={SharingBodyStyle}>
                   {newFiles.map((file) => {
                     const element = this.getItemIcon(file);
+
                     return (
                       <Row key={file.id} element={element}>
                         <Link
@@ -205,7 +208,7 @@ class NewFilesPanel extends React.Component {
                           containerWidth="100%"
                           type="page"
                           fontWeight={600}
-                          color="#333"
+                          color={theme.filesPanels.color}
                           isTextOverflow
                           truncate
                           title={file.title}
@@ -214,19 +217,7 @@ class NewFilesPanel extends React.Component {
                           data-id={file.id}
                           data-extension={file.fileExst}
                         >
-                          <Link
-                            containerWidth="100%"
-                            type="page"
-                            fontWeight="bold"
-                            color={theme.filesPanels.color}
-                            isTextOverflow
-                            truncate
-                            title={file.title}
-                            fontSize="14px"
-                            className="files-new-link"
-                          >
-                            {file.title}
-                          </Link>
+                          {file.title}
                         </Link>
                       </Row>
                     );
@@ -243,7 +234,7 @@ class NewFilesPanel extends React.Component {
             )}
             <StyledFooter>
               <Button
-                className="new_files_panel-button"
+                className="new_files_panel-button new_file_panel-first-button"
                 label={t("MarkAsRead")}
                 size="normal"
                 primary
@@ -251,7 +242,7 @@ class NewFilesPanel extends React.Component {
                 isLoading={this.state.inProgress}
               />
               <Button
-                className="sharing_panel-button"
+                className="new_files_panel-button"
                 label={t("Common:CloseButton")}
                 size="normal"
                 onClick={this.onClose}
