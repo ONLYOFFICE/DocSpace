@@ -77,7 +77,7 @@ function Editor({
   // sharingDialog,
   // onSDKRequestSharingSettings,
   // loadUsersRightsList,
-  isVisible,
+  // isVisible,
   selectFileDialog,
   onSDKRequestInsertImage,
   onSDKRequestMailMergeRecipients,
@@ -577,7 +577,9 @@ function Editor({
   };
 
   return (
-    <EditorWrapper isVisibleSharingDialog={isVisible}>
+    <EditorWrapper
+    // isVisibleSharingDialog={isVisible}
+    >
       {newConfig && (
         <DocumentEditor
           id={EDITOR_ID}

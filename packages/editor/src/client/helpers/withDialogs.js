@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getPresignedUri } from "@docspace/common/api/files";
 import { EDITOR_ID } from "@docspace/common/constants";
 import { useTranslation } from "react-i18next";
-import SharingDialog from "../components/SharingDialog";
+//import SharingDialog from "../components/SharingDialog";
 import SelectFileDialog from "../components/SelectFileDialog";
 import SelectFolderDialog from "../components/SelectFolderDialog";
 
@@ -12,7 +12,7 @@ const compareFilesAction = "documentsFileType";
 
 const withDialogs = (WrappedComponent) => {
   return (props) => {
-    const [isVisible, setIsVisible] = useState(false);
+    //const [isVisible, setIsVisible] = useState(false);
     const [filesType, setFilesType] = useState("");
     const [isFileDialogVisible, setIsFileDialogVisible] = useState(false);
     const [typeInsertImageAction, setTypeInsertImageAction] = useState();
@@ -24,7 +24,12 @@ const withDialogs = (WrappedComponent) => {
 
     const { t } = useTranslation(["Editor", "Common"]);
 
-    const { config, fileId, mfReady, sharingSettings } = props;
+    const {
+      config,
+      fileId,
+      mfReady,
+      //sharingSettings
+    } = props;
     const fileInfo = config?.file;
 
     useEffect(() => {
@@ -51,23 +56,23 @@ const withDialogs = (WrappedComponent) => {
       });
     };
 
-    const onSDKRequestSharingSettings = () => {
-      setIsVisible(true);
-    };
+    // const onSDKRequestSharingSettings = () => {
+    //   setIsVisible(true);
+    // };
 
     // const onCancel = () => {
     //   setIsVisible(false);
     // };
 
-    const loadUsersRightsList = (docEditor) => {
-      window.SharingDialog.convertSharingUsers(sharingSettings).then(
-        (sharingSettings) => {
-          docEditor.setSharingSettings({
-            sharingSettings,
-          });
-        }
-      );
-    };
+    // const loadUsersRightsList = (docEditor) => {
+    //   window.SharingDialog.convertSharingUsers(sharingSettings).then(
+    //     (sharingSettings) => {
+    //       docEditor.setSharingSettings({
+    //         sharingSettings,
+    //       });
+    //     }
+    //   );
+    // };
 
     const onCloseFileDialog = () => {
       setIsFileDialogVisible(false);
@@ -288,7 +293,7 @@ const withDialogs = (WrappedComponent) => {
         //sharingDialog={sharingDialog}
         // onSDKRequestSharingSettings={onSDKRequestSharingSettings}
         //  loadUsersRightsList={loadUsersRightsList}
-        isVisible={isVisible}
+        //isVisible={isVisible}
         selectFileDialog={selectFileDialog}
         onSDKRequestInsertImage={onSDKRequestInsertImage}
         onSDKRequestMailMergeRecipients={onSDKRequestMailMergeRecipients}
