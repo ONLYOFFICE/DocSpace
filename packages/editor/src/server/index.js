@@ -12,6 +12,9 @@ import logger from "morgan";
 import winston from "./lib/logger.js";
 import { getAssets, initDocEditor } from "./lib/helpers";
 import renderApp from "./lib/helpers/render-app";
+import dns from "dns";
+
+dns.setDefaultResultOrder("ipv4first");
 
 const fallbackLng = "en";
 
