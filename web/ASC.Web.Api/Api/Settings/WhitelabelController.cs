@@ -116,7 +116,7 @@ public class WhitelabelController : BaseSettingsController
             if (f.FileName.Contains("dark"))
             {
                 GetParts(f.FileName, out var logoType, out var fileExt);
-                if (HttpContext.Request.Form.Files.Any(f => f.FileName == $"{logoType}.{fileExt}"))
+                if (HttpContext.Request.Form.Files.Any(f => f.FileName.Contains($"{logoType}")))
                 {
                     continue;
                 }
@@ -126,13 +126,17 @@ public class WhitelabelController : BaseSettingsController
             {
                 GetParts(f.FileName, out var logoType, out var fileExt);
                 IFormFile darkFile;
-                if (HttpContext.Request.Form.Files.Any(f => f.FileName == $"{logoType}.dark.{fileExt}"))
+                if (HttpContext.Request.Form.Files.Any(f => f.FileName.Contains($"{logoType}.dark.")))
                 {
-                    darkFile = HttpContext.Request.Form.Files.Single(f => f.FileName == $"{logoType}.dark.{fileExt}");
+                    darkFile = HttpContext.Request.Form.Files.Single(f => f.FileName.Contains($"{logoType}.dark."));
                 }
                 else
                 {
                     darkFile = null;
+                }
+                if(darkFile != null && darkFile.FileName != f.FileName)
+                {
+                    throw new InvalidOperationException("logo light and logo dark have different extention");
                 }
                 _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), darkFile?.OpenReadStream(), null);
             }
@@ -161,7 +165,7 @@ public class WhitelabelController : BaseSettingsController
         new[]
         {
             new {type = (int)WhiteLabelLogoTypeEnum.LightSmall, name = nameof(WhiteLabelLogoTypeEnum.LightSmall), height = TenantWhiteLabelSettings.LogoLightSmallSize.Height, width = TenantWhiteLabelSettings.LogoLightSmallSize.Width},
-            new {type = (int)WhiteLabelLogoTypeEnum.Dark, name = nameof(WhiteLabelLogoTypeEnum.Dark), height = TenantWhiteLabelSettings.LogoDarkSize.Height, width = TenantWhiteLabelSettings.LogoDarkSize.Width},
+            new {type = (int)WhiteLabelLogoTypeEnum.LoginPage, name = nameof(WhiteLabelLogoTypeEnum.LoginPage), height = TenantWhiteLabelSettings.LogoDarkSize.Height, width = TenantWhiteLabelSettings.LogoDarkSize.Width},
             new {type = (int)WhiteLabelLogoTypeEnum.Favicon, name = nameof(WhiteLabelLogoTypeEnum.Favicon), height = TenantWhiteLabelSettings.LogoFaviconSize.Height, width = TenantWhiteLabelSettings.LogoFaviconSize.Width},
             new {type = (int)WhiteLabelLogoTypeEnum.DocsEditor, name = nameof(WhiteLabelLogoTypeEnum.DocsEditor), height = TenantWhiteLabelSettings.LogoDocsEditorSize.Height, width = TenantWhiteLabelSettings.LogoDocsEditorSize.Width},
             new {type = (int)WhiteLabelLogoTypeEnum.DocsEditorEmbed, name = nameof(WhiteLabelLogoTypeEnum.DocsEditorEmbed), height = TenantWhiteLabelSettings.LogoDocsEditorEmbedSize.Height, width = TenantWhiteLabelSettings.LogoDocsEditorEmbedSize.Width},
@@ -175,37 +179,28 @@ public class WhitelabelController : BaseSettingsController
     ///<visible>false</visible>
     [AllowNotPayment, AllowAnonymous]
     [HttpGet("whitelabel/logos")]
-    public Dictionary<string, string> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
+    public Dictionary<string, object> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
-        Dictionary<string, string> result;
-
         var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
-        if (inDto.IsDark.HasValue)
+        var result = new Dictionary<string, object>();
+        foreach (var logoType in (WhiteLabelLogoTypeEnum[])Enum.GetValues(typeof(WhiteLabelLogoTypeEnum)))
         {
-            result = GetLogos(inDto.IsRetina, inDto.IsDark.Value);
-        }
-        else
-        {
-            result = GetLogos(inDto.IsRetina, false, ".light");
-            result = result.Concat(GetLogos(inDto.IsRetina, true, ".dark")).ToDictionary(d=> d.Key, d=> d.Value);
+            if (inDto.IsDark.HasValue) 
+            {
+                result.Add(((int)logoType).ToString(), _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, inDto.IsDark.Value)));
+            }
+            else
+            {
+                var dto = new LogoDto()
+                {
+                    Light = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, false)),
+                    Dark = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, true))
+                };
+                result.Add(((int)logoType).ToString(), dto);
+            }
         }
         return result;
-    }
-
-    private Dictionary<string, string> GetLogos(bool isRetina, bool isDark, string extName = "")
-    {
-        var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
-        return new Dictionary<string, string>
-        {
-            { ((int)WhiteLabelLogoTypeEnum.LightSmall).ToString() + $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LightSmall, !isRetina, isDark)) },
-            { ((int)WhiteLabelLogoTypeEnum.Dark).ToString() + $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Dark, !isRetina, isDark)) },
-            { ((int)WhiteLabelLogoTypeEnum.Favicon).ToString()+ $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Favicon, !isRetina, isDark)) },
-            { ((int)WhiteLabelLogoTypeEnum.DocsEditor).ToString()+ $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.DocsEditor, !isRetina, isDark)) },
-            { ((int)WhiteLabelLogoTypeEnum.DocsEditorEmbed).ToString()+ $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.DocsEditorEmbed, !isRetina, isDark)) },
-            { ((int)WhiteLabelLogoTypeEnum.LeftMenu).ToString()+ $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.LeftMenu, !isRetina, isDark)) },
-            { ((int)WhiteLabelLogoTypeEnum.AboutPage).ToString()+ $"{extName}", _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings,WhiteLabelLogoTypeEnum.AboutPage, !isRetina, isDark)) }
-        };
     }
 
     ///<visible>false</visible>

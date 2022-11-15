@@ -142,7 +142,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
         return type switch
         {
             WhiteLabelLogoTypeEnum.LightSmall => IsDefaultLogoLightSmall,
-            WhiteLabelLogoTypeEnum.Dark => IsDefaultLogoDark,
+            WhiteLabelLogoTypeEnum.LoginPage => IsDefaultLogoDark,
             WhiteLabelLogoTypeEnum.Favicon => IsDefaultLogoFavicon,
             WhiteLabelLogoTypeEnum.DocsEditor => IsDefaultLogoDocsEditor,
             WhiteLabelLogoTypeEnum.DocsEditorEmbed => IsDefaultLogoDocsEditorEmbed,
@@ -159,7 +159,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
             case WhiteLabelLogoTypeEnum.LightSmall:
                 IsDefaultLogoLightSmall = value;
                 break;
-            case WhiteLabelLogoTypeEnum.Dark:
+            case WhiteLabelLogoTypeEnum.LoginPage:
                 IsDefaultLogoDark = value;
                 break;
             case WhiteLabelLogoTypeEnum.Favicon:
@@ -185,7 +185,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
         return type switch
         {
             WhiteLabelLogoTypeEnum.LightSmall => LogoLightSmallExt,
-            WhiteLabelLogoTypeEnum.Dark => LogoDarkExt,
+            WhiteLabelLogoTypeEnum.LoginPage => LogoDarkExt,
             WhiteLabelLogoTypeEnum.Favicon => LogoFaviconExt,
             WhiteLabelLogoTypeEnum.DocsEditor => LogoDocsEditorExt,
             WhiteLabelLogoTypeEnum.DocsEditorEmbed => LogoDocsEditorEmbedExt,
@@ -202,7 +202,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
             case WhiteLabelLogoTypeEnum.LightSmall:
                 LogoLightSmallExt = fileExt;
                 break;
-            case WhiteLabelLogoTypeEnum.Dark:
+            case WhiteLabelLogoTypeEnum.LoginPage:
                 LogoDarkExt = fileExt;
                 break;
             case WhiteLabelLogoTypeEnum.Favicon:
@@ -360,7 +360,6 @@ public class TenantWhiteLabelSettingsHelper
         #endregion
 
         using (var memory = new MemoryStream(data))
-        using (var image = Image.Load(memory))
         {
             var logoFileName = BuildLogoFileName(type, logoFileExt, false, dark);
 
@@ -370,7 +369,10 @@ public class TenantWhiteLabelSettingsHelper
 
         var generalSize = GetSize(type, true);
         var generalFileName = BuildLogoFileName(type, logoFileExt, true, dark);
-        ResizeLogo(generalFileName, data, -1, generalSize, store);
+        if (logoFileExt != "svg")
+        {
+            ResizeLogo(generalFileName, data, -1, generalSize, store);
+        }
     }
 
     public void SetLogo(TenantWhiteLabelSettings tenantWhiteLabelSettings, Dictionary<int, KeyValuePair<string, string>> logo, IDataStore storage = null)
@@ -391,11 +393,24 @@ public class TenantWhiteLabelSettingsHelper
                 if (lightData == null)
                 {
                     lightData = darkData;
+                    extLight = extDark;
                 }
                 if (darkData == null)
                 {
                     darkData = lightData;
+                    extDark = extLight;
                 }
+            }
+            if (extLight != null && extDark != null && extLight != extDark)
+            {
+                throw new InvalidOperationException("logo light and logo dark have different extention");
+            }
+
+            if ((extLight == null || extDark == null) 
+                && tenantWhiteLabelSettings.GetExt(currentLogoType) != extLight
+                && tenantWhiteLabelSettings.GetExt(currentLogoType) != extDark)
+            {
+                throw new InvalidOperationException("current logos and downloaded logo have different extention");
             }
 
             tenantWhiteLabelSettings.SetExt(currentLogoType, extLight);
@@ -416,7 +431,7 @@ public class TenantWhiteLabelSettingsHelper
     private byte[] GetLogoData(string logo, out string ext)
     {
         var xStart = @"data:image/png;base64,";
-        ext = "png";
+        ext = null;
         if (!string.IsNullOrEmpty(logo))
         {
             byte[] data;
@@ -436,6 +451,7 @@ public class TenantWhiteLabelSettingsHelper
             }
             else
             {
+                ext = "png";
                 var xB64 = logo.Substring(xStart.Length); // Get the Base64 string
                 data = Convert.FromBase64String(xB64); // Convert the Base64 string to binary data
             }
@@ -481,6 +497,12 @@ public class TenantWhiteLabelSettingsHelper
             }
 
         }
+
+        if ((lightData == null || darkData == null) && tenantWhiteLabelSettings.GetExt(type) != fileExt)
+        {
+            throw new InvalidOperationException("current logos and downloaded logo have different extention");
+        }
+
         tenantWhiteLabelSettings.SetExt(type, fileExt);
         tenantWhiteLabelSettings.SetIsDefault(type, false);
         if (lightData != null)
@@ -528,15 +550,14 @@ public class TenantWhiteLabelSettingsHelper
         }
 
         var generalStr = general ? "_general" : "";
-        var darkStr = dark ? "_dark" : "";
         return type switch
         {
             WhiteLabelLogoTypeEnum.LightSmall => _webImageSupplier.GetAbsoluteWebPath("logo/light_small_doc_space.svg"),
-            WhiteLabelLogoTypeEnum.Dark => _webImageSupplier.GetAbsoluteWebPath("logo/dark_doc_space.svg"),
-            WhiteLabelLogoTypeEnum.DocsEditor => _webImageSupplier.GetAbsoluteWebPath($"logo/editor_logo{generalStr}{darkStr}.png"),
-            WhiteLabelLogoTypeEnum.DocsEditorEmbed => _webImageSupplier.GetAbsoluteWebPath($"logo/editor_logo_embed{generalStr}{darkStr}.png"),
-            WhiteLabelLogoTypeEnum.Favicon => _webImageSupplier.GetAbsoluteWebPath($"logo/favicon{generalStr}{darkStr}.ico"),
-            WhiteLabelLogoTypeEnum.LeftMenu => _webImageSupplier.GetAbsoluteWebPath($"logo/left_menu{generalStr}{darkStr}.svg"),
+            WhiteLabelLogoTypeEnum.LoginPage => _webImageSupplier.GetAbsoluteWebPath("logo/logo_page_doc_space.svg"),
+            WhiteLabelLogoTypeEnum.DocsEditor => _webImageSupplier.GetAbsoluteWebPath($"logo/editor_logo{generalStr}.png"),
+            WhiteLabelLogoTypeEnum.DocsEditorEmbed => _webImageSupplier.GetAbsoluteWebPath($"logo/editor_logo_embed{generalStr}.png"),
+            WhiteLabelLogoTypeEnum.Favicon => _webImageSupplier.GetAbsoluteWebPath($"logo/favicon.ico"),
+            WhiteLabelLogoTypeEnum.LeftMenu => _webImageSupplier.GetAbsoluteWebPath($"logo/left_menu.svg"),
             WhiteLabelLogoTypeEnum.AboutPage => _webImageSupplier.GetAbsoluteWebPath("logo/about_doc_space.svg"),
             _ => "",
         };
@@ -619,6 +640,7 @@ public class TenantWhiteLabelSettingsHelper
 
     public static string BuildLogoFileName(WhiteLabelLogoTypeEnum type, string fileExt, bool general, bool dark)
     {
+        general = fileExt != "svg" && general;
         return $"logo_{type.ToString().ToLowerInvariant()}{(general ? "_general" : "")}{(dark ? "_dark" : "")}.{fileExt}";
     }
 
@@ -629,7 +651,7 @@ public class TenantWhiteLabelSettingsHelper
             WhiteLabelLogoTypeEnum.LightSmall => new Size(
                    general ? TenantWhiteLabelSettings.LogoLightSmallSize.Width / 2 : TenantWhiteLabelSettings.LogoLightSmallSize.Width,
                    general ? TenantWhiteLabelSettings.LogoLightSmallSize.Height / 2 : TenantWhiteLabelSettings.LogoLightSmallSize.Height),
-            WhiteLabelLogoTypeEnum.Dark => new Size(
+            WhiteLabelLogoTypeEnum.LoginPage => new Size(
                     general ? TenantWhiteLabelSettings.LogoDarkSize.Width / 2 : TenantWhiteLabelSettings.LogoDarkSize.Width,
                     general ? TenantWhiteLabelSettings.LogoDarkSize.Height / 2 : TenantWhiteLabelSettings.LogoDarkSize.Height),
             WhiteLabelLogoTypeEnum.Favicon => new Size(

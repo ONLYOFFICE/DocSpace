@@ -833,7 +833,8 @@
   </data>
   <data name="QuotaLessUsedMemoryError" xml:space="preserve">
     <value>Failed to set the memory quota - the memory quota you set is less than used memory.</value>
-  </data>  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
     <value>Number of admins</value>
   </data>
   <data name="TariffsFeature_audit" xml:space="preserve">
@@ -904,5 +905,11 @@
   </data>
   <data name="PortalName" xml:space="preserve">
     <value>Cloud space for your office docs</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Unknown image file type</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Image size exceed the allowed parameters</value>
   </data>
 </root>

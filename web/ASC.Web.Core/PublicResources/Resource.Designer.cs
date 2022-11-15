@@ -1636,6 +1636,24 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown image file type.
+        /// </summary>
+        public static string ErrorFileNotImage {
+            get {
+                return ResourceManager.GetString("ErrorFileNotImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Image size exceed the allowed parameters.
+        /// </summary>
+        public static string ErrorImageSize {
+            get {
+                return ResourceManager.GetString("ErrorImageSize", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image file size is too large.
         /// </summary>
         public static string ErrorImageWeightLimit {
@@ -2230,7 +2248,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of managers.
+        ///   Looks up a localized string similar to Number of admins.
         /// </summary>
         public static string TariffsFeature_manager_price_count {
             get {
@@ -2302,7 +2320,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Managers added:.
+        ///   Looks up a localized string similar to Admins added:.
         /// </summary>
         public static string TariffsFeature_used_manager {
             get {
@@ -2311,7 +2329,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Room:.
+        ///   Looks up a localized string similar to Rooms:.
         /// </summary>
         public static string TariffsFeature_used_room {
             get {

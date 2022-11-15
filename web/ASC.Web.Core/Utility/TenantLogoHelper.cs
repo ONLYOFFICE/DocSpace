@@ -62,7 +62,7 @@ public class TenantLogoHelper
             }
             else
             {
-                if (type == WhiteLabelLogoTypeEnum.Dark)
+                if (type == WhiteLabelLogoTypeEnum.LoginPage)
                 {
                     /*** simple scheme ***/
                     var _tenantInfoSettings = _settingsManager.Load<TenantInfoSettings>();

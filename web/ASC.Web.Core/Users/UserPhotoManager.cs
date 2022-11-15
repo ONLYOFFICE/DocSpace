@@ -770,6 +770,19 @@ public class UserPhotoManager
         return store.SaveAsync(_tempDomainName, fileName, stream).Result.ToString();
     }
 
+    public string SaveTempSvg(byte[] data, long maxFileSize)
+    {
+        if (maxFileSize != -1 && data.Length > maxFileSize)
+        {
+            throw new ImageSizeLimitException();
+        }
+
+        using var stream = new MemoryStream(data);
+        var fileName = Guid.NewGuid() + ".svg";
+        var store = GetDataStore();
+        return store.SaveAsync(_tempDomainName, fileName, stream).Result.ToString();
+    }
+
     public byte[] GetTempPhotoData(string fileName)
     {
         using var s = GetDataStore().GetReadStreamAsync(_tempDomainName, fileName).Result;

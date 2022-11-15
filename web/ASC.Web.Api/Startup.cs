@@ -50,4 +50,16 @@ public class Startup : BaseStartup
         services.AddScoped<ITenantQuotaFeatureStat<CountRoomFeature, int>, CountRoomCheckerStatistic>();
         services.AddScoped<CountRoomCheckerStatistic>();
     }
+
+    public override void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        base.Configure(app, env);
+
+        app.MapWhen(
+            context => context.Request.Path.ToString().EndsWith("logoUploader.ashx"),
+            appBranch =>
+            {
+                appBranch.UseLogoUploader();
+            });
+    }
 }
