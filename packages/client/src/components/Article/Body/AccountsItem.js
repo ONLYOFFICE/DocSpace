@@ -34,7 +34,6 @@ const PureAccountsItem = ({
 
   return (
     <CatalogItem
-      id="accounts"
       key="accounts"
       text={t("Accounts")}
       icon={iconUrl}

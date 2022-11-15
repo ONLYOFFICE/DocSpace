@@ -57,7 +57,6 @@ const PureSettingsItem = ({
 
   return (
     <CatalogItem
-      id="settings"
       key="settings"
       text={t("Common:Settings")}
       icon={iconUrl}
