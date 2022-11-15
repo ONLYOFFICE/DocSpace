@@ -42,9 +42,9 @@ const InputWrapper = styled.div`
   }
 
   input:disabled {
-    color: ${(props) => props.theme.codeInput.disabledColor}
-    background: ${(props) => props.theme.codeInput.disabledBackground}
-    border: 1px solid ${(props) => props.theme.codeInput.disabledBorder}
+    color: ${(props) => props.theme.codeInput.disabledColor};
+    background: ${(props) => props.theme.codeInput.disabledBackground};
+    border: ${(props) => props.theme.codeInput.disabledBorder};
     outline: none;
   }
 
