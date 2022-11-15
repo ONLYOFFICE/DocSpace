@@ -389,18 +389,15 @@ const StyledCatalogItemContainer = styled.div`
 
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-  .catalog-item__badge,
   .catalog-item__icon {
     display: none;
   }
 
-  .catalog-item__badge:target,
   .catalog-item__icon:target {
     display: flex;
   }
 
   :hover {
-    .catalog-item__badge,
     .catalog-item__icon {
       display: flex;
     }
