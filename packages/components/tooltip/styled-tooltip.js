@@ -28,6 +28,8 @@ const StyledTooltip = styled.div`
     }
     &:after {
       border: ${(props) => props.theme.tooltip.after.border};
+      background-color: ${(props) =>
+        props.color ? props.color : props.theme.tooltip.color} !important;
     }
   }
 
