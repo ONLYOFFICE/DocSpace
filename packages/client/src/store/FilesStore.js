@@ -1154,9 +1154,7 @@ class FilesStore {
           "rename",
           "separator2",
           "delete",
-          "version",
           "finalize-version",
-          "show-version-history",
         ]);
       }
 
