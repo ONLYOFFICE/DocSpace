@@ -80,7 +80,11 @@ class NewFilesPanel extends React.Component {
   onNewFileClick = (e) => {
     const { id, extension: fileExst } = e.target.dataset;
 
-    const { /* updateFolderBadge, */ markAsRead, newFiles } = this.props;
+    const {
+      /* updateFolderBadge, */ markAsRead,
+      newFiles,
+      refreshFiles,
+    } = this.props;
     const readingFiles = this.state.readingFiles;
 
     const fileIds = fileExst ? [id] : [];
@@ -97,6 +101,7 @@ class NewFilesPanel extends React.Component {
         this.setState({ readingFiles });
         this.onFileClick(item);
       })
+      .then(() => refreshFiles())
       .catch((err) => toastr.error(err));
   };
 
