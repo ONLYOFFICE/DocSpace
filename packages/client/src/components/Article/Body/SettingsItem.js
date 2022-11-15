@@ -64,7 +64,7 @@ const PureSettingsItem = ({
       showText={showText}
       onClick={onClick}
       isActive={isActive}
-      forderName="catalog-settings"
+      folderId="document_catalog-settings"
     />
   );
 };

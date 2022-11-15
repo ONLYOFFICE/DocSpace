@@ -41,7 +41,7 @@ const PureAccountsItem = ({
       showText={showText}
       onClick={onClick}
       isActive={isActive}
-      forderName="catalog-accounts"
+      folderId="document_catalog-accounts"
     />
   );
 };

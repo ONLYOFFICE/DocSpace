@@ -101,7 +101,7 @@ const Item = ({
       <CatalogItem
         key={item.id}
         id={item.id}
-        forderId={folderId}
+        folderId={folderId}
         className={`tree-drag ${item.folderClassName}`}
         icon={getFolderIcon(item)}
         showText={showText}

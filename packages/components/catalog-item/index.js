@@ -40,7 +40,7 @@ const CatalogItem = (props) => {
     onClickBadge,
     isHeader,
     isFirstHeader,
-    forderId,
+    folderId,
   } = props;
 
   const onClickAction = () => {
@@ -82,7 +82,7 @@ const CatalogItem = (props) => {
         themeId={ThemeType.CatalogItem}
       >
         <StyledCatalogItemSibling
-          id={forderId}
+          id={folderId}
           isActive={isActive}
           isDragging={isDragging}
           isDragActive={isDragActive}
@@ -173,7 +173,7 @@ CatalogItem.propTypes = {
   isHeader: PropTypes.bool,
   /** Disable margin top for catalog item header */
   isFirstHeader: PropTypes.bool,
-  forderId: PropTypes.string,
+  folderId: PropTypes.string,
 };
 
 CatalogItem.defaultProps = {
