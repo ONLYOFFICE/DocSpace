@@ -54,7 +54,7 @@ const CloseButton = ({ id, currentDisplayType, zIndex, onClick }) => {
       zIndex={zIndex}
       onClick={onClick}
       currentDisplayType={currentDisplayType}
-      id={`${id}_close`}
+      className="modal-close"
     >
       <IconButton
         size="17px"
