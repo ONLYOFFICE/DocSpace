@@ -158,7 +158,8 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .badges {
-    margin-top: ${(props) => (props.isSmallContainer ? "1px" : "2px")};
+    margin-top: ${(props) =>
+      props.isSmallContainer ? "1px" : props.isRooms ? "4px" : "2px"};
     margin-bottom: 0px;
 
     ${(props) =>
