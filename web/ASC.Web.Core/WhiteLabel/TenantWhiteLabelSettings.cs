@@ -381,9 +381,23 @@ public class TenantWhiteLabelSettingsHelper
         {
             var currentLogoType = (WhiteLabelLogoTypeEnum)currentLogo.Key;
 
-            var lightData = GetLogoData(currentLogo.Value.Key, out var extLight);
-            var darkData = GetLogoData(currentLogo.Value.Value, out var extDark);
+            byte[] lightData;
+            byte[] darkData;
 
+            string extLight;
+            string extDark;
+
+            if (currentLogo.Value.Key == currentLogo.Value.Value)
+            {
+                lightData = GetLogoData(currentLogo.Value.Key, out extLight);
+                darkData = lightData;
+                extDark = extLight;
+            }
+            else
+            {
+                lightData = GetLogoData(currentLogo.Value.Key, out extLight);
+                darkData = GetLogoData(currentLogo.Value.Value, out extDark);
+            }
             if(lightData == null && darkData == null)
             {
                 return;
@@ -466,23 +480,22 @@ public class TenantWhiteLabelSettingsHelper
 
     public void SetLogoFromStream(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string fileExt, Stream fileStream, Stream fileDarkStream, IDataStore storage = null)
     {
-        byte[] lightData;
-        using (var memoryStream = new MemoryStream())
-        {
-            fileStream.CopyTo(memoryStream);
-            lightData = memoryStream.ToArray();
+        byte[] lightData = null;
+        if (fileStream != null) {
+            using (var memoryStream = new MemoryStream())
+            {
+                fileStream.CopyTo(memoryStream);
+                lightData = memoryStream.ToArray();
+            }
         }
 
-        byte[] darkData;
-        using (var memoryStream = new MemoryStream())
-        {
-            fileStream.CopyTo(fileDarkStream);
-            darkData = memoryStream.ToArray();
-        }
-
-        if (lightData == null && darkData == null)
-        {
-            return;
+        byte[] darkData = null;
+        if (fileDarkStream != null) {
+            using (var memoryStream = new MemoryStream())
+            {
+                fileStream.CopyTo(fileDarkStream);
+                darkData = memoryStream.ToArray();
+            }
         }
 
         if (tenantWhiteLabelSettings.GetIsDefault(type))
@@ -553,7 +566,7 @@ public class TenantWhiteLabelSettingsHelper
         return type switch
         {
             WhiteLabelLogoTypeEnum.LightSmall => _webImageSupplier.GetAbsoluteWebPath("logo/light_small_doc_space.svg"),
-            WhiteLabelLogoTypeEnum.LoginPage => _webImageSupplier.GetAbsoluteWebPath("logo/logo_page_doc_space.svg"),
+            WhiteLabelLogoTypeEnum.LoginPage => _webImageSupplier.GetAbsoluteWebPath("logo/login_page_doc_space.svg"),
             WhiteLabelLogoTypeEnum.DocsEditor => _webImageSupplier.GetAbsoluteWebPath($"logo/editor_logo{generalStr}.png"),
             WhiteLabelLogoTypeEnum.DocsEditorEmbed => _webImageSupplier.GetAbsoluteWebPath($"logo/editor_logo_embed{generalStr}.png"),
             WhiteLabelLogoTypeEnum.Favicon => _webImageSupplier.GetAbsoluteWebPath($"logo/favicon.ico"),
