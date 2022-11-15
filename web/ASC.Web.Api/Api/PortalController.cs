@@ -62,6 +62,7 @@ public class PortalController : ControllerBase
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
+    private readonly IMapper _mapper;
 
     public PortalController(
         ILogger<PortalController> logger,
@@ -91,7 +92,9 @@ public class PortalController : ControllerBase
         MessageTarget messageTarget,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper, TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper)
+        StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
+        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
+        IMapper mapper)
     {
         _log = logger;
         _apiContext = apiContext;
@@ -122,12 +125,13 @@ public class PortalController : ControllerBase
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
+        _mapper = mapper;
     }
 
     [HttpGet("")]
-    public Tenant Get()
+    public TenantDto Get()
     {
-        return Tenant;
+        return _mapper.Map<TenantDto>(Tenant);
     }
 
     [HttpGet("users/{userID}")]
@@ -485,7 +489,10 @@ public class PortalController : ControllerBase
         }
         finally
         {
-            if (authed) _securityContext.Logout();
+            if (authed)
+            {
+                _securityContext.Logout();
+            }
         }
 
         _studioNotifyService.SendMsgPortalDeletionSuccess(owner, redirectLink);
