@@ -53,7 +53,7 @@ const Login: React.FC<ILoginProps> = ({
   useEffect(() => {
     const theme =
       window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
+        window.matchMedia("(prefers-color-scheme: dark)").matches
         ? Dark
         : Base;
     setTheme(theme);
@@ -108,10 +108,10 @@ const Login: React.FC<ILoginProps> = ({
         const tokenGetterWin = isDesktopEditor
           ? (window.location.href = url)
           : window.open(
-              url,
-              "login",
-              "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-            );
+            url,
+            "login",
+            "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+          );
 
         getOAuthToken(tokenGetterWin).then((code: string) => {
           const token = window.btoa(
@@ -253,10 +253,12 @@ const Login: React.FC<ILoginProps> = ({
           onClose={onRecoverDialogVisible}
           textBody={t("RecoverTextBody")}
           emailPlaceholderText={t("RecoverContactEmailPlaceholder")}
+          id="recover-access-modal"
         />
       </ColorTheme>
       {!checkIsSSR() && enabledJoin && (
         <Register
+          id="login_register"
           enabledJoin={enabledJoin}
           currentColorScheme={currentColorScheme}
         />

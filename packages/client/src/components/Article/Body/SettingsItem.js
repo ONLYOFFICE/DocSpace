@@ -57,13 +57,13 @@ const PureSettingsItem = ({
 
   return (
     <CatalogItem
-      id="settings"
       key="settings"
       text={t("Common:Settings")}
       icon={iconUrl}
       showText={showText}
       onClick={onClick}
       isActive={isActive}
+      folderId="document_catalog-settings"
     />
   );
 };

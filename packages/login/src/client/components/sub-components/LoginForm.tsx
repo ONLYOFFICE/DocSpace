@@ -228,7 +228,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         } //TODO: Add wrong login server error
       >
         <EmailInput
-          id="login"
+          id="login_username"
           name="login"
           type="email"
           hasError={isEmailErrorShow}
@@ -258,7 +258,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
               className="password-input"
               simpleView={true}
               passwordSettings={settings}
-              id="password"
+              id="login_password"
               inputName="password"
               placeholder={t("Common:Password")}
               type="password"
@@ -278,7 +278,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             <div className="login-checkbox-wrapper">
               <div className="remember-wrapper">
                 <Checkbox
-                  id="login-checkbox"
+                  id="login_remember"
                   className="login-checkbox"
                   isChecked={isChecked}
                   onChange={onChangeCheckbox}
@@ -286,6 +286,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                   helpButton={
                     !checkIsSSR() && (
                       <HelpButton
+                        id="login_remember-hint"
                         className="help-button"
                         helpButtonHeaderContent={t("CookieSettingsTitle")}
                         tooltipContent={
@@ -304,6 +305,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                 type="page"
                 isHovered={false}
                 onClick={onClick}
+                id="login_forgot-password-link"
               >
                 {t("ForgotPassword")}
               </Link>
@@ -321,7 +323,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
       )}
 
       <Button
-        id="submit"
+        id="login_submit"
         className="login-button"
         primary
         size="medium"
@@ -353,6 +355,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                 {t("Or")}
               </Text>
               <Link
+                id="login_recover-link"
                 fontWeight="600"
                 fontSize="13px"
                 color="#316DAA"

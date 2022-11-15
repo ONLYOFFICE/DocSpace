@@ -158,11 +158,25 @@ const StyledSimpleFilesRow = styled(Row)`
   }
 
   .badges {
+    margin-top: ${(props) =>
+      props.isSmallContainer ? "1px" : props.isRooms ? "4px" : "2px"};
     margin-bottom: 0px;
+
+    ${(props) =>
+      props.isSmallContainer &&
+      css`
+        .tablet-pinned {
+          margin-top: 2px;
+        }
+      `}
+  }
+
+  .temp-badges {
+    margin-top: 0px;
   }
 
   .badge {
-    margin-right: 24px;
+    margin-right: ${(props) => (props.isSmallContainer ? "8px" : "24px")};
   }
 
   .lock-file {
@@ -281,6 +295,8 @@ const SimpleFilesRow = (props) => {
           showHotkeyBorder={showHotkeyBorder}
           isRoom={item.isRoom}
           isDragOver={isDragOver}
+          isSmallContainer={isSmallContainer}
+          isRooms={isRooms}
         >
           <FilesRowContent
             item={item}
