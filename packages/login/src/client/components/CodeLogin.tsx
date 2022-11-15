@@ -83,7 +83,12 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
         {t("CodeTitle")}
       </Text>
 
-      <Text fontSize="12px" fontWeight={400} textAlign="center" color="#A3A9AE">
+      <Text
+        className="code-description"
+        fontSize="12px"
+        fontWeight={400}
+        textAlign="center"
+      >
         <Trans t={t} i18nKey="CodeSubtitle" ns="Login" key={email}>
           We sent a 6-digit code to {{ email }}. The code has a limited validity
           period, enter it as soon as possible.{" "}
@@ -112,8 +117,7 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
         )}
 
         <Text
-          className="not-found-code"
-          color="#A3A9AE"
+          className="not-found-code code-description"
           fontSize="12px"
           textAlign="center"
         >

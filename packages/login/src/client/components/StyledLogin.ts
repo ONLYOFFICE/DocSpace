@@ -267,6 +267,10 @@ export const LoginContainer = styled.div`
       margin-top: 32px;
     }
   }
+
+  .code-description{
+    color: ${(props) => props.theme.login.textColor};
+  }
 `;
 
 interface ILoginFormWrapperProps {
