@@ -439,9 +439,6 @@ public class TenantWhiteLabelSettingsHelper
                 throw new InvalidOperationException("current logos and downloaded logo have different extention");
             }
 
-            tenantWhiteLabelSettings.SetExt(currentLogoType, extLight);
-            tenantWhiteLabelSettings.SetIsDefault(currentLogoType, false);
-
             if (lightData!= null)
             {
                 SetLogo(tenantWhiteLabelSettings, currentLogoType, extLight, lightData, false, storage);
@@ -451,6 +448,8 @@ public class TenantWhiteLabelSettingsHelper
                 SetLogo(tenantWhiteLabelSettings, currentLogoType, extDark, darkData, true, storage);
             }
 
+            tenantWhiteLabelSettings.SetExt(currentLogoType, extLight);
+            tenantWhiteLabelSettings.SetIsDefault(currentLogoType, false);
         }
     }
 
@@ -515,8 +514,6 @@ public class TenantWhiteLabelSettingsHelper
             throw new InvalidOperationException("current logos and downloaded logo have different extention");
         }
 
-        tenantWhiteLabelSettings.SetExt(type, fileExt);
-        tenantWhiteLabelSettings.SetIsDefault(type, false);
         if (lightData != null)
         {
             SetLogo(tenantWhiteLabelSettings, type, fileExt, lightData, false, storage);
@@ -525,6 +522,9 @@ public class TenantWhiteLabelSettingsHelper
         {
             SetLogo(tenantWhiteLabelSettings, type, fileExt, darkData, true, storage);
         }
+
+        tenantWhiteLabelSettings.SetExt(type, fileExt);
+        tenantWhiteLabelSettings.SetIsDefault(type, false);
     }
 
     private byte[] GetData(Stream stream)
@@ -794,7 +794,6 @@ public class TenantWhiteLabelSettingsHelper
 
     private void DeleteLogoFromStore(TenantWhiteLabelSettings tenantWhiteLabelSettings, IDataStore store, WhiteLabelLogoTypeEnum type, bool dark)
     {
-
         DeleteLogoFromStoreByGeneral(tenantWhiteLabelSettings, store, type, false, dark);
         DeleteLogoFromStoreByGeneral(tenantWhiteLabelSettings, store, type, true, dark);
     }
