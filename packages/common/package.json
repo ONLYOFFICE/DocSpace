@@ -48,7 +48,7 @@
     "@welldone-software/why-did-you-render": "^6.2.1"
   },
   "api": {
-    "origin": "",
+    "origin": "https://apitest.onlyoffice.io",
     "prefix": "/api/2.0",
     "timeout": "30000"
   },
