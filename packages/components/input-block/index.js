@@ -61,11 +61,8 @@ class InputBlock extends React.Component {
       iconSize,
       theme,
       forwardedRef,
+      iconButtonClassName,
     } = this.props;
-
-    const classNamePassword = `password_eye--${
-      type === "password" ? "close" : "open"
-    }`;
 
     if (typeof iconSize == "number" && iconSize > 0) {
       iconButtonSize = iconSize;
@@ -133,7 +130,7 @@ class InputBlock extends React.Component {
           //iconNames.includes(iconName) && (
           <div className="append">
             <StyledIconBlock
-              className={`input-block-icon ${classNamePassword}`}
+              className={`input-block-icon ${iconButtonClassName}`}
               //isDisabled={isDisabled}
               onClick={this.onIconClick}
               isClickable={typeof onIconClick === "function"}
@@ -216,6 +213,7 @@ InputBlock.propTypes = {
   className: PropTypes.string,
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  iconButtonClassName: PropTypes.string,
 };
 
 InputBlock.defaultProps = {
@@ -233,6 +231,7 @@ InputBlock.defaultProps = {
   isIconFill: false,
   isDisabled: false,
   keepCharPositions: false,
+  iconButtonClassName: "",
 };
 
 export default InputBlock;

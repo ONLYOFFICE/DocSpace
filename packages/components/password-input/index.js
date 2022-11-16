@@ -363,7 +363,9 @@ class PasswordInput extends React.Component {
       type === "password"
         ? "/static/images/eye.off.react.svg"
         : "/static/images/eye.react.svg";
-
+    const iconButtonClassName = `password_eye--${
+      type === "password" ? "close" : "open"
+    }`;
     return (
       <>
         <InputBlock
@@ -373,6 +375,7 @@ class PasswordInput extends React.Component {
           hasError={hasError}
           isDisabled={isDisabled}
           iconName={iconName}
+          iconButtonClassName={iconButtonClassName}
           value={inputValue}
           onIconClick={this.changeInputType}
           onChange={this.onChangeAction}
