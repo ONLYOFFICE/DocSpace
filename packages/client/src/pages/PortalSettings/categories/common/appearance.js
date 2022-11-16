@@ -588,10 +588,12 @@ const Appearance = (props) => {
                 >
                   {onShowCheck(item.id)}
 
-                  <ReactSVG
-                    className="check-hover"
-                    src="static/images/check.white.svg"
-                  />
+                  {!selectThemeId === item.id && (
+                    <ReactSVG
+                      className="check-hover"
+                      src="static/images/check.white.svg"
+                    />
+                  )}
                 </StyledTheme>
               );
             })}
@@ -614,10 +616,13 @@ const Appearance = (props) => {
                     onClick={() => onColorSelection(item)}
                   >
                     {onShowCheck(item.id)}
-                    <ReactSVG
-                      className="check-hover"
-                      src="static/images/check.white.svg"
-                    />
+
+                    {!selectThemeId === item.id && (
+                      <ReactSVG
+                        className="check-hover"
+                        src="static/images/check.white.svg"
+                      />
+                    )}
                   </StyledTheme>
                 );
               })}
