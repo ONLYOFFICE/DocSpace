@@ -154,11 +154,13 @@ export const Viewer = (props) => {
 
       {playlist.length > 1 && !isFullscreen && (
         <>
-          <StyledNextToolbar left onClick={onPrevClick}>
-            <StyledButtonScroll orientation="left">
-              <MediaPrevIcon />
-            </StyledButtonScroll>
-          </StyledNextToolbar>
+          {playlistPos !== 0 && (
+            <StyledNextToolbar left onClick={onPrevClick}>
+              <StyledButtonScroll orientation="left">
+                <MediaPrevIcon />
+              </StyledButtonScroll>
+            </StyledNextToolbar>
+          )}
           {playlistPos < playlist.length - 1 && (
             <>
               <StyledNextToolbar onClick={onNextClick}>
