@@ -408,10 +408,16 @@ public class PortalController : ControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpPost("suspend")]
     public void SendSuspendInstructions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
 
         var owner = _userManager.GetUsers(Tenant.OwnerId);
         var suspendUrl = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalSuspend);
@@ -422,10 +428,17 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
+    [AllowNotPayment]
     [HttpPost("delete")]
     public void SendDeleteInstructions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
         var owner = _userManager.GetUsers(Tenant.OwnerId);
 
         var showAutoRenewText = !_coreBaseSettings.Standalone &&
@@ -455,10 +468,16 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.PortalDeactivated);
     }
 
+    [AllowNotPayment]
     [HttpDelete("delete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalRemove")]
     public async Task<object> DeletePortal()
     {
+        if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
         _tenantManager.RemoveTenant(Tenant.Id);
 
         if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))

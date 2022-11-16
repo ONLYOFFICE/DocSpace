@@ -26,7 +26,7 @@ if (!fs.existsSync(dirName)) {
   fs.mkdirSync(dirName);
 }
 
-const aws = config.default.get("aws");
+const aws = config.default.get("aws").cloudWatch;
 
 const accessKeyId = aws.accessKeyId; 
 const secretAccessKey = aws.secretAccessKey; 
@@ -65,6 +65,7 @@ const options = {
                           .replace("${guid}", guid)
                           .replace("${date}", dateAsString);      
     },
+    logGroupName:logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,
     awsOptions: {
