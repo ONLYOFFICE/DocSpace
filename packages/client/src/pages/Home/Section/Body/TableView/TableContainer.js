@@ -129,6 +129,7 @@ const Table = ({
   withPaging,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
+  const [hideColumns, setHideColumns] = React.useState(false);
 
   const ref = useRef(null);
   const tagRef = useRef(null);
@@ -204,6 +205,7 @@ const Table = ({
         roomsColumnInfoPanelStorageName={`${COLUMNS_ROOMS_SIZE_INFO_PANEL}=${userId}`}
         isRooms={isRooms}
         tagRef={onSetTagRef}
+        setHideColumns={setHideColumns}
       />
 
       <TableBody
@@ -231,6 +233,7 @@ const Table = ({
             columnInfoPanelStorageName={columnInfoPanelStorageName}
             tagCount={tagCount}
             isRooms={isRooms}
+            hideColumns={hideColumns}
           />
         ))}
       </TableBody>
