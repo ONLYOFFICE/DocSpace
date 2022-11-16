@@ -277,6 +277,7 @@ class MediaViewer extends React.Component {
 
     let currentPlaylistPos = playlistPos;
     currentPlaylistPos--;
+    if (currentPlaylistPos === -1) return;
     if (currentPlaylistPos < 0) currentPlaylistPos = playlist.length - 1;
 
     this.setState({
@@ -292,6 +293,7 @@ class MediaViewer extends React.Component {
 
     let currentPlaylistPos = playlistPos;
     currentPlaylistPos = (currentPlaylistPos + 1) % playlist.length;
+    if (currentPlaylistPos === 0) return;
 
     this.setState({
       playlistPos: currentPlaylistPos,
