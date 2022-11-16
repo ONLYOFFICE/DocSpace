@@ -588,7 +588,7 @@ const Appearance = (props) => {
                 >
                   {onShowCheck(item.id)}
 
-                  {!selectThemeId === item.id && (
+                  {selectThemeId !== item.id && (
                     <ReactSVG
                       className="check-hover"
                       src="static/images/check.white.svg"
@@ -617,7 +617,7 @@ const Appearance = (props) => {
                   >
                     {onShowCheck(item.id)}
 
-                    {!selectThemeId === item.id && (
+                    {selectThemeId !== item.id && (
                       <ReactSVG
                         className="check-hover"
                         src="static/images/check.white.svg"
