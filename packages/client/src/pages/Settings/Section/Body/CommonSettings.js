@@ -90,7 +90,7 @@ const CommonSettings = ({
         />
       </Box>
 
-      <Box className="settings-section">
+      {/* <Box className="settings-section">
         <Heading className="heading" level={2} size="xsmall">
           {t("AdditionalSections")}
         </Heading>
@@ -109,14 +109,14 @@ const CommonSettings = ({
           onChange={onChangeFavorites}
           isChecked={favoritesSection}
         />
-        {/* <ToggleButton
-            isDisabled={true}
-            className="toggle-btn"
-            label={t("DisplayTemplates")}
-            onChange={(e) => console.log(e)}
-            isChecked={false}
-          /> */}
-      </Box>
+        <ToggleButton
+          isDisabled={true}
+          className="toggle-btn"
+          label={t("DisplayTemplates")}
+          onChange={(e) => console.log(e)}
+          isChecked={false}
+        />
+      </Box> */}
 
       <Box className="settings-section">
         <Heading className="heading" level={2} size="xsmall">
