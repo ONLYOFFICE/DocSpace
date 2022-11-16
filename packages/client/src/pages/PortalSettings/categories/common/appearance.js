@@ -151,11 +151,11 @@ const Appearance = (props) => {
     const standard = document.querySelector(".standard");
     const custom = document.querySelector(".custom");
 
-    standard.addEventListener("mouseover", (e) => {
+    standard?.addEventListener("mouseover", (e) => {
       onColorCheckImgHover(e.target.id);
     });
 
-    custom.addEventListener("mouseover", (e) => {
+    custom?.addEventListener("mouseover", (e) => {
       onColorCheckImgHover(e.target.id);
     });
 

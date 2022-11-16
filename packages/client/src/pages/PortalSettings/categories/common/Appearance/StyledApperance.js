@@ -28,6 +28,11 @@ const StyledComponent = styled.div`
     padding: 12px 0 24px 0;
     display: flex;
   }
+
+  .custom {
+    display: flex;
+  }
+
   .box {
     width: 46px;
     height: 46px;
