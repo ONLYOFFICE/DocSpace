@@ -243,6 +243,7 @@ const ViewerBase = (props) => {
           scaleY: scaleY,
           loadFailed: !success,
           startLoading: false,
+          percent: 100,
         })
       );
     }
@@ -292,30 +293,6 @@ const ViewerBase = (props) => {
     handleZoom(imgCenterXY.x, imgCenterXY.y, direct, zoom);
   }
 
-  function handleChangeImg(newIndex) {
-    if (!loop && (newIndex >= images.length || newIndex < 0)) {
-      return;
-    }
-    if (newIndex >= images.length) {
-      newIndex = 0;
-    }
-    if (newIndex < 0) {
-      newIndex = images.length - 1;
-    }
-    if (newIndex === state.activeIndex) {
-      return;
-    }
-    if (props.onChange) {
-      const activeImage = getActiveImage(newIndex);
-      props.onChange(activeImage, newIndex);
-    }
-    dispatch(
-      createAction(ACTION_TYPES.setActiveIndex, {
-        index: newIndex,
-      })
-    );
-  }
-
   function getActiveImage(activeIndex2 = undefined) {
     let activeImg2 = {
       src: "",
@@ -358,12 +335,6 @@ const ViewerBase = (props) => {
 
   function handleDefaultAction(type) {
     switch (type) {
-      case ActionType.prev:
-        handleChangeImg(state.activeIndex - 1);
-        break;
-      case ActionType.next:
-        handleChangeImg(state.activeIndex + 1);
-        break;
       case ActionType.zoomIn:
         let imgCenterXY = getImageCenterXY();
         handleZoom(imgCenterXY.x, imgCenterXY.y, 1, zoomSpeed);
@@ -454,24 +425,6 @@ const ViewerBase = (props) => {
       // key: esc
       case 27:
         onClose();
-        isFeatrue = true;
-        break;
-      // key: ←
-      case 37:
-        if (e.ctrlKey) {
-          handleDefaultAction(ActionType.rotateLeft);
-        } else {
-          handleDefaultAction(ActionType.prev);
-        }
-        isFeatrue = true;
-        break;
-      // key: →
-      case 39:
-        if (e.ctrlKey) {
-          handleDefaultAction(ActionType.rotateRight);
-        } else {
-          handleDefaultAction(ActionType.next);
-        }
         isFeatrue = true;
         break;
       // key: ↑
