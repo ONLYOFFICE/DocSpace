@@ -94,7 +94,7 @@ public class RestorePortalTask : PortalTaskBase
 
             if (Dump)
             {
-                RestoreFromDump(dataReader);
+                await RestoreFromDump(dataReader);
             }
             else
             {
@@ -153,7 +153,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugEndRestorePortal();
     }
 
-    private void RestoreFromDump(IDataReadOperator dataReader)
+    private async Task RestoreFromDump(IDataReadOperator dataReader)
     {
         var keyBase = KeyHelper.GetDatabaseSchema();
         var keys = dataReader.GetEntries(keyBase).Select(r => Path.GetFileName(r)).ToList();
@@ -187,7 +187,7 @@ public class RestorePortalTask : PortalTaskBase
 
             SetStepsCount(stepscount + 1);
 
-            DoDeleteStorage(storageModules, tenants);
+            await DoDeleteStorage(storageModules, tenants);
         }
         else
         {
@@ -399,7 +399,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugEndRestoreStorage();
     }
 
-    private void DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
+    private async Task DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
     {
         _options.DebugBeginDeleteStorage();
 
@@ -414,7 +414,7 @@ public class RestorePortalTask : PortalTaskBase
 
                 foreach (var domain in domains)
                 {
-                    ActionInvoker.Try(
+                    await ActionInvoker.Try(
                         async state =>
                         {
                             if (await storage.IsDirectoryAsync((string)state))

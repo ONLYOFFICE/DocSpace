@@ -122,7 +122,7 @@ public class FilesModule : FeedModule
             }
         }
 
-        var canRead = (await _fileSecurity.CanReadAsync(files.ToAsyncEnumerable(), userId).ToListAsync()).Where(r => r.Item2).ToList();
+        var canRead = await _fileSecurity.CanReadAsync(files.ToAsyncEnumerable(), userId).Where(r => r.Item2).ToListAsync();
 
         foreach (var f in feed1)
         {
@@ -144,7 +144,7 @@ public class FilesModule : FeedModule
         var folders = await _folderDao.GetFoldersAsync(folderIDs, checkShare: false).ToListAsync();
         var roomsIds = await _folderDao.GetParentRoomsAsync(folderIDs).ToDictionaryAsync(k => k.FolderId, v => v.ParentRoomId);
 
-        return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId)), 
+        return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId)),
             roomsIds.GetValueOrDefault(f.File.ParentId)), f));
     }
 

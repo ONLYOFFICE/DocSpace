@@ -97,7 +97,7 @@ public class BackupPortalTask : PortalTaskBase
                 }
                 if (ProcessStorage)
                 {
-                    DoBackupStorage(writer, fileGroups);
+                    await DoBackupStorage(writer, fileGroups);
                 }
             }
         }
@@ -697,7 +697,7 @@ public class BackupPortalTask : PortalTaskBase
         _logger.DebugEndSavingDataForModule(module.ModuleName);
     }
 
-    private void DoBackupStorage(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
+    private async Task DoBackupStorage(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
     {
         _logger.DebugBeginBackupStorage();
 
@@ -710,7 +710,7 @@ public class BackupPortalTask : PortalTaskBase
             {
                 var storage = StorageFactory.GetStorage(ConfigPath, TenantId, group.Key);
                 var file1 = file;
-                ActionInvoker.Try(async state =>
+                await ActionInvoker.Try(async state =>
                 {
                     var f = (BackupFileInfo)state;
                     using var fileStream = await storage.GetReadStreamAsync(f.Domain, f.Path);

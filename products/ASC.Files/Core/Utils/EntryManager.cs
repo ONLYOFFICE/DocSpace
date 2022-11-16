@@ -71,7 +71,7 @@ public class LockerManager
 
     public async Task<Guid> FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
     {
-        var tagLock = (await tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).ToListAsync()).FirstOrDefault();
+        var tagLock = await tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).FirstOrDefaultAsync();
 
         return tagLock != null ? tagLock.Owner : Guid.Empty;
     }
