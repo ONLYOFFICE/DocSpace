@@ -353,6 +353,7 @@ class FilesTableHeader extends React.Component {
       roomsColumnInfoPanelStorageName,
       withPaging,
       tagRef,
+      setHideColumns,
     } = this.props;
 
     // const { sortBy, sortOrder } = filter;
@@ -394,6 +395,7 @@ class FilesTableHeader extends React.Component {
         infoPanelVisible={infoPanelVisible}
         useReactWindow={!withPaging}
         tagRef={tagRef}
+        setHideColumns={setHideColumns}
       />
     );
   }
