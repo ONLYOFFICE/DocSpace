@@ -123,9 +123,11 @@ const FilterInput = React.memo(
             value={inputValue}
             onChange={onSearch}
             onClearSearch={onClearSearch}
+            id="search-input"
           />
           <FilterButton
             t={t}
+            id="filter-button"
             onFilter={onFilter}
             getFilterData={getFilterData}
             selectedFilterValue={selectedFilterValue}
@@ -138,6 +140,7 @@ const FilterInput = React.memo(
           {!isRecentFolder && (
             <SortButton
               t={t}
+              id="sort-by-button"
               onSort={onSort}
               getSortData={getSortData}
               getSelectedSortData={getSelectedSortData}
@@ -159,6 +162,7 @@ const FilterInput = React.memo(
             !isTabletUtils()) ||
             isRecentFolder) && (
             <ViewSelector
+              id="view-switch-button"
               style={{ marginLeft: "8px" }}
               viewAs={viewAs === "table" ? "row" : viewAs}
               viewSettings={viewSettings}

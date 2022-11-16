@@ -158,6 +158,7 @@ const StyledSortButton = styled.div`
 StyledSortButton.defaultProps = { theme: Base };
 
 const SortButton = ({
+  id,
   getSortData,
   getSelectedSortData,
 
@@ -167,7 +168,6 @@ const SortButton = ({
   viewSettings,
 
   onSort,
-
   viewSelectorVisible,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -303,6 +303,7 @@ const SortButton = ({
         viewAs={viewAs}
         isDesc={selectedSortData.sortDirection === "desc"}
         onClick={toggleCombobox}
+        id={id}
       >
         <ComboBox
           opened={isOpen}

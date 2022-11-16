@@ -371,6 +371,7 @@ const FilterBlock = ({
             <Heading size="medium">{filterHeader}</Heading>
             {showFooter && (
               <IconButton
+                id="filter_search-options-clear"
                 iconName="/static/images/clear.react.svg"
                 isFill={true}
                 onClick={onClearFilter}
@@ -411,6 +412,7 @@ const FilterBlock = ({
           {showFooter && (
             <StyledFilterBlockFooter>
               <Button
+                id="filter_apply-button"
                 size="normal"
                 primary={true}
                 label={t("ApplyButton")}
@@ -418,6 +420,7 @@ const FilterBlock = ({
                 onClick={onFilterAction}
               />
               <Button
+                id="filter_cancel-button"
                 size="normal"
                 label={t("CancelButton")}
                 scale={true}
@@ -426,7 +429,7 @@ const FilterBlock = ({
             </StyledFilterBlockFooter>
           )}
 
-          <StyledControlContainer onClick={hideFilterBlock}>
+          <StyledControlContainer id="filter_close" onClick={hideFilterBlock}>
             <StyledCrossIcon />
           </StyledControlContainer>
         </StyledFilterBlock>

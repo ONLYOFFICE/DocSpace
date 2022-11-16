@@ -23,6 +23,8 @@ import {
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
+import { FilterTypeKeys } from "@docspace/common/constants";
+
 import XIcon from "../svg/x.react.svg";
 
 const FilterBlockItem = ({
@@ -136,6 +138,7 @@ const FilterBlockItem = ({
 
     return (
       <ComboBox
+        id="filter_folders"
         className={"combo-item"}
         key={item.key}
         onSelect={(data) =>
@@ -162,6 +165,7 @@ const FilterBlockItem = ({
     return (
       <StyledFilterBlockItemCheckboxContainer key={item.key}>
         <Checkbox
+          id="filter_search-by-file-contents"
           isChecked={item.isSelected}
           label={item.label}
           onChange={() =>
@@ -178,6 +182,7 @@ const FilterBlockItem = ({
         key={item.key}
         isSelected={item.isSelected}
         name={`${item.label}-${item.key}`}
+        id={FilterTypeKeys[item.key]}
         onClick={() =>
           changeFilterValueAction(item.key, item.isSelected, item.isMultiSelect)
         }
