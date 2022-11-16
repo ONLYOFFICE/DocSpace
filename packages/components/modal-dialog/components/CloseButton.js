@@ -48,12 +48,13 @@ const StyledCloseButtonWrapper = styled.div`
 
 StyledCloseButtonWrapper.defaultProps = { theme: Base };
 
-const CloseButton = ({ currentDisplayType, zIndex, onClick }) => {
+const CloseButton = ({ id, currentDisplayType, zIndex, onClick }) => {
   return (
     <StyledCloseButtonWrapper
       zIndex={zIndex}
       onClick={onClick}
       currentDisplayType={currentDisplayType}
+      className="modal-close"
     >
       <IconButton
         size="17px"

@@ -1,6 +1,7 @@
 ﻿const request = require("../requestManager.js");
 const check = require("./authService.js");
 const portalManager = require("../portalManager.js");
+const logger = require("../log.js");
 
 module.exports = (socket, next) => {
   const req = socket.client.request;
@@ -60,6 +61,7 @@ module.exports = (socket, next) => {
       next();
     })
     .catch((err) => {
+      logger.error(err);
       socket.disconnect("Unauthorized");
       next(new Error("Authentication error"));
     });
