@@ -207,6 +207,7 @@ class ComboBox extends React.Component {
 
                   return (
                     <DropDownItem
+                      id={option.key}
                       {...option}
                       textOverflow={textOverflow}
                       key={option.key}
