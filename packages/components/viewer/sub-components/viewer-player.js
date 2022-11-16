@@ -58,6 +58,16 @@ const StyledVideoPlayer = styled.div`
     }
   }
 
+  .video-backdrop {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: rgba(55, 55, 55, 0.6);
+    height: 100%;
+  }
+
   .dropdown-speed {
     position: relative;
     display: inline-block;
@@ -129,7 +139,7 @@ const StyledVideoPlayer = styled.div`
     z-index: 307;
     padding: 0 20px;
     height: 30px;
-    background: RGB(110, 110, 110);
+    background: rgba(0, 0, 0, 0.5);
 
     input[type="range"] {
       width: 100%;
@@ -174,7 +184,7 @@ const StyledVideoControls = styled.div`
   left: 0;
   z-index: 307;
   height: 48px;
-  background: RGB(110, 110, 110);
+  background: rgba(0, 0, 0, 0.5);
   .volume-container {
     position: relative;
   }
@@ -512,6 +522,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       isFullScreen={state.isFullScreen}
       {...handlers}
     >
+      <div className="video-backdrop" style={{ zIndex: 300 }} />
       {!state.isFullScreen && isMobileOnly && mobileDetails}
       <div className="video-wrapper">
         <video
