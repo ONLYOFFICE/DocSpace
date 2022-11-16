@@ -52,7 +52,7 @@ if(logpath != null)
     fs.existsSync(logpath) || fs.mkdirSync(logpath);
 }
 
-const aws = config["aws"];
+const aws = config["aws"].cloudWatch;
 
 const accessKeyId = aws.accessKeyId; 
 const secretAccessKey = aws.secretAccessKey; 
@@ -88,6 +88,7 @@ if (aws != null && aws.accessKeyId !== '')
                           .replace("${guid}", guid)
                           .replace("${date}", dateAsString);      
     },
+    logGroupName: logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,
     awsOptions: {
