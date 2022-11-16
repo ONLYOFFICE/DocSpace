@@ -120,7 +120,7 @@ public class UserPhotoManagerCache
                               .AddOrUpdate(data.Size, data.FileName, (key, oldValue) => data.FileName);
             }, CacheNotifyAction.InsertOrUpdate);
 
-            _cacheNotify.Subscribe(async (data) =>
+            _cacheNotify.Subscribe((data) =>
             {
                 ConcurrentDictionary<CacheSize, string> removedValue;
 
@@ -134,7 +134,7 @@ public class UserPhotoManagerCache
 
                     try
                     {
-                        await storage.DeleteFilesAsync("", data.UserId + "*.*", false);
+                        storage.DeleteFilesAsync("", data.UserId + "*.*", false).Wait();
                     }
                     catch (Exception ex)
                     {
@@ -438,7 +438,7 @@ public class UserPhotoManager
     }
 
     private static readonly HashSet<int> _tenantDiskCache = new HashSet<int>();
-    private static readonly SemaphoreSlim _semaphore  = new SemaphoreSlim(1);
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
 
     private async Task<string> SearchInCache(Guid userId, Size size)

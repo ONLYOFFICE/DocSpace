@@ -59,14 +59,14 @@ public class FeedAggregatorService : FeedBaseService
         _logger.InformationAggregatorServiceStopping();
     }
 
-    private static T Attempt<T>(int count, Func<T> action)
+    private static async Task<T> Attempt<T>(int count, Func<Task<T>> action)
     {
         var counter = 0;
         while (true)
         {
             try
             {
-                return action();
+                return await action();
             }
             catch
             {
