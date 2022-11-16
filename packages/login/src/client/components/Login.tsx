@@ -14,7 +14,7 @@ import { providersData } from "@docspace/common/constants";
 import Link from "@docspace/components/link";
 import Toast from "@docspace/components/toast";
 import LoginForm from "./sub-components/LoginForm";
-import MoreLoginModal from "./sub-components/more-login";
+import MoreLoginModal from "@docspace/common/components/MoreLoginModal";
 import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/RecoverAccessModalDialog";
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
@@ -53,7 +53,7 @@ const Login: React.FC<ILoginProps> = ({
   useEffect(() => {
     const theme =
       window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
+      window.matchMedia("(prefers-color-scheme: dark)").matches
         ? Dark
         : Base;
     setTheme(theme);
@@ -108,10 +108,10 @@ const Login: React.FC<ILoginProps> = ({
         const tokenGetterWin = isDesktopEditor
           ? (window.location.href = url)
           : window.open(
-            url,
-            "login",
-            "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
-          );
+              url,
+              "login",
+              "width=800,height=500,status=no,toolbar=no,menubar=no,resizable=yes,scrollbars=no"
+            );
 
         getOAuthToken(tokenGetterWin).then((code: string) => {
           const token = window.btoa(
