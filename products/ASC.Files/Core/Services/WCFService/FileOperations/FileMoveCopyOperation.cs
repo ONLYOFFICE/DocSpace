@@ -34,10 +34,8 @@ class FileMoveCopyOperation : ComposeFileOperation<FileMoveCopyOperationData<str
         FileOperation<FileMoveCopyOperationData<int>, int> daoOperation)
         : base(serviceProvider, thirdPartyOperation, daoOperation)
     {
-
+        this[OpType] = (int)ThirdPartyOperation[OpType];
     }
-
-    public override FileOperationType OperationType => ThirdPartyOperation.OperationType;
 }
 
 internal class FileMoveCopyOperationData<T> : FileOperationData<T>
@@ -83,8 +81,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
     private readonly ThumbnailSettings _thumbnailSettings;
     private readonly Dictionary<T, Folder<T>> _parentRooms = new Dictionary<T, Folder<T>>();
 
-    public override FileOperationType OperationType => _copy ? FileOperationType.Copy : FileOperationType.Move;
-
     public FileMoveCopyOperation(IServiceProvider serviceProvider, FileMoveCopyOperationData<T> data, ThumbnailSettings thumbnailSettings)
         : base(serviceProvider, data)
     {
@@ -95,6 +91,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
         _headers = data.Headers;
         _thumbnailSettings = thumbnailSettings;
+        this[OpType] = (int)(_copy ? FileOperationType.Copy : FileOperationType.Move);
     }
 
     protected override async Task DoJob(IServiceScope scope)

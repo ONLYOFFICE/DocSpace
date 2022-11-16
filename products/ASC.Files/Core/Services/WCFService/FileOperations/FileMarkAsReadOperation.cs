@@ -42,21 +42,19 @@ class FileMarkAsReadOperation : ComposeFileOperation<FileMarkAsReadOperationData
     public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileOperation<FileMarkAsReadOperationData<string>, string> f1, FileOperation<FileMarkAsReadOperationData<int>, int> f2)
         : base(serviceProvider, f1, f2)
     {
+        this[OpType] = (int)FileOperationType.MarkAsRead;
     }
-
-    public override FileOperationType OperationType => FileOperationType.MarkAsRead;
 }
 
 class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>, T>
 {
-    public override FileOperationType OperationType => FileOperationType.MarkAsRead;
-
     private readonly IDictionary<string, StringValues> _headers;
 
     public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileMarkAsReadOperationData<T> fileOperationData)
         : base(serviceProvider, fileOperationData)
     {
         _headers = fileOperationData.Headers;
+        this[OpType] = (int)FileOperationType.MarkAsRead;
     }
 
     protected override int InitTotalProgressSteps()

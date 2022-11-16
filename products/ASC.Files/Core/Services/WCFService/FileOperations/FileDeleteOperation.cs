@@ -50,9 +50,8 @@ class FileDeleteOperation : ComposeFileOperation<FileDeleteOperationData<string>
     public FileDeleteOperation(IServiceProvider serviceProvider, FileOperation<FileDeleteOperationData<string>, string> f1, FileOperation<FileDeleteOperationData<int>, int> f2)
         : base(serviceProvider, f1, f2)
     {
+        this[OpType] = (int)FileOperationType.Delete;
     }
-
-    public override FileOperationType OperationType => FileOperationType.Delete;
 }
 
 class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
@@ -64,9 +63,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     private readonly IDictionary<string, StringValues> _headers;
     private readonly ThumbnailSettings _thumbnailSettings;
 
-    public override FileOperationType OperationType => FileOperationType.Delete;
-
-
     public FileDeleteOperation(IServiceProvider serviceProvider, FileDeleteOperationData<T> fileOperationData, ThumbnailSettings thumbnailSettings)
     : base(serviceProvider, fileOperationData)
     {
@@ -75,6 +71,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         _headers = fileOperationData.Headers;
         _isEmptyTrash = fileOperationData.IsEmptyTrash;
         _thumbnailSettings = thumbnailSettings;
+        this[OpType] = (int)FileOperationType.Delete;
     }
 
     protected override async Task DoJob(IServiceScope scope)

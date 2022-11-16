@@ -44,16 +44,12 @@ public abstract class FileOperation : DistributedTaskProgress
 
     protected int _processed;
     public int Total { get; set; }
-
-    public virtual FileOperationType OperationType { get; }
-
     protected FileOperation(IServiceProvider serviceProvider)
     {
         _principal = serviceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
         _culture = Thread.CurrentThread.CurrentCulture.Name;
 
         this[Owner] = ((IAccount)(_principal ?? Thread.CurrentPrincipal).Identity).ID.ToString();
-        this[OpType] = (int)OperationType;
         this[Src] = "";
         this[Progress] = 0;
         this[Res] = "";

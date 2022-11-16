@@ -46,9 +46,8 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
         : base(serviceProvider, f1, f2)
     {
         _tempStream = tempStream;
+        this[OpType] = (int)FileOperationType.Download;
     }
-
-    public override FileOperationType OperationType => FileOperationType.Download;
 
     private readonly TempStream _tempStream;
 
@@ -155,13 +154,13 @@ class FileDownloadOperation<T> : FileOperation<FileDownloadOperationData<T>, T>
     private readonly Dictionary<T, string> _files;
     private readonly IDictionary<string, StringValues> _headers;
     private ItemNameValueCollection<T> _entriesPathId;
-    public override FileOperationType OperationType => FileOperationType.Download;
 
     public FileDownloadOperation(IServiceProvider serviceProvider, FileDownloadOperationData<T> fileDownloadOperationData)
         : base(serviceProvider, fileDownloadOperationData)
     {
         _files = fileDownloadOperationData.FilesDownload;
         _headers = fileDownloadOperationData.Headers;
+        this[OpType] = (int)FileOperationType.Download;
     }
 
     protected override async Task DoJob(IServiceScope scope)
