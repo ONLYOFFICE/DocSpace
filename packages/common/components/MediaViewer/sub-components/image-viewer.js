@@ -204,7 +204,7 @@ class ImageViewer extends React.Component {
           fixedDirection={true}
           withBackdrop={false}
           manualY="55px"
-          manualX="30px"
+          manualX="10px"
         >
           {model.map((item) => {
             const onClick = (e) => onItemClick(e, item);
