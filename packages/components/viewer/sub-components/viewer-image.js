@@ -162,7 +162,7 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
       <div
         style={{
           display: "flex",
-          height: `${window.innerHeight - 84}px`,
+          height: `${window.innerHeight}px`,
           justifyContent: "center",
           alignItems: "center",
         }}
