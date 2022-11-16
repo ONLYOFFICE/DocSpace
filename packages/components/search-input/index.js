@@ -86,6 +86,11 @@ class SearchInput extends React.Component {
               ? "/static/images/cross.react.svg"
               : "/static/images/search.react.svg"
           }
+          iconButtonClassName={
+            !!this.state.inputValue || this.props.showClearButton
+              ? "search-cross"
+              : "search-loupe"
+          }
           isIconFill={true}
           iconSize={clearButtonSize}
           onIconClick={
