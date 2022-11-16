@@ -16,9 +16,7 @@ class AxiosClient {
 
     if (apiOrigin !== "") {
       headers = {
-        "X-REWRITTER-URL": window.location.origin,
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "*",
+        http_x_rewriter_url: window.location.origin,
       };
     }
 
