@@ -26,6 +26,7 @@ const EditRoomEvent = ({
 
   currentFolderId,
   updateCurrentFolder,
+  setCreateRoomDialogVisible,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
@@ -129,6 +130,12 @@ const EditRoomEvent = ({
     setFetchedTags(tags);
   }, []);
 
+  useEffect(() => {
+    setCreateRoomDialogVisible(true);
+
+    return () => setCreateRoomDialogVisible(false);
+  }, []);
+
   return (
     <EditRoomDialog
       t={t}
@@ -149,6 +156,7 @@ export default inject(
     tagsStore,
     filesActionsStore,
     selectedFolderStore,
+    dialogsStore,
     settingsStore,
   }) => {
     const {
@@ -166,6 +174,7 @@ export default inject(
     const { id: currentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
     const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
+    const { setCreateRoomDialogVisible } = dialogsStore;
 
     return {
       editRoom,
@@ -185,6 +194,7 @@ export default inject(
 
       currentFolderId,
       updateCurrentFolder,
+      setCreateRoomDialogVisible,
     };
   }
 )(observer(EditRoomEvent));

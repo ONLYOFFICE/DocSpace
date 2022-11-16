@@ -26,6 +26,7 @@ const CreateRoomEvent = ({
 
   withPaging,
   addFile,
+  setCreateRoomDialogVisible,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
   const [fetchedTags, setFetchedTags] = useState([]);
@@ -106,6 +107,12 @@ const CreateRoomEvent = ({
     setFetchedTags(tags);
   }, []);
 
+  useEffect(() => {
+    setCreateRoomDialogVisible(true);
+
+    return () => setCreateRoomDialogVisible(false);
+  }, []);
+
   return (
     <CreateRoomDialog
       t={t}
@@ -145,7 +152,7 @@ export default inject(
     const { id: currrentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
 
-    const { connectDialogVisible } = dialogsStore;
+    const { connectDialogVisible, setCreateRoomDialogVisible } = dialogsStore;
 
     const {
       deleteThirdParty,
@@ -171,6 +178,7 @@ export default inject(
 
       withPaging,
       addFile,
+      setCreateRoomDialogVisible,
     };
   }
 )(observer(CreateRoomEvent));
