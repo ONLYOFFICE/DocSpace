@@ -3,10 +3,7 @@ import StyledButton from "@docspace/components/button/styled-button";
 import Base from "@docspace/components/themes/base";
 
 const activeCss = css`
-  border-color: ${(props) =>
-    props.primary
-      ? props.$currentColorScheme.main.buttons
-      : props.theme.button.border.baseActive};
+  border-color: ${(props) => props.$currentColorScheme.main.buttons};
 
   background: ${(props) =>
     props.primary && props.$currentColorScheme.main.buttons};
@@ -20,10 +17,7 @@ const activeCss = css`
 `;
 
 const hoverCss = css`
-  border-color: ${(props) =>
-    props.primary
-      ? props.$currentColorScheme.main.buttons
-      : props.theme.button.border.baseHover};
+  border-color: ${(props) => props.$currentColorScheme.main.buttons};
 
   background: ${(props) =>
     props.primary && props.$currentColorScheme.main.buttons};
