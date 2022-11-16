@@ -900,7 +900,7 @@ class FilesStore {
 
           runInAction(() => {
             this.setFolders(data.folders);
-            this.setFiles(data.files);
+            this.setFiles([]);
           });
 
           if (clearFilter) {
@@ -1733,9 +1733,15 @@ class FilesStore {
   };
 
   addFile = (item, isFolder) => {
-    const filter = this.filter.clone();
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+
+    const isRooms = isRoomsFolder || isArchiveFolder;
+
+    const filter = isRooms ? this.roomsFilter.clone() : this.filter.clone();
     filter.total += 1;
-    this.setFilter(filter);
+
+    if (isRooms) this.setRoomsFilter(filter);
+    else this.setFilter(filter);
 
     isFolder ? this.folders.unshift(item) : this.files.unshift(item);
 
@@ -2652,17 +2658,7 @@ class FilesStore {
     const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
-
-    // const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
     const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
-
-    // console.log("hasMoreFiles isRooms", isRooms);
-    // console.log("hasMoreFiles filesList", this.filesList.length);
-    // console.log("hasMoreFiles this.filterTotal", this.filterTotal);
-    // console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
-    // console.log("hasMoreFiles filterTotal", filterTotal);
-    // console.log("hasMoreFiles", this.filesList.length < filterTotal);
-    // console.log("----------------------------");
 
     if (this.isLoading) return false;
     return this.filesList.length < filterTotal;
