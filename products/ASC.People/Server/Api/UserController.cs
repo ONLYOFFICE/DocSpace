@@ -481,6 +481,7 @@ public class UserController : PeopleControllerBase
         return GetByStatus(EmployeeStatus.Active);
     }
 
+    [AllowNotPayment]
     [HttpGet("email")]
     public async Task<EmployeeFullDto> GetByEmail([FromQuery] string email)
     {

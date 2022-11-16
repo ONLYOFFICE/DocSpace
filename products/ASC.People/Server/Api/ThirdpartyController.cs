@@ -93,7 +93,7 @@ public class ThirdpartyController : ApiControllerBase
         _tenantManager = tenantManager;
     }
 
-    [AllowAnonymous]
+    [AllowAnonymous, AllowNotPayment]
     [HttpGet("thirdparty/providers")]
     public ICollection<AccountInfoDto> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
     {
