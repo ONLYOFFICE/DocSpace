@@ -31,13 +31,6 @@ const StyledComponent = styled(ModalDialog)`
     position: relative;
   }
 
-  .box {
-    width: 46px;
-    height: 46px;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-
   .accent-box {
     background: ${(props) =>
       props.currentColorAccent
