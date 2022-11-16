@@ -898,7 +898,10 @@ class FilesStore {
 
           this.setRoomsFilter(filterData);
 
-          this.setFolders(data.folders);
+          runInAction(() => {
+            this.setFolders(data.folders);
+            this.setFiles([]);
+          });
 
           if (clearFilter) {
             if (clearSelection) {

@@ -3,12 +3,5 @@
 	  "port": 9899,
 	  "appsettings": "../../../config",
 	  "environment": "Development"
-	},
-	"aws":{
-		"accessKeyId": "",
-		"secretAccessKey": "",
-		"region": "",
-		"logGroupName": "/asc/docspace/cluster/cluster_name/general",
-		"logStreamName": "${hostname} - ${applicationContext} - ${date} - ${guid}"
 	}
 }
