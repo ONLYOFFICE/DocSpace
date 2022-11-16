@@ -19,8 +19,8 @@ import { isMobileOnly } from "react-device-detect";
 
 import Loader from "./sub-components/loaderAppearance";
 
-import { StyledComponent } from "./Appearance/StyledApperance.js";
-
+import { StyledComponent, StyledTheme } from "./Appearance/StyledApperance.js";
+import { ReactSVG } from "react-svg";
 import BreakpointWarning from "../../../../components/BreakpointWarning/index";
 import ModalDialogDelete from "./sub-components/modalDialogDelete";
 import hexToRgba from "hex-to-rgba";
@@ -76,6 +76,14 @@ const Appearance = (props) => {
   const [previewAccent, setPreviewAccent] = useState(
     currentColorScheme.main.accent
   );
+
+  const [colorCheckImg, setColorCheckImg] = useState(
+    currentColorScheme.text.accent
+  );
+  const [colorCheckImgHover, setColorCheckImgHover] = useState(
+    currentColorScheme.text.accent
+  );
+
   const [selectThemeId, setSelectThemeId] = useState(selectedThemeId);
 
   const [isDisabledSaveButton, setIsDisabledSaveButton] = useState(true);
@@ -89,7 +97,7 @@ const Appearance = (props) => {
   const [visibleDialog, setVisibleDialog] = useState(false);
 
   const checkImg = (
-    <img className="check-img" src="/static/images/check.white.svg" />
+    <ReactSVG className="check-img" src="static/images/check.white.svg" />
   );
 
   const array_items = useMemo(
@@ -140,10 +148,27 @@ const Appearance = (props) => {
     onCheckView();
     window.addEventListener("resize", onCheckView);
 
+    const standard = document.querySelector(".standard");
+    const custom = document.querySelector(".custom");
+
+    standard.addEventListener("mouseover", (e) => {
+      onColorCheckImgHover(e.target.id);
+    });
+
+    custom.addEventListener("mouseover", (e) => {
+      onColorCheckImgHover(e.target.id);
+    });
+
     return () => window.removeEventListener("resize", onCheckView);
   }, []);
 
   useEffect(() => {
+    const colorCheckImg = appearanceTheme.find(
+      (theme) => theme.id == selectThemeId
+    ).text.accent;
+
+    setColorCheckImg(colorCheckImg);
+
     if (appearanceTheme.find((theme) => theme.id == selectThemeId).name) {
       setIsDisabledEditButton(true);
       setIsDisabledDeleteButton(true);
@@ -192,6 +217,18 @@ const Appearance = (props) => {
     isEditDialog,
     previewAccent,
   ]);
+
+  const onColorCheckImgHover = useCallback(
+    (id) => {
+      if (!id) return;
+
+      const colorCheckImg = appearanceTheme.find((theme) => theme.id == id).text
+        .accent;
+
+      setColorCheckImgHover(colorCheckImg);
+    },
+    [appearanceTheme]
+  );
 
   const onCheckView = () => {
     if (isMobileOnly || window.innerWidth < 600) {
@@ -246,18 +283,6 @@ const Appearance = (props) => {
       setOpenHexColorPickerButtons(true);
       setOpenHexColorPickerAccent(false);
     }
-  };
-
-  const onCheckStandardThemeRender = (item) => {
-    if (
-      !item.name ||
-      (theme.isBase && item.name === "grey") ||
-      (!theme.isBase && item.name === "black")
-    ) {
-      return false;
-    }
-
-    return true;
   };
 
   const onClickDeleteModal = useCallback(async () => {
@@ -544,29 +569,31 @@ const Appearance = (props) => {
         onClickDelete={onClickDeleteModal}
       />
 
-      <StyledComponent>
+      <StyledComponent colorCheckImg={colorCheckImg}>
         <div className="header">{t("Common:Color")}</div>
 
         <div className="theme-standard">
           <div className="theme-name">{t("Common:Standard")}</div>
 
-          <div className="theme-container">
+          <div className="theme-container standard">
             {appearanceTheme.map((item, index) => {
-              {
-                return (
-                  onCheckStandardThemeRender(item) && (
-                    <div
-                      key={index}
-                      id={item.id}
-                      style={{ background: item.main.accent }}
-                      className="box"
-                      onClick={() => onColorSelection(item)}
-                    >
-                      {onShowCheck(item.id)}
-                    </div>
-                  )
-                );
-              }
+              if (!item.name) return;
+              return (
+                <StyledTheme
+                  key={index}
+                  id={item.id}
+                  colorCheckImgHover={colorCheckImgHover}
+                  style={{ background: item.main.accent }}
+                  onClick={() => onColorSelection(item)}
+                >
+                  {onShowCheck(item.id)}
+
+                  <ReactSVG
+                    className="check-hover"
+                    src="static/images/check.white.svg"
+                  />
+                </StyledTheme>
+              );
             })}
           </div>
         </div>
@@ -575,20 +602,26 @@ const Appearance = (props) => {
           <div className="theme-name">Custom</div>
 
           <div className="theme-container">
-            {appearanceTheme.map((item, index) => {
-              if (item.name) return;
-              return (
-                <div
-                  key={index}
-                  id={item.id}
-                  style={{ background: item.main.accent }}
-                  className="box"
-                  onClick={() => onColorSelection(item)}
-                >
-                  {onShowCheck(item.id)}
-                </div>
-              );
-            })}
+            <div className="custom">
+              {appearanceTheme.map((item, index) => {
+                if (item.name) return;
+                return (
+                  <StyledTheme
+                    key={index}
+                    id={item.id}
+                    style={{ background: item.main.accent }}
+                    colorCheckImgHover={colorCheckImgHover}
+                    onClick={() => onColorSelection(item)}
+                  >
+                    {onShowCheck(item.id)}
+                    <ReactSVG
+                      className="check-hover"
+                      src="static/images/check.white.svg"
+                    />
+                  </StyledTheme>
+                );
+              })}
+            </div>
 
             <div
               data-for="theme-add"

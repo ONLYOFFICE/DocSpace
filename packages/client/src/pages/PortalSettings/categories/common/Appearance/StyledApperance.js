@@ -28,7 +28,6 @@ const StyledComponent = styled.div`
     padding: 12px 0 24px 0;
     display: flex;
   }
-
   .box {
     width: 46px;
     height: 46px;
@@ -40,10 +39,6 @@ const StyledComponent = styled.div`
   .theme-add {
     background: ${(props) => (props.theme.isBase ? "#eceef1" : "#474747")}
       url("/static/images/plus.theme.svg") no-repeat center;
-  }
-
-  .check-img {
-    padding: 18px 0 0 15px;
   }
 
   .add-theme {
@@ -60,6 +55,35 @@ const StyledComponent = styled.div`
   .button:not(:last-child) {
     margin-right: 8px;
   }
+
+  .check-img {
+    padding: 18px 0 0 15px;
+    svg path {
+      fill: ${(props) => props.colorCheckImg};
+    }
+  }
 `;
 
-export { StyledComponent };
+const StyledTheme = styled.div`
+  width: 46px;
+  height: 46px;
+  margin-right: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  .check-hover {
+    visibility: hidden;
+  }
+
+  &:hover {
+    .check-hover {
+      padding: 18px 0 0 15px;
+      visibility: visible;
+      opacity: 0.5;
+      svg path {
+        fill: ${(props) => props.colorCheckImgHover};
+      }
+    }
+  }
+`;
+export { StyledComponent, StyledTheme };
