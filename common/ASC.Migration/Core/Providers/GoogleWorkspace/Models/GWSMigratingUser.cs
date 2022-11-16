@@ -109,7 +109,7 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
         }
     }
 
-    public override void Migrate()
+    public override async Task Migrate()
     {
         if (string.IsNullOrWhiteSpace(_userInfo.FirstName))
         {
@@ -128,7 +128,7 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
         }
         else
         {
-            saved = _userManager.SaveUserInfo(_userInfo);
+            saved = await _userManager.SaveUserInfo(_userInfo);
         }
         if (_hasPhoto)
         {

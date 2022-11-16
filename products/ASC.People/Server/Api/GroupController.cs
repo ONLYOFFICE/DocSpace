@@ -115,13 +115,13 @@ public class GroupController : ControllerBase
 
         var group = _userManager.SaveGroupInfo(new GroupInfo { Name = inDto.GroupName });
 
-        TransferUserToDepartment(inDto.GroupManager, @group, true);
+        await TransferUserToDepartment(inDto.GroupManager, @group, true);
 
         if (inDto.Members != null)
         {
             foreach (var member in inDto.Members)
             {
-                TransferUserToDepartment(member, group, false);
+                await TransferUserToDepartment(member, group, false);
             }
         }
 
@@ -145,13 +145,13 @@ public class GroupController : ControllerBase
 
         await RemoveMembersFrom(groupid, new GroupRequestDto { Members = _userManager.GetUsersByGroup(groupid, EmployeeStatus.All).Select(u => u.Id).Where(id => !inDto.Members.Contains(id)) });
 
-        TransferUserToDepartment(inDto.GroupManager, @group, true);
+        await TransferUserToDepartment(inDto.GroupManager, @group, true);
 
         if (inDto.Members != null)
         {
             foreach (var member in inDto.Members)
             {
-                TransferUserToDepartment(member, group, false);
+                await TransferUserToDepartment(member, group, false);
             }
         }
 
@@ -186,7 +186,7 @@ public class GroupController : ControllerBase
         var users = _userManager.GetUsersByGroup(oldgroup.ID);
         foreach (var userInfo in users)
         {
-            TransferUserToDepartment(userInfo.Id, newgroup, false);
+            await TransferUserToDepartment(userInfo.Id, newgroup, false);
         }
 
         return await GetById(newgroupid);
@@ -210,7 +210,7 @@ public class GroupController : ControllerBase
 
         foreach (var userId in inDto.Members)
         {
-            TransferUserToDepartment(userId, group, false);
+            await TransferUserToDepartment(userId, group, false);
         }
 
         return await GetById(group.ID);
@@ -258,7 +258,7 @@ public class GroupController : ControllerBase
         return @group;
     }
 
-    private void TransferUserToDepartment(Guid userId, GroupInfo group, bool setAsManager)
+    private async Task TransferUserToDepartment(Guid userId, GroupInfo group, bool setAsManager)
     {
         if (!_userManager.UserExists(userId) && userId != Guid.Empty)
         {
@@ -269,7 +269,7 @@ public class GroupController : ControllerBase
         {
             _userManager.SetDepartmentManager(@group.ID, userId);
         }
-        _userManager.AddUserIntoGroup(userId, @group.ID);
+        await _userManager.AddUserIntoGroup(userId, @group.ID);
     }
 
     private void RemoveUserFromDepartment(Guid userId, GroupInfo @group)
@@ -281,6 +281,6 @@ public class GroupController : ControllerBase
 
         var user = _userManager.GetUsers(userId);
         _userManager.RemoveUserFromGroup(user.Id, @group.ID);
-        _userManager.SaveUserInfo(user);
+        _userManager.UpdateUserInfo(user);
     }
 }

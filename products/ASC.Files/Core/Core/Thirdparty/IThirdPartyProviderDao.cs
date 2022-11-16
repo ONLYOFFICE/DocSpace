@@ -594,22 +594,24 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.FromResult(tagInfo);
     }
 
-    public IEnumerable<Tag> SaveTags(IEnumerable<Tag> tag, Guid createdBy = default)
+    public Task<IEnumerable<Tag>> SaveTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
-        return new List<Tag>();
+        return Task.FromResult(Enumerable.Empty<Tag>());
     }
 
-    public IEnumerable<Tag> SaveTags(Tag tag)
+    public Task<IEnumerable<Tag>> SaveTags(Tag tag)
     {
-        return new List<Tag>();
+        return Task.FromResult(Enumerable.Empty<Tag>());
     }
 
-    public void UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default)
+    public Task UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default)
     {
+        return Task.CompletedTask;
     }
 
-    public void UpdateNewTags(Tag tag)
+    public Task UpdateNewTags(Tag tag)
     {
+        return Task.CompletedTask;
     }
 
     public Task RemoveTagsAsync(FileEntry<string> entry, IEnumerable<int> tagsIds)
@@ -622,12 +624,14 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.CompletedTask;
     }
 
-    public void RemoveTags(IEnumerable<Tag> tag)
+    public Task RemoveTags(IEnumerable<Tag> tag)
     {
+        return Task.CompletedTask;
     }
 
-    public void RemoveTags(Tag tag)
+    public Task RemoveTags(Tag tag)
     {
+        return Task.CompletedTask;
     }
 
     public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)

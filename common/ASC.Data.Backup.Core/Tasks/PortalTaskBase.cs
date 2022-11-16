@@ -85,14 +85,14 @@ public abstract class PortalTaskBase
         }
     }
 
-    public abstract void RunJob();
+    public abstract Task RunJob();
 
     internal virtual IEnumerable<IModuleSpecifics> GetModulesToProcess()
     {
         return ModuleProvider.AllModules.Where(module => !_ignoredModules.Contains(module.ModuleName));
     }
 
-    protected IEnumerable<BackupFileInfo> GetFilesToProcess(int tenantId)
+    protected async Task<IEnumerable<BackupFileInfo>> GetFilesToProcess(int tenantId)
     {
         var files = new List<BackupFileInfo>();
         foreach (var module in StorageFactoryConfig.GetModuleList(ConfigPath).Where(IsStorageModuleAllowed))
@@ -103,12 +103,12 @@ public abstract class PortalTaskBase
             foreach (var domain in domains)
             {
                 files.AddRange(
-                        store.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync().Result
+                        (await store.ListFilesRelativeAsync(domain, "\\", "*.*", true).ToArrayAsync())
                     .Select(path => new BackupFileInfo(domain, module, path, tenantId)));
             }
 
             files.AddRange(
-                    store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync().Result
+                    (await store.ListFilesRelativeAsync(string.Empty, "\\", "*.*", true).ToArrayAsync())
                      .Where(path => domains.All(domain => !path.Contains(domain + "/")))
                      .Select(path => new BackupFileInfo(string.Empty, module, path, tenantId)));
         }

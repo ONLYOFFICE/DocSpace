@@ -43,7 +43,7 @@ public class DispatchEngine
         _logger.LogOnly(_logOnly);
     }
 
-    public SendResponse Dispatch(INoticeMessage message, string senderName)
+    public async Task<SendResponse> Dispatch(INoticeMessage message, string senderName)
     {
         var response = new SendResponse(message, senderName, SendResult.OK);
         if (!_logOnly)
@@ -51,7 +51,7 @@ public class DispatchEngine
             var sender = _context.GetSender(senderName);
             if (sender != null)
             {
-                response = sender.DirectSend(message);
+                response = await sender.DirectSend(message);
             }
             else
             {
