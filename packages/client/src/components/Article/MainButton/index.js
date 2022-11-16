@@ -124,7 +124,6 @@ const ArticleMainButtonContent = (props) => {
   );
 
   const onCreateRoom = React.useCallback(() => {
-    console.log("click");
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   }, []);
