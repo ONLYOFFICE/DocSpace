@@ -140,7 +140,7 @@ public class AuthenticationController : ControllerBase
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
     }
 
-
+    [AllowNotPayment]
     [HttpGet]
     public bool GetIsAuthentificated()
     {
