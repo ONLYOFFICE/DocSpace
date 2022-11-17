@@ -14,22 +14,43 @@ import {
 class AccessRightsStore {
   authStore = null;
   selectedFolderStore = null;
+  treeFoldersStore = null;
 
-  constructor(authStore, selectedFolderStore) {
+  constructor(
+    authStore,
+    selectedFolderStore,
+    treeFoldersStore,
+    versionHistoryStore
+  ) {
     this.authStore = authStore;
     this.selectedFolderStore = selectedFolderStore;
+    this.treeFoldersStore = treeFoldersStore;
 
     makeAutoObservable(this);
   }
 
-  canInviteUserInRoom = (room) => {
-    const { rootFolderType } = this.selectedFolderStore;
+  get canInviteUserInRoom() {
+    const { isArchiveFolderRoot } = this.treeFoldersStore;
+    const { access } = this.selectedFolderStore;
 
-    if (rootFolderType === FolderType.Archive) return false;
+    if (isArchiveFolderRoot) return false;
 
-    const { inviteUsers } = getRoomRoleActions(room.access);
+    return getRoomRoleActions(access).inviteUsers;
+  }
 
-    return inviteUsers;
+  canChangeUserRole = (currentRoomMember) => {
+    const { isArchiveFolderRoot } = this.treeFoldersStore;
+    const { access } = this.selectedFolderStore;
+    const { userStore } = this.authStore;
+    const { user } = userStore;
+
+    const isMyProfile = user.id === currentRoomMember.id;
+    const isOwnerRoleRoom =
+      currentRoomMember.access === ShareAccessRights.FullAccess;
+
+    if (isArchiveFolderRoot || isMyProfile || isOwnerRoleRoom) return false;
+
+    return getRoomRoleActions(access).changeUserRole;
   };
 
   canArchiveRoom = (room) => {
