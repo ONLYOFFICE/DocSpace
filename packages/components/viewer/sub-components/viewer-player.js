@@ -247,6 +247,7 @@ export default function ViewerPlayer(props) {
     progress: 0,
     duration: 0,
     volumeSelection: false,
+    isOpenContext: false,
     volume: 100,
     size: "0%",
   };
@@ -273,7 +274,6 @@ export default function ViewerPlayer(props) {
   const volumeRef = React.useRef(null);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
-  const [isOpen, setIsOpen] = React.useState(false);
   const handlers = useSwipeable({
     onSwipedLeft: (e) => {
       if (e.event.path[0] === inputRef.current) return;
@@ -307,12 +307,25 @@ export default function ViewerPlayer(props) {
     );
   };
 
-  const toggleVolumeSelection = () =>
+  const toggleVolumeSelection = () => {
     dispatch(
       createAction(ACTION_TYPES.update, {
         volumeSelection: !state.volumeSelection,
+        speedSelection: false,
+        isOpenContext: false,
       })
     );
+  };
+
+  const toggleContext = () => {
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        isOpenContext: !state.isOpenContext,
+        volumeSelection: false,
+        speedSelection: false,
+      })
+    );
+  };
 
   const toggleScreen = () => {
     handleFullScreen(!state.isFullScreen);
@@ -325,12 +338,15 @@ export default function ViewerPlayer(props) {
     );
   };
 
-  const toggleSpeedSelectionMenu = () =>
+  const toggleSpeedSelectionMenu = (e) => {
     dispatch(
       createAction(ACTION_TYPES.update, {
         speedSelection: !state.speedSelection,
+        volumeSelection: false,
+        isOpenContext: false,
       })
     );
+  };
 
   const elem = document.documentElement;
 
@@ -447,6 +463,16 @@ export default function ViewerPlayer(props) {
     );
   };
 
+  const handleOutsideClick = (e) => {
+    dispatch(
+      createAction(ACTION_TYPES.update, {
+        volumeSelection: false,
+        speedSelection: false,
+        isOpenContext: false,
+      })
+    );
+  };
+
   React.useEffect(() => {
     state.isMuted
       ? (videoRef.current.muted = true)
@@ -502,7 +528,7 @@ export default function ViewerPlayer(props) {
     });
   }, [props.activeIndex]);
 
-  const contextMenu = generateContextMenu(isOpen);
+  const contextMenu = generateContextMenu(state.isOpenContext);
 
   let iconLeft = (window.innerWidth - iconWidth) / 2 + "px";
   let iconTop = (window.innerHeight - iconHeight - (48 - 53)) / 2 + "px";
@@ -510,7 +536,6 @@ export default function ViewerPlayer(props) {
   let imgStyle = {
     width: `${state.width}px`,
     height: `${state.height}px`,
-    transition: "all .26s ease-out",
     transform: `
 translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
       state.top
@@ -524,7 +549,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
     >
       <div className="video-backdrop" style={{ zIndex: 300 }} />
       {!state.isFullScreen && isMobileOnly && mobileDetails}
-      <div className="video-wrapper">
+      <div className="video-wrapper" onClick={handleOutsideClick}>
         <video
           onClick={togglePlay}
           id="videoPlayer"
@@ -631,7 +656,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
             {!isMobileOnly && (
               <div
                 className="controller"
-                onClick={() => setIsOpen((open) => !open)}
+                onClick={toggleContext}
                 style={{ position: "relative" }}
               >
                 <MediaContextMenu />
