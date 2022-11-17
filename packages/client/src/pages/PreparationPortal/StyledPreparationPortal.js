@@ -6,7 +6,6 @@ const StyledBodyPreparationPortal = styled.div`
   margin-bottom: 24px;
   width: 100%;
   max-width: ${(props) => (props.errorMessage ? "560px" : "480px")};
-  padding: 0 24px;
   box-sizing: border-box;
   align-items: center;
 
@@ -15,23 +14,29 @@ const StyledBodyPreparationPortal = styled.div`
     margin-bottom: 16px;
     position: relative;
     .preparation-portal_progress-bar {
-      border-radius: 2px;
+      padding: 2px;
+      box-sizing: border-box;
+      border-radius: 6px;
       width: 100%;
       height: 24px;
-      background-color: #f3f4f4;
+      background-color: ${(props) =>
+        props.theme.preparationPortalProgress.backgroundColor};
     }
     .preparation-portal_progress-line {
-      border-radius: inherit;
+      border-radius: 5px;
       width: ${(props) => props.percent}%;
-      background: #439ccd;
-      height: inherit;
+      height: 20px;
       transition-property: width;
       transition-duration: 0.9s;
-      background: #1f97ca;
     }
     .preparation-portal_percent {
       position: absolute;
-      ${(props) => props.percent > 50 && "color: white"};
+      font-size: 14px;
+      font-weight: 600;
+      color: ${(props) =>
+        props.percent > 50
+          ? props.theme.preparationPortalProgress.colorPercentBig
+          : props.theme.preparationPortalProgress.colorPercentSmall};
       top: 2px;
       left: calc(50% - 9px);
     }
