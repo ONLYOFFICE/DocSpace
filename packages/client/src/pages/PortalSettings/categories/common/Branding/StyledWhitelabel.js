@@ -90,6 +90,12 @@ const WhiteLabelWrapper = styled.div`
     padding: 12px 20px;
   }
 
+  .logo-about {
+    width: 211px;
+    height: 24px;
+    padding: 12px 20px;
+  }
+
   .logo-favicon {
     width: 32px;
     height: 32px;
