@@ -1076,7 +1076,7 @@ class FilesStore {
         "separator1",
         "open-location",
         "mark-read",
-        "mark-as-favorite",
+        // "mark-as-favorite",
         "remove-from-favorites",
         "download",
         "download-as",
