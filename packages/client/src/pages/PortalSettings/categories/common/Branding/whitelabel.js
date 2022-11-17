@@ -13,6 +13,8 @@ import Link from "@docspace/components/link";
 import WhiteLabelWrapper from "./StyledWhitelabel";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
 
+import Logo from "./sub-components/logo";
+
 const WhiteLabel = (props) => {
   const { t, isSettingPaid, logoText, logoUrls } = props;
   const [isLoadedData, setIsLoadedData] = useState(false);
@@ -107,65 +109,20 @@ const WhiteLabel = (props) => {
             {t("LogoLightSmall")}
           </Text>
           <div className="logos-wrapper">
-            <div>
-              <div className="logo-item">
-                <Text fontSize="13px" fontWeight="600">
-                  Light theme
-                </Text>
-                <img
-                  className="logo-header"
-                  src={logoUrlsWhiteLabel[0]}
-                  alt={t("LogoLightSmall")}
-                />
-              </div>
-              <label>
-                <input
-                  id="logoUploader_1"
-                  type="file"
-                  className="hidden"
-                  //onChange={onChangeLogo}
-                  disabled={!isSettingPaid}
-                />
-                <Link
-                  fontWeight="600"
-                  isHovered
-                  type="action"
-                  className="settings_unavailable"
-                >
-                  {t("ChangeLogoButton")}
-                </Link>
-              </label>
-            </div>
-
-            <div>
-              <div className="logo-item">
-                <Text fontSize="13px" fontWeight="600">
-                  Dark theme
-                </Text>
-                <img
-                  className="logo-header"
-                  src={logoUrlsWhiteLabel[0]}
-                  alt={t("LogoLightSmall")}
-                />
-              </div>
-              <label>
-                <input
-                  id="logoUploader_1"
-                  type="file"
-                  className="hidden"
-                  //onChange={onChangeLogo}
-                  disabled={!isSettingPaid}
-                />
-                <Link
-                  fontWeight="600"
-                  isHovered
-                  type="action"
-                  className="settings_unavailable"
-                >
-                  {t("ChangeLogoButton")}
-                </Link>
-              </label>
-            </div>
+            <Logo
+              title="Light theme"
+              src={logoUrlsWhiteLabel[0]}
+              imageClass="logo-header"
+              inputId="logoUploader_1"
+              onChangeText={t("ChangeLogoButton")}
+            />
+            <Logo
+              title="Dark theme"
+              src={logoUrlsWhiteLabel[0]}
+              imageClass="logo-header"
+              inputId="logoUploader_1"
+              onChangeText={t("ChangeLogoButton")}
+            />
           </div>
         </div>
       </div>
