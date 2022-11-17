@@ -169,11 +169,12 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
 
 ## Doceditor ##
 FROM noderun as doceditor
-WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
+WORKDIR ${BUILD_PATH}/products/ASC.Editors/editor
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/editor/ .
-CMD ["node", "server.js"]
+
+CMD ["server.js", "ASC.Editors"]
 
 ## Login ##
 FROM noderun as login
@@ -181,7 +182,8 @@ WORKDIR ${BUILD_PATH}/products/ASC.Login/login
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/login/ .
-CMD ["node", "server.js"]
+
+CMD ["server.js", "ASC.Login"]
 
 ## ASC.Data.Backup.BackgroundTasks ##
 FROM dotnetrun AS backup_background
