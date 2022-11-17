@@ -8,7 +8,7 @@ import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
 import Badge from "@docspace/components/badge";
-import Link from "@docspace/components/link";
+import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 
 import WhiteLabelWrapper from "./StyledWhitelabel";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
@@ -252,6 +252,19 @@ const WhiteLabel = (props) => {
           />
         </div>
       </div>
+
+      <SaveCancelButtons
+        tabIndex={3}
+        className="save-cancel-buttons"
+        //onSaveClick={onSave}
+        //onCancelClick={onRestoreLogo}
+        saveButtonLabel={t("Common:SaveButton")}
+        cancelButtonLabel={t("RestoreDefaultButton")}
+        displaySettings={true}
+        showReminder={isSettingPaid}
+        saveButtonDisabled={true}
+        //isSaving={isSaving}
+      />
     </WhiteLabelWrapper>
   );
 };
