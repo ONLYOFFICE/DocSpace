@@ -173,7 +173,7 @@ WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/editor/ .
-ENTRYPOINT ["node", "server.js"]
+CMD ["node", "server.js"]
 
 ## Login ##
 FROM noderun as login
@@ -181,7 +181,7 @@ WORKDIR ${BUILD_PATH}/products/ASC.Login/login
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/login/ .
-ENTRYPOINT ["node", "server.js"]
+CMD ["node", "server.js"]
 
 ## ASC.Data.Backup.BackgroundTasks ##
 FROM dotnetrun AS backup_background
