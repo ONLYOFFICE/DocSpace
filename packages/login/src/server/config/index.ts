@@ -14,18 +14,9 @@ function getAndSaveAppsettings() {
   }
 
   const env: string = nconf.get("app").environment;
-
-  const valueEnv: string = nconf.get(env);
-  const fileWithEnv = path.join(
-    appsettings,
-    "appsettings." + valueEnv + ".json"
-  );
-
-  if (fs.existsSync(fileWithEnv)) {
-    nconf.file("appsettings", fileWithEnv);
-  } else {
-    nconf.file("appsettings", path.join(appsettings, "appsettings.json"));
-  }
+  console.log('environment: ' + env);
+  nconf.file("appsettingsWithEnv", path.join(appsettings, 'appsettings.' + env + '.json'));
+  nconf.file("appsettings", path.join(appsettings, 'appsettings.json'));
 
   nconf.file(
     "appsettingsServices",
