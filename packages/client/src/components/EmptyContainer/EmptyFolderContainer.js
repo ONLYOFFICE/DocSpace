@@ -4,6 +4,7 @@ import { withTranslation } from "react-i18next";
 import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
+import { Text } from "@docspace/components";
 
 const EmptyFolderContainer = ({
   t,
@@ -16,6 +17,7 @@ const EmptyFolderContainer = ({
   isRooms,
   sectionWidth,
   canCreateFiles,
+  canInviteUsers,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -63,18 +65,45 @@ const EmptyFolderContainer = ({
         </Link>
       </div>
 
-      <div className="empty-folder_container-links">
-        <img
-          className="empty-folder_container_up-image"
-          src="images/up.svg"
-          onClick={onBackToParentFolder}
-          alt="up_icon"
-        />
+      {isRooms ? (
+        canInviteUsers ? (
+          <>
+            <div className="empty-folder_container-links second-description">
+              <Text as="span" color="#6A7378" fontSize="12px" noSelect>
+                {t("AddMembersDescription")}
+              </Text>
+            </div>
 
-        <Link onClick={onBackToParentFolder} {...linkStyles}>
-          {t("BackToParentFolderButton")}
-        </Link>
-      </div>
+            <div className="empty-folder_container-links">
+              <img
+                className="empty-folder_container_up-image"
+                src="images/plus.svg"
+                onClick={onBackToParentFolder}
+                alt="up_icon"
+              />
+
+              <Link onClick={onBackToParentFolder} {...linkStyles}>
+                {t("InviteUsersInRoom")}
+              </Link>
+            </div>
+          </>
+        ) : (
+          <></>
+        )
+      ) : (
+        <div className="empty-folder_container-links">
+          <img
+            className="empty-folder_container_up-image"
+            src="images/up.svg"
+            onClick={onBackToParentFolder}
+            alt="up_icon"
+          />
+
+          <Link onClick={onBackToParentFolder} {...linkStyles}>
+            {t("BackToParentFolderButton")}
+          </Link>
+        </div>
+      )}
     </>
   ) : (
     <></>
@@ -100,7 +129,7 @@ const EmptyFolderContainer = ({
 export default inject(
   ({ accessRightsStore, filesStore, selectedFolderStore }) => {
     const { fetchFiles, fetchRooms } = filesStore;
-    const { navigationPath, parentId } = selectedFolderStore;
+    const { navigationPath, parentId, access } = selectedFolderStore;
 
     let isRootRoom, isRoom, id;
     if (navigationPath && navigationPath.length) {
@@ -111,7 +140,9 @@ export default inject(
       id = elem.id;
     }
 
-    const { canCreateFiles } = accessRightsStore;
+    const { canCreateFiles, canInviteUserInRoom } = accessRightsStore;
+
+    const canInviteUsers = canInviteUserInRoom({ access });
 
     return {
       fetchFiles,
@@ -120,6 +151,7 @@ export default inject(
       parentId: id ?? parentId,
       isRooms: isRoom || isRootRoom,
       canCreateFiles,
+      canInviteUsers,
     };
   }
 )(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));
