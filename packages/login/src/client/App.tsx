@@ -20,7 +20,7 @@ const App: React.FC<ILoginProps> = (props) => {
           <InvalidRoute />
         </Route>
         <Route path="/login/code">
-          <CodeLogin />
+          <CodeLogin {...props} />
         </Route>
         <Route path="/login">
           <Login {...props} />

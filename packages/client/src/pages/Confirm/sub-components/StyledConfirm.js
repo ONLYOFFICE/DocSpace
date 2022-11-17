@@ -57,10 +57,6 @@ export const StyledBody = styled.div`
     width: 100%;
   }
 
-  .form-field {
-    height: 48px;
-  }
-
   .password-field-wrapper {
     width: 100%;
   }
