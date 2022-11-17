@@ -227,14 +227,14 @@ const StyledComponent = styled.div`
   }
 
   .tablet-tile-name {
-    width: 33% !important;
+    width: 36% !important;
     margin-left: 16px;
     border-right: none !important;
     border-radius: 12px 0 16px 0 !important;
   }
 
   .half {
-    width: ${(props) => props.isViewTablet && "51%"};
+    width: ${(props) => props.isViewTablet && "54%"};
     border-top-width: 1px;
     border-right-width: 1px;
     border-left-width: 1px;
