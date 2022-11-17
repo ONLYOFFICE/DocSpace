@@ -80,6 +80,7 @@ const ViewerBase = (props) => {
     };
   }
   const containerSize = React.useRef(setContainerWidthHeight());
+  const [isOpen, setIsOpen] = React.useState(false);
   const footerHeight = 48;
   function reducer(s, action) {
     switch (action.type) {
@@ -186,9 +187,15 @@ const ViewerBase = (props) => {
   }, [activeIndex, visible, images]);
 
   function loadImg(currentActiveIndex, isReset = false) {
+    const timerId = setTimeout(() => {
+      dispatch(
+        createAction(ACTION_TYPES.update, {
+          loading: true,
+        })
+      );
+    }, 300);
     dispatch(
       createAction(ACTION_TYPES.update, {
-        loading: true,
         loadFailed: false,
       })
     );
@@ -199,6 +206,7 @@ const ViewerBase = (props) => {
     let loadComplete = false;
     let img = new Image();
     img.onload = () => {
+      clearTimeout(timerId);
       if (!init.current) {
         return;
       }
@@ -469,14 +477,8 @@ const ViewerBase = (props) => {
       direct = value > 0 ? -1 : 1;
     }
     if (direct !== 0) {
-      let x = e.clientX;
-      let y = e.clientY;
-      if (props.container) {
-        const containerRect = props.container.getBoundingClientRect();
-        x -= containerRect.left;
-        y -= containerRect.top;
-      }
-      handleZoom(x, y, direct, zoomSpeed);
+      let imgCenterXY = getImageCenterXY();
+      handleZoom(imgCenterXY.x, imgCenterXY.y, direct, zoomSpeed);
     }
   }
 
@@ -652,6 +654,8 @@ const ViewerBase = (props) => {
               scalable={scalable}
               changeable={changeable}
               downloadable={downloadable}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
               noImgDetails={noImgDetails}
               toolbars={customToolbar(defaultToolbars)}
               activeIndex={state.activeIndex}

@@ -82,7 +82,6 @@ export default function ViewerToolbar(props) {
     props.onAction(config);
   }
 
-  const [isOpen, setIsOpen] = React.useState(false);
   const iconRef = React.useRef(null);
 
   function renderAction(config) {
@@ -106,7 +105,7 @@ export default function ViewerToolbar(props) {
     }
 
     if (config.key === "context-menu") {
-      const contextMenu = props.generateContextMenu(isOpen);
+      const contextMenu = props.generateContextMenu(props.isOpen);
       return (
         <ToolbarItem
           ref={iconRef}
@@ -114,7 +113,7 @@ export default function ViewerToolbar(props) {
           noHover={config.noHover}
           key={config.key}
           className={`${props.prefixCls}-btn`}
-          onClick={() => setIsOpen((open) => !open)}
+          onClick={() => props.setIsOpen((open) => !open)}
           data-key={config.key}
         >
           <div className="context" style={{ height: "16px" }}>
