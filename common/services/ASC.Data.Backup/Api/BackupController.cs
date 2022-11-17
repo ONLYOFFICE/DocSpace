@@ -142,9 +142,9 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Backup History</returns>
     [HttpGet("getbackuphistory")]
-    public List<BackupHistoryRecord> GetBackupHistory()
+    public async Task<List<BackupHistoryRecord>> GetBackupHistory()
     {
-        return _backupHandler.GetBackupHistory();
+        return await _backupHandler.GetBackupHistory();
     }
 
     /// <summary>
@@ -152,9 +152,9 @@ public class BackupController : ControllerBase
     /// </summary>
     /// <category>Backup</category>
     [HttpDelete("deletebackup/{id}")]
-    public bool DeleteBackup(Guid id)
+    public async Task<bool> DeleteBackup(Guid id)
     {
-        _backupHandler.DeleteBackup(id);
+        await _backupHandler.DeleteBackup(id);
         return true;
     }
 
@@ -164,9 +164,9 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Backup History</returns>
     [HttpDelete("deletebackuphistory")]
-    public bool DeleteBackupHistory()
+    public async Task<bool> DeleteBackupHistory()
     {
-        _backupHandler.DeleteAllBackups();
+        await _backupHandler.DeleteAllBackups();
         return true;
     }
 

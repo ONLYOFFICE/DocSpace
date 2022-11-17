@@ -6,6 +6,7 @@ import Base from "@docspace/components/themes/base";
 const getDefaultStyles = ({ $currentColorScheme, theme }) =>
   $currentColorScheme &&
   css`
+    margin-top: 2px;
     ${commonIconsStyles}
     svg {
       path {

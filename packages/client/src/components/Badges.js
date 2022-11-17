@@ -143,7 +143,7 @@ const Badges = ({
   };
 
   return fileExst ? (
-    <div className="badges additional-badges">
+    <div className="badges additional-badges temp-badges">
       {isEditing && (
         <ColorTheme
           themeId={ThemeType.IconButton}

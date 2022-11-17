@@ -26,6 +26,10 @@ import {
 import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
+import {
+  getFileRoleActions,
+  getRoomRoleActions,
+} from "@docspace/common/utils/actions";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -896,7 +900,7 @@ class FilesStore {
 
           runInAction(() => {
             this.setFolders(data.folders);
-            this.setFiles(data.files);
+            this.setFiles([]);
           });
 
           if (clearFilter) {
@@ -1005,16 +1009,11 @@ class FilesStore {
   };
 
   getFilesContextOptions = (item, canOpenPlayer) => {
-    const isVisitor =
-      (this.authStore.userStore.user &&
-        this.authStore.userStore.user.isVisitor) ||
-      false;
     const isFile = !!item.fileExst || item.contentLength;
     const isRoom = !!item.roomType;
     const isFavorite =
       (item.fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
-    const isFullAccess = item.access < 2;
-    const withoutShare = false; //TODO: need this prop
+
     const isThirdPartyItem = !!item.providerKey;
     const hasNew =
       item.new > 0 || (item.fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
@@ -1036,38 +1035,9 @@ class FilesStore {
       isArchiveFolder,
     } = this.treeFoldersStore;
 
-    const {
-      canWebEdit,
-      canViewedDocs,
-      canFormFillingDocs,
-    } = this.filesSettingsStore;
+    const { canFormFillingDocs } = this.filesSettingsStore;
 
-    const {
-      canEditRoom,
-      canInviteUserInRoom,
-      canArchiveRoom,
-      canRemoveRoom,
-      canEditFile,
-      canFillForm,
-
-      canBlockFile,
-      canShowVersionHistory,
-      canManageVersionHistory,
-      canDeleteFile,
-      canMoveFile,
-      canRenameFile,
-      canCopyFile,
-    } = this.accessRightsStore;
-
-    const editFile = canEditFile(item);
-    const fillForm = canFillForm(item);
-    const blockFile = canBlockFile(item);
-    const showVersionHistory = canShowVersionHistory(item);
-    const manageVersionHistory = canManageVersionHistory(item);
-    const deleteFile = canDeleteFile(item);
-    const moveFile = canMoveFile(item);
-    const renameFile = canRenameFile(item);
-    const copyFile = canCopyFile(item);
+    const filesRights = getFileRoleActions(item.access);
 
     const { enablePlugins } = this.authStore.settingsStore;
 
@@ -1083,8 +1053,7 @@ class FilesStore {
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
-      const shouldEdit = !shouldFillForm && canWebEdit(item.fileExst);
-      const shouldView = canViewedDocs(item.fileExst);
+
       const isMasterForm = item.fileExst === ".docxf";
 
       let fileOptions = [
@@ -1126,50 +1095,66 @@ class FilesStore {
         "delete",
       ];
 
-      if (!editFile) {
+      if (!filesRights.edit) {
         fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
-      if (!fillForm) {
+      if (!filesRights.fillForm) {
         fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
       }
-      if (!blockFile) {
+      if (!filesRights.blockFile) {
         fileOptions = this.removeOptions(fileOptions, [
           "block-unblock-version",
         ]);
       }
-      if (!showVersionHistory) {
+      if (!filesRights.viewVersionHistory) {
         fileOptions = this.removeOptions(fileOptions, ["show-version-history"]);
       }
-      if (!manageVersionHistory) {
+      if (!filesRights.changeVersionHistory) {
         fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
       }
-      if (!deleteFile) {
+      if (!filesRights.deleteSelf || !filesRights.deleteAlien) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
-      if (!moveFile) {
+      if (!filesRights.moveSelf || !filesRights.moveAlien) {
         fileOptions = this.removeOptions(fileOptions, ["move-to"]);
       }
-      if (!renameFile) {
+      if (!filesRights.rename) {
         fileOptions = this.removeOptions(fileOptions, ["rename"]);
       }
-      if (!copyFile) {
+      if (!filesRights.copyFromPersonal) {
         fileOptions = this.removeOptions(fileOptions, ["copy-to", "copy"]);
       }
-      if (!showVersionHistory && !manageVersionHistory) {
+      if (
+        !filesRights.viewVersionHistory &&
+        !filesRights.changeVersionHistory
+      ) {
         fileOptions = this.removeOptions(fileOptions, ["version"]);
         if (item.rootFolderType === FolderType.Archive) {
           fileOptions = this.removeOptions(fileOptions, ["separator0"]);
         }
       }
-      if (!moveFile && !copyFile) {
+      if (
+        (!filesRights.moveSelf || !filesRights.moveAlien) &&
+        !filesRights.copyFromPersonal
+      ) {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
       }
 
       if (item.rootFolderType === FolderType.Archive) {
         fileOptions = this.removeOptions(fileOptions, [
+          "make-form",
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
+          "edit",
+          "move",
+          "move-to",
+          "copy-to",
+          "copy",
+          "rename",
+          "separator2",
+          "delete",
+          "finalize-version",
         ]);
       }
 
@@ -1361,10 +1346,7 @@ class FilesStore {
 
       return fileOptions;
     } else if (isRoom) {
-      const canEdit = canEditRoom(item);
-      const canInviteUser = canInviteUserInRoom(item);
-      const canArchive = canArchiveRoom(item);
-      const canRemove = canRemoveRoom(item);
+      const roomAccessRights = getRoomRoleActions(item.access);
 
       let roomOptions = [
         "select",
@@ -1381,29 +1363,29 @@ class FilesStore {
         "delete",
       ];
 
-      if (!canEdit) {
+      if (!roomAccessRights.edit) {
         roomOptions = this.removeOptions(roomOptions, [
           "edit-room",
           "reconnect-storage",
         ]);
       }
 
-      if (!canInviteUser) {
+      if (!roomAccessRights.inviteUsers) {
         roomOptions = this.removeOptions(roomOptions, ["invite-users-to-room"]);
       }
 
-      if (!canArchive) {
+      if (!roomAccessRights.archive) {
         roomOptions = this.removeOptions(roomOptions, [
           "archive-room",
           "unarchive-room",
         ]);
       }
 
-      if (!canRemove) {
+      if (!roomAccessRights.delete) {
         roomOptions = this.removeOptions(roomOptions, ["delete"]);
       }
 
-      if (!canRemove && !canArchive) {
+      if (!roomAccessRights.archive && !roomAccessRights.delete) {
         roomOptions = this.removeOptions(roomOptions, ["separator1"]);
       }
 
@@ -1417,25 +1399,16 @@ class FilesStore {
         roomOptions = this.removeOptions(roomOptions, ["unpin-room"]);
       }
 
-      if (isArchiveFolder) {
-        if (!canArchive) {
-          roomOptions = this.removeOptions(roomOptions, [
-            "edit-room",
-            "invite-users-to-room",
-            "archive-room",
-            "separator1",
-          ]);
-        } else {
-          roomOptions = this.removeOptions(roomOptions, [
-            "edit-room",
-            "invite-users-to-room",
-            "pin-room",
-            "unpin-room",
-            "archive-room",
-            "separator1",
-            "room-info",
-          ]);
-        }
+      if (isArchiveFolder || item.rootFolderType === FolderType.Archive) {
+        roomOptions = this.removeOptions(roomOptions, [
+          "edit-room",
+          "invite-users-to-room",
+          "pin-room",
+          "unpin-room",
+          "archive-room",
+          "separator1",
+          "room-info",
+        ]);
       } else {
         roomOptions = this.removeOptions(roomOptions, [
           "delete",
@@ -1481,21 +1454,36 @@ class FilesStore {
         "delete",
       ];
 
-      if (!deleteFile) {
+      if (!filesRights.deleteSelf || !filesRights.deleteAlien) {
         folderOptions = this.removeOptions(folderOptions, ["delete"]);
       }
-      if (!moveFile) {
+      if (!filesRights.moveSelf || !filesRights.moveAlien) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
-      if (!renameFile) {
+      if (!filesRights.rename) {
         folderOptions = this.removeOptions(folderOptions, ["rename"]);
       }
-      if (!copyFile) {
+      if (!filesRights.copyFromPersonal) {
         folderOptions = this.removeOptions(folderOptions, ["copy-to", "copy"]);
       }
 
-      if (!moveFile && !copyFile) {
+      if (
+        (!filesRights.moveSelf || !filesRights.moveAlien) &&
+        !filesRights.copyFromPersonal
+      ) {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
+      }
+
+      if (item.rootFolderType === FolderType.Archive) {
+        folderOptions = this.removeOptions(folderOptions, [
+          "move",
+          "move-to",
+          "copy-to",
+          "rename",
+          "change-thirdparty-info",
+          "separator2",
+          "delete",
+        ]);
       }
 
       if (isPrivacyFolder) {
@@ -1745,9 +1733,15 @@ class FilesStore {
   };
 
   addFile = (item, isFolder) => {
-    const filter = this.filter.clone();
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+
+    const isRooms = isRoomsFolder || isArchiveFolder;
+
+    const filter = isRooms ? this.roomsFilter.clone() : this.filter.clone();
     filter.total += 1;
-    this.setFilter(filter);
+
+    if (isRooms) this.setRoomsFilter(filter);
+    else this.setFilter(filter);
 
     isFolder ? this.folders.unshift(item) : this.files.unshift(item);
 
@@ -2664,17 +2658,7 @@ class FilesStore {
     const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
-
-    // const filterTotal = isRoom ? this.roomsFilterTotal : this.filterTotal;
     const filterTotal = isRooms ? this.roomsFilter.total : this.filter.total;
-
-    // console.log("hasMoreFiles isRooms", isRooms);
-    // console.log("hasMoreFiles filesList", this.filesList.length);
-    // console.log("hasMoreFiles this.filterTotal", this.filterTotal);
-    // console.log("hasMoreFiles this.roomsFilterTotal", this.roomsFilterTotal);
-    // console.log("hasMoreFiles filterTotal", filterTotal);
-    // console.log("hasMoreFiles", this.filesList.length < filterTotal);
-    // console.log("----------------------------");
 
     if (this.isLoading) return false;
     return this.filesList.length < filterTotal;

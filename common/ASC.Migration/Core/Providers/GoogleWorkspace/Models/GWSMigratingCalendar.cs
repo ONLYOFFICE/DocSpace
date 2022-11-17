@@ -48,11 +48,11 @@ public class GwsMigratingCalendar : MigratingCalendar
         //}
     }
 
-    public override void Migrate()
+    public override Task Migrate()
     {
         if (!ShouldImport)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         // \portals\module\ASC.Api\ASC.Api.Calendar\CalendarApi.cs#L2311

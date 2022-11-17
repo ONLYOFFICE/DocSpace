@@ -229,10 +229,12 @@ class TableHeader extends React.Component {
       sectionWidth,
       infoPanelVisible,
       columns,
+      setHideColumns,
     } = this.props;
 
     if (!infoPanelVisible && this.state.hideColumns) {
       this.setState({ hideColumns: false });
+      setHideColumns && setHideColumns(false);
     }
 
     let activeColumnIndex = null;
@@ -335,6 +337,7 @@ class TableHeader extends React.Component {
 
         if (this.state.hideColumns !== hideColumns) {
           this.setState({ hideColumns: hideColumns });
+          setHideColumns(hideColumns);
         }
 
         if (hideColumns) {

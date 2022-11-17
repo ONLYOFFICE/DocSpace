@@ -3,7 +3,11 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import CatalogItem from "@docspace/components/catalog-item";
-import { FolderType, ShareAccessRights } from "@docspace/common/constants";
+import {
+  FolderType,
+  ShareAccessRights,
+  FolderNames,
+} from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@docspace/components/drag-and-drop";
 import { isMobile } from "react-device-detect";
@@ -30,6 +34,7 @@ const Item = ({
   showBadge,
   labelBadge,
   iconBadge,
+  folderId,
 }) => {
   const [isDragActive, setIsDragActive] = useState(false);
 
@@ -96,6 +101,7 @@ const Item = ({
       <CatalogItem
         key={item.id}
         id={item.id}
+        folderId={folderId}
         className={`tree-drag ${item.folderClassName}`}
         icon={getFolderIcon(item)}
         showText={showText}
@@ -318,6 +324,7 @@ const Items = ({
             showBadge={showBadge}
             labelBadge={labelBadge}
             iconBadge={iconBadge}
+            folderId={`document_catalog-${FolderNames[item.rootFolderType]}`}
           />
         );
       });

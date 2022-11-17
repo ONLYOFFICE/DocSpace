@@ -145,12 +145,11 @@ const Base = {
       baseHover: white,
       baseActive: grayLightMid,
       baseDisabled: grayLight,
-      baseLoading: grayLight,
+
       primary: blueDenim,
       primaryHover: blueDenimTransparent,
       primaryActive: blueMaya,
       primaryDisabled: blueSky,
-      primaryLoading: blueSky,
     },
 
     border: {
@@ -158,13 +157,11 @@ const Base = {
       baseHover: `1px solid ${blueDenim}`,
       baseActive: `1px solid ${globalColors.grayMid}`,
       baseDisabled: `1px solid ${globalColors.grayLightMid}`,
-      baseLoading: `1px solid ${globalColors.grayLightMid}`,
 
       primary: `1px solid ${blueDenim}`,
       primaryHover: `1px solid ${blueDenimTransparent}`,
       primaryActive: `1px solid ${blueMaya}`,
       primaryDisabled: `1px solid ${blueSky}`,
-      primaryLoading: `1px solid ${blueSky}`,
     },
 
     loader: {

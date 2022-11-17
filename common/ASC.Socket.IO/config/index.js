@@ -46,4 +46,8 @@ function getAndSaveAppsettings(){
         redis.db = redis.Database;
         nconf.set("Redis", redis);
     }
+
+    
+
+
 }

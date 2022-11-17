@@ -57,9 +57,17 @@ public static class ISetupBuilderExtension
                 awsTarget.LogGroup = awsTarget.LogGroup.Replace("${var:name}", settings.Name);
             }
 
-            if (!string.IsNullOrEmpty(settings.AWSSecretAccessKey))
+
+            var awsAccessKeyId = string.IsNullOrEmpty(settings.AWSAccessKeyId) ? configuration["aws:cloudWatch:accessKeyId"] : settings.AWSAccessKeyId;
+            var awsSecretAccessKey = string.IsNullOrEmpty(settings.AWSSecretAccessKey) ? configuration["aws:cloudWatch:secretAccessKey"] : settings.AWSSecretAccessKey;
+
+            if (!string.IsNullOrEmpty(awsAccessKeyId))
             {
-                awsTarget.Credentials = new Amazon.Runtime.BasicAWSCredentials(settings.AWSAccessKeyId, settings.AWSSecretAccessKey);
+
+                awsTarget.LogGroup = String.IsNullOrEmpty(configuration["aws:cloudWatch:logGroupName"]) ? awsTarget.LogGroup : configuration["aws:cloudWatch:logGroupName"];
+                awsTarget.Region = String.IsNullOrEmpty(configuration["aws:cloudWatch:region"]) ? awsTarget.Region : configuration["aws:cloudWatch:region"];
+
+                awsTarget.Credentials = new Amazon.Runtime.BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
             }
         }
 
