@@ -63,6 +63,8 @@ const EmptyFolderWrapper = styled.div`
     .flex-wrapper_container {
       display: flex;
       flex-wrap: wrap;
+
+      row-gap: 16px;
     }
 
     .empty-folder_container-image {
