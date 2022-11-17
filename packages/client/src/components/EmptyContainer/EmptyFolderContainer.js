@@ -133,7 +133,11 @@ const EmptyFolderContainer = ({
           ? t("EmptyFolderDecription")
           : t("EmptyFolderDescriptionUser")
       }
-      imageSrc="/static/images/empty_screen_alt.svg"
+      imageSrc={
+        isRooms
+          ? "images/empty_screen_corporate.png"
+          : "/static/images/empty_screen_alt.svg"
+      }
       buttons={buttons}
       sectionWidth={sectionWidth}
       isEmptyFolderContainer={true}
