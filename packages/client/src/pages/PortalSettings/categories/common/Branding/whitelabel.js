@@ -203,6 +203,22 @@ const WhiteLabel = (props) => {
             />
           </div>
         </div>
+
+        <div className="logo-wrapper">
+          <Text
+            fontSize="15px"
+            fontWeight="600"
+            className="settings_unavailable"
+          >
+            {t("LogoFavicon")}
+          </Text>
+          <Logo
+            src={logoUrlsWhiteLabel[2]}
+            imageClass="border-img logo-favicon"
+            inputId="logoUploader_3"
+            onChangeText={t("ChangeLogoButton")}
+          />
+        </div>
       </div>
     </WhiteLabelWrapper>
   );

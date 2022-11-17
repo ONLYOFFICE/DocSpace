@@ -15,9 +15,11 @@ const Logo = (props) => {
   return (
     <div>
       <div className="logo-item">
-        <Text fontSize="13px" fontWeight="600">
-          {title}
-        </Text>
+        {title && (
+          <Text fontSize="13px" fontWeight="600">
+            {title}
+          </Text>
+        )}
         <img className={imageClass} src={src} />
       </div>
       <label>

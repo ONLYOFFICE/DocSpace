@@ -97,8 +97,8 @@ const WhiteLabelWrapper = styled.div`
   }
 
   .logo-favicon {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
 
   .logo-docs-editor {
