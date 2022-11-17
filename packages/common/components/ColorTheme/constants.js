@@ -26,4 +26,5 @@ export const ThemeType = {
   Slider: "slider",
   IndicatorLoader: "indicatorLoader",
   Progress: "progress",
+  MobileProgressBar: "mobileProgressBar",
 };
