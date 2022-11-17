@@ -51,6 +51,12 @@ const WhiteLabelWrapper = styled.div`
     gap: 20px;
   }
 
+  .logos-login-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
   .logo-item {
     display: flex;
     flex-direction: column;
@@ -79,9 +85,9 @@ const WhiteLabelWrapper = styled.div`
   }
 
   .logo-big {
-    max-width: 216px;
-    max-height: 35px;
-    padding: 10px;
+    width: 384px;
+    height: 42px;
+    padding: 12px 20px;
   }
 
   .logo-favicon {

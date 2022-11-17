@@ -151,6 +151,32 @@ const WhiteLabel = (props) => {
             />
           </div>
         </div>
+
+        <div className="logo-wrapper">
+          <Text
+            fontSize="15px"
+            fontWeight="600"
+            className="settings_unavailable"
+          >
+            {t("LogoLogin")}
+          </Text>
+          <div className="logos-login-wrapper">
+            <Logo
+              title={t("Profile:LightTheme")}
+              src={logoUrlsWhiteLabel[1]}
+              imageClass="border-img logo-big"
+              inputId="logoUploader_2"
+              onChangeText={t("ChangeLogoButton")}
+            />
+            <Logo
+              title={t("Profile:DarkTheme")}
+              src={logoUrlsWhiteLabel[1]}
+              imageClass="border-img logo-big"
+              inputId="logoUploader_2"
+              onChangeText={t("ChangeLogoButton")}
+            />
+          </div>
+        </div>
       </div>
     </WhiteLabelWrapper>
   );
