@@ -600,7 +600,7 @@ const Appearance = (props) => {
           </div>
         </div>
 
-        <div className="theme-custom">
+        <div className="theme-custom show-custom-functional">
           <div className="theme-name">Custom</div>
 
           <div className="theme-container">
@@ -677,7 +677,7 @@ const Appearance = (props) => {
           />
 
           <Button
-            className="button"
+            className="button show-custom-functional"
             label="Edit current theme"
             onClick={onClickEdit}
             size="small"
@@ -685,7 +685,7 @@ const Appearance = (props) => {
           />
           {isShowDeleteButton && (
             <Button
-              className="button"
+              className="button show-custom-functional"
               label="Delete theme"
               onClick={() => setVisibleDialog(true)}
               size="small"

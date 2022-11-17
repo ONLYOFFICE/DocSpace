@@ -67,6 +67,10 @@ const StyledComponent = styled.div`
       fill: ${(props) => props.colorCheckImg};
     }
   }
+
+  .show-custom-functional {
+    display: none;
+  }
 `;
 
 const StyledTheme = styled.div`
