@@ -483,6 +483,8 @@ function Editor({
         goback: goBack,
       };
 
+      config.document.info.favorite = null;
+
       // if (personal && !fileInfo) {
       //   //TODO: add conditions for SaaS
       //   config.document.info.favorite = null;
