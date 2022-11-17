@@ -18,6 +18,7 @@ const EmptyFolderContainer = ({
   sectionWidth,
   canCreateFiles,
   canInviteUsers,
+  setIsEmptyPage,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -26,6 +27,12 @@ const EmptyFolderContainer = ({
       ? fetchRooms(parentId).finally(() => setIsLoading(false))
       : fetchFiles(parentId).finally(() => setIsLoading(false));
   };
+
+  React.useEffect(() => {
+    setIsEmptyPage(true);
+
+    return () => setIsEmptyPage(false);
+  }, []);
 
   const buttons = canCreateFiles ? (
     <>
@@ -128,7 +135,7 @@ const EmptyFolderContainer = ({
 
 export default inject(
   ({ accessRightsStore, filesStore, selectedFolderStore }) => {
-    const { fetchFiles, fetchRooms } = filesStore;
+    const { fetchFiles, fetchRooms, setIsEmptyPage } = filesStore;
     const { navigationPath, parentId, access } = selectedFolderStore;
 
     let isRootRoom, isRoom, id;
@@ -152,6 +159,7 @@ export default inject(
       isRooms: isRoom || isRootRoom,
       canCreateFiles,
       canInviteUsers,
+      setIsEmptyPage,
     };
   }
 )(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));
