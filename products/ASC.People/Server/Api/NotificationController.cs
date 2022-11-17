@@ -66,7 +66,7 @@ public class NotificationController : ApiControllerBase
 
         user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
 
-        _userManager.SaveUserInfo(user);
+        _userManager.UpdateUserInfo(user);
 
         if (user.IsMe(_authContext))
         {

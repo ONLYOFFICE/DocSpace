@@ -41,7 +41,7 @@ public class PushSender : INotifySender
 
     public void Init(IDictionary<string, string> properties) { }
 
-    public NoticeSendResult Send(NotifyMessage m)
+    public Task<NoticeSendResult> Send(NotifyMessage m)
     {
         if (!string.IsNullOrEmpty(m.Content))
         {
@@ -59,7 +59,7 @@ public class PushSender : INotifySender
             _logger.ErrorUnexpected(e);
         }
 
-        return NoticeSendResult.OK;
+        return Task.FromResult(NoticeSendResult.OK);
     }
 }
 public static class FirebaseSenderExtension

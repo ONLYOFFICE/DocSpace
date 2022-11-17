@@ -45,7 +45,7 @@ public class DbBackupProvider : IBackupProvider
 
     public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
-    public IEnumerable<XElement> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
+    public Task<IEnumerable<XElement>> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
     {
         _processedTables.Clear();
         var xml = new List<XElement>();
@@ -69,11 +69,11 @@ public class DbBackupProvider : IBackupProvider
                 node.Add(BackupDatabase(tenant, connectionString, writer));
             }
         }
-
-        return xml;
+       
+        return Task.FromResult(xml.AsEnumerable());
     }
 
-    public void LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
+    public Task LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
     {
         _processedTables.Clear();
 
@@ -81,6 +81,7 @@ public class DbBackupProvider : IBackupProvider
         {
             RestoreDatabase(connectionString, elements, reader);
         }
+        return Task.CompletedTask;
     }
 
     public IEnumerable<ConnectionStringSettings> GetConnectionStrings(string[] configs)

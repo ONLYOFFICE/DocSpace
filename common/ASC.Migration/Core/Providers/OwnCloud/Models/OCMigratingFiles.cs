@@ -116,9 +116,8 @@ public class OCMigratingFiles : MigratingFiles
         }
     }
 
-    public override void Migrate()
+    public override async Task Migrate()
     {
-
         if (!ShouldImport)
         {
             return;
@@ -149,7 +148,7 @@ public class OCMigratingFiles : MigratingFiles
                     var parentId = i == 0 ? _globalFolderHelper.FolderMy : foldersDict[string.Join(Path.DirectorySeparatorChar.ToString(), split.Take(i))].Id;
                     try
                     {
-                        var newFolder = _fileStorageService.CreateNewFolderAsync(parentId, split[i]).Result;
+                        var newFolder = await _fileStorageService.CreateNewFolderAsync(parentId, split[i]);
                         foldersDict.Add(path, newFolder);
                         _matchingFileId.Add(newFolder.Id, folder.FileId);
                     }
@@ -179,7 +178,7 @@ public class OCMigratingFiles : MigratingFiles
                     var fileDao = _daoFactory.GetFileDao<int>();
                     var folderDao = _daoFactory.GetFolderDao<int>();
 
-                    var parentFolder = string.IsNullOrWhiteSpace(parentPath) ? folderDao.GetFolderAsync(_globalFolderHelper.FolderMy).Result : foldersDict[parentPath];
+                    var parentFolder = string.IsNullOrWhiteSpace(parentPath) ? await folderDao.GetFolderAsync(_globalFolderHelper.FolderMy) : foldersDict[parentPath];
 
                     var newFile = new File<int>
                     {
@@ -188,7 +187,7 @@ public class OCMigratingFiles : MigratingFiles
                         Title = Path.GetFileName(file.Path),
                         ContentLength = fs.Length
                     };
-                    newFile = fileDao.SaveFileAsync(newFile, fs).Result;
+                    newFile = await fileDao.SaveFileAsync(newFile, fs);
                     _matchingFileId.Add(newFile.Id, file.FileId);
 
                 }
@@ -255,7 +254,7 @@ public class OCMigratingFiles : MigratingFiles
 
             try
             {
-                _fileStorageService.SetAceObjectAsync(aceCollection, false).Wait();
+                await _fileStorageService.SetAceObjectAsync(aceCollection, false);
             }
             catch (Exception ex)
             {

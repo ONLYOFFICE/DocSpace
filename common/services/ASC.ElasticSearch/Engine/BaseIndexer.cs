@@ -208,9 +208,9 @@ public class BaseIndexer<T> where T : class, ISearchItem
         _client.Instance.Indices.Refresh(new RefreshRequest(IndexName));
     }
 
-    internal void Index(T data, bool immediately = true)
+    internal async Task Index(T data, bool immediately = true)
     {
-        if (!BeforeIndex(data))
+        if (!(await BeforeIndex(data)))
         {
             return;
         }
@@ -218,7 +218,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
         _client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
     }
 
-    internal void Index(List<T> data, bool immediately = true)
+    internal async Task Index(List<T> data, bool immediately = true)
     {
         if (data.Count == 0)
         {
@@ -241,7 +241,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
                 var t = data[i];
                 var runBulk = i == data.Count - 1;
 
-                BeforeIndex(t);
+                await BeforeIndex(t);
 
                 if (t is not ISearchItemDocument wwd || wwd.Document == null || string.IsNullOrEmpty(wwd.Document.Data))
                 {
@@ -254,7 +254,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
                     {
                         try
                         {
-                            Index(t, immediately);
+                            await Index(t, immediately);
                         }
                         catch (ElasticsearchClientException e)
                         {
@@ -316,7 +316,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
         {
             foreach (var item in data)
             {
-                BeforeIndex(item);
+                await BeforeIndex(item);
             }
 
             _client.Instance.Bulk(r => r.IndexMany(data, GetMeta));
@@ -356,7 +356,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
                     {
                         try
                         {
-                            Index(t, immediately);
+                            await Index(t, immediately);
                         }
                         catch (ElasticsearchClientException e)
                         {
@@ -523,9 +523,9 @@ public class BaseIndexer<T> where T : class, ISearchItem
         return result.Documents;
     }
 
-    protected virtual bool BeforeIndex(T data)
+    protected virtual Task<bool> BeforeIndex(T data)
     {
-        return CheckExist(data);
+        return Task.FromResult(CheckExist(data));
     }
 
     protected virtual Task<bool> BeforeIndexAsync(T data)

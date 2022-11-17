@@ -135,7 +135,7 @@ public sealed class UserManagerWrapper
             Status = EmployeeStatus.Active,
         };
 
-        var newUser = _userManager.SaveUserInfo(user);
+        var newUser = await _userManager.SaveUserInfo(user);
 
         var groupId = type switch
         {
@@ -146,13 +146,13 @@ public sealed class UserManagerWrapper
 
         if (groupId != Guid.Empty)
         {
-            _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
+            await _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
         }
 
         return newUser;
     }
 
-    public UserInfo AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isUser = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false, 
+    public async Task<UserInfo> AddUser(UserInfo userInfo, string passwordHash, bool afterInvite = false, bool notify = true, bool isUser = false, bool fromInviteLink = false, bool makeUniqueName = true, bool isCardDav = false,
         bool updateExising = false, bool isAdmin = false)
     {
         ArgumentNullException.ThrowIfNull(userInfo);
@@ -181,7 +181,7 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
+        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -226,11 +226,11 @@ public sealed class UserManagerWrapper
 
         if (isUser)
         {
-            _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
         }
         else if (isAdmin)
         {
-            _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupAdmin.ID);
         }
 
         return newUserInfo;

@@ -272,7 +272,7 @@ public class WebItemSecurity
         return result;
     }
 
-    public void SetProductAdministrator(Guid productid, Guid userid, bool administrator)
+    public async Task SetProductAdministrator(Guid productid, Guid userid, bool administrator)
     {
         if (productid == Guid.Empty)
         {
@@ -283,7 +283,7 @@ public class WebItemSecurity
         {
             if (_userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupUser.ID))
             {
-                _countRoomAdminChecker.CheckAppend().Wait();
+                await _countRoomAdminChecker.CheckAppend();
                 _userManager.RemoveUserFromGroup(userid, ASC.Core.Users.Constants.GroupUser.ID);
             }
 
@@ -295,7 +295,7 @@ public class WebItemSecurity
                 }
             }
 
-            _userManager.AddUserIntoGroup(userid, productid);
+            await _userManager.AddUserIntoGroup(userid, productid);
         }
         else
         {

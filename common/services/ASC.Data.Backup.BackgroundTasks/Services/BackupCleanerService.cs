@@ -66,7 +66,7 @@ internal sealed class BackupCleanerService : BackgroundService
                 continue;
             }
 
-            ExecuteBackupCleaner(stoppingToken);
+            await ExecuteBackupCleaner(stoppingToken);
 
             await Task.Delay(_backupCleanerPeriod, stoppingToken);
         }
@@ -74,7 +74,7 @@ internal sealed class BackupCleanerService : BackgroundService
         _logger.DebugBackupCleanerServiceStopping();
     }
 
-    private void ExecuteBackupCleaner(CancellationToken stoppingToken)
+    private async Task ExecuteBackupCleaner(CancellationToken stoppingToken)
     {
         using var serviceScope = _scopeFactory.CreateScope();
 
@@ -126,7 +126,7 @@ internal sealed class BackupCleanerService : BackgroundService
                     continue;
                 }
 
-                backupStorage.Delete(backupRecord.StoragePath);
+                await backupStorage.Delete(backupRecord.StoragePath);
 
                 backupRepository.DeleteBackupRecord(backupRecord.Id);
             }

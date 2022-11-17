@@ -81,16 +81,16 @@ public class PhotoController : PeopleControllerBase
             var settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
 
             _settingsManager.SaveForUser(settings, user.Id);
-            _userPhotoManager.RemovePhoto(user.Id);
+            await _userPhotoManager.RemovePhoto(user.Id);
             await _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
-            _userPhotoManager.RemoveTempPhoto(fileName);
+            await _userPhotoManager.RemoveTempPhoto(fileName);
         }
         else
         {
             await UserPhotoThumbnailManager.SaveThumbnails(_userPhotoManager, _settingsManager, inDto.X, inDto.Y, inDto.Width, inDto.Height, user.Id);
         }
 
-        _userManager.SaveUserInfo(user, syncCardDav: true);
+        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
         return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
     }
@@ -107,8 +107,8 @@ public class PhotoController : PeopleControllerBase
 
         _permissionContext.DemandPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
-        _userPhotoManager.RemovePhoto(user.Id);
-        _userManager.SaveUserInfo(user, syncCardDav: true);
+        await _userPhotoManager.RemovePhoto(user.Id);
+        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
@@ -142,7 +142,7 @@ public class PhotoController : PeopleControllerBase
             await UpdatePhotoUrl(inDto.Files, user);
         }
 
-        _userManager.SaveUserInfo(user, syncCardDav: true);
+        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
         return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);

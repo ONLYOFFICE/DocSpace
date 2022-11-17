@@ -609,6 +609,7 @@ class SectionHeaderContent extends React.Component {
       isEmptyPage,
       canCreateFiles,
     } = this.props;
+
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
@@ -636,7 +637,7 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate && canCreateFiles}
+                    canCreate={canCreate && (canCreateFiles || isRoomsFolder)}
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}

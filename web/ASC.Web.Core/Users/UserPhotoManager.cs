@@ -343,7 +343,7 @@ public class UserPhotoManager
 
     public async Task<string> GetPhotoAbsoluteWebPath(Guid userID)
     {
-        var path = SearchInCache(userID, Size.Empty);
+        var path = await SearchInCache(userID, Size.Empty);
         if (!string.IsNullOrEmpty(path))
         {
             return path;
@@ -397,7 +397,7 @@ public class UserPhotoManager
 
     private async Task<string> GetSizedPhotoAbsoluteWebPath(Guid userID, Size size)
     {
-        var res = SearchInCache(userID, size);
+        var res = await SearchInCache(userID, size);
         if (!string.IsNullOrEmpty(res))
         {
             return res;
@@ -438,14 +438,14 @@ public class UserPhotoManager
     }
 
     private static readonly HashSet<int> _tenantDiskCache = new HashSet<int>();
-    private static readonly object _diskCacheLoaderLock = new object();
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
 
-    private string SearchInCache(Guid userId, Size size)
+    private async Task<string> SearchInCache(Guid userId, Size size)
     {
         if (!_userPhotoManagerCache.IsCacheLoadedForTenant(Tenant.Id))
         {
-            LoadDiskCache();
+            await LoadDiskCache();
         }
 
         var fileName = _userPhotoManagerCache.SearchInCache(userId, size);
@@ -464,42 +464,41 @@ public class UserPhotoManager
         return null;
     }
 
-    private void LoadDiskCache()
+    private async Task LoadDiskCache()
     {
-        lock (_diskCacheLoaderLock)
+        await _semaphore.WaitAsync();
+        if (!_userPhotoManagerCache.IsCacheLoadedForTenant(Tenant.Id))
         {
-            if (!_userPhotoManagerCache.IsCacheLoadedForTenant(Tenant.Id))
+            try
             {
-                try
+                var listFileNames = await GetDataStore().ListFilesRelativeAsync("", "", "*.*", false).ToArrayAsync();
+                foreach (var fileName in listFileNames)
                 {
-                    var listFileNames = GetDataStore().ListFilesRelativeAsync("", "", "*.*", false).ToArrayAsync().Result;
-                    foreach (var fileName in listFileNames)
+                    //Try parse fileName
+                    if (fileName != null)
                     {
-                        //Try parse fileName
-                        if (fileName != null)
+                        var match = _parseFile.Match(fileName);
+                        if (match.Success && match.Groups["user"].Success)
                         {
-                            var match = _parseFile.Match(fileName);
-                            if (match.Success && match.Groups["user"].Success)
+                            var parsedUserId = new Guid(match.Groups["user"].Value);
+                            var size = Size.Empty;
+                            if (match.Groups["width"].Success && match.Groups["height"].Success)
                             {
-                                var parsedUserId = new Guid(match.Groups["user"].Value);
-                                var size = Size.Empty;
-                                if (match.Groups["width"].Success && match.Groups["height"].Success)
-                                {
-                                    //Parse size
-                                    size = new Size(int.Parse(match.Groups["width"].Value), int.Parse(match.Groups["height"].Value));
-                                }
-                                _userPhotoManagerCache.AddToCache(parsedUserId, size, fileName, _tenant.Id);
+                                //Parse size
+                                size = new Size(int.Parse(match.Groups["width"].Value), int.Parse(match.Groups["height"].Value));
                             }
+                            _userPhotoManagerCache.AddToCache(parsedUserId, size, fileName, _tenant.Id);
                         }
                     }
-                    _userPhotoManagerCache.SetCacheLoadedForTenant(true, Tenant.Id);
                 }
-                catch (Exception err)
-                {
-                    _log.ErrorLoadDiskCache(err);
-                }
+                _userPhotoManagerCache.SetCacheLoadedForTenant(true, Tenant.Id);
+            }
+            catch (Exception err)
+            {
+                _log.ErrorLoadDiskCache(err);
             }
         }
+        _semaphore.Release();
     }
     public void ResetThumbnailSettings(Guid userId)
     {
@@ -512,13 +511,13 @@ public class UserPhotoManager
         return await SaveOrUpdatePhoto(userID, data, -1, OriginalFotoSize, true);
     }
 
-    public void RemovePhoto(Guid idUser)
+    public async Task RemovePhoto(Guid idUser)
     {
         _userManager.SaveUserPhoto(idUser, null);
         try
         {
             var storage = GetDataStore();
-            storage.DeleteFilesAsync("", idUser + "*.*", false).Wait();
+            await storage.DeleteFilesAsync("", idUser + "*.*", false);
         }
         catch (AggregateException e)
         {
@@ -818,14 +817,14 @@ public class UserPhotoManager
         return GetDefaultPhotoAbsoluteWebPath(new Size(newWidth, newHeight));
     }
 
-    public void RemoveTempPhoto(string fileName)
+    public async Task RemoveTempPhoto(string fileName)
     {
         var index = fileName.LastIndexOf('.');
         var fileNameWithoutExt = (index != -1) ? fileName.Substring(0, index) : fileName;
         try
         {
             var store = GetDataStore();
-            store.DeleteFilesAsync(_tempDomainName, "", fileNameWithoutExt + "*.*", false).Wait();
+            await store.DeleteFilesAsync(_tempDomainName, "", fileNameWithoutExt + "*.*", false);
         }
         catch { }
     }
@@ -867,13 +866,13 @@ public class UserPhotoManager
         return photoUrl;
     }
 
-    public byte[] GetUserPhotoData(Guid userId, Size size)
+    public async Task<byte[]> GetUserPhotoData(Guid userId, Size size)
     {
         try
         {
             var pattern = string.Format("{0}_size_{1}-{2}.*", userId, size.Width, size.Height);
 
-            var fileName = GetDataStore().ListFilesRelativeAsync("", "", pattern, false).ToArrayAsync().Result.FirstOrDefault();
+            var fileName = (await GetDataStore().ListFilesRelativeAsync("", "", pattern, false).ToArrayAsync()).FirstOrDefault();
 
             if (string.IsNullOrEmpty(fileName))
             {
