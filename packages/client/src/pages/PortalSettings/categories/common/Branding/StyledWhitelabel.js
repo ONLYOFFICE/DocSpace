@@ -80,8 +80,6 @@ const WhiteLabelWrapper = styled.div`
     width: 211px;
     height: 24px;
     padding: 22px 20px;
-    background-color: ${(props) =>
-      props.theme.client.settings.common.whiteLabel.backgroundColor};
   }
 
   .logo-compact {
@@ -134,6 +132,16 @@ const WhiteLabelWrapper = styled.div`
   .background-orange {
     background-color: ${(props) =>
       props.theme.client.settings.common.whiteLabel.orangeBackgroundColor};
+  }
+
+  .background-light {
+    background-color: ${(props) =>
+      props.theme.client.settings.common.whiteLabel.backgroundColorLight};
+  }
+
+  .background-dark {
+    background-color: ${(props) =>
+      props.theme.client.settings.common.whiteLabel.backgroundColorDark};
   }
 
   .hidden {

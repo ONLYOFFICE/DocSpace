@@ -112,14 +112,14 @@ const WhiteLabel = (props) => {
             <Logo
               title={t("Profile:LightTheme")}
               src={logoUrlsWhiteLabel[0]}
-              imageClass="logo-header"
+              imageClass="logo-header background-light"
               inputId="logoUploader_1"
               onChangeText={t("ChangeLogoButton")}
             />
             <Logo
               title={t("Profile:DarkTheme")}
               src={logoUrlsWhiteLabel[0]}
-              imageClass="logo-header"
+              imageClass="logo-header background-dark"
               inputId="logoUploader_1"
               onChangeText={t("ChangeLogoButton")}
             />
@@ -138,14 +138,14 @@ const WhiteLabel = (props) => {
             <Logo
               title={t("Profile:LightTheme")}
               src={logoUrlsWhiteLabel[5]}
-              imageClass="border-img logo-compact"
+              imageClass="border-img logo-compact background-light"
               inputId="logoUploader_6"
               onChangeText={t("ChangeLogoButton")}
             />
             <Logo
               title={t("Profile:DarkTheme")}
               src={logoUrlsWhiteLabel[5]}
-              imageClass="border-img logo-compact"
+              imageClass="border-img logo-compact background-dark"
               inputId="logoUploader_6"
               onChangeText={t("ChangeLogoButton")}
             />
@@ -171,7 +171,7 @@ const WhiteLabel = (props) => {
             <Logo
               title={t("Profile:DarkTheme")}
               src={logoUrlsWhiteLabel[1]}
-              imageClass="border-img logo-big"
+              imageClass="border-img logo-big background-dark"
               inputId="logoUploader_2"
               onChangeText={t("ChangeLogoButton")}
             />
@@ -197,7 +197,7 @@ const WhiteLabel = (props) => {
             <Logo
               title={t("Profile:DarkTheme")}
               src={logoUrlsWhiteLabel[6]}
-              imageClass="border-img logo-about"
+              imageClass="border-img logo-about background-dark"
               inputId="logoUploader_7"
               onChangeText={t("ChangeLogoButton")}
             />
