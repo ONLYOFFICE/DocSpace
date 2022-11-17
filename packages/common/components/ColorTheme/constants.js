@@ -25,4 +25,5 @@ export const ThemeType = {
   Link: "link",
   Slider: "slider",
   IndicatorLoader: "indicatorLoader",
+  Progress: "progress",
 };
