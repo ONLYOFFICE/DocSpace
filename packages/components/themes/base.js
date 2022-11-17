@@ -2985,6 +2985,12 @@ const Base = {
     background: white,
     boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
+
+  preparationPortalProgress: {
+    backgroundColor: "#F3F4F4",
+    colorPercentSmall: "#333333",
+    colorPercentBig: "#FFFFFF",
+  },
 };
 
 export default Base;

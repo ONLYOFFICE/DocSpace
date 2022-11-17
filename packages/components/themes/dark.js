@@ -2988,6 +2988,12 @@ const Dark = {
     background: black,
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.16);",
   },
+
+  preparationPortalProgress: {
+    backgroundColor: "#282828",
+    colorPercentSmall: "#FFFFFF",
+    colorPercentBig: "#333333",
+  },
 };
 
 export default Dark;
