@@ -35,7 +35,12 @@ class TreeFoldersStore {
   getFoldersTree = () => getFoldersTree();
 
   setTreeFolders = (treeFolders) => {
-    this.treeFolders = treeFolders;
+    // this.treeFolders = treeFolders;
+
+    //TODO: remove after api fix
+    this.treeFolders = treeFolders
+      .filter((f) => f.rootFolderType !== FolderType.Recent)
+      .filter((f) => f.rootFolderType !== FolderType.Favorites);
   };
 
   setIsLoadingNodes = (isLoadingNodes) => {
