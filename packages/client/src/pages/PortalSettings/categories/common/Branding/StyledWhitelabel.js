@@ -1,0 +1,111 @@
+import styled from "styled-components";
+import { Base } from "@docspace/components/themes";
+
+const WhiteLabelWrapper = styled.div`
+  .subtitle {
+    margin-top: 5px;
+    margin-bottom: 20px;
+  }
+
+  .header-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .wl-subtitle {
+    margin-top: 8px;
+    margin-bottom: 20px;
+  }
+
+  .wl-helper {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .use-as-logo {
+    margin-top: 12px;
+    margin-bottom: 24px;
+  }
+
+  .input {
+    max-width: 350px;
+  }
+
+  .logos-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .logo-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .border-img {
+    border: ${(props) =>
+      props.theme.client.settings.common.whiteLabel.borderImg};
+    box-sizing: content-box;
+  }
+
+  .logo-header {
+    width: 211px;
+    height: 24px;
+    padding: 12px 20px;
+    background-color: ${(props) =>
+      props.theme.client.settings.common.whiteLabel.backgroundColor};
+  }
+
+  .logo-compact {
+    width: 56px;
+    height: 56px;
+  }
+
+  .logo-big {
+    max-width: 216px;
+    max-height: 35px;
+    padding: 10px;
+  }
+
+  .logo-favicon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .logo-docs-editor {
+    width: 86px;
+    height: 20px;
+    padding: 10px;
+  }
+
+  .background-green {
+    background-color: ${(props) =>
+      props.theme.client.settings.common.whiteLabel.greenBackgroundColor};
+  }
+
+  .background-blue {
+    background-color: ${(props) =>
+      props.theme.client.settings.common.whiteLabel.blueBackgroundColor};
+  }
+
+  .background-orange {
+    background-color: ${(props) =>
+      props.theme.client.settings.common.whiteLabel.orangeBackgroundColor};
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .save-cancel-buttons {
+    margin-top: 24px;
+  }
+`;
+
+WhiteLabelWrapper.defaultProps = { theme: Base };
+
+export default WhiteLabelWrapper;
