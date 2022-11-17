@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Base from "../themes/base";
 
 const InputWrapper = styled.div`
   display: flex;
@@ -9,8 +10,9 @@ const InputWrapper = styled.div`
     height: 120px;
     width: 100px;
     display: block;
-    background: #ffffff;
-    border: 1px solid #d0d5da;
+    background: ${(props) => props.theme.codeInput.background};
+    border: ${(props) => props.theme.codeInput.border};
+    color: ${(props) => props.theme.codeInput.color};
     box-sizing: border-box;
     border-radius: 8px;
     margin: 0 4px;
@@ -35,20 +37,21 @@ const InputWrapper = styled.div`
   }
 
   input:focus {
-    border: 1px solid #3b72a7;
+    border: 1px solid #5299e0;
+    outline: none;
   }
 
   input:disabled {
-    color: #a3a9ae;
-    background: #f8f9f9;
-    border: 1px solid #eceef1;
+    color: ${(props) => props.theme.codeInput.disabledColor};
+    background: ${(props) => props.theme.codeInput.disabledBackground};
+    border: ${(props) => props.theme.codeInput.disabledBorder};
     outline: none;
   }
 
   hr {
     width: 24px;
     height: 1px;
-    background: #c4c4c4;
+    background: ${(props) => props.theme.codeInput.lineColor};
     border: none;
     margin: 0 16px;
 
@@ -57,5 +60,7 @@ const InputWrapper = styled.div`
     }
   }
 `;
+
+InputWrapper.defaultProps = { theme: Base };
 
 export default InputWrapper;

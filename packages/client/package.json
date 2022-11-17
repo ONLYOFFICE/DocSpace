@@ -8,7 +8,7 @@
     "clean": "shx rm -rf dist",
     "deploy": "shx --silent mkdir -p ../../build/deploy/client && shx cp -r dist/* ../../build/deploy/client",
     "start": "NODE_OPTIONS=--openssl-legacy-provider webpack-cli serve",
-    "start-prod": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production && serve dist -p 5001"
+    "start-prod": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production && serve dist -s -p 5001"
   },
   "old-scripts": {
     "build:test": "webpack --env minimize=false --mode production",
@@ -71,7 +71,7 @@
     "playwright": "^1.18.1",
     "sass": "^1.39.2",
     "sass-loader": "^12.1.0",
-    "serve": "12.0.1",
+    "serve": "14.1.1",
     "shx": "^0.3.3",
     "source-map-loader": "^3.0.0",
     "style-loader": "3.2.1",
