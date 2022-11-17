@@ -57,6 +57,12 @@ const WhiteLabelWrapper = styled.div`
     gap: 20px;
   }
 
+  .logos-editor-wrapper {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
   .logo-item {
     display: flex;
     flex-direction: column;
@@ -99,12 +105,20 @@ const WhiteLabelWrapper = styled.div`
   .logo-favicon {
     width: 30px;
     height: 30px;
+    margin-bottom: 8px;
   }
 
   .logo-docs-editor {
-    width: 86px;
-    height: 20px;
-    padding: 10px;
+    width: 154px;
+    height: 27px;
+    padding: 6px 9px 7px 9px;
+  }
+
+  .logo-embedded-editor {
+    width: 154px;
+    height: 27px;
+    padding: 5px 8px 6px 8px;
+    margin-bottom: 8px;
   }
 
   .background-green {

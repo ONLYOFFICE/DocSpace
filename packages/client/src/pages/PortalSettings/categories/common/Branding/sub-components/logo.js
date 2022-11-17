@@ -11,6 +11,7 @@ const Logo = (props) => {
     onChangeText,
     inputId,
     imageClass,
+    isEditor,
   } = props;
   return (
     <div>
@@ -20,7 +21,15 @@ const Logo = (props) => {
             {title}
           </Text>
         )}
-        <img className={imageClass} src={src} />
+        {isEditor ? (
+          <div className="logos-editor-wrapper">
+            <img className="logo-docs-editor background-green" src={src} />
+            <img className="logo-docs-editor background-blue" src={src} />
+            <img className="logo-docs-editor background-orange" src={src} />
+          </div>
+        ) : (
+          <img className={imageClass} src={src} />
+        )}
       </div>
       <label>
         <input

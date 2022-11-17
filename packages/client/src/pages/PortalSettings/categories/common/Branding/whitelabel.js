@@ -219,6 +219,38 @@ const WhiteLabel = (props) => {
             onChangeText={t("ChangeLogoButton")}
           />
         </div>
+
+        <div className="logo-wrapper">
+          <Text
+            fontSize="15px"
+            fontWeight="600"
+            className="settings_unavailable"
+          >
+            {t("LogoDocsEditor")}
+          </Text>
+          <Logo
+            isEditor={true}
+            src={logoUrlsWhiteLabel[3]}
+            inputId="logoUploader_4"
+            onChangeText={t("ChangeLogoButton")}
+          />
+        </div>
+
+        <div className="logo-wrapper">
+          <Text
+            fontSize="15px"
+            fontWeight="600"
+            className="settings_unavailable"
+          >
+            {t("LogoDocsEditorEmbedded")}
+          </Text>
+          <Logo
+            src={logoUrlsWhiteLabel[4]}
+            imageClass="border-img logo-embedded-editor"
+            inputId="logoUploader_5"
+            onChangeText={t("ChangeLogoButton")}
+          />
+        </div>
       </div>
     </WhiteLabelWrapper>
   );
