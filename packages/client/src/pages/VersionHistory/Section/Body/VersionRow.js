@@ -42,15 +42,11 @@ const VersionRow = (props) => {
     versionsListLength,
     isEditing,
     theme,
-    isArchiveFolderRoot,
+    canChangeVersionHistory,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
-
-  const { changeVersionHistory } = getFileRoleActions(info.access);
-
-  const canEdit = changeVersionHistory && !isEditing;
 
   const title = `${new Date(info.updated).toLocaleString(
     culture
@@ -95,15 +91,13 @@ const VersionRow = (props) => {
     );
   };
 
-  const isAvailableEdit = canEdit && !isArchiveFolderRoot;
-
   const contextOptions = [
-    isAvailableEdit && {
+    canChangeVersionHistory && {
       key: "edit",
       label: t("EditComment"),
       onClick: onEditComment,
     },
-    isAvailableEdit && {
+    canChangeVersionHistory && {
       key: "restore",
       label: t("Common:Restore"),
       onClick: onRestoreClick,
@@ -115,7 +109,9 @@ const VersionRow = (props) => {
     },
   ];
 
-  const onClickProp = isAvailableEdit ? { onClick: onVersionClick } : {};
+  const onClickProp = canChangeVersionHistory
+    ? { onClick: onVersionClick }
+    : {};
 
   useEffect(() => {
     const newRowHeight = document.getElementsByClassName(
@@ -129,7 +125,7 @@ const VersionRow = (props) => {
     <StyledVersionRow
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
-      canEdit={isAvailableEdit}
+      canEdit={canChangeVersionHistory}
       isTabletView={isTabletView}
       isSavingComment={isSavingComment}
       isEditing={isEditing}
@@ -225,32 +221,42 @@ const VersionRow = (props) => {
   );
 };
 
-export default inject(({ auth, versionHistoryStore, treeFoldersStore }) => {
-  const { user } = auth.userStore;
-  const { culture, isTabletView } = auth.settingsStore;
-  const language = (user && user.cultureName) || culture || "en";
+export default inject(
+  ({ auth, versionHistoryStore, accessRightsStore, selectedFolderStore }) => {
+    const { user } = auth.userStore;
+    const { culture, isTabletView } = auth.settingsStore;
+    const language = (user && user.cultureName) || culture || "en";
 
-  const {
-    markAsVersion,
-    restoreVersion,
-    updateCommentVersion,
-    isEditing,
-    isEditingVersion,
-  } = versionHistoryStore;
+    const {
+      markAsVersion,
+      restoreVersion,
+      updateCommentVersion,
+      isEditing,
+      isEditingVersion,
+      fileAccess,
+    } = versionHistoryStore;
 
-  const { isArchiveFolderRoot } = treeFoldersStore;
+    const { rootFolderType } = selectedFolderStore;
 
-  return {
-    theme: auth.settingsStore.theme,
-    culture: language,
-    isTabletView,
-    markAsVersion,
-    restoreVersion,
-    updateCommentVersion,
-    isEditing: isEditingVersion || isEditing,
-    isArchiveFolderRoot,
-  };
-})(
+    const isEdit = isEditingVersion || isEditing;
+    const canChangeVersionHistory = accessRightsStore.canChangeVersionHistory({
+      access: fileAccess,
+      rootFolderType,
+      editing: isEdit,
+    });
+
+    return {
+      theme: auth.settingsStore.theme,
+      culture: language,
+      isTabletView,
+      markAsVersion,
+      restoreVersion,
+      updateCommentVersion,
+      isEditing: isEdit,
+      canChangeVersionHistory,
+    };
+  }
+)(
   withRouter(
     withTranslation(["VersionHistory", "Common", "Translations"])(
       observer(VersionRow)

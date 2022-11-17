@@ -1053,7 +1053,10 @@ class FilesStore {
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
-      const isCanLockFile = this.accessRightsStore.canLockFile;
+      const canLockFile = this.accessRightsStore.canLockFile;
+      const canChangeVersionHistory = this.accessRightsStore.canChangeVersionHistory(
+        { ...item, ...{ editing: isEditing } }
+      );
 
       const isMasterForm = item.fileExst === ".docxf";
 
@@ -1096,10 +1099,14 @@ class FilesStore {
         "delete",
       ];
 
-      if (!isCanLockFile) {
+      if (!canLockFile) {
         fileOptions = this.removeOptions(fileOptions, [
           "block-unblock-version",
         ]);
+      }
+
+      if (!canChangeVersionHistory) {
+        fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
       }
 
       if (!filesRights.edit) {
@@ -1116,9 +1123,9 @@ class FilesStore {
       if (!filesRights.viewVersionHistory) {
         fileOptions = this.removeOptions(fileOptions, ["show-version-history"]);
       }
-      if (!filesRights.changeVersionHistory) {
-        fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
-      }
+      // if (!filesRights.changeVersionHistory) {
+      //   fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
+      // }
       if (!filesRights.deleteSelf || !filesRights.deleteAlien) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
@@ -1161,7 +1168,7 @@ class FilesStore {
           "rename",
           "separator2",
           "delete",
-          "finalize-version",
+          //"finalize-version",
         ]);
       }
 
@@ -1191,7 +1198,7 @@ class FilesStore {
 
       if (isEditing) {
         fileOptions = this.removeOptions(fileOptions, [
-          "finalize-version",
+          // "finalize-version",
           "move-to",
           "separator2",
           "delete",
@@ -1235,7 +1242,7 @@ class FilesStore {
           "send-by-email",
           //"block-unblock-version", //need split
           "version", //category
-          "finalize-version",
+          //"finalize-version",
           "copy-to",
           "copy",
           "mark-as-favorite",
@@ -1276,8 +1283,8 @@ class FilesStore {
           "send-by-email",
           //"block-unblock-version", //need split
           "version", //category
-          "finalize-version",
-          "show-version-history",
+          //"finalize-version",
+          //"show-version-history",
           "move", //category
           "move-to",
           "copy-to",
@@ -1311,7 +1318,7 @@ class FilesStore {
       if (isThirdPartyItem) {
         fileOptions = this.removeOptions(fileOptions, [
           "owner-change",
-          "finalize-version",
+          //"finalize-version",
           "copy",
         ]);
       }

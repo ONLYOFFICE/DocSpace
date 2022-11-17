@@ -489,7 +489,7 @@ class ContextOptionsStore {
                 key: "show-version-history",
                 label: t("ShowVersionHistory"),
                 icon: "images/history.react.svg",
-                onClick: () => this.showVersionHistory(item.id),
+                onClick: () => this.showVersionHistory(item.id, item.access),
                 disabled: false,
               },
             ]
@@ -503,14 +503,15 @@ class ContextOptionsStore {
                     key: "finalize-version",
                     label: t("FinalizeVersion"),
                     icon: "images/history-finalized.react.svg",
-                    onClick: () => this.finalizeVersion(item.id),
+                    onClick: () => this.finalizeVersion(item.id, item.access),
                     disabled: false,
                   },
                   {
                     key: "show-version-history",
                     label: t("ShowVersionHistory"),
                     icon: "images/history.react.svg",
-                    onClick: () => this.showVersionHistory(item.id),
+                    onClick: () =>
+                      this.showVersionHistory(item.id, item.access),
                     disabled: false,
                   },
                 ],
@@ -528,7 +529,7 @@ class ContextOptionsStore {
               key: "show-version-history",
               label: t("ShowVersionHistory"),
               icon: "images/history.react.svg",
-              onClick: () => this.showVersionHistory(item.id),
+              onClick: () => this.showVersionHistory(item.id, item.access),
               disabled: false,
             },
           ]

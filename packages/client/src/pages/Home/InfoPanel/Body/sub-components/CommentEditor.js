@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { inject } from "mobx-react";
 import { ReactSVG } from "react-svg";
 
@@ -9,14 +9,26 @@ import infoPanel from "@docspace/common/components/Section/sub-components/info-p
 const CommentEditor = ({
   t,
   item,
-
+  editing,
   setSelection,
-  isRecycleBinFolder,
-  isArchiveFolderRoot,
   fetchFileVersions,
   updateCommentVersion,
+  canChangeVersionHistory,
+  setVerHistoryFileId,
+  setVerHistoryFileAccess,
 }) => {
-  const { id, comment, version } = item;
+  const { id, comment, version, access, folderType } = item;
+
+  const changeVersionHistoryAbility = canChangeVersionHistory({
+    access,
+    folderType,
+    editing,
+  });
+
+  useEffect(() => {
+    setVerHistoryFileId(id);
+    setVerHistoryFileAccess(access);
+  }, []);
 
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +44,7 @@ const CommentEditor = ({
   const onSave = async () => {
     setIsLoading(true);
 
-    await fetchFileVersions(id).catch((err) => {
+    await fetchFileVersions(id, access).catch((err) => {
       toastr.error(err);
       setIsLoading(false);
     });
@@ -61,7 +73,7 @@ const CommentEditor = ({
               {comment}
             </Text>
           )}
-          {!isRecycleBinFolder && !isArchiveFolderRoot && (
+          {changeVersionHistoryAbility && (
             <div className="edit_toggle" onClick={onOpenEditor}>
               <ReactSVG
                 className="edit_toggle-icon"
@@ -104,17 +116,29 @@ const CommentEditor = ({
   );
 };
 
-export default inject(({ auth, versionHistoryStore, treeFoldersStore }) => {
+export default inject(({ auth, versionHistoryStore, accessRightsStore }) => {
   const { setSelection } = auth.infoPanelStore;
 
-  const { fetchFileVersions, updateCommentVersion } = versionHistoryStore;
-  const { isRecycleBinFolder, isArchiveFolderRoot } = treeFoldersStore;
+  const {
+    fetchFileVersions,
+    updateCommentVersion,
+    isEditingVersion,
+    isEditing,
+    fileId,
+    setVerHistoryFileId,
+    setVerHistoryFileAccess,
+  } = versionHistoryStore;
+
+  const { canChangeVersionHistory } = accessRightsStore;
+  const editing = isEditingVersion || isEditing;
 
   return {
     setSelection,
-    isRecycleBinFolder,
-    isArchiveFolderRoot,
     fetchFileVersions,
     updateCommentVersion,
+    canChangeVersionHistory,
+    editing,
+    setVerHistoryFileId,
+    setVerHistoryFileAccess,
   };
 })(CommentEditor);
