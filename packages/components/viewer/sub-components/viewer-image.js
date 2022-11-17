@@ -69,11 +69,6 @@ export default function ViewerImage(props) {
     props.onResize();
   }
 
-  function handleCanvasMouseDown(e) {
-    props.onCanvasMouseDown(e);
-    handleMouseDown(e);
-  }
-
   function handleMouseDown(e) {
     if (e.button !== 0) {
       return;
@@ -173,12 +168,7 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
   }
 
   return (
-    <div
-      className={`${props.prefixCls}-canvas`}
-      onMouseDown={handleCanvasMouseDown}
-      style={style}
-      {...handlers}
-    >
+    <div className={`${props.prefixCls}-canvas`} style={style} {...handlers}>
       {imgNode}
     </div>
   );
