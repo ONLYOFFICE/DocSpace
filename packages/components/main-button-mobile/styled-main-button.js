@@ -275,10 +275,6 @@ const StyledBar = styled.div`
   width: ${(props) => props.uploadPercent}%;
   height: 4px;
   opacity: 1;
-  background: ${(props) =>
-    props.error
-      ? props.theme.mainButtonMobile.bar.errorBackground
-      : props.theme.mainButtonMobile.bar.background};
 `;
 
 const StyledAlertIcon = styled.div`
