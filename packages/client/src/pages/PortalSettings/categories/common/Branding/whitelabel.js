@@ -110,14 +110,14 @@ const WhiteLabel = (props) => {
           </Text>
           <div className="logos-wrapper">
             <Logo
-              title="Light theme"
+              title={t("Profile:LightTheme")}
               src={logoUrlsWhiteLabel[0]}
               imageClass="logo-header"
               inputId="logoUploader_1"
               onChangeText={t("ChangeLogoButton")}
             />
             <Logo
-              title="Dark theme"
+              title={t("Profile:DarkTheme")}
               src={logoUrlsWhiteLabel[0]}
               imageClass="logo-header"
               inputId="logoUploader_1"
@@ -155,4 +155,4 @@ export default inject(({ setup, auth, common }) => {
     setWhiteLabelSettings,
     restoreWhiteLabelSettings,
   };
-})(withTranslation(["Settings", "Common"])(observer(WhiteLabel)));
+})(withTranslation(["Settings", "Profile", "Common"])(observer(WhiteLabel)));
