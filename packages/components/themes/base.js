@@ -193,7 +193,6 @@ const Base = {
     mobileProgressBarBackground: "rgb(48%, 58%, 69%, 0.4)",
 
     bar: {
-      background: "linear-gradient(225deg, #2274aa 0%, #0f4071 100%)",
       errorBackground: orangePressed,
 
       icon: "#A3A9AE",

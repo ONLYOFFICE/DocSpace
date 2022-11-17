@@ -188,7 +188,6 @@ const Dark = {
     mobileProgressBarBackground: "#606060",
 
     bar: {
-      background: "#858585",
       errorBackground: orangePressed,
 
       icon: "#858585",
