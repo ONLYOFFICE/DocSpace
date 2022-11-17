@@ -53,9 +53,18 @@ const EmptyFolderWrapper = styled.div`
       grid-column-gap: 8px;
     }
 
+    .second-description {
+      display: grid;
+      grid-template-columns: 1fr;
+
+      margin: 32px 0 26px !important;
+    }
+
     .flex-wrapper_container {
       display: flex;
       flex-wrap: wrap;
+
+      row-gap: 16px;
     }
 
     .empty-folder_container-image {
