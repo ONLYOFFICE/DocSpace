@@ -30,11 +30,13 @@ namespace ASC.Api.Core;
 
 public abstract class BaseStartup
 {
+    private const string CustomCorsPolicyName = "Basic";
     private const string BasicAuthScheme = "Basic";
     private const string MultiAuthSchemes = "MultiAuthSchemes";
 
     private readonly IConfiguration _configuration;
     private readonly IHostEnvironment _hostEnvironment;
+    private readonly string _corsOrigin;
 
     protected virtual JsonConverter[] Converters { get; }
     protected virtual bool AddControllersAsServices { get; }
@@ -48,6 +50,9 @@ public abstract class BaseStartup
     {
         _configuration = configuration;
         _hostEnvironment = hostEnvironment;
+
+        _corsOrigin = _configuration["core:cors"];
+
         DIHelper = new DIHelper();
 
         if (bool.TryParse(_configuration["core:products"], out var loadProducts))
@@ -116,6 +121,22 @@ public abstract class BaseStartup
         DIHelper.TryAdd<BasicAuthHandler>();
         DIHelper.TryAdd<CookieAuthHandler>();
         DIHelper.TryAdd<WebhooksGlobalFilterAttribute>();
+
+
+        if (!string.IsNullOrEmpty(_corsOrigin))
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: CustomCorsPolicyName,
+                                  policy =>
+                                  {
+                                      policy.WithOrigins(_corsOrigin)
+                                      .SetIsOriginAllowedToAllowWildcardSubdomains()
+                                      .AllowAnyHeader()
+                                    .AllowAnyMethod();
+                                  });
+            });
+        }
 
         services.AddDistributedCache(_configuration);
         services.AddEventBus(_configuration);
@@ -251,6 +272,11 @@ public abstract class BaseStartup
         });
 
         app.UseRouting();
+
+        if (!string.IsNullOrEmpty(_corsOrigin))
+        {
+            app.UseCors(CustomCorsPolicyName);
+        }
 
         if (AddAndUseSession)
         {
