@@ -73,8 +73,9 @@ const WhiteLabelWrapper = styled.div`
   }
 
   .logo-compact {
-    width: 56px;
-    height: 56px;
+    width: 26px;
+    height: 26px;
+    padding: 16px;
   }
 
   .logo-big {

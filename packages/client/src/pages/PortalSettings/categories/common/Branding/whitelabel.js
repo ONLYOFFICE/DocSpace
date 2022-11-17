@@ -125,6 +125,32 @@ const WhiteLabel = (props) => {
             />
           </div>
         </div>
+
+        <div className="logo-wrapper">
+          <Text
+            fontSize="15px"
+            fontWeight="600"
+            className="settings_unavailable"
+          >
+            {t("LogoCompact")}
+          </Text>
+          <div className="logos-wrapper">
+            <Logo
+              title={t("Profile:LightTheme")}
+              src={logoUrlsWhiteLabel[5]}
+              imageClass="border-img logo-compact"
+              inputId="logoUploader_6"
+              onChangeText={t("ChangeLogoButton")}
+            />
+            <Logo
+              title={t("Profile:DarkTheme")}
+              src={logoUrlsWhiteLabel[5]}
+              imageClass="border-img logo-compact"
+              inputId="logoUploader_6"
+              onChangeText={t("ChangeLogoButton")}
+            />
+          </div>
+        </div>
       </div>
     </WhiteLabelWrapper>
   );
