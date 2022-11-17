@@ -19,6 +19,8 @@ const EmptyFolderContainer = ({
   canCreateFiles,
   canInviteUsers,
   setIsEmptyPage,
+  onClickInviteUsers,
+  folderId,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -33,6 +35,12 @@ const EmptyFolderContainer = ({
 
     return () => setIsEmptyPage(false);
   }, []);
+
+  const onInviteUsersClick = () => {
+    if (!isRooms) return;
+
+    onClickInviteUsers && onClickInviteUsers(folderId);
+  };
 
   const buttons = canCreateFiles ? (
     <>
@@ -85,11 +93,11 @@ const EmptyFolderContainer = ({
               <img
                 className="empty-folder_container_up-image"
                 src="images/plus.svg"
-                onClick={onBackToParentFolder}
+                onClick={onInviteUsersClick}
                 alt="up_icon"
               />
 
-              <Link onClick={onBackToParentFolder} {...linkStyles}>
+              <Link onClick={onInviteUsersClick} {...linkStyles}>
                 {t("InviteUsersInRoom")}
               </Link>
             </div>
@@ -134,9 +142,19 @@ const EmptyFolderContainer = ({
 };
 
 export default inject(
-  ({ accessRightsStore, filesStore, selectedFolderStore }) => {
+  ({
+    accessRightsStore,
+    filesStore,
+    selectedFolderStore,
+    contextOptionsStore,
+  }) => {
     const { fetchFiles, fetchRooms, setIsEmptyPage } = filesStore;
-    const { navigationPath, parentId, access } = selectedFolderStore;
+    const {
+      navigationPath,
+      parentId,
+      access,
+      id: folderId,
+    } = selectedFolderStore;
 
     let isRootRoom, isRoom, id;
     if (navigationPath && navigationPath.length) {
@@ -149,6 +167,8 @@ export default inject(
 
     const { canCreateFiles, canInviteUserInRoom } = accessRightsStore;
 
+    const { onClickInviteUsers } = contextOptionsStore;
+
     const canInviteUsers = canInviteUserInRoom({ access });
 
     return {
@@ -160,6 +180,8 @@ export default inject(
       canCreateFiles,
       canInviteUsers,
       setIsEmptyPage,
+      onClickInviteUsers,
+      folderId,
     };
   }
 )(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));
