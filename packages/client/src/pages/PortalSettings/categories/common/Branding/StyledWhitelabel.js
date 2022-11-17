@@ -73,7 +73,7 @@ const WhiteLabelWrapper = styled.div`
   .logo-header {
     width: 211px;
     height: 24px;
-    padding: 12px 20px;
+    padding: 22px 20px;
     background-color: ${(props) =>
       props.theme.client.settings.common.whiteLabel.backgroundColor};
   }
