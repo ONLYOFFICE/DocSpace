@@ -93,6 +93,19 @@ class AccessRightsStore {
     return getFileRoleActions(access).viewVersionHistory;
   };
 
+  canEditFile = (file) => {
+    const { rootFolderType, access, providerKey } = file;
+
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Privacy
+    )
+      return false;
+
+    return getFileRoleActions(access).edit;
+  };
+
   canArchiveRoom = (room) => {
     const { archive } = getRoomRoleActions(room.access);
 

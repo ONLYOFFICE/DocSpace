@@ -1061,7 +1061,7 @@ class FilesStore {
       const canViewVersionHistory = this.accessRightsStore.canViewVersionHistory(
         item
       );
-
+      const canEditFile = this.accessRightsStore.canEditFile(item);
       const isMasterForm = item.fileExst === ".docxf";
 
       let fileOptions = [
@@ -1121,9 +1121,10 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["version"]);
       }
 
-      if (!filesRights.edit) {
+      if (canOpenPlayer || !canEditFile) {
         fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
+
       if (!filesRights.fillForm) {
         fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
       }
@@ -1172,7 +1173,7 @@ class FilesStore {
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
-          "edit",
+          // "edit",
           "move",
           "move-to",
           "copy-to",
@@ -1201,7 +1202,7 @@ class FilesStore {
       if (!canOpenPlayer) {
         fileOptions = this.removeOptions(fileOptions, ["view"]);
       } else {
-        fileOptions = this.removeOptions(fileOptions, ["edit", "preview"]);
+        //fileOptions = this.removeOptions(fileOptions, ["edit", "preview"]);
       }
 
       if (!isDocuSign) {
@@ -1247,7 +1248,7 @@ class FilesStore {
       if (isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
-          "edit",
+          //"edit",
           "make-form",
           "link-for-portal-users",
           "external-link",
@@ -1287,7 +1288,7 @@ class FilesStore {
           "open-location",
           "view",
           "preview",
-          "edit",
+          // "edit",
           "make-form",
           "link-for-portal-users",
           "sharing-settings",
