@@ -1053,6 +1053,7 @@ class FilesStore {
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
+      const isCanLockFile = this.accessRightsStore.canLockFile;
 
       const isMasterForm = item.fileExst === ".docxf";
 
@@ -1095,17 +1096,23 @@ class FilesStore {
         "delete",
       ];
 
+      if (!isCanLockFile) {
+        fileOptions = this.removeOptions(fileOptions, [
+          "block-unblock-version",
+        ]);
+      }
+
       if (!filesRights.edit) {
         fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
       if (!filesRights.fillForm) {
         fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
       }
-      if (!filesRights.blockFile) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "block-unblock-version",
-        ]);
-      }
+      // if (!filesRights.blockFile) {
+      //   fileOptions = this.removeOptions(fileOptions, [
+      //     "block-unblock-version",
+      //   ]);
+      // }
       if (!filesRights.viewVersionHistory) {
         fileOptions = this.removeOptions(fileOptions, ["show-version-history"]);
       }
@@ -1226,7 +1233,7 @@ class FilesStore {
           "link-for-portal-users",
           "external-link",
           "send-by-email",
-          "block-unblock-version", //need split
+          //"block-unblock-version", //need split
           "version", //category
           "finalize-version",
           "copy-to",
@@ -1267,7 +1274,7 @@ class FilesStore {
           "sharing-settings",
           "external-link",
           "send-by-email",
-          "block-unblock-version", //need split
+          //"block-unblock-version", //need split
           "version", //category
           "finalize-version",
           "show-version-history",

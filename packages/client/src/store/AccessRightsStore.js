@@ -53,6 +53,20 @@ class AccessRightsStore {
     return getRoomRoleActions(access).changeUserRole;
   };
 
+  get canLockFile() {
+    const {
+      isArchiveFolderRoot,
+      isRecycleBinFolder,
+      isPrivacyFolder,
+    } = this.treeFoldersStore;
+    const { access } = this.selectedFolderStore;
+
+    if (isArchiveFolderRoot || isRecycleBinFolder || isPrivacyFolder)
+      return false;
+
+    return getFileRoleActions(access).block;
+  }
+
   canArchiveRoom = (room) => {
     const { archive } = getRoomRoleActions(room.access);
 

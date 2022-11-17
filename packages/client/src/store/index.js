@@ -46,13 +46,6 @@ const bannerStore = new BannerStore();
 
 const ssoStore = new SsoFormStore();
 
-const peopleStore = new PeopleStore(
-  authStore,
-  authStore.infoPanelStore,
-  setupStore,
-  accessRightsStore
-);
-
 const tagsStore = new TagsStore();
 
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
@@ -63,6 +56,14 @@ const accessRightsStore = new AccessRightsStore(
   selectedFolderStore,
   treeFoldersStore
 );
+
+const peopleStore = new PeopleStore(
+  authStore,
+  authStore.infoPanelStore,
+  setupStore,
+  accessRightsStore
+);
+
 const filesStore = new FilesStore(
   authStore,
   selectedFolderStore,

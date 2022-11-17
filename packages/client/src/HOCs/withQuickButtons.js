@@ -1,7 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-
-import { ShareAccessRights } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 import QuickButtons from "../components/QuickButtons";
 
@@ -56,18 +54,11 @@ export default function withQuickButtons(WrappedComponent) {
         t,
         theme,
         item,
-        isTrashFolder,
         isAdmin,
         sectionWidth,
         viewAs,
-        isArchiveFolderRoot,
+        canLockFile,
       } = this.props;
-
-      const { access, id, fileExst } = item;
-
-      const accessToEdit =
-        access === ShareAccessRights.FullAccess ||
-        access === ShareAccessRights.None; // TODO: fix access type for owner (now - None)
 
       const quickButtonsComponent = (
         <QuickButtons
@@ -76,14 +67,12 @@ export default function withQuickButtons(WrappedComponent) {
           item={item}
           sectionWidth={sectionWidth}
           isAdmin={isAdmin}
-          isTrashFolder={isTrashFolder}
-          accessToEdit={accessToEdit}
           viewAs={viewAs}
           isDisabled={isLoading}
           isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
-          isArchiveFolderRoot={isArchiveFolderRoot}
+          canLockFile={canLockFile}
         />
       );
 
@@ -99,13 +88,11 @@ export default function withQuickButtons(WrappedComponent) {
   return inject(
     ({
       auth,
-      treeFoldersStore,
       filesActionsStore,
-      filesStore,
       dialogsStore,
       settingsStore,
+      accessRightsStore,
     }) => {
-      const { isRecycleBinFolder, isArchiveFolderRoot } = treeFoldersStore;
       const {
         lockFileAction,
         setFavoriteAction,
@@ -114,16 +101,17 @@ export default function withQuickButtons(WrappedComponent) {
 
       const { setSharingPanelVisible } = dialogsStore;
       const { canWebEdit } = settingsStore;
+      const { canLockFile } = accessRightsStore;
+
       return {
         theme: auth.settingsStore.theme,
         isAdmin: auth.isAdmin,
-        isTrashFolder: isRecycleBinFolder,
         lockFileAction,
         setFavoriteAction,
         onSelectItem,
         setSharingPanelVisible,
         canWebEdit,
-        isArchiveFolderRoot,
+        canLockFile,
       };
     }
   )(observer(WithQuickButtons));
