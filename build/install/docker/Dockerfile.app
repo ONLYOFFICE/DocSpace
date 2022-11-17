@@ -171,6 +171,7 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
 FROM noderun as doceditor
 WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
 
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/editor/ .
 ENTRYPOINT ["node", "server.js"]
 
@@ -178,6 +179,7 @@ ENTRYPOINT ["node", "server.js"]
 FROM noderun as login
 WORKDIR ${BUILD_PATH}/products/ASC.Login/login
 
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/login/ .
 ENTRYPOINT ["node", "server.js"]
 
