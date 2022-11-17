@@ -46,6 +46,18 @@ const WhiteLabelWrapper = styled.div`
     gap: 16px;
   }
 
+  .logos-wrapper {
+    display: flex;
+    gap: 20px;
+  }
+
+  .logo-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
   .border-img {
     border: ${(props) =>
       props.theme.client.settings.common.whiteLabel.borderImg};

@@ -8,12 +8,16 @@ import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
 import Badge from "@docspace/components/badge";
+import Link from "@docspace/components/link";
 
 import WhiteLabelWrapper from "./StyledWhitelabel";
+import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
 
 const WhiteLabel = (props) => {
-  const { t, isSettingPaid, logoText } = props;
+  const { t, isSettingPaid, logoText, logoUrls } = props;
+  const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
+  const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
 
   useEffect(() => {
     if (logoText) {
@@ -21,12 +25,26 @@ const WhiteLabel = (props) => {
     }
   }, [logoText]);
 
+  useEffect(() => {
+    if (logoUrls) {
+      setLogoUrlsWhiteLabel(logoUrls);
+    }
+  }, [logoUrls]);
+
+  useEffect(() => {
+    if (logoTextWhiteLabel && logoUrlsWhiteLabel.length && !isLoadedData) {
+      setIsLoadedData(true);
+    }
+  }, [isLoadedData, logoTextWhiteLabel, logoUrlsWhiteLabel]);
+
   const onChangeCompanyName = (e) => {
     const value = e.target.value;
     setLogoTextWhiteLabel(value);
   };
 
-  return (
+  return !isLoadedData ? (
+    <LoaderWhiteLabel />
+  ) : (
     <WhiteLabelWrapper>
       <Text className="subtitle" color="#657077">
         {t("BrandingSubtitle")}
@@ -77,6 +95,79 @@ const WhiteLabel = (props) => {
             isDisabled={!isSettingPaid}
           />
         </FieldContainer>
+      </div>
+
+      <div className="logos-container">
+        <div className="logo-wrapper">
+          <Text
+            fontSize="15px"
+            fontWeight="600"
+            className="settings_unavailable"
+          >
+            {t("LogoLightSmall")}
+          </Text>
+          <div className="logos-wrapper">
+            <div>
+              <div className="logo-item">
+                <Text fontSize="13px" fontWeight="600">
+                  Light theme
+                </Text>
+                <img
+                  className="logo-header"
+                  src={logoUrlsWhiteLabel[0]}
+                  alt={t("LogoLightSmall")}
+                />
+              </div>
+              <label>
+                <input
+                  id="logoUploader_1"
+                  type="file"
+                  className="hidden"
+                  //onChange={onChangeLogo}
+                  disabled={!isSettingPaid}
+                />
+                <Link
+                  fontWeight="600"
+                  isHovered
+                  type="action"
+                  className="settings_unavailable"
+                >
+                  {t("ChangeLogoButton")}
+                </Link>
+              </label>
+            </div>
+
+            <div>
+              <div className="logo-item">
+                <Text fontSize="13px" fontWeight="600">
+                  Dark theme
+                </Text>
+                <img
+                  className="logo-header"
+                  src={logoUrlsWhiteLabel[0]}
+                  alt={t("LogoLightSmall")}
+                />
+              </div>
+              <label>
+                <input
+                  id="logoUploader_1"
+                  type="file"
+                  className="hidden"
+                  //onChange={onChangeLogo}
+                  disabled={!isSettingPaid}
+                />
+                <Link
+                  fontWeight="600"
+                  isHovered
+                  type="action"
+                  className="settings_unavailable"
+                >
+                  {t("ChangeLogoButton")}
+                </Link>
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
     </WhiteLabelWrapper>
   );
