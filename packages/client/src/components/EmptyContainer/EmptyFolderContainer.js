@@ -126,7 +126,7 @@ const EmptyFolderContainer = ({
 
   return (
     <EmptyContainer
-      headerText={t("EmptyScreenFolder")}
+      headerText={isRooms ? t("RoomCreated") : t("EmptyScreenFolder")}
       style={{ gridColumnGap: "39px" }}
       descriptionText={
         canCreateFiles
