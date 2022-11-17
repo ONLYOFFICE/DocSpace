@@ -53,19 +53,17 @@ class AccessRightsStore {
     return getRoomRoleActions(access).changeUserRole;
   };
 
-  get canLockFile() {
-    const {
-      isArchiveFolderRoot,
-      isRecycleBinFolder,
-      isPrivacyFolder,
-    } = this.treeFoldersStore;
-    const { access } = this.selectedFolderStore;
+  canLockFile = (file) => {
+    const { rootFolderType, access } = file;
 
-    if (isArchiveFolderRoot || isRecycleBinFolder || isPrivacyFolder)
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH
+    )
       return false;
 
     return getFileRoleActions(access).block;
-  }
+  };
 
   canChangeVersionHistory = (file) => {
     const { rootFolderType, editing, providerKey, access } = file;
@@ -73,12 +71,26 @@ class AccessRightsStore {
     if (
       rootFolderType === FolderType.Archive ||
       rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Privacy ||
       editing ||
       providerKey
     )
       return false;
 
     return getFileRoleActions(access).changeVersionHistory;
+  };
+  canViewVersionHistory = (file) => {
+    const { rootFolderType, access, providerKey } = file;
+
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Privacy ||
+      providerKey
+    )
+      return false;
+
+    return getFileRoleActions(access).viewVersionHistory;
   };
 
   canArchiveRoom = (room) => {

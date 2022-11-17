@@ -1053,9 +1053,13 @@ class FilesStore {
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
-      const canLockFile = this.accessRightsStore.canLockFile;
+      const canLockFile = this.accessRightsStore.canLockFile(item);
       const canChangeVersionHistory = this.accessRightsStore.canChangeVersionHistory(
         { ...item, ...{ editing: isEditing } }
+      );
+
+      const canViewVersionHistory = this.accessRightsStore.canViewVersionHistory(
+        item
       );
 
       const isMasterForm = item.fileExst === ".docxf";
@@ -1109,6 +1113,14 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
       }
 
+      if (!canViewVersionHistory) {
+        fileOptions = this.removeOptions(fileOptions, ["show-version-history"]);
+      }
+
+      if (!canChangeVersionHistory && !canViewVersionHistory) {
+        fileOptions = this.removeOptions(fileOptions, ["version"]);
+      }
+
       if (!filesRights.edit) {
         fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
@@ -1120,9 +1132,9 @@ class FilesStore {
       //     "block-unblock-version",
       //   ]);
       // }
-      if (!filesRights.viewVersionHistory) {
-        fileOptions = this.removeOptions(fileOptions, ["show-version-history"]);
-      }
+      // if (!filesRights.viewVersionHistory) {
+      //   fileOptions = this.removeOptions(fileOptions, ["show-version-history"]);
+      // }
       // if (!filesRights.changeVersionHistory) {
       //   fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
       // }
@@ -1241,7 +1253,7 @@ class FilesStore {
           "external-link",
           "send-by-email",
           //"block-unblock-version", //need split
-          "version", //category
+          // "version", //category
           //"finalize-version",
           "copy-to",
           "copy",
@@ -1282,7 +1294,7 @@ class FilesStore {
           "external-link",
           "send-by-email",
           //"block-unblock-version", //need split
-          "version", //category
+          //"version", //category
           //"finalize-version",
           //"show-version-history",
           "move", //category
