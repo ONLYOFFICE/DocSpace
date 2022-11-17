@@ -24,10 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-
-using System.Net.Http.Json;
-
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
 namespace ASC.Web.Files.ThirdPartyApp;
@@ -372,7 +368,9 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         if (!_authContext.IsAuthenticated)
         {
-            var userInfo = GetUserInfo(token, out var isNew);
+            var wrapper = await GetUserInfo(token);
+            var userInfo = wrapper.UserInfo;
+            var isNew = wrapper.IsNew;
 
             if (userInfo == null)
             {
@@ -630,9 +628,9 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         _accountLinker.AddLink(_authContext.CurrentAccount.ID.ToString(), googleUserId, ProviderConstants.Google);
     }
 
-    private UserInfo GetUserInfo(Token token, out bool isNew)
+    private async Task<UserInfoWrapper> GetUserInfo(Token token)
     {
-        isNew = false;
+        var wrapper = new UserInfoWrapper();
         if (token == null)
         {
             _logger.ErrorGoogleDriveAppTokenIsNull();
@@ -681,19 +679,19 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             try
             {
                 _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
-                userInfo = _userManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
+                userInfo = await _userManagerWrapper.AddUser(userInfo, UserManagerWrapper.GeneratePassword());
             }
             finally
             {
                 _securityContext.Logout();
             }
 
-            isNew = true;
+            wrapper.IsNew = true;
 
             _logger.DebugGoogleDriveAppNewUser(userInfo.Id);
         }
-
-        return userInfo;
+        wrapper.UserInfo = userInfo;
+        return wrapper;
     }
 
     private string GetDriveFile(string googleFileId, Token token)

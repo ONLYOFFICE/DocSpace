@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,13 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Data.Backup.Storage;
-
-public interface IBackupStorage
+namespace ASC.ActiveDirectory.Wrapper;
+public class UserInfoAndLdapChangeCollectionWrapper
 {
-    Task<bool> IsExists(string storagePath);
-    Task<string> GetPublicLink(string storagePath);
-    Task<string> Upload(string storageBasePath, string localPath, Guid userId);
-    Task Delete(string storagePath);
-    Task Download(string storagePath, string targetLocalPath);
+    public UserInfo UserInfo { get; set; }
+    public LdapChangeCollection LdapChangeCollection { get; set; }
 }

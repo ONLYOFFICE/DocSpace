@@ -58,7 +58,7 @@ public class BackupService : IBackupService
         }
     }
 
-    public void DeleteBackup(Guid id)
+    public async Task DeleteBackup(Guid id)
     {
         var backupRecord = _backupRepository.GetBackupRecord(id);
         _backupRepository.DeleteBackupRecord(backupRecord.Id);
@@ -69,10 +69,10 @@ public class BackupService : IBackupService
             return;
         }
 
-        storage.Delete(backupRecord.StoragePath);
+        await storage.Delete(backupRecord.StoragePath);
     }
 
-    public void DeleteAllBackups(int tenantId)
+    public async Task DeleteAllBackups(int tenantId)
     {
         foreach (var backupRecord in _backupRepository.GetBackupRecordsByTenantId(tenantId))
         {
@@ -85,7 +85,7 @@ public class BackupService : IBackupService
                     continue;
                 }
 
-                storage.Delete(backupRecord.StoragePath);
+                await storage.Delete(backupRecord.StoragePath);
             }
             catch (Exception error)
             {
@@ -94,7 +94,7 @@ public class BackupService : IBackupService
         }
     }
 
-    public List<BackupHistoryRecord> GetBackupHistory(int tenantId)
+    public async Task<List<BackupHistoryRecord>> GetBackupHistory(int tenantId)
     {
         var backupHistory = new List<BackupHistoryRecord>();
         foreach (var record in _backupRepository.GetBackupRecordsByTenantId(tenantId))
@@ -105,7 +105,7 @@ public class BackupService : IBackupService
                 continue;
             }
 
-            if (storage.IsExists(record.StoragePath))
+            if (await storage.IsExists(record.StoragePath))
             {
                 backupHistory.Add(new BackupHistoryRecord
                 {

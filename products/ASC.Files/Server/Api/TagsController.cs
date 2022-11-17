@@ -71,7 +71,8 @@ public abstract class TagsController<T> : ApiControllerBase
     public async Task<FileDto<T>> AddToRecentAsync(T fileId)
     {
         var file = await _fileStorageServiceString.GetFileAsync(fileId, -1).NotFoundIfNull("File not found");
-        _entryManager.MarkAsRecent(file);
+
+        await _entryManager.MarkAsRecent(file);
 
         return await _fileDtoHelper.GetAsync(file);
     }

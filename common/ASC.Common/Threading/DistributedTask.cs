@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using JsonSerializer = System.Text.Json.JsonSerializer;
-
 namespace ASC.Common.Threading;
 
 [ProtoContract(IgnoreUnknownSubTypes = true)]
@@ -75,21 +73,6 @@ public class DistributedTask
         }
 
         Publication(this);
-    }
-
-    public T GetProperty<T>(string propName)
-    {
-        if (!_props.TryGetValue(propName, out var propValue))
-        {
-            return default;
-        }
-
-        return JsonSerializer.Deserialize<T>(propValue);
-    }
-
-    public void SetProperty<T>(string propName, T propValue)
-    {
-        _props[propName] = JsonSerializer.Serialize(propValue);
     }
 
     public dynamic this[string propName]

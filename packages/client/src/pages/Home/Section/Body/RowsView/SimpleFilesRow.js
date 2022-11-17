@@ -19,15 +19,6 @@ const checkedStyle = css`
   ${marginStyles}
 `;
 
-const draggingStyle = css`
-  background: ${(props) =>
-    props.isDragOver
-      ? props.theme.dragAndDrop.acceptBackground
-      : props.theme.dragAndDrop.background};
-
-  ${marginStyles}
-`;
-
 const StyledWrapper = styled.div`
   .files-item {
     border-left: none;
@@ -38,7 +29,6 @@ const StyledWrapper = styled.div`
 
 const StyledSimpleFilesRow = styled(Row)`
   ${(props) => (props.checked || props.isActive) && checkedStyle};
-  ${(props) => props.dragging && draggingStyle}
   height: 56px;
 
   ${(props) =>
@@ -245,9 +235,20 @@ const SimpleFilesRow = (props) => {
     setIsDragOver(false);
   };
 
+  const dragStyles =
+    dragging && isDragging
+      ? {
+          marginLeft: "-16px",
+          marginRight: "-16px",
+          paddingLeft: "16px",
+          paddingRight: "16px",
+        }
+      : {};
+
   return (
     <StyledWrapper
       id={id}
+      onDragOver={onDragOver}
       className={`row-wrapper ${
         showHotkeyBorder
           ? "row-hotkey-border"
@@ -265,6 +266,7 @@ const SimpleFilesRow = (props) => {
         dragging={dragging && isDragging}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
+        style={dragStyles}
       >
         <StyledSimpleFilesRow
           key={item.id}

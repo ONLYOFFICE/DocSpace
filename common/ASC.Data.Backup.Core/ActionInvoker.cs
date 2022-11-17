@@ -76,4 +76,42 @@ public static class ActionInvoker
             }
         }
     }
+
+    public static async Task Try(
+        Func<object, Task> action,
+        object state,
+        int maxAttempts,
+        Action<Exception> onFailure = null,
+        Action<Exception> onAttemptFailure = null,
+        int sleepMs = 1000,
+        bool isSleepExponential = true)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        var countAttempts = 0;
+        while (countAttempts++ < maxAttempts)
+        {
+            try
+            {
+                await action(state);
+                return;
+            }
+            catch (Exception error)
+            {
+                if (countAttempts < maxAttempts)
+                {
+                    onAttemptFailure?.Invoke(error);
+
+                    if (sleepMs > 0)
+                    {
+                        await Task.Delay(isSleepExponential ? sleepMs * countAttempts : sleepMs);
+                    }
+                }
+                else
+                {
+                    onFailure?.Invoke(error);
+                }
+            }
+        }
+    }
 }

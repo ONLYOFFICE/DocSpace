@@ -48,7 +48,7 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
         _settings = settings;
     }
 
-    public override void IndexAll()
+    public override async Task IndexAll()
     {
         (int, int, int) getCount(DateTime lastIndexed)
         {
@@ -125,7 +125,7 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
             {
                 if (_settings.Threads == 1)
                 {
-                    Index(data);
+                    await Index(data);
                 }
                 else
                 {

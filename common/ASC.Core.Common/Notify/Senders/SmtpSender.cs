@@ -57,7 +57,7 @@ public class SmtpSender : INotifySender
         _initProperties = properties;
     }
 
-    public virtual NoticeSendResult Send(NotifyMessage m)
+    public virtual Task<NoticeSendResult> Send(NotifyMessage m)
     {
         using var scope = _serviceProvider.CreateScope();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
@@ -149,7 +149,7 @@ public class SmtpSender : INotifySender
             smtpClient.Dispose();
         }
 
-        return result;
+        return Task.FromResult(result);
     }
 
     private void BuildSmtpSettings(CoreConfiguration configuration)

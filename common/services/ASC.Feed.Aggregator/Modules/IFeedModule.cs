@@ -32,11 +32,11 @@ public interface IFeedModule
 
     string Product { get; }
 
-    IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime);
+    Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime);
 
-    IEnumerable<Tuple<Feed, object>> GetFeeds(FeedFilter filter);
+    Task<IEnumerable<Tuple<Feed, object>>> GetFeeds(FeedFilter filter);
 
     bool VisibleFor(Feed feed, object data, Guid userId);
 
-    void VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId);
+    Task VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId);
 }

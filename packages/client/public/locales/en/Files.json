@@ -1,4 +1,5 @@
 {
+  "AddMembersDescription": "You can add new team members manually or invite them via link.",
   "All": "All",
   "Archived": "Move to archive",
   "ArchiveAction": "Empty archive",
@@ -50,6 +51,7 @@
   "GoToPersonal": "Go to Personal",
   "Images": "Images",
   "InviteUsers": "Invite users",
+  "InviteUsersInRoom": "Invite users in room",
   "LinkForPortalUsers": "Link for portal users",
   "MarkAsFavorite": "Mark as favorite",
   "MarkRead": "Mark as read",
@@ -89,6 +91,7 @@
   "RemovedFromFavorites": "Removed from favorites",
   "Rename": "Rename",
   "ReviewRooms": "Review",
+  "RoomCreated": "Room created!",
   "RoomEmptyContainerDescription": "Please create the first room.",
   "RoomEmptyContainerDescriptionUser": "Rooms shared with you will appear here",
   "RoomRemoved": "Room removed",

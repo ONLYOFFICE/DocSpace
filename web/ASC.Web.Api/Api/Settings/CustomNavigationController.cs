@@ -68,7 +68,7 @@ public class CustomNavigationController : BaseSettingsController
     }
 
     [HttpPost("customnavigation/create")]
-    public CustomNavigationItem CreateCustomNavigationItem(CustomNavigationItem item)
+    public async Task<CustomNavigationItem> CreateCustomNavigationItem(CustomNavigationItem item)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -90,14 +90,14 @@ public class CustomNavigationController : BaseSettingsController
 
             if (existItem.SmallImg != item.SmallImg)
             {
-                _storageHelper.DeleteLogo(existItem.SmallImg);
-                existItem.SmallImg = _storageHelper.SaveTmpLogo(item.SmallImg);
+                await _storageHelper.DeleteLogo(existItem.SmallImg);
+                existItem.SmallImg = await _storageHelper.SaveTmpLogo(item.SmallImg);
             }
 
             if (existItem.BigImg != item.BigImg)
             {
-                _storageHelper.DeleteLogo(existItem.BigImg);
-                existItem.BigImg = _storageHelper.SaveTmpLogo(item.BigImg);
+                await _storageHelper.DeleteLogo(existItem.BigImg);
+                existItem.BigImg = await _storageHelper.SaveTmpLogo(item.BigImg);
             }
 
             exist = true;
@@ -107,8 +107,8 @@ public class CustomNavigationController : BaseSettingsController
         if (!exist)
         {
             item.Id = Guid.NewGuid();
-            item.SmallImg = _storageHelper.SaveTmpLogo(item.SmallImg);
-            item.BigImg = _storageHelper.SaveTmpLogo(item.BigImg);
+            item.SmallImg = await _storageHelper.SaveTmpLogo(item.SmallImg);
+            item.BigImg = await _storageHelper.SaveTmpLogo(item.BigImg);
 
             settings.Items.Add(item);
         }
@@ -121,7 +121,7 @@ public class CustomNavigationController : BaseSettingsController
     }
 
     [HttpDelete("customnavigation/delete/{id}")]
-    public void DeleteCustomNavigationItem(Guid id)
+    public async Task DeleteCustomNavigationItem(Guid id)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -134,8 +134,8 @@ public class CustomNavigationController : BaseSettingsController
             return;
         }
 
-        _storageHelper.DeleteLogo(terget.SmallImg);
-        _storageHelper.DeleteLogo(terget.BigImg);
+        await _storageHelper.DeleteLogo(terget.SmallImg);
+        await _storageHelper.DeleteLogo(terget.BigImg);
 
         settings.Items.Remove(terget);
         _settingsManager.Save(settings);

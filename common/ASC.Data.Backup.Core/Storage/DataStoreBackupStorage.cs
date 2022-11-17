@@ -44,39 +44,39 @@ public class DataStoreBackupStorage : IBackupStorage
         _tenant = tenant;
     }
 
-    public string Upload(string storageBasePath, string localPath, Guid userId)
+    public async Task<string> Upload(string storageBasePath, string localPath, Guid userId)
     {
         using var stream = File.OpenRead(localPath);
         var storagePath = Path.GetFileName(localPath);
-        GetDataStore().SaveAsync("", storagePath, stream).Wait();
+        await GetDataStore().SaveAsync("", storagePath, stream);
 
         return storagePath;
     }
 
-    public void Download(string storagePath, string targetLocalPath)
+    public async Task Download(string storagePath, string targetLocalPath)
     {
-        using var source = GetDataStore().GetReadStreamAsync("", storagePath).Result;
+        using var source = await GetDataStore().GetReadStreamAsync("", storagePath);
         using var destination = File.OpenWrite(targetLocalPath);
         source.CopyTo(destination);
     }
 
-    public void Delete(string storagePath)
+    public async Task Delete(string storagePath)
     {
         var dataStore = GetDataStore();
-        if (dataStore.IsFileAsync("", storagePath).Result)
+        if (await dataStore.IsFileAsync("", storagePath))
         {
-            dataStore.DeleteAsync("", storagePath).Wait();
+            await dataStore.DeleteAsync("", storagePath);
         }
     }
 
-    public bool IsExists(string storagePath)
+    public async Task<bool> IsExists(string storagePath)
     {
-        return GetDataStore().IsFileAsync("", storagePath).Result;
+        return await GetDataStore().IsFileAsync("", storagePath);
     }
 
-    public string GetPublicLink(string storagePath)
+    public async Task<string> GetPublicLink(string storagePath)
     {
-        return GetDataStore().GetPreSignedUriAsync("", storagePath, TimeSpan.FromDays(1), null).Result.ToString();
+        return (await GetDataStore().GetPreSignedUriAsync("", storagePath, TimeSpan.FromDays(1), null)).ToString();
     }
 
     protected virtual IDataStore GetDataStore()
