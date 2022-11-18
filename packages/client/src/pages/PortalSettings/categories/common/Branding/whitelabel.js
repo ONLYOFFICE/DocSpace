@@ -9,6 +9,7 @@ import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
 import Badge from "@docspace/components/badge";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
+import toastr from "@docspace/components/toast/toastr";
 
 import WhiteLabelWrapper from "./StyledWhitelabel";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
@@ -17,7 +18,15 @@ import Logo from "./sub-components/logo";
 import { generateLogo } from "../../../utils/generateLogo";
 
 const WhiteLabel = (props) => {
-  const { t, isSettingPaid, logoText, logoUrls, logoSizes } = props;
+  const {
+    t,
+    isSettingPaid,
+    logoText,
+    logoUrls,
+    logoSizes,
+    restoreWhiteLabelSettings,
+    getWhiteLabelLogoUrls,
+  } = props;
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
   const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
@@ -59,6 +68,16 @@ const WhiteLabel = (props) => {
       newLogos.push(logo);
     }
     setLogoUrlsWhiteLabel(newLogos);
+  };
+
+  const onRestoreLogo = () => {
+    try {
+      restoreWhiteLabelSettings(true);
+      getWhiteLabelLogoUrls();
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
   };
 
   return !isLoadedData ? (
@@ -274,7 +293,7 @@ const WhiteLabel = (props) => {
         tabIndex={3}
         className="save-cancel-buttons"
         //onSaveClick={onSave}
-        //onCancelClick={onRestoreLogo}
+        onCancelClick={onRestoreLogo}
         saveButtonLabel={t("Common:SaveButton")}
         cancelButtonLabel={t("RestoreDefaultButton")}
         displaySettings={true}
