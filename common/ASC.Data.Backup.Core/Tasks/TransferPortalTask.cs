@@ -74,7 +74,7 @@ public class TransferPortalTask : PortalTaskBase
         BackupDirectory = backupDirectory;
     }
 
-    public override void RunJob()
+    public override async Task RunJob()
     {
         _logger.DebugBeginTransfer(TenantId);
         var fromDbFactory = new DbFactory(null, null);
@@ -103,7 +103,7 @@ public class TransferPortalTask : PortalTaskBase
             {
                 backupTask.IgnoreModule(moduleName);
             }
-            backupTask.RunJob();
+            await backupTask.RunJob();
 
             //restore db data from temporary file
             var restoreTask = _serviceProvider.GetService<RestorePortalTask>();
@@ -114,12 +114,12 @@ public class TransferPortalTask : PortalTaskBase
             {
                 restoreTask.IgnoreModule(moduleName);
             }
-            restoreTask.RunJob();
+            await restoreTask.RunJob();
 
             //transfer files
             if (ProcessStorage)
             {
-                DoTransferStorage(columnMapper);
+                await DoTransferStorage(columnMapper);
             }
 
             SaveTenant(toDbFactory, tenantAlias, TenantStatus.Active);
@@ -153,10 +153,10 @@ public class TransferPortalTask : PortalTaskBase
         }
     }
 
-    private void DoTransferStorage(ColumnMapper columnMapper)
+    private async Task DoTransferStorage(ColumnMapper columnMapper)
     {
         _logger.DebugBeginTransferStorage();
-        var fileGroups = GetFilesToProcess(TenantId).GroupBy(file => file.Module).ToList();
+        var fileGroups = (await GetFilesToProcess(TenantId)).GroupBy(file => file.Module).ToList();
         var groupsProcessed = 0;
         foreach (var group in fileGroups)
         {
@@ -173,7 +173,7 @@ public class TransferPortalTask : PortalTaskBase
                 {
                     try
                     {
-                        utility.CopyFileAsync(file.Domain, file.Path, file.Domain, adjustedPath).Wait();
+                        await utility.CopyFileAsync(file.Domain, file.Path, file.Domain, adjustedPath);
                     }
                     catch (Exception error)
                     {

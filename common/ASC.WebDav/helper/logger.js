@@ -21,6 +21,7 @@ const winston = require("winston"),
       date = require('date-and-time'),
       os = require("os");
 
+
 const { format } = require("winston");
 require("winston-daily-rotate-file");
 
@@ -45,7 +46,27 @@ const fileTransport = new (winston.transports.DailyRotateFile)({
     maxFiles: "30d"
 });
 
-const aws = config["aws"];
+const nconf = require("nconf");
+
+nconf.argv()
+     .env();
+
+var appsettings = config.appsettings;
+
+if(!path.isAbsolute(appsettings)){
+    appsettings = path.join(__dirname, appsettings);
+}
+
+var fileWithEnv = path.join(appsettings, 'appsettings.' + config.environment + '.json');
+
+if(fs.existsSync(fileWithEnv)){
+    nconf.file("appsettings", fileWithEnv);
+}
+else{
+    nconf.file("appsettings", path.join(appsettings, 'appsettings.json'));
+}
+
+const aws = nconf.get("aws").cloudWatch;
 
 const accessKeyId = aws.accessKeyId; 
 const secretAccessKey = aws.secretAccessKey; 
@@ -75,6 +96,7 @@ if (aws != null && aws.accessKeyId !== '')
                           .replace("${guid}", guid)
                           .replace("${date}", dateAsString);      
     },
+    logGroupName: logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,
     awsOptions: {

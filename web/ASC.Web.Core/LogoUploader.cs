@@ -45,7 +45,7 @@ public class StorageHelper
         _logger = logger;
     }
 
-    public string SaveTmpLogo(string tmpLogoPath)
+    public async Task<string> SaveTmpLogo(string tmpLogoPath)
     {
         if (string.IsNullOrEmpty(tmpLogoPath))
         {
@@ -67,7 +67,7 @@ public class StorageHelper
 
             data = _userPhotoManager.GetTempPhotoData(fileName);
 
-            _userPhotoManager.RemoveTempPhoto(fileName);
+            await _userPhotoManager.RemoveTempPhoto(fileName);
 
             return SaveLogo(fileName, data);
         }
@@ -78,7 +78,7 @@ public class StorageHelper
         }
     }
 
-    public void DeleteLogo(string logoPath)
+    public async Task DeleteLogo(string logoPath)
     {
         if (string.IsNullOrEmpty(logoPath))
         {
@@ -91,9 +91,9 @@ public class StorageHelper
 
             var fileName = Path.GetFileName(logoPath);
 
-            if (store.IsFileAsync(fileName).Result)
+            if (await store.IsFileAsync(fileName))
             {
-                store.DeleteAsync(fileName).Wait();
+               await store.DeleteAsync(fileName);
             }
         }
         catch (Exception e)
