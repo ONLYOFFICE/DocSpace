@@ -9,6 +9,7 @@ import {
 import {
   getFileRoleActions,
   getRoomRoleActions,
+  getArchiveRoomRoleActions,
 } from "@docspace/common/utils/actions";
 
 class AccessRightsStore {
@@ -411,6 +412,19 @@ class AccessRightsStore {
     if (isAdmin) return needRemove && !userIsAdmin && !userIsOwner;
 
     return false;
+  };
+
+  canViewUsers = (room) => {
+    const { rootFolderType } = this.selectedFolderStore;
+
+    if (!room) return false;
+
+    const options =
+      rootFolderType === FolderType.Archive
+        ? getArchiveRoomRoleActions(room.access)
+        : getRoomRoleActions(room.access);
+
+    return options.viewUsers;
   };
 }
 

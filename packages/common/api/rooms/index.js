@@ -159,8 +159,8 @@ export function archiveRoom(id, deleteAfter = false) {
   });
 }
 
-export function unarchiveRoom(id, deleteAfter = true) {
-  const data = { deleteAfter };
+export function unarchiveRoom(id) {
+  const data = { deleteAfter: false };
   const options = {
     method: "put",
     url: `/files/rooms/${id}/unarchive`,

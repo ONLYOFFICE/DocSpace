@@ -28,7 +28,7 @@ import {
 } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 import withLoader from "../withLoader";
-//import MoreLoginModal from "login/moreLogin";
+import MoreLoginModal from "@docspace/common/components/MoreLoginModal";
 import AppLoader from "@docspace/common/components/AppLoader";
 import EmailInput from "@docspace/components/email-input";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
@@ -183,10 +183,6 @@ const RegisterContainer = styled.div`
   .auth-form-container {
     margin-top: 32px;
     width: 100%;
-
-    .form-field {
-      height: 48px;
-    }
 
     @media (max-width: 768px) {
       margin: 32px 0 0 0;
@@ -778,7 +774,7 @@ const Confirm = (props) => {
             />
           </form>
 
-          {/* <MoreLoginModal
+          <MoreLoginModal
             t={t}
             visible={moreAuthVisible}
             onClose={moreAuthClose}
@@ -786,7 +782,7 @@ const Confirm = (props) => {
             onSocialLoginClick={onSocialButtonClick}
             ssoLabel={ssoLabel}
             ssoUrl={ssoUrl}
-          /> */}
+          />
         </RegisterContainer>
       </FormWrapper>
     </ConfirmContainer>

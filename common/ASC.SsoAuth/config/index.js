@@ -22,6 +22,8 @@ const nconf = require("nconf"),
 nconf.argv()
     .env()
     .file("config",path.join(__dirname, "config.json"));
+    
+console.log("NODE_ENV: " + nconf.get("NODE_ENV"));
 
 if (nconf.get("NODE_ENV") !== "development" && fs.existsSync(path.join(__dirname, nconf.get("NODE_ENV") + ".json"))) {
     nconf.file("config", path.join(__dirname, nconf.get("NODE_ENV") + ".json"));
@@ -38,14 +40,9 @@ function getAndSaveAppsettings(){
         appsettings =path.join(__dirname, appsettings);
     }
     var env = nconf.get("app").environment;
-    var valueEnv = nconf.get(env);
-    var fileWithEnv = path.join(appsettings, 'appsettings.' + valueEnv + '.json');
+    console.log('environment: ' + env);
 
-    if(fs.existsSync(fileWithEnv)){
-        nconf.file("appsettings", fileWithEnv);
-    }
-    else{
-        nconf.file("appsettings", path.join(appsettings, 'appsettings.json'));
-    }
+    nconf.file("appsettingsWithEnv", path.join(appsettings, 'appsettings.' + env + '.json'));
+    nconf.file("appsettings", path.join(appsettings, 'appsettings.json'));
     nconf.file("appsettingsServices", path.join(appsettings, 'appsettings.services.json'));
 }

@@ -279,8 +279,8 @@ public class SsoHandlerService
                     limitExceeded = true;
                 }
 
-                newUserInfo = _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
-                    false, isUser: limitExceeded);
+                newUserInfo = await _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
+                  false, isUser: limitExceeded);
             }
             else
             {
@@ -289,7 +289,7 @@ public class SsoHandlerService
                     throw new Exception(Resource.ErrorIncorrectUserName);
                 }
 
-                _userManager.SaveUserInfo(newUserInfo);
+                await _userManager.SaveUserInfo(newUserInfo);
             }
 
             /*var photoUrl = samlResponse.GetRemotePhotoUrl();

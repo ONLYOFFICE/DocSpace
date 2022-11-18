@@ -315,7 +315,7 @@ const FilesTableRow = (props) => {
     showHotkeyBorder,
     tableColumns,
     id,
-
+    hideColumns,
     isRooms,
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
@@ -381,21 +381,22 @@ const FilesTableRow = (props) => {
   let ownerAvailableDrag = true;
   let tagsAvailableDrag = true;
   let activityAvailableDrag = true;
-
   let buttonsAvailableDrag = true;
 
   if (dragging && isDragging) {
     availableColumns = localStorage.getItem(tableColumns).split(",");
 
-    authorAvailableDrag = availableColumns.includes("Author");
-    createdAvailableDrag = availableColumns.includes("Created");
-    modifiedAvailableDrag = availableColumns.includes("Modified");
-    sizeAvailableDrag = availableColumns.includes("Size");
-    typeAvailableDrag = availableColumns.includes("Type");
+    authorAvailableDrag = availableColumns.includes("Author") && !hideColumns;
+    createdAvailableDrag = availableColumns.includes("Created") && !hideColumns;
+    modifiedAvailableDrag =
+      availableColumns.includes("Modified") && !hideColumns;
+    sizeAvailableDrag = availableColumns.includes("Size") && !hideColumns;
+    typeAvailableDrag = availableColumns.includes("Type") && !hideColumns;
     buttonsAvailableDrag = availableColumns.includes("QuickButtons");
-    ownerAvailableDrag = availableColumns.includes("Owner");
-    tagsAvailableDrag = availableColumns.includes("Tags");
-    activityAvailableDrag = availableColumns.includes("Activity");
+    ownerAvailableDrag = availableColumns.includes("Owner") && !hideColumns;
+    tagsAvailableDrag = availableColumns.includes("Tags") && !hideColumns;
+    activityAvailableDrag =
+      availableColumns.includes("Activity") && !hideColumns;
   }
 
   return (

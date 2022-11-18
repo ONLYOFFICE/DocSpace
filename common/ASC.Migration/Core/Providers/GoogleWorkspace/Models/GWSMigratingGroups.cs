@@ -86,7 +86,7 @@ public class GWSMigratingGroups : MigratingGroup
         }
     }
 
-    public override void Migrate()
+    public override async Task Migrate()
     {
         var existingGroups = _userManager.GetGroups().ToList();
         var oldGroup = existingGroups.Find(g => g.Name == _groupinfo.Name);
@@ -110,7 +110,7 @@ public class GWSMigratingGroups : MigratingGroup
                 }
                 if (!_userManager.IsUserInGroup(user.Id, _groupinfo.ID))
                 {
-                    _userManager.AddUserIntoGroup(user.Id, _groupinfo.ID);
+                    await _userManager.AddUserIntoGroup(user.Id, _groupinfo.ID);
                 }
             }
             catch (Exception ex)
