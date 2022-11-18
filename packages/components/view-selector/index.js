@@ -60,7 +60,6 @@ const ViewSelector = ({
 
       return (
         <IconWrapper
-          id="view-switch-card-button"
           isFilter={isFilter}
           isDisabled={isDisabled}
           key={value}
