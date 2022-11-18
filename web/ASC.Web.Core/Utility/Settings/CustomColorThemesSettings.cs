@@ -158,36 +158,6 @@ public class CustomColorThemesSettingsItem
                 Accent = "#FFFFFF",
                 Buttons = "#FFFFFF"
             }
-        },
-        new CustomColorThemesSettingsItem
-        {
-            Id = 7,
-            Name = "black",
-            Main = new CustomColorThemesSettingsColorItem
-            {
-                Accent = "#444444",
-                Buttons = "#6E6E6E"
-            },
-            Text = new CustomColorThemesSettingsColorItem
-            {
-                Accent = "#FFFFFF",
-                Buttons = "#FFFFFF"
-            }
-        },
-        new CustomColorThemesSettingsItem
-        {
-            Id = 8,
-            Name = "grey",
-            Main = new CustomColorThemesSettingsColorItem
-            {
-                Accent ="#F1F2F4",
-                Buttons = "#DADCDE"
-            },
-            Text = new CustomColorThemesSettingsColorItem
-            {
-                Accent = "#333333",
-                Buttons = "#333333"
-            }
         }
     };
 }
