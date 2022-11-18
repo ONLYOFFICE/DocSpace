@@ -1063,6 +1063,7 @@ class FilesStore {
       const canViewVersionHistory = this.accessRightsStore.canViewVersionHistory(
         item
       );
+      const canFillForm = this.accessRightsStore.canFillForm(item);
 
       const canEditFile = this.accessRightsStore.canEditFile(item);
       const isMasterForm = item.fileExst === ".docxf";
@@ -1132,7 +1133,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
 
-      if (!filesRights.fillForm) {
+      if (!(shouldFillForm && canFillForm)) {
         fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
       }
       // if (!filesRights.blockFile) {
@@ -1195,8 +1196,8 @@ class FilesStore {
       if (!isMasterForm)
         fileOptions = this.removeOptions(fileOptions, ["make-form"]);
 
-      if (!shouldFillForm)
-        fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
+      // if (!shouldFillForm)
+      //   fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
 
       if (!canConvert) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
@@ -1290,7 +1291,7 @@ class FilesStore {
 
       if (isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
-          "fill-form",
+          //"fill-form",
           "open",
           "open-location",
           "view",

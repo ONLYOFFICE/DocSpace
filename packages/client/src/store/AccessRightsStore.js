@@ -118,6 +118,17 @@ class AccessRightsStore {
 
     return getFileRoleActions(access).rename;
   };
+  canFillForm = (file) => {
+    const { rootFolderType, access } = file;
+
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH
+    )
+      return false;
+
+    return getFileRoleActions(access).fillForm;
+  };
 
   canArchiveRoom = (room) => {
     const { archive } = getRoomRoleActions(room.access);
