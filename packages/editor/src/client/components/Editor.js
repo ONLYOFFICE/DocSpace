@@ -94,7 +94,8 @@ function Editor({
   filesSettings,
 }) {
   const fileInfo = config?.file;
-  isArchiveFolderRoot = fileInfo.rootFolderType === FolderType.Archive;
+  isArchiveFolderRoot =
+    fileInfo && fileInfo.rootFolderType === FolderType.Archive;
 
   const { t } = useTranslation(["Editor", "Common"]);
 
