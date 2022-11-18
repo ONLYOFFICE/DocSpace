@@ -123,7 +123,7 @@ const FilterInput = React.memo(
             value={inputValue}
             onChange={onSearch}
             onClearSearch={onClearSearch}
-            id="search-input"
+            id="filter_search-input"
           />
           <FilterButton
             t={t}
