@@ -1071,6 +1071,9 @@ class FilesStore {
       ...{ editing: isEditing },
     });
 
+    const canMoveAbility = canMoveItsItems || canMoveAlienItems;
+    const canDeleteAbility = canDeleteItsItems || canDeleteAlienItems;
+
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
       const canLockFile = this.accessRightsStore.canLockFile(item);
@@ -1141,6 +1144,9 @@ class FilesStore {
 
       if (!canChangeVersionHistory && !canViewVersionHistory) {
         fileOptions = this.removeOptions(fileOptions, ["version"]);
+        if (item.rootFolderType === FolderType.Archive) {
+          fileOptions = this.removeOptions(fileOptions, ["separator0"]);
+        }
       }
 
       if (!canRename) {
@@ -1165,11 +1171,11 @@ class FilesStore {
       // if (!filesRights.changeVersionHistory) {
       //   fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
       // }
-      if (!canDeleteItsItems || !canDeleteAlienItems) {
+      if (!canDeleteAbility) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
 
-      if (!canMoveItsItems || !canMoveAlienItems) {
+      if (!canMoveAbility) {
         fileOptions = this.removeOptions(fileOptions, ["move-to"]);
       }
       // if (!filesRights.rename) {
@@ -1178,19 +1184,16 @@ class FilesStore {
       if (!filesRights.copyFromPersonal) {
         fileOptions = this.removeOptions(fileOptions, ["copy-to", "copy"]);
       }
-      if (
-        !filesRights.viewVersionHistory &&
-        !filesRights.changeVersionHistory
-      ) {
-        fileOptions = this.removeOptions(fileOptions, ["version"]);
-        if (item.rootFolderType === FolderType.Archive) {
-          fileOptions = this.removeOptions(fileOptions, ["separator0"]);
-        }
-      }
-      if (
-        (!canMoveItsItems || !filesRights.moveAlien) &&
-        !filesRights.copyFromPersonal
-      ) {
+      // if (
+      //   !filesRights.viewVersionHistory &&
+      //   !filesRights.changeVersionHistory
+      // ) {
+      //   fileOptions = this.removeOptions(fileOptions, ["version"]);
+      //   if (item.rootFolderType === FolderType.Archive) {
+      //     fileOptions = this.removeOptions(fileOptions, ["separator0"]);
+      //   }
+      // }
+      if (!canMoveAbility && !filesRights.copyFromPersonal) {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
       }
 
@@ -1521,10 +1524,10 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["rename"]);
       }
 
-      if (!canDeleteItsItems || !canDeleteAlienItems) {
+      if (!canDeleteAbility) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
-      if (!canMoveItsItems || !canMoveAlienItems) {
+      if (!canMoveAbility) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
       // if (!filesRights.rename) {
@@ -1534,16 +1537,13 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["copy-to", "copy"]);
       }
 
-      if (
-        (!canMoveItsItems || !filesRights.moveAlien) &&
-        !filesRights.copyFromPersonal
-      ) {
+      if (!canMoveAbility && !filesRights.copyFromPersonal) {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
       }
 
       if (item.rootFolderType === FolderType.Archive) {
         folderOptions = this.removeOptions(folderOptions, [
-          "move",
+          // "move",
           // "move-to",
           "copy-to",
           //"rename",
