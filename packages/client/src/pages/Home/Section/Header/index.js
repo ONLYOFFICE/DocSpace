@@ -618,7 +618,7 @@ class SectionHeaderContent extends React.Component {
       <Consumer>
         {(context) => (
           <StyledContainer>
-            {isHeaderVisible ? (
+            {isHeaderVisible && headerMenu.length ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
                 onChange={this.onChange}
