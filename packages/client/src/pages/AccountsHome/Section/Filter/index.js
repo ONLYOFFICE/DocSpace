@@ -150,7 +150,7 @@ const SectionFilterContent = ({
         isLast: true,
       },
       {
-        id: "filter_type-doc-space-admin",
+        id: "filter_type-docspace-admin",
         key: "admin",
         group: "filter-type",
         label: t("Common:DocSpaceAdmin"),
