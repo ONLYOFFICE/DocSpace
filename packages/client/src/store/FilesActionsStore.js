@@ -1270,7 +1270,7 @@ class FilesActionStore {
     const {
       canCopyFile,
       canDeleteFile,
-      canMoveFile,
+      canMoveItems,
       canArchiveRoom,
       canRemoveRoom,
     } = this.accessRightsStore;
@@ -1287,7 +1287,7 @@ class FilesActionStore {
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
-        const canMove = canMoveFile({ access, rootFolderType });
+        const canMove = canMoveItems({ access, rootFolderType });
         return (
           !isThirdPartyRootSelection &&
           hasSelection &&

@@ -260,7 +260,7 @@ class AccessRightsStore {
     return create;
   }
 
-  canMoveFile = (room) => {
+  canMoveItems = (room) => {
     const { rootFolderType } = room;
 
     if (rootFolderType === FolderType.Archive) return false;
