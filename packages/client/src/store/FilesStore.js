@@ -1337,6 +1337,7 @@ class FilesStore {
       const canRemoveRoom = this.accessRightsStore.canRemoveRoom(item);
 
       const canArchiveRoom = this.accessRightsStore.canArchiveRoom(item);
+      const canPinRoom = this.accessRightsStore.canPinRoom(item);
 
       let roomOptions = [
         "select",
@@ -1383,18 +1384,23 @@ class FilesStore {
         roomOptions = this.removeOptions(roomOptions, ["reconnect-storage"]);
       }
 
-      if (item.pinned) {
-        roomOptions = this.removeOptions(roomOptions, ["pin-room"]);
+      if (!canPinRoom) {
+        roomOptions = this.removeOptions(roomOptions, [
+          "unpin-room",
+          "pin-room",
+        ]);
       } else {
-        roomOptions = this.removeOptions(roomOptions, ["unpin-room"]);
+        item.pinned
+          ? (roomOptions = this.removeOptions(roomOptions, ["pin-room"]))
+          : (roomOptions = this.removeOptions(roomOptions, ["unpin-room"]));
       }
 
       if (isArchiveFolder || item.rootFolderType === FolderType.Archive) {
         roomOptions = this.removeOptions(roomOptions, [
           "edit-room",
           //"invite-users-to-room",
-          "pin-room",
-          "unpin-room",
+          //"pin-room",
+          //"unpin-room",
           "archive-room",
           "separator1",
           "room-info",
