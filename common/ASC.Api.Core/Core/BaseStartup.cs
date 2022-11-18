@@ -133,7 +133,8 @@ public abstract class BaseStartup
                                       policy.WithOrigins(_corsOrigin)
                                       .SetIsOriginAllowedToAllowWildcardSubdomains()
                                       .AllowAnyHeader()
-                                    .AllowAnyMethod();
+                                      .AllowAnyMethod()
+                                      .AllowCredentials();
                                   });
             });
         }

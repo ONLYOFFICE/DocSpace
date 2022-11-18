@@ -26,6 +26,8 @@
 
 using ASC.Core.Data;
 
+using Microsoft.Net.Http.Headers;
+
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core;
@@ -71,29 +73,6 @@ public class CookiesManager
         _messageService = messageService;
     }
 
-    private static string GetCookiesName(CookiesType type)
-    {
-        return type switch
-        {
-            CookiesType.AuthKey => AuthCookiesName,
-            CookiesType.SocketIO => SocketIOCookiesName,
-
-            _ => string.Empty,
-        };
-    }
-
-    public string GetRequestVar(CookiesType type)
-    {
-        if (_httpContextAccessor?.HttpContext == null)
-        {
-            return "";
-        }
-
-        var cookie = _httpContextAccessor.HttpContext.Request.Query[GetCookiesName(type)].FirstOrDefault() ?? _httpContextAccessor.HttpContext.Request.Form[GetCookiesName(type)].FirstOrDefault();
-
-        return string.IsNullOrEmpty(cookie) ? GetCookies(type) : cookie;
-    }
-
     public void SetCookies(CookiesType type, string value, bool session = false)
     {
         if (_httpContextAccessor?.HttpContext == null)
@@ -110,45 +89,15 @@ public class CookiesManager
         {
             options.HttpOnly = true;
 
-            if (_httpContextAccessor.HttpContext.Request.GetUrlRewriter().Scheme == "https")
+            var urlRewriter = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
+            if (urlRewriter.Scheme == "https")
             {
                 options.Secure = true;
-
-                if (_coreBaseSettings.Personal)
-                {
-                    options.SameSite = SameSiteMode.None;
-                }
             }
-        }
 
-        _httpContextAccessor.HttpContext.Response.Cookies.Append(GetCookiesName(type), value, options);
-    }
-
-    public void SetCookies(CookiesType type, string value, string domain, bool session = false)
-    {
-        if (_httpContextAccessor?.HttpContext == null)
-        {
-            return;
-        }
-
-        var options = new CookieOptions
-        {
-            Expires = GetExpiresDate(session),
-            Domain = domain
-        };
-
-        if (type == CookiesType.AuthKey)
-        {
-            options.HttpOnly = true;
-
-            if (_httpContextAccessor.HttpContext.Request.GetUrlRewriter().Scheme == "https")
+            if (FromCors())
             {
-                options.Secure = true;
-
-                if (_coreBaseSettings.Personal)
-                {
-                    options.SameSite = SameSiteMode.None;
-                }
+                options.Domain = $".{_coreBaseSettings.Basedomain}";
             }
         }
 
@@ -321,5 +270,55 @@ public class CookiesManager
         var data = new MessageUserData(tenantId, userId);
 
         return _messageService.SendLoginMessage(data, action);
+    }
+
+    private string GetCookiesName(CookiesType type)
+    {
+        var result = type switch
+        {
+            CookiesType.AuthKey => AuthCookiesName,
+            CookiesType.SocketIO => SocketIOCookiesName,
+
+            _ => string.Empty,
+        };
+
+        if (FromCors())
+        {
+            var origin = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Origin].FirstOrDefault();
+            if (!string.IsNullOrEmpty(origin))
+            {
+                var originUri = new Uri(origin);
+                result = $"{result}_{originUri.Host.Replace('.', '_')}";
+            }
+        }
+
+        return result;
+    }
+
+    private bool FromCors()
+    {
+        var urlRewriter = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
+        var origin = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Origin].FirstOrDefault();
+        var baseDomain = _coreBaseSettings.Basedomain;
+
+        try
+        {
+            if (!string.IsNullOrEmpty(origin))
+            {
+                var originUri = new Uri(origin);
+                if (!string.IsNullOrEmpty(baseDomain) &&
+                urlRewriter.Host != originUri.Host &&
+                originUri.Host.EndsWith(baseDomain))
+                {
+                    return true;
+                }
+            }
+        }
+        catch (Exception)
+        {
+
+        }
+
+        return false;
     }
 }
