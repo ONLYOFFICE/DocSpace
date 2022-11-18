@@ -1208,12 +1208,12 @@ class FilesStore {
           "mark-as-favorite",
           "remove-from-favorites",
           // "edit",
-          "move",
+          // "move",
           // "move-to",
           "copy-to",
           "copy",
           //"rename",
-          "separator2",
+          // "separator2",
           //"delete",
           //"finalize-version",
         ]);
@@ -1243,7 +1243,13 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["docu-sign"]);
       }
 
-      if (isEditing)
+      if (
+        isEditing ||
+        item.rootFolderType === FolderType.Archive ||
+        (isFavoritesFolder && !isFavorite) ||
+        isFavoritesFolder ||
+        isRecentFolder
+      )
         fileOptions = this.removeOptions(fileOptions, ["separator2"]);
 
       // if (isEditing) {
@@ -1269,9 +1275,6 @@ class FilesStore {
           fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
         }
       }
-
-      if (isFavoritesFolder && !isFavorite)
-        fileOptions = this.removeOptions(fileOptions, ["separator2"]);
 
       if (isFavoritesFolder) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -1302,9 +1305,6 @@ class FilesStore {
         ]);
       }
 
-      if (isRecentFolder && !isFavorite)
-        fileOptions = this.removeOptions(fileOptions, ["separator2"]);
-
       // if (isRecentFolder) {
       //   //fileOptions = this.removeOptions(fileOptions, ["delete"]);
 
@@ -1320,7 +1320,7 @@ class FilesStore {
           // "move-to",
           //"sharing-settings",
           "unsubscribe",
-          "separator2",
+          //"separator2",
         ]);
       }
 
