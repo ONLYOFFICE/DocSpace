@@ -94,7 +94,8 @@ function Editor({
   filesSettings,
 }) {
   const fileInfo = config?.file;
-  isArchiveFolderRoot = fileInfo.rootFolderType === FolderType.Archive;
+  isArchiveFolderRoot =
+    fileInfo && fileInfo.rootFolderType === FolderType.Archive;
 
   const { t } = useTranslation(["Editor", "Common"]);
 
@@ -482,6 +483,8 @@ function Editor({
         ...config.editorConfig.customization,
         goback: goBack,
       };
+
+      config.document.info.favorite = null;
 
       // if (personal && !fileInfo) {
       //   //TODO: add conditions for SaaS

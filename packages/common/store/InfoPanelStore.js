@@ -23,7 +23,7 @@ class InfoPanelStore {
   selection = null;
   selectionParentRoom = null;
 
-  roomsView = "members";
+  roomsView = "details";
   fileView = "history";
 
   authStore = null;
