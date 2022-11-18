@@ -55,28 +55,6 @@ export const FilterType = Object.freeze({
 });
 
 /**
- * dependence FilterType
- * Enum for file type keys.
- * @readonly
- */
-export const FilterTypeKeys = Object.freeze({
-  0: "filter_none",
-  1: "filter_files-only",
-  2: "filter_folders-only",
-  3: "filter_documents-only",
-  4: "filter_presentations-only",
-  5: "filter_spreadsheets-only",
-  7: "filter_images-only",
-  8: "filter_by-user",
-  9: "filter_by-department",
-  10: "filter_archive-only",
-  11: "filter_by-extension",
-  12: "filter_media-only",
-  18: "filter_form-templates-only",
-  19: "filter_forms-only",
-});
-
-/**
  * Enum for file type.
  * @readonly
  */
