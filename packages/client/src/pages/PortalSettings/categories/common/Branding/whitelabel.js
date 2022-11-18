@@ -14,9 +14,10 @@ import WhiteLabelWrapper from "./StyledWhitelabel";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
 
 import Logo from "./sub-components/logo";
+import { generateLogo } from "../../../utils/generateLogo";
 
 const WhiteLabel = (props) => {
-  const { t, isSettingPaid, logoText, logoUrls } = props;
+  const { t, isSettingPaid, logoText, logoUrls, logoSizes } = props;
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
   const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
@@ -42,6 +43,22 @@ const WhiteLabel = (props) => {
   const onChangeCompanyName = (e) => {
     const value = e.target.value;
     setLogoTextWhiteLabel(value);
+  };
+
+  const onUseTextAsLogo = () => {
+    let newLogos = [];
+    for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
+      const width = logoSizes[i].width / 2;
+      const height = logoSizes[i].height / 2;
+      const text =
+        i === 2 || i === 5
+          ? logoTextWhiteLabel.trim().charAt(0)
+          : logoTextWhiteLabel;
+
+      const logo = generateLogo(width, height, text);
+      newLogos.push(logo);
+    }
+    setLogoUrlsWhiteLabel(newLogos);
   };
 
   return !isLoadedData ? (
@@ -92,7 +109,7 @@ const WhiteLabel = (props) => {
             className="use-as-logo"
             size="small"
             label={t("UseAsLogoButton")}
-            //onClick={onUseTextAsLogo}
+            onClick={onUseTextAsLogo}
             tabIndex={2}
             isDisabled={!isSettingPaid}
           />
