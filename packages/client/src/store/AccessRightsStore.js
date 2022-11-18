@@ -257,7 +257,7 @@ class AccessRightsStore {
     return deleteSelf || deleteAlien;
   };
 
-  canCopyFile = (room) => {
+  canCopyItems = (room) => {
     const { rootFolderType } = room;
 
     if (rootFolderType === FolderType.Archive) return false;

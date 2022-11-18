@@ -1268,7 +1268,7 @@ class FilesActionStore {
     } = this.filesStore;
 
     const {
-      canCopyFile,
+      canCopyItems,
       canDeleteFile,
       canMoveItems,
       canArchiveRoom,
@@ -1278,7 +1278,7 @@ class FilesActionStore {
 
     switch (option) {
       case "copy":
-        const canCopy = canCopyFile({ access, rootFolderType });
+        const canCopy = canCopyItems({ access, rootFolderType });
 
         return hasSelection && canCopy;
       case "showInfo":
