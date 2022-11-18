@@ -395,9 +395,9 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
     const { isArchiveFolder } = this.treeFoldersStore;
-    const { addActiveItems, folders, getIsEmptyTrash } = this.filesStore;
+    const { addActiveItems, roomsForDelete } = this.filesStore;
 
-    const folderIds = folders.map((f) => f.id);
+    const folderIds = roomsForDelete.map((f) => f.id);
     if (isArchiveFolder) addActiveItems(null, folderIds);
 
     setSecondaryProgressBarData({

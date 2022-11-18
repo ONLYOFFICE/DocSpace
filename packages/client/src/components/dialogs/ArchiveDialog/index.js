@@ -128,7 +128,7 @@ const ArchiveDialog = withTranslation(["Files", "ArchiveDialog", "Common"])(
 );
 
 export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
-  const { folders, selection, bufferSelection } = filesStore;
+  const { roomsForRestore, selection, bufferSelection } = filesStore;
   const { setArchiveAction } = filesActionsStore;
 
   const {
@@ -142,7 +142,7 @@ export default inject(({ filesStore, filesActionsStore, dialogsStore }) => {
   } = dialogsStore;
 
   const items = restoreAll
-    ? folders
+    ? roomsForRestore
     : selection.length > 0
     ? selection
     : [bufferSelection];
