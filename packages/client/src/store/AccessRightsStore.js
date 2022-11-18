@@ -159,6 +159,27 @@ class AccessRightsStore {
 
     return getFileRoleActions(access).deleteAlien;
   };
+  canMoveItsItems = (item) => {
+    const {
+      rootFolderType,
+      access,
+      isFile,
+      editing: fileEditing,
+      providerKey,
+    } = item;
+    const { isDesktopClient } = this.authStore.settingsStore;
+
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent ||
+      fileEditing
+    )
+      return false;
+
+    return getFileRoleActions(access).moveSelf;
+  };
 
   canArchiveRoom = (room) => {
     const { archive } = getRoomRoleActions(room.access);

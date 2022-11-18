@@ -1062,6 +1062,12 @@ class FilesStore {
       ...{ editing: isEditing },
     });
 
+    const canMoveItsItems = this.accessRightsStore.canMoveItsItems({
+      ...item,
+      ...isFile,
+      ...{ editing: isEditing },
+    });
+
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
       const canLockFile = this.accessRightsStore.canLockFile(item);
@@ -1159,7 +1165,8 @@ class FilesStore {
       if (!canDeleteItsItems || !canDeleteAlienItems) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
-      if (!filesRights.moveSelf || !filesRights.moveAlien) {
+
+      if (!canMoveItsItems || !filesRights.moveAlien) {
         fileOptions = this.removeOptions(fileOptions, ["move-to"]);
       }
       // if (!filesRights.rename) {
@@ -1178,7 +1185,7 @@ class FilesStore {
         }
       }
       if (
-        (!filesRights.moveSelf || !filesRights.moveAlien) &&
+        (!canMoveItsItems || !filesRights.moveAlien) &&
         !filesRights.copyFromPersonal
       ) {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
@@ -1192,7 +1199,7 @@ class FilesStore {
           "remove-from-favorites",
           // "edit",
           "move",
-          "move-to",
+          // "move-to",
           "copy-to",
           "copy",
           //"rename",
@@ -1226,17 +1233,20 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["docu-sign"]);
       }
 
-      if (isEditing) {
-        fileOptions = this.removeOptions(fileOptions, [
-          // "finalize-version",
-          "move-to",
-          "separator2",
-          // "delete",
-        ]);
-        // if (isThirdPartyItem) {
-        //   fileOptions = this.removeOptions(fileOptions, ["rename"]);
-        // }
-      }
+      if (isEditing)
+        fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+
+      // if (isEditing) {
+      //   fileOptions = this.removeOptions(fileOptions, [
+      //     // "finalize-version",
+      //     // "move-to",
+      //     "separator2",
+      //     // "delete",
+      //   ]);
+      //   // if (isThirdPartyItem) {
+      //   //   fileOptions = this.removeOptions(fileOptions, ["rename"]);
+      //   // }
+      // }
 
       if (isFavorite) {
         fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
@@ -1255,7 +1265,7 @@ class FilesStore {
 
       if (isFavoritesFolder) {
         fileOptions = this.removeOptions(fileOptions, [
-          "move-to",
+          // "move-to",
           //"delete",
           "copy",
         ]);
@@ -1297,7 +1307,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, [
           "make-form",
           "copy",
-          "move-to",
+          // "move-to",
           //"sharing-settings",
           "unsubscribe",
           "separator2",
@@ -1322,7 +1332,7 @@ class FilesStore {
           //"finalize-version",
           //"show-version-history",
           "move", //category
-          "move-to",
+          // "move-to",
           "copy-to",
           "copy",
           "mark-read",
@@ -1511,7 +1521,7 @@ class FilesStore {
       if (!canDeleteItsItems || !canDeleteAlienItems) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
-      if (!filesRights.moveSelf || !filesRights.moveAlien) {
+      if (!canMoveItsItems || !filesRights.moveAlien) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
       // if (!filesRights.rename) {
@@ -1522,7 +1532,7 @@ class FilesStore {
       }
 
       if (
-        (!filesRights.moveSelf || !filesRights.moveAlien) &&
+        (!canMoveItsItems || !filesRights.moveAlien) &&
         !filesRights.copyFromPersonal
       ) {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
@@ -1531,7 +1541,7 @@ class FilesStore {
       if (item.rootFolderType === FolderType.Archive) {
         folderOptions = this.removeOptions(folderOptions, [
           "move",
-          "move-to",
+          // "move-to",
           "copy-to",
           //"rename",
           "change-thirdparty-info",
@@ -1558,7 +1568,7 @@ class FilesStore {
           "link-for-portal-users",
           "sharing-settings",
           "move",
-          "move-to",
+          // "move-to",
           "copy-to",
           "mark-read",
           // "rename",
@@ -1591,20 +1601,25 @@ class FilesStore {
       if (isThirdPartyFolder && isDesktopClient)
         folderOptions = this.removeOptions(folderOptions, ["separator2"]);
 
-      if (isThirdPartyFolder) {
-        folderOptions = this.removeOptions(folderOptions, ["move-to"]);
-
-        // if (isDesktopClient) {
-        //   folderOptions = this.removeOptions(folderOptions, [
-        //     "separator2",
-        //     "delete",
-        //   ]);
-        // }
-      } else {
+      if (!isThirdPartyFolder)
         folderOptions = this.removeOptions(folderOptions, [
           "change-thirdparty-info",
         ]);
-      }
+
+      // if (isThirdPartyFolder) {
+      //  // folderOptions = this.removeOptions(folderOptions, ["move-to"]);
+
+      //   // if (isDesktopClient) {
+      //   //   folderOptions = this.removeOptions(folderOptions, [
+      //   //     "separator2",
+      //   //     "delete",
+      //   //   ]);
+      //   // }
+      // } else {
+      //   folderOptions = this.removeOptions(folderOptions, [
+      //     "change-thirdparty-info",
+      //   ]);
+      // }
 
       if (isThirdPartyItem) {
         folderOptions = this.removeOptions(folderOptions, ["owner-change"]);
