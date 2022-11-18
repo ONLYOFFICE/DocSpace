@@ -33,6 +33,7 @@ class NewFilesPanel extends React.Component {
   state = { readingFiles: [], inProgress: false };
 
   onClose = () => {
+    if (this.state.inProgress) return;
     this.props.setNewFilesPanelVisible(false);
   };
 
@@ -52,15 +53,26 @@ class NewFilesPanel extends React.Component {
   };
 
   onMarkAsRead = () => {
-    const fileIds = [];
-    const folderIds = [];
-
-    for (let item of this.props.newFiles) {
-      if (item.fileExst) fileIds.push(item.id);
-      else folderIds.push(item.id);
-    }
+    const { inProgress, readingFiles } = this.state;
+    if (inProgress) return;
 
     this.setState({ inProgress: true });
+
+    const files = [];
+    const folders = [];
+
+    for (let item of this.props.newFiles) {
+      if (item.fileExst) files.push(item);
+      else folders.push(item);
+    }
+
+    const fileIds = files
+      .filter((f) => !readingFiles.includes(f.id.toString()))
+      .map((f) => f.id);
+
+    const folderIds = folders
+      .filter((f) => !readingFiles.includes(f.id.toString()))
+      .map((f) => f.id);
 
     this.props
       .markAsRead(folderIds, fileIds)
@@ -78,6 +90,10 @@ class NewFilesPanel extends React.Component {
   };
 
   onNewFileClick = (e) => {
+    if (this.state.inProgress) return;
+
+    this.setState({ inProgress: true });
+
     const { id, extension: fileExst } = e.target.dataset;
 
     const {
@@ -92,16 +108,23 @@ class NewFilesPanel extends React.Component {
 
     const item = newFiles.find((file) => file.id.toString() === id);
 
-    if (readingFiles.includes(id)) return this.onFileClick(item);
+    if (readingFiles.includes(id)) {
+      this.setState({ inProgress: false });
+      return this.onFileClick(item);
+    }
+
     markAsRead(folderIds, fileIds, item)
       .then(() => {
         //updateFolderBadge(folderId, 1);
 
         readingFiles.push(id);
         this.setState({ readingFiles });
+        this.setState({ inProgress: false });
         this.onFileClick(item);
       })
-      .then(() => refreshFiles())
+      .then(() => {
+        refreshFiles();
+      })
       .catch((err) => toastr.error(err));
   };
 
@@ -159,7 +182,11 @@ class NewFilesPanel extends React.Component {
       newFiles,
     } = this.props;
 
-    const filesCount = newFiles.length;
+    const { readingFiles } = this.state;
+
+    const filesCount = newFiles.filter(
+      (f) => !readingFiles.includes(f.id.toString())
+    ).length;
     updateRootBadge(+newFilesIds[0], filesCount);
 
     if (newFilesIds.length <= 1) {
@@ -175,6 +202,7 @@ class NewFilesPanel extends React.Component {
   render() {
     //console.log("NewFiles panel render");
     const { t, visible, isLoading, newFiles, theme } = this.props;
+    const { inProgress } = this.state;
     const zIndex = 310;
 
     return (
@@ -244,12 +272,13 @@ class NewFilesPanel extends React.Component {
                 size="normal"
                 primary
                 onClick={this.onMarkAsRead}
-                isLoading={this.state.inProgress}
+                isLoading={inProgress}
               />
               <Button
                 className="new_files_panel-button"
                 label={t("Common:CloseButton")}
                 size="normal"
+                isDisabled={inProgress}
                 onClick={this.onClose}
               />
             </StyledFooter>
