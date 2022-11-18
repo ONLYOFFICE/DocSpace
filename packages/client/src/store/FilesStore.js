@@ -1058,6 +1058,12 @@ class FilesStore {
       ...{ editing: isEditing },
     });
 
+    const canDeleteAlienItems = this.accessRightsStore.canDeleteAlienItems({
+      ...item,
+      ...isFile,
+      ...{ editing: isEditing },
+    });
+
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
       const canLockFile = this.accessRightsStore.canLockFile(item);
@@ -1152,7 +1158,7 @@ class FilesStore {
       // if (!filesRights.changeVersionHistory) {
       //   fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
       // }
-      if (!canDeleteItsItems || !filesRights.deleteAlien) {
+      if (!canDeleteItsItems || !canDeleteAlienItems) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
       if (!filesRights.moveSelf || !filesRights.moveAlien) {
@@ -1501,9 +1507,9 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["rename"]);
       }
 
-      // if (!filesRights.deleteSelf || !filesRights.deleteAlien) {
-      //   folderOptions = this.removeOptions(folderOptions, ["delete"]);
-      // }
+      if (!canDeleteItsItems || !canDeleteAlienItems) {
+        fileOptions = this.removeOptions(fileOptions, ["delete"]);
+      }
       if (!filesRights.moveSelf || !filesRights.moveAlien) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
