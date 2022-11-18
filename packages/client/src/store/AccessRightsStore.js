@@ -144,7 +144,7 @@ class AccessRightsStore {
     )
       return false;
 
-    return getFileRoleActions(access).fillForm;
+    return getFileRoleActions(access).deleteSelf;
   };
 
   canDeleteAlienItems = (item) => {
@@ -161,7 +161,7 @@ class AccessRightsStore {
     )
       return false;
 
-    return getFileRoleActions(access).fillForm;
+    return getFileRoleActions(access).deleteAlien;
   };
 
   canArchiveRoom = (room) => {
