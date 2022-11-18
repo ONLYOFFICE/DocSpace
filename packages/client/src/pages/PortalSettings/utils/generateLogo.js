@@ -8,7 +8,7 @@ export const generateLogo = (width, height, text, fill = "#000") => {
   ctx.fillStyle = fill;
   ctx.textAlign = "start";
   ctx.textBaseline = "top";
-  ctx.font = `${height}px Arial`;
+  ctx.font = `18px Arial`;
   ctx.fillText(text, 0, 0);
   return canvas.toDataURL();
 };

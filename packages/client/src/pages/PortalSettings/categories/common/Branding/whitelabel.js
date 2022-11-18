@@ -122,6 +122,7 @@ const WhiteLabel = (props) => {
             scale={true}
             isAutoFocussed={true}
             tabIndex={1}
+            maxLength={30}
           />
           <Button
             id="btnUseAsLogo"
