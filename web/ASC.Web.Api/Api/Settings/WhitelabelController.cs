@@ -70,7 +70,7 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPost("whitelabel/save")]
-    public bool SaveWhiteLabelSettings(WhiteLabelRequestsDto inDto)
+    public async Task<bool> SaveWhiteLabelSettings(WhiteLabelRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -87,7 +87,7 @@ public class WhitelabelController : BaseSettingsController
                 logoDict.Add(Int32.Parse(l.Key), l.Value);
             }
 
-            _tenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, null);
+            await _tenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, null);
         }
 
         settings.SetLogoText(inDto.LogoText);
@@ -98,7 +98,7 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPost("whitelabel/savefromfiles")]
-    public bool SaveWhiteLabelSettingsFromFiles()
+    public async Task<bool> SaveWhiteLabelSettingsFromFiles()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -116,7 +116,7 @@ public class WhitelabelController : BaseSettingsController
             var parts = f.FileName.Split('.');
             var logoType = (WhiteLabelLogoTypeEnum)Convert.ToInt32(parts[0]);
             var fileExt = parts[1];
-            _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), null);
+            await _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), null);
         }
 
         _settingsManager.SaveForTenant(settings, Tenant.Id);
@@ -184,17 +184,17 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPut("whitelabel/restore")]
-    public bool RestoreWhiteLabelOptions()
+    public async Task<bool> RestoreWhiteLabelOptions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
 
         var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
-        _tenantWhiteLabelSettingsHelper.RestoreDefault(settings, _tenantLogoManager, Tenant.Id, null);
+        await _tenantWhiteLabelSettingsHelper.RestoreDefault(settings, _tenantLogoManager, Tenant.Id, null);
 
         var tenantInfoSettings = _settingsManager.Load<TenantInfoSettings>();
-        _tenantInfoSettingsHelper.RestoreDefaultLogo(tenantInfoSettings, _tenantLogoManager);
+        await _tenantInfoSettingsHelper.RestoreDefaultLogo(tenantInfoSettings, _tenantLogoManager);
         _settingsManager.Save(tenantInfoSettings);
 
         return true;

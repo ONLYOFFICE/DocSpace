@@ -157,7 +157,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         return lambda;
     }
-    public EmployeeFullDto GetSimple(UserInfo userInfo)
+    public async Task<EmployeeFullDto> GetSimple(UserInfo userInfo)
     {
         var result = new EmployeeFullDto
         {
@@ -167,7 +167,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         FillGroups(result, userInfo);
 
-        var photoData = _userPhotoManager.GetUserPhotoData(userInfo.Id, UserPhotoManager.BigFotoSize);
+        var photoData = await _userPhotoManager.GetUserPhotoData(userInfo.Id, UserPhotoManager.BigFotoSize);
 
         if (photoData != null)
         {

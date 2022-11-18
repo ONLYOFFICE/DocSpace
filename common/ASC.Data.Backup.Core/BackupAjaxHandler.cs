@@ -122,25 +122,25 @@ public class BackupAjaxHandler
         return _backupService.GetBackupProgress(tenantId);
     }
 
-    public void DeleteBackup(Guid id)
+    public async Task DeleteBackup(Guid id)
     {
         DemandPermissionsBackup();
 
-        _backupService.DeleteBackup(id);
+        await _backupService.DeleteBackup(id);
     }
 
-    public void DeleteAllBackups()
+    public async Task DeleteAllBackups()
     {
         DemandPermissionsBackup();
 
-        _backupService.DeleteAllBackups(GetCurrentTenantId());
+        await _backupService.DeleteAllBackups(GetCurrentTenantId());
     }
 
-    public List<BackupHistoryRecord> GetBackupHistory()
+    public async Task<List<BackupHistoryRecord>> GetBackupHistory()
     {
         DemandPermissionsBackup();
 
-        return _backupService.GetBackupHistory(GetCurrentTenantId());
+        return await _backupService.GetBackupHistory(GetCurrentTenantId());
     }
 
     public void CreateSchedule(BackupStorageType storageType, Dictionary<string, string> storageParams, int backupsStored, CronParams cronParams)

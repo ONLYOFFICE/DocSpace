@@ -119,7 +119,7 @@ public class GwsMigratingFiles : MigratingFiles
         _user = user;
     }
 
-    public override void Migrate()
+    public override async Task Migrate()
     {
         if (!ShouldImport)
         {
@@ -150,7 +150,7 @@ public class GwsMigratingFiles : MigratingFiles
                         var parentId = i == 0 ? _globalFolderHelper.FolderMy : foldersDict[string.Join(Path.DirectorySeparatorChar.ToString(), split.Take(i))].Id;
                         try
                         {
-                            var createdFolder = _fileStorageService.CreateNewFolderAsync(parentId, split[i]).Result;
+                            var createdFolder = await _fileStorageService.CreateNewFolderAsync(parentId, split[i]);
                             path = path.Contains(_newParentFolder + Path.DirectorySeparatorChar.ToString()) ? path.Replace(_newParentFolder + Path.DirectorySeparatorChar.ToString(), "") : path;
                             foldersDict.Add(path, createdFolder);
                         }
@@ -165,7 +165,7 @@ public class GwsMigratingFiles : MigratingFiles
             if ((_folders == null || _folders.Count == 0) && (_files != null && _files.Count != 0))
             {
                 var parentId = _globalFolderHelper.FolderMy;
-                var createdFolder = _fileStorageService.CreateNewFolderAsync(parentId, _newParentFolder).Result;
+                var createdFolder = await _fileStorageService.CreateNewFolderAsync(parentId, _newParentFolder);
                 foldersDict.Add(_newParentFolder, createdFolder);
             }
 
@@ -196,7 +196,7 @@ public class GwsMigratingFiles : MigratingFiles
                             Title = Path.GetFileName(file),
                             ContentLength = fs.Length
                         };
-                        newFile = fileDao.SaveFileAsync(newFile, fs).Result;
+                        newFile = await fileDao.SaveFileAsync(newFile, fs);
                         realPath = realPath.Contains(Path.DirectorySeparatorChar.ToString() + _newParentFolder) ? realPath.Replace(Path.DirectorySeparatorChar.ToString() + _newParentFolder, "") : realPath;
                         filesDict.Add(realPath, newFile);
 
@@ -263,7 +263,7 @@ public class GwsMigratingFiles : MigratingFiles
                             }
                             var entryGuid = userToShare == null ? groupToShare.Guid : userToShare.Guid;
 
-                            if (checkRights != null && checkRights(kv.Value, entryGuid).Result)
+                            if (checkRights != null && await checkRights(kv.Value, entryGuid))
                             {
                                 continue; // already have rights, skip
                             }
@@ -301,7 +301,7 @@ public class GwsMigratingFiles : MigratingFiles
 
                     try
                     {
-                        _fileStorageService.SetAceObjectAsync(aceCollection, false).Wait();
+                        await _fileStorageService.SetAceObjectAsync(aceCollection, false);
                     }
                     catch (Exception ex)
                     {
@@ -312,7 +312,7 @@ public class GwsMigratingFiles : MigratingFiles
 
             if (favFolders.Any() || favFiles.Any())
             {
-                _fileStorageService.AddToFavoritesAsync(favFolders, favFiles).Wait();
+                await _fileStorageService.AddToFavoritesAsync(favFolders, favFiles);
             }
         }
         catch
