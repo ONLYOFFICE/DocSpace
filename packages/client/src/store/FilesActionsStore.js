@@ -1287,14 +1287,15 @@ class FilesActionStore {
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
-        const canMove = canMoveItems({ access, rootFolderType });
+        const canMove = canMoveItems({
+          access,
+          rootFolderType,
+          editing: allFilesIsEditing,
+        });
         return (
           !isThirdPartyRootSelection &&
           hasSelection &&
           isAccessedSelected &&
-          !isRecentFolder &&
-          !isFavoritesFolder &&
-          !allFilesIsEditing &&
           canMove
         );
 
