@@ -17,6 +17,7 @@ class AxiosClient {
     if (apiOrigin !== "") {
       headers = {
         http_x_rewriter_url: window.location.origin,
+		'Access-Control-Allow-Credentials' : true
       };
     }
 

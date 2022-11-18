@@ -309,6 +309,11 @@ public class CookiesManager
         var origin = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Origin].FirstOrDefault();
         var baseDomain = _coreBaseSettings.Basedomain;
 
+        foreach (var h in _httpContextAccessor.HttpContext.Request.Headers)
+        {
+            _logger.Debug($"{h.Key}:{h.Value.FirstOrDefault()}");
+        }
+
         try
         {
             _logger.Debug($"baseDomain:{baseDomain}");
