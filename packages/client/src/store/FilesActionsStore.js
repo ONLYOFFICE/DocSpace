@@ -1314,12 +1314,13 @@ class FilesActionStore {
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = canDeleteItems({ access, rootFolderType });
+        const canDelete = canDeleteItems({
+          access,
+          rootFolderType,
+          editing: allFilesIsEditing,
+        });
         const deleteCondition =
-          !isThirdPartyRootSelection &&
-          hasSelection &&
-          isAccessedSelected &&
-          !allFilesIsEditing;
+          !isThirdPartyRootSelection && hasSelection && isAccessedSelected;
 
         return canDelete && deleteCondition;
     }
