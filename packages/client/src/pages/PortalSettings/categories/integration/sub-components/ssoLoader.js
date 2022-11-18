@@ -24,13 +24,16 @@ const StyledLoader = styled.div`
   }
 `;
 
-const SSOLoader = () => {
+const SSOLoader = (props) => {
+  const { isToggleSSO } = props;
   return (
     <StyledLoader>
-      <div className="submenu">
-        <Loaders.Rectangle className="item" height="28px" />
-        <Loaders.Rectangle className="item" height="28px" />
-      </div>
+      {!isToggleSSO && (
+        <div className="submenu">
+          <Loaders.Rectangle className="item" height="28px" />
+          <Loaders.Rectangle className="item" height="28px" />
+        </div>
+      )}
       <Loaders.Rectangle className="description" height="60px" />
       <Loaders.Rectangle height="64px" />
 
