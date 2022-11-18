@@ -162,7 +162,7 @@ const FilterInput = React.memo(
             !isTabletUtils()) ||
             isRecentFolder) && (
             <ViewSelector
-              id="view-switch-button"
+              id={viewAs === "tile" ? "view-switch--row" : "view-switch--tile"}
               style={{ marginLeft: "8px" }}
               viewAs={viewAs === "table" ? "row" : viewAs}
               viewSettings={viewSettings}
