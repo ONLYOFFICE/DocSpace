@@ -268,9 +268,11 @@ const SectionHeaderContent = (props) => {
     ];
   };
 
+  const isEmptyHeader = headerMenu.some((x) => !x.disabled);
+
   return (
     <StyledContainer>
-      {isHeaderVisible ? (
+      {isHeaderVisible && isEmptyHeader ? (
         <div className="group-button-menu-container">
           <TableGroupMenu
             checkboxOptions={getMenuItems()}
