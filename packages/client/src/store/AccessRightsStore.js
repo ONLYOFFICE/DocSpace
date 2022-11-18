@@ -206,7 +206,7 @@ class AccessRightsStore {
   }
 
   canMoveItems = (item) => {
-    const { rootFolderType, access, editing: fileEditing } = item;
+    const { rootFolderType, access, editing: fileEditing, providerKey } = item;
 
     if (
       rootFolderType === FolderType.Archive ||
@@ -214,6 +214,7 @@ class AccessRightsStore {
       rootFolderType === FolderType.Favorites ||
       rootFolderType === FolderType.Recent ||
       rootFolderType === FolderType.Privacy ||
+      providerKey ||
       fileEditing
     )
       return false;

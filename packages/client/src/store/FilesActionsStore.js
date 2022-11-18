@@ -1257,7 +1257,6 @@ class FilesActionStore {
   };
 
   isAvailableOption = (option) => {
-    const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
     const {
       isAccessedSelected,
       canConvertSelected,
@@ -1293,7 +1292,6 @@ class FilesActionStore {
           editing: allFilesIsEditing,
         });
         return (
-          !isThirdPartyRootSelection &&
           hasSelection &&
           isAccessedSelected &&
           canMove
