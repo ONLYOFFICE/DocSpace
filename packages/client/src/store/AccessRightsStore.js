@@ -131,16 +131,14 @@ class AccessRightsStore {
   };
 
   canDeleteItsItems = (item) => {
-    const { rootFolderType, access, isFile, editing: fileEditing } = item;
-    const { isDesktopClient } = this.authStore.settingsStore;
+    const { rootFolderType, access, editing: fileEditing } = item;
 
     if (
       rootFolderType === FolderType.Archive ||
       rootFolderType === FolderType.TRASH ||
       rootFolderType === FolderType.Favorites ||
       rootFolderType === FolderType.Recent ||
-      fileEditing ||
-      (!isFile && rootFolderType === FolderType.Privacy && isDesktopClient)
+      fileEditing
     )
       return false;
 
@@ -148,16 +146,14 @@ class AccessRightsStore {
   };
 
   canDeleteAlienItems = (item) => {
-    const { rootFolderType, access, isFile, editing: fileEditing } = item;
-    const { isDesktopClient } = this.authStore.settingsStore;
+    const { rootFolderType, access, editing: fileEditing } = item;
 
     if (
       rootFolderType === FolderType.Archive ||
       rootFolderType === FolderType.TRASH ||
       rootFolderType === FolderType.Favorites ||
       rootFolderType === FolderType.Recent ||
-      fileEditing ||
-      (!isFile && rootFolderType === FolderType.Privacy && isDesktopClient)
+      fileEditing
     )
       return false;
 

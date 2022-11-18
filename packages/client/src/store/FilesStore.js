@@ -1054,13 +1054,11 @@ class FilesStore {
     const canRename = this.accessRightsStore.canRename({ ...item, ...isFile });
     const canDeleteItsItems = this.accessRightsStore.canDeleteItsItems({
       ...item,
-      ...isFile,
       ...{ editing: isEditing },
     });
 
     const canDeleteAlienItems = this.accessRightsStore.canDeleteAlienItems({
       ...item,
-      ...isFile,
       ...{ editing: isEditing },
     });
 
@@ -1284,13 +1282,16 @@ class FilesStore {
         ]);
       }
 
-      if (isRecentFolder) {
-        //fileOptions = this.removeOptions(fileOptions, ["delete"]);
+      if (isRecentFolder && !isFavorite)
+        fileOptions = this.removeOptions(fileOptions, ["separator2"]);
 
-        if (!isFavorite) {
-          fileOptions = this.removeOptions(fileOptions, ["separator2"]);
-        }
-      }
+      // if (isRecentFolder) {
+      //   //fileOptions = this.removeOptions(fileOptions, ["delete"]);
+
+      //   if (!isFavorite) {
+      //     fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+      //   }
+      // }
 
       if (isFavoritesFolder || isRecentFolder) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -1546,9 +1547,9 @@ class FilesStore {
           "copy-to",
         ]);
 
-        if (!isDesktopClient) {
-          folderOptions = this.removeOptions(folderOptions, ["rename"]);
-        }
+        // if (!isDesktopClient) {
+        //   folderOptions = this.removeOptions(folderOptions, ["rename"]);
+        // }
       }
 
       if (isRecycleBinFolder) {
