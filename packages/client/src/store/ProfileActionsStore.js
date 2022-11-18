@@ -252,21 +252,23 @@ class ProfileActionsStore {
 
     if (!feedbackAndSupportEnabled) {
       const index = actionsArray.findIndex(
-        (item) => item?.key === "SupportBtn"
+        (item) => item?.key === "user-menu-support"
       );
 
       actionsArray.splice(index, 1);
     }
 
     if (!videoGuidesEnabled) {
-      const index = actionsArray.findIndex((item) => item?.key === "VideoBtn");
+      const index = actionsArray.findIndex(
+        (item) => item?.key === "user-menu-video"
+      );
 
       actionsArray.splice(index, 1);
     }
 
     if (!helpCenterEnabled) {
       const index = actionsArray.findIndex(
-        (item) => item?.key === "HelpCenterBtn"
+        (item) => item?.key === "user-menu-help-center"
       );
 
       actionsArray.splice(index, 1);
