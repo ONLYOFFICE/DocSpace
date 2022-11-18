@@ -2740,6 +2740,14 @@ class FilesStore {
       isRecentFolder
     );
   }
+
+  get roomsForRestore() {
+    return this.folders.filter((f) => getRoomRoleActions(f.access).archive);
+  }
+
+  get roomsForDelete() {
+    return this.folders.filter((f) => getRoomRoleActions(f.access).delete);
+  }
 }
 
 export default FilesStore;
