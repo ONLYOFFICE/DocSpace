@@ -169,6 +169,21 @@ class AccessRightsStore {
     return getFileRoleActions(access).moveSelf;
   };
 
+  canMakeForm = (item) => {
+    const { rootFolderType, access } = item;
+
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Privacy ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent
+    )
+      return false;
+
+    return getFileRoleActions(access).saveAsForm;
+  };
+
   canMoveAlienItems = (item) => {
     const {
       rootFolderType,

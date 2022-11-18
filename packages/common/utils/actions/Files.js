@@ -19,6 +19,7 @@ export const FilesActions = Object.freeze({
   moveAlien: false,
   rename: false,
   copyFromPersonal: false,
+  saveAsForm: false,
 });
 
 export const OwnerFilesActions = Object.freeze({
@@ -43,6 +44,7 @@ export const OwnerFilesActions = Object.freeze({
   moveAlien: true,
   rename: true,
   copyFromPersonal: true,
+  saveAsForm: true,
 });
 
 export const RoomAdminFilesActions = Object.freeze({
@@ -67,6 +69,7 @@ export const RoomAdminFilesActions = Object.freeze({
   moveAlien: true,
   rename: true,
   copyFromPersonal: true,
+  saveAsForm: true,
 });
 
 export const EditorFilesActions = Object.freeze({

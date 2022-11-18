@@ -1088,6 +1088,7 @@ class FilesStore {
 
       const canEditFile = this.accessRightsStore.canEditFile(item);
       const isMasterForm = item.fileExst === ".docxf";
+      const canMakeForm = this.accessRightsStore.canMakeForm(item);
 
       let fileOptions = [
         //"open",
@@ -1197,9 +1198,12 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
       }
 
+      if (!(isMasterForm && canMakeForm))
+        fileOptions = this.removeOptions(fileOptions, ["make-form"]);
+
       if (item.rootFolderType === FolderType.Archive) {
         fileOptions = this.removeOptions(fileOptions, [
-          "make-form",
+          // "make-form",
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
@@ -1215,8 +1219,8 @@ class FilesStore {
         ]);
       }
 
-      if (!isMasterForm)
-        fileOptions = this.removeOptions(fileOptions, ["make-form"]);
+      // if (!isMasterForm)
+      //   fileOptions = this.removeOptions(fileOptions, ["make-form"]);
 
       // if (!shouldFillForm)
       //   fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
@@ -1285,7 +1289,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
           //"edit",
-          "make-form",
+          // "make-form",
           "link-for-portal-users",
           "external-link",
           "send-by-email",
@@ -1311,7 +1315,7 @@ class FilesStore {
 
       if (isFavoritesFolder || isRecentFolder) {
         fileOptions = this.removeOptions(fileOptions, [
-          "make-form",
+          // "make-form",
           "copy",
           // "move-to",
           //"sharing-settings",
@@ -1328,7 +1332,7 @@ class FilesStore {
           "view",
           "preview",
           // "edit",
-          "make-form",
+          // "make-form",
           "link-for-portal-users",
           "sharing-settings",
           "external-link",
