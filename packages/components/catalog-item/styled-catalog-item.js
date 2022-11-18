@@ -263,9 +263,10 @@ const StyledCatalogItemImg = styled.div`
     height: ${(props) => props.theme.catalogItem.img.svg.height};
     path {
       fill: ${(props) =>
-        props.isActive
+        (props.isActive && !props.theme.isBase) ||
+        (props.isActive && props.theme.isBase && !props.showText)
           ? props.theme.catalogItem.img.svg.isActiveFill
-          : props.theme.catalogItem.img.svg.fill} !important;
+          : props.theme.catalogItem.img.svg.fill};
     }
   }
 
