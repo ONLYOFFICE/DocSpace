@@ -1056,16 +1056,10 @@ class FilesStore {
       ...{ editing: isEditing },
     });
 
-    const canMoveItsItems = this.accessRightsStore.canMoveItsItems({
+    const canMove = this.accessRightsStore.canMoveItems({
       ...item,
       ...{ editing: isEditing },
     });
-    const canMoveAlienItems = this.accessRightsStore.canMoveItsItems({
-      ...item,
-      ...{ editing: isEditing },
-    });
-
-    const canMoveAbility = canMoveItsItems || canMoveAlienItems;
     const canDeleteAbility = canDeleteItsItems || canDeleteAlienItems;
 
     const canCopy = this.accessRightsStore.canCopy(item);
@@ -1163,7 +1157,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
 
-      if (!canMoveAbility) {
+      if (!canMove) {
         fileOptions = this.removeOptions(fileOptions, ["move-to"]);
       }
 
@@ -1174,7 +1168,7 @@ class FilesStore {
       if (!canCreateCopy) {
         fileOptions = this.removeOptions(fileOptions, ["copy"]);
       }
-      if (!canMoveAbility && !canCopy && !canCreateCopy) {
+      if (!canMove && !canCopy && !canCreateCopy) {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
       }
 
@@ -1435,7 +1429,7 @@ class FilesStore {
       if (!canDeleteAbility) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
-      if (!canMoveAbility) {
+      if (!canMove) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
 
@@ -1447,7 +1441,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["copy"]);
       }
 
-      if (!canMoveAbility && !canCopy && !canCreateCopy) {
+      if (!canMove && !canCopy && !canCreateCopy) {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
       }
 
