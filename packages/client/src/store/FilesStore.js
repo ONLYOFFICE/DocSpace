@@ -1100,8 +1100,8 @@ class FilesStore {
         "separator1",
         "open-location",
         "mark-read",
-        "mark-as-favorite",
-        "remove-from-favorites",
+        // "mark-as-favorite",
+        // "remove-from-favorites",
         "download",
         "download-as",
         "convert",
@@ -1199,24 +1199,25 @@ class FilesStore {
 
       if (
         isEditing ||
-        item.rootFolderType === FolderType.Archive ||
-        (isFavoritesFolder && !isFavorite) ||
-        isFavoritesFolder ||
-        isRecentFolder
+        item.rootFolderType === FolderType.Archive
+        // ||
+        // (isFavoritesFolder && !isFavorite) ||
+        // isFavoritesFolder ||
+        // isRecentFolder
       )
         fileOptions = this.removeOptions(fileOptions, ["separator2"]);
 
-      if (isFavorite) {
-        fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
-      } else {
-        fileOptions = this.removeOptions(fileOptions, [
-          "remove-from-favorites",
-        ]);
+      // if (isFavorite) {
+      //   fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
+      // } else {
+      //   fileOptions = this.removeOptions(fileOptions, [
+      //     "remove-from-favorites",
+      //   ]);
 
-        if (isFavoritesFolder) {
-          fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
-        }
-      }
+      //   if (isFavoritesFolder) {
+      //     fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
+      //   }
+      // }
 
       if (isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -1245,8 +1246,8 @@ class FilesStore {
           //"external-link",
           "send-by-email",
           "mark-read",
-          "mark-as-favorite",
-          "remove-from-favorites",
+          // "mark-as-favorite",
+          // "remove-from-favorites",
           "separator0",
           "separator1",
         ]);
@@ -1277,28 +1278,28 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["mark-read"]);
       }
 
-      if (
-        !(
-          isRecentFolder ||
-          isFavoritesFolder ||
-          (isMyFolder && (this.filterType || this.filterSearch))
-        )
-      ) {
-        fileOptions = this.removeOptions(fileOptions, ["open-location"]);
-      }
+      // if (
+      //   !(
+      //     isRecentFolder ||
+      //     isFavoritesFolder ||
+      //     (isMyFolder && (this.filterType || this.filterSearch))
+      //   )
+      // ) {
+      //   fileOptions = this.removeOptions(fileOptions, ["open-location"]);
+      // }
 
-      if (isPrivacyFolder) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "preview",
-          "view",
-          "separator0",
-          "download-as",
-        ]);
+      // if (isPrivacyFolder) {
+      //   fileOptions = this.removeOptions(fileOptions, [
+      //     "preview",
+      //     "view",
+      //     "separator0",
+      //     "download-as",
+      //   ]);
 
-        // if (!isDesktopClient) {
-        //   fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
-        // }
-      }
+      //   // if (!isDesktopClient) {
+      //   //   fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
+      //   // }
+      // }
 
       fileOptions = this.removeSeparator(fileOptions);
 
@@ -1412,7 +1413,7 @@ class FilesStore {
         "mark-read",
         "restore",
         "rename",
-        "change-thirdparty-info",
+        // "change-thirdparty-info",
         "separator2",
         // "unsubscribe",
         "delete",
@@ -1441,12 +1442,12 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
       }
 
-      if (item.rootFolderType === FolderType.Archive) {
-        folderOptions = this.removeOptions(folderOptions, [
-          "change-thirdparty-info",
-          "separator2",
-        ]);
-      }
+      // if (item.rootFolderType === FolderType.Archive) {
+      //   folderOptions = this.removeOptions(folderOptions, [
+      //     "change-thirdparty-info",
+      //     "separator2",
+      //   ]);
+      // }
 
       // if (isPrivacyFolder) {
       //   folderOptions = this.removeOptions(folderOptions, [
@@ -1489,44 +1490,44 @@ class FilesStore {
       if (isThirdPartyFolder && isDesktopClient)
         folderOptions = this.removeOptions(folderOptions, ["separator2"]);
 
-      if (!isThirdPartyFolder)
-        folderOptions = this.removeOptions(folderOptions, [
-          "change-thirdparty-info",
-        ]);
+      // if (!isThirdPartyFolder)
+      //   folderOptions = this.removeOptions(folderOptions, [
+      //     "change-thirdparty-info",
+      //   ]);
 
-      if (isThirdPartyItem) {
-        folderOptions = this.removeOptions(folderOptions, ["owner-change"]);
+      // if (isThirdPartyItem) {
+      //   folderOptions = this.removeOptions(folderOptions, ["owner-change"]);
 
-        if (isShareFolder) {
-          folderOptions = this.removeOptions(folderOptions, [
-            "change-thirdparty-info",
-          ]);
-        } else {
-          if (isDesktopClient) {
-            folderOptions = this.removeOptions(folderOptions, [
-              "change-thirdparty-info",
-            ]);
-          }
+      //   if (isShareFolder) {
+      //     folderOptions = this.removeOptions(folderOptions, [
+      //       "change-thirdparty-info",
+      //     ]);
+      //   } else {
+      //     if (isDesktopClient) {
+      //       folderOptions = this.removeOptions(folderOptions, [
+      //         "change-thirdparty-info",
+      //       ]);
+      //     }
 
-          folderOptions = this.removeOptions(folderOptions, ["remove"]);
+      //     folderOptions = this.removeOptions(folderOptions, ["remove"]);
 
-          if (!item) {
-            //For damaged items
-            folderOptions = this.removeOptions(folderOptions, [
-              "open",
-              "download",
-            ]);
-          }
-        }
-      } else {
-        folderOptions = this.removeOptions(folderOptions, [
-          "change-thirdparty-info",
-        ]);
-      }
+      //     if (!item) {
+      //       //For damaged items
+      //       folderOptions = this.removeOptions(folderOptions, [
+      //         "open",
+      //         "download",
+      //       ]);
+      //     }
+      //   }
+      // } else {
+      //   folderOptions = this.removeOptions(folderOptions, [
+      //     "change-thirdparty-info",
+      //   ]);
+      // }
 
-      if (!(isMyFolder && (this.filterType || this.filterSearch))) {
-        folderOptions = this.removeOptions(folderOptions, ["open-location"]);
-      }
+      // if (!(isMyFolder && (this.filterType || this.filterSearch))) {
+      //   folderOptions = this.removeOptions(folderOptions, ["open-location"]);
+      // }
 
       folderOptions = this.removeSeparator(folderOptions);
 
