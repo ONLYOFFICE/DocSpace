@@ -159,26 +159,33 @@ class AccessRightsStore {
 
     return getFileRoleActions(access).deleteAlien;
   };
+
+  generalMoveProhibitionConditions = (rootFolderType, fileEditing) =>
+    rootFolderType === FolderType.Archive ||
+    rootFolderType === FolderType.TRASH ||
+    rootFolderType === FolderType.Favorites ||
+    rootFolderType === FolderType.Recent ||
+    fileEditing;
+
   canMoveItsItems = (item) => {
+    const { rootFolderType, access, editing: fileEditing } = item;
+
+    if (generalConditionsForMovement(rootFolderType, fileEditing)) return false;
+
+    return getFileRoleActions(access).moveSelf;
+  };
+
+  canMoveAlienItems = (item) => {
     const {
       rootFolderType,
       access,
-      isFile,
+
       editing: fileEditing,
-      providerKey,
     } = item;
-    const { isDesktopClient } = this.authStore.settingsStore;
 
-    if (
-      rootFolderType === FolderType.Archive ||
-      rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Recent ||
-      fileEditing
-    )
-      return false;
+    if (generalConditionsForMovement(rootFolderType, fileEditing)) return false;
 
-    return getFileRoleActions(access).moveSelf;
+    return getFileRoleActions(access).moveAlien;
   };
 
   canArchiveRoom = (room) => {

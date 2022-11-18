@@ -1064,7 +1064,10 @@ class FilesStore {
 
     const canMoveItsItems = this.accessRightsStore.canMoveItsItems({
       ...item,
-      ...isFile,
+      ...{ editing: isEditing },
+    });
+    const canMoveAlienItems = this.accessRightsStore.canMoveItsItems({
+      ...item,
       ...{ editing: isEditing },
     });
 
@@ -1166,7 +1169,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
 
-      if (!canMoveItsItems || !filesRights.moveAlien) {
+      if (!canMoveItsItems || !canMoveAlienItems) {
         fileOptions = this.removeOptions(fileOptions, ["move-to"]);
       }
       // if (!filesRights.rename) {
@@ -1521,7 +1524,7 @@ class FilesStore {
       if (!canDeleteItsItems || !canDeleteAlienItems) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
-      if (!canMoveItsItems || !filesRights.moveAlien) {
+      if (!canMoveItsItems || !canMoveAlienItems) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
       // if (!filesRights.rename) {
