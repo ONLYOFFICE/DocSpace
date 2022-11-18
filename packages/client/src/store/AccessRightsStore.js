@@ -138,7 +138,7 @@ class AccessRightsStore {
   canDeleteItsItems = (item) => {
     const { rootFolderType, access, editing: fileEditing } = item;
 
-    if (generalDeleteProhibitionConditions(rootFolderType, fileEditing))
+    if (this.generalDeleteProhibitionConditions(rootFolderType, fileEditing))
       return false;
 
     return getFileRoleActions(access).deleteSelf;
@@ -147,7 +147,7 @@ class AccessRightsStore {
   canDeleteAlienItems = (item) => {
     const { rootFolderType, access, editing: fileEditing } = item;
 
-    if (generalDeleteProhibitionConditions(rootFolderType, fileEditing))
+    if (this.generalDeleteProhibitionConditions(rootFolderType, fileEditing))
       return false;
 
     return getFileRoleActions(access).deleteAlien;
@@ -163,7 +163,8 @@ class AccessRightsStore {
   canMoveItsItems = (item) => {
     const { rootFolderType, access, editing: fileEditing } = item;
 
-    if (generalConditionsForMovement(rootFolderType, fileEditing)) return false;
+    if (this.generalMoveProhibitionConditions(rootFolderType, fileEditing))
+      return false;
 
     return getFileRoleActions(access).moveSelf;
   };
@@ -176,7 +177,8 @@ class AccessRightsStore {
       editing: fileEditing,
     } = item;
 
-    if (generalConditionsForMovement(rootFolderType, fileEditing)) return false;
+    if (this.generalMoveProhibitionConditions(rootFolderType, fileEditing))
+      return false;
 
     return getFileRoleActions(access).moveAlien;
   };
