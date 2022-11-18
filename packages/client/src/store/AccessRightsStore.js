@@ -123,15 +123,26 @@ class AccessRightsStore {
     return getFileRoleActions(access).fillForm;
   };
 
+  generalCopyProhibitionConditions = (rootFolderType, fileEditing) =>
+    rootFolderType === FolderType.TRASH ||
+    rootFolderType === FolderType.Favorites ||
+    rootFolderType === FolderType.Recent ||
+    rootFolderType === FolderType.Privacy ||
+    fileEditing;
   canCopy = (item) => {
+    const { rootFolderType, access } = item;
+
+    if (this.generalCopyProhibitionConditions(rootFolderType)) return false;
+
+    return getFileRoleActions(access).canCopy;
+  };
+
+  canCreateCopy = (item) => {
     const { rootFolderType, access } = item;
 
     if (
       rootFolderType === FolderType.Archive ||
-      rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Privacy ||
-      rootFolderType === FolderType.Recent
+      this.generalCopyProhibitionConditions(rootFolderType)
     )
       return false;
 

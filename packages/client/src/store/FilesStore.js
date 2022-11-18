@@ -1075,6 +1075,7 @@ class FilesStore {
     const canDeleteAbility = canDeleteItsItems || canDeleteAlienItems;
 
     const canCopy = this.accessRightsStore.canCopy(item);
+    const canCreateCopy = this.accessRightsStore.canCreateCopy(item);
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
@@ -1173,10 +1174,13 @@ class FilesStore {
       }
 
       if (!canCopy) {
-        fileOptions = this.removeOptions(fileOptions, ["copy-to", "copy"]);
+        fileOptions = this.removeOptions(fileOptions, ["copy-to"]);
       }
 
-      if (!canMoveAbility && !filesRights.copyFromPersonal) {
+      if (!canCreateCopy) {
+        fileOptions = this.removeOptions(fileOptions, ["copy"]);
+      }
+      if (!canMoveAbility && !canCopy && !canCreateCopy) {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
       }
 
@@ -1442,10 +1446,14 @@ class FilesStore {
       }
 
       if (!canCopy) {
-        folderOptions = this.removeOptions(folderOptions, ["copy-to", "copy"]);
+        folderOptions = this.removeOptions(folderOptions, ["copy-to"]);
       }
 
-      if (!canMoveAbility && !filesRights.copyFromPersonal) {
+      if (!canCreateCopy) {
+        fileOptions = this.removeOptions(fileOptions, ["copy"]);
+      }
+
+      if (!canMoveAbility && !canCopy && !canCreateCopy) {
         folderOptions = this.removeOptions(folderOptions, ["move"]);
       }
 
