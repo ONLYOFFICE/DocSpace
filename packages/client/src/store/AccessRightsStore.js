@@ -215,6 +215,14 @@ class AccessRightsStore {
     return getRoomRoleActions(access).canPin;
   };
 
+  canEditRoom = (room) => {
+    const { access, rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive) return false;
+
+    return getRoomRoleActions(access).edit;
+  };
+
   get canCreateFiles() {
     const { access, rootFolderType } = this.selectedFolderStore;
 

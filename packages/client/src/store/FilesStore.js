@@ -1329,8 +1329,6 @@ class FilesStore {
 
       return fileOptions;
     } else if (isRoom) {
-      const roomAccessRights = getRoomRoleActions(item.access);
-
       const canInviteUserInRoom = this.accessRightsStore.canInviteUserInRoom(
         item
       );
@@ -1338,6 +1336,8 @@ class FilesStore {
 
       const canArchiveRoom = this.accessRightsStore.canArchiveRoom(item);
       const canPinRoom = this.accessRightsStore.canPinRoom(item);
+
+      const canEditRoom = this.accessRightsStore.canEditRoom(item);
 
       let roomOptions = [
         "select",
@@ -1354,7 +1354,7 @@ class FilesStore {
         "delete",
       ];
 
-      if (!roomAccessRights.edit) {
+      if (!canEditRoom) {
         roomOptions = this.removeOptions(roomOptions, [
           "edit-room",
           "reconnect-storage",
@@ -1397,19 +1397,12 @@ class FilesStore {
 
       if (isArchiveFolder || item.rootFolderType === FolderType.Archive) {
         roomOptions = this.removeOptions(roomOptions, [
-          "edit-room",
-          //"invite-users-to-room",
-          //"pin-room",
-          //"unpin-room",
           "archive-room",
           "separator1",
           "room-info",
         ]);
       } else {
-        roomOptions = this.removeOptions(roomOptions, [
-          // "delete",
-          "unarchive-room",
-        ]);
+        roomOptions = this.removeOptions(roomOptions, ["unarchive-room"]);
 
         if (enablePlugins) {
           const pluginRoomsKeys = getContextMenuKeysByType(
