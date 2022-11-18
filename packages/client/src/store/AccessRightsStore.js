@@ -257,14 +257,21 @@ class AccessRightsStore {
     return deleteSelf || deleteAlien;
   };
 
-  canCopyItems = (room) => {
-    const { rootFolderType } = room;
+  canCopyItems = (item) => {
+    const { rootFolderType, access, editing: fileEditing } = item;
 
-    if (rootFolderType === FolderType.Archive) return false;
+    if (
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent ||
+      rootFolderType === FolderType.Privacy ||
+      fileEditing
+    )
+      return false;
 
-    const { copyFromPersonal } = getFileRoleActions(room.access);
+    const { canCopy } = getFileRoleActions(access);
 
-    return copyFromPersonal;
+    return canCopy;
   };
 
   canChangeUserType = (user) => {
