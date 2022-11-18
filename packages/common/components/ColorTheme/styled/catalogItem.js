@@ -8,31 +8,40 @@ import {
 
 import Base from "@docspace/components/themes/base";
 
-const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
+const getDefaultStyles = ({ $currentColorScheme, isActive, showText, theme }) =>
   $currentColorScheme &&
   css`
     ${StyledCatalogItemText} {
-      color: ${isActive && $currentColorScheme.main.accent};
+      color: ${isActive && theme.isBase && $currentColorScheme.main.accent};
 
       &:hover {
-        color: ${isActive && $currentColorScheme.main.accent};
+        color: ${isActive && theme.isBase && $currentColorScheme.main.accent};
       }
     }
 
     ${StyledCatalogItemImg} {
       svg {
         path {
-          fill: ${isActive && $currentColorScheme.main.accent} !important;
+          fill: ${isActive &&
+          !showText &&
+          theme.isBase &&
+          $currentColorScheme.main.accent} !important;
         }
         circle {
-          fill: ${isActive && $currentColorScheme.main.accent} !important;
+          fill: ${isActive &&
+          !showText &&
+          theme.isBase &&
+          $currentColorScheme.main.accent} !important;
         }
       }
 
       &:hover {
         svg {
           path {
-            fill: ${isActive && $currentColorScheme.main.accent} !important;
+            fill: ${isActive &&
+            !showText &&
+            theme.isBase &&
+            $currentColorScheme.main.accent} !important;
           }
         }
       }
