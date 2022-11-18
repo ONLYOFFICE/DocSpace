@@ -275,6 +275,11 @@ public class CookiesManager
         return _messageService.SendLoginMessage(data, action);
     }
 
+    public string GetAscCookiesName()
+    {
+        return GetCookiesName(CookiesType.AuthKey);
+    }
+
     private string GetCookiesName(CookiesType type)
     {
         var result = type switch
