@@ -20,6 +20,7 @@ export const FilesActions = Object.freeze({
   rename: false,
   copyFromPersonal: false,
   saveAsForm: false,
+  canCopy: false,
 });
 
 export const OwnerFilesActions = Object.freeze({
@@ -45,6 +46,7 @@ export const OwnerFilesActions = Object.freeze({
   rename: true,
   copyFromPersonal: true,
   saveAsForm: true,
+  canCopy: true,
 });
 
 export const RoomAdminFilesActions = Object.freeze({
@@ -70,6 +72,7 @@ export const RoomAdminFilesActions = Object.freeze({
   rename: true,
   copyFromPersonal: true,
   saveAsForm: true,
+  canCopy: true,
 });
 
 export const EditorFilesActions = Object.freeze({

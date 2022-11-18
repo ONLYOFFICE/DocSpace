@@ -122,6 +122,21 @@ class AccessRightsStore {
 
     return getFileRoleActions(access).fillForm;
   };
+
+  canCopy = (item) => {
+    const { rootFolderType, access } = item;
+
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Privacy ||
+      rootFolderType === FolderType.Recent
+    )
+      return false;
+
+    return getFileRoleActions(access).canCopy;
+  };
   generalDeleteProhibitionConditions = (rootFolderType, fileEditing) =>
     rootFolderType === FolderType.Archive ||
     rootFolderType === FolderType.TRASH ||

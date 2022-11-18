@@ -1074,6 +1074,8 @@ class FilesStore {
     const canMoveAbility = canMoveItsItems || canMoveAlienItems;
     const canDeleteAbility = canDeleteItsItems || canDeleteAlienItems;
 
+    const canCopy = this.accessRightsStore.canCopy(item);
+
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
       const canLockFile = this.accessRightsStore.canLockFile(item);
@@ -1170,7 +1172,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["move-to"]);
       }
 
-      if (!filesRights.copyFromPersonal) {
+      if (!canCopy) {
         fileOptions = this.removeOptions(fileOptions, ["copy-to", "copy"]);
       }
 
@@ -1186,9 +1188,6 @@ class FilesStore {
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
-          "move",
-          "copy-to",
-          "copy",
         ]);
       }
 
@@ -1231,29 +1230,21 @@ class FilesStore {
         }
       }
 
-      if (isFavoritesFolder) {
-        fileOptions = this.removeOptions(fileOptions, ["copy"]);
-      }
-
       if (isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
-
           // "link-for-portal-users",
           // "external-link",
           "send-by-email",
-          "copy-to",
-          "copy",
           "mark-as-favorite",
         ]);
       }
 
-      if (isFavoritesFolder || isRecentFolder) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "copy",
-          //"unsubscribe",
-        ]);
-      }
+      // if (isFavoritesFolder || isRecentFolder) {
+      //   fileOptions = this.removeOptions(fileOptions, [
+      //     //"unsubscribe",
+      //   ]);
+      // }
 
       if (isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
@@ -1265,9 +1256,6 @@ class FilesStore {
           //"sharing-settings",
           //"external-link",
           "send-by-email",
-          "move", //category
-          "copy-to",
-          "copy",
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
@@ -1294,7 +1282,7 @@ class FilesStore {
       }
 
       if (isThirdPartyItem) {
-        fileOptions = this.removeOptions(fileOptions, ["owner-change", "copy"]);
+        fileOptions = this.removeOptions(fileOptions, ["owner-change"]);
       }
 
       if (!hasNew) {
@@ -1316,7 +1304,6 @@ class FilesStore {
           "preview",
           "view",
           "separator0",
-          "copy",
           "download-as",
         ]);
 
@@ -1454,7 +1441,7 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
 
-      if (!filesRights.copyFromPersonal) {
+      if (!canCopy) {
         folderOptions = this.removeOptions(folderOptions, ["copy-to", "copy"]);
       }
 
@@ -1464,28 +1451,22 @@ class FilesStore {
 
       if (item.rootFolderType === FolderType.Archive) {
         folderOptions = this.removeOptions(folderOptions, [
-          "move",
-          "copy-to",
           "change-thirdparty-info",
           "separator2",
         ]);
       }
 
-      if (isPrivacyFolder) {
-        folderOptions = this.removeOptions(folderOptions, [
-          // "sharing-settings",
-          "copy",
-          "copy-to",
-        ]);
-      }
+      // if (isPrivacyFolder) {
+      //   folderOptions = this.removeOptions(folderOptions, [
+      //     // "sharing-settings",
+      //   ]);
+      // }
 
       if (isRecycleBinFolder) {
         folderOptions = this.removeOptions(folderOptions, [
           "open",
           // "link-for-portal-users",
           // "sharing-settings",
-          "move",
-          "copy-to",
           "mark-read",
           "separator0",
           "separator1",
@@ -1542,8 +1523,6 @@ class FilesStore {
             folderOptions = this.removeOptions(folderOptions, [
               "open",
               "download",
-              "copy-to",
-              "rename",
             ]);
           }
         }
