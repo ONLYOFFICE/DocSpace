@@ -1052,6 +1052,11 @@ class FilesStore {
       enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
 
     const canRename = this.accessRightsStore.canRename({ ...item, ...isFile });
+    const canDeleteItsItems = this.accessRightsStore.canDeleteItsItems({
+      ...item,
+      ...isFile,
+      ...{ editing: isEditing },
+    });
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
@@ -1147,7 +1152,7 @@ class FilesStore {
       // if (!filesRights.changeVersionHistory) {
       //   fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
       // }
-      if (!filesRights.deleteSelf || !filesRights.deleteAlien) {
+      if (!canDeleteItsItems || !filesRights.deleteAlien) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
       if (!filesRights.moveSelf || !filesRights.moveAlien) {
@@ -1188,7 +1193,7 @@ class FilesStore {
           "copy",
           //"rename",
           "separator2",
-          "delete",
+          //"delete",
           //"finalize-version",
         ]);
       }
@@ -1222,7 +1227,7 @@ class FilesStore {
           // "finalize-version",
           "move-to",
           "separator2",
-          "delete",
+          // "delete",
         ]);
         // if (isThirdPartyItem) {
         //   fileOptions = this.removeOptions(fileOptions, ["rename"]);
@@ -1241,16 +1246,19 @@ class FilesStore {
         }
       }
 
+      if (isFavoritesFolder && !isFavorite)
+        fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+
       if (isFavoritesFolder) {
         fileOptions = this.removeOptions(fileOptions, [
           "move-to",
-          "delete",
+          //"delete",
           "copy",
         ]);
 
-        if (!isFavorite) {
-          fileOptions = this.removeOptions(fileOptions, ["separator2"]);
-        }
+        // if (!isFavorite) {
+        //   fileOptions = this.removeOptions(fileOptions, ["separator2"]);
+        // }
       }
 
       if (isEncrypted) {
@@ -1271,7 +1279,7 @@ class FilesStore {
       }
 
       if (isRecentFolder) {
-        fileOptions = this.removeOptions(fileOptions, ["delete"]);
+        //fileOptions = this.removeOptions(fileOptions, ["delete"]);
 
         if (!isFavorite) {
           fileOptions = this.removeOptions(fileOptions, ["separator2"]);
@@ -1493,9 +1501,9 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["rename"]);
       }
 
-      if (!filesRights.deleteSelf || !filesRights.deleteAlien) {
-        folderOptions = this.removeOptions(folderOptions, ["delete"]);
-      }
+      // if (!filesRights.deleteSelf || !filesRights.deleteAlien) {
+      //   folderOptions = this.removeOptions(folderOptions, ["delete"]);
+      // }
       if (!filesRights.moveSelf || !filesRights.moveAlien) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
@@ -1521,7 +1529,7 @@ class FilesStore {
           //"rename",
           "change-thirdparty-info",
           "separator2",
-          "delete",
+          // "delete",
         ]);
       }
 
@@ -1573,15 +1581,18 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, ["mark-read"]);
       }
 
+      if (isThirdPartyFolder && isDesktopClient)
+        folderOptions = this.removeOptions(folderOptions, ["separator2"]);
+
       if (isThirdPartyFolder) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
 
-        if (isDesktopClient) {
-          folderOptions = this.removeOptions(folderOptions, [
-            "separator2",
-            "delete",
-          ]);
-        }
+        // if (isDesktopClient) {
+        //   folderOptions = this.removeOptions(folderOptions, [
+        //     "separator2",
+        //     "delete",
+        //   ]);
+        // }
       } else {
         folderOptions = this.removeOptions(folderOptions, [
           "change-thirdparty-info",

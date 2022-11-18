@@ -106,8 +106,8 @@ class AccessRightsStore {
     return getFileRoleActions(access).edit;
   };
 
-  canRename = (file = {}) => {
-    const { rootFolderType, access, isFile } = file;
+  canRename = (item = {}) => {
+    const { rootFolderType, access, isFile } = item;
     const { isDesktopClient } = this.authStore.settingsStore;
     if (
       rootFolderType === FolderType.Archive ||
@@ -124,6 +124,23 @@ class AccessRightsStore {
     if (
       rootFolderType === FolderType.Archive ||
       rootFolderType === FolderType.TRASH
+    )
+      return false;
+
+    return getFileRoleActions(access).fillForm;
+  };
+
+  canDeleteItsItems = (item) => {
+    const { rootFolderType, access, isFile, editing: fileEditing } = item;
+    const { isDesktopClient } = this.authStore.settingsStore;
+
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent ||
+      fileEditing ||
+      (!isFile && rootFolderType === FolderType.Privacy && isDesktopClient)
     )
       return false;
 
