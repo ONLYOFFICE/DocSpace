@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
-import { ShareAccessRights } from "@docspace/common/constants";
 
 const User = ({
   t,

@@ -16,7 +16,6 @@ import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
 import { Encoder } from "@docspace/common/utils/encoder";
 import { Base } from "@docspace/components/themes";
-import { getFileRoleActions } from "@docspace/common/utils/actions";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   ${commonIconsStyles}
