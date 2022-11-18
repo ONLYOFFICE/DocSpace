@@ -1046,21 +1046,16 @@ class FilesStore {
       enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
 
     const canRename = this.accessRightsStore.canRename({ ...item, ...isFile });
-    const canDeleteItsItems = this.accessRightsStore.canDeleteItsItems({
-      ...item,
-      ...{ editing: isEditing },
-    });
-
-    const canDeleteAlienItems = this.accessRightsStore.canDeleteAlienItems({
-      ...item,
-      ...{ editing: isEditing },
-    });
 
     const canMove = this.accessRightsStore.canMoveItems({
       ...item,
       ...{ editing: isEditing },
     });
-    const canDeleteAbility = canDeleteItsItems || canDeleteAlienItems;
+
+    const canDelete = this.accessRightsStore.canDeleteItems({
+      ...item,
+      ...{ editing: isEditing },
+    });
 
     const canCopy = this.accessRightsStore.canCopy(item);
     const canCreateCopy = this.accessRightsStore.canCreateCopy(item);
@@ -1153,7 +1148,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
       }
 
-      if (!canDeleteAbility) {
+      if (!canDelete) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
 
@@ -1426,7 +1421,7 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["rename"]);
       }
 
-      if (!canDeleteAbility) {
+      if (!canDelete) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
       if (!canMove) {
