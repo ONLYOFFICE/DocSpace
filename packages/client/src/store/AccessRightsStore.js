@@ -31,17 +31,17 @@ class AccessRightsStore {
     return getRoomRoleActions(access).inviteUsers;
   }
 
-  canChangeUserRole = (currentRoomMember) => {
-    // const { isArchiveFolderRoot } = this.treeFoldersStore;
-    const { access } = this.selectedFolderStore;
+  canChangeUserRole = (room) => {
+    const { access, rootFolderType, currentUserInList } = room;
     const { userStore } = this.authStore;
     const { user } = userStore;
 
-    const isMyProfile = user.id === currentRoomMember.id;
+    const isMyProfile = user.id === currentUserInList.id;
     const isOwnerRoleRoom =
-      currentRoomMember.access === ShareAccessRights.FullAccess;
+      currentUserInList.access === ShareAccessRights.FullAccess;
 
-    // if (isArchiveFolderRoot || isMyProfile || isOwnerRoleRoom) return false;
+    if (rootFolderType === FolderType.Archive || isMyProfile || isOwnerRoleRoom)
+      return false;
 
     return getRoomRoleActions(access).changeUserRole;
   };

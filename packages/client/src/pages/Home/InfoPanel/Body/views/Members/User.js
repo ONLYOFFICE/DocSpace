@@ -16,6 +16,8 @@ const User = ({
   selectionParentRoom,
   setSelectionParentRoom,
   canChangeUserRole,
+  rootFolderType,
+  access,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -66,7 +68,13 @@ const User = ({
     }
   };
 
-  const isCanChangeUserRole = user && canChangeUserRole(user);
+  const isCanChangeUserRole =
+    user &&
+    canChangeUserRole({
+      access,
+      rootFolderType,
+      currentUserInList: { id: user.id, access: user.access },
+    });
 
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
