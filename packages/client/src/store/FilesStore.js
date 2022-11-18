@@ -1203,7 +1203,7 @@ class FilesStore {
       if (!canOpenPlayer) {
         fileOptions = this.removeOptions(fileOptions, ["view"]);
       } else {
-        //fileOptions = this.removeOptions(fileOptions, ["edit", "preview"]);
+        fileOptions = this.removeOptions(fileOptions, ["preview"]);
       }
 
       if (!isDocuSign) {
@@ -1261,9 +1261,9 @@ class FilesStore {
           "open-location",
           "view",
           "preview",
-          "link-for-portal-users",
+          //"link-for-portal-users",
           //"sharing-settings",
-          "external-link",
+          //"external-link",
           "send-by-email",
           "move", //category
           "copy-to",
