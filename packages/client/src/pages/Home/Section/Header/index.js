@@ -8,7 +8,6 @@ import {
   AppServerConfig,
   FolderType,
   RoomSearchArea,
-  ShareAccessRights,
 } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
@@ -24,7 +23,6 @@ import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
-import { getRoomRoleActions } from "@docspace/common/utils/actions";
 
 const StyledContainer = styled.div`
   width: 100%;
