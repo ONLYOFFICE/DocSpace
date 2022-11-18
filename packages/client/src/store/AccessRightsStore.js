@@ -134,6 +134,7 @@ class AccessRightsStore {
     rootFolderType === FolderType.TRASH ||
     rootFolderType === FolderType.Favorites ||
     rootFolderType === FolderType.Recent ||
+    rootFolderType === FolderType.Privacy ||
     fileEditing;
   canDeleteItsItems = (item) => {
     const { rootFolderType, access, editing: fileEditing } = item;
@@ -158,6 +159,7 @@ class AccessRightsStore {
     rootFolderType === FolderType.TRASH ||
     rootFolderType === FolderType.Favorites ||
     rootFolderType === FolderType.Recent ||
+    rootFolderType === FolderType.Privacy ||
     fileEditing;
 
   canMoveItsItems = (item) => {
@@ -197,6 +199,7 @@ class AccessRightsStore {
 
     return getFileRoleActions(access).saveAsForm;
   };
+
   canArchiveRoom = (room) => {
     const { archive } = getRoomRoleActions(room.access);
 

@@ -1161,17 +1161,7 @@ class FilesStore {
       if (!(shouldFillForm && canFillForm)) {
         fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
       }
-      // if (!filesRights.blockFile) {
-      //   fileOptions = this.removeOptions(fileOptions, [
-      //     "block-unblock-version",
-      //   ]);
-      // }
-      // if (!filesRights.viewVersionHistory) {
-      //   fileOptions = this.removeOptions(fileOptions, ["show-version-history"]);
-      // }
-      // if (!filesRights.changeVersionHistory) {
-      //   fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
-      // }
+
       if (!canDeleteAbility) {
         fileOptions = this.removeOptions(fileOptions, ["delete"]);
       }
@@ -1179,21 +1169,11 @@ class FilesStore {
       if (!canMoveAbility) {
         fileOptions = this.removeOptions(fileOptions, ["move-to"]);
       }
-      // if (!filesRights.rename) {
-      //   fileOptions = this.removeOptions(fileOptions, ["rename"]);
-      // }
+
       if (!filesRights.copyFromPersonal) {
         fileOptions = this.removeOptions(fileOptions, ["copy-to", "copy"]);
       }
-      // if (
-      //   !filesRights.viewVersionHistory &&
-      //   !filesRights.changeVersionHistory
-      // ) {
-      //   fileOptions = this.removeOptions(fileOptions, ["version"]);
-      //   if (item.rootFolderType === FolderType.Archive) {
-      //     fileOptions = this.removeOptions(fileOptions, ["separator0"]);
-      //   }
-      // }
+
       if (!canMoveAbility && !filesRights.copyFromPersonal) {
         fileOptions = this.removeOptions(fileOptions, ["move"]);
       }
@@ -1203,27 +1183,14 @@ class FilesStore {
 
       if (item.rootFolderType === FolderType.Archive) {
         fileOptions = this.removeOptions(fileOptions, [
-          // "make-form",
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
-          // "edit",
-          // "move",
-          // "move-to",
+          "move",
           "copy-to",
           "copy",
-          //"rename",
-          // "separator2",
-          //"delete",
-          //"finalize-version",
         ]);
       }
-
-      // if (!isMasterForm)
-      //   fileOptions = this.removeOptions(fileOptions, ["make-form"]);
-
-      // if (!shouldFillForm)
-      //   fileOptions = this.removeOptions(fileOptions, ["fill-form"]);
 
       if (!canConvert) {
         fileOptions = this.removeOptions(fileOptions, ["download-as"]);
@@ -1252,18 +1219,6 @@ class FilesStore {
       )
         fileOptions = this.removeOptions(fileOptions, ["separator2"]);
 
-      // if (isEditing) {
-      //   fileOptions = this.removeOptions(fileOptions, [
-      //     // "finalize-version",
-      //     // "move-to",
-      //     "separator2",
-      //     // "delete",
-      //   ]);
-      //   // if (isThirdPartyItem) {
-      //   //   fileOptions = this.removeOptions(fileOptions, ["rename"]);
-      //   // }
-      // }
-
       if (isFavorite) {
         fileOptions = this.removeOptions(fileOptions, ["mark-as-favorite"]);
       } else {
@@ -1277,78 +1232,45 @@ class FilesStore {
       }
 
       if (isFavoritesFolder) {
-        fileOptions = this.removeOptions(fileOptions, [
-          // "move-to",
-          //"delete",
-          "copy",
-        ]);
-
-        // if (!isFavorite) {
-        //   fileOptions = this.removeOptions(fileOptions, ["separator2"]);
-        // }
+        fileOptions = this.removeOptions(fileOptions, ["copy"]);
       }
 
       if (isEncrypted) {
         fileOptions = this.removeOptions(fileOptions, [
           "open",
-          //"edit",
-          // "make-form",
-          "link-for-portal-users",
-          "external-link",
+
+          // "link-for-portal-users",
+          // "external-link",
           "send-by-email",
-          //"block-unblock-version", //need split
-          // "version", //category
-          //"finalize-version",
           "copy-to",
           "copy",
           "mark-as-favorite",
         ]);
       }
 
-      // if (isRecentFolder) {
-      //   //fileOptions = this.removeOptions(fileOptions, ["delete"]);
-
-      //   if (!isFavorite) {
-      //     fileOptions = this.removeOptions(fileOptions, ["separator2"]);
-      //   }
-      // }
-
       if (isFavoritesFolder || isRecentFolder) {
         fileOptions = this.removeOptions(fileOptions, [
-          // "make-form",
           "copy",
-          // "move-to",
-          //"sharing-settings",
-          "unsubscribe",
-          //"separator2",
+          //"unsubscribe",
         ]);
       }
 
       if (isRecycleBinFolder) {
         fileOptions = this.removeOptions(fileOptions, [
-          //"fill-form",
           "open",
           "open-location",
           "view",
           "preview",
-          // "edit",
-          // "make-form",
           "link-for-portal-users",
-          "sharing-settings",
+          //"sharing-settings",
           "external-link",
           "send-by-email",
-          //"block-unblock-version", //need split
-          //"version", //category
-          //"finalize-version",
-          //"show-version-history",
           "move", //category
-          // "move-to",
           "copy-to",
           "copy",
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
-          // "rename",
           "separator0",
           "separator1",
         ]);
@@ -1372,11 +1294,7 @@ class FilesStore {
       }
 
       if (isThirdPartyItem) {
-        fileOptions = this.removeOptions(fileOptions, [
-          "owner-change",
-          //"finalize-version",
-          "copy",
-        ]);
+        fileOptions = this.removeOptions(fileOptions, ["owner-change", "copy"]);
       }
 
       if (!hasNew) {
@@ -1402,14 +1320,9 @@ class FilesStore {
           "download-as",
         ]);
 
-        if (!isDesktopClient) {
-          fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
-        }
-
-        fileOptions = this.removeOptions(
-          fileOptions,
-          isFileOwner ? ["unsubscribe"] : ["move-to", "delete"]
-        );
+        // if (!isDesktopClient) {
+        //   fileOptions = this.removeOptions(fileOptions, ["sharing-settings"]);
+        // }
       }
 
       fileOptions = this.removeSeparator(fileOptions);
@@ -1534,9 +1447,7 @@ class FilesStore {
       if (!canMoveAbility) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
-      // if (!filesRights.rename) {
-      //   folderOptions = this.removeOptions(folderOptions, ["rename"]);
-      // }
+
       if (!filesRights.copyFromPersonal) {
         folderOptions = this.removeOptions(folderOptions, ["copy-to", "copy"]);
       }
@@ -1547,38 +1458,29 @@ class FilesStore {
 
       if (item.rootFolderType === FolderType.Archive) {
         folderOptions = this.removeOptions(folderOptions, [
-          // "move",
-          // "move-to",
+          "move",
           "copy-to",
-          //"rename",
           "change-thirdparty-info",
           "separator2",
-          // "delete",
         ]);
       }
 
       if (isPrivacyFolder) {
         folderOptions = this.removeOptions(folderOptions, [
-          "sharing-settings",
+          // "sharing-settings",
           "copy",
           "copy-to",
         ]);
-
-        // if (!isDesktopClient) {
-        //   folderOptions = this.removeOptions(folderOptions, ["rename"]);
-        // }
       }
 
       if (isRecycleBinFolder) {
         folderOptions = this.removeOptions(folderOptions, [
           "open",
-          "link-for-portal-users",
-          "sharing-settings",
+          // "link-for-portal-users",
+          // "sharing-settings",
           "move",
-          // "move-to",
           "copy-to",
           "mark-read",
-          // "rename",
           "separator0",
           "separator1",
         ]);
@@ -1612,21 +1514,6 @@ class FilesStore {
         folderOptions = this.removeOptions(folderOptions, [
           "change-thirdparty-info",
         ]);
-
-      // if (isThirdPartyFolder) {
-      //  // folderOptions = this.removeOptions(folderOptions, ["move-to"]);
-
-      //   // if (isDesktopClient) {
-      //   //   folderOptions = this.removeOptions(folderOptions, [
-      //   //     "separator2",
-      //   //     "delete",
-      //   //   ]);
-      //   // }
-      // } else {
-      //   folderOptions = this.removeOptions(folderOptions, [
-      //     "change-thirdparty-info",
-      //   ]);
-      // }
 
       if (isThirdPartyItem) {
         folderOptions = this.removeOptions(folderOptions, ["owner-change"]);
