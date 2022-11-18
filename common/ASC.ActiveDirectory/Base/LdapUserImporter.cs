@@ -364,7 +364,7 @@ public class LdapUserImporter : IDisposable
         return result;
     }
 
-    public bool TrySyncUserGroupMembership(Tuple<UserInfo, LdapObject> ldapUserInfo)
+    public async Task<bool> TrySyncUserGroupMembership(Tuple<UserInfo, LdapObject> ldapUserInfo)
     {
         if (ldapUserInfo == null ||
             !Settings.GroupMembership)
@@ -401,12 +401,12 @@ public class LdapUserImporter : IDisposable
                 groupInfo = UserManager.SaveGroupInfo(_ldapObjectExtension.ToGroupInfo(ldapUserGroup, Settings));
 
                 _logger.DebugTrySyncUserGroupMembershipAddingUserToGroup(userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
-                UserManager.AddUserIntoGroup(userInfo.Id, groupInfo.ID);
+                await UserManager.AddUserIntoGroup(userInfo.Id, groupInfo.ID);
             }
             else if (!portalUserLdapGroups.Contains(groupInfo))
             {
                 _logger.DebugTrySyncUserGroupMembershipAddingUserToGroup(userInfo.UserName, ldapUser.Sid, groupInfo.Name, groupInfo.Sid);
-                UserManager.AddUserIntoGroup(userInfo.Id, groupInfo.ID);
+                await UserManager.AddUserIntoGroup(userInfo.Id, groupInfo.ID);
             }
 
             actualPortalLdapGroups.Add(groupInfo);

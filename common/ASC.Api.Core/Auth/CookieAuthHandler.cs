@@ -57,7 +57,7 @@ public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptio
         _httpContextAccessor = httpContextAccessor;
     }
 
-    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         try
         {
@@ -75,7 +75,7 @@ public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptio
                 authorization = authorization.Substring("Bearer ".Length);
             }
 
-            if (!_securityContext.AuthenticateMe(authorization))
+            if (!(await _securityContext.AuthenticateMe(authorization)))
             {
                 throw new AuthenticationException(nameof(HttpStatusCode.Unauthorized));
             }
@@ -83,7 +83,7 @@ public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptio
         }
         catch (Exception)
         {
-            return Task.FromResult(AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized))));
+            return AuthenticateResult.Fail(new AuthenticationException(nameof(HttpStatusCode.Unauthorized)));
         }
         finally
         {
@@ -95,6 +95,6 @@ public class CookieAuthHandler : AuthenticationHandler<AuthenticationSchemeOptio
             }
         }
 
-        return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, Scheme.Name)));
+        return AuthenticateResult.Success(new AuthenticationTicket(Context.User, Scheme.Name));
     }
 }

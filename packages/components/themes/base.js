@@ -801,7 +801,7 @@ const Base = {
     },
 
     fontSize: {
-      base: "14px",
+      base: "13px",
       middle: "14px",
       big: "16px",
       huge: "18px",
@@ -2742,6 +2742,9 @@ const Base = {
     navBackground: "#F8F9F9",
     headerColor: black,
     helpButton: "#A3A9AE",
+    orLineColor: "#ECEEF1",
+    orTextColor: "#A3A9AE",
+    titleColor: black,
 
     register: {
       backgroundColor: grayLight,
@@ -2994,6 +2997,16 @@ const Base = {
   formWrapper: {
     background: white,
     boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
+  },
+
+  codeInput: {
+    background: white,
+    border: "1px solid #d0d5da",
+    color: black,
+    lineColor: "#C4C4C4",
+    disabledBackground: "#F8F9F9",
+    disabledBorder: "1px solid #ECEEF1",
+    disabledColor: "#A3A9AE",
   },
 };
 

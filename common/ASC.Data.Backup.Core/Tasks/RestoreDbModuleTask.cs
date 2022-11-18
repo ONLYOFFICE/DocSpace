@@ -60,7 +60,7 @@ public class RestoreDbModuleTask : PortalTaskBase
         Init(-1, null);
     }
 
-    public override void RunJob()
+    public override Task RunJob()
     {
         _logger.DebugBeginRestoreDataForModule(_module.ModuleName);
         SetStepsCount(_module.Tables.Count(t => !_ignoredTables.Contains(t.Name)));
@@ -86,6 +86,7 @@ public class RestoreDbModuleTask : PortalTaskBase
         }
 
         _logger.DebugEndRestoreDataForModule(_module.ModuleName);
+        return Task.CompletedTask;
     }
 
     public string[] ExecuteArray(DbCommand command)

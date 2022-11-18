@@ -139,7 +139,7 @@ public class MigrationController : ControllerBase
     /// </summary>
     /// <returns></returns>
     [HttpGet("status")]
-    public object Status()
+    public async Task<object> Status()
     {
         if (!_coreBaseSettings.Standalone || !_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID))
         {
@@ -160,7 +160,7 @@ public class MigrationController : ControllerBase
 
         var result = new MigrationStatus()
         {
-            ParseResult = ongoingMigration.ParseTask.IsCompleted ? ongoingMigration.ParseTask.Result : null,
+            ParseResult = ongoingMigration.ParseTask.IsCompleted ? await ongoingMigration.ParseTask : null,
             MigrationEnded = ongoingMigration.MigrationEnded,
             Progress = ongoingMigration.Migration.GetProgress(),
             ProgressStatus = ongoingMigration.Migration.GetProgressStatus()

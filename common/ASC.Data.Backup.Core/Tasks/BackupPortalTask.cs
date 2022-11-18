@@ -70,7 +70,7 @@ public class BackupPortalTask : PortalTaskBase
 
     }
 
-    public override void RunJob()
+    public override async Task RunJob()
     {
         _logger.DebugBeginBackup(TenantId);
         _tenantManager.SetCurrentTenant(TenantId);
@@ -80,13 +80,13 @@ public class BackupPortalTask : PortalTaskBase
         {
             if (_dump)
             {
-                DoDump(writer);
+                await DoDump(writer);
             }
             else
             {
 
                 var modulesToProcess = GetModulesToProcess().ToList();
-                var fileGroups = GetFilesGroup();
+                var fileGroups = await GetFilesGroup();
 
                 var stepscount = ProcessStorage ? fileGroups.Count : 0;
                 SetStepsCount(modulesToProcess.Count + stepscount);
@@ -97,7 +97,7 @@ public class BackupPortalTask : PortalTaskBase
                 }
                 if (ProcessStorage)
                 {
-                    DoBackupStorage(writer, fileGroups);
+                    await DoBackupStorage(writer, fileGroups);
                 }
             }
         }
@@ -121,7 +121,7 @@ public class BackupPortalTask : PortalTaskBase
         return list;
     }
 
-    private void DoDump(IDataWriteOperator writer)
+    private async Task DoDump(IDataWriteOperator writer)
     {
         var databases = new Dictionary<Tuple<string, string>, List<string>>();
 
@@ -173,7 +173,7 @@ public class BackupPortalTask : PortalTaskBase
             var tenants = _tenantManager.GetTenants(false).Select(r => r.Id);
             foreach (var t in tenants)
             {
-                files.AddRange(GetFiles(t));
+                files.AddRange(await GetFiles(t));
             }
 
             stepscount += files.Count * 2 + 1;
@@ -258,9 +258,9 @@ public class BackupPortalTask : PortalTaskBase
         }
     }
 
-    private IEnumerable<BackupFileInfo> GetFiles(int tenantId)
+    private async Task<IEnumerable<BackupFileInfo>> GetFiles(int tenantId)
     {
-        var files = GetFilesToProcess(tenantId).ToList();
+        var files = (await GetFilesToProcess(tenantId)).ToList();
         using var backupRecordContext = _dbContextFactory.CreateDbContext();
         var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
@@ -621,9 +621,9 @@ public class BackupPortalTask : PortalTaskBase
         _logger.DebugArchiveDirEnd(subDir);
     }
 
-    private List<IGrouping<string, BackupFileInfo>> GetFilesGroup()
+    private async Task<List<IGrouping<string, BackupFileInfo>>> GetFilesGroup()
     {
-        var files = GetFilesToProcess(TenantId).ToList();
+        var files = (await GetFilesToProcess(TenantId)).ToList();
 
         using var backupRecordContext = _dbContextFactory.CreateDbContext();
         var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
@@ -697,7 +697,7 @@ public class BackupPortalTask : PortalTaskBase
         _logger.DebugEndSavingDataForModule(module.ModuleName);
     }
 
-    private void DoBackupStorage(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
+    private async Task DoBackupStorage(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
     {
         _logger.DebugBeginBackupStorage();
 
@@ -710,10 +710,10 @@ public class BackupPortalTask : PortalTaskBase
             {
                 var storage = StorageFactory.GetStorage(ConfigPath, TenantId, group.Key);
                 var file1 = file;
-                ActionInvoker.Try(state =>
+                await ActionInvoker.Try(async state =>
                 {
                     var f = (BackupFileInfo)state;
-                    using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
+                    using var fileStream = await storage.GetReadStreamAsync(f.Domain, f.Path);
                     writer.WriteEntry(file1.GetZipKey(), fileStream);
                 }, file, 5, error => _logger.WarningCanNotBackupFile(file1.Module, file1.Path, error));
 
