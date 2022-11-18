@@ -94,7 +94,7 @@ class AccessRightsStore {
   };
 
   canEditFile = (file) => {
-    const { rootFolderType, access, providerKey } = file;
+    const { rootFolderType, access } = file;
 
     if (
       rootFolderType === FolderType.Archive ||
@@ -104,6 +104,19 @@ class AccessRightsStore {
       return false;
 
     return getFileRoleActions(access).edit;
+  };
+
+  canRename = (file = {}) => {
+    const { rootFolderType, access, isFile } = file;
+    const { isDesktopClient } = this.authStore.settingsStore;
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH ||
+      (!isFile && rootFolderType === FolderType.Privacy && !isDesktopClient)
+    )
+      return false;
+
+    return getFileRoleActions(access).rename;
   };
 
   canArchiveRoom = (room) => {

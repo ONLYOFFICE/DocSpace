@@ -1051,6 +1051,8 @@ class FilesStore {
     const pluginAllKeys =
       enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
 
+    const canRename = this.accessRightsStore.canRename({ ...item, ...isFile });
+
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
       const canLockFile = this.accessRightsStore.canLockFile(item);
@@ -1061,6 +1063,7 @@ class FilesStore {
       const canViewVersionHistory = this.accessRightsStore.canViewVersionHistory(
         item
       );
+
       const canEditFile = this.accessRightsStore.canEditFile(item);
       const isMasterForm = item.fileExst === ".docxf";
 
@@ -1121,6 +1124,10 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["version"]);
       }
 
+      if (!canRename) {
+        fileOptions = this.removeOptions(fileOptions, ["rename"]);
+      }
+
       if (canOpenPlayer || !canEditFile) {
         fileOptions = this.removeOptions(fileOptions, ["edit"]);
       }
@@ -1145,9 +1152,9 @@ class FilesStore {
       if (!filesRights.moveSelf || !filesRights.moveAlien) {
         fileOptions = this.removeOptions(fileOptions, ["move-to"]);
       }
-      if (!filesRights.rename) {
-        fileOptions = this.removeOptions(fileOptions, ["rename"]);
-      }
+      // if (!filesRights.rename) {
+      //   fileOptions = this.removeOptions(fileOptions, ["rename"]);
+      // }
       if (!filesRights.copyFromPersonal) {
         fileOptions = this.removeOptions(fileOptions, ["copy-to", "copy"]);
       }
@@ -1178,7 +1185,7 @@ class FilesStore {
           "move-to",
           "copy-to",
           "copy",
-          "rename",
+          //"rename",
           "separator2",
           "delete",
           //"finalize-version",
@@ -1216,9 +1223,9 @@ class FilesStore {
           "separator2",
           "delete",
         ]);
-        if (isThirdPartyItem) {
-          fileOptions = this.removeOptions(fileOptions, ["rename"]);
-        }
+        // if (isThirdPartyItem) {
+        //   fileOptions = this.removeOptions(fileOptions, ["rename"]);
+        // }
       }
 
       if (isFavorite) {
@@ -1305,7 +1312,7 @@ class FilesStore {
           "mark-read",
           "mark-as-favorite",
           "remove-from-favorites",
-          "rename",
+          // "rename",
           "separator0",
           "separator1",
         ]);
@@ -1481,15 +1488,19 @@ class FilesStore {
         "delete",
       ];
 
+      if (!canRename) {
+        fileOptions = this.removeOptions(fileOptions, ["rename"]);
+      }
+
       if (!filesRights.deleteSelf || !filesRights.deleteAlien) {
         folderOptions = this.removeOptions(folderOptions, ["delete"]);
       }
       if (!filesRights.moveSelf || !filesRights.moveAlien) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
       }
-      if (!filesRights.rename) {
-        folderOptions = this.removeOptions(folderOptions, ["rename"]);
-      }
+      // if (!filesRights.rename) {
+      //   folderOptions = this.removeOptions(folderOptions, ["rename"]);
+      // }
       if (!filesRights.copyFromPersonal) {
         folderOptions = this.removeOptions(folderOptions, ["copy-to", "copy"]);
       }
@@ -1506,7 +1517,7 @@ class FilesStore {
           "move",
           "move-to",
           "copy-to",
-          "rename",
+          //"rename",
           "change-thirdparty-info",
           "separator2",
           "delete",
@@ -1534,7 +1545,7 @@ class FilesStore {
           "move-to",
           "copy-to",
           "mark-read",
-          "rename",
+          // "rename",
           "separator0",
           "separator1",
         ]);
