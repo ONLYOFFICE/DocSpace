@@ -129,17 +129,16 @@ class AccessRightsStore {
 
     return getFileRoleActions(access).fillForm;
   };
-
+  generalDeleteProhibitionConditions = (rootFolderType, fileEditing) =>
+    rootFolderType === FolderType.Archive ||
+    rootFolderType === FolderType.TRASH ||
+    rootFolderType === FolderType.Favorites ||
+    rootFolderType === FolderType.Recent ||
+    fileEditing;
   canDeleteItsItems = (item) => {
     const { rootFolderType, access, editing: fileEditing } = item;
 
-    if (
-      rootFolderType === FolderType.Archive ||
-      rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Recent ||
-      fileEditing
-    )
+    if (generalDeleteProhibitionConditions(rootFolderType, fileEditing))
       return false;
 
     return getFileRoleActions(access).deleteSelf;
@@ -148,13 +147,7 @@ class AccessRightsStore {
   canDeleteAlienItems = (item) => {
     const { rootFolderType, access, editing: fileEditing } = item;
 
-    if (
-      rootFolderType === FolderType.Archive ||
-      rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Recent ||
-      fileEditing
-    )
+    if (generalDeleteProhibitionConditions(rootFolderType, fileEditing))
       return false;
 
     return getFileRoleActions(access).deleteAlien;
