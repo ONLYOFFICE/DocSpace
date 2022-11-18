@@ -63,7 +63,9 @@ const RootFolderContainer = (props) => {
   const roomsDescription = isVisitor
     ? t("RoomEmptyContainerDescriptionUser")
     : t("RoomEmptyContainerDescription");
-  const archiveRoomsDescription = t("ArchiveEmptyScreen");
+  const archiveRoomsDescription = isVisitor
+    ? t("ArchiveEmptyScreenUser")
+    : t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
   const privacyIcon = <img alt="" src="images/privacy.svg" />;
@@ -289,7 +291,7 @@ const RootFolderContainer = (props) => {
     </div>
   );
 
-  const archiveButtons = (
+  const archiveButtons = !isVisitor && (
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
