@@ -1331,6 +1331,13 @@ class FilesStore {
     } else if (isRoom) {
       const roomAccessRights = getRoomRoleActions(item.access);
 
+      const canInviteUserInRoom = this.accessRightsStore.canInviteUserInRoom(
+        item
+      );
+      const canRemoveRoom = this.accessRightsStore.canRemoveRoom(item);
+
+      const canArchiveRoom = this.accessRightsStore.canArchiveRoom(item);
+
       let roomOptions = [
         "select",
         "separator0",
@@ -1353,22 +1360,22 @@ class FilesStore {
         ]);
       }
 
-      if (!roomAccessRights.inviteUsers) {
+      if (!canInviteUserInRoom) {
         roomOptions = this.removeOptions(roomOptions, ["invite-users-to-room"]);
       }
 
-      if (!roomAccessRights.archive) {
+      if (!canArchiveRoom) {
         roomOptions = this.removeOptions(roomOptions, [
           "archive-room",
           "unarchive-room",
         ]);
       }
 
-      if (!roomAccessRights.delete) {
+      if (!canRemoveRoom) {
         roomOptions = this.removeOptions(roomOptions, ["delete"]);
       }
 
-      if (!roomAccessRights.archive && !roomAccessRights.delete) {
+      if (!canArchiveRoom && !canRemoveRoom) {
         roomOptions = this.removeOptions(roomOptions, ["separator1"]);
       }
 
@@ -1385,7 +1392,7 @@ class FilesStore {
       if (isArchiveFolder || item.rootFolderType === FolderType.Archive) {
         roomOptions = this.removeOptions(roomOptions, [
           "edit-room",
-          "invite-users-to-room",
+          //"invite-users-to-room",
           "pin-room",
           "unpin-room",
           "archive-room",
@@ -1394,7 +1401,7 @@ class FilesStore {
         ]);
       } else {
         roomOptions = this.removeOptions(roomOptions, [
-          "delete",
+          // "delete",
           "unarchive-room",
         ]);
 

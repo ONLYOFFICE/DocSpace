@@ -39,6 +39,10 @@ const Members = ({
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
 
+  const canInviteUserInRoomAbility = canInviteUserInRoom({
+    access: selection.access,
+    rootFolderType: selection.rootFolderType,
+  });
 
   const fetchMembers = async (roomId) => {
     let timerId;
@@ -123,7 +127,7 @@ const Members = ({
         <Text className="title">
           {t("UsersInRoom")} : {members.inRoom.length}
         </Text>
-        {canInviteUserInRoom && (
+        {canInviteUserInRoomAbility && (
           <IconButton
             className={"icon"}
             title={t("Common:AddUsers")}
@@ -156,7 +160,7 @@ const Members = ({
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
           <Text className="title">{t("ExpectPeople")}</Text>
-          {canInviteUserInRoom && (
+          {canInviteUserInRoomAbility && (
             <IconButton
               className={"icon"}
               title={t("Repeat invitation")}

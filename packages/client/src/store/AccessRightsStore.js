@@ -16,30 +16,23 @@ class AccessRightsStore {
   selectedFolderStore = null;
   treeFoldersStore = null;
 
-  constructor(
-    authStore,
-    selectedFolderStore,
-    treeFoldersStore,
-    versionHistoryStore
-  ) {
+  constructor(authStore, selectedFolderStore) {
     this.authStore = authStore;
     this.selectedFolderStore = selectedFolderStore;
-    this.treeFoldersStore = treeFoldersStore;
 
     makeAutoObservable(this);
   }
 
-  get canInviteUserInRoom() {
-    const { isArchiveFolderRoot } = this.treeFoldersStore;
-    const { access } = this.selectedFolderStore;
+  canInviteUserInRoom(room) {
+    const { access, rootFolderType } = room;
 
-    if (isArchiveFolderRoot) return false;
+    if (rootFolderType === FolderType.Archive) return false;
 
     return getRoomRoleActions(access).inviteUsers;
   }
 
   canChangeUserRole = (currentRoomMember) => {
-    const { isArchiveFolderRoot } = this.treeFoldersStore;
+    // const { isArchiveFolderRoot } = this.treeFoldersStore;
     const { access } = this.selectedFolderStore;
     const { userStore } = this.authStore;
     const { user } = userStore;
@@ -48,7 +41,7 @@ class AccessRightsStore {
     const isOwnerRoleRoom =
       currentRoomMember.access === ShareAccessRights.FullAccess;
 
-    if (isArchiveFolderRoot || isMyProfile || isOwnerRoleRoom) return false;
+    // if (isArchiveFolderRoot || isMyProfile || isOwnerRoleRoom) return false;
 
     return getRoomRoleActions(access).changeUserRole;
   };
@@ -207,8 +200,10 @@ class AccessRightsStore {
   };
 
   canRemoveRoom = (room) => {
-    const { delete: remove } = getRoomRoleActions(room.access);
+    const { access, rootFolderType } = room;
+    const { delete: remove } = getRoomRoleActions(access);
 
+    if (rootFolderType !== FolderType.Archive) return false;
     return remove;
   };
 
