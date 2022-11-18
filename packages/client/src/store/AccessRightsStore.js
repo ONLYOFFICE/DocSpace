@@ -149,30 +149,6 @@ class AccessRightsStore {
 
     return getFileRoleActions(access).canCopy;
   };
-  generalDeleteProhibitionConditions = (rootFolderType, fileEditing) =>
-    rootFolderType === FolderType.Archive ||
-    rootFolderType === FolderType.TRASH ||
-    rootFolderType === FolderType.Favorites ||
-    rootFolderType === FolderType.Recent ||
-    rootFolderType === FolderType.Privacy ||
-    fileEditing;
-  canDeleteItsItems = (item) => {
-    const { rootFolderType, access, editing: fileEditing } = item;
-
-    if (this.generalDeleteProhibitionConditions(rootFolderType, fileEditing))
-      return false;
-
-    return getFileRoleActions(access).deleteSelf;
-  };
-
-  canDeleteAlienItems = (item) => {
-    const { rootFolderType, access, editing: fileEditing } = item;
-
-    if (this.generalDeleteProhibitionConditions(rootFolderType, fileEditing))
-      return false;
-
-    return getFileRoleActions(access).deleteAlien;
-  };
 
   canMakeForm = (item) => {
     const { rootFolderType, access } = item;
@@ -247,12 +223,20 @@ class AccessRightsStore {
     return moveSelf || moveAlien;
   };
 
-  canDeleteFile = (room) => {
-    const { rootFolderType } = room;
+  canDeleteItems = (item) => {
+    const { rootFolderType, access, editing: fileEditing } = item;
 
-    if (rootFolderType === FolderType.Archive) return false;
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent ||
+      rootFolderType === FolderType.Privacy ||
+      fileEditing
+    )
+      return false;
 
-    const { deleteSelf, deleteAlien } = getFileRoleActions(room.access);
+    const { deleteSelf, deleteAlien } = getFileRoleActions(access);
 
     return deleteSelf || deleteAlien;
   };

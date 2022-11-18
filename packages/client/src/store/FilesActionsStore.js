@@ -1269,7 +1269,7 @@ class FilesActionStore {
 
     const {
       canCopyItems,
-      canDeleteFile,
+      canDeleteItems,
       canMoveItems,
       canArchiveRoom,
       canRemoveRoom,
@@ -1314,7 +1314,7 @@ class FilesActionStore {
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = canDeleteFile({ access, rootFolderType });
+        const canDelete = canDeleteItems({ access, rootFolderType });
         const deleteCondition =
           !isThirdPartyRootSelection &&
           hasSelection &&
