@@ -269,6 +269,7 @@ const SortButton = ({
       )}
       {sortData?.map((item) => (
         <DropDownItem
+          id={item.id}
           onClick={onOptionClick}
           className={item.className}
           key={item.key}
