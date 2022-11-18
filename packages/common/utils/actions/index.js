@@ -12,6 +12,17 @@ import {
 } from "./Rooms";
 
 import {
+  ArchiveRoomsActions,
+  OwnerArchiveRoomsActions,
+  RoomAdminArchiveRoomsActions,
+  EditorArchiveRoomsActions,
+  FormFillerArchiveRoomsActions,
+  ReviewerArchiveRoomsActions,
+  CommentatorArchiveRoomsActions,
+  ViewerArchiveRoomsActions,
+} from "./ArchiveRoom";
+
+import {
   FilesActions,
   OwnerFilesActions,
   RoomAdminFilesActions,
@@ -69,6 +80,28 @@ export const getFileRoleActions = (access) => {
       return ViewerFilesActions;
     default:
       return FilesActions;
+  }
+};
+
+export const getArchiveRoomRoleActions = (access) => {
+  switch (access) {
+    case ShareAccessRights.None:
+    case ShareAccessRights.FullAccess:
+      return OwnerArchiveRoomsActions;
+    case ShareAccessRights.RoomManager:
+      return RoomAdminArchiveRoomsActions;
+    case ShareAccessRights.Editing:
+      return EditorArchiveRoomsActions;
+    case ShareAccessRights.FormFilling:
+      return FormFillerArchiveRoomsActions;
+    case ShareAccessRights.Review:
+      return ReviewerArchiveRoomsActions;
+    case ShareAccessRights.Comment:
+      return CommentatorArchiveRoomsActions;
+    case ShareAccessRights.ReadOnly:
+      return ViewerArchiveRoomsActions;
+    default:
+      return ArchiveRoomsActions;
   }
 };
 
