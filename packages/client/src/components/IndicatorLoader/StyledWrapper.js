@@ -9,7 +9,6 @@ const StyledWrapper = styled.div`
     left: -6px;
     width: 0%;
     height: 3px;
-    background-color: #eb835f;
     -moz-border-radius: 1px;
     -webkit-border-radius: 1px;
     border-radius: 1px;
