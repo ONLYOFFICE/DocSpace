@@ -127,9 +127,6 @@
   <data name="DocuSignStatusSended" xml:space="preserve">
     <value>Το έγγραφο απεστάλη για υπογραφή μέσω DocuSign</value>
   </data>
-  <data name="EditorMentions" xml:space="preserve">
-    <value>Ειδοποίηση όταν γίνεται αναφορά σε εσάς σε έγγραφο</value>
-  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Κακό αίτημα.</value>
   </data>
@@ -271,24 +268,6 @@
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Έγγραφα</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} αφαιρέθηκε</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Αναζήτηση</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Ειδοποίηση όταν ένας φάκελος διαμοιράζεται</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Ειδοποίηση όταν το έγγραφο υπογράφεται μέσω DocuSign</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Ειδοποίηση όταν ένα έγγραφο διαμοιράζεται</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Έγγραφα του/της {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Όνομα</value>

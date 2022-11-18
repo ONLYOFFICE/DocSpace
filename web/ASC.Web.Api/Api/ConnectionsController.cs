@@ -137,8 +137,11 @@ public class ConnectionsController : ControllerBase
             _securityContext.Logout();
 
             var auditEventDate = DateTime.UtcNow;
+            auditEventDate = auditEventDate.AddTicks(-(auditEventDate.Ticks % TimeSpan.TicksPerSecond));
+
             var hash = auditEventDate.ToString("s");
-            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash);
+            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash, user.Id);
+
             _messageService.Send(auditEventDate, MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(user.Id), userName);
 
             return confirmationUrl;

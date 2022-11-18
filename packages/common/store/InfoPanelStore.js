@@ -23,7 +23,7 @@ class InfoPanelStore {
   selection = null;
   selectionParentRoom = null;
 
-  roomsView = "members";
+  roomsView = "details";
   fileView = "history";
 
   authStore = null;
@@ -136,8 +136,10 @@ class InfoPanelStore {
   reloadSelectionParentRoom = async () => {
     if (!this.getIsRooms) return;
 
-    const currentFolderRoomId = this.selectedFolderStore.pathParts[1];
-    const prevRoomId = selectionParentRoom?.id;
+    const currentFolderRoomId =
+      this.selectedFolderStore.pathParts &&
+      this.selectedFolderStore.pathParts[1];
+    const prevRoomId = this.selectionParentRoom?.id;
 
     if (!currentFolderRoomId || currentFolderRoomId === prevRoomId) return;
 

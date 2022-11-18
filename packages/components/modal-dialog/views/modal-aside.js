@@ -78,6 +78,7 @@ const Modal = ({
             <CloseButton
               currentDisplayType={currentDisplayType}
               onClick={onClose}
+              id={id}
             />
             {isLoading ? (
               currentDisplayType === "modal" ? (

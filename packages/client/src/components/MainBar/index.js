@@ -11,8 +11,8 @@ const StyledContainer = styled.div`
 
   ${isMobileOnly &&
   css`
-    width: calc(100% + 16px);
-    max-width: calc(100% + 16px);
+    width: calc(100% + 8px);
+    max-width: calc(100% + 8px);
 
     margin-right: -16px;
     margin-top: 48px;

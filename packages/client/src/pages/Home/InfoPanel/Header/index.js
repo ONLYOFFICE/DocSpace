@@ -18,6 +18,7 @@ import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import { StyledInfoPanelHeader } from "./styles/common";
 import { FolderType } from "@docspace/common/constants";
+import { getArchiveRoomRoleActions } from "@docspace/common/utils/actions";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -31,8 +32,8 @@ const InfoPanelHeaderContent = (props) => {
     getIsGallery,
     getIsAccounts,
     isRootFolder,
-    canRemoveUserFromRoom,
     rootFolderType,
+    canViewUsers,
   } = props;
 
   const isRooms = getIsRooms();
@@ -51,7 +52,6 @@ const InfoPanelHeaderContent = (props) => {
   const setDetails = () => setView("details");
 
   const isArchiveRoot = rootFolderType === FolderType.Archive;
-  const canRemove = canRemoveUserFromRoom({ access: selection?.access });
 
   const submenuData = [
     {
@@ -75,9 +75,9 @@ const InfoPanelHeaderContent = (props) => {
   ];
 
   const roomsSubmenu = isArchiveRoot
-    ? !canRemove
-      ? [{ ...submenuData[2] }]
-      : [{ ...submenuData[0] }, { ...submenuData[2] }]
+    ? canViewUsers(selection)
+      ? [{ ...submenuData[0] }, { ...submenuData[2] }]
+      : [{ ...submenuData[2] }]
     : [...submenuData];
   const personalSubmenu = [submenuData[1], submenuData[2]];
 
@@ -145,7 +145,7 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
     getIsAccounts,
   } = auth.infoPanelStore;
   const { isRootFolder, rootFolderType } = selectedFolderStore;
-  const { canRemoveUserFromRoom } = accessRightsStore;
+  const { canViewUsers } = accessRightsStore;
 
   return {
     selection,
@@ -160,7 +160,7 @@ export default inject(({ auth, selectedFolderStore, accessRightsStore }) => {
 
     isRootFolder,
     rootFolderType,
-    canRemoveUserFromRoom,
+    canViewUsers,
   };
 })(
   withTranslation(["Common", "InfoPanel"])(

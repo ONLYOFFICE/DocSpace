@@ -70,7 +70,7 @@ public abstract class PrivacyRoomController<T> : ControllerBase
     {
         if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
         {
-            throw new System.Security.SecurityException();
+            throw new SecurityException();
         }
 
         return _encryptionKeyPairHelper.GetKeyPairAsync(fileId, _fileStorageService);
@@ -117,7 +117,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
 
         if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
         {
-            throw new System.Security.SecurityException();
+            throw new SecurityException();
         }
 
         return _encryptionKeyPairHelper.GetKeyPair();
@@ -148,7 +148,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
 
         if (!PrivacyRoomSettings.GetEnabled(_settingsManager))
         {
-            throw new System.Security.SecurityException();
+            throw new SecurityException();
         }
 
         var keyPair = _encryptionKeyPairHelper.GetKeyPair();

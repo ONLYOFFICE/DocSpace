@@ -193,18 +193,6 @@
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Svoje dokumente ustvarjajte in urejajte ter deljene dokumente s ustreznimi pravicami dostopa|Drugim uporabnikom dajte pravice branja/urejanja za dokumente in mape|Povežite Dropbox, Box in druge račune v oddelku 'Moji Dokumenti'</value>
   </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} odstranjen</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Iskanje</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Obvesti, ko je mapa deljena</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Obvesti, ko je dokument deljen</value>
-  </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Ime</value>
   </data>

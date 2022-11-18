@@ -198,6 +198,10 @@ class TreeFoldersStore {
     );
   }
 
+  get isArchiveFolderRoot() {
+    return FolderType.Archive === this.selectedFolderStore.rootFolderType;
+  }
+
   get selectedKeys() {
     const selectedKeys =
       this.selectedTreeNode.length > 0 &&

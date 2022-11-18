@@ -8,7 +8,8 @@ export const getAccessOptions = (
   t,
   roomType = RoomsType.CustomRoom,
   withRemove = false,
-  withSeparator = false
+  withSeparator = false,
+  isOwner = false
 ) => {
   let options = [];
   const accesses = {
@@ -113,8 +114,10 @@ export const getAccessOptions = (
       ];
       break;
     case -1:
+      if (isOwner) options.push(accesses.docSpaceAdmin);
+
       options = [
-        accesses.docSpaceAdmin,
+        ...options,
         accesses.roomAdmin,
         { key: "s1", isSeparator: withSeparator },
         accesses.user,

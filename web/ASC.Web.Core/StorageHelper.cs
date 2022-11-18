@@ -44,7 +44,7 @@ public class StorageHelper
         _logger = logger;
     }
 
-    public string SaveTmpLogo(string tmpLogoPath)
+    public async Task<string> SaveTmpLogo(string tmpLogoPath)
     {
         if (string.IsNullOrEmpty(tmpLogoPath))
         {
@@ -59,16 +59,16 @@ public class StorageHelper
             {
                 data = Convert.FromBase64String(tmpLogoPath.Substring(Base64Start.Length));
 
-                return SaveLogo(Guid.NewGuid() + ".png", data);
+                return await SaveLogo(Guid.NewGuid() + ".png", data);
             }
 
             var fileName = Path.GetFileName(tmpLogoPath);
 
             data = _userPhotoManager.GetTempPhotoData(fileName);
 
-            _userPhotoManager.RemoveTempPhoto(fileName);
+            await _userPhotoManager.RemoveTempPhoto(fileName);
 
-            return SaveLogo(fileName, data);
+            return await SaveLogo(fileName, data);
         }
         catch (Exception ex)
         {
@@ -77,7 +77,7 @@ public class StorageHelper
         }
     }
 
-    public void DeleteLogo(string logoPath)
+    public async Task DeleteLogo(string logoPath)
     {
         if (string.IsNullOrEmpty(logoPath))
         {
@@ -90,9 +90,9 @@ public class StorageHelper
 
             var fileName = Path.GetFileName(logoPath);
 
-            if (store.IsFileAsync(fileName).Result)
+            if (await store.IsFileAsync(fileName))
             {
-                store.DeleteAsync(fileName).Wait();
+                await store.DeleteAsync(fileName);
             }
         }
         catch (Exception e)
@@ -101,12 +101,12 @@ public class StorageHelper
         }
     }
 
-    private string SaveLogo(string fileName, byte[] data)
+    private async Task<string> SaveLogo(string fileName, byte[] data)
     {
         var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, StorageName);
 
         using var stream = new MemoryStream(data);
         stream.Seek(0, SeekOrigin.Begin);
-        return store.SaveAsync(fileName, stream).Result.ToString();
+        return (await store.SaveAsync(fileName, stream)).ToString();
     }
 }

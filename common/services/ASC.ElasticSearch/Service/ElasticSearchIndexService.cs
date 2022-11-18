@@ -61,7 +61,7 @@ public class ElasticSearchIndexService : BackgroundService
                 {
                     await Task.Delay(10000);
                 }
-                IndexAll(true);
+                await IndexAll(true);
             }, CacheNotifyAction.Any);
         }
         catch (Exception e)
@@ -87,13 +87,13 @@ public class ElasticSearchIndexService : BackgroundService
 
         while (!stoppingToken.IsCancellationRequested)
         {
-            IndexAll();
+            await IndexAll();
 
             await Task.Delay(_period, stoppingToken);
         }
     }
 
-    public void IndexProduct(IFactoryIndexer product, bool reindex)
+    public async Task IndexProduct(IFactoryIndexer product, bool reindex)
     {
         if (reindex)
         {
@@ -122,7 +122,7 @@ public class ElasticSearchIndexService : BackgroundService
 
             _logger.DebugProduct(product.IndexName);
             _indexNotify.Publish(new IndexAction() { Indexing = product.IndexName, LastIndexed = 0 }, CacheNotifyAction.Any);
-            product.IndexAll();
+            await product.IndexAll();
         }
         catch (Exception e)
         {
@@ -130,7 +130,7 @@ public class ElasticSearchIndexService : BackgroundService
         }
     }
 
-    private void IndexAll(bool reindex = false)
+    private async Task IndexAll(bool reindex = false)
     {
         try
         {
@@ -143,11 +143,11 @@ public class ElasticSearchIndexService : BackgroundService
                 wrappers = scope.ServiceProvider.GetService<IEnumerable<IFactoryIndexer>>().Select(r => r.GetType()).ToList();
             }
 
-            Parallel.ForEach(wrappers, wrapper =>
+            await Parallel.ForEachAsync(wrappers, async (wrapper, token) =>
             {
                 using (var scope = _serviceScopeFactory.CreateScope())
                 {
-                    IndexProduct((IFactoryIndexer)scope.ServiceProvider.GetRequiredService(wrapper), reindex);
+                    await IndexProduct((IFactoryIndexer)scope.ServiceProvider.GetRequiredService(wrapper), reindex);
                 }
             });
 

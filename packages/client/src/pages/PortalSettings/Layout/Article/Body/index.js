@@ -215,16 +215,28 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText, isNotPaidPeriod, t } = this.props;
+    const { showText, isNotPaidPeriod, t, isOwner } = this.props;
 
     const items = [];
     let resultTree = [...settingsTree];
 
     if (isNotPaidPeriod) {
       resultTree = [...settingsTree].filter((e) => {
-        return e.tKey === "Backup" || e.tKey === "Payments";
+        return (
+          e.tKey === "Backup" ||
+          e.tKey === "Payments" ||
+          (isOwner && e.tKey === "PortalDeletion")
+        );
       });
     }
+
+    if (!isOwner) {
+      const index = resultTree.findIndex((n) => n.tKey === "PortalDeletion");
+      if (index !== -1) {
+        resultTree.splice(index, 1);
+      }
+    }
+
     resultTree.map((item) => {
       items.push(
         <CatalogItem
@@ -236,6 +248,7 @@ class ArticleBodyContent extends React.Component {
           value={item.link}
           isActive={item.key === selectedKeys[0][0]}
           onClick={() => this.onSelect(item.key)}
+          folderId={item.id}
         />
       );
     });
@@ -265,14 +278,18 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(({ auth, common }) => {
   const { isLoadedArticleBody, setIsLoadedArticleBody } = common;
-  const { currentTariffStatusStore } = auth;
+  const { currentTariffStatusStore, userStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
+  const { user } = userStore;
+  const { isOwner } = user;
+
   return {
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
     isLoadedArticleBody,
     setIsLoadedArticleBody,
     isNotPaidPeriod,
+    isOwner,
   };
 })(
   withLoading(

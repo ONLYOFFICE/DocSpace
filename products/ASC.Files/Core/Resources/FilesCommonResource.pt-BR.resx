@@ -151,9 +151,6 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Anulado</value>
   </data>
-  <data name="EditorMentions" xml:space="preserve">
-    <value>Notificar quando mencionado no documento</value>
-  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Solicitação inválida.</value>
   </data>
@@ -202,9 +199,6 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>O arquivo está atualmente bloqueado por outro usuário</value>
   </data>
-  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>Não há contas disponíveis para enviar a mensagem. Vá para E-mail e conecte uma caixa de correio.</value>
-  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Pelo menos {0} mensagens de e-mail não foram enviadas. Visite o módulo E-mail para ver qual pode ser a falha.</value>
   </data>
@@ -213,9 +207,6 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Lamentamos, este tipo arquivo não é suportado</value>
-  </data>
-  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>A operação foi cancelada</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Autor do salvamento é desconhecido</value>
@@ -330,30 +321,6 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Crie e edite documentos próprios bem como documentos compartilhados com os direitos de acesso adequados|Forneça acesso de leitura/gravação para outros usuários aos documentos e pastas|Conecte a Dropbox, Box e outras contas na seção "Meus documentos".</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} removido</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Pesquisar</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Notificar quando uma pasta é compartilhada</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Notificar quando o documento for assinado no DocuSign</value>
-  </data>
-  <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Notificar quando o documento no DocuSign mudar o status</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Notificar quando um documento é compartilhado</value>
-  </data>
-  <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Notificar quando o envio do e-mail estiver completo</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Documentos do {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Nome</value>

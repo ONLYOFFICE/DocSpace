@@ -24,9 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Text;
-using System.Text.RegularExpressions;
-
 using SecurityContext = ASC.Core.SecurityContext;
 
 namespace ASC.Api.Core.Auth;
@@ -50,8 +47,8 @@ public class BasicAuthHandler : AuthenticationHandler<AuthenticationSchemeOption
 
     public BasicAuthHandler(
       IOptionsMonitor<AuthenticationSchemeOptions> options,
-      ILoggerFactory logger, 
-      UrlEncoder encoder, 
+      ILoggerFactory logger,
+      UrlEncoder encoder,
       ISystemClock clock,
       UserManager userManager,
       SecurityContext securityContext,

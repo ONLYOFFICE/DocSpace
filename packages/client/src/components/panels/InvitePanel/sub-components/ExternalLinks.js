@@ -27,6 +27,7 @@ const ExternalLinks = ({
   defaultAccess,
   shareLinks,
   setInvitationLinks,
+  isOwner,
 }) => {
   const [linksVisible, setLinksVisible] = useState(false);
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
@@ -35,37 +36,45 @@ const ExternalLinks = ({
   const inputsRef = useRef();
 
   const toggleLinks = (e) => {
+    let link = null;
     if (roomId === -1) {
-      const link = shareLinks.find((l) => l.access === +defaultAccess);
+      link = shareLinks.find((l) => l.access === +defaultAccess);
 
       setActiveLink(link);
     } else {
       setInvitationLinks(roomId, shareLinks[0].id, "Invite", +defaultAccess);
+
+      link = shareLinks[0];
 
       setActiveLink(shareLinks[0]);
     }
 
     setLinksVisible(!linksVisible);
 
-    if (!linksVisible) copyLink(activeLink.shareLink);
+    if (!linksVisible) copyLink(link?.shareLink);
   };
 
   const onSelectAccess = (access) => {
+    let link = null;
     if (roomId === -1) {
-      const link = shareLinks.find((l) => l.access === access.access);
+      link = shareLinks.find((l) => l.access === access.access);
 
       setActiveLink(link);
     } else {
       setInvitationLinks(roomId, shareLinks[0].id, "Invite", +access.access);
 
+      link = shareLinks[0];
       setActiveLink(shareLinks[0]);
     }
-    copyLink(activeLink.shareLink);
+
+    copyLink(link.shareLink);
   };
 
   const copyLink = (link) => {
-    toastr.success(t("Translations:LinkCopySuccess"));
-    copy(link);
+    if (link) {
+      toastr.success(t("Translations:LinkCopySuccess"));
+      copy(link);
+    }
   };
 
   const toggleActionLinks = () => {
@@ -165,6 +174,7 @@ const ExternalLinks = ({
             defaultAccess={activeLink.access}
             onSelectAccess={onSelectAccess}
             containerRef={inputsRef}
+            isOwner={isOwner}
           />
         </StyledInviteInputContainer>
       )}
@@ -172,7 +182,8 @@ const ExternalLinks = ({
   );
 };
 
-export default inject(({ dialogsStore, filesStore }) => {
+export default inject(({ auth, dialogsStore, filesStore }) => {
+  const { isOwner } = auth.userStore.user;
   const { invitePanelOptions } = dialogsStore;
   const { setInvitationLinks } = filesStore;
   const { roomId, hideSelector, defaultAccess } = invitePanelOptions;
@@ -182,5 +193,6 @@ export default inject(({ dialogsStore, filesStore }) => {
     roomId,
     hideSelector,
     defaultAccess,
+    isOwner,
   };
 })(observer(ExternalLinks));

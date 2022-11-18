@@ -237,7 +237,7 @@ public class FileSecurity : IFileSecurity
 
     public Task<bool> CanLockAsync<T>(FileEntry<T> entry)
     {
-        return CanLockAsync<T>(entry, _authContext.CurrentAccount.ID);
+        return CanLockAsync(entry, _authContext.CurrentAccount.ID);
     }
 
     public Task<bool> CanLockAsync<T>(FileEntry<T> entry, Guid userId)

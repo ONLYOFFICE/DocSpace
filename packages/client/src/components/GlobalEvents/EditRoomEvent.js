@@ -26,6 +26,9 @@ const EditRoomEvent = ({
 
   currentFolderId,
   updateCurrentFolder,
+  setCreateRoomDialogVisible,
+
+  withPaging,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
 
@@ -72,14 +75,14 @@ const EditRoomEvent = ({
     try {
       setIsLoading(true);
 
-      const room = await editRoom(item.id, editRoomParams);
+      let room = await editRoom(item.id, editRoomParams);
 
       for (let i = 0; i < newTags.length; i++) await createTag(newTags[i]);
-      await addTagsToRoom(room.id, tags);
-      await removeTagsFromRoom(room.id, removedTags);
+      room = await addTagsToRoom(room.id, tags);
+      room = await removeTagsFromRoom(room.id, removedTags);
 
       if (!!item.logo.original && !roomParams.icon.uploadedFile)
-        await removeLogoFromRoom(room.id);
+        room = await removeLogoFromRoom(room.id);
 
       if (roomParams.icon.uploadedFile) {
         await setFolder({
@@ -91,19 +94,24 @@ const EditRoomEvent = ({
           const img = new Image();
           img.onload = async () => {
             const { x, y, zoom } = roomParams.icon;
-            await addLogoToRoom(room.id, {
+            room = await addLogoToRoom(room.id, {
               tmpFile: response.data,
               ...calculateRoomLogoParams(img, x, y, zoom),
             });
+
+            !withPaging && setFolder(room);
+
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-      }
+      } else !withPaging && setFolder(room);
     } catch (err) {
       console.log(err);
     } finally {
-      await updateCurrentFolder(null, currentFolderId);
+      if (withPaging) {
+        await updateCurrentFolder(null, currentFolderId);
+      }
       setIsLoading(false);
       onClose();
     }
@@ -129,6 +137,12 @@ const EditRoomEvent = ({
     setFetchedTags(tags);
   }, []);
 
+  useEffect(() => {
+    setCreateRoomDialogVisible(true);
+
+    return () => setCreateRoomDialogVisible(false);
+  }, []);
+
   return (
     <EditRoomDialog
       t={t}
@@ -145,10 +159,12 @@ const EditRoomEvent = ({
 
 export default inject(
   ({
+    auth,
     filesStore,
     tagsStore,
     filesActionsStore,
     selectedFolderStore,
+    dialogsStore,
     settingsStore,
   }) => {
     const {
@@ -166,6 +182,8 @@ export default inject(
     const { id: currentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
     const { getThirdPartyIcon } = settingsStore.thirdPartyStore;
+    const { setCreateRoomDialogVisible } = dialogsStore;
+    const { withPaging } = auth.settingsStore;
 
     return {
       editRoom,
@@ -185,6 +203,9 @@ export default inject(
 
       currentFolderId,
       updateCurrentFolder,
+
+      withPaging,
+      setCreateRoomDialogVisible,
     };
   }
 )(observer(EditRoomEvent));

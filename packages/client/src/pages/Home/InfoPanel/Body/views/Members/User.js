@@ -12,21 +12,16 @@ const User = ({
   membersHelper,
   currentMember,
   updateRoomMemberRole,
-
+  currCanEditUsers,
   selectionParentRoom,
   setSelectionParentRoom,
+  isArchiveRoot,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
 
   const [userIsRemoved, setUserIsRemoved] = useState(false);
   if (userIsRemoved) return null;
-
-  const currCanEditUsers =
-    currentMember.isOwner ||
-    currentMember.isAdmin ||
-    currentMember?.access === ShareAccessRights.FullAccess ||
-    currentMember?.access === ShareAccessRights.RoomManager;
 
   const fullRoomRoleOptions = membersHelper.getOptionsByRoomType(
     selectionParentRoom.roomType,
@@ -71,6 +66,12 @@ const User = ({
     }
   };
 
+  const isAvailable =
+    !isArchiveRoot &&
+    currCanEditUsers &&
+    currentMember?.id !== user.id &&
+    userRole.access !== ShareAccessRights.FullAccess;
+
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
@@ -84,13 +85,13 @@ const User = ({
       <div className="name">
         {isExpect ? user.email : user.displayName || user.email}
       </div>
-      {currentMember.id === user.id && (
+      {currentMember?.id === user.id && (
         <div className="me-label">&nbsp;{`(${t("Common:MeLabel")})`}</div>
       )}
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {currCanEditUsers && currentMember.id !== user.id ? (
+          {isAvailable ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}

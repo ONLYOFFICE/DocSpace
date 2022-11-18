@@ -38,10 +38,10 @@ builder.Configuration.AddDefaultConfiguration(builder.Environment)
                      .AddNotifyConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
-var logger = NLog.LogManager.Setup()
+var logger = LogManager.Setup()
                             .SetupExtensions(s =>
                             {
-                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                                s.RegisterLayoutRenderer("application-context", (logevent) => AppName);
                             })
                             .LoadConfiguration(builder.Configuration, builder.Environment)
                             .GetLogger(typeof(Startup).Namespace);
@@ -49,7 +49,7 @@ var logger = NLog.LogManager.Setup()
 
 try
 {
-    logger.Info("Configuring web host ({applicationContext})...", Program.AppName);
+    logger.Info("Configuring web host ({applicationContext})...", AppName);
     builder.Host.ConfigureDefault();
 
     var startup = new Startup(builder.Configuration, builder.Environment);
@@ -70,14 +70,14 @@ try
     eventBus.Subscribe<NotifyInvokeSendMethodRequestedIntegrationEvent, NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
     eventBus.Subscribe<NotifySendMessageRequestedIntegrationEvent, NotifySendMessageRequestedIntegrationEventHandler>();
 
-    logger.Info("Starting web host ({applicationContext})...", Program.AppName);
+    logger.Info("Starting web host ({applicationContext})...", AppName);
     await app.RunWithTasksAsync();
 }
 catch (Exception ex)
 {
     if (logger != null)
     {
-        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", AppName);
     }
 
     throw;
@@ -85,7 +85,7 @@ catch (Exception ex)
 finally
 {
     // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-    NLog.LogManager.Shutdown();
+    LogManager.Shutdown();
 }
 
 public partial class Program

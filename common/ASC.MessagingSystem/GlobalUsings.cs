@@ -29,7 +29,6 @@ global using System.Web;
 global using ASC.Common;
 global using ASC.Common.Log;
 global using ASC.Core;
-global using ASC.Core.Common.EF;
 global using ASC.MessagingSystem.Core;
 global using ASC.MessagingSystem.Core.Sender;
 global using ASC.MessagingSystem.Data;

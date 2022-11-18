@@ -26,7 +26,7 @@ if (!fs.existsSync(dirName)) {
   fs.mkdirSync(dirName);
 }
 
-const aws = config.default.get("aws");
+const aws = config.default.get("aws").cloudWatch;
 
 const accessKeyId = aws.accessKeyId; 
 const secretAccessKey = aws.secretAccessKey; 
@@ -54,19 +54,18 @@ const options = {
   cloudWatch: {
     name: 'aws',
     level: "debug",
-    logGroupName: () => {
-      const hostname = os.hostname();
-
-      return logGroupName.replace("${instance-id}", hostname);      
-    },       
     logStreamName: () => {
+      const hostname = os.hostname();
       const now = new Date();
       const guid = randomUUID();
       const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
       
-      return logStreamName.replace("${guid}", guid)
+      return logStreamName.replace("${hostname}", hostname)
+                          .replace("${applicationContext}", "WebPlugins")                  
+                          .replace("${guid}", guid)
                           .replace("${date}", dateAsString);      
     },
+    logGroupName:logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,
     awsOptions: {
@@ -92,7 +91,7 @@ const customFormat = winston.format(info => {
   const now = new Date();
 
   info.date = date.format(now, 'YYYY-MM-DD HH:mm:ss');
-  info.applicationContext = "ASC.WebPlugins";
+  info.applicationContext = "WebPlugins";
   info.level = info.level.toUpperCase();
 
   const hostname = os.hostname();

@@ -42,9 +42,9 @@ public class GwsMigratingMail : MigratingMail
         _user = user;
     }
 
-    public override void Migrate()
+    public override Task Migrate()
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public override void Parse()
@@ -69,6 +69,6 @@ public class GwsMigratingMail : MigratingMail
             mail.Message = messagesList;
             _mails.Add(mail);
         }
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 }

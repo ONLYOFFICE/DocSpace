@@ -52,7 +52,7 @@ if(logpath != null)
     fs.existsSync(logpath) || fs.mkdirSync(logpath);
 }
 
-const aws = config["aws"];
+const aws = config["aws"].cloudWatch;
 
 const accessKeyId = aws.accessKeyId; 
 const secretAccessKey = aws.secretAccessKey; 
@@ -77,19 +77,18 @@ if (aws != null && aws.accessKeyId !== '')
   transports.push(new WinstonCloudWatch({
     name: 'aws',
     level: "debug",
-    logGroupName: () => {
-      const hostname = os.hostname();
-
-      return logGroupName.replace("${instance-id}", hostname);      
-    },       
     logStreamName: () => {
+      const hostname = os.hostname();
       const now = new Date();
       const guid = randomUUID();
       const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
       
-      return logStreamName.replace("${guid}", guid)
+      return logStreamName.replace("${hostname}", hostname)
+                          .replace("${applicationContext}", "SsoAuth")                  
+                          .replace("${guid}", guid)
                           .replace("${date}", dateAsString);      
     },
+    logGroupName: logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,
     awsOptions: {

@@ -3,8 +3,8 @@ import { useHistory } from "react-router-dom";
 
 import Link from "@docspace/components/link";
 import { StyledUserNameLink } from "../../styles/history";
-
-const HistoryBlockUser = ({ user, withComma, openUser }) => {
+import Text from "@docspace/components/text";
+const HistoryBlockUser = ({ user, withComma, openUser, isVisitor }) => {
   const username = user.displayName;
   const history = useHistory();
 
@@ -14,9 +14,15 @@ const HistoryBlockUser = ({ user, withComma, openUser }) => {
 
   return (
     <StyledUserNameLink key={user.id} className="user">
-      <Link className="username link" onClick={onUserClick}>
-        {username}
-      </Link>
+      {isVisitor ? (
+        <Text as="span" fontWeight={600}>
+          {username}
+        </Text>
+      ) : (
+        <Link className="username link" onClick={onUserClick}>
+          {username}
+        </Link>
+      )}
       {withComma ? "," : ""}
       {withComma && <div className="space"></div>}
     </StyledUserNameLink>

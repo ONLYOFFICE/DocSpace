@@ -19,7 +19,9 @@
 
 module.exports = {
   // Port listener WebDav Server
-  port: 1900,
+  port: 1900,  
+  appsettings: "../../../config",
+  environment: "Development",
   // Path to pfx key
   pfxKeyPath: null,
   // Pass phrase for pfx key
@@ -52,14 +54,6 @@ module.exports = {
   apiFiles: "/files",
   // Path to read the file
   fileHandlerPath: "/Products/Files/HttpHandlers/filehandler.ashx?action=stream&fileid={0}",
-
-  aws: {
-		"accessKeyId": "",
-		"secretAccessKey": "",
-		"region": "",
-		"logGroupName": "/docspace/ASC.WebDav/instances/${instance-id}/general",
-		"logStreamName": "${guid} - ${date}"
-	},
 
   method: {
     // Get root directory in "Root"

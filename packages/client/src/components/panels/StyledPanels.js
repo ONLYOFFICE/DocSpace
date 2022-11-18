@@ -461,8 +461,12 @@ const StyledFooter = styled.div`
   .sharing_panel-button {
     margin-left: auto;
   }
-  .new_files_panel-button {
+
+  .new_file_panel-first-button {
     margin-right: 8px;
+  }
+  .new_files_panel-button {
+    width: 100%;
   }
 
   @media ${desktop} {

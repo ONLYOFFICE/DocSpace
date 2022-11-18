@@ -681,7 +681,10 @@ class SettingsStore {
   };
 
   getAppearanceTheme = async () => {
-    const res = await api.settings.getAppearanceTheme();
+    let res = null;
+    if (window?.__ASC_INITIAL_EDITOR_STATE__?.appearanceTheme)
+      res = window.__ASC_INITIAL_EDITOR_STATE__.appearanceTheme;
+    else res = await api.settings.getAppearanceTheme();
 
     const currentColorScheme = res.themes.find((theme) => {
       return res.selected === theme.id;

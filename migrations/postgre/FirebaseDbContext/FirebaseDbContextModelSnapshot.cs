@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace ASC.Migrations.PostgreSql.Migrations.FirebaseDb
+namespace ASC.Migrations.PostgreSql.Migrations
 {
     [DbContext(typeof(FirebaseDbContext))]
     partial class FirebaseDbContextModelSnapshot : ModelSnapshot

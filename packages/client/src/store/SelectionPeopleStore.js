@@ -163,11 +163,11 @@ class SelectionStore {
   }
 
   get getUsersToInviteIds() {
-    const { canRemoveUser } = this.peopleStore.accessRightsStore;
+    const { canInviteUser } = this.peopleStore.accessRightsStore;
 
-    const users = this.selection.filter((x) => canRemoveUser(x));
+    const users = this.selection.filter((x) => canInviteUser(x));
 
-    return users.length > 0 ? users.map((u) => u.id) : false;
+    return users.length > 0 ? users.map((u) => u.id) : [];
   }
 
   get hasUsersToRemove() {

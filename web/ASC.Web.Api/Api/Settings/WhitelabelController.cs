@@ -70,7 +70,7 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPost("whitelabel/save")]
-    public bool SaveWhiteLabelSettings(WhiteLabelRequestsDto inDto)
+    public async Task<bool> SaveWhiteLabelSettings(WhiteLabelRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -87,7 +87,7 @@ public class WhitelabelController : BaseSettingsController
                 logoDict.Add(Int32.Parse(l.Key), new KeyValuePair<string, string>(l.Value.Light, l.Value.Dark));
             }
 
-            _tenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, null);
+            await _tenantWhiteLabelSettingsHelper.SetLogo(settings, logoDict, null);
         }
 
         settings.SetLogoText(inDto.LogoText);
@@ -98,7 +98,7 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPost("whitelabel/savefromfiles")]
-    public bool SaveWhiteLabelSettingsFromFiles()
+    public async Task<bool> SaveWhiteLabelSettingsFromFiles()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -120,7 +120,7 @@ public class WhitelabelController : BaseSettingsController
                 {
                     continue;
                 }
-                _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, null, f.OpenReadStream(), null);
+                await _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, null, f.OpenReadStream(), null);
             }
             else
             {
@@ -134,11 +134,12 @@ public class WhitelabelController : BaseSettingsController
                 {
                     darkFile = null;
                 }
-                if(darkFile != null && darkFile.FileName != f.FileName)
+                if (darkFile != null && darkFile.FileName != f.FileName)
                 {
                     throw new InvalidOperationException("logo light and logo dark have different extention");
                 }
-                _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), darkFile?.OpenReadStream(), null);
+
+                await _tenantWhiteLabelSettingsHelper.SetLogoFromStream(settings, logoType, fileExt, f.OpenReadStream(), darkFile?.OpenReadStream(), null);
             }
         }
 
@@ -164,7 +165,7 @@ public class WhitelabelController : BaseSettingsController
         var result = new Dictionary<string, object>();
         foreach (var logoType in (WhiteLabelLogoTypeEnum[])Enum.GetValues(typeof(WhiteLabelLogoTypeEnum)))
         {
-            if (inDto.IsDark.HasValue) 
+            if (inDto.IsDark.HasValue)
             {
                 var dto = new
                 {
@@ -206,17 +207,17 @@ public class WhitelabelController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPut("whitelabel/restore")]
-    public bool RestoreWhiteLabelOptions()
+    public async Task<bool> RestoreWhiteLabelOptions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
 
         var settings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
-        _tenantWhiteLabelSettingsHelper.RestoreDefault(settings, _tenantLogoManager, Tenant.Id, null);
+        await _tenantWhiteLabelSettingsHelper.RestoreDefault(settings, _tenantLogoManager, Tenant.Id, null);
 
         var tenantInfoSettings = _settingsManager.Load<TenantInfoSettings>();
-        _tenantInfoSettingsHelper.RestoreDefaultLogo(tenantInfoSettings, _tenantLogoManager);
+        await _tenantInfoSettingsHelper.RestoreDefaultLogo(tenantInfoSettings, _tenantLogoManager);
         _settingsManager.Save(tenantInfoSettings);
 
         return true;

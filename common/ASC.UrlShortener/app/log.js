@@ -22,7 +22,7 @@ if(logpath != null)
 const fileName = logpath ? path.join(logpath, "web.shorturl.%DATE%.log") : path.join(__dirname, "..", "..", "..", "Logs", "web.shorturl.%DATE%.log");
 const dirName = path.dirname(fileName);
 
-const aws = config.get("aws");
+const aws = config.get("aws").cloudWatch;
 
 const accessKeyId = aws.accessKeyId; 
 const secretAccessKey = aws.secretAccessKey; 
@@ -54,19 +54,18 @@ var options = {
   cloudWatch: {
     name: 'aws',
     level: "debug",
-    logGroupName: () => {
-      const hostname = os.hostname();
-
-      return logGroupName.replace("${instance-id}", hostname);      
-    },       
     logStreamName: () => {
+      const hostname = os.hostname();
       const now = new Date();
       const guid = randomUUID();
       const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
       
-      return logStreamName.replace("${guid}", guid)
+      return logStreamName.replace("${hostname}", hostname)
+                          .replace("${applicationContext}", "UrlShortener")                  
+                          .replace("${guid}", guid)
                           .replace("${date}", dateAsString);      
     },
+    logGroupName: logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,
     awsOptions: {

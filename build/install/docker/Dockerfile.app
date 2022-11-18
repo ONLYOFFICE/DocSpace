@@ -30,7 +30,7 @@ RUN apt-get -y update && \
         npm  && \
     locale-gen en_US.UTF-8 && \
     npm install --global yarn && \
-    curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash - && \
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
 
@@ -93,7 +93,7 @@ COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onl
 EXPOSE 5050
 ENTRYPOINT ["python3", "docker-entrypoint.py"]
 
-FROM node:16.16-slim as noderun
+FROM node:18.12.1-slim as noderun
 ARG BUILD_PATH
 ARG SRC_PATH 
 ENV BUILD_PATH=${BUILD_PATH}
@@ -169,17 +169,21 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
 
 ## Doceditor ##
 FROM noderun as doceditor
-WORKDIR ${BUILD_PATH}/products/ASC.Files/editor
+WORKDIR ${BUILD_PATH}/products/ASC.Editors/editor
 
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/editor/ .
-ENTRYPOINT ["node", "server.js"]
+
+CMD ["server.js", "ASC.Editors"]
 
 ## Login ##
 FROM noderun as login
 WORKDIR ${BUILD_PATH}/products/ASC.Login/login
 
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${SRC_PATH}/build/deploy/login/ .
-ENTRYPOINT ["node", "server.js"]
+
+CMD ["server.js", "ASC.Login"]
 
 ## ASC.Data.Backup.BackgroundTasks ##
 FROM dotnetrun AS backup_background

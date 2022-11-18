@@ -12,8 +12,8 @@ class MembersHelper {
   getOptions = () => {
     return {
       docSpaceAdmin: {
-        key: "docSpaceAdmin",
-        label: this.t("Common:DocSpaceAdmin"),
+        key: "owner",
+        label: this.t("Common:Owner"),
         access: ShareAccessRights.FullAccess,
       },
       roomAdmin: {

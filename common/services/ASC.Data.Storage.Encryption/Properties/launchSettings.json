@@ -8,6 +8,7 @@
         "log__name": "Encryption",
         "log__dir": "../../../Logs",
         "core__products__folder": "../../../products",
+        "core__eventBus__subscriptionClientName": "asc_event_bus_encryption_queue",
         "ASPNETCORE_URLS": "http://localhost:5019",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

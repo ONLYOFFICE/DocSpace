@@ -12,6 +12,7 @@ const CommentEditor = ({
 
   setSelection,
   isRecycleBinFolder,
+  isArchiveFolderRoot,
   fetchFileVersions,
   updateCommentVersion,
 }) => {
@@ -60,7 +61,7 @@ const CommentEditor = ({
               {comment}
             </Text>
           )}
-          {!isRecycleBinFolder && (
+          {!isRecycleBinFolder && !isArchiveFolderRoot && (
             <div className="edit_toggle" onClick={onOpenEditor}>
               <ReactSVG
                 className="edit_toggle-icon"
@@ -107,10 +108,12 @@ export default inject(({ auth, versionHistoryStore, treeFoldersStore }) => {
   const { setSelection } = auth.infoPanelStore;
 
   const { fetchFileVersions, updateCommentVersion } = versionHistoryStore;
-  const { isRecycleBinFolder } = treeFoldersStore;
+  const { isRecycleBinFolder, isArchiveFolderRoot } = treeFoldersStore;
+
   return {
     setSelection,
     isRecycleBinFolder,
+    isArchiveFolderRoot,
     fetchFileVersions,
     updateCommentVersion,
   };
