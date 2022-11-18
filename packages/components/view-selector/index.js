@@ -27,10 +27,11 @@ const ViewSelector = ({
 
   const renderFewIconView = () => {
     return viewSettings.map((el, indx) => {
-      const { value, icon } = el;
+      const { value, icon, id } = el;
 
       return (
         <IconWrapper
+          id={id}
           isDisabled={isDisabled}
           isChecked={viewAs === value}
           firstItem={indx === 0}

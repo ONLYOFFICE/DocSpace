@@ -9,8 +9,6 @@ import Items from "./Items";
 import { isMobile, tablet } from "@docspace/components/utils/device";
 import FilesFilter from "@docspace/common/api/files/filter";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
-import SettingsItem from "./SettingsItem";
-import AccountsItem from "./AccountsItem";
 import { combineUrl } from "@docspace/common/utils";
 import { isDesktop, isTablet, isMobileOnly } from "react-device-detect";
 //import ThirdPartyList from "./ThirdPartyList";
@@ -162,8 +160,7 @@ const ArticleBodyContent = (props) => {
         showText={showText}
         onHide={toggleArticleOpen}
       />
-      {!personal && !isVisitor && <AccountsItem />}
-      {!personal && !firstLoad && <SettingsItem />}
+
       {!isDesktopClient && showText && !docSpace && (
         <StyledBlock showText={showText}>
           {/* {enableThirdParty && !isVisitor && <ThirdPartyList />} */}
