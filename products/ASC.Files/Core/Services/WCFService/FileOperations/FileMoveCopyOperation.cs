@@ -73,6 +73,8 @@ internal class FileMoveCopyOperationData<T> : FileOperationData<T>
 
 class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 {
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+
     private readonly int _daoFolderId;
     private readonly string _thirdpartyFolderId;
     private readonly bool _copy;
@@ -380,12 +382,18 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             }
                             else
                             {
+                                await _semaphore.WaitAsync();
                                 if (isRoom && toFolder.FolderType == FolderType.VirtualRooms)
                                 {
+                                    await _semaphore.WaitAsync();
                                     await countRoomChecker.CheckAppend();
+                                    newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                    _semaphore.Release();
                                 }
-
-                                newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                else
+                                {
+                                    newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+                                }
                             }
 
                             newFolder = await folderDao.GetFolderAsync(newFolderId);
