@@ -41,6 +41,7 @@ class AxiosClient {
       baseURL: apiBaseURL,
       responseType: "json",
       timeout: apiTimeout, // default is `0` (no timeout)
+	  withCredentials: true
     };
 
     if (headers) {
