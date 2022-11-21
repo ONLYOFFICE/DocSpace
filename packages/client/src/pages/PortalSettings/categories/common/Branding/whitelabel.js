@@ -15,7 +15,7 @@ import WhiteLabelWrapper from "./StyledWhitelabel";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
 
 import Logo from "./sub-components/logo";
-import { generateLogo } from "../../../utils/generateLogo";
+import { generateLogo, getLogoOptions } from "../../../utils/generateLogo";
 
 const WhiteLabel = (props) => {
   const {
@@ -59,12 +59,9 @@ const WhiteLabel = (props) => {
     for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
       const width = logoSizes[i].width / 2;
       const height = logoSizes[i].height / 2;
-      const text =
-        i === 2 || i === 5
-          ? logoTextWhiteLabel.trim().charAt(0)
-          : logoTextWhiteLabel;
-
-      const logo = generateLogo(width, height, text);
+      const options = getLogoOptions(i, logoTextWhiteLabel);
+      console.log(i, logoUrlsWhiteLabel[i]);
+      const logo = generateLogo(width, height, options.text, options.fontSize);
       newLogos.push(logo);
     }
     setLogoUrlsWhiteLabel(newLogos);
