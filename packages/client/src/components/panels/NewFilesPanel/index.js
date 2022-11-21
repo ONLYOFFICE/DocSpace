@@ -118,8 +118,8 @@ class NewFilesPanel extends React.Component {
         //updateFolderBadge(folderId, 1);
 
         readingFiles.push(id);
-        this.setState({ readingFiles });
-        this.setState({ inProgress: false });
+        this.setState({ readingFiles, inProgress: false });
+
         this.onFileClick(item);
       })
       .then(() => {
