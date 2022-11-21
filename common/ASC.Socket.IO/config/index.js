@@ -17,25 +17,15 @@ function getAndSaveAppsettings(){
     }
 
     var env = nconf.get("app").environment;
-    var valueEnv = nconf.get(env);
-    var fileWithEnv = path.join(appsettings, 'appsettings.' + valueEnv + '.json');
 
-    if(fs.existsSync(fileWithEnv)){
-        nconf.file("appsettings", fileWithEnv);
-    }
-    else{
-        nconf.file("appsettings", path.join(appsettings, 'appsettings.json'));
-    }
+    console.log('environment: ' + env);
+    nconf.file("appsettingsWithEnv", path.join(appsettings, 'appsettings.' + env + '.json'));
+    nconf.file("appsettings", path.join(appsettings, 'appsettings.json'));
 
     nconf.file("appsettingsServices", path.join(appsettings, 'appsettings.services.json'));
 
-    var redisWithEnv = path.join(appsettings, 'redis.' + valueEnv + '.json');
-    if(fs.existsSync(fileWithEnv)){
-        nconf.file("redis", redisWithEnv);
-    }
-    else{
-        nconf.file("redis", path.join(__dirname, appsettings, 'redis.json'));
-    }
+    nconf.file("redisWithEnv", path.join(appsettings, 'redis.' + env + '.json'));
+    nconf.file("redis", path.join(appsettings, 'redis.json'));
 
     var redis = nconf.get("Redis");
     if(redis != null)
@@ -46,8 +36,4 @@ function getAndSaveAppsettings(){
         redis.db = redis.Database;
         nconf.set("Redis", redis);
     }
-
-    
-
-
 }
