@@ -532,7 +532,8 @@ function Editor({
         onRequestInsertImage,
         onRequestMailMergeRecipients,
         onRequestCompareFile,
-        onRequestRestore;
+        onRequestRestore,
+        onRequestHistory;
 
       // if (isSharingAccess) {
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -540,6 +541,10 @@ function Editor({
 
       if (userAccessRights.rename && !isArchiveFolderRoot) {
         onRequestRename = onSDKRequestRename;
+      }
+
+      if (userAccessRights.viewVersionHistory) {
+        onRequestHistory = onSDKRequestHistory;
       }
 
       if (successAuth && !user.isVisitor) {
@@ -573,7 +578,7 @@ function Editor({
           onRequestMailMergeRecipients,
           onRequestCompareFile,
           onRequestEditRights: onSDKRequestEditRights,
-          onRequestHistory: onSDKRequestHistory,
+          onRequestHistory: onRequestHistory,
           onRequestHistoryClose: onSDKRequestHistoryClose,
           onRequestHistoryData: onSDKRequestHistoryData,
           onRequestRestore,
