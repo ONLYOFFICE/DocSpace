@@ -7,19 +7,13 @@ import {
 } from "@docspace/common/components/FloatingButton/StyledFloatingButton";
 import Base from "@docspace/components/themes/base";
 
-const getDefaultStyles = ({
-  $currentColorScheme,
-  color,
-  icon,
-  theme,
-  displayProgress,
-}) =>
+const getDefaultStyles = ({ $currentColorScheme, color, displayProgress }) =>
   $currentColorScheme &&
   css`
-    background: ${color ? color : $currentColorScheme.main.accent} !important;
+    background: ${color || $currentColorScheme.main.accent} !important;
 
     ${StyledFloatingButton} {
-      background: ${color ? color : $currentColorScheme.main.accent} !important;
+      background: ${color || $currentColorScheme.main.accent} !important;
     }
 
     ${IconBox} {
