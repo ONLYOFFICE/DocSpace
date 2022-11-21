@@ -52,7 +52,6 @@ public class CookiesManager
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly DbLoginEventsManager _dbLoginEventsManager;
     private readonly MessageService _messageService;
-    private readonly ILogger<CookiesManager> _logger;
 
     public CookiesManager(
         IHttpContextAccessor httpContextAccessor,
@@ -62,8 +61,7 @@ public class CookiesManager
         TenantManager tenantManager,
         CoreBaseSettings coreBaseSettings,
         DbLoginEventsManager dbLoginEventsManager,
-        MessageService messageService,
-        ILogger<CookiesManager> logger)
+        MessageService messageService)
     {
         _httpContextAccessor = httpContextAccessor;
         _userManager = userManager;
@@ -73,7 +71,6 @@ public class CookiesManager
         _coreBaseSettings = coreBaseSettings;
         _dbLoginEventsManager = dbLoginEventsManager;
         _messageService = messageService;
-        _logger = logger;
     }
 
     public void SetCookies(CookiesType type, string value, bool session = false)
@@ -296,7 +293,9 @@ public class CookiesManager
             if (!string.IsNullOrEmpty(origin))
             {
                 var originUri = new Uri(origin);
-                result = $"{result}_{originUri.Host.Replace('.', '_')}";
+                var host = originUri.Host;
+                var alias = host.Substring(0, host.Length - _coreBaseSettings.Basedomain.Length - 1);
+                result = $"{result}_{alias}";
             }
         }
 
@@ -309,22 +308,11 @@ public class CookiesManager
         var origin = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Origin].FirstOrDefault();
         var baseDomain = _coreBaseSettings.Basedomain;
 
-        foreach (var h in _httpContextAccessor.HttpContext.Request.Headers)
-        {
-            _logger.Debug($"{h.Key}:{h.Value.FirstOrDefault()}");
-        }
-
         try
         {
-            _logger.Debug($"baseDomain:{baseDomain}");
-            _logger.Debug($"origin:{origin}");
-
             if (!string.IsNullOrEmpty(origin))
             {
                 var originUri = new Uri(origin);
-
-                _logger.Debug($"originHost:{originUri.Host}");
-                _logger.Debug($"urlRewriter:{urlRewriter.Host}");
 
                 if (!string.IsNullOrEmpty(baseDomain) &&
                 urlRewriter.Host != originUri.Host &&
