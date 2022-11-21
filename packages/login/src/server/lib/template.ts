@@ -90,6 +90,10 @@ const template: Template = (
             background-color: #fff;
           }
 
+          #login-header{
+            background-color: #f8f9f9;
+          }
+
           #login-page > div > svg > path:last-child {
             fill: #333;
           }
@@ -116,11 +120,33 @@ const template: Template = (
           #login-checkbox > div > span {
             color: #333;
           }
+
+          #code-page > div > svg > path:last-child {
+            fill: #333;
+          }
+
+          #workspace-title {
+            color: #333;
+          }
+
+          #code-page > div > div > input {
+            background: #fff;
+            border-color: #d0d5da;
+          }
+
+          #code-page > div > div > input:disabled {
+            background: #F8F9F9;
+            border-color: #ECEEF1;
+          }
         }
 
         @media (prefers-color-scheme: dark) {
           body {
             background-color: #333;
+          }
+
+          #login-header{
+            background-color: #282828;
           }
 
           #login-page > div > svg > path:last-child {
@@ -148,6 +174,24 @@ const template: Template = (
 
           #login-checkbox > div > span {
             color: #fff;
+          }
+
+          #code-page > div > svg > path:last-child {
+            fill: #fff;
+          }
+
+          #workspace-title {
+            color: #fff;
+          }
+
+          #code-page > div > div > input {
+            background: #282828;
+            border-color: #474747;
+          }
+
+          #code-page > div > div > input:disabled {
+            background: #474747;
+            border-color: #474747;
           }
         }        
         </style>

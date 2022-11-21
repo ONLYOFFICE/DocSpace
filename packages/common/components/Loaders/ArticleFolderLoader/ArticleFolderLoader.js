@@ -12,7 +12,8 @@ const ArticleFolderLoader = ({
   className,
   style,
   showText,
-  personal,
+
+  isVisitor,
   ...rest
 }) => {
   return (
@@ -22,22 +23,28 @@ const ArticleFolderLoader = ({
       style={style}
       showText={showText}
     >
-      <StyledBlock>
-        <StyledRectangleLoader {...rest} />
-        <StyledRectangleLoader {...rest} />
-        <StyledRectangleLoader {...rest} />
-        <StyledRectangleLoader {...rest} />
-      </StyledBlock>
-      {!personal && (
+      {isVisitor ? (
         <>
           <StyledBlock>
             <StyledRectangleLoader {...rest} />
             <StyledRectangleLoader {...rest} />
           </StyledBlock>
+
           <StyledBlock>
             <StyledRectangleLoader {...rest} />
           </StyledBlock>
+        </>
+      ) : (
+        <>
           <StyledBlock>
+            <StyledRectangleLoader {...rest} />
+            <StyledRectangleLoader {...rest} />
+            <StyledRectangleLoader {...rest} />
+          </StyledBlock>
+
+          <StyledBlock>
+            <StyledRectangleLoader {...rest} />
+            <StyledRectangleLoader {...rest} />
             <StyledRectangleLoader {...rest} />
           </StyledBlock>
         </>
@@ -62,6 +69,6 @@ ArticleFolderLoader.defaultProps = {
 export default inject(({ auth }) => {
   return {
     showText: auth.settingsStore.showText,
-    personal: auth.settingsStore.personal,
+    isVisitor: auth.userStore.user.isVisitor,
   };
 })(observer(ArticleFolderLoader));

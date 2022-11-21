@@ -1079,7 +1079,7 @@ class FilesStore {
         "separator1",
         "open-location",
         "mark-read",
-        "mark-as-favorite",
+        // "mark-as-favorite",
         "remove-from-favorites",
         "download",
         "download-as",
@@ -2739,6 +2739,14 @@ class FilesStore {
       isFavoritesFolder ||
       isRecentFolder
     );
+  }
+
+  get roomsForRestore() {
+    return this.folders.filter((f) => getRoomRoleActions(f.access).archive);
+  }
+
+  get roomsForDelete() {
+    return this.folders.filter((f) => getRoomRoleActions(f.access).delete);
   }
 }
 
