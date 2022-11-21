@@ -138,6 +138,7 @@ services:
     container_name: ${WEBHOOKS_SERVICE_HOST}  
 
   onlyoffice-doceditor:
+    <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-doceditor:${DOCKER_TAG}"
     container_name: ${DOCEDITOR_HOST}
     restart: always
@@ -145,6 +146,7 @@ services:
       - "5013"
 
   onlyoffice-login:
+    <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-login:${DOCKER_TAG}"
     container_name: ${LOGIN_HOST}
     restart: always
