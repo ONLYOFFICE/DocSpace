@@ -21,6 +21,7 @@ export const ArchiveFilesActions = Object.freeze({
   copyToPersonal: false,
   saveAsForm: false,
   canCopy: false,
+  canDuplicate: false,
 });
 
 export const OwnerArchiveFilesActions = Object.freeze({

@@ -8,6 +8,7 @@ export const ArchiveRoomsActions = Object.freeze({
   deleteUsers: false,
   restore: false,
   delete: false,
+  canPin: false,
 });
 
 export const OwnerArchiveRoomsActions = Object.freeze({
