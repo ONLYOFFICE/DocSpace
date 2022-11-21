@@ -10,6 +10,7 @@ import {
   getFileRoleActions,
   getRoomRoleActions,
   getArchiveRoomRoleActions,
+  getArchiveFileRoleActions,
 } from "@docspace/common/utils/actions";
 
 class AccessRightsStore {
@@ -165,8 +166,16 @@ class AccessRightsStore {
     if (rootFolderType !== FolderType.Archive)
       return getArchiveRoomRoleActions(access).delete;
 
-    if (rootFolderType !== FolderType.Archive) return false;
     return getRoomRoleActions(access).delete;
+  };
+
+  canViewRoomInfo = (room) => {
+    const { access, rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveRoomRoleActions(access).viewInfo;
+
+    return getRoomRoleActions(access).viewInfo;
   };
 
   canPinRoom = (room) => {

@@ -1310,6 +1310,8 @@ class FilesStore {
 
       const canEditRoom = this.accessRightsStore.canEditRoom(item);
 
+      const canViewRoomInfo = this.accessRightsStore.canViewRoomInfo(item);
+
       let roomOptions = [
         "select",
         "separator0",
@@ -1366,11 +1368,14 @@ class FilesStore {
           : (roomOptions = this.removeOptions(roomOptions, ["unpin-room"]));
       }
 
+      if (!canViewRoomInfo) {
+        roomOptions = this.removeOptions(roomOptions, ["room-info"]);
+      }
+
       if (isArchiveFolder || item.rootFolderType === FolderType.Archive) {
         roomOptions = this.removeOptions(roomOptions, [
           "archive-room",
           "separator1",
-          "room-info",
         ]);
       } else {
         roomOptions = this.removeOptions(roomOptions, ["unarchive-room"]);
@@ -1415,11 +1420,11 @@ class FilesStore {
       ];
 
       if (!canRenameItem) {
-        fileOptions = this.removeOptions(fileOptions, ["rename"]);
+        folderOptions = this.removeOptions(folderOptions, ["rename"]);
       }
 
       if (!canDelete) {
-        fileOptions = this.removeOptions(fileOptions, ["delete"]);
+        folderOptions = this.removeOptions(folderOptions, ["delete"]);
       }
       if (!canMove) {
         folderOptions = this.removeOptions(folderOptions, ["move-to"]);
@@ -1430,7 +1435,7 @@ class FilesStore {
       }
 
       if (!canCreateCopy) {
-        fileOptions = this.removeOptions(fileOptions, ["copy"]);
+        folderOptions = this.removeOptions(folderOptions, ["copy"]);
       }
 
       if (!canMove && !canCopy && !canCreateCopy) {
