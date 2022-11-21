@@ -44,6 +44,7 @@
     "element-resize-detector": "^1.2.4",
     "file-saver": "^2.0.5",
     "firebase": "^8.10.0",
+    "hex-to-rgba": "^2.0.1",
     "react-avatar-editor": "^13.0.0",
     "react-colorful": "^5.5.1",
     "react-hotkeys-hook": "^3.4.4",
