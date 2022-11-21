@@ -24,7 +24,7 @@ export const ArchiveFilesActions = Object.freeze({
 });
 
 export const OwnerArchiveFilesActions = Object.freeze({
-  ...FilesActions,
+  ...ArchiveFilesActions,
   viewVersionHistory: true,
   viewContent: true,
   viewComments: true,
@@ -36,7 +36,7 @@ export const OwnerArchiveFilesActions = Object.freeze({
 });
 
 export const RoomAdminArchiveFilesActions = Object.freeze({
-  ...FilesActions,
+  ...ArchiveFilesActions,
   viewVersionHistory: true,
   viewContent: true,
   viewComments: true,
@@ -48,7 +48,7 @@ export const RoomAdminArchiveFilesActions = Object.freeze({
 });
 
 export const EditorArchiveFilesActions = Object.freeze({
-  ...FilesActions,
+  ...ArchiveFilesActions,
   viewVersionHistory: true,
   viewContent: true,
   viewComments: true,
@@ -58,7 +58,7 @@ export const EditorArchiveFilesActions = Object.freeze({
 });
 
 export const FormFillerArchiveFilesActions = Object.freeze({
-  ...FilesActions,
+  ...ArchiveFilesActions,
   viewContent: true,
   viewComments: true,
   copyAtBuffer: true,
@@ -67,7 +67,7 @@ export const FormFillerArchiveFilesActions = Object.freeze({
 });
 
 export const ReviewerArchiveFilesActions = Object.freeze({
-  ...FilesActions,
+  ...ArchiveFilesActions,
   viewContent: true,
   viewComments: true,
   copyAtBuffer: true,
@@ -76,7 +76,7 @@ export const ReviewerArchiveFilesActions = Object.freeze({
 });
 
 export const CommentatorArchiveFilesActions = Object.freeze({
-  ...FilesActions,
+  ...ArchiveFilesActions,
   viewContent: true,
   viewComments: true,
   copyAtBuffer: true,
@@ -85,7 +85,7 @@ export const CommentatorArchiveFilesActions = Object.freeze({
 });
 
 export const ViewerArchiveFilesActions = Object.freeze({
-  ...FilesActions,
+  ...ArchiveFilesActions,
   viewContent: true,
   viewComments: true,
   copyAtBuffer: true,
