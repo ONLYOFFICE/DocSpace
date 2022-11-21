@@ -9,9 +9,10 @@ const getDefaultStyles = ({ $currentColorScheme, isSelected, theme }) =>
     background: ${$currentColorScheme.main.accent};
     border-color: ${$currentColorScheme.main.accent};
 
-    p {
+    .filter-text {
       color: ${$currentColorScheme.textColor};
     }
+
     &:hover {
       background: ${$currentColorScheme.main.accent};
       border-color: ${$currentColorScheme.main.accent};
