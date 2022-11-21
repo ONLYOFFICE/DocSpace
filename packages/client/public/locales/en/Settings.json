@@ -1,4 +1,5 @@
 {
+  "Accent": "Accent",
   "AccessRightsAccessToProduct": "Access to {{product}} module is given to",
   "AccessRightsAllUsers": "All {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Changes will be applied after the confirmation via email.",
@@ -50,6 +51,7 @@
   "BrowserNoCanvasSupport": "Your browser does not support the HTML5 canvas tag.",
   "BreakpointWarningText": "This section is only available in desktop version",
   "BreakpointWarningTextPrompt": "Please use the desktop site to access <1>{{content}}</1>",
+  "Buttons": "Buttons",
   "ByApp": "By authenticator app",
   "BySms": "By sms",
   "ChangeLogoButton": "Change Logo",

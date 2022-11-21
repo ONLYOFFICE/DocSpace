@@ -2,6 +2,7 @@ import React from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
+import { withTranslation } from "react-i18next";
 
 const StyledComponent = styled(ModalDialog)`
   .modal-dialog-aside-footer {
@@ -86,7 +87,7 @@ const ColorSchemeDialog = (props) => {
       <ModalDialog.Body>
         <div>
           <div className="flex relative">
-            <div className="text">Accent</div>
+            <div className="text">{t("Settings:Accent")}</div>
             <div
               id="accent"
               className="modal-add-theme accent-box"
@@ -97,7 +98,7 @@ const ColorSchemeDialog = (props) => {
           </div>
 
           <div className="flex relative">
-            <div className="text">Buttons</div>
+            <div className="text">{t("Settings:Buttons")}</div>
             <div
               id="buttons"
               className="modal-add-theme buttons-box"
@@ -113,13 +114,18 @@ const ColorSchemeDialog = (props) => {
         {showSaveButtonDialog && (
           <>
             <Button
-              label="Save"
+              label={t("Common:SaveButton")}
               size="normal"
               primary
               scale
               onClick={onSaveColorSchemeDialog}
             />
-            <Button label="Cancel" size="normal" scale onClick={onClose} />
+            <Button
+              label={t("Common:CancelButton")}
+              size="normal"
+              scale
+              onClick={onClose}
+            />
           </>
         )}
       </ModalDialog.Footer>
@@ -127,4 +133,4 @@ const ColorSchemeDialog = (props) => {
   );
 };
 
-export default ColorSchemeDialog;
+export default withTranslation(["Common", "Settings"])(ColorSchemeDialog);
