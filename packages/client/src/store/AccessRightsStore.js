@@ -231,7 +231,7 @@ class AccessRightsStore {
 
     return canCopy;
   };
-  canCreateFileCopy = (item) => {
+  canDuplicateFile = (item) => {
     const { rootFolderType, access } = item;
 
     if (

@@ -1059,7 +1059,7 @@ class FilesStore {
     });
 
     const canCopy = this.accessRightsStore.canCopyItems(item);
-    const canCreateCopy = this.accessRightsStore.canCreateFileCopy(item);
+    const canCreateCopy = this.accessRightsStore.canDuplicateFile(item);
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
