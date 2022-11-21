@@ -38,8 +38,6 @@ const Appearance = (props) => {
     t,
   } = props;
 
-  const [previewTheme, setPreviewTheme] = useState("Light theme");
-
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
   const [headerColorSchemeDialog, setHeaderColorSchemeDialog] = useState(
@@ -107,9 +105,9 @@ const Appearance = (props) => {
         title: t("Profile:LightTheme"),
         content: (
           <Preview
-            previewTheme={previewTheme}
             previewAccent={previewAccent}
             selectThemeId={selectThemeId}
+            colorCheckImg={colorCheckImg}
             themePreview="Light"
           />
         ),
@@ -119,25 +117,25 @@ const Appearance = (props) => {
         title: t("Profile:DarkTheme"),
         content: (
           <Preview
-            previewTheme={previewTheme}
             previewAccent={previewAccent}
             selectThemeId={selectThemeId}
+            colorCheckImg={colorCheckImg}
             themePreview="Dark"
           />
         ),
       },
     ],
-    [previewAccent, previewTheme, selectThemeId, tReady]
+    [previewAccent, selectThemeId, colorCheckImg, tReady]
   );
 
   useEffect(() => {
-    if (appearanceTheme.length === 11) {
+    if (appearanceTheme.length === 9) {
       setAbilityAddTheme(false);
     } else {
       setAbilityAddTheme(true);
     }
 
-    if (appearanceTheme.length === 8) {
+    if (appearanceTheme.length === 6) {
       setIsShowDeleteButton(false);
     } else {
       setIsShowDeleteButton(true);
@@ -249,10 +247,6 @@ const Appearance = (props) => {
     },
     [selectThemeId, checkImg]
   );
-
-  const onChangePreviewTheme = (e) => {
-    setPreviewTheme(e.title);
-  };
 
   const onSave = useCallback(async () => {
     setIsDisabledSaveButton(true);
@@ -429,7 +423,7 @@ const Appearance = (props) => {
   const onSaveNewThemes = useCallback(
     async (theme) => {
       try {
-        await sendAppearanceTheme({ themes: [theme] });
+        await sendAppearanceTheme({ theme: theme });
         await getAppearanceTheme();
 
         toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
@@ -443,7 +437,7 @@ const Appearance = (props) => {
   const onSaveChangedThemes = useCallback(
     async (editTheme) => {
       try {
-        await sendAppearanceTheme({ themes: [editTheme] });
+        await sendAppearanceTheme({ theme: editTheme });
         await getAppearanceTheme();
         setPreviewAccent(editTheme.main.accent);
 
@@ -664,7 +658,7 @@ const Appearance = (props) => {
           onSaveColorSchemeDialog={onSaveColorSchemeDialog}
         />
         <div className="header preview-header">{t("Common:Preview")}</div>
-        <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />
+        <TabContainer elements={array_items} />
 
         <div className="buttons-container">
           <Button

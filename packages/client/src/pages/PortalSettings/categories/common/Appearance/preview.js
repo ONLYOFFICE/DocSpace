@@ -18,6 +18,7 @@ const Preview = (props) => {
     withBorder,
     withTileActions,
     floatingButtonClass,
+    colorCheckImg,
   } = props;
 
   const [colorPreview, setColorPreview] = useState(previewAccent);
@@ -414,6 +415,7 @@ const Preview = (props) => {
               colorPreview={colorPreview}
               themePreview={themePreview}
               selectThemeId={selectThemeId}
+              colorCheckImg={colorCheckImg}
             >
               <ButtonPlusIcon />
             </IconBox>

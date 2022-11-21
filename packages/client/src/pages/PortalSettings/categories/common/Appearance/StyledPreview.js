@@ -314,7 +314,7 @@ const IconBox = styled.div`
 
   svg {
     path {
-      fill: ${(props) => (props.themePreview === "Light" ? "#FFF" : "#292929")};
+      fill: ${(props) => props.colorCheckImg};
     }
   }
 `;
