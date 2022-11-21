@@ -53,6 +53,7 @@ export const FilterType = Object.freeze({
   OFormTemplateOnly: 18,
   OFormOnly: 19,
 });
+
 /**
  * Enum for file type.
  * @readonly

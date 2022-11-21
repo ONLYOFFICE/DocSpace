@@ -23,6 +23,7 @@ const QuickButtons = (props) => {
     onClickFavorite,
     viewAs,
     isCanWebEdit,
+    isArchiveFolderRoot,
   } = props;
 
   const { id, locked, fileStatus, title, fileExst } = item;
@@ -57,28 +58,32 @@ const QuickButtons = (props) => {
 
   const setFavorite = () => onClickFavorite(isFavorite);
 
+  const isAvailableLockFile =
+    !isArchiveFolderRoot &&
+    fileExst &&
+    accessToEdit &&
+    !isTrashFolder &&
+    displayBadges &&
+    isCanWebEdit;
+
   return (
     <div className="badges additional-badges">
-      {fileExst &&
-        accessToEdit &&
-        !isTrashFolder &&
-        displayBadges &&
-        isCanWebEdit && (
-          <ColorTheme
-            themeId={ThemeType.IconButton}
-            iconName={iconLock}
-            locked={locked}
-            className="badge lock-file icons-group"
-            size={sizeQuickButton}
-            data-id={id}
-            data-locked={locked ? true : false}
-            onClick={onClickLock}
-            color={colorLock}
-            isDisabled={isDisabled}
-            hoverColor={theme.filesQuickButtons.sharedColor}
-          />
-        )}
-      {fileExst && !isTrashFolder && displayBadges && (
+      {isAvailableLockFile && (
+        <ColorTheme
+          themeId={ThemeType.IconButton}
+          iconName={iconLock}
+          locked={locked}
+          className="badge lock-file icons-group"
+          size={sizeQuickButton}
+          data-id={id}
+          data-locked={locked ? true : false}
+          onClick={onClickLock}
+          color={colorLock}
+          isDisabled={isDisabled}
+          hoverColor={theme.filesQuickButtons.sharedColor}
+        />
+      )}
+      {/* {fileExst && !isTrashFolder && displayBadges && (
         <ColorTheme
           themeId={ThemeType.IconButton}
           iconName={iconFavorite}
@@ -91,7 +96,7 @@ const QuickButtons = (props) => {
           onClick={setFavorite}
           hoverColor={theme.filesQuickButtons.hoverColor}
         />
-      )}
+      )} */}
     </div>
   );
 };

@@ -316,7 +316,7 @@ public class S3Storage : BaseStorage
         try
         {
             using var s3 = GetClient();
-            var response = s3.UploadPartAsync(request).Result;
+            var response = await s3.UploadPartAsync(request);
 
             return response.ETag;
         }

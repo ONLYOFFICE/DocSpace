@@ -60,6 +60,7 @@ export default function withQuickButtons(WrappedComponent) {
         isAdmin,
         sectionWidth,
         viewAs,
+        isArchiveFolderRoot,
       } = this.props;
 
       const { access, id, fileExst } = item;
@@ -82,6 +83,7 @@ export default function withQuickButtons(WrappedComponent) {
           isCanWebEdit={isCanWebEdit}
           onClickLock={this.onClickLock}
           onClickFavorite={this.onClickFavorite}
+          isArchiveFolderRoot={isArchiveFolderRoot}
         />
       );
 
@@ -103,7 +105,7 @@ export default function withQuickButtons(WrappedComponent) {
       dialogsStore,
       settingsStore,
     }) => {
-      const { isRecycleBinFolder } = treeFoldersStore;
+      const { isRecycleBinFolder, isArchiveFolderRoot } = treeFoldersStore;
       const {
         lockFileAction,
         setFavoriteAction,
@@ -121,6 +123,7 @@ export default function withQuickButtons(WrappedComponent) {
         onSelectItem,
         setSharingPanelVisible,
         canWebEdit,
+        isArchiveFolderRoot,
       };
     }
   )(observer(WithQuickButtons));

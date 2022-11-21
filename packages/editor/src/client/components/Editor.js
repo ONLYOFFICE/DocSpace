@@ -64,6 +64,7 @@ let newConfig;
 let documentserverUrl =
   typeof window !== "undefined" && window?.location?.origin;
 let userAccessRights = {};
+let isArchiveFolderRoot = true;
 
 function Editor({
   config,
@@ -93,6 +94,9 @@ function Editor({
   filesSettings,
 }) {
   const fileInfo = config?.file;
+  isArchiveFolderRoot =
+    fileInfo && fileInfo.rootFolderType === FolderType.Archive;
+
   const { t } = useTranslation(["Editor", "Common"]);
 
   if (fileInfo) {
@@ -480,6 +484,8 @@ function Editor({
         goback: goBack,
       };
 
+      config.document.info.favorite = null;
+
       // if (personal && !fileInfo) {
       //   //TODO: add conditions for SaaS
       //   config.document.info.favorite = null;
@@ -528,7 +534,7 @@ function Editor({
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
       // }
 
-      if (userAccessRights.rename) {
+      if (userAccessRights.rename && !isArchiveFolderRoot) {
         onRequestRename = onSDKRequestRename;
       }
 
@@ -542,7 +548,7 @@ function Editor({
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
-      if (userAccessRights.changeVersionHistory) {
+      if (userAccessRights.changeVersionHistory && !isArchiveFolderRoot) {
         onRequestRestore = onSDKRequestRestore;
       }
 

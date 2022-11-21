@@ -156,6 +156,7 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
+            isArchiveRoot={isArchiveRoot}
           />
         ))}
       </StyledUserList>
@@ -190,6 +191,7 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
+            isArchiveRoot={isArchiveRoot}
           />
         ))}
       </StyledUserList>
@@ -204,7 +206,7 @@ export default inject(
     peopleStore,
     dialogsStore,
     accessRightsStore,
-    selectedFolderStore,
+    treeFoldersStore,
   }) => {
     const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
     const {
@@ -216,9 +218,8 @@ export default inject(
     const { setInvitePanelOptions } = dialogsStore;
     const { changeType: changeUserType } = peopleStore;
     const { canInviteUserInRoom } = accessRightsStore;
-    const { rootFolderType } = selectedFolderStore;
 
-    const isArchiveRoot = rootFolderType === FolderType.Archive;
+    const { isArchiveFolderRoot } = treeFoldersStore;
 
     return {
       selectionParentRoom,
@@ -236,7 +237,7 @@ export default inject(
 
       changeUserType,
       canInviteUserInRoom,
-      isArchiveRoot,
+      isArchiveRoot: isArchiveFolderRoot,
     };
   }
 )(

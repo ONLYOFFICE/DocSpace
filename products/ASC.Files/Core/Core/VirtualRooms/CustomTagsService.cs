@@ -124,7 +124,7 @@ public class CustomTagsService<T>
 
         var tags = tagsInfos.Select(tagInfo => Tag.Custom(_authContext.CurrentAccount.ID, folder, tagInfo.Name));
 
-        tagDao.SaveTags(tags);
+        await tagDao.SaveTags(tags);
 
         _filesMessageService.Send(folder, Headers, MessageAction.AddedRoomTags, tagsInfos.Select(t => t.Name).ToArray());
 
