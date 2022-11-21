@@ -1058,8 +1058,8 @@ class FilesStore {
       ...{ editing: isEditing },
     });
 
-    const canCopy = this.accessRightsStore.canCopy(item);
-    const canCreateCopy = this.accessRightsStore.canCreateCopy(item);
+    const canCopy = this.accessRightsStore.canCopyItems(item);
+    const canCreateCopy = this.accessRightsStore.canCreateFileCopy(item);
 
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);

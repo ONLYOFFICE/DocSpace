@@ -124,32 +124,6 @@ class AccessRightsStore {
     return getFileRoleActions(access).fillForm;
   };
 
-  generalCopyProhibitionConditions = (rootFolderType, fileEditing) =>
-    rootFolderType === FolderType.TRASH ||
-    rootFolderType === FolderType.Favorites ||
-    rootFolderType === FolderType.Recent ||
-    rootFolderType === FolderType.Privacy ||
-    fileEditing;
-  canCopy = (item) => {
-    const { rootFolderType, access } = item;
-
-    if (this.generalCopyProhibitionConditions(rootFolderType)) return false;
-
-    return getFileRoleActions(access).canCopy;
-  };
-
-  canCreateCopy = (item) => {
-    const { rootFolderType, access } = item;
-
-    if (
-      rootFolderType === FolderType.Archive ||
-      this.generalCopyProhibitionConditions(rootFolderType)
-    )
-      return false;
-
-    return getFileRoleActions(access).canCopy;
-  };
-
   canMakeForm = (item) => {
     const { rootFolderType, access } = item;
 
@@ -243,14 +217,13 @@ class AccessRightsStore {
   };
 
   canCopyItems = (item) => {
-    const { rootFolderType, access, editing: fileEditing } = item;
+    const { rootFolderType, access } = item;
 
     if (
       rootFolderType === FolderType.TRASH ||
       rootFolderType === FolderType.Favorites ||
       rootFolderType === FolderType.Recent ||
-      rootFolderType === FolderType.Privacy ||
-      fileEditing
+      rootFolderType === FolderType.Privacy
     )
       return false;
 
@@ -258,7 +231,20 @@ class AccessRightsStore {
 
     return canCopy;
   };
+  canCreateFileCopy = (item) => {
+    const { rootFolderType, access } = item;
 
+    if (
+      rootFolderType === FolderType.Archive ||
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent ||
+      rootFolderType === FolderType.Privacy
+    )
+      return false;
+
+    return getFileRoleActions(access).canDuplicate;
+  };
   canChangeUserType = (user) => {
     const { id, isOwner } = this.authStore.userStore.user;
 

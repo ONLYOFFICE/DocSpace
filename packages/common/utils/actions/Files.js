@@ -21,6 +21,7 @@ export const FilesActions = Object.freeze({
   copyFromPersonal: false,
   saveAsForm: false,
   canCopy: false,
+  canDuplicate: false,
 });
 
 export const OwnerFilesActions = Object.freeze({
@@ -47,6 +48,7 @@ export const OwnerFilesActions = Object.freeze({
   copyFromPersonal: true,
   saveAsForm: true,
   canCopy: true,
+  canDuplicate: true,
 });
 
 export const RoomAdminFilesActions = Object.freeze({
@@ -73,6 +75,7 @@ export const RoomAdminFilesActions = Object.freeze({
   copyFromPersonal: true,
   saveAsForm: true,
   canCopy: true,
+  canDuplicate: true,
 });
 
 export const EditorFilesActions = Object.freeze({
