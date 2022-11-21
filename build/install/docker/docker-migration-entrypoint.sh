@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 MYSQL_HOST=${MYSQL_HOST:-"localhost"}
 MYSQL_DATABASE=${MYSQL_DATABASE:-"onlyoffice"}
