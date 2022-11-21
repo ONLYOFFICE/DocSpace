@@ -2,6 +2,7 @@ import React from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import styled from "styled-components";
+import { withTranslation } from "react-i18next";
 
 const StyledModalDialogDelete = styled(ModalDialog)`
   .button-modal {
@@ -10,7 +11,7 @@ const StyledModalDialogDelete = styled(ModalDialog)`
 `;
 
 const ModalDialogDelete = (props) => {
-  const { visible, onClose, onClickDelete } = props;
+  const { visible, onClose, onClickDelete, t } = props;
 
   return (
     <StyledModalDialogDelete
@@ -18,22 +19,21 @@ const ModalDialogDelete = (props) => {
       onClose={onClose}
       displayType="modal"
     >
-      <ModalDialog.Header>Delete theme forever?</ModalDialog.Header>
-      <ModalDialog.Body>
-        The theme will be deleted permanently. You will not be able to undo this
-        action.
-      </ModalDialog.Body>
+      <ModalDialog.Header>
+        {t("Settings:DeleteThemeForever")}
+      </ModalDialog.Header>
+      <ModalDialog.Body>{t("Settings:DeleteThemeNotice")}</ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
           className="button-modal"
-          label="Delete"
+          label={t("Common:Delete")}
           onClick={onClickDelete}
           primary
           size="normal"
         />
         <Button
           className="button-modal"
-          label="Cancel"
+          label={t("Common:CancelButton")}
           size="normal"
           onClick={onClose}
         />
@@ -42,4 +42,4 @@ const ModalDialogDelete = (props) => {
   );
 };
 
-export default ModalDialogDelete;
+export default withTranslation(["Common", "Settings"])(ModalDialogDelete);

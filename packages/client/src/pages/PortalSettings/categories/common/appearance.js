@@ -38,13 +38,15 @@ const Appearance = (props) => {
     t,
   } = props;
 
-  const defaultAppliedColorAccent = "#AABBCC";
-  const defaultAppliedColorButtons = "#AABBCC";
+  const defaultAppliedColor = "#AABBCC";
+
+  const headerAddTheme = t("Settings:NewColorScheme");
+  const headerEditTheme = t("Settings:EditColorScheme");
 
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
   const [headerColorSchemeDialog, setHeaderColorSchemeDialog] = useState(
-    "Edit color scheme"
+    headerEditTheme
   );
 
   const [currentColorAccent, setCurrentColorAccent] = useState(null);
@@ -58,10 +60,10 @@ const Appearance = (props) => {
   );
 
   const [appliedColorAccent, setAppliedColorAccent] = useState(
-    defaultAppliedColorAccent
+    defaultAppliedColor
   );
   const [appliedColorButtons, setAppliedColorButtons] = useState(
-    defaultAppliedColorButtons
+    defaultAppliedColor
   );
 
   const [changeCurrentColorAccent, setChangeCurrentColorAccent] = useState(
@@ -331,15 +333,15 @@ const Appearance = (props) => {
     setCurrentColorAccent(null);
     setCurrentColorButtons(null);
 
-    setAppliedColorAccent("#AABBCC");
-    setAppliedColorButtons("#AABBCC");
+    setAppliedColorAccent(defaultAppliedColor);
+    setAppliedColorButtons(defaultAppliedColor);
   };
 
   const onAddTheme = () => {
     if (!abilityAddTheme) return;
     setIsAddThemeDialog(true);
 
-    setHeaderColorSchemeDialog("New color scheme");
+    setHeaderColorSchemeDialog(headerAddTheme);
 
     setShowColorSchemeDialog(true);
   };
@@ -357,7 +359,7 @@ const Appearance = (props) => {
 
     setIsEditDialog(true);
 
-    setHeaderColorSchemeDialog("Edit color scheme");
+    setHeaderColorSchemeDialog(headerEditTheme);
 
     setShowColorSchemeDialog(true);
   };
@@ -552,8 +554,7 @@ const Appearance = (props) => {
   const textTooltip = () => {
     return (
       <Text fontSize="12px" noSelect>
-        You can only create 3 custom themes. To create a new one, you must
-        delete one of the previous themes.
+        {t("Settings:LimitThemesTooltip")}
       </Text>
     );
   };
@@ -602,7 +603,7 @@ const Appearance = (props) => {
         </div>
 
         <div className="theme-custom show-custom-functional">
-          <div className="theme-name">Custom</div>
+          <div className="theme-name">{t("Settings:Custom")}</div>
 
           <div className="theme-container">
             <div className="custom">
@@ -670,7 +671,7 @@ const Appearance = (props) => {
         <div className="buttons-container">
           <Button
             className="button"
-            label="Save"
+            label={t("Common:SaveButton")}
             onClick={onSave}
             primary
             size="small"
@@ -679,7 +680,7 @@ const Appearance = (props) => {
 
           <Button
             className="button show-custom-functional"
-            label="Edit current theme"
+            label={t("Settings:EditCurrentTheme")}
             onClick={onClickEdit}
             size="small"
             isDisabled={isDisabledEditButton}
@@ -687,7 +688,7 @@ const Appearance = (props) => {
           {isShowDeleteButton && (
             <Button
               className="button show-custom-functional"
-              label="Delete theme"
+              label={t("Settings:DeleteTheme")}
               onClick={() => setVisibleDialog(true)}
               size="small"
               isDisabled={isDisabledDeleteButton}
