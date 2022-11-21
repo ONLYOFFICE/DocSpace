@@ -69,7 +69,7 @@ class AccessRightsStore {
 
     if (
       rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Privacy ||
+      // rootFolderType === FolderType.Privacy ||
       editing ||
       providerKey
     )
@@ -85,7 +85,7 @@ class AccessRightsStore {
 
     if (
       rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Privacy ||
+      // rootFolderType === FolderType.Privacy ||
       providerKey
     )
       return false;
@@ -100,8 +100,8 @@ class AccessRightsStore {
       return getArchiveFileRoleActions(access).edit;
 
     if (
-      rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Privacy
+      rootFolderType === FolderType.TRASH
+      // || rootFolderType === FolderType.Privacy
     )
       return false;
 
@@ -117,7 +117,9 @@ class AccessRightsStore {
 
     if (
       rootFolderType === FolderType.TRASH ||
-      (!isFile && rootFolderType === FolderType.Privacy && !isDesktopClient)
+      (!isFile &&
+        // rootFolderType === FolderType.Privacy &&
+        !isDesktopClient)
     )
       return false;
 
@@ -142,7 +144,7 @@ class AccessRightsStore {
 
     if (
       rootFolderType === FolderType.TRASH ||
-      rootFolderType === FolderType.Privacy ||
+      // rootFolderType === FolderType.Privacy ||
       rootFolderType === FolderType.Favorites ||
       rootFolderType === FolderType.Recent
     )
@@ -209,7 +211,7 @@ class AccessRightsStore {
       rootFolderType === FolderType.TRASH ||
       rootFolderType === FolderType.Favorites ||
       rootFolderType === FolderType.Recent ||
-      rootFolderType === FolderType.Privacy ||
+      // rootFolderType === FolderType.Privacy ||
       providerKey ||
       fileEditing
     )
@@ -233,7 +235,7 @@ class AccessRightsStore {
       rootFolderType === FolderType.TRASH ||
       rootFolderType === FolderType.Favorites ||
       rootFolderType === FolderType.Recent ||
-      rootFolderType === FolderType.Privacy ||
+      // rootFolderType === FolderType.Privacy ||
       fileEditing
     )
       return false;
@@ -249,8 +251,8 @@ class AccessRightsStore {
     if (
       rootFolderType === FolderType.TRASH ||
       rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Recent ||
-      rootFolderType === FolderType.Privacy
+      rootFolderType === FolderType.Recent
+      // || rootFolderType === FolderType.Privacy
     )
       return false;
 
@@ -267,8 +269,8 @@ class AccessRightsStore {
     if (
       rootFolderType === FolderType.TRASH ||
       rootFolderType === FolderType.Favorites ||
-      rootFolderType === FolderType.Recent ||
-      rootFolderType === FolderType.Privacy
+      rootFolderType === FolderType.Recent
+      // || rootFolderType === FolderType.Privacy
     )
       return false;
 

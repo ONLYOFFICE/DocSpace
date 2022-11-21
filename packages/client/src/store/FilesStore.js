@@ -1019,18 +1019,10 @@ class FilesStore {
     const isDocuSign = false; //TODO: need this prop;
     const isEditing =
       (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    const isFileOwner =
-      item.createdBy?.id === this.authStore.userStore.user?.id;
+    // const isFileOwner =
+    //   item.createdBy?.id === this.authStore.userStore.user?.id;
 
-    const {
-      isRecycleBinFolder,
-      isPrivacyFolder,
-      isRecentFolder,
-      isFavoritesFolder,
-      isShareFolder,
-      isMy,
-      isArchiveFolder,
-    } = this.treeFoldersStore;
+    const { isRecycleBinFolder, isMy, isArchiveFolder } = this.treeFoldersStore;
 
     const { canFormFillingDocs } = this.filesSettingsStore;
 
