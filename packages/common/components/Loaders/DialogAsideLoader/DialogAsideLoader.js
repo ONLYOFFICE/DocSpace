@@ -11,9 +11,15 @@ const DialogAsideLoader = ({
 }) => {
   const zIndex = 310;
 
+  console.log(isPanel);
+
   const renderClearDialogAsideLoader = () => {
     return (
-      <StyledDialogAsideLoader withFooterBorder={withFooterBorder} visible>
+      <StyledDialogAsideLoader
+        withFooterBorder={withFooterBorder}
+        isPanel={isPanel}
+        visible
+      >
         <div className="dialog-loader-header">
           <Loaders.Rectangle height="29px" />
         </div>
@@ -23,16 +29,19 @@ const DialogAsideLoader = ({
 
         <div className="dialog-loader-footer">
           <Loaders.Rectangle height="40px" />
+          <Loaders.Rectangle height="40px" />
         </div>
       </StyledDialogAsideLoader>
     );
   };
 
+  console.log("1");
+
   return withoutAside ? (
     renderClearDialogAsideLoader()
   ) : (
     <>
-      <Backdrop visible isAside />
+      <Backdrop visible isAside zIndex={zIndex} />
       <StyledDialogAsideLoader visible isPanel={isPanel}>
         <Aside className="dialog-aside-loader" visible zIndex={zIndex}>
           {renderClearDialogAsideLoader()}
