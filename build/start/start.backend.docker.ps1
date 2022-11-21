@@ -1,3 +1,11 @@
+$PSversionMajor = $PSVersionTable.PSVersion | sort-object major | ForEach-Object { $_.major }
+$PSversionMinor = $PSVersionTable.PSVersion | sort-object minor | ForEach-Object { $_.minor }
+
+if ($PSversionMajor -lt 7 -or $PSversionMinor -lt 2) {
+  Write-Error "Powershell version must be greater than or equal to 7.2."
+  exit
+}
+
 $RootDir = Split-Path (Split-Path -Parent $PSScriptRoot) -Parent
 $Branch = git branch --show-current
 $DockerDir = ($RootDir + "\build\install\docker")
@@ -12,8 +20,7 @@ $DockerFile = "Dockerfile.dev"
 $EnvExtension = "dev"
 $CoreBaseDomain = "localhost"
 
-Write-Host "Start all backend services (containers)"
-
+Write-Host "Start all backend services (containers)" -ForegroundColor Green
 $Env:DOCKERFILE = $DockerFile
 $Env:ROOT_DIR = $RootDir
 $Env:RELEASE_DATE = $BuildDate
@@ -24,5 +31,4 @@ $Env:SERVICE_CLIENT = $Client
 $Env:APP_CORE_BASE_DOMAIN = $CoreBaseDomain
 $Env:APP_URL_PORTAL = ("http://" + $LocalIp + ":8092")
 $Env:ENV_EXTENSION = $EnvExtension
-
 docker compose -f ($DockerDir + "\docspace.dev.yml") up -d

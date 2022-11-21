@@ -1,3 +1,11 @@
+$PSversionMajor = $PSVersionTable.PSVersion | sort-object major | ForEach-Object { $_.major }
+$PSversionMinor = $PSVersionTable.PSVersion | sort-object minor | ForEach-Object { $_.minor }
+
+if ($PSversionMajor -lt 7 -or $PSversionMinor -lt 2) {
+  Write-Error "Powershell version must be greater than or equal to 7.2."
+  exit
+}
+
 $RootDir = Split-Path -Parent $PSScriptRoot
 $Branch = git branch --show-current
 $DockerDir = ($RootDir + "\build\install\docker")
@@ -15,40 +23,39 @@ $CoreBaseDomain = "localhost"
 # Stop all backend services"
 & "$PSScriptRoot\start\stop.backend.docker.ps1"
 
+$Env:COMPOSE_IGNORE_ORPHANS = "True"
+
 $Containers = docker ps -a -f "name=^onlyoffice" --format="{{.ID}} {{.Names}}" | Select-String -Pattern ("mysql|rabbitmq|redis|elasticsearch|documentserver") -NotMatch | ConvertFrom-String | ForEach-Object P1
-$Images = docker images onlyoffice/docspace*
+$Images = docker images onlyoffice/docspace* -q
 
 if ($Containers) {
-  Write-Host "Remove all backend containers"
+  Write-Host "Remove all backend containers" -ForegroundColor Blue
   docker rm -f $Containers
 }
 
 if ($Images) {
-  Write-Host "Remove all backend images"
+  Write-Host "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'" -ForegroundColor Blue
   docker rmi -f $Images
-    
-  Write-Host "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'"
-  docker image rm -f $Images
 }
 
-Write-Host "Run MySQL"
+Write-Host "Run MySQL" -ForegroundColor Green
 docker compose -f  ($DockerDir + "\db.yml") up -d
 
-Write-Host "Run environments (redis, rabbitmq)"
-$env:DOCKERFILE = $DockerFile
+Write-Host "Run environments (redis, rabbitmq)" -ForegroundColor Green
+$Env:DOCKERFILE = $DockerFile
 docker compose -f ($DockerDir + "\redis.yml") -f ($DockerDir + "\rabbitmq.yml") up -d
 
 if ($args[0] -eq "--no_ds") {
-  Write-Host "SKIP Document server"
+  Write-Host "SKIP Document server" -ForegroundColor Blue
 }
 else { 
-  Write-Host "Run Document server"
+  Write-Host "Run Document server" -ForegroundColor Green
   $Env:DOCUMENT_SERVER_IMAGE_NAME = "onlyoffice/documentserver-de:latest"
   $Env:ROOT_DIR = $RootDir
   docker compose -f ($DockerDir + "\ds.dev.yml") up -d
 }
 
-Write-Host "Build all backend services"
+Write-Host "Build all backend services" -ForegroundColor Blue
 $Env:DOCKERFILE = $DockerFile
 $Env:RELEASE_DATE = $BuildDate
 $Env:GIT_BRANCH = $Branch
@@ -59,7 +66,7 @@ $Env:APP_CORE_BASE_DOMAIN = $CoreBaseDomain
 $Env:ENV_EXTENSION = $EnvExtension
 docker compose -f ($DockerDir + "\build.dev.yml") build --build-arg GIT_BRANCH=$Branch --build-arg RELEASE_DATE=$BuildDate
 
-Write-Host "Run DB migration"
+Write-Host "Run DB migration" -ForegroundColor Green
 $Env:DOCKERFILE = $DockerFile
 docker compose -f ($DockerDir + "\migration-runner.yml") up -d
 
