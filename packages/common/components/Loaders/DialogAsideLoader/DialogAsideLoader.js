@@ -11,8 +11,6 @@ const DialogAsideLoader = ({
 }) => {
   const zIndex = 310;
 
-  console.log(isPanel);
-
   const renderClearDialogAsideLoader = () => {
     return (
       <StyledDialogAsideLoader
@@ -34,8 +32,6 @@ const DialogAsideLoader = ({
       </StyledDialogAsideLoader>
     );
   };
-
-  console.log("1");
 
   return withoutAside ? (
     renderClearDialogAsideLoader()
