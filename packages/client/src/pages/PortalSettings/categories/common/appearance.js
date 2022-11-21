@@ -166,7 +166,11 @@ const Appearance = (props) => {
       onColorCheckImgHover(e.target.id);
     });
 
-    return () => window.removeEventListener("resize", onCheckView);
+    return () => {
+      window.removeEventListener("resize", onCheckView);
+      standard.removeEventListener("mouseover", onColorCheckImgHover);
+      custom.removeEventListener("mouseover", onColorCheckImgHover);
+    };
   }, []);
 
   useEffect(() => {
