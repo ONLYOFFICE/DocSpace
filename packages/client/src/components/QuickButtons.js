@@ -78,7 +78,7 @@ const QuickButtons = (props) => {
           hoverColor={theme.filesQuickButtons.sharedColor}
         />
       )}
-      {fileExst && !isTrashFolder && displayBadges && (
+      {/* {fileExst && !isTrashFolder && displayBadges && (
         <ColorTheme
           themeId={ThemeType.IconButton}
           iconName={iconFavorite}
@@ -91,7 +91,7 @@ const QuickButtons = (props) => {
           onClick={setFavorite}
           hoverColor={theme.filesQuickButtons.hoverColor}
         />
-      )}
+      )} */}
     </div>
   );
 };
