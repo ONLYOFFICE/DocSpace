@@ -38,6 +38,9 @@ const Appearance = (props) => {
     t,
   } = props;
 
+  const defaultAppliedColorAccent = "#AABBCC";
+  const defaultAppliedColorButtons = "#AABBCC";
+
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
   const [headerColorSchemeDialog, setHeaderColorSchemeDialog] = useState(
@@ -54,8 +57,12 @@ const Appearance = (props) => {
     false
   );
 
-  const [appliedColorAccent, setAppliedColorAccent] = useState("#AABBCC");
-  const [appliedColorButtons, setAppliedColorButtons] = useState("#AABBCC");
+  const [appliedColorAccent, setAppliedColorAccent] = useState(
+    defaultAppliedColorAccent
+  );
+  const [appliedColorButtons, setAppliedColorButtons] = useState(
+    defaultAppliedColorButtons
+  );
 
   const [changeCurrentColorAccent, setChangeCurrentColorAccent] = useState(
     false
