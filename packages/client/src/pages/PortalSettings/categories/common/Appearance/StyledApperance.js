@@ -69,7 +69,7 @@ const StyledComponent = styled.div`
   }
 
   .show-custom-functional {
-    visibility: hidden;
+    /* display: none; */
   }
 `;
 
