@@ -14,7 +14,7 @@ const User = ({
   currCanEditUsers,
   selectionParentRoom,
   setSelectionParentRoom,
-  canChangeUserRole,
+  canChangeUserRoleInRoom,
   rootFolderType,
   access,
 }) => {
@@ -69,7 +69,7 @@ const User = ({
 
   const isCanChangeUserRole =
     user &&
-    canChangeUserRole({
+    canChangeUserRoleInRoom({
       access,
       rootFolderType,
       currentUserInList: { id: user.id, access: user.access },

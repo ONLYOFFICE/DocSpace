@@ -41,7 +41,7 @@ const VersionRow = (props) => {
     versionsListLength,
     isEditing,
     theme,
-    canChangeVersionHistory,
+    canChangeVersionFileHistory,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
@@ -91,12 +91,12 @@ const VersionRow = (props) => {
   };
 
   const contextOptions = [
-    canChangeVersionHistory && {
+    canChangeVersionFileHistory && {
       key: "edit",
       label: t("EditComment"),
       onClick: onEditComment,
     },
-    canChangeVersionHistory && {
+    canChangeVersionFileHistory && {
       key: "restore",
       label: t("Common:Restore"),
       onClick: onRestoreClick,
@@ -108,7 +108,7 @@ const VersionRow = (props) => {
     },
   ];
 
-  const onClickProp = canChangeVersionHistory
+  const onClickProp = canChangeVersionFileHistory
     ? { onClick: onVersionClick }
     : {};
 
@@ -124,7 +124,7 @@ const VersionRow = (props) => {
     <StyledVersionRow
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
-      canEdit={canChangeVersionHistory}
+      canEdit={canChangeVersionFileHistory}
       isTabletView={isTabletView}
       isSavingComment={isSavingComment}
       isEditing={isEditing}
@@ -238,11 +238,13 @@ export default inject(
     const { rootFolderType } = selectedFolderStore;
 
     const isEdit = isEditingVersion || isEditing;
-    const canChangeVersionHistory = accessRightsStore.canChangeVersionHistory({
-      access: fileAccess,
-      rootFolderType,
-      editing: isEdit,
-    });
+    const canChangeVersionFileHistory = accessRightsStore.canChangeVersionFileHistory(
+      {
+        access: fileAccess,
+        rootFolderType,
+        editing: isEdit,
+      }
+    );
 
     return {
       theme: auth.settingsStore.theme,
@@ -252,7 +254,7 @@ export default inject(
       restoreVersion,
       updateCommentVersion,
       isEditing: isEdit,
-      canChangeVersionHistory,
+      canChangeVersionFileHistory,
     };
   }
 )(

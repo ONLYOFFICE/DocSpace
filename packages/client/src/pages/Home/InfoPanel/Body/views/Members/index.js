@@ -32,7 +32,7 @@ const Members = ({
 
   changeUserType,
   canInviteUserInRoom,
-  canChangeUserRole,
+  canChangeUserRoleInRoom,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -155,7 +155,7 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
-            canChangeUserRole={canChangeUserRole}
+            canChangeUserRoleInRoom={canChangeUserRoleInRoom}
           />
         ))}
       </StyledUserList>
@@ -210,7 +210,7 @@ export default inject(
     const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { setInvitePanelOptions } = dialogsStore;
     const { changeType: changeUserType } = peopleStore;
-    const { canInviteUserInRoom, canChangeUserRole } = accessRightsStore;
+    const { canInviteUserInRoom, canChangeUserRoleInRoom } = accessRightsStore;
 
     return {
       selectionParentRoom,
@@ -228,7 +228,7 @@ export default inject(
 
       changeUserType,
       canInviteUserInRoom,
-      canChangeUserRole,
+      canChangeUserRoleInRoom,
     };
   }
 )(

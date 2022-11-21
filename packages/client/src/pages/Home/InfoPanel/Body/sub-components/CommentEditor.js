@@ -13,13 +13,13 @@ const CommentEditor = ({
   setSelection,
   fetchFileVersions,
   updateCommentVersion,
-  canChangeVersionHistory,
+  canChangeVersionFileHistory,
   setVerHistoryFileId,
   setVerHistoryFileAccess,
 }) => {
   const { id, comment, version, access, folderType } = item;
 
-  const changeVersionHistoryAbility = canChangeVersionHistory({
+  const changeVersionHistoryAbility = canChangeVersionFileHistory({
     access,
     folderType,
     editing,
@@ -129,14 +129,14 @@ export default inject(({ auth, versionHistoryStore, accessRightsStore }) => {
     setVerHistoryFileAccess,
   } = versionHistoryStore;
 
-  const { canChangeVersionHistory } = accessRightsStore;
+  const { canChangeVersionFileHistory } = accessRightsStore;
   const editing = isEditingVersion || isEditing;
 
   return {
     setSelection,
     fetchFileVersions,
     updateCommentVersion,
-    canChangeVersionHistory,
+    canChangeVersionFileHistory,
     editing,
     setVerHistoryFileId,
     setVerHistoryFileAccess,

@@ -33,7 +33,7 @@ class AccessRightsStore {
     return getRoomRoleActions(access).inviteUsers;
   }
 
-  canChangeUserRole = (room) => {
+  canChangeUserRoleInRoom = (room) => {
     const { access, rootFolderType, currentUserInList } = room;
     const { userStore } = this.authStore;
     const { user } = userStore;
@@ -61,7 +61,7 @@ class AccessRightsStore {
     return getFileRoleActions(access).block;
   };
 
-  canChangeVersionHistory = (file) => {
+  canChangeVersionFileHistory = (file) => {
     const { rootFolderType, editing, providerKey, access } = file;
 
     if (rootFolderType === FolderType.Archive)
@@ -77,7 +77,7 @@ class AccessRightsStore {
 
     return getFileRoleActions(access).changeVersionHistory;
   };
-  canViewVersionHistory = (file) => {
+  canViewVersionFileHistory = (file) => {
     const { rootFolderType, access, providerKey } = file;
 
     if (rootFolderType === FolderType.Archive)
@@ -108,7 +108,7 @@ class AccessRightsStore {
     return getFileRoleActions(access).edit;
   };
 
-  canRename = (item = {}) => {
+  canRenameItem = (item = {}) => {
     const { rootFolderType, access, isFile } = item;
     const { isDesktopClient } = this.authStore.settingsStore;
 

@@ -1046,7 +1046,10 @@ class FilesStore {
     const pluginAllKeys =
       enablePlugins && getContextMenuKeysByType(PluginContextMenuItemType.All);
 
-    const canRename = this.accessRightsStore.canRename({ ...item, ...isFile });
+    const canRenameItem = this.accessRightsStore.canRenameItem({
+      ...item,
+      ...isFile,
+    });
 
     const canMove = this.accessRightsStore.canMoveItems({
       ...item,
@@ -1064,11 +1067,11 @@ class FilesStore {
     if (isFile) {
       const shouldFillForm = canFormFillingDocs(item.fileExst);
       const canLockFile = this.accessRightsStore.canLockFile(item);
-      const canChangeVersionHistory = this.accessRightsStore.canChangeVersionHistory(
+      const canChangeVersionFileHistory = this.accessRightsStore.canChangeVersionFileHistory(
         { ...item, ...{ editing: isEditing } }
       );
 
-      const canViewVersionHistory = this.accessRightsStore.canViewVersionHistory(
+      const canViewVersionFileHistory = this.accessRightsStore.canViewVersionFileHistory(
         item
       );
       const canFillForm = this.accessRightsStore.canFillForm(item);
@@ -1122,22 +1125,22 @@ class FilesStore {
         ]);
       }
 
-      if (!canChangeVersionHistory) {
+      if (!canChangeVersionFileHistory) {
         fileOptions = this.removeOptions(fileOptions, ["finalize-version"]);
       }
 
-      if (!canViewVersionHistory) {
+      if (!canViewVersionFileHistory) {
         fileOptions = this.removeOptions(fileOptions, ["show-version-history"]);
       }
 
-      if (!canChangeVersionHistory && !canViewVersionHistory) {
+      if (!canChangeVersionFileHistory && !canViewVersionFileHistory) {
         fileOptions = this.removeOptions(fileOptions, ["version"]);
         if (item.rootFolderType === FolderType.Archive) {
           fileOptions = this.removeOptions(fileOptions, ["separator0"]);
         }
       }
 
-      if (!canRename) {
+      if (!canRenameItem) {
         fileOptions = this.removeOptions(fileOptions, ["rename"]);
       }
 
@@ -1419,7 +1422,7 @@ class FilesStore {
         "delete",
       ];
 
-      if (!canRename) {
+      if (!canRenameItem) {
         fileOptions = this.removeOptions(fileOptions, ["rename"]);
       }
 
