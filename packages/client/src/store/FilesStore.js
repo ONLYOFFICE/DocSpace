@@ -2265,10 +2265,10 @@ class FilesStore {
     );
   }
 
-  get isThirdPartyRootSelection() {
-    const withProvider = this.selection.find((x) => x.providerKey);
-    return withProvider && withProvider.rootFolderId === withProvider.id;
-  }
+  // get isThirdPartyRootSelection() {
+  //   const withProvider = this.selection.find((x) => x.providerKey);
+  //   return withProvider && withProvider.rootFolderId === withProvider.id;
+  // }
 
   get isThirdPartySelection() {
     const withProvider = this.selection.find((x) => x.providerKey);

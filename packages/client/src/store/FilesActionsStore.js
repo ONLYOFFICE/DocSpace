@@ -1260,7 +1260,6 @@ class FilesActionStore {
     const {
       isAccessedSelected,
       canConvertSelected,
-      isThirdPartyRootSelection,
       hasSelection,
       allFilesIsEditing,
       selection,
@@ -1291,11 +1290,7 @@ class FilesActionStore {
           rootFolderType,
           editing: allFilesIsEditing,
         });
-        return (
-          hasSelection &&
-          isAccessedSelected &&
-          canMove
-        );
+        return hasSelection && isAccessedSelected && canMove;
 
       case "archive":
       case "unarchive":
@@ -1317,8 +1312,7 @@ class FilesActionStore {
           rootFolderType,
           editing: allFilesIsEditing,
         });
-        const deleteCondition =
-          !isThirdPartyRootSelection && hasSelection && isAccessedSelected;
+        const deleteCondition = hasSelection && isAccessedSelected;
 
         return canDelete && deleteCondition;
     }
