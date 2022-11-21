@@ -51,11 +51,7 @@ const tagsStore = new TagsStore();
 const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
 
-const accessRightsStore = new AccessRightsStore(
-  authStore,
-  selectedFolderStore,
-  treeFoldersStore
-);
+const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
 
 const peopleStore = new PeopleStore(
   authStore,
