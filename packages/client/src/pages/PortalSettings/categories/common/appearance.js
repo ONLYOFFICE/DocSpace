@@ -158,13 +158,8 @@ const Appearance = (props) => {
     const standard = document.querySelector(".standard");
     const custom = document.querySelector(".custom");
 
-    standard?.addEventListener("mouseover", (e) => {
-      onColorCheckImgHover(e.target.id);
-    });
-
-    custom?.addEventListener("mouseover", (e) => {
-      onColorCheckImgHover(e.target.id);
-    });
+    standard?.addEventListener("mouseover", onColorCheckImgHover);
+    custom?.addEventListener("mouseover", onColorCheckImgHover);
 
     return () => {
       window.removeEventListener("resize", onCheckView);
@@ -230,7 +225,8 @@ const Appearance = (props) => {
   ]);
 
   const onColorCheckImgHover = useCallback(
-    (id) => {
+    (e) => {
+      const id = e.target.id;
       if (!id) return;
 
       const colorCheckImg = appearanceTheme.find((theme) => theme.id == id).text
