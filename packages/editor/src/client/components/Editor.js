@@ -417,6 +417,10 @@ function Editor({
     } else {
       title = organizationName;
     }
+
+    if (!documentIsReady) {
+      docTitle = title;
+    }
     document.title = title;
   };
 
