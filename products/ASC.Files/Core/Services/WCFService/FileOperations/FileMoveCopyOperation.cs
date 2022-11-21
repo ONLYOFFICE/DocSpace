@@ -382,7 +382,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                             }
                             else
                             {
-                                await _semaphore.WaitAsync();
                                 if (isRoom && toFolder.FolderType == FolderType.VirtualRooms)
                                 {
                                     await _semaphore.WaitAsync();
