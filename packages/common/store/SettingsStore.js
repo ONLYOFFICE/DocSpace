@@ -151,7 +151,6 @@ class SettingsStore {
   companyInfoSettingsIsDefault = true;
 
   whiteLabelLogoUrls = [];
-  docSpaceLogo = "";
 
   constructor() {
     makeAutoObservable(this);
@@ -387,10 +386,6 @@ class SettingsStore {
     );
   };
 
-  setDocSpaceLogo = (urls) => {
-    this.docSpaceLogo = urls[6];
-  };
-
   setLogoUrl = (url) => {
     this.logoUrl = url[0];
   };
@@ -410,7 +405,6 @@ class SettingsStore {
     const res = await api.settings.getLogoUrls();
 
     this.setLogoUrls(Object.values(res));
-    this.setDocSpaceLogo(Object.values(res));
     this.setLogoUrl(Object.values(res));
   };
 
