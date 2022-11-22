@@ -146,14 +146,14 @@ const WhiteLabel = (props) => {
           <div className="logos-wrapper">
             <Logo
               title={t("Profile:LightTheme")}
-              src={logoUrlsWhiteLabel[0]}
+              src={logoUrlsWhiteLabel[0].lightPath}
               imageClass="logo-header background-light"
               inputId="logoUploader_1"
               onChangeText={t("ChangeLogoButton")}
             />
             <Logo
               title={t("Profile:DarkTheme")}
-              src={logoUrlsWhiteLabel[0]}
+              src={logoUrlsWhiteLabel[0].darkPath}
               imageClass="logo-header background-dark"
               inputId="logoUploader_1"
               onChangeText={t("ChangeLogoButton")}
@@ -173,14 +173,14 @@ const WhiteLabel = (props) => {
           <div className="logos-wrapper">
             <Logo
               title={t("Profile:LightTheme")}
-              src={logoUrlsWhiteLabel[5]}
+              src={logoUrlsWhiteLabel[5].lightPath}
               imageClass="border-img logo-compact background-light"
               inputId="logoUploader_6"
               onChangeText={t("ChangeLogoButton")}
             />
             <Logo
               title={t("Profile:DarkTheme")}
-              src={logoUrlsWhiteLabel[5]}
+              src={logoUrlsWhiteLabel[5].darkPath}
               imageClass="border-img logo-compact background-dark"
               inputId="logoUploader_6"
               onChangeText={t("ChangeLogoButton")}
@@ -200,14 +200,14 @@ const WhiteLabel = (props) => {
           <div className="logos-login-wrapper">
             <Logo
               title={t("Profile:LightTheme")}
-              src={logoUrlsWhiteLabel[1]}
+              src={logoUrlsWhiteLabel[1].lightPath}
               imageClass="border-img logo-big"
               inputId="logoUploader_2"
               onChangeText={t("ChangeLogoButton")}
             />
             <Logo
               title={t("Profile:DarkTheme")}
-              src={logoUrlsWhiteLabel[1]}
+              src={logoUrlsWhiteLabel[1].darkPath}
               imageClass="border-img logo-big background-dark"
               inputId="logoUploader_2"
               onChangeText={t("ChangeLogoButton")}
@@ -227,14 +227,14 @@ const WhiteLabel = (props) => {
           <div className="logos-wrapper">
             <Logo
               title={t("Profile:LightTheme")}
-              src={logoUrlsWhiteLabel[6]}
+              src={logoUrlsWhiteLabel[6].lightPath}
               imageClass="border-img logo-about"
               inputId="logoUploader_7"
               onChangeText={t("ChangeLogoButton")}
             />
             <Logo
               title={t("Profile:DarkTheme")}
-              src={logoUrlsWhiteLabel[6]}
+              src={logoUrlsWhiteLabel[6].darkPath}
               imageClass="border-img logo-about background-dark"
               inputId="logoUploader_7"
               onChangeText={t("ChangeLogoButton")}
