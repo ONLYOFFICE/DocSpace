@@ -370,9 +370,9 @@ function Editor({
     assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
   };
 
-  const updateFavorite = (favorite) => {
-    docEditor.setFavorite(favorite);
-  };
+  // const updateFavorite = (favorite) => {
+  //   docEditor.setFavorite(favorite);
+  // };
 
   const onMetaChange = (event) => {
     const newTitle = event.data.title;
