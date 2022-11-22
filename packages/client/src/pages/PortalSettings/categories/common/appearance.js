@@ -43,6 +43,9 @@ const Appearance = (props) => {
   const headerAddTheme = t("Settings:NewColorScheme");
   const headerEditTheme = t("Settings:EditColorScheme");
 
+  const checkImg = "static/images/check.white.svg";
+  const checkImgHover = <ReactSVG className="check-hover" src={checkImg} />;
+
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
   const [headerColorSchemeDialog, setHeaderColorSchemeDialog] = useState(
@@ -103,10 +106,6 @@ const Appearance = (props) => {
 
   const [visibleDialog, setVisibleDialog] = useState(false);
 
-  const checkImg = (
-    <ReactSVG className="check-img" src="static/images/check.white.svg" />
-  );
-
   const array_items = useMemo(
     () => [
       {
@@ -155,16 +154,8 @@ const Appearance = (props) => {
     onCheckView();
     window.addEventListener("resize", onCheckView);
 
-    const standard = document.querySelector(".standard");
-    const custom = document.querySelector(".custom");
-
-    standard?.addEventListener("mouseover", onColorCheckImgHover);
-    custom?.addEventListener("mouseover", onColorCheckImgHover);
-
     return () => {
       window.removeEventListener("resize", onCheckView);
-      standard.removeEventListener("mouseover", onColorCheckImgHover);
-      custom.removeEventListener("mouseover", onColorCheckImgHover);
     };
   }, []);
 
@@ -252,9 +243,14 @@ const Appearance = (props) => {
 
   const onShowCheck = useCallback(
     (colorNumber) => {
-      return selectThemeId && selectThemeId === colorNumber && checkImg;
+      return (
+        selectThemeId &&
+        selectThemeId === colorNumber && (
+          <ReactSVG className="check-img" src={checkImg} />
+        )
+      );
     },
-    [selectThemeId, checkImg]
+    [selectThemeId]
   );
 
   const onSave = useCallback(async () => {
@@ -587,15 +583,11 @@ const Appearance = (props) => {
                   colorCheckImgHover={colorCheckImgHover}
                   style={{ background: item.main.accent }}
                   onClick={() => onColorSelection(item)}
+                  onMouseOver={onColorCheckImgHover}
                 >
                   {onShowCheck(item.id)}
 
-                  {selectThemeId !== item.id && (
-                    <ReactSVG
-                      className="check-hover"
-                      src="static/images/check.white.svg"
-                    />
-                  )}
+                  {selectThemeId !== item.id && checkImgHover}
                 </StyledTheme>
               );
             })}
@@ -616,15 +608,11 @@ const Appearance = (props) => {
                     style={{ background: item.main.accent }}
                     colorCheckImgHover={colorCheckImgHover}
                     onClick={() => onColorSelection(item)}
+                    onMouseOver={onColorCheckImgHover}
                   >
                     {onShowCheck(item.id)}
 
-                    {selectThemeId !== item.id && (
-                      <ReactSVG
-                        className="check-hover"
-                        src="static/images/check.white.svg"
-                      />
-                    )}
+                    {selectThemeId !== item.id && checkImgHover}
                   </StyledTheme>
                 );
               })}
