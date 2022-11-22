@@ -22,7 +22,7 @@ const StyledComponent = styled(ModalDialog)`
     }
   }
 
-  .text {
+  .name-color {
     font-weight: 700;
     font-size: 18px;
     line-height: 24px;
@@ -87,7 +87,7 @@ const ColorSchemeDialog = (props) => {
       <ModalDialog.Body>
         <div>
           <div className="flex relative">
-            <div className="text">{t("Settings:Accent")}</div>
+            <div className="name-color">{t("Settings:Accent")}</div>
             <div
               id="accent"
               className="modal-add-theme accent-box"
@@ -98,7 +98,7 @@ const ColorSchemeDialog = (props) => {
           </div>
 
           <div className="flex relative">
-            <div className="text">{t("Settings:Buttons")}</div>
+            <div className="name-color">{t("Settings:Buttons")}</div>
             <div
               id="buttons"
               className="modal-add-theme buttons-box"
