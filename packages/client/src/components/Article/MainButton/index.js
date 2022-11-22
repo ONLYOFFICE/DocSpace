@@ -29,6 +29,8 @@ const StyledButton = styled(Button)`
 
   background-color: ${({ currentColorScheme }) =>
     currentColorScheme.main.accent};
+  background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+  border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
 
   :hover {
     background-color: ${({ currentColorScheme }) =>
