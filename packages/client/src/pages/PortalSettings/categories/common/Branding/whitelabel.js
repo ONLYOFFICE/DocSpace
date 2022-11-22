@@ -307,10 +307,8 @@ export default inject(({ setup, auth, common }) => {
   const { setWhiteLabelSettings } = setup;
 
   const {
-    whiteLabelLogoSizes,
     whiteLabelLogoText,
     getWhiteLabelLogoText,
-    getWhiteLabelLogoSizes,
     whiteLabelLogoUrls,
     restoreWhiteLabelSettings,
   } = common;
@@ -320,10 +318,8 @@ export default inject(({ setup, auth, common }) => {
   return {
     theme: auth.settingsStore.theme,
     logoText: whiteLabelLogoText,
-    logoSizes: whiteLabelLogoSizes,
     logoUrls: whiteLabelLogoUrls,
     getWhiteLabelLogoText,
-    getWhiteLabelLogoSizes,
     getWhiteLabelLogoUrls,
     setWhiteLabelSettings,
     restoreWhiteLabelSettings,
