@@ -100,6 +100,7 @@ const InfoPanelHeaderContent = (props) => {
           {!isTablet && (
             <div className="info-panel-toggle-bg">
               <IconButton
+                id="info-panel-toggle--close"
                 className="info-panel-toggle"
                 iconName="images/panel.react.svg"
                 size="16"
