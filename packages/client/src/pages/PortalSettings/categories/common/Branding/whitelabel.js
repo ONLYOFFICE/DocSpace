@@ -140,7 +140,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoLightSmall")}
+            {t("LogoLightSmall")} ({logoUrlsWhiteLabel[0].width}x
+            {logoUrlsWhiteLabel[0].height})
           </Text>
           <div className="logos-wrapper">
             <Logo
@@ -166,7 +167,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoCompact")}
+            {t("LogoCompact")} ({logoUrlsWhiteLabel[5].width}x
+            {logoUrlsWhiteLabel[5].height})
           </Text>
           <div className="logos-wrapper">
             <Logo
@@ -192,7 +194,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoLogin")}
+            {t("LogoLogin")} ({logoUrlsWhiteLabel[1].width}x
+            {logoUrlsWhiteLabel[1].height})
           </Text>
           <div className="logos-login-wrapper">
             <Logo
@@ -218,7 +221,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoAbout")}
+            {t("LogoAbout")} ({logoUrlsWhiteLabel[6].width}x
+            {logoUrlsWhiteLabel[6].height})
           </Text>
           <div className="logos-wrapper">
             <Logo
@@ -244,7 +248,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoFavicon")}
+            {t("LogoFavicon")} ({logoUrlsWhiteLabel[2].width}x
+            {logoUrlsWhiteLabel[2].height})
           </Text>
           <Logo
             src={logoUrlsWhiteLabel[2]}
@@ -260,7 +265,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoDocsEditor")}
+            {t("LogoDocsEditor")} ({logoUrlsWhiteLabel[3].width}x
+            {logoUrlsWhiteLabel[3].height})
           </Text>
           <Logo
             isEditor={true}
@@ -276,7 +282,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoDocsEditorEmbedded")}
+            {t("LogoDocsEditorEmbedded")} ({logoUrlsWhiteLabel[4].width}x
+            {logoUrlsWhiteLabel[4].height})
           </Text>
           <Logo
             src={logoUrlsWhiteLabel[4]}
