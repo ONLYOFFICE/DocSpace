@@ -175,8 +175,8 @@ const Login: React.FC<ILoginProps> = ({
 
   const bgPattern = getBgPattern(currentColorScheme.id);
 
-  const loginLogo = Object.values(logoUrls)[1];
-  const isSvgLogo = loginLogo.includes(".svg");
+  const logo = Object.values(logoUrls)[1];
+  const loginLogo = theme === Dark ? logo.darkPath : logo.lightPath;
 
   if (!mounted) return <></>;
 
@@ -189,11 +189,7 @@ const Login: React.FC<ILoginProps> = ({
       bgPattern={bgPattern}
     >
       <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
-        {isSvgLogo ? (
-          <ReactSVG src={loginLogo} className="logo-wrapper" />
-        ) : (
-          <img src={loginLogo} className="logo-wrapper" />
-        )}
+        <img src={loginLogo} className="logo-wrapper" />
         <Text
           fontSize="23px"
           fontWeight={700}
