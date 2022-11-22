@@ -195,6 +195,7 @@ const Navigation = ({
           </StyledContainer>
           {infoPanelIsVisible && (
             <ToggleInfoPanelButton
+              id="info-panel-toggle--open"
               isRootFolder={isRootFolder}
               toggleInfoPanel={toggleInfoPanel}
               isInfoPanelVisible={isInfoPanelVisible}
