@@ -336,7 +336,7 @@ const Preview = (props) => {
           </div>
 
           <div className="section-flex-tablet">
-            <div className="tile-name half background border-color">
+            <div className="tile-name only-tile-name background border-color">
               <div className="tile-container">
                 <div className="tile-icon">
                   <Loaders.Rectangle
@@ -379,7 +379,7 @@ const Preview = (props) => {
             </div>
 
             {isViewTablet && (
-              <div className="tile-name half background border-color tablet-tile-name">
+              <div className="tile-name only-tile-name background border-color tablet-tile-name">
                 <div className="tile-container">
                   <div className="tile-icon">
                     <Loaders.Rectangle

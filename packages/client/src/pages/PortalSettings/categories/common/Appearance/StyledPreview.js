@@ -233,7 +233,7 @@ const StyledComponent = styled.div`
     border-radius: 12px 0 16px 0 !important;
   }
 
-  .half {
+  .only-tile-name {
     width: ${(props) => props.isViewTablet && "66%"};
     border-top-width: 1px;
     border-right-width: 1px;

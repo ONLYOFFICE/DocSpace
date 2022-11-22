@@ -14,7 +14,7 @@ const StyledComponent = styled.div`
     padding-bottom: 20px;
   }
 
-  .theme-standard {
+  .theme-standard-container {
     padding-top: 21px;
   }
 
@@ -29,7 +29,7 @@ const StyledComponent = styled.div`
     display: flex;
   }
 
-  .custom {
+  .flex {
     display: flex;
   }
 
@@ -66,10 +66,6 @@ const StyledComponent = styled.div`
     svg path {
       fill: ${(props) => props.colorCheckImg};
     }
-  }
-
-  .show-custom-functional {
-    /* display: none; */
   }
 `;
 

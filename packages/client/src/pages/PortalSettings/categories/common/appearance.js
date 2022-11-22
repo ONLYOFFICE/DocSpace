@@ -570,10 +570,10 @@ const Appearance = (props) => {
       <StyledComponent colorCheckImg={colorCheckImg}>
         <div className="header">{t("Common:Color")}</div>
 
-        <div className="theme-standard">
+        <div className="theme-standard-container">
           <div className="theme-name">{t("Common:Standard")}</div>
 
-          <div className="theme-container standard">
+          <div className="theme-container">
             {appearanceTheme.map((item, index) => {
               if (!item.name) return;
               return (
@@ -594,11 +594,11 @@ const Appearance = (props) => {
           </div>
         </div>
 
-        <div className="theme-custom show-custom-functional">
+        <div className="theme-custom-container">
           <div className="theme-name">{t("Settings:Custom")}</div>
 
           <div className="theme-container">
-            <div className="custom">
+            <div className="flex">
               {appearanceTheme.map((item, index) => {
                 if (item.name) return;
                 return (
@@ -667,7 +667,7 @@ const Appearance = (props) => {
           />
 
           <Button
-            className="button show-custom-functional"
+            className="button"
             label={t("Settings:EditCurrentTheme")}
             onClick={onClickEdit}
             size="small"
@@ -675,7 +675,7 @@ const Appearance = (props) => {
           />
           {isShowDeleteButton && (
             <Button
-              className="button show-custom-functional"
+              className="button"
               label={t("Settings:DeleteTheme")}
               onClick={() => setVisibleDialog(true)}
               size="small"
