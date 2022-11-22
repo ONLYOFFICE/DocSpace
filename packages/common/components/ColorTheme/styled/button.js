@@ -37,17 +37,20 @@ const getDefaultStyles = ({
 }) =>
   $currentColorScheme &&
   css`
-    background: ${primary && $currentColorScheme.main.buttons};
-    opacity: ${primary && isDisabled && "0.6"};
-    border-color: ${primary && $currentColorScheme.main.buttons};
-    color: ${primary && $currentColorScheme.text.buttons};
+    ${primary &&
+    css`
+      background: ${$currentColorScheme.main.buttons};
+      opacity: ${isDisabled && "0.6"};
+      border: ${`1px solid`} ${$currentColorScheme.main.buttons};
+      color: ${$currentColorScheme.text.buttons};
 
-    .loader {
-      svg {
-        color: ${primary && $currentColorScheme.text.buttons};
+      .loader {
+        svg {
+          color: ${$currentColorScheme.text.buttons};
+        }
+        background-color: ${$currentColorScheme.main.buttons};
       }
-      background-color: ${primary && $currentColorScheme.main.buttons};
-    }
+    `}
 
     ${!isDisabled &&
     !isLoading &&
