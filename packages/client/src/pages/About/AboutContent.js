@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { Dark } from "@docspace/components/themes";
 
 const StyledAboutBody = styled.div`
   width: 100%;
@@ -75,7 +76,7 @@ const AboutContent = (props) => {
     theme,
     companyInfoSettingsData,
     previewData,
-    docSpaceLogo,
+    whiteLabelLogoUrls,
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
@@ -100,6 +101,10 @@ const AboutContent = (props) => {
     ? previewData.address
     : companyInfoSettingsData?.address;
 
+  const logo =
+    theme === Dark
+      ? whiteLabelLogoUrls[6]?.darkPath
+      : whiteLabelLogoUrls[6]?.lightPath;
   return (
     companyInfoSettingsData && (
       <StyledAboutBody>
@@ -111,7 +116,7 @@ const AboutContent = (props) => {
             />
           ) : (
             <img
-              src={docSpaceLogo}
+              src={logo}
               alt="Logo"
               className="logo-docspace-theme no-select"
             />
@@ -236,7 +241,7 @@ const AboutContent = (props) => {
 export default inject(({ auth }) => {
   const { settingsStore } = auth;
 
-  const { theme, companyInfoSettingsData, docSpaceLogo } = settingsStore;
+  const { theme, companyInfoSettingsData, whiteLabelLogoUrls } = settingsStore;
 
-  return { theme, companyInfoSettingsData, docSpaceLogo };
+  return { theme, companyInfoSettingsData, whiteLabelLogoUrls };
 })(observer(AboutContent));
