@@ -40,6 +40,5 @@ public class LogoRequestsDto
 
 public class WhiteLabelQueryRequestsDto
 {
-    public bool IsRetina { get; set; }
     public bool? IsDark { get; set; }
 }

@@ -617,7 +617,7 @@ public class CustomerConfig<T>
 
     public string Address => _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().Address;
 
-    public string Logo => _baseCommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LoginPage, !_configuration.EditorConfig.Customization.IsRetina, false));
+    public string Logo => _baseCommonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum.LoginPage, false));
 
     public string Mail => _settingsManager.LoadForDefaultTenant<CompanyWhiteLabelSettings>().Email;
 
@@ -767,8 +767,6 @@ public class CustomizationConfig<T>
             }
         }
     }
-
-    public bool IsRetina { get; set; }
 
     public LogoConfig<T> Logo { get; set; }
 
@@ -933,8 +931,8 @@ public class LogoConfig<T>
 
             return _configuration.EditorType == EditorType.Embedded
                 || fillingForm
-                    ? _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed, !_configuration.EditorConfig.Customization.IsRetina))
-                    : _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor, !_configuration.EditorConfig.Customization.IsRetina));
+                    ? _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed))
+                    : _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor));
         }
     }
 
@@ -942,7 +940,7 @@ public class LogoConfig<T>
     {
         set { }
         get => _commonLinkUtility.GetFullAbsolutePath(
-            _tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor, !_configuration.EditorConfig.Customization.IsRetina));
+            _tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditor));
     }
 
     public string ImageEmbedded
@@ -951,7 +949,7 @@ public class LogoConfig<T>
         {
             return _configuration.EditorType != EditorType.Embedded
                     ? null
-                    : _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed, !_configuration.EditorConfig.Customization.IsRetina));
+                    : _commonLinkUtility.GetFullAbsolutePath(_tenantLogoHelper.GetLogo(WhiteLabelLogoTypeEnum.DocsEditorEmbed));
         }
     }
 

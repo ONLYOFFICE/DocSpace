@@ -404,7 +404,7 @@ public class NotifyTransferRequest : INotifyEngineAction
             }
         }
 
-        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDark(true, false));
+        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDark(false));
 
         request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
     }

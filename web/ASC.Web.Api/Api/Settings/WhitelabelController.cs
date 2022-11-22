@@ -158,38 +158,56 @@ public class WhitelabelController : BaseSettingsController
     ///<visible>false</visible>
     [AllowNotPayment, AllowAnonymous]
     [HttpGet("whitelabel/logos")]
-    public Dictionary<string, object> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
+    public IEnumerable<WhiteLabelItemDto> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {
         var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
 
-        var result = new Dictionary<string, object>();
         foreach (var logoType in (WhiteLabelLogoTypeEnum[])Enum.GetValues(typeof(WhiteLabelLogoTypeEnum)))
         {
+            var result = new WhiteLabelItemDto
+            {
+                Name = logoType.ToString(),
+                Size = TenantWhiteLabelSettings.GetSize(logoType)
+            };
+
             if (inDto.IsDark.HasValue)
             {
-                var dto = new
+                var path = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, inDto.IsDark.Value));
+
+                if (inDto.IsDark.Value)
                 {
-                    Name = nameof(logoType),
-                    Path = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, inDto.IsDark.Value)),
-                    height = TenantWhiteLabelSettings.GetSize(logoType).Height,
-                    width = TenantWhiteLabelSettings.GetSize(logoType).Width
-                };
-                result.Add(((int)logoType).ToString(), dto);
+                    result.Path = new WhiteLabelItemPathDto
+                    {
+                        Dark = path
+                    };
+                }
+                else
+                {
+                    result.Path = new WhiteLabelItemPathDto
+                    {
+                        Light = path
+                    };
+                }
             }
             else
             {
-                var dto = new
+                var lightPath = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, false));
+                var darkPath = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, true));
+
+                if (lightPath == darkPath)
                 {
-                    Name = nameof(logoType),
-                    LightPath = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, false)),
-                    DarkPath = _commonLinkUtility.GetFullAbsolutePath(_tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, logoType, !inDto.IsRetina, true)),
-                    height = TenantWhiteLabelSettings.GetSize(logoType).Height,
-                    width = TenantWhiteLabelSettings.GetSize(logoType).Width
+                    darkPath = null;
+                }
+
+                result.Path = new WhiteLabelItemPathDto
+                {
+                    Light = lightPath,
+                    Dark = darkPath
                 };
-                result.Add(((int)logoType).ToString(), dto);
             }
+
+            yield return result;
         }
-        return result;
     }
 
     ///<visible>false</visible>
