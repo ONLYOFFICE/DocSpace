@@ -192,12 +192,6 @@ export function getLogoText() {
     url: `/settings/whitelabel/logotext.json`,
   });
 }
-export function getLogoSizes() {
-  return request({
-    method: "get",
-    url: `/settings/whitelabel/sizes.json`,
-  });
-}
 
 export function getLogoUrls() {
   return request({
