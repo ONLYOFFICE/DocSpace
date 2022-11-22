@@ -183,7 +183,7 @@ const InvitePanel = ({
         visible={visible}
         onClose={onClose}
         withoutBodyScroll
-        zIndex={110}
+        zIndex={310}
       >
         <StyledBlock>
           <StyledHeading>

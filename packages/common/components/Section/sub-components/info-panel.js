@@ -24,6 +24,7 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
   backdrop-filter: blur(3px);
 
   @media ${tablet} {
+    z-index: 309;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -33,6 +34,7 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
 
   ${isMobile &&
   css`
+    z-index: 309;
     position: fixed;
     top: 0;
     bottom: 0;
