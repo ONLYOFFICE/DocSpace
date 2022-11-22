@@ -445,8 +445,10 @@ function Editor({
 
     if (index > -1) {
       const splitUrl = url.split("#message/");
+
       if (splitUrl.length === 2) {
-        const message = decodeURIComponent(raw).replace(/\+/g, " ");
+        const message = decodeURIComponent(splitUrl[1]).replace(/\+/g, " ");
+
         docEditor.showMessage(message);
         history.pushState({}, null, url.substring(0, index));
       } else {
