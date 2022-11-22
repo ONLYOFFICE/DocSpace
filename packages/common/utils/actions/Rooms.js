@@ -21,7 +21,6 @@ export const OwnerRoomsActions = Object.freeze({
   viewInfo: true,
   deleteUsers: true,
   archive: true,
-  delete: true,
 });
 
 export const RoomAdminRoomsActions = Object.freeze({

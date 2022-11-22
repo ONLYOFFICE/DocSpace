@@ -164,9 +164,9 @@ class AccessRightsStore {
     const { access, rootFolderType } = room;
 
     if (rootFolderType !== FolderType.Archive)
-      return getArchiveRoomRoleActions(access).delete;
+      return getRoomRoleActions(access).delete;
 
-    return getRoomRoleActions(access).delete;
+    return getArchiveRoomRoleActions(access).delete;
   };
 
   canViewRoomInfo = (room) => {
