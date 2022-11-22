@@ -240,7 +240,7 @@ public class SsoController : BaseSettingsController
 
             existingSsoUser.ConvertExternalContactsToOrdinary();
 
-            _userManager.SaveUserInfo(existingSsoUser);
+            _userManager.UpdateUserInfo(existingSsoUser);
         }
     }
 

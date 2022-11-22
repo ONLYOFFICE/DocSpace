@@ -31,7 +31,7 @@ namespace ASC.Core.Notify.Senders;
 [Singletone]
 public class AWSSender : SmtpSender, IDisposable
 {
-    private readonly object _locker = new object();
+    private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     private AmazonSimpleEmailServiceClient _amazonEmailServiceClient;
     private TimeSpan _refreshTimeout;
     private DateTime _lastRefresh;
@@ -56,7 +56,7 @@ public class AWSSender : SmtpSender, IDisposable
         _lastRefresh = DateTime.UtcNow - _refreshTimeout; //set to refresh on first send
     }
 
-    public override NoticeSendResult Send(NotifyMessage m)
+    public override async Task<NoticeSendResult> Send(NotifyMessage m)
     {
         NoticeSendResult result;
         try
@@ -71,11 +71,11 @@ public class AWSSender : SmtpSender, IDisposable
                 var configuration = scope.ServiceProvider.GetService<CoreConfiguration>();
                 if (!configuration.SmtpSettings.IsDefaultSettings)
                 {
-                    result = base.Send(m);
+                    result = await base.Send(m);
                 }
                 else
                 {
-                    result = SendMessage(m);
+                    result = await SendMessage(m);
                 }
 
                 _logger.Debug(result.ToString());
@@ -106,29 +106,28 @@ public class AWSSender : SmtpSender, IDisposable
         if (result == NoticeSendResult.MessageIncorrect || result == NoticeSendResult.SendingImpossible)
         {
             _logger.DebugAmazonSendingFailed(result);
-            result = base.Send(m);
+            result = await base.Send(m);
         }
 
         return result;
     }
 
-    private NoticeSendResult SendMessage(NotifyMessage m)
+    private async Task<NoticeSendResult> SendMessage(NotifyMessage m)
     {
         //Check if we need to query stats
-        RefreshQuotaIfNeeded();
+        await RefreshQuotaIfNeeded();
         if (_quota != null)
         {
-            lock (_locker)
+            await _semaphore.WaitAsync();
+            if (_quota.Max24HourSend <= _quota.SentLast24Hours)
             {
-                if (_quota.Max24HourSend <= _quota.SentLast24Hours)
-                {
-                    //Quota exceeded, queue next refresh to +24 hours
-                    _lastRefresh = DateTime.UtcNow.AddHours(24);
-                    _logger.WarningQuotaLimit(_lastRefresh);
+                //Quota exceeded, queue next refresh to +24 hours
+                _lastRefresh = DateTime.UtcNow.AddHours(24);
+                _logger.WarningQuotaLimit(_lastRefresh);
 
-                    return NoticeSendResult.SendingImpossible;
-                }
+                return NoticeSendResult.SendingImpossible;
             }
+            _semaphore.Release();
         }
 
         var dest = new Destination
@@ -160,7 +159,7 @@ public class AWSSender : SmtpSender, IDisposable
 
         ThrottleIfNeeded();
 
-        var response = _amazonEmailServiceClient.SendEmailAsync(request).Result;
+        var response = await _amazonEmailServiceClient.SendEmailAsync(request);
         _lastSend = DateTime.UtcNow;
 
         return response != null ? NoticeSendResult.OK : NoticeSendResult.TryOnceAgain;
@@ -182,34 +181,33 @@ public class AWSSender : SmtpSender, IDisposable
         }
     }
 
-    private void RefreshQuotaIfNeeded()
+    private async Task RefreshQuotaIfNeeded()
     {
         if (!IsRefreshNeeded())
         {
             return;
         }
 
-        lock (_locker)
+        await _semaphore.WaitAsync();
+        if (IsRefreshNeeded())//Double check
         {
-            if (IsRefreshNeeded())//Double check
-            {
-                _logger.DebugRefreshingQuota(_refreshTimeout, _lastRefresh);
+            _logger.DebugRefreshingQuota(_refreshTimeout, _lastRefresh);
 
-                //Do quota refresh
-                _lastRefresh = DateTime.UtcNow.AddMinutes(1);
-                try
-                {
-                    var r = new GetSendQuotaRequest();
-                    _quota = _amazonEmailServiceClient.GetSendQuotaAsync(r).Result;
-                    _sendWindow = TimeSpan.FromSeconds(1.0 / _quota.MaxSendRate);
-                    _logger.DebugQuota(_quota.SentLast24Hours, _quota.Max24HourSend, _quota.MaxSendRate, _sendWindow);
-                }
-                catch (Exception e)
-                {
-                    _logger.ErrorRefreshingQuota(e);
-                }
+            //Do quota refresh
+            _lastRefresh = DateTime.UtcNow.AddMinutes(1);
+            try
+            {
+                var r = new GetSendQuotaRequest();
+                _quota = await _amazonEmailServiceClient.GetSendQuotaAsync(r);
+                _sendWindow = TimeSpan.FromSeconds(1.0 / _quota.MaxSendRate);
+                _logger.DebugQuota(_quota.SentLast24Hours, _quota.Max24HourSend, _quota.MaxSendRate, _sendWindow);
+            }
+            catch (Exception e)
+            {
+                _logger.ErrorRefreshingQuota(e);
             }
         }
+        _semaphore.Release();
     }
 
     private bool IsRefreshNeeded()

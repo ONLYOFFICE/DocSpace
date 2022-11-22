@@ -44,7 +44,7 @@ const Register: React.FC<IRegisterProps> = (props) => {
     trustedDomains,
     theme,
     currentColorScheme,
-    id
+    id,
   } = props;
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -112,7 +112,9 @@ const Register: React.FC<IRegisterProps> = (props) => {
   return enabledJoin && !isAuthenticated ? (
     <>
       <StyledRegister id={id} onClick={onRegisterClick}>
-        <Text color={currentColorScheme.accentColor}>{t("Register")}</Text>
+        <Text as="span" color={currentColorScheme.accentColor}>
+          {t("Register")}
+        </Text>
       </StyledRegister>
 
       {visible && (

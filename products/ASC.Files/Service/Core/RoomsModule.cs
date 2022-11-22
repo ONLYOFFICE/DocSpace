@@ -94,16 +94,16 @@ public class RoomsModule : FeedModule
         return targetCond && _fileSecurity.CanReadAsync(folder, userId).Result;
     }
 
-    public override IEnumerable<Tuple<Feed.Aggregator.Feed, object>> GetFeeds(FeedFilter filter)
+    public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
     {
-        var rooms = _folderDao.GetFeedsForRoomsAsync(filter.Tenant, filter.Time.From, filter.Time.To).ToListAsync().Result;
+        var rooms = await _folderDao.GetFeedsForRoomsAsync(filter.Tenant, filter.Time.From, filter.Time.To).ToListAsync();
 
         return rooms.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f), f));
     }
 
-    public override IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime)
+    public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync().Result;
+        return await _folderDao.GetTenantsWithFeedsForFoldersAsync(fromTime).ToListAsync();
     }
 
     private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity)

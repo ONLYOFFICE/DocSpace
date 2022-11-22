@@ -43,6 +43,7 @@ const SelectedItem = ({ propKey, label, group, removeSelectedItem }) => {
         {label}
       </Text>
       <IconButton
+        className="selected-tag-removed"
         iconName={"/static/images/cross.react.svg"}
         size={12}
         onClick={onRemove}
