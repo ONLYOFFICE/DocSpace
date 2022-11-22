@@ -136,35 +136,41 @@ class SectionHeaderContent extends React.Component {
         ]
       : [
           {
+            id: "personal_new-documnet",
             key: "new-document",
             label: t("NewDocument"),
             onClick: this.createDocument,
             icon: "images/actions.documents.react.svg",
           },
           {
+            id: "personal_new-spreadsheet",
             key: "new-spreadsheet",
             label: t("NewSpreadsheet"),
             onClick: this.createSpreadsheet,
             icon: "images/spreadsheet.react.svg",
           },
           {
+            id: "personal_new-presentation",
             key: "new-presentation",
             label: t("NewPresentation"),
             onClick: this.createPresentation,
             icon: "images/actions.presentation.react.svg",
           },
           {
+            id: "personal_form-template",
             icon: "images/form.react.svg",
             label: t("Translations:NewForm"),
             key: "new-form-base",
             items: [
               {
+                id: "personal_template_black",
                 key: "new-form",
                 label: t("Translations:SubNewForm"),
                 icon: "images/form.blank.react.svg",
                 onClick: this.createForm,
               },
               {
+                id: "personal_template_new-form-file",
                 key: "new-form-file",
                 label: t("Translations:SubNewFormFile"),
                 icon: "images/form.file.react.svg",
@@ -172,6 +178,7 @@ class SectionHeaderContent extends React.Component {
                 disabled: isPrivacyFolder,
               },
               {
+                id: "personal_template_oforms-gallery",
                 key: "oforms-gallery",
                 label: t("Common:OFORMsGallery"),
                 icon: "images/form.gallery.react.svg",
@@ -181,6 +188,7 @@ class SectionHeaderContent extends React.Component {
             ],
           },
           {
+            id: "personal_new-folder",
             key: "new-folder",
             label: t("NewFolder"),
             onClick: this.createFolder,
@@ -506,14 +514,21 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const { t, cbMenuItems, getCheckboxItemLabel } = this.props;
-
+    const {
+      t,
+      cbMenuItems,
+      getCheckboxItemLabel,
+      getCheckboxItemId,
+    } = this.props;
+    console.log(cbMenuItems);
     const checkboxOptions = (
       <>
         {cbMenuItems.map((key) => {
           const label = getCheckboxItemLabel(t, key);
+          const id = getCheckboxItemId(key);
           return (
             <DropDownItem
+              id={id}
               key={key}
               label={label}
               data-key={key}
@@ -700,6 +715,7 @@ export default inject(
       isThirdPartySelection,
       cbMenuItems,
       getCheckboxItemLabel,
+      getCheckboxItemId,
       isEmptyFilesList,
       getFolderInfo,
       setBufferSelection,
@@ -817,6 +833,7 @@ export default inject(
       getHeaderMenu,
       backToParentFolder,
       getCheckboxItemLabel,
+      getCheckboxItemId,
       setSelectFileDialogVisible,
 
       isRecycleBinFolder,
