@@ -12,6 +12,12 @@ import config from "PACKAGE_FILE";
 
 export default function withBadges(WrappedComponent) {
   class WithBadges extends React.Component {
+    constructor(props) {
+      super(props);
+
+      this.state = { disableBadgeClick: false, disableUnpinClick: false };
+    }
+
     onShowVersionHistory = () => {
       const {
         homepage,
@@ -28,22 +34,42 @@ export default function withBadges(WrappedComponent) {
     };
 
     onBadgeClick = () => {
+      if (this.state.disableBadgeClick) return;
+
       const { item, markAsRead, setNewFilesPanelVisible } = this.props;
+      this.setState(() => ({
+        disableBadgeClick: true,
+      }));
+
+      const enableBadgeClick = () => {
+        this.setState({ disableBadgeClick: false });
+      };
+
       if (item.fileExst) {
-        markAsRead([], [item.id], item);
+        markAsRead([], [item.id], item).then(() => {
+          enableBadgeClick();
+        });
       } else {
-        setNewFilesPanelVisible(true, null, item);
+        setNewFilesPanelVisible(true, null, item).then(() => {
+          enableBadgeClick();
+        });
       }
     };
 
     onUnpinClick = (e) => {
+      if (this.state.disableUnpinClick) return;
+
+      this.setState({ disableUnpinClick: true });
+
       const { t, setPinAction } = this.props;
 
       const { action, id } = e.target.closest(".is-pinned").dataset;
 
       if (!action && !id) return;
 
-      setPinAction(action, id, t);
+      setPinAction(action, id, t).then(() => {
+        this.setState({ disableUnpinClick: false });
+      });
     };
 
     setConvertDialogVisible = () => {
