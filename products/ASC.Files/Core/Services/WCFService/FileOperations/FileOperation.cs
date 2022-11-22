@@ -50,13 +50,12 @@ public abstract class FileOperation : DistributedTaskProgress
         _culture = Thread.CurrentThread.CurrentCulture.Name;
 
         this[Owner] = ((IAccount)(_principal ?? Thread.CurrentPrincipal).Identity).ID.ToString();
-        this[Src] = "";
+        this[Src] = _props.ContainsValue(Src) ? this[Src] : "";
         this[Progress] = 0;
         this[Res] = "";
         this[Err] = "";
         this[Process] = 0;
         this[Finish] = false;
-        this[Hold] = false;
     }
 
     protected void IncrementProgress()
@@ -84,6 +83,7 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
     {
         ThirdPartyOperation = thirdPartyOperation;
         DaoOperation = daoOperation;
+        this[Hold] = ThirdPartyOperation[Hold] || DaoOperation[Hold];
     }
 
     public override async Task RunJob(DistributedTask _, CancellationToken cancellationToken)

@@ -49,6 +49,8 @@ const ArticleBodyContent = (props) => {
     archiveFolderId,
   } = props;
 
+  const [disableBadgeClick, setDisableBadgeClick] = React.useState(false);
+
   const campaigns = (localStorage.getItem("campaigns") || "")
     .split(",")
     .filter((campaign) => campaign.length > 0);
@@ -148,9 +150,18 @@ const ArticleBodyContent = (props) => {
     [categoryType, roomsFolderId, archiveFolderId]
   );
 
-  const onShowNewFilesPanel = React.useCallback((folderId) => {
-    props.setNewFilesPanelVisible(true, [`${folderId}`]);
-  }, []);
+  const onShowNewFilesPanel = React.useCallback(
+    async (folderId) => {
+      if (disableBadgeClick) return;
+
+      setDisableBadgeClick(true);
+
+      await props.setNewFilesPanelVisible(true, [`${folderId}`]);
+
+      setDisableBadgeClick(false);
+    },
+    [disableBadgeClick]
+  );
 
   return (
     <>
