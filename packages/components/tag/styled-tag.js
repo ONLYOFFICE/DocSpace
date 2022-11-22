@@ -47,6 +47,7 @@ const StyledTag = styled.div`
 
   ${(props) =>
     !props.isDisabled &&
+    !props.isNoHover &&
     css`
       cursor: pointer;
 

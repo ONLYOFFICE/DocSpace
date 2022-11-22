@@ -21,6 +21,7 @@ const Tag = ({
   isLast,
   onDelete,
   onClick,
+  isNoHover,
   advancedOptions,
   tagMaxWidth,
   id,
@@ -95,6 +96,7 @@ const Tag = ({
             isDefault={isDefault}
             isLast={isLast}
             tagMaxWidth={tagMaxWidth}
+            isNoHover={isNoHover}
           >
             <Text className={"tag-text"} font-size={"13px"} noSelect>
               ...
@@ -136,6 +138,7 @@ const Tag = ({
           onClick={onClickAction}
           isNewTag={isNewTag}
           isDisabled={isDisabled}
+          isNoHover={isNoHover}
           isDefault={isDefault}
           tagMaxWidth={tagMaxWidth}
           data-tag={label}

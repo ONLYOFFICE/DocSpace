@@ -37,7 +37,7 @@ const link = (text, onClick) => (
 const tagList = (tags) => (
   <div className="property-tag_list">
     {tags.map((tag, i) => (
-      <Tag key={i} className="property-tag" label={tag} />
+      <Tag key={i} className="property-tag" label={tag} isNoHover />
     ))}
   </div>
 );
