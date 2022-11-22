@@ -1273,15 +1273,15 @@ class FilesStore {
         fileOptions = this.removeOptions(fileOptions, ["mark-read"]);
       }
 
-      // if (
-      //   !(
-      //     isRecentFolder ||
-      //     isFavoritesFolder ||
-      //     (isMyFolder && (this.filterType || this.filterSearch))
-      //   )
-      // ) {
-      //   fileOptions = this.removeOptions(fileOptions, ["open-location"]);
-      // }
+      if (
+        !(
+          // isRecentFolder ||
+          // isFavoritesFolder ||
+          (isMyFolder && (this.filterType || this.filterSearch))
+        )
+      ) {
+        fileOptions = this.removeOptions(fileOptions, ["open-location"]);
+      }
 
       // if (isPrivacyFolder) {
       //   fileOptions = this.removeOptions(fileOptions, [
@@ -1525,9 +1525,9 @@ class FilesStore {
       //   ]);
       // }
 
-      // if (!(isMyFolder && (this.filterType || this.filterSearch))) {
-      //   folderOptions = this.removeOptions(folderOptions, ["open-location"]);
-      // }
+      if (!(isMyFolder && (this.filterType || this.filterSearch))) {
+        folderOptions = this.removeOptions(folderOptions, ["open-location"]);
+      }
 
       folderOptions = this.removeSeparator(folderOptions);
 
