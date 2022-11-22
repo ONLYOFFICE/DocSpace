@@ -28,7 +28,7 @@ const StyledButton = styled(Button)`
   opacity: 1;
 
   background-color: ${({ currentColorScheme }) =>
-    currentColorScheme.main.accent};
+    currentColorScheme.main.accent} !important;
   background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
   border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
 
@@ -36,12 +36,15 @@ const StyledButton = styled(Button)`
     background-color: ${({ currentColorScheme }) =>
       currentColorScheme.main.accent};
     opacity: 0.85;
+    background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+    border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
   }
 
   :active {
     background-color: ${({ currentColorScheme }) =>
       currentColorScheme.main.accent};
-
+    background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+    border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
     opacity: 1;
     filter: brightness(90%);
     cursor: pointer;
