@@ -57,8 +57,8 @@ const WhiteLabel = (props) => {
   const onUseTextAsLogo = () => {
     let newLogos = [];
     for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
-      const width = logoSizes[i].width / 2;
-      const height = logoSizes[i].height / 2;
+      const width = logoUrlsWhiteLabel[i].width / 2;
+      const height = logoUrlsWhiteLabel[i].height / 2;
       const options = getLogoOptions(i, logoTextWhiteLabel);
       console.log(i, logoUrlsWhiteLabel[i]);
       const logo = generateLogo(width, height, options.text, options.fontSize);
