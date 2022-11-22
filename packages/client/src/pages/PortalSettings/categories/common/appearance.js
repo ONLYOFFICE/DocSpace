@@ -598,7 +598,7 @@ const Appearance = (props) => {
           <div className="theme-name">{t("Settings:Custom")}</div>
 
           <div className="theme-container">
-            <div className="flex">
+            <div className="custom-themes">
               {appearanceTheme.map((item, index) => {
                 if (item.name) return;
                 return (

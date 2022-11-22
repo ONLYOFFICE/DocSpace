@@ -29,7 +29,7 @@ const StyledComponent = styled.div`
     display: flex;
   }
 
-  .flex {
+  .custom-themes {
     display: flex;
   }
 
