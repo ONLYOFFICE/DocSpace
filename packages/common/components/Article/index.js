@@ -17,6 +17,7 @@ import ArticleProfile from "./sub-components/article-profile";
 import ArticlePaymentAlert from "./sub-components/article-payment-alert";
 import { StyledArticle } from "./styled-article";
 import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
+import Portal from "@docspace/components/portal";
 
 const Article = ({
   showText,
@@ -107,7 +108,7 @@ const Article = ({
     [setShowText]
   );
 
-  return (
+  const articleComponent = (
     <>
       <StyledArticle
         id={"article-container"}
@@ -153,6 +154,20 @@ const Article = ({
       ) : null}
     </>
   );
+
+  const renderPortalArticle = () => {
+    const rootElement = document.getElementById("root");
+
+    return (
+      <Portal
+        element={articleComponent}
+        appendTo={rootElement}
+        visible={true}
+      />
+    );
+  };
+
+  return isMobileOnly ? renderPortalArticle() : articleComponent;
 };
 
 Article.propTypes = {
