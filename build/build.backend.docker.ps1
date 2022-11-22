@@ -6,8 +6,15 @@ if ($PSversionMajor -lt 7 -or $PSversionMinor -lt 2) {
   exit
 }
 
-$RootDir = Split-Path -Parent $PSScriptRoot
 $Branch = git branch --show-current
+$BranchExistRemote = git ls-remote --heads origin $Branch
+
+if (-not $BranchExistRemote) {
+  Write-Error "Current branch not exist on remote repository. Pleace push changes."
+  exit
+}
+
+$RootDir = Split-Path -Parent $PSScriptRoot
 $DockerDir = ($RootDir + "\build\install\docker")
 $BuildDate = Get-Date -Format "yyyy-MM-dd"
 $LocalIp = (Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object { $_.DHCPEnabled -ne $null -and $_.DefaultIPGateway -ne $null }).IPAddress | Select-Object -First 1
