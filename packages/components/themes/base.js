@@ -1498,6 +1498,26 @@ const Base = {
     borderRadius: "50%",
   },
 
+  rombsLoader: {
+    blue: {
+      colorStep_1: "#F2CBBF",
+      colorStep_2: "#fff",
+      colorStep_3: "#E6E4E4",
+      colorStep_4: "#D2D2D2",
+    },
+    red: {
+      colorStep_1: "#BFE8F8",
+      colorStep_2: "#fff",
+      colorStep_3: "#EFEFEF",
+    },
+    green: {
+      colorStep_1: "#CBE0AC",
+      colorStep_2: "#fff",
+      colorStep_3: "#EFEFEF",
+      colorStep_4: "#E6E4E4",
+    },
+  },
+
   dialogLoader: {
     borderBottom: "1px solid rgb(222, 226, 230)",
   },

@@ -1488,7 +1488,26 @@ const Dark = {
     marginRight: "2px",
     borderRadius: "50%",
   },
-
+  rombsLoader: {
+    blue: {
+      colorStep_1: "#333",
+      colorStep_2: "#333",
+      colorStep_3: "#323032",
+      colorStep_4: "#323032",
+    },
+    red: {
+      colorStep_1: "#333",
+      colorStep_2: "#333",
+      colorStep_3: "#323032",
+      colorStep_4: "#323032",
+    },
+    green: {
+      colorStep_1: "#333",
+      colorStep_2: "#333",
+      colorStep_3: "#323032",
+      colorStep_4: "#323032",
+    },
+  },
   dialogLoader: {
     borderBottom: "1px solid #292929",
   },
