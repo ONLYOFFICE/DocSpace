@@ -8,7 +8,7 @@ import {
 
 import Base from "@docspace/components/themes/base";
 
-const getDefaultStyles = ({ $currentColorScheme, isActive, showText, theme }) =>
+const getDefaultStyles = ({ $currentColorScheme, isActive, theme }) =>
   $currentColorScheme &&
   css`
     ${StyledCatalogItemText} {
@@ -23,13 +23,11 @@ const getDefaultStyles = ({ $currentColorScheme, isActive, showText, theme }) =>
       svg {
         path {
           fill: ${isActive &&
-          !showText &&
           theme.isBase &&
           $currentColorScheme.main.accent} !important;
         }
         circle {
           fill: ${isActive &&
-          !showText &&
           theme.isBase &&
           $currentColorScheme.main.accent} !important;
         }
@@ -39,7 +37,6 @@ const getDefaultStyles = ({ $currentColorScheme, isActive, showText, theme }) =>
         svg {
           path {
             fill: ${isActive &&
-            !showText &&
             theme.isBase &&
             $currentColorScheme.main.accent} !important;
           }
