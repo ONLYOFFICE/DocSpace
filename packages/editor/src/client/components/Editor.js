@@ -376,27 +376,27 @@ function Editor({
 
   const onMetaChange = (event) => {
     const newTitle = event.data.title;
-    const favorite = event.data.favorite;
+    //const favorite = event.data.favorite;
 
     if (newTitle && newTitle !== docTitle) {
       setDocumentTitle(newTitle);
       docTitle = newTitle;
     }
 
-    if (!newTitle) {
-      const onlyNumbers = new RegExp("^[0-9]+$");
-      const isFileWithoutProvider = onlyNumbers.test(fileId);
+    // if (!newTitle) {
+    //   const onlyNumbers = new RegExp("^[0-9]+$");
+    //   const isFileWithoutProvider = onlyNumbers.test(fileId);
 
-      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+    //   const convertFileId = isFileWithoutProvider ? +fileId : fileId;
 
-      favorite
-        ? markAsFavorite([convertFileId])
-            .then(() => updateFavorite(favorite))
-            .catch((error) => console.log("error", error))
-        : removeFromFavorite([convertFileId])
-            .then(() => updateFavorite(favorite))
-            .catch((error) => console.log("error", error));
-    }
+    //   favorite
+    //     ? markAsFavorite([convertFileId])
+    //         .then(() => updateFavorite(favorite))
+    //         .catch((error) => console.log("error", error))
+    //     : removeFromFavorite([convertFileId])
+    //         .then(() => updateFavorite(favorite))
+    //         .catch((error) => console.log("error", error));
+    // }
   };
 
   const setDocumentTitle = (subTitle = null) => {
