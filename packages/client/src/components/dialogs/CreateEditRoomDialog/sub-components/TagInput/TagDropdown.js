@@ -30,8 +30,14 @@ const TagDropdown = ({
     e.preventDefault();
   };
 
-  const onClickOutside = () => {
-    document.getElementById("tags-input").blur();
+  const onClickOutside = (e) => {
+    console.log(e.target.id, e.target.for);
+    if (e.target.id !== "tags-input" || e.target.for !== "tags-input") {
+      document.getElementById("tags-input").blur();
+    } else {
+      document.getElementById("tags-input").focus();
+    }
+    // if (e) console.log(e.target, e.currentTarget);
   };
 
   const addNewTag = () => {
@@ -106,6 +112,7 @@ const TagDropdown = ({
           clickOutsideAction={onClickOutside}
           maxHeight={dropdownMaxHeight}
           showDisabledItems={false}
+          withBackdrop={false}
         >
           {dropdownItems}
         </StyledDropDown>
