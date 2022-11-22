@@ -27,7 +27,7 @@ import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { getLink, checkIfModuleOld, onItemClick } from "SRC_DIR/helpers/utils";
 import StyledExternalLinkIcon from "@docspace/client/src/components/StyledExternalLinkIcon";
 import HeaderCatalogBurger from "./header-catalog-burger";
-import { Base } from "@docspace/components/themes";
+import { Base, Dark } from "@docspace/components/themes";
 import { ReactSVG } from "react-svg";
 
 const { proxyURL } = AppServerConfig;
@@ -215,6 +215,9 @@ const HeaderComponent = ({
     });
   }, [history]);
 
+  const logo =
+    theme === Dark ? props.logoUrl.darkPath : props.logoUrl.lightPath;
+
   return (
     <>
       <Header
@@ -232,15 +235,7 @@ const HeaderComponent = ({
           !isFormGallery && <HeaderCatalogBurger onClick={toggleArticleOpen} />}
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
-            props.logoUrl.includes(".svg") ? (
-              <ReactSVG src={props.logoUrl} className="header-logo-icon" />
-            ) : (
-              <img
-                alt="logo"
-                src={props.logoUrl}
-                className="header-logo-icon"
-              />
-            )
+            <img alt="logo" src={logo} className="header-logo-icon" />
           ) : (
             <img
               alt="logo"
