@@ -621,7 +621,7 @@ const Appearance = (props) => {
             <div
               data-for="theme-add"
               data-tip="tooltip"
-              className="box theme-add"
+              className="theme-add"
               onClick={() => onAddTheme()}
             />
             {!abilityAddTheme && (

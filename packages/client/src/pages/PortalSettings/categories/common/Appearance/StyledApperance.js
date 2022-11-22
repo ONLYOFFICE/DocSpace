@@ -33,15 +33,12 @@ const StyledComponent = styled.div`
     display: flex;
   }
 
-  .box {
+  .theme-add {
     width: 46px;
     height: 46px;
     margin-right: 12px;
     border-radius: 8px;
     cursor: pointer;
-  }
-
-  .theme-add {
     background: ${(props) => (props.theme.isBase ? "#eceef1" : "#474747")}
       url("/static/images/plus.theme.svg") no-repeat center;
   }
