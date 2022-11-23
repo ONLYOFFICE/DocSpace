@@ -546,31 +546,31 @@ public class TenantWhiteLabelSettingsHelper
 
     #region Get logo path
 
-    public string GetAbsoluteLogoPath(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark = false)
+    public async Task<string> GetAbsoluteLogoPath(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark = false)
     {
         if (tenantWhiteLabelSettings.GetIsDefault(type))
         {
-            return GetAbsoluteDefaultLogoPath(type, dark);
+            return await GetAbsoluteDefaultLogoPath(type, dark);
         }
 
-        return GetAbsoluteStorageLogoPath(tenantWhiteLabelSettings, type, dark);
+        return await GetAbsoluteStorageLogoPath(tenantWhiteLabelSettings, type, dark);
     }
 
-    private string GetAbsoluteStorageLogoPath(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark)
+    private async Task<string> GetAbsoluteStorageLogoPath(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark)
     {
         var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, ModuleName);
         var fileName = BuildLogoFileName(type, tenantWhiteLabelSettings.GetExt(type), dark);
 
-        if (store.IsFileAsync(fileName).Result)
+        if (await store.IsFileAsync(fileName))
         {
-            return store.GetUriAsync(fileName).Result.ToString();
+            return (await store.GetUriAsync(fileName)).ToString();
         }
-        return GetAbsoluteDefaultLogoPath(type, dark);
+        return await GetAbsoluteDefaultLogoPath(type, dark);
     }
 
-    public string GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum type, bool dark)
+    public async Task<string> GetAbsoluteDefaultLogoPath(WhiteLabelLogoTypeEnum type, bool dark)
     {
-        var partnerLogoPath = GetPartnerStorageLogoPath(type, dark);
+        var partnerLogoPath = await GetPartnerStorageLogoPath(type, dark);
         if (!string.IsNullOrEmpty(partnerLogoPath))
         {
             return partnerLogoPath;
@@ -579,7 +579,7 @@ public class TenantWhiteLabelSettingsHelper
         return _webImageSupplier.GetAbsoluteWebPath($"logo/" + BuildLogoFileName(type, "svg", dark));
     }
 
-    private string GetPartnerStorageLogoPath(WhiteLabelLogoTypeEnum type, bool dark)
+    private async Task<string> GetPartnerStorageLogoPath(WhiteLabelLogoTypeEnum type, bool dark)
     {
         var partnerSettings = _settingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
 
@@ -597,7 +597,7 @@ public class TenantWhiteLabelSettingsHelper
 
         var logoPath = BuildLogoFileName(type, partnerSettings.GetExt(type), dark);
 
-        return partnerStorage.IsFileAsync(logoPath).Result ? partnerStorage.GetUriAsync(logoPath).Result.ToString() : null;
+        return (await partnerStorage.IsFileAsync(logoPath)) ? (await partnerStorage.GetUriAsync(logoPath)).ToString() : null;
     }
 
     #endregion
@@ -607,17 +607,17 @@ public class TenantWhiteLabelSettingsHelper
     /// <summary>
     /// Get logo stream or null in case of default whitelabel
     /// </summary>
-    public Stream GetWhitelabelLogoData(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark = false)
+    public async Task<Stream> GetWhitelabelLogoData(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark = false)
     {
         if (tenantWhiteLabelSettings.GetIsDefault(type))
         {
-            return GetPartnerStorageLogoData(type, dark);
+            return await GetPartnerStorageLogoData(type, dark);
         }
 
-        return GetStorageLogoData(tenantWhiteLabelSettings, type, dark);
+        return await GetStorageLogoData(tenantWhiteLabelSettings, type, dark);
     }
 
-    private Stream GetStorageLogoData(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark)
+    private async Task<Stream> GetStorageLogoData(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark)
     {
         var storage = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, ModuleName);
 
@@ -628,10 +628,10 @@ public class TenantWhiteLabelSettingsHelper
 
         var fileName = BuildLogoFileName(type, tenantWhiteLabelSettings.GetExt(type), dark);
 
-        return storage.IsFileAsync(fileName).Result ? storage.GetReadStreamAsync(fileName).Result : null;
+        return await storage.IsFileAsync(fileName) ? await storage.GetReadStreamAsync(fileName) : null;
     }
 
-    private Stream GetPartnerStorageLogoData(WhiteLabelLogoTypeEnum type, bool dark)
+    private async Task<Stream> GetPartnerStorageLogoData(WhiteLabelLogoTypeEnum type, bool dark)
     {
         var partnerSettings = _settingsManager.LoadForDefaultTenant<TenantWhiteLabelSettings>();
 
@@ -649,7 +649,7 @@ public class TenantWhiteLabelSettingsHelper
 
         var fileName = BuildLogoFileName(type, partnerSettings.GetExt(type), dark);
 
-        return partnerStorage.IsFileAsync(fileName).Result ? partnerStorage.GetReadStreamAsync(fileName).Result : null;
+        return await partnerStorage.IsFileAsync(fileName) ? await partnerStorage.GetReadStreamAsync(fileName) : null;
     }
 
     #endregion

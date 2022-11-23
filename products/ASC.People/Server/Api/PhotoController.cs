@@ -149,7 +149,7 @@ public class PhotoController : PeopleControllerBase
     }
 
     [HttpPost("{userid}/photo")]
-    public FileUploadResultDto UploadMemberPhoto(string userid, IFormCollection formCollection)
+    public async Task<FileUploadResultDto> UploadMemberPhoto(string userid, IFormCollection formCollection)
     {
         var result = new FileUploadResultDto();
         var autosave = bool.Parse(formCollection["Autosave"]);
@@ -211,7 +211,7 @@ public class PhotoController : PeopleControllerBase
                 }
                 else
                 {
-                    result.Data = _userPhotoManager.SaveTempPhoto(data, _setupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
+                    result.Data = await _userPhotoManager.SaveTempPhoto(data, _setupInfo.MaxImageUploadSize, UserPhotoManager.OriginalFotoSize.Width, UserPhotoManager.OriginalFotoSize.Height);
                 }
 
                 result.Success = true;

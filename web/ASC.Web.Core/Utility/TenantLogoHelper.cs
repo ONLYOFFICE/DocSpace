@@ -46,19 +46,19 @@ public class TenantLogoHelper
         _tenantInfoSettingsHelper = tenantInfoSettingsHelper;
     }
 
-    public string GetLogo(WhiteLabelLogoTypeEnum type, bool isDefIfNoWhiteLabel = false, bool dark = false)
+    public async Task<string> GetLogo(WhiteLabelLogoTypeEnum type, bool isDefIfNoWhiteLabel = false, bool dark = false)
     {
         string imgUrl;
         if (_tenantLogoManager.WhiteLabelEnabled)
         {
             var _tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
-            return _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, type, dark);
+            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPath(_tenantWhiteLabelSettings, type, dark);
         }
         else
         {
             if (isDefIfNoWhiteLabel)
             {
-                imgUrl = _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(type, dark);
+                imgUrl = await _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(type, dark);
             }
             else
             {
@@ -71,7 +71,7 @@ public class TenantLogoHelper
                 }
                 else
                 {
-                    imgUrl = _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(type, dark);
+                    imgUrl = await _tenantWhiteLabelSettingsHelper.GetAbsoluteDefaultLogoPath(type, dark);
                 }
             }
         }

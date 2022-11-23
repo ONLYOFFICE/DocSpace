@@ -375,7 +375,7 @@ public class NotifyTransferRequest : INotifyEngineAction
 
                 if (logoData == null)
                 {
-                    var logoStream = _tenantLogoManager.GetWhitelabelMailLogo();
+                    var logoStream = _tenantLogoManager.GetWhitelabelMailLogo().Result;
                     logoData = ReadStreamToByteArray(logoStream) ?? GetDefaultMailLogo();
 
                     if (logoData != null)
@@ -404,7 +404,7 @@ public class NotifyTransferRequest : INotifyEngineAction
             }
         }
 
-        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDark(false));
+        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDark(false).Result);
 
         request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
     }

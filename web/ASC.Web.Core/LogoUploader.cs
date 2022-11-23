@@ -67,7 +67,7 @@ public class LogoUploader
                 if (logo.ContentType.Contains("svg"))
                 {
                     result.Success = true;
-                    result.Message = userPhotoManager.SaveTempSvg(data, setupInfo.MaxImageUploadSize);
+                    result.Message = await userPhotoManager.SaveTempSvg(data, setupInfo.MaxImageUploadSize);
                 }
                 else
                 {
@@ -81,8 +81,7 @@ public class LogoUploader
                         }
                     }
                     result.Success = true;
-                    result.Message = userPhotoManager.SaveTempPhoto(data, setupInfo.MaxImageUploadSize, size.Width,
-                        size.Height);
+                    result.Message = await userPhotoManager.SaveTempPhoto(data, setupInfo.MaxImageUploadSize, size.Width, size.Height);
                 }
             }
             else
