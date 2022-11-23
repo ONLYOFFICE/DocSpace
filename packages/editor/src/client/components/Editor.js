@@ -216,6 +216,8 @@ function Editor({
 
   const onSDKRequestEditRights = async () => {
     console.log("ONLYOFFICE Document Editor requests editing rights");
+    const url = window.location.href;
+
     const index = url.indexOf("&action=view");
 
     if (index) {
@@ -233,6 +235,8 @@ function Editor({
   };
 
   const onMakeActionLink = (event) => {
+    const url = window.location.href;
+
     const actionData = event.data;
 
     const link = generateLink(actionData);
