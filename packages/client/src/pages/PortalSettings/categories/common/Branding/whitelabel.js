@@ -140,8 +140,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoLightSmall")} ({logoUrlsWhiteLabel[0].width}x
-            {logoUrlsWhiteLabel[0].height})
+            {t("LogoLightSmall")} ({logoUrlsWhiteLabel[0].size.width}x
+            {logoUrlsWhiteLabel[0].size.height})
           </Text>
           <div className="logos-wrapper">
             <Logo
@@ -167,8 +167,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoCompact")} ({logoUrlsWhiteLabel[5].width}x
-            {logoUrlsWhiteLabel[5].height})
+            {t("LogoCompact")} ({logoUrlsWhiteLabel[5].size.width}x
+            {logoUrlsWhiteLabel[5].size.height})
           </Text>
           <div className="logos-wrapper">
             <Logo
@@ -194,8 +194,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoLogin")} ({logoUrlsWhiteLabel[1].width}x
-            {logoUrlsWhiteLabel[1].height})
+            {t("LogoLogin")} ({logoUrlsWhiteLabel[1].size.width}x
+            {logoUrlsWhiteLabel[1].size.height})
           </Text>
           <div className="logos-login-wrapper">
             <Logo
@@ -221,8 +221,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoAbout")} ({logoUrlsWhiteLabel[6].width}x
-            {logoUrlsWhiteLabel[6].height})
+            {t("LogoAbout")} ({logoUrlsWhiteLabel[6].size.width}x
+            {logoUrlsWhiteLabel[6].size.height})
           </Text>
           <div className="logos-wrapper">
             <Logo
@@ -248,8 +248,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoFavicon")} ({logoUrlsWhiteLabel[2].width}x
-            {logoUrlsWhiteLabel[2].height})
+            {t("LogoFavicon")} ({logoUrlsWhiteLabel[2].size.width}x
+            {logoUrlsWhiteLabel[2].size.height})
           </Text>
           <Logo
             src={logoUrlsWhiteLabel[2].path.light}
@@ -265,8 +265,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoDocsEditor")} ({logoUrlsWhiteLabel[3].width}x
-            {logoUrlsWhiteLabel[3].height})
+            {t("LogoDocsEditor")} ({logoUrlsWhiteLabel[3].size.width}x
+            {logoUrlsWhiteLabel[3].size.height})
           </Text>
           <Logo
             isEditor={true}
@@ -282,8 +282,8 @@ const WhiteLabel = (props) => {
             fontWeight="600"
             className="settings_unavailable"
           >
-            {t("LogoDocsEditorEmbedded")} ({logoUrlsWhiteLabel[4].width}x
-            {logoUrlsWhiteLabel[4].height})
+            {t("LogoDocsEditorEmbedded")} ({logoUrlsWhiteLabel[4].size.width}x
+            {logoUrlsWhiteLabel[4].size.height})
           </Text>
           <Logo
             src={logoUrlsWhiteLabel[4].path.light}
