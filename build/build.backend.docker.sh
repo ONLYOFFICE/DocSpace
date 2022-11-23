@@ -16,7 +16,7 @@ echo "GIT_BRANCH:" $branch
 branch_exist_remote=$(git ls-remote --heads origin $branch)
 
 if [ -z "$branch_exist_remote" ]; then
-    echo "Current branch not exist on remote repository. Please push changes."
+    echo "The current branch does not exist in the remote repository. Please push changes."
     exit 1
 fi
 
