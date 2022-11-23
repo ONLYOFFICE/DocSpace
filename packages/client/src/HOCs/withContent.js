@@ -135,7 +135,7 @@ export default function withContent(WrappedContent) {
         isArchiveFolder,
       } = treeFoldersStore;
 
-      const { replaceFileStream, setEncryptionAccess } = auth;
+      const { replaceFileStream } = auth;
 
       const {
         culture,
@@ -166,7 +166,7 @@ export default function withContent(WrappedContent) {
         openDocEditor,
         renameFolder,
         replaceFileStream,
-        setEncryptionAccess,
+
         setIsLoading,
         updateFile,
         viewAs,
