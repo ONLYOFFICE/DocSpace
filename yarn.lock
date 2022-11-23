@@ -11079,7 +11079,6 @@ __metadata:
   resolution: "docspace@workspace:."
   dependencies:
     auto-changelog: "file:./packages/auto-changelog-2.3.1.tgz"
-    hex-to-rgba: ^2.0.1
     shx: ^0.3.3
     terser: ^5.8.0
   languageName: unknown
