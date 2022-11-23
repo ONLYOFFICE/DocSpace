@@ -138,20 +138,6 @@ const Appearance = (props) => {
   );
 
   useEffect(() => {
-    if (appearanceTheme.length === 9) {
-      setAbilityAddTheme(false);
-    } else {
-      setAbilityAddTheme(true);
-    }
-
-    if (appearanceTheme.length === 6) {
-      setIsShowDeleteButton(false);
-    } else {
-      setIsShowDeleteButton(true);
-    }
-  }, [appearanceTheme.length, setAbilityAddTheme, setIsShowDeleteButton]);
-
-  useEffect(() => {
     onCheckView();
     window.addEventListener("resize", onCheckView);
 
@@ -173,7 +159,26 @@ const Appearance = (props) => {
       setSelectThemeId(idNewTheme);
       setPreviewAccent(accentNewTheme);
     }
-  }, [appearanceTheme, theme, setSelectThemeId, setPreviewAccent]);
+
+    if (appearanceTheme.length === 9) {
+      setAbilityAddTheme(false);
+    } else {
+      setAbilityAddTheme(true);
+    }
+
+    if (appearanceTheme.length === 6) {
+      setIsShowDeleteButton(false);
+    } else {
+      setIsShowDeleteButton(true);
+    }
+  }, [
+    appearanceTheme,
+    theme,
+    setSelectThemeId,
+    setPreviewAccent,
+    setAbilityAddTheme,
+    setIsShowDeleteButton,
+  ]);
 
   useEffect(() => {
     onColorCheck(appearanceTheme);
