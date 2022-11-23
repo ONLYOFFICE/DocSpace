@@ -94,6 +94,8 @@ const ArticleMainButtonContent = (props) => {
     canCreateFiles,
 
     setInvitePanelOptions,
+
+    isPrivateFolder,
   } = props;
 
   const isAccountsPage = selectedTreeNode[0] === "accounts";
@@ -415,7 +417,8 @@ const ArticleMainButtonContent = (props) => {
 
   const isDisabled =
     ((!canCreate || (!canCreateFiles && !isRoomsFolder)) && !canInvite) ||
-    isArchiveFolder;
+    isArchiveFolder ||
+    isPrivateFolder;
   const isProfile = history.location.pathname === "/accounts/view/@self";
 
   return (
@@ -430,7 +433,8 @@ const ArticleMainButtonContent = (props) => {
             !isArchiveFolder &&
             !isArticleLoading &&
             !isProfile &&
-            ((canCreate && (canCreateFiles || isRoomsFolder)) || canInvite) && (
+            ((canCreate && (canCreateFiles || isRoomsFolder)) || canInvite) &&
+            !isPrivateFolder && (
               <MobileView
                 t={t}
                 titleProp={t("Upload")}
@@ -523,6 +527,8 @@ export default inject(
 
     const currentFolderId = selectedFolderStore.id;
 
+    const { private: isPrivateFolder } = selectedFolderStore;
+
     const { isAdmin, isOwner, isVisitor } = auth.userStore.user;
 
     const { canCreateFiles } = accessRightsStore;
@@ -561,6 +567,8 @@ export default inject(
       isAdmin,
       isOwner,
       isVisitor,
+
+      isPrivateFolder,
     };
   }
 )(
