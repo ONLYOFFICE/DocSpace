@@ -123,7 +123,13 @@ class SectionHeaderContent extends React.Component {
   uploadToFolder = () => console.log("Upload To Folder click");
 
   getContextOptionsPlus = () => {
-    const { t, isPrivacyFolder, isRoomsFolder, enablePlugins } = this.props;
+    const {
+      t,
+      isPrivacyFolder,
+      isRoomsFolder,
+      enablePlugins,
+      selectedFolder,
+    } = this.props;
 
     const options = isRoomsFolder
       ? [
@@ -153,7 +159,7 @@ class SectionHeaderContent extends React.Component {
             onClick: this.createPresentation,
             icon: "images/actions.presentation.react.svg",
           },
-          {
+          !selectedFolder.private && {
             icon: "images/form.react.svg",
             label: t("Translations:NewForm"),
             key: "new-form-base",
@@ -179,6 +185,12 @@ class SectionHeaderContent extends React.Component {
                 disabled: isPrivacyFolder || (isMobile && isTablet),
               },
             ],
+          },
+          selectedFolder.private && {
+            key: "new-form",
+            label: t("Translations:NewForm"),
+            icon: "images/form.react.svg",
+            onClick: this.createForm,
           },
           {
             key: "new-folder",
@@ -612,6 +624,8 @@ class SectionHeaderContent extends React.Component {
       isEmptyPage,
       canCreateFiles,
       isEmptyArchive,
+      isDesktopClient,
+      isEncryptionSupport,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -759,7 +773,11 @@ export default inject(
 
     const selectedFolder = { ...selectedFolderStore };
 
-    const { enablePlugins } = auth.settingsStore;
+    const {
+      enablePlugins,
+      isDesktopClient,
+      isEncryptionSupport,
+    } = auth.settingsStore;
 
     const isRoom = !!roomType;
 
@@ -859,6 +877,9 @@ export default inject(
       isEmptyArchive,
       canRestoreAll,
       canDeleteAll,
+
+      isDesktopClient,
+      isEncryptionSupport,
     };
   }
 )(

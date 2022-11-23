@@ -65,7 +65,7 @@ const ArticleMainButtonContent = (props) => {
     t,
     isMobileArticle,
     canCreate,
-    isPrivacy,
+
     encryptedFile,
     encrypted,
     startUpload,
@@ -96,6 +96,8 @@ const ArticleMainButtonContent = (props) => {
     setInvitePanelOptions,
 
     isPrivateFolder,
+    isDesktopClient,
+    isEncryptionSupport,
   } = props;
 
   const isAccountsPage = selectedTreeNode[0] === "accounts";
@@ -142,7 +144,7 @@ const ArticleMainButtonContent = (props) => {
   );
 
   const onUploadFileClick = React.useCallback(() => {
-    if (isPrivacy) {
+    if (isPrivateFolder) {
       encryptionUploadDialog((encryptedFile, encrypted) => {
         encryptedFile.encrypted = encrypted;
         startUpload([encryptedFile], null, t);
@@ -151,7 +153,7 @@ const ArticleMainButtonContent = (props) => {
       inputFilesElement.current.click();
     }
   }, [
-    isPrivacy,
+    isPrivateFolder,
     encrypted,
     encryptedFile,
     encryptionUploadDialog,
@@ -225,51 +227,63 @@ const ArticleMainButtonContent = (props) => {
             className: "main-button_drop-down",
             icon: "images/actions.upload.react.svg",
             label: t("UploadFolder"),
-            disabled: isPrivacy,
+            disabled: isPrivateFolder,
             onClick: onUploadFolderClick,
             key: "upload-folder",
           },
         ]
       : [];
 
-    const formActions = [
-      {
-        id: "actions_template",
-        className: "main-button_drop-down",
-        icon: "images/form.react.svg",
-        label: t("Translations:NewForm"),
-        key: "new-form",
-        items: [
+    const formActions = isPrivateFolder
+      ? [
           {
             id: "actions_template_blank",
-            className: "main-button_drop-down_sub",
-            icon: "images/form.blank.react.svg",
-            label: t("Translations:SubNewForm"),
+            className: "main-button_drop-down",
+            icon: "images/form.react.svg",
+            label: t("Translations:NewForm"),
             onClick: onCreate,
             action: "docxf",
             key: "docxf",
           },
+        ]
+      : [
           {
-            id: "actions_template_from-file",
-            className: "main-button_drop-down_sub",
-            icon: "images/form.file.react.svg",
-            label: t("Translations:SubNewFormFile"),
-            onClick: onShowSelectFileDialog,
-            disabled: isPrivacy,
-            key: "form-file",
+            id: "actions_template",
+            className: "main-button_drop-down",
+            icon: "images/form.react.svg",
+            label: t("Translations:NewForm"),
+            key: "new-form",
+            items: [
+              {
+                id: "actions_template_blank",
+                className: "main-button_drop-down_sub",
+                icon: "images/form.blank.react.svg",
+                label: t("Translations:SubNewForm"),
+                onClick: onCreate,
+                action: "docxf",
+                key: "docxf",
+              },
+              {
+                id: "actions_template_from-file",
+                className: "main-button_drop-down_sub",
+                icon: "images/form.file.react.svg",
+                label: t("Translations:SubNewFormFile"),
+                onClick: onShowSelectFileDialog,
+                disabled: isPrivateFolder,
+                key: "form-file",
+              },
+              {
+                id: "actions_template_oforms-gallery",
+                className: "main-button_drop-down_sub",
+                icon: "images/form.gallery.react.svg",
+                label: t("Common:OFORMsGallery"),
+                onClick: onShowGallery,
+                disabled: isPrivateFolder,
+                key: "form-gallery",
+              },
+            ],
           },
-          {
-            id: "actions_template_oforms-gallery",
-            className: "main-button_drop-down_sub",
-            icon: "images/form.gallery.react.svg",
-            label: t("Common:OFORMsGallery"),
-            onClick: onShowGallery,
-            disabled: isPrivacy,
-            key: "form-gallery",
-          },
-        ],
-      },
-    ];
+        ];
 
     const actions = isAccountsPage
       ? [
@@ -391,7 +405,7 @@ const ArticleMainButtonContent = (props) => {
     setActions(actions);
   }, [
     t,
-    isPrivacy,
+    isPrivateFolder,
     currentFolderId,
     isAccountsPage,
     enablePlugins,
@@ -415,10 +429,16 @@ const ArticleMainButtonContent = (props) => {
     ? t("Common:Invite")
     : t("Common:Actions");
 
+  const canCreateEncrypted =
+    isPrivateFolder && isDesktopClient && isEncryptionSupport;
+
   const isDisabled =
-    ((!canCreate || (!canCreateFiles && !isRoomsFolder)) && !canInvite) ||
+    ((!canCreate || (!canCreateFiles && !isRoomsFolder)) &&
+      !canInvite &&
+      !isPrivateFolder) ||
     isArchiveFolder ||
-    isPrivateFolder;
+    !canCreateEncrypted;
+
   const isProfile = history.location.pathname === "/accounts/view/@self";
 
   return (
@@ -434,7 +454,7 @@ const ArticleMainButtonContent = (props) => {
             !isArticleLoading &&
             !isProfile &&
             ((canCreate && (canCreateFiles || isRoomsFolder)) || canInvite) &&
-            !isPrivateFolder && (
+            (!isPrivateFolder || canCreateEncrypted) && (
               <MobileView
                 t={t}
                 titleProp={t("Upload")}
@@ -481,17 +501,19 @@ const ArticleMainButtonContent = (props) => {
         ref={inputFilesElement}
         style={{ display: "none" }}
       />
-      <input
-        id="customFolderInput"
-        className="custom-file-input"
-        webkitdirectory=""
-        mozdirectory=""
-        type="file"
-        onChange={onFileChange}
-        onClick={onInputClick}
-        ref={inputFolderElement}
-        style={{ display: "none" }}
-      />
+      {!isPrivateFolder && (
+        <input
+          id="customFolderInput"
+          className="custom-file-input"
+          webkitdirectory=""
+          mozdirectory=""
+          type="file"
+          onChange={onFileChange}
+          onClick={onInputClick}
+          ref={inputFolderElement}
+          style={{ display: "none" }}
+        />
+      )}
     </>
   );
 };
@@ -508,7 +530,6 @@ export default inject(
   }) => {
     const { isLoaded, firstLoad, isLoading, canCreate } = filesStore;
     const {
-      isPrivacyFolder,
       isFavoritesFolder,
       isRecentFolder,
       isCommonFolder,
@@ -523,7 +544,12 @@ export default inject(
 
     const isArticleLoading = (!isLoaded || isLoading) && firstLoad;
 
-    const { enablePlugins, currentColorScheme } = auth.settingsStore;
+    const {
+      enablePlugins,
+      currentColorScheme,
+      isDesktopClient,
+      isEncryptionSupport,
+    } = auth.settingsStore;
 
     const currentFolderId = selectedFolderStore.id;
 
@@ -538,7 +564,7 @@ export default inject(
       isMobileArticle: auth.settingsStore.isMobileArticle,
 
       isArticleLoading,
-      isPrivacy: isPrivacyFolder,
+
       isFavoritesFolder,
       isRecentFolder,
       isCommonFolder,
@@ -569,6 +595,8 @@ export default inject(
       isVisitor,
 
       isPrivateFolder,
+      isDesktopClient,
+      isEncryptionSupport,
     };
   }
 )(

@@ -48,6 +48,7 @@ const EmptyContainer = ({
     <EmptyFilterContainer linkStyles={linkStyles} />
   ) : isPrivateFolder ? (
     <PrivateFolderContainer
+      onCreate={onCreate}
       linkStyles={linkStyles}
       sectionWidth={sectionWidth}
     />

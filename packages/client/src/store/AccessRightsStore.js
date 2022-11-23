@@ -52,7 +52,13 @@ class AccessRightsStore {
       private: isPrivateFolder,
     } = this.selectedFolderStore;
 
-    if (isPrivateFolder) return false;
+    const {
+      isDesktopClient,
+      isEncryptionSupport,
+    } = this.authStore.settingsStore;
+
+    if (isPrivateFolder && (!isDesktopClient || !isEncryptionSupport))
+      return false;
 
     if (rootFolderType === FolderType.Archive) return false;
 
