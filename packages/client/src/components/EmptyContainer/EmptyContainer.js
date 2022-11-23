@@ -53,6 +53,10 @@ const EmptyFolderWrapper = styled.div`
       grid-column-gap: 8px;
     }
 
+    .list-container {
+      gap: 8px;
+    }
+
     .second-description {
       display: grid;
       grid-template-columns: 1fr;

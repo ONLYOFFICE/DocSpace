@@ -6,6 +6,7 @@ import EmptyFolderContainer from "./EmptyFolderContainer";
 import { FileAction } from "@docspace/common/constants";
 import { isMobile } from "react-device-detect";
 import { Events } from "@docspace/common/constants";
+import PrivateFolderContainer from "./PrivateFolderContainer";
 
 const linkStyles = {
   isHovered: true,
@@ -19,8 +20,8 @@ const EmptyContainer = ({
   isFiltered,
   parentId,
   theme,
-  setCreateRoomDialogVisible,
   sectionWidth,
+  isPrivateFolder,
 }) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
@@ -45,6 +46,11 @@ const EmptyContainer = ({
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
+  ) : isPrivateFolder ? (
+    <PrivateFolderContainer
+      linkStyles={linkStyles}
+      sectionWidth={sectionWidth}
+    />
   ) : parentId === 0 ? (
     <RootFolderContainer
       onCreate={onCreate}
@@ -119,6 +125,7 @@ export default inject(
       setCreateRoomDialogVisible,
 
       parentId: selectedFolderStore.parentId,
+      isPrivateFolder: selectedFolderStore.private,
     };
   }
 )(observer(EmptyContainer));
