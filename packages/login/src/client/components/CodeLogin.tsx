@@ -63,11 +63,11 @@ const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
   };
 
   const logo = Object.values(logoUrls)[1];
-  const loginLogo = theme === Dark ? logo.darkPath : logo.lightPath;
+  const logoUrl = !theme.isBase ? logo.path.dark : logo.path.light;
 
   return (
     <LoginContainer id="code-page" theme={theme}>
-      <img src={loginLogo} className="logo-wrapper" />
+      <img src={logoUrl} className="logo-wrapper" />
       <Text
         id="workspace-title"
         fontSize="23px"
