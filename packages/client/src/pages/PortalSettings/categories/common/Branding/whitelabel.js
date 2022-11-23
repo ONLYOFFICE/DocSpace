@@ -23,7 +23,6 @@ const WhiteLabel = (props) => {
     isSettingPaid,
     logoText,
     logoUrls,
-    logoSizes,
     restoreWhiteLabelSettings,
     getWhiteLabelLogoUrls,
   } = props;
@@ -75,6 +74,30 @@ const WhiteLabel = (props) => {
     } catch (error) {
       toastr.error(error);
     }
+  };
+
+  const onChangeLogo = (e) => {
+    const id = e.target.id.split("_");
+    const index = id[1];
+    const theme = id[2];
+
+    let file = e.target.files[0];
+
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const img = e.target.result;
+
+      const newArr = logoUrlsWhiteLabel;
+
+      if (theme === "light") {
+        newArr[index - 1].path.light = img;
+      } else if (theme === "dark") {
+        newArr[index - 1].path.dark = img;
+      }
+
+      setLogoUrlsWhiteLabel(newArr);
+    };
   };
 
   return !isLoadedData ? (
@@ -148,15 +171,19 @@ const WhiteLabel = (props) => {
               title={t("Profile:LightTheme")}
               src={logoUrlsWhiteLabel[0].path.light}
               imageClass="logo-header background-light"
-              inputId="logoUploader_1"
+              inputId="logoUploader_1_light"
               onChangeText={t("ChangeLogoButton")}
+              onChange={onChangeLogo}
+              isSettingPaid={isSettingPaid}
             />
             <Logo
               title={t("Profile:DarkTheme")}
               src={logoUrlsWhiteLabel[0].path.dark}
               imageClass="logo-header background-dark"
-              inputId="logoUploader_1"
+              inputId="logoUploader_1_dark"
               onChangeText={t("ChangeLogoButton")}
+              onChange={onChangeLogo}
+              isSettingPaid={isSettingPaid}
             />
           </div>
         </div>
@@ -175,15 +202,19 @@ const WhiteLabel = (props) => {
               title={t("Profile:LightTheme")}
               src={logoUrlsWhiteLabel[5].path.light}
               imageClass="border-img logo-compact background-light"
-              inputId="logoUploader_6"
+              inputId="logoUploader_6_light"
               onChangeText={t("ChangeLogoButton")}
+              onChange={onChangeLogo}
+              isSettingPaid={isSettingPaid}
             />
             <Logo
               title={t("Profile:DarkTheme")}
               src={logoUrlsWhiteLabel[5].path.dark}
               imageClass="border-img logo-compact background-dark"
-              inputId="logoUploader_6"
+              inputId="logoUploader_6_dark"
               onChangeText={t("ChangeLogoButton")}
+              onChange={onChangeLogo}
+              isSettingPaid={isSettingPaid}
             />
           </div>
         </div>
@@ -202,15 +233,19 @@ const WhiteLabel = (props) => {
               title={t("Profile:LightTheme")}
               src={logoUrlsWhiteLabel[1].path.light}
               imageClass="border-img logo-big"
-              inputId="logoUploader_2"
+              inputId="logoUploader_2_light"
               onChangeText={t("ChangeLogoButton")}
+              onChange={onChangeLogo}
+              isSettingPaid={isSettingPaid}
             />
             <Logo
               title={t("Profile:DarkTheme")}
               src={logoUrlsWhiteLabel[1].path.dark}
               imageClass="border-img logo-big background-dark"
-              inputId="logoUploader_2"
+              inputId="logoUploader_2_dark"
               onChangeText={t("ChangeLogoButton")}
+              onChange={onChangeLogo}
+              isSettingPaid={isSettingPaid}
             />
           </div>
         </div>
@@ -229,15 +264,19 @@ const WhiteLabel = (props) => {
               title={t("Profile:LightTheme")}
               src={logoUrlsWhiteLabel[6].path.light}
               imageClass="border-img logo-about"
-              inputId="logoUploader_7"
+              inputId="logoUploader_7_light"
               onChangeText={t("ChangeLogoButton")}
+              onChange={onChangeLogo}
+              isSettingPaid={isSettingPaid}
             />
             <Logo
               title={t("Profile:DarkTheme")}
               src={logoUrlsWhiteLabel[6].path.dark}
               imageClass="border-img logo-about background-dark"
-              inputId="logoUploader_7"
+              inputId="logoUploader_7_dark"
               onChangeText={t("ChangeLogoButton")}
+              onChange={onChangeLogo}
+              isSettingPaid={isSettingPaid}
             />
           </div>
         </div>
@@ -254,8 +293,10 @@ const WhiteLabel = (props) => {
           <Logo
             src={logoUrlsWhiteLabel[2].path.light}
             imageClass="border-img logo-favicon"
-            inputId="logoUploader_3"
+            inputId="logoUploader_3_light"
             onChangeText={t("ChangeLogoButton")}
+            onChange={onChangeLogo}
+            isSettingPaid={isSettingPaid}
           />
         </div>
 
@@ -271,8 +312,10 @@ const WhiteLabel = (props) => {
           <Logo
             isEditor={true}
             src={logoUrlsWhiteLabel[3].path.light}
-            inputId="logoUploader_4"
+            inputId="logoUploader_4_light"
             onChangeText={t("ChangeLogoButton")}
+            onChange={onChangeLogo}
+            isSettingPaid={isSettingPaid}
           />
         </div>
 
@@ -288,8 +331,10 @@ const WhiteLabel = (props) => {
           <Logo
             src={logoUrlsWhiteLabel[4].path.light}
             imageClass="border-img logo-embedded-editor"
-            inputId="logoUploader_5"
+            inputId="logoUploader_5_light"
             onChangeText={t("ChangeLogoButton")}
+            onChange={onChangeLogo}
+            isSettingPaid={isSettingPaid}
           />
         </div>
       </div>

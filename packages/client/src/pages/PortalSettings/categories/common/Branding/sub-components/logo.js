@@ -13,6 +13,7 @@ const Logo = (props) => {
     imageClass,
     isEditor,
   } = props;
+
   return (
     <div>
       <div className="logo-item">
@@ -36,7 +37,7 @@ const Logo = (props) => {
           id={inputId}
           type="file"
           className="hidden"
-          //onChange={onChange}
+          onChange={onChange}
           disabled={!isSettingPaid}
         />
         <Link
