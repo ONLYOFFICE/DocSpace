@@ -8,62 +8,35 @@ import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
 import Loaders from "@docspace/common/components/Loaders";
-import RoomsFilter from "@docspace/common/api/rooms/filter";
-import { combineUrl } from "@docspace/common/utils";
-import { getCategoryUrl } from "SRC_DIR/helpers/utils";
-import { AppServerConfig } from "@docspace/common/constants";
-import history from "@docspace/common/history";
-import config from "PACKAGE_FILE";
-import PlusIcon from "@docspace/client/public/images/plus.react.svg";
-
-const StyledPlusIcon = styled(PlusIcon)`
-  path {
-    fill: #657077;
-  }
-`;
 
 const PrivateFolderContainer = (props) => {
   const {
     t,
     theme,
-    isPrivacyFolder,
+
     isDesktop,
     isEncryptionSupport,
     organizationName,
     privacyInstructions,
-    title,
-    onCreate,
-    onCreateRoom,
-    myFolderId,
-    filter,
-    fetchFiles,
-    setIsLoading,
-    rootFolderType,
-    linkStyles,
+
     isLoading,
     viewAs,
-    fetchRooms,
-    setAlreadyFetchingRooms,
-    categoryType,
+
     isEmptyPage,
     setIsEmptyPage,
-    isVisitor,
+
     sectionWidth,
   } = props;
 
   const [showLoader, setShowLoader] = React.useState(false);
 
   React.useEffect(() => {
-    if (rootFolderType !== FolderType.COMMON) {
-      setIsEmptyPage(true);
-    } else {
-      setIsEmptyPage(false);
-    }
+    setIsEmptyPage(true);
 
     return () => {
       setIsEmptyPage(false);
     };
-  }, [isEmptyPage, setIsEmptyPage, rootFolderType]);
+  }, [setIsEmptyPage]);
 
   const privateRoomHeader = t("PrivateRoomHeader");
   const privacyIcon = <img alt="" src="images/privacy.svg" />;
@@ -139,52 +112,38 @@ const PrivateFolderContainer = (props) => {
   );
 };
 
-export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const {
-      isDesktopClient,
-      isEncryptionSupport,
-      organizationName,
-      theme,
-    } = auth.settingsStore;
+export default inject(({ auth, filesStore }) => {
+  const {
+    isDesktopClient,
+    isEncryptionSupport,
+    organizationName,
+    theme,
+  } = auth.settingsStore;
 
-    const {
-      filter,
-      fetchFiles,
-      privacyInstructions,
-      isLoading,
-      setIsLoading,
-      viewAs,
-      fetchRooms,
-      categoryType,
-      setAlreadyFetchingRooms,
-      isEmptyPage,
-      setIsEmptyPage,
-    } = filesStore;
-    const { title, rootFolderType } = selectedFolderStore;
-    const { isPrivacyFolder, myFolderId } = treeFoldersStore;
+  const {
+    privacyInstructions,
+    isLoading,
 
-    return {
-      theme,
-      isPrivacyFolder,
-      isDesktop: isDesktopClient,
-      isVisitor: auth.userStore.user.isVisitor,
-      isEncryptionSupport,
-      organizationName,
-      privacyInstructions,
-      title,
-      myFolderId,
-      filter,
-      fetchFiles,
-      isLoading,
-      setIsLoading,
-      rootFolderType,
-      viewAs,
-      fetchRooms,
-      categoryType,
-      setAlreadyFetchingRooms,
-      isEmptyPage,
-      setIsEmptyPage,
-    };
-  }
-)(withTranslation(["Files"])(observer(PrivateFolderContainer)));
+    viewAs,
+
+    isEmptyPage,
+    setIsEmptyPage,
+  } = filesStore;
+
+  return {
+    theme,
+
+    isDesktop: isDesktopClient,
+    isVisitor: auth.userStore.user.isVisitor,
+    isEncryptionSupport,
+    organizationName,
+    privacyInstructions,
+
+    isLoading,
+
+    viewAs,
+
+    isEmptyPage,
+    setIsEmptyPage,
+  };
+})(withTranslation(["Files"])(observer(PrivateFolderContainer)));
