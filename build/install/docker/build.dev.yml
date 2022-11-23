@@ -92,6 +92,13 @@ services:
       target: api
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api:${DOCKER_TAG}"
 
+  onlyoffice-api-system:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: api_system
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
+
   onlyoffice-studio:
     build:
       context: ./

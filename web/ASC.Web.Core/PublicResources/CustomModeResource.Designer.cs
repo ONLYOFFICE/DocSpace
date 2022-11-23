@@ -61,22 +61,19 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Dear $UserName,
+        ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your user profile has been successfully added to the portal at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Get started with it today!
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to ____onlyoffice.io. Now you can:
         ///
-        ///h3.Start working with Documents:
+        ///*#* Work with other users in the room you are invited to: *view-only, review, collaboration, custom rooms*.
         ///
-        ///# Create and edit text documents, spreadsheet and presentations.
-        ///# Connect cloud storages you use to create a single workspace for all of your docs.
-        ///# Share documents with your team members.
-        ///# Explore different ways of working on docs together: two real-time co-editing modes, review, comments, chat.
+        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///h3.Try add [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time usin [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_user_welcome_custom_mode {
+        public static string pattern_enterprise_whitelabel_user_welcome_custom_mode_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_user_welcome_custom_mode", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_whitelabel_user_welcome_custom_mode_v1", resourceCulture);
             }
         }
         
@@ -98,22 +95,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string pattern_personal_custom_mode_after_registration1 {
             get {
                 return ResourceManager.GetString("pattern_personal_custom_mode_after_registration1", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to $PersonalHeaderStart Connect your favorite cloud storage to ONLYOFFICE $PersonalHeaderEnd
-        ///
-        ///It has been a week since you created your cloud office, so we believe it&apos;s time to unveil some tips and recommendations on how to make your work even more effective.
-        ///
-        ///*Bring all your docs together*
-        ///
-        ///Connect Dropbox, Google Drive, Box, OneDrive, Nextcloud, ownCloud, kDrive, or Yandex.Disk to ONLYOFFICE and create a single document management space for all your documents.
-        ///&quot;Learn more&quot;:&quot;https://helpcenter.onlyoffice.com/ [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string pattern_personal_custom_mode_after_registration8 {
-            get {
-                return ResourceManager.GetString("pattern_personal_custom_mode_after_registration8", resourceCulture);
             }
         }
         

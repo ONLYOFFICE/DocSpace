@@ -135,6 +135,7 @@ class Filter {
         break;
       case "manager":
         dtoFilter.employeeType = 1;
+        dtoFilter.isadministrator = "false";
         break;
       case "user":
         dtoFilter.employeeType = 2;

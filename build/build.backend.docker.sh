@@ -38,8 +38,13 @@ echo "SERVICE_DOCEDITOR: $doceditor"
 echo "SERVICE_LOGIN: $login"
 echo "SERVICE_CLIENT: $client"
 
-echo "Stop all backend services"
+# Stop all backend services"
 $dir/build/start/stop.backend.docker.sh
+
+echo "Remove all backend containers"
+docker rm -f $(docker ps -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $1}')
+echo "Remove all backend images"
+docker rmi -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
 
 echo "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'"
 docker image rm -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
@@ -68,7 +73,9 @@ if [ "$1" = "--no_ds" ]; then
     echo "SKIP Document server"
 else 
     echo "Run Document server"
-    docker compose -f ds.yml up -d
+    DOCUMENT_SERVER_IMAGE_NAME=onlyoffice/documentserver-de:latest \
+    ROOT_DIR=$dir \
+    docker compose -f ds.dev.yml up -d
 fi
 
 echo "Build all backend services"
@@ -86,5 +93,5 @@ echo "Run DB migration"
 DOCKERFILE=$docker_file \
 docker compose -f migration-runner.yml up -d
 
-echo "Start all backend services"
+# Start all backend services"
 $dir/build/start/start.backend.docker.sh

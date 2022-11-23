@@ -11,6 +11,7 @@ import TextInput from "@docspace/components/text-input";
 import HelpButton from "@docspace/components/help-button";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import Badge from "@docspace/components/badge";
+import toastr from "@docspace/components/toast/toastr";
 
 import { Base } from "@docspace/components/themes";
 import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
@@ -67,9 +68,9 @@ const StyledComponent = styled.div`
   }
 
   .logo-header {
-    width: 142px;
-    height: 23px;
-    padding: 10px;
+    width: 211px;
+    height: 24px;
+    padding: 12px 20px;
     background-color: ${(props) =>
       props.theme.client.settings.common.whiteLabel.backgroundColor};
   }
@@ -163,6 +164,8 @@ const WhiteLabel = (props) => {
   const [editorsHeaderLabel, setEditorsHeaderLabel] = useState();
   const [logoEditorsEmbeddedLabel, setLogoEditorsEmbeddedLabel] = useState();
 
+  const [isSaving, setIsSaving] = useState(false);
+
   useEffect(() => {
     if (logoText) {
       setLogoTextWhiteLabel(logoText);
@@ -174,6 +177,10 @@ const WhiteLabel = (props) => {
       setLogoUrlsWhiteLabel(logoUrls);
     }
   }, [logoUrls]);
+
+  useEffect(() => {
+    setLogoSizes(mapSizesToArray(logoSizes));
+  }, [logoSizes]);
 
   useEffect(() => {
     if (
@@ -285,6 +292,26 @@ const WhiteLabel = (props) => {
     setIsUseTextAsLogo(false);
   }, [isCanvasProcessing, isUseTextAsLogo]);
 
+  useEffect(() => {
+    if (isCanvasProcessing) {
+      let logosArr = [];
+      for (let i = 0; i < 7; i++) {
+        const id = String(i + 1);
+        const canvas =
+          id === "4"
+            ? document.getElementById(`canvas_logo_${id}_1`)
+            : document.getElementById(`canvas_logo_${id}`);
+
+        const changeImg = {
+          id,
+          src: canvas.toDataURL(),
+        };
+        logosArr.push(changeImg);
+      }
+      setLogoUrlsChange(logosArr);
+    }
+  }, [isCanvasProcessing]);
+
   const onUseTextAsLogo = () => {
     setIsCanvasProcessing(true);
     setIsUseTextAsLogo(true);
@@ -297,27 +324,43 @@ const WhiteLabel = (props) => {
   };
 
   const onRestoreLogo = () => {
-    restoreWhiteLabelSettings(true);
-    setIsCanvasProcessing(false);
+    try {
+      restoreWhiteLabelSettings(true);
+      setIsCanvasProcessing(false);
+      setLogoUrlsChange([]);
+      getWhiteLabelLogoUrls();
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
   };
 
-  const onSave = () => {
-    let fd = new FormData();
-    fd.append("logoText", logoTextWhiteLabel);
+  const onSave = async () => {
+    let logoArr = [];
 
-    for (let i = 0; i < 7; i++) {
-      fd.append(`logo[${i}][key]`, i + 1);
-      fd.append(`logo[${i}][value]`, logoUrlsWhiteLabel[i]);
-    }
+    logoUrlsChange.map((item) => {
+      logoArr.push({ key: item.id, value: item.src });
+    });
 
-    const data = new URLSearchParams(fd);
-    console.log(data);
+    const data = {
+      logoText: logoTextWhiteLabel,
+      logo: logoArr,
+    };
 
-    setWhiteLabelSettings(data).finally(() => {
+    setIsSaving(true);
+
+    try {
+      await setWhiteLabelSettings(data);
+      setLogoUrlsChange([]);
       getWhiteLabelLogoText();
       getWhiteLabelLogoSizes();
       getWhiteLabelLogoUrls();
-    });
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const onChangeLogo = (e) => {
@@ -414,19 +457,19 @@ const WhiteLabel = (props) => {
               !logoUrlsChange.some((obj) => obj.id === "1") ? (
                 <canvas
                   id="canvas_logo_1"
-                  className="border-img logo-header"
+                  className="logo-header"
                   width="251"
                   height="48"
                   data-fontsize="36"
                   data-fontcolor={
-                    theme.client.settings.common.whiteLabel.dataFontColor
+                    theme.client.settings.common.whiteLabel.dataFontColorBlack
                   }
                 >
                   {t("BrowserNoCanvasSupport")}
                 </canvas>
               ) : (
                 <img
-                  className="border-img logo-header"
+                  className="logo-header"
                   src={
                     logoUrlsChange &&
                     logoUrlsChange.some((obj) => obj.id === "1")
@@ -474,7 +517,7 @@ const WhiteLabel = (props) => {
                   height="56"
                   data-fontsize="36"
                   data-fontcolor={
-                    theme.client.settings.common.whiteLabel.dataFontColor
+                    theme.client.settings.common.whiteLabel.dataFontColorBlack
                   }
                 >
                   {t("BrowserNoCanvasSupport")}
@@ -838,34 +881,36 @@ const WhiteLabel = (props) => {
           </div>
         </div>
 
-        {isSettingPaid && (
-          <SaveCancelButtons
-            tabIndex={3}
-            className="save-cancel-buttons"
-            onSaveClick={onSave}
-            onCancelClick={onRestoreLogo}
-            saveButtonLabel={t("Common:SaveButton")}
-            cancelButtonLabel={t("RestoreDefaultButton")}
-            displaySettings={true}
-            showReminder={true}
-          />
-        )}
+        <SaveCancelButtons
+          tabIndex={3}
+          className="save-cancel-buttons"
+          onSaveClick={onSave}
+          onCancelClick={onRestoreLogo}
+          saveButtonLabel={t("Common:SaveButton")}
+          cancelButtonLabel={t("RestoreDefaultButton")}
+          displaySettings={true}
+          showReminder={isSettingPaid}
+          saveButtonDisabled={logoUrlsChange.length === 0}
+          isSaving={isSaving}
+        />
       </div>
     </StyledComponent>
   );
 };
 
 export default inject(({ setup, auth, common }) => {
-  const { setWhiteLabelSettings, restoreWhiteLabelSettings } = setup;
-
-  const { whiteLabelLogoSizes, whiteLabelLogoText } = common;
+  const { setWhiteLabelSettings } = setup;
 
   const {
-    whiteLabelLogoUrls,
+    whiteLabelLogoSizes,
+    whiteLabelLogoText,
     getWhiteLabelLogoText,
     getWhiteLabelLogoSizes,
-    getWhiteLabelLogoUrls,
-  } = auth.settingsStore;
+    whiteLabelLogoUrls,
+    restoreWhiteLabelSettings,
+  } = common;
+
+  const { getWhiteLabelLogoUrls } = auth.settingsStore;
 
   return {
     theme: auth.settingsStore.theme,

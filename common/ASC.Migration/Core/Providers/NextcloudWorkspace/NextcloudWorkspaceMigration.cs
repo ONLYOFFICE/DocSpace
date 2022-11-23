@@ -456,7 +456,7 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
             .Select(m => m.Groups[1].Value.Trim(new[] { '(', ')' }));
     }
 
-    public override Task Migrate(MigrationApiInfo migrationApiInfo)
+    public override async Task Migrate(MigrationApiInfo migrationApiInfo)
     {
         ReportProgress(0, MigrationResource.PreparingForMigration);
         _migrationInfo.Merge(migrationApiInfo);
@@ -471,12 +471,12 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
         var i = 1;
         foreach (var user in usersForImport)
         {
-            if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return null; }
+            if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return; }
             ReportProgress(GetProgress() + progressStep, string.Format(MigrationResource.UserMigration, user.DisplayName, i++, usersCount));
             try
             {
                 user.dataСhange(migrationApiInfo.Users.Find(element => element.Key == user.Key));
-                user.Migrate();
+                await user.Migrate();
                 _importedUsers.Add(user.Guid);
             }
             catch (Exception ex)
@@ -497,7 +497,7 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
             i = 1;
             foreach (var group in groupsForImport)
             {
-                if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return null; }
+                if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return; }
                 ReportProgress(GetProgress() + progressStep, string.Format(MigrationResource.GroupMigration, group.GroupName, i++, groupsCount));
                 try
                 {
@@ -505,7 +505,7 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
                     .Where(user => group.UserUidList.Exists(u => user.Key == u))
                     .Select(u => u)
                     .ToDictionary(k => k.Key, v => v.Value.Guid);
-                    group.Migrate();
+                    await group.Migrate();
                 }
                 catch (Exception ex)
                 {
@@ -517,7 +517,7 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
         i = 1;
         foreach (var user in usersForImport)
         {
-            if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return null; }
+            if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return; }
             if (failedUsers.Contains(user))
             {
                 ReportProgress(GetProgress() + progressStep, string.Format(MigrationResource.UserSkipped, user.DisplayName, i, usersCount));
@@ -528,7 +528,7 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
 
             try
             {
-                user.MigratingContacts.Migrate();
+                await user.MigratingContacts.Migrate();
             }
             catch (Exception ex)
             {
@@ -558,7 +558,7 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
                 _securityContext.AuthenticateMe(user.Guid);
                 user.MigratingFiles.SetUsersDict(usersForImport.Except(failedUsers));
                 user.MigratingFiles.SetGroupsDict(groupsForImport);
-                user.MigratingFiles.Migrate();
+                await user.MigratingFiles.Migrate();
                 _securityContext.AuthenticateMe(currentUser.ID);
             }
             catch (Exception ex)
@@ -577,6 +577,5 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
             Directory.Delete(_tmpFolder, true);
         }
         ReportProgress(100, MigrationResource.MigrationCompleted);
-        return Task.CompletedTask;
     }
 }

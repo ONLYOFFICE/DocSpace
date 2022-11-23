@@ -45,4 +45,6 @@ app.use(cookieParser());
 app.get('/', short.make);
 app.get('/*', short.redirect);
 
-app.listen(config.get("app").port);
+const port = config.get("app").port;
+
+app.listen(port, () => log.info(`Server started on port: ${port}`));

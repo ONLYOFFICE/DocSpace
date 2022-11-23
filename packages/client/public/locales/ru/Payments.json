@@ -3,7 +3,7 @@
   "ActivateBusinessPlan": "Активировать {{planName}} план?",
   "AdministratorDescription": "Настройка DocSpace, создание и администрирование комнат, возможность приглашать пользователей и управлять ими в DocSpace и в виртуальных комнатах, возможность управлять правами доступа.",
   "Benefits": "Преимущества",
-  "PlanTitle": "Вы используете {{planName}} план",
+  "BusinessTitle": "Вы используете {{planName}} план",
   "BusinessSuggestion": "Настройте свой {{planName}} план",
   "BusinessFinalDateInfo": "Подписка будет автоматически продлена {{finalDate}} с обновленными ценами и техническими характеристиками. Вы можете отменить его или изменить свою платежную информацию на клиентский портал Stripe.",
   "BusinessRequestDescription": "Тарифные планы с более чем {{peopleNumber}} менеджерами доступны только по запросу",
@@ -37,6 +37,6 @@
   "SendRequest": "Отправить запрос",
   "TotalPricePerMonth": "<1>{{currencySymbol}}</1><2>{{price}}</2><3>/месяц</3>",
   "UpgradeNow": "Обновить прямо сейчас",
-  "UserNotFound": "Пользователь <1>«{{email}}»</1> не найден",
+  "UserNotFound": "Пользователь <1>{{email}}</1> не найден",
   "YourPrice": "Ваша стоимость"
 }

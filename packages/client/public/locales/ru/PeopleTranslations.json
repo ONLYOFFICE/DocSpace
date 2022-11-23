@@ -23,6 +23,7 @@
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
   "SuccessDeletePersonalData": "Персональные данные успешно удалены",
   "SuccessSentInvitation": "Приглашение было успешно отправлено",
+  "SuccessSentMultipleInvitatios": "Приглашения были успешно отправлены",
   "maxSizeFileError": "Превышен максимальный размер файла",
   "orDropFileHereLabel": "или перетащите файл сюда",
   "selectNewPhotoLabel": "Выбрать новое фото"

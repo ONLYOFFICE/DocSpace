@@ -41,17 +41,17 @@ builder.Configuration.AddDefaultConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 
-var logger = NLog.LogManager.Setup()
+var logger = LogManager.Setup()
                             .SetupExtensions(s =>
                             {
-                                s.RegisterLayoutRenderer("application-context", (logevent) => Program.AppName);
+                                s.RegisterLayoutRenderer("application-context", (logevent) => AppName);
                             })
                             .LoadConfiguration(builder.Configuration, builder.Environment)
                             .GetLogger(typeof(Startup).Namespace);
 
 try
 {
-    logger.Info("Configuring web host ({applicationContext})...", Program.AppName);
+    logger.Info("Configuring web host ({applicationContext})...", AppName);
     builder.Host.ConfigureDefault();
 
     builder.WebHost.ConfigureDefaultKestrel((hostingContext, serverOptions) =>
@@ -62,7 +62,7 @@ try
         serverOptions.Limits.MinResponseDataRate = null;
     });
 
-    var startup = new ASC.Files.Startup(builder.Configuration, builder.Environment);
+    var startup = new Startup(builder.Configuration, builder.Environment);
 
     startup.ConfigureServices(builder.Services);
 
@@ -75,14 +75,14 @@ try
 
     startup.Configure(app, app.Environment);
 
-    logger.Info("Starting web host ({applicationContext})...", Program.AppName);
+    logger.Info("Starting web host ({applicationContext})...", AppName);
     await app.RunWithTasksAsync();
 }
 catch (Exception ex)
 {
     if (logger != null)
     {
-        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", Program.AppName);
+        logger.Error(ex, "Program terminated unexpectedly ({applicationContext})!", AppName);
     }
 
     throw;
@@ -90,7 +90,7 @@ catch (Exception ex)
 finally
 {
     // Ensure to flush and stop internal timers/threads before application-exit (Avoid segmentation fault on Linux)
-    NLog.LogManager.Shutdown();
+    LogManager.Shutdown();
 }
 
 public partial class Program

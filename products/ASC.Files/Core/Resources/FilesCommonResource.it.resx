@@ -154,9 +154,6 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Annullato</value>
   </data>
-  <data name="EditorMentions" xml:space="preserve">
-    <value>Notifica quando menzionato nel documento</value>
-  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Richiesta non valida.</value>
   </data>
@@ -165,9 +162,6 @@
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
     <value>La conversione sta impiegando troppo tempo</value>
-  </data>
-  <data name="ErrorMassage_CreateNewFolderInTrash" xml:space="preserve">
-    <value>Non è consentito creare cartelle nel cestino</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
     <value>Si è verificato un errore nel servizio di conversione </value>
@@ -196,9 +190,6 @@
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
     <value>File maggiori di {0} non saranno spostati</value>
   </data>
-  <data name="ErrorMassage_FileSizeZip" xml:space="preserve">
-    <value>Il file superiore a {0} non sarà archiviato</value>
-  </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
     <value>E' impossibile copiare la cartella nella sua sottocartella</value>
   </data>
@@ -211,9 +202,6 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Il file è attualmente bloccato da un altro utente</value>
   </data>
-  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>Non ci sono account disponibili per inviare un messaggio. Andare nella Posta e collegare la cassetta postale.</value>
-  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Non è stato possibile eseguire l'invio di almeno {0} mail. Si prega di controllare il Modulo mail per conoscere il motivo del errore.</value>
   </data>
@@ -222,9 +210,6 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Scusa, questo formato file non è supportato</value>
-  </data>
-  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>Operazione annullata</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Autore del salvataggio sconosciuto</value>
@@ -340,30 +325,6 @@ Massima compatibilità con docx, xlsx, pptx.</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Creare e modificare i propri documenti e anche i documenti condivisi con i diritti di accesso adatti|Concedere l'accesso agli altri utenti per leggere/modificare i documenti e le cartelle|Collegare Dropbox, Box e altri account nella sezione 'I miei documenti'</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} eliminato</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Ricerca</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Inviami una notifica quando qualcuno condivide una cartella</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Notifica quando il documento è stato firmato con Docusign</value>
-  </data>
-  <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Notifica al cambio di status del documento su Docusign</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Inviami una notifica quando qualcuno condivide un documento</value>
-  </data>
-  <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Notifica quando la spedizione è completata</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Documenti di {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Nome</value>

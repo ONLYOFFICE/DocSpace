@@ -37,9 +37,13 @@ const StyledInner = styled.div`
   border-radius: ${(props) => props.borderRadius};
   padding: ${(props) => props.padding};
   max-width: ${(props) => props.maxWidth};
+  height: ${(props) => props.height};
   text-align: center;
   user-select: none;
   line-height: ${(props) => props.lineHeight};
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 StyledInner.defaultProps = { theme: Base };

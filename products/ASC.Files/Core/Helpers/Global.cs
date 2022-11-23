@@ -250,12 +250,12 @@ public class GlobalStore
 [Scope]
 public class GlobalSpace
 {
-    private readonly FilesUserSpaceUsage _filesUserSpaceUsage;
+    private readonly FilesSpaceUsageStatManager _filesSpaceUsageStatManager;
     private readonly AuthContext _authContext;
 
-    public GlobalSpace(FilesUserSpaceUsage filesUserSpaceUsage, AuthContext authContext)
+    public GlobalSpace(FilesSpaceUsageStatManager filesSpaceUsageStatManager, AuthContext authContext)
     {
-        _filesUserSpaceUsage = filesUserSpaceUsage;
+        _filesSpaceUsageStatManager = filesSpaceUsageStatManager;
         _authContext = authContext;
     }
 
@@ -266,7 +266,7 @@ public class GlobalSpace
 
     public Task<long> GetUserUsedSpaceAsync(Guid userId)
     {
-        return _filesUserSpaceUsage.GetUserSpaceUsageAsync(userId);
+        return _filesSpaceUsageStatManager.GetUserSpaceUsageAsync(userId);
     }
 }
 

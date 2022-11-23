@@ -1,29 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
+
+import Base from "../themes/base";
 import Loader from "../loader";
 import StyledButton from "./styled-button";
-import Base from "../themes/base";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 // eslint-disable-next-line no-unused-vars, react/prop-types
 const Button = React.forwardRef((props, ref) => {
-  const { primary, size, isLoading, icon, label } = props;
+  const { isLoading, icon, label, primary } = props;
   return (
     <ColorTheme {...props} innerRef={ref} themeId={ThemeType.Button}>
+      {isLoading && (
+        <Loader
+          className="loader"
+          size="20px"
+          type="track"
+          label={label}
+          primary={primary}
+        />
+      )}
       <div className="button-content">
-        {(isLoading || icon) &&
-          (isLoading ? (
-            <Loader
-              type="oval"
-              size={
-                size === "medium" ? "20px" : size === "normal" ? "16px" : "12px"
-              }
-              color={primary ? "#FFFFFF" : "#333333"}
-              className="loader"
-            />
-          ) : (
-            <div className="icon">{icon}</div>
-          ))}
+        {icon && <div className="icon">{icon}</div>}
         {label}
       </div>
     </ColorTheme>
@@ -35,7 +33,7 @@ Button.propTypes = {
   label: PropTypes.string,
   /** Tells when the button should be primary */
   primary: PropTypes.bool,
-  /** Size of button.     
+  /** Size of button.
 
    The normal size equals 36px and 40px in height on the Desktop and Touchcreen devices. */
   size: PropTypes.oneOf([
@@ -43,8 +41,6 @@ Button.propTypes = {
     "small",
     "normal",
     "medium",
-    "normalDesktop",
-    "normalTouchscreen",
   ]),
   /** Scale width of button to 100% */
   scale: PropTypes.bool,

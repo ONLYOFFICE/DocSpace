@@ -78,6 +78,7 @@ const SectionFilterContent = ({
     newFilter.page = 0;
 
     newFilter.role = role;
+
     newFilter.group = group;
 
     setIsLoading(true);
@@ -114,22 +115,26 @@ const SectionFilterContent = ({
 
     const statusItems = [
       {
+        id: "filter_status-user",
         key: "filter-status",
         group: "filter-status",
         label: t("UserStatus"),
         isHeader: true,
       },
       {
+        id: "filter_status-active",
         key: 1,
         group: "filter-status",
         label: t("Common:Active"),
       },
       {
+        id: "filter_status-pending",
         key: 2,
         group: "filter-status",
         label: t("PeopleTranslations:PendingTitle"),
       },
       {
+        id: "filter_status-disabled",
         key: 3,
         group: "filter-status",
         label: t("PeopleTranslations:DisabledEmployeeStatus"),
@@ -144,13 +149,20 @@ const SectionFilterContent = ({
         isHeader: true,
         isLast: true,
       },
-      { key: "admin", group: "filter-type", label: t("Administrator") },
       {
-        key: "manager",
+        id: "filter_type-docspace-admin",
+        key: "admin",
         group: "filter-type",
-        label: "Manager",
+        label: t("Common:DocSpaceAdmin"),
       },
       {
+        id: "filter_type-room-admin",
+        key: "manager",
+        group: "filter-type",
+        label: t("Common:RoomAdmin"),
+      },
+      {
+        id: "filter_type-user",
         key: "user",
         group: "filter-type",
         label: userCaption,
@@ -214,11 +226,17 @@ const SectionFilterContent = ({
   const getSortData = React.useCallback(() => {
     return [
       {
+        id: "sory-by_first-name",
         key: "firstname",
         label: t("Common:ByFirstNameSorting"),
         default: true,
       },
-      { key: "lastname", label: t("Common:ByLastNameSorting"), default: true },
+      {
+        id: "sory-by_last-name",
+        key: "lastname",
+        label: t("Common:ByLastNameSorting"),
+        default: true,
+      },
     ];
   }, [t]);
 
@@ -266,13 +284,13 @@ const SectionFilterContent = ({
 
       switch (filter.role) {
         case "admin":
-          label = t("Administrator");
+          label = t("Common:DocSpaceAdmin");
+          break;
+        case "manager":
+          label = t("Common:RoomAdmin");
           break;
         case "user":
           label = userCaption;
-          break;
-        case "guest":
-          label = guestCaption;
           break;
         default:
           label = "";

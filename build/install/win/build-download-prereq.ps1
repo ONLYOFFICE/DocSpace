@@ -12,31 +12,45 @@ $AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12,Tls13'
 function DownloadComponents {
 
   param ( $prereq_list, $path )
+
+  [void](New-Item -ItemType Directory -Force -Path $path)
     
   ForEach ( $item in $prereq_list ) {
     $url = $item.link
     $output = $path + $item.name
 
-    if( $item.download_allways ){
-      [system.console]::WriteLine("Downloading $url")
-      Invoke-WebRequest -Uri $url -OutFile $output
-    } else {
-      if(![System.IO.File]::Exists($output)){
+    try
+    {
+      if( $item.download_allways ){
         [system.console]::WriteLine("Downloading $url")
         Invoke-WebRequest -Uri $url -OutFile $output
+      } else {
+        if(![System.IO.File]::Exists($output)){
+          [system.console]::WriteLine("Downloading $url")
+          Invoke-WebRequest -Uri $url -OutFile $output
+        }
       }
+    } catch {
+      Write-Host "[ERROR] Can not download" $item.name "by link" $url
     }
   }
 }
 
+switch ( $env:DOCUMENT_SERVER_VERSION )
+{
+  latest { $DOCUMENT_SERVER_LINK = "https://download.onlyoffice.com/install/documentserver/windows/onlyoffice-documentserver-ee.exe" }
+  custom { $DOCUMENT_SERVER_LINK = $env:DOCUMENT_SERVER_CUSTOM_LINK.Replace(",", "") }
+}
+
 $nginx_version = '1.21.1'
+$psql_version = '9.5.4'
 
 $path_prereq = "${pwd}\build\install\win\"
 
 $prerequisites = @(
   @{  
     download_allways = $false; 
-    name = "nginx-${nginx_version}.zip"; 
+    name = "nginx-${nginx_version}.zip";
     link = "https://nginx.org/download/nginx-${nginx_version}.zip";
   }
 
@@ -44,6 +58,24 @@ $prerequisites = @(
     download_allways = $false; 
     name = "WinSW.NET4new.exe"; 
     link = "https://github.com/winsw/winsw/releases/download/v2.11.0/WinSW.NET4.exe";
+  }
+
+  @{  
+    download_allways = $true; 
+    name = "onlyoffice-documentserver.latest.exe"; 
+    link = $DOCUMENT_SERVER_LINK
+  }
+
+  @{  
+    download_allways = $false; 
+    name = "psqlodbc_x64.msi"; 
+    link = "http://download.onlyoffice.com/install/windows/redist/psqlodbc_x64.msi"
+  }
+
+  @{  
+    download_allways = $false; 
+    name = "postgresql-${psql_version}-1-windows-x64.exe"; 
+    link = "https://get.enterprisedb.com/postgresql/postgresql-${psql_version}-1-windows-x64.exe"
   }
 )
 

@@ -82,6 +82,7 @@ const FilterBlockItem = ({
           onClick={(event) =>
             showSelectorAction(event, isAuthor, item.group, [])
           }
+          id="filter_add-author"
         />
         <StyledFilterBlockItemSelectorText noSelect={true}>
           {item.label}
@@ -90,6 +91,7 @@ const FilterBlockItem = ({
     ) : (
       <ColorTheme
         key={item.key}
+        id={item.id}
         isSelected={item.isSelected}
         onClick={(event) =>
           showSelectorAction(
@@ -136,6 +138,7 @@ const FilterBlockItem = ({
 
     return (
       <ComboBox
+        id={item.id}
         className={"combo-item"}
         key={item.key}
         onSelect={(data) =>
@@ -162,6 +165,7 @@ const FilterBlockItem = ({
     return (
       <StyledFilterBlockItemCheckboxContainer key={item.key}>
         <Checkbox
+          id={item.id}
           isChecked={item.isSelected}
           label={item.label}
           onChange={() =>
@@ -178,6 +182,7 @@ const FilterBlockItem = ({
         key={item.key}
         isSelected={item.isSelected}
         name={`${item.label}-${item.key}`}
+        id={item.id}
         onClick={() =>
           changeFilterValueAction(item.key, item.isSelected, item.isMultiSelect)
         }
@@ -186,6 +191,7 @@ const FilterBlockItem = ({
         <StyledFilterBlockItemTagText
           noSelect={true}
           isSelected={item.isSelected}
+          truncate
         >
           {item.label}
         </StyledFilterBlockItemTagText>

@@ -39,7 +39,7 @@ public class LockerManager
         _thirdPartySelector = thirdPartySelector;
     }
 
-    public bool FileLockedForMe<T>(T fileId, Guid userId = default)
+    public async Task<bool> FileLockedForMe<T>(T fileId, Guid userId = default)
     {
         var app = _thirdPartySelector.GetAppByFileId(fileId.ToString());
         if (app != null)
@@ -49,7 +49,7 @@ public class LockerManager
 
         userId = userId == default ? _authContext.CurrentAccount.ID : userId;
         var tagDao = _daoFactory.GetTagDao<T>();
-        var lockedBy = FileLockedBy(fileId, tagDao);
+        var lockedBy = await FileLockedBy(fileId, tagDao);
 
         return lockedBy != Guid.Empty && lockedBy != userId;
     }
@@ -69,9 +69,9 @@ public class LockerManager
         return lockedBy != Guid.Empty && lockedBy != userId;
     }
 
-    public Guid FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
+    public async Task<Guid> FileLockedBy<T>(T fileId, ITagDao<T> tagDao)
     {
-        var tagLock = tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).ToListAsync().Result.FirstOrDefault();
+        var tagLock = await tagDao.GetTagsAsync(fileId, FileEntryType.File, TagType.Locked).FirstOrDefaultAsync();
 
         return tagLock != null ? tagLock.Owner : Guid.Empty;
     }
@@ -154,6 +154,20 @@ public class BreadCrumbsManager
 
                 case FolderType.BUNCH:
                     rootId = await _globalFolderHelper.FolderProjectsAsync;
+                    break;
+                case FolderType.VirtualRooms:
+                    if (firstVisible.ProviderEntry)
+                    {
+                        rootId = await _globalFolderHelper.FolderVirtualRoomsAsync;
+                        breadCrumbs = breadCrumbs.SkipWhile(f => f is Folder<T> folder && !DocSpaceHelper.IsRoom(folder.FolderType)).ToList();
+                    }
+                    break;
+                case FolderType.Archive:
+                    if (firstVisible.ProviderEntry)
+                    {
+                        rootId = await _globalFolderHelper.FolderArchiveAsync;
+                        breadCrumbs = breadCrumbs.SkipWhile(f => f is Folder<T> folder && !DocSpaceHelper.IsRoom(folder.FolderType)).ToList();
+                    }
                     break;
             }
         }
@@ -1625,7 +1639,8 @@ public class EntryManager
             {
                 var tagTemplate = Tag.Template(_authContext.CurrentAccount.ID, newFile);
                 var tagDao = _daoFactory.GetTagDao<T>();
-                tagDao.RemoveTags(tagTemplate);
+
+                await tagDao.RemoveTags(tagTemplate);
 
                 newFile.IsTemplate = false;
             }
@@ -1770,7 +1785,7 @@ public class EntryManager
         };
     }
 
-    public void MarkAsRecent<T>(File<T> file)
+    public async Task MarkAsRecent<T>(File<T> file)
     {
         if (file.Encrypted || file.ProviderEntry)
         {
@@ -1781,7 +1796,8 @@ public class EntryManager
         var userID = _authContext.CurrentAccount.ID;
 
         var tag = Tag.Recent(userID, file);
-        tagDao.SaveTags(tag);
+
+        await tagDao.SaveTags(tag);
     }
 
 

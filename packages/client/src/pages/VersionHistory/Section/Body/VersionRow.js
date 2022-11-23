@@ -16,6 +16,7 @@ import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
 import { Encoder } from "@docspace/common/utils/encoder";
 import { Base } from "@docspace/components/themes";
+import { getFileRoleActions } from "@docspace/common/utils/actions";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   ${commonIconsStyles}
@@ -41,12 +42,15 @@ const VersionRow = (props) => {
     versionsListLength,
     isEditing,
     theme,
+    isArchiveFolderRoot,
   } = props;
   const [showEditPanel, setShowEditPanel] = useState(false);
   const [commentValue, setCommentValue] = useState(info.comment);
   const [isSavingComment, setIsSavingComment] = useState(false);
 
-  const canEdit = (info.access === 1 || info.access === 0) && !isEditing;
+  const { changeVersionHistory } = getFileRoleActions(info.access);
+
+  const canEdit = changeVersionHistory && !isEditing;
 
   const title = `${new Date(info.updated).toLocaleString(
     culture
@@ -91,9 +95,15 @@ const VersionRow = (props) => {
     );
   };
 
+  const isAvailableEdit = canEdit && !isArchiveFolderRoot;
+
   const contextOptions = [
-    canEdit && { key: "edit", label: t("EditComment"), onClick: onEditComment },
-    canEdit && {
+    isAvailableEdit && {
+      key: "edit",
+      label: t("EditComment"),
+      onClick: onEditComment,
+    },
+    isAvailableEdit && {
       key: "restore",
       label: t("Common:Restore"),
       onClick: onRestoreClick,
@@ -105,7 +115,7 @@ const VersionRow = (props) => {
     },
   ];
 
-  const onClickProp = canEdit ? { onClick: onVersionClick } : {};
+  const onClickProp = isAvailableEdit ? { onClick: onVersionClick } : {};
 
   useEffect(() => {
     const newRowHeight = document.getElementsByClassName(
@@ -119,7 +129,7 @@ const VersionRow = (props) => {
     <StyledVersionRow
       showEditPanel={showEditPanel}
       contextOptions={contextOptions}
-      canEdit={canEdit}
+      canEdit={isAvailableEdit}
       isTabletView={isTabletView}
       isSavingComment={isSavingComment}
       isEditing={isEditing}
@@ -215,7 +225,7 @@ const VersionRow = (props) => {
   );
 };
 
-export default inject(({ auth, versionHistoryStore }) => {
+export default inject(({ auth, versionHistoryStore, treeFoldersStore }) => {
   const { user } = auth.userStore;
   const { culture, isTabletView } = auth.settingsStore;
   const language = (user && user.cultureName) || culture || "en";
@@ -228,6 +238,8 @@ export default inject(({ auth, versionHistoryStore }) => {
     isEditingVersion,
   } = versionHistoryStore;
 
+  const { isArchiveFolderRoot } = treeFoldersStore;
+
   return {
     theme: auth.settingsStore.theme,
     culture: language,
@@ -236,6 +248,7 @@ export default inject(({ auth, versionHistoryStore }) => {
     restoreVersion,
     updateCommentVersion,
     isEditing: isEditingVersion || isEditing,
+    isArchiveFolderRoot,
   };
 })(
   withRouter(

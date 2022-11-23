@@ -22,7 +22,7 @@ if(logpath != null)
 const fileName = logpath ? path.join(logpath, "socket-io.%DATE%.log") : path.join(__dirname, "..", "..", "..", "Logs", "socket-io.%DATE%.log");
 const dirName = path.dirname(fileName);
 
-const aws = config.get("aws");
+const aws = config.get("aws").cloudWatch;
 
 const accessKeyId = aws.accessKeyId; 
 const secretAccessKey = aws.secretAccessKey; 
@@ -54,19 +54,18 @@ var options = {
   cloudWatch: {
     name: 'aws',
     level: "debug",
-    logGroupName: () => {
-      const hostname = os.hostname();
-
-      return logGroupName.replace("${instance-id}", hostname);      
-    },       
     logStreamName: () => {
+      const hostname = os.hostname();
       const now = new Date();
       const guid = randomUUID();
       const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
       
-      return logStreamName.replace("${guid}", guid)
+      return logStreamName.replace("${hostname}", hostname)
+                          .replace("${applicationContext}", "SocketIO")                  
+                          .replace("${guid}", guid)
                           .replace("${date}", dateAsString);      
     },
+    logGroupName: logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,
     awsOptions: {
@@ -78,9 +77,7 @@ var options = {
   }
 };
 
-//const fileTransport = new winston.transports.DailyRotateFile(options.file);
-
-var transports = [
+let transports = [
   new winston.transports.Console(options.console),
   new winston.transports.DailyRotateFile(options.file)  
 ];
@@ -89,8 +86,6 @@ if (aws != null && aws.accessKeyId !== '')
 {
   transports.push(new WinstonCloudWatch(options.cloudWatch));
 }
-
-//winston.exceptions.handle(fileTransport);
 
 const customFormat = winston.format(info => {
   const now = new Date();
@@ -107,7 +102,6 @@ const customFormat = winston.format(info => {
 })();
 
 module.exports = new winston.createLogger({
-  //defaultMeta: { component: "socket.io-server" },
   format: winston.format.combine(
     customFormat,
     winston.format.json()    

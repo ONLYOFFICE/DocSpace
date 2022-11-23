@@ -265,6 +265,10 @@ const StyledContent = styled.div`
     word-break: break-word;
   }
 
+  .new-items {
+    margin-left: 12px;
+  }
+
   @media (max-width: 1024px) {
     white-space: nowrap;
     overflow: hidden;
@@ -492,6 +496,35 @@ class Tile extends React.PureComponent {
       ? t("Translations:TitleShowFolderActions")
       : t("Translations:TitleShowActions");
 
+    const tags = [];
+
+    if (item.providerType) {
+      tags.push({
+        isThirdParty: true,
+        icon: item.thirdPartyIcon,
+        label: item.providerKey,
+        onClick: () =>
+          selectOption({
+            option: "typeProvider",
+            value: item.providerType,
+          }),
+      });
+    }
+
+    if (item?.tags?.length > 0) {
+      tags.push(...item.tags);
+    } else {
+      tags.push({
+        isDefault: true,
+        label: t(RoomsTypeTranslations[item.roomType]),
+        onClick: () =>
+          selectOption({
+            option: "defaultTypeRoom",
+            value: item.roomType,
+          }),
+      });
+    }
+
     return (
       <StyledTile
         ref={this.tile}
@@ -572,37 +605,37 @@ class Tile extends React.PureComponent {
                 </StyledOptionButton>
               </div>
               <div className="room-tile_bottom-content">
-                {item.providerType && (
-                  <Tag
-                    icon={item.thirdPartyIcon}
-                    label={item.providerKey}
-                    onClick={() =>
-                      selectOption({
-                        option: "typeProvider",
-                        value: item.providerType,
-                      })
-                    }
-                  />
-                )}
+                <Tags
+                  columnCount={columnCount}
+                  onSelectTag={selectTag}
+                  tags={tags}
+                />
+                {/* {item.providerType && (
+                    <Tag
+                      icon={item.thirdPartyIcon}
+                      label={item.providerKey}
+                      onClick={() =>
+                        selectOption({
+                          option: "typeProvider",
+                          value: item.providerType,
+                        })
+                      }
+                    />
+                  )} */}
+                {/* {item.tags.length > 0 ? ( */}
 
-                {item.tags.length > 0 ? (
-                  <Tags
-                    columnCount={columnCount}
-                    onSelectTag={selectTag}
-                    tags={item.tags}
-                  />
-                ) : (
-                  <Tag
-                    isDefault
-                    label={t(RoomsTypeTranslations[item.roomType])}
-                    onClick={() =>
-                      selectOption({
-                        option: "defaultTypeRoom",
-                        value: item.roomType,
-                      })
-                    }
-                  />
-                )}
+                {/* ) : (
+                    <Tag
+                      isDefault
+                      label={t(RoomsTypeTranslations[item.roomType])}
+                      onClick={() =>
+                        selectOption({
+                          option: "defaultTypeRoom",
+                          value: item.roomType,
+                        })
+                      }
+                    />
+                  )} */}
               </div>
             </>
           ) : (

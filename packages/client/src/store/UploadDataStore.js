@@ -757,6 +757,9 @@ class UploadDataStore {
 
     if (needConvert) {
       runInAction(() => (currentFile.action = "convert"));
+
+      if (!currentFile.fileId) return;
+
       if (!this.filesToConversion.length || this.converted) {
         this.filesToConversion.push(currentFile);
         this.startConversion();

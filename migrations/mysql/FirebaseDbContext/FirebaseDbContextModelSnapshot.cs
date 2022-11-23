@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations.FirebaseDb
+namespace ASC.Migrations.MySql.Migrations
 {
     [DbContext(typeof(FirebaseDbContext))]
     partial class FirebaseDbContextModelSnapshot : ModelSnapshot

@@ -339,7 +339,7 @@ public class FileStorageService<T> //: IFileStorageService
         var breadCrumbs = await breadCrumbsTask;
 
         var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count - 2);
-        if (prevVisible != null)
+        if (prevVisible != null && !DocSpaceHelper.IsRoom(parent.FolderType))
         {
             if (prevVisible is Folder<string> f1)
             {
@@ -594,7 +594,7 @@ public class FileStorageService<T> //: IFileStorageService
         var folder = await folderDao.GetFolderAsync(folderId);
         ErrorIf(folder == null, FilesCommonResource.ErrorMassage_FolderNotFound);
 
-        var canEdit = DocSpaceHelper.IsRoom(folder.FolderType) ? folder.RootFolderType != FolderType.Archive && await _fileSecurity.CanEditRoomAsync(folder) 
+        var canEdit = DocSpaceHelper.IsRoom(folder.FolderType) ? folder.RootFolderType != FolderType.Archive && await _fileSecurity.CanEditRoomAsync(folder)
             : await _fileSecurity.CanRenameAsync(folder);
 
         ErrorIf(!canEdit, FilesCommonResource.ErrorMassage_SecurityException_RenameFolder);
@@ -1214,7 +1214,7 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 tagLocked = new Tag("locked", TagType.Locked, _authContext.CurrentAccount.ID, 0).AddEntry(file);
 
-                tagDao.SaveTags(tagLocked);
+                await tagDao.SaveTags(tagLocked);
             }
 
             var usersDrop = _fileTracker.GetEditingBy(file.Id).Where(uid => uid != _authContext.CurrentAccount.ID).Select(u => u.ToString()).ToArray();
@@ -1231,7 +1231,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             if (tagLocked != null)
             {
-                tagDao.RemoveTags(tagLocked);
+                await tagDao.RemoveTags(tagLocked);
 
                 _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUnlocked, file.Title);
             }
@@ -2324,7 +2324,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         var tags = entries.Select(entry => Tag.Favorite(_authContext.CurrentAccount.ID, entry));
 
-        tagDao.SaveTags(tags);
+        await tagDao.SaveTags(tags);
 
         foreach (var entry in entries)
         {
@@ -2352,7 +2352,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         var tags = entries.Select(entry => Tag.Favorite(_authContext.CurrentAccount.ID, entry));
 
-        tagDao.RemoveTags(tags);
+        await tagDao.RemoveTags(tags);
 
         foreach (var entry in entries)
         {
@@ -2387,7 +2387,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         var tags = files.Select(file => Tag.Template(_authContext.CurrentAccount.ID, file));
 
-        tagDao.SaveTags(tags);
+        await tagDao.SaveTags(tags);
 
         return files;
     }
@@ -2401,7 +2401,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         var tags = files.Select(file => Tag.Template(_authContext.CurrentAccount.ID, file));
 
-        tagDao.RemoveTags(tags);
+        await tagDao.RemoveTags(tags);
 
         return files;
     }
@@ -2659,11 +2659,11 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (pin)
         {
-            tagDao.SaveTags(tag);
+            await tagDao.SaveTags(tag);
         }
         else
         {
-            tagDao.RemoveTags(tag);
+            await tagDao.RemoveTags(tag);
         }
 
         room.Pinned = pin;

@@ -120,6 +120,10 @@ const StyledInviteInputContainer = styled.div`
   align-items: center;
   ${fillAvailableWidth}
   margin-bottom: 20px;
+
+  .header_aside-panel {
+    max-width: 100% !important;
+  }
 `;
 
 const StyledDropDown = styled(DropDown)`

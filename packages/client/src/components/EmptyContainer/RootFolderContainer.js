@@ -63,7 +63,9 @@ const RootFolderContainer = (props) => {
   const roomsDescription = isVisitor
     ? t("RoomEmptyContainerDescriptionUser")
     : t("RoomEmptyContainerDescription");
-  const archiveRoomsDescription = t("ArchiveEmptyScreen");
+  const archiveRoomsDescription = isVisitor
+    ? t("ArchiveEmptyScreenUser")
+    : t("ArchiveEmptyScreen");
 
   const privateRoomHeader = t("PrivateRoomHeader");
   const privacyIcon = <img alt="" src="images/privacy.svg" />;
@@ -284,12 +286,12 @@ const RootFolderContainer = (props) => {
         alt="plus_icon"
       />
       <Link onClick={onCreateRoom} {...linkStyles}>
-        {t("CreateEditRoomDialog:CreateRoom")}
+        {t("CreateRoom")}
       </Link>
     </div>
   );
 
-  const archiveButtons = (
+  const archiveButtons = !isVisitor && (
     <div className="empty-folder_container-links">
       <img
         className="empty-folder_container-image"
@@ -400,8 +402,4 @@ export default inject(
       setIsEmptyPage,
     };
   }
-)(
-  withTranslation(["Files", "CreateEditRoomDialog"])(
-    observer(RootFolderContainer)
-  )
-);
+)(withTranslation(["Files"])(observer(RootFolderContainer)));

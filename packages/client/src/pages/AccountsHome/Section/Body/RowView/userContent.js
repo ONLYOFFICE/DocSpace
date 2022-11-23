@@ -54,8 +54,8 @@ const UserContent = ({
       : role === "admin"
       ? t("Common:DocSpaceAdmin")
       : isVisitor
-      ? t("Common:RoomAdmin")
-      : t("Common:User");
+      ? t("Common:User")
+      : t("Common:RoomAdmin");
 
   return (
     <StyledRowContent

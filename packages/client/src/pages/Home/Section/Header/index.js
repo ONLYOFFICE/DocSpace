@@ -4,7 +4,11 @@ import styled, { css } from "styled-components";
 import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
-import { AppServerConfig } from "@docspace/common/constants";
+import {
+  AppServerConfig,
+  FolderType,
+  RoomSearchArea,
+} from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -313,7 +317,9 @@ class SectionHeaderContent extends React.Component {
 
     if (isExistActiveItems) return;
 
-    this.props.setRestoreAllArchiveDialogVisible(true);
+    this.props.setArchiveAction("unarchive");
+    this.props.setRestoreAllArchive(true);
+    this.props.setArchiveDialogVisible(true);
   };
 
   onShowInfo = () => {
@@ -339,6 +345,9 @@ class SectionHeaderContent extends React.Component {
       onShowInfoPanel,
       onClickArchive,
       onClickReconnectStorage,
+
+      canRestoreAll,
+      canDeleteAll,
     } = this.props;
 
     const isDisabled = isRecycleBinFolder || isRoom;
@@ -349,14 +358,14 @@ class SectionHeaderContent extends React.Component {
           key: "empty-archive",
           label: t("ArchiveAction"),
           onClick: this.onEmptyTrashAction,
-          disabled: !isArchiveFolder,
+          disabled: !canRestoreAll,
           icon: "images/clear.trash.react.svg",
         },
         {
           key: "restore-all",
           label: t("RestoreAll"),
           onClick: this.onRestoreAllArchiveAction,
-          disabled: !isArchiveFolder,
+          disabled: !canDeleteAll,
           icon: "images/subtract.react.svg",
         },
       ];
@@ -546,16 +555,22 @@ class SectionHeaderContent extends React.Component {
       setAlreadyFetchingRooms,
 
       categoryType,
+
+      rootFolderType,
     } = this.props;
 
     setIsLoading(true);
 
     setAlreadyFetchingRooms(true);
 
-    fetchRooms(null, null)
-      .then(() => {
-        const filter = RoomsFilter.getDefault();
+    const filter = RoomsFilter.getDefault();
 
+    if (rootFolderType === FolderType.Archive) {
+      filter.searchArea = RoomSearchArea.Archive;
+    }
+
+    fetchRooms(null, filter)
+      .then(() => {
         const filterParamsStr = filter.toUrlParams();
 
         const url = getCategoryUrl(categoryType, filter.folder);
@@ -595,8 +610,10 @@ class SectionHeaderContent extends React.Component {
       showText,
       isRoomsFolder,
       isEmptyPage,
-      isVisitor,
+      canCreateFiles,
+      isEmptyArchive,
     } = this.props;
+
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
@@ -605,7 +622,7 @@ class SectionHeaderContent extends React.Component {
       <Consumer>
         {(context) => (
           <StyledContainer>
-            {isHeaderVisible ? (
+            {isHeaderVisible && headerMenu.length ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
                 onChange={this.onChange}
@@ -624,7 +641,7 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate && !isVisitor}
+                    canCreate={canCreate && (canCreateFiles || isRoomsFolder)}
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -637,7 +654,9 @@ class SectionHeaderContent extends React.Component {
                     onClose={this.onClose}
                     onClickFolder={this.onClickFolder}
                     isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
-                    isEmptyFilesList={isEmptyFilesList}
+                    isEmptyFilesList={
+                      isArchiveFolder ? isEmptyArchive : isEmptyFilesList
+                    }
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
                     toggleInfoPanel={this.onToggleInfoPanel}
@@ -669,7 +688,7 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
-
+    accessRightsStore,
     contextOptionsStore,
   }) => {
     const {
@@ -692,7 +711,8 @@ export default inject(
 
       setAlreadyFetchingRooms,
 
-      filesList,
+      roomsForRestore,
+      roomsForDelete,
 
       categoryType,
       isEmptyPage,
@@ -707,7 +727,9 @@ export default inject(
       setSelectFileDialogVisible,
       setIsFolderActions,
       setRestoreAllPanelVisible,
-      setRestoreAllArchiveDialogVisible,
+      setArchiveDialogVisible,
+      setRestoreAllArchive,
+      setArchiveAction,
     } = dialogsStore;
 
     const {
@@ -732,6 +754,7 @@ export default inject(
       roomType,
       pathParts,
       navigationPath,
+      rootFolderType,
     } = selectedFolderStore;
 
     const selectedFolder = { ...selectedFolderStore };
@@ -748,6 +771,14 @@ export default inject(
       onClickReconnectStorage,
     } = contextOptionsStore;
 
+    const { canCreateFiles } = accessRightsStore;
+
+    const canRestoreAll = isArchiveFolder && roomsForRestore.length > 0;
+
+    const canDeleteAll = isArchiveFolder && roomsForDelete.length > 0;
+
+    const isEmptyArchive = !canRestoreAll && !canDeleteAll;
+
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
@@ -759,6 +790,7 @@ export default inject(
       pathParts: pathParts,
       navigationPath: navigationPath,
       canCreate,
+      canCreateFiles,
       setIsInfoPanelVisible: setIsVisible,
       isInfoPanelVisible: isVisible,
       isHeaderVisible,
@@ -790,6 +822,7 @@ export default inject(
       isRecycleBinFolder,
       setEmptyTrashDialogVisible,
       isEmptyFilesList,
+      isEmptyArchive,
       isPrivacyFolder,
       isArchiveFolder,
 
@@ -810,7 +843,9 @@ export default inject(
 
       setRestoreAllPanelVisible,
       isEmptyPage,
-      setRestoreAllArchiveDialogVisible,
+      setArchiveDialogVisible,
+      setRestoreAllArchive,
+      setArchiveAction,
 
       selectedFolder,
 
@@ -818,6 +853,12 @@ export default inject(
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
+
+      rootFolderType,
+
+      isEmptyArchive,
+      canRestoreAll,
+      canDeleteAll,
     };
   }
 )(

@@ -151,7 +151,7 @@ public class FileMarker
                     userEntriesData.Add(userID, entries);
                 }
 
-                RemoveFromCahce(projectsFolder, userID);    
+                RemoveFromCahce(projectsFolder, userID);
             });
         }
         else
@@ -358,12 +358,12 @@ public class FileMarker
 
         if (updateTags.Count > 0)
         {
-            tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
+            await tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
         }
 
         if (newTags.Count > 0)
         {
-            tagDao.SaveTags(newTags, obj.CurrentAccountId);
+            await tagDao.SaveTags(newTags, obj.CurrentAccountId);
         }
 
         async Task GetNewTagsAsync<T1>(Guid userID, List<FileEntry<T1>> entries)
@@ -563,12 +563,12 @@ public class FileMarker
 
         if (updateTags.Count > 0)
         {
-            tagDao.UpdateNewTags(updateTags);
+            await tagDao.UpdateNewTags(updateTags);
         }
 
         if (removeTags.Count > 0)
         {
-            tagDao.RemoveTags(removeTags);
+            await tagDao.RemoveTags(removeTags);
         }
 
         async Task UpdateRemoveTags<TFolder>(Folder<TFolder> folder)
@@ -828,11 +828,11 @@ public class FileMarker
                 parentFolderTag.Count -= diff;
                 if (parentFolderTag.Id == -1)
                 {
-                    tagDao.SaveTags(parentFolderTag);
+                    await tagDao.SaveTags(parentFolderTag);
                 }
                 else
                 {
-                    tagDao.UpdateNewTags(parentFolderTag);
+                    await tagDao.UpdateNewTags(parentFolderTag);
                 }
 
                 var cacheFolderId = parent.Id;
@@ -866,13 +866,13 @@ public class FileMarker
                         {
                             if (await _fileSecurity.CanReadAsync(folderFromList))
                             {
-                                tagDao.SaveTags(Tag.New(_authContext.CurrentAccount.ID, folderFromList, -diff));
+                                await tagDao.SaveTags(Tag.New(_authContext.CurrentAccount.ID, folderFromList, -diff));
                             }
                         }
                         else
                         {
                             parentTreeTag.Count -= diff;
-                            tagDao.UpdateNewTags(parentTreeTag);
+                            await tagDao.UpdateNewTags(parentTreeTag);
                         }
                     }
                 }

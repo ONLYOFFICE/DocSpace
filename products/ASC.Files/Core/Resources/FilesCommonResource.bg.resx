@@ -145,9 +145,6 @@
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Анулира</value>
   </data>
-  <data name="EditorMentions" xml:space="preserve">
-    <value>Уведомяване, когато е споменат в документ</value>
-  </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
     <value>Неправилна заявка.</value>
   </data>
@@ -196,9 +193,6 @@
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
     <value>Понастоящем файлът е заключен от друг потребител</value>
   </data>
-  <data name="ErrorMassage_MailAccountNotFound" xml:space="preserve">
-    <value>Няма налични профили за изпращане на съобщението. Отидете в Поща и свържете пощенска кутия</value>
-  </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Не може да се изпратят най-малко {0} имейли. Моля, посетете модула Поща, за да видите каква е причината за провала.</value>
   </data>
@@ -207,9 +201,6 @@
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>За съжаление този файлов формат не се поддържа</value>
-  </data>
-  <data name="ErrorMassage_OperationCanceledException" xml:space="preserve">
-    <value>Операцията беше отменена</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Авторът на записа е неизвестен</value>
@@ -315,30 +306,6 @@
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
     <value>Създаване и редактиране на собствени документи, както и споделени документи с подходящи права за достъп | Даване на четене/редактиране на достъп до други потребители към документите и папките | Link Dropbox, Box и други профили в секцията "Моите документи"</value>
-  </data>
-  <data name="ProfileRemoved" xml:space="preserve">
-    <value>{!User} премахнат</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Търсене</value>
-  </data>
-  <data name="ShareFolder" xml:space="preserve">
-    <value>Уведомяване при споделяне на папка</value>
-  </data>
-  <data name="SubscriptDocuSignComplete" xml:space="preserve">
-    <value>Уведомете кога документът е подписан чрез DocuSign</value>
-  </data>
-  <data name="SubscriptDocuSignStatus" xml:space="preserve">
-    <value>Уведомява, когато документът в DocuSign промени статуса</value>
-  </data>
-  <data name="SubscriptForAccess" xml:space="preserve">
-    <value>Уведомяване при споделяне на документ</value>
-  </data>
-  <data name="SubscriptForMailMerge" xml:space="preserve">
-    <value>Уведомяване при завършване на изпращането</value>
-  </data>
-  <data name="TitleDeletedUserFolder" xml:space="preserve">
-    <value>Документи на {!user} {0}</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Име</value>

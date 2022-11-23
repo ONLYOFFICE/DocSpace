@@ -112,9 +112,6 @@
   <data name="LinkLearnMore" xml:space="preserve">
     <value>Μάθετε Περισσότερα &gt;&gt;</value>
   </data>
-  <data name="pattern_saas_admin_user_docs_tips_v115_item_3rdparty" xml:space="preserve">
-    <value>Συνδέστε το Dropbox, Google Drive ή άλλες υπηρεσίες για να διαχειρίζεστε τα αρχεία σας από ένα μέρος.</value>
-  </data>
   <data name="subject_activate_email" xml:space="preserve">
     <value>${LetterLogoText}. Παρακαλώ ενεργοποιείστε την διεύθυνση email</value>
   </data>
@@ -124,20 +121,8 @@
   <data name="subject_change_tfa" xml:space="preserve">
     <value>${LetterLogoText}. Ειδοποίηση ασφάλειας</value>
   </data>
-  <data name="subject_enterprise_admin_activation_v10" xml:space="preserve">
-    <value>Επιβεβαίωση email</value>
-  </data>
-  <data name="subject_enterprise_admin_invite_teammates_v10" xml:space="preserve">
-    <value>Προσκαλέστε τους συνεργάτες σας</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_admin_activation_v10" xml:space="preserve">
-    <value>Επιβεβαίωση email</value>
-  </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Μήνυμα χρήστη προς τους διαχειριστές</value>
-  </data>
-  <data name="subject_opensource_admin_activation_v11" xml:space="preserve">
-    <value>Επιβεβαίωση email</value>
   </data>
   <data name="subject_personal_confirmation" xml:space="preserve">
     <value>ONLYOFFICE Personal. Παρακαλώ ενεργοποιείστε τη διεύθυνση email σας</value>
@@ -156,9 +141,6 @@
   </data>
   <data name="subject_restore_started" xml:space="preserve">
     <value>${LetterLogoText}. Η αποκατάσταση ξεκίνησε</value>
-  </data>
-  <data name="subject_saas_admin_activation_v115" xml:space="preserve">
-    <value>Επιβεβαιώστε το email σας</value>
   </data>
   <data name="subject_storage_encryption_start" xml:space="preserve">
     <value>${LetterLogoText}. Η διαδικασία κρυπτογράφησης ξεκίνησε</value>

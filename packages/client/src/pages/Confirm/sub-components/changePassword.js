@@ -59,7 +59,6 @@ const ChangePasswordForm = (props) => {
 
     const hash = createPasswordHash(password, hashSettings);
     const { uid, confirmHeader } = linkData;
-
     changePassword(uid, hash, confirmHeader)
       .then(() => logout())
       .then(() => {

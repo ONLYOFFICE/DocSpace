@@ -26,7 +26,7 @@ import {
   InviteUsersWarningDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
-import RestoreAllArchiveDialog from "../dialogs/RestoreAllArchiveDialog";
+import ArchiveDialog from "../dialogs/ArchiveDialog";
 
 const Panels = (props) => {
   const {
@@ -54,7 +54,7 @@ const Panels = (props) => {
     convertPasswordDialogVisible,
     createRoomDialogVisible,
     restoreAllPanelVisible,
-    restoreAllArchiveDialogVisible,
+    archiveDialogVisible,
     inviteUsersWarningDialogVisible,
   } = props;
 
@@ -121,9 +121,7 @@ const Panels = (props) => {
     convertPasswordDialogVisible && (
       <ConvertPasswordDialog key="convert-password-dialog" />
     ),
-    restoreAllArchiveDialogVisible && (
-      <RestoreAllArchiveDialog key="restore-all-archive-dialog" />
-    ),
+    archiveDialogVisible && <ArchiveDialog key="archive-dialog" />,
     inviteUsersWarningDialogVisible && (
       <InviteUsersWarningDialog key="invite-users-warning-dialog" />
     ),
@@ -151,7 +149,7 @@ export default inject(
       convertPasswordDialogVisible,
       connectItem, //TODO:
       restoreAllPanelVisible,
-      restoreAllArchiveDialogVisible,
+      archiveDialogVisible,
 
       createMasterForm,
       selectFileDialogVisible,
@@ -189,7 +187,7 @@ export default inject(
       hotkeyPanelVisible,
       restoreAllPanelVisible,
       invitePanelVisible: invitePanelOptions.visible,
-      restoreAllArchiveDialogVisible,
+      archiveDialogVisible,
       inviteUsersWarningDialogVisible,
     };
   }

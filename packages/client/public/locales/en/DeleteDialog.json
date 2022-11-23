@@ -1,4 +1,6 @@
 {
+  "DeleteRoom": "You are about to delete this room? You won’t be able to restore her.",
+  "DeleteRooms": "You are about to delete these rooms? You won’t be able to restore it.",
   "MoveToTrashButton": "Move to Trash",
   "MoveToTrashFile": "You are about to delete this file? Please note, that if you have shared it with someone, it will become unavailable. Are you sure you want to continue?",
   "MoveToTrashFolder": "You are about to delete this folder? Please note, that if you have shared it with someone, it will become unavailable. Are you sure you want to continue?",
