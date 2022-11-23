@@ -32,7 +32,6 @@ const Appearance = (props) => {
     sendAppearanceTheme,
     getAppearanceTheme,
     currentColorScheme,
-    theme,
     deleteAppearanceTheme,
     tReady,
     t,
@@ -106,6 +105,8 @@ const Appearance = (props) => {
 
   const [visibleDialog, setVisibleDialog] = useState(false);
 
+  const [theme, setTheme] = useState(appearanceTheme);
+
   const array_items = useMemo(
     () => [
       {
@@ -161,7 +162,18 @@ const Appearance = (props) => {
 
   useEffect(() => {
     onColorCheck(appearanceTheme);
-  }, [appearanceTheme]);
+
+    // Setting a checkbox for a new theme
+    setTheme(appearanceTheme);
+    if (appearanceTheme.length > theme.length) {
+      const newTheme = appearanceTheme[appearanceTheme.length - 1];
+      const idNewTheme = newTheme.id;
+      const accentNewTheme = newTheme.main.accent;
+
+      setSelectThemeId(idNewTheme);
+      setPreviewAccent(accentNewTheme);
+    }
+  }, [appearanceTheme, theme, setSelectThemeId, setPreviewAccent]);
 
   useEffect(() => {
     onColorCheck(appearanceTheme);
