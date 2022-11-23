@@ -10,7 +10,7 @@ $Branch = git branch --show-current
 $BranchExistRemote = git ls-remote --heads origin $Branch
 
 if (-not $BranchExistRemote) {
-  Write-Error "Current branch not exist on remote repository. Pleace push changes."
+  Write-Error "Current branch not exist on remote repository. Please push changes."
   exit
 }
 
