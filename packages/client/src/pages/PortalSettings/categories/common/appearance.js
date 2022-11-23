@@ -265,7 +265,7 @@ const Appearance = (props) => {
 
   const onColorSelection = useCallback(
     (e) => {
-      const theme = e.target.closest(".theme");
+      const theme = e.currentTarget;
       const id = +theme.id;
       const accent = appearanceTheme.find((theme) => theme.id == id).main
         .accent;
@@ -612,7 +612,6 @@ const Appearance = (props) => {
                 <StyledTheme
                   key={index}
                   id={item.id}
-                  className="theme"
                   colorCheckImgHover={colorCheckImgHover}
                   style={{ background: item.main.accent }}
                   onClick={onColorSelection}
@@ -640,7 +639,6 @@ const Appearance = (props) => {
                   <StyledTheme
                     key={index}
                     id={item.id}
-                    className="theme"
                     style={{ background: item.main.accent }}
                     colorCheckImgHover={colorCheckImgHover}
                     onClick={onColorSelection}
