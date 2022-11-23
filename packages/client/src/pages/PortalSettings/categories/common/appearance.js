@@ -263,10 +263,18 @@ const Appearance = (props) => {
     }
   };
 
-  const onColorSelection = (item) => {
-    setPreviewAccent(item.main.accent);
-    setSelectThemeId(item.id);
-  };
+  const onColorSelection = useCallback(
+    (e) => {
+      const theme = e.target.closest(".theme");
+      const id = +theme.id;
+      const accent = appearanceTheme.find((theme) => theme.id == id).main
+        .accent;
+
+      setPreviewAccent(accent);
+      setSelectThemeId(id);
+    },
+    [appearanceTheme, setPreviewAccent, setSelectThemeId]
+  );
 
   const onSave = useCallback(async () => {
     setIsDisabledSaveButton(true);
@@ -596,9 +604,10 @@ const Appearance = (props) => {
                 <StyledTheme
                   key={index}
                   id={item.id}
+                  className="theme"
                   colorCheckImgHover={colorCheckImgHover}
                   style={{ background: item.main.accent }}
-                  onClick={() => onColorSelection(item)}
+                  onClick={onColorSelection}
                   onMouseOver={onColorCheckImgHover}
                 >
                   {selectThemeId === item.id && (
@@ -623,9 +632,10 @@ const Appearance = (props) => {
                   <StyledTheme
                     key={index}
                     id={item.id}
+                    className="theme"
                     style={{ background: item.main.accent }}
                     colorCheckImgHover={colorCheckImgHover}
-                    onClick={() => onColorSelection(item)}
+                    onClick={onColorSelection}
                     onMouseOver={onColorCheckImgHover}
                   >
                     {selectThemeId === item.id && (
