@@ -11,7 +11,6 @@ import {
   StyledHeading,
   StyledIconBox,
 } from "../styled-article";
-import { Dark } from "@docspace/components/themes";
 
 const ArticleHeader = ({
   showText,
@@ -28,13 +27,13 @@ const ArticleHeader = ({
   const onLogoClick = () => history.push("/");
 
   const burgerLogo =
-    theme === Dark
-      ? whiteLabelLogoUrls[5].darkPath
-      : whiteLabelLogoUrls[5].lightPath;
+    theme === "Dark"
+      ? whiteLabelLogoUrls[5].path.dark
+      : whiteLabelLogoUrls[5].path.light;
   const logo =
-    theme === Dark
-      ? whiteLabelLogoUrls[0].darkPath
-      : whiteLabelLogoUrls[0].lightPath;
+    theme === "Dark"
+      ? whiteLabelLogoUrls[0].path.dark
+      : whiteLabelLogoUrls[0].path.light;
 
   if (isMobileOnly) return <></>;
   return (
@@ -73,11 +72,13 @@ ArticleHeader.propTypes = {
 ArticleHeader.displayName = "Header";
 
 export default inject(({ auth }) => {
-  const { settingsStore } = auth;
-  const { isBurgerLoading, whiteLabelLogoUrls, theme } = settingsStore;
+  const { settingsStore, userStore } = auth;
+  const { isBurgerLoading, whiteLabelLogoUrls } = settingsStore;
+  const { user } = userStore;
+
   return {
     isBurgerLoading,
     whiteLabelLogoUrls,
-    theme,
+    theme: user.theme,
   };
 })(observer(ArticleHeader));
