@@ -120,20 +120,6 @@ services:
       target: webhooks-service
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-webhooks-service:${DOCKER_TAG}"
 
-  onlyoffice-bin-share:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: bin_share
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-bin-share:${DOCKER_TAG}"
-
-  onlyoffice-wait-bin-share:
-    build:
-      context: ./
-      dockerfile: "${DOCKERFILE}"
-      target: wait_bin_share
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-wait-bin-share:${DOCKER_TAG}"
-
   onlyoffice-proxy:
     build:
       context: ./

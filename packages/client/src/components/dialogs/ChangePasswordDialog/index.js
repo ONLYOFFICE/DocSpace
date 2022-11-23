@@ -57,7 +57,14 @@ class ChangePasswordDialogComponent extends React.Component {
 
   render() {
     // console.log("ChangePasswordDialog render");
-    const { t, tReady, visible, email, onClose, theme } = this.props;
+    const {
+      t,
+      tReady,
+      visible,
+      email,
+      onClose,
+      currentColorScheme,
+    } = this.props;
     const { isRequestRunning } = this.state;
 
     return (
@@ -80,7 +87,7 @@ class ChangePasswordDialogComponent extends React.Component {
                 type="page"
                 href={`mailto:${email}`}
                 noHover
-                color={theme.peopleDialogs.changePassword.linkColor}
+                color={currentColorScheme.main.accent}
                 title={email}
               >
                 {{ email }}
@@ -114,7 +121,7 @@ class ChangePasswordDialogComponent extends React.Component {
 }
 
 const ChangePasswordDialog = inject(({ auth }) => ({
-  theme: auth.settingsStore.theme,
+  currentColorScheme: auth.settingsStore.currentColorScheme,
 }))(
   observer(
     withTranslation(["ChangePasswordDialog", "Common"])(
