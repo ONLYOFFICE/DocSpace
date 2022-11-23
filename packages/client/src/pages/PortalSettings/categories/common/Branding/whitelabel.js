@@ -54,15 +54,28 @@ const WhiteLabel = (props) => {
   };
 
   const onUseTextAsLogo = () => {
-    let newLogos = [];
+    let newLogos = logoUrlsWhiteLabel;
     for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
-      const width = logoUrlsWhiteLabel[i].width / 2;
-      const height = logoUrlsWhiteLabel[i].height / 2;
+      const width = logoUrlsWhiteLabel[i].size.width / 2;
+      const height = logoUrlsWhiteLabel[i].size.height / 2;
       const options = getLogoOptions(i, logoTextWhiteLabel);
-      console.log(i, logoUrlsWhiteLabel[i]);
-      const logo = generateLogo(width, height, options.text, options.fontSize);
-      newLogos.push(logo);
+      const logoLight = generateLogo(
+        width,
+        height,
+        options.text,
+        options.fontSize
+      );
+      const logoDark = generateLogo(
+        width,
+        height,
+        options.text,
+        options.fontSize,
+        "#fff"
+      );
+      newLogos[i].path.light = logoLight;
+      newLogos[i].path.dark = logoDark;
     }
+
     setLogoUrlsWhiteLabel(newLogos);
   };
 
