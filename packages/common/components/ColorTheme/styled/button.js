@@ -34,8 +34,10 @@ const getDefaultStyles = ({
   isClicked,
   isHovered,
   disableHover,
+  title,
 }) =>
   $currentColorScheme &&
+  !title &&
   css`
     ${primary &&
     css`
