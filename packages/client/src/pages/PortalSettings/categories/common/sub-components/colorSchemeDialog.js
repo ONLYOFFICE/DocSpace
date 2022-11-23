@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
@@ -73,6 +73,14 @@ const ColorSchemeDialog = (props) => {
     currentColorAccent,
     currentColorButtons,
   } = props;
+
+  const onKeyPress = (e) =>
+    (e.key === "Esc" || e.key === "Escape") && onClose();
+
+  useEffect(() => {
+    window.addEventListener("keyup", onKeyPress);
+    return () => window.removeEventListener("keyup", onKeyPress);
+  });
 
   return (
     <StyledComponent

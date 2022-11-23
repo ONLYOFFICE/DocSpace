@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import styled from "styled-components";
@@ -12,6 +12,14 @@ const StyledModalDialogDelete = styled(ModalDialog)`
 
 const ModalDialogDelete = (props) => {
   const { visible, onClose, onClickDelete, t } = props;
+
+  const onKeyPress = (e) =>
+    (e.key === "Esc" || e.key === "Escape") && onClose();
+
+  useEffect(() => {
+    window.addEventListener("keyup", onKeyPress);
+    return () => window.removeEventListener("keyup", onKeyPress);
+  });
 
   return (
     <StyledModalDialogDelete
