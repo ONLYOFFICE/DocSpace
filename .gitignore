@@ -50,4 +50,3 @@ TestsResults/
 
 **/.yarn/cache
 **/.yarn/install-state.gz
-config/appsettings.dev.json
