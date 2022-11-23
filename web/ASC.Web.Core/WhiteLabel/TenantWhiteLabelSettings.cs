@@ -167,17 +167,6 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
         };
     }
 
-    internal bool CanBeDark(WhiteLabelLogoTypeEnum type)
-    {
-        return type switch
-        {
-            WhiteLabelLogoTypeEnum.Favicon => false,
-            WhiteLabelLogoTypeEnum.DocsEditor => false,
-            WhiteLabelLogoTypeEnum.DocsEditorEmbed => false,
-            _ => true,
-        };
-    }
-
     internal void SetIsDefault(WhiteLabelLogoTypeEnum type, bool value)
     {
         switch (type)
@@ -433,24 +422,13 @@ public class TenantWhiteLabelSettingsHelper
                     extDark = extLight;
                 }
             }
-            if (extLight != null && extDark != null && extLight != extDark)
-            {
-                throw new InvalidOperationException("logo light and logo dark have different extention");
-            }
-
-            if ((extLight == null || extDark == null)
-                && tenantWhiteLabelSettings.GetExt(currentLogoType) != extLight
-                && tenantWhiteLabelSettings.GetExt(currentLogoType) != extDark
-                && tenantWhiteLabelSettings.CanBeDark(currentLogoType))
-            {
-                throw new InvalidOperationException("current logos and downloaded logo have different extention");
-            }
 
             if (lightData != null)
             {
                 await SetLogo(tenantWhiteLabelSettings, currentLogoType, extLight, lightData, false, storage);
             }
-            if (darkData != null && tenantWhiteLabelSettings.CanBeDark(currentLogoType))
+
+            if (darkData != null && CanBeDark(currentLogoType))
             {
                 await SetLogo(tenantWhiteLabelSettings, currentLogoType, extDark, darkData, true, storage);
             }
@@ -533,7 +511,7 @@ public class TenantWhiteLabelSettingsHelper
 
         if ((lightData == null || darkData == null)
             && tenantWhiteLabelSettings.GetExt(type) != fileExt
-            && tenantWhiteLabelSettings.CanBeDark(type))
+            && CanBeDark(type))
         {
             throw new InvalidOperationException("current logos and downloaded logo have different extention");
         }
@@ -542,7 +520,7 @@ public class TenantWhiteLabelSettingsHelper
         {
             await SetLogo(tenantWhiteLabelSettings, type, fileExt, lightData, false, storage);
         }
-        if (darkData != null && tenantWhiteLabelSettings.CanBeDark(type))
+        if (darkData != null && CanBeDark(type))
         {
             await SetLogo(tenantWhiteLabelSettings, type, fileExt, darkData, true, storage);
         }
@@ -678,16 +656,17 @@ public class TenantWhiteLabelSettingsHelper
 
     public static string BuildLogoFileName(WhiteLabelLogoTypeEnum type, string fileExt, bool dark)
     {
-        switch (type)
+        if (CanBeDark(type))
         {
-            case WhiteLabelLogoTypeEnum.Favicon:
-                return "favicon.ico";
-            case WhiteLabelLogoTypeEnum.DocsEditor:
-            case WhiteLabelLogoTypeEnum.DocsEditorEmbed:
-                return $"{type.ToString().ToLowerInvariant()}.{fileExt}";
-            default:
-                return $"{(dark ? "dark_" : "")}{type.ToString().ToLowerInvariant()}.{fileExt}";
+            return $"{(dark ? "dark_" : "")}{type.ToString().ToLowerInvariant()}.{fileExt}";
         }
+
+        if (type == WhiteLabelLogoTypeEnum.Favicon)
+        {
+            return "favicon.ico";
+        }
+
+        return $"{type.ToString().ToLowerInvariant()}.{fileExt}";
     }
 
     public static Size GetSize(WhiteLabelLogoTypeEnum type)
@@ -813,4 +792,15 @@ public class TenantWhiteLabelSettingsHelper
     }
 
     #endregion
+
+    private static bool CanBeDark(WhiteLabelLogoTypeEnum type)
+    {
+        return type switch
+        {
+            WhiteLabelLogoTypeEnum.Favicon => false,
+            WhiteLabelLogoTypeEnum.DocsEditor => false,
+            WhiteLabelLogoTypeEnum.DocsEditorEmbed => false,
+            _ => true,
+        };
+    }
 }
