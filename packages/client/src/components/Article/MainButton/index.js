@@ -51,6 +51,7 @@ const StyledButton = styled(Button)`
   }
 
   .button-content {
+    color: ${({ currentColorScheme }) => currentColorScheme.text.accent};
     position: relative;
     display: flex;
     justify-content: space-between;
