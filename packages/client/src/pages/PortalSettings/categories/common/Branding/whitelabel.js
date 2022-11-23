@@ -16,6 +16,7 @@ import LoaderWhiteLabel from "../sub-components/loaderWhiteLabel";
 
 import Logo from "./sub-components/logo";
 import { generateLogo, getLogoOptions } from "../../../utils/generateLogo";
+import isEqual from "lodash/isEqual";
 
 const WhiteLabel = (props) => {
   const {
@@ -25,10 +26,13 @@ const WhiteLabel = (props) => {
     logoUrls,
     restoreWhiteLabelSettings,
     getWhiteLabelLogoUrls,
+    setWhiteLabelSettings,
+    defaultWhiteLabelLogoUrls,
   } = props;
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
   const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     if (logoText) {
@@ -111,6 +115,38 @@ const WhiteLabel = (props) => {
 
       setLogoUrlsWhiteLabel(newArr);
     };
+  };
+
+  const onSave = async () => {
+    console.log(logoUrlsWhiteLabel);
+    let logosArr = [];
+
+    for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
+      if (!isEqual(logoUrlsWhiteLabel[i], defaultWhiteLabelLogoUrls[i])) {
+        logosArr.push({
+          key: String(i + 1),
+          value: {
+            light: logoUrlsWhiteLabel[i].path.light,
+            dark: logoUrlsWhiteLabel[i].path.dark,
+          },
+        });
+      }
+    }
+    const data = {
+      logoText: logoTextWhiteLabel,
+      logo: logosArr,
+    };
+
+    try {
+      setIsSaving(true);
+      await setWhiteLabelSettings(data);
+      getWhiteLabelLogoUrls();
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return !isLoadedData ? (
@@ -355,14 +391,14 @@ const WhiteLabel = (props) => {
       <SaveCancelButtons
         tabIndex={3}
         className="save-cancel-buttons"
-        //onSaveClick={onSave}
+        onSaveClick={onSave}
         onCancelClick={onRestoreLogo}
         saveButtonLabel={t("Common:SaveButton")}
         cancelButtonLabel={t("RestoreDefaultButton")}
         displaySettings={true}
         showReminder={isSettingPaid}
-        saveButtonDisabled={true}
-        //isSaving={isSaving}
+        saveButtonDisabled={false}
+        isSaving={isSaving}
       />
     </WhiteLabelWrapper>
   );
@@ -378,7 +414,10 @@ export default inject(({ setup, auth, common }) => {
     restoreWhiteLabelSettings,
   } = common;
 
-  const { getWhiteLabelLogoUrls } = auth.settingsStore;
+  const {
+    getWhiteLabelLogoUrls,
+    whiteLabelLogoUrls: defaultWhiteLabelLogoUrls,
+  } = auth.settingsStore;
 
   return {
     theme: auth.settingsStore.theme,
@@ -388,5 +427,6 @@ export default inject(({ setup, auth, common }) => {
     getWhiteLabelLogoUrls,
     setWhiteLabelSettings,
     restoreWhiteLabelSettings,
+    defaultWhiteLabelLogoUrls,
   };
 })(withTranslation(["Settings", "Profile", "Common"])(observer(WhiteLabel)));
