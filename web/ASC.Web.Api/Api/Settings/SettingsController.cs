@@ -385,32 +385,51 @@ public class SettingsController : BaseSettingsController
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         var settings = _settingsManager.Load<CustomColorThemesSettings>();
 
-        if (inDto.Themes != null)
+        if (inDto.Theme != null)
         {
             lock (locked)
             {
-                foreach (var item in inDto.Themes)
-                {
-                    var settingItem = settings.Themes.SingleOrDefault(r => r.Id == item.Id);
-                    if (settingItem != null)
-                    {
-                        settingItem.AccentColor = item.AccentColor;
-                        settingItem.ButtonsMain = item.ButtonsMain;
-                        settingItem.TextColor = item.TextColor;
-                    }
-                    else
-                    {
-                        if (_customColorThemesSettingsHelper.Limit == 0 || settings.Themes.Count() < _customColorThemesSettingsHelper.Limit)
-                        {
-                            if (item.Id == 0)
-                            {
-                                item.Id = settings.Themes.Max(r => r.Id) + 1;
-                            }
+                var theme = inDto.Theme;
 
-                            settings.Themes = settings.Themes.Append(item).ToList();
-                        }
+                if (CustomColorThemesSettingsItem.Default.Any(r => r.Id == theme.Id))
+                {
+                    theme.Id = 0;
+                }
+
+                var settingItem = settings.Themes.SingleOrDefault(r => r.Id == theme.Id);
+                if (settingItem != null)
+                {
+                    if (theme.Main != null)
+                    {
+                        settingItem.Main = new CustomColorThemesSettingsColorItem
+                        {
+                            Accent = theme.Main.Accent,
+                            Buttons = theme.Main.Buttons
+                        };
+                    }
+                    if (theme.Text != null)
+                    {
+                        settingItem.Text = new CustomColorThemesSettingsColorItem
+                        {
+                            Accent = theme.Text.Accent,
+                            Buttons = theme.Text.Buttons
+                        };
                     }
                 }
+                else
+                {
+                    if (_customColorThemesSettingsHelper.Limit == 0 || settings.Themes.Count < _customColorThemesSettingsHelper.Limit)
+                    {
+                        if (theme.Id == 0)
+                        {
+                            theme.Id = settings.Themes.Max(r => r.Id) + 1;
+                        }
+
+                        theme.Name = "";
+                        settings.Themes = settings.Themes.Append(theme).ToList();
+                    }
+                }
+
 
                 _settingsManager.Save(settings);
             }
