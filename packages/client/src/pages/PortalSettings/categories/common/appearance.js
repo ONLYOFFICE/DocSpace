@@ -160,11 +160,11 @@ const Appearance = (props) => {
   }, []);
 
   useEffect(() => {
-    const colorCheckImg = appearanceTheme.find(
-      (theme) => theme.id == selectThemeId
-    ).text.accent;
+    onColorCheck(appearanceTheme);
+  }, [appearanceTheme]);
 
-    setColorCheckImg(colorCheckImg);
+  useEffect(() => {
+    onColorCheck(appearanceTheme);
 
     if (appearanceTheme.find((theme) => theme.id == selectThemeId).name) {
       setIsDisabledEditButton(true);
@@ -215,6 +215,16 @@ const Appearance = (props) => {
     previewAccent,
   ]);
 
+  const onColorCheck = useCallback(
+    (themes) => {
+      const colorCheckImg = themes.find((theme) => theme.id == selectThemeId)
+        ?.text.accent;
+
+      setColorCheckImg(colorCheckImg);
+    },
+    [selectThemeId]
+  );
+
   const onColorCheckImgHover = useCallback(
     (e) => {
       const id = e.target.id;
@@ -240,18 +250,6 @@ const Appearance = (props) => {
     setPreviewAccent(item.main.accent);
     setSelectThemeId(item.id);
   };
-
-  const onShowCheck = useCallback(
-    (colorNumber) => {
-      return (
-        selectThemeId &&
-        selectThemeId === colorNumber && (
-          <ReactSVG className="check-img" src={checkImg} />
-        )
-      );
-    },
-    [selectThemeId]
-  );
 
   const onSave = useCallback(async () => {
     setIsDisabledSaveButton(true);
@@ -307,6 +305,7 @@ const Appearance = (props) => {
     }
   }, [
     selectThemeId,
+    selectedThemeId,
     setVisibleDialog,
     deleteAppearanceTheme,
     getAppearanceTheme,
@@ -585,7 +584,9 @@ const Appearance = (props) => {
                   onClick={() => onColorSelection(item)}
                   onMouseOver={onColorCheckImgHover}
                 >
-                  {onShowCheck(item.id)}
+                  {selectThemeId === item.id && (
+                    <ReactSVG className="check-img" src={checkImg} />
+                  )}
 
                   {selectThemeId !== item.id && checkImgHover}
                 </StyledTheme>
@@ -610,8 +611,9 @@ const Appearance = (props) => {
                     onClick={() => onColorSelection(item)}
                     onMouseOver={onColorCheckImgHover}
                   >
-                    {onShowCheck(item.id)}
-
+                    {selectThemeId === item.id && (
+                      <ReactSVG className="check-img" src={checkImg} />
+                    )}
                     {selectThemeId !== item.id && checkImgHover}
                   </StyledTheme>
                 );
