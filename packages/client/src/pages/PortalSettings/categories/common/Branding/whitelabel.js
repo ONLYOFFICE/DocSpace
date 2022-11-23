@@ -83,10 +83,10 @@ const WhiteLabel = (props) => {
     setLogoUrlsWhiteLabel(newLogos);
   };
 
-  const onRestoreLogo = () => {
+  const onRestoreLogo = async () => {
     try {
-      restoreWhiteLabelSettings(true);
-      getWhiteLabelLogoUrls();
+      await restoreWhiteLabelSettings(true);
+      await getWhiteLabelLogoUrls();
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
@@ -140,7 +140,7 @@ const WhiteLabel = (props) => {
     try {
       setIsSaving(true);
       await setWhiteLabelSettings(data);
-      getWhiteLabelLogoUrls();
+      await getWhiteLabelLogoUrls();
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
