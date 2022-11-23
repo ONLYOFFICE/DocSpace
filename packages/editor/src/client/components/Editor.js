@@ -216,6 +216,8 @@ function Editor({
 
   const onSDKRequestEditRights = async () => {
     console.log("ONLYOFFICE Document Editor requests editing rights");
+    const url = window.location.href;
+
     const index = url.indexOf("&action=view");
 
     if (index) {
@@ -233,6 +235,8 @@ function Editor({
   };
 
   const onMakeActionLink = (event) => {
+    const url = window.location.href;
+
     const actionData = event.data;
 
     const link = generateLink(actionData);
@@ -370,33 +374,33 @@ function Editor({
     assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
   };
 
-  const updateFavorite = (favorite) => {
-    docEditor.setFavorite(favorite);
-  };
+  // const updateFavorite = (favorite) => {
+  //   docEditor.setFavorite(favorite);
+  // };
 
   const onMetaChange = (event) => {
     const newTitle = event.data.title;
-    const favorite = event.data.favorite;
+    //const favorite = event.data.favorite;
 
     if (newTitle && newTitle !== docTitle) {
       setDocumentTitle(newTitle);
       docTitle = newTitle;
     }
 
-    if (!newTitle) {
-      const onlyNumbers = new RegExp("^[0-9]+$");
-      const isFileWithoutProvider = onlyNumbers.test(fileId);
+    // if (!newTitle) {
+    //   const onlyNumbers = new RegExp("^[0-9]+$");
+    //   const isFileWithoutProvider = onlyNumbers.test(fileId);
 
-      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+    //   const convertFileId = isFileWithoutProvider ? +fileId : fileId;
 
-      favorite
-        ? markAsFavorite([convertFileId])
-            .then(() => updateFavorite(favorite))
-            .catch((error) => console.log("error", error))
-        : removeFromFavorite([convertFileId])
-            .then(() => updateFavorite(favorite))
-            .catch((error) => console.log("error", error));
-    }
+    //   favorite
+    //     ? markAsFavorite([convertFileId])
+    //         .then(() => updateFavorite(favorite))
+    //         .catch((error) => console.log("error", error))
+    //     : removeFromFavorite([convertFileId])
+    //         .then(() => updateFavorite(favorite))
+    //         .catch((error) => console.log("error", error));
+    // }
   };
 
   const setDocumentTitle = (subTitle = null) => {
@@ -416,6 +420,10 @@ function Editor({
       title = moduleTitle + " - " + organizationName;
     } else {
       title = organizationName;
+    }
+
+    if (!documentIsReady) {
+      docTitle = title;
     }
     document.title = title;
   };
@@ -441,8 +449,10 @@ function Editor({
 
     if (index > -1) {
       const splitUrl = url.split("#message/");
+
       if (splitUrl.length === 2) {
-        const message = decodeURIComponent(raw).replace(/\+/g, " ");
+        const message = decodeURIComponent(splitUrl[1]).replace(/\+/g, " ");
+
         docEditor.showMessage(message);
         history.pushState({}, null, url.substring(0, index));
       } else {
@@ -528,7 +538,8 @@ function Editor({
         onRequestInsertImage,
         onRequestMailMergeRecipients,
         onRequestCompareFile,
-        onRequestRestore;
+        onRequestRestore,
+        onRequestHistory;
 
       // if (isSharingAccess) {
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -536,6 +547,10 @@ function Editor({
 
       if (userAccessRights.rename && !isArchiveFolderRoot) {
         onRequestRename = onSDKRequestRename;
+      }
+
+      if (userAccessRights.viewVersionHistory) {
+        onRequestHistory = onSDKRequestHistory;
       }
 
       if (successAuth && !user.isVisitor) {
@@ -569,7 +584,7 @@ function Editor({
           onRequestMailMergeRecipients,
           onRequestCompareFile,
           onRequestEditRights: onSDKRequestEditRights,
-          onRequestHistory: onSDKRequestHistory,
+          onRequestHistory: onRequestHistory,
           onRequestHistoryClose: onSDKRequestHistoryClose,
           onRequestHistoryData: onSDKRequestHistoryData,
           onRequestRestore,
