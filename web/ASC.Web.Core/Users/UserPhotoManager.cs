@@ -782,21 +782,23 @@ public class UserPhotoManager
         return store.SaveAsync(_tempDomainName, fileName, stream).Result.ToString();
     }
 
-    public byte[] GetTempPhotoData(string fileName)
+    public async Task<byte[]> GetTempPhotoData(string fileName)
     {
-        using var s = GetDataStore().GetReadStreamAsync(_tempDomainName, fileName).Result;
+        using var s = await GetDataStore().GetReadStreamAsync(_tempDomainName, fileName);
         var data = new MemoryStream();
         var buffer = new byte[1024 * 10];
+
         while (true)
         {
-            var count = s.Read(buffer, 0, buffer.Length);
+            var count = await s.ReadAsync(buffer, 0, buffer.Length);
             if (count == 0)
             {
                 break;
             }
 
-            data.Write(buffer, 0, count);
+            await data.WriteAsync(buffer, 0, count);
         }
+
         return data.ToArray();
     }
 

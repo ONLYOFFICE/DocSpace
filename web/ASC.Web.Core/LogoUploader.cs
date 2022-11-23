@@ -33,7 +33,8 @@ public class LogoUploader
 
     }
 
-    public async Task Invoke(HttpContext context,
+    public async Task Invoke
+        (HttpContext context,
         PermissionContext permissionContext,
         SetupInfo setupInfo,
         UserPhotoManager userPhotoManager)
@@ -56,14 +57,15 @@ public class LogoUploader
                 {
                     throw new Exception(Resource.ErrorFileNotImage);
                 }
-                
+
                 var data = new byte[logo.Length];
 
                 var reader = new BinaryReader(logo.OpenReadStream());
                 reader.Read(data, 0, (int)logo.Length);
                 reader.Close();
 
-                if (logo.ContentType.Contains("svg")) {
+                if (logo.ContentType.Contains("svg"))
+                {
                     result.Success = true;
                     result.Message = userPhotoManager.SaveTempSvg(data, setupInfo.MaxImageUploadSize);
                 }

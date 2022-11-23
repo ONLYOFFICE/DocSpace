@@ -64,7 +64,7 @@ public class StorageHelper
 
             var fileName = Path.GetFileName(tmpLogoPath);
 
-            data = _userPhotoManager.GetTempPhotoData(fileName);
+            data = await _userPhotoManager.GetTempPhotoData(fileName);
 
             await _userPhotoManager.RemoveTempPhoto(fileName);
 

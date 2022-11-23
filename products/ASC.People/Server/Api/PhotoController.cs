@@ -76,7 +76,7 @@ public class PhotoController : PeopleControllerBase
         if (!string.IsNullOrEmpty(inDto.TmpFile))
         {
             var fileName = Path.GetFileName(inDto.TmpFile);
-            var data = _userPhotoManager.GetTempPhotoData(fileName);
+            var data = await _userPhotoManager.GetTempPhotoData(fileName);
 
             var settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
 

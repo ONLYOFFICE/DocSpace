@@ -462,17 +462,33 @@ public class TenantWhiteLabelSettingsHelper
 
     private async Task<(byte[], string)> GetLogoData(string logo)
     {
-        var xStart = @"data:image/png;base64,";
+        var supportedFormats = new[]
+        {
+            new {
+                    mime = "image/jpeg",
+                    ext = "jpg"
+                },
+            new {
+                    mime = "image/png",
+                    ext = "png"
+                },
+            new {
+                    mime = "image/svg+xml",
+                    ext = "svg"
+                }
+        };
+
         string ext = null;
 
         if (!string.IsNullOrEmpty(logo))
         {
             byte[] data;
-            if (!logo.StartsWith(xStart))
+            var format = supportedFormats.FirstOrDefault(r => logo.StartsWith($"data:{r.mime};base64,"));
+            if (format == null)
             {
                 var fileName = Path.GetFileName(logo);
                 ext = fileName.Split('.').Last();
-                data = _userPhotoManager.GetTempPhotoData(fileName);
+                data = await _userPhotoManager.GetTempPhotoData(fileName);
                 try
                 {
                     await _userPhotoManager.RemoveTempPhoto(fileName);
@@ -484,8 +500,8 @@ public class TenantWhiteLabelSettingsHelper
             }
             else
             {
-                ext = "png";
-                var xB64 = logo.Substring(xStart.Length); // Get the Base64 string
+                ext = format.ext;
+                var xB64 = logo.Substring($"data:{format.mime};base64,".Length); // Get the Base64 string
                 data = Convert.FromBase64String(xB64); // Convert the Base64 string to binary data
             }
 
