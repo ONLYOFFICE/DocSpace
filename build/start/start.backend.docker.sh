@@ -9,9 +9,17 @@ echo "Root directory:" $dir
 
 cd $dir
 
-branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+branch=$(git branch --show-current)
 
 echo "GIT_BRANCH:" $branch
+
+branch_exist_remote=$(git ls-remote --heads origin $branch)
+
+if -z "$branch_exist_remote"
+then
+    echo "Current branch not exist on remote repository. Pleace push changes."
+    exit 1
+fi
 
 cd $dir/build/install/docker/
 
