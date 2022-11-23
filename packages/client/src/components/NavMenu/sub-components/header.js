@@ -138,6 +138,8 @@ const HeaderComponent = ({
   isPreparationPortal,
   theme,
   toggleArticleOpen,
+  logoUrl,
+  userTheme,
   ...props
 }) => {
   const { t } = useTranslation("Common");
@@ -216,7 +218,7 @@ const HeaderComponent = ({
   }, [history]);
 
   const logo =
-    theme === Dark ? props.logoUrl.darkPath : props.logoUrl.lightPath;
+    userTheme === "Dark" ? logoUrl?.path?.dark : logoUrl?.path?.light;
 
   return (
     <>
@@ -332,7 +334,7 @@ HeaderComponent.propTypes = {
   onNavMouseEnter: PropTypes.func,
   onNavMouseLeave: PropTypes.func,
   toggleAside: PropTypes.func,
-  logoUrl: PropTypes.string,
+  logoUrl: PropTypes.object,
   isLoaded: PropTypes.bool,
   version: PropTypes.string,
   isAuthenticated: PropTypes.bool,
@@ -343,6 +345,7 @@ HeaderComponent.propTypes = {
 export default inject(({ auth }) => {
   const {
     settingsStore,
+    userStore,
 
     isLoaded,
     isAuthenticated,
@@ -360,6 +363,7 @@ export default inject(({ auth }) => {
   } = settingsStore;
 
   //TODO: restore when chat will complete -> const mainModules = availableModules.filter((m) => !m.isolateMode);
+  const { user } = userStore;
 
   return {
     theme,
@@ -375,5 +379,6 @@ export default inject(({ auth }) => {
     currentProductId,
     toggleArticleOpen,
     //currentProductName: (product && product.title) || "",
+    userTheme: user.theme,
   };
 })(observer(HeaderComponent));

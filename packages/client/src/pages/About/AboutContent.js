@@ -1,14 +1,12 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
-import Link from "@docspace/components/link";
 import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { useTranslation } from "react-i18next";
 import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import { isMobile } from "react-device-detect";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-import { Dark } from "@docspace/components/themes";
 
 const StyledAboutBody = styled.div`
   width: 100%;
@@ -77,6 +75,7 @@ const AboutContent = (props) => {
     companyInfoSettingsData,
     previewData,
     whiteLabelLogoUrls,
+    userTheme,
   } = props;
   const { t } = useTranslation("About");
   const license = "AGPL-3.0";
@@ -102,9 +101,10 @@ const AboutContent = (props) => {
     : companyInfoSettingsData?.address;
 
   const logo =
-    theme === Dark
-      ? whiteLabelLogoUrls[6]?.darkPath
-      : whiteLabelLogoUrls[6]?.lightPath;
+    userTheme === "Dark"
+      ? whiteLabelLogoUrls[6]?.path.dark
+      : whiteLabelLogoUrls[6]?.path.light;
+
   return (
     companyInfoSettingsData && (
       <StyledAboutBody>
@@ -239,9 +239,15 @@ const AboutContent = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore } = auth;
+  const { settingsStore, userStore } = auth;
 
   const { theme, companyInfoSettingsData, whiteLabelLogoUrls } = settingsStore;
+  const { user } = userStore;
 
-  return { theme, companyInfoSettingsData, whiteLabelLogoUrls };
+  return {
+    theme,
+    companyInfoSettingsData,
+    whiteLabelLogoUrls,
+    userTheme: user?.theme,
+  };
 })(observer(AboutContent));
