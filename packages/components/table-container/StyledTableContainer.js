@@ -45,7 +45,7 @@ const StyledTableContainer = styled.div`
   .table-container_header {
     z-index: 200;
     padding: 0 20px;
-    position: absolute;
+    padding-right: 0;
 
     border-bottom: 1px solid;
     border-image-slice: 1;
@@ -85,6 +85,10 @@ const StyledTableContainer = styled.div`
     .table-container_group-menu-checkbox {
       width: 22px;
     }
+  }
+  .table-container_header-settings {
+    border-bottom: ${(props) => props.theme.tableContainer.tableCell.border};
+    margin-bottom: -1px;
   }
 
   ${({ useReactWindow }) => useReactWindow && reactWindowContainerStyles}
