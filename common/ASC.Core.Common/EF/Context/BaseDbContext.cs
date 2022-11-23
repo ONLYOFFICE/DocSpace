@@ -59,7 +59,7 @@ public static class BaseDbContextExtension
         {
             case Provider.MySql:
                 optionsBuilder.ReplaceService<IMigrationsSqlGenerator, CustomMySqlMigrationsSqlGenerator>();
-                optionsBuilder.UseMySql(connectionString.ConnectionString, ServerVersion.Parse("8.0.25"), providerOptions =>
+                optionsBuilder.UseMySql(connectionString.ConnectionString, ServerVersion.AutoDetect(connectionString.ConnectionString), providerOptions =>
                 {
                     if (!string.IsNullOrEmpty(migrateAssembly))
                     {
