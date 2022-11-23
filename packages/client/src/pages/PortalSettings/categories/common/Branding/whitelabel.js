@@ -397,7 +397,10 @@ const WhiteLabel = (props) => {
         cancelButtonLabel={t("RestoreDefaultButton")}
         displaySettings={true}
         showReminder={isSettingPaid}
-        saveButtonDisabled={false}
+        saveButtonDisabled={isEqual(
+          logoUrlsWhiteLabel,
+          defaultWhiteLabelLogoUrls
+        )}
         isSaving={isSaving}
       />
     </WhiteLabelWrapper>
