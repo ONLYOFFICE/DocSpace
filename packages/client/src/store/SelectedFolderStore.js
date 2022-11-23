@@ -26,6 +26,7 @@ class SelectedFolderStore {
   isRoom = null;
   logo = null;
   tags = null;
+  private = null;
 
   settingsStore = null;
 
@@ -64,6 +65,7 @@ class SelectedFolderStore {
     this.isRoom = null;
     this.logo = null;
     this.tags = null;
+    this.private = null;
   };
 
   setParentId = (parentId) => {
