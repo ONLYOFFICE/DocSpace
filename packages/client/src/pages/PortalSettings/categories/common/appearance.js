@@ -322,7 +322,7 @@ const Appearance = (props) => {
         setPreviewAccent(appearanceTheme[0].main.accent);
       }
 
-      setVisibleDialog(false);
+      onCloseDialogDelete();
 
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
@@ -331,7 +331,7 @@ const Appearance = (props) => {
   }, [
     selectThemeId,
     selectedThemeId,
-    setVisibleDialog,
+    onCloseDialogDelete,
     deleteAppearanceTheme,
     getAppearanceTheme,
   ]);
@@ -526,6 +526,14 @@ const Appearance = (props) => {
     onCloseColorSchemeDialog();
   };
 
+  const onCloseDialogDelete = () => {
+    setVisibleDialog(false);
+  };
+
+  const onOpenDialogDelete = () => {
+    setVisibleDialog(true);
+  };
+
   const nodeHexColorPickerButtons = (
     <DropDownContainer
       directionX="right"
@@ -587,7 +595,7 @@ const Appearance = (props) => {
     <>
       <ModalDialogDelete
         visible={visibleDialog}
-        onClose={() => setVisibleDialog(false)}
+        onClose={onCloseDialogDelete}
         onClickDelete={onClickDeleteModal}
       />
 
@@ -651,7 +659,7 @@ const Appearance = (props) => {
               data-for="theme-add"
               data-tip="tooltip"
               className="theme-add"
-              onClick={() => onAddTheme()}
+              onClick={onAddTheme}
             />
             {!abilityAddTheme && (
               <Tooltip
@@ -706,7 +714,7 @@ const Appearance = (props) => {
             <Button
               className="button"
               label={t("Settings:DeleteTheme")}
-              onClick={() => setVisibleDialog(true)}
+              onClick={onOpenDialogDelete}
               size="small"
               isDisabled={isDisabledDeleteButton}
             />
