@@ -26,7 +26,7 @@ import {
 import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
-import { getRoomRoleActions } from "@docspace/common/utils/actions";
+import { getArchiveRoomRoleActions } from "@docspace/common/utils/actions";
 
 const { FilesFilter, RoomsFilter } = api;
 const storageViewAs = localStorage.getItem("viewAs");
@@ -2686,11 +2686,15 @@ class FilesStore {
   }
 
   get roomsForRestore() {
-    return this.folders.filter((f) => getRoomRoleActions(f.access).archive);
+    return this.folders.filter(
+      (f) => getArchiveRoomRoleActions(f.access).restore
+    );
   }
 
   get roomsForDelete() {
-    return this.folders.filter((f) => getRoomRoleActions(f.access).delete);
+    return this.folders.filter(
+      (f) => getArchiveRoomRoleActions(f.access).delete
+    );
   }
 }
 
