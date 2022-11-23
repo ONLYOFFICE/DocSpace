@@ -46,7 +46,13 @@ class AccessRightsStore {
   };
 
   get canCreateFiles() {
-    const { access, rootFolderType } = this.selectedFolderStore;
+    const {
+      access,
+      rootFolderType,
+      private: isPrivateFolder,
+    } = this.selectedFolderStore;
+
+    if (isPrivateFolder) return false;
 
     if (rootFolderType === FolderType.Archive) return false;
 

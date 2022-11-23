@@ -112,8 +112,7 @@ const ControlButtons = ({
 
   return (
     <StyledContainer isDropBox={isDropBox}>
-      {(!isRootFolder && canCreate) ||
-      (isRecycleBinFolder && !isEmptyFilesList) ? (
+      {!isRootFolder || (isRecycleBinFolder && !isEmptyFilesList) ? (
         <>
           {!isMobile && canCreate && (
             <PlusButton
