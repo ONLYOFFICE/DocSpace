@@ -44,9 +44,6 @@ const StyledTableContainer = styled.div`
   .table-container_group-menu,
   .table-container_header {
     z-index: 200;
-    padding: 0 20px;
-    position: absolute;
-
     border-bottom: 1px solid;
     border-image-slice: 1;
     border-image-source: ${(props) =>
