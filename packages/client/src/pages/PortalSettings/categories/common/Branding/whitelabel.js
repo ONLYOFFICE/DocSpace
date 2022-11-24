@@ -122,13 +122,20 @@ const WhiteLabel = (props) => {
     let logosArr = [];
 
     for (let i = 0; i < logoUrlsWhiteLabel.length; i++) {
-      if (!isEqual(logoUrlsWhiteLabel[i], defaultWhiteLabelLogoUrls[i])) {
+      const currentLogo = logoUrlsWhiteLabel[i];
+      const defaultLogo = defaultWhiteLabelLogoUrls[i];
+
+      if (!isEqual(currentLogo, defaultLogo)) {
+        let value = {};
+
+        if (!isEqual(currentLogo.path.light, defaultLogo.path.light))
+          value.light = currentLogo.path.light;
+        if (!isEqual(currentLogo.path.dark, defaultLogo.path.dark))
+          value.dark = currentLogo.path.dark;
+
         logosArr.push({
           key: String(i + 1),
-          value: {
-            light: logoUrlsWhiteLabel[i].path.light,
-            dark: logoUrlsWhiteLabel[i].path.dark,
-          },
+          value: value,
         });
       }
     }
