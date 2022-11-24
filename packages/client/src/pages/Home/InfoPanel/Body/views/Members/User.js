@@ -15,6 +15,7 @@ const User = ({
   currCanEditUsers,
   selectionParentRoom,
   setSelectionParentRoom,
+  isArchiveRoot,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -65,6 +66,12 @@ const User = ({
     }
   };
 
+  const isAvailable =
+    !isArchiveRoot &&
+    currCanEditUsers &&
+    currentMember?.id !== user.id &&
+    userRole.access !== ShareAccessRights.FullAccess;
+
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
@@ -84,9 +91,7 @@ const User = ({
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {currCanEditUsers &&
-          currentMember?.id !== user.id &&
-          userRole.access !== ShareAccessRights.FullAccess ? (
+          {isAvailable ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}

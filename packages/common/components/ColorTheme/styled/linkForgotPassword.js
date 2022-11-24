@@ -5,7 +5,7 @@ const getDefaultStyles = ({ $currentColorScheme }) =>
   $currentColorScheme &&
   css`
     .login-link {
-      color: ${$currentColorScheme.accentColor};
+      color: ${$currentColorScheme.main.accent};
     }
   `;
 

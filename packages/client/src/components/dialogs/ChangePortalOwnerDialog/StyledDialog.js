@@ -142,53 +142,11 @@ const StyledSelectedOwnerContainer = styled.div`
 
 StyledSelectedOwnerContainer.defaultProps = { theme: Base };
 
-const StyledSelectedOwner = styled.div`
-  width: fit-content;
-  height: 28px;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 4px 15px;
-  gap: 8px;
-
-  box-sizing: border-box;
-
-  background: ${(props) =>
-    props.theme.filterInput.filter.selectedItem.background};
-
-  border-radius: 16px;
-
-  .text {
-    color: ${(props) => props.theme.filterInput.filter.selectedItem.color};
-
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 20px;
-  }
-
-  .cross-icon {
-    display: flex;
-    align-items: center;
-
-    svg {
-      cursor: pointer;
-
-      path {
-        fill: ${(props) => props.theme.filterInput.filter.selectedItem.color};
-      }
-    }
-  }
-`;
-
-StyledSelectedOwner.defaultProps = { theme: Base };
-
 export {
   StyledOwnerInfo,
   StyledPeopleSelectorInfo,
   StyledPeopleSelector,
   StyledAvailableList,
   StyledFooterWrapper,
-  StyledSelectedOwner,
   StyledSelectedOwnerContainer,
 };

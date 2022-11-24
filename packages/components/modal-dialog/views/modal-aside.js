@@ -37,6 +37,7 @@ const Modal = ({
   withFooterBorder,
   modalSwipeOffset,
   containerVisible,
+  isDoubleFooterLine,
 }) => {
   const headerComponent = header ? header.props.children : null;
   const bodyComponent = body ? body.props.children : null;
@@ -78,6 +79,7 @@ const Modal = ({
             <CloseButton
               currentDisplayType={currentDisplayType}
               onClick={onClose}
+              id={id}
             />
             {isLoading ? (
               currentDisplayType === "modal" ? (
@@ -143,6 +145,7 @@ const Modal = ({
                         className={`modal-footer ${footer.props.className}`}
                         withFooterBorder={withFooterBorder}
                         currentDisplayType={currentDisplayType}
+                        isDoubleFooterLine={isDoubleFooterLine}
                         {...footer.props}
                       >
                         {footerComponent}

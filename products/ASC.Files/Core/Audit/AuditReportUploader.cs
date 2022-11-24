@@ -52,11 +52,11 @@ public class AuditReportUploader
         _auditReportCreator = auditReportCreator;
     }
 
-    public string UploadCsvReport(Stream stream, string reportName)
+    public async Task<string> UploadCsvReport(Stream stream, string reportName)
     {
         try
         {
-            var file = _fileUploader.ExecAsync(_globalFolderHelper.FolderMy, reportName, stream.Length, stream, true).Result;
+            var file = await _fileUploader.ExecAsync(_globalFolderHelper.FolderMy, reportName, stream.Length, stream, true);
             var fileUrl = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.GetFileWebEditorUrl(file.Id));
 
             fileUrl += string.Format("&options={{\"codePage\":{0}}}", Encoding.UTF8.CodePage);

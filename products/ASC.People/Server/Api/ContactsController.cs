@@ -54,7 +54,7 @@ public class ContactsController : PeopleControllerBase
         }
 
         DeleteContacts(inDto.Contacts, user);
-        _userManager.SaveUserInfo(user, syncCardDav: true);
+        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
         return await _employeeFullDtoHelper.GetFull(user);
     }
@@ -71,7 +71,7 @@ public class ContactsController : PeopleControllerBase
 
         user.ContactsList.Clear();
         UpdateContacts(inDto.Contacts, user);
-        _userManager.SaveUserInfo(user, syncCardDav: true);
+        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
         return await _employeeFullDtoHelper.GetFull(user);
     }
@@ -87,7 +87,7 @@ public class ContactsController : PeopleControllerBase
         }
 
         UpdateContacts(inDto.Contacts, user);
-        _userManager.SaveUserInfo(user, syncCardDav: true);
+        await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
         return await _employeeFullDtoHelper.GetFull(user);
     }

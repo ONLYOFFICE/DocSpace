@@ -110,7 +110,7 @@ public class QuotaSyncJob : DistributedTaskProgress
     {
         TenantId = tenant.Id;
     }
-    protected override void DoJob()
+    protected override async Task DoJob()
     {
         try
         {
@@ -126,12 +126,12 @@ public class QuotaSyncJob : DistributedTaskProgress
             foreach (var module in storageModules)
             {
                 var storage = _storageFactory.GetStorage(TenantId, module);
-                storage.ResetQuotaAsync("").Wait();
+                await storage.ResetQuotaAsync("");
 
                 var domains = _storageFactoryConfig.GetDomainList(string.Empty, module);
                 foreach (var domain in domains)
                 {
-                    storage.ResetQuotaAsync(domain).Wait();
+                    await storage.ResetQuotaAsync(domain);
                 }
             }
         }

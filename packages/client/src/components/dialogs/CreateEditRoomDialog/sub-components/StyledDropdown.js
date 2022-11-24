@@ -45,6 +45,13 @@ const StyledDropDown = styled(DropDown)`
     font-weight: 400;
     font-size: 13px;
     line-height: 20px;
+
+    display: block;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     &:hover {
       background: ${(props) =>
         props.theme.createEditRoomDialog.dropdown.item.hoverBackground};

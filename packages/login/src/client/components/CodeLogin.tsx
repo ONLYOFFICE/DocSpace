@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import CodeInput from "@docspace/components/code-input";
 import { Trans } from "react-i18next";
+import { ReactSVG } from "react-svg";
 import { LoginContainer, LoginFormWrapper } from "./StyledLogin";
 import BarLogo from "../../../../../public/images/danger.alert.react.svg";
-import DocspaceLogo from "../../../../../public/images/docspace.big.react.svg";
+import { Dark, Base } from "@docspace/components/themes";
+import { getBgPattern } from "@docspace/common/utils";
+import { useMounted } from "../helpers/useMounted";
+
 interface IBarProp {
   t: TFuncType;
   expired: boolean;
@@ -25,7 +30,7 @@ const Bar: React.FC<IBarProp> = (props) => {
   );
 };
 
-const Form: React.FC = () => {
+const Form: React.FC = ({ theme, setTheme, logoUrls }) => {
   const { t } = useTranslation("Login");
   const [invalidCode, setInvalidCode] = useState(false);
   const [expiredCode, setExpiredCode] = useState(false);
@@ -33,6 +38,15 @@ const Form: React.FC = () => {
 
   const email = "test@onlyoffice.com"; //TODO: get email from form
   const validCode = "123456"; //TODO: get from api
+
+  useEffect(() => {
+    const theme =
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? Dark
+        : Base;
+    setTheme(theme);
+  }, []);
 
   const onSubmit = (code: number | string) => {
     if (code !== validCode) {
@@ -48,11 +62,19 @@ const Form: React.FC = () => {
     setInvalidCode(false);
   };
 
+  const loginLogo = Object.values(logoUrls)[1];
+  const isSvgLogo = loginLogo.includes(".svg");
+
   return (
-    <LoginContainer>
-      <DocspaceLogo className="logo-wrapper" />
+    <LoginContainer id="code-page" theme={theme}>
+      {isSvgLogo ? (
+        <ReactSVG src={loginLogo} className="logo-wrapper" />
+      ) : (
+        <img src={loginLogo} className="logo-wrapper" />
+      )}
 
       <Text
+        id="workspace-title"
         fontSize="23px"
         fontWeight={700}
         textAlign="center"
@@ -61,7 +83,12 @@ const Form: React.FC = () => {
         {t("CodeTitle")}
       </Text>
 
-      <Text fontSize="12px" fontWeight={400} textAlign="center" color="#A3A9AE">
+      <Text
+        className="code-description"
+        fontSize="12px"
+        fontWeight={400}
+        textAlign="center"
+      >
         <Trans t={t} i18nKey="CodeSubtitle" ns="Login" key={email}>
           We sent a 6-digit code to {{ email }}. The code has a limited validity
           period, enter it as soon as possible.{" "}
@@ -70,6 +97,7 @@ const Form: React.FC = () => {
 
       <div className="code-input-container">
         <CodeInput
+          theme={theme}
           onSubmit={onSubmit}
           handleChange={handleChange}
           isDisabled={isLoading}
@@ -89,8 +117,7 @@ const Form: React.FC = () => {
         )}
 
         <Text
-          className="not-found-code"
-          color="#A3A9AE"
+          className="not-found-code code-description"
           fontSize="12px"
           textAlign="center"
         >
@@ -102,11 +129,20 @@ const Form: React.FC = () => {
 };
 
 const CodeLogin: React.FC<ICodeProps> = (props) => {
+  const bgPattern = getBgPattern(props.currentColorScheme.id);
+  const mounted = useMounted();
+
+  if (!mounted) return <></>;
   return (
-    <LoginFormWrapper>
+    <LoginFormWrapper bgPattern={bgPattern}>
       <Form {...props} />
     </LoginFormWrapper>
   );
 };
 
-export default CodeLogin;
+export default inject(({ loginStore }) => {
+  return {
+    theme: loginStore.theme,
+    setTheme: loginStore.setTheme,
+  };
+})(observer(CodeLogin));

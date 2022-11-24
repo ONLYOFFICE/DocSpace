@@ -358,12 +358,12 @@ public class FileMarker
 
         if (updateTags.Count > 0)
         {
-            tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
+            await tagDao.UpdateNewTags(updateTags, obj.CurrentAccountId);
         }
 
         if (newTags.Count > 0)
         {
-            tagDao.SaveTags(newTags, obj.CurrentAccountId);
+            await tagDao.SaveTags(newTags, obj.CurrentAccountId);
         }
 
         await Task.WhenAll(ExecMarkAsNewRequest(updateTags.Concat(newTags), socketManager));
@@ -565,12 +565,12 @@ public class FileMarker
 
         if (updateTags.Count > 0)
         {
-            tagDao.UpdateNewTags(updateTags);
+            await tagDao.UpdateNewTags(updateTags);
         }
 
         if (removeTags.Count > 0)
         {
-            tagDao.RemoveTags(removeTags);
+            await tagDao.RemoveTags(removeTags);
         }
 
         var socketManager = _serviceProvider.GetRequiredService<SocketManager>();
@@ -834,11 +834,11 @@ public class FileMarker
                 parentFolderTag.Count -= diff;
                 if (parentFolderTag.Id == -1)
                 {
-                    tagDao.SaveTags(parentFolderTag);
+                    await tagDao.SaveTags(parentFolderTag);
                 }
                 else
                 {
-                    tagDao.UpdateNewTags(parentFolderTag);
+                    await tagDao.UpdateNewTags(parentFolderTag);
                 }
 
                 var cacheFolderId = parent.Id;
@@ -872,13 +872,13 @@ public class FileMarker
                         {
                             if (await _fileSecurity.CanReadAsync(folderFromList))
                             {
-                                tagDao.SaveTags(Tag.New(_authContext.CurrentAccount.ID, folderFromList, -diff));
+                                await tagDao.SaveTags(Tag.New(_authContext.CurrentAccount.ID, folderFromList, -diff));
                             }
                         }
                         else
                         {
                             parentTreeTag.Count -= diff;
-                            tagDao.UpdateNewTags(parentTreeTag);
+                            await tagDao.UpdateNewTags(parentTreeTag);
                         }
                     }
                 }
