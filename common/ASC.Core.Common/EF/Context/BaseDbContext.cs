@@ -87,11 +87,6 @@ public static class BaseDbContextExtension
         services.AddPooledDbContextFactory<T>(OptionsAction);
     }
 
-    public static void AddBaseDbContext<T>(this IServiceCollection services) where T : DbContext
-    {
-        services.AddDbContext<T>(OptionsAction);
-    }
-
     public static T AddOrUpdate<T, TContext>(this TContext b, Expression<Func<TContext, DbSet<T>>> expressionDbSet, T entity) where T : BaseEntity where TContext : DbContext
     {
         var dbSet = expressionDbSet.Compile().Invoke(b);
