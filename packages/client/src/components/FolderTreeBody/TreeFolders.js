@@ -411,9 +411,14 @@ class TreeFolders extends React.Component {
         this.getNewTreeData(treeData, listIds, data.folders, data.level);
         !certainFolders && this.props.setTreeFolders(treeData);
 
-        if (data.listIds[0] == roomsFolderId && this.props.onSelect) {
+        if (
+          data.listIds[0] == roomsFolderId &&
+          this.props.onSelect &&
+          this.selectedRootRoom
+        ) {
           const roomsIndex = treeData.findIndex((f) => f.id == roomsFolderId);
           const firstRoomsNodeId = treeData[roomsIndex]?.folders[0]?.id;
+          this.selectedRootRoom = false;
           this.props.onSelect([firstRoomsNodeId], treeNode);
         }
       })
@@ -444,6 +449,7 @@ class TreeFolders extends React.Component {
 
     if (folder[0] == roomsFolderId) {
       this.onExpand(newExpandedPanelKeys, treeNode, true);
+      this.selectedRootRoom = true;
       return;
     }
 
