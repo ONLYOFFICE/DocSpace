@@ -39,12 +39,13 @@ const TagDropdown = ({
   };
 
   const onClickOutside = (e) => {
-    console.log(e.target.id, e.target.for);
-    if (e.target.id !== "tags-input" || e.target.for !== "tags-input") {
-      document.getElementById("tags-input").blur();
-    } else {
-      document.getElementById("tags-input").focus();
-    }
+    console.log("clickOutside");
+    // console.log(e.target.id, e.target.for);
+    // if (e.target.id !== "tags-input" || e.target.for !== "tags-input") {
+    //   document.getElementById("tags-input").blur();
+    // } else {
+    //   document.getElementById("tags-input").focus();
+    // }
     // if (e) console.log(e.target, e.currentTarget);
   };
 
@@ -89,6 +90,7 @@ const TagDropdown = ({
         ...res,
       ];
 
+    if (!res.length) return [null];
     return res;
   };
 
@@ -112,15 +114,14 @@ const TagDropdown = ({
       className="dropdown-content-wrapper"
       onMouseDown={preventDefault}
     >
-      {!!dropdownItems.length && (
+      {dropdownItems && (
         <StyledDropDown
           className="dropdown-content"
           open={open}
           forwardedRef={dropdownRef}
-          clickOutsideAction={onClickOutside}
           maxHeight={dropdownMaxHeight}
           showDisabledItems={false}
-          withBackdrop={false}
+          withBackdrop={true}
         >
           {dropdownItems}
         </StyledDropDown>

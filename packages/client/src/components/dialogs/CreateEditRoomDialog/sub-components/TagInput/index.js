@@ -21,6 +21,10 @@ const StyledTagInput = styled.div`
     margin-bottom: -4px;
     max-width: 100%;
     position: relative;
+
+    * {
+      max-width: 100%;
+    }
   }
 `;
 
@@ -38,13 +42,13 @@ const TagInput = ({
 
   const openDropdown = () => {
     if (isDisabled) return;
-    setIsScrollLocked(true);
+    // setIsScrollLocked(true);
     setIsDropdownOpen(true);
   };
 
   const closeDropdown = () => {
-    setIsScrollLocked(false);
-    setIsDropdownOpen(false);
+    // setIsScrollLocked(false);
+    // setIsDropdownOpen(false);
   };
 
   return (
