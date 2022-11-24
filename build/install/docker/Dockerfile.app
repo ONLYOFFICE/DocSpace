@@ -150,18 +150,12 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     # changes for upstream configure
     sed -i 's/127.0.0.1:5010/$service_api_system/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5012/$service_backup/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/127.0.0.1:5021/$service_crm/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5007/$service_files/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5004/$service_people_server/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/127.0.0.1:5020/$service_projects_server/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5000/$service_api/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5003/$service_studio/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/127.0.0.1:5023/$service_calendar/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:9899/$service_socket/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:9834/$service_sso/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/127.0.0.1:5022/$service_mail/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/127.0.0.1:9999/$service_urlshortener/' /etc/nginx/conf.d/onlyoffice.conf && \
-    sed -i 's/127.0.0.1:5034/$service_migration/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5013/$service_doceditor/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5011/$service_login/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
@@ -211,15 +205,6 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ClearEvents/service/  .
 
 CMD ["ASC.ClearEvents.dll", "ASC.ClearEvents"]
-
-## ASC.Migration ##
-FROM dotnetrun AS migration
-WORKDIR ${BUILD_PATH}/services/ASC.Migration/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Migration/service/  .
-
-CMD ["ASC.Migration.dll", "ASC.Migration"]
 
 ## ASC.Data.Backup ##
 FROM dotnetrun AS backup
@@ -293,24 +278,6 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Studio
 
 CMD ["ASC.Studio.Notify.dll", "ASC.Studio.Notify"]
 
-## ASC.TelegramService ##
-FROM dotnetrun AS telegram_service
-WORKDIR ${BUILD_PATH}/services/ASC.TelegramService/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.TelegramService/service/ .
-
-CMD ["ASC.TelegramService.dll", "ASC.TelegramService"]
-
-## ASC.UrlShortener ##
-FROM noderun AS urlshortener
-WORKDIR  ${BUILD_PATH}/services/ASC.UrlShortener/service/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.UrlShortener/service/ .
-
-CMD ["index.js", "ASC.UrlShortener"]
-
 ## ASC.Web.Api ##
 FROM dotnetrun AS api
 WORKDIR ${BUILD_PATH}/studio/ASC.Web.Api/
@@ -319,15 +286,6 @@ COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Web.Api/service/ .
 
 CMD ["ASC.Web.Api.dll", "ASC.Web.Api"]
-
-## ASC.Webhooks.Service ##
-FROM dotnetrun AS webhooks-service
-WORKDIR ${BUILD_PATH}/services/ASC.Webhooks.Service/
-
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Webhooks.Service/service/  .
-
-CMD ["ASC.Webhooks.Service.dll", "ASC.Webhooks.Service"]
 
 ## ASC.Web.Studio ##
 FROM dotnetrun AS studio
