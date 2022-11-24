@@ -144,6 +144,11 @@ const WhiteLabelWrapper = styled.div`
       props.theme.client.settings.common.whiteLabel.backgroundColorDark};
   }
 
+  .background-white {
+    background-color: ${(props) =>
+      props.theme.client.settings.common.whiteLabel.backgroundColorWhite};
+  }
+
   .hidden {
     display: none;
   }

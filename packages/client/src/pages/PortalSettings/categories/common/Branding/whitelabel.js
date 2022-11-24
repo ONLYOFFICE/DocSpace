@@ -290,7 +290,7 @@ const WhiteLabel = (props) => {
             <Logo
               title={t("Profile:LightTheme")}
               src={logoUrlsWhiteLabel[1].path.light}
-              imageClass="border-img logo-big"
+              imageClass="border-img logo-big background-white"
               inputId="logoUploader_2_light"
               onChangeText={t("ChangeLogoButton")}
               onChange={onChangeLogo}
@@ -321,7 +321,7 @@ const WhiteLabel = (props) => {
             <Logo
               title={t("Profile:LightTheme")}
               src={logoUrlsWhiteLabel[6].path.light}
-              imageClass="border-img logo-about"
+              imageClass="border-img logo-about background-white"
               inputId="logoUploader_7_light"
               onChangeText={t("ChangeLogoButton")}
               onChange={onChangeLogo}
@@ -388,7 +388,7 @@ const WhiteLabel = (props) => {
           </Text>
           <Logo
             src={logoUrlsWhiteLabel[4].path.light}
-            imageClass="border-img logo-embedded-editor"
+            imageClass="border-img logo-embedded-editor background-white"
             inputId="logoUploader_5_light"
             onChangeText={t("ChangeLogoButton")}
             onChange={onChangeLogo}
