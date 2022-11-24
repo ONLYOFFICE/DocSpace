@@ -409,20 +409,6 @@ public class TenantWhiteLabelSettingsHelper
                 return;
             }
 
-            if (tenantWhiteLabelSettings.GetIsDefault(currentLogoType))
-            {
-                if (lightData == null)
-                {
-                    lightData = darkData;
-                    extLight = extDark;
-                }
-                if (darkData == null)
-                {
-                    darkData = lightData;
-                    extDark = extLight;
-                }
-            }
-
             if (lightData != null)
             {
                 await SetLogo(tenantWhiteLabelSettings, currentLogoType, extLight, lightData, false, storage);
