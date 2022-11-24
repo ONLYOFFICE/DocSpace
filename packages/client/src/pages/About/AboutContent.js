@@ -242,12 +242,12 @@ export default inject(({ auth }) => {
   const { settingsStore, userStore } = auth;
 
   const { theme, companyInfoSettingsData, whiteLabelLogoUrls } = settingsStore;
-  const { user } = userStore;
+  const { userTheme } = userStore;
 
   return {
     theme,
     companyInfoSettingsData,
     whiteLabelLogoUrls,
-    userTheme: user?.theme,
+    userTheme,
   };
 })(observer(AboutContent));
