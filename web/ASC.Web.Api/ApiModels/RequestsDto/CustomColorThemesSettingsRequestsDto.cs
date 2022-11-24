@@ -28,6 +28,6 @@ namespace ASC.Web.Api.ApiModels.RequestsDto;
 
 public class CustomColorThemesSettingsRequestsDto
 {
-    public IEnumerable<CustomColorThemesSettingsItem> Themes { get; set; }
+    public CustomColorThemesSettingsItem Theme { get; set; }
     public int? Selected { get; set; }
 }
