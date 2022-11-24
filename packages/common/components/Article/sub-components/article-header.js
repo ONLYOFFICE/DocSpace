@@ -26,7 +26,6 @@ const ArticleHeader = ({
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
   const onLogoClick = () => history.push("/");
 
-  console.log(userTheme);
   const burgerLogo =
     userTheme === "Dark"
       ? whiteLabelLogoUrls[5].path.dark
