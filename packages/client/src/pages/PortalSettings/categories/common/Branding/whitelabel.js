@@ -28,6 +28,7 @@ const WhiteLabel = (props) => {
     getWhiteLabelLogoUrls,
     setWhiteLabelSettings,
     defaultWhiteLabelLogoUrls,
+    getWhiteLabelLogoText,
   } = props;
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
@@ -87,6 +88,7 @@ const WhiteLabel = (props) => {
     try {
       await restoreWhiteLabelSettings(true);
       await getWhiteLabelLogoUrls();
+      await getWhiteLabelLogoText();
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
