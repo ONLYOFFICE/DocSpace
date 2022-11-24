@@ -17,7 +17,7 @@ import { size } from "@docspace/components/utils/device";
 import { inject, observer } from "mobx-react";
 
 const AccessPortal = (props) => {
-  const { t, helpLink } = props;
+  const { t, helpLink, currentColorScheme } = props;
   const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
@@ -42,6 +42,7 @@ const AccessPortal = (props) => {
         title={t("SettingPasswordStrength")}
         tooltipTitle={t("SettingPasswordStrengthDescription")}
         tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        currentColorScheme={currentColorScheme}
       />
       <PasswordStrengthSection />
       <StyledSettingsSeparator />
@@ -50,6 +51,7 @@ const AccessPortal = (props) => {
         title={t("TwoFactorAuth")}
         tooltipTitle={t("TwoFactorAuthDescription")}
         tooltipUrl={`${helpLink}/administration/two-factor-authentication.aspx`}
+        currentColorScheme={currentColorScheme}
       />
       <TfaSection />
       <StyledSettingsSeparator />
@@ -58,6 +60,7 @@ const AccessPortal = (props) => {
         title={t("TrustedMail")}
         tooltipTitle={t("TrustedMailDescription")}
         tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        currentColorScheme={currentColorScheme}
       />
       <TrustedMailSection />
       <StyledSettingsSeparator />
@@ -74,6 +77,7 @@ const AccessPortal = (props) => {
         title={t("AdminsMessage")}
         tooltipTitle={t("AdminsMessageDescription")}
         tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        currentColorScheme={currentColorScheme}
       />
       <AdminMessageSection />
 
@@ -89,6 +93,6 @@ const AccessPortal = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { helpLink } = auth.settingsStore;
-  return { helpLink };
+  const { helpLink, currentColorScheme } = auth.settingsStore;
+  return { helpLink, currentColorScheme };
 })(withTranslation("Settings")(withRouter(observer(AccessPortal))));

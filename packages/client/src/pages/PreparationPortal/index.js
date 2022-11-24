@@ -10,6 +10,7 @@ import Text from "@docspace/components/text";
 import { getRestoreProgress } from "@docspace/common/api/portal";
 import { observer, inject } from "mobx-react";
 import PropTypes from "prop-types";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const baseSize = 1073741824; //number of bytes in one GB
 const unSizeMultiplicationFactor = 3;
@@ -193,7 +194,8 @@ class PreparationPortal extends React.Component {
           headerText={withoutHeader ? "" : t("Common:PreparationPortalTitle")}
           style={style}
         >
-          <StyledBodyPreparationPortal
+          <ColorTheme
+            themeId={ThemeType.Progress}
             percent={percent}
             errorMessage={errorMessage}
             className="preparation-portal_body-wrapper"
@@ -209,17 +211,14 @@ class PreparationPortal extends React.Component {
                   <div className="preparation-portal_progress-bar">
                     <div className="preparation-portal_progress-line"></div>
                   </div>
-                  <Text
-                    className="preparation-portal_percent"
-                    color="#a3a9ae"
-                  >{`${percent}%`}</Text>
+                  <Text className="preparation-portal_percent">{`${percent} %`}</Text>
                 </div>
                 <Text className="preparation-portal_text">
                   {t("PreparationPortalDescription")}
                 </Text>
               </>
             )}
-          </StyledBodyPreparationPortal>
+          </ColorTheme>
         </ErrorContainer>
       </StyledPreparationPortal>
     );

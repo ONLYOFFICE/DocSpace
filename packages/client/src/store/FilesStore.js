@@ -2574,6 +2574,14 @@ class FilesStore {
 
   setCreatedItem = (createdItem) => {
     this.createdItem = createdItem;
+
+    const { socketHelper } = this.authStore.settingsStore;
+    if (createdItem?.type == "file") {
+      socketHelper.emit({
+        command: "subscribe",
+        data: `FILE-${createdItem.id}`,
+      });
+    }
   };
 
   setScrollToItem = (item) => {

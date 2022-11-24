@@ -40,8 +40,10 @@ module.exports = {
       },
       {
         test: /\.svg/,
-        type: "asset/inline",
+        //type: "asset/inline",
+        use: ["@svgr/webpack"],
       },
+
       {
         test: imageExtensions,
         type: "asset/resource",
