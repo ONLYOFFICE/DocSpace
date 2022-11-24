@@ -2893,7 +2893,8 @@ const Dark = {
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
 
-          backgroundColorLight: "#F8F9F9;",
+          backgroundColorWhite: white,
+          backgroundColorLight: "#F8F9F9",
           backgroundColorDark: "#282828",
           greenBackgroundColor: "#7e983f",
           blueBackgroundColor: "#5170b5",

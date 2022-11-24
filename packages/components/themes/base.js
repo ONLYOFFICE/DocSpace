@@ -2891,7 +2891,8 @@ const Base = {
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
 
-          backgroundColorLight: "#F8F9F9;",
+          backgroundColorWhite: white,
+          backgroundColorLight: "#F8F9F9",
           backgroundColorDark: "#282828",
           greenBackgroundColor: "#7e983f",
           blueBackgroundColor: "#5170b5",
@@ -3006,13 +3007,12 @@ const Base = {
     boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
 
-
   preparationPortalProgress: {
     backgroundColor: "#F3F4F4",
     colorPercentSmall: "#333333",
     colorPercentBig: "#FFFFFF",
- },
- 
+  },
+
   codeInput: {
     background: white,
     border: "1px solid #d0d5da",
