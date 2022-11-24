@@ -489,7 +489,7 @@ class ContextOptionsStore {
                 key: "show-version-history",
                 label: t("ShowVersionHistory"),
                 icon: "images/history.react.svg",
-                onClick: () => this.showVersionHistory(item.id),
+                onClick: () => this.showVersionHistory(item.id, item.access),
                 disabled: false,
               },
             ]
@@ -503,14 +503,15 @@ class ContextOptionsStore {
                     key: "finalize-version",
                     label: t("FinalizeVersion"),
                     icon: "images/history-finalized.react.svg",
-                    onClick: () => this.finalizeVersion(item.id),
+                    onClick: () => this.finalizeVersion(item.id, item.access),
                     disabled: false,
                   },
                   {
                     key: "show-version-history",
                     label: t("ShowVersionHistory"),
                     icon: "images/history.react.svg",
-                    onClick: () => this.showVersionHistory(item.id),
+                    onClick: () =>
+                      this.showVersionHistory(item.id, item.access),
                     disabled: false,
                   },
                 ],
@@ -528,7 +529,7 @@ class ContextOptionsStore {
               key: "show-version-history",
               label: t("ShowVersionHistory"),
               icon: "images/history.react.svg",
-              onClick: () => this.showVersionHistory(item.id),
+              onClick: () => this.showVersionHistory(item.id, item.access),
               disabled: false,
             },
           ]
@@ -884,9 +885,24 @@ class ContextOptionsStore {
 
       deleteRooms,
     } = this.filesActionsStore;
-
+ 
     if (isRoomsFolder || isArchiveFolder) {
       const isPinOption = selection.filter((item) => !item.pinned).length > 0;
+
+      const canDelete =
+        selection.findIndex((k) => k.contextOptions.includes("delete")) !== -1;
+
+      const canArchiveRoom =
+        selection.findIndex((k) =>
+          k.contextOptions.includes("archive-room")
+        ) !== -1;
+
+      const canRestoreRoom =
+        selection.findIndex((k) =>
+          k.contextOptions.includes("unarchive-room")
+        ) !== -1;
+
+      let archiveOptions;
 
       const pinOption = isPinOption
         ? {
@@ -904,25 +920,28 @@ class ContextOptionsStore {
             disabled: false,
           };
 
-      const archiveOptions = !isArchiveFolder
-        ? {
-            key: "archive-room",
-            label: t("Archived"),
-            icon: "/static/images/room.archive.svg",
-            onClick: (e) => this.onClickArchive(e),
-            disabled: false,
-            "data-action": "archive",
-            action: "archive",
-          }
-        : {
-            key: "unarchive-room",
-            label: t("Common:Restore"),
-            icon: "images/subtract.react.svg",
-            onClick: (e) => this.onClickArchive(e),
-            disabled: false,
-            "data-action": "unarchive",
-            action: "unarchive",
-          };
+      if (canArchiveRoom) {
+        archiveOptions = {
+          key: "archive-room",
+          label: t("Archived"),
+          icon: "/static/images/room.archive.svg",
+          onClick: (e) => this.onClickArchive(e),
+          disabled: false,
+          "data-action": "archive",
+          action: "archive",
+        };
+      }
+      if (canRestoreRoom) {
+        archiveOptions = {
+          key: "unarchive-room",
+          label: t("Common:Restore"),
+          icon: "images/subtract.react.svg",
+          onClick: (e) => this.onClickArchive(e),
+          disabled: false,
+          "data-action": "unarchive",
+          action: "unarchive",
+        };
+      }
 
       const options = [];
 
@@ -936,14 +955,13 @@ class ContextOptionsStore {
 
       options.push(archiveOptions);
 
-      if (isArchiveFolder) {
+      canDelete &&
         options.push({
           key: "delete-rooms",
           label: t("Common:Delete"),
           icon: "images/trash.react.svg",
           onClick: () => deleteRooms(t),
         });
-      }
 
       return options;
     }
