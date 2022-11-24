@@ -116,10 +116,10 @@ services:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api:${DOCKER_TAG}"
     container_name: ${API_HOST}
 
-  onlyoffice-api-system:
-    <<: *x-service-base
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
-    container_name: ${API_SYSTEM_HOST}
+  # onlyoffice-api-system:
+  #   <<: *x-service-base
+  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
+  #   container_name: ${API_SYSTEM_HOST}
 
   onlyoffice-studio:
     <<: *x-service-base
@@ -163,7 +163,7 @@ services:
       # - onlyoffice-telegram-service
       # - onlyoffice-urlshortener
       - onlyoffice-api
-      - onlyoffice-api-system
+      # - onlyoffice-api-system
       - onlyoffice-studio
       - onlyoffice-ssoauth
     environment:
@@ -173,14 +173,14 @@ services:
       - SERVICE_CLEAR_EVENTS=${SERVICE_CLEAR_EVENTS}
       # - SERVICE_MIGRATION=${SERVICE_MIGRATION}
       # - SERVICE_WEBHOOKS_SERVICE=${SERVICE_WEBHOOKS_SERVICE}
-      - SERVICE_NOTIFY=${SERVICE_NOTIFY}
+      # - SERVICE_NOTIFY=${SERVICE_NOTIFY}
       - SERVICE_PEOPLE_SERVER=${SERVICE_PEOPLE_SERVER}
       - SERVICE_SOCKET=${SERVICE_SOCKET}
       - SERVICE_STUDIO_NOTIFY=${SERVICE_STUDIO_NOTIFY}
       # - SERVICE_TELEGRAM_SERVICE=${SERVICE_TELEGRAM_SERVICE}
       # - SERVICE_URLSHORTENER=${SERVICE_URLSHORTENER}
       - SERVICE_API=${SERVICE_API}
-      - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
+      # - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
       - SERVICE_STUDIO=${SERVICE_STUDIO}
       - SERVICE_SSOAUTH=${SERVICE_SSOAUTH}
       - SERVICE_DOCEDITOR=${SERVICE_DOCEDITOR}

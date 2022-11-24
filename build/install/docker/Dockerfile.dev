@@ -130,7 +130,7 @@ ENV DNS_NAMESERVER=127.0.0.11 \
 
 RUN apt-get -y update && \
     apt-get install -yq vim && \
-    apt-get install -yq dos2unix && \
+    apt-get install -y dos2unix && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/share/nginx/html/* 
 
@@ -143,7 +143,7 @@ COPY /config/nginx/templates/nginx.conf.template /etc/nginx/nginx.conf.template
 COPY prepare-nginx-proxy.sh /docker-entrypoint.d/prepare-nginx-proxy.sh
 
 RUN dos2unix /docker-entrypoint.d/prepare-nginx-proxy.sh && \
-    apt-get --purge remove -yq dos2unix && \
+    apt-get --purge remove -y dos2unix && \
     rm -rf /var/lib/apt/lists/*
 
 # add defualt user and group for no-root run
@@ -175,13 +175,13 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Data.B
 CMD ["ASC.Data.Backup.BackgroundTasks.dll", "ASC.Data.Backup.BackgroundTasks"]
 
 # ASC.ApiSystem ##
-FROM dotnetrun AS api_system
-WORKDIR ${BUILD_PATH}/services/ASC.ApiSystem/
+# FROM dotnetrun AS api_system
+# WORKDIR ${BUILD_PATH}/services/ASC.ApiSystem/
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/ .
+# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.ApiSystem/service/ .
 
-CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
+# CMD ["ASC.ApiSystem.dll", "ASC.ApiSystem"]
 
 ## ASC.ClearEvents ##
 FROM dotnetrun AS clear-events
@@ -229,13 +229,13 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.
 CMD ["ASC.Files.Service.dll", "ASC.Files.Service"]
 
 ## ASC.Notify ##
-FROM dotnetrun AS notify
-WORKDIR ${BUILD_PATH}/services/ASC.Notify/service
+# FROM dotnetrun AS notify
+# WORKDIR ${BUILD_PATH}/services/ASC.Notify/service
 
-COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Notify/service/ .
+# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+# COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Notify/service/ .
 
-CMD ["ASC.Notify.dll", "ASC.Notify"]
+# CMD ["ASC.Notify.dll", "ASC.Notify"]
 
 ## ASC.People ##
 FROM dotnetrun AS people_server
@@ -327,12 +327,12 @@ ENV SRC_PATH=${SRC_PATH}
 WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
 
 RUN apt-get update && \
-    apt-get install -yq dos2unix
+    apt-get install -y dos2unix
 
 COPY docker-migration-entrypoint.sh docker-migration-entrypoint.sh
 
 RUN dos2unix docker-migration-entrypoint.sh && \
-    apt-get --purge remove -yq dos2unix && \
+    apt-get --purge remove -y dos2unix && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=base ${SRC_PATH}/ASC.Migration.Runner/service/ .
