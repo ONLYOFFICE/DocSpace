@@ -34,6 +34,17 @@ import {
 } from "./Files";
 
 import {
+  ArchiveFilesActions,
+  OwnerArchiveFilesActions,
+  RoomAdminArchiveFilesActions,
+  EditorArchiveFilesActions,
+  FormFillerArchiveFilesActions,
+  ReviewerArchiveFilesActions,
+  CommentatorArchiveFilesActions,
+  ViewerArchiveFilesActions,
+} from "./ArchiveFiles";
+
+import {
   OwnerAccountsActions,
   DocSpaceAdminAccountsActions,
   RoomAdminAccountsActions,
@@ -102,6 +113,28 @@ export const getArchiveRoomRoleActions = (access) => {
       return ViewerArchiveRoomsActions;
     default:
       return ArchiveRoomsActions;
+  }
+};
+
+export const getArchiveFileRoleActions = (access) => {
+  switch (access) {
+    case ShareAccessRights.None:
+    case ShareAccessRights.FullAccess:
+      return OwnerArchiveFilesActions;
+    case ShareAccessRights.RoomManager:
+      return RoomAdminArchiveFilesActions;
+    case ShareAccessRights.Editing:
+      return EditorArchiveFilesActions;
+    case ShareAccessRights.FormFilling:
+      return FormFillerArchiveFilesActions;
+    case ShareAccessRights.Review:
+      return ReviewerArchiveFilesActions;
+    case ShareAccessRights.Comment:
+      return CommentatorArchiveFilesActions;
+    case ShareAccessRights.ReadOnly:
+      return ViewerArchiveFilesActions;
+    default:
+      return ArchiveFilesActions;
   }
 };
 

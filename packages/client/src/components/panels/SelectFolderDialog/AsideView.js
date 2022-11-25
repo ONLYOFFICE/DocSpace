@@ -47,6 +47,7 @@ const SelectFolderDialogAsideView = ({
       withoutBodyScroll
       withFooterBorder
       displayType="aside"
+      isDoubleFooterLine
     >
       <ModalDialog.Header theme={theme}>
         <StyledAsideHeader>
@@ -97,29 +98,32 @@ const SelectFolderDialogAsideView = ({
         </StyledAsideBody>
       </ModalDialog.Body>
       <ModalDialog.Footer>
-        <Button
-          theme={theme}
-          className="select-folder-dialog-buttons-save"
-          primary
-          scale
-          size="normal"
-          label={primaryButtonName}
-          onClick={onButtonClick}
-          isDisabled={
-            folderSelectionDisabled ||
-            isDisableButton ||
-            isDisableTree ||
-            isLoadingData ||
-            !isAvailable
-          }
-        />
-        <Button
-          size="normal"
-          scale
-          label={t("Common:CancelButton")}
-          onClick={onClose}
-          isDisabled={isLoadingData}
-        />
+        {footer}
+        <div>
+          <Button
+            theme={theme}
+            className="select-folder-dialog-buttons-save"
+            primary
+            scale
+            size="normal"
+            label={primaryButtonName}
+            onClick={onButtonClick}
+            isDisabled={
+              folderSelectionDisabled ||
+              isDisableButton ||
+              isDisableTree ||
+              isLoadingData ||
+              !isAvailable
+            }
+          />
+          <Button
+            size="normal"
+            scale
+            label={t("Common:CancelButton")}
+            onClick={onClose}
+            isDisabled={isLoadingData}
+          />
+        </div>
       </ModalDialog.Footer>
     </StyledModalDialog>
   );

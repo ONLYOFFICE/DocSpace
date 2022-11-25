@@ -11,14 +11,18 @@ module.exports = (socket, next) => {
   const token = req?.headers?.authorization;
 
   if (!cookie && !token) {
+    const err = new Error("Authentication error (not token or cookie)");
+    logger.error(err);
     socket.disconnect("unauthorized");
-    next(new Error("Authentication error"));
+    next(err);
     return;
   }
 
   if (token) {
     if (!check(token)) {
-      next(new Error("Authentication error"));
+      const err = new Error("Authentication error (token check)");
+      logger.error(err);
+      next(err);
     } else {
       session.system = true;
       session.save();
@@ -33,7 +37,9 @@ module.exports = (socket, next) => {
       Authorization: cookie,
     };
 
-  const basePath = portalManager(req).replace(/\/$/g, "");
+  const basePath = portalManager(req)?.replace(/\/$/g, "");
+
+  logger.info(`API basePath='${basePath}' Authorization='${cookie}'`);
 
   const getUser = () => {
     return request({
@@ -55,14 +61,15 @@ module.exports = (socket, next) => {
 
   return Promise.all([getUser(), getPortal()])
     .then(([user, portal]) => {
+      logger.info("Get account info", { user, portal });
       session.user = user;
       session.portal = portal;
       session.save();
       next();
     })
     .catch((err) => {
-      logger.error(err);
+      logger.error("Error of getting account info", err);
       socket.disconnect("Unauthorized");
-      next(new Error("Authentication error"));
+      next(err);
     });
 };

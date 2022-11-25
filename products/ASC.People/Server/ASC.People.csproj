@@ -6,6 +6,7 @@
     <DefaultItemExcludes>$(DefaultItemExcludes);</DefaultItemExcludes>
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
     <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
+    <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AssemblyTitle>ASC.People</AssemblyTitle>
     <Company>Ascensio System SIA</Company>

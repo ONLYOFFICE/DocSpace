@@ -39,10 +39,10 @@ class PaymentQuotasStore {
   }
 
   get tariffTitle() {
-    return this.portalPaymentQuotas.title;
+    return this.portalPaymentQuotas?.title;
   }
 
-  replaceFeaturesValues = (t) => {
+  setReplacingValuesInTranslation = (t) => {
     this.replaceTotalSizeValue(t);
   };
 

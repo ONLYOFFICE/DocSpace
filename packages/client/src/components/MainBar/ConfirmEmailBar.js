@@ -14,21 +14,23 @@ const StyledLink = styled(Link)`
   color: #316daa;
 `;
 
-const ConfirmEmailBar = ({ t, onClick, onClose, onLoad }) => {
+const ConfirmEmailBar = ({ t, tReady, onClick, onClose, onLoad }) => {
   return (
-    <SnackBar
-      headerText={t("ConfirmEmailHeader")}
-      text={
-        <>
-          {t("ConfirmEmailDescription")}{" "}
-          <StyledLink onClick={onClick}>{t("RequestActivation")}</StyledLink>
-        </>
-      }
-      isCampaigns={false}
-      opacity={1}
-      onLoad={onLoad}
-      clickAction={onClose}
-    />
+    tReady && (
+      <SnackBar
+        headerText={t("ConfirmEmailHeader")}
+        text={
+          <>
+            {t("ConfirmEmailDescription")}{" "}
+            <StyledLink onClick={onClick}>{t("RequestActivation")}</StyledLink>
+          </>
+        }
+        isCampaigns={false}
+        opacity={1}
+        onLoad={onLoad}
+        clickAction={onClose}
+      />
+    )
   );
 };
 
