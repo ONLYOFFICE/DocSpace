@@ -5,6 +5,7 @@ import { useSwipeable } from "react-swipeable";
 
 export default function ViewerImage(props) {
   const isMouseDown = React.useRef(false);
+  const imgRef = React.useRef(null);
   const prePosition = React.useRef({
     x: 0,
     y: 0,
@@ -102,6 +103,11 @@ export default function ViewerImage(props) {
     isMouseDown.current = false;
   }
 
+  function onClose(e) {
+    if (e.target === imgRef.current) return;
+    props.onMaskClick();
+  }
+
   function bindWindowResizeEvent(remove) {
     let funcName = "addEventListener";
     if (remove) {
@@ -148,6 +154,7 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
         className={imgClass}
         src={props.imgSrc}
         style={imgStyle}
+        ref={imgRef}
         onMouseDown={handleMouseDown}
       />
     );
@@ -168,7 +175,12 @@ translateX(${props.left !== null ? props.left + "px" : "auto"}) translateY(${
   }
 
   return (
-    <div className={`${props.prefixCls}-canvas`} style={style} {...handlers}>
+    <div
+      className={`${props.prefixCls}-canvas`}
+      onClick={onClose}
+      style={style}
+      {...handlers}
+    >
       {imgNode}
     </div>
   );

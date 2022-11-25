@@ -109,7 +109,7 @@ const StyledViewer = styled(ViewerBase)`
     left: 0;
     z-index: 307;
     height: 48px;
-    background: rgba(0, 0, 0, 0.5);
+    background: #333;
     text-align: center;
   }
 

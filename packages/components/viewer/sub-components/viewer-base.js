@@ -49,6 +49,7 @@ const ViewerBase = (props) => {
     mobileDetails,
     onNextClick,
     onPrevClick,
+    onMaskClick,
   } = props;
 
   const initialState = {
@@ -626,6 +627,7 @@ const ViewerBase = (props) => {
         top={state.top}
         left={state.left}
         rotate={state.rotate}
+        onMaskClick={onMaskClick}
         onChangeImgState={handleChangeImgState}
         onResize={handleResize}
         zIndex={zIndex + 5}
