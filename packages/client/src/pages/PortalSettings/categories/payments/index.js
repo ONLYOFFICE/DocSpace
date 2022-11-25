@@ -111,7 +111,7 @@ const PaymentsPage = ({
   dueDate,
   delayDueDate,
   portalStatus,
-  replaceFeaturesValues,
+  setReplacingValuesInTranslation,
   portalPaymentQuotasFeatures,
   currentTariffPlanTitle,
   tariffPlanTitle,
@@ -155,7 +155,7 @@ const PaymentsPage = ({
   }, []);
 
   useEffect(() => {
-    if (ready && portalPaymentQuotas) replaceFeaturesValues(t);
+    if (ready && portalPaymentQuotas) setReplacingValuesInTranslation(t);
   }, [ready, portalPaymentQuotas]);
   useEffect(() => {
     (async () => {
@@ -440,7 +440,7 @@ export default inject(({ auth, payments }) => {
   const {
     setPortalPaymentQuotas,
     planCost,
-    replaceFeaturesValues,
+    setReplacingValuesInTranslation,
     portalPaymentQuotasFeatures,
     tariffPlanTitle,
     portalPaymentQuotas,
@@ -478,7 +478,7 @@ export default inject(({ auth, payments }) => {
     dueDate,
     delayDueDate,
     portalStatus,
-    replaceFeaturesValues,
+    setReplacingValuesInTranslation,
     portalPaymentQuotasFeatures,
     currentTariffPlanTitle,
     setPortalQuota,

@@ -42,7 +42,7 @@ class PaymentQuotasStore {
     return this.portalPaymentQuotas?.title;
   }
 
-  replaceFeaturesValues = (t) => {
+  setReplacingValuesInTranslation = (t) => {
     this.replaceTotalSizeValue(t);
   };
 
