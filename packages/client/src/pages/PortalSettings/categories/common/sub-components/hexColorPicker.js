@@ -1,10 +1,7 @@
-import React, { useState, useCallback, useEffect } from "react";
-
-import styled, { css } from "styled-components";
-import { inject, observer } from "mobx-react";
+import React from "react";
+import styled from "styled-components";
 import Button from "@docspace/components/button";
 import { HexColorPicker, HexColorInput } from "react-colorful";
-import { isMobileOnly } from "react-device-detect";
 
 const StyledComponent = styled.div`
   .save-button {
@@ -13,13 +10,17 @@ const StyledComponent = styled.div`
 
   .hex-color-picker .react-colorful {
     width: auto;
-    height: 239px;
-    padding-bottom: 16px;
+    height: 250px;
+    padding-bottom: 26px;
   }
 
   .react-colorful__saturation {
-    margin: 16px 0;
+    margin: 16px 0 26px 0;
     border-radius: 3px;
+  }
+
+  .hex-color-picker .react-colorful__interactive {
+    width: 183px;
   }
 
   .hex-color-picker .react-colorful__saturation-pointer {
@@ -34,21 +35,22 @@ const StyledComponent = styled.div`
   }
 
   .hex-color-picker .react-colorful__hue-pointer {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
     box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.25);
-    border: 6px solid #fff;
+    border: 8px solid #fff;
   }
 
   .hex-value {
     height: 32px;
     outline: none;
     padding: 6px 8px;
-    border: 1px solid #d0d5da;
+    border: 1px solid ${(props) => (props.theme.isBase ? "#d0d5da" : "#474747")};
     border-radius: 3px;
-
     width: 100%;
     box-sizing: border-box;
+    background: ${(props) => !props.theme.isBase && "#282828"};
+    color: ${(props) => !props.theme.isBase && "#5C5C5C"};
   }
 
   .hex-value-label {
@@ -63,48 +65,37 @@ const StyledComponent = styled.div`
     }
   }
 
-  @media (min-width: 428px) {
-    ${!isMobileOnly &&
-    css`
-      .hex-color-picker {
-        display: flex;
-        flex-direction: column;
-        padding-bottom: 16px;
-        width: 195px;
-      }
+  .hex-color-picker {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 16px;
+    width: 195px;
+  }
 
-      .hex-value-container {
-        order: 2;
-        padding-bottom: 16px;
-      }
+  .hex-value-container {
+    order: 2;
+    padding-bottom: 16px;
+  }
 
-      .hex-color-picker .react-colorful {
-        order: 1;
-      }
+  .hex-color-picker .react-colorful {
+    order: 1;
+  }
 
-      .hex-button {
-        order: 3;
-      }
-    `}
+  .hex-button {
+    order: 3;
   }
 `;
 
 const HexColorPickerComponent = (props) => {
-  const {
-    onCloseHexColorPicker,
-    onAppliedColor,
-    setColor,
-    color,
-    viewMobile,
-  } = props;
+  const { onCloseHexColorPicker, onAppliedColor, setColor, color } = props;
 
   const { t } = useTranslation("Common");
 
   return (
-    <StyledComponent viewMobile={viewMobile}>
+    <StyledComponent>
       <div className="hex-color-picker">
         <div className="hex-value-container">
-          {!viewMobile && <div className="hex-value-label">Hex code:</div>}
+          <div className="hex-value-label">Hex code:</div>
 
           <HexColorInput
             className="hex-value"
@@ -114,7 +105,7 @@ const HexColorPickerComponent = (props) => {
           />
         </div>
 
-        <HexColorPicker color={color} onChange={setColor} />
+        <HexColorPicker color={color.toUpperCase()} onChange={setColor} />
 
         <div className="hex-button">
           <Button

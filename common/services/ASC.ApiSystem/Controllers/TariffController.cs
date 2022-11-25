@@ -89,7 +89,7 @@ public class TariffController : ControllerBase
 
         var quota = new TenantQuota(tenant.Id)
         {
-            CountManager = 10000,
+            CountRoomAdmin = 10000,
             Features = model.Features ?? "",
             MaxFileSize = 1024 * 1024 * 1024,
             MaxTotalSize = 1024L * 1024 * 1024 * 1024 - 1,
@@ -98,7 +98,7 @@ public class TariffController : ControllerBase
 
         if (model.ActiveUsers != default)
         {
-            quota.CountManager = model.ActiveUsers;
+            quota.CountRoomAdmin = model.ActiveUsers;
         }
 
         if (model.MaxTotalSize != default)
@@ -160,7 +160,7 @@ public class TariffController : ControllerBase
     {
         var tariffs = HostedSolution.GetTenantQuotas()
             .Where(q => !q.Trial && !q.Free)
-            .OrderBy(q => q.CountManager)
+            .OrderBy(q => q.CountRoomAdmin)
             .ThenByDescending(q => q.Tenant)
             .Select(q => ToTariffWrapper(null, q));
 
@@ -191,7 +191,7 @@ public class TariffController : ControllerBase
     {
         return new
         {
-            countManager = q.CountManager,
+            countManager = q.CountRoomAdmin,
             dueDate = t == null ? DateTime.MaxValue : t.DueDate,
             features = q.Features,
             maxFileSize = q.MaxFileSize,

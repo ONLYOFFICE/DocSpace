@@ -95,7 +95,7 @@ public class SecurityContext
         return AuthenticateMe(new UserAccount(u, tenantid, _userFormatter), funcLoginEvent);
     }
 
-    public bool AuthenticateMe(string cookie)
+    public async Task<bool> AuthenticateMe(string cookie)
     {
         if (string.IsNullOrEmpty(cookie)) return false;
 
@@ -161,7 +161,7 @@ public class SecurityContext
                 return false;
             }
 
-            var settingLoginEvents = _dbLoginEventsManager.GetLoginEventIds(tenant, userid).Result; // remove Result
+            var settingLoginEvents = await _dbLoginEventsManager.GetLoginEventIds(tenant, userid); 
             if (loginEventId != 0 && !settingLoginEvents.Contains(loginEventId))
             {
                 return false;
@@ -253,10 +253,10 @@ public class SecurityContext
 
             if (_userManager.IsUserInGroup(u.Id, Users.Constants.GroupAdmin.ID))
             {
-                roles.Add(Role.Administrators);
+                roles.Add(Role.DocSpaceAdministrators);
             }
 
-            roles.Add(Role.Users);
+            roles.Add(Role.RoomAdministrators);
 
             account = new UserAccount(u, _tenantManager.GetCurrentTenant().Id, _userFormatter);
         }

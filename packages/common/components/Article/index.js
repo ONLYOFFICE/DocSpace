@@ -31,10 +31,10 @@ const Article = ({
 
   isGracePeriod,
 
-  isBannerVisible,
   hideProfileBlock,
   isFreeTariff,
   isAvailableArticlePaymentAlert,
+  currentColorScheme,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -113,7 +113,6 @@ const Article = ({
         id={"article-container"}
         showText={showText}
         articleOpen={articleOpen}
-        isBannerVisible={isBannerVisible}
         {...rest}
       >
         <SubArticleHeader showText={showText}>
@@ -132,13 +131,19 @@ const Article = ({
           <HideArticleMenuButton
             showText={showText}
             toggleShowText={toggleShowText}
+            currentColorScheme={currentColorScheme}
           />
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
           {isAvailableArticlePaymentAlert &&
             (isFreeTariff || isGracePeriod) &&
-            showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
+            showText && (
+              <ArticlePaymentAlert
+                isFreeTariff={isFreeTariff}
+                toggleArticleOpen={toggleArticleOpen}
+              />
+            )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -180,7 +185,7 @@ Article.Body = () => {
 };
 Article.Body.displayName = "Body";
 
-export default inject(({ auth, bannerStore }) => {
+export default inject(({ auth }) => {
   const {
     settingsStore,
     currentQuotaStore,
@@ -189,7 +194,6 @@ export default inject(({ auth, bannerStore }) => {
   } = auth;
   const { isFreeTariff } = currentQuotaStore;
   const { isGracePeriod } = currentTariffStatusStore;
-  const { isBannerVisible } = bannerStore;
 
   const { user } = userStore;
 
@@ -202,6 +206,7 @@ export default inject(({ auth, bannerStore }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
+    currentColorScheme,
   } = settingsStore;
 
   return {
@@ -212,8 +217,8 @@ export default inject(({ auth, bannerStore }) => {
     toggleShowText,
     toggleArticleOpen,
     isFreeTariff,
-    isBannerVisible,
     isGracePeriod,
     isAvailableArticlePaymentAlert,
+    currentColorScheme,
   };
 })(observer(Article));

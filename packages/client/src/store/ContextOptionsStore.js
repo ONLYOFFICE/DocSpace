@@ -401,7 +401,7 @@ class ContextOptionsStore {
 
   onShowInfoPanel = (item) => {
     const { setSelection, setIsVisible } = this.authStore.infoPanelStore;
-    setSelection({ ...item, isContextMenuSelection: true });
+    setSelection(item);
     setIsVisible(true);
   };
 
@@ -419,7 +419,7 @@ class ContextOptionsStore {
     const { isGracePeriod } = this.authStore.currentTariffStatusStore;
     const { isFreeTariff } = this.authStore.currentQuotaStore;
 
-    if (isGracePeriod || isFreeTariff) {
+    if (isGracePeriod) {
       this.dialogsStore.setInviteUsersWarningDialogVisible(true);
     } else {
       this.dialogsStore.setInvitePanelOptions({
@@ -435,16 +435,17 @@ class ContextOptionsStore {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
 
-    this.filesActionsStore.setPinAction(action, id);
+    this.filesActionsStore.setPinAction(action, id, t);
   };
 
-  onClickArchive = (e, item, t) => {
+  onClickArchive = (e) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
 
-    this.filesActionsStore
-      .setArchiveAction(action, item, t)
-      .catch((err) => toastr.error(err));
+    const { setArchiveDialogVisible, setArchiveAction } = this.dialogsStore;
+
+    setArchiveAction(action);
+    setArchiveDialogVisible(true);
   };
 
   onSelect = (item) => {
@@ -476,31 +477,46 @@ class ContextOptionsStore {
         }
       : false;
 
+    const onlyShowVersionHistory =
+      !contextOptions.includes("finalize-version") &&
+      contextOptions.includes("show-version-history");
+
     const versionActions = !isMedia
       ? !isMobile && !isMobileUtils() && !isTabletUtils()
-        ? [
-            {
-              key: "version",
-              label: t("VersionHistory"),
-              icon: "images/history-finalized.react.svg",
-              items: [
-                {
-                  key: "finalize-version",
-                  label: t("FinalizeVersion"),
-                  icon: "images/history-finalized.react.svg",
-                  onClick: () => this.finalizeVersion(item.id),
-                  disabled: false,
-                },
-                {
-                  key: "show-version-history",
-                  label: t("ShowVersionHistory"),
-                  icon: "images/history.react.svg",
-                  onClick: () => this.showVersionHistory(item.id),
-                  disabled: false,
-                },
-              ],
-            },
-          ]
+        ? onlyShowVersionHistory
+          ? [
+              {
+                key: "show-version-history",
+                label: t("ShowVersionHistory"),
+                icon: "images/history.react.svg",
+                onClick: () => this.showVersionHistory(item.id, item.access),
+                disabled: false,
+              },
+            ]
+          : [
+              {
+                key: "version",
+                label: t("VersionHistory"),
+                icon: "images/history-finalized.react.svg",
+                items: [
+                  {
+                    key: "finalize-version",
+                    label: t("FinalizeVersion"),
+                    icon: "images/history-finalized.react.svg",
+                    onClick: () => this.finalizeVersion(item.id, item.access),
+                    disabled: false,
+                  },
+                  {
+                    key: "show-version-history",
+                    label: t("ShowVersionHistory"),
+                    icon: "images/history.react.svg",
+                    onClick: () =>
+                      this.showVersionHistory(item.id, item.access),
+                    disabled: false,
+                  },
+                ],
+              },
+            ]
         : [
             {
               key: "finalize-version",
@@ -513,7 +529,7 @@ class ContextOptionsStore {
               key: "show-version-history",
               label: t("ShowVersionHistory"),
               icon: "images/history.react.svg",
-              onClick: () => this.showVersionHistory(item.id),
+              onClick: () => this.showVersionHistory(item.id, item.access),
               disabled: false,
             },
           ]
@@ -799,7 +815,7 @@ class ContextOptionsStore {
         key: "archive-room",
         label: t("Archived"),
         icon: "/static/images/room.archive.svg",
-        onClick: (e) => this.onClickArchive(e, item, t),
+        onClick: (e) => this.onClickArchive(e),
         disabled: false,
         "data-action": "archive",
         action: "archive",
@@ -808,7 +824,7 @@ class ContextOptionsStore {
         key: "unarchive-room",
         label: t("Common:Restore"),
         icon: "images/subtract.react.svg",
-        onClick: (e) => this.onClickArchive(e, item, t),
+        onClick: (e) => this.onClickArchive(e),
         disabled: false,
         "data-action": "unarchive",
         action: "unarchive",
@@ -866,13 +882,27 @@ class ContextOptionsStore {
     const {
       pinRooms,
       unpinRooms,
-      moveRoomsToArchive,
-      moveRoomsFromArchive,
+
       deleteRooms,
     } = this.filesActionsStore;
-
+ 
     if (isRoomsFolder || isArchiveFolder) {
       const isPinOption = selection.filter((item) => !item.pinned).length > 0;
+
+      const canDelete =
+        selection.findIndex((k) => k.contextOptions.includes("delete")) !== -1;
+
+      const canArchiveRoom =
+        selection.findIndex((k) =>
+          k.contextOptions.includes("archive-room")
+        ) !== -1;
+
+      const canRestoreRoom =
+        selection.findIndex((k) =>
+          k.contextOptions.includes("unarchive-room")
+        ) !== -1;
+
+      let archiveOptions;
 
       const pinOption = isPinOption
         ? {
@@ -890,21 +920,28 @@ class ContextOptionsStore {
             disabled: false,
           };
 
-      const archiveOptions = !isArchiveFolder
-        ? {
-            key: "archive-room",
-            label: t("Archived"),
-            icon: "/static/images/room.archive.svg",
-            onClick: () => moveRoomsToArchive(t),
-            disabled: false,
-          }
-        : {
-            key: "unarchive-room",
-            label: t("Common:Restore"),
-            icon: "images/subtract.react.svg",
-            onClick: () => moveRoomsFromArchive(t),
-            disabled: false,
-          };
+      if (canArchiveRoom) {
+        archiveOptions = {
+          key: "archive-room",
+          label: t("Archived"),
+          icon: "/static/images/room.archive.svg",
+          onClick: (e) => this.onClickArchive(e),
+          disabled: false,
+          "data-action": "archive",
+          action: "archive",
+        };
+      }
+      if (canRestoreRoom) {
+        archiveOptions = {
+          key: "unarchive-room",
+          label: t("Common:Restore"),
+          icon: "images/subtract.react.svg",
+          onClick: (e) => this.onClickArchive(e),
+          disabled: false,
+          "data-action": "unarchive",
+          action: "unarchive",
+        };
+      }
 
       const options = [];
 
@@ -918,14 +955,13 @@ class ContextOptionsStore {
 
       options.push(archiveOptions);
 
-      if (isArchiveFolder) {
+      canDelete &&
         options.push({
           key: "delete-rooms",
           label: t("Common:Delete"),
           icon: "images/trash.react.svg",
           onClick: () => deleteRooms(t),
         });
-      }
 
       return options;
     }

@@ -18,6 +18,7 @@ const Tag = ({
   isNewTag,
   isDisabled,
   isDefault,
+  isLast,
   onDelete,
   onClick,
   advancedOptions,
@@ -30,14 +31,37 @@ const Tag = ({
   const [openDropdown, setOpenDropdown] = React.useState(false);
 
   const tagRef = React.useRef(null);
+  const isMountedRef = React.useRef(true);
 
-  const onClickOutside = React.useCallback(() => {
-    toggleDropdown();
-  }, [toggleDropdown]);
+  React.useEffect(() => {
+    if (openDropdown) {
+      return document.addEventListener("click", onClickOutside);
+    }
 
-  const toggleDropdown = React.useCallback(() => {
-    setOpenDropdown((val) => !val);
+    document.removeEventListener("click", onClickOutside);
+    return () => {
+      document.removeEventListener("click", onClickOutside);
+    };
+  }, [openDropdown, onClickOutside]);
+
+  React.useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
   }, []);
+
+  const onClickOutside = React.useCallback((e) => {
+    if (e?.target?.className?.includes("advanced-tag") || !isMountedRef.current)
+      return;
+
+    setOpenDropdown(false);
+  }, []);
+
+  const openDropdownAction = (e) => {
+    if (e?.target?.className?.includes("backdrop-active")) return;
+
+    setOpenDropdown(true);
+  };
 
   const onClickAction = React.useCallback(
     (e) => {
@@ -60,23 +84,27 @@ const Tag = ({
   return (
     <>
       {!!advancedOptions ? (
-        <StyledTag
-          id={id}
-          className={`tag advanced-tag ${className ? ` ${className}` : ""}`}
-          style={style}
-          ref={tagRef}
-          onClick={toggleDropdown}
-          isDisabled={isDisabled}
-          isDefault={isDefault}
-        >
-          <Text className={"tag-text"} font-size={"13px"} noSelect>
-            ...
-          </Text>
+        <>
+          <StyledTag
+            id={id}
+            className={`tag advanced-tag ${className ? ` ${className}` : ""}`}
+            style={style}
+            ref={tagRef}
+            onClick={openDropdownAction}
+            isDisabled={isDisabled}
+            isDefault={isDefault}
+            isLast={isLast}
+            tagMaxWidth={tagMaxWidth}
+          >
+            <Text className={"tag-text"} font-size={"13px"} noSelect>
+              ...
+            </Text>
+          </StyledTag>
           <DropDown
             open={openDropdown}
             forwardedRef={tagRef}
             clickOutsideAction={onClickOutside}
-            directionX={"right"}
+            // directionX={"right"}
             manualY={"4px"}
           >
             {advancedOptions.map((tag, index) => (
@@ -94,13 +122,14 @@ const Tag = ({
                   className="tag__dropdown-item-text"
                   fontWeight={600}
                   fontSize={"12px"}
+                  truncate
                 >
                   {tag}
                 </StyledDropdownText>
               </DropDownItem>
             ))}
           </DropDown>
-        </StyledTag>
+        </>
       ) : (
         <StyledTag
           title={label}
@@ -113,6 +142,7 @@ const Tag = ({
           id={id}
           className={`tag${className ? ` ${className}` : ""}`}
           style={style}
+          isLast={isLast}
         >
           {icon ? (
             <ReactSVG className="third-party-tag" src={icon} />

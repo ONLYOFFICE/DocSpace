@@ -139,9 +139,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Şifre şunları içermek zorundadır</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>İçermelidir</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>basamak</value>
   </data>

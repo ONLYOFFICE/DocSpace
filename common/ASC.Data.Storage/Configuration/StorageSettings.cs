@@ -229,8 +229,7 @@ public class StorageSettingsHelper
 
     internal void ClearDataStoreCache()
     {
-        var tenantId = _tenantManager.GetCurrentTenant().Id.ToString();
-        var path = TenantPath.CreatePath(tenantId);
+        var path = TenantPath.CreatePath(_tenantManager.GetCurrentTenant().Id);
 
         foreach (var module in _storageFactoryConfig.GetModuleList("", true))
         {

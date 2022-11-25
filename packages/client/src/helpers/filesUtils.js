@@ -24,13 +24,13 @@ export const getFileTypeName = (fileType, t) => {
     case FileType.Image:
       return t("Common:Image");
     case FileType.Spreadsheet:
-      return t("Home:Spreadsheet");
+      return t("Files:Spreadsheet");
     case FileType.Presentation:
-      return t("Home:Presentation");
+      return t("Files:Presentation");
     case FileType.Document:
-      return t("Home:Document");
+      return t("Files:Document");
     default:
-      return t("Home:Folder");
+      return t("Files:Folder");
   }
 };
 
@@ -155,7 +155,7 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
       combineUrl(
         AppServerConfig.proxyURL,
         config.homepage,
-        `/httphandlers/filehandler.ashx?${params}`
+        `products/files/httphandlers/filehandler.ashx?${params}` //TODO: will change 'products/files' path
       ),
       "_blank"
     );

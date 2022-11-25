@@ -139,9 +139,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Mật khẩu phải chứa</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Phải chứa</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>chữ số</value>
   </data>

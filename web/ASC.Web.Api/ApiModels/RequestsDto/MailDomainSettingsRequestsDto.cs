@@ -30,7 +30,7 @@ public class MailDomainSettingsRequestsDto
 {
     public TenantTrustedDomainsType Type { get; set; }
     public List<string> Domains { get; set; }
-    public bool InviteUsersAsVisitors { get; set; }
+    public bool InviteAsUsers { get; set; }
 }
 
 public class AdminMessageSettingsRequestsDto

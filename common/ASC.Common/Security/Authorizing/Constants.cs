@@ -28,12 +28,12 @@ namespace ASC.Common.Security.Authorizing;
 
 public static class Constants
 {
-    public static readonly Role Admin = new Role(new Guid("cd84e66b-b803-40fc-99f9-b2969a54a1de"), "Admin");
+    public static readonly Role DocSpaceAdmin = new Role(new Guid("cd84e66b-b803-40fc-99f9-b2969a54a1de"), "Admin");
 
     public static readonly Role Everyone = new Role(new Guid("c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e"), "Everyone");
 
 
-    public static readonly Role Manager = new Role(new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"), "User");
+    public static readonly Role RoomAdmin = new Role(new Guid("abef62db-11a8-4673-9d32-ef1d8af19dc0"), "User");
 
     public static readonly Role User = new Role(new Guid("aced04fa-dd96-4b35-af3e-346bf1eb972d"), "Visitor");
 

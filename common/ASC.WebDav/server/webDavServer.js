@@ -17,6 +17,7 @@
 
 const webdav = require('webdav-server').v2;
 const express = require('express');
+const logger = require('../helper/logger.js');
 
 const FileSystem = require('../manager/customFileSystem');
 const customUserManager = require('../user/customUserManager');
@@ -32,6 +33,7 @@ const {
     isHttps,
     virtualPath
 } = require('./config.js');
+
 const { logContext, logMessage } = require('../helper/helper.js');
 
 const userManager = new customUserManager();
@@ -96,4 +98,6 @@ app.use("/isLife", (req, res) => {
 
 app.use(webdav.extensions.express('/', server));
 
-app.listen(options.port);
+app.listen(options.port,() => {
+    logger.info(`Start WebDav Service Provider listening on port ${options.port} for http`);
+});

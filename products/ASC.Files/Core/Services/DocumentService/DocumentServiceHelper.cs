@@ -128,14 +128,6 @@ public class DocumentServiceHelper
 
         var rightModifyFilter = rightToEdit;
 
-        if (linkRight == FileShare.Restrict && _userManager.IsVisitor(_authContext.CurrentAccount.ID))
-        {
-            rightToEdit = false;
-            rightToReview = false;
-            rightToFillForms = false;
-            rightToComment = false;
-        }
-
         rightToEdit = rightToEdit
                       && (linkRight == FileShare.ReadWrite || linkRight == FileShare.CustomFilter
                           || await _fileSecurity.CanEditAsync(file) || await _fileSecurity.CanCustomFilterEditAsync(file));

@@ -89,14 +89,14 @@ public class StudioNotifyHelper
                     return _userManager.GetUsers();
                 }
 
-                return _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.User);
+                return _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.RoomAdmin);
             }
 
             if (toguests)
             {
                 return
                     _userManager.GetUsersByGroup(Constants.GroupAdmin.ID)
-                               .Concat(_userManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor));
+                               .Concat(_userManager.GetUsers(EmployeeStatus.Default, EmployeeType.User));
             }
 
             return _userManager.GetUsersByGroup(Constants.GroupAdmin.ID);
@@ -110,13 +110,13 @@ public class StudioNotifyHelper
                                   .Where(u => !_userManager.IsUserInGroup(u.Id, Constants.GroupAdmin.ID));
             }
 
-            return _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.User)
+            return _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.RoomAdmin)
                               .Where(u => !_userManager.IsUserInGroup(u.Id, Constants.GroupAdmin.ID));
         }
 
         if (toguests)
         {
-            return _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.Visitor);
+            return _userManager.GetUsers(EmployeeStatus.Default, EmployeeType.User);
         }
 
         return new List<UserInfo>();

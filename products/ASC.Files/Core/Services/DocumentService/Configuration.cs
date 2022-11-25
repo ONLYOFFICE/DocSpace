@@ -262,7 +262,7 @@ public class EditorConfiguration<T>
                 return null;
             }
 
-            if (!_authContext.IsAuthenticated || _userManager.IsVisitor(_authContext.CurrentAccount.ID))
+            if (!_authContext.IsAuthenticated || _userManager.IsUser(_authContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -295,7 +295,7 @@ public class EditorConfiguration<T>
     {
         get
         {
-            if (!_authContext.IsAuthenticated || _userManager.IsVisitor(_authContext.CurrentAccount.ID))
+            if (!_authContext.IsAuthenticated || _userManager.IsUser(_authContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -355,7 +355,7 @@ public class EditorConfiguration<T>
         set { }
         get
         {
-            if (!_authContext.IsAuthenticated || _userManager.IsVisitor(_authContext.CurrentAccount.ID))
+            if (!_authContext.IsAuthenticated || _userManager.IsUser(_authContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -505,7 +505,7 @@ public class InfoConfig<T>
                 return _favorite;
             }
 
-            if (!_securityContext.IsAuthenticated || _userManager.IsVisitor(_securityContext.CurrentAccount.ID))
+            if (!_securityContext.IsAuthenticated || _userManager.IsUser(_securityContext.CurrentAccount.ID))
             {
                 return null;
             }
@@ -792,7 +792,7 @@ public class CustomizationConfig<T>
         get
         {
             if (_configuration.EditorConfig.ModeWrite
-              && _configuration.Document.Info.GetFile().Access == ASC.Files.Core.Security.FileShare.FillForms)
+              && _configuration.Document.Info.GetFile().Access == FileShare.FillForms)
             {
                 var linkDao = _daoFactory.GetLinkDao();
                 var sourceId = linkDao.GetSourceAsync(_configuration.Document.Info.GetFile().Id.ToString()).Result;

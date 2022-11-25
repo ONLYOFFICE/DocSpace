@@ -85,7 +85,7 @@ public class ReassignController : ApiControllerBase
             throw new ArgumentException("User with id = " + inDto.ToUserId + " not found");
         }
 
-        if (_userManager.IsVisitor(toUser) || toUser.Status == EmployeeStatus.Terminated)
+        if (_userManager.IsUser(toUser) || toUser.Status == EmployeeStatus.Terminated)
         {
             throw new ArgumentException("Can not reassign data to user with id = " + inDto.ToUserId);
         }

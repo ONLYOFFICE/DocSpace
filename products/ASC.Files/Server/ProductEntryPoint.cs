@@ -35,13 +35,13 @@ public class ApiProductEntryPoint : ProductEntryPoint
     }
 
     public ApiProductEntryPoint(
-       //FilesSpaceUsageStatManager filesSpaceUsageStatManager,
+       FilesSpaceUsageStatManager filesSpaceUsageStatManager,
        CoreBaseSettings coreBaseSettings,
        AuthContext authContext,
        UserManager userManager,
         NotifyConfiguration notifyConfiguration
        //SubscriptionManager subscriptionManager
-       ) : base(coreBaseSettings, authContext, userManager, notifyConfiguration)
+       ) : base(filesSpaceUsageStatManager, coreBaseSettings, authContext, userManager, notifyConfiguration)
     {
 
     }

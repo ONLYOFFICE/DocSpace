@@ -13,7 +13,7 @@ const HeaderItem = ({ children, className, ...rest }) => {
   );
 };
 
-const Card = ({ children, ...rest }) => {
+const Card = ({ children, countTilesInRow, ...rest }) => {
   const getItemSize = (child) => {
     const isFile = child?.props?.className?.includes("file");
     const isFolder = child?.props?.className?.includes("folder");
@@ -143,7 +143,11 @@ const InfiniteGrid = (props) => {
         }
 
         const cardKey = uniqueid("card-item_");
-        cards.push(<Card key={cardKey}>{child}</Card>);
+        cards.push(
+          <Card countTilesInRow={countTilesInRow} key={cardKey}>
+            {child}
+          </Card>
+        );
       }
     }
   });

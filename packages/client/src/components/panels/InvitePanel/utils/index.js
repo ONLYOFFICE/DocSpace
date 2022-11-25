@@ -1,28 +1,41 @@
-import { ShareAccessRights, RoomsType } from "@docspace/common/constants";
+import {
+  ShareAccessRights,
+  RoomsType,
+  EmployeeType,
+} from "@docspace/common/constants";
 
 export const getAccessOptions = (
   t,
   roomType = RoomsType.CustomRoom,
   withRemove = false,
-  withSeparator = false
+  withSeparator = false,
+  isOwner = false
 ) => {
   let options = [];
   const accesses = {
     docSpaceAdmin: {
       key: "docSpaceAdmin",
-      label: t("Translations:RoleDocSpaceAdmin"),
+      label: t("Common:DocSpaceAdmin"),
       description: t("Translations:RoleDocSpaceAdminDescription"),
       quota: t("Common:Paid"),
       color: "#EDC409",
-      access: ShareAccessRights.FullAccess,
+      access:
+        roomType === -1 ? EmployeeType.Admin : ShareAccessRights.FullAccess,
     },
     roomAdmin: {
       key: "roomAdmin",
-      label: t("Translations:RoleRoomAdmin"),
+      label: t("Common:RoomAdmin"),
       description: t("Translations:RoleRoomAdminDescription"),
       quota: t("Common:Paid"),
       color: "#EDC409",
-      access: ShareAccessRights.RoomManager,
+      access:
+        roomType === -1 ? EmployeeType.User : ShareAccessRights.RoomManager,
+    },
+    user: {
+      key: "user",
+      label: t("Common:User"),
+      description: t("Translations:RoleUserDescription"),
+      access: EmployeeType.Guest,
     },
     editor: {
       key: "editor",
@@ -98,6 +111,16 @@ export const getAccessOptions = (
         accesses.reviewer,
         accesses.commentator,
         accesses.viewer,
+      ];
+      break;
+    case -1:
+      if (isOwner) options.push(accesses.docSpaceAdmin);
+
+      options = [
+        ...options,
+        accesses.roomAdmin,
+        { key: "s1", isSeparator: withSeparator },
+        accesses.user,
       ];
       break;
   }

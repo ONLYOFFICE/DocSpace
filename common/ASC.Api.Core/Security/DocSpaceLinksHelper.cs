@@ -62,9 +62,9 @@ public class DocSpaceLinkHelper
         return _signature.Create(linkId);
     }
 
-    public string MakeKey(string email)
+    public string MakeKey(string email, EmployeeType employeeType)
     {
-        return email + ConfirmType.LinkInvite.ToStringFast() + EmployeeType.User.ToStringFast();
+        return email + ConfirmType.LinkInvite.ToStringFast() + employeeType.ToStringFast();
     }
 
     public Guid Parse(string key)
@@ -72,14 +72,14 @@ public class DocSpaceLinkHelper
         return _signature.Read<Guid>(key);
     }
 
-    public ValidationResult Validate(string key, string email)
+    public ValidationResult Validate(string key, string email, EmployeeType employeeType)
     {
-        return string.IsNullOrEmpty(email) ? ValidateExternalLink(key) : ValidateEmailLink(email, key);
+        return string.IsNullOrEmpty(email) ? ValidateRoomExternalLink(key) : ValidateEmailLink(email, key, employeeType);
     }
 
-    private ValidationResult ValidateEmailLink(string email, string key)
+    public ValidationResult ValidateEmailLink(string email, string key, EmployeeType employeeType)
     {
-        var result = _emailValidationKeyProvider.ValidateEmailKey(MakeKey(email), key, ExpirationInterval);
+        var result = _emailValidationKeyProvider.ValidateEmailKey(MakeKey(email, employeeType), key, ExpirationInterval);
 
         if (result == ValidationResult.Ok)
         {
@@ -94,16 +94,16 @@ public class DocSpaceLinkHelper
         return result;
     }
 
-    private ValidationResult ValidateExternalLink(string key)
+    public ValidationResult ValidateRoomExternalLink(string key)
     {
         var payload = Parse(key);
 
-        if (payload == default)
-        {
-            return ValidationResult.Invalid;
-        }
+        return payload == default ? ValidationResult.Invalid : ValidationResult.Ok;
+    }
 
-        return ValidationResult.Ok;
+    public ValidationResult ValidateExtarnalLink(string key, EmployeeType employeeType)
+    {
+        return _emailValidationKeyProvider.ValidateEmailKey(ConfirmType.LinkInvite.ToStringFast() + (int)employeeType, key);
     }
 
     private bool CanUsed(string email, string key, TimeSpan interval)

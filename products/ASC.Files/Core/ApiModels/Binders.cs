@@ -293,7 +293,7 @@ public class InsertFileModelBinder : IModelBinder
 
 public class UploadModelBinder : IModelBinder
 {
-    public Task BindModelAsync(ModelBindingContext bindingContext)
+    public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
         ArgumentNullException.ThrowIfNull(bindingContext);
 
@@ -343,11 +343,9 @@ public class UploadModelBinder : IModelBinder
         bindingContext.HttpContext.Request.Body.Position = 0;
 
         result.Stream = new MemoryStream();
-        bindingContext.HttpContext.Request.Body.CopyToAsync(result.Stream).Wait();
+        await bindingContext.HttpContext.Request.Body.CopyToAsync(result.Stream);
         result.Stream.Position = 0;
 
         bindingContext.Result = ModelBindingResult.Success(result);
-
-        return Task.CompletedTask;
     }
 }

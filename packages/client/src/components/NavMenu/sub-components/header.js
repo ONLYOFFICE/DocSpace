@@ -28,6 +28,7 @@ import { getLink, checkIfModuleOld, onItemClick } from "SRC_DIR/helpers/utils";
 import StyledExternalLinkIcon from "@docspace/client/src/components/StyledExternalLinkIcon";
 import HeaderCatalogBurger from "./header-catalog-burger";
 import { Base } from "@docspace/components/themes";
+import { ReactSVG } from "react-svg";
 
 const { proxyURL } = AppServerConfig;
 
@@ -57,6 +58,12 @@ const Header = styled.header`
     transform: translateX(50%);
     height: 24px;
     cursor: pointer;
+
+    svg {
+      path:last-child {
+        fill: ${(props) => props.theme.client.home.logoColor};
+      }
+    }
   }
   .mobile-short-logo {
     width: 146px;
@@ -225,7 +232,15 @@ const HeaderComponent = ({
           !isFormGallery && <HeaderCatalogBurger onClick={toggleArticleOpen} />}
         <LinkWithoutRedirect className="header-logo-wrapper" to={defaultPage}>
           {!isPersonal ? (
-            <img alt="logo" src={props.logoUrl} className="header-logo-icon" />
+            props.logoUrl.includes(".svg") ? (
+              <ReactSVG src={props.logoUrl} className="header-logo-icon" />
+            ) : (
+              <img
+                alt="logo"
+                src={props.logoUrl}
+                className="header-logo-icon"
+              />
+            )
           ) : (
             <img
               alt="logo"

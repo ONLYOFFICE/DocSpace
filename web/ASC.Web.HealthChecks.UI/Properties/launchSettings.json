@@ -3,19 +3,19 @@
     "Kestrel WebServer": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5027/hc-ui",
+      "launchUrl": "http://localhost:5033/hc-ui",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5027"
+        "ASPNETCORE_URLS": "http://localhost:5033"
       }
     },
     "WSL 2 : Ubuntu 20.04": {
       "commandName": "WSL2",
       "launchBrowser": true,
-      "launchUrl": "http://localhost:5027/hc-ui",
+      "launchUrl": "http://localhost:5033/hc-ui",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "http://localhost:5027"
+        "ASPNETCORE_URLS": "http://localhost:5033"
       },
       "distributionName": "Ubuntu-20.04"
     }

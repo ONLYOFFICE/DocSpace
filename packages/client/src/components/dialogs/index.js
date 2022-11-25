@@ -27,6 +27,8 @@ import ChangeNameDialog from "./ChangeNameDialog";
 import AvatarEditorDialog from "./AvatarEditorDialog";
 import DeletePortalDialog from "./DeletePortalDialog";
 import InviteUsersWarningDialog from "./InviteUsersWarningDialog";
+import LogoutConnectionDialog from "./LogoutConnectionDialog";
+import LogoutAllConnectionDialog from "./LogoutAllConnectionDialog";
 
 export {
   EmptyTrashDialog,
@@ -57,5 +59,7 @@ export {
   ChangeNameDialog,
   AvatarEditorDialog,
   DeletePortalDialog,
+  LogoutConnectionDialog,
   InviteUsersWarningDialog,
+  LogoutAllConnectionDialog,
 };

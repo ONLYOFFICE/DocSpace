@@ -186,6 +186,13 @@ export function sendAppearanceTheme(data) {
   });
 }
 
+export function deleteAppearanceTheme(id) {
+  return request({
+    method: "delete",
+    url: `/settings/colortheme?id=${id}`,
+  });
+}
+
 export function getLogoText() {
   return request({
     method: "get",
@@ -662,5 +669,34 @@ export function getPortalQuota() {
   return request({
     method: "get",
     url: `/settings/quota`,
+  });
+}
+
+export function getAllActiveSessions() {
+  return request({
+    method: "get",
+    url: "/security/activeconnections",
+  });
+}
+
+export function removeAllActiveSessions() {
+  return request({
+    method: "put",
+    url: "/security/activeconnections/logoutallchangepassword",
+  });
+}
+
+export function removeAllExceptThisSession() {
+  return request({
+    method: "put",
+    url: "/security/activeconnections/logoutallexceptthis",
+  });
+}
+
+export function removeActiveSession(eventId) {
+  return request({
+    method: "put",
+    url: `/security/activeconnections/logout/${eventId}`,
+    data: { eventId },
   });
 }

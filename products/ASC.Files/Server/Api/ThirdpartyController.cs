@@ -86,7 +86,7 @@ public class ThirdpartyController : ApiControllerBase
     {
         var result = new List<List<string>>();
 
-        if (_userManager.IsVisitor(_securityContext.CurrentAccount.ID)
+        if (_userManager.IsUser(_securityContext.CurrentAccount.ID)
                 || (!_filesSettingsHelper.EnableThirdParty
                 && !_coreBaseSettings.Personal))
         {
@@ -294,7 +294,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpPost("thirdparty/backup")]
     public async Task<FolderDto<string>> SaveThirdPartyBackupAsync(ThirdPartyBackupRequestDto inDto)
     {
-        if (!_fileSecurityCommon.IsAdministrator(_securityContext.CurrentAccount.ID))
+        if (!_fileSecurityCommon.IsDocSpaceAdministrator(_securityContext.CurrentAccount.ID))
         {
             throw new InvalidOperationException(FilesCommonResource.ErrorMassage_SecurityException_Create);
         }

@@ -37,7 +37,6 @@ global using System.Security.Cryptography.X509Certificates;
 global using System.Text;
 global using System.Text.Json.Serialization;
 global using System.Web;
-global using System.Xml.XPath;
 
 global using ASC.Common;
 global using ASC.Common.Caching;
@@ -70,10 +69,10 @@ global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.Logging;
-global using Microsoft.Extensions.Options;
 global using Microsoft.IdentityModel.Tokens;
 
 global using Newtonsoft.Json;
 global using Newtonsoft.Json.Linq;
 
 global using SecurityContext = ASC.Core.SecurityContext;
+global using JsonSerializer = System.Text.Json.JsonSerializer;

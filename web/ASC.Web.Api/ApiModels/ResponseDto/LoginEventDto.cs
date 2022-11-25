@@ -49,7 +49,7 @@ public class LoginEventDto
 
     public string Page { get; set; }
 
-    public LoginEventDto(ASC.AuditTrail.Models.LoginEventDto loginEvent)
+    public LoginEventDto(AuditTrail.Models.LoginEventDto loginEvent)
     {
         Id = loginEvent.Id;
         Date = new ApiDateTime(loginEvent.Date, TimeSpan.Zero);

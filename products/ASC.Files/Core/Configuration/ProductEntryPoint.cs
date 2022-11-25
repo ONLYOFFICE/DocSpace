@@ -31,7 +31,7 @@ public class ProductEntryPoint : Product
 {
     internal const string ProductPath = "/products/files/";
 
-    //public FilesSpaceUsageStatManager FilesSpaceUsageStatManager { get; }
+    private readonly FilesSpaceUsageStatManager _filesSpaceUsageStatManager;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
@@ -42,7 +42,7 @@ public class ProductEntryPoint : Product
     public ProductEntryPoint() { }
 
     public ProductEntryPoint(
-        //            FilesSpaceUsageStatManager filesSpaceUsageStatManager,
+        FilesSpaceUsageStatManager filesSpaceUsageStatManager,
         CoreBaseSettings coreBaseSettings,
         AuthContext authContext,
         UserManager userManager,
@@ -50,7 +50,7 @@ public class ProductEntryPoint : Product
         //            SubscriptionManager subscriptionManager
         )
     {
-        //            FilesSpaceUsageStatManager = filesSpaceUsageStatManager;
+        _filesSpaceUsageStatManager = filesSpaceUsageStatManager;
         _coreBaseSettings = coreBaseSettings;
         _authContext = authContext;
         _userManager = userManager;
@@ -83,7 +83,7 @@ public class ProductEntryPoint : Product
                 LargeIconFileName = "images/files.svg",
                 DefaultSortOrder = 10,
                 //SubscriptionManager = SubscriptionManager,
-                //SpaceUsageStatManager = FilesSpaceUsageStatManager,
+                SpaceUsageStatManager = _filesSpaceUsageStatManager,
                 AdminOpportunities = adminOpportunities,
                 UserOpportunities = userOpportunities,
                 CanNotBeDisabled = true,
@@ -122,12 +122,12 @@ public class ProductEntryPoint : Product
         {
             var id = _authContext.CurrentAccount.ID;
 
-            if (_userManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupUser.ID))
+            if (_userManager.IsUserInGroup(id, Constants.GroupUser.ID))
             {
                 return FilesCommonResource.ProductDescriptionShort;
             }
 
-            if (_userManager.IsUserInGroup(id, ASC.Core.Users.Constants.GroupAdmin.ID) || _userManager.IsUserInGroup(id, ID))
+            if (_userManager.IsUserInGroup(id, Constants.GroupAdmin.ID) || _userManager.IsUserInGroup(id, ID))
             {
                 return FilesCommonResource.ProductDescriptionEx;
             }

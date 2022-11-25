@@ -140,8 +140,8 @@ RUN cd /app/onlyoffice/src/ && \
     cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \
     mkdir -p /etc/nginx/includes/ && cp -f config/nginx/includes/onlyoffice*.conf /etc/nginx/includes/ && \
     sed -e 's/#//' -i /etc/nginx/conf.d/onlyoffice.conf && \
-    dotnet restore ASC.Web.sln && \
-    dotnet build -r linux-x64 ASC.Web.sln && \
+    dotnet restore ASC.Web.slnf && \
+    dotnet build -r linux-x64 ASC.Web.slnf && \
     cd products/ASC.People/Server && \
     dotnet -d publish --no-build --self-contained -r linux-x64 -o /var/www/products/ASC.People/server && \
     cd ../../../ && \

@@ -10,6 +10,7 @@ import {
   hideLoader,
   frameCallbackData,
   frameCallCommand,
+  getObjectByLocation,
 } from "@docspace/common/utils";
 import FilesFilter from "@docspace/common/api/files/filter";
 import { getGroup } from "@docspace/common/api/groups";
@@ -80,10 +81,13 @@ class PureHome extends React.Component {
       return;
     }
 
+    const isRoomFolder = getObjectByLocation(window.location)?.folder;
+
     if (
-      categoryType == CategoryType.Shared ||
-      categoryType == CategoryType.SharedRoom ||
-      categoryType == CategoryType.Archive
+      (categoryType == CategoryType.Shared ||
+        categoryType == CategoryType.SharedRoom ||
+        categoryType == CategoryType.Archive) &&
+      !isRoomFolder
     ) {
       filterObj = RoomsFilter.getFilter(window.location);
 

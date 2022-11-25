@@ -24,16 +24,23 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Api.Core.Core;
+using ASC.Common.Logging;
+
 namespace ASC.ClearEvents.Extensions;
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddClearEventsServices(this IServiceCollection services)
+    public static IServiceCollection AddClearEventsServices(this IServiceCollection services, IConfiguration configuration)
     {
         var diHelper = new DIHelper(services);
+
+        services.AddScoped<EFLoggerFactory>();
 
         services.AddHostedService<ClearEventsService>();
         diHelper.TryAdd<ClearEventsService>();
         services.AddBaseDbContextPool<MessagesContext>();
+
+        services.AddCustomHealthCheck(configuration);
 
         return services;
 

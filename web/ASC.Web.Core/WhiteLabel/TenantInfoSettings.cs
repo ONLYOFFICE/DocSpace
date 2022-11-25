@@ -72,10 +72,10 @@ public class TenantInfoSettingsHelper
         _tenantManager = tenantManager;
         _configuration = configuration;
     }
-    public void RestoreDefault(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
+    public async Task RestoreDefault(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
         RestoreDefaultTenantName();
-        RestoreDefaultLogo(tenantInfoSettings, tenantLogoManager);
+        await RestoreDefaultLogo(tenantInfoSettings, tenantLogoManager);
     }
 
     public void RestoreDefaultTenantName()
@@ -85,14 +85,14 @@ public class TenantInfoSettingsHelper
         _tenantManager.SaveTenant(currentTenant);
     }
 
-    public void RestoreDefaultLogo(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
+    public async Task RestoreDefaultLogo(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
         tenantInfoSettings.IsDefault = true;
 
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), "logo");
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
         try
         {
-            store.DeleteFilesAsync("", "*", false).Wait();
+            await store.DeleteFilesAsync("", "*", false);
         }
         catch
         {
@@ -102,15 +102,15 @@ public class TenantInfoSettingsHelper
         tenantLogoManager.RemoveMailLogoDataFromCache();
     }
 
-    public void SetCompanyLogo(string companyLogoFileName, byte[] data, TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
+    public async Task SetCompanyLogo(string companyLogoFileName, byte[] data, TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), "logo");
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
 
         if (!tenantInfoSettings.IsDefault)
         {
             try
             {
-                store.DeleteFilesAsync("", "*", false).Wait();
+                await store.DeleteFilesAsync("", "*", false);
             }
             catch
             {
@@ -121,7 +121,7 @@ public class TenantInfoSettingsHelper
         {
             tenantInfoSettings.CompanyLogoSize = image.Size();
             memory.Seek(0, SeekOrigin.Begin);
-            store.SaveAsync(companyLogoFileName, memory).Wait();
+            await store.SaveAsync(companyLogoFileName, memory);
             tenantInfoSettings.CompanyLogoFileName = companyLogoFileName;
         }
         tenantInfoSettings.IsDefault = false;
@@ -136,7 +136,7 @@ public class TenantInfoSettingsHelper
             return _webImageSupplier.GetAbsoluteWebPath("logo/dark_general.png");
         }
 
-        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(), "logo");
+        var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
         return store.GetUriAsync(tenantInfoSettings.CompanyLogoFileName ?? "").Result.ToString();
     }
 
@@ -150,7 +150,7 @@ public class TenantInfoSettingsHelper
             return null;
         }
 
-        var storage = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id.ToString(CultureInfo.InvariantCulture), "logo");
+        var storage = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");
 
         if (storage == null)
         {

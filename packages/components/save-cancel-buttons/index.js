@@ -52,6 +52,7 @@ class SaveCancelButtons extends React.Component {
       isSaving,
       cancelEnable,
       tabIndex,
+      saveButtonDisabled,
     } = this.props;
 
     const cancelButtonDisabled = cancelEnable
@@ -76,7 +77,7 @@ class SaveCancelButtons extends React.Component {
             tabIndex={tabIndexSaveButton}
             className="save-button"
             size="normal"
-            isDisabled={!showReminder}
+            isDisabled={!showReminder || saveButtonDisabled}
             primary
             onClick={onSaveClick}
             label={saveButtonLabel}

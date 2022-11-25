@@ -6,46 +6,51 @@ const excludeOptionsIntoFolder = ["open", "separator0", "separator1"];
 class ContextHelper {
   constructor(props) {
     this.t = props.t;
-    this.selection = { ...props.selection };
+    this.isUser = props.isUser;
+    this.selection = props.selection;
     this.getContextOptions = props.getContextOptions;
+    this.getUserContextOptions = props.getUserContextOptions;
     this.getContextOptionActions = props.getContextOptionActions;
-
-    this.selectedFolderId = props.selectedFolderId;
 
     if (this.selection) this.fixItemContextOptions();
   }
 
   fixItemContextOptions = () => {
+    if (this.isUser) {
+      if (!this.selection?.options) return;
+      const newOptions = this.selection.options.filter(
+        (option) => option !== "details"
+      );
+      this.selection.options = newOptions;
+      return;
+    }
+
     const options = this.getContextOptions(this.selection, false);
 
     excludeGeneralOptions.forEach((excludeOption) => {
       const idx = options.findIndex((o) => o === excludeOption);
-
       if (idx !== -1) options.splice(idx, 1);
     });
 
     if (this.selection?.isRoom) {
       excludeRoomOptions.forEach((excludeOption) => {
         const idx = options.findIndex((o) => o === excludeOption);
-
         if (idx !== -1) options.splice(idx, 1);
       });
 
-      if (this.selection.id === this.selectedFolderId) {
+      if (this.selection.isSelectedFolder) {
         excludeOptionsIntoRoom.forEach((excludeOption) => {
           const idx = options.findIndex((o) => o === excludeOption);
-
           if (idx !== -1) options.splice(idx, 1);
         });
       }
-    } else if (this.selection?.isFolder) {
-      if (this.selection.id === this.selectedFolderId) {
-        excludeOptionsIntoFolder.forEach((excludeOption) => {
-          const idx = options.findIndex((o) => o === excludeOption);
+    }
 
-          if (idx !== -1) options.splice(idx, 1);
-        });
-      }
+    if (this.selection?.isSelectedFolder && !this.selection?.isRoom) {
+      excludeOptionsIntoFolder.forEach((excludeOption) => {
+        const idx = options.findIndex((o) => o === excludeOption);
+        if (idx !== -1) options.splice(idx, 1);
+      });
     }
 
     const length = options.length;
@@ -76,7 +81,13 @@ class ContextHelper {
   };
 
   getItemContextOptions = () => {
-    return this.getContextOptionActions(this.selection, this.t);
+    return this.isUser
+      ? this.getUserContextOptions(
+          this.t,
+          this.selection.options || [],
+          this.selection
+        )
+      : this.getContextOptionActions(this.selection, this.t);
   };
 }
 

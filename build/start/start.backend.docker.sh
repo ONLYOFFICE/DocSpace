@@ -9,9 +9,16 @@ echo "Root directory:" $dir
 
 cd $dir
 
-branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+branch=$(git branch --show-current)
 
 echo "GIT_BRANCH:" $branch
+
+branch_exist_remote=$(git ls-remote --heads origin $branch)
+
+if [ -z "$branch_exist_remote" ]; then
+    echo "The current branch does not exist in the remote repository. Please push changes."
+    exit 1
+fi
 
 cd $dir/build/install/docker/
 
@@ -39,7 +46,7 @@ docker_file=Dockerfile.dev
 env_extension="dev"
 core_base_domain="localhost"
 
-echo "Start all backend services"
+echo "Start all backend services (containers)"
 DOCKERFILE=$docker_file \
 ROOT_DIR=$dir \
 RELEASE_DATE=$build_date \

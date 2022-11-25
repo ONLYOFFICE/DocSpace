@@ -42,6 +42,7 @@ const StyledHideArticleMenuButton = styled.div`
 
     .article-hide-menu-text {
       margin-left: 8px;
+      color: ${({ currentColorScheme }) => currentColorScheme.main.accent};
     }
 
     @media ${tablet} {
@@ -71,16 +72,33 @@ const StyledHideArticleMenuButton = styled.div`
   .article-hide-menu-icon_svg,
   .article-show-menu-icon_svg {
     height: 28px;
+
+    svg {
+      path {
+        fill: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+      }
+    }
   }
 `;
 
-const HideArticleMenuButton = ({ showText, toggleShowText }) => {
+const HideArticleMenuButton = ({
+  showText,
+  toggleShowText,
+  currentColorScheme,
+}) => {
   const { t } = useTranslation("Common");
 
   return (
-    <StyledHideArticleMenuButton showText={showText} onClick={toggleShowText}>
+    <StyledHideArticleMenuButton
+      showText={showText}
+      onClick={toggleShowText}
+      currentColorScheme={currentColorScheme}
+    >
       {showText ? (
-        <div className="article-hide-menu-container">
+        <div
+          className="article-hide-menu-container"
+          id="document_catalog-hide-menu"
+        >
           <ReactSVG
             className="article-hide-menu-icon_svg"
             src="/static/images/article-hide-menu.react.svg"
@@ -91,13 +109,15 @@ const HideArticleMenuButton = ({ showText, toggleShowText }) => {
             fontSize="12px"
             noSelect
             truncate
-            color="#3B72A7"
           >
             {t("HideArticleMenu")}
           </Text>
         </div>
       ) : (
-        <div className="article-show-menu-container">
+        <div
+          className="article-show-menu-container"
+          id="document_catalog-show-menu"
+        >
           <ReactSVG
             className="article-show-menu-icon_svg"
             src="/static/images/article-show-menu.react.svg"

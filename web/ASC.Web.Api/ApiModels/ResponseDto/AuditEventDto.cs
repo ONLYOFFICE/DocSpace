@@ -58,7 +58,7 @@ public class AuditEventDto
 
     public IEnumerable<EntryType> Entries { get; set; }
 
-    public AuditEventDto(ASC.AuditTrail.Models.AuditEventDto auditEvent, AuditActionMapper auditActionMapper)
+    public AuditEventDto(AuditTrail.Models.AuditEventDto auditEvent, AuditActionMapper auditActionMapper)
     {
         Id = auditEvent.Id;
         Date = new ApiDateTime(auditEvent.Date, TimeSpan.Zero);

@@ -46,7 +46,6 @@ public static class Actions
     public static readonly INotifyAction RestoreCompletedV115 = new NotifyAction("restore_completed_v115");
     public static readonly INotifyAction PortalDeactivate = new NotifyAction("portal_deactivate", "portal deactivate");
     public static readonly INotifyAction PortalDelete = new NotifyAction("portal_delete", "portal delete");
-    public static readonly INotifyAction PortalDeleteSuccessV115 = new NotifyAction("portal_delete_success_v115");
 
     public static readonly INotifyAction ProfileDelete = new NotifyAction("profile_delete", "profile_delete");
     public static readonly INotifyAction ProfileHasDeletedItself = new NotifyAction("profile_has_deleted_itself", "profile_has_deleted_itself");
@@ -73,27 +72,6 @@ public static class Actions
     public static readonly INotifyAction MailboxWithoutSettingsCreated = new NotifyAction("mailbox_without_settings_created");
     public static readonly INotifyAction MailboxPasswordChanged = new NotifyAction("mailbox_password_changed");
 
-    public static readonly INotifyAction SaasAdminActivationV115 = new NotifyAction("saas_admin_activation_v115");
-    public static readonly INotifyAction EnterpriseAdminActivationV10 = new NotifyAction("enterprise_admin_activation_v10");
-    public static readonly INotifyAction EnterpriseWhitelabelAdminActivationV10 = new NotifyAction("enterprise_whitelabel_admin_activation_v10");
-    public static readonly INotifyAction OpensourceAdminActivationV11 = new NotifyAction("opensource_admin_activation_v11");
-
-    public static readonly INotifyAction SaasAdminWelcomeV115 = new NotifyAction("saas_admin_welcome_v115");
-    public static readonly INotifyAction EnterpriseAdminWelcomeV10 = new NotifyAction("enterprise_admin_welcome_v10");
-    public static readonly INotifyAction EnterpriseWhitelabelAdminWelcomeV10 = new NotifyAction("enterprise_whitelabel_admin_welcome_v10");
-    public static readonly INotifyAction OpensourceAdminWelcomeV11 = new NotifyAction("opensource_admin_welcome_v11");
-
-    public static readonly INotifyAction SaasUserActivationV115 = new NotifyAction("saas_user_activation_v115");
-    public static readonly INotifyAction EnterpriseUserActivationV10 = new NotifyAction("enterprise_user_activation_v10");
-    public static readonly INotifyAction EnterpriseWhitelabelUserActivationV10 = new NotifyAction("enterprise_whitelabel_user_activation_v10");
-    public static readonly INotifyAction OpensourceUserActivationV11 = new NotifyAction("opensource_user_activation_v11");
-
-    public static readonly INotifyAction SaasUserWelcomeV115 = new NotifyAction("saas_user_welcome_v115");
-    public static readonly INotifyAction EnterpriseUserWelcomeV10 = new NotifyAction("enterprise_user_welcome_v10");
-    public static readonly INotifyAction EnterpriseWhitelabelUserWelcomeV10 = new NotifyAction("enterprise_whitelabel_user_welcome_v10");
-    public static readonly INotifyAction EnterpriseWhitelabelUserWelcomeCustomMode = new NotifyAction("enterprise_whitelabel_user_welcome_custom_mode");
-    public static readonly INotifyAction OpensourceUserWelcomeV11 = new NotifyAction("opensource_user_welcome_v11");
-
     public static readonly INotifyAction SaasGuestActivationV115 = new NotifyAction("saas_guest_activation_v115");
     public static readonly INotifyAction EnterpriseGuestActivationV10 = new NotifyAction("enterprise_guest_activation_v10");
     public static readonly INotifyAction EnterpriseWhitelabelGuestActivationV10 = new NotifyAction("enterprise_whitelabel_guest_activation_v10");
@@ -104,43 +82,8 @@ public static class Actions
     public static readonly INotifyAction EnterpriseWhitelabelGuestWelcomeV10 = new NotifyAction("enterprise_whitelabel_guest_welcome_v10");
     public static readonly INotifyAction OpensourceGuestWelcomeV11 = new NotifyAction("opensource_guest_welcome_v11");
 
-    public static readonly INotifyAction EnterpriseAdminCustomizePortalV10 = new NotifyAction("enterprise_admin_customize_portal_v10");
-    public static readonly INotifyAction EnterpriseWhitelabelAdminCustomizePortalV10 = new NotifyAction("enterprise_whitelabel_admin_customize_portal_v10");
-    public static readonly INotifyAction EnterpriseAdminInviteTeammatesV10 = new NotifyAction("enterprise_admin_invite_teammates_v10");
-    public static readonly INotifyAction EnterpriseAdminWithoutActivityV10 = new NotifyAction("enterprise_admin_without_activity_v10");
-    public static readonly INotifyAction EnterpriseAdminUserDocsTipsV10 = new NotifyAction("enterprise_admin_user_docs_tips_v10");
-    public static readonly INotifyAction EnterpriseAdminUserAppsTipsV10 = new NotifyAction("enterprise_admin_user_apps_tips_v10");
-
-    public static readonly INotifyAction EnterpriseAdminTrialWarningBefore7V10 = new NotifyAction("enterprise_admin_trial_warning_before7_v10");
-    public static readonly INotifyAction EnterpriseAdminTrialWarningV10 = new NotifyAction("enterprise_admin_trial_warning_v10");
-
-    public static readonly INotifyAction EnterpriseAdminPaymentWarningBefore7V10 = new NotifyAction("enterprise_admin_payment_warning_before7_v10");
-    public static readonly INotifyAction EnterpriseWhitelabelAdminPaymentWarningBefore7V10 = new NotifyAction("enterprise_whitelabel_admin_payment_warning_before7_v10");
-    public static readonly INotifyAction EnterpriseAdminPaymentWarningV10 = new NotifyAction("enterprise_admin_payment_warning_v10");
-    public static readonly INotifyAction EnterpriseWhitelabelAdminPaymentWarningV10 = new NotifyAction("enterprise_whitelabel_admin_payment_warning_v10");
-
-    public static readonly INotifyAction SaasAdminUserDocsTipsV115 = new NotifyAction("saas_admin_user_docs_tips_v115");
-    public static readonly INotifyAction SaasAdminComfortTipsV115 = new NotifyAction("saas_admin_comfort_tips_v115");
-    public static readonly INotifyAction SaasAdminUserAppsTipsV115 = new NotifyAction("saas_admin_user_apps_tips_v115");
-
-    public static readonly INotifyAction SaasAdminTrialWarningBefore5V115 = new NotifyAction("saas_admin_trial_warning_before5_v115");
-    public static readonly INotifyAction SaasAdminTrialWarningV115 = new NotifyAction("saas_admin_trial_warning_v115");
-    public static readonly INotifyAction SaasAdminTrialWarningAfter1V115 = new NotifyAction("saas_admin_trial_warning_after1_v115");
-    public static readonly INotifyAction SaasAdminTrialWarningAfterHalfYearV115 = new NotifyAction("saas_admin_trial_warning_after_half_year_v115");
-
-    public static readonly INotifyAction SaasAdminPaymentWarningEvery2MonthsV115 = new NotifyAction("saas_admin_payment_warning_every_2months_v115");
-
-    public static readonly INotifyAction SaasAdminModulesV115 = new NotifyAction("saas_admin_modules_v115");
-
-    public static readonly INotifyAction OpensourceAdminDocsTipsV11 = new NotifyAction("opensource_admin_docs_tips_v11");
-    public static readonly INotifyAction OpensourceUserDocsTipsV11 = new NotifyAction("opensource_user_docs_tips_v11");
-
     public static readonly INotifyAction PersonalActivate = new NotifyAction("personal_activate");
     public static readonly INotifyAction PersonalAfterRegistration1 = new NotifyAction("personal_after_registration1");
-    public static readonly INotifyAction PersonalAfterRegistration7 = new NotifyAction("personal_after_registration7");
-    public static readonly INotifyAction PersonalAfterRegistration14 = new NotifyAction("personal_after_registration14");
-    public static readonly INotifyAction PersonalAfterRegistration21 = new NotifyAction("personal_after_registration21");
-    public static readonly INotifyAction PersonalAfterRegistration28 = new NotifyAction("personal_after_registration28");
     public static readonly INotifyAction PersonalConfirmation = new NotifyAction("personal_confirmation");
     public static readonly INotifyAction PersonalEmailChangeV115 = new NotifyAction("personal_change_email_v115");
     public static readonly INotifyAction PersonalPasswordChangeV115 = new NotifyAction("personal_change_password_v115");
@@ -163,5 +106,43 @@ public static class Actions
     public static readonly INotifyAction StorageDecryptionSuccess = new NotifyAction("storage_decryption_success");
     public static readonly INotifyAction StorageDecryptionError = new NotifyAction("storage_decryption_error");
 
-    public static readonly INotifyAction RoomInvite = new NotifyAction("room_invite");
+    public static readonly INotifyAction RoomInvite = new NotifyAction("room_invite", "room_invite");
+    public static readonly INotifyAction DocSpaceInvite = new NotifyAction("docspace_invite", "docspace_invite");
+
+    public static readonly INotifyAction SaasAdminActivationV1 = new NotifyAction("saas_admin_activation_v1");
+    public static readonly INotifyAction EnterpriseAdminActivationV1 = new NotifyAction("enterprise_admin_activation_v1");
+    public static readonly INotifyAction EnterpriseWhitelabelAdminActivationV1 = new NotifyAction("enterprise_whitelabel_admin_activation_v1");
+    public static readonly INotifyAction OpensourceAdminActivationV1 = new NotifyAction("opensource_admin_activation_v1");
+
+    public static readonly INotifyAction SaasAdminWelcomeV1 = new NotifyAction("saas_admin_welcome_v1");
+    public static readonly INotifyAction EnterpriseAdminWelcomeV1 = new NotifyAction("enterprise_admin_welcome_v1");
+    public static readonly INotifyAction EnterpriseWhitelabelAdminWelcomeV1 = new NotifyAction("enterprise_whitelabel_admin_welcome_v1");
+    public static readonly INotifyAction OpensourceAdminWelcomeV1 = new NotifyAction("opensource_admin_welcome_v1");
+
+    public static readonly INotifyAction SaasAdminUserDocsTipsV1 = new NotifyAction("saas_admin_user_docs_tips_v1");
+    public static readonly INotifyAction OpensourceAdminDocsTipsV1 = new NotifyAction("opensource_admin_docs_tips_v1");
+    public static readonly INotifyAction OpensourceUserDocsTipsV1 = new NotifyAction("opensource_user_docs_tips_v1");
+    public static readonly INotifyAction EnterpriseAdminUserDocsTipsV1 = new NotifyAction("enterprise_admin_user_docs_tips_v1");
+
+    public static readonly INotifyAction SaasAdminTrialWarningAfterHalfYearV1 = new NotifyAction("saas_admin_trial_warning_after_half_year_v1");
+
+    public static readonly INotifyAction PortalDeleteSuccessV1 = new NotifyAction("portal_delete_success_v1");
+
+    public static readonly INotifyAction SaasUserWelcomeV1 = new NotifyAction("saas_user_welcome_v1");
+    public static readonly INotifyAction EnterpriseUserWelcomeV1 = new NotifyAction("enterprise_user_welcome_v1");
+    public static readonly INotifyAction EnterpriseWhitelabelUserWelcomeV1 = new NotifyAction("enterprise_whitelabel_user_welcome_v1");
+    public static readonly INotifyAction EnterpriseWhitelabelUserWelcomeCustomModeV1 = new NotifyAction("enterprise_whitelabel_user_welcome_custom_mode_v1");
+    public static readonly INotifyAction OpensourceUserWelcomeV1 = new NotifyAction("opensource_user_welcome_v1");
+
+    public static readonly INotifyAction SaasUserActivationV1 = new NotifyAction("saas_user_activation_v1");
+    public static readonly INotifyAction EnterpriseUserActivationV1 = new NotifyAction("enterprise_user_activation_v1");
+    public static readonly INotifyAction EnterpriseWhitelabelUserActivationV1 = new NotifyAction("enterprise_whitelabel_user_activation_v1");
+    public static readonly INotifyAction OpensourceUserActivationV1 = new NotifyAction("opensource_user_activation_v1");
+
+    public static readonly INotifyAction PersonalAfterRegistration14V1 = new NotifyAction("personal_after_registration14_v1");
+
+    public static readonly INotifyAction SaasAdminModulesV1 = new NotifyAction("saas_admin_modules_v1");
+
+    public static readonly INotifyAction SaasAdminUserAppsTipsV1 = new NotifyAction("saas_admin_user_apps_tips_v1");
+    public static readonly INotifyAction EnterpriseAdminUserAppsTipsV1 = new NotifyAction("enterprise_admin_user_apps_tips_v1");
 }

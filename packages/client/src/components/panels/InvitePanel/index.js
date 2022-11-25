@@ -29,13 +29,20 @@ const InvitePanel = ({
   visible,
   setRoomSecurity,
   getRoomSecurityInfo,
+  getPortalInviteLinks,
+  userLink,
+  guestLink,
+  adminLink,
+  defaultAccess,
+  inviteUsers,
+  reloadSelectionParentRoom,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
   const [shareLinks, setShareLinks] = useState([]);
   const [roomUsers, setRoomUsers] = useState([]);
 
-  useEffect(() => {
+  const selectRoom = () => {
     const room = folders.find((folder) => folder.id === roomId);
 
     if (room) {
@@ -45,7 +52,9 @@ const InvitePanel = ({
         setSelectedRoom(info);
       });
     }
+  };
 
+  const getInfo = () => {
     getRoomSecurityInfo(roomId).then((users) => {
       let links = [];
 
@@ -58,6 +67,7 @@ const InvitePanel = ({
             title,
             shareLink,
             expirationDate,
+            access: defaultAccess,
           });
         }
       });
@@ -65,7 +75,39 @@ const InvitePanel = ({
       setShareLinks(links);
       setRoomUsers(users);
     });
-  }, [roomId]);
+  };
+
+  useEffect(() => {
+    if (roomId === -1) {
+      if (!userLink || !guestLink || !adminLink) getPortalInviteLinks();
+
+      setShareLinks([
+        {
+          id: "user",
+          title: "User",
+          shareLink: userLink,
+          access: 1,
+        },
+        {
+          id: "guest",
+          title: "Guest",
+          shareLink: guestLink,
+          access: 2,
+        },
+        {
+          id: "admin",
+          title: "Admin",
+          shareLink: adminLink,
+          access: 3,
+        },
+      ]);
+
+      return;
+    }
+
+    selectRoom();
+    getInfo();
+  }, [roomId, userLink, guestLink, adminLink]);
 
   useEffect(() => {
     const hasErrors = inviteItems.some((item) => !!item.errors?.length);
@@ -74,7 +116,11 @@ const InvitePanel = ({
   }, [inviteItems]);
 
   const onClose = () => {
-    setInvitePanelOptions({ visible: false });
+    setInvitePanelOptions({
+      visible: false,
+      hideSelector: false,
+      defaultAccess: 1,
+    });
     setInviteItems([]);
   };
 
@@ -88,7 +134,11 @@ const InvitePanel = ({
 
   const onClickSend = async (e) => {
     const invitations = inviteItems.map((item) => {
-      let newItem = { access: item.access };
+      let newItem = {};
+
+      roomId === -1
+        ? (newItem.type = item.access)
+        : (newItem.access = item.access);
 
       item.avatar ? (newItem.id = item.id) : (newItem.email = item.email);
 
@@ -97,20 +147,26 @@ const InvitePanel = ({
 
     const data = {
       invitations,
-      notify: true,
-      message: "Invitation message",
     };
 
+    if (roomId !== -1) {
+      data.notify = true;
+      data.message = "Invitation message";
+    }
+
     try {
-      await setRoomSecurity(roomId, data);
+      roomId === -1
+        ? await inviteUsers(data)
+        : await setRoomSecurity(roomId, data);
       onClose();
-      toastr.success(`Users invited to ${selectedRoom.title}`);
+      toastr.success(`Users invited`);
+      reloadSelectionParentRoom();
     } catch (err) {
       toastr.error(err);
     }
   };
 
-  const roomType = selectedRoom ? selectedRoom.roomType : 5;
+  const roomType = selectedRoom ? selectedRoom.roomType : -1;
 
   return (
     <StyledInvitePanel>
@@ -127,7 +183,9 @@ const InvitePanel = ({
         withoutBodyScroll
       >
         <StyledBlock>
-          <StyledHeading>{t("InviteUsersToRoom")}</StyledHeading>
+          <StyledHeading>
+            {roomId === -1 ? t("InviteUsers") : t("InviteUsersToRoom")}
+          </StyledHeading>
         </StyledBlock>
 
         <ExternalLinks t={t} shareLinks={shareLinks} roomType={roomType} />
@@ -168,7 +226,15 @@ const InvitePanel = ({
 export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
 
-  const { getUsersByQuery } = peopleStore.usersStore;
+  const { getUsersByQuery, inviteUsers } = peopleStore.usersStore;
+  const { reloadSelectionParentRoom } = auth.infoPanelStore;
+
+  const {
+    getPortalInviteLinks,
+    userLink,
+    guestLink,
+    adminLink,
+  } = peopleStore.inviteLinksStore;
 
   const {
     inviteItems,
@@ -195,7 +261,14 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     setRoomSecurity,
     theme,
     visible: invitePanelOptions.visible,
+    defaultAccess: invitePanelOptions.defaultAccess,
     getFolderInfo,
+    getPortalInviteLinks,
+    userLink,
+    guestLink,
+    adminLink,
+    inviteUsers,
+    reloadSelectionParentRoom,
   };
 })(
   withTranslation([

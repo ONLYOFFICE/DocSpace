@@ -37,9 +37,9 @@ public class SubscriptionManager
     public static readonly object CacheLocker = new object();
     public static readonly List<Guid> Groups = Groups = new List<Guid>
     {
-        Constants.Admin.ID,
+        Constants.DocSpaceAdmin.ID,
         Constants.Everyone.ID,
-        Constants.Manager.ID
+        Constants.RoomAdmin.ID
     };
 
     public SubscriptionManager(CachedSubscriptionService service, TenantManager tenantManager, ICache cache)

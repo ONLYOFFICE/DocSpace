@@ -21,6 +21,10 @@ const AccessRightSelect = ({
 }) => {
   const [currentItem, setCurrentItem] = useState(selectedOption);
 
+  useEffect(() => {
+    setCurrentItem(selectedOption);
+  }, [selectedOption]);
+
   const onSelectCurrentItem = useCallback(
     (e) => {
       const key = e.currentTarget.dataset.key;

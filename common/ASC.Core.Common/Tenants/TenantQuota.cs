@@ -35,7 +35,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         MaxFileSize = 25 * 1024 * 1024, // 25Mb
         MaxTotalSize = long.MaxValue,
         CountUser = int.MaxValue,
-        CountManager = int.MaxValue,
+        CountRoomAdmin = int.MaxValue,
         CountRoom = int.MaxValue
     };
 
@@ -90,11 +90,11 @@ public class TenantQuota : IMapFrom<DbQuota>
         set => _countUserFeature.Value = value;
     }
 
-    private readonly CountManagerFeature _countManagerFeature;
-    public int CountManager
+    private readonly CountRoomAdminFeature _countRoomAdminFeature;
+    public int CountRoomAdmin
     {
-        get => _countManagerFeature.Value;
-        set => _countManagerFeature.Value = value;
+        get => _countRoomAdminFeature.Value;
+        set => _countRoomAdminFeature.Value = value;
     }
 
     private readonly UsersInRoomFeature _usersInRoomFeature;
@@ -221,7 +221,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         _featuresList = new List<string>();
 
         _countUserFeature = new CountUserFeature(this) { Order = 1 };
-        _countManagerFeature = new CountManagerFeature(this);
+        _countRoomAdminFeature = new CountRoomAdminFeature(this);
         _usersInRoomFeature = new UsersInRoomFeature(this) { Order = 8 };
         _countRoomFeature = new CountRoomFeature(this) { Order = 2 };
         _maxTotalSizeFeature = new MaxTotalSizeFeature(this);
@@ -245,7 +245,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         TenantQuotaFeatures = new List<TenantQuotaFeature>
         {
             _countUserFeature,
-            _countManagerFeature,
+            _countRoomAdminFeature,
             _usersInRoomFeature,
             _countRoomFeature,
             _maxTotalSizeFeature,

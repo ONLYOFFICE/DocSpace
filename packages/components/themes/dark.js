@@ -98,71 +98,70 @@ const Dark = {
     height: {
       extraSmall: "24px",
       small: "32px",
-      normalDesktop: "36px",
-      normalTouchscreen: "40px",
+      normal: "40px",
       medium: "44px",
     },
 
     lineHeight: {
       extraSmall: "15px",
       small: "20px",
-      normalDesktop: "16px",
-      normalTouchscreen: "16px",
+      normal: "16px",
       medium: "22px",
     },
 
     fontSize: {
       extraSmall: "12px",
       small: "13px",
-      normalDesktop: "14px",
-      normalTouchscreen: "14px",
+      normal: "14px",
       medium: "16px",
     },
 
     padding: {
       extraSmall: "0 12px",
       small: "0 28px",
-      normalDesktop: "0 28px",
-      normalTouchscreen: "0 28px",
+      normal: "0 28px",
       medium: "0 32px",
     },
 
     color: {
-      base: "#CCCCCC",
-      baseHover: "#FAFAFA",
-      baseActive: "#858585",
-      baseDisabled: "#545454",
+      base: "#FFFFFF",
+      baseHover: "#FFFFFF",
+      baseActive: "#FFFFFF",
+      baseDisabled: "#474747",
+
       primary: "#FFFFFF",
       primaryHover: "#FFFFFF",
       primaryActive: "#FFFFFF",
-      primaryDisabled: black,
+      primaryDisabled: "#FFFFFF",
     },
 
     backgroundColor: {
-      base: "transparent",
-      baseHover: black,
-      baseActive: "#292929",
-      baseDisabled: "#474747",
-      primary: "#CCCCCC",
-      primaryHover: "#FAFAFA",
-      primaryActive: "#858585",
-      primaryDisabled: "#545454",
+      base: "#333333",
+      baseHover: "#333333",
+      baseActive: "#282828",
+      baseDisabled: "#282828",
+
+      primary: "#5299E0",
+      primaryHover: "#4D8AC7",
+      primaryActive: "#427CB7",
+      primaryDisabled: "#45709B",
     },
 
     border: {
-      base: `1px solid #CCCCCC`,
-      baseHover: `1px solid #FAFAFA`,
-      baseActive: `1px solid #FAFAFA`,
-      baseDisabled: `1px solid #545454`,
-      primary: `1px solid #CCCCCC`,
-      primaryHover: `1px solid #FAFAFA`,
-      primaryActive: `1px solid #FAFAFA`,
-      primaryDisabled: `1px solid #545454`,
+      base: `1px solid #474747`,
+      baseHover: `1px solid #858585`,
+      baseActive: `1px solid #CCCCCC`,
+      baseDisabled: `1px solid #474747`,
+
+      primary: `1px solid #5299E0`,
+      primaryHover: `1px solid #4D8AC7`,
+      primaryActive: `1px solid #427CB7`,
+      primaryDisabled: `1px solid #45709B`,
     },
 
     loader: {
-      base: grayMaxLight,
-      primary: black,
+      base: white,
+      primary: white,
     },
   },
 
@@ -189,7 +188,6 @@ const Dark = {
     mobileProgressBarBackground: "#606060",
 
     bar: {
-      background: "#858585",
       errorBackground: orangePressed,
 
       icon: "#858585",
@@ -794,7 +792,7 @@ const Dark = {
     },
 
     fontSize: {
-      base: "14px",
+      base: "13px",
       middle: "14px",
       big: "16px",
       huge: "18px",
@@ -1489,7 +1487,26 @@ const Dark = {
     marginRight: "2px",
     borderRadius: "50%",
   },
-
+  rombsLoader: {
+    blue: {
+      colorStep_1: "#333",
+      colorStep_2: "#333",
+      colorStep_3: "#323032",
+      colorStep_4: "#323032",
+    },
+    red: {
+      colorStep_1: "#333",
+      colorStep_2: "#333",
+      colorStep_3: "#323032",
+      colorStep_4: "#323032",
+    },
+    green: {
+      colorStep_1: "#333",
+      colorStep_2: "#333",
+      colorStep_3: "#323032",
+      colorStep_4: "#323032",
+    },
+  },
   dialogLoader: {
     borderBottom: "1px solid #292929",
   },
@@ -1636,23 +1653,11 @@ const Dark = {
   },
 
   toggleButton: {
-    fillColor: "#F0F0F0",
     fillColorOff: "#292929",
+    hoverFillColorOff: "#3D3D3D",
 
-    disableFillColor: black,
-    disableFillColorOff: "#545454",
-
-    borderColor: "#474747",
-    borderColorOff: "#474747",
-
-    disableBorderColor: "#474747",
-    disableBorderColorOff: "#646464",
-
-    fillCircleColor: "#292929",
-    fillCircleColorOff: grayMaxLight,
-
-    disableFillCircleColor: "#545454",
-    disableFillCircleColorOff: black,
+    fillCircleColor: "#FFFFFF",
+    fillCircleColorOff: "#FFFFFF",
   },
 
   contextMenuButton: {
@@ -1854,6 +1859,8 @@ const Dark = {
 
     headerBurgerColor: "#606060",
 
+    verticalLine: "1px solid #474747",
+
     profile: {
       borderTop: "1px solid #474747",
       background: "#3D3D3D",
@@ -2021,6 +2028,8 @@ const Dark = {
 
     members: {
       iconColor: "#A3A9AE",
+      iconHoverColor: "#ffffff",
+      isExpectName: "#A3A9AE",
       subtitleColor: "#a3a9ae",
       meLabelColor: "#a3a9ae",
       roleSelectorColor: "#a3a9ae",
@@ -2741,6 +2750,9 @@ const Dark = {
     navBackground: "#282828",
     headerColor: white,
     helpButton: "#D8D8D8",
+    orLineColor: "#474747",
+    orTextColor: "#858585",
+    titleColor: white,
 
     register: {
       backgroundColor: "#292929",
@@ -2881,13 +2893,13 @@ const Dark = {
         whiteLabel: {
           borderImg: "1px solid #d1d1d1",
 
-          backgroundColor: "#0f4071",
+          backgroundColor: "#282828",
           greenBackgroundColor: "#7e983f",
           blueBackgroundColor: "#5170b5",
           orangeBackgroundColor: "#e86e2e",
 
           dataFontColor: white,
-          dataFontColorBlack: black,
+          dataFontColorBlack: white,
         },
       },
 
@@ -2984,9 +2996,30 @@ const Dark = {
     },
   },
 
+  activeSessions: {
+    borderColor: "#858585",
+    color: "#eeeeee",
+  },
+
   formWrapper: {
     background: black,
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.16);",
+  },
+
+  preparationPortalProgress: {
+    backgroundColor: "#282828",
+    colorPercentSmall: "#FFFFFF",
+    colorPercentBig: "#333333",
+  },
+
+  codeInput: {
+    background: "#282828",
+    border: "1px solid #474747",
+    color: white,
+    lineColor: "#858585",
+    disabledBackground: "#474747",
+    disabledBorder: "1px solid #474747",
+    disabledColor: "#858585",
   },
 };
 

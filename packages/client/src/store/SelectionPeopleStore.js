@@ -1,8 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import {
-  EmployeeStatus,
-  EmployeeActivationStatus,
-} from "@docspace/common/constants";
+import { EmployeeStatus } from "@docspace/common/constants";
 import { getUserStatus } from "../helpers/people-helpers";
 
 class SelectionStore {
@@ -102,47 +99,17 @@ class SelectionStore {
   }
 
   get hasUsersToMakeEmployees() {
-    const { id, isOwner } = this.peopleStore.authStore.userStore.user;
+    const { canMakeEmployeeUser } = this.peopleStore.accessRightsStore;
 
-    if (isOwner) {
-      const users = this.selection.filter(
-        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
-      );
-
-      return users.length > 0;
-    }
-
-    const users = this.selection.filter(
-      (x) =>
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== id &&
-        !x.isAdmin &&
-        !x.isOwner &&
-        x.isVisitor
-    );
+    const users = this.selection.filter((x) => canMakeEmployeeUser(x));
 
     return users.length > 0;
   }
 
   get getUsersToMakeEmployees() {
-    const { id, isOwner } = this.peopleStore.authStore.userStore.user;
+    const { canMakeEmployeeUser } = this.peopleStore.accessRightsStore;
 
-    if (isOwner) {
-      const users = this.selection.filter(
-        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
-      );
-
-      return users.map((u) => u);
-    }
-
-    const users = this.selection.filter(
-      (x) =>
-        x.status !== EmployeeStatus.Disabled &&
-        x.id !== id &&
-        !x.isAdmin &&
-        !x.isOwner &&
-        x.isVisitor
-    );
+    const users = this.selection.filter((x) => canMakeEmployeeUser(x));
 
     return users.map((u) => u);
   }
@@ -156,211 +123,67 @@ class SelectionStore {
   }
 
   get hasUsersToActivate() {
-    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+    const { canActivateUser } = this.peopleStore.accessRightsStore;
 
-    if (isOwner) {
-      const users = this.selection.filter(
-        (x) => x.status !== EmployeeStatus.Active && x.id !== id
-      );
+    const users = this.selection.filter((x) => canActivateUser(x));
 
-      return users.length > 0;
-    }
-
-    if (isAdmin && !isOwner) {
-      const users = this.selection.filter(
-        (x) =>
-          x.status !== EmployeeStatus.Active &&
-          x.id !== id &&
-          !x.isAdmin &&
-          !x.isOwner
-      );
-
-      return users.length > 0;
-    }
-
-    return false;
+    return users.length > 0;
   }
 
   get getUsersToActivate() {
-    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+    const { canActivateUser } = this.peopleStore.accessRightsStore;
 
-    if (isOwner) {
-      const users = this.selection.filter(
-        (x) => x.status !== EmployeeStatus.Active && x.id !== id
-      );
+    const users = this.selection.filter((x) => canActivateUser(x));
 
-      return users.map((u) => u);
-    }
-
-    if (isAdmin && !isOwner) {
-      const users = this.selection.filter(
-        (x) =>
-          x.status !== EmployeeStatus.Active &&
-          x.id !== id &&
-          !x.isAdmin &&
-          !x.isOwner
-      );
-
-      return users.map((u) => u);
-    }
-
-    return [];
+    return users.map((u) => u);
   }
 
   get hasUsersToDisable() {
-    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+    const { canDisableUser } = this.peopleStore.accessRightsStore;
 
-    if (isOwner) {
-      const users = this.selection.filter(
-        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
-      );
+    const users = this.selection.filter((x) => canDisableUser(x));
 
-      return users.length > 0;
-    }
-
-    if (isAdmin && !isOwner) {
-      const users = this.selection.filter(
-        (x) =>
-          x.status !== EmployeeStatus.Disabled &&
-          x.id !== id &&
-          !x.isAdmin &&
-          !x.isOwner
-      );
-
-      return users.length > 0;
-    }
-
-    return false;
+    return users.length > 0;
   }
 
   get getUsersToDisable() {
-    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+    const { canDisableUser } = this.peopleStore.accessRightsStore;
 
-    if (isOwner) {
-      const users = this.selection.filter(
-        (x) => x.status !== EmployeeStatus.Disabled && x.id !== id
-      );
+    const users = this.selection.filter((x) => canDisableUser(x));
 
-      return users.map((u) => u);
-    }
-
-    if (isAdmin && !isOwner) {
-      const users = this.selection.filter(
-        (x) =>
-          x.status !== EmployeeStatus.Disabled &&
-          x.id !== id &&
-          !x.isAdmin &&
-          !x.isOwner
-      );
-
-      return users.map((u) => u);
-    }
-
-    return [];
+    return users.map((u) => u);
   }
 
   get hasUsersToInvite() {
-    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+    const { canInviteUser } = this.peopleStore.accessRightsStore;
 
-    if (isOwner) {
-      const users = this.selection.filter(
-        (x) =>
-          x.activationStatus === EmployeeActivationStatus.Pending &&
-          x.status === EmployeeStatus.Active &&
-          x.id !== id
-      );
-
-      return users.length > 0;
-    }
-
-    const users = this.selection.filter(
-      (x) =>
-        x.activationStatus === EmployeeActivationStatus.Pending &&
-        x.status === EmployeeStatus.Active &&
-        x.id !== id &&
-        !x.isAdmin &&
-        !x.isOwner
-    );
+    const users = this.selection.filter((x) => canInviteUser(x));
 
     return users.length > 0;
   }
 
   get getUsersToInviteIds() {
-    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+    const { canInviteUser } = this.peopleStore.accessRightsStore;
 
-    if (isOwner) {
-      const users = this.selection.filter(
-        (x) =>
-          x.activationStatus === EmployeeActivationStatus.Pending &&
-          x.status === EmployeeStatus.Active &&
-          x.id !== id
-      );
+    const users = this.selection.filter((x) => canInviteUser(x));
 
-      return users.map((u) => u.id);
-    }
-
-    const users = this.selection.filter(
-      (x) =>
-        x.activationStatus === EmployeeActivationStatus.Pending &&
-        x.status === EmployeeStatus.Active &&
-        x.id !== id &&
-        !x.isAdmin &&
-        !x.isOwner
-    );
-
-    return users.map((u) => u.id);
+    return users.length > 0 ? users.map((u) => u.id) : [];
   }
 
   get hasUsersToRemove() {
-    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+    const { canRemoveUser } = this.peopleStore.accessRightsStore;
 
-    if (isOwner) {
-      const users = this.selection.filter(
-        (x) => x.status === EmployeeStatus.Disabled && x.id !== id
-      );
+    const users = this.selection.filter((x) => canRemoveUser(x));
 
-      return users.length > 0;
-    }
-
-    if (isAdmin && !isOwner) {
-      const users = this.selection.filter(
-        (x) =>
-          x.status === EmployeeStatus.Disabled &&
-          x.id !== id &&
-          !x.isAdmin &&
-          !x.isOwner
-      );
-
-      return users.length > 0;
-    }
-
-    return false;
+    return users.length > 0;
   }
 
   get getUsersToRemoveIds() {
-    const { id, isOwner, isAdmin } = this.peopleStore.authStore.userStore.user;
+    const { canRemoveUser } = this.peopleStore.accessRightsStore;
 
-    if (isOwner) {
-      const users = this.selection.filter(
-        (x) => x.status === EmployeeStatus.Disabled && x.id !== id
-      );
+    const users = this.selection.filter((x) => canRemoveUser(x));
 
-      return users.map((u) => u.id);
-    }
-
-    if (isAdmin && !isOwner) {
-      const users = this.selection.filter(
-        (x) =>
-          x.status === EmployeeStatus.Disabled &&
-          x.id !== id &&
-          !x.isAdmin &&
-          !x.isOwner
-      );
-
-      return users.map((u) => u.id);
-    }
-
-    return false;
+    return users.length > 0 ? users : false;
   }
 }
 

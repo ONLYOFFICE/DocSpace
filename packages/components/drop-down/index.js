@@ -187,8 +187,12 @@ class DropDown extends React.PureComponent {
       this.dropDownRef.current.style.left =
         rects.right - this.dropDownRef.current.clientWidth + "px";
     } else if (rects.left + dropDownRects.width > viewport.width) {
-      this.dropDownRef.current.style.left =
-        rects.right - this.dropDownRef.current.clientWidth + "px";
+      if (rects.right - dropDownRects.width < 0) {
+        this.dropDownRef.current.style.left = 0 + "px";
+      } else {
+        this.dropDownRef.current.style.left =
+          rects.right - this.dropDownRef.current.clientWidth + "px";
+      }
     } else {
       this.dropDownRef.current.style.left = left + this.props.offsetLeft + "px";
     }

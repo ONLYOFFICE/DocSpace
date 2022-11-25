@@ -137,8 +137,11 @@ public class ConnectionsController : ControllerBase
             _securityContext.Logout();
 
             var auditEventDate = DateTime.UtcNow;
+            auditEventDate = auditEventDate.AddTicks(-(auditEventDate.Ticks % TimeSpan.TicksPerSecond));
+
             var hash = auditEventDate.ToString("s");
-            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash);
+            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash, user.Id);
+
             _messageService.Send(auditEventDate, MessageAction.UserSentPasswordChangeInstructions, _messageTarget.Create(user.Id), userName);
 
             return confirmationUrl;
@@ -153,7 +156,7 @@ public class ConnectionsController : ControllerBase
     [HttpPut("activeconnections/logoutall/{userId}")]
     public async Task LogOutAllActiveConnectionsForUser(Guid userId)
     {
-        if (!_userManager.IsAdmin(_securityContext.CurrentAccount.ID)
+        if (!_userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID)
             && !_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID))
         {
             throw new SecurityException("Method not available");

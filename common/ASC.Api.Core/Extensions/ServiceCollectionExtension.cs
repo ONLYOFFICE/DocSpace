@@ -85,38 +85,7 @@ public static class ServiceCollectionExtension
 
                 var logger = sp.GetRequiredService<ILogger<DefaultRabbitMQPersistentConnection>>();
 
-                var factory = new ConnectionFactory()
-                {
-                    DispatchConsumersAsync = true
-                };
-
-                if (!string.IsNullOrEmpty(rabbitMQConfiguration.Uri))
-                {
-                    factory.Uri = new Uri(rabbitMQConfiguration.Uri);
-                }
-                else
-                {
-                    factory.HostName = rabbitMQConfiguration.HostName;
-                    factory.UserName = rabbitMQConfiguration.UserName;
-                    factory.Password = rabbitMQConfiguration.Password;
-                    factory.Port = rabbitMQConfiguration.Port;
-                    factory.VirtualHost = rabbitMQConfiguration.VirtualHost;
-                }
-
-                if (rabbitMQConfiguration.EnableSsl)
-                {
-                    factory.Ssl = new SslOption
-                    {
-                        Enabled = rabbitMQConfiguration.EnableSsl,
-                        Version = SslProtocols.Tls12
-                    };
-
-                    if (!string.IsNullOrEmpty(rabbitMQConfiguration.SslCertPath))
-                    {
-                        factory.Ssl.CertPath = rabbitMQConfiguration.SslCertPath;
-                        factory.Ssl.ServerName = rabbitMQConfiguration.SslServerName;
-                    }
-                }
+                var connectionFactory = rabbitMQConfiguration.GetConnectionFactory();
 
                 var retryCount = 5;
 
@@ -125,7 +94,7 @@ public static class ServiceCollectionExtension
                     retryCount = int.Parse(cfg["core:eventBus:connectRetryCount"]);
                 }
 
-                return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
+                return new DefaultRabbitMQPersistentConnection(connectionFactory, logger, retryCount);
             });
 
             services.AddSingleton<IEventBus, EventBusRabbitMQ>(sp =>

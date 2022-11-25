@@ -4,7 +4,8 @@ import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
-
+import Tooltip from "@docspace/components/tooltip";
+import Text from "@docspace/components/text";
 import TabContainer from "@docspace/components/tabs-container";
 import Preview from "./Appearance/preview";
 
@@ -18,9 +19,11 @@ import { isMobileOnly } from "react-device-detect";
 
 import Loader from "./sub-components/loaderAppearance";
 
-import { StyledComponent } from "./Appearance/StyledApperance.js";
-
+import { StyledComponent, StyledTheme } from "./Appearance/StyledApperance.js";
+import { ReactSVG } from "react-svg";
 import BreakpointWarning from "../../../../components/BreakpointWarning/index";
+import ModalDialogDelete from "./sub-components/modalDialogDelete";
+import hexToRgba from "hex-to-rgba";
 
 const Appearance = (props) => {
   const {
@@ -29,16 +32,23 @@ const Appearance = (props) => {
     sendAppearanceTheme,
     getAppearanceTheme,
     currentColorScheme,
+    deleteAppearanceTheme,
     tReady,
     t,
   } = props;
 
-  const [previewTheme, setPreviewTheme] = useState("Light theme");
+  const defaultAppliedColor = "#AABBCC";
+
+  const headerAddTheme = t("Settings:NewColorScheme");
+  const headerEditTheme = t("Settings:EditColorScheme");
+
+  const checkImg = "static/images/check.white.svg";
+  const checkImgHover = <ReactSVG className="check-hover" src={checkImg} />;
 
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
   const [headerColorSchemeDialog, setHeaderColorSchemeDialog] = useState(
-    "Edit color scheme"
+    headerEditTheme
   );
 
   const [currentColorAccent, setCurrentColorAccent] = useState(null);
@@ -51,9 +61,12 @@ const Appearance = (props) => {
     false
   );
 
-  //TODO: Add default color
-  const [appliedColorAccent, setAppliedColorAccent] = useState("#F97A0B");
-  const [appliedColorButtons, setAppliedColorButtons] = useState("#FF9933");
+  const [appliedColorAccent, setAppliedColorAccent] = useState(
+    defaultAppliedColor
+  );
+  const [appliedColorButtons, setAppliedColorButtons] = useState(
+    defaultAppliedColor
+  );
 
   const [changeCurrentColorAccent, setChangeCurrentColorAccent] = useState(
     false
@@ -65,23 +78,34 @@ const Appearance = (props) => {
   const [viewMobile, setViewMobile] = useState(false);
 
   const [showSaveButtonDialog, setShowSaveButtonDialog] = useState(false);
-  const [
-    showRestoreToDefaultButtonDialog,
-    setShowRestoreToDefaultButtonDialog,
-  ] = useState(false);
 
   const [isEditDialog, setIsEditDialog] = useState(false);
   const [isAddThemeDialog, setIsAddThemeDialog] = useState(false);
 
-  const [selectAccentColor, setSelectAccentColor] = useState(
-    currentColorScheme.accentColor
+  const [previewAccent, setPreviewAccent] = useState(
+    currentColorScheme.main.accent
   );
-  const [selectThemeId, setSelectThemeId] = useState(selectedThemeId);
-  const [changeColorTheme, setChangeColorTheme] = useState(false);
 
-  const checkImg = (
-    <img className="check-img" src="/static/images/check.white.svg" />
+  const [colorCheckImg, setColorCheckImg] = useState(
+    currentColorScheme.text.accent
   );
+  const [colorCheckImgHover, setColorCheckImgHover] = useState(
+    currentColorScheme.text.accent
+  );
+
+  const [selectThemeId, setSelectThemeId] = useState(selectedThemeId);
+
+  const [isDisabledSaveButton, setIsDisabledSaveButton] = useState(true);
+
+  const [abilityAddTheme, setAbilityAddTheme] = useState(true);
+
+  const [isDisabledEditButton, setIsDisabledEditButton] = useState(true);
+  const [isDisabledDeleteButton, setIsDisabledDeleteButton] = useState(true);
+  const [isShowDeleteButton, setIsShowDeleteButton] = useState(false);
+
+  const [visibleDialog, setVisibleDialog] = useState(false);
+
+  const [theme, setTheme] = useState(appearanceTheme);
 
   const array_items = useMemo(
     () => [
@@ -90,9 +114,9 @@ const Appearance = (props) => {
         title: t("Profile:LightTheme"),
         content: (
           <Preview
-            previewTheme={previewTheme}
-            selectAccentColor={selectAccentColor}
+            previewAccent={previewAccent}
             selectThemeId={selectThemeId}
+            colorCheckImg={colorCheckImg}
             themePreview="Light"
           />
         ),
@@ -102,30 +126,78 @@ const Appearance = (props) => {
         title: t("Profile:DarkTheme"),
         content: (
           <Preview
-            previewTheme={previewTheme}
-            selectAccentColor={selectAccentColor}
+            previewAccent={previewAccent}
             selectThemeId={selectThemeId}
+            colorCheckImg={colorCheckImg}
             themePreview="Dark"
           />
         ),
       },
     ],
-    [selectAccentColor, previewTheme, selectThemeId, tReady]
+    [previewAccent, selectThemeId, colorCheckImg, tReady]
   );
 
   useEffect(() => {
     onCheckView();
     window.addEventListener("resize", onCheckView);
 
-    return () => window.removeEventListener("resize", onCheckView);
+    return () => {
+      window.removeEventListener("resize", onCheckView);
+    };
   }, []);
 
   useEffect(() => {
-    // Set the Save button to disabled
-    if (selectAccentColor !== currentColorScheme.accentColor) {
-      setChangeColorTheme(true);
+    onColorCheck(appearanceTheme);
+
+    // Setting a checkbox for a new theme
+    setTheme(appearanceTheme);
+    if (appearanceTheme.length > theme.length) {
+      const newTheme = appearanceTheme[appearanceTheme.length - 1];
+      const idNewTheme = newTheme.id;
+      const accentNewTheme = newTheme.main.accent;
+
+      setSelectThemeId(idNewTheme);
+      setPreviewAccent(accentNewTheme);
+    }
+
+    if (appearanceTheme.length === 9) {
+      setAbilityAddTheme(false);
     } else {
-      setChangeColorTheme(false);
+      setAbilityAddTheme(true);
+    }
+
+    if (appearanceTheme.length === 6) {
+      setIsShowDeleteButton(false);
+    } else {
+      setIsShowDeleteButton(true);
+    }
+  }, [
+    appearanceTheme,
+    theme,
+    setSelectThemeId,
+    setPreviewAccent,
+    setAbilityAddTheme,
+    setIsShowDeleteButton,
+  ]);
+
+  useEffect(() => {
+    onColorCheck(appearanceTheme);
+
+    if (appearanceTheme.find((theme) => theme.id == selectThemeId).name) {
+      setIsDisabledEditButton(true);
+      setIsDisabledDeleteButton(true);
+      return;
+    }
+
+    setIsDisabledEditButton(false);
+    setIsDisabledDeleteButton(false);
+  }, [selectThemeId]);
+
+  useEffect(() => {
+    if (selectThemeId === selectedThemeId) {
+      setIsDisabledSaveButton(true);
+    } else {
+      setIsDisabledSaveButton(false);
     }
 
     if (
@@ -142,13 +214,46 @@ const Appearance = (props) => {
     ) {
       setShowSaveButtonDialog(true);
     }
+
+    if (
+      !changeCurrentColorAccent &&
+      !changeCurrentColorButtons &&
+      isEditDialog
+    ) {
+      setShowSaveButtonDialog(false);
+    }
   }, [
+    selectedThemeId,
+    selectThemeId,
     changeCurrentColorAccent,
     changeCurrentColorButtons,
     isAddThemeDialog,
     isEditDialog,
-    selectAccentColor,
+    previewAccent,
   ]);
+
+  const onColorCheck = useCallback(
+    (themes) => {
+      const colorCheckImg = themes.find((theme) => theme.id == selectThemeId)
+        ?.text.accent;
+
+      setColorCheckImg(colorCheckImg);
+    },
+    [selectThemeId]
+  );
+
+  const onColorCheckImgHover = useCallback(
+    (e) => {
+      const id = e.target.id;
+      if (!id) return;
+
+      const colorCheckImg = appearanceTheme.find((theme) => theme.id == id).text
+        .accent;
+
+      setColorCheckImgHover(colorCheckImg);
+    },
+    [appearanceTheme]
+  );
 
   const onCheckView = () => {
     if (isMobileOnly || window.innerWidth < 600) {
@@ -158,47 +263,78 @@ const Appearance = (props) => {
     }
   };
 
-  const onColorSelection = (item) => {
-    setSelectAccentColor(item.accentColor);
-    setSelectThemeId(item.id);
+  const onColorSelection = useCallback(
+    (e) => {
+      const theme = e.currentTarget;
+      const id = +theme.id;
+      const accent = appearanceTheme.find((theme) => theme.id == id).main
+        .accent;
+
+      setPreviewAccent(accent);
+      setSelectThemeId(id);
+    },
+    [appearanceTheme, setPreviewAccent, setSelectThemeId]
+  );
+
+  const onSave = useCallback(async () => {
+    setIsDisabledSaveButton(true);
+
+    if (!selectThemeId) return;
+
+    try {
+      await sendAppearanceTheme({ selected: selectThemeId });
+      await getAppearanceTheme();
+
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
+  }, [
+    selectThemeId,
+    setIsDisabledSaveButton,
+    sendAppearanceTheme,
+    getAppearanceTheme,
+  ]);
+
+  // Open HexColorPicker
+  const onClickColor = (e) => {
+    if (e.target.id === "accent") {
+      setOpenHexColorPickerAccent(true);
+      setOpenHexColorPickerButtons(false);
+    } else {
+      setOpenHexColorPickerButtons(true);
+      setOpenHexColorPickerAccent(false);
+    }
   };
 
-  const onShowCheck = (colorNumber) => {
-    return selectThemeId && selectThemeId === colorNumber && checkImg;
-  };
+  const onClickDeleteModal = useCallback(async () => {
+    try {
+      await deleteAppearanceTheme(selectThemeId);
+      await getAppearanceTheme();
 
-  const onChangePreviewTheme = (e) => {
-    setPreviewTheme(e.title);
-  };
-
-  const onSaveSelectedColor = () => {
-    sendAppearanceTheme({ selected: selectThemeId })
-      .then(() => {
-        toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
-        getAppearanceTheme();
-        setChangeColorTheme(false);
-      })
-      .catch((error) => {
-        toastr.error(error);
-      });
-  };
-
-  const onClickEdit = () => {
-    appearanceTheme.map((item) => {
-      if (item.id === selectThemeId) {
-        setCurrentColorAccent(item.accentColor);
-        setCurrentColorButtons(item.buttonsMain);
+      if (selectedThemeId !== selectThemeId) {
+        setSelectThemeId(selectedThemeId);
+        setPreviewAccent(currentColorScheme.main.accent);
       }
-    });
 
-    setIsEditDialog(true);
+      if (selectedThemeId === selectThemeId) {
+        setSelectThemeId(appearanceTheme[0].id);
+        setPreviewAccent(appearanceTheme[0].main.accent);
+      }
 
-    setHeaderColorSchemeDialog("Edit color scheme");
+      onCloseDialogDelete();
 
-    setShowRestoreToDefaultButtonDialog(true);
-
-    setShowColorSchemeDialog(true);
-  };
+      toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+    } catch (error) {
+      toastr.error(error);
+    }
+  }, [
+    selectThemeId,
+    selectedThemeId,
+    onCloseDialogDelete,
+    deleteAppearanceTheme,
+    getAppearanceTheme,
+  ]);
 
   const onCloseColorSchemeDialog = () => {
     setShowColorSchemeDialog(false);
@@ -213,88 +349,204 @@ const Appearance = (props) => {
     setIsAddThemeDialog(false);
 
     setShowSaveButtonDialog(false);
+
+    setCurrentColorAccent(null);
+    setCurrentColorButtons(null);
+
+    setAppliedColorAccent(defaultAppliedColor);
+    setAppliedColorButtons(defaultAppliedColor);
   };
 
   const onAddTheme = () => {
+    if (!abilityAddTheme) return;
     setIsAddThemeDialog(true);
-    setCurrentColorAccent(
-      "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA"
-    );
-    setCurrentColorButtons(
-      "url(/static/images/plus.theme.svg) 15px 15px no-repeat #D0D5DA"
-    );
 
-    setHeaderColorSchemeDialog("New color scheme");
+    setHeaderColorSchemeDialog(headerAddTheme);
 
     setShowColorSchemeDialog(true);
   };
 
-  const onClickColor = (e) => {
-    if (e.target.id === "accent") {
-      setOpenHexColorPickerAccent(true);
-      setOpenHexColorPickerButtons(false);
-    } else {
-      setOpenHexColorPickerButtons(true);
-      setOpenHexColorPickerAccent(false);
-    }
+  const onClickEdit = () => {
+    appearanceTheme.map((item) => {
+      if (item.id === selectThemeId) {
+        setCurrentColorAccent(item.main.accent.toUpperCase());
+        setCurrentColorButtons(item.main.buttons.toUpperCase());
+
+        setAppliedColorAccent(item.main.accent.toUpperCase());
+        setAppliedColorButtons(item.main.buttons.toUpperCase());
+      }
+    });
+
+    setIsEditDialog(true);
+
+    setHeaderColorSchemeDialog(headerEditTheme);
+
+    setShowColorSchemeDialog(true);
   };
 
-  const onCloseHexColorPicker = () => {
+  const onCloseHexColorPickerAccent = useCallback(() => {
     setOpenHexColorPickerAccent(false);
+    if (!currentColorAccent) return;
+    setAppliedColorAccent(currentColorAccent);
+  }, [currentColorAccent, setOpenHexColorPickerAccent, setAppliedColorAccent]);
+
+  const onCloseHexColorPickerButtons = useCallback(() => {
     setOpenHexColorPickerButtons(false);
+    if (!currentColorButtons) return;
+    setAppliedColorButtons(currentColorButtons);
+  }, [
+    currentColorButtons,
+    setOpenHexColorPickerButtons,
+    setAppliedColorButtons,
+  ]);
+
+  const getTextColor = (color) => {
+    const black = "#333333";
+    const white = "#FFFFFF";
+
+    const rgba = hexToRgba(color)
+      .replace("rgba(", "")
+      .replace(")", "")
+      .split(", ");
+
+    const r = rgba[0];
+    const g = rgba[1];
+    const b = rgba[2];
+
+    const textColor =
+      (r * 299 + g * 587 + b * 114) / 1000 > 128 ? black : white;
+
+    return textColor;
   };
 
   const onAppliedColorAccent = useCallback(() => {
+    if (appliedColorAccent.toUpperCase() !== currentColorAccent) {
+      setChangeCurrentColorAccent(true);
+    }
+
     setCurrentColorAccent(appliedColorAccent);
 
-    onCloseHexColorPicker();
-
-    if (appliedColorAccent === currentColorAccent) return;
-
-    setChangeCurrentColorAccent(true);
-  }, [appliedColorAccent, currentColorAccent]);
+    setOpenHexColorPickerAccent(false);
+  }, [
+    appliedColorAccent,
+    currentColorAccent,
+    setChangeCurrentColorAccent,
+    setOpenHexColorPickerAccent,
+  ]);
 
   const onAppliedColorButtons = useCallback(() => {
+    if (appliedColorButtons.toUpperCase() !== currentColorButtons) {
+      setChangeCurrentColorButtons(true);
+    }
+
     setCurrentColorButtons(appliedColorButtons);
 
-    onCloseHexColorPicker();
+    setOpenHexColorPickerButtons(false);
+  }, [
+    appliedColorButtons,
+    currentColorButtons,
+    setChangeCurrentColorButtons,
+    setOpenHexColorPickerButtons,
+  ]);
 
-    if (appliedColorButtons === currentColorButtons) return;
+  const onSaveNewThemes = useCallback(
+    async (theme) => {
+      try {
+        await sendAppearanceTheme({ theme: theme });
+        await getAppearanceTheme();
 
-    setChangeCurrentColorButtons(true);
-  }, [appliedColorButtons]);
+        toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+      } catch (error) {
+        toastr.error(error);
+      }
+    },
+    [sendAppearanceTheme, getAppearanceTheme]
+  );
+
+  const onSaveChangedThemes = useCallback(
+    async (editTheme) => {
+      try {
+        await sendAppearanceTheme({ theme: editTheme });
+        await getAppearanceTheme();
+        setPreviewAccent(editTheme.main.accent);
+
+        toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
+      } catch (error) {
+        toastr.error(error);
+      }
+    },
+    [sendAppearanceTheme, getAppearanceTheme]
+  );
 
   const onSaveColorSchemeDialog = () => {
-    const theme = {
-      id: selectTheme.id,
-      accentColor: currentColorAccent,
-      buttonsMain: currentColorButtons,
-      textColor: "#FFFFFF",
+    const textColorAccent = getTextColor(currentColorAccent);
+    const textColorButtons = getTextColor(currentColorButtons);
+
+    if (isAddThemeDialog) {
+      // Saving a new custom theme
+      const theme = {
+        main: {
+          accent: currentColorAccent,
+          buttons: currentColorButtons,
+        },
+        text: {
+          accent: textColorAccent,
+          buttons: textColorButtons,
+        },
+      };
+
+      onSaveNewThemes(theme);
+
+      setCurrentColorAccent(null);
+      setCurrentColorButtons(null);
+
+      onCloseColorSchemeDialog();
+
+      return;
+    }
+
+    // Editing themes
+    const editTheme = {
+      id: selectThemeId,
+      main: {
+        accent: currentColorAccent,
+        buttons: currentColorButtons,
+      },
+      text: {
+        accent: textColorAccent,
+        buttons: textColorButtons,
+      },
     };
+
+    onSaveChangedThemes(editTheme);
+
+    setCurrentColorAccent(appliedColorAccent);
+    setCurrentColorButtons(appliedColorButtons);
+
+    onCloseColorSchemeDialog();
   };
 
-  const nodeHexColorPickerButtons = viewMobile ? (
-    <HexColorPickerComponent
-      id="buttons-hex"
-      onCloseHexColorPicker={onCloseHexColorPicker}
-      onAppliedColor={onAppliedColorButtons}
-      color={appliedColorButtons}
-      setColor={setAppliedColorButtons}
-      viewMobile={viewMobile}
-    />
-  ) : (
+  const onCloseDialogDelete = () => {
+    setVisibleDialog(false);
+  };
+
+  const onOpenDialogDelete = () => {
+    setVisibleDialog(true);
+  };
+
+  const nodeHexColorPickerButtons = (
     <DropDownContainer
       directionX="right"
       manualY="62px"
       withBackdrop={false}
       isDefaultMode={false}
       open={openHexColorPickerButtons}
-      clickOutsideAction={onCloseHexColorPicker}
+      clickOutsideAction={onCloseHexColorPickerButtons}
     >
       <DropDownItem className="drop-down-item-hex">
         <HexColorPickerComponent
           id="buttons-hex"
-          onCloseHexColorPicker={onCloseHexColorPicker}
+          onCloseHexColorPicker={onCloseHexColorPickerButtons}
           onAppliedColor={onAppliedColorButtons}
           color={appliedColorButtons}
           setColor={setAppliedColorButtons}
@@ -304,29 +556,20 @@ const Appearance = (props) => {
     </DropDownContainer>
   );
 
-  const nodeHexColorPickerAccent = viewMobile ? (
-    <HexColorPickerComponent
-      id="accent-hex"
-      onCloseHexColorPicker={onCloseHexColorPicker}
-      onAppliedColor={onAppliedColorAccent}
-      color={appliedColorAccent}
-      setColor={setAppliedColorAccent}
-      viewMobile={viewMobile}
-    />
-  ) : (
+  const nodeHexColorPickerAccent = (
     <DropDownContainer
       directionX="right"
       manualY="62px"
       withBackdrop={false}
       isDefaultMode={false}
       open={openHexColorPickerAccent}
-      clickOutsideAction={onCloseHexColorPicker}
+      clickOutsideAction={onCloseHexColorPickerAccent}
       viewMobile={viewMobile}
     >
       <DropDownItem className="drop-down-item-hex">
         <HexColorPickerComponent
           id="accent-hex"
-          onCloseHexColorPicker={onCloseHexColorPicker}
+          onCloseHexColorPicker={onCloseHexColorPickerAccent}
           onAppliedColor={onAppliedColorAccent}
           color={appliedColorAccent}
           setColor={setAppliedColorAccent}
@@ -336,80 +579,147 @@ const Appearance = (props) => {
     </DropDownContainer>
   );
 
-  const nodeAccentColor = (
-    <div
-      id="accent"
-      style={{ background: currentColorAccent }}
-      className="color-button"
-      onClick={onClickColor}
-    ></div>
-  );
-
-  const nodeButtonsColor = (
-    <div
-      id="buttons"
-      style={{ background: currentColorButtons }}
-      className="color-button"
-      onClick={onClickColor}
-    ></div>
-  );
+  const textTooltip = () => {
+    return (
+      <Text fontSize="12px" noSelect>
+        {t("Settings:LimitThemesTooltip")}
+      </Text>
+    );
+  };
 
   return viewMobile ? (
     <BreakpointWarning sectionName={t("Settings:Appearance")} />
   ) : !tReady ? (
     <Loader />
   ) : (
-    <StyledComponent>
-      <div className="header">{t("Common:Color")}</div>
-
-      <div className="theme-standard">
-        <div className="theme-name">{t("Common:Standard")}</div>
-
-        <div className="theme-container">
-          {appearanceTheme.map((item, index) => {
-            return (
-              <div
-                key={index}
-                id={item.id}
-                style={{ background: item.accentColor }}
-                className="box"
-                onClick={() => onColorSelection(item)}
-              >
-                {onShowCheck(item.id)}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      <ColorSchemeDialog
-        nodeButtonsColor={nodeButtonsColor}
-        nodeAccentColor={nodeAccentColor}
-        nodeHexColorPickerAccent={nodeHexColorPickerAccent}
-        nodeHexColorPickerButtons={nodeHexColorPickerButtons}
-        visible={showColorSchemeDialog}
-        onClose={onCloseColorSchemeDialog}
-        header={headerColorSchemeDialog}
-        viewMobile={viewMobile}
-        openHexColorPickerButtons={openHexColorPickerButtons}
-        openHexColorPickerAccent={openHexColorPickerAccent}
-        showRestoreToDefaultButtonDialog={showRestoreToDefaultButtonDialog}
-        showSaveButtonDialog={showSaveButtonDialog}
-        onSaveColorSchemeDialog={onSaveColorSchemeDialog}
+    <>
+      <ModalDialogDelete
+        visible={visibleDialog}
+        onClose={onCloseDialogDelete}
+        onClickDelete={onClickDeleteModal}
       />
-      <div className="header preview-header">{t("Common:Preview")}</div>
-      <TabContainer elements={array_items} onSelect={onChangePreviewTheme} />
 
-      <div className="buttons-container">
-        <Button
-          label="Save"
-          onClick={onSaveSelectedColor}
-          primary
-          size="small"
-          isDisabled={!changeColorTheme}
+      <StyledComponent colorCheckImg={colorCheckImg}>
+        <div className="header">{t("Common:Color")}</div>
+
+        <div className="theme-standard-container">
+          <div className="theme-name">{t("Common:Standard")}</div>
+
+          <div className="theme-container">
+            {appearanceTheme.map((item, index) => {
+              if (!item.name) return;
+              return (
+                <StyledTheme
+                  key={index}
+                  id={item.id}
+                  colorCheckImgHover={colorCheckImgHover}
+                  style={{ background: item.main.accent }}
+                  onClick={onColorSelection}
+                  onMouseOver={onColorCheckImgHover}
+                >
+                  {selectThemeId === item.id && (
+                    <ReactSVG className="check-img" src={checkImg} />
+                  )}
+
+                  {selectThemeId !== item.id && checkImgHover}
+                </StyledTheme>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="theme-custom-container">
+          <div className="theme-name">{t("Settings:Custom")}</div>
+
+          <div className="theme-container">
+            <div className="custom-themes">
+              {appearanceTheme.map((item, index) => {
+                if (item.name) return;
+                return (
+                  <StyledTheme
+                    key={index}
+                    id={item.id}
+                    style={{ background: item.main.accent }}
+                    colorCheckImgHover={colorCheckImgHover}
+                    onClick={onColorSelection}
+                    onMouseOver={onColorCheckImgHover}
+                  >
+                    {selectThemeId === item.id && (
+                      <ReactSVG className="check-img" src={checkImg} />
+                    )}
+                    {selectThemeId !== item.id && checkImgHover}
+                  </StyledTheme>
+                );
+              })}
+            </div>
+
+            <div
+              data-for="theme-add"
+              data-tip="tooltip"
+              className="theme-add"
+              onClick={onAddTheme}
+            />
+            {!abilityAddTheme && (
+              <Tooltip
+                id="theme-add"
+                offsetBottom={0}
+                offsetRight={130}
+                effect="solid"
+                place="bottom"
+                getContent={textTooltip}
+                maxWidth="300px"
+              />
+            )}
+          </div>
+        </div>
+
+        <ColorSchemeDialog
+          onClickColor={onClickColor}
+          currentColorAccent={currentColorAccent}
+          currentColorButtons={currentColorButtons}
+          nodeHexColorPickerAccent={nodeHexColorPickerAccent}
+          nodeHexColorPickerButtons={nodeHexColorPickerButtons}
+          visible={showColorSchemeDialog}
+          onClose={onCloseColorSchemeDialog}
+          header={headerColorSchemeDialog}
+          viewMobile={viewMobile}
+          openHexColorPickerButtons={openHexColorPickerButtons}
+          openHexColorPickerAccent={openHexColorPickerAccent}
+          showSaveButtonDialog={showSaveButtonDialog}
+          onSaveColorSchemeDialog={onSaveColorSchemeDialog}
         />
-      </div>
-    </StyledComponent>
+        <div className="header preview-header">{t("Common:Preview")}</div>
+        <TabContainer elements={array_items} />
+
+        <div className="buttons-container">
+          <Button
+            className="button"
+            label={t("Common:SaveButton")}
+            onClick={onSave}
+            primary
+            size="small"
+            isDisabled={isDisabledSaveButton}
+          />
+
+          <Button
+            className="button"
+            label={t("Settings:EditCurrentTheme")}
+            onClick={onClickEdit}
+            size="small"
+            isDisabled={isDisabledEditButton}
+          />
+          {isShowDeleteButton && (
+            <Button
+              className="button"
+              label={t("Settings:DeleteTheme")}
+              onClick={onOpenDialogDelete}
+              size="small"
+              isDisabled={isDisabledDeleteButton}
+            />
+          )}
+        </div>
+      </StyledComponent>
+    </>
   );
 };
 
@@ -421,6 +731,8 @@ export default inject(({ auth }) => {
     sendAppearanceTheme,
     getAppearanceTheme,
     currentColorScheme,
+    deleteAppearanceTheme,
+    theme,
   } = settingsStore;
 
   return {
@@ -429,6 +741,8 @@ export default inject(({ auth }) => {
     sendAppearanceTheme,
     getAppearanceTheme,
     currentColorScheme,
+    deleteAppearanceTheme,
+    theme,
   };
 })(
   withTranslation(["Profile", "Common", "Settings"])(

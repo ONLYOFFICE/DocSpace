@@ -6,6 +6,7 @@ import {
   getAuthProviders,
   getCapabilities,
   getAppearanceTheme,
+  getLogoUrls
 } from "@docspace/common/api/settings";
 import { checkIsAuthenticated } from "@docspace/common/api/user";
 
@@ -57,7 +58,8 @@ export const getInitialState = async (
     providers: ProvidersType,
     capabilities: ICapabilities,
     availableThemes: IThemes,
-    isAuth: any;
+    isAuth: any,
+    logoUrls: any;
 
   [
     portalSettings,
@@ -66,13 +68,15 @@ export const getInitialState = async (
     capabilities,
     availableThemes,
     isAuth,
+    logoUrls
   ] = await Promise.all([
     getSettings(),
     getBuildVersion(),
     getAuthProviders(),
     getCapabilities(),
     getAppearanceTheme(),
-    checkIsAuthenticated()
+    checkIsAuthenticated(),
+    getLogoUrls()
   ]);
 
   const currentColorScheme = availableThemes.themes.find((theme) => {
@@ -86,7 +90,8 @@ export const getInitialState = async (
     capabilities,
     match: query,
     currentColorScheme,
-    isAuth
+    isAuth,
+    logoUrls
   };
 
   return initialState;

@@ -142,9 +142,6 @@
   <data name="ErrorPasswordMessage" xml:space="preserve">
     <value>Heslo musí obsahovať</value>
   </data>
-  <data name="ErrorPasswordMessageStart" xml:space="preserve">
-    <value>Musí obsahovať</value>
-  </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>číslice</value>
   </data>

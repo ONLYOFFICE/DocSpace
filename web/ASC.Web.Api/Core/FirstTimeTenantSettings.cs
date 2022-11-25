@@ -122,7 +122,7 @@ public class FirstTimeTenantSettings
                 currentUser.ActivationStatus = EmployeeActivationStatus.NotActivated;
             }
 
-            _userManager.SaveUserInfo(currentUser);
+            _userManager.UpdateUserInfo(currentUser);
 
             if (RequestLicense)
             {

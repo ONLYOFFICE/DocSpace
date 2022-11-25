@@ -153,7 +153,10 @@ const InfoPanel = ({
       if (!isDesktop() && isVisible) closeInfoPanel();
     };
 
-    return () => document.removeEventListener("mousedown", onMouseDown);
+    return () => {
+      document.removeEventListener("mousedown", onMouseDown);
+      closeInfoPanel();
+    };
   }, []);
 
   return (

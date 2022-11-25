@@ -24,15 +24,12 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System;
 global using System.Collections;
 global using System.Collections.Concurrent;
-global using System.Collections.Generic;
 global using System.Configuration;
 global using System.Data.Common;
 global using System.Diagnostics;
 global using System.Globalization;
-global using System.Linq;
 global using System.Linq.Expressions;
 global using System.Net;
 global using System.Net.Http.Headers;
@@ -99,7 +96,7 @@ global using ASC.Core.Data;
 global using ASC.Core.Notify;
 global using ASC.Core.Notify.Jabber;
 global using ASC.Core.Notify.Senders;
-global using ASC.Core.Notify.Signalr;
+global using ASC.Core.Notify.Socket;
 global using ASC.Core.Security.Authentication;
 global using ASC.Core.Security.Authorizing;
 global using ASC.Core.Tenants;
@@ -168,4 +165,5 @@ global using static ASC.Security.Cryptography.EmailValidationKeyProvider;
 global using AppOptions = FirebaseAdmin.AppOptions;
 global using FirebaseApp = FirebaseAdmin.FirebaseApp;
 global using FirebaseAdminMessaging = FirebaseAdmin.Messaging;
+global using JsonSerializer = System.Text.Json.JsonSerializer;
 global using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;

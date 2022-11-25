@@ -77,7 +77,6 @@ const Dialogs = ({
           {...data}
         />
       )}
-
       {changeUserStatusDialogVisible && (
         <ChangeUserStatusDialog
           visible={changeUserStatusDialogVisible}
@@ -85,14 +84,12 @@ const Dialogs = ({
           {...data}
         />
       )}
-
       {sendInviteDialogVisible && (
         <SendInviteDialog
           visible={sendInviteDialogVisible}
           onClose={closeDialogs}
         />
       )}
-
       {deleteDialogVisible && (
         <DeleteUsersDialog
           visible={deleteDialogVisible}

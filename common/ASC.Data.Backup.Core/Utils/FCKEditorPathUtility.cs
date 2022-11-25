@@ -37,7 +37,7 @@ static class FCKEditorPathUtility
             return content;
         }
 
-        var tenantPath = "/" + TenantPath.CreatePath(tenant.ToString()) + "/";
+        var tenantPath = "/" + TenantPath.CreatePath(tenant) + "/";
 
         return _regex.Replace(content, (m) => m.Success ? m.Groups["start"] + tenantPath : string.Empty);
     }

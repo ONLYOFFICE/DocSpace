@@ -27,14 +27,14 @@
 namespace ASC.Data.Storage.Encryption.IntegrationEvents.Events;
 
 [ProtoContract]
-public record EncryptionDataStorageRequestedIntegration : IntegrationEvent
+public record EncryptionDataStorageRequestedIntegrationEvent : IntegrationEvent
 {
-    protected EncryptionDataStorageRequestedIntegration() : base()
+    protected EncryptionDataStorageRequestedIntegrationEvent() : base()
     {
 
     }
 
-    public EncryptionDataStorageRequestedIntegration(EncryptionSettings encryptionSettings,
+    public EncryptionDataStorageRequestedIntegrationEvent(EncryptionSettings encryptionSettings,
                                                      String serverRootPath,
                                                      Guid createBy,
                                                      int tenantId) : base(createBy, tenantId)

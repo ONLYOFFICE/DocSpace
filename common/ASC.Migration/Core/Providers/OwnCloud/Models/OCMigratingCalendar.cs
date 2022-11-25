@@ -67,11 +67,11 @@ public class OCMigratingCalendar : MigratingCalendar
         //}
     }
 
-    public override void Migrate()
+    public override Task Migrate()
     {
         if (!ShouldImport)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         throw new NotImplementedException();

@@ -57,6 +57,9 @@ const StyledAboutBody = styled.div`
   }
 
   .logo-docspace-theme {
+    height: 24px;
+    width: 211px;
+
     svg {
       path:nth-child(4) {
         fill: ${(props) => props.theme.client.about.logoColor};
@@ -107,7 +110,7 @@ const AboutContent = (props) => {
               className="logo-theme no-select"
             />
           ) : (
-            <ReactSVG
+            <img
               src={docSpaceLogo}
               alt="Logo"
               className="logo-docspace-theme no-select"

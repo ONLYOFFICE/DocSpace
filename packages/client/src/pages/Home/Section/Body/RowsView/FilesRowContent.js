@@ -76,7 +76,7 @@ const SimpleFilesRowContent = styled(RowContent)`
 
     .new-items {
       min-width: 16px;
-      margin: 7px 22px 0 0;
+      margin: 5px 24px 0 0;
     }
   `}
 `;
@@ -105,16 +105,6 @@ const FilesRowContent = ({
     isRoom,
   } = item;
 
-  let tags = null;
-
-  if (isRoom) {
-    if (item.tags.length > 0) {
-      tags = item?.tags.join(" | ");
-    } else {
-      tags = t(RoomsTypeTranslations[item.roomType]);
-    }
-  }
-
   return (
     <>
       <SimpleFilesRowContent
@@ -139,18 +129,18 @@ const FilesRowContent = ({
           {badgesComponent}
           {!isRoom && !isRooms && quickButtons}
         </div>
-        {!isRoom && (
-          <Text
-            containerMinWidth="200px"
-            containerWidth="15%"
-            fontSize="12px"
-            fontWeight={400}
-            // color={sideColor}
-            className="row_update-text"
-          >
-            {updatedDate && updatedDate}
-          </Text>
-        )}
+
+        <Text
+          containerMinWidth="200px"
+          containerWidth="15%"
+          fontSize="12px"
+          fontWeight={400}
+          // color={sideColor}
+          className="row_update-text"
+        >
+          {updatedDate && updatedDate}
+        </Text>
+
         <Text
           containerMinWidth="90px"
           containerWidth="10%"
@@ -162,7 +152,7 @@ const FilesRowContent = ({
           truncate={true}
         >
           {isRooms
-            ? tags
+            ? t(RoomsTypeTranslations[item.roomType])
             : !fileExst && !contentLength && !providerKey && !isMobileOnly
             ? `${foldersCount} ${t("Translations:Folders")} | ${filesCount} ${t(
                 "Translations:Files"

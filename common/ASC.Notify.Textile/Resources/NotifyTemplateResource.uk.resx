@@ -128,10 +128,4 @@
 &lt;/div&gt;
 &lt;/body&gt;</value>
   </data>
-  <data name="TextForFooterWithUnsubscribeLink" xml:space="preserve">
-    <value>Цей електронний лист сформовано автоматично, і вам не потрібно відповідати на нього.
-&lt;br /&gt;Ви отримуєте цей електронний лист, оскільки ви є зареєстрованим користувачем &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;{0}&lt;/a&gt;
-&lt;br /&gt;Якщо ви більше не бажаєте отримувати ці електронні листи, натисніть на це посилання: &lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;Скасувати підписку&lt;/a&gt;
-&lt;br /&gt;</value>
-  </data>
 </root>

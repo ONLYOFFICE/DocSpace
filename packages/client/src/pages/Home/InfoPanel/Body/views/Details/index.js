@@ -16,8 +16,9 @@ const Details = ({
   personal,
   culture,
   createThumbnail,
-  getItemIcon,
+  getInfoPanelItemIcon,
   openUser,
+  isVisitor,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
@@ -27,6 +28,7 @@ const Details = ({
   const history = useHistory();
 
   const detailsHelper = new DetailsHelper({
+    isVisitor,
     t,
     item: selection,
     openUser,
@@ -68,7 +70,7 @@ const Details = ({
             className={`no-thumbnail-img ${selection.isRoom && "is-room"} ${
               selection.isRoom && selection.logo?.large && "custom-logo"
             }`}
-            src={getItemIcon(selection, 96)}
+            src={getInfoPanelItemIcon(selection, 96)}
             alt="thumbnail-icon-big"
           />
         </StyledNoThumbnail>
@@ -95,16 +97,21 @@ const Details = ({
 };
 
 export default inject(({ auth, filesStore }) => {
-  const { selection, getItemIcon, openUser } = auth.infoPanelStore;
+  const { userStore } = auth;
+  const { selection, getInfoPanelItemIcon, openUser } = auth.infoPanelStore;
   const { createThumbnail } = filesStore;
   const { personal, culture } = auth.settingsStore;
+  const { user } = userStore;
+
+  const isVisitor = user.isVisitor;
 
   return {
     personal,
     culture,
     selection,
     createThumbnail,
-    getItemIcon,
+    getInfoPanelItemIcon,
     openUser,
+    isVisitor,
   };
-})(withTranslation(["InfoPanel", "Common", "Translations"])(Details));
+})(withTranslation(["InfoPanel", "Common", "Translations", "Files"])(Details));

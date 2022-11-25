@@ -1,7 +1,7 @@
 import { makeAutoObservable } from "mobx";
 
 class BannerStore {
-  isBannerVisible = false; //TODO: set to true after fix
+  isBannerVisible = true;
 
   constructor() {
     makeAutoObservable(this);

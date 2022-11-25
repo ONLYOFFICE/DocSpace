@@ -155,6 +155,8 @@ const SectionFilterContent = ({
   setCurrentRoomsFilter,
   providers,
 }) => {
+  const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
+
   const onFilter = React.useCallback(
     (data) => {
       if (isRooms) {
@@ -418,8 +420,25 @@ const SectionFilterContent = ({
 
         filterValues.push({
           key: isMe ? FilterKeys.me : roomsFilter.subjectId,
+          key: isMe
+            ? roomsFilter.excludeSubject
+              ? FilterKeys.other
+              : FilterKeys.me
+            : roomsFilter.subjectId,
           group: FilterGroups.roomFilterOwner,
           label: label,
+        });
+      }
+
+      if (roomsFilter.type) {
+        const key = +roomsFilter.type;
+
+        const label = getDefaultRoomName(key, t);
+
+        filterValues.push({
+          key: key,
+          label: label,
+          group: FilterGroups.roomFilterType,
         });
       }
 
@@ -428,6 +447,18 @@ const SectionFilterContent = ({
           key: roomsFilter.tags,
           group: FilterGroups.roomFilterTags,
           isMultiSelect: true,
+        });
+      }
+
+      if (roomsFilter.provider) {
+        const provider = +roomsFilter.provider;
+
+        const label = RoomsProviderTypeName[provider];
+
+        filterValues.push({
+          key: provider,
+          label: label,
+          group: FilterGroups.roomFilterProviderType,
         });
       }
     } else {
@@ -518,6 +549,51 @@ const SectionFilterContent = ({
     }
 
     return filterValues;
+    const currentFilterValues = [];
+
+    setSelectedFilterValues((value) => {
+      if (!value) {
+        currentFilterValues.push(...filterValues);
+        return filterValues.map((f) => ({ ...f }));
+      }
+
+      const items = value.map((v) => {
+        const item = filterValues.find((f) => f.group === v.group);
+
+        if (item) {
+          if (item.isMultiSelect) {
+            let isEqual = true;
+
+            item.key.forEach((k) => {
+              if (!v.key.includes(k)) {
+                isEqual = false;
+              }
+            });
+
+            if (isEqual) return item;
+
+            return false;
+          } else {
+            if (item.key === v.key) return item;
+            return false;
+          }
+        } else {
+          return false;
+        }
+      });
+
+      const newItems = filterValues.filter(
+        (v) => !items.find((i) => i.group === v.group)
+      );
+
+      items.push(...newItems);
+
+      currentFilterValues.push(...items.filter((i) => i));
+
+      return items.filter((i) => i);
+    });
+
+    return currentFilterValues;
   }, [
     filter.withSubfolders,
     filter.authorType,
@@ -552,6 +628,7 @@ const SectionFilterContent = ({
       !isFavoritesFolder && !isRecentFolder
         ? [
             {
+              id: "filter_type-folders",
               key: FilterType.FoldersOnly.toString(),
               group: FilterGroups.filterType,
               label: t("Translations:Folders").toLowerCase(),
@@ -562,6 +639,7 @@ const SectionFilterContent = ({
     const images = !isRecentFolder
       ? [
           {
+            id: "filter_type-images",
             key: FilterType.ImagesOnly.toString(),
             group: FilterGroups.filterType,
             label: t("Images").toLowerCase(),
@@ -572,6 +650,7 @@ const SectionFilterContent = ({
     const archives = !isRecentFolder
       ? [
           {
+            id: "filter_type-archive",
             key: FilterType.ArchiveOnly.toString(),
             group: FilterGroups.filterType,
             label: t("Archives").toLowerCase(),
@@ -582,6 +661,7 @@ const SectionFilterContent = ({
     const media = !isRecentFolder
       ? [
           {
+            id: "filter_type-media",
             key: FilterType.MediaOnly.toString(),
             group: FilterGroups.filterType,
             label: t("Media").toLowerCase(),
@@ -599,26 +679,31 @@ const SectionFilterContent = ({
             isLast: isLastTypeOptionsRooms,
           },
           {
+            id: "filter_type-custom",
             key: RoomsType.CustomRoom,
             group: FilterGroups.roomFilterType,
             label: t("CustomRooms"),
           },
           {
+            id: "filter_type-filling-form",
             key: RoomsType.FillingFormsRoom,
             group: FilterGroups.roomFilterType,
             label: t("FillingFormRooms"),
           },
           {
+            id: "filter_type-collaboration",
             key: RoomsType.EditingRoom,
             group: FilterGroups.roomFilterType,
             label: t("CollaborationRooms"),
           },
           {
+            id: "filter_type-review",
             key: RoomsType.ReviewRoom,
             group: FilterGroups.roomFilterType,
             label: t("ReviewRooms"),
           },
           {
+            id: "filter_type-view-only",
             key: RoomsType.ReadOnlyRoom,
             group: FilterGroups.roomFilterType,
             label: t("ViewOnlyRooms"),
@@ -634,26 +719,31 @@ const SectionFilterContent = ({
           },
           ...folders,
           {
+            id: "filter_type-documents",
             key: FilterType.DocumentsOnly.toString(),
             group: FilterGroups.filterType,
             label: t("Common:Documents").toLowerCase(),
           },
           {
+            id: "filter_type-presentations",
             key: FilterType.PresentationsOnly.toString(),
             group: FilterGroups.filterType,
             label: t("Translations:Presentations").toLowerCase(),
           },
           {
+            id: "filter_type-spreadsheets",
             key: FilterType.SpreadsheetsOnly.toString(),
             group: FilterGroups.filterType,
             label: t("Translations:Spreadsheets").toLowerCase(),
           },
           {
+            id: "filter_type-form-templates",
             key: FilterType.OFormTemplateOnly.toString(),
             group: FilterGroups.filterType,
             label: t("FormsTemplates").toLowerCase(),
           },
           {
+            id: "filter_type-forms",
             key: FilterType.OFormOnly.toString(),
             group: FilterGroups.filterType,
             label: t("Forms").toLowerCase(),
@@ -673,16 +763,19 @@ const SectionFilterContent = ({
         withMultiItems: true,
       },
       {
+        id: "filter_author-me",
         key: FilterKeys.me,
         group: FilterGroups.roomFilterOwner,
         label: t("Common:MeLabel"),
       },
       {
+        id: "filter_author-other",
         key: FilterKeys.other,
         group: FilterGroups.roomFilterOwner,
         label: t("Common:OtherLabel"),
       },
       {
+        id: "filter_author-user",
         key: FilterKeys.user,
         group: FilterGroups.roomFilterOwner,
         label: t("Translations:AddOwner"),
@@ -792,6 +885,7 @@ const SectionFilterContent = ({
             withoutSeparator: true,
           },
           {
+            id: "filter_folders",
             key: "folders",
             group: FilterGroups.filterFolders,
             label: "",
@@ -799,6 +893,12 @@ const SectionFilterContent = ({
             options: [
               { key: FilterKeys.withSubfolders, label: t("WithSubfolders") },
               {
+                id: "filter_folders_with-subfolders",
+                key: FilterKeys.withSubfolders,
+                label: t("WithSubfolders"),
+              },
+              {
+                id: "filter_folders_exclude-subfolders",
                 key: FilterKeys.excludeSubfolders,
                 label: t("ExcludeSubfolders"),
               },
@@ -814,6 +914,7 @@ const SectionFilterContent = ({
             withoutHeader: true,
           },
           {
+            id: "filter_search-by-file-contents",
             key: "true",
             group: FilterGroups.filterContent,
             label: t("SearchByContent"),
@@ -834,16 +935,19 @@ const SectionFilterContent = ({
             withMultiItems: true,
           },
           {
+            id: "filter_author-me",
             key: FilterKeys.me,
             group: FilterGroups.filterAuthor,
             label: t("Common:MeLabel"),
           },
           {
+            id: "filter_author-other",
             key: FilterKeys.other,
             group: FilterGroups.filterAuthor,
             label: t("Common:OtherLabel"),
           },
           {
+            id: "filter_author-user",
             key: FilterKeys.user,
             group: FilterGroups.filterAuthor,
             label: t("Translations:AddAuthor"),
@@ -871,11 +975,13 @@ const SectionFilterContent = ({
   const getViewSettingsData = React.useCallback(() => {
     const viewSettings = [
       {
+        id: "view-switch_rows",
         value: "row",
         label: t("ViewList"),
         icon: "/static/images/view-rows.react.svg",
       },
       {
+        id: "view-switch_tiles",
         value: "tile",
         label: t("ViewTiles"),
         icon: "/static/images/view-tiles.react.svg",
@@ -890,7 +996,14 @@ const SectionFilterContent = ({
     const commonOptions = [];
 
     const name = { key: "AZ", label: t("Common:Name"), default: true };
+    const name = {
+      id: "sort-by_name",
+      key: "AZ",
+      label: t("Common:Name"),
+      default: true,
+    };
     const modifiedDate = {
+      id: "sort-by_modified",
       key: "DateAndTime",
       label: t("ByLastModified"),
       default: true,
@@ -898,12 +1011,26 @@ const SectionFilterContent = ({
 
     const type = { key: "Type", label: t("Common:Type"), default: true };
     const size = { key: "Size", label: t("Common:Size"), default: true };
+    const type = {
+      id: "sort-by_type",
+      key: "Type",
+      label: t("Common:Type"),
+      default: true,
+    };
+    const size = {
+      id: "sort-by_size",
+      key: "Size",
+      label: t("Common:Size"),
+      default: true,
+    };
     const creationDate = {
+      id: "sort-by_created",
       key: "DateAndTimeCreation",
       label: t("ByCreation"),
       default: true,
     };
     const authorOption = {
+      id: "sort-by_author",
       key: "Author",
       label: t("ByAuthor"),
       default: true,
@@ -911,7 +1038,20 @@ const SectionFilterContent = ({
 
     const owner = { key: "Author", label: t("Common:Owner"), default: true };
     const tags = { key: "Tags", label: t("Tags"), default: true };
+    const owner = {
+      id: "sort-by_owner",
+      key: "Author",
+      label: t("Common:Owner"),
+      default: true,
+    };
+    const tags = {
+      id: "sort-by_tags",
+      key: "Tags",
+      label: t("Tags"),
+      default: true,
+    };
     const roomType = {
+      id: "sort-by_room-type",
       key: "roomType",
       label: t("Common:Type"),
       default: true,

@@ -53,6 +53,7 @@ const RenameEvent = ({
     if (isSameTitle) {
       setStartValue(originalTitle);
       setIsLoading(false);
+
       onClose();
 
       return editCompleteAction(item, type);
@@ -124,6 +125,7 @@ const RenameEvent = ({
       t={t}
       visible={eventDialogVisible}
       title={t("Home:Rename")}
+      title={t("Files:Rename")}
       startValue={startValue}
       onSave={onUpdate}
       onCancel={onCancel}

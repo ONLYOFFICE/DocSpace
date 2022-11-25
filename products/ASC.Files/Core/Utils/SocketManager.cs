@@ -29,17 +29,17 @@ namespace ASC.Web.Files.Utils;
 [Scope]
 public class SocketManager
 {
-    private readonly SignalrServiceClient _signalrServiceClient;
+    private readonly SocketServiceClient _socketServiceClient;
     private readonly FileDtoHelper _filesWrapperHelper;
     private readonly TenantManager _tenantManager;
 
     public SocketManager(
-        IOptionsSnapshot<SignalrServiceClient> optionsSnapshot,
+        IOptionsSnapshot<SocketServiceClient> optionsSnapshot,
         FileDtoHelper filesWrapperHelper,
         TenantManager tenantManager
         )
     {
-        _signalrServiceClient = optionsSnapshot.Get("files");
+        _socketServiceClient = optionsSnapshot.Get("files");
         _filesWrapperHelper = filesWrapperHelper;
         _tenantManager = tenantManager;
     }
@@ -47,13 +47,13 @@ public class SocketManager
     public void StartEdit<T>(T fileId)
     {
         var room = GetFileRoom(fileId);
-        _signalrServiceClient.StartEdit(fileId, room);
+        _socketServiceClient.StartEdit(fileId, room);
     }
 
     public void StopEdit<T>(T fileId)
     {
         var room = GetFileRoom(fileId);
-        _signalrServiceClient.StopEdit(fileId, room);
+        _socketServiceClient.StopEdit(fileId, room);
     }
 
     public async Task CreateFileAsync<T>(File<T> file)
@@ -69,7 +69,7 @@ public class SocketManager
         serializerSettings.Converters.Add(new FileEntryWrapperConverter());
         var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
 
-        _signalrServiceClient.CreateFile(file.Id, room, data);
+        _socketServiceClient.CreateFile(file.Id, room, data);
     }
 
     public async Task UpdateFileAsync<T>(File<T> file)
@@ -85,13 +85,13 @@ public class SocketManager
         serializerSettings.Converters.Add(new FileEntryWrapperConverter());
         var data = JsonSerializer.Serialize(await _filesWrapperHelper.GetAsync(file), serializerSettings);
 
-        _signalrServiceClient.UpdateFile(file.Id, room, data);
+        _socketServiceClient.UpdateFile(file.Id, room, data);
     }
 
     public void DeleteFile<T>(File<T> file)
     {
         var room = GetFolderRoom(file.ParentId);
-        _signalrServiceClient.DeleteFile(file.Id, room);
+        _socketServiceClient.DeleteFile(file.Id, room);
     }
 
     private string GetFileRoom<T>(T fileId)

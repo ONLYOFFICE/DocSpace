@@ -56,6 +56,8 @@ const SectionFilterContent = ({
   groups,
   customNames,
 }) => {
+  const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
+
   //TODO: add new options from filter after update backend and fix manager from role
   const onFilter = (data) => {
     const status = getStatus(data);
@@ -76,10 +78,11 @@ const SectionFilterContent = ({
     newFilter.page = 0;
 
     newFilter.role = role;
+
     newFilter.group = group;
 
     setIsLoading(true);
-    fetchPeople(newFilter).finally(() => setIsLoading(false));
+    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
   const onSort = (sortId, sortDirection) => {
@@ -93,7 +96,7 @@ const SectionFilterContent = ({
 
     setIsLoading(true);
 
-    fetchPeople(newFilter).finally(() => setIsLoading(false));
+    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
   const onSearch = (data = "") => {
@@ -103,7 +106,7 @@ const SectionFilterContent = ({
 
     setIsLoading(true);
 
-    fetchPeople(newFilter).finally(() => setIsLoading(false));
+    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
   // TODO: change translation keys
@@ -112,22 +115,26 @@ const SectionFilterContent = ({
 
     const statusItems = [
       {
+        id: "filter_status-user",
         key: "filter-status",
         group: "filter-status",
         label: t("UserStatus"),
         isHeader: true,
       },
       {
+        id: "filter_status-active",
         key: 1,
         group: "filter-status",
         label: t("Common:Active"),
       },
       {
+        id: "filter_status-pending",
         key: 2,
         group: "filter-status",
         label: t("PeopleTranslations:PendingTitle"),
       },
       {
+        id: "filter_status-disabled",
         key: 3,
         group: "filter-status",
         label: t("PeopleTranslations:DisabledEmployeeStatus"),
@@ -142,13 +149,20 @@ const SectionFilterContent = ({
         isHeader: true,
         isLast: true,
       },
-      { key: "admin", group: "filter-type", label: t("Administrator") },
       {
-        key: "manager",
+        id: "filter_type-docspace-admin",
+        key: "admin",
         group: "filter-type",
-        label: "Manager",
+        label: t("Common:DocSpaceAdmin"),
       },
       {
+        id: "filter_type-room-admin",
+        key: "manager",
+        group: "filter-type",
+        label: t("Common:RoomAdmin"),
+      },
+      {
+        id: "filter_type-user",
         key: "user",
         group: "filter-type",
         label: userCaption,
@@ -212,11 +226,17 @@ const SectionFilterContent = ({
   const getSortData = React.useCallback(() => {
     return [
       {
+        id: "sory-by_first-name",
         key: "firstname",
         label: t("Common:ByFirstNameSorting"),
         default: true,
       },
-      { key: "lastname", label: t("Common:ByLastNameSorting"), default: true },
+      {
+        id: "sory-by_last-name",
+        key: "lastname",
+        label: t("Common:ByLastNameSorting"),
+        default: true,
+      },
     ];
   }, [t]);
 
@@ -232,7 +252,7 @@ const SectionFilterContent = ({
   }, [filter.sortOrder, filter.sortBy]);
 
   //TODO: add new options from filter after update backend
-  const getSelectedFilterData = async () => {
+  const getSelectedFilterData = React.useCallback(async () => {
     const { guestCaption, userCaption, groupCaption } = customNames;
     const filterValues = [];
 
@@ -264,13 +284,13 @@ const SectionFilterContent = ({
 
       switch (filter.role) {
         case "admin":
-          label = t("Administrator");
+          label = t("Common:DocSpaceAdmin");
+          break;
+        case "manager":
+          label = t("Common:RoomAdmin");
           break;
         case "user":
           label = userCaption;
-          break;
-        case "guest":
-          label = guestCaption;
           break;
         default:
           label = "";
@@ -295,8 +315,59 @@ const SectionFilterContent = ({
       }
     }
 
-    return filterValues;
-  };
+    const currentFilterValues = [];
+
+    setSelectedFilterValues((value) => {
+      if (!value) {
+        currentFilterValues.push(...filterValues);
+        return filterValues.map((f) => ({ ...f }));
+      }
+
+      const items = value.map((v) => {
+        const item = filterValues.find((f) => f.group === v.group);
+
+        if (item) {
+          if (item.isMultiSelect) {
+            let isEqual = true;
+
+            item.key.forEach((k) => {
+              if (!v.key.includes(k)) {
+                isEqual = false;
+              }
+            });
+
+            if (isEqual) return item;
+
+            return false;
+          } else {
+            if (item.key === v.key) return item;
+            return false;
+          }
+        } else {
+          return false;
+        }
+      });
+
+      const newItems = filterValues.filter(
+        (v) => !items.find((i) => i.group === v.group)
+      );
+
+      items.push(...newItems);
+
+      currentFilterValues.push(...items.filter((i) => i));
+
+      return items.filter((i) => i);
+    });
+
+    return currentFilterValues;
+  }, [
+    filter.employeeStatus,
+    filter.activationStatus,
+    filter.role,
+    filter.group,
+    t,
+    customNames,
+  ]);
 
   //TODO: add new options from filter after update backend
   const removeSelectedItem = ({ key, group }) => {
@@ -317,12 +388,12 @@ const SectionFilterContent = ({
     }
 
     setIsLoading(true);
-    fetchPeople(newFilter).finally(() => setIsLoading(false));
+    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
   const clearAll = () => {
     setIsLoading(true);
-    fetchPeople().finally(() => setIsLoading(false));
+    fetchPeople(null, true).finally(() => setIsLoading(false));
   };
 
   return isLoaded && tReady ? (

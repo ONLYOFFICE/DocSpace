@@ -26,7 +26,7 @@
 
 using System.Text.Json.Serialization;
 
-namespace ASC.Webhooks.Service;
+namespace ASC.Webhooks;
 
 [Singletone]
 public class WebhookSender

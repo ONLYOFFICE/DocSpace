@@ -59,7 +59,7 @@ public class SsoHandlerService
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly TenantUtil _tenantUtil;
     private readonly Action<string> _signatureResolver;
-    private readonly CountManagerChecker _countManagerChecker;
+    private readonly CountRoomAdminChecker _countRoomAdminChecker;
     private const string MOB_PHONE = "mobphone";
     private const string EXT_MOB_PHONE = "extmobphone";
 
@@ -81,7 +81,7 @@ public class SsoHandlerService
         MessageService messageService,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         TenantUtil tenantUtil,
-        CountManagerChecker countManagerChecker)
+        CountRoomAdminChecker countRoomAdminChecker)
     {
         _log = log;
         _coreBaseSettings = coreBaseSettings;
@@ -97,7 +97,7 @@ public class SsoHandlerService
         _messageService = messageService;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _tenantUtil = tenantUtil;
-        _countManagerChecker = countManagerChecker;
+        _countRoomAdminChecker = countRoomAdminChecker;
         _signatureResolver = signature =>
         {
             int.TryParse(signature.Substring(signature.Length - 1), out var lastSignChar);
@@ -272,15 +272,15 @@ public class SsoHandlerService
 
                 try
                 {
-                    await _countManagerChecker.CheckAppend();
+                    await _countRoomAdminChecker.CheckAppend();
                 }
                 catch (Exception)
                 {
                     limitExceeded = true;
                 }
 
-                newUserInfo = _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
-                    false, isVisitor: limitExceeded);
+                newUserInfo = await _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
+                  false, isUser: limitExceeded);
             }
             else
             {
@@ -289,7 +289,7 @@ public class SsoHandlerService
                     throw new Exception(Resource.ErrorIncorrectUserName);
                 }
 
-                _userManager.SaveUserInfo(newUserInfo);
+                await _userManager.SaveUserInfo(newUserInfo);
             }
 
             /*var photoUrl = samlResponse.GetRemotePhotoUrl();

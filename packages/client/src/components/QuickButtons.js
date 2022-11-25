@@ -17,30 +17,21 @@ const QuickButtons = (props) => {
     theme,
     sectionWidth,
     isTrashFolder,
-    accessToEdit,
-    showShare,
     onClickLock,
     isDisabled,
     onClickFavorite,
-    onClickShare,
     viewAs,
     isCanWebEdit,
+    canLockFile,
   } = props;
 
-  const { id, locked, fileStatus, title, fileExst, shared } = item;
+  const { id, locked, fileStatus, title, fileExst, access, folderType } = item;
+  const canLockFileAbility = canLockFile(item);
 
   const isFavorite =
     (fileStatus & FileStatus.IsFavorite) === FileStatus.IsFavorite;
 
   const isTile = viewAs === "tile";
-
-  const iconShare = shared
-    ? "/static/images/shared.share.react.svg"
-    : "/static/images/share.react.svg";
-
-  const colorShare = shared
-    ? theme.filesQuickButtons.sharedColor
-    : theme.filesQuickButtons.color;
 
   const iconLock = locked
     ? "/static/images/file.actions.locked.react.svg"
@@ -67,40 +58,27 @@ const QuickButtons = (props) => {
 
   const setFavorite = () => onClickFavorite(isFavorite);
 
+  const isAvailableLockFile =
+    canLockFileAbility && fileExst && displayBadges && isCanWebEdit;
+
   return (
     <div className="badges additional-badges">
-      {item.canShare && showShare && displayBadges && (
+      {isAvailableLockFile && (
         <ColorTheme
           themeId={ThemeType.IconButton}
-          shared={shared}
-          iconName={iconShare}
-          className="badge share-button-icon"
+          iconName={iconLock}
+          locked={locked}
+          className="badge lock-file icons-group"
           size={sizeQuickButton}
-          color={colorShare}
-          onClick={onClickShare}
+          data-id={id}
+          data-locked={locked ? true : false}
+          onClick={onClickLock}
+          color={colorLock}
+          isDisabled={isDisabled}
           hoverColor={theme.filesQuickButtons.sharedColor}
         />
       )}
-      {fileExst &&
-        accessToEdit &&
-        !isTrashFolder &&
-        displayBadges &&
-        isCanWebEdit && (
-          <ColorTheme
-            themeId={ThemeType.IconButton}
-            iconName={iconLock}
-            locked={locked}
-            className="badge lock-file icons-group"
-            size={sizeQuickButton}
-            data-id={id}
-            data-locked={locked ? true : false}
-            onClick={onClickLock}
-            color={colorLock}
-            isDisabled={isDisabled}
-            hoverColor={theme.filesQuickButtons.sharedColor}
-          />
-        )}
-      {fileExst && !isTrashFolder && displayBadges && (
+      {/* {fileExst && !isTrashFolder && displayBadges && (
         <ColorTheme
           themeId={ThemeType.IconButton}
           iconName={iconFavorite}
@@ -113,7 +91,7 @@ const QuickButtons = (props) => {
           onClick={setFavorite}
           hoverColor={theme.filesQuickButtons.hoverColor}
         />
-      )}
+      )} */}
     </div>
   );
 };
