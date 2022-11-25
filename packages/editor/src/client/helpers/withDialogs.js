@@ -44,7 +44,7 @@ const withDialogs = (WrappedComponent) => {
       const { socketHelper } = window.authStore.auth.settingsStore;
       socketHelper.emit({
         command: "subscribe",
-        data: "backup-restore",
+        data: { roomParts: "backup-restore" }
       });
       socketHelper.on("restore-backup", () => {
         const message = t("Common:PreparationPortalTitle");
