@@ -27,6 +27,7 @@ const ArticlePaymentAlert = ({
   currencySymbol,
   setPortalPaymentQuotas,
   currentTariffPlanTitle,
+  toggleArticleOpen,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -40,6 +41,7 @@ const ArticlePaymentAlert = ({
       "/payments/portal-payments"
     );
     history.push(paymentPageUrl);
+    toggleArticleOpen();
   };
 
   const isShowLoader = !ready;
@@ -51,6 +53,7 @@ const ArticlePaymentAlert = ({
       onClick={onClick}
       isFreeTariff={isFreeTariff}
       theme={theme}
+      id="document_catalog-payment-alert"
     >
       <div>
         <Text className="article-payment_border">

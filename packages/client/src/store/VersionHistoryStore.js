@@ -6,6 +6,7 @@ import { FileStatus } from "@docspace/common/constants";
 class VersionHistoryStore {
   isVisible = false;
   fileId = null;
+  fileAccess = null;
   versions = null;
   filesStore = null;
   showProgressBar = false;
@@ -61,7 +62,9 @@ class VersionHistoryStore {
   setVerHistoryFileId = (fileId) => {
     this.fileId = fileId;
   };
-
+  setVerHistoryFileAccess = (access) => {
+    this.fileAccess = access;
+  };
   setVersions = (versions) => {
     this.versions = versions;
   };
@@ -90,9 +93,11 @@ class VersionHistoryStore {
     this.versions = versions;
   };
 
-  fetchFileVersions = (fileId) => {
+  fetchFileVersions = (fileId, access) => {
     if (this.fileId !== fileId || !this.versions) {
       this.setVerHistoryFileId(fileId);
+      this.setVerHistoryFileAccess(access);
+
       return api.files
         .getFileVersionInfo(fileId)
         .then((versions) => this.setVerHistoryFileVersions(versions));

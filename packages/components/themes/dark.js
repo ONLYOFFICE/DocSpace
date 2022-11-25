@@ -188,7 +188,6 @@ const Dark = {
     mobileProgressBarBackground: "#606060",
 
     bar: {
-      background: "#858585",
       errorBackground: orangePressed,
 
       icon: "#858585",
@@ -793,7 +792,7 @@ const Dark = {
     },
 
     fontSize: {
-      base: "14px",
+      base: "13px",
       middle: "14px",
       big: "16px",
       huge: "18px",
@@ -1488,7 +1487,26 @@ const Dark = {
     marginRight: "2px",
     borderRadius: "50%",
   },
-
+  rombsLoader: {
+    blue: {
+      colorStep_1: "#333",
+      colorStep_2: "#333",
+      colorStep_3: "#323032",
+      colorStep_4: "#323032",
+    },
+    red: {
+      colorStep_1: "#333",
+      colorStep_2: "#333",
+      colorStep_3: "#323032",
+      colorStep_4: "#323032",
+    },
+    green: {
+      colorStep_1: "#333",
+      colorStep_2: "#333",
+      colorStep_3: "#323032",
+      colorStep_4: "#323032",
+    },
+  },
   dialogLoader: {
     borderBottom: "1px solid #292929",
   },
@@ -1635,23 +1653,11 @@ const Dark = {
   },
 
   toggleButton: {
-    fillColor: "#F0F0F0",
     fillColorOff: "#292929",
+    hoverFillColorOff: "#3D3D3D",
 
-    disableFillColor: black,
-    disableFillColorOff: "#545454",
-
-    borderColor: "#474747",
-    borderColorOff: "#474747",
-
-    disableBorderColor: "#474747",
-    disableBorderColorOff: "#646464",
-
-    fillCircleColor: "#292929",
-    fillCircleColorOff: grayMaxLight,
-
-    disableFillCircleColor: "#545454",
-    disableFillCircleColorOff: black,
+    fillCircleColor: "#FFFFFF",
+    fillCircleColorOff: "#FFFFFF",
   },
 
   contextMenuButton: {
@@ -2744,6 +2750,9 @@ const Dark = {
     navBackground: "#282828",
     headerColor: white,
     helpButton: "#D8D8D8",
+    orLineColor: "#474747",
+    orTextColor: "#858585",
+    titleColor: white,
 
     register: {
       backgroundColor: "#292929",
@@ -2995,6 +3004,22 @@ const Dark = {
   formWrapper: {
     background: black,
     boxShadow: "0px 5px 20px rgba(0, 0, 0, 0.16);",
+  },
+
+  preparationPortalProgress: {
+    backgroundColor: "#282828",
+    colorPercentSmall: "#FFFFFF",
+    colorPercentBig: "#333333",
+  },
+
+  codeInput: {
+    background: "#282828",
+    border: "1px solid #474747",
+    color: white,
+    lineColor: "#858585",
+    disabledBackground: "#474747",
+    disabledBorder: "1px solid #474747",
+    disabledColor: "#858585",
   },
 };
 

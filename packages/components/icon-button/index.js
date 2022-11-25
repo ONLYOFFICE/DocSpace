@@ -158,6 +158,7 @@ class IconButton extends React.PureComponent {
         data-tip={dataTip}
         data-event="click focus"
         data-for={id}
+        id={id}
         style={style}
         color={this.state.currentIconColor}
         {...rest}

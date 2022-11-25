@@ -395,9 +395,9 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
     const { isArchiveFolder } = this.treeFoldersStore;
-    const { addActiveItems, folders, getIsEmptyTrash } = this.filesStore;
+    const { addActiveItems, roomsForDelete } = this.filesStore;
 
-    const folderIds = folders.map((f) => f.id);
+    const folderIds = roomsForDelete.map((f) => f.id);
     if (isArchiveFolder) addActiveItems(null, folderIds);
 
     setSecondaryProgressBarData({
@@ -1257,20 +1257,18 @@ class FilesActionStore {
   };
 
   isAvailableOption = (option) => {
-    const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
     const {
       isAccessedSelected,
       canConvertSelected,
-      isThirdPartyRootSelection,
       hasSelection,
       allFilesIsEditing,
       selection,
     } = this.filesStore;
 
     const {
-      canCopyFile,
-      canDeleteFile,
-      canMoveFile,
+      canCopyItems,
+      canDeleteItems,
+      canMoveItems,
       canArchiveRoom,
       canRemoveRoom,
     } = this.accessRightsStore;
@@ -1278,7 +1276,7 @@ class FilesActionStore {
 
     switch (option) {
       case "copy":
-        const canCopy = canCopyFile({ access, rootFolderType });
+        const canCopy = canCopyItems({ access, rootFolderType });
 
         return hasSelection && canCopy;
       case "showInfo":
@@ -1287,16 +1285,12 @@ class FilesActionStore {
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
-        const canMove = canMoveFile({ access, rootFolderType });
-        return (
-          !isThirdPartyRootSelection &&
-          hasSelection &&
-          isAccessedSelected &&
-          !isRecentFolder &&
-          !isFavoritesFolder &&
-          !allFilesIsEditing &&
-          canMove
-        );
+        const canMove = canMoveItems({
+          access,
+          rootFolderType,
+          editing: allFilesIsEditing,
+        });
+        return hasSelection && isAccessedSelected && canMove;
 
       case "archive":
       case "unarchive":
@@ -1313,12 +1307,12 @@ class FilesActionStore {
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = canDeleteFile({ access, rootFolderType });
-        const deleteCondition =
-          !isThirdPartyRootSelection &&
-          hasSelection &&
-          isAccessedSelected &&
-          !allFilesIsEditing;
+        const canDelete = canDeleteItems({
+          access,
+          rootFolderType,
+          editing: allFilesIsEditing,
+        });
+        const deleteCondition = hasSelection && isAccessedSelected;
 
         return canDelete && deleteCondition;
     }
@@ -1334,7 +1328,7 @@ class FilesActionStore {
     return result;
   };
 
-  pinRooms = () => {
+  pinRooms = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
@@ -1343,10 +1337,10 @@ class FilesActionStore {
       if (!item.pinned) items.push(item.id);
     });
 
-    this.setPinAction("pin", items);
+    this.setPinAction("pin", items, t);
   };
 
-  unpinRooms = () => {
+  unpinRooms = (t) => {
     const { selection } = this.filesStore;
 
     const items = [];
@@ -1355,7 +1349,7 @@ class FilesActionStore {
       if (item.pinned) items.push(item.id);
     });
 
-    this.setPinAction("unpin", items);
+    this.setPinAction("unpin", items, t);
   };
 
   archiveRooms = (action) => {
@@ -1493,7 +1487,7 @@ class FilesActionStore {
           key: "pin",
           label: t("Pin"),
           iconUrl: "/static/images/pin.react.svg",
-          onClick: this.pinRooms,
+          onClick: () => this.pinRooms(t),
           disabled: false,
         };
       case "unpin":
@@ -1501,7 +1495,7 @@ class FilesActionStore {
           key: "unpin",
           label: t("Unpin"),
           iconUrl: "/static/images/unpin.react.svg",
-          onClick: this.unpinRooms,
+          onClick: () => this.unpinRooms(t),
           disabled: false,
         };
       case "archive":
@@ -1579,22 +1573,6 @@ class FilesActionStore {
     const archive = this.getOption("unarchive", t);
     const deleteOption = this.getOption("delete-room", t);
     const showOption = this.getOption("show-info", t);
-
-    const { selection } = this.filesStore;
-    const { canArchiveRoom } = this.accessRightsStore;
-
-    const canArchive = selection.map((s) => canArchiveRoom(s)).filter((s) => s);
-
-    if (canArchive.length <= 0) {
-      let pinName = "unpin";
-
-      selection.forEach((item) => {
-        if (!item.pinned) pinName = "pin";
-      });
-
-      const pin = this.getOption(pinName, t);
-      itemsCollection.set(pinName, pin);
-    }
 
     itemsCollection
       .set("unarchive", archive)

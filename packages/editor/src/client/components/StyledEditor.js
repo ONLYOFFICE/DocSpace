@@ -9,6 +9,7 @@ const StyledSelectFolder = styled.div`
   .editor-select-folder_checkbox {
     background-color: ${(props) => props.theme.editor.background};
     word-break: break-word;
+    margin-bottom: 16px;
   }
 `;
 

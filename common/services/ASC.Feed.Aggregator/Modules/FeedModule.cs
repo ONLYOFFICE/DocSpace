@@ -43,15 +43,15 @@ public abstract class FeedModule : IFeedModule
         _webItemSecurity = webItemSecurity;
     }
 
-    public abstract IEnumerable<Tuple<Feed, object>> GetFeeds(FeedFilter filter);
+    public abstract Task<IEnumerable<Tuple<Feed, object>>> GetFeeds(FeedFilter filter);
 
-    public abstract IEnumerable<int> GetTenantsWithFeeds(DateTime fromTime);
+    public abstract Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime);
 
-    public virtual void VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
+    public virtual Task VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
     {
         if (!_webItemSecurity.IsAvailableForUser(ProductID, userId))
         {
-            return;
+            return Task.CompletedTask;
         }
 
         foreach (var tuple in feed)
@@ -61,6 +61,7 @@ public abstract class FeedModule : IFeedModule
                 tuple.Item1.Users.Add(userId);
             }
         }
+        return Task.CompletedTask;
     }
 
     public virtual bool VisibleFor(Feed feed, object data, Guid userId)

@@ -31,9 +31,9 @@ global using System.ServiceModel.Security;
 global using System.Web;
 
 global using ASC.Api.Core;
-global using ASC.Api.Core.Model;
 global using ASC.Api.Core.Convention;
 global using ASC.Api.Core.Extensions;
+global using ASC.Api.Core.Model;
 global using ASC.Api.Utils;
 global using ASC.Common;
 global using ASC.Common.Caching;
@@ -80,9 +80,16 @@ global using ASC.Web.Studio.Utility;
 global using Autofac;
 
 global using Microsoft.AspNetCore.Authorization;
+global using Microsoft.AspNetCore.Builder;
+global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Http.Extensions;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Hosting.WindowsServices;
+global using Microsoft.Extensions.Logging;
 
 global using SixLabors.ImageSharp;
 global using SixLabors.ImageSharp.Formats;

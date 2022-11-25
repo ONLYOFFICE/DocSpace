@@ -45,34 +45,34 @@ public class ConsumerBackupStorage : IBackupStorage
         _store = _storageSettingsHelper.DataStore(settings);
     }
 
-    public string Upload(string storageBasePath, string localPath, Guid userId)
+    public async Task<string> Upload(string storageBasePath, string localPath, Guid userId)
     {
         using var stream = File.OpenRead(localPath);
         var storagePath = Path.GetFileName(localPath);
-        _store.SaveAsync(Domain, storagePath, stream, ACL.Private).Wait();
+        await _store.SaveAsync(Domain, storagePath, stream, ACL.Private);
         return storagePath;
     }
 
-    public void Download(string storagePath, string targetLocalPath)
+    public async Task Download(string storagePath, string targetLocalPath)
     {
-        using var source = _store.GetReadStreamAsync(Domain, storagePath).Result;
+        using var source = await _store.GetReadStreamAsync(Domain, storagePath);
         using var destination = File.OpenWrite(targetLocalPath);
-        source.CopyTo(destination);
+        await source.CopyToAsync(destination);
     }
 
-    public void Delete(string storagePath)
+    public async Task Delete(string storagePath)
     {
-        if (_store.IsFileAsync(Domain, storagePath).Result)
+        if (await _store.IsFileAsync(Domain, storagePath))
         {
-            _store.DeleteAsync(Domain, storagePath).Wait();
+            await _store.DeleteAsync(Domain, storagePath);
         }
     }
 
-    public bool IsExists(string storagePath)
+    public async Task<bool> IsExists(string storagePath)
     {
         if (_store != null)
         {
-            return _store.IsFileAsync(Domain, storagePath).Result;
+            return await _store.IsFileAsync(Domain, storagePath);
         }
         else
         {
@@ -80,8 +80,8 @@ public class ConsumerBackupStorage : IBackupStorage
         }
     }
 
-    public string GetPublicLink(string storagePath)
+    public async Task<string> GetPublicLink(string storagePath)
     {
-        return _store.GetInternalUriAsync(Domain, storagePath, TimeSpan.FromDays(1), null).Result.AbsoluteUri;
+        return (await _store.GetInternalUriAsync(Domain, storagePath, TimeSpan.FromDays(1), null)).AbsoluteUri;
     }
 }

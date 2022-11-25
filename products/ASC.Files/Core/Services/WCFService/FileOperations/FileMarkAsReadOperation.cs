@@ -42,21 +42,19 @@ class FileMarkAsReadOperation : ComposeFileOperation<FileMarkAsReadOperationData
     public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileOperation<FileMarkAsReadOperationData<string>, string> f1, FileOperation<FileMarkAsReadOperationData<int>, int> f2)
         : base(serviceProvider, f1, f2)
     {
+        this[OpType] = (int)FileOperationType.MarkAsRead;
     }
-
-    public override FileOperationType OperationType => FileOperationType.MarkAsRead;
 }
 
 class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>, T>
 {
-    public override FileOperationType OperationType => FileOperationType.MarkAsRead;
-
     private readonly IDictionary<string, StringValues> _headers;
 
     public FileMarkAsReadOperation(IServiceProvider serviceProvider, FileMarkAsReadOperationData<T> fileOperationData)
         : base(serviceProvider, fileOperationData)
     {
         _headers = fileOperationData.Headers;
+        this[OpType] = (int)FileOperationType.MarkAsRead;
     }
 
     protected override int InitTotalProgressSteps()
@@ -64,7 +62,7 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
         return Files.Count + Folders.Count;
     }
 
-    protected override async Task DoAsync(IServiceScope scope)
+    protected override async Task DoJob(IServiceScope scope)
     {
         var scopeClass = scope.ServiceProvider.GetService<FileMarkAsReadOperationScope>();
         var filesMessageService = scope.ServiceProvider.GetRequiredService<FilesMessageService>();
@@ -122,7 +120,7 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
             newrootfolder.Add($"new_{{\"key\"? \"{item.Key}\", \"value\"? \"{item.Value}\"}}");
         }
 
-        Result += string.Join(SplitChar, newrootfolder.ToArray());
+        this[Res] += string.Join(SplitChar, newrootfolder.ToArray());
     }
 }
 

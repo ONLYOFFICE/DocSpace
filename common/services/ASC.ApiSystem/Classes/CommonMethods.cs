@@ -122,23 +122,20 @@ public class CommonMethods
             Method = HttpMethod.Post,
             RequestUri = new Uri(url)
         };
-        request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/x-www-form-urlencoded"));
+        request.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
         try
         {
             var httpClient = _clientFactory.CreateClient();
             using var response = httpClient.Send(request);
-            using var stream = response.Content.ReadAsStream();
-            using var reader = new StreamReader(stream, Encoding.UTF8);
 
-            var result = reader.ReadToEnd();
+            _log.LogDebug("congratulations result = {0}", response.StatusCode);
 
-            _log.LogDebug("congratulations result = {0}", result);
-
-            var resObj = JObject.Parse(result);
-
-            if (resObj["errors"] != null && resObj["errors"].HasValues)
+            if (response.StatusCode != HttpStatusCode.OK)
             {
+                using var stream = response.Content.ReadAsStream();
+                using var reader = new StreamReader(stream, Encoding.UTF8);
+                var result = reader.ReadToEnd();
                 throw new Exception(result);
             }
         }

@@ -62,6 +62,7 @@ public class PortalController : ControllerBase
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
+    private readonly IMapper _mapper;
 
     public PortalController(
         ILogger<PortalController> logger,
@@ -91,7 +92,9 @@ public class PortalController : ControllerBase
         MessageTarget messageTarget,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper, TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper)
+        StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
+        TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
+        IMapper mapper)
     {
         _log = logger;
         _apiContext = apiContext;
@@ -122,12 +125,13 @@ public class PortalController : ControllerBase
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
+        _mapper = mapper;
     }
 
     [HttpGet("")]
-    public Tenant Get()
+    public TenantDto Get()
     {
-        return Tenant;
+        return _mapper.Map<TenantDto>(Tenant);
     }
 
     [HttpGet("users/{userID}")]
@@ -404,10 +408,16 @@ public class PortalController : ControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpPost("suspend")]
     public void SendSuspendInstructions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
 
         var owner = _userManager.GetUsers(Tenant.OwnerId);
         var suspendUrl = _commonLinkUtility.GetConfirmationEmailUrl(owner.Email, ConfirmType.PortalSuspend);
@@ -418,10 +428,17 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.OwnerSentPortalDeactivationInstructions, _messageTarget.Create(owner.Id), owner.DisplayUserName(false, _displayUserSettingsHelper));
     }
 
+    [AllowNotPayment]
     [HttpPost("delete")]
     public void SendDeleteInstructions()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
         var owner = _userManager.GetUsers(Tenant.OwnerId);
 
         var showAutoRenewText = !_coreBaseSettings.Standalone &&
@@ -451,10 +468,16 @@ public class PortalController : ControllerBase
         _messageService.Send(MessageAction.PortalDeactivated);
     }
 
+    [AllowNotPayment]
     [HttpDelete("delete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalRemove")]
     public async Task<object> DeletePortal()
     {
+        if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
+        {
+            throw new Exception(Resource.ErrorAccessDenied);
+        }
+
         _tenantManager.RemoveTenant(Tenant.Id);
 
         if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
@@ -485,7 +508,10 @@ public class PortalController : ControllerBase
         }
         finally
         {
-            if (authed) _securityContext.Logout();
+            if (authed)
+            {
+                _securityContext.Logout();
+            }
         }
 
         _studioNotifyService.SendMsgPortalDeletionSuccess(owner, redirectLink);

@@ -66,10 +66,10 @@ services:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-clear-events:${DOCKER_TAG}"
     container_name: ${CLEAR_EVENTS_HOST}
 
-  onlyoffice-migration:
-    <<: *x-service-base
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration:${DOCKER_TAG}"
-    container_name: ${MIGRATION_HOST}
+  # onlyoffice-migration:
+  #   <<: *x-service-base
+  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-migration:${DOCKER_TAG}"
+  #   container_name: ${MIGRATION_HOST}
 
   onlyoffice-files:
     <<: *x-service-base
@@ -98,28 +98,28 @@ services:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio-notify:${DOCKER_TAG}"
     container_name: ${STUDIO_NOTIFY_HOST}
 
-  onlyoffice-telegram-service:
-    <<: *x-service-base
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-telegram-service:${DOCKER_TAG}"
-    container_name: ${TELEGRAM_SERVICE_HOST}
+  # onlyoffice-telegram-service:
+  #   <<: *x-service-base
+  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-telegram-service:${DOCKER_TAG}"
+  #   container_name: ${TELEGRAM_SERVICE_HOST}
 
-  onlyoffice-urlshortener:
-    <<: *x-service-base
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-urlshortener:${DOCKER_TAG}"
-    container_name: ${URLSHORTENER_HOST}
-    expose:
-      - ${SERVICE_PORT}
-      - "9999"
+  # onlyoffice-urlshortener:
+  #   <<: *x-service-base
+  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-urlshortener:${DOCKER_TAG}"
+  #   container_name: ${URLSHORTENER_HOST}
+  #   expose:
+  #     - ${SERVICE_PORT}
+  #     - "9999"
 
   onlyoffice-api:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api:${DOCKER_TAG}"
     container_name: ${API_HOST}
 
-  onlyoffice-api-system:
-    <<: *x-service-base
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
-    container_name: ${API_SYSTEM_HOST}
+  # onlyoffice-api-system:
+  #   <<: *x-service-base
+  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
+  #   container_name: ${API_SYSTEM_HOST}
 
   onlyoffice-studio:
     <<: *x-service-base
@@ -134,10 +134,10 @@ services:
       - ${SERVICE_PORT}
       - "9834"
 
-  onlyoffice-webhooks-service:
-    <<: *x-service-base
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-webhooks-service:${DOCKER_TAG}"
-    container_name: ${WEBHOOKS_SERVICE_HOST}
+  # onlyoffice-webhooks-service:
+  #   <<: *x-service-base
+  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-webhooks-service:${DOCKER_TAG}"
+  #   container_name: ${WEBHOOKS_SERVICE_HOST}
 
   onlyoffice-proxy:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-proxy:${DOCKER_TAG}"
@@ -153,17 +153,17 @@ services:
       - onlyoffice-backup-background-tasks
       - onlyoffice-backup
       - onlyoffice-clear-events
-      - onlyoffice-migration
-      - onlyoffice-webhooks-service
+      # - onlyoffice-migration
+      # - webhooks-service
       - onlyoffice-files
       - onlyoffice-files-services
       - onlyoffice-people-server
       - onlyoffice-socket
       - onlyoffice-studio-notify
-      - onlyoffice-telegram-service
-      - onlyoffice-urlshortener
+      # - onlyoffice-telegram-service
+      # - onlyoffice-urlshortener
       - onlyoffice-api
-      - onlyoffice-api-system
+      # - onlyoffice-api-system
       - onlyoffice-studio
       - onlyoffice-ssoauth
     environment:
@@ -171,14 +171,14 @@ services:
       - SERVICE_FILES=${SERVICE_FILES}
       - SERVICE_FILES_SERVICES=${SERVICE_FILES_SERVICES}
       - SERVICE_CLEAR_EVENTS=${SERVICE_CLEAR_EVENTS}
-      - SERVICE_MIGRATION=${SERVICE_MIGRATION}
-      - SERVICE_WEBHOOKS_SERVICE=${SERVICE_WEBHOOKS_SERVICE}
+      # - SERVICE_MIGRATION=${SERVICE_MIGRATION}
+      # - SERVICE_WEBHOOKS_SERVICE=${SERVICE_WEBHOOKS_SERVICE}
       - SERVICE_NOTIFY=${SERVICE_NOTIFY}
       - SERVICE_PEOPLE_SERVER=${SERVICE_PEOPLE_SERVER}
       - SERVICE_SOCKET=${SERVICE_SOCKET}
       - SERVICE_STUDIO_NOTIFY=${SERVICE_STUDIO_NOTIFY}
-      - SERVICE_TELEGRAM_SERVICE=${SERVICE_TELEGRAM_SERVICE}
-      - SERVICE_URLSHORTENER=${SERVICE_URLSHORTENER}
+      # - SERVICE_TELEGRAM_SERVICE=${SERVICE_TELEGRAM_SERVICE}
+      # - SERVICE_URLSHORTENER=${SERVICE_URLSHORTENER}
       - SERVICE_API=${SERVICE_API}
       - SERVICE_API_SYSTEM=${SERVICE_API_SYSTEM}
       - SERVICE_STUDIO=${SERVICE_STUDIO}
@@ -196,8 +196,8 @@ services:
 
 networks:
   default:
-    external:
-      name: ${NETWORK_NAME}
+    name: ${NETWORK_NAME}
+    external: true
 
 volumes:
   es_data:
