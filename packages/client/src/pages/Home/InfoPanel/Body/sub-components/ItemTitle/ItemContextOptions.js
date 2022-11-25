@@ -58,8 +58,22 @@ const ItemContextOptions = ({
 
   const options = contextHelper?.getItemContextOptions();
 
-  const getData = () => {
+  const withId = (options) => {
+    if (Array.isArray(options)) {
+      return options.map((option) => {
+        if (option.items) {
+          option.items = withId(option.items);
+        }
+        return option.key
+          ? { ...option, id: `info-option_${option.key}` }
+          : option;
+      });
+    }
     return options;
+  };
+
+  const getData = () => {
+    return withId(options);
   };
 
   return (
@@ -71,6 +85,7 @@ const ItemContextOptions = ({
       />
       {options?.length > 0 && (
         <ContextMenuButton
+          id="info-options"
           className="expandButton"
           title={"Show item actions"}
           onClick={onContextMenu}
