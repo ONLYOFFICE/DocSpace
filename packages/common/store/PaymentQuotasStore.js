@@ -7,7 +7,7 @@ const MANAGER = "manager";
 const TOTAL_SIZE = "total_size";
 
 class PaymentQuotasStore {
-  portalPaymentQuotas = {};
+  portalPaymentQuotas = null;
   portalPaymentQuotasFeatures = [];
   isLoaded = false;
 
@@ -20,7 +20,7 @@ class PaymentQuotasStore {
   };
 
   get planCost() {
-    if (this.portalPaymentQuotas.price) return this.portalPaymentQuotas.price;
+    if (this.portalPaymentQuotas?.price) return this.portalPaymentQuotas?.price;
     else return { value: 0, currencySymbol: "" };
   }
 
@@ -39,7 +39,7 @@ class PaymentQuotasStore {
   }
 
   get tariffTitle() {
-    return this.portalPaymentQuotas.title;
+    return this.portalPaymentQuotas?.title;
   }
 
   replaceFeaturesValues = (t) => {
@@ -72,7 +72,7 @@ class PaymentQuotasStore {
   }
 
   get tariffPlanTitle() {
-    return this.portalPaymentQuotas.title;
+    return this.portalPaymentQuotas?.title;
   }
   setPortalPaymentQuotas = async (t) => {
     if (this.isLoaded) return;

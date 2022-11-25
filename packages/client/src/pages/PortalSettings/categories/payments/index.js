@@ -91,7 +91,8 @@ let paymentTerm,
   fromDate,
   byDate,
   delayDaysCount,
-  payerInfo = null;
+  payerInfo = null,
+  isAlreadyPaid = false;
 const PaymentsPage = ({
   setPortalPaymentQuotas,
   language,
@@ -116,20 +117,17 @@ const PaymentsPage = ({
   tariffPlanTitle,
   expandArticle,
   setPortalQuota,
+  currentPortalQuota,
+  portalTariffStatus,
+  portalPaymentQuotas,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
-  const isAlreadyPaid = payerEmail.length !== 0 || !isFreeTariff;
-
   useEffect(() => {
     setDocumentTitle(t("Settings:Payments"));
   }, [ready]);
-  useEffect(() => {
-    if (ready && portalPaymentQuotasFeatures.length !== 0)
-      replaceFeaturesValues(t);
-  }, [ready, portalPaymentQuotasFeatures]);
 
   const gracePeriodDays = () => {
     const fromDateMoment = moment(dueDate);
@@ -153,8 +151,17 @@ const PaymentsPage = ({
   };
 
   useEffect(() => {
+    moment.locale(language);
+  }, []);
+
+  useEffect(() => {
+    if (ready && portalPaymentQuotas) replaceFeaturesValues(t);
+  }, [ready, portalPaymentQuotas]);
+  useEffect(() => {
     (async () => {
-      moment.locale(language);
+      if (!currentPortalQuota || !portalTariffStatus) return;
+
+      isAlreadyPaid = payerEmail.length !== 0 || !isFreeTariff;
 
       const requests = [getSettingsPayment(), setPortalQuota()];
 
@@ -180,7 +187,7 @@ const PaymentsPage = ({
 
       setIsInitialLoading(false);
     })();
-  }, []);
+  }, [currentPortalQuota, portalTariffStatus]);
 
   const renderTooltip = () => {
     return (
@@ -417,6 +424,7 @@ export default inject(({ auth, payments }) => {
     isFreeTariff,
     currentTariffPlanTitle,
     setPortalQuota,
+    currentPortalQuota,
   } = currentQuotaStore;
   const {
     isNotPaidPeriod,
@@ -426,6 +434,7 @@ export default inject(({ auth, payments }) => {
     dueDate,
     delayDueDate,
     portalStatus,
+    portalTariffStatus,
   } = currentTariffStatusStore;
 
   const {
@@ -434,6 +443,7 @@ export default inject(({ auth, payments }) => {
     replaceFeaturesValues,
     portalPaymentQuotasFeatures,
     tariffPlanTitle,
+    portalPaymentQuotas,
   } = paymentQuotasStore;
   const { organizationName, theme } = auth.settingsStore;
 
@@ -472,5 +482,8 @@ export default inject(({ auth, payments }) => {
     portalPaymentQuotasFeatures,
     currentTariffPlanTitle,
     setPortalQuota,
+    currentPortalQuota,
+    portalTariffStatus,
+    portalPaymentQuotas,
   };
 })(withRouter(observer(PaymentsPage)));

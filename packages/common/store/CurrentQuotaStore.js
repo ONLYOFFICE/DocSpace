@@ -10,7 +10,7 @@ const ROOM = "room";
 const USERS = "users";
 const USERS_IN_ROOM = "usersInRoom";
 class QuotasStore {
-  currentPortalQuota = {};
+  currentPortalQuota = null;
   currentPortalQuotaFeatures = [];
 
   isLoaded = false;
@@ -32,11 +32,11 @@ class QuotasStore {
   };
 
   get isFreeTariff() {
-    return this.currentPortalQuota.free;
+    return this.currentPortalQuota?.free;
   }
 
   get currentPlanCost() {
-    if (this.currentPortalQuota.price) return this.currentPortalQuota.price;
+    if (this.currentPortalQuota?.price) return this.currentPortalQuota?.price;
     else return { value: 0, currencySymbol: "" };
   }
 
@@ -138,7 +138,7 @@ class QuotasStore {
   }
 
   get currentTariffPlanTitle() {
-    return this.currentPortalQuota.title;
+    return this.currentPortalQuota?.title;
   }
 
   get quotaCharacteristics() {
