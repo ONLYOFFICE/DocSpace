@@ -72,7 +72,7 @@ class DetailsHelper {
 
   getPropertyList = () => {
     return this.getNeededProperties().map((propertyId) => ({
-      id: propertyId,
+      id: `info_details_${propertyId.toLowerCase().replace(/ /g, "-")}`,
       title: this.getPropertyTitle(propertyId),
       content: this.getPropertyContent(propertyId),
     }));
