@@ -34,10 +34,13 @@ export const Viewer = (props) => {
     generateContextMenu,
   } = props;
 
+  let timer;
+
   const defaultContainer = React.useRef(
     typeof document !== "undefined" ? document.createElement("div") : null
   );
   const [container, setContainer] = React.useState(props.container);
+  const [panelVisible, setPanelVisible] = React.useState(true);
   const [init, setInit] = React.useState(false);
 
   const detailsContainerRef = React.useRef(null);
@@ -50,6 +53,16 @@ export const Viewer = (props) => {
   React.useEffect(() => {
     document.body.appendChild(defaultContainer.current);
   }, []);
+
+  React.useEffect(() => {
+    document.addEventListener("mousemove", resetTimer);
+  }, []);
+
+  function resetTimer() {
+    setPanelVisible(true);
+    clearTimeout(timer);
+    timer = setTimeout(() => setPanelVisible(false), 5000);
+  }
 
   React.useEffect(() => {
     if (props.visible && !init) {
@@ -102,11 +115,14 @@ export const Viewer = (props) => {
     </div>
   );
 
+  const displayUI = isImage || panelVisible;
+
   const viewerPortal = ReactDOM.createPortal(
     <StyledViewer
       {...props}
       mobileDetails={mobileDetails}
       container={container}
+      onMaskClick={onMaskClick}
       generateContextMenu={generateContextMenu}
     />,
     container
@@ -118,6 +134,7 @@ export const Viewer = (props) => {
       onPrevClick={onPrevClick}
       contextModel={contextModel}
       mobileDetails={mobileDetails}
+      displayUI={displayUI}
       title={title}
       onMaskClick={onMaskClick}
       generateContextMenu={generateContextMenu}
@@ -131,7 +148,7 @@ export const Viewer = (props) => {
 
   return (
     <StyledViewerContainer visible={visible}>
-      {!isFullscreen && !isMobileOnly && (
+      {!isFullscreen && !isMobileOnly && displayUI && (
         <div>
           <div className="details" ref={detailsContainerRef}>
             <Text isBold fontSize="14px" className="title">
@@ -152,7 +169,7 @@ export const Viewer = (props) => {
         </div>
       )}
 
-      {playlist.length > 1 && !isFullscreen && (
+      {playlist.length > 1 && !isFullscreen && displayUI && (
         <>
           {playlistPos !== 0 && (
             <StyledNextToolbar left onClick={onPrevClick}>
