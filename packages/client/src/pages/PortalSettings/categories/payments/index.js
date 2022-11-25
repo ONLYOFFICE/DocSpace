@@ -168,8 +168,7 @@ const PaymentsPage = ({
       if (!currencySymbol && !startValue)
         requests.push(setPortalPaymentQuotas());
 
-      if (portalStatus !== TariffState.Trial)
-        requests.push(setPaymentAccount());
+      if (isAlreadyPaid) requests.push(setPaymentAccount());
 
       try {
         await Promise.all(requests);
