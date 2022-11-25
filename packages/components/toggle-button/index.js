@@ -75,6 +75,8 @@ class ToggleButton extends Component {
         id={id}
         className={className}
         style={style}
+        isChecked={this.state.checked}
+        isDisabled={isDisabled}
       >
         <ToggleButtonContainer
           id={id}

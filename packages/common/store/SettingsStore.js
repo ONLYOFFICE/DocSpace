@@ -698,6 +698,10 @@ class SettingsStore {
   sendAppearanceTheme = async (data) => {
     return api.settings.sendAppearanceTheme(data);
   };
+
+  deleteAppearanceTheme = async (id) => {
+    return api.settings.deleteAppearanceTheme(id);
+  };
 }
 
 export default SettingsStore;

@@ -42,6 +42,7 @@ global using ASC.Data.Backup.BackgroundTasks.Log;
 global using ASC.Data.Backup.Contracts;
 global using ASC.Data.Backup.Core.IntegrationEvents.Events;
 global using ASC.Data.Backup.EF.Context;
+global using ASC.Data.Backup.Extension;
 global using ASC.Data.Backup.IntegrationEvents.EventHandling;
 global using ASC.Data.Backup.Services;
 global using ASC.Data.Backup.Storage;
@@ -56,11 +57,6 @@ global using ASC.Web.Studio.Core.Notify;
 
 global using Autofac;
 
-global using Microsoft.AspNetCore.Builder;
-global using Microsoft.Extensions.Configuration;
-global using Microsoft.Extensions.DependencyInjection;
-global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.Hosting.WindowsServices;
-global using Microsoft.Extensions.Logging;
+
 global using Newtonsoft.Json;
-global using ASC.Data.Backup.Extension;

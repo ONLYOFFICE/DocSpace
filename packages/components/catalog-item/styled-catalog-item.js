@@ -265,7 +265,7 @@ const StyledCatalogItemImg = styled.div`
       fill: ${(props) =>
         props.isActive
           ? props.theme.catalogItem.img.svg.isActiveFill
-          : props.theme.catalogItem.img.svg.fill} !important;
+          : props.theme.catalogItem.img.svg.fill};
     }
   }
 

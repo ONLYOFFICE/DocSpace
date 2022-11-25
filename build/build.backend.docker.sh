@@ -9,9 +9,16 @@ echo "Root directory:" $dir
 
 cd $dir
 
-branch=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+branch=$(git branch --show-current)
 
 echo "GIT_BRANCH:" $branch
+
+branch_exist_remote=$(git ls-remote --heads origin $branch)
+
+if [ -z "$branch_exist_remote" ]; then
+    echo "The current branch does not exist in the remote repository. Please push changes."
+    exit 1
+fi
 
 cd $dir/build/install/docker/
 
@@ -43,11 +50,9 @@ $dir/build/start/stop.backend.docker.sh
 
 echo "Remove all backend containers"
 docker rm -f $(docker ps -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $1}')
-echo "Remove all backend images"
-docker rmi -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
 
 echo "Remove all docker images except 'mysql, rabbitmq, redis, elasticsearch, documentserver'"
-docker image rm -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
+docker rmi -f $(docker images -a | egrep "onlyoffice" | egrep -v "mysql|rabbitmq|redis|elasticsearch|documentserver" | awk 'NR>0 {print $3}')
 
 echo "Run MySQL"
 
@@ -58,7 +63,7 @@ if [ "${arch_name}" = "x86_64" ]; then
     docker compose -f db.yml up -d
 elif [ "${arch_name}" = "arm64" ]; then
     echo "CPU Type: arm64 -> run db.yml with arm64v8 image"
-    MYSQL_IMAGE=arm64v8/mysql:oracle \
+    MYSQL_IMAGE=arm64v8/mysql:8.0.31-oracle \
     docker compose -f db.yml up -d
 else
     echo "Error: Unknown CPU Type: ${arch_name}."

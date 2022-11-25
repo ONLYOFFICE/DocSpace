@@ -19,7 +19,6 @@ const Members = ({
   selfId,
   isOwner,
   isAdmin,
-  isArchiveRoot,
   selection,
 
   selectionParentRoom,
@@ -33,13 +32,19 @@ const Members = ({
 
   changeUserType,
   canInviteUserInRoom,
+  canChangeUserRoleInRoom,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
+  const { access, rootFolderType } = selection;
 
-  const isDisabledInvite = !canInviteUserInRoom({ access: selection.access });
+  const canInviteUserInRoomAbility = canInviteUserInRoom({
+    access,
+    rootFolderType,
+  });
+
   const fetchMembers = async (roomId) => {
     let timerId;
     if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
@@ -117,19 +122,13 @@ const Members = ({
     (member) => member.id === selfId
   );
 
-  const currCanEditUsers =
-    isOwner ||
-    isAdmin ||
-    currentMember?.access === ShareAccessRights.FullAccess ||
-    currentMember?.access === ShareAccessRights.RoomManager;
-
   return (
     <>
       <StyledUserTypeHeader>
         <Text className="title">
           {t("UsersInRoom")} : {members.inRoom.length}
         </Text>
-        {currCanEditUsers && !isArchiveRoot && (
+        {canInviteUserInRoomAbility && (
           <IconButton
             className={"icon"}
             title={t("Common:AddUsers")}
@@ -137,7 +136,6 @@ const Members = ({
             isFill={true}
             onClick={onClickInviteUsers}
             size={16}
-            isDisabled={isDisabledInvite}
           />
         )}
       </StyledUserTypeHeader>
@@ -145,7 +143,8 @@ const Members = ({
       <StyledUserList>
         {Object.values(members.inRoom).map((user) => (
           <User
-            currCanEditUsers={currCanEditUsers}
+            access={access}
+            rootFolderType={rootFolderType}
             key={user.id}
             t={t}
             user={user}
@@ -156,7 +155,7 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
-            isArchiveRoot={isArchiveRoot}
+            canChangeUserRoleInRoom={canChangeUserRoleInRoom}
           />
         ))}
       </StyledUserList>
@@ -164,7 +163,7 @@ const Members = ({
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
           <Text className="title">{t("ExpectPeople")}</Text>
-          {currCanEditUsers && !isArchiveRoot && (
+          {canInviteUserInRoomAbility && (
             <IconButton
               className={"icon"}
               title={t("Repeat invitation")}
@@ -180,6 +179,8 @@ const Members = ({
       <StyledUserList>
         {Object.values(members.expected).map((user) => (
           <User
+            access={access}
+            rootFolderType={rootFolderType}
             isExpect
             key={user.id}
             t={t}
@@ -191,7 +192,6 @@ const Members = ({
             roomType={selectionParentRoom.roomType}
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
-            isArchiveRoot={isArchiveRoot}
           />
         ))}
       </StyledUserList>
@@ -200,14 +200,7 @@ const Members = ({
 };
 
 export default inject(
-  ({
-    auth,
-    filesStore,
-    peopleStore,
-    dialogsStore,
-    accessRightsStore,
-    treeFoldersStore,
-  }) => {
+  ({ auth, filesStore, peopleStore, dialogsStore, accessRightsStore }) => {
     const { selectionParentRoom, setSelectionParentRoom } = auth.infoPanelStore;
     const {
       getRoomMembers,
@@ -217,9 +210,7 @@ export default inject(
     const { isOwner, isAdmin, id: selfId } = auth.userStore.user;
     const { setInvitePanelOptions } = dialogsStore;
     const { changeType: changeUserType } = peopleStore;
-    const { canInviteUserInRoom } = accessRightsStore;
-
-    const { isArchiveFolderRoot } = treeFoldersStore;
+    const { canInviteUserInRoom, canChangeUserRoleInRoom } = accessRightsStore;
 
     return {
       selectionParentRoom,
@@ -237,7 +228,7 @@ export default inject(
 
       changeUserType,
       canInviteUserInRoom,
-      isArchiveRoot: isArchiveFolderRoot,
+      canChangeUserRoleInRoom,
     };
   }
 )(

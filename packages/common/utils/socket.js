@@ -1,6 +1,7 @@
 import io from "socket.io-client";
 
 let client = null;
+let callbacks = [];
 
 class SocketIOHelper {
   socketUrl = null;
@@ -21,7 +22,15 @@ class SocketIOHelper {
       path: url,
     });
 
-    client.on("connect", () => console.log("socket is connected"));
+    client.on("connect", () => {
+      console.log("socket is connected");
+      if (callbacks?.length > 0) {
+        callbacks.forEach(({ eventName, callback }) =>
+          client.on(eventName, callback)
+        );
+        callbacks = [];
+      }
+    });
     client.on("connect_error", (err) =>
       console.log("socket connect error", err)
     );
@@ -49,7 +58,10 @@ class SocketIOHelper {
   };
 
   on = (eventName, callback) => {
-    if (!this.isEnabled) return;
+    if (!this.isEnabled) {
+      callbacks.push({ eventName, callback });
+      return;
+    }
 
     if (!client.connected) {
       client.on("connect", () => {

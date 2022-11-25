@@ -6,13 +6,25 @@ import { Base } from "@docspace/components/themes";
 import { StyledCategoryWrapper, StyledTooltip } from "../StyledSecurity";
 
 const CategoryWrapper = (props) => {
-  const { t, title, tooltipTitle, tooltipUrl, theme } = props;
+  const {
+    t,
+    title,
+    tooltipTitle,
+    tooltipUrl,
+    theme,
+    currentColorScheme,
+  } = props;
 
   const tooltip = () => (
     <StyledTooltip>
       <Text className={tooltipUrl ? "subtitle" : ""}>{tooltipTitle}</Text>
       {tooltipUrl && (
-        <Link target="_blank" isHovered href={tooltipUrl}>
+        <Link
+          target="_blank"
+          isHovered
+          href={tooltipUrl}
+          color={currentColorScheme.main.accent}
+        >
           {t("Common:LearnMore")}
         </Link>
       )}

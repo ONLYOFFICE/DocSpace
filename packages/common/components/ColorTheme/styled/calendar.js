@@ -5,9 +5,11 @@ const getDefaultStyles = ({ $currentColorScheme, color }) =>
   $currentColorScheme &&
   css`
     .calendar-month_selected-day {
-      background-color: ${color ? color : $currentColorScheme.accentColor};
+      background-color: ${color ? color : $currentColorScheme.main.accent};
+      color: ${$currentColorScheme.text.accent};
       &:hover {
-        background-color: ${color ? color : $currentColorScheme.accentColor};
+        background-color: ${color ? color : $currentColorScheme.main.accent};
+        color: ${$currentColorScheme.text.accent};
       }
     }
   `;
