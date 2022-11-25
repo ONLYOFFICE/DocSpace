@@ -157,7 +157,7 @@ const PaymentsPage = ({
   }, [ready, portalPaymentQuotas]);
   useEffect(() => {
     (async () => {
-      if (!currentPortalQuota || !portalTariffStatus) return;
+      if (!currentPortalQuota.id || !portalTariffStatus.state) return;
 
       isAlreadyPaid = payerEmail.length !== 0 || !isFreeTariff;
 
@@ -184,7 +184,7 @@ const PaymentsPage = ({
 
       setIsInitialLoading(false);
     })();
-  }, [currentPortalQuota, portalTariffStatus]);
+  }, [currentPortalQuota.id, portalTariffStatus.state]);
 
   const renderTooltip = () => {
     return (

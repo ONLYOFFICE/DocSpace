@@ -3,7 +3,7 @@ import api from "../api";
 import { TariffState } from "../constants";
 
 class CurrentTariffStatusStore {
-  portalTariffStatus = null;
+  portalTariffStatus = {};
   isLoaded = false;
 
   constructor() {
@@ -23,35 +23,35 @@ class CurrentTariffStatusStore {
   };
 
   get isGracePeriod() {
-    return this.portalTariffStatus?.state === TariffState.Delay;
+    return this.portalTariffStatus.state === TariffState.Delay;
   }
 
   get isPaidPeriod() {
-    return this.portalTariffStatus?.state === TariffState.Paid;
+    return this.portalTariffStatus.state === TariffState.Paid;
   }
 
   get isNotPaidPeriod() {
-    return this.portalTariffStatus?.state === TariffState.NotPaid;
+    return this.portalTariffStatus.state === TariffState.NotPaid;
   }
 
   get dueDate() {
-    return this.portalTariffStatus?.dueDate;
+    return this.portalTariffStatus.dueDate;
   }
 
   get delayDueDate() {
-    return this.portalTariffStatus?.delayDueDate;
+    return this.portalTariffStatus.delayDueDate;
   }
 
   get delayDueDate() {
-    return this.portalTariffStatus?.delayDueDate;
+    return this.portalTariffStatus.delayDueDate;
   }
 
   get customerId() {
-    return this.portalTariffStatus?.customerId;
+    return this.portalTariffStatus.customerId;
   }
 
   get portalStatus() {
-    return this.portalTariffStatus?.portalStatus;
+    return this.portalTariffStatus.portalStatus;
   }
 
   setPortalTariff = async () => {
