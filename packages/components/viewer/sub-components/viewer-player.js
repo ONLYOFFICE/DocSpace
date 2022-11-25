@@ -14,6 +14,11 @@ import IconExitFullScreen from "../../../../public/images/videoplayer.exit.react
 import IconSpeed from "../../../../public/images/videoplayer.speed.react.svg";
 import MediaContextMenu from "../../../../public/images/vertical-dots.react.svg";
 
+import Icon1x from "../../../../public/images/media.viewer1x.react.svg";
+import Icon05x from "../../../../public/images/media.viewer05x.react.svg";
+import Icon15x from "../../../../public/images/media.viewer15x.react.svg";
+import Icon2x from "../../../../public/images/media.viewer2x.react.svg";
+
 import BigIconPlay from "../../../../public/images/videoplayer.bgplay.react.svg";
 import { useSwipeable } from "react-swipeable";
 
@@ -58,6 +63,10 @@ const StyledVideoPlayer = styled.div`
     }
   }
 
+  rect {
+    stroke: #fff;
+  }
+
   .video-backdrop {
     position: fixed;
     top: 0;
@@ -76,9 +85,8 @@ const StyledVideoPlayer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 3px 3px 0px 0px;
     height: 30px;
-    width: 40px;
+    width: 48px;
     &:hover {
       cursor: pointer;
       background: #222;
@@ -87,14 +95,17 @@ const StyledVideoPlayer = styled.div`
 
   .dropdown-content {
     display: flex;
+    height: 120px;
+    width: 48px;
+    padding: 4px 0px;
     flex-direction: column;
     align-items: center;
     position: absolute;
-    bottom: 52px;
+    bottom: 48px;
     color: #fff;
-    background: #000;
+    background: #333;
     text-align: center;
-    border-radius: 3px 3px 0px 0px;
+    border-radius: 7px 7px 0px 0px;
   }
 
   .bg-play {
@@ -109,8 +120,7 @@ const StyledVideoPlayer = styled.div`
     margin-right: 15px;
     width: 80%;
     height: 8px;
-    background: #4d4d4d;
-    border: 1px solid rgba(0, 0, 0, 0.4);
+    background: #000;
     border-radius: 5px;
     background-image: linear-gradient(#d1d1d1, #d1d1d1);
     background-repeat: no-repeat;
@@ -121,11 +131,10 @@ const StyledVideoPlayer = styled.div`
   }
   input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    height: 14px;
-    width: 14px;
+    height: 18px;
+    width: 18px;
     border-radius: 50%;
     background: #fff;
-    border: 1px solid rgba(0, 0, 0);
   }
 
   .mobile-video-progress {
@@ -172,7 +181,6 @@ const StyledVideoActions = styled.div`
     height: 48px;
     &:hover {
       cursor: pointer;
-      background: rgb(77, 77, 77);
     }
   }
 `;
@@ -187,19 +195,34 @@ const StyledVideoControls = styled.div`
   background: rgba(0, 0, 0, 0.5);
   .volume-container {
     position: relative;
+
+    &:hover {
+      .volume-wrapper {
+        display: flex;
+      }
+    }
   }
 
   .volume-wrapper {
-    background: #000;
+    background: #333;
     position: absolute;
     bottom: 78px;
-    padding: 9px;
+    border: 1px solid #333;
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+    width: 126px;
+    height: 48px;
+    bottom: 86px;
+    display: none;
+
+    justify-content: center;
+    align-items: center;
     transform: rotate(270deg);
-    //  left: -4px;
   }
 
   .volume-toolbar {
-    width: 50px !important;
+    width: 110px !important;
+    margin: 0px !important;
   }
 `;
 
@@ -232,6 +255,8 @@ export default function ViewerPlayer(props) {
     mobileDetails,
     onPrevClick,
     onNextClick,
+    onMaskClick,
+    displayUI,
   } = props;
 
   const initialState = {
@@ -247,6 +272,7 @@ export default function ViewerPlayer(props) {
     progress: 0,
     duration: 0,
     volumeSelection: false,
+    speedState: 1,
     isOpenContext: false,
     volume: 100,
     size: "0%",
@@ -274,6 +300,8 @@ export default function ViewerPlayer(props) {
   const volumeRef = React.useRef(null);
 
   const [state, dispatch] = React.useReducer(reducer, initialState);
+  const [currentVolume, setCurrentVolume] = React.useState(100);
+  const speedIcons = [<Icon05x />, <Icon1x />, <Icon15x />, <Icon2x />];
   const handlers = useSwipeable({
     onSwipedLeft: (e) => {
       if (e.event.path[0] === inputRef.current) return;
@@ -288,16 +316,21 @@ export default function ViewerPlayer(props) {
   const footerHeight = 48;
   const titleHeight = 53;
 
-  const togglePlay = () =>
+  const togglePlay = (e) => {
+    e.stopPropagation();
     dispatch(
       createAction(ACTION_TYPES.update, {
         isPlaying: !state.isPlaying,
       })
     );
+  };
+
   const handleVolumeUpdate = (e) => {
     const volume = e.target.value / 100;
 
     videoRef.current.volume = volume;
+
+    setCurrentVolume(e.target.value);
 
     dispatch(
       createAction(ACTION_TYPES.update, {
@@ -307,12 +340,11 @@ export default function ViewerPlayer(props) {
     );
   };
 
-  const toggleVolumeSelection = () => {
+  const toggleVolumeMute = () => {
     dispatch(
       createAction(ACTION_TYPES.update, {
-        volumeSelection: !state.volumeSelection,
-        speedSelection: false,
-        isOpenContext: false,
+        isMuted: !state.isMuted,
+        volume: state.volume ? 0 : currentVolume,
       })
     );
   };
@@ -367,19 +399,20 @@ export default function ViewerPlayer(props) {
   };
 
   const handleVideoSpeed = (speed) => {
-    const currentSpeeed = Number(speed);
+    const currentSpeeed = Number(speed.substring(1));
     videoRef.current.playbackRate = currentSpeeed;
   };
 
   const SpeedButtonComponent = () => {
-    const speed = ["0.5", "1", "1.5", "2"];
-    const items = speed.map((speed) => (
+    const speed = ["X0.5", "X1", "X1.5", "X2"];
+    const items = speed.map((speed, index) => (
       <div
         className="dropdown-item"
         onClick={() => {
           dispatch(
             createAction(ACTION_TYPES.update, {
               speedSelection: false,
+              speedState: index,
             })
           );
           return handleVideoSpeed(speed);
@@ -489,6 +522,15 @@ export default function ViewerPlayer(props) {
   }, [inputRef.current, state.progress]);
 
   React.useEffect(() => {
+    if (!volumeRef.current) return;
+
+    volumeRef.current.style.backgroundSize =
+      ((state.volume - volumeRef.current.min) * 100) /
+        (volumeRef.current.max - volumeRef.current.min) +
+      "% 100%";
+  }, [volumeRef.current, state.volume]);
+
+  React.useEffect(() => {
     window.addEventListener("resize", handleResize);
 
     return () => window.removeEventListener("resize", handleResize);
@@ -522,6 +564,10 @@ export default function ViewerPlayer(props) {
     );
   }
 
+  const onClose = () => {
+    onMaskClick();
+  };
+
   React.useEffect(() => {
     videoRef.current.addEventListener("loadedmetadata", function (e) {
       loadVideo(videoRef.current);
@@ -549,7 +595,7 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
     >
       <div className="video-backdrop" style={{ zIndex: 300 }} />
       {!state.isFullScreen && isMobileOnly && mobileDetails}
-      <div className="video-wrapper" onClick={handleOutsideClick}>
+      <div className="video-wrapper" onClick={onClose}>
         <video
           onClick={togglePlay}
           id="videoPlayer"
@@ -579,45 +625,48 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
           />
         </div>
       )}
-      <StyledVideoControls>
-        <StyledVideoActions>
-          <div className="actions-container">
-            <div
-              className="controller volume-container video-play"
-              onClick={togglePlay}
-            >
-              {!state.isPlaying ? <IconPlay /> : <IconStop />}
-            </div>
-            {!isMobileOnly && (
-              <input
-                ref={inputRef}
-                type="range"
-                min="0"
-                max="100"
-                value={state.progress}
-                onChange={(e) => handleVideoProgress(e)}
-              />
-            )}
-
-            {!isMobileOnly && (
+      {displayUI && (
+        <StyledVideoControls>
+          <StyledVideoActions>
+            <div className="actions-container">
               <div
-                style={{
-                  paddingLeft: "10px",
-                  paddingRight: "14px",
-                  width: "102px",
-                  color: "#DDDDDD",
-                }}
+                className="controller volume-container video-play"
+                onClick={togglePlay}
               >
-                {state.duration}
+                {!state.isPlaying ? <IconPlay /> : <IconStop />}
               </div>
-            )}
-            {!isMobileOnly && (
-              <div
-                className="controller volume-container"
-                onClick={toggleVolumeSelection}
-              >
-                {!state.isMuted ? <IconSound /> : <IconMuted />}
-                {state.volumeSelection && (
+              {!isMobileOnly && (
+                <input
+                  ref={inputRef}
+                  type="range"
+                  min="0"
+                  max="100"
+                  value={state.progress}
+                  onChange={(e) => handleVideoProgress(e)}
+                />
+              )}
+
+              {!isMobileOnly && (
+                <div
+                  style={{
+                    paddingLeft: "10px",
+                    paddingRight: "14px",
+                    width: "102px",
+                    color: "#DDDDDD",
+                    userSelect: "none",
+                  }}
+                >
+                  {state.duration}
+                </div>
+              )}
+              {!isMobileOnly && (
+                <div className="controller volume-container">
+                  {!state.isMuted ? (
+                    <IconSound onClick={toggleVolumeMute} />
+                  ) : (
+                    <IconMuted onClick={toggleVolumeMute} />
+                  )}
+
                   <div className="volume-wrapper">
                     <input
                       ref={volumeRef}
@@ -629,43 +678,45 @@ translateX(${state.left !== null ? state.left + "px" : "auto"}) translateY(${
                       onChange={(e) => handleVolumeUpdate(e)}
                     />
                   </div>
+                </div>
+              )}
+
+              <div
+                className="controller fullscreen-button"
+                onClick={toggleScreen}
+              >
+                {!state.isFullScreen ? (
+                  <IconFullScreen />
+                ) : (
+                  <IconExitFullScreen />
                 )}
               </div>
-            )}
 
-            <div
-              className="controller fullscreen-button"
-              onClick={toggleScreen}
-            >
-              {!state.isFullScreen ? (
-                <IconFullScreen />
-              ) : (
-                <IconExitFullScreen />
-              )}
-            </div>
-
-            <div
-              className="controller dropdown-speed"
-              onClick={toggleSpeedSelectionMenu}
-            >
-              <IconSpeed />
-              {state.speedSelection && (
-                <div className="dropdown-content">{SpeedButtonComponent()}</div>
-              )}
-            </div>
-            {!isMobileOnly && (
               <div
-                className="controller"
-                onClick={toggleContext}
-                style={{ position: "relative" }}
+                className="controller dropdown-speed"
+                onClick={toggleSpeedSelectionMenu}
               >
-                <MediaContextMenu />
-                {contextMenu}
+                {speedIcons[state.speedState]}
+                {state.speedSelection && (
+                  <div className="dropdown-content">
+                    {SpeedButtonComponent()}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </StyledVideoActions>
-      </StyledVideoControls>
+              {!isMobileOnly && (
+                <div
+                  className="controller"
+                  onClick={toggleContext}
+                  style={{ position: "relative" }}
+                >
+                  <MediaContextMenu />
+                  {contextMenu}
+                </div>
+              )}
+            </div>
+          </StyledVideoActions>
+        </StyledVideoControls>
+      )}
     </StyledVideoPlayer>
   );
 }
