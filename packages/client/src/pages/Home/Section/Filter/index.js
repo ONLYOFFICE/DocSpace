@@ -995,7 +995,6 @@ const SectionFilterContent = ({
   const getSortData = React.useCallback(() => {
     const commonOptions = [];
 
-    const name = { key: "AZ", label: t("Common:Name"), default: true };
     const name = {
       id: "sort-by_name",
       key: "AZ",
@@ -1008,9 +1007,6 @@ const SectionFilterContent = ({
       label: t("ByLastModified"),
       default: true,
     };
-
-    const type = { key: "Type", label: t("Common:Type"), default: true };
-    const size = { key: "Size", label: t("Common:Size"), default: true };
     const type = {
       id: "sort-by_type",
       key: "Type",
@@ -1035,9 +1031,6 @@ const SectionFilterContent = ({
       label: t("ByAuthor"),
       default: true,
     };
-
-    const owner = { key: "Author", label: t("Common:Owner"), default: true };
-    const tags = { key: "Tags", label: t("Tags"), default: true };
     const owner = {
       id: "sort-by_owner",
       key: "Author",
