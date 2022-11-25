@@ -520,7 +520,6 @@ class SectionHeaderContent extends React.Component {
       getCheckboxItemLabel,
       getCheckboxItemId,
     } = this.props;
-    console.log(cbMenuItems);
     const checkboxOptions = (
       <>
         {cbMenuItems.map((key) => {
