@@ -157,6 +157,24 @@ const StyledViewer = styled(Viewer)`
   }
 `;
 
+const StyledDropDown = styled(DropDown)`
+  background: #333;
+`;
+
+const StyledDropDownItem = styled(DropDownItem)`
+  color: #fff;
+
+  .drop-down-item_icon svg {
+    path {
+      fill: #fff !important;
+    }
+  }
+
+  &:hover {
+    background: #444;
+  }
+`;
+
 StyledViewer.defaultProps = { theme: Base };
 
 class ImageViewer extends React.Component {
@@ -183,7 +201,6 @@ class ImageViewer extends React.Component {
       playlistPos,
       isImage,
       contextModel,
-      onFavorite,
     } = this.props;
 
     const generateContextMenu = (isOpen) => {
@@ -196,7 +213,7 @@ class ImageViewer extends React.Component {
       };
 
       return (
-        <DropDown
+        <StyledDropDown
           open={isOpen}
           isDefaultMode={false}
           directionY="top"
@@ -207,9 +224,12 @@ class ImageViewer extends React.Component {
           manualX="10px"
         >
           {model.map((item) => {
-            const onClick = (e) => onItemClick(e, item);
+            const onClick = (e) => {
+              onClose();
+              onItemClick(e, item);
+            };
             return (
-              <DropDownItem
+              <StyledDropDownItem
                 key={item.key}
                 label={item.label}
                 icon={item.icon ? item.icon : ""}
@@ -218,7 +238,7 @@ class ImageViewer extends React.Component {
               />
             );
           })}
-        </DropDown>
+        </StyledDropDown>
       );
     };
 
@@ -340,8 +360,6 @@ class ImageViewer extends React.Component {
         case "customDownload":
           button.onClick = this.props.onDownloadClick;
           break;
-        case "favorite":
-          button.onClick = onFavorite;
         default:
           break;
       }
