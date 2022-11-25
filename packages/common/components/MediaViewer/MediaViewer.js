@@ -472,22 +472,8 @@ class MediaViewer extends React.Component {
 
     const ext = this.getFileExtension(title);
 
-    const onFavorite = () => {
-      const item = getContextModel()[0];
-      return onClickFavorite(item, currentFileId, t);
-    };
-
     const getContextModel = () => {
       return [
-        {
-          key: isFavorite ? "remove-from-favorites" : "mark-as-favorite",
-          label: isFavorite ? t("RemoveFromFavorites") : t("MarkAsFavorite"),
-          icon: "images/favorites.react.svg",
-          onClick: (e) => onFavorite(e),
-          disabled: false,
-          "data-action": isFavorite ? "remove" : "mark",
-          action: isFavorite ? "remove" : "mark",
-        },
         {
           key: "download",
           label: t("Common:Download"),
@@ -556,7 +542,6 @@ class MediaViewer extends React.Component {
             onPrevClick={this.prevMedia}
             onDeleteClick={this.onDelete}
             isFavorite={isFavorite}
-            onFavorite={onFavorite}
             isImage={isImage}
             onDownloadClick={this.onDownload}
             //    isFavoritesFolder={isFavoritesFolder}
