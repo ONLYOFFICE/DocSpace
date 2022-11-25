@@ -110,9 +110,7 @@ const PaymentsPage = ({
   startValue,
   dueDate,
   delayDueDate,
-  portalStatus,
   setReplacingValuesInTranslation,
-  portalPaymentQuotasFeatures,
   currentTariffPlanTitle,
   tariffPlanTitle,
   expandArticle,
@@ -432,7 +430,6 @@ export default inject(({ auth, payments }) => {
     customerId,
     dueDate,
     delayDueDate,
-    portalStatus,
     portalTariffStatus,
   } = currentTariffStatusStore;
 
@@ -440,7 +437,6 @@ export default inject(({ auth, payments }) => {
     setPortalPaymentQuotas,
     planCost,
     setReplacingValuesInTranslation,
-    portalPaymentQuotasFeatures,
     tariffPlanTitle,
     portalPaymentQuotas,
   } = paymentQuotasStore;
@@ -476,9 +472,7 @@ export default inject(({ auth, payments }) => {
     setPortalPaymentQuotas,
     dueDate,
     delayDueDate,
-    portalStatus,
     setReplacingValuesInTranslation,
-    portalPaymentQuotasFeatures,
     currentTariffPlanTitle,
     setPortalQuota,
     currentPortalQuota,
