@@ -153,11 +153,17 @@ const PaymentsPage = ({
   }, []);
 
   useEffect(() => {
-    if (ready && portalPaymentQuotas) setReplacingValuesInTranslation(t);
-  }, [ready, portalPaymentQuotas]);
+    if (ready && Object.keys(portalPaymentQuotas).length !== 0)
+      setReplacingValuesInTranslation(t);
+  }, [ready, portalPaymentQuotas.title]);
+
   useEffect(() => {
     (async () => {
-      if (!currentPortalQuota.id || !portalTariffStatus.state) return;
+      if (
+        Object.keys(currentPortalQuota).length === 0 ||
+        Object.keys(portalTariffStatus).length === 0
+      )
+        return;
 
       isAlreadyPaid = payerEmail.length !== 0 || !isFreeTariff;
 
@@ -184,7 +190,7 @@ const PaymentsPage = ({
 
       setIsInitialLoading(false);
     })();
-  }, [currentPortalQuota.id, portalTariffStatus.state]);
+  }, [currentPortalQuota.title, portalTariffStatus.state]);
 
   const renderTooltip = () => {
     return (
