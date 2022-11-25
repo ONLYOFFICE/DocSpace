@@ -131,6 +131,7 @@ const Members = ({
         </Text>
         {currCanEditUsers && !isArchiveRoot && (
           <IconButton
+            id="info_add-user"
             className={"icon"}
             title={t("Common:AddUsers")}
             iconName="/static/images/person+.react.svg"
