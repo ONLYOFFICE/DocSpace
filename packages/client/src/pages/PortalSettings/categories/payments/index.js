@@ -91,7 +91,8 @@ let paymentTerm,
   fromDate,
   byDate,
   delayDaysCount,
-  payerInfo = null;
+  payerInfo = null,
+  isAlreadyPaid = false;
 const PaymentsPage = ({
   setPortalPaymentQuotas,
   language,
@@ -109,27 +110,22 @@ const PaymentsPage = ({
   startValue,
   dueDate,
   delayDueDate,
-  portalStatus,
-  replaceFeaturesValues,
-  portalPaymentQuotasFeatures,
+  setReplacingValuesInTranslation,
   currentTariffPlanTitle,
   tariffPlanTitle,
   expandArticle,
   setPortalQuota,
+  currentPortalQuota,
+  portalTariffStatus,
+  portalPaymentQuotas,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
 
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
-  const isAlreadyPaid = payerEmail.length !== 0 || !isFreeTariff;
-
   useEffect(() => {
     setDocumentTitle(t("Settings:Payments"));
   }, [ready]);
-  useEffect(() => {
-    if (ready && portalPaymentQuotasFeatures.length !== 0)
-      replaceFeaturesValues(t);
-  }, [ready, portalPaymentQuotasFeatures]);
 
   const gracePeriodDays = () => {
     const fromDateMoment = moment(dueDate);
@@ -153,16 +149,30 @@ const PaymentsPage = ({
   };
 
   useEffect(() => {
+    moment.locale(language);
+  }, []);
+
+  useEffect(() => {
+    if (ready && Object.keys(portalPaymentQuotas).length !== 0)
+      setReplacingValuesInTranslation(t);
+  }, [ready, portalPaymentQuotas.title]);
+
+  useEffect(() => {
     (async () => {
-      moment.locale(language);
+      if (
+        Object.keys(currentPortalQuota).length === 0 ||
+        Object.keys(portalTariffStatus).length === 0
+      )
+        return;
+
+      isAlreadyPaid = payerEmail.length !== 0 || !isFreeTariff;
 
       const requests = [getSettingsPayment(), setPortalQuota()];
 
       if (!currencySymbol && !startValue)
         requests.push(setPortalPaymentQuotas());
 
-      if (portalStatus !== TariffState.Trial)
-        requests.push(setPaymentAccount());
+      if (isAlreadyPaid) requests.push(setPaymentAccount());
 
       try {
         await Promise.all(requests);
@@ -180,7 +190,7 @@ const PaymentsPage = ({
 
       setIsInitialLoading(false);
     })();
-  }, []);
+  }, [currentPortalQuota.title, portalTariffStatus.state]);
 
   const renderTooltip = () => {
     return (
@@ -417,6 +427,7 @@ export default inject(({ auth, payments }) => {
     isFreeTariff,
     currentTariffPlanTitle,
     setPortalQuota,
+    currentPortalQuota,
   } = currentQuotaStore;
   const {
     isNotPaidPeriod,
@@ -425,15 +436,15 @@ export default inject(({ auth, payments }) => {
     customerId,
     dueDate,
     delayDueDate,
-    portalStatus,
+    portalTariffStatus,
   } = currentTariffStatusStore;
 
   const {
     setPortalPaymentQuotas,
     planCost,
-    replaceFeaturesValues,
-    portalPaymentQuotasFeatures,
+    setReplacingValuesInTranslation,
     tariffPlanTitle,
+    portalPaymentQuotas,
   } = paymentQuotasStore;
   const { organizationName, theme } = auth.settingsStore;
 
@@ -467,10 +478,11 @@ export default inject(({ auth, payments }) => {
     setPortalPaymentQuotas,
     dueDate,
     delayDueDate,
-    portalStatus,
-    replaceFeaturesValues,
-    portalPaymentQuotasFeatures,
+    setReplacingValuesInTranslation,
     currentTariffPlanTitle,
     setPortalQuota,
+    currentPortalQuota,
+    portalTariffStatus,
+    portalPaymentQuotas,
   };
 })(withRouter(observer(PaymentsPage)));
