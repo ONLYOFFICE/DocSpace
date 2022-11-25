@@ -130,6 +130,7 @@ const SelectionPanelBody = ({
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
+          id="select-file-modal-submit"
           theme={theme}
           className="select-file-modal-dialog-buttons-save"
           primary
@@ -149,6 +150,7 @@ const SelectionPanelBody = ({
           isLoading={isDisableTree}
         />
         <Button
+          id="select-file-modal-cancel"
           theme={theme}
           className="modal-dialog-button"
           size="normal"
