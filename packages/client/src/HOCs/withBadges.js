@@ -29,7 +29,7 @@ export default function withBadges(WrappedComponent) {
         isTrashFolder,
       } = this.props;
       if (isTrashFolder) return;
-      fetchFileVersions(item.id + "");
+      fetchFileVersions(item.id + "", item.access);
       setIsVerHistoryPanel(true);
     };
 
@@ -91,6 +91,7 @@ export default function withBadges(WrappedComponent) {
         isDesktopClient,
         sectionWidth,
         viewAs,
+        canViewVersionFileHistory,
       } = this.props;
       const { fileStatus, access } = item;
 
@@ -123,6 +124,7 @@ export default function withBadges(WrappedComponent) {
           setConvertDialogVisible={this.setConvertDialogVisible}
           onFilesClick={onFilesClick}
           viewAs={viewAs}
+          canViewVersionFileHistory={canViewVersionFileHistory}
         />
       );
 
@@ -142,6 +144,7 @@ export default function withBadges(WrappedComponent) {
         dialogsStore,
         filesStore,
         settingsStore,
+        accessRightsStore,
       },
       { item }
     ) => {
@@ -158,6 +161,9 @@ export default function withBadges(WrappedComponent) {
 
       const canWebEdit = settingsStore.canWebEdit(item.fileExst);
       const canConvert = settingsStore.canConvert(item.fileExst);
+      const canViewVersionFileHistory = accessRightsStore.canViewVersionFileHistory(
+        item
+      );
 
       return {
         theme,
@@ -177,6 +183,7 @@ export default function withBadges(WrappedComponent) {
         setConvertItem,
         isDesktopClient,
         setPinAction,
+        canViewVersionFileHistory,
       };
     }
   )(observer(WithBadges));

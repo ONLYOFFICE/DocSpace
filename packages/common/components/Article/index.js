@@ -139,7 +139,12 @@ const Article = ({
           )}
           {isAvailableArticlePaymentAlert &&
             (isFreeTariff || isGracePeriod) &&
-            showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
+            showText && (
+              <ArticlePaymentAlert
+                isFreeTariff={isFreeTariff}
+                toggleArticleOpen={toggleArticleOpen}
+              />
+            )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (

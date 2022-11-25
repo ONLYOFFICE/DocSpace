@@ -71,6 +71,7 @@ const Badges = ({
   setConvertDialogVisible,
   viewAs,
   onUnpinClick,
+  canViewVersionFileHistory,
 }) => {
   const {
     id,
@@ -142,6 +143,10 @@ const Badges = ({
     "data-id": id,
   };
 
+  const onShowVersionHistoryProp = canViewVersionFileHistory
+    ? { onClick: onShowVersionHistory }
+    : {};
+
   return fileExst ? (
     <div className="badges additional-badges temp-badges">
       {isEditing && (
@@ -167,13 +172,13 @@ const Badges = ({
         />
       )}
       {version > 1 && (
-        <BadgeWrapper onClick={onShowVersionHistory} isTile={isTile}>
+        <BadgeWrapper {...onShowVersionHistoryProp} isTile={isTile}>
           <Badge
             {...versionBadgeProps}
             className="badge-version badge-version-current tablet-badge icons-group"
             backgroundColor={theme.filesBadges.backgroundColor}
             label={t("VersionBadge", { version: countVersions })}
-            onClick={onShowVersionHistory}
+            {...onShowVersionHistoryProp}
             noHover={true}
             isVersionBadge={true}
           />

@@ -63,10 +63,6 @@ public static class ISetupBuilderExtension
 
             if (!string.IsNullOrEmpty(awsAccessKeyId))
             {
-
-                awsTarget.LogGroup = String.IsNullOrEmpty(configuration["aws:cloudWatch:logGroupName"]) ? awsTarget.LogGroup : configuration["aws:cloudWatch:logGroupName"];
-                awsTarget.Region = String.IsNullOrEmpty(configuration["aws:cloudWatch:region"]) ? awsTarget.Region : configuration["aws:cloudWatch:region"];
-
                 awsTarget.Credentials = new Amazon.Runtime.BasicAWSCredentials(awsAccessKeyId, awsSecretAccessKey);
             }
         }

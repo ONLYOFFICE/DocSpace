@@ -133,6 +133,16 @@ const StyledFooter = styled.div`
   @media ${tablet} {
     gap: 10px;
   }
+
+  ${(props) =>
+    props.isDoubleFooterLine &&
+    css`
+      flex-direction: column;
+      div {
+        display: flex;
+        gap: 8px;
+      }
+    `}
 `;
 
 Dialog.defaultProps = { theme: Base };

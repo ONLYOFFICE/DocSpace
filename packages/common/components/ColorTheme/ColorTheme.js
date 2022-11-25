@@ -28,6 +28,8 @@ import {
   LinkTheme,
   SliderTheme,
   IndicatorLoaderTheme,
+  ProgressTheme,
+  MobileProgressBarTheme,
 } from "./styled";
 import { ThemeType } from "./constants";
 
@@ -263,6 +265,24 @@ const ColorTheme = forwardRef(
       case ThemeType.IndicatorLoader: {
         return (
           <IndicatorLoaderTheme
+            {...props}
+            $currentColorScheme={currentColorScheme}
+            ref={ref}
+          />
+        );
+      }
+      case ThemeType.Progress: {
+        return (
+          <ProgressTheme
+            {...props}
+            $currentColorScheme={currentColorScheme}
+            ref={ref}
+          />
+        );
+      }
+      case ThemeType.MobileProgressBar: {
+        return (
+          <MobileProgressBarTheme
             {...props}
             $currentColorScheme={currentColorScheme}
             ref={ref}

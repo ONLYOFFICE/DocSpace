@@ -26,7 +26,10 @@ import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
-import { getFileRoleActions } from "@docspace/common/utils/actions";
+import {
+  getArchiveFileRoleActions,
+  getFileRoleActions,
+} from "@docspace/common/utils/actions";
 
 toast.configure();
 
@@ -94,13 +97,16 @@ function Editor({
   filesSettings,
 }) {
   const fileInfo = config?.file;
+
   isArchiveFolderRoot =
     fileInfo && fileInfo.rootFolderType === FolderType.Archive;
 
   const { t } = useTranslation(["Editor", "Common"]);
 
   if (fileInfo) {
-    userAccessRights = getFileRoleActions(fileInfo.access);
+    userAccessRights = isArchiveFolderRoot
+      ? getArchiveFileRoleActions(fileInfo.access)
+      : getFileRoleActions(fileInfo.access);
   }
   useEffect(() => {
     if (error && mfReady) {
@@ -216,6 +222,8 @@ function Editor({
 
   const onSDKRequestEditRights = async () => {
     console.log("ONLYOFFICE Document Editor requests editing rights");
+    const url = window.location.href;
+
     const index = url.indexOf("&action=view");
 
     if (index) {
@@ -233,6 +241,8 @@ function Editor({
   };
 
   const onMakeActionLink = (event) => {
+    const url = window.location.href;
+
     const actionData = event.data;
 
     const link = generateLink(actionData);
@@ -370,33 +380,33 @@ function Editor({
     assign(window, ["ASC", "Files", "Editor", "docEditor"], docEditor); //Do not remove: it's for Back button on Mobile App
   };
 
-  const updateFavorite = (favorite) => {
-    docEditor.setFavorite(favorite);
-  };
+  // const updateFavorite = (favorite) => {
+  //   docEditor.setFavorite(favorite);
+  // };
 
   const onMetaChange = (event) => {
     const newTitle = event.data.title;
-    const favorite = event.data.favorite;
+    //const favorite = event.data.favorite;
 
     if (newTitle && newTitle !== docTitle) {
       setDocumentTitle(newTitle);
       docTitle = newTitle;
     }
 
-    if (!newTitle) {
-      const onlyNumbers = new RegExp("^[0-9]+$");
-      const isFileWithoutProvider = onlyNumbers.test(fileId);
+    // if (!newTitle) {
+    //   const onlyNumbers = new RegExp("^[0-9]+$");
+    //   const isFileWithoutProvider = onlyNumbers.test(fileId);
 
-      const convertFileId = isFileWithoutProvider ? +fileId : fileId;
+    //   const convertFileId = isFileWithoutProvider ? +fileId : fileId;
 
-      favorite
-        ? markAsFavorite([convertFileId])
-            .then(() => updateFavorite(favorite))
-            .catch((error) => console.log("error", error))
-        : removeFromFavorite([convertFileId])
-            .then(() => updateFavorite(favorite))
-            .catch((error) => console.log("error", error));
-    }
+    //   favorite
+    //     ? markAsFavorite([convertFileId])
+    //         .then(() => updateFavorite(favorite))
+    //         .catch((error) => console.log("error", error))
+    //     : removeFromFavorite([convertFileId])
+    //         .then(() => updateFavorite(favorite))
+    //         .catch((error) => console.log("error", error));
+    // }
   };
 
   const setDocumentTitle = (subTitle = null) => {
@@ -416,6 +426,10 @@ function Editor({
       title = moduleTitle + " - " + organizationName;
     } else {
       title = organizationName;
+    }
+
+    if (!documentIsReady) {
+      docTitle = title;
     }
     document.title = title;
   };
@@ -441,8 +455,10 @@ function Editor({
 
     if (index > -1) {
       const splitUrl = url.split("#message/");
+
       if (splitUrl.length === 2) {
-        const message = decodeURIComponent(raw).replace(/\+/g, " ");
+        const message = decodeURIComponent(splitUrl[1]).replace(/\+/g, " ");
+
         docEditor.showMessage(message);
         history.pushState({}, null, url.substring(0, index));
       } else {
@@ -522,20 +538,25 @@ function Editor({
           );
       }
 
-      let onRequestSharingSettings,
+      let //onRequestSharingSettings,
         onRequestRename,
         onRequestSaveAs,
         onRequestInsertImage,
         onRequestMailMergeRecipients,
         onRequestCompareFile,
-        onRequestRestore;
+        onRequestRestore,
+        onRequestHistory;
 
       // if (isSharingAccess) {
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
       // }
 
-      if (userAccessRights.rename && !isArchiveFolderRoot) {
+      if (userAccessRights.rename) {
         onRequestRename = onSDKRequestRename;
+      }
+
+      if (userAccessRights.viewVersionHistory) {
+        onRequestHistory = onSDKRequestHistory;
       }
 
       if (successAuth && !user.isVisitor) {
@@ -548,7 +569,7 @@ function Editor({
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
-      if (userAccessRights.changeVersionHistory && !isArchiveFolderRoot) {
+      if (userAccessRights.changeVersionHistory) {
         onRequestRestore = onSDKRequestRestore;
       }
 
@@ -569,7 +590,7 @@ function Editor({
           onRequestMailMergeRecipients,
           onRequestCompareFile,
           onRequestEditRights: onSDKRequestEditRights,
-          onRequestHistory: onSDKRequestHistory,
+          onRequestHistory: onRequestHistory,
           onRequestHistoryClose: onSDKRequestHistoryClose,
           onRequestHistoryData: onSDKRequestHistoryData,
           onRequestRestore,
