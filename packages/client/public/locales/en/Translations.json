@@ -49,7 +49,6 @@
   "RoleCommentatorDescription": "Operations with existing files: viewing, commenting.",
   "RoleDocSpaceAdmin": "DocSpace admin",
   "RoleDocSpaceAdminDescription": "DocSpace admins can access DocSpace settings, manage and archive rooms, invite new users and assign roles below their level. All admins have access to the Personal section.",
-  "RoleDocSpaceAdminDescription": "DocSpace admins can access DocSpace settings, manage and archive rooms, invite new users and assign roles below their level. All admins have access to the Personal section.",
   "RoleEditor": "Editor",
   "RoleEditorDescription": "Operations with existing files: viewing, editing, form filling, reviewing, commenting.",
   "RoleFormFiller": "Form filler",

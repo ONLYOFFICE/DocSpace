@@ -5,7 +5,6 @@
   "Benefits": "Преимущества",
   "BusinessExpired": "Срок действия вашего {{planName}} тарифа истек {{date}}",
   "BusinessTitle": "Вы используете {{planName}} план",
-  "BusinessSuggestion": "Настройте свой {{planName}} план",
   "BusinessFinalDateInfo": "Подписка будет автоматически продлена {{finalDate}} с обновленными ценами и техническими характеристиками. Вы можете отменить его или изменить свою платежную информацию на клиентский портал Stripe.",
   "BusinessRequestDescription": "Тарифные планы с более чем {{peopleNumber}} менеджерами доступны только по запросу",
   "BusinessSuggestion": "Настройте свой {{planName}} план",
@@ -40,6 +39,5 @@
   "TotalPricePerMonth": "<1>{{currencySymbol}}</1><2>{{price}}</2><3>/месяц</3>",
   "UpgradeNow": "Обновить прямо сейчас",
   "UserNotFound": "Пользователь <1>«{{email}}»</1> не найден",
-  "UserNotFound": "Пользователь <1>{{email}}</1> не найден",
   "YourPrice": "Ваша стоимость"
 }
