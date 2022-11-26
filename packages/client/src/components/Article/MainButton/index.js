@@ -429,15 +429,14 @@ const ArticleMainButtonContent = (props) => {
     ? t("Common:Invite")
     : t("Common:Actions");
 
-  const canCreateEncrypted =
-    isPrivateFolder && isDesktopClient && isEncryptionSupport;
+  const canCreateEncrypted = isDesktopClient && isEncryptionSupport;
 
   const isDisabled =
     ((!canCreate || (!canCreateFiles && !isRoomsFolder)) &&
       !canInvite &&
       !isPrivateFolder) ||
     isArchiveFolder ||
-    !canCreateEncrypted;
+    (isPrivateFolder && !canCreateEncrypted);
 
   const isProfile = history.location.pathname === "/accounts/view/@self";
 
