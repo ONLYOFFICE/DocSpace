@@ -62,6 +62,7 @@ public class FileSecurity : IFileSecurity
     private readonly AuthManager _authManager;
     private readonly GlobalFolder _globalFolder;
     private readonly FileSecurityCommon _fileSecurityCommon;
+    private readonly CoreBaseSettings _coreBaseSettings;
 
     public FileSecurity(
         IDaoFactory daoFactory,
@@ -70,7 +71,8 @@ public class FileSecurity : IFileSecurity
         AuthContext authContext,
         AuthManager authManager,
         GlobalFolder globalFolder,
-        FileSecurityCommon fileSecurityCommon)
+        FileSecurityCommon fileSecurityCommon,
+        CoreBaseSettings coreBaseSettings)
     {
         _daoFactory = daoFactory;
         _userManager = userManager;
@@ -79,6 +81,7 @@ public class FileSecurity : IFileSecurity
         _authManager = authManager;
         _globalFolder = globalFolder;
         _fileSecurityCommon = fileSecurityCommon;
+        _coreBaseSettings = coreBaseSettings;
     }
 
     public IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
@@ -527,6 +530,21 @@ public class FileSecurity : IFileSecurity
 
     private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin)
     {
+        if (!_coreBaseSettings.DisableDocSpace)
+        {
+            if (
+                e.RootFolderType == FolderType.COMMON ||
+                e.RootFolderType == FolderType.SHARE ||
+                e.RootFolderType == FolderType.Recent ||
+                e.RootFolderType == FolderType.Favorites ||
+                e.RootFolderType == FolderType.Templates ||
+                e.RootFolderType == FolderType.Privacy ||
+                e.RootFolderType == FolderType.Projects)
+            {
+                return false;
+            }
+        }
+
         if (e.RootFolderType == FolderType.COMMON ||
             e.RootFolderType == FolderType.USER ||
             e.RootFolderType == FolderType.SHARE ||
@@ -1022,7 +1040,7 @@ public class FileSecurity : IFileSecurity
     private async Task<IEnumerable<string>> GetThirdpartyRoomsIdsAsync(SearchArea searchArea)
     {
         var result = new List<string>();
-        
+
         if (_userManager.IsUser(_authContext.CurrentAccount.ID))
         {
             return Array.Empty<string>();

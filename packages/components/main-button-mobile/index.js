@@ -78,7 +78,11 @@ const ProgressBarMobile = ({
       </div>
 
       <StyledMobileProgressBar>
-        <StyledBar uploadPercent={uploadPercent} error={error} />
+        <ColorTheme
+          themeId={ThemeType.MobileProgressBar}
+          uploadPercent={uploadPercent}
+          error={error}
+        />
       </StyledMobileProgressBar>
     </StyledProgressBarContainer>
   );

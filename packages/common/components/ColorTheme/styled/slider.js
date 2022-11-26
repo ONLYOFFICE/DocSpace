@@ -11,11 +11,11 @@ const getDefaultStyles = ({
   css`
     background-image: ${withPouring &&
     ((theme.isBase &&
-      `linear-gradient( ${$currentColorScheme.accentColor}, ${$currentColorScheme.accentColor})`) ||
+      `linear-gradient( ${$currentColorScheme.main.accent}, ${$currentColorScheme.main.accent})`) ||
       (!theme.isBase && `linear-gradient(#FFFFFF, #FFFFFF)`))};
 
     &::-webkit-slider-thumb {
-      background: ${(theme.isBase && $currentColorScheme.accentColor) ||
+      background: ${(theme.isBase && $currentColorScheme.main.accent) ||
       (!theme.isBase && "#FFFFFF")};
       box-shadow: ${!theme.isBase &&
       "0px 3px 12px rgba(0, 0, 0, 0.25); !important"};
@@ -24,7 +24,7 @@ const getDefaultStyles = ({
     &:hover {
       background-image: ${withPouring &&
       ((theme.isBase &&
-        `linear-gradient( ${$currentColorScheme.accentColor}, ${$currentColorScheme.accentColor})`) ||
+        `linear-gradient( ${$currentColorScheme.main.accent}, ${$currentColorScheme.main.accent})`) ||
         (!theme.isBase && `linear-gradient(#FFFFFF, #FFFFFF)`))};
     }
 

@@ -5,9 +5,11 @@ import Base from "@docspace/components/themes/base";
 const getDefaultStyles = ({ $currentColorScheme, selected, theme }) =>
   $currentColorScheme &&
   css`
-    background-color: ${selected &&
-    theme.isBase &&
-    $currentColorScheme.accentColor} !important;
+    background-color: ${selected && $currentColorScheme.main.accent} !important;
+
+    .title_style {
+      color: ${selected && $currentColorScheme.text.accent};
+    }
   `;
 
 Label.defaultProps = { theme: Base };
