@@ -1,18 +1,8 @@
 {
   "AccountsEmptyScreenText": "Здесь будут представлены подробности о пользователях",
   "AndMoreLabel": "и <strong>еще {{count}}</strong>",
-  "RoomsEmptyScreenTent": "Здесь будут представлены подробности о комнатах",
   "CreationDate": "Дата создания",
-  "FilesEmptyScreenText": "Здесь будут представлены свойства файлов и папок",
-
-  "SubmenuMembers": "Участники",
-  "SubmenuHistory": "История",
-  "SubmenuDetails": "Детали",
-
-  "UsersInRoom": "Пользователей в комнате",
   "ExpectPeople": "Приглашенные люди",
-  "RecentActivities": "Недавние действия",
-  "Properties": "Cвойства",
   "Data": "Данные",
   "DateModified": "Дата изменения",
   "FeedCreateFileSeveral": "Добавлены файлы.",
