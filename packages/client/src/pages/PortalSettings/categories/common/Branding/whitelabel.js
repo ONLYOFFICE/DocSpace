@@ -89,7 +89,7 @@ const WhiteLabel = (props) => {
     try {
       await restoreWhiteLabelSettings(true);
       await getWhiteLabelLogoUrls();
-      await getWhiteLabelLogoUrlsAction();
+      await getWhiteLabelLogoUrlsAction(); //TODO: delete duplicate request
       await getWhiteLabelLogoText();
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
@@ -152,7 +152,7 @@ const WhiteLabel = (props) => {
       setIsSaving(true);
       await setWhiteLabelSettings(data);
       await getWhiteLabelLogoUrls();
-      await getWhiteLabelLogoUrlsAction();
+      await getWhiteLabelLogoUrlsAction(); //TODO: delete duplicate request
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
