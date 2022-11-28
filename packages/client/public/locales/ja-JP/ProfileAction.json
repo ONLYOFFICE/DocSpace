@@ -14,7 +14,6 @@
   "EmailPopupHelper": "メインのメールは、通知やアクセスの復元に使用されます。<1> このドメインにユーザー用の新しいメールを作成し、初回ログイン時のワンタイムパスワードを設定することができます</1>。",
   "ErrorInvalidUserFirstName": "無効な名",
   "ErrorInvalidUserLastName": "無効な姓",
-  "FirstName": "お名前",
   "Message": "話す",
   "ProductsAndInstruments_Products": "モジュール",
   "ProfileAction": "プロフィールアクション",

@@ -80,6 +80,7 @@
   "EncryptionKeysReload": "Verschlüsselungsschlüssel müssen erneut eingegeben werden",
   "Error": "Fehler",
   "ErrorInternalServer": "Interner Serverfehler. Versuchen Sie nochmals später.",
+  "FirstName": "Vorname",
   "FillFormButton": "Formular ausfüllen",
   "FullAccess": "Voller Zugriff",
   "Guest": "Gast",

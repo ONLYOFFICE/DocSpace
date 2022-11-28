@@ -14,7 +14,6 @@
   "EmailPopupHelper": "Το κύριο email χρησιμοποιείται για ειδοποιήσεις και αποκατάσταση της πρόσβασης. <1> Μπορείτε να δημιουργήσετε ένα νέο email σε αυτόν τον τομέα για τον χρήστη και να ορίσετε έναν κωδικό πρόσβασης μιας χρήσης για την πρώτη σύνδεση.</1>",
   "ErrorInvalidUserFirstName": "Μη έγκυρο όνομα",
   "ErrorInvalidUserLastName": "Μη έγκυρο επώνυμο",
-  "FirstName": "Όνομα",
   "Message": "Ομιλία",
   "ProductsAndInstruments_Products": "Ενότητες",
   "ProfileAction": "Ενέργεια προφίλ",

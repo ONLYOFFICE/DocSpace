@@ -80,6 +80,7 @@
   "EncryptionKeysReload": "Потрібно повторно ввести ключі шифрування",
   "Error": "Помилка",
   "ErrorInternalServer": "Внутрішня помилка сервера. Спробуйте ще раз пізніше",
+  "FirstName": "Ім'я",
   "FillFormButton": "Заповнити форму",
   "FullAccess": "Повний доступ",
   "Guest": "Гість",

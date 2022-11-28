@@ -14,7 +14,6 @@
   "EmailPopupHelper": "Əsas elektron poçt ünvanı bildirişlər və icazənin bərpası üçün istifadə olunur. <1> İlk daxil olma üçün həmin domendə yeni elektron poçtu əlavə edib, giriş üçün bir dəfəlik şifrədən istifadə edin. </1>",
   "ErrorInvalidUserFirstName": "Etibarsız ad",
   "ErrorInvalidUserLastName": "Etibarsız soyad",
-  "FirstName": "Ad",
   "Message": "Çat",
   "ProductsAndInstruments_Products": "Modullar",
   "ProfileAction": "Profil əməliyyatları",

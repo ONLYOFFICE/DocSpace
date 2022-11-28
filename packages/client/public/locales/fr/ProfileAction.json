@@ -14,7 +14,6 @@
   "EmailPopupHelper": "L'adresse mail principal est utilisée pour les notifications et pour la restauration de l'accès. <1> Vous pouvez créer une nouvelle adresse mail sur ce domaine pour cet utilisateur et définir un mot de passe à usage unique pour la première connexion.",
   "ErrorInvalidUserFirstName": "Nom invalide",
   "ErrorInvalidUserLastName": "Prénom invalide",
-  "FirstName": "Prénom",
   "Message": "Chat",
   "ProductsAndInstruments_Products": "Modules",
   "ProfileAction": "Action sur le profil",

@@ -14,7 +14,6 @@
   "EmailPopupHelper": "Główny adres e-mail jest wykorzystywany do powiadomień oraz odzyskiwania dostępu. <1> Możesz utworzyć dla użytkownika nowy adres e-mail na tej domenie i ustawić jednorazowe hasło umożliwiające pierwsze logowanie.</1>",
   "ErrorInvalidUserFirstName": "Nieprawidłowe imię",
   "ErrorInvalidUserLastName": "Nieprawidłowe nazwisko",
-  "FirstName": "Imię",
   "Message": "Mów",
   "ProductsAndInstruments_Products": "Moduły",
   "ProfileAction": "Działania na profilu",

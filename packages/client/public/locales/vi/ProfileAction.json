@@ -14,7 +14,6 @@
   "EmailPopupHelper": " Email chính được sử dụng để thông báo và khôi phục quyền truy cập. <1> Bạn có thể tạo email mới trên tên miền này cho người dùng và đặt mật khẩu một lần cho lần đăng nhập đầu tiên.</1>",
   "ErrorInvalidUserFirstName": "Tên không có",
   "ErrorInvalidUserLastName": "Họ không có",
-  "FirstName": "Tên",
   "Message": "Nói",
   "ProductsAndInstruments_Products": "Mô-đun",
   "ProfileAction": "Hành động với hồ sơ",

@@ -14,7 +14,6 @@
   "EmailPopupHelper": "O e-mail principal é utilizado para notificações e restabelecimento do acesso. <1> Pode criar um novo e-mail neste domínio para o utilizador e definir uma palavra-passe única para o primeiro acesso.</1>",
   "ErrorInvalidUserFirstName": "Primeiro nome inválido",
   "ErrorInvalidUserLastName": "Último nome inválido",
-  "FirstName": "Primeiro nome",
   "Message": "Conversa",
   "ProductsAndInstruments_Products": "Módulos",
   "ProfileAction": "Ação de perfil",

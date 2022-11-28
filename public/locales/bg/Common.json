@@ -80,6 +80,7 @@
   "EncryptionKeysReload": "Криптиращите ключове трябва да се въведат отново",
   "Error": "Грешка",
   "ErrorInternalServer": "Вътрешна грешка на сървъра. Опитайте отново по-късно.",
+  "FirstName": "Име",
   "FillFormButton": "Попълнете формуляра",
   "FullAccess": "Пълен достъп",
   "Guest": "Гост",

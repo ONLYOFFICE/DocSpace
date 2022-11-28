@@ -14,7 +14,6 @@
   "EmailPopupHelper": "Pääsähköpostia käytetään ilmoituksiin ja pääsyn palauttamiseen. <1> Voit luoda käyttäjälle uuden sähköpostiviestin tälle verkkotunnukselle ja asettaa kertakäyttöisen salasanan ensimmäiselle kirjautumiskerralle. </1>",
   "ErrorInvalidUserFirstName": "Virheellinen etunimi",
   "ErrorInvalidUserLastName": "Virheellinen sukunimi",
-  "FirstName": "Etunimi",
   "Message": "Puhu",
   "ProductsAndInstruments_Products": "Moduulit",
   "ProfileAction": "Profiilitoiminto",

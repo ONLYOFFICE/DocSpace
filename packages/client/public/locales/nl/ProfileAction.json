@@ -14,7 +14,6 @@
   "EmailPopupHelper": "De primaire e-mail wordt gebruikt voor meldingen en het herstellen van de toegang. <1> U kunt een nieuwe e-mail op dit domein voor de gebruiker aanmaken en een eenmalig wachtwoord instellen voor de eerste login.</1>",
   "ErrorInvalidUserFirstName": "Ongeldige voornaam",
   "ErrorInvalidUserLastName": "Ongeldige achternaam",
-  "FirstName": "Voornaam",
   "Message": "Praten",
   "ProductsAndInstruments_Products": "Modules",
   "ProfileAction": "Profiel actie",

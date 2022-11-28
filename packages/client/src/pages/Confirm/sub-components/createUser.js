@@ -661,7 +661,7 @@ const Confirm = (props) => {
                   type="text"
                   hasError={!fnameValid}
                   value={fname}
-                  placeholder={t("FirstName")}
+                  placeholder={t("Common:FirstName")}
                   size="large"
                   scale={true}
                   tabIndex={1}

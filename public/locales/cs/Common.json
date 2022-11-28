@@ -80,6 +80,7 @@
   "EncryptionKeysReload": "Šifrovací klíče musí být zadány znovu",
   "Error": "Chyba",
   "ErrorInternalServer": "Interní chyba serveru. Zkuste to později.",
+  "FirstName": "Křestní jméno",
   "FillFormButton": "Vyplňte formulář",
   "FullAccess": "Plný přístup",
   "Guest": "Host",

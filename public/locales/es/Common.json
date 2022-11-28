@@ -80,6 +80,7 @@
   "EncryptionKeysReload": "Las claves de cifrado deben ser introducidas de nuevo",
   "Error": "Error",
   "ErrorInternalServer": "Error de servidor interno. Inténtelo de nuevo más tarde.",
+  "FirstName": "Nombre",
   "FillFormButton": "Rellenar el formulario",
   "FullAccess": "Acceso total",
   "Guest": "Invitado",

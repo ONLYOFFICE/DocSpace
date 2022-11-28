@@ -80,6 +80,7 @@
   "EncryptionKeysReload": "Salausavaimet on syötettävä uudelleen",
   "Error": "Virhe",
   "ErrorInternalServer": "Palvelimen sisäinen virhe. Yritä myöhemmin uudelleen.",
+  "FirstName": "Etunimi",
   "FillFormButton": "Täytä lomake",
   "FullAccess": "Täysi pääsy",
   "Guest": "Vieras",

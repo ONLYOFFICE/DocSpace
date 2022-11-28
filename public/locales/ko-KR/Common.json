@@ -79,6 +79,7 @@
   "EncryptionFilePreparing": "암호화를 위해 파일을 준비하는 중입니다",
   "EncryptionKeysReload": "암호화 키를 다시 입력해야 합니다",
   "Error": "오류",
+  "FirstName": "이름",
   "FillFormButton": "양식을 작성해주세요",
   "FullAccess": "전체 액세스",
   "Guest": "게스트",

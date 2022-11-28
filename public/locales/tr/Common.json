@@ -80,6 +80,7 @@
   "EncryptionKeysReload": "Şifreleme anahtarları yeniden girilmelidir",
   "Error": "Hata",
   "ErrorInternalServer": "İç sunucu hatası. Daha sonra tekrar deneyin.",
+  "FirstName": "İsim",
   "FillFormButton": "Formu doldurun",
   "FullAccess": "Tam erişim",
   "Guest": "Misafir",

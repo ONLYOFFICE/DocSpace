@@ -14,7 +14,6 @@
   "EmailPopupHelper": "Die Haupt-E-Mail-Adresse wird für Benachrichtigungen und Zugriffswiederherstellung benutzt. <1> Sie können in dieser Domain eine neue E-Mail für den Benutzer erstellen und ein Einmalkennwort für die erste Anmeldung festlegen.</1>",
   "ErrorInvalidUserFirstName": "Ungültiger Vorname",
   "ErrorInvalidUserLastName": "Ungültiger Nachname",
-  "FirstName": "Vorname",
   "Message": "Chat",
   "ProductsAndInstruments_Products": "Module",
   "ProfileAction": "Arbeit mit dem Profil",

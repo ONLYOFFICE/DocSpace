@@ -14,7 +14,6 @@
   "EmailPopupHelper": "主要邮件用于消息通知与回复访问权限。<1>您可在此域上为用户创建新邮件并为首次登录设置一次性密码。</1>",
   "ErrorInvalidUserFirstName": "無效的名字",
   "ErrorInvalidUserLastName": "无效的姓氏",
-  "FirstName": "名字",
   "Message": "聊天",
   "ProductsAndInstruments_Products": "模块",
   "ProfileAction": "档案操作",
