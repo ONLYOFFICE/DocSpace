@@ -2,7 +2,6 @@
   "AddMembers": "Добавить участников",
   "Birthdate": "Дата рождения",
   "DeleteSelfProfile": "Удалить профиль",
-  "DeleteUserDataConfirmation": "Будут удалены личные документы пользователя, доступные для других. Чтобы избежать этого, нужно перед удалением запустить процесс передачи данных.",
   "DisableUserButton": "Заблокировать",
   "DisabledEmployeeStatus": "Заблокирован",
   "EmailChangeButton": "Изменить email",
