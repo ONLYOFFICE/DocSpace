@@ -11,10 +11,10 @@ const StyledBody = styled.div`
   }
 `;
 
-const RequestButtonContainer = ({ isDisabled, isLoading, t }) => {
+const RequestButtonContainer = ({ isDisabled, isLoading }) => {
   const [isVisibleDialog, setIsVisibleDialog] = useState(false);
   const { t } = useTranslation(["Common"]);
-  
+
   const toDoRequest = () => {
     setIsVisibleDialog(true);
   };
