@@ -296,6 +296,7 @@ const SectionHeaderContent = (props) => {
               {t("Accounts")}
             </Headline>
             <ContextMenuButton
+              id="header_add-button"
               className="action-button"
               directionX="left"
               title={t("Common:Actions")}
@@ -314,6 +315,7 @@ const SectionHeaderContent = (props) => {
                 ) && (
                   <div className="info-panel-toggle-bg">
                     <IconButton
+                      id="info-panel-toggle--open"
                       className="info-panel-toggle"
                       iconName="images/panel.react.svg"
                       size="16"
