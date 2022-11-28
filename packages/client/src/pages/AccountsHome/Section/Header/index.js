@@ -226,7 +226,7 @@ const SectionHeaderContent = (props) => {
   const getContextOptions = () => {
     return [
       isOwner && {
-        id: "main-button_administrator",
+        id: "accounts-add-button_administrator",
         className: "main-button_drop-down",
         icon: "/static/images/person.admin.react.svg",
         label: t("Common:DocSpaceAdmin"),
@@ -235,7 +235,7 @@ const SectionHeaderContent = (props) => {
         key: "administrator",
       },
       {
-        id: "main-button_manager",
+        id: "accounts-add-button_manager",
         className: "main-button_drop-down",
         icon: "/static/images/person.manager.react.svg",
         label: t("Common:RoomAdmin"),
@@ -244,8 +244,8 @@ const SectionHeaderContent = (props) => {
         key: "manager",
       },
       {
-        id: "main-button_user",
-        className: "main-button_drop-down",
+        id: "accounts-add-button_user",
+        className: "account-add-button_drop-down",
         icon: "/static/images/person.user.react.svg",
         label: t("Common:User"),
         onClick: onInvite,
@@ -257,7 +257,7 @@ const SectionHeaderContent = (props) => {
         isSeparator: true,
       },
       {
-        id: "main-button_invite-again",
+        id: "accounts-add-button_invite-again",
         className: "main-button_drop-down",
         icon: "/static/images/invite.again.react.svg",
         label: t("LblInviteAgain"),
