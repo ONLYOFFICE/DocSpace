@@ -17,7 +17,6 @@
   "HideAdditionalParameters": "Hide advanced settings",
   "HideAuthPage": "Hide auth page",
   "LastName": "Last Name",
-  "Location": "Location",
   "LogoutEndpointUrl": "IdP Single Logout Endpoint URL",
   "LogoutEndpointUrlTooltip": "The URL used for the single logout on the Service provider side",
   "NameIDFormat": "NameId Format",

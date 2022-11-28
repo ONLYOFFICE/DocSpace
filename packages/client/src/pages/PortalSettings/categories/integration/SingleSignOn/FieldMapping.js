@@ -78,7 +78,7 @@ const FieldMapping = (props) => {
       />
 
       <SsoFormField
-        labelText={t("Location")}
+        labelText={t("Common:Location")}
         name="location"
         placeholder="sn"
         tabIndex={19}
