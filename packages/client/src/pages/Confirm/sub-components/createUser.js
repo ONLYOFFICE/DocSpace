@@ -739,7 +739,6 @@ const Confirm = (props) => {
               </FieldContainer>
 
               <Button
-                id="submit"
                 className="login-button"
                 primary
                 size="medium"
@@ -757,7 +756,6 @@ const Confirm = (props) => {
             </div>
 
             <Button
-              id="submit"
               className="login-button is-greeting-mode-button"
               primary
               size="medium"
