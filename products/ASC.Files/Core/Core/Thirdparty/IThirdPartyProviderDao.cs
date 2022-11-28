@@ -466,11 +466,6 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
             }
             else if (subjectFilter == SubjectFilter.Member)
             {
-                rooms = excludeSubject ? rooms.Where(f => f != null && f.CreateBy != subjectId && !subjectEntriesIds.Contains(f.Id)) 
-                    : rooms.Where(f => f != null && subjectEntriesIds.Contains(f.Id));
-            }
-            else if (subjectFilter == SubjectFilter.All)
-            {
                 rooms = excludeSubject ? rooms.Where(f => f != null && f.CreateBy != subjectId && !subjectEntriesIds.Contains(f.Id))
                 : rooms.Where(f => f != null && (f.CreateBy == subjectId || subjectEntriesIds.Contains(f.Id)));
             }

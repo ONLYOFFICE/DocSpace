@@ -30,5 +30,4 @@ public enum SubjectFilter
 {
     Owner = 0,
     Member = 1,
-    All = 2,
 }
