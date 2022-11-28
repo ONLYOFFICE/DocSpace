@@ -159,7 +159,7 @@ const InvitePanel = ({
         ? await inviteUsers(data)
         : await setRoomSecurity(roomId, data);
       onClose();
-      toastr.success(`Users invited`);
+      toastr.success(t("Common:UsersInvited"));
       reloadSelectionParentRoom();
     } catch (err) {
       toastr.error(err);
