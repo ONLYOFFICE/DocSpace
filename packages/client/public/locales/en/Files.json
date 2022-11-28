@@ -102,7 +102,6 @@
   "SharedEmptyContainerDescription": "The 'Shared with Me' section shows files shared to you by teammates. If you haven't seen the latest changes, they are marked as new. You can remove the files from the list using the context menu. ",
   "ShowVersionHistory": "Show version history",
   "Spreadsheet": "Spreadsheet",
-  "Tags": "Tags",
   "TooltipElementCopyMessage": "Copy {{element}}",
   "TooltipElementsCopyMessage": "Copy {{element}} elements",
   "TooltipElementsMoveMessage": "Move {{element}} elements",

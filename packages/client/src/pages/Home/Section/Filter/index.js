@@ -841,7 +841,7 @@ const SectionFilterContent = ({
         filterOptions.push({
           key: FilterGroups.roomFilterTags,
           group: FilterGroups.roomFilterTags,
-          label: t("Tags"),
+          label: t("Common:Tags"),
           isHeader: true,
           isLast,
         });
@@ -1040,7 +1040,7 @@ const SectionFilterContent = ({
     const tags = {
       id: "sort-by_tags",
       key: "Tags",
-      label: t("Tags"),
+      label: t("Common:Tags"),
       default: true,
     };
     const roomType = {
