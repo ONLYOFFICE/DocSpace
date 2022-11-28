@@ -33,7 +33,6 @@
   "PlanTitle": "You are using the {{planName}} plan",
   "PriceCalculation": "Calculate your price",
   "RenewSubscription": "Renew subscription to {{planName}} plan",
-  "Room": "Room",
   "RoomManagerDescription": "Room administration and archiving, user invitation and management. Several admins can be assigned to the room.",
   "StartupSuggestion": "Do more with {{planName}} plan",
   "StartupTitle": "You are using free {{planName}} plan",
