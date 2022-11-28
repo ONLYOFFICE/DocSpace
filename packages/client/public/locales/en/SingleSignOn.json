@@ -43,7 +43,6 @@
   "SpMetadata": "ONLYOFFICE SP Metadata",
   "SsoIntro": "The Single Sign-on section allows you to enable/disable third-party authentication using SAML, thereby providing a more quick, easy and secure way to access the portal for users.",
   "StandardDecryptionAlgorithm": "Default Decrypt Algorithm",
-  "Title": "Title",
   "TurnOnSSO": "Enable Single Sign-on Authentication",
   "TurnOnSSOCaption": "Enable this option if you want to add users from SSO service to your portal automatically",
   "UploadXML": "Load metadata from XML to fill the required fields automatically",
