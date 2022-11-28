@@ -71,7 +71,11 @@ const AccountsItemTitle = ({
         )}
       </div>
       {!!contextOptions.length && (
-        <ContextMenuButton className="context-button" getData={getData} />
+        <ContextMenuButton
+          id="info-accounts-options"
+          className="context-button"
+          getData={getData}
+        />
       )}
     </StyledAccountsItemTitle>
   );
