@@ -19,7 +19,6 @@
   "RecoverContactEmailPlaceholder": "Sähköposti yhteydenottoa varten",
   "RecoverTextBody": "Jos et voi kirjautua sisään nykyisellä tililläsi tai haluat rekisteröityä uutena käyttäjänä, ota yhteyttä portaalin järjestelmänvalvojaan. ",
   "Register": "Rekisteröidy",
-  "RegisterSendButton": "Lähetä pyyntö",
   "RegisterTextBodyAfterDomainsList": "Rekisteröidy kirjoittamalla sähköpostiosoitteesi ja napsauttamalla Lähetä pyyntö. Sinulle lähetetään aktivointilinkki.  ",
   "RegisterTextBodyBeforeDomainsList": "Rekisteröityminen on saatavilla käyttäjille, joilla on sähköpostitili osoitteessa",
   "RegisterTitle": "Rekisteröintipyyntö",

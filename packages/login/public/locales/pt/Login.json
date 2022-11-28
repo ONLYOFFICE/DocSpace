@@ -19,7 +19,6 @@
   "RecoverContactEmailPlaceholder": "Email de contacto",
   "RecoverTextBody": "Se não consegue iniciar sessão com a sua conta ou se quiser registar-se como um novo utilizador, contacte o administrador do portal.",
   "Register": "Registar",
-  "RegisterSendButton": "Enviar pedido",
   "RegisterTextBodyAfterDomainsList": "Para registar-se, introduza o seu e-mail e clique em Enviar pedido. Ser-lhe-á enviado uma ligação de ativação.",
   "RegisterTextBodyBeforeDomainsList": "O registo está disponível para os utilizadores com uma conta de e-mail em",
   "RegisterTitle": "Pedido de registo",

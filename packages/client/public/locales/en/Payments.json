@@ -35,7 +35,6 @@
   "RenewSubscription": "Renew subscription to {{planName}} plan",
   "Room": "Room",
   "RoomManagerDescription": "Room administration and archiving, user invitation and management. Several admins can be assigned to the room.",
-  "SendRequest": "Send request",
   "StartupSuggestion": "Do more with {{planName}} plan",
   "StartupTitle": "You are using free {{planName}} plan",
   "StorageSpace": "Storage space used",

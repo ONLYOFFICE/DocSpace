@@ -19,7 +19,6 @@
   "RecoverContactEmailPlaceholder": "連絡先メール",
   "RecoverTextBody": "既存のアカウントでログインできない場合や、新規ユーザーとして登録したい場合は、ポータル管理者にお問い合わせください。 ",
   "Register": "登録",
-  "RegisterSendButton": "リクエスト送信",
   "RegisterTextBodyAfterDomainsList": "登録するには、メールアドレスを入力して「リクエスト送信」をクリックします。指定されたアドレスに、アカウント有効化のためのリンクが添付されたメッセージが送信されます。",
   "RegisterTextBodyBeforeDomainsList": "のメールアカウントをお持ちの方は登録が可能です。",
   "RegisterTitle": "登録申請",

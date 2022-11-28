@@ -19,7 +19,6 @@
   "RecoverContactEmailPlaceholder": "E-mail de contacto",
   "RecoverTextBody": "Si no puede conectarse con su cuenta actual o quiere registrarse como nuevo usuario, póngase en contacto con el administrador del portal. ",
   "Register": "Registrarse",
-  "RegisterSendButton": "Enviar solicitud",
   "RegisterTextBodyAfterDomainsList": "Para registrarse, introduzca su email y haga clic en Enviar solicitud. Se le enviará un enlace de activación.",
   "RegisterTextBodyBeforeDomainsList": "El registro está disponible para los usuarios con una cuenta de email en",
   "RegisterTitle": "Solicitud de registro",

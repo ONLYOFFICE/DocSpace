@@ -19,7 +19,6 @@
   "RecoverContactEmailPlaceholder": "연락처 이메일",
   "RecoverTextBody": "기존 계정으로 로그인하실 수 없거나 새로운 사용자로 등록하시길 원하시는 경우, 포털 관리자에게 문의하세요. ",
   "Register": "가입",
-  "RegisterSendButton": "요청 전송",
   "RegisterTextBodyAfterDomainsList": "가입하시려면, 이메일을 입력한 뒤 가입 요청을 클릭하세요. 활성화 링크가 전송됩니다.",
   "RegisterTextBodyBeforeDomainsList": "이메일 계정을 가진 사용자만 가입할 수 있습니다 -",
   "RegisterTitle": "가입 요청",

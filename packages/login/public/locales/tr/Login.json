@@ -19,7 +19,6 @@
   "RecoverContactEmailPlaceholder": "İletişim e-postası",
   "RecoverTextBody": "Eğer hesabınıza giriş yapamıyorsanız veya yeni kullanıcı olarak kayıt olmak istiyorsanız, portal yöneticisi ile iletişime geçin. ",
   "Register": "Kayıt",
-  "RegisterSendButton": "Talep gönder",
   "RegisterTextBodyAfterDomainsList": "Kayıt olmak için e-postanızı girin ve Talep gönder'e tıklayın. Tarafınıza bir aktivasyon bağlantısı gönderilecektir.",
   "RegisterTextBodyBeforeDomainsList": "Buradan e-posta adresi sahibi olan kullanıcılara kayıt mümkündür",
   "RegisterTitle": "Kayıt talebi",

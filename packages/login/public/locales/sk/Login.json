@@ -19,7 +19,6 @@
   "RecoverContactEmailPlaceholder": "Kontaktný email",
   "RecoverTextBody": "Ak sa nemôžete prihlásiť so svojím existujúcim kontom, alebo sa chcete zaregistrovať ako nový užívateľ, kontaktujte admina portálu.",
   "Register": "Registrovať sa",
-  "RegisterSendButton": "Poslať žiadosť",
   "RegisterTextBodyAfterDomainsList": "Ak sa chcete zaregistrovať, zadajte svoj e-mail a kliknite na tlačidlo Poslať žiadosť. Bude vám zaslané aktivačné prepojenie.  ",
   "RegisterTextBodyBeforeDomainsList": "Registrácia je k dispozícii používateľom s e-mailovým kontom na adrese",
   "RegisterTitle": "Požiadavka registrácie",
