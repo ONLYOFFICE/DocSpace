@@ -17,7 +17,7 @@ const StyledWrapper = styled.div`
 `;
 
 const DocspaceLogo = (props) => {
-  const { className, whiteLabelLogoUrls } = props;
+  const { className, whiteLabelLogoUrls, userTheme } = props;
 
   if (isMobileOnly) return <></>;
 
