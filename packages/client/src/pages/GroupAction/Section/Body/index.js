@@ -298,7 +298,7 @@ const SectionBodyContent = ({
           isRequired={false}
           hasError={false}
           isVertical={true}
-          labelText={t("Members")}
+          labelText={t("Common:Members")}
         >
           <ComboBox
             id="users-selector_button"

@@ -56,7 +56,7 @@ const InfoPanelHeaderContent = (props) => {
   const submenuData = [
     {
       id: "members",
-      name: t("InfoPanel:SubmenuMembers"),
+      name: t("Common:Members"),
       onClick: setMembers,
       content: null,
     },
