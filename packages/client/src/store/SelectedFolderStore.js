@@ -74,16 +74,16 @@ class SelectedFolderStore {
     const { socketHelper } = this.settingsStore;
 
     if (this.id !== null) {
-      socketHelper.emit({ 
-        command: "unsubscribe", 
-        data: { roomParts: `DIR-${selectedFolder.id}`, individual: true }
+      socketHelper.emit({
+        command: "unsubscribe",
+        data: { roomParts: `DIR-${this.id}`, individual: true },
       });
     }
 
     if (selectedFolder) {
       socketHelper.emit({
         command: "subscribe",
-        data: { roomParts: `DIR-${selectedFolder.id}`, individual: true }
+        data: { roomParts: `DIR-${selectedFolder.id}`, individual: true },
       });
     }
 
