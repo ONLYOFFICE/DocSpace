@@ -29,6 +29,7 @@ const WhiteLabel = (props) => {
     setWhiteLabelSettings,
     defaultWhiteLabelLogoUrls,
     getWhiteLabelLogoText,
+    getWhiteLabelLogoUrlsAction,
   } = props;
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
@@ -88,6 +89,7 @@ const WhiteLabel = (props) => {
     try {
       await restoreWhiteLabelSettings(true);
       await getWhiteLabelLogoUrls();
+      await getWhiteLabelLogoUrlsAction();
       await getWhiteLabelLogoText();
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
@@ -150,6 +152,7 @@ const WhiteLabel = (props) => {
       setIsSaving(true);
       await setWhiteLabelSettings(data);
       await getWhiteLabelLogoUrls();
+      await getWhiteLabelLogoUrlsAction();
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
@@ -426,6 +429,7 @@ export default inject(({ setup, auth, common }) => {
     getWhiteLabelLogoText,
     whiteLabelLogoUrls,
     restoreWhiteLabelSettings,
+    getWhiteLabelLogoUrls: getWhiteLabelLogoUrlsAction,
   } = common;
 
   const {
@@ -442,5 +446,6 @@ export default inject(({ setup, auth, common }) => {
     setWhiteLabelSettings,
     restoreWhiteLabelSettings,
     defaultWhiteLabelLogoUrls,
+    getWhiteLabelLogoUrlsAction,
   };
 })(withTranslation(["Settings", "Profile", "Common"])(observer(WhiteLabel)));
