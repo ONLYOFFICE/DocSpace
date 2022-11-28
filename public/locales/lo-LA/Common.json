@@ -150,6 +150,7 @@
   "Search": "ຄົ້ນຫາ",
   "SelectAction": "ເລືອກ",
   "SelectAll": "ເລືອກທັງໝົດ",
+  "SelectDOCXFormat": "ເລືອກໄຟລ໌ໃນ . ຮູບແບບ DOCX",
   "SendButton": "ສົ່ງ",
   "SendRequest": "ສົ່ງຄຳຂໍ",
   "Sending": "ກຳລັງສົ່ງ...",

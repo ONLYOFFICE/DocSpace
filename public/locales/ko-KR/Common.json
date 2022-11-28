@@ -151,6 +151,7 @@
   "Search": "검색",
   "SelectAction": "선택",
   "SelectAll": "모두 선택",
+  "SelectDOCXFormat": ".DOCX 형식의 파일을 선택해주세요",
   "SendButton": "전송",
   "SendRequest": "요청 전송",
   "Sending": "전송 중입니다...",
