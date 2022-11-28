@@ -54,7 +54,6 @@
   "EmptyBackupList": "Ainda não foi criada nenhuma cópia de segurança. Crie uma ou mais cópias de segurança para que elas apareçam na lista.",
   "EnableAutomaticBackup": "Ativar Criação Automática de Cópias de Segurança.",
   "EnableAutomaticBackupDescription": "Utilize esta opção para criar cópias de segurança dos dados do portal.",
-  "EnterName": "Introduza o nome",
   "EnterTitle": "Introduza o título",
   "EveryDay": "Todos os dias",
   "EveryMonth": "Todos os meses",

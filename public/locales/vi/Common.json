@@ -76,6 +76,7 @@
   "EmptyEmail": "Không có email nào được phân tích",
   "EmptyFieldError": "Trường trống",
   "Enable": "Bật",
+  "EnterName": "Nhập tên",
   "EncryptingFile": "Mã hóa tệp",
   "EncryptionFilePreparing": "Đang chuẩn bị tệp để mã hóa",
   "EncryptionKeysReload": "Phải nhập lại các khóa mã hóa",

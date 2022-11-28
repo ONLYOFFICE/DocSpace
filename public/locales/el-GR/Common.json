@@ -76,6 +76,7 @@
   "EmptyEmail": "Δεν αναλύθηκε email",
   "EmptyFieldError": "Κενό πεδίο",
   "Enable": "Ενεργοποίηση",
+  "EnterName": "Εισαγωγή ονόματος",
   "EncryptingFile": "Κρυπτογράφηση αρχείου",
   "EncryptionFilePreparing": "Προετοιμασία αρχείου για κρυπτογράφηση",
   "EncryptionKeysReload": "Τα κλειδιά κρυπτογράφησης πρέπει να εισαχθούν εκ νέου",

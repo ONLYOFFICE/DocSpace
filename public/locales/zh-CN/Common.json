@@ -76,6 +76,7 @@
   "EmptyEmail": "没有解析邮件",
   "EmptyFieldError": "空字段",
   "Enable": "启用",
+  "EnterName": "输入名称",
   "EncryptingFile": "加密文件",
   "EncryptionFilePreparing": "准备加密文件",
   "EncryptionKeysReload": "必须重新输入加密密钥",

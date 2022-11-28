@@ -79,6 +79,7 @@
   "EmptyEmail": "Поле email пустое",
   "EmptyFieldError": "Пустое поле",
   "Enable": "Включить",
+  "EnterName": "Введите имя",
   "EncryptingFile": "Шифрование файла",
   "EncryptionFilePreparing": "Подготовка файла к шифрованию",
   "EncryptionKeysReload": "Ключи шифрования необходимо ввести повторно",

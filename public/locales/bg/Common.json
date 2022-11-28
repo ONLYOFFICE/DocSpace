@@ -76,6 +76,7 @@
   "EmptyEmail": "Никой имейл не е анализиран",
   "EmptyFieldError": "Празно поле",
   "Enable": "Активирай",
+  "EnterName": "Въведи име",
   "EncryptingFile": "Криптиране на файл",
   "EncryptionFilePreparing": "Подготвяне на файла за криптиране",
   "EncryptionKeysReload": "Криптиращите ключове трябва да се въведат отново",

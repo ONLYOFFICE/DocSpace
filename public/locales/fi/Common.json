@@ -76,6 +76,7 @@
   "EmptyEmail": "Yhtään sähköpostia ei ole jäsennelty",
   "EmptyFieldError": "Tyhjä kenttä",
   "Enable": "Ota käyttöön",
+  "EnterName": "Syötä nimi",
   "EncryptingFile": "Tiedoston salaaminen",
   "EncryptionFilePreparing": "Valmistellaan tiedostoa salausta varten",
   "EncryptionKeysReload": "Salausavaimet on syötettävä uudelleen",

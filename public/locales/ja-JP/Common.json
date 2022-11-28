@@ -76,6 +76,7 @@
   "EmptyEmail": "誰もメールを解析しない",
   "EmptyFieldError": "空のフィールド",
   "Enable": "イネーブル",
+  "EnterName": "名前を入力してください",
   "EncryptingFile": "ファイルの暗号化",
   "EncryptionFilePreparing": "暗号化するファイルの準備",
   "EncryptionKeysReload": "暗号化キーの再入力が必要",

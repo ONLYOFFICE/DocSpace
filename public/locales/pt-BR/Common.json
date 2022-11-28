@@ -76,6 +76,7 @@
   "EmptyEmail": "Ninguém analisou o e-mail",
   "EmptyFieldError": "Campo vazio",
   "Enable": "Habilitar",
+  "EnterName": "Inserir nome",
   "EncryptingFile": "Criptografar arquivo",
   "EncryptionFilePreparing": "Preparando o arquivo para a criptografia",
   "EncryptionKeysReload": "As chaves de criptografia devem ser inseridas novamente",

@@ -57,7 +57,6 @@
   "EmptyBackupList": "Nenhum backup foi criado ainda, crie um ou mais backups para eles aparecerem nesta lista.",
   "EnableAutomaticBackup": "Ativar backup automático.",
   "EnableAutomaticBackupDescription": "Use esta opção para fazer backup dos dados do portal.",
-  "EnterName": "Inserir nome",
   "EnterTitle": "Insira o título",
   "EveryDay": "Todos os dias",
   "EveryMonth": "Todos os meses",

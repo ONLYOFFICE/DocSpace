@@ -76,6 +76,7 @@
   "EmptyEmail": "Nebyl analyzován žádný e-mail",
   "EmptyFieldError": "Prázdné pole",
   "Enable": "Povolit",
+  "EnterName": "Zadejte název",
   "EncryptingFile": "Šifrování souboru",
   "EncryptionFilePreparing": "Příprava souboru k šifrování",
   "EncryptionKeysReload": "Šifrovací klíče musí být zadány znovu",

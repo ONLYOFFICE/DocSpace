@@ -76,6 +76,7 @@
   "EmptyEmail": "Hiçbir e-posta ayrıştırılmadı",
   "EmptyFieldError": "Boş alan",
   "Enable": "Etkinleştir",
+  "EnterName": "İsim girin",
   "EncryptingFile": "Dosya şifreleme",
   "EncryptionFilePreparing": "Dosya şifreleme için hazırlanıyor",
   "EncryptionKeysReload": "Şifreleme anahtarları yeniden girilmelidir",

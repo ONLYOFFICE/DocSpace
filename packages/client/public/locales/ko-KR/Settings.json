@@ -54,7 +54,6 @@
   "EmptyBackupList": "아직 백업이 생성되지 않았습니다. 이 목록에 표시될 하나 이상의 백업을 생성하세요.",
   "EnableAutomaticBackup": "자동 백업을 활성화하세요.",
   "EnableAutomaticBackupDescription": "포털 데이터를 백업하기 위해 이 옵션을 사용하세요.",
-  "EnterName": "이름을 입력하세요",
   "EnterTitle": "제목을 입력하세요",
   "EveryDay": "매일",
   "EveryMonth": "매월",

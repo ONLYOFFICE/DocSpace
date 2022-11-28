@@ -88,6 +88,7 @@
   "EmptyEmail": "No email parsed",
   "EmptyFieldError": "Empty field",
   "Enable": "Enable",
+  "EnterName": "Enter name",
   "EncryptingFile": "Encrypting file",
   "EncryptionFilePreparing": "Preparing file for encryption",
   "EncryptionKeysReload": "Encryption keys must be re-entered",

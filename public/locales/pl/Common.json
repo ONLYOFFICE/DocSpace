@@ -76,6 +76,7 @@
   "EmptyEmail": "Adres e-mail nie może być pusty",
   "EmptyFieldError": "Puste pole",
   "Enable": "Włącz",
+  "EnterName": "Wpisz nazwę",
   "EncryptingFile": "Szyfrowanie pliku",
   "EncryptionFilePreparing": "Przygotowywanie pliku do szyfrowania",
   "EncryptionKeysReload": "Klucze szyfrowania muszą zostać wpisane ponownie",

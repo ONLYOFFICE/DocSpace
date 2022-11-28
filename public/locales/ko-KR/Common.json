@@ -76,6 +76,7 @@
   "EmptyEmail": "파싱된 이메일이 하나도 없습니다",
   "EmptyFieldError": "항목이 비어있습니다",
   "Enable": "허용",
+  "EnterName": "이름을 입력하세요",
   "EncryptingFile": "파일을 암호화하는 중입니다",
   "EncryptionFilePreparing": "암호화를 위해 파일을 준비하는 중입니다",
   "EncryptionKeysReload": "암호화 키를 다시 입력해야 합니다",

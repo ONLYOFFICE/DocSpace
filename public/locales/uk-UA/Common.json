@@ -76,6 +76,7 @@
   "EmptyEmail": "Не проаналізовано жодної адреси електронної пошти",
   "EmptyFieldError": "Порожнє поле",
   "Enable": "Увімкнути",
+  "EnterName": "Введіть ім'я",
   "EncryptingFile": "Шифрування файлу",
   "EncryptionFilePreparing": "Підготовка файлу до шифрування",
   "EncryptionKeysReload": "Потрібно повторно ввести ключі шифрування",

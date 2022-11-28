@@ -76,6 +76,7 @@
   "EmptyEmail": "Kein E-Mail wurde eingegeben",
   "EmptyFieldError": "Leeres Feld",
   "Enable": "Aktivieren",
+  "EnterName": "Namen eingeben",
   "EncryptingFile": "Dateiverschlüsselung",
   "EncryptionFilePreparing": "Die Datei wird auf Verschlüsselung vorbereitet",
   "EncryptionKeysReload": "Verschlüsselungsschlüssel müssen erneut eingegeben werden",

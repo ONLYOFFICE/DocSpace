@@ -57,7 +57,6 @@
   "EmptyBackupList": "尚未创建任何备份。请创建一个或多个备份，使其显示在此列表中。",
   "EnableAutomaticBackup": "启用自动备份",
   "EnableAutomaticBackupDescription": "使用该选项备份门户数据。",
-  "EnterName": "输入名称",
   "EnterTitle": "请输入标题",
   "EveryDay": "每天",
   "EveryMonth": "每个月",

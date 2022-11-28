@@ -76,7 +76,7 @@ const SetRoomParams = ({
       <InputParam
         id={"room-name"}
         title={`${t("Common:Name")}:`}
-        placeholder={t("NamePlaceholder")}
+        placeholder={t("Common:EnterName")}
         value={roomParams.title}
         onChange={onChangeName}
         isDisabled={isDisabled}
