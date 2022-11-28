@@ -21,7 +21,6 @@ import { Events } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
-import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 
 const StyledContainer = styled.div`
@@ -550,11 +549,8 @@ class SectionHeaderContent extends React.Component {
       setIsLoading,
 
       fetchRooms,
-      history,
 
       setAlreadyFetchingRooms,
-
-      categoryType,
 
       rootFolderType,
     } = this.props;
@@ -569,21 +565,9 @@ class SectionHeaderContent extends React.Component {
       filter.searchArea = RoomSearchArea.Archive;
     }
 
-    fetchRooms(null, filter)
-      .then(() => {
-        const filterParamsStr = filter.toUrlParams();
-
-        const url = getCategoryUrl(categoryType, filter.folder);
-
-        const pathname = `${url}?${filterParamsStr}`;
-
-        history.push(
-          combineUrl(AppServerConfig.proxyURL, config.homepage, pathname)
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    fetchRooms(null, filter).finally(() => {
+      setIsLoading(false);
+    });
   };
 
   render() {
@@ -714,7 +698,6 @@ export default inject(
       roomsForRestore,
       roomsForDelete,
 
-      categoryType,
       isEmptyPage,
     } = filesStore;
 
@@ -836,8 +819,6 @@ export default inject(
       isRoomsFolder,
 
       setAlreadyFetchingRooms,
-
-      categoryType,
 
       enablePlugins,
 
