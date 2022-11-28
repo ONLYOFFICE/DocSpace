@@ -2254,7 +2254,7 @@ class FilesStore {
       case FilterType.FoldersOnly:
         return "selected-only-folders";
       case FilterType.DocumentsOnly:
-        return "selected-only-documnets";
+        return "selected-only-documents";
       case FilterType.PresentationsOnly:
         return "selected-only-presentations";
       case FilterType.SpreadsheetsOnly:
