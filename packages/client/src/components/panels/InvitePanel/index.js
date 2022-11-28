@@ -184,7 +184,7 @@ const InvitePanel = ({
       >
         <StyledBlock>
           <StyledHeading>
-            {roomId === -1 ? t("InviteUsers") : t("InviteUsersToRoom")}
+            {roomId === -1 ? t("Common:InviteUsers") : t("InviteUsersToRoom")}
           </StyledHeading>
         </StyledBlock>
 

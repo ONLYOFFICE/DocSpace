@@ -661,7 +661,7 @@ class ContextOptionsStore {
       },
       {
         key: "invite-users-to-room",
-        label: t("InviteUsers"),
+        label: t("Common:InviteUsers"),
         icon: "/static/images/person.react.svg",
         onClick: (e) => this.onClickInviteUsers(e),
         disabled: false,

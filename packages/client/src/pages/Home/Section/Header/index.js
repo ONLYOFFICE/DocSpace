@@ -423,7 +423,7 @@ class SectionHeaderContent extends React.Component {
       },
       {
         key: "invite-users-to-room",
-        label: t("InviteUsers"),
+        label: t("Common:InviteUsers"),
         icon: "/static/images/person.react.svg",
         onClick: () => onClickInviteUsers(selectedFolder.id),
         disabled: !isRoom,
