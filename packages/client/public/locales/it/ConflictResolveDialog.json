@@ -4,7 +4,6 @@
   "ConflictResolveSelectAction": "Ti preghiamo di selezionare l'azione:",
   "ConflictResolveTitle": "Confermare sovrascrittura",
   "CreateDescription": "Ci saranno due file diversi nella cartella.",
-  "CreateTitle": "Creare copia del file",
   "OverwriteDescription": "Il nuovo file sostituisce quello già esistente come una versione nuova.",
   "OverwriteTitle": "Sovrascrivere con l'aggiornamento della versione",
   "SkipDescription": "Nessun file verrà copiato. Il file originale verrà conservato nella cartella di destinazione.",
