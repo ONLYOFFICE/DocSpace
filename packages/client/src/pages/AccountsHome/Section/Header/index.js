@@ -159,7 +159,7 @@ const SectionHeaderContent = (props) => {
     getHeaderMenu,
     cbMenuItems,
     getCheckboxItemLabel,
-
+    getMenuItemId,
     setInfoPanelIsVisible,
     isInfoPanelVisible,
     isOwner,
@@ -186,8 +186,10 @@ const SectionHeaderContent = (props) => {
       <>
         {cbMenuItems.map((key) => {
           const label = getCheckboxItemLabel(t, key);
+          const id = getMenuItemId(key);
           return (
             <DropDownItem
+              id={id}
               key={key}
               label={label}
               data-key={key}
@@ -351,6 +353,7 @@ export default withRouter(
       isHeaderIndeterminate,
       isHeaderChecked,
       cbMenuItems,
+      getMenuItemId,
       getCheckboxItemLabel,
     } = headerMenuStore;
 
@@ -363,6 +366,7 @@ export default withRouter(
       isHeaderChecked,
       getHeaderMenu,
       cbMenuItems,
+      getMenuItemId,
       getCheckboxItemLabel,
       setInfoPanelIsVisible,
       isInfoPanelVisible,
