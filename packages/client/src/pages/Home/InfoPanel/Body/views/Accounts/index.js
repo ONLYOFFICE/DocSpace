@@ -58,7 +58,7 @@ const Accounts = ({
     const options = [];
 
     const adminOption = {
-      id: "info-account-type_docSpace-admin",
+      id: "info-account-type_docspace-admin",
       key: "admin",
       title: t("Common:DocSpaceAdmin"),
       label: t("Common:DocSpaceAdmin"),
