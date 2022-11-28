@@ -89,6 +89,14 @@ const ArchiveDialogComponent = (props) => {
   const acceptButton =
     action === "archive" ? t("Common:OKButton") : t("Common:Restore");
 
+  const isArchive = action === "archive";
+  const idButtonSubmit = isArchive
+    ? "shared_move-to-archived-modal_submit"
+    : "restore-all_submit";
+  const idButtonCancel = isArchive
+    ? "shared_move-to-archived-modal_cancel"
+    : "restore-all_cancel";
+
   return (
     <StyledModal
       isLoading={!tReady}
@@ -102,7 +110,7 @@ const ArchiveDialogComponent = (props) => {
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
-          id="shared_move-to-archived-modal_submit"
+          id={idButtonSubmit}
           key="OkButton"
           label={acceptButton}
           size="normal"
@@ -112,7 +120,7 @@ const ArchiveDialogComponent = (props) => {
           scale
         />
         <Button
-          id="shared_move-to-archived-modal_cancel"
+          id={idButtonCancel}
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="normal"
