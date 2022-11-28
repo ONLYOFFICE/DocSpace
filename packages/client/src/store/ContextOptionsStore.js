@@ -622,7 +622,7 @@ class ContextOptionsStore {
       },
       {
         key: "preview",
-        label: t("Preview"),
+        label: t("Common:Preview"),
         icon: "/static/images/eye.react.svg",
         onClick: () => this.onPreviewClick(item),
         disabled: false,
