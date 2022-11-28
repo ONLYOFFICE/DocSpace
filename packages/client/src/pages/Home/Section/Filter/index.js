@@ -700,7 +700,7 @@ const SectionFilterContent = ({
             id: "filter_type-review",
             key: RoomsType.ReviewRoom,
             group: FilterGroups.roomFilterType,
-            label: t("ReviewRooms"),
+            label: t("Common:Review"),
           },
           {
             id: "filter_type-view-only",

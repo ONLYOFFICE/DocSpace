@@ -21,7 +21,7 @@ export const roomTypes = [
     type: RoomsType.ReviewRoom,
     title: "ReviewRoomTitle",
     description: "ReviewRoomDescription",
-    defaultTag: "Files:ReviewRooms",
+    defaultTag: "Common:Review",
     withSecondaryInfo: true,
     secondaryInfo: "ReviewRoomSecondaryInfo",
   },

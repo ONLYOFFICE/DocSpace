@@ -85,7 +85,7 @@ export const RoomsType = Object.freeze({
 export const RoomsTypeTranslations = Object.freeze({
   1: "Files:FillingFormRooms",
   2: "Files:CollaborationRooms",
-  3: "Files:ReviewRooms",
+  3: "Common:Review",
   4: "Files:ViewOnlyRooms",
   5: "Files:CustomRooms",
 });
