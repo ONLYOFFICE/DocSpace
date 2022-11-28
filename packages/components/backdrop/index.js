@@ -36,7 +36,7 @@ class Backdrop extends React.Component {
       const backdrops = document.querySelectorAll(".backdrop-active");
 
       const needBackdrop =
-        backdrops.length < 1 || (isAside && backdrops.length <= 1);
+        backdrops.length < 1 || (isAside && backdrops.length <= 2);
 
       let needBackground =
         needBackdrop && ((isTablet && !withoutBlur) || withBackground);
