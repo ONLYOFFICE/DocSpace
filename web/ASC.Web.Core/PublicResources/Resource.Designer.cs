@@ -1150,6 +1150,51 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Telegram.
+        /// </summary>
+        public static string ConsumersTelegram {
+            get {
+                return ResourceManager.GetString("ConsumersTelegram", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot username.
+        /// </summary>
+        public static string ConsumersTelegramBotName {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramBotName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot token.
+        /// </summary>
+        public static string ConsumersTelegramBotToken {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramBotToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect Telegram account to receive portal notifications via Telegram..
+        /// </summary>
+        public static string ConsumersTelegramDescription {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To receive portal notifications via Telegram, enable Telegram bot. You can create a new bot using BotFather in Telegram Desktop. To use this bot, portal users need to enable Telegram notifications on their Profile Page. {0}Paste bot’s username and the token you received in the fields below..
+        /// </summary>
+        public static string ConsumersTelegramInstructionV11 {
+            get {
+                return ResourceManager.GetString("ConsumersTelegramInstructionV11", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Twilio.
         /// </summary>
         public static string ConsumersTwilio {

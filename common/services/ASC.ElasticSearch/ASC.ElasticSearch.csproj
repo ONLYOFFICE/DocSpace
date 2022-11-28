@@ -28,7 +28,6 @@
     <None Remove="protos\search_item.proto" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Elasticsearch.Net" Version="7.10.0" />
     <PackageReference Include="Grpc.Tools" Version="2.47.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

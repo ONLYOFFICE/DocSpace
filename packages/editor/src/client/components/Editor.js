@@ -26,7 +26,10 @@ import { canConvert } from "../helpers/utils";
 import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
-import { getFileRoleActions } from "@docspace/common/utils/actions";
+import {
+  getArchiveFileRoleActions,
+  getFileRoleActions,
+} from "@docspace/common/utils/actions";
 
 toast.configure();
 
@@ -94,13 +97,16 @@ function Editor({
   filesSettings,
 }) {
   const fileInfo = config?.file;
+
   isArchiveFolderRoot =
     fileInfo && fileInfo.rootFolderType === FolderType.Archive;
 
   const { t } = useTranslation(["Editor", "Common"]);
 
   if (fileInfo) {
-    userAccessRights = getFileRoleActions(fileInfo.access);
+    userAccessRights = isArchiveFolderRoot
+      ? getArchiveFileRoleActions(fileInfo.access)
+      : getFileRoleActions(fileInfo.access);
   }
   useEffect(() => {
     if (error && mfReady) {
@@ -532,7 +538,7 @@ function Editor({
           );
       }
 
-      let onRequestSharingSettings,
+      let //onRequestSharingSettings,
         onRequestRename,
         onRequestSaveAs,
         onRequestInsertImage,
@@ -545,7 +551,7 @@ function Editor({
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
       // }
 
-      if (userAccessRights.rename && !isArchiveFolderRoot) {
+      if (userAccessRights.rename) {
         onRequestRename = onSDKRequestRename;
       }
 
@@ -563,7 +569,7 @@ function Editor({
         onRequestCompareFile = onSDKRequestCompareFile;
       }
 
-      if (userAccessRights.changeVersionHistory && !isArchiveFolderRoot) {
+      if (userAccessRights.changeVersionHistory) {
         onRequestRestore = onSDKRequestRestore;
       }
 

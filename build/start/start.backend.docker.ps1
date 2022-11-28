@@ -17,7 +17,7 @@ if (-not $BranchExistRemote) {
 $RootDir = Split-Path (Split-Path -Parent $PSScriptRoot) -Parent
 $DockerDir = ($RootDir + "\build\install\docker")
 $BuildDate = Get-Date -Format "yyyy-MM-dd"
-$LocalIp = (Get-WmiObject -Class Win32_NetworkAdapterConfiguration | Where-Object { $_.DHCPEnabled -ne $null -and $_.DefaultIPGateway -ne $null }).IPAddress | Select-Object -First 1
+$LocalIp = (Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration | Where-Object { $_.DHCPEnabled -ne $null -and $_.DefaultIPGateway -ne $null }).IPAddress | Select-Object -First 1
 
 $Doceditor = ($LocalIp + ":5013")
 $Login = ($LocalIp + ":5011")

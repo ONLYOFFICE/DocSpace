@@ -28,7 +28,6 @@ namespace ASC.Files.Helpers;
 
 public class FoldersControllerHelper<T> : FilesHelperBase<T>
 {
-    private readonly EntryManager _entryManager;
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
     private readonly GlobalFolderHelper _globalFolderHelper;
@@ -45,7 +44,6 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         FolderContentDtoHelper folderContentDtoHelper,
         IHttpContextAccessor httpContextAccessor,
         FolderDtoHelper folderDtoHelper,
-        EntryManager entryManager,
         UserManager userManager,
         SecurityContext securityContext,
         GlobalFolderHelper globalFolderHelper,
@@ -66,7 +64,6 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         _coreBaseSettings = coreBaseSettings;
         _fileUtility = fileUtility;
         _securityContext = securityContext;
-        _entryManager = entryManager;
         _userManager = userManager;
     }
 
@@ -108,45 +105,46 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
             yield return _globalFolderHelper.FolderMy;
         }
 
-        if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace
-            && !_userManager.IsOutsider(user))
+        if (_coreBaseSettings.DisableDocSpace)
         {
-            yield return await _globalFolderHelper.FolderShareAsync;
-        }
-
-        if (!withoutAdditionalFolder)
-        {
-            if (_filesSettingsHelper.FavoritesSection)
+            if (!_coreBaseSettings.Personal &&
+                !_userManager.IsOutsider(user))
             {
-                yield return await _globalFolderHelper.FolderFavoritesAsync;
+                yield return await _globalFolderHelper.FolderShareAsync;
             }
 
-            if (_filesSettingsHelper.RecentSection)
+            if (!withoutAdditionalFolder)
             {
-                yield return await _globalFolderHelper.FolderRecentAsync;
+                if (_filesSettingsHelper.FavoritesSection)
+                {
+                    yield return await _globalFolderHelper.FolderFavoritesAsync;
+                }
+
+                if (_filesSettingsHelper.RecentSection)
+                {
+                    yield return await _globalFolderHelper.FolderRecentAsync;
+                }
+
+                if (!IsUser &&
+                    !_coreBaseSettings.Personal &&
+                    PrivacyRoomSettings.IsAvailable())
+                {
+                    yield return await _globalFolderHelper.FolderPrivacyAsync;
+                }
+            }
+
+            if (!_coreBaseSettings.Personal)
+            {
+                yield return await _globalFolderHelper.FolderCommonAsync;
             }
 
             if (!IsUser &&
-                !_coreBaseSettings.Personal &&
-                _coreBaseSettings.DisableDocSpace &&
-                PrivacyRoomSettings.IsAvailable())
+                !withoutAdditionalFolder &&
+                _fileUtility.ExtsWebTemplate.Count > 0 &&
+                _filesSettingsHelper.TemplatesSection)
             {
-                yield return await _globalFolderHelper.FolderPrivacyAsync;
+                yield return await _globalFolderHelper.FolderTemplatesAsync;
             }
-        }
-
-        if (!_coreBaseSettings.Personal && _coreBaseSettings.DisableDocSpace)
-        {
-            yield return await _globalFolderHelper.FolderCommonAsync;
-        }
-
-        if (!IsUser
-           && _coreBaseSettings.DisableDocSpace
-           && !withoutAdditionalFolder
-           && _fileUtility.ExtsWebTemplate.Count > 0
-           && _filesSettingsHelper.TemplatesSection)
-        {
-            yield return await _globalFolderHelper.FolderTemplatesAsync;
         }
 
         if (!withoutTrash && !IsUser)
