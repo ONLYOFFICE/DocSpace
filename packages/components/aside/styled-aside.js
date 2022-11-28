@@ -57,6 +57,10 @@ const StyledAside = styled(Container)`
     width: 100%;
     max-width: 100%;
     transform: translateX(${(props) => (props.visible ? "0" : "100%")});
+
+    aside:not(:first-child) {
+      height: 100%;
+    }
   }
 
   &.modal-dialog-aside {
