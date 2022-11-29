@@ -9,6 +9,11 @@ const StyledHistoryList = styled.div`
 `;
 
 const StyledHistorySubtitle = styled.div`
+  position: sticky;
+  background: #fff;
+  top: 80px;
+  z-index: 100;
+
   padding: 8px 0 12px;
   font-weight: 600;
   font-size: 13px;

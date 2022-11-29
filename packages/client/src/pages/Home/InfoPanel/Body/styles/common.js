@@ -4,9 +4,9 @@ import { Base } from "@docspace/components/themes";
 import { mobile } from "@docspace/components/utils/device";
 
 const StyledInfoPanelBody = styled.div`
-  padding: 0 3px 0 20px;
+  padding: 80px 3px 0 20px;
   @media ${mobile} {
-    padding: 0 8px 0 16px;
+    padding: 80px 8px 0 16px;
   }
   height: auto;
   background-color: ${(props) => props.theme.infoPanel.backgroundColor};
@@ -26,13 +26,24 @@ const StyledInfoPanelBody = styled.div`
 `;
 
 const StyledTitle = styled.div`
+  position: fixed;
+  margin-top: -80px;
+  margin-left: -20px;
+  width: calc(100% - 40px);
+  padding: 24px 0 24px 20px;
+  background: #fff;
+  z-index: 100;
+
+  @media ${mobile} {
+    width: calc(100% - 32px);
+    padding: 24px 0 24px 16px;
+  }
+
   display: flex;
   flex-wrap: no-wrap;
   flex-direction: row;
   align-items: center;
-  width: 100%;
   height: 32px;
-  padding: 24px 0;
 
   ${(props) =>
     props.withBottomBorder &&
