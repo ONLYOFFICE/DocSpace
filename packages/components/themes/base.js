@@ -1373,7 +1373,7 @@ const Base = {
     maxWidth: "500px",
     border: "0px",
     margin: "0px",
-    padding: "6px 12px",
+    padding: "0px 12px",
     tabletPadding: "0px 16px",
     lineHeight: "32px",
     tabletLineHeight: "36px",
@@ -3005,13 +3005,12 @@ const Base = {
     boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
 
-
   preparationPortalProgress: {
     backgroundColor: "#F3F4F4",
     colorPercentSmall: "#333333",
     colorPercentBig: "#FFFFFF",
- },
- 
+  },
+
   codeInput: {
     background: white,
     border: "1px solid #d0d5da",

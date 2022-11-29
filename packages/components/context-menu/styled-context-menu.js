@@ -179,8 +179,6 @@ const StyledContextMenu = styled.div`
     color: ${(props) => props.theme.dropDownItem.color};
     text-transform: none;
 
-    min-height: 24px;
-
     -webkit-touch-callout: none;
 
     &:hover {
@@ -201,9 +199,9 @@ const StyledContextMenu = styled.div`
     }
   }
 
-  /* .p-contextmenu .p-menuitem-text {
+  .p-contextmenu .p-menuitem-text {
     line-height: 36px;
-  } */
+  }
 
   .p-contextmenu .p-menu-separator {
     border-bottom: ${(props) => props.theme.menuItem.separator.borderBottom};
