@@ -470,6 +470,17 @@ class ContextOptionsStore {
 
     const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
     const isCanWebEdit = this.settingsStore.canWebEdit(item.fileExst);
+    const hasInfoPanel = contextOptions.includes("show-info");
+
+    const emailSendIsDisabled = true;
+    const showSeparator0 = hasInfoPanel || !isMedia || !emailSendIsDisabled;
+
+    const separator0 = showSeparator0
+      ? {
+          key: "separator0",
+          isSeparator: true,
+        }
+      : false;
 
     const blockAction = isCanWebEdit
       ? {
@@ -668,10 +679,7 @@ class ContextOptionsStore {
         onClick: () => this.onClickMakeForm(item, t),
         disabled: false,
       },
-      {
-        key: "separator0",
-        isSeparator: true,
-      },
+      separator0,
       {
         key: "reconnect-storage",
         label: t("Common:ReconnectStorage"),
@@ -727,7 +735,7 @@ class ContextOptionsStore {
         key: "send-by-email",
         label: t("SendByEmail"),
         icon: "/static/images/mail.react.svg",
-        disabled: true,
+        disabled: emailSendIsDisabled,
       },
       ...versionActions,
       {
