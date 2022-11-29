@@ -31,38 +31,41 @@ const ToggleButtonContainer = styled.label`
 
   svg {
     ${(props) =>
-      props.isDisabled
+      props.isChecked
         ? css`
             rect {
-              fill: ${props.isChecked
-                ? props.theme.toggleButton.disableFillColor
-                : props.theme.toggleButton.disableFillColorOff};
-              stroke-width: 1px;
-              stroke-linecap: round;
-              stroke: ${props.isChecked
-                ? props.theme.toggleButton.borderColor
-                : props.theme.toggleButton.borderColorOff};
+              fill: ${props.isDisabled &&
+              props.theme.isBase &&
+              props.theme.toggleButton.fillColorOff} !important;
+
+              &:hover {
+                opacity: ${!props.isDisabled && "0.85"};
+              }
             }
+
             circle {
-              fill: ${props.isChecked
-                ? props.theme.toggleButton.disableFillCircleColor
-                : props.theme.toggleButton.disableFillCircleColorOff};
+              fill: ${props.theme.toggleButton.fillCircleColor};
+              opacity: ${props.isDisabled && "0.6"};
             }
+
+            opacity: ${props.isDisabled && "0.6"};
           `
         : css`
             rect {
-              fill: ${props.isChecked
-                ? props.theme.toggleButton.fillColor
-                : props.theme.toggleButton.fillColorOff};
-              stroke-width: 1px;
-              stroke: ${props.isChecked
-                ? props.theme.toggleButton.borderColor
-                : props.theme.toggleButton.borderColor};
+              fill: ${props.theme.toggleButton.fillColorOff};
             }
             circle {
-              fill: ${props.isChecked
-                ? props.theme.toggleButton.fillCircleColor
-                : props.theme.toggleButton.fillCircleColorOff};
+              fill: ${props.theme.toggleButton.fillCircleColorOff};
+              opacity: ${props.isDisabled && "0.6"};
+            }
+
+            opacity: ${props.isDisabled && "0.6"};
+
+            &:hover {
+              rect {
+                fill: ${!props.isDisabled &&
+                props.theme.toggleButton.hoverFillColorOff};
+              }
             }
           `}
   }

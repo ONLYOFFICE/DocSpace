@@ -42,7 +42,7 @@ public class GwsMigratingMail : MigratingMail
         _user = user;
     }
 
-    public override void Migrate()
+    public override Task Migrate()
     {
         throw new NotImplementedException();
     }

@@ -102,7 +102,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         _region = region;
     }
 
-    protected override void DoJob()
+    protected override async Task DoJob()
     {
         Tenant tenant = null;
 
@@ -127,7 +127,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
             var storage = _backupStorageFactory.GetBackupStorage(StorageType, TenantId, StorageParams);
 
-            storage.Download(StoragePath, tempFile);
+            await storage.Download(StoragePath, tempFile);
 
             if (!_coreBaseSettings.Standalone)
             {
@@ -154,7 +154,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
                 Percentage = Percentage = 10d + 0.65 * args.Progress;
                 PublishChanges();
             };
-            restoreTask.RunJob();
+            await restoreTask.RunJob();
 
             Tenant restoredTenant = null;
 

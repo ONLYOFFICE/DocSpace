@@ -81,7 +81,7 @@ public class RestorePortalTask : PortalTaskBase
         Init(tenantId);
     }
 
-    public override void RunJob()
+    public override async Task RunJob()
     {
         _options.DebugBeginRestorePortal();
 
@@ -96,7 +96,7 @@ public class RestorePortalTask : PortalTaskBase
 
             if (Dump)
             {
-                RestoreFromDump(dataReader);
+                await RestoreFromDump(dataReader);
             }
             else
             {
@@ -113,7 +113,7 @@ public class RestorePortalTask : PortalTaskBase
                         restoreTask.IgnoreTable(tableName);
                     }
 
-                    restoreTask.RunJob();
+                    await restoreTask.RunJob();
                 }
             }
 
@@ -127,7 +127,7 @@ public class RestorePortalTask : PortalTaskBase
                     _ascCacheNotify.ClearCache();
                 }
 
-                DoRestoreStorage(dataReader);
+                await DoRestoreStorage(dataReader);
             }
 
             if (UnblockPortalAfterCompleted)
@@ -155,7 +155,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugEndRestorePortal();
     }
 
-    private void RestoreFromDump(IDataReadOperator dataReader)
+    private async Task RestoreFromDump(IDataReadOperator dataReader)
     {
         var keyBase = KeyHelper.GetDatabaseSchema();
         var keys = dataReader.GetEntries(keyBase).Select(r => Path.GetFileName(r)).ToList();
@@ -189,7 +189,7 @@ public class RestorePortalTask : PortalTaskBase
 
             SetStepsCount(stepscount + 1);
 
-            DoDeleteStorage(storageModules, tenants);
+            await DoDeleteStorage(storageModules, tenants);
         }
         else
         {
@@ -345,7 +345,7 @@ public class RestorePortalTask : PortalTaskBase
         }
     }
 
-    private void DoRestoreStorage(IDataReadOperator dataReader)
+    private async Task DoRestoreStorage(IDataReadOperator dataReader)
     {
         _options.DebugBeginRestoreStorage();
 
@@ -373,7 +373,7 @@ public class RestorePortalTask : PortalTaskBase
                         using var stream = dataReader.GetEntry(key);
                         try
                         {
-                            storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream).Wait();
+                            await storage.SaveAsync(file.Domain, adjustedPath, module != null ? module.PrepareData(key, stream, _columnMapper) : stream);
                         }
                         catch (Exception error)
                         {
@@ -401,7 +401,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugEndRestoreStorage();
     }
 
-    private void DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
+    private async Task DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
     {
         _options.DebugBeginDeleteStorage();
 
@@ -416,12 +416,12 @@ public class RestorePortalTask : PortalTaskBase
 
                 foreach (var domain in domains)
                 {
-                    ActionInvoker.Try(
-                        state =>
+                    await ActionInvoker.Try(
+                        async state =>
                         {
-                            if (storage.IsDirectoryAsync((string)state).Result)
+                            if (await storage.IsDirectoryAsync((string)state))
                             {
-                                storage.DeleteFilesAsync((string)state, "\\", "*.*", true).Wait();
+                                await storage.DeleteFilesAsync((string)state, "\\", "*.*", true);
                             }
                         },
                         domain,

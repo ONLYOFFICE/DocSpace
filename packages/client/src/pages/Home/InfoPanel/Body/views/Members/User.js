@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
 import { ComboBox } from "@docspace/components";
-import { ShareAccessRights } from "@docspace/common/constants";
 
 const User = ({
   t,
@@ -12,9 +11,12 @@ const User = ({
   membersHelper,
   currentMember,
   updateRoomMemberRole,
-  currCanEditUsers,
   selectionParentRoom,
   setSelectionParentRoom,
+  canChangeUserRoleInRoom,
+  canDeleteUserInRoom,
+  rootFolderType,
+  access,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -22,9 +24,26 @@ const User = ({
   const [userIsRemoved, setUserIsRemoved] = useState(false);
   if (userIsRemoved) return null;
 
+  const canChangeUserRole =
+    user &&
+    canChangeUserRoleInRoom({
+      access,
+      rootFolderType,
+      currentUserInList: { id: user.id, access: user.access },
+    });
+
+  const canDeleteUser =
+    user &&
+    canDeleteUserInRoom({
+      access,
+      rootFolderType,
+      currentUserInList: { id: user.id, access: user.access },
+    });
+
   const fullRoomRoleOptions = membersHelper.getOptionsByRoomType(
     selectionParentRoom.roomType,
-    currCanEditUsers
+    canChangeUserRole,
+    canDeleteUser
   );
 
   const userRole = membersHelper.getOptionByUserAccess(user.access);
@@ -84,9 +103,7 @@ const User = ({
 
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
-          {currCanEditUsers &&
-          currentMember?.id !== user.id &&
-          userRole.access !== ShareAccessRights.FullAccess ? (
+          {canChangeUserRole || canDeleteUser ? (
             <ComboBox
               className="role-combobox"
               selectedOption={userRole}

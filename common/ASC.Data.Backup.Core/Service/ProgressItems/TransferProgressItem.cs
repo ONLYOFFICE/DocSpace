@@ -94,7 +94,7 @@ public class TransferProgressItem : BaseBackupProgressItem
 
     }
 
-    protected override void DoJob()
+    protected override async Task DoJob()
     {
         var tempFile = PathHelper.GetTempFileName(TempFolder);
         var tenant = _tenantManager.GetTenant(TenantId);
@@ -116,7 +116,7 @@ public class TransferProgressItem : BaseBackupProgressItem
                 PublishChanges();
             };
 
-            transferProgressItem.RunJob();
+            await transferProgressItem.RunJob();
 
             Link = GetLink(alias, false);
             _notifyHelper.SendAboutTransferComplete(tenant, TargetRegion, Link, !Notify, transferProgressItem.ToTenantId);

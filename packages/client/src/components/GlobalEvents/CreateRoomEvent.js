@@ -23,6 +23,10 @@ const CreateRoomEvent = ({
 
   currrentFolderId,
   updateCurrentFolder,
+
+  withPaging,
+  addFile,
+  setCreateRoomDialogVisible,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
   const [fetchedTags, setFetchedTags] = useState([]);
@@ -50,7 +54,7 @@ const CreateRoomEvent = ({
       setIsLoading(true);
 
       // create room
-      const room =
+      let room =
         isThirdparty && storageFolderId
           ? await createRoomInThirdpary(storageFolderId, createRoomData)
           : await createRoom(createRoomData);
@@ -64,7 +68,7 @@ const CreateRoomEvent = ({
         await createTag(createTagsData[i]);
 
       // add new tags to room
-      await addTagsToRoom(room.id, addTagsData);
+      room = await addTagsToRoom(room.id, addTagsData);
 
       // calculate and upload logo to room
       if (roomParams.icon.uploadedFile)
@@ -73,19 +77,26 @@ const CreateRoomEvent = ({
           const img = new Image();
           img.onload = async () => {
             const { x, y, zoom } = roomParams.icon;
-            await addLogoToRoom(room.id, {
+            room = await addLogoToRoom(room.id, {
               tmpFile: response.data,
               ...calculateRoomLogoParams(img, x, y, zoom),
             });
+
+            !withPaging && addFile(room, true);
+
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
+      else !withPaging && addFile(room, true);
     } catch (err) {
       toastr.error(err);
       console.log(err);
     } finally {
-      await updateCurrentFolder(null, currrentFolderId);
+      if (withPaging) {
+        await updateCurrentFolder(null, currrentFolderId);
+      }
+
       setIsLoading(false);
       onClose();
     }
@@ -94,6 +105,12 @@ const CreateRoomEvent = ({
   useEffect(async () => {
     let tags = await fetchTags();
     setFetchedTags(tags);
+  }, []);
+
+  useEffect(() => {
+    setCreateRoomDialogVisible(true);
+
+    return () => setCreateRoomDialogVisible(false);
   }, []);
 
   return (
@@ -113,6 +130,7 @@ const CreateRoomEvent = ({
 
 export default inject(
   ({
+    auth,
     filesStore,
     tagsStore,
     filesActionsStore,
@@ -127,18 +145,20 @@ export default inject(
       calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
+      addFile,
     } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
     const { id: currrentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
 
-    const { connectDialogVisible } = dialogsStore;
+    const { connectDialogVisible, setCreateRoomDialogVisible } = dialogsStore;
 
     const {
       deleteThirdParty,
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
+    const { withPaging } = auth.settingsStore;
 
     return {
       createRoom,
@@ -155,6 +175,10 @@ export default inject(
       connectDialogVisible,
       currrentFolderId,
       updateCurrentFolder,
+
+      withPaging,
+      addFile,
+      setCreateRoomDialogVisible,
     };
   }
 )(observer(CreateRoomEvent));

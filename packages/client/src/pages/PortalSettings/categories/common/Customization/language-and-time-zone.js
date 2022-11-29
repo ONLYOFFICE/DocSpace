@@ -414,6 +414,7 @@ class LanguageAndTimeZone extends React.Component {
       isLoadedPage,
       helpLink,
       organizationName,
+      currentColorScheme,
     } = this.props;
 
     const {
@@ -434,6 +435,7 @@ class LanguageAndTimeZone extends React.Component {
         t={t}
         helpLink={helpLink}
         organizationName={organizationName}
+        currentColorScheme={currentColorScheme}
       />
     );
 
@@ -533,6 +535,7 @@ export default inject(({ auth, setup, common }) => {
     getCurrentCustomSchema,
     cultures,
     helpLink,
+    currentColorScheme,
   } = auth.settingsStore;
 
   const { user } = auth.userStore;
@@ -563,6 +566,7 @@ export default inject(({ auth, setup, common }) => {
     helpLink,
     initSettings,
     setIsLoaded,
+    currentColorScheme,
   };
 })(
   withLoading(

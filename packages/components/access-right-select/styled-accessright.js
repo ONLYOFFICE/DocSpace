@@ -7,6 +7,16 @@ const StyledWrapper = styled(ComboBox)`
     padding-left: 16px;
     padding-right: 8px;
   }
+
+  @media (max-width: 428px) {
+    .backdrop-active {
+      top: -64px;
+      z-index: 560;
+    }
+    .dropdown-container {
+      z-index: 561;
+    }
+  }
 `;
 
 StyledWrapper.defaultProps = { theme: Base };

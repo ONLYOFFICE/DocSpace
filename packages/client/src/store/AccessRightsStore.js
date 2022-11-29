@@ -6,10 +6,17 @@ import {
   FolderType,
   ShareAccessRights,
 } from "@docspace/common/constants";
+import {
+  getFileRoleActions,
+  getRoomRoleActions,
+  getArchiveRoomRoleActions,
+  getArchiveFileRoleActions,
+} from "@docspace/common/utils/actions";
 
 class AccessRightsStore {
   authStore = null;
   selectedFolderStore = null;
+  treeFoldersStore = null;
 
   constructor(authStore, selectedFolderStore) {
     this.authStore = authStore;
@@ -18,331 +25,281 @@ class AccessRightsStore {
     makeAutoObservable(this);
   }
 
-  canEditRoom = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+  canInviteUserInRoom(room) {
+    const { access, rootFolderType } = room;
 
-    const { rootFolderType } = this.selectedFolderStore;
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveRoomRoleActions(access).inviteUsers;
 
-    if (rootFolderType === FolderType.Archive) return false;
+    return getRoomRoleActions(access).inviteUsers;
+  }
 
-    if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.RoomManager === room.access ||
-      ShareAccessRights.FullAccess === room.access
-    )
-      return true;
+  canChangeUserRoleInRoom = (room) => {
+    const { access, rootFolderType, currentUserInList } = room;
+    const { userStore } = this.authStore;
+    const { user } = userStore;
 
-    return false;
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveRoomRoleActions(access).changeUserRole;
+
+    const isMyProfile = user.id === currentUserInList.id;
+    const isOwnerRoleRoom =
+      currentUserInList.access === ShareAccessRights.FullAccess;
+
+    if (isMyProfile || isOwnerRoleRoom) return false;
+
+    return getRoomRoleActions(access).changeUserRole;
+  };
+  canDeleteUserInRoom = (room) => {
+    const { access, currentUserInList, rootFolderType } = room;
+    const { userStore } = this.authStore;
+    const { user } = userStore;
+
+    const isMyProfile = user.id === currentUserInList.id;
+    const isOwnerRoleRoom =
+      currentUserInList.access === ShareAccessRights.FullAccess;
+
+    if (isMyProfile || isOwnerRoleRoom) return false;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveRoomRoleActions(access).deleteUsers;
+
+    return getRoomRoleActions(access).deleteUsers;
+  };
+  canLockFile = (file) => {
+    const { rootFolderType, access } = file;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveFileRoleActions(access).block;
+
+    if (rootFolderType === FolderType.TRASH) return false;
+
+    return getFileRoleActions(access).block;
   };
 
-  canInviteUserInRoom = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+  canChangeVersionFileHistory = (file) => {
+    const { rootFolderType, editing, providerKey, access } = file;
 
-    const { rootFolderType } = this.selectedFolderStore;
-
-    if (rootFolderType === FolderType.Archive) return false;
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveFileRoleActions(access).changeVersionHistory;
 
     if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.RoomManager === room.access ||
-      ShareAccessRights.FullAccess === room.access
+      rootFolderType === FolderType.TRASH ||
+      // rootFolderType === FolderType.Privacy ||
+      editing ||
+      providerKey
     )
-      return true;
+      return false;
 
-    return false;
+    return getFileRoleActions(access).changeVersionHistory;
+  };
+  canViewVersionFileHistory = (file) => {
+    const { rootFolderType, access, providerKey } = file;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveFileRoleActions(access).viewVersionHistory;
+
+    if (
+      rootFolderType === FolderType.TRASH ||
+      // rootFolderType === FolderType.Privacy ||
+      providerKey
+    )
+      return false;
+
+    return getFileRoleActions(access).viewVersionHistory;
   };
 
-  get canChangeUserRoleInRoom() {}
+  canEditFile = (file) => {
+    const { rootFolderType, access } = file;
 
-  canRemoveUserFromRoom = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveFileRoleActions(access).edit;
 
     if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.RoomManager === room.access ||
-      ShareAccessRights.FullAccess === room.access
+      rootFolderType === FolderType.TRASH
+      // || rootFolderType === FolderType.Privacy
     )
-      return true;
+      return false;
 
-    return false;
+    return getFileRoleActions(access).edit;
+  };
+
+  canRenameItem = (item = {}) => {
+    const { rootFolderType, access, isFile } = item;
+    const { isDesktopClient } = this.authStore.settingsStore;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveFileRoleActions(access).rename;
+
+    if (
+      rootFolderType === FolderType.TRASH ||
+      (!isFile &&
+        // rootFolderType === FolderType.Privacy &&
+        !isDesktopClient)
+    )
+      return false;
+
+    return getFileRoleActions(access).rename;
+  };
+  canFillForm = (file) => {
+    const { rootFolderType, access } = file;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveFileRoleActions(access).fillForm;
+
+    if (rootFolderType === FolderType.TRASH) return false;
+
+    return getFileRoleActions(access).fillForm;
+  };
+
+  canMakeForm = (item) => {
+    const { rootFolderType, access } = item;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveFileRoleActions(access).saveAsForm;
+
+    if (
+      rootFolderType === FolderType.TRASH ||
+      // rootFolderType === FolderType.Privacy ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent
+    )
+      return false;
+
+    return getFileRoleActions(access).saveAsForm;
   };
 
   canArchiveRoom = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+    const { archive } = getRoomRoleActions(room.access);
 
-    if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access
-    )
-      return true;
-
-    return false;
+    return archive;
   };
 
   canRemoveRoom = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+    const { access, rootFolderType } = room;
 
-    if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access
-    )
-      return true;
+    if (rootFolderType !== FolderType.Archive)
+      return getRoomRoleActions(access).delete;
 
-    return false;
+    return getArchiveRoomRoleActions(access).delete;
+  };
+
+  canViewRoomInfo = (room) => {
+    const { access, rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveRoomRoleActions(access).viewInfo;
+
+    return getRoomRoleActions(access).viewInfo;
+  };
+
+  canPinRoom = (room) => {
+    const { access, rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveRoomRoleActions(access).canPin;
+
+    return getRoomRoleActions(access).canPin;
+  };
+
+  canEditRoom = (room) => {
+    const { access, rootFolderType } = room;
+
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveRoomRoleActions(access).edit;
+
+    return getRoomRoleActions(access).edit;
   };
 
   get canCreateFiles() {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
     const { access, rootFolderType } = this.selectedFolderStore;
 
-    if (rootFolderType === FolderType.Archive) return false;
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveFileRoleActions(access).create;
 
-    if (
-      access === ShareAccessRights.None ||
-      access === ShareAccessRights.FullAccess ||
-      access === ShareAccessRights.RoomManager ||
-      isAdmin ||
-      isOwner
-    )
-      return true;
+    const { create } = getFileRoleActions(access);
 
-    return false;
+    return create;
   }
 
-  canDownloadFiles = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+  canMoveItems = (item) => {
+    const { rootFolderType, access, editing: fileEditing, providerKey } = item;
+
+    if (rootFolderType === FolderType.Archive) {
+      const { moveSelf, moveAlien } = getArchiveFileRoleActions(access);
+
+      return moveSelf || moveAlien;
+    }
 
     if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent ||
+      // rootFolderType === FolderType.Privacy ||
+      providerKey ||
+      fileEditing
     )
-      return true;
+      return false;
 
-    return false;
+    const { moveSelf, moveAlien } = getFileRoleActions(access);
+
+    return moveSelf || moveAlien;
   };
 
-  canEditFile = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
+  canDeleteItems = (item) => {
+    const { rootFolderType, access, editing: fileEditing } = item;
 
-    const { rootFolderType } = room;
+    if (rootFolderType === FolderType.Archive) {
+      const { deleteSelf, deleteAlien } = getArchiveFileRoleActions(access);
 
-    if (rootFolderType === FolderType.Archive) return false;
+      return deleteSelf || deleteAlien;
+    }
 
     if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access ||
-      ShareAccessRights.Editing === room.access
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent ||
+      // rootFolderType === FolderType.Privacy ||
+      fileEditing
     )
-      return true;
+      return false;
 
-    return false;
+    const { deleteSelf, deleteAlien } = getFileRoleActions(access);
+
+    return deleteSelf || deleteAlien;
   };
 
-  canFillForm = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
-    const { rootFolderType } = room;
-
-    if (rootFolderType === FolderType.Archive) return false;
+  canCopyItems = (item) => {
+    const { rootFolderType, access } = item;
 
     if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access ||
-      ShareAccessRights.Editing === room.access ||
-      ShareAccessRights.FormFilling === room.access
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent
+      // || rootFolderType === FolderType.Privacy
     )
-      return true;
+      return false;
 
-    return false;
+    const { canCopy } = getFileRoleActions(access);
+
+    return canCopy;
   };
+  canDuplicateFile = (item) => {
+    const { rootFolderType, access } = item;
 
-  canPeerReview = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
-    const { rootFolderType } = room;
-
-    if (rootFolderType === FolderType.Archive) return false;
+    if (rootFolderType === FolderType.Archive)
+      return getArchiveFileRoleActions(access).canDuplicate;
 
     if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access ||
-      ShareAccessRights.Editing === room.access ||
-      ShareAccessRights.FormFilling === room.access ||
-      ShareAccessRights.Review === room.access
+      rootFolderType === FolderType.TRASH ||
+      rootFolderType === FolderType.Favorites ||
+      rootFolderType === FolderType.Recent
+      // || rootFolderType === FolderType.Privacy
     )
-      return true;
+      return false;
 
-    return false;
+    return getFileRoleActions(access).canDuplicate;
   };
-
-  canCommentFile = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
-    const { rootFolderType } = room;
-
-    if (rootFolderType === FolderType.Archive) return false;
-
-    if (isAdmin || isOwner || ShareAccessRights.ReadOnly !== room.access)
-      return true;
-
-    return false;
-  };
-
-  canBlockFile = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
-    const { rootFolderType } = room;
-
-    if (rootFolderType === FolderType.Archive) return false;
-
-    if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access
-    )
-      return true;
-
-    return false;
-  };
-
-  canShowVersionHistory = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
-    if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access ||
-      ShareAccessRights.Editing === room.access
-    )
-      return true;
-
-    return false;
-  };
-
-  canManageVersionHistory = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
-    const { rootFolderType } = room;
-
-    if (rootFolderType === FolderType.Archive) return false;
-
-    if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access
-    )
-      return true;
-
-    return false;
-  };
-
-  canMoveFile = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
-    const { rootFolderType } = room;
-
-    if (rootFolderType === FolderType.Archive) return false;
-
-    if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access
-    )
-      return true;
-
-    return false;
-  };
-
-  canDeleteFile = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
-    const { rootFolderType } = room;
-
-    if (rootFolderType === FolderType.Archive) return false;
-
-    if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access
-    )
-      return true;
-
-    return false;
-  };
-
-  canRenameFile = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
-    const { rootFolderType } = room;
-
-    if (rootFolderType === FolderType.Archive) return false;
-
-    if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access
-    )
-      return true;
-
-    return false;
-  };
-
-  canCopyFile = (room) => {
-    const { isAdmin, isOwner } = this.authStore.userStore.user;
-
-    const { rootFolderType } = room;
-
-    if (rootFolderType === FolderType.Archive) return false;
-
-    if (
-      isAdmin ||
-      isOwner ||
-      ShareAccessRights.None === room.access ||
-      ShareAccessRights.FullAccess === room.access ||
-      ShareAccessRights.RoomManager === room.access
-    )
-      return true;
-
-    return false;
-  };
-
   canChangeUserType = (user) => {
     const { id, isOwner } = this.authStore.userStore.user;
 
@@ -465,6 +422,19 @@ class AccessRightsStore {
     if (isAdmin) return needRemove && !userIsAdmin && !userIsOwner;
 
     return false;
+  };
+
+  canViewUsers = (room) => {
+    const { rootFolderType } = this.selectedFolderStore;
+
+    if (!room) return false;
+
+    const options =
+      rootFolderType === FolderType.Archive
+        ? getArchiveRoomRoleActions(room.access)
+        : getRoomRoleActions(room.access);
+
+    return options.viewUsers;
   };
 }
 

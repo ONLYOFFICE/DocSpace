@@ -72,29 +72,6 @@ const hoverCss = css`
   }
 `;
 
-const loadingCss = css`
-  background-color: ${(props) =>
-    props.primary
-      ? props.theme.button.backgroundColor.primaryLoading
-      : props.theme.button.backgroundColor.grayLight};
-
-  color: ${(props) =>
-    props.primary
-      ? props.theme.button.color.primary
-      : props.theme.button.color.base};
-
-  ${(props) =>
-    props.primary
-      ? css`
-          border: ${(props) => props.theme.button.border.primaryLoading};
-          box-sizing: ${(props) => props.theme.button.boxSizing};
-        `
-      : css`
-          border: ${(props) => props.theme.button.border.baseLoading};
-          box-sizing: ${(props) => props.theme.button.boxSizing};
-        `}
-`;
-
 const disableCss = css`
   background-color: ${(props) =>
     props.primary
@@ -222,20 +199,10 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
           }
         `)}
 
-  ${(props) => props.isDisabled && disableCss}
-  ${(props) => props.isLoading && loadingCss}
+  ${(props) => (props.isDisabled || props.isLoading) && disableCss}
 
-    &:focus {
+  &:focus {
     outline: ${(props) => props.theme.button.outline};
-  }
-
-  .button-content {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
   }
 
   .loader {
@@ -253,10 +220,17 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
     width: 100%;
     height: 100%;
 
-    background-color: ${(props) =>
-      props.primary
-        ? props.theme.button.backgroundColor.primaryLoading
-        : props.theme.button.backgroundColor.baseLoading};
+    background-color: transparent;
+  }
+
+  .button-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
   }
 
   .icon {

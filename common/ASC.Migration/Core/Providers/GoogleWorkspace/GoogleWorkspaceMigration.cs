@@ -131,7 +131,7 @@ namespace ASC.Migration.GoogleWorkspace
             return Task.FromResult(_migrationInfo.ToApiInfo());
         }
 
-        public override Task Migrate(MigrationApiInfo migrationApiInfo)
+        public override async Task Migrate(MigrationApiInfo migrationApiInfo)
         {
             ReportProgress(0, MigrationResource.PreparingForMigration);
             _migrationInfo.Merge(migrationApiInfo);
@@ -148,12 +148,12 @@ namespace ASC.Migration.GoogleWorkspace
             var i = 1;
             foreach (var user in usersForImport)
             {
-                if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return null; }
+                if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return; }
                 ReportProgress(GetProgress() + progressStep, string.Format(MigrationResource.UserMigration, user.DisplayName, i++, usersCount));
                 try
                 {
                     user.DataСhange(migrationApiInfo.Users.Find(element => element.Key == user.Key));
-                    user.Migrate();
+                    await user.Migrate();
                     _importedUsers.Add(user.Guid);
                 }
                 catch (Exception ex)
@@ -173,11 +173,11 @@ namespace ASC.Migration.GoogleWorkspace
                 i = 1;
                 foreach (var group in groupsForImport)
                 {
-                    if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return null; }
+                    if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return; }
                     ReportProgress(GetProgress() + progressStep, string.Format(MigrationResource.GroupMigration, group.GroupName, i++, groupsCount));
                     try
                     {
-                        group.Migrate();
+                        await group.Migrate();
                     }
                     catch (Exception ex)
                     {
@@ -190,7 +190,7 @@ namespace ASC.Migration.GoogleWorkspace
             i = 1;
             foreach (var user in usersForImport)
             {
-                if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return null; }
+                if (_cancellationToken.IsCancellationRequested) { ReportProgress(100, MigrationResource.MigrationCanceled); return; }
                 if (failedUsers.Contains(user))
                 {
                     ReportProgress(GetProgress() + progressStep, string.Format(MigrationResource.UserSkipped, user.DisplayName, i, usersCount));
@@ -201,7 +201,7 @@ namespace ASC.Migration.GoogleWorkspace
 
                 try
                 {
-                    user.MigratingContacts.Migrate();
+                    await user.MigratingContacts.Migrate();
                 }
                 catch (Exception ex)
                 {
@@ -231,7 +231,7 @@ namespace ASC.Migration.GoogleWorkspace
                     _securityContext.AuthenticateMe(user.Guid);
                     user.MigratingFiles.SetUsersDict(usersForImport.Except(failedUsers));
                     user.MigratingFiles.SetGroupsDict(groupsForImport);
-                    user.MigratingFiles.Migrate();
+                    await user.MigratingFiles.Migrate();
                     _securityContext.AuthenticateMe(currentUser.ID);
                 }
                 catch (Exception ex)
@@ -251,7 +251,6 @@ namespace ASC.Migration.GoogleWorkspace
             }
 
             ReportProgress(100, MigrationResource.MigrationCompleted);
-            return Task.CompletedTask;
         }
     }
 }

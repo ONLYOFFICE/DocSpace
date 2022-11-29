@@ -109,6 +109,8 @@ class ComboBox extends React.Component {
       offsetLeft,
       modernView,
       withBackdrop,
+      isAside,
+      withBackground,
 
       advancedOptionsCount,
     } = this.props;
@@ -196,6 +198,8 @@ class ComboBox extends React.Component {
             isPersonal={isPersonal}
             offsetLeft={offsetLeft}
             withBackdrop={withBackdrop}
+            isAside={isAside}
+            withBackground={withBackground}
           >
             {advancedOptions
               ? advancedOptions

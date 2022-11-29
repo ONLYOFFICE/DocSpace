@@ -16,11 +16,14 @@ const Backup = ({
   t,
   history,
   isNotPaidPeriod,
+  currentColorScheme,
 }) => {
   const renderTooltip = (helpInfo) => {
     return (
       <>
         <HelpButton
+          displayType="auto"
+          place="bottom"
           iconName={"/static/images/help.react.svg"}
           tooltipContent={
             <>
@@ -32,7 +35,7 @@ const Backup = ({
                   as="a"
                   href={helpUrlCreatingBackup}
                   target="_blank"
-                  color="#555F65"
+                  color={currentColorScheme.main.accent}
                   isBold
                   isHovered
                 >
@@ -84,7 +87,11 @@ export default inject(({ auth }) => {
   const { settingsStore, currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
 
-  const { helpUrlCreatingBackup, isTabletView } = settingsStore;
+  const {
+    helpUrlCreatingBackup,
+    isTabletView,
+    currentColorScheme,
+  } = settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
 
@@ -92,5 +99,6 @@ export default inject(({ auth }) => {
     helpUrlCreatingBackup,
     buttonSize,
     isNotPaidPeriod,
+    currentColorScheme,
   };
 })(observer(withTranslation(["Settings", "Common"])(Backup)));

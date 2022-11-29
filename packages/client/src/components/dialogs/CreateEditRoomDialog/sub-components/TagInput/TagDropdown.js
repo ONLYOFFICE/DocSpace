@@ -18,6 +18,14 @@ const TagDropdown = ({
 
   const [dropdownMaxHeight, setDropdownMaxHeight] = useState(0);
 
+  useEffect(() => {
+    document.getElementById("tags-input").addEventListener("keyup", onKeyPress);
+
+    return () => document.removeEventListener("keyup", onKeyPress);
+  });
+
+  const onKeyPress = (e) => e.key === "Enter" && addNewTag();
+
   const chosenTags = tagHandler.tags.map((tag) => tag.name);
 
   const tagsForDropdown = tagHandler.fetchedTags.filter(
