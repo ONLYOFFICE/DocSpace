@@ -103,7 +103,7 @@ class PaymentStore {
       const res = await api.portal.updatePayment(adminCount);
       console.log("updatePayment", res);
       if (res !== true) {
-        toastr.error("error");
+        console.error(res);
       }
     } catch (e) {
       toastr.error(e);
