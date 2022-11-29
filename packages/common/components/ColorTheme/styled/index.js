@@ -49,3 +49,7 @@ export { default as LinkTheme } from "./link";
 export { default as SliderTheme } from "./slider";
 
 export { default as IndicatorLoaderTheme } from "./indicatorLoader";
+
+export { default as ProgressTheme } from "./progress";
+
+export { default as MobileProgressBarTheme } from "./mobileProgressBar";

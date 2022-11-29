@@ -7,7 +7,6 @@ import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
-import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 
 const DeleteDialogComponent = (props) => {
   const {
@@ -24,10 +23,8 @@ const DeleteDialogComponent = (props) => {
     unsubscribe,
     isPrivacyFolder,
     isRecycleBinFolder,
-    isRootFolder,
     isRoomDelete,
     setIsRoomDelete,
-
     deleteRoomsAction,
   } = props;
 
@@ -36,7 +33,8 @@ const DeleteDialogComponent = (props) => {
 
   while (props.selection.length !== i) {
     const item = props.selection[i];
-    if (!((isRootFolder && item?.providerKey) || item?.isEditing)) {
+
+    if (!item?.isEditing) {
       if (item?.access === 0 || item?.access === 1 || unsubscribe) {
         selection.push(item);
       }
@@ -196,15 +194,7 @@ const DeleteDialog = withTranslation([
 ])(DeleteDialogComponent);
 
 export default inject(
-  ({
-    filesStore,
-    selectedFolderStore,
-    dialogsStore,
-    filesActionsStore,
-    treeFoldersStore,
-    auth,
-    uploadDataStore,
-  }) => {
+  ({ filesStore, dialogsStore, filesActionsStore, treeFoldersStore, auth }) => {
     const {
       selection,
       isLoading,
@@ -237,7 +227,6 @@ export default inject(
         ? selection
         : [bufferSelection],
       isLoading,
-      isRootFolder: selectedFolderStore.isRootFolder,
       visible,
       isPrivacyFolder,
       isRecycleBinFolder,

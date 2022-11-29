@@ -42,7 +42,7 @@ const StyledHideArticleMenuButton = styled.div`
 
     .article-hide-menu-text {
       margin-left: 8px;
-      color: ${({ currentColorScheme }) => currentColorScheme.accentColor};
+      color: ${({ currentColorScheme }) => currentColorScheme.main.accent};
     }
 
     @media ${tablet} {
@@ -75,7 +75,7 @@ const StyledHideArticleMenuButton = styled.div`
 
     svg {
       path {
-        fill: ${({ currentColorScheme }) => currentColorScheme.accentColor};
+        fill: ${({ currentColorScheme }) => currentColorScheme.main.accent};
       }
     }
   }

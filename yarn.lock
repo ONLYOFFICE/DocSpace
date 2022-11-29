@@ -2791,6 +2791,7 @@ __metadata:
     file-loader: ^6.2.0
     file-saver: ^2.0.5
     firebase: ^8.10.0
+    hex-to-rgba: ^2.0.1
     html-webpack-plugin: 5.3.2
     json-loader: ^0.5.7
     playwright: ^1.18.1
@@ -13787,6 +13788,13 @@ __metadata:
     glob: ^7.1.6
     readable-stream: ^3.6.0
   checksum: 04b0cf1cc02c2710d09718811cdf3d4dc5e3210d65e3f74749c8fc0c8081736cb0309dc3513696cba5e97196254f3c99378dab25ac0c514037c8d238a0b8ce48
+  languageName: node
+  linkType: hard
+
+"hex-to-rgba@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "hex-to-rgba@npm:2.0.1"
+  checksum: adbb81babe9d06cf743b925e2104968bb32d9e10f0de328b71c9e20ff52da4028fadde4623261866eaed4d9a3b975fb325fa34f2422eb035e839ed71ec462431
   languageName: node
   linkType: hard
 

@@ -193,7 +193,6 @@ const Base = {
     mobileProgressBarBackground: "rgb(48%, 58%, 69%, 0.4)",
 
     bar: {
-      background: "linear-gradient(225deg, #2274aa 0%, #0f4071 100%)",
       errorBackground: orangePressed,
 
       icon: "#A3A9AE",
@@ -1662,23 +1661,10 @@ const Base = {
   },
 
   toggleButton: {
-    fillColor: blueMain,
-    fillColorOff: gray,
-
-    disableFillColor: grayLightMid,
-    disableFillColorOff: grayLightMid,
-
-    borderColor: "unset",
-    borderColorOff: "unset",
-
-    disableBorderColor: grayLightMid,
-    disableBorderColorOff: grayLightMid,
-
+    fillColorOff: "#D0D5DA",
+    hoverFillColorOff: "#A3A9AE",
     fillCircleColor: white,
     fillCircleColorOff: white,
-
-    disableFillCircleColor: white,
-    disableFillCircleColorOff: white,
   },
 
   contextMenuButton: {
@@ -3019,6 +3005,13 @@ const Base = {
     boxShadow: "0px 5px 20px rgba(4, 15, 27, 0.07)",
   },
 
+
+  preparationPortalProgress: {
+    backgroundColor: "#F3F4F4",
+    colorPercentSmall: "#333333",
+    colorPercentBig: "#FFFFFF",
+ },
+ 
   codeInput: {
     background: white,
     border: "1px solid #d0d5da",

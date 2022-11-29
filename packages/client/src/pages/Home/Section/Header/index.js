@@ -367,7 +367,7 @@ class SectionHeaderContent extends React.Component {
           key: "empty-archive",
           label: t("ArchiveAction"),
           onClick: this.onEmptyTrashAction,
-          disabled: !canRestoreAll,
+          disabled: !canDeleteAll,
           icon: "images/clear.trash.react.svg",
         },
         {
@@ -375,7 +375,7 @@ class SectionHeaderContent extends React.Component {
           key: "restore-all",
           label: t("RestoreAll"),
           onClick: this.onRestoreAllArchiveAction,
-          disabled: !canDeleteAll,
+          disabled: !canRestoreAll,
           icon: "images/subtract.react.svg",
         },
       ];

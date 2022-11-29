@@ -1257,20 +1257,18 @@ class FilesActionStore {
   };
 
   isAvailableOption = (option) => {
-    const { isFavoritesFolder, isRecentFolder } = this.treeFoldersStore;
     const {
       isAccessedSelected,
       canConvertSelected,
-      isThirdPartyRootSelection,
       hasSelection,
       allFilesIsEditing,
       selection,
     } = this.filesStore;
 
     const {
-      canCopyFile,
-      canDeleteFile,
-      canMoveFile,
+      canCopyItems,
+      canDeleteItems,
+      canMoveItems,
       canArchiveRoom,
       canRemoveRoom,
     } = this.accessRightsStore;
@@ -1278,7 +1276,7 @@ class FilesActionStore {
 
     switch (option) {
       case "copy":
-        const canCopy = canCopyFile({ access, rootFolderType });
+        const canCopy = canCopyItems({ access, rootFolderType });
 
         return hasSelection && canCopy;
       case "showInfo":
@@ -1287,16 +1285,12 @@ class FilesActionStore {
       case "downloadAs":
         return canConvertSelected;
       case "moveTo":
-        const canMove = canMoveFile({ access, rootFolderType });
-        return (
-          !isThirdPartyRootSelection &&
-          hasSelection &&
-          isAccessedSelected &&
-          !isRecentFolder &&
-          !isFavoritesFolder &&
-          !allFilesIsEditing &&
-          canMove
-        );
+        const canMove = canMoveItems({
+          access,
+          rootFolderType,
+          editing: allFilesIsEditing,
+        });
+        return hasSelection && isAccessedSelected && canMove;
 
       case "archive":
       case "unarchive":
@@ -1313,12 +1307,12 @@ class FilesActionStore {
         return canRemove.length > 0;
 
       case "delete":
-        const canDelete = canDeleteFile({ access, rootFolderType });
-        const deleteCondition =
-          !isThirdPartyRootSelection &&
-          hasSelection &&
-          isAccessedSelected &&
-          !allFilesIsEditing;
+        const canDelete = canDeleteItems({
+          access,
+          rootFolderType,
+          editing: allFilesIsEditing,
+        });
+        const deleteCondition = hasSelection && isAccessedSelected;
 
         return canDelete && deleteCondition;
     }
