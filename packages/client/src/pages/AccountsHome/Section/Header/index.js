@@ -247,7 +247,7 @@ const SectionHeaderContent = (props) => {
       },
       {
         id: "accounts-add_user",
-        className: "account-add-button_drop-down",
+        className: "main-button_drop-down",
         icon: "/static/images/person.user.react.svg",
         label: t("Common:User"),
         onClick: onInvite,
