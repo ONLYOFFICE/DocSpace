@@ -14,14 +14,13 @@ const HistoryBlock = ({
   t,
   selection,
   feed,
-  personal,
-  culture,
   selectedFolder,
   selectionParentRoom,
   getInfoPanelItemIcon,
   checkAndOpenLocationAction,
   openUser,
   isVisitor,
+  isLastEntity,
 }) => {
   const { target, initiator, json, groupedFeeds } = feed;
 
@@ -30,7 +29,10 @@ const HistoryBlock = ({
     json.Item === FeedItemTypes.File || json.Item === FeedItemTypes.Folder;
 
   return (
-    <StyledHistoryBlock isUserAction={isUserAction}>
+    <StyledHistoryBlock
+      withBottomDivider={!isLastEntity}
+      isUserAction={isUserAction}
+    >
       <Avatar
         role="user"
         className="avatar"

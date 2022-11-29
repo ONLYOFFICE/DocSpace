@@ -51,7 +51,11 @@ const StyledHistoryBlock = styled.div`
   display: flex;
   gap: 8px;
   padding: 16px 0;
-  border-bottom: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
+
+  ${({ withBottomDivider, theme }) =>
+    withBottomDivider
+      ? ` border-bottom: solid 1px ${theme.infoPanel.borderColor}; `
+      : ` margin-bottom: 12px; `}
 
   .avatar {
     min-width: 32px;
