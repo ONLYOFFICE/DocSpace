@@ -24,39 +24,21 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using CommandLine;
+
 var options = new WebApplicationOptions
 {
     Args = args,
     ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
 };
 
+var param = Parser.Default.ParseArguments<Options>(args)
+                .WithNotParsed(options => Console.WriteLine(@"Bad command line parameters."))
+                .Value;
+
 var builder = WebApplication.CreateBuilder(options);
 
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-
-builder.WebHost.ConfigureAppConfiguration((hostContext, config) =>
-{
-    config.AddJsonFile($"appsettings.json", true);
-    var buildedConfig = config.Build();
-
-    var path = buildedConfig["pathToConf"];
-    try
-    {
-        if (!Path.IsPathRooted(path))
-        {
-            path = Path.GetFullPath(CrossPlatform.PathCombine(hostContext.HostingEnvironment.ContentRootPath, path));
-        }
-
-        config.SetBasePath(path);
-
-        config.AddJsonFile($"storage.json", false)
-        .AddCommandLine(args);
-    }
-    catch (Exception ex)
-    {
-        throw new Exception("Wrong pathToConf, change pathToConf in appsettings.json");
-    }
-});
 
 var config = builder.Configuration;
 
@@ -96,19 +78,30 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
 
 var app = builder.Build();
 
-var tenant = Int32.Parse(config["tenant"]);
-var userName = config["userName"];
-var region = config["region"];
-
 var migrationCreator = app.Services.GetService<MigrationCreator>();
-var fileName = await migrationCreator.Create(tenant, userName, region);
+var fileName = await migrationCreator.Create(param.Tenant, param.UserName, param.ToRegion, param.FromRegion);
 
 var migrationRunner = app.Services.GetService<MigrationRunner>();
-await migrationRunner.Run(fileName, region);
+await migrationRunner.Run(fileName, param.ToRegion);
 
 Directory.GetFiles(AppContext.BaseDirectory).Where(f => f.Equals(fileName)).ToList().ForEach(File.Delete);
 
 if (Directory.Exists(AppContext.BaseDirectory + "\\temp"))
 {
     Directory.Delete(AppContext.BaseDirectory + "\\temp");
+}
+
+public sealed class Options
+{
+    [Option('t', "tenant", Required = true)]
+    public int Tenant { get; set; }
+
+    [Option('u', "username", Required = true)]
+    public string UserName { get; set; }
+
+    [Option("toregion", Required = true)]
+    public string ToRegion { get; set; }
+
+    [Option("fromregion", Required = false, Default = "personal")]
+    public string FromRegion { get; set; }
 }

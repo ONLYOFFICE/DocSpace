@@ -73,7 +73,7 @@ public class MigrationRunner
             {
                 var restoreTask = new RestoreDbModuleTask(_logger, module, dataReader, columnMapper, _dbFactory, false, false, _region, _storageFactory, _storageFactoryConfig, _moduleProvider);
 
-                restoreTask.RunJob();
+                await restoreTask.RunJob();
             }
 
             await DoRestoreStorage(dataReader, columnMapper);

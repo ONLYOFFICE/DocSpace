@@ -29,9 +29,6 @@ namespace ASC.Migration.PersonalToDocspace.Creator;
 [Scope]
 public class MigrationCreator
 {
-    private readonly IDbContextFactory<UserDbContext> _userDbContext;
-    private readonly IDbContextFactory<BackupsContext> _backupsContext;
-    private readonly IDbContextFactory<FilesDbContext> _filesDbContext;
     private readonly IHostEnvironment _hostEnvironment;
     private readonly IConfiguration _configuration;
     private readonly TenantDomainValidator _tenantDomainValidator;
@@ -45,6 +42,7 @@ public class MigrationCreator
     private string _pathToSave;
     private string _userName;
     private string _toRegion;
+    private string _fromRegion;
     private int _tenant;
     private readonly int _limit = 1000;
     private readonly List<ModuleName> _namesModules = new List<ModuleName>()
@@ -57,9 +55,6 @@ public class MigrationCreator
     };
 
     public MigrationCreator(
-        IDbContextFactory<UserDbContext> userDbContext,
-        IDbContextFactory<BackupsContext> backupsContext,
-        IDbContextFactory<FilesDbContext> filesDbContext,
         IHostEnvironment hostEnvironment,
         IConfiguration configuration,
         TenantDomainValidator tenantDomainValidator,
@@ -69,9 +64,6 @@ public class MigrationCreator
         StorageFactoryConfig storageFactoryConfig,
         ModuleProvider moduleProvider)
     {
-        _userDbContext = userDbContext;
-        _backupsContext = backupsContext;
-        _filesDbContext = filesDbContext;
         _hostEnvironment = hostEnvironment;
         _configuration = configuration;
         _tenantDomainValidator = tenantDomainValidator;
@@ -84,9 +76,9 @@ public class MigrationCreator
 
 
 
-    public async Task<string> Create(int tenant, string userName, string toRegion)
+    public async Task<string> Create(int tenant, string userName, string toRegion, string fromRegion)
     {
-        Init(tenant, userName, toRegion);
+        Init(tenant, userName, toRegion, fromRegion);
 
         var id = GetId();
         var fileName = _userName + ".tar.gz";
@@ -99,37 +91,23 @@ public class MigrationCreator
         return fileName;
     }
 
-    private void Init(int tenant, string userName, string toRegion)
+    private void Init(int tenant, string userName, string toRegion, string fromRegion)
     {
         _modules = _moduleProvider.AllModules.Where(m => _namesModules.Contains(m.ModuleName)).ToList();
 
         _pathToSave = "";
         _toRegion = toRegion;
+        _fromRegion = fromRegion;
         _userName = userName;
         _tenant = tenant;
-
-        CheckExistDataStorage();
-    }
-
-    private void CheckExistDataStorage()
-    {
-        var store = _storageFactory.GetStorage(_tenant, "files");
-        if (store is DiscDataStore)
-        {
-            var path = Path.Combine(_hostEnvironment.ContentRootPath, _configuration[Data.Storage.Constants.StorageRootParam]);
-            if (!Directory.Exists(path))
-            {
-                throw new Exception("Wrong $STORAGE_ROOT, change $STORAGE_ROOT in appsettings.json");
-            }
-        }
     }
 
     private Guid GetId()
     {
         try
         {
-            using var dbContext = _userDbContext.CreateDbContext();
-            return dbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName).Id;
+            var userDbContext = _dbFactory.CreateDbContext<UserDbContext>(_fromRegion);
+            return userDbContext.Users.FirstOrDefault(q => q.Tenant == _tenant && q.Status == EmployeeStatus.Active && q.UserName == _userName).Id;
         }
         catch (Exception)
         {
@@ -143,7 +121,7 @@ public class MigrationCreator
         {
             var tablesToProcess = module.Tables.Where(t => t.InsertMethod != InsertMethod.None).ToList();
 
-            using (var connection = _dbFactory.OpenConnection())
+            using (var connection = _dbFactory.OpenConnection(region: _fromRegion))
             {
                 foreach (var table in tablesToProcess)
                 {
@@ -270,8 +248,8 @@ public class MigrationCreator
     {
         var files = (await GetFilesToProcess(id)).ToList();
 
-        using var dbManager = _backupsContext.CreateDbContext();
-        var exclude = dbManager.Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
+        var backupsContext = _dbFactory.CreateDbContext<BackupsContext>(_fromRegion);
+        var exclude = backupsContext.Backups.AsQueryable().Where(b => b.TenantId == _tenant && b.StorageType == 0 && b.StoragePath != null).ToList();
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
         return files.GroupBy(file => file.Module).ToList();
@@ -281,10 +259,10 @@ public class MigrationCreator
     {
         var files = new List<BackupFileInfo>();
 
-        foreach (var module in _storageFactoryConfig.GetModuleList().Where(m => m == "files"))
+        foreach (var module in _storageFactoryConfig.GetModuleList(_fromRegion).Where(m => m == "files"))
         {
-            var store = _storageFactory.GetStorage(_tenant, module);
-            var domains = _storageFactoryConfig.GetDomainList(module).ToArray();
+            var store = _storageFactory.GetStorage(_tenant, module, _fromRegion);
+            var domains = _storageFactoryConfig.GetDomainList(module, _fromRegion).ToArray();
 
             foreach (var domain in domains)
             {
@@ -298,8 +276,8 @@ public class MigrationCreator
                 .ToListAsync());
         }
 
-        using var filesRecordContext = _filesDbContext.CreateDbContext();
-        files = files.Where(f => UserIsFileOwner(id, f, filesRecordContext)).ToList();
+        var filesDbContext = _dbFactory.CreateDbContext<FilesDbContext>(_fromRegion);
+        files = files.Where(f => UserIsFileOwner(id, f, filesDbContext)).ToList();
         return files.Distinct();
     }
 

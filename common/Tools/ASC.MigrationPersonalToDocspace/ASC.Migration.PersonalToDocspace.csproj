@@ -28,6 +28,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="CommandLineParser" Version="2.9.1" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <ProjectReference Include="..\..\ASC.Common\ASC.Common.csproj" />
 	  <ProjectReference Include="..\..\ASC.Core.Common\ASC.Core.Common.csproj" />
 	  <ProjectReference Include="..\..\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />

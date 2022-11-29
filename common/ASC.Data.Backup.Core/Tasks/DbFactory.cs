@@ -78,7 +78,7 @@ public class DbFactory
 
     public T CreateDbContext<T>(string region = "current") where T : DbContext
     {
-        var contextOptions = _cache.Get<DbContextOptionsBuilder>($"context {region}");
+        var contextOptions = _cache.Get<DbContextOptionsBuilder<T>>($"context {typeof(T)} {region}");
         if (contextOptions == null)
         {
             contextOptions = new DbContextOptionsBuilder<T>();
