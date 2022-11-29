@@ -13,7 +13,7 @@ import { AppServerConfig } from "@docspace/common/constants";
 import {
   openEdit,
   getSettingsFiles,
-  getShareFiles,
+  // getShareFiles,
 } from "@docspace/common/api/files";
 import pkg from "../../../../package.json";
 
@@ -96,9 +96,9 @@ export const initDocEditor = async (req) => {
 
     const config = await openEdit(fileId, fileVersion, doc, view);
 
-    const sharingSettings = await getShareFiles([+fileId], []);
+    //const sharingSettings = await getShareFiles([+fileId], []);
 
-    const isSharingAccess = false; //TODO: temporary disable sharing (many errors). Restore => config?.file && config?.file?.canShare;
+    // const isSharingAccess = false; //TODO: temporary disable sharing (many errors). Restore => config?.file && config?.file?.canShare;
 
     if (view) {
       config.editorConfig.mode = "view";
@@ -117,13 +117,13 @@ export const initDocEditor = async (req) => {
       user,
       error,
       actionLink,
-      isSharingAccess,
+      //isSharingAccess,
       url,
       doc,
       fileId,
       view,
       filesSettings,
-      sharingSettings,
+      //sharingSettings,
       portalSettings: settings,
       versionInfo,
       customNames,

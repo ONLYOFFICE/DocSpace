@@ -13,5 +13,5 @@ services:
 
 networks:
   default:
-    external:
-      name: ${NETWORK_NAME}
+    name: ${NETWORK_NAME}
+    external: true

@@ -363,15 +363,19 @@ class PasswordInput extends React.Component {
       type === "password"
         ? "/static/images/eye.off.react.svg"
         : "/static/images/eye.react.svg";
-
+    const iconButtonClassName = `password_eye--${
+      type === "password" ? "close" : "open"
+    }`;
     return (
       <>
         <InputBlock
+          id={id}
           className="input-relative"
           name={inputName}
           hasError={hasError}
           isDisabled={isDisabled}
           iconName={iconName}
+          iconButtonClassName={iconButtonClassName}
           value={inputValue}
           onIconClick={this.changeInputType}
           onChange={this.onChangeAction}
@@ -411,12 +415,10 @@ class PasswordInput extends React.Component {
       style,
       simpleView,
       isDisabled,
-      id,
     } = this.props;
 
     return (
       <StyledInput
-        id={id}
         onValidateInput={onValidateInput}
         className={className}
         style={style}

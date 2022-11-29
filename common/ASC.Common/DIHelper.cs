@@ -185,10 +185,18 @@ public class DIHelper
 
     public bool TryAdd(Type service, Type implementation = null)
     {
-        if (service.IsInterface && service.IsGenericType && implementation == null &&
-            (service.GetGenericTypeDefinition() == typeof(IOptionsSnapshot<>) ||
-            service.GetGenericTypeDefinition() == typeof(IOptions<>) ||
-            service.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
+        Type serviceGenericTypeDefinition = null;
+
+        if (service.IsGenericType)
+        {
+            serviceGenericTypeDefinition = service.GetGenericTypeDefinition();
+        }
+
+        if (service.IsInterface && serviceGenericTypeDefinition != null && implementation == null &&
+            (
+            serviceGenericTypeDefinition == typeof(IOptionsSnapshot<>) ||
+            serviceGenericTypeDefinition == typeof(IOptions<>) ||
+            serviceGenericTypeDefinition == typeof(IOptionsMonitor<>)
             ))
         {
             service = service.GetGenericArguments().FirstOrDefault();
@@ -208,10 +216,10 @@ public class DIHelper
 
         Added.Add(serviceName);
 
-        var di = service.IsGenericType && (
-            service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
-            service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
-            service.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
+        var di = serviceGenericTypeDefinition != null && (
+            serviceGenericTypeDefinition == typeof(IConfigureOptions<>) ||
+            serviceGenericTypeDefinition == typeof(IPostConfigureOptions<>) ||
+            serviceGenericTypeDefinition == typeof(IOptionsMonitor<>)
             ) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
 
         var isnew = false;
@@ -237,11 +245,21 @@ public class DIHelper
             {
                 if (di.Service != null)
                 {
-                    var a = di.Service.GetInterfaces().FirstOrDefault(x => x.IsGenericType && (
-                    x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
-                    x.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
-                    x.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
-                    ));
+                    var a = di.Service.GetInterfaces().FirstOrDefault(x =>
+                    {
+                        Type xGenericTypeDefinition = null;
+
+                        if (x.IsGenericType)
+                        {
+                            xGenericTypeDefinition = x.GetGenericTypeDefinition();
+                        }
+
+                        return
+                        xGenericTypeDefinition != null && (
+                        xGenericTypeDefinition == typeof(IConfigureOptions<>) ||
+                        xGenericTypeDefinition == typeof(IPostConfigureOptions<>) ||
+                        xGenericTypeDefinition == typeof(IOptionsMonitor<>));
+                    });
 
                     if (a != null)
                     {
@@ -302,11 +320,24 @@ public class DIHelper
 
                 if (di.Implementation != null)
                 {
-                    var a = di.Implementation.GetInterfaces().FirstOrDefault(x => x.IsGenericType &&
-                    (x.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
-                    x.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
-                    x.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>))
-                    );
+                    var a = di.Implementation.GetInterfaces().FirstOrDefault(x =>
+                    {
+
+                        Type xGenericTypeDefinition = null;
+
+                        if (x.IsGenericType)
+                        {
+                            xGenericTypeDefinition = x.GetGenericTypeDefinition();
+                        }
+
+                        return
+                        xGenericTypeDefinition != null &&
+                        (
+                        xGenericTypeDefinition == typeof(IConfigureOptions<>) ||
+                        xGenericTypeDefinition == typeof(IPostConfigureOptions<>) ||
+                        xGenericTypeDefinition == typeof(IOptionsMonitor<>));
+                    });
+
                     if (a != null)
                     {
                         if (!a.ContainsGenericParameters)
@@ -449,10 +480,17 @@ public class DIHelper
             return true;
         }
 
-        var c = service.IsGenericType && (
-            service.GetGenericTypeDefinition() == typeof(IConfigureOptions<>) ||
-            service.GetGenericTypeDefinition() == typeof(IPostConfigureOptions<>) ||
-            service.GetGenericTypeDefinition() == typeof(IOptionsMonitor<>)
+        Type serviceGenericTypeDefinition = null;
+
+        if (service.IsGenericType)
+        {
+            serviceGenericTypeDefinition = service.GetGenericTypeDefinition();
+        }
+
+        var c = serviceGenericTypeDefinition != null && (
+            serviceGenericTypeDefinition == typeof(IConfigureOptions<>) ||
+            serviceGenericTypeDefinition == typeof(IPostConfigureOptions<>) ||
+            serviceGenericTypeDefinition == typeof(IOptionsMonitor<>)
             ) && implementation != null ? implementation.GetCustomAttribute<DIAttribute>() : service.GetCustomAttribute<DIAttribute>();
 
         var serviceName = $"{service}{implementation}";

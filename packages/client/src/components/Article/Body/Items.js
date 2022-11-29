@@ -3,13 +3,23 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import CatalogItem from "@docspace/components/catalog-item";
-import { FolderType, ShareAccessRights } from "@docspace/common/constants";
+import {
+  FolderType,
+  ShareAccessRights,
+  FolderNames,
+} from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import DragAndDrop from "@docspace/components/drag-and-drop";
 import { isMobile } from "react-device-detect";
+import SettingsItem from "./SettingsItem";
+import AccountsItem from "./AccountsItem";
 
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
+`;
+
+const CatalogDivider = styled.div`
+  height: 16px;
 `;
 
 const Item = ({
@@ -30,6 +40,7 @@ const Item = ({
   showBadge,
   labelBadge,
   iconBadge,
+  folderId,
 }) => {
   const [isDragActive, setIsDragActive] = useState(false);
 
@@ -96,6 +107,7 @@ const Item = ({
       <CatalogItem
         key={item.id}
         id={item.id}
+        folderId={folderId}
         className={`tree-drag ${item.folderClassName}`}
         icon={getFolderIcon(item)}
         showText={showText}
@@ -146,6 +158,7 @@ const Items = ({
   trashIsEmpty,
 
   onHide,
+  firstLoad,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -318,48 +331,16 @@ const Items = ({
             showBadge={showBadge}
             labelBadge={labelBadge}
             iconBadge={iconBadge}
+            folderId={`document_catalog-${FolderNames[item.rootFolderType]}`}
           />
         );
       });
 
-      const roomsHeader = (
-        <CatalogItem
-          key={"rooms-header"}
-          isHeader={true}
-          isFirstHeader={true}
-          showText={showText}
-          text={t("Common:Rooms")}
-        />
-      );
+      if (!firstLoad) items.splice(3, 0, <SettingsItem key="settings-item" />);
+      if (!isVisitor) items.splice(3, 0, <AccountsItem key="accounts-item" />);
 
-      const filesHeader = (
-        <CatalogItem
-          key={"files-header"}
-          isHeader={true}
-          isFirstHeader={false}
-          showText={showText}
-          text={t("Translations:Files")}
-        />
-      );
-
-      const otherHeader = (
-        <CatalogItem
-          key={"other-header"}
-          isHeader={true}
-          isFirstHeader={false}
-          showText={showText}
-          text={t("Translations:Other")}
-        />
-      );
-
-      if (isVisitor) {
-        items.length > 2 && items.splice(2, 0, filesHeader);
-      } else {
-        items.splice(3, 0, filesHeader);
-      }
-
-      items.unshift(roomsHeader);
-      items.push(otherHeader);
+      if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
+      else items.splice(2, 0, <CatalogDivider key="other-header" />);
 
       return items;
     },
@@ -379,6 +360,8 @@ const Items = ({
       uploadEmptyFolders,
       trashIsEmpty,
       isAdmin,
+      isVisitor,
+      firstLoad,
     ]
   );
 
@@ -410,6 +393,7 @@ export default inject(
       setDragging,
       setStartDrag,
       trashIsEmpty,
+      firstLoad,
     } = filesStore;
 
     const { startUpload } = uploadDataStore;
@@ -448,6 +432,7 @@ export default inject(
       setEmptyTrashDialogVisible,
       trashIsEmpty,
       rootFolderType,
+      firstLoad,
     };
   }
 )(withTranslation(["Files", "Common", "Translations"])(observer(Items)));

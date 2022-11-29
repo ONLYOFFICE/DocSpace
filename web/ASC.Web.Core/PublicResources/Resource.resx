@@ -909,4 +909,19 @@
   <data name="ErrorIpSecurity" xml:space="preserve">
     <value>The access to the portal is restricted</value>
   </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Bot username</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Bot token</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Connect Telegram account to receive portal notifications via Telegram.</value>
+  </data>
+  <data name="ConsumersTelegramInstructionV11" xml:space="preserve">
+    <value>To receive portal notifications via Telegram, enable Telegram bot. You can create a new bot using BotFather in Telegram Desktop. To use this bot, portal users need to enable Telegram notifications on their Profile Page. {0}Paste bot’s username and the token you received in the fields below.</value>
+  </data>
 </root>

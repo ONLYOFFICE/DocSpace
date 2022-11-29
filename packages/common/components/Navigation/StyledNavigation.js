@@ -47,6 +47,9 @@ const StyledContainer = styled.div`
     width: 100%;
     grid-template-columns: ${(props) =>
       props.isRootFolder ? "auto 1fr" : "29px 1fr auto"};
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   `}
 `;
 
