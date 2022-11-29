@@ -345,6 +345,9 @@ class SectionHeaderContent extends React.Component {
       onShowInfoPanel,
       onClickArchive,
       onClickReconnectStorage,
+
+      canRestoreAll,
+      canDeleteAll,
     } = this.props;
 
     const isDisabled = isRecycleBinFolder || isRoom;
@@ -355,14 +358,14 @@ class SectionHeaderContent extends React.Component {
           key: "empty-archive",
           label: t("ArchiveAction"),
           onClick: this.onEmptyTrashAction,
-          disabled: !isArchiveFolder,
+          disabled: !canDeleteAll,
           icon: "images/clear.trash.react.svg",
         },
         {
           key: "restore-all",
           label: t("RestoreAll"),
           onClick: this.onRestoreAllArchiveAction,
-          disabled: !isArchiveFolder,
+          disabled: !canRestoreAll,
           icon: "images/subtract.react.svg",
         },
       ];
@@ -608,7 +611,9 @@ class SectionHeaderContent extends React.Component {
       isRoomsFolder,
       isEmptyPage,
       canCreateFiles,
+      isEmptyArchive,
     } = this.props;
+
     const menuItems = this.getMenuItems();
     const isLoading = !title || !tReady;
     const headerMenu = getHeaderMenu(t);
@@ -617,7 +622,7 @@ class SectionHeaderContent extends React.Component {
       <Consumer>
         {(context) => (
           <StyledContainer>
-            {isHeaderVisible ? (
+            {isHeaderVisible && headerMenu.length ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
                 onChange={this.onChange}
@@ -636,7 +641,7 @@ class SectionHeaderContent extends React.Component {
                     sectionWidth={context.sectionWidth}
                     showText={showText}
                     isRootFolder={isRootFolder}
-                    canCreate={canCreate && canCreateFiles}
+                    canCreate={canCreate && (canCreateFiles || isRoomsFolder)}
                     title={title}
                     isDesktop={isDesktop}
                     isTabletView={isTabletView}
@@ -649,7 +654,9 @@ class SectionHeaderContent extends React.Component {
                     onClose={this.onClose}
                     onClickFolder={this.onClickFolder}
                     isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
-                    isEmptyFilesList={isEmptyFilesList}
+                    isEmptyFilesList={
+                      isArchiveFolder ? isEmptyArchive : isEmptyFilesList
+                    }
                     clearTrash={this.onEmptyTrashAction}
                     onBackToParentFolder={this.onBackToParentFolder}
                     toggleInfoPanel={this.onToggleInfoPanel}
@@ -704,7 +711,8 @@ export default inject(
 
       setAlreadyFetchingRooms,
 
-      filesList,
+      roomsForRestore,
+      roomsForDelete,
 
       categoryType,
       isEmptyPage,
@@ -765,6 +773,12 @@ export default inject(
 
     const { canCreateFiles } = accessRightsStore;
 
+    const canRestoreAll = isArchiveFolder && roomsForRestore.length > 0;
+
+    const canDeleteAll = isArchiveFolder && roomsForDelete.length > 0;
+
+    const isEmptyArchive = !canRestoreAll && !canDeleteAll;
+
     return {
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
@@ -808,6 +822,7 @@ export default inject(
       isRecycleBinFolder,
       setEmptyTrashDialogVisible,
       isEmptyFilesList,
+      isEmptyArchive,
       isPrivacyFolder,
       isArchiveFolder,
 
@@ -840,6 +855,10 @@ export default inject(
       onClickArchive,
 
       rootFolderType,
+
+      isEmptyArchive,
+      canRestoreAll,
+      canDeleteAll,
     };
   }
 )(

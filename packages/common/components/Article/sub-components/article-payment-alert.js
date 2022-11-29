@@ -27,6 +27,7 @@ const ArticlePaymentAlert = ({
   currencySymbol,
   setPortalPaymentQuotas,
   currentTariffPlanTitle,
+  toggleArticleOpen,
 }) => {
   const { t, ready } = useTranslation("Payments");
 
@@ -40,6 +41,7 @@ const ArticlePaymentAlert = ({
       "/payments/portal-payments"
     );
     history.push(paymentPageUrl);
+    toggleArticleOpen();
   };
 
   const isShowLoader = !ready;

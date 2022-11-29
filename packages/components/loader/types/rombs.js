@@ -2,38 +2,37 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled, { keyframes } from "styled-components";
 
-export const keyFrameBlue = keyframes`
-    0%   { top:120px; background: #de7a59;  }
-    10%  { top:120px; background: #F2CBBF;  }
-    14%  { background: #fff; top: 120px;    }  
-    15%  { background: #fff; top: 0;        }  
-    20%  { background: #E6E4E4;             }
-    30%  { background: #D2D2D2;             }
-    40%  { top: 120px;                      }  
-    100% { top: 120px; background: #de7a59; }   
+export const keyFrameBlue = (props) => keyframes`
+    0%   { background: #de7a59;               top: 120px; }
+    10%  { background: ${props.colorStep_1};  top: 120px; }
+    14%  { background: ${props.colorStep_2};  top: 120px; }
+    15%  { background: ${props.colorStep_2};  top: 0;     }
+    20%  { background: ${props.colorStep_3};              }
+    30%  { background: ${props.colorStep_4};              }
+    40%  { top: 120px;                                    }
+    100% { background: #de7a59;               top: 120px; }
 `;
 
-export const keyFrameRed = keyframes`
-    0%   { top:100px; background: #55bce6;  opacity: 1;   }
-    10%  { top:100px; background: #BFE8F8;  opacity: 1;   }
-    14%  { background: #fff;  top: 100px;   opacity: 1;   } 
-    15%  { background: #fff;  top: 0;       opacity: 1;   }  
-    20%  { background: #ffffff; top: 0;     opacity: 0;   }
-    25%  { background: #ffffff; top: 0;     opacity: 0;   }
-    45%  { background: #EFEFEF; top: 0;     opacity: 0,2; }
-    100% { top: 100px; background: #55bce6;               }  
+export const keyFrameRed = (props) => keyframes`
+    0%   { background: #55bce6;               top: 100px; opacity: 1; }
+    10%  { background: ${props.colorStep_1};  top: 100px; opacity: 1; }
+    14%  { background: ${props.colorStep_2};  top: 100px; opacity: 1; }
+    15%  { background: ${props.colorStep_2};  top: 0;     opacity: 1; }
+    20%  { background: ${props.colorStep_2};  top: 0;     opacity: 0; }
+    45%  { background: ${props.colorStep_3};  top: 0;                 }
+    100% { background: #55bce6;               top: 100px;             }
 `;
 
-export const keyFrameGreen = keyframes`
-    0%   { top:110px; background: #a1cb5c; opacity: 1;  }
-    10%  { top:110px; background: #CBE0AC; opacity: 1;  }
-    14%  { background: #fff; top: 110px; opacity: 1;    } 
-    15%  { background: #fff; top: 0; opacity: 1;        }   
-    20%  { background: #ffffff; top: 0; opacity: 0;     }
-    25%  { background: #EFEFEF; top: 0; opacity: 1;     }
-    30%  { background: #E6E4E4;                         }
-    70%  { top: 110px;                                  }
-    100% { top: 110px; background: #a1cb5c;             } 
+export const keyFrameGreen = (props) => keyframes`
+    0%   { background: #a1cb5c;               top: 110px; opacity: 1; }
+    10%  { background: ${props.colorStep_1};  top: 110px; opacity: 1; }
+    14%  { background: ${props.colorStep_2};  top: 110px; opacity: 1; }
+    15%  { background: ${props.colorStep_2};  top: 0;     opacity: 1; }
+    20%  { background: ${props.colorStep_2};  top: 0;     opacity: 0; }
+    25%  { background: ${props.colorStep_3};  top: 0;     opacity: 1; }
+    30%  { background: ${props.colorStep_4};                          }
+    70%  { top: 110px;                                                }
+    100% { background: #a1cb5c;               top: 110px;             }
 `;
 
 const Romb = styled.div`
@@ -63,9 +62,9 @@ const Romb = styled.div`
     (props.color === "green" && "2")};
 
   animation: ${(props) =>
-      (props.color === "blue" && keyFrameBlue) ||
-      (props.color === "red" && keyFrameRed) ||
-      (props.color === "green" && keyFrameGreen)}
+      (props.color === "blue" && keyFrameBlue(props.theme.rombsLoader.blue)) ||
+      (props.color === "red" && keyFrameRed(props.theme.rombsLoader.red)) ||
+      (props.color === "green" && keyFrameGreen(props.theme.rombsLoader.green))}
     2s ease-in-out 0s infinite;
 `;
 

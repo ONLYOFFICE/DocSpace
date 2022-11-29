@@ -56,6 +56,7 @@ class DialogsStore {
   restoreAllArchive = false;
   isConnectDialogReconnect = false;
   saveAfterReconnectOAuth = false;
+  createRoomDialogVisible = false;
 
   constructor(
     authStore,
@@ -306,6 +307,10 @@ class DialogsStore {
     this.inviteUsersWarningDialogVisible = inviteUsersWarningDialogVisible;
   };
 
+  setCreateRoomDialogVisible = (createRoomDialogVisible) => {
+    this.createRoomDialogVisible = createRoomDialogVisible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -329,7 +334,8 @@ class DialogsStore {
       this.invitePanelOptions.visible ||
       this.archiveDialogVisible ||
       this.restoreAllPanelVisible ||
-      this.inviteUsersWarningDialogVisible
+      this.inviteUsersWarningDialogVisible ||
+      this.createRoomDialogVisible
     );
   }
 

@@ -28,24 +28,30 @@ const StyledButton = styled(Button)`
   opacity: 1;
 
   background-color: ${({ currentColorScheme }) =>
-    currentColorScheme.accentColor};
+    currentColorScheme.main.accent} !important;
+  background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+  border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
 
   :hover {
     background-color: ${({ currentColorScheme }) =>
-      currentColorScheme.accentColor};
+      currentColorScheme.main.accent};
     opacity: 0.85;
+    background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+    border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
   }
 
   :active {
     background-color: ${({ currentColorScheme }) =>
-      currentColorScheme.accentColor};
-
+      currentColorScheme.main.accent};
+    background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+    border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
     opacity: 1;
     filter: brightness(90%);
     cursor: pointer;
   }
 
   .button-content {
+    color: ${({ currentColorScheme }) => currentColorScheme.text.accent};
     position: relative;
     display: flex;
     justify-content: space-between;
@@ -124,7 +130,6 @@ const ArticleMainButtonContent = (props) => {
   );
 
   const onCreateRoom = React.useCallback(() => {
-    console.log("click");
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   }, []);

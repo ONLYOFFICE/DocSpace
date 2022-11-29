@@ -145,7 +145,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
         _cancelationToken[channelName] = new CancellationTokenSource();
         _actions[channelName] = onchange;
 
-        void action()
+        async void action()
         {
             var conf = new ConsumerConfig(_clientConfig)
             {
@@ -160,7 +160,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
                 try
                 {
                     //TODO: must add checking exist
-                    adminClient.CreateTopicsAsync(
+                    await adminClient.CreateTopicsAsync(
                         new TopicSpecification[]
                         {
                                 new TopicSpecification
@@ -169,7 +169,7 @@ public class KafkaCacheNotify<T> : IDisposable, ICacheNotify<T> where T : IMessa
                                     NumPartitions = 1,
                                     ReplicationFactor = 1
                                 }
-                        }).Wait();
+                        });
                 }
                 catch (AggregateException) { }
             }

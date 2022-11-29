@@ -38,7 +38,7 @@ public class EmailSenderSink : Sink
         _serviceProvider = serviceProvider;
     }
 
-    public override SendResponse ProcessMessage(INoticeMessage message)
+    public override async Task<SendResponse> ProcessMessage(INoticeMessage message)
     {
         if (message.Recipient.Addresses == null || message.Recipient.Addresses.Length == 0)
         {
@@ -50,7 +50,7 @@ public class EmailSenderSink : Sink
         {
             using var scope = _serviceProvider.CreateScope();
             var m = scope.ServiceProvider.GetRequiredService<EmailSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
-            var result = _sender.Send(m);
+            var result = await _sender.Send(m);
 
             responce.Result = result switch
             {
