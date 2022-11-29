@@ -143,9 +143,11 @@ public class PortalController : ControllerBase
     [HttpGet("users/invite/{employeeType}")]
     public object GeInviteLink(EmployeeType employeeType)
     {
-        if (!_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _authContext.CurrentAccount.ID))
+        var currentUserType = _userManager.GetUserType(_authContext.CurrentAccount.ID);
+
+        if (currentUserType == EmployeeType.User)
         {
-            throw new SecurityException("Method not available");
+            throw new SecurityException(Resource.ErrorAccessDenied);
         }
 
         return _commonLinkUtility.GetConfirmationEmailUrl(string.Empty, ConfirmType.LinkInvite, (int)employeeType, _authContext.CurrentAccount.ID)
