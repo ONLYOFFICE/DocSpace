@@ -32,9 +32,7 @@ var options = new WebApplicationOptions
     ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default
 };
 
-var param = Parser.Default.ParseArguments<Options>(args)
-                .WithNotParsed(options => Console.WriteLine(@"Bad command line parameters."))
-                .Value;
+var param = Parser.Default.ParseArguments<Options>(args).Value;
 
 var builder = WebApplication.CreateBuilder(options);
 
