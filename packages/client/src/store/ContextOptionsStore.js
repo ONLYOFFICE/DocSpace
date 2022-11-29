@@ -469,6 +469,7 @@ class ContextOptionsStore {
 
     const blockAction = isCanWebEdit
       ? {
+          id: "option_block-unblock-version",
           key: "block-unblock-version",
           label: t("UnblockVersion"),
           icon: "/static/images/locked.react.svg",
@@ -929,7 +930,7 @@ class ContextOptionsStore {
 
       deleteRooms,
     } = this.filesActionsStore;
- 
+
     if (isRoomsFolder || isArchiveFolder) {
       const isPinOption = selection.filter((item) => !item.pinned).length > 0;
 
