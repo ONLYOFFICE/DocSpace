@@ -131,7 +131,15 @@ const StyledDisplayItem = styled(StyledRoomType)`
   }
 `;
 
-const RoomType = ({ t, room, onClick, type = "listItem", isOpen, id }) => {
+const RoomType = ({
+  t,
+  room,
+  onClick,
+  type = "listItem",
+  isOpen,
+  id,
+  selectedId,
+}) => {
   const arrowClassName =
     type === "dropdownButton"
       ? "choose_room-forward_btn dropdown-button"
@@ -175,10 +183,11 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen, id }) => {
     </StyledListItem>
   ) : type === "dropdownButton" ? (
     <StyledDropdownButton
+      id={id}
       title={t(room.title)}
       onClick={onClick}
       isOpen={isOpen}
-      id={id}
+      data-selected-id={selectedId}
     >
       {content}
     </StyledDropdownButton>
@@ -188,11 +197,16 @@ const RoomType = ({ t, room, onClick, type = "listItem", isOpen, id }) => {
       title={t(room.title)}
       onClick={onClick}
       isOpen={isOpen}
+      data-selected-id={selectedId}
     >
       {content}
     </StyledDropdownItem>
   ) : (
-    <StyledDisplayItem id={id} title={t(room.title)}>
+    <StyledDisplayItem
+      id={id}
+      title={t(room.title)}
+      data-selected-id={selectedId}
+    >
       {content}
     </StyledDisplayItem>
   );
