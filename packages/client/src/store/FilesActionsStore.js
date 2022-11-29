@@ -1072,7 +1072,6 @@ class FilesActionStore {
   openLocationAction = async (locationId) => {
     this.filesStore.setBufferSelection(null);
     const files = await this.filesStore.fetchFiles(locationId, null);
-    console.log(files);
     return files;
   };
 
