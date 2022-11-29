@@ -17,7 +17,6 @@ Depends: {{product}}-api (= {{package_header_tag_version}}),
          {{product}}-files (= {{package_header_tag_version}}),
          {{product}}-files-services (= {{package_header_tag_version}}),
          {{product}}-login (= {{package_header_tag_version}}),
-         {{product}}-migration (= {{package_header_tag_version}}),
          {{product}}-migration-runner (= {{package_header_tag_version}}),
          {{product}}-notify (= {{package_header_tag_version}}),
          {{product}}-people-server (= {{package_header_tag_version}}),
@@ -26,10 +25,7 @@ Depends: {{product}}-api (= {{package_header_tag_version}}),
          {{product}}-socket (= {{package_header_tag_version}}),
          {{product}}-ssoauth (= {{package_header_tag_version}}),
          {{product}}-studio (= {{package_header_tag_version}}),
-         {{product}}-studio-notify (= {{package_header_tag_version}}),
-         {{product}}-telegram-service (= {{package_header_tag_version}}),
-         {{product}}-urlshortener (= {{package_header_tag_version}}),
-         {{product}}-webhooks-service (= {{package_header_tag_version}})
+         {{product}}-studio-notify (= {{package_header_tag_version}})
 Description: Description
 
 Package: {{product}}-common
@@ -93,22 +89,6 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  ${shlibs:Depends}
 Description: Description
 
-Package: {{product}}-telegram-service
-Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: {{product}}-urlshortener
-Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- nodejs (>=14),
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
 Package: {{product}}-api
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
@@ -154,14 +134,6 @@ Depends: {{product}}-common (= {{package_header_tag_version}}),
  ${shlibs:Depends}
 Description: Description
 
-Package: {{product}}-migration
-Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
 Package: {{product}}-migration-runner
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
@@ -174,14 +146,6 @@ Package: {{product}}-radicale
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
  python3-pip,
- ${misc:Depends},
- ${shlibs:Depends}
-Description: Description
-
-Package: {{product}}-webhooks-service
-Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-6.0,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: Description

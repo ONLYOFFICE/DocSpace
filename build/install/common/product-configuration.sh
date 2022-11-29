@@ -242,9 +242,9 @@ restart_services() {
 	echo "OK"
 
 	echo -n "Restarting services... "
-	for SVC in login api urlshortener socket studio-notify notify \
-	people-server files files-services studio backup telegram-service \
-	webhooks-service clear-events backup-background migration ssoauth doceditor
+	for SVC in login api socket studio-notify notify \
+	people-server files files-services studio backup \
+	clear-events backup-background ssoauth doceditor
 	do
 		systemctl enable ${PRODUCT}-$SVC >/dev/null 2>&1
 		systemctl restart ${PRODUCT}-$SVC
@@ -449,15 +449,11 @@ setup_nginx(){
 					PORTS+=('5011') #ASC.Login
 					PORTS+=('5012') #ASC.Data.Backup
 					PORTS+=('5013') #ASC.Files/editor
-					PORTS+=('5018') #ASC.Migration
 					PORTS+=('5027') #ASC.ClearEvents
 					PORTS+=('5028') #ASC.Socket.IO
-					PORTS+=('5029') #ASC.UrlShortener
-					PORTS+=('5031') #ASC.Webhooks.Service
 					PORTS+=('5032') #ASC.Data.Backup.BackgroundTasks
 					PORTS+=('8081') #Storybook
 					PORTS+=('9834') #ASC.SsoAuth
-					PORTS+=('51702') #ASC.TelegramService
 					setsebool -P httpd_can_network_connect on
 				;;
 				disabled)

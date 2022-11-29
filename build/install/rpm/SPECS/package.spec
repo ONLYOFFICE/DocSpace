@@ -60,14 +60,6 @@ Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    people-server
 
-%package        urlshortener
-Summary:        urlshortener
-Group:          Applications/Internet
-Requires:       %name-common  = %version-%release
-Requires:       nodejs >= 14.0
-AutoReqProv:    no
-%description    urlshortener
-
 %package        socket
 Summary:        socket
 Group:          Applications/Internet
@@ -92,14 +84,6 @@ Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    api
 
-%package        telegram-service
-Summary:        telegram-service
-Group:          Applications/Internet
-Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
-AutoReqProv:    no
-%description    telegram-service
-
 %package        ssoauth
 Summary:        ssoauth
 Group:          Applications/Internet
@@ -107,14 +91,6 @@ Requires:       %name-common  = %version-%release
 Requires:       nodejs >= 14.0
 AutoReqProv:    no
 %description    ssoauth
-
-%package        webhooks-service
-Summary:        webhooks-service
-Group:          Applications/Internet
-Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
-AutoReqProv:    no
-%description    webhooks-service
 
 %package        clear-events
 Summary:        clear-events
@@ -131,14 +107,6 @@ Requires:       %name-common  = %version-%release
 Requires:       dotnet-sdk-6.0
 AutoReqProv:    no
 %description    backup-background
-
-%package        migration
-Summary:        migration
-Group:          Applications/Internet
-Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-6.0
-AutoReqProv:    no
-%description    migration
 
 %package        radicale
 Summary:        radicale
