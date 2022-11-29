@@ -265,7 +265,7 @@ const ThirdPartyComboBox = ({
           {thirdparties.map((thirdparty) => (
             <DropDownItem
               id={thirdparty.id}
-              className="dropdown-item"
+              className={`dropdown-item ${thirdparty.className ?? ""}`}
               label={thirdparty.title}
               key={thirdparty.id}
               height={32}
