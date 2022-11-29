@@ -2,13 +2,13 @@ import React from "react";
 
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
-import { parseAndFormatDate } from "../../helpers/DetailsHelper";
 import HistoryBlockMessage from "./HistoryBlockMessage";
 import HistoryBlockItemList from "./HistoryBlockItemList";
 import HistoryBlockUser from "./HistoryBlockUser";
 import { FeedItemTypes } from "@docspace/common/constants";
 
 import { StyledHistoryBlock } from "../../styles/history";
+import { getDateTime } from "../../helpers/HistoryHelper";
 
 const HistoryBlock = ({
   t,
@@ -51,9 +51,7 @@ const HistoryBlock = ({
               {t("Common:Owner").toLowerCase()}
             </Text>
           )}
-          <Text className="date">
-            {parseAndFormatDate(json.ModifiedDate, personal, culture)}
-          </Text>
+          <Text className="date">{getDateTime(json.ModifiedDate)}</Text>
         </div>
 
         <HistoryBlockMessage

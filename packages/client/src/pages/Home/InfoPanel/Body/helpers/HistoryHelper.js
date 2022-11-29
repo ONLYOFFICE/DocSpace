@@ -28,3 +28,10 @@ export const getRelativeDateDay = (t, date) => {
   const longDate = given.format("MMMM D, YYYY");
   return longDate.charAt(0).toUpperCase() + longDate.slice(1);
 };
+
+export const getDateTime = (date) => {
+  moment.locale(getCookie(LANGUAGE));
+
+  const given = moment(date);
+  return given.format("H:mm A");
+};
