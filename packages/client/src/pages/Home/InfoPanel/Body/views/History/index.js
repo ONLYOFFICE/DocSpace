@@ -10,8 +10,6 @@ import HistoryBlock from "./HistoryBlock";
 
 const History = ({
   t,
-  personal,
-  culture,
   selection,
   selectedFolder,
   selectionParentRoom,
@@ -86,7 +84,6 @@ const History = ({
         });
     }
 
-    console.log(parsedFeeds);
     return { ...fetchedHistory, feedsByDays: parsedFeeds };
   };
 
@@ -109,20 +106,19 @@ const History = ({
       <StyledHistoryList>
         {history.feedsByDays.map(({ day, feeds }, i) => [
           <StyledHistorySubtitle key={day}>{day}</StyledHistorySubtitle>,
-          ...feeds.map((feed) => (
+          ...feeds.map((feed, i) => (
             <HistoryBlock
               key={feed.json.Id}
               t={t}
               feed={feed}
               selection={selection}
-              personal={personal}
-              culture={culture}
               selectedFolder={selectedFolder}
               selectionParentRoom={selectionParentRoom}
               getInfoPanelItemIcon={getInfoPanelItemIcon}
               checkAndOpenLocationAction={checkAndOpenLocationAction}
               openUser={openUser}
               isVisitor={isVisitor}
+              isLastEntity={i === feeds.length - 1}
             />
           )),
         ])}
