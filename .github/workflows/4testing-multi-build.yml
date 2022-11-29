@@ -33,10 +33,10 @@ jobs:
           cd ./build/install/docker
           REPO="onlyoffice" \
           DOCKER_IMAGE_PREFIX="4testing-docspace" \
-          DOCKER_TAG="develop" \
+          DOCKER_TAG="rc-v1.2.0" \
           DOCKERFILE="Dockerfile.app" \
           docker buildx bake -f build.yml \
-          --set *.args.GIT_BRANCH="develop" \
+          --set *.args.GIT_BRANCH="release/rc-v1.2.0" \
           --set *.platform=linux/amd64 \
           --push
         shell: bash
