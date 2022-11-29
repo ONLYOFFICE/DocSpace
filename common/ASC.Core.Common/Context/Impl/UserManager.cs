@@ -346,14 +346,17 @@ public class UserManager
         return newUser;
     }
 
-    public async Task<UserInfo> SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false)
+    public async Task<UserInfo> SaveUserInfo(UserInfo u, bool isVisitor = false, bool syncCardDav = false, bool checkPermission = true)
     {
         if (IsSystemUser(u.Id))
         {
             return SystemUsers[u.Id];
         }
 
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        if (checkPermission)
+        {
+            _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        }
 
         if (!_coreBaseSettings.Personal)
         {
@@ -625,13 +628,17 @@ public class UserManager
         return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
     }
 
-    public async Task AddUserIntoGroup(Guid userId, Guid groupId, bool dontClearAddressBook = false)
+    public async Task AddUserIntoGroup(Guid userId, Guid groupId, bool dontClearAddressBook = false, bool checkPermissions = true)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
             return;
         }
-        _permissionContext.DemandPermissions(Constants.Action_EditGroups);
+
+        if (checkPermissions)
+        {
+            _permissionContext.DemandPermissions(Constants.Action_EditGroups);
+        }
 
         _userService.SaveUserGroupRef(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
@@ -651,14 +658,17 @@ public class UserManager
         }
     }
 
-    public void RemoveUserFromGroup(Guid userId, Guid groupId)
+    public void RemoveUserFromGroup(Guid userId, Guid groupId, bool checkPermissions = true)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
             return;
         }
 
-        _permissionContext.DemandPermissions(Constants.Action_EditGroups);
+        if (checkPermissions)
+        {
+            _permissionContext.DemandPermissions(Constants.Action_EditGroups);
+        }
 
         _userService.RemoveUserGroupRef(Tenant.Id, userId, groupId, UserGroupRefType.Contains);
 
