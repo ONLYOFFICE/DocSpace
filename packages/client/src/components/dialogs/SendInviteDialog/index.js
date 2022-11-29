@@ -129,6 +129,7 @@ class SendInviteDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
+            id="send-inite-again-modal_submit"
             label={t("Common:SendButton")}
             size="normal"
             scale
@@ -138,6 +139,7 @@ class SendInviteDialogComponent extends React.Component {
             isDisabled={!userIds.length}
           />
           <Button
+            id="send-inite-again-modal_cancel"
             label={t("Common:CancelButton")}
             size="normal"
             scale

@@ -23,8 +23,8 @@ class InfoPanelStore {
   selection = null;
   selectionParentRoom = null;
 
-  roomsView = "details";
-  fileView = "history";
+  roomsView = "info_details";
+  fileView = "info_history";
 
   authStore = null;
   settingsStore = null;
@@ -54,7 +54,7 @@ class InfoPanelStore {
 
   setView = (view) => {
     this.roomsView = view;
-    this.fileView = view === "members" ? "history" : view;
+    this.fileView = view === "info_members" ? "info_history" : view;
   };
 
   // Selection helpers //

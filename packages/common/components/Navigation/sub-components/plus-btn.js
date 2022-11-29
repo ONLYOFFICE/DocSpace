@@ -31,6 +31,7 @@ const PlusButton = (props) => {
       <IconButton
         onClick={onClick}
         iconName="images/plus.svg"
+        id={props.id}
         size={15}
         isFill
       />
@@ -50,6 +51,7 @@ PlusButton.propTypes = {
   className: PropTypes.string,
   getData: PropTypes.func.isRequired,
   onPlusClick: PropTypes.func,
+  id: PropTypes.string,
 };
 
 PlusButton.defaultProps = {
