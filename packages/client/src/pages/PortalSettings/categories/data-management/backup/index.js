@@ -22,8 +22,6 @@ const Backup = ({
     return (
       <>
         <HelpButton
-          displayType="auto"
-          place="bottom"
           iconName={"/static/images/help.react.svg"}
           tooltipContent={
             <>
