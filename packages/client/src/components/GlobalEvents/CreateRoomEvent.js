@@ -21,16 +21,28 @@ const CreateRoomEvent = ({
 
   connectDialogVisible,
 
-  currrentFolderId,
+  currentFolderId,
   updateCurrentFolder,
 
   withPaging,
-  addFile,
   setCreateRoomDialogVisible,
+  fetchFiles,
+  setInfoPanelIsVisible,
 }) => {
   const { t } = useTranslation(["CreateEditRoomDialog", "Common", "Files"]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const openNewRoom = (id) => {
+    fetchFiles(id)
+      .then(() => {
+        setInfoPanelIsVisible(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        onClose();
+      });
+  };
 
   const onCreate = async (roomParams) => {
     const createRoomData = {
@@ -82,23 +94,23 @@ const CreateRoomEvent = ({
               ...calculateRoomLogoParams(img, x, y, zoom),
             });
 
-            !withPaging && addFile(room, true);
+            !withPaging && openNewRoom(room.id);
 
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-      else !withPaging && addFile(room, true);
+      else !withPaging && openNewRoom(room.id);
     } catch (err) {
       toastr.error(err);
       console.log(err);
-    } finally {
-      if (withPaging) {
-        await updateCurrentFolder(null, currrentFolderId);
-      }
 
       setIsLoading(false);
       onClose();
+    } finally {
+      if (withPaging) {
+        await updateCurrentFolder(null, currentFolderId);
+      }
     }
   };
 
@@ -145,11 +157,11 @@ export default inject(
       calculateRoomLogoParams,
       uploadRoomLogo,
       addLogoToRoom,
-      addFile,
+      fetchFiles,
     } = filesStore;
     const { createTag, fetchTags } = tagsStore;
 
-    const { id: currrentFolderId } = selectedFolderStore;
+    const { id: currentFolderId } = selectedFolderStore;
     const { updateCurrentFolder } = filesActionsStore;
 
     const { connectDialogVisible, setCreateRoomDialogVisible } = dialogsStore;
@@ -159,6 +171,8 @@ export default inject(
       fetchThirdPartyProviders,
     } = settingsStore.thirdPartyStore;
     const { withPaging } = auth.settingsStore;
+
+    const { setIsVisible: setInfoPanelIsVisible } = auth.infoPanelStore;
 
     return {
       createRoom,
@@ -173,12 +187,13 @@ export default inject(
       addLogoToRoom,
 
       connectDialogVisible,
-      currrentFolderId,
+      currentFolderId,
       updateCurrentFolder,
 
       withPaging,
-      addFile,
       setCreateRoomDialogVisible,
+      fetchFiles,
+      setInfoPanelIsVisible,
     };
   }
 )(observer(CreateRoomEvent));
