@@ -37,11 +37,12 @@ const RoomTypeDropdown = ({
     setRoomType(roomType);
     toggleDropdown();
   };
-
   return (
     <StyledRoomTypeDropdown isOpen={isOpen}>
       <RoomType
         t={t}
+        id="shared_select-room"
+        selectedId={currentRoom.id}
         room={currentRoom}
         type="dropdownButton"
         isOpen={isOpen}

@@ -35,7 +35,18 @@ class HeaderMenuStore {
 
     return cbMenu;
   }
-
+  getMenuItemId = (item) => {
+    switch (item) {
+      case "active":
+        return "selected_active";
+      case "pending":
+        return "selected_pending";
+      case "disabled":
+        return "selected_disabled";
+      case "all":
+        return "selected_all";
+    }
+  };
   getCheckboxItemLabel = (t, item) => {
     switch (item) {
       case "active":
