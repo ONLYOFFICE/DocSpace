@@ -26,6 +26,7 @@ class ContextOptionsStore {
   versionHistoryStore;
   settingsStore;
   filesSettingsStore;
+  selectedFolderStore;
 
   constructor(
     authStore,
@@ -36,7 +37,8 @@ class ContextOptionsStore {
     treeFoldersStore,
     uploadDataStore,
     versionHistoryStore,
-    settingsStore
+    settingsStore,
+    selectedFolderStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -48,6 +50,7 @@ class ContextOptionsStore {
     this.uploadDataStore = uploadDataStore;
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
+    this.selectedFolderStore = selectedFolderStore;
   }
 
   onOpenFolder = (item) => {
@@ -456,12 +459,13 @@ class ContextOptionsStore {
 
   getFilesContextOptions = (item, t) => {
     const { contextOptions } = item;
-
+    const { id, rootFolderId } = this.selectedFolderStore;
     const { enablePlugins } = this.authStore.settingsStore;
 
     const isRootThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
 
+    const isRootRoom = item.isRoom && rootFolderId === id;
     const isShareable = item.canShare;
 
     const isMedia = this.settingsStore.isMediaOrImage(item.fileExst);
@@ -591,6 +595,29 @@ class ContextOptionsStore {
             },
           ];
 
+    const pinOptions = isRootRoom
+      ? [
+          {
+            key: "pin-room",
+            label: t("Pin"),
+            icon: "/static/images/pin.react.svg",
+            onClick: (e) => this.onClickPin(e, item.id, t),
+            disabled: false,
+            "data-action": "pin",
+            action: "pin",
+          },
+          {
+            key: "unpin-room",
+            label: t("Unpin"),
+            icon: "/static/images/unpin.react.svg",
+            onClick: (e) => this.onClickPin(e, item.id, t),
+            disabled: false,
+            "data-action": "unpin",
+            action: "unpin",
+          },
+        ]
+      : [];
+
     const optionsModel = [
       {
         key: "select",
@@ -674,24 +701,7 @@ class ContextOptionsStore {
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
       },
-      {
-        key: "pin-room",
-        label: t("Pin"),
-        icon: "/static/images/pin.react.svg",
-        onClick: (e) => this.onClickPin(e, item.id, t),
-        disabled: false,
-        "data-action": "pin",
-        action: "pin",
-      },
-      {
-        key: "unpin-room",
-        label: t("Unpin"),
-        icon: "/static/images/unpin.react.svg",
-        onClick: (e) => this.onClickPin(e, item.id, t),
-        disabled: false,
-        "data-action": "unpin",
-        action: "unpin",
-      },
+      ...pinOptions,
       {
         key: "sharing-settings",
         label: t("SharingPanel:SharingSettingsTitle"),
@@ -885,7 +895,7 @@ class ContextOptionsStore {
 
       deleteRooms,
     } = this.filesActionsStore;
- 
+
     if (isRoomsFolder || isArchiveFolder) {
       const isPinOption = selection.filter((item) => !item.pinned).length > 0;
 
