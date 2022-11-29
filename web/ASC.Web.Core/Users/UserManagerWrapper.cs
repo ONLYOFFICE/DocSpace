@@ -117,12 +117,7 @@ public sealed class UserManagerWrapper
 
         if (_userManager.GetUserByEmail(mail.Address).Id != Constants.LostUser.Id)
         {
-            throw new InvalidOperationException($"User with email {mail.Address} already exists or is invited");
-        }
-
-        if (type is EmployeeType.RoomAdmin or EmployeeType.DocSpaceAdmin)
-        {
-            await _countManagerChecker.CheckAppend();
+            throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
         var user = new UserInfo
@@ -135,7 +130,7 @@ public sealed class UserManagerWrapper
             Status = EmployeeStatus.Active,
         };
 
-        var newUser = await _userManager.SaveUserInfo(user);
+        var newUser = await _userManager.SaveUserInfo(user, type == EmployeeType.User, checkPermission: false);
 
         var groupId = type switch
         {
@@ -146,7 +141,7 @@ public sealed class UserManagerWrapper
 
         if (groupId != Guid.Empty)
         {
-            await _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
+            await _userManager.AddUserIntoGroup(newUser.Id, groupId, true, false);
         }
 
         return newUser;
@@ -181,7 +176,7 @@ public sealed class UserManagerWrapper
             userInfo.ActivationStatus = !afterInvite ? EmployeeActivationStatus.Pending : EmployeeActivationStatus.Activated;
         }
 
-        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isUser, isCardDav);
+        var newUserInfo = await _userManager.SaveUserInfo(userInfo, isUser, isCardDav, !fromInviteLink);
         _securityContext.SetUserPasswordHash(newUserInfo.Id, passwordHash);
 
         if (_coreBaseSettings.Personal)
@@ -226,7 +221,7 @@ public sealed class UserManagerWrapper
 
         if (isUser)
         {
-            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroup(newUserInfo.Id, Constants.GroupUser.ID, checkPermissions: !fromInviteLink);
         }
         else if (isAdmin)
         {
