@@ -188,7 +188,8 @@ export default inject(
       .map(
         (item) =>
           item && {
-            id: `storage_${item[0].toLowerCase()}`,
+            id: item[0],
+            className: `storage_${item[0].toLowerCase()}`,
             providerKey: item[0],
             isOauth: item.length > 1 && item[0] !== "WebDav",
             oauthHref: item.length > 1 && item[0] !== "WebDav" ? item[1] : "",
