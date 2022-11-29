@@ -206,13 +206,24 @@ public class UserController : PeopleControllerBase
     {
         _apiContext.AuthByClaim();
 
-        _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
-
         var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.Type) : null;
-
         if (options != null && !options.IsCorrect)
         {
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
+        }
+
+        if (inDto.FromInviteLink && options.IsCorrect)
+        {
+            var currentUserType = _userManager.GetUserType(_authContext.CurrentAccount.ID);
+
+            if (currentUserType == EmployeeType.User || (inDto.Type == EmployeeType.DocSpaceAdmin && currentUserType != EmployeeType.DocSpaceAdmin))
+            {
+                throw new SecurityException(Resource.ErrorAccessDenied);
+            }
+        }
+        else
+        {
+            _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
         }
 
         inDto.Type = options != null ? options.EmployeeType : inDto.Type;
@@ -264,9 +275,9 @@ public class UserController : PeopleControllerBase
         user.BirthDate = inDto.Birthday != null && inDto.Birthday != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Birthday) : null;
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
-        UpdateContacts(inDto.Contacts, user);
+        UpdateContacts(inDto.Contacts, user, !inDto.FromInviteLink);
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.User, inDto.FromInviteLink, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.User, inDto.FromInviteLink && options.IsCorrect, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
 
         await UpdateDepartments(inDto.Department, user);
 
@@ -300,8 +311,20 @@ public class UserController : PeopleControllerBase
     [HttpPost("invite")]
     public async IAsyncEnumerable<EmployeeDto> InviteUsersAsync(InviteUsersRequestDto inDto)
     {
+        var currentUserType = _userManager.GetUserType(_authContext.CurrentAccount.ID);
+
+        if (currentUserType == EmployeeType.User)
+        {
+            throw new SecurityException(Resource.ErrorAccessDenied);
+        }
+
         foreach (var invite in inDto.Invitations)
         {
+            if (invite.Type == EmployeeType.DocSpaceAdmin && currentUserType != EmployeeType.DocSpaceAdmin)
+            {
+                continue;
+            }
+
             var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
             var link = _roomLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
 
@@ -1054,6 +1077,13 @@ public class UserController : PeopleControllerBase
             .Select(userId => _userManager.GetUsers(userId))
             .ToList();
 
+        var currentUserType = _userManager.GetUserType(_authContext.CurrentAccount.ID);
+
+        if (currentUserType == EmployeeType.User)
+        {
+            throw new SecurityException(Resource.ErrorAccessDenied);
+        }
+
         foreach (var user in users)
         {
             if (user.IsOwner(Tenant) || _userManager.IsDocSpaceAdmin(user)
@@ -1066,12 +1096,12 @@ public class UserController : PeopleControllerBase
             {
                 case EmployeeType.RoomAdmin:
                     await _countRoomAdminChecker.CheckAppend();
-                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID, false);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
                 case EmployeeType.User:
                     await _countUserChecker.CheckAppend();
-                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID);
+                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupUser.ID, checkPermissions: false);
                     _webItemSecurityCache.ClearCache(Tenant.Id);
                     break;
             }
