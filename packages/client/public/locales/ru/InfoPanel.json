@@ -25,6 +25,9 @@
   "ItemsSelected": "Выбрано элементов",
   "SelectedUsers": "Выбрано пользователей",
 
+  "Today": "Сегодня",
+  "Yesterday": "Вчера",
+
   "FeedCreateFileSingle": "Создан файл.",
   "FeedCreateFileSeveral": "Добавлены файлы.",
   "FeedCreateFolderSingle": "Создана папка.",
