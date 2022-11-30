@@ -6,7 +6,6 @@
   "AccessRightsUsersFromList": "Depuis la liste {{users}}",
   "AddName": "Ajouter un nom",
   "AddTrustedDomain": "Ajouter domaine autorisé",
-  "AdministratorsRemovedSuccessfully": "Les administrateurs ont été supprimés avec succès",
   "Admins": "Administrateurs",
   "AllDomains": "Tous les domaines",
   "AuditDownloadText": "Vous pouvez télécharger le rapport des données accessibles lors d'une période sélectionnée pour voir les statistiques détaillées. Veuillez noter que la fonction d'enregistrement est activée pour les modules Documents, Projets, CRM  et Personnes ainsi que pour les paramètres de portail. ",

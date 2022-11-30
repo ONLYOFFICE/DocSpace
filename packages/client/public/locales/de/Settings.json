@@ -6,7 +6,6 @@
   "AccessRightsUsersFromList": "{{users}} aus der Liste",
   "AddName": "Namen hinzufügen",
   "AddTrustedDomain": "Sichere Domain hinzufügen",
-  "AdministratorsRemovedSuccessfully": "Administratoren erfolgreich entfernt",
   "Admins": "Administratoren",
   "AllDomains": "Alle Domains",
   "AuditDownloadText": "Sie können den Bericht für die verfügbaren Daten während des ausgewählten Speicherzeitraums herunterladen, um die detaillierten Statistiken anzuzeigen. Beachten Sie, dass die Protokollierung derzeit für die Module Dokumente, Projekte, CRM und Personen sowie für Portaleinstellungen aktiviert ist.",

@@ -6,7 +6,6 @@
   "AccessRightsUsersFromList": "列表中的{{users}}",
   "AddName": "添加名称",
   "AddTrustedDomain": "添加受信任的域名",
-  "AdministratorsRemovedSuccessfully": "管理员移除成功",
   "Admins": "管理员",
   "AllDomains": "任意域",
   "AuditDownloadText": "您可以下载所选存储期间可用数据的报告，以查看详细统计信息。请注意，当前已为文档、项目、CRM和人员模块以及门户设置启用了日志记录。",

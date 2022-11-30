@@ -6,7 +6,6 @@
   "AccessRightsUsersFromList": "{{users}} de la lista",
   "AddName": "Añadir nombre",
   "AddTrustedDomain": "Añadir dominio seguro",
-  "AdministratorsRemovedSuccessfully": "Administradores eliminados correctamente",
   "Admins": "Administradores",
   "AllDomains": "Cualquier dominios",
   "AuditDownloadText": "Usted puede descargar el informe para los datos disponibles durante el período de almacenamiento seleccionado para ver estadísticas detalladas. Note, por favor, que el registro es actualmente activado para los módulos Documentos, Proyectos, CRM y Personas así como para los ajustes de portal.",
