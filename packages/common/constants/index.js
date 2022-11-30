@@ -42,6 +42,14 @@ export const PaymentsType = Object.freeze({
   Free: "1",
 });
 /**
+ * Enum for filter subject.
+ * @readonly
+ */
+export const FilterSubject = Object.freeze({
+  Owner: "0",
+  Member: "1",
+});
+/**
  * Enum for filter type.
  * @readonly
  */
