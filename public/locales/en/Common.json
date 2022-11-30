@@ -194,6 +194,7 @@
   "NoTags": "No tags",
   "Title": "Title",
   "TitleSelectFile": "Select",
+  "Today": "Today",
   "Type": "Type",
   "Terabyte": "TB",
   "Unknown": "Unknown",
@@ -214,6 +215,7 @@
   "HelpCenter": "Help center",
   "FeedbackAndSupport": "Feedback & Support",
   "VideoGuides": "Video Guides",
+  "Yesterday": "Yesterday",
   "SelectFile": "Select file",
   "HideArticleMenu": "Hide menu"
 }

@@ -98,6 +98,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
+            id="change-user-status-modal_submit"
             label={t("ChangeUsersStatusButton")}
             size="normal"
             primary
@@ -107,6 +108,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
             isDisabled={userIDs.length === 0}
           />
           <Button
+            id="change-user-status-modal_cancel"
             label={t("Common:CancelButton")}
             size="normal"
             scale

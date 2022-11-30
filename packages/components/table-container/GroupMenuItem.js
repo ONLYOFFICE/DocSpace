@@ -140,6 +140,7 @@ const GroupMenuItem = ({ item }) => {
     title,
     withDropDown,
     options,
+    id,
   } = item;
   return (
     <>
@@ -148,6 +149,7 @@ const GroupMenuItem = ({ item }) => {
       ) : (
         <>
           <StyledButton
+            id={id}
             label={label}
             title={title || label}
             isDisabled={disabled}
