@@ -1,7 +1,6 @@
 {
   "Administrator": "Správca",
   "LblInviteAgain": "Pozvať znova",
-  "LblSetDisabled": "Nastaviť ako neaktívného",
   "MakeInvitationLink": "Vytvoriť odkaz na pozvanie",
   "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na <1>{{email}}</1> e-mail",
   "NotFoundDescription": "Skúste iný filter alebo ho vymažte, aby sa zobrazili všetci ľudia v sekcii.",

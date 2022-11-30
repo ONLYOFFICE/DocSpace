@@ -1,7 +1,6 @@
 {
   "Administrator": "Administrator",
   "LblInviteAgain": "Zaproś ponownie",
-  "LblSetDisabled": "Ustaw jako nieaktywny",
   "MakeInvitationLink": "Utwórz link z zaproszeniem",
   "MessageEmailActivationInstuctionsSentOnEmail": "Instrukcje dotyczące aktywacji adresu e-mail zostały wysłane na adres <1>{{email}}</1>",
   "NotFoundDescription": "Spróbuj użyć innego filtra lub usuń go, aby zobaczyć wszystkich użytkowników w sekcji.",

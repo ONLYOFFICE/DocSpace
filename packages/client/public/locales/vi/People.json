@@ -1,7 +1,6 @@
 {
   "Administrator": "Quản trị viên",
   "LblInviteAgain": "Mời lại",
-  "LblSetDisabled": "Vô hiệu hóa",
   "MakeInvitationLink": "Tạo liên kết mời",
   "MessageEmailActivationInstuctionsSentOnEmail": "Email hướng dẫn kích hoạt đã được gửi đến địa chỉ email <1>{{email}}</1>",
   "NotFoundDescription": "Hãy thử một bộ lọc khác hoặc xóa bộ lọc đó để xem tất cả mọi người trong mục này.",

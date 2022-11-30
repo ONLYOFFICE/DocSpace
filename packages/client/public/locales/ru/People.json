@@ -1,7 +1,6 @@
 {
   "Administrator": "Администратор",
   "LblInviteAgain": "Выслать приглашение ещё раз",
-  "LblSetDisabled": "Заблокировать",
   "MakeInvitationLink": "Создать пригласительную ссылку",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкции по активации электронной почты были отправлены на адрес <1>{{email}}</1>",
   "NotFoundDescription": "Попробуйте изменить или очистить настройки фильтра, чтобы увидеть всех людей в разделе.",
