@@ -90,7 +90,6 @@
   "Migration": "Migration",
   "NoAdmins": "Aucun administrateur trouvé",
   "NoAdminsDescription": "Vous pouvez ajouter un nouvel administrateur manuellement",
-  "NotFoundDescription": "Changer les paramètres de filtres ou ajouter les personnes à la section.",
   "PasswordMinLenght": "Longueur minimale du mot de passe",
   "Path": "Chemin",
   "PeopleAdministratorsCan": "Les administrateurs du module Personnes peuvent créer des profils et des groupes, importer des personnes et inviter des utilisateurs.",

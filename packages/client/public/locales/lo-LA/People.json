@@ -2,7 +2,6 @@
   "Administrator": "ຜູ້ຄຸມຄອງລະບົບ",
   "LblInviteAgain": "ເຊີນອີກຄັ້ງ",
   "MessageEmailActivationInstuctionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ອີເມວ <1> {{email}} </1> ທີ່ຢູ່ເມວ",
-  "NotFoundDescription": "ລອງໃຊ້ຕົວຄົ້ນຫາ ຫຼື ລ້າງເພື່ອເບິ່ງທຸກຄົນໃນສ່ວນນີ້",
   "NotFoundTitle": "ບໍ່ພົບເພື່ອນຮ່ວມທີມ",
   "ReassignmentData": "ການຈັດສັນຂໍ້ມູນຄືນ",
   "SuccessfullyRemovedGroup": "ລົບກຸ່ມສຳເລັດແລ້ວ",

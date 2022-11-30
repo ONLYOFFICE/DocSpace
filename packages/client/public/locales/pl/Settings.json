@@ -87,7 +87,6 @@
   "Migration": "Migracja",
   "NoAdmins": "Brak administratorów",
   "NoAdminsDescription": "Możesz dodać nowego administratora ręcznie",
-  "NotFoundDescription": "Zmień ustawienia filtra lub dodaj do tej sekcji użytkowników.",
   "PasswordMinLenght": "Minimalna długość hasła",
   "Path": "Ścieżka",
   "PeopleAdministratorsCan": "Administratorzy modułu użytkowników mogą tworzyć nowe profile i grupy oraz importować i zapraszać użytkowników.",

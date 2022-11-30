@@ -88,7 +88,6 @@
   "Migration": "移行",
   "NoAdmins": "まだ管理者はいません",
   "NoAdminsDescription": "新しい管理者を手動で追加することも可能です。",
-  "NotFoundDescription": "フィルターの設定を変更したり、セクションに人を追加したりすることができます。",
   "PasswordMinLenght": "最小のパスワードの長さ",
   "Path": "パス",
   "PeopleAdministratorsCan": "人モジュールの管理者は、プロファイルやグループの作成、利用者のインポート、ユーザーの招待などを行えます。",

@@ -87,7 +87,6 @@
   "Migration": "Migraatio",
   "NoAdmins": "Täällä ei ole vielä ylläpitäjiä",
   "NoAdminsDescription": "Voit lisätä uuden järjestelmänvalvojan manuaalisesti",
-  "NotFoundDescription": "Muuta suodatinasetuksia tai lisää ihmisiä osioon.",
   "PasswordMinLenght": "Salasanan vähimmäispituus",
   "Path": "Polku",
   "PeopleAdministratorsCan": "Ihmiset-moduulin järjestelmänvalvojat voivat luoda profiileja ja ryhmiä, tuoda ihmisiä ja kutsua käyttäjiä.",

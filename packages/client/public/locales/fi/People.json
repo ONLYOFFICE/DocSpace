@@ -2,7 +2,6 @@
   "Administrator": "Järjestelmänvalvoja",
   "LblInviteAgain": "Kutsu uudelleen",
   "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <1>{{email}}</1>",
-  "NotFoundDescription": "Kokeile toista suodatinta tai tyhjennä se nähdäksesi kaikki osion ihmiset.",
   "NotFoundTitle": "Ryhmänjäseniä ei löytynyt",
   "ReassignmentData": "Tietojen uudelleenmääritys",
   "SuccessfullyRemovedGroup": "Ryhmä poistettiin onnistuneesti",
