@@ -5,7 +5,6 @@
   "InterfaceTheme": "Vzhľad prostredia",
   "LightTheme": "Svetlá téma",
   "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na e-mail <strong>{{ email }}</strong>",
-  "PhoneLbl": "Telefón",
   "ProviderSuccessfullyConnected": "Poskytovateľ bol úspešne pripojený",
   "ProviderSuccessfullyDisconnected": "Poskytovateľ bol úspešne odpojený",
   "ShowBackupCodes": "Zobraziť záložné kódy",

@@ -5,7 +5,6 @@
   "InterfaceTheme": "Tema dell'interfaccia",
   "LightTheme": "Tema chiaro",
   "MessageEmailActivationInstuctionsSentOnEmail": "Le istruzioni per l'attivazione sono state inviate all'indirizzo email <strong>{{email}}</strong>",
-  "PhoneLbl": "Telefono",
   "ProviderSuccessfullyConnected": "Il fornitore è stato collegato con successo",
   "ProviderSuccessfullyDisconnected": "Il fornitore è stato scollegato con successo",
   "ShowBackupCodes": "Mostrare codici di backup",

@@ -5,7 +5,6 @@
   "InterfaceTheme": "Θέμα διεπαφής",
   "LightTheme": "Ανοιχτό θέμα",
   "MessageEmailActivationInstuctionsSentOnEmail": "Οι οδηγίες ενεργοποίησης email έχουν σταλεί στη διεύθυνση email <strong>{{ email }}</strong>",
-  "PhoneLbl": "Τηλέφωνο",
   "ProviderSuccessfullyConnected": "Ο πάροχος συνδέθηκε επιτυχώς",
   "ProviderSuccessfullyDisconnected": "Ο πάροχος αποσυνδέθηκε επιτυχώς",
   "ShowBackupCodes": "Εμφάνιση εφεδρικών κωδικών",

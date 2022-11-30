@@ -5,7 +5,6 @@
   "InterfaceTheme": "Thema der Benutzeroberfläche",
   "LightTheme": "Heller Modus",
   "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an <strong>{{ email }}</strong> versandt.",
-  "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Anbieter erfolgreich verbunden",
   "ProviderSuccessfullyDisconnected": "Anbieter erfolgreich getrennt",
   "ShowBackupCodes": "Back-up-Codes anzeigen",

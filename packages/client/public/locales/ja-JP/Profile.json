@@ -5,7 +5,6 @@
   "InterfaceTheme": "インターフェイスのテーマ",
   "LightTheme": "ライトのテーマ",
   "MessageEmailActivationInstuctionsSentOnEmail": "電子メールによるアクティベーションの指示は、<strong>{{email}}</strong>のメールアドレスに送信されています。",
-  "PhoneLbl": "電話",
   "ProviderSuccessfullyConnected": "プロバイダが正常に接続されました",
   "ProviderSuccessfullyDisconnected": "プロバイダが正常に切断された",
   "ShowBackupCodes": "バックアップコードの表示",

@@ -5,7 +5,6 @@
   "InterfaceTheme": "İnterfeys mövzusu",
   "LightTheme": "İşıqlı tema",
   "MessageEmailActivationInstuctionsSentOnEmail": " <strong>{{ email }}</strong> elektron poçta emailin aktivlşdirilməsi haqqında təlimat göndərilmişdir",
-  "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Provayder müvəffəqiyyətlə qoşuldu",
   "ProviderSuccessfullyDisconnected": "Provayderin əlaqəsi müvəffəqiyyətlə kəsildi",
   "ShowBackupCodes": "Rezerv kodlarını göstər",

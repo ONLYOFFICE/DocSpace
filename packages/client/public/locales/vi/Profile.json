@@ -5,7 +5,6 @@
   "InterfaceTheme": "Chủ đề giao diện\"",
   "LightTheme": "Nền sáng",
   "MessageEmailActivationInstuctionsSentOnEmail": "Email hướng dẫn kích hoạt đã được gửi thành công đến địa chỉ email <strong>{{ email }}</strong>",
-  "PhoneLbl": "Điện thoại",
   "ProviderSuccessfullyConnected": "Đã kết nối nhà cung cấp thành công",
   "ProviderSuccessfullyDisconnected": " Đã ngắt kết nối nhà cung cấp thành công",
   "ShowBackupCodes": "Hiển thị mã dự phòng",

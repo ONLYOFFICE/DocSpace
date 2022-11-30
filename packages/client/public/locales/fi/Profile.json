@@ -5,7 +5,6 @@
   "InterfaceTheme": "Käyttöliittymän teema",
   "LightTheme": "Kevyt teema",
   "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <strong>{{email}}</strong>",
-  "PhoneLbl": "Puhelin",
   "ProviderSuccessfullyConnected": "Palveluntarjoajan yhdistäminen onnistui",
   "ProviderSuccessfullyDisconnected": "Yhteys palveluntarjoajaan katkaistu",
   "ShowBackupCodes": "Näytä varakoodit\n",

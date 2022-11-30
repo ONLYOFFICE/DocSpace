@@ -5,7 +5,6 @@
   "InterfaceTheme": "Тема на интерфейса",
   "LightTheme": "Светла тема",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкциите за активиране на имейла бяха изпратени на имейл адрес <strong>{{ email }}</strong>",
-  "PhoneLbl": "Телефон",
   "ProviderSuccessfullyConnected": "Доставчикът е свързан успешно",
   "ProviderSuccessfullyDisconnected": "Връзката с доставчика беше прекъсната успешно",
   "ShowBackupCodes": "Покажи резервните кодове",

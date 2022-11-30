@@ -5,7 +5,6 @@
   "InterfaceTheme": "Arayüz teması",
   "LightTheme": "Açık tema",
   "MessageEmailActivationInstuctionsSentOnEmail": "E-posta etkinleştirme talimatları <strong>{{ email }}</strong> e-posta adresine gönderildi",
-  "PhoneLbl": "Telefon",
   "ProviderSuccessfullyConnected": "Sağlayıcı başarıyla bağlandı",
   "ProviderSuccessfullyDisconnected": "Sağlayıcının bağlantısı başarıyla kesildi",
   "ShowBackupCodes": "Yedek kodları göster",
