@@ -320,7 +320,7 @@ const FilesTableRow = (props) => {
   } = props;
   const { acceptBackground, background } = theme.dragAndDrop;
 
-  const element = <ItemIcon item={item} />;
+  const element = <ItemIcon item={item} viewAs={"table"} />;
 
   const selectionProp = {
     className: `files-item ${className} ${value}`,

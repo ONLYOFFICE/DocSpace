@@ -6,7 +6,8 @@ import { getCustomRoomLogo, getDefaultRoomLogo } from "./helpers/getRoomLogo";
 
 export interface ItemIconProps {
   item: {
-    icon?: string;
+    icon: string;
+    viewAs: "row" | "table" | "tile";
 
     isRoom: boolean;
     roomType: number;
@@ -23,8 +24,16 @@ export interface ItemIconProps {
   roomLogoSize?: "small" | "medium" | "large";
 }
 
-const ItemIcon = ({ item, roomLogoSize = "medium" }: ItemIconProps) => {
-  const { icon, logo, isRoom, roomType, isArchive, isPrivate } = item;
+const ItemIcon = ({ item, roomLogoSize = "medium", viewAs }: ItemIconProps) => {
+  const {
+    icon,
+    logo,
+    isRoom,
+    roomType,
+    isArchive,
+    isPrivate,
+    encrypted,
+  } = item;
 
   if (isRoom) {
     const isCustomLogo = !isArchive && !!(logo && logo[roomLogoSize]);
@@ -66,7 +75,17 @@ const ItemIcon = ({ item, roomLogoSize = "medium" }: ItemIconProps) => {
     );
   }
 
-  return <img className={`react-svg-icon`} src={icon} />;
+  return (
+    <Styled.StyledIconContainer viewAs={viewAs}>
+      <ReactSVG className={`react-svg-icon`} src={icon} />
+      {encrypted && (
+        <ReactSVG
+          className="item-icon_privacy"
+          src={"images/privacy.with-background.svg"}
+        />
+      )}
+    </Styled.StyledIconContainer>
+  );
 };
 
 export default ItemIcon;

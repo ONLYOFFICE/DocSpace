@@ -216,7 +216,7 @@ const SimpleFilesRow = (props) => {
   const withAccess = isAdmin || item.access === 0;
   const isSmallContainer = sectionWidth <= 500;
 
-  const element = <ItemIcon item={item} />;
+  const element = <ItemIcon item={item} viewAs={"row"} />;
 
   const onDragOver = (dragOver) => {
     if (dragOver !== isDragOver) {

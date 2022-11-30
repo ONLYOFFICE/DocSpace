@@ -64,7 +64,7 @@ const FileTile = (props) => {
 
   const { thumbnailUrl } = item;
 
-  const element = <ItemIcon item={item} />;
+  const element = <ItemIcon item={item} viewAs={"tile"} />;
 
   return (
     <div ref={props.selectableRef} id={id}>

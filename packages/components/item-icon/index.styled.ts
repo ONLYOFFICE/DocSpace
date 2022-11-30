@@ -75,3 +75,39 @@ export const CustomRoomLogo = styled.div<{
 CustomRoomLogo.defaultProps = {
   theme: Base,
 };
+
+export const StyledIconContainer = styled.div<{
+  viewAs: "row" | "table" | "tile";
+}>`
+  width: 32px;
+  height: 32px;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .item-icon_privacy {
+    position: absolute;
+
+    width: 12px;
+    height: 12px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    div {
+      width: 12px;
+      height: 12px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    top: ${(props) => (props.viewAs === "table" ? "18px" : "22px")};
+    left: ${(props) => (props.viewAs === "table" ? "18px" : "22px")};
+  }
+`;
