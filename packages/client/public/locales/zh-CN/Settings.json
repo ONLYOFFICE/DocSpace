@@ -4,7 +4,6 @@
   "AccessRightsChangeOwnerConfirmText": "通过邮件确认后将应用变更。",
   "AccessRightsProductUsersCan": "{{category}}用户可",
   "AccessRightsUsersFromList": "列表中的{{users}}",
-  "AddAdmins": "添加管理员",
   "AddName": "添加名称",
   "AddTrustedDomain": "添加受信任的域名",
   "AdminInModules": "模块管理员",

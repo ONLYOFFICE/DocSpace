@@ -4,7 +4,6 @@
   "AccessRightsChangeOwnerConfirmText": "이메일을 통한 승인 후 변경 사항이 적용됩니다.",
   "AccessRightsProductUsersCan": "{{category}} 사용자가 할 수 있는 것:",
   "AccessRightsUsersFromList": "목록의 {{users}}",
-  "AddAdmins": "관리자 추가",
   "AddName": "이름 추가",
   "AddTrustedDomain": "신뢰할 수있는 도메인을 추가",
   "AdminInModules": "모듈 관리자",

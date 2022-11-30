@@ -4,7 +4,6 @@
   "AccessRightsChangeOwnerConfirmText": "Зміни будуть застосовані після підтвердження за допомогою електронної пошти.",
   "AccessRightsProductUsersCan": "Користувачі {{category}} можуть",
   "AccessRightsUsersFromList": "{{users}} зі списку",
-  "AddAdmins": "Додати адміністраторів",
   "AddName": "Додати ім'я",
   "AddTrustedDomain": "Додати довірений домен",
   "AdminInModules": "Адміністратор в модулях",

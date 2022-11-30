@@ -4,7 +4,6 @@
   "AccessRightsChangeOwnerConfirmText": "Muutokset otetaan käyttöön sähköpostivahvistuksen jälkeen.",
   "AccessRightsProductUsersCan": "{{category}} käyttäjät voivat",
   "AccessRightsUsersFromList": "{{users}} luettelosta",
-  "AddAdmins": "Lisätä järjestelmänvalvojia",
   "AddName": "Lisätä nimiä",
   "AddTrustedDomain": "Lisää luotettu verkkotunnus",
   "AdminInModules": "Ylläpitää moduuleja",
