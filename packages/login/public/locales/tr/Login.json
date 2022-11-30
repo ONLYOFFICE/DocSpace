@@ -8,7 +8,6 @@
   "ExpiredCode": "Bu kod artık geçerli değil. Yeni bir kod isteyip tekrar deneyin",
   "ForgotPassword": "Şifrenizi mi unuttunuz?",
   "InvalidCode": "Bu kod geçersizdir. Tekrar deneyin",
-  "LoginDescription": "Size, parola olmadan oturum açmanız için e-postayla sihirli bir kod göndereceğiz. Veya <1>manuel olarak oturum açabilirsiniz.</1>",
   "MessageAuthorize": "Devam etmek için giriş yapın",
   "MessageEmailConfirmed": "E-posta adresiniz başarıyla etkinleştirildi.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Lütfen kayıt için kullandığınız e-postayı giriniz. Şifre kurtarma talimatları o adrese gönderilecektir.",

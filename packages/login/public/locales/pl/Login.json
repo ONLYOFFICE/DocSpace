@@ -8,7 +8,6 @@
   "ExpiredCode": "Dany kod jest już nieważny. Poproś o nowy kod i spróbuj ponownie",
   "ForgotPassword": "Nie pamiętasz hasła?",
   "InvalidCode": "Dany kod jest nieprawidłowy. Spróbuj ponownie",
-  "LoginDescription": "Wyślemy Ci magiczny kod, który umożliwi zalogowanie bez hasła. Możesz też <1>zalogować się ręcznie.</1>",
   "MessageAuthorize": "Zaloguj się, aby kontynuować",
   "MessageEmailConfirmed": "Twój e-mail został pomyślnie aktywowany.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Podaj adres e-mail użyty podczas rejestracji. Instrukcje dotyczące odzyskiwania hasła zostaną wysłane pod wskazany adres.",

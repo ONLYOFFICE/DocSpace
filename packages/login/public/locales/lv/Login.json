@@ -8,7 +8,6 @@
   "ExpiredCode": "Šis kods vairs nav derīgs. Pieprasiet jaunu kodu un mēģiniet vēlreiz",
   "ForgotPassword": "Vai aizmirsāt savu paroli?",
   "InvalidCode": "Šis kods nav derīgs. Mēģiniet vēlreiz",
-  "LoginDescription": "Mēs jums pa e-pastu nosūtīsim maģisko kodu, lai pierakstītos bez paroles. Vai arī varat <1>pieteikties manuāli.</1>",
   "MessageAuthorize": "Piesakieties, lai turpinātu",
   "MessageEmailConfirmed": "Jūsu e-pasts tika veiksmīgi aktivizēts.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Lūdzu, ievadiet reģistrācijā izmantoto e-pasta adresi. Uz to tiks nosūtīti norādījumi paroles atkopšanai.",
