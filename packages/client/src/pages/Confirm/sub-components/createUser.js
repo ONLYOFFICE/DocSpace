@@ -29,7 +29,6 @@ import {
 import { providersData } from "@docspace/common/constants";
 import withLoader from "../withLoader";
 import MoreLoginModal from "@docspace/common/components/MoreLoginModal";
-import AppLoader from "@docspace/common/components/AppLoader";
 import EmailInput from "@docspace/components/email-input";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
 import { getPasswordErrorMessage } from "../../../helpers/utils";
@@ -242,8 +241,6 @@ const Confirm = (props) => {
 
   const [user, setUser] = useState("");
 
-  const [isLoaded, setIsLoaded] = useState(false);
-
   const [isGreetingMode, setIsGreetingMode] = useState(true);
 
   const [isEmailErrorShow, setIsEmailErrorShow] = useState(false);
@@ -269,19 +266,20 @@ const Confirm = (props) => {
     }
   }, []);
 
-  useEffect(async () => {
-    const { linkData } = props;
-    const uid = linkData.uid;
-    const confirmKey = linkData.confirmHeader;
-    const user = await getUserFromConfirm(uid, confirmKey);
-    setUser(user);
+  useEffect(() => {
+    async () => {
+      const { linkData } = props;
+      const uid = linkData.uid;
+      const confirmKey = linkData.confirmHeader;
+      const user = await getUserFromConfirm(uid, confirmKey);
+      setUser(user);
 
-    window.authCallback = authCallback;
+      window.authCallback = authCallback;
 
-    Promise.all([setProviders(), getSso()]).then(() => {
-      setIsLoaded(true);
+      await setProviders();
+      await getSso();
       focusInput();
-    });
+    };
   }, []);
 
   const onSubmit = () => {
@@ -555,7 +553,6 @@ const Confirm = (props) => {
     setIsPasswordErrorShow(true);
   };
 
-  if (!isLoaded) return <AppLoader />;
   return (
     <ConfirmContainer>
       <GreetingContainer isGreetingMode={isGreetingMode}>
