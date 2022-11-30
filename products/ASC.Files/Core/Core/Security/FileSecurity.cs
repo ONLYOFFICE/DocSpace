@@ -450,6 +450,11 @@ public class FileSecurity : IFileSecurity
         }
     }
 
+    public IAsyncEnumerable<FileEntry<T>> SetSecurity<T>(IAsyncEnumerable<FileEntry<T>> entries)
+    {
+        return SetSecurity(entries, _authContext.CurrentAccount.ID);
+    }
+
     public async IAsyncEnumerable<FileEntry<T>> SetSecurity<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
     {
         var user = _userManager.GetUsers(userId);
@@ -956,6 +961,11 @@ public class FileSecurity : IFileSecurity
             var mytrashId = await folderDao.GetFolderIDTrashAsync(false, userId);
             if (!Equals(mytrashId, 0) && Equals(e.RootId, mytrashId))
             {
+                if (e.FileEntryType == FileEntryType.Folder && action == FilesSecurityActions.Delete && Equals(e.Id, mytrashId))
+                {
+                    return false;
+                }
+
                 return true;
             }
         }

@@ -93,7 +93,8 @@ public class FileEntryDtoHelper
     public FileEntryDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
         EmployeeDtoHelper employeeWraperHelper,
-        FileSharingHelper fileSharingHelper, FileSecurity fileSecurity
+        FileSharingHelper fileSharingHelper,
+        FileSecurity fileSecurity
         )
     {
         _apiDateTimeHelper = apiDateTimeHelper;
@@ -104,6 +105,11 @@ public class FileEntryDtoHelper
 
     protected internal async Task<T> GetAsync<T, TId>(FileEntry<TId> entry) where T : FileEntryDto<TId>, new()
     {
+        if (entry.Security == null)
+        {
+            entry = await _fileSecurity.SetSecurity(new[] { entry }.ToAsyncEnumerable()).FirstAsync();
+        }
+
         return new T
         {
             Id = entry.Id,
