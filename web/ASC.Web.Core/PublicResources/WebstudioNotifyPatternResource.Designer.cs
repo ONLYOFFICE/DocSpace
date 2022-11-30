@@ -1867,9 +1867,11 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
-        ///You are invited to join ONLYOFFICE DocSpace at  &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
+        ///You are invited to join ONLYOFFICE DocSpace at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
+        ///
+        ///After clicking on the invitation link, please set a new password for your account.
         ///
         ///Truly yours,
         ///ONLYOFFICE Team
@@ -1919,9 +1921,11 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
-        ///You are invited to join ONLYOFFICE DocSpace at  &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
+        ///You are invited to join $Message room at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
+        ///
+        ///After clicking on the invitation link, please set a new password for your account.
         ///
         ///Truly yours,
         ///ONLYOFFICE Team

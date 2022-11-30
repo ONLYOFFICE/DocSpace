@@ -225,21 +225,22 @@ public class StudioNotifyService
                     new TagValue(Tags.UserDisplayName, (user.DisplayUserName(_displayUserSettingsHelper) ?? string.Empty).Trim()));
     }
 
-    public void SendEmailRoomInvite(string email, string confirmationUrl)
+    public void SendEmailRoomInvite(string email, string roomTitle, string confirmationUrl)
     {
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmRoomInvite;
+        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
         _client.SendNoticeToAsync(
             Actions.SaasRoomInvite,
                 _studioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
+                new TagValue(Tags.Message, roomTitle),
                 new TagValue(Tags.InviteLink, confirmationUrl),
                 TagValues.GreenButton(greenButtonText, confirmationUrl));
     }
 
     public void SendDocSpaceInvite(string email, string confirmationUrl)
     {
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmDocSpaceInvite;
+        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
 
         _client.SendNoticeToAsync(
             Actions.SaasDocSpaceInvite,
