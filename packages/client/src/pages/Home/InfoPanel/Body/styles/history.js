@@ -9,6 +9,11 @@ const StyledHistoryList = styled.div`
 `;
 
 const StyledHistorySubtitle = styled.div`
+  position: sticky;
+  background: ${(props) => props.theme.infoPanel.backgroundColor};
+  top: 80px;
+  z-index: 100;
+
   padding: 8px 0 12px;
   font-weight: 600;
   font-size: 13px;
@@ -46,7 +51,11 @@ const StyledHistoryBlock = styled.div`
   display: flex;
   gap: 8px;
   padding: 16px 0;
-  border-bottom: ${(props) => `solid 1px ${props.theme.infoPanel.borderColor}`};
+
+  ${({ withBottomDivider, theme }) =>
+    withBottomDivider
+      ? ` border-bottom: solid 1px ${theme.infoPanel.borderColor}; `
+      : ` margin-bottom: 12px; `}
 
   .avatar {
     min-width: 32px;
