@@ -89,7 +89,6 @@
   "PortalNameEmpty": "Hesap adı boş",
   "PortalNameIncorrect": "Yanlış hesap adı",
   "PortalNameLength": "Hesap adı 6 ila 50 karakter uzunluğunda olmalıdır",
-  "PortalOwner": "Portal Sahibi",
   "PortalRenaming": "Portal Yeniden Adlandırma",
   "PortalRenamingDescription": "Buradan portal adresinizi değiştirebilirsiniz.",
   "PortalRenamingLabelText": "Yeni portal adı",

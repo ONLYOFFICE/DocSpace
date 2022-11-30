@@ -153,7 +153,6 @@
   "PortalNameEmpty": "Account name is empty",
   "PortalNameIncorrect": "Incorrect account name",
   "PortalNameLength": "The account name must be between 6 and 50 characters long",
-  "PortalOwner": "Portal Owner",
   "PortalRenaming": "Portal Renaming",
   "PortalRenamingDescription": "Here you can change your portal address.",
   "PortalRenamingLabelText": "New portal name",

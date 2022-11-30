@@ -114,7 +114,6 @@
   "PortalNameEmpty": "Поле имя аккаунта не заполнено",
   "PortalNameIncorrect": "Неверное имя портала",
   "PortalNameLength": "Имя учетной записи должно быть от 6 до 50 символов",
-  "PortalOwner": "Владелец портала",
   "PortalRenaming": "Изменение имени портала",
   "PortalRenamingDescription": "Здесь вы можете изменить адрес портала.",
   "PortalRenamingLabelText": "Новое имя портала",

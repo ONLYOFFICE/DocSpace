@@ -89,7 +89,6 @@
   "PortalNameEmpty": "Názov účtu je prázdny",
   "PortalNameIncorrect": "Nesprávny názov účtu",
   "PortalNameLength": "Názov účtu musí mať 6 až 50 znakov",
-  "PortalOwner": "Vlastník portálu",
   "PortalRenaming": "Premenovanie portálu",
   "PortalRenamingDescription": "Tu môžete zmeniť adresu portálu.",
   "PortalRenamingLabelText": "Nový názov portálu",

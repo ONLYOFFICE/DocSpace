@@ -86,7 +86,6 @@
   "PortalNameEmpty": "계정 이름이 비어 있습니다",
   "PortalNameIncorrect": "계정 이름이 잘못되었습니다",
   "PortalNameLength": "계정 이름은 6~50글자여야 합니다",
-  "PortalOwner": "포털 소유자",
   "PortalRenaming": "포털 이름 변경",
   "PortalRenamingDescription": "여기에서 포털 주소를 변경할 수 있습니다.",
   "PortalRenamingLabelText": "새 포털 이름",

@@ -89,7 +89,6 @@
   "PortalNameEmpty": "Ім'я облікового запису порожнє",
   "PortalNameIncorrect": "Неправильне ім'я облікового запису",
   "PortalNameLength": "Довжина імені облікового запису має бути від 6 до 50 символів",
-  "PortalOwner": "Власник порталу",
   "PortalRenaming": "Перейменування порталу",
   "PortalRenamingDescription": "Тут ви можете змінити адресу вашого порталу.",
   "PortalRenamingLabelText": "Нове ім'я порталу",

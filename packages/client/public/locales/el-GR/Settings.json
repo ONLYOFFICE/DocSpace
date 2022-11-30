@@ -86,7 +86,6 @@
   "PortalNameEmpty": "Το όνομα λογαριασμού είναι κενό",
   "PortalNameIncorrect": "Λανθασμένο όνομα λογαριασμού",
   "PortalNameLength": "Το όνομα του λογαριασμού πρέπει να έχει μήκος μεταξύ 6 και 50 χαρακτήρων",
-  "PortalOwner": "Κάτοχος πύλης",
   "PortalRenaming": "Μετονομασία πύλης",
   "PortalRenamingDescription": "Εδώ μπορείτε να αλλάξετε τη διεύθυνση της πύλης σας.",
   "PortalRenamingLabelText": "Νέο όνομα πύλης",

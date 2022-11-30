@@ -92,7 +92,6 @@
   "PortalNameEmpty": "Nome da conta está vazio",
   "PortalNameIncorrect": "Nome da conta incorreto",
   "PortalNameLength": "O nome da conta deve ter entre 6 e 50 caracteres",
-  "PortalOwner": "Proprietário do Portal",
   "PortalRenaming": "Renomear portal",
   "PortalRenamingDescription": "Aqui, você pode alterar o endereço do seu portal.",
   "PortalRenamingLabelText": "Nome do novo portal",

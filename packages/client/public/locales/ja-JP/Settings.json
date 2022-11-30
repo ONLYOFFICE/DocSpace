@@ -90,7 +90,6 @@
   "PortalNameEmpty": "アカウント名が空です。",
   "PortalNameIncorrect": "アカウント名が無効です。",
   "PortalNameLength": "アカウント名は6～50文字がある必要です。",
-  "PortalOwner": "ポータルオーナー",
   "PortalRenaming": "ポータル改名",
   "PortalRenamingDescription": "ここではポータルアドレスを変更できます。",
   "PortalRenamingLabelText": "新のポータル名",
