@@ -4,7 +4,6 @@
   "AccessRightsChangeOwnerConfirmText": "Les changements seront appliqués après la confirmation par e-mail.",
   "AccessRightsProductUsersCan": "Les utilisateurs {{category}} peuvent",
   "AccessRightsUsersFromList": "Depuis la liste {{users}}",
-  "AccessSettings": "Paramètres d'accès",
   "AddAdmins": "Ajouter des administrateurs",
   "AddName": "Ajouter un nom",
   "AddTrustedDomain": "Ajouter domaine autorisé",

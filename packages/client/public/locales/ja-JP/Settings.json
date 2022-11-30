@@ -4,7 +4,6 @@
   "AccessRightsChangeOwnerConfirmText": "変更内容は、メールでの確認後に適用されます。",
   "AccessRightsProductUsersCan": "{{category}}ユーザーが",
   "AccessRightsUsersFromList": "リストから{{users}}",
-  "AccessSettings": "アクセス設定",
   "AddAdmins": "管理者の追加",
   "AddName": "お名前の追加",
   "AddTrustedDomain": "信頼されたドメインを追加",

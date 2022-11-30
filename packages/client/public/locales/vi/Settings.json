@@ -4,7 +4,6 @@
   "AccessRightsChangeOwnerConfirmText": "Các thay đổi sẽ được áp dụng sau khi xác nhận qua email.",
   "AccessRightsProductUsersCan": "người dùng {{category}} có thể ",
   "AccessRightsUsersFromList": "{{users}} từ danh sách ",
-  "AccessSettings": "Cài đặt truy cập",
   "AddAdmins": "Thêm quản trị viên",
   "AddName": "Thêm tên",
   "AddTrustedDomain": "Thêm tên miền được tin cậy",
