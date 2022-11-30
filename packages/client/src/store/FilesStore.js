@@ -130,6 +130,9 @@ class FilesStore {
 
             const file = JSON.parse(opt?.data);
 
+            if (this.selectedFolderStore.id !== file.folderId)
+              return;
+
             const newFiles = [file, ...this.files];
 
             if (newFiles.length > this.filter.pageCount && withPaging) {
@@ -466,8 +469,24 @@ class FilesStore {
   };
 
   setFolders = (folders) => {
+    const { socketHelper } = this.authStore.settingsStore;
     if (folders.length === 0 && this.folders.length === 0) return;
+
+    if (this.folders?.length > 0) {
+      socketHelper.emit({
+        command: "unsubscribe",
+        data: { roomParts: this.folders.map((f) => `DIR-${f.id}`), individual: true },
+      });
+    }
+
     this.folders = folders;
+
+    if (this.folders?.length > 0) {
+      socketHelper.emit({
+        command: "subscribe",
+        data: { roomParts: this.folders.map((f) => `DIR-${f.id}`), individual: true },
+      });
+    }
   };
 
   getFileIndex = (id) => {
