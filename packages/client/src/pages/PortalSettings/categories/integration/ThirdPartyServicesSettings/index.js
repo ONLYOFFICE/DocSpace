@@ -121,6 +121,7 @@ class ThirdPartyServices extends React.Component {
       updateConsumerProps,
       urlAuthKeys,
       theme,
+      currentColorScheme,
     } = this.props;
     const { dialogVisible, isLoading } = this.state;
     const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
@@ -131,7 +132,7 @@ class ThirdPartyServices extends React.Component {
           <Text>{t("ThirdPartyTitleDescription")}</Text>
           <Box marginProp="8px 0 24px 0">
             <Link
-              color={theme.client.settings.integration.linkColor}
+              color={currentColorScheme.main.accent}
               isHovered
               target="_blank"
               href={urlAuthKeys}
@@ -186,7 +187,7 @@ ThirdPartyServices.propTypes = {
 
 export default inject(({ setup, auth }) => {
   const { settingsStore, setDocumentTitle } = auth;
-  const { urlAuthKeys, theme } = settingsStore;
+  const { urlAuthKeys, theme, currentColorScheme } = settingsStore;
   const {
     getConsumers,
     integration,
@@ -203,5 +204,6 @@ export default inject(({ setup, auth }) => {
     updateConsumerProps,
     setSelectedConsumer,
     setDocumentTitle,
+    currentColorScheme,
   };
 })(withTranslation(["Settings", "Common"])(observer(ThirdPartyServices)));

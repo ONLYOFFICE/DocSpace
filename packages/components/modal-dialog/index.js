@@ -41,6 +41,7 @@ const ModalDialog = ({
   withFooterBorder,
   isScrollLocked,
   containerVisible,
+  isDoubleFooterLine,
 }) => {
   const [currentDisplayType, setCurrentDisplayType] = useState(
     getCurrentDisplayType(displayType, displayTypeDetailed)
@@ -89,6 +90,7 @@ const ModalDialog = ({
     <Portal
       element={
         <ModalAside
+          isDoubleFooterLine={isDoubleFooterLine}
           id={id}
           style={style}
           className={className}

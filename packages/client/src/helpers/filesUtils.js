@@ -155,7 +155,7 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
       combineUrl(
         AppServerConfig.proxyURL,
         config.homepage,
-        `/httphandlers/filehandler.ashx?${params}`
+        `products/files/httphandlers/filehandler.ashx?${params}` //TODO: will change 'products/files' path
       ),
       "_blank"
     );

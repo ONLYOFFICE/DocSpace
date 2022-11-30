@@ -1,6 +1,6 @@
-version: '3'
-services:       
-   onlyoffice-rabbitmq:
+version: "3"
+services:
+  onlyoffice-rabbitmq:
     image: rabbitmq:3
     container_name: onlyoffice-rabbitmq
     restart: always
@@ -9,5 +9,5 @@ services:
       - "80"
 networks:
   default:
-    external:
-      name: ${NETWORK_NAME}
+    name: ${NETWORK_NAME}
+    external: true

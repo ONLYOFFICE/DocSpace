@@ -12,15 +12,16 @@ import ButtonPlusIcon from "../../../../../../../../public/images/actions.button
 
 const Preview = (props) => {
   const {
-    selectAccentColor,
+    previewAccent,
     themePreview,
     selectThemeId,
     withBorder,
     withTileActions,
     floatingButtonClass,
+    colorCheckImg,
   } = props;
 
-  const [colorPreview, setColorPreview] = useState(selectAccentColor);
+  const [colorPreview, setColorPreview] = useState(previewAccent);
   const [isViewTablet, setIsViewTablet] = useState(false);
 
   const onCheckView = () => {
@@ -30,8 +31,8 @@ const Preview = (props) => {
   };
 
   useEffect(() => {
-    setColorPreview(selectAccentColor);
-  }, [selectAccentColor]);
+    setColorPreview(previewAccent);
+  }, [previewAccent]);
 
   useEffect(() => {
     onCheckView();
@@ -335,7 +336,7 @@ const Preview = (props) => {
           </div>
 
           <div className="section-flex-tablet">
-            <div className="tile-name half background border-color">
+            <div className="tile-name only-tile-name background border-color">
               <div className="tile-container">
                 <div className="tile-icon">
                   <Loaders.Rectangle
@@ -378,7 +379,7 @@ const Preview = (props) => {
             </div>
 
             {isViewTablet && (
-              <div className="tile-name half background border-color tablet-tile-name">
+              <div className="tile-name only-tile-name background border-color tablet-tile-name">
                 <div className="tile-container">
                   <div className="tile-icon">
                     <Loaders.Rectangle
@@ -414,6 +415,7 @@ const Preview = (props) => {
               colorPreview={colorPreview}
               themePreview={themePreview}
               selectThemeId={selectThemeId}
+              colorCheckImg={colorCheckImg}
             >
               <ButtonPlusIcon />
             </IconBox>

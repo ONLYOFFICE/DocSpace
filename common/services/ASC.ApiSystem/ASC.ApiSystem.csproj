@@ -8,8 +8,10 @@
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
     <RazorCompileOnBuild>false</RazorCompileOnBuild>
     <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
+    <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <NoWarn>NU1701</NoWarn>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>

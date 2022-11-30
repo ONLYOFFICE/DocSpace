@@ -130,7 +130,9 @@ const DNSSettings = (props) => {
             tooltipContent={tooltipDNSSettingsTooltip}
             className="dns-setting_helpbutton "
           />
-          {!isSettingPaid && <Badge backgroundColor="#EDC409" label="Paid" />}
+          {!isSettingPaid && (
+            <Badge backgroundColor="#EDC409" label="Paid" isPaidBadge={true} />
+          )}
         </div>
       )}
       {(isMobileOnly && isSmallTablet()) || isSmallTablet() ? (

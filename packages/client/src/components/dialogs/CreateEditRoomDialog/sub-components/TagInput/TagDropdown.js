@@ -19,7 +19,9 @@ const TagDropdown = ({
   const [dropdownMaxHeight, setDropdownMaxHeight] = useState(0);
 
   useEffect(() => {
-    document.getElementById("tags-input").addEventListener("keyup", onKeyPress);
+    document
+      .getElementById("shared_tags-input")
+      .addEventListener("keyup", onKeyPress);
 
     return () => document.removeEventListener("keyup", onKeyPress);
   });
@@ -39,7 +41,7 @@ const TagDropdown = ({
   };
 
   const onClickOutside = () => {
-    document.getElementById("tags-input").blur();
+    document.getElementById("shared_tags-input").blur();
   };
 
   const addNewTag = () => {
