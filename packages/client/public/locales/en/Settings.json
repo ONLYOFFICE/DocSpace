@@ -72,7 +72,6 @@
   "DataBackup": "Data backup",
   "Deactivate": "Deactivate",
   "DeactivateOrDeletePortal": "Deactivate or delete portal.",
-  "DeleteDataHeader": "Portal deactivation/deletion",
   "DeleteDocSpace": "Delete DocSpace",
   "DeleteDocSpaceInfo": "Before you delete the portal, please make sure that automatic billing is turned off. You may check the status of automatic billing in <1>on your Stripe customer portal.</1>",
   "DeleteTheme": "Delete theme",
