@@ -6,7 +6,6 @@
   "Data": "Данные",
   "DateModified": "Дата изменения",
   "FeedLocationLabel": "Папка «{{folderTitle}}»",
-  "FeedUpdateUser": "назначена роль {{role}}",
   "FileExtension": "Расширение файла",
   "FilesEmptyScreenText": "Здесь будут представлены свойства файлов и папок",
   "ItemsSelected": "Выбрано элементов",
