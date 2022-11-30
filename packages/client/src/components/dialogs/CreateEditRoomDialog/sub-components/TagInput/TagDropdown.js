@@ -85,7 +85,6 @@ const TagDropdown = ({
         ...res,
       ];
 
-    if (!res.length) return [null];
     return res;
   };
 
@@ -109,18 +108,18 @@ const TagDropdown = ({
       className="dropdown-content-wrapper"
       onMouseDown={preventDefault}
     >
-      {dropdownItems && (
-        <StyledDropDown
-          className="dropdown-content"
-          open={open}
-          forwardedRef={dropdownRef}
-          maxHeight={dropdownMaxHeight}
-          showDisabledItems={false}
-          withBackdrop={true}
-        >
-          {dropdownItems}
-        </StyledDropDown>
-      )}
+      <StyledDropDown
+        className="dropdown-content"
+        open={open}
+        forwardedRef={dropdownRef}
+        maxHeight={dropdownMaxHeight}
+        showDisabledItems={false}
+        hasItems={!!dropdownItems.length}
+        clickOutsideAction={onClickOutside}
+        withBackdrop={false}
+      >
+        {dropdownItems}
+      </StyledDropDown>
     </StyledDropDownWrapper>
   );
 };
