@@ -1,7 +1,6 @@
 {
   "Administrator": "Järjestelmänvalvoja",
   "LblInviteAgain": "Kutsu uudelleen",
-  "LblSetActive": "Aseta käyttöön",
   "LblSetDisabled": "Aseta pois käytöstä",
   "MakeInvitationLink": "Luo kutsulinkki",
   "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <1>{{email}}</1>",

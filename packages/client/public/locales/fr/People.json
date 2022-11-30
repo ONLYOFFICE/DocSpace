@@ -1,7 +1,6 @@
 {
   "Administrator": "Administrateur",
   "LblInviteAgain": "Inviter à nouveau",
-  "LblSetActive": "Définir comme actif",
   "LblSetDisabled": "Définir comme désactivé",
   "MakeInvitationLink": "Créer un lien d'invitation",
   "MessageEmailActivationInstuctionsSentOnEmail": "Les instructions d'activation ont été envoyées à l'adresse <1>{{email}}</1>",

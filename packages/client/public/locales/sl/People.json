@@ -1,7 +1,6 @@
 {
   "Administrator": "Administrator",
   "LblInviteAgain": "Povabi znova",
-  "LblSetActive": "Nastavi aktivno",
   "LblSetDisabled": "Nastavi onemogočeno",
   "MakeInvitationLink": "Ustvari povezavo do povabila",
   "MessageEmailActivationInstuctionsSentOnEmail": "Navodila za aktivacijo e-mail naslova so bila poslana na <1>{{email}}</1> email naslov",

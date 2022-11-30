@@ -1,7 +1,6 @@
 {
   "Administrator": "İnzibatçı",
   "LblInviteAgain": "Bir daha dəvət et",
-  "LblSetActive": "Aktiv kimi təyin et",
   "LblSetDisabled": "Bloklanmış kimi təyin et",
   "MakeInvitationLink": "Dəvəetmə linkin yaradılması",
   "MessageEmailActivationInstuctionsSentOnEmail": "<1>{{email}}</1> elektron poçtuna aktivləşdirmə haqqında məlumat göndərilmişdir",

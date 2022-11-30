@@ -1,7 +1,6 @@
 {
   "Administrator": "Администратор",
   "LblInviteAgain": "Покани отново",
-  "LblSetActive": "Задай като активен",
   "LblSetDisabled": "Задай като неактивен",
   "MakeInvitationLink": "Създай връзка за покана",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкциите за активиране на имейла бяха изпратени на имейл адрес <1>{{email}}</1>",

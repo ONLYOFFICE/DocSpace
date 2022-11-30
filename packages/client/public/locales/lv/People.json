@@ -1,7 +1,6 @@
 {
   "Administrator": "Administrators",
   "LblInviteAgain": "Uzaicināt vēlreiz",
-  "LblSetActive": "Iestatīt kā aktīvs",
   "LblSetDisabled": "Iestatīt kā atspējots",
   "MakeInvitationLink": "Izveidot ielūguma saiti",
   "MessageEmailActivationInstuctionsSentOnEmail": "Norādījumi par e-pasta aktivizēšanu ir nosūtīti uz <1>{{email}}</1> e-pasta adresi",

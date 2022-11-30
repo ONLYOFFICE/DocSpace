@@ -1,7 +1,6 @@
 {
   "Administrator": "관리자",
   "LblInviteAgain": "다시 초대",
-  "LblSetActive": "활성화 설정",
   "LblSetDisabled": "비활성화 설정",
   "MakeInvitationLink": "초대 링크 생성",
   "MessageEmailActivationInstuctionsSentOnEmail": "이메일 활성화 방법이 <1>{{email}}</1> 이메일 주소로 전송되었습니다",

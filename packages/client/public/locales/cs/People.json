@@ -1,7 +1,6 @@
 {
   "Administrator": "Administrátor",
   "LblInviteAgain": "Pozvat znovu",
-  "LblSetActive": "Nastavit jako aktivní",
   "LblSetDisabled": "Nastavit jako neaktivní",
   "MakeInvitationLink": "Vytvořit odkaz na pozvánku",
   "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny k aktivaci e-mailu byly zaslány na e-mailovou adresu <1>{{email}}</1>",

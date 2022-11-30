@@ -1,7 +1,6 @@
 {
   "Administrator": "管理者",
   "LblInviteAgain": "もう一度招待する",
-  "LblSetActive": "アクティブの設定",
   "LblSetDisabled": "設定無効",
   "MakeInvitationLink": "招待用リンクの作成",
   "MessageEmailActivationInstuctionsSentOnEmail": "電子メールによるアクティベーションの指示は、<1>{{email}}</1>のメールアドレスに送信されています。",

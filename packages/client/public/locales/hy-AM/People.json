@@ -1,7 +1,6 @@
 {
   "Administrator": "Ադմինիստրատոր",
   "LblInviteAgain": "Կրկին հրավիրել",
-  "LblSetActive": "Սահմանել ակտիվը",
   "LblSetDisabled": "Սահմանել անջատված է",
   "MakeInvitationLink": "Ստեղծեք հրավերի հղում",
   "MessageEmailActivationInstuctionsSentOnEmail": "Էլփոստի ակտիվացման հրահանգներն ուղարկվել են <1>{{email}}</1> Էլփոստի հասցե",

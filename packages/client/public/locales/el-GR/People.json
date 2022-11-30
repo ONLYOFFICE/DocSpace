@@ -1,7 +1,6 @@
 {
   "Administrator": "Διαχειριστής",
   "LblInviteAgain": "Πρόσκληση ξανά",
-  "LblSetActive": "Ορισμός ως ενεργού",
   "LblSetDisabled": "Ορισμός ως ανενεργού",
   "MakeInvitationLink": "Δημιουργία συνδέσμου πρόσκλησης",
   "MessageEmailActivationInstuctionsSentOnEmail": "Οι οδηγίες ενεργοποίησης μέσω email έχουν σταλεί στη διεύθυνση email <1>{{email}}</1>",
