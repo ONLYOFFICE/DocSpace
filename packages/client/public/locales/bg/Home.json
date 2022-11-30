@@ -1,5 +1,4 @@
 {
-  "GoodAfternoon": "Добър ден, {{displayName}}!",
   "GoodEvening": "Добър вечер, {{displayName}}",
   "GoodMorning": "Добро утро, {{displayName}}!",
   "NoOneModulesAvailable": "Няма налични модули"
