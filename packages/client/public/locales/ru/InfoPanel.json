@@ -5,7 +5,6 @@
   "ExpectPeople": "Приглашенные люди",
   "Data": "Данные",
   "DateModified": "Дата изменения",
-  "FeedDeleteFolder": "Удалены папки.",
   "FeedDeleteRoomTag": "Удалены теги.",
   "FeedDeleteUser": "Удален пользователь",
   "FeedLocationLabel": "Папка «{{folderTitle}}»",
