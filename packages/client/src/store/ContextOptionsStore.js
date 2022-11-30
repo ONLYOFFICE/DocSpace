@@ -228,6 +228,14 @@ class ContextOptionsStore {
     toastr.success(t("Translations:LinkCopySuccess"));
   };
 
+  onCopyLinkRoom = (item, t) => {
+    const { folderUrl } = item;
+    const url = combineUrl(window.location.origin, config.homepage, folderUrl);
+    copy(url);
+
+    toastr.success(t("Translations:LinkCopySuccess"));
+  };
+
   onClickLinkEdit = (item) => {
     const { setConvertItem, setConvertDialogVisible } = this.dialogsStore;
     const canConvert = this.settingsStore.canConvert(item.fileExst);
@@ -759,6 +767,14 @@ class ContextOptionsStore {
         label: t("LinkForPortalUsers"),
         icon: "/static/images/invitation.link.react.svg",
         onClick: () => this.onClickLinkForPortal(item, t),
+        disabled: false,
+      },
+      {
+        id: "option_link-for-room-members",
+        key: "link-for-room-members",
+        label: t("LinkForRoomMembers"),
+        icon: "/static/images/invitation.link.react.svg",
+        onClick: () => this.onCopyLinkRoom(item, t),
         disabled: false,
       },
       {
