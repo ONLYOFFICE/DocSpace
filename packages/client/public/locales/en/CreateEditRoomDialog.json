@@ -21,7 +21,6 @@
   "ThirdPartyStorageComboBoxPlaceholder": "Select storage",
   "ThirdPartyStorageDescription": "Use third-party services as data storage for this room. A new folder for storing this room’s data will be created in the connected storage",
   "ThirdPartyStorageNoStorageAlert": "No storage is connected in the portal Settings. Go to the Integrations section to enable data storage on a third-party",
-  "ThirdPartyStorageNoStorageAlertLink": "Third-party services",
   "ThirdPartyStoragePermanentSettingDescription": "Files are stored in a third-party {{thirdpartyTitle}} storage in the \"{{thirdpartyFolderName}}\" folder.\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRememberChoice": "Remember this choice for new rooms",
   "ThirdPartyStorageTitle": "Third party storage",
