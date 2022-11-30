@@ -75,7 +75,6 @@
   "Migration": "Migraatio",
   "PasswordMinLenght": "Salasanan vähimmäispituus",
   "Path": "Polku",
-  "PeopleAdministratorsCan": "Ihmiset-moduulin järjestelmänvalvojat voivat luoda profiileja ja ryhmiä, tuoda ihmisiä ja kutsua käyttäjiä.",
   "PleaseNote": "Huomaa",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: portaalisi osoite tulee saataville uusille käyttäjille sen jälkeen kun klikkaat <2>{{save}}</2> painiketta.",
   "PortalAccess": "Pääsy portaaliin",

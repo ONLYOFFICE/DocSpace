@@ -75,7 +75,6 @@
   "Migration": "Yer Değiştirme",
   "PasswordMinLenght": "Minimum şifre uzunluğu",
   "Path": "Yol",
-  "PeopleAdministratorsCan": "Kişiler modülü yöneticileri profiller ve gruplar oluşturabilir, kişileri içeri alabilir ve kullanıcıları davet edebilir.",
   "PleaseNote": "Lütfen dikkat",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: <2>{{save}}</2> tuşuna tıkladığınız takdirde eski portal adresiniz yeni kullanıcılarına erişilebilir olacaktır.",
   "PortalAccess": "Portal erişimi",

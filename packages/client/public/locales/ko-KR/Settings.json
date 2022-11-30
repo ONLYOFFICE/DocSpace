@@ -72,7 +72,6 @@
   "Migration": "마이그레이션",
   "PasswordMinLenght": "최소 비밀번호 길이",
   "Path": "경로",
-  "PeopleAdministratorsCan": "사람 모듈 관리자는 프로필과 그룹을 생성하고, 사람을 불러오고, 사용자를 초대할 수 있습니다.",
   "PleaseNote": "참고",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: <2>{{save}}</2> 버튼을 클릭하면 새로운 사용자가 이전 포털 주소를 이용할 수 있게 됩니다.",
   "PortalAccess": "포털 액세스",

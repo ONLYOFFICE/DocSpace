@@ -78,7 +78,6 @@
   "Migration": "Köçürülmə",
   "PasswordMinLenght": "Parolun minimal uzunluğu",
   "Path": "Cığır",
-  "PeopleAdministratorsCan": "İnsanlar üzrə modul adminləri profillər və qruplar yarada, insanları əlavə edə və istifadəçiləri dəvət edə bilər.",
   "PleaseNote": "Qeyd edin",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: <2>{{save}}</2> düyməsini kliklədikdən sonra köhnə portal ünvanınız yeni istifadəçiləri üçün əlçatan olacaq.",
   "PortalAccess": "Portala giriş",

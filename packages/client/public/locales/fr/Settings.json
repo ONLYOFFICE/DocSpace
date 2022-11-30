@@ -78,7 +78,6 @@
   "Migration": "Migration",
   "PasswordMinLenght": "Longueur minimale du mot de passe",
   "Path": "Chemin",
-  "PeopleAdministratorsCan": "Les administrateurs du module Personnes peuvent créer des profils et des groupes, importer des personnes et inviter des utilisateurs.",
   "PleaseNote": "Veuillez noter",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: votre ancienne adresse du portail sera disponible pour les nouveaux utilisateurs une fois que vous cliquez sur le bouton <2>{{save}}</2>.",
   "PortalAccess": "Accès au portail",

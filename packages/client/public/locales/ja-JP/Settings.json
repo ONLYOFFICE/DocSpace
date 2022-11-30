@@ -76,7 +76,6 @@
   "Migration": "移行",
   "PasswordMinLenght": "最小のパスワードの長さ",
   "Path": "パス",
-  "PeopleAdministratorsCan": "人モジュールの管理者は、プロファイルやグループの作成、利用者のインポート、ユーザーの招待などを行えます。",
   "PleaseNote": "ご注意ください",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: <2>{{save}}</2>ボタンをクリックすると、古いポータルアドレスが新しいユーザに使用できるようになります。",
   "PortalAccess": "ポータルアクセス",

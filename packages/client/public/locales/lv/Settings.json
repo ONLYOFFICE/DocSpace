@@ -75,7 +75,6 @@
   "Migration": "Migrācija",
   "PasswordMinLenght": "Minimālais paroles garums",
   "Path": "Ceļš",
-  "PeopleAdministratorsCan": "Cilvēku moduļa administratori var izveidot profilus un grupas, importēt cilvēkus un uzaicināt lietotājus.",
   "PleaseNote": "Lūdzu, ņemiet vērā",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: jūsu vecā portāla adrese kļūs pieejama jaunajiem lietotājiem, ja nospiedīsit <2>{{save}}</2>.",
   "PortalAccess": "Piekļuve portālam",

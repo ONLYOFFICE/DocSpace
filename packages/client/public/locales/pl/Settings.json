@@ -75,7 +75,6 @@
   "Migration": "Migracja",
   "PasswordMinLenght": "Minimalna długość hasła",
   "Path": "Ścieżka",
-  "PeopleAdministratorsCan": "Administratorzy modułu użytkowników mogą tworzyć nowe profile i grupy oraz importować i zapraszać użytkowników.",
   "PleaseNote": "Uwaga",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: stary adres portalu będzie dostępny dla nowych użytkowników po kliknięciu przycisku <2>{{save}}</2>.",
   "PortalAccess": "Dostęp do portalu",

@@ -75,7 +75,6 @@
   "Migration": "Migracija",
   "PasswordMinLenght": "Minimalna dolžina gesla",
   "Path": "Pot",
-  "PeopleAdministratorsCan": "Administratorji modula Ljudje lahko ustvarijo profile in skupine, uvozijo ljudi in povabijo uporabnike.",
   "PleaseNote": "Zavedajte se",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: vaš stari naslov portala bo na voljo novim uporabnikom takoj ko kliknete na <2>{{save}}</2> gumb.",
   "PortalAccess": "Dostop do portala",

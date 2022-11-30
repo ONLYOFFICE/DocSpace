@@ -75,7 +75,6 @@
   "Migration": "Migrace",
   "PasswordMinLenght": "Minimální délka hesla",
   "Path": "Сesta",
-  "PeopleAdministratorsCan": "Správci modulu Lidé mohou vytvářet profily a skupiny, importovat lidi a zvát uživatele.",
   "PleaseNote": "Upozornění",
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: Vaše stará portálová adresa bude dostupná pouze pro uživatele poté, co kliknete na tlačítko <2>{{save}}</2>.",
   "PortalAccess": "Přístup k portálu",

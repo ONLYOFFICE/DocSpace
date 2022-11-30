@@ -75,7 +75,6 @@
   "Migration": "Di chuyển",
   "PasswordMinLenght": "Độ dài mật khẩu tối thiểu",
   "Path": "Đường dẫn",
-  "PeopleAdministratorsCan": "Quản trị viên mô-đun con người có thể tạo hồ sơ và nhóm, nhập mọi người và mời người dùng.",
   "PleaseNote": "Xin hãy lưu ý",
   "PleaseNoteDescription": "0>{{pleaseNote}}</0>: địa chỉ cổng thông tin cũ của bạn sẽ khả dụng cho người dùng mới ngay khi bạn bấm vào nút <2>{{save}}</2>.",
   "PortalAccess": "Truy cập cổng thông tin",
