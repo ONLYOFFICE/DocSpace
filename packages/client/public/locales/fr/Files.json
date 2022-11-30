@@ -27,7 +27,6 @@
   "Folder": "Dossier",
   "FolderRemoved": "Dossier déplacé vers la corbeille",
   "FolderRenamed": "Le dossier '{{folderTitle}}' est renommé en '{{newFoldedTitle}}'",
-  "GoToMyButton": "Allez dans Mes documents",
   "Images": "Images",
   "LinkForPortalUsers": "Lien pour les utilisateurs du portail",
   "MarkAsFavorite": "Marquer en tant que favori",

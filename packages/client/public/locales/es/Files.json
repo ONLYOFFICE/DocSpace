@@ -27,7 +27,6 @@
   "Folder": "Carpeta",
   "FolderRemoved": "Carpeta movida a la Papelera",
   "FolderRenamed": "El nombre de la carpeta '{{folderTitle}}' se ha cambiado a '{{newFoldedTitle}}'",
-  "GoToMyButton": "Ir a Mis documentos",
   "Images": "Imágenes",
   "LinkForPortalUsers": "Enlace para los usuarios del portal",
   "MarkAsFavorite": "Marcar como favorito",

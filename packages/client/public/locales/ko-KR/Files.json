@@ -27,7 +27,6 @@
   "Folder": "폴더",
   "FolderRemoved": "폴더가 휴지통으로 이동되었습니다",
   "FolderRenamed": "'{{folderTitle}}' 폴더 이름이 '{{newFoldedTitle}}'으로 변경되었습니다",
-  "GoToMyButton": "내 문서로 이동",
   "Images": "이미지",
   "LinkForPortalUsers": "포털 사용자를 위한 링크",
   "MarkAsFavorite": "즐겨 찾기로 표시",
