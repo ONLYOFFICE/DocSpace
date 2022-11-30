@@ -48,6 +48,7 @@ export const ButtonsWrapper = styled.div`
 `;
 
 const ConfirmContainer = styled.div`
+  width: 100%;
   display: flex;
   flex: 1fr 1fr;
   gap: 80px;
@@ -167,6 +168,7 @@ const RegisterContainer = styled.div`
     align-items: center;
     color: #eceef1;
     padding-top: 35px;
+    margin-bottom: 32px;
   }
 
   .line:before,
@@ -181,7 +183,7 @@ const RegisterContainer = styled.div`
   }
 
   .auth-form-container {
-    margin-top: 32px;
+    //margin-top: 32px;
     width: 100%;
 
     @media (max-width: 768px) {
