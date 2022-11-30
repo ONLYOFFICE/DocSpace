@@ -1,6 +1,5 @@
 {
   "Administrator": "Administrator",
-  "ChangeToUser": "Change to {{userCaption}}",
   "EmptyGroupDescription": "You can add new team members manually or invite them via link.",
   "EmptyGroupTitle": "No teammates here yet",
   "LblInviteAgain": "Invite again",

@@ -1,6 +1,5 @@
 {
   "Administrator": "Správca",
-  "ChangeToUser": "Zmeniť na {{userCaption}}",
   "EmptyGroupDescription": "Nových členov tímu môžete pridať ručne alebo ich pozvať prostredníctvom odkazu.",
   "EmptyGroupTitle": "Zatiaľ tu nie sú žiadni členovia tímu",
   "LblInviteAgain": "Pozvať znova",

@@ -1,6 +1,5 @@
 {
   "Administrator": "Järjestelmänvalvoja",
-  "ChangeToUser": "Vaihda {{userCaption}}",
   "EmptyGroupDescription": "Voit lisätä uusia ryhmänjäseniä manuaalisesti tai kutsua heidät linkin kautta.",
   "EmptyGroupTitle": "Täällä ei ole vielä ryhmänjäseniä",
   "LblInviteAgain": "Kutsu uudelleen",

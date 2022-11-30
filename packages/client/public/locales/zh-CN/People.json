@@ -1,6 +1,5 @@
 {
   "Administrator": "管理员",
-  "ChangeToUser": "变更为{{userCaption}}",
   "EmptyGroupDescription": "您可手动添加新的团队成员或通过链接进行邀请。",
   "EmptyGroupTitle": "这里暂无团队成员",
   "LblInviteAgain": "再次邀请",

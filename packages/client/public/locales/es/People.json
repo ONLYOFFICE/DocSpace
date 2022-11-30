@@ -1,6 +1,5 @@
 {
   "Administrator": "Administrador",
-  "ChangeToUser": "Cambiar a {{userCaption}}",
   "EmptyGroupDescription": "Puede añadir nuevos miembros del equipo manualmente o invitarlos a través de un enlace.",
   "EmptyGroupTitle": "No hay compañeros de equipo aquí todavía",
   "LblInviteAgain": "Volver a invitar",

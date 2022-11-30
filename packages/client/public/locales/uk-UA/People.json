@@ -1,6 +1,5 @@
 {
   "Administrator": "Адміністратор",
-  "ChangeToUser": "Змінити на {{userCaption}}",
   "EmptyGroupDescription": "Ви можете додати нових учасників команди вручну або запросити їх за допомогою посилання.",
   "EmptyGroupTitle": "Тут ще немає учасників команди",
   "LblInviteAgain": "Запросити знову",

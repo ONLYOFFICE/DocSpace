@@ -1,6 +1,5 @@
 {
   "Administrator": "Администратор",
-  "ChangeToUser": "Изменить на {{userCaption}}",
   "EmptyGroupDescription": "Вы можете добавить новых сотрудников вручную или пригласить их по ссылке.",
   "EmptyGroupTitle": "Здесь пока нет сотрудников",
   "LblInviteAgain": "Выслать приглашение ещё раз",
