@@ -6,7 +6,6 @@
   "Data": "Data",
   "DateModified": "Date modified",
   "FeedLocationLabel": "Folder «{{folderTitle}}»",
-  "FeedMoveFile": "Files moved.",
   "FeedMoveFolder": "Folders moved.",
   "FeedRenameFile": "File renamed.",
   "FeedRenameFolder": "Folder renamed.",
