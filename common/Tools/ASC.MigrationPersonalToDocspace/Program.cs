@@ -33,6 +33,13 @@ var options = new WebApplicationOptions
 };
 
 var param = Parser.Default.ParseArguments<Options>(args).Value;
+/*var param = new Options()
+{
+    FromRegion = "personal",
+    ToRegion = "personal",
+    Tenant = 1,
+    UserName = "administrator"
+};*/
 
 var builder = WebApplication.CreateBuilder(options);
 
@@ -42,8 +49,9 @@ var config = builder.Configuration;
 
 builder.WebHost.ConfigureServices((hostContext, services) =>
 {
-    services.RegisterFeature();
+    RegionSettings.SetCurrent(param.FromRegion);
 
+    services.RegisterFeature();
     services.AddScoped<EFLoggerFactory>();
     services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
     services.AddHttpClient();
@@ -77,7 +85,7 @@ builder.WebHost.ConfigureServices((hostContext, services) =>
 var app = builder.Build();
 
 var migrationCreator = app.Services.GetService<MigrationCreator>();
-var fileName = await migrationCreator.Create(param.Tenant, param.UserName, param.ToRegion, param.FromRegion);
+var fileName = await migrationCreator.Create(param.Tenant, param.UserName, param.ToRegion);
 
 var migrationRunner = app.Services.GetService<MigrationRunner>();
 await migrationRunner.Run(fileName, param.ToRegion);
@@ -88,6 +96,8 @@ if (Directory.Exists(AppContext.BaseDirectory + "\\temp"))
 {
     Directory.Delete(AppContext.BaseDirectory + "\\temp");
 }
+
+Console.WriteLine("migration was success");
 
 public sealed class Options
 {
