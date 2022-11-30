@@ -6,7 +6,6 @@
   "Data": "Данные",
   "DateModified": "Дата изменения",
   "FeedLocationLabel": "Папка «{{folderTitle}}»",
-  "FeedUpdateFile": "Обновлен файл.",
   "FeedUpdateRoom": "Изменена иконка",
   "FeedUpdateUser": "назначена роль {{role}}",
   "FileExtension": "Расширение файла",
