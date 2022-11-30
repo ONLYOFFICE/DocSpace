@@ -1,7 +1,6 @@
 {
   "Administrator": "Administrátor",
   "LblInviteAgain": "Pozvat znovu",
-  "MakeInvitationLink": "Vytvořit odkaz na pozvánku",
   "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny k aktivaci e-mailu byly zaslány na e-mailovou adresu <1>{{email}}</1>",
   "NotFoundDescription": "Zkuste použít jiný filtr nebo jej vymažte, aby se zobrazily všechny osoby v sekci.",
   "NotFoundTitle": "Nenalezeni žádní členové týmu",

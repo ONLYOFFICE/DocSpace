@@ -1,7 +1,6 @@
 {
   "Administrator": "Administrator",
   "LblInviteAgain": "Invită din nou",
-  "MakeInvitationLink": "Creează un link de invitație",
   "MessageEmailActivationInstuctionsSentOnEmail": "Instrucțiunile de activare a adresei e-mail au fost trimise la <1>{{email}}</1>",
   "NotFoundDescription": "Aplicați un alt filtru sau îl eliminați ca să afișați toți utilizatorii din secțiunea.",
   "NotFoundTitle": "Niciun membru al echipei nu s-a găsit",

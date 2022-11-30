@@ -1,7 +1,6 @@
 {
   "Administrator": "Administrator",
   "LblInviteAgain": "Povabi znova",
-  "MakeInvitationLink": "Ustvari povezavo do povabila",
   "MessageEmailActivationInstuctionsSentOnEmail": "Navodila za aktivacijo e-mail naslova so bila poslana na <1>{{email}}</1> email naslov",
   "NotFoundDescription": "Poskusite z drugim filtrom ali filter počistite, če si želite ogledati vse osebe v razdelku.",
   "NotFoundTitle": "Ni najdenih predlog",

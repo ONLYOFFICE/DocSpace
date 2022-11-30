@@ -1,7 +1,6 @@
 {
   "Administrator": "Администратор",
   "LblInviteAgain": "Покани отново",
-  "MakeInvitationLink": "Създай връзка за покана",
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкциите за активиране на имейла бяха изпратени на имейл адрес <1>{{email}}</1>",
   "NotFoundDescription": "Изпробвайте различен филтър или го изчистете, за да видите всички хора в раздела.",
   "NotFoundTitle": "Няма открити съотборници",
