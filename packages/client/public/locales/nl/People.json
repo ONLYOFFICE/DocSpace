@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "De e-mail activatie instructies zijn verzonden naar het <1>{{email}}</1> e-mailadres",
   "NotFoundTitle": "Geen teamleden gevonden",
   "ReassignmentData": "Herschikking van gegevens",
-  "SuccessfullyRemovedGroup": "Groep is met succes verwijderd",
   "UserStatus": "Status"
 }

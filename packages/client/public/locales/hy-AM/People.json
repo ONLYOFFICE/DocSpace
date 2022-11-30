@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Էլփոստի ակտիվացման հրահանգներն ուղարկվել են <1>{{email}}</1> Էլփոստի հասցե",
   "NotFoundTitle": "Թիմակիցներ չեն գտնվել",
   "ReassignmentData": "Տվյալների վերաբաշխում",
-  "SuccessfullyRemovedGroup": "Խումբը հաջողությամբ հեռացվել է",
   "UserStatus": "Կարգավիճակ"
 }

@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "邮件激活指示已发送至<1>{{email}}</1>邮件地址",
   "NotFoundTitle": "未找到团队成员",
   "ReassignmentData": "数据重新分配",
-  "SuccessfullyRemovedGroup": "群组已成功移除",
   "UserStatus": "状态"
 }

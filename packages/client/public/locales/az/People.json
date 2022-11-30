@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "<1>{{email}}</1> elektron poçtuna aktivləşdirmə haqqında məlumat göndərilmişdir",
   "NotFoundTitle": "Qrup üzvləri tapılmadı",
   "ReassignmentData": "Məlumatların yenidən təyini",
-  "SuccessfullyRemovedGroup": "Qrup müvəffəqiyyətlə silindi",
   "UserStatus": "Status"
 }

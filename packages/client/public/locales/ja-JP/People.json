@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "電子メールによるアクティベーションの指示は、<1>{{email}}</1>のメールアドレスに送信されています。",
   "NotFoundTitle": "チームメンバは見つかりませんでした",
   "ReassignmentData": "データの再配置",
-  "SuccessfullyRemovedGroup": "グループの削除が完了しました。",
   "UserStatus": "ステータス"
 }

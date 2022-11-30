@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Anleitungen zur Änderung eines Passworts wurden an <1>{{email}}</1> gesendet",
   "NotFoundTitle": "Keine Teammitglieder gefunden",
   "ReassignmentData": "Neuzuweisung von Daten",
-  "SuccessfullyRemovedGroup": "Die Gruppe wurde erfolgreich entfernt",
   "UserStatus": "Status"
 }

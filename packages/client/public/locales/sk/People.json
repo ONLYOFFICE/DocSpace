@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na <1>{{email}}</1> e-mail",
   "NotFoundTitle": "Nenašli sa žiadni členovia tímu",
   "ReassignmentData": "Zmena priradenia údajov",
-  "SuccessfullyRemovedGroup": "Skupina bola úspešne odstránená",
   "UserStatus": "Stav"
 }

@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Инструкциите за активиране на имейла бяха изпратени на имейл адрес <1>{{email}}</1>",
   "NotFoundTitle": "Няма открити съотборници",
   "ReassignmentData": "Пренасочване на данни",
-  "SuccessfullyRemovedGroup": "Групата беше премахната успешно",
   "UserStatus": "Статус"
 }

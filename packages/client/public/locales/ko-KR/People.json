@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "이메일 활성화 방법이 <1>{{email}}</1> 이메일 주소로 전송되었습니다",
   "NotFoundTitle": "팀원을 찾을 수 없습니다",
   "ReassignmentData": "데이터 재할당",
-  "SuccessfullyRemovedGroup": "그룹이 성공적으로 삭제되었습니다",
   "UserStatus": "상태"
 }

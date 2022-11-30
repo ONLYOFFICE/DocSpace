@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <1>{{email}}</1>",
   "NotFoundTitle": "Nenhum colega de equipe encontrado",
   "ReassignmentData": "Reatribuição de dados",
-  "SuccessfullyRemovedGroup": "O grupo foi removido com sucesso",
   "UserStatus": "Status"
 }

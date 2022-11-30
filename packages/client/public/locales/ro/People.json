@@ -4,6 +4,5 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Instrucțiunile de activare a adresei e-mail au fost trimise la <1>{{email}}</1>",
   "NotFoundTitle": "Niciun membru al echipei nu s-a găsit",
   "ReassignmentData": "Reasinarea datelor",
-  "SuccessfullyRemovedGroup": "Grupul a fost șters cu succes",
   "UserStatus": "Statutul"
 }
