@@ -439,13 +439,51 @@ public class FileSecurity : IFileSecurity
         return result;
     }
 
-    public IAsyncEnumerable<FileEntry<T>> FilterReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
+    public async IAsyncEnumerable<FileEntry<T>> FilterReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
     {
-        return FilterAsync(entries, FilesSecurityActions.Read, _authContext.CurrentAccount.ID);
+        await foreach (var e in CanAsync(entries.Where(f => f != null), _authContext.CurrentAccount.ID, FilesSecurityActions.Read))
+        {
+            if (e.Item2)
+            {
+                yield return e.Item1;
+            }
+        }
+    }
+
+    public async IAsyncEnumerable<FileEntry<T>> SetSecurity<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
+    {
+        var user = _userManager.GetUsers(userId);
+        var isOutsider = _userManager.IsOutsider(user);
+        var isUser = _userManager.IsUser(user);
+        var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
+        var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
+
+        await foreach (var entry in entries)
+        {
+            if (entry.Security != null)
+            {
+                yield return entry;
+            }
+
+            var tasks = Enum.GetValues<FilesSecurityActions>().Select(async e =>
+            {
+                var t = await FilterEntry(entry, e, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin);
+                return new KeyValuePair<FilesSecurityActions, bool>(e, t);
+            });
+
+            entry.Security = (await Task.WhenAll(tasks)).ToDictionary(a => a.Key, b => b.Value);
+
+            yield return entry;
+        }
     }
 
     private async Task<bool> CanAsync<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
     {
+        if (entry.Security != null)
+        {
+            return entry.Security[action];
+        }
+
         var user = _userManager.GetUsers(userId);
         var isOutsider = _userManager.IsOutsider(user);
 
@@ -482,49 +520,9 @@ public class FileSecurity : IFileSecurity
 
     private async IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanAsync<T>(IAsyncEnumerable<FileEntry<T>> entry, Guid userId, FilesSecurityActions action)
     {
-        var user = _userManager.GetUsers(userId);
-        var isOutsider = _userManager.IsOutsider(user);
-
-        if (isOutsider && action != FilesSecurityActions.Read)
+        await foreach (var r in SetSecurity(entry, userId))
         {
-            yield break;
-        }
-
-        var isUser = _userManager.IsUser(user);
-        var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
-        var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
-
-        await foreach (var r in entry)
-        {
-            yield return new Tuple<FileEntry<T>, bool>(r, await FilterEntry(r, action, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin));
-        }
-    }
-
-    private IAsyncEnumerable<FileEntry<T>> FilterAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId)
-    {
-        var user = _userManager.GetUsers(userId);
-        var isOutsider = _userManager.IsOutsider(user);
-
-        if (isOutsider && action != FilesSecurityActions.Read)
-        {
-            return AsyncEnumerable.Empty<FileEntry<T>>();
-        }
-
-        return InternalFilterAsync(entries, action, userId, user, isOutsider);
-    }
-
-    private async IAsyncEnumerable<FileEntry<T>> InternalFilterAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, FilesSecurityActions action, Guid userId, UserInfo user, bool isOutsider)
-    {
-        var isUser = _userManager.IsUser(user);
-        var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
-        var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
-
-        await foreach (var e in entries.Where(f => f != null))
-        {
-            if (await FilterEntry(e, action, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin))
-            {
-                yield return e;
-            }
+            yield return new Tuple<FileEntry<T>, bool>(r, r.Security[action]);
         }
     }
 
@@ -1563,7 +1561,7 @@ public class FileSecurity : IFileSecurity
         }
     }
 
-    private enum FilesSecurityActions
+    public enum FilesSecurityActions
     {
         Read,
         Comment,

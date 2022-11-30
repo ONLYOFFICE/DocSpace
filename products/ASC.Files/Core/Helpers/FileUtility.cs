@@ -174,6 +174,19 @@ public class FileUtilityConfiguration
     }
 }
 
+public enum Accessability
+{
+    ImageView,
+    MediaView,
+    WebView,
+    WebEdit,
+    WebReview,
+    WebCustomFilterEditing,
+    WebRestrictedEditing,
+    WebComment,
+    CoAuhtoring
+}
+
 [Scope]
 public class FileUtility
 {
@@ -294,6 +307,51 @@ public class FileUtility
         }
 
         return FileType.Unknown;
+    }
+
+    public IDictionary<Accessability, bool> GetAccessability(string fileName)
+    {
+        var result = new Dictionary<Accessability, bool>();
+
+        foreach (var r in Enum.GetValues<Accessability>())
+        {
+            var val = false;
+
+            switch (r)
+            {
+                case Accessability.ImageView:
+                    val = CanImageView(fileName);
+                    break;
+                case Accessability.MediaView:
+                    val = CanMediaView(fileName);
+                    break;
+                case Accessability.WebView:
+                    val = CanWebView(fileName);
+                    break;
+                case Accessability.WebEdit:
+                    val = CanWebEdit(fileName);
+                    break;
+                case Accessability.WebReview:
+                    val = CanWebReview(fileName);
+                    break;
+                case Accessability.WebCustomFilterEditing:
+                    val = CanWebCustomFilterEditing(fileName);
+                    break;
+                case Accessability.WebRestrictedEditing:
+                    val = CanWebRestrictedEditing(fileName);
+                    break;
+                case Accessability.WebComment:
+                    val = CanWebComment(fileName);
+                    break;
+                case Accessability.CoAuhtoring:
+                    val = CanCoAuhtoring(fileName);
+                    break;
+            }
+
+            result.Add(r, val);
+        }
+
+        return result;
     }
 
     public bool CanImageView(string fileName)

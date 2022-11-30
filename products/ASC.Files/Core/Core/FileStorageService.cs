@@ -343,14 +343,16 @@ public class FileStorageService<T> //: IFileStorageService
         var prevVisible = breadCrumbs.ElementAtOrDefault(breadCrumbs.Count - 2);
         if (prevVisible != null && !DocSpaceHelper.IsRoom(parent.FolderType))
         {
-            if (prevVisible is Folder<string> f1)
+            if (prevVisible.FileEntryType == FileEntryType.Folder)
             {
-                parent.ParentId = (T)Convert.ChangeType(f1.Id, typeof(T));
-            }
-
-            if (prevVisible is Folder<int> f2)
-            {
-                parent.ParentId = (T)Convert.ChangeType(f2.Id, typeof(T));
+                if (prevVisible is Folder<string> f1)
+                {
+                    parent.ParentId = (T)Convert.ChangeType(f1.Id, typeof(T));
+                }
+                else if (prevVisible is Folder<int> f2)
+                {
+                    parent.ParentId = (T)Convert.ChangeType(f2.Id, typeof(T));
+                }
             }
         }
 
@@ -358,9 +360,20 @@ public class FileStorageService<T> //: IFileStorageService
             || parent.FolderType == FolderType.SHARE
             || parent.RootFolderType == FolderType.Privacy;
 
-        entries = entries.Where(x => x.FileEntryType == FileEntryType.Folder ||
-        x is File<string> f1 && !_fileConverter.IsConverting(f1) ||
-         x is File<int> f2 && !_fileConverter.IsConverting(f2));
+        entries = entries.Where(x =>
+        {
+            if (x.FileEntryType == FileEntryType.Folder)
+            {
+                return true;
+            }
+
+            if (x is File<string> f1)
+            {
+                return !_fileConverter.IsConverting(f1);
+            }
+
+            return x is File<int> f2 && !_fileConverter.IsConverting(f2);
+        });
 
         var result = new DataWrapper<T>
         {
@@ -368,14 +381,17 @@ public class FileStorageService<T> //: IFileStorageService
             Entries = entries.ToList(),
             FolderPathParts = new List<object>(breadCrumbs.Select(f =>
             {
-                if (f is Folder<string> f1)
+                if (f.FileEntryType == FileEntryType.Folder)
                 {
-                    return (object)f1.Id;
-                }
+                    if (f is Folder<string> f1)
+                    {
+                        return (object)f1.Id;
+                    }
 
-                if (f is Folder<int> f2)
-                {
-                    return f2.Id;
+                    if (f is Folder<int> f2)
+                    {
+                        return f2.Id;
+                    }
                 }
 
                 return 0;
@@ -385,17 +401,6 @@ public class FileStorageService<T> //: IFileStorageService
         };
 
         return result;
-    }
-
-    public async Task<object> GetFolderItemsXmlAsync(T parentId, int from, int count, FilterType filter, bool subjectGroup, string subjectID, string search, bool searchInContent, bool withSubfolders, OrderBy orderBy)
-    {
-        var folderItems = await GetFolderItemsAsync(parentId, from, count, filter, subjectGroup, subjectID, search, searchInContent, withSubfolders, orderBy);
-        var response = new HttpResponseMessage(HttpStatusCode.OK)
-        {
-            Content = new StreamContent(_serializer.ToXml(folderItems))
-        };
-        response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/xml");
-        return response;
     }
 
     public async Task<List<FileEntry>> GetItemsAsync<TId>(IEnumerable<TId> filesId, IEnumerable<TId> foldersId, FilterType filter, bool subjectGroup, string subjectID, string search)

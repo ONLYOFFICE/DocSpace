@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using static ASC.Files.Core.Security.FileSecurity;
+
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public abstract class FileEntryDto
@@ -68,6 +70,7 @@ public abstract class FileEntryDto<T> : FileEntryDto
     public T RootFolderId { get; set; }
     public bool CanShare { get; set; }
     public bool CanEdit { get; set; }
+    public IDictionary<FilesSecurityActions, bool> Security { get; set; }
 
     protected FileEntryDto(FileEntry<T> entry)
         : base(entry)
@@ -117,7 +120,8 @@ public class FileEntryDtoHelper
             ProviderKey = entry.ProviderKey,
             ProviderId = entry.ProviderId.NullIfDefault(),
             CanShare = await _fileSharingHelper.CanSetAccessAsync(entry),
-            CanEdit = await _fileSecurity.CanEditAsync(entry)
+            CanEdit = await _fileSecurity.CanEditAsync(entry),
+            Security = entry.Security
         };
     }
 }

@@ -48,6 +48,8 @@ public class FileDto<T> : FileEntryDto<T>
     public bool CanFillForms { get; set; }
     public bool DenyDownload { get; set; }
     public bool DenySharing { get; set; }
+    public IDictionary<Accessability, bool> ViewAccessability { get; set; }
+
     protected internal override FileEntryType EntryType { get => FileEntryType.File; }
 
     public FileDto() { }
@@ -137,6 +139,8 @@ public class FileDtoHelper : FileEntryDtoHelper
                 }
             }
         }
+
+        result.ViewAccessability = _fileUtility.GetAccessability(file.Title);
 
         return result;
     }
