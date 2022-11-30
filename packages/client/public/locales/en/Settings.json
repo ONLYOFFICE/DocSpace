@@ -101,7 +101,6 @@
   "IPSecurityDescription": "IP Security is used to restrict login to the portal from all IP addresses except certain addresses.",
   "IPSecurityHelper": "You can set the allowed IP addresses using either exact IP addresses in the IPv4 format (#.#.#.#, where # is a numeric value from 0 to 255) or IP range (in the #.#.#.#-#.#.#.# format).",
   "IPSecurityWarningHelper": "First you need to specify your current IP or the IP range your current IP address belongs to, otherwise your portal access will be blocked right after you save the settings. The portal owner will have the portal access from any IP address.",
-  "ImageSizeError": "Image size exceed the allowed parameters",
   "Job/Title": "Job/Title",
   "LanguageAndTimeZoneSettingsDescription": "Language and Time Zone Settings is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the portal will be shown with the correct date and time.",
   "LanguageTimeSettingsTooltip": "<0>{{text}}</0> is a way to change the language of the whole portal for all portal users and to configure the time zone so that all the events of the {{ organizationName }} portal will be shown with the correct date and time.",
