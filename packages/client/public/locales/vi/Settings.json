@@ -79,7 +79,6 @@
   "PleaseNoteDescription": "0>{{pleaseNote}}</0>: địa chỉ cổng thông tin cũ của bạn sẽ khả dụng cho người dùng mới ngay khi bạn bấm vào nút <2>{{save}}</2>.",
   "PortalAccess": "Truy cập cổng thông tin",
   "PortalAccessSubTitle": "Phần này cho phép bạn cung cấp cho người dùng những cách an toàn và thuận tiện để truy cập cổng thông tin.",
-  "PortalAdmins": "Quản trị viên cổng thông tin",
   "PortalAdminsDescription": "Có quyền truy cập giống như chủ sở hữu cổng thông tin, ngoại trừ quyền: thay đổi chủ sở hữu cổng thông tin; tắt hoặc xóa cổng thông tin.",
   "PortalNameEmpty": "Tên tài khoản trống",
   "PortalNameIncorrect": "Tên tài khoản không chính xác",

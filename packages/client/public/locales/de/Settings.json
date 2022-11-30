@@ -82,7 +82,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: Ihre alte Portal-Adresse steht zu Verfügung für neue Benutzer, sobald Sie die Druckschalter <2>{{save}}</2> klicken.",
   "PortalAccess": "Zugang zum Portal",
   "PortalAccessSubTitle": "In diesem Bereich können Sie den Benutzern einen sicheren und nahtlosen Zugang zum Portal gewähren.",
-  "PortalAdmins": "Portalverwalter",
   "PortalAdminsDescription": "Sie Haben die gleichen Zugriffsrechte wie der Portalbesitzer, außer: den Portalbesitzer zu ändern; Portal zu deaktivieren oder zu löschen.",
   "PortalNameEmpty": "Der Kontoname ist leer",
   "PortalNameIncorrect": "Inkorrekter Kontoname",

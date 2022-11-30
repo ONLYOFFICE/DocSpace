@@ -82,7 +82,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: il tuo vecchio indirizzo portale sarà disponibile per i nuovi utenti una volta che tu fai clic sul pulsante <2>{{save}}</2>.",
   "PortalAccess": "Accesso al portale",
   "PortalAccessSubTitle": "Questa sezione consente di fornire agli utenti modi sicuri e convenienti per accedere al portale.",
-  "PortalAdmins": "Gli amministratori del portale",
   "PortalAdminsDescription": "Ci sono gli stessi diritti di accesso del proprietario del portale, tranne il diritto di cambiare il proprietario del portale, disattivare o cancellare il portale",
   "PortalNameEmpty": "Nome account vuoto",
   "PortalNameIncorrect": "Nome account errato",

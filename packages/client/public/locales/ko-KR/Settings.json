@@ -76,7 +76,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: <2>{{save}}</2> 버튼을 클릭하면 새로운 사용자가 이전 포털 주소를 이용할 수 있게 됩니다.",
   "PortalAccess": "포털 액세스",
   "PortalAccessSubTitle": "이 섹션에서는 사용자에게 안전하고 편리한 포털 액세스 방법을 제공할 수 있습니다.",
-  "PortalAdmins": "포털 관리자",
   "PortalAdminsDescription": "다음 권리를 제외하고 포털 소유자와 같은 액세스 권리를 갖게 됩니다: 포털 소유자 변경; 포털 비활성화 또는 삭제.",
   "PortalNameEmpty": "계정 이름이 비어 있습니다",
   "PortalNameIncorrect": "계정 이름이 잘못되었습니다",

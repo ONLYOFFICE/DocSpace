@@ -79,7 +79,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: jūsu vecā portāla adrese kļūs pieejama jaunajiem lietotājiem, ja nospiedīsit <2>{{save}}</2>.",
   "PortalAccess": "Piekļuve portālam",
   "PortalAccessSubTitle": "Šī sadaļa ļauj lietotājiem nodrošināt drošus un ērtus veidus, kā piekļūt portālam.",
-  "PortalAdmins": "Portāla administratori",
   "PortalAdminsDescription": "Jums ir tādas pašas piekļuves tiesības kā portāla īpašniekam, izņemot šīs tiesības: mainīt portāla īpašnieku, deaktivizēt vai dzēst portālu.",
   "PortalNameEmpty": "Konta nosaukums ir tukšs",
   "PortalNameIncorrect": "Nepareizs konta nosaukums",

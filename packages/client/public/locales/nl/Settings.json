@@ -79,7 +79,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: uw oude portaaladres zal beschikbaar worden voor nieuwe gebruikers zodra u klikt op de knop <2>{{save}}</2>.",
   "PortalAccess": "Portaal toegang",
   "PortalAccessSubTitle": "In dit gedeelte kunt u gebruikers veilige en handige manieren bieden om toegang te krijgen tot het portaal.",
-  "PortalAdmins": "Portaal beheerders",
   "PortalAdminsDescription": "Hebben dezelfde toegangsrechten als de eigenaar van het portaal, behalve het recht om: de eigenaar van het portaal te veranderen; het portaal te deactiveren of te verwijderen.",
   "PortalNameEmpty": "Accountnaam is leeg",
   "PortalNameIncorrect": "Onjuiste accountnaam",

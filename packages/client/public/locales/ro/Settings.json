@@ -76,7 +76,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: adresa dvs. de portal veche va deveni disponibilă pentru utilizatorii noi odată ce faceți clic pe butonul <2>{{save}}</2>.",
   "PortalAccess": "Accesul la portal",
   "PortalAccessSubTitle": "Această secțiune va permite să le oferă utilizatorilor accesul sigur și convenabil la portal.",
-  "PortalAdmins": "Administratorii portalului",
   "PortalAdminsDescription": "Are aceleași drepturi ca și proprietarul portalului cu excepția dreptului de a modifica proprietarul portalului; de a dezactiva sau elimina portalul.",
   "PortalNameEmpty": "Denumirea contului este necompletată",
   "PortalNameIncorrect": "Denumirea contului incorectă",

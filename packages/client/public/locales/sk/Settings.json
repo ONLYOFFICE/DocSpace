@@ -79,7 +79,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: Po kliknutí na tlačidlo <2>{{save}}</2> bude Vaša stará adresa portálu dostupná novým používateľom.",
   "PortalAccess": "Prístup k portálu",
   "PortalAccessSubTitle": "Tu môžete vytvoriť pre používateľov bezpečné a pohodlné spôsoby prístupu na portál.",
-  "PortalAdmins": "Administrátori portálu",
   "PortalAdminsDescription": "Mať rovnaké prístupové práva ako vlastník portálu, s výnimkou práva: zmeniť vlastníka portálu; deaktivovať alebo odstrániť portál.",
   "PortalNameEmpty": "Názov účtu je prázdny",
   "PortalNameIncorrect": "Nesprávny názov účtu",
