@@ -10,7 +10,6 @@ const DEFAULT_ACTIVATION_STATUS = null;
 const DEFAULT_ROLE = null;
 const DEFAULT_SEARCH = "";
 const DEFAULT_GROUP = null;
-
 const DEFAULT_PAYMENTS = null;
 
 const EMPLOYEE_STATUS = "employeestatus";
@@ -22,7 +21,6 @@ const SORT_BY = "sortby";
 const SORT_ORDER = "sortorder";
 const PAGE = "page";
 const PAGE_COUNT = "pagecount";
-
 const PAYMENTS = "payments";
 
 class Filter {
@@ -55,6 +53,7 @@ class Filter {
     const pageCount =
       (urlFilter[PAGE_COUNT] && +urlFilter[PAGE_COUNT]) ||
       defaultFilter.pageCount;
+    const payments = urlFilter[PAYMENTS] || defaultFilter.payments;
 
     const newFilter = new Filter(
       page,
@@ -66,7 +65,8 @@ class Filter {
       activationStatus,
       role,
       search,
-      group
+      group,
+      payments
     );
 
     return newFilter;
@@ -83,7 +83,6 @@ class Filter {
     role = DEFAULT_ROLE,
     search = DEFAULT_SEARCH,
     group = DEFAULT_GROUP,
-
     payments = DEFAULT_PAYMENTS
   ) {
     this.page = page;
@@ -96,7 +95,6 @@ class Filter {
     this.search = search;
     this.total = total;
     this.group = group;
-
     this.payments = payments;
   }
 
@@ -122,6 +120,7 @@ class Filter {
       role,
       search,
       group,
+      payments,
     } = this;
 
     let dtoFilter = {
@@ -135,6 +134,7 @@ class Filter {
       filtervalue: (search ?? "").trim(),
       groupId: group,
       fields: fields,
+      payments,
     };
 
     const str = toUrlParams(dtoFilter, true);
@@ -152,6 +152,7 @@ class Filter {
       search,
       group,
       page,
+      payments,
     } = this;
 
     const dtoFilter = {};
@@ -183,6 +184,7 @@ class Filter {
     dtoFilter[PAGE] = page + 1;
     dtoFilter[SORT_BY] = sortBy;
     dtoFilter[SORT_ORDER] = sortOrder;
+    dtoFilter[PAYMENTS] = payments;
 
     const str = toUrlParams(dtoFilter, true);
 
@@ -208,7 +210,8 @@ class Filter {
           this.activationStatus,
           this.role,
           this.search,
-          this.group
+          this.group,
+          this.payments
         );
   }
 
@@ -224,7 +227,8 @@ class Filter {
         null,
         null,
         "",
-        idGroup
+        idGroup,
+        null
       );
     } else {
       this.clone(true);
@@ -241,7 +245,8 @@ class Filter {
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
       this.page === filter.page &&
-      this.pageCount === filter.pageCount;
+      this.pageCount === filter.pageCount &&
+      this.payments === filter.payments;
 
     return equals;
   }
