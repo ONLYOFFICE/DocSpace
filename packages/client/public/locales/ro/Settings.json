@@ -96,7 +96,6 @@
   "RegistrationDate": "Data de înregistrare",
   "RestoreBackup": "Restaurarea datelor",
   "RestoreBackupDescription": "Utilizați această opțiune pentru a restaura portalul dvs. dintr-o copie de rezervă existentă.",
-  "RestoreBackupHelp": "Opțiunea <strong>Restaurarea datelor</strong> permite restabilirea datelor din portal pe care le-ați salvat anterior (din serverul local sau portalul SaaS).",
   "RestoreBackupHelpNote": "Alegeți serviciul de stocare a datelor, introduceți detaliile necesare și bifați <strong>Trimite o notificare utilizatorilor portalului</strong> pentru a avertiza utilizatorii portalului privind  operațiunile de copiere și restaurare.",
   "RestoreBackupResetInfoWarningText": "Toate parolele curente vor fi resetate. Utilizatorii portalului vor primi prin e-mail un mesaj cu link-ul pentru restaurarea accesului.",
   "RestoreBackupWarningText": "Portalului va deveni indisponibil în curs de restaurare. Odată ce procesul de restaurare este finalizat, toate modificările efectuate după crearea unui punct de restaurare vor fi pierdute.",

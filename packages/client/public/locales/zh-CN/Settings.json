@@ -102,7 +102,6 @@
   "RegistrationDate": "注册日期",
   "RestoreBackup": "数据恢复",
   "RestoreBackupDescription": "使用此选项，以从先前保存的备份文件中恢复您的门户。",
-  "RestoreBackupHelp": "选项<strong>数据恢复</strong>用于恢复以前保存的数据门户网站（从本地服务器或SaaS的门户网站）。",
   "RestoreBackupHelpNote": "选择数据所在的位置，输入所需信息，并检查该选项<strong>通知门户网站的用户</strong>，提醒用户保存的备份/恢复。",
   "RestoreBackupResetInfoWarningText": "所有当前的密码将被重置。门户网站用户将收到邮件，邮件中会有恢复访问的链接。",
   "RestoreBackupWarningText": "在恢复过程中，门户将不可用。恢复完成后，所选的恢复点日期后所做的所有更改均将丢失。",

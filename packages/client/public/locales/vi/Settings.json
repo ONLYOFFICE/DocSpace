@@ -99,7 +99,6 @@
   "RegistrationDate": "Ngày đăng ký",
   "RestoreBackup": "Khôi phục dữ liệu",
   "RestoreBackupDescription": "Sử dụng tùy chọn này để khôi phục lại cổng của bạn từ file sao lưu đã lưu trước đó",
-  "RestoreBackupHelp": "Tùy chọn <strong>Khôi phục dữ liệu</strong> được sử dụng để khôi phục lại dữ liệu cổng thông tin được lưu trữ trước đó (từ server cục bộ hoặc cổng SaaS).",
   "RestoreBackupHelpNote": "Chọn nơi lưu trữ dữ liệu, nhập các chi tiết cần thiết và kiểm tra <strong>Thông báo gửi cho người dùng cổng thông tin</strong> để báo cho người dùng cổng thông tin của bạn về các hoạt động sao lưu/khôi phục.",
   "RestoreBackupResetInfoWarningText": "Tất cả mật khẩu hiện tại sẽ được đặt lại. Người dùng cổng thông tin sẽ nhận được email có liên kết khôi phục quyền truy cập.",
   "RestoreBackupWarningText": "Cổng sẽ trở nên không khả dụng trong quá trình khôi phục. Sau khi hoàn tất khôi phục tất cả các thay đổi được thực hiện sau ngày khôi phục đã chọn sẽ bị mất.",

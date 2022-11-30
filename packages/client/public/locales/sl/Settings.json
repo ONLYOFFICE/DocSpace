@@ -99,7 +99,6 @@
   "RegistrationDate": "Datum registracije",
   "RestoreBackup": "Obnovitev podatkov",
   "RestoreBackupDescription": "S to opcijo obnovite svoj portal iz predhodno shranjene varnostne kopije.",
-  "RestoreBackupHelp": "Možnost <strong>Obnovitev podatkov</strong> se uporablja za obnovitev vaših predhodno shranjenih podatkov portala (iz lokalnega strežnika ali portala SaaS).",
   "RestoreBackupHelpNote": "Izberite mesto, kjer so shranjeni podatki, vnesite potrebne podatke in označite <strong>Pošlji obvestilo uporabnikom portala</strong> da opozorite uporabnike vašega portala na operacije varnostnega kopiranja/obnovitve.",
   "RestoreBackupResetInfoWarningText": "Vsa trenutna gesla bodo ponastavljena. Uporabniki portala bodo prejeli e-pošto s povezavo za obnovitev dostopa.",
   "RestoreBackupWarningText": "Portal bo med postopkom obnavljanja postal nedostopen. Po končani obnovi bodo vse spremembe, storjene po izbranem datumu obnove, izgubljene.",

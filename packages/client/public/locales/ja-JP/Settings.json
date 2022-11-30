@@ -100,7 +100,6 @@
   "RegistrationDate": "登録日",
   "RestoreBackup": "データ復元",
   "RestoreBackupDescription": "バックアップ・ファイルからポータルを復するためにこの操作を使用してください。",
-  "RestoreBackupHelp": "<strong>データリストア(Data Restore)</strong>は以前に取っておいたポータルデータ（Saasポータルあるいはローカルサーバデータ）の複製を書き戻すなどして復元する機能です。",
   "RestoreBackupHelpNote": "データは保存しているストレージを選択し、必要な詳細を入力し、<strong>ポータルユーザに通知を送信する</strong>というオプションにチェックを付け、ポータルユーザをバックアップ／リストア過程を知らせてください。",
   "RestoreBackupResetInfoWarningText": "現在のパスワードはすべてリセットされます。ポータルのユーザーには、アクセス回復のためのリンクが記載されたメールが送信されます。",
   "RestoreBackupWarningText": "リストア中は、ポータルを使用できなくなります。復元が完了すると、選択した復元ポイントの日付以降に行われたすべての変更が失われます。",

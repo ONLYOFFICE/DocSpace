@@ -102,7 +102,6 @@
   "RegistrationDate": "Date d'inscription",
   "RestoreBackup": "Restauration des données",
   "RestoreBackupDescription": "Utilisez cette option pour restaurer votre portail du fichier de sauvegarde enregistré précédemment.",
-  "RestoreBackupHelp": "L'option <strong>Restauration des données</strong> est utilisée pour restaurer vos données du portail précédemment sauvegardées (depuis un serveur local ou portail SaaS).",
   "RestoreBackupHelpNote": "Sélectionnez le stockage où les données sont sauvegardées, entrez les détails nécessaires et choisissez <strong>Envoyer notification aux utilisateurs du portail</strong> pour avertir les utilisateurs de votre portail sur la sauvegarde/restauration des opérations.",
   "RestoreBackupResetInfoWarningText": "Tous les mots de passe existants seront restaurés. Les utilisateurs du portail vont recevoir le mail avec le lien de récupération.",
   "RestoreBackupWarningText": "Le portail ne sera pas disponible pendant le processus de restauration. Une fois la restauration terminée toutes les modifications apportées après la date du point de restauration sélectionné seront perdues.",

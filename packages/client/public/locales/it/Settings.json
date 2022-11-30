@@ -102,7 +102,6 @@
   "RegistrationDate": "Data di registrazione",
   "RestoreBackup": "Ripristino dati",
   "RestoreBackupDescription": "Utilizza questa opzione per ripristinare il portale dal file di backup precedentemente salvato.",
-  "RestoreBackupHelp": "<strong>Ripristino dati</strong> si usa per ripristinare i dati del portale salvati prima (da un server locale o portale SaaS).",
   "RestoreBackupHelpNote": "Seleziona la risorsa di archiviazione con i dati salvati, inserisci i dati adatti e spunta <strong>Invia notifica agli utenti del portale</strong> per informare gli utenti del tuo portale delle operazioni di backup/ripristino.",
   "RestoreBackupResetInfoWarningText": "Tutte le password correnti verranno resettate. Gli utenti del portale riceveranno un'email con il link per recuperare l'accesso.",
   "RestoreBackupWarningText": "Il portale non sarà disponibile durante il processo di ripristino. Dopo il ripristino tutte le modifiche effettuate dopo la data del punto di ripristino scelto andranno persi.",

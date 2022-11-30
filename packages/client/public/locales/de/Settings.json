@@ -102,7 +102,6 @@
   "RegistrationDate": "Datum der Registrierung",
   "RestoreBackup": "Datenwiederherstellung",
   "RestoreBackupDescription": "Nutzen Sie diese Option, um Ihr Portal aus der vorher gespeicherten Sicherungsdatei wiederherzustellen.",
-  "RestoreBackupHelp": "Die Option <strong>Datenwiederherstellung</strong> wird genutzt, um die vorher gespeicherten Portaldaten wiederherzustellen (vom lokalen Server oder SaaS-Portal). ",
   "RestoreBackupHelpNote": "Wählen Sie den Speicher, wo die Daten gespeichert sind, geben Sie die erforderlichen Angaben ein und aktivieren Sie die Option <strong>Portalbenutzer benachrichtigen</strong>, um Ihre Portalbenutzer über Backup/Wiederherstellung zu informieren.",
   "RestoreBackupResetInfoWarningText": "Alle gültige Passwörter werden zurückgesetzt. Die Portalbenutzer bekommen eine E-Mail mit dem Link für Zugriffswiederherstellung.",
   "RestoreBackupWarningText": "Während der Wiederherstellung wird das Portal nicht verfügbar sein. Nach der Wiederherstellung gehen alle Änderungen, die nach dem Datum des gewählten Wiederherstellungspunktes vorgenommen werden, verloren.",

@@ -99,7 +99,6 @@
   "RegistrationDate": "Reģistrācijas datums",
   "RestoreBackup": "Datu atjaunošana",
   "RestoreBackupDescription": "Izmantojiet šo iespēju, lai atjaunotu portālu no iepriekš noglabāta rezerves faila.",
-  "RestoreBackupHelp": "Opcija <strong>Datu atjaunošana</strong> tiek izmantota, lai atjaunotu jūsu iepriekš saglabātos portāla datus (no lokālā servera vai SaaS portāla).",
   "RestoreBackupHelpNote": "Atlasiet krātuvi, kurā tiek saglabāti dati, ievadiet nepieciešamo informāciju un atzīmējiet <strong>Nosūtīt paziņojumu portāla lietotājiem</strong>, lai brīdinātu savus portāla lietotājus par dublēšanas/atkopšanas darbībām.",
   "RestoreBackupResetInfoWarningText": "Visas pašreizējās paroles tiks atiestatītas. Portāla lietotāji saņems e-pasta ziņojumu ar piekļuves atjaunošanas saiti.",
   "RestoreBackupWarningText": "Portāls nebūs pieejams atjaunošanas laikā. Pēc atjaunošanas tiks pazaudētas visas izmaiņas kas veiktas pēc izvēlētā atjaunošanas punkta datuma.",

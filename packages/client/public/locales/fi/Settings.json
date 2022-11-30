@@ -99,7 +99,6 @@
   "RegistrationDate": "Rekisteröinti päivämäärä",
   "RestoreBackup": "Tiedon Palautus",
   "RestoreBackupDescription": "Käytä tätä, jos haluat palauttaa sivuston sisällön aiemmin tehdyltä varmuuskopiolta.",
-  "RestoreBackupHelp": "<strong>Tietojen palautus</strong> -vaihtoehtoa käytetään aiemmin tallennettujen portaalitietojen palauttamiseen (paikallisesta palvelimesta tai SaaS-portaalista).",
   "RestoreBackupHelpNote": "Valitse varmuuskopion sijainti, syötä tarvittavat yksityiskohdat ja valitse <strong>Lähetä ilmoitus sivuston käyttäjille</strong> ilmoittaaksesi heille tietojen palauttamisesta.",
   "RestoreBackupResetInfoWarningText": "Kaikki nykyiset salasanat nollataan. Portaalin käyttäjät saavat sähköpostiviestin, jossa on pääsyn palautuslinkki.",
   "RestoreBackupWarningText": "Portaali ei ole saatavilla palautuksen aikana. Siinä vaiheessa kun palautus on valmis, kaikki tehdyt muutokset, jotka ovat tehty halutun palautuspisteen jälkeen, ovat menetettyjä.",

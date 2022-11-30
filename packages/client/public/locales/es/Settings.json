@@ -102,7 +102,6 @@
   "RegistrationDate": "Fecha de registro",
   "RestoreBackup": "Restauración de datos",
   "RestoreBackupDescription": "Use esta opción para restaurar su portal de copia de seguridad guardada anteriormente.",
-  "RestoreBackupHelp": "La opción <strong>Restauración de datos</strong> se usa para restaurar los datos de portal guardados antes (de servidor local o portal SaaS).",
   "RestoreBackupHelpNote": "Seleccione el almacenamiento donde están guardados los datos, introduzca los detalles y marque la opción <strong>Enviar notificación a usuarios de portal</strong> para avisar a los usuarios de su portal sobre backup/restauración.",
   "RestoreBackupResetInfoWarningText": "Todas las contraseñas actuales se restablecerán. Los usuarios del portal recibirán un correo electrónico con el enlace para restablecer el acceso.",
   "RestoreBackupWarningText": "El portal no estará disponible durante el proceso de restauración. Una vez terminado el proceso, se perderán todos los cambios realizados después de la fecha del punto de restauración seleccionado.",

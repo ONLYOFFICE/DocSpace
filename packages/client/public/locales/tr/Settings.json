@@ -99,7 +99,6 @@
   "RegistrationDate": "Kayıt tarihi",
   "RestoreBackup": "Veri Geri Yükleme",
   "RestoreBackupDescription": "Portalınızı önceden kaydedilmiş yedekleme dosyasından geri yüklemek için bu seçeneği kullanın.",
-  "RestoreBackupHelp": "<strong>Data Yenileme</strong> seçeneği önceden kaydettiğiniz portal verilerinizi yenilemek için kullanılır (yerel sunucudan yada SaaS portalından).",
   "RestoreBackupHelpNote": "Verinin kaydedildiği depoyu seçin, gerekli bilgileri girin ve <strong>'ı işaretleyin. Portal kullanıcılarınızı</strong> yedekleme/yenileme operasyonlarından haberdar etmek için bildirim gönderin.",
   "RestoreBackupResetInfoWarningText": "Tüm mevcut şifreler sıfırlanacak. Portal kullanıcıları, erişim geri yükleme bağlantısını içeren bir e-posta alacaktır.",
   "RestoreBackupWarningText": "Geri yükleme esnasında portal erişilemez olacaktır. Geri yükleme tamamlandıktan sonra geri yükleme tarihinden sonra yapılan tüm değişiklikler kaybedilecektir.",

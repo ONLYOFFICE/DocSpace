@@ -99,7 +99,6 @@
   "RegistrationDate": "Datum registrace",
   "RestoreBackup": "Obnova dat",
   "RestoreBackupDescription": "Použijte tuto možnost pro obnovu Vašeho portálu z předchozího souboru obnovy.",
-  "RestoreBackupHelp": "<strong>Možnost Obnova dat</strong> je použita k obnově dříve uloženým datům na portálu (z místního serveru nebo SaaS portálu).",
   "RestoreBackupHelpNote": "Vyberte úložný prostor, kde jsou Vaše data uložena, zadejte důležité detaily a zaškrtněte <strong>Poslat oznámení všem uživatelům portálu</strong>, abyste upozornili uživatele portálu ohledně zálohovacích/obnovovacích operací.",
   "RestoreBackupResetInfoWarningText": "Všechna aktuální hesla budou resetována. Uživatelé portálu obdrží e-mail s odkazem na obnovení přístupu.",
   "RestoreBackupWarningText": "Portál se stane nedostupný během procesu obnovy. Poté, co je obnova dokončena, jsou všechny změny, které proběhly po datu, ke kterému jste chtěli obnovu, ztraceny.",

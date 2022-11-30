@@ -96,7 +96,6 @@
   "RegistrationDate": "등록일",
   "RestoreBackup": "데이터 복원",
   "RestoreBackupDescription": "이전에 저장한 백업 파일에서 포털을 복원하기 위해 이 옵션을 사용하세요.",
-  "RestoreBackupHelp": "<strong>데이터 복원</strong> 옵션은 (로컬 서버 또는 SaaS 포털에서) 이전에 저장한 포털 데이터를 복원하는 데 사용됩니다.",
   "RestoreBackupHelpNote": "데이터가 저장된 저장소를 선택하고 필요한 세부 정보를 입력한 뒤 <strong>포털 사용자에게 알림 전송</strong>을 선택하여 포털 사용자에게 백업/복원 작업에 대해 알리세요.",
   "RestoreBackupResetInfoWarningText": "사용 중인 모든 비밀번호가 리셋됩니다. 포털 사용자는 액세스 복원 링크가 포함된 이메일을 받게 됩니다.",
   "RestoreBackupWarningText": "복원 프로세스 동안 포털을 사용할 수 없게 됩니다. 복원이 완료되면 선택한 복원 지점 날짜 이후의 모든 변경 사항이 손실됩니다.",

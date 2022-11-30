@@ -99,7 +99,6 @@
   "RegistrationDate": "Data rejestracji",
   "RestoreBackup": "Odzyskiwanie danych",
   "RestoreBackupDescription": "Użyj tej opcji do przywrócenia portalu z wcześniej zapisanego pliku kopii zapasowej.",
-  "RestoreBackupHelp": "Opcja <strong>Odzyskaj dane</strong> pozwala odzyskać wcześniej zapisane dane portalu (z lokalnego serwera lub portalu SaaS).",
   "RestoreBackupHelpNote": "Wybierz, gdzie przechowywane są dane, wpisz niezbędne szczegóły i zaznacz <strong>Wyślij powiadomienie użytkownikom portalu</strong>, aby poinformować ich o przeprowadzanych działaniach dot. tworzenia kopii zapasowej/odzyskiwania danych.",
   "RestoreBackupResetInfoWarningText": "Wszystkie aktualne hasła zostaną zresetowane. Użytkownicy portalu otrzymają wiadomość e-mail z linkiem umożliwiającym odzyskanie dostępu.",
   "RestoreBackupWarningText": "Portal zostanie niedostępny podczas procesu przywracania. Po zakończeniu przywracania wszystkie zmiany dokonane po terminie wybranego punktu przywracania zostaną utracone.",
