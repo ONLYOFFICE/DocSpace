@@ -31,7 +31,7 @@ const StyledTitle = styled.div`
   margin-left: -20px;
   width: calc(100% - 40px);
   padding: 24px 0 24px 20px;
-  background: #fff;
+  background: ${(props) => props.theme.infoPanel.backgroundColor};
   z-index: 100;
 
   @media ${mobile} {

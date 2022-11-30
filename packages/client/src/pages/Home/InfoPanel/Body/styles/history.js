@@ -10,7 +10,7 @@ const StyledHistoryList = styled.div`
 
 const StyledHistorySubtitle = styled.div`
   position: sticky;
-  background: #fff;
+  background: ${(props) => props.theme.infoPanel.backgroundColor};
   top: 80px;
   z-index: 100;
 
