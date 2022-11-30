@@ -5,7 +5,6 @@
   "ExpectPeople": "Приглашенные люди",
   "Data": "Данные",
   "DateModified": "Дата изменения",
-  "FeedCreateFolderSingle": "Создана папка.",
   "FeedCreateRoom": "Создана комната <strong>«{{roomTitle}}»</strong>",
   "FeedCreateRoomTag": "Добавлены теги.",
   "FeedCreateUser": "Добавлены пользователи. ",
