@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "Accesul la modul {{product}} este acordat lui",
   "AccessRightsAllUsers": "Toți {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Modificările vor fi aplicate după confirmarea e-mailului.",
-  "AccessRightsOwnerOpportunities": "Procedați în același mod ca și administratorii de modul|Numiți administratorii de modul|Definiți drepturi de acces la modul|Gestionați setarea portalului|Gestionați conturile de utilizator|Schimbați proprietarul portalului|Creați o copie de rezervă a datelor pe portal|Dezactivați sau suprimați portalul",
   "AccessRightsProductUsersCan": "Utilizatorii {{category}} pot",
   "AccessRightsSubTitle": "Această secțiune va permite să acordați accesul cu privilegii de proprietar al portalului.",
   "AccessRightsUsersFromList": "{{users}} din lista",

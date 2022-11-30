@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "Acesso ao módulo {{product}} dado a",
   "AccessRightsAllUsers": "Todos {{users}}",
   "AccessRightsChangeOwnerConfirmText": "As mudanças serão aplicadas depois da confirmação via email.",
-  "AccessRightsOwnerOpportunities": "Faça o mesmo como o módulo dos administradores|Nomear os administradores do módulo|Definir os direitos de acesso aos módulos|Gerir a configuração do portal|Gerir as contas dos utilizadores|Alterar o proprietário do portal|Faça uma cópia de segurança dos dados do portal|Desative ou elimine o portal",
   "AccessRightsProductUsersCan": "{{category}} os utilizadores podem",
   "AccessRightsSubTitle": "Esta secção permite-lhe transferir os direitos de propriedade do portal e gerir os direitos de acesso por parte dos administradores.",
   "AccessRightsUsersFromList": "{{users}} da lista",

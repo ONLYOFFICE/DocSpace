@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "{{product}} moduluna giriş hüququ verilmişdir",
   "AccessRightsAllUsers": "Bütün {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Dəyişikliklər e-poçt vasitəsilə təsdiqlənmə məktubundan sonra tətbiq olunacaq.",
-  "AccessRightsOwnerOpportunities": "Eyni şeyi modul administratorları üçün edin|Modul administratorlarını təyin edin| Modullara giriş hüquqlarını təyin edin| Portal konfiqurasiyasını idarə edin|İstifadəçi hesablarını idarə edin|Portal sahibini dəyişdirin|Portal məlumatlarını yedəkləyin|Portalı deaktivləşdirin və ya silin",
   "AccessRightsProductUsersCan": "{{category}} istifadəçilər edə bilərlər",
   "AccessRightsSubTitle": "Bu bölmə sizə portal sahibi hüquqlarınızı ötürmə və administrator giriş hüquqlarını tənzimləmə imkanı verir",
   "AccessRightsUsersFromList": "Siyahıdan {{users}}",

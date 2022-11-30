@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "{{product}} modülüne erişim şu kişilere verildi:",
   "AccessRightsAllUsers": "Tüm {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Değişiklikler e-posta yolu ile onaylandıktan sonra uygulanacaktır.",
-  "AccessRightsOwnerOpportunities": "Modül yöneticileri ile aynısını yap|Modül yöneticileri ata|Modül erişim yetkileri tanımla|Portal yapılandırmasını yönet|Kullanıcı hesaplarını yönet|Portal sahibini değiştir|Portal verisini yedekle|Portalı devre dışı bırak veya sil",
   "AccessRightsProductUsersCan": "{{category}} kullanıcılar",
   "AccessRightsSubTitle": "Bu bölüm portal sahibi haklarını aktarmanıza ve yönetici erişim haklarını yönetmenizi sağlar.",
   "AccessRightsUsersFromList": "{{users}} listeden",

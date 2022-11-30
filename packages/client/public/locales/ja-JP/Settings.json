@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "{{product}} モジュールへのアクセス権は",
   "AccessRightsAllUsers": "すべて {{users}}",
   "AccessRightsChangeOwnerConfirmText": "変更内容は、メールでの確認後に適用されます。",
-  "AccessRightsOwnerOpportunities": "モジュール管理者と同じことをする|モジュール管理者を任命する|モジュールのアクセス権を設定する|ポータル構成を管理する|ユーザーアカウントを管理する|ポータルの所有者を変更する|ポータルデータをバックアップする|ポータルを非活性化または削除する",
   "AccessRightsProductUsersCan": "{{category}}ユーザーが",
   "AccessRightsSubTitle": "このセクションでは、ポータル所有者の権限委譲、または管理者のアクセス権を管理ができます。",
   "AccessRightsUsersFromList": "リストから{{users}}",

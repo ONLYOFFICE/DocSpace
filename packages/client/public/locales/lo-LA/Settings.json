@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "ການເຂົ້າເຖິງໂມດູນ {{product}} ທີ່ມອບໃຫ້",
   "AccessRightsAllUsers": "{{users}} ທັງຫມົດ",
   "AccessRightsChangeOwnerConfirmText": "ການປ່ຽນແປງດັ່ງກວ່າຈະຖືກນຳໃຊ້ຫຼັງຈາກທ່ານໄດ້ຢືນຢັນຜ່ານທາງອີເມວ",
-  "AccessRightsOwnerOpportunities": "ເຮັດຄືກັບຜູ້ດູແລໂມດູນ | ຕັ້ງຕັ້ງຜູ້ດູແລລະບົບໂມດູນ | ຕັ້ງຄ່າສິດການເຂົ້າເຖິງໂມດູນ | ຈັດການກຳນົດຄ່າ portal| ຈັດການບັນຊີຜູ້ໃຊ້ | ປ່ຽນເຈົ້າຂອງ portal| ສຳຮອງຂໍ້ມູນ portal| ປິດການໃຊ້ງານ portal",
   "AccessRightsProductUsersCan": "{{category}} ຜູ້ໃຊ້ສາມາດເຮັດໄດ້",
   "AccessRightsSubTitle": "ພາກນີ້ອະນຸຍາດໃຫ້ທ່ານໂອນສິດເຈົ້າຂອງປະຕູ ແລະຈັດການສິດການເຂົ້າເຖິງຜູ້ເບິ່ງແຍງລະບົບ.",
   "AccessRightsUsersFromList": "{{users}} ຈາກລາຍການ",

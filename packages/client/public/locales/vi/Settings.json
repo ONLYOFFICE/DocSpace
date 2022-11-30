@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "Quyền truy cập vào mô-đun {{product}} được cấp cho",
   "AccessRightsAllUsers": "Tất cả {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Các thay đổi sẽ được áp dụng sau khi xác nhận qua email.",
-  "AccessRightsOwnerOpportunities": "Thao tác giống như quản trị viên mô-đun|Chỉ định quản trị viên mô-đun|Thiết lập quyền truy cập mô-đun|Quản lý cấu hình cổng thông tin|Quản lý tài khoản người dùng|Thay đổi chủ sở hữu cổng thông tin|Sao lưu dữ liệu cổng thông tin|Tắt hoặc xóa cổng thông tin",
   "AccessRightsProductUsersCan": "người dùng {{category}} có thể ",
   "AccessRightsSubTitle": "Phần này cho phép bạn chuyển quyền chủ sở hữu cổng thông tin và quản lý quyền truy cập của quản trị viên.",
   "AccessRightsUsersFromList": "{{users}} từ danh sách ",

@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "Dostęp do modułu {{product}} został udzielony",
   "AccessRightsAllUsers": "Wszyscy {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Zmiany zostaną zastosowane po zatwierdzeniu ich drogą mailową.",
-  "AccessRightsOwnerOpportunities": "Takie same prawa dostępu jak administratorzy modułu|Wyznacz administratorów modułu|Skonfiguruj prawa dostępu do modułu|Zarządzaj konfiguracją portalu|Zarządzaj kontami użytkowników|Zmień właściciela portalu|Stwórz kopię zapasową danych portalu|Dezaktywuj lub usuń portal",
   "AccessRightsProductUsersCan": "Użytkownicy {{category}} mogą",
   "AccessRightsSubTitle": "Dana sekcja umożliwia przenoszenie uprawnień właściciela portalu i zarządzanie uprawnieniami dostępu administratora.",
   "AccessRightsUsersFromList": "{{users}} z listy",

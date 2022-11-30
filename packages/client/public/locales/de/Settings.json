@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "Das Modul {{product}} ist zugreifbar für",
   "AccessRightsAllUsers": "Alle Mitglieder mit dem Status {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Die Änderungen werden nach der Bestätigung per E-Mail übernommen.",
-  "AccessRightsOwnerOpportunities": "Dieselben Operationen wie die Moduladministratoren durchführen|Moduladministratoren bestimmen|Modulzugriffsrechte bestimmen|Portal einrichten|Benutzerprofile verwalten|Portalbesitzer ändern|Backup von Portaldaten erstellen|Portal deaktivieren oder löschen",
   "AccessRightsProductUsersCan": "Im Modul {{category}} Portalbenutzer können",
   "AccessRightsSubTitle": "In diesem Abschnitt können Sie die Rechte des Portalbesitzers übertragen und die Zugriffsrechte des Administrators verwalten.",
   "AccessRightsUsersFromList": "{{users}} aus der Liste",

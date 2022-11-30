@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "Dostop do {{product}} modula je omogočen za",
   "AccessRightsAllUsers": "Vsi {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Spremembe bodo uporabljene po potrditvi po e-mailu.",
-  "AccessRightsOwnerOpportunities": "Delajte tako kot skrbniki modulov | Imenujte skrbnike modulov | Nastavite pravice dostopa do modulov | Upravljajte konfiguracijo portala | Upravljajte uporabniške račune | Spremenite lastnika portala | Varnostno kopirajte podatke portala | Deaktivirajte ali izbrišite portal",
   "AccessRightsProductUsersCan": "{{category}} uporabniki lahko",
   "AccessRightsSubTitle": "Ta razdelek vam omogoča prenos lastniških pravic portala in upravljanje s pravicami skrbniškega dostopa.",
   "AccessRightsUsersFromList": "{{users}} uporabniki iz seznama",

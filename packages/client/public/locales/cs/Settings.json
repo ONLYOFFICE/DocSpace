@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "Přístup k modulu {{product}} je udělen",
   "AccessRightsAllUsers": "Všichni {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Změny budou uplatněny po potvrzení e-mailem.",
-  "AccessRightsOwnerOpportunities": "Dělat totéž co správci modulů|Jmenovat správce modulů|Nastavit přístupová práva modulů|Spravovat konfiguraci portálu|Spravovat uživatelské účty|Změnit vlastníka portálu|Zálohovat data portálu|Deaktivovat nebo odstranit portál",
   "AccessRightsProductUsersCan": "{{category}} uživatelé mohou",
   "AccessRightsSubTitle": "Tato část umožňuje přenášet práva vlastníka portálu a spravovat přístupová práva správce.",
   "AccessRightsUsersFromList": "{{users}} ze seznamu",

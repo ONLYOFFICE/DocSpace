@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "Toegang tot {{product}} module wordt gegeven aan",
   "AccessRightsAllUsers": "Alle {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Wijzigingen zullen worden toegepast na de bevestiging via e-mail.",
-  "AccessRightsOwnerOpportunities": "Hetzelfde doen als modulebeheerders|Modulebeheerders aanstellen|Toegangsrechten voor modules instellen|Portaalconfiguratie beheren|Gebruikersaccounts beheren|Veranderen van eigenaar van portaal|Back-up portaalgegevens|Deactiveren of verwijderen portaal",
   "AccessRightsProductUsersCan": "{{category}} gebruikers kunnen",
   "AccessRightsSubTitle": "In dit gedeelte kunt u de rechten van de portaaleigenaar overdragen en de toegangsrechten van de beheerder beheren.",
   "AccessRightsUsersFromList": "{{users}} van de lijst",

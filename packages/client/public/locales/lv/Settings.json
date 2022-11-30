@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "{{product}} piekļuves tiesību modulis ir piešķirts",
   "AccessRightsAllUsers": "Visi {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Izmaiņas tiks piemērotas pēc apstiprinājuma saņemšanas pa e-pastu.",
-  "AccessRightsOwnerOpportunities": "Darīt to pašu kā moduļu administratori|Iecelt moduļu administratorus|Iestatīt moduļu piekļuves tiesības|Pārvaldīt portāla konfigurāciju|Pārvaldīt lietotāju kontus|Mainīt portāla īpašnieku|Dublēt portāla datus|Deaktivizēt vai dzēst portālu",
   "AccessRightsProductUsersCan": "{{category}} lietotāji var",
   "AccessRightsSubTitle": "Šī sadaļa ļauj nodot portāla īpašnieka tiesības un pārvaldīt administratora piekļuves tiesības.",
   "AccessRightsUsersFromList": "{{users}} no saraksta",

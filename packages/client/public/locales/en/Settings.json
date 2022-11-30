@@ -3,7 +3,6 @@
   "AccessRightsAccessToProduct": "Access to {{product}} module is given to",
   "AccessRightsAllUsers": "All {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Changes will be applied after the confirmation via email.",
-  "AccessRightsOwnerOpportunities": "Do the same as module administrators|Appoint module administrators|Set modules access rights|Manage portal configuration|Manage user accounts|Change portal owner|Backup portal data|Deactivate or delete portal",
   "AccessRightsProductUsersCan": "{{category}} users can",
   "AccessRightsSubTitle": "This section allows you to transfer portal owner rights and manage administrator access rights.",
   "AccessRightsUsersFromList": "{{users}} from the list",

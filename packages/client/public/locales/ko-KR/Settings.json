@@ -2,7 +2,6 @@
   "AccessRightsAccessToProduct": "{{product}} 모듈에 대한 액세스 부여:",
   "AccessRightsAllUsers": "전체 {{users}}",
   "AccessRightsChangeOwnerConfirmText": "이메일을 통한 승인 후 변경 사항이 적용됩니다.",
-  "AccessRightsOwnerOpportunities": "모듈 관리자와 같은 권한|모듈 관리자 지정|모듈 액세스 권한 설정|포털 구성 관리|사용자 계정 관리|포털 소유자 변경|포털 데이터 백업|포털 비활성화 또는 삭제",
   "AccessRightsProductUsersCan": "{{category}} 사용자가 할 수 있는 것:",
   "AccessRightsSubTitle": "이 섹션에서는 포털 소유자 권한을 이전하고 관리자 액세스 권한을 관리할 수 있습니다.",
   "AccessRightsUsersFromList": "목록의 {{users}}",
