@@ -1,7 +1,6 @@
 {
   "AccessingProblem": "If you are an existing user and have problems accessing this portal please contact the portal administrator.",
   "ActivateBusinessPlan": "Activate {{planName}} plan?",
-  "AddedManagers": "Managers added",
   "AdministratorDescription": "DocSpace configuration, room creation and administration, ability to invite and manage users in DocSpace and in virtual rooms, ability to manage access rights.",
   "Benefits": "Benefits",
   "BusinessExpired": "Your {{planName}} plan has expired on {{date}}",
