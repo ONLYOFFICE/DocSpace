@@ -73,7 +73,6 @@
   "ManualBackupHelpNote": "Chọn dung lượng lưu trữ cho dữ liệu (đừng quên nhập chi tiết lưu trữ của bên thứ ba để có thể truy cập dữ liệu đó).<br/><strong>Lưu ý:</strong> bạn cần kết nối tài khoản bên thứ ba (DropBox, Box.com, OneDrive hoặc Google Drive) với thư mục Cộng  tác của {{organizationName}} trước khi bạn có thể lưu bản sao lưu của mình ở đó.",
   "MaxCopies": "{{copiesCount}} - số lượng bản sao lưu tối đa",
   "Migration": "Di chuyển",
-  "NoAdmins": "Chưa có quản trị viên nào ở đây",
   "NoAdminsDescription": "Bạn có thể tự thêm quản trị viên mới",
   "PasswordMinLenght": "Độ dài mật khẩu tối thiểu",
   "Path": "Đường dẫn",

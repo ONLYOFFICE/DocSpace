@@ -70,7 +70,6 @@
   "ManualBackupHelpNote": "데이터에 대한 저장소를 선택하세요(타사 저장소 세부 정보를 입력하는 것을 잊지 마시기 바랍니다).<br/><strong>참고:</strong> 타사 계정(DropBox, Box.com, OneDrive, Google Drive)에 백업을 저장하기 전에 이 계정을 {{organizationName}} 공유 폴더에 연결해야 합니다.",
   "MaxCopies": "{{copiesCount}} - 최대 백업 복사본 수",
   "Migration": "마이그레이션",
-  "NoAdmins": "아직 관리자가 없습니다",
   "NoAdminsDescription": "직접 새 관리자를 추가할 수 있습니다",
   "PasswordMinLenght": "최소 비밀번호 길이",
   "Path": "경로",

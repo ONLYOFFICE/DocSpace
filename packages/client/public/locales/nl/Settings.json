@@ -73,7 +73,6 @@
   "ManualBackupHelpNote": "Selecteer de gegevens opslag type (vergeet niet uw opslag door derden gegevens in te geven om er bij te kunnen).<br/><strong>Opmerking:</strong> u dient eerst uw overige accounts (Dropbox, Box.com, OneDrive of Google Drive) toe te voegen aan de {{organizationName}} Gemeenschappelijke documenten folder voordat u uw back-up op een van deze kunt bewaren.",
   "MaxCopies": "{{copiesCount}} - maximum aantal back-ups",
   "Migration": "Migratie",
-  "NoAdmins": "Nog geen beheerders hier",
   "NoAdminsDescription": "U kunt handmatig een nieuwe beheerder toevoegen",
   "PasswordMinLenght": "Minimumlengte wachtwoord",
   "Path": "Pad",

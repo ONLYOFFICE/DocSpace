@@ -70,7 +70,6 @@
   "ManualBackupHelpNote": "Selecione o armazenamento para os dados (não se esqueça de introduzir os dados do armazenamento em terceiros para conseguir aceder ao mesmo).<br/><strong>Nota:</strong> precisa de se ligar à sua conta no armazenamento em terceiros (DropBox, Box.com, OneDrive ou Google Drive) para pasta Comum da {{organizationName}}, assim consegue guardar a sua cópia de segurança lá.",
   "MaxCopies": "{{copiesCount}} - número máximo de cópias de segurança",
   "Migration": "Migração",
-  "NoAdmins": "Ainda não tem administradores",
   "NoAdminsDescription": "Pode adicionar um novo administrador manualmente",
   "PasswordMinLenght": "Comprimento mínimo da senha",
   "Path": "Destino",

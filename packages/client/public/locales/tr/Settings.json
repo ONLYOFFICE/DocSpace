@@ -73,7 +73,6 @@
   "ManualBackupHelpNote": "Veri için depo alanı seçin (erişebilmek için üçüncü taraf depolama bilgilerinizi girmeyi unutmayın).<br/><strong>Not:</strong> Yedeklemenizi buraya kaydedebilmek için önceden üçüncü taraf hesabınızı (Dropbox, Box.com, OneDrive veya Google Drive) {{organizationName}} Ortak Belgeler klasörüne bağlamanız gerekmektedir, böylelikle yedeğinizi oraya kaydedebileceksiniz.",
   "MaxCopies": "{{copiesCount}} - maksimum yedek kopya sayısı",
   "Migration": "Yer Değiştirme",
-  "NoAdmins": "Burada henüz yönetici yok",
   "NoAdminsDescription": "Yeni yöneticiyi manuel olarak ekleyebilirsiniz",
   "PasswordMinLenght": "Minimum şifre uzunluğu",
   "Path": "Yol",

@@ -73,7 +73,6 @@
   "ManualBackupHelpNote": "Izvēlieties datu glabātuvi (neaizmirstiet ievadīt trešās puses krātuves datus, lai varētu tiem piekļūt).<br/><strong>Piezīme:</strong> jums ir jāpieslēdzas savu trešās puses kontu (DropBox, Box.com, OneDrive vai Google Drive) {{organizationName}} Kopīgie dokumenti mapei pirms jūs varēsit tajā noglabāt savu rezerves kopiju.",
   "MaxCopies": "Maksimālais rezerves dublējumu skaits: {{copiesCount}}",
   "Migration": "Migrācija",
-  "NoAdmins": "Šeit vēl nav neviena administratora",
   "NoAdminsDescription": "Jūs varat manuāli pievienot jaunu administratoru",
   "PasswordMinLenght": "Minimālais paroles garums",
   "Path": "Ceļš",

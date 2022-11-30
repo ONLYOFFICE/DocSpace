@@ -129,7 +129,6 @@
   "MaxCopies": "{{copiesCount}} - maximum number of backup copies",
   "Migration": "Migration",
   "NewColorScheme": "New color scheme",
-  "NoAdmins": "No admins here yet",
   "NoAdminsDescription": "You can add new administrator manually",
   "PasswordMinLenght": "Minimal password length",
   "Path": "Path",

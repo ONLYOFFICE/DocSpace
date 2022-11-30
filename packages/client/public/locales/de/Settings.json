@@ -76,7 +76,6 @@
   "ManualBackupHelpNote": "Wählen Sie den Speicher für die Daten aus (vergessen Sie nicht, die Speicherdetails Ihres Drittanbieters einzugeben, um darauf zugreifen zu können.)<br/><strong>Hinweis:</strong> Sie müssen Ihr Drittanbieter-Konto (DropBox, Box.com, OneDrive oder Google Drive) mit dem Ordner {{organizationName}} 'Gemeinsame Dokumente' verbinden, bevor Sie Ihr Backup dort speichern können.",
   "MaxCopies": "{{copiesCount}} - maximale Anzahl von Sicherungskopien",
   "Migration": "Migration",
-  "NoAdmins": "Keine Administratoren gefunden",
   "NoAdminsDescription": "Sie können einen neuen Administrator manuell hinzufügen",
   "PasswordMinLenght": "Minimale Kennwortlänge",
   "Path": "Pfad",
