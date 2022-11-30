@@ -132,10 +132,9 @@ class AccessRightsStore {
       return getArchiveFileRoleActions(access).rename;
 
     if (
-      rootFolderType === FolderType.TRASH ||
-      (!isFile &&
-        // rootFolderType === FolderType.Privacy &&
-        !isDesktopClient)
+      rootFolderType === FolderType.TRASH
+      // ||
+      // (!isFile && rootFolderType === FolderType.Privacy && !isDesktopClient)
     )
       return false;
 
