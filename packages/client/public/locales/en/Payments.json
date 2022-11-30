@@ -29,7 +29,6 @@
   "PayerDescription": "This user has access to payment details and is the only user that can adjust the quota and make payments. The DocSpace owner, as well as the paying manager themselves, can reassign the paying manger role using the Stripe client portal.",
   "PaymentOverdue": "Cannot add new users.",
   "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per admin/month",
-  "PlanTitle": "You are using the {{planName}} plan",
   "PriceCalculation": "Calculate your price",
   "RenewSubscription": "Renew subscription to {{planName}} plan",
   "RoomManagerDescription": "Room administration and archiving, user invitation and management. Several admins can be assigned to the room.",
