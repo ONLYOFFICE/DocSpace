@@ -6,7 +6,6 @@
   "Data": "Данные",
   "DateModified": "Дата изменения",
   "FeedLocationLabel": "Папка «{{folderTitle}}»",
-  "FeedRenameRoom": "Комната <strong>«{{oldRoomTitle}}»</strong> переименована в <strong>«{{roomTitle}}»</strong>.",
   "FeedUpdateFile": "Обновлен файл.",
   "FeedUpdateRoom": "Изменена иконка",
   "FeedUpdateUser": "назначена роль {{role}}",
