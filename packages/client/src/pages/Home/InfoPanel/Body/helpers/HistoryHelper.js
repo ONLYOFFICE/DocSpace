@@ -13,8 +13,8 @@ export const getRelativeDateDay = (t, date) => {
   const halfYearAgo = moment().subtract(6, "month");
 
   if (given.isAfter(weekAgo)) {
-    if (now.weekday() === given.weekday()) return t("InfoPanel:Today");
-    if (now.weekday() - 1 === given.weekday()) return t("InfoPanel:Yesterday");
+    if (now.weekday() === given.weekday()) return t("Common:Today");
+    if (now.weekday() - 1 === given.weekday()) return t("Common:Yesterday");
 
     const weekday = moment.weekdays(given.weekday());
     return weekday.charAt(0).toUpperCase() + weekday.slice(1);
