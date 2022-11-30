@@ -3,7 +3,6 @@
   "AccessRightsAllUsers": "Kaikki {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Muutokset otetaan käyttöön sähköpostivahvistuksen jälkeen.",
   "AccessRightsProductUsersCan": "{{category}} käyttäjät voivat",
-  "AccessRightsSubTitle": "Tämän osan avulla voit siirtää portaalin omistajan oikeuksia ja hallita järjestelmänvalvojan käyttöoikeuksia.",
   "AccessRightsUsersFromList": "{{users}} luettelosta",
   "AccessSettings": "Päästä asetuksiin",
   "AddAdmins": "Lisätä järjestelmänvalvojia",

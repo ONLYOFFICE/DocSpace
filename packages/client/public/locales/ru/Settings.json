@@ -3,7 +3,6 @@
   "AccessRightsAllUsers": "Всех участников со статусом {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Изменения будут применены после подтверждения по электронной почте.",
   "AccessRightsProductUsersCan": "В модуле {{category}} участники портала со статусом Пользователи могут",
-  "AccessRightsSubTitle": "Данный раздел позволяет передавать права владельца портала и управлять правами доступа администраторов.",
   "AccessRightsUsersFromList": "Участников со статусом {{users}} из списка",
   "AccessSettings": "Настройки доступа",
   "AddAdmins": "Добавить администраторов",

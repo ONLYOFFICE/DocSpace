@@ -4,7 +4,6 @@
   "AccessRightsAllUsers": "All {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Changes will be applied after the confirmation via email.",
   "AccessRightsProductUsersCan": "{{category}} users can",
-  "AccessRightsSubTitle": "This section allows you to transfer portal owner rights and manage administrator access rights.",
   "AccessRightsUsersFromList": "{{users}} from the list",
   "AccessSettings": "Access settings",
   "AddAdmins": "Add admins",

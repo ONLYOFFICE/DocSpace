@@ -3,7 +3,6 @@
   "AccessRightsAllUsers": "Wszyscy {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Zmiany zostaną zastosowane po zatwierdzeniu ich drogą mailową.",
   "AccessRightsProductUsersCan": "Użytkownicy {{category}} mogą",
-  "AccessRightsSubTitle": "Dana sekcja umożliwia przenoszenie uprawnień właściciela portalu i zarządzanie uprawnieniami dostępu administratora.",
   "AccessRightsUsersFromList": "{{users}} z listy",
   "AccessSettings": "Ustawienia dostępu",
   "AddAdmins": "Dodaj administratorów",

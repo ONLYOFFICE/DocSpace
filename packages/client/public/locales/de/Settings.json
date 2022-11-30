@@ -3,7 +3,6 @@
   "AccessRightsAllUsers": "Alle Mitglieder mit dem Status {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Die Änderungen werden nach der Bestätigung per E-Mail übernommen.",
   "AccessRightsProductUsersCan": "Im Modul {{category}} Portalbenutzer können",
-  "AccessRightsSubTitle": "In diesem Abschnitt können Sie die Rechte des Portalbesitzers übertragen und die Zugriffsrechte des Administrators verwalten.",
   "AccessRightsUsersFromList": "{{users}} aus der Liste",
   "AccessSettings": "Zugriffseinstellungen",
   "AddAdmins": "Administratoren hinzufügen",

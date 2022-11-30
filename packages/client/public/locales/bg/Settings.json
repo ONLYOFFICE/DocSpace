@@ -3,7 +3,6 @@
   "AccessRightsAllUsers": "Всички {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Промените ще бъдат приложени след потвърждението по имейла.",
   "AccessRightsProductUsersCan": "{{category}} потребители могат",
-  "AccessRightsSubTitle": "Този раздел Ви позволява да прехвърляте правата на собственика на портала и да управлявате правата за достъп на администратор.",
   "AccessRightsUsersFromList": "{{users}} от списъка",
   "AccessSettings": "Настройки за достъп",
   "AddAdmins": "Добавяне на администратори",

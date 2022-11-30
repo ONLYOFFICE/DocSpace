@@ -3,7 +3,6 @@
   "AccessRightsAllUsers": "Tất cả {{users}}",
   "AccessRightsChangeOwnerConfirmText": "Các thay đổi sẽ được áp dụng sau khi xác nhận qua email.",
   "AccessRightsProductUsersCan": "người dùng {{category}} có thể ",
-  "AccessRightsSubTitle": "Phần này cho phép bạn chuyển quyền chủ sở hữu cổng thông tin và quản lý quyền truy cập của quản trị viên.",
   "AccessRightsUsersFromList": "{{users}} từ danh sách ",
   "AccessSettings": "Cài đặt truy cập",
   "AddAdmins": "Thêm quản trị viên",

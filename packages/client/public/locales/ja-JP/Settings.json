@@ -3,7 +3,6 @@
   "AccessRightsAllUsers": "すべて {{users}}",
   "AccessRightsChangeOwnerConfirmText": "変更内容は、メールでの確認後に適用されます。",
   "AccessRightsProductUsersCan": "{{category}}ユーザーが",
-  "AccessRightsSubTitle": "このセクションでは、ポータル所有者の権限委譲、または管理者のアクセス権を管理ができます。",
   "AccessRightsUsersFromList": "リストから{{users}}",
   "AccessSettings": "アクセス設定",
   "AddAdmins": "管理者の追加",
