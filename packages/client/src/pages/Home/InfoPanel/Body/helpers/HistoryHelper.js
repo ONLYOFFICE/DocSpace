@@ -33,5 +33,5 @@ export const getDateTime = (date) => {
   moment.locale(getCookie(LANGUAGE));
 
   const given = moment(date);
-  return given.format("H:mm A");
+  return given.format("LT");
 };

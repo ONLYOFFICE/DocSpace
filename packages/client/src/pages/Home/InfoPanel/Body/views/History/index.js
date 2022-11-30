@@ -104,7 +104,7 @@ const History = ({
   return (
     <>
       <StyledHistoryList>
-        {history.feedsByDays.map(({ day, feeds }, i) => [
+        {history.feedsByDays.map(({ day, feeds }) => [
           <StyledHistorySubtitle key={day}>{day}</StyledHistorySubtitle>,
           ...feeds.map((feed, i) => (
             <HistoryBlock

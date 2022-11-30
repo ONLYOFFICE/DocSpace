@@ -69,15 +69,12 @@ const InfoPanelBodyContent = ({
     if (isAccounts) return viewHelper.AccountsView();
 
     switch (isRooms ? roomsView : fileView) {
-      case "members": {
+      case "members":
         return viewHelper.MembersView();
-      }
-      case "history": {
+      case "history":
         return viewHelper.HistoryView();
-      }
-      case "details": {
+      case "details":
         return viewHelper.DetailsView();
-      }
     }
   };
 
