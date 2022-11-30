@@ -15,7 +15,6 @@
   "ByCreation": "Created",
   "ByLastModified": "Modified",
   "ByOwner": "Owner",
-  "ByTitle": "Title",
   "CollaborationRooms": "Collaboration",
   "CommonEmptyContainerDescription": "'Common' section contains files shared to all users by the portal admin. Only portal admins can create files there. Users can be granted Full access to a certain folder within the section. This way they will be able to create/upload files in this very folder.  ",
   "ContainsSpecCharacter": "The title can't contain any of the following characters: *+:\"<>?|/",
