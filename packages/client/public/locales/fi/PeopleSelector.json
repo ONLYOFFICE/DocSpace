@@ -1,5 +1,4 @@
 {
-  "AllUsers": "Kaikki käyttäjät",
   "CustomAllGroups": "Kaikki {{ groupsCaption, lowercase}} ",
   "EmptySearchUsersResult": "Tällä nimellä ei ole käyttäjiä",
   "EmptyUsers": "Käyttäjiä ei ole",

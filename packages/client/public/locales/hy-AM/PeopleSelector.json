@@ -1,5 +1,4 @@
 {
-  "AllUsers": "Բոլոր օգտատերերը",
   "CustomAllGroups": "Բոլոր{{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "Նման անունով օգտվողներ չկան",
   "EmptyUsers": "Օգտատերեր չկան",

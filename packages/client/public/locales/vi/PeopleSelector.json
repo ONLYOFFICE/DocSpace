@@ -1,5 +1,4 @@
 {
-  "AllUsers": "Tất cả người dùng",
   "CustomAllGroups": "Tất cả {{ groupsCaption, lowercase }}",
   "EmptySearchUsersResult": "Không có người dùng nào có tên như vậy",
   "EmptyUsers": "Không có người dùng",
