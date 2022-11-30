@@ -73,7 +73,6 @@
   "ManualBackupHelpNote": "Wybierz pamięć danych (nie zapomnij wpisać szczegółów przechowywania przez strony trzecie, aby móc uzyskać dostęp do niego).<br/><strong>Uwaga:</strong> musisz się połączyć z kontem osób trzecich (DropBox, Box.com, OneDrive lub Google Drive) w folderze Wspólnych Dokumentów {{organizationName}}, aby można było zapisać kopię zapasową w tym miejscu.",
   "MaxCopies": "{{copiesCount}} – maksymalna liczba kopii zapasowych",
   "Migration": "Migracja",
-  "NoAdminsDescription": "Możesz dodać nowego administratora ręcznie",
   "PasswordMinLenght": "Minimalna długość hasła",
   "Path": "Ścieżka",
   "PeopleAdministratorsCan": "Administratorzy modułu użytkowników mogą tworzyć nowe profile i grupy oraz importować i zapraszać użytkowników.",

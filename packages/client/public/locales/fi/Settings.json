@@ -73,7 +73,6 @@
   "ManualBackupHelpNote": "Valitse tietojen tallennus (älä unohda syöttää kolmannen osapuolen tallennuksen tietojasi, jotta voit käyttää niitä).<br/><strong>Huom:</strong> sinun tulee yhdistää ulkopuolinen tallennuspalvelusi (Dropbox, Box.com, OneDrive tai Google Drive) {{organizationName}} Yleisten asiakirjojen moduuliin ennen kuin voit varmuuskopioida sinne.",
   "MaxCopies": "{{copiesCount}} - varmuuskopioiden enimmäismäärä",
   "Migration": "Migraatio",
-  "NoAdminsDescription": "Voit lisätä uuden järjestelmänvalvojan manuaalisesti",
   "PasswordMinLenght": "Salasanan vähimmäispituus",
   "Path": "Polku",
   "PeopleAdministratorsCan": "Ihmiset-moduulin järjestelmänvalvojat voivat luoda profiileja ja ryhmiä, tuoda ihmisiä ja kutsua käyttäjiä.",

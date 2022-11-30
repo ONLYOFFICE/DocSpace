@@ -73,7 +73,6 @@
   "ManualBackupHelpNote": "Vyberte miesto ukladania údajov (nezabudnite zadať podrobnosti o úložisku tretej strany, aby ste k ním mali prístup).<br/><strong>Poznámka:</strong> skôr ako budete môcť ukladať svoje zálohy, potrebujete prepojiť účet tretej strany (DropBox, Box.com, OneDrive alebo Google Drive) do priečinka Všeobecné Dokumenty {{organizationName}}.",
   "MaxCopies": "{{copiesCount}} - maximálny počet zálohovaných kópií",
   "Migration": "Migrácia",
-  "NoAdminsDescription": "Nového admina môžete pridať manuálne",
   "PasswordMinLenght": "Minimálna dĺžka hesla",
   "Path": "Cesta",
   "PeopleAdministratorsCan": "Administrátori skupiny ľudí môžu vytvárať profily a skupiny, importovať ľudí a pozývať užívateľov.",

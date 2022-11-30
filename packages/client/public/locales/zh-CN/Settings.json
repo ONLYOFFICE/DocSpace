@@ -76,7 +76,6 @@
   "ManualBackupHelpNote": "選擇數據的存儲（不要忘記輸入第三方存儲詳細信息以便能夠存取它）。<br/><strong>注意：</strong>您需要將第三方帳戶（DropBox，Box.com，OneDrive或Google Drive）連接到{{organizationName}} Common文件夾，然後才能在其中保存備份。",
   "MaxCopies": "{{copiesCount}} - 备份的最大数量",
   "Migration": "迁移",
-  "NoAdminsDescription": "您可手动添加新的管理员",
   "PasswordMinLenght": "密码最短长度",
   "Path": "路径",
   "PeopleAdministratorsCan": "人员模块管理员可创建档案和群组、导入人员以及邀请用户。",

@@ -70,7 +70,6 @@
   "ManualBackupHelpNote": "Alegeți varianta de stocare a datelor (nu uitați să introduceți detaliile furnizorului de servicii de stocare ca să-l puteți accesa).<br/><strong>Mențiune:</strong> trebuie să vă conectați cu contul de stocare de la terți (DropBox, Box.com, OneDrive sau Google Drive) la folderul Comun al {{organizationName}} înainte de a crea o copie de rezervă acolo.",
   "MaxCopies": "{{copiesCount}} - numărul maxim de copii de rezervă",
   "Migration": "Migrare",
-  "NoAdminsDescription": "Puteți adăuga manual un administrator nou",
   "PasswordMinLenght": "Lungimea minimă a parolei",
   "Path": "Cale",
   "PeopleAdministratorsCan": "Administratorii modulului Persoane pot crea profile și grupe, importa persoane și invita utilizatori.",

@@ -76,7 +76,6 @@
   "ManualBackupHelpNote": "Sélectionnez le stockage pour les données (n'oubliez pas d'ajouter vos détails de stockage tiers afin de l'accéder).<br/><strong>Remarque:</strong>vous devez connecter votre compte tiers (Dropbox, Box.com, OneDrive ou Google Drive) au dossier Documents Communs {{organizationName}} avant que vous puissiez enregistrer votre sauvegarde là-bas.",
   "MaxCopies": "{{copiesCount}} - nombre maximum de copies de sauvegarde",
   "Migration": "Migration",
-  "NoAdminsDescription": "Vous pouvez ajouter un nouvel administrateur manuellement",
   "PasswordMinLenght": "Longueur minimale du mot de passe",
   "Path": "Chemin",
   "PeopleAdministratorsCan": "Les administrateurs du module Personnes peuvent créer des profils et des groupes, importer des personnes et inviter des utilisateurs.",

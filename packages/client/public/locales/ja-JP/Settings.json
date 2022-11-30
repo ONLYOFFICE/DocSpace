@@ -74,7 +74,6 @@
   "ManualBackupHelpNote": "データのためのストレージを選択してください。（アクセスすることができるように、第三者サービスストレージ詳細も入力してください）。<br/><strong>ご注意してください：</strong>バックアップを保存する前に、第三者サービスのアカウント（DropBox、Box.com、OneDriveまたはGoogle Drive）を{{organizationName}}「共通文書」フォルダーに接続する必要です。",
   "MaxCopies": "{{copiesCount}}は、バックアップの最大コピー数",
   "Migration": "移行",
-  "NoAdminsDescription": "新しい管理者を手動で追加することも可能です。",
   "PasswordMinLenght": "最小のパスワードの長さ",
   "Path": "パス",
   "PeopleAdministratorsCan": "人モジュールの管理者は、プロファイルやグループの作成、利用者のインポート、ユーザーの招待などを行えます。",

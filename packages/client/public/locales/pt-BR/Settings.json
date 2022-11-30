@@ -76,7 +76,6 @@
   "ManualBackupHelpNote": "Selecione o armazenamento para os dados (não se esqueça de inserir seus detalhes de armazenamento de terceiros para conseguir ter acesso).<br/><strong>Nota:</strong> você precisa de uma conta de terceiros (Dropbox, Box.com, OneDrive ou Google Drive) para o Comum {{organizationName}} antes de poder salvar seu backup lá.",
   "MaxCopies": "{{copiesCount}} - número máximo de cópias de backup",
   "Migration": "Migração",
-  "NoAdminsDescription": "Você pode adicionar um novo administrador manualmente",
   "PasswordMinLenght": "Tamanho mínimo da senha",
   "Path": "Caminho",
   "PeopleAdministratorsCan": "Os administradores do módulo de pessoas podem criar perfis e grupos, importar pessoas e convidar usuários.",

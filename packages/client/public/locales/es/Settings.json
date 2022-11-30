@@ -76,7 +76,6 @@
   "ManualBackupHelpNote": "Seleccione el almacenamiento para los datos (no olvide introducir los detalles de su almacenamiento de terceros para tener acceso a él).<br/><strong>Nota:</strong> Usted necesita conectar su cuenta de terceros (Dropbox, Box.com, OneDrive o Google Drive) a la carpeta Documentos Comunes de {{organizationName}} antes de que pueda guardar su copia de seguridad allí.",
   "MaxCopies": "{{copiesCount}} - número máximo de copias de seguridad",
   "Migration": "Migración",
-  "NoAdminsDescription": "Puede añadir un nuevo administrador manualmente",
   "PasswordMinLenght": "Longitud mínima de la contraseña",
   "Path": "Ruta",
   "PeopleAdministratorsCan": "Los administradores del módulo Personas pueden crear perfiles y grupos, importar personas e invitar a usuarios.",

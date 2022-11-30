@@ -73,7 +73,6 @@
   "ManualBackupHelpNote": "Vyberte úložiště pro data (nezapomeňte vyplnit Vaše úložišti třetí strany detaily, aby jste k nim měli přístup).<br/><strong>Poznámka:</strong>musíte připojit účet třetí strany (DropBox, Box.com, OneDrive nebo Google Drive) k složce Běžné Dokumenty {{organizationName}} před tím, než tam budete moci uložit vaše zálohovaná data.",
   "MaxCopies": "{{copiesCount}} - maximální počet záložních kopií",
   "Migration": "Migrace",
-  "NoAdminsDescription": "Můžete přidat nového administrátora manuálně",
   "PasswordMinLenght": "Minimální délka hesla",
   "Path": "Сesta",
   "PeopleAdministratorsCan": "Správci modulu Lidé mohou vytvářet profily a skupiny, importovat lidi a zvát uživatele.",

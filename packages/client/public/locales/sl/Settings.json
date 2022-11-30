@@ -73,7 +73,6 @@
   "ManualBackupHelpNote": "Izberite shrambo podatkov (ne pozabite vnesti podatkov o pomnilniku tretjih oseb, ki bodo omogočali dostop).<br/><strong>Opomba:</strong> Svoj tuj račun morate povezati (Dropbox, Box.com, OneDrive ali Google Drive) z {{organizationName}} Skupno, preden boste tam lahko shranili svoje varnostno kopiranje.",
   "MaxCopies": "{{copiesCount}} - največje število varnostnih kopij",
   "Migration": "Migracija",
-  "NoAdminsDescription": "Novega administratorja lahko dodate ročno",
   "PasswordMinLenght": "Minimalna dolžina gesla",
   "Path": "Pot",
   "PeopleAdministratorsCan": "Administratorji modula Ljudje lahko ustvarijo profile in skupine, uvozijo ljudi in povabijo uporabnike.",
