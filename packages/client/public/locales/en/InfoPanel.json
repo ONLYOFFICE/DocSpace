@@ -5,7 +5,6 @@
   "ExpectPeople": "Expect people",
   "Data": "Data",
   "DateModified": "Date modified",
-  "FeedCreateRoom": "<strong>«{{roomTitle}}»</strong> room created",
   "FeedCreateRoomTag": "Tags added.",
   "FeedCreateUser": "Users added. ",
   "FeedDeleteFile": "Files removed.",
