@@ -38,8 +38,8 @@ export const EmployeeType = Object.freeze({
  * @readonly
  */
 export const PaymentsType = Object.freeze({
-  Paid: 0,
-  Free: 1,
+  Paid: "0",
+  Free: "1",
 });
 /**
  * Enum for filter type.
