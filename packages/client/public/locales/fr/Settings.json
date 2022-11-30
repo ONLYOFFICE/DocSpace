@@ -82,7 +82,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: votre ancienne adresse du portail sera disponible pour les nouveaux utilisateurs une fois que vous cliquez sur le bouton <2>{{save}}</2>.",
   "PortalAccess": "Accès au portail",
   "PortalAccessSubTitle": "Cette section vous permet de fournir aux utilisateurs des moyens sûrs et pratiques d'accéder au portail.",
-  "PortalAdminsDescription": "Les droits d'accès sont les mêmes que ceux du propriétaire du portail, à l'exception du droit de: changer le propriétaire du portail ; désactiver ou supprimer le portail.",
   "PortalNameEmpty": "Nom de compte est vide",
   "PortalNameIncorrect": "Nom de compte incorrect",
   "PortalNameLength": "Le nom du compte doit comporter entre 6 et 50 caractères",

@@ -79,7 +79,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: <2>{{save}}</2> tuşuna tıkladığınız takdirde eski portal adresiniz yeni kullanıcılarına erişilebilir olacaktır.",
   "PortalAccess": "Portal erişimi",
   "PortalAccessSubTitle": "Bu bölüm, kullanıcılara portala erişmeleri için güvenli ve uygun yollar sağlamanıza olanak tanır.",
-  "PortalAdminsDescription": "Portal sahibiyle aynı erişim haklarına sahip olun, şunlar dışında: portal sahibi değiştirmek; portalı devre dışı bırakmak veya silmek.",
   "PortalNameEmpty": "Hesap adı boş",
   "PortalNameIncorrect": "Yanlış hesap adı",
   "PortalNameLength": "Hesap adı 6 ila 50 karakter uzunluğunda olmalıdır",

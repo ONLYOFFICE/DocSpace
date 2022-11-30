@@ -136,7 +136,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: your old portal address will become available to new users once you click the <2>{{save}}</2> button.",
   "PortalAccess": "Portal access",
   "PortalAccessSubTitle": "This section allows you to provide users with safe and convenient ways to access the portal.",
-  "PortalAdminsDescription": "Have the same access rights as the portal owner, except the right to: change portal owner; deactivate or delete portal.",
   "PortalDeactivation": "Deactivate DocSpace",
   "PortalDeactivationDescription": "Use this option to deactivate your portal temporarily.",
   "PortalDeactivationHelper": "If you wish to deactivate the portal, your portal and all information associated with it will be blocked so that no one has access to it for a particular period. To do that click the Deactivate button. A link to confirm the operation will be sent to the email address of the portal owner.\n In case you want to come back to the portal and resume using it you will need to use the second link provided in the confirmation email. So, please, keep this email in a safe place.",

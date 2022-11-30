@@ -82,7 +82,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: <2>{{save}}</2> düyməsini kliklədikdən sonra köhnə portal ünvanınız yeni istifadəçiləri üçün əlçatan olacaq.",
   "PortalAccess": "Portala giriş",
   "PortalAccessSubTitle": "Bu bölmə sizə istifadəçiləri portala təhlükəsiz və rahat giriş imkanı ilə təmin etmək imkanı verir",
-  "PortalAdminsDescription": "Portal sahibi ilə sadalananlar xaricində eyni hüquqlara malik olun: portal sahibini dəyişdirmək; portalı deaktivləşdirmək və ya silmək.",
   "PortalNameEmpty": "Hesab adı boşdur",
   "PortalNameIncorrect": "Yanlış hesab adı",
   "PortalNameLength": "Hesab adı ən az 6, ən çox 50 işarədən ibarət ola bilər",

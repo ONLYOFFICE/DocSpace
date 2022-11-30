@@ -80,7 +80,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: <2>{{save}}</2>ボタンをクリックすると、古いポータルアドレスが新しいユーザに使用できるようになります。",
   "PortalAccess": "ポータルアクセス",
   "PortalAccessSubTitle": "このセクションでは、ユーザーがポータルにアクセスするための安全で便利な方法を提供することができます。",
-  "PortalAdminsDescription": "ポータルの所有者と同じアクセス権を持つ、ただし、ポータルの所有者を変更する権利、ポータルを無効化または削除する権利は含まれていません。",
   "PortalNameEmpty": "アカウント名が空です。",
   "PortalNameIncorrect": "アカウント名が無効です。",
   "PortalNameLength": "アカウント名は6～50文字がある必要です。",

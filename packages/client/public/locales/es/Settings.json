@@ -82,7 +82,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: su dirección de portal anterior estará disponible para nuevos usuarios al hacer clic en el botón <2>{{save}}</2>.",
   "PortalAccess": "Acceso al portal",
   "PortalAccessSubTitle": "Esta sección le permite ofrecer a los usuarios formas seguras y cómodas de acceder al portal.",
-  "PortalAdminsDescription": "Tiene los mismos derechos de acceso que el propietario del portal, excepto el derecho a: cambiar el propietario del portal; desactivar o eliminar el portal.",
   "PortalNameEmpty": "Nombre de cuenta está vacío",
   "PortalNameIncorrect": "Nombre de cuenta incorrecto",
   "PortalNameLength": "El nombre de cuenta debe tener entre 6 y 50 caracteres de longitud",

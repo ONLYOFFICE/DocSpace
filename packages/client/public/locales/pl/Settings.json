@@ -79,7 +79,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: stary adres portalu będzie dostępny dla nowych użytkowników po kliknięciu przycisku <2>{{save}}</2>.",
   "PortalAccess": "Dostęp do portalu",
   "PortalAccessSubTitle": "Dana sekcja umożliwia zapewnienie użytkownikom bezpiecznych i wygodnych metod dostępu do portalu.",
-  "PortalAdminsDescription": "Mają takie same prawa dostępu, jak właściciel portalu, z wyjątkiem prawa do: zmiany właściciela portalu; dezaktywacji lub usunięcia portalu.",
   "PortalNameEmpty": "Nazwa konta jest pusta",
   "PortalNameIncorrect": "Nieprawidłowa nazwa konta",
   "PortalNameLength": "Nazwa konta musi zawierać od 6 do 50 znaków",

@@ -79,7 +79,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: portaalisi osoite tulee saataville uusille käyttäjille sen jälkeen kun klikkaat <2>{{save}}</2> painiketta.",
   "PortalAccess": "Pääsy portaaliin",
   "PortalAccessSubTitle": "Tämän osan avulla voit tarjota käyttäjille turvallisia ja käteviä tapoja käyttää portaalia.",
-  "PortalAdminsDescription": "Samat käyttöoikeudet kuin portaalin omistajalla, paitsi oikeus: muuttaa portaalin omistajaa; ottaa portaali pois käytöstä tai poista se.",
   "PortalNameEmpty": "Tilin nimi on tyhjä",
   "PortalNameIncorrect": "Virheellinen tilin nimi",
   "PortalNameLength": "Tilin nimen on oltava 6-50 merkkiä pitkä",

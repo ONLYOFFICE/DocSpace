@@ -82,7 +82,6 @@
   "PleaseNoteDescription": "<0>{{pleaseNote}}</0>:点击<2>{{save}}</2>按钮后，您的旧门户网站地址将可用于新的用户。",
   "PortalAccess": "门户访问权限",
   "PortalAccessSubTitle": "这一部分允许您为用户提供安全又方便的方式来访问门户网站。",
-  "PortalAdminsDescription": "基本具有与门户所有者相同的访问权限，以下除外：更改门户所有者；停用或删除门户。",
   "PortalNameEmpty": "账户名称为空",
   "PortalNameIncorrect": "账户名称不正确",
   "PortalNameLength": "账户名称的长度必须在6至50个字符之间",
