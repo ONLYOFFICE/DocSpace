@@ -54,7 +54,7 @@ const TagInput = ({
   return (
     <StyledTagInput className="set_room_params-input set_room_params-tag_input">
       <InputParam
-        id={"tags-input"}
+        id="shared_tags-input"
         title={`${t("Common:Tags")}:`}
         placeholder={t("TagsPlaceholder")}
         value={tagInput}

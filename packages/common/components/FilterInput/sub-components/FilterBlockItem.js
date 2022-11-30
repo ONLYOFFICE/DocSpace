@@ -104,6 +104,7 @@ const FilterBlockItem = ({
         themeId={ThemeType.FilterBlockItemTag}
       >
         <StyledFilterBlockItemTagText
+          className="filter-text"
           noSelect={true}
           isSelected={item.isSelected}
         >
@@ -189,6 +190,7 @@ const FilterBlockItem = ({
         themeId={ThemeType.FilterBlockItemTag}
       >
         <StyledFilterBlockItemTagText
+          className="filter-text"
           noSelect={true}
           isSelected={item.isSelected}
           truncate

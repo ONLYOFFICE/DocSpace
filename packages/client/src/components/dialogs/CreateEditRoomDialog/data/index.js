@@ -2,6 +2,7 @@ import { RoomsType } from "@docspace/common/constants";
 
 export const roomTypes = [
   {
+    id: "shared_filling-forms-room",
     type: RoomsType.FillingFormsRoom,
     title: "FillingFormsRoomTitle",
     description: "FillingFormsRoomDescription",
@@ -10,6 +11,7 @@ export const roomTypes = [
     secondaryInfo: "FillingFormsRoomSecondaryInfo",
   },
   {
+    id: "shared_collaboration-room",
     type: RoomsType.EditingRoom,
     title: "CollaborationRoomTitle",
     description: "CollaborationRoomDescription",
@@ -18,6 +20,7 @@ export const roomTypes = [
     secondaryInfo: "CollaborationRoomSecondaryInfo",
   },
   {
+    id: "shared_review-room",
     type: RoomsType.ReviewRoom,
     title: "ReviewRoomTitle",
     description: "ReviewRoomDescription",
@@ -26,6 +29,7 @@ export const roomTypes = [
     secondaryInfo: "ReviewRoomSecondaryInfo",
   },
   {
+    id: "shared_read-only-room",
     type: RoomsType.ReadOnlyRoom,
     title: "ViewOnlyRoomTitle",
     description: "ViewOnlyRoomDescription",
@@ -34,6 +38,7 @@ export const roomTypes = [
     secondaryInfo: "ViewOnlyRoomSecondaryInfo",
   },
   {
+    id: "shared_custom-room",
     type: RoomsType.CustomRoom,
     title: "CustomRoomTitle",
     description: "CustomRoomDescription",

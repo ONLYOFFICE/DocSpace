@@ -23,6 +23,7 @@ export const LanguageTimeSettingsTooltip = ({
   theme,
   helpLink,
   organizationName,
+  currentColorScheme,
 }) => {
   const learnMore = t("Common:LearnMore");
   const text = t("Settings:StudioTimeLanguageSettings");
@@ -47,7 +48,7 @@ export const LanguageTimeSettingsTooltip = ({
           <div className="bold display-inline font-size"> {{ save }}</div>
           button at the bottom of the section.
           <Link
-            color={theme.client.settings.common.linkColorHelp}
+            color={currentColorScheme.main.accent}
             className="display-block font-size"
             isHovered={true}
             target="_blank"

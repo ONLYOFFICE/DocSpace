@@ -19,7 +19,9 @@ const TagDropdown = ({
   const [dropdownMaxHeight, setDropdownMaxHeight] = useState(0);
 
   useEffect(() => {
-    document.getElementById("tags-input").addEventListener("keyup", onKeyPress);
+    document
+      .getElementById("shared_tags-input")
+      .addEventListener("keyup", onKeyPress);
 
     return () => document.removeEventListener("keyup", onKeyPress);
   });
@@ -38,15 +40,8 @@ const TagDropdown = ({
     e.preventDefault();
   };
 
-  const onClickOutside = (e) => {
-    console.log("clickOutside");
-    // console.log(e.target.id, e.target.for);
-    // if (e.target.id !== "tags-input" || e.target.for !== "tags-input") {
-    //   document.getElementById("tags-input").blur();
-    // } else {
-    //   document.getElementById("tags-input").focus();
-    // }
-    // if (e) console.log(e.target, e.currentTarget);
+  const onClickOutside = () => {
+    document.getElementById("shared_tags-input").blur();
   };
 
   const addNewTag = () => {

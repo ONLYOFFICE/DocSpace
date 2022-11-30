@@ -8,6 +8,7 @@ export const RoomsActions = Object.freeze({
   deleteUsers: false,
   archive: false,
   delete: false,
+  canPin: true,
 });
 
 export const OwnerRoomsActions = Object.freeze({
@@ -20,7 +21,6 @@ export const OwnerRoomsActions = Object.freeze({
   viewInfo: true,
   deleteUsers: true,
   archive: true,
-  delete: true,
 });
 
 export const RoomAdminRoomsActions = Object.freeze({

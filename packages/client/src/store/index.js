@@ -36,8 +36,6 @@ const oformsStore = new OformsStore(authStore);
 
 const selectedFolderStore = new SelectedFolderStore(authStore.settingsStore);
 
-const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
-
 const paymentStore = new PaymentStore();
 const wizardStore = new WizardStore();
 const setupStore = new SettingsSetupStore();
@@ -48,17 +46,19 @@ const bannerStore = new BannerStore();
 
 const ssoStore = new SsoFormStore();
 
+const tagsStore = new TagsStore();
+
+const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
+const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
+
+const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);
+
 const peopleStore = new PeopleStore(
   authStore,
   authStore.infoPanelStore,
   setupStore,
   accessRightsStore
 );
-
-const tagsStore = new TagsStore();
-
-const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
-const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
 
 const filesStore = new FilesStore(
   authStore,
