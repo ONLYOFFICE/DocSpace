@@ -1,6 +1,5 @@
 {
   "Administrator": "管理者",
-  "ChangeToGuest": "{{guestCaption}}に変更します",
   "ChangeToUser": "{{userCaption}}に変更します",
   "EmptyGroupDescription": "新しいチームメンバーを手動で追加することも、リンクで招待することもできます。",
   "EmptyGroupTitle": "ここにはまだチームメンバはいません。",

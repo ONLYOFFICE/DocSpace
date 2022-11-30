@@ -1,6 +1,5 @@
 {
   "Administrator": "Yönetici",
-  "ChangeToGuest": "Şuna değiştir {{guestCaption}}",
   "ChangeToUser": "Şuna değiştir {{userCaption}}",
   "EmptyGroupDescription": "Yeni ekip üyelerini manuel olarak ekleyebilir veya bağlantı yoluyla davet edebilirsiniz.",
   "EmptyGroupTitle": "Burada henüz takım arkadaşı yok",

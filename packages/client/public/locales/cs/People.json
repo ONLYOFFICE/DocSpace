@@ -1,6 +1,5 @@
 {
   "Administrator": "Administrátor",
-  "ChangeToGuest": "Změnit na {{guestCaption}}",
   "ChangeToUser": "Změnit {{userCaption}}",
   "EmptyGroupDescription": "Můžete přidat nové členy týmu ručně nebo je pozvat prostřednictvím odkazu.",
   "EmptyGroupTitle": "Zatím zde nejsou žádní členové týmu",

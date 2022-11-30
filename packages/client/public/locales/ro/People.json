@@ -1,6 +1,5 @@
 {
   "Administrator": "Administrator",
-  "ChangeToGuest": "Se schimbă în {{guestCaption}}",
   "ChangeToUser": "Se schimbă în {{userCaption}}",
   "EmptyGroupDescription": "Puteți adăuga manual membrii noi la o echipă sau le invitați prin link.",
   "EmptyGroupTitle": "Deocamdată nu aveți niciun membru al echipei",

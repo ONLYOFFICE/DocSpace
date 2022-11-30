@@ -1,6 +1,5 @@
 {
   "Administrator": "관리자",
-  "ChangeToGuest": "{{guestCaption}}로 변경",
   "ChangeToUser": "{{userCaption}}로 변경",
   "EmptyGroupDescription": "새로운 팀원을 직접 추가하거나 링크를 통해 초대할 수 있습니다.",
   "EmptyGroupTitle": "아직 팀원이 없습니다",

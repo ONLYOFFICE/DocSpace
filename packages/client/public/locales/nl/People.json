@@ -1,6 +1,5 @@
 {
   "Administrator": "Beheerder",
-  "ChangeToGuest": "Verander in {{guestCaption}}",
   "ChangeToUser": "Verander in {{userCaption}}",
   "EmptyGroupDescription": "U kunt nieuwe teamleden handmatig toevoegen of ze via een link uitnodigen.",
   "EmptyGroupTitle": "Nog geen teamleden hier",
