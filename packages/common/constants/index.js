@@ -34,6 +34,14 @@ export const EmployeeType = Object.freeze({
   Owner: "Owner",
 });
 /**
+ * Enum for user payments type.
+ * @readonly
+ */
+export const PaymentsType = Object.freeze({
+  Paid: 0,
+  Free: 1,
+});
+/**
  * Enum for filter type.
  * @readonly
  */
