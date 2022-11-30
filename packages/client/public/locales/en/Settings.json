@@ -175,7 +175,6 @@
   "SessionLifetime": "Session Lifetime",
   "SessionLifetimeDescription": "Session Lifetime allows to set time (in minutes) before the portal users will need to enter the portal credentials again in order to access the portal.",
   "SessionLifetimeHelper": "After save all the users will be logged out from portal.",
-  "SetDefaultTitle": "Set default title",
   "SettingPasswordStrength": "Setting password strength",
   "SettingPasswordStrengthDescription": "Password Strength Settings is a way to determine the effectiveness of a password in resisting guessing and brute-force attacks.",
   "SettingPasswordStrengthHelper": "Use the Minimum Password Length bar to determine how long the password should be. Check the appropriate boxes below to determine the character set that must be used in the password.",
