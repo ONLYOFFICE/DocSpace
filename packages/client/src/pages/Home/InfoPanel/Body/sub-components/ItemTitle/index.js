@@ -35,7 +35,7 @@ const ItemTitle = ({
   const filesItemSelection =
     isRooms &&
     !isSeveralItems &&
-    roomsView === "members" &&
+    roomsView === "info_members" &&
     !selection.isRoom &&
     !!selectionParentRoom
       ? selectionParentRoom

@@ -125,6 +125,7 @@ const ControlButtons = ({
           )}
           {!personal && (
             <ContextMenuButton
+              id="header_optional-button"
               zIndex={402}
               className="option-button"
               directionX="right"
@@ -147,6 +148,7 @@ const ControlButtons = ({
         <>
           {!isMobile && (
             <PlusButton
+              id="header_add-button"
               className="add-button"
               getData={getContextOptionsPlus}
               withMenu={withMenu}

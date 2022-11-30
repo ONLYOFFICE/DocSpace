@@ -113,6 +113,7 @@ class LinkWithDropdown extends React.Component {
     const dropDownItem = data.map((item) => (
       <DropDownItem
         className="drop-down-item"
+        id={item.key}
         key={item.key}
         {...item}
         onClick={this.onClickDropDownItem}

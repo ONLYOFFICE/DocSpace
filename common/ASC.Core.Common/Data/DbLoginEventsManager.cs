@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.ComponentModel;
+
 namespace ASC.Core.Data;
 
 [Scope]
@@ -62,25 +64,21 @@ public class DbLoginEventsManager
         _mapper = mapper;
     }
 
-    public async Task<List<int>> GetLoginEventIds(int tenantId, Guid userId)
+    public async Task<LoginEvent> GetById(int id)
     {
-        var date = DateTime.UtcNow.AddYears(-1);
+        if (id < 0) return null;
 
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
-
-        var resultList = await loginEventContext.LoginEvents
-            .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action ?? 0) && r.Date >= date && r.Active)
-            .Select(r => r.Id)
-            .ToListAsync();
-
-        return resultList;
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+            
+        return await loginEventContext.LoginEvents.FindAsync(id);
     }
 
     public async Task<List<BaseEvent>> GetLoginEvents(int tenantId, Guid userId)
     {
         var date = DateTime.UtcNow.AddYears(-1);
 
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+
         var loginInfo = await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action ?? 0) && r.Date >= date && r.Active)
             .OrderByDescending(r => r.Id)
@@ -91,7 +89,8 @@ public class DbLoginEventsManager
 
     public async Task LogOutEvent(int loginEventId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+
         var events = await loginEventContext.LoginEvents
            .Where(r => r.Id == loginEventId)
            .ToListAsync();
@@ -108,7 +107,8 @@ public class DbLoginEventsManager
 
     public async Task LogOutAllActiveConnections(int tenantId, Guid userId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+
         var events = await loginEventContext.LoginEvents
               .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Active)
               .ToListAsync();
@@ -125,7 +125,8 @@ public class DbLoginEventsManager
 
     public async Task LogOutAllActiveConnectionsForTenant(int tenantId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+        
         var events = await loginEventContext.LoginEvents
               .Where(r => r.TenantId == tenantId && r.Active)
               .ToListAsync();
@@ -140,7 +141,8 @@ public class DbLoginEventsManager
 
     public async Task LogOutAllActiveConnectionsExceptThis(int loginEventId, int tenantId, Guid userId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+        
         var events = await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Id != loginEventId && r.Active)
             .ToListAsync();
