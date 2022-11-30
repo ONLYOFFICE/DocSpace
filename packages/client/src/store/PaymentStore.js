@@ -190,7 +190,7 @@ class PaymentStore {
   sendPaymentRequest = async (email, userName, message) => {
     try {
       await api.portal.sendPaymentRequest(email, userName, message);
-      toastr.success("Success");
+      toastr.success(t("SuccessfullySentMessage"));
     } catch (e) {
       toastr.error(e);
     }
