@@ -102,7 +102,6 @@
   "RegistrationDate": "Data de Registro",
   "RestoreBackup": "Restauração de dados",
   "RestoreBackupDescription": "Use esta opção para restaurar seu portal a partir do arquivo de backup salvo anteriormente.",
-  "RestoreBackupHelpNote": "Selecione o armazenamento onde os dados são salvos, insira as informações necessárias e marque <strong>Enviar notificação para usuários do portal</strong> para alertar os usuários do portal sobre as operações de backup/restauração.",
   "RestoreBackupResetInfoWarningText": "Todas as senhas atuais serão redefinidas. Os usuários do portal receberão um e-mail com o link de restauração de acesso.",
   "RestoreBackupWarningText": "O portal ficará indisponível durante o processo de restauração. Após a conclusão da restauração, todas as mudanças feitas após a data do ponto de restauração selecionado serão perdidas.",
   "RestoreDefaultButton": "Restaurar padrão",

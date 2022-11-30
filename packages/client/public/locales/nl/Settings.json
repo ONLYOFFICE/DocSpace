@@ -99,7 +99,6 @@
   "RegistrationDate": "Registratiedatum",
   "RestoreBackup": "Dataherstel",
   "RestoreBackupDescription": "Gebruik deze optie om uw portaal te herstellen vanaf het voorgaande opgeslagen back-up bestand.",
-  "RestoreBackupHelpNote": "Selecteer de opslagplaats waar de gegevens worden opgeslagen, voer de nodige gegevens in en vink de optie <strong>Melding naar portaalgebruikers sturen</strong> aan om uw portaalgebruikers op de hoogte te brengen van de back-up/herstel operaties.",
   "RestoreBackupResetInfoWarningText": "Alle huidige wachtwoorden zullen opnieuw worden ingesteld. Portaalgebruikers krijgen een e-mail met de link voor het herstel van de toegang.",
   "RestoreBackupWarningText": "Het portaal is tijdens het herstelproces niet beschikbaar. Nadat het herstel is voltooid, gaan alle veranderingen na de datum van het geselecteerde herstelpunt, verloren.",
   "RestoreDefaultButton": "Terugzetten naar Standaardwaarden",

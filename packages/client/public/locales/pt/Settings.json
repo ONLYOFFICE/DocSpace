@@ -96,7 +96,6 @@
   "RegistrationDate": "Data do Registo",
   "RestoreBackup": "Restaurar Dados",
   "RestoreBackupDescription": "Utilize esta opção para restaurar o seu portal através de uma cópia de segurança guardada anteriormente.",
-  "RestoreBackupHelpNote": "Selecione o armazenamento onde os dados serão guardados, introduza os detalhes necessários e clique no <strong>Enviar notificação para os utilizadores do portal</strong> para avisar os utilizadores do portal sobre as operações de restauro ou cópia de segurança.",
   "RestoreBackupResetInfoWarningText": "Todas as palavras-passe atuais serão redefinidas. Os utilizadores do portal irão receber um email com um link para restaurar o acesso.",
   "RestoreBackupWarningText": "O portal vai ficar indisponível durante o processo de restauro. Após a restauração estar completa, todas as alterações feitas após a data do ponto de restauro serão perdidas.",
   "RestoreDefaultButton": "Restaurar para a Predefinição",

@@ -102,7 +102,6 @@
   "RegistrationDate": "Qeydiyyat tarixi",
   "RestoreBackup": "Məlumatların bərpası",
   "RestoreBackupDescription": "Portalınızı əvvəllər saxlanmış ehtiyat faylından bərpa etmək üçün bu seçimdən istifadə edin.",
-  "RestoreBackupHelpNote": "Verilənin yadda saxlanıldığı yaddaşı seçin, lazımi məlumatları daxil edin və portal istifadəçilərinizi yedəkləmə/bərpa əməliyyatları haqqında məlumatlandırmaq üçün <strong>Portal istifadəçilərinə bildiriş göndər</strong> seçimini edin.",
   "RestoreBackupResetInfoWarningText": "Bütün cari parollar sıfırlanacaq. Portal istifadəçiləri girişin bərpası linki ilə e-poçt məktubu alacaqlar.",
   "RestoreBackupWarningText": "Portal bərpa prosesi zamanı əlçatmaz olacaq. Bərpa tamamlandıqdan sonra seçilmiş bərpa nöqtəsi tarixindən sonra edilən bütün dəyişikliklər itiriləcək.",
   "RestoreDefaultButton": "İlkin vəziyyətə bərpa edin",
