@@ -74,7 +74,7 @@ const SetRoomParams = ({
       )}
 
       <InputParam
-        id={"room-name"}
+        id="shared_room-name"
         title={`${t("Common:Name")}:`}
         placeholder={t("Common:EnterName")}
         value={roomParams.title}

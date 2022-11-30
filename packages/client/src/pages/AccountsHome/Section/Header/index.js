@@ -159,7 +159,7 @@ const SectionHeaderContent = (props) => {
     getHeaderMenu,
     cbMenuItems,
     getCheckboxItemLabel,
-
+    getMenuItemId,
     setInfoPanelIsVisible,
     isInfoPanelVisible,
     isOwner,
@@ -186,8 +186,10 @@ const SectionHeaderContent = (props) => {
       <>
         {cbMenuItems.map((key) => {
           const label = getCheckboxItemLabel(t, key);
+          const id = getMenuItemId(key);
           return (
             <DropDownItem
+              id={id}
               key={key}
               label={label}
               data-key={key}
@@ -226,7 +228,7 @@ const SectionHeaderContent = (props) => {
   const getContextOptions = () => {
     return [
       isOwner && {
-        id: "main-button_administrator",
+        id: "accounts-add_administrator",
         className: "main-button_drop-down",
         icon: "/static/images/person.admin.react.svg",
         label: t("Common:DocSpaceAdmin"),
@@ -235,7 +237,7 @@ const SectionHeaderContent = (props) => {
         key: "administrator",
       },
       {
-        id: "main-button_manager",
+        id: "accounts-add_manager",
         className: "main-button_drop-down",
         icon: "/static/images/person.manager.react.svg",
         label: t("Common:RoomAdmin"),
@@ -244,7 +246,7 @@ const SectionHeaderContent = (props) => {
         key: "manager",
       },
       {
-        id: "main-button_user",
+        id: "accounts-add_user",
         className: "main-button_drop-down",
         icon: "/static/images/person.user.react.svg",
         label: t("Common:User"),
@@ -257,7 +259,7 @@ const SectionHeaderContent = (props) => {
         isSeparator: true,
       },
       {
-        id: "main-button_invite-again",
+        id: "accounts-add_invite-again",
         className: "main-button_drop-down",
         icon: "/static/images/invite.again.react.svg",
         label: t("LblInviteAgain"),
@@ -296,6 +298,7 @@ const SectionHeaderContent = (props) => {
               {t("Common:Accounts")}
             </Headline>
             <ContextMenuButton
+              id="header_add-button"
               className="action-button"
               directionX="left"
               title={t("Common:Actions")}
@@ -314,6 +317,7 @@ const SectionHeaderContent = (props) => {
                 ) && (
                   <div className="info-panel-toggle-bg">
                     <IconButton
+                      id="info-panel-toggle--open"
                       className="info-panel-toggle"
                       iconName="images/panel.react.svg"
                       size="16"
@@ -349,6 +353,7 @@ export default withRouter(
       isHeaderIndeterminate,
       isHeaderChecked,
       cbMenuItems,
+      getMenuItemId,
       getCheckboxItemLabel,
     } = headerMenuStore;
 
@@ -361,6 +366,7 @@ export default withRouter(
       isHeaderChecked,
       getHeaderMenu,
       cbMenuItems,
+      getMenuItemId,
       getCheckboxItemLabel,
       setInfoPanelIsVisible,
       isInfoPanelVisible,

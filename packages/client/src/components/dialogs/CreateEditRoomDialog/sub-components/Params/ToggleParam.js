@@ -21,7 +21,13 @@ const StyledToggleParam = styled(StyledParam)`
   }
 `;
 
-const ToggleParam = ({ title, description, isChecked, onCheckedChange }) => {
+const ToggleParam = ({
+  id,
+  title,
+  description,
+  isChecked,
+  onCheckedChange,
+}) => {
   return (
     <StyledToggleParam isPrivate>
       <div className="set_room_params-info">
@@ -31,6 +37,7 @@ const ToggleParam = ({ title, description, isChecked, onCheckedChange }) => {
         <div className="set_room_params-info-description">{description}</div>
       </div>
       <ToggleButton
+        id={id}
         className="set_room_params-toggle"
         isChecked={isChecked}
         onChange={onCheckedChange}

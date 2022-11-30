@@ -194,6 +194,7 @@
   "Tags": "Tags",
   "Title": "Title",
   "TitleSelectFile": "Select",
+  "Today": "Today",
   "Type": "Type",
   "Terabyte": "TB",
   "UsersInvited": "Users invited",
@@ -214,6 +215,7 @@
   "HelpCenter": "Help center",
   "FeedbackAndSupport": "Feedback & Support",
   "VideoGuides": "Video Guides",
+  "Yesterday": "Yesterday",
   "SelectFile": "Select file",
   "HideArticleMenu": "Hide menu"
 }

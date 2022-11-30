@@ -29,13 +29,6 @@ namespace ASC.Files.Core.Mapping;
 [Scope]
 public class FolderMappingAction : IMappingAction<DbFolderQuery, Folder<int>>
 {
-    private readonly CoreBaseSettings _coreBaseSettings;
-
-    public FolderMappingAction(CoreBaseSettings coreBaseSettings)
-    {
-        _coreBaseSettings = coreBaseSettings;
-    }
-
     public void Process(DbFolderQuery source, Folder<int> destination, ResolutionContext context)
     {
         switch (destination.FolderType)
@@ -44,7 +37,7 @@ public class FolderMappingAction : IMappingAction<DbFolderQuery, Folder<int>>
                 destination.Title = FilesUCResource.CorporateFiles;
                 break;
             case FolderType.USER:
-                destination.Title = _coreBaseSettings.DisableDocSpace ? FilesUCResource.MyFiles : FilesUCResource.Personal;
+                destination.Title = FilesUCResource.MyFiles;
                 break;
             case FolderType.SHARE:
                 destination.Title = FilesUCResource.SharedForMe;
