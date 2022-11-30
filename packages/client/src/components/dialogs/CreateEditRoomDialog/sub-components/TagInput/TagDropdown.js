@@ -40,7 +40,8 @@ const TagDropdown = ({
     e.preventDefault();
   };
 
-  const onClickOutside = () => {
+  const onClickOutside = (e) => {
+    if (e.target.id === "shared_tags-input") return;
     document.getElementById("shared_tags-input").blur();
   };
 
