@@ -39,7 +39,6 @@
   "BySms": "С помощью SMS",
   "ChangeLogoButton": "Сменить логотип",
   "Characters": "{{length}} символов",
-  "ChooseOwner": "Выбрать владельца",
   "ClearBackupList": "Удалить все резервные копии",
   "CompanyNameForCanvasLogo": "Название компании",
   "ConfirmEmailSended": "Письмо с подтверждением отправлено {{ownerName}}",

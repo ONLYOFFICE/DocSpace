@@ -23,7 +23,6 @@
   "BySms": "ຈາກຂໍ້ຄວາມ",
   "ChangeLogoButton": "ປ່ຽນໂລໂກ",
   "Characters": "{{ length }} ຕົວອັກສອນ",
-  "ChooseOwner": "ເລືອກເຈົ້າຂອງ",
   "ClearBackupList": "ລົບ ທັງໝົດ ສໍາຮອງຂໍ້ມູນ",
   "CompanyNameForCanvasLogo": "ຊື່ບໍລິສັດ",
   "ConfirmEmailSended": "ອີເມລຢືນຢັນໄດ້ຖືກສົ່ງໄປຫາ {{ownerName}}",
