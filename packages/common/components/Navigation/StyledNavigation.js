@@ -35,7 +35,7 @@ const StyledContainer = styled.div`
   }
 
   .navigation-header-separator {
-    display: block;
+    display: ${isMobileOnly ? "none" : "block"};
     padding-left: 16px;
     border-right: ${(props) =>
       `1px solid ${props.theme.navigation.icon.stroke}`};
