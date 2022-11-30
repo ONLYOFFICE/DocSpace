@@ -1315,6 +1315,7 @@ class FilesStore {
       let roomOptions = [
         "select",
         "separator0",
+        "link-for-room-members",
         "reconnect-storage",
         "edit-room",
         "invite-users-to-room",
