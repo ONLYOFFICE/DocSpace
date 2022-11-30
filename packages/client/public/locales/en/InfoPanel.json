@@ -6,7 +6,6 @@
   "Data": "Data",
   "DateModified": "Date modified",
   "FeedLocationLabel": "Folder «{{folderTitle}}»",
-  "FeedRenameFile": "File renamed.",
   "FeedRenameFolder": "Folder renamed.",
   "FeedRenameRoom": "Room <strong>«{{oldRoomTitle}}»</strong> renamed to <strong>«{{roomTitle}}»</strong>.",
   "FeedUpdateFile": "File updated.",
