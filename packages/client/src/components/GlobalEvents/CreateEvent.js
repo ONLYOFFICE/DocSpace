@@ -49,6 +49,8 @@ const CreateEvent = ({
 
   setEventDialogVisible,
   eventDialogVisible,
+
+  isPrivateFolder,
 }) => {
   const [headerTitle, setHeaderTitle] = React.useState(null);
   const [startValue, setStartValue] = React.useState("");
@@ -197,7 +199,7 @@ const CreateEvent = ({
             setCreatedItem({ id: createdFileId, type: "file" });
             addActiveItems([file.id]);
 
-            if (isPrivacy) {
+            if (isPrivateFolder) {
               return setEncryptionAccess(file).then((encryptedFile) => {
                 if (!encryptedFile) return Promise.resolve();
                 toastr.info(t("Translations:EncryptedFileSaving"));
@@ -278,7 +280,7 @@ export default inject(
 
     const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
 
-    const { id: parentId } = selectedFolderStore;
+    const { id: parentId, private: isPrivateFolder } = selectedFolderStore;
 
     const { replaceFileStream, setEncryptionAccess } = auth;
 
@@ -318,6 +320,8 @@ export default inject(
 
       replaceFileStream,
       setEncryptionAccess,
+
+      isPrivateFolder,
     };
   }
 )(observer(CreateEvent));
