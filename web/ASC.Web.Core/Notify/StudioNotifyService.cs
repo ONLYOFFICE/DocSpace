@@ -230,7 +230,7 @@ public class StudioNotifyService
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmRoomInvite;
 
         _client.SendNoticeToAsync(
-            Actions.RoomInvite,
+            Actions.SaasRoomInvite,
                 _studioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
                 new TagValue(Tags.InviteLink, confirmationUrl),
@@ -242,7 +242,7 @@ public class StudioNotifyService
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmDocSpaceInvite;
 
         _client.SendNoticeToAsync(
-            Actions.DocSpaceInvite,
+            Actions.SaasDocSpaceInvite,
                 _studioNotifyHelper.RecipientFromEmail(email, false),
                 new[] { EMailSenderName },
                 new TagValue(Tags.InviteLink, confirmationUrl),
