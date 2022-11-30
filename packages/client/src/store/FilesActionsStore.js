@@ -1439,6 +1439,7 @@ class FilesActionStore {
         if (!isTablet() && !isMobile) return null;
         else
           return {
+            id: "menu-show-info",
             key: "show-info",
             label: t("Common:Info"),
             iconUrl: "/static/images/info.outline.react.svg",
@@ -1448,6 +1449,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("copy")) return null;
         else
           return {
+            id: "menu-copy",
             label: t("Translations:Copy"),
             onClick: () => setCopyPanelVisible(true),
             iconUrl: "/static/images/copyTo.react.svg",
@@ -1457,6 +1459,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("download")) return null;
         else
           return {
+            id: "menu-download",
             label: t("Common:Download"),
             onClick: () =>
               this.downloadAction(
@@ -1469,6 +1472,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("downloadAs")) return null;
         else
           return {
+            id: "menu-download-as",
             label: t("Translations:DownloadAs"),
             onClick: () => setDownloadDialogVisible(true),
             iconUrl: "/static/images/downloadAs.react.svg",
@@ -1478,12 +1482,14 @@ class FilesActionStore {
         if (!this.isAvailableOption("moveTo")) return null;
         else
           return {
+            id: "menu-move-to",
             label: t("MoveTo"),
             onClick: () => setMoveToPanelVisible(true),
             iconUrl: "/static/images/move.react.svg",
           };
       case "pin":
         return {
+          id: "menu-pin",
           key: "pin",
           label: t("Pin"),
           iconUrl: "/static/images/pin.react.svg",
@@ -1492,6 +1498,7 @@ class FilesActionStore {
         };
       case "unpin":
         return {
+          id: "menu-unpin",
           key: "unpin",
           label: t("Unpin"),
           iconUrl: "/static/images/unpin.react.svg",
@@ -1502,6 +1509,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("archive")) return null;
         else
           return {
+            id: "menu-archive",
             key: "archive",
             label: t("Archived"),
             iconUrl: "/static/images/room.archive.svg",
@@ -1512,6 +1520,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("unarchive")) return null;
         else
           return {
+            id: "menu-unarchive",
             key: "unarchive",
             label: t("Common:Restore"),
             iconUrl: "images/subtract.react.svg",
@@ -1522,6 +1531,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("delete-room")) return null;
         else
           return {
+            id: "menu-delete-room",
             label: t("Common:Delete"),
             onClick: () => this.deleteRooms(t),
             iconUrl: "/static/images/delete.react.svg",
@@ -1531,6 +1541,7 @@ class FilesActionStore {
         if (!this.isAvailableOption("delete")) return null;
         else
           return {
+            id: "menu-delete",
             label: t("Common:Delete"),
             onClick: () => {
               if (this.settingsStore.confirmDelete) {
@@ -1700,6 +1711,7 @@ class FilesActionStore {
       .set("download", download)
       .set("downloadAs", downloadAs)
       .set("restore", {
+        id: "menu-restore",
         label: t("Common:Restore"),
         onClick: () => setMoveToPanelVisible(true),
         iconUrl: "/static/images/move.react.svg",

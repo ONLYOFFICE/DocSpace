@@ -653,7 +653,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// </returns>
     [HttpGet("rooms")]
     public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomFilterType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject,
-        ProviderFilter? provider)
+        ProviderFilter? provider, SubjectFilter? subjectFilter)
     {
         ErrorIfNotDocSpace();
 
@@ -685,7 +685,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
 
         var content = await _fileStorageServiceInt.GetFolderItemsAsync(parentId, startIndex, count, filter, false, subjectId, filterValue,
             searchInContent ?? false, withSubfolders ?? false, orderBy, searchArea ?? SearchArea.Active, withoutTags ?? false, tagNames, excludeSubject ?? false, 
-            provider ?? ProviderFilter.None);
+            provider ?? ProviderFilter.None, subjectFilter ?? SubjectFilter.Owner);
 
         var dto = await _folderContentDtoHelper.GetAsync(content, startIndex);
 
