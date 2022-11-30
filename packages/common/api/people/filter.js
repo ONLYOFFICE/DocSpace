@@ -1,4 +1,3 @@
-import { EmployeeStatus } from "../../constants";
 import { getObjectByLocation, toUrlParams } from "../../utils";
 
 const DEFAULT_PAGE = 0;
@@ -12,15 +11,19 @@ const DEFAULT_ROLE = null;
 const DEFAULT_SEARCH = "";
 const DEFAULT_GROUP = null;
 
+const DEFAULT_PAYMENTS = null;
+
 const EMPLOYEE_STATUS = "employeestatus";
 const ACTIVATION_STATUS = "activationstatus";
-const ROLE = "role";
+const ROLE = "employeeType";
 const GROUP = "group";
 const SEARCH = "search";
 const SORT_BY = "sortby";
 const SORT_ORDER = "sortorder";
 const PAGE = "page";
 const PAGE_COUNT = "pagecount";
+
+const PAYMENTS = "payments";
 
 class Filter {
   static getDefault(total = DEFAULT_TOTAL) {
@@ -79,7 +82,9 @@ class Filter {
     activationStatus = DEFAULT_ACTIVATION_STATUS,
     role = DEFAULT_ROLE,
     search = DEFAULT_SEARCH,
-    group = DEFAULT_GROUP
+    group = DEFAULT_GROUP,
+
+    payments = DEFAULT_PAYMENTS
   ) {
     this.page = page;
     this.pageCount = pageCount;
@@ -91,6 +96,8 @@ class Filter {
     this.search = search;
     this.total = total;
     this.group = group;
+
+    this.payments = payments;
   }
 
   getStartIndex = () => {
@@ -123,26 +130,12 @@ class Filter {
       sortby: sortBy,
       sortorder: sortOrder,
       employeestatus: employeeStatus,
+      employeetype: role,
       activationstatus: activationStatus,
       filtervalue: (search ?? "").trim(),
       groupId: group,
       fields: fields,
     };
-
-    switch (role) {
-      case "admin":
-        dtoFilter.isadministrator = true;
-        break;
-      case "manager":
-        dtoFilter.employeeType = 1;
-        dtoFilter.isadministrator = "false";
-        break;
-      case "user":
-        dtoFilter.employeeType = 2;
-        break;
-      default:
-        break;
-    }
 
     const str = toUrlParams(dtoFilter, true);
     return str;
